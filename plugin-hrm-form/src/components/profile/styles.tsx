@@ -38,6 +38,7 @@ export const ProfileSectionWrapper = styled('div')`
 `;
 ProfileSectionWrapper.displayName = 'ProfileSectionWrapper';
 
+//TODO: refactor to HrmStyles
 export const ProfileSectionSubtitle = styled(FontOpenSans)`
   color: ${HrmTheme.colors.categoryTextColor};
   font-size: 10px;
@@ -78,7 +79,7 @@ type ColorProps = {
   blocked?: boolean;
 };
 
-export const StatusFlagPill = styled('div')<ColorProps>`
+export const FlagPill = styled('div')<ColorProps>`
   display: inline-flex;
   align-items: center;
   border-radius: 6px;
@@ -89,7 +90,7 @@ export const StatusFlagPill = styled('div')<ColorProps>`
   border: ${props => (props.blocked ? `2px dashed #D61F1F` : '#F9FAFB')};
   color: ${props => (props.blocked ? `#D61F1F` : 'none')};
 `;
-StatusFlagPill.displayName = 'StatusFlagPill';
+FlagPill.displayName = 'FlagPill';
 
 export const StyledFlagSelect = styled(Select)`
   background-color: #f9fafb;
@@ -136,7 +137,7 @@ type StyledTextProps = {
   hasContent?: boolean;
 };
 
-export const SectionContentTextArea = styled('textarea')<StyledTextProps>`
+export const SectionContentText = styled('div')<StyledTextProps>`
   font-size: 12px;
   line-height: 15px;
   padding: 5px 5px 5px 15px;
@@ -149,13 +150,13 @@ export const SectionContentTextArea = styled('textarea')<StyledTextProps>`
   box-sizing: border-box;
   overflow: hidden;
   flex-grow: 1;
-  resize: none;
   font-family: 'Open Sans';
   font-weight: 400;
   box-sizing: border-box;
+  white-space: pre-wrap;
   opacity: ${props => (props.hasContent ? 1 : 0.5)};
   :focus {
     outline: none;
   }
 `;
-SectionContentTextArea.displayName = 'SectionContentTextArea';
+SectionContentText.displayName = 'SectionContentText';

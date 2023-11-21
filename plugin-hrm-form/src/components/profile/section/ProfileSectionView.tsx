@@ -18,7 +18,7 @@ import React, { useEffect, useState } from 'react';
 
 import { ProfileCommonProps } from '../types';
 import { useProfileSectionByType } from '../../../states/profile/hooks/useProfileSection';
-import { SectionContentTextArea, SectionText } from '../styles';
+import { SectionContentText, SectionText } from '../styles';
 
 type OwnProps = ProfileCommonProps & {
   sectionType: {
@@ -42,9 +42,9 @@ const ProfileSectionView = ({ profileId, sectionType }: OwnProps) => {
   }
 
   return (
-    <SectionContentTextArea hasContent={Boolean(section?.content)}>
+    <SectionContentText hasContent={Boolean(section?.content)}>
       {section?.content?.length > 0 ? section?.content : `No ${sectionType.name}`}
-    </SectionContentTextArea>
+    </SectionContentText>
   );
 };
 

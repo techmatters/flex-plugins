@@ -21,7 +21,7 @@ import { IconButton, Template } from '@twilio/flex-ui';
 import { RouterTask, Profile, ProfileFlag } from '../../../types/types';
 import { useProfileFlags } from '../../../states/profile/hooks';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
-import { StatusFlagPill, CloseIconButton } from '../styles';
+import { FlagPill, CloseIconButton } from '../styles';
 import { RootState } from '../../../states';
 
 type OwnProps = {
@@ -67,10 +67,10 @@ const ProfileFlagsList: React.FC<Props> = ({ enableDisassociate, profileId }) =>
 
   const renderPill = (flag: ProfileFlag) => {
     return (
-      <StatusFlagPill key={flag.name} fillColor="#F5EEF4" blocked={flag.name === 'blocked'}>
+      <FlagPill key={flag.name} fillColor="#F5EEF4" blocked={flag.name === 'blocked'}>
         {flag.name}
         {renderDisassociate(flag)}
-      </StatusFlagPill>
+      </FlagPill>
     );
   };
 
@@ -79,9 +79,9 @@ const ProfileFlagsList: React.FC<Props> = ({ enableDisassociate, profileId }) =>
       {profileFlags?.length ? (
         profileFlags.map(renderPill)
       ) : (
-        <StatusFlagPill>
+        <FlagPill>
           <Template code="Profile-NoStatusesListed" />
-        </StatusFlagPill>
+        </FlagPill>
       )}
     </>
   );
