@@ -209,8 +209,18 @@ const CaseHome: React.FC<Props> = ({
   };
 
   return (
-    <NavigableContainer titleCode={contactIdentifier} task={task} onGoBack={handleClose} onCloseModal={handleClose}>
-      <CaseContainer data-testid="CaseHome-CaseDetailsComponent">
+    <NavigableContainer
+      titleCode={contactIdentifier}
+      task={task}
+      onGoBack={handleClose}
+      onCloseModal={handleClose}
+      data-testid="CaseHome-CaseDetailsComponent"
+    >
+      <CaseContainer
+        style={{
+          overflowY: isCreating ? 'scroll' : 'visible',
+        }}
+      >
         {showConnectToCaseButton && (
           <BannerContainer color="yellow" style={{ paddingTop: '12px', paddingBottom: '12px' }}>
             <Flex width="100%" justifyContent="space-between">
@@ -231,7 +241,7 @@ const CaseHome: React.FC<Props> = ({
             </Flex>
           </BannerContainer>
         )}
-        <Box marginLeft="25px" marginTop="13px">
+        <Box marginTop="13px">
           <CaseDetailsComponent
             caseId={id.toString()}
             statusLabel={statusLabel}
@@ -250,13 +260,13 @@ const CaseHome: React.FC<Props> = ({
             editCaseSummary={onEditCaseSummaryClick}
           />
         </Box>
-        <Box margin="25px 0 0 25px">
+        <Box margin="25px 0 0 0">
           <CaseSummary task={task} />
         </Box>
-        <Box margin="25px 0 0 25px">
+        <Box margin="25px 0 0 0">
           <Timeline taskSid={task.taskSid} can={can} />
         </Box>
-        <Box margin="25px 0 0 25px">
+        <Box margin="25px 0 0 0">
           <CaseSection
             canAdd={() => can(PermissionActions.ADD_HOUSEHOLD)}
             onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Household)}
@@ -265,7 +275,7 @@ const CaseHome: React.FC<Props> = ({
             {householdRows()}
           </CaseSection>
         </Box>
-        <Box margin="25px 0 0 25px">
+        <Box margin="25px 0 0 0">
           <CaseSection
             canAdd={() => can(PermissionActions.ADD_PERPETRATOR)}
             onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Perpetrator)}
@@ -274,7 +284,7 @@ const CaseHome: React.FC<Props> = ({
             {perpetratorRows()}
           </CaseSection>
         </Box>
-        <Box margin="25px 0 0 25px">
+        <Box margin="25px 0 0 0">
           <CaseSection
             canAdd={() => can(PermissionActions.ADD_INCIDENT)}
             onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Incident)}
@@ -284,7 +294,7 @@ const CaseHome: React.FC<Props> = ({
           </CaseSection>
         </Box>
         {featureFlags.enable_upload_documents && (
-          <Box margin="25px 0 0 25px">
+          <Box margin="25px 0 0 0">
             <CaseSection
               onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Document)}
               canAdd={() => can(PermissionActions.ADD_DOCUMENT)}

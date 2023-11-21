@@ -41,8 +41,8 @@ const ViewTaskNumber = ({ task }: Props) => {
         {viewNumber ? <EyeOpenIcon /> : <EyeCloseIcon />}
       </UnmaskStyledButton>
       {viewNumber ? (
-        <Popper open={viewNumber} anchorEl={viewNumberRef.current} placement="bottom">
-          <Paper style={{ width: '310px', padding: '25px' }}>
+        <Popper open={viewNumber} anchorEl={viewNumberRef.current} placement="bottom-start">
+          <Paper style={{ width: '300px', padding: '20px' }}>
             <Box style={{ float: 'right' }}>
               <HiddenText id="CloseButton">
                 <Template code="CloseButton" />

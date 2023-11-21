@@ -26,8 +26,15 @@ import { getCurrentBaseRoute, getCurrentTopmostRouteStackForTask } from '../stat
 import { isRouteModal } from '../states/routing/types';
 import { changeRoute, newCloseModalAction, newGoBackAction } from '../states/routing/actions';
 import { Contact, CustomITask, StandaloneITask } from '../types/types';
-import { HeaderCloseButton, HiddenText, Row, StyledBackButton } from '../styles/HrmStyles';
-import { LargeBackIcon, NavigableContainerBox, NavigableContainerTitle } from '../styles/NavigableContainerStyles';
+import * as CaseActions from '../states/case/actions';
+import * as RoutingActions from '../states/routing/actions';
+import { Box, HeaderCloseButton, HiddenText, Row, StyledBackButton } from '../styles/HrmStyles';
+import {
+  LargeBackIcon,
+  NavigableContainerBox,
+  NavigableContainerContentBox,
+  NavigableContainerTitle,
+} from '../styles/NavigableContainerStyles';
 import useFocus from '../utils/useFocus';
 
 type FocusTarget = 'back' | 'close';
@@ -128,7 +135,7 @@ const NavigableContainer: React.FC<Props> = ({
           </HeaderCloseButton>
         )}
       </Row>
-      {children}
+      <NavigableContainerContentBox>{children}</NavigableContainerContentBox>
     </NavigableContainerBox>
   );
 };

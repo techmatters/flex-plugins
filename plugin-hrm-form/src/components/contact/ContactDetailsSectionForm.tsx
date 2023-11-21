@@ -83,7 +83,7 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
   }, [layoutDefinition, form]);
 
   return (
-    <Container>
+    <Container removePadding={true}>
       <Box paddingBottom={`${BottomButtonBarHeight}px`}>
         <TwoColumnLayout>
           <ColumnarBlock>

@@ -253,7 +253,7 @@ const AddEditCaseItem: React.FC<Props> = ({
             updatingCounsellor={updatingCounsellorName}
             updated={updated}
           />
-          <Container>
+          <Container removePadding={true}>
             <Box paddingBottom={`${BottomButtonBarHeight}px`}>
               <TwoColumnLayout>
                 <ColumnarBlock>
