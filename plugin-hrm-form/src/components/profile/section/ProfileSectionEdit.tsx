@@ -58,13 +58,6 @@ const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props)
 
   return (
     <NavigableContainer titleCode={`Edit ${sectionType}`} task={task}>
-      {/* <TextField
-        multiline
-        minRows={40}
-        variant="outlined"
-        defaultValue={content}
-        onChange={e => setContent(e.target.value)}
-      /> */}
       <Container>
         <Box>
           <ColumnarBlock>
