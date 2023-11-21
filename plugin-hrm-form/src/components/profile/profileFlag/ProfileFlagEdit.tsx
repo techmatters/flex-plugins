@@ -14,9 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { ArrowDropDown } from '@material-ui/icons';
+import { Popper, Paper } from '@material-ui/core';
 
 import ProfileFlagList from './ProfileFlagList';
 import { StyledMenuItem } from '../../../styles/HrmStyles';
@@ -24,7 +24,7 @@ import { RouterTask, Profile, ProfileFlag } from '../../../types/types';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
 import { useProfileFlags } from '../../../states/profile/hooks';
 import { RootState } from '../../../states';
-import { StyledFlagSelect } from '../styles';
+import { StyledFlagEditList } from '../styles';
 
 type OwnProps = {
   profileId: Profile['id'];
@@ -38,46 +38,32 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
   const { allProfileFlags, profileFlags, associateProfileFlag } = useProfileFlags(profileId);
   const { loading } = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId));
 
-  const [open, setOpen] = useState(false);
+  const anchorRef = useRef(null);
+
+  const [open, setOpen] = useState(true);
 
   const availableFlags = allProfileFlags.filter(flag => !profileFlags.find(f => f.id === flag.id));
-  const renderValue = () => <ProfileFlagList {...props} enableDisassociate={true} />;
 
+  useEffect(() => {
+    setOpen(Boolean(availableFlags.length));
+  }, [availableFlags]);
+
+  const renderValue = () => <ProfileFlagList {...props} enableDisassociate={true} />;
   const shouldAllowAssociate = availableFlags.length && !loading;
 
-  const handleOpen = () => {
-    if (shouldAllowAssociate) setOpen(true);
-  };
-  const getIconComponent = () =>
-    shouldAllowAssociate ? <ArrowDropDown onClick={handleOpen} /> : <ArrowDropDown style={{ visibility: 'hidden' }} />;
-
   return (
-    <StyledFlagSelect
-      open={open}
-      onOpen={handleOpen}
-      onClose={() => setOpen(false)}
-      IconComponent={getIconComponent}
-      value="false"
-      renderValue={renderValue}
-      variant="standard"
-      MenuProps={{
-        anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: 'left',
-        },
-        transformOrigin: {
-          vertical: 'top',
-          horizontal: 'left',
-        },
-        getContentAnchorEl: null,
-      }}
-    >
-      {availableFlags.map((flag: ProfileFlag) => (
-        <StyledMenuItem key={flag.id} onClick={() => associateProfileFlag(flag.id)}>
-          {flag.name}
-        </StyledMenuItem>
-      ))}
-    </StyledFlagSelect>
+    <>
+      <StyledFlagEditList ref={anchorRef}>{renderValue()}</StyledFlagEditList>
+      <Popper open={open} anchorEl={anchorRef.current} placement="bottom-start">
+        <Paper>
+          {availableFlags.map((flag: ProfileFlag) => (
+            <StyledMenuItem key={flag.id} onClick={() => shouldAllowAssociate && associateProfileFlag(flag.id)}>
+              {flag.name}
+            </StyledMenuItem>
+          ))}
+        </Paper>
+      </Popper>
+    </>
   );
 };
 

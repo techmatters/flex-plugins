@@ -92,7 +92,7 @@ export const FlagPill = styled('div')<ColorProps>`
 `;
 FlagPill.displayName = 'FlagPill';
 
-export const StyledFlagSelect = styled(Select)`
+export const StyledFlagEditList = styled('div')`
   background-color: #f9fafb;
   border-radius: 5px;
   &:focus-within {
