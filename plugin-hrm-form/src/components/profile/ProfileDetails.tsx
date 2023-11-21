@@ -42,7 +42,7 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal }) => {
   const { profile } = useProfile({ profileId });
 
-  const baseSections: Section[] = [
+  const overviewSections: Section[] = [
     {
       titleCode: 'Profile-IdentifiersHeader',
       renderComponent: () =>
@@ -94,6 +94,26 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
     );
   };
 
+  const renderSection = section => {
+    if (!section) return null;
+
+    return (
+      <div key={section.title}>
+        <ProfileSectionWrapper>
+          <Box marginBottom="5px">
+            <Row>
+              <ProfileSectionSubtitle>
+                {section.titleCode ? <Template code={section.titleCode} /> : section.title}
+              </ProfileSectionSubtitle>
+              {renderEditButton(section)}
+            </Row>
+          </Box>
+          <Box>{section.renderComponent()}</Box>
+        </ProfileSectionWrapper>
+      </div>
+    );
+  };
+
   return (
     <DetailsWrapper>
       <Column>
@@ -101,39 +121,10 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
           <Template code="Profile-DetailsHeader" />
         </Bold>
       </Column>
-      {baseSections.map(section => (
-        <div key={section.title}>
-          <ProfileSectionWrapper>
-            <Box marginBottom="5px">
-              <Row>
-                <ProfileSectionSubtitle>
-                  {section.titleCode ? <Template code={section.titleCode} /> : section.title}
-                </ProfileSectionSubtitle>
-                {renderEditButton(section)}
-              </Row>
-            </Box>
-            <Box>{section.renderComponent()}</Box>
-          </ProfileSectionWrapper>
-        </div>
-      ))}
+      {overviewSections.map(section => renderSection(section))}
       <hr />
       <h2>Notes</h2>
-      {/* eslint-disable sonarjs/no-identical-functions */}
-      {sectionSections.map(section => (
-        <div key={section.title}>
-          <ProfileSectionWrapper>
-            <Box marginBottom="5px">
-              <Row>
-                <ProfileSectionSubtitle>
-                  {section.titleCode ? <Template code={section.titleCode} /> : section.title}
-                </ProfileSectionSubtitle>
-                {renderEditButton(section)}
-              </Row>
-            </Box>
-            <Box>{section.renderComponent()}</Box>
-          </ProfileSectionWrapper>
-        </div>
-      ))}
+      {sectionSections.map(section => renderSection(section))}
       <hr />
     </DetailsWrapper>
   );
