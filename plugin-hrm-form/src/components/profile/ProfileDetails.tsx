@@ -16,13 +16,13 @@
 
 import React, { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { IconButton, Template } from '@twilio/flex-ui';
+import { Icon, Template } from '@twilio/flex-ui';
 
 import { ProfileCommonProps } from './types';
 import ProfileFlagList from './profileFlag/ProfileFlagList';
 import ProfileFlagEdit from './profileFlag/ProfileFlagEdit';
-import { DetailsWrapper, ProfileSubtitle } from './styles';
-import { Bold, Box, Column, Flex } from '../../styles/HrmStyles';
+import { DetailsWrapper, ProfileSectionWrapper, ProfileSectionSubtitle, ProfileSectionEditButton } from './styles';
+import { Bold, Box, Column, Row } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
 import ProfileSectionView from './section/ProfileSectionView';
@@ -32,7 +32,6 @@ type OwnProps = ProfileCommonProps;
 type Section = {
   titleCode?: string;
   title?: string;
-  margin: string;
   renderComponent: () => React.ReactNode;
   handleEdit?: () => void;
   inInlineEditMode?: boolean;
@@ -48,7 +47,6 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
   const baseSections: Section[] = [
     {
       titleCode: 'Profile-IdentifiersHeader',
-      margin: '20px 0',
       renderComponent: () =>
         profile?.identifiers ? (
           profile.identifiers?.map(identifier => <div key={identifier.id}>{identifier.identifier}</div>)
@@ -58,7 +56,6 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
     },
     {
       titleCode: 'Profile-StatusHeader',
-      margin: '10px 4px',
       renderComponent: () =>
         shouldEditProfileFlags ? (
           <ProfileFlagEdit profileId={profileId} task={task} />
@@ -70,53 +67,40 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
     },
   ];
 
-  const sectionTypes = ['summary', 'actions', 'recommendations'];
-
+  const sectionTypes = [
+    {
+      name: 'summary',
+      placeholder: 'Enter a summary of the case',
+    },
+    {
+      name: 'recommended approach',
+      placeholder: 'Enter the recommended approach',
+    },
+    {
+      name: 'details',
+      placeholder: 'Enter the details',
+    },
+  ];
   const sectionSections: Section[] = sectionTypes.map(sectionType => ({
-    title: `${sectionType}`,
-    margin: '20px 0',
+    title: `${sectionType.name}`,
     renderComponent: () => <ProfileSectionView profileId={profileId} task={task} sectionType={sectionType} />,
-    handleEdit: () => openSectionEditModal(sectionType),
+    handleEdit: () => openSectionEditModal(sectionType.name),
   }));
-
   const sections = [...baseSections, ...sectionSections];
 
-  const renderTitle = section => {
-    if (section.titleCode) {
-      return <Template code={section.titleCode} />;
-    }
-
-    return section.title;
-  };
-
   const renderEditButton = section => {
-    if (!section.handleEdit) return null;
+    if (!section || !section.handleEdit) return null;
 
-    let icon = 'Edit';
-    let title = 'Edit';
+    let icon = null;
     if (section.hasOwnProperty('inInlineEditMode') && section.inInlineEditMode) {
       icon = 'Close';
-      title = 'Close Edit';
     }
 
     return (
-      <Box alignSelf="center">
-        <IconButton icon={icon} title={title} size="small" onClick={section.handleEdit} />
-      </Box>
-    );
-  };
-
-  const renderSection = (section: any) => {
-    return (
-      <Box margin="20px 0">
-        <Flex flexDirection="row">
-          <Box alignSelf="center">
-            <ProfileSubtitle>{renderTitle(section)}</ProfileSubtitle>
-          </Box>
-          {renderEditButton(section)}
-        </Flex>
-        <Box margin={section.margin}>{section.renderComponent()}</Box>
-      </Box>
+      <ProfileSectionEditButton onClick={section.handleEdit}>
+        {icon && <Icon icon={icon} />}
+        {!icon && <Template code="Profile-EditButton" />}
+      </ProfileSectionEditButton>
     );
   };
 
@@ -127,8 +111,38 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
           <Template code="Profile-DetailsHeader" />
         </Bold>
       </Column>
-      {sections.map(section => (
-        <div key={section.title}>{renderSection(section)}</div>
+      {baseSections.map(section => (
+        <div key={section.title}>
+          <ProfileSectionWrapper>
+            <Box marginBottom="5px">
+              <Row>
+                <ProfileSectionSubtitle>
+                  {section.titleCode ? <Template code={section.titleCode} /> : section.title}
+                </ProfileSectionSubtitle>
+                {renderEditButton(section)}
+              </Row>
+            </Box>
+            <Box>{section.renderComponent()}</Box>
+          </ProfileSectionWrapper>
+        </div>
+      ))}
+      <hr />
+      <h2>Notes</h2>
+      {/* eslint-disable sonarjs/no-identical-functions */}
+      {sectionSections.map(section => (
+        <div key={section.title}>
+          <ProfileSectionWrapper>
+            <Box marginBottom="5px">
+              <Row>
+                <ProfileSectionSubtitle>
+                  {section.titleCode ? <Template code={section.titleCode} /> : section.title}
+                </ProfileSectionSubtitle>
+                {renderEditButton(section)}
+              </Row>
+            </Box>
+            <Box>{section.renderComponent()}</Box>
+          </ProfileSectionWrapper>
+        </div>
       ))}
       <hr />
     </DetailsWrapper>

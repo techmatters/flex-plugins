@@ -24,7 +24,7 @@ import { RouterTask, Profile, ProfileFlag } from '../../../types/types';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
 import { useProfileFlags } from '../../../states/profile/hooks';
 import { RootState } from '../../../states';
-import { StyledStatusSelect } from '../styles';
+import { StyledFlagSelect } from '../styles';
 
 type OwnProps = {
   profileId: Profile['id'];
@@ -52,7 +52,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
     shouldAllowAssociate ? <ArrowDropDown onClick={handleOpen} /> : <ArrowDropDown style={{ visibility: 'hidden' }} />;
 
   return (
-    <StyledStatusSelect
+    <StyledFlagSelect
       open={open}
       onOpen={handleOpen}
       onClose={() => setOpen(false)}
@@ -77,7 +77,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
           {flag.name}
         </StyledMenuItem>
       ))}
-    </StyledStatusSelect>
+    </StyledFlagSelect>
   );
 };
 

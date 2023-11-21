@@ -19,7 +19,7 @@ import { Template } from '@twilio/flex-ui';
 
 import { RouterTask, Profile } from '../../types/types';
 import NavigableContainer from '../NavigableContainer';
-import { DetailsWrapper, ProfileSubtitle } from './styles';
+import { DetailsWrapper, ProfileSectionSubtitle } from './styles';
 import { ProfileCommonProps } from './types';
 
 type OwnProps = ProfileCommonProps;
@@ -31,7 +31,7 @@ const ProfileEdit: React.FC<Props> = (props: Props) => {
   return (
     <NavigableContainer titleCode="Profile-EditHeader" task={task}>
       <DetailsWrapper>
-        <ProfileSubtitle>{/* <Template code="Profile-StatusHeader" /> */}</ProfileSubtitle>
+        <ProfileSectionSubtitle>{/* <Template code="Profile-StatusHeader" /> */}</ProfileSectionSubtitle>
       </DetailsWrapper>
     </NavigableContainer>
   );

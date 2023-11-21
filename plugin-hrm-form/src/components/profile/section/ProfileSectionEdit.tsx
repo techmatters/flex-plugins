@@ -14,46 +14,59 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 import { TextField } from '@material-ui/core';
-import { set } from 'lodash';
 
 import NavigableContainer from '../../NavigableContainer';
 import { ProfileSection } from '../../../types/types';
-import { Flex, StyledNextStepButton } from '../../../styles/HrmStyles';
+import {
+  Flex,
+  StyledNextStepButton,
+  Container,
+  Box,
+  TwoColumnLayout,
+  ColumnarBlock,
+  ColumnarContent,
+  FormTextArea,
+} from '../../../styles/HrmStyles';
 import { useEditProfileSection } from '../../../states/profile/hooks/useProfileSection';
 import { ProfileCommonProps } from '../types';
+import * as RoutingActions from '../../../states/routing/actions';
 
 type OwnProps = ProfileCommonProps & {
   sectionType: ProfileSection['sectionType'];
 };
 
-type Props = OwnProps;
+type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ProfileSectionEdit = ({ task, profileId, sectionType }: Props) => {
+const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props) => {
   const { section, createProfileSection, updateProfileSection } = useEditProfileSection({ profileId, sectionType });
 
   const [content, setContent] = useState<string>(section?.content || '');
   const sectionId: ProfileSection['id'] = section?.id;
-  console.log('>>> ProfileSectionEdit', profileId, sectionType, section, content);
 
   const handleEdit = () => {
     if (!sectionId) {
-      return createProfileSection({ profileId, sectionType, content });
+      createProfileSection({ profileId, sectionType, content });
+      closeModal();
+      return;
     }
-    return updateProfileSection({ profileId, sectionType, content, sectionId });
+    updateProfileSection({ profileId, sectionType, content, sectionId });
+    closeModal();
   };
-  console.log('>>> ProfileSectionEdit', profileId, sectionType, section, content);
 
   return (
-    <NavigableContainer titleCode="Profile-EditNoteHeader" task={task}>
-      <TextField
-        multiline
-        minRows={40}
-        variant="outlined"
-        defaultValue={content}
-        onChange={e => setContent(e.target.value)}
-      />
+    <NavigableContainer titleCode={`Edit ${sectionType}`} task={task}>
+      <Container>
+        <Box>
+          <ColumnarBlock>
+            <ColumnarContent>
+              <FormTextArea defaultValue={content} onChange={e => setContent(e.target.value)} rows={10} width={500} />
+            </ColumnarContent>
+          </ColumnarBlock>
+        </Box>
+      </Container>
       <Flex justifyContent="flex-end" flexDirection="row">
         <StyledNextStepButton roundCorners onClick={handleEdit}>
           Save
@@ -63,4 +76,13 @@ const ProfileSectionEdit = ({ task, profileId, sectionType }: Props) => {
   );
 };
 
-export default ProfileSectionEdit;
+const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
+  return {
+    closeModal: () => dispatch(RoutingActions.newCloseModalAction(task.taskSid)),
+  };
+};
+
+const connector = connect(null, mapDispatchToProps);
+const connected = connector(ProfileSectionEdit);
+
+export default connected;
