@@ -58,7 +58,7 @@ import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentif
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
-import { removeFromCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
+import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
 import { configurationBase, connectedCaseBase, namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
@@ -93,7 +93,6 @@ const Case: React.FC<Props> = ({
   releaseContacts,
   updateCaseAsyncAction,
   onNewCaseSaved = () => Promise.resolve(),
-  disconnectFromCase,
   submitContactFormAsyncAction,
   ...props
 }) => {
@@ -352,7 +351,6 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     loadContacts: bindActionCreators(ContactActions.loadContacts, dispatch),
     updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
       caseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
-    disconnectFromCase: (contactId: string) => caseAsyncDispatch(removeFromCaseAsyncAction(contactId, null)),
     submitContactFormAsyncAction: (
       task: CustomITask,
       contact: Contact,
