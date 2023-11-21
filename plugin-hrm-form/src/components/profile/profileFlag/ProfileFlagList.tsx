@@ -39,23 +39,10 @@ const ProfileFlagsList: React.FC<Props> = ({ enableDisassociate, profileId }) =>
   const renderDisassociate = (flag: ProfileFlag) => {
     if (!enableDisassociate) return null;
 
-    /*
-     * We have to use onMouseDown instead of onClick because this is
-     * rendered inside a Material UI Select component value, which will intercept
-     * the click event and open the dropdown before the event bubbles up.
-     * onMouseDown fires before onClick, so we can stop propagation and prevent
-     * the dropdown from opening.
-     */
-    const handleDisassociate = (event: React.MouseEvent, flag: ProfileFlag) => {
-      event.preventDefault();
-      event.stopPropagation();
-      disassociateProfileFlag(flag.id);
-    };
-
     return (
       <IconButton
         icon={<CloseIconButton />}
-        onMouseDown={event => handleDisassociate(event, flag)}
+        onClick={() => disassociateProfileFlag(flag.id)}
         title="Disassociate Flag"
         themeOverride={{ Icon: { size: '10px' } }}
         disabled={loading}
