@@ -78,7 +78,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
             <IconButton
               icon="ArrowDown"
               title="Associate status"
-              onMouseDown={focusOnAssociateRef}
+              onClick={focusOnAssociateRef}
               aria-controls={open ? 'composition-menu' : undefined}
               aria-expanded={open ? 'true' : undefined}
               aria-haspopup="true"
