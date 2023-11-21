@@ -26,8 +26,8 @@ import { ContactMetadata } from '../states/contacts/types';
 import { ChannelTypes } from '../states/DomainConstants';
 import { ResourceReferral } from '../states/contacts/resourceReferral';
 import { ContactState } from '../states/contacts/existingContacts';
-import { newContact, newContactState } from '../states/contacts/contactState';
-import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
+import { newContact } from '../states/contacts/contactState';
+import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { RootState } from '../states';
 import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
 import asyncDispatch from '../states/asyncDispatch';
@@ -195,7 +195,7 @@ export const loadFormSharedState = async (task: ITask): Promise<ContactState> =>
   }
 
   // Should have been loaded already in the beforeAcceptTask handler
-  let contactState = findContactByTaskSid(store.getState() as RootState, task.attributes.transferMeta.originalTask);
+  let contactState = selectContactByTaskSid(store.getState() as RootState, task.attributes.transferMeta.originalTask);
 
   if (!contactState) {
     console.error('Could not find contact state for original task, aborting loading transferred data');

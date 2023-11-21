@@ -16,17 +16,16 @@
 import { combineReducers } from 'redux';
 
 import * as t from './types';
-import { identifierReducer } from './identifier';
-import { profileReducer } from './profile';
-import { profileFlagsReducer } from './profileFlag';
+import identifiersReducer from './identifiers';
+import profilesReducer from './profiles';
+import profileFlagsReducer from './profileFlags';
 
 const reducers = {
-  identifiers: identifierReducer(),
-  profiles: profileReducer(),
+  identifiers: identifiersReducer(),
+  profiles: profilesReducer(),
   profileFlags: profileFlagsReducer(),
 };
 
 const combinedReducers = combineReducers(reducers);
 
-export const reduce = (state = t.initialState, action: t.ProfileActions): t.ProfileState =>
-  combinedReducers(state, action);
+export const reduce = (state = t.initialState, action: any): t.ProfileState => combinedReducers(state, action);

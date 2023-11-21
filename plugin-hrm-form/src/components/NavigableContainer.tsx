@@ -29,8 +29,13 @@ import { changeRoute, newCloseModalAction, newGoBackAction } from '../states/rou
 import { Contact, CustomITask, StandaloneITask } from '../types/types';
 import * as CaseActions from '../states/case/actions';
 import * as RoutingActions from '../states/routing/actions';
-import { HeaderCloseButton, HiddenText, Row, StyledBackButton } from '../styles/HrmStyles';
-import { LargeBackIcon, NavigableContainerBox, NavigableContainerTitle } from '../styles/NavigableContainerStyles';
+import { Box, HeaderCloseButton, HiddenText, Row, StyledBackButton } from '../styles/HrmStyles';
+import {
+  LargeBackIcon,
+  NavigableContainerBox,
+  NavigableContainerContentBox,
+  NavigableContainerTitle,
+} from '../styles/NavigableContainerStyles';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -39,10 +44,7 @@ type OwnProps = {
   onCloseModal?: () => void;
 };
 
-const mapStateToProps = (
-  { [namespace]: { searchContacts, configuration, routing } }: RootState,
-  { task: { taskSid } }: OwnProps,
-) => {
+const mapStateToProps = ({ [namespace]: { routing } }: RootState, { task: { taskSid } }: OwnProps) => {
   const routeStack = getCurrentTopmostRouteStackForTask(routing, taskSid);
   return {
     routing: routeStack[routeStack.length - 1],
@@ -86,16 +88,19 @@ const NavigableContainer: React.FC<Props> = ({
   return (
     <NavigableContainerBox modal={isModal} {...boxProps}>
       <Row style={{ alignItems: 'start' }}>
-        {hasHistory && (
-          <StyledBackButton onClick={onGoBack} data-testid="NavigableContainer-BackButton">
-            <Row style={{ paddingTop: '7px' }}>
-              <LargeBackIcon />
-              <HiddenText>
-                <Template code="NavigableContainer-BackButton" />
-              </HiddenText>
-            </Row>
-          </StyledBackButton>
-        )}
+        <Box width="30px">
+          {hasHistory && (
+            <StyledBackButton onClick={onGoBack} data-testid="NavigableContainer-BackButton">
+              <Row style={{ paddingTop: '7px' }}>
+                <LargeBackIcon />
+                <HiddenText>
+                  <Template code="NavigableContainer-BackButton" />
+                </HiddenText>
+              </Row>
+            </StyledBackButton>
+          )}
+        </Box>
+
         <NavigableContainerTitle data-testid="NavigableContainer-Title">
           <Template code={titleCode} />
         </NavigableContainerTitle>
@@ -112,7 +117,7 @@ const NavigableContainer: React.FC<Props> = ({
           </HeaderCloseButton>
         )}
       </Row>
-      {children}
+      <NavigableContainerContentBox>{children}</NavigableContainerContentBox>
     </NavigableContainerBox>
   );
 };

@@ -39,7 +39,7 @@ import { RootState } from '../states';
 import { changeRoute } from '../states/routing/actions';
 import { reactivateAseloListeners } from '../conversationListeners';
 import { prepopulateForm } from '../utils/prepopulateForm';
-import findContactByTaskSid from '../states/contacts/findContactByTaskSid';
+import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { ContactState } from '../states/contacts/existingContacts';
 import { ChangeRouteMode } from '../states/routing/types';
 
@@ -72,7 +72,7 @@ const safeTransfer = async (transferFunction: () => Promise<any>, task: ITask): 
  * Given a taskSid, retrieves the state of the form (stored in redux) for that task
  */
 const getStateContactForms = (taskSid: string): ContactState => {
-  return findContactByTaskSid(Manager.getInstance().store.getState() as RootState, taskSid);
+  return selectContactByTaskSid(Manager.getInstance().store.getState() as RootState, taskSid);
 };
 
 /**

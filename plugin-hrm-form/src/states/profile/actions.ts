@@ -15,16 +15,7 @@
  */
 
 /* eslint-disable import/no-unused-modules */
-import { Dispatch } from 'redux';
 
-import { Profile } from '../../types/types';
-import * as t from './types';
-
-export * from './identifier';
-export * from './profile';
-export * from './profileFlag';
-
-// Action creators
-export const addProfileState = (dispatch: Dispatch<any>) => (profileId: Profile['id'], profile: Profile) => {
-  dispatch({ type: t.ADD_PROFILE_STATE, profileId, profile });
-};
+export * from './identifiers';
+export * from './profiles';
+export * from './profileFlags';

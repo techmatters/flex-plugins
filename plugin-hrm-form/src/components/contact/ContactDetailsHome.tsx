@@ -33,13 +33,7 @@ import {
   CustomITask,
   StandaloneITask,
 } from '../../types/types';
-import {
-  DetailsContainer,
-  ContactAddedFont,
-  SectionActionButton,
-  SectionValueText,
-  ContactDetailsIcon,
-} from '../../styles/search';
+import { ContactAddedFont, SectionActionButton, SectionValueText, ContactDetailsIcon } from '../../styles/search';
 import ContactDetailsSection from './ContactDetailsSection';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';
@@ -262,7 +256,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   );
 
   return (
-    <DetailsContainer data-testid="ContactDetails-Container">
+    <Box data-testid="ContactDetails-Container">
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
       {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
 
@@ -431,7 +425,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           </Flex>
         </ContactDetailsSection>
       )}
-    </DetailsContainer>
+    </Box>
   );
 };
 

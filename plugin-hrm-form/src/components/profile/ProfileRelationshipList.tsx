@@ -17,10 +17,12 @@
 import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
+import Pagination from '../Pagination';
 import asyncDispatch from '../../states/asyncDispatch';
 import * as profileActions from '../../states/profile/actions';
 import * as ProfileTypes from '../../states/profile/types';
 import * as profileSelectors from '../../states/profile/selectors';
+import { PAGE_SIZE } from '../../states/profile/profiles';
 import { RootState } from '../../states';
 
 type ProfileId = ProfileTypes.Profile['id'];
@@ -36,20 +38,20 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileRelationshipList: React.FC<Props> = ({
   data,
-  exhausted,
   loadedPage,
   loading,
   page,
   type,
-  incrementPage,
+  total,
+  updatePage,
   loadRelationshipAsync,
   renderItem,
 }) => {
   const hasData = data && data.length > 0;
 
   useEffect(() => {
-    if (loadedPage === page) return;
-    loadRelationshipAsync(page);
+    if (loading || hasData) return;
+    loadRelationshipAsync(page, loadedPage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
@@ -61,29 +63,31 @@ const ProfileRelationshipList: React.FC<Props> = ({
     return <>{data.map((d: ProfileTypes.ProfileRelationshipTypes) => renderItem(d))}</>;
   };
 
-  const renderLoadMore = () => {
-    if (loading) return <div>Loading...</div>;
-    if (exhausted) return null;
+  const renderPagination = () => {
+    if (!hasData) return null;
 
-    return (
-      <button type="button" onClick={incrementPage}>
-        Load more
-      </button>
-    );
+    const pagesCount = Math.ceil(total / PAGE_SIZE);
+
+    return <Pagination page={page} pagesCount={pagesCount} handleChangePage={updatePage} disabled={loading} />;
   };
 
   return (
     <>
       {renderData()}
-      {renderLoadMore()}
+      {renderPagination()}
     </>
   );
 };
 
 const mapStateToProps = (state: RootState, { profileId, type }) => {
-  const currentProfileState = profileSelectors.selectProfileById(state, profileId);
-  console.log('currentProfileState', currentProfileState);
-  const { data, exhausted, loadedPage, loading, page } = currentProfileState?.[type] || {};
+  const { exhausted, loadedPage, loading, page, total } =
+    profileSelectors.selectProfileRelationshipsByType(state, profileId, type) || {};
+
+  const data = profileSelectors.selectProfileRelationshipsByPage(state, {
+    profileId,
+    type,
+    page,
+  });
 
   return {
     data,
@@ -91,19 +95,28 @@ const mapStateToProps = (state: RootState, { profileId, type }) => {
     loading,
     exhausted,
     page,
+    total,
   };
 };
 
 const mapDispatchToProps = (dispatch, { profileId, type }: OwnProps) => ({
-  loadRelationshipAsync: (page: number) =>
+  loadRelationshipAsync: (page: number, loadedPage: number) =>
     asyncDispatch(dispatch)(
       profileActions.loadRelationshipAsync({
         profileId,
         type,
         page,
+        loadedPage,
       }),
     ),
-  incrementPage: () => dispatch(profileActions.incrementPage({ profileId, type })),
+  updatePage: (page: number) =>
+    dispatch(
+      profileActions.updateRelationshipsPage({
+        profileId,
+        type,
+        page,
+      }),
+    ),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

@@ -18,7 +18,7 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
-import { CheckCircleOutlineOutlined, CreateNewFolderOutlined, FolderOutlined } from '@material-ui/icons';
+import { FolderOutlined } from '@material-ui/icons';
 
 import {
   SubtitleLabel,
@@ -27,10 +27,10 @@ import {
   PreviewHeaderText,
   PreviewRow,
   SummaryText,
-  PreviewActionButton,
 } from '../../../styles/search';
 import { Flex } from '../../../styles/HrmStyles';
 import { getTemplateStrings } from '../../../hrmConfig';
+import ConnectToCaseButton from '../../case/ConnectToCaseButton';
 
 type OwnProps = {
   caseId: number;
@@ -82,20 +82,10 @@ const CaseHeader: React.FC<Props> = ({
           </Flex>
           {showConnectButton && (
             <Flex style={{ minWidth: 'fit-content' }}>
-              <PreviewActionButton
-                disabled={isConnectedToTaskContact}
-                onClick={onClickConnectToTaskContact}
-                secondary="true"
-              >
-                {!isConnectedToTaskContact && <CreateNewFolderOutlined />}
-                {isConnectedToTaskContact && <CheckCircleOutlineOutlined />}
-                <div style={{ width: 10 }} />
-                <Template
-                  code={
-                    isConnectedToTaskContact ? 'CaseHeader-TaskContactConnected' : 'CaseHeader-ConnectToTaskContact'
-                  }
-                />
-              </PreviewActionButton>
+              <ConnectToCaseButton
+                isConnectedToTaskContact={isConnectedToTaskContact}
+                onClickConnectToTaskContact={onClickConnectToTaskContact}
+              />
             </Flex>
           )}
         </Flex>

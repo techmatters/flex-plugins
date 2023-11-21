@@ -15,10 +15,11 @@
  */
 
 import { fetchHrmApi } from './fetchHrmApi';
-import { Identifier, Profile, ProfileFlag } from '../states/profile/types';
+import { Identifier, Profile, ProfileFlag, ProfileSection } from '../states/profile/types';
 
 type ProfileId = Profile['id'];
 type ProfileFlagId = ProfileFlag['id'];
+type ProfileSectionId = ProfileSection['id'];
 
 export const getIdentifierByIdentifier = (identifier: Identifier['identifier']) =>
   fetchHrmApi(`/profiles/identifier/${identifier}`);
@@ -31,7 +32,11 @@ export const getProfileContacts = (id: ProfileId, offset: number, limit: number)
 export const getProfileCases = (id: ProfileId, offset: number, limit: number) =>
   fetchHrmApi(`/profiles/${id}/cases?offset=${offset}&limit=${limit}`);
 
-export const getProfileFlags = () => fetchHrmApi(`/profiles/flags`);
+export const getProfileFlags = () => {
+  return fetchHrmApi(`/profiles/flags`).then(response => {
+    return response;
+  });
+};
 
 export const associateProfileFlag = (profileId: ProfileId, profileFlagId: ProfileFlagId) =>
   fetchHrmApi(`/profiles/${profileId}/flags/${profileFlagId}`, {
@@ -42,3 +47,19 @@ export const disassociateProfileFlag = (profileId: ProfileId, profileFlagId: Pro
   fetchHrmApi(`/profiles/${profileId}/flags/${profileFlagId}`, {
     method: 'DELETE',
   });
+
+export const getProfileSection = (profileId: ProfileId, sectionId: ProfileSectionId) =>
+  fetchHrmApi(`/profiles/${profileId}/sections/${sectionId}`);
+
+export const createProfileSection = (profileId: ProfileId, content: string, sectionType: string) =>
+  fetchHrmApi(`/profiles/${profileId}/sections`, {
+    method: 'POST',
+    body: JSON.stringify({ content, sectionType }),
+  });
+
+export const updateProfileSection = (profileId: ProfileId, sectionId: ProfileSectionId, content: string) => {
+  return fetchHrmApi(`/profiles/${profileId}/sections/${sectionId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ content }),
+  });
+};

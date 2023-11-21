@@ -14,15 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import { SubmitErrorHandler } from 'react-hook-form';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import {
@@ -32,13 +30,12 @@ import {
   AddedToCaseButton,
   SaveAndEndContactButton,
 } from '../../styles/HrmStyles';
-import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { completeTask } from '../../services/formSubmissionHelpers';
 import { hasTaskControl } from '../../utils/transfer';
 import { RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
-import { recordBackendError, recordingErrorHandler } from '../../fullStory';
+import { recordBackendError } from '../../fullStory';
 import { Case, CustomITask, Contact } from '../../types/types';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
@@ -48,9 +45,11 @@ import { ContactMetadata } from '../../states/contacts/types';
 import { connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { AppRoutes } from '../../states/routing/types';
 import AddNewCaseDropdown from './AddNewCaseDropdown';
+import asyncDispatch from '../../states/asyncDispatch';
+import { showConnectedToCaseBannerAction } from '../caseMergingBanners/state';
 
 type BottomBarProps = {
-  handleSubmitIfValid: (handleSubmit: () => void, onError: SubmitErrorHandler<unknown>) => () => void;
+  handleSubmitIfValid: (handleSubmit: () => Promise<void>) => () => void;
   optionalButtons?: { onClick: () => void; label: string }[];
   showNextButton: boolean;
   showSubmitButton: boolean;
@@ -124,17 +123,14 @@ const BottomBar: React.FC<
     }
   };
 
-  const onError = recordingErrorHandler('Tabbed HRM Form', () => {
-    window.alert(strings['Error-Form']);
-  });
-
   const showBottomBar = showNextButton || showSubmitButton;
   const featureFlags = getAseloFeatureFlags();
 
   if (!showBottomBar) return null;
 
   const openSearchModal = () => {
-    openModal({ route: 'search', subroute: 'form' });
+    openModal({ route: 'search', subroute: 'form', action: 'select-case' });
+    // searchExistingCase(true);
   };
 
   return (
@@ -170,7 +166,7 @@ const BottomBar: React.FC<
           <>
             {featureFlags.enable_case_management && (
               <AddNewCaseDropdown
-                handleNewCaseType={handleSubmitIfValid(handleOpenNewCase, onError)}
+                handleNewCaseType={handleOpenNewCase}
                 handleExistingCaseType={openSearchModal}
                 dropdown={dropdown}
               />
@@ -211,7 +207,7 @@ const BottomBar: React.FC<
                 )}
             <SaveAndEndContactButton
               roundCorners={true}
-              onClick={handleSubmitIfValid(handleSubmit, onError)}
+              onClick={handleSubmitIfValid(handleSubmit)}
               disabled={isSubmitting}
               data-fs-id="Contact-SaveContact-Button"
               data-testid="BottomBar-SaveContact-Button"
@@ -246,11 +242,12 @@ const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
   return {
     changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
     openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid)),
-    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
-    createCaseAsyncAction: (contact, workerSid: string, definitionVersion: DefinitionVersionId) =>
+    createCaseAsyncAction: async (contact, workerSid: string, definitionVersion: DefinitionVersionId) => {
       // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
       // TODO: Rework error handling to be based on redux state set by the _REJECTED action
-      dispatch(createCaseAsyncAction(contact, task.taskSid, workerSid, definitionVersion)),
+      await asyncDispatch(dispatch)(createCaseAsyncAction(contact, task.taskSid, workerSid, definitionVersion));
+      dispatch(showConnectedToCaseBannerAction(contact.id));
+    },
     submitContactFormAsyncAction: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) =>
       // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
       // TODO: Rework error handling to be based on redux state set by the _REJECTED action

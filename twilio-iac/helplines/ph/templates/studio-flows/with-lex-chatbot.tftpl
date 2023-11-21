@@ -114,12 +114,12 @@ ${
           "event": "match",
           "conditions": [
             {
-              "friendly_name": "If value contains yes",
+              "friendly_name": "If value matches any yes",
               "arguments": [
                 "{{widgets.get_permission_en.inbound.Body}}"
               ],
-              "type": "contains",
-              "value": "yes"
+              "type": "matches_any_of",
+              "value": "yes,1,yeah,y,yes!"
             }
           ]
         },
@@ -128,12 +128,12 @@ ${
           "event": "match",
           "conditions": [
             {
-              "friendly_name": "If value contains no",
+              "friendly_name": "If value matches any no",
               "arguments": [
                 "{{widgets.get_permission_en.inbound.Body}}"
               ],
-              "type": "contains",
-              "value": "no"
+              "type": "matches_any_of",
+              "value": "2,no,nope,no!"
             }
           ]
         }
@@ -870,7 +870,7 @@ ${
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "Bot",
-        "body": "For us to better assist you, this platform will collect personal information which will be used for case management purposes only in compliance to the Data Privacy Act of 2012 (RA 10173). Do you want to proceed? Please answer Yes or No.",
+        "body": "For us to better assist you, this platform will collect personal information which will be used for case management purposes only in compliance to the Data Privacy Act of 2012 (RA 10173). Do you want to proceed? Please answer 1-Yes or 2- No.",
         "timeout": "3600"
       }
     },
@@ -1075,7 +1075,7 @@ ${
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "Bot",
-        "body": "Ang platform na ito ay mangongolekta ng ilang personal na impormasyon na gagamitin lamang para sa Case Management alinsunod sa Data Privacy Act of 2012 (RA 10173). Gusto mo bang magpatuloy? Mangyaring sagutin ng Oo o Hindi",
+        "body": "Ang platform na ito ay mangongolekta ng ilang personal na impormasyon na gagamitin lamang para sa Case Management alinsunod sa Data Privacy Act of 2012 (RA 10173). Gusto mo bang magpatuloy? Mangyaring sagutin ng 1-Oo o 2-Hindi",
         "timeout": "3600"
       }
     },
@@ -1145,12 +1145,12 @@ ${
           "event": "match",
           "conditions": [
             {
-              "friendly_name": "If value contains oo",
+              "friendly_name": "If value matches any oo",
               "arguments": [
                 "{{widgets.get_permission_fil.inbound.Body}}"
               ],
-              "type": "contains",
-              "value": "oo"
+              "type": "matches_any_of",
+              "value": "oo,1"
             }
           ]
         },
@@ -1159,12 +1159,12 @@ ${
           "event": "match",
           "conditions": [
             {
-              "friendly_name": "If value contains hindi",
+              "friendly_name": "If value matches any hindi",
               "arguments": [
                 "{{widgets.get_permission_fil.inbound.Body}}"
               ],
-              "type": "contains",
-              "value": "hindi"
+              "type": "matches_any_of",
+              "value": "hindi,2"
             }
           ]
         }

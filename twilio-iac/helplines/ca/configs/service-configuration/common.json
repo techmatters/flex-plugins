@@ -5,6 +5,11 @@
             "web"
         ],
         "definitionVersion": "ca-v1",
+        "external_recordings_enabled": true,
+        "config_flags": {
+            "enableExternalRecordings": true,
+            "enableUnmaskingCalls": true
+        },
         "feature_flags": {
             "enable_aselo_messaging_ui": true,
             "enable_counselor_toolkits": true,

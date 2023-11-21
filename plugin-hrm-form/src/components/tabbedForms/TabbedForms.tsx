@@ -28,7 +28,13 @@ import { RootState } from '../../states';
 import { completeTask, removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute, newCloseModalAction, newOpenModalAction } from '../../states/routing/actions';
 import { emptyCategories } from '../../states/contacts/reducer';
-import { AppRoutes, ChangeRouteMode, isRouteWithModalSupport, TabbedFormSubroutes } from '../../states/routing/types';
+import {
+  AppRoutes,
+  CaseRoute,
+  ChangeRouteMode,
+  isRouteWithModalSupport,
+  TabbedFormSubroutes,
+} from '../../states/routing/types';
 import {
   ContactRawJson,
   CustomITask,
@@ -60,11 +66,15 @@ import { namespace } from '../../states/storeNamespaces';
 import Search from '../search';
 import { getCurrentBaseRoute, getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { CaseLayout } from '../../styles/case';
-import Case from '../case/Case';
+import Case, { OwnProps as CaseProps } from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
 import ViewContact from '../case/ViewContact';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
-import { getHrmConfig } from '../../hrmConfig';
+import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
+import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
+import { selectCaseMergingBanners } from '../caseMergingBanners/state';
+import { getHrmConfig, getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
+import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
@@ -135,6 +145,8 @@ const TabbedForms: React.FC<Props> = ({
   openSearchModal,
   closeModal,
   finaliseContact,
+  showConnectedToCaseBanner,
+  showRemovedFromCaseBanner,
   metadata,
   task,
   removeIfOfflineContact,
@@ -145,7 +157,11 @@ const TabbedForms: React.FC<Props> = ({
     mode: 'onChange',
   });
 
+  const strings = getTemplateStrings();
+
   const { contactSaveFrequency } = getHrmConfig();
+  // eslint-disable-next-line camelcase
+  const { enable_case_merging } = getAseloFeatureFlags();
 
   const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={savedContact.csamReports} />, [
     savedContact.csamReports,
@@ -159,6 +175,21 @@ const TabbedForms: React.FC<Props> = ({
     helpline,
   } = updatedContact;
 
+  const submit = async (caseForm: CaseForm) => {
+    try {
+      await finaliseContact(savedContact, metadata, caseForm);
+      await completeTask(task, savedContact);
+    } catch (error) {
+      if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
+        recordBackendError('Submit Contact Form TASK COMPLETED WITHOUT RECORDING', error);
+        await completeTask(task, savedContact);
+      } else {
+        recordBackendError('Submit Contact Form', error);
+      }
+    }
+    return undefined;
+  };
+
   /**
    * Clear some parts of the form state when helpline changes.
    */
@@ -166,6 +197,14 @@ const TabbedForms: React.FC<Props> = ({
     if (isMounted.current) setValue('categories', emptyCategories);
     else isMounted.current = true;
   }, [helpline, setValue]);
+
+  const onError = recordingErrorHandler('Tabbed HRM Form', () => {
+    window.alert(strings['Error-Form']);
+  });
+
+  const newSubmitHandler = (successHandler: () => Promise<void>) => {
+    return methods.handleSubmit(successHandler, onError);
+  };
 
   const onSelectSearchResult = (searchResult: Contact) => {
     const selectedIsCaller = searchResult.rawJson.callType === callTypes.caller;
@@ -180,8 +219,7 @@ const TabbedForms: React.FC<Props> = ({
   };
 
   const onNewCaseSaved = async (caseForm: CaseForm) => {
-    await finaliseContact(savedContact, metadata, caseForm);
-    await completeTask(task, savedContact);
+    await newSubmitHandler(() => submit(caseForm))();
   };
 
   if (
@@ -197,12 +235,32 @@ const TabbedForms: React.FC<Props> = ({
     );
   }
 
-  if (currentRoute.route === 'case') {
+  const renderCaseLayout = () => {
+    // This is a dirty hack so that case viewing works for the create case form and
+    // the profile view case form. It could use a refactor if/when we move routing
+    // into a separate component, but this *should* mostly work for now.
+    // Editing the case in the profile view case form will probably not work
+    // as expected without some additional work.
+    const isCreating = currentRoute.hasOwnProperty('isCreating') ? (currentRoute as CaseRoute).isCreating : true;
+    const caseProps: CaseProps = {
+      task,
+      isCreating,
+    };
+
+    if (isCreating) {
+      caseProps.onNewCaseSaved = onNewCaseSaved;
+      caseProps.handleClose = closeModal;
+    }
+
     return (
       <CaseLayout>
-        <Case task={task} isCreating={true} onNewCaseSaved={onNewCaseSaved} handleClose={closeModal} />
+        <Case {...caseProps} />
       </CaseLayout>
     );
+  };
+
+  if (currentRoute.route === 'case') {
+    return renderCaseLayout();
   }
 
   if (currentRoute.route === 'contact') {
@@ -286,7 +344,6 @@ const TabbedForms: React.FC<Props> = ({
     <FormProvider {...methods}>
       <div role="form" style={{ height: '100%' }}>
         <TabbedFormsContainer>
-          {/* Buttons at the top of the form */}
           <HeaderControlButtons />
           <StyledTabs
             className="hiddenWhenModalOpen"
@@ -299,6 +356,13 @@ const TabbedForms: React.FC<Props> = ({
             {tabs}
           </StyledTabs>
           <div style={{ height: '100%', overflow: 'hidden' }}>
+            {/* eslint-disable-next-line camelcase */}
+            {enable_case_merging && (
+              <Box margin="0 5px">
+                {showConnectedToCaseBanner && <ContactAddedToCaseBanner taskId={task.taskSid} />}
+                {showRemovedFromCaseBanner && <ContactRemovedFromCaseBanner taskId={task.taskSid} />}
+              </Box>
+            )}
             {isOfflineContactTask(task) && (
               <TabbedFormTabContainer display={subroute === 'contactlessTask'}>
                 <ContactlessTaskTab
@@ -372,7 +436,7 @@ const TabbedForms: React.FC<Props> = ({
               // TODO: move this two functions to a separate file to centralize "handle task completions"
               showNextButton={tabIndex !== 0 && tabIndex < tabs.length - 1}
               showSubmitButton={showSubmitButton}
-              handleSubmitIfValid={methods.handleSubmit} // TODO: this should be used within BottomBar, but that requires a small refactor to make it a functional component
+              handleSubmitIfValid={newSubmitHandler} // TODO: this should be used within BottomBar, but that requires a small refactor to make it a functional component
               optionalButtons={optionalButtons}
             />
           </div>
@@ -384,10 +448,10 @@ const TabbedForms: React.FC<Props> = ({
 
 TabbedForms.displayName = 'TabbedForms';
 
-const mapStateToProps = (
-  { [namespace]: { routing, activeContacts, configuration } }: RootState,
-  { task: { taskSid }, contactId }: OwnProps,
-) => {
+const mapStateToProps = (state: RootState, { task: { taskSid }, contactId }: OwnProps) => {
+  const {
+    [namespace]: { routing, activeContacts, configuration },
+  } = state;
   const currentRoute = getCurrentTopmostRouteForTask(routing, taskSid);
   const { isCallTypeCaller, existingContacts } = activeContacts;
   const { savedContact, draftContact, metadata } = existingContacts[contactId] || {};
@@ -396,6 +460,7 @@ const mapStateToProps = (
     isRouteWithModalSupport(baseRoute) && baseRoute.activeModal?.length && baseRoute.activeModal[0].route === 'search';
 
   const { currentDefinitionVersion } = configuration;
+  const { showConnectedToCaseBanner, showRemovedFromCaseBanner } = selectCaseMergingBanners(state, contactId);
   return {
     currentRoute,
     savedContact,
@@ -405,6 +470,8 @@ const mapStateToProps = (
     searchModalOpen,
     isCallTypeCaller,
     metadata,
+    showConnectedToCaseBanner,
+    showRemovedFromCaseBanner,
   };
 };
 

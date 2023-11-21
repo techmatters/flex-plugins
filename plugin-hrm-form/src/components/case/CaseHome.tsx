@@ -21,16 +21,21 @@ import { connect, ConnectedProps } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseContainer } from '../../styles/case';
-import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyles';
+import { BottomButtonBar, Box, Flex, StyledNextStepButton } from '../../styles/HrmStyles';
 import CaseDetailsComponent from './CaseDetails';
 import Timeline from './Timeline';
 import CaseSection from './CaseSection';
-import { PermissionActions, PermissionActionType } from '../../permissions';
+import {
+  getPermissionsForCase,
+  getPermissionsForContact,
+  PermissionActions,
+  PermissionActionType,
+} from '../../permissions';
 import { AppRoutes, CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
 import { RootState } from '../../states';
-import { Activity, CaseDetails, CaseState } from '../../states/case/types';
-import { CustomITask, EntryInfo, StandaloneITask } from '../../types/types';
+import { CaseDetails, CaseState } from '../../states/case/types';
+import { Case, Contact, CustomITask, EntryInfo, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
 import InformationRow from './InformationRow';
 import TimelineInformationRow from './TimelineInformationRow';
@@ -40,16 +45,22 @@ import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { connectedCaseBase, namespace } from '../../states/storeNamespaces';
 import NavigableContainer from '../NavigableContainer';
+import ConnectToCaseButton from './ConnectToCaseButton';
+import { isStandaloneITask } from './Case';
+import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
+import asyncDispatch from '../../states/asyncDispatch';
+import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
+import { newCloseModalAction } from '../../states/routing/actions';
+import { BannerContainer, Text } from '../caseMergingBanners/styles';
+import InfoIcon from '../caseMergingBanners/InfoIcon';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
   definitionVersion: DefinitionVersion;
   caseDetails: CaseDetails;
-  timeline: Activity[];
   isCreating?: boolean;
   handleClose?: () => void;
   handleSaveAndEnd: () => void;
-  handleCancelNewCaseAndClose: () => void;
   handleUpdate: () => void;
   can: (action: PermissionActionType) => boolean;
 };
@@ -61,14 +72,15 @@ const CaseHome: React.FC<Props> = ({
   definitionVersion,
   task,
   openModal,
+  closeModal,
+  connectCaseToTaskContact,
   isCreating,
   handleClose,
   handleSaveAndEnd,
-  handleCancelNewCaseAndClose,
-  timeline,
   caseDetails,
   can,
   connectedCaseState,
+  taskContact,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   if (!connectedCaseState) return null; // narrow type before deconstructing
@@ -110,6 +122,19 @@ const CaseHome: React.FC<Props> = ({
     followUpDate,
   } = caseDetails;
   const statusLabel = definitionVersion.caseStatus[status]?.label ?? status;
+  const isConnectedToTaskContact = taskContact && taskContact.caseId === id;
+
+  const { connectedCase } = connectedCaseState;
+
+  const { can: canForCase } = getPermissionsForCase(connectedCase.twilioWorkerId, connectedCase.status);
+  const { can: canForContact } = getPermissionsForContact(taskContact?.twilioWorkerId);
+
+  const showConnectToCaseButton = Boolean(
+    taskContact &&
+      !isConnectedToTaskContact &&
+      canForCase(PermissionActions.UPDATE_CASE_CONTACTS) &&
+      canForContact(PermissionActions.ADD_CONTACT_TO_CASE),
+  );
 
   const itemRowRenderer = (itemTypeName: string, viewSubroute: CaseSectionSubroute, items: EntryInfo[]) => {
     const itemRows = () => {
@@ -184,9 +209,39 @@ const CaseHome: React.FC<Props> = ({
   };
 
   return (
-    <NavigableContainer titleCode={contactIdentifier} task={task} onGoBack={handleClose} onCloseModal={handleClose}>
-      <CaseContainer data-testid="CaseHome-CaseDetailsComponent">
-        <Box marginLeft="25px" marginTop="13px">
+    <NavigableContainer
+      titleCode={contactIdentifier}
+      task={task}
+      onGoBack={handleClose}
+      onCloseModal={handleClose}
+      data-testid="CaseHome-CaseDetailsComponent"
+    >
+      <CaseContainer
+        style={{
+          overflowY: isCreating ? 'scroll' : 'visible',
+        }}
+      >
+        {showConnectToCaseButton && (
+          <BannerContainer color="yellow" style={{ paddingTop: '12px', paddingBottom: '12px' }}>
+            <Flex width="100%" justifyContent="space-between">
+              <Flex alignItems="center">
+                <InfoIcon color="#fed44b" />
+                <Text>
+                  <Template code="CaseMerging-AddContactToCase" />
+                </Text>
+              </Flex>
+              <ConnectToCaseButton
+                isConnectedToTaskContact={isConnectedToTaskContact}
+                onClickConnectToTaskContact={() => {
+                  connectCaseToTaskContact(taskContact, connectedCaseState.connectedCase);
+                  closeModal();
+                }}
+                color="black"
+              />
+            </Flex>
+          </BannerContainer>
+        )}
+        <Box marginTop="13px">
           <CaseDetailsComponent
             caseId={id.toString()}
             statusLabel={statusLabel}
@@ -205,13 +260,13 @@ const CaseHome: React.FC<Props> = ({
             editCaseSummary={onEditCaseSummaryClick}
           />
         </Box>
-        <Box margin="25px 0 0 25px">
+        <Box margin="25px 0 0 0">
           <CaseSummary task={task} />
         </Box>
-        <Box margin="25px 0 0 25px">
-          <Timeline timelineActivities={timeline} taskSid={task.taskSid} can={can} />
+        <Box margin="25px 0 0 0">
+          <Timeline taskSid={task.taskSid} can={can} />
         </Box>
-        <Box margin="25px 0 0 25px">
+        <Box margin="25px 0 0 0">
           <CaseSection
             canAdd={() => can(PermissionActions.ADD_HOUSEHOLD)}
             onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Household)}
@@ -220,7 +275,7 @@ const CaseHome: React.FC<Props> = ({
             {householdRows()}
           </CaseSection>
         </Box>
-        <Box margin="25px 0 0 25px">
+        <Box margin="25px 0 0 0">
           <CaseSection
             canAdd={() => can(PermissionActions.ADD_PERPETRATOR)}
             onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Perpetrator)}
@@ -229,7 +284,7 @@ const CaseHome: React.FC<Props> = ({
             {perpetratorRows()}
           </CaseSection>
         </Box>
-        <Box margin="25px 0 0 25px">
+        <Box margin="25px 0 0 0">
           <CaseSection
             canAdd={() => can(PermissionActions.ADD_INCIDENT)}
             onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Incident)}
@@ -239,7 +294,7 @@ const CaseHome: React.FC<Props> = ({
           </CaseSection>
         </Box>
         {featureFlags.enable_upload_documents && (
-          <Box margin="25px 0 0 25px">
+          <Box margin="25px 0 0 0">
             <CaseSection
               onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Document)}
               canAdd={() => can(PermissionActions.ADD_DOCUMENT)}
@@ -253,16 +308,6 @@ const CaseHome: React.FC<Props> = ({
       {isCreating && (
         <BottomButtonBar>
           <>
-            <Box marginRight="15px">
-              <StyledNextStepButton
-                data-testid="CaseHome-CancelButton"
-                secondary="true"
-                roundCorners
-                onClick={handleCancelNewCaseAndClose}
-              >
-                <Template code="BottomBar-CancelNewCaseAndClose" />
-              </StyledNextStepButton>
-            </Box>
             <StyledNextStepButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
               <Template code="BottomBar-SaveAndEnd" />
             </StyledNextStepButton>
@@ -278,13 +323,16 @@ CaseHome.displayName = 'CaseHome';
 const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase];
   const connectedCaseState = caseState.tasks[task.taskSid];
-
-  return { connectedCaseState };
+  const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
+  return { connectedCaseState, taskContact };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: CaseHomeProps) => ({
   changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
   openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid)),
+  connectCaseToTaskContact: async (taskContact: Contact, cas: Case) =>
+    asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, cas.id)),
+  closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
 });
 const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(CaseHome);

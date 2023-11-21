@@ -35,7 +35,7 @@ import CallTypeIcon from '../common/icons/CallTypeIcon';
 import { Contact, CustomITask, isOfflineContactTask } from '../../types/types';
 import { getTemplateStrings } from '../../hrmConfig';
 import { AppRoutes } from '../../states/routing/types';
-import findContactByTaskSid from '../../states/contacts/findContactByTaskSid';
+import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import asyncDispatch from '../../states/asyncDispatch';
 import { submitContactFormAsyncAction, updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import { configurationBase, namespace } from '../../states/storeNamespaces';
@@ -117,7 +117,7 @@ const CallTypeButtons: React.FC<Props> = ({
       await completeTask(task, savedContact);
     } catch (error) {
       const strings = getTemplateStrings();
-      if (!window.confirm(strings['Error-ContinueWithoutRecording'])) {
+      if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
         await completeTask(task, savedContact);
       }
     }
@@ -181,7 +181,7 @@ const CallTypeButtons: React.FC<Props> = ({
 CallTypeButtons.displayName = 'CallTypeButtons';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const { savedContact, draftContact, metadata } = findContactByTaskSid(state, ownProps.task.taskSid) ?? {};
+  const { savedContact, draftContact, metadata } = selectContactByTaskSid(state, ownProps.task.taskSid) ?? {};
   const { currentDefinitionVersion } = state[namespace][configurationBase];
 
   return { savedContact, draftContact, metadata, currentDefinitionVersion };
