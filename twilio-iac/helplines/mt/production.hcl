@@ -5,6 +5,11 @@ locals {
 
   local_config = {
     custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true OR  twilioNumber IN ['instagram:17841400289612325', 'messenger:325981127456443', 'whatsapp:+15077097720']"
+    
+    workflow_vars = {
+     helpline_webchat_location = "https://kellimni.com/"
+     ecpm_webchat_location = "https://empoweringchildren.gov.mt/"
+    }
     #Studio flow
     flow_vars = {
       service_sid                           = "ZSdb37ba82eecdad41e21c71d1f2461052"

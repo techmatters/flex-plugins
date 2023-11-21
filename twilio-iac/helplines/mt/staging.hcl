@@ -10,7 +10,7 @@ locals {
  
     workflow_vars = {
      helpline_webchat_location = "https://tl-public-chat-mt-stg.s3.eu-west-1.amazonaws.com/mt-chat-staging.html"
-     ecpm_webchat_location = "xx"
+     ecpm_webchat_location = "https://empoweringchildren.gov.mt/"
     }
     
     flow_vars = {
