@@ -16,7 +16,20 @@
 
 import React, { useEffect, useRef } from 'react';
 
-const useClickOutside = (ref, handler, ignoreRefs) => {
+type CommonTypes = {
+  onClick: (event: MouseEvent) => void;
+  ignoreRefs?: React.RefObject<HTMLElement>[];
+};
+
+type Props = CommonTypes & {
+  children: React.ReactNode;
+};
+
+type UseClickOutsideParams = CommonTypes & {
+  ref: React.RefObject<HTMLElement>;
+};
+
+const useClickOutside = ({ ref, onClick, ignoreRefs }: UseClickOutsideParams) => {
   useEffect(() => {
     const listener = event => {
       if (
@@ -26,25 +39,19 @@ const useClickOutside = (ref, handler, ignoreRefs) => {
       ) {
         return;
       }
-      handler(event);
+      onClick(event);
     };
     document.addEventListener('mousedown', listener);
     return () => {
       document.removeEventListener('mousedown', listener);
     };
-  }, [ref, handler, ignoreRefs]);
+  }, [ref, onClick, ignoreRefs]);
 };
 
-type Props = {
-  children: React.ReactNode;
-  ignoreRefs?: React.RefObject<HTMLElement>[];
-  onClick: () => void;
-};
-
-const ClickOutsideInterceptor = ({ children, ignoreRefs, onClick }) => {
-  const wrapperRef = useRef(null);
-  useClickOutside(wrapperRef, onClick, ignoreRefs);
-  return <div ref={wrapperRef}>{children}</div>;
+const ClickOutsideInterceptor = ({ children, ignoreRefs, onClick }: Props) => {
+  const ref = useRef(null);
+  useClickOutside({ ref, onClick, ignoreRefs });
+  return <div ref={ref}>{children}</div>;
 };
 
 export default ClickOutsideInterceptor;
