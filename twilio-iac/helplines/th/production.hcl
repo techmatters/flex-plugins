@@ -16,13 +16,6 @@ locals {
     }
 
     channels = {
-      webchat : {
-        channel_type         = "web"
-        contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging.tftpl"
-        channel_flow_vars    = {}
-        chatbot_unique_names = []
-      },
       facebook : {
         channel_type         = "facebook"
         contact_identity     = "messenger:59591583805"
