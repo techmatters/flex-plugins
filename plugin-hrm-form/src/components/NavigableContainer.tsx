@@ -26,8 +26,6 @@ import { getCurrentBaseRoute, getCurrentTopmostRouteStackForTask } from '../stat
 import { isRouteModal } from '../states/routing/types';
 import { changeRoute, newCloseModalAction, newGoBackAction } from '../states/routing/actions';
 import { Contact, CustomITask, StandaloneITask } from '../types/types';
-import * as CaseActions from '../states/case/actions';
-import * as RoutingActions from '../states/routing/actions';
 import { Box, HeaderCloseButton, HiddenText, Row, StyledBackButton } from '../styles/HrmStyles';
 import {
   LargeBackIcon,
@@ -97,23 +95,25 @@ const NavigableContainer: React.FC<Props> = ({
   return (
     <NavigableContainerBox modal={isModal} {...boxProps}>
       <Row style={{ alignItems: 'start' }}>
-        {hasHistory && (
-          <StyledBackButton
-            style={{ marginTop: '7px', marginRight: '5px' }}
-            onClick={onGoBack}
-            data-testid="NavigableContainer-BackButton"
-            ref={ref => {
-              if (shouldFocus('back')) {
-                initialFocusRef.current = ref;
-              }
-            }}
-          >
-            <LargeBackIcon />
-            <HiddenText>
-              <Template code="NavigableContainer-BackButton" />
-            </HiddenText>
-          </StyledBackButton>
-        )}
+        <Box width="30px">
+          {hasHistory && (
+            <StyledBackButton
+              style={{ marginTop: '10px', marginRight: '5px' }}
+              onClick={onGoBack}
+              data-testid="NavigableContainer-BackButton"
+              ref={ref => {
+                if (shouldFocus('back')) {
+                  initialFocusRef.current = ref;
+                }
+              }}
+            >
+              <LargeBackIcon />
+              <HiddenText>
+                <Template code="NavigableContainer-BackButton" />
+              </HiddenText>
+            </StyledBackButton>
+          )}
+        </Box>
         <NavigableContainerTitle data-testid="NavigableContainer-Title">
           <Template code={titleCode} />
         </NavigableContainerTitle>
