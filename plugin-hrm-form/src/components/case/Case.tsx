@@ -59,7 +59,7 @@ import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentif
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
-import { connectToCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
+import { removeFromCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
@@ -378,7 +378,7 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
   const caseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
-  const cancelNewCase = (caseId: number, loadedContactIds: string[]) => {
+  const cancelNewCase = async (caseId: number, loadedContactIds: string[]) => {
     const { taskSid } = task;
     dispatch(CaseActions.removeConnectedCase(taskSid));
     dispatch(ContactActions.releaseContacts(loadedContactIds, `case-${caseId}`));
@@ -397,7 +397,7 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     cancelNewCase,
     updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
       caseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
-    disconnectFromCase: (contactId: string) => caseAsyncDispatch(connectToCaseAsyncAction(contactId, null)),
+    disconnectFromCase: (contactId: string) => caseAsyncDispatch(removeFromCaseAsyncAction(contactId, null)),
     submitContactFormAsyncAction: (
       task: CustomITask,
       contact: Contact,
