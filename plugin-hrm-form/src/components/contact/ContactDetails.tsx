@@ -196,7 +196,7 @@ const ContactDetails: React.FC<Props> = ({
               layoutDefinition={editContactSectionApi(formPath).getLayoutDefinition(definitionVersion)}
               initialValues={editContactSectionApi(formPath).getFormValues(definitionVersion, unsavedContact)[formPath]}
               display={true}
-              autoFocus={true}
+              autoFocus={false}
               updateForm={values =>
                 updateDraftForm({
                   [formPath]: values[formPath],

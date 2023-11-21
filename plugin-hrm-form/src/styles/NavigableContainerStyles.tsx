@@ -59,5 +59,5 @@ export const NavigableContainerTitle = styled(FontOpenSans)`
 NavigableContainerTitle.displayName = 'NavigableContainerTitle';
 export const LargeBackIcon = styled(ChevronLeft)`
   color: #000000;
-  font-size: 2rem !important; // FU material
+  font-size: 1.5rem !important; // FU material
 `;
