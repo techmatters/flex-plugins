@@ -38,7 +38,7 @@ export const ProfileSectionWrapper = styled('div')`
 `;
 ProfileSectionWrapper.displayName = 'ProfileSectionWrapper';
 
-//TODO: refactor to HrmStyles
+// TODO: refactor to HrmStyles
 export const ProfileSectionSubtitle = styled(FontOpenSans)`
   color: ${HrmTheme.colors.categoryTextColor};
   font-size: 10px;
