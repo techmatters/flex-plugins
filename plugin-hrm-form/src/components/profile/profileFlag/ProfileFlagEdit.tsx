@@ -42,6 +42,11 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
   const { loading } = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId));
 
   const anchorRef = useRef(null);
+
+  /**
+   * We need refs to manage focus for accessibility since we're using a Popper
+   * a lot of this is based around the example here: https://mui.com/material-ui/react-menu/#menulist-composition
+   */
   const associateRef = useRef(null);
   const disassociateRef = useRef(null);
   const [open, setOpen] = useState(true);
@@ -55,6 +60,9 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
   }, [hasAvailableFlags]);
 
   useEffect(() => {
+    /**
+     * I
+     */
     if (profileFlags?.length) {
       disassociateRef?.current?.focus();
       return;
