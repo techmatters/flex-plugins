@@ -27,7 +27,7 @@ import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid
 import selectCaseByTaskSid from '../../states/case/selectCaseByTaskSid';
 import { newGoBackAction } from '../../states/routing/actions';
 import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
-import { cancelCase } from '../../services/CaseService';
+import { cancelCaseAsyncAction } from '../../states/case/saveCase';
 
 type OwnProps = {
   task?: ITask;
@@ -49,9 +49,11 @@ const mapStateToProps = (state, { task }: OwnProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
+const mapDispatchToProps = dispatch => ({
   removeContactFromCase: async (contactId: string, caseId: number) =>
     asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId, caseId)),
+  cancelCase: async (caseId: number, taskSid: string) =>
+    asyncDispatch(dispatch)(cancelCaseAsyncAction(caseId, taskSid)),
   showRemovedFromCaseBanner: (contactId: string) => dispatch(showRemovedFromCaseBannerAction(contactId)),
   navigateBack: (taskSid: string) => dispatch(newGoBackAction(taskSid)),
 });
@@ -62,19 +64,18 @@ const CreatedCaseBanner: React.FC<Props> = ({
   contactId,
   cas,
   removeContactFromCase,
+  cancelCase,
   showRemovedFromCaseBanner,
   navigateBack,
 }) => {
   const handleCancelCase = async () => {
-    /**
-     * TODO: should we move the next 3 lines to a single redux action?
-     * How can we dispatch other actions from within an action?
-     */
     const contactIds = cas.connectedContacts.map(c => c.id);
     await Promise.all(contactIds.map(id => removeContactFromCase(id, caseId)));
-    await cancelCase(caseId);
-    showRemovedFromCaseBanner(contactId);
+
+    // Navigating back before removing the case provides a better user experience.
     navigateBack(taskSid);
+    showRemovedFromCaseBanner(contactId);
+    await cancelCase(caseId, taskSid);
   };
 
   return (
