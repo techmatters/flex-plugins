@@ -20,6 +20,7 @@ import ClickOutsideInterceptor from '../../common/ClickOutsideInterceptor';
 import ProfileFlagList from './ProfileFlagList';
 import ProfileFlagEdit from './ProfileFlagEdit';
 import { ProfileCommonProps } from '../types';
+import { ProfileFlagsView } from '../styles';
 
 type Props = ProfileCommonProps;
 
@@ -45,9 +46,13 @@ const ProfileFlagSection: React.FC<Props> = ({ profileId, task }) => {
           modalRef={profileFlagsModalRef}
         />
       ) : (
-        <button type="button" onClick={openEditProfileFlags}>
+        <ProfileFlagsView
+          type="button"
+          style={{ display: 'flex', width: '-webkit-fill-available' }}
+          onClick={openEditProfileFlags}
+        >
           <ProfileFlagList profileId={profileId} task={task} />
-        </button>
+        </ProfileFlagsView>
       )}
     </ClickOutsideInterceptor>
   );

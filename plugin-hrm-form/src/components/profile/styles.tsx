@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { styled, Button } from '@twilio/flex-ui';
+import { styled, Button, IconButton } from '@twilio/flex-ui';
 import { withStyles, Select } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -76,7 +76,7 @@ ProfileSectionEditButton.displayName = 'ProfileSectionEditButton';
 
 type ColorProps = {
   fillColor?: string;
-  blocked?: boolean;
+  isBlocked?: boolean;
 };
 
 export const FlagPill = styled('div')<ColorProps>`
@@ -86,28 +86,30 @@ export const FlagPill = styled('div')<ColorProps>`
   white-space: nowrap;
   margin: 5px 6px 5px 1px;
   padding: 5px 20px;
-  background-color: ${props => (props.fillColor ? `${props.fillColor}` : '#F9FAFB')};
-  border: ${props => (props.blocked ? `2px dashed #D61F1F` : '#F9FAFB')};
-  color: ${props => (props.blocked ? `#D61F1F` : 'none')};
+  background-color: ${props => (props.isBlocked ? `#FCF4F4` : '#F9FAFB')};
+  border: ${props => (props.isBlocked ? `2px dashed #D61F1F` : '2px none')};
+  color: ${props => (props.isBlocked ? `#D61F1F` : 'none')};
+  text-transform: capitalize;
 `;
 FlagPill.displayName = 'FlagPill';
 
 export const StyledFlagEditList = styled('div')`
   background-color: #f9fafb;
   border-radius: 5px;
+  align-items: center;
   &:focus-within {
     outline: 3px solid rgb(0, 95, 204);
-    border-radius: 5px;
   }
 `;
 
 export const CloseIconButton = withStyles({
   root: {
-    width: '23px',
-    height: '16px',
-    margin: '1px',
+    width: '1rem',
+    height: '1rem',
+    margin: '.5px 4px .5px 0',
     padding: '0 1px',
     cursor: 'pointer',
+    color: '#192b33',
   },
 })(CloseIcon);
 
@@ -160,3 +162,20 @@ export const SectionContentText = styled('div')<StyledTextProps>`
   }
 `;
 SectionContentText.displayName = 'SectionContentText';
+
+export const ProfileFlagsView = styled('button')`
+  background-color: ${HrmTheme.colors.inputBackgroundColor};
+  display: flex;
+  border: none;
+  border-radius: 5px;
+  align-items: center;
+  align-self: center;
+  align-content: center;
+  width: -webkit-fill-available;
+  :focus {
+    background-color: ${HrmTheme.colors.inputBackgroundColor};
+    box-shadow: none;
+    border: 1px solid rgba(0, 59, 129, 0.37);
+  }
+`;
+ProfileFlagsView.displayName = 'ProfileFlagsView';

@@ -17,6 +17,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { IconButton, Template } from '@twilio/flex-ui';
+import BlockOutlinedIcon from '@material-ui/icons/BlockOutlined';
 
 import { ProfileFlag } from '../../../types/types';
 import { useProfileFlags } from '../../../states/profile/hooks';
@@ -47,7 +48,6 @@ const ProfileFlagsList: React.FC<Props> = ({ disassociateRef, enableDisassociate
         themeOverride={{ Icon: { size: '10px' } }}
         disabled={loading}
         // TODO: Remove inline styles
-        style={{ width: '1rem', height: '1rem', padding: 0 }}
         ref={disassociateRef}
       />
     );
@@ -56,7 +56,10 @@ const ProfileFlagsList: React.FC<Props> = ({ disassociateRef, enableDisassociate
   const renderPill = (flag: ProfileFlag) => {
     return (
       <li style={{ display: 'inline-block' }} key={flag.name}>
-        <FlagPill key={flag.name} fillColor="#F5EEF4" blocked={flag.name === 'blocked'}>
+        <FlagPill key={flag.name} fillColor="#F5EEF4" isBlocked={flag.name === 'blocked'}>
+          {flag.name === 'blocked' && (
+            <BlockOutlinedIcon fontSize="small" style={{ height: '16px', paddingRight: '6px' }} />
+          )}
           {flag.name}
           {renderDisassociate(flag)}
         </FlagPill>

@@ -17,9 +17,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { IconButton } from '@twilio/flex-ui';
-import { Box, MenuList, Popper, Paper } from '@material-ui/core';
+import { Box, Popper, Paper } from '@material-ui/core';
 
-import { StyledMenuItem } from '../../../styles/HrmStyles';
+import { StyledMenuList, StyledMenuItem } from '../../../styles/HrmStyles';
 import { ProfileFlag } from '../../../types/types';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
 import { useProfileFlags } from '../../../states/profile/hooks';
@@ -45,12 +45,11 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
 
   /**
    * We need refs to manage focus for accessibility since we're using a Popper
-   * a lot of this is based around the example here: https://mui.com/material-ui/react-menu/#menulist-composition
+   * a lot of this is based around the example here: https://mui.com/material-ui/react-menu/#StyledMenuList-composition
    */
   const associateRef = useRef(null);
   const disassociateRef = useRef(null);
   const [open, setOpen] = useState(true);
-
   const availableFlags = allProfileFlags?.filter(flag => !profileFlags.find(f => f.id === flag.id));
   const hasAvailableFlags = Boolean(availableFlags?.length);
   const shouldAllowAssociate = hasAvailableFlags && !loading;
@@ -61,7 +60,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
 
   useEffect(() => {
     /**
-     * I
+     * If there are flags to disassociate, focus on the disassociate button
      */
     if (profileFlags?.length) {
       disassociateRef?.current?.focus();
@@ -87,6 +86,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
               icon="ArrowDown"
               title="Associate status"
               onClick={focusOnAssociateRef}
+              disabled={!shouldAllowAssociate}
               aria-controls={open ? 'composition-menu' : undefined}
               aria-expanded={open ? 'true' : undefined}
               aria-haspopup="true"
@@ -96,7 +96,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
       </StyledFlagEditList>
       <Popper open={open} anchorEl={anchorRef.current} placement="bottom-start" ref={modalRef}>
         <Paper>
-          <MenuList>
+          <StyledMenuList>
             {availableFlags?.map((flag: ProfileFlag, index: number) => (
               <StyledMenuItem
                 key={flag.id}
@@ -106,7 +106,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
                 {flag.name}
               </StyledMenuItem>
             ))}
-          </MenuList>
+          </StyledMenuList>
         </Paper>
       </Popper>
     </>
