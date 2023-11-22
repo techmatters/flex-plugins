@@ -46,7 +46,6 @@ import { connectedCaseBase, contactFormsBase, namespace } from '../../states/sto
 import { AppRoutes } from '../../states/routing/types';
 import AddNewCaseDropdown from './AddNewCaseDropdown';
 import asyncDispatch from '../../states/asyncDispatch';
-import { showConnectedToCaseBannerAction } from '../caseMergingBanners/state';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => Promise<void>) => () => void;
@@ -246,7 +245,6 @@ const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
       // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
       // TODO: Rework error handling to be based on redux state set by the _REJECTED action
       await asyncDispatch(dispatch)(createCaseAsyncAction(contact, task.taskSid, workerSid, definitionVersion));
-      dispatch(showConnectedToCaseBannerAction(contact.id));
     },
     submitContactFormAsyncAction: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) =>
       // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
