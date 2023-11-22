@@ -19,7 +19,12 @@ import { callTypes } from 'hrm-form-definitions';
 import { createReducer } from 'redux-promise-middleware-actions';
 
 import * as t from './types';
-import { ContactsState, ContactUpdatingAction } from './types';
+import {
+  ContactsState,
+  CREATE_CONTACT_ACTION,
+  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION,
+  SET_SAVED_CONTACT, UPDATE_CONTACT_ACTION,
+} from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import {
   createDraftReducer,
@@ -61,6 +66,7 @@ export const emptyCategories = [];
 // exposed for testing
 export const initialState: ContactsState = {
   existingContacts: {},
+  contactsBeingCreated: new Set<string>(),
   contactDetails: {
     [DetailsContext.CASE_DETAILS]: { detailsExpanded: {} },
     [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {} },
@@ -69,8 +75,15 @@ export const initialState: ContactsState = {
 };
 
 const boundReferralReducer = resourceReferralReducer(initialState);
-const boundSaveContactReducer = saveContactReducer(existingContactInitialState);
-
+const boundSaveContactReducer = saveContactReducer(initialState);
+type SaveContactReducerAction = Parameters<typeof boundSaveContactReducer>[1] &
+  { type:
+    // eslint-disable-next-line prettier/prettier
+      `${typeof CREATE_CONTACT_ACTION
+      | typeof UPDATE_CONTACT_ACTION
+      | typeof LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION
+      | typeof SET_SAVED_CONTACT}_${string}`
+  };
 const newCaseReducer = createReducer(initialState, handleAction => [
   handleAction(
     createCaseAsyncAction.fulfilled,
@@ -106,12 +119,12 @@ export function reduce(
     | ContactCategoryAction
     | RemoveContactStateAction
     | t.UpdatedContactAction
-    | ContactUpdatingAction,
+    | SaveContactReducerAction,
 ): ContactsState {
   let state = boundReferralReducer(inputState, action as any);
   state = toggleSubCategoriesReducer(state, action as ContactCategoryAction);
   state = newCaseReducer(state, action as any);
-  state = { ...state, existingContacts: boundSaveContactReducer(state.existingContacts, action) };
+  state = boundSaveContactReducer(state, action as SaveContactReducerAction);
   switch (action.type) {
     case REMOVE_CONTACT_STATE: {
       const contactId = Object.values(state.existingContacts).find(cs => cs.savedContact.taskId === action.taskId)

@@ -58,10 +58,12 @@ export type ContactMetadata = {
     resourceReferralList: DraftResourceReferralState;
     dialogsOpen: { [key: string]: boolean };
   };
+  saveStatus: 'saving' | 'saved';
 };
 
 export type ContactsState = {
   existingContacts: ExistingContactsState;
+  contactsBeingCreated: Set<string>;
   contactDetails: ContactDetailsState;
   isCallTypeCaller: boolean;
 };
@@ -108,6 +110,14 @@ export type ContactUpdatingAction = {
     | typeof CONNECT_TO_CASE_ACTION_FULFILLED
     | typeof REMOVE_FROM_CASE_ACTION_FULFILLED
     | typeof LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED
+    | typeof LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED;
+  payload: { contact: Contact; contactCase?: Case; previousContact?: Contact };
+};
+
+export type ContactCreatingAction = {
+  type:
+    | typeof CREATE_CONTACT_ACTION_FULFILLED
+    | typeof UPDATE_CONTACT_ACTION_FULFILLED
     | typeof LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED;
   payload: { contact: Contact; contactCase?: Case; previousContact?: Contact };
 };

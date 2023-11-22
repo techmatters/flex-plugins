@@ -15,7 +15,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Template } from '@twilio/flex-ui';
 
 import { Box, Row, HiddenText } from '../../styles/HrmStyles';
@@ -29,7 +28,25 @@ import {
 } from '../../styles/callTypeButtons';
 import TabPressWrapper from '../TabPressWrapper';
 
-const NonDataCallTypeDialog = ({ isOpen, isCallTask, isInWrapupMode, handleConfirm, handleCancel }) => (
+type OwnProps = {
+  isOpen: boolean;
+  isCallTask: boolean;
+  isEnabled: boolean;
+  isInWrapupMode: boolean;
+  handleConfirm: () => Promise<any>;
+  handleCancel: () => void;
+};
+
+type Props = OwnProps;
+
+const NonDataCallTypeDialog: React.FC<Props> = ({
+  isOpen,
+  isCallTask,
+  isEnabled,
+  isInWrapupMode,
+  handleConfirm,
+  handleCancel,
+}) => (
   <CloseTaskDialog onClose={handleCancel} open={isOpen}>
     <TabPressWrapper>
       <NonDataCallTypeDialogContainer>
@@ -44,14 +61,20 @@ const NonDataCallTypeDialog = ({ isOpen, isCallTask, isInWrapupMode, handleConfi
         </CloseTaskDialogText>
         <Box marginBottom="32px">
           <Row>
-            <ConfirmButton data-fs-id="Task-EndCallOrChat-Button" autoFocus tabIndex={1} onClick={handleConfirm}>
+            <ConfirmButton
+              disabled={!isEnabled}
+              data-fs-id="Task-EndCallOrChat-Button"
+              autoFocus
+              tabIndex={1}
+              onClick={handleConfirm}
+            >
               {/* eslint-disable react/jsx-max-depth,no-nested-ternary */}
               <Template
                 code={isInWrapupMode ? 'CallType-CloseContact' : isCallTask ? 'TaskHeaderEndCall' : 'TaskHeaderEndChat'}
               />
               {/* eslint-enable react/jsx-max-depth,no-nested-ternary */}
             </ConfirmButton>
-            <CancelButton tabIndex={2} onClick={handleCancel}>
+            <CancelButton tabIndex={2} onClick={handleCancel} disabled={!isEnabled}>
               {/* eslint-disable-next-line react/jsx-max-depth */}
               <Template code="CancelButton" />
             </CancelButton>
@@ -63,12 +86,5 @@ const NonDataCallTypeDialog = ({ isOpen, isCallTask, isInWrapupMode, handleConfi
 );
 
 NonDataCallTypeDialog.displayName = 'NonDataCallTypeDialog';
-NonDataCallTypeDialog.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  isCallTask: PropTypes.bool.isRequired,
-  isInWrapupMode: PropTypes.bool.isRequired,
-  handleConfirm: PropTypes.func.isRequired,
-  handleCancel: PropTypes.func.isRequired,
-};
 
 export default NonDataCallTypeDialog;
