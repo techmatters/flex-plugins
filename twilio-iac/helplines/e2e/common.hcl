@@ -13,6 +13,7 @@ locals {
     helpline_language                 = "en"
     voice_ivr_language                = ""
     enable_post_survey                = false
+    task_language                     = "en-US"
 
 
     lex_bot_languages = {
@@ -33,8 +34,12 @@ locals {
 
     task_queues = {
       master : {
-        "target_workers" = "1==1",
-        "friendly_name"  = "E2E Testing"
+        "target_workers" = "helpline IN ['Childline', ''] AND routing.skills HAS 'automated-test'",
+        "friendly_name"  = "Childline"
+      },
+      childline_human : {
+        "target_workers" = "1==0",
+        "friendly_name"  = "Childline-Human"
       },
       survey : {
         "target_workers" = "1==0",
@@ -45,6 +50,7 @@ locals {
         "friendly_name"  = "E2E Test Queue"
       }
     }
+    
     task_channels = {
       default : "Default"
       chat : "Programmable Chat"
@@ -55,7 +61,7 @@ locals {
       survey : "Survey"
     }
 
-  
+
     phone_numbers = {}
 
   }
