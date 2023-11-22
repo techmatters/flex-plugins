@@ -33,7 +33,7 @@ import { getHrmConfig } from '../../../hrmConfig';
 import CaseCreatedBanner from '../../caseMergingBanners/CaseCreatedBanner';
 
 type OwnProps = {
-  caseId: string;
+  caseId: number;
   office: string;
   counselor: string;
   handlePrintCase: () => void;

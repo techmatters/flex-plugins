@@ -244,7 +244,7 @@ const CaseHome: React.FC<Props> = ({
         )}
         <Box marginTop="13px">
           <CaseDetailsComponent
-            caseId={id.toString()}
+            caseId={id}
             statusLabel={statusLabel}
             can={can}
             counselor={caseCounselor}

@@ -25,40 +25,56 @@ import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
 import { showRemovedFromCaseBannerAction } from './state';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import selectCaseByTaskSid from '../../states/case/selectCaseByTaskSid';
+import { newGoBackAction } from '../../states/routing/actions';
+import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
+import { cancelCase } from '../../services/CaseService';
 
 type OwnProps = {
   task?: ITask;
-  caseId: string;
+  caseId: number;
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const mapStateToProps = (state, { task }: OwnProps) => {
-  const contact = selectContactByTaskSid(state, task.taskSid);
-  const cas = selectCaseByTaskSid(state, task.taskSid);
+  const taskSid = task ? task.taskSid : getOfflineContactTaskSid();
+
+  const contact = selectContactByTaskSid(state, taskSid);
+  const cas = selectCaseByTaskSid(state, taskSid);
   return {
     contactId: contact.savedContact.id,
     cas,
+    taskSid,
   };
 };
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
-  removeContactFromCase: async (contactId: string, caseId: number) => {
-    await asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId, caseId));
-    // TODO: close current modal
-    dispatch(showRemovedFromCaseBannerAction(contactId));
-  },
+  removeContactFromCase: async (contactId: string, caseId: number) =>
+    asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId, caseId)),
+  showRemovedFromCaseBanner: (contactId: string) => dispatch(showRemovedFromCaseBannerAction(contactId)),
+  navigateBack: (taskSid: string) => dispatch(newGoBackAction(taskSid)),
 });
 
-const CreatedCaseBanner: React.FC<Props> = ({ task, caseId, contactId, cas }) => {
-  const cancelCase = async () => {
-    // const contactIds = cas.connectedContacts.map(c => c.id);
-    // await Promise.all(contactIds.map(id => disconnectFromCase(id)));
-    // // TODO: Dont call service directly
-    // await cancelCase(connectedCase.id);
-    // cancelNewCase(connectedCase.id, loadedContactIds);
-    // handleClose();
+const CreatedCaseBanner: React.FC<Props> = ({
+  taskSid,
+  caseId,
+  contactId,
+  cas,
+  removeContactFromCase,
+  showRemovedFromCaseBanner,
+  navigateBack,
+}) => {
+  const handleCancelCase = async () => {
+    /**
+     * TODO: should we move the next 3 lines to a single redux action?
+     * How can we dispatch other actions from within an action?
+     */
+    const contactIds = cas.connectedContacts.map(c => c.id);
+    await Promise.all(contactIds.map(id => removeContactFromCase(id, caseId)));
+    await cancelCase(caseId);
+    showRemovedFromCaseBanner(contactId);
+    navigateBack(taskSid);
   };
 
   return (
@@ -67,7 +83,7 @@ const CreatedCaseBanner: React.FC<Props> = ({ task, caseId, contactId, cas }) =>
       <Text>
         <Template code="CaseMerging-CaseCreatedAndContactAdded" caseId={caseId} />
       </Text>
-      <BannerActionLink type="button" onClick={cancelCase}>
+      <BannerActionLink type="button" onClick={handleCancelCase}>
         <Template code="CaseMerging-CancelCase" />
       </BannerActionLink>
     </BannerContainer>
