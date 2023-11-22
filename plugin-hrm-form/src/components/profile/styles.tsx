@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { styled, Button, IconButton } from '@twilio/flex-ui';
-import { withStyles, Select } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import BlockOutlinedIcon from '@material-ui/icons/BlockOutlined';
 
@@ -60,7 +60,7 @@ export const ProfileSectionEditButton = styled(Button)<ButtonProps>`
   height: 30px;
   border-radius: 4px;
   color: ${HrmTheme.colors.categoryTextColor};
-  background-color: '#ecedf1';
+  background-color: ${HrmTheme.colors.secondaryButtonColor};
   font-size: 14px;
   box-shadow: none;
   border: none;
@@ -85,8 +85,8 @@ export const FlagPill = styled('div')<ColorProps>`
   align-items: center;
   border-radius: 6px;
   white-space: nowrap;
-  margin: 5px 6px 5px 1px;
-  padding: 5px 20px;
+  margin: 5px 4px 5px 1px;
+  padding: 4px 12px;
   background-color: ${props => (props.isBlocked ? `#FCF4F4` : '#F5EEF4')};
   border: ${props => (props.isBlocked ? `2px dashed #D61F1F` : '2px solid #F5EEF4')};
   border-color: ${props => (props.isBlocked ? `#D61F1F` : 'none')};
@@ -95,10 +95,9 @@ export const FlagPill = styled('div')<ColorProps>`
 `;
 FlagPill.displayName = 'FlagPill';
 
-export const StyledBlockOutlinedIcon = styled(BlockOutlinedIcon)`
-  height: 16px;
-  padding-right: 6px;
-`;
+export const StyledBlockOutlinedIcon = withStyles({
+  root: { width: '1rem', height: '1rem', fontSize: 'smaller', marginRight: '7px' },
+})(BlockOutlinedIcon);
 
 export const StyledFlagEditList = styled('div')`
   background-color: #f9fafb;
@@ -108,16 +107,30 @@ export const StyledFlagEditList = styled('div')`
     outline: 3px solid rgb(0, 95, 204);
   }
 `;
+StyledFlagEditList.displayName = 'StyledFlagEditList';
 
 export const DisassociateButton = styled(IconButton)`
   height: 1rem;
   width: 1rem;
   padding: 4px;
-  margin-left: 5px;
+  margin-left: 12px;
+  background-color: #d61f1f;
+  :hover {
+    background-color: #4a0b0b;
+  }
 `;
+DisassociateButton.displayName = 'DisassociateButton';
 
 export const CloseIconButton = withStyles({
-  root: { width: '1rem', height: '1rem', cursor: 'pointer', color: '#192b33' },
+  root: {
+    width: '1rem',
+    height: '1rem',
+    cursor: 'pointer',
+    color: '#fff',
+    '&:hover': {
+      color: '#fff',
+    },
+  },
 })(CloseIcon);
 
 export const SectionText = styled('p')`

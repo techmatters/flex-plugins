@@ -46,7 +46,6 @@ const ProfileFlagsList: React.FC<Props> = ({ disassociateRef, enableDisassociate
         title="Remove associated status"
         themeOverride={{ Icon: { size: '10px' } }}
         disabled={loading}
-        // TODO: Remove inline styles
         ref={disassociateRef}
       />
     );
@@ -55,8 +54,8 @@ const ProfileFlagsList: React.FC<Props> = ({ disassociateRef, enableDisassociate
   const renderPill = (flag: ProfileFlag) => {
     return (
       <li style={{ display: 'inline-block' }} key={flag.name}>
-        <FlagPill key={flag.name} fillColor="#F5EEF4" isBlocked={flag.name === 'blocked'}>
-          {flag.name === 'blocked' && <StyledBlockOutlinedIcon fontSize="small" />}
+        <FlagPill title={`${flag.name} Status`} key={flag.name} fillColor="#F5EEF4" isBlocked={flag.name === 'blocked'}>
+          {flag.name === 'blocked' && <StyledBlockOutlinedIcon titleAccess="Blocked" />}
           {flag.name}
           {renderDisassociate(flag)}
         </FlagPill>
@@ -65,12 +64,12 @@ const ProfileFlagsList: React.FC<Props> = ({ disassociateRef, enableDisassociate
   };
 
   return (
-    <ul style={{ display: 'block' }}>
+    <ul style={{ display: 'flex' }}>
       {profileFlags?.length ? (
         profileFlags.map(renderPill)
       ) : (
         <li>
-          <FlagPill>
+          <FlagPill title="No Status Listed">
             <Template code="Profile-NoStatusesListed" />
           </FlagPill>
         </li>

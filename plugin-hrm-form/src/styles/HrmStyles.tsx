@@ -269,6 +269,7 @@ export const StyledMenuItem = styled(MenuItem)`
   margin: 0;
   padding: 0 12px;
   min-width: 0;
+  text-transform: capitalize;
 `;
 StyledMenuItem.displayName = 'StyledMenuItem';
 

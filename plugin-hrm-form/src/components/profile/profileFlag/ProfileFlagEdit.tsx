@@ -77,7 +77,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
 
   return (
     <>
-      <StyledFlagEditList ref={anchorRef}>
+      <StyledFlagEditList title="Edit Statuses" ref={anchorRef}>
         <Box display="flex" justifyContent="space-between">
           <ProfileFlagList {...props} enableDisassociate={true} disassociateRef={disassociateRef} />
           <Box alignItems="center">
