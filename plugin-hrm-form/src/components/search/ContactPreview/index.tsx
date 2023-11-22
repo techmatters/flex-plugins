@@ -98,7 +98,7 @@ const ContactPreview: React.FC<Props> = ({ contact, handleViewDetails, definitio
   }, [versionId, definitionVersions]);
 
   return (
-    <Flex>
+    <Flex width="100%">
       <PreviewWrapper key={contact.id}>
         <ContactHeader
           id={contact.id}
