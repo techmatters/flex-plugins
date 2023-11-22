@@ -102,15 +102,15 @@ export const StyledFlagEditList = styled('div')`
   }
 `;
 
+export const DisassociateButton = styled(IconButton)`
+  height: 1rem;
+  width: 1rem;
+  padding: 4px;
+  margin-left: 5px;
+`;
+
 export const CloseIconButton = withStyles({
-  root: {
-    width: '1rem',
-    height: '1rem',
-    margin: '.5px 4px .5px 0',
-    padding: '0 1px',
-    cursor: 'pointer',
-    color: '#192b33',
-  },
+  root: { width: '1rem', height: '1rem', cursor: 'pointer', color: '#192b33' },
 })(CloseIcon);
 
 export const SectionText = styled('p')`

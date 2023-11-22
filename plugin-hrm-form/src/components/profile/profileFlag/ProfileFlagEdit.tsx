@@ -84,7 +84,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
             <IconButton icon="Close" title="Done Editing" onClick={handleClose} />
             <IconButton
               icon="ArrowDown"
-              title="Associate status"
+              title={open ? 'Associate status' : 'All statuses are associated'}
               onClick={focusOnAssociateRef}
               disabled={!shouldAllowAssociate}
               aria-controls={open ? 'composition-menu' : undefined}

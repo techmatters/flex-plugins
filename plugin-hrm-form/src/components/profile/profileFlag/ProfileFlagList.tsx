@@ -22,7 +22,7 @@ import BlockOutlinedIcon from '@material-ui/icons/BlockOutlined';
 import { ProfileFlag } from '../../../types/types';
 import { useProfileFlags } from '../../../states/profile/hooks';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
-import { FlagPill, CloseIconButton } from '../styles';
+import { CloseIconButton, DisassociateButton, FlagPill } from '../styles';
 import { RootState } from '../../../states';
 import { ProfileCommonProps } from '../types';
 
@@ -41,7 +41,7 @@ const ProfileFlagsList: React.FC<Props> = ({ disassociateRef, enableDisassociate
     if (!enableDisassociate) return null;
 
     return (
-      <IconButton
+      <DisassociateButton
         icon={<CloseIconButton />}
         onClick={() => disassociateProfileFlag(flag.id)}
         title="Remove associated status"
