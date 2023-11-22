@@ -10,6 +10,7 @@ locals {
 
   local_config = {
     helpline                   = "Tinkle Friend"
+    old_dir_prefix             = ""
     task_language              = "en-US"
     enable_post_survey         = false
     enable_external_recordings = true
@@ -40,10 +41,10 @@ locals {
     #Channels
     channels = {
       webchat : {
-        channel_type     = "web"
-        contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/webchat-basic.tftpl"
-        channel_flow_vars = {}
+        channel_type         = "web"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/webchat-basic.tftpl"
+        channel_flow_vars    = {}
         chatbot_unique_names = []
       }
     }
