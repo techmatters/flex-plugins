@@ -77,11 +77,11 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
 
   return (
     <>
-      <StyledFlagEditList title="Edit Statuses" ref={anchorRef}>
+      <StyledFlagEditList title="Edit statuses" ref={anchorRef}>
         <Box display="flex" justifyContent="space-between">
           <ProfileFlagList {...props} enableDisassociate={true} disassociateRef={disassociateRef} />
           <Box alignItems="center">
-            <IconButton icon="Close" title="Done Editing" onClick={handleClose} />
+            <IconButton icon="Close" title="Done editing status" onClick={handleClose} />
             <IconButton
               icon="ArrowDown"
               title={open ? 'Associate status' : 'All statuses are associated'}

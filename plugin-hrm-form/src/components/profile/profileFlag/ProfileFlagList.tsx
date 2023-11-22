@@ -55,7 +55,7 @@ const ProfileFlagsList: React.FC<Props> = ({ disassociateRef, enableDisassociate
     return (
       <li style={{ display: 'inline-block' }} key={flag.name}>
         <FlagPill title={`${flag.name} Status`} key={flag.name} fillColor="#F5EEF4" isBlocked={flag.name === 'blocked'}>
-          {flag.name === 'blocked' && <StyledBlockOutlinedIcon titleAccess="Blocked" />}
+          {flag.name === 'blocked' && <StyledBlockOutlinedIcon />}
           {flag.name}
           {renderDisassociate(flag)}
         </FlagPill>
