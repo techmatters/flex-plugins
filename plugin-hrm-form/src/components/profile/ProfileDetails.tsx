@@ -18,7 +18,7 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Icon, Template } from '@twilio/flex-ui';
 
-import { Bold, Box, Column, Row } from '../../styles/HrmStyles';
+import { Bold, Box, Column, HiddenText, Row } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
 import { ProfileCommonProps } from './types';
@@ -90,6 +90,7 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
       <ProfileSectionEditButton onClick={section.handleEdit}>
         {icon && <Icon icon={icon} />}
         {!icon && <Template code="Profile-EditButton" />}
+        <HiddenText>{section.title}</HiddenText>
       </ProfileSectionEditButton>
     );
   };
