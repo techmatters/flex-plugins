@@ -47,6 +47,7 @@ const ProfileFlagSection: React.FC<Props> = ({ profileId, task }) => {
         />
       ) : (
         <ProfileFlagsView
+          title="Edit Statuses"
           type="button"
           style={{ display: 'flex', width: '-webkit-fill-available' }}
           onClick={openEditProfileFlags}
