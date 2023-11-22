@@ -158,7 +158,9 @@ const TaskView: React.FC<Props> = props => {
 TaskView.displayName = 'TaskView';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const { [namespace]: { configuration, activeContacts, routing, searchContacts } } = state;
+  const {
+    [namespace]: { configuration, activeContacts, routing, searchContacts },
+  } = state;
   const { task } = ownProps;
   const { currentDefinitionVersion } = configuration;
   // Check if the entry for this task exists in each reducer
