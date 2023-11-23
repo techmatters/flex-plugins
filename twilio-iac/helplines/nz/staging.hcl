@@ -49,7 +49,7 @@ locals {
       sms : {
         channel_type         = "sms"
         contact_identity     = "+18645238101"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-priority.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }
