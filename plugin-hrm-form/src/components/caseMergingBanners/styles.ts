@@ -64,14 +64,15 @@ export const CaseLink = styled('button')<ButtonProps>`
   background: none;
   border: none;
   cursor: pointer;
+  font-family: Open Sans;
 `;
 CaseLink.displayName = 'CaseLink';
 
-export const RemoveFromCaseLink = styled('button')<ButtonProps>`
+export const BannerActionLink = styled('button')<ButtonProps>`
   color: #0263e0;
   margin-left: auto;
   background: none;
   border: none;
   cursor: pointer;
 `;
-RemoveFromCaseLink.displayName = 'RemoveFromCaseLink';
+BannerActionLink.displayName = 'BannerActionLink';

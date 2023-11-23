@@ -144,11 +144,8 @@ export const connectToCaseAsyncAction = createAsyncAction(
 
 export const removeFromCaseAsyncAction = createAsyncAction(
   REMOVE_FROM_CASE,
-  async (contactId: string, deleteCase = false): Promise<RemoveFromCaseActionPayload> => {
+  async (contactId: string): Promise<RemoveFromCaseActionPayload> => {
     const contact = await removeFromCase(contactId);
-    if (deleteCase) {
-      await cancelCase(contact.caseId);
-    }
     return { contactId, contact };
   },
 );

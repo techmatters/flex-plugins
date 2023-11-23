@@ -358,10 +358,10 @@ const TabbedForms: React.FC<Props> = ({
           <div style={{ height: '100%', overflow: 'hidden' }}>
             {/* eslint-disable-next-line camelcase */}
             {enable_case_merging && (
-              <Box margin="0 5px">
+              <>
                 {showConnectedToCaseBanner && <ContactAddedToCaseBanner taskId={task.taskSid} />}
                 {showRemovedFromCaseBanner && <ContactRemovedFromCaseBanner taskId={task.taskSid} />}
-              </Box>
+              </>
             )}
             {isOfflineContactTask(task) && (
               <TabbedFormTabContainer display={subroute === 'contactlessTask'}>
