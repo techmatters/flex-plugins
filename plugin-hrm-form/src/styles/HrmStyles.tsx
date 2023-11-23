@@ -542,6 +542,18 @@ export const HiddenText = styled('span')`
 `;
 HiddenText.displayName = 'HiddenText';
 
+// This text will not be a child element but can be used for aria-live
+// where the text is read when it enters the dom
+export const AriaLiveHiddenText = styled('span')`
+  top: 0;
+  left: -2px;
+  width: 1px;
+  height: 1px;
+  position: absolute;
+  overflow: hidden;
+`;
+AriaLiveHiddenText.displayName = 'AriaLiveHiddenText';
+
 export const CasePrintViewSpinner = styled('div')`
   display: flex;
   align-items: center;

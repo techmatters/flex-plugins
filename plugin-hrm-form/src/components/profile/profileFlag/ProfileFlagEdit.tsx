@@ -30,13 +30,12 @@ import { ProfileCommonProps } from '../types';
 
 type OwnProps = ProfileCommonProps & {
   modalRef?: React.RefObject<HTMLDivElement>;
-  handleClose: () => void;
 };
 
 type Props = OwnProps;
 
 const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
-  const { modalRef, profileId, handleClose } = props;
+  const { modalRef, profileId } = props;
 
   const { allProfileFlags, profileFlags, associateProfileFlag } = useProfileFlags(profileId);
   const { loading } = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId));
@@ -77,12 +76,12 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
   };
 
   function handleListKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'Tab') {
-      e.preventDefault();
-      associateButtonRef?.current?.focus();
-    } else if (e.key === 'Escape') {
-      associateButtonRef?.current?.focus();
-    }
+    const exitListKeys = ['Tab', 'Escape'];
+    if (!exitListKeys.includes(e.key)) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    associateButtonRef?.current?.focus();
   }
 
   return (
@@ -91,7 +90,6 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
         <Box display="flex" justifyContent="space-between">
           <ProfileFlagList {...props} enableDisassociate={true} disassociateRef={disassociateRef} />
           <Box alignItems="center">
-            <IconButton icon="Close" title="Done editing status" onClick={handleClose} />
             <IconButton
               id="associate-status-button"
               icon="ArrowDown"

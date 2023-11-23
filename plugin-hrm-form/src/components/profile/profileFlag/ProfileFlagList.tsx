@@ -64,7 +64,7 @@ const ProfileFlagsList: React.FC<Props> = ({ disassociateRef, enableDisassociate
   };
 
   return (
-    <ul style={{ display: 'flex' }}>
+    <ul style={{ display: 'flex' }} aria-label="Profile Statuses">
       {profileFlags?.length ? (
         profileFlags.map(renderPill)
       ) : (
