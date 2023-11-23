@@ -23,7 +23,7 @@ import { Template, Tab as TwilioTab } from '@twilio/flex-ui';
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
 import { SearchContactResult, SearchCaseResult, Contact, Case, CustomITask } from '../../../types/types';
-import { Row } from '../../../styles/HrmStyles';
+import { Box, Row } from '../../../styles/HrmStyles';
 import {
   ResultsHeader,
   ListContainer,
@@ -35,8 +35,6 @@ import {
   StyledTabs,
   StyledResultsContainer,
   StyledResultsText,
-  StyledTabLabel,
-  StyledFolderIcon,
   StyledResultsHeader,
   EmphasisedText,
   StyledCount,
@@ -211,35 +209,36 @@ const SearchResults: React.FC<Props> = ({
   return (
     <>
       <ResultsHeader>
-        <Row style={{ justifyContent: 'center' }}>
-          <div style={{ width: '300px' }}>
-            <StyledTabs
-              selectedTabName={currentResultPage}
-              onTabSelected={tabSelected}
-              alignment="left"
-              keepTabsMounted={false}
+        <Row style={{ justifyContent: 'center', width: '100%' }}>
+          <StyledTabs
+            selectedTabName={currentResultPage}
+            onTabSelected={tabSelected}
+            alignment="center"
+            keepTabsMounted={false}
+          >
+            <TwilioTab
+              key="SearchResultsIndex-Contacts"
+              label={
+                <Box style={{ minWidth: '340px' }}>
+                  <Template code="SearchResultsIndex-Contacts" />
+                </Box>
+              }
+              uniqueName="contact-results"
             >
-              <TwilioTab
-                key="SearchResultsIndex-Contacts"
-                label={<Template code="SearchResultsIndex-Contacts" />}
-                uniqueName="contact-results"
-              >
-                {[]}
-              </TwilioTab>
-              <TwilioTab
-                key="SearchResultsIndex-Cases"
-                label={
-                  <StyledTabLabel>
-                    <StyledFolderIcon />
-                    <Template code="SearchResultsIndex-Cases" />
-                  </StyledTabLabel>
-                }
-                uniqueName="case-results"
-              >
-                {[]}
-              </TwilioTab>
-            </StyledTabs>
-          </div>
+              {[]}
+            </TwilioTab>
+            <TwilioTab
+              key="SearchResultsIndex-Cases"
+              label={
+                <Box style={{ minWidth: '340px' }}>
+                  <Template code="SearchResultsIndex-Cases" />
+                </Box>
+              }
+              uniqueName="case-results"
+            >
+              {[]}
+            </TwilioTab>
+          </StyledTabs>
         </Row>
       </ResultsHeader>
       <ListContainer>
