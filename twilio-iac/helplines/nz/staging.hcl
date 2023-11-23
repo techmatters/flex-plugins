@@ -15,6 +15,7 @@ locals {
       operating_hours_function_name         = "operatingHours"
       capture_channel_with_bot_function_sid = "ZH26e3dd66fd428ae98074f9959a5ec8d3"
       chatbot_callback_cleanup_function_id  = "ZHfba53e17e98107e879e54299fd472796"
+      bot_language                          = "en-NZ"
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
