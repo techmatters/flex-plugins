@@ -22,7 +22,6 @@ import { ChannelTypes } from '../DomainConstants';
 
 // Action types
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
-export const REMOVE_CONNECTED_CASE = 'REMOVE_CONNECTED_CASE';
 export const UPDATE_CASE_ACTION = 'case-action/update-case';
 export const UPDATE_CASE_ACTION_FULFILLED = `${UPDATE_CASE_ACTION}_FULFILLED` as const;
 export const CREATE_CASE_ACTION = 'case-action/create-case';
@@ -41,11 +40,6 @@ type SetConnectedCaseAction = {
   taskId: string;
 };
 
-type RemoveConnectedCaseAction = {
-  type: typeof REMOVE_CONNECTED_CASE;
-  taskId: string;
-};
-
 type UpdatedCaseAction = {
   type: typeof UPDATE_CASE_ACTION;
   payload: Promise<{ taskSid: string; case: t.Case }>;
@@ -60,7 +54,7 @@ type CreateCaseAction = {
   meta: unknown;
 };
 
-export type CaseActionType = SetConnectedCaseAction | RemoveConnectedCaseAction | UpdatedCaseAction | CreateCaseAction;
+export type CaseActionType = SetConnectedCaseAction | UpdatedCaseAction | CreateCaseAction;
 
 export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
 

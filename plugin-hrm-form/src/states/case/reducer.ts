@@ -16,7 +16,7 @@
 
 import { omit } from 'lodash';
 
-import { CaseActionType, CaseState, REMOVE_CONNECTED_CASE, SET_CONNECTED_CASE } from './types';
+import { CaseActionType, CaseState, SET_CONNECTED_CASE } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import {
   CaseWorkingCopyActionType,
@@ -120,7 +120,6 @@ export function reduce(
           },
         },
       };
-    case REMOVE_CONNECTED_CASE:
     case REMOVE_CONTACT_STATE:
       return {
         ...state,
