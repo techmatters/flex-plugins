@@ -47,6 +47,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
    * We need refs to manage focus for accessibility since we're using a Popper
    * a lot of this is based around the example here: https://mui.com/material-ui/react-menu/#StyledMenuList-composition
    */
+  const associateButtonRef = useRef(null);
   const associateRef = useRef(null);
   const disassociateRef = useRef(null);
   const [open, setOpen] = useState(true);
@@ -75,6 +76,17 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
     associateRef?.current?.focus();
   };
 
+  function handleListKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      console.log('tab', associateButtonRef?.current);
+      associateButtonRef?.current?.focus();
+    } else if (e.key === 'Escape') {
+      console.log('escape', associateButtonRef?.current);
+      associateButtonRef?.current?.focus();
+    }
+  }
+
   return (
     <>
       <StyledFlagEditList title="Edit statuses" ref={anchorRef}>
@@ -83,20 +95,26 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
           <Box alignItems="center">
             <IconButton icon="Close" title="Done editing status" onClick={handleClose} />
             <IconButton
+              id="associate-status-button"
               icon="ArrowDown"
-              title={open ? 'Associate status' : 'All statuses are associated'}
+              title={open ? 'Add status' : 'All statuses are associated'}
               onClick={focusOnAssociateRef}
               disabled={!shouldAllowAssociate}
-              aria-controls={open ? 'composition-menu' : undefined}
+              aria-controls={open ? 'associate-status-menu' : undefined}
               aria-expanded={open ? 'true' : undefined}
               aria-haspopup="true"
+              ref={associateButtonRef}
             />
           </Box>
         </Box>
       </StyledFlagEditList>
       <Popper open={open} anchorEl={anchorRef.current} placement="bottom-start" ref={modalRef}>
         <Paper>
-          <StyledMenuList>
+          <StyledMenuList
+            id="associate-status-menu"
+            aria-labelledby="associate-status-button"
+            onKeyDown={handleListKeyDown}
+          >
             {availableFlags?.map((flag: ProfileFlag, index: number) => (
               <StyledMenuItem
                 key={flag.id}
