@@ -67,7 +67,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
       disassociateRef?.current?.focus();
       return;
     }
-    associateRef?.current?.focus();
+    associateButtonRef?.current?.focus();
   }, [profileFlags]);
 
   const focusOnAssociateRef = (e?: React.MouseEvent) => {
@@ -79,10 +79,8 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
   function handleListKeyDown(e: React.KeyboardEvent) {
     if (e.key === 'Tab') {
       e.preventDefault();
-      console.log('tab', associateButtonRef?.current);
       associateButtonRef?.current?.focus();
     } else if (e.key === 'Escape') {
-      console.log('escape', associateButtonRef?.current);
       associateButtonRef?.current?.focus();
     }
   }
