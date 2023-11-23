@@ -101,6 +101,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   if (!shouldDisplayBanner) return null;
 
   const handleClickViewRecords = async () => {
+    performSearch();
     viewPreviousContacts();
     openContactSearchResults();
   };
@@ -151,7 +152,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
 PreviousContactsBanner.displayName = 'PreviousContactsBanner';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const { searchContacts, routing, activeContacts, configuration } = state[namespace];
+  const { searchContacts, configuration } = state[namespace];
   const { taskSid } = task;
   const taskSearchState = searchContacts.tasks[taskSid];
   const { counselors } = configuration;

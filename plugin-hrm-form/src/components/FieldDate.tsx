@@ -82,8 +82,7 @@ const FieldDate: React.FC<MyProps> = ({
 
   const convertUiValueToSavedValue = uiValue => (uiValue ? formatISO(new Date(`${uiValue} 00:00:00`)) : undefined);
 
-  const convertSavedValueToUiValue = savedValue =>
-    savedValue ? format(new Date(savedValue), 'yyyy-MM-dd') : undefined;
+  const convertSavedValueToUiValue = savedValue => (savedValue ? format(new Date(savedValue), 'yyyy-MM-dd') : '');
 
   return (
     <TextField {...rest}>

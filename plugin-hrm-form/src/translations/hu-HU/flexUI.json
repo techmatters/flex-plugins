@@ -129,6 +129,7 @@
   "CaseHeader-Updated": "Frissített",
   "CaseHeader-Closed": "Lezárt",
   "CaseHeader-NoData": "Nincs adat",
+  "CaseHeader-Status": "Állapot",
   "Case-CaseDetailsDateOpened": "Folyamatban lévő",
   "Case-CaseDetailsLastUpdated": "Utoljára frissítve / lezárt",
   "Case-CaseDetailsFollowUpDate": "Frissítés dátuma",

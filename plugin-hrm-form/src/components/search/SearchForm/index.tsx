@@ -55,7 +55,7 @@ const getField = value => ({
 type OwnProps = {
   handleSearch: (searchParams: any) => void;
   handleSearchFormChange: (fieldName: string, value: string) => void;
-  values: SearchFormValues & { helpline: { value: string } }; // The type of helpline is being used inconsistently, leaving as 'any' for now
+  values: SearchFormValues & { helpline: { value: string } };
   task: ITask;
 };
 

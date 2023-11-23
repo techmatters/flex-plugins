@@ -117,6 +117,7 @@
   "CaseHeader-Updated": "Atualizada",
   "CaseHeader-Closed": "Fechadas",
   "CaseHeader-NoData": "Sem dados",
+  "CaseHeader-Status": "Status",
   "Case-CaseDetailsDateOpened": "Aberto",
   "Case-CaseDetailsLastUpdated": "Última atualização / fechada",
   "Case-CaseDetailsFollowUpDate": "Data de Acompanhamento",

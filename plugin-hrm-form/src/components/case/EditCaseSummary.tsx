@@ -154,6 +154,7 @@ const EditCaseSummary: React.FC<Props> = ({
           return true;
       }
     },
+    shouldFocusFirstElement: false,
   });
 
   const [l, r] = React.useMemo(() => {

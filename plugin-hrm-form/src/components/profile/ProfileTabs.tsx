@@ -23,10 +23,9 @@ import { useProfile } from '../../states/profile/hooks';
 import * as RoutingTypes from '../../states/routing/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import * as RoutingActions from '../../states/routing/actions';
-import { namespace, profileBase } from '../../states/storeNamespaces';
+import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileRoute } from '../../states/routing/types';
-import { RouterTask, Profile } from '../../types/types';
 import { StyledTabs } from '../../styles/search'; // just stealing from search until we have a centralized tab style
 import NavigableContainer from '../NavigableContainer';
 import ProfileCases from './ProfileCases';
@@ -43,7 +42,7 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
   const { profile: { contactsCount, casesCount } = {} } = useProfile({ profileId, shouldAutoload: true });
   const tabs = [
     {
-      label: 'Profile',
+      label: 'Client',
       key: 'details',
       component: <ProfileDetails profileId={profileId} task={task} />,
     },
@@ -93,7 +92,7 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
 const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const routingState = state[namespace].routing;
   const route = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const currentTab = (route as ProfileRoute).subroute || 'contacts';
+  const currentTab = (route as ProfileRoute).subroute || 'details';
 
   return {
     currentTab,

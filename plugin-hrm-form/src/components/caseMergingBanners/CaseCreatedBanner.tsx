@@ -51,7 +51,7 @@ const mapStateToProps = (state, { task }: OwnProps) => {
 
 const mapDispatchToProps = dispatch => ({
   removeContactFromCase: async (contactId: string, caseId: number) =>
-    asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId, caseId)),
+    asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId)),
   cancelCase: async (caseId: number, taskSid: string) =>
     asyncDispatch(dispatch)(cancelCaseAsyncAction(caseId, taskSid)),
   showRemovedFromCaseBanner: (contactId: string) => dispatch(showRemovedFromCaseBannerAction(contactId)),

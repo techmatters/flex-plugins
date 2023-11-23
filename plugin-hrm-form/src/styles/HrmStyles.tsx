@@ -16,7 +16,7 @@
 
 /* eslint-disable no-nested-ternary */
 import React from 'react';
-import { ButtonBase, Input, MenuItem, Select, Tab, TabProps, Tabs, withStyles } from '@material-ui/core';
+import { ButtonBase, Input, MenuItem, MenuList, Select, Tab, TabProps, Tabs, withStyles } from '@material-ui/core';
 import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
 import AssignmentInd from '@material-ui/icons/AssignmentIndOutlined';
 import { Button, Icon, styled } from '@twilio/flex-ui';
@@ -241,7 +241,7 @@ export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSe
   line-height: 22px;
   border-radius: 4px;
   border: none;
-  boxshadow: none;
+  box-shadow: none;
   padding: 0 7px;
 
   /* hide the arrow */
@@ -255,6 +255,13 @@ export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSe
 `;
 StyledSelect.displayName = 'StyledSelect';
 
+export const StyledMenuList = styled(MenuList)`
+  border-radius: 5px;
+  min-width: 250px;
+  width: 100%;
+`;
+StyledMenuList.displayName = 'StyledMenuList';
+
 export const StyledMenuItem = styled(MenuItem)`
   box-sizing: border-box;
   height: 32px;
@@ -262,6 +269,7 @@ export const StyledMenuItem = styled(MenuItem)`
   margin: 0;
   padding: 0 12px;
   min-width: 0;
+  text-transform: capitalize;
 `;
 StyledMenuItem.displayName = 'StyledMenuItem';
 
@@ -839,7 +847,7 @@ export const FormInput = styled('input')<FormInputProps>`
      */
     HrmTheme.colors.darkTextColor};
     border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
-    boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
+    box-shadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
     padding: 0 7px;
   }
   &:focus {
@@ -931,7 +939,7 @@ export const FormTextArea = styled('textarea')<FormInputProps>`
      */
     HrmTheme.colors.darkTextColor};
     border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
-    boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
+    box-shadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
     padding: 5px;
     border-radius: 4px;
   }
@@ -953,7 +961,7 @@ export const FormCheckBoxWrapper = styled(Row)<FormInputProps>`
   height: 36px;
   border-radius: 4px;
   border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
-  boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
+  box-shadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
 `;
 FormCheckBoxWrapper.displayName = 'FormCheckBoxWrapper';
 
@@ -1079,7 +1087,7 @@ export const FormSelect = styled('select')<FormInputProps>`
   line-height: 22px;
   border-radius: 4px;
   border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
-  boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
+  box-shadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
   padding: 0 7px;
 
   /* hide the arrow */
@@ -1219,8 +1227,14 @@ CSAMReportButtonText.displayName = 'CSAMReportButtonText';
 
 const TabbedFormsHeaderButton = styled(ButtonBase)`
   &:focus {
-    outline: auto;
-    padding: 5px;
+    outline-color: ${HrmTheme.colors.focusColor};
+    outline-style: solid;
+    outline-width: medium;
+  }
+
+  &:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
   }
 `;
 TabbedFormsHeaderButton.displayName = 'TabbedFormsHeaderButton';
@@ -1236,8 +1250,15 @@ export const HeaderCloseButton = styled(ButtonBase)`
     margin-left: auto;
   }
 
-  :focus {
-    outline: auto;
+  &:focus {
+    outline-color: ${HrmTheme.colors.focusColor};
+    outline-style: solid;
+    outline-width: medium;
+  }
+
+  &:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
   }
 `;
 HeaderCloseButton.displayName = 'HeaderCloseButton';

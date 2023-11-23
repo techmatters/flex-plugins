@@ -14,21 +14,31 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { ProfileCommonProps } from '../types';
 import { useProfileSectionByType } from '../../../states/profile/hooks/useProfileSection';
+import { SectionContentText, SectionText } from '../styles';
 
 type OwnProps = ProfileCommonProps & {
-  sectionType: string;
+  sectionType: {
+    name: string;
+    placeholder: string;
+  };
 };
 
 const ProfileSectionView = ({ profileId, sectionType }: OwnProps) => {
-  const { section } = useProfileSectionByType({ profileId, sectionType });
+  const { section, loading } = useProfileSectionByType({ profileId, sectionType: sectionType.name });
 
-  console.log('>>> ProfileSectionView', profileId, sectionType, section);
+  if (loading) {
+    return <SectionText>Loading...</SectionText>;
+  }
 
-  return <div>{section?.content}</div>;
+  return (
+    <SectionContentText hasContent={Boolean(section?.content)}>
+      {section?.content?.length > 0 ? section?.content : `No ${sectionType.name}`}
+    </SectionContentText>
+  );
 };
 
 export default ProfileSectionView;

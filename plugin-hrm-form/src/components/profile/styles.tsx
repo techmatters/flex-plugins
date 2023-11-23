@@ -15,9 +15,10 @@
  */
 
 import React from 'react';
-import { styled, Button } from '@twilio/flex-ui';
-import { withStyles, Select } from '@material-ui/core';
+import { styled, Button, IconButton } from '@twilio/flex-ui';
+import { withStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import BlockOutlinedIcon from '@material-ui/icons/BlockOutlined';
 
 import { FontOpenSans } from '../../styles/HrmStyles';
 import HrmTheme from '../../styles/HrmTheme';
@@ -33,7 +34,13 @@ export const DetailsWrapper = styled(FontOpenSans)`
 `;
 DetailsWrapper.displayName = 'DetailsWrapper';
 
-export const ProfileSubtitle = styled(FontOpenSans)`
+export const ProfileSectionWrapper = styled('div')`
+  padding: 5px 0 10px 5px;
+`;
+ProfileSectionWrapper.displayName = 'ProfileSectionWrapper';
+
+// TODO: refactor to HrmStyles
+export const ProfileSectionSubtitle = styled(FontOpenSans)`
   color: ${HrmTheme.colors.categoryTextColor};
   font-size: 10px;
   font-weight: 700;
@@ -42,63 +49,153 @@ export const ProfileSubtitle = styled(FontOpenSans)`
   text-transform: uppercase;
   margin: 15px 0 5px;
 `;
-ProfileSubtitle.displayName = 'ProfileSubtitle';
+ProfileSectionSubtitle.displayName = 'ProfileSectionSubtitle';
 
-type EditButtonProps = {
+type ButtonProps = {
   onClick: () => void;
 };
 
-// eslint-disable-next-line import/no-unused-modules
-export const EditButton = styled(props => <Button roundCorners={false} {...props} />)<EditButtonProps>`
-  color: ${HrmTheme.colors.categoryTextColor};
-  text-align: right;
-  background-color: #ecedf1;
-  height: 28px;
+export const ProfileSectionEditButton = styled(Button)<ButtonProps>`
+  width: 40px;
+  height: 30px;
   border-radius: 4px;
-  letter-spacing: normal;
-  font-size: 13px;
+  color: ${HrmTheme.colors.categoryTextColor};
+  background-color: ${HrmTheme.colors.secondaryButtonColor};
+  font-size: 14px;
   box-shadow: none;
   border: none;
+  margin-left: auto;
 
-  :focus {
+  :focus,
+  :active {
     outline: auto;
+    box-shadow: none;
+    border: none;
   }
 `;
-EditButton.displayName = 'EditButton';
+ProfileSectionEditButton.displayName = 'ProfileSectionEditButton';
 
 type ColorProps = {
   fillColor?: string;
-  blocked?: boolean;
+  isBlocked?: boolean;
 };
 
-export const StatusLabelPill = styled('div')<ColorProps>`
+export const FlagPill = styled('div')<ColorProps>`
   display: inline-flex;
   align-items: center;
   border-radius: 6px;
   white-space: nowrap;
-  margin: 5px 6px 5px 1px;
-  padding: 5px 20px;
-  background-color: ${props => (props.fillColor ? `${props.fillColor}` : '#F9FAFB')};
-  border: ${props => (props.blocked ? `2px dashed #D61F1F` : '#F9FAFB')};
-  color: ${props => (props.blocked ? `#D61F1F` : 'none')};
+  margin: 5px 4px 5px 1px;
+  padding: 4px 12px;
+  background-color: ${props => (props.isBlocked ? `#FCF4F4` : '#F5EEF4')};
+  border: ${props => (props.isBlocked ? `2px dashed #D61F1F` : '2px solid #F5EEF4')};
+  border-color: ${props => (props.isBlocked ? `#D61F1F` : 'none')};
+  color: ${props => (props.isBlocked ? `#D61F1F` : '#192B33')};
+  text-transform: capitalize;
 `;
-StatusLabelPill.displayName = 'StatusLabelPill';
+FlagPill.displayName = 'FlagPill';
 
-export const StyledStatusSelect = styled(Select)`
+export const StyledBlockOutlinedIcon = withStyles({
+  root: { width: '1rem', height: '1rem', fontSize: 'smaller', marginRight: '7px' },
+})(BlockOutlinedIcon);
+
+export const StyledFlagEditList = styled('div')`
   background-color: #f9fafb;
   border-radius: 5px;
+  align-items: center;
   &:focus-within {
     outline: 3px solid rgb(0, 95, 204);
-    border-radius: 5px;
   }
 `;
+StyledFlagEditList.displayName = 'StyledFlagEditList';
+
+export const DisassociateButton = styled(IconButton)`
+  height: 1rem;
+  width: 1rem;
+  padding: 4px;
+  margin-left: 12px;
+  background-color: #d61f1f;
+  :hover {
+    background-color: #4a0b0b;
+  }
+`;
+DisassociateButton.displayName = 'DisassociateButton';
 
 export const CloseIconButton = withStyles({
   root: {
-    width: '23px',
-    height: '16px',
-    margin: '1px',
-    padding: '0 1px',
+    width: '1rem',
+    height: '1rem',
     cursor: 'pointer',
+    color: '#fff',
+    '&:hover': {
+      color: '#fff',
+    },
   },
 })(CloseIcon);
+
+export const SectionText = styled('p')`
+  font-size: 12px;
+  line-height: 15px;
+  padding: 5px 5px 5px 15px;
+  margin: 5px 0 10px 0;
+  height: 150%;
+  width: 100%;
+  background-color: rgba(246, 246, 246, 0.49);
+  border: none;
+  border-radius: 2px;
+  box-sizing: border-box;
+  overflow: hidden;
+  flex-grow: 1;
+  font-family: 'Open Sans';
+  box-sizing: border-box;
+  opacity: 0.5;
+  :focus {
+    outline: none;
+  }
+`;
+SectionText.displayName = 'SectionText';
+
+type StyledTextProps = {
+  hasContent?: boolean;
+};
+
+export const SectionContentText = styled('div')<StyledTextProps>`
+  font-size: 12px;
+  line-height: 15px;
+  padding: 5px 5px 5px 15px;
+  margin: 20px 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(246, 246, 246, 0.49);
+  border: none;
+  border-radius: 2px;
+  box-sizing: border-box;
+  overflow: hidden;
+  flex-grow: 1;
+  font-family: 'Open Sans';
+  font-weight: 400;
+  box-sizing: border-box;
+  white-space: pre-wrap;
+  opacity: ${props => (props.hasContent ? 1 : 0.5)};
+  :focus {
+    outline: none;
+  }
+`;
+SectionContentText.displayName = 'SectionContentText';
+
+export const ProfileFlagsView = styled('button')`
+  background-color: ${HrmTheme.colors.inputBackgroundColor};
+  display: flex;
+  border: none;
+  border-radius: 5px;
+  align-items: center;
+  align-self: center;
+  align-content: center;
+  width: -webkit-fill-available;
+  :focus {
+    background-color: ${HrmTheme.colors.inputBackgroundColor};
+    box-shadow: none;
+    border: 1px solid rgba(0, 59, 129, 0.37);
+  }
+`;
+ProfileFlagsView.displayName = 'ProfileFlagsView';

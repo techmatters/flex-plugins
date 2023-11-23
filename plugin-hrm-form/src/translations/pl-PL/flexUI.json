@@ -133,6 +133,7 @@
     "CaseHeader-Updated": "Zaktualizowano",
     "CaseHeader-Closed": "Zamknięte",
     "CaseHeader-NoData": "Brak danych",
+    "CaseHeader-Status": "Status",
     "Case-CaseDetailsDateOpened": "Otwierany",
     "Case-CaseDetailsLastUpdated": "Ostatnia aktualizacja / zamknięta",
     "Case-CaseDetailsFollowUpDate": "Kontynuacja",

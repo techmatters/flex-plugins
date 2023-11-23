@@ -133,6 +133,7 @@
     "CaseHeader-Updated": "La curent",
     "CaseHeader-Closed": "Închis",
     "CaseHeader-NoData": "Nu există date",
+    "CaseHeader-Status": "stare",
     "Case-CaseDetailsDateOpened": "Deschis",
     "Case-CaseDetailsLastUpdated": "Ultimul actualizat / închis",
     "Case-CaseDetailsFollowUpDate": "Data de urmărire",

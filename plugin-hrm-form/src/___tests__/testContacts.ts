@@ -65,4 +65,5 @@ export const VALID_EMPTY_METADATA: ContactMetadata = {
     resourceReferralList: { resourceReferralIdToAdd: undefined, lookupStatus: ReferralLookupStatus.NOT_STARTED },
     dialogsOpen: {},
   },
+  saveStatus: 'saved',
 };

@@ -86,7 +86,10 @@ const CaseHome: React.FC<Props> = ({
 }) => {
   if (!connectedCaseState) return null; // narrow type before deconstructing
 
-  const featureFlags = getAseloFeatureFlags();
+  const {
+    enable_upload_documents: enableUploadDocuments,
+    enable_case_merging: enableCaseMerging,
+  } = getAseloFeatureFlags();
 
   const onViewCaseItemClick = (targetSubroute: CaseSectionSubroute) => (id: string) => {
     openModal({ route: 'case', subroute: targetSubroute, action: CaseItemAction.View, id });
@@ -133,6 +136,7 @@ const CaseHome: React.FC<Props> = ({
   const showConnectToCaseButton = Boolean(
     taskContact &&
       !isConnectedToTaskContact &&
+      connectedCase.connectedContacts?.length &&
       canForCase(PermissionActions.UPDATE_CASE_CONTACTS) &&
       canForContact(PermissionActions.ADD_CONTACT_TO_CASE),
   );
@@ -295,7 +299,7 @@ const CaseHome: React.FC<Props> = ({
             {incidentRows()}
           </CaseSection>
         </Box>
-        {featureFlags.enable_upload_documents && (
+        {enableUploadDocuments && (
           <Box margin="25px 0 0 0">
             <CaseSection
               onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Document)}
@@ -309,11 +313,21 @@ const CaseHome: React.FC<Props> = ({
       </CaseContainer>
       {isCreating && (
         <BottomButtonBar>
-          <>
-            <StyledNextStepButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
-              <Template code="BottomBar-SaveAndEnd" />
-            </StyledNextStepButton>
-          </>
+          {!enableCaseMerging && (
+            <Box marginRight="15px">
+              <StyledNextStepButton
+                data-testid="CaseHome-CancelButton"
+                secondary="true"
+                roundCorners
+                onClick={handleClose}
+              >
+                <Template code="BottomBar-CancelNewCaseAndClose" />
+              </StyledNextStepButton>
+            </Box>
+          )}
+          <StyledNextStepButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
+            <Template code="BottomBar-SaveAndEnd" />
+          </StyledNextStepButton>
         </BottomButtonBar>
       )}
     </NavigableContainer>

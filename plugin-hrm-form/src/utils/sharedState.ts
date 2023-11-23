@@ -31,7 +31,7 @@ import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { RootState } from '../states';
 import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
 import asyncDispatch from '../states/asyncDispatch';
-import { updateContactInHrmAsyncAction } from '../states/contacts/saveContact';
+import { connectToCaseAsyncAction, updateContactInHrmAsyncAction } from '../states/contacts/saveContact';
 
 // Legacy type previously used for unsaved contact forms, kept around to ensure transfers are compatible between new & old clients
 // Not much point in replacing the use of this type in the shared state, since we will drop use of shared state in favour of the HRM DB for managing transfer state soon anyway
@@ -152,10 +152,13 @@ const DOCUMENT_TTL_SECONDS = 24 * 60 * 60; // 24 hours
  */
 export const saveFormSharedState = async (contactState: ContactState, task: ITask): Promise<string | null> => {
   if (!getAseloFeatureFlags().enable_transfers) return null;
-  if (contactState.draftContact) {
-    await asyncDispatch(Manager.getInstance().store.dispatch)(
-      updateContactInHrmAsyncAction(contactState.savedContact, contactState.draftContact, task.taskSid),
-    );
+  const { draftContact, savedContact } = contactState;
+  const asyncDispatcher = asyncDispatch(Manager.getInstance().store.dispatch);
+  if (draftContact) {
+    await asyncDispatcher(updateContactInHrmAsyncAction(savedContact, draftContact, task.taskSid));
+  }
+  if (savedContact.caseId) {
+    await asyncDispatcher(connectToCaseAsyncAction(savedContact.id, undefined));
   }
   console.log('Saved form to HRM', contactState.savedContact.id);
   try {
@@ -209,7 +212,7 @@ export const loadFormSharedState = async (task: ITask): Promise<ContactState> =>
         const document = await sharedStateClient.document(documentName);
         const transferredContactState = transferFormToContactState(
           document.data as TransferForm,
-          contactState.savedContact ?? newContact(getDefinitionVersions().currentDefinitionVersion),
+          contactState.savedContact ?? newContact(getDefinitionVersions().currentDefinitionVersion, task),
         );
 
         const updatedContact = {
@@ -221,7 +224,6 @@ export const loadFormSharedState = async (task: ITask): Promise<ContactState> =>
           },
           id: contactState.savedContact.id,
           accountSid: contactState.savedContact.accountSid,
-          twilioWorkerId: getHrmConfig().workerSid,
         };
         contactState = {
           ...transferredContactState,
@@ -233,6 +235,7 @@ export const loadFormSharedState = async (task: ITask): Promise<ContactState> =>
       recordBackendError('Load Form Shared State', new Error('Sync Client Disconnected'));
     }
     contactState.savedContact.taskId = task.taskSid;
+    contactState.savedContact.twilioWorkerId = getHrmConfig().workerSid;
     await asyncDispatch(store.dispatch)(
       updateContactInHrmAsyncAction(contactState.savedContact, contactState.savedContact, task.taskSid),
     );
