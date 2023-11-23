@@ -1,0 +1,15 @@
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "Tinkle Friend",
+      "value": "Tinkle Friend",
+      "default": true,
+      "manager": {
+        "name": "Helpline Manager",
+        "phone": "+123 45 678",
+        "email": "supervisor@helpline.org"
+      }
+    }
+  ]
+}
