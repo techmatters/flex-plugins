@@ -148,11 +148,6 @@ export type ProfileEditRoute = {
   id: Profile['id'];
 };
 
-export type ProfileFlagEditRoute = {
-  route: 'profileFlagEdit';
-  id: Profile['id'];
-};
-
 export type ProfileSectionEditRoute = {
   route: 'profileSectionEdit';
   type: ProfileSection['sectionType'];
@@ -214,7 +209,6 @@ type OtherRoutes =
   | CaseListRoute
   | ProfileRoute
   | ProfileEditRoute
-  | ProfileFlagEditRoute
   | ProfileSectionEditRoute;
 
 // The different routes we have in our app

@@ -10,7 +10,7 @@ terraform {
 locals {
   helplines                      = var.helplines == null ? [var.helpline] : var.helplines
   helplines_filter               = var.helplines == null ? "1==1" : "helpline IN [${join(", ", formatlist("'%s'", local.helplines))}]"
-  task_routing_filter_expression = var.custom_task_routing_filter_expression != "" ? var.custom_task_routing_filter_expression : "${local.helplines_filter} OR channelType ==\"web\" OR isContactlessTask == true"
+  task_routing_filter_expression = var.custom_task_routing_filter_expression != "" ? var.custom_task_routing_filter_expression : "${local.helplines_filter} OR channelType =='web' OR isContactlessTask == true"
   event_callback_url             = "${var.serverless_url}/webhooks/taskrouterCallback"
 }
 

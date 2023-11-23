@@ -82,7 +82,7 @@ locals {
     sms : "SMS"
     video : "Video"
     email : "Email"
-    // survey : "Survey"
+    survey : "Survey"
   }
 
   mock_outputs = {
