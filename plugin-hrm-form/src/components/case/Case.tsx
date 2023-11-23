@@ -93,7 +93,6 @@ const Case: React.FC<Props> = ({
   releaseContacts,
   updateCaseAsyncAction,
   onNewCaseSaved = () => Promise.resolve(),
-  disconnectFromCase,
   submitContactFormAsyncAction,
   taskContact,
   ...props
@@ -360,7 +359,6 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     loadContacts: bindActionCreators(ContactActions.loadContacts, dispatch),
     updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
       caseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
-    disconnectFromCase: (contactId: string, caseId: number) => caseAsyncDispatch(removeFromCaseAsyncAction(contactId)),
     submitContactFormAsyncAction: (
       task: CustomITask,
       contact: Contact,
