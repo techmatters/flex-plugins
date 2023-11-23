@@ -174,8 +174,8 @@ test('Click View Records should redirect user to search results', () => {
 
   screen.getByTestId('PreviousContacts-ViewRecords').click();
 
-  expect(searchContacts).not.toHaveBeenCalled();
-  expect(searchCases).not.toHaveBeenCalled();
+  expect(searchContacts).toHaveBeenCalled();
+  expect(searchCases).toHaveBeenCalled();
   expect(viewPreviousContacts).toHaveBeenCalled();
   expect(openModal).toHaveBeenCalled();
 });

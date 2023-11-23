@@ -19,8 +19,6 @@ import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import {
@@ -44,7 +42,7 @@ import { submitContactFormAsyncAction } from '../../states/contacts/saveContact'
 import { ContactMetadata } from '../../states/contacts/types';
 import { connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { AppRoutes } from '../../states/routing/types';
-import AddNewCaseDropdown from './AddNewCaseDropdown';
+import AddCaseButton from './AddCaseButton';
 import asyncDispatch from '../../states/asyncDispatch';
 
 type BottomBarProps = {
@@ -77,13 +75,8 @@ const BottomBar: React.FC<
   savedContact,
 }) => {
   const [isSubmitting, setSubmitting] = useState(false);
-  const [dropdown, setDropdown] = useState(false);
 
   const strings = getTemplateStrings();
-
-  const handleDropdown = () => {
-    setDropdown(previous => !previous);
-  };
 
   const isAddedToCase = savedContact?.caseId !== null;
 
@@ -133,49 +126,22 @@ const BottomBar: React.FC<
 
   const renderCaseButton = () => {
     if (featureFlags.enable_case_merging) {
-      return (
-        <>
-          <AddNewCaseDropdown
-            handleNewCaseType={handleOpenNewCase}
-            handleExistingCaseType={openSearchModal}
-            dropdown={dropdown}
-          />
-
-          {isAddedToCase ? (
-            <Box marginRight="25px">
-              <AddedToCaseButton>
-                <Template code="BottomBar-AddedToCase" />
-              </AddedToCaseButton>
-            </Box>
-          ) : (
-            !isNonDataCallType(contact.rawJson.callType) && (
-              <Box marginRight="15px">
-                <StyledNextStepButton
-                  type="button"
-                  roundCorners
-                  secondary="true"
-                  onClick={handleDropdown}
-                  data-fs-id="Contact-SaveAndAddToCase-Button"
-                  data-testid="BottomBar-SaveAndAddToCase-Button"
-                >
-                  <FolderIcon style={{ fontSize: '16px', marginRight: '10px', width: '24px', height: '24px' }} />
-                  <Template code="BottomBar-AddContactToNewCase" />
-                  {dropdown && (
-                    <KeyboardArrowUpIcon
-                      style={{ fontSize: '20px', marginLeft: '10px', width: '24px', height: '24px' }}
-                    />
-                  )}
-                  {!dropdown && (
-                    <KeyboardArrowDownIcon
-                      style={{ fontSize: '20px', marginLeft: '10px', width: '24px', height: '24px' }}
-                    />
-                  )}
-                </StyledNextStepButton>
-              </Box>
-            )
-          )}
-        </>
-      );
+      if (isAddedToCase) {
+        return (
+          <Box marginRight="25px">
+            <AddedToCaseButton>
+              <Template code="BottomBar-AddedToCase" />
+            </AddedToCaseButton>
+          </Box>
+        );
+      } else if (!isNonDataCallType(contact.rawJson.callType)) {
+        return (
+          <Box marginRight="15px">
+            <AddCaseButton handleNewCaseType={handleOpenNewCase} handleExistingCaseType={openSearchModal} />
+          </Box>
+        );
+      }
+      return null;
     }
     return isAddedToCase ? null : (
       <Box marginRight="15px">
@@ -195,13 +161,7 @@ const BottomBar: React.FC<
   };
 
   return (
-    <BottomButtonBar
-      onBlurCapture={event => {
-        if (!event.currentTarget.contains(event.relatedTarget)) {
-          setDropdown(false);
-        }
-      }}
-    >
+    <BottomButtonBar>
       {optionalButtons &&
         optionalButtons.map((i, index) => (
           <Box key={`optional-button-${index}`} marginRight="15px">
