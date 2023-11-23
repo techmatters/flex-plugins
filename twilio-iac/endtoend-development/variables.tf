@@ -3,23 +3,3 @@ variable "local_os" {
   type        = string
   default     = "Linux"
 }
-
-variable "helpline" {
-  default = "End To End Testing"
-}
-
-variable "short_helpline" {
-  default = "E2E"
-}
-
-variable "operating_info_key" {
-  default = "e2e"
-}
-
-variable "environment" {
-  default = "Development"
-}
-
-variable "short_environment" {
-  default = "DEV"
-}

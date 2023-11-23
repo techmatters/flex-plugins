@@ -277,12 +277,9 @@ export async function connectToCase(contactId: string, caseId: number) {
   return fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
 }
 
-export async function removeFromCase(contactId: string, caseId: number) {
-  const body = { caseId };
-
+export async function removeFromCase(contactId: string) {
   const options = {
     method: 'DELETE',
-    body: JSON.stringify(body),
   };
 
   return fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);

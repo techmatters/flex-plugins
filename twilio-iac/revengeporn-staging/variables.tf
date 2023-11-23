@@ -4,22 +4,3 @@ variable "local_os" {
   default     = "Linux"
 }
 
-variable "helpline" {
-  default = "RevengePorn"
-}
-
-variable "short_helpline" {
-  default = "UK"
-}
-
-variable "operating_info_key" {
-  default = "uk"
-}
-
-variable "environment" {
-  default = "Staging"
-}
-
-variable "short_environment" {
-  default = "STG"
-}
