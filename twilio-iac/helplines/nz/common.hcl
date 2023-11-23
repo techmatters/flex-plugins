@@ -10,6 +10,7 @@ locals {
     task_language                     = "en-NZ"
     contacts_waiting_channels         = ["voice", "sms", "web"]
 
+
     workflows = {
       master : {
         friendly_name            = "Master Workflow - Messaging"
@@ -37,6 +38,11 @@ locals {
         "friendly_name"  = "Clinical"
       }
     }
+
+     lex_bot_languages = {
+      en_NZ : ["pre_survey"]
+    }
+
 
 
   }
