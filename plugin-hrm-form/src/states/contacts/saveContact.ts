@@ -31,13 +31,14 @@ import {
   CONNECT_TO_CASE,
   REMOVE_FROM_CASE,
   ContactMetadata,
+  ContactsState,
   CREATE_CONTACT_ACTION,
   LOAD_CONTACT_FROM_HRM_BY_ID_ACTION,
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION,
   SET_SAVED_CONTACT,
   UPDATE_CONTACT_ACTION,
 } from './types';
-import { ContactDraftChanges, ExistingContactsState } from './existingContacts';
+import { ContactDraftChanges } from './existingContacts';
 import { newContactMetaData } from './contactState';
 import { cancelCase, getCase } from '../../services/CaseService';
 import { getUnsavedContact } from './getUnsavedContact';
@@ -57,6 +58,11 @@ export const createContactAsyncAction = createAsyncAction(
       metadata: newContactMetaData(false),
     };
   },
+  (contactToCreate: Contact, workerSid: string, taskSid: string) => ({
+    contactToCreate,
+    workerSid,
+    taskSid,
+  }),
 );
 
 type FulfilledUpdatedContactActionPayload = { contact: Contact; previousContact: Contact; reference: string };
@@ -152,6 +158,12 @@ export const submitContactFormAsyncAction = createAsyncAction(
   async (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) => {
     return submitContactForm(task, contact, metadata, caseForm);
   },
+  (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) => ({
+    task,
+    contact,
+    metadata,
+    caseForm,
+  }),
 );
 
 export const loadContactFromHrmByTaskSidAsyncAction = createAsyncAction(
@@ -180,92 +192,184 @@ export const loadContactFromHrmByIdAsyncAction = createAsyncAction(
   },
 );
 
-const handleAsyncAction = (handleAction, asyncAction) =>
-  handleAction(asyncAction, state => {
-    return {
-      ...state,
-    };
-  });
-
 // TODO: Consolidate this logic with the loadContactReducer implementation?
 const loadContactIntoRedux = (
-  state: ExistingContactsState,
+  state: ContactsState,
   contact: Contact,
   reference?: string,
   newMetadata?: ContactMetadata,
-) => {
-  const references = state[contact.id]?.references ?? new Set();
+): ContactsState => {
+  const { existingContacts } = state;
+  const references = existingContacts[contact.id]?.references ?? new Set();
   if (reference) {
     references.add(reference);
   }
-  const metadata = newMetadata ?? state[contact.id]?.metadata;
+  const metadata = newMetadata ?? existingContacts[contact.id]?.metadata;
+  const contactsBeingCreated = new Set(state.contactsBeingCreated);
+  contactsBeingCreated.delete(contact.taskId);
   return {
     ...state,
-    [contact.id]: {
-      ...state[contact.id],
-      metadata,
-      savedContact: contact,
-      references,
+    contactsBeingCreated,
+    existingContacts: {
+      ...existingContacts,
+      [contact.id]: {
+        ...existingContacts[contact.id],
+        metadata: { ...metadata, saveStatus: 'saved' },
+        savedContact: contact,
+        references: references ?? existingContacts[contact.id]?.references,
+      },
     },
   };
 };
 
-export const saveContactReducer = (initialState: ExistingContactsState) =>
+const setContactSavingStateInRedux = (
+  state: ContactsState,
+  contact: Contact,
+  updates: ContactDraftChanges,
+): ContactsState => {
+  const { existingContacts } = state;
+  return {
+    ...state,
+    existingContacts: {
+      ...state.existingContacts,
+      [contact.id]: {
+        ...existingContacts[contact.id],
+        draftContact: undefined,
+        savedContact: getUnsavedContact(existingContacts[contact.id]?.savedContact, updates),
+        metadata: { ...existingContacts[contact.id]?.metadata, saveStatus: 'saving' },
+      },
+    },
+  };
+};
+
+const rollbackSavingStateInRedux = (
+  state: ContactsState,
+  contact: Contact,
+  changes: ContactDraftChanges,
+): ContactsState => {
+  const { existingContacts } = state;
+  return {
+    ...state,
+    existingContacts: {
+      ...existingContacts,
+      [contact.id]: {
+        ...existingContacts[contact.id],
+        draftContact: changes,
+        savedContact: contact,
+        metadata: { ...existingContacts[contact.id]?.metadata, saveStatus: 'saved' },
+      },
+    },
+  };
+};
+
+export const saveContactReducer = (initialState: ContactsState) =>
   createReducer(initialState, handleAction => [
     handleAction(
       updateContactInHrmAsyncAction.pending as typeof updateContactInHrmAsyncAction,
-      (state, { meta: { changes, previousContact } }) => {
-        return {
-          ...state,
-          [previousContact.id]: {
-            ...state[previousContact.id],
-            draftContact: undefined,
-            savedContact: getUnsavedContact(state[previousContact.id]?.savedContact, changes),
-          },
-        };
+      (state, { meta: { changes, previousContact } }): ContactsState => {
+        return setContactSavingStateInRedux(state, previousContact, changes);
       },
     ),
 
     handleAction(
       updateContactInHrmAsyncAction.fulfilled,
-      (state, { payload: { contact, reference } }): ExistingContactsState => {
+      (state, { payload: { contact, reference } }): ContactsState => {
         return loadContactIntoRedux(state, contact, reference);
       },
     ),
     handleAction(
+      updateContactInHrmAsyncAction.rejected as typeof updateContactInHrmAsyncAction.rejected,
+      (state, action): ContactsState => {
+        const {
+          meta: { previousContact, changes },
+        } = action as typeof action & {
+          meta: { previousContact: Contact; changes: ContactDraftChanges };
+        };
+        return rollbackSavingStateInRedux(state, previousContact, changes);
+      },
+    ),
+    handleAction(
+      createContactAsyncAction.pending as typeof createContactAsyncAction,
+      (state, { meta: { taskSid } }): ContactsState => {
+        const contactsBeingCreated = new Set(state.contactsBeingCreated);
+        contactsBeingCreated.add(taskSid);
+        return {
+          ...state,
+          contactsBeingCreated,
+        };
+      },
+    ),
+    handleAction(
       createContactAsyncAction.fulfilled,
-      (state, { payload: { contact, reference } }): ExistingContactsState => {
+      (state, { payload: { contact, reference } }): ContactsState => {
         return loadContactIntoRedux(state, contact, reference, newContactMetaData(false));
       },
     ),
     handleAction(
+      createContactAsyncAction.rejected,
+      (state, action): ContactsState => {
+        const {
+          meta: { taskSid },
+        } = action as typeof action & {
+          meta: { taskSid: string };
+        };
+        const contactsBeingCreated = new Set(state.contactsBeingCreated);
+        contactsBeingCreated.delete(taskSid);
+        return {
+          ...state,
+          contactsBeingCreated,
+        };
+      },
+    ),
+    handleAction(
+      submitContactFormAsyncAction.pending as typeof submitContactFormAsyncAction,
+      (state, { meta: { contact } }): ContactsState => {
+        return setContactSavingStateInRedux(state, contact, contact);
+      },
+    ),
+    handleAction(
+      submitContactFormAsyncAction.fulfilled,
+      (state, { payload }): ContactsState => {
+        return loadContactIntoRedux(state, payload, undefined, newContactMetaData(false));
+      },
+    ),
+    handleAction(
+      submitContactFormAsyncAction.rejected,
+      (state, action): ContactsState => {
+        const {
+          meta: { contact },
+        } = action as typeof action & {
+          meta: { contact: Contact; changes: ContactDraftChanges };
+        };
+        return rollbackSavingStateInRedux(state, contact, undefined);
+      },
+    ),
+    handleAction(
       loadContactFromHrmByTaskSidAsyncAction.fulfilled,
-      (state, { payload: { contact, reference } }): ExistingContactsState => {
+      (state, { payload: { contact, reference } }): ContactsState => {
         if (!contact) return state;
         return loadContactIntoRedux(state, contact, reference, newContactMetaData(true));
       },
     ),
     handleAction(
       loadContactFromHrmByIdAsyncAction.fulfilled,
-      (state, { payload: { contact, reference } }): ExistingContactsState => {
+      (state, { payload: { contact, reference } }): ContactsState => {
         if (!contact) return state;
         return loadContactIntoRedux(state, contact, reference, newContactMetaData(true));
       },
     ),
     handleAction(
       connectToCaseAsyncAction.fulfilled,
-      (state, { payload: { contact } }): ExistingContactsState => {
+      (state, { payload: { contact } }): ContactsState => {
         if (!contact) return state;
         return loadContactIntoRedux(state, contact);
       },
     ),
     handleAction(
       removeFromCaseAsyncAction.fulfilled,
-      (state, { payload: { contact } }): ExistingContactsState => {
+      (state, { payload: { contact } }): ContactsState => {
         if (!contact) return state;
         return loadContactIntoRedux(state, contact);
       },
     ),
-
-    handleAsyncAction(handleAction, updateContactInHrmAsyncAction.rejected),
   ]);

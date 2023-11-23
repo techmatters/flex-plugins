@@ -135,6 +135,7 @@ const CaseHome: React.FC<Props> = ({
   const showConnectToCaseButton = Boolean(
     taskContact &&
       !isConnectedToTaskContact &&
+      connectedCase.connectedContacts?.length &&
       canForCase(PermissionActions.UPDATE_CASE_CONTACTS) &&
       canForContact(PermissionActions.ADD_CONTACT_TO_CASE),
   );

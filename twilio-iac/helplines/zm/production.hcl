@@ -5,12 +5,36 @@ locals {
 
   local_config = {
 
+    channels = {
+      webchat : {
+        channel_type         = "web"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-webchat.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      facebook : {
+        channel_type         = "facebook"
+        contact_identity     = "messenger:261976427221327"
+        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      whatsapp : {
+        channel_type         = "whatsapp"
+        contact_identity     = "whatsapp:+260973553422"
+        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      }
+    }
     #Studio flow
     flow_vars = {
-      service_sid                   = "ZSe84c8040f76f6e331310f132b88c25d8"
-      environment_sid               = "ZE79c328112066b496d1875fe19bfe2b5c"
-      operating_hours_function_sid  = "ZHb02706803df7458aebd679967beb1005"
-      operating_hours_function_name = "operatingHours"
+      service_sid                           = "ZS6ac8653b2845b206a0a0bbdda861e3e9"
+      environment_sid                       = "ZEe7486f2ebe86b00591d4550ab0389566"
+      send_message_janitor_function_sid     = "ZH55f6e780a85d1371f00234481fee3b35"
+      capture_channel_with_bot_function_sid = "ZH38598267c5c40e659e4fef46a019dd24"
+
     }
   }
 }

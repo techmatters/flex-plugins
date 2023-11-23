@@ -19,6 +19,8 @@ import { Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 import { ArrowDropDownTwoTone, ArrowRightTwoTone, Edit, Link } from '@material-ui/icons';
 
+import { RootState } from '../../states';
+import { contactFormsBase, namespace } from '../../states/storeNamespaces';
 import {
   SectionTitleContainer,
   SectionTitleButton,
@@ -46,8 +48,9 @@ type OwnProps = {
   handleEditClick?: (event?: any) => void;
   handleOpenConnectDialog?: (event: any) => void;
   showActionIcons?: boolean;
-  task?: any;
+  extraActionButton?: React.ReactElement;
   callType?: string;
+  contactId?: string;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -66,6 +69,8 @@ const ContactDetailsSection: React.FC<Props> = ({
   showActionIcons,
   handleEditClick,
   callType,
+  savedContact,
+  extraActionButton,
   ...props
 }) => {
   const showCopyButton = () => callType === 'child' || callType === 'caller';
@@ -86,6 +91,7 @@ const ContactDetailsSection: React.FC<Props> = ({
           {!hideIcon && (expanded ? <ArrowDownIcon /> : <ArrowRightIcon />)}
           <SectionTitleText>{sectionTitle}</SectionTitleText>
         </SectionTitleButton>
+
         {showActionIcons && showCopyButton && (
           <SectionActionButton
             onClick={e => {
@@ -98,13 +104,12 @@ const ContactDetailsSection: React.FC<Props> = ({
           </SectionActionButton>
         )}
         {showEditButton && (
-          <>
-            <SectionActionButton type="button" onClick={handleEditClick}>
-              <EditIcon style={{ fontSize: '14px', padding: '-1px 6px 0 6px', marginRight: '6px' }} />
-              <Template code="EditButton" />
-            </SectionActionButton>
-          </>
+          <SectionActionButton type="button" onClick={handleEditClick}>
+            <EditIcon style={{ fontSize: '14px', padding: '-1px 6px 0 6px', marginRight: '6px' }} />
+            <Template code="EditButton" />
+          </SectionActionButton>
         )}
+        {extraActionButton}
       </SectionTitleContainer>
       <SectionCollapse expanded={expanded} timeout="auto">
         {children}
@@ -115,10 +120,14 @@ const ContactDetailsSection: React.FC<Props> = ({
 
 ContactDetailsSection.displayName = 'ContactDetailsSection';
 
-const mapDispatchToProps = {
-  setCallType,
-};
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
+  savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
+});
 
-const connector = connect(null, mapDispatchToProps);
+const mapDispatchToProps = () => ({
+  setCallType,
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(ContactDetailsSection);
 export default connected;

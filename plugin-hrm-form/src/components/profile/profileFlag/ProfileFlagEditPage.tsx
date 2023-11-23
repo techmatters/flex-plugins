@@ -19,7 +19,7 @@ import { Template } from '@twilio/flex-ui';
 
 import { CustomITask, Profile } from '../../../types/types';
 import NavigableContainer from '../../NavigableContainer';
-import { DetailsWrapper, ProfileSubtitle } from '../styles';
+import { DetailsWrapper, ProfileSectionSubtitle } from '../styles';
 import ProfileFlagEdit from './ProfileFlagEdit';
 import { ProfileCommonProps } from '../types';
 
@@ -29,9 +29,9 @@ const ProfileFlagEditPage = (props: OwnProps) => {
   return (
     <NavigableContainer titleCode="Profile-FlagEditHeader" task={props.task}>
       <DetailsWrapper>
-        <ProfileSubtitle>
+        <ProfileSectionSubtitle>
           <Template code="Profile-StatusHeader" />
-        </ProfileSubtitle>
+        </ProfileSectionSubtitle>
         <ProfileFlagEdit {...props} />
       </DetailsWrapper>
     </NavigableContainer>

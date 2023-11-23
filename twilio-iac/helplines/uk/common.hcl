@@ -3,28 +3,24 @@ locals {
   defaults_config     = local.defaults_config_hcl.locals
   config              = merge(local.defaults_config, local.local_config)
 
-
   local_config = {
-    helpline                          = "End to End Testing"
-    old_dir_prefix                    = "e2e"
-    definition_version                = "e2e-v1"
+    helpline                          = "RevengePorn"
+    old_dir_prefix                    = "revengeporn"
+    definition_version                = "uk-v1"
     default_autopilot_chatbot_enabled = false
     task_language                     = "en-US"
-    helpline_language                 = "en"
+    helpline_language                 = "en-US"
     voice_ivr_language                = ""
+    contacts_waiting_channels         = ["web", "whatsapp"]
     enable_post_survey                = false
-    task_language                     = "en-US"
 
 
-    lex_bot_languages = {
-      en : ["pre_survey"]
-    }
 
 
     workflows = {
       master : {
         friendly_name : "Master Workflow"
-        templatefile : "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+        templatefile : "/app/twilio-iac/helplines/uk/templates/workflows/master.tftpl"
       },
       survey : {
         friendly_name : "Survey Workflow"
@@ -34,12 +30,16 @@ locals {
 
     task_queues = {
       master : {
-        "target_workers" = "helpline IN ['Childline', ''] AND routing.skills HAS 'automated-test'",
-        "friendly_name"  = "Childline"
+        "target_workers" = "routing.skills HAS 'RP'",
+        "friendly_name"  = "Revenge Porn"
       },
-      childline_human : {
-        "target_workers" = "1==0",
-        "friendly_name"  = "Childline-Human"
+      rhc : {
+        "target_workers" = "routing.skills HAS 'RHC'",
+        "friendly_name"  = "RHC"
+      },
+      posh : {
+        "target_workers" = "routing.skills HAS 'POSH'",
+        "friendly_name"  = "POSH"
       },
       survey : {
         "target_workers" = "1==0",
@@ -50,7 +50,6 @@ locals {
         "friendly_name"  = "E2E Test Queue"
       }
     }
-    
     task_channels = {
       default : "Default"
       chat : "Programmable Chat"
@@ -62,7 +61,7 @@ locals {
     }
 
 
-    phone_numbers = {}
 
+    phone_numbers = {}
   }
 }

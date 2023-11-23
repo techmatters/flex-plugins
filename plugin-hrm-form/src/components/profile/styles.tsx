@@ -33,7 +33,13 @@ export const DetailsWrapper = styled(FontOpenSans)`
 `;
 DetailsWrapper.displayName = 'DetailsWrapper';
 
-export const ProfileSubtitle = styled(FontOpenSans)`
+export const ProfileSectionWrapper = styled('div')`
+  padding: 5px 0 10px 5px;
+`;
+ProfileSectionWrapper.displayName = 'ProfileSectionWrapper';
+
+// TODO: refactor to HrmStyles
+export const ProfileSectionSubtitle = styled(FontOpenSans)`
   color: ${HrmTheme.colors.categoryTextColor};
   font-size: 10px;
   font-weight: 700;
@@ -42,36 +48,38 @@ export const ProfileSubtitle = styled(FontOpenSans)`
   text-transform: uppercase;
   margin: 15px 0 5px;
 `;
-ProfileSubtitle.displayName = 'ProfileSubtitle';
+ProfileSectionSubtitle.displayName = 'ProfileSectionSubtitle';
 
-type EditButtonProps = {
+type ButtonProps = {
   onClick: () => void;
 };
 
-// eslint-disable-next-line import/no-unused-modules
-export const EditButton = styled(props => <Button roundCorners={false} {...props} />)<EditButtonProps>`
-  color: ${HrmTheme.colors.categoryTextColor};
-  text-align: right;
-  background-color: #ecedf1;
-  height: 28px;
+export const ProfileSectionEditButton = styled(Button)<ButtonProps>`
+  width: 40px;
+  height: 30px;
   border-radius: 4px;
-  letter-spacing: normal;
-  font-size: 13px;
+  color: ${HrmTheme.colors.categoryTextColor};
+  background-color: '#ecedf1';
+  font-size: 14px;
   box-shadow: none;
   border: none;
+  margin-left: auto;
 
-  :focus {
+  :focus,
+  :active {
     outline: auto;
+    box-shadow: none;
+    border: none;
   }
 `;
-EditButton.displayName = 'EditButton';
+ProfileSectionEditButton.displayName = 'ProfileSectionEditButton';
 
 type ColorProps = {
   fillColor?: string;
   blocked?: boolean;
 };
 
-export const StatusLabelPill = styled('div')<ColorProps>`
+export const FlagPill = styled('div')<ColorProps>`
   display: inline-flex;
   align-items: center;
   border-radius: 6px;
@@ -82,9 +90,9 @@ export const StatusLabelPill = styled('div')<ColorProps>`
   border: ${props => (props.blocked ? `2px dashed #D61F1F` : '#F9FAFB')};
   color: ${props => (props.blocked ? `#D61F1F` : 'none')};
 `;
-StatusLabelPill.displayName = 'StatusLabelPill';
+FlagPill.displayName = 'FlagPill';
 
-export const StyledStatusSelect = styled(Select)`
+export const StyledFlagSelect = styled(Select)`
   background-color: #f9fafb;
   border-radius: 5px;
   &:focus-within {
@@ -102,3 +110,53 @@ export const CloseIconButton = withStyles({
     cursor: 'pointer',
   },
 })(CloseIcon);
+
+export const SectionText = styled('p')`
+  font-size: 12px;
+  line-height: 15px;
+  padding: 5px 5px 5px 15px;
+  margin: 5px 0 10px 0;
+  height: 150%;
+  width: 100%;
+  background-color: rgba(246, 246, 246, 0.49);
+  border: none;
+  border-radius: 2px;
+  box-sizing: border-box;
+  overflow: hidden;
+  flex-grow: 1;
+  font-family: 'Open Sans';
+  box-sizing: border-box;
+  opacity: 0.5;
+  :focus {
+    outline: none;
+  }
+`;
+SectionText.displayName = 'SectionText';
+
+type StyledTextProps = {
+  hasContent?: boolean;
+};
+
+export const SectionContentText = styled('div')<StyledTextProps>`
+  font-size: 12px;
+  line-height: 15px;
+  padding: 5px 5px 5px 15px;
+  margin: 20px 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(246, 246, 246, 0.49);
+  border: none;
+  border-radius: 2px;
+  box-sizing: border-box;
+  overflow: hidden;
+  flex-grow: 1;
+  font-family: 'Open Sans';
+  font-weight: 400;
+  box-sizing: border-box;
+  white-space: pre-wrap;
+  opacity: ${props => (props.hasContent ? 1 : 0.5)};
+  :focus {
+    outline: none;
+  }
+`;
+SectionContentText.displayName = 'SectionContentText';

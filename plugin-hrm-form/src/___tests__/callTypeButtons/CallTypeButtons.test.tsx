@@ -34,6 +34,7 @@ import { completeTask } from '../../services/formSubmissionHelpers';
 import CallTypeButtons from '../../components/callTypeButtons';
 import { submitContactFormAsyncAction, updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
+import { VALID_EMPTY_METADATA } from '../testContacts';
 
 jest.mock('../../states/conferencing', () => ({}));
 
@@ -133,6 +134,7 @@ test('<CallTypeButtons> inital render (no dialog)', () => {
               callType: '',
               taskId: task.taskSid,
             },
+            metadata: VALID_EMPTY_METADATA,
           },
         },
       },
@@ -171,6 +173,7 @@ test('<CallTypeButtons> renders dialog with all buttons', () => {
               callType: 'child',
               taskId: task.taskSid,
             },
+            metadata: VALID_EMPTY_METADATA,
           },
         },
       },
@@ -215,6 +218,7 @@ test('<CallTypeButtons> renders dialog with END CHAT button', () => {
               callType: 'child',
               taskId: task.taskSid,
             },
+            metadata: VALID_EMPTY_METADATA,
           },
         },
       },
@@ -253,6 +257,7 @@ test('<CallTypeButtons> renders dialog with HANG UP button', () => {
               callType: 'child',
               taskId: task.taskSid,
             },
+            metadata: VALID_EMPTY_METADATA,
           },
         },
       },
@@ -291,6 +296,7 @@ test('<CallTypeButtons> click on Data (Child) button', async () => {
               callType: 'child',
               taskId: task.taskSid,
             },
+            metadata: VALID_EMPTY_METADATA,
           },
         },
       },
@@ -334,6 +340,7 @@ test('<CallTypeButtons> click on NonData (Joke) button', () => {
               callType: 'child',
               taskId: task.taskSid,
             },
+            metadata: VALID_EMPTY_METADATA,
           },
         },
       },
@@ -373,6 +380,7 @@ test('<CallTypeButtons> click on END CHAT button', async () => {
               callType: 'blank',
               taskId: task.taskSid,
             },
+            metadata: VALID_EMPTY_METADATA,
           },
         },
       },
@@ -415,6 +423,7 @@ test('<CallTypeButtons> click on CANCEL button', async () => {
         existingContacts: {
           contact1: {
             savedContact: { id: 'contact1', callType: '', taskId: task.taskSid },
+            metadata: VALID_EMPTY_METADATA,
           },
         },
       },
