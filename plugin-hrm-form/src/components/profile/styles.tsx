@@ -15,9 +15,10 @@
  */
 
 import React from 'react';
-import { styled, Button } from '@twilio/flex-ui';
-import { withStyles, Select } from '@material-ui/core';
+import { styled, Button, IconButton } from '@twilio/flex-ui';
+import { withStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import BlockOutlinedIcon from '@material-ui/icons/BlockOutlined';
 
 import { FontOpenSans } from '../../styles/HrmStyles';
 import HrmTheme from '../../styles/HrmTheme';
@@ -59,7 +60,7 @@ export const ProfileSectionEditButton = styled(Button)<ButtonProps>`
   height: 30px;
   border-radius: 4px;
   color: ${HrmTheme.colors.categoryTextColor};
-  background-color: '#ecedf1';
+  background-color: ${HrmTheme.colors.secondaryButtonColor};
   font-size: 14px;
   box-shadow: none;
   border: none;
@@ -76,7 +77,7 @@ ProfileSectionEditButton.displayName = 'ProfileSectionEditButton';
 
 type ColorProps = {
   fillColor?: string;
-  blocked?: boolean;
+  isBlocked?: boolean;
 };
 
 export const FlagPill = styled('div')<ColorProps>`
@@ -84,30 +85,51 @@ export const FlagPill = styled('div')<ColorProps>`
   align-items: center;
   border-radius: 6px;
   white-space: nowrap;
-  margin: 5px 6px 5px 1px;
-  padding: 5px 20px;
-  background-color: ${props => (props.fillColor ? `${props.fillColor}` : '#F9FAFB')};
-  border: ${props => (props.blocked ? `2px dashed #D61F1F` : '#F9FAFB')};
-  color: ${props => (props.blocked ? `#D61F1F` : 'none')};
+  margin: 5px 4px 5px 1px;
+  padding: 4px 12px;
+  background-color: ${props => (props.isBlocked ? `#FCF4F4` : '#F5EEF4')};
+  border: ${props => (props.isBlocked ? `2px dashed #D61F1F` : '2px solid #F5EEF4')};
+  border-color: ${props => (props.isBlocked ? `#D61F1F` : 'none')};
+  color: ${props => (props.isBlocked ? `#D61F1F` : '#192B33')};
+  text-transform: capitalize;
 `;
 FlagPill.displayName = 'FlagPill';
 
-export const StyledFlagSelect = styled(Select)`
+export const StyledBlockOutlinedIcon = withStyles({
+  root: { width: '1rem', height: '1rem', fontSize: 'smaller', marginRight: '7px' },
+})(BlockOutlinedIcon);
+
+export const StyledFlagEditList = styled('div')`
   background-color: #f9fafb;
   border-radius: 5px;
+  align-items: center;
   &:focus-within {
     outline: 3px solid rgb(0, 95, 204);
-    border-radius: 5px;
   }
 `;
+StyledFlagEditList.displayName = 'StyledFlagEditList';
+
+export const DisassociateButton = styled(IconButton)`
+  height: 1rem;
+  width: 1rem;
+  padding: 4px;
+  margin-left: 12px;
+  background-color: #d61f1f;
+  :hover {
+    background-color: #4a0b0b;
+  }
+`;
+DisassociateButton.displayName = 'DisassociateButton';
 
 export const CloseIconButton = withStyles({
   root: {
-    width: '23px',
-    height: '16px',
-    margin: '1px',
-    padding: '0 1px',
+    width: '1rem',
+    height: '1rem',
     cursor: 'pointer',
+    color: '#fff',
+    '&:hover': {
+      color: '#fff',
+    },
   },
 })(CloseIcon);
 
@@ -160,3 +182,20 @@ export const SectionContentText = styled('div')<StyledTextProps>`
   }
 `;
 SectionContentText.displayName = 'SectionContentText';
+
+export const ProfileFlagsView = styled('button')`
+  background-color: ${HrmTheme.colors.inputBackgroundColor};
+  display: flex;
+  border: none;
+  border-radius: 5px;
+  align-items: center;
+  align-self: center;
+  align-content: center;
+  width: -webkit-fill-available;
+  :focus {
+    background-color: ${HrmTheme.colors.inputBackgroundColor};
+    box-shadow: none;
+    border: 1px solid rgba(0, 59, 129, 0.37);
+  }
+`;
+ProfileFlagsView.displayName = 'ProfileFlagsView';

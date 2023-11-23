@@ -16,7 +16,7 @@
 
 /* eslint-disable no-nested-ternary */
 import React from 'react';
-import { ButtonBase, Input, MenuItem, Select, Tab, TabProps, Tabs, withStyles } from '@material-ui/core';
+import { ButtonBase, Input, MenuItem, MenuList, Select, Tab, TabProps, Tabs, withStyles } from '@material-ui/core';
 import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
 import AssignmentInd from '@material-ui/icons/AssignmentIndOutlined';
 import { Button, Icon, styled } from '@twilio/flex-ui';
@@ -255,6 +255,13 @@ export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSe
 `;
 StyledSelect.displayName = 'StyledSelect';
 
+export const StyledMenuList = styled(MenuList)`
+  border-radius: 5px;
+  min-width: 250px;
+  width: 100%;
+`;
+StyledMenuList.displayName = 'StyledMenuList';
+
 export const StyledMenuItem = styled(MenuItem)`
   box-sizing: border-box;
   height: 32px;
@@ -262,6 +269,7 @@ export const StyledMenuItem = styled(MenuItem)`
   margin: 0;
   padding: 0 12px;
   min-width: 0;
+  text-transform: capitalize;
 `;
 StyledMenuItem.displayName = 'StyledMenuItem';
 
