@@ -14,9 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { omit } from 'lodash';
-
-import { CaseActionType, CaseState, SET_CONNECTED_CASE } from './types';
+import { CaseActionType, CaseState, CaseStateEntry, SET_CONNECTED_CASE } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import {
   CaseWorkingCopyActionType,
@@ -35,9 +33,9 @@ import {
   updateCaseSectionWorkingCopyReducer,
   updateCaseSummaryWorkingCopyReducer,
 } from './caseWorkingCopy';
-import { RootState } from '..';
+import { HrmState, RootState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
-import { SaveCaseReducerState, saveCaseReducer } from './saveCase';
+import { saveCaseReducer } from './saveCase';
 import { CaseListContentStateAction } from '../caseList/listContent';
 import { configurationBase, namespace } from '../storeNamespaces';
 import {
@@ -48,14 +46,10 @@ import {
 
 const initialState: CaseState = {
   tasks: {},
+  cases: {},
 };
 
-export const saveCaseState: SaveCaseReducerState = {
-  state: initialState,
-  rootState: {} as RootState['plugin-hrm-form'],
-};
-
-const boundSaveCaseReducer = saveCaseReducer(saveCaseState);
+const boundSaveCaseReducer = saveCaseReducer({} as RootState['plugin-hrm-form']);
 
 const contactUpdatingReducer = (
   state: CaseState,
@@ -69,16 +63,19 @@ const contactUpdatingReducer = (
     const { contact, contactCase } = action.payload;
     if (contactCase) {
       const caseDefinitionVersion = configuration.definitionVersions[contactCase.info.definitionVersion];
+      const references = state.cases[contactCase.id]?.references ?? new Set<string>();
+      references.add(`contact-${contact.id}`);
       return {
         ...state,
-        tasks: {
-          ...state.tasks,
-          [contact.taskId]: {
+        cases: {
+          ...state.cases,
+          [contactCase.id]: {
             connectedCase: contactCase,
             caseWorkingCopy: { sections: {} },
             availableStatusTransitions: caseDefinitionVersion
               ? getAvailableCaseStatusTransitions(contactCase, caseDefinitionVersion)
               : [],
+            references,
           },
         },
       };
@@ -89,7 +86,7 @@ const contactUpdatingReducer = (
 
 // eslint-disable-next-line import/no-unused-modules
 export function reduce(
-  rootState: RootState['plugin-hrm-form'],
+  inputRootState: HrmState,
   inputState = initialState,
   action:
     | CaseActionType
@@ -98,8 +95,8 @@ export function reduce(
     | CaseListContentStateAction
     | ContactUpdatingAction,
 ): CaseState {
-  const { state } = boundSaveCaseReducer({ state: inputState, rootState }, action as any);
-
+  const rootState = boundSaveCaseReducer(inputRootState, action as any);
+  const state = rootState.connectedCase;
   switch (action.type) {
     case CREATE_CONTACT_ACTION_FULFILLED:
     case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED:
@@ -120,11 +117,22 @@ export function reduce(
           },
         },
       };
-    case REMOVE_CONTACT_STATE:
+    case REMOVE_CONTACT_STATE: {
+      const dereferencedCaseEntries = Object.entries(state.cases).map(([caseId, caseEntry]): [
+        string,
+        CaseStateEntry,
+      ] => {
+        const references = new Set(caseEntry.references);
+        references.delete(`contact-${action.contactId}`);
+        return [caseId, { ...caseEntry, references }];
+      });
       return {
         ...state,
-        tasks: omit(state.tasks, action.taskId),
+        cases: Object.fromEntries(
+          dereferencedCaseEntries.filter(([, dereferencedCaseEntries]) => dereferencedCaseEntries.references.size),
+        ),
       };
+    }
     case UPDATE_CASE_SECTION_WORKING_COPY:
       return updateCaseSectionWorkingCopyReducer(state, rootState.configuration, action);
     case INIT_EXISTING_CASE_SECTION_WORKING_COPY:

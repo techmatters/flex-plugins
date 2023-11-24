@@ -91,6 +91,7 @@ type CaseListRoute = RouteWithModalSupport & {
 
 type CaseCoreRoute = {
   route: 'case';
+  caseId: string;
   autoFocus?: boolean;
   isCreating?: boolean;
 };
@@ -175,15 +176,6 @@ export function isRouteModal(route: AppRoutes): boolean {
   return isRouteWithModalSupport(route) && route.activeModal?.length > 0;
 }
 
-// Routes that may lead to Case screen (maybe we need an improvement here)
-export type AppRoutesWithCase =
-  // TODO: enum the possible subroutes on each route
-  CaseRoute;
-
-export function isCaseRoute(appRoute: AppRoutes): appRoute is AppRoutesWithCase {
-  return appRoute?.route === 'case';
-}
-
 export type CSAMReportRoute = {
   route: 'csam-report';
   subroute: 'form' | 'loading' | 'status' | 'report-type-picker';
@@ -218,13 +210,15 @@ type OtherRoutes =
   | ProfileSectionEditRoute;
 
 // The different routes we have in our app
-export type AppRoutes = AppRoutesWithCase | OtherRoutes;
+export type AppRoutes = CaseRoute | OtherRoutes;
 
 export function isRouteWithModalSupport(appRoute: any): appRoute is RouteWithModalSupport {
   return ['tabbed-forms', 'case', 'case-list', 'contact', 'profile', 'search', 'select-call-type'].includes(
     appRoute.route,
   );
 }
+
+export const isCaseRoute = (route: AppRoutes): route is CaseRoute => route?.route === 'case';
 
 export enum ChangeRouteMode {
   Push = 'push',

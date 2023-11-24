@@ -24,12 +24,13 @@ import ContactDetails from '../contact/ContactDetails';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { namespace } from '../../states/storeNamespaces';
+import selectCurrentRouteCase from '../../states/case/selectCurrentRouteCase';
 
-const mapStateToProps = (
-  { [namespace]: { activeContacts, configuration, connectedCase: connectedCaseState } }: RootState,
-  { task, contactId }: OwnProps,
-) => {
-  const connectedCase = connectedCaseState.tasks[task.taskSid]?.connectedCase;
+const mapStateToProps = (state: RootState, { task, contactId }: OwnProps) => {
+  const {
+    [namespace]: { activeContacts },
+  } = state;
+  const { connectedCase } = selectCurrentRouteCase(state, task.taskSid) ?? {};
   if (connectedCase) {
     const contact = activeContacts.existingContacts[contactId]?.savedContact;
     const enableEditing = Boolean(connectedCase.connectedContacts?.find(cc => cc.id?.toString() === contactId));

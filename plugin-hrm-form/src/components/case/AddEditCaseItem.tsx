@@ -41,7 +41,7 @@ import { RootState } from '../../states';
 import { createStateItem, CustomHandlers, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import type { Case, CaseInfo, CaseItemEntry, CustomITask, StandaloneITask } from '../../types/types';
-import { CaseItemAction, isAddCaseSectionRoute, isEditCaseSectionRoute } from '../../states/routing/types';
+import { CaseItemAction, isAddCaseSectionRoute, isCaseRoute, isEditCaseSectionRoute } from '../../states/routing/types';
 import { recordingErrorHandler } from '../../fullStory';
 import { caseItemHistory } from '../../states/case/types';
 import CloseCaseDialog from './CloseCaseDialog';
@@ -60,7 +60,8 @@ import asyncDispatch from '../../states/asyncDispatch';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import { namespace } from '../../states/storeNamespaces';
 import NavigableContainer from '../NavigableContainer';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import selectCaseByCaseId from '../../states/case/selectCaseStateByCaseId';
 
 export type AddEditCaseItemProps = {
   task: CustomITask | StandaloneITask;
@@ -89,23 +90,22 @@ const AddEditCaseItem: React.FC<Props> = ({
   workingCopy,
   updateCaseAsyncAction,
   currentRoute,
+  sectionId,
 }) => {
-  const { id } = isEditCaseSectionRoute(currentRoute) ? currentRoute : { id: undefined };
-
   const formDefinition = React.useMemo(
     () =>
       sectionApi
         .getSectionFormDefinition(definitionVersion)
         // If more 'when adding only' form item types are implemented, we should create a specific property, but there is only one so just check the type for now
-        .filter(fd => !id || fd.type !== 'copy-to'),
-    [definitionVersion, id, sectionApi],
+        .filter(fd => !sectionId || fd.type !== 'copy-to'),
+    [definitionVersion, sectionId, sectionApi],
   );
   const layout = sectionApi.getSectionLayoutDefinition(definitionVersion);
 
   // Grab initial values in first render only. If getTemporaryFormContent(temporaryCaseInfo), cherrypick the values using formDefinition, if not build the object with getInitialValue
   const savedForm = React.useMemo(() => {
-    if (id && connectedCase) {
-      const { form } = sectionApi.toForm(sectionApi.getSectionItemById(connectedCase.info, id));
+    if (sectionId && connectedCase) {
+      const { form } = sectionApi.toForm(sectionApi.getSectionItemById(connectedCase.info, sectionId));
       return formDefinition.reduce(
         (accum, curr) => ({
           ...accum,
@@ -115,18 +115,18 @@ const AddEditCaseItem: React.FC<Props> = ({
       );
     }
     return formDefinition.reduce(createStateItem, {});
-  }, [connectedCase, formDefinition, id, sectionApi]);
+  }, [connectedCase, formDefinition, sectionId, sectionApi]);
 
   useEffect(() => {
     if (!workingCopy) {
-      if (id) {
-        initialiseCaseSectionWorkingCopy(task.taskSid, sectionApi, id);
+      if (sectionId) {
+        initialiseCaseSectionWorkingCopy(task.taskSid, sectionApi, sectionId);
       } else {
         initialiseNewCaseSectionWorkingCopy(task.taskSid, sectionApi, savedForm);
       }
     }
   }, [
-    id,
+    sectionId,
     initialiseCaseSectionWorkingCopy,
     initialiseNewCaseSectionWorkingCopy,
     sectionApi,
@@ -147,7 +147,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     updateCallback: () => {
       const form = getValues();
       console.log('Updated case form', form);
-      updateCaseSectionWorkingCopy(task.taskSid, sectionApi, { ...workingCopy, form }, id);
+      updateCaseSectionWorkingCopy(connectedCase?.id.toString(), sectionApi, { ...workingCopy, form }, sectionId);
     },
     customHandlers: customFormHandlers,
     shouldFocusFirstElement: false,
@@ -157,13 +157,17 @@ const AddEditCaseItem: React.FC<Props> = ({
     return null;
   }
 
-  const [l, r] = layout.splitFormAt
-    ? splitAt(layout.splitFormAt)(disperseInputs(7)(form))
-    : splitInHalf(disperseInputs(7)(form));
+  if (!connectedCase) {
+    return null;
+  }
 
   if (!workingCopy) {
     return null;
   }
+
+  const [l, r] = layout.splitFormAt
+    ? splitAt(layout.splitFormAt)(disperseInputs(7)(form))
+    : splitInHalf(disperseInputs(7)(form));
 
   const save = async () => {
     const { info, id: caseId } = connectedCase;
@@ -171,7 +175,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     const now = new Date().toISOString();
     const { workerSid } = getHrmConfig();
     let newInfo: CaseInfo;
-    if (id) {
+    if (sectionId) {
       newInfo = sectionApi.upsertCaseSectionItemFromForm(info, {
         ...workingCopy,
         form,
@@ -203,12 +207,12 @@ const AddEditCaseItem: React.FC<Props> = ({
   };
 
   function close() {
-    closeActions(id);
+    closeActions(sectionId);
   }
 
   async function saveAndStay() {
     await save();
-    closeActions(id, false);
+    closeActions(sectionId, false);
 
     // Reset the entire form state, fields reference, and subscriptions.
     methods.reset();
@@ -216,7 +220,7 @@ const AddEditCaseItem: React.FC<Props> = ({
 
   async function saveAndLeave() {
     await save();
-    closeActions(id);
+    closeActions(sectionId);
   }
 
   const strings = getTemplateStrings();
@@ -228,7 +232,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     },
   );
 
-  const { added, addingCounsellorName, updated, updatingCounsellorName } = id
+  const { added, addingCounsellorName, updated, updatingCounsellorName } = sectionId
     ? caseItemHistory(workingCopy, counselorsHash)
     : { added: new Date(), addingCounsellorName: counselor, updated: undefined, updatingCounsellorName: undefined };
 
@@ -302,17 +306,26 @@ const AddEditCaseItem: React.FC<Props> = ({
 
 AddEditCaseItem.displayName = 'AddEditCaseItem';
 
-const mapStateToProps = (
-  { [namespace]: { routing, configuration, connectedCase: caseState } }: RootState,
-  { task, sectionApi }: AddEditCaseItemProps,
-) => {
-  const currentRoute = getCurrentTopmostRouteForTask(routing, task.taskSid);
-  const id = isEditCaseSectionRoute(currentRoute) ? currentRoute.id : undefined;
+const mapStateToProps = (state: RootState, { task, sectionApi }: AddEditCaseItemProps) => {
+  const {
+    [namespace]: { configuration },
+  } = state;
+  const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
   const counselorsHash = configuration.counselors.hash;
-  const { connectedCase, caseWorkingCopy } = caseState.tasks[task.taskSid];
-  const workingCopy = sectionApi.getWorkingCopy(caseWorkingCopy, id);
+  if (isCaseRoute(currentRoute)) {
+    const sectionId = isEditCaseSectionRoute(currentRoute) ? currentRoute.id : undefined;
+    const { connectedCase, caseWorkingCopy } = selectCaseByCaseId(state, currentRoute.caseId);
+    const workingCopy = sectionApi.getWorkingCopy(caseWorkingCopy, sectionId);
 
-  return { connectedCase, counselorsHash, workingCopy, currentRoute };
+    return { connectedCase, counselorsHash, workingCopy, currentRoute, sectionId };
+  }
+  return {
+    connectedCase: undefined,
+    counselorsHash,
+    workingCopy: undefined,
+    currentRoute: undefined,
+    sectionId: undefined,
+  };
 };
 
 const mapDispatchToProps = (dispatch, props: AddEditCaseItemProps) => {

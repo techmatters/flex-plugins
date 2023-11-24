@@ -59,10 +59,13 @@ import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import { removeFromCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
-import { configurationBase, connectedCaseBase, namespace } from '../../states/storeNamespaces';
+import { namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { selectSavedContacts } from '../../states/case/connectedContacts';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
+import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
+import selectCounselorsHash from '../../states/configuration/selectCounselorsHash';
+import { selectCurrentDefinitionVersion, selectDefinitionVersions } from '../../states/configuration/selectDefinitions';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -328,17 +331,16 @@ const Case: React.FC<Props> = ({
 Case.displayName = 'Case';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const caseState = state[namespace][connectedCaseBase].tasks[task.taskSid];
+  const caseState = selectCurrentRouteCaseState(state, task.taskSid);
   const { connectedCase } = caseState ?? {};
-  const { definitionVersions, currentDefinitionVersion } = state[namespace][configurationBase];
 
   return {
     connectedCaseState: caseState,
     connectedCaseId: connectedCase?.id,
-    counselorsHash: state[namespace][configurationBase].counselors.hash,
+    counselorsHash: selectCounselorsHash(state),
     routing: getCurrentTopmostRouteForTask(state[namespace].routing, task.taskSid) as CaseRoute,
-    definitionVersions,
-    currentDefinitionVersion,
+    definitionVersions: selectDefinitionVersions(state),
+    currentDefinitionVersion: selectCurrentDefinitionVersion(state),
     savedContacts: selectSavedContacts(state, connectedCase),
     taskContact: selectContactByTaskSid(state, task.taskSid)?.savedContact,
   };

@@ -70,7 +70,8 @@ const reducers = {
    * [connectedCaseBase] - this is going to be combined manually, rather than using 'combineReducers', so isn't in this map
    */
 };
-type HrmState = {
+
+export type HrmState = {
   [P in keyof typeof reducers]: ReturnType<typeof reducers[P]>;
 } & { [connectedCaseBase]: CaseState; [contactFormsBase]: ContactsState };
 

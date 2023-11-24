@@ -16,14 +16,16 @@
 
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 import { DefinitionVersionId } from 'hrm-form-definitions';
+import { CreateHandlerMap } from 'redux-promise-middleware-actions/lib/reducers';
 
 import { createCase, updateCase } from '../../services/CaseService';
 import { Case } from '../../types/types';
-import { UPDATE_CASE_ACTION, CREATE_CASE_ACTION, SavedCaseStatus, CaseState } from './types';
-import type { RootState } from '..';
+import { UPDATE_CASE_ACTION, CREATE_CASE_ACTION } from './types';
+import type { HrmState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { connectToCase } from '../../services/ContactService';
 import { connectToCaseAsyncAction } from '../contacts/saveContact';
+import { namespace } from '../storeNamespaces';
 
 export const createCaseAsyncAction = createAsyncAction(
   CREATE_CASE_ACTION,
@@ -47,36 +49,23 @@ export const updateCaseAsyncAction = createAsyncAction(
   },
 );
 
-// In order to use the createReducer helper, we need to combine the case state and the root state into a single object
-// Perhaps we should just pass the root state to simplify things?
-export type SaveCaseReducerState = {
-  state: CaseState;
-  rootState: RootState['plugin-hrm-form'];
-};
-
 // We need to return a state object of the same type as we are passed, so we need to return the rootState even though we don't change it.
 const handlePendingAction = (handleAction, asyncAction) =>
-  handleAction(asyncAction as typeof asyncAction, ({ state, rootState }) => {
-    return {
-      state: {
-        ...state,
-      },
-      rootState,
-      status: SavedCaseStatus.ResultReceived,
-    };
+  handleAction(asyncAction as typeof asyncAction, rootState => {
+    return rootState;
   });
 
-const updateConnectedCase = (state, rootState, connectedCase, taskSid) => {
-  const caseDefinitionVersion = (rootState as RootState['plugin-hrm-form']).configuration.definitionVersions[
-    connectedCase?.info?.definitionVersion
-  ];
+const updateConnectedCase = (state: HrmState, connectedCase: Case) => {
+  const caseDefinitionVersion =
+    state[namespace].configuration.definitionVersions[connectedCase?.info?.definitionVersion];
 
   return {
-    state: {
-      ...state,
-      tasks: {
-        ...state.tasks,
-        [taskSid]: {
+    ...state,
+    connectedCase: {
+      ...state[namespace].connectedCase,
+      cases: {
+        ...state[namespace].connectedCase.cases,
+        [connectedCase.id.toString()]: {
           connectedCase,
           caseWorkingCopy: { sections: {} },
           availableStatusTransitions: caseDefinitionVersion
@@ -85,35 +74,33 @@ const updateConnectedCase = (state, rootState, connectedCase, taskSid) => {
         },
       },
     },
-    rootState,
   };
 };
 
-const handleFulfilledAction = (handleAction, asyncAction) =>
+const handleFulfilledAction = (
+  handleAction: CreateHandlerMap<HrmState>,
+  asyncAction: typeof updateCaseAsyncAction.fulfilled | typeof createCaseAsyncAction.fulfilled,
+) =>
   handleAction(
     asyncAction,
-    ({ state, rootState }, { payload: { case: connectedCase, taskSid } }): SaveCaseReducerState =>
-      updateConnectedCase(state, rootState, connectedCase, taskSid),
+    (state, { payload: { case: connectedCase, taskSid } }): HrmState => updateConnectedCase(state, connectedCase),
   );
 
-const handleConnectToCaseFulfilledAction = (handleAction, asyncAction: typeof connectToCaseAsyncAction.fulfilled) =>
-  handleAction(asyncAction, ({ state, rootState }, { payload: { contact, contactCase } }) =>
-    updateConnectedCase(state, rootState, contactCase, contact.taskId),
-  );
+const handleConnectToCaseFulfilledAction = (
+  handleAction: CreateHandlerMap<HrmState>,
+  asyncAction: typeof connectToCaseAsyncAction.fulfilled,
+) =>
+  handleAction(asyncAction, (state, { payload: { contact, contactCase } }) => updateConnectedCase(state, contactCase));
 
-const handleRejectedAction = (handleAction, asyncAction) =>
-  handleAction(asyncAction, ({ state, rootState }, { payload }) => {
-    return {
-      state: {
-        ...state,
-      },
-      rootState,
-      error: payload,
-      status: SavedCaseStatus.ResultReceived,
-    };
+const handleRejectedAction = (
+  handleAction: CreateHandlerMap<HrmState>,
+  asyncAction: typeof updateCaseAsyncAction.rejected | typeof createCaseAsyncAction.rejected,
+) =>
+  handleAction(asyncAction, (state, { payload }) => {
+    return state;
   });
 
-export const saveCaseReducer = (initialState: SaveCaseReducerState) =>
+export const saveCaseReducer = (initialState: HrmState): ((state: HrmState, action) => HrmState) =>
   createReducer(initialState, handleAction => [
     handlePendingAction(handleAction, updateCaseAsyncAction.pending),
     handleFulfilledAction(handleAction, updateCaseAsyncAction.fulfilled),

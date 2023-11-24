@@ -27,20 +27,20 @@ export const UPDATE_CASE_SECTION_WORKING_COPY = 'UPDATE_CASE_SECTION_WORKING_COP
 
 type UpdateCaseSectionWorkingCopyAction = {
   type: typeof UPDATE_CASE_SECTION_WORKING_COPY;
-  taskId: string;
+  caseId: string;
   api: CaseSectionApi<unknown>;
   id?: string;
   sectionItem: CaseItemEntry;
 };
 
 export const updateCaseSectionWorkingCopy = (
-  taskId: string,
+  caseId: string,
   api: CaseSectionApi<unknown>,
   sectionItem: CaseItemEntry,
   id?: string,
 ): UpdateCaseSectionWorkingCopyAction => ({
   type: UPDATE_CASE_SECTION_WORKING_COPY,
-  taskId,
+  caseId,
   api,
   sectionItem,
   id,
@@ -49,10 +49,10 @@ export const updateCaseSectionWorkingCopy = (
 export const updateCaseSectionWorkingCopyReducer = (
   state: CaseState,
   configState: ConfigurationState,
-  { sectionItem, taskId, id, api }: UpdateCaseSectionWorkingCopyAction,
+  { sectionItem, caseId, id, api }: UpdateCaseSectionWorkingCopyAction,
 ): CaseState => {
   const definition =
-    configState.definitionVersions[state.tasks[taskId].connectedCase.info.definitionVersion] ??
+    configState.definitionVersions[state.cases[caseId].connectedCase.info.definitionVersion] ??
     configState.currentDefinitionVersion;
   const transformedSectionItem = {
     ...sectionItem,
@@ -60,11 +60,11 @@ export const updateCaseSectionWorkingCopyReducer = (
   };
   return {
     ...state,
-    tasks: {
-      ...state.tasks,
-      [taskId]: {
-        ...state.tasks[taskId],
-        caseWorkingCopy: api.updateWorkingCopy(state.tasks[taskId]?.caseWorkingCopy, transformedSectionItem, id),
+    cases: {
+      ...state.cases,
+      [caseId]: {
+        ...state.cases[caseId],
+        caseWorkingCopy: api.updateWorkingCopy(state.cases[caseId]?.caseWorkingCopy, transformedSectionItem, id),
       },
     },
   };

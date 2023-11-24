@@ -53,15 +53,40 @@ import { useCreateFormFromDefinition } from '../forms';
 import { getTemplateStrings } from '../../hrmConfig';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
-import { configurationBase, connectedCaseBase, namespace } from '../../states/storeNamespaces';
 import NavigableContainer from '../NavigableContainer';
+import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
+import selectCounselorsHash from '../../states/configuration/selectCounselorsHash';
 
 export type EditCaseSummaryProps = {
   task: CustomITask | StandaloneITask;
   definitionVersion: DefinitionVersion;
   can: (action: PermissionActionType) => boolean;
 };
-// eslint-disable-next-line no-use-before-define
+
+const mapStateToProps = (state: RootState, { task }: EditCaseSummaryProps) => {
+  const counselorsHash = selectCounselorsHash(state);
+  const connectedCaseState = selectCurrentRouteCaseState(state, task.taskSid);
+  const workingCopy = connectedCaseState?.caseWorkingCopy.caseSummary;
+
+  return { connectedCaseState, counselorsHash, workingCopy };
+};
+
+const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
+  const updateCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
+  return {
+    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
+    changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
+    initialiseWorkingCopy: bindActionCreators(initialiseCaseSummaryWorkingCopy, dispatch),
+    updateWorkingCopy: bindActionCreators(updateCaseSummaryWorkingCopy, dispatch),
+    closeActions: (closeModal: boolean) => {
+      dispatch(removeCaseSummaryWorkingCopy(task.taskSid));
+      dispatch(closeModal ? newCloseModalAction(task.taskSid) : newGoBackAction(task.taskSid));
+    },
+    updateCaseAsyncAction: (caseId: Case['id'], body: Partial<Case>) =>
+      updateCaseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
+  };
+};
+
 type Props = EditCaseSummaryProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const enum DialogState {
@@ -238,29 +263,5 @@ const EditCaseSummary: React.FC<Props> = ({
 };
 
 EditCaseSummary.displayName = 'EditCaseSummary';
-
-const mapStateToProps = (state: RootState, ownProps: EditCaseSummaryProps) => {
-  const counselorsHash = state[namespace][configurationBase].counselors.hash;
-  const connectedCaseState = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid];
-  const workingCopy = connectedCaseState?.caseWorkingCopy.caseSummary;
-
-  return { connectedCaseState, counselorsHash, workingCopy };
-};
-
-const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
-  const updateCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
-  return {
-    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
-    changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
-    initialiseWorkingCopy: bindActionCreators(initialiseCaseSummaryWorkingCopy, dispatch),
-    updateWorkingCopy: bindActionCreators(updateCaseSummaryWorkingCopy, dispatch),
-    closeActions: (closeModal: boolean) => {
-      dispatch(removeCaseSummaryWorkingCopy(task.taskSid));
-      dispatch(closeModal ? newCloseModalAction(task.taskSid) : newGoBackAction(task.taskSid));
-    },
-    updateCaseAsyncAction: (caseId: Case['id'], body: Partial<Case>) =>
-      updateCaseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
-  };
-};
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditCaseSummary);

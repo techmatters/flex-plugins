@@ -43,6 +43,7 @@ import { NewCaseSubroutes, CaseItemAction, CaseSectionSubroute } from '../../sta
 import { newOpenModalAction } from '../../states/routing/actions';
 import { RootState } from '../../states';
 import { selectCaseActivities } from '../../states/case/timeline';
+import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 
 type OwnProps = {
   can: (action: PermissionActionType) => boolean;
@@ -51,15 +52,16 @@ type OwnProps = {
 
 const mapStateToProps = (state: RootState, { taskSid }: OwnProps) => ({
   timelineActivities: selectCaseActivities(state, taskSid),
+  connectedCase: selectCurrentRouteCaseState(state, taskSid)?.connectedCase,
 });
 
 const mapDispatchToProps = (dispatch, { taskSid }: OwnProps) => ({
   openContactModal: (contactId: string) =>
     dispatch(newOpenModalAction({ route: 'contact', subroute: 'view', id: contactId }, taskSid)),
-  openAddCaseSectionModal: (subroute: CaseSectionSubroute) =>
-    dispatch(newOpenModalAction({ route: 'case', subroute, action: CaseItemAction.Add }, taskSid)),
-  openViewCaseSectionModal: (subroute: CaseSectionSubroute, id: string) =>
-    dispatch(newOpenModalAction({ route: 'case', subroute, id, action: CaseItemAction.View }, taskSid)),
+  openAddCaseSectionModal: (caseId: string, subroute: CaseSectionSubroute) =>
+    dispatch(newOpenModalAction({ route: 'case', subroute, action: CaseItemAction.Add, caseId }, taskSid)),
+  openViewCaseSectionModal: (caseId: string, subroute: CaseSectionSubroute, id: string) =>
+    dispatch(newOpenModalAction({ route: 'case', subroute, id, action: CaseItemAction.View, caseId }, taskSid)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -72,15 +74,20 @@ const Timeline: React.FC<Props> = ({
   openContactModal,
   openViewCaseSectionModal,
   openAddCaseSectionModal,
+  connectedCase,
 }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
 
+  if (!connectedCase || !timelineActivities) {
+    return null;
+  }
+  const caseId = connectedCase.id.toString();
   const handleViewNoteClick = ({ id }: NoteActivity) => {
-    openViewCaseSectionModal(NewCaseSubroutes.Note, id);
+    openViewCaseSectionModal(caseId, NewCaseSubroutes.Note, id);
   };
 
   const handleViewReferralClick = ({ id }: ReferralActivity) => {
-    openViewCaseSectionModal(NewCaseSubroutes.Referral, id);
+    openViewCaseSectionModal(caseId, NewCaseSubroutes.Referral, id);
   };
 
   const handleViewConnectedCaseActivityClick = ({ contactId }: ConnectedCaseActivity) => {
@@ -88,11 +95,11 @@ const Timeline: React.FC<Props> = ({
   };
 
   const handleAddNoteClick = () => {
-    openAddCaseSectionModal(NewCaseSubroutes.Note);
+    openAddCaseSectionModal(caseId, NewCaseSubroutes.Note);
   };
 
   const handleAddReferralClick = () => {
-    openAddCaseSectionModal(NewCaseSubroutes.Referral);
+    openAddCaseSectionModal(caseId, NewCaseSubroutes.Referral);
   };
 
   const handleViewClick = activity => {

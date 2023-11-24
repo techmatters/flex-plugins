@@ -27,6 +27,7 @@ export const UPDATE_CASE_ACTION_FULFILLED = `${UPDATE_CASE_ACTION}_FULFILLED` as
 export const CREATE_CASE_ACTION = 'case-action/create-case';
 export const CREATE_CASE_ACTION_FULFILLED = `${CREATE_CASE_ACTION}_FULFILLED` as const;
 
+// eslint-disable-next-line prettier/prettier,import/no-unused-modules
 export enum SavedCaseStatus {
   NotSaved,
   ResultPending,
@@ -56,42 +57,42 @@ type CreateCaseAction = {
 
 export type CaseActionType = SetConnectedCaseAction | UpdatedCaseAction | CreateCaseAction;
 
-export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
+type CoreActivity = {
+  text: string;
+  type: string;
+  twilioWorkerId: string;
+};
 
-export type NoteActivity = {
+export type NoteActivity = CoreActivity & {
   id: string;
   date: string;
   type: 'note';
-  text: string;
   note: t.Note;
-  twilioWorkerId: string;
   updatedAt?: string;
   updatedBy?: string;
 };
 
-export type ReferralActivity = {
+export type ReferralActivity = CoreActivity & {
   id: string;
   date: string;
   createdAt: string;
   type: 'referral';
-  text: string;
   referral: t.Referral;
-  twilioWorkerId: string;
   updatedAt?: string;
   updatedBy?: string;
 };
 
-export type ConnectedCaseActivity = {
+export type ConnectedCaseActivity = CoreActivity & {
   callType: string;
   contactId?: string;
   date: string;
   createdAt: string;
   type: string;
-  text: string;
-  twilioWorkerId: string;
   channel: ChannelTypes;
   showViewButton: boolean;
 };
+
+export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
 
 export type CaseDetails = {
   id: number;
@@ -151,13 +152,20 @@ export type CaseWorkingCopy = {
   };
   caseSummary?: CaseSummaryWorkingCopy;
 };
+
+export type CaseStateEntry = {
+  connectedCase: t.Case;
+  caseWorkingCopy: CaseWorkingCopy;
+  availableStatusTransitions: StatusInfo[];
+  references: Set<string>;
+};
+
 export type CaseState = {
   tasks: {
-    [taskId: string]: {
-      connectedCase: t.Case;
-      caseWorkingCopy: CaseWorkingCopy;
-      availableStatusTransitions: StatusInfo[];
-    };
+    [taskId: string]: Omit<CaseStateEntry, 'references'>;
+  };
+  cases: {
+    [caseId: number]: CaseStateEntry;
   };
 };
 
