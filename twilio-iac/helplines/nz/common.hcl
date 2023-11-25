@@ -21,6 +21,10 @@ locals {
         friendly_name            = "Master Workflow - Calls"
         templatefile             = "/app/twilio-iac/helplines/nz/templates/workflows/master_calls.tftpl",
         task_reservation_timeout = 30
+      },
+      survey : {
+        friendly_name : "Survey Workflow"
+        templatefile : "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
 
@@ -39,7 +43,7 @@ locals {
       }
     }
 
-     lex_bot_languages = {
+    lex_bot_languages = {
       en_NZ : ["pre_survey"]
     }
 
