@@ -40,6 +40,14 @@ locals {
       clinical : {
         "target_workers" = "routing.skills HAS 'Clinical'",
         "friendly_name"  = "Clinical"
+      },
+      survey : {
+        "target_workers" = "1==0",
+        "friendly_name"  = "Survey"
+      },
+      e2e_test : {
+        "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
+        "friendly_name"  = "E2E Test Queue"
       }
     }
 
