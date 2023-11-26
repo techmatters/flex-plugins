@@ -39,6 +39,18 @@ export const ProfileSectionWrapper = styled('div')`
 `;
 ProfileSectionWrapper.displayName = 'ProfileSectionWrapper';
 
+// TODO: refactor to HrmStyles- used from ResourcesSearchFormSectionHeader
+export const SectionHeader = styled(FontOpenSans)`
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 700;
+  display: inline-block;
+  color: #192b33;
+  margin-bottom: 10px;
+  margin-top: 10px;
+`;
+SectionHeader.displayName = 'SectionHeader';
+
 // TODO: refactor to HrmStyles
 export const ProfileSectionSubtitle = styled(FontOpenSans)`
   color: ${HrmTheme.colors.categoryTextColor};
@@ -159,14 +171,17 @@ type StyledTextProps = {
   hasContent?: boolean;
 };
 
-export const SectionContentText = styled('div')<StyledTextProps>`
+export const ProfileSectionTextContent = styled('div')<StyledTextProps>`
   font-size: 12px;
   line-height: 15px;
-  padding: 5px 5px 5px 15px;
-  margin: 20px 0;
+  padding: 20px 10px;
+  /* margin: 20px 10px; */
   height: 100%;
+  min-height: 44px;
   width: 100%;
-  background-color: rgba(246, 246, 246, 0.49);
+  max-width: 600px
+  background-color: #F9FAFB;
+  color: #606b85;
   border: none;
   border-radius: 2px;
   box-sizing: border-box;
@@ -181,7 +196,7 @@ export const SectionContentText = styled('div')<StyledTextProps>`
     outline: none;
   }
 `;
-SectionContentText.displayName = 'SectionContentText';
+ProfileSectionTextContent.displayName = 'ProfileSectionTextContent';
 
 export const ProfileFlagsView = styled('button')`
   background-color: ${HrmTheme.colors.inputBackgroundColor};

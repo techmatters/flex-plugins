@@ -1347,3 +1347,11 @@ export const TypingIndicatorText = styled(FontOpenSans)`
   text-overflow: ellipsis;
 `;
 TypingIndicatorText.displayName = 'TypingIndicatorText';
+
+export const HorizontalLine = styled('hr')`
+  border: 0;
+  height: 1px;
+  background-color: #c6cad7;
+  margin: 0;
+`;
+HorizontalLine.displayName = 'HorizontalLine';

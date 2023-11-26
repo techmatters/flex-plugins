@@ -55,14 +55,18 @@ const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props)
     updateProfileSection({ profileId, sectionType, content, sectionId });
     closeModal();
   };
+  const capitalizedSectionType = sectionType
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 
   return (
-    <NavigableContainer titleCode={`Edit ${sectionType}`} task={task}>
+    <NavigableContainer titleCode={`Edit ${capitalizedSectionType}`} task={task}>
       <Container>
         <Box>
           <ColumnarBlock>
             <ColumnarContent>
-              <FormTextArea defaultValue={content} onChange={e => setContent(e.target.value)} rows={10} width={500} />
+              <FormTextArea defaultValue={content} onChange={e => setContent(e.target.value)} rows={20} width={500} />
             </ColumnarContent>
           </ColumnarBlock>
         </Box>
