@@ -26,7 +26,6 @@ import * as CaseActions from '../../states/case/actions';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileCommonProps } from './types';
-import { Flex } from '../../styles/HrmStyles';
 
 type OwnProps = ProfileCommonProps;
 

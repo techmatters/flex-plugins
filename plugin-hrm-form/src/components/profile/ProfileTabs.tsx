@@ -44,25 +44,25 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
     {
       label: 'Client',
       key: 'details',
-      component: <ProfileDetails profileId={profileId} task={task} />,
+      renderComponent: () => <ProfileDetails profileId={profileId} task={task} />,
     },
     {
       label: (
         <>
-          <Template code="SearchResultsIndex-Contacts" />({contactsCount})
+          <Template code="SearchResultsIndex-Contacts" /> ({contactsCount})
         </>
       ),
       key: 'contacts',
-      component: <ProfileContacts profileId={profileId} task={task} />,
+      renderComponent: () => <ProfileContacts profileId={profileId} task={task} />,
     },
     {
       label: (
         <>
-          <Template code="SearchResultsIndex-Cases" />({casesCount})
+          <Template code="SearchResultsIndex-Cases" /> ({casesCount})
         </>
       ),
       key: 'cases',
-      component: <ProfileCases profileId={profileId} task={task} />,
+      renderComponent: () => <ProfileCases profileId={profileId} task={task} />,
     },
   ];
 
@@ -87,12 +87,10 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
     </StyledTabs>
   );
 
-  const renderedTab = tabs.find(tab => tab.key === currentTab).component;
-
   return (
     <NavigableContainer task={task} titleCode="Profile-Title">
       {renderedLabels}
-      {renderedTab}
+      {tabs.find(tab => tab.key === currentTab).renderComponent()}
     </NavigableContainer>
   );
 };
