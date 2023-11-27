@@ -167,6 +167,10 @@ export const StyledTabs = styled((props: Partial<TabsProps> & { children?: any }
   .Twilio-Tabs-Labels {
     padding: 0;
   }
+
+  .Twilio-Tab {
+    flex-direction: column;
+  }
 `;
 StyledTabs.displayName = 'StyledTabs';
 

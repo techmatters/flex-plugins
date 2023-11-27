@@ -72,25 +72,20 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
       label={<Box style={{ minWidth: '200px' }}>{tab.label}</Box>}
       uniqueName={tab.key}
     >
-      {[]}
+      {tab.renderComponent()}
     </TwilioTab>
   ));
 
-  const renderedLabels = (
-    <StyledTabs
-      selectedTabName={currentTab}
-      onTabSelected={(selectedTab: RoutingTypes.ProfileTabs) => changeProfileTab(profileId, selectedTab)}
-      alignment="center"
-      keepTabsMounted={false}
-    >
-      {renderedTabs}
-    </StyledTabs>
-  );
-
   return (
     <NavigableContainer task={task} titleCode="Profile-Title">
-      {renderedLabels}
-      {tabs.find(tab => tab.key === currentTab).renderComponent()}
+      <StyledTabs
+        selectedTabName={currentTab}
+        onTabSelected={(selectedTab: RoutingTypes.ProfileTabs) => changeProfileTab(profileId, selectedTab)}
+        alignment="center"
+        keepTabsMounted={false}
+      >
+        {renderedTabs}
+      </StyledTabs>
     </NavigableContainer>
   );
 };
