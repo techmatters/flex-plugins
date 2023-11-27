@@ -67,11 +67,7 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
   ];
 
   const renderedTabs = tabs.map(tab => (
-    <TwilioTab
-      key={`ProfileTabs-${profileId}-${tab.key}`}
-      label={<Box style={{ minWidth: '200px' }}>{tab.label}</Box>}
-      uniqueName={tab.key}
-    >
+    <TwilioTab key={`ProfileTabs-${profileId}-${tab.key}`} label={tab.label} uniqueName={tab.key}>
       {tab.renderComponent()}
     </TwilioTab>
   ));
