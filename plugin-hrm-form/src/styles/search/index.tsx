@@ -17,7 +17,6 @@
 import React from 'react';
 import { ButtonBase, Paper, Button, FormControlLabel, Switch, Collapse, withStyles } from '@material-ui/core';
 import { Tabs, TabsProps, styled } from '@twilio/flex-ui';
-import Folder from '@material-ui/icons/Folder';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import { ButtonProps } from '@material-ui/core/Button';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
@@ -26,7 +25,7 @@ import { Flex, Row, FontOpenSans, BottomButtonBar, TabbedFormsContainer, StyledN
 import HrmTheme from '../HrmTheme';
 
 // CaseViewer Styles
-export const PreviewWrapper = styled('div')`
+export const PreviewWrapper = styled(Flex)`
   display: flex;
   flex-direction: column;
   justify-content: space-between;

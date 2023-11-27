@@ -19,18 +19,11 @@ import { ButtonBase } from '@material-ui/core';
 
 import { Box, Column, Flex, Row, FontOpenSans, StyledNextStepButton } from './HrmStyles';
 import HrmTheme from './HrmTheme';
+import { PreviewWrapper } from './search';
 
-export const ResourcePreviewWrapper = styled('div')`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin-top: 10px;
-  padding: 5px 20px 10px 20px;
+export const ResourcePreviewWrapper = styled(PreviewWrapper)`
   width: 730px;
-  box-sizing: border-box;
-  background-color: #ffffff;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.06);
-  border-radius: 4px;
 `;
 ResourcePreviewWrapper.displayName = 'ResourcePreviewWrapper';
 

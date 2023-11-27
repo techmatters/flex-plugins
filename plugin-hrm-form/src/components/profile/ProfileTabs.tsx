@@ -16,9 +16,9 @@
 
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { Tab as TwilioTab } from '@twilio/flex-ui';
+import { Tab as TwilioTab, Template } from '@twilio/flex-ui';
 
-import { Row } from '../../styles/HrmStyles';
+import { Box } from '../../styles/HrmStyles';
 import { useProfile } from '../../states/profile/hooks';
 import * as RoutingTypes from '../../states/routing/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
@@ -47,36 +47,44 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
       component: <ProfileDetails profileId={profileId} task={task} />,
     },
     {
-      label: `Contacts (${contactsCount})`,
+      label: (
+        <>
+          <Template code="SearchResultsIndex-Contacts" />({contactsCount})
+        </>
+      ),
       key: 'contacts',
       component: <ProfileContacts profileId={profileId} task={task} />,
     },
     {
-      label: `Cases (${casesCount})`,
+      label: (
+        <>
+          <Template code="SearchResultsIndex-Cases" />({casesCount})
+        </>
+      ),
       key: 'cases',
       component: <ProfileCases profileId={profileId} task={task} />,
     },
   ];
 
   const renderedTabs = tabs.map(tab => (
-    <TwilioTab key={`ProfileTabs-${profileId}-${tab.key}`} label={tab.label} uniqueName={tab.key}>
+    <TwilioTab
+      key={`ProfileTabs-${profileId}-${tab.key}`}
+      label={<Box style={{ minWidth: '200px' }}>{tab.label}</Box>}
+      uniqueName={tab.key}
+    >
       {[]}
     </TwilioTab>
   ));
 
   const renderedLabels = (
-    <Row style={{ justifyContent: 'center' }}>
-      <div style={{ width: '400px' }}>
-        <StyledTabs
-          selectedTabName={currentTab}
-          onTabSelected={(selectedTab: RoutingTypes.ProfileTabs) => changeProfileTab(profileId, selectedTab)}
-          alignment="center"
-          keepTabsMounted={false}
-        >
-          {renderedTabs}
-        </StyledTabs>
-      </div>
-    </Row>
+    <StyledTabs
+      selectedTabName={currentTab}
+      onTabSelected={(selectedTab: RoutingTypes.ProfileTabs) => changeProfileTab(profileId, selectedTab)}
+      alignment="center"
+      keepTabsMounted={false}
+    >
+      {renderedTabs}
+    </StyledTabs>
   );
 
   const renderedTab = tabs.find(tab => tab.key === currentTab).component;

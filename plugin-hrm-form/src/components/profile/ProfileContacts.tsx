@@ -36,9 +36,7 @@ const ProfileContacts: React.FC<Props> = ({ profileId, viewContactDetails }) => 
     };
 
     return (
-      <div style={{ alignSelf: 'center' }}>
-        <ContactPreview key={`ContactPreview-${contact.id}`} contact={contact} handleViewDetails={handleViewDetails} />
-      </div>
+      <ContactPreview key={`ContactPreview-${contact.id}`} contact={contact} handleViewDetails={handleViewDetails} />
     );
   };
 

@@ -26,6 +26,7 @@ import * as CaseActions from '../../states/case/actions';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileCommonProps } from './types';
+import { Flex } from '../../styles/HrmStyles';
 
 type OwnProps = ProfileCommonProps;
 
@@ -41,15 +42,13 @@ const ProfileCases: React.FC<Props> = ({ profileId, task, counselorsHash, viewCa
     };
 
     return (
-      <div style={{ alignSelf: 'center' }}>
-        <CasePreview
-          key={`CasePreview-${cas.id}`}
-          task={task}
-          currentCase={cas}
-          counselorsHash={counselorsHash}
-          onClickViewCase={handleClickViewCase}
-        />
-      </div>
+      <CasePreview
+        key={`CasePreview-${cas.id}`}
+        task={task}
+        currentCase={cas}
+        counselorsHash={counselorsHash}
+        onClickViewCase={handleClickViewCase}
+      />
     );
   };
 
