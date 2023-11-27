@@ -163,17 +163,14 @@ const TabbedForms: React.FC<Props> = ({
   // eslint-disable-next-line camelcase
   const { enable_case_merging } = getAseloFeatureFlags();
 
-  const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={savedContact.csamReports} />, [
-    savedContact.csamReports,
-  ]);
+  const csamAttachments = React.useMemo(
+    () => savedContact && <CSAMAttachments csamReports={savedContact.csamReports} />,
+    [savedContact],
+  );
 
   const isMounted = React.useRef(false); // mutable value to avoid reseting the state in the first render.
 
   const { setValue } = methods;
-  const {
-    rawJson: { callType, callerInformation, childInformation, caseInformation, contactlessTask },
-    helpline,
-  } = updatedContact;
 
   const submit = async (caseForm: CaseForm) => {
     try {
@@ -196,11 +193,18 @@ const TabbedForms: React.FC<Props> = ({
   React.useEffect(() => {
     if (isMounted.current) setValue('categories', emptyCategories);
     else isMounted.current = true;
-  }, [helpline, setValue]);
+  }, [savedContact?.helpline, setValue]);
 
   const onError = recordingErrorHandler('Tabbed HRM Form', () => {
     window.alert(strings['Error-Form']);
   });
+
+  if (!currentDefinitionVersion || !savedContact) return null;
+
+  const {
+    rawJson: { callType, callerInformation, childInformation, caseInformation, contactlessTask },
+    helpline,
+  } = updatedContact;
 
   const newSubmitHandler = (successHandler: () => Promise<void>) => {
     return methods.handleSubmit(successHandler, onError);
