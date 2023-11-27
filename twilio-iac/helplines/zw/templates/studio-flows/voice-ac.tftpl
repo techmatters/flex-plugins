@@ -50,8 +50,8 @@ ${
           "x": 30,
           "y": 180
         },
-        "workflow": "WWfd9eb357c72a412fb1853721f38c80b8",
-        "channel": "TC28aa832df099896f57fb10063c4318dd",
+        "workflow": workflow_sids["master"],
+        "channel": task_channel_sids["voice"],
         "attributes": "{ "type": "inbound", "name_old": "{{trigger.call.From}}","name":"{{trigger.call.From | replace: 'sip:', '' | split: '@' | first}}","ignoreAgent":"", "transferTargetType":"","channelType":"voice", "aseloCallId": "{{trigger.call.SipHeader_X-Aselo-Call-Id}}"}"
       }
     }
