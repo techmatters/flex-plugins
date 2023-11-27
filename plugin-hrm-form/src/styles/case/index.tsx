@@ -263,21 +263,10 @@ FullWidthFormTextContainer.displayName = 'FullWidthFormTextContainer';
 
 export const DetailsHeaderContainer = styled('div')`
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: space-between;
+  flex-direction: column;
   margin-right: 10px;
 `;
 DetailsHeaderContainer.displayName = 'DetailsHeaderContainer';
-
-export const DetailsHeaderTextContainer = styled('div')`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 70%;
-`;
-
-DetailsHeaderTextContainer.displayName = 'DetailsHeaderTextContainer';
 
 export const DetailsHeaderCaseContainer = styled('div')`
   display: flex;
@@ -297,7 +286,8 @@ DetailsHeaderCounselor.displayName = 'DetailsHeaderCounselor';
 
 export const DetailsHeaderCaseId = styled(FontOpenSans)`
   font-weight: 600;
-  font-size: 14px;
+  font-size: 20px;
+  margin-bottom: 15px;
 `;
 
 DetailsHeaderCaseId.displayName = 'DetailsHeaderCaseId';

@@ -210,7 +210,7 @@ describe('View Contact', () => {
 
     // TODO: Verify interpolated translations contain the expected data
     await waitFor(() => expect(screen.getByTestId('ContactDetails-Container')).toBeInTheDocument());
-    expect(screen.getByText('#TEST_ID Jill Smith')).toBeInTheDocument();
+    expect(screen.getAllByText('#TEST_ID Jill Smith')[0]).toBeInTheDocument();
   });
 
   test('click on close button', async () => {

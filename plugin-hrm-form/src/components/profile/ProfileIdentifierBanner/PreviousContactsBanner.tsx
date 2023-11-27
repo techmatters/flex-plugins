@@ -101,6 +101,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   if (!shouldDisplayBanner) return null;
 
   const handleClickViewRecords = async () => {
+    performSearch();
     viewPreviousContacts();
     openContactSearchResults();
   };
@@ -151,7 +152,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
 PreviousContactsBanner.displayName = 'PreviousContactsBanner';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const { searchContacts, routing, activeContacts, configuration } = state[namespace];
+  const { searchContacts, configuration } = state[namespace];
   const { taskSid } = task;
   const taskSearchState = searchContacts.tasks[taskSid];
   const { counselors } = configuration;
@@ -173,7 +174,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     openContactSearchResults: () => {
       // We put the form 'under' the search results in the modal stack so the back button takes them to the form without needing custom handlers
       dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, taskId));
-      dispatch(changeRoute({ route: 'search', subroute: 'contact-results' }, taskId));
+      dispatch(changeRoute({ route: 'search', subroute: 'contact-results', contactsPage: 0, casesPage: 0 }, taskId));
     },
   };
 };

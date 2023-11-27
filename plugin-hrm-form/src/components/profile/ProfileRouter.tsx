@@ -17,16 +17,14 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
+import { RouterTask } from '../../types/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileRoute, ProfileSectionEditRoute } from '../../states/routing/types';
-import { RouterTask } from '../../types/types';
 import ProfileEdit from './ProfileEdit';
 import ProfileTabs from './ProfileTabs';
-import ProfileFlagEditPage from './profileFlag/ProfileFlagEditPage';
 import ProfileSectionEdit from './section/ProfileSectionEdit';
-import { ProfileCommonProps } from './types';
 
 type OwnProps = {
   task: RouterTask;
@@ -44,10 +42,6 @@ const PROFILE_ROUTES = {
     routes: ['profileEdit'],
     renderComponent: (props: Props) => <ProfileEdit {...props} />,
   },
-  profileFlagEdit: {
-    routes: ['profileFlagEdit'],
-    renderComponent: (props: Props) => <ProfileFlagEditPage {...props} />,
-  },
   profileSectionEdit: {
     routes: ['profileSectionEdit'],
     renderComponent: (props: Props) => <ProfileSectionEdit {...props} sectionType={props.sectionType} />,
@@ -57,7 +51,7 @@ const PROFILE_ROUTES = {
 export const ALL_PROFILE_ROUTES = Object.values(PROFILE_ROUTES).flatMap(({ routes }) => routes);
 
 const ProfileRouter: React.FC<Props> = props => {
-  const { currentRoute, task } = props;
+  const { currentRoute } = props;
 
   return (
     Object.values(PROFILE_ROUTES)

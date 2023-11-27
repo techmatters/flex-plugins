@@ -14,70 +14,118 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { ArrowDropDown } from '@material-ui/icons';
+import { IconButton } from '@twilio/flex-ui';
+import { Box, Popper, Paper } from '@material-ui/core';
 
-import ProfileFlagList from './ProfileFlagList';
-import { StyledMenuItem } from '../../../styles/HrmStyles';
-import { RouterTask, Profile, ProfileFlag } from '../../../types/types';
+import { StyledMenuList, StyledMenuItem } from '../../../styles/HrmStyles';
+import { ProfileFlag } from '../../../types/types';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
 import { useProfileFlags } from '../../../states/profile/hooks';
 import { RootState } from '../../../states';
-import { StyledFlagSelect } from '../styles';
+import { StyledFlagEditList } from '../styles';
+import ProfileFlagList from './ProfileFlagList';
+import { ProfileCommonProps } from '../types';
 
-type OwnProps = {
-  profileId: Profile['id'];
-  task: RouterTask;
+type OwnProps = ProfileCommonProps & {
+  modalRef?: React.RefObject<HTMLDivElement>;
+  handleClose: () => void;
 };
 
 type Props = OwnProps;
 
 const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
-  const { profileId } = props;
+  const { modalRef, profileId, handleClose } = props;
+
   const { allProfileFlags, profileFlags, associateProfileFlag } = useProfileFlags(profileId);
   const { loading } = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId));
 
-  const [open, setOpen] = useState(false);
+  const anchorRef = useRef(null);
 
-  const availableFlags = allProfileFlags.filter(flag => !profileFlags.find(f => f.id === flag.id));
-  const renderValue = () => <ProfileFlagList {...props} enableDisassociate={true} />;
+  /**
+   * We need refs to manage focus for accessibility since we're using a Popper
+   * a lot of this is based around the example here: https://mui.com/material-ui/react-menu/#StyledMenuList-composition
+   */
+  const associateButtonRef = useRef(null);
+  const associateRef = useRef(null);
+  const disassociateRef = useRef(null);
+  const [open, setOpen] = useState(true);
+  const availableFlags = allProfileFlags?.filter(flag => !profileFlags.find(f => f.id === flag.id));
+  const hasAvailableFlags = Boolean(availableFlags?.length);
+  const shouldAllowAssociate = hasAvailableFlags && !loading;
 
-  const shouldAllowAssociate = availableFlags.length && !loading;
+  useEffect(() => {
+    setOpen(hasAvailableFlags);
+  }, [hasAvailableFlags]);
 
-  const handleOpen = () => {
-    if (shouldAllowAssociate) setOpen(true);
+  useEffect(() => {
+    /**
+     * If there are flags to disassociate, focus on the disassociate button
+     */
+    if (profileFlags?.length) {
+      disassociateRef?.current?.focus();
+      return;
+    }
+    associateButtonRef?.current?.focus();
+  }, [profileFlags]);
+
+  const focusOnAssociateRef = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    associateRef?.current?.focus();
   };
-  const getIconComponent = () =>
-    shouldAllowAssociate ? <ArrowDropDown onClick={handleOpen} /> : <ArrowDropDown style={{ visibility: 'hidden' }} />;
+
+  function handleListKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      associateButtonRef?.current?.focus();
+    } else if (e.key === 'Escape') {
+      associateButtonRef?.current?.focus();
+    }
+  }
 
   return (
-    <StyledFlagSelect
-      open={open}
-      onOpen={handleOpen}
-      onClose={() => setOpen(false)}
-      IconComponent={getIconComponent}
-      value="false"
-      renderValue={renderValue}
-      variant="standard"
-      MenuProps={{
-        anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: 'left',
-        },
-        transformOrigin: {
-          vertical: 'top',
-          horizontal: 'left',
-        },
-        getContentAnchorEl: null,
-      }}
-    >
-      {availableFlags.map((flag: ProfileFlag) => (
-        <StyledMenuItem key={flag.id} onClick={() => associateProfileFlag(flag.id)}>
-          {flag.name}
-        </StyledMenuItem>
-      ))}
-    </StyledFlagSelect>
+    <>
+      <StyledFlagEditList title="Edit statuses" ref={anchorRef}>
+        <Box display="flex" justifyContent="space-between">
+          <ProfileFlagList {...props} enableDisassociate={true} disassociateRef={disassociateRef} />
+          <Box alignItems="center">
+            <IconButton icon="Close" title="Done editing status" onClick={handleClose} />
+            <IconButton
+              id="associate-status-button"
+              icon="ArrowDown"
+              title={open ? 'Add status' : 'All statuses are associated'}
+              onClick={focusOnAssociateRef}
+              disabled={!shouldAllowAssociate}
+              aria-controls={open ? 'associate-status-menu' : undefined}
+              aria-expanded={open ? 'true' : undefined}
+              aria-haspopup="true"
+              ref={associateButtonRef}
+            />
+          </Box>
+        </Box>
+      </StyledFlagEditList>
+      <Popper open={open} anchorEl={anchorRef.current} placement="bottom-start" ref={modalRef}>
+        <Paper>
+          <StyledMenuList
+            id="associate-status-menu"
+            aria-labelledby="associate-status-button"
+            onKeyDown={handleListKeyDown}
+          >
+            {availableFlags?.map((flag: ProfileFlag, index: number) => (
+              <StyledMenuItem
+                key={flag.id}
+                onClick={() => shouldAllowAssociate && associateProfileFlag(flag.id)}
+                ref={index ? null : associateRef}
+              >
+                {flag.name}
+              </StyledMenuItem>
+            ))}
+          </StyledMenuList>
+        </Paper>
+      </Popper>
+    </>
   );
 };
 

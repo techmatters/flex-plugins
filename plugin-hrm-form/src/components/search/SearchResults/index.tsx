@@ -15,17 +15,17 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Template, Tab as TwilioTab } from '@twilio/flex-ui';
 import InfoIcon from '@material-ui/icons/Info';
 import { DefinitionVersionId } from 'hrm-form-definitions';
-import { connect } from 'react-redux';
 
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
 import { SearchContactResult, SearchCaseResult, Contact, Case, CustomITask } from '../../../types/types';
-import { Row } from '../../../styles/HrmStyles';
+import { Box, Row } from '../../../styles/HrmStyles';
 import {
   ResultsHeader,
   ListContainer,
@@ -37,8 +37,6 @@ import {
   StyledTabs,
   StyledResultsContainer,
   StyledResultsText,
-  StyledTabLabel,
-  StyledFolderIcon,
   StyledResultsHeader,
   EmphasisedText,
   StyledCount,
@@ -47,20 +45,20 @@ import {
 } from '../../../styles/search';
 import Pagination from '../../Pagination';
 import * as CaseActions from '../../../states/case/actions';
-import * as RoutingActions from '../../../states/routing/actions';
 import { SearchPagesType } from '../../../states/search/types';
 import { getPermissionsForContact, getPermissionsForCase, PermissionActions } from '../../../permissions';
 import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
 import { getCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
-import { AppRoutes, ChangeRouteMode, SearchRoute } from '../../../states/routing/types';
+import { AppRoutes, ChangeRouteMode, SearchResultRoute, SearchRoute } from '../../../states/routing/types';
 import { recordBackendError } from '../../../fullStory';
 import { hasTaskControl } from '../../../utils/transfer';
 import { getUnsavedContact } from '../../../states/contacts/getUnsavedContact';
 import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 import { createCaseAsyncAction } from '../../../states/case/saveCase';
 import asyncDispatch from '../../../states/asyncDispatch';
+import * as RoutingActions from '../../../states/routing/actions';
 
 export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;
@@ -97,7 +95,8 @@ const SearchResults: React.FC<Props> = ({
   toggleNonDataContacts,
   toggleClosedCases,
   viewContactDetails,
-  changeSearchPage,
+  changeCaseResultPage,
+  changeContactResultPage,
   viewCaseDetails,
   setConnectedCase,
   counselorsHash,
@@ -112,8 +111,7 @@ const SearchResults: React.FC<Props> = ({
   createCaseAsyncAction,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const [contactsPage, setContactsPage] = useState(0);
-  const [casesPage, setCasesPage] = useState(0);
+  const { subroute: currentResultPage, casesPage, contactsPage } = routing as SearchResultRoute;
 
   const strings = getTemplateStrings();
 
@@ -130,7 +128,8 @@ const SearchResults: React.FC<Props> = ({
   if (routing.route !== 'search' || (routing.subroute !== 'case-results' && routing.subroute !== 'contact-results')) {
     return null;
   }
-  const currentResultPage = routing.subroute;
+  const setContactsPage = (page: number) => changeContactResultPage(page, routing);
+  const setCasesPage = (page: number) => changeCaseResultPage(page, routing);
 
   const handleContactsChangePage = newPage => {
     setContactsPage(newPage);
@@ -162,14 +161,15 @@ const SearchResults: React.FC<Props> = ({
   const contactsPageCount = Math.ceil(contactsCount / CONTACTS_PER_PAGE);
   const casesPageCount = Math.ceil(casesCount / CASES_PER_PAGE);
 
-  const toggleTabs = () => {
-    // eslint-disable-next-line no-unused-expressions
-    currentResultPage === 'contact-results' ? changeSearchPage('case-results') : changeSearchPage('contact-results');
+  const tabSelected = tabName => {
+    if (tabName === 'contact-results') {
+      changeContactResultPage(contactsPage, routing);
+    } else {
+      changeCaseResultPage(casesPage, routing);
+    }
   };
 
-  const tabSelected = tabName => {
-    changeSearchPage(tabName);
-  };
+  const toggleTabs = () => tabSelected(currentResultPage === 'contact-results' ? 'case-selected' : 'contact-selected');
 
   const openSearchModal = () => {
     if (routing.action) {
@@ -247,7 +247,7 @@ const SearchResults: React.FC<Props> = ({
   );
 
   const handleNoSearchResult = (type: string) => (
-    <SearchResultWarningContainer>
+    <SearchResultWarningContainer data-testid={type === "Contact" ? "ContactsCount" : "CasesCount"}>
       <Row style={{ paddingTop: '20px' }}>
         <InfoIcon style={{ color: '#ffc811' }} />
         <Text padding="0" fontWeight="700" margin="20px" color="#282a2b">
@@ -280,35 +280,36 @@ const SearchResults: React.FC<Props> = ({
   return (
     <>
       <ResultsHeader>
-        <Row style={{ justifyContent: 'center' }}>
-          <div style={{ width: '300px' }}>
-            <StyledTabs
-              selectedTabName={currentResultPage}
-              onTabSelected={tabSelected}
-              alignment="left"
-              keepTabsMounted={false}
+        <Row style={{ justifyContent: 'center', width: '100%' }}>
+          <StyledTabs
+            selectedTabName={currentResultPage}
+            onTabSelected={tabSelected}
+            alignment="center"
+            keepTabsMounted={false}
+          >
+            <TwilioTab
+              key="SearchResultsIndex-Contacts"
+              label={
+                <Box style={{ minWidth: '340px' }}>
+                  <Template code="SearchResultsIndex-Contacts" />
+                </Box>
+              }
+              uniqueName="contact-results"
             >
-              <TwilioTab
-                key="SearchResultsIndex-Contacts"
-                label={<Template code="SearchResultsIndex-Contacts" />}
-                uniqueName="contact-results"
-              >
-                {[]}
-              </TwilioTab>
-              <TwilioTab
-                key="SearchResultsIndex-Cases"
-                label={
-                  <StyledTabLabel>
-                    <StyledFolderIcon />
-                    <Template code="SearchResultsIndex-Cases" />
-                  </StyledTabLabel>
-                }
-                uniqueName="case-results"
-              >
-                {[]}
-              </TwilioTab>
-            </StyledTabs>
-          </div>
+              {[]}
+            </TwilioTab>
+            <TwilioTab
+              key="SearchResultsIndex-Cases"
+              label={
+                <Box style={{ minWidth: '340px' }}>
+                  <Template code="SearchResultsIndex-Cases" />
+                </Box>
+              }
+              uniqueName="case-results"
+            >
+              {[]}
+            </TwilioTab>
+          </StyledTabs>
         </Row>
       </ResultsHeader>
       <ListContainer>
@@ -443,8 +444,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   const taskId = ownProps.task.taskSid;
 
   return {
-    changeSearchPage: (subroute: SearchRoute['subroute']) =>
-      dispatch(changeRoute({ route: 'search', subroute }, taskId, ChangeRouteMode.Replace)),
+    changeContactResultPage: (contactsPage: number, currentRoute: SearchResultRoute) => {
+      dispatch(
+        changeRoute({ ...currentRoute, subroute: 'contact-results', contactsPage }, taskId, ChangeRouteMode.Replace),
+      );
+    },
+    changeCaseResultPage: (casesPage: number, currentRoute: SearchResultRoute) => {
+      dispatch(changeRoute({ ...currentRoute, subroute: 'case-results', casesPage }, taskId, ChangeRouteMode.Replace));
+    },
     viewCaseDetails: (route, subroute, isCreating?: boolean) => {
       dispatch(newOpenModalAction({ route, subroute, isCreating }, taskId));
     },

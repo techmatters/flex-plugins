@@ -32,7 +32,8 @@ export const PreviewWrapper = styled('div')`
   justify-content: space-between;
   margin-top: 10px;
   padding: 5px 20px 10px 20px;
-  width: 600px;
+  width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
   background-color: #ffffff;
   border-color: #d8d8d8;
@@ -162,6 +163,10 @@ export const StyledTabs = styled((props: Partial<TabsProps> & { children?: any }
   .Twilio-TabHeader-StateIndicator-Active {
     background-color: #0064e1;
     height: 1px;
+    padding: 0;
+  }
+  .Twilio-Tabs-Labels {
+    padding: 0;
   }
 `;
 StyledTabs.displayName = 'StyledTabs';
@@ -169,31 +174,16 @@ StyledTabs.displayName = 'StyledTabs';
 export const StyledResultsContainer = styled('div')`
   display: flex;
   align-items: center;
-  width: 600px;
+  width: 100%;
   margin-top: 10px;
 `;
 StyledResultsContainer.displayName = 'StyledResultsContainer';
-
-export const StyledTabLabel = styled('div')`
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-`;
-StyledTabLabel.displayName = 'StyledTabLabel';
 
 export const StyledResultsText = styled('div')`
   display: flex;
   padding-right: 5px;
 `;
 StyledResultsText.displayName = 'StyledResultsText';
-
-export const StyledFolderIcon = styled(Folder)`
-  font-size: 18px !important;
-  padding: -1px 10px 0 6px;
-  margin-right: 10px;
-`;
-
-StyledFolderIcon.displayName = 'StyledFolderIcon';
 
 export const EmphasisedText = styled('div')`
   font-weight: 600;
@@ -404,10 +394,14 @@ export const ResultsHeader = styled('div')`
 `;
 
 export const ListContainer = styled(BottomButtonBar)`
+  box-shadow: none;
   background-color: #ffffff;
   flex-basis: 0;
   flex-grow: 1;
-  padding: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 0;
+  padding-right: 0;
   margin: 2px 5px 0 5px;
 `;
 

@@ -25,7 +25,6 @@ import { getDefinitionVersion } from '../../services/ServerlessService';
 import { getNoteActivities, sortActivities } from '../../states/case/caseActivities';
 import { getHelplineData } from './caseHelpers';
 import { getLocaleDateTime } from '../../utils/helpers';
-import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import { CaseDetails } from '../../states/case/types';
@@ -55,14 +54,15 @@ import { noteSectionApi } from '../../states/case/sections/note';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import * as ContactActions from '../../states/contacts/existingContacts';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
-import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
-import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
+import { removeFromCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
 import { configurationBase, connectedCaseBase, namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { selectSavedContacts } from '../../states/case/connectedContacts';
+import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -94,6 +94,7 @@ const Case: React.FC<Props> = ({
   updateCaseAsyncAction,
   onNewCaseSaved = () => Promise.resolve(),
   submitContactFormAsyncAction,
+  taskContact,
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
@@ -102,6 +103,7 @@ const Case: React.FC<Props> = ({
 
   const { workerSid } = getHrmConfig();
   const strings = getTemplateStrings();
+  const { enable_case_merging: enableCaseMerging } = getAseloFeatureFlags();
 
   useEffect(() => {
     if (!connectedCase) return;
@@ -195,6 +197,14 @@ const Case: React.FC<Props> = ({
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCloseCase = async () => {
+    releaseContacts(loadedContactIds, task.taskSid);
+    if (!enableCaseMerging && taskContact && isCreating) {
+      await removeConnectedCase(taskContact.id);
+    }
+    handleClose();
   };
 
   const caseDetails: CaseDetails = {
@@ -306,10 +316,7 @@ const Case: React.FC<Props> = ({
       task={task}
       definitionVersion={definitionVersion}
       caseDetails={caseDetails}
-      handleClose={() => {
-        releaseContacts(loadedContactIds, task.taskSid);
-        handleClose();
-      }}
+      handleClose={handleCloseCase}
       handleUpdate={handleUpdate}
       handleSaveAndEnd={handleSaveAndEnd}
       can={can}
@@ -332,6 +339,7 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
     definitionVersions,
     currentDefinitionVersion,
     savedContacts: selectSavedContacts(state, connectedCase),
+    taskContact: selectContactByTaskSid(state, task.taskSid)?.savedContact,
   };
 };
 
@@ -344,7 +352,7 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
     closeModal: () => dispatch(RoutingActions.newCloseModalAction(task.taskSid)),
     goBack: () => dispatch(RoutingActions.newGoBackAction(task.taskSid)),
-    removeConnectedCase: bindActionCreators(CaseActions.removeConnectedCase, dispatch),
+    removeConnectedCase: (contactId: string) => caseAsyncDispatch(removeFromCaseAsyncAction(contactId)),
     updateDefinitionVersion: updateCaseDefinition,
     releaseContacts: bindActionCreators(ContactActions.releaseContacts, dispatch),
     loadContacts: bindActionCreators(ContactActions.loadContacts, dispatch),
