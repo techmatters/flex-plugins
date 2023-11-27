@@ -163,7 +163,9 @@ describe('Search Results', () => {
       );
 
       expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 PreviousContacts-Cases');
-      expect(screen.getByTestId('ContactsCount')).toHaveTextContent('SearchResultsIndex-NoCasesFoundSearchResultsIndex-SearchAgainForCase');
+      expect(screen.getByTestId('ContactsCount')).toHaveTextContent(
+        'SearchResultsIndex-NoCasesFoundSearchResultsIndex-SearchAgainForCase',
+      );
     });
 
     test('on cases tab', () => {
@@ -185,7 +187,9 @@ describe('Search Results', () => {
       );
 
       expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 PreviousContacts-Contacts');
-      expect(screen.getByTestId('CasesCount')).toHaveTextContent('SearchResultsIndex-NoCasesFoundSearchResultsIndex-SearchAgainForCase');
+      expect(screen.getByTestId('CasesCount')).toHaveTextContent(
+        'SearchResultsIndex-NoCasesFoundSearchResultsIndex-SearchAgainForCase',
+      );
     });
   });
 

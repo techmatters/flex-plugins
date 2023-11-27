@@ -247,7 +247,7 @@ const SearchResults: React.FC<Props> = ({
   );
 
   const handleNoSearchResult = (type: string) => (
-    <SearchResultWarningContainer data-testid={type === "Contact" ? "ContactsCount" : "CasesCount"}>
+    <SearchResultWarningContainer data-testid={type === 'Contact' ? 'ContactsCount' : 'CasesCount'}>
       <Row style={{ paddingTop: '20px' }}>
         <InfoIcon style={{ color: '#ffc811' }} />
         <Text padding="0" fontWeight="700" margin="20px" color="#282a2b">
