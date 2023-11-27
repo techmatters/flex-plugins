@@ -1,0 +1,65 @@
+${
+  jsonencode(
+    {
+      "description": flow_description,
+      "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "next": "SendCallToAgent",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": -10
+        }
+      }
+    },
+    {
+      "name": "SendCallToAgent",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 30,
+          "y": 180
+        },
+        "workflow": "WWfd9eb357c72a412fb1853721f38c80b8",
+        "channel": "TC28aa832df099896f57fb10063c4318dd",
+        "attributes": "{ \"type\": \"inbound\", \"name\":\"{{trigger.call.From | replace: 'sip:', '' | split: '@' | first}}\", \"channelType\":\"voice\",\"aseloCallId\": \"{{trigger.call.SipHeader_X-Aselo-Call-Id}}\"}"
+      }
+    }
+  ],
+      "initial_state": "Trigger",
+      "flags": {
+        "allow_concurrent_calls": true
+      }
+    }
+  )
+}
