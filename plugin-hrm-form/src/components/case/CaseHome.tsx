@@ -45,6 +45,7 @@ import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { connectedCaseBase, namespace } from '../../states/storeNamespaces';
 import NavigableContainer from '../NavigableContainer';
+import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ConnectToCaseButton from './ConnectToCaseButton';
 import { isStandaloneITask } from './Case';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
@@ -247,7 +248,7 @@ const CaseHome: React.FC<Props> = ({
         )}
         <Box marginTop="13px">
           <CaseDetailsComponent
-            caseId={id.toString()}
+            caseId={id}
             statusLabel={statusLabel}
             can={can}
             counselor={caseCounselor}
@@ -262,6 +263,7 @@ const CaseHome: React.FC<Props> = ({
             definitionVersion={definitionVersion}
             isOrphanedCase={!contact}
             editCaseSummary={onEditCaseSummaryClick}
+            isCreating={isCreating}
           />
         </Box>
         <Box margin="25px 0 0 0">

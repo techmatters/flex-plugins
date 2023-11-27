@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
@@ -44,6 +44,7 @@ import { connectedCaseBase, contactFormsBase, namespace } from '../../states/sto
 import { AppRoutes } from '../../states/routing/types';
 import AddCaseButton from './AddCaseButton';
 import asyncDispatch from '../../states/asyncDispatch';
+import selectIsContactCreating from '../../states/contacts/selectIsContactCreating';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => Promise<void>) => () => void;
@@ -73,9 +74,8 @@ const BottomBar: React.FC<
   submitContactFormAsyncAction,
   saveUpdates,
   savedContact,
+  contactIsSaving,
 }) => {
-  const [isSubmitting, setSubmitting] = useState(false);
-
   const strings = getTemplateStrings();
 
   const isAddedToCase = savedContact?.caseId !== null;
@@ -96,9 +96,7 @@ const BottomBar: React.FC<
   };
 
   const handleSubmit = async () => {
-    if (isSubmitting || !hasTaskControl(task)) return;
-
-    setSubmitting(true);
+    if (contactIsSaving || !hasTaskControl(task)) return;
 
     try {
       await submitContactFormAsyncAction(task, contact, metadata, caseForm as Case);
@@ -110,8 +108,6 @@ const BottomBar: React.FC<
       } else {
         recordBackendError('Submit Contact Form', error);
       }
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -170,7 +166,7 @@ const BottomBar: React.FC<
               roundCorners
               secondary="true"
               onClick={i.onClick}
-              disabled={isSubmitting}
+              disabled={contactIsSaving}
             >
               <Template code={i.label} />
             </StyledNextStepButton>
@@ -189,14 +185,14 @@ const BottomBar: React.FC<
           <SaveAndEndContactButton
             roundCorners={true}
             onClick={handleSubmitIfValid(handleSubmit)}
-            disabled={isSubmitting}
+            disabled={contactIsSaving}
             data-fs-id="Contact-SaveContact-Button"
             data-testid="BottomBar-SaveContact-Button"
           >
-            <span style={{ visibility: isSubmitting ? 'hidden' : 'inherit' }}>
+            <span style={{ visibility: contactIsSaving ? 'hidden' : 'inherit' }}>
               <Template code="BottomBar-SaveAndEnd" />
             </span>
-            {isSubmitting ? <CircularProgress size={12} style={{ position: 'absolute' }} /> : null}
+            {contactIsSaving ? <CircularProgress size={12} style={{ position: 'absolute' }} /> : null}
           </SaveAndEndContactButton>
         </>
       )}
@@ -206,15 +202,16 @@ const BottomBar: React.FC<
 
 BottomBar.displayName = 'BottomBar';
 
-const mapStateToProps = (state: RootState, ownProps: BottomBarProps) => {
-  const { draftContact, savedContact, metadata } =
-    state[namespace][contactFormsBase].existingContacts[ownProps.contactId] ?? {};
-  const caseForm = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase || {};
+const mapStateToProps = (state: RootState, { contactId, task }: BottomBarProps) => {
+  const { draftContact, savedContact, metadata } = state[namespace][contactFormsBase].existingContacts[contactId] ?? {};
+  const caseForm = state[namespace][connectedCaseBase].tasks[task.taskSid]?.connectedCase || {};
+  const contactIsSaving = selectIsContactCreating(state, contactId);
   return {
     contact: getUnsavedContact(savedContact, draftContact),
     metadata,
     caseForm,
     savedContact,
+    contactIsSaving,
   };
 };
 

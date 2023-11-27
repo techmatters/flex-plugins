@@ -39,7 +39,7 @@ import { PermissionActions } from '../../permissions';
 import { getLocaleDateTime } from '../../utils/helpers';
 
 type Props = {
-  caseId: string;
+  caseId: number;
   categories: { [category: string]: string[] };
   counselor: string;
   createdAt: string;
@@ -50,6 +50,7 @@ type Props = {
   office: string | undefined;
   childIsAtRisk: boolean;
   isOrphanedCase: boolean | undefined;
+  isCreating?: boolean;
   editCaseSummary: () => void;
   handlePrintCase: () => void;
   availableStatusTransitions: StatusInfo[];
@@ -71,6 +72,7 @@ const CaseDetails: React.FC<Props> = ({
   handlePrintCase,
   definitionVersion,
   isOrphanedCase = false,
+  isCreating,
   editCaseSummary,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -92,6 +94,7 @@ const CaseDetails: React.FC<Props> = ({
           office={office}
           handlePrintCase={handlePrintCase}
           isOrphanedCase={isOrphanedCase}
+          isCreating={isCreating}
         />
         <div style={{ paddingTop: '15px' }}>
           <CaseTags definitionVersion={definitionVersion} categories={categories} />

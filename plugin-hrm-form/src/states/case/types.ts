@@ -26,6 +26,7 @@ export const UPDATE_CASE_ACTION = 'case-action/update-case';
 export const UPDATE_CASE_ACTION_FULFILLED = `${UPDATE_CASE_ACTION}_FULFILLED` as const;
 export const CREATE_CASE_ACTION = 'case-action/create-case';
 export const CREATE_CASE_ACTION_FULFILLED = `${CREATE_CASE_ACTION}_FULFILLED` as const;
+export const CANCEL_CASE_ACTION = 'case-action/cancel-case';
 
 export enum SavedCaseStatus {
   NotSaved,
