@@ -464,3 +464,38 @@ export const PreviewActionButton = styled(StyledNextStepButton)`
   padding: 5px 17px 5px 12px;
 `;
 PreviewActionButton.displayName = 'PreviewActionButton';
+
+export const SearchResultWarningContainer = styled('div')`
+  width: 597px;
+  height: auto;
+  top: 143px;
+  left: 744px;
+  margin-top: 30px;
+  background-color: #fef5ee;
+  padding-left: 20px;
+  padding-right: 30px;
+  padding-bottom: 20px;
+  border: 1px solid #ffc811;
+  border-radius: 5px;
+`;
+SearchResultWarningContainer.displayName = 'SearchResultWarningContainer';
+
+type TextProps = {
+  margin?: string;
+  padding?: string;
+  fontWeight?: string;
+  decoration?: string;
+  color?: string;
+  cursor?: string;
+};
+
+export const Text = styled('span')<TextProps>`
+  align-items: center;
+  color: ${({ color }) => color};
+  font-weight: ${({ fontWeight }) => fontWeight};
+  padding-top: ${({ padding }) => (padding ? padding : '17px')};
+  margin-left: ${({ margin }) => (margin ? margin : '5px')};
+  text-decoration: ${({ decoration }) => decoration};
+  cursor: ${({ cursor }) => cursor};
+`;
+Text.displayName = 'Text';

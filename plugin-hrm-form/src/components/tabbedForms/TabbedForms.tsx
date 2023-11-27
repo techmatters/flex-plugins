@@ -151,6 +151,7 @@ const TabbedForms: React.FC<Props> = ({
   task,
   removeIfOfflineContact,
   isCallTypeCaller,
+  contactId,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -231,6 +232,8 @@ const TabbedForms: React.FC<Props> = ({
         task={task}
         currentIsCaller={savedContact?.rawJson?.callType === callTypes.caller}
         handleSelectSearchResult={onSelectSearchResult}
+        contactId={contactId}
+        saveUpdates={() => saveDraft(savedContact, draftContact)}
       />
     );
   }

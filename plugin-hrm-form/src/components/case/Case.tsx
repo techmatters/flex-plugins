@@ -312,7 +312,6 @@ const Case: React.FC<Props> = ({
       }}
       handleUpdate={handleUpdate}
       handleSaveAndEnd={handleSaveAndEnd}
-      isCreating={isCreating}
       can={can}
     />
   );

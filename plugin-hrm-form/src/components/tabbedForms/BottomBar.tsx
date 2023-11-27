@@ -95,7 +95,7 @@ const BottomBar: React.FC<
     try {
       await saveUpdates();
       await createCaseAsyncAction(contact, workerSid, definitionVersion);
-      openModal({ route: 'case', subroute: 'home' });
+      openModal({ route: 'case', subroute: 'home', isCreating: true });
     } catch (error) {
       recordBackendError('Open New Case', error);
       window.alert(strings['Error-Backend']);
@@ -129,7 +129,6 @@ const BottomBar: React.FC<
 
   const openSearchModal = () => {
     openModal({ route: 'search', subroute: 'form', action: 'select-case' });
-    // searchExistingCase(true);
   };
 
   return (

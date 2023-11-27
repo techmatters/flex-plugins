@@ -16,9 +16,11 @@
 
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Template, Tab as TwilioTab } from '@twilio/flex-ui';
+import InfoIcon from '@material-ui/icons/Info';
+import { DefinitionVersionId } from 'hrm-form-definitions';
+import { connect } from 'react-redux';
 
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
@@ -40,6 +42,8 @@ import {
   StyledResultsHeader,
   EmphasisedText,
   StyledCount,
+  SearchResultWarningContainer,
+  Text,
 } from '../../../styles/search';
 import Pagination from '../../Pagination';
 import * as CaseActions from '../../../states/case/actions';
@@ -50,7 +54,13 @@ import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
 import { getCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
-import { ChangeRouteMode, SearchRoute } from '../../../states/routing/types';
+import { AppRoutes, ChangeRouteMode, SearchRoute } from '../../../states/routing/types';
+import { recordBackendError } from '../../../fullStory';
+import { hasTaskControl } from '../../../utils/transfer';
+import { getUnsavedContact } from '../../../states/contacts/getUnsavedContact';
+import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
+import { createCaseAsyncAction } from '../../../states/case/saveCase';
+import asyncDispatch from '../../../states/asyncDispatch';
 
 export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;
@@ -69,6 +79,8 @@ type OwnProps = {
   changeSearchPage: (SearchPagesType) => void;
   setConnectedCase: (currentCase: Case, taskSid: string) => void;
   currentPage: SearchPagesType;
+  contactId: string;
+  saveUpdates: () => Promise<void>;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -94,11 +106,16 @@ const SearchResults: React.FC<Props> = ({
   isRequestingContacts,
   caseRefreshRequired,
   contactRefreshRequired,
-  searchCase,
+  openModal,
+  contact,
+  saveUpdates,
+  createCaseAsyncAction,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [contactsPage, setContactsPage] = useState(0);
   const [casesPage, setCasesPage] = useState(0);
+
+  const strings = getTemplateStrings();
 
   useEffect(() => {
     if (contactRefreshRequired) {
@@ -137,7 +154,7 @@ const SearchResults: React.FC<Props> = ({
 
   const handleClickViewCase = currentCase => () => {
     setConnectedCase(currentCase, task.taskSid);
-    viewCaseDetails();
+    viewCaseDetails('case', 'home');
   };
 
   const { count: contactsCount, contacts } = searchContactsResults;
@@ -152,6 +169,29 @@ const SearchResults: React.FC<Props> = ({
 
   const tabSelected = tabName => {
     changeSearchPage(tabName);
+  };
+
+  const openSearchModal = () => {
+    if (routing.action) {
+      openModal({ route: 'search', subroute: 'form', action: 'select-case' });
+    } else {
+      openModal({ route: 'search', subroute: 'form' });
+    }
+  };
+
+  const handleOpenNewCase = async () => {
+    const { workerSid, definitionVersion } = getHrmConfig();
+
+    if (!hasTaskControl(task)) return;
+
+    try {
+      await saveUpdates();
+      await createCaseAsyncAction(contact, workerSid, definitionVersion);
+      viewCaseDetails('case', 'home', true);
+    } catch (error) {
+      recordBackendError('Open New Case', error);
+      window.alert(strings['Error-Backend']);
+    }
   };
 
   const caseResults = () => (
@@ -205,6 +245,35 @@ const SearchResults: React.FC<Props> = ({
       )}
     </>
   );
+
+  const handleNoSearchResult = (type: string) => (
+    <SearchResultWarningContainer>
+      <Row style={{ paddingTop: '20px' }}>
+        <InfoIcon style={{ color: '#ffc811' }} />
+        <Text padding="0" fontWeight="700" margin="20px" color="#282a2b">
+          <Template code="SearchResultsIndex-NoCasesFound" type={type} />
+        </Text>
+      </Row>
+
+      <Row>
+        <Text margin="44px" decoration="underline" color="#1976D2" cursor="pointer" onClick={openSearchModal}>
+          <Template code="SearchResultsIndex-SearchAgainForCase" type={type.toLocaleLowerCase()} />
+        </Text>
+        {routing.action && (
+          <>
+            <Text>
+              <Template code="SearchResultsIndex-Or" />
+            </Text>
+            <Text decoration="underline" color="#1976D2" cursor="pointer" onClick={handleOpenNewCase}>
+              <Template code="SearchResultsIndex-SaveToNewCase" />
+            </Text>
+          </>
+        )}
+      </Row>
+    </SearchResultWarningContainer>
+  );
+
+  if (cases && cases.length === 0 && routing.action === 'select-case') return handleNoSearchResult('Case');
 
   if (currentResultPage === 'case-results' && routing.action === 'select-case') return caseResults();
 
@@ -283,59 +352,63 @@ const SearchResults: React.FC<Props> = ({
               />
             </StyledLink>
           </StyledResultsContainer>
-          {currentResultPage === 'contact-results' && (
-            <>
-              <StyledResultsHeader>
-                <StyledCount data-testid="ContactsCount">
-                  {contactsCount}&nbsp;
-                  {contactsCount === 1 ? (
-                    <Template code="PreviousContacts-Contact" />
-                  ) : (
-                    <Template code="SearchResultsIndex-Contacts" />
-                  )}
-                </StyledCount>
-                <StyledFormControlLabel
-                  control={
-                    <StyledSwitch
-                      color="default"
-                      size="small"
-                      checked={!onlyDataContacts}
-                      onChange={handleToggleNonDataContact}
+          {currentResultPage === 'contact-results' && contacts && contacts.length === 0
+            ? handleNoSearchResult('Contact')
+            : currentResultPage === 'contact-results' && (
+                <>
+                  <StyledResultsHeader>
+                    <StyledCount data-testid="ContactsCount">
+                      {contactsCount}&nbsp;
+                      {contactsCount === 1 ? (
+                        <Template code="PreviousContacts-Contact" />
+                      ) : (
+                        <Template code="SearchResultsIndex-Contacts" />
+                      )}
+                    </StyledCount>
+                    <StyledFormControlLabel
+                      control={
+                        <StyledSwitch
+                          color="default"
+                          size="small"
+                          checked={!onlyDataContacts}
+                          onChange={handleToggleNonDataContact}
+                          disabled={isRequestingContacts}
+                        />
+                      }
+                      label={
+                        <SwitchLabel>
+                          <Template code="SearchResultsIndex-NonDataContacts" />
+                        </SwitchLabel>
+                      }
+                      labelPlacement="start"
+                    />
+                  </StyledResultsHeader>
+                  {contacts &&
+                    contacts.length > 0 &&
+                    contacts.map(contact => {
+                      const { can } = getPermissionsForContact(contact.twilioWorkerId);
+                      return (
+                        <ContactPreview
+                          key={contact.id}
+                          contact={contact}
+                          handleViewDetails={() => can(PermissionActions.VIEW_CONTACT) && viewContactDetails(contact)}
+                        />
+                      );
+                    })}
+                  {contactsPageCount > 1 && (
+                    <Pagination
+                      page={contactsPage}
+                      pagesCount={contactsPageCount}
+                      handleChangePage={handleContactsChangePage}
+                      transparent
                       disabled={isRequestingContacts}
                     />
-                  }
-                  label={
-                    <SwitchLabel>
-                      <Template code="SearchResultsIndex-NonDataContacts" />
-                    </SwitchLabel>
-                  }
-                  labelPlacement="start"
-                />
-              </StyledResultsHeader>
-              {contacts &&
-                contacts.length > 0 &&
-                contacts.map(contact => {
-                  const { can } = getPermissionsForContact(contact.twilioWorkerId);
-                  return (
-                    <ContactPreview
-                      key={contact.id}
-                      contact={contact}
-                      handleViewDetails={() => can(PermissionActions.VIEW_CONTACT) && viewContactDetails(contact)}
-                    />
-                  );
-                })}
-              {contactsPageCount > 1 && (
-                <Pagination
-                  page={contactsPage}
-                  pagesCount={contactsPageCount}
-                  handleChangePage={handleContactsChangePage}
-                  transparent
-                  disabled={isRequestingContacts}
-                />
+                  )}
+                </>
               )}
-            </>
-          )}
-          {currentResultPage === 'case-results' && caseResults()}
+          {currentResultPage === 'case-results' && cases && cases.length === 0
+            ? handleNoSearchResult('Case')
+            : currentResultPage === 'case-results' && caseResults()}
         </ScrollableList>
       </ListContainer>
     </>
@@ -344,13 +417,15 @@ const SearchResults: React.FC<Props> = ({
 SearchResults.displayName = 'SearchResults';
 
 const mapStateToProps = (
-  { [namespace]: { searchContacts, configuration, routing, activeContacts } }: RootState,
-  { task }: OwnProps,
+  { [namespace]: { searchContacts, configuration, routing, activeContacts, connectedCase } }: RootState,
+  { task, contactId }: OwnProps,
 ) => {
   const taskId = task.taskSid;
   const { isRequesting, isRequestingCases, caseRefreshRequired, contactRefreshRequired } = searchContacts.tasks[taskId];
   const { counselors } = configuration;
   const taskContact = activeContacts.existingContacts[taskId]?.savedContact;
+  const { draftContact, savedContact } = activeContacts.existingContacts[contactId] ?? {};
+
   return {
     isRequestingContacts: isRequesting,
     isRequestingCases,
@@ -360,6 +435,7 @@ const mapStateToProps = (
     routing: getCurrentTopmostRouteForTask(routing, taskId),
     taskContact,
     searchCase: searchContacts.tasks[task.taskSid].searchExistingCaseStatus,
+    contact: getUnsavedContact(savedContact, draftContact),
   };
 };
 
@@ -369,14 +445,20 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     changeSearchPage: (subroute: SearchRoute['subroute']) =>
       dispatch(changeRoute({ route: 'search', subroute }, taskId, ChangeRouteMode.Replace)),
-    viewCaseDetails: () => {
-      dispatch(newOpenModalAction({ route: 'case', subroute: 'home' }, taskId));
+    viewCaseDetails: (route, subroute, isCreating?: boolean) => {
+      dispatch(newOpenModalAction({ route, subroute, isCreating }, taskId));
     },
     viewContactDetails: ({ id }: Contact) => {
       dispatch(newOpenModalAction({ route: 'contact', subroute: 'view', id: id.toString() }, taskId));
     },
     setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
+    openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, taskId)),
+    createCaseAsyncAction: async (contact, workerSid: string, definitionVersion: DefinitionVersionId) => {
+      // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
+      // TODO: Rework error handling to be based on redux state set by the _REJECTED action
+      await asyncDispatch(dispatch)(createCaseAsyncAction(contact, taskId, workerSid, definitionVersion));
+    },
   };
 };
 
