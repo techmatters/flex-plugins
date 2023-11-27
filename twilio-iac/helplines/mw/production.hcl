@@ -9,20 +9,6 @@ locals {
 
     custom_task_routing_filter_expression = "channelType == 'web'  OR isContactlessTask == true OR  twilioNumber IN ['messenger:113053900394672', 'messenger:154148147974717', 'messenger:338505126727604']"
 
-    workflows = {
-      master : {
-        friendly_name : "Master Workflow"
-        templatefile : "/app/twilio-iac/helplines/mw/templates/workflows/master-prod.tftpl"
-      }
-    }
-
-    task_queues = {
-      iwf : {
-        "target_workers" = "1==1",
-        "friendly_name"  = "IWF"
-      }
-    }
-
     #Studio flow
     flow_vars = {
       service_sid                            = "ZS42eddf74e047f1b42570b91766e278c8"
