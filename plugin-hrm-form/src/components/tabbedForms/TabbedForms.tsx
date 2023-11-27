@@ -126,6 +126,7 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
+// eslint-disable-next-line complexity
 const TabbedForms: React.FC<Props> = ({
   currentRoute,
   savedContact,
