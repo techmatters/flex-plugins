@@ -161,6 +161,10 @@ export const PreviewHeaderText = styled(FontOpenSans)`
 export const StyledTabs = styled((props: Partial<TabsProps> & { children?: any }) => <Tabs {...props} />)`
   .Twilio-TabHeader {
     flex-grow: 1;
+
+    button {
+      width: 100%;
+    }
   }
 
   .Twilio-TabHeader-StateIndicator-Active {
