@@ -39,7 +39,6 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileRelationshipList: React.FC<Props> = ({
   data,
-  loadedPage,
   loading,
   page,
   type,
@@ -51,8 +50,8 @@ const ProfileRelationshipList: React.FC<Props> = ({
   const hasData = data && data.length > 0;
 
   useEffect(() => {
-    if (loading || hasData) return;
-    loadRelationshipAsync(page, loadedPage);
+    if (loading) return;
+    loadRelationshipAsync(page);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
@@ -61,7 +60,7 @@ const ProfileRelationshipList: React.FC<Props> = ({
       return <div>Loading...</div>;
     }
 
-    if (!hasData && !loading) {
+    if (!hasData && page === 0) {
       return <Template code={type === 'contacts' ? 'Profile-NoContactsFound' : 'Profile-NoCasesFound'} />;
     }
 
@@ -85,18 +84,11 @@ const ProfileRelationshipList: React.FC<Props> = ({
 };
 
 const mapStateToProps = (state: RootState, { profileId, type }) => {
-  const { exhausted, loadedPage, loading, page, total } =
+  const { data, exhausted, loading, page, total } =
     profileSelectors.selectProfileRelationshipsByType(state, profileId, type) || {};
-
-  const data = profileSelectors.selectProfileRelationshipsByPage(state, {
-    profileId,
-    type,
-    page,
-  });
 
   return {
     data,
-    loadedPage,
     loading,
     exhausted,
     page,
@@ -105,13 +97,12 @@ const mapStateToProps = (state: RootState, { profileId, type }) => {
 };
 
 const mapDispatchToProps = (dispatch, { profileId, type }: OwnProps) => ({
-  loadRelationshipAsync: (page: number, loadedPage: number) =>
+  loadRelationshipAsync: (page: number) =>
     asyncDispatch(dispatch)(
       profileActions.loadRelationshipAsync({
         profileId,
         type,
         page,
-        loadedPage,
       }),
     ),
   updatePage: (page: number) =>

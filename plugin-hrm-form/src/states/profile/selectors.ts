@@ -72,7 +72,11 @@ export const selectProfileRelationshipsByType = (
   type: t.ProfileRelationships,
 ) => selectProfileById(state, profileId)?.[type];
 
-export const selectProfileRelationshipsByPage = (
-  state: RootState,
-  { profileId, type, page }: SelectProfileRelationshipsByPageParams,
-) => selectProfileRelationshipsByType(state, profileId, type)?.data?.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+// export const selectProfileRelationshipsByPage = (
+//   state: RootState,
+//   { profileId, type, page }: SelectProfileRelationshipsByPageParams,
+// ) => {
+//   const data = selectProfileRelationshipsByType(state, profileId, type)?.data;
+//   console.log('>>> selectProfileRelationshipsByPage pageData', { data, page });
+//   return data?.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+// };
