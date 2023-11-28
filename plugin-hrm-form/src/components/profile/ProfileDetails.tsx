@@ -18,11 +18,17 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Icon, Template } from '@twilio/flex-ui';
 
-import { Bold, Box, Column, HiddenText, Row } from '../../styles/HrmStyles';
+import { Box, HiddenText, Row, HorizontalLine } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
 import { ProfileCommonProps } from './types';
-import { DetailsWrapper, ProfileSectionWrapper, ProfileSectionSubtitle, ProfileSectionEditButton } from './styles';
+import {
+  DetailsWrapper,
+  ProfileSectionWrapper,
+  ProfileSectionSubtitle,
+  ProfileSectionEditButton,
+  SectionHeader,
+} from './styles';
 import ProfileFlagSection from './profileFlag/ProfileFlagSection';
 import ProfileSectionView from './section/ProfileSectionView';
 
@@ -117,16 +123,16 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
 
   return (
     <DetailsWrapper>
-      <Column>
-        <Bold>
-          <Template code="Profile-DetailsHeader" />
-        </Bold>
-      </Column>
+      <SectionHeader>
+        <Template code="Profile-DetailsHeader-Overview" />
+      </SectionHeader>
       {overviewSections.map(section => renderSection(section))}
-      <hr />
-      <h2>Notes</h2>
+      <HorizontalLine />
+      <SectionHeader>
+        <Template code="Profile-DetailsHeader-Notes" />
+      </SectionHeader>
       {sectionSections.map(section => renderSection(section))}
-      <hr />
+      <HorizontalLine />
     </DetailsWrapper>
   );
 };

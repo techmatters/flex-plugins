@@ -39,6 +39,18 @@ export const ProfileSectionWrapper = styled('div')`
 `;
 ProfileSectionWrapper.displayName = 'ProfileSectionWrapper';
 
+// TODO: refactor to HrmStyles- used from ResourcesSearchFormSectionHeader
+export const SectionHeader = styled(FontOpenSans)`
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 700;
+  display: inline-block;
+  color: #192b33;
+  margin-bottom: 10px;
+  margin-top: 10px;
+`;
+SectionHeader.displayName = 'SectionHeader';
+
 // TODO: refactor to HrmStyles
 export const ProfileSectionSubtitle = styled(FontOpenSans)`
   color: ${HrmTheme.colors.categoryTextColor};
@@ -51,29 +63,25 @@ export const ProfileSectionSubtitle = styled(FontOpenSans)`
 `;
 ProfileSectionSubtitle.displayName = 'ProfileSectionSubtitle';
 
-type ButtonProps = {
-  onClick: () => void;
-};
-
-export const ProfileSectionEditButton = styled(Button)<ButtonProps>`
-  width: 40px;
-  height: 30px;
-  border-radius: 4px;
-  color: ${HrmTheme.colors.categoryTextColor};
-  background-color: ${HrmTheme.colors.secondaryButtonColor};
-  font-size: 14px;
-  box-shadow: none;
+/**
+ * ProfileFlags
+ */
+export const ProfileFlagsView = styled('button')`
+  background-color: ${HrmTheme.colors.inputBackgroundColor};
+  display: flex;
   border: none;
-  margin-left: auto;
-
-  :focus,
-  :active {
-    outline: auto;
+  border-radius: 5px;
+  align-items: center;
+  align-self: center;
+  align-content: center;
+  width: -webkit-fill-available;
+  :focus {
+    background-color: ${HrmTheme.colors.inputBackgroundColor};
     box-shadow: none;
-    border: none;
+    border: 1px solid rgba(0, 59, 129, 0.37);
   }
 `;
-ProfileSectionEditButton.displayName = 'ProfileSectionEditButton';
+ProfileFlagsView.displayName = 'ProfileFlagsView';
 
 type ColorProps = {
   fillColor?: string;
@@ -99,7 +107,7 @@ export const StyledBlockOutlinedIcon = withStyles({
   root: { width: '1rem', height: '1rem', fontSize: 'smaller', marginRight: '7px' },
 })(BlockOutlinedIcon);
 
-export const StyledFlagEditList = styled('div')`
+export const ProfileFlagEditList = styled('div')`
   background-color: #f9fafb;
   border-radius: 5px;
   align-items: center;
@@ -107,7 +115,7 @@ export const StyledFlagEditList = styled('div')`
     outline: 3px solid rgb(0, 95, 204);
   }
 `;
-StyledFlagEditList.displayName = 'StyledFlagEditList';
+ProfileFlagEditList.displayName = 'ProfileFlagEditList';
 
 export const DisassociateButton = styled(IconButton)`
   height: 1rem;
@@ -132,6 +140,20 @@ export const CloseIconButton = withStyles({
     },
   },
 })(CloseIcon);
+
+export const ProfileFlagsUnorderedList = styled('ul')`
+  display: 'flex';
+`;
+ProfileFlagsUnorderedList.displayName = 'ProfileFlagsUnorderedList';
+
+export const ProfileFlagsListItem = styled('li')`
+  display: 'inline-block';
+`;
+ProfileFlagsListItem.displayName = 'ProfileFlagsListItem';
+
+/**
+ * ProfileSection
+ */
 
 export const SectionText = styled('p')`
   font-size: 12px;
@@ -159,14 +181,16 @@ type StyledTextProps = {
   hasContent?: boolean;
 };
 
-export const SectionContentText = styled('div')<StyledTextProps>`
+export const ProfileSectionTextContent = styled('div')<StyledTextProps>`
   font-size: 12px;
   line-height: 15px;
-  padding: 5px 5px 5px 15px;
-  margin: 20px 0;
+  padding: 20px 10px;
   height: 100%;
+  min-height: 44px;
   width: 100%;
-  background-color: rgba(246, 246, 246, 0.49);
+  max-width: 600px
+  background-color: #F9FAFB;
+  color: #606b85;
   border: none;
   border-radius: 2px;
   box-sizing: border-box;
@@ -181,21 +205,29 @@ export const SectionContentText = styled('div')<StyledTextProps>`
     outline: none;
   }
 `;
-SectionContentText.displayName = 'SectionContentText';
+ProfileSectionTextContent.displayName = 'ProfileSectionTextContent';
 
-export const ProfileFlagsView = styled('button')`
-  background-color: ${HrmTheme.colors.inputBackgroundColor};
-  display: flex;
+type ButtonProps = {
+  onClick: () => void;
+};
+
+// TODO: refactor to HrmStyles
+export const ProfileSectionEditButton = styled(Button)<ButtonProps>`
+  width: 40px;
+  height: 30px;
+  border-radius: 4px;
+  color: ${HrmTheme.colors.categoryTextColor};
+  background-color: ${HrmTheme.colors.secondaryButtonColor};
+  font-size: 14px;
+  box-shadow: none;
   border: none;
-  border-radius: 5px;
-  align-items: center;
-  align-self: center;
-  align-content: center;
-  width: -webkit-fill-available;
-  :focus {
-    background-color: ${HrmTheme.colors.inputBackgroundColor};
+  margin-left: auto;
+
+  :focus,
+  :active {
+    outline: auto;
     box-shadow: none;
-    border: 1px solid rgba(0, 59, 129, 0.37);
+    border: none;
   }
 `;
-ProfileFlagsView.displayName = 'ProfileFlagsView';
+ProfileSectionEditButton.displayName = 'ProfileSectionEditButton';

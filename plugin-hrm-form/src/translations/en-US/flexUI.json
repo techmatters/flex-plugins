@@ -386,7 +386,8 @@
   "PreviousContacts-ViewRecords": "View Records",
   "PreviousContacts-OnlyShowRecordsFrom": "Only show records from",
 
-  "Profile-DetailsHeader": "Overview",
+  "Profile-DetailsHeader-Overview": "Overview",
+  "Profile-DetailsHeader-Notes": "Notes",
   "Profile-IdentifiersHeader": "Identifiers",
   "Profile-NoIdentifiersFound": "No identifiers found",
   "Profile-StatusHeader": "Status",

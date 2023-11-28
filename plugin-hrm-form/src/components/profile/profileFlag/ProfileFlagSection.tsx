@@ -46,12 +46,7 @@ const ProfileFlagSection: React.FC<Props> = ({ profileId, task }) => {
           modalRef={profileFlagsModalRef}
         />
       ) : (
-        <ProfileFlagsView
-          title="Edit Statuses"
-          type="button"
-          style={{ display: 'flex', width: '-webkit-fill-available' }}
-          onClick={openEditProfileFlags}
-        >
+        <ProfileFlagsView title="Edit Statuses" type="button" onClick={openEditProfileFlags}>
           <ProfileFlagList profileId={profileId} task={task} />
         </ProfileFlagsView>
       )}
