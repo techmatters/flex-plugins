@@ -75,11 +75,11 @@ const ProfileFlagsList: React.FC<Props> = ({ disassociateRef, enableDisassociate
       {profileFlags?.length ? (
         profileFlags.map(renderPill)
       ) : (
-        <li>
+        <ProfileFlagsListItem>
           <FlagPill title="No Status Listed">
             <Template code="Profile-NoStatusesListed" />
           </FlagPill>
-        </li>
+        </ProfileFlagsListItem>
       )}
     </ProfileFlagsUnorderedList>
   );

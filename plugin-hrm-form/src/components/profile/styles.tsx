@@ -142,12 +142,12 @@ export const CloseIconButton = withStyles({
 })(CloseIcon);
 
 export const ProfileFlagsUnorderedList = styled('ul')`
-  display: 'flex';
+  display: flex;
 `;
 ProfileFlagsUnorderedList.displayName = 'ProfileFlagsUnorderedList';
 
 export const ProfileFlagsListItem = styled('li')`
-  display: 'inline-block';
+  display: inline-block;
 `;
 ProfileFlagsListItem.displayName = 'ProfileFlagsListItem';
 
