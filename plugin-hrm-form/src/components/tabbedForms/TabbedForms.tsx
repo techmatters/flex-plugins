@@ -126,6 +126,7 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
+// eslint-disable-next-line complexity
 const TabbedForms: React.FC<Props> = ({
   currentRoute,
   savedContact,
@@ -151,6 +152,7 @@ const TabbedForms: React.FC<Props> = ({
   task,
   removeIfOfflineContact,
   isCallTypeCaller,
+  contactId,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -163,17 +165,14 @@ const TabbedForms: React.FC<Props> = ({
   // eslint-disable-next-line camelcase
   const { enable_case_merging } = getAseloFeatureFlags();
 
-  const csamAttachments = React.useMemo(() => <CSAMAttachments csamReports={savedContact.csamReports} />, [
-    savedContact.csamReports,
-  ]);
+  const csamAttachments = React.useMemo(
+    () => savedContact && <CSAMAttachments csamReports={savedContact.csamReports} />,
+    [savedContact],
+  );
 
   const isMounted = React.useRef(false); // mutable value to avoid reseting the state in the first render.
 
   const { setValue } = methods;
-  const {
-    rawJson: { callType, callerInformation, childInformation, caseInformation, contactlessTask },
-    helpline,
-  } = updatedContact;
 
   const submit = async (caseForm: CaseForm) => {
     try {
@@ -196,11 +195,18 @@ const TabbedForms: React.FC<Props> = ({
   React.useEffect(() => {
     if (isMounted.current) setValue('categories', emptyCategories);
     else isMounted.current = true;
-  }, [helpline, setValue]);
+  }, [savedContact?.helpline, setValue]);
 
   const onError = recordingErrorHandler('Tabbed HRM Form', () => {
     window.alert(strings['Error-Form']);
   });
+
+  if (!currentDefinitionVersion || !savedContact) return null;
+
+  const {
+    rawJson: { callType, callerInformation, childInformation, caseInformation, contactlessTask },
+    helpline,
+  } = updatedContact;
 
   const newSubmitHandler = (successHandler: () => Promise<void>) => {
     return methods.handleSubmit(successHandler, onError);
@@ -231,6 +237,8 @@ const TabbedForms: React.FC<Props> = ({
         task={task}
         currentIsCaller={savedContact?.rawJson?.callType === callTypes.caller}
         handleSelectSearchResult={onSelectSearchResult}
+        contactId={contactId}
+        saveUpdates={() => saveDraft(savedContact, draftContact)}
       />
     );
   }
