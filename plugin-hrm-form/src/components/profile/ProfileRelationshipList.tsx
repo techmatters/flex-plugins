@@ -16,6 +16,7 @@
 
 import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { Template } from '@twilio/flex-ui';
 
 import Pagination from '../Pagination';
 import asyncDispatch from '../../states/asyncDispatch';
@@ -56,8 +57,12 @@ const ProfileRelationshipList: React.FC<Props> = ({
   }, [page]);
 
   const renderData = () => {
-    if (!hasData) {
-      return <div>No {type} found</div>;
+    if (loading) {
+      return <div>Loading...</div>;
+    }
+
+    if (!hasData && !loading) {
+      return <Template code={type === 'contacts' ? 'Profile-NoContactsFound' : 'Profile-NoCasesFound'} />;
     }
 
     return <>{data.map((d: ProfileTypes.ProfileRelationshipTypes) => renderItem(d))}</>;
