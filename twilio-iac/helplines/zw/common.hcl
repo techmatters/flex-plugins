@@ -30,6 +30,14 @@ locals {
         "target_workers" = "1==1",
         "friendly_name"  = "Childline Zimbabwe"
       },
+      harare : {
+        "target_workers" = "ac_hostname=="196.27.102.1"",
+        "friendly_name"  = "Harare"
+      },
+      bulawayo : {
+        "target_workers" = "ac_hostname=="196.27.102.1",
+        "friendly_name"  = "Bulawayo"
+      },
       survey : {
         "target_workers" = "1==0",
         "friendly_name"  = "Survey"
