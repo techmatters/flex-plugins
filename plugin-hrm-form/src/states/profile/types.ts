@@ -79,7 +79,6 @@ export type ProfileAsyncCommon<t> = {
 
 export type ProfileAsyncRelationships = {
   [type in ProfileRelationships]: ProfileAsyncCommon<ProfileRelationshipTypes[]> & {
-    exhausted: boolean;
     page: number;
     total?: number;
   };
@@ -105,12 +104,10 @@ export const newProfileEntry: ProfileEntry = {
   loading: false,
   data: undefined,
   contacts: {
-    exhausted: false,
     loading: false,
     page: 0,
   },
   cases: {
-    exhausted: false,
     loading: false,
     page: 0,
   },
