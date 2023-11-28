@@ -45,7 +45,6 @@ import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { connectedCaseBase, namespace } from '../../states/storeNamespaces';
 import NavigableContainer from '../NavigableContainer';
-import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ConnectToCaseButton from './ConnectToCaseButton';
 import { isStandaloneITask } from './Case';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
@@ -135,6 +134,7 @@ const CaseHome: React.FC<Props> = ({
 
   const showConnectToCaseButton = Boolean(
     taskContact &&
+      !taskContact.caseId &&
       !isConnectedToTaskContact &&
       connectedCase.connectedContacts?.length &&
       canForCase(PermissionActions.UPDATE_CASE_CONTACTS) &&
