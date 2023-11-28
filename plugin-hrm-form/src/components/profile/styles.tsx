@@ -66,7 +66,7 @@ ProfileSectionSubtitle.displayName = 'ProfileSectionSubtitle';
 /**
  * ProfileFlags
  */
-export const ProfileFlagsView = styled('button')`
+export const ProfileFlagsEditButton = styled('button')`
   background-color: ${HrmTheme.colors.inputBackgroundColor};
   display: flex;
   border: none;
@@ -81,7 +81,7 @@ export const ProfileFlagsView = styled('button')`
     border: 1px solid rgba(0, 59, 129, 0.37);
   }
 `;
-ProfileFlagsView.displayName = 'ProfileFlagsView';
+ProfileFlagsEditButton.displayName = 'ProfileFlagsEditButton';
 
 type ColorProps = {
   fillColor?: string;
@@ -142,12 +142,12 @@ export const CloseIconButton = withStyles({
 })(CloseIcon);
 
 export const ProfileFlagsUnorderedList = styled('ul')`
-  display: 'flex';
+  display: flex;
 `;
 ProfileFlagsUnorderedList.displayName = 'ProfileFlagsUnorderedList';
 
 export const ProfileFlagsListItem = styled('li')`
-  display: 'inline-block';
+  display: inline-block;
 `;
 ProfileFlagsListItem.displayName = 'ProfileFlagsListItem';
 
