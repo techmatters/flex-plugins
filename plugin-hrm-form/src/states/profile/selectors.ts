@@ -17,7 +17,6 @@
 import { RootState } from '..';
 import { namespace, profileBase } from '../storeNamespaces';
 import * as t from './types';
-import { PAGE_SIZE } from './profiles';
 
 export type ProfileIdParam = t.Profile['id'] | undefined;
 export type IdentifierIdentifierParam = t.Identifier['identifier'] | undefined;
@@ -60,23 +59,8 @@ export const selectProfileSectionById = (state: RootState, profileId: ProfileIdP
     .values()
     .find(section => section.data?.id === sectionId);
 
-type SelectProfileRelationshipsByPageParams = {
-  profileId: ProfileIdParam;
-  type: t.ProfileRelationships;
-  page: number;
-};
-
 export const selectProfileRelationshipsByType = (
   state: RootState,
   profileId: ProfileIdParam,
   type: t.ProfileRelationships,
 ) => selectProfileById(state, profileId)?.[type];
-
-// export const selectProfileRelationshipsByPage = (
-//   state: RootState,
-//   { profileId, type, page }: SelectProfileRelationshipsByPageParams,
-// ) => {
-//   const data = selectProfileRelationshipsByType(state, profileId, type)?.data;
-//   console.log('>>> selectProfileRelationshipsByPage pageData', { data, page });
-//   return data?.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
-// };
