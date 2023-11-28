@@ -52,7 +52,7 @@ ${
         },
         "workflow": workflow_sids["master"],
         "channel": task_channel_sids["voice"],
-        "attributes": "{ "type": "inbound", "name_old": "{{trigger.call.From}}","name":"{{trigger.call.From | replace: 'sip:', '' | split: '@' | first}}","ignoreAgent":"", "transferTargetType":"","channelType":"voice", "aseloCallId": "{{trigger.call.SipHeader_X-Aselo-Call-Id}}"}"
+        "attributes": "{ "type": "inbound", "name_old": "{{trigger.call.From}}","name":"{{trigger.call.From | replace: 'sip:', '' | split: '@' | first}}","ignoreAgent":"", "transferTargetType":"","channelType":"voice", "aseloCallId": "{{trigger.call.SipHeader_X-Aselo-Call-Id}}","aseloHostId": "{{trigger.call.SipHeader_X-Aselo-Call-Id | split: ':' | last}}"}"
       }
     }
   ],

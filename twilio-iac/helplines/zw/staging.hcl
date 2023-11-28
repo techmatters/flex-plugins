@@ -6,7 +6,7 @@ locals {
 
   local_config = {
 
-    custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true OR  twilioNumber == 'messenger:103260519220529'"
+    custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true OR  twilioNumber == 'messenger:103260519220529' OR aseloHostId == 'zw1' OR aseloHostId == 'zw2'"
 
 
     flow_vars = {
