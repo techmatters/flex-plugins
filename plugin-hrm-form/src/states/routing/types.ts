@@ -93,7 +93,6 @@ type CaseCoreRoute = {
   route: 'case';
   autoFocus?: boolean;
   isCreating?: boolean;
-  // action?: 'select-case';
 };
 
 type CaseHomeRoute = CaseCoreRoute &
