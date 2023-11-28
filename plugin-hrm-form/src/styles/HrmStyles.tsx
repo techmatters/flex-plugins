@@ -621,7 +621,7 @@ type PaginationRowProps = {
 export const PaginationRow = styled('nav')<PaginationRowProps>`
   display: flex;
   justify-content: center;
-  background-color: ${HrmTheme.colors.base2};
+  background-color: transparent;
   padding: 40px auto;
   margin: 40px auto;
 `;
@@ -1359,3 +1359,30 @@ export const TypingIndicatorText = styled(FontOpenSans)`
   text-overflow: ellipsis;
 `;
 TypingIndicatorText.displayName = 'TypingIndicatorText';
+
+export const HorizontalLine = styled('hr')`
+  border: 0;
+  height: 1px;
+  background-color: #c6cad7;
+  margin: 0;
+`;
+HorizontalLine.displayName = 'HorizontalLine';
+
+// Used in search results and viewing records of an identifier(View Records in Yello Banner) regardless of client profiles
+export const PreviewWrapper = styled(Flex)`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 5px 20px 10px 20px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  border-color: #d8d8d8;
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 4px;
+`;
+
+PreviewWrapper.displayName = 'PreviewWrapper';

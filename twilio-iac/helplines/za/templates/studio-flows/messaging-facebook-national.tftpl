@@ -69,7 +69,7 @@ ${
             "event": "noMatch"
             },
             {
-            "next": "fb_redirect",
+            "next": "timeout",
             "event": "match",
             "conditions": [
                 {
@@ -117,30 +117,6 @@ ${
             "x": 100,
             "y": -200
             }
-        }
-        },
-        {
-        "name": "fb_redirect",
-        "type": "send-message",
-        "transitions": [
-            {
-            "next": "timeout",
-            "event": "sent"
-            },
-            {
-            "event": "failed"
-            }
-        ],
-        "properties": {
-            "offset": {
-            "x": 160,
-            "y": 130
-            },
-            "service": "{{trigger.message.InstanceSid}}",
-            "channel": "{{trigger.message.ChannelSid}}",
-            "from": "{{flow.channel.address}}",
-            "to": "{{contact.channel.address}}",
-            "body": "Thank you for your message. Your message has reached the Childline National Office based in Durban. For us to understand the situation a little better, could you kindly send us a message detailing the situation you require advice on, your age and the area you are in and we shall pass these on to our counsellors as we do not have counsellors on Facebook, or alternatively, refer you to services closer to you. If you would like to speak to a counsellor, you may call us 24X7 on our Tollfree Crisisline - 116. Our Tollfree Crisisline is free from all networks. Sometimes it does get busy due to our high volume of calls. Also, you may also chat to an online counsellor on our website, Monday-Friday, 2-6pm (excluding Public Holidays) by clicking on this link: http://chat.childlinesa.org.za/status.php\nThank you for taking the first step in contacting us.\nKind Regards, Childline SA"
         }
         },
         {

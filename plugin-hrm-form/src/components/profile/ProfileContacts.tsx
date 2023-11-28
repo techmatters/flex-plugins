@@ -17,7 +17,7 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { getPermissionsForContact, PermissionActions } from '../../permissions';
-import { Contact, RouterTask, Profile } from '../../types/types';
+import { Contact } from '../../types/types';
 import ContactPreview from '../search/ContactPreview';
 import * as ProfileTypes from '../../states/profile/types';
 import * as RoutingActions from '../../states/routing/actions';
@@ -36,9 +36,7 @@ const ProfileContacts: React.FC<Props> = ({ profileId, viewContactDetails }) => 
     };
 
     return (
-      <div style={{ alignSelf: 'center' }}>
-        <ContactPreview key={`ContactPreview-${contact.id}`} contact={contact} handleViewDetails={handleViewDetails} />
-      </div>
+      <ContactPreview key={`ContactPreview-${contact.id}`} contact={contact} handleViewDetails={handleViewDetails} />
     );
   };
 

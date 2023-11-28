@@ -16,7 +16,7 @@
 
 import React, { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { TextField } from '@material-ui/core';
+import startCase from 'lodash/startCase';
 
 import NavigableContainer from '../../NavigableContainer';
 import { ProfileSection } from '../../../types/types';
@@ -25,7 +25,6 @@ import {
   StyledNextStepButton,
   Container,
   Box,
-  TwoColumnLayout,
   ColumnarBlock,
   ColumnarContent,
   FormTextArea,
@@ -57,12 +56,12 @@ const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props)
   };
 
   return (
-    <NavigableContainer titleCode={`Edit ${sectionType}`} task={task}>
+    <NavigableContainer titleCode={`Edit ${startCase(sectionType)}`} task={task}>
       <Container>
         <Box>
           <ColumnarBlock>
             <ColumnarContent>
-              <FormTextArea defaultValue={content} onChange={e => setContent(e.target.value)} rows={10} width={500} />
+              <FormTextArea defaultValue={content} onChange={e => setContent(e.target.value)} rows={20} width={500} />
             </ColumnarContent>
           </ColumnarBlock>
         </Box>

@@ -24,7 +24,7 @@ import { ProfileFlag } from '../../../types/types';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
 import { useProfileFlags } from '../../../states/profile/hooks';
 import { RootState } from '../../../states';
-import { StyledFlagEditList } from '../styles';
+import { ProfileFlagEditList } from '../styles';
 import ProfileFlagList from './ProfileFlagList';
 import { ProfileCommonProps } from '../types';
 
@@ -86,7 +86,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
 
   return (
     <>
-      <StyledFlagEditList title="Edit statuses" ref={anchorRef}>
+      <ProfileFlagEditList title="Edit statuses" ref={anchorRef}>
         <Box display="flex" justifyContent="space-between">
           <ProfileFlagList {...props} enableDisassociate={true} disassociateRef={disassociateRef} />
           <Box alignItems="center">
@@ -103,7 +103,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
             />
           </Box>
         </Box>
-      </StyledFlagEditList>
+      </ProfileFlagEditList>
       <Popper open={open} anchorEl={anchorRef.current} placement="bottom-start" ref={modalRef}>
         <Paper>
           <StyledMenuList

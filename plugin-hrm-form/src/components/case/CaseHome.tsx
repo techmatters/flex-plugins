@@ -45,7 +45,6 @@ import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { connectedCaseBase, namespace } from '../../states/storeNamespaces';
 import NavigableContainer from '../NavigableContainer';
-import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ConnectToCaseButton from './ConnectToCaseButton';
 import { isStandaloneITask } from './Case';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
@@ -54,12 +53,12 @@ import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
 import { newCloseModalAction } from '../../states/routing/actions';
 import { BannerContainer, Text } from '../caseMergingBanners/styles';
 import InfoIcon from '../caseMergingBanners/InfoIcon';
+import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
   definitionVersion: DefinitionVersion;
   caseDetails: CaseDetails;
-  isCreating?: boolean;
   handleClose?: () => void;
   handleSaveAndEnd: () => void;
   handleUpdate: () => void;
@@ -75,13 +74,13 @@ const CaseHome: React.FC<Props> = ({
   openModal,
   closeModal,
   connectCaseToTaskContact,
-  isCreating,
   handleClose,
   handleSaveAndEnd,
   caseDetails,
   can,
   connectedCaseState,
   taskContact,
+  routing,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   if (!connectedCaseState) return null; // narrow type before deconstructing
@@ -107,6 +106,8 @@ const CaseHome: React.FC<Props> = ({
 
   const { caseForms } = definitionVersion;
   const caseLayouts = definitionVersion.layoutVersion.case;
+
+  const isCreating = routing.route === 'case' && routing.isCreating;
 
   const {
     incidents,
@@ -135,6 +136,7 @@ const CaseHome: React.FC<Props> = ({
 
   const showConnectToCaseButton = Boolean(
     taskContact &&
+      !taskContact.caseId &&
       !isConnectedToTaskContact &&
       connectedCase.connectedContacts?.length &&
       canForCase(PermissionActions.UPDATE_CASE_CONTACTS) &&
@@ -340,7 +342,9 @@ const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
   const caseState: CaseState = state[namespace][connectedCaseBase];
   const connectedCaseState = caseState.tasks[task.taskSid];
   const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
-  return { connectedCaseState, taskContact };
+  const routing = getCurrentTopmostRouteForTask(state[namespace].routing, task.taskSid);
+
+  return { connectedCaseState, taskContact, routing };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: CaseHomeProps) => ({

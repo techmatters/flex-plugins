@@ -21,7 +21,14 @@ import { Template } from '@twilio/flex-ui';
 import { ProfileFlag } from '../../../types/types';
 import { useProfileFlags } from '../../../states/profile/hooks';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
-import { CloseIconButton, DisassociateButton, FlagPill, StyledBlockOutlinedIcon } from '../styles';
+import {
+  CloseIconButton,
+  DisassociateButton,
+  FlagPill,
+  StyledBlockOutlinedIcon,
+  ProfileFlagsUnorderedList,
+  ProfileFlagsListItem,
+} from '../styles';
 import { RootState } from '../../../states';
 import { ProfileCommonProps } from '../types';
 
@@ -53,18 +60,18 @@ const ProfileFlagsList: React.FC<Props> = ({ disassociateRef, enableDisassociate
 
   const renderPill = (flag: ProfileFlag) => {
     return (
-      <li style={{ display: 'inline-block' }} key={flag.name}>
+      <ProfileFlagsListItem key={flag.name}>
         <FlagPill title={`${flag.name} Status`} key={flag.name} fillColor="#F5EEF4" isBlocked={flag.name === 'blocked'}>
           {flag.name === 'blocked' && <StyledBlockOutlinedIcon />}
           {flag.name}
           {renderDisassociate(flag)}
         </FlagPill>
-      </li>
+      </ProfileFlagsListItem>
     );
   };
 
   return (
-    <ul style={{ display: 'flex' }} aria-label="Profile Statuses">
+    <ProfileFlagsUnorderedList aria-label="Profile Statuses">
       {profileFlags?.length ? (
         profileFlags.map(renderPill)
       ) : (
@@ -74,7 +81,7 @@ const ProfileFlagsList: React.FC<Props> = ({ disassociateRef, enableDisassociate
           </FlagPill>
         </li>
       )}
-    </ul>
+    </ProfileFlagsUnorderedList>
   );
 };
 
