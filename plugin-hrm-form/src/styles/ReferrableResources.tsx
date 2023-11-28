@@ -17,9 +17,8 @@
 import { styled } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 
-import { Box, Column, Flex, Row, FontOpenSans, StyledNextStepButton } from './HrmStyles';
+import { Box, Column, Flex, Row, FontOpenSans, StyledNextStepButton, PreviewWrapper } from './HrmStyles';
 import HrmTheme from './HrmTheme';
-import { PreviewWrapper } from './search';
 
 export const ResourcePreviewWrapper = styled(PreviewWrapper)`
   width: 730px;

@@ -16,7 +16,7 @@
 
 import React, { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { TextField } from '@material-ui/core';
+import startCase from 'lodash/startCase';
 
 import NavigableContainer from '../../NavigableContainer';
 import { ProfileSection } from '../../../types/types';
@@ -25,7 +25,6 @@ import {
   StyledNextStepButton,
   Container,
   Box,
-  TwoColumnLayout,
   ColumnarBlock,
   ColumnarContent,
   FormTextArea,
@@ -55,13 +54,9 @@ const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props)
     updateProfileSection({ profileId, sectionType, content, sectionId });
     closeModal();
   };
-  const capitalizedSectionType = sectionType
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
 
   return (
-    <NavigableContainer titleCode={`Edit ${capitalizedSectionType}`} task={task}>
+    <NavigableContainer titleCode={`Edit ${startCase(sectionType)}`} task={task}>
       <Container>
         <Box>
           <ColumnarBlock>

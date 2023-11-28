@@ -25,23 +25,6 @@ import { Flex, Row, FontOpenSans, BottomButtonBar, TabbedFormsContainer, StyledN
 import HrmTheme from '../HrmTheme';
 
 // CaseViewer Styles
-export const PreviewWrapper = styled(Flex)`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin-top: 10px;
-  padding: 5px 20px 10px 20px;
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  background-color: #ffffff;
-  border-color: #d8d8d8;
-  border-style: solid;
-  border-width: 2px;
-  border-radius: 4px;
-`;
-
-PreviewWrapper.displayName = 'PreviewWrapper';
 
 export const ConfirmContainer = styled(Paper)`
   display: flex;
