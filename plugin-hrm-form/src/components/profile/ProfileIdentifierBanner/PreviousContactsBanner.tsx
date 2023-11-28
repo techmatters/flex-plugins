@@ -101,6 +101,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   if (!shouldDisplayBanner) return null;
 
   const handleClickViewRecords = async () => {
+    performSearch();
     viewPreviousContacts();
     openContactSearchResults();
   };

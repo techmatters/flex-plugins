@@ -52,13 +52,13 @@ import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
 import { newCloseModalAction } from '../../states/routing/actions';
 import { BannerContainer, Text } from '../caseMergingBanners/styles';
 import InfoIcon from '../caseMergingBanners/InfoIcon';
+import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
   definitionVersion: DefinitionVersion;
   caseDetails: CaseDetails;
-  isCreating?: boolean;
   handleClose?: () => void;
   handleSaveAndEnd: () => void;
   handleUpdate: () => void;
@@ -74,13 +74,13 @@ const CaseHome: React.FC<Props> = ({
   openModal,
   closeModal,
   connectCaseToTaskContact,
-  isCreating,
   handleClose,
   handleSaveAndEnd,
   caseDetails,
   can,
   connectedCaseState,
   taskContact,
+  routing,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   if (!connectedCaseState) return null; // narrow type before deconstructing
@@ -106,6 +106,8 @@ const CaseHome: React.FC<Props> = ({
 
   const { caseForms } = definitionVersion;
   const caseLayouts = definitionVersion.layoutVersion.case;
+
+  const isCreating = routing.route === 'case' && routing.isCreating;
 
   const {
     incidents,
@@ -134,6 +136,7 @@ const CaseHome: React.FC<Props> = ({
 
   const showConnectToCaseButton = Boolean(
     taskContact &&
+      !taskContact.caseId &&
       !isConnectedToTaskContact &&
       connectedCase.connectedContacts?.length &&
       canForCase(PermissionActions.UPDATE_CASE_CONTACTS) &&
@@ -247,7 +250,7 @@ const CaseHome: React.FC<Props> = ({
         )}
         <Box marginTop="13px">
           <CaseDetailsComponent
-            caseId={id.toString()}
+            caseId={id}
             statusLabel={statusLabel}
             can={can}
             counselor={caseCounselor}
@@ -262,6 +265,7 @@ const CaseHome: React.FC<Props> = ({
             definitionVersion={definitionVersion}
             isOrphanedCase={!contact}
             editCaseSummary={onEditCaseSummaryClick}
+            isCreating={isCreating}
           />
         </Box>
         <Box margin="25px 0 0 0">
@@ -337,7 +341,9 @@ CaseHome.displayName = 'CaseHome';
 const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
   const connectedCaseState = selectCurrentRouteCaseState(state, task.taskSid);
   const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
-  return { connectedCaseState, taskContact };
+  const routing = getCurrentTopmostRouteForTask(state[namespace].routing, task.taskSid);
+
+  return { connectedCaseState, taskContact, routing };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: CaseHomeProps) => ({

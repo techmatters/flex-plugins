@@ -118,7 +118,7 @@ const CasePreview: React.FC<Props> = ({
     );
   }
   return (
-    <Flex>
+    <Flex width="100%">
       <PreviewWrapper>
         <CaseHeader
           caseId={id}

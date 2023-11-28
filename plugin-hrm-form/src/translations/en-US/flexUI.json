@@ -61,6 +61,10 @@
   "SearchResultsIndex-ViewCases": "View Cases",
   "Contact-ViewButton": "View",
   "SearchResultsIndex-SelectCase":"Select Case",
+  "SearchResultsIndex-NoCasesFound":"No {{type}} Found",
+  "SearchResultsIndex-SearchAgainForCase":"Search again for a {{type}}",
+  "SearchResultsIndex-SaveToNewCase":"save this contact to a new case",
+  "SearchResultsIndex-Or":"or",
 
   "StandaloneSearch-SideNav": "Search",
   "CaseHeader-Opened": "Opened",
@@ -500,5 +504,7 @@
   "CaseMerging-ContactAddedTo": "Contact added to",
   "CaseMerging-AddContactToCase": "Add Contact to Case?",
   "CaseMerging-RemoveFromCase": "Remove from Case",
-  "CaseMerging-ContactRemovedFromCase": "Contact removed from case"
+  "CaseMerging-ContactRemovedFromCase": "Contact removed from case",
+  "CaseMerging-CaseCreatedAndContactAdded": "Case #{{caseId}} created and contact added",
+  "CaseMerging-CancelCase": "Cancel Case"
 }

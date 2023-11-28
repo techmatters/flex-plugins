@@ -18,10 +18,10 @@ import { createAsyncAction, createReducer } from 'redux-promise-middleware-actio
 import { DefinitionVersionId } from 'hrm-form-definitions';
 import { CreateHandlerMap } from 'redux-promise-middleware-actions/lib/reducers';
 
-import { createCase, updateCase } from '../../services/CaseService';
+import { createCase, updateCase, cancelCase } from '../../services/CaseService';
 import { Case } from '../../types/types';
-import { UPDATE_CASE_ACTION, CREATE_CASE_ACTION } from './types';
-import type { HrmState } from '..';
+import { UPDATE_CASE_ACTION, CREATE_CASE_ACTION, CANCEL_CASE_ACTION, SavedCaseStatus, CaseState } from './types';
+import type { RootState, HrmState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { connectToCase } from '../../services/ContactService';
 import { connectToCaseAsyncAction } from '../contacts/saveContact';
@@ -48,6 +48,21 @@ export const updateCaseAsyncAction = createAsyncAction(
     return { taskSid, case: await updateCase(caseId, body) };
   },
 );
+
+export const cancelCaseAsyncAction = createAsyncAction(
+  CANCEL_CASE_ACTION,
+  async (caseId: Case['id'], taskSid: string): Promise<{ taskSid: string; case: Case }> => {
+    await cancelCase(caseId);
+    return { taskSid, case: null };
+  },
+);
+
+// In order to use the createReducer helper, we need to combine the case state and the root state into a single object
+// Perhaps we should just pass the root state to simplify things?
+export type SaveCaseReducerState = {
+  state: CaseState;
+  rootState: RootState['plugin-hrm-form'];
+};
 
 // We need to return a state object of the same type as we are passed, so we need to return the rootState even though we don't change it.
 const handlePendingAction = (handleAction, asyncAction) =>
@@ -109,6 +124,10 @@ export const saveCaseReducer = (initialState: HrmState): ((state: HrmState, acti
     handlePendingAction(handleAction, createCaseAsyncAction.pending),
     handleFulfilledAction(handleAction, createCaseAsyncAction.fulfilled),
     handleRejectedAction(handleAction, createCaseAsyncAction.rejected),
+
+    handlePendingAction(handleAction, cancelCaseAsyncAction.pending),
+    handleFulfilledAction(handleAction, cancelCaseAsyncAction.fulfilled),
+    handleRejectedAction(handleAction, cancelCaseAsyncAction.rejected),
 
     handleConnectToCaseFulfilledAction(handleAction, connectToCaseAsyncAction.fulfilled),
   ]);

@@ -33,6 +33,7 @@ import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { namespace } from '../../../states/storeNamespaces';
 import { RecursivePartial } from '../../RecursivePartial';
 import { RootState } from '../../../states';
+import selectContactByTaskSid from '../../../states/contacts/selectContactByTaskSid';
 
 jest.mock('../../../permissions', () => ({
   ...jest.requireActual('../../../permissions'),
@@ -40,6 +41,7 @@ jest.mock('../../../permissions', () => ({
   getPermissionsForContact: jest.fn(() => ({ can: () => true })),
 }));
 
+jest.mock('../../../states/contacts/selectContactByTaskSid');
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
@@ -372,6 +374,9 @@ describe('useState mocked', () => {
   });
 
   each([true, false]).test('Click close button on case', async isCreating => {
+    (selectContactByTaskSid as jest.Mock).mockImplementation(
+      (state, taskSid) => initialState['plugin-hrm-form']?.activeContacts?.existingContacts?.contact1,
+    );
     const store = mockStore(initialState);
     ownProps.isCreating = isCreating;
 
