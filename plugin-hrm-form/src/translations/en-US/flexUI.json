@@ -61,6 +61,10 @@
   "SearchResultsIndex-ViewCases": "View Cases",
   "Contact-ViewButton": "View",
   "SearchResultsIndex-SelectCase":"Select Case",
+  "SearchResultsIndex-NoCasesFound":"No {{type}} Found",
+  "SearchResultsIndex-SearchAgainForCase":"Search again for a {{type}}",
+  "SearchResultsIndex-SaveToNewCase":"save this contact to a new case",
+  "SearchResultsIndex-Or":"or",
 
   "StandaloneSearch-SideNav": "Search",
   "CaseHeader-Opened": "Opened",
