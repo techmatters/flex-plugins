@@ -17,9 +17,10 @@
 import React, { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import startCase from 'lodash/startCase';
+import { ProfileSection } from 'hrm-form-definitions';
 
+import type * as t from '../../../types/types';
 import NavigableContainer from '../../NavigableContainer';
-import { ProfileSection } from '../../../types/types';
 import {
   Flex,
   StyledNextStepButton,
@@ -35,19 +36,18 @@ import { ProfileCommonProps } from '../types';
 import * as RoutingActions from '../../../states/routing/actions';
 
 type OwnProps = ProfileCommonProps & {
-  sectionType: ProfileSection['sectionType'];
+  sectionType: t.ProfileSection['sectionType'];
 };
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props) => {
   const { section, createProfileSection, updateProfileSection } = useEditProfileSection({ profileId, sectionType });
-  const sectionTypesForms = useProfileSectionTypes();
-  const sectionTypesForm: any = sectionTypesForms.find(sectionTypesForm => sectionTypesForm.name === sectionType);
-  console.log('>>> ProfileSectionEdit form definition', { sectionTypesForms, sectionTypesForm });
+  const sectionTypesForms: ProfileSection[] = useProfileSectionTypes();
+  const sectionTypesForm = sectionTypesForms.find(sectionTypesForm => sectionTypesForm.name === sectionType);
 
   const [content, setContent] = useState<string>(section?.content || '');
-  const sectionId: ProfileSection['id'] = section?.id;
+  const sectionId: t.ProfileSection['id'] = section?.id;
 
   const handleEdit = () => {
     if (!sectionId) {
