@@ -15,7 +15,7 @@
  */
 
 import { RootState } from '..';
-import { configurationBase, namespace, profileBase } from '../storeNamespaces';
+import { namespace, profileBase } from '../storeNamespaces';
 import * as t from './types';
 
 export type ProfileIdParam = t.Profile['id'] | undefined;
@@ -41,9 +41,6 @@ export const selectIdentifierByIdentifier = (state: RootState, identifier: Ident
   Object.values(selectProfileState(state)?.identifiers).find(entry => entry.data?.identifier === identifier);
 
 export const selectAllProfileFlags = (state: RootState) => selectProfileState(state).profileFlags;
-
-export const selectProfileSectionsFromFormDefintions = (state: RootState) =>
-  state[namespace][configurationBase].currentDefinitionVersion?.profileForms?.Sections;
 
 export const selectAllProfileSectionsFromProfile = (state: RootState, profileId: ProfileIdParam) =>
   selectProfileById(state, profileId)?.data?.profileSections;

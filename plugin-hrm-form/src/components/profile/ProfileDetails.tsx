@@ -21,7 +21,8 @@ import { Icon, Template } from '@twilio/flex-ui';
 import { Box, HiddenText, Row, HorizontalLine } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
-import { useSectionTypes } from '../../states/profile/hooks/useProfileSection';
+import { useProfileSectionByType } from '../../states/profile/hooks/useProfileSection';
+import { useProfileSectionTypes } from '../../states/configuration/hooks/useProfileSection';
 import { ProfileCommonProps } from './types';
 import {
   DetailsWrapper,
@@ -66,8 +67,10 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
       renderComponent: () => <ProfileFlagSection profileId={profileId} task={task} />,
     },
   ];
-  const sectionTypesForms = useSectionTypes();
-  console.log('>>> ProfileDetails sectionTypesForms', sectionTypesForms);
+
+  const sectionTypesForms = useProfileSectionTypes();
+  // const sectionTypesForms = useSectionTypes();
+  // console.log('>>> ProfileDetails sectionTypesForms', sectionTypesForms);
 
   const sectionSections: Section[] = sectionTypesForms.map(sectionType => ({
     title: `${sectionType.name}`,

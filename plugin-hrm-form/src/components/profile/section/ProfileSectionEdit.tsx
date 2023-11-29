@@ -29,7 +29,8 @@ import {
   ColumnarContent,
   FormTextArea,
 } from '../../../styles/HrmStyles';
-import { useEditProfileSection, useSectionTypes } from '../../../states/profile/hooks/useProfileSection';
+import { useEditProfileSection } from '../../../states/profile/hooks/useProfileSection';
+import { useProfileSectionTypes } from '../../../states/configuration/hooks/useProfileSection';
 import { ProfileCommonProps } from '../types';
 import * as RoutingActions from '../../../states/routing/actions';
 
@@ -41,7 +42,7 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props) => {
   const { section, createProfileSection, updateProfileSection } = useEditProfileSection({ profileId, sectionType });
-  const sectionTypesForms = useSectionTypes();
+  const sectionTypesForms = useProfileSectionTypes();
   const sectionTypesForm: any = sectionTypesForms.find(sectionTypesForm => sectionTypesForm.name === sectionType);
   console.log('>>> ProfileSectionEdit form definition', { sectionTypesForms, sectionTypesForm });
 

@@ -23,9 +23,6 @@ import * as ProfileActions from '../profiles';
 import * as ProfileSelectors from '../selectors';
 import { RootState } from '../..';
 
-export const useSectionTypes = () =>
-  useSelector((state: RootState) => ProfileSelectors.selectProfileSectionsFromFormDefintions(state));
-
 export type useProfileSectionByType = {
   profileId: Profile['id'];
   sectionType: string;

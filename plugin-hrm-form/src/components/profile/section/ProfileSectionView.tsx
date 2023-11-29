@@ -21,15 +21,7 @@ import { useProfileSectionByType } from '../../../states/profile/hooks/useProfil
 import { ProfileSectionTextContent, SectionText } from '../styles';
 
 type OwnProps = ProfileCommonProps & {
-  sectionType: any;
-  // sectionType: {
-  //   name: string;
-  //   label: string;
-  //   type: string;
-  //   rows: number;
-  //   placeholder: string;
-  //   width: number;
-  // };
+  sectionType: ProfileSection
 };
 
 const ProfileSectionView = ({ profileId, sectionType }: OwnProps) => {
