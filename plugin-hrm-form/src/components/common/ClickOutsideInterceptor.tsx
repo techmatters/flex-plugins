@@ -16,6 +16,8 @@
 
 import React, { useEffect, useRef } from 'react';
 
+import { AriaLiveHiddenText } from '../../styles/HrmStyles';
+
 type CommonTypes = {
   onClick: (event: MouseEvent) => void;
   ignoreRefs?: React.RefObject<HTMLElement>[];
@@ -31,27 +33,41 @@ type UseClickOutsideParams = CommonTypes & {
 
 const useClickOutside = ({ ref, onClick, ignoreRefs }: UseClickOutsideParams) => {
   useEffect(() => {
-    const listener = event => {
-      if (
-        !ref.current ||
-        ref.current.contains(event.target) ||
-        ignoreRefs?.some(r => r.current?.contains(event.target))
-      ) {
-        return;
-      }
+    const isTarget = event =>
+      !ref.current || ref.current.contains(event.target) || ignoreRefs?.some(r => r.current?.contains(event.target));
+
+    const mousedownListener = event => {
+      if (isTarget(event)) return;
       onClick(event);
     };
-    document.addEventListener('mousedown', listener);
-    return () => {
-      document.removeEventListener('mousedown', listener);
+
+    const keydownListener = event => {
+      if (!isTarget(event) || event.key !== 'Escape') return;
+
+      onClick(event);
     };
+
+    document.addEventListener('mousedown', mousedownListener);
+    document.addEventListener('keydown', keydownListener);
+    return () => {
+      document.removeEventListener('mousedown', mousedownListener);
+      document.removeEventListener('keydown', keydownListener);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref, onClick, ignoreRefs]);
 };
 
 const ClickOutsideInterceptor = ({ children, ignoreRefs, onClick }: Props) => {
   const ref = useRef(null);
   useClickOutside({ ref, onClick, ignoreRefs });
-  return <div ref={ref}>{children}</div>;
+  return (
+    <div ref={ref}>
+      <AriaLiveHiddenText aria-live="polite">
+        You are in an interface that can be closed by hitting escape.
+      </AriaLiveHiddenText>
+      {children}
+    </div>
+  );
 };
 
 export default ClickOutsideInterceptor;

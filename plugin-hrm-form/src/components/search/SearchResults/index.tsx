@@ -286,22 +286,14 @@ const SearchResults: React.FC<Props> = ({
           >
             <TwilioTab
               key="SearchResultsIndex-Contacts"
-              label={
-                <Box style={{ minWidth: '340px' }}>
-                  <Template code="SearchResultsIndex-Contacts" />
-                </Box>
-              }
+              label={<Template code="SearchResultsIndex-Contacts" />}
               uniqueName="contact-results"
             >
               {[]}
             </TwilioTab>
             <TwilioTab
               key="SearchResultsIndex-Cases"
-              label={
-                <Box style={{ minWidth: '340px' }}>
-                  <Template code="SearchResultsIndex-Cases" />
-                </Box>
-              }
+              label={<Template code="SearchResultsIndex-Cases" />}
               uniqueName="case-results"
             >
               {[]}

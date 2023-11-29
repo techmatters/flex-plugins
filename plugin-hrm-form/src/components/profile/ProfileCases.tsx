@@ -40,15 +40,13 @@ const ProfileCases: React.FC<Props> = ({ profileId, task, counselorsHash, viewCa
     };
 
     return (
-      <div style={{ alignSelf: 'center' }}>
-        <CasePreview
-          key={`CasePreview-${cas.id}`}
-          task={task}
-          currentCase={cas}
-          counselorsHash={counselorsHash}
-          onClickViewCase={handleClickViewCase}
-        />
-      </div>
+      <CasePreview
+        key={`CasePreview-${cas.id}`}
+        task={task}
+        currentCase={cas}
+        counselorsHash={counselorsHash}
+        onClickViewCase={handleClickViewCase}
+      />
     );
   };
 

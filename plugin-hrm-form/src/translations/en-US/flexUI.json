@@ -386,7 +386,8 @@
   "PreviousContacts-ViewRecords": "View Records",
   "PreviousContacts-OnlyShowRecordsFrom": "Only show records from",
 
-  "Profile-DetailsHeader": "Overview",
+  "Profile-DetailsHeader-Overview": "Overview",
+  "Profile-DetailsHeader-Notes": "Notes",
   "Profile-IdentifiersHeader": "Identifiers",
   "Profile-NoIdentifiersFound": "No identifiers found",
   "Profile-StatusHeader": "Status",
@@ -395,7 +396,9 @@
   "Profile-EditNoteHeader": "Edit Note",
   "Profile-EditButton": "Edit",
   "Profile-FlagEditHeader": "Edit Status and Blocking",
-
+  "Profile-NoContactsFound": "No Contacts Found",
+  "Profile-NoCasesFound": "No Cases Found",
+  
   "UploadFile-ButtonText": "Upload File",
   "DownloadFile-ButtonText": "Download File",
   "CSAMReportForm-Header": "File a Report: Child Sexual Abuse Material",

@@ -16,6 +16,7 @@
 
 import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { Template } from '@twilio/flex-ui';
 
 import Pagination from '../Pagination';
 import asyncDispatch from '../../states/asyncDispatch';
@@ -38,7 +39,6 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileRelationshipList: React.FC<Props> = ({
   data,
-  loadedPage,
   loading,
   page,
   type,
@@ -50,14 +50,18 @@ const ProfileRelationshipList: React.FC<Props> = ({
   const hasData = data && data.length > 0;
 
   useEffect(() => {
-    if (loading || hasData) return;
-    loadRelationshipAsync(page, loadedPage);
+    if (loading) return;
+    loadRelationshipAsync(page);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   const renderData = () => {
-    if (!hasData) {
-      return <div>No {type} found</div>;
+    if (loading) {
+      return <div>Loading...</div>;
+    }
+
+    if (!hasData && page === 0) {
+      return <Template code={type === 'contacts' ? 'Profile-NoContactsFound' : 'Profile-NoCasesFound'} />;
     }
 
     return <>{data.map((d: ProfileTypes.ProfileRelationshipTypes) => renderItem(d))}</>;
@@ -80,33 +84,24 @@ const ProfileRelationshipList: React.FC<Props> = ({
 };
 
 const mapStateToProps = (state: RootState, { profileId, type }) => {
-  const { exhausted, loadedPage, loading, page, total } =
+  const { data, loading, page, total } =
     profileSelectors.selectProfileRelationshipsByType(state, profileId, type) || {};
-
-  const data = profileSelectors.selectProfileRelationshipsByPage(state, {
-    profileId,
-    type,
-    page,
-  });
 
   return {
     data,
-    loadedPage,
     loading,
-    exhausted,
     page,
     total,
   };
 };
 
 const mapDispatchToProps = (dispatch, { profileId, type }: OwnProps) => ({
-  loadRelationshipAsync: (page: number, loadedPage: number) =>
+  loadRelationshipAsync: (page: number) =>
     asyncDispatch(dispatch)(
       profileActions.loadRelationshipAsync({
         profileId,
         type,
         page,
-        loadedPage,
       }),
     ),
   updatePage: (page: number) =>

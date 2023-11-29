@@ -20,43 +20,45 @@ import ClickOutsideInterceptor from '../../common/ClickOutsideInterceptor';
 import ProfileFlagList from './ProfileFlagList';
 import ProfileFlagEdit from './ProfileFlagEdit';
 import { ProfileCommonProps } from '../types';
-import { ProfileFlagsView } from '../styles';
+import { ProfileFlagsEditButton } from '../styles';
 
 type Props = ProfileCommonProps;
 
 const ProfileFlagSection: React.FC<Props> = ({ profileId, task }) => {
   const [shouldEditProfileFlags, setShouldEditProfileFlags] = useState(false);
 
-  const openEditProfileFlags = () => setShouldEditProfileFlags(true);
-  const closeEditProfileFlags = () => setShouldEditProfileFlags(false);
-
   /**
    * We need a ref to attach to the modal so that we can ignore clicks on it
    * in the ClickOutsideInterceptor since it's not a direct child of the ProfileFlagSection
    */
   const profileFlagsModalRef = useRef(null);
+  const profileFlagsEditButtonRef = useRef(null);
 
-  return (
+  const openEditProfileFlags = () => setShouldEditProfileFlags(true);
+  const closeEditProfileFlags = () => {
+    setShouldEditProfileFlags(false);
+    // This won't actually focus on the button on click, but if escape is pressed it will
+    profileFlagsEditButtonRef.current?.focus();
+  };
+
+  const renderViewMode = () => (
+    <ProfileFlagsEditButton
+      title="Edit Statuses"
+      type="button"
+      onClick={openEditProfileFlags}
+      ref={profileFlagsEditButtonRef}
+    >
+      <ProfileFlagList profileId={profileId} task={task} />
+    </ProfileFlagsEditButton>
+  );
+
+  const renderEditMode = () => (
     <ClickOutsideInterceptor onClick={closeEditProfileFlags} ignoreRefs={[profileFlagsModalRef]}>
-      {shouldEditProfileFlags ? (
-        <ProfileFlagEdit
-          profileId={profileId}
-          task={task}
-          handleClose={closeEditProfileFlags}
-          modalRef={profileFlagsModalRef}
-        />
-      ) : (
-        <ProfileFlagsView
-          title="Edit Statuses"
-          type="button"
-          style={{ display: 'flex', width: '-webkit-fill-available' }}
-          onClick={openEditProfileFlags}
-        >
-          <ProfileFlagList profileId={profileId} task={task} />
-        </ProfileFlagsView>
-      )}
+      <ProfileFlagEdit profileId={profileId} task={task} modalRef={profileFlagsModalRef} />
     </ClickOutsideInterceptor>
   );
+
+  return shouldEditProfileFlags ? renderEditMode() : renderViewMode();
 };
 
 export default ProfileFlagSection;

@@ -14,11 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { ProfileCommonProps } from '../types';
 import { useProfileSectionByType } from '../../../states/profile/hooks/useProfileSection';
-import { SectionContentText, SectionText } from '../styles';
+import { ProfileSectionTextContent, SectionText } from '../styles';
 
 type OwnProps = ProfileCommonProps & {
   sectionType: {
@@ -35,9 +35,9 @@ const ProfileSectionView = ({ profileId, sectionType }: OwnProps) => {
   }
 
   return (
-    <SectionContentText hasContent={Boolean(section?.content)}>
+    <ProfileSectionTextContent hasContent={Boolean(section?.content)}>
       {section?.content?.length > 0 ? section?.content : `No ${sectionType.name}`}
-    </SectionContentText>
+    </ProfileSectionTextContent>
   );
 };
 

@@ -24,19 +24,18 @@ import { ProfileFlag } from '../../../types/types';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
 import { useProfileFlags } from '../../../states/profile/hooks';
 import { RootState } from '../../../states';
-import { StyledFlagEditList } from '../styles';
+import { ProfileFlagEditList } from '../styles';
 import ProfileFlagList from './ProfileFlagList';
 import { ProfileCommonProps } from '../types';
 
 type OwnProps = ProfileCommonProps & {
   modalRef?: React.RefObject<HTMLDivElement>;
-  handleClose: () => void;
 };
 
 type Props = OwnProps;
 
 const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
-  const { modalRef, profileId, handleClose } = props;
+  const { modalRef, profileId } = props;
 
   const { allProfileFlags, profileFlags, associateProfileFlag } = useProfileFlags(profileId);
   const { loading } = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId));
@@ -77,21 +76,20 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
   };
 
   function handleListKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'Tab') {
-      e.preventDefault();
-      associateButtonRef?.current?.focus();
-    } else if (e.key === 'Escape') {
-      associateButtonRef?.current?.focus();
-    }
+    const exitListKeys = ['Tab', 'Escape'];
+    if (!exitListKeys.includes(e.key)) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    associateButtonRef?.current?.focus();
   }
 
   return (
     <>
-      <StyledFlagEditList title="Edit statuses" ref={anchorRef}>
+      <ProfileFlagEditList title="Edit statuses" ref={anchorRef}>
         <Box display="flex" justifyContent="space-between">
           <ProfileFlagList {...props} enableDisassociate={true} disassociateRef={disassociateRef} />
           <Box alignItems="center">
-            <IconButton icon="Close" title="Done editing status" onClick={handleClose} />
             <IconButton
               id="associate-status-button"
               icon="ArrowDown"
@@ -105,7 +103,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
             />
           </Box>
         </Box>
-      </StyledFlagEditList>
+      </ProfileFlagEditList>
       <Popper open={open} anchorEl={anchorRef.current} placement="bottom-start" ref={modalRef}>
         <Paper>
           <StyledMenuList

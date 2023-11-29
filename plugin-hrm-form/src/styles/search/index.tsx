@@ -17,7 +17,6 @@
 import React from 'react';
 import { ButtonBase, Paper, Button, FormControlLabel, Switch, Collapse, withStyles } from '@material-ui/core';
 import { Tabs, TabsProps, styled } from '@twilio/flex-ui';
-import Folder from '@material-ui/icons/Folder';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import { ButtonProps } from '@material-ui/core/Button';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
@@ -26,23 +25,6 @@ import { Flex, Row, FontOpenSans, BottomButtonBar, TabbedFormsContainer, StyledN
 import HrmTheme from '../HrmTheme';
 
 // CaseViewer Styles
-export const PreviewWrapper = styled('div')`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin-top: 10px;
-  padding: 5px 20px 10px 20px;
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  background-color: #ffffff;
-  border-color: #d8d8d8;
-  border-style: solid;
-  border-width: 2px;
-  border-radius: 4px;
-`;
-
-PreviewWrapper.displayName = 'PreviewWrapper';
 
 export const ConfirmContainer = styled(Paper)`
   display: flex;
@@ -160,6 +142,14 @@ export const PreviewHeaderText = styled(FontOpenSans)`
 `;
 
 export const StyledTabs = styled((props: Partial<TabsProps> & { children?: any }) => <Tabs {...props} />)`
+  .Twilio-TabHeader {
+    flex-grow: 1;
+
+    button {
+      width: 100%;
+    }
+  }
+
   .Twilio-TabHeader-StateIndicator-Active {
     background-color: #0064e1;
     height: 1px;
@@ -167,6 +157,10 @@ export const StyledTabs = styled((props: Partial<TabsProps> & { children?: any }
   }
   .Twilio-Tabs-Labels {
     padding: 0;
+  }
+
+  .Twilio-Tab {
+    flex-direction: column;
   }
 `;
 StyledTabs.displayName = 'StyledTabs';
