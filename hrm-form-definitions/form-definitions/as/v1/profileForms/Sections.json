@@ -13,7 +13,7 @@
     "type": "textarea",
     "rows": 20,
     "width": 300,
-    "placeholder": "Enter actions taken"
+    "placeholder": "Enter recommended approach "
   },
   {
     "name": "details",
@@ -21,6 +21,6 @@
     "type": "textarea",
     "rows": 20,
     "width": 300,
-    "placeholder": "Enter recommendations"
+    "placeholder": "Enter Details"
   }
 ]
