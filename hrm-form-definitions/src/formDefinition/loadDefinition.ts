@@ -197,7 +197,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     ),
     fetchDefinition<Record<string, any>>('ReferenceData.json', {}),
     fetchDefinition<string[]>('BlockedEmojis.json', []),
-    fetchDefinition<ProfileSection[]>('profileForms/Sections.json'),
+    fetchDefinition<ProfileSection[]>('profileForms/Sections.json', []),
   ]);
 
   const { helplines } = helplineInformation;
