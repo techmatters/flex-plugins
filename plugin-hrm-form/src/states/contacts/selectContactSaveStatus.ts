@@ -17,7 +17,7 @@
 import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
 
-const selectIsContactCreating = (
+export const selectIsContactCreating = (
   {
     [namespace]: {
       activeContacts: { contactsBeingCreated },
@@ -26,4 +26,10 @@ const selectIsContactCreating = (
   taskSid: string,
 ) => contactsBeingCreated.has(taskSid);
 
-export default selectIsContactCreating;
+export const selectAnyContactIsSaving = ({
+  [namespace]: {
+    activeContacts: { contactsBeingCreated, existingContacts },
+  },
+}: RootState) =>
+  contactsBeingCreated.size > 0 ||
+  Object.values(existingContacts).some(({ metadata }) => metadata?.saveStatus === 'saving');

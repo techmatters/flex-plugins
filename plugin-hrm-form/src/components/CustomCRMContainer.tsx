@@ -34,6 +34,7 @@ import asyncDispatch from '../states/asyncDispatch';
 import { createContactAsyncAction } from '../states/contacts/saveContact';
 import { getHrmConfig } from '../hrmConfig';
 import { newContact } from '../states/contacts/contactState';
+import { selectAnyContactIsSaving } from '../states/contacts/selectContactSaveStatus';
 
 type OwnProps = {
   task?: ITask;
@@ -115,10 +116,11 @@ const CustomCRMContainer: React.FC<Props> = ({
 
 CustomCRMContainer.displayName = 'CustomCRMContainer';
 
-const mapStateToProps = ({
-  [namespace]: { routing, activeContacts, configuration, connectedCase },
-  flex,
-}: RootState) => {
+const mapStateToProps = (state: RootState) => {
+  const {
+    [namespace]: { routing, activeContacts, configuration, connectedCase },
+    flex,
+  } = state;
   const { selectedTaskSid } = flex.view;
   const { isAddingOfflineContact } = routing;
   const currentOfflineContact = Object.values(activeContacts.existingContacts).find(
@@ -131,7 +133,8 @@ const mapStateToProps = ({
     Object.values(connectedCase.tasks).some(
       ({ caseWorkingCopy }) =>
         caseWorkingCopy.caseSummary || Object.values(caseWorkingCopy.sections).some(section => section),
-    );
+    ) ||
+    selectAnyContactIsSaving(state);
   return {
     selectedTaskSid,
     isAddingOfflineContact,
