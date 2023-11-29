@@ -16,16 +16,16 @@
 
 import { omit } from 'lodash';
 
-import { CaseActionType, CaseState, CaseStateEntry } from './types';
+import { CaseActionType, CaseState } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import {
   CaseWorkingCopyActionType,
+  INIT_CASE_SUMMARY_WORKING_COPY,
   INIT_EXISTING_CASE_SECTION_WORKING_COPY,
   INIT_NEW_CASE_SECTION_WORKING_COPY,
-  INIT_CASE_SUMMARY_WORKING_COPY,
   initialiseCaseSectionWorkingCopyReducer,
-  initialiseNewCaseSectionWorkingCopyReducer,
   initialiseCaseSummaryWorkingCopyReducer,
+  initialiseNewCaseSectionWorkingCopyReducer,
   REMOVE_CASE_SECTION_WORKING_COPY,
   REMOVE_CASE_SUMMARY_WORKING_COPY,
   removeCaseSectionWorkingCopyReducer,
@@ -38,7 +38,11 @@ import {
 import { HrmState, RootState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { saveCaseReducer } from './saveCase';
-import { CaseListContentStateAction } from '../caseList/listContent';
+import {
+  CaseListContentStateAction,
+  FETCH_CASE_LIST_SUCCESS,
+  FetchCaseListSuccessAction,
+} from '../caseList/listContent';
 import { namespace } from '../storeNamespaces';
 import {
   ContactUpdatingAction,
@@ -162,6 +166,18 @@ const contactUpdatingReducer = (
   return state;
 };
 
+const loadCaseListIntoState = (state: CaseState, cases: Case[], referenceId: string): CaseState => {
+  const withoutOldSearchResults = dereferenceAllCases(state, referenceId);
+  if (cases?.length) {
+    return cases.reduce((acc, newCase) => {
+      // TODO: strip the totalCount property in HRM
+      const { totalCount, ...caseToAdd } = newCase as Case & { totalCount: number };
+      return loadCaseIntoState(acc, caseToAdd, referenceId);
+    }, withoutOldSearchResults);
+  }
+  return withoutOldSearchResults;
+};
+
 // eslint-disable-next-line import/no-unused-modules
 export function reduce(
   inputRootState: HrmState,
@@ -172,7 +188,8 @@ export function reduce(
     | RemoveContactStateAction
     | CaseListContentStateAction
     | ContactUpdatingAction
-    | SearchCasesSuccessAction,
+    | SearchCasesSuccessAction
+    | FetchCaseListSuccessAction,
 ): CaseState {
   const rootState = boundSaveCaseReducer(inputRootState, action as any);
   const state = rootState.connectedCase;
@@ -182,20 +199,9 @@ export function reduce(
       return contactUpdatingReducer(state, rootState, action);
 
     case REMOVE_CONTACT_STATE: {
-      const dereferencedCaseEntries = Object.entries(state.cases).map(([caseId, caseEntry]): [
-        string,
-        CaseStateEntry,
-      ] => {
-        const references = new Set(caseEntry.references);
-        references.delete(`contact-${action.contactId}`);
-        return [caseId, { ...caseEntry, references }];
-      });
-      return {
-        ...state,
-        cases: Object.fromEntries(
-          dereferencedCaseEntries.filter(([, dereferencedCaseEntries]) => dereferencedCaseEntries.references.size),
-        ),
-      };
+      const { contactId, taskId } = action;
+      const contactReferenceRemoved = dereferenceAllCases(state, `contact-${contactId}`);
+      return dereferenceAllCases(contactReferenceRemoved, `task-${taskId}`);
     }
     case UPDATE_CASE_SECTION_WORKING_COPY:
       return updateCaseSectionWorkingCopyReducer(state, rootState.configuration, action);
@@ -211,18 +217,12 @@ export function reduce(
       return updateCaseSummaryWorkingCopyReducer(state, action);
     case REMOVE_CASE_SUMMARY_WORKING_COPY:
       return removeCaseSummaryWorkingCopyReducer(state, action);
+    case FETCH_CASE_LIST_SUCCESS:
+      return loadCaseListIntoState(state, action.payload.caseList, `case-list`);
     case SEARCH_CASES_SUCCESS: {
       const { searchResult, taskId } = action as SearchCasesSuccessAction;
       const referenceId = `search-${taskId}`;
-      const withoutOldSearchResults = dereferenceAllCases(state, referenceId);
-      if (searchResult && searchResult.cases?.length) {
-        return searchResult.cases.reduce((acc, newCase) => {
-          // TODO: strip the totalCount property in HRM
-          const { totalCount, ...caseToAdd } = newCase as Case & { totalCount: number };
-          return loadCaseIntoState(acc, caseToAdd, referenceId);
-        }, withoutOldSearchResults);
-      }
-      return withoutOldSearchResults;
+      return loadCaseListIntoState(state, searchResult?.cases, referenceId);
     }
     default:
       return state;

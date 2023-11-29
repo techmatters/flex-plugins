@@ -42,14 +42,14 @@ export const fetchCaseListStarted = (): FetchCaseListStartAction => ({
   type: FETCH_CASE_LIST_STARTED,
 });
 
-export const fetchCaseListStartReducer = (
-  state: CaseListContentState,
-  action: FetchCaseListStartAction,
-): CaseListContentState => ({ ...state, listLoading: true });
+export const fetchCaseListStartReducer = (state: CaseListContentState): CaseListContentState => ({
+  ...state,
+  listLoading: true,
+});
 
 export const FETCH_CASE_LIST_SUCCESS = 'FETCH_CASE_LIST_SUCCESS';
 
-type FetchCaseListSuccessAction = {
+export type FetchCaseListSuccessAction = {
   type: typeof FETCH_CASE_LIST_SUCCESS;
   payload: { caseList: CaseType[]; caseCount: number };
 };
@@ -88,10 +88,10 @@ export const openCaseDetails = (): OpenCaseDetailsAction => ({
   type: OPEN_CASE_DETAILS,
 });
 
-export const openCaseDetailsReducer = (
-  state: CaseListContentState,
-  action: OpenCaseDetailsAction,
-): CaseListContentState => ({ ...state, caseDetailsOpen: true });
+export const openCaseDetailsReducer = (state: CaseListContentState): CaseListContentState => ({
+  ...state,
+  caseDetailsOpen: true,
+});
 
 export const CLOSE_CASE_DETAILS = 'CLOSE_CASE_DETAILS';
 
@@ -101,10 +101,10 @@ export const closeCaseDetails = (): CloseCaseDetailsAction => ({
   type: CLOSE_CASE_DETAILS,
 });
 
-export const closeCaseDetailsReducer = (
-  state: CaseListContentState,
-  action: CloseCaseDetailsAction,
-): CaseListContentState => ({ ...state, caseDetailsOpen: false });
+export const closeCaseDetailsReducer = (state: CaseListContentState): CaseListContentState => ({
+  ...state,
+  caseDetailsOpen: false,
+});
 
 export type CaseListContentStateAction =
   | FetchCaseListStartAction

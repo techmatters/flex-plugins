@@ -25,7 +25,7 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
 import { SearchContactResult, SearchCaseResult, Contact, Case, CustomITask } from '../../../types/types';
-import { Box, Row } from '../../../styles/HrmStyles';
+import { Row } from '../../../styles/HrmStyles';
 import {
   ResultsHeader,
   ListContainer,
@@ -73,7 +73,6 @@ type OwnProps = {
   toggleClosedCases: () => void;
   handleBack: () => void;
   changeSearchPage: (SearchPagesType) => void;
-  setConnectedCase: (currentCase: Case, taskSid: string) => void;
   contactId: string;
   saveUpdates: () => Promise<void>;
 };
@@ -95,7 +94,7 @@ const SearchResults: React.FC<Props> = ({
   changeCaseResultPage,
   changeContactResultPage,
   viewCaseDetails,
-  setConnectedCase,
+  newCase,
   counselorsHash,
   routing,
   isRequestingCases,
@@ -149,8 +148,7 @@ const SearchResults: React.FC<Props> = ({
   };
 
   const handleClickViewCase = currentCase => () => {
-    setConnectedCase(currentCase, task.taskSid);
-    viewCaseDetails('case', 'home');
+    viewCaseDetails(currentCase.id);
   };
 
   const { count: contactsCount, contacts } = searchContactsResults;
@@ -184,7 +182,7 @@ const SearchResults: React.FC<Props> = ({
     try {
       await saveUpdates();
       await createCaseAsyncAction(contact, workerSid, definitionVersion);
-      viewCaseDetails('case', 'home', true);
+      newCase();
     } catch (error) {
       recordBackendError('Open New Case', error);
       window.alert(strings['Error-Backend']);
@@ -439,8 +437,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     changeCaseResultPage: (casesPage: number, currentRoute: SearchResultRoute) => {
       dispatch(changeRoute({ ...currentRoute, subroute: 'case-results', casesPage }, taskId, ChangeRouteMode.Replace));
     },
-    viewCaseDetails: (route, subroute, isCreating?: boolean) => {
-      dispatch(newOpenModalAction({ route, subroute, isCreating }, taskId));
+    viewCaseDetails: (caseId: string) => {
+      dispatch(newOpenModalAction({ route: 'case', subroute: 'home', isCreating: false, caseId }, taskId));
+    },
+    newCase: () => {
+      dispatch(newOpenModalAction({ route: 'case', subroute: 'home', isCreating: true, caseId: undefined }, taskId));
     },
     viewContactDetails: ({ id }: Contact) => {
       dispatch(newOpenModalAction({ route: 'contact', subroute: 'view', id: id.toString() }, taskId));
