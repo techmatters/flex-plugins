@@ -21,6 +21,7 @@ import { Icon, Template } from '@twilio/flex-ui';
 import { Box, HiddenText, Row, HorizontalLine } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
+import { useSectionTypes } from '../../states/profile/hooks/useProfileSection';
 import { ProfileCommonProps } from './types';
 import {
   DetailsWrapper,
@@ -46,6 +47,8 @@ type Section = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal }) => {
+  console.log('>>> ProfileDetails form definition');
+
   const { profile } = useProfile({ profileId });
 
   const overviewSections: Section[] = [
@@ -63,22 +66,10 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
       renderComponent: () => <ProfileFlagSection profileId={profileId} task={task} />,
     },
   ];
+  const sectionTypesForms = useSectionTypes();
+  console.log('>>> ProfileDetails sectionTypesForms', sectionTypesForms);
 
-  const sectionTypes = [
-    {
-      name: 'summary',
-      placeholder: 'Enter a summary of the case',
-    },
-    {
-      name: 'recommended approach',
-      placeholder: 'Enter the recommended approach',
-    },
-    {
-      name: 'details',
-      placeholder: 'Enter the details',
-    },
-  ];
-  const sectionSections: Section[] = sectionTypes.map(sectionType => ({
+  const sectionSections: Section[] = sectionTypesForms.map(sectionType => ({
     title: `${sectionType.name}`,
     renderComponent: () => <ProfileSectionView profileId={profileId} task={task} sectionType={sectionType} />,
     handleEdit: () => openSectionEditModal(sectionType.name),

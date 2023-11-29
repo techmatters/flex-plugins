@@ -15,13 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import asyncDispatch from '../../asyncDispatch';
 import { Profile, ProfileSection } from '../types';
 import * as ProfileActions from '../profiles';
 import * as ProfileSelectors from '../selectors';
 import { RootState } from '../..';
+
+export const useSectionTypes = () =>
+  useSelector((state: RootState) => ProfileSelectors.selectProfileSectionsFromFormDefintions(state));
 
 export type useProfileSectionByType = {
   profileId: Profile['id'];

@@ -29,7 +29,7 @@ import {
   ColumnarContent,
   FormTextArea,
 } from '../../../styles/HrmStyles';
-import { useEditProfileSection } from '../../../states/profile/hooks/useProfileSection';
+import { useEditProfileSection, useSectionTypes } from '../../../states/profile/hooks/useProfileSection';
 import { ProfileCommonProps } from '../types';
 import * as RoutingActions from '../../../states/routing/actions';
 
@@ -41,6 +41,9 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props) => {
   const { section, createProfileSection, updateProfileSection } = useEditProfileSection({ profileId, sectionType });
+  const sectionTypesForms = useSectionTypes();
+  const sectionTypesForm: any = sectionTypesForms.find(sectionTypesForm => sectionTypesForm.name === sectionType);
+  console.log('>>> ProfileSectionEdit form definition', { sectionTypesForms, sectionTypesForm });
 
   const [content, setContent] = useState<string>(section?.content || '');
   const sectionId: ProfileSection['id'] = section?.id;
@@ -61,7 +64,13 @@ const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props)
         <Box>
           <ColumnarBlock>
             <ColumnarContent>
-              <FormTextArea defaultValue={content} onChange={e => setContent(e.target.value)} rows={20} width={500} />
+              <FormTextArea
+                defaultValue={content}
+                onChange={e => setContent(e.target.value)}
+                rows={sectionTypesForm.rows}
+                width={sectionTypesForm.width}
+                placeholder={sectionTypesForm.placeholder}
+              />
             </ColumnarContent>
           </ColumnarBlock>
         </Box>
