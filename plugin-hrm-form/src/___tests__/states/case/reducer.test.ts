@@ -17,14 +17,11 @@
 import { DefinitionVersion, DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import { reduce } from '../../../states/case/reducer';
-import * as actions from '../../../states/case/actions';
 import * as GeneralActions from '../../../states/actions';
 import { Case } from '../../../types/types';
 import { REMOVE_CONTACT_STATE } from '../../../states/types';
 import { CaseState } from '../../../states/case/types';
 import { RootState } from '../../../states';
-import { getAvailableCaseStatusTransitions } from '../../../states/case/caseStatus';
-import { ConfigurationState } from '../../../states/configuration/reducer';
 import { configurationBase, connectedCaseBase, namespace } from '../../../states/storeNamespaces';
 
 const task = { taskSid: 'task1' };
@@ -42,7 +39,7 @@ beforeEach(() => {
 });
 
 describe('test reducer', () => {
-  let state: CaseState = undefined;
+  const state: CaseState = undefined;
   let mockV1: DefinitionVersion;
 
   beforeAll(async () => {
@@ -61,39 +58,12 @@ describe('test reducer', () => {
       contactId: 'TEST_CONTACT_ID',
     });
     expect(result).toStrictEqual(expected);
-
-    state = result;
   });
 
-  test('SET_CONNECTED_CASE, definition version missing in config state - sets available statuses to empty', async () => {
+  test('should handle REMOVE_CONTACT_STATE', async () => {
     const connectedCase: Case = {
       accountSid: 'ACxxx',
-      id: 1,
-      helpline: '',
-      status: 'open',
-      twilioWorkerId: 'WK123',
-      info: null,
-      createdAt: '2020-07-31T20:39:37.408Z',
-      updatedAt: '2020-07-31T20:39:37.408Z',
-      connectedContacts: null,
-      categories: {},
-    };
-
-    const expected: RootState[typeof namespace][typeof connectedCaseBase] = {
-      tasks: {
-        task1: { connectedCase, caseWorkingCopy: { sections: {} }, availableStatusTransitions: [] },
-      },
-    };
-
-    const result = reduce(stubRootState, state, actions.setConnectedCase(connectedCase, task.taskSid));
-    state = result;
-    expect(result).toStrictEqual(expected);
-  });
-
-  test('SET_CONNECTED_CASE, definition version present in config state - sets available statuses using getAvailableCaseStatuses', async () => {
-    const connectedCase: Case = {
-      accountSid: 'ACxxx',
-      id: 1,
+      id: '1',
       helpline: '',
       status: 'open',
       twilioWorkerId: 'WK123',
@@ -106,36 +76,21 @@ describe('test reducer', () => {
       categories: {},
     };
 
-    const expected: RootState[typeof namespace][typeof connectedCaseBase] = {
-      tasks: {
-        task1: {
+    const state: RootState[typeof namespace][typeof connectedCaseBase] = {
+      cases: {
+        1: {
           connectedCase,
           caseWorkingCopy: { sections: {} },
           availableStatusTransitions: Object.values(mockV1.caseStatus),
+          references: new Set(['task-task1']),
         },
       },
+      tasks: {},
     };
 
-    const rootState = {
-      [configurationBase]: {
-        definitionVersions: {
-          [DefinitionVersionId.v1]: mockV1,
-        } as Record<string, DefinitionVersion>,
-      } as ConfigurationState,
-    } as RootState['plugin-hrm-form'];
+    const expected = { tasks: {}, cases: {} };
 
-    (<jest.Mock>getAvailableCaseStatusTransitions).mockReturnValue(Object.values(mockV1.caseStatus));
-
-    const result = reduce(rootState, state, actions.setConnectedCase(connectedCase, task.taskSid));
-    state = result;
-    expect(result).toStrictEqual(expected);
-    expect(getAvailableCaseStatusTransitions).toHaveBeenCalledWith(connectedCase, mockV1);
-  });
-
-  test('should handle REMOVE_CONTACT_STATE', async () => {
-    const expected = { tasks: {} };
-
-    const result = reduce(stubRootState, state, GeneralActions.removeContactState(task.taskSid));
+    const result = reduce(stubRootState, state, GeneralActions.removeContactState(task.taskSid, undefined));
     expect(result).toStrictEqual(expected);
 
     // state = result; no assignment here as we don't want to lose the only task in the state, it will be reused in following tests

@@ -52,7 +52,7 @@ import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
 import { newCloseModalAction } from '../../states/routing/actions';
 import { BannerContainer, Text } from '../caseMergingBanners/styles';
 import InfoIcon from '../caseMergingBanners/InfoIcon';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 
 export type CaseHomeProps = {
@@ -341,7 +341,7 @@ CaseHome.displayName = 'CaseHome';
 const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
   const connectedCaseState = selectCurrentRouteCaseState(state, task.taskSid);
   const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
-  const routing = getCurrentTopmostRouteForTask(state[namespace].routing, task.taskSid);
+  const routing = selectCurrentTopmostRouteForTask(state, task.taskSid);
 
   return { connectedCaseState, taskContact, routing };
 };

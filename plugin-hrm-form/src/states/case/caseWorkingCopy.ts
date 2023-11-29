@@ -75,18 +75,18 @@ export const INIT_EXISTING_CASE_SECTION_WORKING_COPY = 'INIT_EXISTING_CASE_SECTI
 
 type InitialiseExistingCaseSectionWorkingCopyAction = {
   type: typeof INIT_EXISTING_CASE_SECTION_WORKING_COPY;
-  taskId: string;
+  caseId: string;
   api: CaseSectionApi<unknown>;
   id: string;
 };
 
 export const initialiseExistingCaseSectionWorkingCopy = (
-  taskId: string,
+  caseId: string,
   api: CaseSectionApi<unknown>,
   id: string,
 ): InitialiseExistingCaseSectionWorkingCopyAction => ({
   type: INIT_EXISTING_CASE_SECTION_WORKING_COPY,
-  taskId,
+  caseId,
   api,
   id,
 });
@@ -96,15 +96,15 @@ export const initialiseCaseSectionWorkingCopyReducer = (
   action: InitialiseExistingCaseSectionWorkingCopyAction,
 ): CaseState => {
   const item: CaseItemEntry = action.api.toForm(
-    action.api.getSectionItemById(state.tasks[action.taskId].connectedCase.info, action.id),
+    action.api.getSectionItemById(state.cases[action.caseId].connectedCase.info, action.id),
   );
   return {
     ...state,
-    tasks: {
-      ...state.tasks,
-      [action.taskId]: {
-        ...state.tasks[action.taskId],
-        caseWorkingCopy: action.api.updateWorkingCopy(state.tasks[action.taskId]?.caseWorkingCopy, item, action.id),
+    cases: {
+      ...state.cases,
+      [action.caseId]: {
+        ...state.cases[action.caseId],
+        caseWorkingCopy: action.api.updateWorkingCopy(state.cases[action.caseId]?.caseWorkingCopy, item, action.id),
       },
     },
   };
@@ -114,18 +114,18 @@ export const INIT_NEW_CASE_SECTION_WORKING_COPY = 'INIT_NEW_CASE_SECTION_WORKING
 
 type InitialiseNewCaseSectionWorkingCopyAction = {
   type: typeof INIT_NEW_CASE_SECTION_WORKING_COPY;
-  taskId: string;
+  caseId: string;
   api: CaseSectionApi<unknown>;
   form: CaseItemFormValues;
 };
 
 export const initialiseNewCaseSectionWorkingCopy = (
-  taskId: string,
+  caseId: string,
   api: CaseSectionApi<unknown>,
   form: CaseItemFormValues,
 ): InitialiseNewCaseSectionWorkingCopyAction => ({
   type: INIT_NEW_CASE_SECTION_WORKING_COPY,
-  taskId,
+  caseId,
   api,
   form,
 });
@@ -137,11 +137,11 @@ export const initialiseNewCaseSectionWorkingCopyReducer = (
   const item: CaseItemEntry = { id: uuidV4(), form: action.form, createdAt: null, twilioWorkerId: null };
   return {
     ...state,
-    tasks: {
-      ...state.tasks,
-      [action.taskId]: {
-        ...state.tasks[action.taskId],
-        caseWorkingCopy: action.api.updateWorkingCopy(state.tasks[action.taskId]?.caseWorkingCopy, item),
+    cases: {
+      ...state.cases,
+      [action.caseId]: {
+        ...state.cases[action.caseId],
+        caseWorkingCopy: action.api.updateWorkingCopy(state.cases[action.caseId]?.caseWorkingCopy, item),
       },
     },
   };
@@ -152,18 +152,18 @@ export const REMOVE_CASE_SECTION_WORKING_COPY = 'REMOVE_CASE_SECTION_WORKING_COP
 
 type RemoveCaseSectionWorkingCopyAction = {
   type: typeof REMOVE_CASE_SECTION_WORKING_COPY;
-  taskId: string;
+  caseId: string;
   api: CaseSectionApi<unknown>;
   id?: string;
 };
 
 export const removeCaseSectionWorkingCopy = (
-  taskId: string,
+  caseId: string,
   api: CaseSectionApi<unknown>,
   id?: string,
 ): RemoveCaseSectionWorkingCopyAction => ({
   type: REMOVE_CASE_SECTION_WORKING_COPY,
-  taskId,
+  caseId,
   api,
   id,
 });
@@ -172,14 +172,14 @@ export const removeCaseSectionWorkingCopyReducer = (
   state: CaseState,
   action: RemoveCaseSectionWorkingCopyAction,
 ): CaseState => {
-  const caseWorkingCopy = state.tasks[action.taskId]?.caseWorkingCopy;
+  const caseWorkingCopy = state.cases[action.caseId]?.caseWorkingCopy;
   if (caseWorkingCopy) {
     return {
       ...state,
-      tasks: {
-        ...state.tasks,
-        [action.taskId]: {
-          ...state.tasks[action.taskId],
+      cases: {
+        ...state.cases,
+        [action.caseId]: {
+          ...state.cases[action.caseId],
           caseWorkingCopy: action.api.updateWorkingCopy(caseWorkingCopy, undefined, action.id),
         },
       },
@@ -193,16 +193,16 @@ export const INIT_CASE_SUMMARY_WORKING_COPY = 'INIT_CASE_SUMMARY_WORKING_COPY';
 
 type InitialiseCaseSummaryWorkingCopyAction = {
   type: typeof INIT_CASE_SUMMARY_WORKING_COPY;
-  taskId: string;
+  caseId: string;
   defaults: CaseSummaryWorkingCopy;
 };
 
 export const initialiseCaseSummaryWorkingCopy = (
-  taskId: string,
+  caseId: string,
   defaults: CaseSummaryWorkingCopy,
 ): InitialiseCaseSummaryWorkingCopyAction => ({
   type: INIT_CASE_SUMMARY_WORKING_COPY,
-  taskId,
+  caseId,
   defaults,
 });
 
@@ -210,14 +210,14 @@ export const initialiseCaseSummaryWorkingCopyReducer = (
   state: CaseState,
   action: InitialiseCaseSummaryWorkingCopyAction,
 ): CaseState => {
-  const caseState = state.tasks[action.taskId];
+  const caseState = state.cases[action.caseId];
   if (!caseState) return state;
   const { childIsAtRisk, summary, followUpDate } = caseState.connectedCase.info;
   return {
     ...state,
-    tasks: {
-      ...state.tasks,
-      [action.taskId]: {
+    cases: {
+      ...state.cases,
+      [action.caseId]: {
         ...caseState,
         caseWorkingCopy: {
           caseSummary: {
@@ -238,16 +238,16 @@ export const UPDATE_CASE_SUMMARY_WORKING_COPY = 'UPDATE_CASE_SUMMARY_WORKING_COP
 
 type UpdateCaseSummaryWorkingCopyAction = {
   type: typeof UPDATE_CASE_SUMMARY_WORKING_COPY;
-  taskId: string;
+  caseId: string;
   caseSummary: CaseSummaryWorkingCopy;
 };
 
 export const updateCaseSummaryWorkingCopy = (
-  taskId: string,
+  caseId: string,
   caseSummary: CaseSummaryWorkingCopy,
 ): UpdateCaseSummaryWorkingCopyAction => ({
   type: UPDATE_CASE_SUMMARY_WORKING_COPY,
-  taskId,
+  caseId,
   caseSummary,
 });
 
@@ -255,15 +255,15 @@ export const updateCaseSummaryWorkingCopyReducer = (
   state: CaseState,
   action: UpdateCaseSummaryWorkingCopyAction,
 ): CaseState => {
-  if (!state.tasks[action.taskId]) return state;
+  if (!state.cases[action.caseId]) return state;
   return {
     ...state,
-    tasks: {
-      ...state.tasks,
-      [action.taskId]: {
-        ...state.tasks[action.taskId],
+    cases: {
+      ...state.cases,
+      [action.caseId]: {
+        ...state.cases[action.caseId],
         caseWorkingCopy: {
-          ...state.tasks[action.taskId]?.caseWorkingCopy,
+          ...state.cases[action.caseId]?.caseWorkingCopy,
           caseSummary: action.caseSummary,
         },
       },
@@ -276,29 +276,29 @@ export const REMOVE_CASE_SUMMARY_WORKING_COPY = 'REMOVE_CASE_SUMMARY_WORKING_COP
 
 type RemoveCaseSummaryWorkingCopyAction = {
   type: typeof REMOVE_CASE_SUMMARY_WORKING_COPY;
-  taskId: string;
+  caseId: string;
 };
 
-export const removeCaseSummaryWorkingCopy = (taskId: string): RemoveCaseSummaryWorkingCopyAction => ({
+export const removeCaseSummaryWorkingCopy = (caseId: string): RemoveCaseSummaryWorkingCopyAction => ({
   type: REMOVE_CASE_SUMMARY_WORKING_COPY,
-  taskId,
+  caseId,
 });
 
 export const removeCaseSummaryWorkingCopyReducer = (
   state: CaseState,
   action: RemoveCaseSummaryWorkingCopyAction,
 ): CaseState => {
-  if (!state.tasks[action.taskId]) return state;
-  const { caseSummary, ...caseWorkingCopyWithoutSummary } = state.tasks[action.taskId]?.caseWorkingCopy ?? {
+  if (!state.cases[action.caseId]) return state;
+  const { caseSummary, ...caseWorkingCopyWithoutSummary } = state.cases[action.caseId]?.caseWorkingCopy ?? {
     sections: {},
   };
   if (caseWorkingCopyWithoutSummary) {
     return {
       ...state,
-      tasks: {
-        ...state.tasks,
-        [action.taskId]: {
-          ...state.tasks[action.taskId],
+      cases: {
+        ...state.cases,
+        [action.caseId]: {
+          ...state.cases[action.caseId],
           caseWorkingCopy: caseWorkingCopyWithoutSummary,
         },
       },

@@ -24,14 +24,14 @@ import asyncDispatch from '../../states/asyncDispatch';
 import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
 import { showRemovedFromCaseBannerAction } from './state';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
-import selectCaseByTaskSid from '../../states/case/selectCaseByTaskSid';
 import { newGoBackAction } from '../../states/routing/actions';
 import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
 import { cancelCaseAsyncAction } from '../../states/case/saveCase';
+import selectCaseStateByCaseId from '../../states/case/selectCaseStateByCaseId';
 
 type OwnProps = {
   task?: ITask;
-  caseId: number;
+  caseId: string;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -41,7 +41,7 @@ const mapStateToProps = (state, { task }: OwnProps) => {
   const taskSid = task ? task.taskSid : getOfflineContactTaskSid();
 
   const contact = selectContactByTaskSid(state, taskSid);
-  const cas = selectCaseByTaskSid(state, taskSid);
+  const cas = selectCaseStateByCaseId(state, contact.savedContact.caseId)?.connectedCase;
   return {
     contactId: contact.savedContact.id,
     cas,
@@ -50,10 +50,8 @@ const mapStateToProps = (state, { task }: OwnProps) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  removeContactFromCase: async (contactId: string, caseId: number) =>
-    asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId)),
-  cancelCase: async (caseId: number, taskSid: string) =>
-    asyncDispatch(dispatch)(cancelCaseAsyncAction(caseId, taskSid)),
+  removeContactFromCase: async (contactId: string) => asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId)),
+  cancelCase: async (caseId: string) => asyncDispatch(dispatch)(cancelCaseAsyncAction(caseId)),
   showRemovedFromCaseBanner: (contactId: string) => dispatch(showRemovedFromCaseBannerAction(contactId)),
   navigateBack: (taskSid: string) => dispatch(newGoBackAction(taskSid)),
 });
@@ -70,12 +68,12 @@ const CreatedCaseBanner: React.FC<Props> = ({
 }) => {
   const handleCancelCase = async () => {
     const contactIds = cas.connectedContacts.map(c => c.id);
-    await Promise.all(contactIds.map(id => removeContactFromCase(id, caseId)));
+    await Promise.all(contactIds.map(id => removeContactFromCase(id)));
 
     // Navigating back before removing the case provides a better user experience.
     navigateBack(taskSid);
     showRemovedFromCaseBanner(contactId);
-    await cancelCase(caseId, taskSid);
+    await cancelCase(caseId);
   };
 
   return (

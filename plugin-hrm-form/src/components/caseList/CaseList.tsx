@@ -15,7 +15,6 @@
  */
 
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { DefinitionVersion } from 'hrm-form-definitions';
@@ -32,7 +31,6 @@ import CaseListTable from './CaseListTable';
 import { CaseListContainer, CenteredContainer, SomethingWentWrongText } from '../../styles/caseList';
 import { listCases } from '../../services/CaseService';
 import { CaseLayout } from '../../styles/case';
-import * as CaseActions from '../../states/case/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import { StandaloneSearchContainer } from '../../styles/search';
 import { getCasesMissingVersions } from '../../utils/definitionVersions';
@@ -44,7 +42,8 @@ import { getHrmConfig } from '../../hrmConfig';
 import { namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { newCloseModalAction, newOpenModalAction } from '../../states/routing/actions';
-import ViewContact from '../case/ViewContact';
+import ContactDetails from '../contact/ContactDetails';
+import { DetailsContext } from '../../states/contacts/contactDetails';
 
 export const CASES_PER_PAGE = 10;
 
@@ -55,11 +54,37 @@ const standaloneTask: StandaloneITask = {
 
 type OwnProps = {};
 
+const mapDispatchToProps = dispatch => {
+  return {
+    updateDefinitionVersion: (version: string, definitions: DefinitionVersion) =>
+      dispatch(ConfigActions.updateDefinitionVersion(version, definitions)),
+    undoSettingsUpdate: () => dispatch(undoCaseListSettingsUpdate()),
+    fetchCaseListStarted: () => dispatch(ListContent.fetchCaseListStarted()),
+    fetchCaseListSuccess: (caseList: CaseType[], caseCount: number) =>
+      dispatch(ListContent.fetchCaseListSuccess(caseList, caseCount)),
+    fetchCaseListError: error => dispatch(ListContent.fetchCaseListError(error)),
+    openCaseDetails: (caseId: string) =>
+      dispatch(newOpenModalAction({ route: 'case', subroute: 'home', caseId }, standaloneTask.taskSid)),
+    closeCaseDetails: () => dispatch(newCloseModalAction(standaloneTask.taskSid)),
+  };
+};
+
+const mapStateToProps = ({ [namespace]: { caseList, routing } }: RootState) => ({
+  currentSettings: caseList.currentSettings,
+  previousSettings: caseList.previousSettings,
+  routing: getCurrentTopmostRouteForTask(routing, standaloneTask.taskSid) ?? {
+    route: 'case-list',
+    subroute: 'case-list',
+  },
+  ...caseList.content,
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const CaseList: React.FC<Props> = ({
-  setConnectedCase,
   updateDefinitionVersion,
   currentSettings,
   fetchCaseListStarted,
@@ -111,9 +136,8 @@ const CaseList: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSettings]);
 
-  const handleClickViewCase = currentCase => () => {
-    setConnectedCase(currentCase, standaloneTask.taskSid);
-    openCaseDetails();
+  const handleClickViewCase = (currentCase: CaseType) => () => {
+    openCaseDetails(currentCase.id.toString());
   };
 
   const closeCaseView = async () => {
@@ -145,7 +169,12 @@ const CaseList: React.FC<Props> = ({
     return (
       <StandaloneSearchContainer>
         <CaseLayout>
-          <ViewContact contactId={routing.id} task={standaloneTask} />
+          <ContactDetails
+            contactId={routing.id}
+            enableEditing={true}
+            context={DetailsContext.CASE_DETAILS}
+            task={standaloneTask}
+          />
         </CaseLayout>
       </StandaloneSearchContainer>
     );
@@ -165,38 +194,6 @@ const CaseList: React.FC<Props> = ({
 };
 
 CaseList.displayName = 'CaseList';
-
-CaseList.propTypes = {
-  setConnectedCase: PropTypes.func.isRequired,
-  updateDefinitionVersion: PropTypes.func.isRequired,
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    setConnectedCase: (connectedCase, taskId: string) => dispatch(CaseActions.setConnectedCase(connectedCase, taskId)),
-    updateDefinitionVersion: (version: string, definitions: DefinitionVersion) =>
-      dispatch(ConfigActions.updateDefinitionVersion(version, definitions)),
-    undoSettingsUpdate: () => dispatch(undoCaseListSettingsUpdate()),
-    fetchCaseListStarted: () => dispatch(ListContent.fetchCaseListStarted()),
-    fetchCaseListSuccess: (caseList: CaseType[], caseCount: number) =>
-      dispatch(ListContent.fetchCaseListSuccess(caseList, caseCount)),
-    fetchCaseListError: error => dispatch(ListContent.fetchCaseListError(error)),
-    openCaseDetails: () => dispatch(newOpenModalAction({ route: 'case', subroute: 'home' }, standaloneTask.taskSid)),
-    closeCaseDetails: () => dispatch(newCloseModalAction(standaloneTask.taskSid)),
-  };
-};
-
-const mapStateToProps = ({ [namespace]: { caseList, routing } }: RootState) => ({
-  currentSettings: caseList.currentSettings,
-  previousSettings: caseList.previousSettings,
-  routing: getCurrentTopmostRouteForTask(routing, standaloneTask.taskSid) ?? {
-    route: 'case-list',
-    subroute: 'case-list',
-  },
-  ...caseList.content,
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(CaseList);
 
 export default connected;

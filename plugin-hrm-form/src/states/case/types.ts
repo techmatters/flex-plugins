@@ -96,7 +96,7 @@ export type ConnectedCaseActivity = CoreActivity & {
 export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
 
 export type CaseDetails = {
-  id: number;
+  id: string;
   contactIdentifier: string;
   categories?: {
     [category: string]: string[];
@@ -162,9 +162,6 @@ export type CaseStateEntry = {
 };
 
 export type CaseState = {
-  tasks: {
-    [taskId: string]: Omit<CaseStateEntry, 'references'>;
-  };
   cases: {
     [caseId: number]: CaseStateEntry;
   };

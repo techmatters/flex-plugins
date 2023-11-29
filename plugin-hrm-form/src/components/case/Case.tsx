@@ -32,6 +32,7 @@ import { Case as CaseType, CustomITask, Contact, StandaloneITask } from '../../t
 import CasePrintView from './casePrint/CasePrintView';
 import {
   CaseRoute,
+  ChangeRouteMode,
   isAddCaseSectionRoute,
   isEditCaseSectionRoute,
   isViewCaseSectionRoute,
@@ -85,7 +86,7 @@ const Case: React.FC<Props> = ({
   task,
   counselorsHash,
   removeConnectedCase,
-  changeRoute,
+  redirectToNewCase,
   closeModal,
   goBack,
   isCreating,
@@ -107,6 +108,12 @@ const Case: React.FC<Props> = ({
   const { workerSid } = getHrmConfig();
   const strings = getTemplateStrings();
   const { enable_case_merging: enableCaseMerging } = getAseloFeatureFlags();
+
+  useEffect(() => {
+    if (routing.isCreating && !routing.caseId && taskContact?.caseId) {
+      redirectToNewCase(taskContact.caseId);
+    }
+  });
 
   useEffect(() => {
     if (!connectedCase) return;
@@ -351,7 +358,14 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     dispatch(ConfigActions.updateDefinitionVersion(connectedCase.info.definitionVersion, definition));
   };
   return {
-    changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
+    redirectToNewCase: (caseId: string) =>
+      dispatch(
+        RoutingActions.changeRoute(
+          { route: 'case', subroute: 'home', caseId, isCreating: true },
+          task.taskSid,
+          ChangeRouteMode.Replace,
+        ),
+      ),
     closeModal: () => dispatch(RoutingActions.newCloseModalAction(task.taskSid)),
     goBack: () => dispatch(RoutingActions.newGoBackAction(task.taskSid)),
     removeConnectedCase: (contactId: string) => caseAsyncDispatch(removeFromCaseAsyncAction(contactId)),
@@ -359,7 +373,7 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     releaseContacts: bindActionCreators(ContactActions.releaseContacts, dispatch),
     loadContacts: bindActionCreators(ContactActions.loadContacts, dispatch),
     updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
-      caseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
+      caseAsyncDispatch(updateCaseAsyncAction(caseId, body)),
     submitContactFormAsyncAction: (
       task: CustomITask,
       contact: Contact,

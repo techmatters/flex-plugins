@@ -18,18 +18,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import '../../mockGetConfig';
-import {
-  SaveCaseReducerState,
-  createCaseAsyncAction,
-  saveCaseReducer,
-  updateCaseAsyncAction,
-} from '../../../states/case/saveCase';
+import { createCaseAsyncAction, saveCaseReducer, updateCaseAsyncAction } from '../../../states/case/saveCase';
 import { RootState } from '../../../states';
 import { saveCaseState, reduce } from '../../../states/case/reducer';
 import { updateCase, createCase } from '../../../services/CaseService';
 import { connectToCase } from '../../../services/ContactService';
 import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
 import { configurationBase, connectedCaseBase } from '../../../states/storeNamespaces';
+import { Case } from '../../../types/types';
 
 jest.mock('../../../services/CaseService');
 jest.mock('../../../services/ContactService');
@@ -40,7 +36,7 @@ const mockConnectedCase = connectToCase as jest.Mock<ReturnType<typeof connectTo
 
 beforeEach(() => {
   mockUpdateCase.mockReset();
-  mockUpdateCase.mockResolvedValue({ id: 234 });
+  mockUpdateCase.mockResolvedValue({ id: '234' } as Case);
   mockCreateCase.mockReset();
   mockCreateCase.mockResolvedValue({ id: 234 });
   mockConnectedCase.mockReset();
@@ -64,7 +60,6 @@ const mockPayload = {
     connectedContacts: [],
     categories: {},
   },
-  taskSid: 'task-sid',
 };
 
 const testStore = (stateChanges: SaveCaseReducerState) =>
@@ -80,11 +75,11 @@ const testStore = (stateChanges: SaveCaseReducerState) =>
 // Mock the necessary dependencies
 const nonInitialState: SaveCaseReducerState = {
   state: {
-    tasks: {
-      task1: {
+    cases: {
+      213: {
         connectedCase: {
           accountSid: 'test-id',
-          id: 213,
+          id: '213',
           helpline: 'za',
           status: 'test-st',
           twilioWorkerId: 'WE2xxx1',
@@ -104,6 +99,7 @@ const nonInitialState: SaveCaseReducerState = {
           },
         },
         availableStatusTransitions: [],
+        references: new Set(['x']),
       },
     },
   },
@@ -155,8 +151,8 @@ const contact = {
 const workerSid = 'Worker-Sid';
 const definitionVersion = 'demo-v1';
 const expectObject = {
-  tasks: {
-    task1: {
+  cases: {
+    [mockPayload.case.id]: {
       connectedCase: mockPayload.case,
       caseWorkingCopy: {
         sections: {},
@@ -174,8 +170,8 @@ const expectObject = {
 
 describe('actions', () => {
   test('Calls the updateCase service, and update a case', async () => {
-    updateCaseAsyncAction(234, mockPayload.taskSid, mockPayload.case);
-    expect(updateCase).toHaveBeenCalledWith(234, mockPayload.case);
+    updateCaseAsyncAction('234', mockPayload.case);
+    expect(updateCase).toHaveBeenCalledWith('234', mockPayload.case);
   });
 
   test('Calls the createCase service, and create a case', () => {
@@ -186,7 +182,7 @@ describe('actions', () => {
   test('should dispatch updateCaseAsyncAction correctly', async () => {
     const { dispatch, getState } = testStore(nonInitialState);
     const startingState = getState();
-    await ((dispatch(updateCaseAsyncAction(234, mockPayload.taskSid, mockPayload.case)) as unknown) as Promise<void>);
+    await ((dispatch(updateCaseAsyncAction('234', mockPayload.taskSid, mockPayload.case)) as unknown) as Promise<void>);
     const state = getState();
     expect(state).toStrictEqual({
       rootState: {

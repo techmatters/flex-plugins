@@ -22,7 +22,6 @@ import CasePreview from '../search/CasePreview';
 import ProfileRelationshipList from './ProfileRelationshipList';
 import * as ProfileTypes from '../../states/profile/types';
 import * as RoutingActions from '../../states/routing/actions';
-import * as CaseActions from '../../states/case/actions';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileCommonProps } from './types';
@@ -71,9 +70,10 @@ const mapStateToProps = ({ [namespace]: { configuration } }: RootState) => {
 
 const mapDispatchToProps = (dispatch, { task: { taskSid } }) => {
   return {
-    viewCaseDetails: (cas: Case) => {
-      dispatch(CaseActions.setConnectedCase(cas, taskSid));
-      dispatch(RoutingActions.newOpenModalAction({ route: 'case', subroute: 'home', isCreating: false }, taskSid));
+    viewCaseDetails: ({ id }: Case) => {
+      dispatch(
+        RoutingActions.newOpenModalAction({ route: 'case', subroute: 'home', caseId: id, isCreating: false }, taskSid),
+      );
     },
   };
 };

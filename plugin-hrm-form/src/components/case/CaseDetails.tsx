@@ -39,7 +39,7 @@ import { PermissionActions } from '../../permissions';
 import { getLocaleDateTime } from '../../utils/helpers';
 
 type Props = {
-  caseId: number;
+  caseId: string;
   categories: { [category: string]: string[] };
   counselor: string;
   createdAt: string;

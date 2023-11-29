@@ -50,10 +50,14 @@ type OwnProps = {
   taskSid: CustomITask['taskSid'];
 };
 
-const mapStateToProps = (state: RootState, { taskSid }: OwnProps) => ({
-  timelineActivities: selectCaseActivities(state, taskSid),
-  connectedCase: selectCurrentRouteCaseState(state, taskSid)?.connectedCase,
-});
+const mapStateToProps = (state: RootState, { taskSid }: OwnProps) => {
+  const { connectedCase } = selectCurrentRouteCaseState(state, taskSid) ?? {};
+
+  return {
+    timelineActivities: connectedCase ? selectCaseActivities(state, connectedCase.id) : [],
+    connectedCase,
+  };
+};
 
 const mapDispatchToProps = (dispatch, { taskSid }: OwnProps) => ({
   openContactModal: (contactId: string) =>

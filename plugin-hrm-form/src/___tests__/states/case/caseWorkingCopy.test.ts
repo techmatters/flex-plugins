@@ -343,6 +343,7 @@ describe('Working copy reducers', () => {
   describe('REMOVE_CASE_SECTION_WORKING_COPY', () => {
     test("Task doesn't exist - noop", () => {
       const initialState: CaseState = {
+        cases: {},
         tasks: {},
       };
 

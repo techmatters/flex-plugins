@@ -82,7 +82,7 @@ export type CaseInfo = {
 
 export type Case = {
   accountSid: any;
-  id: number;
+  id: string;
   status: string;
   helpline: string;
   twilioWorkerId: string;
@@ -186,7 +186,7 @@ export type Contact = {
   queueName: string;
   channelSid: string;
   serviceSid: string;
-  caseId?: number;
+  caseId?: string;
 };
 
 export type SearchContactResult = {

@@ -44,7 +44,7 @@ const uploadDocument = async (file: File, preSignedUrl: string, mimeType: string
  *
  * It returns the file name at AWS
  */
-const bindOnFileChange = (caseId: number) => async event => {
+const bindOnFileChange = (caseId: string) => async event => {
   const file = event.target.files[0];
   const { name, size, type } = file;
 
@@ -61,7 +61,7 @@ const bindOnFileChange = (caseId: number) => async event => {
     generateSignedURLPath({
       method: 'putObject',
       objectType: 'case',
-      objectId: caseId.toString(),
+      objectId: caseId,
       fileType: 'document',
       location: {
         bucket,
@@ -75,13 +75,13 @@ const bindOnFileChange = (caseId: number) => async event => {
   return key;
 };
 
-const bindOnDeleteFile = (caseId: number) => async (fileName: string) => {
+const bindOnDeleteFile = (caseId: string) => async (fileName: string) => {
   const { docsBucket: bucket } = getHrmConfig();
   await fetchHrmApi(
     generateSignedURLPath({
       method: 'deleteObject',
       objectType: 'case',
-      objectId: caseId.toString(),
+      objectId: caseId,
       fileType: 'document',
       location: {
         bucket,
@@ -91,7 +91,7 @@ const bindOnDeleteFile = (caseId: number) => async (fileName: string) => {
   );
 };
 
-export const bindFileUploadCustomHandlers = (caseId: number): CustomHandlers => {
+export const bindFileUploadCustomHandlers = (caseId: string): CustomHandlers => {
   return {
     onFileChange: bindOnFileChange(caseId),
     onDeleteFile: bindOnDeleteFile(caseId),

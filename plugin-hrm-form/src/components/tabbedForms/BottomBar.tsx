@@ -40,11 +40,12 @@ import { createCaseAsyncAction } from '../../states/case/saveCase';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
-import { connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { AppRoutes } from '../../states/routing/types';
 import AddCaseButton from './AddCaseButton';
 import asyncDispatch from '../../states/asyncDispatch';
 import selectIsContactCreating from '../../states/contacts/selectIsContactCreating';
+import selectCaseByCaseId from '../../states/case/selectCaseStateByCaseId';
+import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => Promise<void>) => () => void;
@@ -88,7 +89,7 @@ const BottomBar: React.FC<
     try {
       await saveUpdates();
       await createCaseAsyncAction(contact, workerSid, definitionVersion);
-      openModal({ route: 'case', subroute: 'home', isCreating: true });
+      openModal({ route: 'case', subroute: 'home', isCreating: true, caseId: undefined });
     } catch (error) {
       recordBackendError('Open New Case', error);
       window.alert(strings['Error-Backend']);
@@ -202,9 +203,9 @@ const BottomBar: React.FC<
 
 BottomBar.displayName = 'BottomBar';
 
-const mapStateToProps = (state: RootState, { contactId, task }: BottomBarProps) => {
-  const { draftContact, savedContact, metadata } = state[namespace][contactFormsBase].existingContacts[contactId] ?? {};
-  const caseForm = state[namespace][connectedCaseBase].tasks[task.taskSid]?.connectedCase || {};
+const mapStateToProps = (state: RootState, { contactId }: BottomBarProps) => {
+  const { draftContact, savedContact, metadata } = selectContactStateByContactId(state, contactId) ?? {};
+  const caseForm = selectCaseByCaseId(state, savedContact.caseId ?? '')?.connectedCase || {};
   const contactIsSaving = selectIsContactCreating(state, contactId);
   return {
     contact: getUnsavedContact(savedContact, draftContact),
@@ -222,7 +223,7 @@ const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
     createCaseAsyncAction: async (contact, workerSid: string, definitionVersion: DefinitionVersionId) => {
       // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
       // TODO: Rework error handling to be based on redux state set by the _REJECTED action
-      await asyncDispatch(dispatch)(createCaseAsyncAction(contact, task.taskSid, workerSid, definitionVersion));
+      await asyncDispatch(dispatch)(createCaseAsyncAction(contact, workerSid, definitionVersion));
     },
     submitContactFormAsyncAction: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) =>
       // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.

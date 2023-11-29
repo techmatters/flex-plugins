@@ -17,6 +17,7 @@
 import { omit } from 'lodash';
 
 import * as t from './types';
+import { SearchResultReferences } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import { Contact, SearchCaseResult, standaloneTaskSid } from '../../types/types';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../../components/common/ContactDetails';
@@ -41,7 +42,7 @@ type TaskEntry = {
     [key in ContactDetailsSectionsType]: boolean;
   };
   searchContactsResult: t.DetailedSearchContactsResult;
-  searchCasesResult: SearchCaseResult;
+  searchCasesResult: SearchResultReferences;
   previousContacts?: PreviousContacts;
   isRequesting: boolean;
   isRequestingCases: boolean;
@@ -79,7 +80,7 @@ export const newTaskEntry: TaskEntry = {
     [ContactDetailsSections.RECORDING]: false,
   },
   searchContactsResult: { count: 0, contacts: [] },
-  searchCasesResult: { count: 0, cases: [] },
+  searchCasesResult: { count: 0, ids: [] },
   previousContacts: undefined,
   isRequesting: false,
   isRequestingCases: false,
@@ -235,13 +236,17 @@ export function reduce(
       const previousContacts = action.dispatchedFromPreviousContacts
         ? { ...task.previousContacts, cases: action.searchResult }
         : task.previousContacts;
+
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            searchCasesResult: action.searchResult,
+            searchCasesResult: {
+              ...action.searchResult,
+              ids: action.searchResult.cases.map(c => c.id),
+            },
             previousContacts,
             isRequestingCases: false,
             casesError: null,
@@ -271,8 +276,6 @@ export function reduce(
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            searchContactsResult: task.previousContacts.contacts,
-            searchCasesResult: task.previousContacts.cases,
             form: {
               ...task.form,
               contactNumber: action.contactNumber,

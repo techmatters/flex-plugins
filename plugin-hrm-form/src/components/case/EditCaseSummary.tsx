@@ -35,7 +35,6 @@ import {
 } from '../../styles/HrmStyles';
 import ActionHeader from './ActionHeader';
 import { RootState } from '../../states';
-import * as CaseActions from '../../states/case/actions';
 import * as RoutingActions from '../../states/routing/actions';
 import { newCloseModalAction, newGoBackAction } from '../../states/routing/actions';
 import type { Case, CustomITask, StandaloneITask } from '../../types/types';
@@ -74,16 +73,15 @@ const mapStateToProps = (state: RootState, { task }: EditCaseSummaryProps) => {
 const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
   const updateCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
-    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
     initialiseWorkingCopy: bindActionCreators(initialiseCaseSummaryWorkingCopy, dispatch),
     updateWorkingCopy: bindActionCreators(updateCaseSummaryWorkingCopy, dispatch),
-    closeActions: (closeModal: boolean) => {
-      dispatch(removeCaseSummaryWorkingCopy(task.taskSid));
+    closeActions: (caseId: string, closeModal: boolean) => {
+      dispatch(removeCaseSummaryWorkingCopy(caseId));
       dispatch(closeModal ? newCloseModalAction(task.taskSid) : newGoBackAction(task.taskSid));
     },
     updateCaseAsyncAction: (caseId: Case['id'], body: Partial<Case>) =>
-      updateCaseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
+      updateCaseAsyncDispatch(updateCaseAsyncAction(caseId, body)),
   };
 };
 
@@ -106,6 +104,8 @@ const EditCaseSummary: React.FC<Props> = ({
   can,
   updateCaseAsyncAction,
 }) => {
+  const { connectedCase, availableStatusTransitions } = connectedCaseState ?? {};
+
   const formDefinition: FormDefinition = useMemo(() => {
     try {
       return [
@@ -113,7 +113,7 @@ const EditCaseSummary: React.FC<Props> = ({
           name: 'status',
           label: 'Case-CaseStatus',
           type: FormInputType.Select,
-          options: connectedCaseState.availableStatusTransitions,
+          options: availableStatusTransitions,
         },
         {
           name: 'followUpDate',
@@ -135,20 +135,20 @@ const EditCaseSummary: React.FC<Props> = ({
       console.error('Failed to render edit case summary form', e);
       return [];
     }
-  }, [connectedCaseState.availableStatusTransitions]);
+  }, [availableStatusTransitions]);
 
   const savedForm = React.useMemo(() => {
     const {
       status,
       info: { summary, followUpDate, childIsAtRisk },
-    } = connectedCaseState.connectedCase;
+    } = connectedCase;
     return {
       status,
       summary: summary ?? '',
       followUpDate: followUpDate ?? '',
       childIsAtRisk: childIsAtRisk ?? false,
     };
-  }, [connectedCaseState.connectedCase]);
+  }, [connectedCase]);
 
   const methods = useForm();
 
@@ -158,7 +158,7 @@ const EditCaseSummary: React.FC<Props> = ({
 
   useEffect(() => {
     if (!workingCopy) {
-      initialiseWorkingCopy(task.taskSid, getValues() as CaseSummaryWorkingCopy);
+      initialiseWorkingCopy(connectedCase.id, getValues() as CaseSummaryWorkingCopy);
     }
   });
 
@@ -166,7 +166,7 @@ const EditCaseSummary: React.FC<Props> = ({
     definition: formDefinition,
     initialValues: workingCopy,
     parentsPath: '',
-    updateCallback: () => updateWorkingCopy(task.taskSid, getValues() as CaseSummaryWorkingCopy),
+    updateCallback: () => updateWorkingCopy(connectedCase.id, getValues() as CaseSummaryWorkingCopy),
     isItemEnabled: item => {
       switch (item.name) {
         case 'childIsAtRisk':
@@ -198,7 +198,7 @@ const EditCaseSummary: React.FC<Props> = ({
 
   const saveAndLeave = async () => {
     await save();
-    closeActions(false);
+    closeActions(connectedCase.id, false);
   };
 
   const strings = getTemplateStrings();
@@ -214,7 +214,7 @@ const EditCaseSummary: React.FC<Props> = ({
 
   const checkForEdits = (closeModal: boolean) => {
     if (isEqual(workingCopy, savedForm)) {
-      closeActions(closeModal);
+      closeActions(connectedCase.id, closeModal);
     } else setDialogState(closeModal ? DialogState.OpenForClose : DialogState.OpenForBack);
   };
 
@@ -254,7 +254,7 @@ const EditCaseSummary: React.FC<Props> = ({
           data-testid="CloseCaseDialog"
           openDialog={dialogState === DialogState.OpenForClose || dialogState === DialogState.OpenForBack}
           setDialog={() => setDialogState(DialogState.Closed)}
-          handleDontSaveClose={() => closeActions(dialogState === DialogState.OpenForClose)}
+          handleDontSaveClose={() => closeActions(connectedCase.id, dialogState === DialogState.OpenForClose)}
           handleSaveUpdate={methods.handleSubmit(saveAndLeave, onError)}
         />
       </NavigableContainer>

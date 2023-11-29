@@ -44,14 +44,12 @@ import {
   Text,
 } from '../../../styles/search';
 import Pagination from '../../Pagination';
-import * as CaseActions from '../../../states/case/actions';
-import { SearchPagesType } from '../../../states/search/types';
 import { getPermissionsForContact, getPermissionsForCase, PermissionActions } from '../../../permissions';
 import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
 import { getCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
-import { AppRoutes, ChangeRouteMode, SearchResultRoute, SearchRoute } from '../../../states/routing/types';
+import { AppRoutes, ChangeRouteMode, SearchResultRoute } from '../../../states/routing/types';
 import { recordBackendError } from '../../../fullStory';
 import { hasTaskControl } from '../../../utils/transfer';
 import { getUnsavedContact } from '../../../states/contacts/getUnsavedContact';
@@ -76,7 +74,6 @@ type OwnProps = {
   handleBack: () => void;
   changeSearchPage: (SearchPagesType) => void;
   setConnectedCase: (currentCase: Case, taskSid: string) => void;
-  currentPage: SearchPagesType;
   contactId: string;
   saveUpdates: () => Promise<void>;
 };
@@ -424,7 +421,6 @@ const mapStateToProps = (
   const taskId = task.taskSid;
   const { isRequesting, isRequestingCases, caseRefreshRequired, contactRefreshRequired } = searchContacts.tasks[taskId];
   const { counselors } = configuration;
-  const taskContact = activeContacts.existingContacts[taskId]?.savedContact;
   const { draftContact, savedContact } = activeContacts.existingContacts[contactId] ?? {};
 
   return {
@@ -434,7 +430,6 @@ const mapStateToProps = (
     contactRefreshRequired,
     counselorsHash: counselors.hash,
     routing: getCurrentTopmostRouteForTask(routing, taskId),
-    taskContact,
     searchCase: searchContacts.tasks[task.taskSid].searchExistingCaseStatus,
     contact: getUnsavedContact(savedContact, draftContact),
   };
@@ -458,13 +453,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     viewContactDetails: ({ id }: Contact) => {
       dispatch(newOpenModalAction({ route: 'contact', subroute: 'view', id: id.toString() }, taskId));
     },
-    setConnectedCase: bindActionCreators(CaseActions.setConnectedCase, dispatch),
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
     openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, taskId)),
     createCaseAsyncAction: async (contact, workerSid: string, definitionVersion: DefinitionVersionId) => {
       // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
       // TODO: Rework error handling to be based on redux state set by the _REJECTED action
-      await asyncDispatch(dispatch)(createCaseAsyncAction(contact, taskId, workerSid, definitionVersion));
+      await asyncDispatch(dispatch)(createCaseAsyncAction(contact, workerSid, definitionVersion));
     },
   };
 };

@@ -14,12 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Case } from '../../types/types';
-import { CaseActionType, SET_CONNECTED_CASE } from './types';
+import { ContactState } from './existingContacts';
+import { RootState } from '..';
+import { namespace } from '../storeNamespaces';
 
-// Action creators
-export const setConnectedCase = (connectedCase: Case, taskId: string): CaseActionType => ({
-  type: SET_CONNECTED_CASE,
-  connectedCase,
-  taskId,
-});
+const selectContactStateByContactId = (state: RootState, contactId: string): ContactState | undefined =>
+  state[namespace].activeContacts.existingContacts[contactId];
+export default selectContactStateByContactId;

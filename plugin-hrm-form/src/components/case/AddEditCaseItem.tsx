@@ -120,9 +120,9 @@ const AddEditCaseItem: React.FC<Props> = ({
   useEffect(() => {
     if (!workingCopy) {
       if (sectionId) {
-        initialiseCaseSectionWorkingCopy(task.taskSid, sectionApi, sectionId);
+        initialiseCaseSectionWorkingCopy(connectedCase.id, sectionApi, sectionId);
       } else {
-        initialiseNewCaseSectionWorkingCopy(task.taskSid, sectionApi, savedForm);
+        initialiseNewCaseSectionWorkingCopy(connectedCase.id, sectionApi, savedForm);
       }
     }
   }, [
@@ -130,9 +130,9 @@ const AddEditCaseItem: React.FC<Props> = ({
     initialiseCaseSectionWorkingCopy,
     initialiseNewCaseSectionWorkingCopy,
     sectionApi,
-    task.taskSid,
     workingCopy,
     savedForm,
+    connectedCase.id,
   ]);
 
   const methods = useForm(reactHookFormOptions);
@@ -147,7 +147,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     updateCallback: () => {
       const form = getValues();
       console.log('Updated case form', form);
-      updateCaseSectionWorkingCopy(connectedCase?.id.toString(), sectionApi, { ...workingCopy, form }, sectionId);
+      updateCaseSectionWorkingCopy(connectedCase?.id, sectionApi, { ...workingCopy, form }, sectionId);
     },
     customHandlers: customFormHandlers,
     shouldFocusFirstElement: false,
@@ -164,6 +164,8 @@ const AddEditCaseItem: React.FC<Props> = ({
   if (!workingCopy) {
     return null;
   }
+
+  const { id: caseId } = connectedCase;
 
   const [l, r] = layout.splitFormAt
     ? splitAt(layout.splitFormAt)(disperseInputs(7)(form))
@@ -207,12 +209,12 @@ const AddEditCaseItem: React.FC<Props> = ({
   };
 
   function close() {
-    closeActions(sectionId);
+    closeActions(caseId, sectionId);
   }
 
   async function saveAndStay() {
     await save();
-    closeActions(sectionId, false);
+    closeActions(caseId, sectionId, false);
 
     // Reset the entire form state, fields reference, and subscriptions.
     methods.reset();
@@ -220,7 +222,7 @@ const AddEditCaseItem: React.FC<Props> = ({
 
   async function saveAndLeave() {
     await save();
-    closeActions(sectionId);
+    closeActions(caseId, sectionId);
   }
 
   const strings = getTemplateStrings();
@@ -335,14 +337,14 @@ const mapDispatchToProps = (dispatch, props: AddEditCaseItemProps) => {
     updateCaseSectionWorkingCopy: bindActionCreators(updateCaseSectionWorkingCopy, dispatch),
     initialiseCaseSectionWorkingCopy: bindActionCreators(initialiseExistingCaseSectionWorkingCopy, dispatch),
     initialiseNewCaseSectionWorkingCopy: bindActionCreators(initialiseNewCaseSectionWorkingCopy, dispatch),
-    closeActions: (id: string, closeForm: boolean = true) => {
-      dispatch(removeCaseSectionWorkingCopy(task.taskSid, sectionApi, id));
+    closeActions: (caseId: string, id: string, closeForm: boolean = true) => {
+      dispatch(removeCaseSectionWorkingCopy(caseId, sectionApi, id));
       if (closeForm) {
         dispatch(newGoBackAction(task.taskSid));
       }
     },
     updateCaseAsyncAction: (caseId: Case['id'], body: Partial<Case>) =>
-      searchAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
+      searchAsyncDispatch(updateCaseAsyncAction(caseId, body)),
   };
 };
 

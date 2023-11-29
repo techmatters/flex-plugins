@@ -20,49 +20,36 @@ import { CreateHandlerMap } from 'redux-promise-middleware-actions/lib/reducers'
 
 import { createCase, updateCase, cancelCase } from '../../services/CaseService';
 import { Case } from '../../types/types';
-import { UPDATE_CASE_ACTION, CREATE_CASE_ACTION, CANCEL_CASE_ACTION, SavedCaseStatus, CaseState } from './types';
-import type { RootState, HrmState } from '..';
+import { UPDATE_CASE_ACTION, CREATE_CASE_ACTION, CANCEL_CASE_ACTION } from './types';
+import type { HrmState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { connectToCase } from '../../services/ContactService';
 import { connectToCaseAsyncAction } from '../contacts/saveContact';
-import { namespace } from '../storeNamespaces';
 
 export const createCaseAsyncAction = createAsyncAction(
   CREATE_CASE_ACTION,
-  async (
-    contact,
-    taskSid: string,
-    workerSid: string,
-    definitionVersion: DefinitionVersionId,
-  ): Promise<{ taskSid: string; case: Case }> => {
+  async (contact, workerSid: string, definitionVersion: DefinitionVersionId): Promise<Case> => {
     // We should probably update the case POST endpoint to accept a connected contact to simplify this and avoid extra calls and inconsistent state
     const newCase = await createCase(contact, workerSid, definitionVersion);
     const updatedContact = await connectToCase(contact.id, newCase.id);
-    return { taskSid, case: { ...newCase, connectedContacts: [...(newCase.connectedContacts ?? []), updatedContact] } };
+    return { ...newCase, connectedContacts: [...(newCase.connectedContacts ?? []), updatedContact] };
   },
 );
 
 export const updateCaseAsyncAction = createAsyncAction(
   UPDATE_CASE_ACTION,
-  async (caseId: Case['id'], taskSid: string, body: Partial<Case>): Promise<{ taskSid: string; case: Case }> => {
-    return { taskSid, case: await updateCase(caseId, body) };
+  async (caseId: Case['id'], body: Partial<Case>): Promise<Case> => {
+    return updateCase(caseId, body);
   },
 );
 
 export const cancelCaseAsyncAction = createAsyncAction(
   CANCEL_CASE_ACTION,
-  async (caseId: Case['id'], taskSid: string): Promise<{ taskSid: string; case: Case }> => {
+  async (caseId: Case['id']): Promise<Case> => {
     await cancelCase(caseId);
-    return { taskSid, case: null };
+    return null;
   },
 );
-
-// In order to use the createReducer helper, we need to combine the case state and the root state into a single object
-// Perhaps we should just pass the root state to simplify things?
-export type SaveCaseReducerState = {
-  state: CaseState;
-  rootState: RootState['plugin-hrm-form'];
-};
 
 // We need to return a state object of the same type as we are passed, so we need to return the rootState even though we don't change it.
 const handlePendingAction = (handleAction, asyncAction) =>
@@ -71,15 +58,14 @@ const handlePendingAction = (handleAction, asyncAction) =>
   });
 
 const updateConnectedCase = (state: HrmState, connectedCase: Case) => {
-  const caseDefinitionVersion =
-    state[namespace].configuration.definitionVersions[connectedCase?.info?.definitionVersion];
+  const caseDefinitionVersion = state.configuration.definitionVersions[connectedCase?.info?.definitionVersion];
 
   return {
     ...state,
     connectedCase: {
-      ...state[namespace].connectedCase,
+      ...state.connectedCase,
       cases: {
-        ...state[namespace].connectedCase.cases,
+        ...state.connectedCase.cases,
         [connectedCase.id.toString()]: {
           connectedCase,
           caseWorkingCopy: { sections: {} },
@@ -95,11 +81,7 @@ const updateConnectedCase = (state: HrmState, connectedCase: Case) => {
 const handleFulfilledAction = (
   handleAction: CreateHandlerMap<HrmState>,
   asyncAction: typeof updateCaseAsyncAction.fulfilled | typeof createCaseAsyncAction.fulfilled,
-) =>
-  handleAction(
-    asyncAction,
-    (state, { payload: { case: connectedCase, taskSid } }): HrmState => updateConnectedCase(state, connectedCase),
-  );
+) => handleAction(asyncAction, (state, { payload }): HrmState => updateConnectedCase(state, payload));
 
 const handleConnectToCaseFulfilledAction = (
   handleAction: CreateHandlerMap<HrmState>,

@@ -54,7 +54,7 @@ export async function cancelCase(caseId: Case['id']) {
   await fetchHrmApi(`/cases/${caseId}`, options);
 }
 
-export async function updateCase(caseId: Case['id'], body: Partial<Case>) {
+export async function updateCase(caseId: Case['id'], body: Partial<Case>): Promise<Case> {
   const options = {
     method: 'PUT',
     body: JSON.stringify(body),
