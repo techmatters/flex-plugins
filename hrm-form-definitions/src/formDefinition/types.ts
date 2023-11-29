@@ -188,6 +188,15 @@ type CustomContactComponentDefinition = ItemBase &
     props?: Record<string, boolean | number | string>;
   };
 
+export declare type ProfileSection = {
+  name: string;
+  label: string;
+  type: string;
+  rows: number;
+  placeholder: string;
+  width: number;
+};
+
 export type FormItemDefinition =
   | InputDefinition
   | NumericInputDefinition
@@ -204,7 +213,8 @@ export type FormItemDefinition =
   | FileUploadDefinition
   | CallTypeButtonInputDefinition
   | CopyToDefinition
-  | CustomContactComponentDefinition;
+  | CustomContactComponentDefinition
+  | ProfileSection;
 
 export type FormItemJsonDefinition =
   | FormItemDefinition
@@ -329,5 +339,5 @@ export type DefinitionVersion = {
   };
   referenceData?: Record<string, any>;
   blockedEmojis: string[];
-  profileForms?: { Sections: FormDefinition };
+  profileForms?: { Sections: ProfileSection };
 };
