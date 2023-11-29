@@ -213,8 +213,7 @@ export type FormItemDefinition =
   | FileUploadDefinition
   | CallTypeButtonInputDefinition
   | CopyToDefinition
-  | CustomContactComponentDefinition
-  | ProfileSection;
+  | CustomContactComponentDefinition;
 
 export type FormItemJsonDefinition =
   | FormItemDefinition
@@ -339,5 +338,5 @@ export type DefinitionVersion = {
   };
   referenceData?: Record<string, any>;
   blockedEmojis: string[];
-  profileForms?: { Sections: ProfileSection };
+  profileForms?: { Sections: ProfileSection[] };
 };

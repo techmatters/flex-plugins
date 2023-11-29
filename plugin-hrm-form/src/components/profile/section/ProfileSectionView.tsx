@@ -15,13 +15,14 @@
  */
 
 import React from 'react';
+import { ProfileSection } from 'hrm-form-definitions';
 
 import { ProfileCommonProps } from '../types';
 import { useProfileSectionByType } from '../../../states/profile/hooks/useProfileSection';
 import { ProfileSectionTextContent, SectionText } from '../styles';
 
 type OwnProps = ProfileCommonProps & {
-  sectionType: ProfileSection
+  sectionType: ProfileSection;
 };
 
 const ProfileSectionView = ({ profileId, sectionType }: OwnProps) => {
