@@ -20,7 +20,9 @@ import * as ConfigurationSelectors from '../selectors';
 
 import { RootState } from '../..';
 
-export const useProfileSectionTypes = () =>
+const useProfileSectionTypes = () =>
   useSelector(
     (state: RootState) => ConfigurationSelectors.selectDefinitionVersionProperty(state, 'profileForms')?.Sections,
   );
+
+export default useProfileSectionTypes;

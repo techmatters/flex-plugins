@@ -30,7 +30,7 @@ import {
   FormTextArea,
 } from '../../../styles/HrmStyles';
 import { useEditProfileSection } from '../../../states/profile/hooks/useProfileSection';
-import { useProfileSectionTypes } from '../../../states/configuration/hooks/useProfileSection';
+import useProfileSectionTypes from '../../../states/configuration/hooks/useProfileSectionTypes';
 import { ProfileCommonProps } from '../types';
 import * as RoutingActions from '../../../states/routing/actions';
 

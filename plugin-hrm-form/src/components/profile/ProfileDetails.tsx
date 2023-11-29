@@ -22,7 +22,7 @@ import { Box, HiddenText, Row, HorizontalLine } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
 import { useProfileSectionByType } from '../../states/profile/hooks/useProfileSection';
-import { useProfileSectionTypes } from '../../states/configuration/hooks/useProfileSection';
+import useProfileSectionTypes from '../../states/configuration/hooks/useProfileSectionTypes';
 import { ProfileCommonProps } from './types';
 import {
   DetailsWrapper,
