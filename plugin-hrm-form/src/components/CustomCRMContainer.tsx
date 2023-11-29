@@ -32,7 +32,7 @@ import { namespace } from '../states/storeNamespaces';
 import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
 import asyncDispatch from '../states/asyncDispatch';
 import { createContactAsyncAction } from '../states/contacts/saveContact';
-import { getHrmConfig } from '../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { newContact } from '../states/contacts/contactState';
 import { selectAnyContactIsSaving } from '../states/contacts/selectContactSaveStatus';
 
@@ -55,6 +55,7 @@ const CustomCRMContainer: React.FC<Props> = ({
   definitionVersion,
   loadOrCreateDraftOfflineContact,
 }) => {
+  const { enable_confirm_on_browser_close: enableConfirmOnBrowserClose } = getAseloFeatureFlags();
   useEffect(() => {
     const fetchPopulateCounselors = async () => {
       try {
@@ -76,6 +77,9 @@ const CustomCRMContainer: React.FC<Props> = ({
   }, [currentOfflineContact, definitionVersion, loadOrCreateDraftOfflineContact]);
 
   useEffect(() => {
+    if (!enableConfirmOnBrowserClose) {
+      return () => undefined;
+    }
     if (handleUnloadRef) {
       window.removeEventListener('beforeunload', handleUnloadRef);
     }
@@ -93,7 +97,7 @@ const CustomCRMContainer: React.FC<Props> = ({
         window.removeEventListener('beforeunload', handleUnloadRef);
       }
     };
-  }, [hasUnsavedChanges]);
+  }, [enableConfirmOnBrowserClose, hasUnsavedChanges]);
 
   const offlineContactTask: OfflineContactTask = {
     taskSid: getOfflineContactTaskSid(),
