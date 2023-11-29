@@ -15,15 +15,9 @@
  */
 
 import { RootState } from '..';
-import { namespace } from '../storeNamespaces';
+import { configurationBase, namespace } from '../storeNamespaces';
 
-const selectIsContactCreating = (
-  {
-    [namespace]: {
-      activeContacts: { contactsBeingCreated },
-    },
-  }: RootState,
-  taskSid: string,
-) => contactsBeingCreated.has(taskSid);
+const selectDefinitionVersion = (state: RootState) => state[namespace][configurationBase].currentDefinitionVersion;
 
-export default selectIsContactCreating;
+export const selectDefinitionVersionProperty = (state: RootState, property: string) =>
+  selectDefinitionVersion(state)?.[property];
