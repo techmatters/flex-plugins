@@ -17,9 +17,8 @@
 import React, { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import startCase from 'lodash/startCase';
-import { ProfileSection } from 'hrm-form-definitions';
 
-import type * as t from '../../../types/types';
+import { ProfileSection } from '../../../types/types';
 import NavigableContainer from '../../NavigableContainer';
 import {
   Flex,
@@ -36,18 +35,18 @@ import { ProfileCommonProps } from '../types';
 import * as RoutingActions from '../../../states/routing/actions';
 
 type OwnProps = ProfileCommonProps & {
-  sectionType: t.ProfileSection['sectionType'];
+  sectionType: ProfileSection['sectionType'];
 };
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props) => {
   const { section, createProfileSection, updateProfileSection } = useEditProfileSection({ profileId, sectionType });
-  const sectionTypesForms: ProfileSection[] = useProfileSectionTypes();
+  const sectionTypesForms = useProfileSectionTypes();
   const sectionTypesForm = sectionTypesForms.find(sectionTypesForm => sectionTypesForm.name === sectionType);
 
   const [content, setContent] = useState<string>(section?.content || '');
-  const sectionId: t.ProfileSection['id'] = section?.id;
+  const sectionId: ProfileSection['id'] = section?.id;
 
   const handleEdit = () => {
     if (!sectionId) {
