@@ -53,7 +53,10 @@ const mapDispatchToProps = (dispatch, { task: { taskSid } }) => {
   return {
     viewContactDetails: ({ id }: Contact) => {
       dispatch(
-        RoutingActions.newOpenModalAction({ route: 'profile-contact', subroute: 'view', id: id.toString() }, taskSid),
+        RoutingActions.newOpenModalAction(
+          { route: 'contact', context: 'profile', subroute: 'view', id: id.toString() },
+          taskSid,
+        ),
       );
     },
   };

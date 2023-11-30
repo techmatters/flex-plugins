@@ -51,6 +51,7 @@ import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { isRouteWithContext } from '../../states/routing/types';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -439,18 +440,20 @@ ContactDetailsHome.defaultProps = {
   showActionIcons: false,
 };
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
-  definitionVersions: state[namespace][configurationBase].definitionVersions,
-  counselorsHash: state[namespace][configurationBase].counselors.hash,
-  savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
-  draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
-  detailsExpanded: state[namespace][contactFormsBase].contactDetails[ownProps.context].detailsExpanded,
-  canViewTwilioTranscript: (state.flex.worker.attributes.roles as string[]).some(
-    role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.quality_process_manager',
-  ),
-  isProfileRoute:
-    getCurrentTopmostRouteForTask(state[namespace].routing, ownProps.task.taskSid)?.route === 'profile-contact',
-});
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+  const currentRoute = getCurrentTopmostRouteForTask(state[namespace].routing, ownProps.task.taskSid);
+  return {
+    definitionVersions: state[namespace][configurationBase].definitionVersions,
+    counselorsHash: state[namespace][configurationBase].counselors.hash,
+    savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
+    draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
+    detailsExpanded: state[namespace][contactFormsBase].contactDetails[ownProps.context].detailsExpanded,
+    canViewTwilioTranscript: (state.flex.worker.attributes.roles as string[]).some(
+      role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.quality_process_manager',
+    ),
+    isProfileRoute: isRouteWithContext(currentRoute) && currentRoute?.context === 'profile',
+  };
+};
 
 const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) => ({
   toggleSectionExpandedForContext: (section: ContactDetailsSectionsType) =>
