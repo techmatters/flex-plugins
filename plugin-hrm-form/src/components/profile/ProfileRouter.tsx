@@ -79,23 +79,16 @@ const PROFILE_ROUTES: Record<string, ProfileRouteConfig> = {
   },
 };
 
-const ALL_PROFILE_ROUTES = Object.values(PROFILE_ROUTES).flatMap(({ routes }) => routes);
-const PROFILE_ROUTES_WITH_CONTEXT = Object.values(PROFILE_ROUTES).flatMap(({ contextRoutes }) => contextRoutes);
+const rootProfileRoutes = Object.values(PROFILE_ROUTES).flatMap(({ routes }) => routes);
+const contextProfileRoutes = Object.values(PROFILE_ROUTES).flatMap(({ contextRoutes }) => contextRoutes);
 
 export const isProfileRoute = (routing: AppRoutes) => {
-  if (ALL_PROFILE_ROUTES.includes(routing.route)) return true;
-
-  console.log('>>>isRouteWithContext', isRouteWithContext(routing));
-  // @ts-ignore
-  console.log('>>>routing.context', routing.context);
-  console.log('>>>PROFILE_ROUTES_WITH_CONTEXT', PROFILE_ROUTES_WITH_CONTEXT);
-  console.log('>>>routing.route', routing.route);
+  if (rootProfileRoutes.includes(routing.route)) return true;
 
   return (
     isRouteWithContext(routing) &&
     routing.context === 'profile' &&
-    // @ts-ignore
-    PROFILE_ROUTES_WITH_CONTEXT.includes(routing.route as AppRoutes['route'])
+    contextProfileRoutes.includes(routing.route as AppRoutes['route'])
   );
 };
 
