@@ -238,6 +238,7 @@ const CaseHome: React.FC<Props> = ({
                 </Text>
               </Flex>
               <ConnectToCaseButton
+                caseId={connectedCase.id.toString()}
                 isConnectedToTaskContact={isConnectedToTaskContact}
                 onClickConnectToTaskContact={() => {
                   connectCaseToTaskContact(taskContact, connectedCaseState.connectedCase);

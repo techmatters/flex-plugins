@@ -19,10 +19,12 @@ import { Template } from '@twilio/flex-ui';
 import React from 'react';
 
 import { PreviewActionButton } from '../../styles/search';
+import { getTemplateStrings } from '../../hrmConfig';
 
 type OwnProps = {
   isConnectedToTaskContact: boolean;
   onClickConnectToTaskContact: () => void;
+  caseId: string;
   color?: 'black' | 'grey';
 };
 
@@ -32,12 +34,16 @@ const ConnectToCaseButton: React.FC<Props> = ({
   isConnectedToTaskContact,
   onClickConnectToTaskContact,
   color = 'grey',
+  caseId,
 }) => {
+  const strings = getTemplateStrings();
   return (
     <PreviewActionButton
+      style={{ height: '28px' }}
       disabled={isConnectedToTaskContact}
       onClick={onClickConnectToTaskContact}
       secondary={color === 'grey' ? 'true' : 'false'}
+      title={`${strings['CaseHeader-ConnectToTaskContact']} #${caseId}`}
     >
       {!isConnectedToTaskContact && <CreateNewFolderOutlined />}
       {isConnectedToTaskContact && <CheckCircleOutlineOutlined />}
