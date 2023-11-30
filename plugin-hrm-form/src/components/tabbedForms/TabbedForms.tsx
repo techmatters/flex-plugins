@@ -72,9 +72,9 @@ import ViewContact from '../case/ViewContact';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
-import { selectCaseMergingBanners } from '../caseMergingBanners/state';
 import { getHrmConfig, getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
+import { selectCaseMergingBanners } from '../../states/case/caseBanners';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
