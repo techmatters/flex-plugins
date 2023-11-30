@@ -113,6 +113,7 @@ export const TabbedFormTabContainer = styled(({ display, ...rest }: TabbedFormTa
   background-color: white;
   display: ${({ display }) => (display ? 'block' : 'none')};
   height: ${({ display }) => (display ? '100%' : '0px')};
+  border-bottom: 1px solid #e1e3ea;
 `;
 TabbedFormTabContainer.displayName = 'TabbedFormTabContainer';
 
@@ -364,9 +365,9 @@ export const BottomButtonBar = styled('div')`
   justify-content: flex-end;
   height: ${BottomButtonBarHeight}px;
   flex-shrink: 0;
+  background-color: #ffffff;
   padding: 0 20px;
   z-index: 1;
-  box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.1);
 `;
 BottomButtonBar.displayName = 'BottomButtonBar';
 
