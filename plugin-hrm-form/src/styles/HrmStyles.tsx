@@ -1379,9 +1379,9 @@ export const PreviewWrapper = styled(Flex)`
   max-width: 100%;
   box-sizing: border-box;
   background-color: #ffffff;
-  border-color: #d8d8d8;
+  border-color: #E1E3EA;
   border-style: solid;
-  border-width: 2px;
+  border-width: 1px;
   border-radius: 4px;
 `;
 
