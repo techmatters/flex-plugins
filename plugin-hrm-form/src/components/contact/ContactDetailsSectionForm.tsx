@@ -21,11 +21,11 @@ import { useFormContext } from 'react-hook-form';
 
 import {
   ColumnarBlock,
-  Container,
   TwoColumnLayout,
   Box,
   BottomButtonBarHeight,
   ColumnarContent,
+  Container,
 } from '../../styles/HrmStyles';
 import { disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
@@ -83,7 +83,7 @@ const ContactDetailsSectionForm: React.FC<Props> = ({
   }, [layoutDefinition, form]);
 
   return (
-    <Container removePadding={true}>
+    <Container formContainer={true}>
       <Box paddingBottom={`${BottomButtonBarHeight}px`}>
         <TwoColumnLayout>
           <ColumnarBlock>

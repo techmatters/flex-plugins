@@ -113,18 +113,17 @@ export const TabbedFormTabContainer = styled(({ display, ...rest }: TabbedFormTa
   background-color: white;
   display: ${({ display }) => (display ? 'block' : 'none')};
   height: ${({ display }) => (display ? '100%' : '0px')};
-  border-bottom: 1px solid #e1e3ea;
 `;
 TabbedFormTabContainer.displayName = 'TabbedFormTabContainer';
 
 const containerLeftRightMargin = '5px';
 
 type ContainerProps = {
-  removePadding?: boolean;
+  formContainer?: boolean;
 };
 export const Container = styled('div')<ContainerProps>`
   display: flex;
-  padding: ${({ removePadding }) => (removePadding ? '0' : '32px 20px 12px 20px')};
+  padding: ${({ formContainer }) => (formContainer ? '0' : '32px 20px 12px 20px')};
   flex-direction: column;
   flex-wrap: nowrap;
   background-color: #ffffff;
@@ -133,6 +132,7 @@ export const Container = styled('div')<ContainerProps>`
   margin: 0 ${containerLeftRightMargin};
   height: 100%;
   overflow-y: auto;
+  ${({ formContainer }) => (formContainer ? 'border-bottom: 1px solid #e1e3ea' : '')};
 `;
 Container.displayName = 'Container';
 
