@@ -135,7 +135,7 @@ const CaseList: React.FC<Props> = ({
     return (
       <StandaloneSearchContainer>
         <CaseLayout>
-          <Case task={standaloneTask} isCreating={false} handleClose={closeCaseView} />
+          <Case task={standaloneTask} handleClose={closeCaseView} />
         </CaseLayout>
       </StandaloneSearchContainer>
     );

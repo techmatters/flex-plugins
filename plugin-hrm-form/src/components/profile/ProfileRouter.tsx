@@ -22,6 +22,8 @@ import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileRoute, ProfileSectionEditRoute } from '../../states/routing/types';
+import ProfileCaseDetails from './ProfileCaseDetails';
+import ProfileContactDetails from './ProfileContactDetails';
 import ProfileEdit from './ProfileEdit';
 import ProfileTabs from './ProfileTabs';
 import ProfileSectionEdit from './section/ProfileSectionEdit';
@@ -30,13 +32,36 @@ type OwnProps = {
   task: RouterTask;
 };
 
-// eslint-disable-next-line no-use-before-define
+const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
+  const routingState = state[namespace].routing;
+  const route = getCurrentTopmostRouteForTask(routingState, taskSid);
+  const profileId = (route as ProfileRoute).id;
+  const currentRouteStack = getCurrentTopmostRouteForTask(routingState, taskSid);
+  const currentRoute = currentRouteStack?.route.toString();
+  const sectionType = (currentRouteStack as ProfileSectionEditRoute)?.type;
+
+  return {
+    profileId,
+    currentRoute,
+    sectionType,
+  };
+};
+
+const connector = connect(mapStateToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const PROFILE_ROUTES = {
   profile: {
     routes: ['profile'],
     renderComponent: (props: Props) => <ProfileTabs {...props} />,
+  },
+  profileContact: {
+    routes: ['profile-contact'],
+    renderComponent: (props: Props) => <ProfileContactDetails {...props} />,
+  },
+  profileCase: {
+    routes: ['profile-case'],
+    renderComponent: (props: Props) => <ProfileCaseDetails {...props} />,
   },
   profileEdit: {
     routes: ['profileEdit'],
@@ -60,20 +85,4 @@ const ProfileRouter: React.FC<Props> = props => {
   );
 };
 
-const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
-  const routingState = state[namespace].routing;
-  const route = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const profileId = (route as ProfileRoute).id;
-  const currentRouteStack = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const currentRoute = currentRouteStack?.route.toString();
-  const sectionType = (currentRouteStack as ProfileSectionEditRoute)?.type;
-
-  return {
-    profileId,
-    currentRoute,
-    sectionType,
-  };
-};
-
-const connector = connect(mapStateToProps);
 export default connector(ProfileRouter);

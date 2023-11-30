@@ -165,7 +165,7 @@ const Search: React.FC<Props> = ({
         break;
       }
       case 'case': {
-        return <Case task={task} isCreating={false} />;
+        return <Case task={task} />;
       }
       case 'contact':
         // Find contact in contact search results or connected to one of case search results
