@@ -1379,7 +1379,7 @@ export const PreviewWrapper = styled(Flex)`
   max-width: 100%;
   box-sizing: border-box;
   background-color: #ffffff;
-  border-color: #E1E3EA;
+  border-color: #e1e3ea;
   border-style: solid;
   border-width: 1px;
   border-radius: 4px;
