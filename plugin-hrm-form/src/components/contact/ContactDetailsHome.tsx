@@ -50,6 +50,7 @@ import type { ResourceReferral } from '../../states/contacts/resourceReferral';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
+import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -111,6 +112,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   toggleSectionExpandedForContext,
   navigate,
   openProfileModal,
+  isProfileRoute,
   enableEditing,
   canViewTwilioTranscript,
   createDraftCsamReport,
@@ -249,7 +251,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
-  const profileLink = featureFlags.enable_client_profiles && savedContact.profileId && (
+  const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && (
     <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>
       <Icon icon="DefaultAvatar" />
       View Client
@@ -446,6 +448,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
   canViewTwilioTranscript: (state.flex.worker.attributes.roles as string[]).some(
     role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.quality_process_manager',
   ),
+  isProfileRoute:
+    getCurrentTopmostRouteForTask(state[namespace].routing, ownProps.task.taskSid)?.route === 'profile-contact',
 });
 
 const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) => ({
