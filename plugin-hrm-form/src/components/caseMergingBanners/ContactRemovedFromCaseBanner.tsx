@@ -20,10 +20,10 @@ import { Template } from '@twilio/flex-ui';
 import { Close } from '@material-ui/icons';
 
 import { HeaderCloseButton, HiddenText } from '../../styles/HrmStyles';
-import { closeRemovedFromCaseBannerAction } from './state';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import WarningIcon from './WarningIcon';
 import { BannerContainer, Text } from './styles';
+import { closeRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
 
 type OwnProps = {
   taskId: string;
