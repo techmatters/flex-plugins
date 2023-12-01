@@ -119,11 +119,11 @@ TabbedFormTabContainer.displayName = 'TabbedFormTabContainer';
 const containerLeftRightMargin = '5px';
 
 type ContainerProps = {
-  removePadding?: boolean;
+  formContainer?: boolean;
 };
 export const Container = styled('div')<ContainerProps>`
   display: flex;
-  padding: ${({ removePadding }) => (removePadding ? '0' : '32px 20px 12px 20px')};
+  padding: ${({ formContainer }) => (formContainer ? '0' : '32px 20px 12px 20px')};
   flex-direction: column;
   flex-wrap: nowrap;
   background-color: #ffffff;
@@ -132,6 +132,7 @@ export const Container = styled('div')<ContainerProps>`
   margin: 0 ${containerLeftRightMargin};
   height: 100%;
   overflow-y: auto;
+  ${({ formContainer }) => (formContainer ? 'border-bottom: 1px solid #e1e3ea' : '')};
 `;
 Container.displayName = 'Container';
 
@@ -364,9 +365,9 @@ export const BottomButtonBar = styled('div')`
   justify-content: flex-end;
   height: ${BottomButtonBarHeight}px;
   flex-shrink: 0;
+  background-color: #ffffff;
   padding: 0 20px;
   z-index: 1;
-  box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.1);
 `;
 BottomButtonBar.displayName = 'BottomButtonBar';
 
@@ -1379,9 +1380,9 @@ export const PreviewWrapper = styled(Flex)`
   max-width: 100%;
   box-sizing: border-box;
   background-color: #ffffff;
-  border-color: #d8d8d8;
+  border-color: #e1e3ea;
   border-style: solid;
-  border-width: 2px;
+  border-width: 1px;
   border-radius: 4px;
 `;
 

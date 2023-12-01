@@ -22,12 +22,12 @@ import { BannerContainer, Text, BannerActionLink } from './styles';
 import InfoIcon from './InfoIcon';
 import asyncDispatch from '../../states/asyncDispatch';
 import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
-import { showRemovedFromCaseBannerAction } from './state';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import selectCaseByTaskSid from '../../states/case/selectCaseByTaskSid';
 import { newGoBackAction } from '../../states/routing/actions';
 import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
 import { cancelCaseAsyncAction } from '../../states/case/saveCase';
+import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
 
 type OwnProps = {
   task?: ITask;
@@ -50,8 +50,7 @@ const mapStateToProps = (state, { task }: OwnProps) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  removeContactFromCase: async (contactId: string, caseId: number) =>
-    asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId)),
+  removeContactFromCase: async (contactId: string) => asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId)),
   cancelCase: async (caseId: number, taskSid: string) =>
     asyncDispatch(dispatch)(cancelCaseAsyncAction(caseId, taskSid)),
   showRemovedFromCaseBanner: (contactId: string) => dispatch(showRemovedFromCaseBannerAction(contactId)),
@@ -70,7 +69,7 @@ const CreatedCaseBanner: React.FC<Props> = ({
 }) => {
   const handleCancelCase = async () => {
     const contactIds = cas.connectedContacts.map(c => c.id);
-    await Promise.all(contactIds.map(id => removeContactFromCase(id, caseId)));
+    await Promise.all(contactIds.map(id => removeContactFromCase(id)));
 
     // Navigating back before removing the case provides a better user experience.
     navigateBack(taskSid);

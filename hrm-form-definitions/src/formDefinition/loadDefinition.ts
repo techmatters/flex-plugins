@@ -30,6 +30,7 @@ import {
   isSelectDefinitionWithReferenceOptions,
   LayoutVersion,
   CategoriesDefinition,
+  ProfileSection,
 } from './types';
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 
@@ -167,6 +168,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     prepopulateKeys,
     referenceData,
     blockedEmojis,
+    profileSections,
   ] = await Promise.all([
     fetchDefinition<LayoutVersion>('LayoutDefinitions.json'),
     fetchDefinition<FormItemJsonDefinition[]>('caseForms/HouseholdForm.json'),
@@ -195,6 +197,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     ),
     fetchDefinition<Record<string, any>>('ReferenceData.json', {}),
     fetchDefinition<string[]>('BlockedEmojis.json', []),
+    fetchDefinition<ProfileSection[]>('profileForms/Sections.json', []),
   ]);
 
   const { helplines } = helplineInformation;
@@ -230,5 +233,8 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     prepopulateKeys,
     referenceData,
     blockedEmojis,
+    profileForms: {
+      Sections: profileSections,
+    },
   };
 }
