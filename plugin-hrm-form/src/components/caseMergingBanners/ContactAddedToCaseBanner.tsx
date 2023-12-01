@@ -18,7 +18,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { showRemovedFromCaseBannerAction } from './state';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import asyncDispatch from '../../states/asyncDispatch';
 import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
@@ -28,6 +27,7 @@ import selectCaseByTaskSid from '../../states/case/selectCaseByTaskSid';
 import type { Case } from '../../types/types';
 import { BannerContainer, Text, CaseLink, BannerActionLink } from './styles';
 import InfoIcon from './InfoIcon';
+import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
 
 type OwnProps = {
   taskId: string;

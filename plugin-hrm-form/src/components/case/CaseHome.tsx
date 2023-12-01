@@ -226,6 +226,7 @@ const CaseHome: React.FC<Props> = ({
       <CaseContainer
         style={{
           overflowY: isCreating ? 'scroll' : 'visible',
+          borderBottom: isCreating ? '1px solid #e5e5e5' : 'none',
         }}
       >
         {showConnectToCaseButton && (

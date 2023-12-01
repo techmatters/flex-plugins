@@ -1,0 +1,122 @@
+${
+  jsonencode(
+  {
+      "states": [
+
+        {
+            "transitions": [
+              {
+                "event": "incomingMessage",
+                "next": "ChatBot"
+              },
+              {
+                "event": "incomingCall"
+              },
+              {
+                "event": "incomingConversationMessage"
+              },
+              {
+                "event": "incomingRequest"
+              },
+              {
+                "event": "incomingParent"
+              }
+            ],
+            "type": "trigger",
+            "name": "Trigger",
+            "properties": {
+              "offset": {
+                "y": -90,
+                "x": -90
+              }
+            }
+          },
+          {
+            "transitions": [
+              {
+                "event": "sessionEnded",
+                "next": "check_counselor_handoff"
+              },
+              {
+                "event": "failure"
+              }
+            ],
+            "type": "send-to-auto-pilot",
+            "name": "ChatBot",
+            "properties": {
+              "body": "{{trigger.message.Body}}",
+              "from": "Bot",
+              "chat_service": "{{trigger.message.InstanceSid}}",
+              "target_task": target_task_name,
+              "timeout": 14400,
+              "offset": {
+                "y": 110,
+                "x": -20
+              },
+              "chat_channel": "{{trigger.message.ChannelSid}}",
+              "autopilot_assistant_sid": pre_survey_bot_sid
+            }
+          },
+          {
+            "transitions": [
+              {
+                "event": "noMatch"
+              },
+              {
+                "conditions": [
+                  {
+                    "type": "equal_to",
+                    "friendly_name": "If value equal_to counselor_handoff",
+                    "arguments": [
+                      "{{widgets.ChatBot.CurrentTask}}"
+                    ],
+                    "value": "counselor_handoff"
+                  }
+                ],
+                "event": "match",
+                "next": "attributes"
+              }
+            ],
+            "type": "split-based-on",
+            "name": "check_counselor_handoff",
+            "properties": {
+              "input": "{{widgets.ChatBot.CurrentTask}}",
+              "offset": {
+                "y": 400,
+                "x": 70
+              }
+            }
+          },
+          {
+            "transitions": [
+              {
+                "event": "callComplete"
+              },
+              {
+                "event": "failedToEnqueue"
+              },
+              {
+                "event": "callFailure"
+              }
+            ],
+            "type": "send-to-flex",
+            "name": "attributes",
+            "properties": {
+              "attributes": channel_attributes,
+              "workflow":  master_workflow_sid,
+              "channel": chat_task_channel_sid,
+              "offset": {
+                "y": 670,
+                "x": 310
+              }
+            }
+          }
+        ],
+        "initial_state": "Trigger",
+        "flags": {
+          "allow_concurrent_calls": true
+        },
+        "description": flow_description
+      }
+
+  )}

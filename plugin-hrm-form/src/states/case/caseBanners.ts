@@ -16,8 +16,8 @@
 
 import { createAction, createReducer } from 'redux-promise-middleware-actions';
 
-import { RootState } from '../../states';
-import { namespace } from '../../states/storeNamespaces';
+import { RootState } from '..';
+import { namespace } from '../storeNamespaces';
 
 const SHOW_REMOVED_FROM_CASE_BANNER = 'case-merging-banners/show-removed-from-case-banner';
 
@@ -51,11 +51,15 @@ const initialState: CaseMergingBannersState = {};
 export const selectCaseMergingBanners = (
   state: RootState,
   contactId: string,
-): CaseMergingBannersState['contactId'] & { showConnectedToCaseBanner: boolean } => ({
-  showConnectedToCaseBanner: Boolean(state[namespace].activeContacts.existingContacts[contactId]?.savedContact.caseId),
-  showRemovedFromCaseBanner: state[namespace].caseMergingBanners[contactId]?.showRemovedFromCaseBanner ?? false,
-});
-
+): CaseMergingBannersState['contactId'] & { showConnectedToCaseBanner: boolean } => {
+  const connected = Boolean(state[namespace].activeContacts.existingContacts[contactId]?.savedContact.caseId);
+  return {
+    showConnectedToCaseBanner: connected,
+    showRemovedFromCaseBanner: Boolean(
+      !connected && state[namespace].caseMergingBanners[contactId]?.showRemovedFromCaseBanner,
+    ),
+  };
+};
 const mergeResultPayloadIntoState = (state, action: CaseMergingBannersAction) => {
   const { contactId, banners } = action.payload;
 

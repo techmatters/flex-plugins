@@ -52,7 +52,7 @@ import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
 import { getCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
-import { AppRoutes, ChangeRouteMode, SearchResultRoute, SearchRoute } from '../../../states/routing/types';
+import { AppRoutes, ChangeRouteMode, SearchResultRoute } from '../../../states/routing/types';
 import { recordBackendError } from '../../../fullStory';
 import { hasTaskControl } from '../../../utils/transfer';
 import { getUnsavedContact } from '../../../states/contacts/getUnsavedContact';

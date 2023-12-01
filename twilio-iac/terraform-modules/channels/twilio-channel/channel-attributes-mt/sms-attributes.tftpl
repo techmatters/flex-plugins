@@ -1,0 +1,10 @@
+{
+  "name": "{{trigger.message.ChannelAttributes.from}}",
+  "channelType": "{{trigger.message.ChannelAttributes.channel_type}}",
+  "channelSid": "{{trigger.message.ChannelSid}}",
+  "twilioNumber": "{{trigger.message.ChannelAttributes.twilioNumber}}",
+  "ignoreAgent": "",
+  "language":"{{widgets.chatbot_language.memory.twilio.collected_data.collect_survey.answers.language.answer}}",
+  "transferTargetType": "",
+  "memory": {{ widgets.${chatbot_language}.memory  | to_json}}
+}
