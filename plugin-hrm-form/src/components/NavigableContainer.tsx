@@ -129,7 +129,7 @@ const NavigableContainer: React.FC<Props> = ({
             }}
           >
             <HiddenText>
-              <Template code="NavigableContainer-CloseButton" />
+              <Template code="NavigableContainer-CloseButton" /> <Template code={titleCode} />
             </HiddenText>
             <Close />
           </HeaderCloseButton>

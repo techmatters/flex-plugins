@@ -132,15 +132,6 @@ describe('test reducer', () => {
     expect(getAvailableCaseStatusTransitions).toHaveBeenCalledWith(connectedCase, mockV1);
   });
 
-  test('should handle REMOVE_CONNECTED_CASE', async () => {
-    const expected = { tasks: {} };
-
-    const result = reduce(stubRootState, state, actions.removeConnectedCase(task.taskSid));
-    expect(result).toStrictEqual(expected);
-
-    // state = result; no assignment here as we don't want to lose the only task in the state, it will be reused in following tests
-  });
-
   test('should handle REMOVE_CONTACT_STATE', async () => {
     const expected = { tasks: {} };
 

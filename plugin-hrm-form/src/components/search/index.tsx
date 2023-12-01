@@ -34,13 +34,15 @@ import { RootState } from '../../states';
 import { namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { changeRoute, newCloseModalAction } from '../../states/routing/actions';
-import { SearchRoute } from '../../states/routing/types';
+import { SearchResultRoute, SearchRoute } from '../../states/routing/types';
 import NavigableContainer from '../NavigableContainer';
 
 type OwnProps = {
   task: CustomITask;
   currentIsCaller?: boolean;
   handleSelectSearchResult?: (contact: Contact) => void;
+  contactId?: string;
+  saveUpdates?: () => Promise<void>;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -60,6 +62,8 @@ const Search: React.FC<Props> = ({
   form,
   routing,
   changeSearchPage,
+  contactId,
+  saveUpdates,
 }) => {
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});
@@ -151,6 +155,8 @@ const Search: React.FC<Props> = ({
                 handleSearchCases={setOffsetAndHandleSearchCases}
                 toggleNonDataContacts={toggleNonDataContacts}
                 toggleClosedCases={toggleClosedCases}
+                contactId={contactId}
+                saveUpdates={saveUpdates}
               />
             </NavigableContainer>
           );
@@ -244,8 +250,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     handleSearchFormChange: bindActionCreators(handleSearchFormChange(taskId), dispatch),
-    changeSearchPage: (subroute: SearchRoute['subroute'], action?: SearchRoute['action']) =>
-      dispatch(changeRoute({ route: 'search', subroute, action }, taskId)),
+    changeSearchPage: (subroute: SearchResultRoute['subroute'], action?: SearchRoute['action']) =>
+      dispatch(changeRoute({ route: 'search', subroute, action, casesPage: 0, contactsPage: 0 }, taskId)),
     searchContacts: searchContacts(dispatch)(taskId),
     searchCases: searchCases(dispatch)(taskId),
     closeModal: () => dispatch(newCloseModalAction(taskId)),

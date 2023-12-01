@@ -22,11 +22,11 @@ import { ChannelTypes } from '../DomainConstants';
 
 // Action types
 export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
-export const REMOVE_CONNECTED_CASE = 'REMOVE_CONNECTED_CASE';
 export const UPDATE_CASE_ACTION = 'case-action/update-case';
 export const UPDATE_CASE_ACTION_FULFILLED = `${UPDATE_CASE_ACTION}_FULFILLED` as const;
 export const CREATE_CASE_ACTION = 'case-action/create-case';
 export const CREATE_CASE_ACTION_FULFILLED = `${CREATE_CASE_ACTION}_FULFILLED` as const;
+export const CANCEL_CASE_ACTION = 'case-action/cancel-case';
 
 export enum SavedCaseStatus {
   NotSaved,
@@ -38,11 +38,6 @@ export enum SavedCaseStatus {
 type SetConnectedCaseAction = {
   type: typeof SET_CONNECTED_CASE;
   connectedCase: t.Case;
-  taskId: string;
-};
-
-type RemoveConnectedCaseAction = {
-  type: typeof REMOVE_CONNECTED_CASE;
   taskId: string;
 };
 
@@ -60,7 +55,7 @@ type CreateCaseAction = {
   meta: unknown;
 };
 
-export type CaseActionType = SetConnectedCaseAction | RemoveConnectedCaseAction | UpdatedCaseAction | CreateCaseAction;
+export type CaseActionType = SetConnectedCaseAction | UpdatedCaseAction | CreateCaseAction;
 
 export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
 

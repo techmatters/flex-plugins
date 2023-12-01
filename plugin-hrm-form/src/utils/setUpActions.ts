@@ -14,15 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  ActionFunction,
-  ChatOrchestrator,
-  ChatOrchestratorEvent,
-  ITask,
-  Manager,
-  StateHelper,
-  TaskHelper,
-} from '@twilio/flex-ui';
+import { ActionFunction, ChatOrchestrator, ChatOrchestratorEvent, ITask, Manager, TaskHelper } from '@twilio/flex-ui';
 import { Conversation } from '@twilio/conversations';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
@@ -42,6 +34,8 @@ import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { newContact } from '../states/contacts/contactState';
 import asyncDispatch from '../states/asyncDispatch';
 import { createContactAsyncAction } from '../states/contacts/saveContact';
+import { handleTransferredTask } from '../transfer/setUpTransferActions';
+import { prepopulateForm } from './prepopulateForm';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -75,7 +69,7 @@ export const initializeContactForm = async ({ task }: ActionPayload) => {
     'plugin-hrm-form'
   ].configuration;
   const contact = {
-    ...newContact(currentDefinitionVersion),
+    ...newContact(currentDefinitionVersion, task),
     number: getNumberFromTask(task),
   };
   const { workerSid } = getHrmConfig();
@@ -91,7 +85,10 @@ const sendMessageOfKey = (messageKey: string) => (
 ): ActionFunction => async (payload: ActionPayload) => {
   const taskLanguage = getTaskLanguage(setupObject)(payload.task);
   const message = await getMessage(messageKey)(taskLanguage);
-  await conversation.sendMessage(message);
+  const res = await conversation.sendMessage(message);
+  console.log(
+    `Successfully sent message '${message}' from key ${messageKey} translated to ${taskLanguage}, added as index ${res}`,
+  );
 };
 
 const sendSystemMessageOfKey = (messageKey: string) => (
@@ -128,12 +125,17 @@ const sendWelcomeMessageOnConversationJoined = (
   payload: ActionPayload,
 ) => {
   const manager = Manager.getInstance();
-  const { task } = payload;
   const trySendWelcomeMessage = (convo: Conversation, ms: number, retries: number) => {
     setTimeout(() => {
-      const convoState = StateHelper.getConversationStateForTask(task);
+      const convoState = manager.store.getState().flex.chat.conversations[convo.sid];
+      if (!convoState) {
+        console.warn(
+          `Conversation ${convo.sid}, which should be for task ${payload.task.taskSid} not found in redux store.`,
+        );
+        return;
+      }
       // if channel is not ready, wait 200ms and retry
-      if (convoState.isLoadingConversation) {
+      if (convoState.isLoadingParticipants || convoState.isLoadingConversation || convoState.isLoadingMessages) {
         if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
         else console.error('Failed to send welcome message: max retries reached.');
       } else {
@@ -150,7 +152,6 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   payload: ActionPayload,
 ) => {
   const { task } = payload;
-
   if (TaskHelper.isChatBasedTask(task)) {
     subscribeAlertOnConversationJoined(task);
   }
@@ -158,6 +159,13 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   // If this is the first counsellor that gets the task, say hi
   if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
     sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
+  }
+
+  await initializeContactForm(payload);
+  if (getAseloFeatureFlags().enable_transfers && TransferHelpers.hasTransferStarted(task)) {
+    await handleTransferredTask(task);
+  } else {
+    await prepopulateForm(task);
   }
 };
 

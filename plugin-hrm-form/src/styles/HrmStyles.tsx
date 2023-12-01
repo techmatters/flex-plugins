@@ -16,7 +16,7 @@
 
 /* eslint-disable no-nested-ternary */
 import React from 'react';
-import { ButtonBase, Input, MenuItem, Select, Tab, TabProps, Tabs, withStyles } from '@material-ui/core';
+import { ButtonBase, Input, MenuItem, MenuList, Select, Tab, TabProps, Tabs, withStyles } from '@material-ui/core';
 import type { ButtonBaseProps } from '@material-ui/core/ButtonBase';
 import AssignmentInd from '@material-ui/icons/AssignmentIndOutlined';
 import { Button, Icon, styled } from '@twilio/flex-ui';
@@ -119,11 +119,11 @@ TabbedFormTabContainer.displayName = 'TabbedFormTabContainer';
 const containerLeftRightMargin = '5px';
 
 type ContainerProps = {
-  removePadding?: boolean;
+  formContainer?: boolean;
 };
 export const Container = styled('div')<ContainerProps>`
   display: flex;
-  padding: ${({ removePadding }) => (removePadding ? '0' : '32px 20px 12px 20px')};
+  padding: ${({ formContainer }) => (formContainer ? '0' : '32px 20px 12px 20px')};
   flex-direction: column;
   flex-wrap: nowrap;
   background-color: #ffffff;
@@ -132,6 +132,7 @@ export const Container = styled('div')<ContainerProps>`
   margin: 0 ${containerLeftRightMargin};
   height: 100%;
   overflow-y: auto;
+  ${({ formContainer }) => (formContainer ? 'border-bottom: 1px solid #e1e3ea' : '')};
 `;
 Container.displayName = 'Container';
 
@@ -241,7 +242,7 @@ export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSe
   line-height: 22px;
   border-radius: 4px;
   border: none;
-  boxshadow: none;
+  box-shadow: none;
   padding: 0 7px;
 
   /* hide the arrow */
@@ -255,6 +256,13 @@ export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSe
 `;
 StyledSelect.displayName = 'StyledSelect';
 
+export const StyledMenuList = styled(MenuList)`
+  border-radius: 5px;
+  min-width: 250px;
+  width: 100%;
+`;
+StyledMenuList.displayName = 'StyledMenuList';
+
 export const StyledMenuItem = styled(MenuItem)`
   box-sizing: border-box;
   height: 32px;
@@ -262,6 +270,7 @@ export const StyledMenuItem = styled(MenuItem)`
   margin: 0;
   padding: 0 12px;
   min-width: 0;
+  text-transform: capitalize;
 `;
 StyledMenuItem.displayName = 'StyledMenuItem';
 
@@ -356,9 +365,9 @@ export const BottomButtonBar = styled('div')`
   justify-content: flex-end;
   height: ${BottomButtonBarHeight}px;
   flex-shrink: 0;
+  background-color: #ffffff;
   padding: 0 20px;
   z-index: 1;
-  box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.1);
 `;
 BottomButtonBar.displayName = 'BottomButtonBar';
 
@@ -534,6 +543,18 @@ export const HiddenText = styled('span')`
 `;
 HiddenText.displayName = 'HiddenText';
 
+// This text will not be a child element but can be used for aria-live
+// where the text is read when it enters the dom
+export const AriaLiveHiddenText = styled('span')`
+  top: 0;
+  left: -2px;
+  width: 1px;
+  height: 1px;
+  position: absolute;
+  overflow: hidden;
+`;
+AriaLiveHiddenText.displayName = 'AriaLiveHiddenText';
+
 export const CasePrintViewSpinner = styled('div')`
   display: flex;
   align-items: center;
@@ -601,7 +622,7 @@ type PaginationRowProps = {
 export const PaginationRow = styled('nav')<PaginationRowProps>`
   display: flex;
   justify-content: center;
-  background-color: ${HrmTheme.colors.base2};
+  background-color: transparent;
   padding: 40px auto;
   margin: 40px auto;
 `;
@@ -839,7 +860,7 @@ export const FormInput = styled('input')<FormInputProps>`
      */
     HrmTheme.colors.darkTextColor};
     border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
-    boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
+    box-shadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
     padding: 0 7px;
   }
   &:focus {
@@ -931,7 +952,7 @@ export const FormTextArea = styled('textarea')<FormInputProps>`
      */
     HrmTheme.colors.darkTextColor};
     border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
-    boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
+    box-shadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
     padding: 5px;
     border-radius: 4px;
   }
@@ -953,7 +974,7 @@ export const FormCheckBoxWrapper = styled(Row)<FormInputProps>`
   height: 36px;
   border-radius: 4px;
   border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
-  boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
+  box-shadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
 `;
 FormCheckBoxWrapper.displayName = 'FormCheckBoxWrapper';
 
@@ -1079,7 +1100,7 @@ export const FormSelect = styled('select')<FormInputProps>`
   line-height: 22px;
   border-radius: 4px;
   border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
-  boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
+  box-shadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
   padding: 0 7px;
 
   /* hide the arrow */
@@ -1339,3 +1360,30 @@ export const TypingIndicatorText = styled(FontOpenSans)`
   text-overflow: ellipsis;
 `;
 TypingIndicatorText.displayName = 'TypingIndicatorText';
+
+export const HorizontalLine = styled('hr')`
+  border: 0;
+  height: 1px;
+  background-color: #c6cad7;
+  margin: 0;
+`;
+HorizontalLine.displayName = 'HorizontalLine';
+
+// Used in search results and viewing records of an identifier(View Records in Yello Banner) regardless of client profiles
+export const PreviewWrapper = styled(Flex)`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 5px 20px 10px 20px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  border-color: #e1e3ea;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 4px;
+`;
+
+PreviewWrapper.displayName = 'PreviewWrapper';

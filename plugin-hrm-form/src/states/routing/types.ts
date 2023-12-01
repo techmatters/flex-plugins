@@ -41,11 +41,21 @@ export type TabbedFormRoute = {
   autoFocus?: boolean;
 } & RouteWithModalSupport;
 
-export type SearchRoute = RouteWithModalSupport & {
+export type SearchResultRoute = RouteWithModalSupport & {
   route: 'search';
-  subroute: 'form' | 'case-results' | 'contact-results';
+  casesPage: number;
+  contactsPage: number;
+  subroute: 'case-results' | 'contact-results';
   action?: 'select-case';
 };
+
+export type SearchRoute =
+  | (RouteWithModalSupport & {
+      route: 'search';
+      subroute: 'form';
+      action?: 'select-case';
+    })
+  | SearchResultRoute;
 
 export const NewCaseSectionSubroutes = {
   Note: 'note',
@@ -138,11 +148,6 @@ export type ProfileEditRoute = {
   id: Profile['id'];
 };
 
-export type ProfileFlagEditRoute = {
-  route: 'profileFlagEdit';
-  id: Profile['id'];
-};
-
 export type ProfileSectionEditRoute = {
   route: 'profileSectionEdit';
   type: ProfileSection['sectionType'];
@@ -204,7 +209,6 @@ type OtherRoutes =
   | CaseListRoute
   | ProfileRoute
   | ProfileEditRoute
-  | ProfileFlagEditRoute
   | ProfileSectionEditRoute;
 
 // The different routes we have in our app

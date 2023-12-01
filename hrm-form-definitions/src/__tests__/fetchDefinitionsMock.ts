@@ -47,6 +47,7 @@ const files = [
   'PrepopulateKeys.json',
   'ReferenceData.json',
   'BlockedEmojis.json',
+  'profileForms/Sections.json',
 ];
 
 const getDefinitionVersionId = (formDefinitionsBaseUrl: string) =>

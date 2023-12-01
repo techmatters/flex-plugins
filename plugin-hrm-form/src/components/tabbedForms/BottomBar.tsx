@@ -14,13 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import {
@@ -44,9 +42,9 @@ import { submitContactFormAsyncAction } from '../../states/contacts/saveContact'
 import { ContactMetadata } from '../../states/contacts/types';
 import { connectedCaseBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { AppRoutes } from '../../states/routing/types';
-import AddNewCaseDropdown from './AddNewCaseDropdown';
+import AddCaseButton from './AddCaseButton';
 import asyncDispatch from '../../states/asyncDispatch';
-import { showConnectedToCaseBannerAction } from '../caseMergingBanners/state';
+import { SuccessReportIcon } from '../../styles/CSAMReport';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => Promise<void>) => () => void;
@@ -76,15 +74,9 @@ const BottomBar: React.FC<
   submitContactFormAsyncAction,
   saveUpdates,
   savedContact,
+  contactIsSaving,
 }) => {
-  const [isSubmitting, setSubmitting] = useState(false);
-  const [dropdown, setDropdown] = useState(false);
-
   const strings = getTemplateStrings();
-
-  const handleDropdown = () => {
-    setDropdown(previous => !previous);
-  };
 
   const isAddedToCase = savedContact?.caseId !== null;
 
@@ -96,7 +88,7 @@ const BottomBar: React.FC<
     try {
       await saveUpdates();
       await createCaseAsyncAction(contact, workerSid, definitionVersion);
-      openModal({ route: 'case', subroute: 'home' });
+      openModal({ route: 'case', subroute: 'home', isCreating: true });
     } catch (error) {
       recordBackendError('Open New Case', error);
       window.alert(strings['Error-Backend']);
@@ -104,9 +96,7 @@ const BottomBar: React.FC<
   };
 
   const handleSubmit = async () => {
-    if (isSubmitting || !hasTaskControl(task)) return;
-
-    setSubmitting(true);
+    if (contactIsSaving || !hasTaskControl(task)) return;
 
     try {
       await submitContactFormAsyncAction(task, contact, metadata, caseForm as Case);
@@ -118,8 +108,6 @@ const BottomBar: React.FC<
       } else {
         recordBackendError('Submit Contact Form', error);
       }
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -130,111 +118,103 @@ const BottomBar: React.FC<
 
   const openSearchModal = () => {
     openModal({ route: 'search', subroute: 'form', action: 'select-case' });
-    // searchExistingCase(true);
+  };
+
+  const renderCaseButton = () => {
+    if (featureFlags.enable_case_merging) {
+      if (isAddedToCase) {
+        return (
+          <Box marginRight="25px">
+            <AddedToCaseButton>
+              <Box marginRight="10px">
+                <SuccessReportIcon style={{ verticalAlign: 'middle' }} />
+              </Box>
+              <Template code="BottomBar-AddedToCase" />
+            </AddedToCaseButton>
+          </Box>
+        );
+      } else if (!isNonDataCallType(contact.rawJson.callType)) {
+        return (
+          <Box marginRight="15px">
+            <AddCaseButton handleNewCaseType={handleOpenNewCase} handleExistingCaseType={openSearchModal} />
+          </Box>
+        );
+      }
+      return null;
+    }
+    return isAddedToCase ? null : (
+      <Box marginRight="15px">
+        <StyledNextStepButton
+          type="button"
+          roundCorners
+          secondary="true"
+          onClick={handleSubmitIfValid(handleOpenNewCase)}
+          data-fs-id="Contact-SaveAndAddToCase-Button"
+          data-testid="BottomBar-SaveAndAddToCase-Button"
+        >
+          <FolderIcon style={{ fontSize: '16px', marginRight: '10px', width: '24px', height: '24px' }} />
+          <Template code="BottomBar-AddContactToNewCase" />
+        </StyledNextStepButton>
+      </Box>
+    );
   };
 
   return (
-    <>
-      <BottomButtonBar
-        onBlurCapture={event => {
-          if (!event.currentTarget.contains(event.relatedTarget)) {
-            setDropdown(false);
-          }
-        }}
-      >
-        {optionalButtons &&
-          optionalButtons.map((i, index) => (
-            <Box key={`optional-button-${index}`} marginRight="15px">
-              <StyledNextStepButton
-                type="button"
-                roundCorners
-                secondary="true"
-                onClick={i.onClick}
-                disabled={isSubmitting}
-              >
-                <Template code={i.label} />
-              </StyledNextStepButton>
-            </Box>
-          ))}
-
-        {showNextButton && (
-          <StyledNextStepButton type="button" roundCorners={true} onClick={nextTab}>
-            <Template code="BottomBar-Next" />
-          </StyledNextStepButton>
-        )}
-        {showSubmitButton && (
-          <>
-            {featureFlags.enable_case_management && (
-              <AddNewCaseDropdown
-                handleNewCaseType={handleOpenNewCase}
-                handleExistingCaseType={openSearchModal}
-                dropdown={dropdown}
-              />
-            )}
-            {isAddedToCase
-              ? featureFlags.enable_case_management && (
-                  <Box marginRight="25px">
-                    <AddedToCaseButton>
-                      <Template code="BottomBar-AddedToCase" />
-                    </AddedToCaseButton>
-                  </Box>
-                )
-              : featureFlags.enable_case_management &&
-                !isNonDataCallType(contact.rawJson.callType) && (
-                  <Box marginRight="15px">
-                    <StyledNextStepButton
-                      type="button"
-                      roundCorners
-                      secondary="true"
-                      onClick={handleDropdown}
-                      data-fs-id="Contact-SaveAndAddToCase-Button"
-                      data-testid="BottomBar-SaveAndAddToCase-Button"
-                    >
-                      <FolderIcon style={{ fontSize: '16px', marginRight: '10px', width: '24px', height: '24px' }} />
-                      <Template code="BottomBar-AddContactToNewCase" />
-                      {dropdown && (
-                        <KeyboardArrowUpIcon
-                          style={{ fontSize: '20px', marginLeft: '10px', width: '24px', height: '24px' }}
-                        />
-                      )}
-                      {!dropdown && (
-                        <KeyboardArrowDownIcon
-                          style={{ fontSize: '20px', marginLeft: '10px', width: '24px', height: '24px' }}
-                        />
-                      )}
-                    </StyledNextStepButton>
-                  </Box>
-                )}
-            <SaveAndEndContactButton
-              roundCorners={true}
-              onClick={handleSubmitIfValid(handleSubmit)}
-              disabled={isSubmitting}
-              data-fs-id="Contact-SaveContact-Button"
-              data-testid="BottomBar-SaveContact-Button"
+    <BottomButtonBar>
+      {optionalButtons &&
+        optionalButtons.map((i, index) => (
+          <Box key={`optional-button-${index}`} marginRight="15px">
+            <StyledNextStepButton
+              type="button"
+              roundCorners
+              secondary="true"
+              onClick={i.onClick}
+              disabled={contactIsSaving}
             >
-              <span style={{ visibility: isSubmitting ? 'hidden' : 'inherit' }}>
-                <Template code="BottomBar-SaveAndEnd" />
-              </span>
-              {isSubmitting ? <CircularProgress size={12} style={{ position: 'absolute' }} /> : null}
-            </SaveAndEndContactButton>
-          </>
-        )}
-      </BottomButtonBar>
-    </>
+              <Template code={i.label} />
+            </StyledNextStepButton>
+          </Box>
+        ))}
+
+      {showNextButton && (
+        <StyledNextStepButton type="button" roundCorners={true} onClick={nextTab}>
+          <Template code="BottomBar-Next" />
+        </StyledNextStepButton>
+      )}
+      {showSubmitButton && (
+        <>
+          {featureFlags.enable_case_management && renderCaseButton()}
+
+          <SaveAndEndContactButton
+            roundCorners={true}
+            onClick={handleSubmitIfValid(handleSubmit)}
+            disabled={contactIsSaving}
+            data-fs-id="Contact-SaveContact-Button"
+            data-testid="BottomBar-SaveContact-Button"
+          >
+            <span style={{ visibility: contactIsSaving ? 'hidden' : 'inherit' }}>
+              <Template code="BottomBar-SaveAndEnd" />
+            </span>
+            {contactIsSaving ? <CircularProgress size={12} style={{ position: 'absolute' }} /> : null}
+          </SaveAndEndContactButton>
+        </>
+      )}
+    </BottomButtonBar>
   );
 };
 
 BottomBar.displayName = 'BottomBar';
 
-const mapStateToProps = (state: RootState, ownProps: BottomBarProps) => {
-  const { draftContact, savedContact, metadata } =
-    state[namespace][contactFormsBase].existingContacts[ownProps.contactId] ?? {};
-  const caseForm = state[namespace][connectedCaseBase].tasks[ownProps.task.taskSid]?.connectedCase || {};
+const mapStateToProps = (state: RootState, { contactId, task }: BottomBarProps) => {
+  const { draftContact, savedContact, metadata } = state[namespace][contactFormsBase].existingContacts[contactId] ?? {};
+  const caseForm = state[namespace][connectedCaseBase].tasks[task.taskSid]?.connectedCase || {};
+  const contactIsSaving = metadata?.saveStatus === 'saving';
   return {
     contact: getUnsavedContact(savedContact, draftContact),
     metadata,
     caseForm,
     savedContact,
+    contactIsSaving,
   };
 };
 
@@ -246,7 +226,6 @@ const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
       // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
       // TODO: Rework error handling to be based on redux state set by the _REJECTED action
       await asyncDispatch(dispatch)(createCaseAsyncAction(contact, task.taskSid, workerSid, definitionVersion));
-      dispatch(showConnectedToCaseBannerAction(contact.id));
     },
     submitContactFormAsyncAction: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) =>
       // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.

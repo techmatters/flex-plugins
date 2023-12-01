@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { format } from 'date-fns';
-import { Actions, Insights, Template } from '@twilio/flex-ui';
+import { Actions, Insights, Template, Icon } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
@@ -251,7 +251,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const profileLink = featureFlags.enable_client_profiles && savedContact.profileId && (
     <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>
-      View Profile
+      <Icon icon="DefaultAvatar" />
+      View Client
     </SectionActionButton>
   );
 
@@ -260,13 +261,13 @@ const ContactDetailsHome: React.FC<Props> = function ({
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
       {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
 
-      {profileLink}
-
       <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
         expanded={detailsExpanded[GENERAL_DETAILS]}
         handleExpandClick={() => toggleSection(GENERAL_DETAILS)}
         buttonDataTestid={`ContactDetails-Section-${GENERAL_DETAILS}`}
+        contactId={contactId}
+        extraActionButton={profileLink}
       >
         <SectionEntry descriptionKey="ContactDetails-GeneralDetails-Channel">
           <SectionEntryValue value={formattedChannel} />

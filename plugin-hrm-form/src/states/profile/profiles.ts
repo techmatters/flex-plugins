@@ -32,22 +32,13 @@ type CommonRelationshipParams = {
 
 type LoadRelationshipAsyncParams = CommonRelationshipParams & {
   page?: number;
-  loadedPage?: number;
 };
 
 export const loadRelationshipAsync = createAsyncAction(
   t.LOAD_RELATIONSHIP,
-  async ({ profileId, type, page, loadedPage }: LoadRelationshipAsyncParams): Promise<any> => {
-    /*
-    This handles skipping forward several pages at once and loads the pages in between into state
-    in a single request. This could end up with a large payload if there are dozens of pages and
-    hundreds of records.
-    If the tradeoff is not worth it, we can change this to only load the current page and only store
-    it in state like the current behavior.
-    */
-    const offset = loadedPage === 0 ? 0 : loadedPage * PAGE_SIZE;
-    const limit = (page + 1 - loadedPage) * PAGE_SIZE || PAGE_SIZE;
-
+  async ({ profileId, type, page }: LoadRelationshipAsyncParams): Promise<any> => {
+    const offset = page * PAGE_SIZE;
+    const limit = PAGE_SIZE;
     return t.PROFILE_RELATIONSHIPS[type].method(profileId, offset, limit);
   },
   (params: LoadRelationshipAsyncParams) => params,
@@ -95,6 +86,7 @@ const handleRelationshipsPendingAction = (state: t.ProfilesState, action: any) =
   const profileUpdate = {
     [type]: {
       ...state[profileId][type],
+      data: undefined,
       loading: true,
       error: undefined,
     },
@@ -104,21 +96,16 @@ const handleRelationshipsPendingAction = (state: t.ProfilesState, action: any) =
 };
 
 const handleRelationshipsFulfilledAction = (state: t.ProfilesState, action: any) => {
-  const { page, profileId, type } = action.meta;
+  const { profileId, type } = action.meta;
 
-  const data = [...(state[profileId][type].data || []), ...action.payload[type]];
+  const data = action.payload[type];
   const total = action.payload.count || 0;
-  const exhausted = data.length >= action.payload.count;
-
-  const loadedPage = Math.max(page + 1, state[profileId][type].loadedPage);
 
   const profileUpdate = {
     [type]: {
       ...state[profileId][type],
       data,
       loading: false,
-      exhausted,
-      loadedPage,
       total,
     },
   };
@@ -302,6 +289,16 @@ const handleLoadProfileSectionRejectedAction = (state: t.ProfilesState, action: 
   return loadProfileSectionEntryIntoRedux(state, profileId, sectionType, update);
 };
 
+const handleLoadProfileSectionFulfilledAction = (state: t.ProfilesState, action: any) => {
+  const { profileId, sectionType } = action.meta;
+  const update = {
+    loading: false,
+    data: action.payload,
+  };
+
+  return loadProfileSectionEntryIntoRedux(state, profileId, sectionType, update);
+};
+
 export type CreateProfileSectionAsyncParams = ProfileSectionCommonParams & {
   content: string;
 };
@@ -326,16 +323,6 @@ export const updateProfileSectionAsync = createAsyncAction(
   (params: UpdateProfileSectionAsyncParams) => params,
 );
 
-const handleProfileSectionFulfilledAction = (state: t.ProfileState, action: any) => {
-  const { profileId, sectionType } = action.meta;
-  const update = {
-    loading: false,
-    data: action.payload,
-  };
-
-  return loadProfileSectionEntryIntoRedux(state, profileId, sectionType, update);
-};
-
 const profilesReducer = (initialState: t.ProfilesState = {}) =>
   createReducer(initialState, handleAction => [
     handleAction(loadProfileAsync.pending, handleLoadProfilePendingAction),
@@ -355,13 +342,13 @@ const profilesReducer = (initialState: t.ProfilesState = {}) =>
     handleAction(disassociateProfileFlagAsync.fulfilled, handleProfileFlagUpdateFulfilledAction),
     handleAction(loadProfileSectionAsync.pending, handleLoadProfileSectionPendingAction),
     handleAction(loadProfileSectionAsync.rejected, handleLoadProfileSectionRejectedAction),
-    handleAction(loadProfileSectionAsync.fulfilled, handleProfileSectionFulfilledAction),
+    handleAction(loadProfileSectionAsync.fulfilled, handleLoadProfileSectionFulfilledAction),
     handleAction(createProfileSectionAsync.pending, handleLoadProfileSectionPendingAction),
     handleAction(createProfileSectionAsync.rejected, handleLoadProfileSectionRejectedAction),
-    handleAction(createProfileSectionAsync.fulfilled, handleProfileSectionFulfilledAction),
+    handleAction(createProfileSectionAsync.fulfilled, handleLoadProfileSectionFulfilledAction),
     handleAction(updateProfileSectionAsync.pending, handleLoadProfileSectionPendingAction),
     handleAction(updateProfileSectionAsync.rejected, handleLoadProfileSectionRejectedAction),
-    handleAction(updateProfileSectionAsync.fulfilled, handleProfileSectionFulfilledAction),
+    handleAction(updateProfileSectionAsync.fulfilled, handleLoadProfileSectionFulfilledAction),
   ]);
 
 export default profilesReducer;

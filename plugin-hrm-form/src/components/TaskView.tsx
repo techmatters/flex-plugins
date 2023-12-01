@@ -41,6 +41,7 @@ import ContactNotLoaded from './ContactNotLoaded';
 import { completeTask } from '../services/formSubmissionHelpers';
 import { newContact } from '../states/contacts/contactState';
 import asyncDispatch from '../states/asyncDispatch';
+import { selectIsContactCreating } from '../states/contacts/selectContactSaveStatus';
 
 type OwnProps = {
   task: CustomITask;
@@ -60,13 +61,14 @@ const TaskView: React.FC<Props> = props => {
     loadContactFromHrmByTaskSid,
     createContact,
     isModalOpen,
+    contactIsCreating,
   } = props;
 
   React.useEffect(() => {
     if (shouldRecreateState) {
       if (isOfflineContactTask(task)) {
         loadContactFromHrmByTaskSid();
-      } else {
+      } else if (TaskHelper.isTaskAccepted(task) && hasTaskControl(task)) {
         createContact(currentDefinitionVersion);
       }
     }
@@ -126,7 +128,7 @@ const TaskView: React.FC<Props> = props => {
       />
     );
   // If state is partially loaded, don't render until everything settles
-  if (shouldRecreateState) {
+  if (shouldRecreateState || contactIsCreating) {
     return null;
   }
 
@@ -155,10 +157,10 @@ const TaskView: React.FC<Props> = props => {
 
 TaskView.displayName = 'TaskView';
 
-const mapStateToProps = (
-  { [namespace]: { configuration, activeContacts, routing, searchContacts } }: RootState,
-  ownProps: OwnProps,
-) => {
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+  const {
+    [namespace]: { configuration, activeContacts, routing, searchContacts },
+  } = state;
   const { task } = ownProps;
   const { currentDefinitionVersion } = configuration;
   // Check if the entry for this task exists in each reducer
@@ -168,6 +170,7 @@ const mapStateToProps = (
   const contactFormStateExists = Boolean(savedContact);
   const routingStateExists = Boolean(task && routing.tasks[task.taskSid]);
   const searchStateExists = Boolean(task && searchContacts.tasks[task.taskSid]);
+  const contactIsCreating = selectIsContactCreating(state, task.taskSid);
 
   const shouldRecreateState =
     currentDefinitionVersion && (!contactFormStateExists || !routingStateExists || !searchStateExists);
@@ -177,13 +180,16 @@ const mapStateToProps = (
     shouldRecreateState,
     currentDefinitionVersion,
     isModalOpen: routingStateExists && isRouteModal(getCurrentBaseRoute(routing, task.taskSid)),
+    contactIsCreating,
   };
 };
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
   loadContactFromHrmByTaskSid: () => dispatch(loadContactFromHrmByTaskSidAsyncAction(task.taskSid)),
   createContact: (definition: DefinitionVersion) =>
-    asyncDispatch(dispatch)(createContactAsyncAction(newContact(definition), getHrmConfig().workerSid, task.taskSid)),
+    asyncDispatch(dispatch)(
+      createContactAsyncAction(newContact(definition, task), getHrmConfig().workerSid, task.taskSid),
+    ),
   updateHelpline: (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline })),
 });
 

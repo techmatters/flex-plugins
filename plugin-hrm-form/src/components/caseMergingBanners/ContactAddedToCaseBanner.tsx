@@ -18,7 +18,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { showRemovedFromCaseBannerAction } from './state';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import asyncDispatch from '../../states/asyncDispatch';
 import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
@@ -26,8 +25,9 @@ import { newOpenModalAction } from '../../states/routing/actions';
 import { setConnectedCase } from '../../states/case/actions';
 import selectCaseByTaskSid from '../../states/case/selectCaseByTaskSid';
 import type { Case } from '../../types/types';
-import { BannerContainer, Text, CaseLink, RemoveFromCaseLink } from './styles';
+import { BannerContainer, Text, CaseLink, BannerActionLink } from './styles';
 import InfoIcon from './InfoIcon';
+import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
 
 type OwnProps = {
   taskId: string;
@@ -49,8 +49,8 @@ const mapDispatchToProps = (dispatch, { taskId }: OwnProps) => ({
     dispatch(setConnectedCase(cas, taskId));
     dispatch(newOpenModalAction({ route: 'case', subroute: 'home', isCreating: false }, taskId));
   },
-  removeContactFromCase: async (contactId: string, caseId: number) => {
-    await asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId, caseId));
+  removeContactFromCase: async (contactId: string) => {
+    await asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId));
     dispatch(showRemovedFromCaseBannerAction(contactId));
   },
 });
@@ -73,9 +73,9 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
         <Template code="Case-CaseNumber" />
         {connectedCase.id}
       </CaseLink>
-      <RemoveFromCaseLink type="button" onClick={() => removeContactFromCase(contact.id, connectedCase.id)}>
+      <BannerActionLink type="button" onClick={() => removeContactFromCase(contact.id)}>
         <Template code="CaseMerging-RemoveFromCase" />
-      </RemoveFromCaseLink>
+      </BannerActionLink>
     </BannerContainer>
   );
 };

@@ -16,17 +16,16 @@
 
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { Tab as TwilioTab } from '@twilio/flex-ui';
+import { Tab as TwilioTab, Template } from '@twilio/flex-ui';
 
-import { Row } from '../../styles/HrmStyles';
+import { Box } from '../../styles/HrmStyles';
 import { useProfile } from '../../states/profile/hooks';
 import * as RoutingTypes from '../../states/routing/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import * as RoutingActions from '../../states/routing/actions';
-import { namespace, profileBase } from '../../states/storeNamespaces';
+import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileRoute } from '../../states/routing/types';
-import { RouterTask, Profile } from '../../types/types';
 import { StyledTabs } from '../../styles/search'; // just stealing from search until we have a centralized tab style
 import NavigableContainer from '../NavigableContainer';
 import ProfileCases from './ProfileCases';
@@ -43,49 +42,46 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
   const { profile: { contactsCount, casesCount } = {} } = useProfile({ profileId, shouldAutoload: true });
   const tabs = [
     {
-      label: 'Profile',
+      label: 'Client',
       key: 'details',
-      component: <ProfileDetails profileId={profileId} task={task} />,
+      renderComponent: () => <ProfileDetails profileId={profileId} task={task} />,
     },
     {
-      label: `Contacts (${contactsCount})`,
+      label: (
+        <>
+          <Template code="SearchResultsIndex-Contacts" /> ({contactsCount})
+        </>
+      ),
       key: 'contacts',
-      component: <ProfileContacts profileId={profileId} task={task} />,
+      renderComponent: () => <ProfileContacts profileId={profileId} task={task} />,
     },
     {
-      label: `Cases (${casesCount})`,
+      label: (
+        <>
+          <Template code="SearchResultsIndex-Cases" /> ({casesCount})
+        </>
+      ),
       key: 'cases',
-      component: <ProfileCases profileId={profileId} task={task} />,
+      renderComponent: () => <ProfileCases profileId={profileId} task={task} />,
     },
   ];
 
   const renderedTabs = tabs.map(tab => (
     <TwilioTab key={`ProfileTabs-${profileId}-${tab.key}`} label={tab.label} uniqueName={tab.key}>
-      {[]}
+      {tab.renderComponent()}
     </TwilioTab>
   ));
 
-  const renderedLabels = (
-    <Row style={{ justifyContent: 'center' }}>
-      <div style={{ width: '400px' }}>
-        <StyledTabs
-          selectedTabName={currentTab}
-          onTabSelected={(selectedTab: RoutingTypes.ProfileTabs) => changeProfileTab(profileId, selectedTab)}
-          alignment="center"
-          keepTabsMounted={false}
-        >
-          {renderedTabs}
-        </StyledTabs>
-      </div>
-    </Row>
-  );
-
-  const renderedTab = tabs.find(tab => tab.key === currentTab).component;
-
   return (
     <NavigableContainer task={task} titleCode="Profile-Title">
-      {renderedLabels}
-      {renderedTab}
+      <StyledTabs
+        selectedTabName={currentTab}
+        onTabSelected={(selectedTab: RoutingTypes.ProfileTabs) => changeProfileTab(profileId, selectedTab)}
+        alignment="center"
+        keepTabsMounted={false}
+      >
+        {renderedTabs}
+      </StyledTabs>
     </NavigableContainer>
   );
 };
@@ -93,7 +89,7 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
 const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const routingState = state[namespace].routing;
   const route = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const currentTab = (route as ProfileRoute).subroute || 'contacts';
+  const currentTab = (route as ProfileRoute).subroute || 'details';
 
   return {
     currentTab,

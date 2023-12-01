@@ -25,17 +25,33 @@
   },
   {
     "name": "age",
-    "label": "Age",
+    "label": "Age Range",
     "type": "select",
     "unknownOption": "",
     "options": [
       {
-        "value": "",
-        "label": ""
+        "value": ">=16",
+        "label": ">=16"
       },
       {
+        "value": "<16",
+        "label": "<16"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "ageDetails",
+    "label": "Age",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
         "value": "Unknown",
-        "label": "Unknown"
+        "label": ""
       },
       {
         "value": "00",
@@ -322,14 +338,10 @@
         "label": "70"
       },
       {
-        "value": ">70",
-        "label": ">70"
+        "value": "70+",
+        "label": "70+"
       }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    ]
   },
   {
     "name": "gender",

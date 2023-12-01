@@ -15,7 +15,7 @@
  */
 
 import { Case } from '../../../types/types';
-import { CaseActionType, REMOVE_CONNECTED_CASE, SET_CONNECTED_CASE } from '../../../states/case/types';
+import { CaseActionType, SET_CONNECTED_CASE } from '../../../states/case/types';
 import * as actions from '../../../states/case/actions';
 
 const task = { taskSid: 'task1' };
@@ -42,14 +42,5 @@ describe('test action creators', () => {
     };
 
     expect(actions.setConnectedCase(connectedCase, task.taskSid)).toStrictEqual(expectedAction);
-  });
-
-  test('removeConnectedCase', async () => {
-    const expectedAction: CaseActionType = {
-      type: REMOVE_CONNECTED_CASE,
-      taskId: task.taskSid,
-    };
-
-    expect(actions.removeConnectedCase(task.taskSid)).toStrictEqual(expectedAction);
   });
 });

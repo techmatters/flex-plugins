@@ -20,7 +20,7 @@ locals {
       master : {
         friendly_name : "Master Workflow"
         templatefile : "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
-        task_reservation_timeout = 45
+        task_reservation_timeout = 180
       },
       survey : {
         friendly_name : "Survey Workflow"
@@ -32,7 +32,7 @@ locals {
     task_queues = {
       master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "Master"
+        "friendly_name"  = "Childline Thailand"
       },
       survey : {
         "target_workers" = "1==0",

@@ -14,17 +14,24 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { IconButton, Template } from '@twilio/flex-ui';
+import { Icon, Template } from '@twilio/flex-ui';
+import { ProfileSection } from 'hrm-form-definitions';
 
-import { ProfileCommonProps } from './types';
-import ProfileFlagList from './profileFlag/ProfileFlagList';
-import ProfileFlagEdit from './profileFlag/ProfileFlagEdit';
-import { DetailsWrapper, ProfileSubtitle } from './styles';
-import { Bold, Box, Column, Flex } from '../../styles/HrmStyles';
+import { Box, HiddenText, Row, HorizontalLine } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
+import useProfileSectionTypes from '../../states/configuration/hooks/useProfileSectionTypes';
+import { ProfileCommonProps } from './types';
+import {
+  DetailsWrapper,
+  ProfileSectionWrapper,
+  ProfileSectionSubtitle,
+  ProfileSectionEditButton,
+  SectionHeader,
+} from './styles';
+import ProfileFlagSection from './profileFlag/ProfileFlagSection';
 import ProfileSectionView from './section/ProfileSectionView';
 
 type OwnProps = ProfileCommonProps;
@@ -32,7 +39,6 @@ type OwnProps = ProfileCommonProps;
 type Section = {
   titleCode?: string;
   title?: string;
-  margin: string;
   renderComponent: () => React.ReactNode;
   handleEdit?: () => void;
   inInlineEditMode?: boolean;
@@ -41,14 +47,12 @@ type Section = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, openSectionEditModal }) => {
+const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal }) => {
   const { profile } = useProfile({ profileId });
-  const [shouldEditProfileFlags, setShouldEditProfileFlags] = useState(false);
 
-  const baseSections: Section[] = [
+  const overviewSections: Section[] = [
     {
       titleCode: 'Profile-IdentifiersHeader',
-      margin: '20px 0',
       renderComponent: () =>
         profile?.identifiers ? (
           profile.identifiers?.map(identifier => <div key={identifier.id}>{identifier.identifier}</div>)
@@ -58,79 +62,67 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openFlagEditModal, o
     },
     {
       titleCode: 'Profile-StatusHeader',
-      margin: '10px 4px',
-      renderComponent: () =>
-        shouldEditProfileFlags ? (
-          <ProfileFlagEdit profileId={profileId} task={task} />
-        ) : (
-          <ProfileFlagList profileId={profileId} task={task} />
-        ),
-      handleEdit: () => setShouldEditProfileFlags(!shouldEditProfileFlags),
-      inInlineEditMode: shouldEditProfileFlags,
+      renderComponent: () => <ProfileFlagSection profileId={profileId} task={task} />,
     },
   ];
 
-  const sectionTypes = ['summary', 'actions', 'recommendations'];
+  const sectionTypesForms: ProfileSection[] = useProfileSectionTypes();
 
-  const sectionSections: Section[] = sectionTypes.map(sectionType => ({
-    title: `${sectionType}`,
-    margin: '20px 0',
+  const sectionSections: Section[] = sectionTypesForms.map(sectionType => ({
+    title: `${sectionType.name}`,
     renderComponent: () => <ProfileSectionView profileId={profileId} task={task} sectionType={sectionType} />,
-    handleEdit: () => openSectionEditModal(sectionType),
+    handleEdit: () => openSectionEditModal(sectionType.label),
   }));
 
-  const sections = [...baseSections, ...sectionSections];
-
-  const renderTitle = section => {
-    if (section.titleCode) {
-      return <Template code={section.titleCode} />;
-    }
-
-    return section.title;
-  };
-
   const renderEditButton = section => {
-    if (!section.handleEdit) return null;
+    if (!section || !section.handleEdit) return null;
 
-    let icon = 'Edit';
-    let title = 'Edit';
+    let icon = null;
     if (section.hasOwnProperty('inInlineEditMode') && section.inInlineEditMode) {
       icon = 'Close';
-      title = 'Close Edit';
     }
 
     return (
-      <Box alignSelf="center">
-        <IconButton icon={icon} title={title} size="small" onClick={section.handleEdit} />
-      </Box>
+      <ProfileSectionEditButton onClick={section.handleEdit}>
+        {icon && <Icon icon={icon} />}
+        {!icon && <Template code="Profile-EditButton" />}
+        <HiddenText>{section.title}</HiddenText>
+      </ProfileSectionEditButton>
     );
   };
 
-  const renderSection = (section: any) => {
+  const renderSection = section => {
+    if (!section) return null;
+
     return (
-      <Box margin="20px 0">
-        <Flex flexDirection="row">
-          <Box alignSelf="center">
-            <ProfileSubtitle>{renderTitle(section)}</ProfileSubtitle>
+      <div key={section.title}>
+        <ProfileSectionWrapper>
+          <Box marginBottom="5px">
+            <Row>
+              <ProfileSectionSubtitle>
+                {section.titleCode ? <Template code={section.titleCode} /> : section.title}
+              </ProfileSectionSubtitle>
+              {renderEditButton(section)}
+            </Row>
           </Box>
-          {renderEditButton(section)}
-        </Flex>
-        <Box margin={section.margin}>{section.renderComponent()}</Box>
-      </Box>
+          <Box>{section.renderComponent()}</Box>
+        </ProfileSectionWrapper>
+      </div>
     );
   };
 
   return (
     <DetailsWrapper>
-      <Column>
-        <Bold>
-          <Template code="Profile-DetailsHeader" />
-        </Bold>
-      </Column>
-      {sections.map(section => (
-        <div key={section.title}>{renderSection(section)}</div>
-      ))}
-      <hr />
+      <SectionHeader>
+        <Template code="Profile-DetailsHeader-Overview" />
+      </SectionHeader>
+      {overviewSections.map(section => renderSection(section))}
+      <HorizontalLine />
+      <SectionHeader>
+        <Template code="Profile-DetailsHeader-Notes" />
+      </SectionHeader>
+      {sectionSections.map(section => renderSection(section))}
+      <HorizontalLine />
     </DetailsWrapper>
   );
 };
@@ -139,9 +131,6 @@ const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
   const { profileId, task } = ownProps;
   const taskId = task.taskSid;
   return {
-    openFlagEditModal: () => {
-      dispatch(newOpenModalAction({ route: 'profileFlagEdit', id: profileId }, taskId));
-    },
     openSectionEditModal: (type: string) => {
       dispatch(newOpenModalAction({ route: 'profileSectionEdit', type, id: profileId }, taskId));
     },

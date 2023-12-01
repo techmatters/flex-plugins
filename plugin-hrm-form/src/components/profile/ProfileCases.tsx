@@ -29,7 +29,6 @@ import { ProfileCommonProps } from './types';
 
 type OwnProps = ProfileCommonProps;
 
-// eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileCases: React.FC<Props> = ({ profileId, task, counselorsHash, viewCaseDetails }) => {
