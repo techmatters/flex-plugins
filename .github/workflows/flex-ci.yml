@@ -53,20 +53,19 @@ jobs:
           ssm_parameter: "/development/twilio/AS/account_sid"
           env_variable_name: "AS_DEV_ACCOUNT_SID"
       - name: Set Twilio Auth Token for AS DEV
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
-        with:
-          ssm_parameter: "/development/twilio/${{env.AS_DEV_ACCOUNT_SID}}/auth_token"
-          env_variable_name: "AS_DEV_AUTH_TOKEN"
+        run: |
+          AS_DEV_AUTH_TOKEN=$(aws ssm get-parameter --name "/development/twilio/${AS_DEV_ACCOUNT_SID}/auth_token" --query "Parameter.Value" --output text)
+          echo "AS_DEV_AUTH_TOKEN=$AS_DEV_AUTH_TOKEN" >> $GITHUB_ENV
       - name: Set Twilio account SID for E2E
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
           ssm_parameter: "/development/twilio/E2E/account_sid"
           env_variable_name: "E2E_DEV_ACCOUNT_SID"       
       - name: Set Twilio Auth Token for E2E
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
-        with:
-          ssm_parameter: "/development/twilio/${{env.E2E_DEV_ACCOUNT_SID}}/auth_token"
-          env_variable_name: "E2E_DEV_AUTH_TOKEN"
+        run: |
+          E2E_DEV_AUTH_TOKEN=$(aws ssm get-parameter --name "/development/twilio/${E2E_DEV_ACCOUNT_SID}/auth_token" --query "Parameter.Value" --output text)
+          echo "E2E_DEV_AUTH_TOKEN=$E2E_DEV_AUTH_TOKEN" >> $GITHUB_ENV
+
   unit-test:
     runs-on: ubuntu-latest
 
