@@ -1,0 +1,258 @@
+${
+  jsonencode(
+    {
+      "description": flow_description,
+      "states": [
+        {
+          "name": "Trigger",
+          "type": "trigger",
+          "transitions": [
+            {
+              "next": "operating_hours",
+              "event": "incomingMessage"
+            },
+            {
+              "event": "incomingCall"
+            },
+            {
+              "event": "incomingConversationMessage"
+            },
+            {
+              "event": "incomingRequest"
+            },
+            {
+              "event": "incomingParent"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": 0,
+              "y": 0
+            }
+          }
+        },
+        {
+          "name": "attributes",
+          "type": "send-to-flex",
+          "transitions": [
+            {
+              "event": "callComplete"
+            },
+            {
+              "event": "failedToEnqueue"
+            },
+            {
+              "event": "callFailure"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": 1190,
+              "y": 1420
+            },
+            "workflow": master_workflow_sid,
+            "channel": chat_task_channel_sid,
+            "attributes": channel_attributes
+          }
+        },
+        {
+          "name": "operating_hours",
+          "type": "run-function",
+          "transitions": [
+            {
+              "next": "check_office_state",
+              "event": "success"
+            },
+            {
+              "event": "fail"
+            }
+          ],
+          "properties": {
+            "service_sid": serverless_service_sid,
+            "environment_sid": serverless_environment_sid,
+            "offset": {
+              "x": 180,
+              "y": 290
+            },
+            "function_sid": operating_hours_function_sid,
+            "parameters": [
+              {
+                "value": channel_name,
+                "key": "channel"
+              }
+            ],
+            "url": "${serverless_url}/operatingHours"
+          }
+        },
+        {
+          "name": "check_office_state",
+          "type": "split-based-on",
+          "transitions": [
+            {
+              "next": "closed",
+              "event": "noMatch"
+            },
+            {
+              "next": "closed",
+              "event": "match",
+              "conditions": [
+                {
+                  "friendly_name": "If value contains closed",
+                  "arguments": [
+                    "{{widgets.operating_hours.body}}"
+                  ],
+                  "type": "contains",
+                  "value": "closed"
+                }
+              ]
+            },
+            {
+              "next": "holiday",
+              "event": "match",
+              "conditions": [
+                {
+                  "friendly_name": "If value contains holiday",
+                  "arguments": [
+                    "{{widgets.operating_hours.body}}"
+                  ],
+                  "type": "contains",
+                  "value": "holiday"
+                }
+              ]
+            },
+            {
+              "next": "ChatBot",
+              "event": "match",
+              "conditions": [
+                {
+                  "friendly_name": "If value contains open",
+                  "arguments": [
+                    "{{widgets.operating_hours.body}}"
+                  ],
+                  "type": "contains",
+                  "value": "open"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "input": "{{widgets.operating_hours.body}}",
+            "offset": {
+              "x": 240,
+              "y": 580
+            }
+          }
+        },
+        {
+          "name": "closed",
+          "type": "send-message",
+          "transitions": [
+            {
+              "event": "sent"
+            },
+            {
+              "event": "failed"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": -170,
+              "y": 890
+            },
+            "service": "{{trigger.message.InstanceSid}}",
+            "channel": "{{trigger.message.ChannelSid}}",
+            "from": "{{flow.channel.address}}",
+            "to": "{{contact.channel.address}}",
+            "body": operating_hours_closed
+          }
+        },
+        {
+          "name": "holiday",
+          "type": "send-message",
+          "transitions": [
+            {
+              "event": "sent"
+            },
+            {
+              "event": "failed"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": 430,
+              "y": 880
+            },
+            "service": "{{trigger.message.InstanceSid}}",
+            "channel": "{{trigger.message.ChannelSid}}",
+            "from": "{{flow.channel.address}}",
+            "to": "{{contact.channel.address}}",
+            "body": operating_hours_holiday
+          }
+        },
+        {
+          "name": "ChatBot",
+          "type": "send-to-auto-pilot",
+          "transitions": [
+            {
+              "next": "check_counselor_handoff",
+              "event": "sessionEnded"
+            },
+            {
+              "event": "failure"
+            },
+            {
+              "event": "timeout"
+            }
+          ],
+          "properties": {
+            "chat_channel": "{{trigger.message.ChannelSid}}",
+            "offset": {
+              "x": 850,
+              "y": 880
+            },
+            "autopilot_assistant_sid": pre_survey_bot_sid,
+            "from": "{{flow.channel.address}}",
+            "chat_service": "{{trigger.message.InstanceSid}}",
+            "body": "{{trigger.message.Body}}",
+            "target_task": target_task_name,
+            "timeout": 14400
+          }
+        },
+        {
+          "name": "check_counselor_handoff",
+          "type": "split-based-on",
+          "transitions": [
+            {
+              "event": "noMatch"
+            },
+            {
+              "next": "attributes",
+              "event": "match",
+              "conditions": [
+                {
+                  "friendly_name": "If value equal_to counselor_handoff",
+                  "arguments": [
+                    "{{widgets.ChatBot.CurrentTask}}"
+                  ],
+                  "type": "equal_to",
+                  "value": "counselor_handoff"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "input": "{{widgets.ChatBot.CurrentTask}}",
+            "offset": {
+              "x": 930,
+              "y": 1150
+            }
+          }
+        }
+      ],
+      "initial_state": "Trigger",
+      "flags": {
+        "allow_concurrent_calls": true
+      }
+    }
+
+  )}
