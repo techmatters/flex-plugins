@@ -21,7 +21,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseContainer } from '../../styles/case';
-import { BottomButtonBar, Box, Flex, StyledNextStepButton } from '../../styles/HrmStyles';
+import { BottomButtonBar, Box, Flex, SaveAndEndButton, StyledNextStepButton } from '../../styles/HrmStyles';
 import CaseDetailsComponent from './CaseDetails';
 import Timeline from './Timeline';
 import CaseSection from './CaseSection';
@@ -328,9 +328,9 @@ const CaseHome: React.FC<Props> = ({
               </StyledNextStepButton>
             </Box>
           )}
-          <StyledNextStepButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
+          <SaveAndEndButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
             <Template code="BottomBar-SaveAndEnd" />
-          </StyledNextStepButton>
+          </SaveAndEndButton>
         </BottomButtonBar>
       )}
     </NavigableContainer>
