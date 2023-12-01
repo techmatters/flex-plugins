@@ -46,6 +46,7 @@ import asyncDispatch from '../../states/asyncDispatch';
 import selectIsContactCreating from '../../states/contacts/selectIsContactCreating';
 import selectCaseByCaseId from '../../states/case/selectCaseStateByCaseId';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
+import { SuccessReportIcon } from '../../styles/CSAMReport';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => Promise<void>) => () => void;
@@ -127,6 +128,9 @@ const BottomBar: React.FC<
         return (
           <Box marginRight="25px">
             <AddedToCaseButton>
+              <Box marginRight="10px">
+                <SuccessReportIcon style={{ verticalAlign: 'middle' }} />
+              </Box>
               <Template code="BottomBar-AddedToCase" />
             </AddedToCaseButton>
           </Box>
@@ -206,7 +210,7 @@ BottomBar.displayName = 'BottomBar';
 const mapStateToProps = (state: RootState, { contactId }: BottomBarProps) => {
   const { draftContact, savedContact, metadata } = selectContactStateByContactId(state, contactId) ?? {};
   const caseForm = selectCaseByCaseId(state, savedContact.caseId ?? '')?.connectedCase || {};
-  const contactIsSaving = selectIsContactCreating(state, contactId);
+  const contactIsSaving = metadata?.saveStatus === 'saving';
   return {
     contact: getUnsavedContact(savedContact, draftContact),
     metadata,

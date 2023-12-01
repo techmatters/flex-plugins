@@ -277,6 +277,7 @@ export type FeatureFlags = {
   backend_handled_chat_janitor: boolean; // [Temporary flag until all accounts are migrated] Enables handling the janitor from taskrouter event listeners
   enable_client_profiles: boolean; // Enables Client Profiles
   enable_case_merging: boolean; // Enables adding contacts to existing cases
+  enable_confirm_on_browser_close: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
 };
 /* eslint-enable camelcase */
 

@@ -34,6 +34,7 @@ export const CaseContainer = styled('div')`
   flex-direction: column;
   height: 100%;
   background-color: #ffffff;
+  border-bottom: 1px solid #e1e3ea;
   padding-right: 5px;
 `;
 CaseContainer.displayName = 'CaseContainer';

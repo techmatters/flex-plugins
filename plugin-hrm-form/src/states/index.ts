@@ -29,7 +29,6 @@ import { reduce as DualWriteReducer } from './dualWrite/reducer';
 import { reduce as ReferrableResourcesReducer } from './resources';
 import { reduce as ConversationsReducer } from './conversations';
 import { reduce as ConferencingReducer } from './conferencing';
-import { reduce as CaseMergingBannersReducer } from '../components/caseMergingBanners/state';
 import { reduce as ProfileReducer } from './profile/reducer';
 import { CaseState } from './case/types';
 import { ContactsState } from './contacts/types';
@@ -50,6 +49,7 @@ import {
   caseMergingBannersBase,
   profileBase,
 } from './storeNamespaces';
+import { reduce as CaseMergingBannersReducer } from './case/caseBanners';
 
 const reducers = {
   [searchContactsBase]: SearchFormReducer,

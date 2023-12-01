@@ -48,7 +48,7 @@ import CloseCaseDialog from './CloseCaseDialog';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import { lookupApi } from '../../states/case/sections/lookupApi';
 import { copyCaseSectionItem } from '../../states/case/sections/update';
-import { newGoBackAction } from '../../states/routing/actions';
+import { newCloseModalAction, newGoBackAction } from '../../states/routing/actions';
 import {
   initialiseExistingCaseSectionWorkingCopy,
   initialiseNewCaseSectionWorkingCopy,
@@ -73,6 +73,12 @@ export type AddEditCaseItemProps = {
 };
 // eslint-disable-next-line no-use-before-define
 type Props = AddEditCaseItemProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+
+enum DismissAction {
+  NONE,
+  BACK,
+  CLOSE,
+}
 
 const AddEditCaseItem: React.FC<Props> = ({
   definitionVersion,
@@ -136,7 +142,14 @@ const AddEditCaseItem: React.FC<Props> = ({
   ]);
 
   const methods = useForm(reactHookFormOptions);
-  const [openDialog, setOpenDialog] = React.useState(false);
+
+  enum DialogState {
+    CLOSED,
+    OPEN_FOR_BACK,
+    OPEN_FOR_CLOSE,
+  }
+
+  const [dialogState, setDialogState] = React.useState(DialogState.CLOSED);
 
   const { getValues } = methods;
 
@@ -208,21 +221,21 @@ const AddEditCaseItem: React.FC<Props> = ({
     await updateCaseAsyncAction(caseId, { info: newInfo });
   };
 
-  function close() {
-    closeActions(caseId, sectionId);
+  function close(action: DismissAction) {
+    closeActions(caseId, sectionId, action);
   }
 
   async function saveAndStay() {
     await save();
-    closeActions(caseId, sectionId, false);
+    closeActions(caseId, sectionId, DismissAction.NONE);
 
     // Reset the entire form state, fields reference, and subscriptions.
     methods.reset();
   }
 
-  async function saveAndLeave() {
+  async function saveAndLeave(followingAction: DismissAction) {
     await save();
-    closeActions(caseId, sectionId);
+    closeActions(caseId, sectionId, followingAction);
   }
 
   const strings = getTemplateStrings();
@@ -230,7 +243,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     currentRoute.action === CaseItemAction.Edit ? `Case: Edit ${sectionApi.label}` : `Case: Add ${sectionApi.label}`,
     () => {
       window.alert(strings['Error-Form']);
-      if (openDialog) setOpenDialog(false);
+      if (dialogState !== DialogState.CLOSED) setDialogState(DialogState.CLOSED);
     },
   );
 
@@ -238,10 +251,10 @@ const AddEditCaseItem: React.FC<Props> = ({
     ? caseItemHistory(workingCopy, counselorsHash)
     : { added: new Date(), addingCounsellorName: counselor, updated: undefined, updatingCounsellorName: undefined };
 
-  const checkForEdits = () => {
+  const checkForEdits = (action: DismissAction) => {
     if (isEqual(workingCopy?.form, savedForm)) {
-      close();
-    } else setOpenDialog(true);
+      close(action);
+    } else setDialogState(action === DismissAction.CLOSE ? DialogState.OPEN_FOR_CLOSE : DialogState.OPEN_FOR_BACK);
   };
   return (
     <FormProvider {...methods}>
@@ -249,7 +262,8 @@ const AddEditCaseItem: React.FC<Props> = ({
         titleCode={
           currentRoute.action === CaseItemAction.Edit ? `Case-Edit${sectionApi.label}` : `Case-Add${sectionApi.label}`
         }
-        onGoBack={checkForEdits}
+        onGoBack={() => checkForEdits(DismissAction.BACK)}
+        onCloseModal={() => checkForEdits(DismissAction.CLOSE)}
         task={task}
       >
         <CaseActionFormContainer>
@@ -259,7 +273,7 @@ const AddEditCaseItem: React.FC<Props> = ({
             updatingCounsellor={updatingCounsellorName}
             updated={updated}
           />
-          <Container removePadding={true}>
+          <Container formContainer={true}>
             <Box paddingBottom={`${BottomButtonBarHeight}px`}>
               <TwoColumnLayout>
                 <ColumnarBlock>
@@ -289,17 +303,22 @@ const AddEditCaseItem: React.FC<Props> = ({
           <StyledNextStepButton
             data-testid="Case-AddEditItemScreen-SaveItem"
             roundCorners
-            onClick={methods.handleSubmit(saveAndLeave, onError)}
+            onClick={methods.handleSubmit(() => saveAndLeave(DismissAction.BACK), onError)}
           >
             <Template code={`BottomBar-Save${sectionApi.label}`} />
           </StyledNextStepButton>
         </BottomButtonBar>
         <CloseCaseDialog
           data-testid="CloseCaseDialog"
-          openDialog={openDialog}
-          setDialog={() => setOpenDialog(false)}
-          handleDontSaveClose={close}
-          handleSaveUpdate={methods.handleSubmit(saveAndLeave, onError)}
+          openDialog={dialogState !== DialogState.CLOSED}
+          setDialog={() => setDialogState(DialogState.CLOSED)}
+          handleDontSaveClose={() =>
+            close(dialogState === DialogState.OPEN_FOR_CLOSE ? DismissAction.CLOSE : DismissAction.BACK)
+          }
+          handleSaveUpdate={methods.handleSubmit(
+            () => saveAndLeave(dialogState === DialogState.OPEN_FOR_CLOSE ? DismissAction.CLOSE : DismissAction.BACK),
+            onError,
+          )}
         />
       </NavigableContainer>
     </FormProvider>
@@ -337,10 +356,12 @@ const mapDispatchToProps = (dispatch, props: AddEditCaseItemProps) => {
     updateCaseSectionWorkingCopy: bindActionCreators(updateCaseSectionWorkingCopy, dispatch),
     initialiseCaseSectionWorkingCopy: bindActionCreators(initialiseExistingCaseSectionWorkingCopy, dispatch),
     initialiseNewCaseSectionWorkingCopy: bindActionCreators(initialiseNewCaseSectionWorkingCopy, dispatch),
-    closeActions: (caseId: string, id: string, closeForm: boolean = true) => {
+    closeActions: (caseId: Case['id'], id: string, action: DismissAction) => {
       dispatch(removeCaseSectionWorkingCopy(caseId, sectionApi, id));
-      if (closeForm) {
+      if (action === DismissAction.BACK) {
         dispatch(newGoBackAction(task.taskSid));
+      } else if (action === DismissAction.CLOSE) {
+        dispatch(newCloseModalAction(task.taskSid));
       }
     },
     updateCaseAsyncAction: (caseId: Case['id'], body: Partial<Case>) =>

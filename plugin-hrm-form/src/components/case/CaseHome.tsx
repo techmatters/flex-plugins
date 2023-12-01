@@ -226,6 +226,7 @@ const CaseHome: React.FC<Props> = ({
       <CaseContainer
         style={{
           overflowY: isCreating ? 'scroll' : 'visible',
+          borderBottom: isCreating ? '1px solid #e5e5e5' : 'none',
         }}
       >
         {showConnectToCaseButton && (
@@ -238,6 +239,7 @@ const CaseHome: React.FC<Props> = ({
                 </Text>
               </Flex>
               <ConnectToCaseButton
+                caseId={connectedCase.id.toString()}
                 isConnectedToTaskContact={isConnectedToTaskContact}
                 onClickConnectToTaskContact={() => {
                   connectCaseToTaskContact(taskContact, connectedCaseState.connectedCase);

@@ -41,7 +41,7 @@ import ContactNotLoaded from './ContactNotLoaded';
 import { completeTask } from '../services/formSubmissionHelpers';
 import { newContact } from '../states/contacts/contactState';
 import asyncDispatch from '../states/asyncDispatch';
-import selectIsContactCreating from '../states/contacts/selectIsContactCreating';
+import { selectIsContactCreating } from '../states/contacts/selectContactSaveStatus';
 
 type OwnProps = {
   task: CustomITask;
