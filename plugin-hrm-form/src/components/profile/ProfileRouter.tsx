@@ -19,9 +19,9 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RouterTask } from '../../types/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { AppRoutes, ProfileRoute, ProfileSectionEditRoute, isRouteWithContext } from '../../states/routing/types';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
-import { ProfileRoute, ProfileSectionEditRoute } from '../../states/routing/types';
 import ProfileCaseDetails from './ProfileCaseDetails';
 import ProfileContactDetails from './ProfileContactDetails';
 import ProfileEdit from './ProfileEdit';
@@ -37,7 +37,7 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const route = getCurrentTopmostRouteForTask(routingState, taskSid);
   const profileId = (route as ProfileRoute).id;
   const currentRouteStack = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const currentRoute = currentRouteStack?.route.toString();
+  const currentRoute = currentRouteStack?.route.toString() as AppRoutes['route'];
   const sectionType = (currentRouteStack as ProfileSectionEditRoute)?.type;
 
   return {
@@ -50,17 +50,23 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
 const connector = connect(mapStateToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const PROFILE_ROUTES = {
+type ProfileRouteConfig = {
+  routes?: AppRoutes['route'][];
+  contextRoutes?: AppRoutes['route'][];
+  renderComponent: (props: Props) => JSX.Element;
+};
+
+const PROFILE_ROUTES: Record<string, ProfileRouteConfig> = {
   profile: {
     routes: ['profile'],
     renderComponent: (props: Props) => <ProfileTabs {...props} />,
   },
   profileContact: {
-    routes: ['profile-contact'],
+    contextRoutes: ['contact'],
     renderComponent: (props: Props) => <ProfileContactDetails {...props} />,
   },
   profileCase: {
-    routes: ['profile-case'],
+    contextRoutes: ['case'],
     renderComponent: (props: Props) => <ProfileCaseDetails {...props} />,
   },
   profileEdit: {
@@ -73,14 +79,25 @@ const PROFILE_ROUTES = {
   },
 };
 
-export const ALL_PROFILE_ROUTES = Object.values(PROFILE_ROUTES).flatMap(({ routes }) => routes);
+const rootProfileRoutes = Object.values(PROFILE_ROUTES).flatMap(({ routes }) => routes);
+const contextProfileRoutes = Object.values(PROFILE_ROUTES).flatMap(({ contextRoutes }) => contextRoutes);
+
+export const isProfileRoute = (routing: AppRoutes) => {
+  if (rootProfileRoutes.includes(routing.route)) return true;
+
+  return (
+    isRouteWithContext(routing) &&
+    routing.context === 'profile' &&
+    contextProfileRoutes.includes(routing.route as AppRoutes['route'])
+  );
+};
 
 const ProfileRouter: React.FC<Props> = props => {
   const { currentRoute } = props;
 
   return (
     Object.values(PROFILE_ROUTES)
-      .find(({ routes }) => routes.includes(currentRoute))
+      .find(({ routes, contextRoutes }) => routes?.includes(currentRoute) || contextRoutes?.includes(currentRoute))
       ?.renderComponent(props) || null
   );
 };

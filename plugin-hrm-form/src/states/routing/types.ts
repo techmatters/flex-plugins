@@ -88,10 +88,20 @@ type CaseListRoute = RouteWithModalSupport & {
   subroute: 'case-list';
 };
 
-const CASE_ROUTES = ['case', 'profile-case'] as const;
+const CONTEXTS = ['search', 'hrm-form', 'profile'] as const;
 
-type CaseCoreRoute = {
-  route: typeof CASE_ROUTES[number];
+export type Contexts = typeof CONTEXTS[number];
+
+export type RouteWithContext = {
+  context?: Contexts;
+};
+
+export const isRouteWithContext = (route: any): route is RouteWithContext => {
+  return CONTEXTS.includes((route as RouteWithContext).context);
+};
+
+type CaseCoreRoute = RouteWithContext & {
+  route: 'case';
   autoFocus?: boolean;
   isCreating?: boolean;
 };
@@ -172,7 +182,7 @@ export function isRouteModal(route: AppRoutes): boolean {
 }
 
 export function isCaseRoute(appRoute: AppRoutes): appRoute is CaseRoute {
-  return CASE_ROUTES.includes(appRoute?.route as CaseRoute['route']);
+  return appRoute?.route === 'case';
 }
 
 export type CSAMReportRoute = {
@@ -181,11 +191,10 @@ export type CSAMReportRoute = {
   previousRoute: AppRoutes;
 };
 
-const CONTACT_ROUTES = ['contact', 'profile-contact'] as const;
-
-type ContactCoreRoute = {
-  route: typeof CONTACT_ROUTES[number];
+type ContactCoreRoute = RouteWithContext & {
+  route: 'contact';
   id: string;
+  profileId?: Profile['id'];
 };
 
 type ContactViewRoute = ContactCoreRoute & {
@@ -200,7 +209,7 @@ export type ContactEditRoute = ContactCoreRoute & {
 type ContactRoute = ContactViewRoute | ContactEditRoute;
 
 export const isContactRoute = (route: AppRoutes): route is ContactRoute => {
-  return CONTACT_ROUTES.includes(route.route as ContactRoute['route']);
+  return route.route === 'contact';
 };
 
 type OtherRoutes =
