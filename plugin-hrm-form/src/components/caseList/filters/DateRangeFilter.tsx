@@ -21,15 +21,7 @@ import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 
 import { Box, Flex, FormDateInput, FormLabel, FormRadioInput } from '../../../styles/HrmStyles';
-import {
-  DateFilterOption,
-  DateFilterOptions,
-  DateFilterValue,
-  isDivider,
-  isExistsDateFilter,
-  isExistsDateFilterValue,
-  isFixedDateRange,
-} from './dateFilters';
+import { DateFilterOption, DateFilterOptions, isDivider, isExistsDateFilter, isFixedDateRange } from './dateFilters';
 import {
   DialogArrow,
   FiltersDialog,
@@ -41,6 +33,7 @@ import {
   MultiSelectUnorderedList,
   DateErrorMessage,
 } from '../../../styles/caseList/filters';
+import { DateFilterValue, isExistsDateFilterValue } from '../../../states/caseList/dateFilters';
 
 type ReactHookFormValues = {
   [name: string]: string;

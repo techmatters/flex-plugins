@@ -14,7 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { addDays, endOfDay, formatISO, startOfDay, subDays } from 'date-fns';
+import { addDays, endOfDay, startOfDay, subDays } from 'date-fns';
+
+import { DateExistsCondition } from '../../../states/caseList/dateFilters';
 
 type RelativeDateRange = {
   titleKey: string;
@@ -31,11 +33,6 @@ type FixedDateRange = {
   to?: Date;
 };
 
-export enum DateExistsCondition {
-  MUST_EXIST = 'MUST_EXIST',
-  MUST_NOT_EXIST = 'MUST_NOT_EXIST',
-}
-
 type ExistsDateFilter = {
   titleKey: string;
   titleParameters?: Record<string, string | number>;
@@ -45,19 +42,6 @@ type ExistsDateFilter = {
 type Divider = { __divider: 'divider' };
 
 type DateFilterSetting = RelativeDateRange | FixedDateRange | ExistsDateFilter;
-
-type RangeDateFilterValue = {
-  option: string;
-  from?: Date;
-  to?: Date;
-};
-
-type ExistsDateFilterValue = {
-  option: string;
-  exists: DateExistsCondition;
-};
-
-export type DateFilterValue = RangeDateFilterValue | ExistsDateFilterValue;
 
 export type DateFilterOption = [string, DateFilterSetting];
 
@@ -121,9 +105,6 @@ export const isFixedDateRange = (item: any): item is FixedDateRange =>
 
 export const isExistsDateFilter = (item: any): item is ExistsDateFilter => Boolean((<ExistsDateFilter>item)?.exists);
 
-export const isExistsDateFilterValue = (filterValue: DateFilterValue): filterValue is ExistsDateFilterValue =>
-  Boolean((filterValue as ExistsDateFilterValue)?.exists);
-
 export const standardCaseListDateFilterOptions = (): DateFilterOptions => [
   ['TODAY', today()],
   ['YESTERDAY', yesterday()],
@@ -147,29 +128,3 @@ export const followUpDateFilterOptions = (): DateFilterOptions => [
   divider(),
   ['CUSTOM_RANGE', customRange()],
 ];
-
-/**
- * Creates the date filters sub section of the search endpoint POST payload from a list of DateFilter objects
- * @param filters - the input date filters used to build the payload
- */
-export const dateFilterPayloadFromFilters = (filters: Record<string, DateFilterValue>) => {
-  if (!filters) return {};
-  const entries = Object.entries(filters)
-    .filter(([, filter]) => filter)
-    .map(([key, filter]) => {
-      let filterPayload: { from?: string; to?: string; exists: DateExistsCondition };
-      if (isExistsDateFilterValue(filter)) {
-        filterPayload = {
-          exists: filter.exists,
-        };
-      } else {
-        filterPayload = {
-          from: filter.from ? formatISO(startOfDay(filter.from)) : undefined,
-          to: filter.to ? formatISO(endOfDay(filter.to)) : undefined,
-          exists: DateExistsCondition.MUST_EXIST,
-        };
-      }
-      return [key, filterPayload];
-    });
-  return Object.fromEntries(entries);
-};

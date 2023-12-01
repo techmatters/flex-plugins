@@ -43,7 +43,6 @@ import { ContactMetadata } from '../../states/contacts/types';
 import { AppRoutes } from '../../states/routing/types';
 import AddCaseButton from './AddCaseButton';
 import asyncDispatch from '../../states/asyncDispatch';
-import selectIsContactCreating from '../../states/contacts/selectIsContactCreating';
 import selectCaseByCaseId from '../../states/case/selectCaseStateByCaseId';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { SuccessReportIcon } from '../../styles/CSAMReport';

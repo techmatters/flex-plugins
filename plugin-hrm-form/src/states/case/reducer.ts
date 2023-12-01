@@ -17,7 +17,7 @@
 import { omit } from 'lodash';
 
 import { CaseActionType, CaseState } from './types';
-import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
+import { DefinitionVersion, REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import {
   CaseWorkingCopyActionType,
   INIT_CASE_SUMMARY_WORKING_COPY,
@@ -38,11 +38,7 @@ import {
 import { HrmState, RootState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { saveCaseReducer } from './saveCase';
-import {
-  CaseListContentStateAction,
-  FETCH_CASE_LIST_SUCCESS,
-  FetchCaseListSuccessAction,
-} from '../caseList/listContent';
+import { FETCH_CASE_LIST_FULFILLED_ACTION, FetchCaseListFulfilledAction } from '../caseList/listContent';
 import { namespace } from '../storeNamespaces';
 import {
   ContactUpdatingAction,
@@ -51,6 +47,7 @@ import {
 } from '../contacts/types';
 import { SEARCH_CASES_SUCCESS, SearchCasesSuccessAction } from '../search/types';
 import { Case } from '../../types/types';
+import { ConfigurationState } from '../configuration/reducer';
 
 const initialState: CaseState = {
   cases: {},
@@ -102,7 +99,12 @@ const dereferenceAllCases = (state: CaseState, referenceId: string): CaseState =
   };
 };
 
-const loadCaseIntoState = (state: CaseState, newCase: Case, referenceId?: string): CaseState => {
+const loadCaseIntoState = (
+  state: CaseState,
+  definitionVersion: DefinitionVersion,
+  newCase: Case,
+  referenceId?: string,
+): CaseState => {
   const existingCase = state.cases[newCase.id];
   if (!existingCase) {
     return {
@@ -112,7 +114,7 @@ const loadCaseIntoState = (state: CaseState, newCase: Case, referenceId?: string
         [newCase.id]: {
           connectedCase: newCase,
           caseWorkingCopy: { sections: {} },
-          availableStatusTransitions: [],
+          availableStatusTransitions: getAvailableCaseStatusTransitions(newCase, definitionVersion),
           references: referenceId ? new Set([referenceId]) : new Set<string>(),
         },
       },
@@ -154,9 +156,7 @@ const contactUpdatingReducer = (
           [contactCase.id]: {
             connectedCase: contactCase,
             caseWorkingCopy: { sections: {} },
-            availableStatusTransitions: caseDefinitionVersion
-              ? getAvailableCaseStatusTransitions(contactCase, caseDefinitionVersion)
-              : [],
+            availableStatusTransitions: getAvailableCaseStatusTransitions(contactCase, caseDefinitionVersion),
             references,
           },
         },
@@ -166,13 +166,19 @@ const contactUpdatingReducer = (
   return state;
 };
 
-const loadCaseListIntoState = (state: CaseState, cases: Case[], referenceId: string): CaseState => {
-  const withoutOldSearchResults = dereferenceAllCases(state, referenceId);
+const loadCaseListIntoState = (
+  casesState: CaseState,
+  configurationState: ConfigurationState,
+  cases: Case[],
+  referenceId: string,
+): CaseState => {
+  const withoutOldSearchResults = dereferenceAllCases(casesState, referenceId);
   if (cases?.length) {
     return cases.reduce((acc, newCase) => {
       // TODO: strip the totalCount property in HRM
       const { totalCount, ...caseToAdd } = newCase as Case & { totalCount: number };
-      return loadCaseIntoState(acc, caseToAdd, referenceId);
+      const caseDefinitionVersion = configurationState.definitionVersions[newCase.info.definitionVersion];
+      return loadCaseIntoState(acc, caseDefinitionVersion, caseToAdd, referenceId);
     }, withoutOldSearchResults);
   }
   return withoutOldSearchResults;
@@ -186,13 +192,12 @@ export function reduce(
     | CaseActionType
     | CaseWorkingCopyActionType
     | RemoveContactStateAction
-    | CaseListContentStateAction
     | ContactUpdatingAction
     | SearchCasesSuccessAction
-    | FetchCaseListSuccessAction,
+    | FetchCaseListFulfilledAction,
 ): CaseState {
   const rootState = boundSaveCaseReducer(inputRootState, action as any);
-  const state = rootState.connectedCase;
+  const { connectedCase: state, configuration } = rootState;
   switch (action.type) {
     case CREATE_CONTACT_ACTION_FULFILLED:
     case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED:
@@ -217,12 +222,12 @@ export function reduce(
       return updateCaseSummaryWorkingCopyReducer(state, action);
     case REMOVE_CASE_SUMMARY_WORKING_COPY:
       return removeCaseSummaryWorkingCopyReducer(state, action);
-    case FETCH_CASE_LIST_SUCCESS:
-      return loadCaseListIntoState(state, action.payload.caseList, `case-list`);
+    case FETCH_CASE_LIST_FULFILLED_ACTION:
+      return loadCaseListIntoState(state, configuration, action.payload.result.cases, `case-list`);
     case SEARCH_CASES_SUCCESS: {
       const { searchResult, taskId } = action as SearchCasesSuccessAction;
       const referenceId = `search-${taskId}`;
-      return loadCaseListIntoState(state, searchResult?.cases, referenceId);
+      return loadCaseListIntoState(state, configuration, searchResult?.cases, referenceId);
     }
     default:
       return state;

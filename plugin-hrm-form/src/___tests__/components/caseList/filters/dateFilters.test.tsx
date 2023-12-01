@@ -16,7 +16,7 @@
 
 import { addDays, endOfDay, formatISO } from 'date-fns';
 
-import { DateExistsCondition, dateFilterPayloadFromFilters } from '../../../../components/caseList/filters/dateFilters';
+import { DateExistsCondition, dateFilterPayloadFromFilters } from '../../../../states/caseList/dateFilters';
 
 const baseline = new Date(2000, 10, 14);
 

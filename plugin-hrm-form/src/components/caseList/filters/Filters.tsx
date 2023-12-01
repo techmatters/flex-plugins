@@ -32,18 +32,14 @@ import {
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
 import { CategoryFilter, CounselorHash } from '../../../types/types';
 import DateRangeFilter from './DateRangeFilter';
-import {
-  DateFilter,
-  followUpDateFilterOptions,
-  standardCaseListDateFilterOptions,
-  DateFilterValue,
-} from './dateFilters';
+import { DateFilter, followUpDateFilterOptions, standardCaseListDateFilterOptions } from './dateFilters';
 import CategoriesFilter, { Category } from './CategoriesFilter';
 import { RootState } from '../../../states';
 import * as CaseListSettingsActions from '../../../states/caseList/settings';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 import { canOnlyViewOwnCases } from '../../../permissions';
 import { caseListBase, configurationBase, namespace } from '../../../states/storeNamespaces';
+import { DateFilterValue } from '../../../states/caseList/dateFilters';
 /**
  * Reads the definition version and returns and array of items (type Item[])
  * to be used as the options for the status filter
