@@ -98,8 +98,8 @@
     "type": "mixed-checkbox"
   },
   {
-    "name": "didYouDiscussRightsWithTheChild",
-    "label": "Did you discuss privacy rights and consent with the client?",
+    "name": "didYouDiscussConfidentialityWithClient",
+    "label": "Did you discuss confidentiality and limits of confidentiality with the client?",
     "type": "mixed-checkbox"
   }
 ]

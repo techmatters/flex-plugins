@@ -20,8 +20,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { Case, Contact, RouterTask } from '../../../types/types';
 import CaseHeader from './CaseHeader';
-import { Flex } from '../../../styles/HrmStyles';
-import { PreviewWrapper } from '../../../styles/search';
+import { Flex, PreviewWrapper } from '../../../styles/HrmStyles';
 import getUpdatedDate from '../../../states/getUpdatedDate';
 import { PreviewDescription } from '../PreviewDescription';
 import { getDefinitionVersion } from '../../../services/ServerlessService';
@@ -118,7 +117,7 @@ const CasePreview: React.FC<Props> = ({
     );
   }
   return (
-    <Flex>
+    <Flex width="100%">
       <PreviewWrapper>
         <CaseHeader
           caseId={id}

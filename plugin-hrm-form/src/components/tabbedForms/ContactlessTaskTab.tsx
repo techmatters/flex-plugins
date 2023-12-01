@@ -135,7 +135,7 @@ const ContactlessTaskTab: React.FC<Props> = ({
   }, [setValue, time]);
 
   return (
-    <Container removePadding={true}>
+    <Container formContainer={true}>
       <TwoColumnLayout>
         <ColumnarBlock>
           <ColumnarContent>{contactlessTaskForm}</ColumnarContent>

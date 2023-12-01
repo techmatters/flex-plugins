@@ -17,12 +17,20 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Icon, Template } from '@twilio/flex-ui';
+import { ProfileSection } from 'hrm-form-definitions';
 
-import { Bold, Box, Column, HiddenText, Row } from '../../styles/HrmStyles';
+import { Box, HiddenText, Row, HorizontalLine } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
+import useProfileSectionTypes from '../../states/configuration/hooks/useProfileSectionTypes';
 import { ProfileCommonProps } from './types';
-import { DetailsWrapper, ProfileSectionWrapper, ProfileSectionSubtitle, ProfileSectionEditButton } from './styles';
+import {
+  DetailsWrapper,
+  ProfileSectionWrapper,
+  ProfileSectionSubtitle,
+  ProfileSectionEditButton,
+  SectionHeader,
+} from './styles';
 import ProfileFlagSection from './profileFlag/ProfileFlagSection';
 import ProfileSectionView from './section/ProfileSectionView';
 
@@ -58,24 +66,12 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
     },
   ];
 
-  const sectionTypes = [
-    {
-      name: 'summary',
-      placeholder: 'Enter a summary of the case',
-    },
-    {
-      name: 'recommended approach',
-      placeholder: 'Enter the recommended approach',
-    },
-    {
-      name: 'details',
-      placeholder: 'Enter the details',
-    },
-  ];
-  const sectionSections: Section[] = sectionTypes.map(sectionType => ({
+  const sectionTypesForms: ProfileSection[] = useProfileSectionTypes();
+
+  const sectionSections: Section[] = sectionTypesForms.map(sectionType => ({
     title: `${sectionType.name}`,
     renderComponent: () => <ProfileSectionView profileId={profileId} task={task} sectionType={sectionType} />,
-    handleEdit: () => openSectionEditModal(sectionType.name),
+    handleEdit: () => openSectionEditModal(sectionType.label),
   }));
 
   const renderEditButton = section => {
@@ -117,16 +113,16 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
 
   return (
     <DetailsWrapper>
-      <Column>
-        <Bold>
-          <Template code="Profile-DetailsHeader" />
-        </Bold>
-      </Column>
+      <SectionHeader>
+        <Template code="Profile-DetailsHeader-Overview" />
+      </SectionHeader>
       {overviewSections.map(section => renderSection(section))}
-      <hr />
-      <h2>Notes</h2>
+      <HorizontalLine />
+      <SectionHeader>
+        <Template code="Profile-DetailsHeader-Notes" />
+      </SectionHeader>
       {sectionSections.map(section => renderSection(section))}
-      <hr />
+      <HorizontalLine />
     </DetailsWrapper>
   );
 };

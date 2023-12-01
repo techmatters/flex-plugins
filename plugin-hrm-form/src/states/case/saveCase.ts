@@ -17,9 +17,9 @@
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
-import { createCase, updateCase } from '../../services/CaseService';
+import { createCase, updateCase, cancelCase } from '../../services/CaseService';
 import { Case } from '../../types/types';
-import { UPDATE_CASE_ACTION, CREATE_CASE_ACTION, SavedCaseStatus, CaseState } from './types';
+import { UPDATE_CASE_ACTION, CREATE_CASE_ACTION, CANCEL_CASE_ACTION, SavedCaseStatus, CaseState } from './types';
 import type { RootState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { connectToCase } from '../../services/ContactService';
@@ -44,6 +44,14 @@ export const updateCaseAsyncAction = createAsyncAction(
   UPDATE_CASE_ACTION,
   async (caseId: Case['id'], taskSid: string, body: Partial<Case>): Promise<{ taskSid: string; case: Case }> => {
     return { taskSid, case: await updateCase(caseId, body) };
+  },
+);
+
+export const cancelCaseAsyncAction = createAsyncAction(
+  CANCEL_CASE_ACTION,
+  async (caseId: Case['id'], taskSid: string): Promise<{ taskSid: string; case: Case }> => {
+    await cancelCase(caseId);
+    return { taskSid, case: null };
   },
 );
 
@@ -122,6 +130,10 @@ export const saveCaseReducer = (initialState: SaveCaseReducerState) =>
     handlePendingAction(handleAction, createCaseAsyncAction.pending),
     handleFulfilledAction(handleAction, createCaseAsyncAction.fulfilled),
     handleRejectedAction(handleAction, createCaseAsyncAction.rejected),
+
+    handlePendingAction(handleAction, cancelCaseAsyncAction.pending),
+    handleFulfilledAction(handleAction, cancelCaseAsyncAction.fulfilled),
+    handleRejectedAction(handleAction, cancelCaseAsyncAction.rejected),
 
     handleConnectToCaseFulfilledAction(handleAction, connectToCaseAsyncAction.fulfilled),
   ]);

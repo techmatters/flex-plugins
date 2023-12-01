@@ -106,7 +106,12 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) =>
           )}
           .{' '}
         </pre>
-        <StyledLink underline data-testid="PreviousContacts-ViewRecords" onClick={handleClickViewRecords}>
+        <StyledLink
+          underline
+          data-testid="PreviousContacts-ViewRecords"
+          onClick={handleClickViewRecords}
+          aria-label="View Client Records"
+        >
           <Template code="PreviousContacts-ViewRecords" />
         </StyledLink>
       </YellowBanner>

@@ -17,7 +17,6 @@
 import React from 'react';
 import { ButtonBase, Paper, Button, FormControlLabel, Switch, Collapse, withStyles } from '@material-ui/core';
 import { Tabs, TabsProps, styled } from '@twilio/flex-ui';
-import Folder from '@material-ui/icons/Folder';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import { ButtonProps } from '@material-ui/core/Button';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
@@ -26,22 +25,6 @@ import { Flex, Row, FontOpenSans, BottomButtonBar, TabbedFormsContainer, StyledN
 import HrmTheme from '../HrmTheme';
 
 // CaseViewer Styles
-export const PreviewWrapper = styled('div')`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin-top: 10px;
-  padding: 5px 20px 10px 20px;
-  width: 600px;
-  box-sizing: border-box;
-  background-color: #ffffff;
-  border-color: #d8d8d8;
-  border-style: solid;
-  border-width: 2px;
-  border-radius: 4px;
-`;
-
-PreviewWrapper.displayName = 'PreviewWrapper';
 
 export const ConfirmContainer = styled(Paper)`
   display: flex;
@@ -159,9 +142,25 @@ export const PreviewHeaderText = styled(FontOpenSans)`
 `;
 
 export const StyledTabs = styled((props: Partial<TabsProps> & { children?: any }) => <Tabs {...props} />)`
+  .Twilio-TabHeader {
+    flex-grow: 1;
+
+    button {
+      width: 100%;
+    }
+  }
+
   .Twilio-TabHeader-StateIndicator-Active {
     background-color: #0064e1;
     height: 1px;
+    padding: 0;
+  }
+  .Twilio-Tabs-Labels {
+    padding: 0;
+  }
+
+  .Twilio-Tab {
+    flex-direction: column;
   }
 `;
 StyledTabs.displayName = 'StyledTabs';
@@ -169,31 +168,16 @@ StyledTabs.displayName = 'StyledTabs';
 export const StyledResultsContainer = styled('div')`
   display: flex;
   align-items: center;
-  width: 600px;
+  width: 100%;
   margin-top: 10px;
 `;
 StyledResultsContainer.displayName = 'StyledResultsContainer';
-
-export const StyledTabLabel = styled('div')`
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-`;
-StyledTabLabel.displayName = 'StyledTabLabel';
 
 export const StyledResultsText = styled('div')`
   display: flex;
   padding-right: 5px;
 `;
 StyledResultsText.displayName = 'StyledResultsText';
-
-export const StyledFolderIcon = styled(Folder)`
-  font-size: 18px !important;
-  padding: -1px 10px 0 6px;
-  margin-right: 10px;
-`;
-
-StyledFolderIcon.displayName = 'StyledFolderIcon';
 
 export const EmphasisedText = styled('div')`
   font-weight: 600;
@@ -404,10 +388,14 @@ export const ResultsHeader = styled('div')`
 `;
 
 export const ListContainer = styled(BottomButtonBar)`
+  box-shadow: none;
   background-color: #ffffff;
   flex-basis: 0;
   flex-grow: 1;
-  padding: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 0;
+  padding-right: 0;
   margin: 2px 5px 0 5px;
 `;
 
@@ -464,3 +452,52 @@ export const PreviewActionButton = styled(StyledNextStepButton)`
   padding: 5px 17px 5px 12px;
 `;
 PreviewActionButton.displayName = 'PreviewActionButton';
+
+export const SearchResultWarningContainer = styled('div')`
+  width: 597px;
+  height: auto;
+  top: 143px;
+  left: 744px;
+  margin-top: 30px;
+  background-color: #fffeef;
+  padding-left: 20px;
+  padding-right: 30px;
+  padding-bottom: 20px;
+  border: 1px solid #ffc811;
+  border-radius: 5px;
+`;
+SearchResultWarningContainer.displayName = 'SearchResultWarningContainer';
+
+type TextProps = {
+  margin?: string;
+  padding?: string;
+  fontWeight?: string;
+  decoration?: string;
+  color?: string;
+  cursor?: string;
+  onClick?: () => void;
+};
+
+export const NoResultTextLink = styled('button')<TextProps>`
+  align-items: center;
+  color: ${({ color }) => color};
+  font-weight: ${({ fontWeight }) => fontWeight};
+  padding-top: ${({ padding }) => (padding ? padding : '17px')};
+  margin-left: ${({ margin }) => (margin ? margin : '5px')};
+  text-decoration: ${({ decoration }) => decoration};
+  cursor: ${({ cursor }) => cursor};
+  background: none;
+  border: none;
+`;
+NoResultTextLink.displayName = 'Text';
+
+export const Text = styled('span')<TextProps>`
+  align-items: center;
+  color: ${({ color }) => color};
+  font-weight: ${({ fontWeight }) => fontWeight};
+  padding-top: ${({ padding }) => (padding ? padding : '17px')};
+  margin-left: ${({ margin }) => (margin ? margin : '5px')};
+  text-decoration: ${({ decoration }) => decoration};
+  cursor: ${({ cursor }) => cursor};
+`;
+Text.displayName = 'Text';

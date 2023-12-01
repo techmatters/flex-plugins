@@ -64,7 +64,7 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
   const selectedCount = Object.values(selectedCategories).reduce((acc, curr) => acc + curr.length, 0);
 
   return (
-    <Container removePadding={true}>
+    <Container formContainer={true}>
       <CategoryTitle>
         <Template code="Categories-Title" />
       </CategoryTitle>

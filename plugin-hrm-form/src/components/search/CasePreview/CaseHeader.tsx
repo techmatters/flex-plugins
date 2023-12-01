@@ -72,7 +72,7 @@ const CaseHeader: React.FC<Props> = ({
           <Flex alignItems="center" style={{ minWidth: 'fit-content' }}>
             {!isOrphanedCase && (
               <Flex marginRight="10px">
-                <FolderOutlined style={{ color: '#192b33' }} />
+                <FolderOutlined style={{ color: '#606B85' }} />
               </Flex>
             )}
             <StyledLink underline={true} style={{ minWidth: 'inherit', marginInlineEnd: 10 }} onClick={onClickViewCase}>
@@ -83,6 +83,7 @@ const CaseHeader: React.FC<Props> = ({
           {showConnectButton && (
             <Flex style={{ minWidth: 'fit-content' }}>
               <ConnectToCaseButton
+                caseId={caseId.toString()}
                 isConnectedToTaskContact={isConnectedToTaskContact}
                 onClickConnectToTaskContact={onClickConnectToTaskContact}
               />

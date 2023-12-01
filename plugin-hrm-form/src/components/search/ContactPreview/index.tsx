@@ -20,8 +20,7 @@ import { callTypes } from 'hrm-form-definitions';
 
 import ContactHeader from './ContactHeader';
 import TagsAndCounselor from '../TagsAndCounselor';
-import { PreviewWrapper } from '../../../styles/search';
-import { Flex } from '../../../styles/HrmStyles';
+import { Flex, PreviewWrapper } from '../../../styles/HrmStyles';
 import { ContactRawJson, Contact } from '../../../types/types';
 import { PreviewDescription } from '../PreviewDescription';
 import { isNonDataCallType } from '../../../states/validationRules';
@@ -98,7 +97,7 @@ const ContactPreview: React.FC<Props> = ({ contact, handleViewDetails, definitio
   }, [versionId, definitionVersions]);
 
   return (
-    <Flex>
+    <Flex width="100%">
       <PreviewWrapper key={contact.id}>
         <ContactHeader
           id={contact.id}

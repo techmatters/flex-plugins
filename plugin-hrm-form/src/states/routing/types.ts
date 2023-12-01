@@ -41,11 +41,21 @@ export type TabbedFormRoute = {
   autoFocus?: boolean;
 } & RouteWithModalSupport;
 
-export type SearchRoute = RouteWithModalSupport & {
+export type SearchResultRoute = RouteWithModalSupport & {
   route: 'search';
-  subroute: 'form' | 'case-results' | 'contact-results';
+  casesPage: number;
+  contactsPage: number;
+  subroute: 'case-results' | 'contact-results';
   action?: 'select-case';
 };
+
+export type SearchRoute =
+  | (RouteWithModalSupport & {
+      route: 'search';
+      subroute: 'form';
+      action?: 'select-case';
+    })
+  | SearchResultRoute;
 
 export const NewCaseSectionSubroutes = {
   Note: 'note',

@@ -25,9 +25,9 @@ export function flexChat(page: Page) {
     //Chatting
     chatMessageArea: taskCanvas.locator('div.Twilio-MessagingCanvas'),
     anyChatInput: taskCanvas.locator(
-      "//textarea[@id='messageInputArea' or @data-test='message-input']",
+      "//textarea[@id='messageInputArea' or @data-testid='message-input']",
     ),
-    twilioChatInput: taskCanvas.locator('textarea[data-test="message-input"]'),
+    twilioChatInput: taskCanvas.locator('textarea[data-testid="message-input"]'),
     aseloChatInput: taskCanvas.locator('textarea#messageInputArea'),
     chatInput: (type: string) =>
       type == 'twilio' ? selectors.twilioChatInput : selectors.aseloChatInput,
