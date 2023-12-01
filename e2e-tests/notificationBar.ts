@@ -20,7 +20,7 @@ import { saveDownloadAsArtifact } from './artifacts';
 
 export const notificationBar = (page: Page) => {
   const selectors = {
-    notification: page.locator("//div[@data-test='notification-container']"),
+    notification: page.locator("//div[@data-testid='notification-container']"),
     notificationDismissButton: (notificationLocator: Locator) =>
       notificationLocator.locator('//button[@aria-label="Close notification"]'),
     notificationDownloadButton: (notificationLocator: Locator) =>
@@ -28,7 +28,7 @@ export const notificationBar = (page: Page) => {
         '//button[@aria-label="DegradedNotificationDownloadReportAction  task"]',
       ),
     notificationMessage: (notificationLocator: Locator) =>
-      notificationLocator.locator("//div[@data-test='notification-message']"),
+      notificationLocator.locator("//div[@data-testid='notification-message']"),
   };
 
   return {
