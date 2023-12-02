@@ -17,6 +17,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { useLocation, useHistory } from 'react-router-dom';
 import { Template } from '@twilio/flex-ui';
 
 import { useIdentifierByIdentifier, useProfileProperty } from '../../../states/profile/hooks';
@@ -54,6 +55,17 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) =>
   const { identifier } = useIdentifierByIdentifier({ identifierIdentifier, shouldAutoload: true });
   const profileId = identifier?.profiles?.[0]?.id;
 
+  const location = useLocation();
+  const history = useHistory();
+
+  console.log('>>>', { location, history });
+
+  const handleClickViewRecords = async () => {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set('activeModal', `profile/${profileId}`);
+    history.push({ search: searchParams.toString() });
+  };
+
   // Ugh. The previous contacts count is off by one because we immediately create a contact when a task is created.
   // contacts should really have a status so we can filter out the "active" contact on the db side.
   const contactsCountState = useProfileProperty(profileId, 'contactsCount') || 0;
@@ -77,10 +89,6 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) =>
   // We immediately create a contact when a task is created, so we don't want to show the banner
   const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
   if (!shouldDisplayBanner) return null;
-
-  const handleClickViewRecords = async () => {
-    openProfileModal(profileId);
-  };
 
   return (
     <div>

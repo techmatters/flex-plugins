@@ -17,6 +17,7 @@
 /* eslint-disable react/prop-types */
 import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { Redirect, Route, Switch, useLocation, useHistory } from 'react-router-dom';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import CallTypeButtons from './callTypeButtons';
@@ -44,41 +45,43 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact }) => {
-  if (!routing) return null;
-  const { route } = routing;
+  const location = useLocation();
+  const history = useHistory();
 
-  const routes = [
-    {
-      shouldHandleRoute: () => isProfileRoute(routing),
-      renderComponent: () => <ProfileRouter task={task} />,
-    },
-    // TODO: move hrm form search into it's own component and use it here so all routes are in one place
-    {
-      shouldHandleRoute: () => ['tabbed-forms', 'search', 'contact', 'case'].includes(route),
-      renderComponent: () => (
-        <TabbedForms
-          task={task}
-          contactId={savedContact?.id}
-          csamClcReportEnabled={featureFlags.enable_csam_clc_report}
-          csamReportEnabled={featureFlags.enable_csam_report}
-        />
-      ),
-    },
-    {
-      shouldHandleRoute: () => ['csam-report'].includes(route),
-      renderComponent: () => (
-        <CSAMReport
-          api={newContactCSAMApi(savedContact.id, task.taskSid, (routing as CSAMReportRoute).previousRoute)}
-        />
-      ),
-    },
-    {
-      shouldHandleRoute: () => ['select-call-type'].includes(route),
-      renderComponent: () => <CallTypeButtons task={task} />,
-    },
-  ];
+  console.log('>>>HrmForm', { location, history });
 
-  return routes.find(r => r.shouldHandleRoute())?.renderComponent() || null;
+  if (/profile\/.~$/.test(location.pathname)) {
+    return <ProfileRouter task={task} />;
+  }
+
+  // @ts-ignore
+  const taskSid = task.sid || task.taskSid;
+  const routeBase = `/agent-desktop/${taskSid}`;
+  return (
+    <Switch>
+      <Route path={`${routeBase}/select-call-type`} render={() => <CallTypeButtons task={task} />} />
+      <Route
+        path={`${routeBase}/csam-report`}
+        render={() => (
+          <CSAMReport
+            api={newContactCSAMApi(savedContact.id, task.taskSid, (routing as CSAMReportRoute).previousRoute)}
+          />
+        )}
+      />
+      <Route
+        path={`${routeBase}/tabbed-forms`}
+        render={() => (
+          <TabbedForms
+            task={task}
+            contactId={savedContact?.id}
+            csamClcReportEnabled={featureFlags.enable_csam_clc_report}
+            csamReportEnabled={featureFlags.enable_csam_report}
+          />
+        )}
+      />
+      <Redirect from="*" to={`${routeBase}/select-call-type`} />
+    </Switch>
+  );
 };
 
 HrmForm.displayName = 'HrmForm';

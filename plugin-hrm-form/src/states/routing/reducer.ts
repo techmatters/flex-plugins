@@ -43,9 +43,8 @@ export const newTaskEntry = {
 };
 
 export const initialState: RoutingState = {
-  tasks: {
-    [standaloneTaskSid]: [{ route: 'case-list', subroute: 'case-list' }],
-  },
+  tasks: {},
+  rTasks: {},
   isAddingOfflineContact: false,
 };
 

@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { Actions } from '@twilio/flex-ui';
 
 import { AppRoutes, CHANGE_ROUTE, ChangeRouteMode, CLOSE_MODAL, GO_BACK, OPEN_MODAL, RoutingActionType } from './types';
 
@@ -21,31 +22,47 @@ export const changeRoute = (
   routing: AppRoutes,
   taskId: string,
   mode: ChangeRouteMode = ChangeRouteMode.Push,
-): RoutingActionType => ({
-  type: CHANGE_ROUTE,
-  routing,
-  taskId,
-  mode,
-});
+): RoutingActionType => {
+  Actions.invokeAction('HistoryPush', { pathname: `/${routing.route}` });
+  console.log('>>>changeRoute', { pathname: routing.route });
 
-export const newOpenModalAction = (routing: AppRoutes, taskId: string): RoutingActionType => ({
-  type: OPEN_MODAL,
-  routing,
-  taskId,
-});
+  return {
+    type: CHANGE_ROUTE,
+    routing,
+    taskId,
+    mode,
+  };
+};
+
+export const newOpenModalAction = (routing: AppRoutes, taskId: string): RoutingActionType => {
+  // Actions.invokeAction('HistoryPush', { pathname: routing.route });
+  return {
+    type: OPEN_MODAL,
+    routing,
+    taskId,
+  };
+};
 
 /**
  * Close modal action
  * @param taskId
  * @param topRoute - if this is specified, all modals on top the lowest modal with this route (or the base route, if it matches) will be closed, otherwise just the top modal will be closed
  */
-export const newCloseModalAction = (taskId: string, topRoute?: AppRoutes['route']): RoutingActionType => ({
-  type: CLOSE_MODAL,
-  taskId,
-  topRoute,
-});
+export const newCloseModalAction = (taskId: string, topRoute?: AppRoutes['route']): RoutingActionType => {
+  Actions.invokeAction('HistoryGoBack');
 
-export const newGoBackAction = (taskId: string): RoutingActionType => ({
-  type: GO_BACK,
-  taskId,
-});
+  return {
+    type: CLOSE_MODAL,
+    taskId,
+    topRoute,
+  };
+};
+
+export const newGoBackAction = (taskId: string): RoutingActionType => {
+  Actions.invokeAction('HistoryGoBack');
+
+  return {
+    type: GO_BACK,
+    taskId,
+  };
+};

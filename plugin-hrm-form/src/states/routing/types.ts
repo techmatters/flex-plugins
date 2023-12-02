@@ -13,6 +13,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { LocationDescriptorObject } from 'history';
+
 import { ContactRawJson, Profile, ProfileSection } from '../../types/types';
 
 // Action types
@@ -263,9 +265,18 @@ type CloseModalAction = {
 };
 
 export type RoutingActionType = ChangeRouteAction | GoBackAction | OpenModalAction | CloseModalAction;
+
+export type RTaskEntry = {
+  basePath: string;
+  current: Partial<LocationDescriptorObject>;
+};
+
 export type RoutingState = {
   tasks: {
     [taskId: string]: AppRoutes[];
   };
   isAddingOfflineContact: boolean;
+  rTasks: {
+    [taskId: string]: RTaskEntry;
+  };
 };
