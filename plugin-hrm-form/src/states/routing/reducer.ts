@@ -23,6 +23,8 @@ import {
   ChangeRouteMode,
   CLOSE_MODAL,
   GO_BACK,
+  HISTORY_INIT,
+  HISTORY_PUSH,
   isRouteWithModalSupport,
   OPEN_MODAL,
   RoutingActionType,
@@ -46,6 +48,11 @@ export const initialState: RoutingState = {
   tasks: {},
   rTasks: {},
   isAddingOfflineContact: false,
+};
+
+const newRTaskEntry = {
+  basePath: undefined,
+  current: undefined,
 };
 
 const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingAction): RoutingState => {
@@ -210,32 +217,27 @@ export function reduce(
   action: RoutingActionType | RemoveContactStateAction | ContactUpdatingAction,
 ): RoutingState {
   switch (action.type) {
-    // @ts-ignore
-    case 'HistoryInit':
+    case HISTORY_INIT:
       console.log('>>>HistoryInit', { action });
       return {
         ...state,
         rTasks: {
           ...state.rTasks,
-          // @ts-ignore
           [action.payload.taskSid]: {
-            // @ts-ignore
             basePath: action.payload.basePath,
-            // @ts-ignore
             current: action.payload.current,
           },
         },
       };
     // @ts-ignore
-    case 'HistoryChange':
+    case HISTORY_PUSH:
       console.log('>>>HistoryChange', { action });
       return {
         ...state,
         rTasks: {
+          ...newRTaskEntry,
           ...state.rTasks,
-          // @ts-ignore
           [action.payload.taskSid]: {
-            // @ts-ignore
             current: action.payload.location,
           },
         },

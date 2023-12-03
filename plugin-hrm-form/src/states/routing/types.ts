@@ -22,6 +22,8 @@ export const CHANGE_ROUTE = 'routing/change-route';
 export const OPEN_MODAL = 'routing/open-modal';
 export const CLOSE_MODAL = 'routing/close-modal';
 export const GO_BACK = 'routing/go-back';
+export const HISTORY_INIT = 'routing/history-init';
+export const HISTORY_PUSH = 'routing/history-push';
 
 export type TabbedFormSubroutes =
   | 'contactlessTask'
@@ -264,7 +266,30 @@ type CloseModalAction = {
   topRoute?: AppRoutes['route'];
 };
 
-export type RoutingActionType = ChangeRouteAction | GoBackAction | OpenModalAction | CloseModalAction;
+type HistoryInitAction = {
+  type: typeof HISTORY_INIT;
+  payload: {
+    taskSid: string;
+    basePath: string;
+    current: Partial<LocationDescriptorObject>;
+  };
+};
+
+type HistoryPushAction = {
+  type: typeof HISTORY_PUSH;
+  payload: {
+    taskSid: string;
+    location: Partial<LocationDescriptorObject>;
+  };
+};
+
+export type RoutingActionType =
+  | ChangeRouteAction
+  | GoBackAction
+  | OpenModalAction
+  | CloseModalAction
+  | HistoryPushAction
+  | HistoryInitAction;
 
 export type RTaskEntry = {
   basePath: string;

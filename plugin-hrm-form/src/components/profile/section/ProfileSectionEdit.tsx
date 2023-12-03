@@ -19,7 +19,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import startCase from 'lodash/startCase';
 
 import { ProfileSection } from '../../../types/types';
-import NavigableContainer from '../../NavigableContainer';
+import NavigableContainer from '../../router/NavigableContainer';
 import {
   Flex,
   StyledNextStepButton,
@@ -31,29 +31,24 @@ import {
 } from '../../../styles/HrmStyles';
 import { useEditProfileSection } from '../../../states/profile/hooks/useProfileSection';
 import useProfileSectionTypes from '../../../states/configuration/hooks/useProfileSectionTypes';
+import { useModalRouting } from '../../../states/routing/hooks';
 import { ProfileCommonProps } from '../types';
-import * as RoutingActions from '../../../states/routing/actions';
 
 type OwnProps = ProfileCommonProps & {
   sectionType: ProfileSection['sectionType'];
 };
 
-const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
-  return {
-    closeModal: () => dispatch(RoutingActions.newCloseModalAction(task.taskSid)),
-  };
-};
+type Props = OwnProps;
 
-const connector = connect(null, mapDispatchToProps);
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props) => {
+const ProfileSectionEdit = ({ task, profileId, sectionType }: Props) => {
   const { section, createProfileSection, updateProfileSection } = useEditProfileSection({ profileId, sectionType });
   const sectionTypesForms = useProfileSectionTypes();
   const sectionTypesForm = sectionTypesForms.find(sectionTypesForm => sectionTypesForm.name === sectionType);
 
   const [content, setContent] = useState<string>(section?.content || '');
   const sectionId: ProfileSection['id'] = section?.id;
+
+  const { closeModal } = useModalRouting(task);
 
   const handleEdit = () => {
     if (!sectionId) {
@@ -91,4 +86,4 @@ const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props)
   );
 };
 
-export default connector(ProfileSectionEdit);
+export default ProfileSectionEdit;

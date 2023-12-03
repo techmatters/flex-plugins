@@ -17,7 +17,6 @@
 /* eslint-disable react/prop-types */
 import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { Route } from 'react-router-dom';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import Switch from './router/Switch';
@@ -35,7 +34,7 @@ import { createContactAsyncAction, submitContactFormAsyncAction } from '../state
 import { newContact } from '../states/contacts/contactState';
 import { getHrmConfig } from '../hrmConfig';
 import { getCurrentTopmostRouteForTask } from '../states/routing/getRoute';
-import useRouting from '../states/routing/hooks/useRouting';
+import { useRouting } from '../states/routing/hooks';
 import type { CSAMReportRoute } from '../states/routing/types';
 
 type OwnProps = {
@@ -52,34 +51,40 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact })
 
   if (!basePath || !taskSid) return null;
 
-  if (isProfileRoute(routingHook)) {
-    return <ProfileRouter task={task} />;
-  }
+  const modals = [
+    {
+      shouldRender: () => isProfileRoute(routingHook),
+      component: <ProfileRouter task={task} />,
+    },
+  ];
 
-  return (
-    <Switch task={task}>
-      <Route path={`${basePath}/`} render={() => <CallTypeButtons task={task} />} />
-      <Route
-        path={`${basePath}/csam-report`}
-        render={() => (
-          <CSAMReport
-            api={newContactCSAMApi(savedContact.id, task.taskSid, (routing as CSAMReportRoute).previousRoute)}
-          />
-        )}
-      />
-      <Route
-        path={`${basePath}/tabbed-forms`}
-        render={() => (
-          <TabbedForms
-            task={task}
-            contactId={savedContact?.id}
-            csamClcReportEnabled={featureFlags.enable_csam_clc_report}
-            csamReportEnabled={featureFlags.enable_csam_report}
-          />
-        )}
-      />
-    </Switch>
-  );
+  const routes = [
+    {
+      path: '/',
+      render: () => <CallTypeButtons task={task} />,
+    },
+    {
+      path: '/csam-report',
+      render: () => (
+        <CSAMReport
+          api={newContactCSAMApi(savedContact.id, task.taskSid, (routing as CSAMReportRoute).previousRoute)}
+        />
+      ),
+    },
+    {
+      path: '/tabbed-forms',
+      render: () => (
+        <TabbedForms
+          task={task}
+          contactId={savedContact?.id}
+          csamClcReportEnabled={featureFlags.enable_csam_clc_report}
+          csamReportEnabled={featureFlags.enable_csam_report}
+        />
+      ),
+    },
+  ];
+
+  return <Switch task={task} modals={modals} routes={routes} />;
 };
 
 HrmForm.displayName = 'HrmForm';

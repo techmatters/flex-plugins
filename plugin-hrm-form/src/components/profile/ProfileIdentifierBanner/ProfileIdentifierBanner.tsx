@@ -23,7 +23,7 @@ import { YellowBanner } from '../../../styles/previousContactsBanner';
 import { Bold } from '../../../styles/HrmStyles';
 import { StyledLink } from '../../../styles/search';
 import { ChannelTypes, channelTypes } from '../../../states/DomainConstants';
-import useRouting from '../../../states/routing/hooks/useRouting';
+import { useRouting } from '../../../states/routing/hooks';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
 import { RouterTask, isTwilioTask } from '../../../types/types';

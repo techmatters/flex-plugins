@@ -15,11 +15,9 @@
  */
 
 import React from 'react';
-import { LocationDescriptorObject } from 'history';
 
 import { RouterTask } from '../../types/types';
-import { AppRoutes, isRouteWithContext } from '../../states/routing/types';
-import useRouting from '../../states/routing/hooks/useRouting';
+import { useModalRouting, useRouting } from '../../states/routing/hooks';
 import ProfileCaseDetails from './ProfileCaseDetails';
 import ProfileContactDetails from './ProfileContactDetails';
 import ProfileEdit from './ProfileEdit';
@@ -33,46 +31,46 @@ type OwnProps = {
 type Props = OwnProps;
 
 type ProfileRouteConfig = {
-  subroutes: string[];
+  modals: string[];
   renderComponent: (props: Props) => JSX.Element;
 };
 
 const PROFILE_ROUTES: Record<string, ProfileRouteConfig> = {
   profile: {
-    subroutes: ['profile'],
+    modals: ['profile'],
     renderComponent: (props: ProfileCommonProps) => <ProfileTabs {...props} />,
   },
   profileContact: {
-    subroutes: ['contact'],
+    modals: ['profileContact'],
     renderComponent: (props: ProfileCommonProps) => <ProfileContactDetails {...props} />,
   },
   profileCase: {
-    subroutes: ['case'],
+    modals: ['profileCase'],
     renderComponent: (props: ProfileCommonProps) => <ProfileCaseDetails {...props} />,
   },
   profileEdit: {
-    subroutes: ['profileEdit'],
+    modals: ['profileEdit'],
     renderComponent: (props: ProfileCommonProps) => <ProfileEdit {...props} />,
   },
   profileSectionEdit: {
-    subroutes: ['profileSectionEdit'],
+    modals: ['profileSectionEdit'],
     renderComponent: (props: ProfileCommonProps & { sectionType: string }) => (
       <ProfileSectionEdit {...props} sectionType={props.sectionType} />
     ),
   },
 };
 
-export const isProfileRoute = ({ activeModal }: ReturnType<typeof useRouting>) => activeModal === 'profile';
+const MODALS = Object.values(PROFILE_ROUTES).flatMap(({ modals }) => modals);
+
+export const isProfileRoute = ({ activeModal }: ReturnType<typeof useRouting>) =>
+  activeModal && MODALS.includes(activeModal);
 
 const ProfileRouter: React.FC<Props> = props => {
-  const { activeModalParams } = useRouting(props.task);
-  const subroute = activeModalParams?.subroute || 'profile';
-
-  console.log('>>>ProfileRouter', { activeModalParams, subroute });
+  const { activeModal, activeModalParams } = useModalRouting(props.task);
 
   return (
     Object.values(PROFILE_ROUTES)
-      .find(({ subroutes }) => subroutes?.includes(subroute))
+      .find(({ modals }) => modals?.includes(activeModal))
       ?.renderComponent({ ...props, ...activeModalParams }) || null
   );
 };

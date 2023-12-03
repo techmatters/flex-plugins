@@ -15,19 +15,13 @@
  */
 
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
 import { Tab as TwilioTab, Template } from '@twilio/flex-ui';
 
-import { Box } from '../../styles/HrmStyles';
 import { useProfile } from '../../states/profile/hooks';
+import { useModalRouting } from '../../states/routing/hooks';
 import * as RoutingTypes from '../../states/routing/types';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import * as RoutingActions from '../../states/routing/actions';
-import { namespace } from '../../states/storeNamespaces';
-import { RootState } from '../../states';
-import { ProfileRoute } from '../../states/routing/types';
 import { StyledTabs } from '../../styles/search'; // just stealing from search until we have a centralized tab style
-import NavigableContainer from '../NavigableContainer';
+import NavigableContainer from '../router/NavigableContainer';
 import ProfileCases from './ProfileCases';
 import ProfileContacts from './ProfileContacts';
 import ProfileDetails from './ProfileDetails';
@@ -35,32 +29,18 @@ import { ProfileCommonProps } from './types';
 
 type OwnProps = ProfileCommonProps;
 
-const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
-  const routingState = state[namespace].routing;
-  const route = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const currentTab = (route as ProfileRoute).subroute || 'details';
+type Props = OwnProps;
 
-  return {
-    currentTab,
-  };
-};
-
-const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
-  changeProfileTab: (id, subroute) =>
-    dispatch(
-      RoutingActions.changeRoute(
-        { route: 'profile', id, subroute },
-        task.taskSid,
-        RoutingTypes.ChangeRouteMode.Replace,
-      ),
-    ),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfileTab }) => {
+const ProfileTabs: React.FC<Props> = ({ profileId, task }) => {
+  const { activeModalParams, updateModalParams } = useModalRouting(task);
   const { profile: { contactsCount, casesCount } = {} } = useProfile({ profileId, shouldAutoload: true });
+
+  const currentTab = activeModalParams?.tab || 'details';
+
+  const changeProfileTab = (profileId: ProfileCommonProps['profileId'], tab: RoutingTypes.ProfileTabs) => {
+    updateModalParams({ profileId, tab });
+  };
+
   const tabs = [
     {
       label: 'Client',
@@ -107,4 +87,4 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
   );
 };
 
-export default connector(ProfileTabs);
+export default ProfileTabs;

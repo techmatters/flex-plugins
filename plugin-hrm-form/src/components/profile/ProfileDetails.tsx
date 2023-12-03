@@ -15,13 +15,12 @@
  */
 
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
 import { Icon, Template } from '@twilio/flex-ui';
 import { ProfileSection } from 'hrm-form-definitions';
 
 import { Box, HiddenText, Row, HorizontalLine } from '../../styles/HrmStyles';
-import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
+import { useModalRouting } from '../../states/routing/hooks';
 import useProfileSectionTypes from '../../states/configuration/hooks/useProfileSectionTypes';
 import { ProfileCommonProps } from './types';
 import {
@@ -36,18 +35,7 @@ import ProfileSectionView from './section/ProfileSectionView';
 
 type OwnProps = ProfileCommonProps;
 
-const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
-  const { profileId, task } = ownProps;
-  const taskId = task.taskSid;
-  return {
-    openSectionEditModal: (type: string) => {
-      dispatch(newOpenModalAction({ route: 'profileSectionEdit', type, id: profileId }, taskId));
-    },
-  };
-};
-
-const connector = connect(null, mapDispatchToProps);
-type Props = OwnProps & ConnectedProps<typeof connector>;
+type Props = OwnProps;
 
 type Section = {
   titleCode?: string;
@@ -57,8 +45,13 @@ type Section = {
   inInlineEditMode?: boolean;
 };
 
-const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal }) => {
+const ProfileDetails: React.FC<Props> = ({ profileId, task }) => {
   const { profile } = useProfile({ profileId });
+  const { openModal } = useModalRouting(task);
+
+  const openSectionEditModal = (sectionType: string) => {
+    openModal('profileSectionEdit', { profileId, sectionType });
+  };
 
   const overviewSections: Section[] = [
     {
@@ -81,7 +74,7 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
   const sectionSections: Section[] = sectionTypesForms.map(sectionType => ({
     title: `${sectionType.name}`,
     renderComponent: () => <ProfileSectionView profileId={profileId} task={task} sectionType={sectionType} />,
-    handleEdit: () => openSectionEditModal(sectionType.label),
+    handleEdit: () => openSectionEditModal(sectionType.name),
   }));
 
   const renderEditButton = section => {
@@ -137,4 +130,4 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
   );
 };
 
-export default connector(ProfileDetails);
+export default ProfileDetails;

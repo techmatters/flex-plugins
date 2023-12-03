@@ -17,37 +17,33 @@ import React, { useEffect } from 'react';
 import { Router as BaseRouter, RouteComponentProps } from 'react-router-dom';
 import { withRouter } from '@twilio/flex-ui';
 
-import useRouting from '../../states/routing/hooks/useRouting';
+import { useRouterInit, useRoutingState, GetBasePath } from '../../states/routing/hooks';
 import { RouterTask } from '../../types/types';
 
 type OwnProps = {
   children: React.ReactNode;
   task: RouterTask;
-  getBasePath: (params: { task?: RouterTask; taskSid?: string }) => string;
+  getBasePath: GetBasePath; // a function that returns the base path for the router based on the task
 };
 
 type Props = OwnProps & RouteComponentProps;
 
 const RouterInit: React.FC<OwnProps> = ({ task, getBasePath }) => {
-  const { taskSid, initRouting } = useRouting(task);
-  const basePath = getBasePath({ task, taskSid });
-
-  console.log('>>>RouterInit', { basePath });
-
-  useEffect(() => {
-    if (!taskSid) return;
-
-    console.log('>>>RouterInit.useEffect', { taskSid, basePath });
-    initRouting(basePath);
-  }, [taskSid, basePath, initRouting]);
+  // This hook must be called as a child of our new router component
+  // so that all of our underlying react-router-dom hooks have access
+  // to the router context
+  useRouterInit(task, getBasePath);
 
   return null;
 };
 
 const RenderChildren = ({ task, children }: OwnProps) => {
-  const { taskSid } = useRouting(task);
+  // This hook must be called as a child of our new router component
+  // so that all of our underlying react-router-dom hooks have access
+  // to the router context
+  const { current } = useRoutingState(task);
 
-  if (!taskSid) return null;
+  if (!current) return null;
 
   return <>{children}</>;
 };
@@ -55,6 +51,7 @@ const RenderChildren = ({ task, children }: OwnProps) => {
 const Router: React.FC<Props> = (props: Props) => {
   const { children, history } = props;
 
+  // We hack our own router here but tie into the twilio router history object
   return (
     <BaseRouter history={history}>
       <RouterInit {...props} />
@@ -63,5 +60,6 @@ const Router: React.FC<Props> = (props: Props) => {
   );
 };
 
-// @ts-ignore
+// withRouter gives us access to the twilio react-router history object
+// way down here in the component tree
 export default withRouter(Router);

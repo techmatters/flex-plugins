@@ -13,36 +13,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { useSelector } from 'react-redux';
 
-import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
-import { LocationDescriptorObject } from 'history';
-import isEqual from 'lodash/isEqual';
-import omit from 'lodash/omit';
-
-import { RootState } from '../..';
 import { RouterTask } from '../../../types/types';
+import { RootState } from '../..';
 import { selectRoutingStateByTaskId } from '../selectors';
-import useModalRouting from './useModalRouting';
-import useRoutingHistory from './useRoutingHistory';
-import useRoutingLocation, { standardizeLocation } from './useRoutingLocation';
-import useRoutingState from './useRoutingState';
 
-export const useRouting = (task: RouterTask) => {
-  const routingLocation = useRoutingLocation();
+export const getTaskSidFromTask = (task: RouterTask): string => {
+  // @ts-ignore
+  return task?.sid || task?.taskSid;
+};
 
-  const { basePath, current, taskSid } = useRoutingState(task);
-  const routingHistory = useRoutingHistory();
+export const useRoutingState = (task: RouterTask) => {
+  /**
+   * The only reason we even need routing state in redux is so that we can
+   * take over where the twilio router leaves off and restore the current
+   * tasks path when the user navigates away from the task and then back.
+   *
+   * All configuration should be part of the location or in individual state somewhere.
+   */
+  const taskSid = getTaskSidFromTask(task);
+  const { basePath, current } = useSelector((state: RootState) => selectRoutingStateByTaskId(state, taskSid)) || {};
 
   return {
     basePath,
     current,
     taskSid,
-    ...routingHistory,
-    ...routingLocation,
-    ...useModalRouting(task),
   };
 };
 
-export default useRouting;
+export default useRoutingState;

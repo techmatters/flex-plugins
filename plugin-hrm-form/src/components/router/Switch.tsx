@@ -13,30 +13,50 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import React, { useCallback } from 'react';
-import { Redirect, Switch as BaseSwitch, SwitchProps } from 'react-router-dom';
+import React from 'react';
+import { Redirect, Route, Switch as BaseSwitch, SwitchProps } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 
-import useRouting from '../../states/routing/hooks/useRouting';
+import { useRouting } from '../../states/routing/hooks';
 import { RouterTask } from '../../types/types';
+
+type ModalEntry = {
+  shouldRender: () => boolean;
+  component: JSX.Element;
+};
+
+type RouteEntry = {
+  path: string;
+  render: () => JSX.Element;
+};
 
 type Props = SwitchProps & {
   task: RouterTask;
+  routes: RouteEntry[];
+  modals?: ModalEntry[];
 };
 
 const Switch: React.FC<Props> = props => {
-  const { children, task } = props;
-  const { current, location } = useRouting(task);
-
-  const shouldRedirectToCurrent = useCallback(() => {
-    return current && !isEqual(location, current);
-  }, [current, location]);
+  const { children, modals, routes, task } = props;
+  const { basePath, current, location } = useRouting(task);
 
   if (!current) return null;
 
+  const shouldRedirectToCurrent = current && !isEqual(location, current);
+
+  const currentModal = modals.find(modal => modal.shouldRender());
+  if (currentModal) return currentModal.component;
+
+  const renderRoutes = () => {
+    return routes.map(route => {
+      return <Route key={route.path} path={`${basePath}${route.path}`} render={route.render} />;
+    });
+  };
+
   return (
     <BaseSwitch {...props}>
-      {shouldRedirectToCurrent() && <Redirect to={current} />}
+      {shouldRedirectToCurrent && <Redirect to={current} />}
+      {renderRoutes()}
       {children}
     </BaseSwitch>
   );
