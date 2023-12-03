@@ -20,3 +20,9 @@ export type ProfileCommonProps = {
   profileId: Profile['id'];
   task: RouterTask;
 };
+
+export type ProfileModalParams = {
+  profileId: Profile['id'];
+  subroute?: string;
+  sectionType?: string;
+};

@@ -16,8 +16,6 @@
 
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
-import { useLocation, useHistory } from 'react-router-dom';
 import { Template } from '@twilio/flex-ui';
 
 import { useIdentifierByIdentifier, useProfileProperty } from '../../../states/profile/hooks';
@@ -25,45 +23,27 @@ import { YellowBanner } from '../../../styles/previousContactsBanner';
 import { Bold } from '../../../styles/HrmStyles';
 import { StyledLink } from '../../../styles/search';
 import { ChannelTypes, channelTypes } from '../../../states/DomainConstants';
-import { newOpenModalAction } from '../../../states/routing/actions';
+import useRouting from '../../../states/routing/hooks/useRouting';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
-import { CustomITask } from '../../../types/types';
+import { RouterTask, isTwilioTask } from '../../../types/types';
+import { ProfileModalParams } from '../types';
 
 type OwnProps = {
-  task: CustomITask;
+  task: RouterTask;
   enableClientProfiles?: boolean;
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-  const { task } = ownProps;
-  const taskId = task.taskSid;
+type Props = OwnProps;
 
-  return {
-    openProfileModal: id => {
-      dispatch(newOpenModalAction({ route: 'profile', id }, taskId));
-    },
-  };
-};
-
-const connector = connect(null, mapDispatchToProps);
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) => {
+const ProfileIdentifierBanner: React.FC<Props> = ({ task }) => {
+  const { openModal } = useRouting(task);
   const formattedIdentifier = getFormattedNumberFromTask(task);
   const identifierIdentifier = getNumberFromTask(task);
   const { identifier } = useIdentifierByIdentifier({ identifierIdentifier, shouldAutoload: true });
   const profileId = identifier?.profiles?.[0]?.id;
-
-  const location = useLocation();
-  const history = useHistory();
-
-  console.log('>>>', { location, history });
-
   const handleClickViewRecords = async () => {
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set('activeModal', `profile/${profileId}`);
-    history.push({ search: searchParams.toString() });
+    openModal<ProfileModalParams>('profile', { profileId });
   };
 
   // Ugh. The previous contacts count is off by one because we immediately create a contact when a task is created.
@@ -88,7 +68,7 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) =>
 
   // We immediately create a contact when a task is created, so we don't want to show the banner
   const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
-  if (!shouldDisplayBanner) return null;
+  if (!isTwilioTask(task) || !shouldDisplayBanner) return null;
 
   return (
     <div>
@@ -139,4 +119,4 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) =>
 };
 
 ProfileIdentifierBanner.displayName = 'PreviousContactsBanner';
-export default connector(ProfileIdentifierBanner);
+export default ProfileIdentifierBanner;

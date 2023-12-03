@@ -132,7 +132,7 @@ const Search: React.FC<Props> = ({
   renderMockDialog.displayName = 'MockDialog';
 
   const renderSearchPages = () => {
-    if (isProfileRoute(routing)) return <ProfileRouter task={task} />;
+    // if (isProfileRoute(routing)) return <ProfileRouter task={task} />;
 
     switch (routing.route) {
       case 'search': {

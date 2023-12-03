@@ -17,9 +17,10 @@
 /* eslint-disable react/prop-types */
 import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { Redirect, Route, Switch, useLocation, useHistory } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
+import Switch from './router/Switch';
 import CallTypeButtons from './callTypeButtons';
 import ProfileRouter, { isProfileRoute } from './profile/ProfileRouter';
 import TabbedForms from './tabbedForms';
@@ -34,6 +35,7 @@ import { createContactAsyncAction, submitContactFormAsyncAction } from '../state
 import { newContact } from '../states/contacts/contactState';
 import { getHrmConfig } from '../hrmConfig';
 import { getCurrentTopmostRouteForTask } from '../states/routing/getRoute';
+import useRouting from '../states/routing/hooks/useRouting';
 import type { CSAMReportRoute } from '../states/routing/types';
 
 type OwnProps = {
@@ -45,23 +47,20 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact }) => {
-  const location = useLocation();
-  const history = useHistory();
+  const routingHook = useRouting(task);
+  const { basePath, taskSid } = routingHook;
 
-  console.log('>>>HrmForm', { location, history });
+  if (!basePath || !taskSid) return null;
 
-  if (/profile\/.~$/.test(location.pathname)) {
+  if (isProfileRoute(routingHook)) {
     return <ProfileRouter task={task} />;
   }
 
-  // @ts-ignore
-  const taskSid = task.sid || task.taskSid;
-  const routeBase = `/agent-desktop/${taskSid}`;
   return (
-    <Switch>
-      <Route path={`${routeBase}/select-call-type`} render={() => <CallTypeButtons task={task} />} />
+    <Switch task={task}>
+      <Route path={`${basePath}/`} render={() => <CallTypeButtons task={task} />} />
       <Route
-        path={`${routeBase}/csam-report`}
+        path={`${basePath}/csam-report`}
         render={() => (
           <CSAMReport
             api={newContactCSAMApi(savedContact.id, task.taskSid, (routing as CSAMReportRoute).previousRoute)}
@@ -69,7 +68,7 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact })
         )}
       />
       <Route
-        path={`${routeBase}/tabbed-forms`}
+        path={`${basePath}/tabbed-forms`}
         render={() => (
           <TabbedForms
             task={task}
@@ -79,7 +78,6 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact })
           />
         )}
       />
-      <Redirect from="*" to={`${routeBase}/select-call-type`} />
     </Switch>
   );
 };

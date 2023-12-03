@@ -13,43 +13,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import React, { useEffect } from 'react';
-import { Router as BaseRouter, RouteComponentProps } from 'react-router-dom';
-import { withRouter } from '@twilio/flex-ui';
+import React, { useCallback } from 'react';
+import { Redirect, Switch as BaseSwitch, SwitchProps } from 'react-router-dom';
+import isEqual from 'lodash/isEqual';
 
 import useRouting from '../../states/routing/hooks/useRouting';
 import { RouterTask } from '../../types/types';
 
-type OwnProps = {
-  children: React.ReactNode;
+type Props = SwitchProps & {
   task: RouterTask;
-  getBasePath: (taskSid: string) => string;
 };
 
-type Props = OwnProps & RouteComponentProps;
+const Switch: React.FC<Props> = props => {
+  const { children, task } = props;
+  const { current, location } = useRouting(task);
 
-const RouterInit: React.FC<OwnProps> = ({ task, getBasePath }) => {
-  // @ts-ignore
-  const taskSid = task.sid || task.taskSid;
-  const { initRouting } = useRouting(taskSid);
-  const basePath = getBasePath(taskSid);
+  const shouldRedirectToCurrent = useCallback(() => {
+    return current && !isEqual(location, current);
+  }, [current, location]);
 
-  useEffect(() => {
-    initRouting(basePath);
-  }, [basePath, initRouting]);
+  if (!current) return null;
 
-  return null;
-};
-
-const Router: React.FC<Props> = (props: Props) => {
-  const { children, history } = props;
   return (
-    <BaseRouter history={history}>
-      <RouterInit {...props} />
+    <BaseSwitch {...props}>
+      {shouldRedirectToCurrent() && <Redirect to={current} />}
       {children}
-    </BaseRouter>
+    </BaseSwitch>
   );
 };
 
-// @ts-ignore
-export default withRouter(Router);
+export default Switch;

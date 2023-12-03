@@ -17,7 +17,7 @@ import { ITask } from '@twilio/flex-ui';
 
 import { channelTypes } from '../states/DomainConstants';
 import { getHrmConfig } from '../hrmConfig';
-import { CustomITask, isTwilioTask } from '../types/types';
+import { RouterTask, isTwilioTask } from '../types/types';
 
 const getContactValueFromWebchat = task => {
   const { preEngagementData } = task.attributes;
@@ -25,7 +25,7 @@ const getContactValueFromWebchat = task => {
   return preEngagementData.contactIdentifier;
 };
 
-export const getNumberFromTask = (task: CustomITask) => {
+export const getNumberFromTask = (task: RouterTask) => {
   if (!isTwilioTask(task)) return null;
   if (task.channelType === channelTypes.facebook) {
     return task.defaultFrom.replace('messenger:', '');
@@ -41,7 +41,8 @@ export const getNumberFromTask = (task: CustomITask) => {
  *
  * @param {ITask | CustomITask} task
  */
-export const getFormattedNumberFromTask = (task: CustomITask) => {
+export const getFormattedNumberFromTask = (task: RouterTask) => {
+  if (!isTwilioTask(task)) return null;
   return task.channelType === channelTypes.twitter ? `@${task.attributes.twitterUserHandle}` : getNumberFromTask(task);
 };
 

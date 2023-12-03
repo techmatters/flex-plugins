@@ -20,7 +20,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { TaskHelper } from '@twilio/flex-ui';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import Router from './common/Router';
+import Router from './router/Router';
 import HrmForm from './HrmForm';
 import FormNotEditable from './FormNotEditable';
 import { RootState } from '../states';
@@ -136,7 +136,7 @@ const TaskView: React.FC<Props> = props => {
   const featureFlags = getAseloFeatureFlags();
   const isFormLocked = !hasTaskControl(task);
   return (
-    <Router task={task} getBasePath={(taskSid: string) => `/agent-desktop/${taskSid}`}>
+    <Router task={task} getBasePath={({ taskSid }) => `/agent-desktop/${taskSid}`}>
       <Flex flexDirection="column" style={{ pointerEvents: isFormLocked ? 'none' : 'auto', height: '100%' }}>
         {featureFlags.enable_previous_contacts && !isModalOpen && <ProfileIdentifierBanner task={task} />}
 

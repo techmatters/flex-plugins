@@ -15,91 +15,66 @@
  */
 
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { LocationDescriptorObject } from 'history';
 
 import { RouterTask } from '../../types/types';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import { AppRoutes, ProfileRoute, ProfileSectionEditRoute, isRouteWithContext } from '../../states/routing/types';
-import { namespace } from '../../states/storeNamespaces';
-import { RootState } from '../../states';
+import { AppRoutes, isRouteWithContext } from '../../states/routing/types';
+import useRouting from '../../states/routing/hooks/useRouting';
 import ProfileCaseDetails from './ProfileCaseDetails';
 import ProfileContactDetails from './ProfileContactDetails';
 import ProfileEdit from './ProfileEdit';
 import ProfileTabs from './ProfileTabs';
 import ProfileSectionEdit from './section/ProfileSectionEdit';
+import { ProfileCommonProps } from './types';
 
 type OwnProps = {
   task: RouterTask;
 };
-
-const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
-  const routingState = state[namespace].routing;
-  const route = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const profileId = (route as ProfileRoute).id;
-  const currentRouteStack = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const currentRoute = currentRouteStack?.route.toString() as AppRoutes['route'];
-  const sectionType = (currentRouteStack as ProfileSectionEditRoute)?.type;
-
-  return {
-    profileId,
-    currentRoute,
-    sectionType,
-  };
-};
-
-const connector = connect(mapStateToProps);
-type Props = OwnProps & ConnectedProps<typeof connector>;
+type Props = OwnProps;
 
 type ProfileRouteConfig = {
-  routes?: AppRoutes['route'][];
-  contextRoutes?: AppRoutes['route'][];
+  subroutes: string[];
   renderComponent: (props: Props) => JSX.Element;
 };
 
 const PROFILE_ROUTES: Record<string, ProfileRouteConfig> = {
   profile: {
-    routes: ['profile'],
-    renderComponent: (props: Props) => <ProfileTabs {...props} />,
+    subroutes: ['profile'],
+    renderComponent: (props: ProfileCommonProps) => <ProfileTabs {...props} />,
   },
   profileContact: {
-    contextRoutes: ['contact'],
-    renderComponent: (props: Props) => <ProfileContactDetails {...props} />,
+    subroutes: ['contact'],
+    renderComponent: (props: ProfileCommonProps) => <ProfileContactDetails {...props} />,
   },
   profileCase: {
-    contextRoutes: ['case'],
-    renderComponent: (props: Props) => <ProfileCaseDetails {...props} />,
+    subroutes: ['case'],
+    renderComponent: (props: ProfileCommonProps) => <ProfileCaseDetails {...props} />,
   },
   profileEdit: {
-    routes: ['profileEdit'],
-    renderComponent: (props: Props) => <ProfileEdit {...props} />,
+    subroutes: ['profileEdit'],
+    renderComponent: (props: ProfileCommonProps) => <ProfileEdit {...props} />,
   },
   profileSectionEdit: {
-    routes: ['profileSectionEdit'],
-    renderComponent: (props: Props) => <ProfileSectionEdit {...props} sectionType={props.sectionType} />,
+    subroutes: ['profileSectionEdit'],
+    renderComponent: (props: ProfileCommonProps & { sectionType: string }) => (
+      <ProfileSectionEdit {...props} sectionType={props.sectionType} />
+    ),
   },
 };
 
-const rootProfileRoutes = Object.values(PROFILE_ROUTES).flatMap(({ routes }) => routes);
-const contextProfileRoutes = Object.values(PROFILE_ROUTES).flatMap(({ contextRoutes }) => contextRoutes);
-
-export const isProfileRoute = (routing: AppRoutes) => {
-  if (rootProfileRoutes.includes(routing.route)) return true;
-
-  return (
-    isRouteWithContext(routing) &&
-    routing.context === 'profile' &&
-    contextProfileRoutes.includes(routing.route as AppRoutes['route'])
-  );
-};
+export const isProfileRoute = ({ activeModal }: ReturnType<typeof useRouting>) => activeModal === 'profile';
 
 const ProfileRouter: React.FC<Props> = props => {
-  const { currentRoute } = props;
+  const { activeModalParams } = useRouting(props.task);
+  const subroute = activeModalParams?.subroute || 'profile';
+
+  console.log('>>>ProfileRouter', { activeModalParams, subroute });
 
   return (
     Object.values(PROFILE_ROUTES)
-      .find(({ routes, contextRoutes }) => routes?.includes(currentRoute) || contextRoutes?.includes(currentRoute))
-      ?.renderComponent(props) || null
+      .find(({ subroutes }) => subroutes?.includes(subroute))
+      ?.renderComponent({ ...props, ...activeModalParams }) || null
   );
 };
 
-export default connector(ProfileRouter);
+export default ProfileRouter;

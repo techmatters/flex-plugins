@@ -210,6 +210,36 @@ export function reduce(
   action: RoutingActionType | RemoveContactStateAction | ContactUpdatingAction,
 ): RoutingState {
   switch (action.type) {
+    // @ts-ignore
+    case 'HistoryInit':
+      console.log('>>>HistoryInit', { action });
+      return {
+        ...state,
+        rTasks: {
+          ...state.rTasks,
+          // @ts-ignore
+          [action.payload.taskSid]: {
+            // @ts-ignore
+            basePath: action.payload.basePath,
+            // @ts-ignore
+            current: action.payload.current,
+          },
+        },
+      };
+    // @ts-ignore
+    case 'HistoryChange':
+      console.log('>>>HistoryChange', { action });
+      return {
+        ...state,
+        rTasks: {
+          ...state.rTasks,
+          // @ts-ignore
+          [action.payload.taskSid]: {
+            // @ts-ignore
+            current: action.payload.location,
+          },
+        },
+      };
     case CREATE_CONTACT_ACTION_FULFILLED:
     case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED:
     case UPDATE_CONTACT_ACTION_FULFILLED:
