@@ -24,6 +24,12 @@ export const useRoutingHistory = () => {
   const {
     location: { pathname },
   } = useRoutingLocation();
+
+  /**
+   * Currently we hack into the history object to get access to the push and replace methods.
+   * This could also probably be accomplished in a more "flex native" way using the history
+   * actions: https://www.twilio.com/docs/flex/developer/ui/custom-views-and-routes#actions-for-navigation-and-routing
+   */
   const { push: pushRoute, replace: replaceRoute } = history;
 
   // Core routing (not modal) should all be hierarchical, so we can just go back to the previous route by removing the last path segment

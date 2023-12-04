@@ -17,6 +17,7 @@
 /* eslint-disable react/prop-types */
 import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { RouteProps } from 'react-router-dom';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import Switch from './router/Switch';
@@ -48,6 +49,7 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact }) => {
   const routingHook = useRouting(task);
   const { basePath, taskSid } = routingHook;
+  const { route } = routing;
 
   if (!basePath || !taskSid) return null;
 
@@ -58,22 +60,17 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact })
     },
   ];
 
-  const routes = [
+  const routes: RouteProps[] = [
     {
       path: '/',
       render: () => <CallTypeButtons task={task} />,
     },
+  ];
+
+  const oldRoutes = [
     {
-      path: '/csam-report',
-      render: () => (
-        <CSAMReport
-          api={newContactCSAMApi(savedContact.id, task.taskSid, (routing as CSAMReportRoute).previousRoute)}
-        />
-      ),
-    },
-    {
-      path: '/tabbed-forms',
-      render: () => (
+      routes: ['tabbed-forms', 'search', 'contact', 'case'],
+      renderComponent: () => (
         <TabbedForms
           task={task}
           contactId={savedContact?.id}
@@ -82,9 +79,19 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact })
         />
       ),
     },
+    {
+      routes: ['csam-report'],
+      renderComponent: () => (
+        <CSAMReport
+          api={newContactCSAMApi(savedContact.id, task.taskSid, (routing as CSAMReportRoute).previousRoute)}
+        />
+      ),
+    },
   ];
 
-  return <Switch task={task} modals={modals} routes={routes} />;
+  const renderOldRoute = oldRoutes.find(r => r.routes?.includes(route))?.renderComponent || null;
+
+  return renderOldRoute ? renderOldRoute() : <Switch task={task} modals={modals} routes={routes} />;
 };
 
 HrmForm.displayName = 'HrmForm';

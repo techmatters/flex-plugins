@@ -51,7 +51,17 @@ const RenderChildren = ({ task, children }: OwnProps) => {
 const Router: React.FC<Props> = (props: Props) => {
   const { children, history } = props;
 
-  // We hack our own router here but tie into the twilio router history object
+  /**
+   * We hack our own react-router here but tie into the twilio router history object
+   *
+   * This depends on react-router v5.x and wil break if twilio upgrades to v6
+   * which doesn't support nested routers. There are, obviously, other more
+   * "flex-ui native" ways to handle this but this is the simplest way to get
+   * at the hooks/context we need to make this work without a lot of bespoke
+   * code. If flex ever upgrades to v6, they will also hopefully export the
+   * hooks we need to make the rest of this system work instead of just the ancient
+   * withRouter HOC.
+   */
   return (
     <BaseRouter history={history}>
       <RouterInit {...props} />

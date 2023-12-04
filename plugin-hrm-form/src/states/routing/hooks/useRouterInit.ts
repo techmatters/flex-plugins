@@ -16,7 +16,6 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import isEqual from 'lodash/isEqual';
 
 import { RouterTask } from '../../../types/types';
 import { HISTORY_INIT, HISTORY_PUSH } from '../types';

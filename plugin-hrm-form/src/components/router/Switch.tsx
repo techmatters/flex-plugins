@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import React from 'react';
-import { Redirect, Route, Switch as BaseSwitch, SwitchProps } from 'react-router-dom';
+import { Redirect, Route, Switch as BaseSwitch, SwitchProps, RouteProps } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 
 import { useRouting } from '../../states/routing/hooks';
@@ -25,14 +25,9 @@ type ModalEntry = {
   component: JSX.Element;
 };
 
-type RouteEntry = {
-  path: string;
-  render: () => JSX.Element;
-};
-
 type Props = SwitchProps & {
   task: RouterTask;
-  routes: RouteEntry[];
+  routes: RouteProps[];
   modals?: ModalEntry[];
 };
 
@@ -42,6 +37,17 @@ const Switch: React.FC<Props> = props => {
 
   if (!current) return null;
 
+  /**
+   * This redirector is a workaround so that we can update the task link when
+   * a user navigates back to a task to maintain our multi-tasking functionality.
+   *
+   * This could be accomplished in a more "flex-ui native" way by tying into the
+   * afterAcceptTask listener and updating the task link there based on the state
+   * using flex actions.
+   *
+   * That would, obviously not work for the standalone search page or any other
+   * places where we are faking a task.
+   */
   const shouldRedirectToCurrent = current && !isEqual(location, current);
 
   const currentModal = modals.find(modal => modal.shouldRender());
@@ -49,7 +55,7 @@ const Switch: React.FC<Props> = props => {
 
   const renderRoutes = () => {
     return routes.map(route => {
-      return <Route key={route.path} path={`${basePath}${route.path}`} render={route.render} />;
+      return <Route key={route.path.toString()} path={`${basePath}${route.path}`} render={route.render} />;
     });
   };
 

@@ -14,25 +14,27 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
 
 import { getPermissionsForContact, PermissionActions } from '../../permissions';
 import { Contact } from '../../types/types';
 import ContactPreview from '../search/ContactPreview';
 import * as ProfileTypes from '../../states/profile/types';
-import * as RoutingActions from '../../states/routing/actions';
+import { useModalRouting } from '../../states/routing/hooks';
 import ProfileRelationshipList from './ProfileRelationshipList';
 import { ProfileCommonProps } from './types';
 
 type OwnProps = ProfileCommonProps;
 
-type Props = OwnProps & ConnectedProps<typeof connector>;
+type Props = OwnProps;
 
-const ProfileContacts: React.FC<Props> = ({ profileId, viewContactDetails }) => {
+const ProfileContacts: React.FC<Props> = ({ profileId, task }) => {
+  const { openModal } = useModalRouting(task);
   const renderItem = (contact: Contact) => {
     const { can } = getPermissionsForContact(contact.twilioWorkerId);
     const handleViewDetails = () => {
-      if (can(PermissionActions.VIEW_CONTACT)) viewContactDetails(contact);
+      if (!can(PermissionActions.VIEW_CONTACT)) return;
+
+      openModal('profileContact', { id: contact.id.toString() });
     };
 
     return (
@@ -49,19 +51,4 @@ const ProfileContacts: React.FC<Props> = ({ profileId, viewContactDetails }) => 
   );
 };
 
-const mapDispatchToProps = (dispatch, { task: { taskSid } }) => {
-  return {
-    viewContactDetails: ({ id }: Contact) => {
-      dispatch(
-        RoutingActions.newOpenModalAction(
-          { route: 'contact', context: 'profile', subroute: 'view', id: id.toString() },
-          taskSid,
-        ),
-      );
-    },
-  };
-};
-
-const connector = connect(null, mapDispatchToProps);
-
-export default connector(ProfileContacts);
+export default ProfileContacts;

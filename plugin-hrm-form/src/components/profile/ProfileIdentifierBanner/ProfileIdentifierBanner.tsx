@@ -23,7 +23,7 @@ import { YellowBanner } from '../../../styles/previousContactsBanner';
 import { Bold } from '../../../styles/HrmStyles';
 import { StyledLink } from '../../../styles/search';
 import { ChannelTypes, channelTypes } from '../../../states/DomainConstants';
-import { useRouting } from '../../../states/routing/hooks';
+import { useModalRouting } from '../../../states/routing/hooks';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
 import { RouterTask, isTwilioTask } from '../../../types/types';
@@ -37,7 +37,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const ProfileIdentifierBanner: React.FC<Props> = ({ task }) => {
-  const { openModal } = useRouting(task);
+  const { activeModal, openModal } = useModalRouting(task);
   const formattedIdentifier = getFormattedNumberFromTask(task);
   const identifierIdentifier = getNumberFromTask(task);
   const { identifier } = useIdentifierByIdentifier({ identifierIdentifier, shouldAutoload: true });
@@ -68,7 +68,7 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task }) => {
 
   // We immediately create a contact when a task is created, so we don't want to show the banner
   const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
-  if (!isTwilioTask(task) || !shouldDisplayBanner) return null;
+  if (activeModal || !isTwilioTask(task) || !shouldDisplayBanner) return null;
 
   return (
     <div>
