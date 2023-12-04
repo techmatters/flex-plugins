@@ -32,9 +32,9 @@ import { conferencingBase, namespace } from '../../../states/storeNamespaces';
 type Props = TaskContextProps;
 
 const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
-  const { isDialogOpen, callStatus, phoneNumber } = useSelector(
-    (state: RootState) => state[namespace][conferencingBase].tasks[task.taskSid],
-  );
+  const taskFromRedux = useSelector((state: RootState) => state[namespace][conferencingBase].tasks[task.taskSid]);
+
+  const { isDialogOpen, callStatus, phoneNumber } = taskFromRedux ?? {};
   const dispatch = useDispatch();
 
   const setIsDialogOpen = (isOpen: boolean) => dispatch(setIsDialogOpenAction(task.taskSid, isOpen));
