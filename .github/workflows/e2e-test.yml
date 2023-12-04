@@ -48,6 +48,13 @@ jobs:
         working-directory: ./plugin-hrm-form
         shell: bash
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
       - name: Set Twilio account SID
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
@@ -55,9 +62,10 @@ jobs:
           env_variable_name: "E2E_DEV_ACCOUNT_SID"
       
       - name: Set Twilio Auth Token
-        run: |
-          E2E_DEV_AUTH_TOKEN=$(aws ssm get-parameter --name "/development/twilio/${E2E_DEV_ACCOUNT_SID}/auth_token" --query "Parameter.Value" --output text)
-          echo "E2E_DEV_AUTH_TOKEN=$E2E_DEV_AUTH_TOKEN" >> $GITHUB_ENV
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "/development/twilio/${{env.E2E_DEV_ACCOUNT_SID}}/auth_token"
+          env_variable_name: "E2E_DEV_AUTH_TOKEN"
 
       - name: Create secret.js
         run: |

@@ -75,9 +75,10 @@ jobs:
           ssm_parameter: "/${{inputs.environment_code}}/twilio/${{inputs.helpline_code}}/account_sid"
           env_variable_name: "TWILIO_ACCOUNT_SID"
       - name: Set Twilio Auth Token
-        run: |
-          TWILIO_AUTH_TOKEN=$(aws ssm get-parameter --name "/development/twilio/${TWILIO_ACCOUNT_SID}/auth_token" --query "Parameter.Value" --output text)
-          echo "TWILIO_AUTH_TOKEN=$TWILIO_AUTH_TOKEN" >> $GITHUB_ENV
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "/${{inputs.environment_code}}/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
+          env_variable_name: "TWILIO_AUTH_TOKEN"
 
       # Call main-action to compile and deploy
       - name: Executing main-action
