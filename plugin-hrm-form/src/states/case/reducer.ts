@@ -18,28 +18,11 @@ import { omit } from 'lodash';
 
 import { CaseActionType, CaseState } from './types';
 import { DefinitionVersion, REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
-import {
-  CaseWorkingCopyActionType,
-  INIT_CASE_SUMMARY_WORKING_COPY,
-  INIT_EXISTING_CASE_SECTION_WORKING_COPY,
-  INIT_NEW_CASE_SECTION_WORKING_COPY,
-  initialiseCaseSectionWorkingCopyReducer,
-  initialiseCaseSummaryWorkingCopyReducer,
-  initialiseNewCaseSectionWorkingCopyReducer,
-  REMOVE_CASE_SECTION_WORKING_COPY,
-  REMOVE_CASE_SUMMARY_WORKING_COPY,
-  removeCaseSectionWorkingCopyReducer,
-  removeCaseSummaryWorkingCopyReducer,
-  UPDATE_CASE_SECTION_WORKING_COPY,
-  UPDATE_CASE_SUMMARY_WORKING_COPY,
-  updateCaseSectionWorkingCopyReducer,
-  updateCaseSummaryWorkingCopyReducer,
-} from './caseWorkingCopy';
+import { CaseWorkingCopyActionType, caseWorkingCopyReducer } from './caseWorkingCopy';
 import { HrmState, RootState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { saveCaseReducer } from './saveCase';
 import { FETCH_CASE_LIST_FULFILLED_ACTION, FetchCaseListFulfilledAction } from '../caseList/listContent';
-import { namespace } from '../storeNamespaces';
 import {
   ContactUpdatingAction,
   CREATE_CONTACT_ACTION_FULFILLED,
@@ -135,35 +118,35 @@ const loadCaseIntoState = (
   };
 };
 
-const contactUpdatingReducer = (
-  state: CaseState,
-  { configuration }: RootState[typeof namespace],
-  action: ContactUpdatingAction,
-): CaseState => {
+const contactUpdatingReducer = (hrmState: HrmState, action: ContactUpdatingAction): HrmState => {
   if (
     action.type === CREATE_CONTACT_ACTION_FULFILLED ||
     action.type === LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED
   ) {
+    const { configuration, connectedCase } = hrmState;
     const { contact, contactCase } = action.payload;
     if (contactCase) {
       const caseDefinitionVersion = configuration.definitionVersions[contactCase.info.definitionVersion];
-      const references = state.cases[contactCase.id]?.references ?? new Set<string>();
+      const references = connectedCase.cases[contactCase.id]?.references ?? new Set<string>();
       references.add(`contact-${contact.id}`);
       return {
-        ...state,
-        cases: {
-          ...state.cases,
-          [contactCase.id]: {
-            connectedCase: contactCase,
-            caseWorkingCopy: { sections: {} },
-            availableStatusTransitions: getAvailableCaseStatusTransitions(contactCase, caseDefinitionVersion),
-            references,
+        ...hrmState,
+        connectedCase: {
+          ...connectedCase,
+          cases: {
+            ...connectedCase.cases,
+            [contactCase.id]: {
+              connectedCase: contactCase,
+              caseWorkingCopy: { sections: {} },
+              availableStatusTransitions: getAvailableCaseStatusTransitions(contactCase, caseDefinitionVersion),
+              references,
+            },
           },
         },
       };
     }
   }
-  return state;
+  return hrmState;
 };
 
 const loadCaseListIntoState = (
@@ -187,7 +170,6 @@ const loadCaseListIntoState = (
 // eslint-disable-next-line import/no-unused-modules
 export function reduce(
   inputRootState: HrmState,
-  inputState = initialState,
   action:
     | CaseActionType
     | CaseWorkingCopyActionType
@@ -195,41 +177,41 @@ export function reduce(
     | ContactUpdatingAction
     | SearchCasesSuccessAction
     | FetchCaseListFulfilledAction,
-): CaseState {
-  const rootState = boundSaveCaseReducer(inputRootState, action as any);
-  const { connectedCase: state, configuration } = rootState;
+): HrmState {
+  let hrmState = boundSaveCaseReducer(inputRootState, action as any);
+  hrmState = {
+    ...hrmState,
+    connectedCase: caseWorkingCopyReducer(
+      hrmState.connectedCase,
+      hrmState.configuration,
+      action as CaseWorkingCopyActionType,
+    ),
+  };
+  const { connectedCase: state, configuration } = hrmState;
   switch (action.type) {
     case CREATE_CONTACT_ACTION_FULFILLED:
     case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED:
-      return contactUpdatingReducer(state, rootState, action);
+      return contactUpdatingReducer(hrmState, action);
 
     case REMOVE_CONTACT_STATE: {
       const { contactId, taskId } = action;
       const contactReferenceRemoved = dereferenceAllCases(state, `contact-${contactId}`);
-      return dereferenceAllCases(contactReferenceRemoved, `task-${taskId}`);
+      return { ...hrmState, connectedCase: dereferenceAllCases(contactReferenceRemoved, `task-${taskId}`) };
     }
-    case UPDATE_CASE_SECTION_WORKING_COPY:
-      return updateCaseSectionWorkingCopyReducer(state, rootState.configuration, action);
-    case INIT_EXISTING_CASE_SECTION_WORKING_COPY:
-      return initialiseCaseSectionWorkingCopyReducer(state, action);
-    case INIT_NEW_CASE_SECTION_WORKING_COPY:
-      return initialiseNewCaseSectionWorkingCopyReducer(state, action);
-    case REMOVE_CASE_SECTION_WORKING_COPY:
-      return removeCaseSectionWorkingCopyReducer(state, action);
-    case INIT_CASE_SUMMARY_WORKING_COPY:
-      return initialiseCaseSummaryWorkingCopyReducer(state, action);
-    case UPDATE_CASE_SUMMARY_WORKING_COPY:
-      return updateCaseSummaryWorkingCopyReducer(state, action);
-    case REMOVE_CASE_SUMMARY_WORKING_COPY:
-      return removeCaseSummaryWorkingCopyReducer(state, action);
     case FETCH_CASE_LIST_FULFILLED_ACTION:
-      return loadCaseListIntoState(state, configuration, action.payload.result.cases, `case-list`);
+      return {
+        ...hrmState,
+        connectedCase: loadCaseListIntoState(state, configuration, action.payload.result.cases, `case-list`),
+      };
     case SEARCH_CASES_SUCCESS: {
       const { searchResult, taskId } = action as SearchCasesSuccessAction;
       const referenceId = `search-${taskId}`;
-      return loadCaseListIntoState(state, configuration, searchResult?.cases, referenceId);
+      return {
+        ...hrmState,
+        connectedCase: loadCaseListIntoState(state, configuration, searchResult?.cases, referenceId),
+      };
     }
     default:
-      return state;
+      return hrmState;
   }
 }

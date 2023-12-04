@@ -236,7 +236,7 @@ export function reduce(
       const previousContacts = action.dispatchedFromPreviousContacts
         ? { ...task.previousContacts, cases: action.searchResult }
         : task.previousContacts;
-
+      const { cases, ...searchResult } = action.searchResult;
       return {
         ...state,
         tasks: {
@@ -244,8 +244,8 @@ export function reduce(
           [action.taskId]: {
             ...task,
             searchCasesResult: {
-              ...action.searchResult,
-              ids: action.searchResult.cases.map(c => c.id),
+              ...searchResult,
+              ids: cases.map(c => c.id),
             },
             previousContacts,
             isRequestingCases: false,

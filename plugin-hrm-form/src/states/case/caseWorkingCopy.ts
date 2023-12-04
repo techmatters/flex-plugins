@@ -23,7 +23,7 @@ import { ConfigurationState } from '../configuration/reducer';
 import { transformValues } from '../contacts/contactDetailsAdapter';
 
 // Update a section of a case's working copy
-export const UPDATE_CASE_SECTION_WORKING_COPY = 'UPDATE_CASE_SECTION_WORKING_COPY';
+const UPDATE_CASE_SECTION_WORKING_COPY = 'UPDATE_CASE_SECTION_WORKING_COPY';
 
 type UpdateCaseSectionWorkingCopyAction = {
   type: typeof UPDATE_CASE_SECTION_WORKING_COPY;
@@ -46,7 +46,7 @@ export const updateCaseSectionWorkingCopy = (
   id,
 });
 
-export const updateCaseSectionWorkingCopyReducer = (
+const updateCaseSectionWorkingCopyReducer = (
   state: CaseState,
   configState: ConfigurationState,
   { sectionItem, caseId, id, api }: UpdateCaseSectionWorkingCopyAction,
@@ -71,7 +71,7 @@ export const updateCaseSectionWorkingCopyReducer = (
 };
 
 // Initialise a new section of a case's working copy based on the saved data, or blank if adding a new section
-export const INIT_EXISTING_CASE_SECTION_WORKING_COPY = 'INIT_EXISTING_CASE_SECTION_WORKING_COPY';
+const INIT_EXISTING_CASE_SECTION_WORKING_COPY = 'INIT_EXISTING_CASE_SECTION_WORKING_COPY';
 
 type InitialiseExistingCaseSectionWorkingCopyAction = {
   type: typeof INIT_EXISTING_CASE_SECTION_WORKING_COPY;
@@ -91,7 +91,7 @@ export const initialiseExistingCaseSectionWorkingCopy = (
   id,
 });
 
-export const initialiseCaseSectionWorkingCopyReducer = (
+const initialiseCaseSectionWorkingCopyReducer = (
   state: CaseState,
   action: InitialiseExistingCaseSectionWorkingCopyAction,
 ): CaseState => {
@@ -110,7 +110,7 @@ export const initialiseCaseSectionWorkingCopyReducer = (
   };
 };
 
-export const INIT_NEW_CASE_SECTION_WORKING_COPY = 'INIT_NEW_CASE_SECTION_WORKING_COPY';
+const INIT_NEW_CASE_SECTION_WORKING_COPY = 'INIT_NEW_CASE_SECTION_WORKING_COPY';
 
 type InitialiseNewCaseSectionWorkingCopyAction = {
   type: typeof INIT_NEW_CASE_SECTION_WORKING_COPY;
@@ -130,7 +130,7 @@ export const initialiseNewCaseSectionWorkingCopy = (
   form,
 });
 
-export const initialiseNewCaseSectionWorkingCopyReducer = (
+const initialiseNewCaseSectionWorkingCopyReducer = (
   state: CaseState,
   action: InitialiseNewCaseSectionWorkingCopyAction,
 ): CaseState => {
@@ -148,7 +148,7 @@ export const initialiseNewCaseSectionWorkingCopyReducer = (
 };
 
 // Remove a section's working copy
-export const REMOVE_CASE_SECTION_WORKING_COPY = 'REMOVE_CASE_SECTION_WORKING_COPY';
+const REMOVE_CASE_SECTION_WORKING_COPY = 'REMOVE_CASE_SECTION_WORKING_COPY';
 
 type RemoveCaseSectionWorkingCopyAction = {
   type: typeof REMOVE_CASE_SECTION_WORKING_COPY;
@@ -168,7 +168,7 @@ export const removeCaseSectionWorkingCopy = (
   id,
 });
 
-export const removeCaseSectionWorkingCopyReducer = (
+const removeCaseSectionWorkingCopyReducer = (
   state: CaseState,
   action: RemoveCaseSectionWorkingCopyAction,
 ): CaseState => {
@@ -189,7 +189,7 @@ export const removeCaseSectionWorkingCopyReducer = (
 };
 
 // Initialise a new section of a case's working copy based on the saved data, or blank if adding a new section
-export const INIT_CASE_SUMMARY_WORKING_COPY = 'INIT_CASE_SUMMARY_WORKING_COPY';
+const INIT_CASE_SUMMARY_WORKING_COPY = 'INIT_CASE_SUMMARY_WORKING_COPY';
 
 type InitialiseCaseSummaryWorkingCopyAction = {
   type: typeof INIT_CASE_SUMMARY_WORKING_COPY;
@@ -197,16 +197,7 @@ type InitialiseCaseSummaryWorkingCopyAction = {
   defaults: CaseSummaryWorkingCopy;
 };
 
-export const initialiseCaseSummaryWorkingCopy = (
-  caseId: string,
-  defaults: CaseSummaryWorkingCopy,
-): InitialiseCaseSummaryWorkingCopyAction => ({
-  type: INIT_CASE_SUMMARY_WORKING_COPY,
-  caseId,
-  defaults,
-});
-
-export const initialiseCaseSummaryWorkingCopyReducer = (
+const initialiseCaseSummaryWorkingCopyReducer = (
   state: CaseState,
   action: InitialiseCaseSummaryWorkingCopyAction,
 ): CaseState => {
@@ -234,7 +225,7 @@ export const initialiseCaseSummaryWorkingCopyReducer = (
 };
 
 // Update a section of a case's working copy
-export const UPDATE_CASE_SUMMARY_WORKING_COPY = 'UPDATE_CASE_SUMMARY_WORKING_COPY';
+const UPDATE_CASE_SUMMARY_WORKING_COPY = 'UPDATE_CASE_SUMMARY_WORKING_COPY';
 
 type UpdateCaseSummaryWorkingCopyAction = {
   type: typeof UPDATE_CASE_SUMMARY_WORKING_COPY;
@@ -251,7 +242,7 @@ export const updateCaseSummaryWorkingCopy = (
   caseSummary,
 });
 
-export const updateCaseSummaryWorkingCopyReducer = (
+const updateCaseSummaryWorkingCopyReducer = (
   state: CaseState,
   action: UpdateCaseSummaryWorkingCopyAction,
 ): CaseState => {
@@ -272,7 +263,7 @@ export const updateCaseSummaryWorkingCopyReducer = (
 };
 
 // Remove the summary working copy
-export const REMOVE_CASE_SUMMARY_WORKING_COPY = 'REMOVE_CASE_SUMMARY_WORKING_COPY';
+const REMOVE_CASE_SUMMARY_WORKING_COPY = 'REMOVE_CASE_SUMMARY_WORKING_COPY';
 
 type RemoveCaseSummaryWorkingCopyAction = {
   type: typeof REMOVE_CASE_SUMMARY_WORKING_COPY;
@@ -284,7 +275,7 @@ export const removeCaseSummaryWorkingCopy = (caseId: string): RemoveCaseSummaryW
   caseId,
 });
 
-export const removeCaseSummaryWorkingCopyReducer = (
+const removeCaseSummaryWorkingCopyReducer = (
   state: CaseState,
   action: RemoveCaseSummaryWorkingCopyAction,
 ): CaseState => {
@@ -315,3 +306,28 @@ export type CaseWorkingCopyActionType =
   | InitialiseCaseSummaryWorkingCopyAction
   | UpdateCaseSummaryWorkingCopyAction
   | RemoveCaseSummaryWorkingCopyAction;
+
+export const caseWorkingCopyReducer = (
+  caseState: CaseState,
+  configurationState: ConfigurationState,
+  action: CaseWorkingCopyActionType,
+): CaseState => {
+  switch (action.type) {
+    case UPDATE_CASE_SECTION_WORKING_COPY:
+      return updateCaseSectionWorkingCopyReducer(caseState, configurationState, action);
+    case INIT_EXISTING_CASE_SECTION_WORKING_COPY:
+      return initialiseCaseSectionWorkingCopyReducer(caseState, action);
+    case INIT_NEW_CASE_SECTION_WORKING_COPY:
+      return initialiseNewCaseSectionWorkingCopyReducer(caseState, action);
+    case REMOVE_CASE_SECTION_WORKING_COPY:
+      return removeCaseSectionWorkingCopyReducer(caseState, action);
+    case INIT_CASE_SUMMARY_WORKING_COPY:
+      return initialiseCaseSummaryWorkingCopyReducer(caseState, action);
+    case UPDATE_CASE_SUMMARY_WORKING_COPY:
+      return updateCaseSummaryWorkingCopyReducer(caseState, action);
+    case REMOVE_CASE_SUMMARY_WORKING_COPY:
+      return removeCaseSummaryWorkingCopyReducer(caseState, action);
+    default:
+      return caseState;
+  }
+};
