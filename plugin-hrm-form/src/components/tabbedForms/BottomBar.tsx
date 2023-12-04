@@ -26,7 +26,7 @@ import {
   BottomButtonBar,
   StyledNextStepButton,
   AddedToCaseButton,
-  SaveAndEndContactButton,
+  SaveAndEndButton,
 } from '../../styles/HrmStyles';
 import * as RoutingActions from '../../states/routing/actions';
 import { completeTask } from '../../services/formSubmissionHelpers';
@@ -44,7 +44,7 @@ import { connectedCaseBase, contactFormsBase, namespace } from '../../states/sto
 import { AppRoutes } from '../../states/routing/types';
 import AddCaseButton from './AddCaseButton';
 import asyncDispatch from '../../states/asyncDispatch';
-import selectIsContactCreating from '../../states/contacts/selectIsContactCreating';
+import { SuccessReportIcon } from '../../styles/CSAMReport';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => Promise<void>) => () => void;
@@ -88,7 +88,7 @@ const BottomBar: React.FC<
     try {
       await saveUpdates();
       await createCaseAsyncAction(contact, workerSid, definitionVersion);
-      openModal({ route: 'case', subroute: 'home' });
+      openModal({ route: 'case', subroute: 'home', isCreating: true });
     } catch (error) {
       recordBackendError('Open New Case', error);
       window.alert(strings['Error-Backend']);
@@ -126,6 +126,9 @@ const BottomBar: React.FC<
         return (
           <Box marginRight="25px">
             <AddedToCaseButton>
+              <Box marginRight="10px">
+                <SuccessReportIcon style={{ verticalAlign: 'middle' }} />
+              </Box>
               <Template code="BottomBar-AddedToCase" />
             </AddedToCaseButton>
           </Box>
@@ -182,7 +185,7 @@ const BottomBar: React.FC<
         <>
           {featureFlags.enable_case_management && renderCaseButton()}
 
-          <SaveAndEndContactButton
+          <SaveAndEndButton
             roundCorners={true}
             onClick={handleSubmitIfValid(handleSubmit)}
             disabled={contactIsSaving}
@@ -193,7 +196,7 @@ const BottomBar: React.FC<
               <Template code="BottomBar-SaveAndEnd" />
             </span>
             {contactIsSaving ? <CircularProgress size={12} style={{ position: 'absolute' }} /> : null}
-          </SaveAndEndContactButton>
+          </SaveAndEndButton>
         </>
       )}
     </BottomButtonBar>
@@ -205,7 +208,7 @@ BottomBar.displayName = 'BottomBar';
 const mapStateToProps = (state: RootState, { contactId, task }: BottomBarProps) => {
   const { draftContact, savedContact, metadata } = state[namespace][contactFormsBase].existingContacts[contactId] ?? {};
   const caseForm = state[namespace][connectedCaseBase].tasks[task.taskSid]?.connectedCase || {};
-  const contactIsSaving = selectIsContactCreating(state, contactId);
+  const contactIsSaving = metadata?.saveStatus === 'saving';
   return {
     contact: getUnsavedContact(savedContact, draftContact),
     metadata,

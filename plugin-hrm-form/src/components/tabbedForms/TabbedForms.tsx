@@ -72,9 +72,9 @@ import ViewContact from '../case/ViewContact';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
-import { selectCaseMergingBanners } from '../caseMergingBanners/state';
 import { getHrmConfig, getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
+import { selectCaseMergingBanners } from '../../states/case/caseBanners';
 
 // eslint-disable-next-line react/display-name
 const mapTabsComponents = (errors: any) => (t: TabbedFormSubroutes | 'search') => {
@@ -152,6 +152,7 @@ const TabbedForms: React.FC<Props> = ({
   task,
   removeIfOfflineContact,
   isCallTypeCaller,
+  contactId,
 }) => {
   const methods = useForm({
     shouldFocusError: false,
@@ -236,6 +237,8 @@ const TabbedForms: React.FC<Props> = ({
         task={task}
         currentIsCaller={savedContact?.rawJson?.callType === callTypes.caller}
         handleSelectSearchResult={onSelectSearchResult}
+        contactId={contactId}
+        saveUpdates={() => saveDraft(savedContact, draftContact)}
       />
     );
   }
@@ -360,14 +363,14 @@ const TabbedForms: React.FC<Props> = ({
           >
             {tabs}
           </StyledTabs>
+          {/* eslint-disable-next-line camelcase */}
+          {enable_case_merging && (
+            <>
+              {showConnectedToCaseBanner && <ContactAddedToCaseBanner taskId={task.taskSid} />}
+              {showRemovedFromCaseBanner && <ContactRemovedFromCaseBanner taskId={task.taskSid} />}
+            </>
+          )}
           <div style={{ height: '100%', overflow: 'hidden' }}>
-            {/* eslint-disable-next-line camelcase */}
-            {enable_case_merging && (
-              <>
-                {showConnectedToCaseBanner && <ContactAddedToCaseBanner taskId={task.taskSid} />}
-                {showRemovedFromCaseBanner && <ContactRemovedFromCaseBanner taskId={task.taskSid} />}
-              </>
-            )}
             {isOfflineContactTask(task) && (
               <TabbedFormTabContainer display={subroute === 'contactlessTask'}>
                 <ContactlessTaskTab

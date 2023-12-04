@@ -41,6 +41,8 @@ type OwnProps = {
   task: CustomITask;
   currentIsCaller?: boolean;
   handleSelectSearchResult?: (contact: Contact) => void;
+  contactId?: string;
+  saveUpdates?: () => Promise<void>;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -60,6 +62,8 @@ const Search: React.FC<Props> = ({
   form,
   routing,
   changeSearchPage,
+  contactId,
+  saveUpdates,
 }) => {
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});
@@ -151,6 +155,8 @@ const Search: React.FC<Props> = ({
                 handleSearchCases={setOffsetAndHandleSearchCases}
                 toggleNonDataContacts={toggleNonDataContacts}
                 toggleClosedCases={toggleClosedCases}
+                contactId={contactId}
+                saveUpdates={saveUpdates}
               />
             </NavigableContainer>
           );

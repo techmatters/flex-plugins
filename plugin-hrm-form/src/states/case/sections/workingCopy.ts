@@ -31,23 +31,28 @@ export const setWorkingCopy = (sectionName: string) => (
   if (!caseWorkingCopy.sections[sectionName]) {
     caseWorkingCopy.sections[sectionName] = { existing: {} };
   }
+  const section = caseWorkingCopy.sections[sectionName];
   if (id) {
     // Id specified so we are updating an existing section's working copy
     if (item) {
       // Overwriting
-      caseWorkingCopy.sections[sectionName].existing[id] = item;
+      section.existing[id] = item;
     } else {
       // Removing
-      delete caseWorkingCopy.sections[sectionName].existing[id];
+      delete section.existing[id];
     }
   }
   // Id not specified so we are updating a 'new', as yet unsaved section's working copy
   else if (item) {
     // Overwriting
-    caseWorkingCopy.sections[sectionName].new = item;
+    section.new = item;
   } else {
     // Removing
-    delete caseWorkingCopy.sections[sectionName].new;
+    delete section.new;
+  }
+  // Clean up empty sections
+  if (!section.new && Object.keys(section.existing).length === 0) {
+    delete caseWorkingCopy.sections[sectionName];
   }
   return caseWorkingCopy;
 };

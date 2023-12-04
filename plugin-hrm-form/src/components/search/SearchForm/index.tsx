@@ -159,7 +159,7 @@ const SearchForm: React.FC<Props> = ({
 
   return (
     <>
-      <Container data-testid="SearchForm" removePadding={true}>
+      <Container data-testid="SearchForm" formContainer={true} style={{ borderBottom: 'none' }}>
         <Row>
           <FieldText
             id="Search_FirstName"

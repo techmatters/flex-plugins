@@ -46,7 +46,6 @@ const DownloadFile: React.FC<Props> = ({ fileNameAtAws, targetObject }) => {
 
   const handleClick = async () => {
     const { docsBucket: bucket } = getHrmConfig();
-    const key = encodeURIComponent(fileNameAtAws);
 
     try {
       const { media_url: preSignedUrl } = await fetchHrmApi(
@@ -57,7 +56,7 @@ const DownloadFile: React.FC<Props> = ({ fileNameAtAws, targetObject }) => {
           fileType: 'document',
           location: {
             bucket,
-            key,
+            key: fileNameAtAws,
           },
         }),
       );
