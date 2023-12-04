@@ -26,7 +26,7 @@ import {
   BottomButtonBar,
   StyledNextStepButton,
   AddedToCaseButton,
-  SaveAndEndContactButton,
+  SaveAndEndButton,
 } from '../../styles/HrmStyles';
 import * as RoutingActions from '../../states/routing/actions';
 import { completeTask } from '../../services/formSubmissionHelpers';
@@ -186,7 +186,7 @@ const BottomBar: React.FC<
         <>
           {featureFlags.enable_case_management && renderCaseButton()}
 
-          <SaveAndEndContactButton
+          <SaveAndEndButton
             roundCorners={true}
             onClick={handleSubmitIfValid(handleSubmit)}
             disabled={contactIsSaving}
@@ -197,7 +197,7 @@ const BottomBar: React.FC<
               <Template code="BottomBar-SaveAndEnd" />
             </span>
             {contactIsSaving ? <CircularProgress size={12} style={{ position: 'absolute' }} /> : null}
-          </SaveAndEndContactButton>
+          </SaveAndEndButton>
         </>
       )}
     </BottomButtonBar>

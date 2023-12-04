@@ -42,6 +42,7 @@ import {
   StyledCount,
   SearchResultWarningContainer,
   Text,
+  NoResultTextLink,
 } from '../../../styles/search';
 import Pagination from '../../Pagination';
 import { getPermissionsForContact, getPermissionsForCase, PermissionActions } from '../../../permissions';
@@ -105,6 +106,7 @@ const SearchResults: React.FC<Props> = ({
   contact,
   saveUpdates,
   createCaseAsyncAction,
+  closeModal,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { subroute: currentResultPage, casesPage, contactsPage } = routing as SearchResultRoute;
@@ -182,6 +184,7 @@ const SearchResults: React.FC<Props> = ({
     try {
       await saveUpdates();
       await createCaseAsyncAction(contact, workerSid, definitionVersion);
+      closeModal();
       newCase();
     } catch (error) {
       recordBackendError('Open New Case', error);
@@ -251,17 +254,23 @@ const SearchResults: React.FC<Props> = ({
       </Row>
 
       <Row>
-        <Text margin="44px" decoration="underline" color="#1976D2" cursor="pointer" onClick={openSearchModal}>
+        <NoResultTextLink
+          margin="44px"
+          decoration="underline"
+          color="#1976D2"
+          cursor="pointer"
+          onClick={openSearchModal}
+        >
           <Template code="SearchResultsIndex-SearchAgainForCase" type={type.toLocaleLowerCase()} />
-        </Text>
+        </NoResultTextLink>
         {routing.action && (
           <>
             <Text>
               <Template code="SearchResultsIndex-Or" />
             </Text>
-            <Text decoration="underline" color="#1976D2" cursor="pointer" onClick={handleOpenNewCase}>
+            <NoResultTextLink decoration="underline" color="#1976D2" cursor="pointer" onClick={handleOpenNewCase}>
               <Template code="SearchResultsIndex-SaveToNewCase" />
-            </Text>
+            </NoResultTextLink>
           </>
         )}
       </Row>
@@ -448,6 +457,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
     openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, taskId)),
+    closeModal: () => dispatch(RoutingActions.newCloseModalAction(taskId)),
     createCaseAsyncAction: async (contact, workerSid: string, definitionVersion: DefinitionVersionId) => {
       // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
       // TODO: Rework error handling to be based on redux state set by the _REJECTED action

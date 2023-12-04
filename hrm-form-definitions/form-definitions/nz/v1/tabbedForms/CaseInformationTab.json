@@ -62,7 +62,7 @@
   },
   {
     "name": "howDidYouKnowAboutOurLine",
-    "label": "How did you know about us?",
+    "label": "How did the client know about us?",
     "type": "select",
     "unknownOption": "Unknown",
     "options": [

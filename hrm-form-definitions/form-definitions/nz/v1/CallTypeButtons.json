@@ -24,12 +24,6 @@
     "category": "non-data"
   },
   {
-    "name": "joke",
-    "label": "Joke",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
     "name": "hangup",
     "label": "Hang up",
     "type": "button",
@@ -38,12 +32,6 @@
   {
     "name": "wrongnumber",
     "label": "Wrong Number",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "abusive",
-    "label": "Abusive",
     "type": "button",
     "category": "non-data"
   },
