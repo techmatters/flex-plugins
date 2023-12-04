@@ -1,0 +1,65 @@
+${
+  jsonencode(
+    {
+      "description": flow_description,
+      "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "next": "SendCallToAgent",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": -10
+        }
+      }
+    },
+    {
+      "name": "SendCallToAgent",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 30,
+          "y": 180
+        },
+        "workflow": workflow_sids["master"],
+        "channel": task_channel_sids["voice"],
+        "attributes": "{ "type": "inbound", "name_old": "{{trigger.call.From}}","name":"{{trigger.call.From | replace: 'sip:', '' | split: '@' | first}}","ignoreAgent":"", "transferTargetType":"","channelType":"voice", "aseloCallId": "{{trigger.call.SipHeader_X-Aselo-Call-Id}}","aseloHostId": "{{trigger.call.SipHeader_X-Aselo-Call-Id | split: ':' | last}}"}"
+      }
+    }
+  ],
+      "initial_state": "Trigger",
+      "flags": {
+        "allow_concurrent_calls": true
+      }
+    }
+  )
+}
