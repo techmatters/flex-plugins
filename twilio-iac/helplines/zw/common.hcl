@@ -35,7 +35,7 @@ locals {
         "friendly_name"  = "Harare"
       },
       bulawayo : {
-        "target_workers" = "ac_hostname=='196.27.102.1'",
+        "target_workers" = "ac_hostname=='196.27.113.186'",
         "friendly_name"  = "Bulawayo"
       },
       survey : {
