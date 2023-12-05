@@ -54,6 +54,7 @@ import { BannerContainer, Text } from '../caseMergingBanners/styles';
 import InfoIcon from '../caseMergingBanners/InfoIcon';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
+import CaseCreatedBanner from '../caseMergingBanners/CaseCreatedBanner';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -249,6 +250,12 @@ const CaseHome: React.FC<Props> = ({
               />
             </Flex>
           </BannerContainer>
+        )}
+
+        {isCreating && (
+          <Box marginBottom="14px" width="100%">
+            <CaseCreatedBanner caseId={caseId} task={task} />
+          </Box>
         )}
         <Box marginTop="13px">
           <CaseDetailsComponent
