@@ -91,7 +91,7 @@ jobs:
         working-directory: ./plugin-hrm-form
 
       - name: Run Flex Dev Server
-        run: NODE_ENV=development REACT_APP_FORM_DEFINITIONS_BASE_URL=http://localhost:8090 TWILIO_ACCOUNT_SID=${{env.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=$E2E_DEV_AUTH_TOKEN npm run start &
+        run: NODE_ENV=development REACT_APP_FORM_DEFINITIONS_BASE_URL=http://localhost:8090 TWILIO_ACCOUNT_SID=${{env.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{env.E2E_DEV_AUTH_TOKEN}} npm run start &
         working-directory: ./plugin-hrm-form
 
       - name: Run e2e tests
