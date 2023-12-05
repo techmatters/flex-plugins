@@ -16,15 +16,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import { useSelector } from 'react-redux';
-import * as ConfigurationSelectors from '../selectors';
 
 import { RootState } from '../..';
 import { ProfileSection } from 'hrm-form-definitions';
+import { selectCurrentDefinitionVersion } from '../selectDefinitions';
 
 const useProfileSectionTypes = () =>
-  useSelector(
-    (state: RootState): ProfileSection[] =>
-      ConfigurationSelectors.selectDefinitionVersionProperty(state, 'profileForms')?.Sections,
-  );
+  useSelector((state: RootState): ProfileSection[] => selectCurrentDefinitionVersion(state).profileForms?.Sections);
 
 export default useProfileSectionTypes;

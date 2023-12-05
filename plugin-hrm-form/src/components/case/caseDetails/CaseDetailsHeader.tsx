@@ -39,13 +39,7 @@ type OwnProps = {
   isOrphanedCase: boolean;
 };
 
-const CaseDetailsHeader: React.FC<OwnProps> = ({
-  caseId,
-  office,
-  counselor,
-  handlePrintCase,
-  isOrphanedCase,
-}) => {
+const CaseDetailsHeader: React.FC<OwnProps> = ({ caseId, office, counselor, handlePrintCase, isOrphanedCase }) => {
   const { multipleOfficeSupport } = getHrmConfig();
 
   return (
