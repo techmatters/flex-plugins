@@ -193,9 +193,11 @@ export const canTransferConference = (task: ITask) => {
   }
 
   const isLiveCall = TaskHelper.isLiveCall(task);
-  const { callStatus } = (Manager.getInstance().store.getState() as RootState)['plugin-hrm-form'].conferencing.tasks[
+  const taskFromRedux = (Manager.getInstance().store.getState() as RootState)['plugin-hrm-form'].conferencing.tasks[
     task.taskSid
   ];
 
-  return isLiveCall && !isCallStatusLoading(callStatus) && task.conference && task.conference.liveParticipantCount < 3;
+  const isLoading = taskFromRedux ? isCallStatusLoading(taskFromRedux.callStatus) : false;
+
+  return isLiveCall && !isLoading && task.conference && task.conference.liveParticipantCount < 3;
 };
