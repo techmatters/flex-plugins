@@ -138,7 +138,7 @@
   "CaseHeader-ViewCase": "View Emergency Referral",
   "CaseHeader-ConnectToTaskContact": "Add to Emergency Referral",
   "CaseHeader-TaskContactConnected": "Added to Emergency Referral",
-  "CaseHeader-MergeContactIntoCase": "Merge Current Contact into Case and Copy Child Information",
+  "CaseHeader-MergeContactIntoCase": "Merge Current Contact into Emergency Referral and Copy Child Information",
   "CaseHeader-CopyChildInfo": "Copy Child Information into Current Contact",
   "CaseHeader-Copy": "Yes, copy",
   "CaseHeader-Cancel": "Cancel",
