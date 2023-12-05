@@ -227,6 +227,7 @@ describe('actions', () => {
             connectedCase: {
               id: '234',
             },
+            references: new Set(),
           },
         },
       },
@@ -255,6 +256,7 @@ describe('actions', () => {
               id: '234',
               connectedContacts: [{ id: 'contact-1' }],
             },
+            references: new Set(),
           },
         },
       },
