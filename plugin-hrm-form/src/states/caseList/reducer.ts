@@ -46,17 +46,6 @@ const initialState: CaseListState = {
   content: caseListContentInitialState(),
 };
 
-// Undo action & reducer
-const UNDO_CASE_LIST_SETTINGS_UPDATE = 'UNDO_CASE_LIST_SETTINGS_UPDATE';
-
-type UndoCaseListSettingsUpdateAction = {
-  type: typeof UNDO_CASE_LIST_SETTINGS_UPDATE;
-};
-
-export const undoCaseListSettingsUpdate = (): UndoCaseListSettingsUpdateAction => ({
-  type: UNDO_CASE_LIST_SETTINGS_UPDATE,
-});
-
 export const reduce = (
   state = initialState,
   action: CaseListSettingsActionType | FetchCaseListRejectedAction,

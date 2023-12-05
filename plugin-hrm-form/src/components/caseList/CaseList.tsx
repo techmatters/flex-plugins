@@ -36,6 +36,7 @@ import { DetailsContext } from '../../states/contacts/contactDetails';
 import selectCasesForList from '../../states/caseList/selectCasesForList';
 import selectCaseListSettings from '../../states/caseList/selectCaseListSettings';
 import { CaseListSettingsState } from '../../states/caseList/settings';
+import asyncDispatch from '../../states/asyncDispatch';
 
 export const CASES_PER_PAGE = 10;
 
@@ -51,7 +52,7 @@ const mapDispatchToProps = dispatch => {
     updateDefinitionVersion: (version: string, definitions: DefinitionVersion) =>
       dispatch(ConfigActions.updateDefinitionVersion(version, definitions)),
     fetchCaseList: (settings: CaseListSettingsState, helpline) =>
-      dispatch(ListContent.fetchCaseListAsyncAction(settings, helpline, CASES_PER_PAGE)),
+      asyncDispatch(dispatch)(ListContent.fetchCaseListAsyncAction(settings, helpline, CASES_PER_PAGE)),
     openCaseDetails: (caseId: string) =>
       dispatch(newOpenModalAction({ route: 'case', subroute: 'home', caseId }, standaloneTask.taskSid)),
     closeCaseDetails: () => dispatch(newCloseModalAction(standaloneTask.taskSid)),

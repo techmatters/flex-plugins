@@ -16,34 +16,31 @@
 
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { Template, ITask, withTaskContext } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 
 import { BannerContainer, Text, BannerActionLink } from './styles';
 import InfoIcon from './InfoIcon';
 import asyncDispatch from '../../states/asyncDispatch';
 import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
-import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import { newGoBackAction } from '../../states/routing/actions';
 import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
 import { cancelCaseAsyncAction } from '../../states/case/saveCase';
 import selectCaseStateByCaseId from '../../states/case/selectCaseStateByCaseId';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
+import { CustomITask, StandaloneITask } from '../../types/types';
 
 type OwnProps = {
-  task?: ITask;
+  task?: CustomITask | StandaloneITask;
   caseId: string;
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const mapStateToProps = (state, { task }: OwnProps) => {
+const mapStateToProps = (state, { task, caseId }: OwnProps) => {
   const taskSid = task ? task.taskSid : getOfflineContactTaskSid();
-
-  const contact = selectContactByTaskSid(state, taskSid);
-  const cas = selectCaseStateByCaseId(state, contact.savedContact.caseId)?.connectedCase;
+  const cas = selectCaseStateByCaseId(state, caseId)?.connectedCase;
   return {
-    contactId: contact.savedContact.id,
     cas,
     taskSid,
   };
@@ -59,7 +56,6 @@ const mapDispatchToProps = dispatch => ({
 const CreatedCaseBanner: React.FC<Props> = ({
   taskSid,
   caseId,
-  contactId,
   cas,
   removeContactFromCase,
   cancelCase,
@@ -72,7 +68,7 @@ const CreatedCaseBanner: React.FC<Props> = ({
 
     // Navigating back before removing the case provides a better user experience.
     navigateBack(taskSid);
-    showRemovedFromCaseBanner(contactId);
+    contactIds.forEach(id => showRemovedFromCaseBanner(id));
     await cancelCase(caseId);
   };
 
@@ -89,7 +85,8 @@ const CreatedCaseBanner: React.FC<Props> = ({
   );
 };
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
-const connected = connector(CreatedCaseBanner);
+CreatedCaseBanner.displayName = 'CreatedCaseBanner';
 
-export default withTaskContext(connected);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+export default connector(CreatedCaseBanner);

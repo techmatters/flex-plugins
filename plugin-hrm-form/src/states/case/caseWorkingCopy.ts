@@ -197,6 +197,15 @@ type InitialiseCaseSummaryWorkingCopyAction = {
   defaults: CaseSummaryWorkingCopy;
 };
 
+export const initialiseCaseSummaryWorkingCopy = (
+  caseId: string,
+  defaults: CaseSummaryWorkingCopy,
+): InitialiseCaseSummaryWorkingCopyAction => ({
+  type: INIT_CASE_SUMMARY_WORKING_COPY,
+  caseId,
+  defaults,
+});
+
 const initialiseCaseSummaryWorkingCopyReducer = (
   state: CaseState,
   action: InitialiseCaseSummaryWorkingCopyAction,
