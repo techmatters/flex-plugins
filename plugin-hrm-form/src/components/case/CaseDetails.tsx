@@ -94,7 +94,6 @@ const CaseDetails: React.FC<Props> = ({
           office={office}
           handlePrintCase={handlePrintCase}
           isOrphanedCase={isOrphanedCase}
-          isCreating={isCreating}
         />
         <div style={{ paddingTop: '15px' }}>
           <CaseTags definitionVersion={definitionVersion} categories={categories} />

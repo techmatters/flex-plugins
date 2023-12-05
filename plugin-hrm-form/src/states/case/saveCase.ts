@@ -57,7 +57,7 @@ const handlePendingAction = (handleAction, asyncAction) =>
     return rootState;
   });
 
-const updateConnectedCase = (state: HrmState, connectedCase: Case) => {
+const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => {
   const caseDefinitionVersion = state.configuration.definitionVersions[connectedCase?.info?.definitionVersion];
 
   return {
@@ -66,12 +66,13 @@ const updateConnectedCase = (state: HrmState, connectedCase: Case) => {
       ...state.connectedCase,
       cases: {
         ...state.connectedCase.cases,
-        [connectedCase.id.toString()]: {
+        [connectedCase.id]: {
           connectedCase,
           caseWorkingCopy: { sections: {} },
           availableStatusTransitions: caseDefinitionVersion
             ? getAvailableCaseStatusTransitions(connectedCase, caseDefinitionVersion)
             : [],
+          references: state.connectedCase.cases[connectedCase.id]?.references ?? new Set(),
         },
       },
     },

@@ -35,12 +35,6 @@ export enum SavedCaseStatus {
   Error,
 }
 
-type SetConnectedCaseAction = {
-  type: typeof SET_CONNECTED_CASE;
-  connectedCase: t.Case;
-  taskId: string;
-};
-
 type UpdatedCaseAction = {
   type: typeof UPDATE_CASE_ACTION;
   payload: Promise<{ taskSid: string; case: t.Case }>;
@@ -55,7 +49,7 @@ type CreateCaseAction = {
   meta: unknown;
 };
 
-export type CaseActionType = SetConnectedCaseAction | UpdatedCaseAction | CreateCaseAction;
+export type CaseActionType = UpdatedCaseAction | CreateCaseAction;
 
 type CoreActivity = {
   text: string;

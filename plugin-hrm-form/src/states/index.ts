@@ -80,14 +80,15 @@ const combinedReducers = combineReducers(reducers);
 
 // Combine the reducers
 const reducer = (state: HrmState, action): HrmState => {
+  const stateWithCaseUpdates: HrmState = ConnectedCaseReducer(state, action);
   return {
-    ...combinedReducers(state, action),
+    ...combinedReducers(stateWithCaseUpdates, action),
+    connectedCase: stateWithCaseUpdates.connectedCase,
     /*
      * ConnectedCaseReducer's signature takes the root HrmState rather than the connectedCase state
      * This makes it incompatible with combineReducers, so instead, we add the case state property with an explicit call to ConnectedCaseReducer
      */
-    ...ConnectedCaseReducer(state, action),
-    [contactFormsBase]: ContactStateReducer(state, (state ?? {})[contactFormsBase], action),
+    activeContacts: ContactStateReducer(state, (state ?? {})[contactFormsBase], action),
   };
 };
 

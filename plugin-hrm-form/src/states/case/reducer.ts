@@ -191,17 +191,22 @@ export function reduce(
   switch (action.type) {
     case CREATE_CONTACT_ACTION_FULFILLED:
     case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED:
-      return contactUpdatingReducer(hrmState, action);
+      return contactUpdatingReducer(hrmState, action as ContactUpdatingAction);
 
     case REMOVE_CONTACT_STATE: {
-      const { contactId, taskId } = action;
+      const { contactId, taskId } = action as RemoveContactStateAction;
       const contactReferenceRemoved = dereferenceAllCases(state, `contact-${contactId}`);
       return { ...hrmState, connectedCase: dereferenceAllCases(contactReferenceRemoved, `task-${taskId}`) };
     }
     case FETCH_CASE_LIST_FULFILLED_ACTION:
+      const {
+        payload: {
+          result: { cases },
+        },
+      } = action as FetchCaseListFulfilledAction;
       return {
         ...hrmState,
-        connectedCase: loadCaseListIntoState(state, configuration, action.payload.result.cases, `case-list`),
+        connectedCase: loadCaseListIntoState(state, configuration, cases, `case-list`),
       };
     case SEARCH_CASES_SUCCESS: {
       const { searchResult, taskId } = action as SearchCasesSuccessAction;
