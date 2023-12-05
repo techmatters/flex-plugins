@@ -84,20 +84,9 @@ module "aws" {
   helpline_region = var.helpline_region
 }
 
+#TODO: Remove the provider and moved once this has been applied everywhere
 provider "github" {
   owner = "techmatters"
-}
-
-module "github" {
-  source = "../../github/default"
-
-  count = var.manage_github_secrets ? 1 : 0
-
-  twilio_account_sid = local.secrets.twilio_account_sid
-  twilio_auth_token  = local.secrets.twilio_auth_token
-  short_environment  = var.short_environment
-  short_helpline     = upper(var.short_helpline)
-  serverless_url     = module.serverless.serverless_environment_production_url
 }
 
 moved {
