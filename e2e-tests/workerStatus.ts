@@ -38,8 +38,8 @@ async function getFirstMatchingStatus(page: Page, statusOptions: string[]): Prom
 
 export function statusIndicator(page: Page) {
   const selectors = {
-    userActivityDropdownButton: page.locator("//button[@data-test='activity-dropdown-button']"),
-    activityMenu: page.locator("//div[@data-test='activity-menu']"),
+    userActivityDropdownButton: page.locator("//button[@data-testid='activity-dropdown-button']"),
+    activityMenu: page.locator("//div[@data-testid='activity-menu']"),
   };
 
   return {

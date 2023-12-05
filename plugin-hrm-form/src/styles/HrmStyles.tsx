@@ -119,11 +119,11 @@ TabbedFormTabContainer.displayName = 'TabbedFormTabContainer';
 const containerLeftRightMargin = '5px';
 
 type ContainerProps = {
-  removePadding?: boolean;
+  formContainer?: boolean;
 };
 export const Container = styled('div')<ContainerProps>`
   display: flex;
-  padding: ${({ removePadding }) => (removePadding ? '0' : '32px 20px 12px 20px')};
+  padding: ${({ formContainer }) => (formContainer ? '0' : '32px 20px 12px 20px')};
   flex-direction: column;
   flex-wrap: nowrap;
   background-color: #ffffff;
@@ -132,6 +132,7 @@ export const Container = styled('div')<ContainerProps>`
   margin: 0 ${containerLeftRightMargin};
   height: 100%;
   overflow-y: auto;
+  ${({ formContainer }) => (formContainer ? 'border-bottom: 1px solid #e1e3ea' : '')};
 `;
 Container.displayName = 'Container';
 
@@ -290,8 +291,9 @@ export const AddedToCaseButton = styled('p')`
   padding: 4px 10px;
   min-width: auto;
 `;
+AddedToCaseButton.displayName = 'AddedToCaseButton';
 
-export const SaveAndEndContactButton = styled(Button)<StyledNextStepButtonProps>`
+export const SaveAndEndButton = styled(Button)<StyledNextStepButtonProps>`
   display: flex;
   align-items: center;
   font-size: 13px;
@@ -313,6 +315,7 @@ export const SaveAndEndContactButton = styled(Button)<StyledNextStepButtonProps>
     background-color: rgba(255, 255, 255, 0.3);
   }
 `;
+SaveAndEndButton.displayName = 'SaveAndEndButton';
 
 export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
   display: flex;
@@ -364,9 +367,9 @@ export const BottomButtonBar = styled('div')`
   justify-content: flex-end;
   height: ${BottomButtonBarHeight}px;
   flex-shrink: 0;
+  background-color: #ffffff;
   padding: 0 20px;
   z-index: 1;
-  box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.1);
 `;
 BottomButtonBar.displayName = 'BottomButtonBar';
 
@@ -1313,15 +1316,15 @@ StyledCSAMReportDropdownList.displayName = 'StyledCSAMReportDropdownList';
 
 export const StyledAddNewCaseDropdown = styled('ul')`
   position: absolute;
-  right: 20%;
-  bottom: 8%;
+  right: -12%;
+  bottom: 110%;
   display: flex;
   box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
   -webkit-box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
   -moz-box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
   font-size: 0.875rem;
   z-index: 9999;
-  width: 194px;
+  width: 164px;
   padding: 10px 0 10px 0;
   flex-direction: column;
   align-items: flex-start;
@@ -1337,7 +1340,7 @@ export const StyledAddNewCaseDropdownList = styled('button')`
   font-size: 14px;
   display: flex;
   color: inherit;
-  min-width: 12rem;
+  min-width: 10.1rem;
   align-items: flex-start;
   align-self: stretch;
   padding: 7px 0 7px 18px;

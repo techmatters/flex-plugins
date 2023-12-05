@@ -1,0 +1,36 @@
+{
+  "task_routing": {
+    "filters": [
+      {
+        "filter_friendly_name": "${helpline}",
+        "expression": "channelType =='web'  OR isContactlessTask == true OR  twilioNumber == 'messenger:103260519220529'",
+        "targets": [
+          {
+            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "queue": "${task_queues.master}"
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "Harare AC",
+        "expression": "aseloHostId == 'zw1'",
+        "targets": [
+          {
+            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "queue": "${task_queues.harare}"
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "Bulawayo AC",
+        "expression": "aseloHostId == 'zw2'",
+        "targets": [
+          {
+            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "queue": "${task_queues.bulawayo}"
+          }
+        ]
+      }
+    ]
+  } 
+}

@@ -459,7 +459,7 @@ export const SearchResultWarningContainer = styled('div')`
   top: 143px;
   left: 744px;
   margin-top: 30px;
-  background-color: #fef5ee;
+  background-color: #fffeef;
   padding-left: 20px;
   padding-right: 30px;
   padding-bottom: 20px;
@@ -475,7 +475,21 @@ type TextProps = {
   decoration?: string;
   color?: string;
   cursor?: string;
+  onClick?: () => void;
 };
+
+export const NoResultTextLink = styled('button')<TextProps>`
+  align-items: center;
+  color: ${({ color }) => color};
+  font-weight: ${({ fontWeight }) => fontWeight};
+  padding-top: ${({ padding }) => (padding ? padding : '17px')};
+  margin-left: ${({ margin }) => (margin ? margin : '5px')};
+  text-decoration: ${({ decoration }) => decoration};
+  cursor: ${({ cursor }) => cursor};
+  background: none;
+  border: none;
+`;
+NoResultTextLink.displayName = 'Text';
 
 export const Text = styled('span')<TextProps>`
   align-items: center;

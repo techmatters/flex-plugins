@@ -39,6 +39,7 @@ export const CSAMReportLayout = styled('div')`
   overflow-y: auto;
   background-color: #ffffff;
   border-radius: 4px 4px 0 0;
+  border-bottom: 1px solid #e1e3ea;
   padding: 3% 4%;
 `;
 CSAMReportLayout.displayName = 'CSAMReportLayout';
