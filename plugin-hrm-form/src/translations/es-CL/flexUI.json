@@ -514,8 +514,5 @@
   "CaseMerging-CaseCreatedAndContactAdded": "Caso #{{caseId}} creado y contacto agregado",
   "CaseMerging-CancelCase": "Cancelar Caso",
 
-  "Summary": "Resumen",
-  "Something Else": "Enfoque Recomendado",
-  "Edit Summary": "Editar Resumen",
-  "Edit Something Else": "Editar Enfoque Recomendado"
+  "Something Else": "Enfoque Recomendado"
 }
