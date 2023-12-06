@@ -59,7 +59,7 @@ const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props)
   };
 
   return (
-    <NavigableContainer titleCode={`Edit ${startCase(sectionType)}`} task={task}>
+    <NavigableContainer titleCode={`Profile-Edit-${sectionTypesForm.label}`} task={task}>
       <Container>
         <Box>
           <ColumnarBlock>

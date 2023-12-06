@@ -69,9 +69,9 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
   const sectionTypesForms: ProfileSection[] = useProfileSectionTypes();
 
   const sectionSections: Section[] = sectionTypesForms.map(sectionType => ({
-    title: `${sectionType.name}`,
+    title: `${sectionType.label}`,
     renderComponent: () => <ProfileSectionView profileId={profileId} task={task} sectionType={sectionType} />,
-    handleEdit: () => openSectionEditModal(sectionType.label),
+    handleEdit: () => openSectionEditModal(sectionType.name),
   }));
 
   const renderEditButton = section => {
