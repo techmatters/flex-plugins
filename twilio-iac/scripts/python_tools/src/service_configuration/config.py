@@ -149,6 +149,7 @@ class ConfigDict(TypedDict):
     skip_lock: bool
     sync_action: bool
     argument: str
+    aws_role_arn: str
 
 
 class InitServiceConfigurationArgsDict(TypedDict):
@@ -174,6 +175,7 @@ class Config():
             'json_available': False,
             'sync_action': False,
             'syncers': [],
+            'aws_role_arn': None
         }
 
         self.init_arg_parser()

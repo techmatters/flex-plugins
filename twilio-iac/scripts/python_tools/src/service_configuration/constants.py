@@ -1,2 +1,5 @@
 """ Constants for the service configuration manager """
-AWS_ROLE_ARN: str = 'arn:aws:iam::712893914485:role/twilio-iac-service-config-manager'
+AWS_ROLE_ARNS: dict[str, str] = {
+    'developer': 'arn:aws:iam::712893914485:role/twilio-iac-service-config-developer',
+    'manager': 'arn:aws:iam::712893914485:role/twilio-iac-service-config-manager',
+}

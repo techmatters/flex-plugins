@@ -25,6 +25,7 @@ class InitArgsDict(TypedDict):
     helpline_code: str
     state: dict[str, str]
     skip_lock: NotRequired[bool | None]
+    aws_role_arn: str
 
 
 class Version():
@@ -33,7 +34,7 @@ class Version():
         self.helpline_code = kwargs['helpline_code']
         self.state = kwargs['state']
         self.skip_lock = kwargs.get('skip_lock') or False
-        self.s3_client = S3Client(AWS_ROLE_ARN)
+        self.s3_client = S3Client(kwargs.get('aws_role_arn'))
         self.init_ip()
         self.init_sha()
         self.init_s3_paths()
