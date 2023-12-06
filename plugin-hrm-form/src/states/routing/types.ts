@@ -22,8 +22,10 @@ export const CHANGE_ROUTE = 'routing/change-route';
 export const OPEN_MODAL = 'routing/open-modal';
 export const CLOSE_MODAL = 'routing/close-modal';
 export const GO_BACK = 'routing/go-back';
-export const HISTORY_INIT = 'routing/history-init';
-export const HISTORY_PUSH = 'routing/history-push';
+export const TASK_ROUTER_INIT = 'routing/task-router-init';
+export const TASK_ROUTE_PUSH = 'routing/task-route-push';
+export const TASK_ROUTE_REPLACE = 'routing/task-route-replace';
+export const TASK_ROUTE_POP = 'routing/task-route-pop';
 
 export type TabbedFormSubroutes =
   | 'contactlessTask'
@@ -266,20 +268,37 @@ type CloseModalAction = {
   topRoute?: AppRoutes['route'];
 };
 
-type HistoryInitAction = {
-  type: typeof HISTORY_INIT;
+export type TaskRoute = Omit<LocationDescriptorObject, 'state' | 'key'>;
+
+type TaskRouterInitAction = {
+  type: typeof TASK_ROUTER_INIT;
   payload: {
     taskSid: string;
     basePath: string;
-    current: Partial<LocationDescriptorObject>;
+    location: TaskRoute;
   };
 };
 
-type HistoryPushAction = {
-  type: typeof HISTORY_PUSH;
+type TaskRoutePushAction = {
+  type: typeof TASK_ROUTE_PUSH;
   payload: {
     taskSid: string;
-    location: Partial<LocationDescriptorObject>;
+    location: TaskRoute;
+  };
+};
+
+type TaskRouteReplaceAction = {
+  type: typeof TASK_ROUTE_REPLACE;
+  payload: {
+    taskSid: string;
+    location: TaskRoute;
+  };
+};
+
+type TaskRoutePopAction = {
+  type: typeof TASK_ROUTE_POP;
+  payload: {
+    taskSid: string;
   };
 };
 
@@ -288,12 +307,14 @@ export type RoutingActionType =
   | GoBackAction
   | OpenModalAction
   | CloseModalAction
-  | HistoryPushAction
-  | HistoryInitAction;
+  | TaskRouterInitAction
+  | TaskRoutePushAction
+  | TaskRouteReplaceAction
+  | TaskRoutePopAction;
 
 export type RTaskEntry = {
   basePath: string;
-  current: Partial<LocationDescriptorObject>;
+  taskRoutes: TaskRoute[];
 };
 
 export type RoutingState = {

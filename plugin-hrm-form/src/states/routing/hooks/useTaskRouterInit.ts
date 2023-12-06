@@ -18,18 +18,19 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { RouterTask } from '../../../types/types';
-import { HISTORY_INIT, HISTORY_PUSH } from '../types';
-import useRoutingState from './useRoutingState';
+import { TASK_ROUTER_INIT, TASK_ROUTE_REPLACE } from '../types';
+import { useTaskRouterBasePath } from './useTaskRouterBasePath';
+import getTaskSidFromTask from './getTaskSidFromTask';
 import { standardizeLocation } from './useRoutingLocation';
 
 export type GetBasePath = (params: { task?: RouterTask; taskSid?: string }) => string;
 
-export const useRouterInit = (task: RouterTask, getBasePath: GetBasePath) => {
+export const useTaskRouterInit = (task: RouterTask, getBasePath: GetBasePath) => {
   const dispatch = useDispatch();
-
-  const routingState = useRoutingState(task);
-  const { basePath, taskSid } = routingState;
+  const basePath = useTaskRouterBasePath(task);
   const history = useHistory();
+  const taskSid = getTaskSidFromTask(task);
+  const { location } = history;
   const newBasePath = getBasePath({ task, taskSid });
 
   /**
@@ -40,11 +41,11 @@ export const useRouterInit = (task: RouterTask, getBasePath: GetBasePath) => {
     if (!taskSid || basePath) return;
 
     dispatch({
-      type: HISTORY_INIT,
+      type: TASK_ROUTER_INIT,
       payload: {
         taskSid,
         basePath: newBasePath,
-        current: standardizeLocation(location),
+        location: standardizeLocation(location),
       },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -52,8 +53,7 @@ export const useRouterInit = (task: RouterTask, getBasePath: GetBasePath) => {
 
   /**
    * This effect sets up a listener on the history object so we can dispatch
-   * updates to the current routing state when the user navigates around the
-   * app.
+   * updates to the current route whenever navigation happens.
    */
   useEffect(() => {
     // We *really* don't want to add multiple listeners for the same task router
@@ -63,11 +63,15 @@ export const useRouterInit = (task: RouterTask, getBasePath: GetBasePath) => {
       // Ignore navigate away from page events
       if (!location.pathname.startsWith(basePath)) return;
 
-      dispatch({ type: HISTORY_PUSH, payload: { taskSid, location: standardizeLocation(location) } });
+      console.log('>>> history.listen', { location, action, basePath, taskSid });
+
+      // We only care about replacing the top of the task route stack unless a user has specifically pushed
+      // a new route onto the stack or popped a route off the stack.
+      dispatch({ type: TASK_ROUTE_REPLACE, payload: { taskSid, location: standardizeLocation(location) } });
     });
     return unregister;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [basePath, taskSid]);
 };
 
-export default useRouterInit;
+export default useTaskRouterInit;

@@ -17,7 +17,7 @@ import React from 'react';
 import { Redirect, Route, Switch as BaseSwitch, SwitchProps, RouteProps } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 
-import { useRouting } from '../../states/routing/hooks';
+import { useRoutingState } from '../../states/routing/hooks';
 import { RouterTask } from '../../types/types';
 
 type ModalEntry = {
@@ -33,9 +33,9 @@ type Props = SwitchProps & {
 
 const Switch: React.FC<Props> = props => {
   const { children, modals, routes, task } = props;
-  const { basePath, current, location } = useRouting(task);
+  const { basePath, currentRoute, location } = useRoutingState(task);
 
-  if (!current) return null;
+  if (!currentRoute) return null;
 
   /**
    * This redirector is a workaround so that we can update the task link when
@@ -48,7 +48,7 @@ const Switch: React.FC<Props> = props => {
    * That would, obviously not work for the standalone search page or any other
    * places where we are faking a task.
    */
-  const shouldRedirectToCurrent = current && !isEqual(location, current);
+  const shouldRedirectToCurrent = currentRoute && !isEqual(location, currentRoute);
 
   const currentModal = modals.find(modal => modal.shouldRender());
   if (currentModal) return currentModal.component;
@@ -61,7 +61,7 @@ const Switch: React.FC<Props> = props => {
 
   return (
     <BaseSwitch {...props}>
-      {shouldRedirectToCurrent && <Redirect to={current} />}
+      {shouldRedirectToCurrent && <Redirect to={currentRoute} />}
       {renderRoutes()}
       {children}
     </BaseSwitch>

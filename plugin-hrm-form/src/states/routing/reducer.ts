@@ -13,9 +13,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
-import { omit } from 'lodash';
+import omit from 'lodash/omit';
+import isEqual from 'lodash/isEqual';
 import { callTypes } from 'hrm-form-definitions';
+import { LocationDescriptorObject } from 'history';
 
 import {
   AppRoutes,
@@ -23,15 +24,17 @@ import {
   ChangeRouteMode,
   CLOSE_MODAL,
   GO_BACK,
-  HISTORY_INIT,
-  HISTORY_PUSH,
+  TASK_ROUTER_INIT,
+  TASK_ROUTE_PUSH,
+  TASK_ROUTE_REPLACE,
+  TASK_ROUTE_POP,
+  TaskRoute,
   isRouteWithModalSupport,
   OPEN_MODAL,
   RoutingActionType,
   RoutingState,
 } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
-import { standaloneTaskSid } from '../../types/types';
 import getOfflineContactTaskSid from '../contacts/offlineContactTaskSid';
 import {
   ContactUpdatingAction,
@@ -52,7 +55,13 @@ export const initialState: RoutingState = {
 
 const newRTaskEntry = {
   basePath: undefined,
-  current: undefined,
+  taskRoutes: [],
+};
+
+const newTaskRoute: TaskRoute = {
+  pathname: '',
+  search: '',
+  hash: '',
 };
 
 const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingAction): RoutingState => {
@@ -217,28 +226,84 @@ export function reduce(
   action: RoutingActionType | RemoveContactStateAction | ContactUpdatingAction,
 ): RoutingState {
   switch (action.type) {
-    case HISTORY_INIT:
-      console.log('>>>HistoryInit', { action });
+    case TASK_ROUTER_INIT:
+      console.log('>>>TASK_ROUTER_INIT', { action });
+      const { taskSid: initTaskSid, basePath: initBasePath, location: initLocation } = action.payload;
+      if (state.rTasks[initTaskSid]) return state;
+
+      // TODO: destructure url string
+      const taskRoutes: TaskRoute[] = [{ ...newTaskRoute, pathname: `${initBasePath}` }];
+
+      // TODO: elliminate duplicate when basePath has trailing slash
+      if (initLocation.pathname !== initBasePath) {
+        taskRoutes.push(initLocation);
+      }
+
       return {
         ...state,
         rTasks: {
           ...state.rTasks,
-          [action.payload.taskSid]: {
-            basePath: action.payload.basePath,
-            current: action.payload.current,
+          [initTaskSid]: {
+            ...newRTaskEntry,
+            ...state.rTasks[initTaskSid],
+            basePath: initBasePath,
+            taskRoutes,
           },
         },
       };
-    // @ts-ignore
-    case HISTORY_PUSH:
-      console.log('>>>HistoryChange', { action });
+    case TASK_ROUTE_PUSH:
+      console.log('>>>TASK_ROUTE_PUSH', { action });
+      const { taskSid: pushTaskSid, location: pushLocation } = action.payload;
+      console.log('>>>isEqual', {
+        current: state.rTasks[pushTaskSid]?.taskRoutes?.[state.rTasks[pushTaskSid]?.taskRoutes?.length - 1],
+        next: pushLocation,
+      });
+      if (
+        isEqual(
+          state.rTasks[pushTaskSid]?.taskRoutes?.[state.rTasks[pushTaskSid]?.taskRoutes?.length - 1],
+          pushLocation,
+        )
+      ) {
+        return state;
+      }
       return {
         ...state,
         rTasks: {
-          ...newRTaskEntry,
           ...state.rTasks,
-          [action.payload.taskSid]: {
-            current: action.payload.location,
+          [pushTaskSid]: {
+            ...newRTaskEntry,
+            ...state.rTasks[pushTaskSid],
+            taskRoutes: [...state.rTasks[pushTaskSid].taskRoutes, pushLocation],
+          },
+        },
+      };
+    case TASK_ROUTE_REPLACE:
+      console.log('>>>TASK_ROUTE_REPLACE', { action });
+      const { taskSid: replaceTaskSid, location: replaceLocation } = action.payload;
+      return {
+        ...state,
+        rTasks: {
+          ...state.rTasks,
+          [replaceTaskSid]: {
+            ...newRTaskEntry,
+            ...state.rTasks[replaceTaskSid],
+            taskRoutes: [...state.rTasks[replaceTaskSid].taskRoutes.slice(0, -1), replaceLocation],
+          },
+        },
+      };
+    case TASK_ROUTE_POP:
+      console.log('>>>TASK_ROUTE_POP', { action });
+      const { taskSid: popTaskSid } = action.payload;
+      if (state.rTasks[popTaskSid].taskRoutes.length <= 1) return state;
+
+      return {
+        ...state,
+        rTasks: {
+          ...state.rTasks,
+          [popTaskSid]: {
+            ...newRTaskEntry,
+            ...state.rTasks[popTaskSid],
+            taskRoutes: state.rTasks[popTaskSid].taskRoutes.slice(0, -1),
           },
         },
       };

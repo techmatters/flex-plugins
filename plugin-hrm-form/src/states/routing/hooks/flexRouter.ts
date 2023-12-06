@@ -13,11 +13,34 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { Actions } from '@twilio/flex-ui';
 
-import { useHistory } from 'react-router-dom';
+import { TaskRoute } from '../types';
 
-export const useRoutingHistory = () => {
-  return useHistory();
+export const pushRoute = (route: TaskRoute) => {
+  Actions.invokeAction('HistoryPush', route);
 };
 
-export default useRoutingHistory;
+export const replaceRoute = (route: TaskRoute) => {
+  Actions.invokeAction('HistoryReplace', route);
+};
+
+export const goBack = () => {
+  Actions.invokeAction('HistoryGoBack');
+};
+
+export const goForward = () => {
+  Actions.invokeAction('HistoryGoForward');
+};
+
+export const navigateToView = (viewName: string) => {
+  Actions.invokeAction('NavigateToView', { viewName });
+};
+
+export default {
+  pushRoute,
+  replaceRoute,
+  goBack,
+  goForward,
+  navigateToView,
+};

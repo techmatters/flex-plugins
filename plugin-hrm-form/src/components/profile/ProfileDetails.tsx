@@ -20,7 +20,7 @@ import { ProfileSection } from 'hrm-form-definitions';
 
 import { Box, HiddenText, Row, HorizontalLine } from '../../styles/HrmStyles';
 import { useProfile } from '../../states/profile/hooks';
-import { useModalRouting } from '../../states/routing/hooks';
+import { useModalRouter } from '../../states/routing/hooks';
 import useProfileSectionTypes from '../../states/configuration/hooks/useProfileSectionTypes';
 import { ProfileCommonProps } from './types';
 import {
@@ -47,7 +47,7 @@ type Section = {
 
 const ProfileDetails: React.FC<Props> = ({ profileId, task }) => {
   const { profile } = useProfile({ profileId });
-  const { openModal } = useModalRouting(task);
+  const { openModal } = useModalRouter(task);
 
   const openSectionEditModal = (sectionType: string) => {
     openModal('profileSectionEdit', { profileId, sectionType });

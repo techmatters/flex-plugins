@@ -13,32 +13,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { useSelector } from 'react-redux';
-
 import { RouterTask } from '../../../types/types';
-import { RootState } from '../..';
-import { selectRoutingStateByTaskId } from '../selectors';
+import useTaskRouterBasePath from './useTaskRouterBasePath';
+import useTaskRouterCurrentRoute from './useTaskRouterCurrentRoute';
+import getTaskSidFromTask from './getTaskSidFromTask';
+import useModalRouter from './useModalRouter';
+import useRoutingLocation from './useRoutingLocation';
 
-export const getTaskSidFromTask = (task: RouterTask): string => {
-  // @ts-ignore
-  return task?.sid || task?.taskSid;
-};
-
+/**
+ * This hook provides access to the entire routing state for a given task.
+ * It is a convenience hook that combines the other routing hooks for use
+ * in root task sub-router components. It is a re-render nightmare and should
+ * not be used in components that are not the root of a section.
+ *
+ * @param task
+ * @returns
+ */
 export const useRoutingState = (task: RouterTask) => {
-  /**
-   * The only reason we even need routing state in redux is so that we can
-   * take over where the twilio router leaves off and restore the current
-   * tasks path when the user navigates away from the task and then back.
-   *
-   * All configuration should be part of the location or in individual state somewhere.
-   */
+  const currentRoute = useTaskRouterCurrentRoute(task);
+  const basePath = useTaskRouterBasePath(task);
   const taskSid = getTaskSidFromTask(task);
-  const { basePath, current } = useSelector((state: RootState) => selectRoutingStateByTaskId(state, taskSid)) || {};
+  const { activeModal } = useModalRouter(task);
+  const { location, fullLocation } = useRoutingLocation();
 
   return {
+    activeModal,
+    currentRoute,
     basePath,
-    current,
     taskSid,
+    location,
+    fullLocation,
   };
 };
 

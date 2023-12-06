@@ -35,7 +35,7 @@ import { createContactAsyncAction, submitContactFormAsyncAction } from '../state
 import { newContact } from '../states/contacts/contactState';
 import { getHrmConfig } from '../hrmConfig';
 import { getCurrentTopmostRouteForTask } from '../states/routing/getRoute';
-import { useRouting } from '../states/routing/hooks';
+import { useRoutingState } from '../states/routing/hooks';
 import type { CSAMReportRoute } from '../states/routing/types';
 
 type OwnProps = {
@@ -47,30 +47,23 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact }) => {
-  const routingHook = useRouting(task);
-  const { basePath, taskSid } = routingHook;
+  const routingState = useRoutingState(task);
+  const { basePath, taskSid } = routingState;
   const { route } = routing;
 
   if (!basePath || !taskSid) return null;
 
   const modals = [
     {
-      shouldRender: () => isProfileRoute(routingHook),
+      shouldRender: () => isProfileRoute(routingState),
       component: <ProfileRouter task={task} />,
     },
   ];
 
   const routes: RouteProps[] = [
     {
-      path: '/',
-      render: () => <CallTypeButtons task={task} />,
-    },
-  ];
-
-  const oldRoutes = [
-    {
-      routes: ['tabbed-forms', 'search', 'contact', 'case'],
-      renderComponent: () => (
+      path: '/tabbed-forms',
+      render: () => (
         <TabbedForms
           task={task}
           contactId={savedContact?.id}
@@ -79,6 +72,14 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact })
         />
       ),
     },
+    {
+      path: '/',
+      exact: true,
+      render: () => <CallTypeButtons task={task} />,
+    },
+  ];
+
+  const oldRoutes = [
     {
       routes: ['csam-report'],
       renderComponent: () => (

@@ -13,11 +13,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { RouterTask } from '../../../types/types';
 
-import { useHistory } from 'react-router-dom';
-
-export const useRoutingHistory = () => {
-  return useHistory();
+const getTaskSidFromTask = (task: RouterTask) => {
+  // @ts-ignore
+  return task.sid || task.taskSid;
 };
 
-export default useRoutingHistory;
+export default getTaskSidFromTask;

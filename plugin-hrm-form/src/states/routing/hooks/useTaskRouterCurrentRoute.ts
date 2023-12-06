@@ -13,11 +13,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { useSelector } from 'react-redux';
 
-import { useHistory } from 'react-router-dom';
+import { RouterTask } from '../../../types/types';
+import { RootState } from '../..';
+import { TaskRoute } from '../types';
+import { selectCurrentTaskRoute } from '../selectors';
+import getTaskSidFromTask from './getTaskSidFromTask';
 
-export const useRoutingHistory = () => {
-  return useHistory();
+/**
+ * This hook provides access to the current route for a given task.
+ *
+ * @param task
+ * @returns string
+ */
+export const useTaskRouterCurrentRoute = (task: RouterTask): TaskRoute => {
+  const taskSid = getTaskSidFromTask(task);
+  return useSelector((state: RootState) => selectCurrentTaskRoute(state, taskSid));
 };
 
-export default useRoutingHistory;
+export default useTaskRouterCurrentRoute;

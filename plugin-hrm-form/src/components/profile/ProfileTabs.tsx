@@ -18,7 +18,7 @@ import React from 'react';
 import { Tab as TwilioTab, Template } from '@twilio/flex-ui';
 
 import { useProfile } from '../../states/profile/hooks';
-import { useModalRouting } from '../../states/routing/hooks';
+import { useModalRouter } from '../../states/routing/hooks';
 import * as RoutingTypes from '../../states/routing/types';
 import { StyledTabs } from '../../styles/search'; // just stealing from search until we have a centralized tab style
 import NavigableContainer from '../router/NavigableContainer';
@@ -32,7 +32,7 @@ type OwnProps = ProfileCommonProps;
 type Props = OwnProps;
 
 const ProfileTabs: React.FC<Props> = ({ profileId, task }) => {
-  const { activeModalParams, updateModalParams } = useModalRouting(task);
+  const { activeModalParams, updateModalParams } = useModalRouter(task);
   const { profile: { contactsCount, casesCount } = {} } = useProfile({ profileId, shouldAutoload: true });
 
   const currentTab = activeModalParams?.tab || 'details';

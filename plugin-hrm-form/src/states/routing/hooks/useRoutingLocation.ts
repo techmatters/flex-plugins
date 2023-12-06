@@ -17,8 +17,10 @@ import { useLocation } from 'react-router-dom';
 import { LocationDescriptorObject } from 'history';
 import pick from 'lodash/pick';
 
+import { TaskRoute } from '../types';
+
 // Remove the key from the location object, as it changes on every route change
-export const standardizeLocation = (location: LocationDescriptorObject) =>
+export const standardizeLocation = (location: LocationDescriptorObject): TaskRoute =>
   pick(location, ['pathname', 'search', 'hash']);
 
 export const useRoutingLocation = () => {

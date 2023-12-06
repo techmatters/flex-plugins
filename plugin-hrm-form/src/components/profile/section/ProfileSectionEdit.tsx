@@ -31,7 +31,7 @@ import {
 } from '../../../styles/HrmStyles';
 import { useEditProfileSection } from '../../../states/profile/hooks/useProfileSection';
 import useProfileSectionTypes from '../../../states/configuration/hooks/useProfileSectionTypes';
-import { useModalRouting } from '../../../states/routing/hooks';
+import { useModalRouter } from '../../../states/routing/hooks';
 import { ProfileCommonProps } from '../types';
 
 type OwnProps = ProfileCommonProps & {
@@ -48,7 +48,7 @@ const ProfileSectionEdit = ({ task, profileId, sectionType }: Props) => {
   const [content, setContent] = useState<string>(section?.content || '');
   const sectionId: ProfileSection['id'] = section?.id;
 
-  const { closeModal } = useModalRouting(task);
+  const { closeModal } = useModalRouter(task);
 
   const handleEdit = () => {
     if (!sectionId) {

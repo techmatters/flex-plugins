@@ -41,6 +41,7 @@ import { submitContactFormAsyncAction, updateContactInHrmAsyncAction } from '../
 import { configurationBase, namespace } from '../../states/storeNamespaces';
 import { ContactMetadata } from '../../states/contacts/types';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
+import { useTaskRouter } from '../../states/routing/hooks';
 
 const isDialogOpen = (task: CustomITask, contact: ContactDraftChanges) => {
   if (isOfflineContactTask(task)) return false;
@@ -70,6 +71,8 @@ const CallTypeButtons: React.FC<Props> = ({
 }) => {
   const { isCallTask } = localization;
   const { saveStatus } = metadata;
+
+  const { pushRoute } = useTaskRouter(task);
 
   // Todo: need to handle this error scenario in a better way. Currently is showing a blank screen if there aren't definitions.
   if (!currentDefinitionVersion) return null;
@@ -102,6 +105,7 @@ const CallTypeButtons: React.FC<Props> = ({
       rawJson: { callType: callTypes[callTypeEntry.name] || callTypeEntry.label },
     });
     changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true });
+    pushRoute({ pathname: 'tabbed-forms' });
   };
 
   const handleNonDataClick = (taskSid: string, callTypeEntry: CallTypeButtonsEntry) => {

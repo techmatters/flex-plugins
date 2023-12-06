@@ -19,7 +19,7 @@ import { getPermissionsForContact, PermissionActions } from '../../permissions';
 import { Contact } from '../../types/types';
 import ContactPreview from '../search/ContactPreview';
 import * as ProfileTypes from '../../states/profile/types';
-import { useModalRouting } from '../../states/routing/hooks';
+import { useModalRouter } from '../../states/routing/hooks';
 import ProfileRelationshipList from './ProfileRelationshipList';
 import { ProfileCommonProps } from './types';
 
@@ -28,7 +28,7 @@ type OwnProps = ProfileCommonProps;
 type Props = OwnProps;
 
 const ProfileContacts: React.FC<Props> = ({ profileId, task }) => {
-  const { openModal } = useModalRouting(task);
+  const { openModal } = useModalRouter(task);
   const renderItem = (contact: Contact) => {
     const { can } = getPermissionsForContact(contact.twilioWorkerId);
     const handleViewDetails = () => {

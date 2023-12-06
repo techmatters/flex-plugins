@@ -19,31 +19,26 @@ import omit from 'lodash/omit';
 
 import { RouterTask } from '../../../types/types';
 import useRoutingLocation from './useRoutingLocation';
-import useRoutingHistory from './useRoutingHistory';
+import useTaskRouter from './useTaskRouter';
 
-export const useModalRouting = (task: RouterTask) => {
-  /**
-   *  Modal routing is all handled in the URL search params.
-   */
-  const { pushRoute } = useRoutingHistory();
+/**
+ * This is the primary hook for interacting with the modal router. Modal routing is
+ * handled exclusively through the search params of the URL. This hook provides
+ * access to the current modal and its params as well as methods for manipulating
+ * the modal stack.
+ *
+ * @param task
+ * @returns
+ */
+export const useModalRouter = (task: RouterTask) => {
+  const { replaceRoute } = useTaskRouter(task);
   const { location } = useRoutingLocation();
 
-  const getSearchParams = useCallback(() => {
-    return new URLSearchParams(location.search);
-  }, [location.search]);
-  const searchParams = getSearchParams();
-
-  const getActiveModals = useCallback(() => {
-    return searchParams.get('activeModals')?.split(',') || [];
-  }, [searchParams]);
-  const activeModals = getActiveModals();
+  const searchParams = new URLSearchParams(location.search);
+  const activeModals = searchParams.get('activeModals')?.split(',') || [];
   const activeModal = activeModals[activeModals.length - 1];
-
-  const getModalParams = useCallback(() => {
-    const modalParams = searchParams.get('modalParams');
-    return modalParams ? JSON.parse(atob(modalParams)) : undefined;
-  }, [searchParams]);
-  const modalParams = getModalParams();
+  const encodedModalParams = searchParams.get('modalParams');
+  const modalParams = encodedModalParams ? JSON.parse(atob(encodedModalParams)) : undefined;
   const activeModalParams = modalParams?.[activeModal];
 
   const openModal = useCallback(
@@ -59,7 +54,9 @@ export const useModalRouting = (task: RouterTask) => {
 
       searchParams.set('modalParams', btoa(JSON.stringify(newModalParams)));
 
-      pushRoute({ search: searchParams.toString() });
+      console.log('>>> openModal', { modal, params, newModalParams, searchParams });
+
+      replaceRoute({ search: searchParams.toString() });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [searchParams],
@@ -77,7 +74,7 @@ export const useModalRouting = (task: RouterTask) => {
       searchParams.delete('modalParams');
     }
 
-    pushRoute({ search: searchParams.toString() });
+    replaceRoute({ search: searchParams.toString() });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
@@ -86,9 +83,10 @@ export const useModalRouting = (task: RouterTask) => {
     <T>(params: T) => {
       searchParams.set(
         'modalParams',
-        btoa(JSON.stringify({ ...modalParams, [activeModal]: { activeModalParams, ...params } })),
+        btoa(JSON.stringify({ ...modalParams, [activeModal]: { ...activeModalParams[activeModal], ...params } })),
       );
-      pushRoute({ search: searchParams.toString() });
+      console.log('>>> updateModalParams', { params, activeModal, activeModalParams, searchParams });
+      replaceRoute({ search: searchParams.toString() });
     },
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -104,4 +102,4 @@ export const useModalRouting = (task: RouterTask) => {
   };
 };
 
-export default useModalRouting;
+export default useModalRouter;

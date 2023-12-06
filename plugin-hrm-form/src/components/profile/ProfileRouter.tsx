@@ -17,7 +17,7 @@
 import React from 'react';
 
 import { RouterTask } from '../../types/types';
-import { useModalRouting, useRouting } from '../../states/routing/hooks';
+import { useModalRouter, useRoutingState } from '../../states/routing/hooks';
 import ProfileCaseDetails from './ProfileCaseDetails';
 import ProfileContactDetails from './ProfileContactDetails';
 import ProfileEdit from './ProfileEdit';
@@ -62,11 +62,11 @@ const PROFILE_ROUTES: Record<string, ProfileRouteConfig> = {
 
 const MODALS = Object.values(PROFILE_ROUTES).flatMap(({ modals }) => modals);
 
-export const isProfileRoute = ({ activeModal }: ReturnType<typeof useRouting>) =>
+export const isProfileRoute = ({ activeModal }: ReturnType<typeof useRoutingState>) =>
   activeModal && MODALS.includes(activeModal);
 
 const ProfileRouter: React.FC<Props> = props => {
-  const { activeModal, activeModalParams } = useModalRouting(props.task);
+  const { activeModal, activeModalParams } = useModalRouter(props.task);
 
   return (
     Object.values(PROFILE_ROUTES)

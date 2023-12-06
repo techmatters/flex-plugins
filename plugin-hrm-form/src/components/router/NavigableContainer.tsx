@@ -19,7 +19,7 @@ import { Close } from '@material-ui/icons';
 import { StyledProps } from '@material-ui/core';
 
 import { RouterTask } from '../../types/types';
-import { useModalRouting, useRoutingHistory } from '../../states/routing/hooks';
+import { useModalRouter, useTaskRouter } from '../../states/routing/hooks';
 import { Box, HeaderCloseButton, HiddenText, Row, StyledBackButton } from '../../styles/HrmStyles';
 import {
   LargeBackIcon,
@@ -47,8 +47,8 @@ const NavigableContainer: React.FC<Props> = ({
   onCloseModal,
   ...boxProps
 }) => {
-  const { activeModal, closeModal } = useModalRouting(task);
-  const { goBack } = useRoutingHistory();
+  const { activeModal, closeModal } = useModalRouter(task);
+  const { popRoute } = useTaskRouter(task);
 
   const handleCloseModal = () => {
     if (onCloseModal) {
@@ -64,7 +64,7 @@ const NavigableContainer: React.FC<Props> = ({
     if (activeModal) {
       return handleCloseModal();
     }
-    return goBack();
+    return popRoute();
   };
 
   return (

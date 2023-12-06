@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { LocationDescriptorObject } from 'history';
 
 import { RootState } from '..';
 import { namespace, routingBase } from '../storeNamespaces';
@@ -22,3 +23,19 @@ const selectRoutingState = (state: RootState) => state[namespace][routingBase];
 
 export const selectRoutingStateByTaskId = (state: RootState, taskId: string): RTaskEntry | undefined =>
   selectRoutingState(state)?.rTasks[taskId];
+
+export const selectCurrentTaskRoute = (
+  state: RootState,
+  taskId: string,
+): LocationDescriptorObject<unknown> | undefined => {
+  const taskRoutes = selectRoutingStateByTaskId(state, taskId)?.taskRoutes || [];
+  return taskRoutes.length ? taskRoutes[taskRoutes.length - 1] : undefined;
+};
+
+export const selectLastTaskRoute = (
+  state: RootState,
+  taskId: string,
+): LocationDescriptorObject<unknown> | undefined => {
+  const taskRoutes = selectRoutingStateByTaskId(state, taskId)?.taskRoutes || [];
+  return taskRoutes.length ? taskRoutes[taskRoutes.length - 2] : undefined;
+};

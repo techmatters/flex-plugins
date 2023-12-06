@@ -17,7 +17,7 @@ import React, { useEffect } from 'react';
 import { Router as BaseRouter, RouteComponentProps } from 'react-router-dom';
 import { withRouter } from '@twilio/flex-ui';
 
-import { useRouterInit, useRoutingState, GetBasePath } from '../../states/routing/hooks';
+import { useTaskRouterInit, GetBasePath } from '../../states/routing/hooks';
 import { RouterTask } from '../../types/types';
 
 type OwnProps = {
@@ -32,18 +32,18 @@ const RouterInit: React.FC<OwnProps> = ({ task, getBasePath }) => {
   // This hook must be called as a child of our new router component
   // so that all of our underlying react-router-dom hooks have access
   // to the router context
-  useRouterInit(task, getBasePath);
+  useTaskRouterInit(task, getBasePath);
 
   return null;
 };
 
 const RenderChildren = ({ task, children }: OwnProps) => {
-  // This hook must be called as a child of our new router component
-  // so that all of our underlying react-router-dom hooks have access
-  // to the router context
-  const { current } = useRoutingState(task);
+  //   // This hook must be called as a child of our new router component
+  //   // so that all of our underlying react-router-dom hooks have access
+  //   // to the router context
+  //   const { current } = useRoutingState(task);
 
-  if (!current) return null;
+  //   if (!current) return null;
 
   return <>{children}</>;
 };

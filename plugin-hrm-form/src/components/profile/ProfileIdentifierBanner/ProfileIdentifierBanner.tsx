@@ -23,7 +23,7 @@ import { YellowBanner } from '../../../styles/previousContactsBanner';
 import { Bold } from '../../../styles/HrmStyles';
 import { StyledLink } from '../../../styles/search';
 import { ChannelTypes, channelTypes } from '../../../states/DomainConstants';
-import { useModalRouting } from '../../../states/routing/hooks';
+import { useModalRouter } from '../../../states/routing/hooks';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
 import { RouterTask, isTwilioTask } from '../../../types/types';
@@ -37,7 +37,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const ProfileIdentifierBanner: React.FC<Props> = ({ task }) => {
-  const { activeModal, openModal } = useModalRouting(task);
+  const { activeModal, openModal } = useModalRouter(task);
   const formattedIdentifier = getFormattedNumberFromTask(task);
   const identifierIdentifier = getNumberFromTask(task);
   const { identifier } = useIdentifierByIdentifier({ identifierIdentifier, shouldAutoload: true });

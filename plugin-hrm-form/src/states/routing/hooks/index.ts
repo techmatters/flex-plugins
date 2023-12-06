@@ -14,11 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-export * from './useModalRouting';
-export * from './useRouterInit';
-export * from './useRouting';
+export * from './useModalRouter';
+export * from './useTaskRouterInit';
 export * from './useRoutingHistory';
 export * from './useRoutingLocation';
-
-// This is the only hook that is actually related to state and not just routing management
 export * from './useRoutingState';
+export * from './useTaskRouter';
+export * from './useTaskRouterBasePath';
