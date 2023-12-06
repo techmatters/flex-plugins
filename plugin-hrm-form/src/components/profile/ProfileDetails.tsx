@@ -17,7 +17,7 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Icon, Template } from '@twilio/flex-ui';
-import { ProfileSection } from 'hrm-form-definitions';
+import { ProfileSectionDefinition } from 'hrm-form-definitions';
 
 import { Box, HiddenText, Row, HorizontalLine } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';
@@ -37,8 +37,7 @@ import ProfileSectionView from './section/ProfileSectionView';
 type OwnProps = ProfileCommonProps;
 
 type Section = {
-  titleCode?: string;
-  title?: string;
+  titleCode: string;
   renderComponent: () => React.ReactNode;
   handleEdit?: () => void;
   inInlineEditMode?: boolean;
@@ -66,10 +65,10 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
     },
   ];
 
-  const sectionTypesForms: ProfileSection[] = useProfileSectionTypes();
+  const sectionTypesForms = useProfileSectionTypes();
 
   const sectionSections: Section[] = sectionTypesForms.map(sectionType => ({
-    title: `${sectionType.label}`,
+    titleCode: sectionType.label,
     renderComponent: () => <ProfileSectionView profileId={profileId} task={task} sectionType={sectionType} />,
     handleEdit: () => openSectionEditModal(sectionType.name),
   }));
@@ -86,7 +85,9 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
       <ProfileSectionEditButton onClick={section.handleEdit}>
         {icon && <Icon icon={icon} />}
         {!icon && <Template code="Profile-EditButton" />}
-        <HiddenText>{section.title}</HiddenText>
+        <HiddenText>
+          <Template code={section.titleCode} />{' '}
+        </HiddenText>
       </ProfileSectionEditButton>
     );
   };
@@ -95,7 +96,7 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
     if (!section) return null;
 
     return (
-      <div key={section.title}>
+      <div key={section.titleCode}>
         <ProfileSectionWrapper>
           <Box marginBottom="5px">
             <Row>
