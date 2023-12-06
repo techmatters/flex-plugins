@@ -88,7 +88,7 @@ type CaseListRoute = RouteWithModalSupport & {
   subroute: 'case-list';
 };
 
-const CONTEXTS = ['search', 'hrm-form', 'profile'] as const;
+const CONTEXTS = ['search', 'hrm-form', 'profile', 'tabbed-forms'] as const;
 
 export type Contexts = typeof CONTEXTS[number];
 
