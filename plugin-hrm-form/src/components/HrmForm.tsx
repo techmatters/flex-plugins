@@ -20,7 +20,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import CallTypeButtons from './callTypeButtons';
-import ProfileRouter, { ALL_PROFILE_ROUTES } from './profile/ProfileRouter';
+import ProfileRouter, { isProfileRoute } from './profile/ProfileRouter';
 import TabbedForms from './tabbedForms';
 import CSAMReport from './CSAMReport/CSAMReport';
 import { RootState } from '../states';
@@ -49,12 +49,12 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact })
 
   const routes = [
     {
-      routes: ALL_PROFILE_ROUTES,
+      shouldHandleRoute: () => isProfileRoute(routing),
       renderComponent: () => <ProfileRouter task={task} />,
     },
     // TODO: move hrm form search into it's own component and use it here so all routes are in one place
     {
-      routes: ['tabbed-forms', 'search', 'contact', 'case'],
+      shouldHandleRoute: () => ['tabbed-forms', 'search', 'contact', 'case'].includes(route),
       renderComponent: () => (
         <TabbedForms
           task={task}
@@ -65,17 +65,20 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact })
       ),
     },
     {
-      routes: ['csam-report'],
+      shouldHandleRoute: () => ['csam-report'].includes(route),
       renderComponent: () => (
         <CSAMReport
           api={newContactCSAMApi(savedContact.id, task.taskSid, (routing as CSAMReportRoute).previousRoute)}
         />
       ),
     },
-    { routes: ['select-call-type'], renderComponent: () => <CallTypeButtons task={task} /> },
+    {
+      shouldHandleRoute: () => ['select-call-type'].includes(route),
+      renderComponent: () => <CallTypeButtons task={task} />,
+    },
   ];
 
-  return routes.find(r => r.routes?.includes(route))?.renderComponent() || null;
+  return routes.find(r => r.shouldHandleRoute())?.renderComponent() || null;
 };
 
 HrmForm.displayName = 'HrmForm';

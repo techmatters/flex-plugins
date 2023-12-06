@@ -80,7 +80,7 @@ const CaseHome: React.FC<Props> = ({
   can,
   connectedCaseState,
   taskContact,
-  routing,
+  isCreating,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   if (!connectedCaseState) return null; // narrow type before deconstructing
@@ -106,8 +106,6 @@ const CaseHome: React.FC<Props> = ({
 
   const { caseForms } = definitionVersion;
   const caseLayouts = definitionVersion.layoutVersion.case;
-
-  const isCreating = routing.route === 'case' && routing.isCreating;
 
   const {
     incidents,
@@ -345,8 +343,9 @@ const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
   const connectedCaseState = caseState.tasks[task.taskSid];
   const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
   const routing = getCurrentTopmostRouteForTask(state[namespace].routing, task.taskSid);
+  const isCreating = routing.route === 'case' && routing.isCreating;
 
-  return { connectedCaseState, taskContact, routing };
+  return { isCreating, connectedCaseState, taskContact };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: CaseHomeProps) => ({

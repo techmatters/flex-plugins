@@ -34,7 +34,18 @@ type OwnProps = {
   enableClientProfiles?: boolean;
 };
 
-// eslint-disable-next-line no-use-before-define
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const { task } = ownProps;
+  const taskId = task.taskSid;
+
+  return {
+    openProfileModal: id => {
+      dispatch(newOpenModalAction({ route: 'profile', id }, taskId));
+    },
+  };
+};
+
+const connector = connect(null, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) => {
@@ -120,17 +131,4 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) =>
 };
 
 ProfileIdentifierBanner.displayName = 'PreviousContactsBanner';
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-  const { task } = ownProps;
-  const taskId = task.taskSid;
-
-  return {
-    openProfileModal: id => {
-      dispatch(newOpenModalAction({ route: 'profile', id }, taskId));
-    },
-  };
-};
-
-const connector = connect(null, mapDispatchToProps);
 export default connector(ProfileIdentifierBanner);
