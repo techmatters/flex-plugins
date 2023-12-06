@@ -33,7 +33,12 @@ import ContactDetailsSectionForm from './ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
 import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
 import { loadContactFromHrmByIdAsyncAction } from '../../states/contacts/saveContact';
-import { clearDraft, newSetContactDialogStateAction, updateDraft } from '../../states/contacts/existingContacts';
+import {
+  clearDraft,
+  newSetContactDialogStateAction,
+  releaseContact,
+  updateDraft,
+} from '../../states/contacts/existingContacts';
 import CSAMReport from '../CSAMReport/CSAMReport';
 import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
@@ -76,15 +81,16 @@ const ContactDetails: React.FC<Props> = ({
   clearContactDraft,
   currentRoute,
   openFormConfirmDialog,
+  saveStatus,
   loadContactFromHrm,
   ...otherProps
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   React.useEffect(() => {
-    if (!savedContact) {
+    if (!savedContact && saveStatus !== 'saving') {
       loadContactFromHrm();
     }
-  }, [savedContact, loadContactFromHrm]);
+  }, [saveStatus, savedContact, loadContactFromHrm]);
   const version = savedContact?.rawJson.definitionVersion;
 
   const featureFlags = getAseloFeatureFlags();
@@ -251,7 +257,9 @@ const mapDispatchToProps = (
   goBack: () => dispatch(newGoBackAction(task.taskSid)),
   openFormConfirmDialog: (form: keyof ContactRawJson, dismissAction: 'close' | 'back') =>
     dispatch(newSetContactDialogStateAction(contactId, `${form}-confirm-${dismissAction}`, true)),
-  loadContactFromHrm: () => dispatch(loadContactFromHrmByIdAsyncAction(contactId)),
+  loadContactFromHrm: () => dispatch(loadContactFromHrmByIdAsyncAction(contactId, `${task.taskSid}-viewing`)),
+
+  releaseContactFromState: () => dispatch(releaseContact(contactId, `${task.taskSid}-viewing`)),
 });
 
 const mapStateToProps = (
@@ -259,11 +267,12 @@ const mapStateToProps = (
   { contactId, task }: OwnProps,
 ) => {
   const currentRoute = getCurrentTopmostRouteForTask(routing, task.taskSid);
-
+  const { savedContact, draftContact, metadata } = activeContacts.existingContacts[contactId] ?? {};
   return {
     definitionVersions: configuration.definitionVersions,
-    savedContact: activeContacts.existingContacts[contactId]?.savedContact,
-    draftContact: activeContacts.existingContacts[contactId]?.draftContact,
+    savedContact,
+    draftContact,
+    saveStatus: metadata?.saveStatus,
     draftCsamReport: csamReport.contacts[contactId],
     currentRoute,
   };
