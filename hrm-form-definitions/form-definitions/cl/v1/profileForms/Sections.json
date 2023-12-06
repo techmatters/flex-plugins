@@ -1,26 +1,26 @@
 [
   {
     "name": "summary",
-    "label": "Summary",
+    "label": "Resumen",
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "Enter a summary of the client"
+    "placeholder": "Ingrese un resumen del cliente"
   },
   {
     "name": "recommendedApproach",
-    "label": "Recommended Approach",
+    "label": "Enfoque Recomendado",
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "Enter recommended approach"
+    "placeholder": "Ingrese el enfoque recomendado"
   },
   {
     "name": "details",
-    "label": "Details",
+    "label": "Detalles",
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "Enter Details"
+    "placeholder": "Ingrese los detalles"
   }
 ]
