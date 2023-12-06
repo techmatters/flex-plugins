@@ -64,7 +64,7 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
   const firstElementRef = useFocus(shouldFocusFirstElement);
   const selectedCount = Object.values(selectedCategories).reduce((acc, curr) => acc + curr.length, 0);
 
-  const { register, setError } = useFormContext();
+  const { clearErrors, register } = useFormContext();
 
   // Add invisible field that errors if no category is selected (triggered by validaiton)
   React.useEffect(() => {
@@ -82,9 +82,9 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
   // Clear the error state once the count is non-zero
   React.useEffect(() => {
     if (selectedCount) {
-      setError('categories.categorySelected', null);
+      clearErrors('categories.categorySelected');
     }
-  }, [selectedCount, setError]);
+  }, [clearErrors, selectedCount]);
 
   return (
     <Container formContainer={true}>
