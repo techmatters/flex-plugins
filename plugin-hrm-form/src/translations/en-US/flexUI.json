@@ -398,7 +398,10 @@
   "Profile-FlagEditHeader": "Edit Status and Blocking",
   "Profile-NoContactsFound": "No Contacts Found",
   "Profile-NoCasesFound": "No Cases Found",
-  
+  "Profile-Edit-summary": "Edit Summary",
+  "Profile-Edit-recommendedApproach": "Edit Recommended Approach",
+  "Profile-Edit-details": "Edit Details",
+
   "UploadFile-ButtonText": "Upload File",
   "DownloadFile-ButtonText": "Download File",
   "CSAMReportForm-Header": "File a Report: Child Sexual Abuse Material",

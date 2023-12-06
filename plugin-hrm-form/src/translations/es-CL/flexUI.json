@@ -512,5 +512,9 @@
   "CaseMerging-RemoveFromCase": "Quitar del caso",
   "CaseMerging-ContactRemovedFromCase": "Contacto eliminado del caso",
   "CaseMerging-CaseCreatedAndContactAdded": "Caso #{{caseId}} creado y contacto agregado",
-  "CaseMerging-CancelCase": "Cancelar Caso"
+  "CaseMerging-CancelCase": "Cancelar Caso",
+
+  "Profile-Edit-resumen": "Editar Resumen",
+  "Profile-Edit-enfoqueRecomendado": "Editar Enfoque Recomendado",
+  "Profile-Edit-detalles": "Editar Detalles"
 }
