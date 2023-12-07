@@ -30,7 +30,7 @@ import {
   isSelectDefinitionWithReferenceOptions,
   LayoutVersion,
   CategoriesDefinition,
-  ProfileSection,
+  ProfileSectionDefinition,
 } from './types';
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 
@@ -197,7 +197,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     ),
     fetchDefinition<Record<string, any>>('ReferenceData.json', {}),
     fetchDefinition<string[]>('BlockedEmojis.json', []),
-    fetchDefinition<ProfileSection[]>('profileForms/Sections.json', []),
+    fetchDefinition<ProfileSectionDefinition[]>('profileForms/Sections.json', []),
   ]);
 
   const { helplines } = helplineInformation;
