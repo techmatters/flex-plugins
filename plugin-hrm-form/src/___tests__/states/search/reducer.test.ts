@@ -20,7 +20,7 @@ import * as t from '../../../states/search/types';
 import { handleSearchFormChange } from '../../../states/search/actions';
 import { SearchCaseResult } from '../../../types/types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../../../states/types';
-import { reduce, newTaskEntry } from '../../../states/search/reducer';
+import { newTaskEntry, reduce } from '../../../states/search/reducer';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
 import {
   CREATE_CONTACT_ACTION_FULFILLED,
@@ -145,8 +145,8 @@ describe('search reducer', () => {
     const searchResult = {
       count: 2,
       contacts: [
-        { contactId: 'fake contact result 1', overview: {}, details: {}, counselorName: '' },
-        { contactId: 'fake contact result 2', overview: {}, details: {}, counselorName: '' },
+        { ...VALID_EMPTY_CONTACT, id: 'fake contact result 1' },
+        { ...VALID_EMPTY_CONTACT, id: 'fake contact result 2' },
       ],
     } as t.DetailedSearchContactsResult; // type casting to avoid writing an entire DetailedSearchContactsResult
     const action: t.SearchActionType = {
@@ -157,7 +157,10 @@ describe('search reducer', () => {
     const result = reduce(state, action);
 
     const { tasks } = result;
-    expect(tasks[task.taskSid].searchContactsResult).toStrictEqual(searchResult);
+    expect(tasks[task.taskSid].searchContactsResult).toStrictEqual({
+      count: 2,
+      ids: ['fake contact result 1', 'fake contact result 2'],
+    });
     state = result;
   });
 

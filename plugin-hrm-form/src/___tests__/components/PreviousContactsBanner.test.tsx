@@ -23,6 +23,7 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 
 import { UnconnectedPreviousContactsBanner } from '../../components/profile/ProfileIdentifierBanner/PreviousContactsBanner';
 import { channelTypes } from '../../states/DomainConstants';
+import { PreviousContactCounts } from '../../states/search/types';
 
 jest.mock('../../components/CSAMReport/CSAMReportFormDefinition');
 
@@ -52,6 +53,11 @@ const counselorsHash = {
   'counselor-hash-1': counselor,
 };
 
+const previousContactCounts: PreviousContactCounts = {
+  contacts: 3,
+  cases: 1,
+};
+
 test('PreviousContacts initial search', () => {
   const searchContacts = jest.fn();
   const searchCases = jest.fn();
@@ -61,7 +67,7 @@ test('PreviousContacts initial search', () => {
       <UnconnectedPreviousContactsBanner
         task={webChatTask}
         counselorsHash={counselorsHash}
-        previousContacts={undefined}
+        previousContactCounts={undefined}
         searchContacts={searchContacts}
         searchCases={searchCases}
         changeRoute={jest.fn()}
@@ -78,17 +84,12 @@ test('Dont repeat initial search calls on PreviousContacts', () => {
   const searchContacts = jest.fn();
   const searchCases = jest.fn();
 
-  const previousContacts = {
-    contacts: { count: 3, contacts: [] },
-    casesCount: { count: 1, cases: [] },
-  };
-
   render(
     <StorelessThemeProvider themeConf={{}}>
       <UnconnectedPreviousContactsBanner
         task={webChatTask}
         counselorsHash={counselorsHash}
-        previousContacts={previousContacts}
+        previousContactCounts={previousContactCounts}
         searchContacts={searchContacts}
         searchCases={searchCases}
         changeRoute={jest.fn()}
@@ -102,7 +103,7 @@ test('Dont repeat initial search calls on PreviousContacts', () => {
 });
 
 test('Dont render PreviousContacts when there are no previous contacts', () => {
-  const previousContacts = {
+  const emptyPreviousContacts = {
     contacts: { count: 0, contacts: [] },
     casesCount: { count: 0, cases: [] },
   };
@@ -112,7 +113,7 @@ test('Dont render PreviousContacts when there are no previous contacts', () => {
       <UnconnectedPreviousContactsBanner
         task={webChatTask}
         counselorsHash={counselorsHash}
-        previousContacts={previousContacts}
+        previousContactCounts={emptyPreviousContacts}
         searchContacts={jest.fn()}
         searchCases={jest.fn()}
         changeRoute={jest.fn()}
@@ -125,9 +126,9 @@ test('Dont render PreviousContacts when there are no previous contacts', () => {
 });
 
 test('Render PreviousContacts when there are previous contacts', () => {
-  const previousContacts = {
-    contacts: { count: 3, contacts: [] },
-    casesCount: { count: 1, cases: [] },
+  const previousContactCounts: PreviousContactCounts = {
+    contacts: 3,
+    cases: 1,
   };
 
   render(
@@ -135,7 +136,7 @@ test('Render PreviousContacts when there are previous contacts', () => {
       <UnconnectedPreviousContactsBanner
         task={webChatTask}
         counselorsHash={counselorsHash}
-        previousContacts={previousContacts}
+        previousContactCounts={previousContactCounts}
         searchContacts={jest.fn()}
         searchCases={jest.fn()}
         changeRoute={jest.fn()}
@@ -148,11 +149,6 @@ test('Render PreviousContacts when there are previous contacts', () => {
 });
 
 test('Click View Records should redirect user to search results', () => {
-  const previousContacts = {
-    contacts: { count: 3, contacts: [] },
-    casesCount: { count: 1, cases: [] },
-  };
-
   const searchContacts = jest.fn();
   const searchCases = jest.fn();
   const openModal = jest.fn();
@@ -163,7 +159,7 @@ test('Click View Records should redirect user to search results', () => {
       <UnconnectedPreviousContactsBanner
         task={webChatTask}
         counselorsHash={counselorsHash}
-        previousContacts={previousContacts}
+        previousContactCounts={previousContactCounts}
         searchContacts={searchContacts}
         searchCases={searchCases}
         viewPreviousContacts={viewPreviousContacts}
@@ -181,17 +177,12 @@ test('Click View Records should redirect user to search results', () => {
 });
 
 test('a11y', async () => {
-  const previousContacts = {
-    contacts: { count: 3, contacts: [] },
-    casesCount: { count: 1, cases: [] },
-  };
-
   const wrapper = mount(
     <StorelessThemeProvider themeConf={{}}>
       <UnconnectedPreviousContactsBanner
         task={webChatTask}
         counselorsHash={counselorsHash}
-        previousContacts={previousContacts}
+        previousContactCounts={previousContactCounts}
         searchContacts={jest.fn()}
         searchCases={jest.fn()}
         changeRoute={jest.fn()}

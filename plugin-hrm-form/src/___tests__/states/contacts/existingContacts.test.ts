@@ -44,31 +44,17 @@ import { ConfigurationState } from '../../../states/configuration/reducer';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
 
 const baseContact: Contact = {
+  ...VALID_EMPTY_CONTACT,
   id: '1337',
-  accountSid: '',
-  timeOfContact: '',
-  number: '',
   channel: 'default',
-  twilioWorkerId: '',
   helpline: 'test helpline',
-  conversationDuration: 0,
-  createdBy: '',
-  createdAt: '',
-  updatedBy: '',
-  updatedAt: '',
-  queueName: '',
-  channelSid: '',
-  serviceSid: '',
   taskId: 'TASK_ID',
-  conversationMedia: [],
-  csamReports: [],
   rawJson: {
+    ...VALID_EMPTY_CONTACT.rawJson,
     definitionVersion: DefinitionVersionId.v1,
     callType: 'Child calling about self',
-    caseInformation: {},
     childInformation: { firstName: 'Lorna', lastName: 'Ballantyne' },
     callerInformation: { firstName: 'Charlie', lastName: 'Ballantyne' },
-    categories: {},
     contactlessTask: {
       ...VALID_EMPTY_CONTACT.rawJson.contactlessTask,
       channel: 'web',

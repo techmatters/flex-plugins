@@ -17,7 +17,7 @@
 import type { DefinitionVersion } from 'hrm-form-definitions';
 import { ITask, TaskHelper } from '@twilio/flex-ui';
 
-import type { ContactMetadata, LoadingStatus } from './types';
+import { ContactMetadata, LoadingStatus } from './types';
 import { ReferralLookupStatus } from './resourceReferral';
 import type { ContactState } from './existingContacts';
 import { Contact, ContactRawJson, isOfflineContactTask, OfflineContactTask } from '../../types/types';
