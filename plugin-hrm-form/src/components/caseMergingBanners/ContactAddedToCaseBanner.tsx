@@ -28,6 +28,7 @@ import type { Case } from '../../types/types';
 import { BannerContainer, Text, CaseLink, BannerActionLink } from './styles';
 import InfoIcon from './InfoIcon';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
+import { RootState } from '../../states';
 
 type OwnProps = {
   taskId: string;
@@ -35,12 +36,14 @@ type OwnProps = {
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-const mapStateToProps = (state, { taskId }: OwnProps) => {
+const mapStateToProps = (state: RootState, { taskId }: OwnProps) => {
   const contact = selectContactByTaskSid(state, taskId);
   const connectedCase = selectCaseByTaskSid(state, taskId);
+  const caseId = contact?.savedContact?.caseId;
   return {
     contact: contact.savedContact,
     connectedCase,
+    caseId,
   };
 };
 
@@ -60,6 +63,7 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
   contact,
   viewCaseDetails,
   removeContactFromCase,
+  caseId,
 }) => {
   if (connectedCase === undefined) return null;
 
@@ -71,7 +75,7 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
       </Text>
       <CaseLink type="button" onClick={() => viewCaseDetails(connectedCase)}>
         <Template code="Case-CaseNumber" />
-        {connectedCase.id}
+        {caseId}
       </CaseLink>
       <BannerActionLink type="button" onClick={() => removeContactFromCase(contact.id)}>
         <Template code="CaseMerging-RemoveFromCase" />
