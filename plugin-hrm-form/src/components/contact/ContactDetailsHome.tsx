@@ -50,6 +50,8 @@ import type { ResourceReferral } from '../../states/contacts/resourceReferral';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
+import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { isRouteWithContext } from '../../states/routing/types';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -111,6 +113,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   toggleSectionExpandedForContext,
   navigate,
   openProfileModal,
+  isProfileRoute,
   enableEditing,
   canViewTwilioTranscript,
   createDraftCsamReport,
@@ -249,7 +252,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
-  const profileLink = featureFlags.enable_client_profiles && savedContact.profileId && (
+  const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && (
     <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>
       <Icon icon="DefaultAvatar" />
       View Client
@@ -437,16 +440,20 @@ ContactDetailsHome.defaultProps = {
   showActionIcons: false,
 };
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
-  definitionVersions: state[namespace][configurationBase].definitionVersions,
-  counselorsHash: state[namespace][configurationBase].counselors.hash,
-  savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
-  draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
-  detailsExpanded: state[namespace][contactFormsBase].contactDetails[ownProps.context].detailsExpanded,
-  canViewTwilioTranscript: (state.flex.worker.attributes.roles as string[]).some(
-    role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.quality_process_manager',
-  ),
-});
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+  const currentRoute = getCurrentTopmostRouteForTask(state[namespace].routing, ownProps.task.taskSid);
+  return {
+    definitionVersions: state[namespace][configurationBase].definitionVersions,
+    counselorsHash: state[namespace][configurationBase].counselors.hash,
+    savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
+    draftContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.draftContact,
+    detailsExpanded: state[namespace][contactFormsBase].contactDetails[ownProps.context].detailsExpanded,
+    canViewTwilioTranscript: (state.flex.worker.attributes.roles as string[]).some(
+      role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.quality_process_manager',
+    ),
+    isProfileRoute: isRouteWithContext(currentRoute) && currentRoute?.context === 'profile',
+  };
+};
 
 const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) => ({
   toggleSectionExpandedForContext: (section: ContactDetailsSectionsType) =>

@@ -52,7 +52,12 @@ const ProfileContacts: React.FC<Props> = ({ profileId, viewContactDetails }) => 
 const mapDispatchToProps = (dispatch, { task: { taskSid } }) => {
   return {
     viewContactDetails: ({ id }: Contact) => {
-      dispatch(RoutingActions.newOpenModalAction({ route: 'contact', subroute: 'view', id: id.toString() }, taskSid));
+      dispatch(
+        RoutingActions.newOpenModalAction(
+          { route: 'contact', context: 'profile', subroute: 'view', id: id.toString() },
+          taskSid,
+        ),
+      );
     },
   };
 };

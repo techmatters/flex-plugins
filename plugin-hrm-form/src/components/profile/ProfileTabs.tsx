@@ -35,7 +35,28 @@ import { ProfileCommonProps } from './types';
 
 type OwnProps = ProfileCommonProps;
 
-// eslint-disable-next-line no-use-before-define
+const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
+  const routingState = state[namespace].routing;
+  const route = getCurrentTopmostRouteForTask(routingState, taskSid);
+  const currentTab = (route as ProfileRoute).subroute || 'details';
+
+  return {
+    currentTab,
+  };
+};
+
+const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
+  changeProfileTab: (id, subroute) =>
+    dispatch(
+      RoutingActions.changeRoute(
+        { route: 'profile', id, subroute },
+        task.taskSid,
+        RoutingTypes.ChangeRouteMode.Replace,
+      ),
+    ),
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfileTab }) => {
@@ -86,26 +107,4 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
   );
 };
 
-const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
-  const routingState = state[namespace].routing;
-  const route = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const currentTab = (route as ProfileRoute).subroute || 'details';
-
-  return {
-    currentTab,
-  };
-};
-
-const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
-  changeProfileTab: (id, subroute) =>
-    dispatch(
-      RoutingActions.changeRoute(
-        { route: 'profile', id, subroute },
-        task.taskSid,
-        RoutingTypes.ChangeRouteMode.Replace,
-      ),
-    ),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
 export default connector(ProfileTabs);

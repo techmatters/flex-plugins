@@ -31,7 +31,6 @@ export type TabbedFormSubroutes =
   | 'profileEdit';
 
 export type RouteWithModalSupport = {
-  route: 'tabbed-forms' | 'case' | 'case-list' | 'search';
   activeModal?: AppRoutes[];
 };
 
@@ -89,7 +88,19 @@ type CaseListRoute = RouteWithModalSupport & {
   subroute: 'case-list';
 };
 
-type CaseCoreRoute = {
+const CONTEXTS = ['search', 'hrm-form', 'profile'] as const;
+
+export type Contexts = typeof CONTEXTS[number];
+
+export type RouteWithContext = {
+  context?: Contexts;
+};
+
+export const isRouteWithContext = (route: any): route is RouteWithContext => {
+  return CONTEXTS.includes((route as RouteWithContext).context);
+};
+
+type CaseCoreRoute = RouteWithContext & {
   route: 'case';
   caseId: string;
   autoFocus?: boolean;
@@ -138,7 +149,7 @@ export const PROFILE_TABS = {
 
 export type ProfileTabs = typeof PROFILE_TABS[keyof typeof PROFILE_TABS];
 
-export type ProfileRoute = {
+export type ProfileRoute = RouteWithModalSupport & {
   route: 'profile';
   id: Profile['id'];
   subroute?: ProfileTabs;
@@ -177,20 +188,26 @@ export type CSAMReportRoute = {
   previousRoute: AppRoutes;
 };
 
-type ContactViewRoute = {
+type ContactCoreRoute = RouteWithContext & {
   route: 'contact';
-  subroute: 'view';
   id: string;
+  profileId?: Profile['id'];
 };
 
-export type ContactEditRoute = {
-  route: 'contact';
+type ContactViewRoute = ContactCoreRoute & {
+  subroute: 'view';
+};
+
+export type ContactEditRoute = ContactCoreRoute & {
   subroute: 'edit';
-  id: string;
   form: keyof Pick<ContactRawJson, 'childInformation' | 'callerInformation' | 'caseInformation' | 'categories'>;
 };
 
 type ContactRoute = ContactViewRoute | ContactEditRoute;
+
+export const isContactRoute = (route: AppRoutes): route is ContactRoute => {
+  return route.route === 'contact';
+};
 
 type OtherRoutes =
   | CSAMReportRoute

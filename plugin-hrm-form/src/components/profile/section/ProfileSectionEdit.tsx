@@ -38,6 +38,13 @@ type OwnProps = ProfileCommonProps & {
   sectionType: ProfileSection['sectionType'];
 };
 
+const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
+  return {
+    closeModal: () => dispatch(RoutingActions.newCloseModalAction(task.taskSid)),
+  };
+};
+
+const connector = connect(null, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props) => {
@@ -84,13 +91,4 @@ const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props)
   );
 };
 
-const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
-  return {
-    closeModal: () => dispatch(RoutingActions.newCloseModalAction(task.taskSid)),
-  };
-};
-
-const connector = connect(null, mapDispatchToProps);
-const connected = connector(ProfileSectionEdit);
-
-export default connected;
+export default connector(ProfileSectionEdit);

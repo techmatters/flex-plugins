@@ -36,6 +36,19 @@ import ProfileSectionView from './section/ProfileSectionView';
 
 type OwnProps = ProfileCommonProps;
 
+const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
+  const { profileId, task } = ownProps;
+  const taskId = task.taskSid;
+  return {
+    openSectionEditModal: (type: string) => {
+      dispatch(newOpenModalAction({ route: 'profileSectionEdit', type, id: profileId }, taskId));
+    },
+  };
+};
+
+const connector = connect(null, mapDispatchToProps);
+type Props = OwnProps & ConnectedProps<typeof connector>;
+
 type Section = {
   titleCode?: string;
   title?: string;
@@ -43,9 +56,6 @@ type Section = {
   handleEdit?: () => void;
   inInlineEditMode?: boolean;
 };
-
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal }) => {
   const { profile } = useProfile({ profileId });
@@ -127,15 +137,4 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
   );
 };
 
-const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
-  const { profileId, task } = ownProps;
-  const taskId = task.taskSid;
-  return {
-    openSectionEditModal: (type: string) => {
-      dispatch(newOpenModalAction({ route: 'profileSectionEdit', type, id: profileId }, taskId));
-    },
-  };
-};
-
-const connector = connect(null, mapDispatchToProps);
 export default connector(ProfileDetails);
