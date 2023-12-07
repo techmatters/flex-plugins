@@ -34,7 +34,7 @@ jest.mock('react-hook-form', () => ({
   useFormContext: () => ({
     clearErrors: jest.fn(),
     register: jest.fn(),
-  })
+  }),
 }));
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
 jest.mock('../../../hrmConfig');
