@@ -21,7 +21,9 @@ import { RootState } from '../../states';
 import { namespace } from '../../states/storeNamespaces';
 import { AppRoutes, isRouteWithContext } from '../../states/routing/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import { RouterTask } from '../../types/types';
+import useTabbedForm from './hooks/useTabbedForm';
+import TabbedFormsCase from './TabbedFormsCase';
+import TabbedFormsContact from './TabbedFormsContact';
 import TabbedFormsTabs from './TabbedFormsTabs';
 import TabbedFormsSearch from './TabbedFormsSearch';
 import { TabbedFormsCommonProps } from './types';
@@ -53,16 +55,16 @@ const TABBED_FORMS_ROUTES: TabbedFormRouteConfig[] = [
     renderComponent: (props: Props) => <TabbedFormsTabs {...props} />,
   },
   {
-    contextRoutes: ['search'],
+    routes: ['contact'],
+    renderComponent: (props: Props) => <TabbedFormsContact {...props} />,
+  },
+  {
+    routes: ['case'],
+    renderComponent: (props: Props) => <TabbedFormsCase {...props} />,
+  },
+  {
+    routes: ['search'],
     renderComponent: (props: Props) => <TabbedFormsSearch {...props} />,
-  },
-  {
-    contextRoutes: ['contact'],
-    renderComponent: (props: Props) => <div>Contact</div>,
-  },
-  {
-    contextRoutes: ['case'],
-    renderComponent: (props: Props) => <div>Case</div>,
   },
 ];
 
@@ -83,11 +85,14 @@ export const isTabbedFormsRoute = (routing: AppRoutes) => {
 
 const TabbedFormsRouter: React.FC<Props> = props => {
   const { currentRoute } = props;
+  const { methods, FormProvider } = useTabbedForm();
 
   return (
-    TABBED_FORMS_ROUTES.find(
-      ({ routes, contextRoutes }) => routes?.includes(currentRoute) || contextRoutes?.includes(currentRoute),
-    )?.renderComponent(props) || null
+    <FormProvider {...methods}>
+      {TABBED_FORMS_ROUTES.find(
+        ({ routes, contextRoutes }) => routes?.includes(currentRoute) || contextRoutes?.includes(currentRoute),
+      )?.renderComponent(props) || null}
+    </FormProvider>
   );
 };
 

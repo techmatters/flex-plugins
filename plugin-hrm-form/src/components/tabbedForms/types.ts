@@ -14,6 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { FormProvider } from 'react-hook-form';
+
 import { RouterTask } from '../../types/types';
 
 export type TabbedFormsCommonProps = {

@@ -56,18 +56,6 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact })
       shouldHandleRoute: () => isTabbedFormsRoute(routing),
       renderComponent: () => <TabbedFormsRouter task={task} />,
     },
-    // TODO: move hrm form search into it's own component and use it here so all routes are in one place
-    // {
-    //   shouldHandleRoute: () => ['tabbed-forms', 'search', 'contact', 'case'].includes(route),
-    //   renderComponent: () => (
-    //     <TabbedForms
-    //       task={task}
-    //       contactId={savedContact?.id}
-    //       csamClcReportEnabled={featureFlags.enable_csam_clc_report}
-    //       csamReportEnabled={featureFlags.enable_csam_report}
-    //     />
-    //   ),
-    // },
     {
       shouldHandleRoute: () => ['csam-report'].includes(route),
       renderComponent: () => (

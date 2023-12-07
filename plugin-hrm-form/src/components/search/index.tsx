@@ -34,7 +34,7 @@ import { RootState } from '../../states';
 import { namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { changeRoute, newCloseModalAction } from '../../states/routing/actions';
-import { SearchResultRoute, SearchRoute } from '../../states/routing/types';
+import { Contexts, SearchResultRoute, SearchRoute } from '../../states/routing/types';
 import NavigableContainer from '../NavigableContainer';
 
 type OwnProps = {
@@ -45,13 +45,50 @@ type OwnProps = {
   saveUpdates?: () => Promise<void>;
 };
 
-// eslint-disable-next-line no-use-before-define
+const mapStateToProps = (
+  { [namespace]: { searchContacts, activeContacts, routing } }: RootState,
+  { task }: OwnProps,
+) => {
+  const taskId = task.taskSid;
+  const taskSearchState = searchContacts.tasks[taskId];
+  const isStandaloneSearch = taskId === standaloneTaskSid;
+  const currentRoute = getCurrentTopmostRouteForTask(routing, taskId);
+  const { context } = currentRoute as SearchRoute;
+
+  return {
+    activeContacts,
+    context,
+    isRequesting: taskSearchState.isRequesting,
+    error: taskSearchState.error,
+    form: taskSearchState.form,
+    searchContactsResults: taskSearchState.searchContactsResult,
+    searchCasesResults: taskSearchState.searchCasesResult,
+    showActionIcons: !isStandaloneSearch,
+    routing: currentRoute,
+    searchCase: taskSearchState.searchExistingCaseStatus,
+  };
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const taskId = ownProps.task.taskSid;
+
+  return {
+    handleSearchFormChange: bindActionCreators(handleSearchFormChange(taskId), dispatch),
+    changeSearchPage: (subroute: SearchResultRoute['subroute'], context: Contexts, action?: SearchRoute['action']) =>
+      dispatch(changeRoute({ route: 'search', context, subroute, action, casesPage: 0, contactsPage: 0 }, taskId)),
+    searchContacts: searchContacts(dispatch)(taskId),
+    searchCases: searchCases(dispatch)(taskId),
+    closeModal: () => dispatch(newCloseModalAction(taskId)),
+  };
+};
+
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const Search: React.FC<Props> = ({
   task,
   currentIsCaller,
   activeContacts,
+  context,
   searchContacts,
   searchCases,
   handleSearchFormChange,
@@ -77,13 +114,13 @@ const Search: React.FC<Props> = ({
 
   const setSearchParamsAndHandleSearch = async newSearchParams => {
     if (routing.route === 'search' && routing.action === 'select-case') {
-      changeSearchPage('case-results', 'select-case');
+      changeSearchPage('case-results', context, 'select-case');
       await Promise.all([handleSearchCases(newSearchParams, 0)]);
       setSearchParams(newSearchParams);
       return;
     }
 
-    changeSearchPage('contact-results');
+    changeSearchPage('contact-results', context);
     await Promise.all([handleSearchContacts(newSearchParams, 0), handleSearchCases(newSearchParams, 0)]);
     setSearchParams(newSearchParams);
   };
@@ -221,41 +258,6 @@ Search.displayName = 'Search';
 Search.defaultProps = {
   currentIsCaller: false,
   error: null,
-};
-
-const mapStateToProps = (
-  { [namespace]: { searchContacts, activeContacts, routing } }: RootState,
-  { task }: OwnProps,
-) => {
-  const taskId = task.taskSid;
-  const taskSearchState = searchContacts.tasks[taskId];
-  const isStandaloneSearch = taskId === standaloneTaskSid;
-  const currentRoute = getCurrentTopmostRouteForTask(routing, taskId);
-
-  return {
-    activeContacts,
-    isRequesting: taskSearchState.isRequesting,
-    error: taskSearchState.error,
-    form: taskSearchState.form,
-    searchContactsResults: taskSearchState.searchContactsResult,
-    searchCasesResults: taskSearchState.searchCasesResult,
-    showActionIcons: !isStandaloneSearch,
-    routing: currentRoute,
-    searchCase: taskSearchState.searchExistingCaseStatus,
-  };
-};
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-  const taskId = ownProps.task.taskSid;
-
-  return {
-    handleSearchFormChange: bindActionCreators(handleSearchFormChange(taskId), dispatch),
-    changeSearchPage: (subroute: SearchResultRoute['subroute'], action?: SearchRoute['action']) =>
-      dispatch(changeRoute({ route: 'search', subroute, action, casesPage: 0, contactsPage: 0 }, taskId)),
-    searchContacts: searchContacts(dispatch)(taskId),
-    searchCases: searchCases(dispatch)(taskId),
-    closeModal: () => dispatch(newCloseModalAction(taskId)),
-  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search);

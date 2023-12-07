@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
@@ -25,7 +25,7 @@ import { ContactDraftChanges, updateDraft } from '../../states/contacts/existing
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import { changeRoute, newCloseModalAction } from '../../states/routing/actions';
-import { ChangeRouteMode } from '../../states/routing/types';
+import { ChangeRouteMode, TabbedFormSubroutes } from '../../states/routing/types';
 import { namespace } from '../../states/storeNamespaces';
 import { Contact, ContactRawJson } from '../../types/types';
 import Search from '../search';
@@ -88,6 +88,8 @@ const TabbedFormsSearch: React.FC<Props> = ({
     }
   };
 
+  // YAH: override handleViewDetails
+
   return (
     <Search
       task={task}
@@ -98,5 +100,7 @@ const TabbedFormsSearch: React.FC<Props> = ({
     />
   );
 };
+
+TabbedFormsSearch.displayName = 'TabbedFormsSearch';
 
 export default connector(TabbedFormsSearch);

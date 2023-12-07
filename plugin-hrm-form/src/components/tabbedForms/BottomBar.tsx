@@ -99,7 +99,7 @@ const BottomBar: React.FC<
     if (contactIsSaving || !hasTaskControl(task)) return;
 
     try {
-      await submitContactFormAsyncAction(task, contact, metadata, caseForm as Case);
+      await submitContactFormAsyncAction(task as CustomITask, contact, metadata, caseForm as Case);
       await completeTask(task, contact);
     } catch (error) {
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
