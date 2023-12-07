@@ -4,7 +4,6 @@ import requests
 from datetime import datetime
 from typing import NotRequired, TypedDict, Unpack
 from ..aws import S3Client
-from .constants import AWS_ROLE_ARN
 
 """
 We keep track of every version of the service configuration in S3 so we have a change log.
