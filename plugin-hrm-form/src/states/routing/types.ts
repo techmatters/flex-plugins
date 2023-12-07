@@ -30,7 +30,7 @@ export type TabbedFormSubroutes =
   | 'profile'
   | 'profileEdit';
 
-const CONTEXTS = ['search', 'hrm-form', 'profile', 'tabbed-forms'] as const;
+const CONTEXTS = ['search', 'hrm-form', 'profile'] as const;
 
 export type Contexts = typeof CONTEXTS[number];
 
@@ -66,7 +66,7 @@ export type SearchRoute =
       subroute: 'form';
       action?: 'select-case';
     })
-  | (RouteWithContext & SearchResultRoute);
+  | SearchResultRoute;
 
 export const NewCaseSectionSubroutes = {
   Note: 'note',

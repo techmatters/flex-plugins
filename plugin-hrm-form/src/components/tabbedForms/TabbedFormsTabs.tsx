@@ -94,8 +94,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => ({
     dispatch(newCSAMReportActionForContact(contactId, csamReportType, true)),
   openCSAMReport: (previousRoute: AppRoutes) =>
     dispatch(changeRoute({ route: 'csam-report', subroute: 'form', previousRoute }, task.taskSid)),
-  openSearchModal: () =>
-    dispatch(newOpenModalAction({ route: 'search', subroute: 'form', context: 'tabbed-forms' }, task.taskSid)),
+  openSearchModal: () => dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, task.taskSid)),
   removeIfOfflineContact: (contact: Contact) => removeOfflineContact(dispatch, contact),
   saveDraft: (savedContact: Contact, draftContact: ContactDraftChanges) =>
     asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact, task.taskSid)),

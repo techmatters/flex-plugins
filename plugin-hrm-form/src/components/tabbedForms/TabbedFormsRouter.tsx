@@ -15,12 +15,9 @@
  */
 
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
 
-import { RootState } from '../../states';
-import { namespace } from '../../states/storeNamespaces';
-import { AppRoutes, isRouteWithContext } from '../../states/routing/types';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { AppRoutes } from '../../states/routing/types';
+import Router, { RouteConfig, shouldHandleRoute } from '../router/Router';
 import useTabbedForm from './hooks/useTabbedForm';
 import TabbedFormsCase from './TabbedFormsCase';
 import TabbedFormsContact from './TabbedFormsContact';
@@ -28,28 +25,9 @@ import TabbedFormsTabs from './TabbedFormsTabs';
 import TabbedFormsSearch from './TabbedFormsSearch';
 import { TabbedFormsCommonProps } from './types';
 
-type OwnProps = TabbedFormsCommonProps;
+type Props = TabbedFormsCommonProps;
 
-const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
-  const routingState = state[namespace].routing;
-  const currentRouteStack = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const currentRoute = currentRouteStack?.route.toString() as AppRoutes['route'];
-
-  return {
-    currentRoute,
-  };
-};
-
-const connector = connect(mapStateToProps);
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-type TabbedFormRouteConfig = {
-  routes?: AppRoutes['route'][];
-  contextRoutes?: AppRoutes['route'][];
-  renderComponent: (props: Props) => JSX.Element;
-};
-
-const TABBED_FORMS_ROUTES: TabbedFormRouteConfig[] = [
+const TABBED_FORMS_ROUTES: RouteConfig<Props> = [
   {
     routes: ['tabbed-forms'],
     renderComponent: (props: Props) => <TabbedFormsTabs {...props} />,
@@ -68,32 +46,16 @@ const TABBED_FORMS_ROUTES: TabbedFormRouteConfig[] = [
   },
 ];
 
-const rootTabbedFormsRoutes = TABBED_FORMS_ROUTES.filter(route => route.routes).flatMap(route => route.routes);
-const contextTabbedFormsRoutes = TABBED_FORMS_ROUTES.filter(route => route.contextRoutes).flatMap(
-  route => route.contextRoutes,
-);
+export const isTabbedFormsRoute = (routing: AppRoutes) => shouldHandleRoute(routing, TABBED_FORMS_ROUTES);
 
-export const isTabbedFormsRoute = (routing: AppRoutes) => {
-  if (rootTabbedFormsRoutes.includes(routing.route)) return true;
-
-  return (
-    isRouteWithContext(routing) &&
-    routing.context === 'tabbed-forms' &&
-    contextTabbedFormsRoutes.includes(routing.route as AppRoutes['route'])
-  );
-};
-
-const TabbedFormsRouter: React.FC<Props> = props => {
-  const { currentRoute } = props;
+const TabbedFormsRouter: React.FC<Props> = ({ task }) => {
   const { methods, FormProvider } = useTabbedForm();
 
   return (
     <FormProvider {...methods}>
-      {TABBED_FORMS_ROUTES.find(
-        ({ routes, contextRoutes }) => routes?.includes(currentRoute) || contextRoutes?.includes(currentRoute),
-      )?.renderComponent(props) || null}
+      <Router task={task} routeConfig={TABBED_FORMS_ROUTES} />
     </FormProvider>
   );
 };
 
-export default connector(TabbedFormsRouter);
+export default TabbedFormsRouter;

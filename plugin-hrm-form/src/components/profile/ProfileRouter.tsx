@@ -22,6 +22,7 @@ import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { AppRoutes, ProfileRoute, isRouteWithContext } from '../../states/routing/types';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
+import Router, { RouteConfig, shouldHandleRoute } from '../router/Router';
 import ProfileCaseDetails from './ProfileCaseDetails';
 import ProfileContactDetails from './ProfileContactDetails';
 import ProfileEdit from './ProfileEdit';
@@ -36,24 +37,16 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const routingState = state[namespace].routing;
   const route = getCurrentTopmostRouteForTask(routingState, taskSid);
   const profileId = (route as ProfileRoute).id;
-  const currentRoute = route?.route.toString() as AppRoutes['route'];
 
   return {
     profileId,
-    currentRoute,
   };
 };
 
 const connector = connect(mapStateToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-type ProfileRouteConfig = {
-  routes?: AppRoutes['route'][];
-  contextRoutes?: AppRoutes['route'][];
-  renderComponent: (props: Props) => JSX.Element;
-};
-
-const PROFILE_ROUTES: ProfileRouteConfig[] = [
+const PROFILE_ROUTES: RouteConfig<Props> = [
   {
     routes: ['profile'],
     renderComponent: (props: Props) => <ProfileTabs {...props} />,
@@ -76,30 +69,10 @@ const PROFILE_ROUTES: ProfileRouteConfig[] = [
   },
 ];
 
-const rootProfileRoutes = PROFILE_ROUTES.filter(({ routes }) => Boolean(routes)).flatMap(({ routes }) => routes);
-const contextProfileRoutes = PROFILE_ROUTES.filter(({ contextRoutes }) => Boolean(contextRoutes)).flatMap(
-  ({ contextRoutes }) => contextRoutes,
-);
+export const isProfileRoute = (routing: AppRoutes) => shouldHandleRoute(routing, PROFILE_ROUTES, 'profile');
 
-export const isProfileRoute = (routing: AppRoutes) => {
-  // @ts-ignore
-  if (rootProfileRoutes.includes(routing.route)) return true;
-
-  return (
-    isRouteWithContext(routing) &&
-    routing.context === 'profile' &&
-    contextProfileRoutes.includes(routing.route as AppRoutes['route'])
-  );
-};
-
-const ProfileRouter: React.FC<Props> = props => {
-  const { currentRoute } = props;
-
-  return (
-    PROFILE_ROUTES.find(
-      ({ routes, contextRoutes }) => routes?.includes(currentRoute) || contextRoutes?.includes(currentRoute),
-    )?.renderComponent(props) || null
-  );
+const ProfileRouter: React.FC<Props> = ({ task }) => {
+  return <Router task={task} routeConfig={PROFILE_ROUTES} />;
 };
 
 export default connector(ProfileRouter);
