@@ -244,32 +244,12 @@ const TabbedForms: React.FC<Props> = ({
     );
   }
 
-  const renderCaseLayout = () => {
-    // This is a dirty hack so that case viewing works for the create case form and
-    // the profile view case form. It could use a refactor if/when we move routing
-    // into a separate component, but this *should* mostly work for now.
-    // Editing the case in the profile view case form will probably not work
-    // as expected without some additional work.
-    const isCreating = currentRoute.hasOwnProperty('isCreating') ? (currentRoute as CaseRoute).isCreating : true;
-    const caseProps: CaseProps = {
-      task,
-      isCreating,
-    };
-
-    if (isCreating) {
-      caseProps.onNewCaseSaved = onNewCaseSaved;
-      caseProps.handleClose = closeModal;
-    }
-
+  if (currentRoute.route === 'case') {
     return (
       <CaseLayout>
-        <Case {...caseProps} />
+        <Case task={task} onNewCaseSaved={onNewCaseSaved} handleClose={closeModal} />
       </CaseLayout>
     );
-  };
-
-  if (currentRoute.route === 'case') {
-    return renderCaseLayout();
   }
 
   if (currentRoute.route === 'contact') {

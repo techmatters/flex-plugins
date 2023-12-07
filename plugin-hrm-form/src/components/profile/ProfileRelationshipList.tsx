@@ -34,7 +34,38 @@ type OwnProps = {
   renderItem: (d: ProfileTypes.ProfileRelationshipTypes) => React.ReactNode;
 };
 
-// eslint-disable-next-line no-use-before-define
+const mapStateToProps = (state: RootState, { profileId, type }) => {
+  const { data, loading, page, total } =
+    profileSelectors.selectProfileRelationshipsByType(state, profileId, type) || {};
+
+  return {
+    data,
+    loading,
+    page,
+    total,
+  };
+};
+
+const mapDispatchToProps = (dispatch, { profileId, type }: OwnProps) => ({
+  loadRelationshipAsync: (page: number) =>
+    asyncDispatch(dispatch)(
+      profileActions.loadRelationshipAsync({
+        profileId,
+        type,
+        page,
+      }),
+    ),
+  updatePage: (page: number) =>
+    dispatch(
+      profileActions.updateRelationshipsPage({
+        profileId,
+        type,
+        page,
+      }),
+    ),
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileRelationshipList: React.FC<Props> = ({
@@ -83,36 +114,4 @@ const ProfileRelationshipList: React.FC<Props> = ({
   );
 };
 
-const mapStateToProps = (state: RootState, { profileId, type }) => {
-  const { data, loading, page, total } =
-    profileSelectors.selectProfileRelationshipsByType(state, profileId, type) || {};
-
-  return {
-    data,
-    loading,
-    page,
-    total,
-  };
-};
-
-const mapDispatchToProps = (dispatch, { profileId, type }: OwnProps) => ({
-  loadRelationshipAsync: (page: number) =>
-    asyncDispatch(dispatch)(
-      profileActions.loadRelationshipAsync({
-        profileId,
-        type,
-        page,
-      }),
-    ),
-  updatePage: (page: number) =>
-    dispatch(
-      profileActions.updateRelationshipsPage({
-        profileId,
-        type,
-        page,
-      }),
-    ),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
 export default connector(ProfileRelationshipList);

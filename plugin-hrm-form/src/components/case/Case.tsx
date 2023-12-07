@@ -74,7 +74,6 @@ export const isStandaloneITask = (task): task is StandaloneITask => {
 
 export type OwnProps = {
   task: CustomITask | StandaloneITask;
-  isCreating?: boolean;
   handleClose?: () => void;
   onNewCaseSaved?: (caseForm: CaseType) => Promise<void>;
 };
@@ -339,14 +338,17 @@ Case.displayName = 'Case';
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const caseState = selectCurrentRouteCaseState(state, task.taskSid);
   const { connectedCase } = caseState ?? {};
+  const routing = getCurrentTopmostRouteForTask(state[namespace].routing, task.taskSid) as CaseRoute;
+  const isCreating = routing.route === 'case' && routing.isCreating;
 
   return {
     connectedCaseState: caseState,
     connectedCaseId: connectedCase?.id,
     counselorsHash: selectCounselorsHash(state),
-    routing: getCurrentTopmostRouteForTask(state[namespace].routing, task.taskSid) as CaseRoute,
     definitionVersions: selectDefinitionVersions(state),
     currentDefinitionVersion: selectCurrentDefinitionVersion(state),
+    isCreating,
+    routing,
     savedContacts: selectSavedContacts(state, connectedCase),
     taskContact: selectContactByTaskSid(state, task.taskSid)?.savedContact,
   };
