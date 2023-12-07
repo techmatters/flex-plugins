@@ -170,7 +170,7 @@ class ServiceConfiguration():
 
     def init_region(self):
         try:
-            self.region = self.get_ssm_client(self.environment).get_parameter(
+            self.region = self.get_ssm_client().get_parameter(
                 f"/{self.environment}/aws/{self.account_sid}/region"
             )
         except Exception:
@@ -250,7 +250,7 @@ class ServiceConfiguration():
                 account_sid=self.account_sid,
                 helpline_code=self.helpline_code
             )
-            ssm_value = self.get_ssm_client(self.environment).get_parameter(ssm_key_name)
+            ssm_value = self.get_ssm_client().get_parameter(ssm_key_name)
             set_nested_key(self.new_state, key, ssm_value)
 
     def init_plan(self):
