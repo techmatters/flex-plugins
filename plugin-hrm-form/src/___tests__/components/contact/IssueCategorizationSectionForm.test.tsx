@@ -30,6 +30,12 @@ import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { FeatureFlags } from '../../../types/types';
 import { contactFormsBase, namespace } from '../../../states/storeNamespaces';
 
+jest.mock('react-hook-form', () => ({
+  useFormContext: () => ({
+    clearErrors: jest.fn(),
+    register: jest.fn(),
+  }),
+}));
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
 jest.mock('../../../hrmConfig');
 
