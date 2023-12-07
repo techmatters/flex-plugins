@@ -15,14 +15,14 @@
  */
 
 import React from 'react';
-import { ProfileSection } from 'hrm-form-definitions';
+import { ProfileSectionDefinition } from 'hrm-form-definitions';
 
 import { ProfileCommonProps } from '../types';
 import { useProfileSectionByType } from '../../../states/profile/hooks/useProfileSection';
 import { ProfileSectionTextContent, SectionText } from '../styles';
 
 type OwnProps = ProfileCommonProps & {
-  sectionType: ProfileSection;
+  sectionType: ProfileSectionDefinition;
 };
 
 const ProfileSectionView = ({ profileId, sectionType }: OwnProps) => {
@@ -34,7 +34,7 @@ const ProfileSectionView = ({ profileId, sectionType }: OwnProps) => {
 
   return (
     <ProfileSectionTextContent hasContent={Boolean(section?.content)}>
-      {section?.content?.length > 0 ? section?.content : `No ${sectionType.name}`}
+      {section?.content?.length > 0 ? section?.content : `No ${sectionType.label}`}
     </ProfileSectionTextContent>
   );
 };
