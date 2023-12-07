@@ -34,7 +34,7 @@ import { hasTaskControl } from '../../utils/transfer';
 import { RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError } from '../../fullStory';
-import { Case, CustomITask, Contact } from '../../types/types';
+import { Case, CustomITask, Contact, RouterTask } from '../../types/types';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
@@ -52,7 +52,7 @@ type BottomBarProps = {
   showNextButton: boolean;
   showSubmitButton: boolean;
   nextTab: () => void;
-  task: CustomITask;
+  task: RouterTask;
   contactId: string;
   saveUpdates: () => Promise<void>;
 };

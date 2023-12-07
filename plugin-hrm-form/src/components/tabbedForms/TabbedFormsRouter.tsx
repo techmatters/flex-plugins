@@ -22,11 +22,11 @@ import { namespace } from '../../states/storeNamespaces';
 import { AppRoutes, isRouteWithContext } from '../../states/routing/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { RouterTask } from '../../types/types';
-import TabbedForms from './TabbedForms';
+import TabbedFormsTabs from './TabbedFormsTabs';
+import TabbedFormsSearch from './TabbedFormsSearch';
+import { TabbedFormsCommonProps } from './types';
 
-type OwnProps = {
-  task: RouterTask;
-};
+type OwnProps = TabbedFormsCommonProps;
 
 const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const routingState = state[namespace].routing;
@@ -50,11 +50,11 @@ type TabbedFormRouteConfig = {
 const TABBED_FORMS_ROUTES: TabbedFormRouteConfig[] = [
   {
     routes: ['tabbed-forms'],
-    renderComponent: (props: Props) => <TabbedForms {...props} />,
+    renderComponent: (props: Props) => <TabbedFormsTabs {...props} />,
   },
   {
     contextRoutes: ['search'],
-    renderComponent: (props: Props) => <div>Search</div>,
+    renderComponent: (props: Props) => <TabbedFormsSearch {...props} />,
   },
   {
     contextRoutes: ['contact'],

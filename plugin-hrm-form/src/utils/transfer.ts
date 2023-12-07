@@ -19,7 +19,7 @@ import { Actions, ITask, TaskHelper, Manager } from '@twilio/flex-ui';
 
 import type { RootState } from '../states';
 import { transferStatuses, transferModes } from '../states/DomainConstants';
-import { CustomITask, isTwilioTask } from '../types/types';
+import { CustomITask, isTwilioTask, RouterTask } from '../types/types';
 import { isCallStatusLoading } from '../states/conferencing/callStatus';
 
 export const hasTransferStarted = (task: ITask) => Boolean(task.attributes && task.attributes.transferMeta);
@@ -65,7 +65,7 @@ export const shouldShowTransferControls = (task: ITask) =>
  * - this is the original reservation and a transfer was initiated and then rejected
  * - this is not the original reservation and a transfer was initiated and then accepted
  */
-export const hasTaskControl = (task: CustomITask) =>
+export const hasTaskControl = (task: RouterTask) =>
   !isTwilioTask(task) || !hasTransferStarted(task) || task.attributes.transferMeta.sidWithTaskControl === task.sid;
 
 const setTaskControl = async (task: ITask, sidWithTaskControl: string) => {

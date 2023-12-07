@@ -18,45 +18,72 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { callTypes } from 'hrm-form-definitions';
 
+import { RootState } from '../../states';
 import asyncDispatch from '../../states/asyncDispatch';
+import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
+import { ContactDraftChanges, updateDraft } from '../../states/contacts/existingContacts';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
-import { selectContactByTaskSid } from '../../states/contacts/selectContactByTaskSid';
+import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
+import { changeRoute, newCloseModalAction } from '../../states/routing/actions';
+import { ChangeRouteMode } from '../../states/routing/types';
+import { namespace } from '../../states/storeNamespaces';
+import { Contact, ContactRawJson } from '../../types/types';
 import Search from '../search';
 import { TabbedFormsCommonProps } from './types';
 
 type OwnProps = TabbedFormsCommonProps;
 
-const mapStateToProps = (state: RootState, { task: { taskSid }, contactId }: OwnProps) => {
+const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const {
-    [namespace]: { routing, activeContacts, configuration },
+    [namespace]: { activeContacts },
   } = state;
-  const savedContact = selectContactByTaskSid(state, taskSid);
+  const { savedContact, draftContact } = selectContactByTaskSid(state, taskSid);
+  const { isCallTypeCaller } = activeContacts;
 
   return {
-    contactId,
-    savedContact,
     draftContact,
+    isCallTypeCaller,
+    savedContact,
+    updatedContact: getUnsavedContact(savedContact, draftContact),
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => ({
   saveDraft: (savedContact: Contact, draftContact: ContactDraftChanges) =>
     asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact, task.taskSid)),
+  updateDraftForm: (contactId: Contact['id'], form: Partial<ContactRawJson>) =>
+    dispatch(updateDraft(contactId, { rawJson: form })),
+  closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
+  navigateToTab: (tab: TabbedFormSubroutes) =>
+    dispatch(
+      changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, task.taskSid, ChangeRouteMode.Replace),
+    ),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-export const TabbedFormsSearch: React.FC<Props> = ({ task, savedContact }) => {
+const TabbedFormsSearch: React.FC<Props> = ({
+  task,
+  isCallTypeCaller,
+  draftContact,
+  savedContact,
+  updatedContact,
+  closeModal,
+  saveDraft,
+  navigateToTab,
+  updateDraftForm,
+}) => {
   const onSelectSearchResult = (searchResult: Contact) => {
     const selectedIsCaller = searchResult.rawJson.callType === callTypes.caller;
+    const isCallerType = updatedContact.rawJson.callType === callTypes.caller;
     closeModal();
     if (isCallerType && selectedIsCaller && isCallTypeCaller) {
-      updateDraftForm({ callerInformation: searchResult.rawJson.callerInformation });
+      updateDraftForm(savedContact.id, { callerInformation: searchResult.rawJson.callerInformation });
       navigateToTab('callerInformation');
     } else {
-      updateDraftForm({ childInformation: searchResult.rawJson.childInformation });
+      updateDraftForm(savedContact.id, { childInformation: searchResult.rawJson.childInformation });
       navigateToTab('childInformation');
     }
   };
@@ -66,7 +93,7 @@ export const TabbedFormsSearch: React.FC<Props> = ({ task, savedContact }) => {
       task={task}
       currentIsCaller={savedContact?.rawJson?.callType === callTypes.caller}
       handleSelectSearchResult={onSelectSearchResult}
-      contactId={contactId}
+      contactId={savedContact?.id}
       saveUpdates={() => saveDraft(savedContact, draftContact)}
     />
   );
