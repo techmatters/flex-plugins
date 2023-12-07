@@ -52,7 +52,8 @@ import ContactlessTaskTab from './ContactlessTaskTab';
 import CSAMAttachments from './CSAMAttachments';
 import CSAMReportButton from './CSAMReportButton';
 import { TabbedFormsCommonProps } from './types';
-import useTabbedForm from './hooks/useTabbedForm'; // Ensure ww import any custom components that might be used in a form
+import useTabbedForm from './hooks/useTabbedForm';
+// Ensure we import any custom components that might be used in a form
 import '../contact/ResourceReferralList';
 
 type OwnProps = TabbedFormsCommonProps;
