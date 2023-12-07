@@ -14,23 +14,24 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { SearchContactResult } from '../../types/types';
 import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
-import { LoadingStatus } from './types';
 
-export const selectIsContactCreating = (
-  {
-    [namespace]: {
-      activeContacts: { contactsBeingCreated },
-    },
-  }: RootState,
-  taskSid: string,
-) => contactsBeingCreated.has(taskSid);
+const selectContactsForSearchResults = (state: RootState, taskSid: string): SearchContactResult => {
+  const resultReferences = state[namespace].searchContacts.tasks[taskSid]?.searchContactsResult;
+  if (!resultReferences) {
+    return {
+      count: 0,
+      contacts: [],
+    };
+  }
+  return {
+    count: resultReferences.count,
+    contacts: resultReferences.ids
+      .map(id => state[namespace].activeContacts.existingContacts[id]?.savedContact)
+      .filter(c => Boolean(c)),
+  };
+};
 
-export const selectAnyContactIsSaving = ({
-  [namespace]: {
-    activeContacts: { contactsBeingCreated, existingContacts },
-  },
-}: RootState) =>
-  contactsBeingCreated.size > 0 ||
-  Object.values(existingContacts).some(({ metadata }) => metadata?.loadingStatus === LoadingStatus.LOADING);
+export default selectContactsForSearchResults;

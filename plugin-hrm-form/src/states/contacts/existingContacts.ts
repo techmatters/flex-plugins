@@ -167,6 +167,33 @@ type ReleaseContactAction = {
   reference: string;
 };
 
+const releaseContactStatesById = (
+  state: ExistingContactsState,
+  ids: string[],
+  reference: string,
+): ExistingContactsState => {
+  const updateKvps = ids
+    .map(id => {
+      const current = state[id];
+      if (!current) {
+        console.warn(
+          `Tried to release contact id ${id} but wasn't in the redux state. You should only release previously loaded contacts once`,
+        );
+        return [id, undefined];
+      }
+      current.references.delete(reference);
+      return [id, current];
+    })
+    .filter(([, ecs]) => typeof ecs === 'object' && ecs.references.size > 0);
+  return {
+    ...omit(state, ...ids),
+    ...Object.fromEntries(updateKvps),
+  };
+};
+
+export const releaseAllContactStates = (state: ExistingContactsState, reference: string) =>
+  releaseContactStatesById(state, Object.keys(state), reference);
+
 export const releaseContact = (id: string, reference: string): ReleaseContactAction => ({
   type: RELEASE_CONTACT_ACTION,
   ids: [id],
@@ -179,25 +206,8 @@ export const releaseContacts = (ids: string[], reference: string): ReleaseContac
   reference,
 });
 
-export const releaseContactReducer = (state: ExistingContactsState, action: ReleaseContactAction) => {
-  const updateKvps = action.ids
-    .map(id => {
-      const current = state[id];
-      if (!current) {
-        console.warn(
-          `Tried to release contact id ${id} but wasn't in the redux state. You should only release previously loaded contacts once`,
-        );
-        return [id, undefined];
-      }
-      current.references.delete(action.reference);
-      return [id, current];
-    })
-    .filter(([, ecs]) => typeof ecs === 'object' && ecs.references.size > 0);
-  return {
-    ...omit(state, ...action.ids),
-    ...Object.fromEntries(updateKvps),
-  };
-};
+export const releaseContactReducer = (state: ExistingContactsState, { ids, reference }: ReleaseContactAction) =>
+  releaseContactStatesById(state, ids, reference);
 
 export const EXISTING_CONTACT_LOAD_TRANSCRIPT = 'EXISTING_CONTACT_LOAD_TRANSCRIPT';
 

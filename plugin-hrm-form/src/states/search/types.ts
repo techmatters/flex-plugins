@@ -37,6 +37,7 @@ export const newSearchFormEntry = {
   dateFrom: '',
   dateTo: '',
   contactNumber: '',
+  helpline: { label: '', value: '' },
 };
 
 export type SearchFormValues = {
@@ -102,7 +103,13 @@ export type SearchActionType =
   | SearchCasesSuccessAction
   | SearchCasesFailureAction
   | ViewPreviousContactsAction;
+
 export type SearchResultReferences = {
   count: number;
   ids: string[];
+};
+
+export type PreviousContactCounts = {
+  contacts: number;
+  cases: number;
 };

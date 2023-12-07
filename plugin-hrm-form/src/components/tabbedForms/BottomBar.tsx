@@ -22,11 +22,11 @@ import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import {
-  Box,
-  BottomButtonBar,
-  StyledNextStepButton,
   AddedToCaseButton,
+  BottomButtonBar,
+  Box,
   SaveAndEndButton,
+  StyledNextStepButton,
 } from '../../styles/HrmStyles';
 import * as RoutingActions from '../../states/routing/actions';
 import { completeTask } from '../../services/formSubmissionHelpers';
@@ -34,12 +34,12 @@ import { hasTaskControl } from '../../utils/transfer';
 import { RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError } from '../../fullStory';
-import { Case, CustomITask, Contact } from '../../types/types';
+import { Case, Contact, CustomITask } from '../../types/types';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
-import { ContactMetadata } from '../../states/contacts/types';
+import { ContactMetadata, LoadingStatus } from '../../states/contacts/types';
 import { AppRoutes } from '../../states/routing/types';
 import AddCaseButton from './AddCaseButton';
 import asyncDispatch from '../../states/asyncDispatch';
@@ -209,7 +209,7 @@ BottomBar.displayName = 'BottomBar';
 const mapStateToProps = (state: RootState, { contactId }: BottomBarProps) => {
   const { draftContact, savedContact, metadata } = selectContactStateByContactId(state, contactId) ?? {};
   const caseForm = selectCaseByCaseId(state, savedContact.caseId ?? '')?.connectedCase || {};
-  const contactIsSaving = metadata?.saveStatus === 'saving';
+  const contactIsSaving = metadata.loadingStatus === LoadingStatus.LOADING;
   return {
     contact: getUnsavedContact(savedContact, draftContact),
     metadata,

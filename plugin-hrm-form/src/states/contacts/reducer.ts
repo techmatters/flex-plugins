@@ -23,7 +23,8 @@ import {
   ContactsState,
   CREATE_CONTACT_ACTION,
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION,
-  SET_SAVED_CONTACT, UPDATE_CONTACT_ACTION,
+  SET_SAVED_CONTACT,
+  UPDATE_CONTACT_ACTION,
 } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import {
@@ -38,6 +39,7 @@ import {
   loadContactReducer,
   loadTranscriptReducer,
   RELEASE_CONTACT_ACTION,
+  releaseAllContactStates,
   releaseContactReducer,
   SET_CONTACT_DIALOG_STATE,
   setCategoriesGridViewReducer,
@@ -54,11 +56,14 @@ import {
 import { ADD_EXTERNAL_REPORT_ENTRY, addExternalReportEntryReducer } from '../csam-report/existingContactExternalReport';
 import { resourceReferralReducer } from './resourceReferral';
 import { ContactCategoryAction, toggleSubCategoriesReducer } from './categories';
-import { RootState } from '..';
+import { HrmState } from '..';
 import { createCaseAsyncAction } from '../case/saveCase';
 import { newContactState } from './contactState';
-import { saveContactReducer } from './saveContact';
+import { loadContactIntoRedux, saveContactReducer } from './saveContact';
 import { configurationBase } from '../storeNamespaces';
+import { ConfigurationState } from '../configuration/reducer';
+import { Contact } from '../../types/types';
+import { SEARCH_CONTACTS_SUCCESS, SearchContactsSuccessAction } from '../search/types';
 
 export const emptyCategories = [];
 
@@ -83,6 +88,7 @@ type SaveContactReducerAction = Parameters<typeof boundSaveContactReducer>[1] &
       | typeof LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION
       | typeof SET_SAVED_CONTACT}_${string}`
   };
+
 const newCaseReducer = createReducer(initialState, handleAction => [
   handleAction(
     createCaseAsyncAction.fulfilled,
@@ -107,9 +113,27 @@ const newCaseReducer = createReducer(initialState, handleAction => [
   ),
 ]);
 
+const loadContactListIntoState = (
+  contactsState: ContactsState,
+  configurationState: ConfigurationState,
+  contacts: Contact[],
+  referenceId: string,
+): ContactsState => {
+  // Release any contacts currently loaded with the same referenceId - they are being replaced
+  const withoutOldSearchResults = { ...contactsState, existingContacts: releaseAllContactStates(contactsState.existingContacts, referenceId) };
+  if (contacts?.length) {
+    return contacts.reduce((acc, newContact) => {
+      // TODO: strip the totalCount property in HRM
+      const { totalCount, ...contactToAdd } = newContact as Contact & { totalCount: number };
+      return loadContactIntoRedux(acc, contactToAdd, referenceId);
+    }, withoutOldSearchResults);
+  }
+  return withoutOldSearchResults;
+};
+
 // eslint-disable-next-line import/no-unused-modules,complexity
 export function reduce(
-  rootState: RootState['plugin-hrm-form'],
+  rootState: HrmState,
   inputState = initialState,
   action:
     | t.ContactsActionType
@@ -118,7 +142,8 @@ export function reduce(
     | ContactCategoryAction
     | RemoveContactStateAction
     | t.UpdatedContactAction
-    | SaveContactReducerAction,
+    | SaveContactReducerAction
+    | SearchContactsSuccessAction,
 ): ContactsState {
   let state = boundReferralReducer(inputState, action as any);
   state = toggleSubCategoriesReducer(state, action as ContactCategoryAction);
@@ -232,6 +257,9 @@ export function reduce(
     }
     case ADD_EXTERNAL_REPORT_ENTRY: {
       return { ...state, existingContacts: addExternalReportEntryReducer(state.existingContacts, action) };
+    }
+    case SEARCH_CONTACTS_SUCCESS: {
+      return loadContactListIntoState(state, rootState.configuration, action.searchResult.contacts, `${action.taskId}-search`);
     }
     default:
       return state;

@@ -19,14 +19,14 @@
 import React from 'react';
 import { ITask, TaskHelper, Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
-import { callTypes, CallTypeButtonsEntry } from 'hrm-form-definitions';
+import { CallTypeButtonsEntry, callTypes } from 'hrm-form-definitions';
 
 import { RootState } from '../../states';
 import { ContactDraftChanges, updateDraft as newUpdateDraftAction } from '../../states/contacts/existingContacts';
 import { changeRoute as newChangeRouteAction } from '../../states/routing/actions';
 import { withLocalization } from '../../contexts/LocalizationContext';
 import { Box, Flex } from '../../styles/HrmStyles';
-import { Container, Label, DataCallTypeButton, NonDataCallTypeButton } from '../../styles/callTypeButtons';
+import { Container, DataCallTypeButton, Label, NonDataCallTypeButton } from '../../styles/callTypeButtons';
 import { isNonDataCallType } from '../../states/validationRules';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';
@@ -39,7 +39,7 @@ import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid
 import asyncDispatch from '../../states/asyncDispatch';
 import { submitContactFormAsyncAction, updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import { configurationBase, namespace } from '../../states/storeNamespaces';
-import { ContactMetadata } from '../../states/contacts/types';
+import { ContactMetadata, LoadingStatus } from '../../states/contacts/types';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 
 const isDialogOpen = (task: CustomITask, contact: ContactDraftChanges) => {
@@ -69,7 +69,7 @@ const CallTypeButtons: React.FC<Props> = ({
   saveFinalizedNonDataContact,
 }) => {
   const { isCallTask } = localization;
-  const { saveStatus } = metadata;
+  const { loadingStatus } = metadata;
 
   // Todo: need to handle this error scenario in a better way. Currently is showing a blank screen if there aren't definitions.
   if (!currentDefinitionVersion) return null;
@@ -143,7 +143,7 @@ const CallTypeButtons: React.FC<Props> = ({
                   key={callType.name}
                   autoFocus={index === 0}
                   data-testid={`DataCallTypeButton-${callType.name}`}
-                  disabled={saveStatus === 'saving'}
+                  disabled={loadingStatus === LoadingStatus.LOADING}
                 >
                   <Flex width="50px" marginRight="5px">
                     {/* TODO: We currently need the call type name in English. I think we should actually save callType.name (instead of label) on the DB, and use it in here.  */}
@@ -166,7 +166,7 @@ const CallTypeButtons: React.FC<Props> = ({
                 key={callType.name}
                 onClick={() => handleNonDataClick(task.taskSid, callType)}
                 marginRight={i % 2 === 0}
-                disabled={saveStatus === 'saving'}
+                disabled={loadingStatus === LoadingStatus.LOADING}
               >
                 {callType.label}
               </NonDataCallTypeButton>
@@ -175,7 +175,7 @@ const CallTypeButtons: React.FC<Props> = ({
       </Container>
       <NonDataCallTypeDialog
         isOpen={isDialogOpen(task, draftContact)}
-        isEnabled={saveStatus === 'saved'}
+        isEnabled={loadingStatus === LoadingStatus.LOADED}
         isCallTask={!isOfflineContactTask(task) && isCallTask(task)}
         isInWrapupMode={!isOfflineContactTask(task) && TaskHelper.isInWrapupMode(task)}
         handleConfirm={handleConfirmNonDataCallType}
@@ -190,7 +190,7 @@ CallTypeButtons.displayName = 'CallTypeButtons';
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const { savedContact, draftContact, metadata } = selectContactByTaskSid(state, ownProps.task.taskSid) ?? {};
   const { currentDefinitionVersion } = state[namespace][configurationBase];
-  // Return saveStatus as it's own prop so changes to it will trigger a re-render
+  // Return loadingStatus as it's own prop so changes to it will trigger a re-render
   return { savedContact, draftContact, metadata, currentDefinitionVersion };
 };
 
