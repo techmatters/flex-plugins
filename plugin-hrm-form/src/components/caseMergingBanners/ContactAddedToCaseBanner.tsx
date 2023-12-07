@@ -33,15 +33,14 @@ import { RootState } from '../../states';
 
 type OwnProps = {
   taskId: string;
-  contactId: string;
 };
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-const mapStateToProps = (state: RootState, { taskId, contactId }: OwnProps) => {
+const mapStateToProps = (state: RootState, { taskId }: OwnProps) => {
   const contact = selectContactByTaskSid(state, taskId);
   const connectedCase = selectCaseByTaskSid(state, taskId);
-  const caseId = state[namespace][contactFormsBase].existingContacts[contactId].savedContact?.caseId;
+  const caseId = contact?.savedContact?.caseId;
   return {
     contact: contact.savedContact,
     connectedCase,
