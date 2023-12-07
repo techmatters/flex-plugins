@@ -18,10 +18,10 @@
 import { useSelector } from 'react-redux';
 
 import { RootState } from '../..';
-import { ProfileSection } from 'hrm-form-definitions';
+import { ProfileSectionDefinition } from 'hrm-form-definitions';
 import { selectCurrentDefinitionVersion } from '../selectDefinitions';
 
 const useProfileSectionTypes = () =>
-  useSelector((state: RootState): ProfileSection[] => selectCurrentDefinitionVersion(state).profileForms?.Sections);
+  useSelector((state: RootState): ProfileSectionDefinition[] => selectCurrentDefinitionVersion(state).profileForms?.Sections);
 
 export default useProfileSectionTypes;
