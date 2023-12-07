@@ -366,7 +366,9 @@ const TabbedForms: React.FC<Props> = ({
           {/* eslint-disable-next-line camelcase */}
           {enable_case_merging && (
             <>
-              {showConnectedToCaseBanner && <ContactAddedToCaseBanner taskId={task.taskSid} />}
+              {showConnectedToCaseBanner && (
+                <ContactAddedToCaseBanner taskId={task.taskSid} contactId={savedContact.id} />
+              )}
               {showRemovedFromCaseBanner && <ContactRemovedFromCaseBanner taskId={task.taskSid} />}
             </>
           )}
