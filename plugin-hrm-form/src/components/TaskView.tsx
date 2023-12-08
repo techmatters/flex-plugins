@@ -149,7 +149,7 @@ const TaskView: React.FC<Props> = props => {
           overflow: 'auto',
         }}
       >
-        <HrmForm task={task} featureFlags={featureFlags} />
+        <HrmForm task={task} />
       </Flex>
     </Flex>
   );

@@ -23,11 +23,38 @@ import { AppRoutes, Contexts, isRouteWithContext } from '../../states/routing/ty
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { RouterTask } from '../../types/types';
 
-type RouteConfigEntry<TProps> = {
-  routes?: AppRoutes['route'][];
-  contextRoutes?: AppRoutes['route'][];
+type RouteConfigEntryBase<TProps> = {
   renderComponent: (props: TProps) => JSX.Element;
 };
+
+type RouteConfigEntryRoutes<TProps> = RouteConfigEntryBase<TProps> & {
+  routes: AppRoutes['route'][];
+};
+const isRouteConfigEntryRoutes = (
+  routeConfigEntry: RouteConfigEntry<any>,
+): routeConfigEntry is RouteConfigEntryRoutes<any> =>
+  (routeConfigEntry as RouteConfigEntryRoutes<any>).routes !== undefined;
+
+type RouteConfigEntryContextRoutes<TProps> = RouteConfigEntryBase<TProps> & {
+  contextRoutes: AppRoutes['route'][];
+};
+const isRouteConfigEntryContextRoutes = (
+  routeConfigEntry: RouteConfigEntry<any>,
+): routeConfigEntry is RouteConfigEntryContextRoutes<any> =>
+  (routeConfigEntry as RouteConfigEntryContextRoutes<any>).contextRoutes !== undefined;
+
+type RouteConfigEntryShouldHandleRoute<TProps> = RouteConfigEntryBase<TProps> & {
+  shouldHandleRoute: (routing: AppRoutes) => boolean;
+};
+const isRouteConfigEntryShouldHandleRoute = (
+  routeConfigEntry: RouteConfigEntry<any>,
+): routeConfigEntry is RouteConfigEntryShouldHandleRoute<any> =>
+  (routeConfigEntry as RouteConfigEntryShouldHandleRoute<any>).shouldHandleRoute !== undefined;
+
+type RouteConfigEntry<TProps> =
+  | RouteConfigEntryRoutes<TProps>
+  | RouteConfigEntryContextRoutes<TProps>
+  | RouteConfigEntryShouldHandleRoute<TProps>;
 
 export type RouteConfig<TProps> = RouteConfigEntry<TProps>[];
 
@@ -40,11 +67,10 @@ type OwnProps = {
 
 const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const routingState = state[namespace].routing;
-  const currentRouteStack = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const currentRoute = currentRouteStack?.route.toString() as AppRoutes['route'];
+  const routing = getCurrentTopmostRouteForTask(routingState, taskSid);
 
   return {
-    currentRoute,
+    routing,
   };
 };
 
@@ -52,12 +78,38 @@ const connector = connect(mapStateToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const getRootRoutes = (routeConfig: RouteConfigAny) =>
-  routeConfig.filter(route => route.routes).flatMap(route => route.routes);
+  routeConfig
+    .filter(route => isRouteConfigEntryRoutes(route))
+    .flatMap((route: RouteConfigEntryRoutes<any>) => route.routes);
 
 const getContextRoutes = (routeConfig: RouteConfigAny) =>
-  routeConfig.filter(route => route.contextRoutes).flatMap(route => route.contextRoutes);
+  routeConfig
+    .filter(route => isRouteConfigEntryContextRoutes(route))
+    .flatMap((route: RouteConfigEntryContextRoutes<any>) => route.contextRoutes);
+
+const getShouldHandleRoutes = (routeConfig: RouteConfigAny) =>
+  routeConfig
+    .filter(route => isRouteConfigEntryShouldHandleRoute(route))
+    .flatMap((route: RouteConfigEntryShouldHandleRoute<any>) => route);
+
+const getShouldHandleRoute = (routeConfig: RouteConfigAny, routing: AppRoutes) =>
+  getShouldHandleRoutes(routeConfig).find(route => route.shouldHandleRoute(routing));
+
+const getHandleableRoute = (routeConfig: RouteConfigAny, routing: AppRoutes) => {
+  const currentRoute = routing?.route.toString() as AppRoutes['route'];
+
+  return routeConfig.find(
+    configEntry =>
+      (isRouteConfigEntryRoutes(configEntry) && configEntry.routes?.includes(currentRoute)) ||
+      (isRouteConfigEntryContextRoutes(configEntry) && configEntry.contextRoutes?.includes(currentRoute)) ||
+      (isRouteConfigEntryShouldHandleRoute(configEntry) && configEntry.shouldHandleRoute(routing)),
+  );
+};
 
 export const shouldHandleRoute = (routing: AppRoutes, routeConfig: RouteConfigAny, context?: Contexts) => {
+  const shouldHandleRoute = getShouldHandleRoute(routeConfig, routing);
+  if (shouldHandleRoute) return true;
+
   if (getRootRoutes(routeConfig).includes(routing.route)) return true;
 
   if (!context) return false;
@@ -70,13 +122,8 @@ export const shouldHandleRoute = (routing: AppRoutes, routeConfig: RouteConfigAn
 };
 
 const Router: React.FC<Props> = props => {
-  const { currentRoute, routeConfig } = props;
-
-  return (
-    routeConfig
-      .find(({ routes, contextRoutes }) => routes?.includes(currentRoute) || contextRoutes?.includes(currentRoute))
-      ?.renderComponent(props) || null
-  );
+  const { routeConfig, routing } = props;
+  return getHandleableRoute(routeConfig, routing)?.renderComponent(props) || null;
 };
 
 export default connector(Router);

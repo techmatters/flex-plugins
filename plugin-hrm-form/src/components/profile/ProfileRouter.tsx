@@ -52,7 +52,7 @@ const PROFILE_ROUTES: RouteConfig<Props> = [
     renderComponent: (props: Props) => <ProfileTabs {...props} />,
   },
   {
-    contextRoutes: ['contact'],
+    routes: ['profile'],
     renderComponent: (props: Props) => <ProfileContactDetails {...props} />,
   },
   {
@@ -71,8 +71,8 @@ const PROFILE_ROUTES: RouteConfig<Props> = [
 
 export const isProfileRoute = (routing: AppRoutes) => shouldHandleRoute(routing, PROFILE_ROUTES, 'profile');
 
-const ProfileRouter: React.FC<Props> = ({ task }) => {
-  return <Router task={task} routeConfig={PROFILE_ROUTES} />;
+const ProfileRouter: React.FC<Props> = props => {
+  return <Router {...props} routeConfig={PROFILE_ROUTES} />;
 };
 
 export default connector(ProfileRouter);

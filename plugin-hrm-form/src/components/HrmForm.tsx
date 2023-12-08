@@ -15,39 +15,43 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { Dispatch } from 'react';
+import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { DefinitionVersion } from 'hrm-form-definitions';
 
 import CallTypeButtons from './callTypeButtons';
 import ProfileRouter, { isProfileRoute } from './profile/ProfileRouter';
 import TabbedFormsRouter, { isTabbedFormsRoute } from './tabbedForms/TabbedFormsRouter';
 import CSAMReport from './CSAMReport/CSAMReport';
 import { RootState } from '../states';
-import type { CustomITask, Case as CaseForm, Contact } from '../types/types';
+import type { CustomITask } from '../types/types';
 import { newContactCSAMApi } from './CSAMReport/csamReportApi';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { namespace } from '../states/storeNamespaces';
-import { ContactMetadata } from '../states/contacts/types';
-import { createContactAsyncAction, submitContactFormAsyncAction } from '../states/contacts/saveContact';
-import { newContact } from '../states/contacts/contactState';
-import { getHrmConfig } from '../hrmConfig';
 import { getCurrentTopmostRouteForTask } from '../states/routing/getRoute';
 import type { CSAMReportRoute } from '../states/routing/types';
+import Router, { RouteConfig } from './router/Router';
 
 type OwnProps = {
   task: CustomITask;
-  featureFlags: { [flag: string]: boolean };
 };
 
-// eslint-disable-next-line no-use-before-define
+const mapStateToProps = (state: RootState, { task }: OwnProps) => {
+  const { routing } = state[namespace];
+  const { savedContact } = selectContactByTaskSid(state, task.taskSid) ?? {};
+
+  return {
+    routing: getCurrentTopmostRouteForTask(routing, task.taskSid),
+    savedContact,
+  };
+};
+
+const connector = connect(mapStateToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact }) => {
+const HrmForm: React.FC<Props> = ({ routing, task, savedContact }) => {
   if (!routing) return null;
-  const { route } = routing;
 
-  const routes = [
+  const routes: RouteConfig<Props> = [
     {
       shouldHandleRoute: () => isProfileRoute(routing),
       renderComponent: () => <ProfileRouter task={task} />,
@@ -57,7 +61,7 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact })
       renderComponent: () => <TabbedFormsRouter task={task} />,
     },
     {
-      shouldHandleRoute: () => ['csam-report'].includes(route),
+      routes: ['csam-report'],
       renderComponent: () => (
         <CSAMReport
           api={newContactCSAMApi(savedContact.id, task.taskSid, (routing as CSAMReportRoute).previousRoute)}
@@ -65,37 +69,14 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact })
       ),
     },
     {
-      shouldHandleRoute: () => ['select-call-type'].includes(route),
+      routes: ['select-call-type'],
       renderComponent: () => <CallTypeButtons task={task} />,
     },
   ];
 
-  return routes.find(r => r.shouldHandleRoute())?.renderComponent() || null;
+  return <Router task={task} routeConfig={routes} />;
 };
 
 HrmForm.displayName = 'HrmForm';
-
-const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const { routing, configuration } = state[namespace];
-  const { savedContact, metadata } = selectContactByTaskSid(state, task.taskSid) ?? {};
-
-  return {
-    routing: getCurrentTopmostRouteForTask(routing, task.taskSid),
-    savedContact,
-    metadata,
-    definitionVersion: configuration.currentDefinitionVersion,
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => {
-  return {
-    createContact: (definition: DefinitionVersion) =>
-      dispatch(createContactAsyncAction(newContact(definition), getHrmConfig().workerSid, task.taskSid)),
-    finaliseContact: (contact: Contact, metadata: ContactMetadata, caseForm: CaseForm) =>
-      dispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
-  };
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
 
 export default connector(HrmForm);

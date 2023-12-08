@@ -48,12 +48,12 @@ const TABBED_FORMS_ROUTES: RouteConfig<Props> = [
 
 export const isTabbedFormsRoute = (routing: AppRoutes) => shouldHandleRoute(routing, TABBED_FORMS_ROUTES);
 
-const TabbedFormsRouter: React.FC<Props> = ({ task }) => {
+const TabbedFormsRouter: React.FC<Props> = props => {
   const { methods, FormProvider } = useTabbedForm();
 
   return (
     <FormProvider {...methods}>
-      <Router task={task} routeConfig={TABBED_FORMS_ROUTES} />
+      <Router {...props} routeConfig={TABBED_FORMS_ROUTES} />
     </FormProvider>
   );
 };
