@@ -16,7 +16,6 @@
 
 import React, { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import startCase from 'lodash/startCase';
 
 import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
@@ -78,7 +77,7 @@ const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props)
   };
 
   return (
-    <NavigableContainer titleCode={`Edit ${startCase(sectionType)}`} task={task}>
+    <NavigableContainer titleCode={sectionTypesForm.editLabel} task={task}>
       <Container>
         <Box>
           <ColumnarBlock>
