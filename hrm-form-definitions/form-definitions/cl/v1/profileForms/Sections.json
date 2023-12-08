@@ -7,14 +7,5 @@
     "rows": 20,
     "width": 500,
     "placeholder": "Ingrese un resumen del cliente"
-  },
-  {
-    "name": "somethingElse",
-    "label": "Something Else",
-    "editLabel": "Edit Something Else",
-    "type": "textarea",
-    "rows": 20,
-    "width": 500,
-    "placeholder": "Ingrese el enfoque recomendado"
   }
 ]
