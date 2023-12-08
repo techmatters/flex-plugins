@@ -19,7 +19,7 @@ import { namespace } from '../storeNamespaces';
 import { getActivitiesFromCase, getActivitiesFromContacts, sortActivities } from './caseActivities';
 import { selectSavedContacts } from './connectedContacts';
 
-export const selectCaseActivities = (state: RootState, caseId: string) => {
+export const selectCaseActivities = (state: RootState, caseId: string, pageSize: number, page: number) => {
   const {
     [namespace]: { configuration, connectedCase },
   } = state;
@@ -41,5 +41,5 @@ export const selectCaseActivities = (state: RootState, caseId: string) => {
     ),
     ...getActivitiesFromContacts(selectSavedContacts(state, caseForTask)),
   ];
-  return sortActivities(timelineActivities);
+  return sortActivities(timelineActivities).slice(page * pageSize, (page + 1) * pageSize);
 };

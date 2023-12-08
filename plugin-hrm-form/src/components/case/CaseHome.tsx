@@ -37,6 +37,7 @@ import { RootState } from '../../states';
 import { CaseDetails } from '../../states/case/types';
 import { Case, Contact, CustomITask, EntryInfo, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
+import { newCloseModalAction } from '../../states/routing/actions';
 import InformationRow from './InformationRow';
 import TimelineInformationRow from './TimelineInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
@@ -49,7 +50,6 @@ import { isStandaloneITask } from './Case';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import asyncDispatch from '../../states/asyncDispatch';
 import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
-import { newCloseModalAction } from '../../states/routing/actions';
 import { BannerContainer, Text } from '../caseMergingBanners/styles';
 import InfoIcon from '../caseMergingBanners/InfoIcon';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
@@ -279,7 +279,7 @@ const CaseHome: React.FC<Props> = ({
           <CaseSummary task={task} />
         </Box>
         <Box margin="25px 0 0 0">
-          <Timeline taskSid={task.taskSid} can={can} />
+          <Timeline taskSid={task.taskSid} can={can} page={0} pageSize={5} />
         </Box>
         <Box margin="25px 0 0 0">
           <CaseSection

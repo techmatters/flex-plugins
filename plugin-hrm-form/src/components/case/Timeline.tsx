@@ -25,13 +25,13 @@ import DialogContent from '@material-ui/core/DialogContent';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
 import TimelineIcon from './TimelineIcon';
 import {
-  CaseSectionFont,
-  ViewButton,
-  TimelineRow,
-  TimelineDate,
-  TimelineText,
-  TimelineCallTypeIcon,
   CaseDetailsBorder,
+  CaseSectionFont,
+  TimelineCallTypeIcon,
+  TimelineDate,
+  TimelineRow,
+  TimelineText,
+  ViewButton,
 } from '../../styles/case';
 import { Box, Row } from '../../styles/HrmStyles';
 import CaseAddButton from './CaseAddButton';
@@ -39,7 +39,7 @@ import { CustomITask } from '../../types/types';
 import { isConnectedCaseActivity } from '../../states/case/caseActivities';
 import { ConnectedCaseActivity, NoteActivity, ReferralActivity } from '../../states/case/types';
 import { getPermissionsForContact, PermissionActions, PermissionActionType } from '../../permissions';
-import { NewCaseSubroutes, CaseItemAction, CaseSectionSubroute } from '../../states/routing/types';
+import { CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../../states/routing/types';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { RootState } from '../../states';
 import { selectCaseActivities } from '../../states/case/timeline';
@@ -48,13 +48,16 @@ import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCas
 type OwnProps = {
   can: (action: PermissionActionType) => boolean;
   taskSid: CustomITask['taskSid'];
+  pageSize: number;
+  page: number;
+  titleCode?: string;
 };
 
-const mapStateToProps = (state: RootState, { taskSid }: OwnProps) => {
+const mapStateToProps = (state: RootState, { taskSid, pageSize, page }: OwnProps) => {
   const { connectedCase } = selectCurrentRouteCaseState(state, taskSid) ?? {};
 
   return {
-    timelineActivities: connectedCase ? selectCaseActivities(state, connectedCase.id) : [],
+    timelineActivities: connectedCase ? selectCaseActivities(state, connectedCase.id, pageSize, page) : [],
     connectedCase,
   };
 };
@@ -79,6 +82,7 @@ const Timeline: React.FC<Props> = ({
   openViewCaseSectionModal,
   openAddCaseSectionModal,
   connectedCase,
+  titleCode = 'Case-TimelineSection',
 }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
 
@@ -127,7 +131,7 @@ const Timeline: React.FC<Props> = ({
         <Box marginBottom="10px">
           <Row>
             <CaseSectionFont id="Case-TimelineSection-label">
-              <Template code="Case-TimelineSection" />
+              <Template code={titleCode} />
             </CaseSectionFont>
             <Box marginLeft="auto">
               <CaseAddButton
