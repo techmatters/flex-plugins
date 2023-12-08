@@ -62,9 +62,27 @@ jobs:
     - name: Run hrm-form-definitions Tests
       run: npm run test
       working-directory: ./hrm-form-definitions
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Set Twilio account SID for AS DEV
+      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      with:
+        ssm_parameter: "/development/twilio/AS/account_sid"
+        env_variable_name: "TWILIO_ACCOUNT_SID"
+  
+    - name: Set Twilio Auth Token for AS DEV
+      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      with:
+        ssm_parameter: "/development/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
+        env_variable_name: "TWILIO_AUTH_TOKEN"
 
     - name: Run plugin-hrm-form Tests
-      run: TWILIO_ACCOUNT_SID=${{secrets.AS_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.AS_DEV_AUTH_TOKEN}} npm run test
+      run: TWILIO_ACCOUNT_SID=${{env.TWILIO_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{env.TWILIO_AUTH_TOKEN}} npm run test
       working-directory: ./plugin-hrm-form
       env:
         CI: true
@@ -82,6 +100,25 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '16.x'
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+        
+      - name: Set Twilio account SID for E2E
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "/development/twilio/E2E/account_sid"
+          env_variable_name: "TWILIO_ACCOUNT_SID"       
+        
+      - name: Set Twilio Auth Token for E2E
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "/development/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
+          env_variable_name: "TWILIO_AUTH_TOKEN"
 
       - name: Install Flex Plugin
         uses: ./.github/actions/install-flex-plugin
@@ -114,7 +151,7 @@ jobs:
 
       - name: Run Flex Dev Server
         # Creds aren't used in the tests, but I don't think the dev server starts without some set.
-        run: NODE_ENV=development REACT_APP_FORM_DEFINITIONS_BASE_URL=http://localhost:8090 TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npm run start &
+        run: NODE_ENV=development REACT_APP_FORM_DEFINITIONS_BASE_URL=http://localhost:8090 TWILIO_ACCOUNT_SID=${{env.TWILIO_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{env.TWILIO_AUTH_TOKEN}} npm run start &
         working-directory: ./plugin-hrm-form
 
       - name: Run e2e tests

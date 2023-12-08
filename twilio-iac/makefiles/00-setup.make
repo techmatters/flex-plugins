@@ -17,6 +17,7 @@ else
     DIND_ARG = -v /var/run/docker.sock:/var/run/docker.sock
 endif
 
+AWS_DEFAULT_REGION ?= us-east-1 
 MY_CONTAINER_PATH = $(MOUNT_PATH)$(MY_RELATIVE_PATH)
 PWD_ARG = -v $(MY_PWD):$(MOUNT_PATH) -w $(MY_CONTAINER_PATH)
 ENV_ARG = -e MY_ENV=$(MY_ENV) -e HL=$(HL) -e HL_ENV=$(HL_ENV) -e TF_LOG
