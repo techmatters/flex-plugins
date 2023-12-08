@@ -223,7 +223,8 @@ export function isRouteWithModalSupport(appRoute: any): appRoute is RouteWithMod
 export enum ChangeRouteMode {
   Push = 'push',
   Replace = 'replace',
-  Reset = 'reset',
+  ResetModal = 'reset-modal',
+  ResetRoute = 'reset-route',
 }
 
 type ChangeRouteAction = {
