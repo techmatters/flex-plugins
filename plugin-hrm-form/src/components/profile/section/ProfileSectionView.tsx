@@ -39,8 +39,7 @@ const ProfileSectionView = ({ profileId, sectionType }: OwnProps) => {
         section?.content
       ) : (
         <>
-          <Template code="Profile-Notes-No" />{' '}
-          {sectionType.label}
+          <Template code="Profile-Notes-No" /> {sectionType.label}
         </>
       )}
     </ProfileSectionTextContent>
