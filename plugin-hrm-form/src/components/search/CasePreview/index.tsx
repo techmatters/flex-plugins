@@ -36,7 +36,6 @@ import { isStandaloneITask } from '../../case/Case';
 import { newCloseModalAction } from '../../../states/routing/actions';
 import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../../permissions';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
-import { isNonDataCallType } from '../../../states/validationRules';
 
 type OwnProps = {
   currentCase: Case;
@@ -100,11 +99,8 @@ const CasePreview: React.FC<Props> = ({
   });
   let isConnectedToTaskContact = false;
   let showConnectButton = false;
-  const {
-    enable_case_management: enableCaseManagement,
-    enable_case_merging: enableCaseMerging,
-  } = getAseloFeatureFlags();
-  if (enableCaseManagement && enableCaseMerging && taskContact && !isNonDataCallType(taskContact.rawJson?.callType)) {
+
+  if (getAseloFeatureFlags().enable_case_merging && taskContact) {
     isConnectedToTaskContact = Boolean(connectedContacts?.find(contact => contact.id === taskContact.id));
 
     const { can: canForCase } = getPermissionsForCase(currentCase.twilioWorkerId, currentCase.status);

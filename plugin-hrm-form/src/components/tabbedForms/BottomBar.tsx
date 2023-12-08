@@ -22,11 +22,11 @@ import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import {
-  Box,
-  BottomButtonBar,
-  StyledNextStepButton,
   AddedToCaseButton,
+  BottomButtonBar,
+  Box,
   SaveAndEndContactButton,
+  StyledNextStepButton,
 } from '../../styles/HrmStyles';
 import * as RoutingActions from '../../states/routing/actions';
 import { completeTask } from '../../services/formSubmissionHelpers';
@@ -34,7 +34,7 @@ import { hasTaskControl } from '../../utils/transfer';
 import { RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError } from '../../fullStory';
-import { Case, CustomITask, Contact } from '../../types/types';
+import { Case, Contact, CustomITask } from '../../types/types';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
@@ -183,7 +183,7 @@ const BottomBar: React.FC<
       )}
       {showSubmitButton && (
         <>
-          {featureFlags.enable_case_management && renderCaseButton()}
+          {renderCaseButton()}
 
           <SaveAndEndContactButton
             roundCorners={true}

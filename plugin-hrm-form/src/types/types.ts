@@ -254,7 +254,6 @@ export type FeatureFlags = {
   enable_upload_documents: boolean; // Enables Case Documents
   enable_post_survey: boolean; // Enables Post-Survey
   enable_contact_editing: boolean; // Enables Editing Contacts
-  enable_case_management: boolean; // Enables Creating Cases and Viewing the Case List
   enable_offline_contact: boolean; // Enables Creating Offline Contacts
   enable_filter_cases: boolean; // Enables Filters at Case List
   enable_sort_cases: boolean; // Enables Sorting at Case List
