@@ -20,7 +20,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import { Template } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
 
-import { completeTask, removeOfflineContact } from '../../services/formSubmissionHelpers';
+import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { RootState } from '../../states';
 import asyncDispatch from '../../states/asyncDispatch';
 import { namespace } from '../../states/storeNamespaces';
@@ -31,12 +31,12 @@ import { selectCaseMergingBanners } from '../../states/case/caseBanners';
 import { ContactDraftChanges, updateDraft } from '../../states/contacts/existingContacts';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { forExistingContact } from '../../states/contacts/issueCategorizationStateApi';
-import { submitContactFormAsyncAction, updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
+import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import { emptyCategories } from '../../states/contacts/reducer';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import { CSAMReportType, CSAMReportTypes } from '../../states/csam-report/types';
-import { changeRoute, newCloseModalAction, newOpenModalAction } from '../../states/routing/actions';
+import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 import { AppRoutes, ChangeRouteMode, TabbedFormRoute, TabbedFormSubroutes } from '../../states/routing/types';
 import { Box, Row, StyledTabs, TabbedFormsContainer, TabbedFormTabContainer } from '../../styles/HrmStyles';
 import { hasTaskControl } from '../../utils/transfer';
@@ -45,7 +45,7 @@ import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFr
 import FormTab from '../common/forms/FormTab';
 import ContactDetailsSectionForm from '../contact/ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from '../contact/IssueCategorizationSectionForm';
-import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig } from '../../hrmConfig';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import BottomBar from './BottomBar';
 import ContactlessTaskTab from './ContactlessTaskTab';
@@ -188,6 +188,8 @@ const TabbedFormsTabs: React.FC<Props> = ({
     () => savedContact && <CSAMAttachments csamReports={savedContact.csamReports} />,
     [savedContact],
   );
+
+  if (!currentDefinitionVersion) return null;
 
   const optionalButtons =
     isOfflineContact(savedContact) && subroute === 'contactlessTask'
