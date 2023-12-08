@@ -64,3 +64,5 @@ export const selectProfileRelationshipsByType = (
   profileId: ProfileIdParam,
   type: t.ProfileRelationships,
 ) => selectProfileById(state, profileId)?.[type];
+
+export const selectAllProfilesListState = (state: RootState) => selectProfileState(state)?.profilesList?.data;

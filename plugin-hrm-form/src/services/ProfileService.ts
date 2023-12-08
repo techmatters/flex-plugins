@@ -63,3 +63,16 @@ export const updateProfileSection = (profileId: ProfileId, sectionId: ProfileSec
     body: JSON.stringify({ content }),
   });
 };
+
+// sortBy: valid values are id and name. Used to sort the list. Defaults to id.
+// sortDirection: valid values are desc and asc. Used to specify the sort direction. Defaults to desc.
+export const getProfilesList = (
+  offset: number,
+  limit: number,
+  sortBy: string | number,
+  sortDirection: string,
+  profileFlagIds: string,
+) =>
+  fetchHrmApi(
+    `/profiles?offset=${offset}&limit=${limit}&sortBy=${sortBy}&sortDirection=${sortDirection}&profileFlagIds=${profileFlagIds}`,
+  );
