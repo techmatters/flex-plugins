@@ -52,20 +52,20 @@ const PROFILE_ROUTES: RouteConfig<Props> = [
     renderComponent: (props: Props) => <ProfileTabs {...props} />,
   },
   {
-    routes: ['profile'],
-    renderComponent: (props: Props) => <ProfileContactDetails {...props} />,
-  },
-  {
-    contextRoutes: ['case'],
-    renderComponent: (props: Props) => <ProfileCaseDetails {...props} />,
-  },
-  {
     routes: ['profileEdit'],
     renderComponent: (props: Props) => <ProfileEdit {...props} />,
   },
   {
     routes: ['profileSectionEdit'],
     renderComponent: (props: Props) => <ProfileSectionEdit {...props} />,
+  },
+  {
+    contextRoutes: ['contact'],
+    renderComponent: (props: Props) => <ProfileContactDetails {...props} />,
+  },
+  {
+    contextRoutes: ['case'],
+    renderComponent: (props: Props) => <ProfileCaseDetails {...props} />,
   },
 ];
 
