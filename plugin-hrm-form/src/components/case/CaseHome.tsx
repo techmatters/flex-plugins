@@ -23,7 +23,7 @@ import { DefinitionVersion } from 'hrm-form-definitions';
 import { CaseContainer } from '../../styles/case';
 import { BottomButtonBar, Box, Flex, SaveAndEndButton, StyledNextStepButton } from '../../styles/HrmStyles';
 import CaseDetailsComponent from './CaseDetails';
-import Timeline from './Timeline';
+import Timeline from './timeline/Timeline';
 import CaseSection from './CaseSection';
 import {
   getPermissionsForCase,

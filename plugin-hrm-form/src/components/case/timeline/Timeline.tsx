@@ -22,7 +22,7 @@ import { Template } from '@twilio/flex-ui';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 
-import CallTypeIcon from '../common/icons/CallTypeIcon';
+import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import TimelineIcon from './TimelineIcon';
 import {
   CaseDetailsBorder,
@@ -32,18 +32,18 @@ import {
   TimelineRow,
   TimelineText,
   ViewButton,
-} from '../../styles/case';
-import { Box, Row } from '../../styles/HrmStyles';
-import CaseAddButton from './CaseAddButton';
-import { CustomITask } from '../../types/types';
-import { isConnectedCaseActivity } from '../../states/case/caseActivities';
-import { ConnectedCaseActivity, NoteActivity, ReferralActivity } from '../../states/case/types';
-import { getPermissionsForContact, PermissionActions, PermissionActionType } from '../../permissions';
-import { CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../../states/routing/types';
-import { newOpenModalAction } from '../../states/routing/actions';
-import { RootState } from '../../states';
-import { selectCaseActivities } from '../../states/case/timeline';
-import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
+} from '../../../styles/case';
+import { Box, Row } from '../../../styles/HrmStyles';
+import CaseAddButton from '../CaseAddButton';
+import { CustomITask } from '../../../types/types';
+import { isConnectedCaseActivity } from '../../../states/case/caseActivities';
+import { ConnectedCaseActivity, NoteActivity, ReferralActivity } from '../../../states/case/types';
+import { getPermissionsForContact, PermissionActions, PermissionActionType } from '../../../permissions';
+import { CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../../../states/routing/types';
+import { newOpenModalAction } from '../../../states/routing/actions';
+import { RootState } from '../../../states';
+import { selectCaseActivities } from '../../../states/case/timeline';
+import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRouteCase';
 
 type OwnProps = {
   can: (action: PermissionActionType) => boolean;
