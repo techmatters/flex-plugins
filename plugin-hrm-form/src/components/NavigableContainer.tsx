@@ -40,6 +40,7 @@ type FocusTarget = 'back' | 'close';
 type OwnProps = {
   task: CustomITask | StandaloneITask;
   titleCode: string;
+  titleValues?: Record<string, string>;
   onGoBack?: () => void;
   onCloseModal?: () => void;
   focusPriority: FocusTarget[];
@@ -79,6 +80,7 @@ const NavigableContainer: React.FC<Props> = ({
   closeModal,
   onCloseModal = () => closeModal(),
   titleCode,
+  titleValues = {},
   hasHistory,
   isModal,
   focusPriority = ['back', 'close'],
@@ -115,7 +117,7 @@ const NavigableContainer: React.FC<Props> = ({
           )}
         </Box>
         <NavigableContainerTitle data-testid="NavigableContainer-Title">
-          <Template code={titleCode} />
+          <Template code={titleCode} {...titleValues} />
         </NavigableContainerTitle>
         {isModal && (
           <HeaderCloseButton

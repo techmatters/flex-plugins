@@ -40,7 +40,7 @@ import { Case, Contact, CustomITask, EntryInfo, StandaloneITask } from '../../ty
 import * as RoutingActions from '../../states/routing/actions';
 import { newCloseModalAction } from '../../states/routing/actions';
 import InformationRow from './InformationRow';
-import TimelineInformationRow from './TimelineInformationRow';
+import IncidentInformationRow from './IncidentInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
 import { householdSectionApi } from '../../states/case/sections/household';
 import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
@@ -89,6 +89,7 @@ const CaseHome: React.FC<Props> = ({
   const {
     enable_upload_documents: enableUploadDocuments,
     enable_case_merging: enableCaseMerging,
+    enable_separate_timeline_view: enableSeparateTimelineView,
   } = getAseloFeatureFlags();
 
   const onViewCaseItemClick = (targetSubroute: CaseSectionSubroute) => (id: string) => {
@@ -170,7 +171,7 @@ const CaseHome: React.FC<Props> = ({
       <>
         {incidents.map((item, index) => {
           return (
-            <TimelineInformationRow
+            <IncidentInformationRow
               key={`incident-${index}`}
               onClickView={() => onViewCaseItemClick(NewCaseSubroutes.Incident)(item.id)}
               definition={caseForms.IncidentForm}
@@ -252,8 +253,10 @@ const CaseHome: React.FC<Props> = ({
             <Timeline
               taskSid={task.taskSid}
               page={0}
-              pageSize={5}
-              titleCode={hasMoreActivities ? 'Case-RecentTimelineTitle' : 'Case-TimelineTitle'}
+              pageSize={enableSeparateTimelineView ? 5 : Number.MAX_SAFE_INTEGER}
+              titleCode={
+                hasMoreActivities && enableSeparateTimelineView ? 'Case-Timeline-RecentTitle' : 'Case-Timeline-Title'
+              }
             />
             {hasMoreActivities && (
               <ViewButton style={{ marginTop: '10px' }} withDivider={false} onClick={onViewFullTimelineClick}>

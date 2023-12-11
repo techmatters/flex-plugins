@@ -79,7 +79,7 @@ const Timeline: React.FC<Props> = ({
   openViewCaseSectionModal,
   openAddCaseSectionModal,
   connectedCase,
-  titleCode = 'Case-RecentTimelineTitle',
+  titleCode = 'Case-Timeline-RecentTitle',
 }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
 
@@ -133,7 +133,7 @@ const Timeline: React.FC<Props> = ({
       </Dialog>
       <Box marginBottom="10px">
         <Row>
-          <CaseSectionFont id="Case-RecentTimelineTitle-label">
+          <CaseSectionFont id="Case-TimelineSection-label">
             <Template code={titleCode} />
           </CaseSectionFont>
           <Box marginLeft="auto">

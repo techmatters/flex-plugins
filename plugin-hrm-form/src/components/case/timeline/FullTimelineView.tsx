@@ -63,10 +63,15 @@ const FullTimelineView: React.FC<Props> = ({ task, page, activityCount, changePa
 
   return (
     <CaseLayout>
-      <NavigableContainer task={task} titleCode="Case Timeline">
+      <NavigableContainer
+        task={task}
+        titleCode="Case-Timeline-ModalTitle"
+        titleValues={{ caseId }}
+        style={{ textAlign: 'center' }}
+      >
         <AddToCaseBanner task={task} />
-        <Timeline taskSid={task.taskSid} pageSize={TIMELINE_PAGE_SIZE} page={page} titleCode="Case-TimelineTitle" />
-        <p>
+        <Timeline taskSid={task.taskSid} pageSize={TIMELINE_PAGE_SIZE} page={page} titleCode="Case-Timeline-Title" />
+        <p style={{ marginTop: '10px', fontStyle: 'italic' }}>
           <Template
             code="Case-Timeline-PaginationDescription"
             from={page * TIMELINE_PAGE_SIZE + 1}
