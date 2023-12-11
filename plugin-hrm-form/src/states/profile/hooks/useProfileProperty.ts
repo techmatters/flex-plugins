@@ -13,33 +13,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { useCallback, useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import asyncDispatch from '../../asyncDispatch';
-import { Profile } from '../types';
-import * as ProfileActions from '../profiles';
-import * as ProfileSelectors from '../selectors';
 import { RootState } from '../..';
-import { UseProfileCommonParams } from './types';
-
-export type UseProfileParams = UseProfileCommonParams;
-
-export type UseProfileReturn = {
-  profile?: Profile;
-};
+import { Profile } from '../types';
+import * as ProfileSelectors from '../selectors';
 
 /**
- * Access a profile by id for the current account
+ * Access a profile property by id for the current account
  *
- * @param {UseProfileParams}
+ * @param {ProfileSelectors.ProfileIdParam} profileId - The id of the profile to access
+ * @param {T} property - The property to access
  * @returns {UseProfile} - State and actions for the profile
  */
-export const useProfile = (params: UseProfileParams): UseProfileReturn => {
-  const { profileId } = params;
-  const profile = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.data);
-
-  return {
-    profile,
-  };
-};
+export const useProfileProperty = <T extends keyof Profile>(
+  profileId: ProfileSelectors.ProfileIdParam,
+  property: T,
+): Profile[T] | undefined =>
+  useSelector((state: RootState) => ProfileSelectors.selectProfilePropertyById(state, profileId, property));
