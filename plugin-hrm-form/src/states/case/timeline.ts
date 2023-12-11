@@ -16,7 +16,7 @@
 
 import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
-import { getActivitiesFromCase, getActivitiesFromContacts, sortActivities } from './caseActivities';
+import { getActivitiesFromCase, getActivitiesFromContacts, getActivityCount, sortActivities } from './caseActivities';
 import { selectSavedContacts } from './connectedContacts';
 
 export const selectCaseActivities = (state: RootState, caseId: string, pageSize: number, page: number) => {
@@ -26,10 +26,6 @@ export const selectCaseActivities = (state: RootState, caseId: string, pageSize:
   const { definitionVersions, currentDefinitionVersion } = configuration;
   const caseState = connectedCase.cases[caseId];
 
-  /**
-   * Gets the activities timeline from current caseId
-   * If the case is just being created, adds the case's description as a new activity
-   */
   if (!caseState?.connectedCase) return [];
 
   const { connectedCase: caseForTask } = caseState;
@@ -43,3 +39,6 @@ export const selectCaseActivities = (state: RootState, caseId: string, pageSize:
   ];
   return sortActivities(timelineActivities).slice(page * pageSize, (page + 1) * pageSize);
 };
+
+export const selectCaseActivityCount = ({ [namespace]: { connectedCase } }: RootState, caseId: string) =>
+  getActivityCount(connectedCase.cases[caseId]?.connectedCase) ?? 0;

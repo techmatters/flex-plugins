@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { parseISO } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
@@ -25,7 +25,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import TimelineIcon from './TimelineIcon';
 import {
-  CaseDetailsBorder,
   CaseSectionFont,
   TimelineCallTypeIcon,
   TimelineDate,
@@ -38,7 +37,7 @@ import CaseAddButton from '../CaseAddButton';
 import { CustomITask } from '../../../types/types';
 import { isConnectedCaseActivity } from '../../../states/case/caseActivities';
 import { ConnectedCaseActivity, NoteActivity, ReferralActivity } from '../../../states/case/types';
-import { getPermissionsForContact, PermissionActions, PermissionActionType } from '../../../permissions';
+import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../../permissions';
 import { CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../../../states/routing/types';
 import { newOpenModalAction } from '../../../states/routing/actions';
 import { RootState } from '../../../states';
@@ -46,7 +45,6 @@ import { selectCaseActivities } from '../../../states/case/timeline';
 import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRouteCase';
 
 type OwnProps = {
-  can: (action: PermissionActionType) => boolean;
   taskSid: CustomITask['taskSid'];
   pageSize: number;
   page: number;
@@ -76,19 +74,25 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const Timeline: React.FC<Props> = ({
-  can,
   timelineActivities,
   openContactModal,
   openViewCaseSectionModal,
   openAddCaseSectionModal,
   connectedCase,
-  titleCode = 'Case-TimelineSection',
+  titleCode = 'Case-RecentTimelineTitle',
 }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
+
+  const { can } = useMemo(
+    () =>
+      connectedCase ? getPermissionsForCase(connectedCase.twilioWorkerId, connectedCase.status) : { can: () => false },
+    [connectedCase],
+  );
 
   if (!connectedCase || !timelineActivities) {
     return null;
   }
+
   const caseId = connectedCase.id.toString();
   const handleViewNoteClick = ({ id }: NoteActivity) => {
     openViewCaseSectionModal(caseId, NewCaseSubroutes.Note, id);
@@ -123,69 +127,67 @@ const Timeline: React.FC<Props> = ({
   };
 
   return (
-    <CaseDetailsBorder>
-      <Box marginTop="25px">
-        <Dialog onClose={() => setMockedMessage(null)} open={Boolean(mockedMessage)}>
-          <DialogContent>{mockedMessage}</DialogContent>
-        </Dialog>
-        <Box marginBottom="10px">
-          <Row>
-            <CaseSectionFont id="Case-TimelineSection-label">
-              <Template code={titleCode} />
-            </CaseSectionFont>
-            <Box marginLeft="auto">
-              <CaseAddButton
-                templateCode="Case-Note"
-                onClick={handleAddNoteClick}
-                disabled={!can(PermissionActions.ADD_NOTE)}
-              />
-              <CaseAddButton
-                templateCode="Case-Referral"
-                onClick={handleAddReferralClick}
-                disabled={!can(PermissionActions.ADD_REFERRAL)}
-                withDivider
-              />
-            </Box>
-          </Row>
-        </Box>
-        {timelineActivities &&
-          timelineActivities.length > 0 &&
-          timelineActivities.map((activity, index) => {
-            const date = parseISO(activity.date).toLocaleDateString(navigator.language);
-            let canViewActivity = true;
-            if (isConnectedCaseActivity(activity)) {
-              if (activity.showViewButton) {
-                const { can } = getPermissionsForContact(activity.twilioWorkerId);
-                canViewActivity = can(PermissionActions.VIEW_CONTACT);
-              } else {
-                canViewActivity = false;
-              }
-            }
-
-            return (
-              <TimelineRow key={index}>
-                <TimelineDate>{date}</TimelineDate>
-                <TimelineIcon type={isConnectedCaseActivity(activity) ? activity.channel : activity.type} />
-                {isConnectedCaseActivity(activity) && (
-                  <TimelineCallTypeIcon>
-                    <CallTypeIcon callType={activity.callType} fontSize="18px" />
-                  </TimelineCallTypeIcon>
-                )}
-                <TimelineText>{activity?.text}</TimelineText>
-                {canViewActivity && (
-                  <Box marginLeft="auto">
-                    <Box marginLeft="auto">
-                      <ViewButton onClick={() => handleViewClick(activity)}>
-                        <Template code="Case-ViewButton" />
-                      </ViewButton>
-                    </Box>
-                  </Box>
-                )}
-              </TimelineRow>
-            );
-          })}
+    <Box marginTop="25px">
+      <Dialog onClose={() => setMockedMessage(null)} open={Boolean(mockedMessage)}>
+        <DialogContent>{mockedMessage}</DialogContent>
+      </Dialog>
+      <Box marginBottom="10px">
+        <Row>
+          <CaseSectionFont id="Case-RecentTimelineTitle-label">
+            <Template code={titleCode} />
+          </CaseSectionFont>
+          <Box marginLeft="auto">
+            <CaseAddButton
+              templateCode="Case-Note"
+              onClick={handleAddNoteClick}
+              disabled={!can(PermissionActions.ADD_NOTE)}
+            />
+            <CaseAddButton
+              templateCode="Case-Referral"
+              onClick={handleAddReferralClick}
+              disabled={!can(PermissionActions.ADD_REFERRAL)}
+              withDivider
+            />
+          </Box>
+        </Row>
       </Box>
-    </CaseDetailsBorder>
+      {timelineActivities &&
+        timelineActivities.length > 0 &&
+        timelineActivities.map((activity, index) => {
+          const date = parseISO(activity.date).toLocaleDateString(navigator.language);
+          let canViewActivity = true;
+          if (isConnectedCaseActivity(activity)) {
+            if (activity.showViewButton) {
+              const { can } = getPermissionsForContact(activity.twilioWorkerId);
+              canViewActivity = can(PermissionActions.VIEW_CONTACT);
+            } else {
+              canViewActivity = false;
+            }
+          }
+
+          return (
+            <TimelineRow key={index}>
+              <TimelineDate>{date}</TimelineDate>
+              <TimelineIcon type={isConnectedCaseActivity(activity) ? activity.channel : activity.type} />
+              {isConnectedCaseActivity(activity) && (
+                <TimelineCallTypeIcon>
+                  <CallTypeIcon callType={activity.callType} fontSize="18px" />
+                </TimelineCallTypeIcon>
+              )}
+              <TimelineText>{activity?.text}</TimelineText>
+              {canViewActivity && (
+                <Box marginLeft="auto">
+                  <Box marginLeft="auto">
+                    <ViewButton onClick={() => handleViewClick(activity)}>
+                      <Template code="Case-ViewButton" />
+                    </ViewButton>
+                  </Box>
+                </Box>
+              )}
+            </TimelineRow>
+          );
+        })}
+    </Box>
   );
 };
 Timeline.displayName = 'Timeline';
