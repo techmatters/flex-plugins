@@ -26,7 +26,6 @@
   "CallTypeButtons-Or": "Or was this contact…",
   "ConnectDialog-Child": "Copy child information from this record to new contact?",
   "ConnectDialog-Caller": "Copy caller information from this record to new contact?",
-  "Profile-Title": "Client Profile",
   "QueueCard-WaitLabel": "Longest wait time:",
   "QueueCard-None": "none",
   "QueueCard-LessThanMinute": "less than a minute",
@@ -60,11 +59,11 @@
   "SearchResultsIndex-ViewContacts": "View Contacts",
   "SearchResultsIndex-ViewCases": "View Cases",
   "Contact-ViewButton": "View",
-  "SearchResultsIndex-SelectCase":"Select Case",
-  "SearchResultsIndex-NoCasesFound":"No {{type}}s Found",
-  "SearchResultsIndex-SearchAgainForCase":"Search again for a {{type}}",
-  "SearchResultsIndex-SaveToNewCase":"save this contact to a new case",
-  "SearchResultsIndex-Or":"or",
+  "SearchResultsIndex-SelectCase": "Select Case",
+  "SearchResultsIndex-NoCasesFound": "No {{type}}s Found",
+  "SearchResultsIndex-SearchAgainForCase": "Search again for a {{type}}",
+  "SearchResultsIndex-SaveToNewCase": "save this contact to a new case",
+  "SearchResultsIndex-Or": "or",
 
   "StandaloneSearch-SideNav": "Search",
   "CaseHeader-Opened": "Opened",
@@ -390,6 +389,7 @@
   "PreviousContacts-ViewRecords": "View Records",
   "PreviousContacts-OnlyShowRecordsFrom": "Only show records from",
 
+  "Profile-Title": "Client Profile",
   "Profile-DetailsHeader-Overview": "Overview",
   "Profile-DetailsHeader-Notes": "Notes",
   "Profile-IdentifiersHeader": "Identifiers",
@@ -402,7 +402,7 @@
   "Profile-FlagEditHeader": "Edit Status and Blocking",
   "Profile-NoContactsFound": "No Contacts Found",
   "Profile-NoCasesFound": "No Cases Found",
-  
+
   "UploadFile-ButtonText": "Upload File",
   "DownloadFile-ButtonText": "Download File",
   "CSAMReportForm-Header": "File a Report: Child Sexual Abuse Material",
