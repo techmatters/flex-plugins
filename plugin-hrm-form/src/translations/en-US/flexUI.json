@@ -157,7 +157,7 @@
   "Case-RecentTimelineTitle": "Recent Timeline",
   "Case-TimelineTitle": "Timeline",
   "Case-Timeline-PaginationDescription": "Showing {{from}}-{{to}} of {{total}}",
-  "Case-Timeline-OpenFullTimelineButton": "Show All Timeline Items",
+  "Case-Timeline-OpenFullTimelineButton": "See All Timeline Items",
   "Case-Timeline-DraftContactSummaryPlaceholder": "In Progress",
   "Case-AddPerpetratorSection": "Perpetrators",
   "Case-AddIncidentSection": "Incidents",
