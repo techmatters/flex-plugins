@@ -35,18 +35,22 @@ destroy-tg: verify-env
 destroy-all-tg: verify-env
 	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt rum-all destroy $(tg_args)
 
+##@ Terragrunt Stage Targets - Usage: make [target] HL=[hl short code] HL_ENV=[hl environment]
 apply: verify-pre-work apply-tg ## Apply the current terragrunt stage
-
-apply-all: verify-pre-work plan-all-tg apply-all-tg ## Apply all the terragrunt stages in subdirectories
 
 init: verify-pre-work init-scripts init-tg ## Initialize the current terragrunt stage
 
-init-all: verify-pre-work init-all-tg ## Initialize all the terragrunt stages in subdirectories
-
 plan: verify-pre-work plan-tg ## Plan the current terragrunt stage
-
-plan-all: verify-pre-work plan-all-tg ## Plan all the terragrunt stages in subdirectories
 
 destroy: destroy-tg ## Destroy the current terragrunt stage
 
+##@ Terragrunt All Stage Targets - Usage: make [target] HL=[hl short code] HL_ENV=[hl environment]
+
+apply-all: verify-pre-work plan-all-tg apply-all-tg ## Apply all the terragrunt stages in subdirectories
+
+init-all: verify-pre-work init-all-tg ## Initialize all the terragrunt stages in subdirectories
+
+plan-all: verify-pre-work plan-all-tg ## Plan all the terragrunt stages in subdirectories
+
 destroy-all: destroy-all-tg ## Destroy all the terragrunt stages in subdirectories
+
