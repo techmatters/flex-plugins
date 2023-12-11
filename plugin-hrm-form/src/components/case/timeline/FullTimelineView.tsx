@@ -34,7 +34,7 @@ type MyProps = {
   task: CustomITask | StandaloneITask;
 };
 
-const TIMELINE_PAGE_SIZE = 2;
+const TIMELINE_PAGE_SIZE = 25;
 
 const mapStateToProps = (state: RootState, { task }: MyProps) => {
   const { caseId, page = 0 } = selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseTimelineRoute;
