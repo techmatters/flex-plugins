@@ -35,6 +35,7 @@ import { createContactAsyncAction } from '../states/contacts/saveContact';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { newContact } from '../states/contacts/contactState';
 import { selectAnyContactIsSaving } from '../states/contacts/selectContactSaveStatus';
+import selectCurrentOfflineContact from '../states/contacts/selectCurrentOfflineContact';
 
 type OwnProps = {
   task?: ITask;
@@ -127,9 +128,7 @@ const mapStateToProps = (state: RootState) => {
   } = state;
   const { selectedTaskSid } = flex.view;
   const { isAddingOfflineContact } = routing;
-  const currentOfflineContact = Object.values(activeContacts.existingContacts).find(
-    contact => contact.savedContact.taskId === getOfflineContactTaskSid(),
-  );
+  const currentOfflineContact = selectCurrentOfflineContact(state);
   const hasUnsavedChanges =
     Object.values(activeContacts.existingContacts).some(
       ({ savedContact, draftContact }) => !_.isEqual(savedContact, getUnsavedContact(savedContact, draftContact)),
