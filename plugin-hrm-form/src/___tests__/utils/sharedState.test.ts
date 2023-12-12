@@ -66,7 +66,7 @@ const metadata = {} as ContactMetadata;
 const form: ContactState = {
   savedContact: contact,
   metadata,
-  references: new Set(),
+  references: {},
 };
 const task = createTask();
 
@@ -126,7 +126,7 @@ beforeEach(async () => {
     metadata: {
       draft: undefined,
     } as ContactMetadata,
-    references: new Set<string>(),
+    references: {},
   };
 
   mockFlexManager = {
