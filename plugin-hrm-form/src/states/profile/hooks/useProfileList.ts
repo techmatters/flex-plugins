@@ -19,15 +19,15 @@ import { Profile } from '../types';
 import * as ProfileSelectors from '../selectors';
 
 type UseProfileListReturn = {
-  profiles: Profile[] | undefined;
+  profileIds: Profile['id'][] | undefined;
   loading: boolean | undefined;
 };
 
 export const useProfileList = (): UseProfileListReturn => {
-  const profiles = useSelector((state: any) => ProfileSelectors.selectProfileListState(state)?.data);
+  const profileIds = useSelector((state: any) => ProfileSelectors.selectProfileListState(state)?.data);
   const loading = useSelector((state: any) => ProfileSelectors.selectProfileListState(state)?.loading);
   return {
-    profiles,
+    profileIds,
     loading,
   };
 };

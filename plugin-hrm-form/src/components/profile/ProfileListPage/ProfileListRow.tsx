@@ -14,6 +14,23 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import ProfileListPage from './ProfileListPage';
+import React from 'react';
 
-export default ProfileListPage;
+import { useProfile } from '../../../states/profile/hooks/useProfile';
+import { Profile } from '../../../states/profile/types';
+import { CLTableRow, CLTableCell } from '../../../styles/caseList';
+
+type Props = {
+  profileId: Profile['id'];
+};
+
+const ProfileListRow: React.FC<Props> = ({ profileId }) => {
+  const { profile } = useProfile({ profileId });
+  return (
+    <CLTableRow>
+      <CLTableCell>{profile?.name}</CLTableCell>
+    </CLTableRow>
+  );
+};
+
+export default ProfileListRow;
