@@ -20,28 +20,29 @@ import { format } from 'date-fns';
 import { submitContactForm } from '../../services/formSubmissionHelpers';
 import {
   connectToCase,
-  removeFromCase,
   createContact,
   getContactById,
   getContactByTaskSid,
+  removeFromCase,
   updateContactInHrm,
 } from '../../services/ContactService';
-import { Case, CustomITask, Contact } from '../../types/types';
+import { Case, Contact, CustomITask } from '../../types/types';
 import {
   CONNECT_TO_CASE,
-  REMOVE_FROM_CASE,
   ContactMetadata,
   ContactsState,
   CREATE_CONTACT_ACTION,
   LOAD_CONTACT_FROM_HRM_BY_ID_ACTION,
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION,
+  REMOVE_FROM_CASE,
   SET_SAVED_CONTACT,
   UPDATE_CONTACT_ACTION,
 } from './types';
 import { ContactDraftChanges } from './existingContacts';
 import { newContactMetaData } from './contactState';
-import { cancelCase, getCase } from '../../services/CaseService';
+import { getCase } from '../../services/CaseService';
 import { getUnsavedContact } from './getUnsavedContact';
+import { add, remove } from '../serializableSet';
 
 export const createContactAsyncAction = createAsyncAction(
   CREATE_CONTACT_ACTION,
@@ -197,13 +198,13 @@ const loadContactIntoRedux = (
   newMetadata?: ContactMetadata,
 ): ContactsState => {
   const { existingContacts } = state;
-  const references = existingContacts[contact.id]?.references ?? new Set();
+  const references = existingContacts[contact.id]?.references ?? {};
   if (reference) {
-    references.add(reference);
+    add(references, reference);
   }
   const metadata = newMetadata ?? existingContacts[contact.id]?.metadata;
-  const contactsBeingCreated = new Set(state.contactsBeingCreated);
-  contactsBeingCreated.delete(contact.taskId);
+  const contactsBeingCreated = { ...state.contactsBeingCreated };
+  remove(contactsBeingCreated, contact.taskId);
   return {
     ...state,
     contactsBeingCreated,
@@ -288,11 +289,10 @@ export const saveContactReducer = (initialState: ContactsState) =>
     handleAction(
       createContactAsyncAction.pending as typeof createContactAsyncAction,
       (state, { meta: { taskSid } }): ContactsState => {
-        const contactsBeingCreated = new Set(state.contactsBeingCreated);
-        contactsBeingCreated.add(taskSid);
+        const contactsBeingCreated = { ...state.contactsBeingCreated };
         return {
           ...state,
-          contactsBeingCreated,
+          contactsBeingCreated: add(contactsBeingCreated, taskSid),
         };
       },
     ),
@@ -310,8 +310,8 @@ export const saveContactReducer = (initialState: ContactsState) =>
         } = action as typeof action & {
           meta: { taskSid: string };
         };
-        const contactsBeingCreated = new Set(state.contactsBeingCreated);
-        contactsBeingCreated.delete(taskSid);
+        const contactsBeingCreated = { ...state.contactsBeingCreated };
+        remove(contactsBeingCreated, taskSid);
         return {
           ...state,
           contactsBeingCreated,

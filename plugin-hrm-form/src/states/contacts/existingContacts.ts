@@ -22,6 +22,7 @@ import { ConfigurationState } from '../configuration/reducer';
 import { transformValuesForContactForm } from './contactDetailsAdapter';
 import { ContactMetadata } from './types';
 import { newContactMetaData } from './contactState';
+import { add, has, remove, SerializableSet, size } from '../serializableSet';
 
 export enum ContactDetailsRoute {
   EDIT_CALLER_INFORMATION = 'editCallerInformation',
@@ -85,7 +86,7 @@ export type TranscriptResult = {
 };
 
 export type ContactState = {
-  references: Set<string>;
+  references: SerializableSet;
   savedContact: Contact;
   draftContact?: ContactDraftChanges;
   metadata: ContactMetadata;
@@ -130,12 +131,10 @@ export const refreshContact = (contact: any) => loadContact(contact, undefined, 
 export const loadContactReducer = (state = initialState, action: LoadContactAction) => {
   const updateEntries = action.contacts
     .filter(c => {
-      return (
-        (action.reference && !(state[c.id]?.references ?? new Set()).has(action.reference)) || action.replaceExisting
-      );
+      return (action.reference && !has(state[c.id]?.references ?? {}, action.reference)) || action.replaceExisting;
     })
     .map(c => {
-      const current = state[c.id] ?? { references: new Set() };
+      const current = state[c.id] ?? { references: {} };
       const { draftContact, ...currentContact } = state[c.id] ?? {
         categories: {
           expanded: {},
@@ -147,8 +146,8 @@ export const loadContactReducer = (state = initialState, action: LoadContactActi
         {
           metadata: newContactMetaData(true),
           ...currentContact,
-          savedContact: action.replaceExisting || !current.references.size ? c : state[c.id].savedContact,
-          references: action.reference ? current.references.add(action.reference) : current.references,
+          savedContact: action.replaceExisting || !size(current.references) ? c : state[c.id].savedContact,
+          references: action.reference ? add(current.references, action.reference) : current.references,
           draftContact: action.replaceExisting ? undefined : draftContact,
         },
       ];
@@ -189,10 +188,10 @@ export const releaseContactReducer = (state: ExistingContactsState, action: Rele
         );
         return [id, undefined];
       }
-      current.references.delete(action.reference);
+      remove(current.references, action.reference);
       return [id, current];
     })
-    .filter(([, ecs]) => typeof ecs === 'object' && ecs.references.size > 0);
+    .filter(([, ecs]) => typeof ecs === 'object' && size(ecs.references) > 0);
   return {
     ...omit(state, ...action.ids),
     ...Object.fromEntries(updateKvps),

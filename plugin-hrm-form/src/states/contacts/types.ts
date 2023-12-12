@@ -20,6 +20,7 @@ import { Case, Contact } from '../../types/types';
 import { DraftResourceReferralState } from './resourceReferral';
 import { ContactState, ExistingContactsState } from './existingContacts';
 import { ContactDetailsState } from './contactDetails';
+import { SerializableSet } from '../serializableSet';
 
 // Action types
 export const SAVE_END_MILLIS = 'SAVE_END_MILLIS';
@@ -63,7 +64,7 @@ export type ContactMetadata = {
 
 export type ContactsState = {
   existingContacts: ExistingContactsState;
-  contactsBeingCreated: Set<string>;
+  contactsBeingCreated: SerializableSet;
   contactDetails: ContactDetailsState;
   isCallTypeCaller: boolean;
 };

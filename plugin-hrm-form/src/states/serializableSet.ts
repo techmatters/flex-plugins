@@ -14,23 +14,23 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { RootState } from '..';
-import { namespace } from '../storeNamespaces';
-import { has, size } from '../serializableSet';
+// The JS set doesn't serialize to JSON, so we need to use a plain object instead if we want to keep it in redux state, now we store it in localStorage
 
-export const selectIsContactCreating = (
-  {
-    [namespace]: {
-      activeContacts: { contactsBeingCreated },
-    },
-  }: RootState,
-  taskSid: string,
-) => has(contactsBeingCreated, taskSid);
+export type SerializableSet = Record<string, true>;
 
-export const selectAnyContactIsSaving = ({
-  [namespace]: {
-    activeContacts: { contactsBeingCreated, existingContacts },
-  },
-}: RootState) =>
-  size(contactsBeingCreated) > 0 ||
-  Object.values(existingContacts).some(({ metadata }) => metadata?.saveStatus === 'saving');
+export const has = (set: SerializableSet, key: string): boolean => Boolean(set[key]);
+
+export const add = (set: SerializableSet, key: string): SerializableSet => {
+  set[key] = true;
+  return set;
+};
+
+export const remove = (set: SerializableSet, key: string): boolean => {
+  if (!has(set, key)) {
+    return false;
+  }
+  delete set[key];
+  return true;
+};
+
+export const size = (set: SerializableSet): number => Object.keys(set).length;
