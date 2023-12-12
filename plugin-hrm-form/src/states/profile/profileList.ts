@@ -18,7 +18,9 @@ import { createAsyncAction, createReducer } from 'redux-promise-middleware-actio
 import * as t from './types';
 import { getProfileList } from '../../services/ProfileService';
 
-export const loadProfileListAsync = createAsyncAction(t.LOAD_PROFILES_LIST, getProfileList);
+export const loadProfileListAsync = createAsyncAction(t.LOAD_PROFILES_LIST, (params: any = {}) => {
+  return getProfileList(params);
+});
 
 const loadProfileListEntryIntoRedux = (state: t.ProfileListState, profilesListUpdate: any) => ({
   ...state,

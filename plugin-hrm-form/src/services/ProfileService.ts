@@ -16,6 +16,7 @@
 
 import { fetchHrmApi } from './fetchHrmApi';
 import { Identifier, Profile, ProfileFlag, ProfileSection } from '../states/profile/types';
+import search from 'components/search';
 
 type ProfileId = Profile['id'];
 type ProfileFlagId = ProfileFlag['id'];
@@ -64,13 +65,28 @@ export const updateProfileSection = (profileId: ProfileId, sectionId: ProfileSec
   });
 };
 
-export const getProfileList = (
-  offset: number = 1,
-  limit: number = 10,
-  sortBy: string | number = 'id', // id or name
-  sortDirection: string = null,
-  profileFlagIds: string = null,
-) =>
-  fetchHrmApi(
-    `/profiles?offset=${offset}&limit=${limit}&sortBy=${sortBy}&sortDirection=${sortDirection}&profileFlagIds=${profileFlagIds}`,
-  );
+type GetProfileListParams = {
+  offset?: number;
+  limit?: number;
+  sortBy?: 'id' | 'name' | 'createdAt' | 'updatedAt';
+  sortDirection?: string;
+  profileFlagIds?: string[];
+};
+
+export const getProfileList = ({
+  offset = 0,
+  limit = 10,
+  sortBy = 'id',
+  sortDirection = null,
+  profileFlagIds = null,
+}: // TODO: remove default empty object once params are passed through
+GetProfileListParams = {}) => {
+  const searchParams = new URLSearchParams();
+  searchParams.append('offset', offset.toString());
+  searchParams.append('limit', limit.toString());
+  searchParams.append('sortBy', sortBy);
+  if (sortDirection) searchParams.append('sortDirection', sortDirection);
+  if (profileFlagIds) searchParams.append('profileFlagIds', profileFlagIds.join(','));
+
+  return fetchHrmApi(`/profiles?${searchParams.toString()}`);
+};
