@@ -60,13 +60,13 @@ export const initialProfileFlagsState: ProfileFlagsState = {
   data: undefined,
 };
 
-export type ProfilesListState = {
+export type ProfileListState = {
   data?: Profile[];
   error?: ParseFetchErrorResult;
   loading: boolean;
 };
 
-export const initialProfilesListState: ProfilesListState = {
+export const initialProfileListState: ProfileListState = {
   error: undefined,
   loading: false,
   data: undefined,
@@ -110,7 +110,7 @@ export type ProfileState = {
   identifiers: IdentifiersState;
   profiles: ProfilesState;
   profileFlags: ProfileFlagsState;
-  profilesList: ProfilesListState;
+  profilesList: ProfileListState;
 };
 
 export const newProfileEntry: ProfileEntry = {

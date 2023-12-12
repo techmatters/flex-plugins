@@ -115,6 +115,7 @@ const setUpComponents = (
   }
 
   if (featureFlags.enable_case_management) Components.setUpCaseList();
+  if (featureFlags.enable_client_profiles) Components.setUpClientProfileList();
 
   if (!Boolean(setupObject.helpline)) Components.setUpDeveloperComponents(translateUI); // utilities for developers only
 

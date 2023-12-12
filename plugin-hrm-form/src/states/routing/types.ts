@@ -88,6 +88,11 @@ type CaseListRoute = RouteWithModalSupport & {
   subroute: 'case-list';
 };
 
+type ProfileListRoute = RouteWithModalSupport & {
+  route: 'profiles-list';
+  subroute: 'profiles-list';
+};
+
 const CONTEXTS = ['search', 'hrm-form', 'profile'] as const;
 
 export type Contexts = typeof CONTEXTS[number];
@@ -219,6 +224,7 @@ type OtherRoutes =
   | SearchRoute
   | ContactRoute
   | CaseListRoute
+  | ProfileListRoute
   | ProfileRoute
   | ProfileEditRoute
   | ProfileSectionEditRoute;

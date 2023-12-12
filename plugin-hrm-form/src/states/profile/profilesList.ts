@@ -16,25 +16,25 @@
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
 import * as t from './types';
-import { getProfilesList } from '../../services/ProfileService';
+import { getProfileList } from '../../services/ProfileService';
 
-export const loadProfilesListAsync = createAsyncAction(t.LOAD_PROFILES_LIST, getProfilesList);
+export const loadProfileListAsync = createAsyncAction(t.LOAD_PROFILES_LIST, getProfileList);
 
-const loadProfilesListEntryIntoRedux = (state: t.ProfilesListState, profilesListUpdate: any) => ({
+const loadProfileListEntryIntoRedux = (state: t.ProfileListState, profilesListUpdate: any) => ({
   ...state,
   ...profilesListUpdate,
 });
 
-const handleLoadProfilesListPendingAction = (state: t.ProfilesListState) => {
+const handleLoadProfileListPendingAction = (state: t.ProfileListState) => {
   const update = {
     loading: true,
     error: undefined,
   };
 
-  return loadProfilesListEntryIntoRedux(state, update);
+  return loadProfileListEntryIntoRedux(state, update);
 };
 
-const handleLoadProfilesListRejectedAction = (state: t.ProfilesListState, action: any) => {
+const handleLoadProfileListRejectedAction = (state: t.ProfileListState, action: any) => {
   const error = action.payload;
 
   const update = {
@@ -42,23 +42,23 @@ const handleLoadProfilesListRejectedAction = (state: t.ProfilesListState, action
     error,
   };
 
-  return loadProfilesListEntryIntoRedux(state, update);
+  return loadProfileListEntryIntoRedux(state, update);
 };
 
-const handleLoadProfilesListFulfilledAction = (state: t.ProfilesListState, action: any) => {
+const handleLoadProfileListFulfilledAction = (state: t.ProfileListState, action: any) => {
   const update = {
     loading: false,
     data: action.payload,
   };
 
-  return loadProfilesListEntryIntoRedux(state, update);
+  return loadProfileListEntryIntoRedux(state, update);
 };
 
-const profilesListReducer = (initialState: t.ProfilesListState = t.initialProfilesListState) =>
+const profilesListReducer = (initialState: t.ProfileListState = t.initialProfileListState) =>
   createReducer(initialState, handleAction => [
-    handleAction(loadProfilesListAsync.pending, handleLoadProfilesListPendingAction),
-    handleAction(loadProfilesListAsync.rejected, handleLoadProfilesListRejectedAction),
-    handleAction(loadProfilesListAsync.fulfilled, handleLoadProfilesListFulfilledAction),
+    handleAction(loadProfileListAsync.pending, handleLoadProfileListPendingAction),
+    handleAction(loadProfileListAsync.rejected, handleLoadProfileListRejectedAction),
+    handleAction(loadProfileListAsync.fulfilled, handleLoadProfileListFulfilledAction),
   ]);
 
 export default profilesListReducer;

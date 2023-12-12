@@ -64,12 +64,10 @@ export const updateProfileSection = (profileId: ProfileId, sectionId: ProfileSec
   });
 };
 
-// sortBy: valid values are id and name. Used to sort the list. Defaults to id.
-// sortDirection: valid values are desc and asc. Used to specify the sort direction. Defaults to desc.
-export const getProfilesList = (
+export const getProfileList = (
   offset: number,
   limit: number,
-  sortBy: string | number,
+  sortBy: string | number, // id or name
   sortDirection: string,
   profileFlagIds: string,
 ) =>

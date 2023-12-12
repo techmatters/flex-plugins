@@ -13,15 +13,4 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
-export type UseProfilesListLoaderParams = {
-  shouldAutoload?: Boolean;
-};
-
-// export const selectAllProfilesListState = (state: RootState) => selectProfileState(state)?.profilesList;
-
-/**
- * Load all profiles into redux
- * @param {UseProfilesListLoaderParams} params - The params for the profiles list
- * @returns {UseProfilesListLoaderReturn} - State and actions for the profiles list
- */
+export {};
