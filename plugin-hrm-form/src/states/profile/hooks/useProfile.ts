@@ -26,7 +26,8 @@ import { UseProfileCommonParams } from './types';
 export type UseProfileParams = UseProfileCommonParams;
 
 export type UseProfileReturn = {
-  profile?: Profile;
+  profile: Profile | undefined;
+  loading: boolean | undefined;
 };
 
 /**
@@ -38,8 +39,10 @@ export type UseProfileReturn = {
 export const useProfile = (params: UseProfileParams): UseProfileReturn => {
   const { profileId } = params;
   const profile = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.data);
+  const loading = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.loading);
 
   return {
+    loading,
     profile,
   };
 };
