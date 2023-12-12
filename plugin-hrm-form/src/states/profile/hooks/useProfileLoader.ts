@@ -33,10 +33,10 @@ type UseProfileLoaderReturn = {
 };
 
 /**
- * Load a profile by id into redux
+ * Tools to load a profile by id into redux, by default it will load the profile automatically
  * @param {UseProfileLoaderParams} params - Parameters for the hook
  * @param params.profileId - The id of the profile to load
- * @param params.skipAutoload - If true, the profile will not be loaded automatically
+ * @param params.skipAutoload - If true, the profile will not be loaded automatically (default: false)
  * @returns {UseProfileLoaderReturn} - loading state and actions for the profile
  */
 export const useProfileLoader = ({
