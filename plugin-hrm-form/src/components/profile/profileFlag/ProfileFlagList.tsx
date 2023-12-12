@@ -41,7 +41,7 @@ type Props = OwnProps;
 
 const ProfileFlagsList: React.FC<Props> = ({ disassociateRef, enableDisassociate, profileId }) => {
   const { profileFlags, disassociateProfileFlag } = useProfileFlags(profileId);
-  const { loading } = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId));
+  const loading = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId))?.loading;
 
   const renderDisassociate = (flag: ProfileFlag) => {
     if (!enableDisassociate) return null;

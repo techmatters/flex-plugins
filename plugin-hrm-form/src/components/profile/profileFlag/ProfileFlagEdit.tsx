@@ -38,7 +38,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
   const { modalRef, profileId } = props;
 
   const { allProfileFlags, profileFlags, associateProfileFlag } = useProfileFlags(profileId);
-  const { loading } = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId));
+  const loading = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId))?.loading;
 
   const anchorRef = useRef(null);
 
