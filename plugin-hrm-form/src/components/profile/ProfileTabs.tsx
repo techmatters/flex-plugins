@@ -61,7 +61,8 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfileTab }) => {
   const { profile: { contactsCount, casesCount } = {} } = useProfile({ profileId });
-  useProfileLoader({ profileId, shouldAutoload: true });
+  useProfileLoader({ profileId });
+
   const tabs = [
     {
       label: 'Client',

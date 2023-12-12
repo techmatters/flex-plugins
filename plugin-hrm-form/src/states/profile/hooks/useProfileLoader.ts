@@ -23,7 +23,7 @@ import * as ProfileSelectors from '../selectors';
 import { UseProfileCommonParams } from './types';
 
 type UseProfileLoaderParams = UseProfileCommonParams & {
-  shouldAutoload?: Boolean;
+  skipAutoload?: boolean;
 };
 
 type UseProfileLoaderReturn = {
@@ -34,12 +34,14 @@ type UseProfileLoaderReturn = {
 
 /**
  * Load a profile by id into redux
- * @param {UseProfileLoaderParams}
- * @returns {UseProfileLoaderReturn} - State and actions for the profile
+ * @param {UseProfileLoaderParams} params - Parameters for the hook
+ * @param params.profileId - The id of the profile to load
+ * @param params.skipAutoload - If true, the profile will not be loaded automatically
+ * @returns {UseProfileLoaderReturn} - loading state and actions for the profile
  */
 export const useProfileLoader = ({
   profileId,
-  shouldAutoload = false,
+  skipAutoload = false,
 }: UseProfileLoaderParams): UseProfileLoaderReturn => {
   const dispatch = useDispatch();
   const error = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.error);
@@ -49,11 +51,11 @@ export const useProfileLoader = ({
   }, [dispatch, profileId]);
 
   useEffect(() => {
-    if (shouldAutoload && !loading) {
+    if (!skipAutoload && !loading) {
       loadProfile();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileId, shouldAutoload, loadProfile]);
+  }, [profileId, skipAutoload, loadProfile]);
 
   return {
     error,
