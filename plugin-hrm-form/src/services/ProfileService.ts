@@ -16,7 +16,6 @@
 
 import { fetchHrmApi } from './fetchHrmApi';
 import { Identifier, Profile, ProfileFlag, ProfileSection } from '../states/profile/types';
-import search from 'components/search';
 
 type ProfileId = Profile['id'];
 type ProfileFlagId = ProfileFlag['id'];
@@ -69,7 +68,7 @@ type GetProfileListParams = {
   offset?: number;
   limit?: number;
   sortBy?: 'id' | 'name' | 'createdAt' | 'updatedAt';
-  sortDirection?: string;
+  sortDirection?: 'asc' | 'desc';
   profileFlagIds?: string[];
 };
 
