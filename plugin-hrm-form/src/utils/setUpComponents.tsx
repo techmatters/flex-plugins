@@ -36,7 +36,7 @@ import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
 import StandaloneSearchSideLink from '../components/sideLinks/StandaloneSearchSideLink';
 import ManualPullButton from '../components/ManualPullButton';
 import ViewTaskNumber from '../components/common/MaskingIdentifiers/ViewTaskNumber';
-import ProfileListPage from '../components/profile/ProfilesListPage';
+import ProfileListPage from '../components/profile/ProfileListPage';
 import ProfileListSideLink from '../components/sideLinks/ProfileListSideLink';
 import { AddOfflineContactButton, OfflineContactTask } from '../components/OfflineContact';
 import { chatCapacityUpdated } from '../states/configuration/actions';

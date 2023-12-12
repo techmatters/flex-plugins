@@ -13,4 +13,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-export {};
+import { useSelector } from 'react-redux';
+
+import { Profile } from '../types';
+import * as ProfileSelectors from '../selectors';
+
+type UseProfileListReturn = {
+  profiles: Profile[] | undefined;
+  loading: boolean | undefined;
+};
+
+export const useProfileList = (): UseProfileListReturn => {
+  const profiles = useSelector((state: any) => ProfileSelectors.selectProfileListState(state)?.data);
+  const loading = useSelector((state: any) => ProfileSelectors.selectProfileListState(state)?.loading);
+  return {
+    profiles,
+    loading,
+  };
+};

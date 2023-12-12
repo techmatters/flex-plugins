@@ -16,15 +16,14 @@
 
 import React from 'react';
 
-import { useProfile } from '../../../states/profile/hooks';
 import { CLTableRow, CLTableCell } from '../../../styles/caseList';
+import { useProfileListLoader } from '../../../states/profile/hooks/useProfileListLoader';
+import { useProfileList } from '../../../states/profile/hooks/useProfileList';
 
 const ProfileListPage: React.FC = () => {
-  const { profile: profile4 } = useProfile({ profileId: 4, shouldAutoload: true });
-  const { profile: profile5 } = useProfile({ profileId: 5, shouldAutoload: true });
-
-  console.log('>>> ProfileListPage not really ', profile4, profile5);
-
+  useProfileListLoader();
+  const { profiles } = useProfileList();
+  console.log('>>> ', profiles);
   return (
     <>
       <h1>Clients</h1>

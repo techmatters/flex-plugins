@@ -65,11 +65,11 @@ export const updateProfileSection = (profileId: ProfileId, sectionId: ProfileSec
 };
 
 export const getProfileList = (
-  offset: number,
-  limit: number,
-  sortBy: string | number, // id or name
-  sortDirection: string,
-  profileFlagIds: string,
+  offset: number = 1,
+  limit: number = 10,
+  sortBy: string | number = 'id', // id or name
+  sortDirection: string = null,
+  profileFlagIds: string = null,
 ) =>
   fetchHrmApi(
     `/profiles?offset=${offset}&limit=${limit}&sortBy=${sortBy}&sortDirection=${sortDirection}&profileFlagIds=${profileFlagIds}`,
