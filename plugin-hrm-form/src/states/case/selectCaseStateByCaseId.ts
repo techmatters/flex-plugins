@@ -14,5 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// TODO: Add tests for the async action.
-test('TODO: Add tests for the async action.', () => undefined);
+import { RootState } from '..';
+import { connectedCaseBase, namespace } from '../storeNamespaces';
+import { CaseStateEntry } from './types';
+
+const selectCaseByCaseId = (state: RootState, caseId: string): CaseStateEntry | undefined =>
+  state[namespace][connectedCaseBase].cases[caseId];
+
+export default selectCaseByCaseId;

@@ -22,13 +22,11 @@ import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid
 import asyncDispatch from '../../states/asyncDispatch';
 import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
 import { newOpenModalAction } from '../../states/routing/actions';
-import { setConnectedCase } from '../../states/case/actions';
-import selectCaseByTaskSid from '../../states/case/selectCaseByTaskSid';
 import type { Case } from '../../types/types';
 import { BannerContainer, Text, CaseLink, BannerActionLink } from './styles';
 import InfoIcon from './InfoIcon';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
-import { contactFormsBase, namespace } from '../../states/storeNamespaces';
+import selectCaseByCaseId from '../../states/case/selectCaseStateByCaseId';
 import { RootState } from '../../states';
 
 type OwnProps = {
@@ -38,20 +36,19 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const mapStateToProps = (state: RootState, { taskId }: OwnProps) => {
-  const contact = selectContactByTaskSid(state, taskId);
-  const connectedCase = selectCaseByTaskSid(state, taskId);
-  const caseId = contact?.savedContact?.caseId;
+  const { savedContact } = selectContactByTaskSid(state, taskId);
+  const connectedCase = selectCaseByCaseId(state, savedContact.caseId ?? '')?.connectedCase;
+  const caseId = savedContact?.caseId;
   return {
-    contact: contact.savedContact,
+    contact: savedContact,
     connectedCase,
     caseId,
   };
 };
 
 const mapDispatchToProps = (dispatch, { taskId }: OwnProps) => ({
-  viewCaseDetails: (cas: Case) => {
-    dispatch(setConnectedCase(cas, taskId));
-    dispatch(newOpenModalAction({ route: 'case', subroute: 'home', isCreating: false }, taskId));
+  viewCaseDetails: ({ id }: Case) => {
+    dispatch(newOpenModalAction({ route: 'case', subroute: 'home', caseId: id, isCreating: false }, taskId));
   },
   removeContactFromCase: async (contactId: string) => {
     await asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId));

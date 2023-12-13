@@ -36,6 +36,7 @@ import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { changeRoute, newCloseModalAction } from '../../states/routing/actions';
 import { SearchResultRoute, SearchRoute } from '../../states/routing/types';
 import NavigableContainer from '../NavigableContainer';
+import selectCasesForSearchResults from '../../states/search/selectCasesForSearchResults';
 
 type OwnProps = {
   task: CustomITask;
@@ -223,10 +224,10 @@ Search.defaultProps = {
   error: null,
 };
 
-const mapStateToProps = (
-  { [namespace]: { searchContacts, activeContacts, routing } }: RootState,
-  { task }: OwnProps,
-) => {
+const mapStateToProps = (state: RootState, { task }: OwnProps) => {
+  const {
+    [namespace]: { searchContacts, activeContacts, routing },
+  } = state;
   const taskId = task.taskSid;
   const taskSearchState = searchContacts.tasks[taskId];
   const isStandaloneSearch = taskId === standaloneTaskSid;
@@ -238,7 +239,7 @@ const mapStateToProps = (
     error: taskSearchState.error,
     form: taskSearchState.form,
     searchContactsResults: taskSearchState.searchContactsResult,
-    searchCasesResults: taskSearchState.searchCasesResult,
+    searchCasesResults: selectCasesForSearchResults(state, taskId),
     showActionIcons: !isStandaloneSearch,
     routing: currentRoute,
     searchCase: taskSearchState.searchExistingCaseStatus,
