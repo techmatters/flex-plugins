@@ -28,7 +28,7 @@ import {
   CasesTitle,
   CasesCount,
   FilterTitle,
-} from '../../../styles/caseList/filters';
+} from '../../../styles/table/filters';
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
 import { CategoryFilter, CounselorHash } from '../../../types/types';
 import DateRangeFilter from './DateRangeFilter';

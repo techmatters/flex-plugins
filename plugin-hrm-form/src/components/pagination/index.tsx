@@ -21,8 +21,8 @@ import { range } from 'lodash';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 
-import { PaginationButton, PaginationChevron, ButtonText } from '../styles/caseList';
-import { HiddenText, PaginationRow } from '../styles/HrmStyles';
+import { PaginationRow, PaginationButton, PaginationChevron, PaginationButtonText } from './styles';
+import { HiddenText } from '../../styles/HrmStyles';
 
 export const getPaginationNumbers = (page, pageCount) => {
   if (pageCount <= 11) return range(pageCount);
@@ -35,9 +35,9 @@ export const getPaginationNumbers = (page, pageCount) => {
 const renderPaginationButton = (page, handleChangePage, disabled) => n => {
   if (n === -1)
     return (
-      <ButtonText style={{ padding: '6px 10px', margin: '0 2px' }} key={`ellipsis-${Math.random()}`}>
+      <PaginationButtonText style={{ padding: '6px 10px', margin: '0 2px' }} key={`ellipsis-${Math.random()}`}>
         ...
-      </ButtonText>
+      </PaginationButtonText>
     );
 
   return (
@@ -53,7 +53,7 @@ const renderPaginationButton = (page, handleChangePage, disabled) => n => {
       aria-disabled={disabled}
       style={{ opacity: disabled ? 0.5 : 1 }}
     >
-      <ButtonText highlight={page === n}>{n + 1}</ButtonText>
+      <PaginationButtonText highlight={page === n}>{n + 1}</PaginationButtonText>
     </PaginationButton>
   );
 };

@@ -617,19 +617,6 @@ export const HeaderContainer = styled(Row)`
 `;
 HeaderContainer.displayName = 'HeaderContainer';
 
-type PaginationRowProps = {
-  transparent?: boolean;
-};
-
-export const PaginationRow = styled('nav')<PaginationRowProps>`
-  display: flex;
-  justify-content: center;
-  background-color: transparent;
-  padding: 40px auto;
-  margin: 40px auto;
-`;
-PaginationRow.displayName = 'PaginationRow';
-
 const TaskButtonBase = withStyles({
   root: {
     '&:hover': {

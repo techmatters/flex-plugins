@@ -40,7 +40,7 @@ import {
   MultiSelectButton,
   MultiSelectUnorderedList,
   DateErrorMessage,
-} from '../../../styles/caseList/filters';
+} from '../../../styles/table/filters';
 
 type ReactHookFormValues = {
   [name: string]: string;

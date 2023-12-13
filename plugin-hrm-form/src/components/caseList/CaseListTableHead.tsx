@@ -20,10 +20,11 @@ import { TableHead, TableRow } from '@material-ui/core';
 
 import CaseListTableHeadCell from './CaseListTableHeadCell';
 import { ListCasesSortBy, ListCasesSortDirection } from '../../types/types';
+import { TableHeader } from '../../styles/table';
 
 const CaseListTableHead = () => {
   return (
-    <TableHead style={{ boxShadow: '0 2px 0 0 #E5E6E7' }} data-testid="CaseList-TableHead">
+    <TableHeader data-testid="CaseList-TableHead">
       <TableRow>
         <CaseListTableHeadCell
           column={ListCasesSortBy.ID}
@@ -54,7 +55,7 @@ const CaseListTableHead = () => {
           localizedText="CaseList-THFollowUp"
         />
       </TableRow>
-    </TableHead>
+    </TableHeader>
   );
 };
 
