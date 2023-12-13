@@ -20,6 +20,7 @@ import { buildFormDefinitionsBaseUrlGetter, inferConfiguredFormDefinitionsBaseUr
 import { ConfigFlags, FeatureFlags } from './types/types';
 import type { RootState } from './states';
 import { namespace } from './states/storeNamespaces';
+import { githubSha, versionId } from './private/secret';
 
 const featureFlagEnvVarPrefix = 'REACT_APP_FF_';
 type ContactSaveFrequency = 'onTabChange' | 'onFinalSaveAndTransfer';
@@ -167,3 +168,5 @@ export const getAseloFeatureFlags = (): FeatureFlags => cachedConfig.featureFlag
 export const getDefinitionVersions = () => {
   return (Flex.Manager.getInstance().store.getState() as RootState)[namespace].configuration;
 };
+
+export const pluginVersionDescription = `${versionId}${githubSha ? `#${githubSha}` : ''}`;

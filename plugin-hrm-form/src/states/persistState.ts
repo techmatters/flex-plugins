@@ -19,7 +19,7 @@ import _ from 'lodash';
 
 import { RootState } from '.';
 import { namespace } from './storeNamespaces';
-import { getAseloFeatureFlags } from '../hrmConfig';
+import { getAseloFeatureFlags, pluginVersionDescription } from '../hrmConfig';
 
 // Quick & dirty module to persist redux state to localStorage via subscriptions since we can't add middleware like redux-persist to do it for us
 export const activateStatePersistence = () => {
@@ -29,7 +29,10 @@ export const activateStatePersistence = () => {
       const {
         [namespace]: { configuration, ...persistableState },
       } = Manager.getInstance().store.getState() as RootState;
-      localStorage.setItem('redux-state/plugin-hrm-form', JSON.stringify(persistableState));
+      localStorage.setItem(
+        'redux-state/plugin-hrm-form',
+        JSON.stringify({ [pluginVersionDescription]: persistableState }),
+      );
     }, 1000);
     Manager.getInstance().store.subscribe(debouncedWrite);
   }
@@ -37,9 +40,10 @@ export const activateStatePersistence = () => {
 
 export const readPersistedState = (): RootState[typeof namespace] | null => {
   if (getAseloFeatureFlags().enable_local_redux_persist) {
-    const persistedState = localStorage.getItem('redux-state/plugin-hrm-form');
-    if (persistedState) {
-      return JSON.parse(persistedState);
+    const persistedStateJson = localStorage.getItem('redux-state/plugin-hrm-form');
+    if (persistedStateJson) {
+      const persistedState = JSON.parse(persistedStateJson);
+      return persistedState[pluginVersionDescription];
     }
   }
   return undefined;
