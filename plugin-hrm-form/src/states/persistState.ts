@@ -29,7 +29,7 @@ export const activateStatePersistence = () => {
       const {
         [namespace]: { configuration, ...persistableState },
       } = Manager.getInstance().store.getState() as RootState;
-      localStorage.setItem(
+      sessionStorage.setItem(
         'redux-state/plugin-hrm-form',
         JSON.stringify({ [pluginVersionDescription]: persistableState }),
       );
@@ -40,7 +40,7 @@ export const activateStatePersistence = () => {
 
 export const readPersistedState = (): RootState[typeof namespace] | null => {
   if (getAseloFeatureFlags().enable_local_redux_persist) {
-    const persistedStateJson = localStorage.getItem('redux-state/plugin-hrm-form');
+    const persistedStateJson = sessionStorage.getItem('redux-state/plugin-hrm-form');
     if (persistedStateJson) {
       const persistedState = JSON.parse(persistedStateJson);
       return persistedState[pluginVersionDescription];
