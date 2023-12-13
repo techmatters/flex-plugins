@@ -20,7 +20,7 @@ import { ITask, TaskHelper } from '@twilio/flex-ui';
 import type { ContactMetadata } from './types';
 import { ReferralLookupStatus } from './resourceReferral';
 import type { ContactState } from './existingContacts';
-import { Contact, ContactRawJson, OfflineContactTask, isOfflineContactTask } from '../../types/types';
+import { Contact, ContactRawJson, isOfflineContactTask, OfflineContactTask } from '../../types/types';
 import { createStateItem, getInitialValue } from '../../components/common/forms/formGenerators';
 import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
 import { getHrmConfig } from '../../hrmConfig';
@@ -111,5 +111,5 @@ export const newContactState = (definitions: DefinitionVersion, task?: ITask | O
   savedContact: newContact(definitions, task),
   metadata: newContactMetaData(recreated),
   draftContact: {},
-  references: new Set(),
+  references: {},
 });

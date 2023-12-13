@@ -44,11 +44,12 @@ import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
 import { FeatureFlags, isInMyBehalfITask, standaloneTaskSid } from '../types/types';
 import { colors } from '../channels/colors';
-import { getHrmConfig, getAseloConfigFlags } from '../hrmConfig';
+import { getAseloConfigFlags, getHrmConfig } from '../hrmConfig';
 import { AseloMessageInput, AseloMessageList } from '../components/AseloMessaging';
 import { namespace, routingBase } from '../states/storeNamespaces';
 import { changeRoute } from '../states/routing/actions';
 import { ChangeRouteMode } from '../states/routing/types';
+import { versionId } from '../private/secret';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
@@ -352,6 +353,7 @@ export const removeTaskCanvasHeaderActions = (featureFlags: FeatureFlags) => {
 export const setLogo = url => {
   if (url) {
     Flex.MainHeader.defaultProps.logoUrl = url;
+    Flex.MainHeader.defaultProps.logoAltText = `Twilio Flex running Aselo (${versionId})`;
   } else {
     Flex.MainHeader.Content.remove('logo');
   }

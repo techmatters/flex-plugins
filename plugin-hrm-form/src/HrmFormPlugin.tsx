@@ -43,10 +43,11 @@ import { setUpReferrableResources } from './components/resources/setUpReferrable
 import { subscribeNewMessageAlertOnPluginInit } from './notifications/newMessage';
 import { subscribeReservedTaskAlert } from './notifications/reservedTask';
 import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
-import { setupConferenceComponents, setUpConferenceActions } from './conference';
+import { setUpConferenceActions, setupConferenceComponents } from './conference';
 import { setUpTransferActions } from './transfer/setUpTransferActions';
 import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
+import { activateStatePersistence } from './states/persistState';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -245,6 +246,7 @@ export default class HrmFormPlugin extends FlexPlugin {
      * This is a workaround until we deprecate 'getConfig' in it's current form after we migrate to Flex 2.0
      */
     subscribeToConfigUpdates(manager);
+    activateStatePersistence();
   }
 }
 

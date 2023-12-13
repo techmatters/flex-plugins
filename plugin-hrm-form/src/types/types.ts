@@ -278,6 +278,7 @@ export type FeatureFlags = {
   enable_client_profiles: boolean; // Enables Client Profiles
   enable_case_merging: boolean; // Enables adding contacts to existing cases
   enable_confirm_on_browser_close: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
+  enable_local_redux_persist: boolean; // Enables storing redux state in localStorage
 };
 /* eslint-enable camelcase */
 

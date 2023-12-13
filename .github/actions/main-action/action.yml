@@ -84,6 +84,15 @@ runs:
           TWILIO_ACCOUNT_SID: ${{ inputs.account-sid }}
         with:
           filename: ./plugin-hrm-form/public/appConfig.js
+            # Get latest tag for this version
+      - name: Get latest tag
+        uses: oprypin/find-latest-tag@v1
+        with:
+          repository: ${{ inputs.repository }}
+          # releases-only: false
+          regex: "^v\d+\.\d+\.\d+.*$"
+        id: latest_matching_tag
+        continue-on-error: true
       - name: Create secret.js
         run: |
           touch ./src/private/secret.js
@@ -95,6 +104,8 @@ runs:
           export const datadogAccessToken = '$DATADOG_ACCESS_TOKEN';
           export const datadogApplicationID = '$DATADOG_APP_ID';
           export const fullStoryId = '$FULLSTORY_ID';
+          export const versionId = '${{ steps.latest_matching_tag.outputs.tag }}'
+          export const githubSha = '{{ github.sha }}';
           EOT
         working-directory: ./plugin-hrm-form
         shell: bash

@@ -23,7 +23,8 @@ import {
   ContactsState,
   CREATE_CONTACT_ACTION,
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION,
-  SET_SAVED_CONTACT, UPDATE_CONTACT_ACTION,
+  SET_SAVED_CONTACT,
+  UPDATE_CONTACT_ACTION,
 } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import {
@@ -34,7 +35,6 @@ import {
   EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION,
   EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
   ExistingContactAction,
-  initialState as existingContactInitialState,
   LOAD_CONTACT_ACTION,
   loadContactReducer,
   loadTranscriptReducer,
@@ -66,7 +66,7 @@ export const emptyCategories = [];
 // exposed for testing
 export const initialState: ContactsState = {
   existingContacts: {},
-  contactsBeingCreated: new Set<string>(),
+  contactsBeingCreated: {},
   contactDetails: {
     [DetailsContext.CASE_DETAILS]: { detailsExpanded: {} },
     [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {} },

@@ -34,6 +34,7 @@ import { CaseState } from './case/types';
 import { ContactsState } from './contacts/types';
 import {
   caseListBase,
+  caseMergingBannersBase,
   conferencingBase,
   configurationBase,
   connectedCaseBase,
@@ -42,14 +43,14 @@ import {
   csamReportBase,
   dualWriteBase,
   namespace,
+  profileBase,
   queuesStatusBase,
   referrableResourcesBase,
   routingBase,
   searchContactsBase,
-  caseMergingBannersBase,
-  profileBase,
 } from './storeNamespaces';
 import { reduce as CaseMergingBannersReducer } from './case/caseBanners';
+import { readPersistedState } from './persistState';
 
 const reducers = {
   [searchContactsBase]: SearchFormReducer,
@@ -78,7 +79,8 @@ export type RootState = FlexState & { [namespace]: HrmState };
 const combinedReducers = combineReducers(reducers);
 
 // Combine the reducers
-const reducer = (state: HrmState, action): HrmState => {
+const reducer = (currentState: HrmState, action): HrmState => {
+  const state = currentState ?? readPersistedState();
   return {
     ...combinedReducers(state, action),
     /*

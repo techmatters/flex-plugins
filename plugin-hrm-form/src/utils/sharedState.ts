@@ -21,7 +21,7 @@ import { ITask, Manager } from '@twilio/flex-ui';
 import { recordBackendError } from '../fullStory';
 import { issueSyncToken } from '../services/ServerlessService';
 import { getAseloFeatureFlags, getDefinitionVersions, getHrmConfig, getTemplateStrings } from '../hrmConfig';
-import { CSAMReportEntry, Contact } from '../types/types';
+import { Contact, CSAMReportEntry } from '../types/types';
 import { ContactMetadata } from '../states/contacts/types';
 import { ChannelTypes } from '../states/DomainConstants';
 import { ResourceReferral } from '../states/contacts/resourceReferral';
@@ -89,7 +89,7 @@ const transferFormToContactState = (transferForm: TransferForm, baselineContact:
       ...metadata,
       draft: form.draft,
     },
-    references: new Set<string>(),
+    references: {},
   };
 };
 
