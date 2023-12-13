@@ -134,7 +134,7 @@ const mapStateToProps = (state: RootState) => {
     Object.values(activeContacts.existingContacts).some(
       ({ savedContact, draftContact }) => !_.isEqual(savedContact, getUnsavedContact(savedContact, draftContact)),
     ) ||
-    Object.values(connectedCase.tasks).some(
+    Object.values(connectedCase.cases).some(
       ({ caseWorkingCopy }) =>
         caseWorkingCopy.caseSummary || Object.values(caseWorkingCopy.sections).some(section => section),
     ) ||

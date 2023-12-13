@@ -14,5 +14,16 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// TODO: Add tests for the async action.
-test('TODO: Add tests for the async action.', () => undefined);
+import { namespace } from '../storeNamespaces';
+import { RootState } from '..';
+
+const selectCaseListSettings = ({
+  [namespace]: {
+    caseList: { currentSettings, previousSettings },
+  },
+}: RootState) => ({
+  current: currentSettings,
+  previous: previousSettings,
+});
+
+export default selectCaseListSettings;

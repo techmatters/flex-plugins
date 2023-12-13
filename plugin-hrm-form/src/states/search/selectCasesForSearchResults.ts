@@ -14,11 +14,24 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { SearchCaseResult } from '../../types/types';
 import { RootState } from '..';
-import { Case } from '../../types/types';
-import { connectedCaseBase, namespace } from '../storeNamespaces';
+import { namespace } from '../storeNamespaces';
 
-const selectCaseByTaskSid = (state: RootState, taskSid: string): Case =>
-  state[namespace][connectedCaseBase].tasks[taskSid]?.connectedCase;
+const selectCasesForSearchResults = (state: RootState, taskSid: string): SearchCaseResult => {
+  const resultReferences = state[namespace].searchContacts.tasks[taskSid]?.searchCasesResult;
+  if (!resultReferences) {
+    return {
+      count: 0,
+      cases: [],
+    };
+  }
+  return {
+    count: resultReferences.count,
+    cases: resultReferences.ids
+      .map(id => state[namespace].connectedCase.cases[id]?.connectedCase)
+      .filter(c => Boolean(c)),
+  };
+};
 
-export default selectCaseByTaskSid;
+export default selectCasesForSearchResults;
