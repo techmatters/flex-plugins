@@ -59,7 +59,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { task, currentCase }: OwnP
     await asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, currentCase.id));
   },
   closeModal: () => dispatch(newCloseModalAction(task.taskSid)),
-  setCaseConnectedToContact: (connectedCase: Case) => dispatch(setCaseConnectedToContact(connectedCase))
+  setCaseConnectedToContact: (connectedCase: Case) => dispatch(setCaseConnectedToContact(connectedCase)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
