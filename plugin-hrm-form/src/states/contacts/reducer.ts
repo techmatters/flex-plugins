@@ -60,6 +60,7 @@ import { createCaseAsyncAction } from '../case/saveCase';
 import { newContactState } from './contactState';
 import { saveContactReducer } from './saveContact';
 import { configurationBase } from '../storeNamespaces';
+import { Case } from '../../types/types';
 
 export const emptyCategories = [];
 
@@ -72,6 +73,7 @@ export const initialState: ContactsState = {
     [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {} },
   },
   isCallTypeCaller: false,
+  caseConnectedToContact: {} as Case
 };
 
 const boundReferralReducer = resourceReferralReducer(initialState);
@@ -197,6 +199,9 @@ export function reduce(
           },
         },
       };
+    }
+    case t.CASE_CONNECTED_TO_CONTACT: {
+      return {...state, caseConnectedToContact: { ...action.caseConnectedToContact }}
     }
     case t.SET_CALL_TYPE: {
       return { ...state, isCallTypeCaller: action.isCallTypeCaller };

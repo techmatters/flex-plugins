@@ -19,6 +19,7 @@ import { callTypes, DataCallTypes } from 'hrm-form-definitions';
 
 import * as t from './types';
 import { ContactState, EXISTING_CONTACT_UPDATE_DRAFT_ACTION, ExistingContactAction } from './existingContacts';
+import { Case } from '../../types/types';
 
 export const saveEndMillis = (taskId: string): t.ContactsActionType => ({ type: t.SAVE_END_MILLIS, taskId });
 
@@ -50,4 +51,9 @@ export const restoreEntireContact = (contact: ContactState): t.ContactsActionTyp
 export const setCallType = (isCallTypeCaller: boolean): t.ContactsActionType => ({
   type: t.SET_CALL_TYPE,
   isCallTypeCaller,
+});
+
+export const setCaseConnectedToContact = (caseConnectedToContact: Case): t.ContactsActionType => ({
+  type: t.CASE_CONNECTED_TO_CONTACT,
+  caseConnectedToContact,
 });

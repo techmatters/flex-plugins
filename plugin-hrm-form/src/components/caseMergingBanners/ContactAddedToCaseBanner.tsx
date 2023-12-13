@@ -39,8 +39,8 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 
 const mapStateToProps = (state: RootState, { taskId }: OwnProps) => {
   const contact = selectContactByTaskSid(state, taskId);
-  const connectedCase = selectCaseByTaskSid(state, taskId);
   const caseId = contact?.savedContact?.caseId;
+  const connectedCase = state[namespace].activeContacts?.caseConnectedToContact
   return {
     contact: contact.savedContact,
     connectedCase,

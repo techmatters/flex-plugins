@@ -37,6 +37,7 @@ import { newCloseModalAction } from '../../../states/routing/actions';
 import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../../permissions';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
 import { isNonDataCallType } from '../../../states/validationRules';
+import { setCaseConnectedToContact } from '../../../states/contacts/actions';
 
 type OwnProps = {
   currentCase: Case;
@@ -58,6 +59,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { task, currentCase }: OwnP
     await asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, currentCase.id));
   },
   closeModal: () => dispatch(newCloseModalAction(task.taskSid)),
+  setCaseConnectedToContact: (connectedCase: Case) => dispatch(setCaseConnectedToContact(connectedCase))
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -72,6 +74,7 @@ const CasePreview: React.FC<Props> = ({
   taskContact,
   connectCaseToTaskContact,
   closeModal,
+  setCaseConnectedToContact,
 }) => {
   const { id, createdAt, connectedContacts, status, info, twilioWorkerId } = currentCase;
   const createdAtObj = new Date(createdAt);
@@ -116,6 +119,7 @@ const CasePreview: React.FC<Props> = ({
         (!taskContact.caseId || isConnectedToTaskContact),
     );
   }
+
   return (
     <Flex width="100%">
       <PreviewWrapper>
@@ -133,6 +137,7 @@ const CasePreview: React.FC<Props> = ({
           showConnectButton={showConnectButton}
           onClickConnectToTaskContact={() => {
             connectCaseToTaskContact(taskContact);
+            setCaseConnectedToContact(currentCase);
             closeModal();
           }}
         />

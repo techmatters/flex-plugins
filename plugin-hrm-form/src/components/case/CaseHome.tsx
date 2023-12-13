@@ -54,6 +54,7 @@ import { newCloseModalAction } from '../../states/routing/actions';
 import { BannerContainer, Text } from '../caseMergingBanners/styles';
 import InfoIcon from '../caseMergingBanners/InfoIcon';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { setCaseConnectedToContact } from '../../states/contacts/actions';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -81,6 +82,7 @@ const CaseHome: React.FC<Props> = ({
   connectedCaseState,
   taskContact,
   isCreating,
+  setCaseConnectedToContact,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   if (!connectedCaseState) return null; // narrow type before deconstructing
@@ -241,6 +243,7 @@ const CaseHome: React.FC<Props> = ({
                 isConnectedToTaskContact={isConnectedToTaskContact}
                 onClickConnectToTaskContact={() => {
                   connectCaseToTaskContact(taskContact, connectedCaseState.connectedCase);
+                  setCaseConnectedToContact(connectedCaseState.connectedCase)
                   closeModal();
                 }}
                 color="black"
@@ -354,6 +357,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: CaseHomeProps) =>
   connectCaseToTaskContact: async (taskContact: Contact, cas: Case) =>
     asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, cas.id)),
   closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
+  setCaseConnectedToContact: (connectedCase: Case) => dispatch(setCaseConnectedToContact(connectedCase))
 });
 const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(CaseHome);
