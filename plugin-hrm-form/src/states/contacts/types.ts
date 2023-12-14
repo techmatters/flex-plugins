@@ -18,7 +18,7 @@ import { DataCallTypes } from 'hrm-form-definitions';
 
 import { Case, Contact } from '../../types/types';
 import { DraftResourceReferralState } from './resourceReferral';
-import { ContactState, ExistingContactsState } from './existingContacts';
+import { CaseConnectedToContactState, ContactState, ExistingContactsState } from './existingContacts';
 import { ContactDetailsState } from './contactDetails';
 
 // Action types
@@ -67,7 +67,7 @@ export type ContactsState = {
   contactsBeingCreated: Set<string>;
   contactDetails: ContactDetailsState;
   isCallTypeCaller: boolean;
-  caseConnectedToContact: Case;
+  caseConnectedToContact: CaseConnectedToContactState;
 };
 
 type SaveEndMillisAction = {
@@ -102,6 +102,7 @@ type CheckButtonDataAction = {
 type CaseConnectedToContactAction = {
   type: typeof CASE_CONNECTED_TO_CONTACT;
   caseConnectedToContact: Case;
+  contactId: string;
 };
 
 export type ContactsActionType =

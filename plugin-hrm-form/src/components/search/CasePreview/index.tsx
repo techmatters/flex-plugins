@@ -59,7 +59,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { task, currentCase }: OwnP
     await asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, currentCase.id));
   },
   closeModal: () => dispatch(newCloseModalAction(task.taskSid)),
-  setCaseConnectedToContact: (connectedCase: Case) => dispatch(setCaseConnectedToContact(connectedCase)),
+  setCaseConnectedToContact: (connectedCase: Case, contactId: string) =>
+    dispatch(setCaseConnectedToContact(connectedCase, contactId)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -137,7 +138,7 @@ const CasePreview: React.FC<Props> = ({
           showConnectButton={showConnectButton}
           onClickConnectToTaskContact={() => {
             connectCaseToTaskContact(taskContact);
-            setCaseConnectedToContact(currentCase);
+            setCaseConnectedToContact(currentCase, taskContact.id);
             closeModal();
           }}
         />

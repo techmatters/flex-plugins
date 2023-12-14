@@ -53,7 +53,8 @@ export const setCallType = (isCallTypeCaller: boolean): t.ContactsActionType => 
   isCallTypeCaller,
 });
 
-export const setCaseConnectedToContact = (caseConnectedToContact: Case): t.ContactsActionType => ({
+export const setCaseConnectedToContact = (caseConnectedToContact: Case, contactId: string): t.ContactsActionType => ({
   type: t.CASE_CONNECTED_TO_CONTACT,
   caseConnectedToContact,
+  contactId,
 });

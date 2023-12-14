@@ -243,7 +243,7 @@ const CaseHome: React.FC<Props> = ({
                 isConnectedToTaskContact={isConnectedToTaskContact}
                 onClickConnectToTaskContact={() => {
                   connectCaseToTaskContact(taskContact, connectedCaseState.connectedCase);
-                  setCaseConnectedToContact(connectedCaseState.connectedCase);
+                  setCaseConnectedToContact(connectedCaseState.connectedCase, taskContact.id);
                   closeModal();
                 }}
                 color="black"
@@ -357,7 +357,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: CaseHomeProps) =>
   connectCaseToTaskContact: async (taskContact: Contact, cas: Case) =>
     asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, cas.id)),
   closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
-  setCaseConnectedToContact: (connectedCase: Case) => dispatch(setCaseConnectedToContact(connectedCase)),
+  setCaseConnectedToContact: (connectedCase: Case, contactId: string) =>
+    dispatch(setCaseConnectedToContact(connectedCase, contactId)),
 });
 const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(CaseHome);
