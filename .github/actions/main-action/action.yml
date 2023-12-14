@@ -73,6 +73,7 @@ runs:
         with:
           ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
           env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
+      # TODO:Does this actually do anything? I don't think the appConfig is used unless we are self hosting
       # Create temporal files for the release
       - name: Create appConfig.js
         run: cp ./public/appConfig.template.deploy.js ./public/appConfig.js

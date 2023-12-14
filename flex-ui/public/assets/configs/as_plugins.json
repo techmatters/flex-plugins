@@ -1,0 +1,13 @@
+[
+  {
+    "name": "HrmFormPlugin",
+    "version": "0.0.0",
+    "class": "HrmFormPlugin",
+    "requires": [
+      {
+        "@twilio/flex-ui": "~2.3.3"
+      }
+    ],
+    "src": "https://assets-development.tl.techmatters.org/flex/plugins/hrm-form/selfHostedDemo/plugin-hrm-form.js"
+  }
+]
