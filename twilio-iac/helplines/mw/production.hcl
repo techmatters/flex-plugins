@@ -7,7 +7,7 @@ locals {
 
   local_config = {
 
-    custom_task_routing_filter_expression = "channelType == 'web'  OR isContactlessTask == true OR  twilioNumber IN ['messenger:113053900394672', 'messenger:154148147974717', 'messenger:338505126727604']"
+    custom_task_routing_filter_expression =  "channelType == 'web'  OR isContactlessTask == true OR  twilioNumber IN ['messenger:113053900394672', 'messenger:154148147974717', 'messenger:338505126727604']"
 
     #Studio flow
     flow_vars = {
@@ -31,7 +31,23 @@ locals {
       facebook : {
         channel_type     = "facebook"
         contact_identity = "messenger:113053900394672"
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/mw/templates/studio-flows/mw-lex.tftpl"
+        channel_flow_vars = {
+        }
+        chatbot_unique_names = []
+      },
+      facebook : {
+        channel_type     = "facebook"
+        contact_identity = "messenger:154148147974717"
+        templatefile     = "/app/twilio-iac/helplines/mw/templates/studio-flows/mw-lex.tftpl"
+        channel_flow_vars = {
+        }
+        chatbot_unique_names = []
+      },
+      facebook : {
+        channel_type     = "facebook"
+        contact_identity = "messenger:338505126727604"
+        templatefile     = "/app/twilio-iac/helplines/mw/templates/studio-flows/mw-lex.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
