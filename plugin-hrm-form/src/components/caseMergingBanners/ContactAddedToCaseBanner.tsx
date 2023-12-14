@@ -28,6 +28,7 @@ import InfoIcon from './InfoIcon';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
 import selectCaseByCaseId from '../../states/case/selectCaseStateByCaseId';
 import { RootState } from '../../states';
+import { namespace } from '../../states/storeNamespaces';
 
 type OwnProps = {
   taskId: string;
