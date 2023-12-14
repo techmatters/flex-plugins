@@ -13,9 +13,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { ProfileIdParam } from '../selectors';
 
-export * from './useIdentifier';
-export * from './useProfile';
-export * from './useProfileFlags';
-export * from './useProfileLoader';
-export * from './useProfileProperty';
+export type UseProfileCommonParams = {
+  profileId: ProfileIdParam;
+};
