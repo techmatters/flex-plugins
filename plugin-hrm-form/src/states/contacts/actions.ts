@@ -17,6 +17,7 @@
 /* eslint-disable import/no-unused-modules */
 import { callTypes, DataCallTypes } from 'hrm-form-definitions';
 
+import { Case } from '../../types/types';
 import * as t from './types';
 import { ContactState, EXISTING_CONTACT_UPDATE_DRAFT_ACTION, ExistingContactAction } from './existingContacts';
 
@@ -50,4 +51,10 @@ export const restoreEntireContact = (contact: ContactState): t.ContactsActionTyp
 export const setCallType = (isCallTypeCaller: boolean): t.ContactsActionType => ({
   type: t.SET_CALL_TYPE,
   isCallTypeCaller,
+});
+
+export const setCaseConnectedToContact = (caseConnectedToContact: Case, contactId: string): t.ContactsActionType => ({
+  type: t.CASE_CONNECTED_TO_CONTACT,
+  caseConnectedToContact,
+  contactId,
 });

@@ -29,6 +29,7 @@ import { BannerContainer, Text, CaseLink, BannerActionLink } from './styles';
 import InfoIcon from './InfoIcon';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
 import { RootState } from '../../states';
+import { namespace } from '../../states/storeNamespaces';
 
 type OwnProps = {
   taskId: string;
@@ -38,10 +39,12 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 
 const mapStateToProps = (state: RootState, { taskId }: OwnProps) => {
   const contact = selectContactByTaskSid(state, taskId);
-  const connectedCase = selectCaseByTaskSid(state, taskId);
   const caseId = contact?.savedContact?.caseId;
+  const connectedCase = state[namespace].activeContacts.caseConnectedToContact[contact?.savedContact?.id];
+  const { savedContact } = selectContactByTaskSid(state, taskId);
+
   return {
-    contact: contact.savedContact,
+    contact: savedContact,
     connectedCase,
     caseId,
   };
