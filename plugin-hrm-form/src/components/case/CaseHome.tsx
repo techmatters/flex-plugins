@@ -34,27 +34,29 @@ import {
 import { AppRoutes, CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
 import { RootState } from '../../states';
-import { CaseDetails, CaseState } from '../../states/case/types';
+import { CaseDetails } from '../../states/case/types';
 import { Case, Contact, CustomITask, EntryInfo, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
+import { newCloseModalAction } from '../../states/routing/actions';
 import InformationRow from './InformationRow';
 import TimelineInformationRow from './TimelineInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
 import { householdSectionApi } from '../../states/case/sections/household';
 import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
 import { getAseloFeatureFlags } from '../../hrmConfig';
-import { connectedCaseBase, namespace } from '../../states/storeNamespaces';
 import NavigableContainer from '../NavigableContainer';
 import ConnectToCaseButton from './ConnectToCaseButton';
 import { isStandaloneITask } from './Case';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import asyncDispatch from '../../states/asyncDispatch';
 import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
-import { newCloseModalAction } from '../../states/routing/actions';
 import { BannerContainer, Text } from '../caseMergingBanners/styles';
 import InfoIcon from '../caseMergingBanners/InfoIcon';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { setCaseConnectedToContact } from '../../states/contacts/actions';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
+import CaseCreatedBanner from '../caseMergingBanners/CaseCreatedBanner';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -86,22 +88,22 @@ const CaseHome: React.FC<Props> = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   if (!connectedCaseState) return null; // narrow type before deconstructing
-
+  const caseId = connectedCaseState.connectedCase.id;
   const {
     enable_upload_documents: enableUploadDocuments,
     enable_case_merging: enableCaseMerging,
   } = getAseloFeatureFlags();
 
   const onViewCaseItemClick = (targetSubroute: CaseSectionSubroute) => (id: string) => {
-    openModal({ route: 'case', subroute: targetSubroute, action: CaseItemAction.View, id });
+    openModal({ route: 'case', subroute: targetSubroute, action: CaseItemAction.View, id, caseId });
   };
 
   const onAddCaseItemClick = (targetSubroute: CaseSectionSubroute) => () => {
-    openModal({ route: 'case', subroute: targetSubroute, action: CaseItemAction.Add });
+    openModal({ route: 'case', subroute: targetSubroute, action: CaseItemAction.Add, caseId });
   };
 
   const onPrintCase = () => {
-    openModal({ route: 'case', subroute: 'case-print-view' });
+    openModal({ route: 'case', subroute: 'case-print-view', caseId });
   };
 
   // -- Date cannot be converted here since the date dropdown uses the yyyy-MM-dd format.
@@ -212,7 +214,7 @@ const CaseHome: React.FC<Props> = ({
   };
 
   const onEditCaseSummaryClick = () => {
-    openModal({ route: 'case', subroute: 'caseSummary', action: CaseItemAction.Edit, id: '' });
+    openModal({ route: 'case', subroute: 'caseSummary', action: CaseItemAction.Edit, id: '', caseId });
   };
 
   return (
@@ -250,6 +252,12 @@ const CaseHome: React.FC<Props> = ({
               />
             </Flex>
           </BannerContainer>
+        )}
+
+        {isCreating && (
+          <Box marginBottom="14px" width="100%">
+            <CaseCreatedBanner caseId={caseId} task={task} />
+          </Box>
         )}
         <Box marginTop="13px">
           <CaseDetailsComponent
@@ -342,10 +350,9 @@ const CaseHome: React.FC<Props> = ({
 CaseHome.displayName = 'CaseHome';
 
 const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
-  const caseState: CaseState = state[namespace][connectedCaseBase];
-  const connectedCaseState = caseState.tasks[task.taskSid];
+  const connectedCaseState = selectCurrentRouteCaseState(state, task.taskSid);
   const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
-  const routing = getCurrentTopmostRouteForTask(state[namespace].routing, task.taskSid);
+  const routing = selectCurrentTopmostRouteForTask(state, task.taskSid);
   const isCreating = routing.route === 'case' && routing.isCreating;
 
   return { isCreating, connectedCaseState, taskContact };
@@ -360,6 +367,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: CaseHomeProps) =>
   setCaseConnectedToContact: (connectedCase: Case, contactId: string) =>
     dispatch(setCaseConnectedToContact(connectedCase, contactId)),
 });
+
 const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(CaseHome);
 

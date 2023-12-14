@@ -16,130 +16,207 @@
 
 import { omit } from 'lodash';
 
-import { CaseActionType, CaseState, SET_CONNECTED_CASE } from './types';
-import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
-import {
-  CaseWorkingCopyActionType,
-  INIT_EXISTING_CASE_SECTION_WORKING_COPY,
-  INIT_NEW_CASE_SECTION_WORKING_COPY,
-  INIT_CASE_SUMMARY_WORKING_COPY,
-  initialiseCaseSectionWorkingCopyReducer,
-  initialiseNewCaseSectionWorkingCopyReducer,
-  initialiseCaseSummaryWorkingCopyReducer,
-  REMOVE_CASE_SECTION_WORKING_COPY,
-  REMOVE_CASE_SUMMARY_WORKING_COPY,
-  removeCaseSectionWorkingCopyReducer,
-  removeCaseSummaryWorkingCopyReducer,
-  UPDATE_CASE_SECTION_WORKING_COPY,
-  UPDATE_CASE_SUMMARY_WORKING_COPY,
-  updateCaseSectionWorkingCopyReducer,
-  updateCaseSummaryWorkingCopyReducer,
-} from './caseWorkingCopy';
-import { RootState } from '..';
+import { CaseActionType, CaseState } from './types';
+import { DefinitionVersion, REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
+import { CaseWorkingCopyActionType, caseWorkingCopyReducer } from './caseWorkingCopy';
+import { HrmState, RootState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
-import { SaveCaseReducerState, saveCaseReducer } from './saveCase';
-import { CaseListContentStateAction } from '../caseList/listContent';
-import { configurationBase, namespace } from '../storeNamespaces';
+import { saveCaseReducer } from './saveCase';
+import { FETCH_CASE_LIST_FULFILLED_ACTION, FetchCaseListFulfilledAction } from '../caseList/listContent';
 import {
   ContactUpdatingAction,
   CREATE_CONTACT_ACTION_FULFILLED,
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
 } from '../contacts/types';
+import { SEARCH_CASES_SUCCESS, SearchCasesSuccessAction } from '../search/types';
+import { Case } from '../../types/types';
+import { ConfigurationState } from '../configuration/reducer';
 
 const initialState: CaseState = {
-  tasks: {},
+  cases: {},
 };
 
-export const saveCaseState: SaveCaseReducerState = {
-  state: initialState,
-  rootState: {} as RootState['plugin-hrm-form'],
+const boundSaveCaseReducer = saveCaseReducer({ connectedCase: initialState } as RootState['plugin-hrm-form']);
+
+const dereferenceCase = (state: CaseState, caseId: string, referenceId: string): CaseState => {
+  const caseState = state.cases[caseId];
+  if (!caseState) {
+    return state;
+  }
+  const references = caseState.references ?? new Set<string>();
+  references.delete(referenceId);
+  if (references.size === 0) {
+    return {
+      ...state,
+      cases: omit(state.cases, caseId),
+    };
+  }
+  return {
+    ...state,
+    cases: {
+      ...state.cases,
+      [caseId]: {
+        ...state.cases[caseId],
+        references,
+      },
+    },
+  };
 };
 
-const boundSaveCaseReducer = saveCaseReducer(saveCaseState);
+const dereferenceAllCases = (state: CaseState, referenceId: string): CaseState => {
+  const { cases } = state;
+  const caseIds = Object.keys(cases);
+  if (caseIds.length === 0) {
+    return state;
+  }
+  const updatedCases = caseIds.reduce((acc, caseId) => {
+    const updatedCase = dereferenceCase(state, caseId, referenceId);
+    if (updatedCase.cases[caseId]) {
+      acc[caseId] = updatedCase.cases[caseId];
+    }
+    return acc;
+  }, {} as CaseState['cases']);
+  return {
+    ...state,
+    cases: updatedCases,
+  };
+};
 
-const contactUpdatingReducer = (
+const loadCaseIntoState = (
   state: CaseState,
-  { configuration }: RootState[typeof namespace],
-  action: ContactUpdatingAction,
+  definitionVersion: DefinitionVersion,
+  newCase: Case,
+  referenceId?: string,
 ): CaseState => {
+  const existingCase = state.cases[newCase.id];
+  if (!existingCase) {
+    return {
+      ...state,
+      cases: {
+        ...state.cases,
+        [newCase.id]: {
+          connectedCase: newCase,
+          caseWorkingCopy: { sections: {} },
+          availableStatusTransitions: getAvailableCaseStatusTransitions(newCase, definitionVersion),
+          references: referenceId ? new Set([referenceId]) : new Set<string>(),
+        },
+      },
+    };
+  }
+
+  const updatedReferences = referenceId ? existingCase.references.add(referenceId) : existingCase.references;
+  return {
+    ...state,
+    cases: {
+      ...state.cases,
+      [newCase.id]: {
+        ...existingCase,
+        references: updatedReferences,
+        connectedCase: newCase,
+      },
+    },
+  };
+};
+
+const contactUpdatingReducer = (hrmState: HrmState, action: ContactUpdatingAction): HrmState => {
   if (
     action.type === CREATE_CONTACT_ACTION_FULFILLED ||
     action.type === LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED
   ) {
+    const { configuration, connectedCase } = hrmState;
     const { contact, contactCase } = action.payload;
     if (contactCase) {
       const caseDefinitionVersion = configuration.definitionVersions[contactCase.info.definitionVersion];
+      const references = connectedCase.cases[contactCase.id]?.references ?? new Set<string>();
+      references.add(`contact-${contact.id}`);
       return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [contact.taskId]: {
-            connectedCase: contactCase,
-            caseWorkingCopy: { sections: {} },
-            availableStatusTransitions: caseDefinitionVersion
-              ? getAvailableCaseStatusTransitions(contactCase, caseDefinitionVersion)
-              : [],
+        ...hrmState,
+        connectedCase: {
+          ...connectedCase,
+          cases: {
+            ...connectedCase.cases,
+            [contactCase.id]: {
+              connectedCase: contactCase,
+              caseWorkingCopy: { sections: {} },
+              availableStatusTransitions: getAvailableCaseStatusTransitions(contactCase, caseDefinitionVersion),
+              references,
+            },
           },
         },
       };
     }
   }
-  return state;
+  return hrmState;
+};
+
+const loadCaseListIntoState = (
+  casesState: CaseState,
+  configurationState: ConfigurationState,
+  cases: Case[],
+  referenceId: string,
+): CaseState => {
+  const withoutOldSearchResults = dereferenceAllCases(casesState, referenceId);
+  if (cases?.length) {
+    return cases.reduce((acc, newCase) => {
+      // TODO: strip the totalCount property in HRM
+      const { totalCount, ...caseToAdd } = newCase as Case & { totalCount: number };
+      const caseDefinitionVersion = configurationState.definitionVersions[newCase.info.definitionVersion];
+      return loadCaseIntoState(acc, caseDefinitionVersion, caseToAdd, referenceId);
+    }, withoutOldSearchResults);
+  }
+  return withoutOldSearchResults;
 };
 
 // eslint-disable-next-line import/no-unused-modules
 export function reduce(
-  rootState: RootState['plugin-hrm-form'],
-  inputState = initialState,
+  inputRootState: HrmState,
   action:
     | CaseActionType
     | CaseWorkingCopyActionType
     | RemoveContactStateAction
-    | CaseListContentStateAction
-    | ContactUpdatingAction,
-): CaseState {
-  const { state } = boundSaveCaseReducer({ state: inputState, rootState }, action as any);
-
+    | ContactUpdatingAction
+    | SearchCasesSuccessAction
+    | FetchCaseListFulfilledAction,
+): HrmState {
+  let hrmState = boundSaveCaseReducer(inputRootState, action as any);
+  hrmState = {
+    ...hrmState,
+    connectedCase: caseWorkingCopyReducer(
+      hrmState.connectedCase,
+      hrmState.configuration,
+      action as CaseWorkingCopyActionType,
+    ),
+  };
+  const { connectedCase: state, configuration } = hrmState;
   switch (action.type) {
     case CREATE_CONTACT_ACTION_FULFILLED:
     case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED:
-      return contactUpdatingReducer(state, rootState, action);
-    case SET_CONNECTED_CASE:
-      const caseDefinitionVersion =
-        rootState[configurationBase].definitionVersions[action.connectedCase?.info?.definitionVersion];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: {
-            connectedCase: action.connectedCase,
-            caseWorkingCopy: { sections: {} },
-            availableStatusTransitions: caseDefinitionVersion
-              ? getAvailableCaseStatusTransitions(action.connectedCase, caseDefinitionVersion)
-              : [],
-          },
+      return contactUpdatingReducer(hrmState, action as ContactUpdatingAction);
+
+    case REMOVE_CONTACT_STATE: {
+      const { contactId, taskId } = action as RemoveContactStateAction;
+      const contactReferenceRemoved = dereferenceAllCases(state, `contact-${contactId}`);
+      return { ...hrmState, connectedCase: dereferenceAllCases(contactReferenceRemoved, `task-${taskId}`) };
+    }
+    case FETCH_CASE_LIST_FULFILLED_ACTION:
+      const {
+        payload: {
+          result: { cases },
         },
-      };
-    case REMOVE_CONTACT_STATE:
+      } = action as FetchCaseListFulfilledAction;
       return {
-        ...state,
-        tasks: omit(state.tasks, action.taskId),
+        ...hrmState,
+        connectedCase: loadCaseListIntoState(state, configuration, cases, `case-list`),
       };
-    case UPDATE_CASE_SECTION_WORKING_COPY:
-      return updateCaseSectionWorkingCopyReducer(state, rootState.configuration, action);
-    case INIT_EXISTING_CASE_SECTION_WORKING_COPY:
-      return initialiseCaseSectionWorkingCopyReducer(state, action);
-    case INIT_NEW_CASE_SECTION_WORKING_COPY:
-      return initialiseNewCaseSectionWorkingCopyReducer(state, action);
-    case REMOVE_CASE_SECTION_WORKING_COPY:
-      return removeCaseSectionWorkingCopyReducer(state, action);
-    case INIT_CASE_SUMMARY_WORKING_COPY:
-      return initialiseCaseSummaryWorkingCopyReducer(state, action);
-    case UPDATE_CASE_SUMMARY_WORKING_COPY:
-      return updateCaseSummaryWorkingCopyReducer(state, action);
-    case REMOVE_CASE_SUMMARY_WORKING_COPY:
-      return removeCaseSummaryWorkingCopyReducer(state, action);
+    case SEARCH_CASES_SUCCESS: {
+      const { searchResult, taskId } = action as SearchCasesSuccessAction;
+      const referenceId = `search-${taskId}`;
+      return {
+        ...hrmState,
+        connectedCase: loadCaseListIntoState(state, configuration, searchResult?.cases, referenceId),
+      };
+    }
     default:
-      return state;
+      return hrmState;
   }
 }

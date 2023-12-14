@@ -14,5 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// TODO: Add tests for the async action.
-test('TODO: Add tests for the async action.', () => undefined);
+import { ContactState } from './existingContacts';
+import { RootState } from '..';
+import { namespace } from '../storeNamespaces';
+
+const selectContactStateByContactId = (state: RootState, contactId: string): ContactState | undefined =>
+  state[namespace].activeContacts.existingContacts[contactId];
+export default selectContactStateByContactId;

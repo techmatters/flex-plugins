@@ -26,18 +26,15 @@ import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-fo
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import CaseList from '../../../components/caseList';
-import { listCases } from '../../../services/CaseService';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { CaseListState } from '../../../states/caseList/reducer';
-import {
-  caseListContentInitialState,
-  fetchCaseListError,
-  fetchCaseListStarted,
-  fetchCaseListSuccess,
-} from '../../../states/caseList/listContent';
+import { caseListContentInitialState, fetchCaseListAsyncAction } from '../../../states/caseList/listContent';
 import { caseListSettingsInitialState } from '../../../states/caseList/settings';
-import { Case, ContactRawJson, Contact, standaloneTaskSid } from '../../../types/types';
-import { caseListBase, configurationBase, namespace } from '../../../states/storeNamespaces';
+import { ContactRawJson, Contact, standaloneTaskSid } from '../../../types/types';
+import { namespace } from '../../../states/storeNamespaces';
+import { RecursivePartial } from '../../RecursivePartial';
+import { HrmState, RootState } from '../../../states';
+import { CaseStateEntry } from '../../../states/case/types';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -45,66 +42,81 @@ const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions
 // console.log = () => null;
 console.error = () => null;
 
-const mockedCaseList: (Case & { categories: any })[] = [
-  {
-    id: 1,
-    accountSid: '',
-    twilioWorkerId: 'worker 1',
-    createdAt: '2020-07-07T17:38:42.227Z',
-    updatedAt: '2020-07-07T19:20:33.339Z',
-    status: 'open',
-    info: {
-      definitionVersion: DefinitionVersionId.v1,
+const mockedCases: Record<string, CaseStateEntry> = {
+  '1': {
+    caseWorkingCopy: undefined,
+    references: new Set(['x']),
+    availableStatusTransitions: [],
+    connectedCase: {
+      id: '1',
+      accountSid: '',
+      twilioWorkerId: 'worker 1',
+      createdAt: '2020-07-07T17:38:42.227Z',
+      updatedAt: '2020-07-07T19:20:33.339Z',
+      status: 'open',
+      info: {
+        definitionVersion: DefinitionVersionId.v1,
+      },
+      helpline: '',
+      connectedContacts: [
+        {
+          rawJson: {
+            childInformation: {
+              firstName: 'Michael',
+              lastName: 'Smith',
+            },
+          } as Partial<ContactRawJson>,
+        } as Contact,
+      ],
+      categories: {},
     },
-    helpline: '',
-    connectedContacts: [
-      {
-        rawJson: {
-          childInformation: {
-            firstName: 'Michael',
-            lastName: 'Smith',
-          },
-        } as Partial<ContactRawJson>,
-      } as Contact,
-    ],
-    categories: {},
   },
-  {
-    id: 2,
-    accountSid: '',
-    twilioWorkerId: 'worker 2',
-    createdAt: '2020-07-07T17:38:42.227Z',
-    updatedAt: '2020-07-07T19:20:33.339Z',
-    status: 'closed',
-    info: {
-      definitionVersion: DefinitionVersionId.v1,
+  '2': {
+    caseWorkingCopy: undefined,
+    references: new Set(['x']),
+    availableStatusTransitions: [],
+    connectedCase: {
+      id: '2',
+      accountSid: '',
+      twilioWorkerId: 'worker 2',
+      createdAt: '2020-07-07T17:38:42.227Z',
+      updatedAt: '2020-07-07T19:20:33.339Z',
+      status: 'closed',
+      info: {
+        definitionVersion: DefinitionVersionId.v1,
+      },
+      helpline: '',
+      connectedContacts: [
+        {
+          rawJson: {
+            childInformation: {
+              firstName: 'Sonya',
+              lastName: 'Michels',
+            },
+          } as Partial<ContactRawJson>,
+        } as Contact,
+      ],
+      categories: {},
     },
-    helpline: '',
-    connectedContacts: [
-      {
-        rawJson: {
-          childInformation: {
-            firstName: 'Sonya',
-            lastName: 'Michels',
-          },
-        } as Partial<ContactRawJson>,
-      } as Contact,
-    ],
-    categories: {},
   },
-];
+};
 
-jest.mock('../../../services/CaseService', () => ({ listCases: jest.fn() }));
+const mockedCaseList = Object.keys(mockedCases);
+
+jest.mock('../../../states/caseList/listContent', () => ({
+  ...jest.requireActual('../../../states/caseList/listContent'),
+  fetchCaseListAsyncAction: jest.fn(),
+}));
 
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
 
 const themeConf = {};
 
-function createState(state) {
+function createState(state: RecursivePartial<HrmState>): RootState {
   return {
     [namespace]: state,
-  };
+  } as RootState;
 }
 
 const blankCaseListState: CaseListState = {
@@ -114,8 +126,12 @@ const blankCaseListState: CaseListState = {
 
 let mockV1;
 
+const mockFetchCaseListAsyncAction = fetchCaseListAsyncAction as jest.MockedFunction<typeof fetchCaseListAsyncAction>;
+
 beforeEach(() => {
   mockReset();
+  mockFetchCaseListAsyncAction.mockReset();
+  mockFetchCaseListAsyncAction.mockReturnValue({ type: 'cases/fetch-list' } as any);
 });
 
 beforeAll(async () => {
@@ -126,12 +142,9 @@ beforeAll(async () => {
   mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
 });
 
-test('Should dispatch fetchStarted and fetchSuccess actions if case lists return', async () => {
-  // @ts-ignore
-  listCases.mockReturnValueOnce(Promise.resolve({ cases: mockedCaseList, count: mockedCaseList.length }));
-
+test('Should dispatch fetchList actions', async () => {
   const initialState = createState({
-    [configurationBase]: {
+    configuration: {
       counselors: {
         list: [],
         hash: { worker1: 'worker1 name' },
@@ -139,7 +152,7 @@ test('Should dispatch fetchStarted and fetchSuccess actions if case lists return
       definitionVersions: { v1: mockV1 },
       currentDefinitionVersion: mockV1,
     },
-    [caseListBase]: blankCaseListState,
+    caseList: blankCaseListState,
     routing: {
       tasks: {
         [standaloneTaskSid]: [{ route: 'case-list', subroute: 'case-list' }],
@@ -163,18 +176,16 @@ test('Should dispatch fetchStarted and fetchSuccess actions if case lists return
   expect(screen.getAllByTestId('CaseList-TableHead')).toHaveLength(1);
   expect(screen.queryByTestId('CaseList-TableFooter')).not.toBeInTheDocument();
 
-  expect(store.getActions().length).toBe(2);
+  expect(store.getActions().length).toBe(1);
 
-  expect(store.getActions()[0]).toStrictEqual(fetchCaseListStarted());
-  expect(store.getActions()[1]).toStrictEqual(fetchCaseListSuccess(mockedCaseList, mockedCaseList.length));
+  expect(store.getActions()[0]).toMatchObject({
+    type: 'cases/fetch-list',
+  });
 });
 
 test('Should render list if it is populated', async () => {
-  // @ts-ignore
-  listCases.mockReturnValueOnce(Promise.resolve({ cases: mockedCaseList, count: mockedCaseList.length }));
-
-  const initialState = createState({
-    [configurationBase]: {
+  const initialState: RootState = createState({
+    configuration: {
       counselors: {
         list: [],
         hash: { worker1: 'worker1 name' },
@@ -182,7 +193,10 @@ test('Should render list if it is populated', async () => {
       definitionVersions: { v1: mockV1 },
       currentDefinitionVersion: mockV1,
     },
-    [caseListBase]: {
+    connectedCase: {
+      cases: mockedCases,
+    },
+    caseList: {
       ...blankCaseListState,
       content: {
         ...blankCaseListState.content,
@@ -224,11 +238,8 @@ test('Should render list if it is populated', async () => {
 });
 
 test('Should render no cases and show No Cases Found row', async () => {
-  // @ts-ignore
-  listCases.mockReturnValueOnce(Promise.resolve({ cases: [], count: 0 }));
-
   const initialState = createState({
-    [configurationBase]: {
+    configuration: {
       counselors: {
         list: [],
         hash: { worker1: 'worker1 name' },
@@ -236,7 +247,7 @@ test('Should render no cases and show No Cases Found row', async () => {
       definitionVersions: { v1: mockV1 },
       currentDefinitionVersion: mockV1,
     },
-    [caseListBase]: {
+    caseList: {
       ...blankCaseListState,
       content: {
         ...blankCaseListState.content,
@@ -272,52 +283,9 @@ test('Should render no cases and show No Cases Found row', async () => {
   expect(screen.queryByTestId('CaseList-TableRow')).not.toBeInTheDocument();
 });
 
-test('Should dispatch fetchStarted and fetchError actions if case lists error', async () => {
-  // @ts-ignore
-  listCases.mockImplementationOnce(async () => {
-    throw new Error('Some error');
-  });
-
-  const initialState = createState({
-    [configurationBase]: {
-      counselors: {
-        list: [],
-        hash: { worker1: 'worker1 name' },
-      },
-      definitionVersions: { v1: mockV1 },
-      currentDefinitionVersion: mockV1,
-    },
-    [caseListBase]: blankCaseListState,
-    routing: {
-      tasks: {
-        [standaloneTaskSid]: [{ route: 'case-list', subroute: 'case-list' }],
-      },
-    },
-  });
-  const store = mockStore(initialState);
-
-  render(
-    <StorelessThemeProvider themeConf={themeConf}>
-      <Provider store={store}>
-        <CaseList />
-      </Provider>
-    </StorelessThemeProvider>,
-  );
-
-  await waitFor(() => screen.getByTestId('CaseList-Table'));
-
-  expect(store.getActions()[0]).toStrictEqual(fetchCaseListStarted());
-  expect(store.getActions()[1]).toStrictEqual(fetchCaseListError(new Error('Some error')));
-});
-
 test('Should render error page if fetchError set in store', async () => {
-  // @ts-ignore
-  listCases.mockImplementationOnce(async () => {
-    throw new Error('Some error');
-  });
-
   const initialState = createState({
-    [configurationBase]: {
+    configuration: {
       counselors: {
         list: [],
         hash: { worker1: 'worker1 name' },
@@ -325,9 +293,9 @@ test('Should render error page if fetchError set in store', async () => {
       definitionVersions: { v1: mockV1 },
       currentDefinitionVersion: mockV1,
     },
-    [caseListBase]: {
+    caseList: {
       ...blankCaseListState,
-      content: { ...blankCaseListState.content, fetchError: new Error('Some error') },
+      content: { ...blankCaseListState.content, fetchError: new Error('Some error') as any },
     },
     routing: {
       tasks: {
@@ -354,13 +322,8 @@ test('Should render error page if fetchError set in store', async () => {
 });
 
 test('Should render loading page if listLoading set in store', async () => {
-  // @ts-ignore
-  listCases.mockImplementationOnce(async () => {
-    throw new Error('Some error');
-  });
-
   const initialState = createState({
-    [configurationBase]: {
+    configuration: {
       counselors: {
         list: [],
         hash: { worker1: 'worker1 name' },
@@ -368,7 +331,7 @@ test('Should render loading page if listLoading set in store', async () => {
       definitionVersions: { v1: mockV1 },
       currentDefinitionVersion: mockV1,
     },
-    [caseListBase]: {
+    caseList: {
       ...blankCaseListState,
       content: { ...blankCaseListState.content, listLoading: true },
     },
@@ -394,12 +357,8 @@ test('Should render loading page if listLoading set in store', async () => {
 });
 
 test('a11y', async () => {
-  (listCases as jest.Mock).mockReturnValueOnce(
-    Promise.resolve({ cases: mockedCaseList, count: mockedCaseList.length }),
-  );
-
   const initialState = createState({
-    [configurationBase]: {
+    configuration: {
       counselors: {
         list: [],
         hash: { worker1: 'worker1 name' },
@@ -407,7 +366,7 @@ test('a11y', async () => {
       definitionVersions: { v1: mockV1 },
       currentDefinitionVersion: mockV1,
     },
-    [caseListBase]: blankCaseListState,
+    caseList: blankCaseListState,
     routing: {
       tasks: {
         [standaloneTaskSid]: [{ route: 'case-list', subroute: 'case-list' }],

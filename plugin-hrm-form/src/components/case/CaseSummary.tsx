@@ -21,9 +21,9 @@ import { connect } from 'react-redux';
 
 import { CaseDetailsBorder, CaseSectionFont, CaseSummaryTextArea } from '../../styles/case';
 import type { CustomITask, StandaloneITask } from '../../types/types';
-import { CaseState } from '../../states/case/types';
 import { getTemplateStrings } from '../../hrmConfig';
-import { connectedCaseBase, namespace } from '../../states/storeNamespaces';
+import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
+import { RootState } from '../../states';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -57,11 +57,8 @@ const CaseSummary: React.FC<Props> = ({ connectedCaseState }) => {
 
 CaseSummary.displayName = 'CaseSummary';
 
-const mapStateToProps = (state, ownProps: OwnProps) => {
-  const caseState: CaseState = state[namespace][connectedCaseBase]; // casting type as inference is not working for the store yet
-  const connectedCaseState = caseState.tasks[ownProps.task.taskSid];
-
-  return { connectedCaseState };
+const mapStateToProps = (state: RootState, { task }: OwnProps) => {
+  return { connectedCaseState: selectCurrentRouteCaseState(state, task.taskSid) };
 };
 
 export default connect(mapStateToProps)(CaseSummary);
