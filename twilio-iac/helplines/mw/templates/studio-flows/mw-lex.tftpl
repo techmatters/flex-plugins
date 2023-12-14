@@ -1,0 +1,432 @@
+${
+  jsonencode(
+    {
+      "description": "Messaging Flow - Lex",
+      "states": [
+        {
+          "name": "Trigger",
+          "type": "trigger",
+          "transitions": [
+            {
+              "next": "split_channel",
+              "event": "incomingMessage"
+            },
+            {
+              "event": "incomingCall"
+            },
+            {
+              "event": "incomingConversationMessage"
+            },
+            {
+              "event": "incomingRequest"
+            },
+            {
+              "event": "incomingParent"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": -170,
+              "y": -660
+            }
+          }
+        },
+        {
+          "name": "smsAttributes",
+          "type": "send-to-flex",
+          "transitions": [
+            {
+              "event": "callComplete"
+            },
+            {
+              "event": "failedToEnqueue"
+            },
+            {
+              "event": "callFailure"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": 270,
+              "y": 810
+            },
+            "workflow": workflow_sids["master"],
+            "channel": task_channel_sids["sms"],
+            "attributes": channel_attributes["default"]
+          }
+        },
+        {
+          "name": "defaultAttributes",
+          "type": "send-to-flex",
+          "transitions": [
+            {
+              "event": "callComplete"
+            },
+            {
+              "event": "failedToEnqueue"
+            },
+            {
+              "event": "callFailure"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": -690,
+              "y": 810
+            },
+            "workflow": workflow_sids["master"],
+            "channel": task_channel_sids["default"],
+            "attributes": channel_attributes["default"]
+          }
+        },
+        {
+          "name": "whatsappAttributes",
+          "type": "send-to-flex",
+          "transitions": [
+            {
+              "event": "callComplete"
+            },
+            {
+              "event": "failedToEnqueue"
+            },
+            {
+              "event": "callFailure"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": -370,
+              "y": 810
+            },
+            "workflow": workflow_sids["master"],
+            "channel": task_channel_sids["whatsapp"],
+            "attributes": channel_attributes["default"]
+          }
+        },
+        {
+          "name": "facebookAttributes",
+          "type": "send-to-flex",
+          "transitions": [
+            {
+              "event": "callComplete"
+            },
+            {
+              "event": "failedToEnqueue"
+            },
+            {
+              "event": "callFailure"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": -50,
+              "y": 810
+            },
+            "workflow": workflow_sids["master"],
+            "channel": task_channel_sids["facebook"],
+            "attributes": channel_attributes["default"]
+          }
+        },
+        {
+          "name": "webAttributes",
+          "type": "send-to-flex",
+          "transitions": [
+            {
+              "event": "callComplete"
+            },
+            {
+              "event": "failedToEnqueue"
+            },
+            {
+              "event": "callFailure"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": 590,
+              "y": 810
+            },
+            "workflow": workflow_sids["master"],
+            "channel": task_channel_sids["web"],
+            "attributes": channel_attributes["default"]
+          }
+        },
+        {
+          "name": "AdjustAttributes",
+          "type": "split-based-on",
+          "transitions": [
+            {
+              "next": "defaultAttributes",
+              "event": "noMatch"
+            },
+            {
+              "next": "whatsappAttributes",
+              "event": "match",
+              "conditions": [
+                {
+                  "friendly_name": "If value equal_to whatsapp",
+                  "arguments": [
+                    "{{trigger.message.ChannelAttributes.channel_type}}"
+                  ],
+                  "type": "contains",
+                  "value": "whatsapp"
+                }
+              ]
+            },
+            {
+              "next": "facebookAttributes",
+              "event": "match",
+              "conditions": [
+                {
+                  "friendly_name": "If value equal_to facebook",
+                  "arguments": [
+                    "{{trigger.message.ChannelAttributes.channel_type}}"
+                  ],
+                  "type": "contains",
+                  "value": "facebook"
+                }
+              ]
+            },
+            {
+              "next": "smsAttributes",
+              "event": "match",
+              "conditions": [
+                {
+                  "friendly_name": "If value equal_to sms",
+                  "arguments": [
+                    "{{trigger.message.ChannelAttributes.channel_type}}"
+                  ],
+                  "type": "contains",
+                  "value": "sms"
+                }
+              ]
+            },
+            {
+              "next": "webAttributes",
+              "event": "match",
+              "conditions": [
+                {
+                  "friendly_name": "If value equal_to web",
+                  "arguments": [
+                    "{{trigger.message.ChannelAttributes.channel_type}}"
+                  ],
+                  "type": "contains",
+                  "value": "web"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "input": "{{trigger.message.ChannelAttributes.channel_type}}",
+            "offset": {
+              "x": -200,
+              "y": 560
+            }
+          }
+        },
+        {
+          "name": "check_image",
+          "type": "split-based-on",
+          "transitions": [
+            {
+              "event": "noMatch"
+            },
+            {
+              "next": "pre_survey_complete",
+              "event": "match",
+              "conditions": [
+                {
+                  "friendly_name": "{{trigger.message.Body}}",
+                  "arguments": [
+                    "{{trigger.message.Body}}"
+                  ],
+                  "type": "is_not_blank",
+                  "value": "Is Not Blank"
+                }
+              ]
+            },
+            {
+              "next": "send_message_1",
+              "event": "match",
+              "conditions": [
+                {
+                  "friendly_name": "{{trigger.message.Body}}",
+                  "arguments": [
+                    "{{trigger.message.Body}}"
+                  ],
+                  "type": "is_blank",
+                  "value": "Is Blank"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "input": "{{trigger.message.Body}}",
+            "offset": {
+              "x": 100,
+              "y": -190
+            }
+          }
+        },
+        {
+          "name": "send_message_1",
+          "type": "send-message",
+          "transitions": [
+            {
+              "event": "sent"
+            },
+            {
+              "event": "failed"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": 510,
+              "y": 60
+            },
+            "service": "{{trigger.message.InstanceSid}}",
+            "channel": "{{trigger.message.ChannelSid}}",
+            "from": "{{flow.channel.address}}",
+            "to": "{{contact.channel.address}}",
+            "body": "It is not possible to receive images or media files through Messenger at this time. Please send text only."
+          }
+        },
+        {
+          "name": "split_channel",
+          "type": "split-based-on",
+          "transitions": [
+            {
+              "event": "noMatch"
+            },
+            {
+              "next": "pre_survey_complete",
+              "event": "match",
+              "conditions": [
+                {
+                  "friendly_name": "If value contains web",
+                  "arguments": [
+                    "{{trigger.message.ChannelAttributes.channel_type}}"
+                  ],
+                  "type": "contains",
+                  "value": "web"
+                }
+              ]
+            },
+            {
+              "next": "check_image",
+              "event": "match",
+              "conditions": [
+                {
+                  "friendly_name": "If value contains facebook",
+                  "arguments": [
+                    "{{trigger.message.ChannelAttributes.channel_type}}"
+                  ],
+                  "type": "contains",
+                  "value": "facebook"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "input": "{{trigger.message.ChannelAttributes.channel_type}}",
+            "offset": {
+              "x": -150,
+              "y": -470
+            }
+          }
+        },
+        {
+          "name": "pre_survey_complete",
+          "type": "split-based-on",
+          "transitions": [
+            {
+              "next": "capture_channel_bot",
+              "event": "noMatch"
+            },
+            {
+              "next": "AdjustAttributes",
+              "event": "match",
+              "conditions": [
+                {
+                  "friendly_name": "If value equal_to true",
+                  "arguments": [
+                    "{{trigger.message.ChannelAttributes.preSurveyComplete}}"
+                  ],
+                  "type": "equal_to",
+                  "value": "true"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "input": "{{trigger.message.ChannelAttributes.preSurveyComplete}}",
+            "offset": {
+              "x": -140,
+              "y": 40
+            }
+          }
+        },
+        {
+          "name": "capture_channel_bot",
+          "type": "run-function",
+          "transitions": [
+            {
+              "event": "success"
+            },
+            {
+              "event": "fail"
+            }
+          ],
+          "properties": {
+            "service_sid": flow_vars["service_sid"],
+            "environment_sid": flow_vars["environment_sid"],
+            "offset": {
+              "x": -550,
+              "y": 290
+            },
+            "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
+            "parameters": [
+              {
+                "value": "{{flow.channel.address}}",
+                "key": "channelSid"
+              },
+              {
+                "value": "trigger_pre_survey",
+                "key": "message"
+              },
+              {
+                "value": "{{flow.flow_sid}}",
+                "key": "studioFlowSid"
+              },
+              {
+                "value": flow_vars["bot_language"],
+                "key": "language"
+              },
+              {
+                "value": "pre_survey",
+                "key": "botSuffix"
+              },
+              {
+                "value": "withUserMessage",
+                "key": "triggerType"
+              },
+              {
+                "value": "triggerStudioFlow",
+                "key": "releaseType"
+              },
+              {
+                "value": "preSurveyComplete",
+                "key": "releaseFlag"
+              }
+            ],
+            "url": "${serverless_url}/${flow_vars["capture_channel_with_bot_function_name"]}"
+          }
+        }
+      ],
+      "initial_state": "Trigger",
+      "flags": {
+        "allow_concurrent_calls": true
+      }
+    }
+)
+}
