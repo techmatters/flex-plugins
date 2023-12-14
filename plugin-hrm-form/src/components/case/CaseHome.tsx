@@ -52,7 +52,6 @@ import asyncDispatch from '../../states/asyncDispatch';
 import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
 import { BannerContainer, Text } from '../caseMergingBanners/styles';
 import InfoIcon from '../caseMergingBanners/InfoIcon';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { setCaseConnectedToContact } from '../../states/contacts/actions';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
