@@ -42,7 +42,7 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
   const { profile: { contactsCount, casesCount } = {} } = useProfile({ profileId, shouldAutoload: true });
   const tabs = [
     {
-      label: 'Client',
+      label: <Template code="Profile-ClientTab" />,
       key: 'details',
       renderComponent: () => <ProfileDetails profileId={profileId} task={task} />,
     },
