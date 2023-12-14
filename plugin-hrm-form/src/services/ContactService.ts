@@ -266,7 +266,7 @@ export const saveContact = async (
   };
 };
 
-export async function connectToCase(contactId: string, caseId: number) {
+export async function connectToCase(contactId: string, caseId: string) {
   const body = { caseId };
 
   const options = {

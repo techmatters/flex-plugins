@@ -15,9 +15,9 @@
  */
 
 import { RootState } from '..';
-import { configurationBase, namespace } from '../storeNamespaces';
+import { namespace } from '../storeNamespaces';
 
-const selectDefinitionVersion = (state: RootState) => state[namespace][configurationBase].currentDefinitionVersion;
+export const selectDefinitionVersions = (state: RootState) => state[namespace].configuration.definitionVersions;
 
-export const selectDefinitionVersionProperty = (state: RootState, property: string) =>
-  selectDefinitionVersion(state)?.[property];
+export const selectCurrentDefinitionVersion = (state: RootState) =>
+  state[namespace].configuration.currentDefinitionVersion;

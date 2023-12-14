@@ -46,6 +46,6 @@ export type HTMLElementRef = {
 };
 
 export type FormTargetObject = {
-  id: number;
+  id: string;
   type: ObjectType;
 };

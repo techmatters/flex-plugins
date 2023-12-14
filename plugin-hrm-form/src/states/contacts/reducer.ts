@@ -34,7 +34,6 @@ import {
   EXISTING_CONTACT_TOGGLE_CATEGORY_EXPANDED_ACTION,
   EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
   ExistingContactAction,
-  initialState as existingContactInitialState,
   LOAD_CONTACT_ACTION,
   loadContactReducer,
   loadTranscriptReducer,
@@ -87,7 +86,7 @@ type SaveContactReducerAction = Parameters<typeof boundSaveContactReducer>[1] &
 const newCaseReducer = createReducer(initialState, handleAction => [
   handleAction(
     createCaseAsyncAction.fulfilled,
-    (state: ContactsState, { payload: { case: connectedCase, taskSid } }) => {
+    (state: ContactsState, { payload: connectedCase }) => {
       const connectedContacts = connectedCase.connectedContacts
         .map(({ id }) => state.existingContacts[id])
         .filter(Boolean);

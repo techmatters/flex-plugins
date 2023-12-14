@@ -51,6 +51,7 @@ module "channel" {
   flow_vars             = var.flow_vars
   short_environment     = var.short_environment
   task_language         = var.task_language
+  helpline              = var.helpline
   short_helpline        = upper(var.short_helpline)
   serverless_url        = local.serverless_url
 }

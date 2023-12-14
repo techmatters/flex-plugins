@@ -188,6 +188,7 @@ describe('search reducer', () => {
       count: 2,
       cases: [
         {
+          id: 'case-1',
           createdAt: '2020-11-23T17:38:42.227Z',
           updatedAt: '2020-11-23T17:38:42.227Z',
           helpline: '',
@@ -196,6 +197,7 @@ describe('search reducer', () => {
           },
         },
         {
+          id: 'case-2',
           createdAt: '2020-11-23T17:38:42.227Z',
           updatedAt: '2020-11-23T17:38:42.227Z',
           helpline: '',
@@ -213,7 +215,10 @@ describe('search reducer', () => {
     const result = reduce(state, action);
 
     const { tasks } = result;
-    expect(tasks[task.taskSid].searchCasesResult).toStrictEqual(searchResult);
+    expect(tasks[task.taskSid].searchCasesResult).toStrictEqual({
+      count: 2,
+      ids: ['case-1', 'case-2'],
+    });
     state = result;
   });
 

@@ -17,18 +17,13 @@
 import { DefinitionVersion, DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import { reduce } from '../../../states/case/reducer';
-import * as actions from '../../../states/case/actions';
 import * as GeneralActions from '../../../states/actions';
 import { Case } from '../../../types/types';
 import { REMOVE_CONTACT_STATE } from '../../../states/types';
-import { CaseState } from '../../../states/case/types';
-import { RootState } from '../../../states';
-import { getAvailableCaseStatusTransitions } from '../../../states/case/caseStatus';
-import { ConfigurationState } from '../../../states/configuration/reducer';
-import { configurationBase, connectedCaseBase, namespace } from '../../../states/storeNamespaces';
+import { HrmState } from '../../../states';
 
 const task = { taskSid: 'task1' };
-const stubRootState = { [configurationBase]: { definitionVersions: {} } } as RootState['plugin-hrm-form'];
+const stubRootState = { configuration: { definitionVersions: {} }, connectedCase: { cases: {} } } as HrmState;
 
 jest.mock('../../../states/case/caseStatus', () => ({
   getAvailableCaseStatusTransitions: jest.fn(),
@@ -42,8 +37,22 @@ beforeEach(() => {
 });
 
 describe('test reducer', () => {
-  let state: CaseState = undefined;
   let mockV1: DefinitionVersion;
+
+  const connectedCase: Case = {
+    accountSid: 'ACxxx',
+    id: '1',
+    helpline: '',
+    status: 'open',
+    twilioWorkerId: 'WK123',
+    info: {
+      definitionVersion: DefinitionVersionId.v1,
+    },
+    createdAt: '2020-07-31T20:39:37.408Z',
+    updatedAt: '2020-07-31T20:39:37.408Z',
+    connectedContacts: null,
+    categories: {},
+  };
 
   beforeAll(async () => {
     const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
@@ -53,91 +62,49 @@ describe('test reducer', () => {
   });
 
   test('should return initial state', async () => {
-    const expected = { tasks: {} };
-
-    const result = reduce(stubRootState, state, {
+    const result = reduce(stubRootState, {
       type: REMOVE_CONTACT_STATE,
       taskId: 'TEST_TASK_ID',
       contactId: 'TEST_CONTACT_ID',
     });
-    expect(result).toStrictEqual(expected);
-
-    state = result;
+    expect(result).toStrictEqual(stubRootState);
   });
 
-  test('SET_CONNECTED_CASE, definition version missing in config state - sets available statuses to empty', async () => {
-    const connectedCase: Case = {
-      accountSid: 'ACxxx',
-      id: 1,
-      helpline: '',
-      status: 'open',
-      twilioWorkerId: 'WK123',
-      info: null,
-      createdAt: '2020-07-31T20:39:37.408Z',
-      updatedAt: '2020-07-31T20:39:37.408Z',
-      connectedContacts: null,
-      categories: {},
-    };
-
-    const expected: RootState[typeof namespace][typeof connectedCaseBase] = {
-      tasks: {
-        task1: { connectedCase, caseWorkingCopy: { sections: {} }, availableStatusTransitions: [] },
-      },
-    };
-
-    const result = reduce(stubRootState, state, actions.setConnectedCase(connectedCase, task.taskSid));
-    state = result;
-    expect(result).toStrictEqual(expected);
-  });
-
-  test('SET_CONNECTED_CASE, definition version present in config state - sets available statuses using getAvailableCaseStatuses', async () => {
-    const connectedCase: Case = {
-      accountSid: 'ACxxx',
-      id: 1,
-      helpline: '',
-      status: 'open',
-      twilioWorkerId: 'WK123',
-      info: {
-        definitionVersion: DefinitionVersionId.v1,
-      },
-      createdAt: '2020-07-31T20:39:37.408Z',
-      updatedAt: '2020-07-31T20:39:37.408Z',
-      connectedContacts: null,
-      categories: {},
-    };
-
-    const expected: RootState[typeof namespace][typeof connectedCaseBase] = {
-      tasks: {
-        task1: {
-          connectedCase,
-          caseWorkingCopy: { sections: {} },
-          availableStatusTransitions: Object.values(mockV1.caseStatus),
+  test('should remove any cases referenced via the specified task', async () => {
+    const state = {
+      ...stubRootState,
+      connectedCase: {
+        cases: {
+          1: {
+            connectedCase,
+            caseWorkingCopy: { sections: {} },
+            availableStatusTransitions: Object.values(mockV1.caseStatus),
+            references: new Set(['task-task1']),
+          },
         },
       },
     };
 
-    const rootState = {
-      [configurationBase]: {
-        definitionVersions: {
-          [DefinitionVersionId.v1]: mockV1,
-        } as Record<string, DefinitionVersion>,
-      } as ConfigurationState,
-    } as RootState['plugin-hrm-form'];
-
-    (<jest.Mock>getAvailableCaseStatusTransitions).mockReturnValue(Object.values(mockV1.caseStatus));
-
-    const result = reduce(rootState, state, actions.setConnectedCase(connectedCase, task.taskSid));
-    state = result;
-    expect(result).toStrictEqual(expected);
-    expect(getAvailableCaseStatusTransitions).toHaveBeenCalledWith(connectedCase, mockV1);
+    const result = reduce(state, GeneralActions.removeContactState(task.taskSid, undefined));
+    expect(result).toStrictEqual(stubRootState);
   });
 
-  test('should handle REMOVE_CONTACT_STATE', async () => {
-    const expected = { tasks: {} };
+  test('should remove any cases referenced via the specified contact', async () => {
+    const state = {
+      ...stubRootState,
+      connectedCase: {
+        cases: {
+          1: {
+            connectedCase,
+            caseWorkingCopy: { sections: {} },
+            availableStatusTransitions: Object.values(mockV1.caseStatus),
+            references: new Set(['contact-contact1']),
+          },
+        },
+      },
+    };
 
-    const result = reduce(stubRootState, state, GeneralActions.removeContactState(task.taskSid));
-    expect(result).toStrictEqual(expected);
-
-    // state = result; no assignment here as we don't want to lose the only task in the state, it will be reused in following tests
+    const result = reduce(state, GeneralActions.removeContactState(task.taskSid, 'contact1'));
+    expect(result).toStrictEqual(stubRootState);
   });
 });
