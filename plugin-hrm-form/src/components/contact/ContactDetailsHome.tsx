@@ -52,6 +52,7 @@ import { configurationBase, contactFormsBase, namespace } from '../../states/sto
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { isRouteWithContext } from '../../states/routing/types';
+import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -117,6 +118,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   enableEditing,
   canViewTwilioTranscript,
   createDraftCsamReport,
+  task
 }) {
   const version = savedContact?.rawJson.definitionVersion;
 
@@ -146,6 +148,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
     updatedAt,
     updatedBy,
     rawJson,
+    caseId
   } = savedContact;
 
   const { callType, categories } = rawJson;
@@ -259,10 +262,14 @@ const ContactDetailsHome: React.FC<Props> = function ({
     </SectionActionButton>
   );
 
+  console.log('savedContact in ContactDetails', savedContact, caseId)
+
   return (
     <Box data-testid="ContactDetails-Container">
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
       {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
+
+      {caseId && <ContactAddedToCaseBanner taskId={task.taskSid} contactId={savedContact.id} /> }
 
       <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}

@@ -28,19 +28,22 @@ import InfoIcon from './InfoIcon';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
 import selectCaseByCaseId from '../../states/case/selectCaseStateByCaseId';
 import { RootState } from '../../states';
+import { contactFormsBase, namespace } from '../../states/storeNamespaces';
 
 type OwnProps = {
   taskId: string;
+  contactId?: string;
 };
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-const mapStateToProps = (state: RootState, { taskId }: OwnProps) => {
-  const { savedContact } = selectContactByTaskSid(state, taskId);
-  const connectedCase = selectCaseByCaseId(state, savedContact.caseId ?? '')?.connectedCase;
-  const caseId = savedContact?.caseId;
+const mapStateToProps = (state: RootState, { taskId, contactId }: OwnProps) => {
+  const offlineSavedContact = selectContactByTaskSid(state, taskId)?.savedContact;
+  const connectedCase = selectCaseByCaseId(state, offlineSavedContact?.caseId ?? '')?.connectedCase;
+  const existingSavedContact = state[namespace][contactFormsBase].existingContacts[contactId]?.savedContact
+  const caseId = offlineSavedContact ? offlineSavedContact?.caseId : existingSavedContact?.caseId;
   return {
-    contact: savedContact,
+    contact: offlineSavedContact ? offlineSavedContact : existingSavedContact,
     connectedCase,
     caseId,
   };
@@ -63,7 +66,7 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
   removeContactFromCase,
   caseId,
 }) => {
-  if (connectedCase === undefined) return null;
+  // if (connectedCase === undefined) return null;
 
   return (
     <BannerContainer color="blue">
