@@ -1,7 +1,7 @@
 ${
   jsonencode(
     {
-      "description": "Messaging Flow - Lex",
+      "description": "Messaging Flow - Lex - MW",
       "states": [
         {
           "name": "Trigger",
@@ -52,7 +52,7 @@ ${
             },
             "workflow": workflow_sids["master"],
             "channel": task_channel_sids["sms"],
-            "attributes": channel_attributes["default"]
+            "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}}"
           }
         },
         {
@@ -76,7 +76,7 @@ ${
             },
             "workflow": workflow_sids["master"],
             "channel": task_channel_sids["default"],
-            "attributes": channel_attributes["default"]
+            "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}}"
           }
         },
         {
@@ -99,8 +99,8 @@ ${
               "y": 810
             },
             "workflow": workflow_sids["master"],
-            "channel": task_channel_sids["whatsapp"],
-            "attributes": channel_attributes["default"]
+            "channel": task_channel_sids["chat"],
+            "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}}"
           }
         },
         {
@@ -123,8 +123,8 @@ ${
               "y": 810
             },
             "workflow": workflow_sids["master"],
-            "channel": task_channel_sids["facebook"],
-            "attributes": channel_attributes["default"]
+            "channel": task_channel_sids["chat"],
+            "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}}"
           }
         },
         {
@@ -147,8 +147,8 @@ ${
               "y": 810
             },
             "workflow": workflow_sids["master"],
-            "channel": task_channel_sids["web"],
-            "attributes": channel_attributes["default"]
+            "channel": task_channel_sids["chat"],
+            "attributes": "{\"ip\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.helpline}}\", \"ignoreAgent\":\"\",\n\"transferTargetType\":\"\",\"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}, \"preEngagementData\": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}}}"
           }
         },
         {
@@ -399,7 +399,7 @@ ${
                 "key": "studioFlowSid"
               },
               {
-                "value": flow_vars["bot_language"],
+                "value": en_MW,
                 "key": "language"
               },
               {
