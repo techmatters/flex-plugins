@@ -7,7 +7,7 @@ locals {
 
   local_config = {
 
-    custom_task_routing_filter_expression =  "channelType == 'web'  OR isContactlessTask == true OR  twilioNumber IN ['messenger:113053900394672', 'messenger:154148147974717', 'messenger:338505126727604']"
+    custom_task_routing_filter_expression = "channelType == 'web'  OR isContactlessTask == true OR  twilioNumber IN ['messenger:113053900394672', 'messenger:154148147974717', 'messenger:338505126727604']"
 
     #Studio flow
     flow_vars = {
@@ -15,6 +15,7 @@ locals {
       environment_sid                        = "ZE72542f1675e60fb60a137995fc6b61c2"
       capture_channel_with_bot_function_sid  = "ZH59fec96902ac870dddc110366ea97522"
       capture_channel_with_bot_function_name = "channelCapture/captureChannelWithBot"
+      bot_language                           = "en_MW"
     }
 
     #Channels
