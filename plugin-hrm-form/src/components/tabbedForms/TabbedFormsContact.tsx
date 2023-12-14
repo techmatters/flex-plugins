@@ -18,10 +18,11 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState } from '../../states';
 import { namespace } from '../../states/storeNamespaces';
+import { DetailsContext } from '../../states/contacts/contactDetails';
 import { ContactRoute } from '../../states/routing/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { CaseLayout } from '../../styles/case';
-import ViewContact from '../case/ViewContact';
+import ContactDetails from '../contact/ContactDetails';
 import { TabbedFormsCommonProps } from './types';
 
 type OwnProps = TabbedFormsCommonProps;
@@ -42,7 +43,7 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const TabbedFormsContact: React.FC<Props> = ({ task, contactId }) => {
   return (
     <CaseLayout>
-      <ViewContact contactId={contactId} task={task} />
+      <ContactDetails contactId={contactId} task={task} enableEditing={true} context={DetailsContext.CONTACT_SEARCH} />
     </CaseLayout>
   );
 };
