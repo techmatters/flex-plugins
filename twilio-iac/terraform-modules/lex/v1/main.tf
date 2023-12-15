@@ -23,9 +23,9 @@ resource "aws_lex_slot_type" "this" {
   # that doesn’t allow numbers or certain special characters. Unfortunately, this restriction is imposed by AWS, 
   # and I cannot directly override it. AWS Lex has specific naming requirements for intents, slots, and bot names 
   # and Terraform enforces these requirements when you create resources.
-  # So a work-around for the e2e account was to replace the "2" with the letter "" 
+  # So a work-around for the e2e account was to replace the "[0-9]" with the no space "" 
 
-  name                     = replace("${local.name_prefix}_${each.key}", "2", "")
+  name                     = replace("${local.name_prefix}_${each.key}", "[0-9]", "")
   description              = each.value.description
   value_selection_strategy = each.value.value_selection_strategy
 
