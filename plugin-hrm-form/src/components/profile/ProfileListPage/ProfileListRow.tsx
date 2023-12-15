@@ -32,13 +32,10 @@ type Props = OwnProps & {
 
 const ProfileListRow: React.FC<Props> = ({ profileId, openProfileDetails }) => {
   const { profile } = useProfile({ profileId });
-  console.log('>>> profile', profile);
-  const handleViewProfile = () => {
-    openProfileDetails(profileId.toString());
-  };
+
   return (
-    <DataTableRow onClick={handleViewProfile}>
-      <DataCell onClick={handleViewProfile}>{profile?.id}</DataCell>
+    <DataTableRow>
+      <DataCell>{profile?.id}</DataCell>
       <DataCell>id</DataCell>
       <DataCell>blocked abusive</DataCell>
       <DataCell>summary</DataCell>
