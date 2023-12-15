@@ -40,6 +40,7 @@ ${
           "event": "success"
         },
         {
+          "next": "webhook_notify_error",
           "event": "fail"
         }
       ],
@@ -76,6 +77,7 @@ ${
           "event": "callComplete"
         },
         {
+          "next": "webhook_notify_failed_to_enqueue",
           "event": "failedToEnqueue"
         },
         {
@@ -91,7 +93,52 @@ ${
         "workflow":  workflow_sids["master"],
         "channel": task_channel_sids["chat"],
       }
-    }
+    },
+    {
+        "name": "webhook_notify_error",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "next": "attributes",
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 110,
+            "y": 870
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+          "url": webhook_url_studio_errors
+        }
+      },
+    {
+        "name": "webhook_notify_failed_to_enqueue",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 450,
+            "y": 870
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+          "url": webhook_url_studio_errors
+        }
+      }  
   ],
   "initial_state": "Trigger",
   "flags": {

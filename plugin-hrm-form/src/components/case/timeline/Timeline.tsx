@@ -25,6 +25,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import TimelineIcon from './TimelineIcon';
 import {
+  CaseDetailsBorder,
   CaseSectionFont,
   TimelineCallTypeIcon,
   TimelineDate,
@@ -93,7 +94,7 @@ const Timeline: React.FC<Props> = ({
     return null;
   }
 
-  const caseId = connectedCase.id.toString();
+  const caseId = connectedCase.id;
   const handleViewNoteClick = ({ id }: NoteActivity) => {
     openViewCaseSectionModal(caseId, NewCaseSubroutes.Note, id);
   };

@@ -351,6 +351,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: CaseHomeProps) =>
     asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, cas.id)),
   closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
 });
+
 const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(CaseHome);
 
