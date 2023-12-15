@@ -34,25 +34,23 @@ import { CaseState } from './case/types';
 import { ContactsState } from './contacts/types';
 import {
   caseListBase,
+  caseMergingBannersBase,
   conferencingBase,
   configurationBase,
-  connectedCaseBase,
   contactFormsBase,
   conversationsBase,
   csamReportBase,
   dualWriteBase,
   namespace,
+  profileBase,
   queuesStatusBase,
   referrableResourcesBase,
   routingBase,
-  searchContactsBase,
-  caseMergingBannersBase,
-  profileBase,
 } from './storeNamespaces';
 import { reduce as CaseMergingBannersReducer } from './case/caseBanners';
 
 const reducers = {
-  [searchContactsBase]: SearchFormReducer,
+  searchContacts: SearchFormReducer,
   [queuesStatusBase]: QueuesStatusReducer,
   [caseListBase]: CaseListReducer,
   [configurationBase]: ConfigurationReducer,

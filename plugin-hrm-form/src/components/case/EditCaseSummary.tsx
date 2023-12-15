@@ -54,7 +54,7 @@ import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import NavigableContainer from '../NavigableContainer';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
-import selectCounselorsHash from '../../states/configuration/selectCounselorsHash';
+import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
 
 export type EditCaseSummaryProps = {
   task: CustomITask | StandaloneITask;

@@ -23,13 +23,13 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 
 import SearchForm from './SearchForm';
-import SearchResults, { CONTACTS_PER_PAGE, CASES_PER_PAGE } from './SearchResults';
+import SearchResults, { CASES_PER_PAGE, CONTACTS_PER_PAGE } from './SearchResults';
 import ContactDetails from './ContactDetails';
 import Case from '../case';
 import ProfileRouter, { isProfileRoute } from '../profile/ProfileRouter';
 import { SearchParams } from '../../states/search/types';
-import { CustomITask, Contact, standaloneTaskSid } from '../../types/types';
-import { handleSearchFormChange, searchContacts, searchCases } from '../../states/search/actions';
+import { Contact, CustomITask, standaloneTaskSid } from '../../types/types';
+import { handleSearchFormChange, searchCases, searchContacts } from '../../states/search/actions';
 import { RootState } from '../../states';
 import { namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
@@ -37,6 +37,7 @@ import { changeRoute, newCloseModalAction } from '../../states/routing/actions';
 import { SearchResultRoute, SearchRoute } from '../../states/routing/types';
 import NavigableContainer from '../NavigableContainer';
 import selectCasesForSearchResults from '../../states/search/selectCasesForSearchResults';
+import selectContactsForSearchResults from '../../states/search/selectContactsForSearchResults';
 
 type OwnProps = {
   task: CustomITask;
@@ -238,7 +239,7 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
     isRequesting: taskSearchState.isRequesting,
     error: taskSearchState.error,
     form: taskSearchState.form,
-    searchContactsResults: taskSearchState.searchContactsResult,
+    searchContactsResults: selectContactsForSearchResults(state, taskId),
     searchCasesResults: selectCasesForSearchResults(state, taskId),
     showActionIcons: !isStandaloneSearch,
     routing: currentRoute,
