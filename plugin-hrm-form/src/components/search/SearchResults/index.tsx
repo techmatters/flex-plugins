@@ -44,7 +44,7 @@ import {
   Text,
   NoResultTextLink,
 } from '../../../styles/search';
-import Pagination from '../../Pagination';
+import Pagination from '../../pagination';
 import { getPermissionsForContact, getPermissionsForCase, PermissionActions } from '../../../permissions';
 import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';

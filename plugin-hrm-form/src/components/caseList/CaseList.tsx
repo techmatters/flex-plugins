@@ -22,7 +22,8 @@ import { DefinitionVersion } from 'hrm-form-definitions';
 import Case from '../case';
 import { StandaloneITask, Case as CaseType } from '../../types/types';
 import CaseListTable from './CaseListTable';
-import { CaseListContainer, CenteredContainer, SomethingWentWrongText } from '../../styles/caseList';
+import { ListContainer, CenteredContainer, SomethingWentWrongText } from '../../styles/table';
+import { listCases } from '../../services/CaseService';
 import { CaseLayout } from '../../styles/case';
 import * as ConfigActions from '../../states/configuration/actions';
 import { StandaloneSearchContainer } from '../../styles/search';
@@ -136,14 +137,14 @@ const CaseList: React.FC<Props> = ({
   }
   return (
     <>
-      <CaseListContainer>
+      <ListContainer>
         <CaseListTable
           loading={listLoading}
           caseList={caseList}
           caseCount={caseCount}
           handleClickViewCase={handleClickViewCase}
         />
-      </CaseListContainer>
+      </ListContainer>
     </>
   );
 };

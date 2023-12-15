@@ -26,16 +26,16 @@ import { RootState } from '../../states';
 import * as ConfigActions from '../../states/configuration/actions';
 import { Case, CounselorHash } from '../../types/types';
 import {
-  CLTableRow,
-  CLTableCell,
-  CLNamesCell,
-  CLSummaryCell,
-  CLNumberCell,
-  CLTableBodyFont,
-  CLCaseNumberContainer,
-  CLCaseIDButton,
-  CLTableSummaryFont,
-} from '../../styles/caseList';
+  DataTableRow,
+  DataCell,
+  TextCell,
+  SummaryCell,
+  NumericCell,
+  TableBodyFont,
+  IdentifierContainer,
+  IdentifierActionButton,
+  TableSummaryFont,
+} from '../../styles/table';
 import { Box, HiddenText } from '../../styles/HrmStyles';
 import { formatName, getShortSummary } from '../../utils';
 import { getContactTags } from '../../utils/categories';
@@ -105,31 +105,31 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
     };
 
     return (
-      <CLTableRow data-testid="CaseList-TableRow" onClick={handleClickViewCase(caseItem)}>
-        <CLNumberCell>
-          <CLCaseNumberContainer>
-            <CLCaseIDButton tabIndex={0} data-testid="CaseList-CaseID-Button">
+      <DataTableRow data-testid="CaseList-TableRow" onClick={handleClickViewCase(caseItem)}>
+        <NumericCell>
+          <IdentifierContainer>
+            <IdentifierActionButton tabIndex={0} data-testid="CaseList-CaseID-Button">
               <HiddenText>
                 <Template code={statusString} />
                 <Template code="CaseList-THCase" />
               </HiddenText>
               {caseItem.id}
-            </CLCaseIDButton>
-            <CLTableBodyFont style={{ color: '#606B85', paddingTop: '2px', textAlign: 'center' }}>
+            </IdentifierActionButton>
+            <TableBodyFont style={{ color: '#606B85', paddingTop: '2px', textAlign: 'center' }}>
               {getCaseStatusLabel(caseItem.status)}
-            </CLTableBodyFont>
-          </CLCaseNumberContainer>
-        </CLNumberCell>
-        <CLNamesCell>
-          <CLTableBodyFont>{contactLabelFromHrmContact(definitionVersion, contact)}</CLTableBodyFont>
-        </CLNamesCell>
-        <CLTableCell>
-          <CLTableBodyFont>{counselor}</CLTableBodyFont>
-        </CLTableCell>
-        <CLSummaryCell>
-          <CLTableSummaryFont>{shortSummary}</CLTableSummaryFont>
-        </CLSummaryCell>
-        <CLTableCell>
+            </TableBodyFont>
+          </IdentifierContainer>
+        </NumericCell>
+        <TextCell>
+          <TableBodyFont>{contactLabelFromHrmContact(definitionVersion, contact)}</TableBodyFont>
+        </TextCell>
+        <DataCell>
+          <TableBodyFont>{counselor}</TableBodyFont>
+        </DataCell>
+        <SummaryCell>
+          <TableSummaryFont>{shortSummary}</TableSummaryFont>
+        </SummaryCell>
+        <DataCell>
           <div style={{ display: 'inline-block', flexDirection: 'column' }}>
             {categories &&
               categories.map(category => (
@@ -138,26 +138,26 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
                 </Box>
               ))}
           </div>
-        </CLTableCell>
-        <CLTableCell>
-          <CLTableBodyFont style={{ textAlign: 'right' }}>{opened}</CLTableBodyFont>
-        </CLTableCell>
-        <CLTableCell>
-          <CLTableBodyFont style={{ textAlign: 'right' }}>{updated}</CLTableBodyFont>
-        </CLTableCell>
-        <CLTableCell>
-          <CLTableBodyFont style={{ textAlign: 'right' }}>{followUpDate}</CLTableBodyFont>
-        </CLTableCell>
-      </CLTableRow>
+        </DataCell>
+        <DataCell>
+          <TableBodyFont style={{ textAlign: 'right' }}>{opened}</TableBodyFont>
+        </DataCell>
+        <DataCell>
+          <TableBodyFont style={{ textAlign: 'right' }}>{updated}</TableBodyFont>
+        </DataCell>
+        <DataCell>
+          <TableBodyFont style={{ textAlign: 'right' }}>{followUpDate}</TableBodyFont>
+        </DataCell>
+      </DataTableRow>
     );
   } catch (err) {
     console.error('Error rendering case row.', err);
     return (
-      <CLTableRow>
-        <CLTableCell colSpan={100}>
-          <CLTableBodyFont>INVALID ROW</CLTableBodyFont>
-        </CLTableCell>
-      </CLTableRow>
+      <DataTableRow>
+        <DataCell colSpan={100}>
+          <TableBodyFont>INVALID ROW</TableBodyFont>
+        </DataCell>
+      </DataTableRow>
     );
   }
 };
