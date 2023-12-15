@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 
 import { useProfile } from '../../../states/profile/hooks/useProfile';
 import { Profile } from '../../../states/profile/types';
-import { CLTableRow, CLTableCell } from '../../../styles/caseList';
+import { DataTableRow, DataCell } from '../../../styles/table';
 import { newOpenModalAction } from '../../../states/routing/actions';
 
 type OwnProps = {
@@ -37,12 +37,12 @@ const ProfileListRow: React.FC<Props> = ({ profileId, openProfileDetails }) => {
     openProfileDetails(profileId.toString());
   };
   return (
-    <CLTableRow onClick={handleViewProfile}>
-      <CLTableCell onClick={handleViewProfile}>{profile?.id}</CLTableCell>
-      <CLTableCell>id</CLTableCell>
-      <CLTableCell>blocked abusive</CLTableCell>
-      <CLTableCell>summary</CLTableCell>
-    </CLTableRow>
+    <DataTableRow onClick={handleViewProfile}>
+      <DataCell onClick={handleViewProfile}>{profile?.id}</DataCell>
+      <DataCell>id</DataCell>
+      <DataCell>blocked abusive</DataCell>
+      <DataCell>summary</DataCell>
+    </DataTableRow>
   );
 };
 
