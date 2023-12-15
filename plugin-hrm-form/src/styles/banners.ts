@@ -16,11 +16,11 @@
 
 import { styled } from '@twilio/flex-ui';
 
-type BannerContainerProps = {
+export type BannerContainerProps = {
   color: 'blue' | 'orange' | 'yellow';
 };
 
-const colors = {
+export const colors = {
   background: {
     blue: '#ebf4ff',
     orange: '#fef5ee',
@@ -43,6 +43,7 @@ export const BannerContainer = styled('div')<BannerContainerProps>`
   padding-right: 30px;
   border-bottom: 2px solid ${({ color }) => colors.border[color]};
 `;
+
 BannerContainer.displayName = 'BannerContainer';
 
 export const Text = styled('span')`
@@ -51,8 +52,8 @@ export const Text = styled('span')`
   margin-left: 8px;
   margin-right: 1ch;
 `;
-Text.displayName = 'Text';
 
+Text.displayName = 'Text';
 type ButtonProps = {
   onClick: () => void;
 };
@@ -66,6 +67,7 @@ export const CaseLink = styled('button')<ButtonProps>`
   cursor: pointer;
   font-family: Open Sans;
 `;
+
 CaseLink.displayName = 'CaseLink';
 
 export const BannerActionLink = styled('button')<ButtonProps>`
@@ -75,4 +77,5 @@ export const BannerActionLink = styled('button')<ButtonProps>`
   border: none;
   cursor: pointer;
 `;
+
 BannerActionLink.displayName = 'BannerActionLink';

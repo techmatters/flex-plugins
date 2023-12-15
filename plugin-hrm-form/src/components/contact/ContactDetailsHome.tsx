@@ -17,23 +17,23 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { format } from 'date-fns';
-import { Actions, Insights, Template, Icon } from '@twilio/flex-ui';
+import { Actions, Icon, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
-import { Flex, Box, Row } from '../../styles/HrmStyles';
+import { Box, Flex, Row } from '../../styles/HrmStyles';
 import {
-  CSAMReportEntry,
-  isS3StoredTranscript,
-  isS3StoredRecording,
-  isTwilioStoredMedia,
   ContactRawJson,
+  CSAMReportEntry,
   CustomITask,
+  isS3StoredRecording,
+  isS3StoredTranscript,
+  isTwilioStoredMedia,
   StandaloneITask,
 } from '../../types/types';
-import { ContactAddedFont, SectionActionButton, SectionValueText, ContactDetailsIcon } from '../../styles/search';
+import { ContactAddedFont, ContactDetailsIcon, SectionActionButton, SectionValueText } from '../../styles/search';
 import ContactDetailsSection from './ContactDetailsSection';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';
@@ -43,8 +43,8 @@ import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/Co
 import { RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getPermissionsForContact, getPermissionsForViewingIdentifiers, PermissionActions } from '../../permissions';
-import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
-import { TranscriptSection, RecordingSection } from './MediaSection';
+import { ContactDetailsRoute, createDraft } from '../../states/contacts/existingContacts';
+import { RecordingSection, TranscriptSection } from './MediaSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import type { ResourceReferral } from '../../states/contacts/resourceReferral';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
@@ -52,6 +52,8 @@ import { configurationBase, contactFormsBase, namespace } from '../../states/sto
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { isRouteWithContext } from '../../states/routing/types';
+import InfoIcon from '../caseMergingBanners/InfoIcon';
+import { BannerContainer, Text } from '../../styles/banners';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -147,6 +149,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
     updatedBy,
     rawJson,
   } = savedContact;
+
+  const isDraft = !savedContact.finalizedAt;
 
   const { callType, categories } = rawJson;
 
@@ -263,7 +267,18 @@ const ContactDetailsHome: React.FC<Props> = function ({
     <Box data-testid="ContactDetails-Container">
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
       {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
-
+      {isDraft && (
+        <BannerContainer color="yellow" style={{ paddingTop: '12px', paddingBottom: '12px', marginTop: '10px' }}>
+          <Flex width="100%" justifyContent="space-between">
+            <Flex alignItems="center">
+              <InfoIcon color="#fed44b" />
+              <Text>
+                <Template code="Contact-DraftStatus" />
+              </Text>
+            </Flex>
+          </Flex>
+        </BannerContainer>
+      )}
       <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
         expanded={detailsExpanded[GENERAL_DETAILS]}

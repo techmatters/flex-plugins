@@ -22,8 +22,8 @@ import { Close } from '@material-ui/icons';
 import { HeaderCloseButton, HiddenText } from '../../styles/HrmStyles';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import WarningIcon from './WarningIcon';
-import { BannerContainer, Text } from './styles';
 import { closeRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
+import { BannerContainer, Text } from '../../styles/banners';
 
 type OwnProps = {
   taskId: string;

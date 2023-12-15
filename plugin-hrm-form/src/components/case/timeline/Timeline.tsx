@@ -25,7 +25,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import TimelineIcon from './TimelineIcon';
 import {
-  CaseDetailsBorder,
   CaseSectionFont,
   TimelineCallTypeIcon,
   TimelineDate,
@@ -44,6 +43,8 @@ import { newOpenModalAction } from '../../../states/routing/actions';
 import { RootState } from '../../../states';
 import { selectCaseActivities } from '../../../states/case/timeline';
 import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRouteCase';
+import { colors } from '../../../styles/banners';
+import InfoIcon from '../../caseMergingBanners/InfoIcon';
 
 type OwnProps = {
   taskSid: CustomITask['taskSid'];
@@ -158,16 +159,22 @@ const Timeline: React.FC<Props> = ({
           const date = parseISO(activity.date).toLocaleDateString(navigator.language);
           let canViewActivity = true;
           if (isConnectedCaseActivity(activity)) {
-            if (activity.showViewButton) {
+            if (activity.isDraft) {
+              canViewActivity = false;
+            } else {
               const { can } = getPermissionsForContact(activity.twilioWorkerId);
               canViewActivity = can(PermissionActions.VIEW_CONTACT);
-            } else {
-              canViewActivity = false;
             }
           }
 
           return (
-            <TimelineRow key={index}>
+            <TimelineRow
+              key={index}
+              style={{
+                backgroundColor:
+                  isConnectedCaseActivity(activity) && activity.isDraft ? colors.background.yellow : undefined,
+              }}
+            >
               <TimelineDate>{date}</TimelineDate>
               <TimelineIcon type={isConnectedCaseActivity(activity) ? activity.channel : activity.type} />
               {isConnectedCaseActivity(activity) && (
@@ -182,6 +189,13 @@ const Timeline: React.FC<Props> = ({
                     <ViewButton onClick={() => handleViewClick(activity)}>
                       <Template code="Case-ViewButton" />
                     </ViewButton>
+                  </Box>
+                </Box>
+              )}
+              {isConnectedCaseActivity(activity) && activity.isDraft && (
+                <Box marginLeft="auto">
+                  <Box marginLeft="auto">
+                    <InfoIcon color="#fed44b" />
                   </Box>
                 </Box>
               )}

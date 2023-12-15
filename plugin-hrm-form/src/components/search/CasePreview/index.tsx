@@ -37,6 +37,7 @@ import { newCloseModalAction } from '../../../states/routing/actions';
 import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../../permissions';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
 import { isNonDataCallType } from '../../../states/validationRules';
+import { PreviewRow } from '../../../styles/search';
 
 type OwnProps = {
   currentCase: Case;
@@ -136,13 +137,15 @@ const CasePreview: React.FC<Props> = ({
             closeModal();
           }}
         />
-        {summary && (
-          <PreviewDescription expandLinkText="ReadMore" collapseLinkText="ReadLess">
-            {summary}
-          </PreviewDescription>
-        )}
+        <PreviewRow>
+          {summary && (
+            <PreviewDescription expandLinkText="ReadMore" collapseLinkText="ReadLess">
+              {summary}
+            </PreviewDescription>
+          )}
 
-        <TagsAndCounselor counselor={counselor} categories={categories} definitionVersion={definitionVersion} />
+          <TagsAndCounselor counselor={counselor} categories={categories} definitionVersion={definitionVersion} />
+        </PreviewRow>
       </PreviewWrapper>
     </Flex>
   );

@@ -23,13 +23,13 @@ import { RootState } from '../../states';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 import { isStandaloneITask } from '../case/Case';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
-import { BannerContainer, Text } from './styles';
 import { Flex } from '../../styles/HrmStyles';
 import InfoIcon from './InfoIcon';
 import ConnectToCaseButton from '../case/ConnectToCaseButton';
 import asyncDispatch from '../../states/asyncDispatch';
 import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
 import { newCloseModalAction } from '../../states/routing/actions';
+import { BannerContainer, Text } from '../../styles/banners';
 
 type MyProps = {
   task: CustomITask | StandaloneITask;

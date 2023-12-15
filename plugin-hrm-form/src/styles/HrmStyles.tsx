@@ -1377,7 +1377,7 @@ export const PreviewWrapper = styled(Flex)`
   flex-direction: column;
   justify-content: space-between;
   margin-top: 10px;
-  padding: 5px 20px 10px 20px;
+  padding-bottom: 10px;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;

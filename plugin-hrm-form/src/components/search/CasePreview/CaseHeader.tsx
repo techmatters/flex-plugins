@@ -21,11 +21,11 @@ import { Template } from '@twilio/flex-ui';
 import { FolderOutlined } from '@material-ui/icons';
 
 import {
-  SubtitleLabel,
-  SubtitleValue,
-  StyledLink,
   PreviewHeaderText,
   PreviewRow,
+  StyledLink,
+  SubtitleLabel,
+  SubtitleValue,
   SummaryText,
 } from '../../../styles/search';
 import { Flex } from '../../../styles/HrmStyles';
@@ -67,7 +67,7 @@ const CaseHeader: React.FC<Props> = ({
 
   return (
     <div>
-      <PreviewRow>
+      <PreviewRow style={{ paddingTop: '5px' }}>
         <Flex justifyContent="space-between" width="100%">
           <Flex alignItems="center" style={{ minWidth: 'fit-content' }}>
             {!isOrphanedCase && (
