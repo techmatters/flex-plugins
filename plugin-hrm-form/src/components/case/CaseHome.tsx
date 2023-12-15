@@ -37,6 +37,7 @@ import { RootState } from '../../states';
 import { CaseDetails, CaseState } from '../../states/case/types';
 import { Case, Contact, CustomITask, EntryInfo, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
+import { newCloseModalAction } from '../../states/routing/actions';
 import InformationRow from './InformationRow';
 import TimelineInformationRow from './TimelineInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
@@ -50,7 +51,6 @@ import { isStandaloneITask } from './Case';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import asyncDispatch from '../../states/asyncDispatch';
 import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
-import { newCloseModalAction } from '../../states/routing/actions';
 import { BannerContainer, Text } from '../caseMergingBanners/styles';
 import InfoIcon from '../caseMergingBanners/InfoIcon';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
@@ -135,7 +135,8 @@ const CaseHome: React.FC<Props> = ({
   const { can: canForContact } = getPermissionsForContact(taskContact?.twilioWorkerId);
 
   const showConnectToCaseButton = Boolean(
-    taskContact &&
+    enableCaseMerging &&
+      taskContact &&
       !taskContact.caseId &&
       !isConnectedToTaskContact &&
       connectedCase.connectedContacts?.length &&
