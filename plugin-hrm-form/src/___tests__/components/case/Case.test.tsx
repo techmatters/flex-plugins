@@ -27,19 +27,13 @@ import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-fo
 
 import { mockGetDefinitionsResponse, mockPartialConfiguration } from '../../mockGetConfig';
 import Case from '../../../components/case';
-import { RootState } from '../../../states';
+import { HrmState, RootState } from '../../../states';
 import { getDefinitionVersions } from '../../../hrmConfig';
-import { Contact, StandaloneITask } from '../../../types/types';
+import { Contact, StandaloneITask, standaloneTaskSid } from '../../../types/types';
 import { LOAD_CONTACT_ACTION } from '../../../states/contacts/existingContacts';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { RecursivePartial } from '../../RecursivePartial';
-import {
-  configurationBase,
-  connectedCaseBase,
-  contactFormsBase,
-  namespace,
-  routingBase,
-} from '../../../states/storeNamespaces';
+import { namespace } from '../../../states/storeNamespaces';
 
 jest.mock('../../../services/CaseService', () => ({ getActivities: jest.fn(() => []), cancelCase: jest.fn() }));
 jest.mock('../../../permissions', () => ({
@@ -58,16 +52,16 @@ const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
 
-function createState(state) {
+function createState(state: RecursivePartial<HrmState>): RootState {
   return {
     [namespace]: state,
-  };
+  } as RootState;
 }
 
 let ownProps;
 
 let mockV1;
-let initialState: RecursivePartial<RootState>;
+let initialState: RootState;
 
 beforeEach(() => {
   mockReset();
@@ -102,7 +96,7 @@ describe('useState mocked', () => {
 
   beforeEach(() => {
     initialState = createState({
-      [configurationBase]: {
+      configuration: {
         counselors: {
           list: [],
           hash: { worker1: 'worker1 name' },
@@ -110,30 +104,29 @@ describe('useState mocked', () => {
         definitionVersions: { v1: mockV1 },
         currentDefinitionVersion: mockV1,
       },
-      [contactFormsBase]: {
+      activeContacts: {
         existingContacts: {},
       },
-      [connectedCaseBase]: {
-        tasks: {
-          task1: {
-            taskSid: 'task1',
+      connectedCase: {
+        cases: {
+          case1: {
             connectedCase: {
-              id: 123,
+              id: '123',
               createdAt: '2020-06-29T22:26:00.208Z',
               updatedAt: '2020-06-29T22:26:00.208Z',
               twilioWorkerId: 'worker1',
               status: 'open',
-              info: { definitionVersion: 'v1' },
+              info: { definitionVersion: DefinitionVersionId.v1 },
               connectedContacts: [connectedContact],
             },
           },
         },
       },
-      routing: { tasks: { task1: [{ route: 'case', subroute: 'home' }] } },
+      routing: { tasks: { [standaloneTaskSid]: [{ route: 'case', subroute: 'home', caseId: 'case1' }] } },
     });
 
     ownProps = {
-      task: initialState[namespace][connectedCaseBase].tasks.task1 as StandaloneITask,
+      task: { taskSid: standaloneTaskSid } as StandaloneITask,
     };
   });
 
@@ -143,7 +136,7 @@ describe('useState mocked', () => {
 
   test('Case (should return null)', async () => {
     initialState = createState({
-      [contactFormsBase]: {
+      activeContacts: {
         existingContacts: {
           contact1: {
             savedContact: {
@@ -151,20 +144,21 @@ describe('useState mocked', () => {
               rawJson: {
                 ...VALID_EMPTY_CONTACT.rawJson,
                 childInformation: {
-                  name: { firstName: 'first', lastName: 'last' },
+                  firstName: 'first',
+                  lastName: 'last',
                 },
               },
-              taskSid: 'task1',
+              taskId: 'task1',
             },
             metadata: {},
           },
         },
       },
-      [connectedCaseBase]: {
-        tasks: {},
+      connectedCase: {
+        cases: {},
       },
-      [routingBase]: { tasks: { task1: [{ route: 'case', subroute: 'home' }] } },
-      [configurationBase]: {
+      routing: { tasks: { [standaloneTaskSid]: [{ route: 'case', subroute: 'home', caseId: 'case1' }] } },
+      configuration: {
         counselors: {
           list: [],
           hash: { worker1: 'worker1 name' },
@@ -216,8 +210,8 @@ describe('useState mocked', () => {
   test('Contact name should render once contact is saved to redux', async () => {
     const stateWithContact = createState({
       ...initialState[namespace],
-      [contactFormsBase]: {
-        ...initialState[namespace][contactFormsBase],
+      activeContacts: {
+        ...initialState[namespace].activeContacts,
         existingContacts: {
           contact1: {
             savedContact: connectedContact,
@@ -248,7 +242,7 @@ describe('useState mocked', () => {
   });
 
   test('Case (should render, after update)', async () => {
-    initialState[namespace][connectedCaseBase].tasks.task1.connectedCase.updatedAt = '2020-06-29T22:29:00.208Z';
+    initialState[namespace].connectedCase.cases.case1.connectedCase.updatedAt = '2020-06-29T22:29:00.208Z';
     const store = mockStore(initialState);
     store.dispatch = jest.fn();
 

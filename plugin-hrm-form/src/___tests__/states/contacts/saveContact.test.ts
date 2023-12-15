@@ -18,10 +18,9 @@ import promiseMiddleware from 'redux-promise-middleware';
 
 import { connectToCase, updateContactInHrm } from '../../../services/ContactService';
 import { completeTask, submitContactForm } from '../../../services/formSubmissionHelpers';
-import { Case, CustomITask, Contact } from '../../../types/types';
-import { ContactMetadata, ContactsState } from '../../../states/contacts/types';
+import { Case, Contact, CustomITask } from '../../../types/types';
+import { ContactMetadata, ContactsState, LoadingStatus } from '../../../states/contacts/types';
 import {
-  connectToCaseAsyncAction,
   saveContactReducer,
   submitContactFormAsyncAction,
   updateContactInHrmAsyncAction,
@@ -93,7 +92,7 @@ const metadata = {} as ContactMetadata;
 
 const baseCase: Case = {
   accountSid: 'test-id',
-  id: 213,
+  id: '213',
   helpline: 'za',
   status: 'test-st',
   twilioWorkerId: 'WE2xxx1',
@@ -115,7 +114,7 @@ const baseState: ContactsState = {
   },
 } as const;
 
-const dispatch = jest.fn();
+// const dispatch = jest.fn();
 
 describe('actions', () => {
   test('Calls the updateContactsFormInHrmAsyncAction action, and update a contact', async () => {
@@ -129,8 +128,7 @@ describe('actions', () => {
     const state = getState();
 
     expect(updateContactInHrm).toHaveBeenCalledWith(baseContact.id, { conversationDuration: 1234 });
-
-    expect(state).toStrictEqual({
+    const expected: ContactsState = {
       ...baseState,
       existingContacts: {
         [baseContact.id]: {
@@ -142,14 +140,16 @@ describe('actions', () => {
           },
           metadata: {
             ...startingContactState.metadata,
-            saveStatus: 'saving',
+            loadingStatus: LoadingStatus.LOADING,
           },
         },
         [mockSavedContact.id]: {
           ...state.existingContacts[mockSavedContact.id],
         },
       },
-    });
+    };
+
+    expect(state).toStrictEqual(expected);
   });
 
   /**
@@ -171,52 +171,8 @@ describe('actions', () => {
   //   expect(connectToCase).toHaveBeenCalledWith(baseContact.id, baseCase.id);
   // });
 
-  test('Calls the submitContactFormAsyncAction action, and create a contact', async () => {
+  test('Dispatching submitContactFormAsyncAction action calls the submitContactForm helper', async () => {
     submitContactFormAsyncAction(task, baseContact, metadata, baseCase);
     expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, metadata, baseCase);
-  });
-
-  test('Nothing currently for that ID - adds the contact with provided reference and blank categories state', () => {
-    const newState = boundSaveContactReducer(
-      {
-        ...baseState,
-        existingContacts: {
-          [baseContact.id]: {
-            savedContact: baseContact,
-            references: new Set(['TEST_REFERENCE']),
-            metadata: VALID_EMPTY_METADATA,
-          },
-        },
-      } as ContactsState,
-      updateContactInHrmAsyncAction(baseContact, { conversationDuration: 1234 }),
-    );
-    const newContactState = newState.existingContacts[baseContact.id];
-    expect(newContactState.savedContact).toStrictEqual(baseContact);
-    expect(newContactState.references.size).toStrictEqual(1);
-    expect(newContactState.references.has('TEST_REFERENCE')).toBeTruthy();
-    expect(newContactState.metadata).toStrictEqual(VALID_EMPTY_METADATA);
-  });
-
-  test('Same contact currently loaded for that ID with a different reference - leaves contact the same and adds the reference', () => {
-    const newState = boundSaveContactReducer(
-      {
-        ...baseState,
-        existingContacts: {
-          ...baseState.existingContacts,
-          [baseContact.id]: {
-            savedContact: baseContact,
-            references: new Set(['TEST_FIRST_REFERENCE', 'TEST_SECOND_REFERENCE']),
-            metadata: VALID_EMPTY_METADATA,
-          },
-        },
-      },
-      updateContactInHrmAsyncAction(baseContact, { conversationDuration: 1234 }),
-    );
-    const newContactState = newState.existingContacts[baseContact.id];
-    expect(newContactState.savedContact).toStrictEqual(baseContact);
-    expect(newContactState.references.size).toStrictEqual(2);
-    expect(newContactState.references.has('TEST_FIRST_REFERENCE')).toBeTruthy();
-    expect(newContactState.references.has('TEST_SECOND_REFERENCE')).toBeTruthy();
-    expect(newContactState.references.size).toBe(2);
   });
 });

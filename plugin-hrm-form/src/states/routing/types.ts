@@ -107,6 +107,7 @@ export const isRouteWithContext = (route: any): route is RouteWithContext => {
 
 type CaseCoreRoute = RouteWithContext & {
   route: 'case';
+  caseId: string;
   autoFocus?: boolean;
   isCreating?: boolean;
 };
@@ -186,10 +187,6 @@ export function isRouteModal(route: AppRoutes): boolean {
   return isRouteWithModalSupport(route) && route.activeModal?.length > 0;
 }
 
-export function isCaseRoute(appRoute: AppRoutes): appRoute is CaseRoute {
-  return appRoute?.route === 'case';
-}
-
 export type CSAMReportRoute = {
   route: 'csam-report';
   subroute: 'form' | 'loading' | 'status' | 'report-type-picker';
@@ -237,6 +234,8 @@ export function isRouteWithModalSupport(appRoute: any): appRoute is RouteWithMod
     appRoute.route,
   );
 }
+
+export const isCaseRoute = (route: AppRoutes): route is CaseRoute => route?.route === 'case';
 
 export enum ChangeRouteMode {
   Push = 'push',

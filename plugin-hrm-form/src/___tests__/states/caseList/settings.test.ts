@@ -26,8 +26,8 @@ import {
   updatedPageReducer,
   updatedSortReducer,
 } from '../../../states/caseList/settings';
-import { DateExistsCondition } from '../../../components/caseList/filters/dateFilters';
 import { ListCasesSortBy, ListCasesSortDirection } from '../../../types/types';
+import { DateExistsCondition } from '../../../states/caseList/dateFilters';
 
 const baselineDate = new Date(2012, 11, 3);
 

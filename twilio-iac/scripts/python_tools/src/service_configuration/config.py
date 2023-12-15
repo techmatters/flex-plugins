@@ -4,7 +4,7 @@ import os
 from typing import NotRequired, TypedDict, Unpack
 from ..aws import SSMClient
 from ..twilio import Twilio
-from .constants import AWS_ROLE_ARN
+from .constants import AWS_ROLE_ARNS, get_aws_role_arn
 from .service_configuration import ServiceConfiguration
 from .remote_syncer import RemoteSyncer
 
@@ -149,6 +149,7 @@ class ConfigDict(TypedDict):
     skip_lock: bool
     sync_action: bool
     argument: str
+    aws_role_arn: str
 
 
 class InitServiceConfigurationArgsDict(TypedDict):
@@ -174,6 +175,7 @@ class Config():
             'json_available': False,
             'sync_action': False,
             'syncers': [],
+            'aws_role_arn': None
         }
 
         self.init_arg_parser()
@@ -188,8 +190,9 @@ class Config():
         except KeyError:
             raise AttributeError(f'No such attribute: {name}')
 
-    def get_ssm_client(self):
-        return SSMClient(AWS_ROLE_ARN)
+    def get_ssm_client(self, environment: str):
+        aws_role_arn = get_aws_role_arn(environment)
+        return SSMClient(aws_role_arn)
 
     def init_arg_parser(self) -> None:
         self._arg_parser = ArgumentParser()
@@ -248,7 +251,8 @@ class Config():
         self._config['helplines'][helpline_code_lower][environment] = service_config
 
     def init_service_config(self, **kwargs: Unpack[InitServiceConfigurationArgsDict]):
-        ssm_client = None if self.auth_token else self.get_ssm_client()
+        environment = kwargs['environment']
+        ssm_client = None if self.auth_token else self.get_ssm_client(environment)
         twilio_client = Twilio(ssm_client=ssm_client,  **kwargs)
         service_config = ServiceConfiguration(
             twilio_client=twilio_client,
@@ -279,7 +283,7 @@ class Config():
                 'Could not find helpline code or environment. Please provide helpline code and environment')
 
         if not account_sid:
-            account_sid, _ = self.get_ssm_client().get_twilio_creds_from_ssm(
+            account_sid, _ = self.get_ssm_client(environment).get_twilio_creds_from_ssm(
                 environment, helpline_code)
 
         self.init_service_config(
@@ -305,7 +309,7 @@ class Config():
 
     def init_service_configs_for_environment(self, environment: str):
         print(f'Initializing service configurations for {environment}')
-        for hl in self.get_ssm_client().get_helplines_for_env(environment):
+        for hl in self.get_ssm_client(environment).get_helplines_for_env(environment):
             # if helpline_code is set, only initialize service configs for that helpline across all environments
             if (self.helpline_code and hl['helpline_code'].lower() != self.helpline_code.lower()):
                 continue

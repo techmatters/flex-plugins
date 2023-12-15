@@ -15,6 +15,8 @@
  */
 
 import { AppRoutes, isRouteWithModalSupport, RoutingState } from './types';
+import { namespace } from '../storeNamespaces';
+import { RootState } from '..';
 
 const getCurrentTopmostRouteStack = (baseRouteStack: AppRoutes[]): AppRoutes[] | undefined => {
   if (baseRouteStack?.length) {
@@ -33,6 +35,9 @@ export const getCurrentTopmostRouteForTask = (state: RoutingState, taskSid: stri
   const topStack = getCurrentTopmostRouteStack(state.tasks[taskSid]);
   return topStack.length ? topStack[topStack.length - 1] : undefined;
 };
+
+export const selectCurrentTopmostRouteForTask = (state: RootState, taskSid: string): AppRoutes | undefined =>
+  getCurrentTopmostRouteForTask(state[namespace].routing, taskSid);
 
 export const getCurrentBaseRoute = (state: RoutingState, taskSid: string): AppRoutes | undefined => {
   const baseRouteStack = state.tasks[taskSid];

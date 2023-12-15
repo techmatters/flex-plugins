@@ -48,5 +48,5 @@ jobs:
     with:
       project: flex
       helplines: ${{ needs.configure.outputs.target_helplines }}
-      environments: '[ "STG" ]'
+      environments: '[ "staging" ]'
       changelog: ${{ inputs.changelog }}

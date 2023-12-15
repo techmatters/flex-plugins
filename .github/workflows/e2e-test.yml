@@ -48,10 +48,22 @@ jobs:
         working-directory: ./plugin-hrm-form
         shell: bash
 
+      - name: Set Twilio account SID
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "/development/twilio/E2E/account_sid"
+          env_variable_name: "TWILIO_ACCOUNT_SID"
+      
+      - name: Set Twilio Auth Token
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "/development/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
+          env_variable_name: "TWILIO_AUTH_TOKEN"
+
       - name: Replace Twilio account SID in appConfig.js
         uses: falnyr/replace-env-vars-action@master
         env:
-          TWILIO_ACCOUNT_SID: ${{ secrets.E2E_DEV_ACCOUNT_SID}}
+          TWILIO_ACCOUNT_SID: ${{env.TWILIO_ACCOUNT_SID}}
         with:
           filename: ./plugin-hrm-form/public/appConfig.js
 
@@ -79,7 +91,7 @@ jobs:
         working-directory: ./plugin-hrm-form
 
       - name: Run Flex Dev Server
-        run: NODE_ENV=development REACT_APP_FORM_DEFINITIONS_BASE_URL=http://localhost:8090 TWILIO_ACCOUNT_SID=${{secrets.E2E_DEV_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{secrets.E2E_DEV_AUTH_TOKEN}} npm run start &
+        run: NODE_ENV=development REACT_APP_FORM_DEFINITIONS_BASE_URL=http://localhost:8090 TWILIO_ACCOUNT_SID=${{env.TWILIO_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{env.TWILIO_AUTH_TOKEN}} npm run start &
         working-directory: ./plugin-hrm-form
 
       - name: Run e2e tests

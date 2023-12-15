@@ -32,19 +32,17 @@ import { CaseItemAction, isViewCaseSectionRoute } from '../../states/routing/typ
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import { FormTargetObject } from '../common/forms/types';
-import { namespace } from '../../states/storeNamespaces';
 import NavigableContainer from '../NavigableContainer';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
+import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 
-const mapStateToProps = (
-  { [namespace]: { routing, connectedCase: caseState, configuration } }: RootState,
-  { task }: ViewCaseItemProps,
-) => {
-  const counselorsHash = configuration.counselors.hash;
-
-  const { connectedCase } = caseState.tasks[task.taskSid];
-
-  return { counselorsHash, currentRoute: getCurrentTopmostRouteForTask(routing, task.taskSid), connectedCase };
+const mapStateToProps = (state: RootState, { task }: ViewCaseItemProps) => {
+  return {
+    counselorsHash: selectCounselorsHash(state),
+    currentRoute: selectCurrentTopmostRouteForTask(state, task.taskSid),
+    connectedCase: selectCurrentRouteCaseState(state, task.taskSid)?.connectedCase,
+  };
 };
 
 export type ViewCaseItemProps = {
@@ -55,7 +53,13 @@ export type ViewCaseItemProps = {
   canEdit: () => boolean;
 };
 
-// eslint-disable-next-line no-use-before-define
+const mapToDispatchProps = {
+  changeRoute: RoutingActions.changeRoute,
+  goBack: RoutingActions.newGoBackAction,
+};
+
+const connector = connect(mapStateToProps, mapToDispatchProps);
+
 type Props = ViewCaseItemProps & ConnectedProps<typeof connector>;
 
 const ViewCaseItem: React.FC<Props> = ({
@@ -131,12 +135,5 @@ const ViewCaseItem: React.FC<Props> = ({
 };
 
 ViewCaseItem.displayName = 'ViewCaseItem';
-
-const mapToDispatchProps = {
-  changeRoute: RoutingActions.changeRoute,
-  goBack: RoutingActions.newGoBackAction,
-};
-
-const connector = connect(mapStateToProps, mapToDispatchProps);
 
 export default connector(ViewCaseItem);

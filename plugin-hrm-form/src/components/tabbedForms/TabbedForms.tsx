@@ -68,12 +68,13 @@ import { getCurrentBaseRoute, getCurrentTopmostRouteForTask } from '../../states
 import { CaseLayout } from '../../styles/case';
 import Case, { OwnProps as CaseProps } from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
-import ViewContact from '../case/ViewContact';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
 import { getHrmConfig, getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
+import { DetailsContext } from '../../states/contacts/contactDetails';
+import ContactDetails from '../contact/ContactDetails';
 import { selectCaseMergingBanners } from '../../states/case/caseBanners';
 
 // eslint-disable-next-line react/display-name
@@ -254,7 +255,12 @@ const TabbedForms: React.FC<Props> = ({
   if (currentRoute.route === 'contact') {
     return (
       <CaseLayout>
-        <ViewContact contactId={currentRoute.id} task={task} />
+        <ContactDetails
+          contactId={currentRoute.id}
+          task={task}
+          enableEditing={true}
+          context={DetailsContext.CONTACT_SEARCH}
+        />
       </CaseLayout>
     );
   }
@@ -478,7 +484,6 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { contactId, task }: OwnPro
       changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, task.taskSid, ChangeRouteMode.Replace),
     ),
   openSearchModal: () => dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, task.taskSid)),
-  openCaseModal: () => dispatch(newOpenModalAction({ route: 'case', subroute: 'home' }, task.taskSid)),
   closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
   backToCallTypeSelect: () =>
     dispatch(changeRoute({ route: 'select-call-type' }, task.taskSid, ChangeRouteMode.Replace)),

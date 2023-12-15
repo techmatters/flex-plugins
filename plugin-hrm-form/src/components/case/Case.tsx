@@ -28,10 +28,11 @@ import { getLocaleDateTime } from '../../utils/helpers';
 import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import { CaseDetails } from '../../states/case/types';
-import { Case as CaseType, CustomITask, Contact, StandaloneITask } from '../../types/types';
+import { Case as CaseType, Contact, CustomITask, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import {
   CaseRoute,
+  ChangeRouteMode,
   isAddCaseSectionRoute,
   isEditCaseSectionRoute,
   isViewCaseSectionRoute,
@@ -59,10 +60,13 @@ import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import { removeFromCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
-import { configurationBase, connectedCaseBase, namespace } from '../../states/storeNamespaces';
+import { namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { selectSavedContacts } from '../../states/case/connectedContacts';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
+import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
+import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
+import { selectCurrentDefinitionVersion, selectDefinitionVersions } from '../../states/configuration/selectDefinitions';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -81,7 +85,7 @@ const Case: React.FC<Props> = ({
   task,
   counselorsHash,
   removeConnectedCase,
-  changeRoute,
+  redirectToNewCase,
   closeModal,
   goBack,
   isCreating,
@@ -103,6 +107,12 @@ const Case: React.FC<Props> = ({
   const { workerSid } = getHrmConfig();
   const strings = getTemplateStrings();
   const { enable_case_merging: enableCaseMerging } = getAseloFeatureFlags();
+
+  useEffect(() => {
+    if (routing.isCreating && !routing.caseId && taskContact?.caseId) {
+      redirectToNewCase(taskContact.caseId);
+    }
+  });
 
   useEffect(() => {
     if (!connectedCase) return;
@@ -326,20 +336,19 @@ const Case: React.FC<Props> = ({
 Case.displayName = 'Case';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const caseState = state[namespace][connectedCaseBase].tasks[task.taskSid];
+  const caseState = selectCurrentRouteCaseState(state, task.taskSid);
   const { connectedCase } = caseState ?? {};
-  const { definitionVersions, currentDefinitionVersion } = state[namespace][configurationBase];
   const routing = getCurrentTopmostRouteForTask(state[namespace].routing, task.taskSid) as CaseRoute;
   const isCreating = routing.route === 'case' && routing.isCreating;
 
   return {
     connectedCaseState: caseState,
     connectedCaseId: connectedCase?.id,
-    counselorsHash: state[namespace][configurationBase].counselors.hash,
+    counselorsHash: selectCounselorsHash(state),
+    definitionVersions: selectDefinitionVersions(state),
+    currentDefinitionVersion: selectCurrentDefinitionVersion(state),
     isCreating,
     routing,
-    definitionVersions,
-    currentDefinitionVersion,
     savedContacts: selectSavedContacts(state, connectedCase),
     taskContact: selectContactByTaskSid(state, task.taskSid)?.savedContact,
   };
@@ -351,7 +360,14 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     dispatch(ConfigActions.updateDefinitionVersion(connectedCase.info.definitionVersion, definition));
   };
   return {
-    changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
+    redirectToNewCase: (caseId: string) =>
+      dispatch(
+        RoutingActions.changeRoute(
+          { route: 'case', subroute: 'home', caseId, isCreating: true },
+          task.taskSid,
+          ChangeRouteMode.Replace,
+        ),
+      ),
     closeModal: () => dispatch(RoutingActions.newCloseModalAction(task.taskSid)),
     goBack: () => dispatch(RoutingActions.newGoBackAction(task.taskSid)),
     removeConnectedCase: (contactId: string) => caseAsyncDispatch(removeFromCaseAsyncAction(contactId)),
@@ -359,7 +375,7 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     releaseContacts: bindActionCreators(ContactActions.releaseContacts, dispatch),
     loadContacts: bindActionCreators(ContactActions.loadContacts, dispatch),
     updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
-      caseAsyncDispatch(updateCaseAsyncAction(caseId, task.taskSid, body)),
+      caseAsyncDispatch(updateCaseAsyncAction(caseId, body)),
     submitContactFormAsyncAction: (
       task: CustomITask,
       contact: Contact,

@@ -138,7 +138,7 @@ export const getActivitiesFromCase = (sourceCase: Case, formDefs: DefinitionVers
   ];
 };
 
-export const getActivitiesFromContacts = (sourceContacts: any[]): Activity[] => {
+export const getActivitiesFromContacts = (sourceContacts: Contact[]): Activity[] => {
   return connectedContactActivities(sourceContacts);
 };
 

@@ -19,12 +19,12 @@ import { namespace } from '../storeNamespaces';
 import { getActivitiesFromCase, getActivitiesFromContacts, sortActivities } from './caseActivities';
 import { selectSavedContacts } from './connectedContacts';
 
-export const selectCaseActivities = (state: RootState, taskSid: string) => {
+export const selectCaseActivities = (state: RootState, caseId: string) => {
   const {
     [namespace]: { configuration, connectedCase },
   } = state;
   const { definitionVersions, currentDefinitionVersion } = configuration;
-  const caseState = connectedCase.tasks[taskSid];
+  const caseState = connectedCase.cases[caseId];
 
   /**
    * Gets the activities timeline from current caseId

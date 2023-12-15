@@ -17,7 +17,6 @@
 // Register your redux store under a unique namespace
 export const namespace = 'plugin-hrm-form';
 export const contactFormsBase = 'activeContacts';
-export const searchContactsBase = 'searchContacts';
 export const caseListBase = 'caseList';
 export const connectedCaseBase = 'connectedCase';
 export const queuesStatusBase = 'queuesStatusState';

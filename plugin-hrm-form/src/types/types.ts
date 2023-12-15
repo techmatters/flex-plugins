@@ -18,9 +18,9 @@
 import type { ITask } from '@twilio/flex-ui';
 import type { CallTypes, DefinitionVersionId } from 'hrm-form-definitions';
 
-import type { DateFilterValue } from '../components/caseList/filters/dateFilters';
 import type { ChannelTypes } from '../states/DomainConstants';
 import type { ResourceReferral } from '../states/contacts/resourceReferral';
+import { DateFilterValue } from '../states/caseList/dateFilters';
 
 export type EntryInfo = {
   id: string;
@@ -82,7 +82,7 @@ export type CaseInfo = {
 
 export type Case = {
   accountSid: any;
-  id: number;
+  id: string;
   status: string;
   helpline: string;
   twilioWorkerId: string;
@@ -186,7 +186,7 @@ export type Contact = {
   queueName: string;
   channelSid: string;
   serviceSid: string;
-  caseId?: number;
+  caseId?: string;
 };
 
 export type SearchContactResult = {

@@ -48,6 +48,9 @@ plan-all: verify-pre-work plan-all-tg
 
 destroy: destroy-tg
 
+clean:
+	find . -type d -name ".terragrunt-cache" -exec rm -rf {} +
+
 destroy-all: destroy-all-tg
 
 hclfmt:

@@ -33,7 +33,7 @@ import { getTemplateStrings } from '../../../hrmConfig';
 import ConnectToCaseButton from '../../case/ConnectToCaseButton';
 
 type OwnProps = {
-  caseId: number;
+  caseId: string;
   contactLabel?: string;
   createdAt: Date;
   updatedAt?: Date;

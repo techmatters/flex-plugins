@@ -118,7 +118,12 @@ describe('test action creators', () => {
 
     expect(dispatch).toBeCalledTimes(2);
     expect(dispatch).toBeCalledWith({ type: t.SEARCH_CASES_REQUEST, taskId });
-    expect(dispatch).toBeCalledWith({ type: t.SEARCH_CASES_SUCCESS, taskId, searchResult });
+    expect(dispatch).toBeCalledWith({
+      type: t.SEARCH_CASES_SUCCESS,
+      taskId,
+      searchResult,
+      reference: `search-${taskId}`,
+    });
   });
 
   test('searchCases bundles dateFrom and dateTo under filters object if provided', async () => {
@@ -151,7 +156,12 @@ describe('test action creators', () => {
 
     expect(dispatch).toBeCalledTimes(2);
     expect(dispatch).toBeCalledWith({ type: t.SEARCH_CASES_REQUEST, taskId });
-    expect(dispatch).toBeCalledWith({ type: t.SEARCH_CASES_SUCCESS, taskId, searchResult });
+    expect(dispatch).toBeCalledWith({
+      type: t.SEARCH_CASES_SUCCESS,
+      taskId,
+      searchResult,
+      reference: `search-${taskId}`,
+    });
     expect(searchCases).toBeCalledWith(
       {
         anotherProperty: 'anotherProperty',

@@ -97,7 +97,13 @@ export const searchCases = (dispatch: Dispatch<any>) => (taskId: string) => asyn
     const definitions = await getCasesMissingVersions(searchResult.cases);
     definitions.forEach(d => dispatch(updateDefinitionVersion(d.version, d.definition)));
 
-    dispatch({ type: t.SEARCH_CASES_SUCCESS, searchResult, taskId, dispatchedFromPreviousContacts });
+    dispatch({
+      type: t.SEARCH_CASES_SUCCESS,
+      searchResult,
+      taskId,
+      dispatchedFromPreviousContacts,
+      reference: `search-${taskId}`,
+    });
   } catch (error) {
     dispatch({ type: t.SEARCH_CASES_FAILURE, error, taskId });
   }

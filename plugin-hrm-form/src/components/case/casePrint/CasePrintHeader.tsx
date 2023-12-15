@@ -23,7 +23,7 @@ import styles from './styles';
 import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 
 type OwnProps = {
-  id: number;
+  id: string;
   contactIdentifier: string;
   officeName?: string;
   logoBlob?: string;
