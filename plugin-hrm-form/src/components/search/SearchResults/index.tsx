@@ -45,8 +45,6 @@ import {
   NoResultTextLink,
 } from '../../../styles/search';
 import Pagination from '../../pagination';
-import * as CaseActions from '../../../states/case/actions';
-import { SearchPagesType } from '../../../states/search/types';
 import { getPermissionsForContact, getPermissionsForCase, PermissionActions } from '../../../permissions';
 import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
