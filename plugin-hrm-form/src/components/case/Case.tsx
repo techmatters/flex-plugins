@@ -28,7 +28,7 @@ import { getLocaleDateTime } from '../../utils/helpers';
 import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import { CaseDetails } from '../../states/case/types';
-import { Case as CaseType, CustomITask, Contact, StandaloneITask } from '../../types/types';
+import { Case as CaseType, Contact, CustomITask, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import {
   CaseRoute,
@@ -65,7 +65,7 @@ import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { selectSavedContacts } from '../../states/case/connectedContacts';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
-import selectCounselorsHash from '../../states/configuration/selectCounselorsHash';
+import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
 import { selectCurrentDefinitionVersion, selectDefinitionVersions } from '../../states/configuration/selectDefinitions';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {

@@ -16,7 +16,9 @@
 
 import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
+import { CounselorsList } from './types';
 
-const selectCounselorsHash = (state: RootState) => state[namespace].configuration.counselors.hash;
+export const selectCounselorsHash = (state: RootState) => state[namespace].configuration.counselors.hash;
 
-export default selectCounselorsHash;
+export const selectCounselorsList = (state: RootState): CounselorsList =>
+  state[namespace].configuration.counselors.list;

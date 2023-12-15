@@ -34,7 +34,7 @@ import { CaseSectionApi } from '../../states/case/sections/api';
 import { FormTargetObject } from '../common/forms/types';
 import NavigableContainer from '../NavigableContainer';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import selectCounselorsHash from '../../states/configuration/selectCounselorsHash';
+import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 
 const mapStateToProps = (state: RootState, { task }: ViewCaseItemProps) => {

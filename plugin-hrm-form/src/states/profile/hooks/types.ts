@@ -13,24 +13,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { ProfileIdParam } from '../selectors';
 
-import { RootState } from '..';
-import { namespace } from '../storeNamespaces';
-import { LoadingStatus } from './types';
-
-export const selectIsContactCreating = (
-  {
-    [namespace]: {
-      activeContacts: { contactsBeingCreated },
-    },
-  }: RootState,
-  taskSid: string,
-) => contactsBeingCreated.has(taskSid);
-
-export const selectAnyContactIsSaving = ({
-  [namespace]: {
-    activeContacts: { contactsBeingCreated, existingContacts },
-  },
-}: RootState) =>
-  contactsBeingCreated.size > 0 ||
-  Object.values(existingContacts).some(({ metadata }) => metadata?.loadingStatus === LoadingStatus.LOADING);
+export type UseProfileCommonParams = {
+  profileId: ProfileIdParam;
+};

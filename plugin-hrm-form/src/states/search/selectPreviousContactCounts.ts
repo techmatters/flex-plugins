@@ -16,21 +16,9 @@
 
 import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
-import { LoadingStatus } from './types';
+import { PreviousContactCounts } from './types';
 
-export const selectIsContactCreating = (
-  {
-    [namespace]: {
-      activeContacts: { contactsBeingCreated },
-    },
-  }: RootState,
-  taskSid: string,
-) => contactsBeingCreated.has(taskSid);
+const selectPreviousContactCounts = (state: RootState, taskId: string): PreviousContactCounts | undefined =>
+  state[namespace].searchContacts.tasks[taskId]?.previousContactCounts;
 
-export const selectAnyContactIsSaving = ({
-  [namespace]: {
-    activeContacts: { contactsBeingCreated, existingContacts },
-  },
-}: RootState) =>
-  contactsBeingCreated.size > 0 ||
-  Object.values(existingContacts).some(({ metadata }) => metadata?.loadingStatus === LoadingStatus.LOADING);
+export default selectPreviousContactCounts;

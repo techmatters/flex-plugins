@@ -13,24 +13,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { useSelector } from 'react-redux';
 
-import { RootState } from '..';
-import { namespace } from '../storeNamespaces';
-import { LoadingStatus } from './types';
+import { RootState } from '../..';
+import { Profile } from '../types';
+import * as ProfileSelectors from '../selectors';
 
-export const selectIsContactCreating = (
-  {
-    [namespace]: {
-      activeContacts: { contactsBeingCreated },
-    },
-  }: RootState,
-  taskSid: string,
-) => contactsBeingCreated.has(taskSid);
-
-export const selectAnyContactIsSaving = ({
-  [namespace]: {
-    activeContacts: { contactsBeingCreated, existingContacts },
-  },
-}: RootState) =>
-  contactsBeingCreated.size > 0 ||
-  Object.values(existingContacts).some(({ metadata }) => metadata?.loadingStatus === LoadingStatus.LOADING);
+/**
+ * Access a profile property by id for the current account
+ *
+ * @param {ProfileSelectors.ProfileIdParam} profileId - The id of the profile to access
+ * @param {T} property - The property to access
+ * @returns {UseProfile} - State and actions for the profile
+ */
+export const useProfileProperty = <T extends keyof Profile>(
+  profileId: ProfileSelectors.ProfileIdParam,
+  property: T,
+): Profile[T] | undefined =>
+  useSelector((state: RootState) => ProfileSelectors.selectProfilePropertyById(state, profileId, property));
