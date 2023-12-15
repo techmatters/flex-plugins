@@ -393,3 +393,5 @@ export type ProfileFlag = {
   updatedAt?: string;
 };
 
+export type ProfileList = Profile[];
+
