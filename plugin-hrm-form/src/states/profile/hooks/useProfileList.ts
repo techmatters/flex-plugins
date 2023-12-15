@@ -15,7 +15,7 @@
  */
 import { useSelector } from 'react-redux';
 
-import { Profile } from '../types';
+import { Profile, ProfileListState } from '../types';
 import * as ProfileSelectors from '../selectors';
 
 type UseProfileListReturn = {
@@ -24,8 +24,12 @@ type UseProfileListReturn = {
 };
 
 export const useProfileList = (): UseProfileListReturn => {
-  const profileIds = useSelector((state: any) => ProfileSelectors.selectProfileListState(state)?.data);
-  const loading = useSelector((state: any) => ProfileSelectors.selectProfileListState(state)?.loading);
+  const profileIds = useSelector(
+    (state: any) => (ProfileSelectors.selectProfileListState(state) as ProfileListState)?.data,
+  );
+  const loading = useSelector(
+    (state: any) => (ProfileSelectors.selectProfileListState(state) as ProfileListState)?.loading,
+  );
   return {
     profileIds,
     loading,

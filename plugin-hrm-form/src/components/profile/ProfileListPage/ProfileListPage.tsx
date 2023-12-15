@@ -37,7 +37,6 @@ const ProfileListPage: React.FC = () => {
           <CLTableCell> Client</CLTableCell>
           <CLTableCell> Identifier(s)</CLTableCell>
           <CLTableCell> Status</CLTableCell>
-          <CLTableCell> Blocked</CLTableCell>
           <CLTableCell> Overview</CLTableCell>
         </CLTableRow>
         {profileIds?.map(profileId => (

@@ -52,7 +52,6 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) =>
   const formattedIdentifier = getFormattedNumberFromTask(task);
   const identifierIdentifier = getNumberFromTask(task);
   const { identifier } = useIdentifierByIdentifier({ identifierIdentifier, shouldAutoload: true });
-  console.log('>>> useIdentifierByIdentifier identifier', identifier);
   const profileId = identifier?.profiles?.[0]?.id;
 
   // Ugh. The previous contacts count is off by one because we immediately create a contact when a task is created.

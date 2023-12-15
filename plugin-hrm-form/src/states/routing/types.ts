@@ -93,6 +93,12 @@ type ProfileListRoute = RouteWithModalSupport & {
   subroute: 'profiles-list';
 };
 
+type ProfileHomeRoute = RouteWithModalSupport & {
+  route: 'profile';
+  subroute: 'home';
+  profileId: Profile['id'];
+};
+
 const CONTEXTS = ['search', 'hrm-form', 'profile'] as const;
 
 export type Contexts = typeof CONTEXTS[number];
@@ -227,7 +233,7 @@ type OtherRoutes =
   | ProfileSectionEditRoute;
 
 // The different routes we have in our app
-export type AppRoutes = CaseRoute | OtherRoutes;
+export type AppRoutes = CaseRoute | ProfileHomeRoute | OtherRoutes;
 
 export function isRouteWithModalSupport(appRoute: any): appRoute is RouteWithModalSupport {
   return ['tabbed-forms', 'case', 'case-list', 'contact', 'profile', 'search', 'select-call-type'].includes(

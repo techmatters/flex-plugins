@@ -15,22 +15,43 @@
  */
 
 import React from 'react';
+import { connect } from 'react-redux';
 
 import { useProfile } from '../../../states/profile/hooks/useProfile';
 import { Profile } from '../../../states/profile/types';
 import { CLTableRow, CLTableCell } from '../../../styles/caseList';
+import { newOpenModalAction } from '../../../states/routing/actions';
 
-type Props = {
+type OwnProps = {
   profileId: Profile['id'];
 };
 
-const ProfileListRow: React.FC<Props> = ({ profileId }) => {
+type Props = OwnProps & {
+  openProfileDetails: (profileId: string) => void;
+};
+
+const ProfileListRow: React.FC<Props> = ({ profileId, openProfileDetails }) => {
   const { profile } = useProfile({ profileId });
+  console.log('>>> profile', profile);
+  const handleViewProfile = () => {
+    openProfileDetails(profileId.toString());
+  };
   return (
-    <CLTableRow>
-      <CLTableCell>{profile?.name}</CLTableCell>
+    <CLTableRow onClick={handleViewProfile}>
+      <CLTableCell onClick={handleViewProfile}>{profile?.id}</CLTableCell>
+      <CLTableCell>id</CLTableCell>
+      <CLTableCell>blocked abusive</CLTableCell>
+      <CLTableCell>summary</CLTableCell>
     </CLTableRow>
   );
 };
 
-export default ProfileListRow;
+const mapDispatchToProps = dispatch => {
+  return {
+    openProfileDetails: profileId =>
+      dispatch(newOpenModalAction({ route: 'profile', subroute: 'home', profileId }, 'standalone-task-sid')),
+  };
+};
+
+const connector = connect(null, mapDispatchToProps);
+export default connector(ProfileListRow);

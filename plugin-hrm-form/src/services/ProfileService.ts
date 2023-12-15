@@ -69,7 +69,7 @@ type GetProfileListParams = {
   limit?: number;
   sortBy?: 'id' | 'name' | 'createdAt' | 'updatedAt';
   sortDirection?: 'asc' | 'desc';
-  profileFlagIds?: string[];
+  profileFlagIds?: ProfileFlag['id'][];
 };
 
 export const getProfileList = ({

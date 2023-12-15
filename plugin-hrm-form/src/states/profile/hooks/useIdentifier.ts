@@ -85,7 +85,6 @@ export const useIdentifierByIdentifier = (params: UseIdentifierByIdentifierParam
   const identifier = useSelector(
     (state: RootState) => ProfileSelectors.selectIdentifierByIdentifier(state, identifierIdentifier)?.data,
   );
-  console.log('>>> useIdentifierByIdentifier identifierIdentifier', { identifierIdentifier, identifier });
   return {
     identifier,
     ...useIdentifierByIdentifierLoader(params),

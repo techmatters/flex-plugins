@@ -53,8 +53,6 @@ const handleLoadProfileListFulfilledAction = (state: t.ProfileListState, action:
     data: action.payload.profiles?.map((profile: any) => profile.id),
   };
 
-  console.log('>>>handleLoadProfileListFulfilledAction', update);
-
   return loadProfileListEntryIntoRedux(state, update);
 };
 

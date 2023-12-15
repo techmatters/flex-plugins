@@ -18,13 +18,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect } from 'react';
 
 import { RootState } from '../..';
-import asyncDispatch from '../../asyncDispatch';
 import * as ProfileSelectors from '../selectors';
 import { loadProfileListAsync } from '../profileList';
+import { ProfileListState } from '../types';
 
 type UseProfileListLoaderParams = {
   skipAutoload?: boolean;
-  options?: any; // filters, pagination, etc
 };
 
 type UseProfileListLoaderReturn = {
@@ -40,12 +39,15 @@ type UseProfileListLoaderReturn = {
  */
 export const useProfileListLoader = ({
   skipAutoload = false,
-  options, // filters, pagination, etc
 }: UseProfileListLoaderParams = {}): UseProfileListLoaderReturn => {
   const dispatch = useDispatch();
 
-  const error = useSelector((state: RootState) => ProfileSelectors.selectProfileListState(state)?.error);
-  const loading = useSelector((state: RootState) => ProfileSelectors.selectProfileListState(state)?.loading);
+  const error = useSelector(
+    (state: RootState) => (ProfileSelectors.selectProfileListState(state) as ProfileListState)?.error,
+  );
+  const loading = useSelector(
+    (state: RootState) => (ProfileSelectors.selectProfileListState(state) as ProfileListState)?.loading,
+  );
 
   const loadProfileList = useCallback(() => {
     if (!loading && !error) {
