@@ -37,6 +37,7 @@ import { RootState } from '../../states';
 import { CaseDetails } from '../../states/case/types';
 import { Case, Contact, CustomITask, EntryInfo, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
+import { newCloseModalAction } from '../../states/routing/actions';
 import InformationRow from './InformationRow';
 import TimelineInformationRow from './TimelineInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
@@ -49,7 +50,6 @@ import { isStandaloneITask } from './Case';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import asyncDispatch from '../../states/asyncDispatch';
 import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
-import { newCloseModalAction } from '../../states/routing/actions';
 import { BannerContainer, Text } from '../caseMergingBanners/styles';
 import InfoIcon from '../caseMergingBanners/InfoIcon';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
@@ -85,7 +85,7 @@ const CaseHome: React.FC<Props> = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   if (!connectedCaseState) return null; // narrow type before deconstructing
-  const caseId = connectedCaseState.connectedCase.id.toString();
+  const caseId = connectedCaseState.connectedCase.id;
   const {
     enable_upload_documents: enableUploadDocuments,
     enable_case_merging: enableCaseMerging,
@@ -361,6 +361,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: CaseHomeProps) =>
     asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, cas.id)),
   closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
 });
+
 const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(CaseHome);
 

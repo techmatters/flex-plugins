@@ -19,7 +19,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Tab as TwilioTab, Template } from '@twilio/flex-ui';
 
 import { Box } from '../../styles/HrmStyles';
-import { useProfile } from '../../states/profile/hooks';
+import { useProfile, useProfileLoader } from '../../states/profile/hooks';
 import * as RoutingTypes from '../../states/routing/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import * as RoutingActions from '../../states/routing/actions';
@@ -60,7 +60,9 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfileTab }) => {
-  const { profile: { contactsCount, casesCount } = {} } = useProfile({ profileId, shouldAutoload: true });
+  const { profile: { contactsCount, casesCount } = {} } = useProfile({ profileId });
+  useProfileLoader({ profileId });
+
   const tabs = [
     {
       label: 'Client',

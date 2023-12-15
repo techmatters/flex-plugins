@@ -25,13 +25,13 @@ import DialogContent from '@material-ui/core/DialogContent';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
 import TimelineIcon from './TimelineIcon';
 import {
-  CaseSectionFont,
-  ViewButton,
-  TimelineRow,
-  TimelineDate,
-  TimelineText,
-  TimelineCallTypeIcon,
   CaseDetailsBorder,
+  CaseSectionFont,
+  TimelineCallTypeIcon,
+  TimelineDate,
+  TimelineRow,
+  TimelineText,
+  ViewButton,
 } from '../../styles/case';
 import { Box, Row } from '../../styles/HrmStyles';
 import CaseAddButton from './CaseAddButton';
@@ -39,7 +39,7 @@ import { CustomITask } from '../../types/types';
 import { isConnectedCaseActivity } from '../../states/case/caseActivities';
 import { ConnectedCaseActivity, NoteActivity, ReferralActivity } from '../../states/case/types';
 import { getPermissionsForContact, PermissionActions, PermissionActionType } from '../../permissions';
-import { NewCaseSubroutes, CaseItemAction, CaseSectionSubroute } from '../../states/routing/types';
+import { CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../../states/routing/types';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { RootState } from '../../states';
 import { selectCaseActivities } from '../../states/case/timeline';
@@ -85,7 +85,7 @@ const Timeline: React.FC<Props> = ({
   if (!connectedCase || !timelineActivities) {
     return null;
   }
-  const caseId = connectedCase.id.toString();
+  const caseId = connectedCase.id;
   const handleViewNoteClick = ({ id }: NoteActivity) => {
     openViewCaseSectionModal(caseId, NewCaseSubroutes.Note, id);
   };
