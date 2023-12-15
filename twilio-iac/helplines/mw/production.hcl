@@ -37,7 +37,7 @@ locals {
         }
         chatbot_unique_names = []
       },
-      facebook : {
+      ync : {
         channel_type     = "facebook"
         contact_identity = "messenger:154148147974717"
         templatefile     = "/app/twilio-iac/helplines/mw/templates/studio-flows/mw-lex.tftpl"
@@ -45,7 +45,7 @@ locals {
         }
         chatbot_unique_names = []
       },
-      facebook : {
+      iwf_mw : {
         channel_type     = "facebook"
         contact_identity = "messenger:338505126727604"
         templatefile     = "/app/twilio-iac/helplines/mw/templates/studio-flows/mw-lex.tftpl"
