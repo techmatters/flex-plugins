@@ -1,0 +1,918 @@
+${
+  jsonencode(
+  {
+    "description": "AB211 Studio Flow",
+    "states": [
+      {
+        "name": "Trigger",
+        "type": "trigger",
+        "transitions": [
+          {
+            "event": "incomingMessage"
+          },
+          {
+            "next": "HCIntro",
+            "event": "incomingCall"
+          },
+          {
+            "event": "incomingConversationMessage"
+          },
+          {
+            "event": "incomingRequest"
+          },
+          {
+            "event": "incomingParent"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -550,
+            "y": -780
+          }
+        }
+      },
+      {
+        "name": "split_keys_lang",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "intro_set_retry",
+            "event": "noMatch"
+          },
+          {
+            "next": "Msg10006E-InfoMessage2",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains en_number",
+                "arguments": [
+                  "{{widgets.HCIntro.Digits}}"
+                ],
+                "type": "contains",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "next": "Msg10006F-InfoMessage2",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains fr_number",
+                "arguments": [
+                  "{{widgets.HCIntro.Digits}}"
+                ],
+                "type": "contains",
+                "value": "2"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.HCIntro.Digits}}",
+          "offset": {
+            "x": -590,
+            "y": -540
+          }
+        }
+      },
+      {
+        "name": "sendToQ6001_English",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "waitUrl": channel_flow_vars["en_function_url"],
+          "offset": {
+            "x": -1620,
+            "y": 1060
+          },
+          "workflow": workflow_sids["master"],
+          "channel": task_channel_sids["voice"],
+          "attributes": "{\"language\": \"en-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\"}",
+          "waitUrlMethod": "GET"
+        }
+      },
+      {
+        "name": "sendToQ6002_French",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "waitUrl": channel_flow_vars["fr_function_url"],
+          "offset": {
+            "x": -320,
+            "y": 1190
+          },
+          "workflow": workflow_sids["master"],
+          "channel": task_channel_sids["voice"],
+          "attributes": "{\"language\": \"fr-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\"}",
+          "waitUrlMethod": "GET"
+        }
+      },
+      {
+        "name": "Msg10006E-InfoMessage2",
+        "type": "gather-input-on-call",
+        "transitions": [
+          {
+            "next": "split_keys_E",
+            "event": "keypress"
+          },
+          {
+            "event": "speech"
+          },
+          {
+            "next": "Msg60011E-Inflight",
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "play": channel_flow_vars["en_intro_url"],
+          "speech_timeout": "auto",
+          "offset": {
+            "x": -1080,
+            "y": -190
+          },
+          "loop": 1,
+          "finish_on_key": "#",
+          "language": "en-CA",
+          "stop_gather": true,
+          "gather_language": "en",
+          "profanity_filter": "true",
+          "timeout": 2
+        }
+      },
+      {
+        "name": "Msg10010E-PrivacyMsg",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Msg60011E-Inflight",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "play": channel_flow_vars["en_privacy_url"],
+          "offset": {
+            "x": -1890,
+            "y": 170
+          },
+          "loop": 1,
+          "language": "en-CA"
+        }
+      },
+      {
+        "name": "Msg10015E-ToS",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Msg60011E-Inflight",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "play": channel_flow_vars["en_tos_url"],
+          "offset": {
+            "x": -1580,
+            "y": 250
+          },
+          "loop": 1,
+          "language": "en-CA"
+        }
+      },
+      {
+        "name": "Msg60011E-Inflight",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "sendToQ6001_English",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "play": channel_flow_vars["en_inflight_url"],
+          "offset": {
+            "x": -1650,
+            "y": 700
+          },
+          "loop": 1,
+          "language": "en-CA"
+        }
+      },
+      {
+        "name": "split_keys_E",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "en_set_retry",
+            "event": "noMatch"
+          },
+          {
+            "next": "Msg10010E-PrivacyMsg",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 5",
+                "arguments": [
+                  "{{widgets.Msg10006E-InfoMessage2.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "5"
+              }
+            ]
+          },
+          {
+            "next": "Msg10015E-ToS",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 6",
+                "arguments": [
+                  "{{widgets.Msg10006E-InfoMessage2.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "6"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.Msg10006E-InfoMessage2.Digits}}",
+          "offset": {
+            "x": -1550,
+            "y": -40
+          }
+        }
+      },
+      {
+        "name": "Msg10006F-InfoMessage2",
+        "type": "gather-input-on-call",
+        "transitions": [
+          {
+            "next": "split_keys_F",
+            "event": "keypress"
+          },
+          {
+            "event": "speech"
+          },
+          {
+            "next": "InflightMessage-F",
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "play": channel_flow_vars["fr_intro_url"],
+          "voice": "alice",
+          "speech_timeout": "auto",
+          "offset": {
+            "x": -180,
+            "y": -210
+          },
+          "loop": 1,
+          "finish_on_key": "#",
+          "language": "fr-CA",
+          "stop_gather": true,
+          "gather_language": "en",
+          "profanity_filter": "true",
+          "timeout": 2
+        }
+      },
+      {
+        "name": "split_keys_F",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "set_retry_fr",
+            "event": "noMatch"
+          },
+          {
+            "next": "Msg10010F-PrivacyMsg",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 5",
+                "arguments": [
+                  "{{widgets.Msg10006F-InfoMessage2.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "5"
+              }
+            ]
+          },
+          {
+            "next": "Msg10015F-ToS",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 6",
+                "arguments": [
+                  "{{widgets.Msg10006F-InfoMessage2.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "6"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.Msg10006F-InfoMessage2.Digits}}",
+          "offset": {
+            "x": 300,
+            "y": -150
+          }
+        }
+      },
+      {
+        "name": "InflightMessage-F",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "check_before_queue",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "play": channel_flow_vars["fr_inflight_url"],
+          "offset": {
+            "x": -130,
+            "y": 520
+          },
+          "loop": 1,
+          "language": "fr-CA"
+        }
+      },
+      {
+        "name": "Msg10010F-PrivacyMsg",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "InflightMessage-F",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "play": channel_flow_vars["fr_privacy_url"],
+          "offset": {
+            "x": 410,
+            "y": 180
+          },
+          "loop": 1,
+          "language": "fr-CA"
+        }
+      },
+      {
+        "name": "Msg10015F-ToS",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "InflightMessage-F",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "play": channel_flow_vars["fr_tos_url"],
+          "offset": {
+            "x": 730,
+            "y": 170
+          },
+          "loop": 1,
+          "language": "fr-CA"
+        }
+      },
+      {
+        "name": "check_before_queue",
+        "type": "run-function",
+        "transitions": [
+          {
+            "next": "split_counsellors",
+            "event": "success"
+          },
+          {
+            "next": "sendToQ6002_French",
+            "event": "fail"
+          }
+        ],
+        "properties": {
+          "service_sid": flow_vars["service_sid"],
+          "environment_sid": flow_vars["environment_sid"],
+          "offset": {
+            "x": 70,
+            "y": 760
+          },
+          "function_sid": channel_flow_vars["check_counsellors_function_sid"],
+          "parameters": [
+            {
+              "value": flow_vars["workspace_sid"],
+              "key": "workspaceSid"
+            },
+            {
+              "value": channel_flow_vars["ab211fr_queue_sid"],
+              "key": "taskQueueSid"
+            }
+          ],
+          "url": channel_flow_vars["check_counsellors_function_url"]
+        }
+      },
+      {
+        "name": "split_queues_2",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "set_retry_fr_2",
+            "event": "noMatch"
+          },
+          {
+            "next": "sendToQ6001_English",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 1",
+                "arguments": [
+                  "{{widgets.FrSwitchEnglish.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "1"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.FrSwitchEnglish.Digits}}",
+          "offset": {
+            "x": 240,
+            "y": 1410
+          }
+        }
+      },
+      {
+        "name": "FrSwitchEnglish",
+        "type": "gather-input-on-call",
+        "transitions": [
+          {
+            "next": "split_queues_2",
+            "event": "keypress"
+          },
+          {
+            "event": "speech"
+          },
+          {
+            "next": "set_retry_fr_2"
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "play": channel_flow_vars["fr_switch_english_url"],
+          "speech_timeout": "auto",
+          "offset": {
+            "x": 560,
+            "y": 1200
+          },
+          "loop": 1,
+          "finish_on_key": "#",
+          "language": "fr-CA",
+          "stop_gather": true,
+          "gather_language": "en",
+          "profanity_filter": "true",
+          "timeout": 2
+        }
+      },
+      {
+        "name": "split_counsellors",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "sendToQ6002_French",
+            "event": "noMatch"
+          },
+          {
+            "next": "FrSwitchEnglish",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 0",
+                "arguments": [
+                  "{{widgets.check_before_queue.parsed.totalCounsellors}}"
+                ],
+                "type": "equal_to",
+                "value": "0"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.check_before_queue.parsed.totalCounsellors}}",
+          "offset": {
+            "x": -60,
+            "y": 950
+          }
+        }
+      },
+      {
+        "name": "set_retry_fr_2",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "next": "split_retry",
+            "event": "next"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "value": "{% if flow.variables.retry_counter_2%} {{flow.variables.retry_counter_2| plus: 1}} {% else %} 1 {% endif %}",
+              "key": "retry_counter_2"
+            }
+          ],
+          "offset": {
+            "x": 520,
+            "y": 1760
+          }
+        }
+      },
+      {
+        "name": "split_retry",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "fr_disconnect_2",
+            "event": "noMatch"
+          },
+          {
+            "next": "fr_invalid_2",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value less_than 3",
+                "arguments": [
+                  "{{flow.variables.retry_counter_2}}"
+                ],
+                "type": "less_than",
+                "value": "3"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{flow.variables.retry_counter_2}}",
+          "offset": {
+            "x": 800,
+            "y": 1980
+          }
+        }
+      },
+      {
+        "name": "fr_invalid_2",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "FrSwitchEnglish",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "play": channel_flow_vars["fr_invalid_url"],
+          "offset": {
+            "x": 1340,
+            "y": 1760
+          },
+          "loop": 1
+        }
+      },
+      {
+        "name": "fr_disconnect_2",
+        "type": "say-play",
+        "transitions": [
+          {
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "play": channel_flow_vars["fr_disconnect_url"],
+          "offset": {
+            "x": 820,
+            "y": 2250
+          },
+          "loop": 1
+        }
+      },
+      {
+        "name": "invalid_en",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Msg10006E-InfoMessage2",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "play": channel_flow_vars["en_invalid_url"],
+          "offset": {
+            "x": -2800,
+            "y": 920
+          },
+          "loop": 1
+        }
+      },
+      {
+        "name": "en_set_retry",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "next": "en_split_retry",
+            "event": "next"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "value": "{% if flow.variables.retry_counter%} {{flow.variables.retry_counter| plus: 1}} {% else %} 1 {% endif %}",
+              "key": "retry_counter"
+            }
+          ],
+          "offset": {
+            "x": -2450,
+            "y": 420
+          }
+        }
+      },
+      {
+        "name": "en_split_retry",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "en_disconnect",
+            "event": "noMatch"
+          },
+          {
+            "next": "invalid_en",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value less_than 3",
+                "arguments": [
+                  "{{flow.variables.retry_counter}}"
+                ],
+                "type": "less_than",
+                "value": "3"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{flow.variables.retry_counter}}",
+          "offset": {
+            "x": -2570,
+            "y": 670
+          }
+        }
+      },
+      {
+        "name": "en_disconnect",
+        "type": "say-play",
+        "transitions": [
+          {
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "play": channel_flow_vars["en_disconnect_url"],
+          "offset": {
+            "x": -2420,
+            "y": 950
+          },
+          "loop": 1
+        }
+      },
+      {
+        "name": "set_retry_fr",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "next": "split_retry_fr",
+            "event": "next"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "value": "{% if flow.variables.retry_counter%} {{flow.variables.retry_counter| plus: 1}} {% else %} 1 {% endif %}",
+              "key": "retry_counter"
+            }
+          ],
+          "offset": {
+            "x": 720,
+            "y": 520
+          }
+        }
+      },
+      {
+        "name": "split_retry_fr",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "fr_disconnect",
+            "event": "noMatch"
+          },
+          {
+            "next": "fr_invalid",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value less_than 3",
+                "arguments": [
+                  "{{flow.variables.retry_counter}}"
+                ],
+                "type": "less_than",
+                "value": "3"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{flow.variables.retry_counter}}",
+          "offset": {
+            "x": 1030,
+            "y": 760
+          }
+        }
+      },
+      {
+        "name": "fr_invalid",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "Msg10006F-InfoMessage2",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "play": channel_flow_vars["fr_invalid_url"],
+          "offset": {
+            "x": 1500,
+            "y": 640
+          },
+          "loop": 1
+        }
+      },
+      {
+        "name": "fr_disconnect",
+        "type": "say-play",
+        "transitions": [
+          {
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "play": channel_flow_vars["fr_disconnect_url"],
+          "offset": {
+            "x": 1090,
+            "y": 1030
+          },
+          "loop": 1
+        }
+      },
+      {
+        "name": "intro_set_retry",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "next": "intro_split_retry",
+            "event": "next"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "value": "{% if flow.variables.retry_counter%} {{flow.variables.retry_counter| plus: 1}} {% else %} 1 {% endif %}",
+              "key": "retry_counter"
+            }
+          ],
+          "offset": {
+            "x": -860,
+            "y": -870
+          }
+        }
+      },
+      {
+        "name": "intro_split_retry",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "intro_disconnect",
+            "event": "noMatch"
+          },
+          {
+            "next": "invalid_intro",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value less_than 3",
+                "arguments": [
+                  "{{flow.variables.retry_counter}}"
+                ],
+                "type": "less_than",
+                "value": "3"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{flow.variables.retry_counter}}",
+          "offset": {
+            "x": -1220,
+            "y": -1170
+          }
+        }
+      },
+      {
+        "name": "intro_disconnect",
+        "type": "say-play",
+        "transitions": [
+          {
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "play": channel_flow_vars["en_disconnect_url"],
+          "offset": {
+            "x": -1610,
+            "y": -810
+          },
+          "loop": 1
+        }
+      },
+      {
+        "name": "invalid_intro",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "HCIntro",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "play": channel_flow_vars["en_invalid_url"],
+          "offset": {
+            "x": -1260,
+            "y": -710
+          },
+          "loop": 1
+        }
+      },
+      {
+        "name": "HCIntro",
+        "type": "gather-input-on-call",
+        "transitions": [
+          {
+            "next": "split_keys_lang",
+            "event": "keypress"
+          },
+          {
+            "event": "speech"
+          },
+          {
+            "next": "intro_set_retry",
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "play": channel_flow_vars["main_url"],
+          "speech_timeout": "auto",
+          "offset": {
+            "x": -410,
+            "y": -940
+          },
+          "loop": 1,
+          "finish_on_key": "#",
+          "stop_gather": true,
+          "gather_language": "en",
+          "profanity_filter": "true",
+          "timeout": 2
+        }
+      }
+    ],
+    "initial_state": "Trigger",
+    "flags": {
+      "allow_concurrent_calls": true
+    }
+  }
+)
+}
