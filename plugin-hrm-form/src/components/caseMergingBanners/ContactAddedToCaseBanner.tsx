@@ -39,8 +39,8 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 
 const mapStateToProps = (state: RootState, { taskId, contactId }: OwnProps) => {
   const offlineSavedContact = selectContactByTaskSid(state, taskId)?.savedContact;
-  const connectedCase = selectCaseByCaseId(state, offlineSavedContact?.caseId ?? '')?.connectedCase;
   const existingSavedContact = state[namespace][contactFormsBase].existingContacts[contactId]?.savedContact
+  const connectedCase = selectCaseByCaseId(state, offlineSavedContact?.caseId ? offlineSavedContact?.caseId : existingSavedContact?.caseId)?.connectedCase;
   const caseId = offlineSavedContact ? offlineSavedContact?.caseId : existingSavedContact?.caseId;
   return {
     contact: offlineSavedContact ? offlineSavedContact : existingSavedContact,
@@ -66,7 +66,7 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
   removeContactFromCase,
   caseId,
 }) => {
-  // if (connectedCase === undefined) return null;
+  if (connectedCase === undefined) return null;
 
   return (
     <BannerContainer color="blue">
