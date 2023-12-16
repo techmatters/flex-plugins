@@ -16,7 +16,7 @@
 
 import React from 'react';
 
-import { CLTable, CLTableRow, CLTableCell } from '../../../styles/caseList';
+import { StandardTable, DataTableRow, DataCell } from '../../../styles/table';
 import { useProfileListLoader } from '../../../states/profile/hooks/useProfileListLoader';
 import { useProfileList } from '../../../states/profile/hooks/useProfileList';
 import ProfileListRow from './ProfileListRow';
@@ -32,17 +32,17 @@ const ProfileListPage: React.FC = () => {
   return (
     <>
       <h1>Clients</h1>
-      <CLTable>
-        <CLTableRow>
-          <CLTableCell> Client</CLTableCell>
-          <CLTableCell> Identifier(s)</CLTableCell>
-          <CLTableCell> Status</CLTableCell>
-          <CLTableCell> Overview</CLTableCell>
-        </CLTableRow>
+      <StandardTable>
+        <DataTableRow>
+          <DataCell> Client</DataCell>
+          <DataCell> Identifier(s)</DataCell>
+          <DataCell> Status</DataCell>
+          <DataCell> Overview</DataCell>
+        </DataTableRow>
         {profileIds?.map(profileId => (
           <ProfileListRow key={profileId} profileId={profileId} />
         ))}
-      </CLTable>
+      </StandardTable>
     </>
   );
 };
