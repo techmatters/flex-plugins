@@ -27,7 +27,7 @@
   "Case-CasedetailsStatusOpen": "Open",
   "Case-CaseManager": "Incident Manager",
   "Case-CaseNumber": "Incident #",
-  "Case-CaseOverviewLabel": "CASE OVERVIEW",
+  "Case-CaseOverviewLabel": "INCIDENT OVERVIEW",
   "Case-CaseStatus": "Incident Status",
   "Case-CaseSummarySection": "Incident summary",
   "Case-ChildIsAtRisk": "Person of concern is at risk",
@@ -573,10 +573,10 @@
   "CallerForm-State/County": "State/County",
   "TaskInfoPanelContentMasked": "\n<h1>Task context</h1>\n<dl>\n <div><dt>Task type:&nbsp;</dt><dd data-test=\"task-type\">{{task.channelType}}</dd></div>\n\n <div><dt>Task created on:&nbsp;</dt><dd data-test=\"task-created-on\">{{task.dateCreated}}</dd></div>\n\n <div><dt>Task priority:&nbsp;</dt><dd data-test=\"task-priority\">{{task.priority}}</dd></div>\n\n <div><dt>Task queue:&nbsp;</dt><dd data-test=\"task-queue\">{{task.queueName}}</dd></div>\n\n <div><dt>Task Sid:&nbsp;</dt><dd data-test=\"task-sid\">{{task.taskSid}}</dd></div>\n\n <div><dt>Reservation Sid:&nbsp;</dt><dd data-test=\"reservation-sid\">{{task.sid}}</dd></div>\n\n {{#if task.attributes.subject}}\n <div><dt>Subject:&nbsp;</dt><dd data-test=\"subject\">{{task.attributes.subject}}</dd></div>\n {{/if}}\n</dl>\n\n<h1>Customer context</h1>\n<dl>\n <div><dt>Customer name / {{#if task.attributes.customerAddress}}email address{{else}}phone number{{/if}}:&nbsp;</dt><dd data-test=\"customer-name-number\"> XXXXXX </dd></div>\n {{#if task.attributes.caller_country}}<div><dt>Country:&nbsp;</dt><dd data-test=\"customer-country\">{{task.attributes.caller_country}}</dd></div>{{/if}}\n</dl>\n{{#if to}}\n <h1>Conversation Participants</h1>\n{{else}}\n {{#if cc}}\n <h1>Conversation Participants</h1>\n {{/if}}\n{{/if}}\n<dl>\n {{#if to}}\n {{#each to}}\n <div><dt>To:&nbsp;</dt><dd data-test=\"to\">{{this}}</dd></div>\n {{/each}}\n {{/if}}\n {{#if cc}}\n {{#each cc}}\n <div><dt>Cc:&nbsp;</dt><dd data-test=\"cc\">{{this}}</dd></div>\n {{/each}}\n {{/if}}\n</dl>",
   "CaseMerging-ContactAddedTo": "Contact added to",
-  "CaseMerging-RemoveFromCase": "Remove from Case",
-  "CaseMerging-ContactRemovedFromCase": "Contact removed from case",
-  "CaseMerging-CaseCreatedAndContactAdded": "Case #{{caseId}} created and contact added",
-  "CaseMerging-CancelCase": "Cancel Case",
+  "CaseMerging-RemoveFromCase": "Remove from Incident",
+  "CaseMerging-ContactRemovedFromCase": "Contact removed from incident",
+  "CaseMerging-CaseCreatedAndContactAdded": "Incident #{{caseId}} created and contact added",
+  "CaseMerging-CancelCase": "Cancel Incident",
 
   "Profile-NoCasesFound": "No Incidents Found",
   "CaseMerging-AddContactToCase": "Add Contact to Incident",
@@ -585,5 +585,5 @@
   "BottomBar-AddedToCase": "Added to Incident",
   "SearchContactsAndCases-TitleExistingCase": "Search for Incidents",
   "SearchResultsIndex-SelectCase": "Select Incident",
-  "SearchResultsIndex-SaveToNewCase": "save this contact to a new incident"
+  "SearchResultsIndex-SaveToNewCase": "Save this contact to a new incident"
 }
