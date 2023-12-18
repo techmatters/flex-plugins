@@ -25,7 +25,7 @@ resource "aws_lex_slot_type" "this" {
   # and Terraform enforces these requirements when you create resources.
   # So a work-around for the e2e account was to replace the "[0-9]" with the no space "" 
 
-  name                     = replace("${local.name_prefix}_${each.key}", "[0-9]", "")
+  name                     = replace("${local.name_prefix}_${each.key}", "/[0-9]/", "")
   description              = each.value.description
   value_selection_strategy = each.value.value_selection_strategy
 
