@@ -13,21 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { combineReducers } from 'redux';
 
-import * as t from './types';
-import identifiersReducer from './identifiers';
-import profilesReducer from './profiles';
-import profileFlagsReducer from './profileFlags';
-import profilesListReducer from './profileList';
+import ProfileListPage from './ProfileListPage';
 
-const reducers = {
-  identifiers: identifiersReducer(),
-  profiles: profilesReducer(),
-  profileFlags: profileFlagsReducer(),
-  profilesList: profilesListReducer(),
-};
-
-const combinedReducers = combineReducers(reducers);
-
-export const reduce = (state = t.initialState, action: any): t.ProfileState => combinedReducers(state, action);
+export default ProfileListPage;

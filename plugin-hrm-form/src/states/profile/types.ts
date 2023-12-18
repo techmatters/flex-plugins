@@ -32,6 +32,7 @@ export const DISASSOCIATE_PROFILE_FLAG = 'profile/profileFlags/DISASSOCIATE';
 export const LOAD_PROFILE_SECTIONS = 'profile/profileSections/LOAD';
 export const CREATE_PROFILE_SECTION = 'profile/profileSections/CREATE';
 export const UPDATE_PROFILE_SECTION = 'profile/profileSections/UPDATE';
+export const LOAD_PROFILES_LIST = 'profile/profilesList/LOAD';
 
 export type IdentifierEntry = {
   data?: Identifier;
@@ -54,6 +55,18 @@ export type ProfileFlagsState = {
 };
 
 export const initialProfileFlagsState: ProfileFlagsState = {
+  error: undefined,
+  loading: false,
+  data: undefined,
+};
+
+export type ProfileListState = {
+  data?: Profile['id'][];
+  error?: ParseFetchErrorResult;
+  loading: boolean;
+};
+
+export const initialProfileListState: ProfileListState = {
   error: undefined,
   loading: false,
   data: undefined,
@@ -97,6 +110,7 @@ export type ProfileState = {
   identifiers: IdentifiersState;
   profiles: ProfilesState;
   profileFlags: ProfileFlagsState;
+  profilesList: ProfileListState;
 };
 
 export const newProfileEntry: ProfileEntry = {
@@ -126,4 +140,5 @@ export const initialState: ProfileState = {
   profileFlags: {
     loading: false,
   },
+  profilesList: { loading: false },
 };

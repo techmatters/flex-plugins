@@ -41,7 +41,7 @@ import {
   SearchSettings,
 } from '../../../states/resources/search';
 import { viewResourceAction } from '../../../states/resources';
-import Pagination from '../../Pagination';
+import Pagination from '../../pagination';
 import asyncDispatch from '../../../states/asyncDispatch';
 import ResourcePreview from './ResourcePreview';
 import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';

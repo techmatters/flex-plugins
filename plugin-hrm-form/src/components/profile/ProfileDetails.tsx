@@ -17,7 +17,6 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Icon, Template } from '@twilio/flex-ui';
-import { ProfileSectionDefinition } from 'hrm-form-definitions';
 
 import { Box, HiddenText, Row, HorizontalLine } from '../../styles/HrmStyles';
 import { newOpenModalAction } from '../../states/routing/actions';

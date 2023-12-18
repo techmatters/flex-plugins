@@ -63,3 +63,29 @@ export const updateProfileSection = (profileId: ProfileId, sectionId: ProfileSec
     body: JSON.stringify({ content }),
   });
 };
+
+type GetProfileListParams = {
+  offset?: number;
+  limit?: number;
+  sortBy?: 'id' | 'name' | 'createdAt' | 'updatedAt';
+  sortDirection?: 'asc' | 'desc';
+  profileFlagIds?: ProfileFlag['id'][];
+};
+
+export const getProfileList = ({
+  offset = 0,
+  limit = 10,
+  sortBy = 'id',
+  sortDirection = null,
+  profileFlagIds = null,
+}: // TODO: remove default empty object once params are passed through
+GetProfileListParams = {}) => {
+  const searchParams = new URLSearchParams();
+  searchParams.append('offset', offset.toString());
+  searchParams.append('limit', limit.toString());
+  searchParams.append('sortBy', sortBy);
+  if (sortDirection) searchParams.append('sortDirection', sortDirection);
+  if (profileFlagIds) searchParams.append('profileFlagIds', profileFlagIds.join(','));
+
+  return fetchHrmApi(`/profiles?${searchParams.toString()}`);
+};

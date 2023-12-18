@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unused-modules */
 /**
  * Copyright (C) 2021-2023 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -15,19 +16,19 @@
  */
 
 import { styled } from '@twilio/flex-ui';
-import { Table, TableCell, TableRow, withStyles } from '@material-ui/core';
+import { Table, TableCell, TableRow, TableHead, withStyles } from '@material-ui/core';
 
 import { Absolute, FontOpenSans, Flex } from '../HrmStyles';
 import HrmTheme from '../HrmTheme';
 
-export const CaseListContainer = styled(Absolute)`
+export const ListContainer = styled(Absolute)`
   height: 100%;
   width: 1280px;
   background-color: #f6f6f6;
 `;
-CaseListContainer.displayName = 'CaseListContainer';
+ListContainer.displayName = 'ListContainer';
 
-export const CenteredContainer = styled(CaseListContainer)`
+export const CenteredContainer = styled(ListContainer)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -40,7 +41,7 @@ export const TableContainer = styled(Flex)`
 `;
 TableContainer.displayName = 'TableContainer';
 
-export const CLTable = withStyles({
+export const StandardTable = withStyles({
   root: {
     borderCollapse: 'separate',
     borderSpacing: '0 5px',
@@ -49,9 +50,9 @@ export const CLTable = withStyles({
     },
   },
 })(Table);
-CLTable.displayName = 'CLTable';
+StandardTable.displayName = 'StandardTable';
 
-export const CLTableRow = withStyles({
+export const DataTableRow = withStyles({
   root: {
     height: 85,
     background: '#ffffff',
@@ -66,9 +67,15 @@ export const CLTableRow = withStyles({
     },
   },
 })(TableRow);
-CLTableRow.displayName = 'CLTableRow';
+DataTableRow.displayName = 'DataTableRow';
 
-export const CLHeaderTableCell = withStyles(theme => ({
+export const TableHeader = withStyles(theme => ({
+  root: {
+    'box-shadow': '0 2px 0 0 #E5E6E7',
+  },
+}))(TableHead);
+
+export const HeaderCell = withStyles(theme => ({
   root: {
     borderBottom: 0,
     textTransform: 'none',
@@ -80,9 +87,9 @@ export const CLHeaderTableCell = withStyles(theme => ({
     paddingTop: 8,
   },
 }))(TableCell);
-CLHeaderTableCell.displayName = 'CLHeaderTableCell';
+HeaderCell.displayName = 'HeaderCell';
 
-export const CLTableCell = withStyles({
+export const DataCell = withStyles({
   root: {
     borderBottom: 0,
     textTransform: 'none',
@@ -94,33 +101,40 @@ export const CLTableCell = withStyles({
     paddingTop: 8,
   },
 })(TableCell);
-CLTableCell.displayName = 'CLTableCell';
+DataCell.displayName = 'DataCell';
 
-export const CLNumberCell = withStyles({
+export const NumericCell = withStyles({
   body: {
     paddingLeft: '10px !important',
   },
-})(CLTableCell);
-CLNumberCell.displayName = 'CLNumberCell';
+})(DataCell);
+NumericCell.displayName = 'NumericCell';
 
-export const CLNamesCell = withStyles({
+export const TextCell = withStyles({
   body: {
     paddingRight: 10,
     display: '-webkit-box',
     WebkitLineClamp: 4,
     WebkitBoxOrient: 'vertical',
   },
-})(CLTableCell);
-CLNamesCell.displayName = 'CLNamesCell';
+})(DataCell);
+TextCell.displayName = 'TextCell';
 
-export const CLSummaryCell = withStyles({
+export const LoadingCell = styled(TextCell)`
+  position: 'absolute';
+  text-align: 'center';
+  width: '100%';
+  top: '40%';
+`;
+
+export const SummaryCell = withStyles({
   body: {
     paddingRight: 20,
   },
-})(CLTableCell);
-CLSummaryCell.displayName = 'CLSummaryCell';
+})(DataCell);
+SummaryCell.displayName = 'SummaryCell';
 
-export const CLTableHeaderFont = styled(FontOpenSans)`
+export const TableHeaderFont = styled(FontOpenSans)`
   font-weight: 600;
   font-size: 12px;
   line-height: 30px;
@@ -128,9 +142,9 @@ export const CLTableHeaderFont = styled(FontOpenSans)`
   padding: 0 2px;
   align-items: right;
 `;
-CLTableHeaderFont.displayName = 'CLTableHeaderFont';
+TableHeaderFont.displayName = 'TableHeaderFont';
 
-export const CLTableBodyFont = styled(FontOpenSans)`
+export const TableBodyFont = styled(FontOpenSans)`
   color: #192b33;
   font-size: 13px;
   line-height: 18px;
@@ -139,22 +153,22 @@ export const CLTableBodyFont = styled(FontOpenSans)`
   overflow: hidden;
   text-overflow: ellipsis;
 `;
-CLTableBodyFont.displayName = 'CLTableBodyFont';
+TableBodyFont.displayName = 'TableBodyFont';
 
-export const CLTableSummaryFont = styled(CLTableBodyFont)`
+export const TableSummaryFont = styled(TableBodyFont)`
   display: -webkit-box;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
 `;
-CLTableSummaryFont.displayName = 'CLTableSummaryFont';
+TableSummaryFont.displayName = 'TableSummaryFont';
 
-export const CLCaseNumberContainer = styled('div')`
+export const IdentifierContainer = styled('div')`
   display: inline-block;
   padding: 0 6px;
 `;
-CLCaseNumberContainer.displayName = 'CLCaseNumberContainer';
+IdentifierContainer.displayName = 'IdentifierContainer';
 
-export const CLCaseIDButton = styled('button')`
+export const IdentifierActionButton = styled('button')`
   color: #1876d1;
   text-decoration: underline;
   cursor: pointer;
@@ -167,53 +181,10 @@ export const CLCaseIDButton = styled('button')`
     outline-color: black;
   }
 `;
-CLCaseIDButton.displayName = 'CLCaseIDButton';
-
-type PaginationButtonProps = {
-  highlight?: Boolean;
-};
-
-export const PaginationButton = styled('button')<PaginationButtonProps>`
-  background-color: ${props => (props.highlight ? '#1976D2' : 'transparent')};
-  box-shadow: ${props => (props.highlight ? '0 1px 1px 0 rgba(0, 0, 0, 0.06)' : '0')};
-  border-radius: 4px;
-  padding: 6px 10px;
-  margin: 0 2px;
-  border: none;
-  &:focus {
-    outline: auto;
-  }
-`;
-PaginationButton.displayName = 'PaginationButton';
-
-export const PaginationChevron = styled(PaginationButton)`
-  margin: 0;
-  padding: 7px 3px;
-`;
-PaginationChevron.displayName = 'PaginationChevron';
-
-type ButtonTextProps = {
-  highlight?: Boolean;
-};
-
-export const ButtonText = styled(FontOpenSans)<ButtonTextProps>`
-  font-size: 13px;
-  color: ${props => (props.highlight ? '#ffffff' : '#666c7c')};
-  font-weight: ${props => (props.highlight ? 700 : 600)};
-`;
-ButtonText.displayName = 'ButtonText';
+IdentifierActionButton.displayName = 'IdentifierActionButton';
 
 export const SomethingWentWrongText = styled(FontOpenSans)`
   color: ${HrmTheme.colors.errorColor};
   font-size: 20px;
 `;
 SomethingWentWrongText.displayName = 'SomethingWentWrongText';
-
-const FiltersContainer = styled(Flex)`
-  margin-left: 15px;
-  margin-right: 10px;
-  padding: 10px;
-  font-size: 13px;
-  box-shadow: 0 1px 2px 0 rgba(25, 43, 51, 0.1);
-`;
-FiltersContainer.displayName = 'FiltersContainer';

@@ -18,7 +18,7 @@ import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import Pagination from '../Pagination';
+import Pagination from '../pagination';
 import asyncDispatch from '../../states/asyncDispatch';
 import * as profileActions from '../../states/profile/actions';
 import * as ProfileTypes from '../../states/profile/types';

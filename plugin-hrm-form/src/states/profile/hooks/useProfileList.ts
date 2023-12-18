@@ -13,21 +13,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { combineReducers } from 'redux';
+import { useSelector } from 'react-redux';
 
-import * as t from './types';
-import identifiersReducer from './identifiers';
-import profilesReducer from './profiles';
-import profileFlagsReducer from './profileFlags';
-import profilesListReducer from './profileList';
+import { Profile, ProfileListState } from '../types';
+import * as ProfileSelectors from '../selectors';
 
-const reducers = {
-  identifiers: identifiersReducer(),
-  profiles: profilesReducer(),
-  profileFlags: profileFlagsReducer(),
-  profilesList: profilesListReducer(),
+type UseProfileListReturn = {
+  profileIds: Profile['id'][] | undefined;
+  loading: boolean | undefined;
 };
 
-const combinedReducers = combineReducers(reducers);
-
-export const reduce = (state = t.initialState, action: any): t.ProfileState => combinedReducers(state, action);
+export const useProfileList = (): UseProfileListReturn => {
+  const profileIds = useSelector(
+    (state: any) => (ProfileSelectors.selectProfileListState(state) as ProfileListState)?.data,
+  );
+  const loading = useSelector(
+    (state: any) => (ProfileSelectors.selectProfileListState(state) as ProfileListState)?.loading,
+  );
+  return {
+    profileIds,
+    loading,
+  };
+};
