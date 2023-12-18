@@ -607,7 +607,7 @@
   "SearchContactsAndCases-TitleExistingCase": "ค้นหากรณี",
   "SearchResultsIndex-SelectCase": "เลือกเคส",
   "SearchResultsIndex-NoCasesFound": "ไม่พบ {{type}}",
-  "SearchResultsIndex-SearchAgainForCase": "ค้นหาอีกครั้งสำหรับ {{type}",
+  "SearchResultsIndex-SearchAgainForCase": "ค้นหาอีกครั้งสำหรับ {{type}}",
   "SearchResultsIndex-SaveToNewCase": "บันทึกผู้ติดต่อนี้ไปยังเคสใหม่",
   "SearchResultsIndex-Or": "หรือ",
   "Case-Timeline-DraftContactSummaryPlaceholder": "กำลังดำเนินการ",
