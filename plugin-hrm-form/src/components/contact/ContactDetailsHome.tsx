@@ -53,6 +53,8 @@ import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { isRouteWithContext } from '../../states/routing/types';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
+import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
+import { selectCaseMergingBanners } from '../../states/case/caseBanners';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -118,7 +120,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
   enableEditing,
   canViewTwilioTranscript,
   createDraftCsamReport,
-  task
+  task,
+  showRemovedFromCaseBanner,
 }) {
   const version = savedContact?.rawJson.definitionVersion;
 
@@ -148,7 +151,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
     updatedAt,
     updatedBy,
     rawJson,
-    caseId
+    caseId,
   } = savedContact;
 
   const { callType, categories } = rawJson;
@@ -262,14 +265,19 @@ const ContactDetailsHome: React.FC<Props> = function ({
     </SectionActionButton>
   );
 
-  console.log('savedContact in ContactDetails', savedContact, caseId)
-
   return (
     <Box data-testid="ContactDetails-Container">
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
       {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
 
-      {caseId && <ContactAddedToCaseBanner taskId={task.taskSid} contactId={savedContact.id} /> }
+      {caseId && <ContactAddedToCaseBanner taskId={task.taskSid} contactId={savedContact.id} caseId={caseId} />}
+      {showRemovedFromCaseBanner && (
+        <ContactRemovedFromCaseBanner
+          taskId={task.taskSid}
+          savedContact={savedContact}
+          showRemovedFromCaseBanner={showRemovedFromCaseBanner}
+        />
+      )}
 
       <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
@@ -449,6 +457,7 @@ ContactDetailsHome.defaultProps = {
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const currentRoute = getCurrentTopmostRouteForTask(state[namespace].routing, ownProps.task.taskSid);
+  const { showRemovedFromCaseBanner } = selectCaseMergingBanners(state, ownProps.contactId);
   return {
     definitionVersions: state[namespace][configurationBase].definitionVersions,
     counselorsHash: state[namespace][configurationBase].counselors.hash,
@@ -459,6 +468,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
       role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.quality_process_manager',
     ),
     isProfileRoute: isRouteWithContext(currentRoute) && currentRoute?.context === 'profile',
+    showRemovedFromCaseBanner,
   };
 };
 

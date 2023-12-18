@@ -22,33 +22,65 @@ import { Close } from '@material-ui/icons';
 import { HeaderCloseButton, HiddenText } from '../../styles/HrmStyles';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import WarningIcon from './WarningIcon';
-import { BannerContainer, Text } from './styles';
+import { BannerActionLink, BannerContainer, Text } from './styles';
 import { closeRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
+import { contactFormsBase, namespace } from '../../states/storeNamespaces';
+import { Contact } from '../../types/types';
+import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
+import { newCloseModalAction } from '../../states/routing/actions';
+import asyncDispatch from '../../states/asyncDispatch';
+import { RootState } from '../../states';
 
 type OwnProps = {
   taskId: string;
+  savedContact?: Contact;
+  showRemovedFromCaseBanner?: boolean;
 };
 
-const mapStateToProps = (state, { taskId }: OwnProps) => {
+const mapStateToProps = (state: RootState, { taskId, savedContact }: OwnProps) => {
   const contact = selectContactByTaskSid(state, taskId);
+  const caseId = state[namespace][contactFormsBase].removedCaseId[savedContact?.id];
 
   return {
-    contactId: contact.savedContact.id,
+    contactId: contact?.savedContact.id ? contact?.savedContact.id : savedContact?.id,
+    caseId,
   };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch, { taskId }: OwnProps) => ({
   close: (contactId: string) => dispatch(closeRemovedFromCaseBannerAction(contactId)),
+  connectCaseToTaskContact: async (taskContact: Contact, caseId: string) => {
+    await asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, caseId));
+  },
+  closeModal: () => dispatch(newCloseModalAction(taskId)),
 });
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-const ContactRemovedFromCaseBanner: React.FC<Props> = ({ contactId, close }) => (
+const ContactRemovedFromCaseBanner: React.FC<Props> = ({
+  contactId,
+  close,
+  showRemovedFromCaseBanner,
+  savedContact,
+  connectCaseToTaskContact,
+  closeModal,
+  caseId,
+}) => (
   <BannerContainer color="orange">
     <WarningIcon />
     <Text>
       <Template code="CaseMerging-ContactRemovedFromCase" />
     </Text>
+    {showRemovedFromCaseBanner && savedContact?.id && (
+      <HeaderCloseButton
+        onClick={() => {
+          connectCaseToTaskContact(savedContact, caseId);
+        }}
+        color="#fffeef"
+      >
+        <Template code="CaseMerging-ContactUndoRemovedFromCase" />
+      </HeaderCloseButton>
+     )}
     <HeaderCloseButton onClick={() => close(contactId)} style={{ opacity: '.75' }}>
       <HiddenText>
         <Template code="NavigableContainer-CloseButton" />
