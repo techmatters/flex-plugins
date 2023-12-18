@@ -473,5 +473,11 @@
   "CaseMerging-RemoveFromCase": "Remove from Emergency Referral",
   "CaseMerging-ContactRemovedFromCase": "Contact removed from Emergency Referral",
   "CaseMerging-CaseCreatedAndContactAdded": "Emergency Referral #{{caseId}} created and contact added",
-  "CaseMerging-CancelCase": "Cancel Referral"
-}
+  "CaseMerging-CancelCase": "Cancel Referral",
+
+  "Profile-NoCasesFound": "No Incidents Found",
+  "CaseMerging-AddContactToCase": "Add Contact to Incident",
+  "BottomBar-AddedToCase": "Added to Incident",
+  "SearchContactsAndCases-TitleExistingCase": "Search for Incidents",
+  "SearchResultsIndex-SelectCase": "Select Incident"
+  }
