@@ -528,7 +528,7 @@
   "BottomBar-AddedToCase": "Agregado al caso",
   "SearchContactsAndCases-TitleExistingCase": "Buscar casos",
   "SearchResultsIndex-SelectCase": "Seleccione el caso",
-  "SearchResultsIndex-NoCasesFound": "No {{type}} encontrado",
+  "SearchResultsIndex-NoCasesFound": "{{type}} no encontrado",
   "SearchResultsIndex-SearchAgainForCase": "Busque nuevamente un {{type}",
   "SearchResultsIndex-SaveToNewCase": "Guarde este contacto en un nuevo caso",
   "SearchResultsIndex-Or": "o",
