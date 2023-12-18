@@ -565,44 +565,6 @@ export const CasePrintViewSpinner = styled('div')`
 `;
 CasePrintViewSpinner.displayName = 'CasePrintViewSpinner';
 
-type TransferStyledButtonProps = {
-  background?: string;
-  color?: string;
-  taller?: boolean;
-};
-
-export const TransferStyledButton = styled('button')<TransferStyledButtonProps>`
-  background: ${props => (props.background ? props.background : '#ccc')};
-  color: ${props => (props.color ? props.color : '#000')};
-  letter-spacing: 0px;
-  text-transform: none;
-  margin-right: 1em;
-  padding: 0px 16px;
-  height: ${props => (props.taller ? 35 : 28)}px;
-  font-size: 13px;
-  outline: none;
-  border-radius: 4px;
-  border: none;
-  align-self: center;
-  font-weight: 600;
-  &:hover:not([disabled]) {
-    cursor: pointer;
-    border: 1px solid gray;
-    padding: 0px 15px;
-  }
-  &:focus:not([disabled]) {
-    outline: auto;
-    outline-color: #1976d2;
-  }
-  &:active:not([disabled]) {
-    background: rgb(172, 179, 181);
-  }
-  &:disabled {
-    opacity: 50%;
-  }
-`;
-TransferStyledButton.displayName = 'TransferStyledButton';
-
 export const HeaderContainer = styled(Row)`
   width: 100%;
   justify-items: flex-start;

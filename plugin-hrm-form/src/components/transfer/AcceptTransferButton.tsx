@@ -18,7 +18,7 @@
 import React from 'react';
 import { TaskHelper, Template, ITask, ThemeProps } from '@twilio/flex-ui';
 
-import { TransferStyledButton } from '../../styles/HrmStyles';
+import { TransferStyledButton } from '../../styles/buttons';
 import { closeCallOriginal } from '../../utils/transfer';
 import HrmTheme from '../../styles/HrmTheme';
 
