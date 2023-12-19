@@ -72,7 +72,8 @@
             "post_survey_serverless_handled": true,
             "backend_handled_chat_janitor": true,
             "enable_client_profiles": false,
-            "enable_case_merging": false
+            "enable_case_merging": false,
+            "enable_confirmation_on_browser_close": true
         },
         "multipleOfficeSupport": false,
         "WARNING": "These attributes are set using a tool in the twilio-iac repo. If you are seeing this message anywhere else, please stop and use the process described here: https://github.com/techmatters/flex-plugins/blob/master/twilio-iac/docs/service_configuration.md"
