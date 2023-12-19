@@ -22,12 +22,11 @@ import { Close } from '@material-ui/icons';
 import { HeaderCloseButton, HiddenText } from '../../styles/HrmStyles';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import WarningIcon from './WarningIcon';
-import { BannerActionLink, BannerContainer, Text } from './styles';
+import { BannerContainer, CaseLink, Text } from './styles';
 import { closeRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
 import { contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { Contact } from '../../types/types';
 import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
-import { newCloseModalAction } from '../../states/routing/actions';
 import asyncDispatch from '../../states/asyncDispatch';
 import { RootState } from '../../states';
 
@@ -52,7 +51,6 @@ const mapDispatchToProps = (dispatch, { taskId }: OwnProps) => ({
   connectCaseToTaskContact: async (taskContact: Contact, caseId: string) => {
     await asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, caseId));
   },
-  closeModal: () => dispatch(newCloseModalAction(taskId)),
 });
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
@@ -63,7 +61,6 @@ const ContactRemovedFromCaseBanner: React.FC<Props> = ({
   showRemovedFromCaseBanner,
   savedContact,
   connectCaseToTaskContact,
-  closeModal,
   caseId,
 }) => (
   <BannerContainer color="orange">
@@ -72,15 +69,15 @@ const ContactRemovedFromCaseBanner: React.FC<Props> = ({
       <Template code="CaseMerging-ContactRemovedFromCase" />
     </Text>
     {showRemovedFromCaseBanner && savedContact?.id && (
-      <HeaderCloseButton
+      <CaseLink
         onClick={() => {
           connectCaseToTaskContact(savedContact, caseId);
         }}
-        color="#fffeef"
+        color="#ffa500"
       >
         <Template code="CaseMerging-ContactUndoRemovedFromCase" />
-      </HeaderCloseButton>
-     )}
+      </CaseLink>
+    )}
     <HeaderCloseButton onClick={() => close(contactId)} style={{ opacity: '.75' }}>
       <HiddenText>
         <Template code="NavigableContainer-CloseButton" />

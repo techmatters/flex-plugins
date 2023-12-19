@@ -42,13 +42,11 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 const mapStateToProps = (state: RootState, { taskId, contactId }: OwnProps) => {
   const offlineSavedContact = selectContactByTaskSid(state, taskId)?.savedContact;
   const existingSavedContact = state[namespace][contactFormsBase].existingContacts[contactId]?.savedContact;
-  const connectedCase = selectCaseByCaseId(
-    state,
-    offlineSavedContact?.caseId ? offlineSavedContact?.caseId : existingSavedContact?.caseId,
-  )?.connectedCase;
-  const caseId = offlineSavedContact ? offlineSavedContact?.caseId : existingSavedContact?.caseId;
+  const connectedCase = selectCaseByCaseId(state, offlineSavedContact?.caseId || existingSavedContact?.caseId)
+    ?.connectedCase;
+  const caseId = offlineSavedContact?.caseId || existingSavedContact?.caseId;
   return {
-    contact: offlineSavedContact ? offlineSavedContact : existingSavedContact,
+    contact: offlineSavedContact || existingSavedContact,
     connectedCase,
     caseId,
     existingSavedContact,
@@ -63,7 +61,7 @@ const mapDispatchToProps = (dispatch, { taskId }: OwnProps) => ({
     await asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId));
     dispatch(showRemovedFromCaseBannerAction(contactId));
   },
-  removedCaseId: (contactId: string, caseId: string) => setRemovedCaseId(contactId, caseId),
+  saveRemovedCaseId: (contactId: string, caseId: string) => dispatch(setRemovedCaseId(contactId, caseId)),
 });
 
 const ContactAddedToCaseBanner: React.FC<Props> = ({
@@ -72,17 +70,15 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
   viewCaseDetails,
   removeContactFromCase,
   caseId,
-  removedCaseId,
+  saveRemovedCaseId,
   existingSavedContact,
 }) => {
   if (connectedCase === undefined) return null;
 
   const handleRemoveContactFromCase = () => {
     if (existingSavedContact) {
-      removedCaseId(existingSavedContact.id, existingSavedContact.caseId);
-      console.log('existingSavedContact in block', existingSavedContact)
+      saveRemovedCaseId(existingSavedContact.id, existingSavedContact.caseId);
     }
-    console.log('existingSavedContact in out of block', existingSavedContact)
     removeContactFromCase(contact.id);
   };
 
