@@ -575,7 +575,7 @@
   "Profile-NoContactsFound": "No se encontraron contactos",
   "Profile-NoCasesFound": "No se encontraron casos",
   "Profile-NoStatusesListed": "Sin estatus",
-  "MaskIdentifiers": "Xxxxxx",
+  "MaskIdentifiers": "XXXXXX",
   "CaseMerging-AddContactToCase": "Agregar contacto al caso",
   "TabbedForms-NewCase": "Nuevo caso",
   "TabbedForms-ExistingCase": "Caso existente",
