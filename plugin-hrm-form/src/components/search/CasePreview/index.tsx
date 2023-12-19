@@ -36,7 +36,7 @@ import { isStandaloneITask } from '../../case/Case';
 import { newCloseModalAction } from '../../../states/routing/actions';
 import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../../permissions';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
-import { isNonDataCallType } from '../../../states/validationRules';
+import { setCaseConnectedToContact } from '../../../states/contacts/actions';
 
 type OwnProps = {
   currentCase: Case;
@@ -58,6 +58,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { task, currentCase }: OwnP
     await asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, currentCase.id));
   },
   closeModal: () => dispatch(newCloseModalAction(task.taskSid)),
+  setCaseConnectedToContact: (connectedCase: Case, contactId: string) =>
+    dispatch(setCaseConnectedToContact(connectedCase, contactId)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -72,6 +74,7 @@ const CasePreview: React.FC<Props> = ({
   taskContact,
   connectCaseToTaskContact,
   closeModal,
+  setCaseConnectedToContact,
 }) => {
   const { id, createdAt, connectedContacts, status, info, twilioWorkerId } = currentCase;
   const createdAtObj = new Date(createdAt);
@@ -100,11 +103,8 @@ const CasePreview: React.FC<Props> = ({
   });
   let isConnectedToTaskContact = false;
   let showConnectButton = false;
-  const {
-    enable_case_management: enableCaseManagement,
-    enable_case_merging: enableCaseMerging,
-  } = getAseloFeatureFlags();
-  if (enableCaseManagement && enableCaseMerging && taskContact && !isNonDataCallType(taskContact.rawJson?.callType)) {
+
+  if (getAseloFeatureFlags().enable_case_merging && taskContact) {
     isConnectedToTaskContact = Boolean(connectedContacts?.find(contact => contact.id === taskContact.id));
 
     const { can: canForCase } = getPermissionsForCase(currentCase.twilioWorkerId, currentCase.status);
@@ -133,6 +133,7 @@ const CasePreview: React.FC<Props> = ({
           showConnectButton={showConnectButton}
           onClickConnectToTaskContact={() => {
             connectCaseToTaskContact(taskContact);
+            setCaseConnectedToContact(currentCase, taskContact.id);
             closeModal();
           }}
         />

@@ -331,5 +331,5 @@ test('<Search> should display <ContactDetails />', async () => {
   expect(screen.queryByTestId('ContactDetails')).toBeInTheDocument();
   expect(screen.queryByTestId('SearchForm')).not.toBeInTheDocument();
   expect(screen.queryByRole('button', { name: 'SearchResultsIndex-BackToResults' })).toBeDefined();
-  expect(store.getActions().length).toBe(1);
+  expect(store.getActions().length).toBe(0);
 });

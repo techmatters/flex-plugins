@@ -24,7 +24,7 @@ import HrmForm from './HrmForm';
 import FormNotEditable from './FormNotEditable';
 import { RootState } from '../states';
 import { hasTaskControl } from '../utils/transfer';
-import { CustomITask, isOfflineContactTask, isInMyBehalfITask } from '../types/types';
+import { CustomITask, isInMyBehalfITask, isOfflineContactTask } from '../types/types';
 import ProfileIdentifierBanner from './profile/ProfileIdentifierBanner';
 import { Flex } from '../styles/HrmStyles';
 import { isStandaloneITask } from './case/Case';
@@ -185,7 +185,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 };
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
-  loadContactFromHrmByTaskSid: () => dispatch(loadContactFromHrmByTaskSidAsyncAction(task.taskSid)),
+  loadContactFromHrmByTaskSid: () =>
+    dispatch(loadContactFromHrmByTaskSidAsyncAction(task.taskSid, `${task.taskSid}-active`)),
   createContact: (definition: DefinitionVersion) =>
     asyncDispatch(dispatch)(
       createContactAsyncAction(newContact(definition, task), getHrmConfig().workerSid, task.taskSid),

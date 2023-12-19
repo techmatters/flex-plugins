@@ -18,7 +18,7 @@ import { DataCallTypes } from 'hrm-form-definitions';
 
 import { Case, Contact } from '../../types/types';
 import { DraftResourceReferralState } from './resourceReferral';
-import { ContactState, ExistingContactsState } from './existingContacts';
+import { CaseConnectedToContactState, ContactState, ExistingContactsState } from './existingContacts';
 import { ContactDetailsState } from './contactDetails';
 
 // Action types
@@ -45,6 +45,7 @@ export const REMOVE_FROM_CASE = 'contact-action/remove-from-case';
 export const CONNECT_TO_CASE_ACTION_FULFILLED = `${CONNECT_TO_CASE}_FULFILLED` as const;
 export const REMOVE_FROM_CASE_ACTION_FULFILLED = `${REMOVE_FROM_CASE}_FULFILLED` as const;
 export const SET_SAVED_CONTACT = 'contact-action/set-saved-contact';
+export const CASE_CONNECTED_TO_CONTACT = 'CASE_CONNECTED_TO_CONTACT';
 
 export const LoadingStatus = {
   LOADING: 'loading',
@@ -73,6 +74,7 @@ export type ContactsState = {
   contactsBeingCreated: Set<string>;
   contactDetails: ContactDetailsState;
   isCallTypeCaller: boolean;
+  caseConnectedToContact: CaseConnectedToContactState;
 };
 
 type SaveEndMillisAction = {
@@ -104,11 +106,18 @@ type CheckButtonDataAction = {
   isCallTypeCaller: boolean;
 };
 
+type CaseConnectedToContactAction = {
+  type: typeof CASE_CONNECTED_TO_CONTACT;
+  caseConnectedToContact: Case;
+  contactId: string;
+};
+
 export type ContactsActionType =
   | SaveEndMillisAction
   | PrePopulateFormAction
   | RestoreEntireFormAction
-  | CheckButtonDataAction;
+  | CheckButtonDataAction
+  | CaseConnectedToContactAction;
 
 export type ContactUpdatingAction = {
   type:

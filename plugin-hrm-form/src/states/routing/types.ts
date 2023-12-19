@@ -246,7 +246,8 @@ export const isCaseRoute = (route: AppRoutes): route is CaseRoute => route?.rout
 export enum ChangeRouteMode {
   Push = 'push',
   Replace = 'replace',
-  Reset = 'reset',
+  ResetModal = 'reset-modal',
+  ResetRoute = 'reset-route',
 }
 
 type ChangeRouteAction = {
