@@ -30,7 +30,7 @@ import {
   CategoryTitle,
   ArrowButton,
   SubcategoryList,
-} from '../../../styles/caseList/filters';
+} from '../../../styles/table/filters';
 import type { Category } from './CategoriesFilter';
 
 type OwnProps = {

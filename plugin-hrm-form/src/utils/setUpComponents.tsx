@@ -36,6 +36,8 @@ import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
 import StandaloneSearchSideLink from '../components/sideLinks/StandaloneSearchSideLink';
 import ManualPullButton from '../components/ManualPullButton';
 import ViewTaskNumber from '../components/common/MaskingIdentifiers/ViewTaskNumber';
+import ProfileListPage from '../components/profile/ProfileListPage';
+import ProfileListSideLink from '../components/sideLinks/ProfileListSideLink';
 import { AddOfflineContactButton, OfflineContactTask } from '../components/OfflineContact';
 import { chatCapacityUpdated } from '../states/configuration/actions';
 import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles/HrmStyles';
@@ -306,6 +308,32 @@ export const setUpCaseList = () => {
         Flex.Actions.invokeAction('NavigateToView', { viewName: 'case-list' });
         Flex.Manager.getInstance().store.dispatch(
           changeRoute({ route: 'case-list', subroute: 'case-list' }, standaloneTaskSid, ChangeRouteMode.Reset),
+        );
+      }}
+      reserveSpace={false}
+      showLabel={true}
+    />,
+  );
+};
+
+/**
+ * Add components for Client Profiles page
+ */
+
+export const setUpClientProfileList = () => {
+  Flex.ViewCollection.Content.add(
+    <Flex.View name="client-profiles" key="client-profiles-view">
+      <ProfileListPage />
+    </Flex.View>,
+  );
+
+  Flex.SideNav.Content.add(
+    <ProfileListSideLink
+      key="ProfileListSideLink"
+      onClick={() => {
+        Flex.Actions.invokeAction('NavigateToView', { viewName: 'client-profiles' });
+        Flex.Manager.getInstance().store.dispatch(
+          changeRoute({ route: 'profiles-list', subroute: 'profiles-list' }, standaloneTaskSid, ChangeRouteMode.Reset),
         );
       }}
       reserveSpace={false}
