@@ -18,15 +18,15 @@ import React from 'react';
 import { CallCanvas, CallCanvasActions, ParticipantCanvas, TaskHelper } from '@twilio/flex-ui';
 import { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
 
-import ConferencePanel from '../components/Conference/ConferenceActions/ConferencePanel';
-import ToggleMute from '../components/Conference/ConferenceActions/ToggleMute';
-import ToogleDialpad from '../components/Conference/ConferenceActions/ToogleDialpad';
-import Hangup from '../components/Conference/ConferenceActions/Hangup';
-import HoldParticipantButton from '../components/Conference/HoldParticipantButton';
-import RemoveParticipantButton from '../components/Conference/RemoveParticipantButton';
-import ConferenceMonitor from '../components/Conference/ConferenceMonitor';
+import ConferencePanel from '../components/conference/ConferenceActions/ConferencePanel';
+import ToggleMute from '../components/conference/ConferenceActions/ToggleMute';
+import ToogleDialpad from '../components/conference/ConferenceActions/ToogleDialpad';
+import Hangup from '../components/conference/ConferenceActions/Hangup';
+import HoldParticipantButton from '../components/conference/HoldParticipantButton';
+import RemoveParticipantButton from '../components/conference/RemoveParticipantButton';
+import ConferenceMonitor from '../components/conference/ConferenceMonitor';
 import { getTemplateStrings } from '../hrmConfig';
-import ParticipantLabel from '../components/Conference/ParticipantLabel';
+import ParticipantLabel from '../components/conference/ParticipantLabel';
 
 export const setupConferenceComponents = () => {
   const strings = getTemplateStrings();

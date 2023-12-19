@@ -21,7 +21,9 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMoreOutlined';
 import AssignmentIcon from '@material-ui/icons/AssignmentOutlined';
 import OpenInNew from '@material-ui/icons/OpenInNew';
 
-import { Row, CSAMReportButtonText, StyledCSAMReportButton } from '../../styles/HrmStyles';
+import { Row } from '../../styles/HrmStyles';
+import { CSAMReportButtonText } from './styles';
+import { StyledCSAMReportButton } from '../../styles/buttons';
 import CSAMReportDropdown from './CSAMReportDropdown';
 
 type OwnProps = {

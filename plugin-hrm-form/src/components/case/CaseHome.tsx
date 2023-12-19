@@ -21,7 +21,8 @@ import { connect, ConnectedProps } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseContainer } from '../../styles/case';
-import { BottomButtonBar, Box, Flex, SaveAndEndButton, StyledNextStepButton } from '../../styles/HrmStyles';
+import { BottomButtonBar, Box, Flex } from '../../styles/HrmStyles';
+import { SaveAndEndButton, StyledNextStepButton } from '../../styles/buttons';
 import CaseDetailsComponent from './CaseDetails';
 import Timeline from './Timeline';
 import CaseSection from './CaseSection';

@@ -31,8 +31,8 @@ import {
   FormCheckBoxWrapper,
   FormLabel,
   Row,
-  StyledNextStepButton,
 } from '../../../styles/HrmStyles';
+import { StyledNextStepButton } from '../../../styles/buttons';
 import { getContactValueTemplate, getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
 import {
   canOnlyViewOwnCases,

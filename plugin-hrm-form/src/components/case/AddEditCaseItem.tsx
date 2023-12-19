@@ -32,9 +32,9 @@ import {
   ColumnarBlock,
   ColumnarContent,
   Container,
-  StyledNextStepButton,
   TwoColumnLayout,
 } from '../../styles/HrmStyles';
+import { StyledNextStepButton } from '../../styles/buttons';
 import { CaseActionFormContainer } from '../../styles/case';
 import ActionHeader from './ActionHeader';
 import { RootState } from '../../states';

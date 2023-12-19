@@ -21,7 +21,9 @@ import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import { ButtonProps } from '@material-ui/core/Button';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
 
-import { Flex, Row, FontOpenSans, BottomButtonBar, TabbedFormsContainer, StyledNextStepButton } from '../HrmStyles';
+import { TabbedFormTabContainer, TabbedFormsContainer } from '../../components/tabbedForms/styles';
+import { Flex, Row, FontOpenSans, BottomButtonBar } from '../HrmStyles';
+import { StyledNextStepButton } from '../buttons';
 import HrmTheme from '../HrmTheme';
 
 // CaseViewer Styles

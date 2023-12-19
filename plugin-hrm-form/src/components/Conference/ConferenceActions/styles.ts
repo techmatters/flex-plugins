@@ -18,7 +18,7 @@ import { styled } from '@twilio/flex-ui';
 
 import { Flex } from '../../../styles/HrmStyles';
 
-export const StyledConferenceButtonWrapper = styled('div')`
+export const ConferenceButtonWrapper = styled('div')`
   margin-left: 8px;
   margin-right: 8px;
   display: flex;
@@ -85,17 +85,17 @@ export const DialogArrow = styled(Flex)<DialogArrowProps>`
 `;
 DialogArrow.displayName = 'DialogArrow';
 
-export const StyledConferenceButton = styled('button')`
+export const ConferenceButton = styled('button')`
   border-style: none;
   border-radius: 50%;
   min-width: auto;
   cursor: pointer;
   background-color: none;
 `;
-StyledConferenceButton.displayName = 'StyledConferenceButton';
+ConferenceButton.displayName = 'ConferenceButton';
 
-export const StyledHangUpButton = styled(StyledConferenceButton)`
+export const HangUpButton = styled(ConferenceButton)`
   background-color: #c81c25;
   color: #fff;
 `;
-StyledHangUpButton.displayName = 'StyledHangUpButton';
+HangUpButton.displayName = 'HangUpButton';

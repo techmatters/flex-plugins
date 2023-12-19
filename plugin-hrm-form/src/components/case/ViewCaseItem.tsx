@@ -21,7 +21,8 @@ import { Template } from '@twilio/flex-ui';
 import Edit from '@material-ui/icons/Edit';
 import { DefinitionVersion, isNonSaveable } from 'hrm-form-definitions';
 
-import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyles';
+import { BottomButtonBar, Box } from '../../styles/HrmStyles';
+import { StyledNextStepButton } from '../../styles/buttons';
 import { CaseLayout, FullWidthFormTextContainer } from '../../styles/case';
 import { RootState } from '../../states';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';

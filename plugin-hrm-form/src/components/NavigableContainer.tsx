@@ -26,7 +26,8 @@ import { getCurrentBaseRoute, getCurrentTopmostRouteStackForTask } from '../stat
 import { isRouteModal } from '../states/routing/types';
 import { changeRoute, newCloseModalAction, newGoBackAction } from '../states/routing/actions';
 import { Contact, CustomITask, StandaloneITask } from '../types/types';
-import { Box, HeaderCloseButton, HiddenText, Row, StyledBackButton } from '../styles/HrmStyles';
+import { Box, HiddenText, Row } from '../styles/HrmStyles';
+import { StyledBackButton, HeaderCloseButton } from '../styles/buttons';
 import {
   LargeBackIcon,
   NavigableContainerBox,

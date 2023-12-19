@@ -22,7 +22,7 @@ import {
   ResourceAttributeContent,
   ResourceAttributeDescription,
   ResourceSubtitle,
-} from '../../../styles/ReferrableResources';
+} from '../styles';
 import ExpandableSection from './ExpandableSection';
 import OperatingHours from './OperatingHours';
 import ResourceAttributeWithPrivacy from './ResourceAttributeWithPrivacy';

@@ -31,7 +31,7 @@ import {
   ResourcesSearchResultsList,
   ResourcesSearchTitle,
   ResourceTitle,
-} from '../../../styles/ReferrableResources';
+} from '../styles';
 import {
   changeResultPageAction,
   getCurrentPageResults,

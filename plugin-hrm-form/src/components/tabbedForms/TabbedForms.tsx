@@ -43,7 +43,8 @@ import {
   isOfflineContact,
   Case as CaseForm,
 } from '../../types/types';
-import { Box, Row, StyledTabs, TabbedFormsContainer, TabbedFormTabContainer } from '../../styles/HrmStyles';
+import { Box, Row, StyledTabs } from '../../styles/HrmStyles';
+import { TabbedFormsContainer, TabbedFormTabContainer } from './styles';
 import FormTab from '../common/forms/FormTab';
 import IssueCategorizationSectionForm from '../contact/IssueCategorizationSectionForm';
 import ContactDetailsSectionForm from '../contact/ContactDetailsSectionForm';

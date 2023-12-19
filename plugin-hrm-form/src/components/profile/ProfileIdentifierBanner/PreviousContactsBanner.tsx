@@ -26,7 +26,7 @@ import {
 } from '../../../states/search/actions';
 import { RootState } from '../../../states';
 import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../search/SearchResults';
-import { YellowBanner } from '../../../styles/previousContactsBanner';
+import { YellowBanner } from './styles';
 import { Bold } from '../../../styles/HrmStyles';
 import { StyledLink } from '../../../styles/search';
 import { ChannelTypes, channelTypes } from '../../../states/DomainConstants';

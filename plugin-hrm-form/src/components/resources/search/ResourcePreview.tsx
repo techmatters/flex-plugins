@@ -25,7 +25,7 @@ import {
   ResourcePreviewAttributeDescription,
   ResourcePreviewHeaderText,
   ResourcePreviewWrapper,
-} from '../../../styles/ReferrableResources';
+} from '../styles';
 import { PreviewRow, StyledLink } from '../../../styles/search';
 import { isMissingResource, ReferrableResourceResult } from '../../../states/resources/search';
 import ResourceIdCopyButton from '../ResourceIdCopyButton';

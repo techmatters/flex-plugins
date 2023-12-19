@@ -21,7 +21,8 @@ import { useForm } from 'react-hook-form';
 import Close from '@material-ui/icons/Close';
 
 import ActionHeader from '../case/ActionHeader';
-import { BottomButtonBar, Box, HeaderCloseButton, HiddenText, Row, StyledNextStepButton } from '../../styles/HrmStyles';
+import { BottomButtonBar, Box, HiddenText, Row } from '../../styles/HrmStyles';
+import { StyledNextStepButton, HeaderCloseButton } from '../../styles/buttons';
 import {
   BoldDescriptionText,
   CSAMReportContainer,

@@ -29,7 +29,7 @@ import {
   ResourceTitle,
   ViewResourceArea,
   ResourceViewContainer,
-} from '../../../styles/ReferrableResources';
+} from '../styles';
 import ResourceAttribute from './ResourceAttribute';
 import { loadResourceAsyncAction, navigateToSearchAction, ResourceLoadStatus } from '../../../states/resources';
 import asyncDispatch from '../../../states/asyncDispatch';

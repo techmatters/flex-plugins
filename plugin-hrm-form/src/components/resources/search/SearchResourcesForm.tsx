@@ -32,8 +32,8 @@ import {
   FormSelect,
   FormSelectWrapper,
   Row,
-  StyledNextStepButton,
 } from '../../../styles/HrmStyles';
+import { StyledNextStepButton } from '../../../styles/buttons';
 import {
   ResourceSearchFormClearButton,
   ResourcesSearchFormArea,
@@ -43,7 +43,7 @@ import {
   ResourcesSearchFormSettingBox,
   ResourcesSearchFormTopRule,
   ResourcesSearchTitle,
-} from '../../../styles/ReferrableResources';
+} from '../styles';
 import {
   FilterOption,
   ReferrableResourceSearchState,

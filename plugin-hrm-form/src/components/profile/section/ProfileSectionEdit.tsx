@@ -19,15 +19,8 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { ProfileSection } from '../../../types/types';
 import NavigableContainer from '../../NavigableContainer';
-import {
-  Flex,
-  StyledNextStepButton,
-  Container,
-  Box,
-  ColumnarBlock,
-  ColumnarContent,
-  FormTextArea,
-} from '../../../styles/HrmStyles';
+import { Flex, Container, Box, ColumnarBlock, ColumnarContent, FormTextArea } from '../../../styles/HrmStyles';
+import { StyledNextStepButton } from '../../../styles/buttons';
 import { useEditProfileSection } from '../../../states/profile/hooks/useProfileSection';
 import useProfileSectionTypes from '../../../states/configuration/hooks/useProfileSectionTypes';
 import { ProfileCommonProps } from '../types';

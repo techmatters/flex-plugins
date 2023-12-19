@@ -17,7 +17,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import { StyledCSAMReportDropdown, StyledCSAMReportDropdownList } from '../../styles/HrmStyles';
+import { StyledCSAMReportDropdown, StyledCSAMReportDropdownList } from './styles';
 
 type OwnProps = {
   handleChildCSAMType: () => void;
