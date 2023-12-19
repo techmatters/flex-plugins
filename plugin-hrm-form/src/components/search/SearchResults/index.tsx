@@ -18,46 +18,46 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Template, Tab as TwilioTab } from '@twilio/flex-ui';
+import { Tab as TwilioTab, Template } from '@twilio/flex-ui';
 import InfoIcon from '@material-ui/icons/Info';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
-import { SearchContactResult, SearchCaseResult, Contact, Case, CustomITask } from '../../../types/types';
+import { Case, Contact, CustomITask, SearchCaseResult, SearchContactResult } from '../../../types/types';
 import { Row } from '../../../styles/HrmStyles';
 import {
-  ResultsHeader,
-  ListContainer,
-  ScrollableList,
-  StyledFormControlLabel,
-  StyledSwitch,
-  SwitchLabel,
-  StyledLink,
-  StyledTabs,
-  StyledResultsContainer,
-  StyledResultsText,
-  StyledResultsHeader,
   EmphasisedText,
-  StyledCount,
-  SearchResultWarningContainer,
-  Text,
+  ListContainer,
   NoResultTextLink,
+  ResultsHeader,
+  ScrollableList,
+  SearchResultWarningContainer,
+  StyledCount,
+  StyledFormControlLabel,
+  StyledLink,
+  StyledResultsContainer,
+  StyledResultsHeader,
+  StyledResultsText,
+  StyledSwitch,
+  StyledTabs,
+  SwitchLabel,
+  Text,
 } from '../../../styles/search';
 import Pagination from '../../pagination';
-import { getPermissionsForContact, getPermissionsForCase, PermissionActions } from '../../../permissions';
+import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../../permissions';
 import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
 import { getCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
+import * as RoutingActions from '../../../states/routing/actions';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
 import { AppRoutes, ChangeRouteMode, SearchResultRoute } from '../../../states/routing/types';
 import { recordBackendError } from '../../../fullStory';
-import { hasTaskControl } from '../../../utils/transfer';
+import { hasTaskControl } from '../../../transfer/transferTaskState';
 import { getUnsavedContact } from '../../../states/contacts/getUnsavedContact';
 import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 import { createCaseAsyncAction } from '../../../states/case/saveCase';
 import asyncDispatch from '../../../states/asyncDispatch';
-import * as RoutingActions from '../../../states/routing/actions';
 
 export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;

@@ -14,16 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import * as React from 'react';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider, withTheme } from '@twilio/flex-ui';
 
-import HrmTheme from '../../../styles/HrmTheme';
 import TransferButton from '../../../components/transfer/TransferButton';
 import { transferStatuses } from '../../../states/DomainConstants';
 
-jest.mock('../../../utils/transfer', () => ({
+jest.mock('../../../transfer/transferTaskState', () => ({
   canTransferConference: () => true,
 }));
 
@@ -38,12 +37,8 @@ const task = {
 const Wrapped = withTheme(props => <TransferButton task={task} {...props} />);
 
 test('a11y', async () => {
-  const themeConf = {
-    colorTheme: HrmTheme,
-  };
-
   const wrapper = mount(
-    <StorelessThemeProvider themeConf={themeConf}>
+    <StorelessThemeProvider themeConf={{}}>
       <Wrapped />
     </StorelessThemeProvider>,
   );

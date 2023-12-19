@@ -15,7 +15,7 @@
  */
 import { CustomITask } from '../types/types';
 import { getAseloFeatureFlags } from '../hrmConfig';
-import * as TransferHelpers from './transfer';
+import * as TransferHelpers from '../transfer/transferTaskState';
 
 /* eslint-disable sonarjs/prefer-single-boolean-return */
 export const shouldSendInsightsData = (task: CustomITask) => {

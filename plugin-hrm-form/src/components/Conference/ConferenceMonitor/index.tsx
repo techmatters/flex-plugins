@@ -18,7 +18,7 @@ import React from 'react';
 import { ConferenceParticipant, TaskContextProps } from '@twilio/flex-ui';
 
 import { conferenceApi } from '../../../services/ServerlessService';
-import { hasTaskControl, isOriginalReservation, isTransferring } from '../../../utils/transfer';
+import { hasTaskControl, isOriginalReservation, isTransferring } from '../../../transfer/transferTaskState';
 
 const isJoinedWithEnd = (p: ConferenceParticipant) => p.status === 'joined' && p.mediaProperties.endConferenceOnExit;
 const isJoinedWithoutEnd = (p: ConferenceParticipant) =>

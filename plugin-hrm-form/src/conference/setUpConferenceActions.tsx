@@ -15,9 +15,9 @@
  */
 
 import React from 'react';
-import { Actions, ITask, NotificationType, Notifications, Template } from '@twilio/flex-ui';
+import { Actions, ITask, Notifications, NotificationType, Template } from '@twilio/flex-ui';
 
-import { hasTaskControl, isTransferring } from '../utils/transfer';
+import { hasTaskControl, isTransferring } from '../transfer/transferTaskState';
 import { TransfersNotifications } from '../transfer/setUpTransferActions';
 
 export const ConferenceNotifications = {

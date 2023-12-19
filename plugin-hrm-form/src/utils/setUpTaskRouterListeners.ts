@@ -14,11 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Manager, TaskHelper, StateHelper, ITask } from '@twilio/flex-ui';
+import { ITask, Manager, StateHelper, TaskHelper } from '@twilio/flex-ui';
 import type { Conversation } from '@twilio/conversations';
 
 import { FeatureFlags } from '../types/types';
-import * as TransferHelpers from './transfer';
+import * as TransferHelpers from '../transfer/transferTaskState';
 import { deactivateAseloListeners } from '../conversationListeners';
 
 const removeConversationListeners = (conversation: Conversation) => {
