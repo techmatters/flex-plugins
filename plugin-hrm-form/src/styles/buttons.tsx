@@ -161,7 +161,7 @@ StyledBackButton.displayName = 'StyledBackButton';
 export const StyledCSAMReportButton = TabbedFormsHeaderButton;
 StyledCSAMReportButton.displayName = 'StyledCSAMReportButton';
 
-//Navigation close button
+// Navigation close icon button
 export const HeaderCloseButton = styled(ButtonBase)`
   && {
     margin-left: auto;
