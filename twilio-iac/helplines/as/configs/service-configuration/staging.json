@@ -12,7 +12,8 @@
             "enable_save_insights": true,
             "enable_transcripts": false,
             "enable_twilio_transcripts": false,
-            "enable_voice_recordings": false
+            "enable_voice_recordings": false,
+            "enable_case_merging": false
         },
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",
         "multipleOfficeSupport": true,
