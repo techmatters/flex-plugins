@@ -113,6 +113,8 @@ locals {
           fr_nocounsellors_url: "https://twilio-service-4854.twil.io/Msg60025.mp3"
           fr_issues_url: "https://twilio-service-4854.twil.io/FrTechIssues.mp3"
           fr_switch_english_url: "https://twilio-service-4854.twil.io/FrSwitchEnglish.mp3"
+          fr_switch_url: "https://twilio-service-4854.twil.io/FrSwitchInterpreter.mp3"
+          frtr_function_url: "https://twilio-service-4854.twil.io/6004_khp_french_int"
 
         }
         chatbot_unique_names = []
@@ -191,6 +193,8 @@ locals {
           fr_inflight_url: "https://twilio-service-4854.twil.io/Msg60021.mp3"
           fr_issues_url: "https://twilio-service-4854.twil.io/FrTechIssues.mp3"
           fr_switch_english_url: "https://twilio-service-4854.twil.io/FrSwitchEnglish.mp3"
+          fr_switch_url: "https://twilio-service-4854.twil.io/FrSwitchInterpreter.mp3"
+          frtr_function_url: "https://twilio-service-4854.twil.io/6004_khp_french_int"
 
         }
         chatbot_unique_names = []
@@ -224,6 +228,8 @@ locals {
           fr_inflight_url: "https://twilio-service-4854.twil.io/Msg60021.mp3"
           fr_issues_url: "https://twilio-service-4854.twil.io/FrTechIssues.mp3"
           fr_switch_english_url: "https://twilio-service-4854.twil.io/FrSwitchEnglish.mp3"
+          fr_switch_url: "https://twilio-service-4854.twil.io/FrSwitchInterpreter.mp3"
+          frtr_function_url: "https://twilio-service-4854.twil.io/6004_khp_french_int"
 
         }
         chatbot_unique_names = []
