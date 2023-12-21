@@ -27,7 +27,7 @@ import { RootState } from '../../../states';
 import { selectCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
 import { CaseTimelineRoute, ChangeRouteMode } from '../../../states/routing/types';
 import { selectCaseActivityCount } from '../../../states/case/timeline';
-import Pagination from '../../Pagination';
+import Pagination from '../../pagination';
 import { changeRoute } from '../../../states/routing/actions';
 
 type MyProps = {
