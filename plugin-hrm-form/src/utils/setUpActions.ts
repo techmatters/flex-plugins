@@ -24,12 +24,12 @@ import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../st
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
 import { customChannelTypes } from '../states/DomainConstants';
-import * as TransferHelpers from './transfer';
+import * as TransferHelpers from '../transfer/transferTaskState';
 import { CustomITask, FeatureFlags } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
 import type { RootState } from '../states';
-import { getTaskLanguage, getNumberFromTask } from './task';
+import { getNumberFromTask, getTaskLanguage } from './task';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { newContact } from '../states/contacts/contactState';
 import asyncDispatch from '../states/asyncDispatch';

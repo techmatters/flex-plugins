@@ -16,9 +16,9 @@
 
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Actions, Template, TaskContextProps, withTaskContext } from '@twilio/flex-ui';
+import { Actions, TaskContextProps, Template, withTaskContext } from '@twilio/flex-ui';
 
-import { canTransferConference } from '../../utils/transfer';
+import { canTransferConference } from '../../transfer/transferTaskState';
 import { TransferStyledButton } from '../../styles/HrmStyles';
 import HhrTheme from '../../styles/HrmTheme';
 

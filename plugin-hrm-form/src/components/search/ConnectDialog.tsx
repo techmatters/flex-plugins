@@ -21,9 +21,9 @@ import { Template } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
 
 import { Row } from '../../styles/HrmStyles';
-import { ConfirmContainer, ConfirmText, CancelButton } from '../../styles/search';
+import { CancelButton, ConfirmContainer, ConfirmText } from '../../styles/search';
 import TabPressWrapper from '../TabPressWrapper';
-import { hasTaskControl } from '../../utils/transfer';
+import { hasTaskControl } from '../../transfer/transferTaskState';
 import { Contact, CustomITask } from '../../types/types';
 
 type Props = {
