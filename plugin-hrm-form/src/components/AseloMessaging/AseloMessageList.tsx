@@ -20,7 +20,7 @@ import { ConversationState, Template } from '@twilio/flex-ui';
 
 import { MessageList } from '../Messaging/MessageList';
 import type { GroupedMessage } from '../Messaging/MessageItem';
-import { Flex, TypingIndicatorText } from '../../styles/HrmStyles';
+import { Flex, TypingIndicatorText } from '../../styles';
 
 type ConversationStateMessage = ConversationState.ConversationState['messages'][number];
 

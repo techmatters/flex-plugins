@@ -21,7 +21,7 @@ import { Template } from '@twilio/flex-ui';
 import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
 import { TimelineRow, TimelineText, TimelineLabel, ViewButton, RowItemContainer } from './styles';
-import { Box, HiddenText } from '../../styles/HrmStyles';
+import { Box, HiddenText } from '../../styles';
 import { formatValue } from '../common/forms/helpers';
 import type { Incident } from '../../types/types';
 

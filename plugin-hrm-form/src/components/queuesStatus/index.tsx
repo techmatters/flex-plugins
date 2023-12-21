@@ -22,7 +22,7 @@ import { Template } from '@twilio/flex-ui';
 import { RootState } from '../../states';
 import QueueCard from './QueueCard';
 import { Container, QueuesContainer } from './styles';
-import { Box, ErrorText, HeaderContainer } from '../../styles/HrmStyles';
+import { Box, ErrorText, HeaderContainer } from '../../styles';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 import type { ChannelTypes, ChannelColors } from '../../states/DomainConstants';
 import { namespace, queuesStatusBase } from '../../states/storeNamespaces';

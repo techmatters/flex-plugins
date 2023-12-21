@@ -20,15 +20,8 @@ import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import { FolderOutlined } from '@material-ui/icons';
 
-import {
-  SubtitleLabel,
-  SubtitleValue,
-  StyledLink,
-  PreviewHeaderText,
-  PreviewRow,
-  SummaryText,
-} from '../styles';
-import { Flex } from '../../../styles/HrmStyles';
+import { SubtitleLabel, SubtitleValue, StyledLink, PreviewHeaderText, PreviewRow, SummaryText } from '../styles';
+import { Flex } from '../../../styles';
 import { getTemplateStrings } from '../../../hrmConfig';
 import ConnectToCaseButton from '../../case/ConnectToCaseButton';
 

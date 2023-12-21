@@ -18,7 +18,8 @@
 import { styled } from '@twilio/flex-ui';
 import { Table, TableCell, TableRow, TableHead, withStyles } from '@material-ui/core';
 
-import { Absolute, FontOpenSans, Flex } from './HrmStyles';
+import { FontOpenSans } from './HrmStyles';
+import { Absolute, Flex } from './layout';
 import HrmTheme from './HrmTheme';
 
 export const ListContainer = styled(Absolute)`

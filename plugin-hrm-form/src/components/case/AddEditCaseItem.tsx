@@ -33,7 +33,7 @@ import {
   ColumnarContent,
   Container,
   TwoColumnLayout,
-} from '../../styles/HrmStyles';
+} from '../../styles';
 import { StyledNextStepButton } from '../../styles/buttons';
 import { CaseActionFormContainer } from './styles';
 import ActionHeader from './ActionHeader';

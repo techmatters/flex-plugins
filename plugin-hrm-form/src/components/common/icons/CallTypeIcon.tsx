@@ -19,7 +19,7 @@ import React from 'react';
 import FaceIcon from '@material-ui/icons/Face';
 import { callTypes, CallTypes } from 'hrm-form-definitions';
 
-import { Flex } from '../../../styles/HrmStyles';
+import { Flex } from '../../../styles';
 import { SilentText } from '../../search/styles';
 
 type OwnProps = {

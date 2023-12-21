@@ -23,7 +23,7 @@ import { callTypes, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
-import { Flex, Box, Row } from '../../styles/HrmStyles';
+import { Flex, Box, Row } from '../../styles';
 import {
   CSAMReportEntry,
   isS3StoredTranscript,

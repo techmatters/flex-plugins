@@ -40,7 +40,7 @@ import ProfileListPage from '../components/profile/ProfileListPage';
 import ProfileListSideLink from '../components/sideLinks/ProfileListSideLink';
 import { AddOfflineContactButton, OfflineContactTask } from '../components/OfflineContact';
 import { chatCapacityUpdated } from '../states/configuration/actions';
-import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles/HrmStyles';
+import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles';
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../components/queuesStatus/styles';

@@ -24,7 +24,7 @@ import type { TwilioStoredMedia, S3StoredTranscript } from '../../../types/types
 import { RootState } from '../../../states';
 import { fetchHrmApi, generateSignedURLPath } from '../../../services/fetchHrmApi';
 import { loadTranscript, TranscriptMessage, TranscriptResult } from '../../../states/contacts/existingContacts';
-import { Box } from '../../../styles/HrmStyles';
+import { Box } from '../../../styles';
 import { GroupedMessage } from '../../Messaging/MessageItem';
 import { MessageList } from '../../Messaging/MessageList';
 import { ErrorFont, ItalicFont, LoadMediaButton, LoadMediaButtonText } from './styles';

@@ -20,7 +20,7 @@ import { endOfDay, format, parse } from 'date-fns';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 
-import { Box, Flex, FormDateInput, FormLabel, FormRadioInput } from '../../../styles/HrmStyles';
+import { Box, Flex, FormDateInput, FormLabel, FormRadioInput } from '../../../styles';
 import { DateFilterOption, DateFilterOptions, isDivider, isExistsDateFilter, isFixedDateRange } from './dateFilters';
 import {
   DialogArrow,

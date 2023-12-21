@@ -17,7 +17,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import { Box, Row, HiddenText } from '../../styles/HrmStyles';
+import { Box, Row, HiddenText } from '../../styles';
 import {
   CloseTaskDialog,
   CloseTaskDialogText,

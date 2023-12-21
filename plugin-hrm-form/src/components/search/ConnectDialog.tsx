@@ -20,7 +20,7 @@ import { Button, Popover } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
 
-import { Row } from '../../styles/HrmStyles';
+import { Row } from '../../styles';
 import { ConfirmContainer, ConfirmText, CancelButton } from './styles';
 import TabPressWrapper from '../TabPressWrapper';
 import { hasTaskControl } from '../../utils/transfer';

@@ -14,32 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
-import { styled } from '@twilio/flex-ui';
+export * from './buttons';
+export * from './HrmStyles';
+export * from './HrmTheme';
+export * from './filters';
+export * from './layout';
+export * from './table';
+export * from './typography';
 
-import { FontOpenSans } from '../../../styles';
-
-export const ParticipantLabelText = styled(FontOpenSans)`
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  font-weight: 700;
-  text-align: center;
-  vertical-align: baseline;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-export const ParticipantLabelContainer = styled('div')`
-  margin-top: 0.75rem;
-  margin-bottom: 0.25rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -webkit-box-flex: 0;
-  flex-grow: 0;
-  padding: 0.5rem;
-  text-align: center;
-  box-sizing: border-box;
-  width: 100%;
-`;
+// eslint-disable-next-line import/no-unused-modules
+export const BottomButtonBarHeight = 55;

@@ -18,7 +18,7 @@ import React from 'react';
 import { styled, Button, IconButton } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 
-import { FontOpenSans, FormInput, Row, Column } from '../../styles/HrmStyles';
+import { FontOpenSans, FormInput, Row, Column } from '../../styles';
 import HrmTheme from '../../styles/HrmTheme';
 
 export const CaseLayout = styled('div')`

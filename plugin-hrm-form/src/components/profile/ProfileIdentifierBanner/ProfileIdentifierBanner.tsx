@@ -21,7 +21,7 @@ import { Template } from '@twilio/flex-ui';
 
 import { useIdentifierByIdentifier, useProfileProperty } from '../../../states/profile/hooks';
 import { YellowBanner } from './styles';
-import { Bold } from '../../../styles/HrmStyles';
+import { Bold } from '../../../styles';
 import { StyledLink } from '../../search/styles';
 import { ChannelTypes, channelTypes } from '../../../states/DomainConstants';
 import { newOpenModalAction } from '../../../states/routing/actions';

@@ -26,7 +26,12 @@ import '../mockGetConfig';
 import { callTypes } from 'hrm-form-definitions';
 
 import '../../states/conferencing';
-import { DataCallTypeButton, NonDataCallTypeButton, ConfirmButton, CancelButton } from '../../styles/callTypeButtons';
+import {
+  DataCallTypeButton,
+  NonDataCallTypeButton,
+  ConfirmButton,
+  CancelButton,
+} from '../../components/callTypeButtons/styles';
 import LocalizationContext from '../../contexts/LocalizationContext';
 import { changeRoute } from '../../states/routing/actions';
 import { updateDraft } from '../../states/contacts/existingContacts';

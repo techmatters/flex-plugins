@@ -20,7 +20,7 @@ import React, { useEffect, useState } from 'react';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 
-import { FormLabel } from '../../../styles/HrmStyles';
+import { FormLabel } from '../../../styles';
 import {
   MultiSelectListItem,
   MultiSelectCheckboxLabel,

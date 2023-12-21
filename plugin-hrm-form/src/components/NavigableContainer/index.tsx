@@ -26,14 +26,9 @@ import { getCurrentBaseRoute, getCurrentTopmostRouteStackForTask } from '../../s
 import { isRouteModal } from '../../states/routing/types';
 import { changeRoute, newCloseModalAction, newGoBackAction } from '../../states/routing/actions';
 import { Contact, CustomITask, StandaloneITask } from '../../types/types';
-import { Box, HiddenText, Row } from '../../styles/HrmStyles';
+import { Box, HiddenText, Row } from '../../styles';
 import { StyledBackButton, HeaderCloseButton } from '../../styles/buttons';
-import {
-  LargeBackIcon,
-  NavigableContainerBox,
-  NavigableContainerContentBox,
-  NavigableContainerTitle,
-} from './styles';
+import { LargeBackIcon, NavigableContainerBox, NavigableContainerContentBox, NavigableContainerTitle } from './styles';
 import useFocus from '../../utils/useFocus';
 
 type FocusTarget = 'back' | 'close';

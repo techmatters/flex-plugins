@@ -19,7 +19,7 @@ import React from 'react';
 import ErrorIcon from '@material-ui/icons/Error';
 import { Template } from '@twilio/flex-ui';
 
-import { StyledTab, StyledSearchTab, StyledTabProps } from '../../../styles/HrmStyles';
+import { StyledTab, StyledSearchTab, StyledTabProps } from '../../../styles';
 
 type Props = {
   label?: string;

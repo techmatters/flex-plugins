@@ -21,7 +21,7 @@ import { CircularProgress } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
-import { Box, BottomButtonBar } from '../../styles/HrmStyles';
+import { Box, BottomButtonBar } from '../../styles';
 import { AddedToCaseButton } from './styles';
 import { StyledNextStepButton, SaveAndEndButton } from '../../styles/buttons';
 import * as RoutingActions from '../../states/routing/actions';

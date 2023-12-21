@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 
-import { Row } from '../../../styles/HrmStyles';
+import { Row } from '../../../styles';
 import { StyledBackButton } from '../../../styles/buttons';
 import { BackText, BackIcon } from '../styles';
 

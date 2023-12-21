@@ -20,7 +20,7 @@ import { withStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import BlockOutlinedIcon from '@material-ui/icons/BlockOutlined';
 
-import { FontOpenSans } from '../../styles/HrmStyles';
+import { FontOpenSans } from '../../styles';
 import HrmTheme from '../../styles/HrmTheme';
 
 export const DetailsWrapper = styled(FontOpenSans)`

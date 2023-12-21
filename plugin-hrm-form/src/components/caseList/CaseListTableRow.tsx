@@ -36,7 +36,7 @@ import {
   IdentifierActionButton,
   TableSummaryFont,
 } from '../../styles/table';
-import { Box, HiddenText } from '../../styles/HrmStyles';
+import { Box, HiddenText } from '../../styles';
 import { formatName, getShortSummary } from '../../utils';
 import { getContactTags } from '../../utils/categories';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';

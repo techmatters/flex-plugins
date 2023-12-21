@@ -16,7 +16,7 @@
 import React from 'react';
 import { styled } from '@twilio/flex-ui';
 
-import { Box, FontOpenSans } from '../../styles/HrmStyles';
+import { Box, FontOpenSans } from '../../styles';
 import HrmTheme from '../../styles/HrmTheme';
 
 export const TabbedFormsContainer = styled('div')`

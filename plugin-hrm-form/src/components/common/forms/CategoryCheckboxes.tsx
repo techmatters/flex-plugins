@@ -24,7 +24,7 @@ import {
   InformationIconButton,
   HtmlTooltip,
   CategoryCheckboxWrapper,
-} from '../../../styles/HrmStyles';
+} from '../../../styles';
 
 type Subcategory = {
   label: string;

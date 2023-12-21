@@ -16,7 +16,7 @@
 
 import { styled } from '@twilio/flex-ui';
 
-import { Flex } from '../../../styles/HrmStyles';
+import { Flex } from '../../../styles';
 
 export const ConferenceButtonWrapper = styled('div')`
   margin-left: 8px;

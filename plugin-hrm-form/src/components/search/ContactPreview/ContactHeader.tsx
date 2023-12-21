@@ -20,7 +20,7 @@ import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import { CallTypes } from 'hrm-form-definitions';
 
-import { Flex } from '../../../styles/HrmStyles';
+import { Flex } from '../../../styles';
 import {
   PreviewHeaderText,
   ContactButtonsWrapper,

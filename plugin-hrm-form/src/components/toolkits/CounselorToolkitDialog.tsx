@@ -17,7 +17,7 @@ import React from 'react';
 import { Button, Popover } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
-import { Row } from '../../styles/HrmStyles';
+import { Row } from '../../styles';
 import { ConfirmContainer, ConfirmText, CancelButton } from '../search/styles';
 import TabPressWrapper from '../TabPressWrapper';
 

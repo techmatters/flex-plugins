@@ -34,7 +34,7 @@ import {
   CaseSectionFont,
   ViewButton,
 } from './styles';
-import { Box } from '../../styles/HrmStyles';
+import { Box } from '../../styles';
 import { PermissionActions } from '../../permissions';
 import { getLocaleDateTime } from '../../utils/helpers';
 

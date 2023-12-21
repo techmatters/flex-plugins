@@ -22,7 +22,7 @@ import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 
 import { PaginationRow, PaginationButton, PaginationChevron, PaginationButtonText } from './styles';
-import { HiddenText } from '../../styles/HrmStyles';
+import { HiddenText } from '../../styles';
 
 export const getPaginationNumbers = (page, pageCount) => {
   if (pageCount <= 11) return range(pageCount);

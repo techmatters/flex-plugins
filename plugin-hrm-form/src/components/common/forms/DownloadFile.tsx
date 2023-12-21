@@ -20,8 +20,7 @@ import DownloadIcon from '@material-ui/icons/GetApp';
 import { Template } from '@twilio/flex-ui';
 
 import { getHrmConfig } from '../../../hrmConfig';
-import { Flex, Box, HiddenText } from '../../../styles/HrmStyles';
-import { StyledNextStepButton } from '../../../styles/buttons';
+import { Flex, Box, HiddenText, StyledNextStepButton } from '../../../styles';
 import { formatFileNameAtAws } from '../../../utils';
 import { fetchHrmApi, generateSignedURLPath } from '../../../services/fetchHrmApi';
 import { FormTargetObject } from './types';

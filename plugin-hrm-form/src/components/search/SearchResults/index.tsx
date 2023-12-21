@@ -25,7 +25,7 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
 import { SearchContactResult, SearchCaseResult, Contact, Case, CustomITask } from '../../../types/types';
-import { Row } from '../../../styles/HrmStyles';
+import { Row } from '../../../styles';
 import {
   ResultsHeader,
   ListContainer,

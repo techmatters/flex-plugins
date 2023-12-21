@@ -22,7 +22,7 @@ import _ from 'lodash';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import TaskView from './TaskView';
-import { Absolute } from '../styles/HrmStyles';
+import { Absolute } from '../styles';
 import { populateCounselors } from '../services/ServerlessService';
 import { populateCounselorsState } from '../states/configuration/actions';
 import { RootState } from '../states';

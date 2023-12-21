@@ -23,8 +23,7 @@ import { FormTargetObject } from '../types';
 import { presentValue } from '../../../../utils';
 import DownloadFile from '../DownloadFile';
 import { SectionValueText } from '../../../search/styles';
-import { Flex } from '../../../../styles/HrmStyles';
-import { ObjectType } from '../../../../types/types';
+import { Flex } from '../../../../styles';
 
 type Props = {
   value?: string | number | boolean;

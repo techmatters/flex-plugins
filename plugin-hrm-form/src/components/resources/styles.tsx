@@ -17,7 +17,7 @@
 import { styled } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 
-import { Box, Column, Flex, Row, FontOpenSans, PreviewWrapper } from '../../styles/HrmStyles';
+import { Box, Column, Flex, Row, FontOpenSans, PreviewWrapper } from '../../styles';
 import { StyledNextStepButton } from '../../styles/buttons';
 import HrmTheme from '../../styles/HrmTheme';
 

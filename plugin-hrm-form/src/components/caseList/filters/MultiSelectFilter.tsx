@@ -22,7 +22,7 @@ import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 
 import SearchInput from './SearchInput';
-import { Flex, Box, FormLabel } from '../../../styles/HrmStyles';
+import { Flex, Box, FormLabel } from '../../../styles';
 import {
   MultiSelectButton,
   DialogArrow,

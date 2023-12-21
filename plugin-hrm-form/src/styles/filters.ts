@@ -16,7 +16,7 @@
 
 import { styled } from '@twilio/flex-ui';
 
-import { Flex } from './HrmStyles';
+import { Flex } from './layout';
 import HrmTheme from './HrmTheme';
 
 export const FiltersContainer = styled(Flex)`

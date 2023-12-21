@@ -19,8 +19,7 @@ import { Template } from '@twilio/flex-ui';
 import WarningIcon from '@material-ui/icons/Warning';
 
 import TabPressWrapper from '../TabPressWrapper';
-import { Box, Row, HiddenText } from '../../styles/HrmStyles';
-import { StyledNextStepButton } from '../../styles/buttons';
+import { Box, Row, HiddenText, StyledNextStepButton } from '../../styles';
 import { CloseButton, CloseTaskDialog } from '../callTypeButtons/styles';
 import { CloseDialogText } from './styles';
 

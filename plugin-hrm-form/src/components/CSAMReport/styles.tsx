@@ -19,7 +19,7 @@ import { styled } from '@twilio/flex-ui';
 import { withStyles } from '@material-ui/core';
 import { AttachFile, CheckCircle, FileCopyOutlined, OpenInNew } from '@material-ui/icons';
 
-import { FontOpenSans } from '../../styles/HrmStyles';
+import { FontOpenSans } from '../../styles';
 import { StyledNextStepButton } from '../../styles/buttons';
 import HrmTheme from '../../styles/HrmTheme';
 

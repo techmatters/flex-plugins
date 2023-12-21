@@ -26,7 +26,7 @@ import { RootState } from '../states';
 import { hasTaskControl } from '../utils/transfer';
 import { CustomITask, isOfflineContactTask, isInMyBehalfITask } from '../types/types';
 import ProfileIdentifierBanner from './profile/ProfileIdentifierBanner';
-import { Flex } from '../styles/HrmStyles';
+import { Flex } from '../styles';
 import { isStandaloneITask } from './case/Case';
 import { getHelplineToSave } from '../services/HelplineService';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';

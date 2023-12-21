@@ -22,7 +22,7 @@ import { getFormattedNumberFromTask } from '../../../utils';
 import EyeOpenIcon from './EyeOpenIcon';
 import EyeCloseIcon from './EyeCloseIcon';
 import { PhoneNumberPopperText, UnmaskStyledButton } from './styles';
-import { HiddenText, Box } from '../../../styles/HrmStyles';
+import { HiddenText, Box } from '../../../styles';
 import { CloseButton } from '../../callTypeButtons/styles';
 
 type Props = ThemeProps & { task?: ITask };

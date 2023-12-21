@@ -33,7 +33,7 @@ import {
   TimelineText,
   ViewButton,
 } from './styles';
-import { Box, Row } from '../../styles/HrmStyles';
+import { Box, Row } from '../../styles';
 import CaseAddButton from './CaseAddButton';
 import { CustomITask } from '../../types/types';
 import { isConnectedCaseActivity } from '../../states/case/caseActivities';

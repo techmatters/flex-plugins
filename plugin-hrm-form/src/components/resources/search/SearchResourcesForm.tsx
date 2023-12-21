@@ -32,7 +32,7 @@ import {
   FormSelect,
   FormSelectWrapper,
   Row,
-} from '../../../styles/HrmStyles';
+} from '../../../styles';
 import { StyledNextStepButton } from '../../../styles/buttons';
 import {
   ResourceSearchFormClearButton,

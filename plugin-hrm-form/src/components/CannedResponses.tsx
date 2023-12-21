@@ -21,7 +21,7 @@ import { Actions, withTheme } from '@twilio/flex-ui';
 import { MessageInputChildrenProps } from '@twilio/flex-ui-core/src/components/channel/MessageInput/MessageInputImpl';
 
 import { selectCannedResponses } from '../states/selectors/hrmStateSelectors';
-import { CannedResponsesContainer, FormSelect, FormSelectWrapper, FormOption } from '../styles/HrmStyles';
+import { CannedResponsesContainer, FormSelect, FormSelectWrapper, FormOption } from '../styles';
 import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
 import { newUpdateDraftMessageTextAction } from '../states/conversations';
 

@@ -18,7 +18,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import { Box, Column, Flex } from '../../../styles/HrmStyles';
+import { Box, Column, Flex } from '../../../styles';
 import {
   ResourceAttributesColumn,
   ResourcePreviewAttributeContent,

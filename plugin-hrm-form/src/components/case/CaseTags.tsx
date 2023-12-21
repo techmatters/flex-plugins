@@ -20,7 +20,7 @@ import React from 'react';
 import { View, Text } from '@react-pdf/renderer';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { Flex } from '../../styles/HrmStyles';
+import { Flex } from '../../styles';
 import { TagsWrapper } from '../search/styles';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { getContactTags } from '../../utils/categories';

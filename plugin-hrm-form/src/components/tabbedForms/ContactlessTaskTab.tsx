@@ -24,7 +24,7 @@ import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import { disperseInputs } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
-import { Container, ColumnarBlock, TwoColumnLayout, ColumnarContent } from '../../styles/HrmStyles';
+import { Container, ColumnarBlock, TwoColumnLayout, ColumnarContent } from '../../styles';
 import { RootState } from '../../states';
 import { selectWorkerSid } from '../../states/selectors/flexSelectors';
 import { createContactlessTaskTabDefinition } from './ContactlessTaskTabDefinition';

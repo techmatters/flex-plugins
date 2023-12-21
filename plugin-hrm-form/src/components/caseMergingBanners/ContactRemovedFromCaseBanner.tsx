@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { Close } from '@material-ui/icons';
 
-import { HiddenText } from '../../styles/HrmStyles';
+import { HiddenText } from '../../styles';
 import { HeaderCloseButton } from '../../styles/buttons';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import WarningIcon from './WarningIcon';

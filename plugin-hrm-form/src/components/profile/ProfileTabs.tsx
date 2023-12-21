@@ -18,7 +18,7 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Tab as TwilioTab, Template } from '@twilio/flex-ui';
 
-import { Box } from '../../styles/HrmStyles';
+import { Box } from '../../styles';
 import { useProfile, useProfileLoader } from '../../states/profile/hooks';
 import * as RoutingTypes from '../../states/routing/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';

@@ -17,12 +17,8 @@
 import React from 'react';
 
 import { KhpUiResource } from '../types';
-import { FontOpenSans } from '../../../styles/HrmStyles';
-import {
-  ResourceAttributeContent,
-  ResourceAttributeDescription,
-  ResourceSubtitle,
-} from '../styles';
+import { FontOpenSans } from '../../../styles';
+import { ResourceAttributeContent, ResourceAttributeDescription, ResourceSubtitle } from '../styles';
 import ExpandableSection from './ExpandableSection';
 import OperatingHours from './OperatingHours';
 import ResourceAttributeWithPrivacy from './ResourceAttributeWithPrivacy';

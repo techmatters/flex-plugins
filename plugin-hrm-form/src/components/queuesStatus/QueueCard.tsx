@@ -19,15 +19,8 @@ import React from 'react';
 import { differenceInMinutes } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 
-import { Box, Row, HiddenText } from '../../styles/HrmStyles';
-import {
-  QueueName,
-  ChannelColumn,
-  ChannelBox,
-  ChannelLabel,
-  WaitTimeLabel,
-  WaitTimeValue,
-} from './styles';
+import { Box, Row, HiddenText } from '../../styles';
+import { QueueName, ChannelColumn, ChannelBox, ChannelLabel, WaitTimeLabel, WaitTimeValue } from './styles';
 import { channelTypes, ChannelTypes, ChannelColors } from '../../states/DomainConstants';
 
 const getChannelUI = (
