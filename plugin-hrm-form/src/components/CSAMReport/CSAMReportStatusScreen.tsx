@@ -33,7 +33,7 @@ import {
   StyledCheckCircle,
   StyledFileCopyOutlined,
   SuccessReportIcon,
-} from '../../styles/CSAMReport';
+} from './styles';
 import { CSAMReportStatus, CSAMReportType, CSAMReportTypes } from '../../states/csam-report/types';
 import useFocus from '../../utils/useFocus';
 

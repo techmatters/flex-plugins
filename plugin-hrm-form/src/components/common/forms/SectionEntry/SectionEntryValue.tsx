@@ -22,7 +22,7 @@ import { formatValue } from '../helpers';
 import { FormTargetObject } from '../types';
 import { presentValue } from '../../../../utils';
 import DownloadFile from '../DownloadFile';
-import { SectionValueText } from '../../../../styles/search';
+import { SectionValueText } from '../../../search/styles';
 import { Flex } from '../../../../styles/HrmStyles';
 import { ObjectType } from '../../../../types/types';
 

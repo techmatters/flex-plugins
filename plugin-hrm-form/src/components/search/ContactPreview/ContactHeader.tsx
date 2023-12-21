@@ -28,7 +28,7 @@ import {
   SubtitleValue,
   StyledLink,
   PreviewRow,
-} from '../../../styles/search';
+} from '../styles';
 import { isNonDataCallType } from '../../../states/validationRules';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import { channelTypes, ChannelTypes } from '../../../states/DomainConstants';

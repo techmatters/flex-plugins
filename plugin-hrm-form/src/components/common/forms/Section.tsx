@@ -24,7 +24,7 @@ import {
   SectionTitleText,
   SectionCollapse,
   ContactDetailsIcon,
-} from '../../../styles/search';
+} from '../../search/styles';
 
 const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);
 const ArrowUpIcon = ContactDetailsIcon(ArrowDropUpTwoTone);

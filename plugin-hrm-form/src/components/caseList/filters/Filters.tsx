@@ -22,7 +22,7 @@ import FilterList from '@material-ui/icons/FilterList';
 import DateRange from '@material-ui/icons/DateRange';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { FiltersContainer, FiltersResetAll, CasesTitle, CasesCount, FilterTitle } from '../../../styles/table/filters';
+import { FiltersContainer, FiltersResetAll, CasesTitle, CasesCount, FilterTitle } from '../../../styles/filters';
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
 import { CategoryFilter, CounselorHash } from '../../../types/types';
 import DateRangeFilter from './DateRangeFilter';

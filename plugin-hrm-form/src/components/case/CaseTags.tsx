@@ -21,7 +21,7 @@ import { View, Text } from '@react-pdf/renderer';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { Flex } from '../../styles/HrmStyles';
-import { TagsWrapper } from '../../styles/search';
+import { TagsWrapper } from '../search/styles';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { getContactTags } from '../../utils/categories';
 import styles from './casePrint/styles';

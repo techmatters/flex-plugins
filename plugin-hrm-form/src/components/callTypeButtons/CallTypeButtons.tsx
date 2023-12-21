@@ -26,7 +26,7 @@ import { ContactDraftChanges, updateDraft as newUpdateDraftAction } from '../../
 import { changeRoute as newChangeRouteAction } from '../../states/routing/actions';
 import { withLocalization } from '../../contexts/LocalizationContext';
 import { Box, Flex } from '../../styles/HrmStyles';
-import { Container, DataCallTypeButton, Label, NonDataCallTypeButton } from '../../styles/callTypeButtons';
+import { Container, DataCallTypeButton, Label, NonDataCallTypeButton } from './styles';
 import { isNonDataCallType } from '../../states/validationRules';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
 import { hasTaskControl } from '../../utils/transfer';

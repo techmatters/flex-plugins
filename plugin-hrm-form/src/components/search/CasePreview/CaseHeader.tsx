@@ -27,7 +27,7 @@ import {
   PreviewHeaderText,
   PreviewRow,
   SummaryText,
-} from '../../../styles/search';
+} from '../styles';
 import { Flex } from '../../../styles/HrmStyles';
 import { getTemplateStrings } from '../../../hrmConfig';
 import ConnectToCaseButton from '../../case/ConnectToCaseButton';

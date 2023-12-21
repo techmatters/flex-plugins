@@ -32,7 +32,7 @@ import {
   TimelineRow,
   TimelineText,
   ViewButton,
-} from '../../styles/case';
+} from './styles';
 import { Box, Row } from '../../styles/HrmStyles';
 import CaseAddButton from './CaseAddButton';
 import { CustomITask } from '../../types/types';

@@ -43,7 +43,7 @@ import {
   SearchResultWarningContainer,
   Text,
   NoResultTextLink,
-} from '../../../styles/search';
+} from '../styles';
 import Pagination from '../../pagination';
 import { getPermissionsForContact, getPermissionsForCase, PermissionActions } from '../../../permissions';
 import { namespace } from '../../../states/storeNamespaces';

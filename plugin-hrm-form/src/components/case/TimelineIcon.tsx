@@ -23,7 +23,7 @@ import AssignmentInd from '@material-ui/icons/AssignmentIndOutlined';
 import ReplyIcon from '@material-ui/icons/Reply';
 import { TaskChannelDefinition } from '@twilio/flex-ui';
 
-import { TimelineIconContainer } from '../../styles/case';
+import { TimelineIconContainer } from './styles';
 import { channelTypes, ChannelTypes } from '../../states/DomainConstants';
 import TwitterIcon from '../common/icons/TwitterIcon';
 import InstagramIcon from '../common/icons/InstagramIcon';

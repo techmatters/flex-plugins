@@ -44,7 +44,7 @@ import ViewCaseItem from './ViewCaseItem';
 import { bindFileUploadCustomHandlers } from './documentUploadHandler';
 import { recordBackendError } from '../../fullStory';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
-import { CenteredContainer } from '../../styles/case';
+import { CenteredContainer } from './styles';
 import EditCaseSummary from './EditCaseSummary';
 import { documentSectionApi } from '../../states/case/sections/document';
 import { incidentSectionApi } from '../../states/case/sections/incident';

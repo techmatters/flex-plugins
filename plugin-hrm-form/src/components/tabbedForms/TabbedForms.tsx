@@ -66,7 +66,7 @@ import { submitContactFormAsyncAction, updateContactInHrmAsyncAction } from '../
 import { namespace } from '../../states/storeNamespaces';
 import Search from '../search';
 import { getCurrentBaseRoute, getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import { CaseLayout } from '../../styles/case';
+import { CaseLayout } from '../case/styles';
 import Case, { OwnProps as CaseProps } from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';

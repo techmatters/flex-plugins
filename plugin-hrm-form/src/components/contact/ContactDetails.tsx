@@ -26,7 +26,7 @@ import { DetailsContext } from '../../states/contacts/contactDetails';
 import { RootState } from '../../states';
 import EditContactSection from './EditContactSection';
 import { getDefinitionVersion } from '../../services/ServerlessService';
-import { DetailsContainer } from '../../styles/search';
+import { DetailsContainer } from '../search/styles';
 import * as ConfigActions from '../../states/configuration/actions';
 import { ContactDetailsSectionFormApi, contactDetailsSectionFormApi } from './contactDetailsSectionFormApi';
 import ContactDetailsSectionForm from './ContactDetailsSectionForm';

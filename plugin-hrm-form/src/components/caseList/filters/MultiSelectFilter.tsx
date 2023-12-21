@@ -35,7 +35,7 @@ import {
   FiltersApplyButton,
   FiltersClearButton,
   FiltersCheckbox,
-} from '../../../styles/table/filters';
+} from '../../../styles/filters';
 
 export type Item = {
   value: string;

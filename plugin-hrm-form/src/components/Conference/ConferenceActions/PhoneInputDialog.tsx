@@ -19,7 +19,7 @@ import { CallEnd as CallEndIcon } from '@material-ui/icons';
 import { CircularProgress } from '@material-ui/core';
 
 import { Row, Bold } from '../../../styles/HrmStyles';
-import { CloseButton } from '../../../styles/callTypeButtons';
+import { CloseButton } from '../../callTypeButtons/styles';
 import { PhoneDialogWrapper, DialogArrow } from './styles';
 
 type PhoneDialogProps = {

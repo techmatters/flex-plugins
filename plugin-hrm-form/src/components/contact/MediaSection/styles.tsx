@@ -16,7 +16,7 @@
 
 import { styled } from '@twilio/flex-ui';
 
-import { sectionTitleFontStyle } from '../../../styles/search';
+import { sectionTitleFontStyle } from '../../search/styles';
 import { FontOpenSans } from '../../../styles/HrmStyles';
 import HrmTheme from '../../../styles/HrmTheme';
 

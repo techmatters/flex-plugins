@@ -26,7 +26,7 @@ import {
   ResourcePreviewHeaderText,
   ResourcePreviewWrapper,
 } from '../styles';
-import { PreviewRow, StyledLink } from '../../../styles/search';
+import { PreviewRow, StyledLink } from '../../search/styles';
 import { isMissingResource, ReferrableResourceResult } from '../../../states/resources/search';
 import ResourceIdCopyButton from '../ResourceIdCopyButton';
 import { convertKHPResourceAttributes } from '../convertKHPResourceAttributes';

@@ -23,7 +23,7 @@ import { DefinitionVersion, isNonSaveable } from 'hrm-form-definitions';
 
 import { BottomButtonBar, Box } from '../../styles/HrmStyles';
 import { StyledNextStepButton } from '../../styles/buttons';
-import { CaseLayout, FullWidthFormTextContainer } from '../../styles/case';
+import { CaseLayout, FullWidthFormTextContainer } from './styles';
 import { RootState } from '../../states';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import ActionHeader from './ActionHeader';

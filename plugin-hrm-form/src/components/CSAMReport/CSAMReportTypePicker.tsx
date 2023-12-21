@@ -23,11 +23,11 @@ import Close from '@material-ui/icons/Close';
 import ActionHeader from '../case/ActionHeader';
 import { BottomButtonBar, Box, HiddenText, Row } from '../../styles/HrmStyles';
 import { StyledNextStepButton, HeaderCloseButton } from '../../styles/buttons';
-import { BoldDescriptionText, CSAMReportContainer, CSAMReportLayout } from '../../styles/CSAMReport';
+import { BoldDescriptionText, CSAMReportContainer, CSAMReportLayout } from './styles';
 import { addMargin, getInputType } from '../common/forms/formGenerators';
 import { CSAMReportType } from '../../states/csam-report/types';
 import { externalReportDefinition } from './CSAMReportFormDefinition';
-import { CaseActionTitle } from '../../styles/case';
+import { CaseActionTitle } from '../case/styles';
 import useFocus from '../../utils/useFocus';
 
 type Props = {

@@ -43,7 +43,7 @@ import { chatCapacityUpdated } from '../states/configuration/actions';
 import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles/HrmStyles';
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
-import { Container } from '../styles/queuesStatus';
+import { Container } from '../components/queuesStatus/styles';
 import { FeatureFlags, isInMyBehalfITask, standaloneTaskSid } from '../types/types';
 import { colors } from '../channels/colors';
 import { getHrmConfig, getAseloConfigFlags } from '../hrmConfig';

@@ -29,7 +29,7 @@ import {
   TimelineDate,
   ViewButton,
   RowItemContainer,
-} from '../../styles/case';
+} from './styles';
 import { Box, HiddenText } from '../../styles/HrmStyles';
 import { formatFileNameAtAws } from '../../utils';
 

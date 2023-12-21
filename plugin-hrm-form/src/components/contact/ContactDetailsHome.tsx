@@ -33,7 +33,7 @@ import {
   CustomITask,
   StandaloneITask,
 } from '../../types/types';
-import { ContactAddedFont, SectionActionButton, SectionValueText, ContactDetailsIcon } from '../../styles/search';
+import { ContactAddedFont, SectionActionButton, SectionValueText, ContactDetailsIcon } from '../search/styles';
 import ContactDetailsSection from './ContactDetailsSection';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';

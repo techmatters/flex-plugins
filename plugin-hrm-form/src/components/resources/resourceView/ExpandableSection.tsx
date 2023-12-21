@@ -17,7 +17,7 @@ import React, { useState } from 'react';
 import ArrowRightTwoTone from '@material-ui/icons/ArrowRightTwoTone';
 import ArrowDropDownTwoTone from '@material-ui/icons/ArrowDropDownTwoTone';
 
-import { SectionCollapse } from '../../../styles/search';
+import { SectionCollapse } from '../../search/styles';
 import { SectionTitleContainer, SectionTitleButton, SectionTitleText } from '../styles';
 
 type ExpandableSectionProps = {

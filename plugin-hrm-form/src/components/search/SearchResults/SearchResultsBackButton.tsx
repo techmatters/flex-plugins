@@ -19,7 +19,7 @@ import React from 'react';
 
 import { Row } from '../../../styles/HrmStyles';
 import { StyledBackButton } from '../../../styles/buttons';
-import { BackText, BackIcon } from '../../../styles/search';
+import { BackText, BackIcon } from '../styles';
 
 type OwnProps = {
   text: JSX.Element | string;

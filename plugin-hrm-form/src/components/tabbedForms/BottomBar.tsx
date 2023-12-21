@@ -41,7 +41,7 @@ import AddCaseButton from './AddCaseButton';
 import asyncDispatch from '../../states/asyncDispatch';
 import selectCaseByCaseId from '../../states/case/selectCaseStateByCaseId';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
-import { SuccessReportIcon } from '../../styles/CSAMReport';
+import { SuccessReportIcon } from '../CSAMReport/styles';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => Promise<void>) => () => void;

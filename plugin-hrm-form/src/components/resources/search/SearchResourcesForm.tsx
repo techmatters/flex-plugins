@@ -55,7 +55,7 @@ import {
 import SearchInput from '../../caseList/filters/SearchInput';
 import { getTemplateStrings } from '../../../hrmConfig';
 import asyncDispatch from '../../../states/asyncDispatch';
-import { FiltersCheckbox } from '../../../styles/table/filters';
+import { FiltersCheckbox } from '../../../styles/filters';
 import SearchAutoComplete from './SearchAutoComplete';
 import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
 

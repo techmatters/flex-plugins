@@ -33,7 +33,7 @@ import {
   FiltersApplyButton,
   FiltersClearButton,
   MultiSelectUnorderedList,
-} from '../../../styles/table/filters';
+} from '../../../styles/filters';
 import type { Item } from './MultiSelectFilter';
 import CategorySection from './CategorySection';
 

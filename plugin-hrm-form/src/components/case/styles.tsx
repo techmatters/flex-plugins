@@ -18,8 +18,8 @@ import React from 'react';
 import { styled, Button, IconButton } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 
-import { FontOpenSans, FormInput, Row, Column } from '../HrmStyles';
-import HrmTheme from '../HrmTheme';
+import { FontOpenSans, FormInput, Row, Column } from '../../styles/HrmStyles';
+import HrmTheme from '../../styles/HrmTheme';
 
 export const CaseLayout = styled('div')`
   display: flex;

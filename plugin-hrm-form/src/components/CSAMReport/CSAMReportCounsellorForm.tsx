@@ -29,11 +29,11 @@ import {
   CSAMReportLayout,
   OpenInNewIcon,
   RegularText,
-} from '../../styles/CSAMReport';
+} from './styles';
 import { definitionObject, generateCSAMFormElement, initialValues } from './CSAMReportFormDefinition';
 import { CounselorCSAMReportForm } from '../../states/csam-report/types';
 import useFocus from '../../utils/useFocus';
-import { CaseActionTitle } from '../../styles/case';
+import { CaseActionTitle } from '../case/styles';
 
 type Props = {
   counselor: string;

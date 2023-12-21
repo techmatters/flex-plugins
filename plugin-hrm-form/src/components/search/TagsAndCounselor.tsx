@@ -20,7 +20,7 @@ import { Template } from '@twilio/flex-ui';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { Flex } from '../../styles/HrmStyles';
-import { TagText, SummaryText, TagsWrapper, SilentText, SubtitleLabel } from '../../styles/search';
+import { TagText, SummaryText, TagsWrapper, SilentText, SubtitleLabel } from './styles';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { getContactTags } from '../../utils/categories';
 

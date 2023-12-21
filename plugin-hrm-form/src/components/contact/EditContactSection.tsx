@@ -24,7 +24,7 @@ import { AnyAction } from 'redux';
 import { RootState } from '../../states';
 import { Box, BottomButtonBar } from '../../styles/HrmStyles';
 import { StyledNextStepButton } from '../../styles/buttons';
-import { EditContactContainer } from '../../styles/case';
+import { EditContactContainer } from '../case/styles';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { clearDraft, newSetContactDialogStateAction, refreshContact } from '../../states/contacts/existingContacts';

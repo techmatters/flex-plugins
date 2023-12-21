@@ -32,7 +32,7 @@ import {
   MultiSelectButton,
   MultiSelectUnorderedList,
   DateErrorMessage,
-} from '../../../styles/table/filters';
+} from '../../../styles/filters';
 import { DateFilterValue, isExistsDateFilterValue } from '../../../states/caseList/dateFilters';
 
 type ReactHookFormValues = {

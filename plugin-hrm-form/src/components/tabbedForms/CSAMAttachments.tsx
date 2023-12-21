@@ -19,7 +19,7 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
 import { Box, Column, Row } from '../../styles/HrmStyles';
-import { CSAMAttachmentText, CSAMAttachmentIcon } from '../../styles/CSAMReport';
+import { CSAMAttachmentText, CSAMAttachmentIcon } from '../CSAMReport/styles';
 import { formatStringToDateAndTime } from '../../utils';
 import type { CSAMReportEntry } from '../../types/types';
 

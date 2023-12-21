@@ -25,7 +25,7 @@ import {
   ConfirmButton,
   CancelButton,
   CloseButton,
-} from '../../styles/callTypeButtons';
+} from './styles';
 import TabPressWrapper from '../TabPressWrapper';
 
 type OwnProps = {

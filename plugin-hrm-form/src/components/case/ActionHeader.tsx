@@ -20,7 +20,7 @@ import { Template } from '@twilio/flex-ui';
 import { isEqual } from 'date-fns';
 
 import { Row } from '../../styles/HrmStyles';
-import { CaseActionDetailFont } from '../../styles/case';
+import { CaseActionDetailFont } from './styles';
 
 type OwnProps = {
   added?: Date;

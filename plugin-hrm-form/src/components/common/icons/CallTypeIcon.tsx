@@ -20,7 +20,7 @@ import FaceIcon from '@material-ui/icons/Face';
 import { callTypes, CallTypes } from 'hrm-form-definitions';
 
 import { Flex } from '../../../styles/HrmStyles';
-import { SilentText } from '../../../styles/search';
+import { SilentText } from '../../search/styles';
 
 type OwnProps = {
   callType: CallTypes; // Refactor to use callType.name instead the label

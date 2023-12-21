@@ -27,7 +27,7 @@ import {
   ChannelLabel,
   WaitTimeLabel,
   WaitTimeValue,
-} from '../../styles/queuesStatus';
+} from './styles';
 import { channelTypes, ChannelTypes, ChannelColors } from '../../states/DomainConstants';
 
 const getChannelUI = (

@@ -20,7 +20,7 @@ import React, { Ref } from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
 
-import { MultiSelectSearchInput } from '../../../styles/table/filters';
+import { MultiSelectSearchInput } from '../../../styles/filters';
 
 type OwnProps = {
   label: string;
