@@ -22,8 +22,7 @@ export const selectSavedContacts = (
   { [namespace]: { activeContacts } }: RootState,
   caseWithContacts: Case,
 ): Contact[] => {
-  const connectedContactIds = new Set((caseWithContacts?.connectedContacts ?? []).map(cc => cc.id as string));
   return Object.values(activeContacts.existingContacts)
-    .filter(contact => connectedContactIds.has(contact.savedContact.id))
+    .filter(contact => contact.savedContact.caseId && caseWithContacts.id === contact.savedContact.caseId)
     .map(ecs => ecs.savedContact);
 };

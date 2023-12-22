@@ -34,6 +34,7 @@ import { LOAD_CONTACT_ACTION } from '../../../states/contacts/existingContacts';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { RecursivePartial } from '../../RecursivePartial';
 import { namespace } from '../../../states/storeNamespaces';
+import { CaseStateEntry } from '../../../states/case/types';
 
 jest.mock('../../../services/CaseService', () => ({ getActivities: jest.fn(() => []), cancelCase: jest.fn() }));
 jest.mock('../../../permissions', () => ({
@@ -92,6 +93,25 @@ describe('useState mocked', () => {
       categories: {},
     },
     taskId: 'task1',
+    caseId: 'case1',
+  };
+
+  const case1: CaseStateEntry = {
+    connectedCase: {
+      id: 'case1',
+      createdAt: '2020-06-29T22:26:00.208Z',
+      updatedAt: '2020-06-29T22:26:00.208Z',
+      twilioWorkerId: 'worker1',
+      status: 'open',
+      info: { definitionVersion: DefinitionVersionId.v1 },
+      connectedContacts: [connectedContact],
+      categories: {},
+      accountSid: 'accountSid',
+      helpline: 'helpline',
+    },
+    availableStatusTransitions: [],
+    references: new Set(['x']),
+    caseWorkingCopy: undefined,
   };
 
   beforeEach(() => {
@@ -108,19 +128,7 @@ describe('useState mocked', () => {
         existingContacts: {},
       },
       connectedCase: {
-        cases: {
-          case1: {
-            connectedCase: {
-              id: '123',
-              createdAt: '2020-06-29T22:26:00.208Z',
-              updatedAt: '2020-06-29T22:26:00.208Z',
-              twilioWorkerId: 'worker1',
-              status: 'open',
-              info: { definitionVersion: DefinitionVersionId.v1 },
-              connectedContacts: [connectedContact],
-            },
-          },
-        },
+        cases: {},
       },
       routing: { tasks: { [standaloneTaskSid]: [{ route: 'case', subroute: 'home', caseId: 'case1' }] } },
     });
@@ -135,38 +143,6 @@ describe('useState mocked', () => {
   });
 
   test('Case (should return null)', async () => {
-    initialState = createState({
-      activeContacts: {
-        existingContacts: {
-          contact1: {
-            savedContact: {
-              ...VALID_EMPTY_CONTACT,
-              rawJson: {
-                ...VALID_EMPTY_CONTACT.rawJson,
-                childInformation: {
-                  firstName: 'first',
-                  lastName: 'last',
-                },
-              },
-              taskId: 'task1',
-            },
-            metadata: {},
-          },
-        },
-      },
-      connectedCase: {
-        cases: {},
-      },
-      routing: { tasks: { [standaloneTaskSid]: [{ route: 'case', subroute: 'home', caseId: 'case1' }] } },
-      configuration: {
-        counselors: {
-          list: [],
-          hash: { worker1: 'worker1 name' },
-        },
-        definitionVersions: { v1: mockV1 },
-        currentDefinitionVersion: mockV1,
-      },
-    });
     const store = mockStore(initialState);
 
     render(
@@ -181,7 +157,14 @@ describe('useState mocked', () => {
   });
 
   test('Case (should render, no updated)', async () => {
-    const store = mockStore(initialState);
+    const store = mockStore(
+      createState({
+        ...initialState[namespace],
+        connectedCase: {
+          cases: { case1 },
+        },
+      }),
+    );
     store.dispatch = jest.fn();
 
     render(
@@ -194,14 +177,14 @@ describe('useState mocked', () => {
 
     expect(screen.getByTestId('CaseHome-CaseDetailsComponent')).toBeInTheDocument();
 
-    expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('123');
+    expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('case1');
     expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
     expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe('6/29/2020');
     expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe('—');
 
     expect(store.dispatch).toHaveBeenCalledWith({
       contacts: [connectedContact],
-      reference: 'case-123',
+      reference: 'case-case1',
       replaceExisting: false,
       type: LOAD_CONTACT_ACTION,
     });
@@ -215,10 +198,12 @@ describe('useState mocked', () => {
         existingContacts: {
           contact1: {
             savedContact: connectedContact,
-
-            references: ['case-123'],
+            references: ['case-case1'],
           },
         },
+      },
+      connectedCase: {
+        cases: { case1 },
       },
     });
     const store = mockStore(stateWithContact);
@@ -234,7 +219,7 @@ describe('useState mocked', () => {
 
     expect(screen.getByTestId('CaseHome-CaseDetailsComponent')).toBeInTheDocument();
 
-    expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('123');
+    expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('case1');
     expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
     expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe('6/29/2020');
     expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe('—');
@@ -242,8 +227,18 @@ describe('useState mocked', () => {
   });
 
   test('Case (should render, after update)', async () => {
-    initialState[namespace].connectedCase.cases.case1.connectedCase.updatedAt = '2020-06-29T22:29:00.208Z';
-    const store = mockStore(initialState);
+    const state: RootState = createState({
+      ...initialState[namespace],
+      connectedCase: {
+        cases: {
+          case1: {
+            ...case1,
+            connectedCase: { ...case1.connectedCase, updatedAt: '2020-06-29T22:29:00.208Z' },
+          },
+        },
+      },
+    });
+    const store = mockStore(state);
     store.dispatch = jest.fn();
 
     render(
@@ -256,14 +251,14 @@ describe('useState mocked', () => {
 
     expect(screen.getByTestId('CaseHome-CaseDetailsComponent')).toBeInTheDocument();
 
-    expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('123');
+    expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('case1');
     expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
     expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe('6/29/2020');
     expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe('6/29/2020');
 
     expect(store.dispatch).toHaveBeenCalledWith({
       contacts: [connectedContact],
-      reference: 'case-123',
+      reference: 'case-case1',
       replaceExisting: false,
       type: LOAD_CONTACT_ACTION,
     });
