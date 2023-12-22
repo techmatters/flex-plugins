@@ -155,12 +155,6 @@ const takeControlIfTransfer = async (task: ITask) => {
 };
 
 export const handleTransferredTask = async (task: ITask) => {
-  try {
-    await restoreFormIfTransfer(task);
-  } catch (err) {
-    console.error('Error transferring form state as part of task', err);
-  }
-  await takeControlIfTransfer(task);
   const { source: convo, participants, isLoadingParticipants } = StateHelper.getConversationStateForTask(task) ?? {};
   if (convo) {
     reactivateAseloListeners(convo);
@@ -174,6 +168,12 @@ export const handleTransferredTask = async (task: ITask) => {
       });
     }
   }
+  try {
+    await restoreFormIfTransfer(task);
+  } catch (err) {
+    console.error('Error transferring form state as part of task', err);
+  }
+  await takeControlIfTransfer(task);
 };
 
 export const setUpTransferActions = (transfersEnabled: boolean, setupObject: SetupObject) => {
