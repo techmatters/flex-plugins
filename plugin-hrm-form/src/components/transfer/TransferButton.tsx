@@ -18,7 +18,7 @@
 import React from 'react';
 import { Actions, TaskContextProps, Template, withTaskContext } from '@twilio/flex-ui';
 
-import { canTransferConference } from '../../utils/transfer';
+import { canTransferConference } from '../../transfer/transferTaskState';
 import { TransferStyledButton } from '../../styles/buttons';
 import HhrTheme from '../../styles/HrmTheme';
 

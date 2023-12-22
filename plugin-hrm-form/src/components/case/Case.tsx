@@ -72,7 +72,7 @@ export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
 };
 
-type OwnProps = {
+export type OwnProps = {
   task: CustomITask | StandaloneITask;
   handleClose?: () => void;
   onNewCaseSaved?: (caseForm: CaseType) => Promise<void>;

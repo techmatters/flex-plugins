@@ -19,7 +19,7 @@ import React from 'react';
 import { ITask, TaskHelper, Template, ThemeProps } from '@twilio/flex-ui';
 
 import { TransferStyledButton } from '../../styles/buttons';
-import { closeCallSelf } from '../../utils/transfer';
+import { closeCallSelf } from '../../transfer/transferTaskState';
 import HrmTheme from '../../styles/HrmTheme';
 
 const handleRejectTransfer = async (task: ITask) => {

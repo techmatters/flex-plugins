@@ -43,9 +43,7 @@ import {
   StyledTabs,
   SwitchLabel,
   Text,
-  NoResultTextLink,
 } from '../styles';
-
 import Pagination from '../../pagination';
 import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../../permissions';
 import { namespace } from '../../../states/storeNamespaces';
