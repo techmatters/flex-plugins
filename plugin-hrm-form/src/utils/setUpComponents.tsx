@@ -21,7 +21,7 @@ import * as Flex from '@twilio/flex-ui';
 import type { FilterDefinitionFactory } from '@twilio/flex-ui/src/components/view/TeamsView';
 
 import { AcceptTransferButton, RejectTransferButton, TransferButton } from '../components/transfer';
-import * as TransferHelpers from './transfer';
+import * as TransferHelpers from '../transfer/transferTaskState';
 import EmojiPicker from '../components/emojiPicker';
 import CannedResponses from '../components/CannedResponses';
 import QueuesStatusWriter from '../components/queuesStatus/QueuesStatusWriter';
@@ -46,7 +46,7 @@ import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../styles/queuesStatus';
 import { FeatureFlags, isInMyBehalfITask, standaloneTaskSid } from '../types/types';
 import { colors } from '../channels/colors';
-import { getHrmConfig, getAseloConfigFlags } from '../hrmConfig';
+import { getAseloConfigFlags, getHrmConfig } from '../hrmConfig';
 import { AseloMessageInput, AseloMessageList } from '../components/AseloMessaging';
 import { namespace, routingBase } from '../states/storeNamespaces';
 import { changeRoute } from '../states/routing/actions';

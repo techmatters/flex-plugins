@@ -43,7 +43,7 @@ import IssueCategorizationSectionForm from '../contact/IssueCategorizationSectio
 import ContactDetailsSectionForm from '../contact/ContactDetailsSectionForm';
 import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
-import { hasTaskControl } from '../../utils/transfer';
+import { hasTaskControl } from '../../transfer/transferTaskState';
 import { isNonDataCallType } from '../../states/validationRules';
 import CSAMReportButton from './CSAMReportButton';
 import CSAMAttachments from './CSAMAttachments';

@@ -20,7 +20,7 @@ import { omit } from 'lodash';
 import '../mockGetConfig';
 import each from 'jest-each';
 
-import * as TransferHelpers from '../../utils/transfer';
+import * as TransferHelpers from '../../transfer/transferTaskState';
 import { transferModes, transferStatuses } from '../../states/DomainConstants';
 import { acceptTask, createTask } from '../helpers';
 import * as callStatus from '../../states/conferencing/callStatus';
@@ -354,13 +354,12 @@ describe('Kick, close and helpers', () => {
       originalCounselorName: counselorName,
       originalConversationSid: 'channel1',
       transferStatus: transferStatuses.accepted,
-      formDocument: 'some string',
       mode: transferModes.cold,
       sidWithTaskControl: 'WR00000000000000000000000000000000',
       targetType: 'worker',
     };
 
-    await TransferHelpers.setTransferMeta(coldPayload, 'some string', counselorName);
+    await TransferHelpers.setTransferMeta(coldPayload, counselorName);
     expect(coldTask.attributes.transferMeta).toStrictEqual(coldExpected);
 
     const warmTask = createTask(
@@ -375,7 +374,6 @@ describe('Kick, close and helpers', () => {
       originalCounselorName: counselorName,
       originalConversationSid: undefined,
       transferStatus: transferStatuses.transferring,
-      formDocument: 'some string',
       mode: transferModes.warm,
       sidWithTaskControl: '',
       targetType: 'worker',
@@ -387,7 +385,7 @@ describe('Kick, close and helpers', () => {
       task: warmTask,
     };
 
-    await TransferHelpers.setTransferMeta(warmPayload, 'some string', counselorName);
+    await TransferHelpers.setTransferMeta(warmPayload, counselorName);
     expect(warmTask.attributes.transferMeta).toStrictEqual(warmExpected);
   });
 
@@ -405,7 +403,7 @@ describe('Kick, close and helpers', () => {
       task: anotherTask,
     };
 
-    await TransferHelpers.setTransferMeta(coldPayload, 'some string', counselorName);
+    await TransferHelpers.setTransferMeta(coldPayload, counselorName);
     expect(anotherTask.attributes.transferMeta).not.toBeUndefined();
     expect(anotherTask.attributes.transferStarted).toBeTruthy();
 
@@ -419,7 +417,7 @@ describe('Kick, close and helpers', () => {
       task: anotherTask,
     };
 
-    await TransferHelpers.setTransferMeta(warmPayload, 'some string', counselorName);
+    await TransferHelpers.setTransferMeta(warmPayload, counselorName);
     expect(anotherTask.attributes.transferMeta).not.toBeUndefined();
     expect(anotherTask.attributes.transferStarted).toBeTruthy();
 

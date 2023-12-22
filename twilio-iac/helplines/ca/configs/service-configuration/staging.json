@@ -1,7 +1,10 @@
 {
     "attributes": {
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
-        "resources_base_url": "https://hrm-staging.tl.techmatters.org"
+        "resources_base_url": "https://hrm-staging.tl.techmatters.org",
+        "feature_flags": {
+            "enable_case_merging": true
+        }
     },
     "ui_attributes": {
         "theme": null
