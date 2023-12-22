@@ -22,6 +22,7 @@ export const selectSavedContacts = (
   { [namespace]: { activeContacts } }: RootState,
   caseWithContacts: Case,
 ): Contact[] => {
+  if (!caseWithContacts) return [];
   return Object.values(activeContacts.existingContacts)
     .filter(contact => contact.savedContact.caseId && caseWithContacts.id === contact.savedContact.caseId)
     .map(ecs => ecs.savedContact);

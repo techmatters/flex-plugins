@@ -28,20 +28,14 @@ import { RootState } from '../../states';
 import { completeTask, removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute, newCloseModalAction, newOpenModalAction } from '../../states/routing/actions';
 import { emptyCategories } from '../../states/contacts/reducer';
+import { AppRoutes, ChangeRouteMode, isRouteWithModalSupport, TabbedFormSubroutes } from '../../states/routing/types';
 import {
-  AppRoutes,
-  CaseRoute,
-  ChangeRouteMode,
-  isRouteWithModalSupport,
-  TabbedFormSubroutes,
-} from '../../states/routing/types';
-import {
+  Case as CaseForm,
+  Contact,
   ContactRawJson,
   CustomITask,
-  isOfflineContactTask,
-  Contact,
   isOfflineContact,
-  Case as CaseForm,
+  isOfflineContactTask,
 } from '../../types/types';
 import { Box, Row, StyledTabs, TabbedFormsContainer, TabbedFormTabContainer } from '../../styles/HrmStyles';
 import FormTab from '../common/forms/FormTab';
@@ -66,12 +60,12 @@ import { namespace } from '../../states/storeNamespaces';
 import Search from '../search';
 import { getCurrentBaseRoute, getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { CaseLayout } from '../../styles/case';
-import Case, { OwnProps as CaseProps } from '../case/Case';
+import Case from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
-import { getHrmConfig, getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import ContactDetails from '../contact/ContactDetails';
