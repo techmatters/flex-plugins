@@ -23,7 +23,7 @@ import type { FilterDefinitionFactory } from '@twilio/flex-ui/src/components/vie
 import { AcceptTransferButton, RejectTransferButton, TransferButton } from '../components/transfer';
 import * as TransferHelpers from './transfer';
 import EmojiPicker from '../components/emojiPicker';
-import CannedResponses from '../components/CannedResponses';
+import CannedResponses from '../components/cannedResponses';
 import QueuesStatusWriter from '../components/queuesStatus/QueuesStatusWriter';
 import QueuesStatus from '../components/queuesStatus';
 import CustomCRMContainer from '../components/CustomCRMContainer';

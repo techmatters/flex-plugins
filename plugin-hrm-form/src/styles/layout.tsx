@@ -13,8 +13,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
+import React from 'react';
 import { styled } from '@twilio/flex-ui';
+import { withStyles, Tab, TabProps, Tabs } from '@material-ui/core';
 
 import { BottomButtonBarHeight } from '.';
 import HrmTheme from './HrmTheme';
@@ -167,3 +168,112 @@ export const HeaderContainer = styled(Row)`
   padding: 0px;
 `;
 HeaderContainer.displayName = 'HeaderContainer';
+
+export const CategoriesWrapper = styled('div')`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  padding-bottom: ${BottomButtonBarHeight}px;
+`;
+CategoriesWrapper.displayName = 'CategoriesWrapper';
+
+type SubcategoriesWrapperProps = { gridView?: boolean };
+
+export const SubcategoriesWrapper = styled('div')<SubcategoriesWrapperProps>`
+  display: flex;
+  padding: 10px 0 10px 6px;
+  flex-wrap: wrap;
+  flex-direction: ${({ gridView }) => (gridView ? 'row' : 'column')};
+`;
+SubcategoriesWrapper.displayName = 'SubcategoriesWrapper';
+
+export const StyledTabs = withStyles({
+  root: {
+    minHeight: 35,
+    height: 35,
+    flexShrink: 0,
+    padding: '0 7%',
+  },
+  indicator: {
+    backgroundColor: 'transparent',
+  },
+})(Tabs);
+StyledTabs.displayName = 'StyledTabs';
+
+export type StyledTabProps = { searchTab?: boolean; label: React.ReactNode } & Partial<TabProps>;
+
+export const StyledTab = withStyles({
+  root: {
+    height: 35,
+    minHeight: 35,
+    minWidth: 120,
+    width: 120,
+    backgroundColor: '#ecedf1',
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4,
+    margin: '0 5px 0 0',
+    padding: 0,
+    fontSize: 12,
+    lineHeight: 14,
+    textTransform: 'none',
+    '&:hover': {
+      backgroundColor: '#c9c9c9',
+    },
+    '&:focus': {
+      outline: 'auto',
+    },
+  },
+  selected: {
+    backgroundColor: '#ffffff',
+    fontWeight: 600,
+  },
+})(Tab);
+StyledTab.displayName = 'StyledTab';
+
+export const StyledSearchTab = withStyles({
+  root: {
+    minWidth: 40,
+    width: 40,
+    backgroundColor: 'transparent',
+    '&:focus': {
+      outline: 'auto',
+    },
+  },
+  selected: {
+    backgroundColor: '#ffffff',
+  },
+})(StyledTab);
+StyledSearchTab.displayName = 'StyledSearchTab';
+
+export const PreviewWrapper = styled(Flex)`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 5px 20px 10px 20px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  border-color: #e1e3ea;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 4px;
+`;
+
+PreviewWrapper.displayName = 'PreviewWrapper';
+
+export const HorizontalLine = styled('hr')`
+  border: 0;
+  height: 1px;
+  background-color: #c6cad7;
+  margin: 0;
+`;
+HorizontalLine.displayName = 'HorizontalLine';
+
+export const TaskCanvasOverride = styled('div')`
+  width: 100%;
+  height: 100%;
+  background-color: ${HrmTheme.colors.base2};
+`;

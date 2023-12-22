@@ -15,9 +15,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import React from 'react';
-import { ButtonBase } from '@material-ui/core';
+import { ButtonBase, Tooltip, withStyles } from '@material-ui/core';
 import { styled, Button } from '@twilio/flex-ui';
 import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
 import HrmTheme from './HrmTheme';
 
@@ -179,3 +180,80 @@ export const HeaderCloseButton = styled(ButtonBase)`
   }
 `;
 HeaderCloseButton.displayName = 'HeaderCloseButton';
+
+export const TaskButtonBase = withStyles({
+  root: {
+    '&:hover': {
+      backgroundColor: '#ECEDF1',
+    },
+    '&:hover > div': {
+      backgroundColor: '#ECEDF1',
+    },
+  },
+  disabled: {
+    opacity: 0.3,
+    color: '#192B33',
+    '& svg': {
+      color: '#192B33',
+    },
+    '& p': {
+      color: '#192B33',
+    },
+  },
+})(ButtonBase);
+
+type ToggleViewButtonProps = { active?: boolean };
+
+export const ToggleViewButton = styled('button')<ToggleViewButtonProps>`
+  display: inline-flex;
+  width: 37px;
+  height: 37px;
+  min-height: 37px;
+  border-radius: 1px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  cursor: pointer;
+  border: ${({ active }) => (active ? '1px solid #a0a8bd33' : 'none')};
+  color: ${({ active }) => (active ? '#000000cc' : 'initial')};
+  background-color: ${({ active }) => (active ? 'initial' : '#a0a8bdcc')};
+  opacity: ${({ active }) => (active ? 'initial' : '20%')};
+
+  &:focus {
+    outline: auto;
+  }
+
+  > svg {
+    font-size: 18px;
+  }
+`;
+ToggleViewButton.displayName = 'ToggleViewButton';
+
+export const InformationIconButton = withStyles({
+  root: {
+    width: '16px',
+    height: '16px',
+    color: '#b4babd',
+    margin: '13px 20px 0 5px',
+    cursor: 'pointer',
+  },
+})(InfoOutlinedIcon);
+
+export const HtmlTooltip = withStyles(theme => ({
+  tooltip: {
+    backgroundColor: '#717171',
+    color: '#fff',
+    maxWidth: 400,
+    fontSize: '10pt',
+    fontStyle: 'open sans semibold',
+    border: '1px solid #dadde9',
+  },
+}))(Tooltip);
+
+export const CasePrintViewSpinner = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`;
+CasePrintViewSpinner.displayName = 'CasePrintViewSpinner';

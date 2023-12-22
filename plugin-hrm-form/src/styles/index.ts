@@ -15,12 +15,11 @@
  */
 
 export * from './buttons';
-export * from './HrmStyles';
-export * from './HrmTheme';
 export * from './filters';
 export * from './layout';
 export * from './table';
 export * from './typography';
+// TODO: Remove this once HrmStyles is removed
+export * from './HrmStyles';
 
-// eslint-disable-next-line import/no-unused-modules
 export const BottomButtonBarHeight = 55;

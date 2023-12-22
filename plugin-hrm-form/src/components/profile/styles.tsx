@@ -188,8 +188,8 @@ export const ProfileSectionTextContent = styled('div')<StyledTextProps>`
   height: 100%;
   min-height: 44px;
   width: 100%;
-  max-width: 600px
-  background-color: #F9FAFB;
+  max-width: 600px;
+  background-color: #f9fafb;
   color: #606b85;
   border: none;
   border-radius: 2px;
@@ -231,3 +231,16 @@ export const ProfileSectionEditButton = styled(Button)<ButtonProps>`
   }
 `;
 ProfileSectionEditButton.displayName = 'ProfileSectionEditButton';
+
+const YellowBannerHeight = '36px';
+
+export const YellowBanner = styled('div')`
+  display: flex;
+  background-color: #fdfad3;
+  height: ${YellowBannerHeight};
+  font-size: 13px;
+  align-items: center;
+  justify-content: center;
+`;
+
+YellowBanner.displayName = 'YellowBanner';

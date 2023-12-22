@@ -20,10 +20,11 @@ import { connect, ConnectedProps, useSelector } from 'react-redux';
 import { Actions, withTheme } from '@twilio/flex-ui';
 import { MessageInputChildrenProps } from '@twilio/flex-ui-core/src/components/channel/MessageInput/MessageInputImpl';
 
-import { selectCannedResponses } from '../states/selectors/hrmStateSelectors';
-import { CannedResponsesContainer, FormSelect, FormSelectWrapper, FormOption } from '../styles';
-import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
-import { newUpdateDraftMessageTextAction } from '../states/conversations';
+import { selectCannedResponses } from '../../states/selectors/hrmStateSelectors';
+import { FormSelect, FormSelectWrapper, FormOption } from '../../styles';
+import { CannedResponsesContainer } from './styles';
+import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
+import { newUpdateDraftMessageTextAction } from '../../states/conversations';
 
 const mapDispatchToProps = (
   dispatch: Dispatch<{ type: string } & Record<string, any>>,

@@ -19,7 +19,7 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 
-import { AddTaskButtonBase, AddTaskIconContainer, AddTaskIcon, AddTaskContent, AddTaskText } from '../../../styles';
+import { AddTaskButtonBase, AddTaskIconContainer, AddTaskIcon, AddTaskContent, AddTaskText } from './styles';
 
 type Props = {
   onClick: (() => void) | (() => Promise<void>);
