@@ -211,7 +211,6 @@ type ButtonProps = {
   onClick: () => void;
 };
 
-// TODO: refactor to HrmStyles
 export const ProfileSectionEditButton = styled(Button)<ButtonProps>`
   width: 40px;
   height: 30px;
