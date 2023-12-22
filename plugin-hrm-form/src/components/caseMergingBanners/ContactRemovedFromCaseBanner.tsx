@@ -23,26 +23,28 @@ import { HeaderCloseButton, HiddenText } from '../../styles/HrmStyles';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import WarningIcon from './WarningIcon';
 import { BannerContainer, CaseLink, Text } from './styles';
-import { closeRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
-import { contactFormsBase, namespace } from '../../states/storeNamespaces';
+import { closeRemovedFromCaseBannerAction, selectCaseMergingBanners } from '../../states/case/caseBanners';
 import { Contact } from '../../types/types';
 import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
 import asyncDispatch from '../../states/asyncDispatch';
 import { RootState } from '../../states';
+import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 
 type OwnProps = {
   taskId: string;
-  savedContact?: Contact;
-  showRemovedFromCaseBanner?: boolean;
+  contactId?: string;
+  showUndoButton?: boolean;
 };
 
-const mapStateToProps = (state: RootState, { taskId, savedContact }: OwnProps) => {
+const mapStateToProps = (state: RootState, { taskId, contactId }: OwnProps) => {
   const contact = selectContactByTaskSid(state, taskId);
-  const caseId = state[namespace][contactFormsBase].removedCaseId[savedContact?.id];
+  const { caseId } = selectCaseMergingBanners(state, contactId);
+  const savedContact = selectContactStateByContactId(state, contactId)?.savedContact;
 
   return {
-    contactId: contact?.savedContact.id ? contact?.savedContact.id : savedContact?.id,
+    contactId: contact?.savedContact.id ? contact?.savedContact.id : contactId,
     caseId,
+    savedContact,
   };
 };
 
@@ -58,7 +60,7 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 const ContactRemovedFromCaseBanner: React.FC<Props> = ({
   contactId,
   close,
-  showRemovedFromCaseBanner,
+  showUndoButton,
   savedContact,
   connectCaseToTaskContact,
   caseId,
@@ -68,7 +70,7 @@ const ContactRemovedFromCaseBanner: React.FC<Props> = ({
     <Text>
       <Template code="CaseMerging-ContactRemovedFromCase" />
     </Text>
-    {showRemovedFromCaseBanner && savedContact?.id && (
+    {showUndoButton && savedContact?.id && (
       <CaseLink
         onClick={() => {
           connectCaseToTaskContact(savedContact, caseId);

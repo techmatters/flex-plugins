@@ -270,12 +270,12 @@ const ContactDetailsHome: React.FC<Props> = function ({
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
       {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
 
-      {caseId && <ContactAddedToCaseBanner taskId={task.taskSid} contactId={savedContact.id} caseId={caseId} />}
+      {caseId && <ContactAddedToCaseBanner taskId={task.taskSid} contactId={savedContact.id} />}
       {showRemovedFromCaseBanner && (
         <ContactRemovedFromCaseBanner
           taskId={task.taskSid}
-          savedContact={savedContact}
-          showRemovedFromCaseBanner={showRemovedFromCaseBanner}
+          contactId={savedContact.id}
+          showUndoButton={showRemovedFromCaseBanner}
         />
       )}
 

@@ -45,7 +45,6 @@ export const REMOVE_FROM_CASE = 'contact-action/remove-from-case';
 export const CONNECT_TO_CASE_ACTION_FULFILLED = `${CONNECT_TO_CASE}_FULFILLED` as const;
 export const REMOVE_FROM_CASE_ACTION_FULFILLED = `${REMOVE_FROM_CASE}_FULFILLED` as const;
 export const SET_SAVED_CONTACT = 'contact-action/set-saved-contact';
-export const SET_REMOVED_CASE_ID = 'SET_REMOVED_CASE_ID';
 
 export const LoadingStatus = {
   LOADING: 'loading',
@@ -74,7 +73,6 @@ export type ContactsState = {
   contactsBeingCreated: Set<string>;
   contactDetails: ContactDetailsState;
   isCallTypeCaller: boolean;
-  removedCaseId?: { [key: string]: string };
 };
 
 type SaveEndMillisAction = {
@@ -106,18 +104,11 @@ type CheckButtonDataAction = {
   isCallTypeCaller: boolean;
 };
 
-type RemovedCaseIdAction = {
-  type: typeof SET_REMOVED_CASE_ID;
-  contactId: string;
-  caseId: string;
-};
-
 export type ContactsActionType =
   | SaveEndMillisAction
   | PrePopulateFormAction
   | RestoreEntireFormAction
-  | CheckButtonDataAction
-  | RemovedCaseIdAction;
+  | CheckButtonDataAction;
 
 export type ContactUpdatingAction = {
   type:
