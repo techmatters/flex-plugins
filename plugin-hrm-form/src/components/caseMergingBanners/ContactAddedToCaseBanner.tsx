@@ -28,20 +28,18 @@ import InfoIcon from './InfoIcon';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
 import selectCaseByCaseId from '../../states/case/selectCaseStateByCaseId';
 import { RootState } from '../../states';
-import { contactFormsBase, namespace } from '../../states/storeNamespaces';
-import { setRemovedCaseId } from '../../states/contacts/actions';
+import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 
 type OwnProps = {
   taskId: string;
   contactId?: string;
-  caseId?: string;
 };
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const mapStateToProps = (state: RootState, { taskId, contactId }: OwnProps) => {
   const offlineSavedContact = selectContactByTaskSid(state, taskId)?.savedContact;
-  const existingSavedContact = state[namespace][contactFormsBase].existingContacts[contactId]?.savedContact;
+  const existingSavedContact = selectContactStateByContactId(state, contactId)?.savedContact;
   const connectedCase = selectCaseByCaseId(state, offlineSavedContact?.caseId || existingSavedContact?.caseId)
     ?.connectedCase;
   const caseId = offlineSavedContact?.caseId || existingSavedContact?.caseId;
@@ -57,11 +55,10 @@ const mapDispatchToProps = (dispatch, { taskId }: OwnProps) => ({
   viewCaseDetails: ({ id }: Case) => {
     dispatch(newOpenModalAction({ route: 'case', subroute: 'home', caseId: id, isCreating: false }, taskId));
   },
-  removeContactFromCase: async (contactId: string) => {
+  removeContactFromCase: async (contactId: string, caseId?: string) => {
     await asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId));
-    dispatch(showRemovedFromCaseBannerAction(contactId));
+    dispatch(showRemovedFromCaseBannerAction(contactId, caseId));
   },
-  saveRemovedCaseId: (contactId: string, caseId: string) => dispatch(setRemovedCaseId(contactId, caseId)),
 });
 
 const ContactAddedToCaseBanner: React.FC<Props> = ({
@@ -70,16 +67,16 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
   viewCaseDetails,
   removeContactFromCase,
   caseId,
-  saveRemovedCaseId,
   existingSavedContact,
 }) => {
   if (connectedCase === undefined) return null;
 
   const handleRemoveContactFromCase = () => {
     if (existingSavedContact) {
-      saveRemovedCaseId(existingSavedContact.id, existingSavedContact.caseId);
+      removeContactFromCase(existingSavedContact.id, existingSavedContact.caseId);
+    } else {
+      removeContactFromCase(contact.id);
     }
-    removeContactFromCase(contact.id);
   };
 
   return (

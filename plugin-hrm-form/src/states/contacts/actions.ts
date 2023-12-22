@@ -51,9 +51,3 @@ export const setCallType = (isCallTypeCaller: boolean): t.ContactsActionType => 
   type: t.SET_CALL_TYPE,
   isCallTypeCaller,
 });
-
-export const setRemovedCaseId = (contactId: string, caseId: string): t.ContactsActionType => ({
-  type: t.SET_REMOVED_CASE_ID,
-  contactId,
-  caseId,
-});

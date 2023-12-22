@@ -76,7 +76,6 @@ export const initialState: ContactsState = {
     [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {} },
   },
   isCallTypeCaller: false,
-  removedCaseId: {}
 };
 
 const boundReferralReducer = resourceReferralReducer(initialState);
@@ -222,14 +221,6 @@ export function reduce(
           },
         },
       };
-    }
-    case t.SET_REMOVED_CASE_ID: {
-      return {
-        ...state,
-        removedCaseId: {
-          [action.contactId]: action.caseId
-        }   
-      }
     }
     case t.SET_CALL_TYPE: {
       return { ...state, isCallTypeCaller: action.isCallTypeCaller };
