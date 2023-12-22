@@ -57,6 +57,13 @@ jest.mock('@twilio/flex-ui', () => ({
   },
 }));
 
+jest.mock('../../states/case/caseBanners', () => ({
+  __esModule: true,
+  selectCaseMergingBanners: jest.fn(() => ({
+    showRemovedFromCaseBanner: true,
+  })),
+}));
+
 function createState(
   taskId,
   {
@@ -127,6 +134,7 @@ function createState(
             detailsExpanded: {},
           },
         },
+        removedCaseId: {},
       },
       [csamReportBase]: {
         contacts: {},

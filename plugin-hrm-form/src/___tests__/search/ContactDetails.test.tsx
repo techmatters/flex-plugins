@@ -35,6 +35,13 @@ jest.mock('@twilio/flex-ui', () => ({
   Actions: { invokeAction: jest.fn() },
 }));
 
+jest.mock('../../states/case/caseBanners', () => ({
+  __esModule: true,
+  selectCaseMergingBanners: jest.fn(() => ({
+    showRemovedFromCaseBanner: true,
+  })),
+}));
+
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
@@ -150,6 +157,7 @@ beforeAll(async () => {
             detailsExpanded: {},
           },
         },
+        removedCaseId: {},
       },
       [csamReportBase]: {
         tasks: {},
