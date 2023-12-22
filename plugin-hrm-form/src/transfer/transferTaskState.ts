@@ -14,11 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// eslint-disable-next-line no-unused-vars
-import { Actions, ITask, TaskHelper, Manager } from '@twilio/flex-ui';
+import { Actions, ITask, Manager, TaskHelper } from '@twilio/flex-ui';
 
 import type { RootState } from '../states';
-import { transferStatuses, transferModes } from '../states/DomainConstants';
+import { transferModes, transferStatuses } from '../states/DomainConstants';
 import { CustomITask, isTwilioTask } from '../types/types';
 import { isCallStatusLoading } from '../states/conferencing/callStatus';
 
@@ -120,12 +119,10 @@ export const setTransferRejected = updateTransferStatus(transferStatuses.rejecte
 /**
  * Saves transfer metadata into task attributes
  * @param {{ task: ITask, options: { mode: string }, targetSid: string }} payload
- * @param {string} documentName name to retrieve the form or null if there were no form to save
  * @param {string} counselorName
  */
 export const setTransferMeta = async (
   payload: { task: ITask; options: { mode: string }; targetSid: string },
-  documentName: string,
   counselorName: string,
 ) => {
   const { task, options, targetSid } = payload;
@@ -144,7 +141,6 @@ export const setTransferMeta = async (
       originalConversationSid: task.attributes.conversationSid || task.attributes.channelSid, // save the original conversation sid, so we can cleanup the listeners if transferred succesfully
       sidWithTaskControl: mode === transferModes.warm ? '' : 'WR00000000000000000000000000000000', // if cold, set control to dummy value so Task Janitor completes this one
       transferStatus: mode === transferModes.warm ? transferStatuses.transferring : transferStatuses.accepted,
-      formDocument: documentName,
       mode,
       targetType,
     },

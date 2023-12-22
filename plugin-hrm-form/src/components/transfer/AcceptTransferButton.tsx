@@ -16,7 +16,7 @@
 
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { TaskHelper, Template, ITask, ThemeProps } from '@twilio/flex-ui';
+import { ITask, TaskHelper, Template, ThemeProps } from '@twilio/flex-ui';
 
 import { TransferStyledButton } from '../../styles/buttons';
 import { closeCallOriginal } from '../../utils/transfer';

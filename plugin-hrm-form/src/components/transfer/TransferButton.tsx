@@ -16,7 +16,7 @@
 
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Actions, Template, TaskContextProps, withTaskContext } from '@twilio/flex-ui';
+import { Actions, TaskContextProps, Template, withTaskContext } from '@twilio/flex-ui';
 
 import { canTransferConference } from '../../utils/transfer';
 import { TransferStyledButton } from '../../styles/buttons';
