@@ -67,6 +67,7 @@ import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
 import { selectCurrentDefinitionVersion, selectDefinitionVersions } from '../../states/configuration/selectDefinitions';
+import FullTimelineView from './timeline/FullTimelineView';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -316,6 +317,11 @@ const Case: React.FC<Props> = ({
       />
     );
   }
+
+  if (routing.subroute === 'timeline') {
+    return <FullTimelineView task={task} />;
+  }
+
   return loading || !definitionVersion ? (
     <CenteredContainer>
       <CircularProgress size={50} />

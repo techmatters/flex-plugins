@@ -277,6 +277,7 @@ export type FeatureFlags = {
   enable_client_profiles: boolean; // Enables Client Profiles
   enable_case_merging: boolean; // Enables adding contacts to existing cases
   enable_confirm_on_browser_close: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
+  enable_separate_timeline_view: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
 };
 /* eslint-enable camelcase */
 
