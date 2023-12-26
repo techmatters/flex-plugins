@@ -66,5 +66,6 @@ export const loadFormSharedState = async ({ taskSid, attributes }: ITask): Promi
   savedContact.twilioWorkerId = getHrmConfig().workerSid;
   await asyncDispatch(store.dispatch)(updateContactInHrmAsyncAction(savedContact, savedContact, `task-${taskSid}`));
   store.dispatch(releaseContact(savedContact.id, `task-${attributes.transferMeta.originalTask}`));
-  return contactState;
+  throw new Error('splat');
+  // return contactState;
 };
