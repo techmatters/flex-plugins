@@ -52,6 +52,9 @@ import { configurationBase, contactFormsBase, namespace } from '../../states/sto
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { isRouteWithContext } from '../../states/routing/types';
+import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
+import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
+import { selectCaseMergingBanners } from '../../states/case/caseBanners';
 import InfoIcon from '../caseMergingBanners/InfoIcon';
 import { BannerContainer, Text } from '../../styles/banners';
 
@@ -119,6 +122,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
   enableEditing,
   canViewTwilioTranscript,
   createDraftCsamReport,
+  task,
+  showRemovedFromCaseBanner,
 }) {
   const version = savedContact?.rawJson.definitionVersion;
 
@@ -148,6 +153,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
     updatedAt,
     updatedBy,
     rawJson,
+    caseId,
   } = savedContact;
 
   const isDraft = !savedContact.finalizedAt;
@@ -180,9 +186,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   // Format the obtained information
   const isDataCall = !isNonDataCallType(callType);
   const formattedChannel =
-    channel === 'default'
-      ? mapChannelForInsights(rawJson.contactlessTask.channel.toString())
-      : mapChannelForInsights(channel);
+    channel === 'default' ? mapChannelForInsights(rawJson.contactlessTask.channel) : mapChannelForInsights(channel);
   const addedDate = new Date(timeOfContact);
 
   const formattedDate = `${format(addedDate, 'MMM dd, yyyy')}`;
@@ -279,6 +283,16 @@ const ContactDetailsHome: React.FC<Props> = function ({
           </Flex>
         </BannerContainer>
       )}
+
+      {caseId && <ContactAddedToCaseBanner taskId={task.taskSid} contactId={savedContact.id} />}
+      {showRemovedFromCaseBanner && (
+        <ContactRemovedFromCaseBanner
+          taskId={task.taskSid}
+          contactId={savedContact.id}
+          showUndoButton={showRemovedFromCaseBanner}
+        />
+      )}
+
       <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
         expanded={detailsExpanded[GENERAL_DETAILS]}
@@ -457,6 +471,7 @@ ContactDetailsHome.defaultProps = {
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const currentRoute = getCurrentTopmostRouteForTask(state[namespace].routing, ownProps.task.taskSid);
+  const { showRemovedFromCaseBanner } = selectCaseMergingBanners(state, ownProps.contactId);
   return {
     definitionVersions: state[namespace][configurationBase].definitionVersions,
     counselorsHash: state[namespace][configurationBase].counselors.hash,
@@ -467,6 +482,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
       role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.quality_process_manager',
     ),
     isProfileRoute: isRouteWithContext(currentRoute) && currentRoute?.context === 'profile',
+    showRemovedFromCaseBanner,
   };
 };
 

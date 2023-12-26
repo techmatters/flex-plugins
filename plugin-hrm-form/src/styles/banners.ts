@@ -56,10 +56,11 @@ export const Text = styled('span')`
 Text.displayName = 'Text';
 type ButtonProps = {
   onClick: () => void;
+  color?: string;
 };
 
 export const CaseLink = styled('button')<ButtonProps>`
-  color: #0263e0;
+  color: ${({ color }) => (color ? color : '#0263e0')};
   font-size: 14px;
   text-decoration: underline;
   background: none;
