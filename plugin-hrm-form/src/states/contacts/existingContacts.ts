@@ -16,7 +16,7 @@
 
 import { omit } from 'lodash';
 
-import { Case, Contact, ContactRawJson } from '../../types/types';
+import { Contact, ContactRawJson } from '../../types/types';
 import { AddExternalReportEntryAction } from '../csam-report/existingContactExternalReport';
 import { ConfigurationState } from '../configuration/reducer';
 import { transformValuesForContactForm } from './contactDetailsAdapter';
@@ -94,10 +94,6 @@ export type ContactState = {
 
 export type ExistingContactsState = {
   [contactId: string]: ContactState;
-};
-
-export type CaseConnectedToContactState = {
-  [contactId: string]: Case;
 };
 
 export const LOAD_CONTACT_ACTION = 'LOAD_CONTACT_ACTION';

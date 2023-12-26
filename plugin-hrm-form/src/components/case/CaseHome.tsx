@@ -55,7 +55,6 @@ import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCas
 import CaseCreatedBanner from '../caseMergingBanners/CaseCreatedBanner';
 import AddToCaseBanner from '../caseMergingBanners/AddToCaseBanner';
 import { selectCaseActivityCount } from '../../states/case/timeline';
-import { setCaseConnectedToContact } from '../../states/contacts/actions';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -82,7 +81,6 @@ const CaseHome: React.FC<Props> = ({
   can,
   connectedCaseState,
   isCreating,
-  setCaseConnectedToContact,
   hasMoreActivities,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -352,8 +350,6 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: CaseHomeProps) =>
   connectCaseToTaskContact: async (taskContact: Contact, cas: Case) =>
     asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, cas.id)),
   closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
-  setCaseConnectedToContact: (connectedCase: Case, contactId: string) =>
-    dispatch(setCaseConnectedToContact(connectedCase, contactId)),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

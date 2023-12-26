@@ -81,16 +81,16 @@ const ContactDetails: React.FC<Props> = ({
   clearContactDraft,
   currentRoute,
   openFormConfirmDialog,
-  saveStatus,
+  loadingStatus,
   loadContactFromHrm,
   ...otherProps
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   React.useEffect(() => {
-    if (!savedContact && saveStatus !== 'saving') {
+    if (!savedContact && loadingStatus !== 'loading') {
       loadContactFromHrm();
     }
-  }, [saveStatus, savedContact, loadContactFromHrm]);
+  }, [loadingStatus, savedContact, loadContactFromHrm]);
   const version = savedContact?.rawJson.definitionVersion;
 
   const featureFlags = getAseloFeatureFlags();
@@ -272,7 +272,7 @@ const mapStateToProps = (
     definitionVersions: configuration.definitionVersions,
     savedContact,
     draftContact,
-    saveStatus: metadata?.saveStatus,
+    loadingStatus: metadata?.loadingStatus,
     draftCsamReport: csamReport.contacts[contactId],
     currentRoute,
   };

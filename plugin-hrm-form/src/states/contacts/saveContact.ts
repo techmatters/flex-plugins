@@ -307,7 +307,7 @@ export const saveContactReducer = (initialState: ContactsState) =>
     handleAction(
       loadContactFromHrmByIdAsyncAction.pending as typeof loadContactFromHrmByIdAsyncAction,
       (state, { meta: { contactId } }): ContactsState => {
-        return setContactSavingStateInRedux(state, contactId);
+        return setContactLoadingStateInRedux(state, contactId);
       },
     ),
     handleAction(
