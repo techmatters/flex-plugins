@@ -400,9 +400,11 @@
   "Profile-EditHeader": "Edit Profile",
   "Profile-EditNoteHeader": "Edit Note",
   "Profile-EditButton": "Edit",
+  "Profile-Notes-No": "No",
   "Profile-FlagEditHeader": "Edit Status and Blocking",
   "Profile-NoContactsFound": "No Contacts Found",
   "Profile-NoCasesFound": "No Cases Found",
+  "Profile-ViewClient": "View Client",
 
   "UploadFile-ButtonText": "Upload File",
   "DownloadFile-ButtonText": "Download File",

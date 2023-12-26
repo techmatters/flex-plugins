@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Translations, Configuration, MapHelplineLanguage, ContactType } from '../types';
+import { Configuration, ContactType, MapHelplineLanguage, Translations } from '../types';
 import type { PreEngagementFormDefinition } from '../src/pre-engagement-form';
 
 const accountSid = 'AC6a65d4fbbc731e64e1c94e9806675c3b';
@@ -31,7 +31,7 @@ const translations: Translations = {
     PreEngagementDescription: "Let's get started",
     Today: 'Today',
     InputPlaceHolder: 'Type Message',
-    WelcomeMessage: 'Welcome to ChildLine Zambia!',
+    WelcomeMessage: 'Welcome to E2E Test Chat!',
     Yesterday: 'Yesterday',
     TypingIndicator: 'Counselor is typing',
     MessageCanvasTrayButton: 'Start New Chat',
