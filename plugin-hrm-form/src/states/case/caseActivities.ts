@@ -142,6 +142,11 @@ export const getActivitiesFromContacts = (sourceContacts: Contact[]): Activity[]
   return connectedContactActivities(sourceContacts);
 };
 
+export const getActivityCount = (sourceCase: Case): number =>
+  (sourceCase?.info?.counsellorNotes?.length ?? 0) +
+  (sourceCase?.info?.referrals?.length ?? 0) +
+  (sourceCase?.connectedContacts?.length ?? 0);
+
 /**
  * Sort activities from most recent to oldest.
  * @param activities Activities to sort
