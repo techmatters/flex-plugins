@@ -20,8 +20,13 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
+<<<<<<< HEAD:plugin-hrm-form/src/components/case/TimelineInformationRow.tsx
 import { TimelineRow, TimelineText, TimelineLabel, ViewButton, RowItemContainer } from './styles';
 import { Box, HiddenText } from '../../styles';
+=======
+import { RowItemContainer, TimelineLabel, TimelineRow, TimelineText, ViewButton } from '../../styles/case';
+import { Box, HiddenText } from '../../styles/HrmStyles';
+>>>>>>> 0d1f170937b0125a4c8872a49553c0d77b4968cf:plugin-hrm-form/src/components/case/IncidentInformationRow.tsx
 import { formatValue } from '../common/forms/helpers';
 import type { Incident } from '../../types/types';
 
@@ -35,7 +40,7 @@ type OwnProps = {
 const RowItem: React.FC = ({ children }) => <RowItemContainer style={{ flex: 1 }}>{children}</RowItemContainer>;
 RowItem.displayName = 'RowItem';
 
-const TimelineInformationRow: React.FC<OwnProps> = ({ definition, values, layoutDefinition, onClickView }) => {
+const IncidentInformationRow: React.FC<OwnProps> = ({ definition, values, layoutDefinition, onClickView }) => {
   return (
     <TimelineRow>
       {layoutDefinition.previewFields.map((name, index) => {
@@ -66,6 +71,6 @@ const TimelineInformationRow: React.FC<OwnProps> = ({ definition, values, layout
   );
 };
 
-TimelineInformationRow.displayName = 'TimelineInformationRow';
+IncidentInformationRow.displayName = 'IncidentInformationRow';
 
-export default TimelineInformationRow;
+export default IncidentInformationRow;

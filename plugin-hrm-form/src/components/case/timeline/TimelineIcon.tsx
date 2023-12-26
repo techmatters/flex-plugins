@@ -16,13 +16,13 @@
 
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
-import PropTypes from 'prop-types';
 import * as Flex from '@twilio/flex-ui';
+import { TaskChannelDefinition } from '@twilio/flex-ui';
 import NoteIcon from '@material-ui/icons/NoteAddOutlined';
 import AssignmentInd from '@material-ui/icons/AssignmentIndOutlined';
 import ReplyIcon from '@material-ui/icons/Reply';
-import { TaskChannelDefinition } from '@twilio/flex-ui';
 
+<<<<<<< HEAD:plugin-hrm-form/src/components/case/TimelineIcon.tsx
 import { TimelineIconContainer } from './styles';
 import { channelTypes, ChannelTypes } from '../../states/DomainConstants';
 import TwitterIcon from '../common/icons/TwitterIcon';
@@ -33,6 +33,18 @@ import FacebookIcon from '../common/icons/FacebookIcon';
 import SmsIcon from '../common/icons/SmsIcon';
 import CallIcon from '../common/icons/CallIcon';
 import { colors } from '../../channels/colors';
+=======
+import { TimelineIconContainer } from '../../../styles/case';
+import { channelTypes, ChannelTypes } from '../../../states/DomainConstants';
+import TwitterIcon from '../../common/icons/TwitterIcon';
+import InstagramIcon from '../../common/icons/InstagramIcon';
+import LineIcon from '../../common/icons/LineIcon';
+import WhatsappIcon from '../../common/icons/WhatsappIcon';
+import FacebookIcon from '../../common/icons/FacebookIcon';
+import SmsIcon from '../../common/icons/SmsIcon';
+import CallIcon from '../../common/icons/CallIcon';
+import { colors } from '../../../channels/colors';
+>>>>>>> 0d1f170937b0125a4c8872a49553c0d77b4968cf:plugin-hrm-form/src/components/case/timeline/TimelineIcon.tsx
 
 type IconType = ChannelTypes | 'note' | 'referral';
 
