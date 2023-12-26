@@ -20,7 +20,7 @@ import { TableBody, CircularProgress } from '@material-ui/core';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { TableContainer, StandardTable, DataTableRow, LoadingCell, DataCell, TableBodyFont } from '../../styles/table';
+import { TableContainer, StandardTable, DataTableRow, LoadingCell, DataCell, TableBodyFont } from '../../styles';
 import Filters from './filters/Filters';
 import CaseListTableHead from './CaseListTableHead';
 import CaseListTableRow from './CaseListTableRow';

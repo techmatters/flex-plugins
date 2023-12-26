@@ -35,7 +35,7 @@ import {
   CategoryTitle,
   Container,
   ToggleViewButton,
-} from '../../styles/HrmStyles';
+} from '../../styles';
 import Section from '../common/forms/Section';
 import CategoryCheckboxes from '../common/forms/CategoryCheckboxes';
 
@@ -88,7 +88,7 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
 
   return (
     <Container formContainer={true}>
-      <CategoryTitle>
+      <CategoryTitle searchTerm="">
         <Template code="Categories-Title" />
       </CategoryTitle>
       <CategorySubtitleSection>

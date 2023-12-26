@@ -19,7 +19,7 @@ import { Template } from '@twilio/flex-ui';
 import { get } from 'lodash';
 import { useFormContext } from 'react-hook-form';
 
-import { Box, Row } from '../../../../styles/HrmStyles';
+import { Box, Row } from '../../../../styles';
 import { FormError, FormLabel, RequiredAsterisk } from '../styles';
 import { FormInputBaseProps } from '../types';
 import { StyledFormInput } from './styles';

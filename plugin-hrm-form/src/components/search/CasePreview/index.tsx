@@ -20,7 +20,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { Case, Contact, RouterTask } from '../../../types/types';
 import CaseHeader from './CaseHeader';
-import { Flex, PreviewWrapper } from '../../../styles/HrmStyles';
+import { Flex, PreviewWrapper } from '../../../styles';
 import getUpdatedDate from '../../../states/getUpdatedDate';
 import { PreviewDescription } from '../PreviewDescription';
 import { getDefinitionVersion } from '../../../services/ServerlessService';

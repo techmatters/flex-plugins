@@ -20,7 +20,7 @@ import MicNoneOutlined from '@material-ui/icons/MicNoneOutlined';
 import MicOffOutlined from '@material-ui/icons/MicOffOutlined';
 
 import { conferenceApi } from '../../../services/ServerlessService';
-import { StyledConferenceButtonWrapper, StyledConferenceButton } from './styles';
+import { ConferenceButtonWrapper, ConferenceButton } from './styles';
 
 type Props = TaskContextProps;
 
@@ -55,14 +55,14 @@ const ToggleMute: React.FC<Props> = ({ call, task, conference }) => {
   const buttonText = `${isMuted ? 'Unmute' : 'Mute'}`;
 
   return (
-    <StyledConferenceButtonWrapper>
-      <StyledConferenceButton disabled={!isLiveCall} onClick={handleClick}>
+    <ConferenceButtonWrapper>
+      <ConferenceButton disabled={!isLiveCall} onClick={handleClick}>
         {isMuted ? <MicOffOutlined /> : <MicNoneOutlined />}
-      </StyledConferenceButton>
+      </ConferenceButton>
       <span>
         <Template code={buttonText} />
       </span>
-    </StyledConferenceButtonWrapper>
+    </ConferenceButtonWrapper>
   );
 };
 

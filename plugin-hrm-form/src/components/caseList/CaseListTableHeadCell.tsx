@@ -20,7 +20,7 @@ import { Template } from '@twilio/flex-ui';
 import { ArrowDownward } from '@material-ui/icons';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { TableHeaderFont, HeaderCell } from '../../styles/table';
+import { TableHeaderFont, HeaderCell } from '../../styles';
 import { ListCasesQueryParams, ListCasesSortDirection } from '../../types/types';
 import * as CaseListSettingsActions from '../../states/caseList/settings';
 import { RootState } from '../../states';

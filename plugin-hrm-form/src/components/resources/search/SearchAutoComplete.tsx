@@ -17,7 +17,7 @@
 
 import React from 'react';
 
-import { AutoCompleteDropdown, AutoCompleteDropdownRow } from '../../../styles/ReferrableResources';
+import { AutoCompleteDropdown, AutoCompleteDropdownRow } from '../styles';
 import { sanitizeInputForSuggestions, TaxonomyLevelNameCompletion } from '../../../states/resources/search';
 
 type OwnProps = {

@@ -19,8 +19,9 @@ import { styled } from '@twilio/flex-ui';
 import { withStyles } from '@material-ui/core';
 import { AttachFile, CheckCircle, FileCopyOutlined, OpenInNew } from '@material-ui/icons';
 
-import { FontOpenSans, StyledNextStepButton } from '../HrmStyles';
-import HrmTheme from '../HrmTheme';
+import { FontOpenSans } from '../../styles';
+import { StyledNextStepButton } from '../../styles/buttons';
+import HrmTheme from '../../styles/HrmTheme';
 
 export const CSAMReportContainer = styled('div')`
   display: flex;

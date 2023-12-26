@@ -23,8 +23,9 @@ import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 
 import SearchInput from './SearchInput';
-import { Flex, Box } from '../../../styles/HrmStyles';
 import {
+  Flex,
+  Box,
   MultiSelectButton,
   DialogArrow,
   FiltersDialog,
@@ -33,8 +34,7 @@ import {
   FiltersApplyButton,
   FiltersClearButton,
   MultiSelectUnorderedList,
-} from '../../../styles/table/filters';
-import type { Item } from './MultiSelectFilter';
+} from '../../../styles';
 import CategorySection from './CategorySection';
 
 /**

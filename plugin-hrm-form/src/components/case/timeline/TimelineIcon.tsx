@@ -22,7 +22,7 @@ import NoteIcon from '@material-ui/icons/NoteAddOutlined';
 import AssignmentInd from '@material-ui/icons/AssignmentIndOutlined';
 import ReplyIcon from '@material-ui/icons/Reply';
 
-import { TimelineIconContainer } from '../../../styles/case';
+import { TimelineIconContainer } from '../styles';
 import { channelTypes, ChannelTypes } from '../../../states/DomainConstants';
 import TwitterIcon from '../../common/icons/TwitterIcon';
 import InstagramIcon from '../../common/icons/InstagramIcon';

@@ -23,7 +23,7 @@ import { createCallStatusSyncDocument } from '../../../utils/sharedState';
 import { ConferenceNotifications } from '../../../conference/setUpConferenceActions';
 import { conferenceApi } from '../../../services/ServerlessService';
 import PhoneInputDialog from './PhoneInputDialog';
-import { StyledConferenceButtonWrapper, StyledConferenceButton } from './styles';
+import { ConferenceButtonWrapper, ConferenceButton } from './styles';
 import { RootState } from '../../../states';
 import { setCallStatusAction, setIsDialogOpenAction, setPhoneNumberAction } from '../../../states/conferencing';
 import { CallStatus, isCallStatusLoading } from '../../../states/conferencing/callStatus';
@@ -101,9 +101,9 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
   const isLiveCall = TaskHelper.isLiveCall(task);
 
   return (
-    <StyledConferenceButtonWrapper>
+    <ConferenceButtonWrapper>
       <>
-        <StyledConferenceButton
+        <ConferenceButton
           disabled={
             !isLiveCall ||
             (participants && participants.filter(participant => participant.status === 'joined').length >= 4)
@@ -111,7 +111,7 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
           onClick={toggleDialog}
         >
           <AddIcCallRounded />
-        </StyledConferenceButton>
+        </ConferenceButton>
         {isDialogOpen && (
           <PhoneInputDialog
             targetNumber={phoneNumber}
@@ -125,7 +125,7 @@ const ConferencePanel: React.FC<Props> = ({ task, conference }) => {
       <span>
         <Template code="Conference" />
       </span>
-    </StyledConferenceButtonWrapper>
+    </ConferenceButtonWrapper>
   );
 };
 

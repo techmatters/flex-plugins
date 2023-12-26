@@ -19,7 +19,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import NavigableContainer from '../../NavigableContainer';
-import { CaseLayout } from '../../../styles/case';
+import { CaseLayout } from '../styles';
 import { CustomITask, StandaloneITask } from '../../../types/types';
 import AddToCaseBanner from '../../caseMergingBanners/AddToCaseBanner';
 import Timeline from './Timeline';

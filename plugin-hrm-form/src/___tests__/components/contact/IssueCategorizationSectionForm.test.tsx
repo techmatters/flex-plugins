@@ -22,7 +22,7 @@ import configureMockStore from 'redux-mock-store';
 import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import IssueCategorizationSectionForm from '../../../components/contact/IssueCategorizationSectionForm';
-import { ToggleViewButton } from '../../../styles/HrmStyles';
+import { ToggleViewButton } from '../../../styles';
 import { setCategoriesGridView } from '../../../states/contacts/existingContacts';
 import { forExistingContact } from '../../../states/contacts/issueCategorizationStateApi';
 import { getAseloFeatureFlags } from '../../../hrmConfig';

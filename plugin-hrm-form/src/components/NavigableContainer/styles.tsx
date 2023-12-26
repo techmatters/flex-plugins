@@ -17,7 +17,7 @@
 import { styled } from '@twilio/flex-ui';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 
-import { FontOpenSans } from './HrmStyles';
+import { FontOpenSans } from '../../styles';
 
 type NavigableContainerProps = {
   modal?: boolean;

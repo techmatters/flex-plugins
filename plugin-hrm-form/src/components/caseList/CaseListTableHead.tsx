@@ -20,7 +20,7 @@ import { TableHead, TableRow } from '@material-ui/core';
 
 import CaseListTableHeadCell from './CaseListTableHeadCell';
 import { ListCasesSortBy, ListCasesSortDirection } from '../../types/types';
-import { TableHeader } from '../../styles/table';
+import { TableHeader } from '../../styles';
 
 const CaseListTableHead = () => {
   return (

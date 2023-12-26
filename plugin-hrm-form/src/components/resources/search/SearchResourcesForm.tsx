@@ -33,7 +33,8 @@ import {
   FormSelectWrapper,
   Row,
   StyledNextStepButton,
-} from '../../../styles/HrmStyles';
+  FiltersCheckbox,
+} from '../../../styles';
 import {
   ResourceSearchFormClearButton,
   ResourcesSearchFormArea,
@@ -43,7 +44,7 @@ import {
   ResourcesSearchFormSettingBox,
   ResourcesSearchFormTopRule,
   ResourcesSearchTitle,
-} from '../../../styles/ReferrableResources';
+} from '../styles';
 import {
   FilterOption,
   ReferrableResourceSearchState,
@@ -55,7 +56,6 @@ import {
 import SearchInput from '../../caseList/filters/SearchInput';
 import { getTemplateStrings } from '../../../hrmConfig';
 import asyncDispatch from '../../../states/asyncDispatch';
-import { FiltersCheckbox } from '../../../styles/table/filters';
 import SearchAutoComplete from './SearchAutoComplete';
 import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
 

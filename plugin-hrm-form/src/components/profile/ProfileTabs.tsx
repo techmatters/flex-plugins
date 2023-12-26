@@ -18,7 +18,6 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Tab as TwilioTab, Template } from '@twilio/flex-ui';
 
-import { Box } from '../../styles/HrmStyles';
 import { useProfile, useProfileLoader } from '../../states/profile/hooks';
 import * as RoutingTypes from '../../states/routing/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
@@ -26,7 +25,7 @@ import * as RoutingActions from '../../states/routing/actions';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileRoute } from '../../states/routing/types';
-import { StyledTabs } from '../../styles/search'; // just stealing from search until we have a centralized tab style
+import { StyledTabs } from '../search/styles'; // just stealing from search until we have a centralized tab style
 import NavigableContainer from '../NavigableContainer';
 import ProfileCases from './ProfileCases';
 import ProfileContacts from './ProfileContacts';

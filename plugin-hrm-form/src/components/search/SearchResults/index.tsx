@@ -24,8 +24,8 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
-import { Case, Contact, CustomITask, SearchCaseResult, SearchContactResult } from '../../../types/types';
-import { Row } from '../../../styles/HrmStyles';
+import { SearchContactResult, SearchCaseResult, Contact, Case, CustomITask } from '../../../types/types';
+import { Row } from '../../../styles';
 import {
   EmphasisedText,
   ListContainer,
@@ -43,7 +43,7 @@ import {
   StyledTabs,
   SwitchLabel,
   Text,
-} from '../../../styles/search';
+} from '../styles';
 import Pagination from '../../pagination';
 import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../../permissions';
 import { namespace } from '../../../states/storeNamespaces';

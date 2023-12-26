@@ -18,15 +18,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {
-  ErrorText,
-  FormLabel,
-  FormSelect,
-  StyledLabel,
-  StyledMenuItem,
-  StyledSelect,
-  TextField,
-} from '../styles/HrmStyles';
+import { ErrorText, FormLabel, FormSelect, StyledLabel, StyledMenuItem, StyledSelect, TextField } from '../styles';
 import RequiredAsterisk from './RequiredAsterisk';
 import { fieldType, counselorType } from '../types';
 

@@ -26,9 +26,9 @@ import {
 } from '../../../states/search/actions';
 import { RootState } from '../../../states';
 import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../search/SearchResults';
-import { YellowBanner } from '../../../styles/previousContactsBanner';
-import { Bold } from '../../../styles/HrmStyles';
-import { StyledLink } from '../../../styles/search';
+import { YellowBanner } from '../styles';
+import { Bold } from '../../../styles';
+import { StyledLink } from '../../search/styles';
 import { ChannelTypes, channelTypes } from '../../../states/DomainConstants';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
 import { getContactValueTemplate, getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';

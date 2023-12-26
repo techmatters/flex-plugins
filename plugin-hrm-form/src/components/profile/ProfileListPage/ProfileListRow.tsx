@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 
 import { useProfile } from '../../../states/profile/hooks/useProfile';
 import { Profile } from '../../../states/profile/types';
-import { DataTableRow, DataCell } from '../../../styles/table';
+import { DataTableRow, DataCell } from '../../../styles';
 import { newOpenModalAction } from '../../../states/routing/actions';
 
 type OwnProps = {
