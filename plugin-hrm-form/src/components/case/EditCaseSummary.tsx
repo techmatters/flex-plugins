@@ -24,8 +24,15 @@ import { DefinitionVersion, FormDefinition, FormInputType } from 'hrm-form-defin
 import { isEqual } from 'lodash';
 import { AnyAction, bindActionCreators } from 'redux';
 
-import { BottomButtonBar, BottomButtonBarHeight, Box, ColumnarBlock, Container, TwoColumnLayout } from '../../styles';
-import { StyledNextStepButton } from '../../styles/buttons';
+import {
+  BottomButtonBar,
+  BottomButtonBarHeight,
+  Box,
+  ColumnarBlock,
+  Container,
+  TwoColumnLayout,
+  StyledNextStepButton,
+} from '../../styles';
 import ActionHeader from './ActionHeader';
 import { RootState } from '../../states';
 import * as RoutingActions from '../../states/routing/actions';

@@ -32,8 +32,9 @@ import {
   FormSelect,
   FormSelectWrapper,
   Row,
+  StyledNextStepButton,
+  FiltersCheckbox,
 } from '../../../styles';
-import { StyledNextStepButton } from '../../../styles/buttons';
 import {
   ResourceSearchFormClearButton,
   ResourcesSearchFormArea,
@@ -55,7 +56,6 @@ import {
 import SearchInput from '../../caseList/filters/SearchInput';
 import { getTemplateStrings } from '../../../hrmConfig';
 import asyncDispatch from '../../../states/asyncDispatch';
-import { FiltersCheckbox } from '../../../styles/filters';
 import SearchAutoComplete from './SearchAutoComplete';
 import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
 

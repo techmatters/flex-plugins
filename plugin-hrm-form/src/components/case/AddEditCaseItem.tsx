@@ -33,8 +33,8 @@ import {
   ColumnarContent,
   Container,
   TwoColumnLayout,
+  StyledNextStepButton,
 } from '../../styles';
-import { StyledNextStepButton } from '../../styles/buttons';
 import { CaseActionFormContainer } from './styles';
 import ActionHeader from './ActionHeader';
 import { RootState } from '../../states';
