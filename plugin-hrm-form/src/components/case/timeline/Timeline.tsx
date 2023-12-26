@@ -24,30 +24,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import TimelineIcon from './TimelineIcon';
-import {
-  CaseDetailsBorder,
-  CaseSectionFont,
-  TimelineCallTypeIcon,
-  TimelineDate,
-  TimelineRow,
-  TimelineText,
-  ViewButton,
-<<<<<<< HEAD:plugin-hrm-form/src/components/case/Timeline.tsx
-} from './styles';
-import { Box, Row } from '../../styles';
-import CaseAddButton from './CaseAddButton';
-import { CustomITask } from '../../types/types';
-import { isConnectedCaseActivity } from '../../states/case/caseActivities';
-import { ConnectedCaseActivity, NoteActivity, ReferralActivity } from '../../states/case/types';
-import { getPermissionsForContact, PermissionActions, PermissionActionType } from '../../permissions';
-import { CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../../states/routing/types';
-import { newOpenModalAction } from '../../states/routing/actions';
-import { RootState } from '../../states';
-import { selectCaseActivities } from '../../states/case/timeline';
-import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
-=======
-} from '../../../styles/case';
-import { Box, Row } from '../../../styles/HrmStyles';
+import { CaseSectionFont, TimelineCallTypeIcon, TimelineDate, TimelineRow, TimelineText, ViewButton } from '../styles';
+import { Box, Row } from '../../../styles';
 import CaseAddButton from '../CaseAddButton';
 import { CustomITask } from '../../../types/types';
 import { isConnectedCaseActivity } from '../../../states/case/caseActivities';
@@ -58,7 +36,6 @@ import { newOpenModalAction } from '../../../states/routing/actions';
 import { RootState } from '../../../states';
 import { selectCaseActivities } from '../../../states/case/timeline';
 import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRouteCase';
->>>>>>> 0d1f170937b0125a4c8872a49553c0d77b4968cf:plugin-hrm-form/src/components/case/timeline/Timeline.tsx
 
 type OwnProps = {
   taskSid: CustomITask['taskSid'];
