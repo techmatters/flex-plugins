@@ -185,7 +185,8 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 };
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
-  loadContactFromHrmByTaskSid: () => dispatch(loadContactFromHrmByTaskSidAsyncAction(task.taskSid)),
+  loadContactFromHrmByTaskSid: () =>
+    dispatch(loadContactFromHrmByTaskSidAsyncAction(task.taskSid, `${task.taskSid}-active`)),
   createContact: (definition: DefinitionVersion) =>
     asyncDispatch(dispatch)(
       createContactAsyncAction(newContact(definition, task), getHrmConfig().workerSid, task.taskSid),

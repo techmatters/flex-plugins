@@ -259,7 +259,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && (
     <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>
       <Icon icon="DefaultAvatar" />
-      View Client
+      <Template code="Profile-ViewClient" />
     </SectionActionButton>
   );
 

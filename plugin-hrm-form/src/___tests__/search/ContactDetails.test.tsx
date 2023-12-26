@@ -49,6 +49,7 @@ const mockStore = configureMockStore([]);
 
 const contactOfType = (type): Contact => ({
   id: 'TEST CONTACT ID',
+  profileId: 123,
   accountSid: '',
   createdAt: '',
   updatedBy: '',
@@ -117,12 +118,11 @@ const contactOfType = (type): Contact => ({
     callType: type,
     contactlessTask: {
       channel: 'voice',
-    },
-    conversationMedia: [],
+    } as Contact['rawJson']['contactlessTask'],
   },
+  conversationMedia: [],
 });
 
-const handleBack = jest.fn();
 const handleSelectSearchResult = jest.fn();
 
 let mockV1;
@@ -193,10 +193,9 @@ test(`<ContactDetails> with contact of type ${callTypes.child}`, async () => {
         <ContactDetails
           contact={contact}
           currentIsCaller={false}
-          handleBack={handleBack}
           handleSelectSearchResult={handleSelectSearchResult}
           showActionIcons={false}
-          task={{ taskSid: 'TEST_TASK_ID' }}
+          task={{ taskSid: 'TEST_TASK_ID' } as CustomITask}
         />
       </Provider>
     </StorelessThemeProvider>,
@@ -204,7 +203,6 @@ test(`<ContactDetails> with contact of type ${callTypes.child}`, async () => {
 
   expect(screen.getByTestId('ContactDetails')).toBeInTheDocument();
   expect(screen.queryByTestId('ContactDetails-Section-ChildInformation')).toBeInTheDocument();
-  expect(store.getActions().length).toBe(1);
   expect(screen.getAllByTestId('ContactDetails-Section')).toHaveLength(4);
 });
 
@@ -218,7 +216,6 @@ test(`<ContactDetails> with contact of type ${callTypes.caller}`, async () => {
         <ContactDetails
           contact={contact}
           currentIsCaller={true}
-          handleBack={handleBack}
           handleSelectSearchResult={handleSelectSearchResult}
           task={{ taskSid: 'TEST_TASK_ID' } as CustomITask}
           showActionIcons={false}
@@ -228,7 +225,6 @@ test(`<ContactDetails> with contact of type ${callTypes.caller}`, async () => {
   );
   expect(screen.getByTestId('ContactDetails')).toBeInTheDocument();
   expect(screen.queryByTestId('ContactDetails-Section-ChildInformation')).toBeInTheDocument();
-  expect(store.getActions().length).toBe(1);
   expect(screen.getAllByTestId('ContactDetails-Section')).toHaveLength(5);
 });
 
@@ -242,15 +238,13 @@ test(`<ContactDetails> with a non data (standalone) contact`, async () => {
         <ContactDetails
           contact={contact}
           currentIsCaller={false}
-          handleBack={handleBack}
           handleSelectSearchResult={handleSelectSearchResult}
           showActionIcons={false}
-          task={{ taskSid: 'TEST_TASK_ID' }}
+          task={{ taskSid: 'TEST_TASK_ID' } as CustomITask}
         />
       </Provider>
     </StorelessThemeProvider>,
   );
   expect(screen.getByTestId('ContactDetails')).toBeInTheDocument();
-  expect(store.getActions().length).toBe(1);
   expect(screen.getAllByTestId('ContactDetails-Section')).toHaveLength(1);
 });

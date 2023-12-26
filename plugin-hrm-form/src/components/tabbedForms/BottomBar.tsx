@@ -180,7 +180,7 @@ const BottomBar: React.FC<
       )}
       {showSubmitButton && (
         <>
-          {featureFlags.enable_case_management && renderCaseButton()}
+          {renderCaseButton()}
 
           <SaveAndEndButton
             roundCorners={true}
