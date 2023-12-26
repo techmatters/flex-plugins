@@ -29,7 +29,7 @@ import { Box, Flex } from '../../styles/HrmStyles';
 import { Container, DataCallTypeButton, Label, NonDataCallTypeButton } from '../../styles/callTypeButtons';
 import { isNonDataCallType } from '../../states/validationRules';
 import NonDataCallTypeDialog from './NonDataCallTypeDialog';
-import { hasTaskControl } from '../../utils/transfer';
+import { hasTaskControl } from '../../transfer/transferTaskState';
 import { completeTask } from '../../services/formSubmissionHelpers';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
 import { Contact, CustomITask, isOfflineContactTask } from '../../types/types';

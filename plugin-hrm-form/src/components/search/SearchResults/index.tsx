@@ -29,6 +29,7 @@ import { Row } from '../../../styles/HrmStyles';
 import {
   EmphasisedText,
   ListContainer,
+  NoResultTextLink,
   ResultsHeader,
   ScrollableList,
   SearchResultWarningContainer,
@@ -42,7 +43,6 @@ import {
   StyledTabs,
   SwitchLabel,
   Text,
-  NoResultTextLink,
 } from '../../../styles/search';
 import Pagination from '../../pagination';
 import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../../permissions';
@@ -53,7 +53,7 @@ import * as RoutingActions from '../../../states/routing/actions';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
 import { AppRoutes, ChangeRouteMode, SearchResultRoute } from '../../../states/routing/types';
 import { recordBackendError } from '../../../fullStory';
-import { hasTaskControl } from '../../../utils/transfer';
+import { hasTaskControl } from '../../../transfer/transferTaskState';
 import { getUnsavedContact } from '../../../states/contacts/getUnsavedContact';
 import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 import { createCaseAsyncAction } from '../../../states/case/saveCase';

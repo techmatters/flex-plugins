@@ -23,7 +23,7 @@ import { DefinitionVersion } from 'hrm-form-definitions';
 import HrmForm from './HrmForm';
 import FormNotEditable from './FormNotEditable';
 import { RootState } from '../states';
-import { hasTaskControl } from '../utils/transfer';
+import { hasTaskControl } from '../transfer/transferTaskState';
 import { CustomITask, isInMyBehalfITask, isOfflineContactTask } from '../types/types';
 import ProfileIdentifierBanner from './profile/ProfileIdentifierBanner';
 import { Flex } from '../styles/HrmStyles';
