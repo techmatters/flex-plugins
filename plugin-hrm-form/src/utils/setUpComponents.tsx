@@ -50,7 +50,9 @@ import { getAseloConfigFlags, getHrmConfig } from '../hrmConfig';
 import { AseloMessageInput, AseloMessageList } from '../components/AseloMessaging';
 import { namespace, routingBase } from '../states/storeNamespaces';
 import { changeRoute } from '../states/routing/actions';
-import { ChangeRouteMode } from '../states/routing/types';
+import { AppRoutes, ChangeRouteMode } from '../states/routing/types';
+import { selectCurrentBaseRoute } from '../states/routing/getRoute';
+import { RootState } from '../states';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
@@ -166,6 +168,18 @@ const setUpOfflineContact = () => {
       !props.selectedTaskSid &&
       manager.store.getState()[namespace][routingBase].isAddingOfflineContact, // while this is inefficient because of calling getState several times in a short period of time (re-renders), the impact is minimized by the short-circuit evaluation of the AND operator
   });
+};
+
+/**
+ * Dispatch an action to route to the side link
+ * Will reset standalone route to a starting target route if the standalone base route doesn't already match it
+ * @param targetAppRoute
+ */
+const routeToSideLink = (targetAppRoute: AppRoutes) => {
+  const { store } = Flex.Manager.getInstance();
+  const { route } = selectCurrentBaseRoute(store.getState() as RootState, standaloneTaskSid) ?? {};
+  if (route === targetAppRoute.route) return;
+  store.dispatch(changeRoute(targetAppRoute, standaloneTaskSid, ChangeRouteMode.ResetRoute));
 };
 
 /**
@@ -306,9 +320,7 @@ export const setUpCaseList = () => {
       key="CaseListSideLink"
       onClick={() => {
         Flex.Actions.invokeAction('NavigateToView', { viewName: 'case-list' });
-        Flex.Manager.getInstance().store.dispatch(
-          changeRoute({ route: 'case-list', subroute: 'case-list' }, standaloneTaskSid, ChangeRouteMode.Reset),
-        );
+        routeToSideLink({ route: 'case-list', subroute: 'case-list' });
       }}
       reserveSpace={false}
       showLabel={true}
@@ -333,7 +345,11 @@ export const setUpClientProfileList = () => {
       onClick={() => {
         Flex.Actions.invokeAction('NavigateToView', { viewName: 'client-profiles' });
         Flex.Manager.getInstance().store.dispatch(
-          changeRoute({ route: 'profiles-list', subroute: 'profiles-list' }, standaloneTaskSid, ChangeRouteMode.Reset),
+          changeRoute(
+            { route: 'profiles-list', subroute: 'profiles-list' },
+            standaloneTaskSid,
+            ChangeRouteMode.ResetRoute,
+          ),
         );
       }}
       reserveSpace={false}
@@ -354,9 +370,7 @@ export const setUpStandaloneSearch = () => {
       key="StandaloneSearchSideLink"
       onClick={() => {
         Flex.Actions.invokeAction('NavigateToView', { viewName: 'search' });
-        Flex.Manager.getInstance().store.dispatch(
-          changeRoute({ route: 'search', subroute: 'form' }, standaloneTaskSid, ChangeRouteMode.Reset),
-        );
+        routeToSideLink({ route: 'search', subroute: 'form' });
       }}
       reserveSpace={false}
       showLabel={true}

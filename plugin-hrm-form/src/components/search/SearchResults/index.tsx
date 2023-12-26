@@ -73,7 +73,6 @@ type OwnProps = {
   toggleNonDataContacts: () => void;
   toggleClosedCases: () => void;
   handleBack: () => void;
-  changeSearchPage: (SearchPagesType) => void;
   contactId: string;
   saveUpdates: () => Promise<void>;
 };
@@ -166,7 +165,7 @@ const SearchResults: React.FC<Props> = ({
     }
   };
 
-  const toggleTabs = () => tabSelected(currentResultPage === 'contact-results' ? 'case-selected' : 'contact-selected');
+  const toggleTabs = () => tabSelected(currentResultPage === 'contact-results' ? 'case-results' : 'contact-results');
 
   const openSearchModal = () => {
     if (routing.action) {
