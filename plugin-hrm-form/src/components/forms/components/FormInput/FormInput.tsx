@@ -15,14 +15,11 @@
  */
 
 import React from 'react';
-import { Template } from '@twilio/flex-ui';
-import { get } from 'lodash';
-import { useFormContext } from 'react-hook-form';
 
 import { Box, Row } from '../../../../styles';
-import { FormError, FormLabel, RequiredAsterisk } from '../styles';
+import { FormError, FormInputBase, FormLabel, RequiredAsterisk } from '../styles';
 import { FormInputBaseProps } from '../types';
-import { StyledFormInput } from './styles';
+import useInputContext from '../useInputContext';
 
 type FormInputUIProps = {
   inputId: string;
@@ -62,7 +59,7 @@ const FormInputUI: React.FC<FormInputUIProps> = ({
           {required && <RequiredAsterisk />}
         </Box>
       </Row>
-      <StyledFormInput
+      <FormInputBase
         id={inputId}
         name={inputId}
         error={isErrorState}
@@ -90,26 +87,12 @@ const FormInput: React.FC<Props> = ({
   htmlElRef,
   isEnabled,
 }) => {
-  // TODO factor out into a custom hook to make easier sharing this chunk of code
-  const { errors, register } = useFormContext();
-  const error = get(errors, inputId);
-  const labelTextComponent = React.useMemo(() => <Template code={`${label}`} className=".fullstory-unmask" />, [label]);
-  const errorId = `${inputId}-error`;
-  const errorTextComponent = React.useMemo(() => (error ? <Template id={errorId} code={error.message} /> : null), [
-    error,
-    errorId,
-  ]);
-  const refFunction = React.useCallback(
-    ref => {
-      if (htmlElRef && ref) {
-        htmlElRef.current = ref;
-      }
-
-      register(registerOptions)(ref);
-    },
-    [htmlElRef, register, registerOptions],
-  );
-  // ====== //
+  const { refFunction, labelTextComponent, error, errorId, errorTextComponent } = useInputContext({
+    htmlElRef,
+    inputId,
+    label,
+    registerOptions,
+  });
 
   const defaultValue = typeof initialValue === 'boolean' ? initialValue.toString() : initialValue;
   const disabled = !isEnabled;

@@ -19,9 +19,92 @@ import { render, screen, fireEvent, getByRole } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 import FormInput from './FormInput';
-import { createFormMethods, wrapperFormProvider } from '../../test-utils';
+import { mockFormMethods, wrapperFormProvider } from '../../test-utils';
 
 describe('FormInput', () => {
+  describe('UI states', () => {
+    test('if marked as required, asterisk is shown', async () => {
+      const inputId = 'inputID';
+      const methods = mockFormMethods();
+      const updateCallback = jest.fn();
+
+      render(
+        <FormInput
+          inputId={inputId}
+          label="input label"
+          initialValue=""
+          isEnabled
+          updateCallback={updateCallback}
+          registerOptions={{ required: true }}
+          htmlElRef={null}
+        />,
+        {
+          wrapper: wrapperFormProvider(methods),
+        },
+      );
+
+      expect(() => screen.getByLabelText('input label')).toThrow();
+      const input = screen.getByLabelText('input label*');
+      expect(input).toBeInTheDocument();
+
+      expect(input).toHaveAttribute('aria-required', 'true');
+    });
+
+    test('if marked as disabled, inner input is disabled', async () => {
+      const inputId = 'inputID';
+      const methods = mockFormMethods();
+      const updateCallback = jest.fn();
+
+      render(
+        <FormInput
+          inputId={inputId}
+          label="input label"
+          initialValue=""
+          isEnabled={false}
+          updateCallback={updateCallback}
+          registerOptions={{}}
+          htmlElRef={null}
+        />,
+        {
+          wrapper: wrapperFormProvider(methods),
+        },
+      );
+
+      const input = screen.getByLabelText('input label');
+
+      expect(input).toBeDisabled();
+    });
+
+    test('if in error state, error message is displayed', async () => {
+      const inputId = 'inputID';
+      const errors = { inputID: { message: 'some error message' } };
+      const methods = mockFormMethods();
+      const updateCallback = jest.fn();
+
+      render(
+        <FormInput
+          inputId={inputId}
+          label="input label"
+          initialValue=""
+          isEnabled={false}
+          updateCallback={updateCallback}
+          registerOptions={{}}
+          htmlElRef={null}
+        />,
+        {
+          wrapper: wrapperFormProvider({ ...methods, errors }),
+          // wrapper: wrapperFormProvider(methods),
+        },
+      );
+
+      expect(screen.getByText('some error message')).toBeInTheDocument();
+
+      const input = screen.getByRole('textbox', { hidden: true });
+      expect(input).toHaveAttribute('aria-invalid', 'true');
+      expect(input).toHaveAttribute('aria-errormessage');
+    });
+  });
+
   test('errors if not wrapped in FormProvider', async () => {
     const inputId = 'inputID';
     const updateCallback = jest.fn();
@@ -43,7 +126,7 @@ describe('FormInput', () => {
 
   test('on render is registered, implementation is accessible', async () => {
     const inputId = 'inputID';
-    const methods = createFormMethods();
+    const methods = mockFormMethods();
     const updateCallback = jest.fn();
 
     render(
@@ -80,7 +163,7 @@ describe('FormInput', () => {
 
   test('updateCallback is invoked on blur', async () => {
     const inputId = 'inputID';
-    const methods = createFormMethods();
+    const methods = mockFormMethods();
     const updateCallback = jest.fn();
 
     render(
@@ -114,88 +197,5 @@ describe('FormInput', () => {
     fireEvent.blur(input);
 
     expect(updateCallback).toHaveBeenCalled();
-  });
-
-  describe('UI states', () => {
-    test('if marked as required, asterisk is shown', async () => {
-      const inputId = 'inputID';
-      const methods = createFormMethods();
-      const updateCallback = jest.fn();
-
-      render(
-        <FormInput
-          inputId={inputId}
-          label="input label"
-          initialValue=""
-          isEnabled
-          updateCallback={updateCallback}
-          registerOptions={{ required: true }}
-          htmlElRef={null}
-        />,
-        {
-          wrapper: wrapperFormProvider(methods),
-        },
-      );
-
-      expect(() => screen.getByLabelText('input label')).toThrow();
-      const input = screen.getByLabelText('input label*');
-      expect(input).toBeInTheDocument();
-
-      expect(input).toHaveAttribute('aria-required', 'true');
-    });
-
-    test('if marked as disabled, inner input is disabled', async () => {
-      const inputId = 'inputID';
-      const methods = createFormMethods();
-      const updateCallback = jest.fn();
-
-      render(
-        <FormInput
-          inputId={inputId}
-          label="input label"
-          initialValue=""
-          isEnabled={false}
-          updateCallback={updateCallback}
-          registerOptions={{}}
-          htmlElRef={null}
-        />,
-        {
-          wrapper: wrapperFormProvider(methods),
-        },
-      );
-
-      const input = screen.getByLabelText('input label');
-
-      expect(input).toBeDisabled();
-    });
-
-    test('if in error state, error message is displayed', async () => {
-      const inputId = 'inputID';
-      const errors = { inputID: { message: 'some error message' } };
-      const methods = createFormMethods();
-      const updateCallback = jest.fn();
-
-      render(
-        <FormInput
-          inputId={inputId}
-          label="input label"
-          initialValue=""
-          isEnabled={false}
-          updateCallback={updateCallback}
-          registerOptions={{}}
-          htmlElRef={null}
-        />,
-        {
-          wrapper: wrapperFormProvider({ ...methods, errors }),
-          // wrapper: wrapperFormProvider(methods),
-        },
-      );
-
-      expect(screen.getByText('some error message')).toBeInTheDocument();
-
-      const input = screen.getByRole('textbox', { hidden: true });
-      expect(input).toHaveAttribute('aria-invalid', 'true');
-      expect(input).toHaveAttribute('aria-errormessage');
-    });
   });
 });
