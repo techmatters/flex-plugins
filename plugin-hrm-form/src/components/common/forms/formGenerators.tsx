@@ -182,51 +182,6 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
   const labelTextComponent = <Template code={`${def.label}`} className=".fullstory-unmask" />;
 
   switch (def.type) {
-    case FormInputType.Email:
-      return (
-        <ConnectForm key={path}>
-          {({ errors, register }) => {
-            const error = get(errors, path);
-            return (
-              <FormLabel htmlFor={path}>
-                <Row>
-                  <Box marginBottom="8px">
-                    {labelTextComponent}
-                    {rules.required && <RequiredAsterisk />}
-                  </Box>
-                </Row>
-                <FormInput
-                  id={path}
-                  data-testid={path}
-                  name={path}
-                  error={Boolean(error)}
-                  aria-invalid={Boolean(error)}
-                  aria-describedby={`${path}-error`}
-                  onBlur={updateCallback}
-                  ref={ref => {
-                    if (htmlElRef) {
-                      htmlElRef.current = ref;
-                    }
-
-                    register({
-                      ...rules,
-                      pattern: { value: /\S+@\S+\.\S+/, message: 'Entered value does not match email format' },
-                    })(ref);
-                  }}
-                  defaultValue={initialValue}
-                  disabled={!isEnabled}
-                  type="email"
-                />
-                {error && (
-                  <FormError>
-                    <Template id={`${path}-error`} code={error.message} />
-                  </FormError>
-                )}
-              </FormLabel>
-            );
-          }}
-        </ConnectForm>
-      );
     case FormInputType.RadioInput:
       return (
         <ConnectForm key={path}>
