@@ -15,3 +15,4 @@
  */
 
 export { default as FormInput } from './FormInput/FormInput';
+export { default as NumericInput } from './NumericInput/NumericInput';

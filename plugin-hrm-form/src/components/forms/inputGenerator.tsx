@@ -20,7 +20,7 @@ import { pick } from 'lodash';
 import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
 
 import { FormInputBaseProps } from './components/types';
-import { FormInput } from './components';
+import { FormInput, NumericInput } from './components';
 import { CustomHandlers, getInputType } from '../common/forms/formGenerators';
 import { generateCustomContactFormItem } from './components/customContactComponent';
 
@@ -60,6 +60,20 @@ export const createInput = ({
     case FormInputType.Input: {
       return (
         <FormInput
+          key={inputId}
+          inputId={inputId}
+          initialValue={initialValue}
+          updateCallback={updateCallback}
+          label={formItemDefinition.label}
+          registerOptions={registerOptions}
+          isEnabled={isEnabled}
+          htmlElRef={htmlElRef}
+        />
+      );
+    }
+    case FormInputType.NumericInput: {
+      return (
+        <NumericInput
           key={inputId}
           inputId={inputId}
           initialValue={initialValue}
