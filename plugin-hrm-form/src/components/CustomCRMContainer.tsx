@@ -26,8 +26,7 @@ import { Absolute } from '../styles/HrmStyles';
 import { populateCounselors } from '../services/ServerlessService';
 import { populateCounselorsState } from '../states/configuration/actions';
 import { RootState } from '../states';
-import { OfflineContactTask } from '../types/types';
-import getOfflineContactTaskSid from '../states/contacts/offlineContactTaskSid';
+import { getOfflineContactTask, getOfflineContactTaskSid } from '../states/contacts/offlineContactTask';
 import { namespace } from '../states/storeNamespaces';
 import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
 import asyncDispatch from '../states/asyncDispatch';
@@ -99,12 +98,6 @@ const CustomCRMContainer: React.FC<Props> = ({
     };
   }, [enableConfirmOnBrowserClose, hasUnsavedChanges]);
 
-  const offlineContactTask: OfflineContactTask = {
-    taskSid: getOfflineContactTaskSid(),
-    channelType: 'default',
-    attributes: { isContactlessTask: true, channelType: 'default' },
-  };
-
   const renderITask = selectedTaskSid && task;
   const renderOfflineContactTask = !selectedTaskSid && isAddingOfflineContact;
 
@@ -112,7 +105,7 @@ const CustomCRMContainer: React.FC<Props> = ({
     <Absolute top="0" bottom="0" left="0" right="0">
       {renderITask && <TaskView task={task} key={`controller-${selectedTaskSid}`} />}
       {renderOfflineContactTask && (
-        <TaskView task={offlineContactTask} key={`controller-${getOfflineContactTaskSid()}`} />
+        <TaskView task={getOfflineContactTask()} key={`controller-${getOfflineContactTaskSid()}`} />
       )}
     </Absolute>
   );
@@ -152,7 +145,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => {
   return {
     loadOrCreateDraftOfflineContact: (definition: DefinitionVersion) =>
       asyncDispatch(dispatch)(
-        createContactAsyncAction(newContact(definition), getHrmConfig().workerSid, getOfflineContactTaskSid()),
+        createContactAsyncAction(newContact(definition), getHrmConfig().workerSid, getOfflineContactTask()),
       ),
     populateCounselorList: (listPayload: Awaited<ReturnType<typeof populateCounselors>>) =>
       dispatch(populateCounselorsState(listPayload)),

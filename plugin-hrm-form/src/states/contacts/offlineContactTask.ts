@@ -15,8 +15,13 @@
  */
 
 import { getHrmConfig } from '../../hrmConfig';
+import { OfflineContactTask } from '../../types/types';
 
 // eslint-disable-next-line prettier/prettier
-const getOfflineContactTaskSid = (): `offline-contact-task-${string}` => `offline-contact-task-${getHrmConfig().workerSid}`;
+export const getOfflineContactTaskSid = (): `offline-contact-task-${string}` => `offline-contact-task-${getHrmConfig().workerSid}`;
 
-export default getOfflineContactTaskSid;
+export const getOfflineContactTask = (): OfflineContactTask => Object.freeze({
+  taskSid: getOfflineContactTaskSid(),
+  channelType: 'default',
+  attributes: { isContactlessTask: true, channelType: 'default' },
+} as const);

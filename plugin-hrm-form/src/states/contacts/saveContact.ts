@@ -26,7 +26,7 @@ import {
   removeFromCase,
   updateContactInHrm,
 } from '../../services/ContactService';
-import { Case, Contact, CustomITask } from '../../types/types';
+import { Case, Contact, CustomITask, isOfflineContactTask } from '../../types/types';
 import {
   CONNECT_TO_CASE,
   ContactMetadata,
@@ -43,23 +43,44 @@ import { ContactDraftChanges } from './existingContacts';
 import { newContactMetaData } from './contactState';
 import { getCase } from '../../services/CaseService';
 import { getUnsavedContact } from './getUnsavedContact';
+import * as TransferHelpers from '../../transfer/transferTaskState';
 
 export const createContactAsyncAction = createAsyncAction(
   CREATE_CONTACT_ACTION,
-  async (contactToCreate: Contact, workerSid: string, taskSid: string) => {
-    const contact = await createContact(contactToCreate, workerSid, taskSid);
+  async (contactToCreate: Contact, workerSid: string, task: CustomITask) => {
+    let contact: Contact;
+    const { taskSid } = task;
+    if (isOfflineContactTask(task)) {
+      contact = await createContact(contactToCreate, workerSid, taskSid);
+    } else {
+      const { contactId } = task.attributes;
+      if (contactId) {
+        // Setting the task id and worker id on the contact will be a noop in most cases, but when receiving a transfer it will move the contact to the new worker & task
+        contact = await updateContactInHrm(contactId, { taskId: taskSid, twilioWorkerId: workerSid }, false);
+      } else {
+        contact = await createContact(
+          contactToCreate,
+          workerSid,
+          task.attributes.transferMeta?.originalTask ?? taskSid,
+        );
+        await task.setAttributes({ contactId: contact.id });
+        if (TransferHelpers.isColdTransfer(task)) await TransferHelpers.takeTaskControl(task);
+      }
+    }
+
     let contactCase: Case | undefined;
     if (contact.caseId) {
       contactCase = await getCase(contact.caseId);
     }
+
     return {
       contact,
       contactCase,
-      reference: taskSid,
+      reference: `task-${taskSid}`,
       metadata: newContactMetaData(false),
     };
   },
-  (contactToCreate: Contact, workerSid: string, taskSid: string) => ({
+  (contactToCreate: Contact, workerSid: string, { taskSid }: CustomITask) => ({
     contactToCreate,
     workerSid,
     taskSid,

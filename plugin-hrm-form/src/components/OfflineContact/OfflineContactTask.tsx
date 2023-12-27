@@ -22,17 +22,17 @@ import { connect, ConnectedProps } from 'react-redux';
 import { RootState } from '../../states';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 import {
-  OfflineContactTaskContent,
-  OfflineContactTaskFirstLine,
-  OfflineContactTaskSecondLine,
-  OfflineContactTaskIconContainer,
-  OfflineContactTaskIcon,
-  OfflineContactTaskButton,
   Box,
   HeaderContainer,
+  OfflineContactTaskButton,
+  OfflineContactTaskContent,
+  OfflineContactTaskFirstLine,
+  OfflineContactTaskIcon,
+  OfflineContactTaskIconContainer,
+  OfflineContactTaskSecondLine,
 } from '../../styles/HrmStyles';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
-import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
+import { getOfflineContactTaskSid } from '../../states/contacts/offlineContactTask';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { namespace, routingBase } from '../../states/storeNamespaces';
 
