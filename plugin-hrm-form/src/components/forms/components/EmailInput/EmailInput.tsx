@@ -101,7 +101,7 @@ const EmailInput: React.FC<Props> = ({
     <EmailInputUI
       inputId={inputId}
       updateCallback={updateCallback}
-      refFunction={refFunction}
+      refFunction={refFunction()}
       defaultValue={defaultValue}
       labelTextComponent={labelTextComponent}
       required={Boolean(registerOptions.required)}

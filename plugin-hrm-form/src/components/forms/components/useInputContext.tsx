@@ -31,7 +31,10 @@ type UseInputContextParams = {
 const useInputContext = ({ inputId, label, htmlElRef, registerOptions }: UseInputContextParams) => {
   const methods = useFormContext();
 
-  const labelTextComponent = React.useMemo(() => <Template code={`${label}`} className=".fullstory-unmask" />, [label]);
+  const labelTextComponent = React.useMemo(
+    () => (label ? <Template code={`${label}`} className=".fullstory-unmask" /> : null),
+    [label],
+  );
 
   const error = get(methods.errors, inputId);
   const errorId = `${inputId}-error`;
@@ -41,8 +44,8 @@ const useInputContext = ({ inputId, label, htmlElRef, registerOptions }: UseInpu
   ]);
 
   const refFunction = React.useCallback(
-    ref => {
-      if (htmlElRef && ref) {
+    (index?: number) => ref => {
+      if (htmlElRef && ref && (index === undefined || index === 0)) {
         htmlElRef.current = ref;
       }
       methods.register(registerOptions)(ref);

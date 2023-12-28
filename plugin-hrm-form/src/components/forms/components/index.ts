@@ -17,3 +17,4 @@
 export { default as FormInput } from './FormInput/FormInput';
 export { default as NumericInput } from './NumericInput/NumericInput';
 export { default as EmailInput } from './EmailInput/EmailInput';
+export { default as RadioInput } from './RadioInput/RadioInput';

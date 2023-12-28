@@ -44,7 +44,7 @@ export const FormError = styled('span')`
 `;
 FormError.displayName = 'FormError';
 
-type FormInputBaseProps = { error?: boolean; width?: number | string; fullWidth?: boolean };
+export type FormInputBaseProps = { error?: boolean; width?: number | string; fullWidth?: boolean };
 
 export const FormInputBase = styled('input')<FormInputBaseProps>`
   /* ---------- Input ---------- */

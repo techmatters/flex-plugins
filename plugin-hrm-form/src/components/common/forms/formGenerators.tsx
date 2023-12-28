@@ -40,8 +40,6 @@ import {
   FormOption,
   FormSelectWrapper,
   FormTextArea,
-  FormRadioInput,
-  FormFieldset,
   FormLegend,
   FormListboxMultiselect,
   FormListboxMultiselectOptionsContainer,
@@ -182,71 +180,6 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
   const labelTextComponent = <Template code={`${def.label}`} className=".fullstory-unmask" />;
 
   switch (def.type) {
-    case FormInputType.RadioInput:
-      return (
-        <ConnectForm key={path}>
-          {({ errors, register, setValue, watch }) => {
-            const [isMounted, setIsMounted] = React.useState(false); // value to avoid setting the default in the first render.
-
-            React.useEffect(() => {
-              if (isMounted && def.defaultOption) setValue(path, def.defaultOption);
-              else setIsMounted(true);
-            }, [isMounted, setValue]);
-
-            const error = get(errors, path);
-            const currentValue = watch(path) ?? initialValue;
-
-            return (
-              <FormFieldset
-                error={Boolean(error)}
-                aria-invalid={Boolean(error)}
-                aria-describedby={`${path}-error`}
-                disabled={!isEnabled}
-              >
-                {def.label && (
-                  <Row>
-                    <Box marginBottom="8px">
-                      {labelTextComponent}
-                      {rules.required && <RequiredAsterisk />}
-                    </Box>
-                  </Row>
-                )}
-                {def.options.map(({ value, label }, index) => (
-                  <Box key={`${path}-${value}`} marginBottom="15px">
-                    <FormLabel htmlFor={`${path}-${value}`}>
-                      <Row>
-                        <FormRadioInput
-                          id={`${path}-${value}`}
-                          data-testid={`${path}-${value}`}
-                          name={path}
-                          type="radio"
-                          value={value}
-                          onChange={updateCallback}
-                          ref={ref => {
-                            // If autofocus is pertinent, focus first radio input
-                            if (index === 0 && htmlElRef) {
-                              htmlElRef.current = ref;
-                            }
-
-                            register(rules)(ref);
-                          }}
-                          checked={currentValue === value}
-                        />
-                        <Template code={label} className=".fullstory-unmask" />
-                      </Row>
-                    </FormLabel>
-                  </Box>
-                ))}
-                {error && (
-                  <FormError>
-                    <Template id={`${path}-error`} code={error.message} />
-                  </FormError>
-                )}
-              </FormFieldset>
-            );
-          }}
-        </ConnectForm>
-      );
     case FormInputType.ListboxMultiselect:
       return (
         <ConnectForm key={path}>

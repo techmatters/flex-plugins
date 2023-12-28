@@ -100,7 +100,7 @@ const NumericInput: React.FC<Props> = ({
     <NumericInputUI
       inputId={inputId}
       updateCallback={updateCallback}
-      refFunction={refFunction}
+      refFunction={refFunction()}
       defaultValue={defaultValue}
       labelTextComponent={labelTextComponent}
       required={Boolean(registerOptions.required)}
