@@ -15,7 +15,7 @@
  */
 import React from 'react';
 import { styled } from '@twilio/flex-ui';
-import { withStyles, Tab, TabProps, Tabs } from '@material-ui/core';
+import { Tab, TabProps, Tabs, withStyles } from '@material-ui/core';
 
 import { BottomButtonBarHeight } from '.';
 import HrmTheme from './HrmTheme';
@@ -251,7 +251,7 @@ export const PreviewWrapper = styled(Flex)`
   flex-direction: column;
   justify-content: space-between;
   margin-top: 10px;
-  padding: 5px 20px 10px 20px;
+  padding-bottom: 10px;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
