@@ -20,13 +20,13 @@ import { endOfDay, format, parse } from 'date-fns';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 
+import { FormRadioInput } from '../../forms/components/RadioInput/styles';
 import { DateFilterOption, DateFilterOptions, isDivider, isExistsDateFilter, isFixedDateRange } from './dateFilters';
 import {
   Box,
   Flex,
   FormDateInput,
   FormLabel,
-  FormRadioInput,
   DialogArrow,
   FiltersDialog,
   FiltersApplyButton,
