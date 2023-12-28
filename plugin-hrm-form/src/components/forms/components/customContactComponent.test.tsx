@@ -18,8 +18,8 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { FormInputType } from 'hrm-form-definitions';
 
-import customContactComponentRegistry from '../../../../components/forms/customContactComponentRegistry';
-import { generateCustomContactFormItem } from '../../../../components/forms/components/customContactComponent';
+import customContactComponentRegistry from '../customContactComponentRegistry';
+import { generateCustomContactFormItem } from './customContactComponent';
 
 afterEach(() => {
   jest.clearAllMocks();
