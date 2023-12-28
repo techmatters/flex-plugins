@@ -36,7 +36,7 @@ import { isStandaloneITask } from '../../case/Case';
 import { newCloseModalAction } from '../../../states/routing/actions';
 import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../../permissions';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
-import { PreviewRow } from '../../../styles/search';
+import { PreviewRow } from '../styles';
 
 type OwnProps = {
   currentCase: Case;

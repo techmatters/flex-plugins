@@ -21,6 +21,7 @@ import { Template } from '@twilio/flex-ui';
 import { CallTypes } from 'hrm-form-definitions';
 
 import { Flex } from '../../../styles';
+import { Text as BannerText } from '../../../styles/banners';
 import {
   ContactButtonsWrapper,
   PreviewHeaderText,

@@ -21,7 +21,7 @@ import { callTypes } from 'hrm-form-definitions';
 import ContactHeader from './ContactHeader';
 import TagsAndCounselor from '../TagsAndCounselor';
 import { Flex, PreviewWrapper } from '../../../styles';
-import { ContactRawJson, Contact } from '../../../types/types';
+import { Contact, ContactRawJson } from '../../../types/types';
 import { PreviewDescription } from '../PreviewDescription';
 import { isNonDataCallType } from '../../../states/validationRules';
 import { getDefinitionVersion } from '../../../services/ServerlessService';
@@ -29,7 +29,7 @@ import { updateDefinitionVersion } from '../../../states/configuration/actions';
 import { RootState } from '../../../states';
 import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
 import { configurationBase, namespace } from '../../../states/storeNamespaces';
-import { PreviewRow } from '../../../styles/search';
+import { PreviewRow } from '../styles';
 
 type ContactPreviewProps = {
   contact: Contact;
