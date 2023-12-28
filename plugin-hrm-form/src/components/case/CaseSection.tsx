@@ -18,8 +18,8 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import { Box, Row } from '../../styles/HrmStyles';
-import { CaseSectionFont, TimelineRow, PlaceHolderText, CaseDetailsBorder } from '../../styles/case';
+import { Box, Row } from '../../styles';
+import { CaseSectionFont, TimelineRow, PlaceHolderText, CaseDetailsBorder } from './styles';
 import CaseAddButton from './CaseAddButton';
 
 type OwnProps = {

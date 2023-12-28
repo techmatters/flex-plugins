@@ -20,8 +20,8 @@ import { Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { CaseContainer, CaseDetailsBorder, ViewButton } from '../../styles/case';
-import { BottomButtonBar, Box, SaveAndEndButton, StyledNextStepButton } from '../../styles/HrmStyles';
+import { CaseContainer, CaseDetailsBorder, ViewButton } from './styles';
+import { BottomButtonBar, Box, SaveAndEndButton, StyledNextStepButton } from '../../styles';
 import CaseDetailsComponent from './CaseDetails';
 import Timeline from './timeline/Timeline';
 import CaseSection from './CaseSection';

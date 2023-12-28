@@ -20,7 +20,7 @@ import { callTypes } from 'hrm-form-definitions';
 
 import ContactHeader from './ContactHeader';
 import TagsAndCounselor from '../TagsAndCounselor';
-import { Flex, PreviewWrapper } from '../../../styles/HrmStyles';
+import { Flex, PreviewWrapper } from '../../../styles';
 import { ContactRawJson, Contact } from '../../../types/types';
 import { PreviewDescription } from '../PreviewDescription';
 import { isNonDataCallType } from '../../../states/validationRules';

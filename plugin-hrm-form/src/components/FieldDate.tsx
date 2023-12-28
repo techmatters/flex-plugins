@@ -17,7 +17,7 @@
 import React, { useState } from 'react';
 import { format, formatISO } from 'date-fns';
 
-import { ErrorText, TextField, FormDateInput, FormLabel } from '../styles/HrmStyles';
+import { ErrorText, TextField, FormDateInput, FormLabel } from '../styles';
 import RequiredAsterisk from './RequiredAsterisk';
 
 type Counselor = {

@@ -22,8 +22,9 @@ import { CircularProgress } from '@material-ui/core';
 import { AnyAction } from 'redux';
 
 import { RootState } from '../../states';
-import { Box, StyledNextStepButton, BottomButtonBar } from '../../styles/HrmStyles';
-import { EditContactContainer } from '../../styles/case';
+import { Box, BottomButtonBar } from '../../styles';
+import { StyledNextStepButton } from '../../styles/buttons';
+import { EditContactContainer } from '../case/styles';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { clearDraft, newSetContactDialogStateAction, refreshContact } from '../../states/contacts/existingContacts';

@@ -146,7 +146,7 @@ describe('test reducer (specific actions)', () => {
           { route: 'case', subroute: 'home' },
         ]),
         expected: stateGenerator([{ route: 'tabbed-forms' }]),
-        action: actions.changeRoute({ route: 'tabbed-forms' }, task.taskSid, ChangeRouteMode.Reset),
+        action: actions.changeRoute({ route: 'tabbed-forms' }, task.taskSid, ChangeRouteMode.ResetModal),
         description: `should replace the whole ${routeDescription} route with a new stack containing the new route as the only item if mode is Reset`,
       },
     ];

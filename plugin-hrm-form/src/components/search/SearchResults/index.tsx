@@ -24,8 +24,8 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
-import { Case, Contact, CustomITask, SearchCaseResult, SearchContactResult } from '../../../types/types';
-import { Row } from '../../../styles/HrmStyles';
+import { SearchContactResult, SearchCaseResult, Contact, Case, CustomITask } from '../../../types/types';
+import { Row } from '../../../styles';
 import {
   EmphasisedText,
   ListContainer,
@@ -43,7 +43,7 @@ import {
   StyledTabs,
   SwitchLabel,
   Text,
-} from '../../../styles/search';
+} from '../styles';
 import Pagination from '../../pagination';
 import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../../permissions';
 import { namespace } from '../../../states/storeNamespaces';
@@ -73,7 +73,6 @@ type OwnProps = {
   toggleNonDataContacts: () => void;
   toggleClosedCases: () => void;
   handleBack: () => void;
-  changeSearchPage: (SearchPagesType) => void;
   contactId: string;
   saveUpdates: () => Promise<void>;
 };
@@ -166,7 +165,7 @@ const SearchResults: React.FC<Props> = ({
     }
   };
 
-  const toggleTabs = () => tabSelected(currentResultPage === 'contact-results' ? 'case-selected' : 'contact-selected');
+  const toggleTabs = () => tabSelected(currentResultPage === 'contact-results' ? 'case-results' : 'contact-results');
 
   const openSearchModal = () => {
     if (routing.action) {

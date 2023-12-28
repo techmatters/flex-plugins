@@ -76,6 +76,8 @@ export const createContactAsyncAction = createAsyncAction(
     return {
       contact,
       contactCase,
+      // We assume that any contact we create will be the active contact because that's the only way to create contacts currently
+      // This assumption may not always be valid.
       reference: `task-${taskSid}`,
       metadata: newContactMetaData(false),
     };
@@ -209,6 +211,10 @@ export const loadContactFromHrmByIdAsyncAction = createAsyncAction(
       reference,
     };
   },
+  (contactId: string, reference: string = contactId) => ({
+    contactId,
+    reference,
+  }),
 );
 
 // TODO: Consolidate this logic with the loadContactReducer implementation?
@@ -243,19 +249,20 @@ export const loadContactIntoRedux = (
 
 const setContactLoadingStateInRedux = (
   state: ContactsState,
-  contact: Contact,
-  updates: ContactDraftChanges,
+  contact: Contact | string,
+  updates: ContactDraftChanges = undefined,
 ): ContactsState => {
   const { existingContacts } = state;
+  const id = typeof contact === 'object' ? contact.id : contact;
   return {
     ...state,
     existingContacts: {
       ...state.existingContacts,
-      [contact.id]: {
-        ...existingContacts[contact.id],
+      [id]: {
+        ...existingContacts[id],
         draftContact: undefined,
-        savedContact: getUnsavedContact(existingContacts[contact.id]?.savedContact, updates),
-        metadata: { ...existingContacts[contact.id]?.metadata, loadingStatus: LoadingStatus.LOADING },
+        savedContact: getUnsavedContact(existingContacts[id]?.savedContact, updates),
+        metadata: { ...existingContacts[id]?.metadata, loadingStatus: LoadingStatus.LOADING },
       },
     },
   };
@@ -316,6 +323,12 @@ export const saveContactReducer = (initialState: ContactsState) =>
           ...state,
           contactsBeingCreated,
         };
+      },
+    ),
+    handleAction(
+      loadContactFromHrmByIdAsyncAction.pending as typeof loadContactFromHrmByIdAsyncAction,
+      (state, { meta: { contactId } }): ContactsState => {
+        return setContactLoadingStateInRedux(state, contactId);
       },
     ),
     handleAction(

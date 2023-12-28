@@ -21,13 +21,14 @@ import { useForm } from 'react-hook-form';
 import Close from '@material-ui/icons/Close';
 
 import ActionHeader from '../case/ActionHeader';
-import { BottomButtonBar, Box, HeaderCloseButton, HiddenText, Row, StyledNextStepButton } from '../../styles/HrmStyles';
-import { BoldDescriptionText, CSAMReportContainer, CSAMReportLayout } from '../../styles/CSAMReport';
+import { BottomButtonBar, Box, HiddenText, Row } from '../../styles';
+import { StyledNextStepButton, HeaderCloseButton } from '../../styles/buttons';
+import { BoldDescriptionText, CSAMReportContainer, CSAMReportLayout } from './styles';
 import { childDefinitionObject, childInitialValues, generateCSAMFormElement } from './CSAMReportFormDefinition';
 import { RequiredAsterisk } from '../common/forms/formGenerators';
 import { ChildCSAMReportForm } from '../../states/csam-report/types';
 import useFocus from '../../utils/useFocus';
-import { CaseActionTitle } from '../../styles/case';
+import { CaseActionTitle } from '../case/styles';
 
 type Props = {
   counselor: string;

@@ -20,7 +20,7 @@ import { withStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import BlockOutlinedIcon from '@material-ui/icons/BlockOutlined';
 
-import { FontOpenSans } from '../../styles/HrmStyles';
+import { FontOpenSans } from '../../styles';
 import HrmTheme from '../../styles/HrmTheme';
 
 export const DetailsWrapper = styled(FontOpenSans)`
@@ -188,8 +188,8 @@ export const ProfileSectionTextContent = styled('div')<StyledTextProps>`
   height: 100%;
   min-height: 44px;
   width: 100%;
-  max-width: 600px
-  background-color: #F9FAFB;
+  max-width: 600px;
+  background-color: #f9fafb;
   color: #606b85;
   border: none;
   border-radius: 2px;
@@ -211,7 +211,6 @@ type ButtonProps = {
   onClick: () => void;
 };
 
-// TODO: refactor to HrmStyles
 export const ProfileSectionEditButton = styled(Button)<ButtonProps>`
   width: 40px;
   height: 30px;
@@ -231,3 +230,16 @@ export const ProfileSectionEditButton = styled(Button)<ButtonProps>`
   }
 `;
 ProfileSectionEditButton.displayName = 'ProfileSectionEditButton';
+
+const YellowBannerHeight = '36px';
+
+export const YellowBanner = styled('div')`
+  display: flex;
+  background-color: #fdfad3;
+  height: ${YellowBannerHeight};
+  font-size: 13px;
+  align-items: center;
+  justify-content: center;
+`;
+
+YellowBanner.displayName = 'YellowBanner';

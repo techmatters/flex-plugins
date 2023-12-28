@@ -24,16 +24,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import TimelineIcon from './TimelineIcon';
-import {
-  CaseDetailsBorder,
-  CaseSectionFont,
-  TimelineCallTypeIcon,
-  TimelineDate,
-  TimelineRow,
-  TimelineText,
-  ViewButton,
-} from '../../../styles/case';
-import { Box, Row } from '../../../styles/HrmStyles';
+import { CaseSectionFont, TimelineCallTypeIcon, TimelineDate, TimelineRow, TimelineText, ViewButton } from '../styles';
+import { Box, Row } from '../../../styles';
 import CaseAddButton from '../CaseAddButton';
 import { CustomITask } from '../../../types/types';
 import { isConnectedCaseActivity } from '../../../states/case/caseActivities';

@@ -24,7 +24,7 @@ import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCas
 import { isStandaloneITask } from '../case/Case';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import { BannerContainer, Text } from './styles';
-import { Flex } from '../../styles/HrmStyles';
+import { Flex } from '../../styles';
 import InfoIcon from './InfoIcon';
 import ConnectToCaseButton from '../case/ConnectToCaseButton';
 import asyncDispatch from '../../states/asyncDispatch';

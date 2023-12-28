@@ -16,7 +16,7 @@
 
 import React from 'react';
 
-import { StandardTable, DataTableRow, DataCell } from '../../../styles/table';
+import { StandardTable, DataTableRow, DataCell } from '../../../styles';
 import { useProfileListLoader } from '../../../states/profile/hooks/useProfileListLoader';
 import { useProfileList } from '../../../states/profile/hooks/useProfileList';
 import ProfileListRow from './ProfileListRow';

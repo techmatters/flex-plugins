@@ -21,7 +21,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import CSAMReportStatusScreen from './CSAMReportStatusScreen';
 import CSAMReportCounsellorForm from './CSAMReportCounsellorForm';
-import { CenterContent, CSAMReportContainer, CSAMReportLayout } from '../../styles/CSAMReport';
+import { CenterContent, CSAMReportContainer, CSAMReportLayout } from './styles';
 import { RootState } from '../../states';
 import { CSAMPage, CSAMReportApi } from './csamReportApi';
 import { isChildTaskEntry, isCounsellorTaskEntry } from '../../states/csam-report/types';

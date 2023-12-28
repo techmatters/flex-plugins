@@ -20,8 +20,8 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
-import { RowItemContainer, TimelineLabel, TimelineRow, TimelineText, ViewButton } from '../../styles/case';
-import { Box, HiddenText } from '../../styles/HrmStyles';
+import { RowItemContainer, TimelineLabel, TimelineRow, TimelineText, ViewButton } from './styles';
+import { Box, HiddenText } from '../../styles';
 import { formatValue } from '../common/forms/helpers';
 import type { Incident } from '../../types/types';
 

@@ -24,13 +24,13 @@ import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 import {
   Box,
   HeaderContainer,
+  OfflineContactTaskIconContainer,
   OfflineContactTaskButton,
   OfflineContactTaskContent,
   OfflineContactTaskFirstLine,
-  OfflineContactTaskIcon,
-  OfflineContactTaskIconContainer,
   OfflineContactTaskSecondLine,
-} from '../../styles/HrmStyles';
+  OfflineContactTaskIcon,
+} from './styles';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import { getOfflineContactTaskSid } from '../../states/contacts/offlineContactTask';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';

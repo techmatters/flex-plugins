@@ -20,8 +20,8 @@ import React, { useEffect, useState } from 'react';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 
-import { FormLabel } from '../../../styles/HrmStyles';
 import {
+  FormLabel,
   MultiSelectListItem,
   MultiSelectCheckboxLabel,
   FiltersCheckbox,
@@ -30,7 +30,7 @@ import {
   CategoryTitle,
   ArrowButton,
   SubcategoryList,
-} from '../../../styles/table/filters';
+} from '../../../styles';
 import type { Category } from './CategoriesFilter';
 
 type OwnProps = {

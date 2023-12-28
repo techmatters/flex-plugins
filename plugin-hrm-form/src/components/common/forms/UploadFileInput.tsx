@@ -21,16 +21,9 @@ import { Template } from '@twilio/flex-ui';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import { CircularProgress } from '@material-ui/core';
 
-import {
-  Box,
-  FormError,
-  Row,
-  FormInput,
-  UploadFileLabel,
-  UploadFileFileName,
-  StyledNextStepButton,
-} from '../../../styles/HrmStyles';
-import { StyledLink } from '../../../styles/search';
+import { Box, FormError, Row, FormInput, UploadFileLabel, UploadFileFileName } from '../../../styles';
+import { StyledNextStepButton } from '../../../styles/buttons';
+import { StyledLink } from '../../search/styles';
 import UploadIcon from '../icons/UploadIcon';
 import { formatFileNameAtAws } from '../../../utils';
 import type { HTMLElementRef } from './types';

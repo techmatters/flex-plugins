@@ -21,7 +21,7 @@ import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 
 import { RootState } from '../../../states';
-import { Box, Column } from '../../../styles/HrmStyles';
+import { Box, Column } from '../../../styles';
 import SearchResultsBackButton from '../../search/SearchResults/SearchResultsBackButton';
 import {
   ResourceAttributesColumn,
@@ -29,7 +29,7 @@ import {
   ResourceTitle,
   ViewResourceArea,
   ResourceViewContainer,
-} from '../../../styles/ReferrableResources';
+} from '../styles';
 import ResourceAttribute from './ResourceAttribute';
 import { loadResourceAsyncAction, navigateToSearchAction, ResourceLoadStatus } from '../../../states/resources';
 import asyncDispatch from '../../../states/asyncDispatch';

@@ -19,7 +19,7 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
-import { CaseDetailsBorder, CaseSectionFont, CaseSummaryTextArea } from '../../styles/case';
+import { CaseDetailsBorder, CaseSectionFont, CaseSummaryTextArea } from './styles';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { getTemplateStrings } from '../../hrmConfig';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';

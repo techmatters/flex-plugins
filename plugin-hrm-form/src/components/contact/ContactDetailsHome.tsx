@@ -23,7 +23,7 @@ import { callTypes, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
-import { Box, Flex, Row } from '../../styles/HrmStyles';
+import { Flex, Box, Row } from '../../styles';
 import {
   ContactRawJson,
   CSAMReportEntry,
@@ -33,7 +33,7 @@ import {
   isTwilioStoredMedia,
   StandaloneITask,
 } from '../../types/types';
-import { ContactAddedFont, ContactDetailsIcon, SectionActionButton, SectionValueText } from '../../styles/search';
+import { ContactAddedFont, SectionActionButton, SectionValueText, ContactDetailsIcon } from '../search/styles';
 import ContactDetailsSection from './ContactDetailsSection';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';
@@ -259,7 +259,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && (
     <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>
       <Icon icon="DefaultAvatar" />
-      View Client
+      <Template code="Profile-ViewClient" />
     </SectionActionButton>
   );
 

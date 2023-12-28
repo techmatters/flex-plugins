@@ -24,15 +24,16 @@ import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import { disperseInputs } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
-import { Container, ColumnarBlock, TwoColumnLayout, ColumnarContent } from '../../styles/HrmStyles';
+import { Container, ColumnarBlock, TwoColumnLayout, ColumnarContent } from '../../styles';
 import { RootState } from '../../states';
 import { selectWorkerSid } from '../../states/selectors/flexSelectors';
 import { createContactlessTaskTabDefinition } from './ContactlessTaskTabDefinition';
 import { splitDate, splitTime } from '../../utils/helpers';
 import type { ContactRawJson, OfflineContactTask } from '../../types/types';
 import { updateDraft } from '../../states/contacts/existingContacts';
-import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
+import { configurationBase, namespace } from '../../states/storeNamespaces';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
+import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 
 type OwnProps = {
   task: OfflineContactTask;
@@ -44,10 +45,7 @@ type OwnProps = {
 };
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const { savedContact, draftContact } =
-    Object.values(state[namespace][contactFormsBase].existingContacts).find(
-      cs => cs.savedContact.taskId === task.taskSid,
-    ) ?? {};
+  const { savedContact, draftContact } = selectContactByTaskSid(state, task.taskSid) ?? {};
   return {
     counselorsList: state[namespace][configurationBase].counselors.list,
     unsavedContact: getUnsavedContact(savedContact, draftContact),
