@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /**
  * Copyright (C) 2021-2023 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -13,18 +14,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { styled, Button } from '@twilio/flex-ui';
 
-import { styled } from '@twilio/flex-ui';
+export const CannedResponsesContainer = styled('div')`
+  margin-bottom: 15px;
 
-const YellowBannerHeight = '36px';
+  .form {
+    width: 100%;
+    margin-bottom: 20px;
+  }
 
-export const YellowBanner = styled('div')`
-  display: flex;
-  background-color: #fdfad3;
-  height: ${YellowBannerHeight};
-  font-size: 13px;
-  align-items: center;
-  justify-content: center;
+  .input-label {
+    padding-left: 5px;
+  }
 `;
 
-YellowBanner.displayName = 'YellowBanner';
+CannedResponsesContainer.displayName = 'CannedResponsesContainer';

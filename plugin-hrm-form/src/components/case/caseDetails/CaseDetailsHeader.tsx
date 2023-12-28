@@ -27,8 +27,8 @@ import {
   DetailsHeaderCounselor,
   DetailsHeaderContainer,
   StyledPrintButton,
-} from '../../../styles/case';
-import { Flex, Box } from '../../../styles/HrmStyles';
+} from '../styles';
+import { Flex, Box } from '../../../styles';
 import { getHrmConfig } from '../../../hrmConfig';
 
 type OwnProps = {

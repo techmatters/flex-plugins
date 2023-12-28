@@ -22,7 +22,7 @@ import { IconButton } from '@material-ui/core';
 import { styled, Button } from '@twilio/flex-ui';
 import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
 
-import HrmTheme from '../HrmTheme';
+import HrmTheme from '../../styles/HrmTheme';
 
 export const Container = styled('div')`
   width: 300px;

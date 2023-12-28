@@ -23,7 +23,7 @@ import { RootState } from '../../states';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 import { isStandaloneITask } from '../case/Case';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
-import { Flex } from '../../styles/HrmStyles';
+import { Flex } from '../../styles';
 import InfoIcon from './InfoIcon';
 import ConnectToCaseButton from '../case/ConnectToCaseButton';
 import asyncDispatch from '../../states/asyncDispatch';

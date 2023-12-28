@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 
 import { RootState } from '../../states';
 import { ResourcePage } from '../../states/resources';
-import { ReferrableResourcesContainer } from '../../styles/ReferrableResources';
+import { ReferrableResourcesContainer } from './styles';
 import SearchResources from './search/SearchResources';
 import ViewResource from './resourceView/ViewResource';
 import { namespace, referrableResourcesBase } from '../../states/storeNamespaces';

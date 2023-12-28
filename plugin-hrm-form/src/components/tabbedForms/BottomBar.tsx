@@ -21,13 +21,9 @@ import { CircularProgress } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
-import {
-  AddedToCaseButton,
-  BottomButtonBar,
-  Box,
-  SaveAndEndButton,
-  StyledNextStepButton,
-} from '../../styles/HrmStyles';
+import { Box, BottomButtonBar } from '../../styles';
+import { AddedToCaseButton } from './styles';
+import { StyledNextStepButton, SaveAndEndButton } from '../../styles/buttons';
 import * as RoutingActions from '../../states/routing/actions';
 import { completeTask } from '../../services/formSubmissionHelpers';
 import { hasTaskControl } from '../../transfer/transferTaskState';
@@ -45,7 +41,7 @@ import AddCaseButton from './AddCaseButton';
 import asyncDispatch from '../../states/asyncDispatch';
 import selectCaseByCaseId from '../../states/case/selectCaseStateByCaseId';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
-import { SuccessReportIcon } from '../../styles/CSAMReport';
+import { SuccessReportIcon } from '../CSAMReport/styles';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => Promise<void>) => () => void;
@@ -184,7 +180,7 @@ const BottomBar: React.FC<
       )}
       {showSubmitButton && (
         <>
-          {featureFlags.enable_case_management && renderCaseButton()}
+          {renderCaseButton()}
 
           <SaveAndEndButton
             roundCorners={true}

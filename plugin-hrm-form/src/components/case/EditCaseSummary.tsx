@@ -30,9 +30,9 @@ import {
   Box,
   ColumnarBlock,
   Container,
-  StyledNextStepButton,
   TwoColumnLayout,
-} from '../../styles/HrmStyles';
+  StyledNextStepButton,
+} from '../../styles';
 import ActionHeader from './ActionHeader';
 import { RootState } from '../../states';
 import * as RoutingActions from '../../states/routing/actions';

@@ -18,7 +18,7 @@ import React from 'react';
 import { Actions, TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
 import { CallEndOutlined as CallEndIcon } from '@material-ui/icons';
 
-import { StyledConferenceButtonWrapper, StyledHangUpButton } from './styles';
+import { ConferenceButtonWrapper, HangUpButton } from './styles';
 
 type Props = TaskContextProps;
 
@@ -36,10 +36,10 @@ const Hangup: React.FC<Props> = ({ call, task, conference }) => {
   const isLiveCall = TaskHelper.isLiveCall(task);
 
   return (
-    <StyledConferenceButtonWrapper>
-      <StyledHangUpButton disabled={!isLiveCall} onClick={handleClick}>
+    <ConferenceButtonWrapper>
+      <HangUpButton disabled={!isLiveCall} onClick={handleClick}>
         <CallEndIcon />
-      </StyledHangUpButton>
+      </HangUpButton>
       <span>
         {participants && participants.filter(participant => participant.status === 'joined').length > 2 ? (
           <Template code="Leave Call" />
@@ -47,7 +47,7 @@ const Hangup: React.FC<Props> = ({ call, task, conference }) => {
           <Template code="Hang Up" />
         )}
       </span>
-    </StyledConferenceButtonWrapper>
+    </ConferenceButtonWrapper>
   );
 };
 

@@ -22,15 +22,8 @@ import { parseISO } from 'date-fns';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 
 import { DocumentEntry } from '../../types/types';
-import {
-  TimelineRow,
-  TimelineText,
-  TimelineFileName,
-  TimelineDate,
-  ViewButton,
-  RowItemContainer,
-} from '../../styles/case';
-import { Box, HiddenText } from '../../styles/HrmStyles';
+import { TimelineRow, TimelineText, TimelineFileName, TimelineDate, ViewButton, RowItemContainer } from './styles';
+import { Box, HiddenText } from '../../styles';
 import { formatFileNameAtAws } from '../../utils';
 
 type OwnProps = {

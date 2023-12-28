@@ -16,6 +16,7 @@
 
 import React from 'react';
 import { ProfileSectionDefinition } from 'hrm-form-definitions';
+import { Template } from '@twilio/flex-ui';
 
 import { ProfileCommonProps } from '../types';
 import { useProfileSectionByType } from '../../../states/profile/hooks/useProfileSection';
@@ -34,7 +35,13 @@ const ProfileSectionView = ({ profileId, sectionType }: OwnProps) => {
 
   return (
     <ProfileSectionTextContent hasContent={Boolean(section?.content)}>
-      {section?.content?.length > 0 ? section?.content : `No ${sectionType.label}`}
+      {section?.content?.length > 0 ? (
+        section?.content
+      ) : (
+        <>
+          <Template code="Profile-Notes-No" /> {sectionType.label}
+        </>
+      )}
     </ProfileSectionTextContent>
   );
 };

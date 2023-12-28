@@ -18,7 +18,7 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
 import { KhpUiResource } from '../types';
-import { ResourcePreviewAttributeContent, ResourceSubtitle } from '../../../styles/ReferrableResources';
+import { ResourcePreviewAttributeContent, ResourceSubtitle } from '../styles';
 
 type Props = {
   operations: KhpUiResource['attributes']['operations'];

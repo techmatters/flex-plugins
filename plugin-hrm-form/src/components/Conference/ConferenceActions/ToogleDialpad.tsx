@@ -19,7 +19,7 @@ import { TaskContextProps, TaskHelper, Template, withTaskContext, Actions } from
 import DialpadOutlined from '@material-ui/icons/DialpadOutlined';
 import CloseOutlined from '@material-ui/icons/CloseOutlined';
 
-import { StyledConferenceButtonWrapper, StyledConferenceButton } from './styles';
+import { ConferenceButtonWrapper, ConferenceButton } from './styles';
 
 type Props = TaskContextProps & { dialpadState?: {} | null };
 
@@ -37,14 +37,14 @@ const ToogleDialpad: React.FC<Props> = ({ call, task, conference, dialpadState }
   const isLiveCall = TaskHelper.isLiveCall(task);
 
   return (
-    <StyledConferenceButtonWrapper>
-      <StyledConferenceButton disabled={!isLiveCall} onClick={handleClick}>
+    <ConferenceButtonWrapper>
+      <ConferenceButton disabled={!isLiveCall} onClick={handleClick}>
         {dialpadState ? <CloseOutlined /> : <DialpadOutlined />}
-      </StyledConferenceButton>
+      </ConferenceButton>
       <span>
         <Template code="Dial" />
       </span>
-    </StyledConferenceButtonWrapper>
+    </ConferenceButtonWrapper>
   );
 };
 

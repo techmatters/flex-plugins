@@ -25,8 +25,8 @@ import Hangup from '../components/Conference/ConferenceActions/Hangup';
 import HoldParticipantButton from '../components/Conference/HoldParticipantButton';
 import RemoveParticipantButton from '../components/Conference/RemoveParticipantButton';
 import ConferenceMonitor from '../components/Conference/ConferenceMonitor';
-import { getTemplateStrings } from '../hrmConfig';
 import ParticipantLabel from '../components/Conference/ParticipantLabel';
+import { getTemplateStrings } from '../hrmConfig';
 
 export const setupConferenceComponents = () => {
   const strings = getTemplateStrings();

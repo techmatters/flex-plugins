@@ -17,8 +17,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 
-import { Row, StyledBackButton } from '../../../styles/HrmStyles';
-import { BackText, BackIcon } from '../../../styles/search';
+import { Row } from '../../../styles';
+import { StyledBackButton } from '../../../styles/buttons';
+import { BackText, BackIcon } from '../styles';
 
 type OwnProps = {
   text: JSX.Element | string;

@@ -19,9 +19,9 @@ import { Template } from '@twilio/flex-ui';
 import WarningIcon from '@material-ui/icons/Warning';
 
 import TabPressWrapper from '../TabPressWrapper';
-import { Box, Row, StyledNextStepButton, HiddenText } from '../../styles/HrmStyles';
-import { CloseButton, CloseTaskDialog } from '../../styles/callTypeButtons';
-import { CloseDialogText } from '../../styles/case';
+import { Box, Row, HiddenText, StyledNextStepButton } from '../../styles';
+import { CloseButton, CloseTaskDialog } from '../callTypeButtons/styles';
+import { CloseDialogText } from './styles';
 
 type OwnProps = {
   openDialog?: boolean;

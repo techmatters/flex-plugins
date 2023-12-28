@@ -19,7 +19,7 @@ import PropTypes from 'prop-types';
 import { Add } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 
-import { CaseAddButtonFont, CaseAddButton as CaseAddButtonStyled } from '../../styles/case';
+import { CaseAddButtonFont, CaseAddButton as CaseAddButtonStyled } from './styles';
 import HrmTheme from '../../styles/HrmTheme';
 
 const CaseAddButton = ({ disabled, templateCode, onClick, withDivider }) => {

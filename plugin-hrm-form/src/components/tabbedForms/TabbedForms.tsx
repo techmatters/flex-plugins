@@ -37,7 +37,8 @@ import {
   isOfflineContact,
   isOfflineContactTask,
 } from '../../types/types';
-import { Box, Row, StyledTabs, TabbedFormsContainer, TabbedFormTabContainer } from '../../styles/HrmStyles';
+import { Box, Row, StyledTabs } from '../../styles';
+import { TabbedFormsContainer, TabbedFormTabContainer } from './styles';
 import FormTab from '../common/forms/FormTab';
 import IssueCategorizationSectionForm from '../contact/IssueCategorizationSectionForm';
 import ContactDetailsSectionForm from '../contact/ContactDetailsSectionForm';
@@ -59,8 +60,8 @@ import { submitContactFormAsyncAction, updateContactInHrmAsyncAction } from '../
 import { namespace } from '../../states/storeNamespaces';
 import Search from '../search';
 import { getCurrentBaseRoute, getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import { CaseLayout } from '../../styles/case';
-import Case from '../case/Case';
+import { CaseLayout } from '../case/styles';
+import Case, { OwnProps as CaseProps } from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';

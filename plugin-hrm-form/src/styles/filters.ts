@@ -16,8 +16,8 @@
 
 import { styled } from '@twilio/flex-ui';
 
-import { Flex } from '../HrmStyles';
-import HrmTheme from '../HrmTheme';
+import { Flex } from './layout';
+import HrmTheme from './HrmTheme';
 
 export const FiltersContainer = styled(Flex)`
   align-items: center;

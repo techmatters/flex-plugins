@@ -21,8 +21,10 @@ import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import { ButtonProps } from '@material-ui/core/Button';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
 
-import { BottomButtonBar, Flex, FontOpenSans, Row, StyledNextStepButton, TabbedFormsContainer } from '../HrmStyles';
-import HrmTheme from '../HrmTheme';
+import { TabbedFormTabContainer, TabbedFormsContainer } from '../tabbedForms/styles';
+import { Flex, Row, FontOpenSans, BottomButtonBar } from '../../styles';
+import { StyledNextStepButton } from '../../styles/buttons';
+import HrmTheme from '../../styles/HrmTheme';
 import { BannerContainerProps, colors } from '../banners';
 
 // CaseViewer Styles

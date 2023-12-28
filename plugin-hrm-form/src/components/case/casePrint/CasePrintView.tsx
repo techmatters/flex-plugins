@@ -24,7 +24,7 @@ import { DefinitionVersion, callTypes } from 'hrm-form-definitions';
 import CasePrintSection from './CasePrintSection';
 import CasePrintSummary from './CasePrintSummary';
 import styles, { useThaiFontFamily } from './styles';
-import { CasePrintViewSpinner } from '../../../styles/HrmStyles';
+import { CasePrintViewSpinner } from '../../../styles';
 import CasePrintDetails from './CasePrintDetails';
 import type { CaseDetails } from '../../../states/case/types';
 import CasePrintMultiSection from './CasePrintMultiSection';

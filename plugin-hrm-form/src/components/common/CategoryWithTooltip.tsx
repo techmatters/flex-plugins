@@ -17,7 +17,7 @@
 import React from 'react';
 import { Tooltip } from '@material-ui/core';
 
-import { ContactTag, TagMiddleDot, TagText } from '../../styles/search';
+import { ContactTag, TagMiddleDot, TagText } from '../search/styles';
 
 /**
  * Given a category, truncates it (if necessary) to make it fit (aprox) in the space of 'UNSPECIFIED/OTHER' string

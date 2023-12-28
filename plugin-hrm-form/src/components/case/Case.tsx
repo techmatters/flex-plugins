@@ -44,7 +44,7 @@ import ViewCaseItem from './ViewCaseItem';
 import { bindFileUploadCustomHandlers } from './documentUploadHandler';
 import { recordBackendError } from '../../fullStory';
 import { getPermissionsForCase, PermissionActions } from '../../permissions';
-import { CenteredContainer } from '../../styles/case';
+import { CenteredContainer } from './styles';
 import EditCaseSummary from './EditCaseSummary';
 import { documentSectionApi } from '../../states/case/sections/document';
 import { incidentSectionApi } from '../../states/case/sections/incident';
@@ -73,7 +73,7 @@ export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
 };
 
-type OwnProps = {
+export type OwnProps = {
   task: CustomITask | StandaloneITask;
   handleClose?: () => void;
   onNewCaseSaved?: (caseForm: CaseType) => Promise<void>;
