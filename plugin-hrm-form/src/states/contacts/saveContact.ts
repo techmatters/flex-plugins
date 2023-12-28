@@ -53,19 +53,21 @@ export const createContactAsyncAction = createAsyncAction(
     if (isOfflineContactTask(task)) {
       contact = await createContact(contactToCreate, workerSid, taskSid);
     } else {
-      const { contactId } = task.attributes;
+      const attributes = task.attributes ?? {};
+      const { contactId } = attributes;
       if (contactId) {
         // Setting the task id and worker id on the contact will be a noop in most cases, but when receiving a transfer it will move the contact to the new worker & task
         contact = await updateContactInHrm(contactId, { taskId: taskSid, twilioWorkerId: workerSid }, false);
       } else {
-        contact = await createContact(
-          contactToCreate,
-          workerSid,
-          task.attributes.transferMeta?.originalTask ?? taskSid,
-        );
-        await task.setAttributes({ contactId: contact.id });
-        if (TransferHelpers.isColdTransfer(task)) await TransferHelpers.takeTaskControl(task);
+        contact = await createContact(contactToCreate, workerSid, attributes.transferMeta?.originalTask ?? taskSid);
+        if (contact.taskId! !== taskSid || contact.twilioWorkerId !== workerSid) {
+          // If the contact is being transferred from a client that doesn't set the contactId on the task, we need to update the contact with the task id and worker id
+          contact = await updateContactInHrm(contact.id, { taskId: taskSid, twilioWorkerId: workerSid }, false);
+        }
+        await task.setAttributes({ ...attributes, contactId: contact.id });
       }
+      if (TransferHelpers.isColdTransfer(task) && !TransferHelpers.hasTaskControl(task))
+        await TransferHelpers.takeTaskControl(task);
     }
 
     let contactCase: Case | undefined;
@@ -78,7 +80,7 @@ export const createContactAsyncAction = createAsyncAction(
       contactCase,
       // We assume that any contact we create will be the active contact because that's the only way to create contacts currently
       // This assumption may not always be valid.
-      reference: `task-${taskSid}`,
+      reference: `${taskSid}-active`,
       metadata: newContactMetaData(false),
     };
   },

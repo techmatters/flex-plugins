@@ -68,7 +68,7 @@ const TaskView: React.FC<Props> = props => {
     if (shouldRecreateState) {
       if (isOfflineContactTask(task)) {
         loadContactFromHrmByTaskSid();
-      } else if (TaskHelper.isTaskAccepted(task) && hasTaskControl(task)) {
+      } else if (TaskHelper.isTaskAccepted(task)) {
         createContact(currentDefinitionVersion);
       }
     }

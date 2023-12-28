@@ -21,15 +21,14 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState } from '../../states';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
+import { Box, HeaderContainer } from '../../styles';
 import {
-  Box,
-  HeaderContainer,
-  OfflineContactTaskIconContainer,
   OfflineContactTaskButton,
   OfflineContactTaskContent,
   OfflineContactTaskFirstLine,
-  OfflineContactTaskSecondLine,
   OfflineContactTaskIcon,
+  OfflineContactTaskIconContainer,
+  OfflineContactTaskSecondLine,
 } from './styles';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import { getOfflineContactTaskSid } from '../../states/contacts/offlineContactTask';

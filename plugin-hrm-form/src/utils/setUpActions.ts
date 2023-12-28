@@ -72,9 +72,8 @@ const initializeContactForm = async ({ task }: ActionPayload) => {
     number: getNumberFromTask(task),
   };
   const { workerSid } = getHrmConfig();
-  const taskSid = task.attributes?.transferMeta?.originalTask ?? task.taskSid;
 
-  await asyncDispatch(Manager.getInstance().store.dispatch)(createContactAsyncAction(contact, workerSid, taskSid));
+  await asyncDispatch(Manager.getInstance().store.dispatch)(createContactAsyncAction(contact, workerSid, task));
 };
 
 const sendMessageOfKey = (messageKey: string) => (
