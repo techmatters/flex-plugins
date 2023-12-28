@@ -157,7 +157,7 @@ test("Form renders but can't be submitted on invalid url", async () => {
   expect(screen.queryByTestId('CSAMReport-Loading')).not.toBeInTheDocument();
   expect(screen.queryByTestId('CSAMReport-StatusScreen')).not.toBeInTheDocument();
 
-  const webAddressInput = screen.getByTestId('webAddress');
+  const webAddressInput = screen.getByTestId('webAddress-input');
   expect(webAddressInput).toBeInTheDocument();
 
   fireEvent.change(webAddressInput, {
@@ -185,7 +185,7 @@ test("Form can't be submitted if anonymous value is undefined", async () => {
   const submitButton = screen.getByTestId('CSAMReport-SubmitButton');
   expect(submitButton).toBeInTheDocument();
 
-  const webAddressInput = screen.getByTestId('webAddress');
+  const webAddressInput = screen.getByTestId('webAddress-input');
   expect(webAddressInput).toBeInTheDocument();
 
   fireEvent.change(webAddressInput, {
@@ -224,7 +224,7 @@ test('Form can be submitted if valid (anonymous)', async () => {
   const submitButton = screen.getByTestId('CSAMReport-SubmitButton');
   expect(submitButton).toBeInTheDocument();
 
-  const webAddressInput = screen.getByTestId('webAddress');
+  const webAddressInput = screen.getByTestId('webAddress-input');
   expect(webAddressInput).toBeInTheDocument();
 
   fireEvent.change(webAddressInput, {
@@ -280,7 +280,7 @@ test('Form can be submitted if valid (non-anonymous)', async () => {
   const submitButton = screen.getByTestId('CSAMReport-SubmitButton');
   expect(submitButton).toBeInTheDocument();
 
-  const webAddressInput = screen.getByTestId('webAddress');
+  const webAddressInput = screen.getByTestId('webAddress-input');
   expect(webAddressInput).toBeInTheDocument();
 
   fireEvent.change(webAddressInput, {
@@ -292,11 +292,11 @@ test('Form can be submitted if valid (non-anonymous)', async () => {
   expect(anonymousInput).toBeInTheDocument();
   const nonanonymousInput = screen.getByTestId('anonymous-non-anonymous');
   expect(nonanonymousInput).toBeInTheDocument();
-  const firstNameInput = screen.getByTestId('firstName');
+  const firstNameInput = screen.getByTestId('firstName-input');
   expect(firstNameInput).toBeInTheDocument();
-  const lastNameInput = screen.getByTestId('lastName');
+  const lastNameInput = screen.getByTestId('lastName-input');
   expect(lastNameInput).toBeInTheDocument();
-  const emailInput = screen.getByTestId('email');
+  const emailInput = screen.getByTestId('email-input');
   expect(emailInput).toBeInTheDocument();
 
   fireEvent.change(emailInput, {
