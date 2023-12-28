@@ -20,7 +20,7 @@ import { pick } from 'lodash';
 import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
 
 import { FormInputBaseProps } from './components/types';
-import { EmailInput, FormInput, NumericInput, RadioInput } from './components';
+import { EmailInput, FormInput, NumericInput, RadioInput, SelectInput } from './components';
 import { CustomHandlers, getInputType } from '../common/forms/formGenerators';
 import { generateCustomContactFormItem } from './components/customContactComponent';
 
@@ -112,6 +112,22 @@ export const createInput = ({
           htmlElRef={htmlElRef}
           defaultOption={formItemDefinition.defaultOption}
           options={formItemDefinition.options}
+        />
+      );
+    }
+    case FormInputType.Select: {
+      return (
+        <SelectInput
+          key={inputId}
+          inputId={inputId}
+          initialValue={initialValue}
+          updateCallback={updateCallback}
+          label={formItemDefinition.label}
+          registerOptions={registerOptions}
+          isEnabled={isEnabled}
+          htmlElRef={htmlElRef}
+          options={formItemDefinition.options}
+          // defaultOption={formItemDefinition.defaultOption}
         />
       );
     }

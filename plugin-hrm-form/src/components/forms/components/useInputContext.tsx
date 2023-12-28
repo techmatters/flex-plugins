@@ -44,8 +44,8 @@ const useInputContext = ({ inputId, label, htmlElRef, registerOptions }: UseInpu
   ]);
 
   const refFunction = React.useCallback(
-    (index?: number) => ref => {
-      if (htmlElRef && ref && (index === undefined || index === 0)) {
+    (isFocusTarget: boolean) => ref => {
+      if (htmlElRef && ref && isFocusTarget) {
         htmlElRef.current = ref;
       }
       methods.register(registerOptions)(ref);

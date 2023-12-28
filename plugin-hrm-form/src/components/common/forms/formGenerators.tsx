@@ -300,50 +300,6 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
           }}
         </ConnectForm>
       );
-    case FormInputType.Select:
-      return (
-        <ConnectForm key={path}>
-          {({ errors, register }) => {
-            const error = get(errors, path);
-            return (
-              <FormLabel htmlFor={path}>
-                <Row>
-                  <Box marginBottom="8px">
-                    {labelTextComponent}
-                    {rules.required && <RequiredAsterisk />}
-                  </Box>
-                </Row>
-                <FormSelectWrapper>
-                  <FormSelect
-                    id={path}
-                    data-testid={path}
-                    name={path}
-                    error={Boolean(error)}
-                    aria-invalid={Boolean(error)}
-                    aria-describedby={`${path}-error`}
-                    onChange={updateCallback}
-                    ref={ref => {
-                      if (htmlElRef) {
-                        htmlElRef.current = ref;
-                      }
-
-                      register(rules)(ref);
-                    }}
-                    disabled={!isEnabled}
-                  >
-                    {generateSelectOptions(path, def.options, initialValue)}
-                  </FormSelect>
-                </FormSelectWrapper>
-                {error && (
-                  <FormError>
-                    <Template id={`${path}-error`} code={error.message} />
-                  </FormError>
-                )}
-              </FormLabel>
-            );
-          }}
-        </ConnectForm>
-      );
     case FormInputType.DependentSelect:
       return (
         <ConnectForm key={path}>

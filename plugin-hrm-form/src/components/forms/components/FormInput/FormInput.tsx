@@ -102,7 +102,7 @@ const FormInput: React.FC<Props> = ({
     <FormInputUI
       inputId={inputId}
       updateCallback={updateCallback}
-      refFunction={refFunction()}
+      refFunction={refFunction(true)}
       defaultValue={defaultValue}
       labelTextComponent={labelTextComponent}
       required={Boolean(registerOptions.required)}

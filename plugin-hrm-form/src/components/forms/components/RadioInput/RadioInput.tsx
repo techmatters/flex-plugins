@@ -27,7 +27,7 @@ import { FormFieldset, FormRadioInput } from './styles';
 type RadioInputUIProps = {
   inputId: string;
   updateCallback: () => void;
-  refFunction: (index?: number) => (ref: any) => void;
+  refFunction: (isFocusTarget: boolean) => (ref: any) => void;
   labelTextComponent: JSX.Element;
   required: boolean;
   disabled: boolean;
@@ -60,12 +60,12 @@ const RadioInputUI: React.FC<RadioInputUIProps> = ({
       disabled={disabled}
     >
       {labelTextComponent && (
-        <Box marginBottom="8px">
-          <Row>
+        <Row>
+          <Box marginBottom="8px">
             {labelTextComponent}
             {required && <RequiredAsterisk />}
-          </Row>
-        </Box>
+          </Box>
+        </Row>
       )}
       {options.map(({ value, label }, index) => (
         <Box key={`${inputId}-${value}`} marginBottom="15px">
@@ -78,7 +78,7 @@ const RadioInputUI: React.FC<RadioInputUIProps> = ({
                 type="radio"
                 value={value}
                 onChange={updateCallback}
-                ref={refFunction(index)}
+                ref={refFunction(index === 0)}
                 checked={currentValue === value}
               />
               <Template code={label} className=".fullstory-unmask" />
@@ -117,10 +117,7 @@ const RadioInput: React.FC<Props> = ({
     htmlElRef,
     inputId,
     label,
-    registerOptions: {
-      ...registerOptions,
-      pattern: { value: /\S+@\S+\.\S+/, message: 'Entered value does not match email format' },
-    },
+    registerOptions,
   });
 
   React.useEffect(() => {
