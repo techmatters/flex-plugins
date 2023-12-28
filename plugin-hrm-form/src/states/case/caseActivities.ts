@@ -121,7 +121,7 @@ const connectedContactActivities = (caseContacts: Contact[]): ConnectedCaseActiv
           twilioWorkerId: cc.twilioWorkerId,
           channel,
           callType: cc.rawJson.callType,
-          showViewButton: Boolean(cc.finalizedAt),
+          isDraft: !cc.finalizedAt,
         };
       } catch (err) {
         console.warn(`Error processing connected contact, excluding from data`, cc, err);

@@ -14,18 +14,20 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { callTypes, DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import { Case, CaseInfo } from '../../../types/types';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { getActivitiesFromCase, getActivitiesFromContacts } from '../../../states/case/caseActivities';
+import { VALID_EMPTY_CONTACT } from '../../testContacts';
+import { Activity } from '../../../states/case/types';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
 const createFakeCase = (info: CaseInfo, connectedContacts: any[] = []): Case => ({
-  id: 0,
+  id: '0',
   status: 'borked',
   info: { definitionVersion: DefinitionVersionId.v1, ...info },
   helpline: 'Fakeline',
@@ -344,12 +346,14 @@ describe('getActivitiesFromContacts', () => {
 
     const activities = getActivitiesFromContacts([
       {
-        id: 1,
+        ...VALID_EMPTY_CONTACT,
+        id: '1',
         channel: 'facebook',
         timeOfContact,
         createdAt,
         twilioWorkerId: 'contact-adder',
         rawJson: {
+          ...VALID_EMPTY_CONTACT.rawJson,
           caseInformation: {
             callSummary: 'Child summary',
           },
@@ -357,8 +361,8 @@ describe('getActivitiesFromContacts', () => {
       },
     ]);
 
-    const expectedActivity = {
-      callType: undefined,
+    const expectedActivity: Activity = {
+      callType: callTypes.child,
       contactId: '1',
       date: timeOfContact,
       createdAt,
@@ -366,7 +370,7 @@ describe('getActivitiesFromContacts', () => {
       text: 'Child summary',
       twilioWorkerId: 'contact-adder',
       channel: 'facebook',
-      showViewButton: false,
+      isDraft: true,
     };
 
     expect(activities).toStrictEqual([expectedActivity]);
@@ -376,23 +380,26 @@ describe('getActivitiesFromContacts', () => {
     const timeOfContact = '2021-01-07 10:00:00';
     const activities = getActivitiesFromContacts([
       {
-        id: 1,
+        ...VALID_EMPTY_CONTACT,
+        id: '1',
         channel: 'default',
         timeOfContact,
         createdAt,
         twilioWorkerId: 'contact-adder',
         rawJson: {
+          ...VALID_EMPTY_CONTACT.rawJson,
           callType: 'beep boop',
           caseInformation: {
             callSummary: 'Child summary',
           },
           contactlessTask: {
+            ...VALID_EMPTY_CONTACT.rawJson.contactlessTask,
             channel: 'facebook',
           },
         },
       },
     ]);
-    const expectedActivity = {
+    const expectedActivity: Activity = {
       callType: 'beep boop',
       contactId: '1',
       date: timeOfContact,
@@ -401,7 +408,7 @@ describe('getActivitiesFromContacts', () => {
       text: 'Child summary',
       twilioWorkerId: 'contact-adder',
       channel: 'facebook',
-      showViewButton: false,
+      isDraft: true,
     };
 
     expect(activities).toStrictEqual([expectedActivity]);
@@ -415,12 +422,15 @@ describe('getActivitiesFromContacts', () => {
 
     const activities = getActivitiesFromContacts([
       {
-        id: 1,
+        ...VALID_EMPTY_CONTACT,
+        id: '1',
         channel: 'facebook',
         timeOfContact,
         createdAt: contactCreatedAt,
         twilioWorkerId: 'contact-adder',
+        finalizedAt: contactCreatedAt,
         rawJson: {
+          ...VALID_EMPTY_CONTACT.rawJson,
           callType: 'beep boop',
           caseInformation: {
             callSummary: 'Child summary',
@@ -428,24 +438,27 @@ describe('getActivitiesFromContacts', () => {
         },
       },
       {
-        id: 0,
+        ...VALID_EMPTY_CONTACT,
+        id: '0',
         channel: 'default',
         timeOfContact: timeOfContactlessContact,
         createdAt: contactlessContactCreatedAt,
         twilioWorkerId: 'contact-adder',
         rawJson: {
+          ...VALID_EMPTY_CONTACT.rawJson,
           callType: 'boop beep',
           caseInformation: {
             callSummary: 'Child summary',
           },
           contactlessTask: {
+            ...VALID_EMPTY_CONTACT.rawJson.contactlessTask,
             channel: 'facebook',
           },
         },
       },
     ]);
 
-    const expectedActivities = [
+    const expectedActivities: Activity[] = [
       {
         callType: 'beep boop',
         contactId: '1',
@@ -455,6 +468,7 @@ describe('getActivitiesFromContacts', () => {
         text: 'Child summary',
         twilioWorkerId: 'contact-adder',
         channel: 'facebook',
+        isDraft: false,
       },
       {
         callType: 'boop beep',
@@ -465,6 +479,7 @@ describe('getActivitiesFromContacts', () => {
         text: 'Child summary',
         twilioWorkerId: 'contact-adder',
         channel: 'facebook',
+        isDraft: true,
       },
     ];
 

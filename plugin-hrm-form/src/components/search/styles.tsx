@@ -15,16 +15,16 @@
  */
 
 import React from 'react';
-import { ButtonBase, Paper, Button, FormControlLabel, Switch, Collapse, withStyles } from '@material-ui/core';
-import { Tabs, TabsProps, styled } from '@twilio/flex-ui';
+import { Button, ButtonBase, Collapse, FormControlLabel, Paper, Switch, withStyles } from '@material-ui/core';
+import { styled, Tabs, TabsProps } from '@twilio/flex-ui';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import { ButtonProps } from '@material-ui/core/Button';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
 
-import { TabbedFormTabContainer, TabbedFormsContainer } from '../tabbedForms/styles';
-import { Flex, Row, FontOpenSans, BottomButtonBar } from '../../styles';
-import { StyledNextStepButton } from '../../styles/buttons';
+import { TabbedFormsContainer } from '../tabbedForms/styles';
+import { BottomButtonBar, Flex, FontOpenSans, Row, StyledNextStepButton } from '../../styles';
 import HrmTheme from '../../styles/HrmTheme';
+import { BannerContainerProps, colors } from '../../styles/banners';
 
 // CaseViewer Styles
 
@@ -197,9 +197,11 @@ export const SummaryText = styled(FontOpenSans)`
   white-space: pre-wrap;
 `;
 
-export const PreviewRow = styled(Row)`
+export const PreviewRow = styled(Row)<Partial<BannerContainerProps>>`
+  ${({ color }) => (color ? `background-color: ${colors.background[color]}` : '')};
+  ${({ color }) => (color ? `border-bottom: 2px solid ${colors.border[color]}` : '')};
   margin-top: 10px;
-  padding-bottom: 5px;
+  padding: 0 20px 5px 20px;
 `;
 
 export const SubtitleValue = styled(SummaryText)`
