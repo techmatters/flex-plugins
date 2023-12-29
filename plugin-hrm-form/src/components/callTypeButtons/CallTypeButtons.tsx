@@ -99,7 +99,8 @@ const CallTypeButtons: React.FC<Props> = ({
 
     handleClick(callTypeEntry);
     await saveContactChangesInHrm(savedContact, {
-      rawJson: { callType: callTypes[callTypeEntry.name] || callTypeEntry.label },
+      ...draftContact,
+      rawJson: { ...draftContact?.rawJson, callType: callTypes[callTypeEntry.name] || callTypeEntry.label },
     });
     changeRoute({ route: 'tabbed-forms', subroute, autoFocus: true });
   };

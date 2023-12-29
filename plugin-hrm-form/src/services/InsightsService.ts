@@ -15,22 +15,22 @@
  */
 
 /* eslint-disable camelcase */
-import { get, cloneDeep } from 'lodash';
+import { cloneDeep, get } from 'lodash';
 import {
-  DefinitionVersion,
   callTypes,
+  DefinitionVersion,
   FieldType,
   InsightsFieldSpec,
   InsightsFormSpec,
-  OneToOneConfigSpec,
   OneToManyConfigSpec,
   OneToManyConfigSpecs,
+  OneToOneConfigSpec,
 } from 'hrm-form-definitions';
 
 import { isNonDataCallType } from '../states/validationRules';
-import { mapChannelForInsights, formatCategories } from '../utils';
+import { formatCategories, mapChannelForInsights } from '../utils';
 import { getDateTime } from '../utils/helpers';
-import { Case, CustomITask, Contact, ContactRawJson } from '../types/types';
+import { Case, Contact, ContactRawJson, CustomITask } from '../types/types';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import {
   ExternalRecordingInfo,
@@ -203,7 +203,7 @@ type InsightsCaseForm = {
 
 /*
  * This takes a Case and turns it into a format more like the subforms
- * for a TaskEntry (contact form) so it can be consumed in the same manner.
+ * for a SearchStateTaskEntry (contact form) so it can be consumed in the same manner.
  * As of January 2, 2021, Case has not been moved over to use the
  * customization framework.  When it is, we will need to change this function.
  */
