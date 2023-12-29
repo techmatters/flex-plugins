@@ -29,6 +29,7 @@ import {
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
 import { initialState } from '../../../states/contacts/reducer';
 import { getCase } from '../../../services/CaseService';
+import { newContactMetaData } from '../../../states/contacts/contactState';
 
 jest.mock('../../../services/ContactService');
 jest.mock('../../../services/CaseService');
@@ -92,7 +93,7 @@ const baseContact: Contact = {
 };
 
 const task = <CustomITask>{ taskSid: 'mock task' };
-const metadata = {} as ContactMetadata;
+const baseMetadata = { ...VALID_EMPTY_METADATA } as ContactMetadata;
 
 const baseCase: Case = {
   accountSid: 'test-id',
@@ -170,9 +171,22 @@ describe('actions', () => {
     expect(metadata.loadingStatus).toBe(LoadingStatus.LOADED);
     expect(savedContact).toStrictEqual(connectedContact);
   });
+  describe('submitContactFormAsyncAction', () => {
+    test('Action calls the submitContactForm helper', async () => {
+      submitContactFormAsyncAction(task, baseContact, baseMetadata, baseCase);
+      expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, baseMetadata, baseCase);
+    });
 
-  test('Dispatching submitContactFormAsyncAction action calls the submitContactForm helper', async () => {
-    submitContactFormAsyncAction(task, baseContact, metadata, baseCase);
-    expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, metadata, baseCase);
+    test('Updates contact in redux and sets metadata', async () => {
+      const { dispatch, getState } = testStore(baseState);
+      mockGetCase.mockResolvedValue(baseCase);
+      const updatedContact = { ...baseContact, helpline: 'new helpline' };
+      mockSubmitContactForm.mockResolvedValue(updatedContact);
+      // Not sure why the extra cast to any is needed here but not for the other actions?
+      await (dispatch(submitContactFormAsyncAction(task, baseContact, baseMetadata, baseCase) as any) as unknown);
+      const { metadata, savedContact } = getState().existingContacts[baseContact.id];
+      expect(metadata).toStrictEqual({ ...newContactMetaData(false), loadingStatus: LoadingStatus.LOADED });
+      expect(savedContact).toStrictEqual(updatedContact);
+    });
   });
 });
