@@ -21,12 +21,15 @@ import { completeTask, submitContactForm } from '../../../services/formSubmissio
 import { Case, Contact, CustomITask } from '../../../types/types';
 import { ContactMetadata, ContactsState, LoadingStatus } from '../../../states/contacts/types';
 import {
+  connectToCaseAsyncAction,
   saveContactReducer,
   submitContactFormAsyncAction,
   updateContactInHrmAsyncAction,
 } from '../../../states/contacts/saveContact';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
 import { initialState } from '../../../states/contacts/reducer';
+import { getCase } from '../../../services/CaseService';
+import { newContactMetaData } from '../../../states/contacts/contactState';
 
 jest.mock('../../../services/ContactService');
 jest.mock('../../../services/CaseService');
@@ -36,12 +39,14 @@ jest.mock('../../../components/case/Case');
 const mockUpdateContactInHrm = updateContactInHrm as jest.Mock<ReturnType<typeof updateContactInHrm>>;
 const mockSubmitContactForm = submitContactForm as jest.Mock<ReturnType<typeof submitContactForm>>;
 const mockConnectToCase = connectToCase as jest.Mock<ReturnType<typeof connectToCase>>;
+const mockGetCase = connectToCase as jest.Mock<ReturnType<typeof getCase>>;
 const mockCompleteTask = completeTask as jest.Mock<ReturnType<typeof completeTask>>;
 
 beforeEach(() => {
   mockUpdateContactInHrm.mockReset();
   mockSubmitContactForm.mockReset();
   mockConnectToCase.mockReset();
+  mockGetCase.mockReset();
   mockCompleteTask.mockReset();
 });
 
@@ -88,7 +93,7 @@ const baseContact: Contact = {
 };
 
 const task = <CustomITask>{ taskSid: 'mock task' };
-const metadata = {} as ContactMetadata;
+const baseMetadata = { ...VALID_EMPTY_METADATA } as ContactMetadata;
 
 const baseCase: Case = {
   accountSid: 'test-id',
@@ -152,27 +157,36 @@ describe('actions', () => {
     expect(state).toStrictEqual(expected);
   });
 
-  /**
-   * Commenting this out for now.
-   * TODO: Investigate:
-   *
-   * 1. connectToCaseAsyncAction calls `await getCase(caseId)`
-   * 2. which calls `await fetchHrmApi(params);`
-   * 3. which calls `await fetch(url, options);`
-   * 4. which calls `getHrmConfig()`
-   * 5. which returns `cachedConfig.hrm;`, but `cachedConfig` is undefined
-   *
-   * None of the actions that calls `await getCase(caseId)` have unit tests,
-   * probably because of this issue.
-   */
-  // test('Calls the connectToCaseAsyncAction action, and create a contact, connect contact to case, and complete task', async () => {
-  //   dispatch(connectToCaseAsyncAction(baseContact.id, baseCase.id));
+  test('connectToCaseAsyncAction action connects contact to case and retrieves the connected case to add to redux along with the updated contact', async () => {
+    const { dispatch, getState } = testStore(baseState);
+    mockGetCase.mockResolvedValue(baseCase);
+    const connectedContact = { ...baseContact, caseId: baseCase.id };
+    mockConnectToCase.mockResolvedValue(connectedContact);
+    // Not sure why the extra cast to any is needed here but not for the other actions?
+    await (dispatch(connectToCaseAsyncAction(baseContact.id, baseCase.id) as any) as unknown);
 
-  //   expect(connectToCase).toHaveBeenCalledWith(baseContact.id, baseCase.id);
-  // });
+    expect(connectToCase).toHaveBeenCalledWith(baseContact.id, baseCase.id);
+    expect(getCase).toHaveBeenCalledWith(baseCase.id);
+    const { metadata, savedContact } = getState().existingContacts[baseContact.id];
+    expect(metadata.loadingStatus).toBe(LoadingStatus.LOADED);
+    expect(savedContact).toStrictEqual(connectedContact);
+  });
+  describe('submitContactFormAsyncAction', () => {
+    test('Action calls the submitContactForm helper', async () => {
+      submitContactFormAsyncAction(task, baseContact, baseMetadata, baseCase);
+      expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, baseMetadata, baseCase);
+    });
 
-  test('Dispatching submitContactFormAsyncAction action calls the submitContactForm helper', async () => {
-    submitContactFormAsyncAction(task, baseContact, metadata, baseCase);
-    expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, metadata, baseCase);
+    test('Updates contact in redux and sets metadata', async () => {
+      const { dispatch, getState } = testStore(baseState);
+      mockGetCase.mockResolvedValue(baseCase);
+      const updatedContact = { ...baseContact, helpline: 'new helpline' };
+      mockSubmitContactForm.mockResolvedValue(updatedContact);
+      // Not sure why the extra cast to any is needed here but not for the other actions?
+      await (dispatch(submitContactFormAsyncAction(task, baseContact, baseMetadata, baseCase) as any) as unknown);
+      const { metadata, savedContact } = getState().existingContacts[baseContact.id];
+      expect(metadata).toStrictEqual({ ...newContactMetaData(false), loadingStatus: LoadingStatus.LOADED });
+      expect(savedContact).toStrictEqual(updatedContact);
+    });
   });
 });
