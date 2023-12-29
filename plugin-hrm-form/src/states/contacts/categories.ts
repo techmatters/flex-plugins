@@ -27,12 +27,13 @@ type ToggleSubcategoryAction = {
   subcategory: string;
 };
 
-export const toggleSubcategory = (contactId: string, category: string, subcategory: string) => ({
-  type: TOGGLE_SUBCATEGORY,
-  contactId,
-  category,
-  subcategory,
-});
+export const toggleSubcategory = (contactId: string, category: string, subcategory: string) =>
+  ({
+    type: TOGGLE_SUBCATEGORY,
+    contactId,
+    category,
+    subcategory,
+  } as const);
 
 export type ContactCategoryAction = ToggleSubcategoryAction;
 
@@ -46,7 +47,13 @@ const toggleSubcategoryState = (currentSubcategories: string[], selectedSubcateg
 
 export function toggleSubCategoriesReducer(state: ContactsState, action: ContactCategoryAction): ContactsState {
   if (action.type === TOGGLE_SUBCATEGORY) {
-    const { savedContact, draftContact } = state.existingContacts[action.contactId];
+    const { savedContact, draftContact } = state.existingContacts[action.contactId] ?? {};
+    if (!savedContact) {
+      console.warn(
+        `Tried to toggle ${action.category}/${action.subcategory} on contact ${action.contactId} but it has no state in redux`,
+      );
+      return state;
+    }
     const currentSubcategories =
       getUnsavedContact(savedContact, draftContact).rawJson.categories[action.category] ?? [];
     const updatedSubcategories = toggleSubcategoryState(currentSubcategories, action.subcategory);
