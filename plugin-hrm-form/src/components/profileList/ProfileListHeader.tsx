@@ -14,6 +14,23 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import ProfileList from './ProfileList';
+import React from 'react';
+import { TableRow } from '@material-ui/core';
 
-export default ProfileList;
+import { TableHeader } from '../../styles';
+import ProfileListHeaderCell from './ProfileListHeaderCell';
+
+const ProfileListHeader: React.FC = () => {
+  return (
+    <TableHeader>
+      <TableRow>
+        <ProfileListHeaderCell localizedText="ProfileList-THClient" />
+        <ProfileListHeaderCell localizedText="ProfileList-THStatus" />
+        <ProfileListHeaderCell localizedText="ProfileList-THIdentifier" />
+        <ProfileListHeaderCell localizedText="ProfileList-THSummary" />
+      </TableRow>
+    </TableHeader>
+  );
+};
+
+export default ProfileListHeader;

@@ -22,7 +22,7 @@ import FilterList from '@material-ui/icons/FilterList';
 import DateRange from '@material-ui/icons/DateRange';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { FiltersContainer, FiltersResetAll, CasesTitle, CasesCount, FilterTitle } from '../../../styles';
+import { FiltersContainer, FiltersResetAll, MainTitle, CasesCount, FilterTitle } from '../../../styles';
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
 import { CategoryFilter, CounselorHash } from '../../../types/types';
 import DateRangeFilter from './DateRangeFilter';
@@ -237,9 +237,9 @@ const Filters: React.FC<Props> = ({
   return (
     <>
       <FiltersContainer id="CaseList-Cases-label">
-        <CasesTitle>
+        <MainTitle>
           <Template code="CaseList-Cases" />
-        </CasesTitle>
+        </MainTitle>
         {hasFiltersApplied && (
           <FiltersResetAll type="button" onClick={handleClearFilters}>
             <Template code="CaseList-Filters-ResetAllFilters" />

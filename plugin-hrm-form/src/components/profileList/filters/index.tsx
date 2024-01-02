@@ -1,3 +1,4 @@
+
 /**
  * Copyright (C) 2021-2023 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -14,6 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import ProfileListPage from './ProfileListPage';
+import ProfileFilters from './ProfileFilters';
 
-export default ProfileListPage;
+export default ProfileFilters;

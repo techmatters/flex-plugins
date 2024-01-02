@@ -14,6 +14,16 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import ProfileList from './ProfileList';
+import React, { useEffect, useState } from 'react';
 
-export default ProfileList;
+import { FiltersContainer, MainTitle } from '../../../styles';
+
+const ProfileFilters: React.FC = () => {
+  return (
+    <FiltersContainer>
+      <MainTitle>Clients</MainTitle>
+    </FiltersContainer>
+  );
+};
+
+export default ProfileFilters;

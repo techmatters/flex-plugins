@@ -16,34 +16,19 @@
 
 import React from 'react';
 
-import { StandardTable, DataTableRow, DataCell } from '../../styles';
+import { ListContainer } from '../../styles';
 import { useProfileListLoader } from '../../states/profile/hooks/useProfileListLoader';
-import { useProfileList } from '../../states/profile/hooks/useProfileList';
-import ProfileListRow from './ProfileListRow';
+import ProfileFilters from './filters';
+import ProfileListTable from './ProfileListTable';
 
 const ProfileListPage: React.FC = () => {
   useProfileListLoader();
-  const { loading, profileIds } = useProfileList();
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
-    <>
-      <h1>Clients</h1>
-      <StandardTable>
-        <DataTableRow>
-          <DataCell> Client</DataCell>
-          <DataCell> Identifier(s)</DataCell>
-          <DataCell> Status</DataCell>
-          <DataCell> Overview</DataCell>
-        </DataTableRow>
-        {profileIds?.map(profileId => (
-          <ProfileListRow key={profileId} profileId={profileId} />
-        ))}
-      </StandardTable>
-    </>
+    <ListContainer>
+      <ProfileFilters />
+      <ProfileListTable />
+    </ListContainer>
   );
 };
 

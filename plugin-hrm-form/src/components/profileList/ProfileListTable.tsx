@@ -16,36 +16,25 @@
 
 import React from 'react';
 
-import { StandardTable, DataTableRow, DataCell } from '../../../styles';
-import { useProfileListLoader } from '../../../states/profile/hooks/useProfileListLoader';
-import { useProfileList } from '../../../states/profile/hooks/useProfileList';
-import ProfileListRow from './ProfileListRow';
+import { StandardTable, TableContainer } from '../../styles';
+import { useProfileList } from '../../states/profile/hooks/useProfileList';
+import ProfileListTableHeader from './ProfileListHeader';
 
-const ProfileListPage: React.FC = () => {
-  useProfileListLoader();
+const ProfileListTable: React.FC = () => {
   const { loading, profileIds } = useProfileList();
 
   if (loading) {
     return <div>Loading...</div>;
   }
-
   return (
     <>
-      <h1>Clients</h1>
-      <StandardTable>
-        <DataTableRow>
-          <DataCell> Client</DataCell>
-          <DataCell> Identifier(s)</DataCell>
-          <DataCell> Status</DataCell>
-          <DataCell> Overview</DataCell>
-        </DataTableRow>
-        {profileIds?.map(profileId => (
-          <ProfileListRow key={profileId} profileId={profileId} />
-        ))}
-      </StandardTable>
+      <TableContainer>
+        <StandardTable>
+          <ProfileListTableHeader />
+        </StandardTable>
+      </TableContainer>
     </>
   );
 };
 
-// eslint-disable-next-line import/no-unused-modules
-export default ProfileListPage;
+export default ProfileListTable;

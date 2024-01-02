@@ -407,6 +407,11 @@
   "Profile-NoCasesFound": "No Cases Found",
   "Profile-ViewClient": "View Client",
 
+  "ProfileList-THClient": "Client",
+  "ProfileList-THStatus": "Status",
+  "ProfileList-THIdentifier": "Identifier(s)",
+  "ProfileList-THSummary": "Summary",
+
   "UploadFile-ButtonText": "Upload File",
   "DownloadFile-ButtonText": "Download File",
   "CSAMReportForm-Header": "File a Report: Child Sexual Abuse Material",

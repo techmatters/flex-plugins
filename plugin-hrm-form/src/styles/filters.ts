@@ -33,11 +33,11 @@ export const FiltersContainer = styled(Flex)`
 `;
 FiltersContainer.displayName = 'FiltersContainer';
 
-export const CasesTitle = styled('h1')`
+export const MainTitle = styled('h1')`
   font-size: 14px;
   font-weight: 600;
 `;
-CasesTitle.displayName = 'CasesTitle';
+MainTitle.displayName = 'MainTitle';
 
 export const FiltersResetAll = styled('button')`
   background-color: transparent;

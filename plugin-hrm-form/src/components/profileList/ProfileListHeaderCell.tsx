@@ -14,6 +14,28 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import ProfileList from './ProfileList';
+import React from 'react';
+import { Template } from '@twilio/flex-ui';
 
-export default ProfileList;
+import { TableHeaderFont, HeaderCell } from '../../styles';
+
+type OwnProps = {
+  localizedText?: string;
+  width?: string;
+};
+
+type Props = OwnProps;
+
+const ProfileListHeaderCell: React.FC<Props> = ({ localizedText, width }) => {
+  return (
+    <HeaderCell style={{ width }} align="right" variant="head" scope="col">
+      <TableHeaderFont style={{ whiteSpace: 'nowrap' }}>
+        <Template code={localizedText} />
+      </TableHeaderFont>
+    </HeaderCell>
+  );
+};
+
+ProfileListHeaderCell.displayName = 'ProfileListHeaderCell';
+
+export default ProfileListHeaderCell;
