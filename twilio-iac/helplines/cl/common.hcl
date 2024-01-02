@@ -25,15 +25,15 @@ locals {
 
     task_queues = {
       voice : {
-        "target_workers" = "routing.skills HAS 'Calls'",
-        "friendly_name"  = "Lamadas"
+        "target_workers" = "routing.skills HAS 'Llamadas'",
+        "friendly_name"  = "Llamadas"
       },
       messaging : {
-        "target_workers" = "routing.skills HAS 'Messaging'",
+        "target_workers" = "routing.skills HAS 'Webchat'",
         "friendly_name"  = "Webchat"
       },
       priority : {
-        "target_workers" = "routing.skills HAS 'Priority'",
+        "target_workers" = "routing.skills HAS 'Prioridad'",
         "friendly_name"  = "Prioridad/Emergencia"
       }
       survey : {
