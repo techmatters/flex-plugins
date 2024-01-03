@@ -28,28 +28,23 @@ import { RootState } from '../../states';
 import { completeTask, removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute, newCloseModalAction, newOpenModalAction } from '../../states/routing/actions';
 import { emptyCategories } from '../../states/contacts/reducer';
+import { AppRoutes, ChangeRouteMode, isRouteWithModalSupport, TabbedFormSubroutes } from '../../states/routing/types';
 import {
-  AppRoutes,
-  CaseRoute,
-  ChangeRouteMode,
-  isRouteWithModalSupport,
-  TabbedFormSubroutes,
-} from '../../states/routing/types';
-import {
+  Case as CaseForm,
+  Contact,
   ContactRawJson,
   CustomITask,
-  isOfflineContactTask,
-  Contact,
   isOfflineContact,
-  Case as CaseForm,
+  isOfflineContactTask,
 } from '../../types/types';
-import { Box, Row, StyledTabs, TabbedFormsContainer, TabbedFormTabContainer } from '../../styles/HrmStyles';
+import { Box, Row, StyledTabs } from '../../styles';
+import { TabbedFormsContainer, TabbedFormTabContainer } from './styles';
 import FormTab from '../common/forms/FormTab';
 import IssueCategorizationSectionForm from '../contact/IssueCategorizationSectionForm';
 import ContactDetailsSectionForm from '../contact/ContactDetailsSectionForm';
 import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
-import { hasTaskControl } from '../../utils/transfer';
+import { hasTaskControl } from '../../transfer/transferTaskState';
 import { isNonDataCallType } from '../../states/validationRules';
 import CSAMReportButton from './CSAMReportButton';
 import CSAMAttachments from './CSAMAttachments';
@@ -65,13 +60,13 @@ import { submitContactFormAsyncAction, updateContactInHrmAsyncAction } from '../
 import { namespace } from '../../states/storeNamespaces';
 import Search from '../search';
 import { getCurrentBaseRoute, getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import { CaseLayout } from '../../styles/case';
+import { CaseLayout } from '../case/styles';
 import Case, { OwnProps as CaseProps } from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
-import { getHrmConfig, getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import ContactDetails from '../contact/ContactDetails';

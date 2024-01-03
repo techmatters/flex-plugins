@@ -20,8 +20,8 @@ import { callTypes } from 'hrm-form-definitions';
 
 import ContactHeader from './ContactHeader';
 import TagsAndCounselor from '../TagsAndCounselor';
-import { Flex, PreviewWrapper } from '../../../styles/HrmStyles';
-import { ContactRawJson, Contact } from '../../../types/types';
+import { Flex, PreviewWrapper } from '../../../styles';
+import { Contact, ContactRawJson } from '../../../types/types';
 import { PreviewDescription } from '../PreviewDescription';
 import { isNonDataCallType } from '../../../states/validationRules';
 import { getDefinitionVersion } from '../../../services/ServerlessService';
@@ -29,6 +29,7 @@ import { updateDefinitionVersion } from '../../../states/configuration/actions';
 import { RootState } from '../../../states';
 import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
 import { configurationBase, namespace } from '../../../states/storeNamespaces';
+import { PreviewRow } from '../styles';
 
 type ContactPreviewProps = {
   contact: Contact;
@@ -108,21 +109,24 @@ const ContactPreview: React.FC<Props> = ({ contact, handleViewDetails, definitio
           number={contact.number}
           date={contact.timeOfContact}
           onClickFull={handleViewDetails}
+          isDraft={!contact.finalizedAt}
         />
-        {callSummary && (
-          <PreviewDescription expandLinkText="ReadMore" collapseLinkText="ReadLess">
-            {callSummary}
-          </PreviewDescription>
-        )}
-        {isNonDataCallType(callType) ? (
-          <TagsAndCounselor counselor={counselorName} nonDataCallType={callType} definitionVersion={definition} />
-        ) : (
-          <TagsAndCounselor
-            counselor={counselorName}
-            categories={contact.rawJson.categories}
-            definitionVersion={definition}
-          />
-        )}
+        <PreviewRow>
+          {callSummary && (
+            <PreviewDescription expandLinkText="ReadMore" collapseLinkText="ReadLess">
+              {callSummary}
+            </PreviewDescription>
+          )}
+          {isNonDataCallType(callType) ? (
+            <TagsAndCounselor counselor={counselorName} nonDataCallType={callType} definitionVersion={definition} />
+          ) : (
+            <TagsAndCounselor
+              counselor={counselorName}
+              categories={contact.rawJson.categories}
+              definitionVersion={definition}
+            />
+          )}
+        </PreviewRow>
       </PreviewWrapper>
     </Flex>
   );

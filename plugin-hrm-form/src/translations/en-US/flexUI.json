@@ -153,8 +153,12 @@
   "Error-CategoryRequired": "Required 1 category minimum, 3 categories maximum",
   "Error-Unexpected": "Unexpected error has occurred",
   "Case-CaseNumber": "Case #",
-  "Case-TimelineSection": "Timeline",
+  "Case-Timeline-RecentTitle": "Recent Timeline",
+  "Case-Timeline-Title": "Timeline",
+  "Case-Timeline-PaginationDescription": "Showing {{from}}-{{to}} of {{total}}",
+  "Case-Timeline-OpenFullTimelineButton": "See All Timeline Items",
   "Case-Timeline-DraftContactSummaryPlaceholder": "In Progress",
+  "Case-Timeline-ModalTitle": "Case #{{caseId}} Timeline",
   "Case-AddPerpetratorSection": "Perpetrators",
   "Case-AddIncidentSection": "Incidents",
   "Case-AddHouseholdSection": "Household Information",
@@ -342,6 +346,7 @@
   "Contact-EditCategories": "Edit Categories",
   "Contact-EditSummary": "Edit Summary",
   "Contact-ExternalReport": "File External Report",
+  "Contact-DraftStatus": "In Progress",
 
   "ContactCopyButton": "Copy",
   "ManualPullButtonText": "Another Task",
@@ -386,6 +391,7 @@
   "PreviousContacts-OnlyShowRecordsFrom": "Only show records from",
 
   "Profile-Title": "Client Profile",
+  "Profile-ClientTab": "Client",
   "Profile-DetailsHeader-Overview": "Overview",
   "Profile-DetailsHeader-Notes": "Notes",
   "Profile-IdentifiersHeader": "Identifiers",
@@ -395,9 +401,11 @@
   "Profile-EditHeader": "Edit Profile",
   "Profile-EditNoteHeader": "Edit Note",
   "Profile-EditButton": "Edit",
+  "Profile-Notes-No": "No",
   "Profile-FlagEditHeader": "Edit Status and Blocking",
   "Profile-NoContactsFound": "No Contacts Found",
   "Profile-NoCasesFound": "No Cases Found",
+  "Profile-ViewClient": "View Client",
 
   "UploadFile-ButtonText": "Upload File",
   "DownloadFile-ButtonText": "Download File",
@@ -509,5 +517,6 @@
   "CaseMerging-RemoveFromCase": "Remove from Case",
   "CaseMerging-ContactRemovedFromCase": "Contact removed from case",
   "CaseMerging-CaseCreatedAndContactAdded": "Case #{{caseId}} created and contact added",
-  "CaseMerging-CancelCase": "Cancel Case"
+  "CaseMerging-CancelCase": "Cancel Case",
+  "CaseMerging-ContactUndoRemovedFromCase": "Undo"
 }

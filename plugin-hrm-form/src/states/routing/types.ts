@@ -66,15 +66,11 @@ export const NewCaseSectionSubroutes = {
   CaseSummary: 'caseSummary',
 } as const;
 
-const OtherCaseRoutes = {
-  CasePrintView: 'case-print-view',
-} as const;
-
 export type CaseSectionSubroute = typeof NewCaseSectionSubroutes[keyof typeof NewCaseSectionSubroutes];
 
 export const NewCaseSubroutes = Object.freeze({
   ...NewCaseSectionSubroutes,
-  ...OtherCaseRoutes,
+  CasePrintView: 'case-print-view',
 });
 
 export enum CaseItemAction {
@@ -141,8 +137,13 @@ export type ViewCaseSectionRoute = CaseSectionRoute & {
   id: string;
 };
 
+export type CaseTimelineRoute = CaseCoreRoute & {
+  subroute: 'timeline';
+  page: number;
+};
+
 export type CasePrintRoute = CaseCoreRoute & {
-  subroute: typeof OtherCaseRoutes.CasePrintView;
+  subroute: 'case-print-view';
 };
 
 export type CaseRoute =
@@ -150,7 +151,8 @@ export type CaseRoute =
   | EditCaseSectionRoute
   | ViewCaseSectionRoute
   | CaseHomeRoute
-  | CasePrintRoute;
+  | CasePrintRoute
+  | CaseTimelineRoute;
 
 export const PROFILE_TABS = {
   cases: 'cases',
@@ -246,7 +248,8 @@ export const isCaseRoute = (route: AppRoutes): route is CaseRoute => route?.rout
 export enum ChangeRouteMode {
   Push = 'push',
   Replace = 'replace',
-  Reset = 'reset',
+  ResetModal = 'reset-modal',
+  ResetRoute = 'reset-route',
 }
 
 type ChangeRouteAction = {

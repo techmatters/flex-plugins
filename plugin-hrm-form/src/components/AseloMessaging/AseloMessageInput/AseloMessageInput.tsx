@@ -21,7 +21,7 @@ import { useForm } from 'react-hook-form';
 import debounce from 'lodash/debounce';
 import { connect } from 'react-redux';
 
-import CannedResponses from '../../CannedResponses';
+import CannedResponses from '../../cannedResponses';
 import { RootState } from '../../../states';
 import {
   MessageSendStatus,

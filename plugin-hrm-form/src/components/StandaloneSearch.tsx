@@ -18,7 +18,7 @@
 import React from 'react';
 
 import Search from './search';
-import { StandaloneSearchContainer } from '../styles/search';
+import { StandaloneSearchContainer } from './search/styles';
 import { StandaloneITask, standaloneTaskSid } from '../types/types';
 
 const standaloneTask: StandaloneITask = {

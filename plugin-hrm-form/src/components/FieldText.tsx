@@ -18,7 +18,7 @@
 import React, { CSSProperties } from 'react';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 
-import { ErrorText, TextField, FormInput, FormLabel } from '../styles/HrmStyles';
+import { ErrorText, TextField, FormInput, FormLabel } from '../styles';
 import RequiredAsterisk from './RequiredAsterisk';
 import { FormFieldType } from './common/forms/types';
 

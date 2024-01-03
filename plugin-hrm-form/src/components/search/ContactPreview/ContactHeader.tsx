@@ -20,19 +20,21 @@ import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import { CallTypes } from 'hrm-form-definitions';
 
-import { Flex } from '../../../styles/HrmStyles';
+import { Flex } from '../../../styles';
+import { Text as BannerText } from '../../../styles/banners';
 import {
-  PreviewHeaderText,
   ContactButtonsWrapper,
+  PreviewHeaderText,
+  PreviewRow,
+  StyledLink,
   SubtitleLabel,
   SubtitleValue,
-  StyledLink,
-  PreviewRow,
-} from '../../../styles/search';
+} from '../styles';
 import { isNonDataCallType } from '../../../states/validationRules';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import { channelTypes, ChannelTypes } from '../../../states/DomainConstants';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
+import InfoIcon from '../../caseMergingBanners/InfoIcon';
 
 type OwnProps = {
   channel: ChannelTypes | 'default';
@@ -43,6 +45,7 @@ type OwnProps = {
   number?: string;
   date: string;
   onClickFull: () => void;
+  isDraft: boolean;
 };
 
 type Props = OwnProps;
@@ -58,7 +61,17 @@ const getNumber = (channel, number) => {
   }
 };
 
-const ContactHeader: React.FC<Props> = ({ channel, callType, id, name, callerName, number, date, onClickFull }) => {
+const ContactHeader: React.FC<Props> = ({
+  channel,
+  callType,
+  id,
+  name,
+  callerName,
+  number,
+  date,
+  onClickFull,
+  isDraft,
+}) => {
   const dateObj = new Date(date);
   const dateString = `${format(dateObj, 'MMM d, yyyy')}, ${dateObj.toLocaleTimeString([], {
     hour: '2-digit',
@@ -70,7 +83,7 @@ const ContactHeader: React.FC<Props> = ({ channel, callType, id, name, callerNam
 
   return (
     <>
-      <PreviewRow>
+      <PreviewRow color={isDraft ? 'yellow' : undefined} style={{ paddingTop: '15px', marginTop: '0px' }}>
         {!isNonDataCallType(callType) && (
           <Flex marginRight="10px">
             <CallTypeIcon callType={callType} fontSize="18px" />
@@ -86,7 +99,14 @@ const ContactHeader: React.FC<Props> = ({ channel, callType, id, name, callerNam
         )}
         <PreviewHeaderText>{showNumber && !maskIdentifiers ? getNumber(channel, number) : name}</PreviewHeaderText>
         <ContactButtonsWrapper>
-          <Flex marginRight="20px" />
+          {isDraft && (
+            <Flex marginRight="20px">
+              <InfoIcon color="#fed44b" />
+              <BannerText>
+                <Template code="Contact-DraftStatus" />
+              </BannerText>
+            </Flex>
+          )}
         </ContactButtonsWrapper>
       </PreviewRow>
       <PreviewRow>

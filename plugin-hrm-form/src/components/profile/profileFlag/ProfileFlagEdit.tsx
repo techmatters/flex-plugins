@@ -19,7 +19,7 @@ import { useSelector } from 'react-redux';
 import { IconButton } from '@twilio/flex-ui';
 import { Box, Popper, Paper } from '@material-ui/core';
 
-import { StyledMenuList, StyledMenuItem } from '../../../styles/HrmStyles';
+import { StyledMenuList, StyledMenuItem } from '../../../styles';
 import { ProfileFlag } from '../../../types/types';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
 import { useProfileFlags } from '../../../states/profile/hooks';

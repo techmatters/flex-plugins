@@ -18,7 +18,7 @@
 import React from 'react';
 import { styled } from '@twilio/flex-ui';
 
-import { TransferStyledButton } from '../../../styles/HrmStyles';
+import { TransferStyledButton } from '../../../styles/buttons';
 
 export const PhoneNumberPopperText = styled('p')`
   font-size: 15px;

@@ -33,8 +33,8 @@ import {
   CaseDetailsBorder,
   CaseSectionFont,
   ViewButton,
-} from '../../styles/case';
-import { Box } from '../../styles/HrmStyles';
+} from './styles';
+import { Box } from '../../styles';
 import { PermissionActions } from '../../permissions';
 import { getLocaleDateTime } from '../../utils/helpers';
 

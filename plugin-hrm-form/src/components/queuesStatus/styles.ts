@@ -16,7 +16,7 @@
 
 import { styled } from '@twilio/flex-ui';
 
-import { FontOpenSans } from '../HrmStyles';
+import { FontOpenSans } from '../../styles';
 
 export const Container = styled('div')<{ backgroundColor?: string }>`
   display: flex;

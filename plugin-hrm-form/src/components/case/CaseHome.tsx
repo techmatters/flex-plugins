@@ -20,18 +20,19 @@ import { Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { CaseContainer } from '../../styles/case';
-import { BottomButtonBar, Box, Flex, SaveAndEndButton, StyledNextStepButton } from '../../styles/HrmStyles';
+import { CaseContainer, CaseDetailsBorder, ViewButton } from './styles';
+import { BottomButtonBar, Box, SaveAndEndButton, StyledNextStepButton } from '../../styles';
 import CaseDetailsComponent from './CaseDetails';
-import Timeline from './Timeline';
+import Timeline from './timeline/Timeline';
 import CaseSection from './CaseSection';
+import { PermissionActions, PermissionActionType } from '../../permissions';
 import {
-  getPermissionsForCase,
-  getPermissionsForContact,
-  PermissionActions,
-  PermissionActionType,
-} from '../../permissions';
-import { AppRoutes, CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../../states/routing/types';
+  AppRoutes,
+  CaseItemAction,
+  CaseRoute,
+  CaseSectionSubroute,
+  NewCaseSubroutes,
+} from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
 import { RootState } from '../../states';
 import { CaseDetails } from '../../states/case/types';
@@ -39,22 +40,21 @@ import { Case, Contact, CustomITask, EntryInfo, StandaloneITask } from '../../ty
 import * as RoutingActions from '../../states/routing/actions';
 import { newCloseModalAction } from '../../states/routing/actions';
 import InformationRow from './InformationRow';
-import TimelineInformationRow from './TimelineInformationRow';
+import IncidentInformationRow from './IncidentInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
 import { householdSectionApi } from '../../states/case/sections/household';
 import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import NavigableContainer from '../NavigableContainer';
-import ConnectToCaseButton from './ConnectToCaseButton';
 import { isStandaloneITask } from './Case';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import asyncDispatch from '../../states/asyncDispatch';
 import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
-import { BannerContainer, Text } from '../caseMergingBanners/styles';
-import InfoIcon from '../caseMergingBanners/InfoIcon';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 import CaseCreatedBanner from '../caseMergingBanners/CaseCreatedBanner';
+import AddToCaseBanner from '../caseMergingBanners/AddToCaseBanner';
+import { selectCaseActivityCount } from '../../states/case/timeline';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -69,19 +69,19 @@ export type CaseHomeProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = CaseHomeProps & ConnectedProps<typeof connector>;
 
+const MAX_ACTIVITIES_IN_TIMELINE_SECTION = 5;
+
 const CaseHome: React.FC<Props> = ({
   definitionVersion,
   task,
   openModal,
-  closeModal,
-  connectCaseToTaskContact,
   handleClose,
   handleSaveAndEnd,
   caseDetails,
   can,
   connectedCaseState,
-  taskContact,
   isCreating,
+  hasMoreActivities,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   if (!connectedCaseState) return null; // narrow type before deconstructing
@@ -89,6 +89,7 @@ const CaseHome: React.FC<Props> = ({
   const {
     enable_upload_documents: enableUploadDocuments,
     enable_case_merging: enableCaseMerging,
+    enable_separate_timeline_view: enableSeparateTimelineView,
   } = getAseloFeatureFlags();
 
   const onViewCaseItemClick = (targetSubroute: CaseSectionSubroute) => (id: string) => {
@@ -97,6 +98,10 @@ const CaseHome: React.FC<Props> = ({
 
   const onAddCaseItemClick = (targetSubroute: CaseSectionSubroute) => () => {
     openModal({ route: 'case', subroute: targetSubroute, action: CaseItemAction.Add, caseId });
+  };
+
+  const onViewFullTimelineClick = () => {
+    openModal({ route: 'case', subroute: 'timeline', caseId, page: 0 });
   };
 
   const onPrintCase = () => {
@@ -126,21 +131,6 @@ const CaseHome: React.FC<Props> = ({
     followUpDate,
   } = caseDetails;
   const statusLabel = definitionVersion.caseStatus[status]?.label ?? status;
-  const isConnectedToTaskContact = taskContact && taskContact.caseId === id;
-
-  const { connectedCase } = connectedCaseState;
-
-  const { can: canForCase } = getPermissionsForCase(connectedCase.twilioWorkerId, connectedCase.status);
-  const { can: canForContact } = getPermissionsForContact(taskContact?.twilioWorkerId);
-
-  const showConnectToCaseButton = Boolean(
-    taskContact &&
-      !taskContact.caseId &&
-      !isConnectedToTaskContact &&
-      connectedCase.connectedContacts?.length &&
-      canForCase(PermissionActions.UPDATE_CASE_CONTACTS) &&
-      canForContact(PermissionActions.ADD_CONTACT_TO_CASE),
-  );
 
   const itemRowRenderer = (itemTypeName: string, viewSubroute: CaseSectionSubroute, items: EntryInfo[]) => {
     const itemRows = () => {
@@ -181,7 +171,7 @@ const CaseHome: React.FC<Props> = ({
       <>
         {incidents.map((item, index) => {
           return (
-            <TimelineInformationRow
+            <IncidentInformationRow
               key={`incident-${index}`}
               onClickView={() => onViewCaseItemClick(NewCaseSubroutes.Incident)(item.id)}
               definition={caseForms.IncidentForm}
@@ -228,27 +218,7 @@ const CaseHome: React.FC<Props> = ({
           borderBottom: isCreating ? '1px solid #e5e5e5' : 'none',
         }}
       >
-        {showConnectToCaseButton && (
-          <BannerContainer color="yellow" style={{ paddingTop: '12px', paddingBottom: '12px' }}>
-            <Flex width="100%" justifyContent="space-between">
-              <Flex alignItems="center">
-                <InfoIcon color="#fed44b" />
-                <Text>
-                  <Template code="CaseMerging-AddContactToCase" />
-                </Text>
-              </Flex>
-              <ConnectToCaseButton
-                caseId={connectedCase.id.toString()}
-                isConnectedToTaskContact={isConnectedToTaskContact}
-                onClickConnectToTaskContact={() => {
-                  connectCaseToTaskContact(taskContact, connectedCaseState.connectedCase);
-                  closeModal();
-                }}
-                color="black"
-              />
-            </Flex>
-          </BannerContainer>
-        )}
+        <AddToCaseBanner task={task} />
 
         {isCreating && (
           <Box marginBottom="14px" width="100%">
@@ -278,8 +248,22 @@ const CaseHome: React.FC<Props> = ({
         <Box margin="25px 0 0 0">
           <CaseSummary task={task} />
         </Box>
-        <Box margin="25px 0 0 0">
-          <Timeline taskSid={task.taskSid} can={can} />
+        <Box margin="25px 0 0 0" style={{ textAlign: 'center' }}>
+          <CaseDetailsBorder>
+            <Timeline
+              taskSid={task.taskSid}
+              page={0}
+              pageSize={enableSeparateTimelineView ? 5 : Number.MAX_SAFE_INTEGER}
+              titleCode={
+                hasMoreActivities && enableSeparateTimelineView ? 'Case-Timeline-RecentTitle' : 'Case-Timeline-Title'
+              }
+            />
+            {hasMoreActivities && (
+              <ViewButton style={{ marginTop: '10px' }} withDivider={false} onClick={onViewFullTimelineClick}>
+                <Template code="Case-Timeline-OpenFullTimelineButton" />
+              </ViewButton>
+            )}
+          </CaseDetailsBorder>
         </Box>
         <Box margin="25px 0 0 0">
           <CaseSection
@@ -348,10 +332,16 @@ CaseHome.displayName = 'CaseHome';
 const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
   const connectedCaseState = selectCurrentRouteCaseState(state, task.taskSid);
   const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
-  const routing = selectCurrentTopmostRouteForTask(state, task.taskSid);
+  const routing = selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseRoute;
   const isCreating = routing.route === 'case' && routing.isCreating;
+  const activityCount = routing.route === 'case' ? selectCaseActivityCount(state, routing.caseId) : 0;
 
-  return { isCreating, connectedCaseState, taskContact };
+  return {
+    isCreating,
+    connectedCaseState,
+    taskContact,
+    hasMoreActivities: activityCount > MAX_ACTIVITIES_IN_TIMELINE_SECTION,
+  };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: CaseHomeProps) => ({

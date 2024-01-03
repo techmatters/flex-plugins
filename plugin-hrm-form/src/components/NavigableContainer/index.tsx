@@ -20,26 +20,23 @@ import React from 'react';
 import { Close } from '@material-ui/icons';
 import { StyledProps } from '@material-ui/core';
 
-import { namespace } from '../states/storeNamespaces';
-import { RootState } from '../states';
-import { getCurrentBaseRoute, getCurrentTopmostRouteStackForTask } from '../states/routing/getRoute';
-import { isRouteModal } from '../states/routing/types';
-import { changeRoute, newCloseModalAction, newGoBackAction } from '../states/routing/actions';
-import { Contact, CustomITask, StandaloneITask } from '../types/types';
-import { Box, HeaderCloseButton, HiddenText, Row, StyledBackButton } from '../styles/HrmStyles';
-import {
-  LargeBackIcon,
-  NavigableContainerBox,
-  NavigableContainerContentBox,
-  NavigableContainerTitle,
-} from '../styles/NavigableContainerStyles';
-import useFocus from '../utils/useFocus';
+import { namespace } from '../../states/storeNamespaces';
+import { RootState } from '../../states';
+import { getCurrentBaseRoute, getCurrentTopmostRouteStackForTask } from '../../states/routing/getRoute';
+import { isRouteModal } from '../../states/routing/types';
+import { changeRoute, newCloseModalAction, newGoBackAction } from '../../states/routing/actions';
+import { Contact, CustomITask, StandaloneITask } from '../../types/types';
+import { Box, HiddenText, Row } from '../../styles';
+import { StyledBackButton, HeaderCloseButton } from '../../styles/buttons';
+import { LargeBackIcon, NavigableContainerBox, NavigableContainerContentBox, NavigableContainerTitle } from './styles';
+import useFocus from '../../utils/useFocus';
 
 type FocusTarget = 'back' | 'close';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
   titleCode: string;
+  titleValues?: Record<string, string>;
   onGoBack?: () => void;
   onCloseModal?: () => void;
   focusPriority: FocusTarget[];
@@ -79,6 +76,7 @@ const NavigableContainer: React.FC<Props> = ({
   closeModal,
   onCloseModal = () => closeModal(),
   titleCode,
+  titleValues = {},
   hasHistory,
   isModal,
   focusPriority = ['back', 'close'],
@@ -115,7 +113,7 @@ const NavigableContainer: React.FC<Props> = ({
           )}
         </Box>
         <NavigableContainerTitle data-testid="NavigableContainer-Title">
-          <Template code={titleCode} />
+          <Template code={titleCode} {...titleValues} />
         </NavigableContainerTitle>
         {isModal && (
           <HeaderCloseButton
