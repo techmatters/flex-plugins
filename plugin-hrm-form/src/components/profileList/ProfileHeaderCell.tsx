@@ -1,0 +1,41 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+import React from 'react';
+import { Template } from '@twilio/flex-ui';
+
+import { TableHeaderFont, HeaderCell } from '../../styles';
+
+type OwnProps = {
+  localizedText?: string;
+  width?: string;
+};
+
+type Props = OwnProps;
+
+const ProfileHeaderCell: React.FC<Props> = ({ localizedText, width }) => {
+  return (
+    <HeaderCell style={{ width: width || '10%' }} align="right" variant="head" scope="col">
+      <TableHeaderFont>
+        <Template code={localizedText} />
+      </TableHeaderFont>
+    </HeaderCell>
+  );
+};
+
+ProfileHeaderCell.displayName = 'ProfileHeaderCell';
+
+export default ProfileHeaderCell;

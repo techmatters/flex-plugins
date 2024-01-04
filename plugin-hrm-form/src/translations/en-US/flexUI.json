@@ -412,6 +412,7 @@
   "ProfileList-THStatus": "Status",
   "ProfileList-THIdentifier": "Identifier(s)",
   "ProfileList-THSummary": "Summary",
+  "ProfileList-Summary-None": "- No profile summary -",
 
   "UploadFile-ButtonText": "Upload File",
   "DownloadFile-ButtonText": "Download File",

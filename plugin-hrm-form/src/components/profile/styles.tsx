@@ -93,13 +93,14 @@ export const FlagPill = styled('div')<ColorProps>`
   align-items: center;
   border-radius: 6px;
   white-space: nowrap;
-  margin: 5px 4px 5px 1px;
-  padding: 4px 12px;
+  margin: 5px 2px 5px 1px;
+  padding: 3px 10px;
   background-color: ${props => (props.isBlocked ? `#FCF4F4` : '#F5EEF4')};
   border: ${props => (props.isBlocked ? `2px dashed #D61F1F` : '2px solid #F5EEF4')};
   border-color: ${props => (props.isBlocked ? `#D61F1F` : 'none')};
   color: ${props => (props.isBlocked ? `#D61F1F` : '#192B33')};
   text-transform: capitalize;
+  font-size: 11px;
 `;
 FlagPill.displayName = 'FlagPill';
 
@@ -146,7 +147,7 @@ export const ProfileFlagsUnorderedList = styled('ul')`
 `;
 ProfileFlagsUnorderedList.displayName = 'ProfileFlagsUnorderedList';
 
-export const ProfileFlagsListItem = styled('li')`
+export const ProfileFlagsListItem = styled('div')`
   display: inline-block;
 `;
 ProfileFlagsListItem.displayName = 'ProfileFlagsListItem';

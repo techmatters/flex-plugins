@@ -15,17 +15,26 @@
  */
 
 import React from 'react';
+import { CircularProgress, TableBody } from '@material-ui/core';
 
-import { StandardTable, TableContainer } from '../../styles';
+import { DataTableRow, LoadingCell, StandardTable, TableContainer } from '../../styles';
 import { useProfileList } from '../../states/profile/hooks/useProfileList';
-import ProfileListTableHeader from './ProfileListHeader';
-import ProfileListTableRow from './ProfileListTableRow';
+import ProfileListTableHeader from './ProfileHeader';
+import ProfileRow from './ProfileRow';
 
 const ProfileListTable: React.FC = () => {
   const { loading, profileIds } = useProfileList();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <TableBody>
+        <DataTableRow>
+          <LoadingCell>
+            <CircularProgress size={50} />
+          </LoadingCell>
+        </DataTableRow>
+      </TableBody>
+    );
   }
 
   return (
@@ -33,9 +42,22 @@ const ProfileListTable: React.FC = () => {
       <TableContainer>
         <StandardTable>
           <ProfileListTableHeader />
-          {profileIds?.map(profileId => (
-            <ProfileListTableRow key={profileId} profileId={profileId} />
-          ))}
+          {loading && (
+            <TableBody>
+              <DataTableRow>
+                <LoadingCell>
+                  <CircularProgress size={50} />
+                </LoadingCell>
+              </DataTableRow>
+            </TableBody>
+          )}
+          {!loading && (
+            <TableBody>
+              {profileIds?.map(profileId => (
+                <ProfileRow key={profileId} profileId={profileId} />
+              ))}
+            </TableBody>
+          )}
         </StandardTable>
       </TableContainer>
     </>

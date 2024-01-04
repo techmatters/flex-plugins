@@ -15,27 +15,25 @@
  */
 
 import React from 'react';
-import { Template } from '@twilio/flex-ui';
 
-import { TableHeaderFont, HeaderCell } from '../../styles';
+import { ProfileFlag } from '../../../types/types';
+import { FlagPill, ProfileFlagsListItem, StyledBlockOutlinedIcon } from '../styles';
 
-type OwnProps = {
-  localizedText?: string;
-  width?: string;
+type Props = {
+  flag: ProfileFlag;
+  renderDisassociate?: (flag: ProfileFlag) => JSX.Element;
 };
 
-type Props = OwnProps;
-
-const ProfileListHeaderCell: React.FC<Props> = ({ localizedText, width }) => {
+const ProfileFlagPill: React.FC<Props> = ({ flag, renderDisassociate }) => {
   return (
-    <HeaderCell style={{ width: width || '10%' }} align="right" variant="head" scope="col">
-      <TableHeaderFont>
-        <Template code={localizedText} />
-      </TableHeaderFont>
-    </HeaderCell>
+    <ProfileFlagsListItem key={flag.name}>
+      <FlagPill title={`${flag.name} Status`} key={flag.name} fillColor="#F5EEF4" isBlocked={flag.name === 'blocked'}>
+        {flag.name === 'blocked' && <StyledBlockOutlinedIcon />}
+        {flag.name}
+        {renderDisassociate && renderDisassociate(flag)}
+      </FlagPill>
+    </ProfileFlagsListItem>
   );
 };
 
-ProfileListHeaderCell.displayName = 'ProfileListHeaderCell';
-
-export default ProfileListHeaderCell;
+export default ProfileFlagPill;

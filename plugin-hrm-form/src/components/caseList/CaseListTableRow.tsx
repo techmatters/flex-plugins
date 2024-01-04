@@ -32,11 +32,12 @@ import {
   SummaryCell,
   NumericCell,
   TableBodyFont,
-  IdentifierContainer,
-  IdentifierActionButton,
+  OpenLinkContainer,
+  OpenLinkAction,
   TableSummaryFont,
   Box,
   HiddenText,
+  PillsCell,
 } from '../../styles';
 import { formatName, getShortSummary } from '../../utils';
 import { getContactTags } from '../../utils/categories';
@@ -108,18 +109,18 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
     return (
       <DataTableRow data-testid="CaseList-TableRow" onClick={handleClickViewCase(caseItem)}>
         <NumericCell>
-          <IdentifierContainer>
-            <IdentifierActionButton tabIndex={0} data-testid="CaseList-CaseID-Button">
+          <OpenLinkContainer>
+            <OpenLinkAction tabIndex={0} data-testid="CaseList-CaseID-Button">
               <HiddenText>
                 <Template code={statusString} />
                 <Template code="CaseList-THCase" />
               </HiddenText>
               {caseItem.id}
-            </IdentifierActionButton>
+            </OpenLinkAction>
             <TableBodyFont style={{ color: '#606B85', paddingTop: '2px', textAlign: 'center' }}>
               {getCaseStatusLabel(caseItem.status)}
             </TableBodyFont>
-          </IdentifierContainer>
+          </OpenLinkContainer>
         </NumericCell>
         <TextCell>
           <TableBodyFont>{contactLabelFromHrmContact(definitionVersion, contact)}</TableBodyFont>
@@ -130,16 +131,14 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
         <SummaryCell>
           <TableSummaryFont>{shortSummary}</TableSummaryFont>
         </SummaryCell>
-        <DataCell>
-          <div style={{ display: 'inline-block', flexDirection: 'column' }}>
-            {categories &&
-              categories.map(category => (
-                <Box key={`category-tag-${category.label}`} marginBottom="5px">
-                  <CategoryWithTooltip category={category.label} color={category.color} />
-                </Box>
-              ))}
-          </div>
-        </DataCell>
+        <PillsCell>
+          {categories &&
+            categories.map(category => (
+              <Box key={`category-tag-${category.label}`} marginBottom="5px">
+                <CategoryWithTooltip category={category.label} color={category.color} />
+              </Box>
+            ))}
+        </PillsCell>
         <DataCell>
           <TableBodyFont style={{ textAlign: 'right' }}>{opened}</TableBodyFont>
         </DataCell>

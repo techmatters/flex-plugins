@@ -28,7 +28,7 @@ export const changeRoute = (
   mode,
 });
 
-export const newOpenModalAction = (routing: AppRoutes, taskId: string): RoutingActionType => ({
+export const newOpenModalAction = (routing: AppRoutes, taskId?: string): RoutingActionType => ({
   type: OPEN_MODAL,
   routing,
   taskId,

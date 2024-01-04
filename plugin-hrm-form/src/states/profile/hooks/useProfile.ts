@@ -13,28 +13,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { useCallback, useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import asyncDispatch from '../../asyncDispatch';
-import { Profile, Identifier, ProfileSection } from '../types';
-import * as ProfileActions from '../profiles';
+import { Profile } from '../types';
 import * as ProfileSelectors from '../selectors';
 import { RootState } from '../..';
 import { UseProfileCommonParams } from './types';
 
 export type UseProfileParams = UseProfileCommonParams;
 
-export type ProfileResponse = {
-  id: number;
-  name: string;
-  identifier?: Identifier;
-  profileFlags?: number[];
-  summary?: ProfileSection;
-};
-
 export type UseProfileReturn = {
-  profile: Profile | ProfileResponse | undefined;
+  profile: Profile | undefined;
   loading: boolean | undefined;
 };
 

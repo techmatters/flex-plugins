@@ -262,7 +262,7 @@ type ChangeRouteAction = {
 type OpenModalAction = {
   type: typeof OPEN_MODAL;
   routing: AppRoutes;
-  taskId: string;
+  taskId?: string;
 };
 
 type GoBackAction = {

@@ -374,6 +374,11 @@ export type ProfileSection = {
   updatedAt?: string;
 };
 
+export type ProfileResponse = {
+  identifier: string;
+  summary: string;
+};
+
 export type Profile = {
   id: number;
   name: string;
@@ -384,7 +389,8 @@ export type Profile = {
   identifiers?: Identifier[];
   profileFlags?: number[];
   profileSections?: ProfileSection[];
-};
+} & ProfileResponse;
+
 
 export type ProfileFlag = {
   id: number;

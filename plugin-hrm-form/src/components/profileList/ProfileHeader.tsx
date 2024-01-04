@@ -18,19 +18,19 @@ import React from 'react';
 import { TableRow } from '@material-ui/core';
 
 import { TableHeader } from '../../styles';
-import ProfileListHeaderCell from './ProfileListHeaderCell';
+import ProfileHeaderCell from './ProfileHeaderCell';
 
-const ProfileListHeader: React.FC = () => {
+const ProfileHeader: React.FC = () => {
   return (
     <TableHeader>
       <TableRow>
-        <ProfileListHeaderCell localizedText="ProfileList-THClient" width="5%" />
-        <ProfileListHeaderCell localizedText="ProfileList-THStatus" width="8%" />
-        <ProfileListHeaderCell localizedText="ProfileList-THIdentifier" width="10%" />
-        <ProfileListHeaderCell localizedText="ProfileList-THSummary" width="20%" />
+        <ProfileHeaderCell localizedText="ProfileList-THClient" width="5%" />
+        <ProfileHeaderCell localizedText="ProfileList-THStatus" width="8%" />
+        <ProfileHeaderCell localizedText="ProfileList-THIdentifier" width="10%" />
+        <ProfileHeaderCell localizedText="ProfileList-THSummary" width="20%" />
       </TableRow>
     </TableHeader>
   );
 };
 
-export default ProfileListHeader;
+export default ProfileHeader;
