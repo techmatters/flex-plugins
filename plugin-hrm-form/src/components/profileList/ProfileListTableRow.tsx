@@ -34,7 +34,7 @@ const ProfileListRow: React.FC<Props> = ({ profileId, openProfileDetails }) => {
   const { profile } = useProfile({ profileId });
 
   return (
-    <DataTableRow onClick={()=>console.log('open profile')}>
+    <DataTableRow onClick={() => console.log('open profile')}>
       <DataCell>{profile?.name}</DataCell>
       <DataCell>{profile?.identifiers?.join(', ')}</DataCell>
     </DataTableRow>

@@ -111,7 +111,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
       onClick={handleClick}
       scope="col"
     >
-      <TableHeaderFont style={{ borderBottom: borderBottom(), whiteSpace: 'nowrap', textAlign: textAlign() }}>
+      <TableHeaderFont style={{ borderBottom: borderBottom(), textAlign: textAlign() }}>
         <Template code={localizedText} />
         <span aria-hidden="true">{drawSort()}</span>
       </TableHeaderFont>

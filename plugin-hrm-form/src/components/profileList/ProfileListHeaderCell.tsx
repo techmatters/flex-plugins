@@ -28,8 +28,8 @@ type Props = OwnProps;
 
 const ProfileListHeaderCell: React.FC<Props> = ({ localizedText, width }) => {
   return (
-    <HeaderCell style={{ width }} align="right" variant="head" scope="col">
-      <TableHeaderFont style={{ whiteSpace: 'nowrap' }}>
+    <HeaderCell style={{ width: width || '10%' }} align="right" variant="head" scope="col">
+      <TableHeaderFont>
         <Template code={localizedText} />
       </TableHeaderFont>
     </HeaderCell>

@@ -14,14 +14,17 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { Template } from '@twilio/flex-ui';
 
 import { FiltersContainer, MainTitle } from '../../../styles';
 
 const ProfileFilters: React.FC = () => {
   return (
     <FiltersContainer>
-      <MainTitle>Clients</MainTitle>
+      <MainTitle>
+        <Template code="ProfileList-Clients" />
+      </MainTitle>
     </FiltersContainer>
   );
 };

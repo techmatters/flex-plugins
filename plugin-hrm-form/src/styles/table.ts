@@ -142,6 +142,7 @@ export const TableHeaderFont = styled(FontOpenSans)`
   letter-spacing: 0;
   padding: 0 2px;
   align-items: right;
+  white-space: 'nowrap';
 `;
 TableHeaderFont.displayName = 'TableHeaderFont';
 
