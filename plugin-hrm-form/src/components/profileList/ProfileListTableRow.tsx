@@ -17,13 +17,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { useProfile } from '../../states/profile/hooks/useProfile';
-import { Profile } from '../../states/profile/types';
+import { ProfileResponse, useProfile } from '../../states/profile/hooks/useProfile';
 import { DataTableRow, DataCell } from '../../styles';
 import { newOpenModalAction } from '../../states/routing/actions';
 
 type OwnProps = {
-  profileId: Profile['id'];
+  profileId: any;
 };
 
 type Props = OwnProps & {
@@ -31,12 +30,14 @@ type Props = OwnProps & {
 };
 
 const ProfileListRow: React.FC<Props> = ({ profileId, openProfileDetails }) => {
-  const { profile } = useProfile({ profileId });
+  const { profile } = useProfile({ profileId }) as { profile: ProfileResponse };
 
   return (
     <DataTableRow onClick={() => console.log('open profile')}>
-      <DataCell>{profile?.name}</DataCell>
-      <DataCell>{profile?.identifiers?.join(', ')}</DataCell>
+      <DataCell>{profile?.name ? profile.name : profile?.id}</DataCell>
+      <DataCell>{profile?.identifier}</DataCell>
+      <DataCell>{profile?.profileFlags}</DataCell>
+      <DataCell>{profile?.summary}</DataCell>
     </DataTableRow>
   );
 };

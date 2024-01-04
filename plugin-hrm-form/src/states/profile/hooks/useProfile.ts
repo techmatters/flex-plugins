@@ -17,7 +17,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import asyncDispatch from '../../asyncDispatch';
-import { Profile } from '../types';
+import { Profile, Identifier, ProfileSection } from '../types';
 import * as ProfileActions from '../profiles';
 import * as ProfileSelectors from '../selectors';
 import { RootState } from '../..';
@@ -25,8 +25,16 @@ import { UseProfileCommonParams } from './types';
 
 export type UseProfileParams = UseProfileCommonParams;
 
+export type ProfileResponse = {
+  id: number;
+  name: string;
+  identifier?: Identifier;
+  profileFlags?: number[];
+  summary?: ProfileSection;
+};
+
 export type UseProfileReturn = {
-  profile: Profile | undefined;
+  profile: Profile | ProfileResponse | undefined;
   loading: boolean | undefined;
 };
 

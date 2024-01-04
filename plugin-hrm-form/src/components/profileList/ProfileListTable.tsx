@@ -19,6 +19,7 @@ import React from 'react';
 import { StandardTable, TableContainer } from '../../styles';
 import { useProfileList } from '../../states/profile/hooks/useProfileList';
 import ProfileListTableHeader from './ProfileListHeader';
+import ProfileListTableRow from './ProfileListTableRow';
 
 const ProfileListTable: React.FC = () => {
   const { loading, profileIds } = useProfileList();
@@ -26,11 +27,15 @@ const ProfileListTable: React.FC = () => {
   if (loading) {
     return <div>Loading...</div>;
   }
+
   return (
     <>
       <TableContainer>
         <StandardTable>
           <ProfileListTableHeader />
+          {profileIds?.map(profileId => (
+            <ProfileListTableRow key={profileId} profileId={profileId} />
+          ))}
         </StandardTable>
       </TableContainer>
     </>

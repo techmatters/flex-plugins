@@ -27,6 +27,7 @@ export const useProfileList = (): UseProfileListReturn => {
   const profileIds = useSelector(
     (state: any) => (ProfileSelectors.selectProfileListState(state) as ProfileListState)?.data,
   );
+
   const loading = useSelector(
     (state: any) => (ProfileSelectors.selectProfileListState(state) as ProfileListState)?.loading,
   );

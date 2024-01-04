@@ -31,6 +31,7 @@ import ProfileCases from './ProfileCases';
 import ProfileContacts from './ProfileContacts';
 import ProfileDetails from './ProfileDetails';
 import { ProfileCommonProps } from './types';
+import { Profile } from '../../types/types';
 
 type OwnProps = ProfileCommonProps;
 
@@ -59,7 +60,7 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfileTab }) => {
-  const { profile: { contactsCount, casesCount } = {} } = useProfile({ profileId });
+  const { profile: { contactsCount, casesCount } = {} } = useProfile({ profileId }) as { profile: Profile };
   useProfileLoader({ profileId });
 
   const tabs = [

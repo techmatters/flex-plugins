@@ -32,6 +32,7 @@ import {
 } from './styles';
 import ProfileFlagSection from './profileFlag/ProfileFlagSection';
 import ProfileSectionView from './section/ProfileSectionView';
+import { Profile } from '../../types/types';
 
 type OwnProps = ProfileCommonProps;
 
@@ -56,7 +57,7 @@ type Section = {
 };
 
 const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal }) => {
-  const { profile } = useProfile({ profileId });
+  const { profile } = useProfile({ profileId }) as { profile: Profile };
 
   const overviewSections: Section[] = [
     {
