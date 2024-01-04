@@ -89,6 +89,7 @@ const setUpComponents = (
   Channels.setupTwitterChatChannel(maskIdentifiers);
   Channels.setupInstagramChatChannel(maskIdentifiers);
   Channels.setupLineChatChannel(maskIdentifiers);
+  Channels.expandSMSChannel();
 
   if (maskIdentifiers) {
     // Masks TaskInfoPanelContent - TODO: refactor to use a react component
