@@ -28,28 +28,23 @@ import { RootState } from '../../states';
 import { completeTask, removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { changeRoute, newCloseModalAction, newOpenModalAction } from '../../states/routing/actions';
 import { emptyCategories } from '../../states/contacts/reducer';
+import { AppRoutes, ChangeRouteMode, isRouteWithModalSupport, TabbedFormSubroutes } from '../../states/routing/types';
 import {
-  AppRoutes,
-  CaseRoute,
-  ChangeRouteMode,
-  isRouteWithModalSupport,
-  TabbedFormSubroutes,
-} from '../../states/routing/types';
-import {
+  Case as CaseForm,
+  Contact,
   ContactRawJson,
   CustomITask,
-  isOfflineContactTask,
-  Contact,
   isOfflineContact,
-  Case as CaseForm,
+  isOfflineContactTask,
 } from '../../types/types';
-import { Box, Row, StyledTabs, TabbedFormsContainer, TabbedFormTabContainer } from '../../styles/HrmStyles';
+import { Box, Row, StyledTabs } from '../../styles';
+import { TabbedFormsContainer, TabbedFormTabContainer } from './styles';
 import FormTab from '../common/forms/FormTab';
 import IssueCategorizationSectionForm from '../contact/IssueCategorizationSectionForm';
 import ContactDetailsSectionForm from '../contact/ContactDetailsSectionForm';
 import ContactlessTaskTab from './ContactlessTaskTab';
 import BottomBar from './BottomBar';
-import { hasTaskControl } from '../../utils/transfer';
+import { hasTaskControl } from '../../transfer/transferTaskState';
 import { isNonDataCallType } from '../../states/validationRules';
 import CSAMReportButton from './CSAMReportButton';
 import CSAMAttachments from './CSAMAttachments';
@@ -65,15 +60,16 @@ import { submitContactFormAsyncAction, updateContactInHrmAsyncAction } from '../
 import { namespace } from '../../states/storeNamespaces';
 import Search from '../search';
 import { getCurrentBaseRoute, getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import { CaseLayout } from '../../styles/case';
+import { CaseLayout } from '../case/styles';
 import Case, { OwnProps as CaseProps } from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
-import ViewContact from '../case/ViewContact';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
-import { getHrmConfig, getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
+import { DetailsContext } from '../../states/contacts/contactDetails';
+import ContactDetails from '../contact/ContactDetails';
 import { selectCaseMergingBanners } from '../../states/case/caseBanners';
 
 // eslint-disable-next-line react/display-name
@@ -254,7 +250,12 @@ const TabbedForms: React.FC<Props> = ({
   if (currentRoute.route === 'contact') {
     return (
       <CaseLayout>
-        <ViewContact contactId={currentRoute.id} task={task} />
+        <ContactDetails
+          contactId={currentRoute.id}
+          task={task}
+          enableEditing={true}
+          context={DetailsContext.CONTACT_SEARCH}
+        />
       </CaseLayout>
     );
   }
@@ -478,7 +479,6 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { contactId, task }: OwnPro
       changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, task.taskSid, ChangeRouteMode.Replace),
     ),
   openSearchModal: () => dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, task.taskSid)),
-  openCaseModal: () => dispatch(newOpenModalAction({ route: 'case', subroute: 'home' }, task.taskSid)),
   closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
   backToCallTypeSelect: () =>
     dispatch(changeRoute({ route: 'select-call-type' }, task.taskSid, ChangeRouteMode.Replace)),

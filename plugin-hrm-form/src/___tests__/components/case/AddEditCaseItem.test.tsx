@@ -35,6 +35,8 @@ import { newGoBackAction } from '../../../states/routing/actions';
 import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states/storeNamespaces';
+import { CaseState } from '../../../states/case/types';
+import { RecursivePartial } from '../../RecursivePartial';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -60,16 +62,16 @@ expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
 const baselineDate = new Date(1593469560208);
 
-const addingNewHouseholdCaseState: RootState[typeof namespace][typeof connectedCaseBase] = {
-  tasks: {
-    task1: {
+const addingNewHouseholdCaseState: CaseState = {
+  cases: {
+    case1: {
       caseWorkingCopy: {
         sections: {
           households: {
             new: {
               createdAt: baselineDate.toISOString(),
               twilioWorkerId: 'worker1',
-              id: '1',
+              id: 'case1',
               form: {
                 age: '',
                 district: '',
@@ -109,7 +111,7 @@ const addingNewHouseholdCaseState: RootState[typeof namespace][typeof connectedC
 };
 
 const hrmState: Partial<RootState[typeof namespace]> = {
-  [configurationBase]: {
+  configuration: {
     language: '',
     currentDefinitionVersion: mockV1,
     definitionVersions: {},
@@ -119,7 +121,7 @@ const hrmState: Partial<RootState[typeof namespace]> = {
       hash: { worker1: 'worker1 name' },
     },
   },
-  [contactFormsBase]: {
+  activeContacts: {
     isCallTypeCaller: false,
     contactDetails: { contactSearch: { detailsExpanded: {} }, caseDetails: { detailsExpanded: {} } },
     existingContacts: {
@@ -162,32 +164,32 @@ const hrmState: Partial<RootState[typeof namespace]> = {
       },
     },
   },
-  [connectedCaseBase]: addingNewHouseholdCaseState,
+  connectedCase: addingNewHouseholdCaseState,
   routing: {
     tasks: {
-      task1: [{ route: 'case', subroute: 'household', action: CaseItemAction.Add }],
+      task1: [{ route: 'case', subroute: 'household', caseId: 'case1', action: CaseItemAction.Add }],
     },
     isAddingOfflineContact: false,
   },
 };
 
-const state1 = {
+const state1: RootState = {
   [namespace]: hrmState,
 };
 
 const store1 = mockStore(state1);
 store1.dispatch = jest.fn();
 
-const state2 = {
+const state2: RecursivePartial<RootState> = {
   ...state1,
   [namespace]: {
     ...state1[namespace],
-    [connectedCaseBase]: addingNewHouseholdCaseState,
+    connectedCase: addingNewHouseholdCaseState,
     routing: {
       tasks: {
         task1: [
-          { route: 'case', subroute: 'household', action: CaseItemAction.View },
-          { route: 'case', subroute: 'household', action: CaseItemAction.Add },
+          { route: 'case', caseId: 'case1', subroute: 'household', action: CaseItemAction.View },
+          { route: 'case', caseId: 'case1', subroute: 'household', action: CaseItemAction.Add },
         ],
       },
     },

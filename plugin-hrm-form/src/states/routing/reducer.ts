@@ -124,7 +124,7 @@ const updateTopmostRoute = (baseRouteStack: AppRoutes[], newRoute, mode: ChangeR
       ];
     }
   }
-  if (mode === ChangeRouteMode.Reset) {
+  if (mode === ChangeRouteMode.ResetModal) {
     return [newRoute];
   }
   if (mode === ChangeRouteMode.Replace && baseRouteStack?.length) {
@@ -222,11 +222,14 @@ export function reduce(
         isAddingOfflineContact: action.taskId === getOfflineContactTaskSid() ? false : state.isAddingOfflineContact,
       };
     case CHANGE_ROUTE: {
+      const { routing, mode, taskId } = action;
+      const updatedRoute =
+        mode === ChangeRouteMode.ResetRoute ? [routing] : updateTopmostRoute(state.tasks[action.taskId], routing, mode);
       return {
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: updateTopmostRoute(state.tasks[action.taskId], action.routing, action.mode),
+          [taskId]: updatedRoute,
         },
       };
     }

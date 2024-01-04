@@ -21,25 +21,19 @@ import { CaseItemEntry, Contact } from '../../types/types';
 import { ChannelTypes } from '../DomainConstants';
 
 // Action types
-export const SET_CONNECTED_CASE = 'SET_CONNECTED_CASE';
 export const UPDATE_CASE_ACTION = 'case-action/update-case';
 export const UPDATE_CASE_ACTION_FULFILLED = `${UPDATE_CASE_ACTION}_FULFILLED` as const;
 export const CREATE_CASE_ACTION = 'case-action/create-case';
 export const CREATE_CASE_ACTION_FULFILLED = `${CREATE_CASE_ACTION}_FULFILLED` as const;
 export const CANCEL_CASE_ACTION = 'case-action/cancel-case';
 
+// eslint-disable-next-line prettier/prettier,import/no-unused-modules
 export enum SavedCaseStatus {
   NotSaved,
   ResultPending,
   ResultReceived,
   Error,
 }
-
-type SetConnectedCaseAction = {
-  type: typeof SET_CONNECTED_CASE;
-  connectedCase: t.Case;
-  taskId: string;
-};
 
 type UpdatedCaseAction = {
   type: typeof UPDATE_CASE_ACTION;
@@ -55,47 +49,47 @@ type CreateCaseAction = {
   meta: unknown;
 };
 
-export type CaseActionType = SetConnectedCaseAction | UpdatedCaseAction | CreateCaseAction;
+export type CaseActionType = UpdatedCaseAction | CreateCaseAction;
 
-export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
+type CoreActivity = {
+  text: string;
+  type: string;
+  twilioWorkerId: string;
+};
 
-export type NoteActivity = {
+export type NoteActivity = CoreActivity & {
   id: string;
   date: string;
   type: 'note';
-  text: string;
   note: t.Note;
-  twilioWorkerId: string;
   updatedAt?: string;
   updatedBy?: string;
 };
 
-export type ReferralActivity = {
+export type ReferralActivity = CoreActivity & {
   id: string;
   date: string;
   createdAt: string;
   type: 'referral';
-  text: string;
   referral: t.Referral;
-  twilioWorkerId: string;
   updatedAt?: string;
   updatedBy?: string;
 };
 
-export type ConnectedCaseActivity = {
+export type ConnectedCaseActivity = CoreActivity & {
   callType: string;
   contactId?: string;
   date: string;
   createdAt: string;
   type: string;
-  text: string;
-  twilioWorkerId: string;
   channel: ChannelTypes;
-  showViewButton: boolean;
+  isDraft: boolean;
 };
 
+export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
+
 export type CaseDetails = {
-  id: number;
+  id: string;
   contactIdentifier: string;
   categories?: {
     [category: string]: string[];
@@ -152,13 +146,17 @@ export type CaseWorkingCopy = {
   };
   caseSummary?: CaseSummaryWorkingCopy;
 };
+
+export type CaseStateEntry = {
+  connectedCase: t.Case;
+  caseWorkingCopy: CaseWorkingCopy;
+  availableStatusTransitions: StatusInfo[];
+  references: Set<string>;
+};
+
 export type CaseState = {
-  tasks: {
-    [taskId: string]: {
-      connectedCase: t.Case;
-      caseWorkingCopy: CaseWorkingCopy;
-      availableStatusTransitions: StatusInfo[];
-    };
+  cases: {
+    [caseId: string]: CaseStateEntry;
   };
 };
 

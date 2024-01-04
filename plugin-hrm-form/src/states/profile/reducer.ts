@@ -19,11 +19,13 @@ import * as t from './types';
 import identifiersReducer from './identifiers';
 import profilesReducer from './profiles';
 import profileFlagsReducer from './profileFlags';
+import profilesListReducer from './profileList';
 
 const reducers = {
   identifiers: identifiersReducer(),
   profiles: profilesReducer(),
   profileFlags: profileFlagsReducer(),
+  profilesList: profilesListReducer(),
 };
 
 const combinedReducers = combineReducers(reducers);

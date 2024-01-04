@@ -17,8 +17,9 @@
 import { omit } from 'lodash';
 
 import * as t from './types';
+import { newSearchFormEntry, PreviousContactCounts, SearchResultReferences } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
-import { Contact, SearchCaseResult, standaloneTaskSid } from '../../types/types';
+import { Contact, standaloneTaskSid } from '../../types/types';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 import {
   CONNECT_TO_CASE_ACTION_FULFILLED,
@@ -30,19 +31,14 @@ import {
 } from '../contacts/types';
 import { CaseUpdatingAction, CREATE_CASE_ACTION_FULFILLED, UPDATE_CASE_ACTION_FULFILLED } from '../case/types';
 
-type PreviousContacts = {
-  contacts?: t.DetailedSearchContactsResult;
-  cases?: SearchCaseResult;
-};
-
 type TaskEntry = {
   form: t.SearchFormValues;
   detailsExpanded: {
     [key in ContactDetailsSectionsType]: boolean;
   };
-  searchContactsResult: t.DetailedSearchContactsResult;
-  searchCasesResult: SearchCaseResult;
-  previousContacts?: PreviousContacts;
+  searchContactsResult: SearchResultReferences;
+  searchCasesResult: SearchResultReferences;
+  previousContactCounts?: PreviousContactCounts;
   isRequesting: boolean;
   isRequestingCases: boolean;
   error: any;
@@ -59,15 +55,7 @@ type SearchState = {
 };
 
 export const newTaskEntry: TaskEntry = {
-  form: {
-    firstName: '',
-    lastName: '',
-    counselor: { label: '', value: '' },
-    phoneNumber: '',
-    dateFrom: '',
-    dateTo: '',
-    contactNumber: '',
-  },
+  form: newSearchFormEntry,
   detailsExpanded: {
     [ContactDetailsSections.GENERAL_DETAILS]: true,
     [ContactDetailsSections.CALLER_INFORMATION]: false,
@@ -78,9 +66,8 @@ export const newTaskEntry: TaskEntry = {
     [ContactDetailsSections.EXTERNAL_REPORT]: false,
     [ContactDetailsSections.RECORDING]: false,
   },
-  searchContactsResult: { count: 0, contacts: [] },
-  searchCasesResult: { count: 0, cases: [] },
-  previousContacts: undefined,
+  searchContactsResult: { count: 0, ids: [] },
+  searchCasesResult: { count: 0, ids: [] },
   isRequesting: false,
   isRequestingCases: false,
   caseRefreshRequired: false,
@@ -184,18 +171,27 @@ export function reduce(
       };
     }
     case t.SEARCH_CONTACTS_SUCCESS: {
-      const task = state.tasks[action.taskId];
-      const previousContacts = action.dispatchedFromPreviousContacts
-        ? { ...task.previousContacts, contacts: action.searchResult }
-        : task.previousContacts;
+      const {
+        searchResult: { contacts, ...searchResult },
+        taskId,
+        dispatchedFromPreviousContacts,
+      } = action;
+      const task = state.tasks[taskId];
+      const newContactsResult = {
+        ids: contacts.map(c => c.id),
+        count: searchResult.count,
+      };
+      const previousContactCounts = dispatchedFromPreviousContacts
+        ? { ...task.previousContactCounts, contacts: searchResult.count }
+        : task.previousContactCounts;
       return {
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: {
+          [taskId]: {
             ...task,
-            searchContactsResult: action.searchResult,
-            previousContacts,
+            searchContactsResult: newContactsResult,
+            previousContactCounts,
             isRequesting: false,
             error: null,
           },
@@ -231,18 +227,27 @@ export function reduce(
       };
     }
     case t.SEARCH_CASES_SUCCESS: {
-      const task = state.tasks[action.taskId];
-      const previousContacts = action.dispatchedFromPreviousContacts
-        ? { ...task.previousContacts, cases: action.searchResult }
-        : task.previousContacts;
+      const {
+        searchResult: { cases, count },
+        taskId,
+        dispatchedFromPreviousContacts,
+      } = action;
+      const task = state.tasks[taskId];
+      const newCasesResult = {
+        ids: cases.map(c => c.id),
+        count,
+      };
+      const previousContactCounts = dispatchedFromPreviousContacts
+        ? { ...task.previousContactCounts, cases: newCasesResult.count }
+        : task.previousContactCounts;
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            searchCasesResult: action.searchResult,
-            previousContacts,
+            searchCasesResult: newCasesResult,
+            previousContactCounts,
             isRequestingCases: false,
             casesError: null,
           },
@@ -271,8 +276,6 @@ export function reduce(
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            searchContactsResult: task.previousContacts.contacts,
-            searchCasesResult: task.previousContacts.cases,
             form: {
               ...task.form,
               contactNumber: action.contactNumber,

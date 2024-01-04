@@ -19,14 +19,7 @@ import React from 'react';
 import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 import { useFormContext } from 'react-hook-form';
 
-import {
-  ColumnarBlock,
-  TwoColumnLayout,
-  Box,
-  BottomButtonBarHeight,
-  ColumnarContent,
-  Container,
-} from '../../styles/HrmStyles';
+import { ColumnarBlock, TwoColumnLayout, Box, BottomButtonBarHeight, ColumnarContent, Container } from '../../styles';
 import { disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import { ContactRawJson } from '../../types/types';

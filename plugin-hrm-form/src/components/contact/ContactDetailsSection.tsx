@@ -28,7 +28,7 @@ import {
   SectionCollapse,
   ContactDetailsIcon,
   SectionActionButton,
-} from '../../styles/search';
+} from '../search/styles';
 import { setCallType } from '../../states/contacts/actions';
 
 const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);

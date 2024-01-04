@@ -45,6 +45,14 @@ export const REMOVE_FROM_CASE = 'contact-action/remove-from-case';
 export const CONNECT_TO_CASE_ACTION_FULFILLED = `${CONNECT_TO_CASE}_FULFILLED` as const;
 export const REMOVE_FROM_CASE_ACTION_FULFILLED = `${REMOVE_FROM_CASE}_FULFILLED` as const;
 export const SET_SAVED_CONTACT = 'contact-action/set-saved-contact';
+export const CASE_CONNECTED_TO_CONTACT = 'CASE_CONNECTED_TO_CONTACT';
+
+export const LoadingStatus = {
+  LOADING: 'loading',
+  LOADED: 'loaded',
+} as const;
+
+export type LoadingStatus = typeof LoadingStatus[keyof typeof LoadingStatus];
 
 export type ContactMetadata = {
   startMillis: number;
@@ -58,7 +66,7 @@ export type ContactMetadata = {
     resourceReferralList: DraftResourceReferralState;
     dialogsOpen: { [key: string]: boolean };
   };
-  saveStatus: 'saving' | 'saved';
+  loadingStatus: LoadingStatus;
 };
 
 export type ContactsState = {
@@ -97,11 +105,18 @@ type CheckButtonDataAction = {
   isCallTypeCaller: boolean;
 };
 
+type CaseConnectedToContactAction = {
+  type: typeof CASE_CONNECTED_TO_CONTACT;
+  caseConnectedToContact: Case;
+  contactId: string;
+};
+
 export type ContactsActionType =
   | SaveEndMillisAction
   | PrePopulateFormAction
   | RestoreEntireFormAction
-  | CheckButtonDataAction;
+  | CheckButtonDataAction
+  | CaseConnectedToContactAction;
 
 export type ContactUpdatingAction = {
   type:

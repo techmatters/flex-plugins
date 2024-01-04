@@ -20,9 +20,9 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import { useIdentifierByIdentifier, useProfileProperty } from '../../../states/profile/hooks';
-import { YellowBanner } from '../../../styles/previousContactsBanner';
-import { Bold } from '../../../styles/HrmStyles';
-import { StyledLink } from '../../../styles/search';
+import { YellowBanner } from '../styles';
+import { Bold } from '../../../styles';
+import { StyledLink } from '../../search/styles';
 import { ChannelTypes, channelTypes } from '../../../states/DomainConstants';
 import { newOpenModalAction } from '../../../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils';

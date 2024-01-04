@@ -1,3 +1,8 @@
+variable "helpline" {
+  description = "The human readable helpline name."
+  type        = string
+}
+
 variable "environment" {
   description = "Environment identifier, typically 'production', 'staging' or 'development'"
   type        = string

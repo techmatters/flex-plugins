@@ -16,6 +16,7 @@
 
 import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
+import { LoadingStatus } from './types';
 
 export const selectIsContactCreating = (
   {
@@ -32,4 +33,4 @@ export const selectAnyContactIsSaving = ({
   },
 }: RootState) =>
   contactsBeingCreated.size > 0 ||
-  Object.values(existingContacts).some(({ metadata }) => metadata?.saveStatus === 'saving');
+  Object.values(existingContacts).some(({ metadata }) => metadata?.loadingStatus === LoadingStatus.LOADING);

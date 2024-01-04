@@ -20,7 +20,7 @@ import { Template } from '@twilio/flex-ui';
 import { ArrowDownward } from '@material-ui/icons';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { CLTableHeaderFont, CLHeaderTableCell } from '../../styles/caseList';
+import { TableHeaderFont, HeaderCell } from '../../styles';
 import { ListCasesQueryParams, ListCasesSortDirection } from '../../types/types';
 import * as CaseListSettingsActions from '../../states/caseList/settings';
 import { RootState } from '../../states';
@@ -104,18 +104,18 @@ const CaseListTableHeadCell: React.FC<Props> = ({
     return 'left';
   };
   return (
-    <CLHeaderTableCell
+    <HeaderCell
       style={{ width: width || '8%', cursor: cursor() }}
       align="right"
       variant="head"
       onClick={handleClick}
       scope="col"
     >
-      <CLTableHeaderFont style={{ borderBottom: borderBottom(), whiteSpace: 'nowrap', textAlign: textAlign() }}>
+      <TableHeaderFont style={{ borderBottom: borderBottom(), whiteSpace: 'nowrap', textAlign: textAlign() }}>
         <Template code={localizedText} />
         <span aria-hidden="true">{drawSort()}</span>
-      </CLTableHeaderFont>
-    </CLHeaderTableCell>
+      </TableHeaderFont>
+    </HeaderCell>
   );
 };
 

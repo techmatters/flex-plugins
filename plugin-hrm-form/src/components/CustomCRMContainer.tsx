@@ -22,7 +22,7 @@ import _ from 'lodash';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import TaskView from './TaskView';
-import { Absolute } from '../styles/HrmStyles';
+import { Absolute } from '../styles';
 import { populateCounselors } from '../services/ServerlessService';
 import { populateCounselorsState } from '../states/configuration/actions';
 import { RootState } from '../states';
@@ -35,6 +35,7 @@ import { createContactAsyncAction } from '../states/contacts/saveContact';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { newContact } from '../states/contacts/contactState';
 import { selectAnyContactIsSaving } from '../states/contacts/selectContactSaveStatus';
+import selectCurrentOfflineContact from '../states/contacts/selectCurrentOfflineContact';
 
 type OwnProps = {
   task?: ITask;
@@ -127,14 +128,12 @@ const mapStateToProps = (state: RootState) => {
   } = state;
   const { selectedTaskSid } = flex.view;
   const { isAddingOfflineContact } = routing;
-  const currentOfflineContact = Object.values(activeContacts.existingContacts).find(
-    contact => contact.savedContact.taskId === getOfflineContactTaskSid(),
-  );
+  const currentOfflineContact = selectCurrentOfflineContact(state);
   const hasUnsavedChanges =
     Object.values(activeContacts.existingContacts).some(
       ({ savedContact, draftContact }) => !_.isEqual(savedContact, getUnsavedContact(savedContact, draftContact)),
     ) ||
-    Object.values(connectedCase.tasks).some(
+    Object.values(connectedCase.cases).some(
       ({ caseWorkingCopy }) =>
         caseWorkingCopy.caseSummary || Object.values(caseWorkingCopy.sections).some(section => section),
     ) ||

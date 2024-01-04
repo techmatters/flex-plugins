@@ -15,36 +15,28 @@
  */
 
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import Case from '../case';
-import {
-  StandaloneITask,
-  ListCasesQueryParams,
-  ListCasesFilters,
-  ListCasesSort,
-  Case as CaseType,
-} from '../../types/types';
+import { StandaloneITask, Case as CaseType } from '../../types/types';
 import CaseListTable from './CaseListTable';
-import { CaseListContainer, CenteredContainer, SomethingWentWrongText } from '../../styles/caseList';
-import { listCases } from '../../services/CaseService';
-import { CaseLayout } from '../../styles/case';
-import * as CaseActions from '../../states/case/actions';
+import { ListContainer, CenteredContainer, SomethingWentWrongText } from '../../styles';
+import { CaseLayout } from '../case/styles';
 import * as ConfigActions from '../../states/configuration/actions';
-import { StandaloneSearchContainer } from '../../styles/search';
-import { getCasesMissingVersions } from '../../utils/definitionVersions';
+import { StandaloneSearchContainer } from '../search/styles';
 import { RootState } from '../../states';
-import { undoCaseListSettingsUpdate } from '../../states/caseList/reducer';
-import { dateFilterPayloadFromFilters } from './filters/dateFilters';
 import * as ListContent from '../../states/caseList/listContent';
 import { getHrmConfig } from '../../hrmConfig';
-import { namespace } from '../../states/storeNamespaces';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { newCloseModalAction, newOpenModalAction } from '../../states/routing/actions';
-import ViewContact from '../case/ViewContact';
+import ContactDetails from '../contact/ContactDetails';
+import { DetailsContext } from '../../states/contacts/contactDetails';
+import selectCasesForList from '../../states/caseList/selectCasesForList';
+import selectCaseListSettings from '../../states/caseList/selectCaseListSettings';
+import { CaseListSettingsState } from '../../states/caseList/settings';
+import asyncDispatch from '../../states/asyncDispatch';
 
 export const CASES_PER_PAGE = 10;
 
@@ -55,70 +47,57 @@ const standaloneTask: StandaloneITask = {
 
 type OwnProps = {};
 
+const mapDispatchToProps = dispatch => {
+  return {
+    updateDefinitionVersion: (version: string, definitions: DefinitionVersion) =>
+      dispatch(ConfigActions.updateDefinitionVersion(version, definitions)),
+    fetchCaseList: (settings: CaseListSettingsState, helpline) =>
+      asyncDispatch(dispatch)(ListContent.fetchCaseListAsyncAction(settings, helpline, CASES_PER_PAGE)),
+    openCaseDetails: (caseId: string) =>
+      dispatch(newOpenModalAction({ route: 'case', subroute: 'home', caseId }, standaloneTask.taskSid)),
+    closeCaseDetails: () => dispatch(newCloseModalAction(standaloneTask.taskSid)),
+  };
+};
+
+const mapStateToProps = (state: RootState) => {
+  return {
+    currentSettings: selectCaseListSettings(state).current,
+    routing: selectCurrentTopmostRouteForTask(state, standaloneTask.taskSid) ?? {
+      route: 'case-list',
+      subroute: 'case-list',
+    },
+    ...selectCasesForList(state),
+  };
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const CaseList: React.FC<Props> = ({
-  setConnectedCase,
-  updateDefinitionVersion,
-  currentSettings,
-  fetchCaseListStarted,
-  fetchCaseListSuccess,
-  fetchCaseListError,
   openCaseDetails,
   closeCaseDetails,
-  caseList,
-  caseCount,
+  cases: caseList,
+  count: caseCount,
+  currentSettings,
   fetchError,
   listLoading,
   routing,
+  fetchCaseList,
 }) => {
   const { helpline } = getHrmConfig();
 
-  const fetchCaseList = async (page: number, sort: ListCasesSort, filters: ListCasesFilters) => {
-    try {
-      fetchCaseListStarted();
-      const queryParams: ListCasesQueryParams = {
-        ...sort,
-        offset: page * CASES_PER_PAGE,
-        limit: CASES_PER_PAGE,
-      };
-      const listCasesPayload = {
-        filters: {
-          ...filters,
-          ...dateFilterPayloadFromFilters({
-            createdAt: filters?.createdAt,
-            updatedAt: filters?.updatedAt,
-            followUpDate: filters?.followUpDate,
-          }),
-        },
-        helpline,
-      };
-      const { cases, count } = await listCases(queryParams, listCasesPayload);
-
-      const definitions = await getCasesMissingVersions(cases);
-      definitions.forEach(d => updateDefinitionVersion(d.version, d.definition));
-      fetchCaseListSuccess(cases, count);
-    } catch (error) {
-      console.error(error);
-      undoCaseListSettingsUpdate();
-      fetchCaseListError(error);
-    }
-  };
-
   useEffect(() => {
-    fetchCaseList(currentSettings.page, currentSettings.sort, currentSettings.filter);
+    fetchCaseList(currentSettings, helpline);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentSettings]);
+  }, [currentSettings, helpline]);
 
-  const handleClickViewCase = currentCase => () => {
-    setConnectedCase(currentCase, standaloneTask.taskSid);
-    openCaseDetails();
+  const handleClickViewCase = (currentCase: CaseType) => () => {
+    openCaseDetails(currentCase.id.toString());
   };
 
   const closeCaseView = async () => {
-    // Reload the current page of the list to reflect any updates to the case just being viewed
-    await fetchCaseList(currentSettings.page, currentSettings.sort, currentSettings.filter);
     closeCaseDetails();
   };
 
@@ -145,58 +124,31 @@ const CaseList: React.FC<Props> = ({
     return (
       <StandaloneSearchContainer>
         <CaseLayout>
-          <ViewContact contactId={routing.id} task={standaloneTask} />
+          <ContactDetails
+            contactId={routing.id}
+            enableEditing={true}
+            context={DetailsContext.CASE_DETAILS}
+            task={standaloneTask}
+          />
         </CaseLayout>
       </StandaloneSearchContainer>
     );
   }
   return (
     <>
-      <CaseListContainer>
+      <ListContainer>
         <CaseListTable
           loading={listLoading}
           caseList={caseList}
           caseCount={caseCount}
           handleClickViewCase={handleClickViewCase}
         />
-      </CaseListContainer>
+      </ListContainer>
     </>
   );
 };
 
 CaseList.displayName = 'CaseList';
-
-CaseList.propTypes = {
-  setConnectedCase: PropTypes.func.isRequired,
-  updateDefinitionVersion: PropTypes.func.isRequired,
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    setConnectedCase: (connectedCase, taskId: string) => dispatch(CaseActions.setConnectedCase(connectedCase, taskId)),
-    updateDefinitionVersion: (version: string, definitions: DefinitionVersion) =>
-      dispatch(ConfigActions.updateDefinitionVersion(version, definitions)),
-    undoSettingsUpdate: () => dispatch(undoCaseListSettingsUpdate()),
-    fetchCaseListStarted: () => dispatch(ListContent.fetchCaseListStarted()),
-    fetchCaseListSuccess: (caseList: CaseType[], caseCount: number) =>
-      dispatch(ListContent.fetchCaseListSuccess(caseList, caseCount)),
-    fetchCaseListError: error => dispatch(ListContent.fetchCaseListError(error)),
-    openCaseDetails: () => dispatch(newOpenModalAction({ route: 'case', subroute: 'home' }, standaloneTask.taskSid)),
-    closeCaseDetails: () => dispatch(newCloseModalAction(standaloneTask.taskSid)),
-  };
-};
-
-const mapStateToProps = ({ [namespace]: { caseList, routing } }: RootState) => ({
-  currentSettings: caseList.currentSettings,
-  previousSettings: caseList.previousSettings,
-  routing: getCurrentTopmostRouteForTask(routing, standaloneTask.taskSid) ?? {
-    route: 'case-list',
-    subroute: 'case-list',
-  },
-  ...caseList.content,
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(CaseList);
 
 export default connected;

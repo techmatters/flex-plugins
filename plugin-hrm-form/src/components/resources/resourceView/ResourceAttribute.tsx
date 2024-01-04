@@ -17,8 +17,8 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import { Box, Column } from '../../../styles/HrmStyles';
-import { ResourceAttributeContent, ResourceAttributeDescription } from '../../../styles/ReferrableResources';
+import { Box, Column } from '../../../styles';
+import { ResourceAttributeContent, ResourceAttributeDescription } from '../styles';
 import ExpandableAttributeContent from './ExpandableAttributeContent';
 
 type Props = {

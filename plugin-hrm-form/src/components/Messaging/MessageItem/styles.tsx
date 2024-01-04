@@ -16,7 +16,7 @@
 
 import { styled } from '@twilio/flex-ui';
 
-import { FontOpenSans } from '../../../styles/HrmStyles';
+import { FontOpenSans } from '../../../styles';
 import HrmTheme from '../../../styles/HrmTheme';
 
 export const MessageItemContainer = styled('div')<{ isCounselor: boolean; isGroupedWithPrevious: boolean }>`

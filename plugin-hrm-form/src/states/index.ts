@@ -34,25 +34,23 @@ import { CaseState } from './case/types';
 import { ContactsState } from './contacts/types';
 import {
   caseListBase,
+  caseMergingBannersBase,
   conferencingBase,
   configurationBase,
-  connectedCaseBase,
   contactFormsBase,
   conversationsBase,
   csamReportBase,
   dualWriteBase,
   namespace,
+  profileBase,
   queuesStatusBase,
   referrableResourcesBase,
   routingBase,
-  searchContactsBase,
-  caseMergingBannersBase,
-  profileBase,
 } from './storeNamespaces';
 import { reduce as CaseMergingBannersReducer } from './case/caseBanners';
 
 const reducers = {
-  [searchContactsBase]: SearchFormReducer,
+  searchContacts: SearchFormReducer,
   [queuesStatusBase]: QueuesStatusReducer,
   [caseListBase]: CaseListReducer,
   [configurationBase]: ConfigurationReducer,
@@ -70,23 +68,25 @@ const reducers = {
    * [connectedCaseBase] - this is going to be combined manually, rather than using 'combineReducers', so isn't in this map
    */
 };
-type HrmState = {
+
+export type HrmState = {
   [P in keyof typeof reducers]: ReturnType<typeof reducers[P]>;
-} & { [connectedCaseBase]: CaseState; [contactFormsBase]: ContactsState };
+} & { connectedCase: CaseState; activeContacts: ContactsState };
 
 export type RootState = FlexState & { [namespace]: HrmState };
 const combinedReducers = combineReducers(reducers);
 
 // Combine the reducers
 const reducer = (state: HrmState, action): HrmState => {
+  const stateWithCaseUpdates: HrmState = ConnectedCaseReducer(state, action);
   return {
-    ...combinedReducers(state, action),
+    ...combinedReducers(stateWithCaseUpdates, action),
+    connectedCase: stateWithCaseUpdates.connectedCase,
     /*
-     * ConnectedCaseReducer's signature includes a parameter for global Hrm State as well as the specific CaseState
-     * This makes it incompatible with combineReducers, so instead, we add the case state property with an explicit call to ConnectedCaseReducer, where we specify the extra parameter
+     * ConnectedCaseReducer's signature takes the root HrmState rather than the connectedCase state
+     * This makes it incompatible with combineReducers, so instead, we add the case state property with an explicit call to ConnectedCaseReducer
      */
-    [connectedCaseBase]: ConnectedCaseReducer(state, (state ?? {})[connectedCaseBase], action),
-    [contactFormsBase]: ContactStateReducer(state, (state ?? {})[contactFormsBase], action),
+    activeContacts: ContactStateReducer(state, (state ?? {})[contactFormsBase], action),
   };
 };
 

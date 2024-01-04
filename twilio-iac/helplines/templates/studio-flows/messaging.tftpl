@@ -36,6 +36,7 @@ ${
             "event": "callComplete"
           },
           {
+            "next": "webhook_notify_failed_to_enqueue",
             "event": "failedToEnqueue"
           },
           {
@@ -53,7 +54,29 @@ ${
             "x": 80
           }
         }
-      }
+      },
+    {
+        "name": "webhook_notify_failed_to_enqueue",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 540,
+            "y": 1250
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+          "url": webhook_url_studio_errors
+        }
+      } 
       ],
       "initial_state": "Trigger",
       "flags": {

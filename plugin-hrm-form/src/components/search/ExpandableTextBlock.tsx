@@ -19,7 +19,7 @@ import type { StyledProps } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
 import { useExpandableOnOverflow } from '../../hooks/useExpandableOnOverflow';
-import { StyledLink } from '../../styles/search';
+import { StyledLink } from './styles';
 
 export type ExpandableTextBlockProps = {
   expandLinkText: string;

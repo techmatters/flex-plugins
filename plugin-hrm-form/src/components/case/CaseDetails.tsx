@@ -33,13 +33,13 @@ import {
   CaseDetailsBorder,
   CaseSectionFont,
   ViewButton,
-} from '../../styles/case';
-import { Box } from '../../styles/HrmStyles';
+} from './styles';
+import { Box } from '../../styles';
 import { PermissionActions } from '../../permissions';
 import { getLocaleDateTime } from '../../utils/helpers';
 
 type Props = {
-  caseId: number;
+  caseId: string;
   categories: { [category: string]: string[] };
   counselor: string;
   createdAt: string;
@@ -94,7 +94,6 @@ const CaseDetails: React.FC<Props> = ({
           office={office}
           handlePrintCase={handlePrintCase}
           isOrphanedCase={isOrphanedCase}
-          isCreating={isCreating}
         />
         <div style={{ paddingTop: '15px' }}>
           <CaseTags definitionVersion={definitionVersion} categories={categories} />

@@ -18,9 +18,9 @@
 import type { ITask } from '@twilio/flex-ui';
 import type { CallTypes, DefinitionVersionId } from 'hrm-form-definitions';
 
-import type { DateFilterValue } from '../components/caseList/filters/dateFilters';
 import type { ChannelTypes } from '../states/DomainConstants';
 import type { ResourceReferral } from '../states/contacts/resourceReferral';
+import { DateFilterValue } from '../states/caseList/dateFilters';
 
 export type EntryInfo = {
   id: string;
@@ -82,7 +82,7 @@ export type CaseInfo = {
 
 export type Case = {
   accountSid: any;
-  id: number;
+  id: string;
   status: string;
   helpline: string;
   twilioWorkerId: string;
@@ -186,7 +186,7 @@ export type Contact = {
   queueName: string;
   channelSid: string;
   serviceSid: string;
-  caseId?: number;
+  caseId?: string;
 };
 
 export type SearchContactResult = {
@@ -254,7 +254,6 @@ export type FeatureFlags = {
   enable_upload_documents: boolean; // Enables Case Documents
   enable_post_survey: boolean; // Enables Post-Survey
   enable_contact_editing: boolean; // Enables Editing Contacts
-  enable_case_management: boolean; // Enables Creating Cases and Viewing the Case List
   enable_offline_contact: boolean; // Enables Creating Offline Contacts
   enable_filter_cases: boolean; // Enables Filters at Case List
   enable_sort_cases: boolean; // Enables Sorting at Case List
@@ -278,6 +277,7 @@ export type FeatureFlags = {
   enable_client_profiles: boolean; // Enables Client Profiles
   enable_case_merging: boolean; // Enables adding contacts to existing cases
   enable_confirm_on_browser_close: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
+  enable_separate_timeline_view: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
 };
 /* eslint-enable camelcase */
 
@@ -392,4 +392,6 @@ export type ProfileFlag = {
   createdAt?: string;
   updatedAt?: string;
 };
+
+export type ProfileList = Profile[];
 

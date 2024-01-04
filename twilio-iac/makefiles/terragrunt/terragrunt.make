@@ -54,3 +54,8 @@ plan-all: verify-pre-work plan-all-tg ## Plan all the terragrunt stages in subdi
 
 destroy-all: destroy-all-tg ## Destroy all the terragrunt stages in subdirectories
 
+##@ Terragrunt Utilities
+
+clean: ## Clean all local terragrunt cache dirs
+	find . -type d -name ".terragrunt-cache" -exec rm -rf {} +
+

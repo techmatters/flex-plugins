@@ -19,7 +19,7 @@
  * Should be imported before the components making use of the styled
  */
 
-jest.mock('../styles/HrmStyles', () => ({
+jest.mock('../styles/', () => ({
   Box: 'Box',
   Flex: 'Flex',
   Absolute: 'Absolute',
@@ -89,7 +89,7 @@ jest.mock('../styles/HrmStyles', () => ({
   UploadFileFileName: 'UploadFileFileName',
 }));
 
-jest.mock('../styles/search', () => ({
+jest.mock('../components/search/styles', () => ({
   ConfirmContainer: 'ConfirmContainer',
   BackIcon: 'BackIcon',
   ContactWrapper: 'ContactWrapper',
@@ -147,7 +147,7 @@ jest.mock('../styles/search', () => ({
   StyledCaseResultsHeader: 'StyledCaseResultsHeader',
 }));
 
-jest.mock('../styles/callTypeButtons', () => ({
+jest.mock('../components/callTypeButtons/styles', () => ({
   Container: 'Container',
   Label: 'Label',
   DataCallTypeButton: 'DataCallTypeButton',
@@ -160,7 +160,7 @@ jest.mock('../styles/callTypeButtons', () => ({
   NonDataCallTypeDialogContainer: 'NonDataCallTypeDialogContainer',
 }));
 
-jest.mock('../styles/queuesStatus', () => ({
+jest.mock('../components/queuesStatus/styles', () => ({
   Container: 'Container',
   HeaderContainer: 'HeaderContainer',
   QueuesContainer: 'QueuesContainer',
@@ -172,7 +172,7 @@ jest.mock('../styles/queuesStatus', () => ({
   WaitTimeValue: 'WaitTimeValue',
 }));
 
-jest.mock('../styles/case', () => ({
+jest.mock('../components/case/styles', () => ({
   CaseContainer: 'CaseContainer',
   CaseActionContainer: 'CaseActionContainer',
   CaseActionFormContainer: 'CaseActionFormContainer',
@@ -206,6 +206,6 @@ jest.mock('../styles/case', () => ({
   TimelineFileName: 'TimelineFileName',
 }));
 
-jest.mock('../styles/previousContactsBanner', () => ({
+jest.mock('../components/profile/styles', () => ({
   YellowBanner: 'YellowBanner',
 }));

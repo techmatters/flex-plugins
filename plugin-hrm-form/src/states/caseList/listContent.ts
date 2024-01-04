@@ -16,12 +16,18 @@
 
 // State
 
-import { Case as CaseType, Case } from '../../types/types';
+import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
+
+import { Case as CaseType, ListCasesQueryParams } from '../../types/types';
+import { CaseListSettingsState } from './settings';
+import { listCases } from '../../services/CaseService';
+import { getCasesMissingVersions } from '../../utils/definitionVersions';
+import { dateFilterPayloadFromFilters } from './dateFilters';
 
 export type CaseListContentState = {
   listLoading: boolean;
   fetchError: any;
-  caseList: Case[];
+  caseList: string[];
   caseCount: number;
   caseDetailsOpen: boolean;
 };
@@ -34,81 +40,60 @@ export const caseListContentInitialState = (): CaseListContentState => ({
   caseDetailsOpen: false,
 });
 
-export const FETCH_CASE_LIST_STARTED = 'FETCH_CASE_LIST_STARTED';
+const FETCH_CASE_LIST_ACTION = 'cases/fetch-list';
 
-type FetchCaseListStartAction = { type: typeof FETCH_CASE_LIST_STARTED };
+export const fetchCaseListAsyncAction = createAsyncAction(
+  FETCH_CASE_LIST_ACTION,
+  async ({ sort, page, filter }: CaseListSettingsState, helpline: string, casesPerPage: number) => {
+    const queryParams: ListCasesQueryParams = {
+      ...sort,
+      offset: page * casesPerPage,
+      limit: casesPerPage,
+    };
+    const listCasesPayload = {
+      filters: {
+        ...filter,
+        ...dateFilterPayloadFromFilters({
+          createdAt: filter?.createdAt,
+          updatedAt: filter?.updatedAt,
+          followUpDate: filter?.followUpDate,
+        }),
+      },
+      helpline,
+    };
+    const result = await listCases(queryParams, listCasesPayload);
 
-export const fetchCaseListStarted = (): FetchCaseListStartAction => ({
-  type: FETCH_CASE_LIST_STARTED,
-});
+    const missingDefinitions = await getCasesMissingVersions(result.cases);
+    return { result, missingDefinitions };
+  },
+);
 
-export const fetchCaseListStartReducer = (
-  state: CaseListContentState,
-  action: FetchCaseListStartAction,
-): CaseListContentState => ({ ...state, listLoading: true });
+export const FETCH_CASE_LIST_FULFILLED_ACTION = `${FETCH_CASE_LIST_ACTION}_FULFILLED` as const;
 
-export const FETCH_CASE_LIST_SUCCESS = 'FETCH_CASE_LIST_SUCCESS';
-
-type FetchCaseListSuccessAction = {
-  type: typeof FETCH_CASE_LIST_SUCCESS;
-  payload: { caseList: CaseType[]; caseCount: number };
+export type FetchCaseListFulfilledAction = {
+  type: typeof FETCH_CASE_LIST_FULFILLED_ACTION;
+  payload: {
+    result: { cases: CaseType[]; count: number };
+    missingDefinitions: Awaited<ReturnType<typeof getCasesMissingVersions>>;
+  };
 };
 
-export const fetchCaseListSuccess = (caseList: CaseType[], caseCount: number): FetchCaseListSuccessAction => ({
-  type: FETCH_CASE_LIST_SUCCESS,
-  payload: { caseList, caseCount },
-});
+export const FETCH_CASE_LIST_REJECTED_ACTION = `${FETCH_CASE_LIST_ACTION}_REJECTED` as const;
 
-export const fetchCaseListSuccessReducer = (
-  state: CaseListContentState,
-  action: FetchCaseListSuccessAction,
-): CaseListContentState => {
-  const { caseList, caseCount } = action.payload;
-  return { ...state, caseList, caseCount, listLoading: false, fetchError: undefined };
+export type FetchCaseListRejectedAction = {
+  type: typeof FETCH_CASE_LIST_REJECTED_ACTION;
+  payload: Error;
 };
 
-export const FETCH_CASE_LIST_ERROR = 'FETCH_CASE_LIST_ERROR';
-type CaseListFetchErrorAction = { type: typeof FETCH_CASE_LIST_ERROR; payload: { error: any } };
-
-export const fetchCaseListError = (error: any): CaseListFetchErrorAction => ({
-  type: FETCH_CASE_LIST_ERROR,
-  payload: { error },
-});
-
-export const fetchCaseListErrorReducer = (
-  state: CaseListContentState,
-  action: CaseListFetchErrorAction,
-): CaseListContentState => ({ ...state, listLoading: false, fetchError: action.payload.error });
-
-export const OPEN_CASE_DETAILS = 'OPEN_CASE_DETAILS';
-
-type OpenCaseDetailsAction = { type: typeof OPEN_CASE_DETAILS };
-
-export const openCaseDetails = (): OpenCaseDetailsAction => ({
-  type: OPEN_CASE_DETAILS,
-});
-
-export const openCaseDetailsReducer = (
-  state: CaseListContentState,
-  action: OpenCaseDetailsAction,
-): CaseListContentState => ({ ...state, caseDetailsOpen: true });
-
-export const CLOSE_CASE_DETAILS = 'CLOSE_CASE_DETAILS';
-
-type CloseCaseDetailsAction = { type: typeof CLOSE_CASE_DETAILS };
-
-export const closeCaseDetails = (): CloseCaseDetailsAction => ({
-  type: CLOSE_CASE_DETAILS,
-});
-
-export const closeCaseDetailsReducer = (
-  state: CaseListContentState,
-  action: CloseCaseDetailsAction,
-): CaseListContentState => ({ ...state, caseDetailsOpen: false });
-
-export type CaseListContentStateAction =
-  | FetchCaseListStartAction
-  | FetchCaseListSuccessAction
-  | CaseListFetchErrorAction
-  | OpenCaseDetailsAction
-  | CloseCaseDetailsAction;
+export const listContentReducer = createReducer(caseListContentInitialState(), handleAction => [
+  handleAction(fetchCaseListAsyncAction.pending, (state, action) => {
+    return { ...state, listLoading: true };
+  }),
+  handleAction(fetchCaseListAsyncAction.fulfilled, (state, action) => {
+    const { cases, count } = action.payload.result;
+    return { ...state, caseList: cases.map(c => c.id), caseCount: count, listLoading: false, fetchError: undefined };
+  }),
+  handleAction(fetchCaseListAsyncAction.rejected, (state, action) => {
+    return { ...state, listLoading: false, fetchError: action.payload };
+  }),
+]);

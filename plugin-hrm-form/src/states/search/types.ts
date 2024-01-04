@@ -26,7 +26,6 @@ export const SEARCH_CONTACTS_FAILURE = 'SEARCH_CONTACTS_FAILURE';
 export const SEARCH_CASES_REQUEST = 'SEARCH_CASES_REQUEST';
 export const SEARCH_CASES_SUCCESS = 'SEARCH_CASES_SUCCESS';
 export const SEARCH_CASES_FAILURE = 'SEARCH_CASES_FAILURE';
-export const SEARCH_CASES_UPDATE = 'SEARCH_CASES_UPDATE';
 export const VIEW_PREVIOUS_CONTACTS = 'VIEW_PREVIOUS_CONTACTS';
 
 // types and constants used to construct search form
@@ -38,6 +37,7 @@ export const newSearchFormEntry = {
   dateFrom: '',
   dateTo: '',
   contactNumber: '',
+  helpline: { label: '', value: '' },
 };
 
 export type SearchFormValues = {
@@ -47,16 +47,6 @@ export type SearchFormValues = {
 export type SearchParams = Partial<SearchFormValues> & {
   taskSid?: string;
 };
-
-export const SearchPages = {
-  form: 'form',
-  resultsContacts: 'results.contacts',
-  resultsCases: 'results.cases',
-  details: 'details',
-  case: 'case',
-} as const;
-
-export type SearchPagesType = typeof SearchPages[keyof typeof SearchPages];
 
 export type DetailedSearchContactsResult = {
   count: number;
@@ -113,3 +103,13 @@ export type SearchActionType =
   | SearchCasesSuccessAction
   | SearchCasesFailureAction
   | ViewPreviousContactsAction;
+
+export type SearchResultReferences = {
+  count: number;
+  ids: string[];
+};
+
+export type PreviousContactCounts = {
+  contacts: number;
+  cases: number;
+};
