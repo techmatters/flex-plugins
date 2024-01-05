@@ -2,62 +2,165 @@
   {
     "name": "date",
     "type": "date-input",
-    "label": "Date of Incident",
-    "required": { "value": true, "message": "RequiredFieldError" }
-  },
-  {
-    "name": "duration",
-    "label": "Duration",
-    "type": "select",
-    "options": [
-      { "value": "", "label": "" },
-      { "value": "Ongoing", "label": "Ongoing" },
-      { "value": "Once Off", "label": "Once Off" },
-      { "value": "Other", "label": "Other" }
-    ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "label": "Date",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "location",
     "label": "Location",
     "type": "select",
+    "unknownOption": "",
     "options": [
-      { "value": "", "label": "" },
-      { "value": "HomeOwn", "label": "Home (own)" },
-      { "value": "HomeOther", "label": "Home (other)" },
-      { "value": "EducationalEstablishment", "label": "Educational establishment" },
-      { "value": "Institution", "label": "Institution" },
-      { "value": "Public place", "label": "Public place" },
-      { "value": "Online", "label": "Online" },
-      { "value": "Other", "label": "Other" },
-      { "value": "Unknown", "label": "Unknown" }
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Home (Own)",
+        "label": "Home (Own)"
+      },
+      {
+        "value": "Home (Other)",
+        "label": "Home (Other)"
+      },
+      {
+        "value": "School",
+        "label": "School"
+      },
+      {
+        "value": "Institution",
+        "label": "Institution"
+      },
+      {
+        "value": "Public place",
+        "label": "Public place"
+      },
+      {
+        "value": "Online",
+        "label": "Online"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "duration",
+    "label": "Duration",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Ongoing",
+        "label": "Ongoing"
+      },
+      {
+        "value": "Once Off",
+        "label": "Once Off"
+      },
+      {
+        "value": "Repeated but not ongoing",
+        "label": "Repeated but not ongoing"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "frequency",
+    "label": "Frequency",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "1-2 times a week",
+        "label": "1-2 times a week"
+      },
+      {
+        "value": "More than 2 times a week",
+        "label": "More than 2 times a week"
+      },
+      {
+        "value": "1-2 times a month",
+        "label": "1-2 times a month"
+      },
+      {
+        "value": "More than 2 times a month",
+        "label": "More than 2 times a month"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "isCaregiverAware",
     "label": "Is caregiver aware?",
-    "type": "mixed-checkbox"
+    "type": "checkbox",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "incidentWitnessed",
+    "name": "wasTheIncidentWitnessedByAnyone",
     "label": "Was the incident witnessed by anyone?",
-    "type": "mixed-checkbox"
+    "type": "checkbox",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "abuseReportedElsewhere",
+    "name": "hasAbuseBeenReportedElsewhere",
     "label": "Has abuse been reported elsewhere?",
-    "type": "mixed-checkbox"
+    "type": "checkbox"
   },
   {
-    "name": "whereElseBeenReported",
+    "name": "whereElseTheIncidentHasBeenReported",
     "label": "Where else the incident has been reported?",
-    "type": "input"
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "detailsOfIncident",
+    "label": "Details of Incident",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   }
 ]
-
-
-
-
-
-
