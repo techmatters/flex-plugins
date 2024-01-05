@@ -19,6 +19,7 @@ import { parseFetchError } from '../parseFetchError';
 import * as ProfileService from '../../services/ProfileService';
 import { loadIdentifierByIdentifierAsync } from './identifiers';
 import loadProfileEntryIntoRedux from './loadProfileEntryIntoRedux';
+import { loadProfileListAsync } from './profileList';
 import * as t from './types';
 
 export const PAGE_SIZE = 20;
@@ -323,6 +324,24 @@ export const updateProfileSectionAsync = createAsyncAction(
   (params: UpdateProfileSectionAsyncParams) => params,
 );
 
+export const handleLoadProfileListFulfilledAction = (state: t.ProfilesState, action: any) => {
+  const { profiles } = action.payload;
+  let newState = { ...state };
+  for (const profile of profiles) {
+    const profileUpdate = {
+      ...t.newProfileEntry,
+      data: {
+        ...newState[profile.id]?.data,
+        ...profile,
+      },
+    };
+
+    newState = loadProfileEntryIntoRedux(newState, profile.id, profileUpdate);
+  }
+
+  return newState;
+};
+
 const profilesReducer = (initialState: t.ProfilesState = {}) =>
   createReducer(initialState, handleAction => [
     handleAction(loadProfileAsync.pending, handleLoadProfilePendingAction),
@@ -349,6 +368,7 @@ const profilesReducer = (initialState: t.ProfilesState = {}) =>
     handleAction(updateProfileSectionAsync.pending, handleLoadProfileSectionPendingAction),
     handleAction(updateProfileSectionAsync.rejected, handleLoadProfileSectionRejectedAction),
     handleAction(updateProfileSectionAsync.fulfilled, handleLoadProfileSectionFulfilledAction),
+    handleAction(loadProfileListAsync.fulfilled, handleLoadProfileListFulfilledAction),
   ]);
 
 export default profilesReducer;

@@ -19,7 +19,7 @@ import React from 'react';
 import { Grid } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
-import { SectionDescriptionText } from '../../../../styles/search';
+import { SectionDescriptionText } from '../../../search/styles';
 
 type Props = {
   descriptionKey: string;

@@ -18,9 +18,9 @@ import React from 'react';
 import WarningIcon from '@material-ui/icons/Warning';
 import { FlexBox, Template } from '@twilio/flex-ui';
 
-import { PrivateResourceAttribute } from '../../../styles/ReferrableResources';
+import { PrivateResourceAttribute } from '../styles';
 import ResourceAttribute from './ResourceAttribute';
-import { Column } from '../../../styles/HrmStyles';
+import { Column } from '../../../styles';
 
 type Props = {
   isPrivate: boolean;

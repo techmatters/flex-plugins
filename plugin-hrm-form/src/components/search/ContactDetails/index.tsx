@@ -17,14 +17,13 @@
 /* eslint-disable no-empty-function */
 /* eslint-disable react/require-default-props */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState } from '../../../states';
 import GeneralContactDetails from '../../contact/ContactDetails';
 import ConnectDialog from '../ConnectDialog';
 import { Contact, CustomITask } from '../../../types/types';
-import { loadContact, releaseContact } from '../../../states/contacts/existingContacts';
 import { DetailsContext } from '../../../states/contacts/contactDetails';
 import { namespace } from '../../../states/storeNamespaces';
 
@@ -41,12 +40,8 @@ const mapStateToProps = ({ [namespace]: { activeContacts, configuration } }: Roo
   const definitionVersion = configuration.definitionVersions[contact.rawJson.definitionVersion];
   return { isCallTypeCaller, definitionVersion };
 };
-const mapDispatchToProps = {
-  loadContactIntoState: loadContact,
-  releaseContactFromState: releaseContact,
-};
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(mapStateToProps);
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
@@ -56,20 +51,9 @@ const ContactDetails: React.FC<Props> = ({
   showActionIcons,
   task,
   handleSelectSearchResult,
-  loadContactIntoState,
-  releaseContactFromState,
   isCallTypeCaller,
 }: Props) => {
   const [anchorEl, setAnchorEl] = useState(null);
-
-  useEffect(() => {
-    loadContactIntoState(contact, task.taskSid);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contact]);
-
-  const handleBackToResults = () => {
-    releaseContactFromState(contact.id, task.taskSid);
-  };
 
   const handleCloseDialog = () => {
     setAnchorEl(null);
@@ -103,7 +87,6 @@ const ContactDetails: React.FC<Props> = ({
         contactId={contact.id}
         handleOpenConnectDialog={handleOpenConnectDialog}
         task={task}
-        onClose={handleBackToResults}
         data-testid="ContactDetails"
       />
     </>

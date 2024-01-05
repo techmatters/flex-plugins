@@ -21,31 +21,27 @@ import { CircularProgress } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
-import {
-  Box,
-  BottomButtonBar,
-  StyledNextStepButton,
-  AddedToCaseButton,
-  SaveAndEndButton,
-} from '../../styles/HrmStyles';
+import { Box, BottomButtonBar } from '../../styles';
+import { AddedToCaseButton } from './styles';
+import { StyledNextStepButton, SaveAndEndButton } from '../../styles/buttons';
 import * as RoutingActions from '../../states/routing/actions';
 import { completeTask } from '../../services/formSubmissionHelpers';
-import { hasTaskControl } from '../../utils/transfer';
+import { hasTaskControl } from '../../transfer/transferTaskState';
 import { RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError } from '../../fullStory';
-import { Case, CustomITask, Contact, RouterTask } from '../../types/types';
+import { Case, Contact, CustomITask, RouterTask } from '../../types/types';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
-import { ContactMetadata } from '../../states/contacts/types';
+import { ContactMetadata, LoadingStatus } from '../../states/contacts/types';
 import { AppRoutes } from '../../states/routing/types';
 import AddCaseButton from './AddCaseButton';
 import asyncDispatch from '../../states/asyncDispatch';
 import selectCaseByCaseId from '../../states/case/selectCaseStateByCaseId';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
-import { SuccessReportIcon } from '../../styles/CSAMReport';
+import { SuccessReportIcon } from '../CSAMReport/styles';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => Promise<void>) => () => void;
@@ -184,7 +180,7 @@ const BottomBar: React.FC<
       )}
       {showSubmitButton && (
         <>
-          {featureFlags.enable_case_management && renderCaseButton()}
+          {renderCaseButton()}
 
           <SaveAndEndButton
             roundCorners={true}
@@ -209,7 +205,7 @@ BottomBar.displayName = 'BottomBar';
 const mapStateToProps = (state: RootState, { contactId }: BottomBarProps) => {
   const { draftContact, savedContact, metadata } = selectContactStateByContactId(state, contactId) ?? {};
   const caseForm = selectCaseByCaseId(state, savedContact.caseId ?? '')?.connectedCase || {};
-  const contactIsSaving = metadata?.saveStatus === 'saving';
+  const contactIsSaving = metadata.loadingStatus === LoadingStatus.LOADING;
   return {
     contact: getUnsavedContact(savedContact, draftContact),
     metadata,

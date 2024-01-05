@@ -29,19 +29,18 @@ import {
 } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
 
-import * as TransferHelpers from '../utils/transfer';
+import * as TransferHelpers from './transferTaskState';
 import { transferModes } from '../states/DomainConstants';
 import { recordEvent } from '../fullStory';
-import { loadFormSharedState, saveFormSharedState } from '../utils/sharedState';
 import { transferChatStart } from '../services/ServerlessService';
 import { getHrmConfig } from '../hrmConfig';
 import { RootState } from '../states';
 import { changeRoute } from '../states/routing/actions';
 import { reactivateAseloListeners } from '../conversationListeners';
-import { prepopulateForm } from '../utils/prepopulateForm';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { ContactState } from '../states/contacts/existingContacts';
 import { ChangeRouteMode } from '../states/routing/types';
+import { loadFormSharedState, saveFormSharedState } from './formDataTransfer';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type ActionPayload = { task: ITask };
@@ -96,14 +95,14 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
 
   const { workerSid, counselorName } = setupObject;
 
-  // save current form state as sync document (if there is a form)
+  // save current form state (if there is a form)
   const contact = getStateContactForms(payload.task.taskSid);
   if (!contact) return original(payload);
 
-  const documentName = await saveFormSharedState(contact, payload.task);
+  await saveFormSharedState(contact, payload.task);
 
   // set metadata for the transfer
-  await TransferHelpers.setTransferMeta(payload, documentName, counselorName);
+  await TransferHelpers.setTransferMeta(payload, counselorName);
 
   if (TaskHelper.isCallTask(payload.task)) {
     const disableTransfer = !TransferHelpers.canTransferConference(payload.task);

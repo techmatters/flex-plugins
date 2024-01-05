@@ -29,10 +29,16 @@ import { DetailsContext } from '../../states/contacts/contactDetails';
 import { csamReportBase } from '../../states/storeNamespaces';
 import { RecursivePartial } from '../RecursivePartial';
 import { RootState } from '../../states';
-import { Contact, SearchCaseResult } from '../../types/types';
-import { VALID_EMPTY_CONTACT } from '../testContacts';
-import { DetailedSearchContactsResult, SearchFormValues } from '../../states/search/types';
+import { Contact } from '../../types/types';
+import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
+import {
+  DetailedSearchContactsResult,
+  newSearchFormEntry,
+  PreviousContactCounts,
+  SearchFormValues,
+} from '../../states/search/types';
 import { AppRoutes } from '../../states/routing/types';
+import { ContactState, ExistingContactsState } from '../../states/contacts/existingContacts';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -51,24 +57,43 @@ jest.mock('@twilio/flex-ui', () => ({
   },
 }));
 
+jest.mock('../../states/case/caseBanners', () => ({
+  __esModule: true,
+  selectCaseMergingBanners: jest.fn(() => ({
+    showRemovedFromCaseBanner: true,
+  })),
+}));
+
 function createState(
   taskId,
   {
     searchFormValues,
     currentContact,
     detailsExpanded,
-    previousContacts,
+    previousContactCounts,
     route,
     searchContactsResult,
   }: {
     searchFormValues: SearchFormValues;
     currentContact: Contact;
     detailsExpanded: any;
-    previousContacts: { contacts?: DetailedSearchContactsResult; cases?: SearchCaseResult };
+    previousContactCounts: { contacts: number; cases: number };
     route: AppRoutes;
     searchContactsResult?: DetailedSearchContactsResult;
   },
 ): RecursivePartial<RootState> {
+  const references = searchContactsResult?.contacts.map(c => c.id) || [];
+  const allContactsForState = [...(currentContact ? [currentContact] : []), ...(searchContactsResult?.contacts ?? [])];
+  const existingContacts: ExistingContactsState = Object.fromEntries(
+    allContactsForState.map<[string, ContactState]>(c => [
+      c.id,
+      {
+        savedContact: c,
+        references: new Set(['x']),
+        metadata: VALID_EMPTY_METADATA,
+      },
+    ]),
+  );
   return {
     'plugin-hrm-form': {
       configuration: {
@@ -88,34 +113,28 @@ function createState(
       searchContacts: {
         tasks: {
           [taskId]: {
-            form: searchFormValues || {
-              firstName: '',
-              lastName: '',
-              counselor: { label: '', value: '' },
-              phoneNumber: '',
-              dateFrom: '',
-              dateTo: '',
-            },
-            previousContacts,
+            form: searchFormValues || newSearchFormEntry,
+            previousContactCounts,
             detailsExpanded: detailsExpanded || {},
             isRequesting: false,
             error: null,
-            searchContactsResult,
+            searchContactsResult: references
+              ? {
+                  count: searchContactsResult?.count,
+                  ids: references,
+                }
+              : undefined,
           },
         },
       },
       activeContacts: {
-        existingContacts: {
-          'TEST CONTACT ID': {
-            references: ['1'],
-            savedContact: currentContact,
-          },
-        },
+        existingContacts,
         contactDetails: {
           [DetailsContext.CONTACT_SEARCH]: {
             detailsExpanded: {},
           },
         },
+        removedCaseId: {},
       },
       [csamReportBase]: {
         contacts: {},
@@ -160,13 +179,14 @@ test('<Search> should display <SearchForm />', async () => {
     dateFrom: '2020-03-10',
     dateTo: '2020-03-15',
     contactNumber: undefined,
+    helpline: { label: '', value: '' },
   };
   const task = { taskSid: 'WT123', attributes: { preEngagementData: {} } };
 
   const initialState = createState(task.taskSid, {
     searchFormValues,
     detailsExpanded,
-    previousContacts: undefined,
+    previousContactCounts: undefined,
     currentContact: undefined,
     route: { route: 'search', subroute: 'form' },
   });
@@ -197,6 +217,7 @@ test('<Search> should display <SearchForm /> with previous contacts checkbox', a
     dateFrom: '2020-03-10',
     dateTo: '2020-03-15',
     contactNumber: undefined,
+    helpline: { label: '', value: '' },
   };
   const task = {
     taskSid: 'WT123',
@@ -207,15 +228,15 @@ test('<Search> should display <SearchForm /> with previous contacts checkbox', a
     },
   };
 
-  const previousContacts = {
-    contacts: { count: 3, contacts: [] },
-    cases: { count: 1, cases: [] },
+  const previousContactCounts: PreviousContactCounts = {
+    contacts: 3,
+    cases: 1,
   };
 
   const initialState = createState(task.taskSid, {
     searchFormValues,
     detailsExpanded,
-    previousContacts,
+    previousContactCounts,
     currentContact: undefined,
     route: { route: 'search', subroute: 'form' },
   });
@@ -301,7 +322,7 @@ test('<Search> should display <ContactDetails />', async () => {
     currentContact,
     detailsExpanded,
     searchFormValues: undefined,
-    previousContacts: undefined,
+    previousContactCounts: undefined,
     searchContactsResult: { contacts: [currentContact], count: 1 },
     route: { route: 'contact', subroute: 'view', id: currentContact.id },
   });
@@ -318,5 +339,5 @@ test('<Search> should display <ContactDetails />', async () => {
   expect(screen.queryByTestId('ContactDetails')).toBeInTheDocument();
   expect(screen.queryByTestId('SearchForm')).not.toBeInTheDocument();
   expect(screen.queryByRole('button', { name: 'SearchResultsIndex-BackToResults' })).toBeDefined();
-  expect(store.getActions().length).toBe(1);
+  expect(store.getActions().length).toBe(0);
 });

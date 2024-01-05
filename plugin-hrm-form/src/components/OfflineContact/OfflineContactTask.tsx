@@ -21,6 +21,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState } from '../../states';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
+import { Box, HeaderContainer } from '../../styles';
 import {
   OfflineContactTaskContent,
   OfflineContactTaskFirstLine,
@@ -28,9 +29,7 @@ import {
   OfflineContactTaskIconContainer,
   OfflineContactTaskIcon,
   OfflineContactTaskButton,
-  Box,
-  HeaderContainer,
-} from '../../styles/HrmStyles';
+} from './styles';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';

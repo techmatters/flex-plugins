@@ -18,8 +18,8 @@ import promiseMiddleware from 'redux-promise-middleware';
 
 import { connectToCase, updateContactInHrm } from '../../../services/ContactService';
 import { completeTask, submitContactForm } from '../../../services/formSubmissionHelpers';
-import { Case, CustomITask, Contact } from '../../../types/types';
-import { ContactMetadata, ContactsState } from '../../../states/contacts/types';
+import { Case, Contact, CustomITask } from '../../../types/types';
+import { ContactMetadata, ContactsState, LoadingStatus } from '../../../states/contacts/types';
 import {
   connectToCaseAsyncAction,
   saveContactReducer,
@@ -28,6 +28,8 @@ import {
 } from '../../../states/contacts/saveContact';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
 import { initialState } from '../../../states/contacts/reducer';
+import { getCase } from '../../../services/CaseService';
+import { newContactMetaData } from '../../../states/contacts/contactState';
 
 jest.mock('../../../services/ContactService');
 jest.mock('../../../services/CaseService');
@@ -37,12 +39,14 @@ jest.mock('../../../components/case/Case');
 const mockUpdateContactInHrm = updateContactInHrm as jest.Mock<ReturnType<typeof updateContactInHrm>>;
 const mockSubmitContactForm = submitContactForm as jest.Mock<ReturnType<typeof submitContactForm>>;
 const mockConnectToCase = connectToCase as jest.Mock<ReturnType<typeof connectToCase>>;
+const mockGetCase = connectToCase as jest.Mock<ReturnType<typeof getCase>>;
 const mockCompleteTask = completeTask as jest.Mock<ReturnType<typeof completeTask>>;
 
 beforeEach(() => {
   mockUpdateContactInHrm.mockReset();
   mockSubmitContactForm.mockReset();
   mockConnectToCase.mockReset();
+  mockGetCase.mockReset();
   mockCompleteTask.mockReset();
 });
 
@@ -89,11 +93,11 @@ const baseContact: Contact = {
 };
 
 const task = <CustomITask>{ taskSid: 'mock task' };
-const metadata = {} as ContactMetadata;
+const baseMetadata = { ...VALID_EMPTY_METADATA } as ContactMetadata;
 
 const baseCase: Case = {
   accountSid: 'test-id',
-  id: 213,
+  id: '213',
   helpline: 'za',
   status: 'test-st',
   twilioWorkerId: 'WE2xxx1',
@@ -115,7 +119,7 @@ const baseState: ContactsState = {
   },
 } as const;
 
-const dispatch = jest.fn();
+// const dispatch = jest.fn();
 
 describe('actions', () => {
   test('Calls the updateContactsFormInHrmAsyncAction action, and update a contact', async () => {
@@ -129,8 +133,7 @@ describe('actions', () => {
     const state = getState();
 
     expect(updateContactInHrm).toHaveBeenCalledWith(baseContact.id, { conversationDuration: 1234 });
-
-    expect(state).toStrictEqual({
+    const expected: ContactsState = {
       ...baseState,
       existingContacts: {
         [baseContact.id]: {
@@ -142,81 +145,48 @@ describe('actions', () => {
           },
           metadata: {
             ...startingContactState.metadata,
-            saveStatus: 'saving',
+            loadingStatus: LoadingStatus.LOADING,
           },
         },
         [mockSavedContact.id]: {
           ...state.existingContacts[mockSavedContact.id],
         },
       },
+    };
+
+    expect(state).toStrictEqual(expected);
+  });
+
+  test('connectToCaseAsyncAction action connects contact to case and retrieves the connected case to add to redux along with the updated contact', async () => {
+    const { dispatch, getState } = testStore(baseState);
+    mockGetCase.mockResolvedValue(baseCase);
+    const connectedContact = { ...baseContact, caseId: baseCase.id };
+    mockConnectToCase.mockResolvedValue(connectedContact);
+    // Not sure why the extra cast to any is needed here but not for the other actions?
+    await (dispatch(connectToCaseAsyncAction(baseContact.id, baseCase.id) as any) as unknown);
+
+    expect(connectToCase).toHaveBeenCalledWith(baseContact.id, baseCase.id);
+    expect(getCase).toHaveBeenCalledWith(baseCase.id);
+    const { metadata, savedContact } = getState().existingContacts[baseContact.id];
+    expect(metadata.loadingStatus).toBe(LoadingStatus.LOADED);
+    expect(savedContact).toStrictEqual(connectedContact);
+  });
+  describe('submitContactFormAsyncAction', () => {
+    test('Action calls the submitContactForm helper', async () => {
+      submitContactFormAsyncAction(task, baseContact, baseMetadata, baseCase);
+      expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, baseMetadata, baseCase);
     });
-  });
 
-  /**
-   * Commenting this out for now.
-   * TODO: Investigate:
-   *
-   * 1. connectToCaseAsyncAction calls `await getCase(caseId)`
-   * 2. which calls `await fetchHrmApi(params);`
-   * 3. which calls `await fetch(url, options);`
-   * 4. which calls `getHrmConfig()`
-   * 5. which returns `cachedConfig.hrm;`, but `cachedConfig` is undefined
-   *
-   * None of the actions that calls `await getCase(caseId)` have unit tests,
-   * probably because of this issue.
-   */
-  // test('Calls the connectToCaseAsyncAction action, and create a contact, connect contact to case, and complete task', async () => {
-  //   dispatch(connectToCaseAsyncAction(baseContact.id, baseCase.id));
-
-  //   expect(connectToCase).toHaveBeenCalledWith(baseContact.id, baseCase.id);
-  // });
-
-  test('Calls the submitContactFormAsyncAction action, and create a contact', async () => {
-    submitContactFormAsyncAction(task, baseContact, metadata, baseCase);
-    expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, metadata, baseCase);
-  });
-
-  test('Nothing currently for that ID - adds the contact with provided reference and blank categories state', () => {
-    const newState = boundSaveContactReducer(
-      {
-        ...baseState,
-        existingContacts: {
-          [baseContact.id]: {
-            savedContact: baseContact,
-            references: new Set(['TEST_REFERENCE']),
-            metadata: VALID_EMPTY_METADATA,
-          },
-        },
-      } as ContactsState,
-      updateContactInHrmAsyncAction(baseContact, { conversationDuration: 1234 }),
-    );
-    const newContactState = newState.existingContacts[baseContact.id];
-    expect(newContactState.savedContact).toStrictEqual(baseContact);
-    expect(newContactState.references.size).toStrictEqual(1);
-    expect(newContactState.references.has('TEST_REFERENCE')).toBeTruthy();
-    expect(newContactState.metadata).toStrictEqual(VALID_EMPTY_METADATA);
-  });
-
-  test('Same contact currently loaded for that ID with a different reference - leaves contact the same and adds the reference', () => {
-    const newState = boundSaveContactReducer(
-      {
-        ...baseState,
-        existingContacts: {
-          ...baseState.existingContacts,
-          [baseContact.id]: {
-            savedContact: baseContact,
-            references: new Set(['TEST_FIRST_REFERENCE', 'TEST_SECOND_REFERENCE']),
-            metadata: VALID_EMPTY_METADATA,
-          },
-        },
-      },
-      updateContactInHrmAsyncAction(baseContact, { conversationDuration: 1234 }),
-    );
-    const newContactState = newState.existingContacts[baseContact.id];
-    expect(newContactState.savedContact).toStrictEqual(baseContact);
-    expect(newContactState.references.size).toStrictEqual(2);
-    expect(newContactState.references.has('TEST_FIRST_REFERENCE')).toBeTruthy();
-    expect(newContactState.references.has('TEST_SECOND_REFERENCE')).toBeTruthy();
-    expect(newContactState.references.size).toBe(2);
+    test('Updates contact in redux and sets metadata', async () => {
+      const { dispatch, getState } = testStore(baseState);
+      mockGetCase.mockResolvedValue(baseCase);
+      const updatedContact = { ...baseContact, helpline: 'new helpline' };
+      mockSubmitContactForm.mockResolvedValue(updatedContact);
+      // Not sure why the extra cast to any is needed here but not for the other actions?
+      await (dispatch(submitContactFormAsyncAction(task, baseContact, baseMetadata, baseCase) as any) as unknown);
+      const { metadata, savedContact } = getState().existingContacts[baseContact.id];
+      expect(metadata).toStrictEqual({ ...newContactMetaData(false), loadingStatus: LoadingStatus.LOADED });
+      expect(savedContact).toStrictEqual(updatedContact);
+    });
   });
 });

@@ -20,9 +20,13 @@ import { endOfDay, format, parse } from 'date-fns';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 
-import { Box, Flex, FormDateInput, FormLabel, FormRadioInput } from '../../../styles/HrmStyles';
 import { DateFilterOption, DateFilterOptions, isDivider, isExistsDateFilter, isFixedDateRange } from './dateFilters';
 import {
+  Box,
+  Flex,
+  FormDateInput,
+  FormLabel,
+  FormRadioInput,
   DialogArrow,
   FiltersDialog,
   FiltersApplyButton,
@@ -32,7 +36,7 @@ import {
   MultiSelectButton,
   MultiSelectUnorderedList,
   DateErrorMessage,
-} from '../../../styles/caseList/filters';
+} from '../../../styles';
 import { DateFilterValue, isExistsDateFilterValue } from '../../../states/caseList/dateFilters';
 
 type ReactHookFormValues = {

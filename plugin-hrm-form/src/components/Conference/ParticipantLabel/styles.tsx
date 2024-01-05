@@ -17,7 +17,7 @@
 import React from 'react';
 import { styled } from '@twilio/flex-ui';
 
-import { FontOpenSans } from '../../../styles/HrmStyles';
+import { FontOpenSans } from '../../../styles';
 
 export const ParticipantLabelText = styled(FontOpenSans)`
   font-size: 0.875rem;

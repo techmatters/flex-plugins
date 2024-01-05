@@ -20,21 +20,22 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import {
-  viewPreviousContacts as viewPreviousContactsAction,
-  searchContacts as searchContactsAction,
   searchCases as searchCasesAction,
+  searchContacts as searchContactsAction,
+  viewPreviousContacts as viewPreviousContactsAction,
 } from '../../../states/search/actions';
 import { RootState } from '../../../states';
-import { CONTACTS_PER_PAGE, CASES_PER_PAGE } from '../../search/SearchResults';
-import { YellowBanner } from '../../../styles/previousContactsBanner';
-import { Bold } from '../../../styles/HrmStyles';
-import { StyledLink } from '../../../styles/search';
+import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../search/SearchResults';
+import { YellowBanner } from '../styles';
+import { Bold } from '../../../styles';
+import { StyledLink } from '../../search/styles';
 import { ChannelTypes, channelTypes } from '../../../states/DomainConstants';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
-import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils';
+import { getContactValueTemplate, getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
 import { CustomITask, isTwilioTask } from '../../../types/types';
-import { namespace } from '../../../states/storeNamespaces';
+import { selectCounselorsHash } from '../../../states/configuration/selectCounselorsHash';
+import selectPreviousContactCounts from '../../../states/search/selectPreviousContactCounts';
 
 type OwnProps = {
   task: CustomITask;
@@ -44,7 +45,7 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const PreviousContactsBanner: React.FC<Props> = ({
-  previousContacts,
+  previousContactCounts,
   task,
   viewPreviousContacts,
   searchContacts,
@@ -85,16 +86,16 @@ const PreviousContactsBanner: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    if (previousContacts !== undefined) return;
+    if (previousContactCounts !== undefined) return;
 
     performSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [previousContacts]);
+  }, [previousContactCounts]);
 
   // Ugh. The previous contacts count is off by one because we immediately create a contact when a task is created.
   // contacts should really have a status so we can filter out the "active" contact on the db side.
-  const contactsCount = previousContacts?.contacts?.count || 0;
-  const casesCount = previousContacts?.cases?.count || 0;
+  const contactsCount = previousContactCounts?.contacts || 0;
+  const casesCount = previousContactCounts?.cases || 0;
 
   // We immediately create a contact when a task is created, so we don't want to show the banner
   const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
@@ -152,14 +153,11 @@ const PreviousContactsBanner: React.FC<Props> = ({
 PreviousContactsBanner.displayName = 'PreviousContactsBanner';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const { searchContacts, configuration } = state[namespace];
   const { taskSid } = task;
-  const taskSearchState = searchContacts.tasks[taskSid];
-  const { counselors } = configuration;
 
   return {
-    previousContacts: taskSearchState.previousContacts,
-    counselorsHash: counselors.hash,
+    previousContactCounts: selectPreviousContactCounts(state, taskSid),
+    counselorsHash: selectCounselorsHash(state),
   };
 };
 

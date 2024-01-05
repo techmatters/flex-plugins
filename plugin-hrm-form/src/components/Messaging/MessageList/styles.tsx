@@ -16,7 +16,7 @@
 
 import { styled } from '@twilio/flex-ui';
 
-import { FontOpenSans } from '../../../styles/HrmStyles';
+import { FontOpenSans } from '../../../styles';
 
 export const MessageListContainer = styled('div')`
   flex-direction: column;

@@ -43,7 +43,7 @@ import { setUpReferrableResources } from './components/resources/setUpReferrable
 import { subscribeNewMessageAlertOnPluginInit } from './notifications/newMessage';
 import { subscribeReservedTaskAlert } from './notifications/reservedTask';
 import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
-import { setupConferenceComponents, setUpConferenceActions } from './conference';
+import { setUpConferenceActions, setupConferenceComponents } from './conference';
 import { setUpTransferActions } from './transfer/setUpTransferActions';
 import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
@@ -114,7 +114,8 @@ const setUpComponents = (
     Channels.setUpIncomingTransferMessage();
   }
 
-  if (featureFlags.enable_case_management) Components.setUpCaseList();
+  Components.setUpCaseList();
+  if (featureFlags.enable_client_profiles) Components.setUpClientProfileList();
 
   if (!Boolean(setupObject.helpline)) Components.setUpDeveloperComponents(translateUI); // utilities for developers only
 

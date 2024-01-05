@@ -78,15 +78,11 @@ export const NewCaseSectionSubroutes = {
   CaseSummary: 'caseSummary',
 } as const;
 
-const OtherCaseRoutes = {
-  CasePrintView: 'case-print-view',
-} as const;
-
 export type CaseSectionSubroute = typeof NewCaseSectionSubroutes[keyof typeof NewCaseSectionSubroutes];
 
 export const NewCaseSubroutes = Object.freeze({
   ...NewCaseSectionSubroutes,
-  ...OtherCaseRoutes,
+  CasePrintView: 'case-print-view',
 });
 
 export enum CaseItemAction {
@@ -98,6 +94,17 @@ export enum CaseItemAction {
 type CaseListRoute = RouteWithModalSupport & {
   route: 'case-list';
   subroute: 'case-list';
+};
+
+type ProfileListRoute = RouteWithModalSupport & {
+  route: 'profiles-list';
+  subroute: 'profiles-list';
+};
+
+type ProfileHomeRoute = RouteWithModalSupport & {
+  route: 'profile';
+  subroute: 'home';
+  profileId: Profile['id'];
 };
 
 type CaseCoreRoute = RouteWithContext & {
@@ -130,8 +137,13 @@ export type ViewCaseSectionRoute = CaseSectionRoute & {
   id: string;
 };
 
+export type CaseTimelineRoute = CaseCoreRoute & {
+  subroute: 'timeline';
+  page: number;
+};
+
 export type CasePrintRoute = CaseCoreRoute & {
-  subroute: typeof OtherCaseRoutes.CasePrintView;
+  subroute: 'case-print-view';
 };
 
 export type CaseRoute =
@@ -139,7 +151,8 @@ export type CaseRoute =
   | EditCaseSectionRoute
   | ViewCaseSectionRoute
   | CaseHomeRoute
-  | CasePrintRoute;
+  | CasePrintRoute
+  | CaseTimelineRoute;
 
 export const PROFILE_TABS = {
   cases: 'cases',
@@ -216,12 +229,13 @@ type OtherRoutes =
   | SearchRoute
   | ContactRoute
   | CaseListRoute
+  | ProfileListRoute
   | ProfileRoute
   | ProfileEditRoute
   | ProfileSectionEditRoute;
 
 // The different routes we have in our app
-export type AppRoutes = CaseRoute | OtherRoutes;
+export type AppRoutes = CaseRoute | ProfileHomeRoute | OtherRoutes;
 
 export function isRouteWithModalSupport(appRoute: any): appRoute is RouteWithModalSupport {
   return ['tabbed-forms', 'case', 'case-list', 'contact', 'profile', 'search', 'select-call-type'].includes(
@@ -234,7 +248,8 @@ export const isCaseRoute = (route: AppRoutes): route is CaseRoute => route?.rout
 export enum ChangeRouteMode {
   Push = 'push',
   Replace = 'replace',
-  Reset = 'reset',
+  ResetModal = 'reset-modal',
+  ResetRoute = 'reset-route',
 }
 
 type ChangeRouteAction = {

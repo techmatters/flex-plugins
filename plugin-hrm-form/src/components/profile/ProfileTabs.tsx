@@ -18,15 +18,14 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Tab as TwilioTab, Template } from '@twilio/flex-ui';
 
-import { Box } from '../../styles/HrmStyles';
-import { useProfile } from '../../states/profile/hooks';
+import { useProfile, useProfileLoader } from '../../states/profile/hooks';
 import * as RoutingTypes from '../../states/routing/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import * as RoutingActions from '../../states/routing/actions';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileRoute } from '../../states/routing/types';
-import { StyledTabs } from '../../styles/search'; // just stealing from search until we have a centralized tab style
+import { StyledTabs } from '../search/styles'; // just stealing from search until we have a centralized tab style
 import NavigableContainer from '../NavigableContainer';
 import ProfileCases from './ProfileCases';
 import ProfileContacts from './ProfileContacts';
@@ -60,10 +59,12 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfileTab }) => {
-  const { profile: { contactsCount, casesCount } = {} } = useProfile({ profileId, shouldAutoload: true });
+  const { profile: { contactsCount, casesCount } = {} } = useProfile({ profileId });
+  useProfileLoader({ profileId });
+
   const tabs = [
     {
-      label: 'Client',
+      label: <Template code="Profile-ClientTab" />,
       key: 'details',
       renderComponent: () => <ProfileDetails profileId={profileId} task={task} />,
     },

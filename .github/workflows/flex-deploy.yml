@@ -72,16 +72,28 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      # Set ENVIRONMENT_NAME
+      - name: Production Environment
+        if: inputs.environment_code == 'PROD'
+        run: echo "ENVIRONMENT_NAME=production" >> $GITHUB_ENV
+
+      - name: Staging Environment
+        if: inputs.environment_code == 'STG'
+        run: echo "ENVIRONMENT_NAME=staging" >> $GITHUB_ENV
+
+      - name: Development Environment
+        if: inputs.environment_code == 'DEV'
+        run: echo "ENVIRONMENT_NAME=development" >> $GITHUB_ENV
       - name: Set Twilio account SID
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
-          ssm_parameter: "/${{inputs.environment_code}}/twilio/${{inputs.helpline_code}}/account_sid"
+          ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/twilio/${{inputs.helpline_code}}/account_sid"
           env_variable_name: "TWILIO_ACCOUNT_SID"
 
       - name: Set Twilio Auth Token
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
-          ssm_parameter: "/${{inputs.environment_code}}/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
+          ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
           env_variable_name: "TWILIO_AUTH_TOKEN"
 
       # Call main-action to compile and deploy secrets.AS_DEV_ACCOUNT_SID

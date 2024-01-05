@@ -17,3 +17,5 @@
 export * from './useIdentifier';
 export * from './useProfile';
 export * from './useProfileFlags';
+export * from './useProfileLoader';
+export * from './useProfileProperty';

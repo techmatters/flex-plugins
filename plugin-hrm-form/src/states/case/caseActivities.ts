@@ -121,7 +121,7 @@ const connectedContactActivities = (caseContacts: Contact[]): ConnectedCaseActiv
           twilioWorkerId: cc.twilioWorkerId,
           channel,
           callType: cc.rawJson.callType,
-          showViewButton: Boolean(cc.finalizedAt),
+          isDraft: !cc.finalizedAt,
         };
       } catch (err) {
         console.warn(`Error processing connected contact, excluding from data`, cc, err);
@@ -141,6 +141,11 @@ export const getActivitiesFromCase = (sourceCase: Case, formDefs: DefinitionVers
 export const getActivitiesFromContacts = (sourceContacts: Contact[]): Activity[] => {
   return connectedContactActivities(sourceContacts);
 };
+
+export const getActivityCount = (sourceCase: Case): number =>
+  (sourceCase?.info?.counsellorNotes?.length ?? 0) +
+  (sourceCase?.info?.referrals?.length ?? 0) +
+  (sourceCase?.connectedContacts?.length ?? 0);
 
 /**
  * Sort activities from most recent to oldest.

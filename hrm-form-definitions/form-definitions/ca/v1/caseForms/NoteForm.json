@@ -11,5 +11,10 @@
     "name": "counsellingManagerInformed",
     "label": "Did you inform the Counselling Manager about this referral form? (CM team must be informed once referral is complete)",
     "type": "checkbox"
+    },
+    {
+      "name": "cmSignOff",
+      "label": "Sign off from Counselling Manager (CM use only)",
+      "type": "input"
     }
   ]

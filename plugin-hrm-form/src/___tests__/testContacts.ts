@@ -17,7 +17,7 @@
 import { callTypes } from 'hrm-form-definitions';
 
 import { Contact } from '../types/types';
-import { ContactMetadata } from '../states/contacts/types';
+import { ContactMetadata, LoadingStatus } from '../states/contacts/types';
 import { ReferralLookupStatus } from '../states/contacts/resourceReferral';
 
 export const VALID_EMPTY_CONTACT: Contact = {
@@ -65,5 +65,5 @@ export const VALID_EMPTY_METADATA: ContactMetadata = {
     resourceReferralList: { resourceReferralIdToAdd: undefined, lookupStatus: ReferralLookupStatus.NOT_STARTED },
     dialogsOpen: {},
   },
-  saveStatus: 'saved',
+  loadingStatus: LoadingStatus.LOADED,
 };

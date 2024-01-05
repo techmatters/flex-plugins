@@ -21,20 +21,28 @@ import { namespace } from '../storeNamespaces';
 
 const SHOW_REMOVED_FROM_CASE_BANNER = 'case-merging-banners/show-removed-from-case-banner';
 
-export const showRemovedFromCaseBannerAction = createAction(SHOW_REMOVED_FROM_CASE_BANNER, (contactId: string) => ({
-  contactId,
-  banners: {
-    showConnectedToCaseBanner: false,
-    showRemovedFromCaseBanner: true,
-  },
-}));
+export const showRemovedFromCaseBannerAction = createAction(
+  SHOW_REMOVED_FROM_CASE_BANNER,
+  (contactId: string, caseId?: string) => ({
+    contactId,
+    caseId,
+    banners: {
+      showConnectedToCaseBanner: false,
+      showRemovedFromCaseBanner: true,
+    },
+  }),
+);
 
-export const closeRemovedFromCaseBannerAction = createAction(SHOW_REMOVED_FROM_CASE_BANNER, (contactId: string) => ({
-  contactId,
-  banners: {
-    showRemovedFromCaseBanner: false,
-  },
-}));
+export const closeRemovedFromCaseBannerAction = createAction(
+  SHOW_REMOVED_FROM_CASE_BANNER,
+  (contactId: string, caseId?: string) => ({
+    contactId,
+    caseId,
+    banners: {
+      showRemovedFromCaseBanner: false,
+    },
+  }),
+);
 
 type CaseMergingBannersAction =
   | ReturnType<typeof showRemovedFromCaseBannerAction>
@@ -43,6 +51,7 @@ type CaseMergingBannersAction =
 type CaseMergingBannersState = {
   [contactId: string]: {
     showRemovedFromCaseBanner: boolean;
+    caseId: string;
   };
 };
 
@@ -58,15 +67,17 @@ export const selectCaseMergingBanners = (
     showRemovedFromCaseBanner: Boolean(
       !connected && state[namespace].caseMergingBanners[contactId]?.showRemovedFromCaseBanner,
     ),
+    caseId: state[namespace].caseMergingBanners[contactId]?.caseId,
   };
 };
 const mergeResultPayloadIntoState = (state, action: CaseMergingBannersAction) => {
-  const { contactId, banners } = action.payload;
+  const { contactId, banners, caseId } = action.payload;
 
   return {
     ...state,
     [contactId]: {
       ...state[contactId],
+      caseId,
       ...banners,
     },
   };

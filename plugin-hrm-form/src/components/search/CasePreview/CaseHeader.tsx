@@ -20,15 +20,8 @@ import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import { FolderOutlined } from '@material-ui/icons';
 
-import {
-  SubtitleLabel,
-  SubtitleValue,
-  StyledLink,
-  PreviewHeaderText,
-  PreviewRow,
-  SummaryText,
-} from '../../../styles/search';
-import { Flex } from '../../../styles/HrmStyles';
+import { SubtitleLabel, SubtitleValue, StyledLink, PreviewHeaderText, PreviewRow, SummaryText } from '../styles';
+import { Flex } from '../../../styles';
 import { getTemplateStrings } from '../../../hrmConfig';
 import ConnectToCaseButton from '../../case/ConnectToCaseButton';
 
@@ -67,7 +60,7 @@ const CaseHeader: React.FC<Props> = ({
 
   return (
     <div>
-      <PreviewRow>
+      <PreviewRow style={{ paddingTop: '5px' }}>
         <Flex justifyContent="space-between" width="100%">
           <Flex alignItems="center" style={{ minWidth: 'fit-content' }}>
             {!isOrphanedCase && (

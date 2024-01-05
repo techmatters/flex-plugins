@@ -17,23 +17,23 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { format } from 'date-fns';
-import { Actions, Insights, Template, Icon } from '@twilio/flex-ui';
+import { Actions, Icon, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
-import { Flex, Box, Row } from '../../styles/HrmStyles';
+import { Flex, Box, Row } from '../../styles';
 import {
-  CSAMReportEntry,
-  isS3StoredTranscript,
-  isS3StoredRecording,
-  isTwilioStoredMedia,
   ContactRawJson,
+  CSAMReportEntry,
   CustomITask,
+  isS3StoredRecording,
+  isS3StoredTranscript,
+  isTwilioStoredMedia,
   StandaloneITask,
 } from '../../types/types';
-import { ContactAddedFont, SectionActionButton, SectionValueText, ContactDetailsIcon } from '../../styles/search';
+import { ContactAddedFont, SectionActionButton, SectionValueText, ContactDetailsIcon } from '../search/styles';
 import ContactDetailsSection from './ContactDetailsSection';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';
@@ -43,8 +43,8 @@ import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/Co
 import { RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getPermissionsForContact, getPermissionsForViewingIdentifiers, PermissionActions } from '../../permissions';
-import { createDraft, ContactDetailsRoute } from '../../states/contacts/existingContacts';
-import { TranscriptSection, RecordingSection } from './MediaSection';
+import { ContactDetailsRoute, createDraft } from '../../states/contacts/existingContacts';
+import { RecordingSection, TranscriptSection } from './MediaSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import type { ResourceReferral } from '../../states/contacts/resourceReferral';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
@@ -52,6 +52,11 @@ import { configurationBase, contactFormsBase, namespace } from '../../states/sto
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { isRouteWithContext } from '../../states/routing/types';
+import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
+import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
+import { selectCaseMergingBanners } from '../../states/case/caseBanners';
+import InfoIcon from '../caseMergingBanners/InfoIcon';
+import { BannerContainer, Text } from '../../styles/banners';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -117,6 +122,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
   enableEditing,
   canViewTwilioTranscript,
   createDraftCsamReport,
+  task,
+  showRemovedFromCaseBanner,
 }) {
   const version = savedContact?.rawJson.definitionVersion;
 
@@ -146,7 +153,10 @@ const ContactDetailsHome: React.FC<Props> = function ({
     updatedAt,
     updatedBy,
     rawJson,
+    caseId,
   } = savedContact;
+
+  const isDraft = !savedContact.finalizedAt;
 
   const { callType, categories } = rawJson;
 
@@ -176,9 +186,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   // Format the obtained information
   const isDataCall = !isNonDataCallType(callType);
   const formattedChannel =
-    channel === 'default'
-      ? mapChannelForInsights(rawJson.contactlessTask.channel.toString())
-      : mapChannelForInsights(channel);
+    channel === 'default' ? mapChannelForInsights(rawJson.contactlessTask.channel) : mapChannelForInsights(channel);
   const addedDate = new Date(timeOfContact);
 
   const formattedDate = `${format(addedDate, 'MMM dd, yyyy')}`;
@@ -255,7 +263,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && (
     <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>
       <Icon icon="DefaultAvatar" />
-      View Client
+      <Template code="Profile-ViewClient" />
     </SectionActionButton>
   );
 
@@ -263,6 +271,27 @@ const ContactDetailsHome: React.FC<Props> = function ({
     <Box data-testid="ContactDetails-Container">
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
       {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
+      {isDraft && (
+        <BannerContainer color="yellow" style={{ paddingTop: '12px', paddingBottom: '12px', marginTop: '10px' }}>
+          <Flex width="100%" justifyContent="space-between">
+            <Flex alignItems="center">
+              <InfoIcon color="#fed44b" />
+              <Text>
+                <Template code="Contact-DraftStatus" />
+              </Text>
+            </Flex>
+          </Flex>
+        </BannerContainer>
+      )}
+
+      {caseId && <ContactAddedToCaseBanner taskId={task.taskSid} contactId={savedContact.id} />}
+      {showRemovedFromCaseBanner && (
+        <ContactRemovedFromCaseBanner
+          taskId={task.taskSid}
+          contactId={savedContact.id}
+          showUndoButton={showRemovedFromCaseBanner}
+        />
+      )}
 
       <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
@@ -442,6 +471,7 @@ ContactDetailsHome.defaultProps = {
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const currentRoute = getCurrentTopmostRouteForTask(state[namespace].routing, ownProps.task.taskSid);
+  const { showRemovedFromCaseBanner } = selectCaseMergingBanners(state, ownProps.contactId);
   return {
     definitionVersions: state[namespace][configurationBase].definitionVersions,
     counselorsHash: state[namespace][configurationBase].counselors.hash,
@@ -452,6 +482,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
       role => role.toLowerCase().startsWith('wfo') && role !== 'wfo.quality_process_manager',
     ),
     isProfileRoute: isRouteWithContext(currentRoute) && currentRoute?.context === 'profile',
+    showRemovedFromCaseBanner,
   };
 };
 

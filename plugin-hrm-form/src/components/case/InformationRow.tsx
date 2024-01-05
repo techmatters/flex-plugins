@@ -20,8 +20,8 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
 import { Household, Perpetrator } from '../../types/types';
-import { TimelineRow, InformationBoldText, TimelineText, ViewButton, RowItemContainer } from '../../styles/case';
-import { Box, HiddenText } from '../../styles/HrmStyles';
+import { TimelineRow, InformationBoldText, TimelineText, ViewButton, RowItemContainer } from './styles';
+import { Box, HiddenText } from '../../styles';
 import { formatName } from '../../utils';
 
 type OwnProps = {

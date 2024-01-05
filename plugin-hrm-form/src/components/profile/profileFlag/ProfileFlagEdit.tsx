@@ -19,7 +19,7 @@ import { useSelector } from 'react-redux';
 import { IconButton } from '@twilio/flex-ui';
 import { Box, Popper, Paper } from '@material-ui/core';
 
-import { StyledMenuList, StyledMenuItem } from '../../../styles/HrmStyles';
+import { StyledMenuList, StyledMenuItem } from '../../../styles';
 import { ProfileFlag } from '../../../types/types';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
 import { useProfileFlags } from '../../../states/profile/hooks';
@@ -38,7 +38,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
   const { modalRef, profileId } = props;
 
   const { allProfileFlags, profileFlags, associateProfileFlag } = useProfileFlags(profileId);
-  const { loading } = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId));
+  const loading = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId))?.loading;
 
   const anchorRef = useRef(null);
 

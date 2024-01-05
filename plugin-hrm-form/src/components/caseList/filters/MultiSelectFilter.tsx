@@ -22,7 +22,6 @@ import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 
 import SearchInput from './SearchInput';
-import { Flex, Box, FormLabel } from '../../../styles/HrmStyles';
 import {
   MultiSelectButton,
   DialogArrow,
@@ -35,7 +34,10 @@ import {
   FiltersApplyButton,
   FiltersClearButton,
   FiltersCheckbox,
-} from '../../../styles/caseList/filters';
+  Flex,
+  Box,
+  FormLabel,
+} from '../../../styles';
 
 export type Item = {
   value: string;

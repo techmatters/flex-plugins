@@ -47,7 +47,7 @@ import {
   FormListboxMultiselectOptionsContainer,
   FormListboxMultiselectOption,
   FormListboxMultiselectOptionLabel,
-} from '../../../styles/HrmStyles';
+} from '../../../styles';
 import type { HTMLElementRef } from './types';
 import UploadFileInput from './UploadFileInput';
 

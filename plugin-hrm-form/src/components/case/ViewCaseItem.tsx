@@ -21,8 +21,8 @@ import { Template } from '@twilio/flex-ui';
 import Edit from '@material-ui/icons/Edit';
 import { DefinitionVersion, isNonSaveable } from 'hrm-form-definitions';
 
-import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyles';
-import { CaseLayout, FullWidthFormTextContainer } from '../../styles/case';
+import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles';
+import { CaseLayout, FullWidthFormTextContainer } from './styles';
 import { RootState } from '../../states';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import ActionHeader from './ActionHeader';
@@ -34,7 +34,7 @@ import { CaseSectionApi } from '../../states/case/sections/api';
 import { FormTargetObject } from '../common/forms/types';
 import NavigableContainer from '../NavigableContainer';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import selectCounselorsHash from '../../states/configuration/selectCounselorsHash';
+import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 
 const mapStateToProps = (state: RootState, { task }: ViewCaseItemProps) => {

@@ -83,7 +83,7 @@ export type ConnectedCaseActivity = CoreActivity & {
   createdAt: string;
   type: string;
   channel: ChannelTypes;
-  showViewButton: boolean;
+  isDraft: boolean;
 };
 
 export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;

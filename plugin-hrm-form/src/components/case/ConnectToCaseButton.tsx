@@ -18,7 +18,7 @@ import { CheckCircleOutlineOutlined, CreateNewFolderOutlined } from '@material-u
 import { Template } from '@twilio/flex-ui';
 import React from 'react';
 
-import { PreviewActionButton } from '../../styles/search';
+import { PreviewActionButton } from '../search/styles';
 import { getTemplateStrings } from '../../hrmConfig';
 
 type OwnProps = {

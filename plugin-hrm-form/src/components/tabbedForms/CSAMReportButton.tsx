@@ -22,7 +22,9 @@ import AssignmentIcon from '@material-ui/icons/AssignmentOutlined';
 import OpenInNew from '@material-ui/icons/OpenInNew';
 
 import { getAseloFeatureFlags } from '../../hrmConfig';
-import { Row, CSAMReportButtonText, StyledCSAMReportButton } from '../../styles/HrmStyles';
+import { Row } from '../../styles';
+import { CSAMReportButtonText } from './styles';
+import { StyledCSAMReportButton } from '../../styles/buttons';
 import CSAMReportDropdown from './CSAMReportDropdown';
 
 type OwnProps = {

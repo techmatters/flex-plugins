@@ -19,7 +19,7 @@ import { Template } from '@twilio/flex-ui';
 import { AppBar, Toolbar, Typography } from '@material-ui/core';
 import { InfoTwoTone } from '@material-ui/icons';
 
-import { Row } from '../styles/HrmStyles';
+import { Row } from '../styles';
 
 const FormNotEditable: React.FC = () => (
   <AppBar style={{ zIndex: 'inherit' }} position="relative">
