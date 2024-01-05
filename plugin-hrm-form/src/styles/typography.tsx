@@ -68,10 +68,6 @@ export const ErrorText = styled('p')`
 `;
 ErrorText.displayName = 'ErrorText';
 
-export const OpaqueText = styled('p')`
-  opacity: 0.7;
-`;
-
 export const CategorySubtitleSection = styled('div')`
   display: flex;
   align-items: center;

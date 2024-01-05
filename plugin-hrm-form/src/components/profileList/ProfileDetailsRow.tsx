@@ -43,7 +43,7 @@ type Props = OwnProps & {
   openProfileModal: (profileId: string) => void;
 };
 
-const ProfileListRow: React.FC<Props> = ({ profileId, openProfileModal }) => {
+const ProfileDetailsRow: React.FC<Props> = ({ profileId, openProfileModal }) => {
   const { profile } = useProfile({ profileId });
 
   const { profileFlags } = useProfileFlags(profileId);
@@ -81,4 +81,4 @@ const mapDispatchToProps = dispatch => {
 };
 
 const connector = connect(null, mapDispatchToProps);
-export default connector(ProfileListRow);
+export default connector(ProfileDetailsRow);

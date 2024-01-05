@@ -14,8 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/* eslint-disable react/prop-types */
-/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import { range } from 'lodash';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
@@ -40,11 +38,15 @@ const renderPaginationButton = (page, handleChangePage, disabled) => n => {
       </PaginationButtonText>
     );
 
+  if (isNaN(n)) {
+    return null;
+  }
+
   return (
     <PaginationButton
       aria-label={`Page ${n + 1}`}
       highlight={page === n}
-      key={`CaseList-pagination-${n}`}
+      key={`pagination-${n}`}
       onClick={() => {
         if (!disabled) {
           handleChangePage(n);
@@ -98,7 +100,7 @@ const Pagination: React.FC<PaginationProps> = ({
   page,
   pagesCount,
   handleChangePage,
-  transparent,
+  transparent = false,
   disabled = false,
 }) => {
   const renderButtons = renderPaginationButton(page, handleChangePage, disabled);
@@ -128,11 +130,6 @@ const Pagination: React.FC<PaginationProps> = ({
       />
     </PaginationRow>
   );
-};
-
-Pagination.displayName = 'Pagination';
-Pagination.defaultProps = {
-  transparent: false,
 };
 
 export default Pagination;

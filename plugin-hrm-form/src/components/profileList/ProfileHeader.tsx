@@ -24,10 +24,10 @@ const ProfileHeader: React.FC = () => {
   return (
     <TableHeader>
       <TableRow>
-        <ProfileHeaderCell localizedText="ProfileList-THClient" width="5%" />
-        <ProfileHeaderCell localizedText="ProfileList-THStatus" width="8%" />
-        <ProfileHeaderCell localizedText="ProfileList-THIdentifier" width="10%" />
-        <ProfileHeaderCell localizedText="ProfileList-THSummary" width="20%" />
+        <ProfileHeaderCell localizedText="ProfileList-THClient" width="8%" />
+        <ProfileHeaderCell localizedText="ProfileList-THStatus" />
+        <ProfileHeaderCell localizedText="ProfileList-THIdentifier" />
+        <ProfileHeaderCell localizedText="ProfileList-THSummary" />
       </TableRow>
     </TableHeader>
   );

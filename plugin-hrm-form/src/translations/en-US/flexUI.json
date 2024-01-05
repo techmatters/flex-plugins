@@ -408,6 +408,8 @@
   "Profile-ViewClient": "View Client",
 
   "ProfileList-Clients": "Clients",
+  "ProfileList-Count-Singular": "{{count}} client",
+  "ProfileList-Count-Plural": "{{count}} clients",
   "ProfileList-THClient": "Client",
   "ProfileList-THStatus": "Status",
   "ProfileList-THIdentifier": "Identifier(s)",

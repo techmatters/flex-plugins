@@ -14,28 +14,26 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
-import { CircularProgress, TableBody } from '@material-ui/core';
+import React, { useState } from 'react';
+import { CircularProgress, TableBody, TableCell } from '@material-ui/core';
 
-import { DataTableRow, LoadingCell, StandardTable, TableContainer } from '../../styles';
+import Pagination from '../pagination';
+import { DataTableRow, StandardTable, TableContainer } from '../../styles';
 import { useProfileList } from '../../states/profile/hooks/useProfileList';
 import ProfileListTableHeader from './ProfileHeader';
-import ProfileRow from './ProfileRow';
+import ProfileRow from './ProfileDetailsRow';
+
+const PROFILES_PER_PAGE = 10;
 
 const ProfileListTable: React.FC = () => {
-  const { loading, profileIds } = useProfileList();
+  const [currentPage, setCurrentPage] = useState(0);
 
-  if (loading) {
-    return (
-      <TableBody>
-        <DataTableRow>
-          <LoadingCell>
-            <CircularProgress size={50} />
-          </LoadingCell>
-        </DataTableRow>
-      </TableBody>
-    );
-  }
+  const updatePage = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const { loading, profileIds, profileCount } = useProfileList();
+  const pagesCount = Math.ceil(profileCount / PROFILES_PER_PAGE);
 
   return (
     <>
@@ -45,9 +43,9 @@ const ProfileListTable: React.FC = () => {
           {loading && (
             <TableBody>
               <DataTableRow>
-                <LoadingCell>
+                <TableCell>
                   <CircularProgress size={50} />
-                </LoadingCell>
+                </TableCell>
               </DataTableRow>
             </TableBody>
           )}
@@ -60,6 +58,7 @@ const ProfileListTable: React.FC = () => {
           )}
         </StandardTable>
       </TableContainer>
+      {!loading && <Pagination transparent page={currentPage} pagesCount={pagesCount} handleChangePage={updatePage} />}
     </>
   );
 };

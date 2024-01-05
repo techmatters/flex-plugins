@@ -171,7 +171,7 @@ export const TableSummaryFont = styled(TableBodyFont)`
 `;
 TableSummaryFont.displayName = 'TableSummaryFont';
 
-export const OpenLinkContainer = styled('div')`
+export const OpenLinkContainer = styled('span')`
   display: inline-block;
   padding: 0 6px;
 `;
@@ -197,3 +197,7 @@ export const SomethingWentWrongText = styled(FontOpenSans)`
   font-size: 20px;
 `;
 SomethingWentWrongText.displayName = 'SomethingWentWrongText';
+
+export const OpaqueText = styled('span')`
+  opacity: 0.7;
+`;

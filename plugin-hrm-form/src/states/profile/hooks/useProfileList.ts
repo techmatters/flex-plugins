@@ -20,6 +20,7 @@ import * as ProfileSelectors from '../selectors';
 
 type UseProfileListReturn = {
   profileIds: Profile['id'][] | undefined;
+  profileCount: number | undefined;
   loading: boolean | undefined;
 };
 
@@ -28,11 +29,16 @@ export const useProfileList = (): UseProfileListReturn => {
     (state: any) => (ProfileSelectors.selectProfileListState(state) as ProfileListState)?.data,
   );
 
+  const profileCount = useSelector(
+    (state: any) => (ProfileSelectors.selectProfileListState(state) as ProfileListState)?.count,
+  );
+
   const loading = useSelector(
     (state: any) => (ProfileSelectors.selectProfileListState(state) as ProfileListState)?.loading,
   );
   return {
     profileIds,
+    profileCount,
     loading,
   };
 };

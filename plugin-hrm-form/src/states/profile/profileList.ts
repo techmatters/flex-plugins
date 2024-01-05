@@ -48,9 +48,11 @@ const handleLoadProfileListRejectedAction = (state: t.ProfileListState, action: 
 };
 
 const handleLoadProfileListFulfilledAction = (state: t.ProfileListState, action: any) => {
+  const { profiles, count } = action.payload;
   const update = {
     loading: false,
-    data: action.payload.profiles?.map((profile: any) => profile.id),
+    data: profiles?.map((profile: any) => profile.id),
+    count,
   };
 
   return loadProfileListEntryIntoRedux(state, update);

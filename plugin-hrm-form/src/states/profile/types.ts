@@ -63,13 +63,16 @@ export const initialProfileFlagsState: ProfileFlagsState = {
 export type ProfileListState = {
   data?: Profile['id'][];
   error?: ParseFetchErrorResult;
+  count?: number;
   loading: boolean;
+  currentPage?: number;
 };
 
 export const initialProfileListState: ProfileListState = {
   error: undefined,
   loading: false,
   data: undefined,
+  currentPage: 0,
 };
 
 export const PROFILE_RELATIONSHIPS = {

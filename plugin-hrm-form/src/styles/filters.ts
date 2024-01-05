@@ -65,12 +65,12 @@ export const FilterTitle = styled('span')`
 `;
 FilterTitle.displayName = 'FilterTitle';
 
-export const CasesCount = styled('span')`
+export const CountText = styled('span')`
   margin-left: auto;
   padding-right: 10px;
   display: 'inline-flex';
 `;
-CasesCount.displayName = 'CasesCount';
+CountText.displayName = 'CountText';
 
 type MultiSelectButtonProps = {
   isOpened?: Boolean;
