@@ -520,6 +520,7 @@
   "CaseMerging-ContactRemovedFromCase": "Contacto eliminado del caso",
   "CaseMerging-CaseCreatedAndContactAdded": "Caso #{{caseId}} creado y contacto agregado",
   "CaseMerging-CancelCase": "Cancelar Caso",
+  "Something Else": "Enfoque Recomendado",
   "Profile-NoIdentifiersFound": "No se encontraron identificadores",
   "Profile-EditButton": "Editar",
   "Profile-DetailsHeader-Overview": "Descripción general",
@@ -538,6 +539,7 @@
   "SearchResultsIndex-SearchAgainForCase": "Busque nuevamente un {{type}}",
   "SearchResultsIndex-SaveToNewCase": "Guarde este contacto en un nuevo caso",
   "SearchResultsIndex-Or": "o",
+  "Case-Timeline-DraftContactSummaryPlaceholder": "En curso",
   "Profile-ClientTab": "Cliente",
   "Profile-Notes-No": "No",
   "Profile-ViewClient": "Ver cliente",
@@ -621,3 +623,4 @@
   "NavigableContainer-CloseButton": "Cerrar",
   "CaseMerging-ContactUndoRemovedFromCase": "Deshacer"
 }
+
