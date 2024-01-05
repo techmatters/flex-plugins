@@ -4,7 +4,7 @@
     "label": "Chat Summary",
     "type": "textarea",
     "rows": 20,
-    "width": 270,
+    "width": 260,
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -24,7 +24,7 @@
     "label": "Action Taken by TF",
     "type": "textarea",
     "rows": 20,
-    "width": 270,
+    "width": 260,
     "required": {
       "value": true,
       "message": "RequiredFieldError"
