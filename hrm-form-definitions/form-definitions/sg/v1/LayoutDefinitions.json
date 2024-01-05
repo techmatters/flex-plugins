@@ -3,10 +3,10 @@
     "callerInformation": {
     },
     "childInformation": {
-      "splitFormAt": 12
+      "splitFormAt": 6
     },
     "caseInformation": {
-      "splitFormAt": 4
+      "splitFormAt": 2
     }
   },
   "case": {
@@ -30,7 +30,7 @@
           "includeLabel": true
         }
       },
-      "splitFormAt": 3
+      "splitFormAt": 5
     },
     "referrals": {
       "splitFormAt": 2
