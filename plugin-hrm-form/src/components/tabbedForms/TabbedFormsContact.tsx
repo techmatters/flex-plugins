@@ -21,7 +21,7 @@ import { namespace } from '../../states/storeNamespaces';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { ContactRoute } from '../../states/routing/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import { CaseLayout } from '../../styles/case';
+import { CaseLayout } from '../case/styles';
 import ContactDetails from '../contact/ContactDetails';
 import { TabbedFormsCommonProps } from './types';
 

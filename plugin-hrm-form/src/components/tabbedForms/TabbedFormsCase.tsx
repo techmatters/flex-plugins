@@ -23,7 +23,7 @@ import { ContactMetadata } from '../../states/contacts/types';
 import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import { newCloseModalAction } from '../../states/routing/actions';
-import { CaseLayout } from '../../styles/case';
+import { CaseLayout } from '../case/styles';
 import { Case as CaseForm, Contact, CustomITask } from '../../types/types';
 import Case from '../case/Case';
 import useTabbedForm from './hooks/useTabbedForm';

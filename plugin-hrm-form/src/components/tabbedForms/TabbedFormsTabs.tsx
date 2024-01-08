@@ -38,8 +38,9 @@ import { newCSAMReportActionForContact } from '../../states/csam-report/actions'
 import { CSAMReportType, CSAMReportTypes } from '../../states/csam-report/types';
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 import { AppRoutes, ChangeRouteMode, TabbedFormRoute, TabbedFormSubroutes } from '../../states/routing/types';
-import { Box, Row, StyledTabs, TabbedFormsContainer, TabbedFormTabContainer } from '../../styles/HrmStyles';
-import { hasTaskControl } from '../../utils/transfer';
+import { Box, Row, StyledTabs } from '../../styles';
+import { TabbedFormsContainer, TabbedFormTabContainer } from './styles';
+import { hasTaskControl } from '../../transfer/transferTaskState';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
 import FormTab from '../common/forms/FormTab';
