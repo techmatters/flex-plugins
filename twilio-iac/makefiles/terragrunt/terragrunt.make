@@ -3,13 +3,14 @@ tg_args ?= $(tf_args)     # --terragrunt-log-level debug --terragrunt-debug
 TG_ENV = -e TERRAGRUNT_DOWNLOAD=".terragrunt-cache/$(HL)/$(HL_ENV)"
 
 verify-env:
-	ifeq ($(HL),)
-	$(error No helpline specified. please be sure to set HL=<helpline> before running make)
-	endif
-
-	ifeq ($(HL_ENV),)
-	$(error No environment specified. please be sure to set HL_ENV=<environment> before running make)
-	endif
+	@if [ -z "$(HL)" ]; then \
+		echo "No helpline specified. Please be sure to set HL=<helpline> before running make"; \
+		exit 1; \
+	fi
+	@if [ -z "$(HL_ENV)" ]; then \
+		echo "No environment specified. Please be sure to set HL_ENV=<environment> before running make"; \
+		exit 1; \
+	fi
 
 apply-tg: verify-env
 	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt apply $(tg_args)
