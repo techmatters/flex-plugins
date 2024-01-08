@@ -47,6 +47,7 @@ import { setUpConferenceActions, setupConferenceComponents } from './conference'
 import { setUpTransferActions } from './transfer/setUpTransferActions';
 import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
+import CategoryWithTooltip from './components/common/CategoryWithTooltip';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -80,6 +81,9 @@ const setUpComponents = (
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
   // setUp (add) dynamic components
+  Flex.WorkersDataTable.Content.add(
+    <Flex.ColumnDefinition key="skills" header={"Skills"} content={<CategoryWithTooltip category="category" color="#FF0000"/>} />
+  );
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus(setupObject);
   Components.setUpAddButtons(featureFlags);
@@ -228,6 +232,8 @@ export default class HrmFormPlugin extends FlexPlugin {
     if (hrmBaseUrl === undefined) {
       console.error('HRM base URL not defined, you must provide this to save program data');
     }
+
+
   }
 
   /**
