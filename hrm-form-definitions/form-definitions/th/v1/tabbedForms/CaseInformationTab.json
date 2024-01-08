@@ -12,10 +12,6 @@
       {
         "value": "เดอะฮับสายเด็ก",
         "label": "เดอะฮับสายเด็ก"
-      },
-        {
-        "value": "โครงการไนท์ฮับ",
-        "label": "โครงการไนท์ฮับ"
       }
     ],
     "required": {
@@ -155,66 +151,182 @@
     "label": "Would the child recommend us to a friend?",
     "type": "checkbox"
   },
-  {
-    "name": "hubServicesProvided",
-    "label": "หัวข้อการขอรับบริการ",
-    "type": "listbox-multiselect",
+    { 
+    "name": "nightHub",
+    "label": "ไนท์ฮับ",
+    "type": "select",
     "options": [
       {
-        "value": "ให้คำปรึกษา (ออนไลน์)",
-        "label": "ให้คำปรึกษา (ออนไลน์)"
+        "value": "",
+        "label": ""
       },
       {
-        "value": "ให้คำปรึกษา (ตัวต่อตัว)",
-        "label": "ให้คำปรึกษา (ตัวต่อตัว)"
+        "value": "1",
+        "label": "1"
       },
       {
-        "value": "บริการเอกสารประจำตัว",
-        "label": "บริการเอกสารประจำตัว"
+        "value": "2",
+        "label": "2"
+      },
+        {
+        "value": "3",
+        "label": "3"
+      },
+        {
+        "value": "4",
+        "label": "4"
+      },
+        {
+        "value": "5",
+        "label": "5"
+      }
+    ]
+  },
+  { 
+    "name": "basicServices",
+    "label": "บริการพื้นฐานปัจจัย 4",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },    
+      {
+        "value": "1",
+        "label": "1"
       },
       {
-        "value": "บริการพื้นฐานปัจจัย 4",
-        "label": "บริกํารพื้นฐํานปัจจัย 4"
+        "value": "2",
+        "label": "2"
+      },
+        {
+        "value": "3",
+        "label": "3"
+      },
+        {
+        "value": "4",
+        "label": "4"
+      },
+        {
+        "value": "5",
+        "label": "5"
+      },
+        {
+        "value": "6",
+        "label": "6"
+      },
+        {
+        "value": "7",
+        "label": "7"
+      },
+        {
+        "value": "8",
+        "label": "8"
+      },
+        {
+        "value": "9",
+        "label": "9"
+      },
+        {
+        "value": "10",
+        "label": "10"
+      }
+    ]
+  },
+  { 
+    "name": "identificationService",
+    "label": "บริการเอกสารประจำตัว",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "",
+        "label": ""
       },
       {
-        "value": "บริการด้านสุขภาพ (ตรวจสุขภาพ ให้คำปรึกษาฯลฯ)",
-        "label": "บริการด้านสุขภาพ (ตรวจสุขภาพ ให้คำปรึกษาฯลฯ)"
+        "value": "1",
+        "label": "1"
       },
       {
-        "value": "ส่งต่อและประสํานงํานเคส",
-        "label": "ส่งต่อและประสํานงํานเคส"
+        "value": "2",
+        "label": "2"
+      },
+        {
+        "value": "3",
+        "label": "3"
+      },
+        {
+        "value": "4",
+        "label": "4"
+      },
+        {
+        "value": "5",
+        "label": "5"
+      }
+    ]
+  },
+  { 
+    "name": "physicalHealthServices",
+    "label": "บริการด้านสุขภาพกาย",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },      
+      {
+        "value": "1",
+        "label": "1"
       },
       {
-        "value": "บริการด้านการศึกษา",
-        "label": "บริการด้านการศึกษาา"
+        "value": "2",
+        "label": "2"
+      },
+        {
+        "value": "3",
+        "label": "3"
+      },
+        {
+        "value": "4",
+        "label": "4"
       },
       {
-        "value": "พัฒนาทักษะการใช้ชีวิตประจำวัน",
-        "label": "พัฒนาทักษะการใช้ชีวิตประจำวัน"
+        "value": "5",
+        "label": "5"
+      }
+    ]
+  },
+  { 
+    "name": "mentalHealthServices",
+    "label":  "บริการด้านสุขภาพจิต",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },      
+      {
+        "value": "1",
+        "label": "1"
       },
       {
-        "value": "พัฒนาทักษะอาชีพ / ทดลองงาน",
-        "label": "พัฒนาทักษะอาชีพ / ทดลองงาน"
+        "value": "2",
+        "label": "2"
+      },
+        {
+        "value": "3",
+        "label": "3"
+      },
+        {
+        "value": "4",
+        "label": "4"
       },
       {
-        "value": "ให้คำปรึกษาการตั้งครรภ์เมื่อไม่พร้อม",
-        "label": "ให้คำปรึกษาการตั้งครรภ์เมื่อไม่พร้อม"
-      },
-      {
-        "value": "ให้คำปรึกษาและบริการสำหรับเด็กแรกเกิด - 3 ปี",
-        "label": "ให้คำปรึกษาและบริการสำหรับเด็กแรกเกิด - 3 ปี"
-      },
-      {
-        "value": "ค่ายเพื่อพัฒนาศักยภาพเด็ก",
-        "label": "ค่ํายเพื่อพัฒนําศักยภําพเด็ก"
-      },
-      {
-        "value": "กิจกรรมสันทนํากําร",
-        "label": "กิจกรรมสันทนํากําร"
-      },
-      {
-        "value": "ติดตํามผลเคส",
-        "label": "ติดตํามผลเคส"
+        "value": "5",
+        "label": "5"
       }
     ]
   },
@@ -282,40 +394,8 @@
     ]
   },
   { 
-    "name": "numberOfIDService",
-    "label": "บริการเอกสารประจำตัว",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "1",
-        "label": "1"
-      },
-      {
-        "value": "2",
-        "label": "2"
-      },
-        {
-        "value": "3",
-        "label": "3"
-      },
-        {
-        "value": "4",
-        "label": "4"
-      },
-        {
-        "value": "5",
-        "label": "5"
-      }
-    ]
-  },
-  { 
-    "name": "numberOfBasicServices",
-    "label": "บริการพื้นฐานปัจจัย 4",
+    "name": "lifeSkillsServices",
+    "label": "กิจกรรมพัฒนาทักษะชีวิต",
     "type": "select",
     "unknownOption": "Unknown",
     "options": [
@@ -345,72 +425,8 @@
       }
     ]
   },
-  { 
-    "name": "numberOfHealthServices",
-    "label": "บริการด้านสุขภาพ (ตรวจสุขภาพ ให้คำปรึกษาฯลฯ)",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },      
-      {
-        "value": "1",
-        "label": "1"
-      },
-      {
-        "value": "2",
-        "label": "2"
-      },
-        {
-        "value": "3",
-        "label": "3"
-      },
-        {
-        "value": "4",
-        "label": "4"
-      },
-      {
-        "value": "5",
-        "label": "5"
-      }
-    ]
-  },
-  { 
-    "name": "numberOfCaseServices",
-    "label": "ส่งต่อและประสํานงํานเคส",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },    
-      {
-        "value": "1",
-        "label": "1"
-      },
-      {
-        "value": "2",
-        "label": "2"
-      },
-        {
-        "value": "3",
-        "label": "3"
-      },
-        {
-        "value": "4",
-        "label": "4"
-      },
-        {
-        "value": "5",
-        "label": "5"
-      }
-    ]
-  },
-  { 
-    "name": "numberOfEducationalServices",
+ { 
+    "name": "educationalServices",
     "label": "บริการด้านการศึกษาา",
     "type": "select",
     "unknownOption": "Unknown",
@@ -442,8 +458,8 @@
     ]
   },
   { 
-    "name": "numberOfDailySkillsServices",
-    "label": "พัฒนาทักษะการใช้ชีวิตประจำวัน",
+    "name": "caseFollowUps",
+    "label": "ติดตํามผลเคส",
     "type": "select",
     "unknownOption": "Unknown",
     "options": [
@@ -467,14 +483,14 @@
         "value": "4",
         "label": "4"
       },
-        {
+      {
         "value": "5",
         "label": "5"
       }
     ]
   },
   { 
-    "name": "numberOfCareerServices",
+    "name": "careerServices",
     "label": "พัฒนาทักษะอาชีพ / ทดลองงาน",
     "type": "select",
     "unknownOption": "Unknown",
@@ -506,8 +522,8 @@
     ]
   },
   { 
-    "name": "numberOfPregnancyConsultations",
-    "label": "ให้คำปรึกษาการตั้งครรภ์เมื่อไม่พร้อม",
+    "name": "maternalServices",
+    "label": "บริการช่วยเหลือแม่และเด็ก",
     "type": "select",
     "unknownOption": "Unknown",
     "options": [
@@ -532,134 +548,6 @@
         "label": "4"
       },
         {
-        "value": "5",
-        "label": "5"
-      }
-    ]
-  },
-  { 
-    "name": "numberOfNewbornConsultations",
-    "label": "ให้คำปรึกษาและบริการสำหรับเด็กแรกเกิด - 3 ปี",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },    
-      {
-        "value": "1",
-        "label": "1"
-      },
-      {
-        "value": "2",
-        "label": "2"
-      },
-        {
-        "value": "3",
-        "label": "3"
-      },
-        {
-        "value": "4",
-        "label": "4"
-      },
-        {
-        "value": "5",
-        "label": "5"
-      }
-    ]
-  },
-  { 
-    "name": "numberOfCampServices",
-    "label": "ค่ํายเพื่อพัฒนําศักยภําพเด็ก",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },    
-      {
-        "value": "1",
-        "label": "1"
-      },
-      {
-        "value": "2",
-        "label": "2"
-      },
-        {
-        "value": "3",
-        "label": "3"
-      },
-        {
-        "value": "4",
-        "label": "4"
-      },
-        {
-        "value": "5",
-        "label": "5"
-      }
-    ]
-  },
-  { 
-    "name": "numberOfRecreationalActivites",
-    "label": "กิจกรรมสันทนํากําร",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },    
-      {
-        "value": "1",
-        "label": "1"
-      },
-      {
-        "value": "2",
-        "label": "2"
-      },
-        {
-        "value": "3",
-        "label": "3"
-      },
-        {
-        "value": "4",
-        "label": "4"
-      },
-        {
-        "value": "5",
-        "label": "5"
-      }
-    ]
-  },
-  { 
-    "name": "numberOfCaseFollowUps",
-    "label": "ติดตํามผลเคส",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },    
-      {
-        "value": "1",
-        "label": "1"
-      },
-      {
-        "value": "2",
-        "label": "2"
-      },
-        {
-        "value": "3",
-        "label": "3"
-      },
-        {
-        "value": "4",
-        "label": "4"
-      },
-      {
         "value": "5",
         "label": "5"
       }
