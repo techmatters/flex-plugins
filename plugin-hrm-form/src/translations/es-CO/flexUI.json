@@ -125,6 +125,7 @@
   "Case-Timeline-PaginationDescription": "Mostrando {{from}}-{{to}} de {{total}}",
   "Case-Timeline-OpenFullTimelineButton": "Mostrar todos los elementos de la línea de tiempo",
   "Case-Timeline-ModalTitle": "Caso #{{caseId}} Cronología",
+  "Case-Timeline-DraftContactSummaryPlaceholder": "En curso",
   "Case-AddHouseholdSection": "Información del Hogar",
   "Case-AddPerpetratorSection": "Perpetradores",
   "Case-AddIncidentSection": "Incidentes",
@@ -312,6 +313,7 @@
   "Contact-EditChild": "Editar Info Adolescente",
   "Contact-EditCategories": "Editar Categorías",
   "Contact-EditSummary": "Editar Resumen",
+  "Contact-DraftStatus": "En curso",
   "ContactCopyButton": "Copiar",
   "ContactDetails-ActionHeaderAdded": "Agregado el {{date}} a las {{time}} por {{counsellor}}",
   "MaskIdentifiers": "XXXXXX",
@@ -539,5 +541,4 @@
   "Profile-ClientTab": "Cliente",
   "Profile-Notes-No": "No",
   "Profile-ViewClient": "Ver cliente"
-  
 }

@@ -60,7 +60,7 @@ const CaseHeader: React.FC<Props> = ({
 
   return (
     <div>
-      <PreviewRow>
+      <PreviewRow style={{ paddingTop: '5px' }}>
         <Flex justifyContent="space-between" width="100%">
           <Flex alignItems="center" style={{ minWidth: 'fit-content' }}>
             {!isOrphanedCase && (

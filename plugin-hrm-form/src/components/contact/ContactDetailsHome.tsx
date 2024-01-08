@@ -55,6 +55,8 @@ import { isRouteWithContext } from '../../states/routing/types';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
 import { selectCaseMergingBanners } from '../../states/case/caseBanners';
+import InfoIcon from '../caseMergingBanners/InfoIcon';
+import { BannerContainer, Text } from '../../styles/banners';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -153,6 +155,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
     rawJson,
     caseId,
   } = savedContact;
+
+  const isDraft = !savedContact.finalizedAt;
 
   const { callType, categories } = rawJson;
 
@@ -267,6 +271,18 @@ const ContactDetailsHome: React.FC<Props> = function ({
     <Box data-testid="ContactDetails-Container">
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
       {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
+      {isDraft && (
+        <BannerContainer color="yellow" style={{ paddingTop: '12px', paddingBottom: '12px', marginTop: '10px' }}>
+          <Flex width="100%" justifyContent="space-between">
+            <Flex alignItems="center">
+              <InfoIcon color="#fed44b" />
+              <Text>
+                <Template code="Contact-DraftStatus" />
+              </Text>
+            </Flex>
+          </Flex>
+        </BannerContainer>
+      )}
 
       {caseId && <ContactAddedToCaseBanner taskId={task.taskSid} contactId={savedContact.id} />}
       {showRemovedFromCaseBanner && (
