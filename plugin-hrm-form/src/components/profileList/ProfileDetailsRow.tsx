@@ -16,6 +16,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import { Template } from '@twilio/flex-ui';
 
 import ProfileFlagPill from '../profile/profileFlag/ProfileFlagPill';
 import { getShortSummary } from '../../utils';
@@ -29,6 +30,7 @@ import {
   SummaryCell,
   DataCell,
   TableBodyFont,
+  OpaqueText,
 } from '../../styles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfileFlags } from '../../states/profile/hooks';
@@ -55,13 +57,23 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId, openProfileModal }) => 
           <OpenLinkAction tabIndex={0}>{profile?.name ? profile.name : profile?.id}</OpenLinkAction>
         </OpenLinkContainer>
       </NumericCell>
-      <PillsCell>
-        {profileFlags
-          .sort((a, b) => a.id - b.id)
-          .map(flag => (
-            <ProfileFlagPill key={flag.id} flag={flag} />
-          ))}
-      </PillsCell>
+      {profileFlags.length > 0 ? (
+        <PillsCell>
+          {profileFlags
+            .sort((a, b) => a.id - b.id)
+            .map(flag => (
+              <ProfileFlagPill key={flag.id} flag={flag} />
+            ))}
+        </PillsCell>
+      ) : (
+        <SummaryCell>
+          <TableBodyFont>
+            <OpaqueText>
+              <Template code="ProfileList-Status-None" />
+            </OpaqueText>
+          </TableBodyFont>
+        </SummaryCell>
+      )}
       <DataCell>
         <TableBodyFont>{profile?.identifier}</TableBodyFont>
       </DataCell>

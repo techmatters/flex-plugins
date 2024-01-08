@@ -14,32 +14,40 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CircularProgress, TableBody, TableCell } from '@material-ui/core';
 
 import Pagination from '../pagination';
-import { DataTableRow, StandardTable, TableContainer } from '../../styles';
+import { DataTableRow, ErrorText, StandardTable, TableContainer } from '../../styles';
 import { useProfileList } from '../../states/profile/hooks/useProfileList';
+import { useProfileListLoader } from '../../states/profile/hooks/useProfileListLoader';
 import ProfileListTableHeader from './ProfileHeader';
 import ProfileRow from './ProfileDetailsRow';
 
 const PROFILES_PER_PAGE = 10;
 
 const ProfileListTable: React.FC = () => {
+  const { loading, profileIds, profileCount, error } = useProfileList();
   const [currentPage, setCurrentPage] = useState(0);
+  const pagesCount = Math.ceil(profileCount / PROFILES_PER_PAGE);
+  const offset = (currentPage + 1) * PROFILES_PER_PAGE;
 
   const updatePage = (page: number) => {
     setCurrentPage(page);
   };
 
-  const { loading, profileIds, profileCount } = useProfileList();
-  const pagesCount = Math.ceil(profileCount / PROFILES_PER_PAGE);
+  const { loadProfileList } = useProfileListLoader({ skipAutoload: false, offset, limit: PROFILES_PER_PAGE });
+
+  // useEffect(() => {
+  //   loadProfileList();
+  // }, [currentPage, loadProfileList]);
 
   return (
     <>
       <TableContainer>
         <StandardTable>
           <ProfileListTableHeader />
+          {error && <ErrorText>Please try again later {error}</ErrorText>}
           {loading && (
             <TableBody>
               <DataTableRow>
@@ -51,9 +59,9 @@ const ProfileListTable: React.FC = () => {
           )}
           {!loading && (
             <TableBody>
-              {profileIds?.map(profileId => (
-                <ProfileRow key={profileId} profileId={profileId} />
-              ))}
+              {profileIds?.length > 0
+                ? profileIds?.map(profileId => <ProfileRow key={profileId} profileId={profileId} />)
+                : 'No clients found.'}
             </TableBody>
           )}
         </StandardTable>

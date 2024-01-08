@@ -24,6 +24,8 @@ import { ProfileListState } from '../types';
 
 type UseProfileListLoaderParams = {
   skipAutoload?: boolean;
+  offset?: number;
+  limit?: number;
 };
 
 type UseProfileListLoaderReturn = {
@@ -39,6 +41,8 @@ type UseProfileListLoaderReturn = {
  */
 export const useProfileListLoader = ({
   skipAutoload = false,
+  offset = 0,
+  limit = 10,
 }: UseProfileListLoaderParams = {}): UseProfileListLoaderReturn => {
   const dispatch = useDispatch();
 
@@ -51,9 +55,9 @@ export const useProfileListLoader = ({
 
   const loadProfileList = useCallback(() => {
     if (!loading && !error) {
-      dispatch(loadProfileListAsync());
+      dispatch(loadProfileListAsync({ offset, limit }));
     }
-  }, [dispatch, loading, error]);
+  }, [dispatch, loading, error, offset, limit]);
 
   useEffect(() => {
     if (!skipAutoload && !loading) {

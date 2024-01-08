@@ -22,8 +22,7 @@ import ProfileFilters from './filters';
 import ProfileListTable from './ProfileListTable';
 
 const ProfileListPage: React.FC = () => {
-  useProfileListLoader();
-
+  // useProfileListLoader();
   return (
     <ListContainer>
       <ProfileFilters />

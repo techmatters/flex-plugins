@@ -415,6 +415,7 @@
   "ProfileList-THIdentifier": "Identifier(s)",
   "ProfileList-THSummary": "Summary",
   "ProfileList-Summary-None": "- No profile summary -",
+  "ProfileList-Status-None": "- No status -",
 
   "UploadFile-ButtonText": "Upload File",
   "DownloadFile-ButtonText": "Download File",

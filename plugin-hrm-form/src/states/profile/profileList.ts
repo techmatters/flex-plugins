@@ -18,8 +18,8 @@ import { createAsyncAction, createReducer } from 'redux-promise-middleware-actio
 import * as t from './types';
 import { getProfileList } from '../../services/ProfileService';
 
-export const loadProfileListAsync = createAsyncAction(t.LOAD_PROFILES_LIST, (params: any = {}) => {
-  return getProfileList(params);
+export const loadProfileListAsync = createAsyncAction(t.LOAD_PROFILES_LIST, ({ offset = 0, limit = 10 } = {}) => {
+  return getProfileList({ offset, limit });
 });
 
 const loadProfileListEntryIntoRedux = (state: t.ProfileListState, profilesListUpdate: any) => ({
@@ -48,11 +48,12 @@ const handleLoadProfileListRejectedAction = (state: t.ProfileListState, action: 
 };
 
 const handleLoadProfileListFulfilledAction = (state: t.ProfileListState, action: any) => {
-  const { profiles, count } = action.payload;
+  const { profiles, count, currentPage } = action.payload;
   const update = {
     loading: false,
-    data: profiles?.map((profile: any) => profile.id),
+    data: profiles?.map((profile: t.Profile) => profile.id),
     count,
+    currentPage,
   };
 
   return loadProfileListEntryIntoRedux(state, update);
