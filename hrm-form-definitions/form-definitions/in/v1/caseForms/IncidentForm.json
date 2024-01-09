@@ -40,10 +40,12 @@
              { "value": "Instagram", "label": "Instagram" },
              { "value": "Snapchat", "label": "Snapchat" },
              { "value": "Discord", "label": "Discord" },
+             { "value": "Youtube", "label": "Youtube" },
+             { "value": "Telegram", "label": "Telegram" },
              { "value": "Other", "label": "Other" }
             ],
          "Offline": [
-             { "value": "Child's Home", "label": "Child's Home" },
+             { "value": "Client's Home", "label": "Client's Home" },
              { "value": "Educational Institution", "label": "Educational Institution" },
              { "value": "Neighbourhood", "label": "Neighbourhood" },
              { "value": "Perpetrator's Home", "label": "Perpetrator's Home" },
@@ -122,12 +124,12 @@
     },
     {
       "name": "complainantRelationship",
-      "label": "Relationship between Complainant & Child",
+      "label": "Relationship between Complainant & Client",
       "type": "input"
     },
     {
       "name": "cwcProduced",
-      "label": "Child produced in front of CWC?",
+      "label": "Client produced in front of CWC?",
       "type": "select",
       "options": [
         { "value": "Unknown", "label": "" },
