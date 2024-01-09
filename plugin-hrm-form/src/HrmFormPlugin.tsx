@@ -85,6 +85,12 @@ const setUpComponents = (
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
 
   // setUp (add) dynamic components
+  // Flex.WorkersDataTable.defaultProps = {
+  //   initialCompareFunction = (worker1, worker2) => {
+  //     // see https://www.twilio.com/docs/flex/developer/ui/v1/configuration#agentsdatatable
+  //     return 0;  // -1, -0, or 1
+  //   }
+  // }
   Flex.WorkersDataTable.Content.add(
     <Flex.ColumnDefinition 
       key="skills" 
