@@ -23,15 +23,15 @@ import { RootState } from '../../states';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
 import { Box, HeaderContainer } from '../../styles';
 import {
+  OfflineContactTaskButton,
   OfflineContactTaskContent,
   OfflineContactTaskFirstLine,
-  OfflineContactTaskSecondLine,
-  OfflineContactTaskIconContainer,
   OfflineContactTaskIcon,
-  OfflineContactTaskButton,
+  OfflineContactTaskIconContainer,
+  OfflineContactTaskSecondLine,
 } from './styles';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
-import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
+import { getOfflineContactTaskSid } from '../../states/contacts/offlineContactTask';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { namespace, routingBase } from '../../states/storeNamespaces';
 

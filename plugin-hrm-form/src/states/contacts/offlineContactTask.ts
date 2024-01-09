@@ -14,8 +14,14 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import TransferButton from './TransferButton';
-import AcceptTransferButton from './AcceptTransferButton';
-import RejectTransferButton from './RejectTransferButton';
+import { getHrmConfig } from '../../hrmConfig';
+import { OfflineContactTask } from '../../types/types';
 
-export { TransferButton, AcceptTransferButton, RejectTransferButton };
+// eslint-disable-next-line prettier/prettier
+export const getOfflineContactTaskSid = (): `offline-contact-task-${string}` => `offline-contact-task-${getHrmConfig().workerSid}`;
+
+export const getOfflineContactTask = (): OfflineContactTask => Object.freeze({
+  taskSid: getOfflineContactTaskSid(),
+  channelType: 'default',
+  attributes: { isContactlessTask: true, channelType: 'default' },
+} as const);

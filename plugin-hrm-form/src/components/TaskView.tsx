@@ -70,7 +70,7 @@ const TaskView: React.FC<Props> = props => {
     if (shouldRecreateState) {
       if (isOfflineContactTask(task)) {
         loadContactFromHrmByTaskSid();
-      } else if (TaskHelper.isTaskAccepted(task) && hasTaskControl(task)) {
+      } else if (TaskHelper.isTaskAccepted(task)) {
         createContact(currentDefinitionVersion);
       }
     }
@@ -186,9 +186,7 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
   loadContactFromHrmByTaskSid: () =>
     dispatch(loadContactFromHrmByTaskSidAsyncAction(task.taskSid, `${task.taskSid}-active`)),
   createContact: (definition: DefinitionVersion) =>
-    asyncDispatch(dispatch)(
-      createContactAsyncAction(newContact(definition, task), getHrmConfig().workerSid, task.taskSid),
-    ),
+    asyncDispatch(dispatch)(createContactAsyncAction(newContact(definition, task), getHrmConfig().workerSid, task)),
   updateHelpline: (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline })),
 });
 

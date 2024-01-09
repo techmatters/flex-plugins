@@ -28,15 +28,15 @@ import { Case, Contact } from '../../types/types';
 import { ContactMetadata } from '../../states/contacts/types';
 import { VALID_EMPTY_CONTACT } from '../testContacts';
 import { connectToCaseAsyncAction, updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
-import { loadFormSharedState, saveFormSharedState } from '../../transfer/formDataTransfer';
+import { saveFormSharedState } from '../../transfer/formDataTransfer';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 
 jest.mock('../../states/contacts/saveContact', () => ({
   ...jest.requireActual('../../states/contacts/saveContact'),
-  updateContactInHrmAsyncAction: jest.fn((id, contact, _, task) => {
+  updateContactInHrmAsyncAction: jest.fn((id, contact, _) => {
     return Promise.resolve();
   }),
-  connectToCaseAsyncAction: jest.fn((id, caseId) => {
+  connectToCaseAsyncAction: jest.fn(() => {
     return Promise.resolve();
   }),
 }));
@@ -171,7 +171,7 @@ describe('saveFormSharedState', () => {
     expect(updateContactInHrmAsyncAction).toHaveBeenCalledWith(
       contactState.savedContact,
       { channel: 'whatsapp' },
-      'task-taskSid',
+      'taskSid-active',
     );
     expect(connectToCaseAsyncAction).not.toHaveBeenCalled();
   });
@@ -197,7 +197,7 @@ describe('saveFormSharedState', () => {
     expect(updateContactInHrmAsyncAction).toHaveBeenCalledWith(
       { ...contactState.savedContact, caseId: '1234' },
       { channel: 'whatsapp' },
-      'task-taskSid',
+      'taskSid-active',
     );
     expect(connectToCaseAsyncAction).toHaveBeenCalledWith(contactState.savedContact.id, undefined);
   });
@@ -238,60 +238,5 @@ describe('saveFormSharedState', () => {
     // Bit weird to assert a mocked value here, but it confirms the rejection case we are testing actually occurs
     // It also prevents an unhandled error bubbling up to the top level of the test suite and failing it
     await expect(connectAction.payload).rejects.toEqual(new Error('disconnect error'));
-  });
-});
-describe('loadFormSharedState', () => {
-  let expected: ContactState;
-
-  beforeEach(async () => {
-    expected = {
-      ...transferContactState,
-      savedContact: {
-        ...transferContactState.savedContact,
-        timeOfContact: expect.any(String),
-        taskId: 'taskSid',
-      } as Contact,
-    };
-    await task.setAttributes({
-      transferMeta: {
-        originalTask: 'transferred-task-id',
-      },
-    });
-  });
-
-  test('Flag disabled - does nothing', async () => {
-    baseMockConfig.featureFlags.enable_transfers = false;
-    const loadedForm = await loadFormSharedState(task);
-    expect(loadedForm).toBeNull();
-    expect(updateContactInHrmAsyncAction).not.toHaveBeenCalled();
-  });
-
-  test('Should save the contact back to HRM with the tasks current task SID', async () => {
-    const loadedForm = await loadFormSharedState(task);
-    expect(loadedForm).toStrictEqual(expected);
-    expect(updateContactInHrmAsyncAction).toHaveBeenCalledWith(
-      expected.savedContact,
-      expected.savedContact,
-      'task-taskSid',
-    );
-  });
-
-  test('HRM update endpoint errors - does nothing & returns original state', async () => {
-    const updateAction = {
-      type: 'contact-action/update-contact',
-      payload: Promise.reject(new Error('update error')),
-      meta: { previousContact: expected.savedContact, changes: expected.savedContact },
-    } as const;
-
-    mockUpdateContactInHrmAsyncAction.mockReturnValue(updateAction);
-    const loadedForm = await loadFormSharedState(task);
-    expect(loadedForm).toEqual(transferContactState);
-
-    expect(updateContactInHrmAsyncAction).toHaveBeenCalledWith(
-      expected.savedContact,
-      expected.savedContact,
-      'task-taskSid',
-    );
-    await expect(updateAction.payload).rejects.toEqual(new Error('update error'));
   });
 });
