@@ -30,7 +30,19 @@ export type TabbedFormSubroutes =
   | 'profile'
   | 'profileEdit';
 
-export type RouteWithModalSupport = {
+const CONTEXTS = ['search', 'hrm-form', 'profile'] as const;
+
+export type Contexts = typeof CONTEXTS[number];
+
+export type RouteWithContext = {
+  context?: Contexts;
+};
+
+export const isRouteWithContext = (route: any): route is RouteWithContext => {
+  return CONTEXTS.includes((route as RouteWithContext).context);
+};
+
+export type RouteWithModalSupport = RouteWithContext & {
   activeModal?: AppRoutes[];
 };
 
@@ -93,18 +105,6 @@ type ProfileHomeRoute = RouteWithModalSupport & {
   route: 'profile';
   subroute: 'home';
   profileId: Profile['id'];
-};
-
-const CONTEXTS = ['search', 'hrm-form', 'profile'] as const;
-
-export type Contexts = typeof CONTEXTS[number];
-
-export type RouteWithContext = {
-  context?: Contexts;
-};
-
-export const isRouteWithContext = (route: any): route is RouteWithContext => {
-  return CONTEXTS.includes((route as RouteWithContext).context);
 };
 
 type CaseCoreRoute = RouteWithContext & {
@@ -216,7 +216,7 @@ export type ContactEditRoute = ContactCoreRoute & {
   form: keyof Pick<ContactRawJson, 'childInformation' | 'callerInformation' | 'caseInformation' | 'categories'>;
 };
 
-type ContactRoute = ContactViewRoute | ContactEditRoute;
+export type ContactRoute = ContactViewRoute | ContactEditRoute;
 
 export const isContactRoute = (route: AppRoutes): route is ContactRoute => {
   return route.route === 'contact';

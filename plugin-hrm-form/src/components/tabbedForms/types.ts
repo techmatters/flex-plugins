@@ -14,6 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import TabbedForms from './TabbedForms';
+import { FormProvider } from 'react-hook-form';
 
-export default TabbedForms;
+import { RouterTask } from '../../types/types';
+
+export type TabbedFormsCommonProps = {
+  task: RouterTask;
+};
