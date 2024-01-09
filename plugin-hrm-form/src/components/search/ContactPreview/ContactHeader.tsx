@@ -83,7 +83,10 @@ const ContactHeader: React.FC<Props> = ({
 
   return (
     <>
-      <PreviewRow color={isDraft ? 'yellow' : undefined} style={{ paddingTop: '15px', marginTop: '0px' }}>
+      <PreviewRow
+        color={isDraft ? 'yellow' : undefined}
+        style={{ paddingTop: '15px', marginTop: '0px', paddingBottom: isDraft ? '15px' : undefined }}
+      >
         {!isNonDataCallType(callType) && (
           <Flex marginRight="10px">
             <CallTypeIcon callType={callType} fontSize="18px" />
