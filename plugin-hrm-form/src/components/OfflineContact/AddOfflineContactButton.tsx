@@ -22,7 +22,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { RootState } from '../../states';
 import { Contact } from '../../types/types';
 import AddTaskButton from '../common/AddTaskButton';
-import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
+import { getOfflineContactTask, getOfflineContactTaskSid } from '../../states/contacts/offlineContactTask';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { newContact } from '../../states/contacts/contactState';
 import asyncDispatch from '../../states/asyncDispatch';
@@ -105,7 +105,7 @@ const mapDispatchToProps = dispatch => {
   const asyncDispatcher = asyncDispatch(dispatch);
   return {
     createContactState: (contact: Contact) =>
-      asyncDispatcher(createContactAsyncAction(contact, getHrmConfig().workerSid, getOfflineContactTaskSid())),
+      asyncDispatcher(createContactAsyncAction(contact, getHrmConfig().workerSid, getOfflineContactTask())),
     restartContact: (contact: Contact) =>
       asyncDispatcher(newRestartOfflineContactAsyncAction(contact, getHrmConfig().workerSid)),
   };

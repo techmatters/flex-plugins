@@ -36,12 +36,14 @@ type OwnProps = {
 };
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const { routing } = state[namespace];
-  const { savedContact } = selectContactByTaskSid(state, task.taskSid) ?? {};
+  const { routing, configuration } = state[namespace];
+  const { savedContact, metadata } = selectContactByTaskSid(state, task.taskSid) ?? {};
 
   return {
     routing: getCurrentTopmostRouteForTask(routing, task.taskSid),
     savedContact,
+    metadata,
+    definitionVersion: configuration.currentDefinitionVersion,
   };
 };
 

@@ -87,8 +87,14 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
 const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => ({
   backToCallTypeSelect: () =>
     dispatch(changeRoute({ route: 'select-call-type' }, task.taskSid, ChangeRouteMode.Replace)),
-  clearCallType: (savedContact: Contact) =>
-    asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, { rawJson: { callType: '' } }, task.taskSid)),
+  clearCallType: (savedContact: Contact, otherChanges: ContactDraftChanges) =>
+    asyncDispatch(dispatch)(
+      updateContactInHrmAsyncAction(
+        savedContact,
+        { ...otherChanges, rawJson: { ...otherChanges?.rawJson, callType: '' } },
+        task.taskSid,
+      ),
+    ),
   navigateToTab: (tab: TabbedFormSubroutes) =>
     dispatch(
       changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, task.taskSid, ChangeRouteMode.Replace),
@@ -207,7 +213,7 @@ const TabbedFormsTabs: React.FC<Props> = ({
     helpline,
   } = updatedContact;
 
-  const tabsToIndex = mapTabsToIndex(savedContact, getUnsavedContact(savedContact, draftContact).rawJson);
+  const tabsToIndex = mapTabsToIndex(savedContact, updatedContact.rawJson);
   const tabIndex = tabsToIndex.findIndex(t => t === subroute);
   const tabs = tabsToIndex.map(mapTabsComponents(methods.errors));
 
@@ -218,7 +224,7 @@ const TabbedFormsTabs: React.FC<Props> = ({
 
   const handleBackButton = async () => {
     if (!hasTaskControl(task)) return;
-    await clearCallType(savedContact);
+    await clearCallType(savedContact, draftContact);
     backToCallTypeSelect();
   };
 

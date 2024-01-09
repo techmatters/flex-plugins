@@ -47,6 +47,7 @@ import { setUpConferenceActions, setupConferenceComponents } from './conference'
 import { setUpTransferActions } from './transfer/setUpTransferActions';
 import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
+import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -110,7 +111,7 @@ const setUpComponents = (
   }
 
   if (featureFlags.enable_transfers) {
-    Components.setUpTransferComponents();
+    setUpTransferComponents();
     Channels.setUpIncomingTransferMessage();
   }
 

@@ -1,109 +1,102 @@
 [
   {
-    "name": "firstName",
-    "label": "First Name",
-    "type": "input"
-  },
-  {
-    "name": "lastName",
-    "label": "Last Name",
-    "type": "input"
+    "name": "friendlyName",
+    "label": "Name / Full Name",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "gender",
     "label": "Gender",
     "type": "select",
+    "unknownOption": "",
     "options": [
-      { "value": "", "label": "" },
-      { "value": "Boy", "label": "Boy" },
-      { "value": "Girl", "label": "Girl" },
-      { "value": "Non-Binary", "label": "Non-Binary" },
-      { "value": "Unknown", "label": "Unknown" }
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Male",
+        "label": "Male"
+      },
+      {
+        "value": "Female",
+        "label": "Female"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "age",
     "label": "Age",
     "type": "select",
+    "unknownOption": "",
     "options": [
-      { "value": "", "label": "" },
-      { "value": "Unborn", "label": "Unborn" },
-      { "value": "0", "label": "0" },
-      { "value": "01", "label": "1" },
-      { "value": "02", "label": "2" },
-      { "value": "03", "label": "3" },
-      { "value": "04", "label": "4" },
-      { "value": "05", "label": "5" },
-      { "value": "06", "label": "6" },
-      { "value": "07", "label": "7" },
-      { "value": "08", "label": "8" },
-      { "value": "09", "label": "9" },
-      { "value": "10", "label": "10" },
-      { "value": "11", "label": "11" },
-      { "value": "12", "label": "12" },
-      { "value": ">12", "label": ">12" },
-      { "value": "Unknown", "label": "Unknown" }
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "06",
+        "label": "6"
+      },
+      {
+        "value": "07",
+        "label": "7"
+      },
+      {
+        "value": "08",
+        "label": "8"
+      },
+      {
+        "value": "09",
+        "label": "9"
+      },
+      {
+        "value": "10",
+        "label": "10"
+      },
+      {
+        "value": "11",
+        "label": "11"
+      },
+      {
+        "value": "12",
+        "label": "12"
+      },
+      {
+        "value": "13",
+        "label": "13"
+      },
+      {
+        "value": ">13",
+        "label": ">13"
+      }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "streetAddress",
-    "label": "Street Address",
+    "name": "contactNumber",
+    "label": "Contact Number",
     "type": "input"
   },
   {
-    "name": "city",
-    "label": "City",
+    "name": "emailAddress",
+    "label": "Email Address",
     "type": "input"
-  },
-  {
-    "name": "province",
-    "label": "Province",
-    "type": "select",
-    "options": [
-      { "value": "", "label": "" },
-      { "value": "Northern", "label": "Northern" },
-      { "value": "Eastern", "label": "Eastern" },
-      { "value": "Western", "label": "Western" },
-      { "value": "Southern", "label": "Southern" },
-      { "value": "Unknown", "label": "Unknown"}
-    ],
-    "required": { "value": true, "message": "RequiredFieldError" }
-  },
-  {
-    "name": "district",
-    "label": "District",
-    "type": "dependent-select",
-    "dependsOn": "province",
-    "defaultOption": { "value": "", "label": "" },
-    "options": {
-      "Northern": [
-        { "value": "District A", "label": "District A" },
-        { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" },
-        { "value": "Unknown", "label": "Unknown"}
-      ],
-      "Eastern": [
-        { "value": "District A", "label": "District A" },
-        { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" },
-        { "value": "Unknown", "label": "Unknown"}
-      ],
-      "Western": [
-        { "value": "District A", "label": "District A" },
-        { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" },
-        { "value": "Unknown", "label": "Unknown"}
-      ],
-      "Southern": [
-        { "value": "District A", "label": "District A" },
-        { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" },
-        { "value": "Unknown", "label": "Unknown"}
-      ]
-    },
-    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "postalCode",
@@ -111,32 +104,32 @@
     "type": "input"
   },
   {
-    "name": "phone1",
-    "label": "Phone #1",
-    "type": "input"
-  },
-  {
-    "name": "phone2",
-    "label": "Phone #2",
-    "type": "input"
-  },
-  {
-    "name": "language",
-    "label": "Language",
-    "type": "select",
-    "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Hausa", "label": "Hausa" },
-      { "value": "English", "label": "English" },
-      { "value": "Xhosa", "label": "Xhosa" },
-      { "value": "Bemba", "label": "Bemba" },
-      { "value": "Other", "label": "Other" }
-    ]  
-  },
-  {
     "name": "ethnicity",
     "label": "Ethnicity",
-    "type": "input"
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Chinese",
+        "label": "Chinese"
+      },
+      {
+        "value": "Malay",
+        "label": "Malay"
+      },
+      {
+        "value": "Indian",
+        "label": "Indian"
+      },
+      {
+        "value": "Others",
+        "label": "Others"
+      }
+    ]
   },
   {
     "name": "schoolName",
@@ -144,83 +137,96 @@
     "type": "input"
   },
   {
-    "name": "gradeLevel",
-    "label": "Grade Level",
+    "name": "schoolLevel",
+    "label": "School Level",
     "type": "select",
+    "unknownOption": "",
     "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Grade 1 to 4", "label": "Grade 1 to 4" },
-      { "value": "Grade 5 to 7", "label": "Grade 5 to 7" },
-      { "value": "Grade 8 to 9", "label": "Grade 8 to 9" },
-      { "value": "Grade 10 to 12", "label": "Grade 10 to 12" },
-      { "value": "Out of school", "label": "Out of school" }
-    ]
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Primary 1",
+        "label": "Primary 1"
+      },
+      {
+        "value": "Primary 2",
+        "label": "Primary 2"
+      },
+      {
+        "value": "Primary 3",
+        "label": "Primary 3"
+      },
+      {
+        "value": "Primary 4",
+        "label": "Primary 4"
+      },
+      {
+        "value": "Primary 5",
+        "label": "Primary 5"
+      },
+      {
+        "value": "Primary 6",
+        "label": "Primary 6"
+      },
+      {
+        "value": "Sec 1",
+        "label": "Sec 1"
+      },
+      {
+        "value": "Sec 2 and above",
+        "label": "Sec 2 and above"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "class",
+    "label": "Class",
+    "type": "input"
   },
   {
     "name": "livingSituation",
     "label": "Living Situation",
     "type": "select",
+    "unknownOption": "Unknown",
     "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Alternative care", "label": "Alternative care" },
-      { "value": "Group residential facility", "label": "Group residential facility" },
-      { "value": "Homeless or marginally housed", "label": "Homeless or marginally housed" },
-      { "value": "In detention", "label": "In detention" },
-      { "value": "Living independently", "label": "Living independently" },
-      { "value": "With parent(s)", "label": "With parent(s)" },
-      { "value": "With relatives", "label": "With relatives" },
-      { "value": "Other", "label": "Other" }
-    ]
-  },
-  {
-    "name": "inConflictWithTheLaw",
-    "label": "Child in conflict with the law",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "livingInConflictZone",
-    "label": "Child living in conflict zone",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "livingInPoverty",
-    "label": "Child living in poverty",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "memberOfAnEthnic",
-    "label": "Child member of an ethnic, racial or religious minority",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "childWithDisability",
-    "label": "Child with disability",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "LGBTQI+",
-    "label": "LGBTQI+ / SOGIESC child",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "childOnTheMove",
-    "label": "Child on the move",
-    "type": "select",
-    "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Involuntarily", "label": "Involuntarily" },
-      { "value": "Voluntarily", "label": "Voluntarily" }
-    ]
-  },
-  {
-    "name": "region",
-    "label": "Region",
-    "type": "select",
-    "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Cities", "label": "Cities" },
-      { "value": "Rural areas", "label": "Rural areas" },
-      { "value": "Town & semi-dense areas", "label": "Town & semi-dense areas" }
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Foster Care",
+        "label": "Foster Care"
+      },
+      {
+        "value": "Residential facility",
+        "label": "Residential facility"
+      },
+      {
+        "value": "Living independently",
+        "label": "Living independently"
+      },
+      {
+        "value": "With parent(s)",
+        "label": "With parent(s)"
+      },
+      {
+        "value": "With relatives",
+        "label": "With relatives"
+      },
+      {
+        "value": "Kinship Care",
+        "label": "Kinship Care"
+      },
+      {
+        "value": "Others",
+        "label": "Others"
+      }
     ]
   }
 ]

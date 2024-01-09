@@ -22,7 +22,7 @@ import InfoIcon from './InfoIcon';
 import asyncDispatch from '../../states/asyncDispatch';
 import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
 import { newGoBackAction } from '../../states/routing/actions';
-import getOfflineContactTaskSid from '../../states/contacts/offlineContactTaskSid';
+import { getOfflineContactTaskSid } from '../../states/contacts/offlineContactTask';
 import { cancelCaseAsyncAction } from '../../states/case/saveCase';
 import selectCaseStateByCaseId from '../../states/case/selectCaseStateByCaseId';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';

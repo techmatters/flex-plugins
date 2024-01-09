@@ -36,6 +36,7 @@ import asyncDispatch from '../states/asyncDispatch';
 import { createContactAsyncAction } from '../states/contacts/saveContact';
 import { handleTransferredTask } from '../transfer/setUpTransferActions';
 import { prepopulateForm } from './prepopulateForm';
+import { namespace } from '../states/storeNamespaces';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -64,18 +65,15 @@ const fromActionFunction = (fun: ActionFunction) => async (payload: ActionPayloa
 /**
  * Initializes an empty form (in redux store) for the task within payload
  */
-export const initializeContactForm = async ({ task }: ActionPayload) => {
-  const { currentDefinitionVersion } = (Manager.getInstance().store.getState() as RootState)[
-    'plugin-hrm-form'
-  ].configuration;
+const initializeContactForm = async ({ task }: ActionPayload) => {
+  const { currentDefinitionVersion } = (Manager.getInstance().store.getState() as RootState)[namespace].configuration;
   const contact = {
     ...newContact(currentDefinitionVersion, task),
     number: getNumberFromTask(task),
   };
   const { workerSid } = getHrmConfig();
-  const taskSid = task.attributes?.transferMeta?.originalTask ?? task.taskSid;
 
-  await asyncDispatch(Manager.getInstance().store.dispatch)(createContactAsyncAction(contact, workerSid, taskSid));
+  await asyncDispatch(Manager.getInstance().store.dispatch)(createContactAsyncAction(contact, workerSid, task));
 };
 
 const sendMessageOfKey = (messageKey: string) => (
