@@ -28,6 +28,8 @@ export const customChannelTypes = {
   line: 'line',
 } as const;
 
+export const smsChannelTypes = ['sms', 'modica'];
+
 export const channelTypes = {
   ...defaultChannelTypes,
   ...customChannelTypes,
