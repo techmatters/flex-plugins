@@ -96,8 +96,12 @@ const setUpComponents = (
       key="skills" 
       header={"Skills"} 
       sortingFn={sortFn}
+      style={{ width: "180px" }}
       content={
-        <CategoryWithTooltip category="category" color="#FF0000"/>} />
+        <CategoryWithTooltip category="category" color="#FF0000"/>} />,
+        {
+          sortOrder: 0,
+        }
   );
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus(setupObject);
