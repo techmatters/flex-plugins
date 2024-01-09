@@ -33,15 +33,17 @@ import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { rerenderAgentDesktop } from '../rerenderView';
 import { updateDraft } from '../states/contacts/existingContacts';
 import { createContactAsyncAction, loadContactFromHrmByTaskSidAsyncAction } from '../states/contacts/saveContact';
-import { namespace } from '../states/storeNamespaces';
 import { isRouteModal } from '../states/routing/types';
-import { getCurrentBaseRoute } from '../states/routing/getRoute';
+import { selectCurrentBaseRoute } from '../states/routing/getRoute';
 import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
 import ContactNotLoaded from './ContactNotLoaded';
 import { completeTask } from '../services/formSubmissionHelpers';
 import { newContact } from '../states/contacts/contactState';
 import asyncDispatch from '../states/asyncDispatch';
 import { selectIsContactCreating } from '../states/contacts/selectContactSaveStatus';
+import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
+import { selectCurrentDefinitionVersion } from '../states/configuration/selectDefinitions';
+import selectSearchStateForTask from '../states/search/selectSearchStateForTask';
 
 type OwnProps = {
   task: CustomITask;
@@ -158,28 +160,24 @@ const TaskView: React.FC<Props> = props => {
 TaskView.displayName = 'TaskView';
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const {
-    [namespace]: { configuration, activeContacts, routing, searchContacts },
-  } = state;
   const { task } = ownProps;
-  const { currentDefinitionVersion } = configuration;
+  const currentDefinitionVersion = selectCurrentDefinitionVersion(state);
   // Check if the entry for this task exists in each reducer
-  const { savedContact, draftContact } =
-    (task && Object.values(activeContacts.existingContacts).find(c => c.savedContact?.taskId)) ?? {};
+  const { savedContact, draftContact } = selectContactByTaskSid(state, task?.taskSid) ?? {};
   const unsavedContact = getUnsavedContact(savedContact, draftContact);
   const contactFormStateExists = Boolean(savedContact);
-  const routingStateExists = Boolean(task && routing.tasks[task.taskSid]);
-  const searchStateExists = Boolean(task && searchContacts.tasks[task.taskSid]);
-  const contactIsCreating = selectIsContactCreating(state, task.taskSid);
+  const currentRoute = selectCurrentBaseRoute(state, task?.taskSid);
+  const searchStateExists = Boolean(selectSearchStateForTask(state, task?.taskSid));
+  const contactIsCreating = selectIsContactCreating(state, task?.taskSid);
 
   const shouldRecreateState =
-    currentDefinitionVersion && (!contactFormStateExists || !routingStateExists || !searchStateExists);
+    currentDefinitionVersion && (!contactFormStateExists || !currentRoute || !searchStateExists);
 
   return {
     unsavedContact,
     shouldRecreateState,
     currentDefinitionVersion,
-    isModalOpen: routingStateExists && isRouteModal(getCurrentBaseRoute(routing, task.taskSid)),
+    isModalOpen: currentRoute && isRouteModal(currentRoute),
     contactIsCreating,
   };
 };

@@ -61,7 +61,7 @@ import { namespace } from '../../states/storeNamespaces';
 import Search from '../search';
 import { getCurrentBaseRoute, getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { CaseLayout } from '../case/styles';
-import Case, { OwnProps as CaseProps } from '../case/Case';
+import Case from '../case/Case';
 import { ContactMetadata } from '../../states/contacts/types';
 import SearchResultsBackButton from '../search/SearchResults/SearchResultsBackButton';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
@@ -268,11 +268,11 @@ const TabbedForms: React.FC<Props> = ({
 
   const handleBackButton = async () => {
     if (!hasTaskControl(task)) return;
-    await clearCallType(savedContact);
+    await clearCallType(savedContact, draftContact);
     backToCallTypeSelect();
   };
 
-  const tabsToIndex = mapTabsToIndex(savedContact, getUnsavedContact(savedContact, draftContact).rawJson);
+  const tabsToIndex = mapTabsToIndex(savedContact, updatedContact.rawJson);
   const tabs = tabsToIndex.map(mapTabsComponents(methods.errors));
 
   const handleTabsChange = async (t: number) => {
@@ -468,8 +468,14 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { contactId, task }: OwnPro
   updateDraftForm: (form: Partial<ContactRawJson>) => dispatch(updateDraft(contactId, { rawJson: form })),
   saveDraft: (savedContact: Contact, draftContact: ContactDraftChanges) =>
     asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact, task.taskSid)),
-  clearCallType: (savedContact: Contact) =>
-    asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, { rawJson: { callType: '' } }, task.taskSid)),
+  clearCallType: (savedContact: Contact, otherChanges: ContactDraftChanges) =>
+    asyncDispatch(dispatch)(
+      updateContactInHrmAsyncAction(
+        savedContact,
+        { ...otherChanges, rawJson: { ...otherChanges?.rawJson, callType: '' } },
+        task.taskSid,
+      ),
+    ),
   newCSAMReport: (csamReportType: CSAMReportType) =>
     dispatch(newCSAMReportActionForContact(contactId, csamReportType, true)),
   openCSAMReport: (previousRoute: AppRoutes) =>

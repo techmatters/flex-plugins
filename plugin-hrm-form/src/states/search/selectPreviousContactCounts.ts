@@ -15,10 +15,10 @@
  */
 
 import { RootState } from '..';
-import { namespace } from '../storeNamespaces';
 import { PreviousContactCounts } from './types';
+import selectSearchStateForTask from './selectSearchStateForTask';
 
 const selectPreviousContactCounts = (state: RootState, taskId: string): PreviousContactCounts | undefined =>
-  state[namespace].searchContacts.tasks[taskId]?.previousContactCounts;
+  selectSearchStateForTask(state, taskId)?.previousContactCounts;
 
 export default selectPreviousContactCounts;
