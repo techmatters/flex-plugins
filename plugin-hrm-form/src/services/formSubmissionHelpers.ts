@@ -15,10 +15,18 @@
  */
 
 /* eslint-disable import/no-unused-modules */
-import { Actions, ITask, Manager } from '@twilio/flex-ui';
+import { Actions, Manager } from '@twilio/flex-ui';
 import { Dispatch } from 'react';
 
-import { Case, Contact, CustomITask, isOfflineContact, isOfflineContactTask } from '../types/types';
+import {
+  Case,
+  CustomITask,
+  Contact,
+  isOfflineContactTask,
+  isOfflineContact,
+  RouterTask,
+  isTwilioTask,
+} from '../types/types';
 import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
 import { saveContact } from './ContactService';
@@ -33,7 +41,9 @@ import { getOfflineContactTaskSid } from '../states/contacts/offlineContactTask'
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
  */
-export const completeContactTask = async (task: ITask) => {
+export const completeContactTask = async (task: RouterTask) => {
+  if (!isTwilioTask(task)) return;
+
   const { sid } = task;
 
   if (task.status !== 'wrapping') {
@@ -56,7 +66,7 @@ export const removeOfflineContact = async (dispatch: Dispatch<any>, contact: Con
   }
 };
 
-export const completeTask = (task: CustomITask, contact: Contact) =>
+export const completeTask = (task: RouterTask, contact: Contact) =>
   isOfflineContactTask(task)
     ? Manager.getInstance().store.dispatch(GeneralActions.removeContactState(getOfflineContactTaskSid(), contact.id))
     : completeContactTask(task);

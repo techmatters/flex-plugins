@@ -15,7 +15,7 @@
  */
 
 import type { QueuesStatus } from '../../states/queuesStatus/types';
-import type { ChannelTypes } from '../../states/DomainConstants';
+import { ChannelTypes, smsChannelTypes } from '../../states/DomainConstants';
 
 type QueueEntry = { [K in ChannelTypes]: number } & { longestWaitingDate: string; isChatPending: boolean };
 
@@ -45,6 +45,16 @@ export const isWaiting = (status: string) => isPending(status) || isReserved(sta
 const subscribedToQueue = (queue: string, queues: QueuesStatus) => Boolean(queues[queue]);
 
 /**
+ * This function is used to determine the channel of a task.
+ * It handles additional SMS channels, such as Modica.
+ */
+const getChannel = (task: any): ChannelTypes => {
+  if (task.channel_type === 'voice') return 'voice';
+
+  return smsChannelTypes.includes(task.attributes.channelType) ? 'sms' : task.attributes.channelType;
+};
+
+/**
  * Adds each waiting tasks to the appropiate queue and channel, recording which is the oldest.
  * If counselor is not subscribed to a queue, acc[queue] will be undefined
  */
@@ -54,7 +64,7 @@ export const addPendingTasks = (acc: QueuesStatus, task: any): QueuesStatus => {
 
   const created = task.date_created;
   const isChatBasedTask = task.channel_type !== 'voice';
-  const channel = isChatBasedTask ? task.attributes.channelType : 'voice';
+  const channel = getChannel(task);
   const queue = task.queue_name;
   const currentOldest = acc[queue].longestWaitingDate;
   const longestWaitingDate = currentOldest !== null && currentOldest < created ? currentOldest : created;

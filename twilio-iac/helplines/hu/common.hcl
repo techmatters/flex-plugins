@@ -13,7 +13,7 @@ locals {
     helpline_language                 = "hu-HU"
     contacts_waiting_channels         = ["web", "voice"]
     enable_post_survey                = false
-
+    helpline_region                   = "eu-west-1"
 
     lex_bot_languages = {
       uk : ["pre_survey"],
