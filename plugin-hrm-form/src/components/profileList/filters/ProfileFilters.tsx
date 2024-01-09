@@ -29,7 +29,7 @@ const ProfileFilters: React.FC = () => {
         <Template code="ProfileList-Clients" />
       </MainTitle>
       <CountText>
-        <Template code={getProfileCountString()} count={profileCount} />{' '}
+        <Template code={getProfileCountString()} count={profileCount} />
       </CountText>
     </FiltersContainer>
   );

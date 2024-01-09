@@ -85,8 +85,8 @@ type CaseListRoute = RouteWithModalSupport & {
 };
 
 type ProfileListRoute = RouteWithModalSupport & {
-  route: 'profiles-list';
-  subroute: 'profiles-list';
+  route: 'profile-list';
+  subroute: 'profile-list';
 };
 
 type ProfileHomeRoute = RouteWithModalSupport & {
@@ -238,9 +238,16 @@ type OtherRoutes =
 export type AppRoutes = CaseRoute | ProfileHomeRoute | OtherRoutes;
 
 export function isRouteWithModalSupport(appRoute: any): appRoute is RouteWithModalSupport {
-  return ['tabbed-forms', 'case', 'case-list', 'contact', 'profile', 'search', 'select-call-type'].includes(
-    appRoute.route,
-  );
+  return [
+    'tabbed-forms',
+    'case',
+    'case-list',
+    'contact',
+    'profile',
+    'search',
+    'select-call-type',
+    'profile-list',
+  ].includes(appRoute.route);
 }
 
 export const isCaseRoute = (route: AppRoutes): route is CaseRoute => route?.route === 'case';
@@ -262,7 +269,7 @@ type ChangeRouteAction = {
 type OpenModalAction = {
   type: typeof OPEN_MODAL;
   routing: AppRoutes;
-  taskId?: string;
+  taskId: string;
 };
 
 type GoBackAction = {

@@ -346,7 +346,7 @@ export const setUpClientProfileList = () => {
         Flex.Actions.invokeAction('NavigateToView', { viewName: 'client-profiles' });
         Flex.Manager.getInstance().store.dispatch(
           changeRoute(
-            { route: 'profiles-list', subroute: 'profiles-list' },
+            { route: 'profile-list', subroute: 'profile-list' },
             standaloneTaskSid,
             ChangeRouteMode.ResetRoute,
           ),

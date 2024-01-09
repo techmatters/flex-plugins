@@ -407,6 +407,7 @@
   "Profile-NoCasesFound": "No Cases Found",
   "Profile-ViewClient": "View Client",
 
+  "SideNavProfileList": "Client Profiles",
   "ProfileList-Clients": "Clients",
   "ProfileList-Count-Singular": "{{count}} client",
   "ProfileList-Count-Plural": "{{count}} clients",

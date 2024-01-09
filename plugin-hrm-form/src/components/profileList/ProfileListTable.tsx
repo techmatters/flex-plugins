@@ -30,17 +30,18 @@ const ProfileListTable: React.FC = () => {
   const { loading, profileIds, profileCount, error } = useProfileList();
   const [currentPage, setCurrentPage] = useState(0);
   const pagesCount = Math.ceil(profileCount / PROFILES_PER_PAGE);
-  const offset = (currentPage + 1) * PROFILES_PER_PAGE;
+  const offset = currentPage * PROFILES_PER_PAGE;
 
-  const updatePage = (page: number) => {
-    setCurrentPage(page);
-  };
-
+  console.log('>>> 1 ProfileListTable', { offset, limit: PROFILES_PER_PAGE, profileCount, pagesCount });
   const { loadProfileList } = useProfileListLoader({ skipAutoload: false, offset, limit: PROFILES_PER_PAGE });
 
-  // useEffect(() => {
-  //   loadProfileList();
-  // }, [currentPage, loadProfileList]);
+  const updatePage = (page: number) => {
+    const newoffset = currentPage * PROFILES_PER_PAGE;
+
+    setCurrentPage(page);
+    console.log('>>> ProfileListTable updatePage', { newoffset, page, profileCount });
+    loadProfileList();
+  };
 
   return (
     <>

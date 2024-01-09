@@ -34,6 +34,8 @@ import {
 } from '../../styles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfileFlags } from '../../states/profile/hooks';
+import { RootState } from '../../states';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 
 const CHAR_LIMIT = 200;
 
@@ -87,10 +89,20 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId, openProfileModal }) => 
 const mapDispatchToProps = dispatch => {
   return {
     openProfileModal: id => {
-      dispatch(newOpenModalAction({ route: 'profile', id, subroute: 'details' }));
+      console.log('>>> openProfileModal', id);
+      dispatch(newOpenModalAction({ route: 'profile', id, subroute: 'details' }, 'standalone-task-sid'));
     },
   };
 };
 
-const connector = connect(null, mapDispatchToProps);
+const mapStateToProps = (state: RootState) => {
+  return {
+    routing: selectCurrentTopmostRouteForTask(state, 'standalone-task-sid') ?? {
+      route: 'profile-list',
+      subroute: 'profile-list',
+    },
+  };
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 export default connector(ProfileDetailsRow);

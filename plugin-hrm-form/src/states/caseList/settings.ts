@@ -112,7 +112,6 @@ export type UpdateCaseListPageAction = {
 };
 
 export const updateCaseListPage = (page: number): UpdateCaseListPageAction => {
-  console.log('>>> updateCaseListPage Updated page:', page);
   return {
     type: UPDATE_CASE_LIST_PAGE,
     page,
@@ -120,7 +119,6 @@ export const updateCaseListPage = (page: number): UpdateCaseListPageAction => {
 };
 
 export const updatedPageReducer = (state: CaseListSettingsState, action: UpdateCaseListPageAction) => {
-  console.log('>>> updatedPageReducer Updated page:', action.page);
   return {
     ...state,
     page: action.page,

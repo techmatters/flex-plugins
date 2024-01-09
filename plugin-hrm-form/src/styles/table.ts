@@ -22,9 +22,12 @@ import { Absolute, Flex } from './layout';
 import { FontOpenSans } from './typography';
 import HrmTheme from './HrmTheme';
 
-export const ListContainer = styled(Absolute)`
+type ListContainerProps = {
+  width?: string;
+}
+export const ListContainer = styled(Absolute)<ListContainerProps>`
   height: 100%;
-  width: 1280px;
+  width: ${props => props.width || '1280px'};
   background-color: #f6f6f6;
 `;
 ListContainer.displayName = 'ListContainer';
