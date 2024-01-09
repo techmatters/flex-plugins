@@ -72,6 +72,10 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   return initLocalization(localizationConfig, initialLanguage);
 };
 
+const sortFn = (first, second) => {
+  return 0;
+}
+
 const setUpComponents = (
   featureFlags: FeatureFlags,
   setupObject: ReturnType<typeof getHrmConfig>,
@@ -82,7 +86,12 @@ const setUpComponents = (
 
   // setUp (add) dynamic components
   Flex.WorkersDataTable.Content.add(
-    <Flex.ColumnDefinition key="skills" header={"Skills"} content={<CategoryWithTooltip category="category" color="#FF0000"/>} />
+    <Flex.ColumnDefinition 
+      key="skills" 
+      header={"Skills"} 
+      sortingFn={sortFn}
+      content={
+        <CategoryWithTooltip category="category" color="#FF0000"/>} />
   );
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus(setupObject);
