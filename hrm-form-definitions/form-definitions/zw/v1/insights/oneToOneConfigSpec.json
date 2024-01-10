@@ -31,11 +31,18 @@
           },
           {
             "name": "childStatus",
-            "insights": ["customers", "email"]
+            "insights": ["conversations", "conversation_attribute_10"]
           },
           {
             "name": "concernLevel",
             "insights": ["conversations", "initiative"]
+          },
+          {
+            "name": "vulnerableGroups",
+            "insights": [
+              "customers", 
+              "email"
+            ]
           }
         ],
         "caseInformation": [
