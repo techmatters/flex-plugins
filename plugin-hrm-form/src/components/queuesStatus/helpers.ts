@@ -15,9 +15,10 @@
  */
 
 import type { QueuesStatus } from '../../states/queuesStatus/types';
-import { ChannelTypes, smsChannelTypes } from '../../states/DomainConstants';
+import { CoreChannelTypes } from '../../states/DomainConstants';
+import { isSmsChannelType } from '../../utils/smsChannels';
 
-type QueueEntry = { [K in ChannelTypes]: number } & { longestWaitingDate: string; isChatPending: boolean };
+type QueueEntry = { [K in CoreChannelTypes]: number } & { longestWaitingDate: string; isChatPending: boolean };
 
 export const newQueueEntry: QueueEntry = {
   facebook: 0,
@@ -48,10 +49,10 @@ const subscribedToQueue = (queue: string, queues: QueuesStatus) => Boolean(queue
  * This function is used to determine the channel of a task.
  * It handles additional SMS channels, such as Modica.
  */
-const getChannel = (task: any): ChannelTypes => {
+const getChannel = (task: any): CoreChannelTypes => {
   if (task.channel_type === 'voice') return 'voice';
 
-  return smsChannelTypes.includes(task.attributes.channelType) ? 'sms' : task.attributes.channelType;
+  return isSmsChannelType(task.attributes.channelType) ? 'sms' : task.attributes.channelType;
 };
 
 /**

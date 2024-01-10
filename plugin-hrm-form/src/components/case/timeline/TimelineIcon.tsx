@@ -45,6 +45,7 @@ const getIcon = (type: IconType) => {
     case channelTypes.web:
       return <DefaultIcon defaultTaskChannel={Flex.DefaultTaskChannels.Chat} color={colors.web} />;
     case channelTypes.sms:
+    case channelTypes.modica:
       return <SmsIcon width="24px" height="24px" color={colors.sms} />;
     case channelTypes.voice:
       return <CallIcon width="24px" height="24px" color={colors.voice} />;
