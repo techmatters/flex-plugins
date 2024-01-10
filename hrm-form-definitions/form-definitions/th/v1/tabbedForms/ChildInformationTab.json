@@ -267,48 +267,46 @@
     ]
   },
   {
-    "name": "hivPositive",
-    "label": "HIV Positive?",
-    "type": "checkbox"
-  },
-  {
-    "name": "inConflictWithTheLaw",
-    "label": "Child in conflict with the law",
-    "type": "checkbox"
-  },
-  {
-    "name": "livingInConflictZone",
-    "label": "Child living in conflict zone",
-    "type": "checkbox"
-  },
-  {
-    "name": "livingInPoverty",
-    "label": "Child living in poverty",
-    "type": "checkbox"
-  },
-  {
-    "name": "memberOfAnEthnic",
-    "label": "Child member of an ethnic, racial or religious minority",
-    "type": "checkbox"
-  },
-  {
-    "name": "LGBTQI",
-    "label": "LGBTQI+ / SOGIESC",
-    "type": "checkbox"
-  },
-  {
-    "name": "childOnTheMoveVoluntarily",
-    "label": "เด็กเคลื่อนย้าย-โดยสมัครใจ",
-    "type": "checkbox"
-  },
-  {
-    "name": "childOnTheMoveInvoluntarily",
-    "label": "เด็กเคลื่อนย้าย-ถูกบังคับ",
-    "type": "checkbox"
-  },
-  {
-    "name": "childWithDisability",
-    "label": "Child with disability",
-    "type": "checkbox"
+    "name": "vulnerableGroups",
+    "label": "Vulnerable Groups",
+    "type": "listbox-multiselect",
+    "options": [
+        {
+        "value": "HIV+",
+        "label": "HIV+"
+      },
+      {
+        "value": "เด็กในกระบวนการยุติธรรม",
+        "label": "เด็กในกระบวนการยุติธรรม"
+      },
+      {
+        "value": "เด็กในพื้นที่ความขัดแย้ง",
+        "label": "เด็กในพื้นที่ความขัดแย้ง"
+      },
+      {
+        "value": "เด็กยากจน",
+        "label": "เด็กยากจน"
+      },
+      {
+        "value": "เด็กชาติพันธุ์",
+        "label": "เด็กชาติพันธุ์"
+      },
+      {
+        "value": "เด็กเคลื่อนย้าย-ถูกบังคับ",
+        "label": "เด็กเคลื่อนย้าย-ถูกบังคับ"
+      },
+      {
+        "value": "เด็กเคลื่อนย้าย-โดยสมัครใจ",
+        "label": "เด็กเคลื่อนย้าย-โดยสมัครใจ"
+      },
+      {
+        "value": "เด็กบกพร่องทางความสามารถ",
+        "label": "เด็กบกพร่องทางความสามารถ"
+      },
+      {
+        "value": "LGBTQI+/SOGIESC",
+        "label": "LGBTQI+/SOGIESC"
+      }
+    ]
   }
 ]

@@ -1914,24 +1914,27 @@
     ]
   },
   {
-    "name": "inConflictWithTheLaw",
-    "label": "Child in conflict with the law",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "memberOfAnEthnic",
-    "label": "Child member of a minority religion/caste",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "childWithDisability",
-    "label": "Child with disability",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "LGBTQI+",
-    "label": "LGBTQI+ / SOGIESC child",
-    "type": "mixed-checkbox"
+    "name": "vulnerableGroups",
+    "label": "Vulnerable Groups",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Client in conflict with the law",
+        "label": "Client in conflict with the law"
+      },
+      {
+        "value": "Client member of a minority religion/caste",
+        "label": "Client member of a minority religion/caste"
+      },
+      {
+        "value": "Client with disability",
+        "label": "Client with disability"
+      },
+      {
+        "value": "LGBTQI+/SOGIESC client",
+        "label": "LGBTQI+/SOGIESC client"
+      }
+    ]
   },
   {
     "name": "region",

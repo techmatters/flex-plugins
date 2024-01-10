@@ -375,28 +375,30 @@
     ]
   },
   {
-    "name": "inConflictWithTheLaw",
-    "label": "Person of concern in conflict with the law",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "livingInPoverty",
-    "label": "Person of concern living in poverty",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "childWithDisability",
-    "label": "Person of concern with disability",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "LGBTQI+",
-    "label": "LGBTQI+ / SOGIESC",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "memberOfAnEthnic",
-    "label": "Person of concern member of an ethnic, racial or religious minority",
-    "type": "mixed-checkbox"
+    "name": "vulnerableGroups",
+    "label": "Vulnerable Groups",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "In conflict with the law",
+        "label": "In conflict with the law"
+      },
+      {
+        "value": "Living in poverty",
+        "label": "Living in poverty"
+      },
+      {
+        "value": "Member of an ethnic, racial or religious minority",
+        "label": "Member of an ethnic, racial or religious minority"
+      },
+      {
+        "value": "With disability",
+        "label": "With disability"
+      },
+      {
+        "value": "LGBTQI+/SOGIESC",
+        "label": "LGBTQI+/SOGIESC"
+      }
+    ]
   }
 ]

@@ -356,56 +356,49 @@
     ]
   },
   {
-    "name": "hivPositive",
-    "label": "Child HIV Positive?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "livingInConflictZone",
-    "label": "Child living in conflict zone",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "inConflictWithTheLaw",
-    "label": "Child in conflict with the law",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "livingInPoverty",
-    "label": "Child living in poverty",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "memberOfAnEthnic",
-    "label": "Child member of an ethnic, racial or religious minority",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "childWithDisability",
-    "label": "Child with disability",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "LGBTQI+",
-    "label": "LGBTQI+ / SOGIESC child",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "childOnTheMove",
-    "label": "Child on the move",
-    "type": "select",
+    "name": "vulnerableGroups",
+    "label": "Vulnerable Groups",
+    "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Unknown",
-        "label": ""
+        "value": "Child in conflict with the law",
+        "label": "Child in conflict with the law"
       },
       {
-        "value": "Involuntary",
-        "label": "Involuntary"
+        "value": "Child living in conflict zone",
+        "label": "Child living in conflict zone"
       },
       {
-        "value": "Voluntary",
-        "label": "Voluntary"
+        "value": "Child living in poverty",
+        "label": "Child living in poverty"
+      },
+      {
+        "value": "Child member of an ethnic, racial or religious minority",
+        "label": "Child member of an ethnic, racial or religious minority"
+      },
+      {
+        "value": "Child on the move (involuntarily)",
+        "label": "Child on the move (involuntarily)"
+      },
+      {
+        "value": "Child on the move (voluntarily)",
+        "label": "Child on the move (voluntarily)"
+      },
+      {
+        "value": "Child with disability",
+        "label": "Child with disability"
+      },
+      {
+        "value": "LGBTQI+/SOGIESC child",
+        "label": "LGBTQI+/SOGIESC child"
+      },
+      {
+        "value": "Out-of-school child",
+        "label": "Out-of-school child"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
       }
     ]
   },

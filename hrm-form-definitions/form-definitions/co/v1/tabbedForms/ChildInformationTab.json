@@ -5024,44 +5024,43 @@
     }
   },
   {
-    "name": "inConflictWithTheLaw",
-    "label": "Adolescente en conflicto con la ley",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "livingInConflictZone",
-    "label": "Adolescente viviendo en zona de conflicto",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "livingInPoverty",
-    "label": "Adolescente viviendo en pobreza",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "childOnTheMove",
-    "label": "Adolescente en desplazamiento",
-    "type": "select",
-    "unknownOption": "Desconocido",
+    "name": "vulnerableGroups",
+    "label": "Grupos Vulnerables",
+    "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Desconocido",
-        "label": ""
+        "value": "En conflicto con la ley",
+        "label": "En conflicto con la ley"
       },
       {
-        "value": "Voluntario",
-        "label": "Voluntario"
+        "value": "Viviendo en zona de conflicto",
+        "label": "Viviendo en zona de conflicto"
       },
       {
-        "value": "Involuntario",
-        "label": "Involuntario"
+        "value": "Viviendo en pobreza",
+        "label": "Viviendo en pobreza"
+      },
+      {
+        "value": "Pertenece a una etnia",
+        "label": "Pertenece a una etnia"
+      },
+      {
+        "value": "En desplazamiento (voluntario)",
+        "label": "En desplazamiento (voluntario)"
+      },
+      {
+        "value": "En desplazamiento (involuntario)",
+        "label": "En desplazamiento (involuntario)"
+      },
+      {
+        "value": "En condición de discapacidad",
+        "label": "En condición de discapacidad"
+      },
+      {
+        "value": "Pertenece a la comunidad LGTBIQA+",
+        "label": "Pertenece a la comunidad LGTBIQA+"
       }
     ]
-  },
-  {
-    "name": "childWithDisability",
-    "label": "Adolescente en condición de discapacidad",
-    "type": "mixed-checkbox"
   },
   {
     "name": "epsType",
