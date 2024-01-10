@@ -23,10 +23,10 @@ import {
   addPendingTasks,
   getNewQueuesStatus,
 } from '../../../components/queuesStatus/helpers';
-import { channelTypes } from '../../../states/DomainConstants';
+import { coreChannelTypes } from '../../../states/DomainConstants';
 
 test('Test newQueueEntry', () => {
-  Object.keys(channelTypes).forEach(key => expect(newQueueEntry[key]).toEqual(0));
+  Object.keys(coreChannelTypes).forEach(key => expect(newQueueEntry[key]).toEqual(0));
   expect(newQueueEntry.longestWaitingDate).toBeNull();
 });
 
@@ -50,21 +50,21 @@ const tasks = {
     task_sid: 'T1',
     status: 'pending',
     date_created: '2020-04-14T21:36:28.045Z',
-    attributes: { channelType: channelTypes.facebook },
+    attributes: { channelType: coreChannelTypes.facebook },
     queue_name: queuesNames[0],
   },
   T2: {
     task_sid: 'T2',
     status: 'pending',
     date_created: '2020-04-14T21:36:26.033Z',
-    attributes: { channelType: channelTypes.web },
+    attributes: { channelType: coreChannelTypes.web },
     queue_name: queuesNames[1],
   },
   T3: {
     task_sid: 'T3',
     status: 'reserved',
     date_created: '2020-04-14T21:25:00.012Z',
-    attributes: { channelType: channelTypes.facebook },
+    attributes: { channelType: coreChannelTypes.facebook },
     queue_name: queuesNames[0],
   },
   T4: {
@@ -80,21 +80,21 @@ const tasks = {
     status: 'pending',
     channel_type: 'voice',
     date_created: '2020-04-14T21:36:00.012Z',
-    attributes: { channelType: channelTypes.facebook }, // this should be ignored
+    attributes: { channelType: coreChannelTypes.facebook }, // this should be ignored
     queue_name: queuesNames[0],
   },
   T7: {
     task_sid: 'T7',
     status: 'pending',
     date_created: '2020-04-14T21:36:00.012Z',
-    attributes: { channelType: channelTypes.sms },
+    attributes: { channelType: coreChannelTypes.sms },
     queue_name: queuesNames[0],
   },
   T8: {
     task_sid: 'T8',
     status: 'pending',
     date_created: '2020-04-14T21:36:00.012Z',
-    attributes: { channelType: channelTypes.whatsapp },
+    attributes: { channelType: coreChannelTypes.whatsapp },
     queue_name: queuesNames[0],
   },
 };
@@ -144,7 +144,7 @@ const tasks2 = {
     task_sid: 'T9',
     status: 'pending',
     date_created: '2020-03-14T21:25:00.012Z',
-    attributes: { channelType: channelTypes.facebook },
+    attributes: { channelType: coreChannelTypes.facebook },
     queue_name: queuesNames[0],
   },
 };
@@ -168,7 +168,7 @@ const tasks3 = {
     task_sid: 'T10',
     status: 'pending',
     date_created: '2020-03-14T21:25:00.013Z',
-    attributes: { channelType: channelTypes.facebook },
+    attributes: { channelType: coreChannelTypes.facebook },
     queue_name: queuesNames[0],
   },
 };
