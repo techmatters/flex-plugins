@@ -334,7 +334,7 @@ export const setUpCaseList = () => {
 
 export const setUpClientProfileList = () => {
   Flex.ViewCollection.Content.add(
-    <Flex.View name="client-profiles" key="client-profiles-view">
+    <Flex.View name="profile-list" key="profile-list-view">
       <ProfileList />
     </Flex.View>,
   );
@@ -343,7 +343,7 @@ export const setUpClientProfileList = () => {
     <ProfileListSideLink
       key="ProfileListSideLink"
       onClick={() => {
-        Flex.Actions.invokeAction('NavigateToView', { viewName: 'client-profiles' });
+        Flex.Actions.invokeAction('NavigateToView', { viewName: 'profile-list' });
         Flex.Manager.getInstance().store.dispatch(
           changeRoute(
             { route: 'profile-list', subroute: 'profile-list' },

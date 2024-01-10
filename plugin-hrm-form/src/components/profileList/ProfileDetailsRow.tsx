@@ -97,10 +97,7 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = (state: RootState) => {
   return {
-    routing: selectCurrentTopmostRouteForTask(state, 'standalone-task-sid') ?? {
-      route: 'profile-list',
-      subroute: 'profile-list',
-    },
+    routing: selectCurrentTopmostRouteForTask(state, 'standalone-task-sid'),
   };
 };
 
