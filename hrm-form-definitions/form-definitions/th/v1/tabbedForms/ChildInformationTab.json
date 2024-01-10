@@ -149,8 +149,8 @@
     "label": "Language",
     "type": "select",
     "defaultOption": {
-      "value": "ภาษาไทย",
-      "label": "ภาษาไทย"
+      "value": "Unknown",
+      "label": ""
     },
     "optionsReferenceKey": "languageOptions"
   },
