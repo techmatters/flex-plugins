@@ -18,7 +18,7 @@ import React from 'react';
 
 const DirectoryOpenedIcon = () => {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="10" height="10" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clipPath="url(#clip0_262_60000)">
         <path
           fillRule="evenodd"
@@ -29,7 +29,7 @@ const DirectoryOpenedIcon = () => {
       </g>
       <defs>
         <clipPath id="clip0_262_60000">
-          <rect width="14" height="14" fill="white" />
+          <rect width="16" height="14" fill="white" />
         </clipPath>
       </defs>
     </svg>
