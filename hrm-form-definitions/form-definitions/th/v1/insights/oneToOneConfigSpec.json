@@ -25,10 +25,7 @@
       },
       {
         "name": "vulnerableGroups",
-        "insights": [
-          "customers", 
-          "email"
-        ]
+        "insights": ["customers", "email"]
       }
     ],
     "caseInformation": [
@@ -38,7 +35,7 @@
       },
         {
           "name": "repeatCaller",
-          "insights": ["conversations", "conversation_measure_2"],
+          "insights": ["conversations", "conversation_attribute_7"],
           "type": "mixed-checkbox"
         },
         {
@@ -51,7 +48,7 @@
         },
         {
           "name": "didTheChildFeelWeSolvedTheirProblem",
-          "insights": ["conversations", "conversation_measure_4"],
+          "insights": ["conversations", "customer_attribute_2"],
           "type": "mixed-checkbox"
         },
         {
@@ -60,12 +57,52 @@
           "type": "mixed-checkbox"
         },
         {
-          "name": "hubServicesProvided",
-          "insights": ["customers", "category"]  
+          "name": "nightHub",
+          "insights": ["conversations", "conversation_measure_1"]  
+        },
+        {
+          "name": "basicServices",
+          "insights": ["conversations", "conversation_measure_2"]  
+        },
+        {
+          "name": "identificationService",
+          "insights": ["conversations", "conversation_measure_3"]  
+        },
+        {
+          "name": "physicalHealthServices",
+          "insights": ["conversations", "conversation_measure_4"]  
+        },
+        {
+          "name": "mentalHealthServices",
+          "insights": ["conversations", "conversation_measure_5"]  
         },
         {
           "name": "numberofConsultations",
-          "insights": ["conversations", "conversation_attribute_9"]  
+          "insights": ["conversations", "conversation_measure_6"]  
+        },
+        {
+          "name": "numberofOneOnOneCounselling",
+          "insights": ["conversations", "conversation_measure_7"]  
+        },
+        {
+          "name": "lifeSkillsServices",
+          "insights": ["conversations", "conversation_measure_8"]  
+        },
+        {
+          "name": "educationalServices",
+          "insights": ["conversations", "conversation_measure_9"]  
+        },
+        {
+          "name": "caseFollowUps",
+          "insights": ["conversations", "conversation_measure_10"]  
+        },
+        {
+          "name": "careerServices",
+          "insights": ["customers", "acquisition_cost"]  
+        },
+        {
+          "name": "maternalServices",
+          "insights": ["customers", "business_value"]  
         }
     ]
   },
