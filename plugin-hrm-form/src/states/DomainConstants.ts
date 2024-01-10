@@ -46,8 +46,7 @@ export const coreChannelTypes = {
  * This is the complete list of channels.
  */
 export const channelTypes = {
-  ...defaultChannelTypes,
-  ...customChannelTypes,
+  ...coreChannelTypes,
   ...customSmsChannelTypes,
 };
 
