@@ -26,28 +26,11 @@
           "insights": ["customers", "customer_attribute_1"]
         },
         {
-          "name": "inConflictWithTheLaw",
-          "insights": ["conversations", "conversation_measure_1"],
-          "type": "mixed-checkbox"
-        },
-        {
-          "name": "livingInPoverty",
-          "insights": ["conversations", "conversation_measure_3"],
-          "type": "mixed-checkbox"
-        },
-        {
-          "name": "childOnTheMove",
-          "insights": ["customers", "email"]
-        },
-        {
-          "name": "childWithDisability",
-          "insights": ["customers", "customer_attribute_3"],
-          "type": "mixed-checkbox"
-        },
-        {
-          "name": "LGBTQI+",
-          "insights": ["conversations", "conversation_measure_5"],
-          "type": "mixed-checkbox"
+          "name": "vulnerableGroups",
+          "insights": [
+            "customers", 
+            "email"
+          ]
         },
         {
           "name": "region",
