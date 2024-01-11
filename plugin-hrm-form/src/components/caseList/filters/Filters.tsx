@@ -253,7 +253,7 @@ const Filters: React.FC<Props> = ({
         <FiltersContainer data-testid="CaseList-Filters-Panel">
           <FilterList fontSize="small" />
           <FilterTitle>
-            <Template code="CaseList-FilterBy" />
+            <Template code="Table-FilterBy" />
           </FilterTitle>
           <MultiSelectFilter
             name="status"

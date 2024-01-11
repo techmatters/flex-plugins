@@ -290,7 +290,7 @@
   "CaseList-ExpandButton": "Abrir detalhes do caso",
   "CaseList-PrevPage": "Página anterior",
   "CaseList-NextPage": "Próxima página",
-  "CaseList-FilterBy": "Filtrar por",
+  "Table-FilterBy": "Filtrar por",
   "CaseList-Filters-Status": "Status",
   "CaseList-Filters-Counselor": "Atendente",
   "CaseList-Filters-Categories": "Categorias",

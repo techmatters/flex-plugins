@@ -14,24 +14,73 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Template } from '@twilio/flex-ui';
+import FilterList from '@material-ui/icons/FilterList';
 
-import { CountText, FiltersContainer, MainTitle } from '../../../styles';
+import { getTemplateStrings } from '../../../hrmConfig';
+import MultiSelectFilter, { Item } from '../../caseList/filters/MultiSelectFilter';
+import { CountText, FiltersContainer, FilterTitle, MainTitle } from '../../../styles';
+import { useProfilesListLoader } from '../../../states/profile/hooks/useProfilesListLoader';
+import { useAllProfileFlags } from '../../../states/profile/hooks';
 import { useProfilesList } from '../../../states/profile/hooks/useProfilesList';
 
+const filterCheckedItems = (items: Item[]): string[] => items.filter(item => item.checked).map(item => item.value);
+
 const ProfileFilters: React.FC = () => {
-  const { count } = useProfilesList();
+  const { count, loading: countLoading } = useProfilesList();
+  const strings = getTemplateStrings();
+  const [openedFilter, setOpenedFilter] = useState<string>();
+
+  const { allProfileFlags, loading: flagsLoading } = useAllProfileFlags();
+
+  const [statusValues, setStatusValues] = useState<Item[]>([]);
+  const { updateProfilesListPage } = useProfilesListLoader();
+
+  // const handleApplyStatusFilter = (values: Item[]) => {
+  //   updateCaseListFilter({ statuses: filterCheckedItems(values) });
+  // };
+  useEffect(() => {
+    const statusValues = allProfileFlags?.map(flag => ({
+      value: flag.name,
+      label: flag.name.charAt(0).toUpperCase() + flag.name.slice(1),
+      checked: false,
+    }));
+    if (!flagsLoading) setStatusValues(statusValues);
+  }, [allProfileFlags, flagsLoading]);
+
+  const showStatusFilter = () => {
+    return (
+      <MultiSelectFilter
+        name="status"
+        text={strings['ProfileList-THStatus']}
+        defaultValues={statusValues}
+        openedFilter={openedFilter}
+        applyFilter={() => console.log('>>> apply filter')}
+        setOpenedFilter={setOpenedFilter}
+      />
+    );
+  };
+
   const getProfileCountString = () => (count === 1 ? 'ProfileList-Count-Singular' : 'ProfileList-Count-Plural');
   return (
-    <FiltersContainer>
-      <MainTitle>
-        <Template code="ProfileList-Clients" />
-      </MainTitle>
-      <CountText>
-        <Template code={getProfileCountString()} count={count} />
-      </CountText>
-    </FiltersContainer>
+    <>
+      <FiltersContainer>
+        <MainTitle>
+          <Template code="ProfileList-Clients" />
+        </MainTitle>
+        <CountText>
+          <Template code={getProfileCountString()} count={count} />
+        </CountText>
+      </FiltersContainer>
+      <FiltersContainer>
+        <FilterList fontSize="small" />
+        <FilterTitle>
+          <Template code="Table-FilterBy" />
+        </FilterTitle>
+        {!countLoading && !flagsLoading && showStatusFilter()}
+      </FiltersContainer>
+    </>
   );
 };
 

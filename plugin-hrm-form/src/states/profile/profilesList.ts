@@ -60,6 +60,10 @@ const handleLoadProfilesListFulfilledAction = (state: t.ProfilesListState, actio
 };
 
 export const updateProfilesListPage = createAction(t.PROFILES_LIST_UPDATE_PAGE, (params: { page: number }) => params);
+export const updateProfilesListFilter = createAction(
+  t.PROFILES_LIST_UPDATE_FILTER,
+  (params: { filter: any }) => params,
+);
 
 const handleUpdateProfilesListPageAction = (state: t.ProfilesListState, action: any) => {
   const { page } = action.payload;
@@ -71,6 +75,17 @@ const handleUpdateProfilesListPageAction = (state: t.ProfilesListState, action: 
 
   return loadProfilesListStateIntoRedux(state, update);
 };
+
+const handleUpdateProfilesListFilterAction = (state: t.ProfilesListState, action: any) => {
+  const { filter } = action.payload;
+
+  const update = {
+    ...state,
+    filter,
+  };
+
+  return loadProfilesListStateIntoRedux(state, update);
+}
 
 const profilesListReducer = (initialState: t.ProfilesListState = t.initialProfilesListState) =>
   createReducer(initialState, handleAction => [

@@ -128,7 +128,7 @@
   "Where else the incident has been reported?": "Where else the incident has been reported?",
   "CaseList-Cases": "Incidents",
   "CaseList-ExpandButton": "Open incident details",
-  "CaseList-FilterBy": "Filter by",
+  "Table-FilterBy": "Filter by",
   "CaseList-Filters-Apply": "Apply",
   "CaseList-Filters-CaseCount-Plural": "{{count}} incidents",
   "CaseList-Filters-CaseCount-Singular": "{{count}} incident",

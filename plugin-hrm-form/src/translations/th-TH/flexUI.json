@@ -128,7 +128,7 @@
   "Where else the incident has been reported?": "มีการแจ้งหน่วยงาน...",
   "CaseList-Cases": "เคส",
   "CaseList-ExpandButton": "รายละเอียดเคสเปิด",
-  "CaseList-FilterBy": "ตัวกรอง",
+  "Table-FilterBy": "ตัวกรอง",
   "CaseList-Filters-Apply": "นำมาใช้",
   "CaseList-Filters-CaseCount-Plural": "จำนวน {{count}} เคส",
   "CaseList-Filters-CaseCount-Singular": "{{count}} กรณี",

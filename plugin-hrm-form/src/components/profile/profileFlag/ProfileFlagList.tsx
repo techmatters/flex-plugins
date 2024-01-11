@@ -61,7 +61,7 @@ const ProfileFlagsList: React.FC<Props> = ({ disassociateRef, enableDisassociate
   return (
     <ProfileFlagsUnorderedList aria-label="Profile Statuses">
       {profileFlags?.length ? (
-        profileFlags.map(flag => <ProfileFlagPill key={flag.id} flag={flag} renderDisassociate={renderDisassociate} />)
+        profileFlags?.map(flag => <ProfileFlagPill key={flag.id} flag={flag} renderDisassociate={renderDisassociate} />)
       ) : (
         <ProfileFlagsListItem>
           <FlagPill title="No Status Listed">
