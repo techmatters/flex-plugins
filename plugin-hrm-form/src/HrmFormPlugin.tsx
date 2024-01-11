@@ -15,6 +15,7 @@
  */
 
 import * as Flex from '@twilio/flex-ui';
+import React from 'react';
 import { FlexPlugin, loadCSS } from '@twilio/flex-plugin';
 
 import './styles/global-overrides.css';
@@ -48,6 +49,7 @@ import { setUpTransferActions } from './transfer/setUpTransferActions';
 import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
 import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
+import CategoryWithTooltip from './components/common/CategoryWithTooltip';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -72,6 +74,10 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   return initLocalization(localizationConfig, initialLanguage);
 };
 
+const sortFn = (first, second) => {
+  return 0;
+};
+
 const setUpComponents = (
   featureFlags: FeatureFlags,
   setupObject: ReturnType<typeof getHrmConfig>,
@@ -79,6 +85,27 @@ const setUpComponents = (
 ) => {
   const { canView } = getPermissionsForViewingIdentifiers();
   const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
+
+  Flex.WorkersDataTable.Content.add(
+    <Flex.ColumnDefinition
+      key="skills"
+      header="Skills"
+      sortingFn={sortFn}
+      style={{ width: '180px' }}
+      content={item => {
+        console.log(item);
+        const skills = item?.worker?.attributes?.disabled_skills?.skills ?? [];
+        return (
+          <>
+            {skills.map(skill => (
+              <CategoryWithTooltip key={skill} category={skill} color="#FF0000" />
+            ))}
+          </>
+        );
+      }}
+    />,
+    { sortOrder: 0 },
+  );
 
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
