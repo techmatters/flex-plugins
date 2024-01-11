@@ -6,6 +6,10 @@
         "insights": ["conversations", "initiated_by"]
       },
       {
+        "name": "province",
+        "insights": ["customers", "market_segment"]
+      },
+      {
         "name": "district",
         "insights": ["conversations", "productive"]
       },
@@ -15,7 +19,7 @@
       },
       {
         "name": "age",
-        "insights": ["conversations", "conversation_attribute_2"]
+        "insights": ["conversations", "conversation_attribute_3"]
       }
     ],
     "childInformation": [
@@ -30,10 +34,6 @@
       {
         "name": "livingSituation",
         "insights": ["customers", "zip"]
-      },
-      {
-        "name": "province",
-        "insights": ["customers", "market_segment"]
       },
       {
         "name": "gradeLevel",
