@@ -25,10 +25,7 @@
       },
       {
         "name": "vulnerableGroups",
-        "insights": [
-          "customers", 
-          "email"
-        ]
+        "insights": ["customers", "email"]
       }
     ],
     "caseInformation": [
@@ -38,7 +35,7 @@
       },
         {
           "name": "repeatCaller",
-          "insights": ["conversations", "conversation_measure_2"],
+          "insights": ["conversations", "conversation_measure_1"],
           "type": "mixed-checkbox"
         },
         {
@@ -51,21 +48,61 @@
         },
         {
           "name": "didTheChildFeelWeSolvedTheirProblem",
-          "insights": ["conversations", "conversation_measure_4"],
+          "insights": ["conversations", "conversation_measure_2"],
           "type": "mixed-checkbox"
         },
         {
           "name": "wouldTheChildRecommendUsToAFriend",
-          "insights": ["conversations", "conversation_attribute_6"],
+          "insights": ["conversations", "conversation_measure_3"],
           "type": "mixed-checkbox"
         },
         {
-          "name": "hubServicesProvided",
-          "insights": ["customers", "category"]  
+          "name": "nightHub",
+          "insights": ["conversations", "conversation_attribute_3"]  
+        },
+        {
+          "name": "basicServices",
+          "insights": ["conversations", "conversation_attribute_4"]  
+        },
+        {
+          "name": "identificationService",
+          "insights": ["conversations", "conversation_attribute_6"]  
+        },
+        {
+          "name": "physicalHealthServices",
+          "insights": ["conversations", "conversation_attribute_7"]  
+        },
+        {
+          "name": "mentalHealthServices",
+          "insights": ["conversations", "conversation_attribute_9"]  
         },
         {
           "name": "numberofConsultations",
-          "insights": ["conversations", "conversation_attribute_9"]  
+          "insights": ["conversations", "conversation_attribute_10"]  
+        },
+        {
+          "name": "numberofOneOnOneCounselling",
+          "insights": ["conversations", "in_business_hours"]  
+        },
+        {
+          "name": "lifeSkillsServices",
+          "insights": ["conversations", "campaign"]  
+        },
+        {
+          "name": "educationalServices",
+          "insights": ["customers", "customer_attribute_2"]  
+        },
+        {
+          "name": "caseFollowUps",
+          "insights": ["customers", "zip"]  
+        },
+        {
+          "name": "careerServices",
+          "insights": ["customers", "category"]  
+        },
+        {
+          "name": "maternalServices",
+          "insights": ["customers", "region"]  
         }
     ]
   },
@@ -74,10 +111,6 @@
       {
         "name": "id",
         "insights": ["conversations", "case"]
-      },
-      {
-        "name": "caseStatus",
-        "insights": ["conversations", "in_business_hours"]
       }
     ],     
     "perpetrator": [
