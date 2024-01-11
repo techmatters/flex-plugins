@@ -67,5 +67,5 @@ export const selectProfileRelationshipsByType = (
 
 export const selectProfileListState = (state: RootState): t.ProfilesListState => {
   const profileState = selectProfileState(state);
-  return profileState?.profilesList;
+  return profileState.profilesList;
 };

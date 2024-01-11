@@ -18,9 +18,12 @@ import { createAction, createAsyncAction, createReducer } from 'redux-promise-mi
 import * as t from './types';
 import { getProfilesList } from '../../services/ProfileService';
 
-export const loadProfilesListAsync = createAsyncAction(t.LOAD_PROFILES_LIST, ({ offset = 0, limit = 10 } = {}) => {
-  return getProfilesList({ offset, limit });
-});
+export const loadProfilesListAsync = createAsyncAction(
+  t.LOAD_PROFILES_LIST,
+  ({ offset = 0, limit = 10, sortBy = 'id', sortDirection = null } = {}) => {
+    return getProfilesList({ offset, limit, sortBy, sortDirection });
+  },
+);
 
 const loadProfilesListStateIntoRedux = (state: t.ProfilesListState, profilesListUpdate: any): t.ProfilesListState => ({
   ...state,
@@ -61,12 +64,35 @@ const handleLoadProfilesListFulfilledAction = (state: t.ProfilesListState, actio
 
 export const updateProfilesListPage = createAction(t.PROFILES_LIST_UPDATE_PAGE, (params: { page: number }) => params);
 
-const handleUpdateProfilesListPageAction = (state: t.ProfilesListState, action: any) => {
+const handleUpdateProfilesListPageAction = (
+  state: t.ProfilesListState,
+  action: ReturnType<typeof updateProfilesListPage>,
+) => {
   const { page } = action.payload;
 
   const update = {
     ...state,
     page,
+  };
+
+  return loadProfilesListStateIntoRedux(state, update);
+};
+
+export const updateProfileListSettings = createAction(
+  t.PROFILES_LIST_UPDATE_SETTINGS,
+  (params: Partial<t.ProfilesListState['settings']>) => params,
+);
+
+const handleUpdateProfileListSettingsAction = (
+  state: t.ProfilesListState,
+  action: ReturnType<typeof updateProfileListSettings>,
+) => {
+  const update = {
+    page: 0,
+    settings: {
+      ...state.settings,
+      ...action.payload,
+    },
   };
 
   return loadProfilesListStateIntoRedux(state, update);
@@ -78,6 +104,7 @@ const profilesListReducer = (initialState: t.ProfilesListState = t.initialProfil
     handleAction(loadProfilesListAsync.rejected, handleLoadProfilesListRejectedAction),
     handleAction(loadProfilesListAsync.fulfilled, handleLoadProfilesListFulfilledAction),
     handleAction(updateProfilesListPage, handleUpdateProfilesListPageAction),
+    handleAction(updateProfileListSettings, handleUpdateProfileListSettingsAction),
   ]);
 
 export default profilesListReducer;

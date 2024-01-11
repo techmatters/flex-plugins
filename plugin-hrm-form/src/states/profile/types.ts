@@ -14,7 +14,17 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Case, Contact, Identifier, Profile, ProfileFlag, ProfileSection } from '../../types/types';
+import {
+  Case,
+  Contact,
+  Identifier,
+  Profile,
+  ProfileFlag,
+  ProfileSection,
+  ProfilesListSort,
+  ProfilesListSortBy,
+  SortDirection,
+} from '../../types/types';
 import { getProfileContacts, getProfileCases } from '../../services/ProfileService';
 import { ParseFetchErrorResult } from '../parseFetchError';
 
@@ -32,6 +42,7 @@ export const LOAD_PROFILE_SECTIONS = 'profile/profileSections/LOAD';
 export const CREATE_PROFILE_SECTION = 'profile/profileSections/CREATE';
 export const UPDATE_PROFILE_SECTION = 'profile/profileSections/UPDATE';
 export const PROFILES_LIST_UPDATE_PAGE = 'profile/profilesList/UPDATE_PAGE';
+export const PROFILES_LIST_UPDATE_SETTINGS = 'profile/profilesList/UPDATE_SETTINGS';
 export const LOAD_PROFILES_LIST = 'profile/profilesList/LOAD';
 
 export type IdentifierEntry = {
@@ -66,6 +77,9 @@ export type ProfilesListState = {
   data: Profile['id'][];
   count: number;
   page: number;
+  settings: {
+    sort: ProfilesListSort;
+  };
 };
 
 export const initialProfilesListState: ProfilesListState = {
@@ -74,6 +88,12 @@ export const initialProfilesListState: ProfilesListState = {
   data: [],
   count: 0,
   page: 0,
+  settings: {
+    sort: {
+      sortBy: ProfilesListSortBy.ID,
+      sortDirection: SortDirection.DESC,
+    },
+  },
 };
 
 export const PROFILE_RELATIONSHIPS = {

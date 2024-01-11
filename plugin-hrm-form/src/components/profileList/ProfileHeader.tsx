@@ -19,12 +19,13 @@ import { TableRow } from '@material-ui/core';
 
 import { TableHeader } from '../../styles';
 import ProfileHeaderCell from './ProfileHeaderCell';
+import { ProfilesListSortBy } from '../../types/types';
 
 const ProfileHeader: React.FC = () => {
   return (
     <TableHeader>
       <TableRow>
-        <ProfileHeaderCell localizedText="ProfileList-THClient" width="8%" />
+        <ProfileHeaderCell column={ProfilesListSortBy.ID} localizedText="ProfileList-THClient" width="8%" />
         <ProfileHeaderCell localizedText="ProfileList-THStatus" />
         <ProfileHeaderCell localizedText="ProfileList-THIdentifier" />
         <ProfileHeaderCell localizedText="ProfileList-THSummary" />

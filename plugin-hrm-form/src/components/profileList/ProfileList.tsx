@@ -22,7 +22,7 @@ import ProfileListTable from './ProfileListTable';
 
 const ProfileListPage: React.FC = () => {
   return (
-    <ListContainer width="1080px">
+    <ListContainer>
       <ProfileFilters />
       <ProfileListTable />
     </ListContainer>
