@@ -24,7 +24,7 @@ import HrmTheme from './HrmTheme';
 
 type ListContainerProps = {
   width?: string;
-}
+};
 export const ListContainer = styled(Absolute)<ListContainerProps>`
   height: 100%;
   width: ${props => props.width || '1280px'};

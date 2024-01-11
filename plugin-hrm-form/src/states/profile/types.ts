@@ -21,7 +21,6 @@ import { ParseFetchErrorResult } from '../parseFetchError';
 export type { Case, Contact, Identifier, Profile, ProfileFlag, ProfileSection };
 
 // Action types
-export const PROFILE_RELATIONSHIPS_INCREMENT_PAGE = 'profile/relationships/INCREMENT_PAGE';
 export const PROFILE_RELATIONSHIPS_UPDATE_PAGE = 'profile/relationships/UPDATE_PAGE';
 export const LOAD_IDENTIFIER_BY_IDENTIFIER = 'profile/identifiers/LOAD_BY_IDENTIFIER';
 export const LOAD_PROFILE = 'profile/profiles/LOAD';
@@ -32,6 +31,7 @@ export const DISASSOCIATE_PROFILE_FLAG = 'profile/profileFlags/DISASSOCIATE';
 export const LOAD_PROFILE_SECTIONS = 'profile/profileSections/LOAD';
 export const CREATE_PROFILE_SECTION = 'profile/profileSections/CREATE';
 export const UPDATE_PROFILE_SECTION = 'profile/profileSections/UPDATE';
+export const PROFILES_LIST_UPDATE_PAGE = 'profile/profilesList/UPDATE_PAGE';
 export const LOAD_PROFILES_LIST = 'profile/profilesList/LOAD';
 
 export type IdentifierEntry = {
@@ -60,19 +60,20 @@ export const initialProfileFlagsState: ProfileFlagsState = {
   data: undefined,
 };
 
-export type ProfileListState = {
-  data?: Profile['id'][];
-  error?: ParseFetchErrorResult;
-  count?: number;
+export type ProfilesListState = {
+  error: ParseFetchErrorResult;
   loading: boolean;
-  currentPage?: number;
+  data: Profile['id'][];
+  count: number;
+  page: number;
 };
 
-export const initialProfileListState: ProfileListState = {
-  error: undefined,
+export const initialProfilesListState: ProfilesListState = {
+  error: null,
   loading: false,
-  data: undefined,
-  currentPage: 0,
+  data: [],
+  count: 0,
+  page: 0,
 };
 
 export const PROFILE_RELATIONSHIPS = {
@@ -113,7 +114,7 @@ export type ProfileState = {
   identifiers: IdentifiersState;
   profiles: ProfilesState;
   profileFlags: ProfileFlagsState;
-  profilesList: ProfileListState;
+  profilesList: ProfilesListState;
 };
 
 export const newProfileEntry: ProfileEntry = {
@@ -143,5 +144,5 @@ export const initialState: ProfileState = {
   profileFlags: {
     loading: false,
   },
-  profilesList: { loading: false },
+  profilesList: initialProfilesListState,
 };

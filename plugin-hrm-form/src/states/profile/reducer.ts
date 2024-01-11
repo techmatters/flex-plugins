@@ -19,7 +19,7 @@ import * as t from './types';
 import identifiersReducer from './identifiers';
 import profilesReducer from './profiles';
 import profileFlagsReducer from './profileFlags';
-import profilesListReducer from './profileList';
+import profilesListReducer from './profilesList';
 
 const reducers = {
   identifiers: identifiersReducer(),

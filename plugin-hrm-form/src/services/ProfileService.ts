@@ -64,7 +64,7 @@ export const updateProfileSection = (profileId: ProfileId, sectionId: ProfileSec
   });
 };
 
-type GetProfileListParams = {
+type GetProfilesListParams = {
   offset?: number;
   limit?: number;
   sortBy?: 'id' | 'name' | 'createdAt' | 'updatedAt';
@@ -72,14 +72,14 @@ type GetProfileListParams = {
   profileFlagIds?: ProfileFlag['id'][];
 };
 
-export const getProfileList = ({
+export const getProfilesList = ({
   offset = 0,
   limit = 10,
   sortBy = 'id',
   sortDirection = null,
   profileFlagIds = null,
 }: // TODO: remove default empty object once params are passed through
-GetProfileListParams = {}) => {
+GetProfilesListParams = {}) => {
   const searchParams = new URLSearchParams();
   searchParams.append('offset', offset.toString());
   searchParams.append('limit', limit.toString());

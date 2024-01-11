@@ -18,18 +18,18 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
 import { CountText, FiltersContainer, MainTitle } from '../../../styles';
-import { useProfileList } from '../../../states/profile/hooks/useProfileList';
+import { useProfilesList } from '../../../states/profile/hooks/useProfilesList';
 
 const ProfileFilters: React.FC = () => {
-  const { profileCount } = useProfileList();
-  const getProfileCountString = () => (profileCount === 1 ? 'ProfileList-Count-Singular' : 'ProfileList-Count-Plural');
+  const { count } = useProfilesList();
+  const getProfileCountString = () => (count === 1 ? 'ProfileList-Count-Singular' : 'ProfileList-Count-Plural');
   return (
     <FiltersContainer>
       <MainTitle>
         <Template code="ProfileList-Clients" />
       </MainTitle>
       <CountText>
-        <Template code={getProfileCountString()} count={profileCount} />
+        <Template code={getProfileCountString()} count={count} />
       </CountText>
     </FiltersContainer>
   );

@@ -17,12 +17,10 @@
 import React from 'react';
 
 import { ListContainer } from '../../styles';
-import { useProfileListLoader } from '../../states/profile/hooks/useProfileListLoader';
 import ProfileFilters from './filters';
 import ProfileListTable from './ProfileListTable';
 
 const ProfileListPage: React.FC = () => {
-  // useProfileListLoader();
   return (
     <ListContainer width="1080px">
       <ProfileFilters />

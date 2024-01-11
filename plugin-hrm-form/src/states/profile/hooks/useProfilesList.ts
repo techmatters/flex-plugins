@@ -16,14 +16,16 @@
 import { useSelector } from 'react-redux';
 
 import { ParseFetchErrorResult } from '../../parseFetchError';
-import { Profile, ProfileListState } from '../types';
+import { Profile } from '../types';
 import * as ProfileSelectors from '../selectors';
+// import { selectProfileListState } from '../selectors';
 
 type UseProfileListReturn = {
-  profileIds: Profile['id'][] | undefined;
-  profileCount: number | undefined;
+  data: Profile['id'][] | undefined;
+  count: number | undefined;
   loading: boolean | undefined;
   error: ParseFetchErrorResult | undefined;
+  page: number;
 };
 
 /**
@@ -31,27 +33,14 @@ type UseProfileListReturn = {
  * @returns {UseProfileListReturn} - State and actions for the profile list
  */
 
-export const useProfileList = (): UseProfileListReturn => {
-  const profileIds = useSelector(
-    (state: any) => (ProfileSelectors.selectProfileListState(state) as ProfileListState)?.data,
-  );
-
-  const profileCount = useSelector(
-    (state: any) => (ProfileSelectors.selectProfileListState(state) as ProfileListState)?.count,
-  );
-
-  const loading = useSelector(
-    (state: any) => (ProfileSelectors.selectProfileListState(state) as ProfileListState)?.loading,
-  );
-
-  const error = useSelector(
-    (state: any) => (ProfileSelectors.selectProfileListState(state) as ProfileListState)?.error,
-  );
+export const useProfilesList = (): UseProfileListReturn => {
+  const { loading, count, data, error, page } = useSelector(ProfileSelectors.selectProfileListState) || {};
 
   return {
-    profileIds,
-    profileCount,
     loading,
+    count,
+    data,
     error,
+    page,
   };
 };
