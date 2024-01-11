@@ -149,7 +149,7 @@
     "label": "Language",
     "type": "select",
     "defaultOption": {
-      "value": "Unknown",
+      "value": "unknown",
       "label": ""
     },
     "optionsReferenceKey": "languageOptions"
