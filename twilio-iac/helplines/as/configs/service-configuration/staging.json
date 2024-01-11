@@ -10,6 +10,7 @@
             "enable_external_transcripts": false,
             "enable_lex": false,
             "enable_save_insights": true,
+            "enable_separate_timeline_view": true,
             "enable_transcripts": false,
             "enable_twilio_transcripts": false,
             "enable_voice_recordings": false
