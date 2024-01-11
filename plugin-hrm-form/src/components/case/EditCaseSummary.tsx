@@ -30,16 +30,15 @@ import {
   Box,
   ColumnarBlock,
   Container,
-  TwoColumnLayout,
   StyledNextStepButton,
+  TwoColumnLayout,
 } from '../../styles';
-import ActionHeader from './ActionHeader';
 import { RootState } from '../../states';
 import * as RoutingActions from '../../states/routing/actions';
 import { newCloseModalAction, newGoBackAction } from '../../states/routing/actions';
 import type { Case, CustomITask, StandaloneITask } from '../../types/types';
 import { recordingErrorHandler } from '../../fullStory';
-import { caseItemHistory, CaseSummaryWorkingCopy } from '../../states/case/types';
+import { CaseSummaryWorkingCopy } from '../../states/case/types';
 import CloseCaseDialog from './CloseCaseDialog';
 import {
   initialiseCaseSummaryWorkingCopy,
@@ -55,6 +54,8 @@ import asyncDispatch from '../../states/asyncDispatch';
 import NavigableContainer from '../NavigableContainer';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
+import CaseSummaryEditHistory from './CaseSummaryEditHistory';
+import { selectDefinitionVersionForCase } from '../../states/configuration/selectDefinitions';
 
 export type EditCaseSummaryProps = {
   task: CustomITask | StandaloneITask;
@@ -66,8 +67,8 @@ const mapStateToProps = (state: RootState, { task }: EditCaseSummaryProps) => {
   const counselorsHash = selectCounselorsHash(state);
   const connectedCaseState = selectCurrentRouteCaseState(state, task.taskSid);
   const workingCopy = connectedCaseState?.caseWorkingCopy.caseSummary;
-
-  return { connectedCaseState, counselorsHash, workingCopy };
+  const definitionVersion = selectDefinitionVersionForCase(state, connectedCaseState?.connectedCase);
+  return { connectedCaseState, counselorsHash, workingCopy, definitionVersion };
 };
 
 const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
@@ -95,6 +96,7 @@ const enum DialogState {
 
 const EditCaseSummary: React.FC<Props> = ({
   task,
+  definitionVersion,
   counselorsHash,
   connectedCaseState,
   workingCopy,
@@ -207,11 +209,6 @@ const EditCaseSummary: React.FC<Props> = ({
     if (dialogState) setDialogState(DialogState.Closed);
   });
 
-  const { added, addingCounsellorName, updated, updatingCounsellorName } = caseItemHistory(
-    connectedCaseState.connectedCase,
-    counselorsHash,
-  );
-
   const checkForEdits = (closeModal: boolean) => {
     if (isEqual(workingCopy, savedForm)) {
       closeActions(connectedCase.id, closeModal);
@@ -226,11 +223,10 @@ const EditCaseSummary: React.FC<Props> = ({
         onGoBack={checkForEdits}
         onCloseModal={checkForEdits}
       >
-        <ActionHeader
-          addingCounsellor={addingCounsellorName}
-          added={added}
-          updated={updated}
-          updatingCounsellor={updatingCounsellorName}
+        <CaseSummaryEditHistory
+          sourceCase={connectedCase}
+          counselorsHash={counselorsHash}
+          definitionVersion={definitionVersion}
         />
         <Container formContainer={true}>
           <Box paddingBottom={`${BottomButtonBarHeight}px`}>
