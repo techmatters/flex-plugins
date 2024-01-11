@@ -164,13 +164,13 @@ export type ProfileTabs = typeof PROFILE_TABS[keyof typeof PROFILE_TABS];
 
 export type ProfileRoute = RouteWithModalSupport & {
   route: 'profile';
-  id: Profile['id'];
+  profileId: Profile['id'];
   subroute?: ProfileTabs;
 };
 
 export type ProfileEditRoute = {
   route: 'profileEdit';
-  id: Profile['id'];
+  profileId: Profile['id'];
 };
 
 export type ProfileSectionEditRoute = {

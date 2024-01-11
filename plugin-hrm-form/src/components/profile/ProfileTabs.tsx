@@ -49,7 +49,7 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
   changeProfileTab: (id, subroute) =>
     dispatch(
       RoutingActions.changeRoute(
-        { route: 'profile', id, subroute },
+        { route: 'profile', profileId: id, subroute },
         task.taskSid,
         RoutingTypes.ChangeRouteMode.Replace,
       ),

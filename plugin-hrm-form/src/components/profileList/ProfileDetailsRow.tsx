@@ -34,8 +34,6 @@ import {
 } from '../../styles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfileFlags } from '../../states/profile/hooks';
-import { RootState } from '../../states';
-import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 
 const CHAR_LIMIT = 200;
 
@@ -52,8 +50,12 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId, openProfileModal }) => 
 
   const { profileFlags } = useProfileFlags(profileId);
 
+  const handleViewProfile = async () => {
+    openProfileModal(profileId);
+  };
+
   return (
-    <DataTableRow onClick={() => openProfileModal(profileId)}>
+    <DataTableRow onClick={handleViewProfile}>
       <NumericCell>
         <OpenLinkContainer>
           <OpenLinkAction tabIndex={0}>{profile?.name ? profile.name : profile?.id}</OpenLinkAction>
@@ -89,17 +91,10 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId, openProfileModal }) => 
 const mapDispatchToProps = dispatch => {
   return {
     openProfileModal: id => {
-      console.log('>>> openProfileModal', id);
-      dispatch(newOpenModalAction({ route: 'profile', id, subroute: 'details' }, 'standalone-task-sid'));
+      dispatch(newOpenModalAction({ route: 'profile', profileId: id, subroute: 'details' }, 'standalone-task-sid'));
     },
   };
 };
 
-const mapStateToProps = (state: RootState) => {
-  return {
-    routing: selectCurrentTopmostRouteForTask(state, 'standalone-task-sid'),
-  };
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(null, mapDispatchToProps);
 export default connector(ProfileDetailsRow);

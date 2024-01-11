@@ -44,7 +44,7 @@ import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles';
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../components/queuesStatus/styles';
-import { FeatureFlags, isInMyBehalfITask, standaloneTaskSid } from '../types/types';
+import { FeatureFlags, isInMyBehalfITask, standaloneTaskSid, StandaloneITask } from '../types/types';
 import { colors } from '../channels/colors';
 import { getAseloConfigFlags, getHrmConfig } from '../hrmConfig';
 import { AseloMessageInput, AseloMessageList } from '../components/AseloMessaging';
@@ -344,6 +344,7 @@ export const setUpClientProfileList = () => {
       key="ProfileListSideLink"
       onClick={() => {
         Flex.Actions.invokeAction('NavigateToView', { viewName: 'profile-list' });
+        routeToSideLink({ route: 'profile-list', subroute: 'profile-list' });
         Flex.Manager.getInstance().store.dispatch(
           changeRoute(
             { route: 'profile-list', subroute: 'profile-list' },

@@ -32,14 +32,12 @@ const ProfileListTable: React.FC = () => {
   const pagesCount = Math.ceil(profileCount / PROFILES_PER_PAGE);
   const offset = currentPage * PROFILES_PER_PAGE;
 
-  console.log('>>> 1 ProfileListTable', { offset, limit: PROFILES_PER_PAGE, profileCount, pagesCount });
   const { loadProfileList } = useProfileListLoader({ skipAutoload: false, offset, limit: PROFILES_PER_PAGE });
 
   const updatePage = (page: number) => {
     const newoffset = currentPage * PROFILES_PER_PAGE;
 
     setCurrentPage(page);
-    console.log('>>> ProfileListTable updatePage', { newoffset, page, profileCount });
     loadProfileList();
   };
 

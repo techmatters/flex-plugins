@@ -55,7 +55,6 @@ export const useProfileListLoader = ({
 
   const loadProfileList = useCallback(() => {
     if (!loading && !error) {
-      console.log('>>> loadProfileList', { offset, limit });
       dispatch(loadProfileListAsync({ offset, limit }));
     }
   }, [dispatch, loading, error, offset, limit]);
