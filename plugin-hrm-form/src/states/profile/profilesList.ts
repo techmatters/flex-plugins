@@ -83,7 +83,10 @@ export const updateProfileListSettings = createAction(
   (params: Partial<t.ProfilesListState['settings']>) => params,
 );
 
-export const clearProfilesListFilters = createAction(t.PROFILES_LIST_CLEAR_FILTERS);
+export const clearProfilesListFilters = createAction(
+  t.PROFILES_LIST_CLEAR_FILTERS,
+  (params: Partial<t.ProfilesListState['settings']>) => params,
+);
 
 const handleUpdateProfileListSettingsAction = (
   state: t.ProfilesListState,

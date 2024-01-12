@@ -19,12 +19,14 @@ import { Template } from '@twilio/flex-ui';
 import FilterList from '@material-ui/icons/FilterList';
 
 import { clearProfilesListFilters } from '../../../states/profile/profilesList';
-import { useProfilesList } from '../../../states/profile/hooks/useProfilesList';
+import { useProfilesList, useProfilesListSettings } from '../../../states/profile/hooks/useProfilesList';
 import { getTemplateStrings } from '../../../hrmConfig';
 import MultiSelectFilter, { Item } from '../../caseList/filters/MultiSelectFilter';
 import { CountText, FiltersContainer, FiltersResetAll, FilterTitle, MainTitle } from '../../../styles';
 import { useProfilesListLoader } from '../../../states/profile/hooks/useProfilesListLoader';
 import { useAllProfileFlags } from '../../../states/profile/hooks';
+
+const filterCheckedItems = (items: Item[]): string[] => items.filter(item => item.checked).map(item => item.value);
 
 const ProfileFilters: React.FC = () => {
   const [openedFilter, setOpenedFilter] = useState<string>();
@@ -32,33 +34,31 @@ const ProfileFilters: React.FC = () => {
 
   const { count } = useProfilesList();
 
-  const { updateProfilesListSettings } = useProfilesListLoader();
+  const { updateProfilesListSettings, clearProfilesListFilters } = useProfilesListLoader();
 
   // Populate all the flags as filter options in the status filter
   const { allProfileFlags, loading: flagsLoading } = useAllProfileFlags();
 
   useEffect(() => {
     const statusValues = allProfileFlags?.map(flag => ({
-      // value: flag.name,
-      value: flag.id.toString(), // '1'
+      value: flag.id.toString(),
       label: flag.name.charAt(0).toUpperCase() + flag.name.slice(1),
       checked: false,
     }));
     if (!flagsLoading) setStatusValues(statusValues);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [flagsLoading]);
+  }, [allProfileFlags, flagsLoading]);
 
   const strings = getTemplateStrings();
-
-  const filterCheckedItems = (items: Item[]): string[] => items?.filter(item => item.checked).map(item => item.value);
-  const hasFiltersApplied = filterCheckedItems(statusValues)?.length > 0;
 
   const handleApplyStatusFilter = (values: Item[]) => {
     updateProfilesListSettings({ filter: { statuses: filterCheckedItems(values) } });
   };
 
+  const { filter } = useProfilesListSettings();
+  const hasFiltersApplied = filter.statuses.length > 0;
+
   const handleClearFilters = () => {
-    clearProfilesListFilters();
+    clearProfilesListFilters({ filter: { statuses: [] } });
   };
 
   const showStatusFilter = () => {

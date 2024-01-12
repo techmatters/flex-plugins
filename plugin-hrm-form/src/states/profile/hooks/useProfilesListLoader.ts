@@ -61,6 +61,13 @@ export const useProfilesListLoader = ({ autoload = false }: UseProfilesListLoade
     [dispatch],
   );
 
+  const clearProfilesListFilters = useCallback(
+    (settings: Partial<ProfilesListState['settings']>) => {
+      dispatch(profilesListActions.clearProfilesListFilters(settings));
+    },
+    [dispatch],
+  );
+
   const loadProfileList = useCallback(
     (page: number, settings: ProfilesListState['settings']) => {
       const offset = page * PAGE_SIZE;
@@ -68,13 +75,11 @@ export const useProfilesListLoader = ({ autoload = false }: UseProfilesListLoade
 
       const {
         sort: { sortBy, sortDirection },
-        filter,
+        filter: { statuses },
       } = settings;
 
-      const profileFlagIds = filter.statuses;
-
       asyncDispatch(dispatch)(
-        profilesListActions.loadProfilesListAsync({ offset, limit, sortBy, sortDirection, profileFlagIds }),
+        profilesListActions.loadProfilesListAsync({ offset, limit, sortBy, sortDirection, profileFlagIds: statuses }),
       );
     },
     [dispatch],
@@ -99,5 +104,6 @@ export const useProfilesListLoader = ({ autoload = false }: UseProfilesListLoade
   return {
     updateProfilesListPage,
     updateProfilesListSettings,
+    clearProfilesListFilters,
   };
 };
