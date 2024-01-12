@@ -11,6 +11,7 @@
             "enable_csam_clc_report": false,
             "enable_csam_report": true,
             "enable_external_transcripts": false,
+            "enable_last_case_status_update_info": true,
             "enable_lex": false,
             "enable_save_insights": true,
             "enable_separate_timeline_view": true,
