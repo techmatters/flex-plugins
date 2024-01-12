@@ -187,8 +187,8 @@ describe('actions', () => {
       const { metadata, savedContact } = getState().existingContacts[baseContact.id];
       expect(metadata).toStrictEqual({
         ...newContactMetaData(false),
-        loadingStatus: LoadingStatus.LOADED,
         startMillis: expect.any(Number),
+        loadingStatus: LoadingStatus.LOADED,
       });
       expect(savedContact).toStrictEqual(updatedContact);
     });
