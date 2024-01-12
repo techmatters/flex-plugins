@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { ListCasesFilters, ListCasesSort, ListCasesSortBy, ListCasesSortDirection } from '../../types/types';
+import { ListCasesFilters, ListCasesSort, ListCasesSortBy, SortDirection } from '../../types/types';
 
 // State
 
@@ -33,7 +33,7 @@ export const caseListSettingsInitialState = (): CaseListSettingsState => ({
   },
   sort: {
     sortBy: ListCasesSortBy.ID,
-    sortDirection: ListCasesSortDirection.DESC,
+    sortDirection: SortDirection.DESC,
   },
   page: 0,
 });
@@ -111,19 +111,15 @@ export type UpdateCaseListPageAction = {
   page: number;
 };
 
-export const updateCaseListPage = (page: number): UpdateCaseListPageAction => {
-  return {
-    type: UPDATE_CASE_LIST_PAGE,
-    page,
-  };
-};
+export const updateCaseListPage = (page: number): UpdateCaseListPageAction => ({
+  type: UPDATE_CASE_LIST_PAGE,
+  page,
+});
 
-export const updatedPageReducer = (state: CaseListSettingsState, action: UpdateCaseListPageAction) => {
-  return {
-    ...state,
-    page: action.page,
-  };
-};
+export const updatedPageReducer = (state: CaseListSettingsState, action: UpdateCaseListPageAction) => ({
+  ...state,
+  page: action.page,
+});
 
 export type CaseListSettingsActionType =
   | UpdateCaseListFilterAction

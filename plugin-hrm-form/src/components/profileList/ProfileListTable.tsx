@@ -14,32 +14,22 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { CircularProgress, TableBody, TableCell } from '@material-ui/core';
 
 import Pagination from '../pagination';
 import { DataTableRow, ErrorText, StandardTable, TableContainer } from '../../styles';
-import { useProfileList } from '../../states/profile/hooks/useProfileList';
-import { useProfileListLoader } from '../../states/profile/hooks/useProfileListLoader';
+import { useProfilesList } from '../../states/profile/hooks/useProfilesList';
+import { useProfilesListLoader } from '../../states/profile/hooks/useProfilesListLoader';
 import ProfileListTableHeader from './ProfileHeader';
 import ProfileRow from './ProfileDetailsRow';
-
-const PROFILES_PER_PAGE = 10;
+import { PAGE_SIZE } from '../../states/profile/profiles';
 
 const ProfileListTable: React.FC = () => {
-  const { loading, profileIds, profileCount, error } = useProfileList();
-  const [currentPage, setCurrentPage] = useState(0);
-  const pagesCount = Math.ceil(profileCount / PROFILES_PER_PAGE);
-  const offset = currentPage * PROFILES_PER_PAGE;
+  const { loading, data: profileIds, count, error, page } = useProfilesList();
+  const { updateProfilesListPage } = useProfilesListLoader({ autoload: true });
 
-  const { loadProfileList } = useProfileListLoader({ skipAutoload: false, offset, limit: PROFILES_PER_PAGE });
-
-  const updatePage = (page: number) => {
-    const newoffset = currentPage * PROFILES_PER_PAGE;
-
-    setCurrentPage(page);
-    loadProfileList();
-  };
+  const pagesCount = Math.ceil(count / PAGE_SIZE);
 
   return (
     <>
@@ -65,7 +55,9 @@ const ProfileListTable: React.FC = () => {
           )}
         </StandardTable>
       </TableContainer>
-      {!loading && <Pagination transparent page={currentPage} pagesCount={pagesCount} handleChangePage={updatePage} />}
+      {!loading && (
+        <Pagination transparent page={page} pagesCount={pagesCount} handleChangePage={updateProfilesListPage} />
+      )}
     </>
   );
 };

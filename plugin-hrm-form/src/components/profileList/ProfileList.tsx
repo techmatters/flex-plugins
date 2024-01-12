@@ -52,7 +52,7 @@ const ProfileListPage: React.FC<Props> = ({ routing }) => {
     );
 
   return (
-    <ListContainer width="1080px">
+    <ListContainer>
       <ProfileFilters />
       <ProfileListTable />
     </ListContainer>
