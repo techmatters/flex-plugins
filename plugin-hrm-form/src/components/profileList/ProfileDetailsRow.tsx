@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import ProfileFlagPill from '../profile/profileFlag/ProfileFlagPill';
@@ -34,26 +34,30 @@ import {
 } from '../../styles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfileFlags } from '../../states/profile/hooks';
-import { RootState } from '../../states';
-import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { ProfileRoute } from '../../states/routing/types';
 
 const CHAR_LIMIT = 200;
 
-type OwnProps = {
-  profileId: any;
+type Props = {
+  profileId: number;
 };
 
-type Props = OwnProps & {
-  openProfileModal: (profileId: string) => void;
-};
-
-const ProfileDetailsRow: React.FC<Props> = ({ profileId, openProfileModal }) => {
+const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
+  const dispatch = useDispatch();
   const { profile } = useProfile({ profileId });
-
   const { profileFlags } = useProfileFlags(profileId);
 
+  const handleViewProfile = async () => {
+    dispatch(
+      newOpenModalAction(
+        { route: 'profile', id: profileId, subroute: 'details' } as ProfileRoute,
+        'standalone-task-sid',
+      ),
+    );
+  };
+
   return (
-    <DataTableRow onClick={() => openProfileModal(profileId)}>
+    <DataTableRow onClick={handleViewProfile} role="button" aria-label="View profile details">
       <NumericCell>
         <OpenLinkContainer>
           <OpenLinkAction tabIndex={0}>{profile?.name ? profile.name : profile?.id}</OpenLinkAction>
@@ -86,23 +90,4 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId, openProfileModal }) => 
   );
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    openProfileModal: id => {
-      console.log('>>> openProfileModal', id);
-      dispatch(newOpenModalAction({ route: 'profile', id, subroute: 'details' }, 'standalone-task-sid'));
-    },
-  };
-};
-
-const mapStateToProps = (state: RootState) => {
-  return {
-    routing: selectCurrentTopmostRouteForTask(state, 'standalone-task-sid') ?? {
-      route: 'profile-list',
-      subroute: 'profile-list',
-    },
-  };
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-export default connector(ProfileDetailsRow);
+export default ProfileDetailsRow;

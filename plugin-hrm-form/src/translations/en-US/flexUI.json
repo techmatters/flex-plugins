@@ -415,6 +415,7 @@
   "ProfileList-THStatus": "Status",
   "ProfileList-THIdentifier": "Identifier(s)",
   "ProfileList-THSummary": "Summary",
+  "ProfileList-NoClients": "No clients found.",
   "ProfileList-Summary-None": "- No profile summary -",
   "ProfileList-Status-None": "- No status -",
 
