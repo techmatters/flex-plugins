@@ -49,6 +49,14 @@ const state: RecursivePartial<RootState> = {
         list: [],
         hash: { worker1: 'worker1 name' },
       },
+      definitionVersions: {},
+      currentDefinitionVersion: {
+        caseStatus: {
+          open: {
+            label: 'Open Label',
+          },
+        },
+      },
     },
     activeContacts: {
       existingContacts: {

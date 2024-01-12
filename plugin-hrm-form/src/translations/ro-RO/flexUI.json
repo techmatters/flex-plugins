@@ -192,6 +192,7 @@
     "Case-ActionHeaderUpdated": "Actualizat pe {{data}} la {{time}} de {{consilier}}",
     "CSAMCLC-ActionHeaderAdded": "Adăugat pe {{date}} la {{time}} &nbsp;&nbsp; Consilier: {{counsellor}}",
     "Case-ActionHeaderCounselor": "Trebuie să completați câmpurile necesare",
+    "Case-EditSummary-EditHistory-StatusUpdated": "Starea a fost actualizată de la {{previousStatus}} la {{updatedStatus}} pe {{date}} la {{time}} de către {{counsellor}}",
     "SessionExpired": "Sesiunea dumneavoastră a expirat. Faceți clic aici pentru a vă conecta din nou",
     "TaskTabAgentInfoLabel": "Informații",
     "TaskTabSupervisorInfoLabel": "Informații",
