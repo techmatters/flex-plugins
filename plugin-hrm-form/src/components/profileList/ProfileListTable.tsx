@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { CircularProgress, TableBody, TableCell } from '@material-ui/core';
 
 import Pagination from '../pagination';
@@ -27,7 +27,7 @@ import { PAGE_SIZE } from '../../states/profile/profiles';
 
 const ProfileListTable: React.FC = () => {
   const { loading, data: profileIds, count, error, page } = useProfilesList();
-  const { updateProfilesListPage } = useProfilesListLoader();
+  const { updateProfilesListPage } = useProfilesListLoader({ autoload: true });
 
   const pagesCount = Math.ceil(count / PAGE_SIZE);
 

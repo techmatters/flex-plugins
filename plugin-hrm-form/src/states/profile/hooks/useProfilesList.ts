@@ -15,32 +15,9 @@
  */
 import { useSelector } from 'react-redux';
 
-import { ParseFetchErrorResult } from '../../parseFetchError';
-import { Profile } from '../types';
-import * as ProfileSelectors from '../selectors';
-// import { selectProfileListState } from '../selectors';
+import { ProfilesListState } from '../types';
+import { selectProfileListState } from '../selectors';
 
-type UseProfileListReturn = {
-  data: Profile['id'][] | undefined;
-  count: number | undefined;
-  loading: boolean | undefined;
-  error: ParseFetchErrorResult | undefined;
-  page: number;
-};
-
-/**
- * Get the profile list from redux state
- * @returns {UseProfileListReturn} - State and actions for the profile list
- */
-
-export const useProfilesList = (): UseProfileListReturn => {
-  const { loading, count, data, error, page } = useSelector(ProfileSelectors.selectProfileListState) || {};
-
-  return {
-    loading,
-    count,
-    data,
-    error,
-    page,
-  };
+export const useProfilesList = (): ProfilesListState => {
+  return useSelector(selectProfileListState);
 };

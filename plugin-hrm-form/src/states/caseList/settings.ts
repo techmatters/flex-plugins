@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { ListCasesFilters, ListCasesSort, ListCasesSortBy, ListCasesSortDirection } from '../../types/types';
+import { ListCasesFilters, ListCasesSort, ListCasesSortBy, SortDirection } from '../../types/types';
 
 // State
 
@@ -33,7 +33,7 @@ export const caseListSettingsInitialState = (): CaseListSettingsState => ({
   },
   sort: {
     sortBy: ListCasesSortBy.ID,
-    sortDirection: ListCasesSortDirection.DESC,
+    sortDirection: SortDirection.DESC,
   },
   page: 0,
 });

@@ -18,9 +18,12 @@ import { createAction, createAsyncAction, createReducer } from 'redux-promise-mi
 import * as t from './types';
 import { getProfilesList } from '../../services/ProfileService';
 
-export const loadProfilesListAsync = createAsyncAction(t.LOAD_PROFILES_LIST, ({ offset = 0, limit = 10 } = {}) => {
-  return getProfilesList({ offset, limit });
-});
+export const loadProfilesListAsync = createAsyncAction(
+  t.LOAD_PROFILES_LIST,
+  ({ offset = 0, limit = 10, sortBy = 'id', sortDirection = null } = {}) => {
+    return getProfilesList({ offset, limit, sortBy, sortDirection });
+  },
+);
 
 const loadProfilesListStateIntoRedux = (state: t.ProfilesListState, profilesListUpdate: any): t.ProfilesListState => ({
   ...state,
@@ -65,7 +68,10 @@ export const updateProfilesListFilter = createAction(
   (params: { filter: any }) => params,
 );
 
-const handleUpdateProfilesListPageAction = (state: t.ProfilesListState, action: any) => {
+const handleUpdateProfilesListPageAction = (
+  state: t.ProfilesListState,
+  action: ReturnType<typeof updateProfilesListPage>,
+) => {
   const { page } = action.payload;
 
   const update = {
@@ -76,16 +82,25 @@ const handleUpdateProfilesListPageAction = (state: t.ProfilesListState, action: 
   return loadProfilesListStateIntoRedux(state, update);
 };
 
-const handleUpdateProfilesListFilterAction = (state: t.ProfilesListState, action: any) => {
-  const { filter } = action.payload;
+export const updateProfileListSettings = createAction(
+  t.PROFILES_LIST_UPDATE_SETTINGS,
+  (params: Partial<t.ProfilesListState['settings']>) => params,
+);
 
+const handleUpdateProfileListSettingsAction = (
+  state: t.ProfilesListState,
+  action: ReturnType<typeof updateProfileListSettings>,
+) => {
   const update = {
-    ...state,
-    filter,
+    page: 0,
+    settings: {
+      ...state.settings,
+      ...action.payload,
+    },
   };
 
   return loadProfilesListStateIntoRedux(state, update);
-}
+};
 
 const profilesListReducer = (initialState: t.ProfilesListState = t.initialProfilesListState) =>
   createReducer(initialState, handleAction => [
@@ -93,6 +108,7 @@ const profilesListReducer = (initialState: t.ProfilesListState = t.initialProfil
     handleAction(loadProfilesListAsync.rejected, handleLoadProfilesListRejectedAction),
     handleAction(loadProfilesListAsync.fulfilled, handleLoadProfilesListFulfilledAction),
     handleAction(updateProfilesListPage, handleUpdateProfilesListPageAction),
+    handleAction(updateProfileListSettings, handleUpdateProfileListSettingsAction),
   ]);
 
 export default profilesListReducer;

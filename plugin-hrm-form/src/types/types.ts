@@ -207,21 +207,21 @@ export enum ListCasesSortBy {
   FOLLOW_UP_DATE = 'info.followUpDate',
 }
 
-export enum ListCasesSortDirection {
+export enum SortDirection {
   ASC = 'ASC',
   DESC = 'DESC',
 }
 
 export type ListCasesSort = {
   sortBy?: ListCasesSortBy;
-  sortDirection?: ListCasesSortDirection;
+  sortDirection?: SortDirection;
 };
 
 export type ListCasesQueryParams = {
   limit?: number;
   offset?: number;
   sortBy?: ListCasesSortBy;
-  sortDirection?: ListCasesSortDirection;
+  sortDirection?: SortDirection;
 } & ListCasesSort;
 
 export type CategoryFilter = {
@@ -399,5 +399,14 @@ export type ProfileFlag = {
   updatedAt?: string;
 };
 
-export type ProfileList = Profile[];
+export type ProfilesList = Profile[];
 
+export enum ProfilesListSortBy {
+  ID = 'id',
+  NAME = 'name',
+}
+
+export type ProfilesListSort = {
+  sortBy?: ProfilesListSortBy;
+  sortDirection?: SortDirection;
+};

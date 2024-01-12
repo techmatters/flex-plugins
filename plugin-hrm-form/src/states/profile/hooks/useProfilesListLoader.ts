@@ -23,14 +23,10 @@ import * as profilesListActions from '../profilesList';
 import { PAGE_SIZE } from '../profiles';
 import asyncDispatch from '../../asyncDispatch';
 import usePrevious from '../../../hooks/usePreviousValue';
+import { ProfilesListState } from '../types';
 
 type UseProfilesListLoaderParams = {
-  skipAutoload?: boolean;
-};
-
-type UseProfilesListLoaderReturn = {
-  updateProfilesListPage: (page: number) => void;
-  // loadProfileList: (page: number) => void;
+  autoload?: boolean;
 };
 
 /**
@@ -38,15 +34,14 @@ type UseProfilesListLoaderReturn = {
  * @param {UseProfilesListLoaderParams}
  * @returns {UseProfilesListLoaderReturn} - State and actions for the profile list
  */
-export const useProfilesListLoader = ({
-  skipAutoload = false,
-}: UseProfilesListLoaderParams = {}): UseProfilesListLoaderReturn => {
+export const useProfilesListLoader = ({ autoload = false }: UseProfilesListLoaderParams = {}) => {
   const dispatch = useDispatch();
 
-  const { page, loading, error } =
+  const { page, settings, loading, error } =
     useSelector((state: RootState) => ProfileSelectors.selectProfileListState(state)) || {};
 
   const previousPage = usePrevious(page);
+  const previousSettings = usePrevious(settings);
 
   const updateProfilesListPage = useCallback(
     (page: number) => {
@@ -59,32 +54,45 @@ export const useProfilesListLoader = ({
     [dispatch],
   );
 
+  const updateProfilesListSettings = useCallback(
+    (settings: Partial<ProfilesListState['settings']>) => {
+      dispatch(profilesListActions.updateProfileListSettings(settings));
+    },
+    [dispatch],
+  );
+
   const loadProfileList = useCallback(
-    (page: number) => {
+    (page: number, settings: ProfilesListState['settings']) => {
       const offset = page * PAGE_SIZE;
       const limit = PAGE_SIZE;
 
-      asyncDispatch(dispatch)(profilesListActions.loadProfilesListAsync({ offset, limit }));
+      const {
+        sort: { sortBy, sortDirection },
+      } = settings;
+
+      asyncDispatch(dispatch)(profilesListActions.loadProfilesListAsync({ offset, limit, sortBy, sortDirection }));
     },
     [dispatch],
   );
 
   // Allways trigger load on initial mount
   useEffect(() => {
-    if (!skipAutoload && !loading) {
-      loadProfileList(page);
+    if (autoload && !loading) {
+      loadProfileList(page, settings);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Trigger load only if the page number changed
+  // Trigger load only if the page number or the settings changed
   useEffect(() => {
-    if (previousPage === page || loading || error) return;
+    const shouldTrigger = previousPage !== page || previousSettings !== settings;
+    if (!shouldTrigger || loading || error) return;
 
-    loadProfileList(page);
-  }, [error, loadProfileList, loading, page, previousPage]);
+    loadProfileList(page, settings);
+  }, [error, loadProfileList, loading, page, previousPage, previousSettings, settings]);
 
   return {
     updateProfilesListPage,
+    updateProfilesListSettings,
   };
 };

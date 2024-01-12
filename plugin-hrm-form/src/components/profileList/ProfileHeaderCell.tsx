@@ -16,21 +16,76 @@
 
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
+import { ArrowDownward } from '@material-ui/icons';
 
+import { useProfilesListLoader } from '../../states/profile/hooks/useProfilesListLoader';
+import { ProfilesListSortBy, SortDirection } from '../../types/types';
 import { TableHeaderFont, HeaderCell } from '../../styles';
+import { useProfilesList } from '../../states/profile/hooks/useProfilesList';
+
+const defaultSortDirection = SortDirection.DESC;
+
+const changeSortDirection = (sortDirection: SortDirection): SortDirection =>
+  sortDirection === SortDirection.ASC ? SortDirection.DESC : SortDirection.ASC;
 
 type OwnProps = {
+  column?: ProfilesListSortBy;
   localizedText?: string;
   width?: string;
 };
 
 type Props = OwnProps;
 
-const ProfileHeaderCell: React.FC<Props> = ({ localizedText, width }) => {
+/**
+ * If column prop is filled, the cell will enable sorting by this column
+ */
+const ProfileHeaderCell: React.FC<Props> = ({ column, localizedText, width }) => {
+  const { settings } = useProfilesList();
+  const { updateProfilesListSettings } = useProfilesListLoader();
+
+  const {
+    sort: { sortBy, sortDirection },
+  } = settings;
+
+  const drawSort = () => {
+    if (!sortBy || !column || column !== sortBy) return null;
+
+    return (
+      <ArrowDownward
+        style={{
+          fontSize: 16,
+          marginLeft: '10px',
+          verticalAlign: 'middle',
+          transform: sortDirection === SortDirection.ASC ? 'rotate(180deg) scaleX(-1)' : 'none',
+        }}
+      />
+    );
+  };
+
+  const borderBottom = () => (sortBy === column ? '3px solid #000000' : 'none');
+
+  const cursor = () => (column ? 'pointer' : 'auto');
+
+  const handleClick = async () => {
+    if (!column) return;
+
+    const isDifferentColumn = column !== sortBy;
+    const updatedSortDirection = isDifferentColumn ? defaultSortDirection : changeSortDirection(sortDirection);
+
+    updateProfilesListSettings({ sort: { sortBy: column, sortDirection: updatedSortDirection } });
+  };
+
   return (
-    <HeaderCell style={{ width: width || '10%' }} align="right" variant="head" scope="col">
-      <TableHeaderFont>
+    <HeaderCell
+      style={{ width: width || '10%', cursor: cursor() }}
+      align="right"
+      variant="head"
+      scope="col"
+      onClick={column && handleClick}
+    >
+      <TableHeaderFont style={{ borderBottom: borderBottom() }}>
         <Template code={localizedText} />
+        <span aria-hidden="true">{drawSort()}</span>
       </TableHeaderFont>
     </HeaderCell>
   );
