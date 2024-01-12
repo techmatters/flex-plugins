@@ -97,4 +97,5 @@ const mapDispatchToProps = dispatch => {
 };
 
 const connector = connect(null, mapDispatchToProps);
+// eslint-disable-next-line import/no-unused-modules
 export default connector(ProfileDetailsRow);
