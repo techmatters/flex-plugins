@@ -187,6 +187,7 @@
   "Case-ActionHeaderAdded": "Hozzáadva {{date}} {{time}} ügyelő: {{counsellor}}",
   "Case-ActionHeaderUpdated": "Frissítve {{date}} {{time}} ügyelő: {{counsellor}}",
   "Case-ActionHeaderCounselor": "A kötelező mezőket ki kell tölteni",
+  "Case-EditSummary-EditHistory-StatusUpdated": "Az állapot frissítve {{previousStatus}}-ról {{updatedStatus}}-re, dátum: {{date}}, {{time}}, {{counsellor}}",
   "SessionExpired": "A munkamenet lejárt. Kattintson ide az újboli bejelentkezéshez",
   "TaskTabAgentInfoLabel": "Információ",
   "TaskTabSupervisorInfoLabel": "Információ",
