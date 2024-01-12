@@ -18,7 +18,6 @@ import React, { useState, useEffect } from 'react';
 import { Template } from '@twilio/flex-ui';
 import FilterList from '@material-ui/icons/FilterList';
 
-import { clearProfilesListFilters } from '../../../states/profile/profilesList';
 import { useProfilesList, useProfilesListSettings } from '../../../states/profile/hooks/useProfilesList';
 import { getTemplateStrings } from '../../../hrmConfig';
 import MultiSelectFilter, { Item } from '../../caseList/filters/MultiSelectFilter';
@@ -29,7 +28,7 @@ import { useAllProfileFlags } from '../../../states/profile/hooks';
 const filterCheckedItems = (items: Item[]): string[] => items.filter(item => item.checked).map(item => item.value);
 
 const ProfileFilters: React.FC = () => {
-  const [openedFilter, setOpenedFilter] = useState<string>();
+  const [openedFilter, setOpenedFilter] = useState<string>(null);
   const [statusValues, setStatusValues] = useState<Item[]>([]);
 
   const { count } = useProfilesList();
@@ -40,12 +39,14 @@ const ProfileFilters: React.FC = () => {
   const { allProfileFlags, loading: flagsLoading } = useAllProfileFlags();
 
   useEffect(() => {
-    const statusValues = allProfileFlags?.map(flag => ({
-      value: flag.id.toString(),
-      label: flag.name.charAt(0).toUpperCase() + flag.name.slice(1),
-      checked: false,
-    }));
-    if (!flagsLoading) setStatusValues(statusValues);
+    if (!flagsLoading && allProfileFlags) {
+      const newStatusValues = allProfileFlags.map(flag => ({
+        value: flag.id.toString(),
+        label: flag.name.charAt(0).toUpperCase() + flag.name.slice(1),
+        checked: false,
+      }));
+      setStatusValues(newStatusValues);
+    }
   }, [allProfileFlags, flagsLoading]);
 
   const strings = getTemplateStrings();
@@ -75,6 +76,7 @@ const ProfileFilters: React.FC = () => {
   };
 
   const getProfileCountString = () => (count === 1 ? 'ProfileList-Count-Singular' : 'ProfileList-Count-Plural');
+
   return (
     <>
       <FiltersContainer>
@@ -82,7 +84,7 @@ const ProfileFilters: React.FC = () => {
           <Template code="ProfileList-Clients" />
         </MainTitle>
         {hasFiltersApplied && (
-          <FiltersResetAll type="button" onClick={handleClearFilters}>
+          <FiltersResetAll type="button" onClick={handleClearFilters} aria-label="Reset Filters">
             <Template code="CaseList-Filters-ResetAllFilters" />
           </FiltersResetAll>
         )}
