@@ -37,9 +37,10 @@ type UseProfilesListLoaderParams = {
 export const useProfilesListLoader = ({ autoload = false }: UseProfilesListLoaderParams = {}) => {
   const dispatch = useDispatch();
 
-  const { page, settings, loading, error } =
+  const { settings, loading, error } =
     useSelector((state: RootState) => ProfileSelectors.selectProfileListState(state)) || {};
 
+  const { page } = settings;
   const previousPage = usePrevious(page);
   const previousSettings = usePrevious(settings);
 

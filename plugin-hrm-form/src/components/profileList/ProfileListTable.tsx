@@ -26,7 +26,12 @@ import ProfileRow from './ProfileDetailsRow';
 import { PAGE_SIZE } from '../../states/profile/profiles';
 
 const ProfileListTable: React.FC = () => {
-  const { loading, data: profileIds, count, error, page } = useProfilesList();
+  const {
+    loading,
+    data: profileIds,
+    error,
+    settings: { page, count },
+  } = useProfilesList();
   const { updateProfilesListPage } = useProfilesListLoader({ autoload: true });
 
   const pagesCount = Math.ceil(count / PAGE_SIZE);

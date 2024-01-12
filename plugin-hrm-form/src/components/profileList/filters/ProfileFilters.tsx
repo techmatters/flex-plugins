@@ -28,7 +28,10 @@ import { useProfilesList } from '../../../states/profile/hooks/useProfilesList';
 const filterCheckedItems = (items: Item[]): string[] => items.filter(item => item.checked).map(item => item.value);
 
 const ProfileFilters: React.FC = () => {
-  const { count, loading: countLoading } = useProfilesList();
+  const {
+    settings: { count, filter },
+    loading: countLoading,
+  } = useProfilesList();
   const strings = getTemplateStrings();
   const [openedFilter, setOpenedFilter] = useState<string>();
 
