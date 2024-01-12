@@ -22,7 +22,7 @@ import { DataTableRow, ErrorText, StandardTable, TableContainer } from '../../st
 import { useProfilesList } from '../../states/profile/hooks/useProfilesList';
 import { useProfilesListLoader } from '../../states/profile/hooks/useProfilesListLoader';
 import ProfileListTableHeader from './ProfileHeader';
-import ProfileRow from './ProfileDetailsRow';
+import ProfileDetailsRow from './ProfileDetailsRow';
 import { PAGE_SIZE } from '../../states/profile/profiles';
 
 const ProfileListTable: React.FC = () => {
@@ -49,7 +49,7 @@ const ProfileListTable: React.FC = () => {
           {!loading && (
             <TableBody>
               {profileIds?.length > 0
-                ? profileIds?.map(profileId => <ProfileRow key={profileId} profileId={profileId} />)
+                ? profileIds?.map(profileId => <ProfileDetailsRow key={profileId} profileId={profileId} />)
                 : 'No clients found.'}
             </TableBody>
           )}

@@ -18,6 +18,7 @@ import React, { useState, useEffect } from 'react';
 import { Template } from '@twilio/flex-ui';
 import FilterList from '@material-ui/icons/FilterList';
 
+import { clearProfilesListFilters } from '../../../states/profile/profilesList';
 import { useProfilesList } from '../../../states/profile/hooks/useProfilesList';
 import { getTemplateStrings } from '../../../hrmConfig';
 import MultiSelectFilter, { Item } from '../../caseList/filters/MultiSelectFilter';
@@ -31,12 +32,15 @@ const ProfileFilters: React.FC = () => {
 
   const { count } = useProfilesList();
 
+  const { updateProfilesListSettings } = useProfilesListLoader();
+
   // Populate all the flags as filter options in the status filter
   const { allProfileFlags, loading: flagsLoading } = useAllProfileFlags();
 
   useEffect(() => {
     const statusValues = allProfileFlags?.map(flag => ({
-      value: flag.name,
+      // value: flag.name,
+      value: flag.id.toString(), // '1'
       label: flag.name.charAt(0).toUpperCase() + flag.name.slice(1),
       checked: false,
     }));
@@ -46,13 +50,16 @@ const ProfileFilters: React.FC = () => {
 
   const strings = getTemplateStrings();
 
-  // const filterCheckedItems = (items: Item[]): string[] => items?.filter(item => item.checked).map(item => item.value);
-  // const hasFiltersApplied = filterCheckedItems(statusValues).length > 0;
+  const filterCheckedItems = (items: Item[]): string[] => items?.filter(item => item.checked).map(item => item.value);
+  const hasFiltersApplied = filterCheckedItems(statusValues)?.length > 0;
 
-  // const handleApplyStatusFilter = (values: Item[]) => {
-  //   console.log('>>> handleApplyStatusFilter', values);
-  //   updateProfilesListFilter({ statuses: filterCheckedItems(values) });
-  // };
+  const handleApplyStatusFilter = (values: Item[]) => {
+    updateProfilesListSettings({ filter: { statuses: filterCheckedItems(values) } });
+  };
+
+  const handleClearFilters = () => {
+    clearProfilesListFilters();
+  };
 
   const showStatusFilter = () => {
     return (
@@ -61,8 +68,7 @@ const ProfileFilters: React.FC = () => {
         text={strings['ProfileList-THStatus']}
         defaultValues={statusValues}
         openedFilter={openedFilter}
-        applyFilter={() => console.log('applyFilter')}
-        // applyFilter={handleApplyStatusFilter}
+        applyFilter={handleApplyStatusFilter}
         setOpenedFilter={setOpenedFilter}
       />
     );
@@ -75,11 +81,11 @@ const ProfileFilters: React.FC = () => {
         <MainTitle>
           <Template code="ProfileList-Clients" />
         </MainTitle>
-        {/* {hasFiltersApplied && (
+        {hasFiltersApplied && (
           <FiltersResetAll type="button" onClick={handleClearFilters}>
             <Template code="CaseList-Filters-ResetAllFilters" />
           </FiltersResetAll>
-        )} */}
+        )}
         <CountText>
           <Template code={getProfileCountString()} count={count} />
         </CountText>

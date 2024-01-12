@@ -76,10 +76,10 @@ const MultiSelectFilter: React.FC<Props> = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const transformToItems = (values: ReactHookFormValues): Item[] =>
-    defaultValues.map(item => ({ ...item, checked: values[item.value] }));
+    defaultValues?.map(item => ({ ...item, checked: Boolean(values[item.value]) }));
 
   const transformToValues = (items: Item[]) =>
-    items.reduce((acc, item) => ({ ...acc, [item.value]: item.checked }), {});
+    items?.reduce((acc, item) => ({ ...acc, [item.value]: Boolean(item.checked) }), {});
 
   const { register, handleSubmit, reset, getValues } = useForm({
     defaultValues: transformToValues(defaultValues),
@@ -95,7 +95,7 @@ const MultiSelectFilter: React.FC<Props> = ({
   // Force React Hook Forms to rerender whenever defaultValues changes
   useEffect(() => {
     const updateSelectedCount = () => {
-      const count = defaultValues.reduce((acc, item) => (item.checked ? acc + 1 : acc), 0);
+      const count = defaultValues?.reduce((acc, item) => (item.checked ? acc + 1 : acc), 0);
       setSelectedCount(count);
     };
 

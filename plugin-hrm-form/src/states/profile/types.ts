@@ -44,6 +44,7 @@ export const CREATE_PROFILE_SECTION = 'profile/profileSections/CREATE';
 export const UPDATE_PROFILE_SECTION = 'profile/profileSections/UPDATE';
 export const PROFILES_LIST_UPDATE_PAGE = 'profile/profilesList/UPDATE_PAGE';
 export const PROFILES_LIST_UPDATE_SETTINGS = 'profile/profilesList/UPDATE_SETTINGS';
+export const PROFILES_LIST_CLEAR_FILTERS = 'profile/profilesList/CLEAR_FILTERS';
 export const LOAD_PROFILES_LIST = 'profile/profilesList/LOAD';
 
 export type IdentifierEntry = {
@@ -80,7 +81,7 @@ export type ProfilesListState = {
   page: number;
   settings: {
     sort: ProfilesListSort;
-    filter?: ProfilesListFilters;
+    filter: ProfilesListFilters;
   };
 };
 

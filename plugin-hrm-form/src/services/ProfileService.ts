@@ -77,7 +77,7 @@ export const getProfilesList = ({
   limit = 10,
   sortBy = 'id',
   sortDirection = null,
-  profileFlagIds = null,
+  profileFlagIds = [],
 }: // TODO: remove default empty object once params are passed through
 GetProfilesListParams = {}) => {
   const searchParams = new URLSearchParams();

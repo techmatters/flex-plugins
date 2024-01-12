@@ -68,9 +68,14 @@ export const useProfilesListLoader = ({ autoload = false }: UseProfilesListLoade
 
       const {
         sort: { sortBy, sortDirection },
+        filter,
       } = settings;
 
-      asyncDispatch(dispatch)(profilesListActions.loadProfilesListAsync({ offset, limit, sortBy, sortDirection }));
+      const profileFlagIds = filter.statuses;
+
+      asyncDispatch(dispatch)(
+        profilesListActions.loadProfilesListAsync({ offset, limit, sortBy, sortDirection, profileFlagIds }),
+      );
     },
     [dispatch],
   );

@@ -201,6 +201,7 @@ const Filters: React.FC<Props> = ({
   if (!currentDefinitionVersion) return null;
 
   const handleApplyStatusFilter = (values: Item[]) => {
+    console.log('>>> handleApplyStatusFilter', values);
     updateCaseListFilter({ statuses: filterCheckedItems(values) });
   };
 
