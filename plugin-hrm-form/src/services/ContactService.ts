@@ -119,12 +119,10 @@ type SaveContactToHrmResponse = {
   externalRecordingInfo?: ExternalRecordingInfoSuccess;
 };
 
-export const createContact = async (
-  contact: Contact,
-  twilioWorkerId: string,
-  taskSid: string,
-  task: CustomITask,
-): Promise<Contact> => {
+export const createContact = async (contact: Contact, twilioWorkerId: string, task: CustomITask): Promise<Contact> => {
+  const taskSid = isOfflineContactTask(task)
+    ? task.taskSid
+    : task.attributes?.transferMeta?.originalTask ?? task.taskSid;
   const { definitionVersion } = getHrmConfig();
   const contactForApi: Contact = {
     ...contact,

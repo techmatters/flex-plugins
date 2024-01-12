@@ -116,12 +116,7 @@ test('click on button', async () => {
   screen.getByText('OfflineContactButtonText').click();
   await waitFor(
     () => {
-      expect(mockCreateContact).toHaveBeenCalledWith(
-        expect.anything(),
-        'mock-worker',
-        'offline-contact-task-mock-worker',
-        getOfflineContactTask(),
-      );
+      expect(mockCreateContact).toHaveBeenCalledWith(expect.anything(), 'mock-worker', getOfflineContactTask());
       expect(Actions.invokeAction).toHaveBeenCalledTimes(1);
     },
     { timeout: 1000 },
