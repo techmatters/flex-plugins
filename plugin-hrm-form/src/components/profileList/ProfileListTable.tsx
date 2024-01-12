@@ -16,6 +16,7 @@
 
 import React from 'react';
 import { CircularProgress, TableBody, TableCell } from '@material-ui/core';
+import { Template } from '@twilio/flex-ui';
 
 import Pagination from '../pagination';
 import { DataTableRow, ErrorText, StandardTable, TableContainer } from '../../styles';
@@ -36,7 +37,11 @@ const ProfileListTable: React.FC = () => {
       <TableContainer>
         <StandardTable>
           <ProfileListTableHeader />
-          {error && <ErrorText>Please try again later {error}</ErrorText>}
+          {error && (
+            <TableCell>
+              <ErrorText>Please try again later {error}</ErrorText>
+            </TableCell>
+          )}
           {loading && (
             <TableBody>
               <DataTableRow>
@@ -46,11 +51,17 @@ const ProfileListTable: React.FC = () => {
               </DataTableRow>
             </TableBody>
           )}
-          {!loading && (
+          {!loading && profileIds && (
             <TableBody>
-              {profileIds?.length > 0
-                ? profileIds?.map(profileId => <ProfileDetailsRow key={profileId} profileId={profileId} />)
-                : 'No clients found.'}
+              {profileIds.length > 0 ? (
+                profileIds.map(profileId => <ProfileDetailsRow key={profileId} profileId={profileId} />)
+              ) : (
+                <DataTableRow>
+                  <TableCell>
+                    <Template code="ProfileList-NoClients" />
+                  </TableCell>
+                </DataTableRow>
+              )}
             </TableBody>
           )}
         </StandardTable>
