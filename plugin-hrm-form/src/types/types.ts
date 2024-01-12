@@ -410,3 +410,7 @@ export type ProfilesListSort = {
   sortBy?: ProfilesListSortBy;
   sortDirection?: SortDirection;
 };
+
+export type ProfilesListFilters = {
+  statuses: string[];
+}
