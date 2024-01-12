@@ -63,10 +63,12 @@ const handleLoadProfilesListFulfilledAction = (state: t.ProfilesListState, actio
 };
 
 export const updateProfilesListPage = createAction(t.PROFILES_LIST_UPDATE_PAGE, (params: { page: number }) => params);
+
 export const updateProfilesListFilter = createAction(
   t.PROFILES_LIST_UPDATE_FILTER,
   (params: { filter: any }) => params,
 );
+export const clearProfilesListFilter = createAction(t.PROFILES_LIST_CLEAR_FILTER, (params: { filter: any }) => params);
 
 const handleUpdateProfilesListPageAction = (
   state: t.ProfilesListState,
@@ -92,11 +94,22 @@ const handleUpdateProfileListSettingsAction = (
   action: ReturnType<typeof updateProfileListSettings>,
 ) => {
   const update = {
-    page: 0,
     settings: {
+      page: 0,
       ...state.settings,
       ...action.payload,
     },
+  };
+
+  return loadProfilesListStateIntoRedux(state, update);
+};
+
+const handleClearProfilesListFilterAction = (state: t.ProfilesListState, action: any) => {
+  const { filter } = action.payload;
+
+  const update = {
+    ...state,
+    filter,
   };
 
   return loadProfilesListStateIntoRedux(state, update);
@@ -109,6 +122,8 @@ const profilesListReducer = (initialState: t.ProfilesListState = t.initialProfil
     handleAction(loadProfilesListAsync.fulfilled, handleLoadProfilesListFulfilledAction),
     handleAction(updateProfilesListPage, handleUpdateProfilesListPageAction),
     handleAction(updateProfileListSettings, handleUpdateProfileListSettingsAction),
+    handleAction(updateProfilesListFilter, handleUpdateProfilesListFilterAction),
+    handleAction(clearProfilesListFilter, handleClearProfilesListFilterAction),
   ]);
 
 export default profilesListReducer;

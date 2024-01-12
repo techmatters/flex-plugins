@@ -20,4 +20,29 @@ import { selectProfileListState } from '../selectors';
 
 export const useProfilesList = (): ProfilesListState => {
   return useSelector(selectProfileListState);
+type UseProfileListReturn = {
+  data: Profile['id'][] | undefined;
+  count: number | undefined;
+  loading: boolean | undefined;
+  error: ParseFetchErrorResult | undefined;
+  page: number;
+  filter: any;
+};
+
+/**
+ * Get the profile list from redux state
+ * @returns {UseProfileListReturn} - State and actions for the profile list
+ */
+
+export const useProfilesList = (): UseProfileListReturn => {
+  const { loading, data, error, settings } = useSelector(ProfileSelectors.selectProfileListState) || {};
+
+  return {
+    loading,
+    count,
+    data,
+    error,
+    page,
+    filter,
+  };
 };

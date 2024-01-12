@@ -27,6 +27,13 @@ import { ProfilesListState } from '../types';
 
 type UseProfilesListLoaderParams = {
   autoload?: boolean;
+  skipAutoload?: boolean;
+};
+
+type UseProfilesListLoaderReturn = {
+  updateProfilesListPage: (page: number) => void;
+  updateProfilesListFilter: (filter: any) => void;
+  clearProfilesListFilter: (filter: any) => void;
 };
 
 /**
@@ -58,12 +65,30 @@ export const useProfilesListLoader = ({ autoload = false }: UseProfilesListLoade
   const updateProfilesListSettings = useCallback(
     (settings: Partial<ProfilesListState['settings']>) => {
       dispatch(profilesListActions.updateProfileListSettings(settings));
+  const updateProfilesListFilter = useCallback(
+    (filter: any) => {
+      dispatch(
+        profilesListActions.updateProfilesListFilter({
+          filter,
+        }),
+      );
     },
     [dispatch],
   );
 
+  const clearProfilesListFilter = useCallback(
+    filter => {
+      dispatch(
+        profilesListActions.clearProfilesListFilter({
+          filter,
+        }),
+      );
+    },
+    [dispatch],
+  )
+
   const loadProfileList = useCallback(
-    (page: number, settings: ProfilesListState['settings']) => {
+    (settings: ProfilesListState['settings']) => {
       const offset = page * PAGE_SIZE;
       const limit = PAGE_SIZE;
 
@@ -77,9 +102,15 @@ export const useProfilesListLoader = ({ autoload = false }: UseProfilesListLoade
   );
 
   // Allways trigger load on initial mount
+  // useEffect(() => {
+  //   if (autoload && !loading) {
+  //     loadProfileList(settings);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
   useEffect(() => {
     if (autoload && !loading) {
-      loadProfileList(page, settings);
+      loadProfileList(settings);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -89,11 +120,13 @@ export const useProfilesListLoader = ({ autoload = false }: UseProfilesListLoade
     const shouldTrigger = previousPage !== page || previousSettings !== settings;
     if (!shouldTrigger || loading || error) return;
 
-    loadProfileList(page, settings);
+    loadProfileList(settings);
   }, [error, loadProfileList, loading, page, previousPage, previousSettings, settings]);
 
   return {
     updateProfilesListPage,
     updateProfilesListSettings,
+    updateProfilesListFilter,
+    clearProfilesListFilter,
   };
 };

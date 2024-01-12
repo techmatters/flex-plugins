@@ -44,6 +44,7 @@ export const UPDATE_PROFILE_SECTION = 'profile/profileSections/UPDATE';
 export const PROFILES_LIST_UPDATE_PAGE = 'profile/profilesList/UPDATE_PAGE';
 export const PROFILES_LIST_UPDATE_FILTER = 'profile/profilesList/UPDATE_FILTER';
 export const PROFILES_LIST_UPDATE_SETTINGS = 'profile/profilesList/UPDATE_SETTINGS';
+export const PROFILES_LIST_CLEAR_FILTER = 'profile/profilesList/CLEAR';
 export const LOAD_PROFILES_LIST = 'profile/profilesList/LOAD';
 
 export type IdentifierEntry = {
@@ -79,7 +80,7 @@ export type ProfilesListState = {
   settings: {
     sort: ProfilesListSort;
     count: number;
-    filter?: any;
+    filter?: { statuses: string[] };
     page: number;
   };
 };
@@ -94,7 +95,7 @@ export const initialProfilesListState: ProfilesListState = {
       sortDirection: SortDirection.DESC,
     },
     count: 0,
-    filter: undefined,
+    filter: { statuses: [] },
     page: 0,
   },
 };

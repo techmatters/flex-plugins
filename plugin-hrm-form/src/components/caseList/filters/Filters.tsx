@@ -167,6 +167,7 @@ const Filters: React.FC<Props> = ({
 
   const [openedFilter, setOpenedFilter] = useState<string>();
   const [statusValues, setStatusValues] = useState<Item[]>(getStatusInitialValue(currentDefinitionVersion));
+  console.log('>>> statusValues', statusValues);
   const [counselorValues, setCounselorValues] = useState<Item[]>(getCounselorsInitialValue(counselorsHash));
   const [dateFilterValues, setDateFilterValues] = useState<{
     createdAt?: DateFilterValue;
@@ -179,6 +180,7 @@ const Filters: React.FC<Props> = ({
 
   useEffect(() => {
     setStatusValues(getStatusInitialValue(currentDefinitionVersion));
+    console.log('>>> useEffect setStatusValues', statusValues);
     setCategoriesValues(getCategoriesInitialValue(currentDefinitionVersion, helpline));
   }, [currentDefinitionVersion, helpline]);
 
@@ -190,6 +192,7 @@ const Filters: React.FC<Props> = ({
       checked: counsellors.includes(cv.value),
     }));
     const newStatusValues = statusValues.map(sv => ({ ...sv, checked: statuses.includes(sv.value) }));
+    console.log('>>> useEffect newStatusValues', newStatusValues);
     const newCategoriesValues = getUpdatedCategoriesValues(categories, categoriesValues);
     setCounselorValues(newCounselorValues);
     setStatusValues(newStatusValues);
@@ -201,6 +204,7 @@ const Filters: React.FC<Props> = ({
   if (!currentDefinitionVersion) return null;
 
   const handleApplyStatusFilter = (values: Item[]) => {
+    console.log('>>> handleApplyStatusFilter', values);
     updateCaseListFilter({ statuses: filterCheckedItems(values) });
   };
 
