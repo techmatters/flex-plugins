@@ -248,7 +248,7 @@
   "CaseList-ExpandButton": "Open case details",
   "CaseList-PrevPage": "Previous page",
   "CaseList-NextPage": "Next page",
-  "CaseList-FilterBy": "Filter by",
+  "Table-FilterBy": "Filter by",
   "CaseList-Filters-Status": "Status",
   "CaseList-Filters-Counselor": "Counselor",
   "CaseList-Filters-Categories": "Categories",

@@ -462,7 +462,7 @@
   "CaseList-ExpandButton": "Abrir detalles del caso",
   "CaseList-PrevPage": "Página anterior",
   "CaseList-NextPage": "Siguiente página",
-  "CaseList-FilterBy": "Filtrado por",
+  "Table-FilterBy": "Filtrado por",
   "CaseList-Filters-Status": "Estado",
   "CaseList-Filters-Counselor": "Consejero",
   "CaseList-Filters-Categories": "Categorías",
