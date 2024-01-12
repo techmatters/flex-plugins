@@ -18,9 +18,9 @@ import { createAsyncAction, createReducer } from 'redux-promise-middleware-actio
 import { DefinitionVersionId } from 'hrm-form-definitions';
 import { CreateHandlerMap } from 'redux-promise-middleware-actions/lib/reducers';
 
-import { createCase, updateCase, cancelCase } from '../../services/CaseService';
+import { cancelCase, createCase, getCase, updateCase, updateCaseStatus } from '../../services/CaseService';
 import { Case } from '../../types/types';
-import { UPDATE_CASE_ACTION, CREATE_CASE_ACTION, CANCEL_CASE_ACTION } from './types';
+import { CANCEL_CASE_ACTION, CREATE_CASE_ACTION, UPDATE_CASE_ACTION } from './types';
 import type { HrmState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { connectToCase } from '../../services/ContactService';
@@ -39,7 +39,18 @@ export const createCaseAsyncAction = createAsyncAction(
 export const updateCaseAsyncAction = createAsyncAction(
   UPDATE_CASE_ACTION,
   async (caseId: Case['id'], body: Partial<Case>): Promise<Case> => {
-    return updateCase(caseId, body);
+    const { status, ...otherEdits } = body;
+    let updatedCase;
+    if (Object.keys(otherEdits).length) {
+      updatedCase = await updateCase(caseId, otherEdits);
+    }
+    if (status) {
+      updatedCase = await updateCaseStatus(caseId, status);
+    }
+    if (!updatedCase) {
+      updatedCase = await getCase(caseId); // If the update is empty, just refresh the case from the backend.
+    }
+    return updatedCase;
   },
 );
 
