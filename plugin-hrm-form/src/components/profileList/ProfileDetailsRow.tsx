@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import ProfileFlagPill from '../profile/profileFlag/ProfileFlagPill';
@@ -35,19 +35,17 @@ import {
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfileFlags } from '../../states/profile/hooks';
 
+import { ProfileRoute } from '../../states/routing/types';
+
 const CHAR_LIMIT = 200;
 
-type OwnProps = {
-  profileId: any;
+type Props = {
+  profileId: number;
 };
 
-type Props = OwnProps & {
-  openProfileModal: (profileId: string) => void;
-};
-
-const ProfileDetailsRow: React.FC<Props> = ({ profileId, openProfileModal }) => {
+const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
+  const dispatch = useDispatch();
   const { profile } = useProfile({ profileId });
-
   const { profileFlags } = useProfileFlags(profileId);
 
   const handleViewProfile = async () => {
@@ -88,13 +86,4 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId, openProfileModal }) => 
   );
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    openProfileModal: id => {
-      dispatch(newOpenModalAction({ route: 'profile', profileId: id, subroute: 'details' }, 'standalone-task-sid'));
-    },
-  };
-};
-
-const connector = connect(null, mapDispatchToProps);
-export default connector(ProfileDetailsRow);
+export default ProfileDetailsRow;
