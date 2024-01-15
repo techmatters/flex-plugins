@@ -50,7 +50,9 @@ const HrmForm: React.FC<Props> = ({ routing, task, featureFlags, savedContact })
   const routes = [
     {
       shouldHandleRoute: () => isProfileRoute(routing),
-      renderComponent: () => <ProfileRouter task={task} />,
+      renderComponent: () => {
+        return <ProfileRouter task={task} />;
+      },
     },
     // TODO: move hrm form search into it's own component and use it here so all routes are in one place
     {

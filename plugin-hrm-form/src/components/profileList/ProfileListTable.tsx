@@ -22,11 +22,13 @@ import Pagination from '../pagination';
 import { DataTableRow, ErrorText, StandardTable, TableContainer } from '../../styles';
 import { useProfilesList } from '../../states/profile/hooks/useProfilesList';
 import { useProfilesListLoader } from '../../states/profile/hooks/useProfilesListLoader';
+import { useAllProfileFlags } from '../../states/profile/hooks/useProfileFlags';
 import ProfileListTableHeader from './ProfileHeader';
 import ProfileDetailsRow from './ProfileDetailsRow';
 import { PAGE_SIZE } from '../../states/profile/profiles';
 
 const ProfileListTable: React.FC = () => {
+  useAllProfileFlags();
   const { loading, data: profileIds, count, error, page } = useProfilesList();
   const { updateProfilesListPage } = useProfilesListLoader({ autoload: true });
 
@@ -39,7 +41,7 @@ const ProfileListTable: React.FC = () => {
           <ProfileListTableHeader />
           {error && (
             <TableCell>
-              <ErrorText>Please try again later {error}</ErrorText>
+              <ErrorText>Please try again later</ErrorText>
             </TableCell>
           )}
           {loading && (

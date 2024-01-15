@@ -44,10 +44,9 @@ export type UseProfileFlags = UseAllProfileFlags & UseEditProfileFlags & { profi
  */
 export const useAllProfileFlags = (): UseAllProfileFlags => {
   const dispatch = useDispatch();
-
-  const error = useSelector((state: RootState) => ProfileSelectors.selectAllProfileFlags(state)?.error);
-  const loading = useSelector((state: RootState) => ProfileSelectors.selectAllProfileFlags(state)?.loading);
-  const allProfileFlags = useSelector((state: RootState) => ProfileSelectors.selectAllProfileFlags(state)?.data);
+  const { error, loading, data: allProfileFlags } = useSelector((state: RootState) =>
+    ProfileSelectors.selectAllProfileFlags(state),
+  );
 
   const loadProfileFlags = useCallback(() => {
     asyncDispatch(dispatch)(ProfileFlagActions.loadProfileFlagsAsync());
@@ -115,7 +114,7 @@ export const useProfileFlags = (profileId?: Profile['id']): UseProfileFlags => {
 
   const profileFlags = useMemo(() => {
     if (!allProfileFlags || !profileFlagIds) return [];
-    return profileFlagIds.map(id => allProfileFlags.find(profileFlag => profileFlag.id === id)).filter(Boolean);
+    return profileFlagIds.map(({ id }) => allProfileFlags.find(profileFlag => profileFlag.id === id)).filter(Boolean);
   }, [profileFlagIds, allProfileFlags]);
 
   return {

@@ -31,17 +31,15 @@ type UseProfilesListLoaderParams = {
 
 /**
  * Load a complete profile list with pagination into redux
- * @param {UseProfilesListLoaderParams}
- * @returns {UseProfilesListLoaderReturn} - State and actions for the profile list
  */
 export const useProfilesListLoader = ({ autoload = false }: UseProfilesListLoaderParams = {}) => {
-  const dispatch = useDispatch();
-
   const { page, settings, loading, error } =
     useSelector((state: RootState) => ProfileSelectors.selectProfileListState(state)) || {};
 
   const previousPage = usePrevious(page);
   const previousSettings = usePrevious(settings);
+
+  const dispatch = useDispatch();
 
   const updateProfilesListPage = useCallback(
     (page: number) => {
@@ -67,6 +65,7 @@ export const useProfilesListLoader = ({ autoload = false }: UseProfilesListLoade
     },
     [dispatch],
   );
+
 
   const loadProfileList = useCallback(
     (page: number, settings: ProfilesListState['settings']) => {

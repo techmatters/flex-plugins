@@ -374,11 +374,6 @@ export type ProfileSection = {
   updatedAt?: string;
 };
 
-export type ProfileResponse = {
-  identifier: string;
-  summary: string;
-};
-
 export type Profile = {
   id: number;
   name: string;
@@ -387,9 +382,9 @@ export type Profile = {
   createdAt?: string;
   updatedAt?: string;
   identifiers?: Identifier[];
-  profileFlags?: number[];
+  profileFlags?: {id: ProfileFlag['id'], validUntil: ProfileFlag['validUntil']}[];
   profileSections?: ProfileSection[];
-} & ProfileResponse;
+};
 
 
 export type ProfileFlag = {
@@ -397,6 +392,7 @@ export type ProfileFlag = {
   name: string;
   createdAt?: string;
   updatedAt?: string;
+  validUntil?: string;
 };
 
 export type ProfilesList = Profile[];
