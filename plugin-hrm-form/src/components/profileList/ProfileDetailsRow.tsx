@@ -35,6 +35,8 @@ import {
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfileFlags } from '../../states/profile/hooks';
 
+import { ProfileRoute } from '../../states/routing/types';
+
 const CHAR_LIMIT = 200;
 
 type Props = {
