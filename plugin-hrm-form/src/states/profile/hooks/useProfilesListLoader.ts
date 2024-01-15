@@ -66,7 +66,6 @@ export const useProfilesListLoader = ({ autoload = false }: UseProfilesListLoade
     [dispatch],
   );
 
-
   const loadProfileList = useCallback(
     (page: number, settings: ProfilesListState['settings']) => {
       const offset = page * PAGE_SIZE;
