@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import ProfileFlagPill from '../profile/profileFlag/ProfileFlagPill';
@@ -37,21 +37,17 @@ import { useProfileFlags } from '../../states/profile/hooks';
 
 const CHAR_LIMIT = 200;
 
-type OwnProps = {
-  profileId: any;
+type Props = {
+  profileId: number;
 };
 
-type Props = OwnProps & {
-  openProfileModal: (profileId: string) => void;
-};
-
-const ProfileDetailsRow: React.FC<Props> = ({ profileId, openProfileModal }) => {
+const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
+  const dispatch = useDispatch();
   const { profile } = useProfile({ profileId });
-
   const { profileFlags } = useProfileFlags(profileId);
 
   const handleViewProfile = async () => {
-    openProfileModal(profileId);
+    dispatch(newOpenModalAction({ route: 'profile', profileId, subroute: 'details' }, 'standalone-task-sid'));
   };
 
   return (
@@ -88,14 +84,5 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId, openProfileModal }) => 
   );
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    openProfileModal: id => {
-      dispatch(newOpenModalAction({ route: 'profile', profileId: id, subroute: 'details' }, 'standalone-task-sid'));
-    },
-  };
-};
-
-const connector = connect(null, mapDispatchToProps);
 // eslint-disable-next-line import/no-unused-modules
-export default connector(ProfileDetailsRow);
+export default ProfileDetailsRow;
