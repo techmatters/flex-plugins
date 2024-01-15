@@ -34,6 +34,7 @@ import {
 } from '../../styles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfileFlags } from '../../states/profile/hooks';
+import { useProfileSectionLoaderByType } from '../../states/profile/hooks/useProfileSection';
 
 const CHAR_LIMIT = 200;
 
@@ -45,6 +46,8 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
   const dispatch = useDispatch();
   const { profile } = useProfile({ profileId });
   const { profileFlags } = useProfileFlags(profileId);
+  const summarySection = profile.profileSections?.find(ps => ps.sectionType === 'summary');
+  useProfileSectionLoaderByType({ profileId, sectionType: summarySection?.sectionType });
 
   const handleViewProfile = async () => {
     dispatch(newOpenModalAction({ route: 'profile', profileId, subroute: 'details' }, 'standalone-task-sid'));
@@ -75,10 +78,10 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
         </SummaryCell>
       )}
       <DataCell>
-        <TableBodyFont>{profile?.identifier}</TableBodyFont>
+        <TableBodyFont>{profile?.identifiers.map(i => i.identifier).join('\n')}</TableBodyFont>
       </DataCell>
       <SummaryCell>
-        <TableBodyFont>{getShortSummary(profile?.summary, CHAR_LIMIT, 'profile')}</TableBodyFont>
+        <TableBodyFont>{getShortSummary(summarySection?.content, CHAR_LIMIT, 'profile')}</TableBodyFont>
       </SummaryCell>
     </DataTableRow>
   );

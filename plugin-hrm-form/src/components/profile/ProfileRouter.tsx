@@ -75,7 +75,9 @@ const PROFILE_ROUTES: Record<string, ProfileRouteConfig> = {
   },
   profileSectionEdit: {
     routes: ['profileSectionEdit'],
-    renderComponent: (props: Props) => <ProfileSectionEdit {...props} sectionType={props.sectionType} />,
+    renderComponent: (props: Props) => {
+      return <ProfileSectionEdit {...props} sectionType={props.sectionType} />;
+    },
   },
 };
 
