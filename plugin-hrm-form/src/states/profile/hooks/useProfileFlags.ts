@@ -44,16 +44,15 @@ export type UseProfileFlags = UseAllProfileFlags & UseEditProfileFlags & { profi
  */
 export const useAllProfileFlags = (): UseAllProfileFlags => {
   const dispatch = useDispatch();
-  const { error, loading, data: allProfileFlags } = useSelector((state: RootState) =>
-    ProfileSelectors.selectAllProfileFlags(state),
-  );
+  const flagsState = useSelector((state: RootState) => ProfileSelectors.selectAllProfileFlags(state));
+  const { error, loading, data: allProfileFlags } = flagsState;
 
   const loadProfileFlags = useCallback(() => {
     asyncDispatch(dispatch)(ProfileFlagActions.loadProfileFlagsAsync());
   }, [dispatch]);
 
   useEffect(() => {
-    if (!allProfileFlags && !loading) {
+    if ((!allProfileFlags || !allProfileFlags.length) && !loading) {
       loadProfileFlags();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
