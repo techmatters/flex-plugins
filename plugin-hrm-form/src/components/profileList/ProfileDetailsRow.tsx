@@ -17,6 +17,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
+import { CircularProgress } from '@material-ui/core';
 
 import ProfileFlagPill from '../profile/profileFlag/ProfileFlagPill';
 import { getShortSummary } from '../../utils';
@@ -31,10 +32,11 @@ import {
   DataCell,
   TableBodyFont,
   OpaqueText,
+  ErrorText,
 } from '../../styles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfileFlags } from '../../states/profile/hooks';
-import { useProfileSectionLoaderByType } from '../../states/profile/hooks/useProfileSection';
+import { useProfileSectionByType } from '../../states/profile/hooks/useProfileSection';
 
 const CHAR_LIMIT = 200;
 
@@ -46,8 +48,8 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
   const dispatch = useDispatch();
   const { profile } = useProfile({ profileId });
   const { profileFlags } = useProfileFlags(profileId);
-  const summarySection = profile.profileSections?.find(ps => ps.sectionType === 'summary');
-  useProfileSectionLoaderByType({ profileId, sectionType: summarySection?.sectionType });
+
+  const { section: summarySection, error, loading } = useProfileSectionByType({ profileId, sectionType: 'summary' });
 
   const handleViewProfile = async () => {
     dispatch(newOpenModalAction({ route: 'profile', profileId, subroute: 'details' }, 'standalone-task-sid'));
@@ -81,7 +83,12 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
         <TableBodyFont>{profile?.identifiers.map(i => i.identifier).join('\n')}</TableBodyFont>
       </DataCell>
       <SummaryCell>
-        <TableBodyFont>{getShortSummary(summarySection?.content, CHAR_LIMIT, 'profile')}</TableBodyFont>
+        {error && <ErrorText>Please try again later</ErrorText>}
+        {loading ? (
+          <CircularProgress size={14} />
+        ) : (
+          <TableBodyFont>{getShortSummary(summarySection?.content, CHAR_LIMIT, 'profile')}</TableBodyFont>
+        )}
       </SummaryCell>
     </DataTableRow>
   );
