@@ -29,7 +29,7 @@ import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../search/SearchResults';
 import { YellowBanner } from '../styles';
 import { Bold } from '../../../styles';
 import { StyledLink } from '../../search/styles';
-import { ChannelTypes, channelTypes } from '../../../states/DomainConstants';
+import { CoreChannelTypes, coreChannelTypes } from '../../../states/DomainConstants';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
 import { getContactValueTemplate, getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
@@ -52,18 +52,18 @@ const PreviousContactsBanner: React.FC<Props> = ({
   searchCases,
   openContactSearchResults,
 }) => {
-  let localizedSourceFromTask: { [channelType in ChannelTypes]: string };
+  let localizedSourceFromTask: { [channelType in CoreChannelTypes]: string };
 
   if (isTwilioTask(task)) {
     localizedSourceFromTask = {
-      [channelTypes.web]: `${getContactValueTemplate(task)}`,
-      [channelTypes.voice]: 'PreviousContacts-PhoneNumber',
-      [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
-      [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
-      [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
-      [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
-      [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
-      [channelTypes.line]: 'PreviousContacts-LineUser',
+      [coreChannelTypes.web]: `${getContactValueTemplate(task)}`,
+      [coreChannelTypes.voice]: 'PreviousContacts-PhoneNumber',
+      [coreChannelTypes.sms]: 'PreviousContacts-PhoneNumber',
+      [coreChannelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
+      [coreChannelTypes.facebook]: 'PreviousContacts-FacebookUser',
+      [coreChannelTypes.twitter]: 'PreviousContacts-TwitterUser',
+      [coreChannelTypes.instagram]: 'PreviousContacts-InstagramUser',
+      [coreChannelTypes.line]: 'PreviousContacts-LineUser',
     };
   }
 

@@ -17,9 +17,10 @@
 import { SearchContactResult } from '../../types/types';
 import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
+import selectSearchStateForTask from './selectSearchStateForTask';
 
 const selectContactsForSearchResults = (state: RootState, taskSid: string): SearchContactResult => {
-  const resultReferences = state[namespace].searchContacts.tasks[taskSid]?.searchContactsResult;
+  const resultReferences = selectSearchStateForTask(state, taskSid)?.searchContactsResult;
   if (!resultReferences) {
     return {
       count: 0,

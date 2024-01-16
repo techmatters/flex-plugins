@@ -14,8 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import TransferButton from './TransferButton';
-import AcceptTransferButton from './AcceptTransferButton';
-import RejectTransferButton from './RejectTransferButton';
+import { RootState } from '..';
+import { namespace } from '../storeNamespaces';
+import { SearchStateTaskEntry } from './reducer';
 
-export { TransferButton, AcceptTransferButton, RejectTransferButton };
+const selectSearchStateForTask = (state: RootState, taskId: string): SearchStateTaskEntry | undefined =>
+  taskId ? state[namespace].searchContacts.tasks[taskId] : undefined;
+
+export default selectSearchStateForTask;

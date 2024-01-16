@@ -258,7 +258,7 @@ const CaseHome: React.FC<Props> = ({
                 hasMoreActivities && enableSeparateTimelineView ? 'Case-Timeline-RecentTitle' : 'Case-Timeline-Title'
               }
             />
-            {hasMoreActivities && (
+            {enableSeparateTimelineView && hasMoreActivities && (
               <ViewButton style={{ marginTop: '10px' }} withDivider={false} onClick={onViewFullTimelineClick}>
                 <Template code="Case-Timeline-OpenFullTimelineButton" />
               </ViewButton>

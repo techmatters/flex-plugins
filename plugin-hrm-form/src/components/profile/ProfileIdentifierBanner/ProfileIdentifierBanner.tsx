@@ -23,7 +23,7 @@ import { useIdentifierByIdentifier, useProfileProperty } from '../../../states/p
 import { YellowBanner } from '../styles';
 import { Bold } from '../../../styles';
 import { StyledLink } from '../../search/styles';
-import { ChannelTypes, channelTypes } from '../../../states/DomainConstants';
+import { CoreChannelTypes, coreChannelTypes } from '../../../states/DomainConstants';
 import { newOpenModalAction } from '../../../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils';
 import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
@@ -60,15 +60,15 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) =>
   const contactsCount = contactsCountState ? contactsCountState - 1 : 0;
   const casesCount = useProfileProperty(profileId, 'casesCount') || 0;
 
-  const localizedSourceFromTask: { [channelType in ChannelTypes]: string } = {
-    [channelTypes.web]: `${getContactValueTemplate(task)}`,
-    [channelTypes.voice]: 'PreviousContacts-PhoneNumber',
-    [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
-    [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
-    [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
-    [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
-    [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
-    [channelTypes.line]: 'PreviousContacts-LineUser',
+  const localizedSourceFromTask: { [channelType in CoreChannelTypes]: string } = {
+    [coreChannelTypes.web]: `${getContactValueTemplate(task)}`,
+    [coreChannelTypes.voice]: 'PreviousContacts-PhoneNumber',
+    [coreChannelTypes.sms]: 'PreviousContacts-PhoneNumber',
+    [coreChannelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
+    [coreChannelTypes.facebook]: 'PreviousContacts-FacebookUser',
+    [coreChannelTypes.twitter]: 'PreviousContacts-TwitterUser',
+    [coreChannelTypes.instagram]: 'PreviousContacts-InstagramUser',
+    [coreChannelTypes.line]: 'PreviousContacts-LineUser',
   };
 
   const { canView } = getPermissionsForViewingIdentifiers();

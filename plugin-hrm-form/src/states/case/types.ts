@@ -76,9 +76,9 @@ export type ReferralActivity = CoreActivity & {
   updatedBy?: string;
 };
 
-export type ConnectedCaseActivity = CoreActivity & {
+export type ContactActivity = CoreActivity & {
   callType: string;
-  contactId?: string;
+  contactId: string;
   date: string;
   createdAt: string;
   type: string;
@@ -86,7 +86,7 @@ export type ConnectedCaseActivity = CoreActivity & {
   isDraft: boolean;
 };
 
-export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
+export type Activity = NoteActivity | ReferralActivity | ContactActivity;
 
 export type CaseDetails = {
   id: string;

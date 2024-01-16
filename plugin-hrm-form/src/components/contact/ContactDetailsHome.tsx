@@ -57,6 +57,7 @@ import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFr
 import { selectCaseMergingBanners } from '../../states/case/caseBanners';
 import InfoIcon from '../caseMergingBanners/InfoIcon';
 import { BannerContainer, Text } from '../../styles/banners';
+import { isSmsChannelType } from '../../utils/smsChannels';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -195,7 +196,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const formattedDuration = formatDuration(conversationDuration);
 
   const isPhoneContact =
-    channel === channelTypes.voice || channel === channelTypes.sms || channel === channelTypes.whatsapp;
+    channel === channelTypes.voice || channel === channelTypes.whatsapp || isSmsChannelType(channel);
 
   const formattedCategories = formatCategories(categories);
 

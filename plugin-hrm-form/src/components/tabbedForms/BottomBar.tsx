@@ -30,7 +30,7 @@ import { hasTaskControl } from '../../transfer/transferTaskState';
 import { RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError } from '../../fullStory';
-import { Case, Contact, CustomITask } from '../../types/types';
+import { Case, Contact, CustomITask, RouterTask } from '../../types/types';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
@@ -49,7 +49,7 @@ type BottomBarProps = {
   showNextButton: boolean;
   showSubmitButton: boolean;
   nextTab: () => void;
-  task: CustomITask;
+  task: RouterTask;
   contactId: string;
   saveUpdates: () => Promise<void>;
 };
@@ -96,7 +96,7 @@ const BottomBar: React.FC<
     if (contactIsSaving || !hasTaskControl(task)) return;
 
     try {
-      await submitContactFormAsyncAction(task, contact, metadata, caseForm as Case);
+      await submitContactFormAsyncAction(task as CustomITask, contact, metadata, caseForm as Case);
       await completeTask(task, contact);
     } catch (error) {
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {

@@ -17,6 +17,11 @@
 import React, { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
+import { namespace } from '../../../states/storeNamespaces';
+import { RootState } from '../../../states';
+import * as RoutingActions from '../../../states/routing/actions';
+import { getCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
+import type { ProfileSectionEditRoute } from '../../../states/routing/types';
 import { ProfileSection } from '../../../types/types';
 import NavigableContainer from '../../NavigableContainer';
 import { Flex, Container, Box, ColumnarBlock, ColumnarContent, FormTextArea } from '../../../styles';
@@ -24,10 +29,17 @@ import { StyledNextStepButton } from '../../../styles/buttons';
 import { useEditProfileSection } from '../../../states/profile/hooks/useProfileSection';
 import useProfileSectionTypes from '../../../states/configuration/hooks/useProfileSectionTypes';
 import { ProfileCommonProps } from '../types';
-import * as RoutingActions from '../../../states/routing/actions';
 
-type OwnProps = ProfileCommonProps & {
-  sectionType: ProfileSection['sectionType'];
+type OwnProps = ProfileCommonProps;
+
+const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
+  const routingState = state[namespace].routing;
+  const currentRouteStack = getCurrentTopmostRouteForTask(routingState, taskSid);
+  const sectionType = (currentRouteStack as ProfileSectionEditRoute)?.type;
+
+  return {
+    sectionType,
+  };
 };
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
@@ -36,7 +48,7 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
   };
 };
 
-const connector = connect(null, mapDispatchToProps);
+const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props) => {

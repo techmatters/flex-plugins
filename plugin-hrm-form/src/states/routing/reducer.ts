@@ -30,7 +30,7 @@ import {
 } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import { standaloneTaskSid } from '../../types/types';
-import getOfflineContactTaskSid from '../contacts/offlineContactTaskSid';
+import { getOfflineContactTaskSid } from '../contacts/offlineContactTask';
 import {
   ContactUpdatingAction,
   CREATE_CONTACT_ACTION_FULFILLED,

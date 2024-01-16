@@ -197,6 +197,7 @@
   "CSAMCLC-ActionHeaderAdded": "Added {{date}} at {{time}} &nbsp;&nbsp; Counsellor: {{counsellor}}",
   "Case-ActionHeaderUpdated": "Updated on {{date}} at {{time}} by {{counsellor}}",
   "Case-ActionHeaderCounselor": "Counsellor:",
+  "Case-EditSummary-EditHistory-StatusUpdated": "Status updated from {{previousStatus}} to {{updatedStatus}} on {{date}} at {{time}} by {{counsellor}}",
   "Case-CloseButton": "Close",
   "Case-EditButton": "Edit",
   "Case-PerpetratorName": "Perpetrator Name: ",

@@ -111,22 +111,22 @@ const ContactPreview: React.FC<Props> = ({ contact, handleViewDetails, definitio
           onClickFull={handleViewDetails}
           isDraft={!contact.finalizedAt}
         />
-        <PreviewRow>
-          {callSummary && (
+        {callSummary && (
+          <PreviewRow>
             <PreviewDescription expandLinkText="ReadMore" collapseLinkText="ReadLess">
               {callSummary}
             </PreviewDescription>
-          )}
-          {isNonDataCallType(callType) ? (
-            <TagsAndCounselor counselor={counselorName} nonDataCallType={callType} definitionVersion={definition} />
-          ) : (
-            <TagsAndCounselor
-              counselor={counselorName}
-              categories={contact.rawJson.categories}
-              definitionVersion={definition}
-            />
-          )}
-        </PreviewRow>
+          </PreviewRow>
+        )}
+        {isNonDataCallType(callType) ? (
+          <TagsAndCounselor counselor={counselorName} nonDataCallType={callType} definitionVersion={definition} />
+        ) : (
+          <TagsAndCounselor
+            counselor={counselorName}
+            categories={contact.rawJson.categories}
+            definitionVersion={definition}
+          />
+        )}
       </PreviewWrapper>
     </Flex>
   );

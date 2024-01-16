@@ -28,8 +28,8 @@ import { CaseSectionFont, TimelineCallTypeIcon, TimelineDate, TimelineRow, Timel
 import { Box, Row } from '../../../styles';
 import CaseAddButton from '../CaseAddButton';
 import { CustomITask } from '../../../types/types';
-import { isConnectedCaseActivity } from '../../../states/case/caseActivities';
-import { ConnectedCaseActivity, NoteActivity, ReferralActivity } from '../../../states/case/types';
+import { isContactActivity } from '../../../states/case/caseActivities';
+import { ContactActivity, NoteActivity, ReferralActivity } from '../../../states/case/types';
 import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../../permissions';
 import { CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../../../states/routing/types';
 import { newOpenModalAction } from '../../../states/routing/actions';
@@ -97,7 +97,7 @@ const Timeline: React.FC<Props> = ({
     openViewCaseSectionModal(caseId, NewCaseSubroutes.Referral, id);
   };
 
-  const handleViewConnectedCaseActivityClick = ({ contactId }: ConnectedCaseActivity) => {
+  const handleViewConnectedCaseActivityClick = ({ contactId }: ContactActivity) => {
     openContactModal(contactId);
   };
 
@@ -114,7 +114,7 @@ const Timeline: React.FC<Props> = ({
       handleViewNoteClick(activity);
     } else if (activity.type === 'referral') {
       handleViewReferralClick(activity);
-    } else if (isConnectedCaseActivity(activity)) {
+    } else if (isContactActivity(activity)) {
       handleViewConnectedCaseActivityClick(activity);
     } else {
       setMockedMessage(<Template code="NotImplemented" />);
@@ -151,7 +151,7 @@ const Timeline: React.FC<Props> = ({
         timelineActivities.map((activity, index) => {
           const date = parseISO(activity.date).toLocaleDateString(navigator.language);
           let canViewActivity = true;
-          if (isConnectedCaseActivity(activity)) {
+          if (isContactActivity(activity)) {
             if (activity.isDraft) {
               canViewActivity = false;
             } else {
@@ -164,13 +164,12 @@ const Timeline: React.FC<Props> = ({
             <TimelineRow
               key={index}
               style={{
-                backgroundColor:
-                  isConnectedCaseActivity(activity) && activity.isDraft ? colors.background.yellow : undefined,
+                backgroundColor: isContactActivity(activity) && activity.isDraft ? colors.background.yellow : undefined,
               }}
             >
               <TimelineDate>{date}</TimelineDate>
-              <TimelineIcon type={isConnectedCaseActivity(activity) ? activity.channel : activity.type} />
-              {isConnectedCaseActivity(activity) && (
+              <TimelineIcon type={isContactActivity(activity) ? activity.channel : activity.type} />
+              {isContactActivity(activity) && (
                 <TimelineCallTypeIcon>
                   <CallTypeIcon callType={activity.callType} fontSize="18px" />
                 </TimelineCallTypeIcon>
@@ -185,7 +184,7 @@ const Timeline: React.FC<Props> = ({
                   </Box>
                 </Box>
               )}
-              {isConnectedCaseActivity(activity) && activity.isDraft && (
+              {isContactActivity(activity) && activity.isDraft && (
                 <Box marginLeft="auto">
                   <Box marginLeft="auto">
                     <InfoIcon color="#fed44b" />

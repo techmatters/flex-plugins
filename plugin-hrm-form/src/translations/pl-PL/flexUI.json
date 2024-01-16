@@ -190,6 +190,7 @@
     "Case-CaseNumber": "Sprawa #",
     "Case-ActionHeaderAdded": "Dodano na {{data}} w {{time}} przez {{doradca}}",
     "Case-ActionHeaderUpdated": "Zaktualizowano na {{data}} w {{time}} przez {{doradca}}",
+    "Case-EditSummary-EditHistory-StatusUpdated": "Status zaktualizowany z {{previousStatus}} do {{updatedStatus}} w dniu {{date}} o {{time}} przez {{counsellor}}",
     "CSAMCLC-ActionHeaderAdded": "Dodano na {{date}} w {{time}} &nbsp;&nbsp; Doradca: {{counsellor}}",
     "Case-ActionHeaderCounselor": "Musisz wypełnić wymagane pola",
     "SessionExpired": "Twoja sesja wygasła. Kliknij tutaj, aby ponownie zalogować się",

@@ -22,12 +22,16 @@ import { CircularProgress } from '@material-ui/core';
 import { AnyAction } from 'redux';
 
 import { RootState } from '../../states';
-import { Box, BottomButtonBar } from '../../styles';
-import { StyledNextStepButton } from '../../styles/buttons';
+import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles';
 import { EditContactContainer } from '../case/styles';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-import { clearDraft, newSetContactDialogStateAction, refreshContact } from '../../states/contacts/existingContacts';
+import {
+  clearDraft,
+  ContactDraftChanges,
+  newSetContactDialogStateAction,
+  refreshContact,
+} from '../../states/contacts/existingContacts';
 import CloseCaseDialog from '../case/CloseCaseDialog';
 import { getTemplateStrings } from '../../hrmConfig';
 import { Contact, ContactRawJson, CustomITask, StandaloneITask } from '../../types/types';
@@ -77,12 +81,8 @@ const EditContactSection: React.FC<Props> = ({
 
   const onSubmitValidForm = async (closeAction: () => void) => {
     setSubmitting(true);
-    const payload: Partial<Pick<
-      ContactRawJson,
-      'categories' | 'callerInformation' | 'caseInformation' | 'childInformation'
-    >> = draftContact.rawJson;
     try {
-      updateContactsFormInHrmAsyncAction(savedContact, payload);
+      updateContactsFormInHrmAsyncAction(savedContact, draftContact);
       closeAction();
     } catch (error) {
       setSubmitting(false);
@@ -151,8 +151,8 @@ const mapDispatchToProps = (
   return {
     refreshContact: contact => dispatch(refreshContact(contact)),
     goBack: () => dispatch(newGoBackAction(task.taskSid)),
-    updateContactsFormInHrmAsyncAction: async (contact: Contact, body: Partial<ContactRawJson>) => {
-      await updateContactAsyncDispatch(updateContactInHrmAsyncAction(contact, { rawJson: body }));
+    updateContactsFormInHrmAsyncAction: async (contact: Contact, changes: ContactDraftChanges) => {
+      await updateContactAsyncDispatch(updateContactInHrmAsyncAction(contact, changes));
     },
     closeDialog: (dismissAction: 'close' | 'back') =>
       dispatch(newSetContactDialogStateAction(contactId, `${tabPath}-confirm-${dismissAction}`, false)),

@@ -63,6 +63,15 @@ export async function updateCase(caseId: Case['id'], body: Partial<Case>): Promi
   return fetchHrmApi(`/cases/${caseId}`, options);
 }
 
+export async function updateCaseStatus(caseId: Case['id'], status: Case['status']): Promise<Case> {
+  const options = {
+    method: 'PUT',
+    body: JSON.stringify({ status }),
+  };
+
+  return fetchHrmApi(`/cases/${caseId}/status`, options);
+}
+
 export async function getCase(caseId: Case['id']): Promise<Case> {
   const options = {
     method: 'GET',

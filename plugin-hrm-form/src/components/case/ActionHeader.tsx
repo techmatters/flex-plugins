@@ -29,7 +29,6 @@ type OwnProps = {
   updatingCounsellor?: string;
   includeTime?: boolean;
   codeTemplate?: string;
-  focusCloseButton?: boolean;
 };
 
 type Props = OwnProps;
