@@ -31,7 +31,7 @@ import {
 } from '../contacts/types';
 import { CaseUpdatingAction, CREATE_CASE_ACTION_FULFILLED, UPDATE_CASE_ACTION_FULFILLED } from '../case/types';
 
-type TaskEntry = {
+export type SearchStateTaskEntry = {
   form: t.SearchFormValues;
   detailsExpanded: {
     [key in ContactDetailsSectionsType]: boolean;
@@ -50,11 +50,11 @@ type TaskEntry = {
 
 type SearchState = {
   tasks: {
-    [taskId: string]: TaskEntry;
+    [taskId: string]: SearchStateTaskEntry;
   };
 };
 
-export const newTaskEntry: TaskEntry = {
+export const newTaskEntry: SearchStateTaskEntry = {
   form: newSearchFormEntry,
   detailsExpanded: {
     [ContactDetailsSections.GENERAL_DETAILS]: true,

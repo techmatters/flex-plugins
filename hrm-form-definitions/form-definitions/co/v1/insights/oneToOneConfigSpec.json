@@ -18,43 +18,11 @@
         ]
       },
       {
-        "name": "inConflictWithTheLaw",
+        "name": "vulnerableGroups",
         "insights": [
-          "conversations",
-          "conversation_measure_1"
-        ],
-        "type": "mixed-checkbox"
-      },
-      {
-        "name": "livingInConflictZone",
-        "insights": [
-          "conversations",
-          "conversation_measure_2"
-        ],
-        "type": "mixed-checkbox"
-      },
-      {
-        "name": "livingInPoverty",
-        "insights": [
-          "conversations",
-          "conversation_measure_3"
-        ],
-        "type": "mixed-checkbox"
-      },
-      {
-        "name": "childOnTheMove",
-        "insights": [
-          "customers",
+          "customers", 
           "email"
         ]
-      },
-      {
-        "name": "childWithDisability",
-        "insights": [
-          "customers",
-          "customer_attribute_3"
-        ],
-        "type": "mixed-checkbox"
       }
     ],
     "caseInformation": [

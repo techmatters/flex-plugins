@@ -1,7 +1,7 @@
 ${
   jsonencode(
     {
-      "description": flow_description,
+      "description": "Voice Studio Flow",
       "states": [
         {
           "name": "Trigger",
@@ -11,7 +11,7 @@ ${
               "event": "incomingMessage"
             },
             {
-              "next": "Greeting",
+              "next": "SendCallToAgent",
               "event": "incomingCall"
             },
             {
@@ -46,32 +46,16 @@ ${
             }
           ],
           "properties": {
+            "waitUrl": channel_flow_vars["wait_url"],
             "offset": {
-              "x": 80,
-              "y": 460
+              "x": 270,
+              "y": 340
             },
             "attributes": channel_attributes["default"],
             "workflow":  workflow_sids["master_calls"],
             "channel": task_channel_sids["voice"]
-          }
-        },
-        {
-          "name": "Greeting",
-          "type": "say-play",
-          "transitions": [
-            {
-              "next": "SendCallToAgent",
-              "event": "audioComplete"
-            }
-          ],
-          "properties": {
-            "offset": {
-              "x": 80,
-              "y": 210
-            },
-            "loop": 1,
-            "say": channel_flow_vars["voice_ivr_greeting_message"],
-            "language": channel_flow_vars["voice_ivr_language"]
+            "waitUrlMethod": "GET",
+            "timeout": "3600"
           }
         }
       ],

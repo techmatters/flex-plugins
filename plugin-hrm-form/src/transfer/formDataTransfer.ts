@@ -16,12 +16,10 @@
 
 import { ITask, Manager } from '@twilio/flex-ui';
 
-import { ContactState, releaseContact } from '../states/contacts/existingContacts';
-import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
+import { ContactState } from '../states/contacts/existingContacts';
+import { getAseloFeatureFlags } from '../hrmConfig';
 import asyncDispatch from '../states/asyncDispatch';
 import { connectToCaseAsyncAction, updateContactInHrmAsyncAction } from '../states/contacts/saveContact';
-import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
-import { RootState } from '../states';
 
 /**
  * Ensures the contact is saved in HRM and disconnected from any case it might have been connected to
@@ -33,38 +31,9 @@ export const saveFormSharedState = async (contactState: ContactState, { taskSid 
   const { draftContact, savedContact } = contactState;
   const asyncDispatcher = asyncDispatch(Manager.getInstance().store.dispatch);
   if (draftContact) {
-    await asyncDispatcher(updateContactInHrmAsyncAction(savedContact, draftContact, `task-${taskSid}`));
+    await asyncDispatcher(updateContactInHrmAsyncAction(savedContact, draftContact, `${taskSid}-active`));
   }
   if (savedContact.caseId) {
     await asyncDispatcher(connectToCaseAsyncAction(savedContact.id, undefined));
   }
-};
-
-/**
- * Loads contact being transferred from HRM (if there is any)
- */
-export const loadFormSharedState = async ({ taskSid, attributes }: ITask): Promise<ContactState> => {
-  const { store } = Manager.getInstance();
-  const rootState = store.getState() as RootState;
-  if (!getAseloFeatureFlags().enable_transfers) return null;
-  if (!attributes.transferMeta) {
-    console.error('This function should not be called on non-transferred task.');
-    return null;
-  }
-
-  // Should have been loaded already in the beforeAcceptTask handler
-  const contactState = selectContactByTaskSid(rootState, attributes.transferMeta.originalTask);
-
-  if (!contactState) {
-    console.error('Could not find contact state for original task, aborting loading transferred data');
-    return null;
-  }
-
-  const { savedContact } = contactState;
-
-  savedContact.taskId = taskSid;
-  savedContact.twilioWorkerId = getHrmConfig().workerSid;
-  await asyncDispatch(store.dispatch)(updateContactInHrmAsyncAction(savedContact, savedContact, `task-${taskSid}`));
-  store.dispatch(releaseContact(savedContact.id, `task-${attributes.transferMeta.originalTask}`));
-  return contactState;
 };

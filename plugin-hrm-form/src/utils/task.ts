@@ -31,6 +31,8 @@ export const getNumberFromTask = (task: CustomITask) => {
     return task.defaultFrom.replace('messenger:', '');
   } else if (task.channelType === channelTypes.whatsapp) {
     return task.defaultFrom.replace('whatsapp:', '');
+  } else if (task.channelType === channelTypes.modica) {
+    return task.defaultFrom.replace('modica:', '');
   } else if (task.channelType === channelTypes.web) {
     return getContactValueFromWebchat(task);
   }

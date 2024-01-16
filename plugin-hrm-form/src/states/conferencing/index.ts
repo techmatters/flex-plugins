@@ -168,7 +168,7 @@ const conferencingReducer = createReducer(initialState, handleAction => [
       [payload.taskId]: {
         ...state.tasks[payload.taskId],
         participantsLabels: {
-          ...state.tasks[payload.taskId].participantsLabels,
+          ...state.tasks[payload.taskId]?.participantsLabels,
           [payload.participantSid]: payload.participantLabel,
         },
       },

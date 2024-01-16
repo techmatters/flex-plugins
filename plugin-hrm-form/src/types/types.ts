@@ -81,7 +81,7 @@ export type CaseInfo = {
 };
 
 export type Case = {
-  accountSid: any;
+  accountSid: string;
   id: string;
   status: string;
   helpline: string;
@@ -90,6 +90,10 @@ export type Case = {
   categories: {};
   createdAt: string;
   updatedAt: string;
+  updatedBy?: string;
+  statusUpdatedAt?: string;
+  statusUpdatedBy?: string;
+  previousStatus?: string;
   connectedContacts: Contact[];
 };
 
@@ -277,7 +281,8 @@ export type FeatureFlags = {
   enable_client_profiles: boolean; // Enables Client Profiles
   enable_case_merging: boolean; // Enables adding contacts to existing cases
   enable_confirm_on_browser_close: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
-  enable_separate_timeline_view: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
+  enable_separate_timeline_view: boolean; // Enables a limited inline case timelinbe with a link to the full timeline
+  enable_last_case_status_update_info: boolean; // Enables showing the time, user and changed status of the most recent case status update on the 'Edit Case Summary' page
 };
 /* eslint-enable camelcase */
 

@@ -1,57 +1,62 @@
-ifeq ($(HL),)
-$(error No helpline specified. please be sure to set HL=<helpline> before running make)
-endif
-
-ifeq ($(HL_ENV),)
-$(error No environment specified. please be sure to set HL_ENV=<environment> before running make)
-endif
-
 tg_args ?= $(tf_args)     # --terragrunt-log-level debug --terragrunt-debug
 
 TG_ENV = -e TERRAGRUNT_DOWNLOAD=".terragrunt-cache/$(HL)/$(HL_ENV)"
 
-apply-tg:
+verify-env:
+	@if [ -z "$(HL)" ]; then \
+		echo "No helpline specified. Please be sure to set HL=<helpline> before running make"; \
+		exit 1; \
+	fi
+	@if [ -z "$(HL_ENV)" ]; then \
+		echo "No environment specified. Please be sure to set HL_ENV=<environment> before running make"; \
+		exit 1; \
+	fi
+
+apply-tg: verify-env
 	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt apply $(tg_args)
 
-apply-all-tg:
+apply-all-tg: verify-env
 	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt run-all apply $(tg_args)
 
-init-tg:
+init-tg: verify-env
 	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt init $(tg_args)
 
-init-all-tg:
+init-all-tg: verify-env
 	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt run-all init $(tg_args)
 
-plan-tg:
+plan-tg: verify-env
 	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt plan $(tg_args)
 
-plan-all-tg:
+plan-all-tg: verify-env
 	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt run-all plan $(tg_args)
 
-destroy-tg:
+destroy-tg: verify-env
 	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt destroy $(tg_args)
 
-destroy-all-tg:
+destroy-all-tg: verify-env
 	docker run -it --rm $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt rum-all destroy $(tg_args)
 
-apply: verify-pre-work apply-tg
+##@ Terragrunt Stage Targets - Usage: make [target] HL=[hl short code] HL_ENV=[hl environment]
+apply: verify-pre-work apply-tg ## Apply the current terragrunt stage
 
-apply-all: verify-pre-work plan-all-tg apply-all-tg
+init: verify-pre-work init-scripts init-tg ## Initialize the current terragrunt stage
 
-init: verify-pre-work init-scripts init-tg
+plan: verify-pre-work plan-tg ## Plan the current terragrunt stage
 
-init-all: verify-pre-work init-all-tg
+destroy: destroy-tg ## Destroy the current terragrunt stage
 
-plan: verify-pre-work plan-tg
+##@ Terragrunt All Stage Targets - Usage: make [target] HL=[hl short code] HL_ENV=[hl environment]
 
-plan-all: verify-pre-work plan-all-tg
+apply-all: verify-pre-work plan-all-tg apply-all-tg ## Apply all the terragrunt stages in subdirectories
 
-destroy: destroy-tg
+init-all: verify-pre-work init-all-tg ## Initialize all the terragrunt stages in subdirectories
 
-clean:
+plan-all: verify-pre-work plan-all-tg ## Plan all the terragrunt stages in subdirectories
+
+destroy-all: destroy-all-tg ## Destroy all the terragrunt stages in subdirectories
+
+##@ Terragrunt Utilities
+
+clean: ## Clean all local terragrunt cache dirs
 	find . -type d -name ".terragrunt-cache" -exec rm -rf {} +
 
-destroy-all: destroy-all-tg
-
-hclfmt:
-	docker run -it --rm -v $(MY_PWD):$(MOUNT_PATH) -w $(TF_ROOT_PATH) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt hclfmt $(tg_args)

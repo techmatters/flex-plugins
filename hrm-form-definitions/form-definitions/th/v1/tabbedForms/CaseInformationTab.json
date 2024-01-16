@@ -1,7 +1,7 @@
 [
   {
     "name": "center",
-    "label": "เซ็นเตอร์",
+    "label": "หน่วยงาน",
     "type": "select",
     "unknownOption": "Unknown",
     "options": [
@@ -23,73 +23,6 @@
     "name": "caseNumber",
     "label": "เลขที่เคส",
     "type": "input"
-  },
-  {
-    "name": "hubServicesProvided",
-    "label": "Hub Services Provided",
-    "type": "listbox-multiselect",
-    "options": [
-      {
-        "value": "ให้คำปรึกษา (ออนไลน์)",
-        "label": "ให้คำปรึกษา (ออนไลน์)"
-      },
-      {
-        "value": "ให้คำปรึกษา (ตัวต่อตัว)",
-        "label": "ให้คำปรึกษา (ตัวต่อตัว)"
-      },
-      {
-        "value": "บริการเอกสารประจำตัว",
-        "label": "บริการเอกสารประจำตัว"
-      },
-      {
-        "value": "บริการพื้นฐานปัจจัย 4",
-        "label": "บริกํารพื้นฐํานปัจจัย 4"
-      },
-      {
-        "value": "บริการด้านสุขภาพ (ตรวจสุขภาพ ให้คำปรึกษาฯลฯ)",
-        "label": "บริการด้านสุขภาพ (ตรวจสุขภาพ ให้คำปรึกษาฯลฯ)"
-      },
-      {
-        "value": "ส่งต่อและประสํานงํานเคส",
-        "label": "ส่งต่อและประสํานงํานเคส"
-      },
-      {
-        "value": "บริการด้านการศึกษา",
-        "label": "บริการด้านการศึกษาา"
-      },
-      {
-        "value": "พัฒนาทักษะการใช้ชีวิตประจำวัน",
-        "label": "พัฒนาทักษะการใช้ชีวิตประจำวัน"
-      },
-      {
-        "value": "พัฒนาทักษะอาชีพ / ทดลองงาน",
-        "label": "พัฒนาทักษะอาชีพ / ทดลองงาน"
-      },
-      {
-        "value": "ให้คำปรึกษาการตั้งครรภ์เมื่อไม่พร้อม",
-        "label": "ให้คำปรึกษาการตั้งครรภ์เมื่อไม่พร้อม"
-      },
-      {
-        "value": "ให้คำปรึกษาและบริการสำหรับเด็กแรกเกิด - 3 ปี",
-        "label": "ให้คำปรึกษาและบริการสำหรับเด็กแรกเกิด - 3 ปี"
-      },
-      {
-        "value": "ค่ายเพื่อพัฒนาศักยภาพเด็ก",
-        "label": "ค่ํายเพื่อพัฒนําศักยภําพเด็ก"
-      },
-      {
-        "value": "กิจกรรมสันทนํากําร",
-        "label": "กิจกรรมสันทนํากําร"
-      },
-      {
-        "value": "ติดตํามผลเคส",
-        "label": "ติดตํามผลเคส"
-      },
-      {
-        "value": "โครงการไน้ท์ฮับ",
-        "label": "โครงการไน้ท์ฮับ"
-      }
-    ]
   },
   {
     "name": "callSummary",
@@ -137,6 +70,10 @@
     "type": "select",
     "unknownOption": "Unknown",
     "options": [
+       {
+        "value": "Unknown",
+        "label": ""
+      },
       {
         "value": "การบอกต่อ",
         "label": "การบอกต่อ"
@@ -217,5 +154,407 @@
     "name": "wouldTheChildRecommendUsToAFriend",
     "label": "Would the child recommend us to a friend?",
     "type": "checkbox"
+  },
+    { 
+    "name": "nightHub",
+    "label": "ไนท์ฮับ",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "1",
+        "label": "1"
+      },
+      {
+        "value": "2",
+        "label": "2"
+      },
+        {
+        "value": "3",
+        "label": "3"
+      },
+        {
+        "value": "4",
+        "label": "4"
+      },
+        {
+        "value": "5",
+        "label": "5"
+      }
+    ]
+  },
+  { 
+    "name": "basicServices",
+    "label": "บริการพื้นฐานปัจจัย 4",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },    
+      {
+        "value": "1",
+        "label": "1"
+      },
+      {
+        "value": "2",
+        "label": "2"
+      },
+        {
+        "value": "3",
+        "label": "3"
+      },
+        {
+        "value": "4",
+        "label": "4"
+      },
+        {
+        "value": "5",
+        "label": "5"
+      },
+        {
+        "value": "6",
+        "label": "6"
+      },
+        {
+        "value": "7",
+        "label": "7"
+      },
+        {
+        "value": "8",
+        "label": "8"
+      },
+        {
+        "value": "9",
+        "label": "9"
+      },
+        {
+        "value": "10",
+        "label": "10"
+      }
+    ]
+  },
+  { 
+    "name": "identificationService",
+    "label": "บริการเอกสารประจำตัว",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "1",
+        "label": "1"
+      },
+      {
+        "value": "2",
+        "label": "2"
+      },
+        {
+        "value": "3",
+        "label": "3"
+      },
+        {
+        "value": "4",
+        "label": "4"
+      },
+        {
+        "value": "5",
+        "label": "5"
+      }
+    ]
+  },
+  { 
+    "name": "physicalHealthServices",
+    "label": "บริการด้านสุขภาพกาย",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },      
+      {
+        "value": "1",
+        "label": "1"
+      },
+      {
+        "value": "2",
+        "label": "2"
+      },
+        {
+        "value": "3",
+        "label": "3"
+      },
+        {
+        "value": "4",
+        "label": "4"
+      },
+      {
+        "value": "5",
+        "label": "5"
+      }
+    ]
+  },
+  { 
+    "name": "mentalHealthServices",
+    "label":  "บริการด้านสุขภาพจิต",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },      
+      {
+        "value": "1",
+        "label": "1"
+      },
+      {
+        "value": "2",
+        "label": "2"
+      },
+        {
+        "value": "3",
+        "label": "3"
+      },
+        {
+        "value": "4",
+        "label": "4"
+      },
+      {
+        "value": "5",
+        "label": "5"
+      }
+    ]
+  },
+  { 
+    "name": "numberofConsultations",
+    "label": "ให้คำปรึกษา (ออนไลน์)",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "1",
+        "label": "1"
+      },
+      {
+        "value": "2",
+        "label": "2"
+      },
+        {
+        "value": "3",
+        "label": "3"
+      },
+        {
+        "value": "4",
+        "label": "4"
+      },
+        {
+        "value": "5",
+        "label": "5"
+      }
+    ]
+  },
+  { 
+    "name": "numberofOneOnOneCounselling",
+    "label": "ให้คำปรึกษา (ตัวต่อตัว)",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },      
+      {
+        "value": "1",
+        "label": "1"
+      },
+      {
+        "value": "2",
+        "label": "2"
+      },
+        {
+        "value": "3",
+        "label": "3"
+      },
+        {
+        "value": "4",
+        "label": "4"
+      },
+        {
+        "value": "5",
+        "label": "5"
+      }
+    ]
+  },
+  { 
+    "name": "lifeSkillsServices",
+    "label": "กิจกรรมพัฒนาทักษะชีวิต",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },    
+      {
+        "value": "1",
+        "label": "1"
+      },
+      {
+        "value": "2",
+        "label": "2"
+      },
+        {
+        "value": "3",
+        "label": "3"
+      },
+        {
+        "value": "4",
+        "label": "4"
+      },
+        {
+        "value": "5",
+        "label": "5"
+      }
+    ]
+  },
+ { 
+    "name": "educationalServices",
+    "label": "บริการด้านการศึกษาา",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },    
+      {
+        "value": "1",
+        "label": "1"
+      },
+      {
+        "value": "2",
+        "label": "2"
+      },
+        {
+        "value": "3",
+        "label": "3"
+      },
+        {
+        "value": "4",
+        "label": "4"
+      },
+        {
+        "value": "5",
+        "label": "5"
+      }
+    ]
+  },
+  { 
+    "name": "caseFollowUps",
+    "label": "ติดตํามผลเคส",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },    
+      {
+        "value": "1",
+        "label": "1"
+      },
+      {
+        "value": "2",
+        "label": "2"
+      },
+        {
+        "value": "3",
+        "label": "3"
+      },
+        {
+        "value": "4",
+        "label": "4"
+      },
+      {
+        "value": "5",
+        "label": "5"
+      }
+    ]
+  },
+  { 
+    "name": "careerServices",
+    "label": "พัฒนาทักษะอาชีพ / ทดลองงาน",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },    
+      {
+        "value": "1",
+        "label": "1"
+      },
+      {
+        "value": "2",
+        "label": "2"
+      },
+        {
+        "value": "3",
+        "label": "3"
+      },
+        {
+        "value": "4",
+        "label": "4"
+      },
+        {
+        "value": "5",
+        "label": "5"
+      }
+    ]
+  },
+  { 
+    "name": "maternalServices",
+    "label": "บริการช่วยเหลือแม่และเด็ก",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },    
+      {
+        "value": "1",
+        "label": "1"
+      },
+      {
+        "value": "2",
+        "label": "2"
+      },
+        {
+        "value": "3",
+        "label": "3"
+      },
+        {
+        "value": "4",
+        "label": "4"
+      },
+        {
+        "value": "5",
+        "label": "5"
+      }
+    ]
   }
 ]

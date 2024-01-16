@@ -1,14 +1,11 @@
 {
   "contactForm": {
-    "caseInformation": [
-      {
-        "name": "center",
-        "insights": [
-          "conversations",
-          "initiative"
-        ]
-      }
-    ],
+      "callerInformation": [
+        {
+          "name": "relationshipToChild",
+          "insights": ["conversations", "initiated_by"]
+        }
+      ],
      "childInformation": [
       {
         "name": "province",
@@ -17,7 +14,96 @@
       {
         "name": "area",
         "insights": ["customers", "area"]
+      },
+      {
+        "name": "livingSituation",
+        "insights": ["customers", "customer_attribute_1"]
+      },
+      {
+        "name": "gradeLevel",
+        "insights": ["customers", "acquisition_date"]
+      },
+      {
+        "name": "vulnerableGroups",
+        "insights": ["customers", "email"]
       }
+    ],
+    "caseInformation": [
+      {
+        "name": "center",
+        "insights": ["conversations","initiative"]
+      },
+        {
+          "name": "repeatCaller",
+          "insights": ["conversations", "conversation_measure_1"],
+          "type": "mixed-checkbox"
+        },
+        {
+          "name": "actionTaken",
+          "insights": ["conversations", "language"]
+        },
+        {
+          "name": "howDidYouKnowAboutOurLine",
+          "insights": ["conversations", "conversation_attribute_5"]
+        },
+        {
+          "name": "didTheChildFeelWeSolvedTheirProblem",
+          "insights": ["conversations", "conversation_measure_2"],
+          "type": "mixed-checkbox"
+        },
+        {
+          "name": "wouldTheChildRecommendUsToAFriend",
+          "insights": ["conversations", "conversation_measure_3"],
+          "type": "mixed-checkbox"
+        },
+        {
+          "name": "nightHub",
+          "insights": ["conversations", "conversation_attribute_3"]  
+        },
+        {
+          "name": "basicServices",
+          "insights": ["conversations", "conversation_attribute_4"]  
+        },
+        {
+          "name": "identificationService",
+          "insights": ["conversations", "conversation_attribute_6"]  
+        },
+        {
+          "name": "physicalHealthServices",
+          "insights": ["conversations", "conversation_attribute_7"]  
+        },
+        {
+          "name": "mentalHealthServices",
+          "insights": ["conversations", "conversation_attribute_9"]  
+        },
+        {
+          "name": "numberofConsultations",
+          "insights": ["conversations", "conversation_attribute_10"]  
+        },
+        {
+          "name": "numberofOneOnOneCounselling",
+          "insights": ["conversations", "in_business_hours"]  
+        },
+        {
+          "name": "lifeSkillsServices",
+          "insights": ["conversations", "campaign"]  
+        },
+        {
+          "name": "educationalServices",
+          "insights": ["customers", "customer_attribute_2"]  
+        },
+        {
+          "name": "caseFollowUps",
+          "insights": ["customers", "zip"]  
+        },
+        {
+          "name": "careerServices",
+          "insights": ["customers", "category"]  
+        },
+        {
+          "name": "maternalServices",
+          "insights": ["customers", "region"]  
+        }
     ]
   },
   "caseForm": {
@@ -25,14 +111,37 @@
       {
         "name": "id",
         "insights": ["conversations", "case"]
-      },
-      {
-        "name": "caseStatus",
-        "insights": [
-          "conversations",
-          "in_business_hours"
-        ]
       }
-    ]
+    ],     
+    "perpetrator": [
+        {
+          "name": "relationshipToChild",
+          "insights": ["customers", "organization"]
+        },
+        {
+          "name": "gender",
+          "insights": ["conversations", "followed_by"]
+        },
+        {
+          "name": "age",
+          "insights": ["conversations", "preceded_by"]
+        }
+      ],
+      "incident": [
+        {
+          "name": "duration",
+          "insights": ["conversations", "productive"]
+        },
+        {
+          "name": "location",
+          "insights": ["customers", "market_segment"]
+        }
+      ],
+      "referral": [
+        {
+          "name": "referredTo",
+          "insights": ["customers", "customer_manager"]
+        }
+      ]
   }
 }

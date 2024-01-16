@@ -21,7 +21,7 @@ import '../../mockGetConfig';
 import { createCaseAsyncAction, saveCaseReducer, updateCaseAsyncAction } from '../../../states/case/saveCase';
 import { HrmState } from '../../../states';
 import { reduce } from '../../../states/case/reducer';
-import { updateCase, createCase } from '../../../services/CaseService';
+import { createCase, updateCase, updateCaseStatus } from '../../../services/CaseService';
 import { connectToCase } from '../../../services/ContactService';
 import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
 import { Case } from '../../../types/types';
@@ -33,6 +33,7 @@ jest.mock('../../../services/ContactService');
 const { mockFetchImplementation, buildBaseURL } = useFetchDefinitions();
 
 const mockUpdateCase = updateCase as jest.Mock<ReturnType<typeof updateCase>>;
+const mockUpdateCaseStatus = updateCaseStatus as jest.Mock<ReturnType<typeof updateCaseStatus>>;
 const mockCreateCase = createCase as jest.Mock<ReturnType<typeof createCase>>;
 const mockConnectedCase = connectToCase as jest.Mock<ReturnType<typeof connectToCase>>;
 const workerSid = 'Worker-Sid';
@@ -70,6 +71,8 @@ beforeEach(() => {
   mockCreateCase.mockResolvedValue({ id: '234' });
   mockConnectedCase.mockReset();
   mockConnectedCase.mockResolvedValue({ id: 'contact-1' });
+  mockUpdateCaseStatus.mockReset();
+  mockUpdateCaseStatus.mockResolvedValue({ id: '234' } as Case);
 });
 
 const boundSaveCaseReducer = saveCaseReducer(saveCaseState);
@@ -198,9 +201,12 @@ const expectObject: RecursivePartial<HrmState> = {
 };
 
 describe('actions', () => {
-  test('Calls the updateCase service, and update a case', async () => {
-    updateCaseAsyncAction('234', mockPayload);
-    expect(updateCase).toHaveBeenCalledWith('234', mockPayload);
+  test('Calls the updateCase service, the updateStatus service, and updates the case in redux', async () => {
+    const { status, ...updatePayload } = mockPayload;
+    const { dispatch } = testStore(nonInitialState);
+    await ((dispatch(updateCaseAsyncAction('234', mockPayload)) as unknown) as Promise<void>);
+    expect(updateCase).toHaveBeenCalledWith('234', updatePayload);
+    expect(updateCaseStatus).toHaveBeenCalledWith('234', status);
   });
 
   test('Calls the createCase service, and create a case', () => {

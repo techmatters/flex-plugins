@@ -25,7 +25,7 @@ import each from 'jest-each';
 
 import HrmTheme from '../../../styles/HrmTheme';
 import QueuesStatus from '../../../components/queuesStatus';
-import { channelTypes } from '../../../states/DomainConstants';
+import { coreChannelTypes } from '../../../states/DomainConstants';
 
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
 
@@ -178,7 +178,7 @@ test('Test <QueuesStatus> after update', () => {
   expect(screen.getAllByText('QueueCard-Name')).toHaveLength(5);
 
   const expectAllChannelsRendersInQ = ([qName, qStatus]) =>
-    Object.values(channelTypes).forEach(c => {
+    Object.values(coreChannelTypes).forEach(c => {
       // Check that the UI renders for this channel
       const channelInQ = screen.getByTestId(`${qName}-${c}`);
       expect(channelInQ).toBeInTheDocument();
@@ -196,12 +196,12 @@ test('Test <QueuesStatus> after update', () => {
 });
 
 each([
-  ...Object.values(channelTypes).map(c => ({ contactsWaitingChannels: [c], expectedChannelsCount: 1 })),
+  ...Object.values(coreChannelTypes).map(c => ({ contactsWaitingChannels: [c], expectedChannelsCount: 1 })),
   {
-    contactsWaitingChannels: [channelTypes.voice, channelTypes.whatsapp, channelTypes.instagram],
+    contactsWaitingChannels: [coreChannelTypes.voice, coreChannelTypes.whatsapp, coreChannelTypes.instagram],
     expectedChannelsCount: 3,
   },
-  ...Object.values(channelTypes).map((c1, _, arr) => ({
+  ...Object.values(coreChannelTypes).map((c1, _, arr) => ({
     contactsWaitingChannels: arr.filter(c2 => c2 !== c1),
     expectedChannelsCount: arr.length - 1,
   })),
@@ -249,7 +249,7 @@ each([
     expect(screen.getAllByTestId('channel-box-inner-value')).toHaveLength(expectedChannelsCount);
 
     const expectAllChannelsRendersInQ = ([qName, qStatus]) =>
-      Object.values(channelTypes).forEach(c => {
+      Object.values(coreChannelTypes).forEach(c => {
         if (ownProps.contactsWaitingChannels.includes(c as any)) {
           // Check that the UI renders for this channel (if it's defined in contactsWaitingChannels)
           const channelInQ = screen.getByTestId(`${qName}-${c}`);

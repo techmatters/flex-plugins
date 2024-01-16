@@ -24,7 +24,7 @@
     "type": "input"
   },
   {
-    "name": "age",
+    "name": "ageRange",
     "label": "Age Range",
     "type": "select",
     "unknownOption": "",
@@ -44,7 +44,7 @@
     }
   },
   {
-    "name": "ageDetails",
+    "name": "age",
     "label": "Age",
     "type": "select",
     "unknownOption": "Unknown",

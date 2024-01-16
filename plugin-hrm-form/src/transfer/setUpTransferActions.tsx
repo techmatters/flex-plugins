@@ -27,7 +27,6 @@ import {
   TaskHelper,
   Template,
 } from '@twilio/flex-ui';
-import { callTypes } from 'hrm-form-definitions';
 
 import * as TransferHelpers from './transferTaskState';
 import { transferModes } from '../states/DomainConstants';
@@ -35,12 +34,10 @@ import { recordEvent } from '../fullStory';
 import { transferChatStart } from '../services/ServerlessService';
 import { getHrmConfig } from '../hrmConfig';
 import { RootState } from '../states';
-import { changeRoute } from '../states/routing/actions';
 import { reactivateAseloListeners } from '../conversationListeners';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { ContactState } from '../states/contacts/existingContacts';
-import { ChangeRouteMode } from '../states/routing/types';
-import { loadFormSharedState, saveFormSharedState } from './formDataTransfer';
+import { saveFormSharedState } from './formDataTransfer';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type ActionPayload = { task: ITask };
@@ -75,7 +72,7 @@ const getStateContactForms = (taskSid: string): ContactState => {
 };
 
 /**
- * Custom override for TransferTask action. Saves the form to share with another counseler (if possible) and then starts the transfer
+ * Custom override for TransferTask action. Saves the form to share with another counselor (if possible) and then starts the transfer
  */
 const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction => async (
   payload: ActionPayloadWithOptions,
@@ -124,43 +121,9 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
   return safeTransfer(() => transferChatStart(body), payload.task);
 };
 
-const afterCancelTransfer = (payload: ActionPayload) => {
-  TransferHelpers.clearTransferMeta(payload.task);
-};
-
-const restoreFormIfTransfer = async (task: ITask) => {
-  const contactState = await loadFormSharedState(task);
-  if (contactState) {
-    const {
-      savedContact: { rawJson },
-    } = contactState;
-    if (rawJson.callType === callTypes.child) {
-      Manager.getInstance().store.dispatch(
-        changeRoute({ route: 'tabbed-forms', subroute: 'childInformation' }, task.taskSid, ChangeRouteMode.Replace),
-      );
-    } else if (rawJson.callType === callTypes.caller) {
-      Manager.getInstance().store.dispatch(
-        changeRoute({ route: 'tabbed-forms', subroute: 'callerInformation' }, task.taskSid, ChangeRouteMode.Replace),
-      );
-    } else {
-      Manager.getInstance().store.dispatch(
-        changeRoute({ route: 'select-call-type' }, task.taskSid, ChangeRouteMode.Replace),
-      );
-    }
-  }
-};
-
-const takeControlIfTransfer = async (task: ITask) => {
-  if (TransferHelpers.isColdTransfer(task)) await TransferHelpers.takeTaskControl(task);
-};
+const afterCancelTransfer = (payload: ActionPayload) => TransferHelpers.clearTransferMeta(payload.task);
 
 export const handleTransferredTask = async (task: ITask) => {
-  try {
-    await restoreFormIfTransfer(task);
-  } catch (err) {
-    console.error('Error transferring form state as part of task', err);
-  }
-  await takeControlIfTransfer(task);
   const { source: convo, participants, isLoadingParticipants } = StateHelper.getConversationStateForTask(task) ?? {};
   if (convo) {
     reactivateAseloListeners(convo);

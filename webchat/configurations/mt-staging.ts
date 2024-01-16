@@ -86,7 +86,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       label: 'Age/Età/літа',
       type: 'select',
-      name: 'age',
+      name: 'ageRange',
       required: true,
       defaultValue: '',
       options: [

@@ -20,7 +20,6 @@ import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 import type { FilterDefinitionFactory } from '@twilio/flex-ui/src/components/view/TeamsView';
 
-import { AcceptTransferButton, RejectTransferButton, TransferButton } from '../components/transfer';
 import * as TransferHelpers from '../transfer/transferTaskState';
 import EmojiPicker from '../components/emojiPicker';
 import CannedResponses from '../components/cannedResponses';
@@ -251,30 +250,6 @@ export const setUpViewMaskedVoiceNumber = () => {
   Flex.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" />, {
     sortOrder: 1,
     if: props => props.task.channelType === 'voice',
-  });
-};
-
-/**
- * Add the buttons used to initiate, accept and reject transfers (when it should), and removes the actions button if task is being transferred
- */
-export const setUpTransferComponents = () => {
-  Flex.TaskCanvasHeader.Content.add(<TransferButton key="transfer-button" />, {
-    sortOrder: 1,
-    if: props => TransferHelpers.shouldShowTransferButton(props.task),
-  });
-
-  Flex.TaskCanvasHeader.Content.remove('actions', {
-    if: props => TransferHelpers.isTransferring(props.task),
-  });
-
-  Flex.TaskCanvasHeader.Content.add(<AcceptTransferButton key="complete-transfer-button" />, {
-    sortOrder: 1,
-    if: props => TransferHelpers.shouldShowTransferControls(props.task),
-  });
-
-  Flex.TaskCanvasHeader.Content.add(<RejectTransferButton key="reject-transfer-button" />, {
-    sortOrder: 1,
-    if: props => TransferHelpers.shouldShowTransferControls(props.task),
   });
 };
 

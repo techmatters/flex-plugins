@@ -1760,6 +1760,30 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       },
     },
     {
+      type: 'select',
+      name: 'reason',
+      label: '¿Qué tipo de ayuda estás buscando?',
+      defaultValue: '',
+      options: [
+        {
+          value: "",
+          label: ""
+        },
+        {
+          value: "emergency",
+          label: "Necesito ayuda urgente"
+        },
+        {
+          value: "counselling",
+          label: "Quiero recibir orientación"
+        },
+        {
+          value: "unknown",
+          label: "Otro"
+        }
+      ],
+    },
+    {
       type: 'checkbox',
       name: 'termsAndConditions',
       label:

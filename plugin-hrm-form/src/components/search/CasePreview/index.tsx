@@ -139,9 +139,8 @@ const CasePreview: React.FC<Props> = ({
               {summary}
             </PreviewDescription>
           )}
-
-          <TagsAndCounselor counselor={counselor} categories={categories} definitionVersion={definitionVersion} />
         </PreviewRow>
+        <TagsAndCounselor counselor={counselor} categories={categories} definitionVersion={definitionVersion} />
       </PreviewWrapper>
     </Flex>
   );

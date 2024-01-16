@@ -12,6 +12,14 @@
     "label": "Ready for Review",
     "color": "yellow",
     "transitions": [
+      "followUpRequired"
+    ]
+  },
+  "followUpRequired": {
+    "value": "followUpRequired",
+    "label": "Follow Up Required",
+    "color": "orange",
+    "transitions": [
       "submitted"
     ]
   },

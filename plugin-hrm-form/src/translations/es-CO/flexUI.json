@@ -187,6 +187,7 @@
   "Case-ActionHeaderAdded": "Agregado el {{date}} a las {{time}} por {{counsellor}}",
   "Case-ActionHeaderUpdated": "Agregado el {{date}} a las {{time}} por {{counsellor}}",
   "Case-ActionHeaderCounselor": "Debe completar los campos requeridos",
+  "Case-EditSummary-EditHistory-StatusUpdated": "Estado actualizado de {{previousStatus}} a {{updatedStatus}} el {{date}} a las {{time}} por {{counsellor}}",
   "SessionExpired": "Su sesión ha caducado. haga clic aquí para iniciar sesión nuevamente",
   "TaskTabAgentInfoLabel": "Información",
   "TaskTabSupervisorInfoLabel": "Información",
@@ -537,9 +538,7 @@
   "SearchResultsIndex-SearchAgainForCase": "Busque nuevamente un {{type}}",
   "SearchResultsIndex-SaveToNewCase": "Guarde este contacto en un nuevo caso",
   "SearchResultsIndex-Or": "o",
-  "Case-Timeline-DraftContactSummaryPlaceholder": "En curso",
   "Profile-ClientTab": "Cliente",
   "Profile-Notes-No": "No",
   "Profile-ViewClient": "Ver cliente"
-  
 }

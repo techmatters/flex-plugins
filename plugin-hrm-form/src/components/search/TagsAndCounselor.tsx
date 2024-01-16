@@ -20,7 +20,7 @@ import { Template } from '@twilio/flex-ui';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { Flex } from '../../styles';
-import { TagText, SummaryText, TagsWrapper, SilentText, SubtitleLabel } from './styles';
+import { SilentText, SubtitleLabel, SummaryText, TagsWrapper, TagText } from './styles';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { getContactTags } from '../../utils/categories';
 
@@ -67,7 +67,15 @@ const TagsAndCounselor: React.FC<Props> = props => {
   };
 
   return (
-    <Flex justifyContent="space-between" height="23px" marginTop="10px">
+    <Flex
+      style={{
+        justifyContent: 'space-between',
+        height: '23px',
+        marginTop: '10px',
+        padding: '0 20px 0px 20px',
+        display: 'flex', // Not sure why but display is set to 'block' without this
+      }}
+    >
       {leftTags()}
       <Flex style={{ minWidth: 'fit-content' }}>
         <SubtitleLabel>

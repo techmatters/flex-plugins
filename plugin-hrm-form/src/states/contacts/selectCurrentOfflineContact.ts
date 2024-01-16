@@ -16,7 +16,7 @@
 
 import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
-import getOfflineContactTaskSid from './offlineContactTaskSid';
+import { getOfflineContactTaskSid } from './offlineContactTask';
 import { ContactState } from './existingContacts';
 
 const selectCurrentOfflineContact = ({ [namespace]: { activeContacts } }: RootState): ContactState | undefined =>
