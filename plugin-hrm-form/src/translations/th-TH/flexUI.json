@@ -79,6 +79,8 @@
   "Case-ViewPerpetrator": "ดูผู้กระทำผิด",
   "Case-ViewPerpetratorTitle": "ผู้ละเมิด",
   "Case-ViewReferral": "ดูการอ้างอิง",
+  "CaseHeader-ConnectToTaskContact": "เพิ่มในกรณี",
+  "CaseHeader-TaskContactConnected": "เพิ่มในกรณี",
   "CaseHeader-Cancel": "ยกเลิก",
   "CaseHeader-Closed": "ปิด",
   "CaseHeader-Copy": "ใช่คัดลอก",
