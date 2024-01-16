@@ -52,10 +52,7 @@ export const useAllProfileFlags = (): UseAllProfileFlags => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log('>>>>>>>>>>> EFFECT');
     if ((!allProfileFlags || !allProfileFlags.length) && !loading) {
-      console.log('>>>>>>>>>>> INSIDE IF');
-      console.log(!allProfileFlags, !allProfileFlags.length, !loading);
       loadProfileFlags();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
