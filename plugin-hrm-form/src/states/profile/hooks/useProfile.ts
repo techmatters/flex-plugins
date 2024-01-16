@@ -13,12 +13,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { useCallback, useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import asyncDispatch from '../../asyncDispatch';
 import { Profile } from '../types';
-import * as ProfileActions from '../profiles';
 import * as ProfileSelectors from '../selectors';
 import { RootState } from '../..';
 import { UseProfileCommonParams } from './types';

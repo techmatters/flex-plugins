@@ -13,21 +13,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { combineReducers } from 'redux';
 
-import * as t from './types';
-import identifiersReducer from './identifiers';
-import profilesReducer from './profiles';
-import profileFlagsReducer from './profileFlags';
-import profilesListReducer from './profilesList';
+import React from 'react';
+import { Template } from '@twilio/flex-ui';
 
-const reducers = {
-  identifiers: identifiersReducer(),
-  profiles: profilesReducer(),
-  profileFlags: profileFlagsReducer(),
-  profilesList: profilesListReducer(),
+import { CountText, FiltersContainer, MainTitle } from '../../../styles';
+import { useProfilesList } from '../../../states/profile/hooks/useProfilesList';
+
+const ProfileFilters: React.FC = () => {
+  const { count } = useProfilesList();
+  const getProfileCountString = () => (count === 1 ? 'ProfileList-Count-Singular' : 'ProfileList-Count-Plural');
+  return (
+    <FiltersContainer>
+      <MainTitle>
+        <Template code="ProfileList-Clients" />
+      </MainTitle>
+      <CountText>
+        <Template code={getProfileCountString()} count={count} />
+      </CountText>
+    </FiltersContainer>
+  );
 };
 
-const combinedReducers = combineReducers(reducers);
-
-export const reduce = (state = t.initialState, action: any): t.ProfileState => combinedReducers(state, action);
+export default ProfileFilters;

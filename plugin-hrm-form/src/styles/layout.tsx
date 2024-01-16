@@ -277,3 +277,13 @@ export const TaskCanvasOverride = styled('div')`
   height: 100%;
   background-color: ${HrmTheme.colors.base2};
 `;
+
+export const StandaloneContainer = styled('div')`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: 800px;
+  width: 100%;
+  background-color: ${HrmTheme.colors.base2};
+`;
+StandaloneContainer.displayName = 'StandaloneContainer';

@@ -408,6 +408,18 @@
   "Profile-NoCasesFound": "No Cases Found",
   "Profile-ViewClient": "View Client",
 
+  "SideNavProfileList": "Client Profiles",
+  "ProfileList-Clients": "Clients",
+  "ProfileList-Count-Singular": "{{count}} client",
+  "ProfileList-Count-Plural": "{{count}} clients",
+  "ProfileList-THClient": "Client",
+  "ProfileList-THStatus": "Status",
+  "ProfileList-THIdentifier": "Identifier(s)",
+  "ProfileList-THSummary": "Summary",
+  "ProfileList-NoClients": "No clients found.",
+  "ProfileList-Summary-None": "- No profile summary -",
+  "ProfileList-Status-None": "- No status -",
+
   "UploadFile-ButtonText": "Upload File",
   "DownloadFile-ButtonText": "Download File",
   "CSAMReportForm-Header": "File a Report: Child Sexual Abuse Material",

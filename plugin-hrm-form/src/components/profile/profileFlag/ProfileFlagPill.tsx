@@ -14,26 +14,26 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/* eslint-disable react/prop-types */
 import React from 'react';
 
-import Search from './search';
-import { StandaloneContainer } from '../styles';
-import { StandaloneITask, standaloneTaskSid } from '../types/types';
+import { ProfileFlag } from '../../../types/types';
+import { FlagPill, ProfileFlagsListItem, StyledBlockOutlinedIcon } from '../styles';
 
-const standaloneTask: StandaloneITask = {
-  taskSid: standaloneTaskSid,
-  attributes: { isContactlessTask: false },
+type Props = {
+  flag: ProfileFlag;
+  renderDisassociate?: (flag: ProfileFlag) => JSX.Element;
 };
 
-const StandaloneSearch: React.FC = () => {
+const ProfileFlagPill: React.FC<Props> = ({ flag, renderDisassociate }) => {
   return (
-    <StandaloneContainer>
-      <Search task={standaloneTask} />
-    </StandaloneContainer>
+    <ProfileFlagsListItem key={flag.name}>
+      <FlagPill title={`${flag.name} Status`} key={flag.name} fillColor="#F5EEF4" isBlocked={flag.name === 'blocked'}>
+        {flag.name === 'blocked' && <StyledBlockOutlinedIcon />}
+        {flag.name}
+        {renderDisassociate && renderDisassociate(flag)}
+      </FlagPill>
+    </ProfileFlagsListItem>
   );
 };
 
-StandaloneSearch.displayName = 'StandaloneSearch';
-
-export default StandaloneSearch;
+export default ProfileFlagPill;

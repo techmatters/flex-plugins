@@ -20,6 +20,8 @@ import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import type { FormItemDefinition } from 'hrm-form-definitions';
 
+import { OpaqueText } from '../styles';
+
 /**
  * @param {string} name
  */
@@ -61,6 +63,12 @@ export const formatDuration = inSeconds => {
 export const getShortSummary = (summary, charLimit, chooseMessage = 'call') => {
   if (!summary) {
     if (chooseMessage === 'case') return <Template code="CaseSummary-None" />;
+    if (chooseMessage === 'profile')
+      return (
+        <OpaqueText>
+          <Template code="ProfileList-Summary-None" />
+        </OpaqueText>
+      );
 
     return <Template code="CallSummary-None" />;
   }

@@ -25,12 +25,12 @@ import {
   CloseIconButton,
   DisassociateButton,
   FlagPill,
-  StyledBlockOutlinedIcon,
   ProfileFlagsUnorderedList,
   ProfileFlagsListItem,
 } from '../styles';
 import { RootState } from '../../../states';
 import { ProfileCommonProps } from '../types';
+import ProfileFlagPill from './ProfileFlagPill';
 
 type OwnProps = ProfileCommonProps & {
   disassociateRef?: React.RefObject<HTMLButtonElement>;
@@ -58,22 +58,10 @@ const ProfileFlagsList: React.FC<Props> = ({ disassociateRef, enableDisassociate
     );
   };
 
-  const renderPill = (flag: ProfileFlag) => {
-    return (
-      <ProfileFlagsListItem key={flag.name}>
-        <FlagPill title={`${flag.name} Status`} key={flag.name} fillColor="#F5EEF4" isBlocked={flag.name === 'blocked'}>
-          {flag.name === 'blocked' && <StyledBlockOutlinedIcon />}
-          {flag.name}
-          {renderDisassociate(flag)}
-        </FlagPill>
-      </ProfileFlagsListItem>
-    );
-  };
-
   return (
     <ProfileFlagsUnorderedList aria-label="Profile Statuses">
       {profileFlags?.length ? (
-        profileFlags.map(renderPill)
+        profileFlags.map(flag => <ProfileFlagPill key={flag.id} flag={flag} renderDisassociate={renderDisassociate} />)
       ) : (
         <ProfileFlagsListItem>
           <FlagPill title="No Status Listed">

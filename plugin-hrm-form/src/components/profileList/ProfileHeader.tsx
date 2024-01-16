@@ -13,21 +13,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { combineReducers } from 'redux';
 
-import * as t from './types';
-import identifiersReducer from './identifiers';
-import profilesReducer from './profiles';
-import profileFlagsReducer from './profileFlags';
-import profilesListReducer from './profilesList';
+import React from 'react';
+import { TableRow } from '@material-ui/core';
 
-const reducers = {
-  identifiers: identifiersReducer(),
-  profiles: profilesReducer(),
-  profileFlags: profileFlagsReducer(),
-  profilesList: profilesListReducer(),
+import { TableHeader } from '../../styles';
+import ProfileHeaderCell from './ProfileHeaderCell';
+import { ProfilesListSortBy } from '../../types/types';
+
+const ProfileHeader: React.FC = () => {
+  return (
+    <TableHeader>
+      <TableRow>
+        <ProfileHeaderCell column={ProfilesListSortBy.ID} localizedText="ProfileList-THClient" width="8%" />
+        <ProfileHeaderCell localizedText="ProfileList-THStatus" />
+        <ProfileHeaderCell localizedText="ProfileList-THIdentifier" />
+        <ProfileHeaderCell localizedText="ProfileList-THSummary" />
+      </TableRow>
+    </TableHeader>
+  );
 };
 
-const combinedReducers = combineReducers(reducers);
-
-export const reduce = (state = t.initialState, action: any): t.ProfileState => combinedReducers(state, action);
+export default ProfileHeader;

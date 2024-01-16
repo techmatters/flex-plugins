@@ -40,7 +40,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     openProfileModal: id => {
-      dispatch(newOpenModalAction({ route: 'profile', id }, taskId));
+      dispatch(newOpenModalAction({ route: 'profile', profileId: id }, taskId));
     },
   };
 };

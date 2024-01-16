@@ -23,14 +23,14 @@ import * as RoutingTypes from '../../states/routing/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import * as RoutingActions from '../../states/routing/actions';
 import { namespace } from '../../states/storeNamespaces';
-import { RootState } from '../../states';
-import { ProfileRoute } from '../../states/routing/types';
 import { StyledTabs } from '../search/styles'; // just stealing from search until we have a centralized tab style
 import NavigableContainer from '../NavigableContainer';
 import ProfileCases from './ProfileCases';
 import ProfileContacts from './ProfileContacts';
 import ProfileDetails from './ProfileDetails';
-import { ProfileCommonProps } from './types';
+import type { RootState } from '../../states';
+import type { ProfileRoute } from '../../states/routing/types';
+import type { ProfileCommonProps } from './types';
 
 type OwnProps = ProfileCommonProps;
 
@@ -48,7 +48,7 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
   changeProfileTab: (id, subroute) =>
     dispatch(
       RoutingActions.changeRoute(
-        { route: 'profile', id, subroute },
+        { route: 'profile', profileId: id, subroute },
         task.taskSid,
         RoutingTypes.ChangeRouteMode.Replace,
       ),

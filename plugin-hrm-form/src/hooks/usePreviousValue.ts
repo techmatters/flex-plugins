@@ -14,6 +14,16 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import ProfileListPage from './ProfileListPage';
+import { useEffect, useRef } from 'react';
 
-export default ProfileListPage;
+const usePrevious = <T>(value: T) => {
+  const ref = useRef(value);
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
+};
+
+export default usePrevious;
