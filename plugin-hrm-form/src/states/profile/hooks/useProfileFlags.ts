@@ -44,17 +44,15 @@ export type UseProfileFlags = UseAllProfileFlags & UseEditProfileFlags & { profi
  */
 export const useAllProfileFlags = (): UseAllProfileFlags => {
   const dispatch = useDispatch();
-
-  const error = useSelector((state: RootState) => ProfileSelectors.selectAllProfileFlags(state)?.error);
-  const loading = useSelector((state: RootState) => ProfileSelectors.selectAllProfileFlags(state)?.loading);
-  const allProfileFlags = useSelector((state: RootState) => ProfileSelectors.selectAllProfileFlags(state)?.data);
+  const flagsState = useSelector((state: RootState) => ProfileSelectors.selectAllProfileFlags(state));
+  const { error, loading, data: allProfileFlags } = flagsState;
 
   const loadProfileFlags = useCallback(() => {
     asyncDispatch(dispatch)(ProfileFlagActions.loadProfileFlagsAsync());
   }, [dispatch]);
 
   useEffect(() => {
-    if (!allProfileFlags && !loading) {
+    if ((!allProfileFlags || !allProfileFlags.length) && !loading) {
       loadProfileFlags();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -115,7 +113,7 @@ export const useProfileFlags = (profileId?: Profile['id']): UseProfileFlags => {
 
   const profileFlags = useMemo(() => {
     if (!allProfileFlags || !profileFlagIds) return [];
-    return profileFlagIds.map(id => allProfileFlags.find(profileFlag => profileFlag.id === id)).filter(Boolean);
+    return profileFlagIds.map(({ id }) => allProfileFlags.find(profileFlag => profileFlag.id === id)).filter(Boolean);
   }, [profileFlagIds, allProfileFlags]);
 
   return {

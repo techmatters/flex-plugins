@@ -35,7 +35,7 @@ type OwnProps = {
 const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const routingState = state[namespace].routing;
   const route = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const profileId = (route as ProfileRoute).id;
+  const { profileId } = route as ProfileRoute;
   const currentRouteStack = getCurrentTopmostRouteForTask(routingState, taskSid);
   const currentRoute = currentRouteStack?.route.toString() as AppRoutes['route'];
   const sectionType = (currentRouteStack as ProfileSectionEditRoute)?.type;
@@ -75,7 +75,9 @@ const PROFILE_ROUTES: Record<string, ProfileRouteConfig> = {
   },
   profileSectionEdit: {
     routes: ['profileSectionEdit'],
-    renderComponent: (props: Props) => <ProfileSectionEdit {...props} sectionType={props.sectionType} />,
+    renderComponent: (props: Props) => {
+      return <ProfileSectionEdit {...props} sectionType={props.sectionType} />;
+    },
   },
 };
 

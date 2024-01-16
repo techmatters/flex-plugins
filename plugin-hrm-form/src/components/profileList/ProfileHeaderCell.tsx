@@ -17,11 +17,12 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { ArrowDownward } from '@material-ui/icons';
+import { useDispatch } from 'react-redux';
 
-import { useProfilesListLoader } from '../../states/profile/hooks/useProfilesListLoader';
 import { ProfilesListSortBy, SortDirection } from '../../types/types';
 import { TableHeaderFont, HeaderCell } from '../../styles';
 import { useProfilesList } from '../../states/profile/hooks/useProfilesList';
+import { updateProfileListSettings } from '../../states/profile/profilesList';
 
 const defaultSortDirection = SortDirection.DESC;
 
@@ -41,7 +42,7 @@ type Props = OwnProps;
  */
 const ProfileHeaderCell: React.FC<Props> = ({ column, localizedText, width }) => {
   const { settings } = useProfilesList();
-  const { updateProfilesListSettings } = useProfilesListLoader();
+  const dispatch = useDispatch();
 
   const {
     sort: { sortBy, sortDirection },
@@ -72,7 +73,7 @@ const ProfileHeaderCell: React.FC<Props> = ({ column, localizedText, width }) =>
     const isDifferentColumn = column !== sortBy;
     const updatedSortDirection = isDifferentColumn ? defaultSortDirection : changeSortDirection(sortDirection);
 
-    updateProfilesListSettings({ sort: { sortBy: column, sortDirection: updatedSortDirection } });
+    dispatch(updateProfileListSettings({ sort: { sortBy: column, sortDirection: updatedSortDirection } }));
   };
 
   return (

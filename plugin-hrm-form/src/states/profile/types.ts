@@ -68,7 +68,7 @@ export type ProfileFlagsState = {
 export const initialProfileFlagsState: ProfileFlagsState = {
   error: undefined,
   loading: false,
-  data: undefined,
+  data: [],
 };
 
 export type ProfilesListState = {
@@ -161,8 +161,6 @@ export const newIdentifierEntry: IdentifierEntry = {
 export const initialState: ProfileState = {
   identifiers: {},
   profiles: {},
-  profileFlags: {
-    loading: false,
-  },
+  profileFlags: initialProfileFlagsState,
   profilesList: initialProfilesListState,
 };

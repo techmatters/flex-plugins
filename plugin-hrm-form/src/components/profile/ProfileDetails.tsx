@@ -40,7 +40,7 @@ const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
   const taskId = task.taskSid;
   return {
     openSectionEditModal: (type: string) => {
-      dispatch(newOpenModalAction({ route: 'profileSectionEdit', type, id: profileId }, taskId));
+      dispatch(newOpenModalAction({ route: 'profileSectionEdit', type, profileId }, taskId));
     },
   };
 };

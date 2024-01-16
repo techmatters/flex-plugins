@@ -103,7 +103,6 @@ const Pagination: React.FC<PaginationProps> = ({
   transparent = false,
   disabled = false,
 }) => {
-  console.log('>>> Pagination', page, pagesCount);
   const renderButtons = renderPaginationButton(page, handleChangePage, disabled);
 
   const decreasePage = () => {

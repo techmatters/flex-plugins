@@ -21,7 +21,6 @@ import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import { ButtonProps } from '@material-ui/core/Button';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
 
-import { TabbedFormsContainer } from '../tabbedForms/styles';
 import { BottomButtonBar, Flex, FontOpenSans, Row, StyledNextStepButton } from '../../styles';
 import HrmTheme from '../../styles/HrmTheme';
 import { BannerContainerProps, colors } from '../../styles/banners';
@@ -444,13 +443,6 @@ export const SwitchLabel = styled(SummaryText)`
   margin-right: 5px;
 `;
 SwitchLabel.displayName = 'SwitchLabel';
-
-export const StandaloneSearchContainer = styled(TabbedFormsContainer)`
-  max-width: 800px;
-  width: 100%;
-  background-color: ${HrmTheme.colors.base2};
-`;
-StandaloneSearchContainer.displayName = 'StandaloneSearchContainer';
 
 export const PreviewActionButton = styled(StyledNextStepButton)`
   padding: 5px 17px 5px 12px;

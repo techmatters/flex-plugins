@@ -18,7 +18,7 @@
 import React from 'react';
 
 import Search from './search';
-import { StandaloneSearchContainer } from './search/styles';
+import { StandaloneContainer } from '../styles';
 import { StandaloneITask, standaloneTaskSid } from '../types/types';
 
 const standaloneTask: StandaloneITask = {
@@ -28,9 +28,9 @@ const standaloneTask: StandaloneITask = {
 
 const StandaloneSearch: React.FC = () => {
   return (
-    <StandaloneSearchContainer>
+    <StandaloneContainer>
       <Search task={standaloneTask} />
-    </StandaloneSearchContainer>
+    </StandaloneContainer>
   );
 };
 
