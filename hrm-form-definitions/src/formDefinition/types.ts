@@ -198,6 +198,11 @@ export declare type ProfileSectionDefinition = {
   width: number;
 };
 
+export declare type ProfileBlockDefinition = {
+  type: string;
+  timeFrame: string;
+};
+
 export type FormItemDefinition =
   | InputDefinition
   | NumericInputDefinition
@@ -339,5 +344,8 @@ export type DefinitionVersion = {
   };
   referenceData?: Record<string, any>;
   blockedEmojis: string[];
-  profileForms?: { Sections: ProfileSectionDefinition[] };
+  profileForms?: {
+    Sections: ProfileSectionDefinition[];
+    BlockDurations: ProfileBlockDefinition[];
+  };
 };

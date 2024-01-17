@@ -31,6 +31,7 @@ import {
   LayoutVersion,
   CategoriesDefinition,
   ProfileSectionDefinition,
+  ProfileBlockDefinition,
 } from './types';
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 
@@ -169,6 +170,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     referenceData,
     blockedEmojis,
     profileSections,
+    profileBlockDurations,
   ] = await Promise.all([
     fetchDefinition<LayoutVersion>('LayoutDefinitions.json'),
     fetchDefinition<FormItemJsonDefinition[]>('caseForms/HouseholdForm.json'),
@@ -198,6 +200,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     fetchDefinition<Record<string, any>>('ReferenceData.json', {}),
     fetchDefinition<string[]>('BlockedEmojis.json', []),
     fetchDefinition<ProfileSectionDefinition[]>('profileForms/Sections.json', []),
+    fetchDefinition<ProfileBlockDefinition[]>('profileForms/BlockDurations.json', []),
   ]);
 
   const { helplines } = helplineInformation;
@@ -235,6 +238,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     blockedEmojis,
     profileForms: {
       Sections: profileSections,
+      BlockDurations: profileBlockDurations,
     },
   };
 }
