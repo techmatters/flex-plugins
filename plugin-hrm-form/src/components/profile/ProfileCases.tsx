@@ -16,7 +16,7 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { getPermissionsForCase, PermissionActions } from '../../permissions';
+import { getInitializedCan, PermissionActions } from '../../permissions';
 import { Case } from '../../types/types';
 import CasePreview from '../search/CasePreview';
 import ProfileRelationshipList from './ProfileRelationshipList';
@@ -31,10 +31,13 @@ type OwnProps = ProfileCommonProps;
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileCases: React.FC<Props> = ({ profileId, task, counselorsHash, viewCaseDetails }) => {
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
   const renderItem = (cas: Case) => {
-    const { can } = getPermissionsForCase(cas.twilioWorkerId, cas.status);
     const handleClickViewCase = () => {
-      if (can(PermissionActions.VIEW_CASE)) {
+      if (can(PermissionActions.VIEW_CASE, cas)) {
         viewCaseDetails(cas);
       }
     };

@@ -43,7 +43,7 @@ import AddEditCaseItem, { AddEditCaseItemProps } from './AddEditCaseItem';
 import ViewCaseItem from './ViewCaseItem';
 import { bindFileUploadCustomHandlers } from './documentUploadHandler';
 import { recordBackendError } from '../../fullStory';
-import { getPermissionsForCase, PermissionActions } from '../../permissions';
+import { getInitializedCan, PermissionActions } from '../../permissions';
 import { CenteredContainer } from './styles';
 import EditCaseSummary from './EditCaseSummary';
 import { documentSectionApi } from '../../states/case/sections/document';
@@ -105,6 +105,10 @@ const Case: React.FC<Props> = ({
   const [loadedContactIds, setLoadedContactIds] = useState([]);
   const { connectedCase } = props?.connectedCaseState ?? {};
 
+  const can = React.useMemo(() => {
+    return action => getInitializedCan()(action, connectedCase);
+  }, [connectedCase]);
+
   const { workerSid } = getHrmConfig();
   const strings = getTemplateStrings();
   const { enable_case_merging: enableCaseMerging } = getAseloFeatureFlags();
@@ -149,8 +153,6 @@ const Case: React.FC<Props> = ({
   const getCategories = (firstConnectedContact: Contact): Record<string, string[]> => {
     return firstConnectedContact?.rawJson.categories ?? {};
   };
-
-  const { can } = getPermissionsForCase(connectedCase.twilioWorkerId, connectedCase.status);
 
   const firstConnectedContact = savedContacts && savedContacts[0];
 

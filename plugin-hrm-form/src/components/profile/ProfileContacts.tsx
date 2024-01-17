@@ -16,7 +16,7 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
-import { getPermissionsForContact, PermissionActions } from '../../permissions';
+import { getInitializedCan, PermissionActions } from '../../permissions';
 import { Contact } from '../../types/types';
 import ContactPreview from '../search/ContactPreview';
 import * as ProfileTypes from '../../states/profile/types';
@@ -29,10 +29,13 @@ type OwnProps = ProfileCommonProps;
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileContacts: React.FC<Props> = ({ profileId, viewContactDetails }) => {
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
   const renderItem = (contact: Contact) => {
-    const { can } = getPermissionsForContact(contact.twilioWorkerId);
     const handleViewDetails = () => {
-      if (can(PermissionActions.VIEW_CONTACT)) viewContactDetails(contact);
+      if (can(PermissionActions.VIEW_CONTACT, contact)) viewContactDetails(contact);
     };
 
     return (

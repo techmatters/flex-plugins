@@ -45,7 +45,7 @@ import {
   Text,
 } from '../styles';
 import Pagination from '../../pagination';
-import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../../permissions';
+import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
 import { getCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
@@ -109,6 +109,10 @@ const SearchResults: React.FC<Props> = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { subroute: currentResultPage, casesPage, contactsPage } = routing as SearchResultRoute;
+
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
 
   const strings = getTemplateStrings();
 
@@ -220,13 +224,16 @@ const SearchResults: React.FC<Props> = ({
       {cases &&
         cases.length > 0 &&
         cases.map(cas => {
-          const { can } = getPermissionsForCase(cas.twilioWorkerId, cas.status);
           return (
             <CasePreview
               key={cas.id}
               currentCase={cas}
               counselorsHash={counselorsHash}
-              onClickViewCase={can(PermissionActions.VIEW_CASE) && handleClickViewCase(cas)}
+              onClickViewCase={() => {
+                if (can(PermissionActions.VIEW_CASE, cas)) {
+                  handleClickViewCase(cas);
+                }
+              }}
               task={task}
             />
           );
@@ -382,12 +389,13 @@ const SearchResults: React.FC<Props> = ({
                   {contacts &&
                     contacts.length > 0 &&
                     contacts.map(contact => {
-                      const { can } = getPermissionsForContact(contact.twilioWorkerId);
                       return (
                         <ContactPreview
                           key={contact.id}
                           contact={contact}
-                          handleViewDetails={() => can(PermissionActions.VIEW_CONTACT) && viewContactDetails(contact)}
+                          handleViewDetails={() =>
+                            can(PermissionActions.VIEW_CONTACT, contact) && viewContactDetails(contact)
+                          }
                         />
                       );
                     })}
