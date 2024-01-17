@@ -32,7 +32,7 @@ export type UseAllProfileFlags = {
 };
 
 export type UseEditProfileFlags = {
-  associateProfileFlag: (profileFlagId: ProfileFlag['id']) => void;
+  associateProfileFlag: (profileFlagId: ProfileFlag['id'], validUntil?: Date | null) => void;
   disassociateProfileFlag: (profileFlagId: ProfileFlag['id']) => void;
 };
 
@@ -75,9 +75,9 @@ export const useEditProfileFlags = (profileId?: Profile['id']): UseEditProfileFl
   const dispatch = useDispatch();
 
   const associateProfileFlag = useCallback(
-    (profileFlagId: ProfileFlag['id']) => {
+    (profileFlagId: ProfileFlag['id'], validUntil?: ProfileFlag['validUntil']) => {
       if (!profileId) return;
-      asyncDispatch(dispatch)(ProfileActions.associateProfileFlagAsync(profileId, profileFlagId));
+      asyncDispatch(dispatch)(ProfileActions.associateProfileFlagAsync(profileId, profileFlagId, validUntil));
     },
     [dispatch, profileId],
   );

@@ -397,7 +397,7 @@ export type ProfileFlag = {
   name: string;
   createdAt?: string;
   updatedAt?: string;
-  validUntil?: string;
+  validUntil?: Date;
 };
 
 export type ProfilesList = Profile[];

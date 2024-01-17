@@ -39,10 +39,8 @@ export const getProfileFlags = () => fetchHrmApi(`/profiles/flags`);
 export const associateProfileFlag = (
   profileId: ProfileId,
   profileFlagId: ProfileFlagId,
-  validUntil?: ProfileFlag['validUntil'] | Date,
+  validUntil?: ProfileFlag['validUntil'],
 ) => {
-  // validUntil = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
-  // console.log('>>> validUntil', validUntil, isValid(parseISO(validUntil)));
   const options: { method: string; body?: string } = {
     method: 'POST',
   };

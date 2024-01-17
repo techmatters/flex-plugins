@@ -18,6 +18,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { IconButton } from '@twilio/flex-ui';
 import { Box, Popper, Paper } from '@material-ui/core';
+import { isValid, parseISO } from 'date-fns';
 
 import { StyledMenuList, StyledMenuItem } from '../../../styles';
 import { ProfileFlag } from '../../../types/types';
@@ -27,6 +28,7 @@ import { RootState } from '../../../states';
 import { ProfileFlagEditList } from '../styles';
 import ProfileFlagList from './ProfileFlagList';
 import { ProfileCommonProps } from '../types';
+import useProfileCustomBlock from '../../../states/configuration/hooks/useProfileCustomBlock';
 
 type OwnProps = ProfileCommonProps & {
   modalRef?: React.RefObject<HTMLDivElement>;
@@ -34,12 +36,35 @@ type OwnProps = ProfileCommonProps & {
 
 type Props = OwnProps;
 
+const computeHours = (timeFrame: string): number => {
+  const [value, unit] = timeFrame.split(' ');
+
+  switch (unit) {
+    case 'hour':
+    case 'hours':
+      return Number(value);
+    case 'day':
+    case 'days':
+      return Number(value) * 24;
+    case 'month':
+    case 'months':
+      return Number(value) * 30 * 24; // Approximation, actual number varies by month
+    case 'year':
+    case 'years':
+      return Number(value) * 365 * 24; // Approximation, actual number varies by year
+    default:
+      return 0;
+  }
+};
+
 const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
   const { modalRef, profileId } = props;
 
   const { allProfileFlags, profileFlags, associateProfileFlag } = useProfileFlags(profileId);
   const loading = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId))?.loading;
 
+  const customBlock = useProfileCustomBlock();
+  console.log('>>> ProfileFlagsEdit', { profileFlags, allProfileFlags, customBlock });
   const anchorRef = useRef(null);
 
   /**
@@ -111,15 +136,35 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
             aria-labelledby="associate-status-button"
             onKeyDown={handleListKeyDown}
           >
-            {availableFlags?.map((flag: ProfileFlag, index: number) => (
-              <StyledMenuItem
-                key={flag.id}
-                onClick={() => shouldAllowAssociate && associateProfileFlag(flag.id)}
-                ref={index ? null : associateRef}
-              >
-                {flag.name}
-              </StyledMenuItem>
-            ))}
+            {availableFlags?.map((flag: ProfileFlag, index: number) => {
+              if (flag.name === 'blocked') {
+                return customBlock.map((block, blockIndex) => {
+                  const validUntil = new Date(
+                    Date.now() + computeHours(block.timeFrame) * 60 * 60 * 1000,
+                  ).toISOString();
+                  const validatedTime = parseISO(validUntil);
+                  return (
+                    <StyledMenuItem
+                      key={`${flag.id}-${block.type}`}
+                      onClick={() => shouldAllowAssociate && associateProfileFlag(flag.id, validatedTime)}
+                      ref={index && blockIndex ? null : associateRef}
+                    >
+                      {`${flag.name} - ${block.timeFrame}`}
+                    </StyledMenuItem>
+                  );
+                });
+              }
+
+              return (
+                <StyledMenuItem
+                  key={flag.id}
+                  onClick={() => shouldAllowAssociate && associateProfileFlag(flag.id)}
+                  ref={index ? null : associateRef}
+                >
+                  {flag.name}
+                </StyledMenuItem>
+              );
+            })}
           </StyledMenuList>
         </Paper>
       </Popper>
