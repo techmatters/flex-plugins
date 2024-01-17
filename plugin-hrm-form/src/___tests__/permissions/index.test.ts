@@ -18,9 +18,7 @@ import each from 'jest-each';
 
 import * as fetchRulesModule from '../../permissions/fetchRules';
 import {
-  getPermissionsForCase,
-  getPermissionsForContact,
-  getPermissionsForViewingIdentifiers,
+  getInitializedCan,
   PermissionActions,
   CaseActions,
   ContactActions,
@@ -47,14 +45,15 @@ describe('Test that all actions work fine (everyone)', () => {
     permissionConfig: 'wareva',
   });
 
-  const { can } = getPermissionsForCase('notCreator', 'open');
+  // const can = getInitializedCan('notCreator', 'open');
+  const can = getInitializedCan();
 
   each(
     Object.values(PermissionActions).map(action => ({
       action,
     })),
   ).test(`Action $action should return true`, ({ action }) => {
-    expect(can(action)).toBeTruthy();
+    expect(can(action, { status: 'open', twilioWorkerId: 'some one' })).toBeTruthy();
   });
 });
 
@@ -151,9 +150,9 @@ describe('Test different scenarios (all CasesActions)', () => {
         permissionConfig: 'wareva',
       });
 
-      const { can } = getPermissionsForCase('creator', status);
+      const can = getInitializedCan();
 
-      expect(can(action)).toBe(expectedResult);
+      expect(can(action, { status, twilioWorkerSid: workerSid })).toBe(expectedResult);
     },
   );
 });
@@ -240,9 +239,9 @@ describe('Test different scenarios (all ContactActions)', () => {
         permissionConfig: 'wareva',
       });
 
-      const { can } = getPermissionsForContact('owner');
+      const can = getInitializedCan();
 
-      expect(can(action)).toBe(expectedResult);
+      expect(can(action, { twilioWorkerId: 'owner' })).toBe(expectedResult);
     },
   );
 });
@@ -298,9 +297,9 @@ describe('Test different scenarios for ViewIdentifiersAction', () => {
         permissionConfig: 'wareva',
       });
 
-      const { canView } = getPermissionsForViewingIdentifiers();
+      const can = getInitializedCan();
 
-      expect(canView(action)).toBe(expectedResult);
+      expect(can(action)).toBe(expectedResult);
     },
   );
 });

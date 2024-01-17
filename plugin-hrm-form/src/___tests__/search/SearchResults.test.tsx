@@ -31,15 +31,7 @@ import { RecursivePartial } from '../RecursivePartial';
 import { VALID_EMPTY_METADATA } from '../testContacts';
 
 jest.mock('../../permissions', () => ({
-  getPermissionsForCase: jest.fn(() => ({
-    can: () => true,
-  })),
-  getPermissionsForContact: jest.fn(() => ({
-    can: () => true,
-  })),
-  getPermissionsForViewingIdentifiers: jest.fn(() => ({
-    canView: () => true,
-  })),
+  getInitializedCan: jest.fn(() => true),
   PermissionActions: {},
 }));
 
