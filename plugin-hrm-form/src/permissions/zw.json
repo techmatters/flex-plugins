@@ -25,6 +25,7 @@
   "viewExternalTranscript": [["everyone"]],
   "viewRecording": [["isSupervisor"]],
   "addContactToCase": [["isSupervisor"], ["isOwner"]],
+  "removeContactFromCase": [],
 
   "viewPostSurvey": [["isSupervisor"]],
 
