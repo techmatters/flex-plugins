@@ -32,16 +32,23 @@ export const getProfileContacts = (id: ProfileId, offset: number, limit: number)
 export const getProfileCases = (id: ProfileId, offset: number, limit: number) =>
   fetchHrmApi(`/profiles/${id}/cases?offset=${offset}&limit=${limit}`);
 
-export const getProfileFlags = () => {
-  return fetchHrmApi(`/profiles/flags`).then(response => {
-    return response;
-  });
-};
+export const getProfileFlags = () => fetchHrmApi(`/profiles/flags`);
 
-export const associateProfileFlag = (profileId: ProfileId, profileFlagId: ProfileFlagId) =>
-  fetchHrmApi(`/profiles/${profileId}/flags/${profileFlagId}`, {
+export const associateProfileFlag = (
+  profileId: ProfileId,
+  profileFlagId: ProfileFlagId,
+  validUntil?: ProfileFlag['validUntil'],
+) => {
+  let url = `/profiles/${profileId}/flags/${profileFlagId}`;
+  validUntil = '1234567890';
+  if (validUntil !== undefined || profileFlagId === 1) {
+    const params = new URLSearchParams({ validUntil });
+    url += `?${params.toString()}`;
+  }
+  return fetchHrmApi(url, {
     method: 'POST',
   });
+};
 
 export const disassociateProfileFlag = (profileId: ProfileId, profileFlagId: ProfileFlagId) =>
   fetchHrmApi(`/profiles/${profileId}/flags/${profileFlagId}`, {
