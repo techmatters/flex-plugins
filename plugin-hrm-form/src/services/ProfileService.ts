@@ -14,6 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { formatISO, isValid, parseISO } from 'date-fns';
+
 import { fetchHrmApi } from './fetchHrmApi';
 import { Identifier, Profile, ProfileFlag, ProfileSection } from '../states/profile/types';
 
@@ -37,17 +39,19 @@ export const getProfileFlags = () => fetchHrmApi(`/profiles/flags`);
 export const associateProfileFlag = (
   profileId: ProfileId,
   profileFlagId: ProfileFlagId,
-  validUntil?: ProfileFlag['validUntil'],
+  validUntil?: ProfileFlag['validUntil'] | Date,
 ) => {
-  let url = `/profiles/${profileId}/flags/${profileFlagId}`;
-  validUntil = '1234567890';
-  if (validUntil !== undefined || profileFlagId === 1) {
-    const params = new URLSearchParams({ validUntil });
-    url += `?${params.toString()}`;
-  }
-  return fetchHrmApi(url, {
+  // validUntil = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+  // console.log('>>> validUntil', validUntil, isValid(parseISO(validUntil)));
+  const options: { method: string; body?: string } = {
     method: 'POST',
-  });
+  };
+
+  if (validUntil) {
+    options.body = JSON.stringify({ validUntil });
+  }
+
+  return fetchHrmApi(`/profiles/${profileId}/flags/${profileFlagId}`, options);
 };
 
 export const disassociateProfileFlag = (profileId: ProfileId, profileFlagId: ProfileFlagId) =>
