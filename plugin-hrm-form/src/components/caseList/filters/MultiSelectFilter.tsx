@@ -76,10 +76,10 @@ const MultiSelectFilter: React.FC<Props> = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const transformToItems = (values: ReactHookFormValues): Item[] =>
-    defaultValues?.map(item => ({ ...item, checked: Boolean(values[item.value]) }));
+    defaultValues?.map(item => ({ ...item, checked: values[item.value] }));
 
   const transformToValues = (items: Item[]) =>
-    items?.reduce((acc, item) => ({ ...acc, [item.value]: Boolean(item.checked) }), {});
+    items?.reduce((acc, item) => ({ ...acc, [item.value]: item.checked }), {});
 
   const { register, handleSubmit, reset, getValues } = useForm({
     defaultValues: transformToValues(defaultValues),

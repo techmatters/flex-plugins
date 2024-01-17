@@ -41,7 +41,8 @@ const ProfileFilters: React.FC = () => {
   useEffect(() => {
     if (!flagsLoading && allProfileFlags) {
       const newStatusValues = allProfileFlags.map(flag => ({
-        value: flag.id.toString(),
+        // Note that we are using an underscore to prefix the flag id to avoid react hook form computing '1' as true
+        value: `_${flag.id.toString()}`,
         label: flag.name.charAt(0).toUpperCase() + flag.name.slice(1),
         checked: false,
       }));
@@ -52,7 +53,9 @@ const ProfileFilters: React.FC = () => {
   const strings = getTemplateStrings();
 
   const handleApplyStatusFilter = (values: Item[]) => {
-    updateProfilesListSettings({ filter: { statuses: filterCheckedItems(values) } });
+    const checkedItems = filterCheckedItems(values).map(item => item.replace('_', ''));
+    updateProfilesListSettings({ filter: { statuses: checkedItems } });
+    setStatusValues(values);
   };
 
   const { filter } = useProfilesListSettings();
