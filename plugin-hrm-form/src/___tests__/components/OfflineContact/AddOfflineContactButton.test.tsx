@@ -18,7 +18,7 @@ import * as React from 'react';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { render, screen, waitFor } from '@testing-library/react';
 import { mount } from 'enzyme';
-import { StorelessThemeProvider, withTheme, Actions } from '@twilio/flex-ui';
+import { Actions, StorelessThemeProvider, withTheme } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import '@testing-library/jest-dom/extend-expect';
@@ -32,6 +32,7 @@ import { Contact } from '../../../types/types';
 import { namespace } from '../../../states/storeNamespaces';
 import { RootState } from '../../../states';
 import { RecursivePartial } from '../../RecursivePartial';
+import { getOfflineContactTask } from '../../../states/contacts/offlineContactTask';
 
 let mockV1;
 
@@ -115,11 +116,7 @@ test('click on button', async () => {
   screen.getByText('OfflineContactButtonText').click();
   await waitFor(
     () => {
-      expect(mockCreateContact).toHaveBeenCalledWith(
-        expect.anything(),
-        'mock-worker',
-        'offline-contact-task-mock-worker',
-      );
+      expect(mockCreateContact).toHaveBeenCalledWith(expect.anything(), 'mock-worker', getOfflineContactTask());
       expect(Actions.invokeAction).toHaveBeenCalledTimes(1);
     },
     { timeout: 1000 },
