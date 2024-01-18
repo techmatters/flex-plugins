@@ -246,6 +246,7 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
     };
   }
   if (caseForm.info?.households && caseForm.info.households.length > 0) {
+    // this stores only the first household
     const theHousehold = caseForm.info.households[0];
     const untypedHousehold: any = {
       ...theHousehold,
