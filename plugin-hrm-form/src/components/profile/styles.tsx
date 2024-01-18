@@ -99,10 +99,17 @@ export const FlagPill = styled('div')<ColorProps>`
   border: ${props => (props.isBlocked ? `2px dashed #D61F1F` : '2px solid #F5EEF4')};
   border-color: ${props => (props.isBlocked ? `#D61F1F` : 'none')};
   color: ${props => (props.isBlocked ? `#D61F1F` : '#192B33')};
-  text-transform: capitalize;
-  font-size: 11px;
+  font-size: 12px;
 `;
 FlagPill.displayName = 'FlagPill';
+
+export const FlagPillTime = styled('span')`
+  color: #606b85;
+  font-style: italic;
+  font-size: 10px;
+  margin: 0 0 2px 5px;
+`;
+FlagPillTime.displayName = 'FlagPillTime';
 
 export const StyledBlockOutlinedIcon = withStyles({
   root: { width: '1rem', height: '1rem', fontSize: 'smaller', marginRight: '7px' },

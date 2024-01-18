@@ -170,7 +170,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     referenceData,
     blockedEmojis,
     profileSections,
-    profileBlockDurations,
+    profileFlagDurations,
   ] = await Promise.all([
     fetchDefinition<LayoutVersion>('LayoutDefinitions.json'),
     fetchDefinition<FormItemJsonDefinition[]>('caseForms/HouseholdForm.json'),
@@ -200,7 +200,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     fetchDefinition<Record<string, any>>('ReferenceData.json', {}),
     fetchDefinition<string[]>('BlockedEmojis.json', []),
     fetchDefinition<ProfileSectionDefinition[]>('profileForms/Sections.json', []),
-    fetchDefinition<ProfileBlockDefinition[]>('profileForms/BlockDurations.json', []),
+    fetchDefinition<ProfileBlockDefinition[]>('profileForms/FlagDurations.json', []),
   ]);
 
   const { helplines } = helplineInformation;
@@ -238,7 +238,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     blockedEmojis,
     profileForms: {
       Sections: profileSections,
-      BlockDurations: profileBlockDurations,
+      FlagDurations: profileFlagDurations,
     },
   };
 }

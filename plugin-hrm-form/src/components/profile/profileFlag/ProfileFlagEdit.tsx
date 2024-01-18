@@ -18,7 +18,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { IconButton } from '@twilio/flex-ui';
 import { Box, Popper, Paper } from '@material-ui/core';
-import { isValid, parseISO } from 'date-fns';
+import { parseISO } from 'date-fns';
 
 import { StyledMenuList, StyledMenuItem } from '../../../styles';
 import { ProfileFlag } from '../../../types/types';
@@ -60,11 +60,10 @@ const computeHours = (timeFrame: string): number => {
 const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
   const { modalRef, profileId } = props;
 
-  const { allProfileFlags, profileFlags, associateProfileFlag } = useProfileFlags(profileId);
+  const { allProfileFlags, filteredProfileFlags, associateProfileFlag } = useProfileFlags(profileId);
   const loading = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId))?.loading;
 
   const customBlock = useProfileCustomBlock();
-  console.log('>>> ProfileFlagsEdit', { profileFlags, allProfileFlags, customBlock });
   const anchorRef = useRef(null);
 
   /**
@@ -75,7 +74,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
   const associateRef = useRef(null);
   const disassociateRef = useRef(null);
   const [open, setOpen] = useState(true);
-  const availableFlags = allProfileFlags?.filter(flag => !profileFlags.find(f => f.id === flag.id));
+  const availableFlags = allProfileFlags?.filter(flag => !filteredProfileFlags.find(f => f.id === flag.id));
   const hasAvailableFlags = Boolean(availableFlags?.length);
   const shouldAllowAssociate = hasAvailableFlags && !loading;
 
@@ -87,12 +86,12 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
     /**
      * If there are flags to disassociate, focus on the disassociate button
      */
-    if (profileFlags?.length) {
+    if (filteredProfileFlags?.length) {
       disassociateRef?.current?.focus();
       return;
     }
     associateButtonRef?.current?.focus();
-  }, [profileFlags]);
+  }, [filteredProfileFlags]);
 
   const focusOnAssociateRef = (e?: React.MouseEvent) => {
     e?.preventDefault();
@@ -136,35 +135,37 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
             aria-labelledby="associate-status-button"
             onKeyDown={handleListKeyDown}
           >
-            {availableFlags?.map((flag: ProfileFlag, index: number) => {
-              if (flag.name === 'blocked') {
-                return customBlock.map((block, blockIndex) => {
-                  const validUntil = new Date(
-                    Date.now() + computeHours(block.timeFrame) * 60 * 60 * 1000,
-                  ).toISOString();
-                  const validatedTime = parseISO(validUntil);
-                  return (
-                    <StyledMenuItem
-                      key={`${flag.id}-${block.type}`}
-                      onClick={() => shouldAllowAssociate && associateProfileFlag(flag.id, validatedTime)}
-                      ref={index && blockIndex ? null : associateRef}
-                    >
-                      {`${flag.name} - ${block.timeFrame}`}
-                    </StyledMenuItem>
-                  );
-                });
-              }
+            {availableFlags
+              ?.sort((a, b) => a.name.localeCompare(b.name))
+              .map((flag: ProfileFlag, index: number) => {
+                if (flag.name === 'blocked') {
+                  return customBlock.map((block, blockIndex) => {
+                    const validUntil = new Date(
+                      Date.now() + computeHours(block.timeFrame) * 60 * 60 * 1000,
+                    ).toISOString();
+                    const validatedTime = parseISO(validUntil);
+                    return (
+                      <StyledMenuItem
+                        key={`${flag.id}-${block.type}`}
+                        onClick={() => shouldAllowAssociate && associateProfileFlag(flag.id, validatedTime)}
+                        ref={index && blockIndex ? null : associateRef}
+                      >
+                        {block.type}
+                      </StyledMenuItem>
+                    );
+                  });
+                }
 
-              return (
-                <StyledMenuItem
-                  key={flag.id}
-                  onClick={() => shouldAllowAssociate && associateProfileFlag(flag.id)}
-                  ref={index ? null : associateRef}
-                >
-                  {flag.name}
-                </StyledMenuItem>
-              );
-            })}
+                return (
+                  <StyledMenuItem
+                    key={flag.id}
+                    onClick={() => shouldAllowAssociate && associateProfileFlag(flag.id)}
+                    ref={index ? null : associateRef}
+                  >
+                    {flag.name}
+                  </StyledMenuItem>
+                );
+              })}
           </StyledMenuList>
         </Paper>
       </Popper>

@@ -113,6 +113,7 @@ export const StyledMenuList = styled(MenuList)`
   border-radius: 5px;
   min-width: 250px;
   width: 100%;
+  color: ${HrmTheme.colors.darkTextColor};
 `;
 StyledMenuList.displayName = 'StyledMenuList';
 

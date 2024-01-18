@@ -47,7 +47,7 @@ type Props = {
 const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
   const dispatch = useDispatch();
   const { profile } = useProfile({ profileId });
-  const { profileFlags } = useProfileFlags(profileId);
+  const { combinedProfileFlags } = useProfileFlags(profileId);
 
   const { section: summarySection, error, loading } = useProfileSectionByType({ profileId, sectionType: 'summary' });
 
@@ -62,10 +62,10 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
           <OpenLinkAction tabIndex={0}>{profile?.name ? profile.name : profile?.id}</OpenLinkAction>
         </OpenLinkContainer>
       </NumericCell>
-      {profileFlags.length > 0 ? (
+      {combinedProfileFlags.length > 0 ? (
         <PillsCell>
-          {profileFlags
-            .sort((a, b) => a.id - b.id)
+          {combinedProfileFlags
+            .sort((a, b) => a.name.localeCompare(b.name))
             .map(flag => (
               <ProfileFlagPill key={flag.id} flag={flag} />
             ))}

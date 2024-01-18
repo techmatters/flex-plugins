@@ -199,7 +199,8 @@ export declare type ProfileSectionDefinition = {
 };
 
 export declare type ProfileBlockDefinition = {
-  type: string;
+  flag: string;
+  label: string;
   timeFrame: string;
 };
 
@@ -346,6 +347,6 @@ export type DefinitionVersion = {
   blockedEmojis: string[];
   profileForms?: {
     Sections: ProfileSectionDefinition[];
-    BlockDurations: ProfileBlockDefinition[];
+    FlagDurations: ProfileBlockDefinition[];
   };
 };

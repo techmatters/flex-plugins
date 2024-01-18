@@ -48,7 +48,7 @@ const files = [
   'ReferenceData.json',
   'BlockedEmojis.json',
   'profileForms/Sections.json',
-  'profileForms/BlockDurations.json',
+  'profileForms/FlagDurations.json',
 ];
 
 const getDefinitionVersionId = (formDefinitionsBaseUrl: string) =>
