@@ -15,6 +15,8 @@
  */
 
 import each from 'jest-each';
+import subHours from 'date-fns/subHours';
+import { subDays } from 'date-fns';
 
 import * as fetchRulesModule from '../../permissions/fetchRules';
 import {
@@ -153,11 +155,52 @@ describe('Test different scenarios (all CasesActions)', () => {
           expectedResult: false,
           expectedDescription: 'case is open but user is not creator',
         },
+        {
+          action,
+          conditionsSets: [[{ createdHoursAgo: 1 }]],
+          workerSid: 'not creator',
+          isSupervisor: false,
+          expectedResult: true,
+          expectedDescription: 'created less than 1 hour ago',
+          createdAt: new Date().toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [[{ createdHoursAgo: 1 }]],
+          workerSid: 'not creator',
+          isSupervisor: false,
+          expectedResult: false,
+          expectedDescription: 'created less than 1 hour ago',
+          createdAt: subHours(new Date(), 2).toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [[{ createdDaysAgo: 1 }]],
+          workerSid: 'not creator',
+          isSupervisor: false,
+          expectedResult: true,
+          expectedDescription: 'created less than 1 day ago',
+          createdAt: new Date().toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [[{ createdDaysAgo: 1 }]],
+          workerSid: 'not creator',
+          isSupervisor: false,
+          expectedResult: false,
+          expectedDescription: 'created less than 1 day ago',
+          createdAt: subDays(new Date(), 2).toISOString(),
+        },
       ])
-      .map(t => ({ ...t, prettyConditionsSets: t.conditionsSets.map(arr => `[${arr.join(',')}]`) })),
+      .map(t => ({
+        ...t,
+        prettyConditionsSets: t.conditionsSets
+          .map(arr => arr.map(e => (typeof e === 'string' ? e : JSON.stringify(e))))
+          .map(arr => `[${arr.join(',')}]`),
+      })),
   ).test(
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
-    ({ action, conditionsSets, workerSid, isSupervisor, status = 'open', expectedResult }) => {
+    ({ action, conditionsSets, workerSid, isSupervisor, status = 'open', expectedResult, createdAt }) => {
       const rules = buildRules(conditionsSets, 'case');
       fetchRulesSpy.mockReturnValueOnce(rules);
 
@@ -169,7 +212,7 @@ describe('Test different scenarios (all CasesActions)', () => {
 
       const can = getInitializedCan();
 
-      expect(can(action, { status, twilioWorkerId: 'creator' })).toBe(expectedResult);
+      expect(can(action, { status, twilioWorkerId: 'creator', createdAt })).toBe(expectedResult);
     },
   );
 });
@@ -246,11 +289,52 @@ describe('Test different scenarios (all ContactActions)', () => {
           expectedResult: false,
           expectedDescription: 'user is supervisor but not owner',
         },
+        {
+          action,
+          conditionsSets: [[{ createdHoursAgo: 1 }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          expectedResult: true,
+          expectedDescription: 'created less than 1 hour ago',
+          createdAt: new Date().toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [[{ createdHoursAgo: 1 }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          expectedResult: false,
+          expectedDescription: 'created more than 1 hour ago',
+          createdAt: subHours(new Date(), 2).toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [[{ createdDaysAgo: 1 }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          expectedResult: true,
+          expectedDescription: 'created less than 1 day ago',
+          createdAt: new Date().toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [[{ createdDaysAgo: 1 }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          expectedResult: false,
+          expectedDescription: 'created more than 1 day ago',
+          createdAt: subDays(new Date(), 2).toISOString(),
+        },
       ])
-      .map(t => ({ ...t, prettyConditionsSets: t.conditionsSets.map(arr => `[${arr.join(',')}]`) })),
+      .map(t => ({
+        ...t,
+        prettyConditionsSets: t.conditionsSets
+          .map(arr => arr.map(e => (typeof e === 'string' ? e : JSON.stringify(e))))
+          .map(arr => `[${arr.join(',')}]`),
+      })),
   ).test(
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
-    ({ action, conditionsSets, workerSid, isSupervisor, expectedResult }) => {
+    ({ action, conditionsSets, workerSid, isSupervisor, expectedResult, createdAt }) => {
       const rules = buildRules(conditionsSets, 'contact');
       fetchRulesSpy.mockReturnValueOnce(rules);
 
@@ -262,7 +346,7 @@ describe('Test different scenarios (all ContactActions)', () => {
 
       const can = getInitializedCan();
 
-      expect(can(action, { twilioWorkerId: 'owner' })).toBe(expectedResult);
+      expect(can(action, { twilioWorkerId: 'owner', createdAt })).toBe(expectedResult);
     },
   );
 });
@@ -310,7 +394,12 @@ describe('Test different scenarios for ViewIdentifiersAction', () => {
           expectedDescription: 'user is not a supervisor',
         },
       ])
-      .map(t => ({ ...t, prettyConditionsSets: t.conditionsSets.map(arr => `[${arr.join(',')}]`) })),
+      .map(t => ({
+        ...t,
+        prettyConditionsSets: t.conditionsSets
+          .map(arr => arr.map(e => (typeof e === 'string' ? e : JSON.stringify(e))))
+          .map(arr => `[${arr.join(',')}]`),
+      })),
   ).test(
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
     ({ action, conditionsSets, isSupervisor, expectedResult }) => {

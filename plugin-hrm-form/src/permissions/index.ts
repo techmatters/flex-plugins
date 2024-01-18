@@ -311,10 +311,6 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
         ...appliedTimeBasedConditions,
       };
 
-      console.log('>>>>>>>>>>>>>> performer', performer);
-      console.log('>>>>>>>>>>>>>> target', target);
-      console.log('>>>>>>>>>>>>>> conditionsState', conditionsState);
-
       return checkConditionsSets(conditionsState, conditionsSets);
     } else if (kind === 'contact') {
       const conditionsState: ConditionsState = {
