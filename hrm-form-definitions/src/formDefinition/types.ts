@@ -201,7 +201,7 @@ export declare type ProfileSectionDefinition = {
 export declare type ProfileBlockDefinition = {
   flag: string;
   label: string;
-  timeFrameInHours: string;
+  durationInHours: string;
 };
 
 export type FormItemDefinition =
