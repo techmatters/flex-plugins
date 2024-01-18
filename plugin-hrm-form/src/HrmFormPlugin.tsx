@@ -29,7 +29,7 @@ import * as Components from './utils/setUpComponents';
 import * as Channels from './channels/setUpChannels';
 import setUpMonitoring from './utils/setUpMonitoring';
 import { changeLanguage } from './states/configuration/actions';
-import { getPermissionsForViewingIdentifiers, PermissionActions } from './permissions';
+import { getInitializedCan, PermissionActions } from './permissions';
 import {
   getAseloFeatureFlags,
   getHrmConfig,
@@ -77,8 +77,8 @@ const setUpComponents = (
   setupObject: ReturnType<typeof getHrmConfig>,
   translateUI: (language: string) => Promise<void>,
 ) => {
-  const { canView } = getPermissionsForViewingIdentifiers();
-  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
+  const can = getInitializedCan();
+  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);

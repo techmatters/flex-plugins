@@ -26,6 +26,7 @@
   "viewRecording":  [],
   "viewPostSurvey":  [["isSupervisor"]],
   "addContactToCase": [["isSupervisor"], ["isOwner"]],
+  "removeContactFromCase": [],
   
   "viewIdentifiers": [["everyone"]]
 }

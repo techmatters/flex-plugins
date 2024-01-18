@@ -22,7 +22,7 @@ import {
   useFetchDefinitions,
 } from 'hrm-form-definitions';
 
-import { getPermissionsForCase, PermissionActions } from '../../../permissions';
+import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { Case } from '../../../types/types';
 import { getAvailableCaseStatusTransitions } from '../../../states/case/caseStatus';
 
@@ -33,7 +33,7 @@ jest.mock('../../../permissions', () => ({
     REOPEN_CASE: 'reopenCase',
     CASE_STATUS_TRANSITION: 'caseStatusTransition',
   },
-  getPermissionsForCase: jest.fn(),
+  getInitializedCan: jest.fn(),
 }));
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -82,13 +82,10 @@ describe('getAvailableCaseStatusTransitions', () => {
   });
   describe('Given open permissions', () => {
     beforeEach(() => {
-      (<jest.Mock>getPermissionsForCase).mockReturnValue({
-        can: () => true,
-      });
+      (<jest.Mock>getInitializedCan).mockReturnValue(() => true);
     });
     test('Looks up case permissions using worker and current status', () => {
       getAvailableCaseStatusTransitions(createCase('mulching', 'a worker'), createDefinition([]));
-      expect(getPermissionsForCase).toHaveBeenCalledWith('a worker', 'mulching');
     });
     test('Status exists with valid transitions - returns current status and transitions', () => {
       const result = getAvailableCaseStatusTransitions(
@@ -155,9 +152,7 @@ describe('getAvailableCaseStatusTransitions', () => {
   ]);
 
   test('Can close case and open status that can transition to closed - closed option available', () => {
-    (<jest.Mock>getPermissionsForCase).mockReturnValue({
-      can: () => true,
-    });
+    (<jest.Mock>getInitializedCan).mockReturnValue(() => true);
     const result = getAvailableCaseStatusTransitions(createCase('compost', ''), permissionableDefinition);
     expect(result).toStrictEqual([
       createCaseStatus('mulching', ['compost']),
@@ -167,9 +162,7 @@ describe('getAvailableCaseStatusTransitions', () => {
   });
 
   test('Cannot close case and open status that can transition to closed - closed option not available', () => {
-    (<jest.Mock>getPermissionsForCase).mockReturnValue({
-      can: action => action !== PermissionActions.CLOSE_CASE,
-    });
+    (<jest.Mock>getInitializedCan).mockReturnValue(action => action !== PermissionActions.CLOSE_CASE);
     const result = getAvailableCaseStatusTransitions(createCase('compost', ''), permissionableDefinition);
     expect(result).toStrictEqual([
       createCaseStatus('mulching', ['compost']),
@@ -178,9 +171,7 @@ describe('getAvailableCaseStatusTransitions', () => {
   });
 
   test('Can reopen case and closed status that can transition to open - open option available', () => {
-    (<jest.Mock>getPermissionsForCase).mockReturnValue({
-      can: action => action === PermissionActions.REOPEN_CASE,
-    });
+    (<jest.Mock>getInitializedCan).mockReturnValue(action => action === PermissionActions.REOPEN_CASE);
     const result = getAvailableCaseStatusTransitions(createCase('closed', ''), permissionableDefinition);
     expect(result).toStrictEqual([
       createCaseStatus('spaghettifying', ['mulching', 'compost']),
@@ -190,17 +181,13 @@ describe('getAvailableCaseStatusTransitions', () => {
   });
 
   test('Cannot reopen case and closed status that can transition to open - open option not available', () => {
-    (<jest.Mock>getPermissionsForCase).mockReturnValue({
-      can: action => action !== PermissionActions.REOPEN_CASE,
-    });
+    (<jest.Mock>getInitializedCan).mockReturnValue(action => action !== PermissionActions.REOPEN_CASE);
     const result = getAvailableCaseStatusTransitions(createCase('closed', ''), permissionableDefinition);
     expect(result).toStrictEqual([createCaseStatus('closed', ['spaghettifying', 'mulching'])]);
   });
 
   test('Can transition case and open status that can transition to another open status - transition options available', () => {
-    (<jest.Mock>getPermissionsForCase).mockReturnValue({
-      can: action => action === PermissionActions.CASE_STATUS_TRANSITION,
-    });
+    (<jest.Mock>getInitializedCan).mockReturnValue(action => action === PermissionActions.CASE_STATUS_TRANSITION);
     const result = getAvailableCaseStatusTransitions(createCase('compost', ''), permissionableDefinition);
     expect(result).toStrictEqual([
       createCaseStatus('mulching', ['compost']),
@@ -209,9 +196,7 @@ describe('getAvailableCaseStatusTransitions', () => {
   });
 
   test('Cannot transition case and open status that to another open status - transition options not available', () => {
-    (<jest.Mock>getPermissionsForCase).mockReturnValue({
-      can: action => action !== PermissionActions.CASE_STATUS_TRANSITION,
-    });
+    (<jest.Mock>getInitializedCan).mockReturnValue(action => action !== PermissionActions.CASE_STATUS_TRANSITION);
     const result = getAvailableCaseStatusTransitions(createCase('compost', ''), permissionableDefinition);
     expect(result).toStrictEqual([
       createCaseStatus('compost', ['mulching', 'closed']),

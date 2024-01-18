@@ -42,7 +42,7 @@ import { formatCategories, formatDuration, mapChannelForInsights } from '../../u
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
 import { RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
-import { getPermissionsForContact, getPermissionsForViewingIdentifiers, PermissionActions } from '../../permissions';
+import { getInitializedCan, PermissionActions } from '../../permissions';
 import { ContactDetailsRoute, createDraft } from '../../states/contacts/existingContacts';
 import { RecordingSection, TranscriptSection } from './MediaSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
@@ -133,6 +133,11 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const featureFlags = getAseloFeatureFlags();
   const strings = getTemplateStrings();
 
+  // Permission to edit is based the counselor who created the contact - identified by Twilio worker ID
+  const can = React.useMemo(() => {
+    return action => getInitializedCan()(action, savedContact);
+  }, [savedContact]);
+
   useEffect(
     () => () => {
       Actions.invokeAction(Insights.Player.Action.INSIGHTS_PLAYER_HIDE);
@@ -180,9 +185,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
     }
     return null;
   };
-
-  // Permission to edit is based the counselor who created the contact - identified by Twilio worker ID
-  const { can } = getPermissionsForContact(twilioWorkerId);
 
   // Format the obtained information
   const isDataCall = !isNonDataCallType(callType);
@@ -258,8 +260,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const csamReportEnabled = featureFlags.enable_csam_report && featureFlags.enable_csam_clc_report;
 
-  const { canView } = getPermissionsForViewingIdentifiers();
-  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
+  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && (
     <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>

@@ -37,7 +37,7 @@ import { getContactValueTemplate, getFormattedNumberFromTask, getNumberFromTask 
 import {
   canOnlyViewOwnCases,
   canOnlyViewOwnContacts,
-  getPermissionsForViewingIdentifiers,
+  getInitializedCan,
   PermissionActions,
 } from '../../../permissions';
 import { channelTypes } from '../../../states/DomainConstants';
@@ -83,6 +83,10 @@ const SearchForm: React.FC<Props> = ({
   task,
   handleSearch,
 }) => {
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
   const defaultEventHandlers = fieldName => ({
     handleChange: e => {
       handleSearchFormChange(fieldName, e.target.value);
@@ -150,8 +154,7 @@ const SearchForm: React.FC<Props> = ({
     [channelTypes.line]: 'PreviousContacts-LineUser',
   };
 
-  const { canView } = getPermissionsForViewingIdentifiers();
-  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
+  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   const canChooseCounselor = !(canOnlyViewOwnContacts() || canOnlyViewOwnCases());
 
