@@ -68,7 +68,8 @@ type PermissionActionsKeys = keyof typeof PermissionActions;
 export type PermissionActionType = typeof PermissionActions[PermissionActionsKeys];
 type Condition = 'isSupervisor' | 'isCreator' | 'isCaseOpen' | 'isOwner' | 'everyone';
 export type ConditionsSet = Condition[];
-type ConditionsSets = ConditionsSet[];
+// eslint-disable-next-line import/no-unused-modules
+export type ConditionsSets = ConditionsSet[];
 
 type ConditionsState = {
   [k: string]: boolean;

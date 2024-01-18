@@ -28,6 +28,7 @@ import {
   cleanupInitializedCan,
   actionsMaps,
   TargetKind,
+  ConditionsSets,
 } from '../../permissions';
 import { getHrmConfig } from '../../hrmConfig';
 
@@ -49,6 +50,13 @@ const buildRules = (conditionsSets, kind: TargetKind | 'all') => {
 
 afterEach(() => {
   jest.resetAllMocks();
+});
+
+const addPrettyPrintConditions = (testCase: { conditionsSets: ConditionsSets }) => ({
+  ...testCase,
+  prettyConditionsSets: testCase.conditionsSets
+    .map(arr => arr.map(e => (typeof e === 'string' ? e : JSON.stringify(e))))
+    .map(arr => `[${arr.join(',')}]`),
 });
 
 describe('Test that all actions work fine (everyone)', () => {
@@ -192,12 +200,7 @@ describe('Test different scenarios (all CasesActions)', () => {
           createdAt: subDays(new Date(), 2).toISOString(),
         },
       ])
-      .map(t => ({
-        ...t,
-        prettyConditionsSets: t.conditionsSets
-          .map(arr => arr.map(e => (typeof e === 'string' ? e : JSON.stringify(e))))
-          .map(arr => `[${arr.join(',')}]`),
-      })),
+      .map(addPrettyPrintConditions),
   ).test(
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
     ({ action, conditionsSets, workerSid, isSupervisor, status = 'open', expectedResult, createdAt }) => {
@@ -326,12 +329,7 @@ describe('Test different scenarios (all ContactActions)', () => {
           createdAt: subDays(new Date(), 2).toISOString(),
         },
       ])
-      .map(t => ({
-        ...t,
-        prettyConditionsSets: t.conditionsSets
-          .map(arr => arr.map(e => (typeof e === 'string' ? e : JSON.stringify(e))))
-          .map(arr => `[${arr.join(',')}]`),
-      })),
+      .map(addPrettyPrintConditions),
   ).test(
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
     ({ action, conditionsSets, workerSid, isSupervisor, expectedResult, createdAt }) => {
@@ -394,12 +392,7 @@ describe('Test different scenarios for ViewIdentifiersAction', () => {
           expectedDescription: 'user is not a supervisor',
         },
       ])
-      .map(t => ({
-        ...t,
-        prettyConditionsSets: t.conditionsSets
-          .map(arr => arr.map(e => (typeof e === 'string' ? e : JSON.stringify(e))))
-          .map(arr => `[${arr.join(',')}]`),
-      })),
+      .map(addPrettyPrintConditions),
   ).test(
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
     ({ action, conditionsSets, isSupervisor, expectedResult }) => {
