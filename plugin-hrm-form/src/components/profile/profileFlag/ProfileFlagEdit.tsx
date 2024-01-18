@@ -28,7 +28,7 @@ import { RootState } from '../../../states';
 import { ProfileFlagEditList } from '../styles';
 import ProfileFlagList from './ProfileFlagList';
 import { ProfileCommonProps } from '../types';
-import useProfileFlagDurations from '../../../states/configuration/hooks/useProfileCustomBlock';
+import useProfileFlagDurations from '../../../states/configuration/hooks/useProfileFlagDurations';
 
 type OwnProps = ProfileCommonProps & {
   modalRef?: React.RefObject<HTMLDivElement>;
