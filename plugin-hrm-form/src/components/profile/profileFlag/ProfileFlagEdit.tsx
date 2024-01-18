@@ -28,7 +28,7 @@ import { RootState } from '../../../states';
 import { ProfileFlagEditList } from '../styles';
 import ProfileFlagList from './ProfileFlagList';
 import { ProfileCommonProps } from '../types';
-import useProfileCustomBlock from '../../../states/configuration/hooks/useProfileCustomBlock';
+import useProfileFlagDurations from '../../../states/configuration/hooks/useProfileCustomBlock';
 
 type OwnProps = ProfileCommonProps & {
   modalRef?: React.RefObject<HTMLDivElement>;
@@ -36,34 +36,13 @@ type OwnProps = ProfileCommonProps & {
 
 type Props = OwnProps;
 
-const computeHours = (timeFrame: string): number => {
-  const [value, unit] = timeFrame.split(' ');
-
-  switch (unit) {
-    case 'hour':
-    case 'hours':
-      return Number(value);
-    case 'day':
-    case 'days':
-      return Number(value) * 24;
-    case 'month':
-    case 'months':
-      return Number(value) * 30 * 24; // Approximation, actual number varies by month
-    case 'year':
-    case 'years':
-      return Number(value) * 365 * 24; // Approximation, actual number varies by year
-    default:
-      return 0;
-  }
-};
-
 const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
   const { modalRef, profileId } = props;
 
   const { allProfileFlags, filteredProfileFlags, associateProfileFlag } = useProfileFlags(profileId);
   const loading = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId))?.loading;
 
-  const customBlock = useProfileCustomBlock();
+  const customFlagDurations = useProfileFlagDurations();
   const anchorRef = useRef(null);
 
   /**
@@ -138,19 +117,19 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
             {availableFlags
               ?.sort((a, b) => a.name.localeCompare(b.name))
               .map((flag: ProfileFlag, index: number) => {
-                if (flag.name === 'blocked') {
-                  return customBlock.map((block, blockIndex) => {
-                    const validUntil = new Date(
-                      Date.now() + computeHours(block.timeFrame) * 60 * 60 * 1000,
-                    ).toISOString();
+                // eslint-disable-next-line sonarjs/no-empty-collection
+                const customDurations = customFlagDurations.filter(customDuration => customDuration.flag === flag.name);
+                if (customDurations.length > 0) {
+                  return customDurations.map((customDuration, customDurationIndex) => {
+                    const validUntil = new Date(Date.now() + Number(customDuration.durationInHours)).toISOString();
                     const validatedTime = parseISO(validUntil);
                     return (
                       <StyledMenuItem
-                        key={`${flag.id}-${block.type}`}
+                        key={customDuration.durationInHours}
                         onClick={() => shouldAllowAssociate && associateProfileFlag(flag.id, validatedTime)}
-                        ref={index && blockIndex ? null : associateRef}
+                        ref={index && customDurationIndex ? null : associateRef}
                       >
-                        {block.type}
+                        {customDuration.label}
                       </StyledMenuItem>
                     );
                   });

@@ -19,10 +19,10 @@ import { ProfileBlockDefinition } from 'hrm-form-definitions';
 import { RootState } from '../..';
 import { selectCurrentDefinitionVersion } from '../selectDefinitions';
 
-const useProfileCustomBlock = () =>
+const useProfileFlagDurations = () =>
   useSelector(
     (state: RootState): ProfileBlockDefinition[] =>
-      selectCurrentDefinitionVersion(state).profileForms?.BlockDurations || [],
+      selectCurrentDefinitionVersion(state).profileForms?.FlagDurations || [],
   );
 
-export default useProfileCustomBlock;
+export default useProfileFlagDurations;
