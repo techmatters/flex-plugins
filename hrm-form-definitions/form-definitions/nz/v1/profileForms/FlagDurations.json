@@ -2,11 +2,11 @@
   {
     "flag": "blocked",
     "label": "Short Term Block (24 Hours)",
-    "timeFrame": "86400000"
+    "timeFrameInHours": "24"
   },
   {
     "flag": "blocked",
     "label": "Long Term Block (5 Years)",
-    "timeFrame": "157852800000"
+    "timeFrameInHours": "43848"
   }
 ]
