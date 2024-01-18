@@ -127,7 +127,7 @@ type SupportedTKCondition = {
   viewIdentifiers: SupportedViewIdentifiersCondition;
 };
 
-type TargetKind = keyof typeof actionsMaps;
+export type TargetKind = keyof typeof actionsMaps;
 
 type TKCondition<T extends TargetKind> = SupportedTKCondition[T];
 type TKConditionsSet<T extends TargetKind> = TKCondition<T>[];
@@ -207,8 +207,8 @@ const isTKConditionsSets = <T extends TargetKind>(kind: TargetKind) => (css: any
 type NestedStringValues<T> = T extends object
   ? { [K in keyof T]: T[K] extends string ? T[K] : NestedStringValues<T[K]> }[keyof T]
   : never;
-type Actions = NestedStringValues<typeof actionsMaps>;
-type RulesFile = { [k in Actions]: TKConditionsSets<TargetKind> };
+type Action = NestedStringValues<typeof actionsMaps>;
+type RulesFile = { [k in Action]: TKConditionsSets<TargetKind> };
 
 const isValidTKConditionsSets = <T extends TargetKind>(kind: T) => (
   css: TKConditionsSets<TargetKind>,
@@ -231,18 +231,12 @@ const validateTKActions = (rules: RulesFile) =>
         };
       }, {}),
     )
-    .reduce<{ [k in Actions]: boolean }>((accum, obj) => ({ ...accum, ...obj }), {} as any);
+    .reduce<{ [k in Action]: boolean }>((accum, obj) => ({ ...accum, ...obj }), {} as any);
 
-const isValidTargetKindActions = (validated: { [k in Actions]: boolean }) => Object.values(validated).every(Boolean);
+const isValidTargetKindActions = (validated: { [k in Action]: boolean }) => Object.values(validated).every(Boolean);
 
 export const validateRules = (permissionConfig: string) => {
   const rules = fetchRules(permissionConfig);
-
-  // const rulesAreValid = Object.values(PermissionActions).map(action => {
-  //   console.log('>>>>> rules[action] exists for action:', action, rules[action])
-  //   return Boolean(rules[action])
-  // });
-  // if (!rulesAreValid.every(Boolean)) throw new Error(`Rules file for ${permissionConfig} is incomplete.`);
 
   const validated = validateTKActions(rules);
 
@@ -317,6 +311,10 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
         ...appliedTimeBasedConditions,
       };
 
+      console.log('>>>>>>>>>>>>>> performer', performer);
+      console.log('>>>>>>>>>>>>>> target', target);
+      console.log('>>>>>>>>>>>>>> conditionsState', conditionsState);
+
       return checkConditionsSets(conditionsState, conditionsSets);
     } else if (kind === 'contact') {
       const conditionsState: ConditionsState = {
@@ -351,18 +349,18 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
 };
 
 const initializeCanForRules = (rules: RulesFile) => {
-  const actionCheckers = {} as { [action in Actions]: ReturnType<typeof setupAllow> };
+  const actionCheckers = {} as { [action in Action]: ReturnType<typeof setupAllow> };
 
   const targetKinds = Object.keys(actionsMaps);
   targetKinds.forEach((targetKind: TargetKind) => {
-    const actionsForTK = Object.values(actionsMaps[targetKind]) as Actions[];
+    const actionsForTK = Object.values(actionsMaps[targetKind]) as Action[];
     actionsForTK.forEach(action => (actionCheckers[action] = setupAllow(targetKind, rules[action])));
   });
 
-  return (performer: TwilioUser, action: Actions, target: any) => actionCheckers[action](performer, target);
+  return (performer: TwilioUser, action: Action, target: any) => actionCheckers[action](performer, target);
 };
 
-let initializedCan: (performer: TwilioUser, action: Actions, target?: any) => boolean = null;
+let initializedCan: (performer: TwilioUser, action: Action, target?: any) => boolean = null;
 export const getInitializedCan = () => {
   const { workerSid, isSupervisor, permissionConfig } = getHrmConfig();
   if (initializedCan === null) {
@@ -371,19 +369,9 @@ export const getInitializedCan = () => {
   }
 
   const performer = { isSupervisor, workerSid, roles: null };
-  return (action: Actions, target?: any) => {
-    console.log(
-      '>>>>>>> checking if',
-      performer,
-      'can',
-      action,
-      'on',
-      target,
-      'evaluates to',
-      initializedCan(performer, action, target),
-    );
-    return initializedCan(performer, action, target);
-  };
+  return (action: Action, target?: any) => initializedCan(performer, action, target);
 };
+
+export const cleanupInitializedCan = () => (initializedCan = null);
 
 type InitializeCan = ReturnType<typeof getInitializedCan>;

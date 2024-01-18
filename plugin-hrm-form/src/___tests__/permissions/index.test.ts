@@ -23,21 +23,35 @@ import {
   CaseActions,
   ContactActions,
   ViewIdentifiersAction,
+  cleanupInitializedCan,
+  actionsMaps,
+  TargetKind,
 } from '../../permissions';
 import { getHrmConfig } from '../../hrmConfig';
 
+const fetchRulesSpy = jest.spyOn(fetchRulesModule, 'fetchRules').mockImplementation(() => {
+  throw new Error('fetchRules not mocked!');
+});
 jest.mock('../../hrmConfig');
 const mockGetHrmConfig = getHrmConfig as jest.Mock<Partial<ReturnType<typeof getHrmConfig>>>;
-const buildRules = conditionsSets =>
-  Object.values(PermissionActions).reduce((accum, action) => ({ ...accum, [action]: conditionsSets }), {});
+const buildRules = (conditionsSets, kind: TargetKind | 'all') => {
+  const actionsForTK = kind === 'all' ? [] : Object.values(actionsMaps[kind]);
+  return Object.values(PermissionActions).reduce(
+    (accum, action) => ({
+      ...accum,
+      [action]: kind === 'all' || actionsForTK.includes(action) ? conditionsSets : [],
+    }),
+    {},
+  );
+};
 
 afterEach(() => {
-  jest.clearAllMocks();
+  jest.resetAllMocks();
 });
 
 describe('Test that all actions work fine (everyone)', () => {
-  const rules = buildRules([['everyone']]);
-  jest.spyOn(fetchRulesModule, 'fetchRules').mockReturnValue(rules);
+  const rules = buildRules([['everyone']], 'all');
+  fetchRulesSpy.mockReturnValue(rules);
 
   mockGetHrmConfig.mockReturnValue({
     workerSid: 'not creator',
@@ -45,7 +59,6 @@ describe('Test that all actions work fine (everyone)', () => {
     permissionConfig: 'wareva',
   });
 
-  // const can = getInitializedCan('notCreator', 'open');
   const can = getInitializedCan();
 
   each(
@@ -58,6 +71,10 @@ describe('Test that all actions work fine (everyone)', () => {
 });
 
 describe('Test different scenarios (all CasesActions)', () => {
+  afterEach(() => {
+    cleanupInitializedCan();
+  });
+
   each(
     Object.values(CaseActions)
       .flatMap(action => [
@@ -141,8 +158,8 @@ describe('Test different scenarios (all CasesActions)', () => {
   ).test(
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
     ({ action, conditionsSets, workerSid, isSupervisor, status = 'open', expectedResult }) => {
-      const rules = buildRules(conditionsSets);
-      jest.spyOn(fetchRulesModule, 'fetchRules').mockReturnValueOnce(rules);
+      const rules = buildRules(conditionsSets, 'case');
+      fetchRulesSpy.mockReturnValueOnce(rules);
 
       mockGetHrmConfig.mockReturnValueOnce({
         workerSid,
@@ -152,12 +169,16 @@ describe('Test different scenarios (all CasesActions)', () => {
 
       const can = getInitializedCan();
 
-      expect(can(action, { status, twilioWorkerSid: workerSid })).toBe(expectedResult);
+      expect(can(action, { status, twilioWorkerId: 'creator' })).toBe(expectedResult);
     },
   );
 });
 
 describe('Test different scenarios (all ContactActions)', () => {
+  afterEach(() => {
+    cleanupInitializedCan();
+  });
+
   each(
     Object.values(ContactActions)
       .flatMap(action => [
@@ -230,8 +251,8 @@ describe('Test different scenarios (all ContactActions)', () => {
   ).test(
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
     ({ action, conditionsSets, workerSid, isSupervisor, expectedResult }) => {
-      const rules = buildRules(conditionsSets);
-      jest.spyOn(fetchRulesModule, 'fetchRules').mockReturnValueOnce(rules);
+      const rules = buildRules(conditionsSets, 'contact');
+      fetchRulesSpy.mockReturnValueOnce(rules);
 
       mockGetHrmConfig.mockReturnValueOnce({
         workerSid,
@@ -246,6 +267,10 @@ describe('Test different scenarios (all ContactActions)', () => {
   );
 });
 describe('Test different scenarios for ViewIdentifiersAction', () => {
+  afterEach(() => {
+    cleanupInitializedCan();
+  });
+
   each(
     Object.values(ViewIdentifiersAction)
       .flatMap(action => [
@@ -258,7 +283,7 @@ describe('Test different scenarios for ViewIdentifiersAction', () => {
         },
         {
           action,
-          conditionsSets: [],
+          conditionsSets: [] as any,
           isSupervisor: true,
           expectedResult: false,
           expectedDescription: 'user is supervisor',
@@ -289,8 +314,8 @@ describe('Test different scenarios for ViewIdentifiersAction', () => {
   ).test(
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
     ({ action, conditionsSets, isSupervisor, expectedResult }) => {
-      const rules = buildRules(conditionsSets);
-      jest.spyOn(fetchRulesModule, 'fetchRules').mockReturnValueOnce(rules);
+      const rules = buildRules(conditionsSets, 'viewIdentifiers');
+      fetchRulesSpy.mockReturnValueOnce(rules);
 
       mockGetHrmConfig.mockReturnValueOnce({
         isSupervisor,

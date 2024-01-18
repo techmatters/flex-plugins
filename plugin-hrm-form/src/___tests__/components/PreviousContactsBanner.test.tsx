@@ -28,7 +28,7 @@ import { PreviousContactCounts } from '../../states/search/types';
 jest.mock('../../components/CSAMReport/CSAMReportFormDefinition');
 
 jest.mock('../../permissions', () => ({
-  getInitializedCan: jest.fn(() => true),
+  getInitializedCan: jest.fn(() => () => true),
   PermissionActions: {},
 }));
 
