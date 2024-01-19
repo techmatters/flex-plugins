@@ -33,18 +33,9 @@ const ProfileFilters: React.FC = () => {
   const [statusValues, setStatusValues] = useState<Item[]>([]);
 
   const { count } = useProfilesList();
-
-  const { updateProfilesListSettings } = useProfilesListLoader();
-
-  // Populate all the flags as filter options in the status filter
   const { allProfileFlags, loading: flagsLoading } = useAllProfileFlags();
   const { filter } = useProfilesListSettings();
-
-  const handleClearFilters = useCallback(() => {
-    updateProfilesListSettings({ filter: { statuses: [] } });
-    setStatusValues(computeStatusValues(allProfileFlags));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateProfilesListSettings, allProfileFlags]);
+  const { updateProfilesListSettings } = useProfilesListLoader();
 
   const computeStatusValues = useCallback(
     (flags: ProfileFlag[]) => {
@@ -56,6 +47,12 @@ const ProfileFilters: React.FC = () => {
     },
     [filter],
   );
+
+  const handleClearFilters = useCallback(() => {
+    updateProfilesListSettings({ filter: { statuses: [] } });
+    setStatusValues(computeStatusValues(allProfileFlags));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateProfilesListSettings, allProfileFlags]);
 
   useEffect(() => {
     if (!flagsLoading && allProfileFlags) {
