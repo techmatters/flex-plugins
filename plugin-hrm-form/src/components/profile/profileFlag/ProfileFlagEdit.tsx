@@ -20,12 +20,11 @@ import { IconButton } from '@twilio/flex-ui';
 import { Box, Popper, Paper } from '@material-ui/core';
 import { parseISO } from 'date-fns';
 
-import { StyledMenuList, StyledMenuItem } from '../../../styles';
+import { StyledMenuList, StyledMenuItem, ProfileFlagEditList, StyledPaper } from '../styles';
 import { ProfileFlag } from '../../../types/types';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
 import { useProfileFlags } from '../../../states/profile/hooks';
 import { RootState } from '../../../states';
-import { ProfileFlagEditList } from '../styles';
 import ProfileFlagList from './ProfileFlagList';
 import { ProfileCommonProps } from '../types';
 import useProfileFlagDurations from '../../../states/configuration/hooks/useProfileFlagDurations';
@@ -44,7 +43,15 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
 
   const customFlagDurations = useProfileFlagDurations();
   const anchorRef = useRef(null);
+  console.log('>>> anchorRef', anchorRef);
 
+  const [paperWidth, setPaperWidth] = useState(0);
+
+  useEffect(() => {
+    if (anchorRef.current) {
+      setPaperWidth(anchorRef.current.offsetWidth);
+    }
+  }, []);
   /**
    * We need refs to manage focus for accessibility since we're using a Popper
    * a lot of this is based around the example here: https://mui.com/material-ui/react-menu/#StyledMenuList-composition
@@ -108,7 +115,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
         </Box>
       </ProfileFlagEditList>
       <Popper open={open} anchorEl={anchorRef.current} placement="bottom-start" ref={modalRef}>
-        <Paper>
+        <StyledPaper paperWidth={paperWidth}>
           <StyledMenuList
             id="associate-status-menu"
             aria-labelledby="associate-status-button"
@@ -117,11 +124,12 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
             {availableFlags
               ?.sort((a, b) => a.name.localeCompare(b.name))
               .map((flag: ProfileFlag, index: number) => {
-                // eslint-disable-next-line sonarjs/no-empty-collection
                 const customDurations = customFlagDurations.filter(customDuration => customDuration.flag === flag.name);
                 if (customDurations.length > 0) {
                   return customDurations.map((customDuration, customDurationIndex) => {
-                    const validUntil = new Date(Date.now() + Number(customDuration.durationInHours)).toISOString();
+                    const validUntil = new Date(
+                      Date.now() + Number(customDuration.durationInHours) * 60 * 60 * 1000,
+                    ).toISOString();
                     const validatedTime = parseISO(validUntil);
                     return (
                       <StyledMenuItem
@@ -146,7 +154,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
                 );
               })}
           </StyledMenuList>
-        </Paper>
+        </StyledPaper>
       </Popper>
     </>
   );

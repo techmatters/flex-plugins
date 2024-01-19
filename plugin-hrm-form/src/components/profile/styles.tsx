@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { styled, Button, IconButton } from '@twilio/flex-ui';
-import { withStyles } from '@material-ui/core';
+import { withStyles, MenuItem, MenuList, Popper, Paper } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import BlockOutlinedIcon from '@material-ui/icons/BlockOutlined';
 
@@ -251,3 +251,31 @@ export const YellowBanner = styled('div')`
 `;
 
 YellowBanner.displayName = 'YellowBanner';
+
+export const StyledMenuList = styled(MenuList)`
+  border-radius: 5px;
+  min-width: fit-content;
+  color: ${HrmTheme.colors.darkTextColor};
+`;
+StyledMenuList.displayName = 'StyledMenuList';
+
+export const StyledMenuItem = styled(MenuItem)`
+  box-sizing: border-box;
+  height: 32px;
+  display: flex;
+  margin: 0;
+  padding: 0 12px;
+  width: 100%;
+  text-transform: capitalize;
+`;
+StyledMenuItem.displayName = 'StyledMenuItem';
+
+type StyledPaperProps = {
+  paperWidth: number;
+};
+
+export const StyledPaper = styled(Paper)<StyledPaperProps>`
+  width: ${props => props.paperWidth}px;
+`;
+
+StyledPaper.displayName = 'StyledPaper';
