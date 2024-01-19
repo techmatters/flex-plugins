@@ -131,8 +131,8 @@
         "label": "24"
       },
       {
-          "value": "25",
-          "label": "25"
+        "value": "25",
+        "label": "25"
       },
       {
         "value": ">25",
@@ -142,10 +142,10 @@
         "value": "Other",
         "label": "Other"
       },
-    {
-      "value": "Unknown",
-      "label": "Unknown"
-    }
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
     ],
     "required": {
       "value": true,
@@ -227,6 +227,15 @@
       "label": ""
     },
     "optionsReferenceKey": "districtOptions"
+  },
+  {
+    "name": "suburb",
+    "label": "Suburb",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "phone1",
