@@ -43,7 +43,6 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
 
   const customFlagDurations = useProfileFlagDurations();
   const anchorRef = useRef(null);
-  console.log('>>> anchorRef', anchorRef);
 
   const [paperWidth, setPaperWidth] = useState(0);
 
