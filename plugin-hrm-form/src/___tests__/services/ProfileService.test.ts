@@ -14,7 +14,19 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getIdentifierByIdentifier } from '../../services/ProfileService';
+import {
+  getIdentifierByIdentifier,
+  getProfileById,
+  getProfileContacts,
+  getProfileCases,
+  getProfileFlags,
+  associateProfileFlag,
+  disassociateProfileFlag,
+  getProfileSection,
+  createProfileSection,
+  updateProfileSection,
+  getProfilesList,
+} from '../../services/ProfileService';
 import { fetchHrmApi } from '../../services/fetchHrmApi';
 
 jest.mock('../../services/fetchHrmApi');
@@ -32,5 +44,129 @@ describe('getIdentifierByIdentifier()', () => {
 
     const expectedUrl = `/profiles/identifier/${identifier}`;
     expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl);
+  });
+});
+
+describe('getProfileById()', () => {
+  test('calls "GET /profiles/{id}" with correct id', async () => {
+    const id = 10;
+    await getProfileById(id);
+    expect(mockFetchHrmAPi).toHaveBeenCalledWith(`/profiles/${id}`);
+  });
+});
+
+describe('getProfileContacts()', () => {
+  test('calls "GET /profiles/{id}/contacts" with correct parameters', async () => {
+    const id = 123;
+    const offset = 10;
+    const limit = 5;
+    await getProfileContacts(id, offset, limit);
+    expect(mockFetchHrmAPi).toHaveBeenCalledWith(`/profiles/${id}/contacts?offset=${offset}&limit=${limit}`);
+  });
+});
+
+describe('getProfileCases()', () => {
+  test('calls "GET /profiles/{id}/cases" with correct parameters', async () => {
+    const id = 123;
+    const offset = 0;
+    const limit = 10;
+    await getProfileCases(id, offset, limit);
+    expect(mockFetchHrmAPi).toHaveBeenCalledWith(`/profiles/${id}/cases?offset=${offset}&limit=${limit}`);
+  });
+});
+
+describe('getProfileFlags()', () => {
+  test('calls "GET /profiles/flags"', async () => {
+    await getProfileFlags();
+    expect(mockFetchHrmAPi).toHaveBeenCalledWith(`/profiles/flags`);
+  });
+});
+
+describe('associateProfileFlag()', () => {
+  test('calls "POST /profiles/{profileId}/flags/{profileFlagId}" with correct parameters', async () => {
+    const profileId = 23;
+    const profileFlagId = 1;
+    await associateProfileFlag(profileId, profileFlagId);
+    expect(mockFetchHrmAPi).toHaveBeenCalledWith(`/profiles/${profileId}/flags/${profileFlagId}`, expect.any(Object));
+  });
+  test('calls "POST /profiles/{profileId}/flags/{profileFlagId}" with correct parameters', async () => {
+    const profileId = 23;
+    const profileFlagId = 1;
+    const validUntilDate = new Date();
+    validUntilDate.setDate(validUntilDate.getDate() + 1);
+    await associateProfileFlag(profileId, profileFlagId, validUntilDate);
+
+    expect(mockFetchHrmAPi).toHaveBeenCalledWith(
+      `/profiles/23/flags/1`,
+      expect.objectContaining({
+        body: expect.stringMatching(/{"validUntil":".*"}/),
+        method: 'POST',
+      }),
+    );
+  });
+});
+
+describe('disassociateProfileFlag()', () => {
+  test('calls "DELETE /profiles/{profileId}/flags/{profileFlagId}" with correct parameters', async () => {
+    const profileId = 23;
+    const profileFlagId = 1;
+    await disassociateProfileFlag(profileId, profileFlagId);
+    expect(mockFetchHrmAPi).toHaveBeenCalledWith(`/profiles/${profileId}/flags/${profileFlagId}`, expect.any(Object));
+  });
+});
+
+describe('getProfileSection()', () => {
+  test('calls "GET /profiles/{profileId}/sections/{sectionId}" with correct parameters', async () => {
+    const profileId = 1;
+    const sectionId = 2;
+    await getProfileSection(profileId, sectionId);
+    expect(mockFetchHrmAPi).toHaveBeenCalledWith(`/profiles/${profileId}/sections/${sectionId}`);
+  });
+});
+
+describe('createProfileSection()', () => {
+  test('calls "POST /profiles/{profileId}/sections" with correct parameters', async () => {
+    const profileId = 23;
+    const content = 'Test Content';
+    const sectionType = 'Type';
+    await createProfileSection(profileId, content, sectionType);
+    expect(mockFetchHrmAPi).toHaveBeenCalledWith(`/profiles/${profileId}/sections`, expect.any(Object));
+  });
+});
+
+describe('updateProfileSection()', () => {
+  test('calls "PATCH /profiles/{profileId}/sections/{sectionId}" with correct parameters', async () => {
+    const profileId = 23;
+    const sectionId = 2;
+    const content = 'Updated Content';
+    await updateProfileSection(profileId, sectionId, content);
+    expect(mockFetchHrmAPi).toHaveBeenCalledWith(`/profiles/${profileId}/sections/${sectionId}`, expect.any(Object));
+  });
+});
+
+describe('getProfilesList()', () => {
+  test('calls "GET /profiles" with default parameters', async () => {
+    await getProfilesList();
+    expect(mockFetchHrmAPi).toHaveBeenCalledWith(`/profiles?offset=0&limit=10&sortBy=id`);
+  });
+
+  test('calls "GET /profiles" with custom parameters', async () => {
+    const offset = 20;
+    const limit = 5;
+    const sortBy = 'id';
+    const sortDirection = 'asc';
+    const profileFlagIds = [1, 2];
+    await getProfilesList({
+      offset,
+      limit,
+      sortBy,
+      sortDirection,
+      profileFlagIds,
+    });
+    expect(decodeURIComponent(mockFetchHrmAPi.mock.calls[0][0])).toEqual(
+      `/profiles?offset=${offset}&limit=${limit}&sortBy=${sortBy}&sortDirection=${sortDirection}&profileFlagIds=${profileFlagIds.join(
+        ',',
+      )}`,
+    );
   });
 });
