@@ -20,8 +20,8 @@ import { getProfilesList } from '../../services/ProfileService';
 
 export const loadProfilesListAsync = createAsyncAction(
   t.LOAD_PROFILES_LIST,
-  ({ offset = 0, limit = 10, sortBy = 'id', sortDirection = null } = {}) => {
-    return getProfilesList({ offset, limit, sortBy, sortDirection });
+  ({ offset = 0, limit = 10, sortBy = 'id', sortDirection = null, profileFlagIds = [] } = {}) => {
+    return getProfilesList({ offset, limit, sortBy, sortDirection, profileFlagIds });
   },
 );
 

@@ -21,6 +21,7 @@ import {
   Profile,
   ProfileFlag,
   ProfileSection,
+  ProfilesListFilters,
   ProfilesListSort,
   ProfilesListSortBy,
   SortDirection,
@@ -79,6 +80,7 @@ export type ProfilesListState = {
   page: number;
   settings: {
     sort: ProfilesListSort;
+    filter: ProfilesListFilters;
   };
 };
 
@@ -93,6 +95,7 @@ export const initialProfilesListState: ProfilesListState = {
       sortBy: ProfilesListSortBy.ID,
       sortDirection: SortDirection.DESC,
     },
+    filter: { statuses: [] },
   },
 };
 
