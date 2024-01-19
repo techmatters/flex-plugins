@@ -39,8 +39,8 @@ const CaseSummaryEditHistory: React.FC<Props> = ({ sourceCase, counselorsHash, d
   const previousStatusLabel = previousStatus
     ? definitionVersion.caseStatus[previousStatus]?.label || 'Unknown'
     : 'None';
-  const statusLabel = previousStatus ? definitionVersion.caseStatus[status]?.label || 'Unknown' : undefined;
-  const statusUpdatingCounsellorName = statusUpdatedBy ? counselorsHash[statusUpdatedBy] || 'Unknown' : undefined;
+  const statusLabel = previousStatus ? definitionVersion.caseStatus[status]?.label || `Unknown (${status})` : 'None'; // Shouldn't ever be 'None'
+  const statusUpdatingCounsellorName = statusUpdatedBy ? counselorsHash[statusUpdatedBy] || 'Unknown' : statusUpdatedBy;
   const statusUpdated = statusUpdatedAt ? new Date(statusUpdatedAt) : undefined;
   const { enable_last_case_status_update_info: enableLastCaseStatusUpdateInfo } = getAseloFeatureFlags();
   const { added, addingCounsellorName, updated, updatingCounsellorName } = caseItemHistory(sourceCase, counselorsHash);

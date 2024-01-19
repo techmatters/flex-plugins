@@ -55,7 +55,15 @@ locals {
       en_NZ : ["pre_survey"]
     }
 
-
+    # HRM
+    case_status_transition_rules = [
+      {
+        startingStatus: "submitted",
+        targetStatus: "closed",
+        timeInStatusInterval: '28 days',
+        description: "rule to close submitted cases after 28 days"
+      }
+    ]
 
   }
 }

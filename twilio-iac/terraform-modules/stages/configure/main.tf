@@ -65,3 +65,20 @@ resource "aws_ssm_parameter" "transcript_retention_override" {
   type  = "String"
   value = var.hrm_transcript_retention_days_override
 }
+
+
+
+resource "aws_ssm_parameter" "case_status_transition" {
+  count       = var.case_status_transition_rules != null ? 1 : 0
+  name        = "/${lower(var.environment)}/${var.helpline_region}/hrm/scheduled-task/case-status-transitionrules/${nonsensitive(local.secrets.twilio_account_sid)}"
+  type        = "SecureString"
+  value       = jsonencode(var.case_status_transition_rules)
+  description = "Twilio account - External Recordings Enabled"
+
+  tags = {
+    environment = var.environment
+    helpline    = var.short_helpline
+    env         = var.environment
+    Terraform   = true
+  }
+}
