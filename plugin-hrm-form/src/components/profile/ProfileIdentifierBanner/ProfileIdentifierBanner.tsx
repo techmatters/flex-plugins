@@ -26,7 +26,7 @@ import { StyledLink } from '../../search/styles';
 import { CoreChannelTypes, coreChannelTypes } from '../../../states/DomainConstants';
 import { newOpenModalAction } from '../../../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils';
-import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
+import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { CustomITask } from '../../../types/types';
 
 type OwnProps = {
@@ -49,6 +49,10 @@ const connector = connect(null, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) => {
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
   const formattedIdentifier = getFormattedNumberFromTask(task);
   const identifierIdentifier = getNumberFromTask(task);
   const { identifier } = useIdentifierByIdentifier({ identifierIdentifier, shouldAutoload: true });
@@ -71,8 +75,7 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) =>
     [coreChannelTypes.line]: 'PreviousContacts-LineUser',
   };
 
-  const { canView } = getPermissionsForViewingIdentifiers();
-  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
+  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   // We immediately create a contact when a task is created, so we don't want to show the banner
   const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;

@@ -68,6 +68,7 @@ export const newContact = (definitions: DefinitionVersion, task?: ITask | Offlin
     createdOnBehalfOf: '',
     ...Object.fromEntries(initialContactlessTaskTabDefinition.map(d => [d.name, getInitialValue(d)])),
   };
+  const channel = (task?.channelType ?? 'default') as Contact['channel'];
   const chatSids =
     task && !isOfflineContactTask(task) && TaskHelper.isChatBasedTask(task)
       ? {
@@ -92,12 +93,12 @@ export const newContact = (definitions: DefinitionVersion, task?: ITask | Offlin
       categories: {},
     },
     ...chatSids,
+    channel,
     createdBy: '',
     createdAt: '',
     updatedBy: '',
     updatedAt: '',
     queueName: '',
-    channel: 'web',
     number: '',
     conversationDuration: 0,
     profileId: null,

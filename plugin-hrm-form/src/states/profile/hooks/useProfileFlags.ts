@@ -32,11 +32,15 @@ export type UseAllProfileFlags = {
 };
 
 export type UseEditProfileFlags = {
-  associateProfileFlag: (profileFlagId: ProfileFlag['id']) => void;
+  associateProfileFlag: (profileFlagId: ProfileFlag['id'], validUntil?: Date | null) => void;
   disassociateProfileFlag: (profileFlagId: ProfileFlag['id']) => void;
 };
 
-export type UseProfileFlags = UseAllProfileFlags & UseEditProfileFlags & { profileFlags?: ProfileFlag[] };
+export type UseProfileFlags = UseAllProfileFlags &
+  UseEditProfileFlags & {
+    combinedProfileFlags?: ProfileFlag[];
+    filteredProfileFlags?: ProfileFlag[];
+  };
 
 /**
  * Access all profile flags for the current account
@@ -75,9 +79,9 @@ export const useEditProfileFlags = (profileId?: Profile['id']): UseEditProfileFl
   const dispatch = useDispatch();
 
   const associateProfileFlag = useCallback(
-    (profileFlagId: ProfileFlag['id']) => {
+    (profileFlagId: ProfileFlag['id'], validUntil?: ProfileFlag['validUntil']) => {
       if (!profileId) return;
-      asyncDispatch(dispatch)(ProfileActions.associateProfileFlagAsync(profileId, profileFlagId));
+      asyncDispatch(dispatch)(ProfileActions.associateProfileFlagAsync(profileId, profileFlagId, validUntil));
     },
     [dispatch, profileId],
   );
@@ -107,18 +111,30 @@ export const useProfileFlags = (profileId?: Profile['id']): UseProfileFlags => {
 
   const useEditProfileFlagsReturn = useEditProfileFlags(profileId);
 
-  const profileFlagIds = useSelector((state: RootState) =>
+  const profileFlags: { id: number; validUntil: Date }[] = useSelector((state: RootState) =>
     profileId ? state[namespace][profileBase].profiles?.[profileId]?.data?.profileFlags : [],
   );
 
-  const profileFlags = useMemo(() => {
-    if (!allProfileFlags || !profileFlagIds) return [];
-    return profileFlagIds.map(({ id }) => allProfileFlags.find(profileFlag => profileFlag.id === id)).filter(Boolean);
-  }, [profileFlagIds, allProfileFlags]);
+  const filteredProfileFlags = useMemo(() => {
+    if (!allProfileFlags || !profileFlags) return [];
+    return profileFlags.map(({ id }) => allProfileFlags.find(profileFlag => profileFlag.id === id)).filter(Boolean);
+  }, [profileFlags, allProfileFlags]);
+
+  const combinedProfileFlags = useMemo(() => {
+    return filteredProfileFlags.map(flag => {
+      const matchingFlag = profileFlags.find(pf => pf.id === flag.id);
+
+      return {
+        ...flag,
+        validUntil: flag.validUntil || matchingFlag?.validUntil || null,
+      };
+    });
+  }, [filteredProfileFlags, profileFlags]);
 
   return {
     ...allProfileFlagReturn,
     ...useEditProfileFlagsReturn,
-    profileFlags,
+    filteredProfileFlags,
+    combinedProfileFlags,
   };
 };

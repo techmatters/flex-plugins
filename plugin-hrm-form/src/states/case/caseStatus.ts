@@ -16,7 +16,7 @@
 
 import { DefinitionVersion, StatusInfo } from 'hrm-form-definitions';
 
-import { getPermissionsForCase, PermissionActions } from '../../permissions';
+import { getInitializedCan, PermissionActions } from '../../permissions';
 import { Case } from '../../types/types';
 
 export const getAvailableCaseStatusTransitions = (
@@ -24,7 +24,7 @@ export const getAvailableCaseStatusTransitions = (
   definitionVersion: DefinitionVersion,
 ): StatusInfo[] => {
   if (definitionVersion) {
-    const { can } = getPermissionsForCase(connectedCase.twilioWorkerId, connectedCase.status);
+    const can = getInitializedCan();
     const caseStatusList = Object.values<StatusInfo>(definitionVersion.caseStatus);
     const currentStatusItem = caseStatusList.find(cs => cs.value === connectedCase.status);
     const availableStatusTransitions: string[] = currentStatusItem
@@ -34,11 +34,15 @@ export const getAvailableCaseStatusTransitions = (
       option =>
         availableStatusTransitions.includes(option.value) &&
         (option === currentStatusItem ||
-          (currentStatusItem.value === 'closed' && option.value !== 'closed' && can(PermissionActions.REOPEN_CASE)) ||
-          (currentStatusItem.value !== 'closed' && option.value === 'closed' && can(PermissionActions.CLOSE_CASE)) ||
+          (currentStatusItem.value === 'closed' &&
+            option.value !== 'closed' &&
+            can(PermissionActions.REOPEN_CASE, connectedCase)) ||
+          (currentStatusItem.value !== 'closed' &&
+            option.value === 'closed' &&
+            can(PermissionActions.CLOSE_CASE, connectedCase)) ||
           (currentStatusItem.value !== 'closed' &&
             option.value !== 'closed' &&
-            can(PermissionActions.CASE_STATUS_TRANSITION))),
+            can(PermissionActions.CASE_STATUS_TRANSITION, connectedCase))),
     );
   }
   return [];

@@ -38,12 +38,7 @@ import { CaseStateEntry } from '../../../states/case/types';
 
 jest.mock('../../../services/CaseService', () => ({ getActivities: jest.fn(() => []), cancelCase: jest.fn() }));
 jest.mock('../../../permissions', () => ({
-  getPermissionsForCase: jest.fn(() => ({
-    can: () => true,
-  })),
-  getPermissionsForContact: jest.fn(() => ({
-    can: () => true,
-  })),
+  getInitializedCan: jest.fn(() => () => true),
   PermissionActions: {},
 }));
 

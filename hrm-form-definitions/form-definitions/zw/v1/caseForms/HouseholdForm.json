@@ -187,6 +187,11 @@
     "optionsReferenceKey": "districtOptions"
   },
   {
+    "name": "suburb",
+    "label": "Suburb",
+    "type": "input"
+  },
+  {
     "name": "phone1",
     "label": "Phone #1",
     "type": "input"

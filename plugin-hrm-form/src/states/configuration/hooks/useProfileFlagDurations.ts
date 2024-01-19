@@ -14,14 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import { useSelector } from 'react-redux';
-import { ProfileSectionDefinition } from 'hrm-form-definitions';
+import { ProfileFlagDurationDefinition } from 'hrm-form-definitions';
 
 import { RootState } from '../..';
 import { selectCurrentDefinitionVersion } from '../selectDefinitions';
 
-const useProfileSectionTypes = () =>
+const useProfileFlagDurations = () =>
   useSelector(
-    (state: RootState): ProfileSectionDefinition[] => selectCurrentDefinitionVersion(state).profileForms?.Sections,
+    (state: RootState): ProfileFlagDurationDefinition[] =>
+      selectCurrentDefinitionVersion(state).profileForms?.FlagDurations || [],
   );
 
-export default useProfileSectionTypes;
+export default useProfileFlagDurations;

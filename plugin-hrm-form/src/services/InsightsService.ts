@@ -199,6 +199,7 @@ type InsightsCaseForm = {
   perpetrator?: { [key: string]: string };
   incident?: { [key: string]: string | boolean };
   referral?: { [key: string]: string };
+  household?: { [key: string]: string };
 };
 
 /*
@@ -212,6 +213,7 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
   let perpetrator: { [key: string]: string } = undefined;
   let incident: { [key: string]: string | boolean } = undefined;
   let referral: { [key: string]: string } = undefined;
+  let household: { [key: string]: string } = undefined;
   const topLevel = {
     id: caseForm.id.toString(),
   };
@@ -243,6 +245,17 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
       ...untypedIncident,
     };
   }
+  if (caseForm.info?.households && caseForm.info.households.length > 0) {
+    const theHousehold = caseForm.info.households[0];
+    const untypedHousehold: any = {
+      ...theHousehold,
+      ...theHousehold.household,
+    };
+    delete untypedHousehold.household;
+    household = {
+      ...untypedHousehold,
+    };
+  }
   if (caseForm.info?.referrals && caseForm.info.referrals.length > 0) {
     referral = {
       ...caseForm.info.referrals[0],
@@ -254,6 +267,7 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
     topLevel,
     perpetrator,
     incident,
+    household,
     referral,
   };
 };

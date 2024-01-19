@@ -407,6 +407,7 @@
   "Profile-NoContactsFound": "No Contacts Found",
   "Profile-NoCasesFound": "No Cases Found",
   "Profile-ViewClient": "View Client",
+  "Profile-ValidUntil": "until",
 
   "SideNavProfileList": "Client Profiles",
   "ProfileList-Clients": "Clients",

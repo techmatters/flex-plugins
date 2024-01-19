@@ -32,7 +32,7 @@ import { StyledLink } from '../../search/styles';
 import { CoreChannelTypes, coreChannelTypes } from '../../../states/DomainConstants';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
 import { getContactValueTemplate, getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
-import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
+import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { CustomITask, isTwilioTask } from '../../../types/types';
 import { selectCounselorsHash } from '../../../states/configuration/selectCounselorsHash';
 import selectPreviousContactCounts from '../../../states/search/selectPreviousContactCounts';
@@ -52,6 +52,10 @@ const PreviousContactsBanner: React.FC<Props> = ({
   searchCases,
   openContactSearchResults,
 }) => {
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
   let localizedSourceFromTask: { [channelType in CoreChannelTypes]: string };
 
   if (isTwilioTask(task)) {
@@ -67,8 +71,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
     };
   }
 
-  const { canView } = getPermissionsForViewingIdentifiers();
-  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
+  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   let contactNumber: ReturnType<typeof getFormattedNumberFromTask>;
   if (isTwilioTask(task)) {

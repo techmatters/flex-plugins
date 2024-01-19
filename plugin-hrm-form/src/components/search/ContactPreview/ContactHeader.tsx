@@ -33,7 +33,7 @@ import {
 import { isNonDataCallType } from '../../../states/validationRules';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import { channelTypes, ChannelTypes } from '../../../states/DomainConstants';
-import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
+import { getInitializedCan, PermissionActions } from '../../../permissions';
 import InfoIcon from '../../caseMergingBanners/InfoIcon';
 
 type OwnProps = {
@@ -72,14 +72,17 @@ const ContactHeader: React.FC<Props> = ({
   onClickFull,
   isDraft,
 }) => {
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
   const dateObj = new Date(date);
   const dateString = `${format(dateObj, 'MMM d, yyyy')}, ${dateObj.toLocaleTimeString([], {
     hour: '2-digit',
     minute: '2-digit',
   })}`;
   const showNumber = isNonDataCallType(callType) && Boolean(number);
-  const { canView } = getPermissionsForViewingIdentifiers();
-  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
+  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   return (
     <>

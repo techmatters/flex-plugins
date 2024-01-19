@@ -15,9 +15,11 @@
  */
 
 import React from 'react';
+import { format } from 'date-fns';
 
+import { getTemplateStrings } from '../../../hrmConfig';
 import { ProfileFlag } from '../../../types/types';
-import { FlagPill, ProfileFlagsListItem, StyledBlockOutlinedIcon } from '../styles';
+import { FlagPill, ProfileFlagsListItem, StyledBlockOutlinedIcon, FlagPillTime } from '../styles';
 
 type Props = {
   flag: ProfileFlag;
@@ -25,11 +27,18 @@ type Props = {
 };
 
 const ProfileFlagPill: React.FC<Props> = ({ flag, renderDisassociate }) => {
+  let formattedDate = '';
+  if (flag.validUntil) {
+    formattedDate = `${format(new Date(flag.validUntil), 'MMMM d, yyyy, h:mma')}`;
+  }
+
+  const strings = getTemplateStrings();
   return (
     <ProfileFlagsListItem key={flag.name}>
       <FlagPill title={`${flag.name} Status`} key={flag.name} fillColor="#F5EEF4" isBlocked={flag.name === 'blocked'}>
         {flag.name === 'blocked' && <StyledBlockOutlinedIcon />}
-        {flag.name}
+        {flag.name.charAt(0).toUpperCase() + flag.name.slice(1)}
+        <FlagPillTime>{flag.validUntil && `${strings['Profile-ValidUntil']} ${formattedDate}`}</FlagPillTime>
         {renderDisassociate && renderDisassociate(flag)}
       </FlagPill>
     </ProfileFlagsListItem>

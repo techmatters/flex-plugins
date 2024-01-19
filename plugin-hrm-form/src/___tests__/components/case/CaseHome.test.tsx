@@ -36,8 +36,7 @@ import { RootState } from '../../../states';
 
 jest.mock('../../../permissions', () => ({
   ...jest.requireActual('../../../permissions'),
-  getPermissionsForCase: jest.fn(() => ({ can: () => true })),
-  getPermissionsForContact: jest.fn(() => ({ can: () => true })),
+  getInitializedCan: jest.fn(() => () => true),
 }));
 
 // eslint-disable-next-line react-hooks/rules-of-hooks

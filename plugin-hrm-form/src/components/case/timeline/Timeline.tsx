@@ -30,7 +30,7 @@ import CaseAddButton from '../CaseAddButton';
 import { CustomITask } from '../../../types/types';
 import { isContactActivity } from '../../../states/case/caseActivities';
 import { ContactActivity, NoteActivity, ReferralActivity } from '../../../states/case/types';
-import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../../permissions';
+import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../../../states/routing/types';
 import { newOpenModalAction } from '../../../states/routing/actions';
 import { RootState } from '../../../states';
@@ -78,11 +78,9 @@ const Timeline: React.FC<Props> = ({
 }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
 
-  const { can } = useMemo(
-    () =>
-      connectedCase ? getPermissionsForCase(connectedCase.twilioWorkerId, connectedCase.status) : { can: () => false },
-    [connectedCase],
-  );
+  const can = useMemo(() => {
+    return getInitializedCan();
+  }, []);
 
   if (!connectedCase || !timelineActivities) {
     return null;
@@ -135,12 +133,12 @@ const Timeline: React.FC<Props> = ({
             <CaseAddButton
               templateCode="Case-Note"
               onClick={handleAddNoteClick}
-              disabled={!can(PermissionActions.ADD_NOTE)}
+              disabled={!can(PermissionActions.ADD_NOTE, connectedCase)}
             />
             <CaseAddButton
               templateCode="Case-Referral"
               onClick={handleAddReferralClick}
-              disabled={!can(PermissionActions.ADD_REFERRAL)}
+              disabled={!can(PermissionActions.ADD_REFERRAL, connectedCase)}
               withDivider
             />
           </Box>
@@ -155,8 +153,7 @@ const Timeline: React.FC<Props> = ({
             if (activity.isDraft) {
               canViewActivity = false;
             } else {
-              const { can } = getPermissionsForContact(activity.twilioWorkerId);
-              canViewActivity = can(PermissionActions.VIEW_CONTACT);
+              canViewActivity = can(PermissionActions.VIEW_CONTACT, activity);
             }
           }
 

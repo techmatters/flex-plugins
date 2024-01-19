@@ -14,6 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { formatISO, isValid, parseISO } from 'date-fns';
+
 import { fetchHrmApi } from './fetchHrmApi';
 import { Identifier, Profile, ProfileFlag, ProfileSection } from '../states/profile/types';
 
@@ -32,16 +34,23 @@ export const getProfileContacts = (id: ProfileId, offset: number, limit: number)
 export const getProfileCases = (id: ProfileId, offset: number, limit: number) =>
   fetchHrmApi(`/profiles/${id}/cases?offset=${offset}&limit=${limit}`);
 
-export const getProfileFlags = () => {
-  return fetchHrmApi(`/profiles/flags`).then(response => {
-    return response;
-  });
-};
+export const getProfileFlags = () => fetchHrmApi(`/profiles/flags`);
 
-export const associateProfileFlag = (profileId: ProfileId, profileFlagId: ProfileFlagId) =>
-  fetchHrmApi(`/profiles/${profileId}/flags/${profileFlagId}`, {
+export const associateProfileFlag = (
+  profileId: ProfileId,
+  profileFlagId: ProfileFlagId,
+  validUntil?: ProfileFlag['validUntil'],
+) => {
+  const options: { method: string; body?: string } = {
     method: 'POST',
-  });
+  };
+
+  if (validUntil) {
+    options.body = JSON.stringify({ validUntil });
+  }
+
+  return fetchHrmApi(`/profiles/${profileId}/flags/${profileFlagId}`, options);
+};
 
 export const disassociateProfileFlag = (profileId: ProfileId, profileFlagId: ProfileFlagId) =>
   fetchHrmApi(`/profiles/${profileId}/flags/${profileFlagId}`, {

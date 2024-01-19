@@ -34,7 +34,7 @@ import { connectToCaseAsyncAction } from '../../../states/contacts/saveContact';
 import selectContactByTaskSid from '../../../states/contacts/selectContactByTaskSid';
 import { isStandaloneITask } from '../../case/Case';
 import { newCloseModalAction } from '../../../states/routing/actions';
-import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../../permissions';
+import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
 import { PreviewRow } from '../styles';
 
@@ -85,6 +85,10 @@ const CasePreview: React.FC<Props> = ({
   const summary = info?.summary || callSummary;
   const counselor = counselorsHash[twilioWorkerId];
 
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
   useEffect(() => {
     if (versionId && !definitionVersions[versionId]) {
       getDefinitionVersion(versionId).then(definitionVersion => updateDefinitionVersion(versionId, definitionVersion));
@@ -104,11 +108,9 @@ const CasePreview: React.FC<Props> = ({
   if (getAseloFeatureFlags().enable_case_merging && taskContact) {
     isConnectedToTaskContact = Boolean(connectedContacts?.find(contact => contact.id === taskContact.id));
 
-    const { can: canForCase } = getPermissionsForCase(currentCase.twilioWorkerId, currentCase.status);
-    const { can: canForContact } = getPermissionsForContact(taskContact?.twilioWorkerId);
     showConnectButton = Boolean(
-      canForCase(PermissionActions.UPDATE_CASE_CONTACTS) &&
-        canForContact(PermissionActions.ADD_CONTACT_TO_CASE) &&
+      can(PermissionActions.UPDATE_CASE_CONTACTS, taskContact) &&
+        can(PermissionActions.ADD_CONTACT_TO_CASE, currentCase) &&
         connectedContacts?.length &&
         (!taskContact.caseId || isConnectedToTaskContact),
     );

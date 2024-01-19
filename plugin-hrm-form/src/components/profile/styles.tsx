@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { styled, Button, IconButton } from '@twilio/flex-ui';
-import { withStyles } from '@material-ui/core';
+import { withStyles, MenuItem, MenuList, Paper } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import BlockOutlinedIcon from '@material-ui/icons/BlockOutlined';
 
@@ -99,10 +99,17 @@ export const FlagPill = styled('div')<ColorProps>`
   border: ${props => (props.isBlocked ? `2px dashed #D61F1F` : '2px solid #F5EEF4')};
   border-color: ${props => (props.isBlocked ? `#D61F1F` : 'none')};
   color: ${props => (props.isBlocked ? `#D61F1F` : '#192B33')};
-  text-transform: capitalize;
-  font-size: 11px;
+  font-size: 12px;
 `;
 FlagPill.displayName = 'FlagPill';
+
+export const FlagPillTime = styled('span')`
+  color: #606b85;
+  font-style: italic;
+  font-size: 10px;
+  margin: 0 0 2px 5px;
+`;
+FlagPillTime.displayName = 'FlagPillTime';
 
 export const StyledBlockOutlinedIcon = withStyles({
   root: { width: '1rem', height: '1rem', fontSize: 'smaller', marginRight: '7px' },
@@ -244,3 +251,31 @@ export const YellowBanner = styled('div')`
 `;
 
 YellowBanner.displayName = 'YellowBanner';
+
+export const StyledMenuList = styled(MenuList)`
+  border-radius: 5px;
+  min-width: fit-content;
+  color: ${HrmTheme.colors.darkTextColor};
+`;
+StyledMenuList.displayName = 'StyledMenuList';
+
+export const StyledMenuItem = styled(MenuItem)`
+  box-sizing: border-box;
+  height: 32px;
+  display: flex;
+  margin: 0;
+  padding: 0 12px;
+  width: 100%;
+  text-transform: capitalize;
+`;
+StyledMenuItem.displayName = 'StyledMenuItem';
+
+type StyledPaperProps = {
+  width: number;
+};
+
+export const StyledPaper = styled(Paper)<StyledPaperProps>`
+  width: ${props => props.width || 600}px;
+`;
+
+StyledPaper.displayName = 'StyledPaper';

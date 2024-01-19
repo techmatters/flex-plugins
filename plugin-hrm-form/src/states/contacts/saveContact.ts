@@ -51,7 +51,7 @@ export const createContactAsyncAction = createAsyncAction(
     let contact: Contact;
     const { taskSid } = task;
     if (isOfflineContactTask(task)) {
-      contact = await createContact(contactToCreate, workerSid, taskSid);
+      contact = await createContact(contactToCreate, workerSid, task);
     } else {
       const attributes = task.attributes ?? {};
       const { contactId } = attributes;
@@ -59,7 +59,7 @@ export const createContactAsyncAction = createAsyncAction(
         // Setting the task id and worker id on the contact will be a noop in most cases, but when receiving a transfer it will move the contact to the new worker & task
         contact = await updateContactInHrm(contactId, { taskId: taskSid, twilioWorkerId: workerSid }, false);
       } else {
-        contact = await createContact(contactToCreate, workerSid, attributes.transferMeta?.originalTask ?? taskSid);
+        contact = await createContact(contactToCreate, workerSid, task);
         if (contact.taskId! !== taskSid || contact.twilioWorkerId !== workerSid) {
           // If the contact is being transferred from a client that doesn't set the contactId on the task, we need to update the contact with the task id and worker id
           contact = await updateContactInHrm(contact.id, { taskId: taskSid, twilioWorkerId: workerSid }, false);

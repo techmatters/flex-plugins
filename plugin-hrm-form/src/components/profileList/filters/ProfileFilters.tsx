@@ -23,8 +23,7 @@ import { useProfilesList, useProfilesListSettings } from '../../../states/profil
 import { getTemplateStrings } from '../../../hrmConfig';
 import MultiSelectFilter, { Item } from '../../caseList/filters/MultiSelectFilter';
 import { CountText, FiltersContainer, FiltersResetAll, FilterTitle, MainTitle } from '../../../styles';
-import { useProfilesListLoader } from '../../../states/profile/hooks/useProfilesListLoader';
-import { useAllProfileFlags } from '../../../states/profile/hooks';
+import { useProfilesListLoader, useAllProfileFlags } from '../../../states/profile/hooks';
 
 const filterCheckedItems = (items: Item[]): string[] => items.filter(item => item.checked).map(item => item.value);
 
