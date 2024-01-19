@@ -83,11 +83,6 @@ export const updateProfileListSettings = createAction(
   (params: Partial<t.ProfilesListState['settings']>) => params,
 );
 
-export const clearProfilesListFilters = createAction(
-  t.PROFILES_LIST_CLEAR_FILTERS,
-  (params: Partial<t.ProfilesListState['settings']>) => params,
-);
-
 const handleUpdateProfileListSettingsAction = (
   state: t.ProfilesListState,
   action: ReturnType<typeof updateProfileListSettings>,
@@ -103,18 +98,6 @@ const handleUpdateProfileListSettingsAction = (
   return loadProfilesListStateIntoRedux(state, update);
 };
 
-const handleClearProfilesListFiltersAction = (state: t.ProfilesListState) => {
-  const update = {
-    page: 0,
-    settings: {
-      ...state.settings,
-      filter: t.initialProfilesListState.settings.filter,
-    },
-  };
-
-  return loadProfilesListStateIntoRedux(state, update);
-};
-
 const profilesListReducer = (initialState: t.ProfilesListState = t.initialProfilesListState) =>
   createReducer(initialState, handleAction => [
     handleAction(loadProfilesListAsync.pending, handleLoadProfilesListPendingAction),
@@ -122,7 +105,6 @@ const profilesListReducer = (initialState: t.ProfilesListState = t.initialProfil
     handleAction(loadProfilesListAsync.fulfilled, handleLoadProfilesListFulfilledAction),
     handleAction(updateProfilesListPage, handleUpdateProfilesListPageAction),
     handleAction(updateProfileListSettings, handleUpdateProfileListSettingsAction),
-    handleAction(clearProfilesListFilters, handleClearProfilesListFiltersAction),
   ]);
 
 export default profilesListReducer;

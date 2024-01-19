@@ -59,13 +59,6 @@ export const useProfilesListLoader = ({ autoload = false }: UseProfilesListLoade
     [dispatch],
   );
 
-  const clearProfilesListFilters = useCallback(
-    (settings: Partial<ProfilesListState['settings']>) => {
-      dispatch(profilesListActions.clearProfilesListFilters(settings));
-    },
-    [dispatch],
-  );
-
   const loadProfileList = useCallback(
     (page: number, settings: ProfilesListState['settings']) => {
       const offset = page * PAGE_SIZE;
@@ -102,6 +95,5 @@ export const useProfilesListLoader = ({ autoload = false }: UseProfilesListLoade
   return {
     updateProfilesListPage,
     updateProfilesListSettings,
-    clearProfilesListFilters,
   };
 };

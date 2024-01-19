@@ -14,10 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Template } from '@twilio/flex-ui';
 import FilterList from '@material-ui/icons/FilterList';
 
+import { ProfileFlag } from '../../../types/types';
 import { useProfilesList, useProfilesListSettings } from '../../../states/profile/hooks/useProfilesList';
 import { getTemplateStrings } from '../../../hrmConfig';
 import MultiSelectFilter, { Item } from '../../caseList/filters/MultiSelectFilter';
@@ -33,39 +34,49 @@ const ProfileFilters: React.FC = () => {
 
   const { count } = useProfilesList();
 
-  const { updateProfilesListSettings, clearProfilesListFilters } = useProfilesListLoader();
+  const { updateProfilesListSettings } = useProfilesListLoader();
 
   // Populate all the flags as filter options in the status filter
   const { allProfileFlags, loading: flagsLoading } = useAllProfileFlags();
 
+  const handleClearFilters = useCallback(() => {
+    updateProfilesListSettings({ filter: { statuses: [] } });
+    setStatusValues(computeStatusValues(allProfileFlags));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allProfileFlags, updateProfilesListSettings]);
+
+  const computeStatusValues = useCallback((flags: ProfileFlag[]) => {
+    console.log('>>> flags', flags);
+    // the filter.statuses is array of flag ids. it should translate to the flag value and checked = true
+    return flags.map(flag => ({
+      value: `_${flag.id}`,
+      label: flag.name.charAt(0).toUpperCase() + flag.name.slice(1),
+      checked: false,
+    }));
+  }, []);
+
   useEffect(() => {
     if (!flagsLoading && allProfileFlags) {
-      const newStatusValues = allProfileFlags.map(flag => ({
-        // Note that we are using an underscore to prefix the flag id to avoid react hook form computing '1' as true
-        value: `_${flag.id.toString()}`,
-        label: flag.name.charAt(0).toUpperCase() + flag.name.slice(1),
-        checked: false,
-      }));
-      setStatusValues(newStatusValues);
+      setStatusValues(computeStatusValues(allProfileFlags));
     }
-  }, [allProfileFlags, flagsLoading]);
+  }, [allProfileFlags, flagsLoading, computeStatusValues]);
 
   const strings = getTemplateStrings();
 
-  const handleApplyStatusFilter = (values: Item[]) => {
-    const checkedItems = filterCheckedItems(values).map(item => item.replace('_', ''));
-    updateProfilesListSettings({ filter: { statuses: checkedItems } });
-    setStatusValues(values);
-  };
+  const handleApplyStatusFilter = useCallback(
+    (values: Item[]) => {
+      const checkedItems = filterCheckedItems(values).map(item => item.replace('_', ''));
+      updateProfilesListSettings({ filter: { statuses: checkedItems } });
+      setStatusValues(values);
+    },
+    [updateProfilesListSettings],
+  );
 
   const { filter } = useProfilesListSettings();
+  console.log('>>> filter', filter.statuses); // this is array of flag ids
   const hasFiltersApplied = filter.statuses.length > 0;
 
-  const handleClearFilters = () => {
-    clearProfilesListFilters({ filter: { statuses: [] } });
-  };
-
-  const showStatusFilter = () => {
+  const renderStatusFilter = () => {
     return (
       <MultiSelectFilter
         name="status"
@@ -78,7 +89,7 @@ const ProfileFilters: React.FC = () => {
     );
   };
 
-  const getProfileCountString = () => (count === 1 ? 'ProfileList-Count-Singular' : 'ProfileList-Count-Plural');
+  const profileCountString = count === 1 ? 'ProfileList-Count-Singular' : 'ProfileList-Count-Plural';
 
   return (
     <>
@@ -92,7 +103,7 @@ const ProfileFilters: React.FC = () => {
           </FiltersResetAll>
         )}
         <CountText>
-          <Template code={getProfileCountString()} count={count} />
+          <Template code={profileCountString} count={count} />
         </CountText>
       </FiltersContainer>
       <FiltersContainer>
@@ -100,7 +111,7 @@ const ProfileFilters: React.FC = () => {
         <FilterTitle>
           <Template code="Table-FilterBy" />
         </FilterTitle>
-        {count > 0 && !flagsLoading && showStatusFilter()}
+        {count > 0 && !flagsLoading && renderStatusFilter()}
       </FiltersContainer>
     </>
   );
