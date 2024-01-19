@@ -1,7 +1,9 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_case_merging": true
+            "enable_case_merging": true,
+            "enable_last_case_status_update_info": true,
+            "enable_separate_timeline_view": true
         },
         "helplineLanguage": "en-IN",
         "hrm_base_url": "https://hrm-staging.tl.techmatters.org",

@@ -1,13 +1,12 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_case_merging": true
+            "enable_case_merging": true,
+            "enable_last_case_status_update_info": true,
+            "enable_separate_timeline_view": true
         },
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
-        "resources_base_url": "https://hrm-staging.tl.techmatters.org",
-        "feature_flags": {
-            "enable_case_merging": true
-        }
+        "resources_base_url": "https://hrm-staging.tl.techmatters.org"
     },
     "ui_attributes": {
         "theme": null
