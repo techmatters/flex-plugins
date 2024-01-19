@@ -38,22 +38,24 @@ const ProfileFilters: React.FC = () => {
 
   // Populate all the flags as filter options in the status filter
   const { allProfileFlags, loading: flagsLoading } = useAllProfileFlags();
+  const { filter } = useProfilesListSettings();
 
   const handleClearFilters = useCallback(() => {
     updateProfilesListSettings({ filter: { statuses: [] } });
     setStatusValues(computeStatusValues(allProfileFlags));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allProfileFlags, updateProfilesListSettings]);
+  }, [updateProfilesListSettings, allProfileFlags]);
 
-  const computeStatusValues = useCallback((flags: ProfileFlag[]) => {
-    console.log('>>> flags', flags);
-    // the filter.statuses is array of flag ids. it should translate to the flag value and checked = true
-    return flags.map(flag => ({
-      value: `_${flag.id}`,
-      label: flag.name.charAt(0).toUpperCase() + flag.name.slice(1),
-      checked: false,
-    }));
-  }, []);
+  const computeStatusValues = useCallback(
+    (flags: ProfileFlag[]) => {
+      return flags.map(flag => ({
+        value: `_${flag.id}`,
+        label: flag.name.charAt(0).toUpperCase() + flag.name.slice(1),
+        checked: filter.statuses.includes(flag.id.toString()),
+      }));
+    },
+    [filter],
+  );
 
   useEffect(() => {
     if (!flagsLoading && allProfileFlags) {
@@ -72,8 +74,6 @@ const ProfileFilters: React.FC = () => {
     [updateProfilesListSettings],
   );
 
-  const { filter } = useProfilesListSettings();
-  console.log('>>> filter', filter.statuses); // this is array of flag ids
   const hasFiltersApplied = filter.statuses.length > 0;
 
   const renderStatusFilter = () => {
