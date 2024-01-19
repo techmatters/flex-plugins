@@ -18,7 +18,7 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
 import { CountText, FiltersContainer, MainTitle } from '../../../styles';
-import { useProfilesList } from '../../../states/profile/hooks/useProfilesList';
+import { useProfilesList } from '../../../states/profile/hooks';
 
 const ProfileFilters: React.FC = () => {
   const { count } = useProfilesList();

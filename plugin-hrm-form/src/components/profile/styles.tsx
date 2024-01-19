@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { styled, Button, IconButton } from '@twilio/flex-ui';
-import { withStyles, MenuItem, MenuList, Popper, Paper } from '@material-ui/core';
+import { withStyles, MenuItem, MenuList, Paper } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import BlockOutlinedIcon from '@material-ui/icons/BlockOutlined';
 
@@ -271,11 +271,11 @@ export const StyledMenuItem = styled(MenuItem)`
 StyledMenuItem.displayName = 'StyledMenuItem';
 
 type StyledPaperProps = {
-  paperWidth: number;
+  width: number;
 };
 
 export const StyledPaper = styled(Paper)<StyledPaperProps>`
-  width: ${props => props.paperWidth || 600}px;
+  width: ${props => props.width || 600}px;
 `;
 
 StyledPaper.displayName = 'StyledPaper';

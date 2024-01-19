@@ -20,8 +20,7 @@ import { Template } from '@twilio/flex-ui';
 
 import Pagination from '../pagination';
 import { DataTableRow, ErrorText, StandardTable, TableContainer } from '../../styles';
-import { useProfilesList } from '../../states/profile/hooks/useProfilesList';
-import { useProfilesListLoader } from '../../states/profile/hooks/useProfilesListLoader';
+import { useProfilesList, useProfilesListLoader } from '../../states/profile/hooks';
 import { useAllProfileFlags } from '../../states/profile/hooks/useProfileFlags';
 import ProfileListTableHeader from './ProfileHeader';
 import ProfileDetailsRow from './ProfileDetailsRow';

@@ -35,8 +35,7 @@ import {
   ErrorText,
 } from '../../styles';
 import { newOpenModalAction } from '../../states/routing/actions';
-import { useProfileFlags } from '../../states/profile/hooks';
-import { useProfileSectionByType } from '../../states/profile/hooks/useProfileSection';
+import { useProfileFlags, useProfileSectionByType } from '../../states/profile/hooks';
 
 const CHAR_LIMIT = 200;
 
