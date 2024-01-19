@@ -40,7 +40,7 @@ type OwnProps = ProfileCommonProps & {
 type Props = OwnProps;
 
 const ProfileFlagsList: React.FC<Props> = ({ disassociateRef, enableDisassociate, profileId }) => {
-  const { profileFlags, disassociateProfileFlag } = useProfileFlags(profileId);
+  const { combinedProfileFlags, disassociateProfileFlag } = useProfileFlags(profileId);
   const loading = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId))?.loading;
 
   const renderDisassociate = (flag: ProfileFlag) => {
@@ -60,8 +60,10 @@ const ProfileFlagsList: React.FC<Props> = ({ disassociateRef, enableDisassociate
 
   return (
     <ProfileFlagsUnorderedList aria-label="Profile Statuses">
-      {profileFlags?.length ? (
-        profileFlags.map(flag => <ProfileFlagPill key={flag.id} flag={flag} renderDisassociate={renderDisassociate} />)
+      {combinedProfileFlags?.length ? (
+        combinedProfileFlags
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map(flag => <ProfileFlagPill key={flag.id} flag={flag} renderDisassociate={renderDisassociate} />)
       ) : (
         <ProfileFlagsListItem>
           <FlagPill title="No Status Listed">
