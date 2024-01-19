@@ -275,7 +275,7 @@ type StyledPaperProps = {
 };
 
 export const StyledPaper = styled(Paper)<StyledPaperProps>`
-  width: ${props => props.paperWidth}px;
+  width: ${props => props.paperWidth || 600}px;
 `;
 
 StyledPaper.displayName = 'StyledPaper';
