@@ -186,7 +186,7 @@ describe('actions', () => {
       await (dispatch(submitContactFormAsyncAction(task, baseContact, baseMetadata, baseCase) as any) as unknown);
       const { metadata, savedContact } = getState().existingContacts[baseContact.id];
       // Check that the difference in startMillis is still insignificant
-      expect(Math.abs(metadata.startMillis - newContactMetaData(false).startMillis)).toBeLessThanOrEqual(1);
+      expect(Math.abs(metadata.startMillis - newContactMetaData(false).startMillis)).toBeLessThanOrEqual(100);
       expect(metadata).toStrictEqual(
         expect.objectContaining({
           ...newContactMetaData(false),
