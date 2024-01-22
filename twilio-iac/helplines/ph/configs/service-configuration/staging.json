@@ -1,6 +1,7 @@
 {
     "attributes": {
         "feature_flags": {
+            "enable_case_merging": true,
             "enable_counselor_toolkits": false,
             "enable_csam_clc_report": false,
             "enable_external_transcripts": false,

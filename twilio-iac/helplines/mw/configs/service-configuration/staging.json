@@ -1,6 +1,7 @@
 {
     "attributes": {
         "feature_flags": {
+            "enable_case_merging": true,
             "enable_external_transcripts": false,
             "enable_last_case_status_update_info": true,
             "enable_separate_timeline_view": true,
