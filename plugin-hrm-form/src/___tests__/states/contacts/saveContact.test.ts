@@ -185,16 +185,16 @@ describe('actions', () => {
       // Not sure why the extra cast to any is needed here but not for the other actions?
       await (dispatch(submitContactFormAsyncAction(task, baseContact, baseMetadata, baseCase) as any) as unknown);
       const { metadata, savedContact } = getState().existingContacts[baseContact.id];
-
       // Check that the difference in startMillis is still insignificant
       expect(Math.abs(metadata.startMillis - newContactMetaData(false).startMillis)).toBeLessThanOrEqual(1);
+      expect(metadata).toStrictEqual(
+        expect.objectContaining({
+          ...newContactMetaData(false),
+          loadingStatus: LoadingStatus.LOADED,
+          startMillis: expect.any(Number),
+        }),
+      );
 
-      expect(metadata).toStrictEqual(expect.objectContaining({
-        ...newContactMetaData(false),
-        loadingStatus: LoadingStatus.LOADED,
-        startMillis: expect.any(Number) 
-      }));
-      
       expect(savedContact).toStrictEqual(updatedContact);
     });
   });
