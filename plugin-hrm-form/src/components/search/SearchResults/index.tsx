@@ -24,7 +24,7 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
-import { SearchContactResult, SearchCaseResult, Contact, Case, CustomITask } from '../../../types/types';
+import { Case, Contact, CustomITask, SearchCaseResult, SearchContactResult } from '../../../types/types';
 import { Row } from '../../../styles';
 import {
   EmphasisedText,
@@ -152,7 +152,7 @@ const SearchResults: React.FC<Props> = ({
     toggleClosedCases();
   };
 
-  const handleClickViewCase = currentCase => () => {
+  const handleClickViewCase = currentCase => {
     viewCaseDetails(currentCase.id);
   };
 
