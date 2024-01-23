@@ -109,13 +109,6 @@ export const StyledSelect = styled(({ isPlaceholder = false, ...rest }: StyledSe
 `;
 StyledSelect.displayName = 'StyledSelect';
 
-export const StyledMenuList = styled(MenuList)`
-  border-radius: 5px;
-  min-width: 250px;
-  width: 100%;
-`;
-StyledMenuList.displayName = 'StyledMenuList';
-
 export const StyledMenuItem = styled(MenuItem)`
   box-sizing: border-box;
   height: 32px;

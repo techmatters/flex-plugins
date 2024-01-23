@@ -387,17 +387,17 @@ export type Profile = {
   createdAt?: string;
   updatedAt?: string;
   identifiers?: Identifier[];
-  profileFlags?: {id: ProfileFlag['id'], validUntil: ProfileFlag['validUntil']}[];
+  profileFlags?: {id: ProfileFlag['id'], name: ProfileFlag['name'], validUntil: ProfileFlag['validUntil']}[];
   profileSections?: ProfileSection[];
 };
 
 
 export type ProfileFlag = {
   id: number;
-  name: string;
+  name?: string;
   createdAt?: string;
   updatedAt?: string;
-  validUntil?: string;
+  validUntil?: Date;
 };
 
 export type ProfilesList = Profile[];
@@ -411,3 +411,7 @@ export type ProfilesListSort = {
   sortBy?: ProfilesListSortBy;
   sortDirection?: SortDirection;
 };
+
+export type ProfilesListFilters = {
+  statuses: string[];
+}

@@ -17,9 +17,7 @@
             "enable_separate_timeline_view": true,
             "enable_transcripts": false,
             "enable_twilio_transcripts": false,
-            "enable_voice_recordings": false,
-            "enable_client_profiles": true,
-            "enable_case_merging": true
+            "enable_voice_recordings": false
         },
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",
         "multipleOfficeSupport": true,

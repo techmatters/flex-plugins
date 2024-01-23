@@ -11,9 +11,11 @@
             "enable_conferencing": true,
             "enable_counselor_toolkits": true,
             "enable_fullstory_monitoring": true,
+            "enable_last_case_status_update_info": false,
             "enable_lex": false,
             "enable_post_survey": false,
             "enable_resources": false,
+            "enable_separate_timeline_view": false,
             "enable_transcripts": false,
             "enable_twilio_transcripts": false
         },

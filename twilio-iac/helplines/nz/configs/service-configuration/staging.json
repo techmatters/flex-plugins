@@ -1,9 +1,9 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_save_insights": true,
+            "enable_case_merging": true,
             "enable_client_profiles": true,
-            "enable_case_merging": true
+            "enable_save_insights": true
         },
         "definitionVersion": "nz-v1"
     }
