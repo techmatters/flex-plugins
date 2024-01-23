@@ -60,7 +60,7 @@ locals {
       {
         startingStatus: "submitted",
         targetStatus: "closed",
-        timeInStatusInterval: '28 days',
+        timeInStatusInterval: "28 days",
         description: "rule to close submitted cases after 28 days"
       }
     ]

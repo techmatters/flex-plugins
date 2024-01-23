@@ -162,5 +162,5 @@ variable "case_status_transition_rules" {
     description = string
     timeInStatusInterval = string
   }))
-  required = false
+  default = null
 }
