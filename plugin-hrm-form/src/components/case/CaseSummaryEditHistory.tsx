@@ -42,7 +42,7 @@ const CaseSummaryEditHistory: React.FC<Props> = ({
 
   return (
     <>
-      <ActionHeader added={createdAt} addingCounsellor={updatedBy} updated={updatedAt} updatingCounsellor={createdBy} />
+      <ActionHeader added={createdAt} addingCounsellor={createdBy} updated={updatedAt} updatingCounsellor={updatedBy} />
 
       {enableLastCaseStatusUpdateInfo && statusUpdatedAt && (
         <Row style={{ width: '100%' }}>
