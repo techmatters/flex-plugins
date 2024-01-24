@@ -67,9 +67,11 @@ const ProfileListTable: React.FC = () => {
           )}
         </StandardTable>
       </TableContainer>
-      {!loading && (
-        <Pagination transparent page={page} pagesCount={pagesCount} handleChangePage={updateProfilesListPage} />
-      )}
+      <div style={{ minHeight: '100px' }}>
+        {!loading && count > 0 && (
+          <Pagination transparent page={page} pagesCount={pagesCount} handleChangePage={updateProfilesListPage} />
+        )}
+      </div>
     </>
   );
 };

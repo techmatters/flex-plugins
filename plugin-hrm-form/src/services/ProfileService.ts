@@ -14,8 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { formatISO, isValid, parseISO } from 'date-fns';
-
 import { fetchHrmApi } from './fetchHrmApi';
 import { Identifier, Profile, ProfileFlag, ProfileSection } from '../states/profile/types';
 
