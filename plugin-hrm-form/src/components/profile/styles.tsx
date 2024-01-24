@@ -178,7 +178,6 @@ export const SectionText = styled('p')`
   overflow: hidden;
   flex-grow: 1;
   font-family: 'Open Sans';
-  box-sizing: border-box;
   opacity: 0.5;
   :focus {
     outline: none;
