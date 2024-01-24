@@ -24,7 +24,7 @@ import { Case } from '../../types/types';
 export const selectCaseByCaseId = (state: RootState, caseId: string): CaseStateEntry | undefined =>
   state[namespace][connectedCaseBase].cases[caseId];
 
-export type CaseAuditDetails = {
+export type CaseHistoryDetails = {
   createdAt: Date;
   createdBy: string;
   updatedAt?: Date;
@@ -35,7 +35,7 @@ export type CaseAuditDetails = {
   statusLabel: string;
 };
 
-export const selectCaseHistoryDetails = (state: RootState, caseObj: Case): CaseAuditDetails => {
+export const selectCaseHistoryDetails = (state: RootState, caseObj: Case): CaseHistoryDetails => {
   const definitionVersion = selectDefinitionVersionForCase(state, caseObj);
   const {
     previousStatus,

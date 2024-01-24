@@ -22,9 +22,9 @@ import { Row } from '../../styles';
 import { CaseActionDetailFont } from './styles';
 import ActionHeader from './ActionHeader';
 import { getAseloFeatureFlags } from '../../hrmConfig';
-import { CaseAuditDetails } from '../../states/case/selectCaseStateByCaseId';
+import { CaseHistoryDetails } from '../../states/case/selectCaseStateByCaseId';
 
-type OwnProps = CaseAuditDetails;
+type OwnProps = CaseHistoryDetails;
 
 type Props = OwnProps;
 
