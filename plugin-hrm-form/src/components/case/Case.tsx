@@ -251,7 +251,6 @@ const Case: React.FC<Props> = ({
     const addScreenProps = {
       task,
       counselor: currentCounselor,
-      counselorsHash,
       definitionVersion,
     };
 

@@ -28,17 +28,18 @@ import { getDefinitionVersion } from '../../../services/ServerlessService';
 import { updateDefinitionVersion } from '../../../states/configuration/actions';
 import { RootState } from '../../../states';
 import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
-import { configurationBase, namespace } from '../../../states/storeNamespaces';
 import { PreviewRow } from '../styles';
+import { selectDefinitionVersions } from '../../../states/configuration/selectDefinitions';
+import { selectCounselorName } from '../../../states/configuration/selectCounselorsHash';
 
 type ContactPreviewProps = {
   contact: Contact;
   handleViewDetails: () => void;
 };
 
-const mapStateToProps = (state: RootState) => ({
-  definitionVersions: state[namespace][configurationBase].definitionVersions,
-  counselorsHash: state[namespace][configurationBase].counselors.hash,
+const mapStateToProps = (state: RootState, { contact }: ContactPreviewProps) => ({
+  definitionVersions: selectDefinitionVersions(state),
+  counselorName: selectCounselorName(state, contact.id),
 });
 
 const connector = connect(mapStateToProps);
@@ -79,10 +80,9 @@ const getCallerName = (rawJson: ContactRawJson) => {
   return undefined;
 };
 
-const ContactPreview: React.FC<Props> = ({ contact, handleViewDetails, definitionVersions, counselorsHash }) => {
+const ContactPreview: React.FC<Props> = ({ contact, handleViewDetails, definitionVersions, counselorName }) => {
   const { callType } = contact.rawJson;
   const callerName = getCallerName(contact.rawJson);
-  const counselorName = counselorsHash[contact.twilioWorkerId] || 'Unknown';
   const { definitionVersion: versionId, caseInformation } = contact.rawJson;
   const { callSummary } = caseInformation;
   const definition = definitionVersions[versionId];

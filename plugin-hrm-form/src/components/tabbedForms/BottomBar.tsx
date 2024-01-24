@@ -21,9 +21,8 @@ import { CircularProgress } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
-import { Box, BottomButtonBar } from '../../styles';
+import { BottomButtonBar, Box, SaveAndEndButton, StyledNextStepButton } from '../../styles';
 import { AddedToCaseButton } from './styles';
-import { StyledNextStepButton, SaveAndEndButton } from '../../styles/buttons';
 import * as RoutingActions from '../../states/routing/actions';
 import { completeTask } from '../../services/formSubmissionHelpers';
 import { hasTaskControl } from '../../transfer/transferTaskState';
@@ -39,7 +38,7 @@ import { ContactMetadata, LoadingStatus } from '../../states/contacts/types';
 import { AppRoutes } from '../../states/routing/types';
 import AddCaseButton from './AddCaseButton';
 import asyncDispatch from '../../states/asyncDispatch';
-import selectCaseByCaseId from '../../states/case/selectCaseStateByCaseId';
+import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { SuccessReportIcon } from '../CSAMReport/styles';
 
