@@ -94,9 +94,9 @@ export const FlagPill = styled('div')<ColorProps>`
   border-radius: 6px;
   white-space: nowrap;
   margin: 5px 2px 5px 1px;
-  padding: ${props => (props.isBlocked ? `2px 10px` : '3px 10px')};
+  padding: 3px 10px;
   background-color: ${props => (props.isBlocked ? `#FCF4F4` : '#F5EEF4')};
-  border: ${props => (props.isBlocked ? `1px dashed #D61F1F` : '3px solid #F5EEF4')};
+  border: ${props => (props.isBlocked ? `2px dashed #D61F1F` : '4px solid #F5EEF4')};
   border-color: ${props => (props.isBlocked ? `#D61F1F` : 'none')};
   color: ${props => (props.isBlocked ? `#D61F1F` : '#192B33')};
   font-size: 12px;
