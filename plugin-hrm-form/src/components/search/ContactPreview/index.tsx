@@ -39,7 +39,7 @@ type ContactPreviewProps = {
 
 const mapStateToProps = (state: RootState, { contact }: ContactPreviewProps) => ({
   definitionVersions: selectDefinitionVersions(state),
-  counselorName: selectCounselorName(state, contact.id),
+  counselorName: selectCounselorName(state, contact.twilioWorkerId),
 });
 
 const connector = connect(mapStateToProps);
