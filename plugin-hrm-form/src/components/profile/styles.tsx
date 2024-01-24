@@ -151,6 +151,7 @@ export const CloseIconButton = withStyles({
 
 export const ProfileFlagsUnorderedList = styled('ul')`
   display: flex;
+  align-items: center;
 `;
 ProfileFlagsUnorderedList.displayName = 'ProfileFlagsUnorderedList';
 
