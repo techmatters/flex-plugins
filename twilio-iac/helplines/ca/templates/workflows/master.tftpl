@@ -33,7 +33,7 @@
         },
         {
           "filter_friendly_name": "988 English",
-          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers["988_camh"]))}] AND language CONTAINS \"en-CA\"),
+          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers["988_camh"]))}] AND language CONTAINS \"en-CA\")",
           "targets": [
             {
               "queue": "${task_queues["988_en"]}",
