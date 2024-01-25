@@ -73,7 +73,7 @@ resource "aws_ssm_parameter" "case_status_transition" {
   name        = "/${lower(var.environment)}/${var.helpline_region}/hrm/scheduled-task/case-status-transitionrules/${nonsensitive(local.secrets.twilio_account_sid)}"
   type        = "SecureString"
   value       = jsonencode(var.case_status_transition_rules)
-  description = "Twilio account - External Recordings Enabled"
+  description = "Automated case status transition rules configuration"
 
   tags = {
     environment = var.environment
