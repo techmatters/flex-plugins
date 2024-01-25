@@ -73,10 +73,6 @@ jobs:
           aws-region: us-east-1
 
       # Set ENVIRONMENT_NAME
-      # TODO: Once we have removed all old-style SSM parameters, we can clean this up
-      - name: Default Environment
-        run: echo "ENVIRONMENT_NAME=${{inputs.environment_code}}" >> $GITHUB_ENV
-
       - name: Production Environment
         if: inputs.environment_code == 'PROD'
         run: echo "ENVIRONMENT_NAME=production" >> $GITHUB_ENV
