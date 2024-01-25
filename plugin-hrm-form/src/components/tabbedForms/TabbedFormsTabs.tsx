@@ -53,7 +53,7 @@ import ContactlessTaskTab from './ContactlessTaskTab';
 import CSAMAttachments from './CSAMAttachments';
 import CSAMReportButton from './CSAMReportButton';
 import { TabbedFormsCommonProps } from './types';
-import useTabbedForm from './hooks/useTabbedForm';
+import { useTabbedFormContext } from './hooks/useTabbedForm';
 // Ensure we import any custom components that might be used in a form
 import '../contact/ResourceReferralList';
 
@@ -178,7 +178,7 @@ const TabbedFormsTabs: React.FC<Props> = ({
   const { contactSaveFrequency } = getHrmConfig();
   const { subroute, autoFocus } = currentRoute as TabbedFormRoute;
 
-  const { methods, newSubmitHandler } = useTabbedForm();
+  const { methods, newSubmitHandler } = useTabbedFormContext();
   const { setValue } = methods;
 
   const isMounted = React.useRef(false); // mutable value to avoid reseting the state in the first render.
