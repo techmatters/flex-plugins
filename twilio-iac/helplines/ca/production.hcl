@@ -113,6 +113,8 @@ locals {
           fr_nocounsellors_url: "https://twilio-service-4854.twil.io/Msg60025.mp3"
           fr_issues_url: "https://twilio-service-4854.twil.io/FrTechIssues.mp3"
           fr_switch_english_url: "https://twilio-service-4854.twil.io/FrSwitchEnglish.mp3"
+          fr_switch_url: "https://twilio-service-4854.twil.io/FrSwitchInterpreter.mp3"
+          frtr_function_url: "https://twilio-service-4854.twil.io/6004_khp_french_int"
 
         }
         chatbot_unique_names = []
@@ -191,6 +193,45 @@ locals {
           fr_inflight_url: "https://twilio-service-4854.twil.io/Msg60021.mp3"
           fr_issues_url: "https://twilio-service-4854.twil.io/FrTechIssues.mp3"
           fr_switch_english_url: "https://twilio-service-4854.twil.io/FrSwitchEnglish.mp3"
+          fr_switch_url: "https://twilio-service-4854.twil.io/FrSwitchInterpreter.mp3"
+          frtr_function_url: "https://twilio-service-4854.twil.io/6004_khp_french_int"
+          fr_nocounsellors_url: "https://twilio-service-4854.twil.io/Msg60025.mp3"
+
+        }
+        chatbot_unique_names = []
+      },      
+      ab211 : {
+        channel_type         = "voice"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/ca/templates/studio-flows/ab211.tftpl"
+        channel_flow_vars    = {
+
+          #Twilio things
+          check_counsellors_function_sid: "ZH95bed62f9c0af98771e01cba4bd86d1f"
+          check_counsellors_function_url: "https://twilio-service-4854.twil.io/check_counsellors"
+          ab211fr_queue_sid: "WQd38b69a5ac03ba2cbe5275359b862688"
+
+          #Recording URLs
+          main_url: "https://twilio-service-4854.twil.io/HCMain.mp3"
+          en_function_url: "https://twilio-service-4854.twil.io/6011_ab211_english"
+          fr_function_url: "https://twilio-service-4854.twil.io/6012_ab211_french"
+          en_tos_url: "https://twilio-service-4854.twil.io/KHPENToS.mp3"
+          fr_tos_url: "https://twilio-service-4854.twil.io/KHPFRToS.mp3"
+          en_privacy_url: "https://twilio-service-4854.twil.io/KHPENPrivacy.mp3"
+          fr_privacy_url: "https://twilio-service-4854.twil.io/KHPFRPrivacy.mp3"
+          en_invalid_url: "https://twilio-service-4854.twil.io/EnInvalid.mp3"
+          fr_invalid_url: "https://twilio-service-4854.twil.io/FrInvalid.mp3"
+          en_disconnect_url: "https://twilio-service-4854.twil.io/EnDisconnect.mp3"
+          fr_disconnect_url: "https://twilio-service-4854.twil.io/FrDisconnect.mp3"
+          en_intro_url: "https://twilio-service-4854.twil.io/MSG10006E.mp3"
+          fr_intro_url: "https://twilio-service-4854.twil.io/MSG10006F.mp3"
+          en_inflight_url: "https://twilio-service-4854.twil.io/Msg60011E.mp3"
+          fr_inflight_url: "https://twilio-service-4854.twil.io/Msg60021.mp3"
+          fr_issues_url: "https://twilio-service-4854.twil.io/FrTechIssues.mp3"
+          fr_switch_english_url: "https://twilio-service-4854.twil.io/FrSwitchEnglish.mp3"
+          fr_nocounsellors_url: "https://twilio-service-4854.twil.io/Msg60025.mp3"
+          fr_switch_url: "https://twilio-service-4854.twil.io/FrSwitchInterpreter.mp3"
+          frtr_function_url: "https://twilio-service-4854.twil.io/6004_khp_french_int"
 
         }
         chatbot_unique_names = []
@@ -216,7 +257,7 @@ locals {
       g2ton : ["+13656546095", "+13656546120"],
       g2ttr : ["+13656546032", "+13656546120"],
       g2tns : ["+15878043655"],
-      ab211 : ["+15877412408", "+15876095765"],
+      ab211 : ["+15877412408"],
       hc : ["+13656540516"],
       training : ["+18252547345"],
       "988_camh" : ["+13656520724", "+16473707639"]
