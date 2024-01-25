@@ -15,10 +15,11 @@
  */
 
 import React from 'react';
+import { FormProvider } from 'react-hook-form';
 
 import { AppRoutes } from '../../states/routing/types';
 import Router, { RouteConfig, shouldHandleRoute } from '../router/Router';
-import useTabbedForm from './hooks/useTabbedForm';
+import { useTabbedForm } from './hooks/useTabbedForm';
 import TabbedFormsCase from './TabbedFormsCase';
 import TabbedFormsContact from './TabbedFormsContact';
 import TabbedFormsTabs from './TabbedFormsTabs';
@@ -49,7 +50,7 @@ const TABBED_FORMS_ROUTES: RouteConfig<Props> = [
 export const isTabbedFormsRoute = (routing: AppRoutes) => shouldHandleRoute(routing, TABBED_FORMS_ROUTES);
 
 const TabbedFormsRouter: React.FC<Props> = props => {
-  const { methods, FormProvider } = useTabbedForm();
+  const { methods } = useTabbedForm();
 
   return (
     <FormProvider {...methods}>

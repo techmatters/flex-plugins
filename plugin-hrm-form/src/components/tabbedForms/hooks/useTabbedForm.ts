@@ -13,28 +13,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { FormProvider, useForm } from 'react-hook-form';
+import { useForm, useFormContext } from 'react-hook-form';
 
 import { recordingErrorHandler } from '../../../fullStory';
 import { getTemplateStrings } from '../../../hrmConfig';
 
-const useTabbedForm = () => {
-  const strings = getTemplateStrings();
+const newSubmitHandlerFactory = (methods: ReturnType<typeof useFormContext>) => {
+  const onError = recordingErrorHandler('Tabbed HRM Form', () => {
+    window.alert(getTemplateStrings()['Error-Form']);
+  });
 
+  return (successHandler: () => Promise<void>) => {
+    return methods.handleSubmit(successHandler, onError);
+  };
+};
+
+export const useTabbedFormContext = () => {
+  const methods = useFormContext();
+  return { methods, newSubmitHandler: newSubmitHandlerFactory(methods) };
+};
+
+export const useTabbedForm = () => {
   const methods = useForm({
     shouldFocusError: false,
     mode: 'onChange',
   });
-
-  const onError = recordingErrorHandler('Tabbed HRM Form', () => {
-    window.alert(strings['Error-Form']);
-  });
-
-  const newSubmitHandler = (successHandler: () => Promise<void>) => {
-    return methods.handleSubmit(successHandler, onError);
-  };
-
-  return { methods, strings, FormProvider, onError, newSubmitHandler };
+  return { methods, newSubmitHandler: newSubmitHandlerFactory(methods) };
 };
-
-export default useTabbedForm;
