@@ -231,7 +231,7 @@ export const loadContactIntoRedux = (
   if (reference) {
     references.add(reference);
   }
-  const metadata = newMetadata ?? existingContacts[contact.id]?.metadata;
+  const metadata = { ...newContactMetaData(false), ...(newMetadata ?? existingContacts[contact.id]?.metadata) };
   const contactsBeingCreated = new Set(state.contactsBeingCreated);
   contactsBeingCreated.delete(contact.taskId);
   return {
@@ -264,7 +264,11 @@ const setContactLoadingStateInRedux = (
         ...existingContacts[id],
         draftContact: undefined,
         savedContact: getUnsavedContact(existingContacts[id]?.savedContact, updates),
-        metadata: { ...existingContacts[id]?.metadata, loadingStatus: LoadingStatus.LOADING },
+        metadata: {
+          ...newContactMetaData(false),
+          ...existingContacts[id]?.metadata,
+          loadingStatus: LoadingStatus.LOADING,
+        },
       },
     },
   };
