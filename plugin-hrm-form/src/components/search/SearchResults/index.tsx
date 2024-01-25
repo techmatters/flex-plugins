@@ -152,7 +152,7 @@ const SearchResults: React.FC<Props> = ({
     toggleClosedCases();
   };
 
-  const handleClickViewCase = currentCase => () => {
+  const handleClickViewCase = currentCase => {
     viewCaseDetails(currentCase.id);
   };
 
