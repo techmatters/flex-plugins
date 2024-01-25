@@ -107,7 +107,7 @@ const ProfileFilters: React.FC = () => {
         <FilterTitle>
           <Template code="Table-FilterBy" />
         </FilterTitle>
-        {count > 0 && !flagsLoading && renderStatusFilter()}
+        {!flagsLoading && renderStatusFilter()}
       </FiltersContainer>
     </>
   );

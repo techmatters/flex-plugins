@@ -19,7 +19,7 @@ import { CircularProgress, TableBody, TableCell } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 
 import Pagination from '../pagination';
-import { DataTableRow, ErrorText, StandardTable, TableContainer } from '../../styles';
+import { DataTableRow, StandardTable, TableContainer } from '../../styles';
 import { useProfilesList, useProfilesListLoader } from '../../states/profile/hooks';
 import { useAllProfileFlags } from '../../states/profile/hooks/useProfileFlags';
 import ProfileListTableHeader from './ProfileHeader';
@@ -28,7 +28,7 @@ import { PAGE_SIZE } from '../../states/profile/profiles';
 
 const ProfileListTable: React.FC = () => {
   useAllProfileFlags();
-  const { loading, data: profileIds, count, error, page } = useProfilesList();
+  const { loading, data: profileIds, count, page } = useProfilesList();
   const { updateProfilesListPage } = useProfilesListLoader({ autoload: true });
 
   const pagesCount = Math.ceil(count / PAGE_SIZE);
@@ -38,11 +38,6 @@ const ProfileListTable: React.FC = () => {
       <TableContainer>
         <StandardTable>
           <ProfileListTableHeader />
-          {error && (
-            <TableCell>
-              <ErrorText>Please try again later</ErrorText>
-            </TableCell>
-          )}
           {loading && (
             <TableBody>
               <DataTableRow>
@@ -67,9 +62,11 @@ const ProfileListTable: React.FC = () => {
           )}
         </StandardTable>
       </TableContainer>
-      {!loading && (
-        <Pagination transparent page={page} pagesCount={pagesCount} handleChangePage={updateProfilesListPage} />
-      )}
+      <div style={{ minHeight: '100px' }}>
+        {!loading && count > 0 && (
+          <Pagination transparent page={page} pagesCount={pagesCount} handleChangePage={updateProfilesListPage} />
+        )}
+      </div>
     </>
   );
 };

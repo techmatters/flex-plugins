@@ -96,7 +96,7 @@ export const FlagPill = styled('div')<ColorProps>`
   margin: 5px 2px 5px 1px;
   padding: 3px 10px;
   background-color: ${props => (props.isBlocked ? `#FCF4F4` : '#F5EEF4')};
-  border: ${props => (props.isBlocked ? `2px dashed #D61F1F` : '2px solid #F5EEF4')};
+  border: ${props => (props.isBlocked ? `2px dashed #D61F1F` : '4px solid #F5EEF4')};
   border-color: ${props => (props.isBlocked ? `#D61F1F` : 'none')};
   color: ${props => (props.isBlocked ? `#D61F1F` : '#192B33')};
   font-size: 12px;
@@ -112,7 +112,7 @@ export const FlagPillTime = styled('span')`
 FlagPillTime.displayName = 'FlagPillTime';
 
 export const StyledBlockOutlinedIcon = withStyles({
-  root: { width: '1rem', height: '1rem', fontSize: 'smaller', marginRight: '7px' },
+  root: { width: '.8rem', height: '.8rem', fontSize: 'smaller', marginRight: '7px' },
 })(BlockOutlinedIcon);
 
 export const ProfileFlagEditList = styled('div')`
@@ -151,6 +151,7 @@ export const CloseIconButton = withStyles({
 
 export const ProfileFlagsUnorderedList = styled('ul')`
   display: flex;
+  align-items: center;
 `;
 ProfileFlagsUnorderedList.displayName = 'ProfileFlagsUnorderedList';
 
@@ -177,7 +178,6 @@ export const SectionText = styled('p')`
   overflow: hidden;
   flex-grow: 1;
   font-family: 'Open Sans';
-  box-sizing: border-box;
   opacity: 0.5;
   :focus {
     outline: none;
