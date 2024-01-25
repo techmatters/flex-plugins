@@ -26,8 +26,9 @@ import { newCloseModalAction } from '../../states/routing/actions';
 import { CaseLayout } from '../case/styles';
 import { Case as CaseForm, Contact, CustomITask } from '../../types/types';
 import Case from '../case/Case';
-import useTabbedForm from './hooks/useTabbedForm';
+import { useTabbedFormContext } from './hooks/useTabbedForm';
 import { TabbedFormsCommonProps } from './types';
+import { getTemplateStrings } from '../../hrmConfig';
 
 type OwnProps = TabbedFormsCommonProps;
 
@@ -50,7 +51,8 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const TabbedFormsCase: React.FC<Props> = ({ task, metadata, savedContact, closeModal, finaliseContact }) => {
-  const { newSubmitHandler, strings } = useTabbedForm();
+  const strings = getTemplateStrings();
+  const { newSubmitHandler } = useTabbedFormContext();
 
   const submit = async (caseForm: CaseForm) => {
     try {
