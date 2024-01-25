@@ -114,22 +114,6 @@ export type CaseDetails = {
   contacts: any[];
 };
 
-export const caseItemHistory = (
-  info: {
-    updatedAt?: string;
-    updatedBy?: string;
-    createdAt: string;
-    twilioWorkerId: string;
-  },
-  counselorsHash: Record<string, string>,
-) => {
-  const addingCounsellorName = counselorsHash[info.twilioWorkerId] || 'Unknown';
-  const added = new Date(info.createdAt);
-  const updatingCounsellorName = info.updatedBy ? counselorsHash[info.updatedBy] || 'Unknown' : undefined;
-  const updated = info.updatedAt ? new Date(info.updatedAt) : undefined;
-  return { addingCounsellorName, added, updatingCounsellorName, updated };
-};
-
 export type CaseSummaryWorkingCopy = {
   status: string;
   followUpDate: string;

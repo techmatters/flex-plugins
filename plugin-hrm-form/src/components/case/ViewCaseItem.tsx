@@ -27,21 +27,26 @@ import { RootState } from '../../states';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
-import { caseItemHistory } from '../../states/case/types';
 import { CaseItemAction, isViewCaseSectionRoute } from '../../states/routing/types';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import { FormTargetObject } from '../common/forms/types';
 import NavigableContainer from '../NavigableContainer';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
+import selectCaseItemHistory from '../../states/case/sections/selectCaseItemHistory';
 
-const mapStateToProps = (state: RootState, { task }: ViewCaseItemProps) => {
+const mapStateToProps = (state: RootState, { task, sectionApi }: ViewCaseItemProps) => {
+  const { connectedCase } = selectCurrentRouteCaseState(state, task.taskSid) || {};
+  const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
+  const caseItemHistory =
+    connectedCase && isViewCaseSectionRoute(currentRoute)
+      ? selectCaseItemHistory(state, connectedCase, sectionApi, currentRoute.id)
+      : undefined;
   return {
-    counselorsHash: selectCounselorsHash(state),
-    currentRoute: selectCurrentTopmostRouteForTask(state, task.taskSid),
-    connectedCase: selectCurrentRouteCaseState(state, task.taskSid)?.connectedCase,
+    caseItemHistory,
+    currentRoute,
+    connectedCase,
   };
 };
 
@@ -65,20 +70,20 @@ type Props = ViewCaseItemProps & ConnectedProps<typeof connector>;
 const ViewCaseItem: React.FC<Props> = ({
   task,
   currentRoute,
-  counselorsHash,
   changeRoute,
   definitionVersion,
   sectionApi,
   connectedCase,
   canEdit,
+  caseItemHistory,
 }) => {
-  if (!isViewCaseSectionRoute(currentRoute)) {
+  if (!isViewCaseSectionRoute(currentRoute) || !connectedCase) {
     return null;
   }
 
   const item = sectionApi.toForm(sectionApi.getSectionItemById(connectedCase.info, currentRoute.id));
 
-  const { addingCounsellorName, added, updatingCounsellorName, updated } = caseItemHistory(item, counselorsHash);
+  const { addingCounsellorName, added, updatingCounsellorName, updated } = caseItemHistory;
   const formDefinition = sectionApi.getSectionFormDefinition(definitionVersion).filter(fd => !isNonSaveable(fd));
 
   const onEditCaseItemClick = () => {

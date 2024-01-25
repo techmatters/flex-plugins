@@ -25,7 +25,7 @@ import { newOpenModalAction } from '../../states/routing/actions';
 import type { Case } from '../../types/types';
 import InfoIcon from './InfoIcon';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
-import selectCaseByCaseId from '../../states/case/selectCaseStateByCaseId';
+import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import { RootState } from '../../states';
 import { BannerActionLink, BannerContainer, CaseLink, Text } from '../../styles/banners';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
