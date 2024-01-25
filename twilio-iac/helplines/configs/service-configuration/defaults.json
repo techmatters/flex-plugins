@@ -46,9 +46,13 @@
             "enableUnmaskingCalls": false
         },
         "feature_flags": {
+            "backend_handled_chat_janitor": true,
             "enable_aselo_messaging_ui": false,
             "enable_canned_responses": true,
+            "enable_case_merging": false,
+            "enable_client_profiles": false,
             "enable_conferencing": true,
+            "enable_confirm_on_browser_close": true,
             "enable_contact_editing": true,
             "enable_counselor_toolkits": false,
             "enable_csam_clc_report": false,
@@ -69,11 +73,7 @@
             "enable_twilio_transcripts": true,
             "enable_upload_documents": true,
             "enable_voice_recordings": false,
-            "post_survey_serverless_handled": true,
-            "backend_handled_chat_janitor": true,
-            "enable_client_profiles": false,
-            "enable_case_merging": false,
-            "enable_confirm_on_browser_close": true
+            "post_survey_serverless_handled": true
         },
         "multipleOfficeSupport": false,
         "WARNING": "These attributes are set using a tool in the twilio-iac repo. If you are seeing this message anywhere else, please stop and use the process described here: https://github.com/techmatters/flex-plugins/blob/master/twilio-iac/docs/service_configuration.md"
