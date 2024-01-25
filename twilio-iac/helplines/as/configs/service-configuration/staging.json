@@ -4,7 +4,6 @@
             "enable_aselo_messaging_ui": false,
             "enable_case_merging": true,
             "enable_client_profiles": true,
-            "enable_confirm_on_browser_close": true,
             "enable_conferencing": false,
             "enable_contact_editing": false,
             "enable_counselor_toolkits": false,
