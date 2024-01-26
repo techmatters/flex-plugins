@@ -21,13 +21,11 @@ import { callTypes } from 'hrm-form-definitions';
 import { RootState } from '../../states';
 import asyncDispatch from '../../states/asyncDispatch';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
-import { ContactDraftChanges, updateDraft } from '../../states/contacts/existingContacts';
+import { ContactDraftChanges } from '../../states/contacts/existingContacts';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
-import { changeRoute, newCloseModalAction } from '../../states/routing/actions';
-import { ChangeRouteMode, TabbedFormSubroutes } from '../../states/routing/types';
 import { namespace } from '../../states/storeNamespaces';
-import { Contact, ContactRawJson } from '../../types/types';
+import { Contact } from '../../types/types';
 import Search from '../search';
 import { TabbedFormsCommonProps } from './types';
 
@@ -51,50 +49,17 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
 const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => ({
   saveDraft: (savedContact: Contact, draftContact: ContactDraftChanges) =>
     asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact, task.taskSid)),
-  updateDraftForm: (contactId: Contact['id'], form: Partial<ContactRawJson>) =>
-    dispatch(updateDraft(contactId, { rawJson: form })),
-  closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
-  navigateToTab: (tab: TabbedFormSubroutes) =>
-    dispatch(
-      changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, task.taskSid, ChangeRouteMode.Replace),
-    ),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const TabbedFormsSearch: React.FC<Props> = ({
-  task,
-  isCallTypeCaller,
-  draftContact,
-  savedContact,
-  updatedContact,
-  closeModal,
-  saveDraft,
-  navigateToTab,
-  updateDraftForm,
-}) => {
-  const onSelectSearchResult = (searchResult: Contact) => {
-    const selectedIsCaller = searchResult.rawJson.callType === callTypes.caller;
-    const isCallerType = updatedContact.rawJson.callType === callTypes.caller;
-    closeModal();
-    if (isCallerType && selectedIsCaller && isCallTypeCaller) {
-      updateDraftForm(savedContact.id, { callerInformation: searchResult.rawJson.callerInformation });
-      navigateToTab('callerInformation');
-    } else {
-      updateDraftForm(savedContact.id, { childInformation: searchResult.rawJson.childInformation });
-      navigateToTab('childInformation');
-    }
-  };
-
-  // YAH: override handleViewDetails
-
+const TabbedFormsSearch: React.FC<Props> = ({ task, draftContact, savedContact, saveDraft }) => {
   return (
     <Search
       task={task}
       currentIsCaller={savedContact?.rawJson?.callType === callTypes.caller}
-      handleSelectSearchResult={onSelectSearchResult}
       contactId={savedContact?.id}
       saveUpdates={() => saveDraft(savedContact, draftContact)}
     />

@@ -46,8 +46,3 @@ export const restoreEntireContact = (contact: ContactState): t.ContactsActionTyp
   type: t.RESTORE_ENTIRE_FORM,
   contact,
 });
-
-export const setCallType = (isCallTypeCaller: boolean): t.ContactsActionType => ({
-  type: t.SET_CALL_TYPE,
-  isCallTypeCaller,
-});
