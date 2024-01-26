@@ -195,7 +195,7 @@ test('<Search> should display <SearchForm />', async () => {
   render(
     <StorelessThemeProvider themeConf={{}}>
       <Provider store={store}>
-        <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
+        <Search task={task} handleExpandDetailsSection={() => null} />
       </Provider>
     </StorelessThemeProvider>,
   );
@@ -245,7 +245,7 @@ test('<Search> should display <SearchForm /> with previous contacts checkbox', a
   render(
     <StorelessThemeProvider themeConf={{}}>
       <Provider store={store}>
-        <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
+        <Search task={task} handleExpandDetailsSection={() => null} />
       </Provider>
     </StorelessThemeProvider>,
   );
@@ -331,7 +331,7 @@ test('<Search> should display <ContactDetails />', async () => {
   render(
     <StorelessThemeProvider themeConf={{}}>
       <Provider store={store}>
-        <Search task={task} handleSelectSearchResult={() => null} handleExpandDetailsSection={() => null} />
+        <Search task={task} handleExpandDetailsSection={() => null} />
       </Provider>
     </StorelessThemeProvider>,
   );

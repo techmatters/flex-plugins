@@ -16,20 +16,17 @@
 
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import { connect, ConnectedProps } from 'react-redux';
 import { ArrowDropDownTwoTone, ArrowRightTwoTone, Edit, Link } from '@material-ui/icons';
+import { DataCallTypes } from 'hrm-form-definitions';
 
-import { RootState } from '../../states';
-import { contactFormsBase, namespace } from '../../states/storeNamespaces';
 import {
-  SectionTitleContainer,
-  SectionTitleButton,
-  SectionTitleText,
-  SectionCollapse,
   ContactDetailsIcon,
   SectionActionButton,
+  SectionCollapse,
+  SectionTitleButton,
+  SectionTitleContainer,
+  SectionTitleText,
 } from '../search/styles';
-import { setCallType } from '../../states/contacts/actions';
 
 const ArrowDownIcon = ContactDetailsIcon(ArrowDropDownTwoTone);
 const ArrowRightIcon = ContactDetailsIcon(ArrowRightTwoTone);
@@ -46,15 +43,15 @@ type OwnProps = {
   htmlElRef?: any;
   showEditButton?: boolean;
   handleEditClick?: (event?: any) => void;
-  handleOpenConnectDialog?: (event: any) => void;
+  handleOpenConnectDialog?: (event: any, callType: DataCallTypes) => void;
   showActionIcons?: boolean;
   extraActionButton?: React.ReactElement;
-  callType?: string;
+  callType?: DataCallTypes;
   contactId?: string;
 };
 
 // eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
+type Props = OwnProps;
 
 const ContactDetailsSection: React.FC<Props> = ({
   sectionTitle,
@@ -69,12 +66,9 @@ const ContactDetailsSection: React.FC<Props> = ({
   showActionIcons,
   handleEditClick,
   callType,
-  savedContact,
   extraActionButton,
-  ...props
 }) => {
-  const showCopyButton = () => callType === 'child' || callType === 'caller';
-  const handleSetCallType = () => props.setCallType(callType === 'caller');
+  const showCopyButton = () => callType;
 
   return (
     <>
@@ -95,8 +89,7 @@ const ContactDetailsSection: React.FC<Props> = ({
         {showActionIcons && showCopyButton && (
           <SectionActionButton
             onClick={e => {
-              handleOpenConnectDialog(e);
-              handleSetCallType();
+              handleOpenConnectDialog(e, callType);
             }}
           >
             <LinkIcon style={{ fontSize: '18px', padding: '-1px 6px 0 6px', marginRight: '6px' }} />
@@ -120,14 +113,4 @@ const ContactDetailsSection: React.FC<Props> = ({
 
 ContactDetailsSection.displayName = 'ContactDetailsSection';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => ({
-  savedContact: state[namespace][contactFormsBase].existingContacts[ownProps.contactId]?.savedContact,
-});
-
-const mapDispatchToProps = () => ({
-  setCallType,
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-const connected = connector(ContactDetailsSection);
-export default connected;
+export default ContactDetailsSection;
