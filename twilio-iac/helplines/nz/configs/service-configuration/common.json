@@ -8,6 +8,8 @@
         "definitionVersion": "nz-v1",
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
+            "enable_case_merging": true,
+            "enable_client_profiles": true,
             "enable_conferencing": true,
             "enable_counselor_toolkits": true,
             "enable_fullstory_monitoring": true,
@@ -15,6 +17,7 @@
             "enable_lex": false,
             "enable_post_survey": false,
             "enable_resources": false,
+            "enable_save_insights": true,
             "enable_separate_timeline_view": false,
             "enable_transcripts": false,
             "enable_twilio_transcripts": false
