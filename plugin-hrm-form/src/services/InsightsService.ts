@@ -209,6 +209,11 @@ type InsightsCaseForm = {
  * customization framework.  When it is, we will need to change this function.
  */
 const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
+  const logObject: any = {
+    contactsDetails: caseForm.connectedContacts.map(({ channel, taskId }) => ({ channelType: channel, taskId })),
+    accountSid: caseForm.accountSid,
+    twilioWorkerId: caseForm.twilioWorkerId,
+  };
   try {
     if (!caseForm || Object.keys(caseForm).length === 0) return {};
     let perpetrator: { [key: string]: string } = undefined;
@@ -264,6 +269,8 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
       };
     }
 
+    console.warn(`[InsightsService] converting case form:`, logObject);
+
     return {
       topLevel,
       perpetrator,
@@ -272,14 +279,9 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
       referral,
     };
   } catch (error) {
-    const errorObject = {
-      message: error,
-      contactsDetails: caseForm.connectedContacts.map(({ channel, taskId }) => ({ channelType: channel, taskId })),
-      accountSid: caseForm.accountSid,
-      twilioWorkerId: caseForm.twilioWorkerId,
-    };
-    console.error(errorObject);
-    throw new Error(error);
+    logObject.message = error;
+    console.error(`[InsightsService] Error converting case form:`, logObject);
+    throw error;
   }
 };
 
@@ -288,6 +290,11 @@ const processHelplineConfig = (
   caseForm: Case,
   oneToOneConfigSpec: OneToOneConfigSpec,
 ): InsightsAttributes => {
+  const logObject: any = {
+    accountSid: caseForm.accountSid,
+    twilioWorkerId: caseForm.twilioWorkerId,
+    contactsDetails: caseForm.connectedContacts.map(({ channel, taskId }) => ({ channelType: channel, taskId })),
+  };
   try {
     const insightsAtts: InsightsAttributes = {
       customers: {},
@@ -321,16 +328,13 @@ const processHelplineConfig = (
       });
     });
 
+    console.warn(`[InsightsService] converting case form:`, logObject);
+
     return insightsAtts;
   } catch (error) {
-    const errorObject = {
-      message: error,
-      accountSid: caseForm.accountSid,
-      twilioWorkerId: caseForm.twilioWorkerId,
-      contactsDetails: caseForm.connectedContacts.map(({ channel, taskId }) => ({ channelType: channel, taskId })),
-    };
-    console.error(errorObject);
-    throw new Error(error);
+    logObject.message = error;
+    console.error(`[InsightsService] Error converting case form:`, logObject);
+    throw error;
   }
 };
 
@@ -392,6 +396,13 @@ const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSu
   const { bucket, key } = externalRecordingInfo;
   const { hrmBaseUrl } = getHrmConfig();
 
+  const logObject: any = {
+    taskId: contact.taskId,
+    channelType: contact.channel,
+    accountSid: contact.accountSid,
+    twilioWorkerId: contact.twilioWorkerId,
+  };
+
   try {
     const url_provider = generateUrl(
       new URL(hrmBaseUrl),
@@ -404,6 +415,8 @@ const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSu
       }),
     );
 
+    console.warn(`[InsightsService] converting contact:`, logObject);
+
     return [
       {
         type: 'VoiceRecording',
@@ -411,14 +424,8 @@ const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSu
       },
     ];
   } catch (error) {
-    const errorObject = {
-      message: `'Error generating mediaUrl', ${error}`,
-      taskId: contact.taskId,
-      channelType: contact.channel,
-      accountSid: contact.accountSid,
-      twilioWorkerId: contact.twilioWorkerId,
-    };
-    console.error(errorObject);
+    logObject.message = `Error generating mediaUrl, ${error}`;
+    console.error(`[InsightsService] Error converting contact:`, logObject);
     throw new Error('Error generating mediaUrl');
   }
 };
@@ -438,6 +445,12 @@ export const buildInsightsData = (
   savedContact: Contact,
   externalRecordingInfo: ExternalRecordingInfo | null = null,
 ) => {
+  const logObject: any = {
+    taskId: task.taskSid,
+    channelType: task.channelType,
+    accountSid: savedContact.accountSid,
+    twilioWorkerId: savedContact.twilioWorkerId,
+  };
   try {
     const previousAttributes = typeof task.attributes === 'string' ? JSON.parse(task.attributes) : task.attributes;
 
@@ -458,16 +471,12 @@ export const buildInsightsData = (
       };
     }
 
+    console.warn(`[InsightsService] converting savedContact:`, logObject);
+
     return finalAttributes;
   } catch (error) {
-    const errorObject = {
-      message: error,
-      taskId: task.taskSid,
-      channelType: task.channelType,
-      accountSid: savedContact.accountSid,
-      twilioWorkerId: savedContact.twilioWorkerId,
-    };
-    console.error(errorObject);
-    throw new Error(error);
+    logObject.message = error;
+    console.error(`[InsightsService] Error converting savedContact:`, logObject);
+    throw error;
   }
 };
