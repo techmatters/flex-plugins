@@ -24,7 +24,6 @@ import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { ContactDraftChanges } from '../../states/contacts/existingContacts';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
-import { namespace } from '../../states/storeNamespaces';
 import { Contact } from '../../types/types';
 import Search from '../search';
 import { TabbedFormsCommonProps } from './types';
@@ -32,15 +31,10 @@ import { TabbedFormsCommonProps } from './types';
 type OwnProps = TabbedFormsCommonProps;
 
 const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
-  const {
-    [namespace]: { activeContacts },
-  } = state;
   const { savedContact, draftContact } = selectContactByTaskSid(state, taskSid);
-  const { isCallTypeCaller } = activeContacts;
 
   return {
     draftContact,
-    isCallTypeCaller,
     savedContact,
     updatedContact: getUnsavedContact(savedContact, draftContact),
   };
