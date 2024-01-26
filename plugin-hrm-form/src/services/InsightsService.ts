@@ -209,67 +209,78 @@ type InsightsCaseForm = {
  * customization framework.  When it is, we will need to change this function.
  */
 const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
-  if (!caseForm || Object.keys(caseForm).length === 0) return {};
-  let perpetrator: { [key: string]: string } = undefined;
-  let incident: { [key: string]: string | boolean } = undefined;
-  let referral: { [key: string]: string } = undefined;
-  let household: { [key: string]: string } = undefined;
-  const topLevel = {
-    id: caseForm.id.toString(),
-  };
-  if (caseForm.info?.perpetrators && caseForm.info.perpetrators.length > 0) {
-    /*
-     * Flatten out the Perpetrator object. This can be changed after this is using the
-     * customization framework.
-     */
-    const thePerp = caseForm.info.perpetrators[0];
-    const untypedPerp: any = {
-      ...thePerp,
-      ...thePerp.perpetrator,
+  try {
+    if (!caseForm || Object.keys(caseForm).length === 0) return {};
+    let perpetrator: { [key: string]: string } = undefined;
+    let incident: { [key: string]: string | boolean } = undefined;
+    let referral: { [key: string]: string } = undefined;
+    let household: { [key: string]: string } = undefined;
+    const topLevel = {
+      id: caseForm.id.toString(),
     };
-    delete untypedPerp.perpetrator;
-    delete untypedPerp.name;
-    delete untypedPerp.location;
-    perpetrator = {
-      ...untypedPerp,
-    };
-  }
-  if (caseForm.info?.incidents && caseForm.info.incidents.length > 0) {
-    const theIncident = caseForm.info.incidents[0];
-    const untypedIncident: any = {
-      ...theIncident,
-      ...theIncident.incident,
-    };
-    delete untypedIncident.incident;
-    incident = {
-      ...untypedIncident,
-    };
-  }
-  if (caseForm.info?.households && caseForm.info.households.length > 0) {
-    const theHousehold = caseForm.info.households[0];
-    const untypedHousehold: any = {
-      ...theHousehold,
-      ...theHousehold.household,
-    };
-    delete untypedHousehold.household;
-    household = {
-      ...untypedHousehold,
-    };
-  }
-  if (caseForm.info?.referrals && caseForm.info.referrals.length > 0) {
-    referral = {
-      ...caseForm.info.referrals[0],
-      date: caseForm.info.referrals[0].date.toString(),
-    };
-  }
+    if (caseForm.info?.perpetrators && caseForm.info.perpetrators.length > 0) {
+      /*
+       * Flatten out the Perpetrator object. This can be changed after this is using the
+       * customization framework.
+       */
+      const thePerp = caseForm.info.perpetrators[0];
+      const untypedPerp: any = {
+        ...thePerp,
+        ...thePerp.perpetrator,
+      };
+      delete untypedPerp.perpetrator;
+      delete untypedPerp.name;
+      delete untypedPerp.location;
+      perpetrator = {
+        ...untypedPerp,
+      };
+    }
+    if (caseForm.info?.incidents && caseForm.info.incidents.length > 0) {
+      const theIncident = caseForm.info.incidents[0];
+      const untypedIncident: any = {
+        ...theIncident,
+        ...theIncident.incident,
+      };
+      delete untypedIncident.incident;
+      incident = {
+        ...untypedIncident,
+      };
+    }
+    if (caseForm.info?.households && caseForm.info.households.length > 0) {
+      const theHousehold = caseForm.info.households[0];
+      const untypedHousehold: any = {
+        ...theHousehold,
+        ...theHousehold.household,
+      };
+      delete untypedHousehold.household;
+      household = {
+        ...untypedHousehold,
+      };
+    }
+    if (caseForm.info?.referrals && caseForm.info.referrals.length > 0) {
+      referral = {
+        ...caseForm.info.referrals[0],
+        date: caseForm.info.referrals[0].date.toString(),
+      };
+    }
 
-  return {
-    topLevel,
-    perpetrator,
-    incident,
-    household,
-    referral,
-  };
+    return {
+      topLevel,
+      perpetrator,
+      incident,
+      household,
+      referral,
+    };
+  } catch (error) {
+    const errorObject = {
+      message: error,
+      contactsDetails: caseForm.connectedContacts.map(({ channel, taskId }) => ({ channelType: channel, taskId })),
+      accountSid: caseForm.accountSid,
+      twilioWorkerId: caseForm.twilioWorkerId,
+    };
+    console.error(errorObject);
+    throw new Error(error);
+  }
 };
 
 const processHelplineConfig = (
@@ -277,39 +288,50 @@ const processHelplineConfig = (
   caseForm: Case,
   oneToOneConfigSpec: OneToOneConfigSpec,
 ): InsightsAttributes => {
-  const insightsAtts: InsightsAttributes = {
-    customers: {},
-    conversations: {},
-  };
+  try {
+    const insightsAtts: InsightsAttributes = {
+      customers: {},
+      conversations: {},
+    };
 
-  const formsToProcess: [InsightsFormSpec, ContactRawJson | InsightsCaseForm][] = [];
-  if (oneToOneConfigSpec.contactForm) {
-    // Clone the whole object to avoid modifying the real spec. May not be needed.
-    const contactSpec = cloneDeep(oneToOneConfigSpec.contactForm);
-    if (contactForm.callType !== callTypes.caller) {
-      // If this isn't a caller type, don't save the caller form data
-      contactSpec.callerInformation = [];
+    const formsToProcess: [InsightsFormSpec, ContactRawJson | InsightsCaseForm][] = [];
+    if (oneToOneConfigSpec.contactForm) {
+      // Clone the whole object to avoid modifying the real spec. May not be needed.
+      const contactSpec = cloneDeep(oneToOneConfigSpec.contactForm);
+      if (contactForm.callType !== callTypes.caller) {
+        // If this isn't a caller type, don't save the caller form data
+        contactSpec.callerInformation = [];
+      }
+      formsToProcess.push([contactSpec, contactForm]);
     }
-    formsToProcess.push([contactSpec, contactForm]);
-  }
-  if (oneToOneConfigSpec.caseForm) {
-    formsToProcess.push([oneToOneConfigSpec.caseForm, convertCaseFormForInsights(caseForm)]);
-  }
-  formsToProcess.forEach(([spec, form]) => {
-    Object.keys(spec).forEach(subform => {
-      const fields: InsightsFieldSpec[] = spec[subform];
-      fields.forEach(field => {
-        const [insightsObject, insightsField] = field.insights;
-        let value = form[subform] && form[subform][field.name];
-        if (field.type === FieldType.MixedCheckbox) {
-          value = convertMixedCheckbox(value);
-        }
-        insightsAtts[insightsObject][insightsField] = sanitizeInsightsValue(value);
+    if (oneToOneConfigSpec.caseForm) {
+      formsToProcess.push([oneToOneConfigSpec.caseForm, convertCaseFormForInsights(caseForm)]);
+    }
+    formsToProcess.forEach(([spec, form]) => {
+      Object.keys(spec).forEach(subform => {
+        const fields: InsightsFieldSpec[] = spec[subform];
+        fields.forEach(field => {
+          const [insightsObject, insightsField] = field.insights;
+          let value = form[subform] && form[subform][field.name];
+          if (field.type === FieldType.MixedCheckbox) {
+            value = convertMixedCheckbox(value);
+          }
+          insightsAtts[insightsObject][insightsField] = sanitizeInsightsValue(value);
+        });
       });
     });
-  });
 
-  return insightsAtts;
+    return insightsAtts;
+  } catch (error) {
+    const errorObject = {
+      message: error,
+      accountSid: caseForm.accountSid,
+      twilioWorkerId: caseForm.twilioWorkerId,
+      contactsDetails: caseForm.connectedContacts.map(({ channel, taskId }) => ({ channelType: channel, taskId })),
+    };
+    console.error(errorObject);
+    throw new Error(error);
+  }
 };
 
 const applyCustomUpdate = (customUpdate: OneToManyConfigSpec): InsightsUpdateFunction => {
@@ -389,7 +411,14 @@ const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSu
       },
     ];
   } catch (error) {
-    console.error('Error generating mediaUrl', error);
+    const errorObject = {
+      message: `'Error generating mediaUrl', ${error}`,
+      taskId: contact.taskId,
+      channelType: contact.channel,
+      accountSid: contact.accountSid,
+      twilioWorkerId: contact.twilioWorkerId,
+    };
+    console.error(errorObject);
     throw new Error('Error generating mediaUrl');
   }
 };
@@ -409,24 +438,36 @@ export const buildInsightsData = (
   savedContact: Contact,
   externalRecordingInfo: ExternalRecordingInfo | null = null,
 ) => {
-  const previousAttributes = typeof task.attributes === 'string' ? JSON.parse(task.attributes) : task.attributes;
+  try {
+    const previousAttributes = typeof task.attributes === 'string' ? JSON.parse(task.attributes) : task.attributes;
 
-  if (!shouldSendInsightsData(task)) return previousAttributes;
+    if (!shouldSendInsightsData(task)) return previousAttributes;
 
-  const { currentDefinitionVersion } = getDefinitionVersions();
+    const { currentDefinitionVersion } = getDefinitionVersions();
 
-  // eslint-disable-next-line sonarjs/prefer-immediate-return
-  const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(currentDefinitionVersion.insights)
-    .map(f => f(previousAttributes, contact, caseForm, savedContact))
-    .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
+    // eslint-disable-next-line sonarjs/prefer-immediate-return
+    const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(currentDefinitionVersion.insights)
+      .map(f => f(previousAttributes, contact, caseForm, savedContact))
+      .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
 
-  if (isSuccessfulExternalRecordingInfo(externalRecordingInfo)) {
-    const urlProviderBlock = generateUrlProviderBlock(externalRecordingInfo, savedContact);
-    finalAttributes.conversations = {
-      ...finalAttributes.conversations,
-      media: [...(finalAttributes.conversations.media || []), ...urlProviderBlock],
+    if (isSuccessfulExternalRecordingInfo(externalRecordingInfo)) {
+      const urlProviderBlock = generateUrlProviderBlock(externalRecordingInfo, savedContact);
+      finalAttributes.conversations = {
+        ...finalAttributes.conversations,
+        media: [...(finalAttributes.conversations.media || []), ...urlProviderBlock],
+      };
+    }
+
+    return finalAttributes;
+  } catch (error) {
+    const errorObject = {
+      message: error,
+      taskId: task.taskSid,
+      channelType: task.channelType,
+      accountSid: savedContact.accountSid,
+      twilioWorkerId: savedContact.twilioWorkerId,
     };
+    console.error(errorObject);
+    throw new Error(error);
   }
-
-  return finalAttributes;
 };
