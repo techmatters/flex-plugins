@@ -10,9 +10,7 @@
             "line"
         ],
         "feature_flags": {
-            "enable_case_merging": true,
-            "enable_last_case_status_update_info": true,
-            "enable_separate_timeline_view": true
+            "enable_case_merging": true
         },
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
         "resources_base_url": ""

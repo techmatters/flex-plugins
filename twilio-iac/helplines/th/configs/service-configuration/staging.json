@@ -5,8 +5,6 @@
             "enable_case_merging": true,
             "enable_csam_clc_report": false,
             "enable_csam_report": true,
-            "enable_last_case_status_update_info": true,
-            "enable_separate_timeline_view": true,
             "enable_voice_recordings": false
         }
     }
