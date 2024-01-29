@@ -210,7 +210,7 @@ type InsightsCaseForm = {
  */
 const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
   const logObject: any = {
-    contactsDetails: caseForm.connectedContacts.map(({ channel, taskId }) => ({ channelType: channel, taskId })),
+    contactsDetails: caseForm?.connectedContacts.map(({ channel, taskId }) => ({ channelType: channel, taskId })),
     accountSid: caseForm.accountSid,
     twilioWorkerId: caseForm.twilioWorkerId,
   };
@@ -293,7 +293,7 @@ const processHelplineConfig = (
   const logObject: any = {
     accountSid: caseForm.accountSid,
     twilioWorkerId: caseForm.twilioWorkerId,
-    contactsDetails: caseForm.connectedContacts.map(({ channel, taskId }) => ({ channelType: channel, taskId })),
+    contactsDetails: caseForm?.connectedContacts.map(({ channel, taskId }) => ({ channelType: channel, taskId })),
   };
   try {
     const insightsAtts: InsightsAttributes = {
