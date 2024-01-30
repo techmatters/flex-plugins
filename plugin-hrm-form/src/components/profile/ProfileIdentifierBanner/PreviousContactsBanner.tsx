@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { Template } from '@twilio/flex-ui';
+import { SideLink, Template } from '@twilio/flex-ui';
 
 import {
   searchCases as searchCasesAction,

@@ -123,6 +123,7 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
 
   return (
     <DetailsWrapper>
+      Client # {profileId} <br />
       <SectionHeader>
         <Template code="Profile-DetailsHeader-Overview" />
       </SectionHeader>

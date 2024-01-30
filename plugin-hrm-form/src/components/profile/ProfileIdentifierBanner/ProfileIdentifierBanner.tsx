@@ -17,9 +17,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { Template } from '@twilio/flex-ui';
+import { SideLink, Template } from '@twilio/flex-ui';
 
-import { useIdentifierByIdentifier, useProfileProperty } from '../../../states/profile/hooks';
+import { useIdentifierByIdentifier, useProfile, useProfileProperty } from '../../../states/profile/hooks';
 import { YellowBanner } from '../styles';
 import { Bold } from '../../../styles';
 import { StyledLink } from '../../search/styles';
@@ -42,13 +42,19 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     openProfileModal: id => {
       dispatch(newOpenModalAction({ route: 'profile', profileId: id }, taskId));
     },
+    openContactsModal: id => {
+      dispatch(newOpenModalAction({ route: 'profile', subroute: 'contacts', profileId: id }, taskId));
+    },
+    openCasesModal: id => {
+      dispatch(newOpenModalAction({ route: 'profile', subroute: 'cases', profileId: id }, taskId));
+    },
   };
 };
 
 const connector = connect(null, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) => {
+const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, openContactsModal, openCasesModal }) => {
   const can = React.useMemo(() => {
     return getInitializedCan();
   }, []);
@@ -60,10 +66,18 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) =>
 
   // Ugh. The previous contacts count is off by one because we immediately create a contact when a task is created.
   // contacts should really have a status so we can filter out the "active" contact on the db side.
-  const contactsCountState = useProfileProperty(profileId, 'contactsCount') || 0;
-  const contactsCount = contactsCountState ? contactsCountState - 1 : 0;
-  const casesCount = useProfileProperty(profileId, 'casesCount') || 0;
+  // const contactsCountState = useProfileProperty(profileId, 'contactsCount') || 0;
+  // const contactsCount = contactsCountState ? contactsCountState - 1 : 0;
+  // const casesCount = useProfileProperty(profileId, 'casesCount') || 0;
 
+  const { profile } = useProfile({ profileId });
+  if (!profile) {
+    return <div>Loading...</div>; // or some loading spinner
+  }
+  const { contactsCount, casesCount } = profile;
+  console.log('>>> PreviousIdentifierBanner', profile, contactsCount, casesCount);
+
+  // sell using icons instead of text - See TimelineIcon.tsx
   const localizedSourceFromTask: { [channelType in CoreChannelTypes]: string } = {
     [coreChannelTypes.web]: `${getContactValueTemplate(task)}`,
     [coreChannelTypes.voice]: 'PreviousContacts-PhoneNumber',
@@ -81,53 +95,63 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) =>
   const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
   if (!shouldDisplayBanner) return null;
 
-  const handleClickViewRecords = async () => {
+  const handleViewClients = async () => {
     openProfileModal(profileId);
+  };
+  const handleViewContacts = async () => {
+    openContactsModal(profileId);
+  };
+  const handleViewCases = async () => {
+    openCasesModal(profileId);
   };
 
   return (
     <div>
       <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
-        {/* eslint-disable-next-line prettier/prettier */}
-        <pre>
-          <Template code="PreviousContacts-ThereAre" />{' '}
-          {contactsCount === 1 ? (
-            <Bold>
-              {contactsCount} <Template code="PreviousContacts-PreviousContact" />
-            </Bold>
-          ) : (
-            <Bold>
-              {contactsCount} <Template code="PreviousContacts-PreviousContacts" />
-            </Bold>
-          )}{' '}
-          <Template code="PreviousContacts-And" />{' '}
-          {casesCount === 1 ? (
-            <Bold>
-              {casesCount} <Template code="PreviousContacts-Case" />
-            </Bold>
-          ) : (
-            <Bold>
-              {casesCount} <Template code="PreviousContacts-Cases" />
-            </Bold>
-          )}{' '}
-          <Template code="PreviousContacts-From" /> <Template code={localizedSourceFromTask[task.channelType]} />{' '}
+        <span>
+          {/* <Template code={localizedSourceFromTask[task.channelType]} />{' '} */}
           {maskIdentifiers ? (
             <Bold>
               <Template code="MaskIdentifiers" />
             </Bold>
           ) : (
             <Bold>{formattedIdentifier}</Bold>
-          )}
-          .{' '}
-        </pre>
-        <StyledLink
-          underline
-          data-testid="PreviousContacts-ViewRecords"
-          onClick={handleClickViewRecords}
-          aria-label="View Client Records"
-        >
-          <Template code="PreviousContacts-ViewRecords" />
-        </StyledLink>
+          )}{' '}
+          has{' '}
+          <button type="button" onClick={handleViewContacts}>
+            {contactsCount === 1 ? (
+              <Bold>
+                {contactsCount} <Template code="PreviousContacts-PreviousContact" />
+              </Bold>
+            ) : (
+              <Bold>
+                {contactsCount} <Template code="PreviousContacts-PreviousContacts" />
+              </Bold>
+            )}
+          </button>{' '}
+          <Template code="PreviousContacts-And" />{' '}
+          <button type="button" onClick={handleViewCases}>
+            {casesCount === 1 ? (
+              <Bold>
+                {casesCount} <Template code="PreviousContacts-Case" />
+              </Bold>
+            ) : (
+              <Bold>
+                {casesCount} <Template code="PreviousContacts-Cases" />
+              </Bold>
+            )}
+          </button>{' '}
+          <Template code="PreviousContacts-And" />{' '}
+          <button
+            type="button"
+            // data-testid="PreviousContacts-ViewRecords"
+            onClick={handleViewClients}
+          >
+            <Bold>
+              {'1'} <Template code="Profile-Singular-Client" />{' '}
+            </Bold>
+          </button>
+        </span>
       </YellowBanner>
     </div>
   );
