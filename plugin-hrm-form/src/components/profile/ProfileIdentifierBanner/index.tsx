@@ -18,7 +18,7 @@
 import React from 'react';
 
 import PreviousContactsBanner from './PreviousContactsBanner';
-import IdentifierBanner from './ProfileIdentifierBanner';
+import ProfileIdentifierBanner from './ProfileIdentifierBanner';
 import { RouterTask } from '../../../types/types';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
 
@@ -31,8 +31,9 @@ type Props = OwnProps;
 
 const ProfileIdentifierBannerFeatureFlagSwitch: React.FC<Props> = (props: Props) => {
   const { enable_client_profiles: enableClientProfiles } = getAseloFeatureFlags();
+  // return <PreviousContactsBanner {...props} />;
 
-  return enableClientProfiles ? <IdentifierBanner {...props} /> : <PreviousContactsBanner {...props} />;
+  return enableClientProfiles ? <ProfileIdentifierBanner {...props} /> : <PreviousContactsBanner {...props} />;
 };
 
 export default ProfileIdentifierBannerFeatureFlagSwitch;

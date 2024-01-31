@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { styled, Button, IconButton } from '@twilio/flex-ui';
-import { withStyles, MenuItem, MenuList, Paper } from '@material-ui/core';
+import { withStyles, MenuItem, MenuList, Paper, ButtonBase } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import BlockOutlinedIcon from '@material-ui/icons/BlockOutlined';
 
@@ -277,5 +277,13 @@ type StyledPaperProps = {
 export const StyledPaper = styled(Paper)<StyledPaperProps>`
   width: ${props => props.width || 600}px;
 `;
-
 StyledPaper.displayName = 'StyledPaper';
+
+export const LinkedBanner = withStyles({
+  root: {
+    fontSize: '13px',
+    padding: '0 0 3px 0',
+    textDecoration: 'underline',
+  },
+})(ButtonBase);
+LinkedBanner.displayName = 'LinkedBanner';

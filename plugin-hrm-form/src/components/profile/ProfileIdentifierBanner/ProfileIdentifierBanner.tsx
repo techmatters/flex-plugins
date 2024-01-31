@@ -17,12 +17,11 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { SideLink, Template } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 
 import { useIdentifierByIdentifier, useProfile, useProfileProperty } from '../../../states/profile/hooks';
-import { YellowBanner } from '../styles';
+import { YellowBanner, LinkedBanner } from '../styles';
 import { Bold } from '../../../styles';
-import { StyledLink } from '../../search/styles';
 import { CoreChannelTypes, coreChannelTypes } from '../../../states/DomainConstants';
 import { newOpenModalAction } from '../../../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils';
@@ -66,16 +65,16 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
 
   // Ugh. The previous contacts count is off by one because we immediately create a contact when a task is created.
   // contacts should really have a status so we can filter out the "active" contact on the db side.
-  // const contactsCountState = useProfileProperty(profileId, 'contactsCount') || 0;
-  // const contactsCount = contactsCountState ? contactsCountState - 1 : 0;
-  // const casesCount = useProfileProperty(profileId, 'casesCount') || 0;
+  const contactsCount = useProfileProperty(profileId, 'contactsCount') || 0;
+  const casesCount = useProfileProperty(profileId, 'casesCount') || 0;
 
   const { profile } = useProfile({ profileId });
   if (!profile) {
     return <div>Loading...</div>; // or some loading spinner
   }
-  const { contactsCount, casesCount } = profile;
-  console.log('>>> PreviousIdentifierBanner', profile, contactsCount, casesCount);
+  // const { contactsCount, casesCount } = profile;
+  console.log('>>> ProfileIdentifierBanner', profile, contactsCount, casesCount);
+  // useProfileProperty(profileId)
 
   // sell using icons instead of text - See TimelineIcon.tsx
   const localizedSourceFromTask: { [channelType in CoreChannelTypes]: string } = {
@@ -118,39 +117,23 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
             <Bold>{formattedIdentifier}</Bold>
           )}{' '}
           has{' '}
-          <button type="button" onClick={handleViewContacts}>
-            {contactsCount === 1 ? (
-              <Bold>
-                {contactsCount} <Template code="PreviousContacts-PreviousContact" />
-              </Bold>
-            ) : (
-              <Bold>
-                {contactsCount} <Template code="PreviousContacts-PreviousContacts" />
-              </Bold>
-            )}
-          </button>{' '}
+          <LinkedBanner type="button" onClick={handleViewContacts}>
+            <Bold>
+              {contactsCount} <Template code={`PreviousContacts-PreviousContact${contactsCount === 1 ? '' : 's'}`} />
+            </Bold>
+          </LinkedBanner>{' '}
           <Template code="PreviousContacts-And" />{' '}
-          <button type="button" onClick={handleViewCases}>
-            {casesCount === 1 ? (
-              <Bold>
-                {casesCount} <Template code="PreviousContacts-Case" />
-              </Bold>
-            ) : (
-              <Bold>
-                {casesCount} <Template code="PreviousContacts-Cases" />
-              </Bold>
-            )}
-          </button>{' '}
+          <LinkedBanner type="button" onClick={handleViewCases}>
+            <Bold>
+              {casesCount} <Template code={`PreviousContacts-Case${casesCount === 1 ? '' : 's'}`} />
+            </Bold>
+          </LinkedBanner>{' '}
           <Template code="PreviousContacts-And" />{' '}
-          <button
-            type="button"
-            // data-testid="PreviousContacts-ViewRecords"
-            onClick={handleViewClients}
-          >
+          <LinkedBanner type="button" onClick={handleViewClients}>
             <Bold>
               {'1'} <Template code="Profile-Singular-Client" />{' '}
             </Bold>
-          </button>
+          </LinkedBanner>
         </span>
       </YellowBanner>
     </div>

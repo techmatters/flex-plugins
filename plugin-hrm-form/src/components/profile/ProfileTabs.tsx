@@ -66,11 +66,7 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
 
   const tabs = [
     {
-      label: (
-        <>
-          <Template code="Profile-ClientTab" /> {profileId}
-        </>
-      ),
+      label: <Template code="Profile-ClientTab" />,
       key: 'details',
       renderComponent: () => <ProfileDetails profileId={profileId} task={task} />,
     },

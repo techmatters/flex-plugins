@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { SideLink, Template } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 
 import {
   searchCases as searchCasesAction,
@@ -26,9 +26,8 @@ import {
 } from '../../../states/search/actions';
 import { RootState } from '../../../states';
 import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../search/SearchResults';
-import { YellowBanner } from '../styles';
+import { YellowBanner, LinkedBanner } from '../styles';
 import { Bold } from '../../../styles';
-import { StyledLink } from '../../search/styles';
 import { CoreChannelTypes, coreChannelTypes } from '../../../states/DomainConstants';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
 import { getContactValueTemplate, getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
@@ -47,10 +46,10 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const PreviousContactsBanner: React.FC<Props> = ({
   previousContactCounts,
   task,
-  viewPreviousContacts,
   searchContacts,
   searchCases,
   openContactSearchResults,
+  openCaseSearchResults,
 }) => {
   const can = React.useMemo(() => {
     return getInitializedCan();
@@ -104,50 +103,39 @@ const PreviousContactsBanner: React.FC<Props> = ({
   const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
   if (!shouldDisplayBanner) return null;
 
-  const handleClickViewRecords = async () => {
-    performSearch();
-    viewPreviousContacts();
+  const handleViewContacts = async () => {
     openContactSearchResults();
+  };
+
+  const handleViewCases = async () => {
+    openCaseSearchResults();
   };
 
   return (
     <div>
       <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
-        {/* eslint-disable-next-line prettier/prettier */}
-        <pre>
-          <Template code="PreviousContacts-ThereAre" />{' '}
-          {contactsCount === 1 ? (
-            <Bold>
-              {contactsCount} <Template code="PreviousContacts-PreviousContact" />
-            </Bold>
-          ) : (
-            <Bold>
-              {contactsCount} <Template code="PreviousContacts-PreviousContacts" />
-            </Bold>
-          )}{' '}
-          <Template code="PreviousContacts-And" />{' '}
-          {casesCount === 1 ? (
-            <Bold>
-              {casesCount} <Template code="PreviousContacts-Case" />
-            </Bold>
-          ) : (
-            <Bold>
-              {casesCount} <Template code="PreviousContacts-Cases" />
-            </Bold>
-          )}{' '}
-          <Template code="PreviousContacts-From" /> <Template code={localizedSourceFromTask[task.channelType]} />{' '}
+        <span>
+          {/* <Template code={localizedSourceFromTask[task.channelType]} />{' '} */}
           {maskIdentifiers ? (
             <Bold>
               <Template code="MaskIdentifiers" />
             </Bold>
           ) : (
             <Bold>{contactNumber}</Bold>
-          )}
-          .{' '}
-        </pre>
-        <StyledLink underline data-testid="PreviousContacts-ViewRecords" onClick={handleClickViewRecords}>
-          <Template code="PreviousContacts-ViewRecords" />
-        </StyledLink>
+          )}{' '}
+          has{' '}
+          <LinkedBanner type="button" onClick={handleViewContacts}>
+            <Bold>
+              {contactsCount} <Template code={`PreviousContacts-PreviousContact${contactsCount === 1 ? '' : 's'}`} />
+            </Bold>
+          </LinkedBanner>{' '}
+          <Template code="PreviousContacts-And" />{' '}
+          <LinkedBanner type="button" onClick={handleViewCases}>
+            <Bold>
+              {casesCount} <Template code={`PreviousContacts-Case${casesCount === 1 ? '' : 's'}`} />
+            </Bold>
+          </LinkedBanner>
+        </span>
       </YellowBanner>
     </div>
   );
@@ -176,6 +164,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       // We put the form 'under' the search results in the modal stack so the back button takes them to the form without needing custom handlers
       dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, taskId));
       dispatch(changeRoute({ route: 'search', subroute: 'contact-results', contactsPage: 0, casesPage: 0 }, taskId));
+    },
+    openCaseSearchResults: () => {
+      dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, taskId));
+      dispatch(changeRoute({ route: 'search', subroute: 'case-results', contactsPage: 0, casesPage: 0 }, taskId));
     },
   };
 };
