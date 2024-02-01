@@ -68,11 +68,6 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
   const contactsCount = useProfileProperty(profileId, 'contactsCount') || 0;
   const casesCount = useProfileProperty(profileId, 'casesCount') || 0;
 
-  const { profile } = useProfile({ profileId });
-  if (!profile) {
-    return <div>Loading...</div>; // or some loading spinner
-  }
-
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   // We immediately create a contact when a task is created, so we don't want to show the banner
@@ -101,7 +96,7 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
           <Bold>{formattedIdentifier}</Bold>
         )}
       </IdentifierContainer>
-      has
+      <Template code="PreviousContacts-Has" />
       {contactsCount > 0 && (
         <BannerLink type="button" onClick={handleViewContacts}>
           <Bold>
