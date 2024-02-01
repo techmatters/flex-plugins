@@ -239,19 +239,6 @@ export const ProfileSectionEditButton = styled(Button)<ButtonProps>`
 `;
 ProfileSectionEditButton.displayName = 'ProfileSectionEditButton';
 
-const YellowBannerHeight = '36px';
-
-export const YellowBanner = styled('div')`
-  display: flex;
-  background-color: #fdfad3;
-  height: ${YellowBannerHeight};
-  font-size: 13px;
-  align-items: center;
-  justify-content: center;
-`;
-
-YellowBanner.displayName = 'YellowBanner';
-
 export const StyledMenuList = styled(MenuList)`
   border-radius: 5px;
   min-width: fit-content;
@@ -278,12 +265,3 @@ export const StyledPaper = styled(Paper)<StyledPaperProps>`
   width: ${props => props.width || 600}px;
 `;
 StyledPaper.displayName = 'StyledPaper';
-
-export const LinkedBanner = withStyles({
-  root: {
-    fontSize: '13px',
-    padding: '0 0 3px 0',
-    textDecoration: 'underline',
-  },
-})(ButtonBase);
-LinkedBanner.displayName = 'LinkedBanner';

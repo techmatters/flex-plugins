@@ -20,13 +20,14 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import { useIdentifierByIdentifier, useProfile, useProfileProperty } from '../../../states/profile/hooks';
-import { YellowBanner, LinkedBanner } from '../styles';
+import { YellowBannerContainer, IconContainer, IdentifierContainer, BannerLink } from './styles';
 import { Bold } from '../../../styles';
 import { CoreChannelTypes, coreChannelTypes } from '../../../states/DomainConstants';
 import { newOpenModalAction } from '../../../states/routing/actions';
-import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils';
+import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
 import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { CustomITask } from '../../../types/types';
+import { getIcon } from '../../case/timeline/TimelineIcon';
 
 type OwnProps = {
   task: CustomITask;
@@ -72,20 +73,21 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
   if (!profile) {
     return <div>Loading...</div>; // or some loading spinner
   }
-  // const { contactsCount, casesCount } = profile;
-  console.log('>>> ProfileIdentifierBanner', profile, contactsCount, casesCount);
-  // useProfileProperty(profileId)
 
-  // sell using icons instead of text - See TimelineIcon.tsx
-  const localizedSourceFromTask: { [channelType in CoreChannelTypes]: string } = {
-    [coreChannelTypes.web]: `${getContactValueTemplate(task)}`,
-    [coreChannelTypes.voice]: 'PreviousContacts-PhoneNumber',
-    [coreChannelTypes.sms]: 'PreviousContacts-PhoneNumber',
-    [coreChannelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
-    [coreChannelTypes.facebook]: 'PreviousContacts-FacebookUser',
-    [coreChannelTypes.twitter]: 'PreviousContacts-TwitterUser',
-    [coreChannelTypes.instagram]: 'PreviousContacts-InstagramUser',
-    [coreChannelTypes.line]: 'PreviousContacts-LineUser',
+  type ExtendedChannelTypes = CoreChannelTypes | 'modica';
+
+  const iconsFromTask: { [channelType in ExtendedChannelTypes]: JSX.Element } = {
+    ...{
+      [coreChannelTypes.web]: getIcon(coreChannelTypes.web, '18px'),
+      [coreChannelTypes.voice]: getIcon(coreChannelTypes.voice, '18px'),
+      [coreChannelTypes.sms]: getIcon(coreChannelTypes.sms, '18px'),
+      [coreChannelTypes.whatsapp]: getIcon(coreChannelTypes.whatsapp, '18px'),
+      [coreChannelTypes.facebook]: getIcon(coreChannelTypes.facebook, '18px'),
+      [coreChannelTypes.twitter]: getIcon(coreChannelTypes.twitter, '18px'),
+      [coreChannelTypes.instagram]: getIcon(coreChannelTypes.instagram, '18px'),
+      [coreChannelTypes.line]: getIcon(coreChannelTypes.line, '18px'),
+    },
+    modica: getIcon('modica', '18px'),
   };
 
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
@@ -105,38 +107,42 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
   };
 
   return (
-    <div>
-      <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
-        <span>
-          {/* <Template code={localizedSourceFromTask[task.channelType]} />{' '} */}
-          {maskIdentifiers ? (
-            <Bold>
-              <Template code="MaskIdentifiers" />
-            </Bold>
-          ) : (
-            <Bold>{formattedIdentifier}</Bold>
-          )}{' '}
-          has{' '}
-          <LinkedBanner type="button" onClick={handleViewContacts}>
-            <Bold>
-              {contactsCount} <Template code={`PreviousContacts-PreviousContact${contactsCount === 1 ? '' : 's'}`} />
-            </Bold>
-          </LinkedBanner>{' '}
-          <Template code="PreviousContacts-And" />{' '}
-          <LinkedBanner type="button" onClick={handleViewCases}>
+    <YellowBannerContainer data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
+      <IconContainer>{iconsFromTask[task.channelType]}</IconContainer>
+      <IdentifierContainer>
+        {maskIdentifiers ? (
+          <Bold>
+            <Template code="MaskIdentifiers" />
+          </Bold>
+        ) : (
+          <Bold>{formattedIdentifier}</Bold>
+        )}
+      </IdentifierContainer>
+      has
+      {contactsCount > 0 && (
+        <BannerLink type="button" onClick={handleViewContacts}>
+          <Bold>
+            {contactsCount} <Template code={`PreviousContacts-PreviousContact${contactsCount === 1 ? '' : 's'}`} />
+          </Bold>
+        </BannerLink>
+      )}
+      {casesCount > 0 && (
+        <>
+          {contactsCount > 0 && ', '}
+          <BannerLink type="button" onClick={handleViewCases}>
             <Bold>
               {casesCount} <Template code={`PreviousContacts-Case${casesCount === 1 ? '' : 's'}`} />
             </Bold>
-          </LinkedBanner>{' '}
-          <Template code="PreviousContacts-And" />{' '}
-          <LinkedBanner type="button" onClick={handleViewClients}>
-            <Bold>
-              {'1'} <Template code="Profile-Singular-Client" />{' '}
-            </Bold>
-          </LinkedBanner>
-        </span>
-      </YellowBanner>
-    </div>
+          </BannerLink>
+        </>
+      )}
+      <Template code="PreviousContacts-And" />
+      <BannerLink type="button" onClick={handleViewClients}>
+        <Bold>
+          {'1'} <Template code="Profile-Singular-Client" />
+        </Bold>
+      </BannerLink>
+    </YellowBannerContainer>
   );
 };
 

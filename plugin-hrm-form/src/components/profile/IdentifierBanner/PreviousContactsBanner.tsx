@@ -26,7 +26,7 @@ import {
 } from '../../../states/search/actions';
 import { RootState } from '../../../states';
 import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../search/SearchResults';
-import { YellowBanner, LinkedBanner } from '../styles';
+import { YellowBannerContainer, BannerLink } from './styles';
 import { Bold } from '../../../styles';
 import { CoreChannelTypes, coreChannelTypes } from '../../../states/DomainConstants';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
@@ -113,7 +113,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
   return (
     <div>
-      <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
+      <YellowBannerContainer data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
         <span>
           {/* <Template code={localizedSourceFromTask[task.channelType]} />{' '} */}
           {maskIdentifiers ? (
@@ -124,19 +124,19 @@ const PreviousContactsBanner: React.FC<Props> = ({
             <Bold>{contactNumber}</Bold>
           )}{' '}
           has{' '}
-          <LinkedBanner type="button" onClick={handleViewContacts}>
+          <BannerLink type="button" onClick={handleViewContacts}>
             <Bold>
               {contactsCount} <Template code={`PreviousContacts-PreviousContact${contactsCount === 1 ? '' : 's'}`} />
             </Bold>
-          </LinkedBanner>{' '}
+          </BannerLink>{' '}
           <Template code="PreviousContacts-And" />{' '}
-          <LinkedBanner type="button" onClick={handleViewCases}>
+          <BannerLink type="button" onClick={handleViewCases}>
             <Bold>
               {casesCount} <Template code={`PreviousContacts-Case${casesCount === 1 ? '' : 's'}`} />
             </Bold>
-          </LinkedBanner>
+          </BannerLink>
         </span>
-      </YellowBanner>
+      </YellowBannerContainer>
     </div>
   );
 };
