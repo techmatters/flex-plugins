@@ -156,7 +156,7 @@
   "CaseList-Filters-Status": "Status",
   "CaseList-NextPage": "Next page",
   "CaseList-NoCases": "No incidents found.",
-  "CaseList-PrevPage": "page",
+  "CaseList-PrevPage": "Previous page",
   "CaseList-SomethingWentWrong": "Something went wrong while loading incidents list. Please retry in a moment.",
   "CaseList-THCase": "Incident",
   "CaseList-THCategory": "Category",
