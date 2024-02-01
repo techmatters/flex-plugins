@@ -44,7 +44,6 @@ export const getNumberFromTask = (task: CustomITask) => {
  * @param {ITask | CustomITask} task
  */
 export const getFormattedNumberFromTask = (task: CustomITask) => {
-  console.log('>>> task', task);
   return task.channelType === channelTypes.twitter ? `@${task.attributes.twitterUserHandle}` : getNumberFromTask(task);
 };
 
