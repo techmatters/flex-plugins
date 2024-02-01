@@ -26,15 +26,15 @@ import {
 } from '../../../states/search/actions';
 import { RootState } from '../../../states';
 import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../search/SearchResults';
-import { YellowBannerContainer, BannerLink } from './styles';
+import { YellowBannerContainer, BannerLink, IconContainer, IdentifierContainer } from './styles';
 import { Bold } from '../../../styles';
-import { CoreChannelTypes, coreChannelTypes } from '../../../states/DomainConstants';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
-import { getContactValueTemplate, getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
+import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
 import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { CustomITask, isTwilioTask } from '../../../types/types';
 import { selectCounselorsHash } from '../../../states/configuration/selectCounselorsHash';
 import selectPreviousContactCounts from '../../../states/search/selectPreviousContactCounts';
+import { iconsFromTask } from './iconsFromTask';
 
 type OwnProps = {
   task: CustomITask;
@@ -54,21 +54,6 @@ const PreviousContactsBanner: React.FC<Props> = ({
   const can = React.useMemo(() => {
     return getInitializedCan();
   }, []);
-
-  let localizedSourceFromTask: { [channelType in CoreChannelTypes]: string };
-
-  if (isTwilioTask(task)) {
-    localizedSourceFromTask = {
-      [coreChannelTypes.web]: `${getContactValueTemplate(task)}`,
-      [coreChannelTypes.voice]: 'PreviousContacts-PhoneNumber',
-      [coreChannelTypes.sms]: 'PreviousContacts-PhoneNumber',
-      [coreChannelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
-      [coreChannelTypes.facebook]: 'PreviousContacts-FacebookUser',
-      [coreChannelTypes.twitter]: 'PreviousContacts-TwitterUser',
-      [coreChannelTypes.instagram]: 'PreviousContacts-InstagramUser',
-      [coreChannelTypes.line]: 'PreviousContacts-LineUser',
-    };
-  }
 
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
@@ -112,32 +97,37 @@ const PreviousContactsBanner: React.FC<Props> = ({
   };
 
   return (
-    <div>
-      <YellowBannerContainer data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
-        <span>
-          {/* <Template code={localizedSourceFromTask[task.channelType]} />{' '} */}
-          {maskIdentifiers ? (
-            <Bold>
-              <Template code="MaskIdentifiers" />
-            </Bold>
-          ) : (
-            <Bold>{contactNumber}</Bold>
-          )}{' '}
-          has{' '}
-          <BannerLink type="button" onClick={handleViewContacts}>
-            <Bold>
-              {contactsCount} <Template code={`PreviousContacts-PreviousContact${contactsCount === 1 ? '' : 's'}`} />
-            </Bold>
-          </BannerLink>{' '}
-          <Template code="PreviousContacts-And" />{' '}
-          <BannerLink type="button" onClick={handleViewCases}>
+    <YellowBannerContainer data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
+      <IconContainer>{iconsFromTask[task.channelType]}</IconContainer>
+      <IdentifierContainer>
+        {maskIdentifiers ? (
+          <Bold>
+            <Template code="MaskIdentifiers" />
+          </Bold>
+        ) : (
+          <Bold>{contactNumber}</Bold>
+        )}
+      </IdentifierContainer>
+      has
+      {contactsCount > 0 && (
+        <BannerLink type="button" onClick={handleViewContacts} data-testid="banner-link">
+          <Bold>
+            {contactsCount} <Template code={`PreviousContacts-PreviousContact${contactsCount === 1 ? '' : 's'}`} />
+          </Bold>
+        </BannerLink>
+      )}
+      {casesCount > 0 && (
+        <>
+          {contactsCount > 0 && ', '}
+          <Template code="PreviousContacts-And" />
+          <BannerLink type="button" onClick={handleViewCases} data-testid="banner-link">
             <Bold>
               {casesCount} <Template code={`PreviousContacts-Case${casesCount === 1 ? '' : 's'}`} />
             </Bold>
           </BannerLink>
-        </span>
-      </YellowBannerContainer>
-    </div>
+        </>
+      )}
+    </YellowBannerContainer>
   );
 };
 

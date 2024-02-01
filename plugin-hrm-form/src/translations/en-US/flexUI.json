@@ -379,7 +379,6 @@
   "PreviousContacts-Case": "case",
   "PreviousContacts-Cases": "cases",
   "PreviousContacts-And": ", and",
-  "PreviousContacts-From": "from",
   "PreviousContacts-IPAddress": "IP address",
   "PreviousContacts-EmailAddress": "email",
   "PreviousContacts-PhoneNumber": "phone number",
@@ -388,7 +387,6 @@
   "PreviousContacts-TwitterUser": "Twitter user",
   "PreviousContacts-InstagramUser": "Instagram user",
   "PreviousContacts-LineUser": "Line user",
-  "PreviousContacts-ViewRecords": "View Records",
   "PreviousContacts-OnlyShowRecordsFrom": "Only show records from",
 
   "Profile-Title": "Client Profile",

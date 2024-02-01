@@ -31,9 +31,9 @@ type Props = OwnProps;
 
 const ProfileIdentifierBannerFeatureFlagSwitch: React.FC<Props> = (props: Props) => {
   const { enable_client_profiles: enableClientProfiles } = getAseloFeatureFlags();
-  // return <PreviousContactsBanner {...props} />;
+  return <PreviousContactsBanner {...props} />;
 
-  return enableClientProfiles ? <ProfileIdentifierBanner {...props} /> : <PreviousContactsBanner {...props} />;
+  // return enableClientProfiles ? <ProfileIdentifierBanner {...props} /> : <PreviousContactsBanner {...props} />;
 };
 
 export default ProfileIdentifierBannerFeatureFlagSwitch;

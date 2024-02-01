@@ -319,7 +319,6 @@
   "PreviousContacts-Contacts": "contacts",
   "PreviousContacts-EmailAddress": "Email",
   "PreviousContacts-FacebookUser": "Facebook user",
-  "PreviousContacts-From": "from",
   "PreviousContacts-InstagramUser": "Instagram user",
   "PreviousContacts-IPAddress": "IP address",
   "PreviousContacts-LineUser": "Line user",
@@ -331,7 +330,6 @@
   "PreviousContacts-ThereAre": "There are",
   "PreviousContacts-ThereIs": "There is",
   "PreviousContacts-TwitterUser": "Twitter user",
-  "PreviousContacts-ViewRecords": "View Records",
   "PreviousContacts-WhatsappNumber": "WhatsApp number",
 
   "QueueCard-LessThanMinute": "less than a minute",
