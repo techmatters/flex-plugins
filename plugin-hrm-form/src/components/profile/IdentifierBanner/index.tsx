@@ -26,7 +26,6 @@ type OwnProps = {
   task: RouterTask;
 };
 
-// eslint-disable-next-line no-use-before-define
 type Props = OwnProps;
 
 const ProfileIdentifierBannerFeatureFlagSwitch: React.FC<Props> = (props: Props) => {

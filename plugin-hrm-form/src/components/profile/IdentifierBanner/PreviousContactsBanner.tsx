@@ -14,7 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
@@ -40,7 +39,6 @@ type OwnProps = {
   task: CustomITask;
 };
 
-// eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const PreviousContactsBanner: React.FC<Props> = ({
@@ -79,8 +77,6 @@ const PreviousContactsBanner: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [previousContactCounts]);
 
-  // Ugh. The previous contacts count is off by one because we immediately create a contact when a task is created.
-  // contacts should really have a status so we can filter out the "active" contact on the db side.
   const contactsCount = previousContactCounts?.contacts || 0;
   const casesCount = previousContactCounts?.cases || 0;
 
@@ -108,7 +104,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
           <Bold>{contactNumber}</Bold>
         )}
       </IdentifierContainer>
-      has
+      <Template code="PreviousContacts-Has" />
       {contactsCount > 0 && (
         <BannerLink type="button" onClick={handleViewContacts} data-testid="banner-link">
           <Bold>

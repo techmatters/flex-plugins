@@ -14,12 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/* eslint-disable react/prop-types */
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { useIdentifierByIdentifier, useProfile, useProfileProperty } from '../../../states/profile/hooks';
+import { useIdentifierByIdentifier, useProfileProperty } from '../../../states/profile/hooks';
 import { YellowBannerContainer, IconContainer, IdentifierContainer, BannerLink } from './styles';
 import { Bold } from '../../../styles';
 import { newOpenModalAction } from '../../../states/routing/actions';
@@ -63,8 +62,6 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
   const { identifier } = useIdentifierByIdentifier({ identifierIdentifier, shouldAutoload: true });
   const profileId = identifier?.profiles?.[0]?.id;
 
-  // Ugh. The previous contacts count is off by one because we immediately create a contact when a task is created.
-  // contacts should really have a status so we can filter out the "active" contact on the db side.
   const contactsCount = useProfileProperty(profileId, 'contactsCount') || 0;
   const casesCount = useProfileProperty(profileId, 'casesCount') || 0;
 
