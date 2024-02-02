@@ -36,6 +36,7 @@ import selectCasesForList from '../../states/caseList/selectCasesForList';
 import selectCaseListSettings from '../../states/caseList/selectCaseListSettings';
 import { CaseListSettingsState } from '../../states/caseList/settings';
 import asyncDispatch from '../../states/asyncDispatch';
+import ProfileRouter, { isProfileRoute } from '../profile/ProfileRouter';
 
 export const CASES_PER_PAGE = 10;
 
@@ -133,6 +134,15 @@ const CaseList: React.FC<Props> = ({
       </StandaloneContainer>
     );
   }
+
+  if (isProfileRoute(routing)) {
+    return (
+      <StandaloneContainer>
+        <ProfileRouter task={standaloneTask} />
+      </StandaloneContainer>
+    );
+  }
+
   return (
     <>
       <ListContainer>
