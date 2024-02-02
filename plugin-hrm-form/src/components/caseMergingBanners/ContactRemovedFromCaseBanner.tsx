@@ -30,6 +30,7 @@ import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
 import asyncDispatch from '../../states/asyncDispatch';
 import { RootState } from '../../states';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
+import { getInitializedCan, PermissionActions } from '../../permissions';
 
 type OwnProps = {
   taskId: string;
@@ -65,30 +66,38 @@ const ContactRemovedFromCaseBanner: React.FC<Props> = ({
   savedContact,
   connectCaseToTaskContact,
   caseId,
-}) => (
-  <BannerContainer color="orange">
-    <WarningIcon />
-    <Text>
-      <Template code="CaseMerging-ContactRemovedFromCase" />
-    </Text>
-    {showUndoButton && savedContact?.id && (
-      <CaseLink
-        onClick={() => {
-          connectCaseToTaskContact(savedContact, caseId);
-        }}
-        color="#ffa500"
-      >
-        <Template code="CaseMerging-ContactUndoRemovedFromCase" />
-      </CaseLink>
-    )}
-    <HeaderCloseButton onClick={() => close(contactId)} style={{ opacity: '.75' }}>
-      <HiddenText>
-        <Template code="NavigableContainer-CloseButton" />
-      </HiddenText>
-      <Close />
-    </HeaderCloseButton>
-  </BannerContainer>
-);
+}) => {
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
+  const canUndo = showUndoButton && savedContact?.id && can(PermissionActions.EDIT_CONTACT, savedContact);
+
+  return (
+    <BannerContainer color="orange">
+      <WarningIcon />
+      <Text>
+        <Template code="CaseMerging-ContactRemovedFromCase" />
+      </Text>
+      {canUndo && (
+        <CaseLink
+          onClick={() => {
+            connectCaseToTaskContact(savedContact, caseId);
+          }}
+          color="#ffa500"
+        >
+          <Template code="CaseMerging-ContactUndoRemovedFromCase" />
+        </CaseLink>
+      )}
+      <HeaderCloseButton onClick={() => close(contactId)} style={{ opacity: '.75' }}>
+        <HiddenText>
+          <Template code="NavigableContainer-CloseButton" />
+        </HiddenText>
+        <Close />
+      </HeaderCloseButton>
+    </BannerContainer>
+  );
+};
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(ContactRemovedFromCaseBanner);

@@ -1,5 +1,5 @@
 {
-  "viewCase": [["isSupervisor"], ["isCreator"]],
+  "viewCase": [["isSupervisor"], ["isCreator"], ["isCaseContactOwner"]],
   "closeCase": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "reopenCase": [["isSupervisor"]],
   "caseStatusTransition": [],
@@ -18,7 +18,7 @@
   "editCaseSummary": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "editChildIsAtRisk": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "editFollowUpDate": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "updateCaseContacts": [["isSupervisor"], ["isCaseOpen"]],
+  "updateCaseContacts": [["isSupervisor"], ["isCaseOpen"], "isCaseContactOwner"],
 
   "viewContact": [["everyone"]],
   "editContact": [["isSupervisor"], ["isOwner"]],

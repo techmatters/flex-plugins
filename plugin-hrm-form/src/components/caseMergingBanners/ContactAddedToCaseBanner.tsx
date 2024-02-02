@@ -29,6 +29,8 @@ import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import { RootState } from '../../states';
 import { BannerActionLink, BannerContainer, CaseLink, Text } from '../../styles/banners';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
+import { getInitializedCan, PermissionActions } from '../../permissions';
+import { getHrmConfig } from '../../hrmConfig';
 
 type OwnProps = {
   taskId: string;
@@ -69,7 +71,19 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
   caseId,
   existingSavedContact,
 }) => {
-  if (connectedCase === undefined) return null;
+  /*
+  TODO: Convert to a custom hook since it has been used in several places within 
+  the Flex-plugins repo?
+  */
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
+  const { workerSid } = getHrmConfig();
+  const canViewContactAndCase = workerSid === contact.twilioWorkerId;
+  const canEditContact = can(PermissionActions.EDIT_CONTACT, contact);
+
+  if (connectedCase === undefined && canViewContactAndCase) return null;
 
   const handleRemoveContactFromCase = () => {
     if (existingSavedContact) {
@@ -85,13 +99,20 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
       <Text>
         <Template code="CaseMerging-ContactAddedTo" />
       </Text>
-      <CaseLink type="button" onClick={() => viewCaseDetails(connectedCase)}>
+      <CaseLink
+        type="button"
+        color={!canEditContact && '#000'}
+        permission={!canEditContact && 'none'}
+        onClick={() => canEditContact && viewCaseDetails(connectedCase)}
+      >
         <Template code="Case-CaseNumber" />
         {caseId}
       </CaseLink>
-      <BannerActionLink type="button" onClick={handleRemoveContactFromCase}>
-        <Template code="CaseMerging-RemoveFromCase" />
-      </BannerActionLink>
+      {canEditContact && (
+        <BannerActionLink type="button" onClick={handleRemoveContactFromCase}>
+          <Template code="CaseMerging-RemoveFromCase" />
+        </BannerActionLink>
+      )}
     </BannerContainer>
   );
 };

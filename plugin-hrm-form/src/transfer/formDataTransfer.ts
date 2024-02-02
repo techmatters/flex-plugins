@@ -33,7 +33,4 @@ export const saveFormSharedState = async (contactState: ContactState, { taskSid 
   if (draftContact) {
     await asyncDispatcher(updateContactInHrmAsyncAction(savedContact, draftContact, `${taskSid}-active`));
   }
-  if (savedContact.caseId) {
-    await asyncDispatcher(connectToCaseAsyncAction(savedContact.id, undefined));
-  }
 };
