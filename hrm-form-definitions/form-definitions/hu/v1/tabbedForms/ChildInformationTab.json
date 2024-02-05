@@ -253,7 +253,7 @@
   },
   {
     "name": "vulnerableGroups",
-    "label": "Vulnerable Groups",
+    "label": "Veszélyeztetett Csoportok",
     "type": "listbox-multiselect",
     "options": [
       {
