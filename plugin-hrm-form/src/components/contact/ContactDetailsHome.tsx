@@ -145,8 +145,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
     [],
   );
 
-  console.log('savedContact is contact home', savedContact);
-
   if (!savedContact || !definitionVersion) return null;
 
   const {

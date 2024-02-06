@@ -71,7 +71,7 @@ const ContactRemovedFromCaseBanner: React.FC<Props> = ({
     return getInitializedCan();
   }, []);
 
-  const canUndo = showUndoButton && savedContact?.id && can(PermissionActions.EDIT_CONTACT, savedContact);
+  const canUndo = showUndoButton && savedContact?.id && can(PermissionActions.ADD_CONTACT_TO_CASE, savedContact);
 
   return (
     <BannerContainer color="orange">
