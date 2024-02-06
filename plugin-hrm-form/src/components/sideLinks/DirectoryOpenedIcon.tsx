@@ -25,7 +25,7 @@ const DirectoryOpenedIcon = () => {
       viewBox="0 0 16 14"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      aria-label="Client Profiles Selected" 
+      aria-label="Client Profiles Selected"
     >
       <g clipPath="url(#clip0_262_60000)">
         <path
