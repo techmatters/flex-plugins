@@ -110,7 +110,8 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
             </Bold>
           </BannerLink>
         </>
-      )}&nbsp;
+      )}
+      &nbsp;
       <Template code="PreviousContacts-And" />
       <BannerLink type="button" onClick={handleViewClients}>
         <Bold>
