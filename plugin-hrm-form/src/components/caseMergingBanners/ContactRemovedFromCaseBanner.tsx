@@ -31,6 +31,7 @@ import asyncDispatch from '../../states/asyncDispatch';
 import { RootState } from '../../states';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { getInitializedCan, PermissionActions } from '../../permissions';
+import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 
 type OwnProps = {
   taskId: string;
@@ -42,11 +43,13 @@ const mapStateToProps = (state: RootState, { taskId, contactId }: OwnProps) => {
   const contact = selectContactByTaskSid(state, taskId);
   const { caseId } = selectCaseMergingBanners(state, contactId);
   const savedContact = selectContactStateByContactId(state, contactId)?.savedContact;
+  const connectedCase = selectCaseByCaseId(state, caseId)?.connectedCase;
 
   return {
     contactId: contact?.savedContact.id ? contact?.savedContact.id : contactId,
     caseId,
     savedContact,
+    connectedCase
   };
 };
 
@@ -66,12 +69,17 @@ const ContactRemovedFromCaseBanner: React.FC<Props> = ({
   savedContact,
   connectCaseToTaskContact,
   caseId,
+  connectedCase
 }) => {
   const can = React.useMemo(() => {
     return getInitializedCan();
   }, []);
 
-  const canUndo = showUndoButton && savedContact?.id && can(PermissionActions.ADD_CONTACT_TO_CASE, savedContact);
+  const canUndo =
+    showUndoButton &&
+    savedContact?.id &&
+    can(PermissionActions.ADD_CONTACT_TO_CASE, savedContact) &&
+    can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCase);
 
   return (
     <BannerContainer color="orange">

@@ -81,7 +81,7 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
 
   const { workerSid } = getHrmConfig();
   const canViewContactAndCase = workerSid === contact.twilioWorkerId;
-  const canEditContact = can(PermissionActions.REMOVE_CONTACT_FROM_CASE, contact);
+  const canEditContact = can(PermissionActions.REMOVE_CONTACT_FROM_CASE, contact) && can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCase);
 
   if (connectedCase === undefined && canViewContactAndCase) return null;
 
