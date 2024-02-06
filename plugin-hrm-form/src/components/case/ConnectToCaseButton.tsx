@@ -42,6 +42,7 @@ const ConnectToCaseButton: React.FC<Props> = ({
       style={{ height: '28px' }}
       disabled={isConnectedToTaskContact}
       onClick={onClickConnectToTaskContact}
+      data-fs-id="AddToCase-Button"
       secondary={color === 'grey' ? 'true' : 'false'}
       title={`${strings['CaseHeader-ConnectToTaskContact']} #${caseId}`}
     >

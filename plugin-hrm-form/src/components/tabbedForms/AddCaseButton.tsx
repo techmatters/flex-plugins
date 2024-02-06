@@ -67,6 +67,7 @@ const AddCaseButton: React.FC<Props> = ({ handleNewCaseType, handleExistingCaseT
           onClick={newOptionHandler(handleNewCaseType)}
           tabIndex={0}
           data-testid="TabbedForms-AddNewCase-Button"
+          data-fs-id="TabbedForms-AddToNewCase-Button"
         >
           <Template code="TabbedForms-NewCase" />
         </StyledAddNewCaseDropdownList>
@@ -74,6 +75,7 @@ const AddCaseButton: React.FC<Props> = ({ handleNewCaseType, handleExistingCaseT
           onMouseDown={event => event.preventDefault}
           onClick={newOptionHandler(handleExistingCaseType)}
           tabIndex={0}
+          data-fs-id="TabbedForms-AddToExistingCase-Button"
         >
           <Template code="TabbedForms-ExistingCase" />
         </StyledAddNewCaseDropdownList>
