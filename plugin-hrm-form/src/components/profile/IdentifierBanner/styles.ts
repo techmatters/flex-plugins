@@ -33,20 +33,20 @@ YellowBannerContainer.displayName = 'YellowBannerContainer';
 export const IdentifierContainer = styled('div')`
   display: inline-flex;
   align-items: center;
-  margin: 0 2px;
+  margin: 0 3px;
 `;
 IdentifierContainer.displayName = 'IdentifierContainer';
 
 export const IconContainer = styled('div')`
   display: inline-flex;
-  margin: '2px';
+  margin: 3px;
 `;
 IconContainer.displayName = 'IconContainer';
 
 export const BannerLink = withStyles({
   root: {
     fontSize: '13px',
-    padding: '0 0 2px 3px',
+    padding: '0 0 0 3px',
     textDecoration: 'underline',
     color: '#1874e1',
     whiteSpace: 'nowrap',
