@@ -26,6 +26,7 @@ export const PreviewDescription = styled(ExpandableTextBlock)<ExpandableTextBloc
   font-family: Open Sans, serif;
   text-align: left;
   padding-top: 5px;
+  width: 100%;
 `;
 
 PreviewDescription.displayName = 'PreviewDescription';
