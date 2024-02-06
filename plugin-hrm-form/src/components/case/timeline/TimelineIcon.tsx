@@ -85,6 +85,7 @@ const DefaultIcon: React.FC<DefaultIconProps> = ({ defaultTaskChannel, color }) 
           ? defaultTaskChannel.icons.main
           : defaultTaskChannel.icons.active
       }
+      aria-label={defaultTaskChannel.name}
     />
   </div>
 );
