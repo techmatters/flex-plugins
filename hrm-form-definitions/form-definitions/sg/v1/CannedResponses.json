@@ -1,49 +1,186 @@
-[{
-    "label": "Thank you for contacting.",
-    "text": "Thank you for contacting the helpline. We are here to support you. My name is XXX and I am a counselor at the helpline. "
+[
+  {
+    "label": "2gather",
+    "text": "There is a youth platform 2Gather by our friends from Singapore Children's Society, It is a virtual space for youth to take part in different activities and or speak to a staff online about their issues in private. This platform is meant for youth aged between 13 to 21.You can click on the link https:"
   },
   {
-    "label": "Confidentiality / Privacy",
-    "text": "Before we continue, I would love for you to know that this is a safe space for you to just talk and share the challenges that you are having. Everything you say here will remain here except in cases where you indicate that you are being harmed by someone (meaning any form of abuse), that you want to harm yourself (meaning suicide) or you want to harm someone. In any of these cases, I would have to inform my supervisor and inform the relevant authorities. Do you understand this?"
+    "label": "activities for children",
+    "text": "You can considered these activities to keep yourself occupied. https://www.tinklefriend.sg/info-detail/activities-for-children"
   },
   {
-    "label": "Emergency Services Call",
-    "text": "I am going to call 911 and will ask you to provide as much information as you can about the situation. Do you know where the situation is taking place?"
+    "label": "buzz",
+    "text": "Check out our latest BUZZ magazines at www.tinklefriend.sg/activities "
   },
   {
-    "label": "What is the helpline?",
-    "text": "ChildLine is a 24/7 counseling helpline that provides free counselling and psychosocial support to children and teens under the age of 18 years."
+    "label": "closing",
+    "text": "To close Tinkle Friend online chat, you may click on the 'X' to end the chat. It was a pleasure talking to you! "
   },
   {
-    "label": "How did you learn about the helpline?",
-    "text": "If you don't mind me asking, can you please share with me how you came to know about the helpline?"
+    "label": "contest",
+    "text": "You can take part in our Hard Truths Contest! Find more details at our website https://www.tinklefriend.sg/news-details/hardtruthscontest"
   },
   {
-    "label": "How do I avoid COVID?",
-    "text": "It’s understandable that you are worried about getting the COVID19 Virus, however, here are some tips to help you stay safe: \n\n • Wash your hands regularly / use sanitizer \n • Avoid handshakes, hugs and kisses. \n • Don’t touch your face unnecessarily \n • Keep a 1.5-meter distance from people, especially if they are symptomatic \n • If you feel that you show symptoms or have come in touch with a COVID19 positive person, please also call the COVID19 Helpline \n • Stay calm and don't panic"
+    "label": "end chat",
+    "text": "Thank you for sharing with Tinkle Friend! Please give us your feedback about this chat by completing a short survey on Tinkle Friend online chat at https://bit.ly/tinklefriendsurvey .Thank you!"
   },
   {
-    "label": "What is Physical abuse?",
-    "text": "Physical violence and abuse based on the fact that you are a man or a woman is an increasing problem. If you or anyone you know is being: Beaten, slapped, punched, kicked, bruised, cut, burnt or physically hurt in any way, they are being physically abused."
+    "label": "family service centre",
+    "text": "Your family members can seek help from their nearest Family Service Centre or Social Service Office https://www.msf.gov.sg/dfcs/familyservice/default.aspx or call 1800-222-0000."
   },
   {
-    "label": "What is Verbal and Emotional abuse?",
-    "text": "Not all sexual and gender based violence is physical. Verbal abuse like screaming, shouting and name calling, and emotional abuse like threats and intimidation, are real problems, especially in families."
+    "label": "faq",
+    "text": "You can find Frequently Asked Questions about Tinkle Friend at https://www.tinklefriend.sg/faq "
   },
   {
-    "label": "What is Sexual abuse and rape?",
-    "text": "People are sometimes forced to have sex with people when they don’t want to (rape), or to do sexual things against their will. This can happen once or more often. People may know the person or they may be a stranger. Sexual violence and abuse have immediate as well as long term physical and emotional consequences. Being sexually abused because you are a man or a woman is a growing problem."
+    "label": "feedback survey",
+    "text": "Thank you for sharing with Tinkle Friend! Please give us your feedback about this chat by completing a short survey on Tinkle Friend online chat at https://bit.ly/tinklefriendsurvey .Thank you!"
   },
   {
-    "label": "Affirmations",
-    "text": "Thank you for sharing this with me. It is completely natural to feel the way you do."
+    "label": "helpline opening hours",
+    "text": "Tinkle Friend helpline (1800-2744-788) is open from Monday to Friday, 2.30pm to 5.00pm."
   },
   {
-    "label": "Silent",
-    "text": "Unfortunately because there has been no response, we will have to end this conversation to speak with the next caller. When you are ready to chat with us you are welcome to reach out again."
+    "label": "greeting 1",
+    "text": "Tell me more about your day!"
   },
   {
-    "label": "Goodbye",
-    "text": "Thank you for reaching out to the helpline, we are here to support you. Please reach out to us again if you need to talk. "
+    "label": "greeting 2",
+    "text": "What's going on for you today?"
+  },
+  {
+    "label": "greeting 3",
+    "text": "What's the best thing that happened for you today?"
+  },
+  {
+    "label": "inactive",
+    "text": "Seems like you are away now. Tinkle Friend will leave this chat first. You can talk to Tinkle Friend again when you are ready. Goodbye!"
+  },
+  {
+    "label": "greeting 4 ",
+    "text": "What would you like to talk about today?"
+  },
+  {
+    "label": "mental health check-in",
+    "text": "There is a 30-minute mental health check-in session with our friends from Flourishing Minds at https://bit.ly/oms_booking to understand about and receive information and resources to promote your mental wellness. You can choose to have the check-in session through phone call, whatsapp, telegram, email or in-person; you can also remain anonymous or change your name – what makes you feel more comfortable. Would you prefer for Tinkle Friend to do the booking for you, or would you prefer to do it by yourself?"
+  },
+  {
+    "label": "mental health check-in booking",
+    "text": "To help facilitate the booking, can you share with me your name, your preferred mode of contact, and preferred day of the week (Monday to Friday) for them to contact you?"
+  },
+  {
+    "label": "mental health helpline",
+    "text": "You may wish to call Singapore Association for Mental Health helpline at 1800-283-7019."
+  },
+  {
+    "label": "opening hours",
+    "text": "Tinkle Friend online chat is open from Monday to Thursday, 2.30pm to 7.00pm and Friday from 2.30pm to 5.00pm."
+  },
+  {
+    "label": "sos 1",
+    "text": "Tinkle Friend will not be able to attend to you after our operational hours. If you have suicidal thoughts and you need support, please call our friends from Samaritans of Singapore (SOS) at 1-767, or WhatsApp them at 9151 1767. "
+  },
+  {
+    "label": "sos 2",
+    "text": "You can call Samaritans of Singapore (SOS) at 1-767, or WhatsApp them at 9151 1767."
+  },
+  {
+    "label": "emergency",
+    "text": "If you are in immediate danger, please call 999 or 995. "
+  },
+  {
+    "label": "youth",
+    "text": "I can recommend you youth platforms to seek help from. You may wish to consider calling TOUCHline at 1800 377 2252, chat online at www.ec2.sg or whatsapp Hear4U at 69782728."
+  },
+  {
+    "label": "youth_vox engaged",
+    "text": "All our youth workers at Tinkle Friend are currently engaged. You may consider to DM our youth worker on VOX Instagram https://www.instagram.com/vox.44cc/ instead."
+  },
+  {
+    "label": "youth_vox",
+    "text": "We have our friends from VOX who are trained to support youths like you. Please hold on for a while."
+  },
+  {
+    "label": "abusive language",
+    "text": "Kindly refrain from using abusive language at Tinkle Friend as it would hurt our feelings. Let's use kind words to talk to one another."
+  },
+  {
+    "label": "abusive language warning",
+    "text": "Please note that all our chats are recorded. Tinkle Friend will leave the chat if you are not ready to speak kindly today."
+  },
+  {
+    "label": "coping_deep breathing",
+    "text": "Deep breathing is a simple exercise that we can do anytime and anywhere. It helps us to slow down our breathing and calm our body down so that we can think clearer. Let's give it a try! Place your hands on your stomach and imagine that your stomach is a balloon. Breathe in slowly through your nose and imagine the balloon filling up with air - you should feel your stomach expanding as the balloon gets filled up with air. Then, breathe out slowly through your mouth and imagine the balloon deflating - you should feel your stomach going down. You can slowly count to 5 as you breathe in and out too. Keep breathing like this for a few more times, or until you feel more calm and relaxed. Shall we try it together?"
+  },
+  {
+    "label": "coping_butterfly hug",
+    "text": "Tinkle Friend would like to share you with a relaxation strategy called the butterfly hug technique. Let's try it together! Firstly, wrap your arms around yourself, so that each hand touches the opposite upper arm or shoulder. Then, move your hands like how the wings of a butterfly flutter, and tap your arms/shoulders gently. Take slow and deep breaths in and out while doing the butterfly hug. You can continue until you feel calmer and more relaxed."
+  },
+  {
+    "label": "coping_54321 grounding",
+    "text": "One way we can cope when we keep having repeated thoughts or feel like we are reliving the experiences that it disrupts what we are doing at the moment, is to take a pause and try the 5-4-3-2-1 grounding technique. What you can do is to pay attention to your surroundings through your 5 senses. Take a moment to look around your environment and see if you can name 5 things you can see, 4 things you can touch, 3 things you can hear, 2 things you can smell, and 1 thing you can taste. Let's start off by taking a few deep breaths. Take a look at your surrounding, and see if you can try this 5-4-3-2-1 technique."
+  },
+  {
+    "label": "coping_counting shapes colour grounding",
+    "text": "One way we can cope when we keep having repeated thoughts or feel like we are reliving the experiences that it disrupts what we are doing at the moment, is to take a pause and try the grounding technique. What you can do is to pay attention to your surroundings. You can do so by counting shapes or colour! Let's give it a try! For the next one minute, count all the squares that you can where you are right now. Try and identify as many squares as possible. You can challenge yourself by repeating this simple activity with a different shape or colour until you feel present again."
+  },
+  {
+    "label": "coping_visualisation",
+    "text": "When we feel strong emotions, we can take a pause and imagine something that makes us feel happy, calm or safe. Firstly, find a quiet and comfortable place to sit at. Then, take a deep breath and close your eyes. Next is the part where you work your imaginations! Try and imagine yourself in a place that makes you feel happy, calm and safe. Imagine that you're doing a relaxing activity or enjoying your favourite snack. Try and visualise more details in your imagination, such as the scenary you can see and the sounds you can hear. Continue to take slow, deep breaths while imagining, until you start to feel more relaxed."
+  },
+  {
+    "label": "coping_reframe negative thoughts",
+    "text": "Sometimes our brains come up with thoughts that might not be very friendly or kind about ourselves. These are called automatic negative thoughts, or ANTs for short. ANTs can make us feel not-so-good, just like what you seem to be experiencing now. However, we can learn to turn these negative thoughts into positive ones. This is called reframing. The first step is to identify the negative thoughts. It may sound like \"I'm not good enough\" or \"I can't do it\". Then, ask yourself if those thoughts are 100% true. Sometimes, ANTs like to exaggerate and can trick us into believing that it is true. Next, replace the negative words with something more positive, such as \"I'm good enough and I can be better\" or \"I can't do it yet, and I can try my best\". This is not always easy. You can also ask yourself \"What is a more helpful thought?\", \"What is another possibility?\", \"If my friend had this thought, what would I tell them?\". Reframing takes practice, just like when you learn to ride a bicycle. The more you do it, the better you will become!"
+  },
+  {
+    "label": "NAVH (to send adults contacting on behalf of child)",
+    "text": "If you or someone you know is in an abusive relationship, seek help by contacting the National Anti-Violence & Sexual Harassment Helpline. You may call 1800-777-0000 to report or seek assistance. You may also make an online report at: https://form.gov.sg/6376fbdc8d8be90012d8e56b"
+  },
+  {
+    "label": "Youthline",
+    "text": "Youthline provides a listening ear and free counselling for anyone up to 35 years old. Youthline is a safe space that is confidential and welcomes everyone. You can call their helpline at 6436 6612, WhatsApp them at 8533 9460 or email them at hello@youthline.sg."
+  },
+  {
+    "label": "Safe and unsafe secrets",
+    "text": "Safe secrets are those which can be kept for a short time; usually have a happy outcome; and are always told eventually. You feel excited, safe, or comfortable keeping the secret. Even if you keep the secret, no one will get hurt. For example, holding a birthday surprise for your sibling or having a surprise gift for a friend. \n\nOn the other hand, unsafe secrets are kept for a long time, and someone threatens or tells you that something bad will happen if you tell. You feel unsafe, uncomfortable or confused keeping the secret. If you don't tell, you or someone else might continue to be hurt or feel unsafe. For example, when an online friend asks you for your personal information or someone touches your private body parts without permission and you feel uncomfortable."
+  },
+  {
+    "label": "No, go, tell",
+    "text": "We all have the rights to feel safe at all times. When someone makes you feel unsafe, you can be assertive and try the \"No, Go, Tell\". Say \"No\" with a strong voice and body. \nNo: Keep saying no until you feel safe again or get out of the situation. \nGo: Go away from the person, place, or situation that is making you feel unsafe as soon as you can. Go to somewhere or someone that makes you feel safe. \nTell: Tell a safe adult and keep telling until someone believes you and helps you to feel safe again."
+  },
+  {
+    "label": "Child's identifiable information (for abuse & suicide risk)_full name",
+    "text": "Tinkle Friend is concerned and worried about your safety. It is important to us that all children are safe and well. I want you to know that you are not in trouble for sharing with us what had happened to you. In fact, you have been very brave in sharing this. Tinkle Friend wants to make sure that you get the help that you need. May I know your full name?"
+  },
+  {
+    "label": "Child's identifiable information (for abuse & suicide risk)_school class",
+    "text": "Can I know which school and class you belong to?\r\n"
+  },
+  {
+    "label": "Child's identifiable information (for abuse & suicide risk)_address",
+    "text": "Can you share with me your home address or postal code if you know? This is so that we can contact someone who can keep you safe."
+  },
+  {
+    "label": "Child's identifiable information (for abuse & suicide risk)_contact number",
+    "text": "Just in case we lose contact with you, will you be comfortable to give us your contact number or any other method in which we can contact you?"
+  },
+  {
+    "label": "Limits to confidentiality",
+    "text": "What you share with Tinkle Friend will remain confidential, which means we will not share it with anyone. However, if there is any risk of harm to yourself or others, such as if you or someone else is going to be hurt, or you are going to hurt someone else, Tinkle Friend will need to tell someone about it who can help to keep you safe."
+  },
+  {
+    "label": "Tell me a joke/ riddle 1",
+    "text": "What do you call cheese that isn't yours? \nNacho cheese!"
+  },
+  {
+    "label": "Tell me a joke/ riddle 2",
+    "text": "Why did the bicycle fall over?\nBecause it was two-tired!"
+  },
+  {
+    "label": "Tell me a joke/ riddle 3",
+    "text": "What do you call a fish with no eyes?\nFsh!"
+  },
+  {
+    "label": "SHECARES@SCWO (victims of online harm)",
+    "text": "SHECARES@SCWO is a one-stop centre to support victims of online harms such as cyberbullying, doxxing, cyberstalking and harassment. You can call their toll-free helpline at 8001 01 4616 or WhatsApp their textline at 6571 4400. For more information, you may visit https://www.scwo.org.sg/shecaresscwo-a-one-stop-centre-to-support-victims-of-online-harms/."
   }
 ]
