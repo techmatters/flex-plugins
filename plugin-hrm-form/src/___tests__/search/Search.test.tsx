@@ -64,6 +64,19 @@ jest.mock('../../states/case/caseBanners', () => ({
   })),
 }));
 
+jest.mock('../../states/case/selectCaseStateByCaseId', () => {
+  return {
+    __esModule: true,
+    default: jest.fn()
+  };
+});
+
+const caseObj = {
+  twilioWorkerId: jest.fn(() => 'WEXsazxxxx234ew')
+}
+
+caseObj.twilioWorkerId.mockReturnValue("WEXsazxxxx234ew")
+
 function createState(
   taskId,
   {

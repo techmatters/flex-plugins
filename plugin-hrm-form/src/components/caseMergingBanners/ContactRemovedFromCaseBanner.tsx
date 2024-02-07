@@ -49,7 +49,7 @@ const mapStateToProps = (state: RootState, { taskId, contactId }: OwnProps) => {
     contactId: contact?.savedContact.id ? contact?.savedContact.id : contactId,
     caseId,
     savedContact,
-    connectedCase,
+    connectedCaseState: connectedCase,
   };
 };
 
@@ -69,7 +69,7 @@ const ContactRemovedFromCaseBanner: React.FC<Props> = ({
   savedContact,
   connectCaseToTaskContact,
   caseId,
-  connectedCase,
+  connectedCaseState,
 }) => {
   const can = React.useMemo(() => {
     return getInitializedCan();
@@ -79,7 +79,7 @@ const ContactRemovedFromCaseBanner: React.FC<Props> = ({
     showUndoButton &&
     savedContact?.id &&
     can(PermissionActions.ADD_CONTACT_TO_CASE, savedContact) &&
-    can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCase);
+    can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCaseState);
 
   return (
     <BannerContainer color="orange">
