@@ -134,7 +134,6 @@ function createState(
             detailsExpanded: {},
           },
         },
-        removedCaseId: {},
       },
       [csamReportBase]: {
         contacts: {},
