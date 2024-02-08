@@ -207,5 +207,5 @@ jest.mock('../components/case/styles', () => ({
 }));
 
 jest.mock('../components/profile/styles', () => ({
-  YellowBanner: 'YellowBanner',
+  YellowBannerContainer: 'YellowBannerContainer',
 }));
