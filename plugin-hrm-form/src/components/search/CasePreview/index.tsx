@@ -74,7 +74,6 @@ const CasePreview: React.FC<Props> = ({
   closeModal,
 }) => {
   const { id, createdAt, connectedContacts, status, info, twilioWorkerId } = currentCase;
-  const createdAtObj = new Date(createdAt);
   const updatedAtObj = getUpdatedDate(currentCase);
   const followUpDateObj = info.followUpDate ? new Date(info.followUpDate) : undefined;
   const { definitionVersion: versionId } = info;
@@ -121,8 +120,8 @@ const CasePreview: React.FC<Props> = ({
         <CaseHeader
           caseId={id}
           contactLabel={contactLabel}
-          createdAt={createdAtObj}
-          updatedAt={updatedAtObj}
+          createdAt={createdAt}
+          updatedAt={updatedAtObj.toISOString()}
           followUpDate={followUpDateObj}
           onClickViewCase={onClickViewCase}
           isOrphanedCase={orphanedCase}

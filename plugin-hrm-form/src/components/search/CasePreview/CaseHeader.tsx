@@ -24,12 +24,13 @@ import { SubtitleLabel, SubtitleValue, StyledLink, PreviewHeaderText, PreviewRow
 import { Flex } from '../../../styles';
 import { getTemplateStrings } from '../../../hrmConfig';
 import ConnectToCaseButton from '../../case/ConnectToCaseButton';
+import { getLocaleDateTime } from '../../../utils/helpers';
 
 type OwnProps = {
   caseId: string;
   contactLabel?: string;
-  createdAt: Date;
-  updatedAt?: Date;
+  createdAt: string;
+  updatedAt?: string;
   followUpDate?: Date;
   isOrphanedCase: boolean;
   status: string;
@@ -98,14 +99,14 @@ const CaseHeader: React.FC<Props> = ({
             <SubtitleLabel>
               <Template code="CaseHeader-Opened" />:
             </SubtitleLabel>
-            <SubtitleValue>{format(createdAt, 'MMM d, yyyy')}</SubtitleValue>
+            <SubtitleValue>{getLocaleDateTime(createdAt)}</SubtitleValue>
             {updatedAt && (
               <>
                 <SubtitleLabel>
                   <Template code={status === 'closed' || isOrphanedCase ? 'CaseHeader-Closed' : 'CaseHeader-Updated'} />
                   :
                 </SubtitleLabel>
-                <SubtitleValue>{format(updatedAt, 'MMM d, yyyy')}</SubtitleValue>
+                <SubtitleValue>{getLocaleDateTime(updatedAt)}</SubtitleValue>
               </>
             )}
             {followUpDate && (

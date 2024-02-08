@@ -45,6 +45,7 @@ import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import { getHrmConfig } from '../../hrmConfig';
 import { configurationBase, namespace } from '../../states/storeNamespaces';
+import { getLocaleDateTime } from '../../utils/helpers';
 
 const CHAR_LIMIT = 200;
 
@@ -88,13 +89,11 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
     const summary = caseItem.info && caseItem.info.summary;
     const shortSummary = getShortSummary(summary, CHAR_LIMIT, 'case');
     const counselor = formatName(counselorsHash[caseItem.twilioWorkerId]);
-    const opened = `${format(new Date(caseItem.createdAt), 'MMM d, yyyy')}`;
+    const opened = getLocaleDateTime(caseItem.createdAt);
     const beenUpdated = caseItem.createdAt !== caseItem.updatedAt;
-    const updated = beenUpdated ? `${format(new Date(caseItem.updatedAt), 'MMM d, yyyy')}` : '—';
+    const updated = beenUpdated ? getLocaleDateTime(caseItem.updatedAt) : '—';
     const followUpDate =
-      caseItem.info && caseItem.info.followUpDate
-        ? `${format(parseISO(caseItem.info.followUpDate), 'MMM d, yyyy')}`
-        : '—';
+      caseItem.info && caseItem.info.followUpDate ? getLocaleDateTime(caseItem.info.followUpDate) : '—';
 
     const definitionVersion = definitionVersions[version];
 
