@@ -105,7 +105,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
         )}
       </IdentifierContainer>
       <Template code="PreviousContacts-Has" />
-      <BannerLink type="button" onClick={handleViewContacts} data-testid="banner-link">
+      <BannerLink type="button" onClick={handleViewContacts} data-testid="banner-link-contacts">
         <Bold>
           {contactsCount} <Template code={`PreviousContacts-PreviousContact${contactsCount === 1 ? '' : 's'}`} />
         </Bold>
@@ -115,7 +115,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
           {contactsCount > 0 && ','}&nbsp;
           <Template code="PreviousContacts-And" />
           &nbsp;
-          <BannerLink type="button" onClick={handleViewCases} data-testid="banner-link">
+          <BannerLink type="button" onClick={handleViewCases} data-testid="banner-link-cases">
             <Bold>
               {casesCount} <Template code={`PreviousContacts-Case${casesCount === 1 ? '' : 's'}`} />
             </Bold>

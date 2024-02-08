@@ -163,7 +163,7 @@ test('calls the correct function when the contacts link is clicked', () => {
     />,
   );
 
-  fireEvent.click(getByTestId('banner-link'));
+  fireEvent.click(getByTestId('banner-link-contacts'));
   expect(openContactSearchResults).toHaveBeenCalled();
 });
 
@@ -184,7 +184,7 @@ test('calls the correct function when the cases link is clicked', () => {
     />,
   );
 
-  fireEvent.click(getByTestId('banner-link'));
+  fireEvent.click(getByTestId('banner-link-cases'));
   expect(openCaseSearchResults).toHaveBeenCalled();
 });
 
