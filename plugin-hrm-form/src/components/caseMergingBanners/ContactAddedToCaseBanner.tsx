@@ -106,12 +106,13 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
         color={!canEditContact && '#000'}
         permission={!canEditContact && 'none'}
         onClick={() => canEditContact && viewCaseDetails(connectedCase)}
+        data-fs-id="LinkedCase-Button"
       >
         <Template code="Case-CaseNumber" />
         {caseId}
       </CaseLink>
       {canEditContact && (
-        <BannerActionLink type="button" onClick={handleRemoveContactFromCase}>
+        <BannerActionLink type="button" onClick={handleRemoveContactFromCase} data-fs-id="RemoveContactFromCase-Button">
           <Template code="CaseMerging-RemoveFromCase" />
         </BannerActionLink>
       )}
