@@ -16,19 +16,21 @@
 
 import { getIcon } from '../../case/timeline/TimelineIcon';
 import { CoreChannelTypes, coreChannelTypes } from '../../../states/DomainConstants';
+import { customSmsChannelTypes } from '../../../utils/smsChannels';
 
 type ExtendedChannelTypes = CoreChannelTypes | 'modica';
 
+const iconSize = '18px';
 export const iconsFromTask: { [channelType in ExtendedChannelTypes]: JSX.Element } = {
   ...{
-    [coreChannelTypes.web]: getIcon(coreChannelTypes.web, '18px'),
-    [coreChannelTypes.voice]: getIcon(coreChannelTypes.voice, '18px'),
-    [coreChannelTypes.sms]: getIcon(coreChannelTypes.sms, '18px'),
-    [coreChannelTypes.whatsapp]: getIcon(coreChannelTypes.whatsapp, '18px'),
-    [coreChannelTypes.facebook]: getIcon(coreChannelTypes.facebook, '18px'),
-    [coreChannelTypes.twitter]: getIcon(coreChannelTypes.twitter, '18px'),
-    [coreChannelTypes.instagram]: getIcon(coreChannelTypes.instagram, '18px'),
-    [coreChannelTypes.line]: getIcon(coreChannelTypes.line, '18px'),
+    [coreChannelTypes.web]: getIcon(coreChannelTypes.web, iconSize),
+    [coreChannelTypes.voice]: getIcon(coreChannelTypes.voice, iconSize),
+    [coreChannelTypes.sms]: getIcon(coreChannelTypes.sms, iconSize),
+    [coreChannelTypes.whatsapp]: getIcon(coreChannelTypes.whatsapp, iconSize),
+    [coreChannelTypes.facebook]: getIcon(coreChannelTypes.facebook, iconSize),
+    [coreChannelTypes.twitter]: getIcon(coreChannelTypes.twitter, iconSize),
+    [coreChannelTypes.instagram]: getIcon(coreChannelTypes.instagram, iconSize),
+    [coreChannelTypes.line]: getIcon(coreChannelTypes.line, iconSize),
   },
-  modica: getIcon('modica', '18px'),
+  [customSmsChannelTypes.modica]: getIcon(customSmsChannelTypes.modica, iconSize)
 };

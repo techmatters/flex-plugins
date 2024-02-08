@@ -71,13 +71,13 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
   const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
   if (!shouldDisplayBanner) return null;
 
-  const handleViewClients = async () => {
+  const handleViewClients = () => {
     openProfileModal(profileId);
   };
-  const handleViewContacts = async () => {
+  const handleViewContacts = () => {
     openContactsModal(profileId);
   };
-  const handleViewCases = async () => {
+  const handleViewCases = () => {
     openCasesModal(profileId);
   };
 
@@ -94,13 +94,11 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
         )}
       </IdentifierContainer>
       <Template code="PreviousContacts-Has" />
-      {contactsCount > 0 && (
-        <BannerLink type="button" onClick={handleViewContacts}>
-          <Bold>
-            {contactsCount} <Template code={`PreviousContacts-PreviousContact${contactsCount === 1 ? '' : 's'}`} />
-          </Bold>
-        </BannerLink>
-      )}
+      <BannerLink type="button" onClick={handleViewContacts}>
+        <Bold>
+          {contactsCount} <Template code={`PreviousContacts-PreviousContact${contactsCount === 1 ? '' : 's'}`} />
+        </Bold>
+      </BannerLink>
       {casesCount > 0 && (
         <>
           {contactsCount > 0 && ', '}

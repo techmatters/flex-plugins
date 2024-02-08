@@ -84,11 +84,11 @@ const PreviousContactsBanner: React.FC<Props> = ({
   const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
   if (!shouldDisplayBanner) return null;
 
-  const handleViewContacts = async () => {
+  const handleViewContacts = () => {
     openContactSearchResults();
   };
 
-  const handleViewCases = async () => {
+  const handleViewCases = () => {
     openCaseSearchResults();
   };
 
@@ -105,14 +105,11 @@ const PreviousContactsBanner: React.FC<Props> = ({
         )}
       </IdentifierContainer>
       <Template code="PreviousContacts-Has" />
-      &nbsp;
-      {contactsCount > 0 && (
-        <BannerLink type="button" onClick={handleViewContacts} data-testid="banner-link">
-          <Bold>
-            {contactsCount} <Template code={`PreviousContacts-PreviousContact${contactsCount === 1 ? '' : 's'}`} />
-          </Bold>
-        </BannerLink>
-      )}
+      <BannerLink type="button" onClick={handleViewContacts} data-testid="banner-link">
+        <Bold>
+          {contactsCount} <Template code={`PreviousContacts-PreviousContact${contactsCount === 1 ? '' : 's'}`} />
+        </Bold>
+      </BannerLink>
       {casesCount > 0 && (
         <>
           {contactsCount > 0 && ','}&nbsp;
