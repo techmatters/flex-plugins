@@ -85,11 +85,11 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
       <Text>
         <Template code="CaseMerging-ContactAddedTo" />
       </Text>
-      <CaseLink type="button" onClick={() => viewCaseDetails(connectedCase)}>
+      <CaseLink type="button" onClick={() => viewCaseDetails(connectedCase)} data-fs-id="LinkedCase-Button">
         <Template code="Case-CaseNumber" />
         {caseId}
       </CaseLink>
-      <BannerActionLink type="button" onClick={handleRemoveContactFromCase}>
+      <BannerActionLink type="button" onClick={handleRemoveContactFromCase} data-fs-id="RemoveContactFromCase-Button">
         <Template code="CaseMerging-RemoveFromCase" />
       </BannerActionLink>
     </BannerContainer>

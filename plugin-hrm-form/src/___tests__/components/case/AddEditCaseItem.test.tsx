@@ -34,7 +34,7 @@ import { householdSectionApi } from '../../../states/case/sections/household';
 import { newGoBackAction } from '../../../states/routing/actions';
 import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
-import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states/storeNamespaces';
+import { connectedCaseBase, namespace } from '../../../states/storeNamespaces';
 import { CaseState } from '../../../states/case/types';
 import { RecursivePartial } from '../../RecursivePartial';
 
@@ -122,7 +122,6 @@ const hrmState: Partial<RootState[typeof namespace]> = {
     },
   },
   activeContacts: {
-    isCallTypeCaller: false,
     contactDetails: { contactSearch: { detailsExpanded: {} }, caseDetails: { detailsExpanded: {} } },
     existingContacts: {
       1234: {

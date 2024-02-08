@@ -15,11 +15,23 @@
         {"label": "Cyber Bullying"},
         {"label": "Revenge Porn"},
         {"label": "Exposure to Porn"},
+        {"label": "Invasion of Privacy"},
+        {"label": "Impersonation"},
+        {"label": "Exposure to Porn"},
         {"label": "Sextortion"},
         {"label": "Grooming"},
         {"label": "Hacking"},
         {"label": "Online Addiction"},
-        {"label":"Other Online Harm"}
+        {"label": "Other Online Harm"}
+      ]
+    },
+    "Birth Registration": {
+      "color": "#4A90E2",
+      "subcategories": [
+        {"label": "Inquiry"},
+        {"label": "Notification"},
+        {"label": "Certification"},
+        {"label": "Others"}
       ]
     },
     "Violence": {
@@ -177,11 +189,22 @@
         {"label": "Cyber Bullying"},
         {"label": "Revenge Porn"},
         {"label": "Exposure to Porn"},
+        {"label": "Invasion of Privacy"},
+        {"label": "Impersonation"},
         {"label": "Sextortion"},
         {"label": "Grooming"},
         {"label": "Hacking"},
         {"label": "Online Addiction"},
         {"label":"Other Online Harm"}
+      ]
+    },
+    "Birth Registration": {
+      "color": "#4A90E2",
+      "subcategories": [
+        {"label": "Inquiry"},
+        {"label": "Notification"},
+        {"label": "Certification"},
+        {"label": "Others"}
       ]
     },
     "Mental Health": {

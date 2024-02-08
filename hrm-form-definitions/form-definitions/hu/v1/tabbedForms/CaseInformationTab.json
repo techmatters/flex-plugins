@@ -54,6 +54,10 @@
     "unknownOption": "Nem derült ki",
     "options": [
       {
+        "value": "",
+        "label": "Nem derült ki"
+      },
+      {
         "value": "Szájhagyomány",
         "label": "Szájhagyomány"
       },
@@ -72,10 +76,6 @@
       {
         "value": "Egyéb",
         "label": "Egyéb"
-      },
-      {
-        "value": "Nem derült ki",
-        "label": "Nem derült ki"
       }
     ]
   },

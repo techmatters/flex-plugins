@@ -19,11 +19,11 @@ import React, { useEffect } from 'react';
 import { format } from 'date-fns';
 import { Actions, Icon, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
-import { callTypes, isNonSaveable } from 'hrm-form-definitions';
+import { callTypes, DataCallTypes, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
-import { Flex, Box, Row } from '../../styles';
+import { Box, Flex, Row } from '../../styles';
 import {
   ContactRawJson,
   CSAMReportEntry,
@@ -33,7 +33,7 @@ import {
   isTwilioStoredMedia,
   StandaloneITask,
 } from '../../types/types';
-import { ContactAddedFont, SectionActionButton, SectionValueText, ContactDetailsIcon } from '../search/styles';
+import { ContactAddedFont, ContactDetailsIcon, SectionActionButton, SectionValueText } from '../search/styles';
 import ContactDetailsSection from './ContactDetailsSection';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';
@@ -58,6 +58,7 @@ import { selectCaseMergingBanners } from '../../states/case/caseBanners';
 import InfoIcon from '../caseMergingBanners/InfoIcon';
 import { BannerContainer, Text } from '../../styles/banners';
 import { isSmsChannelType } from '../../utils/smsChannels';
+import getCanEditContact from '../../permissions/canEditContact';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -100,7 +101,7 @@ type OwnProps = {
   task: CustomITask | StandaloneITask;
   context: DetailsContext;
   showActionIcons?: boolean;
-  handleOpenConnectDialog?: (event: any) => void;
+  handleOpenConnectDialog?: (event: any, callType: DataCallTypes) => void;
   enableEditing: boolean;
 };
 // eslint-disable-next-line no-use-before-define
@@ -137,6 +138,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const can = React.useMemo(() => {
     return action => getInitializedCan()(action, savedContact);
   }, [savedContact]);
+  const canEditContact = React.useMemo(() => getCanEditContact(savedContact), [savedContact]);
 
   useEffect(
     () => () => {
@@ -331,12 +333,12 @@ const ContactDetailsHome: React.FC<Props> = function ({
           sectionTitle={<Template code="TabbedForms-AddCallerInfoTab" />}
           expanded={detailsExpanded[CALLER_INFORMATION]}
           handleExpandClick={() => toggleSection(CALLER_INFORMATION)}
-          showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
+          showEditButton={enableEditing && canEditContact()}
           handleEditClick={() => navigate('callerInformation')}
           buttonDataTestid="ContactDetails-Section-CallerInformation"
           handleOpenConnectDialog={handleOpenConnectDialog}
           showActionIcons={showActionIcons}
-          callType="caller"
+          callType={callTypes.caller}
         >
           {definitionVersion.tabbedForms.CallerInformationTab.filter(e => !isNonSaveable(e)).map(e => (
             <SectionEntry key={`CallerInformation-${e.label}`} descriptionKey={e.label}>
@@ -350,12 +352,12 @@ const ContactDetailsHome: React.FC<Props> = function ({
           sectionTitle={<Template code="TabbedForms-AddChildInfoTab" />}
           expanded={detailsExpanded[CHILD_INFORMATION]}
           handleExpandClick={() => toggleSection(CHILD_INFORMATION)}
-          showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
+          showEditButton={enableEditing && canEditContact()}
           handleEditClick={() => navigate('childInformation')}
           buttonDataTestid="ContactDetails-Section-ChildInformation"
           handleOpenConnectDialog={handleOpenConnectDialog}
           showActionIcons={showActionIcons}
-          callType="child"
+          callType={callTypes.child}
         >
           {definitionVersion.tabbedForms.ChildInformationTab.filter(e => !isNonSaveable(e)).map(e => (
             <SectionEntry key={`ChildInformation-${e.label}`} descriptionKey={e.label}>
@@ -370,7 +372,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           expanded={detailsExpanded[ISSUE_CATEGORIZATION]}
           handleExpandClick={() => toggleSection(ISSUE_CATEGORIZATION)}
           buttonDataTestid="ContactDetails-Section-IssueCategorization"
-          showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
+          showEditButton={enableEditing && canEditContact()}
           handleEditClick={() => navigate('categories')}
         >
           {formattedCategories.length ? (
@@ -397,7 +399,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           expanded={detailsExpanded[CONTACT_SUMMARY]}
           handleExpandClick={() => toggleSection(CONTACT_SUMMARY)}
           buttonDataTestid={`ContactDetails-Section-${CONTACT_SUMMARY}`}
-          showEditButton={enableEditing && can(PermissionActions.EDIT_CONTACT)}
+          showEditButton={enableEditing && canEditContact()}
           handleEditClick={() => {
             navigate('caseInformation');
           }}
@@ -415,7 +417,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
               {referrals.map(formatResourceReferral)}
             </SectionEntry>
           )}
-          {csamReportEnabled && can(PermissionActions.EDIT_CONTACT) && (
+          {csamReportEnabled && canEditContact() && (
             <SectionEntry descriptionKey="ContactDetails-GeneralDetails-ExternalReportsFiled">
               {externalReportButton()}
               {csamReports.map(formatCsamReport)}
