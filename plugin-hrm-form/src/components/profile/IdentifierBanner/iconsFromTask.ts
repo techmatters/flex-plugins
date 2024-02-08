@@ -18,7 +18,7 @@ import { getIcon } from '../../case/timeline/TimelineIcon';
 import { CoreChannelTypes, coreChannelTypes } from '../../../states/DomainConstants';
 import { customSmsChannelTypes } from '../../../utils/smsChannels';
 
-type ExtendedChannelTypes = CoreChannelTypes | 'modica';
+type ExtendedChannelTypes = CoreChannelTypes | keyof typeof customSmsChannelTypes;
 
 const iconSize = '18px';
 export const iconsFromTask: { [channelType in ExtendedChannelTypes]: JSX.Element } = {
