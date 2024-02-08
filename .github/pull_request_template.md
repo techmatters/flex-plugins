@@ -12,8 +12,11 @@
 - [ ] Tested for chat contacts
 - [ ] Tested for call contacts
 
-### Related Issues
-Fixes #....
+### Other Related Issues
+<!--
+- The primary issue this PR addresses should be part of the PR title.
+- If there are other tickets related to this PR, reference them here with context of how they are relevant.
+-->
 
 ### Verification steps
 <!--
