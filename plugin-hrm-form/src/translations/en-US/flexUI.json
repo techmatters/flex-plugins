@@ -62,8 +62,8 @@
   "SearchResultsIndex-SelectCase": "Select Case",
   "SearchResultsIndex-NoCasesFound": "No Cases Found",
   "SearchResultsIndex-NoContactsFound": "No Contacts Found",
-  "SearchResultsIndex-SearchAgainForCase": "Search again for a Case",
-  "SearchResultsIndex-SearchAgainForContact": "Search again for a Contact",
+  "SearchResultsIndex-SearchAgainForCase": "Search again for a case",
+  "SearchResultsIndex-SearchAgainForContact": "Search again for a contact",
   "SearchResultsIndex-SaveToNewCase": "save this contact to a new case",
   "SearchResultsIndex-Or": "or",
 

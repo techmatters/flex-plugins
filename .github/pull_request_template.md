@@ -1,6 +1,3 @@
-<!-- Tag the primary responsible for reviewing this PR. If in doubt who can take this, ask first. -->
-Primary reviewer:
-
 ## Description
 <!--
 - What this pull request does.
