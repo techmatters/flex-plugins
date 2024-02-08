@@ -23,6 +23,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { DefinitionVersion, StatusInfo } from 'hrm-form-definitions';
+import { format, parseISO } from 'date-fns';
 
 import CaseTags from './CaseTags';
 import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
@@ -36,7 +37,7 @@ import {
 } from './styles';
 import { Box } from '../../styles';
 import { PermissionActions } from '../../permissions';
-import { getLocaleDateTime } from '../../utils/helpers';
+// import { getLocaleDateTime } from '../../utils/helpers';
 
 type Props = {
   caseId: string;
@@ -76,14 +77,14 @@ const CaseDetails: React.FC<Props> = ({
   editCaseSummary,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const formattedCreatedAt = getLocaleDateTime(createdAt);
-  const formattedUpdatedAt = createdAt === updatedAt ? '—' : getLocaleDateTime(updatedAt);
+  const formattedCreatedAt = `${format(parseISO(createdAt), 'MMM d, yyyy')}`;
+  const formattedUpdatedAt = createdAt === updatedAt ? '—' : `${format(parseISO(updatedAt), 'MMM d, yyyy')}`;
   const editButton =
     can(PermissionActions.EDIT_CASE_SUMMARY) ||
     can(PermissionActions.EDIT_FOLLOW_UP_DATE) ||
     can(PermissionActions.EDIT_CHILD_IS_AT_RISK) ||
     availableStatusTransitions.length > 1; // availableStatusTransitions always includes current status, if that's the only one available, you cannot change it
-  const formatFollowUpDate = getLocaleDateTime(followUpDate);
+  const formatFollowUpDate = `${format(parseISO(followUpDate), 'MMM d, yyyy')}`;
 
   return (
     <>
