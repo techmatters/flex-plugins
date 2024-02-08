@@ -32,5 +32,5 @@ export const iconsFromTask: { [channelType in ExtendedChannelTypes]: JSX.Element
     [coreChannelTypes.instagram]: getIcon(coreChannelTypes.instagram, iconSize),
     [coreChannelTypes.line]: getIcon(coreChannelTypes.line, iconSize),
   },
-  [customSmsChannelTypes.modica]: getIcon(customSmsChannelTypes.modica, iconSize)
+  [customSmsChannelTypes.modica]: getIcon(customSmsChannelTypes.modica, iconSize),
 };
