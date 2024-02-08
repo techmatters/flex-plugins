@@ -18,50 +18,28 @@ import React from 'react';
 import CheckIcon from '@material-ui/icons/Check';
 import { Button, Popover } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
-import { callTypes } from 'hrm-form-definitions';
 
 import { Row } from '../../styles';
-import { ConfirmContainer, ConfirmText, CancelButton } from './styles';
+import { CancelButton, ConfirmContainer, ConfirmText } from './styles';
 import TabPressWrapper from '../TabPressWrapper';
-import { hasTaskControl } from '../../transfer/transferTaskState';
-import { Contact, CustomITask } from '../../types/types';
 
 type Props = {
   anchorEl: Element;
-  currentIsCaller: boolean;
-  contact: Contact;
   handleConfirm: () => void;
   handleClose: () => void;
-  task: CustomITask;
-  isCallTypeCaller: boolean;
+  textTemplateCode?: string;
+  disabled?: boolean;
 };
 
 const ConnectDialog: React.FC<Props> = ({
   anchorEl,
-  currentIsCaller,
-  contact,
   handleConfirm,
   handleClose,
-  task,
-  isCallTypeCaller,
+  textTemplateCode,
+  disabled = false,
 }) => {
   const isOpen = Boolean(anchorEl);
   const id = isOpen ? 'simple-popover' : undefined;
-
-  const getText = () => {
-    const callType = contact && contact.rawJson && contact.rawJson.callType;
-    if (!callType) return '';
-
-    switch (callType) {
-      case callTypes.child:
-        return <Template code="ConnectDialog-Child" />;
-      case callTypes.caller:
-        if (currentIsCaller && isCallTypeCaller) return <Template code="ConnectDialog-Caller" />;
-        return <Template code="ConnectDialog-Child" />;
-      default:
-        return '';
-    }
-  };
 
   return (
     <Popover
@@ -80,7 +58,9 @@ const ConnectDialog: React.FC<Props> = ({
     >
       <TabPressWrapper>
         <ConfirmContainer>
-          <ConfirmText>{getText()}</ConfirmText>
+          <ConfirmText>
+            <Template code={textTemplateCode} />
+          </ConfirmText>
           <Row>
             <CancelButton tabIndex={2} variant="text" size="medium" onClick={handleClose}>
               <Template code="CaseHeader-Cancel" />
@@ -92,7 +72,7 @@ const ConnectDialog: React.FC<Props> = ({
               size="medium"
               onClick={handleConfirm}
               style={{ backgroundColor: '#000', color: '#fff', marginLeft: 20 }}
-              disabled={!hasTaskControl(task)}
+              disabled={disabled}
             >
               <CheckIcon />
               <Template code="CaseHeader-Copy" />

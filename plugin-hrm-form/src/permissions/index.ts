@@ -196,12 +196,6 @@ const isTKCondition = <T extends TargetKind>(kind: T) => (c: any): c is TKCondit
   }
 };
 
-const isTKConditionsSet = <T extends TargetKind>(kind: TargetKind) => (cs: any): cs is TKConditionsSet<T> =>
-  cs && Array.isArray(cs) && cs.every(isTKCondition(kind));
-
-const isTKConditionsSets = <T extends TargetKind>(kind: TargetKind) => (css: any): css is TKConditionsSets<T> =>
-  css && Array.isArray(css) && css.every(isTKConditionsSet(kind));
-
 /**
  * Utility type that given an object with any nesting depth, will return the union of all the leaves that are of type "string"
  */
@@ -214,9 +208,6 @@ type RulesFile = { [k in Action]: TKConditionsSets<TargetKind> };
 const isValidTKConditionsSets = <T extends TargetKind>(kind: T) => (
   css: TKConditionsSets<TargetKind>,
 ): css is TKConditionsSets<typeof kind> => css.every(cs => cs.every(isTKCondition(kind)));
-
-const isRulesFile = (rules: any): rules is RulesFile =>
-  Object.values(actionsMaps).every(map => Object.values(map).every(action => isTKConditionsSets(rules[action])));
 
 /**
  * Validates that for every TK, the ConditionsSets provided are valid
@@ -373,5 +364,3 @@ export const getInitializedCan = () => {
 };
 
 export const cleanupInitializedCan = () => (initializedCan = null);
-
-type InitializeCan = ReturnType<typeof getInitializedCan>;

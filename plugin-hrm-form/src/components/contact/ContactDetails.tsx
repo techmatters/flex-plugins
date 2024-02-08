@@ -14,11 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// TODO: complete this type
-import React, { Dispatch } from 'react';
+import React, { Dispatch, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
-import { DefinitionVersion } from 'hrm-form-definitions';
+import { callTypes, DataCallTypes, DefinitionVersion } from 'hrm-form-definitions';
 import _ from 'lodash';
 
 import ContactDetailsHome from './ContactDetailsHome';
@@ -44,33 +43,73 @@ import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { namespace } from '../../states/storeNamespaces';
 import { ContactRawJson, CustomITask, StandaloneITask } from '../../types/types';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import NavigableContainer from '../NavigableContainer';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import { newCloseModalAction, newGoBackAction } from '../../states/routing/actions';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
+import ConnectDialog from '../search/ConnectDialog';
+import { hasTaskControl } from '../../transfer/transferTaskState';
+import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
+import { selectDefinitionVersions } from '../../states/configuration/selectDefinitions';
+import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 
 type OwnProps = {
   contactId: string;
   context: DetailsContext;
-  handleOpenConnectDialog?: (event: any) => void;
+  onConfirmConnectDialog?: (calltype: DataCallTypes) => void;
   enableEditing?: boolean;
-  showActionIcons?: boolean;
   task: CustomITask | StandaloneITask;
   onClose?: () => void;
 };
+
+const mapDispatchToProps = (
+  dispatch: Dispatch<{ type: string } & Record<string, any>>,
+  { contactId, task }: OwnProps,
+) => ({
+  updateDefinitionVersion: (version: string, definitionVersion: DefinitionVersion) =>
+    dispatch(ConfigActions.updateDefinitionVersion(version, definitionVersion)),
+  updateDraftForm: (draftContactId: string, form: Partial<ContactRawJson>) =>
+    dispatch(updateDraft(draftContactId, { rawJson: form })),
+  closeModal: () => dispatch(newCloseModalAction(task.taskSid)),
+  clearContactDraft: () => {
+    dispatch(clearDraft(contactId));
+  },
+  goBack: () => dispatch(newGoBackAction(task.taskSid)),
+  openFormConfirmDialog: (form: keyof ContactRawJson, dismissAction: 'close' | 'back') =>
+    dispatch(newSetContactDialogStateAction(contactId, `${form}-confirm-${dismissAction}`, true)),
+  loadContactFromHrm: () => dispatch(loadContactFromHrmByIdAsyncAction(contactId, `${task.taskSid}-viewing`)),
+
+  releaseContactFromState: () => dispatch(releaseContact(contactId, `${task.taskSid}-viewing`)),
+});
+
+const mapStateToProps = (state: RootState, { contactId, task }: OwnProps) => {
+  const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
+  const { savedContact: taskContact } = selectContactByTaskSid(state, task.taskSid) ?? {};
+  const { savedContact, draftContact, metadata } = selectContactStateByContactId(state, contactId) ?? {};
+  return {
+    definitionVersions: selectDefinitionVersions(state),
+    savedContact,
+    draftContact,
+    loadingStatus: metadata?.loadingStatus,
+    draftCsamReport: state[namespace]['csam-report'].contacts[contactId],
+    currentRoute,
+    taskContact,
+  };
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ContactDetails: React.FC<Props> = ({
   context,
   contactId,
-  handleOpenConnectDialog,
-  showActionIcons,
   definitionVersions,
   updateDefinitionVersion,
   savedContact,
   draftContact,
+  taskContact,
   enableEditing = true,
   draftCsamReport,
   updateDraftForm,
@@ -83,6 +122,7 @@ const ContactDetails: React.FC<Props> = ({
   openFormConfirmDialog,
   loadingStatus,
   loadContactFromHrm,
+  onConfirmConnectDialog = () => undefined,
   ...otherProps
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -111,7 +151,10 @@ const ContactDetails: React.FC<Props> = ({
 
   const definitionVersion = definitionVersions[version];
 
-  if (!definitionVersion)
+  const [connectDialogAnchorEl, setConnectDialogAnchorEl] = useState(null);
+  const [callTypeInfoToCopy, setCallTypeInfoToCopy] = useState<DataCallTypes>(null);
+
+  if (!definitionVersion || !savedContact)
     return (
       <DetailsContainer>
         <CircularProgress size={50} />
@@ -169,6 +212,32 @@ const ContactDetails: React.FC<Props> = ({
     }
   };
 
+  const handleCloseDialog = () => {
+    setConnectDialogAnchorEl(null);
+    setCallTypeInfoToCopy(null);
+  };
+
+  const isCopyingCallerInformation =
+    callTypeInfoToCopy === callTypes.caller &&
+    taskContact?.rawJson.callType === callTypes.caller &&
+    savedContact?.rawJson.callType === callTypes.caller;
+
+  const handleConfirmDialog = () => {
+    if (isCopyingCallerInformation) {
+      updateDraftForm(taskContact.id, { callerInformation: savedContact.rawJson.callerInformation });
+      onConfirmConnectDialog(callTypes.caller);
+    } else {
+      updateDraftForm(taskContact.id, { childInformation: savedContact.rawJson.childInformation });
+      onConfirmConnectDialog(callTypes.child);
+    }
+  };
+
+  const handleOpenConnectDialog = (e, callType: DataCallTypes) => {
+    e.stopPropagation();
+    setCallTypeInfoToCopy(callType);
+    setConnectDialogAnchorEl(e.currentTarget);
+  };
+
   const editContactSectionElement = (
     formPath: 'callerInformation' | 'childInformation' | 'caseInformation' | 'categories',
   ) => {
@@ -204,7 +273,7 @@ const ContactDetails: React.FC<Props> = ({
               display={true}
               autoFocus={false}
               updateForm={values =>
-                updateDraftForm({
+                updateDraftForm(savedContact.id, {
                   [formPath]: values[formPath],
                 })
               }
@@ -231,10 +300,19 @@ const ContactDetails: React.FC<Props> = ({
       task={task}
       {...otherProps}
     >
+      {taskContact && (
+        <ConnectDialog
+          disabled={!hasTaskControl(task)}
+          anchorEl={connectDialogAnchorEl}
+          textTemplateCode={isCopyingCallerInformation ? 'ConnectDialog-Caller' : 'ConnectDialog-Child'}
+          handleConfirm={handleConfirmDialog}
+          handleClose={handleCloseDialog}
+        />
+      )}
       <ContactDetailsHome
         task={task}
         context={context}
-        showActionIcons={showActionIcons}
+        showActionIcons={Boolean(taskContact)}
         contactId={contactId}
         handleOpenConnectDialog={handleOpenConnectDialog}
         enableEditing={enableEditing && featureFlags.enable_contact_editing}
@@ -243,44 +321,8 @@ const ContactDetails: React.FC<Props> = ({
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: Dispatch<{ type: string } & Record<string, any>>,
-  { contactId, task }: OwnProps,
-) => ({
-  updateDefinitionVersion: (version: string, definitionVersion: DefinitionVersion) =>
-    dispatch(ConfigActions.updateDefinitionVersion(version, definitionVersion)),
-  updateDraftForm: (form: Partial<ContactRawJson>) => dispatch(updateDraft(contactId, { rawJson: form })),
-  closeModal: () => dispatch(newCloseModalAction(task.taskSid)),
-  clearContactDraft: () => {
-    dispatch(clearDraft(contactId));
-  },
-  goBack: () => dispatch(newGoBackAction(task.taskSid)),
-  openFormConfirmDialog: (form: keyof ContactRawJson, dismissAction: 'close' | 'back') =>
-    dispatch(newSetContactDialogStateAction(contactId, `${form}-confirm-${dismissAction}`, true)),
-  loadContactFromHrm: () => dispatch(loadContactFromHrmByIdAsyncAction(contactId, `${task.taskSid}-viewing`)),
-
-  releaseContactFromState: () => dispatch(releaseContact(contactId, `${task.taskSid}-viewing`)),
-});
-
-const mapStateToProps = (
-  { [namespace]: { configuration, activeContacts, 'csam-report': csamReport, routing } }: RootState,
-  { contactId, task }: OwnProps,
-) => {
-  const currentRoute = getCurrentTopmostRouteForTask(routing, task.taskSid);
-  const { savedContact, draftContact, metadata } = activeContacts.existingContacts[contactId] ?? {};
-  return {
-    definitionVersions: configuration.definitionVersions,
-    savedContact,
-    draftContact,
-    loadingStatus: metadata?.loadingStatus,
-    draftCsamReport: csamReport.contacts[contactId],
-    currentRoute,
-  };
-};
-
 ContactDetails.displayName = 'ContactDetails';
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(ContactDetails);
 
 export default connected;

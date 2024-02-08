@@ -14,19 +14,19 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { styled } from '@twilio/flex-ui';
+import { getInitializedCan, PermissionActions } from '.';
+import { Contact } from '../types/types';
+import { getHrmConfig } from '../hrmConfig';
 
-import ExpandableTextBlock, { ExpandableTextBlockProps } from './ExpandableTextBlock';
+const getCanEditContact = (contact: Contact): (() => boolean) => {
+  if (!contact.finalizedAt) {
+    // If the contact is a draft, we use the hardcoded rule that only its owner or creator can edit it
+    const { workerSid } = getHrmConfig();
+    const permitted = contact.twilioWorkerId === workerSid || contact.createdBy === workerSid;
+    return () => permitted;
+  }
+  const initializedCan = getInitializedCan();
+  return () => initializedCan(PermissionActions.EDIT_CONTACT, contact);
+};
 
-export const PreviewDescription = styled(ExpandableTextBlock)<ExpandableTextBlockProps>`
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 16px;
-  color: #000000;
-  font-family: Open Sans, serif;
-  text-align: left;
-  padding-top: 5px;
-  width: 100%;
-`;
-
-PreviewDescription.displayName = 'PreviewDescription';
+export default getCanEditContact;
