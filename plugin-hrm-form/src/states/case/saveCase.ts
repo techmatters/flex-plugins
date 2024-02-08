@@ -78,7 +78,10 @@ const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => 
       cases: {
         ...state.connectedCase.cases,
         [connectedCase.id]: {
-          connectedCase,
+          connectedCase: {
+            ...connectedCase,
+            info: { ...state.connectedCase.cases[connectedCase.id]?.connectedCase?.info, ...connectedCase.info },
+          },
           caseWorkingCopy: { sections: {} },
           availableStatusTransitions: caseDefinitionVersion
             ? getAvailableCaseStatusTransitions(connectedCase, caseDefinitionVersion)
