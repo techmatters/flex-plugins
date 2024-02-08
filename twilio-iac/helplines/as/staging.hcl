@@ -25,5 +25,15 @@ locals {
         chatbot_unique_names = []
       }
     }
+
+    # HRM
+    case_status_transition_rules = [
+      {
+        startingStatus: "inProgress",
+        targetStatus: "closed",
+        timeInStatusInterval: "5 minutes",
+        description: "system - 'In Progress' cases are closed after 5 minutes"
+      }
+    ]
   }
 }

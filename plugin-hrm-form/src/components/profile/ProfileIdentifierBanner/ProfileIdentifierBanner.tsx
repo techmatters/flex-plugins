@@ -20,13 +20,13 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import { useIdentifierByIdentifier, useProfileProperty } from '../../../states/profile/hooks';
-import { YellowBanner } from '../../../styles/previousContactsBanner';
-import { Bold } from '../../../styles/HrmStyles';
-import { StyledLink } from '../../../styles/search';
-import { ChannelTypes, channelTypes } from '../../../states/DomainConstants';
+import { YellowBanner } from '../styles';
+import { Bold } from '../../../styles';
+import { StyledLink } from '../../search/styles';
+import { CoreChannelTypes, coreChannelTypes } from '../../../states/DomainConstants';
 import { newOpenModalAction } from '../../../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils';
-import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
+import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { CustomITask } from '../../../types/types';
 
 type OwnProps = {
@@ -34,10 +34,25 @@ type OwnProps = {
   enableClientProfiles?: boolean;
 };
 
-// eslint-disable-next-line no-use-before-define
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const { task } = ownProps;
+  const taskId = task.taskSid;
+
+  return {
+    openProfileModal: id => {
+      dispatch(newOpenModalAction({ route: 'profile', profileId: id }, taskId));
+    },
+  };
+};
+
+const connector = connect(null, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) => {
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
   const formattedIdentifier = getFormattedNumberFromTask(task);
   const identifierIdentifier = getNumberFromTask(task);
   const { identifier } = useIdentifierByIdentifier({ identifierIdentifier, shouldAutoload: true });
@@ -49,19 +64,18 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) =>
   const contactsCount = contactsCountState ? contactsCountState - 1 : 0;
   const casesCount = useProfileProperty(profileId, 'casesCount') || 0;
 
-  const localizedSourceFromTask: { [channelType in ChannelTypes]: string } = {
-    [channelTypes.web]: `${getContactValueTemplate(task)}`,
-    [channelTypes.voice]: 'PreviousContacts-PhoneNumber',
-    [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
-    [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
-    [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
-    [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
-    [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
-    [channelTypes.line]: 'PreviousContacts-LineUser',
+  const localizedSourceFromTask: { [channelType in CoreChannelTypes]: string } = {
+    [coreChannelTypes.web]: `${getContactValueTemplate(task)}`,
+    [coreChannelTypes.voice]: 'PreviousContacts-PhoneNumber',
+    [coreChannelTypes.sms]: 'PreviousContacts-PhoneNumber',
+    [coreChannelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
+    [coreChannelTypes.facebook]: 'PreviousContacts-FacebookUser',
+    [coreChannelTypes.twitter]: 'PreviousContacts-TwitterUser',
+    [coreChannelTypes.instagram]: 'PreviousContacts-InstagramUser',
+    [coreChannelTypes.line]: 'PreviousContacts-LineUser',
   };
 
-  const { canView } = getPermissionsForViewingIdentifiers();
-  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
+  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   // We immediately create a contact when a task is created, so we don't want to show the banner
   const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
@@ -120,17 +134,4 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal }) =>
 };
 
 ProfileIdentifierBanner.displayName = 'PreviousContactsBanner';
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-  const { task } = ownProps;
-  const taskId = task.taskSid;
-
-  return {
-    openProfileModal: id => {
-      dispatch(newOpenModalAction({ route: 'profile', id }, taskId));
-    },
-  };
-};
-
-const connector = connect(null, mapDispatchToProps);
 export default connector(ProfileIdentifierBanner);

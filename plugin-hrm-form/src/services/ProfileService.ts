@@ -32,16 +32,23 @@ export const getProfileContacts = (id: ProfileId, offset: number, limit: number)
 export const getProfileCases = (id: ProfileId, offset: number, limit: number) =>
   fetchHrmApi(`/profiles/${id}/cases?offset=${offset}&limit=${limit}`);
 
-export const getProfileFlags = () => {
-  return fetchHrmApi(`/profiles/flags`).then(response => {
-    return response;
-  });
-};
+export const getProfileFlags = () => fetchHrmApi(`/profiles/flags`);
 
-export const associateProfileFlag = (profileId: ProfileId, profileFlagId: ProfileFlagId) =>
-  fetchHrmApi(`/profiles/${profileId}/flags/${profileFlagId}`, {
+export const associateProfileFlag = (
+  profileId: ProfileId,
+  profileFlagId: ProfileFlagId,
+  validUntil?: ProfileFlag['validUntil'],
+) => {
+  const options: { method: string; body?: string } = {
     method: 'POST',
-  });
+  };
+
+  if (validUntil) {
+    options.body = JSON.stringify({ validUntil });
+  }
+
+  return fetchHrmApi(`/profiles/${profileId}/flags/${profileFlagId}`, options);
+};
 
 export const disassociateProfileFlag = (profileId: ProfileId, profileFlagId: ProfileFlagId) =>
   fetchHrmApi(`/profiles/${profileId}/flags/${profileFlagId}`, {
@@ -62,4 +69,29 @@ export const updateProfileSection = (profileId: ProfileId, sectionId: ProfileSec
     method: 'PATCH',
     body: JSON.stringify({ content }),
   });
+};
+
+type GetProfilesListParams = {
+  offset?: number;
+  limit?: number;
+  sortBy?: 'id' | 'name' | 'createdAt' | 'updatedAt';
+  sortDirection?: 'asc' | 'desc';
+  profileFlagIds?: ProfileFlag['id'][];
+};
+
+export const getProfilesList = ({
+  offset = 0,
+  limit = 10,
+  sortBy = 'id',
+  sortDirection = null,
+  profileFlagIds = [],
+}: GetProfilesListParams) => {
+  const searchParams = new URLSearchParams();
+  searchParams.append('offset', offset.toString());
+  searchParams.append('limit', limit.toString());
+  searchParams.append('sortBy', sortBy);
+  if (sortDirection) searchParams.append('sortDirection', sortDirection);
+  if (profileFlagIds) searchParams.append('profileFlagIds', profileFlagIds.join(','));
+
+  return fetchHrmApi(`/profiles?${searchParams.toString()}`);
 };

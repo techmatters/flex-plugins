@@ -21,16 +21,16 @@ import { Template } from '@twilio/flex-ui';
 
 import { RootState } from '../../states';
 import QueueCard from './QueueCard';
-import { Container, QueuesContainer } from '../../styles/queuesStatus';
-import { Box, ErrorText, HeaderContainer } from '../../styles/HrmStyles';
+import { Container, QueuesContainer } from './styles';
+import { Box, ErrorText, HeaderContainer } from '../../styles';
 import { TLHPaddingLeft } from '../../styles/GlobalOverrides';
-import type { ChannelTypes, ChannelColors } from '../../states/DomainConstants';
+import type { CoreChannelTypes, ChannelColors } from '../../states/DomainConstants';
 import { namespace, queuesStatusBase } from '../../states/storeNamespaces';
 
 type OwnProps = {
   colors: ChannelColors;
   paddingRight: boolean;
-  contactsWaitingChannels?: ChannelTypes[];
+  contactsWaitingChannels?: CoreChannelTypes[];
 };
 
 const mapStateToProps = (state: RootState) => {

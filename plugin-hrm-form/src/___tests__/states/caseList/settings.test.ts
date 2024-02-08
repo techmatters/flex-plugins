@@ -26,8 +26,8 @@ import {
   updatedPageReducer,
   updatedSortReducer,
 } from '../../../states/caseList/settings';
-import { DateExistsCondition } from '../../../components/caseList/filters/dateFilters';
-import { ListCasesSortBy, ListCasesSortDirection } from '../../../types/types';
+import { ListCasesSortBy, SortDirection } from '../../../types/types';
+import { DateExistsCondition } from '../../../states/caseList/dateFilters';
 
 const baselineDate = new Date(2012, 11, 3);
 
@@ -45,7 +45,7 @@ test('updatedFilterReducer - Patches existing filter state with action payload a
       page: 1337,
       sort: {
         sortBy: ListCasesSortBy.CHILD_NAME,
-        sortDirection: ListCasesSortDirection.DESC,
+        sortDirection: SortDirection.DESC,
       },
     },
     updateCaseListFilter({
@@ -69,7 +69,7 @@ test('updatedFilterReducer - Patches existing filter state with action payload a
     page: 0,
     sort: {
       sortBy: ListCasesSortBy.CHILD_NAME,
-      sortDirection: ListCasesSortDirection.DESC,
+      sortDirection: SortDirection.DESC,
     },
   });
 });
@@ -87,12 +87,12 @@ test('updatedSortReducer - Replaces sort settings and resets page to zero', () =
       page: 1337,
       sort: {
         sortBy: ListCasesSortBy.CHILD_NAME,
-        sortDirection: ListCasesSortDirection.DESC,
+        sortDirection: SortDirection.DESC,
       },
     },
     updateCaseListSort({
       sortBy: ListCasesSortBy.FOLLOW_UP_DATE,
-      sortDirection: ListCasesSortDirection.ASC,
+      sortDirection: SortDirection.ASC,
     }),
   );
   expect(updatedState).toStrictEqual({
@@ -106,7 +106,7 @@ test('updatedSortReducer - Replaces sort settings and resets page to zero', () =
     page: 0,
     sort: {
       sortBy: ListCasesSortBy.FOLLOW_UP_DATE,
-      sortDirection: ListCasesSortDirection.ASC,
+      sortDirection: SortDirection.ASC,
     },
   });
 });
@@ -124,7 +124,7 @@ test('updatePageReducer - Replaces page setting', () => {
       page: 1337,
       sort: {
         sortBy: ListCasesSortBy.CHILD_NAME,
-        sortDirection: ListCasesSortDirection.DESC,
+        sortDirection: SortDirection.DESC,
       },
     },
     updateCaseListPage(42),
@@ -140,7 +140,7 @@ test('updatePageReducer - Replaces page setting', () => {
     page: 42,
     sort: {
       sortBy: ListCasesSortBy.CHILD_NAME,
-      sortDirection: ListCasesSortDirection.DESC,
+      sortDirection: SortDirection.DESC,
     },
   });
 });
@@ -158,7 +158,7 @@ test('clearFilterReducer - Replaces filter settings with defaults and resets pag
       page: 1337,
       sort: {
         sortBy: ListCasesSortBy.CHILD_NAME,
-        sortDirection: ListCasesSortDirection.DESC,
+        sortDirection: SortDirection.DESC,
       },
     },
     clearCaseListFilter(),
@@ -173,7 +173,7 @@ test('clearFilterReducer - Replaces filter settings with defaults and resets pag
     page: 0,
     sort: {
       sortBy: ListCasesSortBy.CHILD_NAME,
-      sortDirection: ListCasesSortDirection.DESC,
+      sortDirection: SortDirection.DESC,
     },
   });
 });

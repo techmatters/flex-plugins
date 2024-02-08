@@ -14,9 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import * as Flex from '@twilio/flex-ui';
 import { ReservationStatuses } from '@twilio/flex-ui';
 import React from 'react';
-import * as Flex from '@twilio/flex-ui';
 
 import TwitterIcon from '../components/common/icons/TwitterIcon';
 import InstagramIcon from '../components/common/icons/InstagramIcon';
@@ -25,9 +25,10 @@ import WhatsappIcon from '../components/common/icons/WhatsappIcon';
 import FacebookIcon from '../components/common/icons/FacebookIcon';
 import CallIcon from '../components/common/icons/CallIcon';
 import SmsIcon from '../components/common/icons/SmsIcon';
-import * as TransferHelpers from '../utils/transfer';
+import * as TransferHelpers from '../transfer/transferTaskState';
 import { colors, mainChannelColor } from './colors';
 import { getTemplateStrings } from '../hrmConfig';
+import { isSmsChannelType } from '../utils/smsChannels';
 
 const isIncomingTransfer = task => TransferHelpers.hasTransferStarted(task) && task.status === 'pending';
 
@@ -81,6 +82,10 @@ export const customiseDefaultChatChannels = () => {
   Flex.DefaultTaskChannels.ChatSms.icons = allIcons(smsIcon);
   const callIcon = <CallIcon width="24px" height="24px" color={colors.voice} />;
   Flex.DefaultTaskChannels.Call.icons = allIcons(callIcon);
+};
+
+export const expandSMSChannel = () => {
+  Flex.DefaultTaskChannels.ChatSms.isApplicable = task => isSmsChannelType(task.channelType);
 };
 
 export const setupTwitterChatChannel = maskIdentifiers => {

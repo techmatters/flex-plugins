@@ -6,7 +6,7 @@ from os.path import exists as path_exists
 from typing import TypedDict, Unpack
 from ..aws import SSMClient
 from ..twilio import Twilio
-from .constants import AWS_ROLE_ARN
+from .constants import AWS_ROLE_ARNS, get_aws_role_arn
 from .version import Version
 
 JSON_PATH_ROOT = "/app/twilio-iac/helplines"
@@ -40,6 +40,7 @@ TEMPLATE_FIELDS = {
 
 # These are fields that will be excluded from the payload sent to twilio
 EXCLUDED_FIELDS = [
+    "flex_instance_sid",
     "flex_service_instance_sid",
     "runtime_domain",
     "flex_insights_hr",
@@ -142,7 +143,7 @@ class LocalConfigsDict(TypedDict):
 
 
 class ServiceConfiguration():
-
+    
     def __init__(self, **kwargs: Unpack[InitArgsDict]) -> None:
         self.local_state: dict[str, object] = {}
         self.new_state: dict[str, object] = {}
@@ -156,6 +157,7 @@ class ServiceConfiguration():
         self.account_sid = self._twilio_client.account_sid
         self.helpline_code = self._twilio_client.helpline_code
         self.environment = self._twilio_client.environment
+        self.aws_role_arn = get_aws_role_arn(self.environment)
         self.remote_state: dict[str,
                                 object] = self._twilio_client.get_flex_configuration()
         self.init_version()
@@ -165,7 +167,7 @@ class ServiceConfiguration():
         self.init_plan()
 
     def get_ssm_client(self):
-        return SSMClient(AWS_ROLE_ARN)
+        return SSMClient(self.aws_role_arn)
 
     def init_region(self):
         try:
@@ -270,6 +272,7 @@ class ServiceConfiguration():
             helpline_code=self.helpline_code,
             state=self.remote_state,
             skip_lock=self.skip_lock,
+            aws_role_arn=self.aws_role_arn
         )
 
     def get_config_path(self, type: str) -> str:
@@ -294,6 +297,7 @@ class ServiceConfiguration():
             helpline_code=self.helpline_code,
             state=self.new_state,
             skip_lock=True,
+            aws_role_arn=self.aws_role_arn
         )
 
     def cleanup(self):

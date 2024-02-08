@@ -20,24 +20,26 @@ import { callTypes } from 'hrm-form-definitions';
 
 import ContactHeader from './ContactHeader';
 import TagsAndCounselor from '../TagsAndCounselor';
-import { Flex, PreviewWrapper } from '../../../styles/HrmStyles';
-import { ContactRawJson, Contact } from '../../../types/types';
+import { Flex, PreviewWrapper } from '../../../styles';
+import { Contact, ContactRawJson } from '../../../types/types';
 import { PreviewDescription } from '../PreviewDescription';
 import { isNonDataCallType } from '../../../states/validationRules';
 import { getDefinitionVersion } from '../../../services/ServerlessService';
 import { updateDefinitionVersion } from '../../../states/configuration/actions';
 import { RootState } from '../../../states';
 import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
-import { configurationBase, namespace } from '../../../states/storeNamespaces';
+import { PreviewRow } from '../styles';
+import { selectDefinitionVersions } from '../../../states/configuration/selectDefinitions';
+import { selectCounselorName } from '../../../states/configuration/selectCounselorsHash';
 
 type ContactPreviewProps = {
   contact: Contact;
   handleViewDetails: () => void;
 };
 
-const mapStateToProps = (state: RootState) => ({
-  definitionVersions: state[namespace][configurationBase].definitionVersions,
-  counselorsHash: state[namespace][configurationBase].counselors.hash,
+const mapStateToProps = (state: RootState, { contact }: ContactPreviewProps) => ({
+  definitionVersions: selectDefinitionVersions(state),
+  counselorName: selectCounselorName(state, contact.twilioWorkerId),
 });
 
 const connector = connect(mapStateToProps);
@@ -78,10 +80,9 @@ const getCallerName = (rawJson: ContactRawJson) => {
   return undefined;
 };
 
-const ContactPreview: React.FC<Props> = ({ contact, handleViewDetails, definitionVersions, counselorsHash }) => {
+const ContactPreview: React.FC<Props> = ({ contact, handleViewDetails, definitionVersions, counselorName }) => {
   const { callType } = contact.rawJson;
   const callerName = getCallerName(contact.rawJson);
-  const counselorName = counselorsHash[contact.twilioWorkerId] || 'Unknown';
   const { definitionVersion: versionId, caseInformation } = contact.rawJson;
   const { callSummary } = caseInformation;
   const definition = definitionVersions[versionId];
@@ -108,11 +109,14 @@ const ContactPreview: React.FC<Props> = ({ contact, handleViewDetails, definitio
           number={contact.number}
           date={contact.timeOfContact}
           onClickFull={handleViewDetails}
+          isDraft={!contact.finalizedAt}
         />
         {callSummary && (
-          <PreviewDescription expandLinkText="ReadMore" collapseLinkText="ReadLess">
-            {callSummary}
-          </PreviewDescription>
+          <PreviewRow>
+            <PreviewDescription expandLinkText="ReadMore" collapseLinkText="ReadLess">
+              {callSummary}
+            </PreviewDescription>
+          </PreviewRow>
         )}
         {isNonDataCallType(callType) ? (
           <TagsAndCounselor counselor={counselorName} nonDataCallType={callType} definitionVersion={definition} />

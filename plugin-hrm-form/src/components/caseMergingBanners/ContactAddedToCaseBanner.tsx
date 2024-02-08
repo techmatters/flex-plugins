@@ -22,36 +22,42 @@ import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid
 import asyncDispatch from '../../states/asyncDispatch';
 import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
 import { newOpenModalAction } from '../../states/routing/actions';
-import { setConnectedCase } from '../../states/case/actions';
-import selectCaseByTaskSid from '../../states/case/selectCaseByTaskSid';
 import type { Case } from '../../types/types';
-import { BannerContainer, Text, CaseLink, BannerActionLink } from './styles';
 import InfoIcon from './InfoIcon';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
+import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
+import { RootState } from '../../states';
+import { BannerActionLink, BannerContainer, CaseLink, Text } from '../../styles/banners';
+import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 
 type OwnProps = {
   taskId: string;
+  contactId?: string;
 };
 
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-const mapStateToProps = (state, { taskId }: OwnProps) => {
-  const contact = selectContactByTaskSid(state, taskId);
-  const connectedCase = selectCaseByTaskSid(state, taskId);
+const mapStateToProps = (state: RootState, { taskId, contactId }: OwnProps) => {
+  const offlineSavedContact = selectContactByTaskSid(state, taskId)?.savedContact;
+  const existingSavedContact = selectContactStateByContactId(state, contactId)?.savedContact;
+  const connectedCase = selectCaseByCaseId(state, offlineSavedContact?.caseId || existingSavedContact?.caseId)
+    ?.connectedCase;
+  const caseId = offlineSavedContact?.caseId || existingSavedContact?.caseId;
   return {
-    contact: contact.savedContact,
+    contact: offlineSavedContact || existingSavedContact,
     connectedCase,
+    caseId,
+    existingSavedContact,
   };
 };
 
 const mapDispatchToProps = (dispatch, { taskId }: OwnProps) => ({
-  viewCaseDetails: (cas: Case) => {
-    dispatch(setConnectedCase(cas, taskId));
-    dispatch(newOpenModalAction({ route: 'case', subroute: 'home', isCreating: false }, taskId));
+  viewCaseDetails: ({ id }: Case) => {
+    dispatch(newOpenModalAction({ route: 'case', subroute: 'home', caseId: id, isCreating: false }, taskId));
   },
-  removeContactFromCase: async (contactId: string) => {
+  removeContactFromCase: async (contactId: string, caseId?: string) => {
     await asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId));
-    dispatch(showRemovedFromCaseBannerAction(contactId));
+    dispatch(showRemovedFromCaseBannerAction(contactId, caseId));
   },
 });
 
@@ -60,8 +66,18 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
   contact,
   viewCaseDetails,
   removeContactFromCase,
+  caseId,
+  existingSavedContact,
 }) => {
   if (connectedCase === undefined) return null;
+
+  const handleRemoveContactFromCase = () => {
+    if (existingSavedContact) {
+      removeContactFromCase(existingSavedContact.id, existingSavedContact.caseId);
+    } else {
+      removeContactFromCase(contact.id);
+    }
+  };
 
   return (
     <BannerContainer color="blue">
@@ -71,9 +87,9 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
       </Text>
       <CaseLink type="button" onClick={() => viewCaseDetails(connectedCase)}>
         <Template code="Case-CaseNumber" />
-        {connectedCase.id}
+        {caseId}
       </CaseLink>
-      <BannerActionLink type="button" onClick={() => removeContactFromCase(contact.id)}>
+      <BannerActionLink type="button" onClick={handleRemoveContactFromCase}>
         <Template code="CaseMerging-RemoveFromCase" />
       </BannerActionLink>
     </BannerContainer>

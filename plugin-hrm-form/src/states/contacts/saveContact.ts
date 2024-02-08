@@ -20,45 +20,71 @@ import { format } from 'date-fns';
 import { submitContactForm } from '../../services/formSubmissionHelpers';
 import {
   connectToCase,
-  removeFromCase,
   createContact,
   getContactById,
   getContactByTaskSid,
+  removeFromCase,
   updateContactInHrm,
 } from '../../services/ContactService';
-import { Case, CustomITask, Contact } from '../../types/types';
+import { Case, Contact, CustomITask, isOfflineContactTask } from '../../types/types';
 import {
   CONNECT_TO_CASE,
-  REMOVE_FROM_CASE,
   ContactMetadata,
   ContactsState,
   CREATE_CONTACT_ACTION,
   LOAD_CONTACT_FROM_HRM_BY_ID_ACTION,
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION,
+  LoadingStatus,
+  REMOVE_FROM_CASE,
   SET_SAVED_CONTACT,
   UPDATE_CONTACT_ACTION,
 } from './types';
 import { ContactDraftChanges } from './existingContacts';
 import { newContactMetaData } from './contactState';
-import { cancelCase, getCase } from '../../services/CaseService';
+import { getCase } from '../../services/CaseService';
 import { getUnsavedContact } from './getUnsavedContact';
+import * as TransferHelpers from '../../transfer/transferTaskState';
 
 export const createContactAsyncAction = createAsyncAction(
   CREATE_CONTACT_ACTION,
-  async (contactToCreate: Contact, workerSid: string, taskSid: string) => {
-    const contact = await createContact(contactToCreate, workerSid, taskSid);
+  async (contactToCreate: Contact, workerSid: string, task: CustomITask) => {
+    let contact: Contact;
+    const { taskSid } = task;
+    if (isOfflineContactTask(task)) {
+      contact = await createContact(contactToCreate, workerSid, task);
+    } else {
+      const attributes = task.attributes ?? {};
+      const { contactId } = attributes;
+      if (contactId) {
+        // Setting the task id and worker id on the contact will be a noop in most cases, but when receiving a transfer it will move the contact to the new worker & task
+        contact = await updateContactInHrm(contactId, { taskId: taskSid, twilioWorkerId: workerSid }, false);
+      } else {
+        contact = await createContact(contactToCreate, workerSid, task);
+        if (contact.taskId! !== taskSid || contact.twilioWorkerId !== workerSid) {
+          // If the contact is being transferred from a client that doesn't set the contactId on the task, we need to update the contact with the task id and worker id
+          contact = await updateContactInHrm(contact.id, { taskId: taskSid, twilioWorkerId: workerSid }, false);
+        }
+        await task.setAttributes({ ...attributes, contactId: contact.id });
+      }
+      if (TransferHelpers.isColdTransfer(task) && !TransferHelpers.hasTaskControl(task))
+        await TransferHelpers.takeTaskControl(task);
+    }
+
     let contactCase: Case | undefined;
     if (contact.caseId) {
       contactCase = await getCase(contact.caseId);
     }
+
     return {
       contact,
       contactCase,
-      reference: taskSid,
+      // We assume that any contact we create will be the active contact because that's the only way to create contacts currently
+      // This assumption may not always be valid.
+      reference: `${taskSid}-active`,
       metadata: newContactMetaData(false),
     };
   },
-  (contactToCreate: Contact, workerSid: string, taskSid: string) => ({
+  (contactToCreate: Contact, workerSid: string, { taskSid }: CustomITask) => ({
     contactToCreate,
     workerSid,
     taskSid,
@@ -126,16 +152,17 @@ export const newRestartOfflineContactAsyncAction = (contact: Contact, createdOnB
         time,
       },
     },
+    channel: 'default',
   });
 };
 
-type ConnectToCaseActionPayload = { contactId: string; caseId: number; contact: Contact; contactCase: Case };
+type ConnectToCaseActionPayload = { contactId: string; caseId: string; contact: Contact; contactCase: Case };
 type RemoveFromCaseActionPayload = { contactId: string; contact: Contact };
 
 // TODO: Update connectedContacts on case in redux state
 export const connectToCaseAsyncAction = createAsyncAction(
   CONNECT_TO_CASE,
-  async (contactId: string, caseId: number | null): Promise<ConnectToCaseActionPayload> => {
+  async (contactId: string, caseId: string | null): Promise<ConnectToCaseActionPayload> => {
     const contact = await connectToCase(contactId, caseId);
     const contactCase = await getCase(caseId);
     return { contactId, caseId, contact, contactCase };
@@ -187,10 +214,14 @@ export const loadContactFromHrmByIdAsyncAction = createAsyncAction(
       reference,
     };
   },
+  (contactId: string, reference: string = contactId) => ({
+    contactId,
+    reference,
+  }),
 );
 
 // TODO: Consolidate this logic with the loadContactReducer implementation?
-const loadContactIntoRedux = (
+export const loadContactIntoRedux = (
   state: ContactsState,
   contact: Contact,
   reference?: string,
@@ -211,7 +242,7 @@ const loadContactIntoRedux = (
       ...existingContacts,
       [contact.id]: {
         ...existingContacts[contact.id],
-        metadata: { ...metadata, saveStatus: 'saved' },
+        metadata: { ...metadata, loadingStatus: LoadingStatus.LOADED },
         savedContact: contact,
         references: references ?? existingContacts[contact.id]?.references,
       },
@@ -219,21 +250,22 @@ const loadContactIntoRedux = (
   };
 };
 
-const setContactSavingStateInRedux = (
+const setContactLoadingStateInRedux = (
   state: ContactsState,
-  contact: Contact,
-  updates: ContactDraftChanges,
+  contact: Contact | string,
+  updates: ContactDraftChanges = undefined,
 ): ContactsState => {
   const { existingContacts } = state;
+  const id = typeof contact === 'object' ? contact.id : contact;
   return {
     ...state,
     existingContacts: {
       ...state.existingContacts,
-      [contact.id]: {
-        ...existingContacts[contact.id],
+      [id]: {
+        ...existingContacts[id],
         draftContact: undefined,
-        savedContact: getUnsavedContact(existingContacts[contact.id]?.savedContact, updates),
-        metadata: { ...existingContacts[contact.id]?.metadata, saveStatus: 'saving' },
+        savedContact: getUnsavedContact(existingContacts[id]?.savedContact, updates),
+        metadata: { ...existingContacts[id]?.metadata, loadingStatus: LoadingStatus.LOADING },
       },
     },
   };
@@ -253,7 +285,7 @@ const rollbackSavingStateInRedux = (
         ...existingContacts[contact.id],
         draftContact: changes,
         savedContact: contact,
-        metadata: { ...existingContacts[contact.id]?.metadata, saveStatus: 'saved' },
+        metadata: { ...existingContacts[contact.id]?.metadata, loadingStatus: LoadingStatus.LOADED },
       },
     },
   };
@@ -264,7 +296,7 @@ export const saveContactReducer = (initialState: ContactsState) =>
     handleAction(
       updateContactInHrmAsyncAction.pending as typeof updateContactInHrmAsyncAction,
       (state, { meta: { changes, previousContact } }): ContactsState => {
-        return setContactSavingStateInRedux(state, previousContact, changes);
+        return setContactLoadingStateInRedux(state, previousContact, changes);
       },
     ),
 
@@ -297,6 +329,12 @@ export const saveContactReducer = (initialState: ContactsState) =>
       },
     ),
     handleAction(
+      loadContactFromHrmByIdAsyncAction.pending as typeof loadContactFromHrmByIdAsyncAction,
+      (state, { meta: { contactId } }): ContactsState => {
+        return setContactLoadingStateInRedux(state, contactId);
+      },
+    ),
+    handleAction(
       createContactAsyncAction.fulfilled,
       (state, { payload: { contact, reference } }): ContactsState => {
         return loadContactIntoRedux(state, contact, reference, newContactMetaData(false));
@@ -321,7 +359,7 @@ export const saveContactReducer = (initialState: ContactsState) =>
     handleAction(
       submitContactFormAsyncAction.pending as typeof submitContactFormAsyncAction,
       (state, { meta: { contact } }): ContactsState => {
-        return setContactSavingStateInRedux(state, contact, contact);
+        return setContactLoadingStateInRedux(state, contact, contact);
       },
     ),
     handleAction(

@@ -188,13 +188,20 @@ type CustomContactComponentDefinition = ItemBase &
     props?: Record<string, boolean | number | string>;
   };
 
-export declare type ProfileSection = {
+export declare type ProfileSectionDefinition = {
   name: string;
   label: string;
+  editLabel: string;
   type: string;
   rows: number;
   placeholder: string;
   width: number;
+};
+
+export declare type ProfileFlagDurationDefinition = {
+  flag: string;
+  label: string;
+  durationInHours: string;
 };
 
 export type FormItemDefinition =
@@ -338,5 +345,8 @@ export type DefinitionVersion = {
   };
   referenceData?: Record<string, any>;
   blockedEmojis: string[];
-  profileForms?: { Sections: ProfileSection[] };
+  profileForms?: {
+    Sections: ProfileSectionDefinition[];
+    FlagDurations: ProfileFlagDurationDefinition[];
+  };
 };

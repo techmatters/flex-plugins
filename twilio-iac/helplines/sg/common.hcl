@@ -11,7 +11,7 @@ locals {
   local_config = {
     helpline                   = "Tinkle Friend"
     old_dir_prefix             = ""
-    task_language              = "en-US"
+    task_language              = "en-SG"
     enable_post_survey         = false
     enable_external_recordings = true
     workflows = {

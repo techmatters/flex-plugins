@@ -6,7 +6,7 @@ locals {
 
   local_config = {
 
-    custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true OR  twilioNumber == 'messenger:103260519220529'"
+    custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true OR  twilioNumber == 'messenger:103260519220529' OR aseloHostId == 'zw1' OR aseloHostId == 'zw2'"
 
 
     flow_vars = {
@@ -27,6 +27,13 @@ locals {
         channel_type         = "facebook"
         contact_identity     = "messenger:103260519220529"
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      voice : {
+        channel_type         = "voice"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/zw/templates/studio-flows/voice-ac.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }

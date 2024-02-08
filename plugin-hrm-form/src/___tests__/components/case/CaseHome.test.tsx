@@ -33,15 +33,12 @@ import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { namespace } from '../../../states/storeNamespaces';
 import { RecursivePartial } from '../../RecursivePartial';
 import { RootState } from '../../../states';
-import selectContactByTaskSid from '../../../states/contacts/selectContactByTaskSid';
 
 jest.mock('../../../permissions', () => ({
   ...jest.requireActual('../../../permissions'),
-  getPermissionsForCase: jest.fn(() => ({ can: () => true })),
-  getPermissionsForContact: jest.fn(() => ({ can: () => true })),
+  getInitializedCan: jest.fn(() => () => true),
 }));
 
-jest.mock('../../../states/contacts/selectContactByTaskSid');
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
@@ -77,16 +74,16 @@ const householdEntry: HouseholdEntry = {
   twilioWorkerId: 'worker1',
 };
 
-function createState(state: RecursivePartial<RootState['plugin-hrm-form']>) {
+function createState(state: RecursivePartial<RootState['plugin-hrm-form']>): RootState {
   return {
     [namespace]: state,
-  };
+  } as RootState;
 }
 
 let ownProps: CaseHomeProps;
 
 let mockV1;
-let initialState: RecursivePartial<RootState>;
+let initialState: RootState;
 let caseDetails: CaseDetails;
 
 describe('useState mocked', () => {
@@ -127,15 +124,16 @@ describe('useState mocked', () => {
                 categories: {},
               },
               taskId: 'task1',
+              caseId: 'case123',
             },
           },
         },
       },
       connectedCase: {
-        tasks: {
-          task1: {
+        cases: {
+          case123: {
             connectedCase: {
-              id: 123,
+              id: 'case123',
               createdAt: '2020-06-29T22:26:00.208Z',
               twilioWorkerId: 'worker1',
               status: 'open',
@@ -148,7 +146,11 @@ describe('useState mocked', () => {
       routing: {
         tasks: {
           task1: [
-            { route: 'tabbed-forms', subroute: 'categories', activeModal: [{ route: 'case', subroute: 'home' }] },
+            {
+              route: 'tabbed-forms',
+              subroute: 'categories',
+              activeModal: [{ route: 'case', subroute: 'home', caseId: 'case123' }],
+            },
           ],
         },
       },
@@ -161,7 +163,7 @@ describe('useState mocked', () => {
 
     caseDetails = {
       contactIdentifier: '',
-      id: 0,
+      id: '0',
       households: [],
       incidents: [],
       perpetrators: [],
@@ -213,6 +215,7 @@ describe('useState mocked', () => {
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'case',
+        caseId: 'case123',
         subroute: NewCaseSubroutes.Note,
         action: CaseItemAction.Add,
       },
@@ -237,6 +240,7 @@ describe('useState mocked', () => {
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'case',
+        caseId: 'case123',
         subroute: NewCaseSubroutes.Referral,
         action: CaseItemAction.Add,
       },
@@ -261,6 +265,7 @@ describe('useState mocked', () => {
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'case',
+        caseId: 'case123',
         subroute: NewCaseSubroutes.Household,
         action: CaseItemAction.Add,
       },
@@ -285,6 +290,7 @@ describe('useState mocked', () => {
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'case',
+        caseId: 'case123',
         subroute: NewCaseSubroutes.Perpetrator,
         action: CaseItemAction.Add,
       },
@@ -311,6 +317,7 @@ describe('useState mocked', () => {
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'case',
+        caseId: 'case123',
         subroute: NewCaseSubroutes.Household,
         action: CaseItemAction.View,
         id: 'HOUSEHOLD_ID',
@@ -338,6 +345,7 @@ describe('useState mocked', () => {
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'case',
+        caseId: 'case123',
         subroute: NewCaseSubroutes.Perpetrator,
         action: CaseItemAction.View,
         id: 'PERPETRATOR_ID',
@@ -364,6 +372,7 @@ describe('useState mocked', () => {
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'case',
+        caseId: 'case123',
         subroute: NewCaseSubroutes.CaseSummary,
         action: CaseItemAction.Edit,
         id: '',
@@ -374,11 +383,21 @@ describe('useState mocked', () => {
   });
 
   each([true, false]).test('Click close button on case', async isCreating => {
-    (selectContactByTaskSid as jest.Mock).mockImplementation(
-      (state, taskSid) => initialState['plugin-hrm-form']?.activeContacts?.existingContacts?.contact1,
-    );
-    const store = mockStore(initialState);
-    ownProps.isCreating = isCreating;
+    const store = mockStore({
+      [namespace]: {
+        ...initialState[namespace],
+        routing: {
+          tasks: {
+            task1: [
+              {
+                ...initialState[namespace].routing.tasks.task1[0],
+                activeModal: [{ route: 'case', subroute: 'home', caseId: 'case123', isCreating }],
+              },
+            ],
+          },
+        },
+      },
+    });
 
     render(
       <StorelessThemeProvider themeConf={{}}>
@@ -389,8 +408,6 @@ describe('useState mocked', () => {
     );
 
     screen.getByTestId('NavigableContainer-CloseCross').click();
-    // Brittle AF but the HTML the menu component produces makes it difficult to do better.
-
     expect(ownProps.handleClose).toHaveBeenCalled();
   });
 });

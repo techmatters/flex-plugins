@@ -20,15 +20,15 @@ import { TableBody, CircularProgress } from '@material-ui/core';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { TableContainer, CLTable, CLTableRow, CLNamesCell, CLTableCell, CLTableBodyFont } from '../../styles/caseList';
+import { TableContainer, StandardTable, DataTableRow, LoadingCell, DataCell, TableBodyFont } from '../../styles';
 import Filters from './filters/Filters';
 import CaseListTableHead from './CaseListTableHead';
 import CaseListTableRow from './CaseListTableRow';
-import Pagination from '../Pagination';
+import Pagination from '../pagination';
 import { CASES_PER_PAGE } from './CaseList';
 import type { Case } from '../../types/types';
 import * as CaseListSettingsActions from '../../states/caseList/settings';
-import { getPermissionsForCase, PermissionActions } from '../../permissions';
+import { PermissionActions, getInitializedCan } from '../../permissions';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 
@@ -57,17 +57,21 @@ const CaseListTable: React.FC<Props> = ({
   counselorsHash,
   currentDefinitionVersion,
 }) => {
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
   const pagesCount = Math.ceil(caseCount / CASES_PER_PAGE);
 
   return (
     <>
       <Filters caseCount={caseCount} currentDefinitionVersion={currentDefinitionVersion} />
       <TableContainer>
-        <CLTable tabIndex={0} aria-labelledby="CaseList-Cases-label" data-testid="CaseList-Table">
+        <StandardTable tabIndex={0} aria-labelledby="CaseList-Cases-label" data-testid="CaseList-Table">
           <CaseListTableHead />
           {loading && (
             <TableBody>
-              <CLTableRow
+              <DataTableRow
                 data-testid="CaseList-Table-Loading"
                 style={{
                   position: 'relative',
@@ -75,40 +79,39 @@ const CaseListTable: React.FC<Props> = ({
                   height: `${(caseList.length || CASES_PER_PAGE) * ROW_HEIGHT}px`,
                 }}
               >
-                <CLNamesCell style={{ position: 'absolute', textAlign: 'center', width: '100%', top: '40%' }}>
+                <LoadingCell>
                   <CircularProgress size={50} />
-                </CLNamesCell>
-              </CLTableRow>
+                </LoadingCell>
+              </DataTableRow>
             </TableBody>
           )}
           {!loading && (
             <TableBody>
               {caseList.length > 0 ? (
                 caseList.map(caseItem => {
-                  const { can } = getPermissionsForCase(caseItem.twilioWorkerId, caseItem.status);
                   return (
                     <CaseListTableRow
                       caseItem={caseItem}
                       key={`CaseListItem-${caseItem.id}`}
                       handleClickViewCase={currentCase =>
-                        can(PermissionActions.VIEW_CASE) && handleClickViewCase(currentCase)
+                        can(PermissionActions.VIEW_CASE, caseItem) ? handleClickViewCase(currentCase) : () => undefined
                       }
                       counselorsHash={counselorsHash}
                     />
                   );
                 })
               ) : (
-                <CLTableRow>
-                  <CLTableCell colSpan={8}>
-                    <CLTableBodyFont style={{ paddingLeft: '6px', fontWeight: 'initial' }}>
+                <DataTableRow>
+                  <DataCell colSpan={8}>
+                    <TableBodyFont style={{ paddingLeft: '6px', fontWeight: 'initial' }}>
                       <Template code="CaseList-NoCases" />
-                    </CLTableBodyFont>
-                  </CLTableCell>
-                </CLTableRow>
+                    </TableBodyFont>
+                  </DataCell>
+                </DataTableRow>
               )}
             </TableBody>
           )}
-        </CLTable>
+        </StandardTable>
       </TableContainer>
       {caseList.length > 0 ? (
         <div style={{ minHeight: '100px' }}>

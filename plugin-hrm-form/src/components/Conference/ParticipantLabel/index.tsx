@@ -29,7 +29,7 @@ type Props = ParticipantCanvasChildrenProps;
 const ParticipantLabel: React.FC<Props> = ({ participant, task }) => {
   const participantLabel = useSelector(
     (state: RootState) =>
-      state[namespace][conferencingBase].tasks[task?.taskSid].participantsLabels[participant?.participantSid],
+      state[namespace][conferencingBase].tasks[task?.taskSid]?.participantsLabels[participant?.participantSid],
   );
   const dispatch = useDispatch();
 

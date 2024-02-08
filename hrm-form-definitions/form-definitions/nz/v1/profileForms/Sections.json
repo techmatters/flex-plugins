@@ -1,26 +1,29 @@
 [
   {
     "name": "summary",
-    "label": "Summary ",
+    "label": "Summary",
+    "editLabel": "Edit Summary",
     "type": "textarea",
     "rows": 20,
-    "width": 300,
-    "placeholder": "Enter a summary of the case"
+    "width": 500,
+    "placeholder": "Enter a summary of the client"
   },
   {
-    "name": "recommended approach",
+    "name": "recommendedApproach",
     "label": "Recommended Approach",
+    "editLabel": "Edit Recommended Approach",
     "type": "textarea",
     "rows": 20,
-    "width": 300,
-    "placeholder": "Enter recommended approach "
+    "width": 500,
+    "placeholder": "Enter recommended approach"
   },
   {
     "name": "details",
     "label": "Details",
+    "editLabel": "Edit Details",
     "type": "textarea",
     "rows": 20,
-    "width": 300,
+    "width": 500,
     "placeholder": "Enter Details"
   }
 ]

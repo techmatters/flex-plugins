@@ -25,27 +25,13 @@ import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-fo
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import SearchResults from '../../components/search/SearchResults';
 import { getDefinitionVersions } from '../../hrmConfig';
-import {
-  configurationBase,
-  connectedCaseBase,
-  contactFormsBase,
-  namespace,
-  searchContactsBase,
-} from '../../states/storeNamespaces';
+import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { RecursivePartial } from '../RecursivePartial';
 import { VALID_EMPTY_METADATA } from '../testContacts';
 
 jest.mock('../../permissions', () => ({
-  getPermissionsForCase: jest.fn(() => ({
-    can: () => true,
-  })),
-  getPermissionsForContact: jest.fn(() => ({
-    can: () => true,
-  })),
-  getPermissionsForViewingIdentifiers: jest.fn(() => ({
-    canView: () => true,
-  })),
+  getInitializedCan: jest.fn(() => () => true),
   PermissionActions: {},
 }));
 
@@ -78,7 +64,7 @@ describe('Search Results', () => {
 
     state1 = {
       [namespace]: {
-        [configurationBase]: {
+        configuration: {
           counselors: {
             list: [],
             hash: { worker1: 'worker1 name' },
@@ -86,7 +72,7 @@ describe('Search Results', () => {
           definitionVersions: { v1: mockV1 },
           currentDefinitionVersion: mockV1,
         },
-        [contactFormsBase]: {
+        activeContacts: {
           existingContacts: {
             contact1: {
               savedContact: {
@@ -102,9 +88,9 @@ describe('Search Results', () => {
             },
           },
         },
-        [connectedCaseBase]: {
-          tasks: {
-            task1: {
+        connectedCase: {
+          cases: {
+            case1: {
               connectedCase: {
                 createdAt: new Date(1593469560208).toISOString(),
                 twilioWorkerId: 'worker1',
@@ -114,7 +100,7 @@ describe('Search Results', () => {
             },
           },
         },
-        [searchContactsBase]: {
+        searchContacts: {
           tasks: {
             task1: {},
           },

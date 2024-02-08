@@ -1,0 +1,144 @@
+${
+  jsonencode(
+    {
+      "description": flow_description,
+     "states": [
+      {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "next": "split_web",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -90,
+          "y": -90
+        }
+      }
+      },
+      {
+      "name": "attributes_web",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "next": "welcome_message",
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 700,
+          "y": 340
+        },
+        "workflow": master_workflow_sid,
+        "channel": chat_task_channel_sid,
+        "attributes": channel_attributes
+      }
+      },
+      {
+      "name": "welcome_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 710,
+          "y": 590
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Bot",
+        "to": "{{contact.channel.address}}",
+        "body": "Thank you for contacting Childline Zimbabwe, a counsellor will be with you shortly. If this is an emergency or you wait longer than 30 min, we recommend you call us for free at 116."
+      }
+      },
+      {
+      "name": "split_web",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "attributes_facebook",
+          "event": "noMatch"
+        },
+        {
+          "next": "attributes_web",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to web",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.channel_type}}"
+              ],
+              "type": "equal_to",
+              "value": "web"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.channel_type}}",
+        "offset": {
+          "x": 230,
+          "y": 110
+        }
+      }
+      },
+      {
+      "name": "attributes_facebook",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 90,
+          "y": 400
+        },
+        "workflow": "WWfd9eb357c72a412fb1853721f38c80b8",
+        "channel": "TCab0384ca345e91e804468b8e63e50261",
+        "attributes": "{\n  \"name\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"language\":\"en-US\",\n  \"transferTargetType\": \"\",\n  \"memory\": {{widgets.ChatBot.memory | to_json}}\n}\n"
+      }
+      }
+  ],
+      "initial_state": "Trigger",
+      "flags": {
+        "allow_concurrent_calls": true
+      }
+    }
+    )
+  }

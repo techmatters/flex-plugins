@@ -10,6 +10,7 @@ locals {
     task_language                     = "en-NZ"
     contacts_waiting_channels         = ["voice", "sms", "web"]
 
+
     workflows = {
       master : {
         friendly_name            = "Master Workflow - Messaging"
@@ -20,6 +21,10 @@ locals {
         friendly_name            = "Master Workflow - Calls"
         templatefile             = "/app/twilio-iac/helplines/nz/templates/workflows/master_calls.tftpl",
         task_reservation_timeout = 30
+      },
+      survey : {
+        friendly_name : "Survey Workflow"
+        templatefile : "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
 
@@ -35,9 +40,30 @@ locals {
       clinical : {
         "target_workers" = "routing.skills HAS 'Clinical'",
         "friendly_name"  = "Clinical"
+      },
+      survey : {
+        "target_workers" = "1==0",
+        "friendly_name"  = "Survey"
+      },
+      e2e_test : {
+        "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
+        "friendly_name"  = "E2E Test Queue"
       }
     }
 
+    lex_bot_languages = {
+      en_NZ : ["pre_survey"]
+    }
+
+    # HRM
+    case_status_transition_rules = [
+      {
+        startingStatus: "submitted",
+        targetStatus: "closed",
+        timeInStatusInterval: "28 days",
+        description: "rule to close submitted cases after 28 days"
+      }
+    ]
 
   }
 }

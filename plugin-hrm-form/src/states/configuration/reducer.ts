@@ -18,6 +18,7 @@ import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import * as t from './types';
 import { defaultLanguage } from '../../utils/pluginHelpers';
+import { FETCH_CASE_LIST_FULFILLED_ACTION, FetchCaseListFulfilledAction } from '../caseList/listContent';
 
 export type ConfigurationState = {
   language: string;
@@ -41,7 +42,10 @@ const initialState: ConfigurationState = {
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export function reduce(state = initialState, action: t.ConfigurationActionType): ConfigurationState {
+export function reduce(
+  state = initialState,
+  action: t.ConfigurationActionType | FetchCaseListFulfilledAction,
+): ConfigurationState {
   switch (action.type) {
     case t.CHANGE_LANGUAGE:
       return {
@@ -80,6 +84,19 @@ export function reduce(state = initialState, action: t.ConfigurationActionType):
         definitionVersions: {
           ...state.definitionVersions,
           [action.version]: action.definitions,
+        },
+      };
+    }
+    case FETCH_CASE_LIST_FULFILLED_ACTION: {
+      const { missingDefinitions } = action.payload;
+      const missingDefinitionsMap = Object.fromEntries(
+        missingDefinitions.map(({ version, definition }) => [version, definition]),
+      );
+      return {
+        ...state,
+        definitionVersions: {
+          ...state.definitionVersions,
+          ...missingDefinitionsMap,
         },
       };
     }

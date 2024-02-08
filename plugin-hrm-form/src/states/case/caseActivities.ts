@@ -16,7 +16,7 @@
 
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { Activity, ConnectedCaseActivity, NoteActivity } from './types';
+import { Activity, ContactActivity, NoteActivity } from './types';
 import { Case, Contact, NoteEntry, ReferralEntry } from '../../types/types';
 import { channelTypes } from '../DomainConstants';
 import { getTemplateStrings } from '../../hrmConfig';
@@ -33,11 +33,11 @@ const ActivityTypes = {
 } as const;
 
 /**
- * Returns true if the activity provided is a connected case activity (included in channelsAndDefault const object)
+ * Returns true if the activity provided represents a contact that was connected to the case
  * @param activity Timeline Activity
  */
-export const isConnectedCaseActivity = (activity): activity is ConnectedCaseActivity =>
-  Boolean(ActivityTypes.connectContact[activity.type]);
+export const isContactActivity = (activity: Activity): activity is ContactActivity =>
+  Boolean((activity as ContactActivity).contactId);
 
 export const getNoteActivities = (counsellorNotes: NoteEntry[], formDefs: DefinitionVersion): NoteActivity[] => {
   let { previewFields } = formDefs.layoutVersion.case.notes ?? {};
@@ -105,7 +105,7 @@ const getContactActivityText = (contact: Contact, strings: Record<string, string
   return '';
 };
 
-const connectedContactActivities = (caseContacts: Contact[]): ConnectedCaseActivity[] => {
+const connectedContactActivities = (caseContacts: Contact[]): ContactActivity[] => {
   const strings = getTemplateStrings();
   return (caseContacts || [])
     .map(cc => {
@@ -121,7 +121,7 @@ const connectedContactActivities = (caseContacts: Contact[]): ConnectedCaseActiv
           twilioWorkerId: cc.twilioWorkerId,
           channel,
           callType: cc.rawJson.callType,
-          showViewButton: Boolean(cc.finalizedAt),
+          isDraft: !cc.finalizedAt,
         };
       } catch (err) {
         console.warn(`Error processing connected contact, excluding from data`, cc, err);
@@ -138,9 +138,14 @@ export const getActivitiesFromCase = (sourceCase: Case, formDefs: DefinitionVers
   ];
 };
 
-export const getActivitiesFromContacts = (sourceContacts: any[]): Activity[] => {
+export const getActivitiesFromContacts = (sourceContacts: Contact[]): Activity[] => {
   return connectedContactActivities(sourceContacts);
 };
+
+export const getActivityCount = (sourceCase: Case): number =>
+  (sourceCase?.info?.counsellorNotes?.length ?? 0) +
+  (sourceCase?.info?.referrals?.length ?? 0) +
+  (sourceCase?.connectedContacts?.length ?? 0);
 
 /**
  * Sort activities from most recent to oldest.

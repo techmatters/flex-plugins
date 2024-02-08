@@ -19,20 +19,13 @@ import React from 'react';
 import { differenceInMinutes } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 
-import { Box, Row, HiddenText } from '../../styles/HrmStyles';
-import {
-  QueueName,
-  ChannelColumn,
-  ChannelBox,
-  ChannelLabel,
-  WaitTimeLabel,
-  WaitTimeValue,
-} from '../../styles/queuesStatus';
-import { channelTypes, ChannelTypes, ChannelColors } from '../../states/DomainConstants';
+import { Box, Row, HiddenText } from '../../styles';
+import { QueueName, ChannelColumn, ChannelBox, ChannelLabel, WaitTimeLabel, WaitTimeValue } from './styles';
+import { coreChannelTypes, CoreChannelTypes, ChannelColors } from '../../states/DomainConstants';
 
 const getChannelUI = (
   shortChannel: string,
-  color: ChannelColors[ChannelTypes],
+  color: ChannelColors[CoreChannelTypes],
   value: number,
   marginLeft: boolean,
   channelAria: string = undefined,
@@ -56,25 +49,25 @@ const renderChannel = ({
 }: {
   colors: ChannelColors;
   contactsWaiting: number;
-}): ((channel: ChannelTypes) => JSX.Element) => channel => {
+}): ((channel: CoreChannelTypes) => JSX.Element) => channel => {
   const channelColor = colors[channel];
 
   switch (channel) {
-    case channelTypes.voice:
+    case coreChannelTypes.voice:
       return getChannelUI('Calls', channelColor, contactsWaiting, false);
-    case channelTypes.sms:
+    case coreChannelTypes.sms:
       return getChannelUI('SMS', channelColor, contactsWaiting, true);
-    case channelTypes.facebook:
+    case coreChannelTypes.facebook:
       return getChannelUI('FB', channelColor, contactsWaiting, true, 'Facebook');
-    case channelTypes.whatsapp:
+    case coreChannelTypes.whatsapp:
       return getChannelUI('WA', channelColor, contactsWaiting, true, 'Whatsapp');
-    case channelTypes.web:
+    case coreChannelTypes.web:
       return getChannelUI('Chat', channelColor, contactsWaiting, true);
-    case channelTypes.twitter:
+    case coreChannelTypes.twitter:
       return getChannelUI('Twtr', channelColor, contactsWaiting, true);
-    case channelTypes.instagram:
+    case coreChannelTypes.instagram:
       return getChannelUI('IG', channelColor, contactsWaiting, true);
-    case channelTypes.line:
+    case coreChannelTypes.line:
       return getChannelUI('LN', channelColor, contactsWaiting, true);
     default:
       return null;
@@ -93,7 +86,7 @@ type Props = {
   line: number;
   longestWaitingDate: string | null;
   colors: ChannelColors;
-  contactsWaitingChannels?: ChannelTypes[];
+  contactsWaitingChannels?: CoreChannelTypes[];
 };
 
 const QueuesCard: React.FC<Props> = props => {
@@ -152,10 +145,10 @@ const QueuesCard: React.FC<Props> = props => {
         <Box marginTop="7px" marginBottom="14px">
           <Row>
             {contactsWaitingChannels && Array.isArray(contactsWaitingChannels)
-              ? Object.values(channelTypes)
+              ? Object.values(coreChannelTypes)
                   .filter(c => contactsWaitingChannels.includes(c))
                   .map(renderFun)
-              : Object.values(channelTypes).map(renderFun)}
+              : Object.values(coreChannelTypes).map(renderFun)}
           </Row>
         </Box>
         <Row>

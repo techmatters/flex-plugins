@@ -20,7 +20,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { Case, Contact, RouterTask } from '../../../types/types';
 import CaseHeader from './CaseHeader';
-import { Flex, PreviewWrapper } from '../../../styles/HrmStyles';
+import { Flex, PreviewWrapper } from '../../../styles';
 import getUpdatedDate from '../../../states/getUpdatedDate';
 import { PreviewDescription } from '../PreviewDescription';
 import { getDefinitionVersion } from '../../../services/ServerlessService';
@@ -34,9 +34,9 @@ import { connectToCaseAsyncAction } from '../../../states/contacts/saveContact';
 import selectContactByTaskSid from '../../../states/contacts/selectContactByTaskSid';
 import { isStandaloneITask } from '../../case/Case';
 import { newCloseModalAction } from '../../../states/routing/actions';
-import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../../permissions';
+import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
-import { isNonDataCallType } from '../../../states/validationRules';
+import { PreviewRow } from '../styles';
 
 type OwnProps = {
   currentCase: Case;
@@ -85,6 +85,10 @@ const CasePreview: React.FC<Props> = ({
   const summary = info?.summary || callSummary;
   const counselor = counselorsHash[twilioWorkerId];
 
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
   useEffect(() => {
     if (versionId && !definitionVersions[versionId]) {
       getDefinitionVersion(versionId).then(definitionVersion => updateDefinitionVersion(versionId, definitionVersion));
@@ -100,18 +104,13 @@ const CasePreview: React.FC<Props> = ({
   });
   let isConnectedToTaskContact = false;
   let showConnectButton = false;
-  const {
-    enable_case_management: enableCaseManagement,
-    enable_case_merging: enableCaseMerging,
-  } = getAseloFeatureFlags();
-  if (enableCaseManagement && enableCaseMerging && taskContact && !isNonDataCallType(taskContact.rawJson?.callType)) {
+
+  if (getAseloFeatureFlags().enable_case_merging && taskContact) {
     isConnectedToTaskContact = Boolean(connectedContacts?.find(contact => contact.id === taskContact.id));
 
-    const { can: canForCase } = getPermissionsForCase(currentCase.twilioWorkerId, currentCase.status);
-    const { can: canForContact } = getPermissionsForContact(taskContact?.twilioWorkerId);
     showConnectButton = Boolean(
-      canForCase(PermissionActions.UPDATE_CASE_CONTACTS) &&
-        canForContact(PermissionActions.ADD_CONTACT_TO_CASE) &&
+      can(PermissionActions.UPDATE_CASE_CONTACTS, taskContact) &&
+        can(PermissionActions.ADD_CONTACT_TO_CASE, currentCase) &&
         connectedContacts?.length &&
         (!taskContact.caseId || isConnectedToTaskContact),
     );
@@ -136,12 +135,13 @@ const CasePreview: React.FC<Props> = ({
             closeModal();
           }}
         />
-        {summary && (
-          <PreviewDescription expandLinkText="ReadMore" collapseLinkText="ReadLess">
-            {summary}
-          </PreviewDescription>
-        )}
-
+        <PreviewRow>
+          {summary && (
+            <PreviewDescription expandLinkText="ReadMore" collapseLinkText="ReadLess">
+              {summary}
+            </PreviewDescription>
+          )}
+        </PreviewRow>
         <TagsAndCounselor counselor={counselor} categories={categories} definitionVersion={definitionVersion} />
       </PreviewWrapper>
     </Flex>

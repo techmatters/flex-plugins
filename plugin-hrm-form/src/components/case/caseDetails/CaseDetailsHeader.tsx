@@ -27,28 +27,19 @@ import {
   DetailsHeaderCounselor,
   DetailsHeaderContainer,
   StyledPrintButton,
-} from '../../../styles/case';
-import { Flex, Box } from '../../../styles/HrmStyles';
+} from '../styles';
+import { Flex, Box } from '../../../styles';
 import { getHrmConfig } from '../../../hrmConfig';
-import CaseCreatedBanner from '../../caseMergingBanners/CaseCreatedBanner';
 
 type OwnProps = {
-  caseId: number;
+  caseId: string;
   office: string;
   counselor: string;
   handlePrintCase: () => void;
   isOrphanedCase: boolean;
-  isCreating?: boolean;
 };
 
-const CaseDetailsHeader: React.FC<OwnProps> = ({
-  caseId,
-  office,
-  counselor,
-  handlePrintCase,
-  isOrphanedCase,
-  isCreating,
-}) => {
+const CaseDetailsHeader: React.FC<OwnProps> = ({ caseId, office, counselor, handlePrintCase, isOrphanedCase }) => {
   const { multipleOfficeSupport } = getHrmConfig();
 
   return (
@@ -60,11 +51,6 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({
         </DetailsHeaderCaseId>
         {multipleOfficeSupport && office && <DetailsHeaderOfficeName>({office})</DetailsHeaderOfficeName>}
       </DetailsHeaderCaseContainer>
-      {isCreating && (
-        <Box marginBottom="14px" width="100%">
-          <CaseCreatedBanner caseId={caseId} />
-        </Box>
-      )}
       <Flex justifyContent="space-between">
         <DetailsHeaderCounselor data-testid="Case-DetailsHeaderCounselor">
           <Template code="Case-Counsellor" />: {counselor}

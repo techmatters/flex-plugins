@@ -20,10 +20,9 @@ import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 import type { FilterDefinitionFactory } from '@twilio/flex-ui/src/components/view/TeamsView';
 
-import { AcceptTransferButton, RejectTransferButton, TransferButton } from '../components/transfer';
-import * as TransferHelpers from './transfer';
+import * as TransferHelpers from '../transfer/transferTaskState';
 import EmojiPicker from '../components/emojiPicker';
-import CannedResponses from '../components/CannedResponses';
+import CannedResponses from '../components/cannedResponses';
 import QueuesStatusWriter from '../components/queuesStatus/QueuesStatusWriter';
 import QueuesStatus from '../components/queuesStatus';
 import CustomCRMContainer from '../components/CustomCRMContainer';
@@ -36,19 +35,23 @@ import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
 import StandaloneSearchSideLink from '../components/sideLinks/StandaloneSearchSideLink';
 import ManualPullButton from '../components/ManualPullButton';
 import ViewTaskNumber from '../components/common/MaskingIdentifiers/ViewTaskNumber';
+import ProfileList from '../components/profileList';
+import ProfileListSideLink from '../components/sideLinks/ProfileListSideLink';
 import { AddOfflineContactButton, OfflineContactTask } from '../components/OfflineContact';
 import { chatCapacityUpdated } from '../states/configuration/actions';
-import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles/HrmStyles';
+import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles';
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
-import { Container } from '../styles/queuesStatus';
-import { FeatureFlags, isInMyBehalfITask, standaloneTaskSid } from '../types/types';
+import { Container } from '../components/queuesStatus/styles';
+import { FeatureFlags, isInMyBehalfITask, standaloneTaskSid, StandaloneITask } from '../types/types';
 import { colors } from '../channels/colors';
-import { getHrmConfig, getAseloConfigFlags } from '../hrmConfig';
+import { getAseloConfigFlags, getHrmConfig } from '../hrmConfig';
 import { AseloMessageInput, AseloMessageList } from '../components/AseloMessaging';
 import { namespace, routingBase } from '../states/storeNamespaces';
 import { changeRoute } from '../states/routing/actions';
-import { ChangeRouteMode } from '../states/routing/types';
+import { AppRoutes, ChangeRouteMode } from '../states/routing/types';
+import { selectCurrentBaseRoute } from '../states/routing/getRoute';
+import { RootState } from '../states';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
@@ -167,6 +170,18 @@ const setUpOfflineContact = () => {
 };
 
 /**
+ * Dispatch an action to route to the side link
+ * Will reset standalone route to a starting target route if the standalone base route doesn't already match it
+ * @param targetAppRoute
+ */
+const routeToSideLink = (targetAppRoute: AppRoutes) => {
+  const { store } = Flex.Manager.getInstance();
+  const { route } = selectCurrentBaseRoute(store.getState() as RootState, standaloneTaskSid) ?? {};
+  if (route === targetAppRoute.route) return;
+  store.dispatch(changeRoute(targetAppRoute, standaloneTaskSid, ChangeRouteMode.ResetRoute));
+};
+
+/**
  * Add buttons to pull / create tasks
  */
 export const setUpAddButtons = (featureFlags: FeatureFlags) => {
@@ -239,30 +254,6 @@ export const setUpViewMaskedVoiceNumber = () => {
 };
 
 /**
- * Add the buttons used to initiate, accept and reject transfers (when it should), and removes the actions button if task is being transferred
- */
-export const setUpTransferComponents = () => {
-  Flex.TaskCanvasHeader.Content.add(<TransferButton key="transfer-button" />, {
-    sortOrder: 1,
-    if: props => TransferHelpers.shouldShowTransferButton(props.task),
-  });
-
-  Flex.TaskCanvasHeader.Content.remove('actions', {
-    if: props => TransferHelpers.isTransferring(props.task),
-  });
-
-  Flex.TaskCanvasHeader.Content.add(<AcceptTransferButton key="complete-transfer-button" />, {
-    sortOrder: 1,
-    if: props => TransferHelpers.shouldShowTransferControls(props.task),
-  });
-
-  Flex.TaskCanvasHeader.Content.add(<RejectTransferButton key="reject-transfer-button" />, {
-    sortOrder: 1,
-    if: props => TransferHelpers.shouldShowTransferControls(props.task),
-  });
-};
-
-/**
  * Add components used only by developers
  */
 export const setUpDeveloperComponents = (translateUI: (language: string) => Promise<void>) => {
@@ -304,8 +295,37 @@ export const setUpCaseList = () => {
       key="CaseListSideLink"
       onClick={() => {
         Flex.Actions.invokeAction('NavigateToView', { viewName: 'case-list' });
+        routeToSideLink({ route: 'case-list', subroute: 'case-list' });
+      }}
+      reserveSpace={false}
+      showLabel={true}
+    />,
+  );
+};
+
+/**
+ * Add components for Client Profiles page
+ */
+
+export const setUpClientProfileList = () => {
+  Flex.ViewCollection.Content.add(
+    <Flex.View name="profile-list" key="profile-list-view">
+      <ProfileList />
+    </Flex.View>,
+  );
+
+  Flex.SideNav.Content.add(
+    <ProfileListSideLink
+      key="ProfileListSideLink"
+      onClick={() => {
+        Flex.Actions.invokeAction('NavigateToView', { viewName: 'profile-list' });
+        routeToSideLink({ route: 'profile-list', subroute: 'profile-list' });
         Flex.Manager.getInstance().store.dispatch(
-          changeRoute({ route: 'case-list', subroute: 'case-list' }, standaloneTaskSid, ChangeRouteMode.Reset),
+          changeRoute(
+            { route: 'profile-list', subroute: 'profile-list' },
+            standaloneTaskSid,
+            ChangeRouteMode.ResetRoute,
+          ),
         );
       }}
       reserveSpace={false}
@@ -326,9 +346,7 @@ export const setUpStandaloneSearch = () => {
       key="StandaloneSearchSideLink"
       onClick={() => {
         Flex.Actions.invokeAction('NavigateToView', { viewName: 'search' });
-        Flex.Manager.getInstance().store.dispatch(
-          changeRoute({ route: 'search', subroute: 'form' }, standaloneTaskSid, ChangeRouteMode.Reset),
-        );
+        routeToSideLink({ route: 'search', subroute: 'form' });
       }}
       reserveSpace={false}
       showLabel={true}

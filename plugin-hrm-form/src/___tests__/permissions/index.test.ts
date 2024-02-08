@@ -15,31 +15,53 @@
  */
 
 import each from 'jest-each';
+import subHours from 'date-fns/subHours';
+import { subDays } from 'date-fns';
 
 import * as fetchRulesModule from '../../permissions/fetchRules';
 import {
-  getPermissionsForCase,
-  getPermissionsForContact,
-  getPermissionsForViewingIdentifiers,
+  getInitializedCan,
   PermissionActions,
   CaseActions,
   ContactActions,
   ViewIdentifiersAction,
+  cleanupInitializedCan,
+  actionsMaps,
+  TargetKind,
+  ConditionsSets,
 } from '../../permissions';
 import { getHrmConfig } from '../../hrmConfig';
 
+const fetchRulesSpy = jest.spyOn(fetchRulesModule, 'fetchRules').mockImplementation(() => {
+  throw new Error('fetchRules not mocked!');
+});
 jest.mock('../../hrmConfig');
 const mockGetHrmConfig = getHrmConfig as jest.Mock<Partial<ReturnType<typeof getHrmConfig>>>;
-const buildRules = conditionsSets =>
-  Object.values(PermissionActions).reduce((accum, action) => ({ ...accum, [action]: conditionsSets }), {});
+const buildRules = (conditionsSets, kind: TargetKind | 'all') => {
+  const actionsForTK = kind === 'all' ? [] : Object.values(actionsMaps[kind]);
+  return Object.values(PermissionActions).reduce(
+    (accum, action) => ({
+      ...accum,
+      [action]: kind === 'all' || actionsForTK.includes(action) ? conditionsSets : [],
+    }),
+    {},
+  );
+};
 
 afterEach(() => {
-  jest.clearAllMocks();
+  jest.resetAllMocks();
+});
+
+const addPrettyPrintConditions = (testCase: { conditionsSets: ConditionsSets }) => ({
+  ...testCase,
+  prettyConditionsSets: testCase.conditionsSets
+    .map(arr => arr.map(e => (typeof e === 'string' ? e : JSON.stringify(e))))
+    .map(arr => `[${arr.join(',')}]`),
 });
 
 describe('Test that all actions work fine (everyone)', () => {
-  const rules = buildRules([['everyone']]);
-  jest.spyOn(fetchRulesModule, 'fetchRules').mockReturnValue(rules);
+  const rules = buildRules([['everyone']], 'all');
+  fetchRulesSpy.mockReturnValue(rules);
 
   mockGetHrmConfig.mockReturnValue({
     workerSid: 'not creator',
@@ -47,18 +69,22 @@ describe('Test that all actions work fine (everyone)', () => {
     permissionConfig: 'wareva',
   });
 
-  const { can } = getPermissionsForCase('notCreator', 'open');
+  const can = getInitializedCan();
 
   each(
     Object.values(PermissionActions).map(action => ({
       action,
     })),
   ).test(`Action $action should return true`, ({ action }) => {
-    expect(can(action)).toBeTruthy();
+    expect(can(action, { status: 'open', twilioWorkerId: 'some one' })).toBeTruthy();
   });
 });
 
 describe('Test different scenarios (all CasesActions)', () => {
+  afterEach(() => {
+    cleanupInitializedCan();
+  });
+
   each(
     Object.values(CaseActions)
       .flatMap(action => [
@@ -137,13 +163,49 @@ describe('Test different scenarios (all CasesActions)', () => {
           expectedResult: false,
           expectedDescription: 'case is open but user is not creator',
         },
+        {
+          action,
+          conditionsSets: [[{ createdHoursAgo: 1 }]],
+          workerSid: 'not creator',
+          isSupervisor: false,
+          expectedResult: true,
+          expectedDescription: 'created less than 1 hour ago',
+          createdAt: new Date().toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [[{ createdHoursAgo: 1 }]],
+          workerSid: 'not creator',
+          isSupervisor: false,
+          expectedResult: false,
+          expectedDescription: 'created less than 1 hour ago',
+          createdAt: subHours(new Date(), 2).toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [[{ createdDaysAgo: 1 }]],
+          workerSid: 'not creator',
+          isSupervisor: false,
+          expectedResult: true,
+          expectedDescription: 'created less than 1 day ago',
+          createdAt: new Date().toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [[{ createdDaysAgo: 1 }]],
+          workerSid: 'not creator',
+          isSupervisor: false,
+          expectedResult: false,
+          expectedDescription: 'created less than 1 day ago',
+          createdAt: subDays(new Date(), 2).toISOString(),
+        },
       ])
-      .map(t => ({ ...t, prettyConditionsSets: t.conditionsSets.map(arr => `[${arr.join(',')}]`) })),
+      .map(addPrettyPrintConditions),
   ).test(
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
-    ({ action, conditionsSets, workerSid, isSupervisor, status = 'open', expectedResult }) => {
-      const rules = buildRules(conditionsSets);
-      jest.spyOn(fetchRulesModule, 'fetchRules').mockReturnValueOnce(rules);
+    ({ action, conditionsSets, workerSid, isSupervisor, status = 'open', expectedResult, createdAt }) => {
+      const rules = buildRules(conditionsSets, 'case');
+      fetchRulesSpy.mockReturnValueOnce(rules);
 
       mockGetHrmConfig.mockReturnValueOnce({
         workerSid,
@@ -151,14 +213,18 @@ describe('Test different scenarios (all CasesActions)', () => {
         permissionConfig: 'wareva',
       });
 
-      const { can } = getPermissionsForCase('creator', status);
+      const can = getInitializedCan();
 
-      expect(can(action)).toBe(expectedResult);
+      expect(can(action, { status, twilioWorkerId: 'creator', createdAt })).toBe(expectedResult);
     },
   );
 });
 
 describe('Test different scenarios (all ContactActions)', () => {
+  afterEach(() => {
+    cleanupInitializedCan();
+  });
+
   each(
     Object.values(ContactActions)
       .flatMap(action => [
@@ -226,13 +292,49 @@ describe('Test different scenarios (all ContactActions)', () => {
           expectedResult: false,
           expectedDescription: 'user is supervisor but not owner',
         },
+        {
+          action,
+          conditionsSets: [[{ createdHoursAgo: 1 }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          expectedResult: true,
+          expectedDescription: 'created less than 1 hour ago',
+          createdAt: new Date().toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [[{ createdHoursAgo: 1 }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          expectedResult: false,
+          expectedDescription: 'created more than 1 hour ago',
+          createdAt: subHours(new Date(), 2).toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [[{ createdDaysAgo: 1 }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          expectedResult: true,
+          expectedDescription: 'created less than 1 day ago',
+          createdAt: new Date().toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [[{ createdDaysAgo: 1 }]],
+          workerSid: 'not owner',
+          isSupervisor: false,
+          expectedResult: false,
+          expectedDescription: 'created more than 1 day ago',
+          createdAt: subDays(new Date(), 2).toISOString(),
+        },
       ])
-      .map(t => ({ ...t, prettyConditionsSets: t.conditionsSets.map(arr => `[${arr.join(',')}]`) })),
+      .map(addPrettyPrintConditions),
   ).test(
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
-    ({ action, conditionsSets, workerSid, isSupervisor, expectedResult }) => {
-      const rules = buildRules(conditionsSets);
-      jest.spyOn(fetchRulesModule, 'fetchRules').mockReturnValueOnce(rules);
+    ({ action, conditionsSets, workerSid, isSupervisor, expectedResult, createdAt }) => {
+      const rules = buildRules(conditionsSets, 'contact');
+      fetchRulesSpy.mockReturnValueOnce(rules);
 
       mockGetHrmConfig.mockReturnValueOnce({
         workerSid,
@@ -240,13 +342,17 @@ describe('Test different scenarios (all ContactActions)', () => {
         permissionConfig: 'wareva',
       });
 
-      const { can } = getPermissionsForContact('owner');
+      const can = getInitializedCan();
 
-      expect(can(action)).toBe(expectedResult);
+      expect(can(action, { twilioWorkerId: 'owner', createdAt })).toBe(expectedResult);
     },
   );
 });
 describe('Test different scenarios for ViewIdentifiersAction', () => {
+  afterEach(() => {
+    cleanupInitializedCan();
+  });
+
   each(
     Object.values(ViewIdentifiersAction)
       .flatMap(action => [
@@ -259,7 +365,7 @@ describe('Test different scenarios for ViewIdentifiersAction', () => {
         },
         {
           action,
-          conditionsSets: [],
+          conditionsSets: [] as any,
           isSupervisor: true,
           expectedResult: false,
           expectedDescription: 'user is supervisor',
@@ -286,21 +392,21 @@ describe('Test different scenarios for ViewIdentifiersAction', () => {
           expectedDescription: 'user is not a supervisor',
         },
       ])
-      .map(t => ({ ...t, prettyConditionsSets: t.conditionsSets.map(arr => `[${arr.join(',')}]`) })),
+      .map(addPrettyPrintConditions),
   ).test(
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
     ({ action, conditionsSets, isSupervisor, expectedResult }) => {
-      const rules = buildRules(conditionsSets);
-      jest.spyOn(fetchRulesModule, 'fetchRules').mockReturnValueOnce(rules);
+      const rules = buildRules(conditionsSets, 'viewIdentifiers');
+      fetchRulesSpy.mockReturnValueOnce(rules);
 
       mockGetHrmConfig.mockReturnValueOnce({
         isSupervisor,
         permissionConfig: 'wareva',
       });
 
-      const { canView } = getPermissionsForViewingIdentifiers();
+      const can = getInitializedCan();
 
-      expect(canView(action)).toBe(expectedResult);
+      expect(can(action)).toBe(expectedResult);
     },
   );
 });

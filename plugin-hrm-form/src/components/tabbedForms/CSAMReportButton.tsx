@@ -21,24 +21,25 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMoreOutlined';
 import AssignmentIcon from '@material-ui/icons/AssignmentOutlined';
 import OpenInNew from '@material-ui/icons/OpenInNew';
 
-import { Row, CSAMReportButtonText, StyledCSAMReportButton } from '../../styles/HrmStyles';
+import { getAseloFeatureFlags } from '../../hrmConfig';
+import { Row } from '../../styles';
+import { CSAMReportButtonText } from './styles';
+import { StyledCSAMReportButton } from '../../styles/buttons';
 import CSAMReportDropdown from './CSAMReportDropdown';
 
 type OwnProps = {
   handleChildCSAMType: () => void;
   handleCounsellorCSAMType: () => void;
-  csamReportEnabled: boolean;
-  csamClcReportEnabled: boolean;
 };
 
 type Props = OwnProps;
 
-const CSAMReportButton: React.FC<Props> = ({
-  handleChildCSAMType,
-  handleCounsellorCSAMType,
-  csamReportEnabled,
-  csamClcReportEnabled,
-}) => {
+const CSAMReportButton: React.FC<Props> = ({ handleChildCSAMType, handleCounsellorCSAMType }) => {
+  const {
+    enable_csam_clc_report: csamClcReportEnabled,
+    enable_csam_report: csamReportEnabled,
+  } = getAseloFeatureFlags();
+
   const [dropdown, setDropdown] = useState(false);
   const buttonRef = useRef(null);
 

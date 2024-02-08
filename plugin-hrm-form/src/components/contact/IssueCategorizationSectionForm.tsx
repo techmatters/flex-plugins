@@ -21,6 +21,7 @@ import type { CategoriesDefinition } from 'hrm-form-definitions';
 import { Template } from '@twilio/flex-ui';
 import GridIcon from '@material-ui/icons/GridOn';
 import ListIcon from '@material-ui/icons/List';
+import { useFormContext } from 'react-hook-form';
 
 import { RootState } from '../../states';
 import useFocus from '../../utils/useFocus';
@@ -34,7 +35,7 @@ import {
   CategoryTitle,
   Container,
   ToggleViewButton,
-} from '../../styles/HrmStyles';
+} from '../../styles';
 import Section from '../common/forms/Section';
 import CategoryCheckboxes from '../common/forms/CategoryCheckboxes';
 
@@ -63,9 +64,31 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
   const firstElementRef = useFocus(shouldFocusFirstElement);
   const selectedCount = Object.values(selectedCategories).reduce((acc, curr) => acc + curr.length, 0);
 
+  const { clearErrors, register } = useFormContext();
+
+  // Add invisible field that errors if no category is selected (triggered by validaiton)
+  React.useEffect(() => {
+    register('categories.categorySelected', {
+      validate: () => {
+        if (selectedCount < 1) {
+          return 'Error';
+        }
+
+        return null;
+      },
+    });
+  }, [register, selectedCount]);
+
+  // Clear the error state once the count is non-zero
+  React.useEffect(() => {
+    if (selectedCount) {
+      clearErrors('categories.categorySelected');
+    }
+  }, [clearErrors, selectedCount]);
+
   return (
     <Container formContainer={true}>
-      <CategoryTitle>
+      <CategoryTitle searchTerm="">
         <Template code="Categories-Title" />
       </CategoryTitle>
       <CategorySubtitleSection>

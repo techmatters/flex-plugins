@@ -18,9 +18,9 @@
 import type { ITask } from '@twilio/flex-ui';
 import type { CallTypes, DefinitionVersionId } from 'hrm-form-definitions';
 
-import type { DateFilterValue } from '../components/caseList/filters/dateFilters';
 import type { ChannelTypes } from '../states/DomainConstants';
 import type { ResourceReferral } from '../states/contacts/resourceReferral';
+import { DateFilterValue } from '../states/caseList/dateFilters';
 
 export type EntryInfo = {
   id: string;
@@ -81,8 +81,8 @@ export type CaseInfo = {
 };
 
 export type Case = {
-  accountSid: any;
-  id: number;
+  accountSid: string;
+  id: string;
   status: string;
   helpline: string;
   twilioWorkerId: string;
@@ -90,6 +90,10 @@ export type Case = {
   categories: {};
   createdAt: string;
   updatedAt: string;
+  updatedBy?: string;
+  statusUpdatedAt?: string;
+  statusUpdatedBy?: string;
+  previousStatus?: string;
   connectedContacts: Contact[];
 };
 
@@ -186,7 +190,7 @@ export type Contact = {
   queueName: string;
   channelSid: string;
   serviceSid: string;
-  caseId?: number;
+  caseId?: string;
 };
 
 export type SearchContactResult = {
@@ -207,21 +211,21 @@ export enum ListCasesSortBy {
   FOLLOW_UP_DATE = 'info.followUpDate',
 }
 
-export enum ListCasesSortDirection {
+export enum SortDirection {
   ASC = 'ASC',
   DESC = 'DESC',
 }
 
 export type ListCasesSort = {
   sortBy?: ListCasesSortBy;
-  sortDirection?: ListCasesSortDirection;
+  sortDirection?: SortDirection;
 };
 
 export type ListCasesQueryParams = {
   limit?: number;
   offset?: number;
   sortBy?: ListCasesSortBy;
-  sortDirection?: ListCasesSortDirection;
+  sortDirection?: SortDirection;
 } & ListCasesSort;
 
 export type CategoryFilter = {
@@ -250,34 +254,36 @@ export type ConfigFlags = {
 
 /* eslint-disable camelcase */
 export type FeatureFlags = {
-  enable_fullstory_monitoring: boolean; // Enables Full Story
-  enable_upload_documents: boolean; // Enables Case Documents
-  enable_post_survey: boolean; // Enables Post-Survey
+  // Please keep this in alphabetical order!
+  backend_handled_chat_janitor: boolean; // [Temporary flag until all accounts are migrated] Enables handling the janitor from taskrouter event listeners
+  enable_aselo_messaging_ui: boolean; // Enables Aselo Messaging UI iinstead of the default Twilio one - reduced functionality for low spec clients.
+  enable_canned_responses: boolean; // Enables Canned Responses
+  enable_case_merging: boolean; // Enables adding contacts to existing cases
+  enable_client_profiles: boolean; // Enables Client Profiles
+  enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior  
+  enable_confirm_on_browser_close: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
   enable_contact_editing: boolean; // Enables Editing Contacts
-  enable_case_management: boolean; // Enables Creating Cases and Viewing the Case List
-  enable_offline_contact: boolean; // Enables Creating Offline Contacts
+  enable_counselor_toolkits: boolean; // Enables Counselor Toolkits
+  enable_csam_clc_report: boolean; // Enables CSAM child Reports
+  enable_csam_report: boolean; // Enables CSAM Reports
+  enable_dual_write: boolean; // Enables Saving Contacts on External Backends
+  enable_emoji_picker: boolean; // Enables Emoji Picker
+  enable_external_transcripts: boolean; // Enables Viewing Transcripts Stored Outside of Twilio
   enable_filter_cases: boolean; // Enables Filters at Case List
+  enable_fullstory_monitoring: boolean; // Enables Full Story
+  enable_last_case_status_update_info: boolean; // Enables showing the time, user and changed status of the most recent case status update on the 'Edit Case Summary' page
+  enable_lex: boolean; // Enables consuming from Lex bots
+  enable_manual_pulling: boolean; // Enables Adding Another Task
+  enable_offline_contact: boolean; // Enables Creating Offline Contacts  
+  enable_post_survey: boolean; // Enables Post-Survey
+  enable_previous_contacts: boolean; // Enables Previous Contacts Yellow Banner
+  enable_save_insights: boolean; // Enables Saving Aditional Data on Insights
+  enable_separate_timeline_view: boolean; // Enables a limited inline case timelinbe with a link to the full timeline
   enable_sort_cases: boolean; // Enables Sorting at Case List
   enable_transfers: boolean; // Enables Transfering Contacts
-  enable_manual_pulling: boolean; // Enables Adding Another Task
-  enable_csam_report: boolean; // Enables CSAM Reports
-  enable_canned_responses: boolean; // Enables Canned Responses
-  enable_dual_write: boolean; // Enables Saving Contacts on External Backends
-  enable_save_insights: boolean; // Enables Saving Aditional Data on Insights
-  enable_previous_contacts: boolean; // Enables Previous Contacts Yellow Banner
-  enable_voice_recordings: boolean; // Enables Loading Voice Recordings
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
-  enable_external_transcripts: boolean; // Enables Viewing Transcripts Stored Outside of Twilio
-  enable_csam_clc_report: boolean; // Enables CSAM child Reports
-  enable_counselor_toolkits: boolean; // Enables Counselor Toolkits
-  enable_emoji_picker: boolean; // Enables Emoji Picker
-  enable_aselo_messaging_ui: boolean; // Enables Aselo Messaging UI iinstead of the default Twilio one - reduced functionality for low spec clients.
-  enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior
-  enable_lex: boolean; // Enables consuming from Lex bots
-  backend_handled_chat_janitor: boolean; // [Temporary flag until all accounts are migrated] Enables handling the janitor from taskrouter event listeners
-  enable_client_profiles: boolean; // Enables Client Profiles
-  enable_case_merging: boolean; // Enables adding contacts to existing cases
-  enable_confirm_on_browser_close: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
+  enable_upload_documents: boolean; // Enables Case Documents
+  enable_voice_recordings: boolean; // Enables Loading Voice Recordings
 };
 /* eslint-enable camelcase */
 
@@ -382,14 +388,31 @@ export type Profile = {
   createdAt?: string;
   updatedAt?: string;
   identifiers?: Identifier[];
-  profileFlags?: number[];
+  profileFlags?: {id: ProfileFlag['id'], name: ProfileFlag['name'], validUntil: ProfileFlag['validUntil']}[];
   profileSections?: ProfileSection[];
 };
 
+
 export type ProfileFlag = {
   id: number;
-  name: string;
+  name?: string;
   createdAt?: string;
   updatedAt?: string;
+  validUntil?: Date;
 };
 
+export type ProfilesList = Profile[];
+
+export enum ProfilesListSortBy {
+  ID = 'id',
+  NAME = 'name',
+}
+
+export type ProfilesListSort = {
+  sortBy?: ProfilesListSortBy;
+  sortDirection?: SortDirection;
+};
+
+export type ProfilesListFilters = {
+  statuses: string[];
+}

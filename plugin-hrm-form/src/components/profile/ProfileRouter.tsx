@@ -19,9 +19,12 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RouterTask } from '../../types/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { AppRoutes, ProfileRoute, isRouteWithContext } from '../../states/routing/types';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
-import { ProfileRoute, ProfileSectionEditRoute } from '../../states/routing/types';
+import Router, { RouteConfig, shouldHandleRoute } from '../router/Router';
+import ProfileCaseDetails from './ProfileCaseDetails';
+import ProfileContactDetails from './ProfileContactDetails';
 import ProfileEdit from './ProfileEdit';
 import ProfileTabs from './ProfileTabs';
 import ProfileSectionEdit from './section/ProfileSectionEdit';
@@ -30,50 +33,48 @@ type OwnProps = {
   task: RouterTask;
 };
 
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const PROFILE_ROUTES = {
-  profile: {
-    routes: ['profile'],
-    renderComponent: (props: Props) => <ProfileTabs {...props} />,
-  },
-  profileEdit: {
-    routes: ['profileEdit'],
-    renderComponent: (props: Props) => <ProfileEdit {...props} />,
-  },
-  profileSectionEdit: {
-    routes: ['profileSectionEdit'],
-    renderComponent: (props: Props) => <ProfileSectionEdit {...props} sectionType={props.sectionType} />,
-  },
-};
-
-export const ALL_PROFILE_ROUTES = Object.values(PROFILE_ROUTES).flatMap(({ routes }) => routes);
-
-const ProfileRouter: React.FC<Props> = props => {
-  const { currentRoute } = props;
-
-  return (
-    Object.values(PROFILE_ROUTES)
-      .find(({ routes }) => routes.includes(currentRoute))
-      ?.renderComponent(props) || null
-  );
-};
-
 const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const routingState = state[namespace].routing;
   const route = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const profileId = (route as ProfileRoute).id;
-  const currentRouteStack = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const currentRoute = currentRouteStack?.route.toString();
-  const sectionType = (currentRouteStack as ProfileSectionEditRoute)?.type;
+  const { profileId } = route as ProfileRoute;
 
   return {
     profileId,
-    currentRoute,
-    sectionType,
   };
 };
 
 const connector = connect(mapStateToProps);
+type Props = OwnProps & ConnectedProps<typeof connector>;
+
+const PROFILE_ROUTES: RouteConfig<Props> = [
+  {
+    routes: ['profile'],
+    renderComponent: (props: Props) => <ProfileTabs {...props} />,
+  },
+  {
+    routes: ['profileEdit'],
+    renderComponent: (props: Props) => <ProfileEdit {...props} />,
+  },
+  {
+    routes: ['profileSectionEdit'],
+    renderComponent: (props: Props) => {
+      return <ProfileSectionEdit {...props} />;
+    },
+  },
+  {
+    contextRoutes: ['contact'],
+    renderComponent: (props: Props) => <ProfileContactDetails {...props} />,
+  },
+  {
+    contextRoutes: ['case'],
+    renderComponent: (props: Props) => <ProfileCaseDetails {...props} />,
+  },
+];
+
+export const isProfileRoute = (routing: AppRoutes) => shouldHandleRoute(routing, PROFILE_ROUTES, 'profile');
+
+const ProfileRouter: React.FC<Props> = props => {
+  return <Router {...props} routeConfig={PROFILE_ROUTES} />;
+};
+
 export default connector(ProfileRouter);

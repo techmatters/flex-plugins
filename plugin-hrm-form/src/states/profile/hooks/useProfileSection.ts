@@ -18,17 +18,17 @@
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import asyncDispatch from '../../asyncDispatch';
-import { Profile, ProfileSection } from '../types';
+import { ProfileSection } from '../types';
 import * as ProfileActions from '../profiles';
 import * as ProfileSelectors from '../selectors';
 import { RootState } from '../..';
+import { UseProfileCommonParams } from './types';
 
-export type useProfileSectionByType = {
-  profileId: Profile['id'];
+export type UseProfileSectionByType = UseProfileCommonParams & {
   sectionType: string;
 };
 
-export const useProfileSectionLoaderByType = ({ profileId, sectionType }: useProfileSectionByType) => {
+export const useProfileSectionLoaderByType = ({ profileId, sectionType }: UseProfileSectionByType) => {
   const dispatch = useDispatch();
   // We need the profile section out of the profile data to use it in the useEffect below
   const profileSection = useSelector((state: RootState) =>
@@ -63,7 +63,7 @@ export const useProfileSectionLoaderByType = ({ profileId, sectionType }: usePro
   };
 };
 
-export const useProfileSectionByType = ({ profileId, sectionType }: useProfileSectionByType) => {
+export const useProfileSectionByType = ({ profileId, sectionType }: UseProfileSectionByType) => {
   const section = useSelector(
     (state: RootState) => ProfileSelectors.selectProfileSectionByType(state, profileId, sectionType)?.data,
   );

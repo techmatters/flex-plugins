@@ -22,7 +22,7 @@ import { fillEndMillis, getConversationDuration } from '../utils/conversationDur
 import { fetchHrmApi } from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
-import { ConversationMedia, Contact, isOfflineContactTask, isTwilioTask } from '../types/types';
+import { Contact, ConversationMedia, CustomITask, isOfflineContactTask, isTwilioTask } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
 import { ContactMetadata } from '../states/contacts/types';
@@ -119,10 +119,14 @@ type SaveContactToHrmResponse = {
   externalRecordingInfo?: ExternalRecordingInfoSuccess;
 };
 
-export const createContact = async (contact: Contact, twilioWorkerId: string, taskSid: string): Promise<Contact> => {
+export const createContact = async (contact: Contact, twilioWorkerId: string, task: CustomITask): Promise<Contact> => {
+  const taskSid = isOfflineContactTask(task)
+    ? task.taskSid
+    : task.attributes?.transferMeta?.originalTask ?? task.taskSid;
   const { definitionVersion } = getHrmConfig();
-  const contactForApi = {
+  const contactForApi: Contact = {
     ...contact,
+    channel: task.channelType as Contact['channel'],
     rawJson: {
       definitionVersion,
       ...contact.rawJson,
@@ -209,7 +213,6 @@ const saveContactToHrm = async (
     rawJson: form,
     twilioWorkerId,
     queueName: task.queueName,
-    channel: task.channelType,
     number,
     conversationDuration,
     timeOfContact,
@@ -266,7 +269,7 @@ export const saveContact = async (
   };
 };
 
-export async function connectToCase(contactId: string, caseId: number) {
+export async function connectToCase(contactId: string, caseId: string) {
   const body = { caseId };
 
   const options = {

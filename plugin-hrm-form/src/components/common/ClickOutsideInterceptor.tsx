@@ -16,7 +16,7 @@
 
 import React, { useEffect, useRef } from 'react';
 
-import { AriaLiveHiddenText } from '../../styles/HrmStyles';
+import { AriaLiveHiddenText } from '../../styles';
 
 type CommonTypes = {
   onClick: (event: MouseEvent) => void;

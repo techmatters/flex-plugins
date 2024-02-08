@@ -30,7 +30,7 @@ import {
 } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import { standaloneTaskSid } from '../../types/types';
-import getOfflineContactTaskSid from '../contacts/offlineContactTaskSid';
+import { getOfflineContactTaskSid } from '../contacts/offlineContactTask';
 import {
   ContactUpdatingAction,
   CREATE_CONTACT_ACTION_FULFILLED,
@@ -42,9 +42,14 @@ export const newTaskEntry = {
   route: 'select-call-type' as const,
 };
 
+const getPathFromUrl = url => {
+  return url.pathname.replace(/^\/|\/$/g, '');
+};
+
+// eslint-disable-next-line import/no-unused-modules
 export const initialState: RoutingState = {
   tasks: {
-    [standaloneTaskSid]: [{ route: 'case-list', subroute: 'case-list' }],
+    [standaloneTaskSid]: [{ route: getPathFromUrl(window.location), subroute: getPathFromUrl(window.location) }],
   },
   isAddingOfflineContact: false,
 };
@@ -124,7 +129,7 @@ const updateTopmostRoute = (baseRouteStack: AppRoutes[], newRoute, mode: ChangeR
       ];
     }
   }
-  if (mode === ChangeRouteMode.Reset) {
+  if (mode === ChangeRouteMode.ResetModal) {
     return [newRoute];
   }
   if (mode === ChangeRouteMode.Replace && baseRouteStack?.length) {
@@ -222,11 +227,14 @@ export function reduce(
         isAddingOfflineContact: action.taskId === getOfflineContactTaskSid() ? false : state.isAddingOfflineContact,
       };
     case CHANGE_ROUTE: {
+      const { routing, mode, taskId } = action;
+      const updatedRoute =
+        mode === ChangeRouteMode.ResetRoute ? [routing] : updateTopmostRoute(state.tasks[action.taskId], routing, mode);
       return {
         ...state,
         tasks: {
           ...state.tasks,
-          [action.taskId]: updateTopmostRoute(state.tasks[action.taskId], action.routing, action.mode),
+          [taskId]: updatedRoute,
         },
       };
     }

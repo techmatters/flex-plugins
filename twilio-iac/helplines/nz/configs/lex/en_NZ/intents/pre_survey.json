@@ -1,0 +1,33 @@
+{
+  "pre_survey": {
+    "description": "Helpline Specific configs/lex/en_JM/intents Pre Survey Intent Survey intent",
+    "sample_utterances": [
+      "Incoming webchat contact",
+      "trigger_pre_survey"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "If you are interested, here is a link to our privacy statement: https://www.youthline.co.nz/psyp",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a practitioner.",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "priority": {
+        "priority": 1,
+        "description": "Emergency support",
+        "slot_constraint": "Required",
+        "slot_type": "yes_no",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "Kia ora, welcome to Youthline, do you need emergency support? \n 1. Yes \n 2. No",
+          "content_type": "PlainText"
+        }
+      }
+    }
+  }
+}

@@ -11,11 +11,13 @@
         },
         "feature_flags": {
             "enable_aselo_messaging_ui": true,
-            "enable_conferencing": false,
+            "enable_conferencing": true,
             "enable_manual_pulling": false,
             "enable_resources": false,
             "enable_lex": true,
-            "enable_voice_recordings": true
+            "enable_voice_recordings": true,
+            "enable_case_merging":true,
+            "enable_client_profiles":true
         },
         "helplineLanguage": "es-CL",
         "permissionConfig": "cl"

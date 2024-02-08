@@ -49,6 +49,14 @@ const state: RecursivePartial<RootState> = {
         list: [],
         hash: { worker1: 'worker1 name' },
       },
+      definitionVersions: {},
+      currentDefinitionVersion: {
+        caseStatus: {
+          open: {
+            label: 'Open Label',
+          },
+        },
+      },
     },
     activeContacts: {
       existingContacts: {
@@ -66,8 +74,8 @@ const state: RecursivePartial<RootState> = {
       },
     },
     connectedCase: {
-      tasks: {
-        task1: {
+      cases: {
+        case1: {
           caseWorkingCopy: { sections: {} },
           connectedCase: {
             createdAt: new Date().toISOString(),
@@ -85,10 +93,12 @@ const state: RecursivePartial<RootState> = {
           {
             route: 'case',
             subroute: 'home',
+            caseId: 'case1',
           },
           {
             route: 'case',
             subroute: 'caseSummary',
+            caseId: 'case1',
           },
         ],
       },
@@ -105,7 +115,7 @@ const task = {
 
 describe('Test EditCaseSummary', () => {
   let ownProps: EditCaseSummaryProps;
-  const exitRoute: CaseRoute = { route: 'case', subroute: 'home' };
+  const exitRoute: CaseRoute = { route: 'case', subroute: 'home', caseId: 'case1' };
 
   beforeAll(async () => {
     const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);

@@ -1815,53 +1815,42 @@
     ]
   },
   {
-    "name": "inConflictWithTheLaw",
-    "label": "Tiene conflictos con la ley",
-    "type": "checkbox"
-  },
-  {
-    "name": "livingInConflictZone",
-    "label": "Vive en una zona de conflicto",
-    "type": "checkbox"
-  },
-  {
-    "name": "livingInPoverty",
-    "label": "Vive en la pobreza",
-    "type": "checkbox"
-  },
-  {
-    "name": "memberOfAnEthnic",
-    "label": "Pertenece a una etnia",
-    "type": "checkbox"
-  },
-  {
-    "name": "childOnTheMove",
-    "label": "Se encuentra migrando",
-    "type": "select",
-    "unknownOption": "Desconocido",
+    "name": "vulnerableGroups",
+    "label": "Grupos Vulnerables",
+    "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Desconocido",
-        "label": ""
+        "value": "Tiene conflictos con la ley",
+        "label": "Tiene conflictos con la ley"
       },
       {
-        "value": "Voluntario",
-        "label": "Voluntario"
+        "value": "Vive en una zona de conflicto",
+        "label": "Vive en una zona de conflicto"
       },
       {
-        "value": "Involuntario",
-        "label": "Involuntario"
+        "value": "Vive en la pobreza",
+        "label": "Vive en la pobreza"
+      },
+      {
+        "value": "Pertenece a una etnia",
+        "label": "Pertenece a una etnia"
+      },
+      {
+        "value": "Se encuentra migrando (voluntario)",
+        "label": "Se encuentra migrando (voluntario)"
+      },
+      {
+        "value": "Se encuentra migrando (involuntario)",
+        "label": "Se encuentra migrando (involuntario)"
+      },
+      {
+        "value": "Tiene una discapacidad",
+        "label": "Tiene una discapacidad"
+      },
+      {
+        "value": "Pertenece a la comunidad LGTBIQA+",
+        "label": "Pertenece a la comunidad LGTBIQA+"
       }
     ]
-  },
-  {
-    "name": "childWithDisability",
-    "label": "Tiene una discapacidad",
-    "type": "checkbox"
-  },
-  {
-    "name": "LGBTQI+",
-    "label": "Pertenece a la comunidad LGTBIQA+",
-    "type": "checkbox"
   }
 ]

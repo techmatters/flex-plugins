@@ -21,18 +21,12 @@ import { useForm } from 'react-hook-form';
 import Close from '@material-ui/icons/Close';
 
 import ActionHeader from '../case/ActionHeader';
-import { BottomButtonBar, Box, HeaderCloseButton, HiddenText, Row, StyledNextStepButton } from '../../styles/HrmStyles';
-import {
-  BoldDescriptionText,
-  CSAMReportContainer,
-  CSAMReportLayout,
-  OpenInNewIcon,
-  RegularText,
-} from '../../styles/CSAMReport';
+import { BottomButtonBar, Box, HeaderCloseButton, HiddenText, Row, StyledNextStepButton } from '../../styles';
+import { BoldDescriptionText, CSAMReportContainer, CSAMReportLayout, OpenInNewIcon, RegularText } from './styles';
 import { definitionObject, generateCSAMFormElement, initialValues } from './CSAMReportFormDefinition';
 import { CounselorCSAMReportForm } from '../../states/csam-report/types';
 import useFocus from '../../utils/useFocus';
-import { CaseActionTitle } from '../../styles/case';
+import { CaseActionTitle } from '../case/styles';
 
 type Props = {
   counselor: string;
@@ -78,7 +72,7 @@ const CSAMReportCounsellorForm: React.FC<Props> = ({
             <Close />
           </HeaderCloseButton>
         </Row>
-        <ActionHeader addingCounsellor={counselor} focusCloseButton={true} />
+        <ActionHeader addingCounsellor={counselor} />
 
         {/** Website details */}
         <Box marginTop="20px" marginBottom="5px">

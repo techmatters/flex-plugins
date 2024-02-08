@@ -20,8 +20,8 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { range } from 'lodash';
 
 import HrmTheme from '../../styles/HrmTheme';
-import { PaginationButton } from '../../styles/caseList';
-import Pagination, { getPaginationNumbers } from '../../components/Pagination';
+import { PaginationButton } from '../../components/pagination/styles';
+import Pagination, { getPaginationNumbers } from '../../components/pagination';
 
 const themeConf = {
   colorTheme: HrmTheme,

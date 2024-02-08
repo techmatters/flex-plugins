@@ -17,10 +17,10 @@
 import type { DefinitionVersion } from 'hrm-form-definitions';
 import { ITask, TaskHelper } from '@twilio/flex-ui';
 
-import type { ContactMetadata } from './types';
+import { ContactMetadata, LoadingStatus } from './types';
 import { ReferralLookupStatus } from './resourceReferral';
 import type { ContactState } from './existingContacts';
-import { Contact, ContactRawJson, OfflineContactTask, isOfflineContactTask } from '../../types/types';
+import { Contact, ContactRawJson, isOfflineContactTask, OfflineContactTask } from '../../types/types';
 import { createStateItem, getInitialValue } from '../../components/common/forms/formGenerators';
 import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
 import { getHrmConfig } from '../../hrmConfig';
@@ -43,9 +43,10 @@ export const newContactMetaData = (recreated: boolean): ContactMetadata => {
     endMillis: null,
     recreated,
     categories: categoriesMeta,
-    saveStatus: 'saved',
+    loadingStatus: LoadingStatus.LOADED,
   };
 };
+
 export const newContact = (definitions: DefinitionVersion, task?: ITask | OfflineContactTask): Contact => {
   const initialChildInformation = definitions.tabbedForms.ChildInformationTab.reduce(createStateItem, {});
   const initialCallerInformation = definitions.tabbedForms.CallerInformationTab.reduce(createStateItem, {});
@@ -67,6 +68,7 @@ export const newContact = (definitions: DefinitionVersion, task?: ITask | Offlin
     createdOnBehalfOf: '',
     ...Object.fromEntries(initialContactlessTaskTabDefinition.map(d => [d.name, getInitialValue(d)])),
   };
+  const channel = (task?.channelType ?? 'default') as Contact['channel'];
   const chatSids =
     task && !isOfflineContactTask(task) && TaskHelper.isChatBasedTask(task)
       ? {
@@ -91,12 +93,12 @@ export const newContact = (definitions: DefinitionVersion, task?: ITask | Offlin
       categories: {},
     },
     ...chatSids,
+    channel,
     createdBy: '',
     createdAt: '',
     updatedBy: '',
     updatedAt: '',
     queueName: '',
-    channel: 'web',
     number: '',
     conversationDuration: 0,
     profileId: null,
@@ -104,6 +106,7 @@ export const newContact = (definitions: DefinitionVersion, task?: ITask | Offlin
     conversationMedia: [],
   };
 };
+
 // eslint-disable-next-line import/no-unused-modules
 export const newContactState = (definitions: DefinitionVersion, task?: ITask | OfflineContactTask) => (
   recreated: boolean,

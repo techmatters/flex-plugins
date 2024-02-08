@@ -22,28 +22,18 @@ import FilterList from '@material-ui/icons/FilterList';
 import DateRange from '@material-ui/icons/DateRange';
 import { connect, ConnectedProps } from 'react-redux';
 
-import {
-  FiltersContainer,
-  FiltersResetAll,
-  CasesTitle,
-  CasesCount,
-  FilterTitle,
-} from '../../../styles/caseList/filters';
+import { FiltersContainer, FiltersResetAll, MainTitle, CountText, FilterTitle } from '../../../styles';
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
 import { CategoryFilter, CounselorHash } from '../../../types/types';
 import DateRangeFilter from './DateRangeFilter';
-import {
-  DateFilter,
-  followUpDateFilterOptions,
-  standardCaseListDateFilterOptions,
-  DateFilterValue,
-} from './dateFilters';
+import { DateFilter, followUpDateFilterOptions, standardCaseListDateFilterOptions } from './dateFilters';
 import CategoriesFilter, { Category } from './CategoriesFilter';
 import { RootState } from '../../../states';
 import * as CaseListSettingsActions from '../../../states/caseList/settings';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 import { canOnlyViewOwnCases } from '../../../permissions';
 import { caseListBase, configurationBase, namespace } from '../../../states/storeNamespaces';
+import { DateFilterValue } from '../../../states/caseList/dateFilters';
 /**
  * Reads the definition version and returns and array of items (type Item[])
  * to be used as the options for the status filter
@@ -247,23 +237,23 @@ const Filters: React.FC<Props> = ({
   return (
     <>
       <FiltersContainer id="CaseList-Cases-label">
-        <CasesTitle>
+        <MainTitle>
           <Template code="CaseList-Cases" />
-        </CasesTitle>
+        </MainTitle>
         {hasFiltersApplied && (
           <FiltersResetAll type="button" onClick={handleClearFilters}>
             <Template code="CaseList-Filters-ResetAllFilters" />
           </FiltersResetAll>
         )}
-        <CasesCount>
+        <CountText>
           <Template code={getCasesCountString()} count={caseCount} />
-        </CasesCount>
+        </CountText>
       </FiltersContainer>
       {featureFlags.enable_filter_cases && (
         <FiltersContainer data-testid="CaseList-Filters-Panel">
           <FilterList fontSize="small" />
           <FilterTitle>
-            <Template code="CaseList-FilterBy" />
+            <Template code="Table-FilterBy" />
           </FilterTitle>
           <MultiSelectFilter
             name="status"

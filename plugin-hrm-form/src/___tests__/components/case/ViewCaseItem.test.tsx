@@ -31,8 +31,10 @@ import { getDefinitionVersions } from '../../../hrmConfig';
 import { StandaloneITask } from '../../../types/types';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
 import { householdSectionApi } from '../../../states/case/sections/household';
-import { configurationBase, connectedCaseBase, contactFormsBase, namespace } from '../../../states/storeNamespaces';
+import { namespace } from '../../../states/storeNamespaces';
 import { newGoBackAction } from '../../../states/routing/actions';
+import { RecursivePartial } from '../../RecursivePartial';
+import { RootState } from '../../../states';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -57,38 +59,34 @@ const household = {
   relationshipToChild: 'Friend',
 };
 
-const state = {
+const state: RecursivePartial<RootState> = {
   [namespace]: {
     routing: {
       tasks: {
         task1: [
-          { route: 'case', subroute: 'home' },
-          { route: 'case', subroute: NewCaseSubroutes.Household, action: CaseItemAction.View, id: 'HOUSEHOLD_2' },
+          { route: 'case', subroute: 'home', caseId: 'case1' },
+          {
+            route: 'case',
+            subroute: NewCaseSubroutes.Household,
+            caseId: 'case1',
+            action: CaseItemAction.View,
+            id: 'HOUSEHOLD_2',
+          },
         ],
       },
     },
-    [configurationBase]: {
+    configuration: {
       counselors: {
         list: [],
         hash: { worker1: 'worker1 name' },
       },
     },
-    [contactFormsBase]: {
-      tasks: {
-        task1: {
-          childInformation: {
-            name: { firstName: { value: 'first' }, lastName: { value: 'last' } },
-          },
-          metadata: {},
-        },
-      },
-    },
-    [connectedCaseBase]: {
-      tasks: {
-        task1: {
-          taskSid: 'task1',
+    connectedCase: {
+      cases: {
+        case1: {
           connectedCase: {
-            createdAt: 1593469560208,
+            id: 'case1',
+            createdAt: new Date(1593469560208).toISOString(),
             twilioWorkerId: 'worker1',
             status: 'open',
             info: {

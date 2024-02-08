@@ -30,8 +30,19 @@ export type TabbedFormSubroutes =
   | 'profile'
   | 'profileEdit';
 
-export type RouteWithModalSupport = {
-  route: 'tabbed-forms' | 'case' | 'case-list' | 'search';
+const CONTEXTS = ['search', 'hrm-form', 'profile'] as const;
+
+export type Contexts = typeof CONTEXTS[number];
+
+export type RouteWithContext = {
+  context?: Contexts;
+};
+
+export const isRouteWithContext = (route: any): route is RouteWithContext => {
+  return CONTEXTS.includes((route as RouteWithContext).context);
+};
+
+export type RouteWithModalSupport = RouteWithContext & {
   activeModal?: AppRoutes[];
 };
 
@@ -67,15 +78,11 @@ export const NewCaseSectionSubroutes = {
   CaseSummary: 'caseSummary',
 } as const;
 
-const OtherCaseRoutes = {
-  CasePrintView: 'case-print-view',
-} as const;
-
 export type CaseSectionSubroute = typeof NewCaseSectionSubroutes[keyof typeof NewCaseSectionSubroutes];
 
 export const NewCaseSubroutes = Object.freeze({
   ...NewCaseSectionSubroutes,
-  ...OtherCaseRoutes,
+  CasePrintView: 'case-print-view',
 });
 
 export enum CaseItemAction {
@@ -89,8 +96,20 @@ type CaseListRoute = RouteWithModalSupport & {
   subroute: 'case-list';
 };
 
-type CaseCoreRoute = {
+type ProfileListRoute = RouteWithModalSupport & {
+  route: 'profile-list';
+  subroute: 'profile-list';
+};
+
+type ProfileHomeRoute = RouteWithModalSupport & {
+  route: 'profile';
+  subroute: 'home';
+  profileId: Profile['id'];
+};
+
+type CaseCoreRoute = RouteWithContext & {
   route: 'case';
+  caseId: string;
   autoFocus?: boolean;
   isCreating?: boolean;
 };
@@ -118,8 +137,13 @@ export type ViewCaseSectionRoute = CaseSectionRoute & {
   id: string;
 };
 
+export type CaseTimelineRoute = CaseCoreRoute & {
+  subroute: 'timeline';
+  page: number;
+};
+
 export type CasePrintRoute = CaseCoreRoute & {
-  subroute: typeof OtherCaseRoutes.CasePrintView;
+  subroute: 'case-print-view';
 };
 
 export type CaseRoute =
@@ -127,7 +151,8 @@ export type CaseRoute =
   | EditCaseSectionRoute
   | ViewCaseSectionRoute
   | CaseHomeRoute
-  | CasePrintRoute;
+  | CasePrintRoute
+  | CaseTimelineRoute;
 
 export const PROFILE_TABS = {
   cases: 'cases',
@@ -137,21 +162,21 @@ export const PROFILE_TABS = {
 
 export type ProfileTabs = typeof PROFILE_TABS[keyof typeof PROFILE_TABS];
 
-export type ProfileRoute = {
+export type ProfileRoute = RouteWithModalSupport & {
   route: 'profile';
-  id: Profile['id'];
+  profileId: Profile['id'];
   subroute?: ProfileTabs;
 };
 
 export type ProfileEditRoute = {
   route: 'profileEdit';
-  id: Profile['id'];
+  profileId: Profile['id'];
 };
 
 export type ProfileSectionEditRoute = {
   route: 'profileSectionEdit';
   type: ProfileSection['sectionType'];
-  id: Profile['id'];
+  profileId: Profile['id'];
 };
 
 export function isAddCaseSectionRoute(appRoute: AppRoutes): appRoute is AddCaseSectionRoute {
@@ -170,35 +195,32 @@ export function isRouteModal(route: AppRoutes): boolean {
   return isRouteWithModalSupport(route) && route.activeModal?.length > 0;
 }
 
-// Routes that may lead to Case screen (maybe we need an improvement here)
-export type AppRoutesWithCase =
-  // TODO: enum the possible subroutes on each route
-  CaseRoute;
-
-export function isCaseRoute(appRoute: AppRoutes): appRoute is AppRoutesWithCase {
-  return appRoute?.route === 'case';
-}
-
 export type CSAMReportRoute = {
   route: 'csam-report';
   subroute: 'form' | 'loading' | 'status' | 'report-type-picker';
   previousRoute: AppRoutes;
 };
 
-type ContactViewRoute = {
+type ContactCoreRoute = RouteWithContext & {
   route: 'contact';
-  subroute: 'view';
   id: string;
+  profileId?: Profile['id'];
 };
 
-export type ContactEditRoute = {
-  route: 'contact';
+type ContactViewRoute = ContactCoreRoute & {
+  subroute: 'view';
+};
+
+export type ContactEditRoute = ContactCoreRoute & {
   subroute: 'edit';
-  id: string;
   form: keyof Pick<ContactRawJson, 'childInformation' | 'callerInformation' | 'caseInformation' | 'categories'>;
 };
 
-type ContactRoute = ContactViewRoute | ContactEditRoute;
+export type ContactRoute = ContactViewRoute | ContactEditRoute;
+
+export const isContactRoute = (route: AppRoutes): route is ContactRoute => {
+  return route.route === 'contact';
+};
 
 type OtherRoutes =
   | CSAMReportRoute
@@ -207,23 +229,34 @@ type OtherRoutes =
   | SearchRoute
   | ContactRoute
   | CaseListRoute
+  | ProfileListRoute
   | ProfileRoute
   | ProfileEditRoute
   | ProfileSectionEditRoute;
 
 // The different routes we have in our app
-export type AppRoutes = AppRoutesWithCase | OtherRoutes;
+export type AppRoutes = CaseRoute | ProfileHomeRoute | OtherRoutes;
 
 export function isRouteWithModalSupport(appRoute: any): appRoute is RouteWithModalSupport {
-  return ['tabbed-forms', 'case', 'case-list', 'contact', 'profile', 'search', 'select-call-type'].includes(
-    appRoute.route,
-  );
+  return [
+    'tabbed-forms',
+    'case',
+    'case-list',
+    'contact',
+    'profile',
+    'search',
+    'select-call-type',
+    'profile-list',
+  ].includes(appRoute.route);
 }
+
+export const isCaseRoute = (route: AppRoutes): route is CaseRoute => route?.route === 'case';
 
 export enum ChangeRouteMode {
   Push = 'push',
   Replace = 'replace',
-  Reset = 'reset',
+  ResetModal = 'reset-modal',
+  ResetRoute = 'reset-route',
 }
 
 type ChangeRouteAction = {

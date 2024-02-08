@@ -18,31 +18,53 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Tab as TwilioTab, Template } from '@twilio/flex-ui';
 
-import { Box } from '../../styles/HrmStyles';
-import { useProfile } from '../../states/profile/hooks';
+import { useProfile, useProfileLoader } from '../../states/profile/hooks';
 import * as RoutingTypes from '../../states/routing/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import * as RoutingActions from '../../states/routing/actions';
 import { namespace } from '../../states/storeNamespaces';
-import { RootState } from '../../states';
-import { ProfileRoute } from '../../states/routing/types';
-import { StyledTabs } from '../../styles/search'; // just stealing from search until we have a centralized tab style
+import { StyledTabs } from '../search/styles'; // just stealing from search until we have a centralized tab style
 import NavigableContainer from '../NavigableContainer';
 import ProfileCases from './ProfileCases';
 import ProfileContacts from './ProfileContacts';
 import ProfileDetails from './ProfileDetails';
-import { ProfileCommonProps } from './types';
+import type { RootState } from '../../states';
+import type { ProfileRoute } from '../../states/routing/types';
+import type { ProfileCommonProps } from './types';
 
 type OwnProps = ProfileCommonProps;
 
-// eslint-disable-next-line no-use-before-define
+const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
+  const routingState = state[namespace].routing;
+  const route = getCurrentTopmostRouteForTask(routingState, taskSid);
+  const currentTab = (route as ProfileRoute).subroute || 'details';
+
+  return {
+    currentTab,
+  };
+};
+
+const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
+  changeProfileTab: (id, subroute) =>
+    dispatch(
+      RoutingActions.changeRoute(
+        { route: 'profile', profileId: id, subroute },
+        task.taskSid,
+        RoutingTypes.ChangeRouteMode.Replace,
+      ),
+    ),
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfileTab }) => {
-  const { profile: { contactsCount, casesCount } = {} } = useProfile({ profileId, shouldAutoload: true });
+  const { profile: { contactsCount, casesCount } = {} } = useProfile({ profileId });
+  useProfileLoader({ profileId });
+
   const tabs = [
     {
-      label: 'Client',
+      label: <Template code="Profile-ClientTab" />,
       key: 'details',
       renderComponent: () => <ProfileDetails profileId={profileId} task={task} />,
     },
@@ -86,26 +108,4 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
   );
 };
 
-const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
-  const routingState = state[namespace].routing;
-  const route = getCurrentTopmostRouteForTask(routingState, taskSid);
-  const currentTab = (route as ProfileRoute).subroute || 'details';
-
-  return {
-    currentTab,
-  };
-};
-
-const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
-  changeProfileTab: (id, subroute) =>
-    dispatch(
-      RoutingActions.changeRoute(
-        { route: 'profile', id, subroute },
-        task.taskSid,
-        RoutingTypes.ChangeRouteMode.Replace,
-      ),
-    ),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
 export default connector(ProfileTabs);

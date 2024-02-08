@@ -19,3 +19,4 @@
 export * from './identifiers';
 export * from './profiles';
 export * from './profileFlags';
+export * from './profilesList';

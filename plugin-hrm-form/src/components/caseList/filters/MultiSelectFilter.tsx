@@ -22,7 +22,6 @@ import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 
 import SearchInput from './SearchInput';
-import { Flex, Box, FormLabel } from '../../../styles/HrmStyles';
 import {
   MultiSelectButton,
   DialogArrow,
@@ -35,7 +34,10 @@ import {
   FiltersApplyButton,
   FiltersClearButton,
   FiltersCheckbox,
-} from '../../../styles/caseList/filters';
+  Flex,
+  Box,
+  FormLabel,
+} from '../../../styles';
 
 export type Item = {
   value: string;
@@ -74,10 +76,10 @@ const MultiSelectFilter: React.FC<Props> = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const transformToItems = (values: ReactHookFormValues): Item[] =>
-    defaultValues.map(item => ({ ...item, checked: values[item.value] }));
+    defaultValues?.map(item => ({ ...item, checked: values[item.value] }));
 
   const transformToValues = (items: Item[]) =>
-    items.reduce((acc, item) => ({ ...acc, [item.value]: item.checked }), {});
+    items?.reduce((acc, item) => ({ ...acc, [item.value]: item.checked }), {});
 
   const { register, handleSubmit, reset, getValues } = useForm({
     defaultValues: transformToValues(defaultValues),
@@ -93,7 +95,7 @@ const MultiSelectFilter: React.FC<Props> = ({
   // Force React Hook Forms to rerender whenever defaultValues changes
   useEffect(() => {
     const updateSelectedCount = () => {
-      const count = defaultValues.reduce((acc, item) => (item.checked ? acc + 1 : acc), 0);
+      const count = defaultValues?.reduce((acc, item) => (item.checked ? acc + 1 : acc), 0);
       setSelectedCount(count);
     };
 

@@ -24,18 +24,19 @@ import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../st
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
 import { customChannelTypes } from '../states/DomainConstants';
-import * as TransferHelpers from './transfer';
+import * as TransferHelpers from '../transfer/transferTaskState';
 import { CustomITask, FeatureFlags } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
 import type { RootState } from '../states';
-import { getTaskLanguage, getNumberFromTask } from './task';
+import { getNumberFromTask, getTaskLanguage } from './task';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { newContact } from '../states/contacts/contactState';
 import asyncDispatch from '../states/asyncDispatch';
 import { createContactAsyncAction } from '../states/contacts/saveContact';
 import { handleTransferredTask } from '../transfer/setUpTransferActions';
 import { prepopulateForm } from './prepopulateForm';
+import { namespace } from '../states/storeNamespaces';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -64,18 +65,15 @@ const fromActionFunction = (fun: ActionFunction) => async (payload: ActionPayloa
 /**
  * Initializes an empty form (in redux store) for the task within payload
  */
-export const initializeContactForm = async ({ task }: ActionPayload) => {
-  const { currentDefinitionVersion } = (Manager.getInstance().store.getState() as RootState)[
-    'plugin-hrm-form'
-  ].configuration;
+const initializeContactForm = async ({ task }: ActionPayload) => {
+  const { currentDefinitionVersion } = (Manager.getInstance().store.getState() as RootState)[namespace].configuration;
   const contact = {
     ...newContact(currentDefinitionVersion, task),
     number: getNumberFromTask(task),
   };
   const { workerSid } = getHrmConfig();
-  const taskSid = task.attributes?.transferMeta?.originalTask ?? task.taskSid;
 
-  await asyncDispatch(Manager.getInstance().store.dispatch)(createContactAsyncAction(contact, workerSid, taskSid));
+  await asyncDispatch(Manager.getInstance().store.dispatch)(createContactAsyncAction(contact, workerSid, task));
 };
 
 const sendMessageOfKey = (messageKey: string) => (

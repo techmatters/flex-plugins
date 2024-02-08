@@ -22,12 +22,11 @@ import _ from 'lodash';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import TaskView from './TaskView';
-import { Absolute } from '../styles/HrmStyles';
+import { Absolute } from '../styles';
 import { populateCounselors } from '../services/ServerlessService';
 import { populateCounselorsState } from '../states/configuration/actions';
 import { RootState } from '../states';
-import { OfflineContactTask } from '../types/types';
-import getOfflineContactTaskSid from '../states/contacts/offlineContactTaskSid';
+import { getOfflineContactTask, getOfflineContactTaskSid } from '../states/contacts/offlineContactTask';
 import { namespace } from '../states/storeNamespaces';
 import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
 import asyncDispatch from '../states/asyncDispatch';
@@ -35,6 +34,7 @@ import { createContactAsyncAction } from '../states/contacts/saveContact';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { newContact } from '../states/contacts/contactState';
 import { selectAnyContactIsSaving } from '../states/contacts/selectContactSaveStatus';
+import selectCurrentOfflineContact from '../states/contacts/selectCurrentOfflineContact';
 
 type OwnProps = {
   task?: ITask;
@@ -99,12 +99,6 @@ const CustomCRMContainer: React.FC<Props> = ({
     };
   }, [enableConfirmOnBrowserClose, hasUnsavedChanges]);
 
-  const offlineContactTask: OfflineContactTask = {
-    taskSid: getOfflineContactTaskSid(),
-    channelType: 'default',
-    attributes: { isContactlessTask: true, channelType: 'default' },
-  };
-
   const renderITask = selectedTaskSid && task;
   const renderOfflineContactTask = !selectedTaskSid && isAddingOfflineContact;
 
@@ -112,7 +106,7 @@ const CustomCRMContainer: React.FC<Props> = ({
     <Absolute top="0" bottom="0" left="0" right="0">
       {renderITask && <TaskView task={task} key={`controller-${selectedTaskSid}`} />}
       {renderOfflineContactTask && (
-        <TaskView task={offlineContactTask} key={`controller-${getOfflineContactTaskSid()}`} />
+        <TaskView task={getOfflineContactTask()} key={`controller-${getOfflineContactTaskSid()}`} />
       )}
     </Absolute>
   );
@@ -127,14 +121,12 @@ const mapStateToProps = (state: RootState) => {
   } = state;
   const { selectedTaskSid } = flex.view;
   const { isAddingOfflineContact } = routing;
-  const currentOfflineContact = Object.values(activeContacts.existingContacts).find(
-    contact => contact.savedContact.taskId === getOfflineContactTaskSid(),
-  );
+  const currentOfflineContact = selectCurrentOfflineContact(state);
   const hasUnsavedChanges =
     Object.values(activeContacts.existingContacts).some(
       ({ savedContact, draftContact }) => !_.isEqual(savedContact, getUnsavedContact(savedContact, draftContact)),
     ) ||
-    Object.values(connectedCase.tasks).some(
+    Object.values(connectedCase.cases).some(
       ({ caseWorkingCopy }) =>
         caseWorkingCopy.caseSummary || Object.values(caseWorkingCopy.sections).some(section => section),
     ) ||
@@ -152,7 +144,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => {
   return {
     loadOrCreateDraftOfflineContact: (definition: DefinitionVersion) =>
       asyncDispatch(dispatch)(
-        createContactAsyncAction(newContact(definition), getHrmConfig().workerSid, getOfflineContactTaskSid()),
+        createContactAsyncAction(newContact(definition), getHrmConfig().workerSid, getOfflineContactTask()),
       ),
     populateCounselorList: (listPayload: Awaited<ReturnType<typeof populateCounselors>>) =>
       dispatch(populateCounselorsState(listPayload)),

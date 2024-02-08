@@ -29,7 +29,7 @@ import * as Components from './utils/setUpComponents';
 import * as Channels from './channels/setUpChannels';
 import setUpMonitoring from './utils/setUpMonitoring';
 import { changeLanguage } from './states/configuration/actions';
-import { getPermissionsForViewingIdentifiers, PermissionActions } from './permissions';
+import { getInitializedCan, PermissionActions } from './permissions';
 import {
   getAseloFeatureFlags,
   getHrmConfig,
@@ -43,10 +43,11 @@ import { setUpReferrableResources } from './components/resources/setUpReferrable
 import { subscribeNewMessageAlertOnPluginInit } from './notifications/newMessage';
 import { subscribeReservedTaskAlert } from './notifications/reservedTask';
 import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
-import { setupConferenceComponents, setUpConferenceActions } from './conference';
+import { setUpConferenceActions, setupConferenceComponents } from './conference';
 import { setUpTransferActions } from './transfer/setUpTransferActions';
 import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
+import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -76,8 +77,8 @@ const setUpComponents = (
   setupObject: ReturnType<typeof getHrmConfig>,
   translateUI: (language: string) => Promise<void>,
 ) => {
-  const { canView } = getPermissionsForViewingIdentifiers();
-  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
+  const can = getInitializedCan();
+  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
@@ -89,6 +90,7 @@ const setUpComponents = (
   Channels.setupTwitterChatChannel(maskIdentifiers);
   Channels.setupInstagramChatChannel(maskIdentifiers);
   Channels.setupLineChatChannel(maskIdentifiers);
+  Channels.expandSMSChannel();
 
   if (maskIdentifiers) {
     // Masks TaskInfoPanelContent - TODO: refactor to use a react component
@@ -110,11 +112,12 @@ const setUpComponents = (
   }
 
   if (featureFlags.enable_transfers) {
-    Components.setUpTransferComponents();
+    setUpTransferComponents();
     Channels.setUpIncomingTransferMessage();
   }
 
-  if (featureFlags.enable_case_management) Components.setUpCaseList();
+  Components.setUpCaseList();
+  if (featureFlags.enable_client_profiles) Components.setUpClientProfileList();
 
   if (!Boolean(setupObject.helpline)) Components.setUpDeveloperComponents(translateUI); // utilities for developers only
 

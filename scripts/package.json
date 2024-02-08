@@ -18,7 +18,7 @@
   "license": "AGPL",
   "dependencies": {
     "aws-sdk": "^2.947.0",
-    "axios": "^0.25.0",
+    "axios": "^1.6.0",
     "dotenv": "^10.0.0",
     "hrm-form-definitions": "file:../hrm-form-definitions",
     "node-fetch": "^2.6.4",

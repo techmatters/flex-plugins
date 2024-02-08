@@ -15,59 +15,82 @@
  */
 import promiseMiddleware from 'redux-promise-middleware';
 import { configureStore } from '@reduxjs/toolkit';
-import { DefinitionVersionId } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import '../../mockGetConfig';
-import {
-  SaveCaseReducerState,
-  createCaseAsyncAction,
-  saveCaseReducer,
-  updateCaseAsyncAction,
-} from '../../../states/case/saveCase';
-import { RootState } from '../../../states';
-import { saveCaseState, reduce } from '../../../states/case/reducer';
-import { updateCase, createCase } from '../../../services/CaseService';
+import { createCaseAsyncAction, saveCaseReducer, updateCaseAsyncAction } from '../../../states/case/saveCase';
+import { HrmState } from '../../../states';
+import { reduce } from '../../../states/case/reducer';
+import { createCase, updateCase, updateCaseStatus } from '../../../services/CaseService';
 import { connectToCase } from '../../../services/ContactService';
 import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
-import { configurationBase, connectedCaseBase } from '../../../states/storeNamespaces';
+import { Case } from '../../../types/types';
+import { RecursivePartial } from '../../RecursivePartial';
 
 jest.mock('../../../services/CaseService');
 jest.mock('../../../services/ContactService');
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, buildBaseURL } = useFetchDefinitions();
 
 const mockUpdateCase = updateCase as jest.Mock<ReturnType<typeof updateCase>>;
+const mockUpdateCaseStatus = updateCaseStatus as jest.Mock<ReturnType<typeof updateCaseStatus>>;
 const mockCreateCase = createCase as jest.Mock<ReturnType<typeof createCase>>;
 const mockConnectedCase = connectToCase as jest.Mock<ReturnType<typeof connectToCase>>;
+const workerSid = 'Worker-Sid';
+const definitionVersion: DefinitionVersionId = DefinitionVersionId.demoV1;
+const partialState: RecursivePartial<HrmState> = {
+  connectedCase: {
+    cases: {},
+  },
+  configuration: {
+    definitionVersions: {
+      [definitionVersion]: {},
+    },
+  },
+};
+
+const saveCaseState = partialState as HrmState;
+
+beforeAll(async () => {
+  const formDefinitionsBaseUrl = buildBaseURL(definitionVersion as DefinitionVersionId);
+  await mockFetchImplementation(formDefinitionsBaseUrl);
+
+  const mockV1 = await loadDefinition(formDefinitionsBaseUrl);
+  partialState.configuration = {
+    definitionVersions: {
+      [definitionVersion]: mockV1,
+    },
+    currentDefinitionVersion: mockV1,
+  };
+});
 
 beforeEach(() => {
   mockUpdateCase.mockReset();
-  mockUpdateCase.mockResolvedValue({ id: 234 });
+  mockUpdateCase.mockResolvedValue({ id: '234' } as Case);
   mockCreateCase.mockReset();
-  mockCreateCase.mockResolvedValue({ id: 234 });
+  mockCreateCase.mockResolvedValue({ id: '234' });
   mockConnectedCase.mockReset();
   mockConnectedCase.mockResolvedValue({ id: 'contact-1' });
+  mockUpdateCaseStatus.mockReset();
+  mockUpdateCaseStatus.mockResolvedValue({ id: '234' } as Case);
 });
-
-const stubRootState = { [configurationBase]: { definitionVersions: {} } } as RootState['plugin-hrm-form'];
 
 const boundSaveCaseReducer = saveCaseReducer(saveCaseState);
 
-const mockPayload = {
-  case: {
-    accountSid: 'test-id',
-    id: 213,
-    helpline: 'za',
-    status: 'test-st',
-    twilioWorkerId: 'WE2xxx1',
-    info: {},
-    createdAt: '12-05-2023',
-    updatedAt: '12-05-2023',
-    connectedContacts: [],
-    categories: {},
-  },
-  taskSid: 'task-sid',
+const mockPayload: Case = {
+  accountSid: 'test-id',
+  id: '213',
+  helpline: 'za',
+  status: 'test-st',
+  twilioWorkerId: 'WE2xxx1',
+  info: {},
+  createdAt: '12-05-2023',
+  updatedAt: '12-05-2023',
+  connectedContacts: [],
+  categories: {},
 };
 
-const testStore = (stateChanges: SaveCaseReducerState) =>
+const testStore = (stateChanges: HrmState) =>
   configureStore({
     preloadedState: { ...saveCaseState, ...stateChanges },
     reducer: boundSaveCaseReducer,
@@ -78,13 +101,14 @@ const testStore = (stateChanges: SaveCaseReducerState) =>
   });
 
 // Mock the necessary dependencies
-const nonInitialState: SaveCaseReducerState = {
-  state: {
-    tasks: {
-      task1: {
+const nonInitialPartialState: RecursivePartial<HrmState> = {
+  ...partialState,
+  connectedCase: {
+    cases: {
+      213: {
         connectedCase: {
           accountSid: 'test-id',
-          id: 213,
+          id: '213',
           helpline: 'za',
           status: 'test-st',
           twilioWorkerId: 'WE2xxx1',
@@ -104,11 +128,13 @@ const nonInitialState: SaveCaseReducerState = {
           },
         },
         availableStatusTransitions: [],
+        references: new Set(['x']),
       },
     },
   },
-  rootState: stubRootState,
 };
+
+const nonInitialState = nonInitialPartialState as HrmState;
 
 const contact = {
   callType: 'chile',
@@ -152,58 +178,62 @@ const contact = {
   metadata: { categories: { expanded: {}, gridView: false }, endMillis: 0, recreated: false, startMillis: 0 },
   referrals: [],
 };
-const workerSid = 'Worker-Sid';
-const definitionVersion = 'demo-v1';
-const expectObject = {
-  tasks: {
-    task1: {
-      connectedCase: mockPayload.case,
-      caseWorkingCopy: {
-        sections: {},
-        caseSummary: {
-          status: 'test-st',
-          followUpDate: '',
-          childIsAtRisk: false,
-          summary: '',
+const expectObject: RecursivePartial<HrmState> = {
+  ...partialState,
+  connectedCase: {
+    cases: {
+      [mockPayload.id]: {
+        connectedCase: mockPayload,
+        caseWorkingCopy: {
+          sections: {},
+          caseSummary: {
+            status: 'test-st',
+            followUpDate: '',
+            childIsAtRisk: false,
+            summary: '',
+          },
         },
+        availableStatusTransitions: [],
+        references: new Set(['x']),
       },
-      availableStatusTransitions: [],
     },
   },
 };
 
 describe('actions', () => {
-  test('Calls the updateCase service, and update a case', async () => {
-    updateCaseAsyncAction(234, mockPayload.taskSid, mockPayload.case);
-    expect(updateCase).toHaveBeenCalledWith(234, mockPayload.case);
+  test('Calls the updateCase service, the updateStatus service, and updates the case in redux', async () => {
+    const { status, ...updatePayload } = mockPayload;
+    const { dispatch } = testStore(nonInitialState);
+    await ((dispatch(updateCaseAsyncAction('234', mockPayload)) as unknown) as Promise<void>);
+    expect(updateCase).toHaveBeenCalledWith('234', updatePayload);
+    expect(updateCaseStatus).toHaveBeenCalledWith('234', status);
   });
 
   test('Calls the createCase service, and create a case', () => {
-    createCaseAsyncAction(contact, mockPayload.taskSid, workerSid, definitionVersion as DefinitionVersionId);
+    createCaseAsyncAction(contact, workerSid, definitionVersion as DefinitionVersionId);
     expect(createCase).toHaveBeenCalledWith(contact, workerSid, definitionVersion);
   });
 
   test('should dispatch updateCaseAsyncAction correctly', async () => {
     const { dispatch, getState } = testStore(nonInitialState);
     const startingState = getState();
-    await ((dispatch(updateCaseAsyncAction(234, mockPayload.taskSid, mockPayload.case)) as unknown) as Promise<void>);
+    await ((dispatch(updateCaseAsyncAction('234', mockPayload)) as unknown) as Promise<void>);
     const state = getState();
     expect(state).toStrictEqual({
-      rootState: {
-        configuration: { definitionVersions: {} },
-      },
-      state: {
-        ...startingState.state,
-        tasks: {
-          ...state.state.tasks,
-          'task-sid': {
+      ...startingState,
+      connectedCase: {
+        ...startingState.connectedCase,
+        cases: {
+          ...state.connectedCase.cases,
+          234: {
             availableStatusTransitions: [],
             caseWorkingCopy: {
               sections: {},
             },
             connectedCase: {
-              id: 234,
+              id: '234',
             },
+            references: new Set(),
           },
         },
       },
@@ -214,49 +244,41 @@ describe('actions', () => {
     const { dispatch, getState } = testStore(nonInitialState);
     const startingState = getState();
     await ((dispatch(
-      createCaseAsyncAction(contact, mockPayload.taskSid, workerSid, definitionVersion as DefinitionVersionId),
+      createCaseAsyncAction(contact, workerSid, definitionVersion as DefinitionVersionId),
     ) as unknown) as Promise<void>);
     const state = getState();
     expect(state).toStrictEqual({
-      state: {
-        ...startingState.state,
-        tasks: {
-          ...state.state.tasks,
-          'task-sid': {
+      ...startingState,
+      connectedCase: {
+        ...startingState.connectedCase,
+        cases: {
+          ...state.connectedCase.cases,
+          234: {
             availableStatusTransitions: [],
             caseWorkingCopy: {
               sections: {},
             },
             connectedCase: {
-              id: 234,
+              id: '234',
               connectedContacts: [{ id: 'contact-1' }],
             },
+            references: new Set(),
           },
         },
       },
-      rootState: startingState.rootState,
     });
   });
 
   test('should handle updateCaseAsyncAction in the reducer', async () => {
-    const expected: RootState['plugin-hrm-form'][typeof connectedCaseBase] = expectObject;
+    const expected: HrmState = expectObject as HrmState;
 
-    const result = reduce(
-      nonInitialState.rootState,
-      nonInitialState.state,
-      updateCaseAsyncAction(234, mockPayload.taskSid, mockPayload.case),
-    );
+    const result = reduce(nonInitialState, updateCaseAsyncAction('234', mockPayload));
     expect(result).toStrictEqual(expected);
   });
 
   test('should handle createCaseAsyncAction in the reducer', async () => {
-    const expected: RootState['plugin-hrm-form'][typeof connectedCaseBase] = expectObject;
-
-    const result = reduce(
-      nonInitialState.rootState,
-      nonInitialState.state,
-      createCaseAsyncAction(contact, mockPayload.taskSid, workerSid, definitionVersion as DefinitionVersionId),
-    );
+    const expected: HrmState = expectObject as HrmState;
+    const result = reduce(nonInitialState, createCaseAsyncAction(contact, workerSid, definitionVersion));
     expect(result).toEqual(expected);
   });
 });

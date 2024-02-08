@@ -1,0 +1,958 @@
+${
+  jsonencode(
+  {
+    "description": "Bot flow for creating a Flex messaging task",
+    "states": [
+      {
+        "name": "Trigger",
+        "type": "trigger",
+        "transitions": [
+          {
+            "next": "LanguageBot",
+            "event": "incomingMessage"
+          },
+          {
+            "event": "incomingCall"
+          },
+          {
+            "event": "incomingConversationMessage"
+          },
+          {
+            "event": "incomingRequest"
+          },
+          {
+            "event": "incomingParent"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -1180,
+            "y": -1350
+          }
+        }
+      },
+      {
+        "name": "ChatBot",
+        "type": "send-to-auto-pilot",
+        "transitions": [
+          {
+            "next": "check_counselor_handoff",
+            "event": "sessionEnded"
+          },
+          {
+            "event": "failure"
+          }
+        ],
+        "properties": {
+          "chat_channel": "{{trigger.message.ChannelSid}}",
+          "offset": {
+            "x": -1350,
+            "y": 620
+          },
+          "autopilot_assistant_sid": presurvey_bot_en_sid,
+          "from": "Bot",
+          "chat_service": "{{trigger.message.InstanceSid}}",
+          "body": "{{trigger.message.Body}}",
+          "target_task": "greeting",
+          "timeout": 14400
+        }
+      },
+      {
+        "name": "check_counselor_handoff",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch"
+          },
+          {
+            "next": "facebookAttributes",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to counselor_handoff",
+                "arguments": [
+                  "{{widgets.ChatBot.CurrentTask}}"
+                ],
+                "type": "equal_to",
+                "value": "counselor_handoff"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.ChatBot.CurrentTask}}",
+          "offset": {
+            "x": -1490,
+            "y": 930
+          }
+        }
+      },
+      {
+        "name": "facebookAttributes",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -1300,
+            "y": 1530
+          },
+          "workflow": master_workflow_sid,
+          "channel": chat_task_channel_sid,
+          "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"language\":\"en-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}"
+        }
+      },
+      {
+        "name": "LanguageBot",
+        "type": "send-to-auto-pilot",
+        "transitions": [
+          {
+            "next": "split_language",
+            "event": "sessionEnded"
+          },
+          {
+            "event": "failure"
+          },
+          {
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "chat_channel": "{{trigger.message.ChannelSid}}",
+          "offset": {
+            "x": -1070,
+            "y": -1160
+          },
+          "autopilot_assistant_sid": language_bot_sid,
+          "from": "Bot",
+          "chat_service": "{{trigger.message.InstanceSid}}",
+          "body": "{{trigger.message.Body}}",
+          "target_task": "greeting",
+          "timeout": 14400
+        }
+      },
+      {
+        "name": "Permission",
+        "type": "send-to-auto-pilot",
+        "transitions": [
+          {
+            "next": "split_permission",
+            "event": "sessionEnded"
+          },
+          {
+            "event": "failure"
+          },
+          {
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "chat_channel": "{{trigger.message.ChannelSid}}",
+          "offset": {
+            "x": -1330,
+            "y": 130
+          },
+          "autopilot_assistant_sid": permission_en_bot_sid,
+          "from": "Bot",
+          "chat_service": "{{trigger.message.InstanceSid}}",
+          "body": "{{trigger.message.Body}}",
+          "target_task": "greeting",
+          "timeout": 14400
+        }
+      },
+      {
+        "name": "split_language",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch"
+          },
+          {
+            "next": "split_reason",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains en-US",
+                "arguments": [
+                  "{{widgets.LanguageBot.memory.twilio.collected_data.collect_survey.answers.languages.answer}}"
+                ],
+                "type": "contains",
+                "value": "en-US"
+              }
+            ]
+          },
+          {
+            "next": "split_reason_fil",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains Filipino",
+                "arguments": [
+                  "{{widgets.LanguageBot.memory.twilio.collected_data.collect_survey.answers.languages.answer}}"
+                ],
+                "type": "contains",
+                "value": "Filipino"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.LanguageBot.memory.twilio.collected_data.collect_survey.answers.languages.answer}}",
+          "offset": {
+            "x": -1020,
+            "y": -930
+          }
+        }
+      },
+      {
+        "name": "split_permission",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch"
+          },
+          {
+            "next": "ChatBot",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains yes",
+                "arguments": [
+                  "{{widgets.Permission.memory.twilio.collected_data.collect_permission.answers.permission.answer}}"
+                ],
+                "type": "contains",
+                "value": "yes"
+              }
+            ]
+          },
+          {
+            "next": "send_message_NO",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains no",
+                "arguments": [
+                  "{{widgets.Permission.memory.twilio.collected_data.collect_permission.answers.permission.answer}}"
+                ],
+                "type": "contains",
+                "value": "no"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.Permission.memory.twilio.collected_data.collect_permission.answers.permission.answer}}",
+          "offset": {
+            "x": -1710,
+            "y": 370
+          }
+        }
+      },
+      {
+        "name": "send_message_NO",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -1800,
+            "y": 620
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "Bot",
+          "to": "{{contact.channel.address}}",
+          "body": "We understand that you might not feel comfortable sharing your informations. For anonymous reporting, please  visit ecpat.org.ph/report to make a report.\n\nThank you for helping us",
+          "media_url": "ecpat.org.ph/report"
+        }
+      },
+      {
+        "name": "Permission_fil",
+        "type": "send-to-auto-pilot",
+        "transitions": [
+          {
+            "next": "split_fil",
+            "event": "sessionEnded"
+          },
+          {
+            "event": "failure"
+          },
+          {
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "chat_channel": "{{trigger.message.ChannelSid}}",
+          "offset": {
+            "x": 310,
+            "y": 80
+          },
+          "autopilot_assistant_sid": permission_fil_bot_sid,
+          "from": "Bot",
+          "chat_service": "{{trigger.message.InstanceSid}}",
+          "body": "{{trigger.message.Body}}",
+          "target_task": "greeting",
+          "timeout": 14400
+        }
+      },
+      {
+        "name": "no_permission_msg_fil",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -470,
+            "y": 660
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.channel.address}}",
+          "to": "{{contact.channel.address}}",
+          "body": "Kung ikaw ay hindi  komportable sa pagbibigay ng inyong impormasyon. Maaring mag-report nang hindi nagpapakilala, magtungo lamang sa www.ecpat.org.ph/report\n\nSalamat!",
+          "media_url": "ecpat.org.ph/report"
+        }
+      },
+      {
+        "name": "split_fil",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch"
+          },
+          {
+            "next": "no_permission_msg_fil",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains no",
+                "arguments": [
+                  "{{widgets.Permission_fil.memory.twilio.collected_data.collect_permission.answers.Permission.answer}}"
+                ],
+                "type": "contains",
+                "value": "no"
+              }
+            ]
+          },
+          {
+            "next": "PreSurvey_fil",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains yes",
+                "arguments": [
+                  "{{widgets.Permission_fil.memory.twilio.collected_data.collect_permission.answers.Permission.answer}}"
+                ],
+                "type": "contains",
+                "value": "yes"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.Permission_fil.memory.twilio.collected_data.collect_permission.answers.Permission.answer}}",
+          "offset": {
+            "x": -400,
+            "y": 380
+          }
+        }
+      },
+      {
+        "name": "PreSurvey_fil",
+        "type": "send-to-auto-pilot",
+        "transitions": [
+          {
+            "next": "check_counselor_fil",
+            "event": "sessionEnded"
+          },
+          {
+            "event": "failure"
+          },
+          {
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "chat_channel": "{{trigger.message.ChannelSid}}",
+          "offset": {
+            "x": -10,
+            "y": 660
+          },
+          "autopilot_assistant_sid": presurvey_bot_fil_sid,
+          "from": "Bot",
+          "chat_service": "{{trigger.message.InstanceSid}}",
+          "body": "{{trigger.message.Body}}",
+          "target_task": "greeting",
+          "timeout": 14400
+        }
+      },
+      {
+        "name": "check_counselor_fil",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch"
+          },
+          {
+            "next": "facebookAttributes_fil",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to counselor_handoff",
+                "arguments": [
+                  "{{widgets.PreSurvey_fil.CurrentTask}}"
+                ],
+                "type": "equal_to",
+                "value": "counselor_handoff"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.PreSurvey_fil.CurrentTask}}",
+          "offset": {
+            "x": 30,
+            "y": 920
+          }
+        }
+      },
+      {
+        "name": "facebookAttributes_fil",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 760,
+            "y": 1430
+          },
+          "workflow": master_workflow_sid,
+          "channel": chat_task_channel_sid,
+          "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"language\":\"tl-PH\",\n\"memory\": {{widgets.PreSurvey_fil.memory | to_json}}}"
+        }
+      },
+      {
+        "name": "split_reason",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "send_and_reply_234",
+            "event": "noMatch"
+          },
+          {
+            "next": "check_operatinghrs",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 1",
+                "arguments": [
+                  "{{widgets.LanguageBot.memory.twilio.collected_data.collect_survey.answers.service.answer}}"
+                ],
+                "type": "equal_to",
+                "value": "1"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.LanguageBot.memory.twilio.collected_data.collect_survey.answers.service.answer}}",
+          "offset": {
+            "x": -1250,
+            "y": -710
+          }
+        }
+      },
+      {
+        "name": "split_reason_fil",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "send_and_reply_234fil",
+            "event": "noMatch"
+          },
+          {
+            "next": "check_operatinghrs_fil",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 1",
+                "arguments": [
+                  "{{widgets.LanguageBot.memory.twilio.collected_data.collect_survey.answers.service.answer}}"
+                ],
+                "type": "equal_to",
+                "value": "1"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.LanguageBot.memory.twilio.collected_data.collect_survey.answers.service.answer}}",
+          "offset": {
+            "x": -580,
+            "y": -700
+          }
+        }
+      },
+      {
+        "name": "send_message_234_fil",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "ncFacebookAttributes_fil",
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -550,
+            "y": -110
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "Bot",
+          "to": "{{contact.channel.address}}",
+          "body": "Salamat, malapit nang makipag-ugnayan ang aming team."
+        }
+      },
+      {
+        "name": "check_operatinghrs",
+        "type": "run-function",
+        "transitions": [
+          {
+            "next": "split_operating",
+            "event": "success"
+          },
+          {
+            "event": "fail"
+          }
+        ],
+        "properties": {
+          "service_sid": serverless_service_sid,
+          "environment_sid": serverless_environment_sid,
+          "offset": {
+            "x": -1180,
+            "y": -400
+          },
+          "function_sid": operating_hours_function_sid,
+          "parameters": [
+            {
+              "value": "facebook",
+              "key": "channel"
+            }
+          ],
+          "url": "${serverless_url}/operatingHours"
+        }
+      },
+      {
+        "name": "split_operating",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch"
+          },
+          {
+            "next": "Permission",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains open",
+                "arguments": [
+                  "{{widgets.check_operatinghrs.body}}"
+                ],
+                "type": "contains",
+                "value": "open"
+              }
+            ]
+          },
+          {
+            "next": "send_message_closed",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains closed",
+                "arguments": [
+                  "{{widgets.check_operatinghrs.body}}"
+                ],
+                "type": "contains",
+                "value": "closed"
+              }
+            ]
+          },
+          {
+            "next": "send_message_closed",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains holiday",
+                "arguments": [
+                  "{{widgets.check_operatinghrs.body}}"
+                ],
+                "type": "contains",
+                "value": "holiday"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.check_operatinghrs.body}}",
+          "offset": {
+            "x": -1250,
+            "y": -190
+          }
+        }
+      },
+      {
+        "name": "send_message_closed",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "oohFacebookAttributes_en",
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -1750,
+            "y": -120
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "Bot",
+          "to": "{{contact.channel.address}}",
+          "body": "Thank you for contacting eProtectKids. Our team is available to assist you from Monday to Friday, between 9am and 6pm. Please don't hesitate to share your concerns with us, and we'll make sure a youth responder responds to you the next day.\n\nIn case of urgent concerns, please call us immediately at (632) 89614754 or (632) 89208151. You may also send us an email at report@ecpat.org.ph to report any issues.\n\nFor emergencies involving children, you can contact WCPC Aling Pulis at +63966-725-5961 (Globe) or +63919-777-7377 (Smart). Thank you for reaching out to us, and we look forward to assisting you in any way we can."
+        }
+      },
+      {
+        "name": "send_and_reply_234",
+        "type": "send-and-wait-for-reply",
+        "transitions": [
+          {
+            "next": "send_message_replied",
+            "event": "incomingMessage"
+          },
+          {
+            "event": "timeout"
+          },
+          {
+            "event": "deliveryFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -1610,
+            "y": -470
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "Bot",
+          "body": "Please share your request details.",
+          "timeout": "3600"
+        }
+      },
+      {
+        "name": "send_message_replied",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "ncFacebookAttributes_en",
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -2180,
+            "y": -140
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "Bot",
+          "to": "{{contact.channel.address}}",
+          "body": "Thank you, our team will reach out soon."
+        }
+      },
+      {
+        "name": "send_and_reply_234fil",
+        "type": "send-and-wait-for-reply",
+        "transitions": [
+          {
+            "next": "send_message_234_fil",
+            "event": "incomingMessage"
+          },
+          {
+            "event": "timeout"
+          },
+          {
+            "event": "deliveryFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -610,
+            "y": -430
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "Bot",
+          "body": "Pakibahagi ang mga detalye ng iyong kahilingan.",
+          "timeout": "3600"
+        }
+      },
+      {
+        "name": "check_operatinghrs_fil",
+        "type": "run-function",
+        "transitions": [
+          {
+            "next": "split_operating_fil",
+            "event": "success"
+          },
+          {
+            "event": "fail"
+          }
+        ],
+        "properties": {
+          "service_sid": serverless_service_sid,
+          "environment_sid": serverless_environment_sid,
+          "offset": {
+            "x": -200,
+            "y": -430
+          },
+          "function_sid": operating_hours_function_sid,
+          "parameters": [
+            {
+              "value": "facebook",
+              "key": "channel"
+            }
+          ],
+          "url": "${serverless_url}/operatingHours"
+        }
+      },
+      {
+        "name": "send_message_closed_fil",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "oohFacebookAttributes_fil",
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -180,
+            "y": 50
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "Bot",
+          "to": "{{contact.channel.address}}",
+          "body": "Salamat po iyong mensahe sa eProtectKids. Kami po ay bukas mula Lunes hanggang Biyernes, 9:00 ng umaga hanggang 6:00 ng gabi. Paki-share na lang po ang inyong mga katanungan o alalahanin at maghihintay po kayo ng tugon mula sa aming youth responder kinabukasan.\n\nKung mayroon naman pong mga pangangailangang kailangan ng agarang aksyon, maaari po kayong tumawag sa +6328 -961-4754 / +6328-920-8151. Puwede rin po kayong magpadala ng email sa report@ecpat.org.ph para sa mga katanungan ukol sa pangangalaga ng mga bata.\n\nKung kinakailangan ng agarang tulong para sa mga bata, maaari rin po kayong mag-contact sa ating awtoridad, WCPC Aling Pulis sa mga numerong ito: +63966-725-5961 (Globe) o +63919-777-7377 (Smart). Salamat po!"
+        }
+      },
+      {
+        "name": "split_operating_fil",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch"
+          },
+          {
+            "next": "Permission_fil",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains open",
+                "arguments": [
+                  "{{widgets.check_operatinghrs_fil.body}}"
+                ],
+                "type": "contains",
+                "value": "open"
+              }
+            ]
+          },
+          {
+            "next": "send_message_closed_fil",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains closed",
+                "arguments": [
+                  "{{widgets.check_operatinghrs_fil.body}}"
+                ],
+                "type": "contains",
+                "value": "closed"
+              }
+            ]
+          },
+          {
+            "next": "send_message_closed_fil",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains holiday",
+                "arguments": [
+                  "{{widgets.check_operatinghrs_fil.body}}"
+                ],
+                "type": "contains",
+                "value": "holiday"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.check_operatinghrs_fil.body}}",
+          "offset": {
+            "x": -60,
+            "y": -190
+          }
+        }
+      },
+     {
+      "name": "oohFacebookAttributes_en",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -2030,
+          "y": 200
+        },
+        "workflow": outside_operating_hours_workflow_sid,
+        "channel": chat_task_channel_sid,
+        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"language\":\"en-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+        "timeout": "259200"
+      }
+    },
+    {
+      "name": "ncFacebookAttributes_en",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -2350,
+          "y": 200
+        },
+        "workflow": non_counselling_workflow_sid,
+        "channel": chat_task_channel_sid,
+        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"language\":\"en-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+        "timeout": "604800"
+      }
+    },
+    {
+      "name": "oohFacebookAttributes_fil",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 820,
+          "y": 340
+        },
+        "workflow": outside_operating_hours_workflow_sid,
+        "channel": chat_task_channel_sid,
+        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"language\":\"tl-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+        "timeout": "259200"
+      }
+    },
+    {
+      "name": "ncFacebookAttributes_fil",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -580,
+          "y": 150
+        },
+        "workflow": non_counselling_workflow_sid,
+        "channel": chat_task_channel_sid,
+        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"language\":\"tl-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+        "timeout": "604800"
+      }
+    }
+    ],
+    "initial_state": "Trigger",
+    "flags": {
+      "allow_concurrent_calls": true
+    }
+  }
+
+  )
+  }

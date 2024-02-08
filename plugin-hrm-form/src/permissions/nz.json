@@ -22,10 +22,11 @@
 
   "viewContact":  [["everyone"]],
   "editContact":  [["isSupervisor"],["isOwner"]],
-  "viewExternalTranscript":  [["everyone"]],
-  "viewRecording":  [["everyone"]],
+  "viewExternalTranscript":  [],
+  "viewRecording":  [],
   "viewPostSurvey":  [["isSupervisor"]],
   "addContactToCase": [["isSupervisor"], ["isOwner"]],
+  "removeContactFromCase": [],
   
   "viewIdentifiers": [["everyone"]]
 }

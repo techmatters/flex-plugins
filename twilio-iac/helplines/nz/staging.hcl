@@ -9,10 +9,13 @@ locals {
 
     #Studio flow
     flow_vars = {
-      service_sid                   = "ZSe8d4ba646d0eafbb6de85e2d96e473f7"
-      environment_sid               = "ZE6945a088f73c41632345fd0aae8df17b"
-      operating_hours_function_sid  = "ZH3ef7c7c03c4533829cc1b53b38197de7"
-      operating_hours_function_name = "operatingHours"
+      service_sid                           = "ZSe8d4ba646d0eafbb6de85e2d96e473f7"
+      environment_sid                       = "ZE6945a088f73c41632345fd0aae8df17b"
+      operating_hours_function_sid          = "ZH3ef7c7c03c4533829cc1b53b38197de7"
+      operating_hours_function_name         = "operatingHours"
+      capture_channel_with_bot_function_sid = "ZH26e3dd66fd428ae98074f9959a5ec8d3"
+      chatbot_callback_cleanup_function_id  = "ZHfba53e17e98107e879e54299fd472796"
+      bot_language                          = "en-NZ"
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
@@ -41,13 +44,14 @@ locals {
         channel_flow_vars = {
           voice_ivr_greeting_message = "Kia ora, thank you for contacting Youthline. One of our counsellors will get back to you as soon as we can. If you or someone else are in immediate danger, please call 111 immediately."
           voice_ivr_language         = "en-US"
+          wait_url                   = "https://nz-assets-8961.twil.io/busyLine"
         }
         chatbot_unique_names = []
       },
       sms : {
         channel_type         = "sms"
         contact_identity     = "+18645238101"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/sms-basic.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }

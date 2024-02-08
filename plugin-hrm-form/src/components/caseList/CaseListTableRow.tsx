@@ -26,17 +26,19 @@ import { RootState } from '../../states';
 import * as ConfigActions from '../../states/configuration/actions';
 import { Case, CounselorHash } from '../../types/types';
 import {
-  CLTableRow,
-  CLTableCell,
-  CLNamesCell,
-  CLSummaryCell,
-  CLNumberCell,
-  CLTableBodyFont,
-  CLCaseNumberContainer,
-  CLCaseIDButton,
-  CLTableSummaryFont,
-} from '../../styles/caseList';
-import { Box, HiddenText } from '../../styles/HrmStyles';
+  DataTableRow,
+  DataCell,
+  TextCell,
+  SummaryCell,
+  NumericCell,
+  TableBodyFont,
+  OpenLinkContainer,
+  OpenLinkAction,
+  TableSummaryFont,
+  Box,
+  HiddenText,
+  PillsCell,
+} from '../../styles';
 import { formatName, getShortSummary } from '../../utils';
 import { getContactTags } from '../../utils/categories';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
@@ -105,59 +107,57 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
     };
 
     return (
-      <CLTableRow data-testid="CaseList-TableRow" onClick={handleClickViewCase(caseItem)}>
-        <CLNumberCell>
-          <CLCaseNumberContainer>
-            <CLCaseIDButton tabIndex={0} data-testid="CaseList-CaseID-Button">
+      <DataTableRow data-testid="CaseList-TableRow" onClick={handleClickViewCase(caseItem)}>
+        <NumericCell>
+          <OpenLinkContainer>
+            <OpenLinkAction tabIndex={0} data-testid="CaseList-CaseID-Button">
               <HiddenText>
                 <Template code={statusString} />
                 <Template code="CaseList-THCase" />
               </HiddenText>
               {caseItem.id}
-            </CLCaseIDButton>
-            <CLTableBodyFont style={{ color: '#606B85', paddingTop: '2px', textAlign: 'center' }}>
+            </OpenLinkAction>
+            <TableBodyFont style={{ color: '#606B85', paddingTop: '2px', textAlign: 'center' }}>
               {getCaseStatusLabel(caseItem.status)}
-            </CLTableBodyFont>
-          </CLCaseNumberContainer>
-        </CLNumberCell>
-        <CLNamesCell>
-          <CLTableBodyFont>{contactLabelFromHrmContact(definitionVersion, contact)}</CLTableBodyFont>
-        </CLNamesCell>
-        <CLTableCell>
-          <CLTableBodyFont>{counselor}</CLTableBodyFont>
-        </CLTableCell>
-        <CLSummaryCell>
-          <CLTableSummaryFont>{shortSummary}</CLTableSummaryFont>
-        </CLSummaryCell>
-        <CLTableCell>
-          <div style={{ display: 'inline-block', flexDirection: 'column' }}>
-            {categories &&
-              categories.map(category => (
-                <Box key={`category-tag-${category.label}`} marginBottom="5px">
-                  <CategoryWithTooltip category={category.label} color={category.color} />
-                </Box>
-              ))}
-          </div>
-        </CLTableCell>
-        <CLTableCell>
-          <CLTableBodyFont style={{ textAlign: 'right' }}>{opened}</CLTableBodyFont>
-        </CLTableCell>
-        <CLTableCell>
-          <CLTableBodyFont style={{ textAlign: 'right' }}>{updated}</CLTableBodyFont>
-        </CLTableCell>
-        <CLTableCell>
-          <CLTableBodyFont style={{ textAlign: 'right' }}>{followUpDate}</CLTableBodyFont>
-        </CLTableCell>
-      </CLTableRow>
+            </TableBodyFont>
+          </OpenLinkContainer>
+        </NumericCell>
+        <TextCell>
+          <TableBodyFont>{contactLabelFromHrmContact(definitionVersion, contact)}</TableBodyFont>
+        </TextCell>
+        <DataCell>
+          <TableBodyFont>{counselor}</TableBodyFont>
+        </DataCell>
+        <SummaryCell>
+          <TableSummaryFont>{shortSummary}</TableSummaryFont>
+        </SummaryCell>
+        <PillsCell>
+          {categories &&
+            categories.map(category => (
+              <Box key={`category-tag-${category.label}`} marginBottom="5px">
+                <CategoryWithTooltip category={category.label} color={category.color} />
+              </Box>
+            ))}
+        </PillsCell>
+        <DataCell>
+          <TableBodyFont style={{ textAlign: 'right' }}>{opened}</TableBodyFont>
+        </DataCell>
+        <DataCell>
+          <TableBodyFont style={{ textAlign: 'right' }}>{updated}</TableBodyFont>
+        </DataCell>
+        <DataCell>
+          <TableBodyFont style={{ textAlign: 'right' }}>{followUpDate}</TableBodyFont>
+        </DataCell>
+      </DataTableRow>
     );
   } catch (err) {
     console.error('Error rendering case row.', err);
     return (
-      <CLTableRow>
-        <CLTableCell colSpan={100}>
-          <CLTableBodyFont>INVALID ROW</CLTableBodyFont>
-        </CLTableCell>
-      </CLTableRow>
+      <DataTableRow>
+        <DataCell colSpan={100}>
+          <TableBodyFont>INVALID ROW</TableBodyFont>
+        </DataCell>
+      </DataTableRow>
     );
   }
 };

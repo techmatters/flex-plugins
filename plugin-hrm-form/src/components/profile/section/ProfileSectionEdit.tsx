@@ -16,28 +16,39 @@
 
 import React, { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import startCase from 'lodash/startCase';
 
+import { namespace } from '../../../states/storeNamespaces';
+import { RootState } from '../../../states';
+import * as RoutingActions from '../../../states/routing/actions';
+import { getCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
+import type { ProfileSectionEditRoute } from '../../../states/routing/types';
 import { ProfileSection } from '../../../types/types';
 import NavigableContainer from '../../NavigableContainer';
-import {
-  Flex,
-  StyledNextStepButton,
-  Container,
-  Box,
-  ColumnarBlock,
-  ColumnarContent,
-  FormTextArea,
-} from '../../../styles/HrmStyles';
-import { useEditProfileSection } from '../../../states/profile/hooks/useProfileSection';
+import { Flex, Container, Box, ColumnarBlock, ColumnarContent, FormTextArea } from '../../../styles';
+import { StyledNextStepButton } from '../../../styles/buttons';
+import { useEditProfileSection } from '../../../states/profile/hooks';
 import useProfileSectionTypes from '../../../states/configuration/hooks/useProfileSectionTypes';
 import { ProfileCommonProps } from '../types';
-import * as RoutingActions from '../../../states/routing/actions';
 
-type OwnProps = ProfileCommonProps & {
-  sectionType: ProfileSection['sectionType'];
+type OwnProps = ProfileCommonProps;
+
+const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
+  const routingState = state[namespace].routing;
+  const currentRouteStack = getCurrentTopmostRouteForTask(routingState, taskSid);
+  const sectionType = (currentRouteStack as ProfileSectionEditRoute)?.type;
+
+  return {
+    sectionType,
+  };
 };
 
+const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
+  return {
+    closeModal: () => dispatch(RoutingActions.newCloseModalAction(task.taskSid)),
+  };
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props) => {
@@ -59,7 +70,7 @@ const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props)
   };
 
   return (
-    <NavigableContainer titleCode={`Edit ${startCase(sectionType)}`} task={task}>
+    <NavigableContainer titleCode={sectionTypesForm.editLabel} task={task}>
       <Container>
         <Box>
           <ColumnarBlock>
@@ -84,13 +95,4 @@ const ProfileSectionEdit = ({ task, profileId, sectionType, closeModal }: Props)
   );
 };
 
-const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
-  return {
-    closeModal: () => dispatch(RoutingActions.newCloseModalAction(task.taskSid)),
-  };
-};
-
-const connector = connect(null, mapDispatchToProps);
-const connected = connector(ProfileSectionEdit);
-
-export default connected;
+export default connector(ProfileSectionEdit);

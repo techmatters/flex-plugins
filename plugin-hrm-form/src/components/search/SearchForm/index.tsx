@@ -23,27 +23,31 @@ import FieldText from '../../FieldText';
 import FieldSelect from '../../FieldSelect';
 import FieldDate from '../../FieldDate';
 import {
-  Container,
-  StyledNextStepButton,
-  Row,
+  Bold,
   BottomButtonBar,
   Box,
-  FormLabel,
-  FormCheckBoxWrapper,
+  Container,
   FormCheckbox,
-  Bold,
-} from '../../../styles/HrmStyles';
-import { getFormattedNumberFromTask, getNumberFromTask, getContactValueTemplate } from '../../../utils';
+  FormCheckBoxWrapper,
+  FormLabel,
+  Row,
+} from '../../../styles';
+import { StyledNextStepButton } from '../../../styles/buttons';
+import { getContactValueTemplate, getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
 import {
-  getPermissionsForViewingIdentifiers,
-  PermissionActions,
   canOnlyViewOwnCases,
   canOnlyViewOwnContacts,
+  getInitializedCan,
+  PermissionActions,
 } from '../../../permissions';
 import { channelTypes } from '../../../states/DomainConstants';
 import { SearchFormValues } from '../../../states/search/types';
 import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
-import { configurationBase, namespace, searchContactsBase } from '../../../states/storeNamespaces';
+import { RootState } from '../../../states';
+import selectPreviousContactCounts from '../../../states/search/selectPreviousContactCounts';
+import { selectCounselorsList } from '../../../states/configuration/selectCounselorsHash';
+import { selectCurrentDefinitionVersion } from '../../../states/configuration/selectDefinitions';
+import { CustomITask } from '../../../types/types';
 
 const getField = value => ({
   value,
@@ -55,14 +59,14 @@ const getField = value => ({
 type OwnProps = {
   handleSearch: (searchParams: any) => void;
   handleSearchFormChange: (fieldName: string, value: string) => void;
-  values: SearchFormValues & { helpline: { value: string } };
-  task: ITask;
+  values: SearchFormValues;
+  task: ITask | CustomITask;
 };
 
-const mapStateToProps = (state, ownProps) => ({
-  counselors: state[namespace][configurationBase].counselors.list,
-  helplineInformation: state[namespace][configurationBase].currentDefinitionVersion?.helplineInformation,
-  previousContacts: state[namespace][searchContactsBase].tasks[ownProps.task.taskSid]?.previousContacts,
+const mapStateToProps = (state: RootState, { task }: OwnProps) => ({
+  counselors: selectCounselorsList(state),
+  helplineInformation: selectCurrentDefinitionVersion(state)?.helplineInformation,
+  previousContactCounts: selectPreviousContactCounts(state, task.taskSid) ?? { contacts: 0, cases: 0 },
 });
 
 const connector = connect(mapStateToProps);
@@ -73,12 +77,16 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const SearchForm: React.FC<Props> = ({
   values,
   counselors,
-  previousContacts = null,
+  previousContactCounts: { contacts: contactsCount, cases: casesCount },
   handleSearchFormChange,
   helplineInformation,
   task,
   handleSearch,
 }) => {
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
   const defaultEventHandlers = fieldName => ({
     handleChange: e => {
       handleSearchFormChange(fieldName, e.target.value);
@@ -88,8 +96,6 @@ const SearchForm: React.FC<Props> = ({
   });
 
   const showPreviousContactsCheckbox = () => {
-    const contactsCount = previousContacts?.contacts?.count || 0;
-    const casesCount = previousContacts?.cases?.count || 0;
     return contactsCount > 0 || casesCount > 0;
   };
 
@@ -100,13 +106,9 @@ const SearchForm: React.FC<Props> = ({
     value: e.sid,
   }));
 
-  const helplineOptions =
-    helplineInformation && helplineInformation.helplines
-      ? helplineInformation.helplines.map(h => ({
-          label: h.label,
-          value: h.value,
-        }))
-      : [];
+  if (!helplineInformation) return null;
+
+  const helplineOptions = helplineInformation?.helplines ?? [];
   const strings = getTemplateStrings();
   const { helpline: userHelpline, multipleOfficeSupport } = getHrmConfig();
   const searchParams = {
@@ -152,8 +154,7 @@ const SearchForm: React.FC<Props> = ({
     [channelTypes.line]: 'PreviousContacts-LineUser',
   };
 
-  const { canView } = getPermissionsForViewingIdentifiers();
-  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
+  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   const canChooseCounselor = !(canOnlyViewOwnContacts() || canOnlyViewOwnCases());
 

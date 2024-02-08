@@ -43,6 +43,7 @@ export const mapChannel = (channel: string) => {
     case channelTypes.voice:
       return 'Voice';
     case channelTypes.sms:
+    case channelTypes.modica:
       return 'SMS';
     case channelTypes.whatsapp:
       return 'WhatsApp';

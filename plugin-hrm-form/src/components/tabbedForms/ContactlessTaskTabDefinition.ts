@@ -17,13 +17,13 @@
 import { isFuture } from 'date-fns';
 import { DefinitionVersion, FormDefinition, FormInputType } from 'hrm-form-definitions';
 
-import { channelTypes } from '../../states/DomainConstants';
+import { coreChannelTypes } from '../../states/DomainConstants';
 import { mapChannelForInsights } from '../../utils/mappers';
 import { splitDate } from '../../utils/helpers';
 import type { CounselorsList } from '../../states/configuration/types';
 
 const defaultChannelOptions = [{ value: '', label: '' }].concat(
-  Object.values(channelTypes).map(s => ({
+  Object.values(coreChannelTypes).map(s => ({
     label: mapChannelForInsights(s),
     value: s,
   })),

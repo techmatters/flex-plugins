@@ -20,7 +20,7 @@ import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 
 import { RootState } from '../../../states';
-import { Box, Column } from '../../../styles/HrmStyles';
+import { Box, Column } from '../../../styles';
 import SearchResultsBackButton from '../../search/SearchResults/SearchResultsBackButton';
 import {
   ResourcesSearchArea,
@@ -31,7 +31,7 @@ import {
   ResourcesSearchResultsList,
   ResourcesSearchTitle,
   ResourceTitle,
-} from '../../../styles/ReferrableResources';
+} from '../styles';
 import {
   changeResultPageAction,
   getCurrentPageResults,
@@ -41,7 +41,7 @@ import {
   SearchSettings,
 } from '../../../states/resources/search';
 import { viewResourceAction } from '../../../states/resources';
-import Pagination from '../../Pagination';
+import Pagination from '../../pagination';
 import asyncDispatch from '../../../states/asyncDispatch';
 import ResourcePreview from './ResourcePreview';
 import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';

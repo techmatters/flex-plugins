@@ -19,8 +19,8 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { isEqual } from 'date-fns';
 
-import { Row } from '../../styles/HrmStyles';
-import { CaseActionDetailFont } from '../../styles/case';
+import { Row } from '../../styles';
+import { CaseActionDetailFont } from './styles';
 
 type OwnProps = {
   added?: Date;
@@ -29,7 +29,6 @@ type OwnProps = {
   updatingCounsellor?: string;
   includeTime?: boolean;
   codeTemplate?: string;
-  focusCloseButton?: boolean;
 };
 
 type Props = OwnProps;

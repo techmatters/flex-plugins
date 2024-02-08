@@ -21,30 +21,33 @@ import { Template } from '@twilio/flex-ui';
 import Edit from '@material-ui/icons/Edit';
 import { DefinitionVersion, isNonSaveable } from 'hrm-form-definitions';
 
-import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles/HrmStyles';
-import { CaseLayout, FullWidthFormTextContainer } from '../../styles/case';
+import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles';
+import { CaseLayout, FullWidthFormTextContainer } from './styles';
 import { RootState } from '../../states';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
-import { caseItemHistory } from '../../states/case/types';
 import { CaseItemAction, isViewCaseSectionRoute } from '../../states/routing/types';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import { FormTargetObject } from '../common/forms/types';
-import { namespace } from '../../states/storeNamespaces';
 import NavigableContainer from '../NavigableContainer';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
+import selectCaseItemHistory from '../../states/case/sections/selectCaseItemHistory';
 
-const mapStateToProps = (
-  { [namespace]: { routing, connectedCase: caseState, configuration } }: RootState,
-  { task }: ViewCaseItemProps,
-) => {
-  const counselorsHash = configuration.counselors.hash;
-
-  const { connectedCase } = caseState.tasks[task.taskSid];
-
-  return { counselorsHash, currentRoute: getCurrentTopmostRouteForTask(routing, task.taskSid), connectedCase };
+const mapStateToProps = (state: RootState, { task, sectionApi }: ViewCaseItemProps) => {
+  const { connectedCase } = selectCurrentRouteCaseState(state, task.taskSid) || {};
+  const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
+  const caseItemHistory =
+    connectedCase && isViewCaseSectionRoute(currentRoute)
+      ? selectCaseItemHistory(state, connectedCase, sectionApi, currentRoute.id)
+      : undefined;
+  return {
+    caseItemHistory,
+    currentRoute,
+    connectedCase,
+  };
 };
 
 export type ViewCaseItemProps = {
@@ -55,26 +58,32 @@ export type ViewCaseItemProps = {
   canEdit: () => boolean;
 };
 
-// eslint-disable-next-line no-use-before-define
+const mapToDispatchProps = {
+  changeRoute: RoutingActions.changeRoute,
+  goBack: RoutingActions.newGoBackAction,
+};
+
+const connector = connect(mapStateToProps, mapToDispatchProps);
+
 type Props = ViewCaseItemProps & ConnectedProps<typeof connector>;
 
 const ViewCaseItem: React.FC<Props> = ({
   task,
   currentRoute,
-  counselorsHash,
   changeRoute,
   definitionVersion,
   sectionApi,
   connectedCase,
   canEdit,
+  caseItemHistory,
 }) => {
-  if (!isViewCaseSectionRoute(currentRoute)) {
+  if (!isViewCaseSectionRoute(currentRoute) || !connectedCase) {
     return null;
   }
 
   const item = sectionApi.toForm(sectionApi.getSectionItemById(connectedCase.info, currentRoute.id));
 
-  const { addingCounsellorName, added, updatingCounsellorName, updated } = caseItemHistory(item, counselorsHash);
+  const { addingCounsellorName, added, updatingCounsellorName, updated } = caseItemHistory;
   const formDefinition = sectionApi.getSectionFormDefinition(definitionVersion).filter(fd => !isNonSaveable(fd));
 
   const onEditCaseItemClick = () => {
@@ -131,12 +140,5 @@ const ViewCaseItem: React.FC<Props> = ({
 };
 
 ViewCaseItem.displayName = 'ViewCaseItem';
-
-const mapToDispatchProps = {
-  changeRoute: RoutingActions.changeRoute,
-  goBack: RoutingActions.newGoBackAction,
-};
-
-const connector = connect(mapStateToProps, mapToDispatchProps);
 
 export default connector(ViewCaseItem);

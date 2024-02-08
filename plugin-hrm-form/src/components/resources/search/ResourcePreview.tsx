@@ -18,15 +18,15 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import { Box, Column, Flex } from '../../../styles/HrmStyles';
+import { Box, Column, Flex } from '../../../styles';
 import {
   ResourceAttributesColumn,
   ResourcePreviewAttributeContent,
   ResourcePreviewAttributeDescription,
   ResourcePreviewHeaderText,
   ResourcePreviewWrapper,
-} from '../../../styles/ReferrableResources';
-import { PreviewRow, StyledLink } from '../../../styles/search';
+} from '../styles';
+import { PreviewRow, StyledLink } from '../../search/styles';
 import { isMissingResource, ReferrableResourceResult } from '../../../states/resources/search';
 import ResourceIdCopyButton from '../ResourceIdCopyButton';
 import { convertKHPResourceAttributes } from '../convertKHPResourceAttributes';

@@ -21,12 +21,12 @@ import { useForm } from 'react-hook-form';
 import Close from '@material-ui/icons/Close';
 
 import ActionHeader from '../case/ActionHeader';
-import { BottomButtonBar, Box, HeaderCloseButton, HiddenText, Row, StyledNextStepButton } from '../../styles/HrmStyles';
-import { BoldDescriptionText, CSAMReportContainer, CSAMReportLayout } from '../../styles/CSAMReport';
+import { BottomButtonBar, Box, HeaderCloseButton, HiddenText, Row, StyledNextStepButton } from '../../styles';
+import { BoldDescriptionText, CSAMReportContainer, CSAMReportLayout } from './styles';
 import { addMargin, getInputType } from '../common/forms/formGenerators';
 import { CSAMReportType } from '../../states/csam-report/types';
 import { externalReportDefinition } from './CSAMReportFormDefinition';
-import { CaseActionTitle } from '../../styles/case';
+import { CaseActionTitle } from '../case/styles';
 import useFocus from '../../utils/useFocus';
 
 type Props = {
@@ -78,12 +78,7 @@ const CSAMReportTypePicker: React.FC<Props> = ({
             <Close />
           </HeaderCloseButton>
         </Row>
-        <ActionHeader
-          added={new Date()}
-          codeTemplate="CSAMCLC-ActionHeaderAdded"
-          addingCounsellor={counselor}
-          focusCloseButton={true}
-        />
+        <ActionHeader added={new Date()} codeTemplate="CSAMCLC-ActionHeaderAdded" addingCounsellor={counselor} />
 
         <Box marginTop="20px" marginBottom="5px">
           <BoldDescriptionText style={{ color: '#192b33' }}>

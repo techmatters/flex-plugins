@@ -19,9 +19,10 @@ import { parseFetchError } from '../parseFetchError';
 import * as ProfileService from '../../services/ProfileService';
 import { loadIdentifierByIdentifierAsync } from './identifiers';
 import loadProfileEntryIntoRedux from './loadProfileEntryIntoRedux';
+import { loadProfilesListAsync } from './profilesList';
 import * as t from './types';
 
-export const PAGE_SIZE = 20;
+export const PAGE_SIZE = 10;
 
 type ProfileId = t.Profile['id'];
 
@@ -43,24 +44,6 @@ export const loadRelationshipAsync = createAsyncAction(
   },
   (params: LoadRelationshipAsyncParams) => params,
 );
-
-export const incrementRelationshipsPage = createAction(
-  t.PROFILE_RELATIONSHIPS_INCREMENT_PAGE,
-  (params: CommonRelationshipParams) => params,
-);
-
-const handleIncrementRelationshipsPageAction = (state: t.ProfilesState, action: any) => {
-  const { profileId, type } = action.payload;
-
-  const profileUpdate = {
-    [type]: {
-      ...state[profileId][type],
-      page: state[profileId][type].page + 1,
-    },
-  };
-
-  return loadProfileEntryIntoRedux(state, profileId, profileUpdate);
-};
 
 export const updateRelationshipsPage = createAction(
   t.PROFILE_RELATIONSHIPS_UPDATE_PAGE,
@@ -323,6 +306,24 @@ export const updateProfileSectionAsync = createAsyncAction(
   (params: UpdateProfileSectionAsyncParams) => params,
 );
 
+export const handleLoadProfileListFulfilledAction = (state: t.ProfilesState, action: any) => {
+  const { profiles } = action.payload;
+  let newState = { ...state };
+  for (const profile of profiles) {
+    const profileUpdate = {
+      ...t.newProfileEntry,
+      data: {
+        ...newState[profile.id]?.data,
+        ...profile,
+      },
+    };
+
+    newState = loadProfileEntryIntoRedux(newState, profile.id, profileUpdate);
+  }
+
+  return newState;
+};
+
 const profilesReducer = (initialState: t.ProfilesState = {}) =>
   createReducer(initialState, handleAction => [
     handleAction(loadProfileAsync.pending, handleLoadProfilePendingAction),
@@ -332,7 +333,6 @@ const profilesReducer = (initialState: t.ProfilesState = {}) =>
     handleAction(loadRelationshipAsync.pending, handleRelationshipsPendingAction),
     handleAction(loadRelationshipAsync.fulfilled, handleRelationshipsFulfilledAction),
     handleAction(loadRelationshipAsync.rejected, handleRelationshipsRejectedAction),
-    handleAction(incrementRelationshipsPage, handleIncrementRelationshipsPageAction),
     handleAction(updateRelationshipsPage, handleUpdateRelationshipsPageAction),
     handleAction(associateProfileFlagAsync.pending, handleLoadProfilePendingAction),
     handleAction(associateProfileFlagAsync.rejected, handleLoadProfileRejectedAction),
@@ -349,6 +349,7 @@ const profilesReducer = (initialState: t.ProfilesState = {}) =>
     handleAction(updateProfileSectionAsync.pending, handleLoadProfileSectionPendingAction),
     handleAction(updateProfileSectionAsync.rejected, handleLoadProfileSectionRejectedAction),
     handleAction(updateProfileSectionAsync.fulfilled, handleLoadProfileSectionFulfilledAction),
+    handleAction(loadProfilesListAsync.fulfilled, handleLoadProfileListFulfilledAction),
   ]);
 
 export default profilesReducer;

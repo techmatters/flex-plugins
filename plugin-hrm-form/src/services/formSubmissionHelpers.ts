@@ -15,10 +15,18 @@
  */
 
 /* eslint-disable import/no-unused-modules */
-import { Actions, ITask, Manager } from '@twilio/flex-ui';
+import { Actions, Manager } from '@twilio/flex-ui';
 import { Dispatch } from 'react';
 
-import { Case, CustomITask, Contact, isOfflineContactTask, isOfflineContact } from '../types/types';
+import {
+  Case,
+  Contact,
+  CustomITask,
+  isOfflineContact,
+  isOfflineContactTask,
+  isTwilioTask,
+  RouterTask,
+} from '../types/types';
 import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
 import { saveContact } from './ContactService';
@@ -27,13 +35,15 @@ import { getHrmConfig } from '../hrmConfig';
 import { ContactMetadata } from '../states/contacts/types';
 import * as GeneralActions from '../states/actions';
 import asyncDispatch from '../states/asyncDispatch';
-import { newClearContactAsyncAction, connectToCaseAsyncAction } from '../states/contacts/saveContact';
-import offlineContactTaskSid from '../states/contacts/offlineContactTaskSid';
+import { newClearContactAsyncAction, removeFromCaseAsyncAction } from '../states/contacts/saveContact';
+import { getOfflineContactTaskSid } from '../states/contacts/offlineContactTask';
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
  */
-export const completeContactTask = async (task: ITask) => {
+export const completeContactTask = async (task: RouterTask) => {
+  if (!isTwilioTask(task)) return;
+
   const { sid } = task;
 
   if (task.status !== 'wrapping') {
@@ -51,14 +61,14 @@ export const removeOfflineContact = async (dispatch: Dispatch<any>, contact: Con
   if (isOfflineContact(contact) && !contact.finalizedAt) {
     const asyncDispatcher = asyncDispatch(dispatch);
     await asyncDispatcher(newClearContactAsyncAction(contact));
-    await asyncDispatcher(connectToCaseAsyncAction(contact.id, undefined));
-    dispatch(GeneralActions.removeContactState(offlineContactTaskSid(), contact.id));
+    await asyncDispatcher(removeFromCaseAsyncAction(contact.id));
+    dispatch(GeneralActions.removeContactState(getOfflineContactTaskSid(), contact.id));
   }
 };
 
-export const completeTask = (task: CustomITask, contact: Contact) =>
+export const completeTask = (task: RouterTask, contact: Contact) =>
   isOfflineContactTask(task)
-    ? Manager.getInstance().store.dispatch(GeneralActions.removeContactState(offlineContactTaskSid(), contact.id))
+    ? Manager.getInstance().store.dispatch(GeneralActions.removeContactState(getOfflineContactTaskSid(), contact.id))
     : completeContactTask(task);
 
 export const submitContactForm = async (

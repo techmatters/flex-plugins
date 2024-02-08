@@ -20,10 +20,10 @@ import { Button, Popover } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-form-definitions';
 
-import { Row } from '../../styles/HrmStyles';
-import { ConfirmContainer, ConfirmText, CancelButton } from '../../styles/search';
+import { Row } from '../../styles';
+import { ConfirmContainer, ConfirmText, CancelButton } from './styles';
 import TabPressWrapper from '../TabPressWrapper';
-import { hasTaskControl } from '../../utils/transfer';
+import { hasTaskControl } from '../../transfer/transferTaskState';
 import { Contact, CustomITask } from '../../types/types';
 
 type Props = {

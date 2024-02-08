@@ -22,7 +22,7 @@
           "insights": ["customers", "city"]
         },
         {
-          "name": "ageDetails",
+          "name": "ageRange",
           "insights": ["conversations", "initiative"]
         },
         {
