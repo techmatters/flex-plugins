@@ -259,13 +259,13 @@ type TwilioUser = {
   isSupervisor: boolean;
 };
 
-const isCounselorWhoCreated = (user: TwilioUser, caseObj: any) => user.workerSid === caseObj.twilioWorkerId;
+const isCounselorWhoCreated = (user: TwilioUser, caseObj: any) => user.workerSid === caseObj?.twilioWorkerId;
 
-const isCaseOpen = (caseObj: any) => caseObj.status !== 'closed';
+const isCaseOpen = (caseObj: any) => caseObj?.status !== 'closed';
 
 const isContactOwner = (user: TwilioUser, contactObj: any) => user.workerSid === contactObj.twilioWorkerId;
 
-const isCaseContactOwner = ({ precalculatedPermissions }) => precalculatedPermissions?.userOwnsContact;
+const isCaseContactOwner = (caseObj: any) => caseObj?.precalculatedPermissions?.userOwnsContact;
 
 const applyTimeBasedConditions = (conditions: TimeBasedCondition[]) => (
   performer: TwilioUser,
