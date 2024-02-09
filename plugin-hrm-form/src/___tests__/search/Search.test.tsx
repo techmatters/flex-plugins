@@ -64,6 +64,13 @@ jest.mock('../../states/case/caseBanners', () => ({
   })),
 }));
 
+jest.mock('../../states/case/selectCaseStateByCaseId', () => {
+  return {
+    __esModule: true,
+    default: jest.fn(),
+  };
+});
+
 function createState(
   taskId,
   {

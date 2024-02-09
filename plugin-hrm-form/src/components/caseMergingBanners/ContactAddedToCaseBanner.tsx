@@ -29,6 +29,8 @@ import selectCaseByCaseId from '../../states/case/selectCaseStateByCaseId';
 import { RootState } from '../../states';
 import { BannerActionLink, BannerContainer, CaseLink, Text } from '../../styles/banners';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
+import { getHrmConfig } from '../../hrmConfig';
+import { PermissionActions, getInitializedCan } from '../../permissions';
 
 type OwnProps = {
   taskId: string;
@@ -69,7 +71,18 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
   caseId,
   existingSavedContact,
 }) => {
-  if (connectedCase === undefined) return null;
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
+  const { workerSid } = getHrmConfig();
+  const canViewContactAndCase = workerSid === contact.twilioWorkerId;
+  const canEditContact =
+    can(PermissionActions.REMOVE_CONTACT_FROM_CASE, contact) &&
+    can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCase);
+  const canViewCase = can(PermissionActions.VIEW_CASE, connectedCase);
+
+  if (connectedCase === undefined && canViewContactAndCase) return null;
 
   const handleRemoveContactFromCase = () => {
     if (existingSavedContact) {
@@ -85,13 +98,20 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
       <Text>
         <Template code="CaseMerging-ContactAddedTo" />
       </Text>
-      <CaseLink type="button" onClick={() => viewCaseDetails(connectedCase)} data-fs-id="LinkedCase-Button">
+      <CaseLink
+        type="button"
+        color={!canEditContact && '#000'}
+        permission={!canEditContact && 'none'}
+        onClick={() => canEditContact && canViewCase && viewCaseDetails(connectedCase)}
+      >
         <Template code="Case-CaseNumber" />
         {caseId}
       </CaseLink>
-      <BannerActionLink type="button" onClick={handleRemoveContactFromCase} data-fs-id="RemoveContactFromCase-Button">
-        <Template code="CaseMerging-RemoveFromCase" />
-      </BannerActionLink>
+      {canEditContact && (
+        <BannerActionLink type="button" onClick={handleRemoveContactFromCase}>
+          <Template code="CaseMerging-RemoveFromCase" />
+        </BannerActionLink>
+      )}
     </BannerContainer>
   );
 };

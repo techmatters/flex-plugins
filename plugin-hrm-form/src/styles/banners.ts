@@ -57,15 +57,16 @@ Text.displayName = 'Text';
 type ButtonProps = {
   onClick: () => void;
   color?: string;
+  permission?: string;
 };
 
 export const CaseLink = styled('button')<ButtonProps>`
   color: ${({ color }) => (color ? color : '#0263e0')};
   font-size: 14px;
-  text-decoration: underline;
+  text-decoration: ${({ permission }) => (permission ? permission : 'underline')};
   background: none;
   border: none;
-  cursor: pointer;
+  cursor: ${({ permission }) => (permission ? 'default' : 'pointer')};
   font-family: Open Sans;
 `;
 
