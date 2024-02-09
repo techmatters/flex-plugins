@@ -13,16 +13,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { callTypes, DataCallTypes } from 'hrm-form-definitions';
 
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-import { isContactRoute } from '../../states/routing/types';
+import { ChangeRouteMode, isContactRoute, TabbedFormSubroutes } from '../../states/routing/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import ContactDetails from '../contact/ContactDetails';
 import { ProfileCommonProps } from './types';
+import { changeRoute, newCloseModalAction } from '../../states/routing/actions';
 
 type OwnProps = ProfileCommonProps;
 
@@ -36,11 +38,34 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }) => {
   };
 };
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => ({
+  closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
+  navigateToTab: (tab: TabbedFormSubroutes) =>
+    dispatch(
+      changeRoute({ route: 'tabbed-forms', subroute: tab, autoFocus: false }, task.taskSid, ChangeRouteMode.Replace),
+    ),
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const ProfileContactDetails: React.FC<Props> = (props: Props) => {
-  return <ContactDetails {...props} context={DetailsContext.CONTACT_SEARCH} />;
+const ProfileContactDetails: React.FC<Props> = ({ closeModal, navigateToTab, ...props }) => {
+  const handleConnectConfirmDialog = (callType: DataCallTypes) => {
+    closeModal();
+    if (callType === callTypes.caller) {
+      navigateToTab('callerInformation');
+    } else {
+      navigateToTab('childInformation');
+    }
+  };
+
+  return (
+    <ContactDetails
+      {...props}
+      onConfirmConnectDialog={handleConnectConfirmDialog}
+      context={DetailsContext.CONTACT_SEARCH}
+    />
+  );
 };
 
 export default connector(ProfileContactDetails);

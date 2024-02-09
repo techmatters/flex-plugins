@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { styled, Button, IconButton } from '@twilio/flex-ui';
-import { withStyles, MenuItem, MenuList, Paper } from '@material-ui/core';
+import { withStyles, MenuItem, MenuList, Paper, ButtonBase } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import BlockOutlinedIcon from '@material-ui/icons/BlockOutlined';
 
@@ -239,19 +239,6 @@ export const ProfileSectionEditButton = styled(Button)<ButtonProps>`
 `;
 ProfileSectionEditButton.displayName = 'ProfileSectionEditButton';
 
-const YellowBannerHeight = '36px';
-
-export const YellowBanner = styled('div')`
-  display: flex;
-  background-color: #fdfad3;
-  height: ${YellowBannerHeight};
-  font-size: 13px;
-  align-items: center;
-  justify-content: center;
-`;
-
-YellowBanner.displayName = 'YellowBanner';
-
 export const StyledMenuList = styled(MenuList)`
   border-radius: 5px;
   min-width: fit-content;
@@ -277,5 +264,4 @@ type StyledPaperProps = {
 export const StyledPaper = styled(Paper)<StyledPaperProps>`
   width: ${props => props.width || 600}px;
 `;
-
 StyledPaper.displayName = 'StyledPaper';

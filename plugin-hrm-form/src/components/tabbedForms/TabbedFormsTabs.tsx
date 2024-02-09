@@ -61,12 +61,11 @@ type OwnProps = TabbedFormsCommonProps;
 
 const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const {
-    [namespace]: { activeContacts, configuration, routing: routingState },
+    [namespace]: { configuration, routing: routingState },
   } = state;
 
   const currentRoute = getCurrentTopmostRouteForTask(routingState, taskSid);
   const { draftContact, savedContact } = selectContactByTaskSid(state, taskSid);
-  const { isCallTypeCaller } = activeContacts;
   const contactId = savedContact.id;
   const { showConnectedToCaseBanner, showRemovedFromCaseBanner } = selectCaseMergingBanners(state, contactId);
   const { currentDefinitionVersion } = configuration;
@@ -76,7 +75,6 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
     currentDefinitionVersion,
     currentRoute,
     draftContact,
-    isCallTypeCaller,
     savedContact,
     showConnectedToCaseBanner,
     showRemovedFromCaseBanner,

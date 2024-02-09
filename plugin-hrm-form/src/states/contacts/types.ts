@@ -73,7 +73,6 @@ export type ContactsState = {
   existingContacts: ExistingContactsState;
   contactsBeingCreated: Set<string>;
   contactDetails: ContactDetailsState;
-  isCallTypeCaller: boolean;
 };
 
 type SaveEndMillisAction = {
@@ -100,11 +99,6 @@ type RestoreEntireFormAction = {
   contact: ContactState;
 };
 
-type CheckButtonDataAction = {
-  type: typeof SET_CALL_TYPE;
-  isCallTypeCaller: boolean;
-};
-
 type CaseConnectedToContactAction = {
   type: typeof CASE_CONNECTED_TO_CONTACT;
   caseConnectedToContact: Case;
@@ -115,7 +109,6 @@ export type ContactsActionType =
   | SaveEndMillisAction
   | PrePopulateFormAction
   | RestoreEntireFormAction
-  | CheckButtonDataAction
   | CaseConnectedToContactAction;
 
 export type ContactUpdatingAction = {

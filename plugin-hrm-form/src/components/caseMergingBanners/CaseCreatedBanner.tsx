@@ -78,7 +78,7 @@ const CreatedCaseBanner: React.FC<Props> = ({
       <Text>
         <Template code="CaseMerging-CaseCreatedAndContactAdded" caseId={caseId} />
       </Text>
-      <BannerActionLink type="button" onClick={handleCancelCase}>
+      <BannerActionLink type="button" onClick={handleCancelCase} data-fs-id="CancelNewCase-Button">
         <Template code="CaseMerging-CancelCase" />
       </BannerActionLink>
     </BannerContainer>
