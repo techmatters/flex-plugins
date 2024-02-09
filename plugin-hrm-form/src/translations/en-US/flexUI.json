@@ -60,8 +60,10 @@
   "SearchResultsIndex-ViewCases": "View Cases",
   "Contact-ViewButton": "View",
   "SearchResultsIndex-SelectCase": "Select Case",
-  "SearchResultsIndex-NoCasesFound": "No {{type}}s Found",
-  "SearchResultsIndex-SearchAgainForCase": "Search again for a {{type}}",
+  "SearchResultsIndex-NoCasesFound": "No Cases Found",
+  "SearchResultsIndex-NoContactsFound": "No Contacts Found",
+  "SearchResultsIndex-SearchAgainForCase": "Search again for a case",
+  "SearchResultsIndex-SearchAgainForContact": "Search again for a contact",
   "SearchResultsIndex-SaveToNewCase": "save this contact to a new case",
   "SearchResultsIndex-Or": "or",
 
