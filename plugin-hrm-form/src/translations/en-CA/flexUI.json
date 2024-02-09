@@ -482,5 +482,7 @@
   "CaseMerging-AddContactToCase": "Add Contact to Referral",
   "BottomBar-AddedToCase": "Added to Referral",
   "SearchContactsAndCases-TitleExistingCase": "Search for Referrals",
-  "SearchResultsIndex-SelectCase": "Select Referral"  
-  }
+  "SearchResultsIndex-SelectCase": "Select Referral",
+  "SearchResultsIndex-NoCasesFound": "No Referral Found",
+  "SearchResultsIndex-SearchAgainForCase": "Search again for an referral"
+}
