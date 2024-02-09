@@ -84,6 +84,7 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
   const canEditContact =
     can(PermissionActions.REMOVE_CONTACT_FROM_CASE, contact) &&
     can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCase);
+  const canViewCase = can(PermissionActions.VIEW_CASE, connectedCase);
 
   if (connectedCase === undefined && canViewContactAndCase) return null;
 
@@ -105,7 +106,7 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
         type="button"
         color={!canEditContact && '#000'}
         permission={!canEditContact && 'none'}
-        onClick={() => canEditContact && viewCaseDetails(connectedCase)}
+        onClick={() => canEditContact && canViewCase && viewCaseDetails(connectedCase)}
         data-fs-id="LinkedCase-Button"
       >
         <Template code="Case-CaseNumber" />
