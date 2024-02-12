@@ -81,10 +81,10 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
 
   const { workerSid } = getHrmConfig();
   const canViewContactAndCase = workerSid === contact.twilioWorkerId;
-  const canViewAndRemoveCase =
+  const canEditAndRemoveCase =
     can(PermissionActions.REMOVE_CONTACT_FROM_CASE, contact) &&
-    can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCase) &&
-    can(PermissionActions.VIEW_CASE, connectedCase);
+    can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCase);
+  const canViewcase = can(PermissionActions.VIEW_CASE, connectedCase);
 
   if (connectedCase === undefined && canViewContactAndCase) return null;
 
@@ -104,15 +104,15 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
       </Text>
       <CaseLink
         type="button"
-        color={!canViewAndRemoveCase && '#000'}
-        permission={!canViewAndRemoveCase && 'none'}
-        onClick={() => canViewAndRemoveCase && viewCaseDetails(connectedCase)}
+        color={!canViewcase && '#000'}
+        permission={!canViewcase && 'none'}
+        onClick={() => canViewcase && viewCaseDetails(connectedCase)}
         data-fs-id="LinkedCase-Button"
       >
         <Template code="Case-CaseNumber" />
         {caseId}
       </CaseLink>
-      {canViewAndRemoveCase && (
+      {canEditAndRemoveCase && (
         <BannerActionLink type="button" onClick={handleRemoveContactFromCase} data-fs-id="RemoveContactFromCase-Button">
           <Template code="CaseMerging-RemoveFromCase" />
         </BannerActionLink>
