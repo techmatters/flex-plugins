@@ -12,6 +12,8 @@
         {"label": "Intimate Content Without Nudity"},
         {"label": "Adult Pornographic Content"},
         {"label": "Sextortion & Blackmail"},
+        {"label": "Digitally Manipulated Imagery/Deepfakes"},
+        {"label": "Livestreaming Imagery"},
         {"label": "Unspecified/Other"}
       ]
     },
@@ -22,7 +24,7 @@
         {"label": "Aggravated Penetrative Sexual Assualt"}, 
         {"label": "Sexual Assualt"},
         {"label": "Aggravated Sexual Assault"}, 
-        {"label": "Sexual Harrasmment"},
+        {"label": "Sexual Harrassment"},
         {"label": "Unspecified/Other"}
       ]
     },
@@ -41,6 +43,7 @@
         {"label": "Harrasment through Sexually Explicit Content"},
         {"label": "Harrasment through Non-sexual Content"},
         {"label": "Repeated Harrasment/Cyberstalking"},
+        {"label": "Financial Fraud"},
         {"label": "Unspecified/Other"}
       ]
     },

@@ -11,12 +11,12 @@
     },
     {
       "name": "relationshipToChild",
-      "label": "Relationship to child",
+      "label": "Relationship to client",
       "type": "select",
       "options": [
         { "value": "Unknown", "label": "" },
         { "value": "Relative/Guardian", "label": "Relative/Guardian" },
-        { "value": "Other adult known to child", "label": "Other adult known to child" },
+        { "value": "Other adult known to client", "label": "Other adult known to client" },
         { "value": "Parent", "label": "Parent" },
         { "value": "Peer", "label": "Peer" },
         { "value": "Adult in a position of responsibility", "label": "Adult in a position of responsibility" },
