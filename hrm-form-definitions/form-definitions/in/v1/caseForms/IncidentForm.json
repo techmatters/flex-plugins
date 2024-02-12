@@ -42,6 +42,7 @@
              { "value": "Discord", "label": "Discord" },
              { "value": "Youtube", "label": "Youtube" },
              { "value": "Telegram", "label": "Telegram" },
+             { "value": "Twitter/X", "label": "Twitter/X" },
              { "value": "Other", "label": "Other" }
             ],
          "Offline": [
