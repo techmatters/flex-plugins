@@ -84,6 +84,13 @@ jobs:
       - name: Development Environment
         if: inputs.environment_code == 'DEV'
         run: echo "ENVIRONMENT_NAME=development" >> $GITHUB_ENV
+
+      - name: Log Environment Variables
+        run: |
+            for var in $(printenv); do
+              echo "$var"
+              done
+
       - name: Set Twilio account SID
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
