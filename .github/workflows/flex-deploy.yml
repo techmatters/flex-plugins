@@ -78,7 +78,7 @@ jobs:
         run: echo "ENVIRONMENT_NAME=production" >> $GITHUB_ENV
 
       - name: Staging Environment
-        if: inputs.environment_code == 'STG'
+        if: inputs.environment_code == 'staging'
         run: echo "ENVIRONMENT_NAME=staging" >> $GITHUB_ENV
 
       - name: Development Environment
