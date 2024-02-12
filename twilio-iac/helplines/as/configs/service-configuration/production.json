@@ -2,10 +2,10 @@
     "attributes": {
         "contacts_waiting_channels": [
             "voice",
+            "sms",
             "web",
             "whatsapp",
             "facebook",
-            "twitter",
             "instagram",
             "line"
         ],
