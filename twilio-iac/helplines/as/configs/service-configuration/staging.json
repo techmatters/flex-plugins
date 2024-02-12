@@ -1,5 +1,14 @@
 {
     "attributes": {
+        "contacts_waiting_channels": [
+            "voice",
+            "sms",
+            "web",
+            "whatsapp",
+            "facebook",
+            "instagram",
+            "line"
+        ],
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_case_merging": true,
