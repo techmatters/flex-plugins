@@ -16,12 +16,11 @@
         ]
       },
       {
-        "name": "LGBTQI+",
+        "name": "vulnerableGroups",
         "insights": [
-          "customers",
-          "category"
-        ],
-        "type": "checkbox"
+          "customers", 
+          "email"
+        ]
       }
     ],
     "caseInformation": [

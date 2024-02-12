@@ -421,16 +421,16 @@
   ],
   "languageOptions": [
     {
+      "value": "unknown",
+      "label": ""
+    },
+    {
       "value": "ภาษาไทย",
       "label": "ภาษาไทย"
     },
     {
       "value": "ภาษาอังกฤษ",
       "label": "ภาษาอังกฤษ"
-    },
-    {
-      "value": "unknown",
-      "label": ""
     }
   ],
   "ageOptions": [

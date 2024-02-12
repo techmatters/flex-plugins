@@ -40,6 +40,7 @@ TEMPLATE_FIELDS = {
 
 # These are fields that will be excluded from the payload sent to twilio
 EXCLUDED_FIELDS = [
+    "flex_instance_sid",
     "flex_service_instance_sid",
     "runtime_domain",
     "flex_insights_hr",

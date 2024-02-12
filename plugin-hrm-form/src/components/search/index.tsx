@@ -24,11 +24,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 
 import SearchForm from './SearchForm';
 import SearchResults, { CASES_PER_PAGE, CONTACTS_PER_PAGE } from './SearchResults';
-import ContactDetails from './ContactDetails';
+import ContactDetails from '../contact/ContactDetails';
 import Case from '../case';
 import ProfileRouter, { isProfileRoute } from '../profile/ProfileRouter';
 import { SearchParams } from '../../states/search/types';
-import { Contact, CustomITask, standaloneTaskSid } from '../../types/types';
+import { CustomITask } from '../../types/types';
 import { handleSearchFormChange, searchCases, searchContacts } from '../../states/search/actions';
 import { RootState } from '../../states';
 import { namespace } from '../../states/storeNamespaces';
@@ -38,11 +38,11 @@ import { SearchResultRoute, SearchRoute } from '../../states/routing/types';
 import NavigableContainer from '../NavigableContainer';
 import selectCasesForSearchResults from '../../states/search/selectCasesForSearchResults';
 import selectContactsForSearchResults from '../../states/search/selectContactsForSearchResults';
+import { DetailsContext } from '../../states/contacts/contactDetails';
 
 type OwnProps = {
   task: CustomITask;
   currentIsCaller?: boolean;
-  handleSelectSearchResult?: (contact: Contact) => void;
   contactId?: string;
   saveUpdates?: () => Promise<void>;
 };
@@ -53,7 +53,6 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   } = state;
   const taskId = task.taskSid;
   const taskSearchState = searchContacts.tasks[taskId];
-  const isStandaloneSearch = taskId === standaloneTaskSid;
   const currentRoute = getCurrentTopmostRouteForTask(routing, taskId);
 
   return {
@@ -63,7 +62,6 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
     form: taskSearchState.form,
     searchContactsResults: selectContactsForSearchResults(state, taskId),
     searchCasesResults: selectCasesForSearchResults(state, taskId),
-    showActionIcons: !isStandaloneSearch,
     routing: currentRoute,
     searchCase: taskSearchState.searchExistingCaseStatus,
   };
@@ -91,8 +89,6 @@ const Search: React.FC<Props> = ({
   searchContacts,
   searchCases,
   handleSearchFormChange,
-  handleSelectSearchResult,
-  showActionIcons,
   searchContactsResults,
   searchCasesResults,
   form,
@@ -212,12 +208,10 @@ const Search: React.FC<Props> = ({
         if (contact) {
           return (
             <ContactDetails
-              currentIsCaller={currentIsCaller}
+              context={DetailsContext.CONTACT_SEARCH}
+              contactId={contact.id}
               task={task}
-              showActionIcons={showActionIcons}
-              contact={contact}
-              handleSelectSearchResult={handleSelectSearchResult}
-              // buttonData={props.checkButtonData('ContactDetails-Section-ChildInformation')}
+              data-testid="ContactDetails"
             />
           );
         }

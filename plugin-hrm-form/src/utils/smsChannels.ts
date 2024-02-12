@@ -14,6 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import ProfileListPage from './ProfileListPage';
+export const customSmsChannelTypes = {
+  modica: 'modica',
+} as const;
 
-export default ProfileListPage;
+const smsChannelTypes = ['sms', ...Object.values(customSmsChannelTypes)] as const;
+
+export const isSmsChannelType = channelType =>
+  Boolean(smsChannelTypes.find(smsChannelType => smsChannelType === channelType));

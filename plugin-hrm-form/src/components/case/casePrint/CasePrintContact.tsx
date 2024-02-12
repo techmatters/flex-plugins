@@ -24,7 +24,7 @@ import { Text, View } from '@react-pdf/renderer';
 
 import styles from './styles';
 import { mapChannel, mapChannelForInsights, formatStringToDateAndTime } from '../../../utils';
-import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
+import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { presentValueFromStrings } from './presentValuesFromStrings';
 import { getTemplateStrings } from '../../../hrmConfig';
 
@@ -38,14 +38,16 @@ type Props = OwnProps;
 
 const CasePrintContact: React.FC<Props> = ({ sectionName, contact, counselor }) => {
   const strings = getTemplateStrings();
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
 
   const { rawJson, channel, number, conversationDuration, timeOfContact } = contact;
 
   const formattedChannel =
     channel === 'default' ? mapChannelForInsights(rawJson.contactlessTask?.channel) : mapChannel(channel);
 
-  const { canView } = getPermissionsForViewingIdentifiers();
-  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
+  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
   return (
     <View>
       <View style={styles['sectionHeader']}>

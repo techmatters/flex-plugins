@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { styled, Button, IconButton } from '@twilio/flex-ui';
-import { withStyles } from '@material-ui/core';
+import { withStyles, MenuItem, MenuList, Paper, ButtonBase } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import BlockOutlinedIcon from '@material-ui/icons/BlockOutlined';
 
@@ -93,18 +93,26 @@ export const FlagPill = styled('div')<ColorProps>`
   align-items: center;
   border-radius: 6px;
   white-space: nowrap;
-  margin: 5px 4px 5px 1px;
-  padding: 4px 12px;
+  margin: 5px 2px 5px 1px;
+  padding: 3px 10px;
   background-color: ${props => (props.isBlocked ? `#FCF4F4` : '#F5EEF4')};
-  border: ${props => (props.isBlocked ? `2px dashed #D61F1F` : '2px solid #F5EEF4')};
+  border: ${props => (props.isBlocked ? `2px dashed #D61F1F` : '4px solid #F5EEF4')};
   border-color: ${props => (props.isBlocked ? `#D61F1F` : 'none')};
   color: ${props => (props.isBlocked ? `#D61F1F` : '#192B33')};
-  text-transform: capitalize;
+  font-size: 12px;
 `;
 FlagPill.displayName = 'FlagPill';
 
+export const FlagPillTime = styled('span')`
+  color: #606b85;
+  font-style: italic;
+  font-size: 10px;
+  margin: 0 0 2px 5px;
+`;
+FlagPillTime.displayName = 'FlagPillTime';
+
 export const StyledBlockOutlinedIcon = withStyles({
-  root: { width: '1rem', height: '1rem', fontSize: 'smaller', marginRight: '7px' },
+  root: { width: '.8rem', height: '.8rem', fontSize: 'smaller', marginRight: '7px' },
 })(BlockOutlinedIcon);
 
 export const ProfileFlagEditList = styled('div')`
@@ -143,10 +151,11 @@ export const CloseIconButton = withStyles({
 
 export const ProfileFlagsUnorderedList = styled('ul')`
   display: flex;
+  align-items: center;
 `;
 ProfileFlagsUnorderedList.displayName = 'ProfileFlagsUnorderedList';
 
-export const ProfileFlagsListItem = styled('li')`
+export const ProfileFlagsListItem = styled('div')`
   display: inline-block;
 `;
 ProfileFlagsListItem.displayName = 'ProfileFlagsListItem';
@@ -169,7 +178,6 @@ export const SectionText = styled('p')`
   overflow: hidden;
   flex-grow: 1;
   font-family: 'Open Sans';
-  box-sizing: border-box;
   opacity: 0.5;
   :focus {
     outline: none;
@@ -231,15 +239,29 @@ export const ProfileSectionEditButton = styled(Button)<ButtonProps>`
 `;
 ProfileSectionEditButton.displayName = 'ProfileSectionEditButton';
 
-const YellowBannerHeight = '36px';
-
-export const YellowBanner = styled('div')`
-  display: flex;
-  background-color: #fdfad3;
-  height: ${YellowBannerHeight};
-  font-size: 13px;
-  align-items: center;
-  justify-content: center;
+export const StyledMenuList = styled(MenuList)`
+  border-radius: 5px;
+  min-width: fit-content;
+  color: ${HrmTheme.colors.darkTextColor};
 `;
+StyledMenuList.displayName = 'StyledMenuList';
 
-YellowBanner.displayName = 'YellowBanner';
+export const StyledMenuItem = styled(MenuItem)`
+  box-sizing: border-box;
+  height: 32px;
+  display: flex;
+  margin: 0;
+  padding: 0 12px;
+  width: 100%;
+  text-transform: capitalize;
+`;
+StyledMenuItem.displayName = 'StyledMenuItem';
+
+type StyledPaperProps = {
+  width: number;
+};
+
+export const StyledPaper = styled(Paper)<StyledPaperProps>`
+  width: ${props => props.width || 600}px;
+`;
+StyledPaper.displayName = 'StyledPaper';

@@ -76,9 +76,9 @@ export type ReferralActivity = CoreActivity & {
   updatedBy?: string;
 };
 
-export type ConnectedCaseActivity = CoreActivity & {
+export type ContactActivity = CoreActivity & {
   callType: string;
-  contactId?: string;
+  contactId: string;
   date: string;
   createdAt: string;
   type: string;
@@ -86,7 +86,7 @@ export type ConnectedCaseActivity = CoreActivity & {
   isDraft: boolean;
 };
 
-export type Activity = NoteActivity | ReferralActivity | ConnectedCaseActivity;
+export type Activity = NoteActivity | ReferralActivity | ContactActivity;
 
 export type CaseDetails = {
   id: string;
@@ -112,22 +112,6 @@ export type CaseDetails = {
   office?: HelplineEntry;
   contact: Contact;
   contacts: any[];
-};
-
-export const caseItemHistory = (
-  info: {
-    updatedAt?: string;
-    updatedBy?: string;
-    createdAt: string;
-    twilioWorkerId: string;
-  },
-  counselorsHash: Record<string, string>,
-) => {
-  const addingCounsellorName = counselorsHash[info.twilioWorkerId] || 'Unknown';
-  const added = new Date(info.createdAt);
-  const updatingCounsellorName = info.updatedBy ? counselorsHash[info.updatedBy] || 'Unknown' : undefined;
-  const updated = info.updatedAt ? new Date(info.updatedAt) : undefined;
-  return { addingCounsellorName, added, updatingCounsellorName, updated };
 };
 
 export type CaseSummaryWorkingCopy = {

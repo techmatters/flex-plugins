@@ -21,8 +21,7 @@ import { useForm } from 'react-hook-form';
 import Close from '@material-ui/icons/Close';
 
 import ActionHeader from '../case/ActionHeader';
-import { BottomButtonBar, Box, HiddenText, Row } from '../../styles';
-import { StyledNextStepButton, HeaderCloseButton } from '../../styles/buttons';
+import { BottomButtonBar, Box, HeaderCloseButton, HiddenText, Row, StyledNextStepButton } from '../../styles';
 import { BoldDescriptionText, CSAMReportContainer, CSAMReportLayout } from './styles';
 import { childDefinitionObject, childInitialValues, generateCSAMFormElement } from './CSAMReportFormDefinition';
 import { RequiredAsterisk } from '../common/forms/formGenerators';
@@ -71,12 +70,7 @@ const CSAMReportChildForm: React.FC<Props> = ({
             <Close />
           </HeaderCloseButton>
         </Row>
-        <ActionHeader
-          added={new Date()}
-          codeTemplate="CSAMCLC-ActionHeaderAdded"
-          addingCounsellor={counselor}
-          focusCloseButton={true}
-        />
+        <ActionHeader added={new Date()} codeTemplate="CSAMCLC-ActionHeaderAdded" addingCounsellor={counselor} />
 
         <Box marginTop="20px" marginBottom="5px">
           <BoldDescriptionText style={{ color: '#192b33' }}>

@@ -446,16 +446,30 @@ ${
               {
                 "friendly_name": "If value equal_to 1",
                 "arguments": [
-                  "{{widgets.FrSwitchEnglish.Digits}}"
+                  "{{widgets.MSG60025F.Digits}}"
                 ],
                 "type": "equal_to",
                 "value": "1"
               }
             ]
+          },
+          {
+            "next": "FrSwitchInterpreter",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 2",
+                "arguments": [
+                  "{{widgets.MSG60025F.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "2"
+              }
+            ]
           }
         ],
         "properties": {
-          "input": "{{widgets.FrSwitchEnglish.Digits}}",
+          "input": "{{widgets.MSG60025F.Digits}}",
           "offset": {
             "x": 240,
             "y": 1410
@@ -463,7 +477,7 @@ ${
         }
       },
       {
-        "name": "FrSwitchEnglish",
+        "name": "MSG60025F",
         "type": "gather-input-on-call",
         "transitions": [
           {
@@ -479,7 +493,7 @@ ${
           }
         ],
         "properties": {
-          "play": channel_flow_vars["fr_switch_english_url"],
+          "play": channel_flow_vars["fr_nocounsellors_url"],
           "speech_timeout": "auto",
           "offset": {
             "x": 560,
@@ -503,7 +517,7 @@ ${
             "event": "noMatch"
           },
           {
-            "next": "FrSwitchEnglish",
+            "next": "MSG60025F",
             "event": "match",
             "conditions": [
               {
@@ -583,7 +597,7 @@ ${
         "type": "say-play",
         "transitions": [
           {
-            "next": "FrSwitchEnglish",
+            "next": "MSG60025F",
             "event": "audioComplete"
           }
         ],
@@ -906,6 +920,52 @@ ${
           "gather_language": "en",
           "profanity_filter": "true",
           "timeout": 2
+        }
+      },
+      {
+        "name": "FrSwitchInterpreter",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "sendToQ6004_FrInterpreter",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "play": channel_flow_vars["fr_switch_url"],
+          "voice": "alice",
+          "offset": {
+            "x": -270,
+            "y": 2150
+          },
+          "loop": 1,
+          "language": "fr-CA"
+        }
+      },
+      {
+        "name": "sendToQ6004_FrInterpreter",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "waitUrl": channel_flow_vars["frtr_function_url"],
+          "offset": {
+            "x": -860,
+            "y": 2150
+          },
+          "workflow": workflow_sids["master"],
+          "channel": task_channel_sids["voice"],
+          "attributes": "{\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"interpreter\": \"fr\"}",
+          "waitUrlMethod": "GET"
         }
       }
     ],

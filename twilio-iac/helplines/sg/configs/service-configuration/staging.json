@@ -1,6 +1,7 @@
 {
     "attributes": {
         "feature_flags": {
+            "enable_case_merging": true,
             "enable_fullstory_monitoring": true
         },
         "helpline_code": "sg",

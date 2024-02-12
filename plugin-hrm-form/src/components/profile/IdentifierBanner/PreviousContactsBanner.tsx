@@ -14,7 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
@@ -26,49 +25,35 @@ import {
 } from '../../../states/search/actions';
 import { RootState } from '../../../states';
 import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../search/SearchResults';
-import { YellowBanner } from '../styles';
+import { YellowBannerContainer, BannerLink, IconContainer, IdentifierContainer } from './styles';
 import { Bold } from '../../../styles';
-import { StyledLink } from '../../search/styles';
-import { ChannelTypes, channelTypes } from '../../../states/DomainConstants';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
-import { getContactValueTemplate, getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
-import { getPermissionsForViewingIdentifiers, PermissionActions } from '../../../permissions';
+import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
+import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { CustomITask, isTwilioTask } from '../../../types/types';
 import { selectCounselorsHash } from '../../../states/configuration/selectCounselorsHash';
 import selectPreviousContactCounts from '../../../states/search/selectPreviousContactCounts';
+import { iconsFromTask } from './iconsFromTask';
 
 type OwnProps = {
   task: CustomITask;
 };
 
-// eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const PreviousContactsBanner: React.FC<Props> = ({
   previousContactCounts,
   task,
-  viewPreviousContacts,
   searchContacts,
   searchCases,
   openContactSearchResults,
+  openCaseSearchResults,
 }) => {
-  let localizedSourceFromTask: { [channelType in ChannelTypes]: string };
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
 
-  if (isTwilioTask(task)) {
-    localizedSourceFromTask = {
-      [channelTypes.web]: `${getContactValueTemplate(task)}`,
-      [channelTypes.voice]: 'PreviousContacts-PhoneNumber',
-      [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
-      [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
-      [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
-      [channelTypes.twitter]: 'PreviousContacts-TwitterUser',
-      [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
-      [channelTypes.line]: 'PreviousContacts-LineUser',
-    };
-  }
-
-  const { canView } = getPermissionsForViewingIdentifiers();
-  const maskIdentifiers = !canView(PermissionActions.VIEW_IDENTIFIERS);
+  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   let contactNumber: ReturnType<typeof getFormattedNumberFromTask>;
   if (isTwilioTask(task)) {
@@ -92,8 +77,6 @@ const PreviousContactsBanner: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [previousContactCounts]);
 
-  // Ugh. The previous contacts count is off by one because we immediately create a contact when a task is created.
-  // contacts should really have a status so we can filter out the "active" contact on the db side.
   const contactsCount = previousContactCounts?.contacts || 0;
   const casesCount = previousContactCounts?.cases || 0;
 
@@ -101,52 +84,45 @@ const PreviousContactsBanner: React.FC<Props> = ({
   const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
   if (!shouldDisplayBanner) return null;
 
-  const handleClickViewRecords = async () => {
-    performSearch();
-    viewPreviousContacts();
+  const handleViewContacts = () => {
     openContactSearchResults();
   };
 
+  const handleViewCases = () => {
+    openCaseSearchResults();
+  };
+
   return (
-    <div>
-      <YellowBanner data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
-        {/* eslint-disable-next-line prettier/prettier */}
-        <pre>
-          <Template code="PreviousContacts-ThereAre" />{' '}
-          {contactsCount === 1 ? (
+    <YellowBannerContainer data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
+      <IconContainer>{iconsFromTask[task.channelType]}</IconContainer>
+      <IdentifierContainer>
+        {maskIdentifiers ? (
+          <Bold>
+            <Template code="MaskIdentifiers" />
+          </Bold>
+        ) : (
+          <Bold>{contactNumber}</Bold>
+        )}
+      </IdentifierContainer>
+      <Template code="PreviousContacts-Has" />
+      <BannerLink type="button" onClick={handleViewContacts} data-testid="banner-link-contacts">
+        <Bold>
+          {contactsCount} <Template code={`PreviousContacts-PreviousContact${contactsCount === 1 ? '' : 's'}`} />
+        </Bold>
+      </BannerLink>
+      {casesCount > 0 && (
+        <>
+          {contactsCount > 0 && ','}&nbsp;
+          <Template code="PreviousContacts-And" />
+          &nbsp;
+          <BannerLink type="button" onClick={handleViewCases} data-testid="banner-link-cases">
             <Bold>
-              {contactsCount} <Template code="PreviousContacts-PreviousContact" />
+              {casesCount} <Template code={`PreviousContacts-Case${casesCount === 1 ? '' : 's'}`} />
             </Bold>
-          ) : (
-            <Bold>
-              {contactsCount} <Template code="PreviousContacts-PreviousContacts" />
-            </Bold>
-          )}{' '}
-          <Template code="PreviousContacts-And" />{' '}
-          {casesCount === 1 ? (
-            <Bold>
-              {casesCount} <Template code="PreviousContacts-Case" />
-            </Bold>
-          ) : (
-            <Bold>
-              {casesCount} <Template code="PreviousContacts-Cases" />
-            </Bold>
-          )}{' '}
-          <Template code="PreviousContacts-From" /> <Template code={localizedSourceFromTask[task.channelType]} />{' '}
-          {maskIdentifiers ? (
-            <Bold>
-              <Template code="MaskIdentifiers" />
-            </Bold>
-          ) : (
-            <Bold>{contactNumber}</Bold>
-          )}
-          .{' '}
-        </pre>
-        <StyledLink underline data-testid="PreviousContacts-ViewRecords" onClick={handleClickViewRecords}>
-          <Template code="PreviousContacts-ViewRecords" />
-        </StyledLink>
-      </YellowBanner>
-    </div>
+          </BannerLink>
+        </>
+      )}
+    </YellowBannerContainer>
   );
 };
 
@@ -173,6 +149,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       // We put the form 'under' the search results in the modal stack so the back button takes them to the form without needing custom handlers
       dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, taskId));
       dispatch(changeRoute({ route: 'search', subroute: 'contact-results', contactsPage: 0, casesPage: 0 }, taskId));
+    },
+    openCaseSearchResults: () => {
+      dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, taskId));
+      dispatch(changeRoute({ route: 'search', subroute: 'case-results', contactsPage: 0, casesPage: 0 }, taskId));
     },
   };
 };

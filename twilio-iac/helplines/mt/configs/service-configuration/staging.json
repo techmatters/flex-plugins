@@ -1,9 +1,9 @@
 {
     "attributes": {
         "feature_flags": {
+            "enable_case_merging": true,
             "enable_manual_pulling": false,
-            "enable_twilio_transcripts": false,
-            "enable_case_merging": true
+            "enable_twilio_transcripts": false
         },
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
         "helplineLanguage": ""

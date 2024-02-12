@@ -252,33 +252,34 @@
     "type": "input"
   },
   {
-    "name": "inConflictWithTheLaw",
-    "label": "Törvénnyel összeütközésbe került gyerek",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "livingInPoverty",
-    "label": "Szegénységben élő gyerek",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "memberOfAnEthnic",
-    "label": "Etnikai, vallási kisebbséghez tartozó gyerek",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "childWithDisability",
-    "label": "Fogyatékossággal élő gyerek",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "childOnTheMove",
-    "label": "Menekült gyerek",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "LGBTQI+",
-    "label": "LGBTQI+",
-    "type": "mixed-checkbox"
+    "name": "vulnerableGroups",
+    "label": "Veszélyeztetett Csoportok",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Törvénnyel összeütközésbe került gyerek",
+        "label": "Törvénnyel összeütközésbe került gyerek"
+      },
+      {
+        "value": "Szegénységben élő gyerek",
+        "label": "Szegénységben élő gyerek"
+      },
+      {
+        "value": "Etnikai, vallási kisebbséghez tartozó gyerek",
+        "label": "Etnikai, vallási kisebbséghez tartozó gyerek"
+      },
+      {
+        "value": "Menekült gyerek",
+        "label": "Menekült gyerek"
+      },
+      {
+        "value": "Fogyatékossággal élő gyerek",
+        "label": "Fogyatékossággal élő gyerek"
+      },
+      {
+        "value": "LGBTQI+",
+        "label": "LGBTQI+"
+      }
+    ]
   }
 ]

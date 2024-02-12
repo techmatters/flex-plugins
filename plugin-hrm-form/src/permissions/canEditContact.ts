@@ -13,25 +13,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { useSelector } from 'react-redux';
 
-import { Profile, ProfileListState } from '../types';
-import * as ProfileSelectors from '../selectors';
+import { getInitializedCan, PermissionActions } from '.';
+import { Contact } from '../types/types';
+import { getHrmConfig } from '../hrmConfig';
 
-type UseProfileListReturn = {
-  profileIds: Profile['id'][] | undefined;
-  loading: boolean | undefined;
+const getCanEditContact = (contact: Contact): (() => boolean) => {
+  if (!contact.finalizedAt) {
+    // If the contact is a draft, we use the hardcoded rule that only its owner or creator can edit it
+    const { workerSid } = getHrmConfig();
+    const permitted = contact.twilioWorkerId === workerSid || contact.createdBy === workerSid;
+    return () => permitted;
+  }
+  const initializedCan = getInitializedCan();
+  return () => initializedCan(PermissionActions.EDIT_CONTACT, contact);
 };
 
-export const useProfileList = (): UseProfileListReturn => {
-  const profileIds = useSelector(
-    (state: any) => (ProfileSelectors.selectProfileListState(state) as ProfileListState)?.data,
-  );
-  const loading = useSelector(
-    (state: any) => (ProfileSelectors.selectProfileListState(state) as ProfileListState)?.loading,
-  );
-  return {
-    profileIds,
-    loading,
-  };
-};
+export default getCanEditContact;

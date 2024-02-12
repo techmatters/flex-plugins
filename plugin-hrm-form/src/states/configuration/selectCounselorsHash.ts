@@ -22,3 +22,16 @@ export const selectCounselorsHash = (state: RootState) => state[namespace].confi
 
 export const selectCounselorsList = (state: RootState): CounselorsList =>
   state[namespace].configuration.counselors.list;
+
+export const selectCounselorName = (state: RootState, counselorId: string): string => {
+  if (counselorId) {
+    const counselor = state[namespace].configuration.counselors.hash[counselorId];
+    if (counselor) {
+      return counselor;
+    } else if (counselorId.startsWith('WK')) {
+      return 'Unknown';
+    }
+    return counselorId;
+  }
+  return undefined;
+};

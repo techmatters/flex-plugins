@@ -1,9 +1,9 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_fullstory_monitoring": true,
+            "enable_case_merging": true,
             "enable_client_profiles": true,
-            "enable_case_merging": true
+            "enable_fullstory_monitoring": true
         },
         "helpline_code": "cl",
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/"

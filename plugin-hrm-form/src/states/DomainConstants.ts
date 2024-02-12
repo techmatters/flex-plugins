@@ -14,6 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { customSmsChannelTypes } from '../utils/smsChannels';
+
 const defaultChannelTypes = {
   voice: 'voice',
   sms: 'sms',
@@ -28,19 +30,34 @@ export const customChannelTypes = {
   line: 'line',
 } as const;
 
-export const smsChannelTypes = ['sms', 'modica'];
-
-export const channelTypes = {
+/**
+ * These are the channels without the custom SMS channels.
+ *
+ * Since the custom SMS channels are going to behave like the default SMS channel,
+ * some components should not be aware of them, like the QueueStatus or
+ * the PreviousContactsBanner.
+ */
+export const coreChannelTypes = {
   ...defaultChannelTypes,
   ...customChannelTypes,
 };
 
+/**
+ * This is the complete list of channels.
+ */
+export const channelTypes = {
+  ...coreChannelTypes,
+  ...customSmsChannelTypes,
+};
+
 export type ChannelTypes = typeof channelTypes[keyof typeof channelTypes];
+export type CoreChannelTypes = typeof coreChannelTypes[keyof typeof coreChannelTypes];
 
 const chatChannels = [
   channelTypes.whatsapp,
   channelTypes.facebook,
   channelTypes.web,
+  channelTypes.modica,
   channelTypes.sms,
   channelTypes.twitter,
   channelTypes.instagram,
@@ -51,7 +68,7 @@ export const isVoiceChannel = (channel: string) => channel === channelTypes.voic
 export const isChatChannel = (channel: string) => chatChannels.includes(channel as any);
 
 export type ChannelColors = {
-  [C in ChannelTypes]: string;
+  [C in CoreChannelTypes]: string;
 };
 
 export const transferModes = {

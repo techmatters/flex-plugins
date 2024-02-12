@@ -28,7 +28,7 @@ import SmsIcon from '../components/common/icons/SmsIcon';
 import * as TransferHelpers from '../transfer/transferTaskState';
 import { colors, mainChannelColor } from './colors';
 import { getTemplateStrings } from '../hrmConfig';
-import { smsChannelTypes } from '../states/DomainConstants';
+import { isSmsChannelType } from '../utils/smsChannels';
 
 const isIncomingTransfer = task => TransferHelpers.hasTransferStarted(task) && task.status === 'pending';
 
@@ -85,7 +85,7 @@ export const customiseDefaultChatChannels = () => {
 };
 
 export const expandSMSChannel = () => {
-  Flex.DefaultTaskChannels.ChatSms.isApplicable = task => smsChannelTypes.includes(task.channelType);
+  Flex.DefaultTaskChannels.ChatSms.isApplicable = task => isSmsChannelType(task.channelType);
 };
 
 export const setupTwitterChatChannel = maskIdentifiers => {

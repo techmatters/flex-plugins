@@ -22,10 +22,9 @@ import { DefinitionVersion } from 'hrm-form-definitions';
 import Case from '../case';
 import { StandaloneITask, Case as CaseType } from '../../types/types';
 import CaseListTable from './CaseListTable';
-import { ListContainer, CenteredContainer, SomethingWentWrongText } from '../../styles';
+import { ListContainer, CenteredContainer, SomethingWentWrongText, StandaloneContainer } from '../../styles';
 import { CaseLayout } from '../case/styles';
 import * as ConfigActions from '../../states/configuration/actions';
-import { StandaloneSearchContainer } from '../search/styles';
 import { RootState } from '../../states';
 import * as ListContent from '../../states/caseList/listContent';
 import { getHrmConfig } from '../../hrmConfig';
@@ -37,6 +36,7 @@ import selectCasesForList from '../../states/caseList/selectCasesForList';
 import selectCaseListSettings from '../../states/caseList/selectCaseListSettings';
 import { CaseListSettingsState } from '../../states/caseList/settings';
 import asyncDispatch from '../../states/asyncDispatch';
+import ProfileRouter, { isProfileRoute } from '../profile/ProfileRouter';
 
 export const CASES_PER_PAGE = 10;
 
@@ -112,17 +112,17 @@ const CaseList: React.FC<Props> = ({
 
   if (routing.route === 'case') {
     return (
-      <StandaloneSearchContainer>
+      <StandaloneContainer>
         <CaseLayout>
           <Case task={standaloneTask} handleClose={closeCaseView} />
         </CaseLayout>
-      </StandaloneSearchContainer>
+      </StandaloneContainer>
     );
   }
 
   if (routing.route === 'contact') {
     return (
-      <StandaloneSearchContainer>
+      <StandaloneContainer>
         <CaseLayout>
           <ContactDetails
             contactId={routing.id}
@@ -131,9 +131,18 @@ const CaseList: React.FC<Props> = ({
             task={standaloneTask}
           />
         </CaseLayout>
-      </StandaloneSearchContainer>
+      </StandaloneContainer>
     );
   }
+
+  if (isProfileRoute(routing)) {
+    return (
+      <StandaloneContainer>
+        <ProfileRouter task={standaloneTask} />
+      </StandaloneContainer>
+    );
+  }
+
   return (
     <>
       <ListContainer>

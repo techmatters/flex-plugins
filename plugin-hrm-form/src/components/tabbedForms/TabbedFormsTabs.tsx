@@ -53,7 +53,7 @@ import ContactlessTaskTab from './ContactlessTaskTab';
 import CSAMAttachments from './CSAMAttachments';
 import CSAMReportButton from './CSAMReportButton';
 import { TabbedFormsCommonProps } from './types';
-import useTabbedForm from './hooks/useTabbedForm';
+import { useTabbedFormContext } from './hooks/useTabbedForm';
 // Ensure we import any custom components that might be used in a form
 import '../contact/ResourceReferralList';
 
@@ -61,12 +61,11 @@ type OwnProps = TabbedFormsCommonProps;
 
 const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const {
-    [namespace]: { activeContacts, configuration, routing: routingState },
+    [namespace]: { configuration, routing: routingState },
   } = state;
 
   const currentRoute = getCurrentTopmostRouteForTask(routingState, taskSid);
   const { draftContact, savedContact } = selectContactByTaskSid(state, taskSid);
-  const { isCallTypeCaller } = activeContacts;
   const contactId = savedContact.id;
   const { showConnectedToCaseBanner, showRemovedFromCaseBanner } = selectCaseMergingBanners(state, contactId);
   const { currentDefinitionVersion } = configuration;
@@ -76,7 +75,6 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
     currentDefinitionVersion,
     currentRoute,
     draftContact,
-    isCallTypeCaller,
     savedContact,
     showConnectedToCaseBanner,
     showRemovedFromCaseBanner,
@@ -178,7 +176,7 @@ const TabbedFormsTabs: React.FC<Props> = ({
   const { contactSaveFrequency } = getHrmConfig();
   const { subroute, autoFocus } = currentRoute as TabbedFormRoute;
 
-  const { methods, newSubmitHandler } = useTabbedForm();
+  const { methods, newSubmitHandler } = useTabbedFormContext();
   const { setValue } = methods;
 
   const isMounted = React.useRef(false); // mutable value to avoid reseting the state in the first render.

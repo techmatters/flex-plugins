@@ -19,3 +19,6 @@ export * from './useProfile';
 export * from './useProfileFlags';
 export * from './useProfileLoader';
 export * from './useProfileProperty';
+export * from './useProfileSection';
+export * from './useProfilesList';
+export * from './useProfilesListLoader';

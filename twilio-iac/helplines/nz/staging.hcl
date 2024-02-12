@@ -48,9 +48,9 @@ locals {
         }
         chatbot_unique_names = []
       },
-      sms : {
-        channel_type         = "sms"
-        contact_identity     = "+18645238101"
+      modica : {
+        channel_type         = "custom"
+        contact_identity     = "modica"
         templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []

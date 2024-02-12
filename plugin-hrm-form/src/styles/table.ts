@@ -22,9 +22,12 @@ import { Absolute, Flex } from './layout';
 import { FontOpenSans } from './typography';
 import HrmTheme from './HrmTheme';
 
-export const ListContainer = styled(Absolute)`
+type ListContainerProps = {
+  width?: string;
+};
+export const ListContainer = styled(Absolute)<ListContainerProps>`
   height: 100%;
-  width: 1280px;
+  width: ${props => props.width || '1280px'};
   background-color: #f6f6f6;
 `;
 ListContainer.displayName = 'ListContainer';
@@ -55,7 +58,7 @@ StandardTable.displayName = 'StandardTable';
 
 export const DataTableRow = withStyles({
   root: {
-    height: 85,
+    height: 80,
     background: '#ffffff',
     borderStyle: 'solid',
     borderWidth: 1,
@@ -135,6 +138,13 @@ export const SummaryCell = withStyles({
 })(DataCell);
 SummaryCell.displayName = 'SummaryCell';
 
+export const PillsCell = withStyles({
+  body: {
+    display: 'grid',
+  },
+})(DataCell);
+PillsCell.displayName = 'PillsCell';
+
 export const TableHeaderFont = styled(FontOpenSans)`
   font-weight: 600;
   font-size: 12px;
@@ -142,6 +152,7 @@ export const TableHeaderFont = styled(FontOpenSans)`
   letter-spacing: 0;
   padding: 0 2px;
   align-items: right;
+  white-space: 'nowrap';
 `;
 TableHeaderFont.displayName = 'TableHeaderFont';
 
@@ -163,13 +174,13 @@ export const TableSummaryFont = styled(TableBodyFont)`
 `;
 TableSummaryFont.displayName = 'TableSummaryFont';
 
-export const IdentifierContainer = styled('div')`
+export const OpenLinkContainer = styled('span')`
   display: inline-block;
   padding: 0 6px;
 `;
-IdentifierContainer.displayName = 'IdentifierContainer';
+OpenLinkContainer.displayName = 'OpenLinkContainer';
 
-export const IdentifierActionButton = styled('button')`
+export const OpenLinkAction = styled('button')`
   color: #1876d1;
   text-decoration: underline;
   cursor: pointer;
@@ -182,10 +193,14 @@ export const IdentifierActionButton = styled('button')`
     outline-color: black;
   }
 `;
-IdentifierActionButton.displayName = 'IdentifierActionButton';
+OpenLinkAction.displayName = 'OpenLinkAction';
 
 export const SomethingWentWrongText = styled(FontOpenSans)`
   color: ${HrmTheme.colors.errorColor};
   font-size: 20px;
 `;
 SomethingWentWrongText.displayName = 'SomethingWentWrongText';
+
+export const OpaqueText = styled('span')`
+  opacity: 0.7;
+`;

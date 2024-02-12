@@ -258,7 +258,7 @@ const CaseHome: React.FC<Props> = ({
                 hasMoreActivities && enableSeparateTimelineView ? 'Case-Timeline-RecentTitle' : 'Case-Timeline-Title'
               }
             />
-            {hasMoreActivities && (
+            {enableSeparateTimelineView && hasMoreActivities && (
               <ViewButton style={{ marginTop: '10px' }} withDivider={false} onClick={onViewFullTimelineClick}>
                 <Template code="Case-Timeline-OpenFullTimelineButton" />
               </ViewButton>
@@ -304,7 +304,7 @@ const CaseHome: React.FC<Props> = ({
           </Box>
         )}
       </CaseContainer>
-      {isCreating && (
+      {connect && (
         <BottomButtonBar>
           {!enableCaseMerging && (
             <Box marginRight="15px">
@@ -333,7 +333,10 @@ const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
   const connectedCaseState = selectCurrentRouteCaseState(state, task.taskSid);
   const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
   const routing = selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseRoute;
-  const isCreating = routing.route === 'case' && routing.isCreating;
+  const connectedContacts = connectedCaseState?.connectedCase?.connectedContacts ?? [];
+  const isCreating = Boolean(
+    connectedContacts.length === 1 && connectedContacts[0].id === taskContact?.id && !taskContact?.finalizedAt,
+  );
   const activityCount = routing.route === 'case' ? selectCaseActivityCount(state, routing.caseId) : 0;
 
   return {

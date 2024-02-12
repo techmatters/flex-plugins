@@ -21,18 +21,18 @@ import { ArrowDownward } from '@material-ui/icons';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { TableHeaderFont, HeaderCell } from '../../styles';
-import { ListCasesQueryParams, ListCasesSortDirection } from '../../types/types';
+import { ListCasesQueryParams, SortDirection } from '../../types/types';
 import * as CaseListSettingsActions from '../../states/caseList/settings';
 import { RootState } from '../../states';
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { caseListBase, namespace } from '../../states/storeNamespaces';
 
-type SortDirection = ListCasesQueryParams['sortDirection'];
+type SortDirectionParam = ListCasesQueryParams['sortDirection'];
 type SortBy = ListCasesQueryParams['sortBy'];
 
 type OwnProps = {
   column?: SortBy;
-  defaultSortDirection?: SortDirection;
+  defaultSortDirection?: SortDirectionParam;
   localizedText?: string;
   width?: string;
 };
@@ -40,15 +40,15 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const changeSortDirection = (sortDirection: SortDirection): SortDirection =>
-  sortDirection === ListCasesSortDirection.ASC ? ListCasesSortDirection.DESC : ListCasesSortDirection.ASC;
+const changeSortDirection = (sortDirection: SortDirectionParam): SortDirectionParam =>
+  sortDirection === SortDirection.ASC ? SortDirection.DESC : SortDirection.ASC;
 
 /**
  * If column prop is filled, the cell will enable sorting by this column
  */
 const CaseListTableHeadCell: React.FC<Props> = ({
   column,
-  defaultSortDirection = ListCasesSortDirection.DESC,
+  defaultSortDirection = SortDirection.DESC,
   localizedText,
   width,
   currentSort,
@@ -67,7 +67,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
           fontSize: 16,
           marginLeft: '10px',
           verticalAlign: 'middle',
-          transform: currentSort.sortDirection === ListCasesSortDirection.ASC ? 'rotate(180deg) scaleX(-1)' : 'none',
+          transform: currentSort.sortDirection === SortDirection.ASC ? 'rotate(180deg) scaleX(-1)' : 'none',
         }}
       />
     );
@@ -111,7 +111,7 @@ const CaseListTableHeadCell: React.FC<Props> = ({
       onClick={handleClick}
       scope="col"
     >
-      <TableHeaderFont style={{ borderBottom: borderBottom(), whiteSpace: 'nowrap', textAlign: textAlign() }}>
+      <TableHeaderFont style={{ borderBottom: borderBottom(), textAlign: textAlign() }}>
         <Template code={localizedText} />
         <span aria-hidden="true">{drawSort()}</span>
       </TableHeaderFont>

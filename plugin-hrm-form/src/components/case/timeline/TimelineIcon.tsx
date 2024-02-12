@@ -35,32 +35,32 @@ import { colors } from '../../../channels/colors';
 
 type IconType = ChannelTypes | 'note' | 'referral';
 
-// eslint-disable-next-line react/display-name
-const getIcon = (type: IconType) => {
+export const getIcon = (type: IconType, size: string = '24px') => {
   switch (type) {
     case channelTypes.whatsapp:
-      return <WhatsappIcon width="24px" height="24px" color={colors.whatsapp} />;
+      return <WhatsappIcon width={size} height={size} color={colors.whatsapp} />;
     case channelTypes.facebook:
-      return <FacebookIcon width="24px" height="24px" color={colors.facebook} />;
+      return <FacebookIcon width={size} height={size} color={colors.facebook} />;
     case channelTypes.web:
       return <DefaultIcon defaultTaskChannel={Flex.DefaultTaskChannels.Chat} color={colors.web} />;
     case channelTypes.sms:
-      return <SmsIcon width="24px" height="24px" color={colors.sms} />;
+    case channelTypes.modica:
+      return <SmsIcon width={size} height={size} color={colors.sms} />;
     case channelTypes.voice:
-      return <CallIcon width="24px" height="24px" color={colors.voice} />;
+      return <CallIcon width={size} height={size} color={colors.voice} />;
     case channelTypes.twitter:
-      return <TwitterIcon width="24px" height="24px" color={colors.twitter} />;
+      return <TwitterIcon width={size} height={size} color={colors.twitter} />;
     case channelTypes.instagram:
-      return <InstagramIcon width="20px" height="20px" color={colors.instagram} />;
+      return <InstagramIcon width={size} height={size} color={colors.instagram} />;
     case channelTypes.line:
-      return <LineIcon width="24px" height="24px" color={colors.line} />;
+      return <LineIcon width={size} height={size} color={colors.line} />;
     case 'note':
-      return <NoteIcon style={{ opacity: 0.62, fontSize: '20px' }} />;
+      return <NoteIcon style={{ opacity: 0.62, fontSize: size }} />;
     case 'referral':
-      return <ReplyIcon style={{ transform: 'scaleX(-1)', fontSize: '20px' }} />;
+      return <ReplyIcon style={{ transform: 'scaleX(-1)', fontSize: size }} />;
     // defaulting to isOtherContactChannel(channel). Maybe at some point we need to address this in a different way.
     default:
-      return <AssignmentInd style={{ opacity: 0.62, fontSize: '20px' }} />;
+      return <AssignmentInd style={{ opacity: 0.62, fontSize: size }} />;
   }
 };
 

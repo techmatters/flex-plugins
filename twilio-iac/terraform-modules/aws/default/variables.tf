@@ -89,9 +89,3 @@ variable "serverless_url" {
   description = "URL used to access Aselo Twilio serverless functions"
   type        = string
 }
-
-variable "post_survey_bot_sid" {
-  description = "Internal Twilio resource SID provided by another module"
-  type        = string
-  default     = ""
-}

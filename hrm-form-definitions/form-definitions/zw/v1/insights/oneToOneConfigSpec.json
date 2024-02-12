@@ -1,128 +1,135 @@
 {
-    "contactForm": {
-        "callerInformation": [
-            {
-              "name": "relationshipToChild",
-              "insights": ["conversations", "initiated_by"]
-            }
-          ],
-        "childInformation": [
-          {
-            "name": "province",
-            "insights": [
-              "customers",
-              "area"
-            ]
-          },
-          {
-            "name": "district",
-            "insights": [
-              "customers",
-              "region"
-            ]
-          },
-          {
-            "name": "schoolName",
-            "insights": ["customers", "customer_attribute_1"]
-          },
-          {
-            "name": "gradeLevel",
-            "insights": ["customers", "acquisition_date"]
-          },
-          {
-            "name": "childStatus",
-            "insights": ["customers", "email"]
-          },
-          {
-            "name": "concernLevel",
-            "insights": ["conversations", "initiative"]
-          }
-        ],
-        "caseInformation": [
-          {
-            "name": "repeatCaller",
-            "insights": [
-              "conversations",
-              "conversation_attribute_6"
-            ],
-            "type": "checkbox"
-          },
-          {
-            "name": "department",
-            "insights": [
-              "customers",
-              "organization"
-            ]
-          },
-          {
-            "name": "location",
-            "insights": [
-              "customers",
-              "city"
-            ]
-          }
-        ]
+  "contactForm": {
+    "callerInformation": [
+      {
+        "name": "relationshipToChild",
+        "insights": ["conversations", "initiated_by"]
       },
-      "caseForm": {
-        "topLevel": [
-          {
-            "name": "id",
-            "insights": [
-              "conversations",
-              "case"
-            ]
-          },
-          {
-            "name": "caseStatus",
-            "insights": [
-              "conversations",
-              "in_business_hours"
-            ]
-          }
-        ],
-        "household": [
-            {
-              "name": "relationshipToChild",
-              "insights": ["conversations", "preceded_by"]
-            },
-            {
-              "name": "gender",
-              "insights": ["conversations", "conversation_measure_1"]
-            },
-            {
-              "name": "age",
-              "insights": ["conversations", "conversation_measure_2"]
-            }
-          ],
-        "perpetrator": [
-            {
-              "name": "relationshipToChild",
-              "insights": ["conversations", "followed_by"]
-            },
-            {
-              "name": "gender",
-              "insights": ["conversations", "conversation_measure_3"]
-            },
-            {
-              "name": "age",
-              "insights": ["conversations", "conversation_measure_4"]
-            }
-          ],
-        "incident": [
-          {
-            "name": "incidentType",
-            "insights": ["customers", "category"]
-          }
-        ],
-        "referral": [
-          {
-            "name": "referredTo",
-            "insights": [
-              "customers",
-              "customer_manager"
-            ]
-          }
-        ]
+      {
+        "name": "province",
+        "insights": ["customers", "market_segment"]
+      },
+      {
+        "name": "district",
+        "insights": ["conversations", "productive"]
+      },
+      {
+        "name": "gender",
+        "insights": ["customers", "customer_attribute_2"]
+      },
+      {
+        "name": "age",
+        "insights": ["conversations", "conversation_attribute_3"]
       }
-
+    ],
+    "childInformation": [
+      {
+        "name": "province",
+        "insights": ["customers", "area"]
+      },
+      {
+        "name": "district",
+        "insights": ["customers", "region"]
+      },
+      {
+        "name": "livingSituation",
+        "insights": ["customers", "zip"]
+      },
+      {
+        "name": "gradeLevel",
+        "insights": ["customers", "acquisition_date"]
+      },
+      {
+        "name": "childStatus",
+        "insights": ["conversations", "conversation_attribute_4"]
+      },
+      {
+        "name": "concernLevel",
+        "insights": ["conversations", "initiative"]
+      },
+      {
+        "name": "vulnerableGroups",
+        "insights": ["customers", "email"]
+      }
+    ],
+    "caseInformation": [
+      {
+        "name": "repeatCaller",
+        "insights": ["conversations", "conversation_measure_1"],
+        "type": "checkbox"
+      },
+      {
+        "name": "department",
+        "insights": ["customers", "organization"]
+      },
+      {
+        "name": "location",
+        "insights": ["customers", "city"]
+      }
+    ]
+  },
+  "caseForm": {
+    "topLevel": [
+      {
+        "name": "id",
+        "insights": ["conversations", "case"]
+      },
+      {
+        "name": "caseStatus",
+        "insights": ["conversations", "in_business_hours"]
+      }
+    ],
+    "household": [
+      {
+        "name": "relationshipToChild",
+        "insights": ["conversations", "preceded_by"]
+      },
+      {
+        "name": "gender",
+        "insights": ["conversations", "conversation_attribute_5"]
+      },
+      {
+        "name": "age",
+        "insights": ["conversations", "conversation_attribute_6"]
+      }
+    ],
+    "perpetrator": [
+      {
+        "name": "relationshipToChild",
+        "insights": ["conversations", "followed_by"]
+      },
+      {
+        "name": "gender",
+        "insights": ["conversations", "conversation_attribute_9"]
+      },
+      {
+        "name": "age",
+        "insights": ["conversations", "conversation_attribute_10"]
+      },
+      {
+        "name": "province",
+        "insights": ["conversations", "conversation_attribute_7"]
+      },
+      {
+        "name": "district",
+        "insights": ["conversations", "campaign"]
+      }
+    ],
+    "incident": [
+      {
+        "name": "duration",
+        "insights": ["customers", "category"]
+      },
+      {
+        "name": "location",
+        "insights": ["customers", "customer_attribute_1"]
+      }
+    ],
+    "referral": [
+      {
+        "name": "referredTo",
+        "insights": ["customers", "customer_manager"]
+      }
+    ]
+  }
 }

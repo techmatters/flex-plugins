@@ -14,7 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import type * as t from '../types/types';
+import parseISO from 'date-fns/parseISO';
+import { differenceInDays, differenceInHours } from 'date-fns';
+
 import { fetchRules } from './fetchRules';
 import { getHrmConfig } from '../hrmConfig';
 
@@ -26,20 +28,20 @@ export const CaseActions = {
   REOPEN_CASE: 'reopenCase',
   CASE_STATUS_TRANSITION: 'caseStatusTransition',
   ADD_NOTE: 'addNote',
+  EDIT_NOTE: 'editNote',
   ADD_REFERRAL: 'addReferral',
+  EDIT_REFERRAL: 'editReferral',
   ADD_HOUSEHOLD: 'addHousehold',
+  EDIT_HOUSEHOLD: 'editHousehold',
   ADD_PERPETRATOR: 'addPerpetrator',
+  EDIT_PERPETRATOR: 'editPerpetrator',
   ADD_INCIDENT: 'addIncident',
+  EDIT_INCIDENT: 'editIncident',
   ADD_DOCUMENT: 'addDocument',
+  EDIT_DOCUMENT: 'editDocument',
   EDIT_CASE_SUMMARY: 'editCaseSummary',
   EDIT_CHILD_IS_AT_RISK: 'editChildIsAtRisk',
   EDIT_FOLLOW_UP_DATE: 'editFollowUpDate',
-  EDIT_NOTE: 'editNote',
-  EDIT_REFERRAL: 'editReferral',
-  EDIT_HOUSEHOLD: 'editHousehold',
-  EDIT_PERPETRATOR: 'editPerpetrator',
-  EDIT_INCIDENT: 'editIncident',
-  EDIT_DOCUMENT: 'editDocument',
   UPDATE_CASE_CONTACTS: 'updateCaseContacts',
 } as const;
 
@@ -49,6 +51,7 @@ export const ContactActions = {
   VIEW_EXTERNAL_TRANSCRIPT: 'viewExternalTranscript',
   VIEW_RECORDING: 'viewRecording',
   ADD_CONTACT_TO_CASE: 'addContactToCase',
+  REMOVE_CONTACT_FROM_CASE: 'removeContactFromCase',
 } as const;
 
 export const ViewIdentifiersAction = {
@@ -65,22 +68,101 @@ type PermissionActionsKeys = keyof typeof PermissionActions;
 export type PermissionActionType = typeof PermissionActions[PermissionActionsKeys];
 type Condition = 'isSupervisor' | 'isCreator' | 'isCaseOpen' | 'isOwner' | 'everyone';
 export type ConditionsSet = Condition[];
-type ConditionsSets = ConditionsSet[];
+// eslint-disable-next-line import/no-unused-modules
+export type ConditionsSets = ConditionsSet[];
 
-type ConditionsState = Partial<{
-  isSupervisor: boolean;
-  isCreator: boolean;
-  isCaseOpen: boolean;
-  isOwner: boolean;
-  everyone: boolean;
-}>;
+type ConditionsState = {
+  [k: string]: boolean;
+};
 
-const checkCondition = (conditionsState: ConditionsState) => (condition: Condition) => conditionsState[condition];
-const checkConditionsSet = (conditionsState: ConditionsState) => (conditionsSet: ConditionsSet) =>
-  conditionsSet.every(checkCondition(conditionsState));
-const checkConditionsSets = (conditionsState: ConditionsState) => (conditionsSets: ConditionsSets) =>
-  conditionsSets.some(checkConditionsSet(conditionsState));
+const timeBasedConditions = ['createdHoursAgo', 'createdDaysAgo'] as const;
+type TimeBasedCondition = { [K in typeof timeBasedConditions[number]]: number };
 
+const isTimeBasedCondition = (c: any): c is TimeBasedCondition => {
+  if (typeof c === 'object') {
+    const [[cond, param]] = Object.entries(c);
+    return timeBasedConditions.includes(cond as any) && typeof param === 'number';
+  }
+
+  return false;
+};
+
+const userBasedConditions = ['isSupervisor', 'everyone'] as const;
+type UserBasedCondition = typeof userBasedConditions[number];
+
+const isUserBasedCondition = (c: any): c is UserBasedCondition =>
+  typeof c === 'string' && userBasedConditions.includes(c as any);
+
+const contactSpecificConditions = ['isOwner'] as const;
+type ContactSpecificCondition = typeof contactSpecificConditions[number];
+
+const isContactSpecificCondition = (c: any): c is ContactSpecificCondition =>
+  typeof c === 'string' && contactSpecificConditions.includes(c as any);
+
+const caseSpecificConditions = ['isCreator', 'isCaseOpen'] as const;
+type CaseSpecificCondition = typeof caseSpecificConditions[number];
+
+const isCaseSpecificCondition = (c: any): c is CaseSpecificCondition =>
+  typeof c === 'string' && caseSpecificConditions.includes(c as any);
+
+type SupportedContactCondition = TimeBasedCondition | UserBasedCondition | ContactSpecificCondition;
+const isSupportedContactCondition = (c: any): c is SupportedContactCondition =>
+  isTimeBasedCondition(c) || isUserBasedCondition(c) || isContactSpecificCondition(c);
+
+type SupportedCaseCondition = TimeBasedCondition | UserBasedCondition | CaseSpecificCondition;
+const isSupportedCaseCondition = (c: any): c is SupportedCaseCondition =>
+  isTimeBasedCondition(c) || isUserBasedCondition(c) || isCaseSpecificCondition(c);
+
+type SupportedPostSurveyCondition = TimeBasedCondition | UserBasedCondition;
+const isSupportedPostSurveyCondition = (c: any): c is SupportedPostSurveyCondition =>
+  isTimeBasedCondition(c) || isUserBasedCondition(c);
+
+type SupportedViewIdentifiersCondition = UserBasedCondition;
+const isSupportedViewIdentifiersCondition = (c: any): c is SupportedPostSurveyCondition => isUserBasedCondition(c);
+
+// Defines which actions are supported on each TargetKind
+type SupportedTKCondition = {
+  contact: SupportedContactCondition;
+  case: SupportedCaseCondition;
+  postSurvey: SupportedPostSurveyCondition;
+  viewIdentifiers: SupportedViewIdentifiersCondition;
+};
+
+export type TargetKind = keyof typeof actionsMaps;
+
+type TKCondition<T extends TargetKind> = SupportedTKCondition[T];
+type TKConditionsSet<T extends TargetKind> = TKCondition<T>[];
+type TKConditionsSets<T extends TargetKind> = TKConditionsSet<T>[];
+
+/**
+ * Given a conditionsState and a condition, returns true if the condition is true in the conditionsState
+ */
+const checkCondition = <T extends TargetKind>(conditionsState: ConditionsState) => (
+  condition: TKCondition<T>,
+): boolean => {
+  if (isTimeBasedCondition(condition)) {
+    return conditionsState[JSON.stringify(condition)];
+  }
+
+  return conditionsState[condition as string];
+};
+
+/**
+ * Given a conditionsState and a set of conditions, returns true if all the conditions are true in the conditionsState
+ */
+const checkConditionsSet = <T extends TargetKind>(conditionsState: ConditionsState) => (
+  conditionsSet: TKConditionsSet<T>,
+): boolean => conditionsSet.length > 0 && conditionsSet.every(checkCondition(conditionsState));
+
+/**
+ * Given a conditionsState and a set of conditions sets, returns true if one of the conditions sets contains conditions that are all true in the conditionsState
+ */
+const checkConditionsSets = <T extends TargetKind>(
+  conditionsState: ConditionsState,
+  conditionsSets: TKConditionsSets<T>,
+): boolean => conditionsSets.some(checkConditionsSet(conditionsState));
+
+// eslint-disable-next-line import/no-unused-modules
 export const actionsMaps = {
   case: CaseActions,
   contact: ContactActions,
@@ -90,35 +172,65 @@ export const actionsMaps = {
   viewIdentifiers: ViewIdentifiersAction,
 } as const;
 
-// Defines which actions are supported on each TargetKind
-const supportedTargetKindActions = {
-  case: ['isSupervisor', 'isCreator', 'isCaseOpen', 'everyone'],
-  contact: ['isSupervisor', 'isOwner', 'everyone'],
-  postSurvey: ['isSupervisor', 'everyone'],
-  viewIdentifiers: ['isSupervisor', 'everyone'],
+const isTKCondition = <T extends TargetKind>(kind: T) => (c: any): c is TKCondition<T> => {
+  if (!c) {
+    return false;
+  }
+
+  switch (kind) {
+    case 'contact': {
+      return isSupportedContactCondition(c);
+    }
+    case 'case': {
+      return isSupportedCaseCondition(c);
+    }
+    case 'postSurvey': {
+      return isSupportedPostSurveyCondition(c);
+    }
+    case 'viewIdentifiers': {
+      return isSupportedViewIdentifiersCondition(c);
+    }
+    default: {
+      return false;
+    }
+  }
 };
 
-const isValidTargetKind = (kind: string, css: ConditionsSets) =>
-  css.every(cs => cs.every(c => supportedTargetKindActions[kind].includes(c)));
+/**
+ * Utility type that given an object with any nesting depth, will return the union of all the leaves that are of type "string"
+ */
+type NestedStringValues<T> = T extends object
+  ? { [K in keyof T]: T[K] extends string ? T[K] : NestedStringValues<T[K]> }[keyof T]
+  : never;
+type Action = NestedStringValues<typeof actionsMaps>;
+type RulesFile = { [k in Action]: TKConditionsSets<TargetKind> };
 
-const validateTargetKindActions = (rules, kind: keyof typeof actionsMaps) =>
-  Object.values(actionsMaps[kind]).reduce<{ [k in keyof typeof actionsMaps]: boolean }>((accum, action) => {
-    return {
-      ...accum,
-      [action]: isValidTargetKind(kind, rules[action]),
-    };
-  }, {} as any);
+const isValidTKConditionsSets = <T extends TargetKind>(kind: T) => (
+  css: TKConditionsSets<TargetKind>,
+): css is TKConditionsSets<typeof kind> => css.every(cs => cs.every(isTKCondition(kind)));
 
-const isValidTargetKindActions = (validated: { [k in keyof typeof actionsMaps]: boolean }) =>
-  Object.values(validated).every(Boolean);
+/**
+ * Validates that for every TK, the ConditionsSets provided are valid
+ * (i.e. present in supportedTKConditions)
+ */
+const validateTKActions = (rules: RulesFile) =>
+  Object.entries(actionsMaps)
+    .map(([kind, map]) =>
+      Object.values(map).reduce((accum, action) => {
+        return {
+          ...accum,
+          [action]: rules[action] && isValidTKConditionsSets(kind as TargetKind)(rules[action]),
+        };
+      }, {}),
+    )
+    .reduce<{ [k in Action]: boolean }>((accum, obj) => ({ ...accum, ...obj }), {} as any);
 
-export const validateRules = (permissionConfig: string, kind: keyof typeof actionsMaps) => {
+const isValidTargetKindActions = (validated: { [k in Action]: boolean }) => Object.values(validated).every(Boolean);
+
+export const validateRules = (permissionConfig: string) => {
   const rules = fetchRules(permissionConfig);
 
-  const rulesAreValid = Object.values(PermissionActions).every(action => rules[action]);
-  if (!rulesAreValid) throw new Error(`Rules file for ${permissionConfig} is incomplete. Missing actions for ${kind}`);
-
-  const validated = validateTargetKindActions(rules, kind);
+  const validated = validateTKActions(rules);
 
   if (!isValidTargetKindActions(validated)) {
     const invalidActions = Object.entries(validated)
@@ -131,88 +243,121 @@ export const validateRules = (permissionConfig: string, kind: keyof typeof actio
   return rules;
 };
 
-export const getPermissionsForCase = (twilioWorkerId: t.Case['twilioWorkerId'], status: t.Case['status']) => {
+type TwilioUser = {
+  workerSid: string;
+
+  roles: string[];
+  isSupervisor: boolean;
+};
+
+const isCounselorWhoCreated = (user: TwilioUser, caseObj: any) => user.workerSid === caseObj.twilioWorkerId;
+
+const isCaseOpen = (caseObj: any) => caseObj.status !== 'closed';
+
+const isContactOwner = (user: TwilioUser, contactObj: any) => user.workerSid === contactObj.twilioWorkerId;
+
+const applyTimeBasedConditions = (conditions: TimeBasedCondition[]) => (
+  performer: TwilioUser,
+  target: any,
+  ctx: { curentTimestamp: Date },
+) =>
+  conditions
+    .map(c => Object.entries(c)[0])
+    .reduce<Record<string, boolean>>((accum, [cond, param]) => {
+      // use the stringified cond-param as key, e.g. '{ "createdHoursAgo": "4" }'
+      const key = JSON.stringify({ [cond]: param });
+      if (cond === 'createdHoursAgo') {
+        return {
+          ...accum,
+          [key]: differenceInHours(ctx.curentTimestamp, parseISO(target.createdAt)) < param,
+        };
+      }
+
+      if (cond === 'createdDaysAgo') {
+        return {
+          ...accum,
+          [key]: differenceInDays(ctx.curentTimestamp, parseISO(target.createdAt)) < param,
+        };
+      }
+
+      return accum;
+    }, {});
+
+const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsSets<T>) => {
+  // We could do type validation on target depending on targetKind if we ever want to make sure the "allow" is called on a proper target (same as cancan used to do)
+
+  const timeBasedConditions = conditionsSets.flatMap(cs => cs.filter(isTimeBasedCondition)) as TimeBasedCondition[];
+
+  return (performer: TwilioUser, target: any) => {
+    const ctx = { curentTimestamp: new Date() };
+
+    const appliedTimeBasedConditions = applyTimeBasedConditions(timeBasedConditions)(performer, target, ctx);
+
+    // Build the proper conditionsState depending on the targetKind
+    if (kind === 'case') {
+      const conditionsState: ConditionsState = {
+        isSupervisor: performer.isSupervisor,
+        isCreator: isCounselorWhoCreated(performer, target),
+        isCaseOpen: isCaseOpen(target),
+        everyone: true,
+        ...appliedTimeBasedConditions,
+      };
+
+      return checkConditionsSets(conditionsState, conditionsSets);
+    } else if (kind === 'contact') {
+      const conditionsState: ConditionsState = {
+        isSupervisor: performer.isSupervisor,
+        isOwner: isContactOwner(performer, target),
+        everyone: true,
+        createdDaysAgo: false,
+        createdHoursAgo: false,
+        ...appliedTimeBasedConditions,
+      };
+
+      return checkConditionsSets(conditionsState, conditionsSets);
+    } else if (kind === 'postSurvey') {
+      const conditionsState: ConditionsState = {
+        isSupervisor: performer.isSupervisor,
+        everyone: true,
+        ...appliedTimeBasedConditions,
+      };
+
+      return checkConditionsSets(conditionsState, conditionsSets);
+    } else if (kind === 'viewIdentifiers') {
+      const conditionsState: ConditionsState = {
+        isSupervisor: performer.isSupervisor,
+        everyone: true,
+      };
+
+      return checkConditionsSets(conditionsState, conditionsSets);
+    }
+
+    return false;
+  };
+};
+
+const initializeCanForRules = (rules: RulesFile) => {
+  const actionCheckers = {} as { [action in Action]: ReturnType<typeof setupAllow> };
+
+  const targetKinds = Object.keys(actionsMaps);
+  targetKinds.forEach((targetKind: TargetKind) => {
+    const actionsForTK = Object.values(actionsMaps[targetKind]) as Action[];
+    actionsForTK.forEach(action => (actionCheckers[action] = setupAllow(targetKind, rules[action])));
+  });
+
+  return (performer: TwilioUser, action: Action, target: any) => actionCheckers[action](performer, target);
+};
+
+let initializedCan: (performer: TwilioUser, action: Action, target?: any) => boolean = null;
+export const getInitializedCan = () => {
   const { workerSid, isSupervisor, permissionConfig } = getHrmConfig();
+  if (initializedCan === null) {
+    const rules = validateRules(permissionConfig);
+    initializedCan = initializeCanForRules(rules);
+  }
 
-  if (!permissionConfig || !twilioWorkerId || !status) return { can: undefined };
-
-  const isCreator = workerSid === twilioWorkerId;
-  const isCaseOpen = status !== 'closed';
-
-  const conditionsState: Partial<{ [condition in Condition]: boolean }> = {
-    isSupervisor,
-    isCreator,
-    isCaseOpen,
-    everyone: true,
-  };
-
-  const rules = validateRules(permissionConfig, 'case');
-
-  const can = (action: PermissionActionType): boolean => {
-    if (!rules[action]) {
-      console.error(`Cannot find rules for ${action}. Returning false.`);
-      return isSupervisor || (isCreator && isCaseOpen);
-    }
-
-    return checkConditionsSets(conditionsState)(rules[action]);
-  };
-
-  return {
-    can,
-  };
+  const performer = { isSupervisor, workerSid, roles: null };
+  return (action: Action, target?: any) => initializedCan(performer, action, target);
 };
 
-export const getPermissionsForContact = (twilioWorkerId: t.Contact['twilioWorkerId']) => {
-  const { workerSid, isSupervisor, permissionConfig } = getHrmConfig();
-
-  if (!permissionConfig || !twilioWorkerId) return { can: undefined };
-
-  const isOwner = workerSid === twilioWorkerId;
-
-  const conditionsState: Partial<{ [condition in Condition]: boolean }> = {
-    isSupervisor,
-    isOwner,
-    everyone: true,
-  };
-
-  const rules = validateRules(permissionConfig, 'contact');
-
-  const can = (action: PermissionActionType): boolean => {
-    if (!rules[action]) {
-      console.error(`Cannot find rules for ${action}. Returning false.`);
-      return isSupervisor || isOwner;
-    }
-
-    return checkConditionsSets(conditionsState)(rules[action]);
-  };
-
-  return {
-    can,
-  };
-};
-
-export const getPermissionsForViewingIdentifiers = () => {
-  const { isSupervisor, permissionConfig } = getHrmConfig();
-
-  if (!permissionConfig) return { canView: undefined };
-
-  const conditionsState: Partial<{ [condition in Condition]: boolean }> = {
-    isSupervisor,
-    everyone: true,
-  };
-
-  const rules = validateRules(permissionConfig, 'viewIdentifiers');
-
-  const canView = (action: PermissionActionType): boolean => {
-    if (!rules[action]) {
-      console.error(`Cannot find rules for ${action}. Returning false.`);
-      return isSupervisor;
-    }
-
-    return checkConditionsSets(conditionsState)(rules[action]);
-  };
-
-  return {
-    canView,
-  };
-};
+export const cleanupInitializedCan = () => (initializedCan = null);

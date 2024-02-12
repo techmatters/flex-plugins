@@ -20,12 +20,12 @@ import { Dispatch } from 'react';
 
 import {
   Case,
-  CustomITask,
   Contact,
-  isOfflineContactTask,
+  CustomITask,
   isOfflineContact,
-  RouterTask,
+  isOfflineContactTask,
   isTwilioTask,
+  RouterTask,
 } from '../types/types';
 import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
@@ -35,7 +35,7 @@ import { getHrmConfig } from '../hrmConfig';
 import { ContactMetadata } from '../states/contacts/types';
 import * as GeneralActions from '../states/actions';
 import asyncDispatch from '../states/asyncDispatch';
-import { connectToCaseAsyncAction, newClearContactAsyncAction } from '../states/contacts/saveContact';
+import { newClearContactAsyncAction, removeFromCaseAsyncAction } from '../states/contacts/saveContact';
 import { getOfflineContactTaskSid } from '../states/contacts/offlineContactTask';
 
 /**
@@ -61,7 +61,7 @@ export const removeOfflineContact = async (dispatch: Dispatch<any>, contact: Con
   if (isOfflineContact(contact) && !contact.finalizedAt) {
     const asyncDispatcher = asyncDispatch(dispatch);
     await asyncDispatcher(newClearContactAsyncAction(contact));
-    await asyncDispatcher(connectToCaseAsyncAction(contact.id, undefined));
+    await asyncDispatcher(removeFromCaseAsyncAction(contact.id));
     dispatch(GeneralActions.removeContactState(getOfflineContactTaskSid(), contact.id));
   }
 };

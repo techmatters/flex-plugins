@@ -18,7 +18,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import { Case, Contact, CustomITask, StandaloneITask } from '../../types/types';
-import { getPermissionsForCase, getPermissionsForContact, PermissionActions } from '../../permissions';
+import { getInitializedCan, PermissionActions } from '../../permissions';
 import { RootState } from '../../states';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 import { isStandaloneITask } from '../case/Case';
@@ -57,8 +57,10 @@ const AddToCaseBanner: React.FC<Props> = ({
   connectCaseToTaskContact,
   closeModal,
 }: Props) => {
-  const { can: canForCase } = getPermissionsForCase(connectedCase.twilioWorkerId, connectedCase.status);
-  const { can: canForContact } = getPermissionsForContact(taskContact?.twilioWorkerId);
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
   const isConnectedToTaskContact = taskContact && taskContact.caseId === connectedCase.id;
 
   const showConnectToCaseButton = Boolean(
@@ -66,8 +68,8 @@ const AddToCaseBanner: React.FC<Props> = ({
       !taskContact.caseId &&
       !isConnectedToTaskContact &&
       connectedCase?.connectedContacts?.length &&
-      canForCase(PermissionActions.UPDATE_CASE_CONTACTS) &&
-      canForContact(PermissionActions.ADD_CONTACT_TO_CASE),
+      can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCase) &&
+      can(PermissionActions.ADD_CONTACT_TO_CASE, taskContact),
   );
 
   if (!showConnectToCaseButton) {

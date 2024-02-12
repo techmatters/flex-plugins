@@ -18,7 +18,7 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Icon, Template } from '@twilio/flex-ui';
 
-import { Box, HiddenText, Row, HorizontalLine } from '../../styles';
+import { Box, HiddenText, Row, HorizontalLine, Title, Bold } from '../../styles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
 import useProfileSectionTypes from '../../states/configuration/hooks/useProfileSectionTypes';
@@ -32,6 +32,7 @@ import {
 } from './styles';
 import ProfileFlagSection from './profileFlag/ProfileFlagSection';
 import ProfileSectionView from './section/ProfileSectionView';
+import { getInitializedCan, PermissionActions } from '../../permissions';
 
 type OwnProps = ProfileCommonProps;
 
@@ -40,7 +41,7 @@ const mapDispatchToProps = (dispatch, ownProps: OwnProps) => {
   const taskId = task.taskSid;
   return {
     openSectionEditModal: (type: string) => {
-      dispatch(newOpenModalAction({ route: 'profileSectionEdit', type, id: profileId }, taskId));
+      dispatch(newOpenModalAction({ route: 'profileSectionEdit', type, profileId }, taskId));
     },
   };
 };
@@ -58,12 +59,27 @@ type Section = {
 const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal }) => {
   const { profile } = useProfile({ profileId });
 
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
+
   const overviewSections: Section[] = [
     {
       titleCode: 'Profile-IdentifiersHeader',
       renderComponent: () =>
         profile?.identifiers ? (
-          profile.identifiers?.map(identifier => <div key={identifier.id}>{identifier.identifier}</div>)
+          profile.identifiers?.map(identifier => (
+            <>
+              {maskIdentifiers ? (
+                <Bold>
+                  <Template code="MaskIdentifiers" />
+                </Bold>
+              ) : (
+                <div key={identifier.id}>{identifier.identifier}</div>
+              )}
+            </>
+          ))
         ) : (
           <Template code="Profile-NoIdentifiersFound" />
         ),
@@ -123,6 +139,7 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
 
   return (
     <DetailsWrapper>
+      <Title>#{profileId}</Title>
       <SectionHeader>
         <Template code="Profile-DetailsHeader-Overview" />
       </SectionHeader>

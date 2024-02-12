@@ -12,7 +12,7 @@ The terragrunt.hcl includes `./terragrunt.root.hcl` which handles shared configu
 
 To run a terraform command for a single stage, navigate into the stage directory use the makesystem to run the command. Specify the helpline short code (`HL`) and the environment (`HL_ENV`) when you run the command.
 
-example plan action for the aselop helpline in the production environment:
+example plan action for the aselo helpline in the production environment:
 
 ```bash
 

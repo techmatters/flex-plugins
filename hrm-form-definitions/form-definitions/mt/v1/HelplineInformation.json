@@ -4,6 +4,7 @@
       {
         "label": "Kellimni",
         "value": "Kellimni",
+        "kmsUrl": "https://drive.google.com/drive/folders/1F-hBZ4tkVXQATquLmxgajA-O_lz2kQPk?usp=drive_link",
         "default": true,
         "manager": {
           "name": "Rachel Scicluna",

@@ -1,11 +1,11 @@
 {
     "attributes": {
         "feature_flags": {
+            "enable_case_merging": true,
             "enable_manual_pulling": false,
             "enable_transcripts": true,
             "enable_twilio_transcripts": false,
-            "enable_voice_recordings": true,
-            "enable_case_merging": true
+            "enable_voice_recordings": true
         },
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",
         "pdfImagesSource": "https://tl-public-chat-jm-stg.s3.amazonaws.com",
