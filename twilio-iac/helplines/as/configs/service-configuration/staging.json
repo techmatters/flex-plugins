@@ -1,20 +1,24 @@
 {
     "attributes": {
+        "contacts_waiting_channels": [
+            "voice",
+            "sms",
+            "web",
+            "whatsapp",
+            "facebook",
+            "instagram",
+            "line"
+        ],
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_case_merging": true,
             "enable_client_profiles": true,
-            "enable_conferencing": false,
-            "enable_contact_editing": false,
             "enable_counselor_toolkits": false,
             "enable_csam_clc_report": false,
             "enable_csam_report": true,
-            "enable_external_transcripts": false,
-            "enable_lex": false,
+            "enable_lex": true,
             "enable_save_insights": true,
-            "enable_transcripts": false,
-            "enable_twilio_transcripts": false,
-            "enable_voice_recordings": false
+            "enable_voice_recordings": true
         },
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",
         "multipleOfficeSupport": true,
