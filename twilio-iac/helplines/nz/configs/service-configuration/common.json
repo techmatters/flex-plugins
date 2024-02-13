@@ -6,6 +6,10 @@
             "web"
         ],
         "definitionVersion": "nz-v1",
+        "config_flags": {
+            "enableExternalRecordings": true,
+            "enableUnmaskingCalls": true
+        },
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
             "enable_case_merging": true,
