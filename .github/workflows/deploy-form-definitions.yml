@@ -68,7 +68,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Validate and normalize input variables
         run: bash .github/scripts/setupDeployFormDefinitionsEnv.sh ${{ inputs.environment }} ${{ inputs.helpline_code }}
