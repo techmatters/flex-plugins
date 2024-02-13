@@ -1,12 +1,17 @@
 [
   {
-    "name": "firstName",
+    "name": "friendlyName",
     "label": "Preferred Name",
     "type": "input",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
     }
+  },
+  {
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input"
   },
   {
     "name": "lastName",
@@ -152,16 +157,28 @@
         "label": ""
       },
       {
+        "value": "Parent",
+        "label": "Parent"
+      },
+      {
         "value": "Caregiver",
         "label": "Caregiver"
+      },
+      {
+        "value": "Family",
+        "label": "Family"
+      },
+      {
+        "value": "Partner",
+        "label": "Partner"
       },
       {
         "value": "Friend",
         "label": "Friend"
       },
       {
-        "value": "Parent",
-        "label": "Parent"
+        "value": "Other",
+        "label": "Other"
       },
       {
         "value": "Unknown",
