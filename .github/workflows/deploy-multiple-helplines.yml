@@ -126,7 +126,7 @@ jobs:
 
       - name: Slack Aselo channel
         id: slack
-        uses: slackapi/slack-github-action@v1.14.0
+        uses: slackapi/slack-github-action@v1.25.0
         with:
           channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
           slack-message: "${{ env.SLACK_MESSAGE_PREFIX }} helplines `${{ inputs.helplines }}` successfully deployed to the following environments: ${{ inputs.environments }} from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` with SHA ${{ github.sha }} :rocket:."
