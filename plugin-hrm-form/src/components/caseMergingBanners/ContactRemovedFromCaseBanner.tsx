@@ -30,6 +30,8 @@ import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
 import asyncDispatch from '../../states/asyncDispatch';
 import { RootState } from '../../states';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
+import { getInitializedCan, PermissionActions } from '../../permissions';
+import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 
 type OwnProps = {
   taskId: string;
@@ -41,11 +43,13 @@ const mapStateToProps = (state: RootState, { taskId, contactId }: OwnProps) => {
   const contact = selectContactByTaskSid(state, taskId);
   const { caseId } = selectCaseMergingBanners(state, contactId);
   const savedContact = selectContactStateByContactId(state, contactId)?.savedContact;
+  const connectedCase = selectCaseByCaseId(state, caseId)?.connectedCase;
 
   return {
     contactId: contact?.savedContact.id ? contact?.savedContact.id : contactId,
     caseId,
     savedContact,
+    connectedCase,
   };
 };
 
@@ -65,30 +69,44 @@ const ContactRemovedFromCaseBanner: React.FC<Props> = ({
   savedContact,
   connectCaseToTaskContact,
   caseId,
-}) => (
-  <BannerContainer color="orange">
-    <WarningIcon />
-    <Text>
-      <Template code="CaseMerging-ContactRemovedFromCase" />
-    </Text>
-    {showUndoButton && savedContact?.id && (
-      <CaseLink
-        onClick={() => {
-          connectCaseToTaskContact(savedContact, caseId);
-        }}
-        color="#ffa500"
-      >
-        <Template code="CaseMerging-ContactUndoRemovedFromCase" />
-      </CaseLink>
-    )}
-    <HeaderCloseButton onClick={() => close(contactId)} style={{ opacity: '.75' }}>
-      <HiddenText>
-        <Template code="NavigableContainer-CloseButton" />
-      </HiddenText>
-      <Close />
-    </HeaderCloseButton>
-  </BannerContainer>
-);
+  connectedCase,
+}) => {
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
+  const canUndo =
+    showUndoButton &&
+    savedContact?.id &&
+    connectedCase &&
+    can(PermissionActions.ADD_CONTACT_TO_CASE, savedContact) &&
+    can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCase);
+
+  return (
+    <BannerContainer color="orange">
+      <WarningIcon />
+      <Text>
+        <Template code="CaseMerging-ContactRemovedFromCase" />
+      </Text>
+      {canUndo && (
+        <CaseLink
+          onClick={() => {
+            connectCaseToTaskContact(savedContact, caseId);
+          }}
+          color="#ffa500"
+        >
+          <Template code="CaseMerging-ContactUndoRemovedFromCase" />
+        </CaseLink>
+      )}
+      <HeaderCloseButton onClick={() => close(contactId)} style={{ opacity: '.75' }}>
+        <HiddenText>
+          <Template code="NavigableContainer-CloseButton" />
+        </HiddenText>
+        <Close />
+      </HeaderCloseButton>
+    </BannerContainer>
+  );
+};
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(ContactRemovedFromCaseBanner);
