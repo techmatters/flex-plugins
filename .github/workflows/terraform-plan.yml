@@ -53,7 +53,7 @@ jobs:
           echo "Running terraform show for ${{ inputs.helpline }}"
           terraform show -no-color /tmp/tfplan > /tmp/plan.log
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: plan.log
           path: /tmp/plan.log
