@@ -23,7 +23,7 @@ on:
         required: true
         type: string
       environment_code:
-        description: The short upper case code used to identify the environment internally, e.g. STG, PROD, DEV
+        description: Flex-plugins environment to deploy
         required: true
         type: choice
         options:
@@ -41,7 +41,7 @@ on:
         required: true
         type: string
       environment_code:
-        description: The short upper case code used to identify the environment internally, e.g. STG, PROD, DEV
+        description: Flex-plugins environment to deploy
         required: true
         type: string
       changelog:
