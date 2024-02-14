@@ -23,7 +23,7 @@ import { parseISO } from 'date-fns';
 import { StyledMenuList, StyledMenuItem, ProfileFlagEditList, StyledPaper } from '../styles';
 import { ProfileFlag } from '../../../types/types';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
-import { useProfileFlags } from '../../../states/profile/hooks';
+import { useProfile, useProfileFlags } from '../../../states/profile/hooks';
 import { RootState } from '../../../states';
 import ProfileFlagList from './ProfileFlagList';
 import { ProfileCommonProps } from '../types';
@@ -37,6 +37,7 @@ type Props = OwnProps;
 
 const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
   const { modalRef, profileId } = props;
+  const { canFlag: canFlagProfile, canUnflag: canUnflagProfile } = useProfile({ profileId });
 
   const { allProfileFlags, filteredProfileFlags, associateProfileFlag } = useProfileFlags(profileId);
   const loading = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId))?.loading;
@@ -61,11 +62,13 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
   const [open, setOpen] = useState(true);
   const availableFlags = allProfileFlags?.filter(flag => !filteredProfileFlags.find(f => f.id === flag.id));
   const hasAvailableFlags = Boolean(availableFlags?.length);
-  const shouldAllowAssociate = hasAvailableFlags && !loading;
+  const shouldAllowAssociate = canFlagProfile && hasAvailableFlags && !loading;
 
   useEffect(() => {
-    setOpen(hasAvailableFlags);
-  }, [hasAvailableFlags]);
+    if (canFlagProfile) {
+      setOpen(hasAvailableFlags);
+    }
+  }, [canFlagProfile, hasAvailableFlags]);
 
   useEffect(() => {
     /**
@@ -97,7 +100,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
     <>
       <ProfileFlagEditList title="Edit statuses" ref={anchorRef}>
         <Box display="flex" justifyContent="space-between">
-          <ProfileFlagList {...props} enableDisassociate={true} disassociateRef={disassociateRef} />
+          <ProfileFlagList {...props} enableDisassociate={canUnflagProfile} disassociateRef={disassociateRef} />
           <Box alignItems="center">
             <IconButton
               id="associate-status-button"
