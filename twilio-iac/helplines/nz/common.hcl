@@ -44,10 +44,6 @@ locals {
       survey : {
         "target_workers" = "1==0",
         "friendly_name"  = "Survey"
-      },
-      e2e_test : {
-        "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
-        "friendly_name"  = "E2E Test Queue"
       }
     }
 
