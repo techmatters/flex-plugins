@@ -20,6 +20,7 @@ import React, { useState, useEffect } from 'react';
 import { Page, Document, View, PDFViewer } from '@react-pdf/renderer';
 import { CircularProgress } from '@material-ui/core';
 import { DefinitionVersion, callTypes } from 'hrm-form-definitions';
+import { parseISO } from 'date-fns';
 
 import CasePrintSection from './CasePrintSection';
 import CasePrintSummary from './CasePrintSummary';
@@ -34,7 +35,6 @@ import CasePrintFooter from './CasePrintFooter';
 import CasePrintCSAMReports from './CasePrintCSAMReports';
 // import CasePrintContact from './CasePrintContact'; // Removed by ZA request, could be useful for other helplines.
 import { getImageAsString, ImageSource } from './helpers';
-import { getLocaleDateTime } from '../../../utils/helpers';
 import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 import NavigableContainer from '../../NavigableContainer';
 import { CustomITask, StandaloneITask } from '../../../types/types';
@@ -121,8 +121,8 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
               <View>
                 <CasePrintDetails
                   status={caseDetails.status}
-                  openedDate={getLocaleDateTime(caseDetails.createdAt)}
-                  lastUpdatedDate={getLocaleDateTime(caseDetails.updatedAt)}
+                  openedDate={parseISO(caseDetails.createdAt).toLocaleDateString()}
+                  lastUpdatedDate={parseISO(caseDetails.updatedAt).toLocaleDateString()}
                   followUpDate={caseDetails.followUpPrintedDate}
                   childIsAtRisk={caseDetails.childIsAtRisk}
                   counselor={caseDetails.caseCounselor}
