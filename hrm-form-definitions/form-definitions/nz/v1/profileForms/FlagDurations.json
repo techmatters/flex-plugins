@@ -3,6 +3,11 @@
     "flag": "blocked",
     "label": "Short Term Block (24 Hours)",
     "durationInHours": "24"
+  }
+  ,{
+    "flag": "blocked",
+    "label": "Short Term Block (72 Hours)",
+    "durationInHours": "72"
   },
   {
     "flag": "blocked",
