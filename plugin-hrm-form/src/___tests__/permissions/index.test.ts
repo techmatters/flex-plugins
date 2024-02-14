@@ -28,7 +28,8 @@ import {
   cleanupInitializedCan,
   actionsMaps,
   TargetKind,
-  ConditionsSets,
+  ProfileActions,
+  ProfileSectionActions,
 } from '../../permissions';
 import { getHrmConfig } from '../../hrmConfig';
 
@@ -52,7 +53,7 @@ afterEach(() => {
   jest.resetAllMocks();
 });
 
-const addPrettyPrintConditions = (testCase: { conditionsSets: ConditionsSets }) => ({
+const addPrettyPrintConditions = (testCase: { conditionsSets: any[][] }) => ({
   ...testCase,
   prettyConditionsSets: testCase.conditionsSets
     .map(arr => arr.map(e => (typeof e === 'string' ? e : JSON.stringify(e))))
