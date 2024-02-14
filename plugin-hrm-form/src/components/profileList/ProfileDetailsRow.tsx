@@ -46,13 +46,18 @@ type Props = {
 
 const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
   const dispatch = useDispatch();
-  const { profile } = useProfile({ profileId });
+  const { profile, canView: canViewProfile } = useProfile({ profileId });
   const { combinedProfileFlags } = useProfileFlags(profileId);
 
-  const { section: summarySection, error, loading } = useProfileSectionByType({ profileId, sectionType: 'summary' });
+  const { section: summarySection, error, loading, canView: canViewSummarySection } = useProfileSectionByType({
+    profileId,
+    sectionType: 'summary',
+  });
 
   const handleViewProfile = async () => {
-    dispatch(newOpenModalAction({ route: 'profile', profileId, subroute: 'details' }, 'standalone-task-sid'));
+    if (canViewProfile) {
+      dispatch(newOpenModalAction({ route: 'profile', profileId, subroute: 'details' }, 'standalone-task-sid'));
+    }
   };
 
   const can = React.useMemo(() => {
@@ -94,7 +99,9 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
         {loading ? (
           <CircularProgress size={14} />
         ) : (
-          <TableBodyFont>{getShortSummary(summarySection?.content, CHAR_LIMIT, 'profile')}</TableBodyFont>
+          <TableBodyFont>
+            {getShortSummary(canViewSummarySection ? summarySection?.content : null, CHAR_LIMIT, 'profile')}
+          </TableBodyFont>
         )}
       </SummaryCell>
     </DataTableRow>
