@@ -1,5 +1,5 @@
 {
-    "viewCase":  [["isSupervisor"],["isCreator", "isCaseOpen", {"createdDaysAgo": 28}]],
+    "viewCase":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
     "closeCase":  [["isSupervisor"]],
     "reopenCase":  [["isSupervisor"]],
     "caseStatusTransition":  [["isSupervisor"]],
@@ -19,8 +19,8 @@
     "editChildIsAtRisk":  [["isSupervisor"],["isCreator", "isCaseOpen", {"createdHoursAgo": 24}]],
     "editFollowUpDate":  [["isSupervisor"],["isCreator", "isCaseOpen", {"createdHoursAgo": 24}]],
     "updateCaseContacts": [["isSupervisor"], ["isCaseOpen", {"createdDaysAgo": 28}]],
-
-    "viewContact":  [["isSupervisor"],["isOwner", {"createdDaysAgo": 28}]],
+  
+    "viewContact":  [["isSupervisor"],["isOwner"]],
     "editContact":  [["isSupervisor"],["isOwner", {"createdHoursAgo": 24}]],
     "viewExternalTranscript":  [["isSupervisor"]],
     "viewRecording":  [["isSupervisor"]],
