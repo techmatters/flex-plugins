@@ -70,6 +70,10 @@
       {
         "value": "Others",
         "label": "Others"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ],
     "required": {

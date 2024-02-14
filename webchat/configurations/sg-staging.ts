@@ -62,7 +62,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         },
         {
           value: "Female",
-          label: "Male"
+          label: "Female"
         },
         {
           value: "Other",
