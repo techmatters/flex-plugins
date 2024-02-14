@@ -223,10 +223,10 @@ const isTKCondition = <T extends TargetKind>(kind: T) => (c: any): c is TKCondit
       return isSupportedCaseCondition(c);
     }
     case 'profile': {
-      isSupportedProfileCondition(c);
+      return isSupportedProfileCondition(c);
     }
     case 'profileSection': {
-      isSupportedProfileSectionCondition(c);
+      return isSupportedProfileSectionCondition(c);
     }
     case 'postSurvey': {
       return isSupportedPostSurveyCondition(c);
