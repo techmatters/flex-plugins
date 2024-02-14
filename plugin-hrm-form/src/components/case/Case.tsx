@@ -163,7 +163,6 @@ const Case: React.FC<Props> = ({
   // -- Date cannot be converted here since the date dropdown uses the yyyy-MM-dd format.
   const followUpDate = info && info.followUpDate ? info.followUpDate : '';
   // -- Converting followUpDate to match the same format as the rest of the dates
-  // const followUpPrintedDate = info && info.followUpDate ? getLocaleDateTime(info.followUpDate) : '';
   const followUpPrintedDate = info && info.followUpDate ? parseISO(info.followUpDate).toLocaleDateString() : '';
   const households = info && info.households ? info.households : [];
   const perpetrators = info && info.perpetrators ? info.perpetrators : [];
