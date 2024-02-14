@@ -22,7 +22,7 @@ import { selectDefinitionVersionForCase } from '../configuration/selectDefinitio
 import { Case } from '../../types/types';
 
 export const selectCaseByCaseId = (state: RootState, caseId: string): CaseStateEntry | undefined =>
-  state[namespace][connectedCaseBase].cases[caseId];
+  state[namespace][connectedCaseBase]?.cases[caseId];
 
 export type CaseHistoryDetails = {
   createdAt: Date;

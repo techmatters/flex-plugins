@@ -41,5 +41,12 @@
     "paths": [
       "contactForm.caseInformation.actionTaken"
     ]
+  },
+  {
+    "attributeName": "followed_by",
+    "insightsObject": "conversations",
+    "paths": [
+      "caseForm.childIsAtRisk"
+    ]
   }
 ]

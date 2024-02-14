@@ -250,11 +250,13 @@ type TwilioUser = {
   isSupervisor: boolean;
 };
 
-const isCounselorWhoCreated = (user: TwilioUser, caseObj: any) => user.workerSid === caseObj.twilioWorkerId;
+const isCounselorWhoCreated = (user: TwilioUser, caseObj: any) => user.workerSid === caseObj?.twilioWorkerId;
 
-const isCaseOpen = (caseObj: any) => caseObj.status !== 'closed';
+const isCaseOpen = (caseObj: any) => caseObj?.status !== 'closed';
 
 const isContactOwner = (user: TwilioUser, contactObj: any) => user.workerSid === contactObj.twilioWorkerId;
+
+const isCaseContactOwner = (caseObj: any) => caseObj?.precalculatedPermissions?.userOwnsContact;
 
 const applyTimeBasedConditions = (conditions: TimeBasedCondition[]) => (
   performer: TwilioUser,
@@ -299,6 +301,7 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
         isSupervisor: performer.isSupervisor,
         isCreator: isCounselorWhoCreated(performer, target),
         isCaseOpen: isCaseOpen(target),
+        isCaseContactOwner: isCaseContactOwner(target),
         everyone: true,
         ...appliedTimeBasedConditions,
       };
