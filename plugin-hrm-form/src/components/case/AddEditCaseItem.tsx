@@ -68,7 +68,6 @@ import { CaseSectionTypeSpecificData } from '../../services/caseSectionService';
 
 export type AddEditCaseItemProps = {
   task: CustomITask | StandaloneITask;
-  counselor: string;
   definitionVersion: DefinitionVersion;
   customFormHandlers?: CustomHandlers;
   reactHookFormOptions?: Partial<{ shouldUnregister: boolean }>;
@@ -76,7 +75,6 @@ export type AddEditCaseItemProps = {
 };
 // eslint-disable-next-line no-use-before-define
 type Props = AddEditCaseItemProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-const { workerSid } = getHrmConfig();
 
 enum DismissAction {
   NONE,
@@ -313,7 +311,8 @@ const AddEditCaseItem: React.FC<Props> = ({
 
 AddEditCaseItem.displayName = 'AddEditCaseItem';
 
-const mapStateToProps = (state: RootState, { task, sectionApi, counselor }: AddEditCaseItemProps) => {
+const mapStateToProps = (state: RootState, { task, sectionApi }: AddEditCaseItemProps) => {
+  const { workerSid } = getHrmConfig();
   const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
   if (isCaseRoute(currentRoute)) {
     const sectionId = isEditCaseSectionRoute(currentRoute) ? currentRoute.id : undefined;
