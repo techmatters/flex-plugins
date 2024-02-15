@@ -3,7 +3,6 @@
         "feature_flags": {
             "enable_case_merging": true
         },
-        "helplineLanguage": "en-IN",
         "hrm_base_url": "https://hrm-staging.tl.techmatters.org",
         "pdfImagesSource": "https://tl-public-chat-in-stg.s3.amazonaws.com",
         "previous_ui_version": {

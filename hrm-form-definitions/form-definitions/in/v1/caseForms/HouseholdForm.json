@@ -12,7 +12,7 @@
     {
       "name": "relationshipToChild",
       "type": "input",
-      "label": "Relationship to child"
+      "label": "Relationship to client"
     },
     {
       "name": "address",

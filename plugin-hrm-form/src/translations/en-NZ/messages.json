@@ -1,4 +1,7 @@
 {
   "WelcomeMsg": "Kia ora, welcome to Youthline. How can I support you today?",
-  "GoodbyeMsg": "Thank you for contacting Youthline. We appreciate you've ended the chat. Webchat is open from 10am - 10pm"
+  "GoodbyeMsg": "Youthline has closed this chat. If you'd like to talk to us again, please click 'Start New Chat'.",
+  "EndChatMsg": "The client has clicked 'End Chat'. Thank you for reaching out. Please contact us again if you need more help.",
+  "ClosedOutOfShift": "You've reached the Helpline outside our webchat hours. If you'd like to talk to us now, please txt us for free on 234 or call us for free on 0800376633",
+  "ClosedHolidays": "The helpline is closed due to a holiday."
 }

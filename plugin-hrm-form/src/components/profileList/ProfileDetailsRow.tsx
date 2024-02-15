@@ -36,6 +36,7 @@ import {
 } from '../../styles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfileFlags, useProfileSectionByType } from '../../states/profile/hooks';
+import { PermissionActions, getInitializedCan } from '../../permissions';
 
 const CHAR_LIMIT = 200;
 
@@ -53,6 +54,11 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
   const handleViewProfile = async () => {
     dispatch(newOpenModalAction({ route: 'profile', profileId, subroute: 'details' }, 'standalone-task-sid'));
   };
+
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   return (
     <DataTableRow onClick={handleViewProfile}>
@@ -78,9 +84,11 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
           </TableBodyFont>
         </SummaryCell>
       )}
-      <DataCell>
-        <TableBodyFont>{profile?.identifiers.map(i => i.identifier).join('\n')}</TableBodyFont>
-      </DataCell>
+      {maskIdentifiers ? null : (
+        <DataCell>
+          <TableBodyFont>{profile?.identifiers.map(i => i.identifier).join('\n')}</TableBodyFont>
+        </DataCell>
+      )}
       <SummaryCell>
         {error && <ErrorText>Please try again later</ErrorText>}
         {loading ? (

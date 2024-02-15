@@ -2,23 +2,19 @@
     "attributes": {
         "contacts_waiting_channels": [
             "voice",
+            "sms",
             "web",
             "whatsapp",
             "facebook",
-            "twitter",
             "instagram",
             "line"
         ],
         "feature_flags": {
             "enable_aselo_messaging_ui": true,
-            "enable_conferencing": false,
             "enable_counselor_toolkits": true,
-            "enable_emoji_picker": false,
-            "enable_external_transcripts": false,
             "enable_lex": true,
-            "enable_transcripts": true,
+            "enable_voice_recordings": true,
             "enable_resources": true,
-            "enable_csam_clc_report": true,
             "enable_csam_report": true,
             "enable_fullstory_monitoring": true,
             "enable_save_insights": true
