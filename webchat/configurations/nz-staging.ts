@@ -388,7 +388,7 @@ const translations: Translations = {
     MessageInputDisabledReasonHold:
       "Thank you very much for this information. We'll transfer you now. Please hold for a practitioner.",
     AutoFirstMessage: 'Incoming webchat contact from',
-    TypingIndicator: 'Practitioner is typing',
+    TypingIndicator: 'Youthline is typing',
     StartChat: 'Start Chat!',
     MessageCanvasTrayButton: 'Start New Chat',
     Email: 'Email',

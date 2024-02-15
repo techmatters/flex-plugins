@@ -135,6 +135,9 @@
         {"label": "Questions about the child helpline"},
         {"label": "Questions about other services"},
         {"label": "Thank you for your assistance"},
+        {"label": "Misuse - Sexually abusive"},
+        {"label": "Misuse - Verbally abusive"},
+        {"label": "Misuse - Prank/Testing service"},
         {"label": "Unspecified/Other - O"}
       ]
     }
