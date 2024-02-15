@@ -24,10 +24,18 @@
   "editContact":  [["isSupervisor"],["isOwner"]],
   "viewExternalTranscript":  [],
   "viewRecording":  [],
-  "viewPostSurvey":  [["isSupervisor"]],
   "addContactToCase": [["isSupervisor"], ["isOwner"]],
   "removeContactFromCase": [],
   
+  "viewProfile": [["everyone"]],
+  "flagProfile": [["everyone"]],
+  "unflagProfile": [["everyone"]],
+  "createProfileSection": [["everyone"]],
+  "viewProfileSection": [["everyone", { "sectionType": "summary" }], ["isSupervisor"]],
+  "editProfileSection": [["everyone", { "sectionType": "summary" }], ["isSupervisor"]],
+
+  "viewPostSurvey":  [["isSupervisor"]],
+
   "viewIdentifiers": [["everyone"]]
 }
 
