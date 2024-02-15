@@ -22,7 +22,14 @@ import { fillEndMillis, getConversationDuration } from '../utils/conversationDur
 import { fetchHrmApi } from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
-import { Contact, ConversationMedia, CustomITask, isOfflineContactTask, isTwilioTask } from '../types/types';
+import {
+  Contact,
+  ConversationMedia,
+  CustomITask,
+  isInMyBehalfITask,
+  isOfflineContactTask,
+  isTwilioTask,
+} from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
 import { ContactMetadata } from '../states/contacts/types';
@@ -36,6 +43,7 @@ import { SearchParams } from '../states/search/types';
 import { ContactDraftChanges } from '../states/contacts/existingContacts';
 import { newContactState } from '../states/contacts/contactState';
 import { ApiError, FetchOptions } from './fetchApi';
+import { TaskSID, WorkerSID } from '../types/twilio';
 
 export async function searchContacts(
   searchParams: SearchParams,
@@ -119,10 +127,15 @@ type SaveContactToHrmResponse = {
   externalRecordingInfo?: ExternalRecordingInfoSuccess;
 };
 
-export const createContact = async (contact: Contact, twilioWorkerId: string, task: CustomITask): Promise<Contact> => {
-  const taskSid = isOfflineContactTask(task)
-    ? task.taskSid
-    : task.attributes?.transferMeta?.originalTask ?? task.taskSid;
+export const createContact = async (
+  contact: Contact,
+  twilioWorkerId: WorkerSID,
+  task: CustomITask,
+): Promise<Contact> => {
+  const taskSid =
+    isOfflineContactTask(task) || isInMyBehalfITask(task)
+      ? task.taskSid
+      : task.attributes?.transferMeta?.originalTask ?? task.taskSid;
   const { definitionVersion } = getHrmConfig();
   const contactForApi: Contact = {
     ...contact,
@@ -164,8 +177,8 @@ const saveContactToHrm = async (
   task,
   contact: Contact,
   metadata: ContactMetadata,
-  workerSid: string,
-  uniqueIdentifier: string,
+  workerSid: WorkerSID,
+  uniqueIdentifier: TaskSID,
   shouldFillEndMillis = true,
 ): Promise<SaveContactToHrmResponse> => {
   // if we got this far, we assume the form is valid and ready to submit
@@ -233,8 +246,8 @@ export const saveContact = async (
   task,
   contact: Contact,
   metadata: ContactMetadata,
-  workerSid: string,
-  uniqueIdentifier: string,
+  workerSid: WorkerSID,
+  uniqueIdentifier: TaskSID,
   shouldFillEndMillis = true,
 ) => {
   const payloads = await saveContactToHrm(task, contact, metadata, workerSid, uniqueIdentifier, shouldFillEndMillis);

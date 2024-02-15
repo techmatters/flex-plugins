@@ -16,40 +16,38 @@
 
 import { DefinitionVersion, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
 
-import { CaseInfo, CaseItemEntry, EntryInfo } from '../../../types/types';
+import { Case, WellKnownCaseSection } from '../../../types/types';
 import { CaseSectionApi, CaseUpdater } from './api';
+import { ApiCaseSection, CaseSectionTypeSpecificData } from '../../../services/caseSectionService';
 
-export const upsertCaseSectionItemUsingSectionName = (listProperty: string, entryProperty: string = listProperty) => (
-  original: CaseInfo,
-  temporaryInfo: CaseItemEntry,
-) => {
-  const sectionList = [...((original ?? {})[listProperty] ?? [])];
-  const { ...entry } = { ...temporaryInfo, [entryProperty]: temporaryInfo.form };
-  if (entryProperty !== 'form') {
-    delete entry.form;
-  }
-  const indexToUpdate = sectionList.findIndex(s => s.id === temporaryInfo.id);
+export const upsertCaseSectionItemUsingSectionName = (listProperty: WellKnownCaseSection) => (
+  original: Case,
+  entry: CaseSectionTypeSpecificData,
+): Case => {
+  const sectionList = [...((original?.sections ?? {})[listProperty] ?? [])];
+  const indexToUpdate = sectionList.findIndex(s => s.sectionId === entry.sectionId);
   if (indexToUpdate > -1) {
-    sectionList[indexToUpdate] = entry;
+    sectionList[indexToUpdate] = { ...sectionList[indexToUpdate], sectionTypeSpecificData: entry };
   } else {
-    sectionList.push(entry);
+    sectionList.push({ sectionTypeSpecificData: entry } as ApiCaseSection);
   }
 
-  return original ? { ...original, [listProperty]: sectionList } : { [listProperty]: sectionList };
+  return original
+    ? { ...original, sections: { ...original.sections, [listProperty]: sectionList } }
+    : ({ sections: { [listProperty]: sectionList } } as Case);
 };
 
-export const upsertCaseSectionItem = <T extends EntryInfo>(
-  listGetter: (ci: CaseInfo) => T[] | undefined,
-  caseItemToListItem: (caseItemEntry: CaseItemEntry) => T,
-): CaseUpdater => (original: CaseInfo, temporaryInfo: CaseItemEntry, id?: string) => {
+export const upsertCaseSectionItem = (listGetter: (c: Case) => ApiCaseSection[] | undefined): CaseUpdater => (
+  original: Case,
+  entry: CaseSectionTypeSpecificData,
+) => {
   const copy = { ...original };
   const sectionList = listGetter(copy);
-  const entry: T = caseItemToListItem(temporaryInfo);
-  const indexToUpdate = sectionList.findIndex(s => s.id === temporaryInfo.id);
+  const indexToUpdate = sectionList.findIndex(s => s.sectionId === entry.sectionId);
   if (indexToUpdate > -1) {
-    sectionList[indexToUpdate] = entry;
+    sectionList[indexToUpdate] = { ...sectionList[indexToUpdate], sectionTypeSpecificData: entry };
   } else {
-    sectionList.push(entry);
+    sectionList.push({ sectionTypeSpecificData: entry } as ApiCaseSection);
   }
   return copy;
 };
@@ -90,49 +88,36 @@ const removeInvalidFormSelections = (
 };
 
 const createCopyForDifferentSection = (
-  sourceItem: CaseItemEntry,
+  sourceItem: CaseSectionTypeSpecificData,
   sourceDefinition: FormDefinition,
   targetDefinition: FormDefinition,
-): CaseItemEntry => {
+): CaseSectionTypeSpecificData => {
   const validTargetFormElements: FormDefinition = targetDefinition.filter(sfi =>
     sourceDefinition.find(tfi => sfi.name === tfi.name && sfi.type === tfi.type),
   );
   const validTargetFormElementMap = Object.fromEntries(validTargetFormElements.map(fe => [fe.name, fe]));
-  const targetFormEntries = Object.entries(sourceItem.form).filter(([k]) => validTargetFormElementMap[k]);
+  const targetFormEntries = Object.entries(sourceItem).filter(([k]) => validTargetFormElementMap[k]);
   const targetForm = Object.fromEntries(targetFormEntries);
   // Have to do this ugly second pass because dependent selects need the value of the item depended to have been written prior to validating it's own value
   const sanitisedTargetFormEntries = targetFormEntries
     .map(([name, value]) => [name, removeInvalidFormSelections(validTargetFormElementMap[name], value, targetForm)])
     .filter(([, val]) => val !== undefined);
-  return { ...sourceItem, form: Object.fromEntries(sanitisedTargetFormEntries) };
+  return Object.fromEntries(sanitisedTargetFormEntries);
 };
 
 export const copyCaseSectionItem = ({
   definition,
-  original,
+  fromSection,
   fromApi,
-  fromId = undefined, // Last item in the list if not specified
   toApi,
 }: {
   definition: DefinitionVersion;
-  original: CaseInfo;
-  fromApi: CaseSectionApi<unknown>;
-  fromId?: string;
-  toApi: CaseSectionApi<unknown>;
-}) => {
-  const fromItem = fromId ? fromApi.getSectionItemById(original, fromId) : fromApi.getMostRecentSectionItem(original);
-  if (!fromItem) {
-    console.warn(
-      `Attempted to copy from '${fromApi.label}' [id: ${fromId ?? '<most recent>'}] to '${
-        toApi.label
-      }' but the specified source item was not found.`,
-    );
-    return original;
-  }
-  const copy = createCopyForDifferentSection(
-    fromApi.toForm(fromItem),
+  fromSection: CaseSectionTypeSpecificData;
+  fromApi: CaseSectionApi;
+  toApi: CaseSectionApi;
+}) =>
+  createCopyForDifferentSection(
+    fromSection,
     fromApi.getSectionFormDefinition(definition),
     toApi.getSectionFormDefinition(definition),
   );
-  return toApi.upsertCaseSectionItemFromForm(original, copy);
-};

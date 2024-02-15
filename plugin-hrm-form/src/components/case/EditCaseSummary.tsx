@@ -36,7 +36,7 @@ import {
 import { RootState } from '../../states';
 import * as RoutingActions from '../../states/routing/actions';
 import { newCloseModalAction, newGoBackAction } from '../../states/routing/actions';
-import type { Case, CustomITask, StandaloneITask } from '../../types/types';
+import type { Case, CaseOverview, CustomITask, StandaloneITask } from '../../types/types';
 import { recordingErrorHandler } from '../../fullStory';
 import { CaseSummaryWorkingCopy } from '../../states/case/types';
 import CloseCaseDialog from './CloseCaseDialog';
@@ -49,7 +49,7 @@ import { PermissionActions, PermissionActionType } from '../../permissions';
 import { disperseInputs, splitAt } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import { getTemplateStrings } from '../../hrmConfig';
-import { updateCaseAsyncAction } from '../../states/case/saveCase';
+import { updateCaseOverviewAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import NavigableContainer from '../NavigableContainer';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
@@ -80,8 +80,8 @@ const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
       dispatch(removeCaseSummaryWorkingCopy(caseId));
       dispatch(closeModal ? newCloseModalAction(task.taskSid) : newGoBackAction(task.taskSid));
     },
-    updateCaseAsyncAction: (caseId: Case['id'], body: Partial<Case>) =>
-      updateCaseAsyncDispatch(updateCaseAsyncAction(caseId, body)),
+    updateCaseAsyncAction: (caseId: Case['id'], overview: CaseOverview, status: Case['status']) =>
+      updateCaseAsyncDispatch(updateCaseOverviewAsyncAction(caseId, overview, status)),
   };
 };
 
@@ -167,18 +167,7 @@ const EditCaseSummary: React.FC<Props> = ({
     initialValues: workingCopy,
     parentsPath: '',
     updateCallback: () => updateWorkingCopy(connectedCase.id, getValues() as CaseSummaryWorkingCopy),
-    isItemEnabled: item => {
-      switch (item.name) {
-        case 'childIsAtRisk':
-          return can(PermissionActions.EDIT_CHILD_IS_AT_RISK);
-        case 'summary':
-          return can(PermissionActions.EDIT_CASE_SUMMARY);
-        case 'followUpDate':
-          return can(PermissionActions.EDIT_FOLLOW_UP_DATE);
-        default:
-          return true;
-      }
-    },
+    isItemEnabled: item => item.name === 'status' || can(PermissionActions.EDIT_CASE_OVERVIEW),
     shouldFocusFirstElement: false,
   });
 
@@ -189,13 +178,10 @@ const EditCaseSummary: React.FC<Props> = ({
   if (!connectedCaseState?.connectedCase) return null;
 
   const save = async () => {
-    const { info, id } = connectedCaseState.connectedCase;
+    const { status: oldStatus, id } = connectedCaseState.connectedCase;
     const { status, ...updatedInfoValues } = workingCopy;
 
-    await updateCaseAsyncAction(id, {
-      status,
-      info: { ...info, ...updatedInfoValues },
-    });
+    await updateCaseAsyncAction(id, updatedInfoValues, status === oldStatus ? undefined : status);
   };
 
   const saveAndLeave = async () => {

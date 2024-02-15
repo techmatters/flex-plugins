@@ -22,7 +22,7 @@ import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseContainer, CaseDetailsBorder, ViewButton } from './styles';
 import { BottomButtonBar, Box, SaveAndEndButton, StyledNextStepButton } from '../../styles';
-import CaseDetailsComponent from './CaseDetails';
+import CaseDetails from './CaseDetails';
 import Timeline from './timeline/Timeline';
 import CaseSection from './CaseSection';
 import { PermissionActions, PermissionActionType } from '../../permissions';
@@ -35,15 +35,12 @@ import {
 } from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
 import { RootState } from '../../states';
-import { CaseDetails } from '../../states/case/types';
-import { Case, Contact, CustomITask, EntryInfo, StandaloneITask } from '../../types/types';
+import { Case, Contact, CustomITask, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
 import { newCloseModalAction } from '../../states/routing/actions';
 import InformationRow from './InformationRow';
 import IncidentInformationRow from './IncidentInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
-import { householdSectionApi } from '../../states/case/sections/household';
-import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import NavigableContainer from '../NavigableContainer';
 import { isStandaloneITask } from './Case';
@@ -55,21 +52,56 @@ import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCas
 import CaseCreatedBanner from '../caseMergingBanners/CaseCreatedBanner';
 import AddToCaseBanner from '../caseMergingBanners/AddToCaseBanner';
 import { selectCaseActivityCount } from '../../states/case/timeline';
+import { ApiCaseSection } from '../../services/caseSectionService';
+import { selectDefinitionVersionForCase } from '../../states/configuration/selectDefinitions';
+import selectCaseHelplineData from '../../states/case/selectCaseHelplineData';
+import { selectCounselorName } from '../../states/configuration/selectCounselorsHash';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
   definitionVersion: DefinitionVersion;
-  caseDetails: CaseDetails;
   handleClose?: () => void;
   handleSaveAndEnd: () => void;
-  handleUpdate: () => void;
   can: (action: PermissionActionType) => boolean;
 };
 
-// eslint-disable-next-line no-use-before-define
-type Props = CaseHomeProps & ConnectedProps<typeof connector>;
-
 const MAX_ACTIVITIES_IN_TIMELINE_SECTION = 5;
+
+const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
+  const connectedCaseState = selectCurrentRouteCaseState(state, task.taskSid);
+  const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
+  const routing = selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseRoute;
+  const { connectedCase } = connectedCaseState ?? {};
+  const connectedContacts = connectedCase?.connectedContacts ?? [];
+  const isCreating = Boolean(
+    connectedContacts.length === 1 && connectedContacts[0].id === taskContact?.id && !taskContact?.finalizedAt,
+  );
+  const activityCount = routing.route === 'case' ? selectCaseActivityCount(state, routing.caseId) : 0;
+  const definitionVersion = selectDefinitionVersionForCase(state, connectedCase);
+  const counselor = selectCounselorName(state, connectedCase?.twilioWorkerId);
+
+  return {
+    isCreating,
+    connectedCaseState,
+    taskContact,
+    hasMoreActivities: activityCount > MAX_ACTIVITIES_IN_TIMELINE_SECTION,
+    office: selectCaseHelplineData(state, routing.caseId),
+    definitionVersion,
+    counselor,
+  };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: CaseHomeProps) => ({
+  changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
+  openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid)),
+  connectCaseToTaskContact: async (taskContact: Contact, cas: Case) =>
+    asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, cas.id)),
+  closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type Props = CaseHomeProps & ConnectedProps<typeof connector>;
 
 const CaseHome: React.FC<Props> = ({
   definitionVersion,
@@ -77,15 +109,16 @@ const CaseHome: React.FC<Props> = ({
   openModal,
   handleClose,
   handleSaveAndEnd,
-  caseDetails,
   can,
   connectedCaseState,
   isCreating,
   hasMoreActivities,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
+  office,
+  counselor,
 }) => {
   if (!connectedCaseState) return null; // narrow type before deconstructing
-  const caseId = connectedCaseState.connectedCase.id;
+  const { connectedCase } = connectedCaseState;
+  const caseId = connectedCase.id;
   const {
     enable_upload_documents: enableUploadDocuments,
     enable_case_merging: enableCaseMerging,
@@ -114,91 +147,84 @@ const CaseHome: React.FC<Props> = ({
   const caseLayouts = definitionVersion.layoutVersion.case;
 
   const {
-    incidents,
-    perpetrators,
-    households,
-    documents,
-    office,
+    sections: {
+      incident: incidentSections,
+      perpetrator: perpetratorSections,
+      household: householdSections,
+      document: documentSections,
+    },
+    info: { followUpDate, childIsAtRisk },
+    status,
     id,
-    contactIdentifier,
+    label,
     categories,
-    contact,
     createdAt,
     updatedAt,
-    childIsAtRisk,
-    caseCounselor,
-    status,
-    followUpDate,
-  } = caseDetails;
+  } = connectedCase;
   const statusLabel = definitionVersion.caseStatus[status]?.label ?? status;
 
-  const itemRowRenderer = (itemTypeName: string, viewSubroute: CaseSectionSubroute, items: EntryInfo[]) => {
+  const itemRowRenderer = (itemTypeName: string, viewSubroute: CaseSectionSubroute, items: ApiCaseSection[]) => {
     const itemRows = () => {
       return items.length ? (
         <>
           {items.map((item, index) => (
             <InformationRow
               key={`${itemTypeName}-${index}`}
-              person={item[itemTypeName]}
-              onClickView={() => onViewCaseItemClick(viewSubroute)(item.id)}
+              person={item.sectionTypeSpecificData}
+              onClickView={() => onViewCaseItemClick(viewSubroute)(item.sectionId)}
             />
           ))}
         </>
       ) : null;
     };
-    itemRows.displayName = `${name}Rows`;
+    itemRows.displayName = `${itemTypeName}Rows`;
     return itemRows;
   };
 
   const householdRows = itemRowRenderer(
     'form',
     NewCaseSubroutes.Household,
-    households.map((h, index) => {
-      return { ...householdSectionApi.toForm(h), index };
+    (householdSections ?? []).map((h, index) => {
+      return { ...h, index };
     }),
   );
 
   const perpetratorRows = itemRowRenderer(
     'form',
     NewCaseSubroutes.Perpetrator,
-    perpetrators.map((p, index) => {
-      return { ...perpetratorSectionApi.toForm(p), index };
+    (perpetratorSections ?? []).map((p, index) => {
+      return { ...p, index };
     }),
   );
 
-  const incidentRows = () => {
-    return incidents.length ? (
-      <>
-        {incidents.map((item, index) => {
-          return (
-            <IncidentInformationRow
-              key={`incident-${index}`}
-              onClickView={() => onViewCaseItemClick(NewCaseSubroutes.Incident)(item.id)}
-              definition={caseForms.IncidentForm}
-              values={item.incident}
-              layoutDefinition={caseLayouts.incidents}
-            />
-          );
-        })}
-      </>
-    ) : null;
-  };
-
-  const documentRows = () => {
-    return documents.length ? (
-      <>
-        {documents.map((item, index) => {
-          return (
-            <DocumentInformationRow
-              key={`document-${index}`}
-              documentEntry={item}
-              onClickView={() => onViewCaseItemClick(NewCaseSubroutes.Document)(item.id)}
-            />
-          );
-        })}
-      </>
-    ) : null;
-  };
+  const incidentRows = () => (
+    <>
+      {(incidentSections ?? []).map((item, index) => {
+        return (
+          <IncidentInformationRow
+            key={`incident-${index}`}
+            onClickView={() => onViewCaseItemClick(NewCaseSubroutes.Incident)(item.sectionId)}
+            definition={caseForms.IncidentForm}
+            values={item.sectionTypeSpecificData}
+            layoutDefinition={caseLayouts.incidents}
+          />
+        );
+      })}
+    </>
+  );
+  const documentRows = () => (
+    <>
+      {(documentSections ?? []).map((item, index) => {
+        return (
+          <DocumentInformationRow
+            key={`document-${index}`}
+            caseSection={item}
+            onClickView={() => onViewCaseItemClick(NewCaseSubroutes.Document)(item.sectionId)}
+          />
+        );
+      })}
+    </>
+  );
 
   const onEditCaseSummaryClick = () => {
     openModal({ route: 'case', subroute: 'caseSummary', action: CaseItemAction.Edit, id: '', caseId });
@@ -206,7 +232,7 @@ const CaseHome: React.FC<Props> = ({
 
   return (
     <NavigableContainer
-      titleCode={contactIdentifier}
+      titleCode={label}
       task={task}
       onGoBack={handleClose}
       onCloseModal={handleClose}
@@ -226,11 +252,11 @@ const CaseHome: React.FC<Props> = ({
           </Box>
         )}
         <Box marginTop="13px">
-          <CaseDetailsComponent
+          <CaseDetails
             caseId={id}
             statusLabel={statusLabel}
             can={can}
-            counselor={caseCounselor}
+            counselor={counselor}
             categories={categories}
             createdAt={createdAt}
             updatedAt={updatedAt}
@@ -240,7 +266,7 @@ const CaseHome: React.FC<Props> = ({
             office={office?.label}
             handlePrintCase={onPrintCase}
             definitionVersion={definitionVersion}
-            isOrphanedCase={!contact}
+            isOrphanedCase={(connectedCase.connectedContacts ?? []).length === 0}
             editCaseSummary={onEditCaseSummaryClick}
             isCreating={isCreating}
           />
@@ -328,34 +354,6 @@ const CaseHome: React.FC<Props> = ({
 };
 
 CaseHome.displayName = 'CaseHome';
-
-const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
-  const connectedCaseState = selectCurrentRouteCaseState(state, task.taskSid);
-  const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
-  const routing = selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseRoute;
-  const connectedContacts = connectedCaseState?.connectedCase?.connectedContacts ?? [];
-  const isCreating = Boolean(
-    connectedContacts.length === 1 && connectedContacts[0].id === taskContact?.id && !taskContact?.finalizedAt,
-  );
-  const activityCount = routing.route === 'case' ? selectCaseActivityCount(state, routing.caseId) : 0;
-
-  return {
-    isCreating,
-    connectedCaseState,
-    taskContact,
-    hasMoreActivities: activityCount > MAX_ACTIVITIES_IN_TIMELINE_SECTION,
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: CaseHomeProps) => ({
-  changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
-  openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid)),
-  connectCaseToTaskContact: async (taskContact: Contact, cas: Case) =>
-    asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, cas.id)),
-  closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(CaseHome);
 
 export default connected;

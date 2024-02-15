@@ -28,13 +28,13 @@ import { CaseState, CaseStateEntry, CaseSummaryWorkingCopy, CaseWorkingCopy } fr
 import { householdSectionApi } from '../../../states/case/sections/household';
 import { reduce } from '../../../states/case/reducer';
 import {
-  initialiseExistingCaseSectionWorkingCopy,
   initialiseCaseSummaryWorkingCopy,
+  initialiseExistingCaseSectionWorkingCopy,
+  initialiseNewCaseSectionWorkingCopy,
   removeCaseSectionWorkingCopy,
   removeCaseSummaryWorkingCopy,
   updateCaseSectionWorkingCopy,
   updateCaseSummaryWorkingCopy,
-  initialiseNewCaseSectionWorkingCopy,
 } from '../../../states/case/caseWorkingCopy';
 import { RootState } from '../../../states';
 import { RecursivePartial } from '../../RecursivePartial';
@@ -90,7 +90,7 @@ describe('Working copy reducers', () => {
     createdAt: baselineDate.toISOString(),
   };
 
-  let stubApi: CaseSectionApi<any>;
+  let stubApi: CaseSectionApi;
   const stubUpdateWorkingCopy: CaseWorkingCopy = { sections: { mock: { existing: { mockId: updatedSection } } } };
 
   beforeEach(() => {

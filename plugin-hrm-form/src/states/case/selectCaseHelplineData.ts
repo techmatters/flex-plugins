@@ -13,26 +13,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { HelplineEntry } from 'hrm-form-definitions';
 
 import { RootState } from '..';
-import { namespace } from '../storeNamespaces';
-import { CounselorsList } from './types';
-import { WorkerSID } from '../../types/twilio';
+import { Case } from '../../types/types';
+import { selectDefinitionVersionForCase } from '../configuration/selectDefinitions';
+import { selectCaseByCaseId } from './selectCaseStateByCaseId';
 
-export const selectCounselorsHash = (state: RootState) => state[namespace].configuration.counselors.hash;
+const selectCaseHelplineData = (state: RootState, caseId: Case['id']): HelplineEntry | undefined => {
+  const { connectedCase } = selectCaseByCaseId(state, caseId) ?? {};
+  if (connectedCase) {
+    const { helpline } = connectedCase;
+    const { helplineInformation } = selectDefinitionVersionForCase(state, connectedCase) ?? {};
 
-export const selectCounselorsList = (state: RootState): CounselorsList =>
-  state[namespace].configuration.counselors.list;
-
-export const selectCounselorName = (state: RootState, counselorId: WorkerSID): string => {
-  if (counselorId) {
-    const counselor = state[namespace].configuration.counselors.hash[counselorId];
-    if (counselor) {
-      return counselor;
-    } else if (counselorId.startsWith('WK')) {
-      return 'Unknown';
-    }
-    return counselorId;
+    if (helpline && helplineInformation) return helplineInformation.helplines.find(x => x.value === helpline);
   }
   return undefined;
 };
+
+export default selectCaseHelplineData;

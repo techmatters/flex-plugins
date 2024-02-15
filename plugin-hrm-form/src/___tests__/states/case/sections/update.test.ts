@@ -24,14 +24,7 @@ import {
 } from 'hrm-form-definitions';
 import { addSeconds } from 'date-fns';
 
-import {
-  CaseInfo,
-  CaseItemEntry,
-  HouseholdEntry,
-  Perpetrator,
-  PerpetratorEntry,
-  ReferralEntry,
-} from '../../../../types/types';
+import { CaseInfo, CaseItemEntry, HouseholdEntry, PerpetratorEntry, ReferralEntry } from '../../../../types/types';
 import {
   copyCaseSectionItem,
   upsertCaseSectionItem,
@@ -249,8 +242,8 @@ describe('copyCaseSection', () => {
     sourceDefinition: FormDefinition;
     targetDefinition: FormDefinition;
     fromId?: string;
-    fromApiOverrides?: Partial<CaseSectionApi<HouseholdEntry>>;
-    toApiOverrides?: Partial<CaseSectionApi<PerpetratorEntry>>;
+    fromApiOverrides?: Partial<CaseSectionApi>;
+    toApiOverrides?: Partial<CaseSectionApi>;
     description: string;
   };
 

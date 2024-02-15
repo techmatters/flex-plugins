@@ -27,11 +27,11 @@ import { DefinitionVersion, StatusInfo } from 'hrm-form-definitions';
 import CaseTags from './CaseTags';
 import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
 import {
-  DetailsContainer,
-  DetailDescription,
-  StyledInputField,
   CaseDetailsBorder,
   CaseSectionFont,
+  DetailDescription,
+  DetailsContainer,
+  StyledInputField,
   ViewButton,
 } from './styles';
 import { Box } from '../../styles';
@@ -72,17 +72,12 @@ const CaseDetails: React.FC<Props> = ({
   handlePrintCase,
   definitionVersion,
   isOrphanedCase = false,
-  isCreating,
   editCaseSummary,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const formattedCreatedAt = getLocaleDateTime(createdAt);
   const formattedUpdatedAt = createdAt === updatedAt ? '—' : getLocaleDateTime(updatedAt);
-  const editButton =
-    can(PermissionActions.EDIT_CASE_SUMMARY) ||
-    can(PermissionActions.EDIT_FOLLOW_UP_DATE) ||
-    can(PermissionActions.EDIT_CHILD_IS_AT_RISK) ||
-    availableStatusTransitions.length > 1; // availableStatusTransitions always includes current status, if that's the only one available, you cannot change it
+  const editButton = can(PermissionActions.EDIT_CASE_OVERVIEW) || availableStatusTransitions.length > 1; // availableStatusTransitions always includes current status, if that's the only one available, you cannot change it
   const formatFollowUpDate = getLocaleDateTime(followUpDate);
 
   return (

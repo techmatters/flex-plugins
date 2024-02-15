@@ -16,39 +16,46 @@
 
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-max-depth */
-import React, { useState, useEffect } from 'react';
-import { Page, Document, View, PDFViewer } from '@react-pdf/renderer';
+import React, { useEffect, useState } from 'react';
+import { Document, Page, PDFViewer, View } from '@react-pdf/renderer';
 import { CircularProgress } from '@material-ui/core';
-import { DefinitionVersion, callTypes } from 'hrm-form-definitions';
+import { callTypes, DefinitionVersion, HelplineEntry } from 'hrm-form-definitions';
+import { parseISO } from 'date-fns';
 
 import CasePrintSection from './CasePrintSection';
 import CasePrintSummary from './CasePrintSummary';
 import styles, { useThaiFontFamily } from './styles';
 import { CasePrintViewSpinner } from '../../../styles';
 import CasePrintDetails from './CasePrintDetails';
-import type { CaseDetails } from '../../../states/case/types';
 import CasePrintMultiSection from './CasePrintMultiSection';
 import CasePrintNotes from './CasePrintNotes';
 import CasePrintHeader from './CasePrintHeader';
 import CasePrintFooter from './CasePrintFooter';
 import CasePrintCSAMReports from './CasePrintCSAMReports';
 // import CasePrintContact from './CasePrintContact'; // Removed by ZA request, could be useful for other helplines.
-import { getImageAsString, ImageSource } from './helpers';
-import { getLocaleDateTime } from '../../../utils/helpers';
+import { getImageAsString, ImageSource } from './images';
 import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 import NavigableContainer from '../../NavigableContainer';
-import { CustomITask, StandaloneITask } from '../../../types/types';
+import { Case, CustomITask, StandaloneITask } from '../../../types/types';
 
 type OwnProps = {
   onClickClose: () => void;
-  caseDetails: CaseDetails;
+  connectedCase: Case;
   definitionVersion: DefinitionVersion;
   counselorsHash: { [sid: string]: string };
   task: CustomITask | StandaloneITask;
+  office: HelplineEntry | undefined;
 };
 type Props = OwnProps;
 
-const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionVersion, counselorsHash, task }) => {
+const CasePrintView: React.FC<Props> = ({
+  onClickClose,
+  connectedCase,
+  definitionVersion,
+  counselorsHash,
+  task,
+  office,
+}) => {
   const strings = getTemplateStrings();
   const { pdfImagesSource } = getHrmConfig();
 
@@ -101,6 +108,10 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   if (definitionVersion.layoutVersion.thaiCharacterPdfSupport) useThaiFontFamily();
+  const contact = connectedCase.connectedContacts?.[0];
+  const printedFollowUpDate = connectedCase.info.followUpDate
+    ? parseISO(connectedCase.info.followUpDate).toLocaleDateString()
+    : '';
 
   return (
     <NavigableContainer task={task} onGoBack={onClickClose}>
@@ -113,26 +124,26 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
           <Document>
             <Page size="A4" style={styles.page}>
               <CasePrintHeader
-                id={caseDetails.id}
-                contactIdentifier={caseDetails.contactIdentifier}
-                officeName={caseDetails.office?.label}
+                id={connectedCase.id}
+                contactIdentifier={connectedCase.label}
+                officeName={office?.label}
                 logoBlob={logoBlob}
               />
               <View>
                 <CasePrintDetails
-                  status={caseDetails.status}
-                  openedDate={getLocaleDateTime(caseDetails.createdAt)}
-                  lastUpdatedDate={getLocaleDateTime(caseDetails.updatedAt)}
-                  followUpDate={caseDetails.followUpPrintedDate}
-                  childIsAtRisk={caseDetails.childIsAtRisk}
-                  counselor={caseDetails.caseCounselor}
-                  categories={caseDetails.categories}
-                  caseManager={caseDetails.office?.manager}
+                  status={connectedCase.status}
+                  openedDate={parseISO(connectedCase.createdAt).toLocaleDateString()}
+                  lastUpdatedDate={parseISO(connectedCase.updatedAt).toLocaleDateString()}
+                  followUpDate={printedFollowUpDate}
+                  childIsAtRisk={connectedCase.info.childIsAtRisk}
+                  counselor={counselorsHash[connectedCase.twilioWorkerId]}
+                  categories={connectedCase.categories}
+                  caseManager={office?.manager}
                   chkOnBlob={chkOnBlob}
                   chkOffBlob={chkOffBlob}
                   definitionVersion={definitionVersion}
                 />
-                {caseDetails.contact?.rawJson?.callType === callTypes.caller ? (
+                {connectedCase.connectedContacts?.[0]?.rawJson?.callType === callTypes.caller ? (
                   <View>
                     <CasePrintSection
                       sectionName={strings['SectionName-CallerInformation']}
@@ -144,14 +155,14 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                         ...definitionVersion.tabbedForms.CallerInformationTab,
                       ]}
                       values={{
-                        ...caseDetails.contact?.rawJson?.caseInformation,
-                        ...caseDetails.contact?.rawJson?.callerInformation,
+                        ...contact?.rawJson?.caseInformation,
+                        ...contact?.rawJson?.callerInformation,
                       }}
                     />
                     <CasePrintSection
                       sectionName={strings['SectionName-ChildInformation']}
                       definitions={definitionVersion.tabbedForms.ChildInformationTab}
-                      values={caseDetails.contact?.rawJson?.childInformation}
+                      values={contact?.rawJson?.childInformation}
                     />
                   </View>
                 ) : (
@@ -165,8 +176,8 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                       ...definitionVersion.tabbedForms.ChildInformationTab,
                     ]}
                     values={{
-                      ...caseDetails.contact?.rawJson?.caseInformation,
-                      ...caseDetails.contact?.rawJson?.childInformation,
+                      ...contact?.rawJson?.caseInformation,
+                      ...contact?.rawJson?.childInformation,
                     }}
                   />
                 )}
@@ -180,29 +191,29 @@ const CasePrintView: React.FC<Props> = ({ onClickClose, caseDetails, definitionV
                   sectionName={strings['SectionName-HouseholdMember']}
                   sectionKey="household"
                   definitions={definitionVersion.caseForms.HouseholdForm}
-                  values={caseDetails.households}
+                  values={connectedCase.sections.household}
                 />
                 <CasePrintMultiSection
                   sectionName={strings['SectionName-Perpetrator']}
                   sectionKey="perpetrator"
                   definitions={definitionVersion.caseForms.PerpetratorForm}
-                  values={caseDetails.perpetrators}
+                  values={connectedCase.sections.perpetrator}
                 />
                 <CasePrintMultiSection
                   sectionName={strings['SectionName-Incident']}
                   definitions={definitionVersion.caseForms.IncidentForm}
                   sectionKey="incident"
-                  values={caseDetails.incidents}
+                  values={connectedCase.sections.incident}
                 />
                 <CasePrintMultiSection
                   sectionName={strings['SectionName-Referral']}
                   definitions={definitionVersion.caseForms.ReferralForm}
                   sectionKey="referral"
-                  values={caseDetails.referrals}
+                  values={connectedCase.sections.referral}
                 />
-                <CasePrintNotes notes={caseDetails.notes} counselorsHash={counselorsHash} />
-                <CasePrintSummary summary={caseDetails.summary} />
-                <CasePrintCSAMReports csamReports={caseDetails.contact?.csamReports} />
+                <CasePrintNotes notes={connectedCase.sections.note} counselorsHash={counselorsHash} />
+                <CasePrintSummary summary={connectedCase.info.summary} />
+                <CasePrintCSAMReports csamReports={contact?.csamReports} />
               </View>
               <CasePrintFooter />
             </Page>

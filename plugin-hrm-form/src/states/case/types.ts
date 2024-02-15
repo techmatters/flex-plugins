@@ -14,11 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { HelplineEntry, StatusInfo } from 'hrm-form-definitions';
+import { StatusInfo } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
-import { CaseItemEntry, Contact } from '../../types/types';
 import { ChannelTypes } from '../DomainConstants';
+import { CaseSectionTypeSpecificData } from '../../services/caseSectionService';
 
 // Action types
 export const UPDATE_CASE_ACTION = 'case-action/update-case';
@@ -88,32 +88,6 @@ export type ContactActivity = CoreActivity & {
 
 export type Activity = NoteActivity | ReferralActivity | ContactActivity;
 
-export type CaseDetails = {
-  id: string;
-  contactIdentifier: string;
-  categories?: {
-    [category: string]: string[];
-  };
-  status: string;
-  caseCounselor: string;
-  currentCounselor: string;
-  createdAt: string;
-  updatedAt: string;
-  followUpDate: string;
-  followUpPrintedDate: string;
-  households: t.HouseholdEntry[];
-  perpetrators: t.PerpetratorEntry[];
-  incidents: t.IncidentEntry[];
-  referrals: t.ReferralEntry[];
-  notes: NoteActivity[];
-  documents: t.DocumentEntry[];
-  summary: string;
-  childIsAtRisk: boolean;
-  office?: HelplineEntry;
-  contact: Contact;
-  contacts: any[];
-};
-
 export type CaseSummaryWorkingCopy = {
   status: string;
   followUpDate: string;
@@ -124,8 +98,8 @@ export type CaseSummaryWorkingCopy = {
 export type CaseWorkingCopy = {
   sections: {
     [section: string]: {
-      new?: CaseItemEntry;
-      existing: { [id: string]: CaseItemEntry };
+      new?: CaseSectionTypeSpecificData;
+      existing: { [id: string]: CaseSectionTypeSpecificData };
     };
   };
   caseSummary?: CaseSummaryWorkingCopy;

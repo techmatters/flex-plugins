@@ -37,6 +37,7 @@ import * as GeneralActions from '../states/actions';
 import asyncDispatch from '../states/asyncDispatch';
 import { newClearContactAsyncAction, removeFromCaseAsyncAction } from '../states/contacts/saveContact';
 import { getOfflineContactTaskSid } from '../states/contacts/offlineContactTask';
+import '../types';
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).

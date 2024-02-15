@@ -16,17 +16,22 @@
 
 import { parseISO } from 'date-fns';
 
-import { CaseInfo } from '../../../types/types';
+import { Case, WellKnownCaseSection } from '../../../types/types';
+import { ApiCaseSection } from '../../../services/caseSectionService';
 
-export const getSectionItemById = (propertyName: string) => (caseInfo: CaseInfo, id: string) => {
-  const sectionList = caseInfo[propertyName];
+export const getSectionItemById = (propertyName: WellKnownCaseSection) => (
+  caseObj: Case,
+  id: string,
+): ApiCaseSection | undefined => {
+  const sectionList = caseObj?.sections[propertyName];
   if (Array.isArray(sectionList)) {
-    return sectionList.find(s => s.id === id);
+    return sectionList.find(s => s.sectionId === id);
   }
   return undefined;
 };
-export const getMostRecentSectionItem = (propertyName: string) => (caseInfo: CaseInfo) => {
-  const sectionList = caseInfo[propertyName];
+
+export const getMostRecentSectionItem = (propertyName: string) => (caseObj: Case): ApiCaseSection | undefined => {
+  const sectionList = caseObj?.sections[propertyName];
   if (Array.isArray(sectionList)) {
     const sorted = [...sectionList].sort((a, b) => parseISO(b.createdAt).getTime() - parseISO(a.createdAt).getTime());
     return sorted[0];

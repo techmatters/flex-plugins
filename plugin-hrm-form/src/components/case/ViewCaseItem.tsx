@@ -53,7 +53,7 @@ const mapStateToProps = (state: RootState, { task, sectionApi }: ViewCaseItemPro
 export type ViewCaseItemProps = {
   task: CustomITask | StandaloneITask;
   definitionVersion: DefinitionVersion;
-  sectionApi: CaseSectionApi<unknown>;
+  sectionApi: CaseSectionApi;
   includeAddedTime?: boolean;
   canEdit: () => boolean;
 };
@@ -81,7 +81,7 @@ const ViewCaseItem: React.FC<Props> = ({
     return null;
   }
 
-  const item = sectionApi.toForm(sectionApi.getSectionItemById(connectedCase.info, currentRoute.id));
+  const { sectionTypeSpecificData: form } = sectionApi.getSectionItemById(connectedCase, currentRoute.id);
 
   const { addingCounsellorName, added, updatingCounsellorName, updated } = caseItemHistory;
   const formDefinition = sectionApi.getSectionFormDefinition(definitionVersion).filter(fd => !isNonSaveable(fd));
@@ -107,13 +107,13 @@ const ViewCaseItem: React.FC<Props> = ({
           />
           {formDefinition.length === 1 && formDefinition[0].type === 'textarea' ? (
             <FullWidthFormTextContainer data-testid="Case-ViewCaseItemScreen-FullWidthTextArea">
-              {item.form[formDefinition[0].name]}
+              {form[formDefinition[0].name]}
             </FullWidthFormTextContainer>
           ) : (
             <Box paddingTop="10px">
               {formDefinition.map(e => (
                 <SectionEntry key={`entry-${e.label}`} descriptionKey={e.label}>
-                  <SectionEntryValue value={item.form[e.name]} targetObject={targetObject} definition={e} />
+                  <SectionEntryValue value={form[e.name]} targetObject={targetObject} definition={e} />
                 </SectionEntry>
               ))}
             </Box>

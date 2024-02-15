@@ -25,8 +25,7 @@ import each from 'jest-each';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import CaseHome, { CaseHomeProps } from '../../../components/case/CaseHome';
-import { CustomITask, HouseholdEntry, PerpetratorEntry } from '../../../types/types';
-import { CaseDetails } from '../../../states/case/types';
+import { Case, CustomITask, HouseholdEntry, PerpetratorEntry } from '../../../types/types';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
@@ -84,7 +83,7 @@ let ownProps: CaseHomeProps;
 
 let mockV1;
 let initialState: RootState;
-let caseDetails: CaseDetails;
+let caseDetails: Case;
 
 describe('useState mocked', () => {
   beforeAll(async () => {
@@ -162,26 +161,30 @@ describe('useState mocked', () => {
     jest.spyOn(React, 'useState').mockImplementation(useStateMock);
 
     caseDetails = {
-      contactIdentifier: '',
+      accountSid: '',
+      helpline: '',
+      label: '',
       id: '0',
-      households: [],
-      incidents: [],
-      perpetrators: [],
-      documents: [],
-      notes: [],
-      referrals: [],
-      childIsAtRisk: false,
-      summary: '',
+      sections: {
+        household: [],
+        incident: [],
+        perpetrator: [],
+        document: [],
+        note: [],
+        referral: [],
+      },
+      info: {
+
+        childIsAtRisk: false,
+        summary: '',
+        followUpDate: '',
+      },
       status: 'open',
-      caseCounselor: '',
-      currentCounselor: '',
+      twilioWorkerId: '',
       createdAt: '2020-06-29T22:26:00.208Z',
       updatedAt: '',
-      followUpDate: '',
-      followUpPrintedDate: '',
       categories: {},
-      contact: VALID_EMPTY_CONTACT,
-      contacts: [VALID_EMPTY_CONTACT],
+      connectedContacts: [VALID_EMPTY_CONTACT],
     };
 
     ownProps = {

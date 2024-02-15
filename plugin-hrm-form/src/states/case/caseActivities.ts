@@ -17,9 +17,10 @@
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { Activity, ContactActivity, NoteActivity } from './types';
-import { Case, Contact, NoteEntry, ReferralEntry } from '../../types/types';
+import { Case, Contact, Referral } from '../../types/types';
 import { channelTypes } from '../DomainConstants';
 import { getTemplateStrings } from '../../hrmConfig';
+import { ApiCaseSection } from '../../services/caseSectionService';
 
 const ActivityTypes = {
   createCase: 'create',
@@ -39,7 +40,7 @@ const ActivityTypes = {
 export const isContactActivity = (activity: Activity): activity is ContactActivity =>
   Boolean((activity as ContactActivity).contactId);
 
-export const getNoteActivities = (counsellorNotes: NoteEntry[], formDefs: DefinitionVersion): NoteActivity[] => {
+const getNoteActivities = (counsellorNotes: ApiCaseSection[], formDefs: DefinitionVersion): NoteActivity[] => {
   let { previewFields } = formDefs.layoutVersion.case.notes ?? {};
   if (!previewFields || !previewFields.length) {
     previewFields = formDefs.caseForms.NoteForm.length ? [formDefs.caseForms.NoteForm[0].name] : [];
@@ -47,10 +48,10 @@ export const getNoteActivities = (counsellorNotes: NoteEntry[], formDefs: Defini
   return (counsellorNotes || [])
     .map(n => {
       try {
-        const { id, createdAt: date, updatedAt, updatedBy, twilioWorkerId, ...toCopy } = n;
+        const { sectionId: id, createdAt: date, updatedAt, updatedBy, twilioWorkerId, sectionTypeSpecificData } = n;
         const text =
           previewFields
-            .map(pf => toCopy[pf])
+            .map(pf => sectionTypeSpecificData[pf])
             .filter(pv => pv)
             .join(', ') || '--';
         return {
@@ -61,7 +62,7 @@ export const getNoteActivities = (counsellorNotes: NoteEntry[], formDefs: Defini
           date,
           twilioWorkerId,
           type: ActivityTypes.addNote,
-          note: toCopy,
+          note: sectionTypeSpecificData,
         };
       } catch (err) {
         console.warn(`Error processing referral, excluding from data`, n, err);
@@ -71,22 +72,22 @@ export const getNoteActivities = (counsellorNotes: NoteEntry[], formDefs: Defini
     .filter(na => na);
 };
 
-const referralActivities = (referrals: ReferralEntry[]): Activity[] =>
+const referralActivities = (referrals: ApiCaseSection[]): Activity[] =>
   (referrals || [])
     .map(referral => {
-      const { id, createdAt, date, updatedAt, updatedBy, twilioWorkerId, ...toCopy } = referral;
-      const { referredTo: text } = referral;
+      const { sectionId: id, createdAt, updatedAt, updatedBy, twilioWorkerId, sectionTypeSpecificData } = referral;
+      const { referredTo, date } = sectionTypeSpecificData;
       try {
         return {
           id,
-          date,
+          date: date?.toString(),
           createdAt,
           twilioWorkerId,
           updatedAt,
           updatedBy,
           type: ActivityTypes.addReferral,
-          text,
-          referral: { date, ...toCopy },
+          text: referredTo?.toString(),
+          referral: sectionTypeSpecificData as Referral,
         };
       } catch (err) {
         console.warn(`Error processing referral, excluding from data`, referral, err);
@@ -133,8 +134,8 @@ const connectedContactActivities = (caseContacts: Contact[]): ContactActivity[] 
 
 export const getActivitiesFromCase = (sourceCase: Case, formDefs: DefinitionVersion): Activity[] => {
   return [
-    ...getNoteActivities(sourceCase.info.counsellorNotes ?? [], formDefs),
-    ...referralActivities(sourceCase.info.referrals ?? []),
+    ...getNoteActivities(sourceCase.sections.note ?? [], formDefs),
+    ...referralActivities(sourceCase.sections.referral ?? []),
   ];
 };
 
@@ -143,8 +144,8 @@ export const getActivitiesFromContacts = (sourceContacts: Contact[]): Activity[]
 };
 
 export const getActivityCount = (sourceCase: Case): number =>
-  (sourceCase?.info?.counsellorNotes?.length ?? 0) +
-  (sourceCase?.info?.referrals?.length ?? 0) +
+  (sourceCase?.sections?.note?.length ?? 0) +
+  (sourceCase?.sections?.referral?.length ?? 0) +
   (sourceCase?.connectedContacts?.length ?? 0);
 
 /**

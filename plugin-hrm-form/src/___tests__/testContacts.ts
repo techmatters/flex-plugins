@@ -21,9 +21,9 @@ import { ContactMetadata, LoadingStatus } from '../states/contacts/types';
 import { ReferralLookupStatus } from '../states/contacts/resourceReferral';
 
 export const VALID_EMPTY_CONTACT: Contact = {
-  accountSid: '',
+  accountSid: 'AC',
   id: '',
-  taskId: '',
+  taskId: 'WT',
   serviceSid: '',
   channelSid: '',
   profileId: null,
@@ -50,7 +50,7 @@ export const VALID_EMPTY_CONTACT: Contact = {
     categories: {},
   },
   conversationMedia: [],
-  twilioWorkerId: '',
+  twilioWorkerId: 'WK',
   timeOfContact: '',
   conversationDuration: 0,
   csamReports: [],

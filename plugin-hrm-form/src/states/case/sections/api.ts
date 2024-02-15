@@ -16,19 +16,19 @@
 
 import { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
-import { CaseInfo, CaseItemEntry } from '../../../types/types';
+import { Case, WellKnownCaseSection } from '../../../types/types';
 import { CaseWorkingCopy } from '../types';
+import { ApiCaseSection, CaseSectionTypeSpecificData } from '../../../services/caseSectionService';
 
-export type CaseUpdater = (original: CaseInfo, temporaryInfo: CaseItemEntry) => CaseInfo;
+export type CaseUpdater = (original: Case, update: CaseSectionTypeSpecificData) => Case;
 
-export type CaseSectionApi<T> = {
+export type CaseSectionApi = {
   readonly label: string; // for logging only
-  getSectionItemById: (caseInfo: CaseInfo, id: string) => T | undefined;
-  getMostRecentSectionItem: (caseInfo: CaseInfo) => T | undefined;
-  toForm: (section: T) => CaseItemEntry;
-  upsertCaseSectionItemFromForm: CaseUpdater;
+  readonly type: WellKnownCaseSection;
+  getSectionItemById: (caseObj: Case, id: string) => ApiCaseSection | undefined;
+  getMostRecentSectionItem: (caseObj: Case) => ApiCaseSection | undefined;
   getSectionFormDefinition: (definitions: DefinitionVersion) => FormDefinition;
   getSectionLayoutDefinition: (definitions: DefinitionVersion) => LayoutDefinition;
-  getWorkingCopy: (caseInfo: CaseWorkingCopy, id?: string) => CaseItemEntry | undefined;
-  updateWorkingCopy: (caseInfo: CaseWorkingCopy, item?: CaseItemEntry, id?: string) => CaseWorkingCopy;
+  getWorkingCopy: (caseInfo: CaseWorkingCopy, id?: string) => CaseSectionTypeSpecificData | undefined;
+  updateWorkingCopy: (caseInfo: CaseWorkingCopy, item?: CaseSectionTypeSpecificData, id?: string) => CaseWorkingCopy;
 };
