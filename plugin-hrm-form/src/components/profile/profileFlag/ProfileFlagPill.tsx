@@ -16,6 +16,7 @@
 
 import React from 'react';
 import { format } from 'date-fns';
+import { Template } from '@twilio/flex-ui';
 
 import { getTemplateStrings } from '../../../hrmConfig';
 import { ProfileFlag } from '../../../types/types';
@@ -37,7 +38,7 @@ const ProfileFlagPill: React.FC<Props> = ({ flag, renderDisassociate }) => {
     <ProfileFlagsListItem key={flag.name}>
       <FlagPill title={`${flag.name} Status`} key={flag.name} fillColor="#F5EEF4" isBlocked={flag.name === 'blocked'}>
         {flag.name === 'blocked' && <StyledBlockOutlinedIcon />}
-        {flag.name.charAt(0).toUpperCase() + flag.name.slice(1)}
+        <Template code={flag.name} />
         <FlagPillTime>{flag.validUntil && `${strings['Profile-ValidUntil']} ${formattedDate}`}</FlagPillTime>
         {renderDisassociate && renderDisassociate(flag)}
       </FlagPill>
