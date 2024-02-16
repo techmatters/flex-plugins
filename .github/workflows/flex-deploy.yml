@@ -23,9 +23,13 @@ on:
         required: true
         type: string
       environment_code:
-        description: The short upper case code used to identify the environment internally, e.g. STG, PROD, DEV
+        description: Flex-plugins environment to deploy
         required: true
-        type: string
+        type: choice
+        options:
+          - development
+          - staging
+          - production
       changelog:
         description: Release Changelog - Add a comment about the changes to be included in this release.
         required: true
@@ -37,7 +41,7 @@ on:
         required: true
         type: string
       environment_code:
-        description: The short upper case code used to identify the environment internally, e.g. STG, PROD, DEV
+        description: Flex-plugins environment to deploy
         required: true
         type: string
       changelog:
@@ -73,17 +77,9 @@ jobs:
           aws-region: us-east-1
 
       # Set ENVIRONMENT_NAME
-      - name: Production Environment
-        if: inputs.environment_code == 'PROD'
-        run: echo "ENVIRONMENT_NAME=production" >> $GITHUB_ENV
+      - name: Set Helpline Environment
+        run: echo "ENVIRONMENT_NAME=${{inputs.environment_code}}" >> $GITHUB_ENV
 
-      - name: Staging Environment
-        if: inputs.environment_code == 'STG'
-        run: echo "ENVIRONMENT_NAME=staging" >> $GITHUB_ENV
-
-      - name: Development Environment
-        if: inputs.environment_code == 'DEV'
-        run: echo "ENVIRONMENT_NAME=development" >> $GITHUB_ENV
       - name: Set Twilio account SID
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
