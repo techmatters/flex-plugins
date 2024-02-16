@@ -19,10 +19,10 @@ import { render, screen, fireEvent, getByRole, waitFor } from '@testing-library/
 import '@testing-library/jest-dom/extend-expect';
 import userEvent from '@testing-library/user-event';
 
-import FormInput from './FormInput';
+import NumericInput from './NumericInput';
 import { mockFormMethods, wrapperFormProvider } from '../../test-utils';
 
-describe('FormInput', () => {
+describe('NumericInput', () => {
   describe('UI states', () => {
     test('if marked as required, asterisk is shown', async () => {
       const inputId = 'inputID';
@@ -30,7 +30,7 @@ describe('FormInput', () => {
       const updateCallback = jest.fn();
 
       render(
-        <FormInput
+        <NumericInput
           inputId={inputId}
           label="input label"
           initialValue=""
@@ -57,7 +57,7 @@ describe('FormInput', () => {
       const updateCallback = jest.fn();
 
       render(
-        <FormInput
+        <NumericInput
           inputId={inputId}
           label="input label"
           initialValue=""
@@ -83,7 +83,7 @@ describe('FormInput', () => {
       const updateCallback = jest.fn();
 
       render(
-        <FormInput
+        <NumericInput
           inputId={inputId}
           label="input label"
           initialValue=""
@@ -94,7 +94,6 @@ describe('FormInput', () => {
         />,
         {
           wrapper: wrapperFormProvider({ ...methods, errors }),
-          // wrapper: wrapperFormProvider(methods),
         },
       );
 
@@ -103,6 +102,7 @@ describe('FormInput', () => {
       const input = screen.getByRole('textbox', { hidden: true });
       expect(input).toHaveAttribute('aria-invalid', 'true');
       expect(input).toHaveAttribute('aria-errormessage');
+      expect(screen.getByTestId(`${inputId}-error`)).toBeInTheDocument();
     });
   });
 
@@ -112,7 +112,7 @@ describe('FormInput', () => {
 
     expect(() =>
       render(
-        <FormInput
+        <NumericInput
           inputId={inputId}
           label="input label"
           initialValue=""
@@ -131,7 +131,7 @@ describe('FormInput', () => {
     const updateCallback = jest.fn();
 
     render(
-      <FormInput
+      <NumericInput
         inputId={inputId}
         label="input label"
         initialValue=""
@@ -147,7 +147,7 @@ describe('FormInput', () => {
 
     expect(methods.register).toHaveBeenCalled();
 
-    const formItem = screen.getByTestId(`FormInput-${inputId}`);
+    const formItem = screen.getByTestId(`${inputId}-label`);
     expect(formItem).toBeInTheDocument();
 
     // Expect the component to have an accessible label
@@ -168,7 +168,7 @@ describe('FormInput', () => {
     const updateCallback = jest.fn();
 
     render(
-      <FormInput
+      <NumericInput
         inputId={inputId}
         label="input label"
         initialValue=""
@@ -188,11 +188,11 @@ describe('FormInput', () => {
 
     fireEvent.change(input, {
       target: {
-        value: 'Each day provides its own gifts.',
+        value: '123',
       },
     });
 
-    expect(input).toHaveValue('Each day provides its own gifts.');
+    expect(input).toHaveValue('123');
     expect(updateCallback).not.toHaveBeenCalled();
 
     fireEvent.blur(input);
@@ -200,12 +200,80 @@ describe('FormInput', () => {
     expect(updateCallback).toHaveBeenCalled();
   });
 
+  test('numeric values are accepted', async () => {
+    const inputId = 'inputID';
+    const updateCallback = jest.fn();
+
+    render(
+      <NumericInput
+        inputId={inputId}
+        label="input label"
+        initialValue=""
+        isEnabled
+        updateCallback={updateCallback}
+        registerOptions={{}}
+        htmlElRef={null}
+      />,
+      {
+        wrapper: wrapperFormProvider({}, [{ shouldFocusError: false, mode: 'onChange' }]),
+      },
+    );
+
+    const input = screen.getByLabelText('input label');
+
+    fireEvent.focus(input);
+
+    expect(input).not.toHaveAttribute('aria-invalid', 'true');
+    expect(input).not.toHaveAttribute('aria-errormessage');
+
+    await waitFor(() => userEvent.type(input, '1'));
+
+    expect(input).toHaveValue('1');
+    expect(input).not.toHaveAttribute('aria-invalid', 'true');
+    expect(input).not.toHaveAttribute('aria-errormessage');
+    expect(() => screen.getByTestId(`${inputId}-error`)).toThrow();
+  });
+
+  test('non-numeric values triggers an error', async () => {
+    const inputId = 'inputID';
+    const updateCallback = jest.fn();
+
+    render(
+      <NumericInput
+        inputId={inputId}
+        label="input label"
+        initialValue=""
+        isEnabled
+        updateCallback={updateCallback}
+        registerOptions={{}}
+        htmlElRef={null}
+      />,
+      {
+        wrapper: wrapperFormProvider({}, [{ shouldFocusError: false, mode: 'onChange' }]),
+      },
+    );
+
+    const input = screen.getByLabelText('input label');
+
+    fireEvent.focus(input);
+
+    expect(input).not.toHaveAttribute('aria-invalid', 'true');
+    expect(input).not.toHaveAttribute('aria-errormessage');
+
+    await waitFor(() => userEvent.type(input, 'some string'));
+
+    expect(input).toHaveValue('some string');
+    expect(input).toHaveAttribute('aria-invalid', 'true');
+    expect(input).toHaveAttribute('aria-errormessage');
+    expect(screen.getByTestId(`${inputId}-error`)).toBeInTheDocument();
+  });
+
   test('required field with empty value triggers an error', async () => {
     const inputId = 'inputID';
     const updateCallback = jest.fn();
 
     render(
-      <FormInput
+      <NumericInput
         inputId={inputId}
         label="input label"
         initialValue=""
@@ -226,7 +294,7 @@ describe('FormInput', () => {
     expect(input).not.toHaveAttribute('aria-invalid', 'true');
     expect(input).not.toHaveAttribute('aria-errormessage');
 
-    await waitFor(() => userEvent.type(input, 'a'));
+    await waitFor(() => userEvent.type(input, '1'));
     await waitFor(() => userEvent.keyboard('{backspace}'));
 
     expect(input).toHaveValue('');

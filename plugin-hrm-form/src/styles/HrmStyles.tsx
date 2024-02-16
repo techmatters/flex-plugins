@@ -146,14 +146,6 @@ export const FormLegend = styled('legend')`
 `;
 FormLegend.displayName = 'FormLegend';
 
-export const FormFieldset = styled('fieldset')<FormInputProps>`
-  display: flex;
-  flex-direction: column;
-  border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
-  border-radius: 4px;
-`;
-FormFieldset.displayName = 'FormFieldset';
-
 type FormListboxMultiselectProps = FormInputProps & { height?: number; width?: number };
 
 export const FormListboxMultiselect = styled('ul')<FormListboxMultiselectProps>`
@@ -256,36 +248,6 @@ export const FormInput = styled('input')<FormInputProps>`
   }
 `;
 FormInput.displayName = 'FormInput';
-
-export const FormRadioInput = styled('input')<FormInputProps>`
-  &[type='radio'] {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-
-    box-sizing: content-box;
-    padding: 0;
-    margin: 0 7px 0 0;
-    width: 12px;
-    height: 12px;
-    border: 2px solid #080808;
-    background-color: ${HrmTheme.colors.inputBackgroundColor};
-    border-radius: 50%;
-    display: grid;
-    place-content: center;
-  }
-
-  &[type='radio']:checked:after {
-    display: block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    content: '';
-    position: relative;
-    background-color: #080808;
-  }
-`;
-FormRadioInput.displayName = 'FormRadioInput';
 
 export const FormDateInput = styled(FormInput)`
   &[type='date']::-webkit-clear-button,

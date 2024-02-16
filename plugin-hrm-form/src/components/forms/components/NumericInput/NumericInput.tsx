@@ -21,7 +21,7 @@ import { FormError, FormInputBase, FormLabel, RequiredAsterisk } from '../styles
 import { FormInputBaseProps } from '../types';
 import useInputContext from '../useInputContext';
 
-type FormInputUIProps = {
+type NumericInputUIProps = {
   inputId: string;
   updateCallback: () => void;
   refFunction: (ref: any) => void;
@@ -34,12 +34,7 @@ type FormInputUIProps = {
   errorTextComponent: JSX.Element;
 };
 
-/*
- * In this component is less evident cause it's simple, but ideally the "inner component" will be a stateless UI with all what's needed provided as props,
- * and the outer one will be a wrapper that "binds" the inner one with our custom logic (rhf, Twilio Template and all of the dependecies should be injected into it).
- * This way, moving the actual UI components to a component library will be feacible (if we ever want to)
- */
-const FormInputUI: React.FC<FormInputUIProps> = ({
+const NumericInputUI: React.FC<NumericInputUIProps> = ({
   inputId,
   updateCallback,
   refFunction,
@@ -52,7 +47,7 @@ const FormInputUI: React.FC<FormInputUIProps> = ({
   errorTextComponent,
 }) => {
   return (
-    <FormLabel htmlFor={inputId} data-testid={`FormInput-${inputId}`}>
+    <FormLabel htmlFor={inputId} data-testid={`${inputId}-label`}>
       <Row>
         <Box marginBottom="8px">
           {labelTextComponent}
@@ -79,7 +74,7 @@ const FormInputUI: React.FC<FormInputUIProps> = ({
 
 type Props = FormInputBaseProps;
 
-const FormInput: React.FC<Props> = ({
+const NumericInput: React.FC<Props> = ({
   inputId,
   label,
   initialValue,
@@ -92,14 +87,17 @@ const FormInput: React.FC<Props> = ({
     htmlElRef,
     inputId,
     label,
-    registerOptions,
+    registerOptions: {
+      ...registerOptions,
+      pattern: { value: /^[0-9]+$/g, message: 'This field only accepts numeric input.' },
+    },
   });
 
   const defaultValue = typeof initialValue === 'boolean' ? initialValue.toString() : initialValue;
   const disabled = !isEnabled;
 
   return (
-    <FormInputUI
+    <NumericInputUI
       inputId={inputId}
       updateCallback={updateCallback}
       refFunction={refFunction(true)}
@@ -114,4 +112,4 @@ const FormInput: React.FC<Props> = ({
   );
 };
 
-export default FormInput;
+export default NumericInput;

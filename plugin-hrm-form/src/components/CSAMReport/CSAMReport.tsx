@@ -115,12 +115,13 @@ export const CSAMReportScreen: React.FC<Props> = ({
     return (
       <FormProvider {...methods}>
         <CSAMReportTypePickerForm
-          methods={methods}
           renderContactDetails={false}
           counselor={currentCounselor}
           onClickClose={exit}
           onSubmit={onConfirmReportTypeSelection}
-          pickReportType={pickReportType}
+          onPickReportType={() => {
+            pickReportType(methods.getValues(['reportType']).reportType);
+          }}
           reportType={csamReportState.reportType}
         />
       </FormProvider>
@@ -137,8 +138,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
               counselor={currentCounselor}
               onClickClose={exit}
               onSendReport={onSendReport}
-              update={updateChildForm}
-              methods={methods}
+              onUpdateInput={() => updateChildForm(methods.getValues() as any)}
             />
           ) : (
             <CSAMReportCounsellorForm
@@ -146,8 +146,7 @@ export const CSAMReportScreen: React.FC<Props> = ({
               counselor={currentCounselor}
               onClickClose={exit}
               onSendReport={onSendReport}
-              update={updateCounsellorForm}
-              methods={methods}
+              onUpdateInput={() => updateCounsellorForm(methods.getValues() as any)}
             />
           )}
         </FormProvider>

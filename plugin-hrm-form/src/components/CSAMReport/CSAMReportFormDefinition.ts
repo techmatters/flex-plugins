@@ -14,10 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { FormItemDefinition, FormInputType, FormDefinition } from 'hrm-form-definitions';
-import { useForm } from 'react-hook-form';
+import {
+  FormItemDefinition,
+  FormInputType,
+  FormDefinition,
+  FormItemDefinitionSpecification,
+} from 'hrm-form-definitions';
 
-import { addMargin, getInitialValue, getInputType } from '../common/forms/formGenerators';
+import { createInput } from '../forms/inputGenerator';
+import { addMargin, getInitialValue } from '../common/forms/formGenerators';
 
 type CounselorCSAMFormDefinitionObject = {
   webAddress: FormItemDefinition;
@@ -121,31 +126,30 @@ export const childInitialValues = {
   ageVerified: getInitialValue(childDefinitionObject.ageVerified),
 } as const;
 
-export const externalReportDefinition: FormDefinition = [
-  {
-    name: 'reportType',
-    label: '',
-    type: FormInputType.RadioInput,
-    required: true,
-    options: [
-      { value: 'child', label: 'Create link for child' },
-      { value: 'counsellor', label: 'Report as counselor' },
-    ],
-  },
-];
+export const externalReportDefinition: FormItemDefinition = {
+  name: 'reportType',
+  label: '',
+  type: FormInputType.RadioInput,
+  required: true,
+  options: [
+    { value: 'child', label: 'Create link for child' },
+    { value: 'counsellor', label: 'Report as counselor' },
+  ],
+};
 
-export const generateCSAMFormElement = <T>(
-  initialValues: T,
-  formValues: T,
-  update: (values: Record<string, any>) => void,
-  methods: ReturnType<typeof useForm>,
-) => (formItem: FormItemDefinition): JSX.Element => {
-  const onUpdateInput = () => {
-    update(methods.getValues());
-  };
-  const generatedInput = getInputType([], onUpdateInput)(formItem);
+export const generateCSAMFormElement = <T>(initialValues: T, formValues: T, onUpdateInput: () => void) => (
+  formItem: FormItemDefinition,
+): JSX.Element => {
   const initialValue =
     formValues[formItem.name] === undefined ? initialValues[formItem.name] : formValues[formItem.name];
 
-  return addMargin(5)(generatedInput(initialValue));
+  const generatedInput = createInput({
+    formItemDefinition: formItem,
+    htmlElRef: undefined,
+    initialValue,
+    parentsPath: '',
+    updateCallback: onUpdateInput,
+  });
+
+  return addMargin(5)(generatedInput);
 };
