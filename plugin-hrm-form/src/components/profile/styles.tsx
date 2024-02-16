@@ -100,6 +100,7 @@ export const FlagPill = styled('div')<ColorProps>`
   border-color: ${props => (props.isBlocked ? `#D61F1F` : 'none')};
   color: ${props => (props.isBlocked ? `#D61F1F` : '#192B33')};
   font-size: 12px;
+  text-transform: capitalize;
 `;
 FlagPill.displayName = 'FlagPill';
 
