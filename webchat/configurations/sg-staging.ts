@@ -90,19 +90,19 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "Unknown"
         },
         {
-          value: "6",
+          value: "06",
           label: "6"
         },
         {
-          value: "7",
+          value: "07",
           label: "7"
         },
         {
-          value: "8",
+          value: "08",
           label: "8"
         },
         {
-          value: "9",
+          value: "09",
           label: "9"
         },
         {
@@ -150,7 +150,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "20"
         },
         {
-          value: "21 >",
+          value: ">20",
           label: "21 and above"
         }
        ],
