@@ -66,6 +66,10 @@
       {
         "value": "Others",
         "label": "Others"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ],
     "required": {
@@ -149,6 +153,10 @@
       {
         "value": "Others",
         "label": "Others"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ],
     "required": {

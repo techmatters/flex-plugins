@@ -66,6 +66,10 @@
       {
         "value": "Others",
         "label": "Others"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ],
     "required": {
@@ -109,6 +113,10 @@
       {
         "value": "Other",
         "label": "Other"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ]
   },
@@ -146,6 +154,10 @@
       {
         "value": "Others",
         "label": "Others"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ],
     "required": {
@@ -178,6 +190,10 @@
       {
         "value": "Others",
         "label": "Others"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ]
   },

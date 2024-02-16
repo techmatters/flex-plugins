@@ -29,6 +29,10 @@
       {
         "value": "Other",
         "label": "Other"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ],
     "required": {
@@ -45,6 +49,10 @@
       {
         "value": "",
         "label": ""
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
         "value": "06",
@@ -79,10 +87,38 @@
         "label": "13"
       },
       {
-        "value": ">13",
-        "label": ">13"
+        "value": "14",
+        "label": "14"
+      },
+      {
+        "value": "15",
+        "label": "15"
+      },
+      {
+        "value": "16",
+        "label": "16"
+      },
+      {
+        "value": "17",
+        "label": "17"
+      },
+      {
+        "value": "18",
+        "label": "18"
+      },
+      {
+        "value": "19",
+        "label": "19"
+      },
+      {
+        "value": "20",
+        "label": "20"
+      },
+      {
+        "value": ">20",
+        "label": "21 and above"
       }
-    ],
+     ],
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -128,6 +164,10 @@
       {
         "value": "Others",
         "label": "Others"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ]
   },
@@ -177,6 +217,10 @@
       {
         "value": "Sec 2 and above",
         "label": "Sec 2 and above"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ],
     "required": {
@@ -226,6 +270,10 @@
       {
         "value": "Others",
         "label": "Others"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ]
   }
