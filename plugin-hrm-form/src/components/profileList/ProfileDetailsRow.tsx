@@ -46,7 +46,7 @@ type Props = {
 
 const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
   const dispatch = useDispatch();
-  const { profile, canView: canViewProfile } = useProfile({ profileId });
+  const { profile } = useProfile({ profileId });
   const { combinedProfileFlags } = useProfileFlags(profileId);
 
   const { section: summarySection, error, loading, canView: canViewSummarySection } = useProfileSectionByType({
@@ -55,9 +55,7 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
   });
 
   const handleViewProfile = async () => {
-    if (canViewProfile) {
-      dispatch(newOpenModalAction({ route: 'profile', profileId, subroute: 'details' }, 'standalone-task-sid'));
-    }
+    dispatch(newOpenModalAction({ route: 'profile', profileId, subroute: 'details' }, 'standalone-task-sid'));
   };
 
   const can = React.useMemo(() => {

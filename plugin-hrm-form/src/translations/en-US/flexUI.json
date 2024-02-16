@@ -422,6 +422,7 @@
   "ProfileList-NoClients": "No clients found.",
   "ProfileList-Summary-None": "- No profile summary -",
   "ProfileList-Status-None": "- No status -",
+  "Profile-DetailsHeader-NotAllowedToView": "You are not allowed to view this profile",
 
   "UploadFile-ButtonText": "Upload File",
   "DownloadFile-ButtonText": "Download File",
