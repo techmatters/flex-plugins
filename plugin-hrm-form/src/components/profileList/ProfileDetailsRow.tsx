@@ -64,9 +64,20 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
     <DataTableRow onClick={handleViewProfile}>
       <NumericCell>
         <OpenLinkContainer>
-          <OpenLinkAction tabIndex={0}>{profile?.name ? profile.name : profile?.id}</OpenLinkAction>
+          <OpenLinkAction tabIndex={0}>{profile?.id}</OpenLinkAction>
         </OpenLinkContainer>
       </NumericCell>
+      <DataCell>
+        <TableBodyFont>
+          {profile?.name ? (
+            profile?.name
+          ) : (
+            <OpaqueText>
+              <Template code="ProfileList-ClientName-None" />
+            </OpaqueText>
+          )}
+        </TableBodyFont>
+      </DataCell>
       {combinedProfileFlags.length > 0 ? (
         <PillsCell>
           {combinedProfileFlags

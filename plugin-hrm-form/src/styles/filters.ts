@@ -27,6 +27,8 @@ export const FiltersContainer = styled(Flex)`
   padding: 10px;
   font-size: 13px;
   border-bottom: 2px solid #e5e6e7;
+  /* width: 100vw;
+  max-width: 1280px; */
   &:focus {
     outline: auto;
   }
