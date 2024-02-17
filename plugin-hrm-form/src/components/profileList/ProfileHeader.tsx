@@ -31,11 +31,11 @@ const ProfileHeader: React.FC = () => {
   return (
     <TableHeader>
       <TableRow>
-        <ProfileHeaderCell column={ProfilesListSortBy.ID} localizedText="ProfileList-THClient" />
-        <ProfileHeaderCell localizedText="ProfileList-THClientName" />
-        <ProfileHeaderCell localizedText="ProfileList-THStatus" />
-        {maskIdentifiers ? null : <ProfileHeaderCell localizedText="ProfileList-THIdentifier" />}
-        <ProfileHeaderCell localizedText="ProfileList-THSummary" />
+        <ProfileHeaderCell column={ProfilesListSortBy.ID} localizedText="ProfileList-THClient" width="8%" />
+        <ProfileHeaderCell localizedText="ProfileList-THClientName" width="8%" />
+        <ProfileHeaderCell localizedText="ProfileList-THStatus" width="8%" />
+        {maskIdentifiers ? null : <ProfileHeaderCell localizedText="ProfileList-THIdentifier" width="8%" />}
+        <ProfileHeaderCell localizedText="ProfileList-THSummary" width="28%" />
       </TableRow>
     </TableHeader>
   );

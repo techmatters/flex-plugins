@@ -450,7 +450,8 @@ export const PreviewActionButton = styled(StyledNextStepButton)`
 PreviewActionButton.displayName = 'PreviewActionButton';
 
 export const SearchResultWarningContainer = styled('div')`
-  width: 597px;
+  /* width: 597px; */
+  width: 100%;
   height: auto;
   top: 143px;
   left: 744px;

@@ -22,13 +22,9 @@ import HrmTheme from './HrmTheme';
 export const FiltersContainer = styled(Flex)`
   align-items: center;
   color: #192b33;
-  margin-left: 15px;
-  margin-right: 10px;
   padding: 10px;
   font-size: 13px;
   border-bottom: 2px solid #e5e6e7;
-  /* width: 100vw;
-  max-width: 1280px; */
   &:focus {
     outline: auto;
   }

@@ -15,16 +15,20 @@
  */
 
 import React from 'react';
-import { CircularProgress, TableBody, TableCell } from '@material-ui/core';
+import { CircularProgress, TableBody } from '@material-ui/core';
 import { Template } from '@twilio/flex-ui';
+import InfoIcon from '@material-ui/icons/Info';
 
 import Pagination from '../pagination';
-import { DataTableRow, StandardTable, TableContainer } from '../../styles';
+import { DataCell, DataTableRow, LoadingCell, StandardTable, TableContainer } from '../../styles';
 import { useProfilesList, useProfilesListLoader } from '../../states/profile/hooks';
 import { useAllProfileFlags } from '../../states/profile/hooks/useProfileFlags';
 import ProfileListTableHeader from './ProfileHeader';
 import ProfileDetailsRow from './ProfileDetailsRow';
 import { PAGE_SIZE } from '../../states/profile/profiles';
+
+const PROFILES_PER_PAGE = 10;
+const ROW_HEIGHT = 89;
 
 const ProfileListTable: React.FC = () => {
   useAllProfileFlags();
@@ -33,6 +37,8 @@ const ProfileListTable: React.FC = () => {
 
   const pagesCount = Math.ceil(count / PAGE_SIZE);
 
+  console.log('>>> ProfileListTable', loading, count);
+
   return (
     <>
       <TableContainer>
@@ -40,10 +46,16 @@ const ProfileListTable: React.FC = () => {
           <ProfileListTableHeader />
           {loading && (
             <TableBody>
-              <DataTableRow>
-                <TableCell>
+              <DataTableRow
+                style={{
+                  position: 'relative',
+                  background: 'transparent',
+                  height: `${(profileIds.length || PROFILES_PER_PAGE) * ROW_HEIGHT}px`,
+                }}
+              >
+                <LoadingCell>
                   <CircularProgress size={50} />
-                </TableCell>
+                </LoadingCell>
               </DataTableRow>
             </TableBody>
           )}
@@ -52,10 +64,11 @@ const ProfileListTable: React.FC = () => {
               {profileIds.length > 0 ? (
                 profileIds.map(profileId => <ProfileDetailsRow key={profileId} profileId={profileId} />)
               ) : (
-                <DataTableRow>
-                  <TableCell>
+                <DataTableRow style={{ background: '#fffeef' }}>
+                  <DataCell style={{ border: '1px solid #ffc811', verticalAlign: 'middle' }} colSpan={5}>
+                    <InfoIcon fontSize="small" style={{ color: '#ffc811', margin: '0 6px -4px 6px' }} />
                     <Template code="ProfileList-NoClients" />
-                  </TableCell>
+                  </DataCell>
                 </DataTableRow>
               )}
             </TableBody>

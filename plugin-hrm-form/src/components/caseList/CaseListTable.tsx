@@ -19,6 +19,7 @@ import React from 'react';
 import { TableBody, CircularProgress } from '@material-ui/core';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
+import InfoIcon from '@material-ui/icons/Info';
 
 import { TableContainer, StandardTable, DataTableRow, LoadingCell, DataCell, TableBodyFont } from '../../styles';
 import Filters from './filters/Filters';
@@ -63,6 +64,8 @@ const CaseListTable: React.FC<Props> = ({
 
   const pagesCount = Math.ceil(caseCount / CASES_PER_PAGE);
 
+  console.log('>>> CaseListTable', loading, caseCount);
+
   return (
     <>
       <Filters caseCount={caseCount} currentDefinitionVersion={currentDefinitionVersion} />
@@ -101,11 +104,10 @@ const CaseListTable: React.FC<Props> = ({
                   );
                 })
               ) : (
-                <DataTableRow>
-                  <DataCell colSpan={8}>
-                    <TableBodyFont style={{ paddingLeft: '6px', fontWeight: 'initial' }}>
-                      <Template code="CaseList-NoCases" />
-                    </TableBodyFont>
+                <DataTableRow style={{ background: '#fffeef' }}>
+                  <DataCell style={{ border: '1px solid #ffc811', verticalAlign: 'middle' }} colSpan={8}>
+                    <InfoIcon fontSize="small" style={{ color: '#ffc811', margin: '0 6px -4px 6px' }} />
+                    <Template code="CaseList-NoCases" />
                   </DataCell>
                 </DataTableRow>
               )}

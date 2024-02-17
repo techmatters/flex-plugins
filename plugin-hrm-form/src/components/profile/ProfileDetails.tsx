@@ -17,6 +17,7 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Icon, Template } from '@twilio/flex-ui';
+import ProfileIcon from '@material-ui/icons/AccountCircleOutlined';
 
 import { Box, HiddenText, Row, HorizontalLine, Title, Bold } from '../../styles';
 import { newOpenModalAction } from '../../states/routing/actions';
@@ -139,7 +140,9 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
 
   return (
     <DetailsWrapper>
-      <Title>#{profileId}</Title>
+      <Title>
+        <ProfileIcon style={{ marginRight: '4px' }} /> #{profileId}
+      </Title>
       <SectionHeader>
         <Template code="Profile-DetailsHeader-Overview" />
       </SectionHeader>

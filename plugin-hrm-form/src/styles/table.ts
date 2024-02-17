@@ -22,8 +22,6 @@ import { Absolute, Flex } from './layout';
 import { FontOpenSans } from './typography';
 import HrmTheme from './HrmTheme';
 
-// const TABLE_WIDTH = '1280px';
-
 type ListContainerProps = {
   width?: string;
 };
@@ -31,8 +29,8 @@ export const ListContainer = styled(Absolute)<ListContainerProps>`
   height: 100%;
   width: ${props => props.width || '1280px'};
   background-color: #f6f6f6;
-  /* max-width: 1280px;
-  width: 100vw; */
+  max-width: 1270px;
+  width: 95vw;
 `;
 ListContainer.displayName = 'ListContainer';
 
@@ -44,9 +42,8 @@ export const CenteredContainer = styled(ListContainer)`
 CenteredContainer.displayName = 'CenteredContainer';
 
 export const TableContainer = styled(Flex)`
-  border-left: 15px solid ${HrmTheme.colors.base2};
-  border-right: 10px solid ${HrmTheme.colors.base2};
-  /* width: 100vw; */
+  border-left: 1px solid ${HrmTheme.colors.base2};
+  border-right: 1px solid ${HrmTheme.colors.base2};
 `;
 TableContainer.displayName = 'TableContainer';
 
