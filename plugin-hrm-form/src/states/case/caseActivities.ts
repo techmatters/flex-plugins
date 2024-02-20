@@ -134,8 +134,8 @@ const connectedContactActivities = (caseContacts: Contact[]): ContactActivity[] 
 
 export const getActivitiesFromCase = (sourceCase: Case, formDefs: DefinitionVersion): Activity[] => {
   return [
-    ...getNoteActivities(sourceCase.sections.note ?? [], formDefs),
-    ...referralActivities(sourceCase.sections.referral ?? []),
+    ...getNoteActivities(sourceCase?.sections?.note ?? [], formDefs),
+    ...referralActivities(sourceCase?.sections?.referral ?? []),
   ];
 };
 

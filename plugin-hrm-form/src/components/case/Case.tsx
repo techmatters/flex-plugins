@@ -286,7 +286,7 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
     routing,
     savedContacts: selectSavedContacts(state, connectedCase),
     taskContact: selectContactByTaskSid(state, task.taskSid)?.savedContact,
-    office: selectCaseHelplineData(state, connectedCase.id),
+    office: selectCaseHelplineData(state, connectedCase?.id),
   };
 };
 

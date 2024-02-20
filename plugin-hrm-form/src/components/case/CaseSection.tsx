@@ -19,14 +19,13 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
 import { Box, Row } from '../../styles';
-import { CaseSectionFont, TimelineRow, PlaceHolderText, CaseDetailsBorder } from './styles';
+import { CaseDetailsBorder, CaseSectionFont, PlaceHolderText, TimelineRow } from './styles';
 import CaseAddButton from './CaseAddButton';
 
 type OwnProps = {
   onClickAddItem: () => void;
   canAdd: () => boolean;
   sectionTypeId: string;
-  children?: JSX.Element;
 };
 
 const CaseSection: React.FC<OwnProps> = ({ onClickAddItem, canAdd, children, sectionTypeId }) => {
@@ -40,15 +39,12 @@ const CaseSection: React.FC<OwnProps> = ({ onClickAddItem, canAdd, children, sec
           <CaseAddButton templateCode={`Case-${sectionTypeId}`} onClick={onClickAddItem} disabled={!canAdd()} />
         </Row>
       </Box>
-
-      {!children || children.type === null ? (
+      {children || (
         <TimelineRow>
           <PlaceHolderText>
             <Template code={`Case-No${sectionTypeId}s`} />
           </PlaceHolderText>
         </TimelineRow>
-      ) : (
-        children
       )}
     </CaseDetailsBorder>
   );

@@ -128,7 +128,7 @@ const mapStateToProps = (state: RootState) => {
     ) ||
     Object.values(connectedCase.cases).some(
       ({ caseWorkingCopy }) =>
-        caseWorkingCopy.caseSummary || Object.values(caseWorkingCopy.sections).some(section => section),
+        caseWorkingCopy.caseSummary || Object.values(caseWorkingCopy.sections ?? {}).some(section => section),
     ) ||
     selectAnyContactIsSaving(state);
   return {

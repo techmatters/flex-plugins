@@ -71,7 +71,7 @@ const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
   const connectedCaseState = selectCurrentRouteCaseState(state, task.taskSid);
   const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
   const routing = selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseRoute;
-  const { connectedCase } = connectedCaseState ?? {};
+  const { connectedCase, availableStatusTransitions = [] } = connectedCaseState ?? {};
   const connectedContacts = connectedCase?.connectedContacts ?? [];
   const isCreating = Boolean(
     connectedContacts.length === 1 && connectedContacts[0].id === taskContact?.id && !taskContact?.finalizedAt,
@@ -82,7 +82,8 @@ const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
 
   return {
     isCreating,
-    connectedCaseState,
+    connectedCase,
+    availableStatusTransitions,
     taskContact,
     hasMoreActivities: activityCount > MAX_ACTIVITIES_IN_TIMELINE_SECTION,
     office: selectCaseHelplineData(state, routing.caseId),
@@ -110,14 +111,14 @@ const CaseHome: React.FC<Props> = ({
   handleClose,
   handleSaveAndEnd,
   can,
-  connectedCaseState,
+  connectedCase,
+  availableStatusTransitions,
   isCreating,
   hasMoreActivities,
   office,
   counselor,
 }) => {
-  if (!connectedCaseState) return null; // narrow type before deconstructing
-  const { connectedCase } = connectedCaseState;
+  if (!connectedCase) return null; // narrow type before deconstructing
   const caseId = connectedCase.id;
   const {
     enable_upload_documents: enableUploadDocuments,
@@ -141,18 +142,11 @@ const CaseHome: React.FC<Props> = ({
     openModal({ route: 'case', subroute: 'case-print-view', caseId });
   };
 
-  // -- Date cannot be converted here since the date dropdown uses the yyyy-MM-dd format.
-
   const { caseForms } = definitionVersion;
   const caseLayouts = definitionVersion.layoutVersion.case;
 
   const {
-    sections: {
-      incident: incidentSections,
-      perpetrator: perpetratorSections,
-      household: householdSections,
-      document: documentSections,
-    },
+    sections,
     info: { followUpDate, childIsAtRisk },
     status,
     id,
@@ -161,70 +155,44 @@ const CaseHome: React.FC<Props> = ({
     createdAt,
     updatedAt,
   } = connectedCase;
+
   const statusLabel = definitionVersion.caseStatus[status]?.label ?? status;
 
-  const itemRowRenderer = (itemTypeName: string, viewSubroute: CaseSectionSubroute, items: ApiCaseSection[]) => {
-    const itemRows = () => {
-      return items.length ? (
-        <>
-          {items.map((item, index) => (
-            <InformationRow
-              key={`${itemTypeName}-${index}`}
-              person={item.sectionTypeSpecificData}
-              onClickView={() => onViewCaseItemClick(viewSubroute)(item.sectionId)}
-            />
-          ))}
-        </>
-      ) : null;
-    };
-    itemRows.displayName = `${itemTypeName}Rows`;
-    return itemRows;
-  };
-
-  const householdRows = itemRowRenderer(
-    'form',
-    NewCaseSubroutes.Household,
-    (householdSections ?? []).map((h, index) => {
-      return { ...h, index };
-    }),
+  const genericSectionRenderer = (
+    subroute: CaseSectionSubroute,
+    addPermission: PermissionActionType,
+    items: ApiCaseSection[] | undefined,
+    itemRowRenderer: (
+      subroute: CaseSectionSubroute,
+      section: ApiCaseSection,
+      rowIndex: number,
+    ) => JSX.Element | null = (subroute, { sectionId, sectionTypeSpecificData }, index) => (
+      <InformationRow
+        key={`${subroute}-${index}`}
+        person={sectionTypeSpecificData}
+        onClickView={() => onViewCaseItemClick(subroute)(sectionId)}
+      />
+    ),
+  ): JSX.Element => (
+    <Box margin="25px 0 0 0">
+      <CaseSection
+        canAdd={() => can(addPermission)}
+        onClickAddItem={onAddCaseItemClick(subroute)}
+        // Messy, need to find a neater approach to the case section translation.
+        // Will probably be reworked if & when customisable case section types are introduced.
+        sectionTypeId={subroute.charAt(0).toUpperCase() + subroute.slice(1)}
+      >
+        <>{(items ?? []).map((item, index) => itemRowRenderer(subroute, item, index))}</>
+      </CaseSection>
+    </Box>
   );
 
-  const perpetratorRows = itemRowRenderer(
-    'form',
-    NewCaseSubroutes.Perpetrator,
-    (perpetratorSections ?? []).map((p, index) => {
-      return { ...p, index };
-    }),
-  );
-
-  const incidentRows = () => (
-    <>
-      {(incidentSections ?? []).map((item, index) => {
-        return (
-          <IncidentInformationRow
-            key={`incident-${index}`}
-            onClickView={() => onViewCaseItemClick(NewCaseSubroutes.Incident)(item.sectionId)}
-            definition={caseForms.IncidentForm}
-            values={item.sectionTypeSpecificData}
-            layoutDefinition={caseLayouts.incidents}
-          />
-        );
-      })}
-    </>
-  );
-  const documentRows = () => (
-    <>
-      {(documentSections ?? []).map((item, index) => {
-        return (
-          <DocumentInformationRow
-            key={`document-${index}`}
-            caseSection={item}
-            onClickView={() => onViewCaseItemClick(NewCaseSubroutes.Document)(item.sectionId)}
-          />
-        );
-      })}
-    </>
-  );
+  const {
+    incident: incidentSections,
+    perpetrator: perpetratorSections,
+    household: householdSections,
+    document: documentSections,
+  } = sections ?? {};
 
   const onEditCaseSummaryClick = () => {
     openModal({ route: 'case', subroute: 'caseSummary', action: CaseItemAction.Edit, id: '', caseId });
@@ -262,7 +230,7 @@ const CaseHome: React.FC<Props> = ({
             updatedAt={updatedAt}
             followUpDate={followUpDate}
             childIsAtRisk={childIsAtRisk}
-            availableStatusTransitions={connectedCaseState.availableStatusTransitions}
+            availableStatusTransitions={availableStatusTransitions}
             office={office?.label}
             handlePrintCase={onPrintCase}
             definitionVersion={definitionVersion}
@@ -291,44 +259,35 @@ const CaseHome: React.FC<Props> = ({
             )}
           </CaseDetailsBorder>
         </Box>
-        <Box margin="25px 0 0 0">
-          <CaseSection
-            canAdd={() => can(PermissionActions.ADD_HOUSEHOLD)}
-            onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Household)}
-            sectionTypeId="Household"
-          >
-            {householdRows()}
-          </CaseSection>
-        </Box>
-        <Box margin="25px 0 0 0">
-          <CaseSection
-            canAdd={() => can(PermissionActions.ADD_PERPETRATOR)}
-            onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Perpetrator)}
-            sectionTypeId="Perpetrator"
-          >
-            {perpetratorRows()}
-          </CaseSection>
-        </Box>
-        <Box margin="25px 0 0 0">
-          <CaseSection
-            canAdd={() => can(PermissionActions.ADD_INCIDENT)}
-            onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Incident)}
-            sectionTypeId="Incident"
-          >
-            {incidentRows()}
-          </CaseSection>
-        </Box>
-        {enableUploadDocuments && (
-          <Box margin="25px 0 0 0">
-            <CaseSection
-              onClickAddItem={onAddCaseItemClick(NewCaseSubroutes.Document)}
-              canAdd={() => can(PermissionActions.ADD_DOCUMENT)}
-              sectionTypeId="Document"
-            >
-              {documentRows()}
-            </CaseSection>
-          </Box>
+        {genericSectionRenderer(NewCaseSubroutes.Household, PermissionActions.ADD_HOUSEHOLD, householdSections)}
+        {genericSectionRenderer(NewCaseSubroutes.Perpetrator, PermissionActions.ADD_PERPETRATOR, perpetratorSections)}
+        {genericSectionRenderer(
+          NewCaseSubroutes.Incident,
+          PermissionActions.ADD_INCIDENT,
+          incidentSections,
+          (subroute, { sectionTypeSpecificData, sectionId }, index) => (
+            <IncidentInformationRow
+              key={`incident-${index}`}
+              onClickView={() => onViewCaseItemClick(subroute)(sectionId)}
+              definition={caseForms.IncidentForm}
+              values={sectionTypeSpecificData}
+              layoutDefinition={caseLayouts.incidents}
+            />
+          ),
         )}
+        {enableUploadDocuments &&
+          genericSectionRenderer(
+            NewCaseSubroutes.Document,
+            PermissionActions.ADD_DOCUMENT,
+            documentSections,
+            (subroute, item, index) => (
+              <DocumentInformationRow
+                key={`document-${index}`}
+                caseSection={item}
+                onClickView={() => onViewCaseItemClick(NewCaseSubroutes.Document)(item.sectionId)}
+              />
+            ),
+          )}
       </CaseContainer>
       {connect && (
         <BottomButtonBar>

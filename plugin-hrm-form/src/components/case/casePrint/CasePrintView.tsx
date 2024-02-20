@@ -68,6 +68,8 @@ const CasePrintView: React.FC<Props> = ({
   const [chkOnBlob, setChkOnBlob] = useState<string>(null);
   const [chkOffBlob, setChkOffBlob] = useState<string>(null);
 
+  const { incident, referral, household, perpetrator, note } = connectedCase?.sections ?? {};
+
   /*
    * The purpose of this effect is to load all the images at once, to avoid re-renders in PDFViewer that leads to issues
    * https://stackoverflow.com/questions/60614940/unhandled-rejection-typeerror-nbind-externallistnum-dereference-is-not-a-f
@@ -191,27 +193,27 @@ const CasePrintView: React.FC<Props> = ({
                   sectionName={strings['SectionName-HouseholdMember']}
                   sectionKey="household"
                   definitions={definitionVersion.caseForms.HouseholdForm}
-                  values={connectedCase.sections.household}
+                  values={household}
                 />
                 <CasePrintMultiSection
                   sectionName={strings['SectionName-Perpetrator']}
                   sectionKey="perpetrator"
                   definitions={definitionVersion.caseForms.PerpetratorForm}
-                  values={connectedCase.sections.perpetrator}
+                  values={perpetrator}
                 />
                 <CasePrintMultiSection
                   sectionName={strings['SectionName-Incident']}
                   definitions={definitionVersion.caseForms.IncidentForm}
                   sectionKey="incident"
-                  values={connectedCase.sections.incident}
+                  values={incident}
                 />
                 <CasePrintMultiSection
                   sectionName={strings['SectionName-Referral']}
                   definitions={definitionVersion.caseForms.ReferralForm}
                   sectionKey="referral"
-                  values={connectedCase.sections.referral}
+                  values={referral}
                 />
-                <CasePrintNotes notes={connectedCase.sections.note} counselorsHash={counselorsHash} />
+                <CasePrintNotes notes={note} counselorsHash={counselorsHash} />
                 <CasePrintSummary summary={connectedCase.info.summary} />
                 <CasePrintCSAMReports csamReports={contact?.csamReports} />
               </View>
