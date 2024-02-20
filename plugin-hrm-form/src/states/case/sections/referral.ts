@@ -15,6 +15,7 @@
  */
 
 import { DefinitionVersion } from 'hrm-form-definitions';
+
 import { CaseSectionApi } from './api';
 import { getMostRecentSectionItem, getSectionItemById } from './get';
 import { getWorkingCopy, setWorkingCopy } from './workingCopy';

@@ -35,6 +35,7 @@ import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { RecursivePartial } from '../../RecursivePartial';
 import { namespace } from '../../../states/storeNamespaces';
 import { CaseStateEntry } from '../../../states/case/types';
+import { WorkerSID } from '../../../types/twilio';
 
 jest.mock('../../../services/CaseService', () => ({ getActivities: jest.fn(() => []), cancelCase: jest.fn() }));
 jest.mock('../../../permissions', () => ({
@@ -58,6 +59,9 @@ let ownProps;
 
 let mockV1;
 let initialState: RootState;
+const TASK_SID: TaskSID = 'WT-taskSid';
+const CURRENT_WORKER_SID: WorkerSID = 'WK-current-worker-sid';
+const WORKER_SID: WorkerSID = 'WK-worker1';
 
 beforeEach(() => {
   mockReset();
@@ -70,7 +74,7 @@ describe('useState mocked', () => {
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);
     mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
-    mockPartialConfiguration({ workerSid: 'current-worker-sid' });
+    mockPartialConfiguration({ workerSid: CURRENT_WORKER_SID });
   });
 
   const connectedContact: Contact = {
@@ -87,7 +91,7 @@ describe('useState mocked', () => {
       callerInformation: {},
       categories: {},
     },
-    taskId: 'task1',
+    taskId: TASK_SID,
     caseId: 'case1',
   };
 
@@ -96,12 +100,12 @@ describe('useState mocked', () => {
       id: 'case1',
       createdAt: '2020-06-29T22:26:00.208Z',
       updatedAt: '2020-06-29T22:26:00.208Z',
-      twilioWorkerId: 'worker1',
+      twilioWorkerId: WORKER_SID,
       status: 'open',
       info: { definitionVersion: DefinitionVersionId.v1 },
       connectedContacts: [connectedContact],
       categories: {},
-      accountSid: 'accountSid',
+      accountSid: 'AC-accountSid',
       helpline: 'helpline',
     },
     availableStatusTransitions: [],
@@ -114,7 +118,7 @@ describe('useState mocked', () => {
       configuration: {
         counselors: {
           list: [],
-          hash: { worker1: 'worker1 name' },
+          hash: { [WORKER_SID]: 'worker1 name' },
         },
         definitionVersions: { v1: mockV1 },
         currentDefinitionVersion: mockV1,

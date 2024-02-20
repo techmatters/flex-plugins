@@ -23,14 +23,16 @@ export const getSectionItemById = (propertyName: WellKnownCaseSection) => (
   caseObj: Case,
   id: string,
 ): ApiCaseSection | undefined => {
-  const sectionList = caseObj?.sections[propertyName];
+  const sectionList = caseObj?.sections?.[propertyName];
   if (Array.isArray(sectionList)) {
     return sectionList.find(s => s.sectionId === id);
   }
   return undefined;
 };
 
-export const getMostRecentSectionItem = (propertyName: string) => (caseObj: Case): ApiCaseSection | undefined => {
+export const getMostRecentSectionItem = (propertyName: WellKnownCaseSection) => (
+  caseObj: Case,
+): ApiCaseSection | undefined => {
   const sectionList = caseObj?.sections[propertyName];
   if (Array.isArray(sectionList)) {
     const sorted = [...sectionList].sort((a, b) => parseISO(b.createdAt).getTime() - parseISO(a.createdAt).getTime());

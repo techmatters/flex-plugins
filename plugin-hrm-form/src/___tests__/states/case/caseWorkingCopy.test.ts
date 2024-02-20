@@ -22,7 +22,6 @@ import {
   useFetchDefinitions,
 } from 'hrm-form-definitions';
 
-import { CaseItemEntry } from '../../../types/types';
 import { CaseSectionApi } from '../../../states/case/sections/api';
 import { CaseState, CaseStateEntry, CaseSummaryWorkingCopy, CaseWorkingCopy } from '../../../states/case/types';
 import { householdSectionApi } from '../../../states/case/sections/household';
@@ -38,6 +37,8 @@ import {
 } from '../../../states/case/caseWorkingCopy';
 import { RootState } from '../../../states';
 import { RecursivePartial } from '../../RecursivePartial';
+import { VALID_EMPTY_CASE } from '../../testCases';
+import { CaseSectionTypeSpecificData } from '../../../services/caseSectionService';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -83,15 +84,10 @@ describe('Working copy reducers', () => {
   });
 
   const baselineDate = new Date(2022, 1, 28);
-  const updatedSection: CaseItemEntry = {
-    id: 'existingHousehold',
-    twilioWorkerId: 'other-worker-sid',
-    form: { otherProp: 'other-value' },
-    createdAt: baselineDate.toISOString(),
-  };
+  const updatedSection: CaseSectionTypeSpecificData = { otherProp: 'other-value' };
 
   let stubApi: CaseSectionApi;
-  const stubUpdateWorkingCopy: CaseWorkingCopy = { sections: { mock: { existing: { mockId: updatedSection } } } };
+  const stubUpdateWorkingCopy: CaseWorkingCopy = { sections: { incident: { existing: { mockId: updatedSection } } } };
 
   beforeEach(() => {
     stubApi = {
@@ -108,14 +104,9 @@ describe('Working copy reducers', () => {
             ...state.cases[1],
             caseWorkingCopy: {
               sections: {
-                households: {
+                household: {
                   existing: {
-                    existingHousehold: {
-                      id: 'existingHousehold',
-                      twilioWorkerId: 'worker-sid',
-                      form: { prop: 'value' },
-                      createdAt: baselineDate.toISOString(),
-                    },
+                    existingHousehold: { prop: 'value' },
                   },
                 },
               },
@@ -180,8 +171,9 @@ describe('Working copy reducers', () => {
 
   describe('Initialise case section', () => {
     describe('INIT_EXISTING_CASE_SECTION_WORKING_COPY', () => {
-      const initTask = {
+      const initTask: CaseStateEntry = {
         connectedCase: {
+          ...VALID_EMPTY_CASE,
           accountSid: 'ACxxx',
           id: '1',
           helpline: '',
@@ -207,13 +199,12 @@ describe('Working copy reducers', () => {
               ...initTask,
               connectedCase: {
                 ...initTask.connectedCase,
-                info: {
-                  ...initTask.connectedCase.info,
-                  households: [
+                sections: {
+                  household: [
                     {
-                      id: 'existingHousehold',
-                      twilioWorkerId: 'other-worker-sid',
-                      household: { otherProp: 'other-value' },
+                      sectionId: 'existingHousehold',
+                      twilioWorkerId: 'WK-other-worker-sid',
+                      sectionTypeSpecificData: { otherProp: 'other-value' },
                       createdAt: baselineDate.toISOString(),
                     },
                   ],
@@ -294,12 +285,7 @@ describe('Working copy reducers', () => {
           initialiseNewCaseSectionWorkingCopy('1', stubApi, {}),
         );
         expect(result).toStrictEqual({ ...stubRootState, connectedCase: expected });
-        expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(initialState.cases[1].caseWorkingCopy, {
-          id: expect.any(String),
-          form: {},
-          createdAt: null,
-          twilioWorkerId: null,
-        });
+        expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(initialState.cases[1].caseWorkingCopy, {});
       });
       test('Specifies populated form - updates case working copy using APIs updateWorkingCopy function specifying provided CaseItemEntry with a random ID', () => {
         const initialState: CaseState = {
@@ -328,10 +314,9 @@ describe('Working copy reducers', () => {
         );
         expect(result).toStrictEqual({ ...stubRootState, connectedCase: expected });
         expect(stubApi.updateWorkingCopy).toHaveBeenCalledWith(initialState.cases[1].caseWorkingCopy, {
-          id: expect.any(String),
-          form: { a: 'b', b: true, c: 'wakka wakka' },
-          createdAt: null,
-          twilioWorkerId: null,
+          a: 'b',
+          b: true,
+          c: 'wakka wakka',
         });
       });
     });

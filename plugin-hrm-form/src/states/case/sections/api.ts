@@ -20,8 +20,6 @@ import { Case, WellKnownCaseSection } from '../../../types/types';
 import { CaseWorkingCopy } from '../types';
 import { ApiCaseSection, CaseSectionTypeSpecificData } from '../../../services/caseSectionService';
 
-export type CaseUpdater = (original: Case, update: CaseSectionTypeSpecificData) => Case;
-
 export type CaseSectionApi = {
   readonly label: string; // for logging only
   readonly type: WellKnownCaseSection;

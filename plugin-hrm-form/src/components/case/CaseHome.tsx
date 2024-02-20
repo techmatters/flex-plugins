@@ -56,6 +56,7 @@ import { ApiCaseSection } from '../../services/caseSectionService';
 import { selectDefinitionVersionForCase } from '../../states/configuration/selectDefinitions';
 import selectCaseHelplineData from '../../states/case/selectCaseHelplineData';
 import { selectCounselorName } from '../../states/configuration/selectCounselorsHash';
+import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -89,6 +90,10 @@ const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
     office: selectCaseHelplineData(state, routing.caseId),
     definitionVersion,
     counselor,
+    label: contactLabelFromHrmContact(definitionVersion, connectedCase?.connectedContacts?.[0] ?? taskContact, {
+      placeholder: '',
+      substituteForId: false,
+    }),
   };
 };
 
@@ -117,6 +122,7 @@ const CaseHome: React.FC<Props> = ({
   hasMoreActivities,
   office,
   counselor,
+  label,
 }) => {
   if (!connectedCase) return null; // narrow type before deconstructing
   const caseId = connectedCase.id;
@@ -150,7 +156,6 @@ const CaseHome: React.FC<Props> = ({
     info: { followUpDate, childIsAtRisk },
     status,
     id,
-    label,
     categories,
     createdAt,
     updatedAt,

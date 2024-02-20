@@ -236,7 +236,7 @@ const AddEditCaseItem: React.FC<Props> = ({
   const { added, addingCounsellorName, updated, updatingCounsellorName } = caseItemHistory;
 
   const checkForEdits = (action: DismissAction) => {
-    if (isEqual(workingCopy?.form, savedForm)) {
+    if (isEqual(workingCopy, savedForm)) {
       close(action);
     } else setDialogState(action === DismissAction.CLOSE ? DialogState.OPEN_FOR_CLOSE : DialogState.OPEN_FOR_BACK);
   };

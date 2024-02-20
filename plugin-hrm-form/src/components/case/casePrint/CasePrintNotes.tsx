@@ -18,6 +18,7 @@
 /* eslint-disable dot-notation */
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
+
 import { formatName, formatStringToDateAndTime } from '../../../utils';
 import styles from './styles';
 import { getTemplateStrings } from '../../../hrmConfig';

@@ -16,41 +16,8 @@
 
 import { DefinitionVersion, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
 
-import { Case, WellKnownCaseSection } from '../../../types/types';
-import { CaseSectionApi, CaseUpdater } from './api';
-import { ApiCaseSection, CaseSectionTypeSpecificData } from '../../../services/caseSectionService';
-
-export const upsertCaseSectionItemUsingSectionName = (listProperty: WellKnownCaseSection) => (
-  original: Case,
-  entry: CaseSectionTypeSpecificData,
-): Case => {
-  const sectionList = [...((original?.sections ?? {})[listProperty] ?? [])];
-  const indexToUpdate = sectionList.findIndex(s => s.sectionId === entry.sectionId);
-  if (indexToUpdate > -1) {
-    sectionList[indexToUpdate] = { ...sectionList[indexToUpdate], sectionTypeSpecificData: entry };
-  } else {
-    sectionList.push({ sectionTypeSpecificData: entry } as ApiCaseSection);
-  }
-
-  return original
-    ? { ...original, sections: { ...original.sections, [listProperty]: sectionList } }
-    : ({ sections: { [listProperty]: sectionList } } as Case);
-};
-
-export const upsertCaseSectionItem = (listGetter: (c: Case) => ApiCaseSection[] | undefined): CaseUpdater => (
-  original: Case,
-  entry: CaseSectionTypeSpecificData,
-) => {
-  const copy = { ...original };
-  const sectionList = listGetter(copy);
-  const indexToUpdate = sectionList.findIndex(s => s.sectionId === entry.sectionId);
-  if (indexToUpdate > -1) {
-    sectionList[indexToUpdate] = { ...sectionList[indexToUpdate], sectionTypeSpecificData: entry };
-  } else {
-    sectionList.push({ sectionTypeSpecificData: entry } as ApiCaseSection);
-  }
-  return copy;
-};
+import { CaseSectionApi } from './api';
+import { CaseSectionTypeSpecificData } from '../../../services/caseSectionService';
 
 type FormValue = string | boolean | number | string[];
 

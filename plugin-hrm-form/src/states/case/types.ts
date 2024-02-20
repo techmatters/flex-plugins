@@ -17,8 +17,10 @@
 import { StatusInfo } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
+import { WellKnownCaseSection } from '../../types/types';
 import { ChannelTypes } from '../DomainConstants';
 import { CaseSectionTypeSpecificData } from '../../services/caseSectionService';
+import { WorkerSID } from '../../types/twilio';
 
 // Action types
 export const UPDATE_CASE_ACTION = 'case-action/update-case';
@@ -54,7 +56,7 @@ export type CaseActionType = UpdatedCaseAction | CreateCaseAction;
 type CoreActivity = {
   text: string;
   type: string;
-  twilioWorkerId: string;
+  twilioWorkerId: WorkerSID;
 };
 
 export type NoteActivity = CoreActivity & {
@@ -63,7 +65,7 @@ export type NoteActivity = CoreActivity & {
   type: 'note';
   note: t.Note;
   updatedAt?: string;
-  updatedBy?: string;
+  updatedBy?: WorkerSID;
 };
 
 export type ReferralActivity = CoreActivity & {
@@ -73,7 +75,7 @@ export type ReferralActivity = CoreActivity & {
   type: 'referral';
   referral: t.Referral;
   updatedAt?: string;
-  updatedBy?: string;
+  updatedBy?: WorkerSID;
 };
 
 export type ContactActivity = CoreActivity & {
@@ -97,7 +99,7 @@ export type CaseSummaryWorkingCopy = {
 
 export type CaseWorkingCopy = {
   sections: {
-    [section: string]: {
+    [section in WellKnownCaseSection]?: {
       new?: CaseSectionTypeSpecificData;
       existing: { [id: string]: CaseSectionTypeSpecificData };
     };
