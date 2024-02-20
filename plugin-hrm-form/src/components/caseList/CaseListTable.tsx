@@ -64,8 +64,6 @@ const CaseListTable: React.FC<Props> = ({
 
   const pagesCount = Math.ceil(caseCount / CASES_PER_PAGE);
 
-  console.log('>>> CaseListTable', loading, caseCount);
-
   return (
     <>
       <Filters caseCount={caseCount} currentDefinitionVersion={currentDefinitionVersion} />

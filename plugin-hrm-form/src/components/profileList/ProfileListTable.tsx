@@ -37,8 +37,6 @@ const ProfileListTable: React.FC = () => {
 
   const pagesCount = Math.ceil(count / PAGE_SIZE);
 
-  console.log('>>> ProfileListTable', loading, count);
-
   return (
     <>
       <TableContainer>
