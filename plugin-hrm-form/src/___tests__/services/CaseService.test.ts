@@ -54,7 +54,7 @@ beforeEach(() => {
 
 describe('cancelCase()', () => {
   test('cancelCase calls "DELETE /cases/id', async () => {
-    const caseId = 1;
+    const caseId = '1';
 
     await cancelCase(caseId);
 
@@ -109,7 +109,7 @@ describe('createCase()', () => {
     const mockedResponse = {
       ...baselineResponse,
       info: { definitionVersion: 'demo-v1', offlineContactCreator: 'creating worker' },
-      twilioWorkerId: 'owning worker',
+      twilioWorkerId: 'WK-owning worker',
     };
 
     const contactForm: Contact = {
@@ -118,7 +118,7 @@ describe('createCase()', () => {
         ...baselineContact.rawJson,
         contactlessTask: {
           ...baselineContact.rawJson.contactlessTask,
-          createdOnBehalfOf: 'owning worker',
+          createdOnBehalfOf: 'WK-owning worker',
         },
       },
     };
@@ -131,7 +131,7 @@ describe('createCase()', () => {
     const expectedOptions = {
       method: 'POST',
       body: expect.jsonStringToParseAs({
-        twilioWorkerId: 'owning worker',
+        twilioWorkerId: 'WK-owning worker',
         status: 'open',
         helpline: 'a helpline',
         info: {

@@ -19,35 +19,7 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { fetchHrmApi } from './fetchHrmApi';
 import { getQueryParams } from './PaginationParams';
-import {
-  Case,
-  CaseInfo,
-  CaseOverview,
-  Contact,
-  DocumentEntry,
-  HouseholdEntry,
-  IncidentEntry,
-  NoteEntry,
-  PerpetratorEntry,
-  ReferralEntry,
-  SearchCaseResult,
-} from '../types/types';
-
-type LegacySections = {
-  counsellorNotes?: NoteEntry[];
-  perpetrators?: PerpetratorEntry[];
-  households?: HouseholdEntry[];
-  referrals?: ReferralEntry[];
-  incidents?: IncidentEntry[];
-  documents?: DocumentEntry[];
-};
-
-type LegacyCase = Omit<Case, 'info'> & {
-  info: Pick<CaseInfo, 'definitionVersion' | 'summary' | 'followUpDate' | 'childIsAtRisk' | 'offlineContactCreator'> &
-    LegacySections;
-};
-
-const convertLegacyCaseFormat = (legacy: LegacyCase): Case => legacy;
+import { Case, CaseOverview, Contact, SearchCaseResult } from '../types/types';
 
 export async function createCase(contact: Contact, creatingWorkerSid: string, definitionVersion: DefinitionVersionId) {
   const { helpline, rawJson: contactForm } = contact;
@@ -80,15 +52,6 @@ export async function cancelCase(caseId: Case['id']) {
   };
 
   await fetchHrmApi(`/cases/${caseId}`, options);
-}
-
-export async function updateCase(caseId: Case['id'], body: Partial<Case>): Promise<Case> {
-  const options = {
-    method: 'PUT',
-    body: JSON.stringify(body),
-  };
-
-  return fetchHrmApi(`/cases/${caseId}`, options);
 }
 
 export async function updateCaseOverview(caseId: Case['id'], body: CaseOverview): Promise<Case> {

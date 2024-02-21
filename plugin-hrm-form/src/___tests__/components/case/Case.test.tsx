@@ -35,7 +35,8 @@ import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { RecursivePartial } from '../../RecursivePartial';
 import { namespace } from '../../../states/storeNamespaces';
 import { CaseStateEntry } from '../../../states/case/types';
-import { WorkerSID } from '../../../types/twilio';
+import { TaskSID, WorkerSID } from '../../../types/twilio';
+import { VALID_EMPTY_CASE } from '../../testCases';
 
 jest.mock('../../../services/CaseService', () => ({ getActivities: jest.fn(() => []), cancelCase: jest.fn() }));
 jest.mock('../../../permissions', () => ({
@@ -62,6 +63,7 @@ let initialState: RootState;
 const TASK_SID: TaskSID = 'WT-taskSid';
 const CURRENT_WORKER_SID: WorkerSID = 'WK-current-worker-sid';
 const WORKER_SID: WorkerSID = 'WK-worker1';
+const BASELINE_DATE = new Date('2020-06-29T22:26:00.208Z');
 
 beforeEach(() => {
   mockReset();
@@ -97,9 +99,10 @@ describe('useState mocked', () => {
 
   const case1: CaseStateEntry = {
     connectedCase: {
+      ...VALID_EMPTY_CASE,
       id: 'case1',
-      createdAt: '2020-06-29T22:26:00.208Z',
-      updatedAt: '2020-06-29T22:26:00.208Z',
+      createdAt: BASELINE_DATE.toISOString(),
+      updatedAt: BASELINE_DATE.toISOString(),
       twilioWorkerId: WORKER_SID,
       status: 'open',
       info: { definitionVersion: DefinitionVersionId.v1 },
@@ -178,7 +181,9 @@ describe('useState mocked', () => {
 
     expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('case1');
     expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
-    expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe('6/29/2020');
+    expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe(
+      BASELINE_DATE.toLocaleDateString(),
+    );
     expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe('—');
 
     expect(store.dispatch).toHaveBeenCalledWith({
@@ -220,7 +225,9 @@ describe('useState mocked', () => {
 
     expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('case1');
     expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
-    expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe('6/29/2020');
+    expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe(
+      BASELINE_DATE.toLocaleDateString(),
+    );
     expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe('—');
     expect(screen.getByTestId('NavigableContainer-Title').innerHTML).toContain('first last');
   });
@@ -252,8 +259,12 @@ describe('useState mocked', () => {
 
     expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('case1');
     expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
-    expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe('6/29/2020');
-    expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe('6/29/2020');
+    expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe(
+      BASELINE_DATE.toLocaleDateString(),
+    );
+    expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe(
+      BASELINE_DATE.toLocaleDateString(),
+    );
 
     expect(store.dispatch).toHaveBeenCalledWith({
       contacts: [connectedContact],
