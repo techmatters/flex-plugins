@@ -72,7 +72,7 @@
             "post_survey_serverless_handled": true,
             "backend_handled_chat_janitor": true,
             "enable_client_profiles": false,
-            "enable_case_merging": false,
+            "enable_case_merging": true,
             "enable_confirm_on_browser_close": true
         },
         "multipleOfficeSupport": false,
