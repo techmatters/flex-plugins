@@ -23,8 +23,8 @@ locals {
 
     #Task router
     phone_numbers = {
-      youthline : ["+18645238101", "+6498867292"],
-      clinical : ["+6498865661"]
+      youthline : ["+18645238101", "+6498865661"],
+      clinical : ["+6498867292"]
     }
 
     #Channels
