@@ -90,6 +90,7 @@ const updateCaseSections = (
     return state;
   }
   const { connectedCase: existingCase, caseWorkingCopy } = caseState;
+  existingCase.sections = existingCase.sections || {};
   existingCase.sections[sectionType] = existingCase.sections[sectionType] || [];
   const list = existingCase.sections[sectionType];
   const index = list.findIndex(section => section.sectionId === updatedCaseSection.sectionId);
