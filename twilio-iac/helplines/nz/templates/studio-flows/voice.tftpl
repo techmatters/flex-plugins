@@ -90,7 +90,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_blocked_message",
+          "next": "play_blocked",
           "event": "match",
           "conditions": [
             {
@@ -149,7 +149,7 @@ ${
       }
     },
     {
-      "name": "send_blocked_message",
+      "name": "play_blocked",
       "type": "say-play",
       "transitions": [
         {
@@ -157,14 +157,12 @@ ${
         }
       ],
       "properties": {
-        "voice": "man",
+        "play": channel_flow_vars["blocked_url"],
         "offset": {
-          "x": 760,
+          "x": 780,
           "y": 800
         },
-        "loop": 1,
-        "say": "I'm sorry, you have been blocked",
-        "language": "en-US"
+        "loop": 1
       }
     }
   ],
