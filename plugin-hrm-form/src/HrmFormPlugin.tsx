@@ -124,6 +124,8 @@ const setUpComponents = (
   // remove dynamic components
   Components.removeTaskCanvasHeaderActions(featureFlags);
   Components.setLogo(setupObject.logoUrl);
+  Components.applyStagingTheme(setupObject.environment);
+
   if (featureFlags.enable_transfers) {
     Components.removeDirectoryButton();
     Components.removeActionsIfTransferring();
@@ -200,17 +202,6 @@ export default class HrmFormPlugin extends FlexPlugin {
     const { translateUI, getMessage } = setUpLocalization(config);
     ActionFunctions.loadCurrentDefinitionVersion();
 
-    setUpSharedStateClient();
-    setUpComponents(featureFlags, config, translateUI);
-    setUpActions(featureFlags, config, getMessage);
-
-    TaskRouterListeners.setTaskWrapupEventListeners(featureFlags);
-
-    subscribeReservedTaskAlert();
-    subscribeNewMessageAlertOnPluginInit();
-    // Force one notification on init so AudioPlayer is eagerly loaded
-    playNotification('silence');
-
     const managerConfiguration: Flex.Config = {
       // colorTheme: HrmTheme,
       theme: {
@@ -223,6 +214,18 @@ export default class HrmFormPlugin extends FlexPlugin {
       },
     };
     manager.updateConfig(managerConfiguration);
+
+    setUpSharedStateClient();
+    setUpComponents(featureFlags, config, translateUI);
+    setUpActions(featureFlags, config, getMessage);
+
+    TaskRouterListeners.setTaskWrapupEventListeners(featureFlags);
+
+    subscribeReservedTaskAlert();
+    subscribeNewMessageAlertOnPluginInit();
+    // Force one notification on init so AudioPlayer is eagerly loaded
+    playNotification('silence');
+
 
     // TODO(nick): Eventually remove this log line or set to debug.  Should we fail hard here?
     const { hrmBaseUrl } = config;
