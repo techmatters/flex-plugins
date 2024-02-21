@@ -17,7 +17,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
-import { CircularProgress } from '@material-ui/core';
 
 import ProfileFlagPill from '../profile/profileFlag/ProfileFlagPill';
 import { getShortSummary } from '../../utils';
@@ -32,13 +31,12 @@ import {
   DataCell,
   TableBodyFont,
   OpaqueText,
-  ErrorText,
 } from '../../styles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfileFlags, useProfileSectionByType } from '../../states/profile/hooks';
 import { PermissionActions, getInitializedCan } from '../../permissions';
 
-const CHAR_LIMIT = 200;
+const CHAR_LIMIT = 250;
 
 type Props = {
   profileId: number;
@@ -49,7 +47,7 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
   const { profile } = useProfile({ profileId });
   const { combinedProfileFlags } = useProfileFlags(profileId);
 
-  const { section: summarySection, error, loading } = useProfileSectionByType({ profileId, sectionType: 'summary' });
+  const { section: summarySection } = useProfileSectionByType({ profileId, sectionType: 'summary' });
 
   const handleViewProfile = async () => {
     dispatch(newOpenModalAction({ route: 'profile', profileId, subroute: 'details' }, 'standalone-task-sid'));
@@ -64,9 +62,20 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
     <DataTableRow onClick={handleViewProfile}>
       <NumericCell>
         <OpenLinkContainer>
-          <OpenLinkAction tabIndex={0}>{profile?.name ? profile.name : profile?.id}</OpenLinkAction>
+          <OpenLinkAction tabIndex={0}>{profile?.id}</OpenLinkAction>
         </OpenLinkContainer>
       </NumericCell>
+      <DataCell>
+        <TableBodyFont>
+          {profile?.name ? (
+            profile?.name
+          ) : (
+            <OpaqueText>
+              <Template code="ProfileList-ClientName-None" />
+            </OpaqueText>
+          )}
+        </TableBodyFont>
+      </DataCell>
       {combinedProfileFlags.length > 0 ? (
         <PillsCell>
           {combinedProfileFlags
@@ -90,12 +99,7 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
         </DataCell>
       )}
       <SummaryCell>
-        {error && <ErrorText>Please try again later</ErrorText>}
-        {loading ? (
-          <CircularProgress size={14} />
-        ) : (
-          <TableBodyFont>{getShortSummary(summarySection?.content, CHAR_LIMIT, 'profile')}</TableBodyFont>
-        )}
+        <TableBodyFont>{getShortSummary(summarySection?.content, CHAR_LIMIT, 'profile')}</TableBodyFont>
       </SummaryCell>
     </DataTableRow>
   );
