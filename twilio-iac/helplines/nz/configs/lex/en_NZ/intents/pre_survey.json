@@ -24,7 +24,7 @@
         "slot_type": "yes_no",
         "value_elicitation_prompt": {
           "max_attempts": 2,
-          "content": "Kia ora, welcome to Youthline, do you need emergency support? \n 1. Yes \n 2. No",
+          "content": "Kia ora, welcome to Youthline, do you need urgent support? \n 1. Yes \n 2. No",
           "content_type": "PlainText"
         }
       }
