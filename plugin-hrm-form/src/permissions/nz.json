@@ -19,7 +19,7 @@
     "editChildIsAtRisk":  [["isSupervisor"],["isCreator", "isCaseOpen", {"createdHoursAgo": 24}]],
     "editFollowUpDate":  [["isSupervisor"],["isCreator", "isCaseOpen", {"createdHoursAgo": 24}]],
     "updateCaseContacts": [["isSupervisor"], ["isCaseOpen", {"createdDaysAgo": 28}]],
-  
+
     "viewContact":  [["isSupervisor"],["isOwner"]],
     "editContact":  [["isSupervisor"],["isOwner", {"createdHoursAgo": 24}]],
     "viewExternalTranscript":  [["isSupervisor"]],

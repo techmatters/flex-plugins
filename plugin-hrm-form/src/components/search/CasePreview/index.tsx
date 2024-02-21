@@ -108,8 +108,8 @@ const CasePreview: React.FC<Props> = ({
     isConnectedToTaskContact = Boolean(connectedContacts?.find(contact => contact.id === taskContact.id));
 
     showConnectButton = Boolean(
-      can(PermissionActions.UPDATE_CASE_CONTACTS, taskContact) &&
-        can(PermissionActions.ADD_CONTACT_TO_CASE, currentCase) &&
+      can(PermissionActions.UPDATE_CASE_CONTACTS, currentCase) &&
+        can(PermissionActions.ADD_CONTACT_TO_CASE, taskContact) &&
         connectedContacts?.length &&
         (!taskContact.caseId || isConnectedToTaskContact),
     );
