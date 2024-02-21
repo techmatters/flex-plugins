@@ -1,6 +1,3 @@
-<!-- Tag the primary responsible for reviewing this PR. If in doubt who can take this, ask first. -->
-Primary reviewer:
-
 ## Description
 <!--
 - What this pull request does.
@@ -15,8 +12,12 @@ Primary reviewer:
 - [ ] Tested for chat contacts
 - [ ] Tested for call contacts
 
-### Related Issues
-Fixes #....
+### Other Related Issues
+<!--
+- The primary issue this PR addresses should be part of the PR title.
+- If there are other tickets related to this PR, reference them here with context of how they are relevant.
+-->
+None
 
 ### Verification steps
 <!--

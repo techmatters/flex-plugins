@@ -16,17 +16,18 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { IconButton } from '@twilio/flex-ui';
-import { Box, Popper, Paper } from '@material-ui/core';
+import { IconButton, Template } from '@twilio/flex-ui';
+import { Box, Popper } from '@material-ui/core';
+import { parseISO } from 'date-fns';
 
-import { StyledMenuList, StyledMenuItem } from '../../../styles';
+import { StyledMenuList, StyledMenuItem, ProfileFlagEditList, StyledPaper } from '../styles';
 import { ProfileFlag } from '../../../types/types';
 import { selectProfileAsyncPropertiesById } from '../../../states/profile/selectors';
 import { useProfileFlags } from '../../../states/profile/hooks';
 import { RootState } from '../../../states';
-import { ProfileFlagEditList } from '../styles';
 import ProfileFlagList from './ProfileFlagList';
 import { ProfileCommonProps } from '../types';
+import useProfileFlagDurations from '../../../states/configuration/hooks/useProfileFlagDurations';
 
 type OwnProps = ProfileCommonProps & {
   modalRef?: React.RefObject<HTMLDivElement>;
@@ -37,11 +38,19 @@ type Props = OwnProps;
 const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
   const { modalRef, profileId } = props;
 
-  const { allProfileFlags, profileFlags, associateProfileFlag } = useProfileFlags(profileId);
+  const { allProfileFlags, filteredProfileFlags, associateProfileFlag } = useProfileFlags(profileId);
   const loading = useSelector((state: RootState) => selectProfileAsyncPropertiesById(state, profileId))?.loading;
 
+  const customFlagDurations = useProfileFlagDurations();
   const anchorRef = useRef(null);
 
+  const [paperwidth, setPaperWidth] = useState(0);
+
+  useEffect(() => {
+    if (anchorRef.current) {
+      setPaperWidth(anchorRef.current.offsetWidth);
+    }
+  }, []);
   /**
    * We need refs to manage focus for accessibility since we're using a Popper
    * a lot of this is based around the example here: https://mui.com/material-ui/react-menu/#StyledMenuList-composition
@@ -50,7 +59,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
   const associateRef = useRef(null);
   const disassociateRef = useRef(null);
   const [open, setOpen] = useState(true);
-  const availableFlags = allProfileFlags?.filter(flag => !profileFlags.find(f => f.id === flag.id));
+  const availableFlags = allProfileFlags?.filter(flag => !filteredProfileFlags.find(f => f.id === flag.id));
   const hasAvailableFlags = Boolean(availableFlags?.length);
   const shouldAllowAssociate = hasAvailableFlags && !loading;
 
@@ -62,12 +71,12 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
     /**
      * If there are flags to disassociate, focus on the disassociate button
      */
-    if (profileFlags?.length) {
+    if (filteredProfileFlags?.length) {
       disassociateRef?.current?.focus();
       return;
     }
     associateButtonRef?.current?.focus();
-  }, [profileFlags]);
+  }, [filteredProfileFlags]);
 
   const focusOnAssociateRef = (e?: React.MouseEvent) => {
     e?.preventDefault();
@@ -105,23 +114,47 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
         </Box>
       </ProfileFlagEditList>
       <Popper open={open} anchorEl={anchorRef.current} placement="bottom-start" ref={modalRef}>
-        <Paper>
+        <StyledPaper width={paperwidth}>
           <StyledMenuList
             id="associate-status-menu"
             aria-labelledby="associate-status-button"
             onKeyDown={handleListKeyDown}
           >
-            {availableFlags?.map((flag: ProfileFlag, index: number) => (
-              <StyledMenuItem
-                key={flag.id}
-                onClick={() => shouldAllowAssociate && associateProfileFlag(flag.id)}
-                ref={index ? null : associateRef}
-              >
-                {flag.name}
-              </StyledMenuItem>
-            ))}
+            {availableFlags
+              ?.sort((a, b) => a.name.localeCompare(b.name))
+              .map((flag: ProfileFlag, index: number) => {
+                const customDurations = customFlagDurations.filter(customDuration => customDuration.flag === flag.name);
+                if (customDurations.length > 0) {
+                  return customDurations.map((customDuration, customDurationIndex) => {
+                    const validUntil = new Date(
+                      Date.now() + Number(customDuration.durationInHours) * 60 * 60 * 1000,
+                    ).toISOString();
+                    const validatedTime = parseISO(validUntil);
+
+                    return (
+                      <StyledMenuItem
+                        key={customDuration.durationInHours}
+                        onClick={() => shouldAllowAssociate && associateProfileFlag(flag.id, validatedTime)}
+                        ref={index && customDurationIndex ? null : associateRef}
+                      >
+                        <Template code={customDuration.label} />
+                      </StyledMenuItem>
+                    );
+                  });
+                }
+
+                return (
+                  <StyledMenuItem
+                    key={flag.id}
+                    onClick={() => shouldAllowAssociate && associateProfileFlag(flag.id)}
+                    ref={index ? null : associateRef}
+                  >
+                    <Template code={flag.name} />
+                  </StyledMenuItem>
+                );
+              })}
           </StyledMenuList>
-        </Paper>
+        </StyledPaper>
       </Popper>
     </>
   );

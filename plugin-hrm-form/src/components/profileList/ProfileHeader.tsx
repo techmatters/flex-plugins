@@ -20,15 +20,21 @@ import { TableRow } from '@material-ui/core';
 import { TableHeader } from '../../styles';
 import ProfileHeaderCell from './ProfileHeaderCell';
 import { ProfilesListSortBy } from '../../types/types';
+import { PermissionActions, getInitializedCan } from '../../permissions';
 
 const ProfileHeader: React.FC = () => {
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
+
   return (
     <TableHeader>
       <TableRow>
         <ProfileHeaderCell column={ProfilesListSortBy.ID} localizedText="ProfileList-THClient" width="8%" />
         <ProfileHeaderCell localizedText="ProfileList-THStatus" />
-        <ProfileHeaderCell localizedText="ProfileList-THIdentifier" />
-        <ProfileHeaderCell localizedText="ProfileList-THSummary" />
+        {maskIdentifiers ? null : <ProfileHeaderCell localizedText="ProfileList-THIdentifier" />}
+        <ProfileHeaderCell localizedText="ProfileList-THSummary" width="15%" />
       </TableRow>
     </TableHeader>
   );

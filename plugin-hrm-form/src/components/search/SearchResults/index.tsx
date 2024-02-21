@@ -24,7 +24,7 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
-import { SearchContactResult, SearchCaseResult, Contact, Case, CustomITask } from '../../../types/types';
+import { Contact, CustomITask, SearchCaseResult, SearchContactResult } from '../../../types/types';
 import { Row } from '../../../styles';
 import {
   EmphasisedText,
@@ -250,12 +250,73 @@ const SearchResults: React.FC<Props> = ({
     </>
   );
 
-  const handleNoSearchResult = (type: string) => (
-    <SearchResultWarningContainer data-testid={type === 'Contact' ? 'ContactsCount' : 'CasesCount'}>
+  const contactResults = () => (
+    <>
+      <StyledResultsHeader>
+        <StyledCount data-testid="ContactsCount">
+          {contactsCount}&nbsp;
+          {contactsCount === 1 ? (
+            <Template code="PreviousContacts-Contact" />
+          ) : (
+            <Template code="SearchResultsIndex-Contacts" />
+          )}
+        </StyledCount>
+        <StyledFormControlLabel
+          control={
+            <StyledSwitch
+              color="default"
+              size="small"
+              checked={!onlyDataContacts}
+              onChange={handleToggleNonDataContact}
+              disabled={isRequestingContacts}
+            />
+          }
+          label={
+            <SwitchLabel>
+              <Template code="SearchResultsIndex-NonDataContacts" />
+            </SwitchLabel>
+          }
+          labelPlacement="start"
+        />
+      </StyledResultsHeader>
+      {contacts &&
+        contacts.length > 0 &&
+        contacts.map(contact => {
+          return (
+            <ContactPreview
+              key={contact.id}
+              contact={contact}
+              handleViewDetails={() => can(PermissionActions.VIEW_CONTACT, contact) && viewContactDetails(contact)}
+            />
+          );
+        })}
+      {contactsPageCount > 1 && (
+        <Pagination
+          page={contactsPage}
+          pagesCount={contactsPageCount}
+          handleChangePage={handleContactsChangePage}
+          transparent
+          disabled={isRequestingContacts}
+        />
+      )}
+    </>
+  );
+
+  const noResultsTemplateCode =
+    currentResultPage === 'contact-results' ? 'SearchResultsIndex-NoContactsFound' : 'SearchResultsIndex-NoCasesFound';
+  const searchAgainTemplateCode =
+    currentResultPage === 'contact-results'
+      ? 'SearchResultsIndex-SearchAgainForContact'
+      : 'SearchResultsIndex-SearchAgainForCase';
+
+  const handleNoSearchResult = () => (
+    <SearchResultWarningContainer
+      data-testid={currentResultPage === 'contact-results' ? 'ContactsCount' : 'CasesCount'}
+    >
       <Row style={{ paddingTop: '20px' }}>
         <InfoIcon style={{ color: '#ffc811' }} />
         <Text padding="0" fontWeight="700" margin="20px" color="#282a2b">
-          <Template code="SearchResultsIndex-NoCasesFound" type={type} />
+          <Template code={noResultsTemplateCode} />
         </Text>
       </Row>
 
@@ -267,7 +328,7 @@ const SearchResults: React.FC<Props> = ({
           cursor="pointer"
           onClick={openSearchModal}
         >
-          <Template code="SearchResultsIndex-SearchAgainForCase" type={type.toLocaleLowerCase()} />
+          <Template code={searchAgainTemplateCode} />
         </NoResultTextLink>
         {routing.action && (
           <>
@@ -282,10 +343,6 @@ const SearchResults: React.FC<Props> = ({
       </Row>
     </SearchResultWarningContainer>
   );
-
-  if (cases && cases.length === 0 && routing.action === 'select-case') return handleNoSearchResult('Case');
-
-  if (currentResultPage === 'case-results' && routing.action === 'select-case') return caseResults();
 
   return (
     <>
@@ -355,64 +412,12 @@ const SearchResults: React.FC<Props> = ({
               />
             </StyledLink>
           </StyledResultsContainer>
-          {currentResultPage === 'contact-results' && contacts && contacts.length === 0
-            ? handleNoSearchResult('Contact')
-            : currentResultPage === 'contact-results' && (
-                <>
-                  <StyledResultsHeader>
-                    <StyledCount data-testid="ContactsCount">
-                      {contactsCount}&nbsp;
-                      {contactsCount === 1 ? (
-                        <Template code="PreviousContacts-Contact" />
-                      ) : (
-                        <Template code="SearchResultsIndex-Contacts" />
-                      )}
-                    </StyledCount>
-                    <StyledFormControlLabel
-                      control={
-                        <StyledSwitch
-                          color="default"
-                          size="small"
-                          checked={!onlyDataContacts}
-                          onChange={handleToggleNonDataContact}
-                          disabled={isRequestingContacts}
-                        />
-                      }
-                      label={
-                        <SwitchLabel>
-                          <Template code="SearchResultsIndex-NonDataContacts" />
-                        </SwitchLabel>
-                      }
-                      labelPlacement="start"
-                    />
-                  </StyledResultsHeader>
-                  {contacts &&
-                    contacts.length > 0 &&
-                    contacts.map(contact => {
-                      return (
-                        <ContactPreview
-                          key={contact.id}
-                          contact={contact}
-                          handleViewDetails={() =>
-                            can(PermissionActions.VIEW_CONTACT, contact) && viewContactDetails(contact)
-                          }
-                        />
-                      );
-                    })}
-                  {contactsPageCount > 1 && (
-                    <Pagination
-                      page={contactsPage}
-                      pagesCount={contactsPageCount}
-                      handleChangePage={handleContactsChangePage}
-                      transparent
-                      disabled={isRequestingContacts}
-                    />
-                  )}
-                </>
-              )}
-          {currentResultPage === 'case-results' && cases && cases.length === 0
-            ? handleNoSearchResult('Case')
-            : currentResultPage === 'case-results' && caseResults()}
+          {currentResultPage === 'contact-results' &&
+            contacts &&
+            (contacts.length === 0 ? handleNoSearchResult() : contactResults())}
+          {currentResultPage === 'case-results' &&
+            cases &&
+            (cases.length === 0 ? handleNoSearchResult() : caseResults())}
         </ScrollableList>
       </ListContainer>
     </>

@@ -19,12 +19,12 @@ import React, { useEffect, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import { AnyAction, bindActionCreators } from 'redux';
+import { parseISO } from 'date-fns';
 
 import { RootState } from '../../states';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { getNoteActivities, sortActivities } from '../../states/case/caseActivities';
 import { getHelplineData } from './caseHelpers';
-import { getLocaleDateTime } from '../../utils/helpers';
 import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
 import { CaseDetails } from '../../states/case/types';
@@ -163,7 +163,7 @@ const Case: React.FC<Props> = ({
   // -- Date cannot be converted here since the date dropdown uses the yyyy-MM-dd format.
   const followUpDate = info && info.followUpDate ? info.followUpDate : '';
   // -- Converting followUpDate to match the same format as the rest of the dates
-  const followUpPrintedDate = info && info.followUpDate ? getLocaleDateTime(info.followUpDate) : '';
+  const followUpPrintedDate = info && info.followUpDate ? parseISO(info.followUpDate).toLocaleDateString() : '';
   const households = info && info.households ? info.households : [];
   const perpetrators = info && info.perpetrators ? info.perpetrators : [];
   const incidents = info && info.incidents ? info.incidents : [];
@@ -251,7 +251,6 @@ const Case: React.FC<Props> = ({
     const addScreenProps = {
       task,
       counselor: currentCounselor,
-      counselorsHash,
       definitionVersion,
     };
 

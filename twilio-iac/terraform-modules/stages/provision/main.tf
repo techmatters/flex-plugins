@@ -74,8 +74,6 @@ module "aws" {
   shared_state_sync_service_sid      = module.services.shared_state_sync_service_sid
   flex_chat_service_sid              = module.services.flex_chat_service_sid
   flex_proxy_service_sid             = module.services.flex_proxy_service_sid
-  # TODO: manually delete this resource from SSM after migration
-  post_survey_bot_sid = "deleted"
   # The serverless deploy action assumes that this paramater exists, so in order not to break it
   # we need to add a non-valid workflow sid.
   survey_workflow_sid = try(module.taskRouter.workflow_sids.survey, "NOTVALIDWORKFLOWSID")

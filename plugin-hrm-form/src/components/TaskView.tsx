@@ -25,7 +25,7 @@ import FormNotEditable from './FormNotEditable';
 import { RootState } from '../states';
 import { hasTaskControl } from '../transfer/transferTaskState';
 import { CustomITask, isInMyBehalfITask, isOfflineContactTask } from '../types/types';
-import ProfileIdentifierBanner from './profile/ProfileIdentifierBanner';
+import ProfileIdentifierBanner from './profile/IdentifierBanner';
 import { Flex } from '../styles';
 import { isStandaloneITask } from './case/Case';
 import { getHelplineToSave } from '../services/HelplineService';

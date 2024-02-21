@@ -62,6 +62,10 @@
       {
         "value": "Others",
         "label": "Others"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ],
     "required": {
@@ -92,7 +96,7 @@
     "options": [
       {
         "value": "Unknown",
-        "label": ""
+        "label": "Unknown"
       },
       {
         "value": "Male",
@@ -125,7 +129,7 @@
     "options": [
       {
         "value": "Unknown",
-        "label": ""
+        "label": "Unknown"
       },
       {
         "value": "English",
@@ -157,7 +161,7 @@
     "options": [
       {
         "value": "Unknown",
-        "label": ""
+        "label": "Unknown"
       },
       {
         "value": "Chinese",

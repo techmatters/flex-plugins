@@ -21,7 +21,7 @@ import { useDispatch } from 'react-redux';
 
 import { ProfilesListSortBy, SortDirection } from '../../types/types';
 import { TableHeaderFont, HeaderCell } from '../../styles';
-import { useProfilesList } from '../../states/profile/hooks/useProfilesList';
+import { useProfilesList } from '../../states/profile/hooks';
 import { updateProfileListSettings } from '../../states/profile/profilesList';
 
 const defaultSortDirection = SortDirection.DESC;

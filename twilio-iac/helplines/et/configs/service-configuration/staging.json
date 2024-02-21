@@ -1,6 +1,7 @@
 {
     "attributes": {
         "feature_flags": {
+            "enable_case_merging": true,
             "post_survey_serverless_handled": false
         },
         "previous_ui_version": {

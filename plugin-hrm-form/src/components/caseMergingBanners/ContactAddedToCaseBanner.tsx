@@ -25,12 +25,12 @@ import { newOpenModalAction } from '../../states/routing/actions';
 import type { Case } from '../../types/types';
 import InfoIcon from './InfoIcon';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
-import selectCaseByCaseId from '../../states/case/selectCaseStateByCaseId';
+import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import { RootState } from '../../states';
 import { BannerActionLink, BannerContainer, CaseLink, Text } from '../../styles/banners';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
+import { getInitializedCan, PermissionActions } from '../../permissions';
 import { getHrmConfig } from '../../hrmConfig';
-import { PermissionActions, getInitializedCan } from '../../permissions';
 
 type OwnProps = {
   taskId: string;
@@ -71,16 +71,20 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
   caseId,
   existingSavedContact,
 }) => {
+  /*
+  TODO: Convert to a custom hook since it has been used in several places within
+  the Flex-plugins repo?
+  */
   const can = React.useMemo(() => {
     return getInitializedCan();
   }, []);
 
   const { workerSid } = getHrmConfig();
   const canViewContactAndCase = workerSid === contact.twilioWorkerId;
-  const canEditContact =
+  const canEditAndRemoveCase =
     can(PermissionActions.REMOVE_CONTACT_FROM_CASE, contact) &&
     can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCase);
-  const canViewCase = can(PermissionActions.VIEW_CASE, connectedCase);
+  const canViewcase = can(PermissionActions.VIEW_CASE, connectedCase);
 
   if (connectedCase === undefined && canViewContactAndCase) return null;
 
@@ -100,15 +104,16 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
       </Text>
       <CaseLink
         type="button"
-        color={!canEditContact && '#000'}
-        permission={!canEditContact && 'none'}
-        onClick={() => canEditContact && canViewCase && viewCaseDetails(connectedCase)}
+        color={!canViewcase && '#000'}
+        permission={!canViewcase && 'none'}
+        onClick={() => canViewcase && viewCaseDetails(connectedCase)}
+        data-fs-id="LinkedCase-Button"
       >
         <Template code="Case-CaseNumber" />
         {caseId}
       </CaseLink>
-      {canEditContact && (
-        <BannerActionLink type="button" onClick={handleRemoveContactFromCase}>
+      {canEditAndRemoveCase && (
+        <BannerActionLink type="button" onClick={handleRemoveContactFromCase} data-fs-id="RemoveContactFromCase-Button">
           <Template code="CaseMerging-RemoveFromCase" />
         </BannerActionLink>
       )}

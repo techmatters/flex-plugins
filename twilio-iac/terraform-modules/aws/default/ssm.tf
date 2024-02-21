@@ -148,26 +148,6 @@ resource "aws_ssm_parameter" "twilio_survey_workflow_sid" {
   }
 }
 
-resource "aws_ssm_parameter" "twilio_post_survey_bot_chat_url" {
-  count = var.post_survey_bot_sid == "" ? 0 : 1
-
-  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/post_survey_bot_chat_url"
-  type        = "SecureString"
-  value       = "https://channels.autopilot.twilio.com/v1/${nonsensitive(var.twilio_account_sid)}/${var.post_survey_bot_sid}/twilio-chat"
-  description = "Twilio account - Post Survey Bot Chat URL"
-
-  tags = {
-    Environment = lower(var.environment)
-    Name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/post_survey_bot_chat_url"
-    Terraform   = true
-  }
-}
-
-moved {
-  from = aws_ssm_parameter.twilio_post_survey_bot_chat_url
-  to   = aws_ssm_parameter.twilio_post_survey_bot_chat_url[0]
-}
-
 resource "aws_ssm_parameter" "twilio_operating_info_key" {
   name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/operating_info_key"
   type        = "SecureString"

@@ -69,3 +69,7 @@ export const selectProfileListState = (state: RootState): t.ProfilesListState =>
   const profileState = selectProfileState(state);
   return profileState.profilesList;
 };
+
+export const selectProfileListSettings = (state: RootState): t.ProfilesListState['settings'] => {
+  return selectProfileListState(state)?.settings;
+};

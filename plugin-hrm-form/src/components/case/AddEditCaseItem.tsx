@@ -32,8 +32,8 @@ import {
   ColumnarBlock,
   ColumnarContent,
   Container,
-  TwoColumnLayout,
   StyledNextStepButton,
+  TwoColumnLayout,
 } from '../../styles';
 import { CaseActionFormContainer } from './styles';
 import ActionHeader from './ActionHeader';
@@ -43,7 +43,6 @@ import { useCreateFormFromDefinition } from '../forms';
 import type { Case, CaseInfo, CaseItemEntry, CustomITask, StandaloneITask } from '../../types/types';
 import { CaseItemAction, isAddCaseSectionRoute, isCaseRoute, isEditCaseSectionRoute } from '../../states/routing/types';
 import { recordingErrorHandler } from '../../fullStory';
-import { caseItemHistory } from '../../states/case/types';
 import CloseCaseDialog from './CloseCaseDialog';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import { lookupApi } from '../../states/case/sections/lookupApi';
@@ -58,10 +57,11 @@ import {
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateCaseAsyncAction } from '../../states/case/saveCase';
-import { namespace } from '../../states/storeNamespaces';
 import NavigableContainer from '../NavigableContainer';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import selectCaseByCaseId from '../../states/case/selectCaseStateByCaseId';
+import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
+import selectCaseItemHistory from '../../states/case/sections/selectCaseItemHistory';
+import { selectCounselorName } from '../../states/configuration/selectCounselorsHash';
 
 export type AddEditCaseItemProps = {
   task: CustomITask | StandaloneITask;
@@ -83,8 +83,7 @@ enum DismissAction {
 const AddEditCaseItem: React.FC<Props> = ({
   definitionVersion,
   task,
-  counselor,
-  counselorsHash,
+  caseItemHistory,
   connectedCase,
   updateCaseSectionWorkingCopy,
   initialiseCaseSectionWorkingCopy,
@@ -170,11 +169,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     return null;
   }
 
-  if (!connectedCase) {
-    return null;
-  }
-
-  if (!workingCopy) {
+  if (!connectedCase || !workingCopy) {
     return null;
   }
 
@@ -247,9 +242,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     },
   );
 
-  const { added, addingCounsellorName, updated, updatingCounsellorName } = sectionId
-    ? caseItemHistory(workingCopy, counselorsHash)
-    : { added: new Date(), addingCounsellorName: counselor, updated: undefined, updatingCounsellorName: undefined };
+  const { added, addingCounsellorName, updated, updatingCounsellorName } = caseItemHistory;
 
   const checkForEdits = (action: DismissAction) => {
     if (isEqual(workingCopy?.form, savedForm)) {
@@ -327,22 +320,27 @@ const AddEditCaseItem: React.FC<Props> = ({
 
 AddEditCaseItem.displayName = 'AddEditCaseItem';
 
-const mapStateToProps = (state: RootState, { task, sectionApi }: AddEditCaseItemProps) => {
-  const {
-    [namespace]: { configuration },
-  } = state;
+const mapStateToProps = (state: RootState, { task, sectionApi, counselor }: AddEditCaseItemProps) => {
   const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
-  const counselorsHash = configuration.counselors.hash;
   if (isCaseRoute(currentRoute)) {
     const sectionId = isEditCaseSectionRoute(currentRoute) ? currentRoute.id : undefined;
     const { connectedCase, caseWorkingCopy } = selectCaseByCaseId(state, currentRoute.caseId);
+    const caseItemHistory = sectionId
+      ? selectCaseItemHistory(state, connectedCase, sectionApi, currentRoute.caseId)
+      : {
+          added: new Date(),
+          addingCounsellorName: selectCounselorName(state, counselor),
+          updated: undefined,
+          updatingCounsellorName: undefined,
+        };
+
     const workingCopy = sectionApi.getWorkingCopy(caseWorkingCopy, sectionId);
 
-    return { connectedCase, counselorsHash, workingCopy, currentRoute, sectionId };
+    return { connectedCase, caseItemHistory, workingCopy, currentRoute, sectionId };
   }
   return {
     connectedCase: undefined,
-    counselorsHash,
+    caseItemHistory: undefined,
     workingCopy: undefined,
     currentRoute: undefined,
     sectionId: undefined,

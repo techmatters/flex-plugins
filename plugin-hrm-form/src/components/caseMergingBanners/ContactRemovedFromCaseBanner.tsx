@@ -30,8 +30,8 @@ import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
 import asyncDispatch from '../../states/asyncDispatch';
 import { RootState } from '../../states';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
-import { PermissionActions, getInitializedCan } from '../../permissions';
-import selectCaseByCaseId from '../../states/case/selectCaseStateByCaseId';
+import { getInitializedCan, PermissionActions } from '../../permissions';
+import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 
 type OwnProps = {
   taskId: string;

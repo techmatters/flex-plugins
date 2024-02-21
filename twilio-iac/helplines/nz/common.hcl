@@ -10,7 +10,12 @@ locals {
     task_language                     = "en-NZ"
     contacts_waiting_channels         = ["voice", "sms", "web"]
 
-
+    channel_attributes = {
+      webchat : "/app/twilio-iac/helplines/nz/templates/channel-attributes/webchat.tftpl"
+      voice   : "/app/twilio-iac/helplines/nz/templates/channel-attributes/voice.tftpl"
+      modica  : "/app/twilio-iac/helplines/nz/templates/channel-attributes/modica.tftpl",
+      default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
+    }
     workflows = {
       master : {
         friendly_name            = "Master Workflow - Messaging"
@@ -44,10 +49,6 @@ locals {
       survey : {
         "target_workers" = "1==0",
         "friendly_name"  = "Survey"
-      },
-      e2e_test : {
-        "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
-        "friendly_name"  = "E2E Test Queue"
       }
     }
 
@@ -55,7 +56,15 @@ locals {
       en_NZ : ["pre_survey"]
     }
 
-
+    # HRM
+    case_status_transition_rules = [
+      {
+        startingStatus : "submitted",
+        targetStatus : "closed",
+        timeInStatusInterval : "28 days",
+        description : "rule to close submitted cases after 28 days"
+      }
+    ]
 
   }
 }

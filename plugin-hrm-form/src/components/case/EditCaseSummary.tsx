@@ -20,7 +20,7 @@ import React, { useEffect, useMemo } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
-import { DefinitionVersion, FormDefinition, FormInputType } from 'hrm-form-definitions';
+import { FormDefinition, FormInputType } from 'hrm-form-definitions';
 import { isEqual } from 'lodash';
 import { AnyAction, bindActionCreators } from 'redux';
 
@@ -53,22 +53,21 @@ import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import NavigableContainer from '../NavigableContainer';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
-import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
 import CaseSummaryEditHistory from './CaseSummaryEditHistory';
 import { selectDefinitionVersionForCase } from '../../states/configuration/selectDefinitions';
+import { selectCaseHistoryDetails } from '../../states/case/selectCaseStateByCaseId';
 
 export type EditCaseSummaryProps = {
   task: CustomITask | StandaloneITask;
-  definitionVersion: DefinitionVersion;
   can: (action: PermissionActionType) => boolean;
 };
 
 const mapStateToProps = (state: RootState, { task }: EditCaseSummaryProps) => {
-  const counselorsHash = selectCounselorsHash(state);
   const connectedCaseState = selectCurrentRouteCaseState(state, task.taskSid);
+  const historyDetails = selectCaseHistoryDetails(state, connectedCaseState?.connectedCase);
   const workingCopy = connectedCaseState?.caseWorkingCopy.caseSummary;
   const definitionVersion = selectDefinitionVersionForCase(state, connectedCaseState?.connectedCase);
-  return { connectedCaseState, counselorsHash, workingCopy, definitionVersion };
+  return { connectedCaseState, workingCopy, definitionVersion, historyDetails };
 };
 
 const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
@@ -96,8 +95,7 @@ const enum DialogState {
 
 const EditCaseSummary: React.FC<Props> = ({
   task,
-  definitionVersion,
-  counselorsHash,
+  historyDetails,
   connectedCaseState,
   workingCopy,
   initialiseWorkingCopy,
@@ -188,6 +186,8 @@ const EditCaseSummary: React.FC<Props> = ({
     return splitAt(3)(disperseInputs(7)(form));
   }, [form]);
 
+  if (!connectedCaseState?.connectedCase) return null;
+
   const save = async () => {
     const { info, id } = connectedCaseState.connectedCase;
     const { status, ...updatedInfoValues } = workingCopy;
@@ -223,11 +223,7 @@ const EditCaseSummary: React.FC<Props> = ({
         onGoBack={checkForEdits}
         onCloseModal={checkForEdits}
       >
-        <CaseSummaryEditHistory
-          sourceCase={connectedCase}
-          counselorsHash={counselorsHash}
-          definitionVersion={definitionVersion}
-        />
+        <CaseSummaryEditHistory {...historyDetails} />
         <Container formContainer={true}>
           <Box paddingBottom={`${BottomButtonBarHeight}px`}>
             <TwoColumnLayout>

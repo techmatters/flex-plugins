@@ -152,6 +152,7 @@ export const newRestartOfflineContactAsyncAction = (contact: Contact, createdOnB
         time,
       },
     },
+    channel: 'default',
   });
 };
 

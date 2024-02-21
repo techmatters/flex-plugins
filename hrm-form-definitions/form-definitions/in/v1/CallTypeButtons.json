@@ -1,13 +1,13 @@
 [
     {
         "name": "child",
-        "label": "Child calling about self",
+        "label": "Client calling about self",
         "type": "button",
         "category": "data"
     },
     {
         "name": "caller",
-        "label": "Someone calling about a child",
+        "label": "Someone calling about a client",
         "type": "button",
         "category": "data"
     },

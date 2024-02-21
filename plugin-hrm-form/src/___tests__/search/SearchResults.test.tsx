@@ -150,7 +150,7 @@ describe('Search Results', () => {
 
       expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 PreviousContacts-Cases');
       expect(screen.getByTestId('ContactsCount')).toHaveTextContent(
-        'SearchResultsIndex-NoCasesFoundSearchResultsIndex-SearchAgainForCase',
+        'SearchResultsIndex-NoContactsFoundSearchResultsIndex-SearchAgainForContact',
       );
     });
 

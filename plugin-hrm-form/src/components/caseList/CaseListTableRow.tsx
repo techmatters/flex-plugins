@@ -16,10 +16,10 @@
 
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
-import { format, parseISO } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
 import { DefinitionVersionId } from 'hrm-form-definitions';
+import { parseISO } from 'date-fns';
 
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { RootState } from '../../states';
@@ -88,13 +88,11 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
     const summary = caseItem.info && caseItem.info.summary;
     const shortSummary = getShortSummary(summary, CHAR_LIMIT, 'case');
     const counselor = formatName(counselorsHash[caseItem.twilioWorkerId]);
-    const opened = `${format(new Date(caseItem.createdAt), 'MMM d, yyyy')}`;
+    const opened = parseISO(caseItem.createdAt).toLocaleDateString();
     const beenUpdated = caseItem.createdAt !== caseItem.updatedAt;
-    const updated = beenUpdated ? `${format(new Date(caseItem.updatedAt), 'MMM d, yyyy')}` : '—';
+    const updated = beenUpdated ? parseISO(caseItem.updatedAt).toLocaleDateString() : '—';
     const followUpDate =
-      caseItem.info && caseItem.info.followUpDate
-        ? `${format(parseISO(caseItem.info.followUpDate), 'MMM d, yyyy')}`
-        : '—';
+      caseItem.info && caseItem.info.followUpDate ? parseISO(caseItem.info.followUpDate).toLocaleDateString() : '—';
 
     const definitionVersion = definitionVersions[version];
 
