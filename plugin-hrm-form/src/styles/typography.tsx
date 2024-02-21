@@ -87,3 +87,10 @@ export const CategoryRequiredText = styled('p')`
   }
 `;
 CategoryRequiredText.displayName = 'CategoryRequiredText';
+
+export const Title = styled(FontOpenSans)`
+  font-size: 14pt;
+  font-weight: 700;
+  margin-bottom: 20px;
+  margin-top: 12px;
+`;

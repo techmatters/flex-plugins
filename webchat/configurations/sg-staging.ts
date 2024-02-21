@@ -58,19 +58,19 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         },
         {
           value: "Male",
-          label: "Boy"
+          label: "Male"
         },
         {
           value: "Female",
-          label: "Girl"
+          label: "Female"
         },
         {
-          value: "Non-binary",
-          label: "Non-binary"
+          value: "Other",
+          label: "Other"
         },
         {
           value: "Unknown",
-          label: "Prefer not to say"
+          label: "Unknown"
         }
       ],
     },
@@ -87,22 +87,22 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         },
         {
           value: "Unknown",
-          label: "Prefer not to say"
+          label: "Unknown"
         },
         {
-          value: "<7",
-          label: "<7"
+          value: "06",
+          label: "6"
         },
         {
-          value: "7",
+          value: "07",
           label: "7"
         },
         {
-          value: "8",
+          value: "08",
           label: "8"
         },
         {
-          value: "9",
+          value: "09",
           label: "9"
         },
         {
@@ -118,8 +118,40 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "12"
         },
         {
-          value: ">12",
-          label: ">12"
+          value: "13",
+          label: "13"
+        },
+        {
+          value: "14",
+          label: "14"
+        },
+        {
+          value: "15",
+          label: "15"
+        },
+        {
+          value: "16",
+          label: "16"
+        },
+        {
+          value: "17",
+          label: "17"
+        },
+        {
+          value: "18",
+          label: "18"
+        },
+        {
+          value: "19",
+          label: "19"
+        },
+        {
+          value: "20",
+          label: "20"
+        },
+        {
+          value: ">20",
+          label: "21 and above"
         }
        ],
      },  
@@ -140,9 +172,9 @@ const translations: Translations = {
     WelcomeMessage: 'Welcome to Tinkle Friend',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
-      "Thank you very much for this information. We'll transfer you now. Please hold for a counsellor.",
+      "Thank you very much for this information. We'll transfer you now. Please hold for a Tinkle Friend.",
     AutoFirstMessage: 'Incoming webchat contact from',
-    TypingIndicator: 'counsellor is typing',
+    TypingIndicator: 'Tinkle Friend is typing',
     StartChat: 'Start Chat!',
     MessageCanvasTrayButton: 'Start New Chat',
     Email: 'Email',
@@ -157,7 +189,7 @@ const memberDisplayOptions = {
   yourDefaultName: 'You',
   yourFriendlyNameOverride: false,
   theirFriendlyNameOverride: false,
-  theirDefaultName: 'Helpline Counsellor',
+  theirDefaultName: 'Tinkle Friend',
 };
 
 const mapHelplineLanguage: MapHelplineLanguage = (helpline) => {

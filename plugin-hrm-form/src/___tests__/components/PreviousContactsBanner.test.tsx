@@ -15,13 +15,13 @@
  */
 
 import * as React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
-import { UnconnectedPreviousContactsBanner } from '../../components/profile/ProfileIdentifierBanner/PreviousContactsBanner';
+import { UnconnectedPreviousContactsBanner } from '../../components/profile/IdentifierBanner/PreviousContactsBanner';
 import { channelTypes } from '../../states/DomainConstants';
 import { PreviousContactCounts } from '../../states/search/types';
 
@@ -146,32 +146,46 @@ test('Render PreviousContacts when there are previous contacts', () => {
   expect(screen.getByTestId('PreviousContacts-Container')).toBeInTheDocument();
 });
 
-test('Click View Records should redirect user to search results', () => {
+test('calls the correct function when the contacts link is clicked', () => {
+  const openContactSearchResults = jest.fn();
+  const openCaseSearchResults = jest.fn();
   const searchContacts = jest.fn();
   const searchCases = jest.fn();
-  const openModal = jest.fn();
-  const viewPreviousContacts = jest.fn();
 
-  render(
-    <StorelessThemeProvider themeConf={{}}>
-      <UnconnectedPreviousContactsBanner
-        task={webChatTask}
-        counselorsHash={counselorsHash}
-        previousContactCounts={previousContactCounts}
-        searchContacts={searchContacts}
-        searchCases={searchCases}
-        viewPreviousContacts={viewPreviousContacts}
-        openContactSearchResults={openModal}
-      />
-    </StorelessThemeProvider>,
+  const { getByTestId } = render(
+    <UnconnectedPreviousContactsBanner
+      previousContactCounts={{ contacts: 1, cases: 0 }}
+      task={webChatTask}
+      searchContacts={searchContacts}
+      searchCases={searchCases}
+      openContactSearchResults={openContactSearchResults}
+      openCaseSearchResults={openCaseSearchResults}
+    />,
   );
 
-  screen.getByTestId('PreviousContacts-ViewRecords').click();
+  fireEvent.click(getByTestId('banner-link-contacts'));
+  expect(openContactSearchResults).toHaveBeenCalled();
+});
 
-  expect(searchContacts).toHaveBeenCalled();
-  expect(searchCases).toHaveBeenCalled();
-  expect(viewPreviousContacts).toHaveBeenCalled();
-  expect(openModal).toHaveBeenCalled();
+test('calls the correct function when the cases link is clicked', () => {
+  const openContactSearchResults = jest.fn();
+  const openCaseSearchResults = jest.fn();
+  const searchContacts = jest.fn();
+  const searchCases = jest.fn();
+
+  const { getByTestId } = render(
+    <UnconnectedPreviousContactsBanner
+      previousContactCounts={{ contacts: 0, cases: 1 }}
+      task={webChatTask}
+      searchContacts={searchContacts}
+      searchCases={searchCases}
+      openContactSearchResults={openContactSearchResults}
+      openCaseSearchResults={openCaseSearchResults}
+    />,
+  );
+
+  fireEvent.click(getByTestId('banner-link-cases'));
+  expect(openCaseSearchResults).toHaveBeenCalled();
 });
 
 test('a11y', async () => {

@@ -153,3 +153,14 @@ variable "hrm_transcript_retention_days_override" {
   type        = number
   default     = -1
 }
+
+variable "case_status_transition_rules" {
+  description = "List of case status transition rules, specifying the starting status, how long it has to have been in that status to qualify for the transition, and the target status. A description is also required."
+  type = list(object({
+    startingStatus = string
+    targetStatus = string
+    description = string
+    timeInStatusInterval = string
+  }))
+  default = null
+}

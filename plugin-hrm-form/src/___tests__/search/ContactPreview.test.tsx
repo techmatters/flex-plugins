@@ -30,6 +30,7 @@ import { getDefinitionVersions } from '../../hrmConfig';
 import { Contact } from '../../types/types';
 import { RootState } from '../../states';
 import { configurationBase, namespace } from '../../states/storeNamespaces';
+import { VALID_EMPTY_CONTACT } from '../testContacts';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -67,6 +68,7 @@ test('<ContactPreview> should mount', async () => {
     },
   };
   const contact: Contact = {
+    ...VALID_EMPTY_CONTACT,
     id: '123',
     accountSid: '',
     timeOfContact: '2019-01-01T00:00:00.000Z',
@@ -75,16 +77,7 @@ test('<ContactPreview> should mount', async () => {
     twilioWorkerId: 'WKxxxx',
     helpline: 'test helpline',
     conversationDuration: 0,
-    createdBy: '',
-    createdAt: '',
-    updatedBy: '',
-    updatedAt: '',
-    queueName: '',
-    channelSid: '',
-    serviceSid: '',
     taskId: 'TASK_ID',
-    conversationMedia: [],
-    csamReports: [],
     rawJson: {
       definitionVersion: DefinitionVersionId.v1,
       callType: 'Child calling about self',
@@ -111,22 +104,17 @@ test('<ContactPreview> should mount', async () => {
         wouldTheChildRecommendUsToAFriend: false,
       },
       callerInformation: {},
-      contactlessTask: { channel: 'voice' },
+      contactlessTask: { ...VALID_EMPTY_CONTACT.rawJson.contactlessTask, channel: 'voice' },
     },
   };
 
-  const handleOpenConnectDialog = jest.fn();
   const handleViewDetails = jest.fn();
   const store = mockStore(initialState);
 
   const wrapper = renderer.create(
     <StorelessThemeProvider themeConf={{}}>
       <Provider store={store}>
-        <ContactPreview
-          contact={contact}
-          handleOpenConnectDialog={handleOpenConnectDialog}
-          handleViewDetails={handleViewDetails}
-        />
+        <ContactPreview contact={contact} handleViewDetails={handleViewDetails} />
       </Provider>
     </StorelessThemeProvider>,
   ).root;

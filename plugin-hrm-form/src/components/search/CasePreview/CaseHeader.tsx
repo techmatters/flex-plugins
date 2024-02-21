@@ -16,7 +16,7 @@
 
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import { FolderOutlined } from '@material-ui/icons';
 
@@ -28,8 +28,8 @@ import ConnectToCaseButton from '../../case/ConnectToCaseButton';
 type OwnProps = {
   caseId: string;
   contactLabel?: string;
-  createdAt: Date;
-  updatedAt?: Date;
+  createdAt: string;
+  updatedAt?: string;
   followUpDate?: Date;
   isOrphanedCase: boolean;
   status: string;
@@ -98,14 +98,14 @@ const CaseHeader: React.FC<Props> = ({
             <SubtitleLabel>
               <Template code="CaseHeader-Opened" />:
             </SubtitleLabel>
-            <SubtitleValue>{format(createdAt, 'MMM d, yyyy')}</SubtitleValue>
+            <SubtitleValue>{parseISO(createdAt).toLocaleDateString()}</SubtitleValue>
             {updatedAt && (
               <>
                 <SubtitleLabel>
                   <Template code={status === 'closed' || isOrphanedCase ? 'CaseHeader-Closed' : 'CaseHeader-Updated'} />
                   :
                 </SubtitleLabel>
-                <SubtitleValue>{format(updatedAt, 'MMM d, yyyy')}</SubtitleValue>
+                <SubtitleValue>{parseISO(updatedAt).toLocaleDateString()}</SubtitleValue>
               </>
             )}
             {followUpDate && (

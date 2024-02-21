@@ -16,8 +16,12 @@
 import { useSelector } from 'react-redux';
 
 import { ProfilesListState } from '../types';
-import { selectProfileListState } from '../selectors';
+import { selectProfileListState, selectProfileListSettings } from '../selectors';
 
 export const useProfilesList = (): ProfilesListState => {
   return useSelector(selectProfileListState);
+};
+
+export const useProfilesListSettings = (): ProfilesListState['settings'] => {
+  return useSelector(selectProfileListSettings);
 };

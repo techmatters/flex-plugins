@@ -27,16 +27,13 @@ import { ContactState } from '../../states/contacts/existingContacts';
 import { Case, Contact } from '../../types/types';
 import { ContactMetadata } from '../../states/contacts/types';
 import { VALID_EMPTY_CONTACT } from '../testContacts';
-import { connectToCaseAsyncAction, updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
+import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import { saveFormSharedState } from '../../transfer/formDataTransfer';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 
 jest.mock('../../states/contacts/saveContact', () => ({
   ...jest.requireActual('../../states/contacts/saveContact'),
   updateContactInHrmAsyncAction: jest.fn((id, contact, _) => {
-    return Promise.resolve();
-  }),
-  connectToCaseAsyncAction: jest.fn(() => {
     return Promise.resolve();
   }),
 }));
@@ -70,8 +67,6 @@ let mockV1;
 const mockUpdateContactInHrmAsyncAction = updateContactInHrmAsyncAction as jest.MockedFunction<
   typeof updateContactInHrmAsyncAction
 >;
-
-const mockConnectToCaseAsyncAction = connectToCaseAsyncAction as jest.MockedFunction<typeof connectToCaseAsyncAction>;
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, buildBaseURL } = useFetchDefinitions();
@@ -114,17 +109,6 @@ beforeEach(async () => {
     meta: { previousContact, changes },
   }));
 
-  mockConnectToCaseAsyncAction.mockImplementation((contactId, caseId) => ({
-    type: 'contact-action/connect-to-case',
-    payload: Promise.resolve({
-      contactId,
-      caseId,
-      contact: { id: contactId, caseId } as Contact,
-      contactCase: { id: caseId } as Case,
-    }),
-    meta: {},
-  }));
-
   mockGetState.mockReturnValue({
     'plugin-hrm-form': {
       activeContacts: {
@@ -163,7 +147,6 @@ describe('saveFormSharedState', () => {
       task,
     );
     expect(updateContactInHrmAsyncAction).not.toHaveBeenCalled();
-    expect(connectToCaseAsyncAction).not.toHaveBeenCalled();
   });
 
   test('Has draft changes - should save them', async () => {
@@ -173,7 +156,6 @@ describe('saveFormSharedState', () => {
       { channel: 'whatsapp' },
       'taskSid-active',
     );
-    expect(connectToCaseAsyncAction).not.toHaveBeenCalled();
   });
 
   test('Has case ID set - should disconnect it', async () => {
@@ -182,7 +164,6 @@ describe('saveFormSharedState', () => {
       task,
     );
     expect(updateContactInHrmAsyncAction).not.toHaveBeenCalled();
-    expect(connectToCaseAsyncAction).toHaveBeenCalledWith(contactState.savedContact.id, undefined);
   });
 
   test('Has case ID set and draft changes - should disconnect the case and save the changes', async () => {
@@ -199,13 +180,11 @@ describe('saveFormSharedState', () => {
       { channel: 'whatsapp' },
       'taskSid-active',
     );
-    expect(connectToCaseAsyncAction).toHaveBeenCalledWith(contactState.savedContact.id, undefined);
   });
 
   test('Has no case ID set and draft changes - should disconnect the case and save the changes', async () => {
     await saveFormSharedState(contactState, task);
     expect(updateContactInHrmAsyncAction).not.toHaveBeenCalled();
-    expect(connectToCaseAsyncAction).not.toHaveBeenCalled();
   });
 
   test('HRM update endpoint errors - still disconnects case', async () => {
@@ -218,7 +197,6 @@ describe('saveFormSharedState', () => {
     } as const;
     mockUpdateContactInHrmAsyncAction.mockReturnValue(updateAction);
     await saveFormSharedState({ ...contactState, savedContact: contact, draftContact: changes }, task);
-    expect(connectToCaseAsyncAction).toHaveBeenCalledWith(contactState.savedContact.id, undefined);
     // Bit weird to assert a mocked value here, but it confirms the rejection case we are testing actually occurs
     // It also prevents an unhandled error bubbling up to the top level of the test suite and failing it
     await expect(updateAction.payload).rejects.toEqual(new Error('update error'));
@@ -232,9 +210,7 @@ describe('saveFormSharedState', () => {
       payload: Promise.reject(new Error('disconnect error')),
       meta: {},
     } as const;
-    mockConnectToCaseAsyncAction.mockReturnValue(connectAction);
     await saveFormSharedState({ ...contactState, savedContact: contact, draftContact: changes }, task);
-    expect(connectToCaseAsyncAction).toHaveBeenCalledWith(contactState.savedContact.id, undefined);
     // Bit weird to assert a mocked value here, but it confirms the rejection case we are testing actually occurs
     // It also prevents an unhandled error bubbling up to the top level of the test suite and failing it
     await expect(connectAction.payload).rejects.toEqual(new Error('disconnect error'));

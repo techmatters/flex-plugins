@@ -17,8 +17,48 @@
 import { RootState } from '..';
 import { connectedCaseBase, namespace } from '../storeNamespaces';
 import { CaseStateEntry } from './types';
+import { selectCounselorName } from '../configuration/selectCounselorsHash';
+import { selectDefinitionVersionForCase } from '../configuration/selectDefinitions';
+import { Case } from '../../types/types';
 
-const selectCaseByCaseId = (state: RootState, caseId: string): CaseStateEntry | undefined =>
+export const selectCaseByCaseId = (state: RootState, caseId: string): CaseStateEntry | undefined =>
   state[namespace][connectedCaseBase]?.cases[caseId];
 
-export default selectCaseByCaseId;
+export type CaseHistoryDetails = {
+  createdAt: Date;
+  createdBy: string;
+  updatedAt?: Date;
+  updatedBy?: string;
+  statusUpdatedAt?: Date;
+  statusUpdatedBy?: string;
+  previousStatusLabel?: string;
+  statusLabel: string;
+};
+
+export const selectCaseHistoryDetails = (state: RootState, caseObj: Case): CaseHistoryDetails => {
+  const definitionVersion = selectDefinitionVersionForCase(state, caseObj);
+  const {
+    previousStatus,
+    status,
+    statusUpdatedBy,
+    statusUpdatedAt,
+    twilioWorkerId,
+    createdAt,
+    updatedAt,
+    updatedBy,
+  } = caseObj;
+  const statusLabel = status ? definitionVersion.caseStatus[status]?.label || `Unknown (${status})` : 'None'; // Shouldn't ever be 'None'
+  const previousStatusLabel = previousStatus
+    ? definitionVersion.caseStatus[previousStatus]?.label || `Unknown (${previousStatus})`
+    : 'None';
+  return {
+    createdAt: new Date(createdAt),
+    createdBy: selectCounselorName(state, twilioWorkerId),
+    updatedAt: updatedAt ? new Date(updatedAt) : undefined,
+    updatedBy: selectCounselorName(state, updatedBy),
+    statusUpdatedAt: statusUpdatedAt ? new Date(statusUpdatedAt) : undefined,
+    statusUpdatedBy: selectCounselorName(state, statusUpdatedBy),
+    previousStatusLabel,
+    statusLabel,
+  };
+};

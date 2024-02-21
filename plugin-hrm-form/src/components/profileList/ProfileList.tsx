@@ -59,7 +59,7 @@ const ProfileListPage: React.FC<Props> = ({ routing }) => {
   );
 };
 
-const connector = connect(mapStateToProps, null);
+const connector = connect(mapStateToProps);
 
 // eslint-disable-next-line import/no-unused-modules
 export default connector(ProfileListPage);

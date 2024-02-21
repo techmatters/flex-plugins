@@ -24,7 +24,7 @@ import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
 import { newGoBackAction } from '../../states/routing/actions';
 import { getOfflineContactTaskSid } from '../../states/contacts/offlineContactTask';
 import { cancelCaseAsyncAction } from '../../states/case/saveCase';
-import selectCaseStateByCaseId from '../../states/case/selectCaseStateByCaseId';
+import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
 import { CustomITask, StandaloneITask } from '../../types/types';
 import { BannerActionLink, BannerContainer, Text } from '../../styles/banners';
@@ -39,7 +39,7 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const mapStateToProps = (state, { task, caseId }: OwnProps) => {
   const taskSid = task ? task.taskSid : getOfflineContactTaskSid();
-  const cas = selectCaseStateByCaseId(state, caseId)?.connectedCase;
+  const cas = selectCaseByCaseId(state, caseId)?.connectedCase;
   return {
     cas,
     taskSid,

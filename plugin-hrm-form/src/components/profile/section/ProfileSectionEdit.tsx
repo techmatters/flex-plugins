@@ -26,7 +26,7 @@ import { ProfileSection } from '../../../types/types';
 import NavigableContainer from '../../NavigableContainer';
 import { Flex, Container, Box, ColumnarBlock, ColumnarContent, FormTextArea } from '../../../styles';
 import { StyledNextStepButton } from '../../../styles/buttons';
-import { useEditProfileSection } from '../../../states/profile/hooks/useProfileSection';
+import { useEditProfileSection } from '../../../states/profile/hooks';
 import useProfileSectionTypes from '../../../states/configuration/hooks/useProfileSectionTypes';
 import { ProfileCommonProps } from '../types';
 
