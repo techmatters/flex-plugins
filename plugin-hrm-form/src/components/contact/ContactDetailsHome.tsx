@@ -23,6 +23,7 @@ import { callTypes, DataCallTypes, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
+import { useProfile } from '../../states/profile/hooks';
 import { Box, Flex, Row } from '../../styles';
 import {
   ContactRawJson,
@@ -147,6 +148,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
     [],
   );
 
+  const { canView } = useProfile({ profileId: savedContact?.profileId });
+
   if (!savedContact || !definitionVersion) return null;
 
   const {
@@ -264,7 +267,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
-  const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && (
+  const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && canView && (
     <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>
       <Icon icon="DefaultAvatar" />
       <Template code="Profile-ViewClient" />
