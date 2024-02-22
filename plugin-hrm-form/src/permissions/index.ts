@@ -39,9 +39,7 @@ export const CaseActions = {
   EDIT_INCIDENT: 'editIncident',
   ADD_DOCUMENT: 'addDocument',
   EDIT_DOCUMENT: 'editDocument',
-  EDIT_CASE_SUMMARY: 'editCaseSummary',
-  EDIT_CHILD_IS_AT_RISK: 'editChildIsAtRisk',
-  EDIT_FOLLOW_UP_DATE: 'editFollowUpDate',
+  EDIT_CASE_OVERVIEW: 'editCaseOverview',
   UPDATE_CASE_CONTACTS: 'updateCaseContacts',
 } as const;
 

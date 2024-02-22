@@ -25,14 +25,16 @@ import each from 'jest-each';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import CaseHome, { CaseHomeProps } from '../../../components/case/CaseHome';
-import { CustomITask, HouseholdEntry, PerpetratorEntry } from '../../../types/types';
-import { CaseDetails } from '../../../states/case/types';
+import { Case, CustomITask } from '../../../types/types';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { namespace } from '../../../states/storeNamespaces';
 import { RecursivePartial } from '../../RecursivePartial';
 import { RootState } from '../../../states';
+import { VALID_EMPTY_CASE } from '../../testCases';
+import { ApiCaseSection } from '../../../services/caseSectionService';
+import { TaskSID } from '../../../types/twilio';
 
 jest.mock('../../../permissions', () => ({
   ...jest.requireActual('../../../permissions'),
@@ -41,7 +43,7 @@ jest.mock('../../../permissions', () => ({
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
-
+const TASK_SID: TaskSID = 'WT-task1';
 const mockStore = configureMockStore([]);
 
 const entry = {
@@ -61,17 +63,17 @@ const entry = {
   relationshipToChild: 'relationshipToChild',
 };
 
-const perpetratorEntry: PerpetratorEntry = {
-  id: 'PERPETRATOR_ID',
-  perpetrator: entry,
+const perpetratorEntry: ApiCaseSection = {
+  sectionId: 'PERPETRATOR_ID',
+  sectionTypeSpecificData: entry,
   createdAt: '2020-06-29T22:26:00.208Z',
-  twilioWorkerId: 'worker1',
+  twilioWorkerId: 'WK-worker1',
 };
-const householdEntry: HouseholdEntry = {
-  id: 'HOUSEHOLD_ID',
-  household: entry,
+const householdEntry: ApiCaseSection = {
+  sectionId: 'HOUSEHOLD_ID',
+  sectionTypeSpecificData: entry,
   createdAt: '2020-06-29T22:26:00.208Z',
-  twilioWorkerId: 'worker1',
+  twilioWorkerId: 'WK-worker1',
 };
 
 function createState(state: RecursivePartial<RootState['plugin-hrm-form']>): RootState {
@@ -84,7 +86,7 @@ let ownProps: CaseHomeProps;
 
 let mockV1;
 let initialState: RootState;
-let caseDetails: CaseDetails;
+let caseDetails: Case;
 
 describe('useState mocked', () => {
   beforeAll(async () => {
@@ -97,6 +99,26 @@ describe('useState mocked', () => {
 
   beforeEach(() => {
     mockReset();
+    caseDetails = {
+      ...VALID_EMPTY_CASE,
+      id: 'case123',
+      sections: {
+        household: [],
+        incident: [],
+        perpetrator: [],
+        document: [],
+        note: [],
+        referral: [],
+      },
+      info: {
+        childIsAtRisk: false,
+        summary: '',
+        followUpDate: '',
+      },
+      status: 'open',
+      createdAt: '2020-06-29T22:26:00.208Z',
+      connectedContacts: [VALID_EMPTY_CONTACT],
+    };
     initialState = createState({
       configuration: {
         counselors: {
@@ -123,7 +145,7 @@ describe('useState mocked', () => {
                 },
                 categories: {},
               },
-              taskId: 'task1',
+              taskId: TASK_SID,
               caseId: 'case123',
             },
           },
@@ -132,20 +154,13 @@ describe('useState mocked', () => {
       connectedCase: {
         cases: {
           case123: {
-            connectedCase: {
-              id: 'case123',
-              createdAt: '2020-06-29T22:26:00.208Z',
-              twilioWorkerId: 'worker1',
-              status: 'open',
-              info: { definitionVersion: DefinitionVersionId.v1 },
-              connectedContacts: [],
-            },
+            connectedCase: caseDetails,
           },
         },
       },
       routing: {
         tasks: {
-          task1: [
+          [TASK_SID]: [
             {
               route: 'tabbed-forms',
               subroute: 'categories',
@@ -160,37 +175,11 @@ describe('useState mocked', () => {
     const useStateMock = initState => [initState, setState];
 
     jest.spyOn(React, 'useState').mockImplementation(useStateMock);
-
-    caseDetails = {
-      contactIdentifier: '',
-      id: '0',
-      households: [],
-      incidents: [],
-      perpetrators: [],
-      documents: [],
-      notes: [],
-      referrals: [],
-      childIsAtRisk: false,
-      summary: '',
-      status: 'open',
-      caseCounselor: '',
-      currentCounselor: '',
-      createdAt: '2020-06-29T22:26:00.208Z',
-      updatedAt: '',
-      followUpDate: '',
-      followUpPrintedDate: '',
-      categories: {},
-      contact: VALID_EMPTY_CONTACT,
-      contacts: [VALID_EMPTY_CONTACT],
-    };
-
     ownProps = {
-      task: { taskSid: 'task1' } as CustomITask,
+      task: { taskSid: TASK_SID as TaskSID } as CustomITask,
       definitionVersion: mockV1,
       can: () => true,
-      caseDetails,
       handleClose: jest.fn(),
-      handleUpdate: jest.fn(),
       handleSaveAndEnd: jest.fn(),
     };
   });
@@ -219,7 +208,7 @@ describe('useState mocked', () => {
         subroute: NewCaseSubroutes.Note,
         action: CaseItemAction.Add,
       },
-      taskId: 'task1',
+      taskId: TASK_SID,
       type: 'routing/open-modal',
     });
   });
@@ -244,7 +233,7 @@ describe('useState mocked', () => {
         subroute: NewCaseSubroutes.Referral,
         action: CaseItemAction.Add,
       },
-      taskId: 'task1',
+      taskId: TASK_SID,
       type: 'routing/open-modal',
     });
   });
@@ -269,7 +258,7 @@ describe('useState mocked', () => {
         subroute: NewCaseSubroutes.Household,
         action: CaseItemAction.Add,
       },
-      taskId: 'task1',
+      taskId: TASK_SID,
       type: 'routing/open-modal',
     });
   });
@@ -294,13 +283,13 @@ describe('useState mocked', () => {
         subroute: NewCaseSubroutes.Perpetrator,
         action: CaseItemAction.Add,
       },
-      taskId: 'task1',
+      taskId: TASK_SID,
       type: 'routing/open-modal',
     });
   });
 
   test('click View Household button', async () => {
-    caseDetails.households = [householdEntry];
+    caseDetails.sections.household = [householdEntry];
     const store = mockStore(initialState);
     store.dispatch = jest.fn();
 
@@ -322,13 +311,13 @@ describe('useState mocked', () => {
         action: CaseItemAction.View,
         id: 'HOUSEHOLD_ID',
       },
-      taskId: 'task1',
+      taskId: TASK_SID,
       type: 'routing/open-modal',
     });
   });
 
   test('click View Perpetrator button', async () => {
-    caseDetails.perpetrators = [perpetratorEntry];
+    caseDetails.sections.perpetrator = [perpetratorEntry];
     const store = mockStore(initialState);
     store.dispatch = jest.fn();
 
@@ -350,7 +339,7 @@ describe('useState mocked', () => {
         action: CaseItemAction.View,
         id: 'PERPETRATOR_ID',
       },
-      taskId: 'task1',
+      taskId: TASK_SID,
       type: 'routing/open-modal',
     });
   });
@@ -377,7 +366,7 @@ describe('useState mocked', () => {
         action: CaseItemAction.Edit,
         id: '',
       },
-      taskId: 'task1',
+      taskId: TASK_SID,
       type: 'routing/open-modal',
     });
   });
@@ -388,9 +377,9 @@ describe('useState mocked', () => {
         ...initialState[namespace],
         routing: {
           tasks: {
-            task1: [
+            [TASK_SID]: [
               {
-                ...initialState[namespace].routing.tasks.task1[0],
+                ...initialState[namespace].routing.tasks[TASK_SID][0],
                 activeModal: [{ route: 'case', subroute: 'home', caseId: 'case123', isCreating }],
               },
             ],

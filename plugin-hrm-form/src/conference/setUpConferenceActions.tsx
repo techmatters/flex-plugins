@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { Actions, ITask, Notifications, NotificationType, Template } from '@twilio/flex-ui';
+import { Actions, Notifications, NotificationType, Template } from '@twilio/flex-ui';
 
 import { hasTaskControl, isTransferring } from '../transfer/transferTaskState';
 import { TransfersNotifications } from '../transfer/setUpTransferActions';

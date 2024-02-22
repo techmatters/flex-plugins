@@ -20,6 +20,7 @@ import { buildFormDefinitionsBaseUrlGetter, inferConfiguredFormDefinitionsBaseUr
 import { ConfigFlags, FeatureFlags } from './types/types';
 import type { RootState } from './states';
 import { namespace } from './states/storeNamespaces';
+import { WorkerSID } from './types/twilio';
 
 const featureFlagEnvVarPrefix = 'REACT_APP_FF_';
 type ContactSaveFrequency = 'onTabChange' | 'onFinalSaveAndTransfer';
@@ -57,7 +58,7 @@ const readConfig = () => {
     manager.serviceConfiguration.attributes.contact_save_frequency || 'onTabChange';
 
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
-  const workerSid = manager.workerClient.sid;
+  const workerSid = manager.workerClient.sid as WorkerSID;
   const { helpline, counselorLanguage, full_name: counselorName, roles } = manager.workerClient.attributes as any;
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const { identity, token } = manager.user;

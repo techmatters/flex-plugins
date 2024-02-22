@@ -23,11 +23,8 @@ import { parseISO } from 'date-fns';
 
 import { RootState } from '../../states';
 import { getDefinitionVersion } from '../../services/ServerlessService';
-import { getNoteActivities, sortActivities } from '../../states/case/caseActivities';
-import { getHelplineData } from './caseHelpers';
 import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
-import { CaseDetails } from '../../states/case/types';
 import { Case as CaseType, Contact, CustomITask, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import {
@@ -54,9 +51,7 @@ import { referralSectionApi } from '../../states/case/sections/referral';
 import { noteSectionApi } from '../../states/case/sections/note';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import * as ContactActions from '../../states/contacts/existingContacts';
-import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
-import { updateCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import { removeFromCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata } from '../../states/contacts/types';
@@ -68,6 +63,7 @@ import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCas
 import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
 import { selectCurrentDefinitionVersion, selectDefinitionVersions } from '../../states/configuration/selectDefinitions';
 import FullTimelineView from './timeline/FullTimelineView';
+import selectCaseHelplineData from '../../states/case/selectCaseHelplineData';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -95,10 +91,10 @@ const Case: React.FC<Props> = ({
   savedContacts,
   loadContacts,
   releaseContacts,
-  updateCaseAsyncAction,
   onNewCaseSaved = () => Promise.resolve(),
   submitContactFormAsyncAction,
   taskContact,
+  office,
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
@@ -150,44 +146,7 @@ const Case: React.FC<Props> = ({
 
   if (!props.connectedCaseState || !definitionVersion) return null;
 
-  const getCategories = (firstConnectedContact: Contact): Record<string, string[]> => {
-    return firstConnectedContact?.rawJson.categories ?? {};
-  };
-
-  const firstConnectedContact = savedContacts && savedContacts[0];
-
-  const categories = getCategories(firstConnectedContact) ?? {};
-  const { createdAt, updatedAt, twilioWorkerId, status, info } = connectedCase || {};
-  const caseCounselor = counselorsHash[twilioWorkerId];
   const currentCounselor = counselorsHash[workerSid];
-  // -- Date cannot be converted here since the date dropdown uses the yyyy-MM-dd format.
-  const followUpDate = info && info.followUpDate ? info.followUpDate : '';
-  // -- Converting followUpDate to match the same format as the rest of the dates
-  const followUpPrintedDate = info && info.followUpDate ? parseISO(info.followUpDate).toLocaleDateString() : '';
-  const households = info && info.households ? info.households : [];
-  const perpetrators = info && info.perpetrators ? info.perpetrators : [];
-  const incidents = info && info.incidents ? info.incidents : [];
-  const documents = info && info.documents ? info.documents : [];
-  const notes = sortActivities(getNoteActivities(info?.counsellorNotes, definitionVersion));
-  const childIsAtRisk = Boolean(info && info.childIsAtRisk);
-  const referrals = info?.referrals;
-  const summary = info?.summary;
-  const office = getHelplineData(connectedCase.helpline, definitionVersion.helplineInformation);
-
-  const handleUpdate = async () => {
-    setLoading(true);
-    try {
-      updateCaseAsyncAction(connectedCase.id, {
-        ...connectedCase,
-      });
-    } catch (error) {
-      console.error(error);
-      recordBackendError('Update Case', error);
-      window.alert(strings['Error-Backend']);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSaveAndEnd = async () => {
     setLoading(true);
@@ -197,9 +156,6 @@ const Case: React.FC<Props> = ({
 
     try {
       releaseContacts(loadedContactIds, `case-${connectedCase.id}`);
-      await updateCaseAsyncAction(connectedCase.id, {
-        ...connectedCase,
-      });
       closeModal();
       await onNewCaseSaved(connectedCase);
     } catch (error) {
@@ -219,32 +175,6 @@ const Case: React.FC<Props> = ({
     handleClose();
   };
 
-  const caseDetails: CaseDetails = {
-    id: connectedCase.id,
-    contactIdentifier: contactLabelFromHrmContact(definitionVersion, firstConnectedContact, {
-      placeholder: '',
-      substituteForId: false,
-    }),
-    categories,
-    status,
-    caseCounselor,
-    currentCounselor,
-    createdAt,
-    updatedAt,
-    followUpDate,
-    followUpPrintedDate,
-    households,
-    perpetrators,
-    incidents,
-    referrals,
-    documents,
-    notes,
-    summary,
-    childIsAtRisk,
-    office,
-    contact: firstConnectedContact,
-    contacts: savedContacts ?? [],
-  };
   if (isAddCaseSectionRoute(routing) || isViewCaseSectionRoute(routing) || isEditCaseSectionRoute(routing)) {
     const { subroute } = routing;
 
@@ -255,7 +185,7 @@ const Case: React.FC<Props> = ({
     };
 
     const renderCaseItemPage = (
-      sectionApi: CaseSectionApi<unknown>,
+      sectionApi: CaseSectionApi,
       editPermission: typeof PermissionActions[keyof typeof PermissionActions],
       extraAddEditProps: Partial<AddEditCaseItemProps> = {},
     ) => {
@@ -308,12 +238,13 @@ const Case: React.FC<Props> = ({
   if (routing.subroute === NewCaseSubroutes.CasePrintView) {
     return (
       <CasePrintView
-        caseDetails={caseDetails}
         {...{
+          connectedCase,
           counselorsHash,
           onClickClose: goBack,
           definitionVersion,
           task,
+          office,
         }}
       />
     );
@@ -331,9 +262,7 @@ const Case: React.FC<Props> = ({
     <CaseHome
       task={task}
       definitionVersion={definitionVersion}
-      caseDetails={caseDetails}
       handleClose={handleCloseCase}
-      handleUpdate={handleUpdate}
       handleSaveAndEnd={handleSaveAndEnd}
       can={can}
     />
@@ -358,6 +287,7 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
     routing,
     savedContacts: selectSavedContacts(state, connectedCase),
     taskContact: selectContactByTaskSid(state, task.taskSid)?.savedContact,
+    office: selectCaseHelplineData(state, connectedCase?.id),
   };
 };
 
@@ -381,8 +311,6 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     updateDefinitionVersion: updateCaseDefinition,
     releaseContacts: bindActionCreators(ContactActions.releaseContacts, dispatch),
     loadContacts: bindActionCreators(ContactActions.loadContacts, dispatch),
-    updateCaseAsyncAction: (caseId: CaseType['id'], body: Partial<CaseType>) =>
-      caseAsyncDispatch(updateCaseAsyncAction(caseId, body)),
     submitContactFormAsyncAction: (
       task: CustomITask,
       contact: Contact,

@@ -14,13 +14,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { v4 as uuidV4 } from 'uuid';
-
 import { CaseSectionApi } from './sections/api';
-import { CaseItemEntry, CaseItemFormValues } from '../../types/types';
+import { CaseItemFormValues } from '../../types/types';
 import { CaseState, CaseSummaryWorkingCopy } from './types';
 import { ConfigurationState } from '../configuration/reducer';
 import { transformValues } from '../contacts/contactDetailsAdapter';
+import { CaseSectionTypeSpecificData } from '../../services/caseSectionService';
 
 // Update a section of a case's working copy
 const UPDATE_CASE_SECTION_WORKING_COPY = 'UPDATE_CASE_SECTION_WORKING_COPY';
@@ -28,15 +27,15 @@ const UPDATE_CASE_SECTION_WORKING_COPY = 'UPDATE_CASE_SECTION_WORKING_COPY';
 type UpdateCaseSectionWorkingCopyAction = {
   type: typeof UPDATE_CASE_SECTION_WORKING_COPY;
   caseId: string;
-  api: CaseSectionApi<unknown>;
+  api: CaseSectionApi;
   id?: string;
-  sectionItem: CaseItemEntry;
+  sectionItem: CaseSectionTypeSpecificData;
 };
 
 export const updateCaseSectionWorkingCopy = (
   caseId: string,
-  api: CaseSectionApi<unknown>,
-  sectionItem: CaseItemEntry,
+  api: CaseSectionApi,
+  sectionItem: CaseSectionTypeSpecificData,
   id?: string,
 ): UpdateCaseSectionWorkingCopyAction => ({
   type: UPDATE_CASE_SECTION_WORKING_COPY,
@@ -54,10 +53,9 @@ const updateCaseSectionWorkingCopyReducer = (
   const definition =
     configState.definitionVersions[state.cases[caseId].connectedCase.info.definitionVersion] ??
     configState.currentDefinitionVersion;
-  const transformedSectionItem = {
-    ...sectionItem,
-    form: transformValues(api.getSectionFormDefinition(definition))(sectionItem.form),
-  };
+  const transformedSectionItem: CaseSectionTypeSpecificData = transformValues(api.getSectionFormDefinition(definition))(
+    sectionItem,
+  );
   return {
     ...state,
     cases: {
@@ -76,13 +74,13 @@ const INIT_EXISTING_CASE_SECTION_WORKING_COPY = 'INIT_EXISTING_CASE_SECTION_WORK
 type InitialiseExistingCaseSectionWorkingCopyAction = {
   type: typeof INIT_EXISTING_CASE_SECTION_WORKING_COPY;
   caseId: string;
-  api: CaseSectionApi<unknown>;
+  api: CaseSectionApi;
   id: string;
 };
 
 export const initialiseExistingCaseSectionWorkingCopy = (
   caseId: string,
-  api: CaseSectionApi<unknown>,
+  api: CaseSectionApi,
   id: string,
 ): InitialiseExistingCaseSectionWorkingCopyAction => ({
   type: INIT_EXISTING_CASE_SECTION_WORKING_COPY,
@@ -95,8 +93,9 @@ const initialiseCaseSectionWorkingCopyReducer = (
   state: CaseState,
   action: InitialiseExistingCaseSectionWorkingCopyAction,
 ): CaseState => {
-  const item: CaseItemEntry = action.api.toForm(
-    action.api.getSectionItemById(state.cases[action.caseId].connectedCase.info, action.id),
+  const { sectionTypeSpecificData } = action.api.getSectionItemById(
+    state.cases[action.caseId].connectedCase,
+    action.id,
   );
   return {
     ...state,
@@ -104,7 +103,11 @@ const initialiseCaseSectionWorkingCopyReducer = (
       ...state.cases,
       [action.caseId]: {
         ...state.cases[action.caseId],
-        caseWorkingCopy: action.api.updateWorkingCopy(state.cases[action.caseId]?.caseWorkingCopy, item, action.id),
+        caseWorkingCopy: action.api.updateWorkingCopy(
+          state.cases[action.caseId]?.caseWorkingCopy,
+          sectionTypeSpecificData,
+          action.id,
+        ),
       },
     },
   };
@@ -115,13 +118,13 @@ const INIT_NEW_CASE_SECTION_WORKING_COPY = 'INIT_NEW_CASE_SECTION_WORKING_COPY';
 type InitialiseNewCaseSectionWorkingCopyAction = {
   type: typeof INIT_NEW_CASE_SECTION_WORKING_COPY;
   caseId: string;
-  api: CaseSectionApi<unknown>;
+  api: CaseSectionApi;
   form: CaseItemFormValues;
 };
 
 export const initialiseNewCaseSectionWorkingCopy = (
   caseId: string,
-  api: CaseSectionApi<unknown>,
+  api: CaseSectionApi,
   form: CaseItemFormValues,
 ): InitialiseNewCaseSectionWorkingCopyAction => ({
   type: INIT_NEW_CASE_SECTION_WORKING_COPY,
@@ -134,14 +137,13 @@ const initialiseNewCaseSectionWorkingCopyReducer = (
   state: CaseState,
   action: InitialiseNewCaseSectionWorkingCopyAction,
 ): CaseState => {
-  const item: CaseItemEntry = { id: uuidV4(), form: action.form, createdAt: null, twilioWorkerId: null };
   return {
     ...state,
     cases: {
       ...state.cases,
       [action.caseId]: {
         ...state.cases[action.caseId],
-        caseWorkingCopy: action.api.updateWorkingCopy(state.cases[action.caseId]?.caseWorkingCopy, item),
+        caseWorkingCopy: action.api.updateWorkingCopy(state.cases[action.caseId]?.caseWorkingCopy, action.form),
       },
     },
   };
@@ -153,13 +155,13 @@ const REMOVE_CASE_SECTION_WORKING_COPY = 'REMOVE_CASE_SECTION_WORKING_COPY';
 type RemoveCaseSectionWorkingCopyAction = {
   type: typeof REMOVE_CASE_SECTION_WORKING_COPY;
   caseId: string;
-  api: CaseSectionApi<unknown>;
+  api: CaseSectionApi;
   id?: string;
 };
 
 export const removeCaseSectionWorkingCopy = (
   caseId: string,
-  api: CaseSectionApi<unknown>,
+  api: CaseSectionApi,
   id?: string,
 ): RemoveCaseSectionWorkingCopyAction => ({
   type: REMOVE_CASE_SECTION_WORKING_COPY,

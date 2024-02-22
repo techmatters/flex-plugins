@@ -14,18 +14,18 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { CaseItemEntry } from '../../../types/types';
 import { CaseWorkingCopy } from '../types';
+import { CaseSectionTypeSpecificData } from '../../../services/caseSectionService';
 
 export const getWorkingCopy = (sectionName: string) => (
   caseWorkingCopy: CaseWorkingCopy,
   id?: string,
-): CaseItemEntry | undefined =>
+): CaseSectionTypeSpecificData | undefined =>
   id ? caseWorkingCopy.sections[sectionName]?.existing[id] : caseWorkingCopy.sections[sectionName]?.new;
 
 export const setWorkingCopy = (sectionName: string) => (
   caseWorkingCopy: CaseWorkingCopy,
-  item?: CaseItemEntry,
+  item?: CaseSectionTypeSpecificData,
   id?: string,
 ): CaseWorkingCopy => {
   if (!caseWorkingCopy.sections[sectionName]) {

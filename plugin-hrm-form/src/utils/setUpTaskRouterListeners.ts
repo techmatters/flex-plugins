@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { ITask, Manager, StateHelper, TaskHelper } from '@twilio/flex-ui';
+import { Manager, StateHelper, TaskHelper } from '@twilio/flex-ui';
 import type { Conversation } from '@twilio/conversations';
 
 import { FeatureFlags } from '../types/types';

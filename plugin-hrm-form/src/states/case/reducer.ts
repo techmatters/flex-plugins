@@ -19,7 +19,7 @@ import { omit } from 'lodash';
 import { CaseActionType, CaseState } from './types';
 import { DefinitionVersion, REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import { CaseWorkingCopyActionType, caseWorkingCopyReducer } from './caseWorkingCopy';
-import { HrmState, RootState } from '..';
+import { HrmState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { saveCaseReducer } from './saveCase';
 import { FETCH_CASE_LIST_FULFILLED_ACTION, FetchCaseListFulfilledAction } from '../caseList/listContent';
@@ -31,12 +31,16 @@ import {
 import { SEARCH_CASES_SUCCESS, SearchCasesSuccessAction } from '../search/types';
 import { Case } from '../../types/types';
 import { ConfigurationState } from '../configuration/reducer';
+import { caseSectionUpdateReducer } from './sections/caseSectionUpdates';
 
 const initialState: CaseState = {
   cases: {},
 };
 
-const boundSaveCaseReducer = saveCaseReducer({ connectedCase: initialState } as RootState['plugin-hrm-form']);
+const boundSaveCaseReducer = saveCaseReducer({ connectedCase: initialState } as HrmState);
+const boundCaseSectionUpdateReducer = caseSectionUpdateReducer({
+  connectedCase: initialState,
+} as HrmState);
 
 const dereferenceCase = (state: CaseState, caseId: string, referenceId: string): CaseState => {
   const caseState = state.cases[caseId];
@@ -179,6 +183,7 @@ export function reduce(
     | FetchCaseListFulfilledAction,
 ): HrmState {
   let hrmState = boundSaveCaseReducer(inputRootState, action as any);
+  hrmState = boundCaseSectionUpdateReducer(hrmState, action);
   hrmState = {
     ...hrmState,
     connectedCase: caseWorkingCopyReducer(

@@ -14,6 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import { ContactRawJson, Profile, ProfileSection } from '../../types/types';
+import { TaskSID } from '../../types/twilio';
 
 // Action types
 export const CHANGE_ROUTE = 'routing/change-route';
@@ -286,7 +287,7 @@ type CloseModalAction = {
 export type RoutingActionType = ChangeRouteAction | GoBackAction | OpenModalAction | CloseModalAction;
 export type RoutingState = {
   tasks: {
-    [taskId: string]: AppRoutes[];
+    [taskId in TaskSID]?: AppRoutes[];
   };
   isAddingOfflineContact: boolean;
 };

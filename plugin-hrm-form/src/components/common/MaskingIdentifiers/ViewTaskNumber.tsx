@@ -13,16 +13,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
 import React, { useRef, useState } from 'react';
-import { ITask, Template, ThemeProps } from '@twilio/flex-ui';
+import { Template, ThemeProps } from '@twilio/flex-ui';
 import { Paper, Popper } from '@material-ui/core';
 
 import { getFormattedNumberFromTask } from '../../../utils';
 import EyeOpenIcon from './EyeOpenIcon';
 import EyeCloseIcon from './EyeCloseIcon';
 import { PhoneNumberPopperText, UnmaskStyledButton } from './styles';
-import { HiddenText, Box } from '../../../styles';
+import { Box, HiddenText } from '../../../styles';
 import { CloseButton } from '../../callTypeButtons/styles';
 
 type Props = ThemeProps & { task?: ITask };

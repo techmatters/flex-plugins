@@ -17,20 +17,14 @@
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseSectionApi } from './api';
-import { PerpetratorEntry } from '../../../types/types';
-import { upsertCaseSectionItemUsingSectionName } from './update';
 import { getMostRecentSectionItem, getSectionItemById } from './get';
 import { getWorkingCopy, setWorkingCopy } from './workingCopy';
 
-const SECTION_PROPERTY = 'perpetrators';
+const SECTION_PROPERTY = 'perpetrator';
 
-export const perpetratorSectionApi: CaseSectionApi<PerpetratorEntry> = {
+export const perpetratorSectionApi: CaseSectionApi = {
   label: 'Perpetrator',
-  toForm: (input: PerpetratorEntry) => {
-    const { perpetrator, ...caseItemEntry } = { ...input, form: input.perpetrator };
-    return caseItemEntry;
-  },
-  upsertCaseSectionItemFromForm: upsertCaseSectionItemUsingSectionName(SECTION_PROPERTY, 'perpetrator'),
+  type: SECTION_PROPERTY,
   getSectionFormDefinition: (definitionVersions: DefinitionVersion) => definitionVersions.caseForms.PerpetratorForm,
   getSectionLayoutDefinition: (definitionVersions: DefinitionVersion) =>
     definitionVersions.layoutVersion.case.perpetrators,

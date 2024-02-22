@@ -26,7 +26,7 @@ import { getTemplateStrings } from '../../../hrmConfig';
 
 type OwnProps = {
   sectionName: string;
-  values: any;
+  values: Record<string, string | boolean>;
   definitions: FormDefinition;
 };
 
