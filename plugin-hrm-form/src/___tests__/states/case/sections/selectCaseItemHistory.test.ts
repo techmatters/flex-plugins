@@ -79,3 +79,45 @@ test('Case section exists, and createdBy & updatedBy exist in the counselor map 
   expect(addingCounsellorName).toEqual('Counselor 1');
   expect(updatingCounsellorName).toEqual('Counselor 2');
 });
+
+test('Case section exists, without updatedAt - leaves updatedAt undefined', () => {
+  delete sampleCase.sections.note[0].updatedAt;
+  const { added, updated, addingCounsellorName, updatingCounsellorName } = selectCaseItemHistory(
+    rootState,
+    sampleCase,
+    noteSectionApi,
+    'this one',
+  );
+  expect(added).toEqual(BASELINE_DATE);
+  expect(updated).toBeUndefined();
+  expect(addingCounsellorName).toEqual('Counselor 1');
+  expect(updatingCounsellorName).toEqual('Counselor 2');
+});
+
+test('Case section exists, without createdAt - returns Invalid Date for createdAt', () => {
+  delete sampleCase.sections.note[0].createdAt;
+  const { added, updated, addingCounsellorName, updatingCounsellorName } = selectCaseItemHistory(
+    rootState,
+    sampleCase,
+    noteSectionApi,
+    'this one',
+  );
+  expect(added.toString()).toEqual('Invalid Date');
+  expect(updated).toEqual(addDays(BASELINE_DATE, 1));
+  expect(addingCounsellorName).toEqual('Counselor 1');
+  expect(updatingCounsellorName).toEqual('Counselor 2');
+});
+
+test("Case section doesn't exist, without createdAt - returns object with undefined / invalid properties", () => {
+  delete sampleCase.sections.note[0].createdAt;
+  const { added, updated, addingCounsellorName, updatingCounsellorName } = selectCaseItemHistory(
+    rootState,
+    sampleCase,
+    noteSectionApi,
+    'never seen this one',
+  );
+  expect(added.toString()).toEqual('Invalid Date');
+  expect(updated).toBeUndefined();
+  expect(addingCounsellorName).toBeUndefined();
+  expect(updatingCounsellorName).toBeUndefined();
+});
