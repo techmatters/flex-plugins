@@ -98,33 +98,27 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
       <Title>
         <ProfileIcon style={{ marginRight: '4px' }} /> #{profileId}
       </Title>
-      {canView ? (
-        <>
-          <SectionHeader>
-            <Template code="Profile-DetailsHeader-Overview" />
-          </SectionHeader>
-          {overviewSections.map(section => renderOverviewSection(section))}
-          <HorizontalLine />
-          <SectionHeader>
-            <Template code="Profile-DetailsHeader-Notes" />
-          </SectionHeader>
-          {sectionTypesForms.map(s => (
-            <ProfileSectionGroup
-              key={s.label}
-              handleEdit={() => openSectionEditModal(s.name)}
-              profileId={profileId}
-              sectionType={s}
-              task={task}
-              titleCode={s.label}
-            />
-          ))}
-          <HorizontalLine />
-        </>
-      ) : (
+      <>
         <SectionHeader>
-          <Template code="Profile-DetailsHeader-NotAllowedToView" />
+          <Template code="Profile-DetailsHeader-Overview" />
         </SectionHeader>
-      )}
+        {overviewSections.map(section => renderOverviewSection(section))}
+        <HorizontalLine />
+        <SectionHeader>
+          <Template code="Profile-DetailsHeader-Notes" />
+        </SectionHeader>
+        {sectionTypesForms.map(s => (
+          <ProfileSectionGroup
+            key={s.label}
+            handleEdit={() => openSectionEditModal(s.name)}
+            profileId={profileId}
+            sectionType={s}
+            task={task}
+            titleCode={s.label}
+          />
+        ))}
+        <HorizontalLine />
+      </>
     </DetailsWrapper>
   );
 };
