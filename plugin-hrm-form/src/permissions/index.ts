@@ -53,14 +53,14 @@ export const ContactActions = {
   REMOVE_CONTACT_FROM_CASE: 'removeContactFromCase',
 } as const;
 
-export const ProfileActions = {
+const ProfileActions = {
   VIEW_PROFILE: 'viewProfile',
   // EDIT_PROFILE: 'editProfile', // we don't need edit for now, will be needed when users can attach more identifiers or edit the name
   FLAG_PROFILE: 'flagProfile',
   UNFLAG_PROFILE: 'unflagProfile',
 };
 
-export const ProfileSectionActions = {
+const ProfileSectionActions = {
   CREATE_PROFILE_SECTION: 'createProfileSection',
   VIEW_PROFILE_SECTION: 'viewProfileSection',
   EDIT_PROFILE_SECTION: 'editProfileSection',
