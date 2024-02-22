@@ -22,8 +22,7 @@
             "enable_transcripts": true,
             "backend_handled_chat_janitor": false,
             "enable_voice_recordings": false,
-            "enable_post_survey": false,
-            "enable_case_merging": true
+            "enable_post_survey": false
         },
         "contact_save_frequency": "onTabChange",
         "multipleOfficeSupport": true,

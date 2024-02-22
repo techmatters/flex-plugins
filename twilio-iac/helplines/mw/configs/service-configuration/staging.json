@@ -1,7 +1,6 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_case_merging": true,
             "enable_external_transcripts": false,
             "post_survey_serverless_handled": false
         },

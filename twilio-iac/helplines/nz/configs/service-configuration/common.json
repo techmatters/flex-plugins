@@ -12,7 +12,6 @@
         },
         "feature_flags": {
             "enable_aselo_messaging_ui": false,
-            "enable_case_merging": true,
             "enable_client_profiles": true,
             "enable_conferencing": true,
             "enable_counselor_toolkits": true,
