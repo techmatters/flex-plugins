@@ -16,7 +16,6 @@
 
 /* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
 
 type Props = {
   width: string;
@@ -26,7 +25,7 @@ type Props = {
 /* eslint-disable react/prop-types */
 const SmsIcon: React.FC<Props> = ({ width, height, color }) => {
   return (
-    <svg width={width} height={height} fill={color} viewBox="0 0 455 455">
+    <svg width={width} height={height} fill={color} viewBox="0 0 455 455" aria-label="SMS Messaging">
       <path
         d="M263.356,286.243c-4.143,0-7.5,3.358-7.5,7.5v75.572H66.644v-189.22h57.74c4.143,0,7.5-3.358,7.5-7.5s-3.357-7.5-7.5-7.5   h-57.74v-31.768c0-13.188,10.729-23.917,23.918-23.917h10.799c4.143,0,7.5-3.358,7.5-7.5s-3.357-7.5-7.5-7.5H90.562   c-21.459,0-38.918,17.458-38.918,38.917v282.755c0,21.459,17.459,38.917,38.918,38.917h141.377   c21.459,0,38.918-17.458,38.918-38.917V293.743C270.856,289.601,267.499,286.243,263.356,286.243z M231.938,440H90.562   c-13.188,0-23.918-10.729-23.918-23.917v-31.768h189.213v31.768C255.856,429.271,245.127,440,231.938,440z"
         fill={color}

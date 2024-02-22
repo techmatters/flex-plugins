@@ -16,9 +16,17 @@
 
 import React from 'react';
 
+// Used for Client profiles
 const DirectoryClosedIcon = () => {
   return (
-    <svg width="10" height="12" viewBox="3 5 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      width="10"
+      height="12"
+      viewBox="3 5 16 10"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="Client Profiles"
+    >
       <path
         fillRule="evenodd"
         clipRule="evenodd"
