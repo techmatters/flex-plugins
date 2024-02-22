@@ -16,9 +16,9 @@
 
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
-import { cancelCase, createCase } from '../../services/CaseService';
+import { cancelCase, createCase, getCase, updateCaseOverview, updateCaseStatus } from '../../services/CaseService';
 import { fetchHrmApi } from '../../services/fetchHrmApi';
-import { Contact } from '../../types/types';
+import { CaseOverview, Contact } from '../../types/types';
 import { VALID_EMPTY_CONTACT } from '../testContacts';
 
 jest.mock('../../services/fetchHrmApi');
@@ -143,4 +143,63 @@ describe('createCase()', () => {
     expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl, expectedOptions);
     expect(response).toStrictEqual(mockedResponse);
   });
+});
+
+describe('update endpoints', () => {
+  const baselineResponse = {
+    id: 1,
+    createdAt: '2022-12-22T07:20:17.042Z',
+    updatedAt: '2022-12-22T07:20:17.042Z',
+    status: 'open',
+    helpline: 'a helpline',
+    info: { definitionVersion: 'demo-v1' },
+    twilioWorkerId: 'creating worker',
+    accountSid: 'an account',
+    createdBy: 'creating worker',
+    updatedBy: null,
+    categories: {},
+  };
+
+  test('updateCaseOverview - Generates a PUT HTTP call via fetchHrmApi', async () => {
+    mockFetchHrmAPi.mockResolvedValue(baselineResponse);
+    const body: CaseOverview = {
+      summary: 'a summary',
+      childIsAtRisk: false,
+      followUpDate: '2022-12-22T07:20:17.042Z',
+    };
+    const response = await updateCaseOverview('case-123', body);
+
+    const expectedUrl = `/cases/case-123/overview`;
+    const expectedOptions = {
+      method: 'PUT',
+      body: expect.jsonStringToParseAs(body),
+    };
+    expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl, expectedOptions);
+    expect(response).toStrictEqual(baselineResponse);
+  });
+
+  test('updateCaseStatus - Generates a PUT HTTP call via fetchHrmApi', async () => {
+    mockFetchHrmAPi.mockResolvedValue(baselineResponse);
+    const response = await updateCaseStatus('case-123', 'stately');
+
+    const expectedUrl = `/cases/case-123/status`;
+    const expectedOptions = {
+      method: 'PUT',
+      body: expect.jsonStringToParseAs({ status: 'stately' }),
+    };
+    expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl, expectedOptions);
+    expect(response).toStrictEqual(baselineResponse);
+  });
+});
+
+test('getCase - Generates a GET HTTP call via fetchHrmApi', async () => {
+  mockFetchHrmAPi.mockResolvedValue({ a: 'case' });
+  const response = await getCase('case-123');
+
+  const expectedUrl = `/cases/case-123`;
+  const expectedOptions = {
+    method: 'GET',
+  };
+  expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl, expectedOptions);
+  expect(response).toStrictEqual({ a: 'case' });
 });
