@@ -20,6 +20,7 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 import { fetchHrmApi } from './fetchHrmApi';
 import { getQueryParams } from './PaginationParams';
 import { Case, Contact, SearchCaseResult } from '../types/types';
+import { ApiError, FetchOptions } from './fetchApi';
 
 export async function createCase(contact: Contact, creatingWorkerSid: string, definitionVersion: DefinitionVersionId) {
   const { helpline, rawJson: contactForm } = contact;
@@ -73,11 +74,18 @@ export async function updateCaseStatus(caseId: Case['id'], status: Case['status'
 }
 
 export async function getCase(caseId: Case['id']): Promise<Case> {
-  const options = {
+  const options: FetchOptions = {
     method: 'GET',
+    returnNullFor404: true,
   };
-
-  return fetchHrmApi(`/cases/${caseId}`, options);
+  try {
+    return await fetchHrmApi(`/cases/${caseId}`, options);
+  } catch (err) {
+    if (err instanceof ApiError && err.response.status === 404) {
+      return null;
+    }
+    throw err;
+  }
 }
 
 export async function searchCases(searchParams, limit, offset): Promise<SearchCaseResult> {
