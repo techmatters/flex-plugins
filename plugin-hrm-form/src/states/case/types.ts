@@ -23,8 +23,6 @@ import { CaseSectionTypeSpecificData } from '../../services/caseSectionService';
 import { WorkerSID } from '../../types/twilio';
 
 // Action types
-export const UPDATE_CASE_ACTION = 'case-action/update-case';
-export const UPDATE_CASE_ACTION_FULFILLED = `${UPDATE_CASE_ACTION}_FULFILLED` as const;
 export const CREATE_CASE_ACTION = 'case-action/create-case';
 export const CREATE_CASE_ACTION_FULFILLED = `${CREATE_CASE_ACTION}_FULFILLED` as const;
 export const CANCEL_CASE_ACTION = 'case-action/cancel-case';
@@ -37,13 +35,6 @@ export enum SavedCaseStatus {
   Error,
 }
 
-type UpdatedCaseAction = {
-  type: typeof UPDATE_CASE_ACTION;
-  payload: Promise<{ taskSid: string; case: t.Case }>;
-  taskId?: string;
-  meta: unknown;
-};
-
 type CreateCaseAction = {
   type: typeof CREATE_CASE_ACTION;
   payload: Promise<{ taskSid: string; case: t.Case }>;
@@ -51,7 +42,7 @@ type CreateCaseAction = {
   meta: unknown;
 };
 
-export type CaseActionType = UpdatedCaseAction | CreateCaseAction;
+export type CaseActionType = CreateCaseAction;
 
 type CoreActivity = {
   text: string;
@@ -121,5 +112,5 @@ export type CaseState = {
 };
 
 export type CaseUpdatingAction = {
-  type: typeof CREATE_CASE_ACTION_FULFILLED | typeof UPDATE_CASE_ACTION_FULFILLED;
+  type: typeof CREATE_CASE_ACTION_FULFILLED;
 };

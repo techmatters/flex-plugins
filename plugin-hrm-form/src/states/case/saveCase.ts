@@ -20,11 +20,13 @@ import { CreateHandlerMap } from 'redux-promise-middleware-actions/lib/reducers'
 
 import { cancelCase, createCase, getCase, updateCaseOverview, updateCaseStatus } from '../../services/CaseService';
 import { Case, CaseOverview } from '../../types/types';
-import { CANCEL_CASE_ACTION, CREATE_CASE_ACTION, UPDATE_CASE_ACTION } from './types';
+import { CANCEL_CASE_ACTION, CREATE_CASE_ACTION } from './types';
 import type { HrmState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { connectToCase } from '../../services/ContactService';
 import { connectToCaseAsyncAction } from '../contacts/saveContact';
+
+const UPDATE_CASE_OVERVIEW_ACTION = 'case-action/update-overview';
 
 export const createCaseAsyncAction = createAsyncAction(
   CREATE_CASE_ACTION,
@@ -37,7 +39,7 @@ export const createCaseAsyncAction = createAsyncAction(
 );
 
 export const updateCaseOverviewAsyncAction = createAsyncAction(
-  UPDATE_CASE_ACTION,
+  UPDATE_CASE_OVERVIEW_ACTION,
   async (caseId: Case['id'], overview?: CaseOverview, status?: Case['status']): Promise<Case> => {
     let updatedCase;
     if (Object.keys(overview).length) {
@@ -121,6 +123,9 @@ export const saveCaseReducer = (initialState: HrmState): ((state: HrmState, acti
     handlePendingAction(handleAction, createCaseAsyncAction.pending),
     handleFulfilledAction(handleAction, createCaseAsyncAction.fulfilled),
     handleRejectedAction(handleAction, createCaseAsyncAction.rejected),
+    handlePendingAction(handleAction, updateCaseOverviewAsyncAction.pending),
+    handleFulfilledAction(handleAction, updateCaseOverviewAsyncAction.fulfilled),
+    handleRejectedAction(handleAction, updateCaseOverviewAsyncAction.rejected),
 
     handlePendingAction(handleAction, cancelCaseAsyncAction.pending),
     handleFulfilledAction(handleAction, cancelCaseAsyncAction.fulfilled),
