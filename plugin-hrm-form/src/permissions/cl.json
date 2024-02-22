@@ -25,6 +25,13 @@
   "addContactToCase": [["everyone"]],
   "removeContactFromCase": [["everyone"]],
 
+  "viewProfile": [],
+  "flagProfile": [],
+  "unflagProfile": [],
+  "createProfileSection": [],
+  "viewProfileSection": [],
+  "editProfileSection": [],
+  
   "viewPostSurvey":  [["isSupervisor"]],
 
   "viewIdentifiers": [["everyone"]]

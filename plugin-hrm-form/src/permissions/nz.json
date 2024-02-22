@@ -22,9 +22,17 @@
     "editContact":  [["isSupervisor"],["isOwner", {"createdHoursAgo": 24}]],
     "viewExternalTranscript":  [["isSupervisor"]],
     "viewRecording":  [["isSupervisor"]],
-    "viewPostSurvey":  [["isSupervisor"]],
     "addContactToCase": [["isSupervisor"], ["isOwner", {"createdHoursAgo": 24}]],
     "removeContactFromCase": [["isSupervisor"], ["isOwner", {"createdHoursAgo": 24}]],
+    
+    "viewProfile": [["everyone"]],
+    "flagProfile": [["everyone"]],
+    "unflagProfile": [["everyone"]],
+    "createProfileSection": [["everyone"]],
+    "viewProfileSection": [["everyone", { "sectionType": "summary" }], ["isSupervisor"]],
+    "editProfileSection": [["everyone", { "sectionType": "summary" }], ["isSupervisor"]],
+
+    "viewPostSurvey":  [["isSupervisor"]],
 
     "viewIdentifiers": [["isSupervisor"]]
 }

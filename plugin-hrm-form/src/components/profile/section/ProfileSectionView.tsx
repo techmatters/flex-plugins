@@ -27,7 +27,14 @@ type OwnProps = ProfileCommonProps & {
 };
 
 const ProfileSectionView = ({ profileId, sectionType }: OwnProps) => {
-  const { section, loading } = useProfileSectionByType({ profileId, sectionType: sectionType.name });
+  const { section, loading, canView: canViewProfileSection } = useProfileSectionByType({
+    profileId,
+    sectionType: sectionType.name,
+  });
+
+  if (!canViewProfileSection) {
+    return null;
+  }
 
   if (loading) {
     return <SectionText>Loading...</SectionText>;
