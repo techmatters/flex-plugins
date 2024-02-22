@@ -48,7 +48,7 @@ locals {
       },
       survey : {
         "target_workers" = "1==0",
-        "friendly_name"  = "Survey"
+        "friendly_name"  = "Survey - DO NOT TRANSFER"
       }
     }
 

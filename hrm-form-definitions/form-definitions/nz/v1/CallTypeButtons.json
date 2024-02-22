@@ -42,12 +42,6 @@
     "category": "non-data"
   },
   {
-    "name": "other",
-    "label": "Other",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
     "name": "test",
     "label": "Test",
     "type": "button",

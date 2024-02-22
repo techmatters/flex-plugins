@@ -48,6 +48,7 @@ locals {
           voice_ivr_greeting_message = "Kia ora, thank you for contacting Youthline. One of our counsellors will get back to you as soon as we can. If you or someone else are in immediate danger, please call 111 immediately."
           voice_ivr_language         = "en-US"
           wait_url                   = "https://nz-assets-8961.twil.io/busyLine"
+          blocked_url                = "https://nz-assets-8961.twil.io/blocked_number.mp3"
         }
         chatbot_unique_names = []
       },
