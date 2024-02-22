@@ -31,8 +31,8 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import { ProfileSectionSubtitle, ProfileSectionWrapper } from './styles';
-import { Box, Row } from '../../styles';
+import { ProfileSectionSubtitle, ProfileSectionWrapper } from '../styles';
+import { Box, Row } from '../../../styles';
 
 type OwnProps = {
   titleCode: string;

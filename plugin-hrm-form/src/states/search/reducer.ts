@@ -29,7 +29,7 @@ import {
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
   UPDATE_CONTACT_ACTION_FULFILLED,
 } from '../contacts/types';
-import { CaseUpdatingAction, CREATE_CASE_ACTION_FULFILLED, UPDATE_CASE_ACTION_FULFILLED } from '../case/types';
+import { CaseUpdatingAction, CREATE_CASE_ACTION_FULFILLED } from '../case/types';
 
 export type SearchStateTaskEntry = {
   form: t.SearchFormValues;
@@ -123,11 +123,8 @@ export function reduce(
       ),
     };
   }
-  if (
-    (<string[]>[CONNECT_TO_CASE_ACTION_FULFILLED, UPDATE_CASE_ACTION_FULFILLED, CREATE_CASE_ACTION_FULFILLED]).includes(
-      action.type,
-    )
-  ) {
+  // TODO: Remove this - now case search results share redux state with connected cases an explicit refresh should be redundant
+  if ((<string[]>[CONNECT_TO_CASE_ACTION_FULFILLED, CREATE_CASE_ACTION_FULFILLED]).includes(action.type)) {
     state = {
       ...state,
       tasks: Object.fromEntries(

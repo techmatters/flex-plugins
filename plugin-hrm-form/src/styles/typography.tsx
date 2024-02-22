@@ -88,9 +88,13 @@ export const CategoryRequiredText = styled('p')`
 `;
 CategoryRequiredText.displayName = 'CategoryRequiredText';
 
-export const Title = styled(FontOpenSans)`
+// Title of the page used with icon
+export const Title = styled('h1')`
   font-size: 14pt;
   font-weight: 700;
   margin-bottom: 20px;
   margin-top: 12px;
+  display: flex;
+  align-items: center;
 `;
+Title.displayName = 'Title';

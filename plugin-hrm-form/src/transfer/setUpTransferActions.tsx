@@ -18,7 +18,6 @@ import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 import {
   ActionFunction,
-  ITask,
   Manager,
   Notifications,
   NotificationType,

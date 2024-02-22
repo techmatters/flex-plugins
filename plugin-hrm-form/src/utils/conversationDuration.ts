@@ -14,8 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { ITask } from '@twilio/flex-ui';
-
 import { isNullOrUndefined } from './checkers';
 import { isOfflineContactTask } from '../types/types';
 import { ContactMetadata } from '../states/contacts/types';

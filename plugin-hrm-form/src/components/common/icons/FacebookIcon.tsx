@@ -16,7 +16,6 @@
 
 /* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
 
 type Props = {
   width: string;
@@ -26,7 +25,7 @@ type Props = {
 /* eslint-disable react/prop-types */
 const FacebookIcon: React.FC<Props> = ({ width, height, color }) => {
   return (
-    <svg width={width} height={height} fill={color} viewBox="0 0 52 52">
+    <svg width={width} height={height} fill={color} viewBox="0 0 52 52" aria-label="Facebook">
       <path
         fill={color}
         stroke="none"

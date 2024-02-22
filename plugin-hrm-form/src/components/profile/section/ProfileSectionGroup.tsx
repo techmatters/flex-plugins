@@ -32,12 +32,12 @@ import React from 'react';
 import type { ProfileSectionDefinition } from 'hrm-form-definitions';
 import { Template } from '@twilio/flex-ui';
 
-import { HiddenText } from '../../styles';
-import { useProfileSectionByType } from '../../states/profile/hooks';
-import ProfileSectionView from './section/ProfileSectionView';
-import type { ProfileCommonProps } from './types';
+import { HiddenText } from '../../../styles';
+import { useProfileSectionByType } from '../../../states/profile/hooks';
+import ProfileSectionView from './ProfileSectionView';
+import type { ProfileCommonProps } from '../types';
 import ProfileDetailsSection from './ProfileDetailsSection';
-import { ProfileSectionEditButton } from './styles';
+import { ProfileSectionEditButton } from '../styles';
 
 type OwnProps = ProfileCommonProps & {
   sectionType: ProfileSectionDefinition;

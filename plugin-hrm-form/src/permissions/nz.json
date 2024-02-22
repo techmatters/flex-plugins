@@ -15,11 +15,9 @@
     "editIncident":  [["isSupervisor"],["isCreator", "isCaseOpen", {"createdHoursAgo": 24}]],
     "addDocument":  [["isSupervisor"],["isCreator", "isCaseOpen", {"createdHoursAgo": 24}]],
     "editDocument":  [["isSupervisor"],["isCreator", "isCaseOpen", {"createdHoursAgo": 24}]],
-    "editCaseSummary":  [["isSupervisor"],["isCreator", "isCaseOpen", {"createdHoursAgo": 24}]],
-    "editChildIsAtRisk":  [["isSupervisor"],["isCreator", "isCaseOpen", {"createdHoursAgo": 24}]],
-    "editFollowUpDate":  [["isSupervisor"],["isCreator", "isCaseOpen", {"createdHoursAgo": 24}]],
+    "editCaseOverview":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
     "updateCaseContacts": [["isSupervisor"], ["isCaseOpen", {"createdDaysAgo": 28}]],
-  
+
     "viewContact":  [["isSupervisor"],["isOwner"]],
     "editContact":  [["isSupervisor"],["isOwner", {"createdHoursAgo": 24}]],
     "viewExternalTranscript":  [["isSupervisor"]],

@@ -73,13 +73,10 @@ export const caseHome = (page: Page) => {
   }
 
   async function saveCaseAndEnd() {
-    const responsesPromise = Promise.all([
-      page.waitForResponse('**/cases/**'),
-      page.waitForResponse('**/contacts/**'),
-    ]);
+    const responsesPromise = page.waitForResponse('**/contacts/**');
     await selectors.saveCaseAndEndButton.click();
-    const responses = await responsesPromise;
-    responses.forEach((response) => expect(response.ok()).toBeTruthy());
+    const response = await responsesPromise;
+    expect(response.ok()).toBeTruthy();
   }
 
   const { getNewCaseId } = selectors;

@@ -16,7 +16,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { IconButton } from '@twilio/flex-ui';
+import { IconButton, Template } from '@twilio/flex-ui';
 import { Box, Popper } from '@material-ui/core';
 import { parseISO } from 'date-fns';
 
@@ -133,13 +133,14 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
                       Date.now() + Number(customDuration.durationInHours) * 60 * 60 * 1000,
                     ).toISOString();
                     const validatedTime = parseISO(validUntil);
+
                     return (
                       <StyledMenuItem
                         key={customDuration.durationInHours}
                         onClick={() => shouldAllowAssociate && associateProfileFlag(flag.id, validatedTime)}
                         ref={index && customDurationIndex ? null : associateRef}
                       >
-                        {customDuration.label}
+                        <Template code={customDuration.label} />
                       </StyledMenuItem>
                     );
                   });
@@ -151,7 +152,7 @@ const ProfileFlagsEdit: React.FC<Props> = (props: Props) => {
                     onClick={() => shouldAllowAssociate && associateProfileFlag(flag.id)}
                     ref={index ? null : associateRef}
                   >
-                    {flag.name}
+                    <Template code={flag.name} />
                   </StyledMenuItem>
                 );
               })}

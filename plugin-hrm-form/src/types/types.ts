@@ -15,12 +15,23 @@
  */
 
 /* eslint-disable import/no-unused-modules */
-import type { ITask } from '@twilio/flex-ui';
+import type { ITask as ITaskOriginalType, TaskContextProps as TaskContextPropsOriginalType } from '@twilio/flex-ui';
 import type { CallTypes, DefinitionVersionId } from 'hrm-form-definitions';
 
 import type { ChannelTypes } from '../states/DomainConstants';
 import type { ResourceReferral } from '../states/contacts/resourceReferral';
 import { DateFilterValue } from '../states/caseList/dateFilters';
+import { ApiCaseSection } from '../services/caseSectionService';
+import { AccountSID, TaskSID, WorkerSID } from './twilio';
+
+declare global {
+  export interface ITask<T = Record<string, any>> extends ITaskOriginalType<T> {
+    taskSid: TaskSID
+  }
+  export interface TaskContextProps extends TaskContextPropsOriginalType {
+    task?: ITask
+  }
+}
 
 export type EntryInfo = {
   id: string;
@@ -66,35 +77,37 @@ export type CSAMReportEntry = {
   contactId?: number;
 } & Omit<EntryInfo, 'id'>;
 
-export type CaseInfo = {
-  definitionVersion?: DefinitionVersionId;
-  offlineContactCreator?: string;
-  summary?: string;
-  counsellorNotes?: NoteEntry[];
-  perpetrators?: PerpetratorEntry[];
-  households?: HouseholdEntry[];
-  referrals?: ReferralEntry[];
-  incidents?: IncidentEntry[];
-  documents?: DocumentEntry[];
+export type CaseOverview = {
+
   followUpDate?: string;
   childIsAtRisk?: boolean;
+  summary?: string;
+}
+
+export type CaseInfo = CaseOverview & {
+  definitionVersion?: DefinitionVersionId;
+  offlineContactCreator?: string;
 };
 
+export type WellKnownCaseSection = 'note' | 'referral' | 'household' | 'perpetrator' | 'incident' | 'document';
+
 export type Case = {
-  accountSid: string;
+  accountSid: AccountSID;
   id: string;
+  label: string;
   status: string;
   helpline: string;
-  twilioWorkerId: string;
+  twilioWorkerId: WorkerSID;
   info?: CaseInfo;
-  categories: {};
   createdAt: string;
   updatedAt: string;
-  updatedBy?: string;
+  updatedBy?: WorkerSID;
   statusUpdatedAt?: string;
-  statusUpdatedBy?: string;
+  statusUpdatedBy?: WorkerSID;
   previousStatus?: string;
   connectedContacts: Contact[];
+  sections: { [K in WellKnownCaseSection]?: ApiCaseSection[] };
+  categories: Record<string, string[]>;
 };
 
 export type TwilioStoredMedia = {
@@ -162,15 +175,15 @@ export type ContactRawJson = {
     channel: ChannelTypes;
     date: string;
     time: string;
-    createdOnBehalfOf: string;
+    createdOnBehalfOf: WorkerSID;
     [key: string]: string | boolean;
   };
 };
 
 export type Contact = {
   id: string;
-  accountSid: string;
-  twilioWorkerId: string;
+  accountSid: AccountSID;
+  twilioWorkerId: WorkerSID;
   number: string;
   conversationDuration: number;
   csamReports: CSAMReportEntry[];
@@ -179,7 +192,7 @@ export type Contact = {
   createdAt: string;
   createdBy: string;
   helpline: string;
-  taskId: string;
+  taskId: TaskSID;
   profileId: Profile['id'] | null;
   channel: ChannelTypes | 'default';
   updatedBy: string;
@@ -334,6 +347,7 @@ export type StandaloneITask = {
   };
 };
 
+// Whilst this is the same as ITask<{ isContactlessTask: true; isInMyBehalf: true }>, TS can distinguish this one from a Twilio ITask
 export type InMyBehalfITask = ITask & { attributes: { isContactlessTask: true; isInMyBehalf: true } };
 
 export type CustomITask = ITask | OfflineContactTask | InMyBehalfITask;

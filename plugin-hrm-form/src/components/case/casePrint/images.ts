@@ -14,6 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import React from 'react';
+
 /**
  * Gets Image as a base64 encoded string (BLOB)
  * @param url Image URL

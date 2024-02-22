@@ -18,8 +18,7 @@
             "enable_transcripts": false,
             "enable_twilio_transcripts": false,
             "enable_voice_recordings": false,
-            "post_survey_serverless_handled": false,
-	    "enable_case_merging": true
+            "post_survey_serverless_handled": false
         },
         "permissionConfig": "e2e",
         "previous_ui_version": {

@@ -21,23 +21,29 @@ import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { getActivitiesFromCase, getActivitiesFromContacts } from '../../../states/case/caseActivities';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
-import { Activity } from '../../../states/case/types';
+import { Activity, ReferralActivity } from '../../../states/case/types';
+import { WorkerSID } from '../../../types/twilio';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
-const createFakeCase = (info: CaseInfo, connectedContacts: any[] = []): Case => ({
+const createFakeCase = (sections: Case['sections'], info: CaseInfo = {}, connectedContacts: any[] = []): Case => ({
   id: '0',
   status: 'borked',
   info: { definitionVersion: DefinitionVersionId.v1, ...info },
   helpline: 'Fakeline',
   connectedContacts,
-  twilioWorkerId: 'fake-worker',
+  twilioWorkerId: 'WK-fake-worker',
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
   categories: {},
-  accountSid: 'x',
+  accountSid: 'ACx',
+  sections,
+  label: 'Fake Case',
 });
+
+const noteWorker: WorkerSID = 'WK-note-twilio-worker-id';
+const referralWorker: WorkerSID = 'WK-note-twilio-worker-id';
 
 let formDefinition;
 
@@ -65,18 +71,20 @@ describe('getActivitiesFromCase', () => {
 
   test('single note added', async () => {
     const fakeCase = createFakeCase({
-      counsellorNotes: [
+      note: [
         {
-          id: 'NOTE_ID',
-          twilioWorkerId: 'note-twilio-worker-id',
+          sectionId: 'NOTE_ID',
+          twilioWorkerId: noteWorker,
           createdAt,
-          note: 'content',
+          sectionTypeSpecificData: {
+            note: 'content',
+          },
         },
       ],
     });
 
     const activities = getActivitiesFromCase(fakeCase, formDefinition);
-    const expectedActivity = {
+    const expectedActivity: Activity = {
       id: 'NOTE_ID',
       date: createdAt,
       type: 'note',
@@ -84,7 +92,7 @@ describe('getActivitiesFromCase', () => {
         note: 'content',
       },
       text: 'content',
-      twilioWorkerId: 'note-twilio-worker-id',
+      twilioWorkerId: noteWorker,
       updatedBy: undefined,
       updatedAt: undefined,
     };
@@ -94,13 +102,15 @@ describe('getActivitiesFromCase', () => {
 
   test('custom note added without preview fields specified in layout - uses first field for text property', async () => {
     const fakeCase = createFakeCase({
-      counsellorNotes: [
+      note: [
         {
-          id: 'NOTE_ID',
-          twilioWorkerId: 'note-twilio-worker-id',
+          sectionId: 'NOTE_ID',
+          twilioWorkerId: 'WK-note-twilio-worker-id',
           createdAt,
-          customProperty1: 'customProperty1 content',
-          customProperty2: 'customProperty2 content',
+          sectionTypeSpecificData: {
+            customProperty1: 'customProperty1 content',
+            customProperty2: 'customProperty2 content',
+          },
         },
       ],
     });
@@ -112,7 +122,7 @@ describe('getActivitiesFromCase', () => {
         NoteForm: [{ name: 'customProperty1' }, { name: 'customProperty2' }],
       },
     });
-    const expectedActivity = {
+    const expectedActivity: Activity = {
       id: 'NOTE_ID',
       date: createdAt,
       type: 'note',
@@ -121,7 +131,7 @@ describe('getActivitiesFromCase', () => {
         customProperty2: 'customProperty2 content',
       },
       text: 'customProperty1 content',
-      twilioWorkerId: 'note-twilio-worker-id',
+      twilioWorkerId: noteWorker,
       updatedBy: undefined,
       updatedAt: undefined,
     };
@@ -131,14 +141,16 @@ describe('getActivitiesFromCase', () => {
 
   test('custom note added with preview fields in layout - uses preview fields specified in layout for text property', async () => {
     const fakeCase = createFakeCase({
-      counsellorNotes: [
+      note: [
         {
-          id: 'NOTE_ID',
-          twilioWorkerId: 'note-twilio-worker-id',
+          sectionId: 'NOTE_ID',
+          twilioWorkerId: noteWorker,
           createdAt,
-          customProperty1: 'customProperty1 content',
-          customProperty2: 'customProperty2 content',
-          customProperty3: 'customProperty3 content',
+          sectionTypeSpecificData: {
+            customProperty1: 'customProperty1 content',
+            customProperty2: 'customProperty2 content',
+            customProperty3: 'customProperty3 content',
+          },
         },
       ],
     });
@@ -157,7 +169,7 @@ describe('getActivitiesFromCase', () => {
         },
       },
     });
-    const expectedActivity = {
+    const expectedActivity: Activity = {
       id: 'NOTE_ID',
       date: createdAt,
       type: 'note',
@@ -167,7 +179,7 @@ describe('getActivitiesFromCase', () => {
         customProperty3: 'customProperty3 content',
       },
       text: expect.stringMatching(/.*customProperty1 content.*customProperty3 content.*/),
-      twilioWorkerId: 'note-twilio-worker-id',
+      twilioWorkerId: noteWorker,
       updatedBy: undefined,
       updatedAt: undefined,
     };
@@ -177,26 +189,30 @@ describe('getActivitiesFromCase', () => {
 
   test('multiple notes added', async () => {
     const fakeCase = createFakeCase({
-      counsellorNotes: [
+      note: [
         {
-          id: 'NOTE_ID_1',
-          twilioWorkerId: 'note-twilio-worker-id',
+          sectionId: 'NOTE_ID_1',
+          twilioWorkerId: noteWorker,
           createdAt,
-          note: 'content',
+          sectionTypeSpecificData: {
+            note: 'content',
+          },
         },
         {
-          id: 'NOTE_ID_2',
-          twilioWorkerId: 'note-twilio-worker-id',
+          sectionId: 'NOTE_ID_2',
+          twilioWorkerId: noteWorker,
           createdAt,
-          note: 'moar content',
-          updatedBy: 'updater',
+          sectionTypeSpecificData: {
+            note: 'moar content',
+          },
+          updatedBy: 'WK-updater',
           updatedAt,
         },
       ],
     });
 
     const activities = getActivitiesFromCase(fakeCase, formDefinition);
-    const expectedActivities = [
+    const expectedActivities: Activity[] = [
       {
         id: 'NOTE_ID_1',
         date: createdAt,
@@ -205,7 +221,7 @@ describe('getActivitiesFromCase', () => {
         note: {
           note: 'content',
         },
-        twilioWorkerId: 'note-twilio-worker-id',
+        twilioWorkerId: noteWorker,
         updatedBy: undefined,
         updatedAt: undefined,
       },
@@ -217,8 +233,8 @@ describe('getActivitiesFromCase', () => {
           note: 'moar content',
         },
         text: 'moar content',
-        twilioWorkerId: 'note-twilio-worker-id',
-        updatedBy: 'updater',
+        twilioWorkerId: noteWorker,
+        updatedBy: 'WK-updater',
         updatedAt,
       },
     ];
@@ -228,25 +244,27 @@ describe('getActivitiesFromCase', () => {
 
   test('single referral added', async () => {
     const referral = {
-      id: 'REFERRAL_ID',
-      date: '2020-12-15',
-      referredTo: 'State Agency 1',
-      comments: 'comment',
+      sectionId: 'REFERRAL_ID',
+      sectionTypeSpecificData: {
+        date: '2020-12-15',
+        referredTo: 'State Agency 1',
+        comments: 'comment',
+      },
       createdAt,
-      twilioWorkerId: 'referral-adder',
-    };
+      twilioWorkerId: referralWorker,
+    } as const;
     const fakeCase = createFakeCase({
-      referrals: [referral],
+      referral: [referral],
     });
-    const { createdAt: referralCreatedAt, twilioWorkerId, id, ...restOfReferral } = referral;
+    const { createdAt: referralCreatedAt, twilioWorkerId, sectionId, sectionTypeSpecificData } = referral;
     const activities = getActivitiesFromCase(fakeCase, formDefinition);
-    const expectedActivity = {
-      id,
-      date: referral.date,
+    const expectedActivity: ReferralActivity = {
+      id: sectionId,
+      date: sectionTypeSpecificData.date,
       createdAt,
       type: 'referral',
-      text: referral.referredTo,
-      referral: restOfReferral,
+      text: sectionTypeSpecificData.referredTo,
+      referral: sectionTypeSpecificData,
       twilioWorkerId,
       updatedBy: undefined,
       updatedAt: undefined,
@@ -262,26 +280,31 @@ describe('getActivitiesFromCase', () => {
     const contactCreatedAt = '2020-07-30 19:55:20';
     const noteCreatedAt = '2020-06-30 18:55:20';
     const referral = {
-      id: 'REFERRAL_ID',
-      date: referralDate,
-      referredTo: 'State Agency 1',
-      comments: 'comment',
+      sectionId: 'REFERRAL_ID',
+      sectionTypeSpecificData: {
+        date: referralDate,
+        referredTo: 'State Agency 1',
+        comments: 'comment',
+      },
       createdAt: referralCreatedAt,
-      twilioWorkerId: 'referral-adder',
-    };
+      twilioWorkerId: referralWorker,
+    } as const;
 
     const fakeCase = createFakeCase(
       {
-        referrals: [referral],
-        counsellorNotes: [
+        referral: [referral],
+        note: [
           {
-            id: 'NOTE_ID',
-            twilioWorkerId: 'note-adder',
+            sectionId: 'NOTE_ID',
+            twilioWorkerId: noteWorker,
             createdAt: noteCreatedAt,
-            note: 'content',
+            sectionTypeSpecificData: {
+              note: 'content',
+            },
           },
         ],
       },
+      {},
       [
         {
           id: 1,
@@ -299,9 +322,9 @@ describe('getActivitiesFromCase', () => {
     );
 
     const activities = getActivitiesFromCase(fakeCase, formDefinition);
-    const { createdAt: _createdAt, twilioWorkerId, id, ...restOfReferral } = referral;
+    const { sectionTypeSpecificData } = referral;
 
-    const expectedActivities = [
+    const expectedActivities: Activity[] = [
       {
         id: 'NOTE_ID',
         date: noteCreatedAt,
@@ -310,18 +333,18 @@ describe('getActivitiesFromCase', () => {
           note: 'content',
         },
         text: 'content',
-        twilioWorkerId: 'note-adder',
+        twilioWorkerId: noteWorker,
         updatedBy: undefined,
         updatedAt: undefined,
       },
       {
         id: 'REFERRAL_ID',
-        date: referral.date,
+        date: sectionTypeSpecificData.date,
         createdAt: referralCreatedAt,
         type: 'referral',
-        text: referral.referredTo,
-        referral: restOfReferral,
-        twilioWorkerId: 'referral-adder',
+        text: sectionTypeSpecificData.referredTo,
+        referral: sectionTypeSpecificData,
+        twilioWorkerId: referralWorker,
         updatedBy: undefined,
         updatedAt: undefined,
       },
@@ -333,6 +356,7 @@ describe('getActivitiesFromCase', () => {
 
 describe('getActivitiesFromContacts', () => {
   const createdAt = '2020-07-30 18:55:20';
+  const contactAdder: WorkerSID = 'WK-contact-adder';
   beforeEach(async () => {
     mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, formDefinition);
   });
@@ -351,7 +375,7 @@ describe('getActivitiesFromContacts', () => {
         channel: 'facebook',
         timeOfContact,
         createdAt,
-        twilioWorkerId: 'contact-adder',
+        twilioWorkerId: contactAdder,
         rawJson: {
           ...VALID_EMPTY_CONTACT.rawJson,
           caseInformation: {
@@ -368,7 +392,7 @@ describe('getActivitiesFromContacts', () => {
       createdAt,
       type: 'facebook',
       text: 'Child summary',
-      twilioWorkerId: 'contact-adder',
+      twilioWorkerId: contactAdder,
       channel: 'facebook',
       isDraft: true,
     };
@@ -385,7 +409,7 @@ describe('getActivitiesFromContacts', () => {
         channel: 'default',
         timeOfContact,
         createdAt,
-        twilioWorkerId: 'contact-adder',
+        twilioWorkerId: contactAdder,
         rawJson: {
           ...VALID_EMPTY_CONTACT.rawJson,
           callType: 'beep boop',
@@ -406,7 +430,7 @@ describe('getActivitiesFromContacts', () => {
       createdAt,
       type: 'default',
       text: 'Child summary',
-      twilioWorkerId: 'contact-adder',
+      twilioWorkerId: contactAdder,
       channel: 'facebook',
       isDraft: true,
     };
@@ -427,7 +451,7 @@ describe('getActivitiesFromContacts', () => {
         channel: 'facebook',
         timeOfContact,
         createdAt: contactCreatedAt,
-        twilioWorkerId: 'contact-adder',
+        twilioWorkerId: contactAdder,
         finalizedAt: contactCreatedAt,
         rawJson: {
           ...VALID_EMPTY_CONTACT.rawJson,
@@ -443,7 +467,7 @@ describe('getActivitiesFromContacts', () => {
         channel: 'default',
         timeOfContact: timeOfContactlessContact,
         createdAt: contactlessContactCreatedAt,
-        twilioWorkerId: 'contact-adder',
+        twilioWorkerId: contactAdder,
         rawJson: {
           ...VALID_EMPTY_CONTACT.rawJson,
           callType: 'boop beep',
@@ -466,7 +490,7 @@ describe('getActivitiesFromContacts', () => {
         createdAt: contactCreatedAt,
         type: 'facebook',
         text: 'Child summary',
-        twilioWorkerId: 'contact-adder',
+        twilioWorkerId: contactAdder,
         channel: 'facebook',
         isDraft: false,
       },
@@ -477,7 +501,7 @@ describe('getActivitiesFromContacts', () => {
         createdAt: contactlessContactCreatedAt,
         type: 'default',
         text: 'Child summary',
-        twilioWorkerId: 'contact-adder',
+        twilioWorkerId: contactAdder,
         channel: 'facebook',
         isDraft: true,
       },

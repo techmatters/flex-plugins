@@ -72,7 +72,7 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
   existingSavedContact,
 }) => {
   /*
-  TODO: Convert to a custom hook since it has been used in several places within 
+  TODO: Convert to a custom hook since it has been used in several places within
   the Flex-plugins repo?
   */
   const can = React.useMemo(() => {

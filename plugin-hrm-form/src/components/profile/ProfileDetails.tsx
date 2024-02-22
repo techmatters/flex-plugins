@@ -17,18 +17,18 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
+import ProfileIcon from '@material-ui/icons/AccountCircleOutlined';
 
-import { HiddenText, HorizontalLine, Title, Bold } from '../../styles';
+import { HorizontalLine, Title, Bold } from '../../styles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
 import useProfileSectionTypes from '../../states/configuration/hooks/useProfileSectionTypes';
 import { ProfileCommonProps } from './types';
-import { DetailsWrapper, ProfileSectionEditButton, SectionHeader } from './styles';
+import { DetailsWrapper, SectionHeader } from './styles';
 import ProfileFlagSection from './profileFlag/ProfileFlagSection';
-import ProfileSectionView from './section/ProfileSectionView';
 import { getInitializedCan, PermissionActions } from '../../permissions';
-import ProfileDetailsSection from './ProfileDetailsSection';
-import ProfileSectionGroup from './ProfileSectionGroup';
+import ProfileDetailsSection from './section/ProfileDetailsSection';
+import ProfileSectionGroup from './section/ProfileSectionGroup';
 
 type OwnProps = ProfileCommonProps;
 
@@ -95,7 +95,9 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
 
   return (
     <DetailsWrapper>
-      <Title>#{profileId}</Title>
+      <Title>
+        <ProfileIcon style={{ marginRight: '4px' }} /> #{profileId}
+      </Title>
       {canView ? (
         <>
           <SectionHeader>

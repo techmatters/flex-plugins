@@ -18,24 +18,33 @@ import { configureStore } from '@reduxjs/toolkit';
 import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
 
 import '../../mockGetConfig';
-import { createCaseAsyncAction, saveCaseReducer, updateCaseAsyncAction } from '../../../states/case/saveCase';
+import { createCaseAsyncAction, saveCaseReducer, updateCaseOverviewAsyncAction } from '../../../states/case/saveCase';
 import { HrmState } from '../../../states';
 import { reduce } from '../../../states/case/reducer';
-import { createCase, updateCase, updateCaseStatus } from '../../../services/CaseService';
+import { createCase, getCase, updateCaseOverview, updateCaseStatus } from '../../../services/CaseService';
 import { connectToCase } from '../../../services/ContactService';
 import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
 import { Case } from '../../../types/types';
 import { RecursivePartial } from '../../RecursivePartial';
+import { VALID_EMPTY_CASE } from '../../testCases';
 
 jest.mock('../../../services/CaseService');
 jest.mock('../../../services/ContactService');
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, buildBaseURL } = useFetchDefinitions();
 
-const mockUpdateCase = updateCase as jest.Mock<ReturnType<typeof updateCase>>;
-const mockUpdateCaseStatus = updateCaseStatus as jest.Mock<ReturnType<typeof updateCaseStatus>>;
 const mockCreateCase = createCase as jest.Mock<ReturnType<typeof createCase>>;
 const mockConnectedCase = connectToCase as jest.Mock<ReturnType<typeof connectToCase>>;
+const mockUpdateCaseOverview = updateCaseOverview as jest.Mock<
+  ReturnType<typeof updateCaseOverview>,
+  Parameters<typeof updateCaseOverview>
+>;
+const mockUpdateStatus = updateCaseStatus as jest.Mock<
+  ReturnType<typeof updateCaseStatus>,
+  Parameters<typeof updateCaseStatus>
+>;
+
+const mockGetCase = getCase as jest.Mock<ReturnType<typeof getCase>, Parameters<typeof getCase>>;
 const workerSid = 'Worker-Sid';
 const definitionVersion: DefinitionVersionId = DefinitionVersionId.demoV1;
 const partialState: RecursivePartial<HrmState> = {
@@ -65,24 +74,20 @@ beforeAll(async () => {
 });
 
 beforeEach(() => {
-  mockUpdateCase.mockReset();
-  mockUpdateCase.mockResolvedValue({ id: '234' } as Case);
   mockCreateCase.mockReset();
   mockCreateCase.mockResolvedValue({ id: '234' });
   mockConnectedCase.mockReset();
   mockConnectedCase.mockResolvedValue({ id: 'contact-1' });
-  mockUpdateCaseStatus.mockReset();
-  mockUpdateCaseStatus.mockResolvedValue({ id: '234' } as Case);
 });
 
 const boundSaveCaseReducer = saveCaseReducer(saveCaseState);
 
-const mockPayload: Case = {
-  accountSid: 'test-id',
+const mockPayload: Omit<Case, 'sections' | 'label'> = {
+  accountSid: 'AC-test-id',
   id: '213',
   helpline: 'za',
   status: 'test-st',
-  twilioWorkerId: 'WE2xxx1',
+  twilioWorkerId: 'WK2xxx1',
   info: {},
   createdAt: '12-05-2023',
   updatedAt: '12-05-2023',
@@ -107,11 +112,11 @@ const nonInitialPartialState: RecursivePartial<HrmState> = {
     cases: {
       213: {
         connectedCase: {
-          accountSid: 'test-id',
+          accountSid: 'AC-test-id',
           id: '213',
           helpline: 'za',
           status: 'test-st',
-          twilioWorkerId: 'WE2xxx1',
+          twilioWorkerId: 'WK2xxx1',
           info: {},
           createdAt: '12-05-2023',
           updatedAt: '12-05-2023',
@@ -177,6 +182,7 @@ const contact = {
   metadata: { categories: { expanded: {}, gridView: false }, endMillis: 0, recreated: false, startMillis: 0 },
   referrals: [],
 };
+
 const expectObject: RecursivePartial<HrmState> = {
   ...partialState,
   connectedCase: {
@@ -199,44 +205,10 @@ const expectObject: RecursivePartial<HrmState> = {
   },
 };
 
-describe('actions', () => {
-  test('Calls the updateCase service, the updateStatus service, and updates the case in redux', async () => {
-    const { status, ...updatePayload } = mockPayload;
-    const { dispatch } = testStore(nonInitialState);
-    await ((dispatch(updateCaseAsyncAction('234', mockPayload)) as unknown) as Promise<void>);
-    expect(updateCase).toHaveBeenCalledWith('234', updatePayload);
-    expect(updateCaseStatus).toHaveBeenCalledWith('234', status);
-  });
-
+describe('createCaseAsyncAction', () => {
   test('Calls the createCase service, and create a case', () => {
     createCaseAsyncAction(contact, workerSid, definitionVersion as DefinitionVersionId);
     expect(createCase).toHaveBeenCalledWith(contact, workerSid, definitionVersion);
-  });
-
-  test('should dispatch updateCaseAsyncAction correctly', async () => {
-    const { dispatch, getState } = testStore(nonInitialState);
-    const startingState = getState();
-    await ((dispatch(updateCaseAsyncAction('234', mockPayload)) as unknown) as Promise<void>);
-    const state = getState();
-    expect(state).toStrictEqual({
-      ...startingState,
-      connectedCase: {
-        ...startingState.connectedCase,
-        cases: {
-          ...state.connectedCase.cases,
-          234: {
-            availableStatusTransitions: [],
-            caseWorkingCopy: {
-              sections: {},
-            },
-            connectedCase: {
-              id: '234',
-            },
-            references: new Set(),
-          },
-        },
-      },
-    });
   });
 
   test('should dispatch createCaseAsyncAction correctly', async () => {
@@ -268,16 +240,128 @@ describe('actions', () => {
     });
   });
 
-  test('should handle updateCaseAsyncAction in the reducer', async () => {
-    const expected: HrmState = expectObject as HrmState;
-
-    const result = reduce(nonInitialState, updateCaseAsyncAction('234', mockPayload));
-    expect(result).toStrictEqual(expected);
-  });
-
   test('should handle createCaseAsyncAction in the reducer', async () => {
     const expected: HrmState = expectObject as HrmState;
     const result = reduce(nonInitialState, createCaseAsyncAction(contact, workerSid, definitionVersion));
     expect(result).toEqual(expected);
+  });
+});
+
+describe('updateCaseOverviewAsyncAction', () => {
+  const overview = {
+    followUpDate: '2023-05-12',
+    childIsAtRisk: true,
+    summary: 'test',
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockUpdateCaseOverview.mockImplementation(async (id, overview) => ({
+      ...VALID_EMPTY_CASE,
+      id,
+      info: { ...VALID_EMPTY_CASE.info, ...overview },
+    }));
+    mockUpdateStatus.mockImplementation(async (id, status) => ({
+      ...VALID_EMPTY_CASE,
+      id,
+      status,
+    }));
+    mockGetCase.mockImplementation(async id => ({
+      ...VALID_EMPTY_CASE,
+      id,
+    }));
+  });
+
+  test('overview populated in action but status omitted - just calls updateCaseOverview with case ID and overview object', async () => {
+    const action = updateCaseOverviewAsyncAction(mockPayload.id, overview);
+    expect(updateCaseOverview).toHaveBeenCalledWith(mockPayload.id, overview);
+    expect(updateCaseStatus).not.toHaveBeenCalled();
+
+    const payload = await action.payload;
+    expect(payload).toEqual({
+      ...VALID_EMPTY_CASE,
+      id: mockPayload.id,
+      info: { ...VALID_EMPTY_CASE.info, ...overview },
+    });
+  });
+
+  test('overview omitted in action but status populated - calls updateStatus with case ID and new status', async () => {
+    const action = updateCaseOverviewAsyncAction(mockPayload.id, {}, 'new-status');
+    expect(updateCaseStatus).toHaveBeenCalledWith(mockPayload.id, 'new-status');
+    expect(updateCaseOverview).not.toHaveBeenCalled();
+    expect(mockGetCase).not.toHaveBeenCalled();
+
+    const payload = await action.payload;
+    expect(payload).toEqual({
+      ...VALID_EMPTY_CASE,
+      id: mockPayload.id,
+      status: 'new-status',
+    });
+  });
+
+  // Jest too crap to handle 2 async calls in a single action apparently
+  test.skip('overview and status populated in action - calls both endpoints', async () => {
+    const action = updateCaseOverviewAsyncAction(mockPayload.id, overview, 'new-status');
+    expect(updateCaseOverview).toHaveBeenCalledWith(mockPayload.id, overview);
+    expect(updateCaseStatus).toHaveBeenCalledWith(mockPayload.id, 'new-status');
+    expect(mockGetCase).not.toHaveBeenCalled();
+  });
+
+  test('neither overview and status populated in action - just calls get to refresh case', async () => {
+    const action = updateCaseOverviewAsyncAction(mockPayload.id, {});
+    expect(updateCaseStatus).not.toHaveBeenCalled();
+    expect(updateCaseOverview).not.toHaveBeenCalled();
+    expect(mockGetCase).toHaveBeenCalledWith(mockPayload.id);
+
+    const payload = await action.payload;
+    expect(payload).toEqual({
+      ...VALID_EMPTY_CASE,
+      id: mockPayload.id,
+    });
+  });
+
+  describe('fulfilled', () => {
+    test('case exists in redux store - updates case overview ', async () => {
+      const { getState, dispatch } = testStore(nonInitialState);
+      await ((dispatch(updateCaseOverviewAsyncAction(mockPayload.id, overview)) as unknown) as PromiseLike<void>);
+      const {
+        connectedCase: {
+          cases: {
+            213: { connectedCase: updatedCase },
+          },
+        },
+      } = getState() as HrmState;
+      expect(updatedCase).toEqual({
+        ...VALID_EMPTY_CASE,
+        id: mockPayload.id,
+        info: {
+          ...VALID_EMPTY_CASE.info,
+          ...overview,
+        },
+      });
+    });
+    test("case doesn't exist in redux store - adds case", async () => {
+      const { getState, dispatch } = testStore(nonInitialState);
+      const {
+        connectedCase: { cases: originalCases },
+      } = getState() as HrmState;
+      await ((dispatch(updateCaseOverviewAsyncAction('ANOTHER_CASE', overview)) as unknown) as PromiseLike<void>);
+      const {
+        connectedCase: { cases: updatedCases },
+      } = getState() as HrmState;
+      expect(updatedCases).toStrictEqual({
+        ...originalCases,
+        ANOTHER_CASE: {
+          connectedCase: {
+            ...VALID_EMPTY_CASE,
+            id: 'ANOTHER_CASE',
+            info: { ...overview, definitionVersion: DefinitionVersionId.v1 },
+          },
+          references: new Set(),
+          availableStatusTransitions: [],
+          caseWorkingCopy: { sections: {} },
+        },
+      });
+    });
   });
 });

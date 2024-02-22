@@ -74,7 +74,6 @@ const CasePreview: React.FC<Props> = ({
   closeModal,
 }) => {
   const { id, createdAt, connectedContacts, status, info, twilioWorkerId } = currentCase;
-  const createdAtObj = new Date(createdAt);
   const updatedAtObj = getUpdatedDate(currentCase);
   const followUpDateObj = info.followUpDate ? new Date(info.followUpDate) : undefined;
   const { definitionVersion: versionId } = info;
@@ -109,8 +108,8 @@ const CasePreview: React.FC<Props> = ({
     isConnectedToTaskContact = Boolean(connectedContacts?.find(contact => contact.id === taskContact.id));
 
     showConnectButton = Boolean(
-      can(PermissionActions.UPDATE_CASE_CONTACTS, taskContact) &&
-        can(PermissionActions.ADD_CONTACT_TO_CASE, currentCase) &&
+      can(PermissionActions.UPDATE_CASE_CONTACTS, currentCase) &&
+        can(PermissionActions.ADD_CONTACT_TO_CASE, taskContact) &&
         connectedContacts?.length &&
         (!taskContact.caseId || isConnectedToTaskContact),
     );
@@ -121,8 +120,8 @@ const CasePreview: React.FC<Props> = ({
         <CaseHeader
           caseId={id}
           contactLabel={contactLabel}
-          createdAt={createdAtObj}
-          updatedAt={updatedAtObj}
+          createdAt={createdAt}
+          updatedAt={updatedAtObj ? updatedAtObj.toISOString() : ''}
           followUpDate={followUpDateObj}
           onClickViewCase={onClickViewCase}
           isOrphanedCase={orphanedCase}

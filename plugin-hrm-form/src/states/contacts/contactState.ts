@@ -15,7 +15,7 @@
  */
 
 import type { DefinitionVersion } from 'hrm-form-definitions';
-import { ITask, TaskHelper } from '@twilio/flex-ui';
+import { TaskHelper } from '@twilio/flex-ui';
 
 import { ContactMetadata, LoadingStatus } from './types';
 import { ReferralLookupStatus } from './resourceReferral';
@@ -65,7 +65,7 @@ export const newContact = (definitions: DefinitionVersion, task?: ITask | Offlin
     channel: 'web', // default, should be overwritten
     date: new Date().toISOString(),
     time: new Date().toTimeString(),
-    createdOnBehalfOf: '',
+    createdOnBehalfOf: null,
     ...Object.fromEntries(initialContactlessTaskTabDefinition.map(d => [d.name, getInitialValue(d)])),
   };
   const channel = (task?.channelType ?? 'default') as Contact['channel'];
@@ -78,11 +78,11 @@ export const newContact = (definitions: DefinitionVersion, task?: ITask | Offlin
       : { channelSid: '', serviceSid: '' };
 
   return {
-    accountSid: '',
+    accountSid: null,
     id: '',
-    twilioWorkerId: '',
+    twilioWorkerId: null,
     timeOfContact: new Date().toISOString(),
-    taskId: '',
+    taskId: null,
     helpline: '',
     rawJson: {
       childInformation: initialChildInformation,

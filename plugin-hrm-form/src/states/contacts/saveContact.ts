@@ -44,10 +44,11 @@ import { newContactMetaData } from './contactState';
 import { getCase } from '../../services/CaseService';
 import { getUnsavedContact } from './getUnsavedContact';
 import * as TransferHelpers from '../../transfer/transferTaskState';
+import { WorkerSID } from '../../types/twilio';
 
 export const createContactAsyncAction = createAsyncAction(
   CREATE_CONTACT_ACTION,
-  async (contactToCreate: Contact, workerSid: string, task: CustomITask) => {
+  async (contactToCreate: Contact, workerSid: WorkerSID, task: CustomITask) => {
     let contact: Contact;
     const { taskSid } = task;
     if (isOfflineContactTask(task)) {
@@ -136,7 +137,7 @@ export const newClearContactAsyncAction = (contact: Contact) =>
     timeOfContact: new Date().toISOString(),
   });
 
-export const newRestartOfflineContactAsyncAction = (contact: Contact, createdOnBehalfOf: string) => {
+export const newRestartOfflineContactAsyncAction = (contact: Contact, createdOnBehalfOf: WorkerSID) => {
   const now = new Date();
   const time = format(now, 'HH:mm');
   const date = format(now, 'yyyy-MM-dd');

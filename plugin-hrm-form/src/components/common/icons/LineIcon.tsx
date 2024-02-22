@@ -25,7 +25,7 @@ type Props = {
 /* eslint-disable react/prop-types */
 const LineIcon: React.FC<Props> = ({ width, height, color }) => {
   return (
-    <svg width={width} height={height} viewBox="0 0 48 48" fill={color} version="1.1">
+    <svg width={width} height={height} viewBox="0 0 48 48" fill={color} version="1.1" aria-label="Line">
       <path
         fill="#00c300"
         d="M12.5,42h23c3.59,0,6.5-2.91,6.5-6.5v-23C42,8.91,39.09,6,35.5,6h-23C8.91,6,6,8.91,6,12.5v23C6,39.09,8.91,42,12.5,42z"

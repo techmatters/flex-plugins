@@ -35,6 +35,7 @@ import { namespace } from '../../../states/storeNamespaces';
 import { newGoBackAction } from '../../../states/routing/actions';
 import { RecursivePartial } from '../../RecursivePartial';
 import { RootState } from '../../../states';
+import { VALID_EMPTY_CASE } from '../../testCases';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -59,11 +60,14 @@ const household = {
   relationshipToChild: 'Friend',
 };
 
+const WORKER_SID = 'WK-worker1';
+const TASK_SID = 'WT-task1';
+
 const state: RecursivePartial<RootState> = {
   [namespace]: {
     routing: {
       tasks: {
-        task1: [
+        [TASK_SID]: [
           { route: 'case', subroute: 'home', caseId: 'case1' },
           {
             route: 'case',
@@ -85,23 +89,24 @@ const state: RecursivePartial<RootState> = {
       cases: {
         case1: {
           connectedCase: {
+            ...VALID_EMPTY_CASE,
             id: 'case1',
             createdAt: new Date(1593469560208).toISOString(),
-            twilioWorkerId: 'worker1',
+            twilioWorkerId: WORKER_SID,
             status: 'open',
-            info: {
-              households: [
+            sections: {
+              household: [
                 {
-                  household: {},
+                  sectionTypeSpecificData: {},
                   createdAt: '2020-06-29T22:26:00.208Z',
-                  twilioWorkerId: 'worker1',
-                  id: 'HOUSEHOLD_1',
+                  twilioWorkerId: WORKER_SID,
+                  sectionId: 'HOUSEHOLD_1',
                 },
                 {
-                  household,
+                  sectionTypeSpecificData: household,
                   createdAt: '2020-06-29T22:26:00.208Z',
-                  twilioWorkerId: 'worker1',
-                  id: 'HOUSEHOLD_2',
+                  twilioWorkerId: WORKER_SID,
+                  sectionId: 'HOUSEHOLD_2',
                 },
               ],
             },
@@ -117,7 +122,7 @@ store.dispatch = jest.fn();
 const themeConf = {};
 
 const task = {
-  taskSid: 'task1',
+  taskSid: TASK_SID,
 };
 
 describe('Test ViewHousehold', () => {
