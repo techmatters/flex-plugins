@@ -1,7 +1,6 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_case_merging": true,
             "enable_client_profiles": true,
             "enable_fullstory_monitoring": true
         },
