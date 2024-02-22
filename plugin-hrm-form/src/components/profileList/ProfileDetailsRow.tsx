@@ -17,6 +17,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
+import { Tab } from '@material-ui/core';
 
 import ProfileFlagPill from '../profile/profileFlag/ProfileFlagPill';
 import { getShortSummary } from '../../utils';
@@ -44,7 +45,7 @@ type Props = {
 
 const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
   const dispatch = useDispatch();
-  const { profile } = useProfile({ profileId });
+  const { profile, canView } = useProfile({ profileId });
   const { combinedProfileFlags } = useProfileFlags(profileId);
 
   const { section: summarySection, canView: canViewSummarySection } = useProfileSectionByType({
@@ -62,11 +63,15 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   return (
-    <DataTableRow onClick={handleViewProfile}>
+    <DataTableRow onClick={canView && handleViewProfile}>
       <NumericCell>
-        <OpenLinkContainer>
-          <OpenLinkAction tabIndex={0}>{profile?.id}</OpenLinkAction>
-        </OpenLinkContainer>
+        {canView ? (
+          <OpenLinkContainer>
+            <OpenLinkAction tabIndex={0}>{profile?.id}</OpenLinkAction>
+          </OpenLinkContainer>
+        ) : (
+          <TableBodyFont>{profile?.id}</TableBodyFont>
+        )}
       </NumericCell>
       <DataCell>
         <TableBodyFont>
