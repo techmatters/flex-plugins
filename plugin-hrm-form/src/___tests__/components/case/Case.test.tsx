@@ -81,6 +81,7 @@ describe('useState mocked', () => {
 
   const connectedContact: Contact = {
     ...VALID_EMPTY_CONTACT,
+    id: 'contact1',
     rawJson: {
       ...VALID_EMPTY_CONTACT.rawJson,
       childInformation: {
