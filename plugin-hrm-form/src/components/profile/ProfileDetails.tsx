@@ -16,24 +16,19 @@
 
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { Icon, Template } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 import ProfileIcon from '@material-ui/icons/AccountCircleOutlined';
 
-import { Box, HiddenText, Row, HorizontalLine, Title, Bold } from '../../styles';
+import { HorizontalLine, Title, Bold } from '../../styles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfile } from '../../states/profile/hooks';
 import useProfileSectionTypes from '../../states/configuration/hooks/useProfileSectionTypes';
 import { ProfileCommonProps } from './types';
-import {
-  DetailsWrapper,
-  ProfileSectionWrapper,
-  ProfileSectionSubtitle,
-  ProfileSectionEditButton,
-  SectionHeader,
-} from './styles';
+import { DetailsWrapper, SectionHeader } from './styles';
 import ProfileFlagSection from './profileFlag/ProfileFlagSection';
-import ProfileSectionView from './section/ProfileSectionView';
 import { getInitializedCan, PermissionActions } from '../../permissions';
+import ProfileDetailsSection from './section/ProfileDetailsSection';
+import ProfileSectionGroup from './section/ProfileSectionGroup';
 
 type OwnProps = ProfileCommonProps;
 
@@ -59,6 +54,7 @@ type Section = {
 
 const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal }) => {
   const { profile } = useProfile({ profileId });
+  const sectionTypesForms = useProfileSectionTypes();
 
   const can = React.useMemo(() => {
     return getInitializedCan();
@@ -91,51 +87,10 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
     },
   ];
 
-  const sectionTypesForms = useProfileSectionTypes();
+  const renderOverviewSection = (element: Section) => {
+    if (!element) return null;
 
-  const sectionSections: Section[] = sectionTypesForms.map(sectionType => ({
-    titleCode: sectionType.label,
-    renderComponent: () => <ProfileSectionView profileId={profileId} task={task} sectionType={sectionType} />,
-    handleEdit: () => openSectionEditModal(sectionType.name),
-  }));
-
-  const renderEditButton = section => {
-    if (!section || !section.handleEdit) return null;
-
-    let icon = null;
-    if (section.hasOwnProperty('inInlineEditMode') && section.inInlineEditMode) {
-      icon = 'Close';
-    }
-
-    return (
-      <ProfileSectionEditButton onClick={section.handleEdit}>
-        {icon && <Icon icon={icon} />}
-        {!icon && <Template code="Profile-EditButton" />}
-        <HiddenText>
-          <Template code={section.titleCode} />{' '}
-        </HiddenText>
-      </ProfileSectionEditButton>
-    );
-  };
-
-  const renderSection = section => {
-    if (!section) return null;
-
-    return (
-      <div key={section.titleCode}>
-        <ProfileSectionWrapper>
-          <Box marginBottom="5px">
-            <Row>
-              <ProfileSectionSubtitle>
-                {section.titleCode ? <Template code={section.titleCode} /> : section.title}
-              </ProfileSectionSubtitle>
-              {renderEditButton(section)}
-            </Row>
-          </Box>
-          <Box>{section.renderComponent()}</Box>
-        </ProfileSectionWrapper>
-      </div>
-    );
+    return <ProfileDetailsSection titleCode={element.titleCode}>{element.renderComponent()}</ProfileDetailsSection>;
   };
 
   return (
@@ -143,16 +98,27 @@ const ProfileDetails: React.FC<Props> = ({ profileId, task, openSectionEditModal
       <Title>
         <ProfileIcon style={{ marginRight: '4px' }} /> #{profileId}
       </Title>
-      <SectionHeader>
-        <Template code="Profile-DetailsHeader-Overview" />
-      </SectionHeader>
-      {overviewSections.map(section => renderSection(section))}
-      <HorizontalLine />
-      <SectionHeader>
-        <Template code="Profile-DetailsHeader-Notes" />
-      </SectionHeader>
-      {sectionSections.map(section => renderSection(section))}
-      <HorizontalLine />
+      <>
+        <SectionHeader>
+          <Template code="Profile-DetailsHeader-Overview" />
+        </SectionHeader>
+        {overviewSections.map(section => renderOverviewSection(section))}
+        <HorizontalLine />
+        <SectionHeader>
+          <Template code="Profile-DetailsHeader-Notes" />
+        </SectionHeader>
+        {sectionTypesForms.map(s => (
+          <ProfileSectionGroup
+            key={s.label}
+            handleEdit={() => openSectionEditModal(s.name)}
+            profileId={profileId}
+            sectionType={s}
+            task={task}
+            titleCode={s.label}
+          />
+        ))}
+        <HorizontalLine />
+      </>
     </DetailsWrapper>
   );
 };

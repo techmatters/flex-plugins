@@ -19,5 +19,5 @@ import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
 
 const selectContactStateByContactId = (state: RootState, contactId: string): ContactState | undefined =>
-  state[namespace].activeContacts.existingContacts[contactId];
+  contactId ? state[namespace].activeContacts.existingContacts[contactId] : undefined;
 export default selectContactStateByContactId;

@@ -13,18 +13,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Profile } from '../types';
 import * as ProfileSelectors from '../selectors';
 import { RootState } from '../..';
 import { UseProfileCommonParams } from './types';
+import { PermissionActions, getInitializedCan } from '../../../permissions';
 
 export type UseProfileParams = UseProfileCommonParams;
 
 export type UseProfileReturn = {
   profile: Profile | undefined;
   loading: boolean | undefined;
+  canView: boolean;
+  canFlag: boolean;
+  canUnflag: boolean;
 };
 
 /**
@@ -34,6 +39,10 @@ export type UseProfileReturn = {
  * @returns {UseProfile} - State and actions for the profile
  */
 export const useProfile = (params: UseProfileParams): UseProfileReturn => {
+  const can = useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
   const { profileId } = params;
   const profile = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.data);
   const loading = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.loading);
@@ -41,5 +50,8 @@ export const useProfile = (params: UseProfileParams): UseProfileReturn => {
   return {
     loading,
     profile,
+    canView: profile && can(PermissionActions.VIEW_PROFILE, profile),
+    canFlag: profile && can(PermissionActions.FLAG_PROFILE, profile),
+    canUnflag: profile && can(PermissionActions.UNFLAG_PROFILE, profile),
   };
 };

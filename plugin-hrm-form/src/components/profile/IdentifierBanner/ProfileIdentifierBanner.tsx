@@ -18,7 +18,7 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { useIdentifierByIdentifier, useProfileProperty } from '../../../states/profile/hooks';
+import { useIdentifierByIdentifier, useProfileProperty, useProfile } from '../../../states/profile/hooks';
 import { YellowBannerContainer, IconContainer, IdentifierContainer, BannerLink } from './styles';
 import { Bold } from '../../../styles';
 import { newOpenModalAction } from '../../../states/routing/actions';
@@ -61,6 +61,7 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
   const identifierIdentifier = getNumberFromTask(task);
   const { identifier } = useIdentifierByIdentifier({ identifierIdentifier, shouldAutoload: true });
   const profileId = identifier?.profiles?.[0]?.id;
+  const { canView } = useProfile({ profileId });
 
   const contactsCount = useProfileProperty(profileId, 'contactsCount') || 0;
   const casesCount = useProfileProperty(profileId, 'casesCount') || 0;
@@ -101,7 +102,13 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
       </BannerLink>
       {casesCount > 0 && (
         <>
-          {contactsCount > 0 && ', '}
+          {contactsCount > 0 && canView && ', '}
+          {!canView && (
+            <span style={{ margin: '1px 0 0 0' }}>
+              &nbsp;
+              <Template code="PreviousContacts-And" />
+            </span>
+          )}
           <BannerLink type="button" onClick={handleViewCases}>
             <Bold>
               {casesCount} <Template code={`PreviousContacts-Case${casesCount === 1 ? '' : 's'}`} />
@@ -109,13 +116,17 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
           </BannerLink>
         </>
       )}
-      &nbsp;
-      <Template code="PreviousContacts-And" />
-      <BannerLink type="button" onClick={handleViewClients}>
-        <Bold>
-          {'1'} <Template code="Profile-Singular-Client" />
-        </Bold>
-      </BannerLink>
+      {canView && (
+        <>
+          &nbsp;
+          <Template code="PreviousContacts-And" />
+          <BannerLink type="button" onClick={handleViewClients}>
+            <Bold>
+              {'1'} <Template code="Profile-Singular-Client" />
+            </Bold>
+          </BannerLink>
+        </>
+      )}
     </YellowBannerContainer>
   );
 };

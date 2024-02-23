@@ -199,6 +199,7 @@ test('getCase - Generates a GET HTTP call via fetchHrmApi', async () => {
   const expectedUrl = `/cases/case-123`;
   const expectedOptions = {
     method: 'GET',
+    returnNullFor404: true,
   };
   expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl, expectedOptions);
   expect(response).toStrictEqual({ a: 'case' });

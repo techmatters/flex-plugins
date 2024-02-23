@@ -25,6 +25,13 @@
   "addContactToCase": [["isSupervisor"], ["isOwner"]],
   "removeContactFromCase": [["isSupervisor"], ["isOwner"]],
 
+  "viewProfile": [["everyone"]],
+  "flagProfile": [["isSupervisor"]],
+  "unflagProfile": [["isSupervisor"]],
+  "createProfileSection": [["isSupervisor"]],
+  "viewProfileSection": [["isSupervisor"]],
+  "editProfileSection": [["isSupervisor"]],
+  
   "viewPostSurvey": [["isSupervisor"]],
 
   "viewIdentifiers": [["everyone"]]
