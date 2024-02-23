@@ -57,6 +57,7 @@ import { selectDefinitionVersionForCase } from '../../states/configuration/selec
 import selectCaseHelplineData from '../../states/case/selectCaseHelplineData';
 import { selectCounselorName } from '../../states/configuration/selectCounselorsHash';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
+import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -73,10 +74,10 @@ const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
   const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
   const routing = selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseRoute;
   const { connectedCase, availableStatusTransitions = [] } = connectedCaseState ?? {};
-  const connectedContacts = connectedCase?.connectedContacts ?? [];
-  const isCreating = Boolean(
-    connectedContacts.length === 1 && connectedContacts[0].id === taskContact?.id && !taskContact?.finalizedAt,
-  );
+  const [firstContact] = connectedCase?.connectedContacts ?? [];
+
+  const contactForLabel = selectContactStateByContactId(state, firstContact?.id)?.savedContact ?? taskContact;
+  const isCreating = Boolean(firstContact && firstContact?.id === taskContact?.id && !taskContact?.finalizedAt);
   const activityCount = routing.route === 'case' ? selectCaseActivityCount(state, routing.caseId) : 0;
   const definitionVersion = selectDefinitionVersionForCase(state, connectedCase);
   const counselor = selectCounselorName(state, connectedCase?.twilioWorkerId);
@@ -90,7 +91,7 @@ const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
     office: selectCaseHelplineData(state, routing.caseId),
     definitionVersion,
     counselor,
-    label: contactLabelFromHrmContact(definitionVersion, connectedCase?.connectedContacts?.[0] ?? taskContact, {
+    label: contactLabelFromHrmContact(definitionVersion, contactForLabel, {
       placeholder: '',
       substituteForId: false,
     }),
@@ -211,12 +212,7 @@ const CaseHome: React.FC<Props> = ({
       onCloseModal={handleClose}
       data-testid="CaseHome-CaseDetailsComponent"
     >
-      <CaseContainer
-        style={{
-          overflowY: isCreating ? 'scroll' : 'visible',
-          borderBottom: isCreating ? '1px solid #e5e5e5' : 'none',
-        }}
-      >
+      <CaseContainer>
         <AddToCaseBanner task={task} />
 
         {isCreating && (
