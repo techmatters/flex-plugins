@@ -78,14 +78,7 @@ export async function getCase(caseId: Case['id']): Promise<Case> {
     method: 'GET',
     returnNullFor404: true,
   };
-  try {
-    return await fetchHrmApi(`/cases/${caseId}`, options);
-  } catch (err) {
-    if (err instanceof ApiError && err.response.status === 404) {
-      return null;
-    }
-    throw err;
-  }
+  return fetchHrmApi(`/cases/${caseId}`, options);
 }
 
 export async function searchCases(searchParams, limit, offset): Promise<SearchCaseResult> {
