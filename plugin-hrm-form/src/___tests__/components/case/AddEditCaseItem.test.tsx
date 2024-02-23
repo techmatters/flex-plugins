@@ -37,6 +37,7 @@ import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { connectedCaseBase, namespace } from '../../../states/storeNamespaces';
 import { CaseState } from '../../../states/case/types';
 import { RecursivePartial } from '../../RecursivePartial';
+import { TaskSID, WorkerSID } from '../../../types/twilio';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -60,34 +61,30 @@ jest.mock('../../../services/CaseService');
 expect.extend(toHaveNoViolations);
 
 const mockStore = configureMockStore([]);
-const baselineDate = new Date(1593469560208);
+const WORKER_SID: WorkerSID = 'WK-worker1';
+const TASK_SID: TaskSID = 'WT-task1';
 
 const addingNewHouseholdCaseState: CaseState = {
   cases: {
     case1: {
       caseWorkingCopy: {
         sections: {
-          households: {
+          household: {
             new: {
-              createdAt: baselineDate.toISOString(),
-              twilioWorkerId: 'worker1',
-              id: 'case1',
-              form: {
-                age: '',
-                district: '',
-                ethnicity: '',
-                firstName: '',
-                gender: '',
-                language: 'Unknown',
-                lastName: '',
-                phone1: '',
-                phone2: '',
-                postalCode: '',
-                province: '',
-                relationshipToChild: '',
-                streetAddress: '',
-                village: '',
-              },
+              age: '',
+              district: '',
+              ethnicity: '',
+              firstName: '',
+              gender: '',
+              language: 'Unknown',
+              lastName: '',
+              phone1: '',
+              phone2: '',
+              postalCode: '',
+              province: '',
+              relationshipToChild: '',
+              streetAddress: '',
+              village: '',
             },
             existing: {},
           },
@@ -97,10 +94,10 @@ const addingNewHouseholdCaseState: CaseState = {
         helpline: '',
         accountSid: 'ACxxx',
         connectedContacts: [],
-        id: 1,
+        id: '1',
         createdAt: new Date(1593469560208).toISOString(),
         updatedAt: new Date(1593469560208).toISOString(),
-        twilioWorkerId: 'worker1',
+        twilioWorkerId: WORKER_SID,
         status: 'open',
         info: null,
         categories: {},
@@ -129,7 +126,7 @@ const hrmState: Partial<RootState[typeof namespace]> = {
         savedContact: {
           ...VALID_EMPTY_CONTACT,
           id: '1234',
-          taskId: 'task1',
+          taskId: TASK_SID,
           rawJson: {
             ...VALID_EMPTY_CONTACT.rawJson,
             childInformation: {
@@ -166,7 +163,7 @@ const hrmState: Partial<RootState[typeof namespace]> = {
   connectedCase: addingNewHouseholdCaseState,
   routing: {
     tasks: {
-      task1: [{ route: 'case', subroute: 'household', caseId: 'case1', action: CaseItemAction.Add }],
+      [TASK_SID]: [{ route: 'case', subroute: 'household', caseId: 'case1', action: CaseItemAction.Add }],
     },
     isAddingOfflineContact: false,
   },
@@ -186,7 +183,7 @@ const state2: RecursivePartial<RootState> = {
     connectedCase: addingNewHouseholdCaseState,
     routing: {
       tasks: {
-        task1: [
+        [TASK_SID]: [
           { route: 'case', caseId: 'case1', subroute: 'household', action: CaseItemAction.View },
           { route: 'case', caseId: 'case1', subroute: 'household', action: CaseItemAction.Add },
         ],
@@ -199,7 +196,7 @@ store2.dispatch = jest.fn();
 
 const routing3: RootState[typeof namespace]['routing'] = {
   tasks: {
-    task1: [{ route: 'case', subroute: 'household', action: CaseItemAction.Add }],
+    [TASK_SID]: [{ route: 'case', subroute: 'household', action: CaseItemAction.Add }],
   },
   isAddingOfflineContact: true,
 };
@@ -221,8 +218,7 @@ describe('Test AddHousehold', () => {
   beforeEach(
     () =>
       (ownProps = {
-        task: { taskSid: 'task1' } as CustomITask,
-        counselor: 'Someone',
+        task: { taskSid: TASK_SID } as CustomITask,
         sectionApi: householdSectionApi,
         definitionVersion: mockV1,
       }),
@@ -236,12 +232,12 @@ describe('Test AddHousehold', () => {
       </StorelessThemeProvider>,
     );
 
-    expect(store2.dispatch).not.toHaveBeenCalledWith(newGoBackAction('task1'));
+    expect(store2.dispatch).not.toHaveBeenCalledWith(newGoBackAction(TASK_SID));
 
     expect(screen.getByTestId('NavigableContainer-BackButton')).toBeInTheDocument();
     screen.getByTestId('NavigableContainer-BackButton').click();
 
-    expect(store2.dispatch).toHaveBeenCalledWith(newGoBackAction('task1'));
+    expect(store2.dispatch).toHaveBeenCalledWith(newGoBackAction(TASK_SID));
   });
 
   test('a11y', async () => {

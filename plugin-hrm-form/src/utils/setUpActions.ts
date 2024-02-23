@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { ActionFunction, ChatOrchestrator, ChatOrchestratorEvent, ITask, Manager, TaskHelper } from '@twilio/flex-ui';
+import { ActionFunction, ChatOrchestrator, ChatOrchestratorEvent, Manager, TaskHelper } from '@twilio/flex-ui';
 import { Conversation } from '@twilio/conversations';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
@@ -212,7 +212,7 @@ export const excludeDeactivateConversationOrchestration = (featureFlags: Feature
 
       if (Array.isArray(defaultOrchestrations)) {
         ChatOrchestrator.setOrchestrations(event, task => {
-          return isAseloCustomChannelTask(task)
+          return isAseloCustomChannelTask(task as ITask)
             ? defaultOrchestrations
             : excludeDeactivateConversation(defaultOrchestrations);
         });

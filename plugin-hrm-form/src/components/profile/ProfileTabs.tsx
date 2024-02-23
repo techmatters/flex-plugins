@@ -59,7 +59,7 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfileTab }) => {
-  const { profile } = useProfile({ profileId });
+  const { profile, canView } = useProfile({ profileId });
   const { contactsCount, casesCount } = profile;
 
   useProfileLoader({ profileId });
@@ -68,7 +68,7 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
     {
       label: <Template code="Profile-ClientTab" />,
       key: 'details',
-      renderComponent: () => <ProfileDetails profileId={profileId} task={task} />,
+      renderComponent: () => (canView ? <ProfileDetails profileId={profileId} task={task} /> : null),
     },
     {
       label: (
@@ -90,11 +90,13 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
     },
   ];
 
-  const renderedTabs = tabs.map(tab => (
-    <TwilioTab key={`ProfileTabs-${profileId}-${tab.key}`} label={tab.label} uniqueName={tab.key}>
-      {tab.renderComponent()}
-    </TwilioTab>
-  ));
+  const renderedTabs = tabs
+    .filter((tab, index) => !(index === 0 && !canView))
+    .map(tab => (
+      <TwilioTab key={`ProfileTabs-${profileId}-${tab.key}`} label={tab.label} uniqueName={tab.key}>
+        {tab.renderComponent()}
+      </TwilioTab>
+    ));
 
   return (
     <NavigableContainer task={task} titleCode="Profile-Title">

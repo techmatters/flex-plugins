@@ -15,9 +15,7 @@
   "editIncident": [["everyone"]],
   "addDocument": [["everyone"]],
   "editDocument": [["everyone"]],
-  "editCaseSummary": [["everyone"]],
-  "editChildIsAtRisk": [["everyone"]],
-  "editFollowUpDate": [["everyone"]],
+  "editCaseOverview": [["everyone"]],
   "updateCaseContacts": [["everyone"]],
 
   "viewContact": [["everyone"]],
@@ -25,8 +23,15 @@
   "viewExternalTranscript": [["everyone"]],
   "viewRecording": [["everyone"]],
   "addContactToCase": [["everyone"]],
-  "removeContactFromCase": [],
+  "removeContactFromCase": [["everyone"]],
 
+  "viewProfile": [],
+  "flagProfile": [],
+  "unflagProfile": [],
+  "createProfileSection": [],
+  "viewProfileSection": [],
+  "editProfileSection": [],
+  
   "viewPostSurvey":  [["isSupervisor"]],
 
   "viewIdentifiers": [["everyone"]]

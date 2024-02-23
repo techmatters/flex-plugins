@@ -17,7 +17,7 @@
 /* eslint-disable no-empty-function */
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { ITask, Template } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 
 import FieldText from '../../FieldText';
 import FieldSelect from '../../FieldSelect';

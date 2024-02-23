@@ -19,6 +19,7 @@ import { differenceInDays, differenceInHours } from 'date-fns';
 
 import { fetchRules } from './fetchRules';
 import { getHrmConfig } from '../hrmConfig';
+import { ProfileSection } from '../types/types';
 
 export { canOnlyViewOwnCases, canOnlyViewOwnContacts } from './search-permissions';
 
@@ -39,9 +40,7 @@ export const CaseActions = {
   EDIT_INCIDENT: 'editIncident',
   ADD_DOCUMENT: 'addDocument',
   EDIT_DOCUMENT: 'editDocument',
-  EDIT_CASE_SUMMARY: 'editCaseSummary',
-  EDIT_CHILD_IS_AT_RISK: 'editChildIsAtRisk',
-  EDIT_FOLLOW_UP_DATE: 'editFollowUpDate',
+  EDIT_CASE_OVERVIEW: 'editCaseOverview',
   UPDATE_CASE_CONTACTS: 'updateCaseContacts',
 } as const;
 
@@ -54,6 +53,19 @@ export const ContactActions = {
   REMOVE_CONTACT_FROM_CASE: 'removeContactFromCase',
 } as const;
 
+export const ProfileActions = {
+  VIEW_PROFILE: 'viewProfile',
+  // EDIT_PROFILE: 'editProfile', // we don't need edit for now, will be needed when users can attach more identifiers or edit the name
+  FLAG_PROFILE: 'flagProfile',
+  UNFLAG_PROFILE: 'unflagProfile',
+};
+
+export const ProfileSectionActions = {
+  CREATE_PROFILE_SECTION: 'createProfileSection',
+  VIEW_PROFILE_SECTION: 'viewProfileSection',
+  EDIT_PROFILE_SECTION: 'editProfileSection',
+};
+
 export const ViewIdentifiersAction = {
   VIEW_IDENTIFIERS: 'viewIdentifiers',
 } as const;
@@ -61,15 +73,13 @@ export const ViewIdentifiersAction = {
 export const PermissionActions = {
   ...CaseActions,
   ...ContactActions,
+  ...ProfileActions,
+  ...ProfileSectionActions,
   ...ViewIdentifiersAction,
 } as const;
 
 type PermissionActionsKeys = keyof typeof PermissionActions;
 export type PermissionActionType = typeof PermissionActions[PermissionActionsKeys];
-type Condition = 'isSupervisor' | 'isCreator' | 'isCaseOpen' | 'isOwner' | 'everyone';
-export type ConditionsSet = Condition[];
-// eslint-disable-next-line import/no-unused-modules
-export type ConditionsSets = ConditionsSet[];
 
 type ConditionsState = {
   [k: string]: boolean;
@@ -105,6 +115,20 @@ type CaseSpecificCondition = typeof caseSpecificConditions[number];
 const isCaseSpecificCondition = (c: any): c is CaseSpecificCondition =>
   typeof c === 'string' && caseSpecificConditions.includes(c as any);
 
+// const profileSectionSpecificConditions = ['sectionType'] as const;
+type ProfileSectionSpecificCondition = {
+  sectionType: ProfileSection['sectionType'];
+};
+
+const isProfileSectionSpecificCondition = (c: any): c is ProfileSectionSpecificCondition => {
+  if (typeof c === 'object') {
+    const [[cond, param]] = Object.entries(c);
+    return cond === 'sectionType' && typeof param === 'string';
+  }
+
+  return false;
+};
+
 type SupportedContactCondition = TimeBasedCondition | UserBasedCondition | ContactSpecificCondition;
 const isSupportedContactCondition = (c: any): c is SupportedContactCondition =>
   isTimeBasedCondition(c) || isUserBasedCondition(c) || isContactSpecificCondition(c);
@@ -117,6 +141,14 @@ type SupportedPostSurveyCondition = TimeBasedCondition | UserBasedCondition;
 const isSupportedPostSurveyCondition = (c: any): c is SupportedPostSurveyCondition =>
   isTimeBasedCondition(c) || isUserBasedCondition(c);
 
+type SupportedProfileCondition = TimeBasedCondition | UserBasedCondition;
+const isSupportedProfileCondition = (c: any): c is SupportedProfileCondition =>
+  isTimeBasedCondition(c) || isUserBasedCondition(c);
+
+type SupportedProfileSectionCondition = TimeBasedCondition | UserBasedCondition | ProfileSectionSpecificCondition;
+const isSupportedProfileSectionCondition = (c: any): c is SupportedProfileSectionCondition =>
+  isTimeBasedCondition(c) || isUserBasedCondition(c) || isProfileSectionSpecificCondition(c);
+
 type SupportedViewIdentifiersCondition = UserBasedCondition;
 const isSupportedViewIdentifiersCondition = (c: any): c is SupportedPostSurveyCondition => isUserBasedCondition(c);
 
@@ -124,6 +156,8 @@ const isSupportedViewIdentifiersCondition = (c: any): c is SupportedPostSurveyCo
 type SupportedTKCondition = {
   contact: SupportedContactCondition;
   case: SupportedCaseCondition;
+  profile: SupportedProfileCondition;
+  profileSection: SupportedProfileSectionCondition;
   postSurvey: SupportedPostSurveyCondition;
   viewIdentifiers: SupportedViewIdentifiersCondition;
 };
@@ -140,7 +174,7 @@ type TKConditionsSets<T extends TargetKind> = TKConditionsSet<T>[];
 const checkCondition = <T extends TargetKind>(conditionsState: ConditionsState) => (
   condition: TKCondition<T>,
 ): boolean => {
-  if (isTimeBasedCondition(condition)) {
+  if (typeof condition === 'object') {
     return conditionsState[JSON.stringify(condition)];
   }
 
@@ -166,6 +200,8 @@ const checkConditionsSets = <T extends TargetKind>(
 export const actionsMaps = {
   case: CaseActions,
   contact: ContactActions,
+  profile: ProfileActions,
+  profileSection: ProfileSectionActions,
   postSurvey: {
     /* TODO: add when used */
   },
@@ -183,6 +219,12 @@ const isTKCondition = <T extends TargetKind>(kind: T) => (c: any): c is TKCondit
     }
     case 'case': {
       return isSupportedCaseCondition(c);
+    }
+    case 'profile': {
+      return isSupportedProfileCondition(c);
+    }
+    case 'profileSection': {
+      return isSupportedProfileSectionCondition(c);
     }
     case 'postSurvey': {
       return isSupportedPostSurveyCondition(c);
@@ -285,6 +327,25 @@ const applyTimeBasedConditions = (conditions: TimeBasedCondition[]) => (
       return accum;
     }, {});
 
+const applyProfileSectionSpecificConditions = (conditions: ProfileSectionSpecificCondition[]) => (
+  performer: TwilioUser,
+  target: ProfileSection,
+) =>
+  conditions
+    .map(c => Object.entries(c)[0])
+    .reduce<Record<string, boolean>>((accum, [cond, param]) => {
+      // use the stringified cond-param as key, e.g. '{ "sectionType": "summary" }'
+      const key = JSON.stringify({ [cond]: param });
+      if (cond === 'sectionType') {
+        return {
+          ...accum,
+          [key]: target.sectionType === param,
+        };
+      }
+
+      return accum;
+    }, {});
+
 const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsSets<T>) => {
   // We could do type validation on target depending on targetKind if we ever want to make sure the "allow" is called on a proper target (same as cancan used to do)
 
@@ -296,46 +357,69 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
     const appliedTimeBasedConditions = applyTimeBasedConditions(timeBasedConditions)(performer, target, ctx);
 
     // Build the proper conditionsState depending on the targetKind
-    if (kind === 'case') {
-      const conditionsState: ConditionsState = {
-        isSupervisor: performer.isSupervisor,
-        isCreator: isCounselorWhoCreated(performer, target),
-        isCaseOpen: isCaseOpen(target),
-        isCaseContactOwner: isCaseContactOwner(target),
-        everyone: true,
-        ...appliedTimeBasedConditions,
-      };
+    switch (kind) {
+      case 'case': {
+        const conditionsState: ConditionsState = {
+          isSupervisor: performer.isSupervisor,
+          isCreator: isCounselorWhoCreated(performer, target),
+          isCaseOpen: isCaseOpen(target),
+          isCaseContactOwner: isCaseContactOwner(target),
+          everyone: true,
+          ...appliedTimeBasedConditions,
+        };
 
-      return checkConditionsSets(conditionsState, conditionsSets);
-    } else if (kind === 'contact') {
-      const conditionsState: ConditionsState = {
-        isSupervisor: performer.isSupervisor,
-        isOwner: isContactOwner(performer, target),
-        everyone: true,
-        createdDaysAgo: false,
-        createdHoursAgo: false,
-        ...appliedTimeBasedConditions,
-      };
+        return checkConditionsSets(conditionsState, conditionsSets);
+      }
+      case 'contact': {
+        const conditionsState: ConditionsState = {
+          isSupervisor: performer.isSupervisor,
+          isOwner: isContactOwner(performer, target),
+          everyone: true,
+          createdDaysAgo: false,
+          createdHoursAgo: false,
+          ...appliedTimeBasedConditions,
+        };
 
-      return checkConditionsSets(conditionsState, conditionsSets);
-    } else if (kind === 'postSurvey') {
-      const conditionsState: ConditionsState = {
-        isSupervisor: performer.isSupervisor,
-        everyone: true,
-        ...appliedTimeBasedConditions,
-      };
+        return checkConditionsSets(conditionsState, conditionsSets);
+      }
+      case 'postSurvey':
+      case 'profile': {
+        const conditionsState: ConditionsState = {
+          isSupervisor: performer.isSupervisor,
+          everyone: true,
+          ...appliedTimeBasedConditions,
+        };
 
-      return checkConditionsSets(conditionsState, conditionsSets);
-    } else if (kind === 'viewIdentifiers') {
-      const conditionsState: ConditionsState = {
-        isSupervisor: performer.isSupervisor,
-        everyone: true,
-      };
+        return checkConditionsSets(conditionsState, conditionsSets);
+      }
+      case 'profileSection': {
+        const specificConditions = conditionsSets.flatMap(cs =>
+          cs.map(c => (isProfileSectionSpecificCondition(c) ? c : null)).filter(c => c !== null),
+        );
 
-      return checkConditionsSets(conditionsState, conditionsSets);
+        const appliedSpecificConditions = applyProfileSectionSpecificConditions(specificConditions)(performer, target);
+
+        const conditionsState: ConditionsState = {
+          isSupervisor: performer.isSupervisor,
+          everyone: true,
+          ...appliedTimeBasedConditions,
+          ...appliedSpecificConditions,
+        };
+
+        return checkConditionsSets(conditionsState, conditionsSets);
+      }
+      case 'viewIdentifiers': {
+        const conditionsState: ConditionsState = {
+          isSupervisor: performer.isSupervisor,
+          everyone: true,
+        };
+
+        return checkConditionsSets(conditionsState, conditionsSets);
+      }
+      default: {
+        return false;
+      }
     }
-
-    return false;
   };
 };
 

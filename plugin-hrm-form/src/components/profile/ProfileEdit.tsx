@@ -15,9 +15,7 @@
  */
 
 import React from 'react';
-import { Template } from '@twilio/flex-ui';
 
-import { RouterTask, Profile } from '../../types/types';
 import NavigableContainer from '../NavigableContainer';
 import { DetailsWrapper, ProfileSectionSubtitle } from './styles';
 import { ProfileCommonProps } from './types';

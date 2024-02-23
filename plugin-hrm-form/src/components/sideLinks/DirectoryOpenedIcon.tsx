@@ -16,9 +16,17 @@
 
 import React from 'react';
 
+// Used for Client profiles
 const DirectoryOpenedIcon = () => {
   return (
-    <svg width="10" height="10" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      width="10"
+      height="10"
+      viewBox="0 0 16 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="Client Profiles Selected"
+    >
       <g clipPath="url(#clip0_262_60000)">
         <path
           fillRule="evenodd"

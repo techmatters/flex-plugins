@@ -16,7 +16,7 @@
 
 import { getHrmConfig } from '../hrmConfig';
 import { isVoiceChannel } from '../states/DomainConstants';
-import { CustomITask, isOfflineContactTask, InMyBehalfITask } from '../types/types';
+import { CustomITask, InMyBehalfITask, isOfflineContactTask, isTwilioTask } from '../types/types';
 import { getExternalRecordingS3Location } from './ServerlessService';
 
 export type ExternalRecordingInfoSuccess = {
@@ -66,7 +66,7 @@ export const getExternalRecordingInfo = async (task: CustomITask): Promise<Exter
   }
 
   // The call id related to the worker is always the one with the recording, as far as I can tell (rbd)
-  const callSid = task.attributes.conference?.participants?.worker;
+  const callSid = isTwilioTask(task) && task.attributes.conference?.participants?.worker;
   if (!callSid) {
     return {
       status: 'failure',

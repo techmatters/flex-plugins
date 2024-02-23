@@ -30,7 +30,7 @@ import {
 import { isNonDataCallType } from '../states/validationRules';
 import { formatCategories, mapChannelForInsights } from '../utils';
 import { getDateTime } from '../utils/helpers';
-import { Case, Contact, ContactRawJson, CustomITask } from '../types/types';
+import { Case, Contact, ContactRawJson, CustomITask, WellKnownCaseSection } from '../types/types';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import {
   ExternalRecordingInfo,
@@ -40,6 +40,7 @@ import {
 import { generateUrl } from './fetchApi';
 import { generateSignedURLPath } from './fetchHrmApi';
 import { shouldSendInsightsData } from '../utils/shouldSendInsightsData';
+import { ApiCaseSection, CaseSectionTypeSpecificData } from './caseSectionService';
 
 /*
  * 'Any' is the best we can do, since we're limited by Twilio here.
@@ -196,10 +197,28 @@ const convertMixedCheckbox = (v: string | boolean): number => {
 
 type InsightsCaseForm = {
   topLevel?: { [key: string]: string };
-  perpetrator?: { [key: string]: string };
+  perpetrator?: { [key: string]: string | boolean };
   incident?: { [key: string]: string | boolean };
-  referral?: { [key: string]: string };
-  household?: { [key: string]: string };
+  referral?: { [key: string]: string | boolean };
+  household?: { [key: string]: string | boolean };
+};
+
+const flattenFirstCaseSection = (
+  caseForm: Case,
+  section: WellKnownCaseSection,
+): Omit<ApiCaseSection, 'sectionTypeSpecificData'> & CaseSectionTypeSpecificData => {
+  if (caseForm.sections?.[section]?.length) {
+    /*
+     * Flatten out the section object. This can be changed after this is using the
+     * customization framework.
+     */
+    const { sectionTypeSpecificData, ...theRest } = caseForm.sections[section][0];
+    return {
+      ...theRest,
+      ...sectionTypeSpecificData,
+    };
+  }
+  return undefined;
 };
 
 /*
@@ -216,58 +235,15 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
   };
   try {
     if (!caseForm || Object.keys(caseForm).length === 0) return {};
-    let perpetrator: { [key: string]: string } = undefined;
-    let incident: { [key: string]: string | boolean } = undefined;
-    let referral: { [key: string]: string } = undefined;
-    let household: { [key: string]: string } = undefined;
+    const perpetrator = flattenFirstCaseSection(caseForm, 'perpetrator');
+    delete perpetrator.name;
+    delete perpetrator.location;
+    const incident = flattenFirstCaseSection(caseForm, 'incident');
+    const referral = flattenFirstCaseSection(caseForm, 'referral');
+    const household = flattenFirstCaseSection(caseForm, 'household');
     const topLevel = {
       id: caseForm.id.toString(),
     };
-    if (caseForm.info?.perpetrators && caseForm.info.perpetrators.length > 0) {
-      /*
-       * Flatten out the Perpetrator object. This can be changed after this is using the
-       * customization framework.
-       */
-      const thePerp = caseForm.info.perpetrators[0];
-      const untypedPerp: any = {
-        ...thePerp,
-        ...thePerp.perpetrator,
-      };
-      delete untypedPerp.perpetrator;
-      delete untypedPerp.name;
-      delete untypedPerp.location;
-      perpetrator = {
-        ...untypedPerp,
-      };
-    }
-    if (caseForm.info?.incidents && caseForm.info.incidents.length > 0) {
-      const theIncident = caseForm.info.incidents[0];
-      const untypedIncident: any = {
-        ...theIncident,
-        ...theIncident.incident,
-      };
-      delete untypedIncident.incident;
-      incident = {
-        ...untypedIncident,
-      };
-    }
-    if (caseForm.info?.households && caseForm.info.households.length > 0) {
-      const theHousehold = caseForm.info.households[0];
-      const untypedHousehold: any = {
-        ...theHousehold,
-        ...theHousehold.household,
-      };
-      delete untypedHousehold.household;
-      household = {
-        ...untypedHousehold,
-      };
-    }
-    if (caseForm.info?.referrals && caseForm.info.referrals.length > 0) {
-      referral = {
-        ...caseForm.info.referrals[0],
-        date: caseForm.info.referrals[0].date.toString(),
-      };
-    }
 
     console.warn(`[InsightsService] converting case form:`, logObject);
 

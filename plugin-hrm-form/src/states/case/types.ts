@@ -14,15 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { HelplineEntry, StatusInfo } from 'hrm-form-definitions';
+import { StatusInfo } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
-import { CaseItemEntry, Contact } from '../../types/types';
+import { WellKnownCaseSection } from '../../types/types';
 import { ChannelTypes } from '../DomainConstants';
+import { CaseSectionTypeSpecificData } from '../../services/caseSectionService';
+import { WorkerSID } from '../../types/twilio';
 
 // Action types
-export const UPDATE_CASE_ACTION = 'case-action/update-case';
-export const UPDATE_CASE_ACTION_FULFILLED = `${UPDATE_CASE_ACTION}_FULFILLED` as const;
 export const CREATE_CASE_ACTION = 'case-action/create-case';
 export const CREATE_CASE_ACTION_FULFILLED = `${CREATE_CASE_ACTION}_FULFILLED` as const;
 export const CANCEL_CASE_ACTION = 'case-action/cancel-case';
@@ -35,13 +35,6 @@ export enum SavedCaseStatus {
   Error,
 }
 
-type UpdatedCaseAction = {
-  type: typeof UPDATE_CASE_ACTION;
-  payload: Promise<{ taskSid: string; case: t.Case }>;
-  taskId?: string;
-  meta: unknown;
-};
-
 type CreateCaseAction = {
   type: typeof CREATE_CASE_ACTION;
   payload: Promise<{ taskSid: string; case: t.Case }>;
@@ -49,12 +42,12 @@ type CreateCaseAction = {
   meta: unknown;
 };
 
-export type CaseActionType = UpdatedCaseAction | CreateCaseAction;
+export type CaseActionType = CreateCaseAction;
 
 type CoreActivity = {
   text: string;
   type: string;
-  twilioWorkerId: string;
+  twilioWorkerId: WorkerSID;
 };
 
 export type NoteActivity = CoreActivity & {
@@ -63,7 +56,7 @@ export type NoteActivity = CoreActivity & {
   type: 'note';
   note: t.Note;
   updatedAt?: string;
-  updatedBy?: string;
+  updatedBy?: WorkerSID;
 };
 
 export type ReferralActivity = CoreActivity & {
@@ -73,7 +66,7 @@ export type ReferralActivity = CoreActivity & {
   type: 'referral';
   referral: t.Referral;
   updatedAt?: string;
-  updatedBy?: string;
+  updatedBy?: WorkerSID;
 };
 
 export type ContactActivity = CoreActivity & {
@@ -88,32 +81,6 @@ export type ContactActivity = CoreActivity & {
 
 export type Activity = NoteActivity | ReferralActivity | ContactActivity;
 
-export type CaseDetails = {
-  id: string;
-  contactIdentifier: string;
-  categories?: {
-    [category: string]: string[];
-  };
-  status: string;
-  caseCounselor: string;
-  currentCounselor: string;
-  createdAt: string;
-  updatedAt: string;
-  followUpDate: string;
-  followUpPrintedDate: string;
-  households: t.HouseholdEntry[];
-  perpetrators: t.PerpetratorEntry[];
-  incidents: t.IncidentEntry[];
-  referrals: t.ReferralEntry[];
-  notes: NoteActivity[];
-  documents: t.DocumentEntry[];
-  summary: string;
-  childIsAtRisk: boolean;
-  office?: HelplineEntry;
-  contact: Contact;
-  contacts: any[];
-};
-
 export type CaseSummaryWorkingCopy = {
   status: string;
   followUpDate: string;
@@ -123,9 +90,9 @@ export type CaseSummaryWorkingCopy = {
 
 export type CaseWorkingCopy = {
   sections: {
-    [section: string]: {
-      new?: CaseItemEntry;
-      existing: { [id: string]: CaseItemEntry };
+    [section in WellKnownCaseSection]?: {
+      new?: CaseSectionTypeSpecificData;
+      existing: { [id: string]: CaseSectionTypeSpecificData };
     };
   };
   caseSummary?: CaseSummaryWorkingCopy;
@@ -145,5 +112,5 @@ export type CaseState = {
 };
 
 export type CaseUpdatingAction = {
-  type: typeof CREATE_CASE_ACTION_FULFILLED | typeof UPDATE_CASE_ACTION_FULFILLED;
+  type: typeof CREATE_CASE_ACTION_FULFILLED;
 };
