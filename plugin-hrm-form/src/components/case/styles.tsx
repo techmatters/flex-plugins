@@ -15,10 +15,10 @@
  */
 
 import React from 'react';
-import { styled, Button, IconButton } from '@twilio/flex-ui';
+import { Button, IconButton, styled } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 
-import { FontOpenSans, FormInput, Row, Column } from '../../styles';
+import { Column, FontOpenSans, FormInput, Row } from '../../styles';
 import HrmTheme from '../../styles/HrmTheme';
 
 export const CaseLayout = styled('div')`
@@ -36,6 +36,7 @@ export const CaseContainer = styled('div')`
   background-color: #ffffff;
   border-bottom: 1px solid #e1e3ea;
   padding-right: 5px;
+  overflow-y: scroll;
 `;
 CaseContainer.displayName = 'CaseContainer';
 
