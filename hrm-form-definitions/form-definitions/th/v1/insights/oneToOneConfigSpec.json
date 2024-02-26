@@ -57,8 +57,24 @@
           "type": "mixed-checkbox"
         },
         {
-          "name": "nightHub",
+          "name": "nightHubFood",
           "insights": ["conversations", "conversation_attribute_3"]  
+        },
+          {
+          "name": "nightHubToilet",
+          "insights": ["conversations", "service_level"]  
+        },
+        {
+          "name": "nightHubShelter",
+          "insights": ["conversations", "source"]  
+        },
+        {
+          "name": "nightHubCounselling",
+          "insights": ["conversations", "destination"]  
+        },
+        {
+          "name": "nightHubEmergency",
+          "insights": ["conversations", "content"]  
         },
         {
           "name": "basicServices",
