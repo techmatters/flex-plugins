@@ -28,8 +28,8 @@
   "viewProfile": [["everyone"]],
   "flagProfile": [["isSupervisor"]],
   "unflagProfile": [["isSupervisor"]],
+  "viewProfileSection": [["everyone", { "sectionType": "summary" }], ["isSupervisor"]],
   "createProfileSection": [["isSupervisor"]],
-  "viewProfileSection": [["isSupervisor"]],
   "editProfileSection": [["isSupervisor"]],
   
   "viewPostSurvey": [["isSupervisor"]],
