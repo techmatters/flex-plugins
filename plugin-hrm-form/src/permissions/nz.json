@@ -26,12 +26,12 @@
     "removeContactFromCase": [["isSupervisor"], ["isOwner", {"createdHoursAgo": 24}]],
     
     "viewProfile": [["everyone"]],
-    "flagProfile": [["everyone"]],
-    "unflagProfile": [["everyone"]],
-    "createProfileSection": [["everyone"]],
+    "flagProfile": [["isSupervisor"]],
+    "unflagProfile": [["isSupervisor"]],
     "viewProfileSection": [["everyone", { "sectionType": "summary" }], ["isSupervisor"]],
-    "editProfileSection": [["everyone", { "sectionType": "summary" }], ["isSupervisor"]],
-
+    "createProfileSection": [["isSupervisor"]],
+    "editProfileSection": [["isSupervisor"]],
+  
     "viewPostSurvey":  [["isSupervisor"]],
 
     "viewIdentifiers": [["isSupervisor"]]

@@ -45,12 +45,15 @@ const ProfileFlagSection: React.FC<Props> = ({ profileId, task }) => {
     profileFlagsEditButtonRef.current?.focus();
   };
 
+  const isActionable = canFlag || canUnflag;
+
   const renderViewMode = () => (
     <ProfileFlagsEditButton
       title="Edit Statuses"
       type="button"
       onClick={openEditProfileFlags}
       ref={profileFlagsEditButtonRef}
+      disabled={!isActionable}
     >
       <ProfileFlagList profileId={profileId} task={task} />
     </ProfileFlagsEditButton>
