@@ -35,15 +35,15 @@ locals {
 
     task_queues = {
       youthline_helpline : {
-        "target_workers" = "routing.skills HAS 'Youthline Helpline'",
+        "target_workers" = "roles HAS 'agent' OR roles HAS 'supervisor'",
         "friendly_name"  = "Youthline Helpline"
       },
       priority : {
-        "target_workers" = "routing.skills HAS 'Priority'",
+        "target_workers" = "roles HAS 'agent' OR roles HAS 'supervisor'",
         "friendly_name"  = "Priority Youthline Helpline"
       },
       clinical : {
-        "target_workers" = "routing.skills HAS 'Clinical'",
+        "target_workers" = "routing.skills HAS 'Clinical' OR roles HAS 'supervisor'",
         "friendly_name"  = "Clinical"
       },
       survey : {
