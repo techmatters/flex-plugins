@@ -124,6 +124,7 @@ const EditCaseSummary: React.FC<Props> = ({
           name: 'childIsAtRisk',
           label: 'Case-ChildIsAtRisk',
           type: FormInputType.Checkbox,
+          initialChecked: Boolean(workingCopy?.childIsAtRisk),
         },
         {
           name: 'summary',
@@ -135,7 +136,7 @@ const EditCaseSummary: React.FC<Props> = ({
       console.error('Failed to render edit case summary form', e);
       return [];
     }
-  }, [availableStatusTransitions]);
+  }, [availableStatusTransitions, workingCopy?.childIsAtRisk]);
 
   const savedForm = React.useMemo(() => {
     const {
