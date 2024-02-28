@@ -236,8 +236,8 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
   try {
     if (!caseForm || Object.keys(caseForm).length === 0) return {};
     const perpetrator = flattenFirstCaseSection(caseForm, 'perpetrator');
-    delete perpetrator.name;
-    delete perpetrator.location;
+    delete perpetrator?.name;
+    delete perpetrator?.location;
     const incident = flattenFirstCaseSection(caseForm, 'incident');
     const referral = flattenFirstCaseSection(caseForm, 'referral');
     const household = flattenFirstCaseSection(caseForm, 'household');
