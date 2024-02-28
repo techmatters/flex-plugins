@@ -34,6 +34,8 @@ const DEFAULT_CONFIG: PageTelemetryConfig = {
   logResponseBody: getConfigValue('browserTelemetryLogResponseBody') as boolean,
 };
 
+const TEXT_EXCLUSIONS = ['FlexModule: FlexModule not initialized'];
+
 export function logPageTelemetry(
   page: Page,
   configOverrides: Partial<PageTelemetryConfig> = {},
@@ -44,9 +46,10 @@ export function logPageTelemetry(
   if (config.level === PageTelemetryLevel.NONE) return;
   page.on('console', (message) => {
     if (
-      config.level === PageTelemetryLevel.ALL ||
-      message.type() === 'error' ||
-      message.type() === 'warn'
+      (config.level === PageTelemetryLevel.ALL ||
+        message.type() === 'error' ||
+        message.type() === 'warn') &&
+      TEXT_EXCLUSIONS.every((ex) => !message.text().includes(ex))
     ) {
       console.log(`[BROWSER: ${page.url()} (${message.type()})] ${message.text()}`);
     }
