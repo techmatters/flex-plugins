@@ -111,7 +111,7 @@ type ContactSpecificCondition = typeof contactSpecificConditions[number];
 const isContactSpecificCondition = (c: any): c is ContactSpecificCondition =>
   typeof c === 'string' && contactSpecificConditions.includes(c as any);
 
-const caseSpecificConditions = ['isCreator', 'isCaseOpen'] as const;
+const caseSpecificConditions = ['isCreator', 'isCaseOpen', 'isCaseContactOwner'] as const;
 type CaseSpecificCondition = typeof caseSpecificConditions[number];
 
 const isCaseSpecificCondition = (c: any): c is CaseSpecificCondition =>
@@ -251,7 +251,7 @@ type RulesFile = { [k in Action]: TKConditionsSets<TargetKind> };
 
 const isValidTKConditionsSets = <T extends TargetKind>(kind: T) => (
   css: TKConditionsSets<TargetKind>,
-): css is TKConditionsSets<typeof kind> => css.every(cs => cs.every(isTKCondition(kind)));
+): css is TKConditionsSets<typeof kind> => css && css.every(cs => cs.every(isTKCondition(kind)));
 
 /**
  * Validates that for every TK, the ConditionsSets provided are valid
