@@ -4,7 +4,9 @@
     "label": "Open",
     "color": "green",
     "transitions": [
-      "readyForReview"
+      "readyForReview",
+      "forHelplineLeadershipReview",
+      "closed"
     ]
   },
   "readyForReview": {
@@ -12,22 +14,18 @@
     "label": "Ready for Review",
     "color": "yellow",
     "transitions": [
-      "followUpRequired"
+      "open",
+      "forHelplineLeadershipReview",
+      "closed"
     ]
   },
-  "followUpRequired": {
-    "value": "followUpRequired",
-    "label": "Follow Up Required",
+  "forHelplineLeadershipReview": {
+    "value": "forHelplineLeadershipReview",
+    "label": "For Helpline Leadership review",
     "color": "orange",
     "transitions": [
-      "submitted"
-    ]
-  },
-  "submitted": {
-    "value": "submitted",
-    "label": "Submitted",
-    "color": "blue",
-    "transitions": [
+      "open",
+      "readyForReview",
       "closed"
     ]
   },
@@ -36,7 +34,9 @@
     "label": "Closed",
     "color": "red",
     "transitions": [
-      "readyForReview", "submitted"
+      "open",
+      "readyForReview",
+      "forHelplineLeadershipReview"
     ]
   }
 }
