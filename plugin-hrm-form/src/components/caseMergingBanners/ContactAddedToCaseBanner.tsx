@@ -25,12 +25,12 @@ import { newOpenModalAction } from '../../states/routing/actions';
 import type { Case } from '../../types/types';
 import InfoIcon from './InfoIcon';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
-import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import { RootState } from '../../states';
 import { BannerActionLink, BannerContainer, CaseLink, Text } from '../../styles/banners';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { getInitializedCan, PermissionActions } from '../../permissions';
 import { getHrmConfig } from '../../hrmConfig';
+import { useCase } from '../../states/case/hooks/useCase';
 
 type OwnProps = {
   taskId: string;
@@ -42,12 +42,10 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 const mapStateToProps = (state: RootState, { taskId, contactId }: OwnProps) => {
   const offlineSavedContact = selectContactByTaskSid(state, taskId)?.savedContact;
   const existingSavedContact = selectContactStateByContactId(state, contactId)?.savedContact;
-  const connectedCase = selectCaseByCaseId(state, offlineSavedContact?.caseId || existingSavedContact?.caseId)
-    ?.connectedCase;
+
   const caseId = offlineSavedContact?.caseId || existingSavedContact?.caseId;
   return {
     contact: offlineSavedContact || existingSavedContact,
-    connectedCase,
     caseId,
     existingSavedContact,
   };
@@ -64,7 +62,6 @@ const mapDispatchToProps = (dispatch, { taskId }: OwnProps) => ({
 });
 
 const ContactAddedToCaseBanner: React.FC<Props> = ({
-  connectedCase,
   contact,
   viewCaseDetails,
   removeContactFromCase,
@@ -79,6 +76,8 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
     return getInitializedCan();
   }, []);
 
+  const { connectedCase } = useCase({ caseId: contact.caseId });
+
   const { workerSid } = getHrmConfig();
   const canViewContactAndCase =
     workerSid === contact.twilioWorkerId && connectedCase && contact.createdBy === contact.twilioWorkerId;
@@ -86,7 +85,7 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
     can(PermissionActions.REMOVE_CONTACT_FROM_CASE, contact) &&
     can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCase) &&
     connectedCase;
-  const canViewcase = can(PermissionActions.VIEW_CASE, connectedCase) && connectedCase;
+  const canViewcase = connectedCase && can(PermissionActions.VIEW_CASE, connectedCase);
 
   if (connectedCase === undefined && canViewContactAndCase) return null;
 
