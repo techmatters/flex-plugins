@@ -23,6 +23,7 @@ import { getAvailableCaseStatusTransitions } from './caseStatus';
 // eslint-disable-next-line import/no-unused-modules
 export const loadCaseIntoState = ({
   state,
+  caseId,
   definitionVersion,
   newCase,
   referenceId,
@@ -30,25 +31,27 @@ export const loadCaseIntoState = ({
   loading = false,
 }: {
   state: CaseState;
+  caseId: Case['id'];
   definitionVersion: DefinitionVersion;
   newCase: Case;
   referenceId?: string;
   loading?: boolean;
   error?: any;
 }): CaseState => {
-  const existingCase = state.cases[newCase.id];
+  const existingCase = state.cases[caseId];
+  const statusUpdates = { loading, error };
+
   if (!existingCase) {
     return {
       ...state,
       cases: {
         ...state.cases,
-        [newCase.id]: {
+        [caseId]: {
           connectedCase: newCase,
           caseWorkingCopy: { sections: {} },
           availableStatusTransitions: getAvailableCaseStatusTransitions(newCase, definitionVersion),
           references: referenceId ? new Set([referenceId]) : new Set<string>(),
-          loading,
-          error,
+          ...statusUpdates,
         },
       },
     };
@@ -59,10 +62,11 @@ export const loadCaseIntoState = ({
     ...state,
     cases: {
       ...state.cases,
-      [newCase.id]: {
+      [caseId]: {
         ...existingCase,
         references: updatedReferences,
         connectedCase: newCase,
+        ...statusUpdates,
       },
     },
   };

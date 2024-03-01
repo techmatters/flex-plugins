@@ -139,6 +139,7 @@ const loadCaseListIntoState = (
       const caseDefinitionVersion = configurationState.definitionVersions[newCase.info.definitionVersion];
       return loadCaseIntoState({
         state: acc,
+        caseId: newCase.id,
         definitionVersion: caseDefinitionVersion,
         newCase: caseToAdd,
         referenceId,

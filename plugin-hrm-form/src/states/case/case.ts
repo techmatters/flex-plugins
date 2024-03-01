@@ -14,9 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// TODO: REMOVE
-/* eslint-disable import/no-unused-modules */
-
 import { createAsyncAction } from 'redux-promise-middleware-actions';
 
 import * as CaseService from '../../services/CaseService';
@@ -25,7 +22,6 @@ import { loadCaseIntoState } from './loadCaseIntoState';
 import type { Case } from '../../types/types';
 import type { HrmState } from '..';
 
-// eslint-disable-next-line import/no-unused-modules
 export const loadCaseAsync = createAsyncAction(t.LOAD_CASE_ACTION, CaseService.getCase, (caseId: Case['id']) => ({
   caseId,
 }));
@@ -38,7 +34,7 @@ export const handleLoadCasePendingAction = (
   state: HrmState,
   action: ReturnType<LoadCaseAsync['pending']> & { meta?: LoadCaseAyncMeta },
 ): HrmState => {
-  const { caseId } = action.meta as { caseId: Case['id'] };
+  const { caseId } = action.meta;
 
   const cas = state.connectedCase.cases[caseId]?.connectedCase;
 
@@ -46,6 +42,7 @@ export const handleLoadCasePendingAction = (
     ...state,
     connectedCase: loadCaseIntoState({
       state: state.connectedCase,
+      caseId,
       definitionVersion: state.configuration.currentDefinitionVersion,
       newCase: cas,
       error: null,
@@ -66,6 +63,7 @@ export const handleLoadCaseFulfilledAction = (
     ...state,
     connectedCase: loadCaseIntoState({
       state: state.connectedCase,
+      caseId,
       definitionVersion: state.configuration.currentDefinitionVersion,
       newCase: cas,
       error: null,
@@ -86,6 +84,7 @@ export const handleLoadCaseRejectedAction = (
     ...state,
     connectedCase: loadCaseIntoState({
       state: state.connectedCase,
+      caseId,
       definitionVersion: state.configuration.currentDefinitionVersion,
       newCase: cas,
       error: action.payload,
