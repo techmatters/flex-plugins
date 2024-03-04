@@ -59,11 +59,8 @@ export const useCase = ({ caseId }: { caseId: Case['id'] }) => {
 
   const connectedCase = useSelector((state: RootState) => CaseSelectors.selectCaseById(state, caseId)?.connectedCase);
 
-
-  const autoload = !connectedCase
-
   return {
     connectedCase,
-    ...useCaseLoader({ caseId, autoload }),
+    ...useCaseLoader({ caseId, autoload: true }),
   };
 };
