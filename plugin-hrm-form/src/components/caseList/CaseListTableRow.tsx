@@ -45,6 +45,7 @@ import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import { getHrmConfig } from '../../hrmConfig';
 import { configurationBase, namespace } from '../../states/storeNamespaces';
+import { useCase } from '../../states/case/hooks/useCase';
 
 const CHAR_LIMIT = 200;
 
@@ -58,6 +59,10 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleClickViewCase, ...props }) => {
+  const {
+    permissions: { canView },
+  } = useCase({ caseId: caseItem.id });
+
   const { updateDefinitionVersion, definitionVersions } = props;
   const { definitionVersion } = getHrmConfig();
   let version = caseItem.info.definitionVersion;
@@ -105,7 +110,14 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
     };
 
     return (
-      <DataTableRow data-testid="CaseList-TableRow" onClick={handleClickViewCase(caseItem)}>
+      <DataTableRow
+        data-testid="CaseList-TableRow"
+        onClick={() => {
+          if (canView) {
+            handleClickViewCase(caseItem);
+          }
+        }}
+      >
         <NumericCell>
           <OpenLinkContainer>
             <OpenLinkAction tabIndex={0} data-testid="CaseList-CaseID-Button">

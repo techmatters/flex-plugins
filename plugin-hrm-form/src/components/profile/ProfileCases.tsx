@@ -25,21 +25,16 @@ import * as RoutingActions from '../../states/routing/actions';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { ProfileCommonProps } from './types';
+import { useCase } from '../../states/case/hooks/useCase';
 
 type OwnProps = ProfileCommonProps;
 
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileCases: React.FC<Props> = ({ profileId, task, counselorsHash, viewCaseDetails }) => {
-  const can = React.useMemo(() => {
-    return getInitializedCan();
-  }, []);
-
   const renderItem = (cas: Case) => {
     const handleClickViewCase = () => {
-      if (can(PermissionActions.VIEW_CASE, cas)) {
-        viewCaseDetails(cas);
-      }
+      viewCaseDetails(cas);
     };
 
     return (

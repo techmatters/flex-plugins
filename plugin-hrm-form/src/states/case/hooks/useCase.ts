@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import asyncDispatch from '../../asyncDispatch';
@@ -22,6 +22,7 @@ import * as CaseActions from '../case';
 import * as CaseSelectors from '../selectors';
 import type { Case } from '../../../types/types';
 import type { RootState } from '../..';
+import { PermissionActions, getInitializedCan } from '../../../permissions';
 
 // TODO: REMOVE
 /* eslint-disable import/no-unused-modules */
@@ -52,15 +53,47 @@ export const useCaseLoader = ({ caseId, autoload = false }: { caseId: Case['id']
   };
 };
 
+const calculateCasePermissions = ({
+  can,
+  connectedCase,
+}: {
+  can: ReturnType<typeof getInitializedCan>;
+  connectedCase: Case;
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+}) => ({
+  canView: connectedCase && can(PermissionActions.VIEW_CASE, connectedCase),
+  canClose: connectedCase && can(PermissionActions.CLOSE_CASE, connectedCase),
+  canReopen: connectedCase && can(PermissionActions.REOPEN_CASE, connectedCase),
+  canCaseStatusTransition: connectedCase && can(PermissionActions.CASE_STATUS_TRANSITION, connectedCase),
+  canAddNote: connectedCase && can(PermissionActions.ADD_NOTE, connectedCase),
+  canEditNote: connectedCase && can(PermissionActions.EDIT_NOTE, connectedCase),
+  canAddReferral: connectedCase && can(PermissionActions.ADD_REFERRAL, connectedCase),
+  canEditReferral: connectedCase && can(PermissionActions.EDIT_REFERRAL, connectedCase),
+  canAddHousehold: connectedCase && can(PermissionActions.ADD_HOUSEHOLD, connectedCase),
+  canEditHousehold: connectedCase && can(PermissionActions.EDIT_HOUSEHOLD, connectedCase),
+  canAddPerpetrator: connectedCase && can(PermissionActions.ADD_PERPETRATOR, connectedCase),
+  canEditPerpetrator: connectedCase && can(PermissionActions.EDIT_PERPETRATOR, connectedCase),
+  canAddIncident: connectedCase && can(PermissionActions.ADD_INCIDENT, connectedCase),
+  canEditIncident: connectedCase && can(PermissionActions.EDIT_INCIDENT, connectedCase),
+  canAddDocument: connectedCase && can(PermissionActions.ADD_DOCUMENT, connectedCase),
+  canEditDocument: connectedCase && can(PermissionActions.EDIT_DOCUMENT, connectedCase),
+  canEditCaseOverview: connectedCase && can(PermissionActions.EDIT_CASE_OVERVIEW, connectedCase),
+  canUpdateCaseContacts: connectedCase && can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCase),
+});
+
 export const useCase = ({ caseId }: { caseId: Case['id'] }) => {
-  // const can = useMemo(() => {
-  //   return getInitializedCan();
-  // }, []);
+  const can = useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
+  const { error, loading } = useCaseLoader({ caseId, autoload: true });
 
   const connectedCase = useSelector((state: RootState) => CaseSelectors.selectCaseById(state, caseId)?.connectedCase);
 
   return {
     connectedCase,
-    ...useCaseLoader({ caseId, autoload: true }),
+    error,
+    loading,
+    permissions: calculateCasePermissions({ can, connectedCase }),
   };
 };

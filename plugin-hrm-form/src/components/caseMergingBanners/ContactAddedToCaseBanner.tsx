@@ -76,16 +76,14 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
     return getInitializedCan();
   }, []);
 
-  const { connectedCase } = useCase({ caseId: contact.caseId });
+  const { connectedCase, permissions: casePermissions } = useCase({ caseId: contact.caseId });
 
   const { workerSid } = getHrmConfig();
   const canViewContactAndCase =
     workerSid === contact.twilioWorkerId && connectedCase && contact.createdBy === contact.twilioWorkerId;
   const canEditAndRemoveCase =
-    can(PermissionActions.REMOVE_CONTACT_FROM_CASE, contact) &&
-    can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCase) &&
-    connectedCase;
-  const canViewcase = connectedCase && can(PermissionActions.VIEW_CASE, connectedCase);
+    can(PermissionActions.REMOVE_CONTACT_FROM_CASE, contact) && casePermissions.canUpdateCaseContacts;
+  const canViewCase = casePermissions.canView;
 
   if (connectedCase === undefined && canViewContactAndCase) return null;
 
@@ -105,9 +103,9 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
       </Text>
       <CaseLink
         type="button"
-        color={!canViewcase && '#000'}
-        permission={!canViewcase && 'none'}
-        onClick={() => canViewcase && viewCaseDetails(connectedCase)}
+        color={!canViewCase && '#000'}
+        permission={!canViewCase && 'none'}
+        onClick={() => canViewCase && viewCaseDetails(connectedCase)}
         data-fs-id="LinkedCase-Button"
       >
         <Template code="Case-CaseNumber" />

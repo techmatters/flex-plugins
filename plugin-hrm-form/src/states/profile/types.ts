@@ -109,7 +109,7 @@ export const PROFILE_RELATIONSHIPS = {
 } as const;
 
 export type ProfileRelationships = keyof typeof PROFILE_RELATIONSHIPS;
-export type ProfileRelationshipTypes = Case | Contact;
+export type ProfileRelationshipTypes = Pick<Case, 'id'> | Contact;
 
 export type ProfileAsyncCommon<t> = {
   loading: boolean;

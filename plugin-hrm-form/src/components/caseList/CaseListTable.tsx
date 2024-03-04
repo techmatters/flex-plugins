@@ -58,10 +58,6 @@ const CaseListTable: React.FC<Props> = ({
   counselorsHash,
   currentDefinitionVersion,
 }) => {
-  const can = React.useMemo(() => {
-    return getInitializedCan();
-  }, []);
-
   const pagesCount = Math.ceil(caseCount / CASES_PER_PAGE);
 
   return (
@@ -94,9 +90,7 @@ const CaseListTable: React.FC<Props> = ({
                     <CaseListTableRow
                       caseItem={caseItem}
                       key={`CaseListItem-${caseItem.id}`}
-                      handleClickViewCase={currentCase =>
-                        can(PermissionActions.VIEW_CASE, caseItem) ? handleClickViewCase(currentCase) : () => undefined
-                      }
+                      handleClickViewCase={currentCase => handleClickViewCase(currentCase)}
                       counselorsHash={counselorsHash}
                     />
                   );
