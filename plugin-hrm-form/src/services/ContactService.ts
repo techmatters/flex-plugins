@@ -210,10 +210,16 @@ const saveContactToHrm = async (
 
   // This might change if isNonDataCallType, that's why we use rawForm
   const timeOfContact = new Date(getDateTime(form.contactlessTask)).toISOString();
-
-  const { conversationMedia, channelSid, serviceSid, externalRecordingInfo } = await handleTwilioTask(task);
-
-  await saveConversationMedia(contact.id, conversationMedia);
+  let channelSid;
+  let serviceSid;
+  let externalRecordingInfo = null;
+  try {
+    const twilioTaskResult = await handleTwilioTask(task);
+    ({ channelSid, serviceSid, externalRecordingInfo } = twilioTaskResult);
+    await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
+  } catch (error) {
+    console.error(`Error saving conversation media, continuing to save to HRM: `, error);
+  }
 
   /*
    * We do a transform from the original and then add things.
