@@ -441,8 +441,9 @@ describe('handleTwilioTask() (externalRecording)', () => {
       attributes: {},
     };
 
-    await expect(handleTwilioTask(task)).rejects.toThrow(
-      'Error getting external recording info: Could not find call sid',
-    );
+    const returnData = await handleTwilioTask(task);
+    expect(returnData).toStrictEqual({
+      conversationMedia: [{ storeType: 'twilio', storeTypeSpecificData: { reservationSid: undefined } }],
+    });
   });
 });

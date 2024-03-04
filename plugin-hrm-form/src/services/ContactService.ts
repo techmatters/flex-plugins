@@ -78,47 +78,65 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
     return returnData;
   }
 
-  if (TaskHelper.isChatBasedTask(task)) {
-    // Store a pending transcript
+  try {
+    if (TaskHelper.isChatBasedTask(task)) {
+      // Store a pending transcript
+      returnData.conversationMedia.push({
+        storeType: 'S3',
+        storeTypeSpecificData: {
+          type: 'transcript',
+          location: undefined,
+        },
+      });
+    }
+
+    if (TaskHelper.isChatBasedTask(task) || TaskHelper.isCallTask(task)) {
+      // Store reservation sid to use Twilio insights overlay (recordings/transcript)
+      returnData.conversationMedia.push({
+        storeType: 'twilio',
+        storeTypeSpecificData: {
+          reservationSid: task.sid,
+        },
+      });
+    }
+
+    if (!shouldGetExternalRecordingInfo(task)) return returnData;
+
+    const externalRecordingInfo = await getExternalRecordingInfo(task);
+    if (isFailureExternalRecordingInfo(externalRecordingInfo)) {
+      console.error(
+        'Failed to get external recording info',
+        externalRecordingInfo.error,
+        'Task:',
+        task,
+        'Return data captured so far:',
+        returnData,
+      );
+      return returnData;
+    }
+
+    returnData.externalRecordingInfo = externalRecordingInfo;
+    const { bucket, key } = externalRecordingInfo;
     returnData.conversationMedia.push({
       storeType: 'S3',
       storeTypeSpecificData: {
-        type: 'transcript',
-        location: undefined,
+        type: 'recording',
+        location: {
+          bucket,
+          key,
+        },
       },
     });
+  } catch (err) {
+    console.error(
+      'Error processing contact media during finalization:',
+      err,
+      'Task:',
+      task,
+      'Return data captured so far:',
+      returnData,
+    );
   }
-
-  if (TaskHelper.isChatBasedTask(task) || TaskHelper.isCallTask(task)) {
-    // Store reservation sid to use Twilio insights overlay (recordings/transcript)
-    returnData.conversationMedia.push({
-      storeType: 'twilio',
-      storeTypeSpecificData: {
-        reservationSid: task.sid,
-      },
-    });
-  }
-
-  if (!shouldGetExternalRecordingInfo(task)) return returnData;
-
-  const externalRecordingInfo = await getExternalRecordingInfo(task);
-  if (isFailureExternalRecordingInfo(externalRecordingInfo)) {
-    throw new Error(`Error getting external recording info: ${externalRecordingInfo.error}`);
-  }
-
-  returnData.externalRecordingInfo = externalRecordingInfo;
-  const { bucket, key } = externalRecordingInfo;
-  returnData.conversationMedia.push({
-    storeType: 'S3',
-    storeTypeSpecificData: {
-      type: 'recording',
-      location: {
-        bucket,
-        key,
-      },
-    },
-  });
-
   return returnData;
 };
 
@@ -210,16 +228,9 @@ const saveContactToHrm = async (
 
   // This might change if isNonDataCallType, that's why we use rawForm
   const timeOfContact = new Date(getDateTime(form.contactlessTask)).toISOString();
-  let channelSid;
-  let serviceSid;
-  let externalRecordingInfo = null;
-  try {
-    const twilioTaskResult = await handleTwilioTask(task);
-    ({ channelSid, serviceSid, externalRecordingInfo } = twilioTaskResult);
-    await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
-  } catch (error) {
-    console.error(`Error saving conversation media, continuing to save to HRM: `, error);
-  }
+  const twilioTaskResult = await handleTwilioTask(task);
+  const { channelSid, serviceSid, externalRecordingInfo } = twilioTaskResult;
+  await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
 
   /*
    * We do a transform from the original and then add things.
@@ -244,7 +255,7 @@ const saveContactToHrm = async (
 
   return {
     response,
-    externalRecordingInfo,
+    externalRecordingInfo: externalRecordingInfo ?? null,
   };
 };
 
