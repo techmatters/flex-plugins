@@ -48,7 +48,7 @@
     "options": [
       {
         "value": "Unknown",
-        "label": "Unknown"
+        "label": ""
       },
       {
         "value": "<18",
@@ -215,7 +215,7 @@
     "options": [
       {
         "value": "Unknown",
-        "label": ""
+        "label": "Unknown"
       },
       {
         "value": "Adult content on social media platform",
@@ -350,7 +350,7 @@
     "options": [
       {
         "value": "Unknown",
-        "label": ""
+        "label": "Unknown"
       },
       {
         "value": "Still images",
@@ -379,10 +379,6 @@
     "label": "Location of content",
     "type": "listbox-multiselect",
     "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
       {
         "value": "Collector site",
         "label": "Collector site"
@@ -463,10 +459,6 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
         "value": "Collector site",
         "label": "Collector site"
       },
@@ -545,10 +537,6 @@
     "label": "Location used to make the threats",
     "type": "listbox-multiselect",
     "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
       {
         "value": "Include - verbal communication",
         "label": "Include - verbal communication"
@@ -668,10 +656,6 @@
     "label": "Assumed gender of perpetrator/s",
     "type": "listbox-multiselect",
     "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
       {
         "value": "Male",
         "label": "Male"
