@@ -44,6 +44,7 @@ import { ContactDraftChanges } from '../states/contacts/existingContacts';
 import { newContactState } from '../states/contacts/contactState';
 import { ApiError, FetchOptions } from './fetchApi';
 import { TaskSID, WorkerSID } from '../types/twilio';
+import { recordEvent } from '../fullStory';
 
 export async function searchContacts(
   searchParams: SearchParams,
@@ -112,6 +113,13 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
         'Return data captured so far:',
         returnData,
       );
+      recordEvent('Backend Error: Get External Recording Info', {
+        taskSid: task.taskSid,
+        reservationSid: task.sid,
+        recordingError: externalRecordingInfo.error,
+        isCallTask: TaskHelper.isCallTask(task),
+        isChatBasedTask: TaskHelper.isChatBasedTask(task),
+      });
       return returnData;
     }
 
