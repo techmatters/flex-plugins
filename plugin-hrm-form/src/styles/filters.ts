@@ -198,11 +198,13 @@ export const MultiSelectListItem = styled('li')<MultiSelectListItemProps>`
 `;
 MultiSelectListItem.displayName = 'MultiSelectListItem';
 
-export const MultiSelectCheckboxLabel = styled('span')`
+export const MultiSelectCheckboxLabel = styled('span')<{ capitalize?: boolean }>`
   font-family: 'Open Sans';
   font-size: 13px;
   color: #192b33;
   margin-left: 2px;
+
+  ${({ capitalize }) => (capitalize ? 'text-transform: capitalize;' : '')}
 
   strong {
     font-weight: 700;
