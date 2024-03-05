@@ -41,10 +41,42 @@
     }
   },
   {
-    "name": "age",
-    "label": "Age",
+    "name": "demographicIdentifiedGender",
+    "label": "Demographic: Identified gender",
     "type": "select",
-    "unknownOption": "",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Male",
+        "label": "Male"
+      },
+      {
+        "value": "Female",
+        "label": "Female"
+      },
+      {
+        "value": "Non-binary",
+        "label": "Non-binary"
+      },
+      {
+        "value": "Question not asked",
+        "label": "Question not asked"
+      },
+      {
+        "value": "Question not answered",
+        "label": "Question not answered"
+      }
+    ]
+  },
+  {
+    "name": "demographicAgeBand",
+    "label": "Demographic: Age band ",
+    "type": "select",
+    "unknownOption": "Unknown",
     "options": [
       {
         "value": "Unknown",
@@ -52,21 +84,33 @@
       },
       {
         "value": "<18",
-        "label": "<18"
+        "label": "Under 18"
       },
       {
-        "value": "19",
-        "label": "19"
+        "value": "18-24",
+        "label": "18-24"
       },
       {
-        "value": "20",
-        "label": "20"
+        "value": "25-34",
+        "label": "25-34"
+      },
+      {
+        "value": "35-44",
+        "label": "35-44"
+      },
+      {
+        "value": "45-54",
+        "label": "45-54"
+      },
+      {
+        "value": "55-64",
+        "label": "55-64"
+      },
+      {
+        "value": ">65",
+        "label": "65+"
       }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    ]
   },
   {
     "name": "clientPhone",
@@ -163,38 +207,6 @@
     "name": "operationMakedom",
     "label": "Operation Makedom",
     "type": "checkbox"
-  },
-  {
-    "name": "gender",
-    "label": "Assumed gender of client",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Man",
-        "label": "Man"
-      },
-      {
-        "value": "Woman",
-        "label": "Woman"
-      },
-      {
-        "value": "Non-binary",
-        "label": "Non-binary"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      },
-      {
-        "value": "Not known",
-        "label": "Not known"
-      }
-    ]
   },
   {
     "name": "numberOfContacts",
