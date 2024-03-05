@@ -41,7 +41,7 @@
     }
   },
   {
-    "name": "demographicIdentifiedGender",
+    "name": "gender",
     "label": "Demographic: Identified gender",
     "type": "select",
     "unknownOption": "Unknown",
@@ -73,7 +73,7 @@
     ]
   },
   {
-    "name": "demographicAgeBand",
+    "name": "age",
     "label": "Demographic: Age band ",
     "type": "select",
     "unknownOption": "Unknown",
