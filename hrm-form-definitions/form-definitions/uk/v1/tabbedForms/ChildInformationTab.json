@@ -11,8 +11,8 @@
     "unknownOption": "",
     "options": [
       {
-        "value": "",
-        "label": ""
+        "value": "Unknown",
+        "label": "Unknown"
       },
       {
         "value": "Yes",
@@ -41,39 +41,81 @@
     }
   },
   {
-    "name": "age",
-    "label": "Age",
+    "name": "gender",
+    "label": "Demographic: Identified gender",
     "type": "select",
-    "unknownOption": "",
+    "unknownOption": "Unknown",
     "options": [
       {
         "value": "Unknown",
-        "label": "Unknown"
+        "label": ""
+      },
+      {
+        "value": "Male",
+        "label": "Male"
+      },
+      {
+        "value": "Female",
+        "label": "Female"
+      },
+      {
+        "value": "Non-binary",
+        "label": "Non-binary"
+      },
+      {
+        "value": "Question not asked",
+        "label": "Question not asked"
+      },
+      {
+        "value": "Question not answered",
+        "label": "Question not answered"
+      }
+    ]
+  },
+  {
+    "name": "age",
+    "label": "Demographic: Age band ",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
       },
       {
         "value": "<18",
-        "label": "<18"
+        "label": "Under 18"
       },
       {
-        "value": "19",
-        "label": "19"
+        "value": "18-24",
+        "label": "18-24"
       },
       {
-        "value": "20",
-        "label": "20"
+        "value": "25-34",
+        "label": "25-34"
+      },
+      {
+        "value": "35-44",
+        "label": "35-44"
+      },
+      {
+        "value": "45-54",
+        "label": "45-54"
+      },
+      {
+        "value": "55-64",
+        "label": "55-64"
+      },
+      {
+        "value": ">65",
+        "label": "65+"
       }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    ]
   },
   {
     "name": "clientPhone",
     "label": "Client phone",
-    "type": "textarea",
-    "rows": 20,
-    "width": 289
+    "type": "input"
   },
   {
     "name": "dateOfEnquiry",
@@ -167,38 +209,6 @@
     "type": "checkbox"
   },
   {
-    "name": "gender",
-    "label": "Assumed gender of client",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Man",
-        "label": "Man"
-      },
-      {
-        "value": "Woman",
-        "label": "Woman"
-      },
-      {
-        "value": "Non-binary",
-        "label": "Non-binary"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      },
-      {
-        "value": "Not known",
-        "label": "Not known"
-      }
-    ]
-  },
-  {
     "name": "numberOfContacts",
     "label": "Number of contacts",
     "type": "input"
@@ -209,148 +219,13 @@
     "type": "checkbox"
   },
   {
-    "name": "issueType",
-    "label": "Issue type",
-    "type": "listbox-multiselect",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Adult content on social media platform",
-        "label": "Adult content on social media platform"
-      },
-      {
-        "value": "Allegations of abuse",
-        "label": "Allegations of abuse"
-      },
-      {
-        "value": "Aminal abuse",
-        "label": "Aminal abuse"
-      },
-      {
-        "value": "Beastiality",
-        "label": "Beastiality"
-      },
-      {
-        "value": "Bullying",
-        "label": "Bullying"
-      },
-      {
-        "value": "Cultural/religious sensitivity",
-        "label": "Cultural/religious sensitivity"
-      },
-      {
-        "value": "CSAM",
-        "label": "CSAM"
-      },
-      {
-        "value": "Domestic abuse",
-        "label": "Domestic abuse"
-      },
-      {
-        "value": "Doxxing",
-        "label": "Doxxing"
-      },
-      {
-        "value": "Extreme pornography",
-        "label": "Extreme pornography"
-      },
-      {
-        "value": "Grooming/CSE",
-        "label": "Grooming/CSE"
-      },
-      {
-        "value": "Hacked accounts",
-        "label": "Hacked accounts"
-      },
-      {
-        "value": "Impersonation",
-        "label": "Impersonation"
-      },
-      {
-        "value": "Intimate image abuse",
-        "label": "Intimate image abuse"
-      },
-      {
-        "value": "Privacy violation",
-        "label": "Privacy violation"
-      },
-      {
-        "value": "Self-harm content",
-        "label": "Self-harm content"
-      },
-      {
-        "value": "Rape/sexual assult",
-        "label": "Rape/sexual assult"
-      },
-      {
-        "value": "Adult now - U18 in the content (RP)",
-        "label": "Adult now - U18 in the content (RP)"
-      },
-      {
-        "value": "Suicide content",
-        "label": "Suicide content"
-      },
-      {
-        "value": "Threatening behaviour",
-        "label": "Threatening behaviour"
-      },
-      {
-        "value": "Violent content (murder/gore/beheading)",
-        "label": "Violent content (murder/gore/beheading)"
-      },
-      {
-        "value": "Content NOT harmful",
-        "label": "Content NOT harmful"
-      },
-      {
-        "value": "Sextortion scam email",
-        "label": "Sextortion scam email"
-      },
-      {
-        "value": "Extortion for more content",
-        "label": "Extortion for more content"
-      },
-      {
-        "value": "Roamance scam",
-        "label": "Roamance scam"
-      },
-      {
-        "value": "Fear of sharing",
-        "label": "Fear of sharing"
-      },
-      {
-        "value": "Paranoia",
-        "label": "Paranoia"
-      },
-      {
-        "value": "Professional/subscription leak content",
-        "label": "Professional/subscription leak content"
-      },
-      {
-        "value": "U18 now & in content",
-        "label": "U18 now & in content"
-      },
-      {
-        "value": "Threats to share intimate content",
-        "label": "Threats to share intimate content"
-      },
-      {
-        "value": "Operation makedom",
-        "label": "Operation makedom"
-      }
-    ]
-  },
-  {
     "name": "natureOfContent",
     "label": "Nature of content",
     "type": "listbox-multiselect",
     "options": [
       {
         "value": "Unknown",
-        "label": ""
+        "label": "Unknown"
       },
       {
         "value": "Still images",
@@ -379,10 +254,6 @@
     "label": "Location of content",
     "type": "listbox-multiselect",
     "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
       {
         "value": "Collector site",
         "label": "Collector site"
@@ -463,10 +334,6 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
         "value": "Collector site",
         "label": "Collector site"
       },
@@ -545,10 +412,6 @@
     "label": "Location used to make the threats",
     "type": "listbox-multiselect",
     "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
       {
         "value": "Include - verbal communication",
         "label": "Include - verbal communication"
@@ -669,10 +532,6 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
         "value": "Male",
         "label": "Male"
       },
@@ -710,7 +569,7 @@
     "options": [
       {
         "value": "Unknown",
-        "label": ""
+        "label": "Unknown"
       },
       {
         "value": "Not reported",
