@@ -51,11 +51,12 @@ type ReactHookFormValues = {
 
 type OwnProps = {
   name: string;
-  text: string;
+  text: string | React.ReactElement;
   defaultValues: Item[];
   withSearch?: boolean;
   openedFilter: string;
   searchable?: boolean;
+  capitalizeOptions?: boolean;
   searchDescription?: string;
   applyFilter: (values: Item[]) => void;
   setOpenedFilter: (name: string) => void;
@@ -70,6 +71,7 @@ const MultiSelectFilter: React.FC<Props> = ({
   defaultValues,
   openedFilter,
   searchable,
+  capitalizeOptions,
   searchDescription,
   applyFilter,
   setOpenedFilter,
@@ -177,7 +179,11 @@ const MultiSelectFilter: React.FC<Props> = ({
   const drawCount = () => (selectedCount === 0 ? '' : ` (${selectedCount})`);
 
   const highlightLabel = (label: string) => {
-    if (!searchable || searchTerm.length === 0) {
+    if (!searchable) {
+      return <Template code={label} />;
+    }
+
+    if (searchTerm.length === 0) {
       return <span>{label}</span>;
     }
 
@@ -257,7 +263,9 @@ const MultiSelectFilter: React.FC<Props> = ({
                         }}
                         onKeyDown={isFirstFocusableElement ? handleShiftTabForFirstElement : null}
                       />
-                      <MultiSelectCheckboxLabel>{highlightLabel(item.label)}</MultiSelectCheckboxLabel>
+                      <MultiSelectCheckboxLabel capitalize={capitalizeOptions}>
+                        {highlightLabel(item.label)}
+                      </MultiSelectCheckboxLabel>
                     </FormLabel>
                   </MultiSelectListItem>
                 );

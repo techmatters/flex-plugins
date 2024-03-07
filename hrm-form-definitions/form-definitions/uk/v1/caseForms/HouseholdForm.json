@@ -12,9 +12,9 @@
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
-    "name": "relationshipToChild",
+    "name": "relationshipToVictim",
     "type": "select",
-    "label": "Relationship to child",
+    "label": "Relationship to victim",
     "options": [
       { "value": "", "label": "" },
       { "value": "Caregiver", "label": "Caregiver" },
