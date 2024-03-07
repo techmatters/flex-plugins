@@ -19,7 +19,6 @@ import React, { useEffect, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import { AnyAction, bindActionCreators } from 'redux';
-import { parseISO } from 'date-fns';
 
 import { RootState } from '../../states';
 import { getDefinitionVersion } from '../../services/ServerlessService';
@@ -64,6 +63,10 @@ import { selectCounselorsHash } from '../../states/configuration/selectCounselor
 import { selectCurrentDefinitionVersion, selectDefinitionVersions } from '../../states/configuration/selectDefinitions';
 import FullTimelineView from './timeline/FullTimelineView';
 import selectCaseHelplineData from '../../states/case/selectCaseHelplineData';
+import { newGetTimelineAsyncAction, selectTimeline } from '../../states/case/timeline';
+import { TimelineActivity } from '../../states/case/types';
+
+const MAX_PRINTOUT_CONTACTS = 100;
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -91,10 +94,13 @@ const Case: React.FC<Props> = ({
   savedContacts,
   loadContacts,
   releaseContacts,
+  releaseAllContacts,
+  openPrintModal,
   onNewCaseSaved = () => Promise.resolve(),
   submitContactFormAsyncAction,
   taskContact,
   office,
+  contactTimeline,
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
@@ -148,15 +154,18 @@ const Case: React.FC<Props> = ({
 
   const currentCounselor = counselorsHash[workerSid];
 
+  const handlePrintCase = () => {
+    openPrintModal(connectedCase.id);
+  };
+
   const handleSaveAndEnd = async () => {
     setLoading(true);
 
-    // Validating that task isn't a StandaloneITask.
-    if (isStandaloneITask(task)) return;
-
     try {
-      releaseContacts(loadedContactIds, `case-${connectedCase.id}`);
+      releaseAllContacts(`case-${connectedCase.id}`);
       closeModal();
+      // Validating that task isn't a StandaloneITask.
+      if (isStandaloneITask(task)) return;
       await onNewCaseSaved(connectedCase);
     } catch (error) {
       console.error(error);
@@ -236,7 +245,7 @@ const Case: React.FC<Props> = ({
   }
 
   if (routing.subroute === NewCaseSubroutes.CasePrintView) {
-    return (
+    return contactTimeline ? (
       <CasePrintView
         {...{
           connectedCase,
@@ -245,8 +254,13 @@ const Case: React.FC<Props> = ({
           definitionVersion,
           task,
           office,
+          contactTimeline,
         }}
       />
+    ) : (
+      <CenteredContainer>
+        <CircularProgress size={50} />
+      </CenteredContainer>
     );
   }
 
@@ -264,6 +278,7 @@ const Case: React.FC<Props> = ({
       definitionVersion={definitionVersion}
       handleClose={handleCloseCase}
       handleSaveAndEnd={handleSaveAndEnd}
+      handlePrintCase={handlePrintCase}
       can={can}
     />
   );
@@ -288,6 +303,10 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
     savedContacts: selectSavedContacts(state, connectedCase),
     taskContact: selectContactByTaskSid(state, task.taskSid)?.savedContact,
     office: selectCaseHelplineData(state, connectedCase?.id),
+    contactTimeline: selectTimeline(state, connectedCase?.id, 'print-contacts', {
+      offset: 0,
+      limit: MAX_PRINTOUT_CONTACTS,
+    }) as TimelineActivity<Contact>[],
   };
 };
 
@@ -306,10 +325,17 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
         ),
       ),
     closeModal: () => dispatch(RoutingActions.newCloseModalAction(task.taskSid)),
+    openPrintModal: (caseId: CaseType['id']) => {
+      asyncDispatch(dispatch)(
+        newGetTimelineAsyncAction(caseId, 'print-contacts', [], true, { offset: 0, limit: MAX_PRINTOUT_CONTACTS }),
+      );
+      dispatch(RoutingActions.newOpenModalAction({ route: 'case', subroute: 'case-print-view', caseId }, task.taskSid));
+    },
     goBack: () => dispatch(RoutingActions.newGoBackAction(task.taskSid)),
     removeConnectedCase: (contactId: string) => caseAsyncDispatch(removeFromCaseAsyncAction(contactId)),
     updateDefinitionVersion: updateCaseDefinition,
     releaseContacts: bindActionCreators(ContactActions.releaseContacts, dispatch),
+    releaseAllContacts: bindActionCreators(ContactActions.releaseAllContacts, dispatch),
     loadContacts: bindActionCreators(ContactActions.loadContacts, dispatch),
     submitContactFormAsyncAction: (
       task: CustomITask,

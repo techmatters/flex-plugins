@@ -24,6 +24,7 @@ import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { DefinitionVersion, DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { parseISO } from 'date-fns';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import ViewCaseItem, { ViewCaseItemProps } from '../../../components/case/ViewCaseItem';
@@ -62,6 +63,7 @@ const household = {
 
 const WORKER_SID = 'WK-worker1';
 const TASK_SID = 'WT-task1';
+const BASELINE_DATE = parseISO('2020-06-29T22:26:00.208Z');
 
 const state: RecursivePartial<RootState> = {
   [namespace]: {
@@ -98,14 +100,14 @@ const state: RecursivePartial<RootState> = {
               household: [
                 {
                   sectionTypeSpecificData: {},
-                  createdAt: '2020-06-29T22:26:00.208Z',
-                  twilioWorkerId: WORKER_SID,
+                  createdAt: BASELINE_DATE,
+                  createdBy: WORKER_SID,
                   sectionId: 'HOUSEHOLD_1',
                 },
                 {
-                  sectionTypeSpecificData: household,
-                  createdAt: '2020-06-29T22:26:00.208Z',
-                  twilioWorkerId: WORKER_SID,
+                  sectionTypeSpecificData: household as any,
+                  createdAt: BASELINE_DATE,
+                  createdBy: WORKER_SID,
                   sectionId: 'HOUSEHOLD_2',
                 },
               ],

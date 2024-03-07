@@ -18,7 +18,7 @@ import { createAsyncAction, createReducer } from 'redux-promise-middleware-actio
 
 import { Case, WellKnownCaseSection } from '../../../types/types';
 import {
-  ApiCaseSection,
+  CaseSection,
   CaseSectionTypeSpecificData,
   createCaseSection,
   updateCaseSection,
@@ -28,7 +28,8 @@ import { HrmState } from '../..';
 type CaseSectionUpdatePayload = {
   caseId: Case['id'];
   sectionType: WellKnownCaseSection;
-  section: ApiCaseSection;
+  section: CaseSection;
+  everntTimestamp?: Date;
 };
 
 const ADD_CASE_SECTION_ACTION = 'case/section/ADD';
@@ -39,9 +40,10 @@ export const createCaseSectionAsyncAction = createAsyncAction(
     caseId: Case['id'],
     sectionType: WellKnownCaseSection,
     newSection: CaseSectionTypeSpecificData,
+    eventTimestamp?: Date,
   ): Promise<CaseSectionUpdatePayload> => {
     return {
-      section: await createCaseSection(caseId, sectionType, newSection),
+      section: await createCaseSection(caseId, sectionType, newSection, eventTimestamp),
       caseId,
       sectionType,
     };
@@ -62,9 +64,10 @@ export const updateCaseSectionAsyncAction = createAsyncAction(
     sectionType: WellKnownCaseSection,
     sectionId: string,
     update: CaseSectionTypeSpecificData,
+    eventTimestamp?: Date,
   ): Promise<CaseSectionUpdatePayload> => {
     return {
-      section: await updateCaseSection(caseId, sectionType, sectionId, update),
+      section: await updateCaseSection(caseId, sectionType, sectionId, update, eventTimestamp),
       caseId,
       sectionType,
     };
@@ -79,7 +82,7 @@ const updateCaseSections = (
   state: HrmState,
   caseId: Case['id'],
   sectionType: WellKnownCaseSection,
-  updatedCaseSection: ApiCaseSection,
+  updatedCaseSection: CaseSection,
 ): HrmState => {
   const caseState = state.connectedCase.cases[caseId];
   if (!caseState) {

@@ -18,14 +18,15 @@
 /* eslint-disable dot-notation */
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
+import { format } from 'date-fns';
 
-import { formatName, formatStringToDateAndTime } from '../../../utils';
+import { formatName } from '../../../utils';
 import styles from './styles';
 import { getTemplateStrings } from '../../../hrmConfig';
-import { ApiCaseSection } from '../../../services/caseSectionService';
+import { CaseSection } from '../../../services/caseSectionService';
 
 type OwnProps = {
-  notes: ApiCaseSection[];
+  notes: CaseSection[];
   counselorsHash: { [sid: string]: string };
 };
 
@@ -43,12 +44,12 @@ const CasePrintNotes: React.FC<Props> = ({ notes, counselorsHash }) => {
       </View>
       {notes &&
         notes.length > 0 &&
-        notes.map(({ twilioWorkerId, sectionTypeSpecificData: note, createdAt }, i) => {
+        notes.map(({ createdBy: twilioWorkerId, sectionTypeSpecificData: note, createdAt }, i) => {
           return (
             <View key={i} style={{ ...styles['sectionBody'], ...styles['caseSummaryText'] }}>
               <View style={{ ...styles.flexRow, justifyContent: 'space-between' }}>
                 <Text style={{ fontWeight: 600 }}>{formatName(counselorsHash[twilioWorkerId])}</Text>
-                <Text style={{ fontStyle: 'italic' }}>{formatStringToDateAndTime(createdAt)}</Text>
+                <Text style={{ fontStyle: 'italic' }}>{`${format(createdAt, 'MMM d, yyyy / h:mm aaaaa')}m`}</Text>
               </View>
               <View>
                 <Text style={styles['noteSummaryText']}>{note.text}</Text>

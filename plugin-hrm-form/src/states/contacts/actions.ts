@@ -18,7 +18,7 @@
 import { callTypes, DataCallTypes } from 'hrm-form-definitions';
 
 import * as t from './types';
-import { ContactState, EXISTING_CONTACT_UPDATE_DRAFT_ACTION, ExistingContactAction } from './existingContacts';
+import { EXISTING_CONTACT_UPDATE_DRAFT_ACTION, ExistingContactAction } from './existingContacts';
 
 export const saveEndMillis = (taskId: string): t.ContactsActionType => ({ type: t.SAVE_END_MILLIS, taskId });
 
@@ -41,8 +41,3 @@ export const prepopulateForm = (
     },
   };
 };
-
-export const restoreEntireContact = (contact: ContactState): t.ContactsActionType => ({
-  type: t.RESTORE_ENTIRE_FORM,
-  contact,
-});

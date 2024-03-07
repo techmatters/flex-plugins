@@ -15,6 +15,7 @@
  */
 
 import { callTypes, DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { parseISO } from 'date-fns';
 
 import { Case, CaseInfo } from '../../../types/types';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
@@ -59,8 +60,8 @@ beforeAll(async () => {
 });
 
 describe('getActivitiesFromCase', () => {
-  const createdAt = '2020-07-30 18:55:20';
-  const updatedAt = '2020-08-30 18:55:20';
+  const createdAt = parseISO('2020-07-30 18:55:20');
+  const updatedAt = parseISO('2020-08-30 18:55:20');
 
   test('nothing added - empty array', async () => {
     const fakeCase = createFakeCase({});
@@ -74,8 +75,9 @@ describe('getActivitiesFromCase', () => {
       note: [
         {
           sectionId: 'NOTE_ID',
-          twilioWorkerId: noteWorker,
+          createdBy: noteWorker,
           createdAt,
+          eventTimestamp: createdAt,
           sectionTypeSpecificData: {
             note: 'content',
           },
@@ -86,7 +88,7 @@ describe('getActivitiesFromCase', () => {
     const activities = getActivitiesFromCase(fakeCase, formDefinition);
     const expectedActivity: Activity = {
       id: 'NOTE_ID',
-      date: createdAt,
+      date: createdAt.toISOString(),
       type: 'note',
       note: {
         note: 'content',
@@ -105,8 +107,9 @@ describe('getActivitiesFromCase', () => {
       note: [
         {
           sectionId: 'NOTE_ID',
-          twilioWorkerId: 'WK-note-twilio-worker-id',
+          createdBy: 'WK-note-twilio-worker-id',
           createdAt,
+          eventTimestamp: createdAt,
           sectionTypeSpecificData: {
             customProperty1: 'customProperty1 content',
             customProperty2: 'customProperty2 content',
@@ -124,7 +127,7 @@ describe('getActivitiesFromCase', () => {
     });
     const expectedActivity: Activity = {
       id: 'NOTE_ID',
-      date: createdAt,
+      date: createdAt.toISOString(),
       type: 'note',
       note: {
         customProperty1: 'customProperty1 content',
@@ -144,8 +147,9 @@ describe('getActivitiesFromCase', () => {
       note: [
         {
           sectionId: 'NOTE_ID',
-          twilioWorkerId: noteWorker,
+          createdBy: noteWorker,
           createdAt,
+          eventTimestamp: createdAt,
           sectionTypeSpecificData: {
             customProperty1: 'customProperty1 content',
             customProperty2: 'customProperty2 content',
@@ -171,7 +175,7 @@ describe('getActivitiesFromCase', () => {
     });
     const expectedActivity: Activity = {
       id: 'NOTE_ID',
-      date: createdAt,
+      date: createdAt.toISOString(),
       type: 'note',
       note: {
         customProperty1: 'customProperty1 content',
@@ -192,16 +196,18 @@ describe('getActivitiesFromCase', () => {
       note: [
         {
           sectionId: 'NOTE_ID_1',
-          twilioWorkerId: noteWorker,
+          createdBy: noteWorker,
           createdAt,
+          eventTimestamp: createdAt,
           sectionTypeSpecificData: {
             note: 'content',
           },
         },
         {
           sectionId: 'NOTE_ID_2',
-          twilioWorkerId: noteWorker,
+          createdBy: noteWorker,
           createdAt,
+          eventTimestamp: createdAt,
           sectionTypeSpecificData: {
             note: 'moar content',
           },
@@ -215,7 +221,7 @@ describe('getActivitiesFromCase', () => {
     const expectedActivities: Activity[] = [
       {
         id: 'NOTE_ID_1',
-        date: createdAt,
+        date: createdAt.toISOString(),
         type: 'note',
         text: 'content',
         note: {
@@ -227,7 +233,7 @@ describe('getActivitiesFromCase', () => {
       },
       {
         id: 'NOTE_ID_2',
-        date: createdAt,
+        date: createdAt.toISOString(),
         type: 'note',
         note: {
           note: 'moar content',
@@ -235,7 +241,7 @@ describe('getActivitiesFromCase', () => {
         text: 'moar content',
         twilioWorkerId: noteWorker,
         updatedBy: 'WK-updater',
-        updatedAt,
+        updatedAt: updatedAt.toISOString(),
       },
     ];
 
@@ -251,21 +257,22 @@ describe('getActivitiesFromCase', () => {
         comments: 'comment',
       },
       createdAt,
-      twilioWorkerId: referralWorker,
+      eventTimestamp: new Date('2020-12-15'),
+      createdBy: referralWorker,
     } as const;
     const fakeCase = createFakeCase({
       referral: [referral],
     });
-    const { createdAt: referralCreatedAt, twilioWorkerId, sectionId, sectionTypeSpecificData } = referral;
+    const { createdAt: referralCreatedAt, createdBy, sectionId, sectionTypeSpecificData, eventTimestamp } = referral;
     const activities = getActivitiesFromCase(fakeCase, formDefinition);
     const expectedActivity: ReferralActivity = {
       id: sectionId,
-      date: sectionTypeSpecificData.date,
-      createdAt,
+      date: eventTimestamp.toISOString(),
+      createdAt: createdAt.toISOString(),
       type: 'referral',
       text: sectionTypeSpecificData.referredTo,
       referral: sectionTypeSpecificData,
-      twilioWorkerId,
+      twilioWorkerId: createdBy,
       updatedBy: undefined,
       updatedAt: undefined,
     };
@@ -275,10 +282,10 @@ describe('getActivitiesFromCase', () => {
 
   test('Multiple events - returned in descending date order', async () => {
     const timeOfContact = '2019-01-07 10:00:00';
-    const referralCreatedAt = '2020-07-30 18:55:20';
+    const referralCreatedAt = parseISO('2020-07-30 18:55:20');
     const referralDate = '2020-06-15';
     const contactCreatedAt = '2020-07-30 19:55:20';
-    const noteCreatedAt = '2020-06-30 18:55:20';
+    const noteCreatedAt = parseISO('2020-06-30 18:55:20');
     const referral = {
       sectionId: 'REFERRAL_ID',
       sectionTypeSpecificData: {
@@ -287,7 +294,8 @@ describe('getActivitiesFromCase', () => {
         comments: 'comment',
       },
       createdAt: referralCreatedAt,
-      twilioWorkerId: referralWorker,
+      eventTimestamp: parseISO(referralDate),
+      createdBy: referralWorker,
     } as const;
 
     const fakeCase = createFakeCase(
@@ -296,8 +304,9 @@ describe('getActivitiesFromCase', () => {
         note: [
           {
             sectionId: 'NOTE_ID',
-            twilioWorkerId: noteWorker,
+            createdBy: noteWorker,
             createdAt: noteCreatedAt,
+            eventTimestamp: noteCreatedAt,
             sectionTypeSpecificData: {
               note: 'content',
             },
@@ -322,12 +331,12 @@ describe('getActivitiesFromCase', () => {
     );
 
     const activities = getActivitiesFromCase(fakeCase, formDefinition);
-    const { sectionTypeSpecificData } = referral;
+    const { sectionTypeSpecificData, eventTimestamp } = referral;
 
     const expectedActivities: Activity[] = [
       {
         id: 'NOTE_ID',
-        date: noteCreatedAt,
+        date: noteCreatedAt.toISOString(),
         type: 'note',
         note: {
           note: 'content',
@@ -339,8 +348,8 @@ describe('getActivitiesFromCase', () => {
       },
       {
         id: 'REFERRAL_ID',
-        date: sectionTypeSpecificData.date,
-        createdAt: referralCreatedAt,
+        date: eventTimestamp.toISOString(),
+        createdAt: referralCreatedAt.toISOString(),
         type: 'referral',
         text: sectionTypeSpecificData.referredTo,
         referral: sectionTypeSpecificData,

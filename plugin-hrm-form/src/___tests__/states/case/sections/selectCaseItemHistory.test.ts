@@ -33,15 +33,15 @@ beforeEach(() => {
       note: [
         {
           sectionId: 'this one',
-          sectionTypeSpecificData: { note: 'this is the note you are looking for' },
-          createdAt: BASELINE_DATE.toISOString(),
-          twilioWorkerId: 'WK-1',
-          updatedAt: addDays(BASELINE_DATE, 1).toISOString(),
+          sectionTypeSpecificData: { note: 'this is the note you are looking for' } as any,
+          createdAt: BASELINE_DATE,
+          createdBy: 'WK-1',
+          updatedAt: addDays(BASELINE_DATE, 1),
           updatedBy: 'WK-2',
         },
         {
           sectionId: 'not this one',
-          sectionTypeSpecificData: { note: 'this is not the note you are looking for' },
+          sectionTypeSpecificData: { note: 'this is not the note you are looking for' } as any,
         },
       ],
     },
@@ -94,7 +94,7 @@ test('Case section exists, without updatedAt - leaves updatedAt undefined', () =
   expect(updatingCounsellorName).toEqual('Counselor 2');
 });
 
-test('Case section exists, without createdAt - returns Invalid Date for createdAt', () => {
+test('Case section exists, without createdAt - returns undefined for createdAt', () => {
   delete sampleCase.sections.note[0].createdAt;
   const { added, updated, addingCounsellorName, updatingCounsellorName } = selectCaseItemHistory(
     rootState,
@@ -102,13 +102,13 @@ test('Case section exists, without createdAt - returns Invalid Date for createdA
     noteSectionApi,
     'this one',
   );
-  expect(added.toString()).toEqual('Invalid Date');
+  expect(added).not.toBeDefined();
   expect(updated).toEqual(addDays(BASELINE_DATE, 1));
   expect(addingCounsellorName).toEqual('Counselor 1');
   expect(updatingCounsellorName).toEqual('Counselor 2');
 });
 
-test("Case section doesn't exist, without createdAt - returns object with undefined / invalid properties", () => {
+test("Case section doesn't exist, without createdAt - returns object with undefined properties", () => {
   delete sampleCase.sections.note[0].createdAt;
   const { added, updated, addingCounsellorName, updatingCounsellorName } = selectCaseItemHistory(
     rootState,
@@ -116,7 +116,7 @@ test("Case section doesn't exist, without createdAt - returns object with undefi
     noteSectionApi,
     'never seen this one',
   );
-  expect(added.toString()).toEqual('Invalid Date');
+  expect(added).not.toBeDefined();
   expect(updated).toBeUndefined();
   expect(addingCounsellorName).toBeUndefined();
   expect(updatingCounsellorName).toBeUndefined();

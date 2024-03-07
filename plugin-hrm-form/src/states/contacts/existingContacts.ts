@@ -125,8 +125,6 @@ export const loadContacts = (
 
 export const initialState: ExistingContactsState = {};
 
-export const refreshContact = (contact: any) => loadContact(contact, undefined, true);
-
 export const loadContactReducer = (state = initialState, action: LoadContactAction) => {
   const updateEntries = action.contacts
     .filter(c => {
@@ -163,7 +161,7 @@ export const RELEASE_CONTACT_ACTION = 'RELEASE_CONTACT_ACTION';
 
 type ReleaseContactAction = {
   type: typeof RELEASE_CONTACT_ACTION;
-  ids: string[];
+  ids?: string[];
   reference: string;
 };
 
@@ -206,8 +204,13 @@ export const releaseContacts = (ids: string[], reference: string): ReleaseContac
   reference,
 });
 
+export const releaseAllContacts = (reference: string): ReleaseContactAction => ({
+  type: RELEASE_CONTACT_ACTION,
+  reference,
+});
+
 export const releaseContactReducer = (state: ExistingContactsState, { ids, reference }: ReleaseContactAction) =>
-  releaseContactStatesById(state, ids, reference);
+  ids ? releaseContactStatesById(state, ids, reference) : releaseAllContactStates(state, reference);
 
 export const EXISTING_CONTACT_LOAD_TRANSCRIPT = 'EXISTING_CONTACT_LOAD_TRANSCRIPT';
 

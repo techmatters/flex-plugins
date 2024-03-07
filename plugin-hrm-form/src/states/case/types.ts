@@ -17,15 +17,16 @@
 import { StatusInfo } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
-import { WellKnownCaseSection } from '../../types/types';
+import { Contact, WellKnownCaseSection } from '../../types/types';
 import { ChannelTypes } from '../DomainConstants';
-import { CaseSectionTypeSpecificData } from '../../services/caseSectionService';
+import { CaseSectionTypeSpecificData, FullCaseSection } from '../../services/caseSectionService';
 import { WorkerSID } from '../../types/twilio';
 
 // Action types
 export const CREATE_CASE_ACTION = 'case-action/create-case';
 export const CREATE_CASE_ACTION_FULFILLED = `${CREATE_CASE_ACTION}_FULFILLED` as const;
 export const CANCEL_CASE_ACTION = 'case-action/cancel-case';
+export const GET_CASE_TIMELINE_ACTION = 'case-action/get-timeline';
 
 // eslint-disable-next-line prettier/prettier,import/no-unused-modules
 export enum SavedCaseStatus {
@@ -43,6 +44,36 @@ type CreateCaseAction = {
 };
 
 export type CaseActionType = CreateCaseAction;
+
+export type GenericTimelineActivity<T, TDate extends string | Date> = {
+  timestamp: TDate;
+  activity: T;
+  activityType: 'case-section' | 'contact' | 'contact-id' | 'case-section-id';
+};
+
+export type TimelineActivity<T> = GenericTimelineActivity<T, Date>;
+
+export const isCaseSectionTimelineActivity = (
+  activity: TimelineActivity<any>,
+): activity is TimelineActivity<FullCaseSection> => activity.activityType === 'case-section';
+
+export const isContactTimelineActivity = (activity: TimelineActivity<any>): activity is TimelineActivity<Contact> =>
+  activity.activityType === 'contact';
+
+export type ContactIdentifierTimelineActivity = TimelineActivity<{ contactId: Contact['id'] }> & {
+  activityType: 'contact-id';
+};
+
+export type CaseSectionIdentifierTimelineActivity = TimelineActivity<{
+  sectionType: WellKnownCaseSection;
+  sectionId: string;
+}> & {
+  activityType: 'case-section-id';
+};
+
+export const isCaseSectionIdentifierTimelineActivity = (
+  activity: TimelineActivity<any>,
+): activity is CaseSectionIdentifierTimelineActivity => activity.activityType === 'case-section-id';
 
 type CoreActivity = {
   text: string;
@@ -103,6 +134,8 @@ export type CaseStateEntry = {
   caseWorkingCopy: CaseWorkingCopy;
   availableStatusTransitions: StatusInfo[];
   references: Set<string>;
+  timelines: Record<string, (ContactIdentifierTimelineActivity | CaseSectionIdentifierTimelineActivity)[]>;
+  sections: { [sectionType in WellKnownCaseSection]?: { [sectionId: string]: FullCaseSection } };
 };
 
 export type CaseState = {

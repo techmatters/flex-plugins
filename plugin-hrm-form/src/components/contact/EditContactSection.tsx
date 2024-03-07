@@ -30,7 +30,6 @@ import {
   clearDraft,
   ContactDraftChanges,
   newSetContactDialogStateAction,
-  refreshContact,
 } from '../../states/contacts/existingContacts';
 import CloseCaseDialog from '../case/CloseCaseDialog';
 import { getTemplateStrings } from '../../hrmConfig';
@@ -149,7 +148,6 @@ const mapDispatchToProps = (
 ) => {
   const updateContactAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
-    refreshContact: contact => dispatch(refreshContact(contact)),
     goBack: () => dispatch(newGoBackAction(task.taskSid)),
     updateContactsFormInHrmAsyncAction: async (contact: Contact, changes: ContactDraftChanges) => {
       await updateContactAsyncDispatch(updateContactInHrmAsyncAction(contact, changes));

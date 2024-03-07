@@ -23,6 +23,7 @@ import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-ho
 import type { DefinitionVersion } from 'hrm-form-definitions';
 import { isEqual } from 'lodash';
 import { AnyAction, bindActionCreators } from 'redux';
+import { parseISO } from 'date-fns';
 
 import {
   BottomButtonBar,
@@ -176,6 +177,7 @@ const AddEditCaseItem: React.FC<Props> = ({
   if (!connectedCase || !workingCopy) {
     return null;
   }
+  const eventTimestampSourceItem = formDefinition.find(fd => fd.metadata?.eventTimestampSource);
 
   const { id: caseId } = connectedCase;
 
@@ -184,10 +186,14 @@ const AddEditCaseItem: React.FC<Props> = ({
     : splitInHalf(disperseInputs(7)(form));
 
   const save = async () => {
+    const eventTimestamp =
+      eventTimestampSourceItem && workingCopy[eventTimestampSourceItem.name]
+        ? parseISO(workingCopy[eventTimestampSourceItem.name].toString())
+        : undefined;
     if (sectionId) {
-      await updateCaseSection(caseId, sectionId, workingCopy);
+      await updateCaseSection(caseId, sectionId, workingCopy, eventTimestamp);
     } else {
-      await createCaseSection(caseId, workingCopy);
+      await createCaseSection(caseId, workingCopy, eventTimestamp);
       await Promise.all(
         formDefinition.map(fd => {
           // A preceding 'filter' call looks nicer but TS type narrowing isn't smart enough to work with that.
@@ -354,16 +360,23 @@ const mapDispatchToProps = (dispatch, { sectionApi, task }: AddEditCaseItemProps
       }
     },
 
-    createCaseSection: (caseId: Case['id'], newSection: CaseSectionTypeSpecificData) =>
-      searchAsyncDispatch(createCaseSectionAsyncAction(caseId, sectionApi.type, newSection)),
+    createCaseSection: (
+      caseId: Case['id'],
+      newSection: CaseSectionTypeSpecificData,
+      eventTimestamp: Date | undefined,
+    ) => searchAsyncDispatch(createCaseSectionAsyncAction(caseId, sectionApi.type, newSection, eventTimestamp)),
 
     createCaseSectionCopy: (
       caseId: Case['id'],
       targetSectionType: WellKnownCaseSection,
       newSection: CaseSectionTypeSpecificData,
     ) => searchAsyncDispatch(createCaseSectionAsyncAction(caseId, targetSectionType, newSection)),
-    updateCaseSection: (caseId: Case['id'], sectionId, update: CaseSectionTypeSpecificData) =>
-      searchAsyncDispatch(updateCaseSectionAsyncAction(caseId, sectionApi.type, sectionId, update)),
+    updateCaseSection: (
+      caseId: Case['id'],
+      sectionId,
+      update: CaseSectionTypeSpecificData,
+      eventTimestamp: Date | undefined,
+    ) => searchAsyncDispatch(updateCaseSectionAsyncAction(caseId, sectionApi.type, sectionId, update, eventTimestamp)),
   };
 };
 

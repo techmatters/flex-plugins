@@ -52,7 +52,7 @@ import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCas
 import CaseCreatedBanner from '../caseMergingBanners/CaseCreatedBanner';
 import AddToCaseBanner from '../caseMergingBanners/AddToCaseBanner';
 import { selectCaseActivityCount } from '../../states/case/timeline';
-import { ApiCaseSection } from '../../services/caseSectionService';
+import { CaseSection as CaseSectionType } from '../../services/caseSectionService';
 import { selectDefinitionVersionForCase } from '../../states/configuration/selectDefinitions';
 import selectCaseHelplineData from '../../states/case/selectCaseHelplineData';
 import { selectCounselorName } from '../../states/configuration/selectCounselorsHash';
@@ -64,6 +64,7 @@ export type CaseHomeProps = {
   definitionVersion: DefinitionVersion;
   handleClose?: () => void;
   handleSaveAndEnd: () => void;
+  handlePrintCase: () => void;
   can: (action: PermissionActionType) => boolean;
 };
 
@@ -114,6 +115,7 @@ const CaseHome: React.FC<Props> = ({
   definitionVersion,
   task,
   openModal,
+  handlePrintCase,
   handleClose,
   handleSaveAndEnd,
   can,
@@ -145,10 +147,6 @@ const CaseHome: React.FC<Props> = ({
     openModal({ route: 'case', subroute: 'timeline', caseId, page: 0 });
   };
 
-  const onPrintCase = () => {
-    openModal({ route: 'case', subroute: 'case-print-view', caseId });
-  };
-
   const { caseForms } = definitionVersion;
   const caseLayouts = definitionVersion.layoutVersion.case;
 
@@ -167,10 +165,10 @@ const CaseHome: React.FC<Props> = ({
   const genericSectionRenderer = (
     subroute: CaseSectionSubroute,
     addPermission: PermissionActionType,
-    items: ApiCaseSection[] | undefined,
+    items: CaseSectionType[] | undefined,
     itemRowRenderer: (
       subroute: CaseSectionSubroute,
-      section: ApiCaseSection,
+      section: CaseSectionType,
       rowIndex: number,
     ) => JSX.Element | null = (subroute, { sectionId, sectionTypeSpecificData }, index) => (
       <InformationRow
@@ -233,7 +231,7 @@ const CaseHome: React.FC<Props> = ({
             childIsAtRisk={childIsAtRisk}
             availableStatusTransitions={availableStatusTransitions}
             office={office?.label}
-            handlePrintCase={onPrintCase}
+            handlePrintCase={handlePrintCase}
             definitionVersion={definitionVersion}
             isOrphanedCase={(connectedCase.connectedContacts ?? []).length === 0}
             editCaseSummary={onEditCaseSummaryClick}
@@ -290,23 +288,25 @@ const CaseHome: React.FC<Props> = ({
             ),
           )}
       </CaseContainer>
-      <BottomButtonBar>
-        {!enableCaseMerging && (
-          <Box marginRight="15px">
-            <StyledNextStepButton
-              data-testid="CaseHome-CancelButton"
-              secondary="true"
-              roundCorners
-              onClick={handleClose}
-            >
-              <Template code="BottomBar-CancelNewCaseAndClose" />
-            </StyledNextStepButton>
-          </Box>
-        )}
-        <SaveAndEndButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
-          <Template code="BottomBar-SaveAndEnd" />
-        </SaveAndEndButton>
-      </BottomButtonBar>
+      {isCreating && (
+        <BottomButtonBar>
+          {!enableCaseMerging && (
+            <Box marginRight="15px">
+              <StyledNextStepButton
+                data-testid="CaseHome-CancelButton"
+                secondary="true"
+                roundCorners
+                onClick={handleClose}
+              >
+                <Template code="BottomBar-CancelNewCaseAndClose" />
+              </StyledNextStepButton>
+            </Box>
+          )}
+          <SaveAndEndButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
+            <Template code="BottomBar-SaveAndEnd" />
+          </SaveAndEndButton>
+        </BottomButtonBar>
+      )}
     </NavigableContainer>
   );
 };

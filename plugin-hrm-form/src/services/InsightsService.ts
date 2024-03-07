@@ -212,9 +212,12 @@ const flattenFirstCaseSection = (
      * Flatten out the section object. This can be changed after this is using the
      * customization framework.
      */
-    const { sectionTypeSpecificData, ...theRest } = caseForm.sections[section][0];
+    const { sectionTypeSpecificData, createdAt, updatedAt, eventTimestamp, ...theRest } = caseForm.sections[section][0];
     return {
       ...theRest,
+      createdAt: createdAt.toISOString(),
+      updatedAt: updatedAt?.toISOString(),
+      eventTimestamp: eventTimestamp?.toISOString(),
       ...sectionTypeSpecificData,
     };
   }

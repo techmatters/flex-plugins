@@ -18,16 +18,15 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import { parseISO } from 'date-fns';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 
 import { RowItemContainer, TimelineDate, TimelineFileName, TimelineRow, TimelineText, ViewButton } from './styles';
 import { Box, HiddenText } from '../../styles';
 import { formatFileNameAtAws } from '../../utils';
-import { ApiCaseSection } from '../../services/caseSectionService';
+import { CaseSection } from '../../services/caseSectionService';
 
 type OwnProps = {
-  caseSection: ApiCaseSection;
+  caseSection: CaseSection;
   onClickView: () => void;
 };
 
@@ -40,7 +39,7 @@ const DocumentInformationRow: React.FC<OwnProps> = ({
   caseSection: { createdAt, sectionTypeSpecificData: document },
   onClickView,
 }) => {
-  const date = parseISO(createdAt).toLocaleDateString(navigator.language);
+  const date = createdAt.toLocaleDateString(navigator.language);
   return (
     <TimelineRow>
       <HiddenText>

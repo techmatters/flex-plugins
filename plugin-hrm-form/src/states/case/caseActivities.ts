@@ -20,7 +20,7 @@ import { Activity, ContactActivity, NoteActivity } from './types';
 import { Case, Contact, Referral } from '../../types/types';
 import { channelTypes } from '../DomainConstants';
 import { getTemplateStrings } from '../../hrmConfig';
-import { ApiCaseSection } from '../../services/caseSectionService';
+import { CaseSection } from '../../services/caseSectionService';
 
 const ActivityTypes = {
   createCase: 'create',
@@ -40,7 +40,7 @@ const ActivityTypes = {
 export const isContactActivity = (activity: Activity): activity is ContactActivity =>
   Boolean((activity as ContactActivity).contactId);
 
-const getNoteActivities = (counsellorNotes: ApiCaseSection[], formDefs: DefinitionVersion): NoteActivity[] => {
+const getNoteActivities = (counsellorNotes: CaseSection[], formDefs: DefinitionVersion): NoteActivity[] => {
   let { previewFields } = formDefs.layoutVersion.case.notes ?? {};
   if (!previewFields || !previewFields.length) {
     previewFields = formDefs.caseForms.NoteForm.length ? [formDefs.caseForms.NoteForm[0].name] : [];
@@ -48,7 +48,7 @@ const getNoteActivities = (counsellorNotes: ApiCaseSection[], formDefs: Definiti
   return (counsellorNotes || [])
     .map(n => {
       try {
-        const { sectionId: id, createdAt: date, updatedAt, updatedBy, twilioWorkerId, sectionTypeSpecificData } = n;
+        const { sectionId: id, updatedAt, updatedBy, createdBy, sectionTypeSpecificData, eventTimestamp } = n;
         const text =
           previewFields
             .map(pf => sectionTypeSpecificData[pf])
@@ -56,11 +56,11 @@ const getNoteActivities = (counsellorNotes: ApiCaseSection[], formDefs: Definiti
             .join(', ') || '--';
         return {
           id,
-          updatedAt,
+          updatedAt: updatedAt?.toISOString(),
           updatedBy,
           text,
-          date,
-          twilioWorkerId,
+          date: eventTimestamp?.toISOString(),
+          twilioWorkerId: createdBy,
           type: ActivityTypes.addNote,
           note: sectionTypeSpecificData,
         };
@@ -72,18 +72,26 @@ const getNoteActivities = (counsellorNotes: ApiCaseSection[], formDefs: Definiti
     .filter(na => na);
 };
 
-const referralActivities = (referrals: ApiCaseSection[]): Activity[] =>
+const referralActivities = (referrals: CaseSection[]): Activity[] =>
   (referrals || [])
     .map(referral => {
-      const { sectionId: id, createdAt, updatedAt, updatedBy, twilioWorkerId, sectionTypeSpecificData } = referral;
-      const { referredTo, date } = sectionTypeSpecificData;
+      const {
+        sectionId: id,
+        createdAt,
+        updatedAt,
+        updatedBy,
+        createdBy,
+        sectionTypeSpecificData,
+        eventTimestamp,
+      } = referral;
+      const { referredTo } = sectionTypeSpecificData;
       try {
         return {
           id,
-          date: date?.toString(),
-          createdAt,
-          twilioWorkerId,
-          updatedAt,
+          date: eventTimestamp?.toISOString(),
+          createdAt: createdAt?.toISOString(),
+          twilioWorkerId: createdBy,
+          updatedAt: updatedAt?.toISOString(),
           updatedBy,
           type: ActivityTypes.addReferral,
           text: referredTo?.toString(),
