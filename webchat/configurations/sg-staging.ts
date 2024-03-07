@@ -155,6 +155,51 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         }
        ],
      },  
+     {
+      label: 'What would like to talk about?',
+      type: 'select',
+      name: 'reason',
+      required: true,
+      defaultValue: '',
+       options: [
+        {
+          value: "",
+          label: ""
+        },
+        {
+          value: "Unknown",
+          label: "Unknown"
+        },
+        {
+          value: "school",
+          label: "School"
+        },
+        {
+          value: "friendship",
+          label: "Friendship"
+        },
+        {
+          value: "family",
+          label: "Family"
+        },
+        {
+          value: "mentalHealth",
+          label: "Mental Health"
+        },
+        {
+          value: "unsafe",
+          label: "Feelings of Being Unsafe"
+        },
+        {
+          value: "nothing",
+          label: "Nothing"
+        },
+        {
+          value: "other",
+          label: "Other"
+        }
+       ],
+     },  
     {
       type: 'checkbox',
       name: 'clientPrivacyStatement',
