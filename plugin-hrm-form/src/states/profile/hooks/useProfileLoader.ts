@@ -54,11 +54,12 @@ export const useProfileLoader = ({
   const firstFetch = autoload && !loading && !data;
 
   useEffect(() => {
+    if (!profileId) return;
+
     if (firstFetch || refresh) {
       loadProfile();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileId, autoload, loadProfile]);
+  }, [firstFetch, loadProfile, profileId, refresh]);
 
   return {
     error,
