@@ -8,8 +8,8 @@ locals {
     old_dir_prefix                    = "revengeporn"
     definition_version                = "uk-v1"
     default_autopilot_chatbot_enabled = false
-    task_language                     = "en-US"
-    helpline_language                 = "en-US"
+    task_language                     = "en-UK"
+    helpline_language                 = "en-UK"
     voice_ivr_language                = ""
     contacts_waiting_channels         = ["web", "whatsapp"]
     enable_post_survey                = false
