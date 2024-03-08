@@ -1,128 +1,308 @@
 {
   "Tinkle Friend": {
-    "Missing children": {
-      "color": "#BBE3FF",
-      "subcategories": [
-        {"label": "Child abduction"},
-        {"label": "Lost, unaccounted for or otherwise missing child"},
-        {"label": "Runaway", "toolkitUrl": "https://aselo.org"},
-        {"label": "Unspecified/Other"}
-      ]
-    },
-    "Violence": {
-      "color": "#F5A623",
-      "subcategories": [
-        {"label": "Active Shooter", "toolkitUrl": "https://www.fbi.gov/about/partnerships/office-of-partner-engagement/active-shooter-resources"},
-        {"label": "Active Threat", "toolkitUrl": "https://www.directives.doe.gov/terms_definitions/active-threat"},
-        {"label": "Assault", "toolkitUrl": "https://apps.leg.wa.gov/rcw/default.aspx?cite=9a.36&full=true#:~:text=(1)%20A%20person%20i s%20guilty,child%20or%20vulnerable%20adult%3B%20or"},
-        {"label": "Bullying", "toolkitUrl": "https://www.cdc.gov/violenceprevention/pdf/bullying-factsheet508.pdf"},
-        {"label": "Child/Early/Forced marriage"},
-        {"label": "Child labour"},
-        {"label": "Commercial sexual exploitation (offline)"},
-        {"label": "Firearm posession", "toolkitUrl": "https://app.leg.wa.gov/rcw/default.aspx?cite=9.41.040"},
-        {"label": "Mental/Emotional violence", "toolkitUrl": "https://google.com"},
-        {"label": "Neglect (or negligent treatment)", "toolkitUrl": "https://google.com"},
-        {"label": "Online sexual abuse (OSA)"},
-        {"label": "Online sexual exploitation (OSE)"},
-        {"label": "Information seeking about OSE/OSA"},
-        {"label": "Physical violence"},
-        {"label": "Sexual violence"},
-        {"label": "Unspecified/Other"}
-      ]
-    },
     "Mental Health": {
-      "color": "#F8E900",
+      "color": "#fac05e",
       "subcategories": [
-        {"label": "Addictive behaviours and substance use"},
-        {"label": "Anxiety", "toolkitUrl": "https://www.apa.org/topics/anxiety"},
-        {"label": "Behavioural problems"},
-        {"label": "Depression", "toolkitUrl": "https://psychiatry.org/patients-families/depression/what-is-depression"},
-        {"label": "Emotional distress – anger problems"},
-        {"label": "Emotional distress – fear and anxiety problems"},
-        {"label": "Emotional distress – mood problems"},
-        {"label": "Neurodevelopmental concerns"},
-        {"label": "Problems with eating behaviour"},
-        {"label": "Self-harming behaviour"},
-        {"label": "Suicidal ideation or threats", "toolkitUrl": "https://store.samhsa.gov/sites/default/files/SAMHSA_Digital_Download/PEP20-06-01-002.pdf"},
-        {"label": "Suicidal attempt", "toolkitUrl": "https://www.cdc.gov/suicide/facts/index.html"},
-        {"label": "Stress", "toolkitUrl": "https://www.nimh.nih.gov/health/publications/so-stressed-out-fact-sheet"},
-        {"label": "Traumatic distress"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Addictive behaviours"
+        },
+        {
+          "label": "Emotional distress - Anxiety "
+        },
+        {
+          "label": "Emotional distress - Anger"
+        },
+        {
+          "label": "Emotional distress - Mood problems"
+        },
+        {
+          "label": "Emotional distress - Fear"
+        },
+        {
+          "label": "Sleep issues"
+        },
+        {
+          "label": "Neurodevelopmental concerns"
+        },
+        {
+          "label": "Problems with eating behaviour"
+        },
+        {
+          "label": "Traumatic distress"
+        },
+        {
+          "label": "Substance abuse"
+        },
+        {
+          "label": "Loneliness"
+        },
+        {
+          "label": "Concerns about self"
+        },
+        {
+          "label": "Unspecified/Other - MH"
+        }
       ]
     },
     "Physical Health": {
-      "color": "#E86B6B",
+      "color": "#f79d8f",
       "subcategories": [
-        {"label": "COVID-19"},
-        {"label": "General medical or lifestyle concerns"},
-        {"label": "Medical or lifestyle information about HIV/AIDS"},
-        {"label": "Male circumcision"},
-        {"label": "Pregnancy and maternal care"},
-        {"label": "Sexual and reproductive health"},
-        {"label": "Nutrition"},
-        {"label": "Unspecified/Other"}
-      ]
-    },
-    "Accessibility": {
-      "color": "#8055BA",
-      "subcategories": [
-        {"label": "Education"},
-        {"label": "Essential needs"},
-        {"label": "General healthcare services"},
-        {"label": "Homelessness", "toolkitUrl": "https://socialinnovation.usc.edu/wp-content/uploads/2021/04/Defining-Homelessness.pdf"},
-        {"label": "Mental health services"},
-        {"label": "Sexual health services"},
-        {"label": "Socio-economical services"},
-        {"label": "Unspecified/Other"}
-      ]
-    },
-    "Discrimination and Exclusion": {
-      "color": "#B971AF",
-      "subcategories": [
-        {"label": "Discrimination", "toolkitUrl": "https://apps.leg.wa.gov/rcw/default.aspx?cite=49.60.030"},
-        {"label": "Ethnicity/nationality"},
-        {"label": "Financial situation"},
-        {"label": "Gender"},
-        {"label": "Gender identity or expression and sexual orientation"},
-        {"label": "Health"},
-        {"label": "Philosophical or religious beliefs"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "General medical or lifestyle concerns"
+        },
+        {
+          "label": "Nutrition"
+        },
+        {
+          "label": "Sexual and reproductive health"
+        },
+        {
+          "label": "Unspecified/Other - PH"
+        }
       ]
     },
     "Family Relationships": {
-      "color": "#239613",
+      "color": "#c99f7d",
       "subcategories": [
-        {"label": "Adoption, fostering, and extended family placement"},
-        {"label": "Relationship to caregiver"},
-        {"label": "Family health and wellbeing"},
-        {"label": "Relationship with sibling(s)"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Relationships to caregiver"
+        },
+        {
+          "label": "Family health and wellbeing"
+        },
+        {
+          "label": "Adoption, fostering and extended family placement"
+        },
+        {
+          "label": "Relationships with sibling(s)"
+        },
+        {
+          "label": "Unspecified/Other - FR"
+        }
       ]
     },
     "Peer Relationships": {
-      "color": "#9AD703",
+      "color": "#db7a34",
       "subcategories": [
-        {"label": "Friends and friendships"},
-        {"label": "Partner relationships"},
-        {"label": "Classmates/colleagues relationships"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Friendship disputes"
+        },
+        {
+          "label": "Making friends"
+        },
+        {
+          "label": "Heterosexual intimate partner relationships"
+        },
+        {
+          "label": "Unspecified/Other - PR"
+        }
       ]
     },
-    "Education and Occupation": {
-      "color": "#55AFAF",
+    "School-related": {
+      "color": "#6c5b7b",
       "subcategories": [
-        {"label": "Academic issues"},
-        {"label": "Teacher and school problems"},
-        {"label": "Problems at work"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Academic issues"
+        },
+        {
+          "label": "Extra-curricular activities"
+        },
+        {
+          "label": "Teacher and school problems"
+        },
+        {
+          "label": "Transitional stress"
+        },
+        {
+          "label": "Home-based learning"
+        },
+        {
+          "label": "Unspecified/Other - SCH"
+        }
       ]
     },
-    "Sexuality": {
-      "color": "#506BA5",
+    "Bullying": {
+      "color": "#355c7d",
       "subcategories": [
-        {"label": "Sexual orientation and gender identity"},
-        {"label": "Sexual behaviours"},
-        {"label": "Unspecified/Other"}
+        {
+          "label": "Physical bullying"
+        },
+        {
+          "label": "Verbal bullying"
+        },
+        {
+          "label": "Relational bullying"
+        },
+        {
+          "label": "Cyberbullying"
+        },
+        {
+          "label": "Witness to bullying"
+        },
+        {
+          "label": "Unspecified/Other - BUL"
+        }
+      ]
+    },
+    "Child Protection Concerns": {
+      "color": "#db7a34",
+      "subcategories": [
+        {
+          "label": "Physical abuse"
+        },
+        {
+          "label": "Emotional abuse"
+        },
+        {
+          "label": "Sexual abuse and/or exploitation"
+        },
+        {
+          "label": "Neglect"
+        },
+        {
+          "label": "Witness of family violence"
+        },
+        {
+          "label": "Exposure/ witness to substance abuse"
+        },
+        {
+          "label": "Unspecified/Other - CP"
+        }
+      ]
+    },
+    "Suicide Risk": {
+      "color": "#cc0000",
+      "subcategories": [
+        {
+          "label": "Suicidal thoughts (no intent/ plan)"
+        },
+        {
+          "label": "Suicidal thoughts (method, no plan/ intent)"
+        },
+        {
+          "label": "Suicidal intent (no plan)"
+        },
+        {
+          "label": "Suicidal with plan and intent"
+        },
+        {
+          "label": "Prior suicide attempt"
+        },
+        {
+          "label": "Current suicide attempt"
+        },
+        {
+          "label": "Suicide threats"
+        }
+      ]
+    },
+    "Self-Harm": {
+      "color": "#f8b595",
+      "subcategories": [
+        {
+          "label": "Self-harm ideation"
+        },
+        {
+          "label": "Self-harm behaviour"
+        }
+      ]
+    },
+    "Boredom": {
+      "color": "#f79d8f",
+      "subcategories": []
+    },
+    "Online-related": {
+      "color": "#a47fbc",
+      "subcategories": [
+        {
+          "label": "Cyber security-related"
+        },
+        {
+          "label": "Social media"
+        },
+        {
+          "label": "Websites"
+        },
+        {
+          "label": "Unspecified/Other - ON"
+        }
+      ]
+    },
+    "LGBTQ-related": {
+      "color": "#a7416a",
+      "subcategories": [
+        {
+          "label": "Sexual orientation"
+        },
+        {
+          "label": "Gender identity"
+        },
+        {
+          "label": "Gender expression"
+        },
+        {
+          "label": "LGBTQ intimate partner relationships"
+        },
+        {
+          "label": "Unspecified/Other - LGBTQ"
+        }
+      ]
+    },
+    "Sexualised Behaviours": {
+      "color": "#8b5b6e",
+      "subcategories": [
+        {
+          "label": "Sexual behaviours"
+        },
+        {
+          "label": "Pornography"
+        }
+      ]
+    },
+    "Contact on Behalf": {
+      "color": "#e8e9eb",
+      "subcategories": [
+        {
+          "label": "Contact from parents"
+        },
+        {
+          "label": "Contact from another child"
+        },
+        {
+          "label": "Contact from teachers"
+        },
+        {
+          "label": "Contact from members of public"
+        },
+        {
+          "label": "Contact from other family members"
+        }
+      ]
+    },
+    "Non-counselling Contacts": {
+      "color": "#54494b",
+      "subcategories": [
+        {
+          "label": "Silent"
+        },
+        {
+          "label": "Nuisance/ Abusive"
+        },
+        {
+          "label": "Attempt to contact"
+        },
+        {
+          "label": "Positive Feedback about Tinkle Friend"
+        },
+        {
+          "label": "Chit-chat"
+        },
+        {
+          "label": "Complaints about Tinkle Friend"
+        },
+        {
+          "label": "Wrong Contact/ Others"
+        }
       ]
     }
   }
