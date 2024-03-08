@@ -19,7 +19,7 @@ import { omit } from 'lodash';
 import * as t from './types';
 import { newSearchFormEntry, PreviousContactCounts, SearchResultReferences } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
-import { Contact, standaloneTaskSid } from '../../types/types';
+import { Case, Contact, standaloneTaskSid } from '../../types/types';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../../components/common/ContactDetails';
 import {
   CONNECT_TO_CASE_ACTION_FULFILLED,
@@ -36,8 +36,8 @@ export type SearchStateTaskEntry = {
   detailsExpanded: {
     [key in ContactDetailsSectionsType]: boolean;
   };
-  searchContactsResult: SearchResultReferences;
-  searchCasesResult: SearchResultReferences;
+  searchContactsResult: SearchResultReferences<Contact['id']>;
+  searchCasesResult: SearchResultReferences<Case['id']>;
   previousContactCounts?: PreviousContactCounts;
   isRequesting: boolean;
   isRequestingCases: boolean;

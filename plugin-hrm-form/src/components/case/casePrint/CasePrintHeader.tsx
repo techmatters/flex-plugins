@@ -21,9 +21,10 @@ import { View, Text, Image } from '@react-pdf/renderer';
 
 import styles from './styles';
 import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
+import type { Case } from '../../../types/types';
 
 type OwnProps = {
-  id: string;
+  id: Case['id'];
   contactIdentifier: string;
   officeName?: string;
   logoBlob?: string;

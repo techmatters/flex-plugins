@@ -318,7 +318,8 @@ const mapStateToProps = (state: RootState, { task, sectionApi }: AddEditCaseItem
     const sectionId = isEditCaseSectionRoute(currentRoute) ? currentRoute.id : undefined;
     const { connectedCase, caseWorkingCopy } = selectCaseByCaseId(state, currentRoute.caseId);
     const caseItemHistory = sectionId
-      ? selectCaseItemHistory(state, connectedCase, sectionApi, currentRoute.caseId)
+      ? // Q: Do we want currentRoute.caseId here???
+        selectCaseItemHistory(state, connectedCase, sectionApi, currentRoute.caseId.toString())
       : {
           added: new Date(),
           addingCounsellorName: selectCounselorName(state, workerSid),

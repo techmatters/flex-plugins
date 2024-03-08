@@ -17,14 +17,14 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
 import { getInitializedCan, PermissionActions } from '../../permissions';
-import { Case } from '../../types/types';
 import CasePreview from '../search/CasePreview';
 import ProfileRelationshipList from './ProfileRelationshipList';
 import * as ProfileTypes from '../../states/profile/types';
 import * as RoutingActions from '../../states/routing/actions';
 import { namespace } from '../../states/storeNamespaces';
-import { RootState } from '../../states';
-import { ProfileCommonProps } from './types';
+import type { Case } from '../../types/types';
+import type { RootState } from '../../states';
+import type { ProfileCommonProps } from './types';
 
 type OwnProps = ProfileCommonProps;
 

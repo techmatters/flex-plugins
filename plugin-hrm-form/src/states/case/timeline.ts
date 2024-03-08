@@ -14,12 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import type { Case } from '../../types/types';
 import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
 import { getActivitiesFromCase, getActivitiesFromContacts, getActivityCount, sortActivities } from './caseActivities';
 import { selectSavedContacts } from './connectedContacts';
 
-export const selectCaseActivities = (state: RootState, caseId: string, pageSize: number, page: number) => {
+export const selectCaseActivities = (state: RootState, caseId: Case['id'], pageSize: number, page: number) => {
   const {
     [namespace]: { configuration, connectedCase },
   } = state;
@@ -40,5 +41,5 @@ export const selectCaseActivities = (state: RootState, caseId: string, pageSize:
   return sortActivities(timelineActivities).slice(page * pageSize, (page + 1) * pageSize);
 };
 
-export const selectCaseActivityCount = ({ [namespace]: { connectedCase } }: RootState, caseId: string) =>
+export const selectCaseActivityCount = ({ [namespace]: { connectedCase } }: RootState, caseId: Case['id']) =>
   getActivityCount(connectedCase.cases[caseId]?.connectedCase) ?? 0;

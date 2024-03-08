@@ -24,9 +24,10 @@ import { SubtitleLabel, SubtitleValue, StyledLink, PreviewHeaderText, PreviewRow
 import { Flex } from '../../../styles';
 import { getTemplateStrings } from '../../../hrmConfig';
 import ConnectToCaseButton from '../../case/ConnectToCaseButton';
+import type { Case } from '../../../types/types';
 
 type OwnProps = {
-  caseId: string;
+  caseId: Case['id'];
   contactLabel?: string;
   createdAt: string;
   updatedAt?: string;
@@ -76,7 +77,7 @@ const CaseHeader: React.FC<Props> = ({
           {showConnectButton && (
             <Flex style={{ minWidth: 'fit-content' }}>
               <ConnectToCaseButton
-                caseId={caseId.toString()}
+                caseId={caseId}
                 isConnectedToTaskContact={isConnectedToTaskContact}
                 onClickConnectToTaskContact={onClickConnectToTaskContact}
               />

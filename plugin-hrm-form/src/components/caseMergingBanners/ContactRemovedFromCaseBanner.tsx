@@ -25,13 +25,13 @@ import { BannerContainer, CaseLink, Text } from '../../styles/banners';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import WarningIcon from './WarningIcon';
 import { closeRemovedFromCaseBannerAction, selectCaseMergingBanners } from '../../states/case/caseBanners';
-import { Contact } from '../../types/types';
 import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
 import asyncDispatch from '../../states/asyncDispatch';
 import { RootState } from '../../states';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { getInitializedCan, PermissionActions } from '../../permissions';
 import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
+import type { Case, Contact } from '../../types/types';
 
 type OwnProps = {
   taskId: string;
@@ -55,7 +55,7 @@ const mapStateToProps = (state: RootState, { taskId, contactId }: OwnProps) => {
 
 const mapDispatchToProps = dispatch => ({
   close: (contactId: string) => dispatch(closeRemovedFromCaseBannerAction(contactId)),
-  connectCaseToTaskContact: async (taskContact: Contact, caseId: string) => {
+  connectCaseToTaskContact: async (taskContact: Contact, caseId: Case['id']) => {
     await asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, caseId));
   },
 });

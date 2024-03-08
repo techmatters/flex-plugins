@@ -20,6 +20,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import { AnyAction, bindActionCreators } from 'redux';
 
+import { useCase } from '../../states/case/hooks/useCase';
 import { RootState } from '../../states';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import * as RoutingActions from '../../states/routing/actions';
@@ -94,11 +95,15 @@ const Case: React.FC<Props> = ({
   submitContactFormAsyncAction,
   taskContact,
   office,
+  connectedCaseId,
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
   const [loadedContactIds, setLoadedContactIds] = useState([]);
-  const { connectedCase } = props?.connectedCaseState ?? {};
+  const { connectedCase, loading: loadingCase } = useCase({
+    caseId: connectedCaseId,
+    referenceId: `case-details-${task.taskSid}`,
+  });
 
   const can = React.useMemo(() => {
     return action => getInitializedCan()(action, connectedCase);
@@ -124,7 +129,7 @@ const Case: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connectedCase, task, workerSid]);
 
-  const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
+  const version = connectedCase?.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;
 
   /**
@@ -143,7 +148,15 @@ const Case: React.FC<Props> = ({
 
   const definitionVersion = props.definitionVersions[version];
 
-  if (!props.connectedCaseState || !definitionVersion) return null;
+  if (loading || loadingCase) {
+    return (
+      <CenteredContainer>
+        <CircularProgress size={50} />
+      </CenteredContainer>
+    );
+  }
+
+  if (!connectedCase || !definitionVersion) return null;
 
   const currentCounselor = counselorsHash[workerSid];
 
@@ -253,11 +266,7 @@ const Case: React.FC<Props> = ({
     return <FullTimelineView task={task} />;
   }
 
-  return loading || !definitionVersion ? (
-    <CenteredContainer>
-      <CircularProgress size={50} />
-    </CenteredContainer>
-  ) : (
+  return (
     <CaseHome
       task={task}
       definitionVersion={definitionVersion}
@@ -277,8 +286,7 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const isCreating = routing.route === 'case' && routing.isCreating;
 
   return {
-    connectedCaseState: caseState,
-    connectedCaseId: connectedCase?.id,
+    connectedCaseId: routing.caseId,
     counselorsHash: selectCounselorsHash(state),
     definitionVersions: selectDefinitionVersions(state),
     currentDefinitionVersion: selectCurrentDefinitionVersion(state),
@@ -292,11 +300,10 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
 
 const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
   const caseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
-  const updateCaseDefinition = (connectedCase: CaseType, taskSid: string, definition) => {
+  const updateCaseDefinition = (connectedCase: CaseType, taskSid: string, definition) =>
     dispatch(ConfigActions.updateDefinitionVersion(connectedCase.info.definitionVersion, definition));
-  };
   return {
-    redirectToNewCase: (caseId: string) =>
+    redirectToNewCase: (caseId: number) =>
       dispatch(
         RoutingActions.changeRoute(
           { route: 'case', subroute: 'home', caseId, isCreating: true },

@@ -20,11 +20,12 @@ import React from 'react';
 
 import { PreviewActionButton } from '../search/styles';
 import { getTemplateStrings } from '../../hrmConfig';
+import type { Case } from '../../types/types';
 
 type OwnProps = {
   isConnectedToTaskContact: boolean;
   onClickConnectToTaskContact: () => void;
-  caseId: string;
+  caseId: Case['id'];
   color?: 'black' | 'grey';
 };
 

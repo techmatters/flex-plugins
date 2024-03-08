@@ -53,7 +53,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(ConfigActions.updateDefinitionVersion(version, definitions)),
     fetchCaseList: (settings: CaseListSettingsState, helpline) =>
       asyncDispatch(dispatch)(ListContent.fetchCaseListAsyncAction(settings, helpline, CASES_PER_PAGE)),
-    openCaseDetails: (caseId: string) =>
+    openCaseDetails: (caseId: CaseType['id']) =>
       dispatch(newOpenModalAction({ route: 'case', subroute: 'home', caseId }, standaloneTask.taskSid)),
     closeCaseDetails: () => dispatch(newCloseModalAction(standaloneTask.taskSid)),
   };
@@ -94,7 +94,7 @@ const CaseList: React.FC<Props> = ({
   }, [currentSettings, helpline]);
 
   const handleClickViewCase = (currentCase: CaseType) => () => {
-    openCaseDetails(currentCase.id.toString());
+    openCaseDetails(currentCase.id);
   };
 
   const closeCaseView = async () => {

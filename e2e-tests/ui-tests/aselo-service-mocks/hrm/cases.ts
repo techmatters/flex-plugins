@@ -32,7 +32,7 @@ const generateMockCases = (toGenerate: number): Case[] => {
     const time = addSeconds(hourAgo, idxNumber);
     return {
       accountSid: flexContext.ACCOUNT_SID,
-      id: idxNumber,
+      id: idxNumber.toString(),
       status: 'open',
       helpline: 'Fake Helpline',
       twilioWorkerId: flexContext.LOGGED_IN_WORKER_SID,
@@ -111,6 +111,24 @@ const hrmCases = () => {
               status: 200,
               contentType: 'application/json',
               body: JSON.stringify(route.request().postDataJSON()),
+            });
+          } else if (
+            route.request().method().toUpperCase() === 'GET' &&
+            route
+              .request()
+              .url()
+              .match(/\/\d+$/g)
+          ) {
+            const caseId = route.request().url().split('/')[
+              route.request().url().split('/').length - 1
+            ];
+
+            const cas = mockCases.find((c) => c.id === caseId);
+
+            await route.fulfill({
+              status: 200,
+              contentType: 'application/json',
+              body: JSON.stringify(cas),
             });
           } else {
             await route.continue();

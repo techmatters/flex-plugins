@@ -18,7 +18,7 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 import { Case } from '../types/types';
 
 export const VALID_EMPTY_CASE: Case = {
-  id: '1',
+  id: 1,
   accountSid: 'AC',
   label: '',
   info: {

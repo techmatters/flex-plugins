@@ -18,12 +18,13 @@ import { createAction, createReducer } from 'redux-promise-middleware-actions';
 
 import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
+import { Case } from '../../types/types';
 
 const SHOW_REMOVED_FROM_CASE_BANNER = 'case-merging-banners/show-removed-from-case-banner';
 
 export const showRemovedFromCaseBannerAction = createAction(
   SHOW_REMOVED_FROM_CASE_BANNER,
-  (contactId: string, caseId?: string) => ({
+  (contactId: string, caseId?: Case['id']) => ({
     contactId,
     caseId,
     banners: {
@@ -51,7 +52,7 @@ type CaseMergingBannersAction =
 type CaseMergingBannersState = {
   [contactId: string]: {
     showRemovedFromCaseBanner: boolean;
-    caseId: string;
+    caseId: Case['id'];
   };
 };
 

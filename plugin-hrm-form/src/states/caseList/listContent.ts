@@ -27,7 +27,7 @@ import { dateFilterPayloadFromFilters } from './dateFilters';
 export type CaseListContentState = {
   listLoading: boolean;
   fetchError: any;
-  caseList: string[];
+  caseList: number[];
   caseCount: number;
   caseDetailsOpen: boolean;
 };

@@ -14,14 +14,14 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { RootState } from '..';
 import { connectedCaseBase, namespace } from '../storeNamespaces';
-import { CaseStateEntry } from './types';
 import { selectCounselorName } from '../configuration/selectCounselorsHash';
 import { selectDefinitionVersionForCase } from '../configuration/selectDefinitions';
-import { Case } from '../../types/types';
+import type { RootState } from '..';
+import type { CaseStateEntry } from './types';
+import type { Case } from '../../types/types';
 
-export const selectCaseByCaseId = (state: RootState, caseId: string): CaseStateEntry | undefined =>
+export const selectCaseByCaseId = (state: RootState, caseId: Case['id']): CaseStateEntry | undefined =>
   state[namespace][connectedCaseBase]?.cases[caseId];
 
 export type CaseHistoryDetails = {

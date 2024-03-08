@@ -17,6 +17,7 @@
 import { CustomHandlers } from '../common/forms/formGenerators';
 import { getHrmConfig } from '../../hrmConfig';
 import { fetchHrmApi, generateSignedURLPath } from '../../services/fetchHrmApi';
+import type { Case } from '../../types/types';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 /**
@@ -44,7 +45,7 @@ const uploadDocument = async (file: File, preSignedUrl: string, mimeType: string
  *
  * It returns the file name at AWS
  */
-const bindOnFileChange = (caseId: string) => async event => {
+const bindOnFileChange = (caseId: Case['id']) => async event => {
   const file = event.target.files[0];
   const { name, size, type } = file;
 
@@ -75,7 +76,7 @@ const bindOnFileChange = (caseId: string) => async event => {
   return key;
 };
 
-const bindOnDeleteFile = (caseId: string) => async (fileName: string) => {
+const bindOnDeleteFile = (caseId: Case['id']) => async (fileName: string) => {
   const { docsBucket: bucket } = getHrmConfig();
   await fetchHrmApi(
     generateSignedURLPath({
@@ -91,7 +92,7 @@ const bindOnDeleteFile = (caseId: string) => async (fileName: string) => {
   );
 };
 
-export const bindFileUploadCustomHandlers = (caseId: string): CustomHandlers => {
+export const bindFileUploadCustomHandlers = (caseId: Case['id']): CustomHandlers => {
   return {
     onFileChange: bindOnFileChange(caseId),
     onDeleteFile: bindOnDeleteFile(caseId),

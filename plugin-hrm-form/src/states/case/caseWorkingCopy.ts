@@ -14,26 +14,26 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { CaseSectionApi } from './sections/api';
-import { CaseItemFormValues } from '../../types/types';
-import { CaseState, CaseSummaryWorkingCopy } from './types';
-import { ConfigurationState } from '../configuration/reducer';
 import { transformValues } from '../contacts/contactDetailsAdapter';
-import { CaseSectionTypeSpecificData } from '../../services/caseSectionService';
+import type { CaseSectionApi } from './sections/api';
+import type { Case, CaseItemFormValues } from '../../types/types';
+import type { CaseState, CaseSummaryWorkingCopy } from './types';
+import type { ConfigurationState } from '../configuration/reducer';
+import type { CaseSectionTypeSpecificData } from '../../services/caseSectionService';
 
 // Update a section of a case's working copy
 const UPDATE_CASE_SECTION_WORKING_COPY = 'UPDATE_CASE_SECTION_WORKING_COPY';
 
 type UpdateCaseSectionWorkingCopyAction = {
   type: typeof UPDATE_CASE_SECTION_WORKING_COPY;
-  caseId: string;
+  caseId: Case['id'];
   api: CaseSectionApi;
   id?: string;
   sectionItem: CaseSectionTypeSpecificData;
 };
 
 export const updateCaseSectionWorkingCopy = (
-  caseId: string,
+  caseId: Case['id'],
   api: CaseSectionApi,
   sectionItem: CaseSectionTypeSpecificData,
   id?: string,
@@ -73,13 +73,13 @@ const INIT_EXISTING_CASE_SECTION_WORKING_COPY = 'INIT_EXISTING_CASE_SECTION_WORK
 
 type InitialiseExistingCaseSectionWorkingCopyAction = {
   type: typeof INIT_EXISTING_CASE_SECTION_WORKING_COPY;
-  caseId: string;
+  caseId: Case['id'];
   api: CaseSectionApi;
   id: string;
 };
 
 export const initialiseExistingCaseSectionWorkingCopy = (
-  caseId: string,
+  caseId: Case['id'],
   api: CaseSectionApi,
   id: string,
 ): InitialiseExistingCaseSectionWorkingCopyAction => ({
@@ -117,13 +117,13 @@ const INIT_NEW_CASE_SECTION_WORKING_COPY = 'INIT_NEW_CASE_SECTION_WORKING_COPY';
 
 type InitialiseNewCaseSectionWorkingCopyAction = {
   type: typeof INIT_NEW_CASE_SECTION_WORKING_COPY;
-  caseId: string;
+  caseId: Case['id'];
   api: CaseSectionApi;
   form: CaseItemFormValues;
 };
 
 export const initialiseNewCaseSectionWorkingCopy = (
-  caseId: string,
+  caseId: Case['id'],
   api: CaseSectionApi,
   form: CaseItemFormValues,
 ): InitialiseNewCaseSectionWorkingCopyAction => ({
@@ -154,13 +154,13 @@ const REMOVE_CASE_SECTION_WORKING_COPY = 'REMOVE_CASE_SECTION_WORKING_COPY';
 
 type RemoveCaseSectionWorkingCopyAction = {
   type: typeof REMOVE_CASE_SECTION_WORKING_COPY;
-  caseId: string;
+  caseId: Case['id'];
   api: CaseSectionApi;
   id?: string;
 };
 
 export const removeCaseSectionWorkingCopy = (
-  caseId: string,
+  caseId: Case['id'],
   api: CaseSectionApi,
   id?: string,
 ): RemoveCaseSectionWorkingCopyAction => ({
@@ -195,12 +195,12 @@ const INIT_CASE_SUMMARY_WORKING_COPY = 'INIT_CASE_SUMMARY_WORKING_COPY';
 
 type InitialiseCaseSummaryWorkingCopyAction = {
   type: typeof INIT_CASE_SUMMARY_WORKING_COPY;
-  caseId: string;
+  caseId: Case['id'];
   defaults: CaseSummaryWorkingCopy;
 };
 
 export const initialiseCaseSummaryWorkingCopy = (
-  caseId: string,
+  caseId: Case['id'],
   defaults: CaseSummaryWorkingCopy,
 ): InitialiseCaseSummaryWorkingCopyAction => ({
   type: INIT_CASE_SUMMARY_WORKING_COPY,
@@ -240,12 +240,12 @@ const UPDATE_CASE_SUMMARY_WORKING_COPY = 'UPDATE_CASE_SUMMARY_WORKING_COPY';
 
 type UpdateCaseSummaryWorkingCopyAction = {
   type: typeof UPDATE_CASE_SUMMARY_WORKING_COPY;
-  caseId: string;
+  caseId: Case['id'];
   caseSummary: CaseSummaryWorkingCopy;
 };
 
 export const updateCaseSummaryWorkingCopy = (
-  caseId: string,
+  caseId: Case['id'],
   caseSummary: CaseSummaryWorkingCopy,
 ): UpdateCaseSummaryWorkingCopyAction => ({
   type: UPDATE_CASE_SUMMARY_WORKING_COPY,
@@ -278,10 +278,10 @@ const REMOVE_CASE_SUMMARY_WORKING_COPY = 'REMOVE_CASE_SUMMARY_WORKING_COPY';
 
 type RemoveCaseSummaryWorkingCopyAction = {
   type: typeof REMOVE_CASE_SUMMARY_WORKING_COPY;
-  caseId: string;
+  caseId: Case['id'];
 };
 
-export const removeCaseSummaryWorkingCopy = (caseId: string): RemoveCaseSummaryWorkingCopyAction => ({
+export const removeCaseSummaryWorkingCopy = (caseId: Case['id']): RemoveCaseSummaryWorkingCopyAction => ({
   type: REMOVE_CASE_SUMMARY_WORKING_COPY,
   caseId,
 });

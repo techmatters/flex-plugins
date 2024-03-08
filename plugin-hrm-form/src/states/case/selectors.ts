@@ -14,15 +14,14 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { namespace } from '../storeNamespaces';
+// TODO: REMOVE
+/* eslint-disable import/no-unused-modules */
+
+import { namespace, connectedCaseBase } from '../storeNamespaces';
 import type { RootState } from '..';
 import type { Case } from '../../types/types';
 
-export const selectDefinitionVersions = (state: RootState) => state[namespace].configuration.definitionVersions;
+export const selectCaseState = (state: RootState) => state[namespace][connectedCaseBase];
 
-export const selectCurrentDefinitionVersion = (state: RootState) =>
-  state[namespace].configuration.currentDefinitionVersion;
-
-export const selectDefinitionVersionForCase = ({ [namespace]: { configuration } }: RootState, connectedCase: Case) =>
-  configuration.definitionVersions[connectedCase?.info?.definitionVersion ?? ''] ??
-  configuration.currentDefinitionVersion;
+export const selectCaseById = (state: RootState, caseId: Case['id']) =>
+  caseId ? selectCaseState(state)?.cases[caseId] : undefined;

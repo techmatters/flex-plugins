@@ -24,7 +24,6 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
-import { Contact, CustomITask, SearchCaseResult, SearchContactResult } from '../../../types/types';
 import { Row } from '../../../styles';
 import {
   EmphasisedText,
@@ -58,6 +57,7 @@ import { getUnsavedContact } from '../../../states/contacts/getUnsavedContact';
 import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 import { createCaseAsyncAction } from '../../../states/case/saveCase';
 import asyncDispatch from '../../../states/asyncDispatch';
+import type { Case, Contact, CustomITask, SearchCaseResult, SearchContactResult } from '../../../types/types';
 
 export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;
@@ -458,7 +458,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     changeCaseResultPage: (casesPage: number, currentRoute: SearchResultRoute) => {
       dispatch(changeRoute({ ...currentRoute, subroute: 'case-results', casesPage }, taskId, ChangeRouteMode.Replace));
     },
-    viewCaseDetails: (caseId: string) => {
+    viewCaseDetails: (caseId: Case['id']) => {
       dispatch(newOpenModalAction({ route: 'case', subroute: 'home', isCreating: false, caseId }, taskId));
     },
     newCase: () => {

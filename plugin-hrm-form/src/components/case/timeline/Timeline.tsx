@@ -27,17 +27,17 @@ import TimelineIcon from './TimelineIcon';
 import { CaseSectionFont, TimelineCallTypeIcon, TimelineDate, TimelineRow, TimelineText, ViewButton } from '../styles';
 import { Box, Row } from '../../../styles';
 import CaseAddButton from '../CaseAddButton';
-import { CustomITask } from '../../../types/types';
 import { isContactActivity } from '../../../states/case/caseActivities';
 import { ContactActivity, NoteActivity, ReferralActivity } from '../../../states/case/types';
 import { getInitializedCan, PermissionActions } from '../../../permissions';
-import { CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../../../states/routing/types';
 import { newOpenModalAction } from '../../../states/routing/actions';
-import { RootState } from '../../../states';
 import { selectCaseActivities } from '../../../states/case/timeline';
 import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRouteCase';
 import { colors } from '../../../styles/banners';
 import InfoIcon from '../../caseMergingBanners/InfoIcon';
+import { CaseItemAction, CaseSectionSubroute, NewCaseSubroutes } from '../../../states/routing/types';
+import type { RootState } from '../../../states';
+import type { Case, CustomITask } from '../../../types/types';
 
 type OwnProps = {
   taskSid: CustomITask['taskSid'];
@@ -58,9 +58,9 @@ const mapStateToProps = (state: RootState, { taskSid, pageSize, page }: OwnProps
 const mapDispatchToProps = (dispatch, { taskSid }: OwnProps) => ({
   openContactModal: (contactId: string) =>
     dispatch(newOpenModalAction({ route: 'contact', subroute: 'view', id: contactId }, taskSid)),
-  openAddCaseSectionModal: (caseId: string, subroute: CaseSectionSubroute) =>
+  openAddCaseSectionModal: (caseId: Case['id'], subroute: CaseSectionSubroute) =>
     dispatch(newOpenModalAction({ route: 'case', subroute, action: CaseItemAction.Add, caseId }, taskSid)),
-  openViewCaseSectionModal: (caseId: string, subroute: CaseSectionSubroute, id: string) =>
+  openViewCaseSectionModal: (caseId: Case['id'], subroute: CaseSectionSubroute, id: string) =>
     dispatch(newOpenModalAction({ route: 'case', subroute, id, action: CaseItemAction.View, caseId }, taskSid)),
 });
 

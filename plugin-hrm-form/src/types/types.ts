@@ -93,7 +93,7 @@ export type WellKnownCaseSection = 'note' | 'referral' | 'household' | 'perpetra
 
 export type Case = {
   accountSid: AccountSID;
-  id: string;
+  id: number;
   label: string;
   status: string;
   helpline: string;
@@ -124,7 +124,7 @@ export type MediaType = 'recording' | 'transcript' | 'document';
 export type GenerateSignedUrlPathParams = {
   method: SignedURLMethod;
   objectType: ObjectType;
-  objectId: string;
+  objectId: string | number;
   fileType: MediaType;
   location: S3Location;
 };
@@ -203,7 +203,7 @@ export type Contact = {
   queueName: string;
   channelSid: string;
   serviceSid: string;
-  caseId?: string;
+  caseId?: Case['id'];
 };
 
 export type SearchContactResult = {
