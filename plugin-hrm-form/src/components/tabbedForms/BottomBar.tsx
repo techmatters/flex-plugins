@@ -203,7 +203,7 @@ BottomBar.displayName = 'BottomBar';
 
 const mapStateToProps = (state: RootState, { contactId }: BottomBarProps) => {
   const { draftContact, savedContact, metadata } = selectContactStateByContactId(state, contactId) ?? {};
-  const caseForm = selectCaseByCaseId(state, savedContact.caseId ?? '')?.connectedCase || {};
+  const caseForm = selectCaseByCaseId(state, savedContact.caseId)?.connectedCase || {};
   const contactIsSaving = metadata.loadingStatus === LoadingStatus.LOADING;
   return {
     contact: getUnsavedContact(savedContact, draftContact),

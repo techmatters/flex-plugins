@@ -14,10 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersion, StatusInfo } from 'hrm-form-definitions';
+import type { DefinitionVersion, StatusInfo } from 'hrm-form-definitions';
 
 import { getInitializedCan, PermissionActions } from '../../permissions';
-import { Case } from '../../types/types';
+import type { Case } from '../../types/types';
 
 export const getAvailableCaseStatusTransitions = (
   connectedCase: Case,

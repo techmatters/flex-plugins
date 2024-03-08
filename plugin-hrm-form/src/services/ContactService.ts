@@ -23,6 +23,7 @@ import { fetchHrmApi } from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import {
+  Case,
   Contact,
   ConversationMedia,
   CustomITask,
@@ -32,18 +33,18 @@ import {
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
-import { ContactMetadata } from '../states/contacts/types';
 import {
   ExternalRecordingInfoSuccess,
   getExternalRecordingInfo,
   isFailureExternalRecordingInfo,
   shouldGetExternalRecordingInfo,
 } from './getExternalRecordingInfo';
-import { SearchParams } from '../states/search/types';
-import { ContactDraftChanges } from '../states/contacts/existingContacts';
-import { newContactState } from '../states/contacts/contactState';
 import { ApiError, FetchOptions } from './fetchApi';
-import { TaskSID, WorkerSID } from '../types/twilio';
+import type { ContactMetadata } from '../states/contacts/types';
+import type { SearchParams } from '../states/search/types';
+import type { ContactDraftChanges } from '../states/contacts/existingContacts';
+import { newContactState } from '../states/contacts/contactState';
+import type { TaskSID, WorkerSID } from '../types/twilio';
 
 export async function searchContacts(
   searchParams: SearchParams,
@@ -282,7 +283,7 @@ export const saveContact = async (
   };
 };
 
-export async function connectToCase(contactId: string, caseId: string) {
+export async function connectToCase(contactId: string, caseId: Case['id']) {
   const body = { caseId };
 
   const options = {

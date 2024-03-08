@@ -14,9 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
-import { Case } from '../../types/types';
+import type { RootState } from '..';
+import type { Case } from '../../types/types';
 
 export const selectDefinitionVersions = (state: RootState) => state[namespace].configuration.definitionVersions;
 

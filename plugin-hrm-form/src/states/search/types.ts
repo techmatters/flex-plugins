@@ -104,9 +104,9 @@ export type SearchActionType =
   | SearchCasesFailureAction
   | ViewPreviousContactsAction;
 
-export type SearchResultReferences = {
+export type SearchResultReferences<T> = {
   count: number;
-  ids: string[];
+  ids: T[];
 };
 
 export type PreviousContactCounts = {

@@ -37,9 +37,10 @@ import {
 } from './styles';
 import { Box } from '../../styles';
 import { PermissionActions } from '../../permissions';
+import type { Case } from '../../types/types';
 
 type Props = {
-  caseId: string;
+  caseId: Case['id'];
   categories: { [category: string]: string[] };
   counselor: string;
   createdAt: string;

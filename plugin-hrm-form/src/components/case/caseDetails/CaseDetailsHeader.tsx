@@ -28,11 +28,12 @@ import {
   DetailsHeaderContainer,
   StyledPrintButton,
 } from '../styles';
-import { Flex, Box } from '../../../styles';
+import { Flex } from '../../../styles';
 import { getHrmConfig } from '../../../hrmConfig';
+import type { Case } from '../../../types/types';
 
 type OwnProps = {
-  caseId: string;
+  caseId: Case['id'];
   office: string;
   counselor: string;
   handlePrintCase: () => void;

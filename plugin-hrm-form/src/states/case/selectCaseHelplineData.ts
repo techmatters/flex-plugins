@@ -16,7 +16,7 @@
 import { HelplineEntry } from 'hrm-form-definitions';
 
 import { RootState } from '..';
-import { Case } from '../../types/types';
+import type { Case } from '../../types/types';
 import { selectDefinitionVersionForCase } from '../configuration/selectDefinitions';
 import { selectCaseByCaseId } from './selectCaseStateByCaseId';
 

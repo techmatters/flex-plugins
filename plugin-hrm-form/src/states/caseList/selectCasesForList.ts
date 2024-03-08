@@ -14,10 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Case } from '../../types/types';
-import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
-import { CaseListContentState } from './listContent';
+import type { RootState } from '..';
+import type { Case } from '../../types/types';
+import type { CaseListContentState } from './listContent';
 
 type CaseListContent = Pick<CaseListContentState, 'listLoading' | 'fetchError'> & { cases: Case[]; count: number };
 

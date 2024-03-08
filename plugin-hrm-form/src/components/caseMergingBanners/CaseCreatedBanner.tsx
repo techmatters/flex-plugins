@@ -26,12 +26,12 @@ import { getOfflineContactTaskSid } from '../../states/contacts/offlineContactTa
 import { cancelCaseAsyncAction } from '../../states/case/saveCase';
 import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
-import { CustomITask, StandaloneITask } from '../../types/types';
+import type { Case, CustomITask, StandaloneITask } from '../../types/types';
 import { BannerActionLink, BannerContainer, Text } from '../../styles/banners';
 
 type OwnProps = {
   task?: CustomITask | StandaloneITask;
-  caseId: string;
+  caseId: Case['id'];
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -48,7 +48,7 @@ const mapStateToProps = (state, { task, caseId }: OwnProps) => {
 
 const mapDispatchToProps = dispatch => ({
   removeContactFromCase: async (contactId: string) => asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId)),
-  cancelCase: async (caseId: string) => asyncDispatch(dispatch)(cancelCaseAsyncAction(caseId)),
+  cancelCase: async (caseId: Case['id']) => asyncDispatch(dispatch)(cancelCaseAsyncAction(caseId)),
   showRemovedFromCaseBanner: (contactId: string) => dispatch(showRemovedFromCaseBannerAction(contactId)),
   navigateBack: (taskSid: string) => dispatch(newGoBackAction(taskSid)),
 });

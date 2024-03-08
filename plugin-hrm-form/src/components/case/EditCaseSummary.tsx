@@ -76,7 +76,7 @@ const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
     initialiseWorkingCopy: bindActionCreators(initialiseCaseSummaryWorkingCopy, dispatch),
     updateWorkingCopy: bindActionCreators(updateCaseSummaryWorkingCopy, dispatch),
-    closeActions: (caseId: string, closeModal: boolean) => {
+    closeActions: (caseId: Case['id'], closeModal: boolean) => {
       dispatch(removeCaseSummaryWorkingCopy(caseId));
       dispatch(closeModal ? newCloseModalAction(task.taskSid) : newGoBackAction(task.taskSid));
     },

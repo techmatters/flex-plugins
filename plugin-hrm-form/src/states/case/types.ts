@@ -21,7 +21,7 @@ import type { CaseSectionTypeSpecificData } from '../../services/caseSectionServ
 import type { WorkerSID } from '../../types/twilio';
 import type { ChannelTypes } from '../DomainConstants';
 import type * as t from '../../types/types';
-import type { LoadCaseAsync } from './case';
+import type { DereferenceCaseAction, LoadCaseAsync, ReferenceCaseAction } from './case';
 
 // Action types
 export const CREATE_CASE_ACTION = 'case-action/create-case';
@@ -31,6 +31,8 @@ export const LOAD_CASE_ACTION_FULFILLED = `${LOAD_CASE_ACTION}_FULFILLED` as con
 export const LOAD_CASE_ACTION_REJECTED = `${LOAD_CASE_ACTION}_REJECTED` as const;
 export const CREATE_CASE_ACTION_FULFILLED = `${CREATE_CASE_ACTION}_FULFILLED` as const;
 export const CANCEL_CASE_ACTION = 'case-action/cancel-case';
+export const REFERENCE_CASE_ACTION = 'case-action/reference-case';
+export const DEREFERENCE_CASE_ACTION = 'case-action/dereference-case';
 
 // eslint-disable-next-line prettier/prettier,import/no-unused-modules
 export enum SavedCaseStatus {
@@ -63,7 +65,9 @@ export type CaseActionType =
   | CreateCaseAction
   | LoadCaseActionPending
   | LoadCaseActionFulfilled
-  | LoadCaseActionRejected;
+  | LoadCaseActionRejected
+  | ReferenceCaseAction
+  | DereferenceCaseAction;
 
 type CoreActivity = {
   text: string;
@@ -130,7 +134,7 @@ export type CaseStateEntry = {
 
 export type CaseState = {
   cases: {
-    [caseId: string]: CaseStateEntry;
+    [caseId: number]: CaseStateEntry;
   };
 };
 

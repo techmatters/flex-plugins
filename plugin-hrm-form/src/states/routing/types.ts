@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { ContactRawJson, Profile, ProfileSection } from '../../types/types';
+import { Case, ContactRawJson, Profile, ProfileSection } from '../../types/types';
 import { TaskSID } from '../../types/twilio';
 
 // Action types
@@ -110,7 +110,7 @@ type ProfileHomeRoute = RouteWithModalSupport & {
 
 type CaseCoreRoute = RouteWithContext & {
   route: 'case';
-  caseId: string;
+  caseId: Case['id'];
   autoFocus?: boolean;
   isCreating?: boolean;
 };
