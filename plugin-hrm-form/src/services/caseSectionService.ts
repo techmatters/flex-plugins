@@ -26,7 +26,7 @@ export type ApiCaseSection = {
   sectionTypeSpecificData: CaseSectionTypeSpecificData;
   sectionId: string;
   createdAt: string;
-  twilioWorkerId: WorkerSID;
+  createdBy: WorkerSID;
   updatedBy?: WorkerSID;
   updatedAt?: string;
 };

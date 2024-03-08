@@ -20,12 +20,14 @@ import { Case } from '../../../types/types';
 import { selectCounselorName } from '../../configuration/selectCounselorsHash';
 
 const selectCaseItemHistory = (state: RootState, caseObj: Case, caseSectionApi: CaseSectionApi, caseItemId: string) => {
-  const { twilioWorkerId, createdAt, updatedAt, updatedBy } =
+  const { createdBy, createdAt, updatedAt, updatedBy } =
     caseSectionApi.getSectionItemById(caseObj, caseItemId) ?? {};
-  const addingCounsellorName = selectCounselorName(state, twilioWorkerId);
+
+  const addingCounsellorName = selectCounselorName(state, createdBy);
   const added = new Date(createdAt);
   const updatingCounsellorName = selectCounselorName(state, updatedBy);
   const updated = updatedAt ? new Date(updatedAt) : undefined;
+
   return { addingCounsellorName, added, updatingCounsellorName, updated };
 };
 
