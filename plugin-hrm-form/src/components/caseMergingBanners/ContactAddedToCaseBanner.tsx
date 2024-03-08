@@ -76,7 +76,10 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
     return getInitializedCan();
   }, []);
 
-  const { connectedCase } = useCase({ caseId: contact.caseId, referenceId: 'contact-added-to-case-banner' });
+  const { connectedCase } = useCase({
+    caseId: contact.caseId,
+    referenceId: `contact-added-to-case-banner-${contact.id}`,
+  });
 
   const { workerSid } = getHrmConfig();
   const canViewContactAndCase =

@@ -102,7 +102,7 @@ const Case: React.FC<Props> = ({
   const [loadedContactIds, setLoadedContactIds] = useState([]);
   const { connectedCase, loading: loadingCase } = useCase({
     caseId: connectedCaseId,
-    referenceId: 'case-details',
+    referenceId: `case-details-${task.taskSid}`,
   });
 
   const can = React.useMemo(() => {
