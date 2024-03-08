@@ -55,7 +55,7 @@ const mapDispatchToProps = (dispatch, { taskId }: OwnProps) => ({
   viewCaseDetails: ({ id }: Case) => {
     dispatch(newOpenModalAction({ route: 'case', subroute: 'home', caseId: id, isCreating: false }, taskId));
   },
-  removeContactFromCase: async (contactId: string, caseId?: string) => {
+  removeContactFromCase: async (contactId: string, caseId?: Case['id']) => {
     await asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId));
     dispatch(showRemovedFromCaseBannerAction(contactId, caseId));
   },
@@ -76,7 +76,7 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
     return getInitializedCan();
   }, []);
 
-  const { connectedCase } = useCase({ caseId: contact.caseId });
+  const { connectedCase } = useCase({ caseId: contact.caseId, referenceId: 'contact-added-to-case-banner' });
 
   const { workerSid } = getHrmConfig();
   const canViewContactAndCase =

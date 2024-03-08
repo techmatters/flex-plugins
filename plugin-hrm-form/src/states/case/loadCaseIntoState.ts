@@ -19,8 +19,8 @@ import type { DefinitionVersion } from 'hrm-form-definitions';
 import type { CaseState } from './types';
 import type { Case } from '../../types/types';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
+import { referenceCase } from './referenceCase';
 
-// eslint-disable-next-line import/no-unused-modules
 export const loadCaseIntoState = ({
   state,
   caseId,
@@ -34,14 +34,14 @@ export const loadCaseIntoState = ({
   caseId: Case['id'];
   definitionVersion: DefinitionVersion;
   newCase: Case;
-  referenceId?: string;
+  referenceId: string;
   loading?: boolean;
   error?: any;
 }): CaseState => {
   const existingCase = state.cases[caseId];
   const statusUpdates = { loading, error };
 
-  if (!existingCase) {
+  if (!existingCase || !existingCase.connectedCase) {
     return {
       ...state,
       cases: {
@@ -57,17 +57,5 @@ export const loadCaseIntoState = ({
     };
   }
 
-  const updatedReferences = referenceId ? existingCase.references.add(referenceId) : existingCase.references;
-  return {
-    ...state,
-    cases: {
-      ...state.cases,
-      [caseId]: {
-        ...existingCase,
-        references: updatedReferences,
-        connectedCase: newCase,
-        ...statusUpdates,
-      },
-    },
-  };
+  return referenceCase(state, caseId, referenceId);
 };

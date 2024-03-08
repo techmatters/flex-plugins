@@ -23,36 +23,69 @@ import * as CaseSelectors from '../selectors';
 import type { Case } from '../../../types/types';
 import type { RootState } from '../..';
 
-// TODO: REMOVE
-/* eslint-disable import/no-unused-modules */
-
-export const useCaseLoader = ({ caseId, autoload = false }: { caseId: Case['id']; autoload?: boolean }) => {
+const useCaseLoader = ({
+  caseId,
+  referenceId,
+  autoload = true,
+}: {
+  caseId: Case['id'];
+  referenceId: string;
+  autoload?: boolean;
+}) => {
   const dispatch = useDispatch();
+
   const error = useSelector((state: RootState) => CaseSelectors.selectCaseById(state, caseId)?.error);
   const loading = useSelector((state: RootState) => CaseSelectors.selectCaseById(state, caseId)?.loading);
+  const connectedCase = useSelector((state: RootState) => CaseSelectors.selectCaseById(state, caseId)?.connectedCase);
+
+  const exists = Boolean(connectedCase);
 
   const loadCase = useCallback(() => {
-    if (caseId) {
-      asyncDispatch(dispatch)(CaseActions.loadCaseAsync(caseId));
+    if (!caseId || !referenceId) {
+      return;
     }
-  }, [caseId, dispatch]);
 
-  // Allways trigger load on initial mount
+    if (exists) {
+      console.log('>>>>>> case exists, referencing');
+      dispatch(CaseActions.referenceCaseAction({ caseId, referenceId }));
+      return;
+    }
+
+    console.log('>>>>>> case does not exists, loading');
+    asyncDispatch(dispatch)(CaseActions.loadCaseAsync({ caseId, referenceId }));
+  }, [caseId, dispatch, exists, referenceId]);
+
+  const unloadCase = useCallback(() => {
+    if (!caseId || !referenceId) {
+      return;
+    }
+
+    console.log('>>>>>> dereferencing');
+    dispatch(CaseActions.dereferenceCaseAction({ caseId, referenceId }));
+  }, [caseId, dispatch, referenceId]);
+
+  // Trigger load on initial mount
   useEffect(() => {
     if (autoload) {
       loadCase();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [autoload, connectedCase, loadCase, unloadCase]);
+
+  // Cleanup case reference on unmount. This is done in a separate effect since the cleanup is triggered every time an effect is triggered, and this should happen only on "unmount"
+  useEffect(() => {
+    return () => {
+      // setImmediate allows for computing next state before derefencing, preventing concurrently trying to ref/deref in transitions between two components that consume the same case
+      setImmediate(() => unloadCase());
+    };
+  }, [unloadCase]);
 
   return {
     error,
     loading,
-    loadCase,
   };
 };
 
-export const useCase = ({ caseId }: { caseId: Case['id'] }) => {
+export const useCase = ({ caseId, referenceId }: { caseId: Case['id']; referenceId: string }) => {
   // const can = useMemo(() => {
   //   return getInitializedCan();
   // }, []);
@@ -61,6 +94,6 @@ export const useCase = ({ caseId }: { caseId: Case['id'] }) => {
 
   return {
     connectedCase,
-    ...useCaseLoader({ caseId, autoload: true }),
+    ...useCaseLoader({ caseId, referenceId, autoload: true }),
   };
 };

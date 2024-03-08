@@ -100,7 +100,10 @@ const Case: React.FC<Props> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [loadedContactIds, setLoadedContactIds] = useState([]);
-  const { connectedCase, error, loading: loadingCase } = useCase({ caseId: connectedCaseId });
+  const { connectedCase, loading: loadingCase } = useCase({
+    caseId: connectedCaseId,
+    referenceId: 'case-details',
+  });
 
   const can = React.useMemo(() => {
     return action => getInitializedCan()(action, connectedCase);
@@ -144,6 +147,14 @@ const Case: React.FC<Props> = ({
   }, [connectedCase, definitionVersions, task.taskSid, updateDefinitionVersion, version]);
 
   const definitionVersion = props.definitionVersions[version];
+
+  if (loading || loadingCase) {
+    return (
+      <CenteredContainer>
+        <CircularProgress size={50} />
+      </CenteredContainer>
+    );
+  }
 
   if (!connectedCase || !definitionVersion) return null;
 
@@ -255,11 +266,7 @@ const Case: React.FC<Props> = ({
     return <FullTimelineView task={task} />;
   }
 
-  return loading || loadingCase || !definitionVersion ? (
-    <CenteredContainer>
-      <CircularProgress size={50} />
-    </CenteredContainer>
-  ) : (
+  return (
     <CaseHome
       task={task}
       definitionVersion={definitionVersion}
@@ -296,7 +303,7 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
   const updateCaseDefinition = (connectedCase: CaseType, taskSid: string, definition) =>
     dispatch(ConfigActions.updateDefinitionVersion(connectedCase.info.definitionVersion, definition));
   return {
-    redirectToNewCase: (caseId: string) =>
+    redirectToNewCase: (caseId: number) =>
       dispatch(
         RoutingActions.changeRoute(
           { route: 'case', subroute: 'home', caseId, isCreating: true },

@@ -14,27 +14,33 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { createAsyncAction } from 'redux-promise-middleware-actions';
+import { createAction, createAsyncAction } from 'redux-promise-middleware-actions';
 
 import * as CaseService from '../../services/CaseService';
 import * as t from './types';
 import { loadCaseIntoState } from './loadCaseIntoState';
 import type { Case } from '../../types/types';
 import type { HrmState } from '..';
+import { dereferenceCase, referenceCase } from './referenceCase';
 
-export const loadCaseAsync = createAsyncAction(t.LOAD_CASE_ACTION, CaseService.getCase, (caseId: Case['id']) => ({
-  caseId,
-}));
+export const loadCaseAsync = createAsyncAction(
+  t.LOAD_CASE_ACTION,
+  ({ caseId }) => CaseService.getCase(caseId),
+  ({ caseId, referenceId }: { caseId: Case['id']; referenceId: string }) => ({
+    caseId,
+    referenceId,
+  }),
+);
 
 export type LoadCaseAsync = typeof loadCaseAsync;
 
-type LoadCaseAyncMeta = { caseId: Case['id'] };
+type LoadCaseAyncMeta = { caseId: Case['id']; referenceId: string };
 
 export const handleLoadCasePendingAction = (
   state: HrmState,
   action: ReturnType<LoadCaseAsync['pending']> & { meta?: LoadCaseAyncMeta },
 ): HrmState => {
-  const { caseId } = action.meta;
+  const { caseId, referenceId } = action.meta;
 
   const cas = state.connectedCase.cases[caseId]?.connectedCase;
 
@@ -47,6 +53,7 @@ export const handleLoadCasePendingAction = (
       newCase: cas,
       error: null,
       loading: true,
+      referenceId,
     }),
   };
 };
@@ -55,7 +62,7 @@ export const handleLoadCaseFulfilledAction = (
   state: HrmState,
   action: ReturnType<LoadCaseAsync['fulfilled']> & { meta?: LoadCaseAyncMeta },
 ): HrmState => {
-  const { caseId } = action.meta;
+  const { caseId, referenceId } = action.meta;
 
   const cas = action.payload;
 
@@ -68,6 +75,7 @@ export const handleLoadCaseFulfilledAction = (
       newCase: cas,
       error: null,
       loading: false,
+      referenceId,
     }),
   };
 };
@@ -76,7 +84,7 @@ export const handleLoadCaseRejectedAction = (
   state: HrmState,
   action: ReturnType<LoadCaseAsync['rejected']> & { meta?: LoadCaseAyncMeta },
 ): HrmState => {
-  const { caseId } = action.meta;
+  const { caseId, referenceId } = action.meta;
 
   const cas = state.connectedCase.cases[caseId]?.connectedCase;
 
@@ -89,6 +97,41 @@ export const handleLoadCaseRejectedAction = (
       newCase: cas,
       error: action.payload,
       loading: false,
+      referenceId,
     }),
   };
+};
+
+export const referenceCaseAction = createAction(
+  t.REFERENCE_CASE_ACTION,
+  ({ caseId, referenceId }: { caseId: Case['id']; referenceId: string }) => ({
+    caseId,
+    referenceId,
+  }),
+);
+
+export type ReferenceCaseAction = ReturnType<typeof referenceCaseAction>;
+
+export const handleReferenceCaseAction = (state: HrmState, action: ReferenceCaseAction): HrmState => {
+  const { caseId, referenceId } = action.payload;
+  const updatedCaseState = referenceCase(state.connectedCase, caseId, referenceId);
+
+  return { ...state, connectedCase: updatedCaseState };
+};
+
+export const dereferenceCaseAction = createAction(
+  t.DEREFERENCE_CASE_ACTION,
+  ({ caseId, referenceId }: { caseId: Case['id']; referenceId: string }) => ({
+    caseId,
+    referenceId,
+  }),
+);
+
+export type DereferenceCaseAction = ReturnType<typeof dereferenceCaseAction>;
+
+export const handleDereferenceCaseAction = (state: HrmState, action: DereferenceCaseAction): HrmState => {
+  const { caseId, referenceId } = action.payload;
+  const updatedCaseState = dereferenceCase(state.connectedCase, caseId, referenceId);
+
+  return { ...state, connectedCase: updatedCaseState };
 };
