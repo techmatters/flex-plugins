@@ -62,7 +62,7 @@ export const selectCaseActivities = (state: RootState, caseId: string, pageSize:
 export const selectCaseActivityCount = ({ [namespace]: { connectedCase } }: RootState, caseId: string) =>
   getActivityCount(connectedCase.cases[caseId]?.connectedCase) ?? 0;
 
-type PaginationSettings = { offset: number; limit: number };
+export type PaginationSettings = { offset: number; limit: number };
 
 export const newGetTimelineAsyncAction = createAsyncAction(
   GET_CASE_TIMELINE_ACTION,
@@ -105,6 +105,7 @@ export const timelineReducer = (initialState: HrmState): ((state: HrmState, acti
             const { activity } = timelineActivity;
             timeline[index + pagination.offset] = {
               ...timelineActivity,
+              activityType: 'case-section-id',
               activity: { sectionType: activity.sectionType, sectionId: activity.sectionId },
             } as CaseSectionIdentifierTimelineActivity;
             caseEntry.sections[activity.sectionType] = caseEntry.sections[activity.sectionType] ?? {};
@@ -113,6 +114,7 @@ export const timelineReducer = (initialState: HrmState): ((state: HrmState, acti
             const { activity } = timelineActivity;
             timeline[index + pagination.offset] = {
               ...timelineActivity,
+              activityType: 'contact-id',
               activity: { contactId: activity.id },
             } as ContactIdentifierTimelineActivity;
           }
