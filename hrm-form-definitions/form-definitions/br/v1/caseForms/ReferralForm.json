@@ -3,7 +3,10 @@
     "name": "date",
     "type": "date-input",
     "label": "Data",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "metadata": {
+      "eventTimestampSource": true
+    }
   },
   {
     "name": "referredTo",
