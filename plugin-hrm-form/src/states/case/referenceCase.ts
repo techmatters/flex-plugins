@@ -21,8 +21,6 @@ import type { Case } from '../../types/types';
 
 export const referenceCase = (state: CaseState, caseId: Case['id'], referenceId: string): CaseState => {
   const existingCase = state.cases[caseId];
-  console.log('>>>>>> trying to reference case, existingCase:', existingCase);
-
   const updatedReferences = existingCase.references.add(referenceId);
 
   return {

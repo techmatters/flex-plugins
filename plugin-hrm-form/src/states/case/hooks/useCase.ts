@@ -46,12 +46,10 @@ const useCaseLoader = ({
     }
 
     if (exists) {
-      console.log('>>>>>> case exists, referencing');
       dispatch(CaseActions.referenceCaseAction({ caseId, referenceId }));
       return;
     }
 
-    console.log('>>>>>> case does not exists, loading');
     asyncDispatch(dispatch)(CaseActions.loadCaseAsync({ caseId, referenceId }));
   }, [caseId, dispatch, exists, referenceId]);
 
@@ -60,7 +58,6 @@ const useCaseLoader = ({
       return;
     }
 
-    console.log('>>>>>> dereferencing');
     dispatch(CaseActions.dereferenceCaseAction({ caseId, referenceId }));
   }, [caseId, dispatch, referenceId]);
 
