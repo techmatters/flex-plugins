@@ -134,7 +134,7 @@ export type CaseStateEntry = {
 
 export type CaseState = {
   cases: {
-    [caseId: number]: CaseStateEntry;
+    [caseId: t.Case['id']]: CaseStateEntry;
   };
 };
 
