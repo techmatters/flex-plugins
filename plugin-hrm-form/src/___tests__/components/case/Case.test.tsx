@@ -38,7 +38,11 @@ import { CaseStateEntry } from '../../../states/case/types';
 import { TaskSID, WorkerSID } from '../../../types/twilio';
 import { VALID_EMPTY_CASE } from '../../testCases';
 
-jest.mock('../../../services/CaseService', () => ({ getActivities: jest.fn(() => []), cancelCase: jest.fn() }));
+jest.mock('../../../services/CaseService', () => ({
+  getActivities: jest.fn(() => []),
+  cancelCase: jest.fn(),
+  getCase: jest.fn(),
+}));
 jest.mock('../../../permissions', () => ({
   getInitializedCan: jest.fn(() => () => true),
   PermissionActions: {},
@@ -95,13 +99,13 @@ describe('useState mocked', () => {
       categories: {},
     },
     taskId: TASK_SID,
-    caseId: 'case1',
+    caseId: 1,
   };
 
   const case1: CaseStateEntry = {
     connectedCase: {
       ...VALID_EMPTY_CASE,
-      id: 'case1',
+      id: 1,
       createdAt: BASELINE_DATE.toISOString(),
       updatedAt: BASELINE_DATE.toISOString(),
       twilioWorkerId: WORKER_SID,
@@ -133,7 +137,7 @@ describe('useState mocked', () => {
       connectedCase: {
         cases: {},
       },
-      routing: { tasks: { [standaloneTaskSid]: [{ route: 'case', subroute: 'home', caseId: 'case1' }] } },
+      routing: { tasks: { [standaloneTaskSid]: [{ route: 'case', subroute: 'home', caseId: 1 }] } },
     });
 
     ownProps = {
@@ -164,7 +168,7 @@ describe('useState mocked', () => {
       createState({
         ...initialState[namespace],
         connectedCase: {
-          cases: { case1 },
+          cases: { 1: case1 },
         },
       }),
     );
@@ -180,7 +184,7 @@ describe('useState mocked', () => {
 
     expect(screen.getByTestId('CaseHome-CaseDetailsComponent')).toBeInTheDocument();
 
-    expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('case1');
+    expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain(1);
     expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
     expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe(
       BASELINE_DATE.toLocaleDateString(),
@@ -189,7 +193,7 @@ describe('useState mocked', () => {
 
     expect(store.dispatch).toHaveBeenCalledWith({
       contacts: [connectedContact],
-      reference: 'case-case1',
+      reference: 'case-1',
       replaceExisting: false,
       type: LOAD_CONTACT_ACTION,
     });
@@ -203,12 +207,12 @@ describe('useState mocked', () => {
         existingContacts: {
           contact1: {
             savedContact: connectedContact,
-            references: ['case-case1'],
+            references: ['case-1'],
           },
         },
       },
       connectedCase: {
-        cases: { case1 },
+        cases: { 1: case1 },
       },
     });
     const store = mockStore(stateWithContact);
@@ -224,7 +228,7 @@ describe('useState mocked', () => {
 
     expect(screen.getByTestId('CaseHome-CaseDetailsComponent')).toBeInTheDocument();
 
-    expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('case1');
+    expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain(1);
     expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
     expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe(
       BASELINE_DATE.toLocaleDateString(),
@@ -238,7 +242,7 @@ describe('useState mocked', () => {
       ...initialState[namespace],
       connectedCase: {
         cases: {
-          case1: {
+          1: {
             ...case1,
             connectedCase: { ...case1.connectedCase, updatedAt: '2020-06-29T22:29:00.208Z' },
           },
@@ -258,7 +262,7 @@ describe('useState mocked', () => {
 
     expect(screen.getByTestId('CaseHome-CaseDetailsComponent')).toBeInTheDocument();
 
-    expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('case1');
+    expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain(1);
     expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
     expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe(
       BASELINE_DATE.toLocaleDateString(),
@@ -269,7 +273,7 @@ describe('useState mocked', () => {
 
     expect(store.dispatch).toHaveBeenCalledWith({
       contacts: [connectedContact],
-      reference: 'case-case1',
+      reference: 'case-1',
       replaceExisting: false,
       type: LOAD_CONTACT_ACTION,
     });
