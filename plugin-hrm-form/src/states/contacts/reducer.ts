@@ -58,12 +58,12 @@ import { resourceReferralReducer } from './resourceReferral';
 import { ContactCategoryAction, toggleSubCategoriesReducer } from './categories';
 import { HrmState } from '..';
 import { createCaseAsyncAction } from '../case/saveCase';
-import { newContactState } from './contactState';
 import { loadContactIntoRedux, saveContactReducer } from './saveContact';
-import { configurationBase } from '../storeNamespaces';
 import { ConfigurationState } from '../configuration/reducer';
 import { Contact } from '../../types/types';
 import { SEARCH_CONTACTS_SUCCESS, SearchContactsSuccessAction } from '../search/types';
+import { GET_CASE_TIMELINE_ACTION, isContactTimelineActivity } from '../case/types';
+import { GetTimelineAsyncAction } from '../case/timeline';
 
 export const emptyCategories = [];
 
@@ -134,7 +134,7 @@ const loadContactListIntoState = (
 export function reduce(
   rootState: HrmState,
   inputState = initialState,
-  action:
+  inputAction:
     | t.ContactsActionType
     | ExistingContactAction
     | ContactDetailsAction
@@ -142,12 +142,14 @@ export function reduce(
     | RemoveContactStateAction
     | t.UpdatedContactAction
     | SaveContactReducerAction
-    | SearchContactsSuccessAction,
+    | SearchContactsSuccessAction
+  | GetTimelineAsyncAction,
 ): ContactsState {
-  let state = boundReferralReducer(inputState, action as any);
-  state = toggleSubCategoriesReducer(state, action as ContactCategoryAction);
-  state = newCaseReducer(state, action as any);
-  state = boundSaveContactReducer(state, action as SaveContactReducerAction);
+  let state = boundReferralReducer(inputState, inputAction as any);
+  state = toggleSubCategoriesReducer(state, inputAction as ContactCategoryAction);
+  state = newCaseReducer(state, inputAction as any);
+  state = boundSaveContactReducer(state, inputAction as SaveContactReducerAction);
+  const action: Exclude<typeof inputAction, SaveContactReducerAction> = inputAction as any;
   switch (action.type) {
     case REMOVE_CONTACT_STATE: {
       const contactId = Object.values(state.existingContacts).find(cs => cs.savedContact.taskId === action.taskId)
@@ -206,21 +208,6 @@ export function reduce(
         },
       };
     }
-    case t.RESTORE_ENTIRE_FORM: {
-      const definition =
-        rootState[configurationBase].definitionVersions[action.contact.savedContact.rawJson.definitionVersion];
-      const { savedContact } = action.contact;
-      return {
-        ...state,
-        existingContacts: {
-          ...state.existingContacts,
-          [savedContact.id]: {
-            ...(state.existingContacts[savedContact.id] || newContactState(definition)(true)),
-            ...action.contact,
-          },
-        },
-      };
-    }
     case LOAD_CONTACT_ACTION: {
       return { ...state, existingContacts: loadContactReducer(state.existingContacts, action) };
     }
@@ -256,6 +243,11 @@ export function reduce(
     }
     case SEARCH_CONTACTS_SUCCESS: {
       return loadContactListIntoState(state, rootState.configuration, action.searchResult.contacts, `${action.taskId}-search`);
+    }
+    case GET_CASE_TIMELINE_ACTION: {
+      const { payload: { caseId, timelineResult: { activities } } } = action;
+      const contacts = activities.filter(isContactTimelineActivity).map(({ activity })=> activity);
+      return loadContactListIntoState(state, rootState.configuration, contacts, `case-${caseId}`);
     }
     default:
       return state;

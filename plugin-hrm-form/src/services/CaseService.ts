@@ -19,8 +19,36 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { fetchHrmApi } from './fetchHrmApi';
 import { getQueryParams } from './PaginationParams';
-import { Case, CaseOverview, Contact, SearchCaseResult } from '../types/types';
-import { ApiError, FetchOptions } from './fetchApi';
+import { Case, CaseOverview, Contact, SearchCaseResult, WellKnownCaseSection } from '../types/types';
+import { FetchOptions } from './fetchApi';
+import { GenericTimelineActivity } from '../states/case/types';
+import {
+  ApiCaseSection,
+  convertApiCaseSectionToCaseSection,
+  FullCaseSection,
+  FullGenericCaseSection,
+} from './caseSectionService';
+
+type ApiCaseWithSections = Omit<Case, 'sections'> & { sections: { [cs in WellKnownCaseSection]?: ApiCaseSection[] } };
+type ApiCaseSearchResult = Omit<SearchCaseResult, 'cases'> & { cases: ApiCaseWithSections[] };
+
+const convertCaseSections = (caseObj: ApiCaseWithSections): Case => {
+  if (typeof caseObj === 'object') {
+    if (caseObj.sections) {
+      const convertedCaseSections: { [cs in WellKnownCaseSection]?: FullCaseSection[] } = Object.fromEntries(
+        Object.entries(caseObj.sections).map(([key, value]) => {
+          return [key, value.map(convertApiCaseSectionToCaseSection)];
+        }),
+      );
+      return {
+        ...caseObj,
+        sections: convertedCaseSections,
+      };
+    }
+    return caseObj as any; // TypeScript is poo
+  }
+  return caseObj;
+};
 
 export async function createCase(contact: Contact, creatingWorkerSid: string, definitionVersion: DefinitionVersionId) {
   const { helpline, rawJson: contactForm } = contact;
@@ -78,7 +106,46 @@ export async function getCase(caseId: Case['id']): Promise<Case> {
     method: 'GET',
     returnNullFor404: true,
   };
-  return fetchHrmApi(`/cases/${caseId}`, options);
+  const fromApi: ApiCaseWithSections = await fetchHrmApi(`/cases/${caseId}`, options);
+  return convertCaseSections(fromApi);
+}
+
+export type TimelineResult<TDate extends string | Date> = {
+  activities: GenericTimelineActivity<any, TDate>[];
+  count: number;
+};
+
+const isApiCaseSectionTimelineActivity = (
+  activity: GenericTimelineActivity<any, string>,
+): activity is GenericTimelineActivity<FullGenericCaseSection<string>, string> =>
+  activity.activityType === 'case-section';
+
+export async function getCaseTimeline(
+  caseId: Case['id'],
+  sectionTypes: WellKnownCaseSection[],
+  includeContacts: boolean,
+  paginationSettings: { offset: number; limit: number },
+): Promise<TimelineResult<Date>> {
+  const queryParamsString = getQueryParams(paginationSettings);
+  const options = {
+    method: 'GET',
+  };
+  const rawResult: TimelineResult<string> = await fetchHrmApi(
+    `/cases/${caseId}/timeline${queryParamsString}&includeContacts=${includeContacts}&sectionTypes=${sectionTypes.join(
+      ',',
+    )}`,
+    options,
+  );
+  return {
+    ...rawResult,
+    activities: rawResult.activities.map(activity => ({
+      ...activity,
+      timestamp: new Date(activity.timestamp),
+      activity: isApiCaseSectionTimelineActivity(activity)
+        ? convertApiCaseSectionToCaseSection(activity.activity)
+        : activity.activity,
+    })),
+  };
 }
 
 export async function searchCases(searchParams, limit, offset): Promise<SearchCaseResult> {
@@ -93,5 +160,10 @@ export async function listCases(queryParams, listCasesPayload): Promise<SearchCa
     body: JSON.stringify(listCasesPayload),
   };
 
-  return fetchHrmApi(`/cases/search${queryParamsString}`, options);
+  const fromApi: ApiCaseSearchResult = await fetchHrmApi(`/cases/search${queryParamsString}`, options);
+
+  return {
+    ...fromApi,
+    cases: fromApi.cases.map(convertCaseSections),
+  };
 }

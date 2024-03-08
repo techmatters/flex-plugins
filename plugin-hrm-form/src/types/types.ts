@@ -21,7 +21,7 @@ import type { CallTypes, DefinitionVersionId } from 'hrm-form-definitions';
 import type { ChannelTypes } from '../states/DomainConstants';
 import type { ResourceReferral } from '../states/contacts/resourceReferral';
 import { DateFilterValue } from '../states/caseList/dateFilters';
-import { ApiCaseSection } from '../services/caseSectionService';
+import { CaseSection } from '../services/caseSectionService';
 import { AccountSID, TaskSID, WorkerSID } from './twilio';
 
 declare global {
@@ -47,11 +47,7 @@ export type CaseItemEntry = { form: CaseItemFormValues } & EntryInfo;
 
 export type Household = { [key: string]: string | boolean };
 
-export type HouseholdEntry = { household: Household } & EntryInfo;
-
 export type Perpetrator = { [key: string]: string | boolean };
-
-export type PerpetratorEntry = { perpetrator: Perpetrator } & EntryInfo;
 
 export type Incident = { [key: string]: string | boolean };
 
@@ -106,7 +102,7 @@ export type Case = {
   statusUpdatedBy?: WorkerSID;
   previousStatus?: string;
   connectedContacts: Contact[];
-  sections: { [K in WellKnownCaseSection]?: ApiCaseSection[] };
+  sections?: { [K in WellKnownCaseSection]?: CaseSection[] };
   categories: Record<string, string[]>;
 };
 

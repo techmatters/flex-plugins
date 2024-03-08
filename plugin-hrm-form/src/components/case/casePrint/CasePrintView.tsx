@@ -32,11 +32,11 @@ import CasePrintNotes from './CasePrintNotes';
 import CasePrintHeader from './CasePrintHeader';
 import CasePrintFooter from './CasePrintFooter';
 import CasePrintCSAMReports from './CasePrintCSAMReports';
-// import CasePrintContact from './CasePrintContact'; // Removed by ZA request, could be useful for other helplines.
 import { getImageAsString, ImageSource } from './images';
-import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
+import { getHrmConfig } from '../../../hrmConfig';
 import NavigableContainer from '../../NavigableContainer';
-import { Case, CustomITask, StandaloneITask } from '../../../types/types';
+import { Case, Contact, CustomITask, StandaloneITask } from '../../../types/types';
+import { TimelineActivity } from '../../../states/case/types';
 
 type OwnProps = {
   onClickClose: () => void;
@@ -45,6 +45,7 @@ type OwnProps = {
   counselorsHash: { [sid: string]: string };
   task: CustomITask | StandaloneITask;
   office: HelplineEntry | undefined;
+  contactTimeline: TimelineActivity<Contact>[];
 };
 type Props = OwnProps;
 
@@ -55,8 +56,8 @@ const CasePrintView: React.FC<Props> = ({
   counselorsHash,
   task,
   office,
+  contactTimeline,
 }) => {
-  const strings = getTemplateStrings();
   const { pdfImagesSource } = getHrmConfig();
 
   const logoSource = `${pdfImagesSource}/helpline-logo.png`;
@@ -145,72 +146,71 @@ const CasePrintView: React.FC<Props> = ({
                   chkOffBlob={chkOffBlob}
                   definitionVersion={definitionVersion}
                 />
-                {connectedCase.connectedContacts?.[0]?.rawJson?.callType === callTypes.caller ? (
-                  <View>
+                {contactTimeline.map(({ activity }, idx) => {
+                  const sectionNameTemplateValues = {
+                    sectionNo: (idx + 1).toString(),
+                    sectionCount: contactTimeline.length.toString(),
+                  };
+                  return activity.rawJson.callType === callTypes.caller ? (
+                    <View>
+                      <CasePrintSection
+                        sectionNameTemplateCode="SectionName-CallerInformation"
+                        sectionNameTemplateValues={sectionNameTemplateValues}
+                        definitions={[
+                          ...definitionVersion.tabbedForms.CaseInformationTab.filter(definition => {
+                            // eslint-disable-next-line
+                          return definition['highlightedAtCasePrint'] ? definition : null;
+                          }),
+                          ...definitionVersion.tabbedForms.CallerInformationTab,
+                        ]}
+                        values={{
+                          ...contact?.rawJson?.caseInformation,
+                          ...contact?.rawJson?.callerInformation,
+                        }}
+                      />
+                      <CasePrintSection
+                        sectionNameTemplateCode="SectionName-ChildInformation"
+                        sectionNameTemplateValues={sectionNameTemplateValues}
+                        definitions={definitionVersion.tabbedForms.ChildInformationTab}
+                        values={contact?.rawJson?.childInformation}
+                      />
+                    </View>
+                  ) : (
                     <CasePrintSection
-                      sectionName={strings['SectionName-CallerInformation']}
+                      sectionNameTemplateCode="SectionName-ChildInformation"
+                      sectionNameTemplateValues={sectionNameTemplateValues}
                       definitions={[
                         ...definitionVersion.tabbedForms.CaseInformationTab.filter(definition => {
                           // eslint-disable-next-line
-                          return definition['highlightedAtCasePrint'] ? definition : null;
+                        return definition['highlightedAtCasePrint'] ? definition : null;
                         }),
-                        ...definitionVersion.tabbedForms.CallerInformationTab,
+                        ...definitionVersion.tabbedForms.ChildInformationTab,
                       ]}
                       values={{
                         ...contact?.rawJson?.caseInformation,
-                        ...contact?.rawJson?.callerInformation,
+                        ...contact?.rawJson?.childInformation,
                       }}
                     />
-                    <CasePrintSection
-                      sectionName={strings['SectionName-ChildInformation']}
-                      definitions={definitionVersion.tabbedForms.ChildInformationTab}
-                      values={contact?.rawJson?.childInformation}
-                    />
-                  </View>
-                ) : (
-                  <CasePrintSection
-                    sectionName={strings['SectionName-ChildInformation']}
-                    definitions={[
-                      ...definitionVersion.tabbedForms.CaseInformationTab.filter(definition => {
-                        // eslint-disable-next-line
-                        return definition['highlightedAtCasePrint'] ? definition : null;
-                      }),
-                      ...definitionVersion.tabbedForms.ChildInformationTab,
-                    ]}
-                    values={{
-                      ...contact?.rawJson?.caseInformation,
-                      ...contact?.rawJson?.childInformation,
-                    }}
-                  />
-                )}
-                {/* // Removed by ZA request, could be useful for other helplines.
-                <CasePrintContact
-                  sectionName={strings['SectionName-Contact']}
-                  contact={caseDetails.contact}
-                  counselor={caseDetails.caseCounselor}
-                /> */}
+                  );
+                })}
                 <CasePrintMultiSection
-                  sectionName={strings['SectionName-HouseholdMember']}
-                  sectionKey="household"
+                  sectionNameTemplateCode="SectionName-HouseholdMember"
                   definitions={definitionVersion.caseForms.HouseholdForm}
                   values={household}
                 />
                 <CasePrintMultiSection
-                  sectionName={strings['SectionName-Perpetrator']}
-                  sectionKey="perpetrator"
+                  sectionNameTemplateCode="SectionName-Perpetrator"
                   definitions={definitionVersion.caseForms.PerpetratorForm}
                   values={perpetrator}
                 />
                 <CasePrintMultiSection
-                  sectionName={strings['SectionName-Incident']}
+                  sectionNameTemplateCode="SectionName-Incident"
                   definitions={definitionVersion.caseForms.IncidentForm}
-                  sectionKey="incident"
                   values={incident}
                 />
                 <CasePrintMultiSection
-                  sectionName={strings['SectionName-Referral']}
+                  sectionNameTemplateCode="SectionName-Referral"
                   definitions={definitionVersion.caseForms.ReferralForm}
-                  sectionKey="referral"
                   values={referral}
                 />
                 <CasePrintNotes notes={note} counselorsHash={counselorsHash} />

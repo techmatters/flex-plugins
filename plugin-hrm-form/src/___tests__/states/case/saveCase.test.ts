@@ -232,8 +232,11 @@ describe('createCaseAsyncAction', () => {
             connectedCase: {
               id: '234',
               connectedContacts: [{ id: 'contact-1' }],
+              sections: undefined,
             },
             references: new Set(),
+            sections: {},
+            timelines: {},
           },
         },
       },
@@ -301,7 +304,7 @@ describe('updateCaseOverviewAsyncAction', () => {
 
   // Jest too crap to handle 2 async calls in a single action apparently
   test.skip('overview and status populated in action - calls both endpoints', async () => {
-    const action = updateCaseOverviewAsyncAction(mockPayload.id, overview, 'new-status');
+    updateCaseOverviewAsyncAction(mockPayload.id, overview, 'new-status');
     expect(updateCaseOverview).toHaveBeenCalledWith(mockPayload.id, overview);
     expect(updateCaseStatus).toHaveBeenCalledWith(mockPayload.id, 'new-status');
     expect(mockGetCase).not.toHaveBeenCalled();
@@ -360,6 +363,8 @@ describe('updateCaseOverviewAsyncAction', () => {
           references: new Set(),
           availableStatusTransitions: [],
           caseWorkingCopy: { sections: {} },
+          sections: {},
+          timelines: {},
         },
       });
     });

@@ -6,6 +6,9 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
+    },
+    "metadata": {
+      "eventTimestampSource": true
     }
   },
   {

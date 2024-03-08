@@ -63,10 +63,11 @@ beforeEach(() => {
             sections: {
               note: [
                 {
-                  sectionTypeSpecificData: { text: 'existing note' },
+                  sectionTypeSpecificData: { text: 'existing note' } as any,
                   sectionId: 'EXISTING_NOTE_ID',
-                  twilioWorkerId: 'WK-WORKER_ID',
-                  createdAt: BASELINE_DATE.toISOString(),
+                  createdBy: 'WK-WORKER_ID',
+                  createdAt: BASELINE_DATE,
+                  eventTimestamp: BASELINE_DATE,
                 },
               ],
             },
@@ -87,22 +88,24 @@ describe('createCaseSectionAsyncAction', () => {
     mockCreateSection.mockResolvedValue({
       sectionTypeSpecificData: payload,
       sectionId: 'SECTION_ID',
-      twilioWorkerId: 'WK-WORKER_ID',
-      createdAt: BASELINE_DATE.toISOString(),
+      createdBy: 'WK-WORKER_ID',
+      createdAt: BASELINE_DATE,
+      eventTimestamp: BASELINE_DATE,
     });
   });
 
   test('calls createCaseSection with parameters taken form the action', async () => {
     const res = createCaseSectionAsyncAction(CASE_ID, 'note', payload);
-    expect(mockCreateSection).toHaveBeenCalledWith(CASE_ID, 'note', payload);
+    expect(mockCreateSection).toHaveBeenCalledWith(CASE_ID, 'note', payload, undefined);
     const result = await res.payload;
     expect(result).toEqual({
       caseId: CASE_ID,
       section: {
         sectionTypeSpecificData: payload,
         sectionId: 'SECTION_ID',
-        twilioWorkerId: 'WK-WORKER_ID',
-        createdAt: BASELINE_DATE.toISOString(),
+        createdBy: 'WK-WORKER_ID',
+        createdAt: BASELINE_DATE,
+        eventTimestamp: BASELINE_DATE,
       },
       sectionType: 'note',
     });
@@ -112,8 +115,9 @@ describe('createCaseSectionAsyncAction', () => {
     const EXPECTED_CASE_SECTION = {
       sectionTypeSpecificData: payload,
       sectionId: 'SECTION_ID',
-      twilioWorkerId: 'WK-WORKER_ID',
-      createdAt: BASELINE_DATE.toISOString(),
+      createdBy: 'WK-WORKER_ID',
+      createdAt: BASELINE_DATE,
+      eventTimestamp: BASELINE_DATE,
     };
 
     test(`case already has sections of the same type - appends section to the appropriate section type list`, async () => {
@@ -142,6 +146,8 @@ describe('createCaseSectionAsyncAction', () => {
               references: new Set(),
               caseWorkingCopy: null,
               connectedCase: { ...VALID_EMPTY_CASE },
+              timelines: {},
+              sections: {},
             },
           },
         },
@@ -191,22 +197,24 @@ describe('updateCaseSectionAsyncAction', () => {
     mockUpdateSection.mockImplementation(async (caseId, sectionType, sectionId, sectionData) => ({
       sectionTypeSpecificData: sectionData,
       sectionId,
-      twilioWorkerId: 'WK-WORKER_ID',
-      createdAt: BASELINE_DATE.toISOString(),
+      createdBy: 'WK-WORKER_ID',
+      createdAt: BASELINE_DATE,
+      eventTimestamp: BASELINE_DATE,
     }));
   });
 
   test('calls updateCaseSection with parameters taken form the action', async () => {
     const res = updateCaseSectionAsyncAction(CASE_ID, 'note', 'EXISTING_NOTE_ID', payload);
-    expect(mockUpdateSection).toHaveBeenCalledWith(CASE_ID, 'note', 'EXISTING_NOTE_ID', payload);
+    expect(mockUpdateSection).toHaveBeenCalledWith(CASE_ID, 'note', 'EXISTING_NOTE_ID', payload, undefined);
     const result = await res.payload;
     expect(result).toEqual({
       caseId: CASE_ID,
       section: {
         sectionTypeSpecificData: payload,
         sectionId: 'EXISTING_NOTE_ID',
-        twilioWorkerId: 'WK-WORKER_ID',
-        createdAt: BASELINE_DATE.toISOString(),
+        createdBy: 'WK-WORKER_ID',
+        createdAt: BASELINE_DATE,
+        eventTimestamp: BASELINE_DATE,
       },
       sectionType: 'note',
     });
@@ -216,8 +224,9 @@ describe('updateCaseSectionAsyncAction', () => {
     const EXPECTED_CASE_SECTION = {
       sectionTypeSpecificData: payload,
       sectionId: 'EXISTING_NOTE_ID',
-      twilioWorkerId: 'WK-WORKER_ID',
-      createdAt: BASELINE_DATE.toISOString(),
+      createdBy: 'WK-WORKER_ID',
+      createdAt: BASELINE_DATE,
+      eventTimestamp: BASELINE_DATE,
     };
 
     test(`case with caseId exists & section with sectionId exists - updates the section in the appropriate type list`, async () => {
@@ -266,6 +275,8 @@ describe('updateCaseSectionAsyncAction', () => {
               references: new Set(),
               caseWorkingCopy: null,
               connectedCase: { ...VALID_EMPTY_CASE },
+              timelines: {},
+              sections: {},
             },
           },
         },

@@ -24,6 +24,8 @@ export const enum PageTelemetryLevel {
   ALL = 'all',
 }
 
+const DEFAULT_EXCLUSIONS: RegExp[] = [/.*FlexModule: FlexModule not initialized.*/];
+
 export type PageTelemetryConfig = {
   level: PageTelemetryLevel;
   logResponseBody: boolean;
@@ -46,7 +48,8 @@ export function logPageTelemetry(
     if (
       config.level === PageTelemetryLevel.ALL ||
       message.type() === 'error' ||
-      message.type() === 'warn'
+      message.type() === 'warn' ||
+      DEFAULT_EXCLUSIONS.every((exclusion) => !exclusion.test(message.text()))
     ) {
       console.log(`[BROWSER: ${page.url()} (${message.type()})] ${message.text()}`);
     }

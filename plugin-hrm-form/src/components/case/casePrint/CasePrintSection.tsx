@@ -19,26 +19,36 @@
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
 import { FormDefinition } from 'hrm-form-definitions';
+import Handlebars from 'handlebars';
 
 import styles from './styles';
 import { presentValueFromStrings } from './presentValuesFromStrings';
 import { getTemplateStrings } from '../../../hrmConfig';
 
 type OwnProps = {
-  sectionName: string;
+  sectionNameTemplateCode: string;
+  sectionNameTemplateValues: Record<string, string>;
   values: Record<string, string | boolean>;
   definitions: FormDefinition;
 };
 
 type Props = OwnProps;
 
-const CasePrintSection: React.FC<Props> = ({ sectionName, values, definitions }) => {
+const CasePrintSection: React.FC<Props> = ({
+  sectionNameTemplateCode,
+  sectionNameTemplateValues,
+  values,
+  definitions,
+}) => {
+  // <Template .../> tags don't render in the PDF it seems
   const strings = getTemplateStrings();
 
   return (
     <View>
       <View style={styles['sectionHeader']}>
-        <Text style={styles['whiteText']}>{sectionName}</Text>
+        <Text style={styles['whiteText']}>
+          {Handlebars.compile(strings[sectionNameTemplateCode])(sectionNameTemplateValues)}
+        </Text>
       </View>
       <View style={styles['sectionBody']}>
         {definitions.map((def, i) => {

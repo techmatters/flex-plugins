@@ -51,6 +51,7 @@
     "@react-pdf/renderer": "^2.3.0",
     "date-fns": "^2.11.1",
     "emoji-mart": "^5.5.2",
+    "handlebars": "^4.7.8",
     "hrm-form-definitions": "file:../hrm-form-definitions",
     "lodash": "^4.17.19",
     "prop-types": "^15.7.2",

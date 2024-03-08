@@ -115,6 +115,8 @@ describe('useState mocked', () => {
     availableStatusTransitions: [],
     references: new Set(['x']),
     caseWorkingCopy: undefined,
+    sections: {},
+    timelines: {},
   };
 
   beforeEach(() => {
