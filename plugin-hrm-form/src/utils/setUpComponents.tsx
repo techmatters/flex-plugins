@@ -375,6 +375,37 @@ export const setLogo = url => {
   }
 };
 
+export const applyStagingTheme = (environment: string) => {
+  // if (environment !== 'staging') return;
+
+  Flex.MainHeader.defaultProps.logoUrl = 'https://gcdnb.pbrd.co/images/90FVp2r5Wfwy.png';
+
+  const manager = Flex.Manager.getInstance();
+  const currentConfig = manager.configuration;
+  const currentTheme = currentConfig.theme;
+  const currentThemeOverrides = currentTheme.componentThemeOverrides;
+  const currentMainHeader = currentThemeOverrides.MainHeader;
+  const currentMainHeaderContainer = currentMainHeader.Container;
+
+  const newConfig: Flex.Config = {
+    ...currentConfig,
+    theme: {
+      ...currentTheme,
+      componentThemeOverrides: {
+        ...currentThemeOverrides,
+        MainHeader: {
+          ...currentMainHeader,
+          Container: {
+            ...currentMainHeaderContainer,
+            background: 'black',
+          },
+        },
+      },
+    },
+  };
+  manager.updateConfig(newConfig);
+};
+
 /**
  * Removes open directory button from Call Canvas Actions (bottom buttons)
  */
