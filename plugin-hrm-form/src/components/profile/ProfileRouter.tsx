@@ -19,7 +19,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RouterTask } from '../../types/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import { AppRoutes, ProfileRoute, isRouteWithContext } from '../../states/routing/types';
+import { AppRoutes, ProfileRoute } from '../../states/routing/types';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import Router, { RouteConfig, shouldHandleRoute } from '../router/Router';
@@ -64,6 +64,10 @@ const PROFILE_ROUTES: RouteConfig<Props> = [
   {
     contextRoutes: ['contact'],
     renderComponent: (props: Props) => <ProfileContactDetails {...props} />,
+  },
+  {
+    routes: ['case'],
+    renderComponent: (props: Props) => <ProfileCaseDetails {...props} />,
   },
   {
     contextRoutes: ['case'],

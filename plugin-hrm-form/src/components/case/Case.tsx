@@ -87,7 +87,6 @@ const Case: React.FC<Props> = ({
   redirectToNewCase,
   closeModal,
   goBack,
-  isCreating,
   handleClose = closeModal,
   routing,
   savedContacts,
@@ -119,7 +118,7 @@ const Case: React.FC<Props> = ({
   });
 
   useEffect(() => {
-    if (!connectedCase) {
+    if (!connectedCase?.sections) {
       if (connectedCaseId) {
         loadCase(connectedCaseId);
       }
@@ -177,7 +176,7 @@ const Case: React.FC<Props> = ({
 
   const handleCloseCase = async () => {
     releaseContacts(loadedContactIds, task.taskSid);
-    if (!enableCaseMerging && taskContact && isCreating) {
+    if (!enableCaseMerging && taskContact && taskContact.caseId === connectedCaseId) {
       await removeConnectedCase(taskContact.id);
     }
     handleClose();
@@ -284,7 +283,6 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const connectedCaseId = isCaseRoute(currentRoute) ? currentRoute.caseId : undefined;
   const caseState = selectCurrentRouteCaseState(state, task.taskSid);
   const { connectedCase } = caseState ?? {};
-  const isCreating = currentRoute.route === 'case' && currentRoute.isCreating;
 
   return {
     connectedCaseId,
@@ -292,7 +290,6 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
     counselorsHash: selectCounselorsHash(state),
     definitionVersions: selectDefinitionVersions(state),
     currentDefinitionVersion: selectCurrentDefinitionVersion(state),
-    isCreating,
     routing: currentRoute as CaseRoute,
     savedContacts: selectSavedContacts(state, connectedCase),
     taskContact: selectContactByTaskSid(state, task.taskSid)?.savedContact,
