@@ -35,7 +35,7 @@ beforeEach(() => {
           sectionId: 'this one',
           sectionTypeSpecificData: { note: 'this is the note you are looking for' },
           createdAt: BASELINE_DATE.toISOString(),
-          twilioWorkerId: 'WK-1',
+          createdBy: 'WK-1',
           updatedAt: addDays(BASELINE_DATE, 1).toISOString(),
           updatedBy: 'WK-2',
         },

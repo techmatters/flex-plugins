@@ -48,7 +48,7 @@ const getNoteActivities = (counsellorNotes: ApiCaseSection[], formDefs: Definiti
   return (counsellorNotes || [])
     .map(n => {
       try {
-        const { sectionId: id, createdAt: date, updatedAt, updatedBy, twilioWorkerId, sectionTypeSpecificData } = n;
+        const { sectionId: id, createdAt: date, updatedAt, updatedBy, createdBy, sectionTypeSpecificData } = n;
         const text =
           previewFields
             .map(pf => sectionTypeSpecificData[pf])
@@ -60,7 +60,7 @@ const getNoteActivities = (counsellorNotes: ApiCaseSection[], formDefs: Definiti
           updatedBy,
           text,
           date,
-          twilioWorkerId,
+          twilioWorkerId: createdBy,
           type: ActivityTypes.addNote,
           note: sectionTypeSpecificData,
         };
@@ -75,14 +75,14 @@ const getNoteActivities = (counsellorNotes: ApiCaseSection[], formDefs: Definiti
 const referralActivities = (referrals: ApiCaseSection[]): Activity[] =>
   (referrals || [])
     .map(referral => {
-      const { sectionId: id, createdAt, updatedAt, updatedBy, twilioWorkerId, sectionTypeSpecificData } = referral;
+      const { sectionId: id, createdAt, updatedAt, updatedBy, createdBy, sectionTypeSpecificData } = referral;
       const { referredTo, date } = sectionTypeSpecificData;
       try {
         return {
           id,
           date: date?.toString(),
           createdAt,
-          twilioWorkerId,
+          twilioWorkerId: createdBy,
           updatedAt,
           updatedBy,
           type: ActivityTypes.addReferral,

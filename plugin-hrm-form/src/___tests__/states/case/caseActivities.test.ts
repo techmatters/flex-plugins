@@ -74,7 +74,7 @@ describe('getActivitiesFromCase', () => {
       note: [
         {
           sectionId: 'NOTE_ID',
-          twilioWorkerId: noteWorker,
+          createdBy: noteWorker,
           createdAt,
           sectionTypeSpecificData: {
             note: 'content',
@@ -105,7 +105,7 @@ describe('getActivitiesFromCase', () => {
       note: [
         {
           sectionId: 'NOTE_ID',
-          twilioWorkerId: 'WK-note-twilio-worker-id',
+          createdBy: 'WK-note-twilio-worker-id',
           createdAt,
           sectionTypeSpecificData: {
             customProperty1: 'customProperty1 content',
@@ -144,7 +144,7 @@ describe('getActivitiesFromCase', () => {
       note: [
         {
           sectionId: 'NOTE_ID',
-          twilioWorkerId: noteWorker,
+          createdBy: noteWorker,
           createdAt,
           sectionTypeSpecificData: {
             customProperty1: 'customProperty1 content',
@@ -192,7 +192,7 @@ describe('getActivitiesFromCase', () => {
       note: [
         {
           sectionId: 'NOTE_ID_1',
-          twilioWorkerId: noteWorker,
+          createdBy: noteWorker,
           createdAt,
           sectionTypeSpecificData: {
             note: 'content',
@@ -200,7 +200,7 @@ describe('getActivitiesFromCase', () => {
         },
         {
           sectionId: 'NOTE_ID_2',
-          twilioWorkerId: noteWorker,
+          createdBy: noteWorker,
           createdAt,
           sectionTypeSpecificData: {
             note: 'moar content',
@@ -251,12 +251,12 @@ describe('getActivitiesFromCase', () => {
         comments: 'comment',
       },
       createdAt,
-      twilioWorkerId: referralWorker,
+      createdBy: referralWorker,
     } as const;
     const fakeCase = createFakeCase({
       referral: [referral],
     });
-    const { createdAt: referralCreatedAt, twilioWorkerId, sectionId, sectionTypeSpecificData } = referral;
+    const { createdAt: referralCreatedAt, createdBy, sectionId, sectionTypeSpecificData } = referral;
     const activities = getActivitiesFromCase(fakeCase, formDefinition);
     const expectedActivity: ReferralActivity = {
       id: sectionId,
@@ -265,7 +265,7 @@ describe('getActivitiesFromCase', () => {
       type: 'referral',
       text: sectionTypeSpecificData.referredTo,
       referral: sectionTypeSpecificData,
-      twilioWorkerId,
+      twilioWorkerId: createdBy,
       updatedBy: undefined,
       updatedAt: undefined,
     };
@@ -287,7 +287,7 @@ describe('getActivitiesFromCase', () => {
         comments: 'comment',
       },
       createdAt: referralCreatedAt,
-      twilioWorkerId: referralWorker,
+      createdBy: referralWorker,
     } as const;
 
     const fakeCase = createFakeCase(
@@ -296,7 +296,7 @@ describe('getActivitiesFromCase', () => {
         note: [
           {
             sectionId: 'NOTE_ID',
-            twilioWorkerId: noteWorker,
+            createdBy: noteWorker,
             createdAt: noteCreatedAt,
             sectionTypeSpecificData: {
               note: 'content',

@@ -1,5 +1,6 @@
 {
   "offlineChannels": [
-    "Other"
+    "Email",
+    "Outgoing SMS"
   ]
 }
