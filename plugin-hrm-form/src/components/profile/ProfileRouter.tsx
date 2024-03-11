@@ -66,10 +66,6 @@ const PROFILE_ROUTES: RouteConfig<Props> = [
     renderComponent: (props: Props) => <ProfileContactDetails {...props} />,
   },
   {
-    routes: ['case'],
-    renderComponent: (props: Props) => <ProfileCaseDetails {...props} />,
-  },
-  {
     contextRoutes: ['case'],
     renderComponent: (props: Props) => <ProfileCaseDetails {...props} />,
   },
