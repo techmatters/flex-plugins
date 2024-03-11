@@ -20,8 +20,7 @@ import { Case } from '../../../types/types';
 import { selectCounselorName } from '../../configuration/selectCounselorsHash';
 
 const selectCaseItemHistory = (state: RootState, caseObj: Case, caseSectionApi: CaseSectionApi, caseItemId: string) => {
-  const { createdBy, createdAt, updatedAt, updatedBy } =
-    caseSectionApi.getSectionItemById(caseObj, caseItemId) ?? {};
+  const { createdBy, createdAt, updatedAt, updatedBy } = caseSectionApi.getSectionItemById(caseObj, caseItemId) ?? {};
 
   const addingCounsellorName = selectCounselorName(state, createdBy);
   const added = new Date(createdAt);
