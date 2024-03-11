@@ -315,14 +315,14 @@ const applyTimeBasedConditions = (conditions: TimeBasedCondition[]) => (
       if (cond === 'createdHoursAgo') {
         return {
           ...accum,
-          [key]: differenceInHours(ctx.curentTimestamp, target && parseISO(target.createdAt)) < param,
+          [key]: target && differenceInHours(ctx.curentTimestamp, parseISO(target.createdAt)) < param,
         };
       }
 
       if (cond === 'createdDaysAgo') {
         return {
           ...accum,
-          [key]: differenceInDays(ctx.curentTimestamp, target && parseISO(target.createdAt)) < param,
+          [key]: target && differenceInDays(ctx.curentTimestamp, parseISO(target.createdAt)) < param,
         };
       }
 
