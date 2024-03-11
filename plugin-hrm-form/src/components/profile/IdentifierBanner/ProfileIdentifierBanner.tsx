@@ -85,9 +85,6 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
     type: 'cases',
   });
 
-  // const contactsCount = useProfileProperty(profileId, 'contactsCount') || 0;
-  // const casesCount = useProfileProperty(profileId, 'casesCount') || 0;
-
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   // We immediately create a contact when a task is created, so we don't want to show the banner

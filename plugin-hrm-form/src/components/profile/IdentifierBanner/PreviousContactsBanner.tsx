@@ -77,11 +77,8 @@ const PreviousContactsBanner: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [previousContactCounts]);
 
-  // const contactsCount = previousContactCounts?.contacts || 0;
-  // const casesCount = previousContactCounts?.cases || 0;
-
-  const contactsCount = 1;
-  const casesCount = 1;
+  const contactsCount = previousContactCounts?.contacts || 0;
+  const casesCount = previousContactCounts?.cases || 0;
 
   // We immediately create a contact when a task is created, so we don't want to show the banner
   const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
