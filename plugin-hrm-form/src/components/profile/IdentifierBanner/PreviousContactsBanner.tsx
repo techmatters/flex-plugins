@@ -77,8 +77,11 @@ const PreviousContactsBanner: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [previousContactCounts]);
 
-  const contactsCount = previousContactCounts?.contacts || 0;
-  const casesCount = previousContactCounts?.cases || 0;
+  // const contactsCount = previousContactCounts?.contacts || 0;
+  // const casesCount = previousContactCounts?.cases || 0;
+
+  const contactsCount = 1;
+  const casesCount = 1;
 
   // We immediately create a contact when a task is created, so we don't want to show the banner
   const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
@@ -96,13 +99,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
     <YellowBannerContainer data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
       <IconContainer>{iconsFromTask[task.channelType]}</IconContainer>
       <IdentifierContainer>
-        {maskIdentifiers ? (
-          <Bold>
-            <Template code="MaskIdentifiers" />
-          </Bold>
-        ) : (
-          <Bold>{contactNumber}</Bold>
-        )}
+        <Bold>{maskIdentifiers ? <Template code="MaskIdentifiers" /> : contactNumber}</Bold>
       </IdentifierContainer>
       <Template code="PreviousContacts-Has" />
       <BannerLink type="button" onClick={handleViewContacts} data-testid="banner-link-contacts">
@@ -112,9 +109,11 @@ const PreviousContactsBanner: React.FC<Props> = ({
       </BannerLink>
       {casesCount > 0 && (
         <>
-          {contactsCount > 0 && ','}&nbsp;
-          <Template code="PreviousContacts-And" />
-          &nbsp;
+          {contactsCount > 0 && <>&nbsp;</>}
+          <div>
+            <Template code="PreviousContacts-And" />
+            &nbsp;
+          </div>
           <BannerLink type="button" onClick={handleViewCases} data-testid="banner-link-cases">
             <Bold>
               {casesCount} <Template code={`PreviousContacts-Case${casesCount === 1 ? '' : 's'}`} />

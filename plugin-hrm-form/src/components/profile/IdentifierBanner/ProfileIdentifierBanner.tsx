@@ -60,7 +60,10 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
   const formattedIdentifier = getFormattedNumberFromTask(task);
   const identifierIdentifier = getNumberFromTask(task);
   const { identifier } = useIdentifierByIdentifier({ identifierIdentifier, shouldAutoload: true });
+
+  // NOTE: This is a temporary render until we handle multiple identifiers
   const profileId = identifier?.profiles?.[0]?.id;
+
   const { canView } = useProfile({ profileId });
 
   const contactsCount = useProfileProperty(profileId, 'contactsCount') || 0;
@@ -86,28 +89,28 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
     <YellowBannerContainer data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
       <IconContainer>{iconsFromTask[task.channelType]}</IconContainer>
       <IdentifierContainer>
-        {maskIdentifiers ? (
-          <Bold>
-            <Template code="MaskIdentifiers" />
-          </Bold>
-        ) : (
-          <Bold>{formattedIdentifier}</Bold>
-        )}
+        <Bold>{maskIdentifiers ? <Template code="MaskIdentifiers" /> : formattedIdentifier}</Bold>
       </IdentifierContainer>
       <Template code="PreviousContacts-Has" />
       <BannerLink type="button" onClick={handleViewContacts}>
         <Bold>
-          {contactsCount} <Template code={`PreviousContacts-PreviousContact${contactsCount === 1 ? '' : 's'}`} />
+          {contactsCount > 0 && (
+            <>
+              {' '}
+              {contactsCount} <Template code={`PreviousContacts-PreviousContact${contactsCount === 1 ? '' : 's'}`} />{' '}
+            </>
+          )}
         </Bold>
       </BannerLink>
       {casesCount > 0 && (
         <>
-          {contactsCount > 0 && canView && ', '}
-          {!canView && (
-            <span style={{ margin: '1px 0 0 0' }}>
+          {canView ? (
+            contactsCount > 0 && <>, </>
+          ) : (
+            <div style={{ margin: '1px 0 0 0', alignSelf: 'end' }}>
               &nbsp;
               <Template code="PreviousContacts-And" />
-            </span>
+            </div>
           )}
           <BannerLink type="button" onClick={handleViewCases}>
             <Bold>
@@ -118,8 +121,10 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
       )}
       {canView && (
         <>
-          &nbsp;
-          <Template code="PreviousContacts-And" />
+          <div>
+            &nbsp;
+            <Template code="PreviousContacts-And" />
+          </div>
           <BannerLink type="button" onClick={handleViewClients}>
             <Bold>
               {'1'} <Template code="Profile-Singular-Client" />
