@@ -31,7 +31,7 @@ type CommonRelationshipParams = {
   type: t.ProfileRelationships;
 };
 
-type LoadRelationshipAsyncParams = CommonRelationshipParams & {
+export type LoadRelationshipAsyncParams = CommonRelationshipParams & {
   page?: number;
 };
 
@@ -197,14 +197,6 @@ const handleProfileFlagUpdateFulfilledAction = (state: t.ProfilesState, action: 
 
   const profileUpdate = {
     loading: false,
-    cases: {
-      ...state[profileId].cases,
-      total: action.payload.casesCount,
-    },
-    contacts: {
-      ...state[profileId].contacts,
-      total: action.payload.contactsCount,
-    },
     data: {
       ...t.newProfileEntry,
       ...state[profileId].data,

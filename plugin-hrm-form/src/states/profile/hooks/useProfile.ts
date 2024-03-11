@@ -21,8 +21,9 @@ import * as ProfileSelectors from '../selectors';
 import { RootState } from '../..';
 import { UseProfileCommonParams } from './types';
 import { PermissionActions, getInitializedCan } from '../../../permissions';
+import { useProfileLoader } from './useProfileLoader';
 
-export type UseProfileParams = UseProfileCommonParams;
+export type UseProfileParams = UseProfileCommonParams & { autoload?: boolean; refresh?: boolean };
 
 export type UseProfileReturn = {
   profile: Profile | undefined;
@@ -39,11 +40,14 @@ export type UseProfileReturn = {
  * @returns {UseProfile} - State and actions for the profile
  */
 export const useProfile = (params: UseProfileParams): UseProfileReturn => {
+  const { profileId } = params;
+
+  useProfileLoader({ profileId, autoload: true });
+
   const can = useMemo(() => {
     return getInitializedCan();
   }, []);
 
-  const { profileId } = params;
   const profile = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.data);
   const loading = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.loading);
 

@@ -14,6 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { getProfileContacts, getProfileCases } from '../../services/ProfileService';
 import {
   Case,
   Contact,
@@ -26,8 +27,8 @@ import {
   ProfilesListSortBy,
   SortDirection,
 } from '../../types/types';
-import { getProfileContacts, getProfileCases } from '../../services/ProfileService';
-import { ParseFetchErrorResult } from '../parseFetchError';
+import type { ParseFetchErrorResult } from '../parseFetchError';
+import type { AsyncCommon } from '../types';
 
 export type { Case, Contact, Identifier, Profile, ProfileFlag, ProfileSection };
 
@@ -111,27 +112,22 @@ export const PROFILE_RELATIONSHIPS = {
 export type ProfileRelationships = keyof typeof PROFILE_RELATIONSHIPS;
 export type ProfileRelationshipTypes = Case | Contact;
 
-export type ProfileAsyncCommon<t> = {
-  loading: boolean;
-  error?: ParseFetchErrorResult;
-  data?: t;
+type ProfileRelationshipsCommon<T> = AsyncCommon<T> & {
+  page: number;
+  total?: number;
+};
+type ProfileAsyncRelationships = {
+  contacts: ProfileRelationshipsCommon<Contact[]>;
+  cases: ProfileRelationshipsCommon<Case[]>;
 };
 
-export type ProfileAsyncRelationships = {
-  [type in ProfileRelationships]: ProfileAsyncCommon<ProfileRelationshipTypes[]> & {
-    page: number;
-    total?: number;
+export type ProfileEntry = AsyncCommon<Profile> & {
+  sections?: {
+    [sectionType: ProfileSection['sectionType']]: AsyncCommon<ProfileSection>;
   };
-};
+} & ProfileAsyncRelationships;
 
-export type ProfileEntry = ProfileAsyncRelationships &
-  ProfileAsyncCommon<Profile> & {
-    sections?: {
-      [sectionType: ProfileSection['sectionType']]: ProfileAsyncCommon<ProfileSection>;
-    };
-  };
-
-export type ProfileSectionsState = ProfileAsyncCommon<ProfileSection>;
+export type ProfileSectionsState = AsyncCommon<ProfileSection>;
 
 export type ProfileState = {
   identifiers: IdentifiersState;
@@ -145,10 +141,16 @@ export const newProfileEntry: ProfileEntry = {
   loading: false,
   data: undefined,
   contacts: {
+    data: null,
+    error: null,
+    total: null,
     loading: false,
     page: 0,
   },
   cases: {
+    data: null,
+    error: null,
+    total: null,
     loading: false,
     page: 0,
   },

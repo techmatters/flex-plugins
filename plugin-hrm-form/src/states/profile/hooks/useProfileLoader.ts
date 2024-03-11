@@ -22,9 +22,7 @@ import * as ProfileActions from '../profiles';
 import * as ProfileSelectors from '../selectors';
 import { UseProfileCommonParams } from './types';
 
-type UseProfileLoaderParams = UseProfileCommonParams & {
-  skipAutoload?: boolean;
-};
+type UseProfileLoaderParams = UseProfileCommonParams & { autoload?: boolean; refresh?: boolean };
 
 type UseProfileLoaderReturn = {
   error?: any;
@@ -41,21 +39,27 @@ type UseProfileLoaderReturn = {
  */
 export const useProfileLoader = ({
   profileId,
-  skipAutoload = false,
+  autoload = true,
+  refresh = false,
 }: UseProfileLoaderParams): UseProfileLoaderReturn => {
   const dispatch = useDispatch();
   const error = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.error);
   const loading = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.loading);
+  const data = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.data);
+
   const loadProfile = useCallback(() => {
     asyncDispatch(dispatch)(ProfileActions.loadProfileAsync(profileId));
   }, [dispatch, profileId]);
 
+  const firstFetch = autoload && !loading && !data;
+
   useEffect(() => {
-    if (!skipAutoload && !loading) {
+    if (!profileId) return;
+
+    if (firstFetch || refresh) {
       loadProfile();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileId, skipAutoload, loadProfile]);
+  }, [firstFetch, loadProfile, profileId, refresh]);
 
   return {
     error,

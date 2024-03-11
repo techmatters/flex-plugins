@@ -98,7 +98,7 @@ const ViewCaseItem: React.FC<Props> = ({
   return (
     <CaseLayout>
       <NavigableContainer task={task} titleCode={`Case-View${sectionApi.label}`}>
-        <Box height="100%">
+        <Box height="100%" style={{ overflowY: 'auto' }}>
           <ActionHeader
             addingCounsellor={addingCounsellorName}
             added={added}
