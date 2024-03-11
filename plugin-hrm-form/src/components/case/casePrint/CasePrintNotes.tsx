@@ -43,11 +43,11 @@ const CasePrintNotes: React.FC<Props> = ({ notes, counselorsHash }) => {
       </View>
       {notes &&
         notes.length > 0 &&
-        notes.map(({ twilioWorkerId, sectionTypeSpecificData: note, createdAt }, i) => {
+        notes.map(({ createdBy, sectionTypeSpecificData: note, createdAt }, i) => {
           return (
             <View key={i} style={{ ...styles['sectionBody'], ...styles['caseSummaryText'] }}>
               <View style={{ ...styles.flexRow, justifyContent: 'space-between' }}>
-                <Text style={{ fontWeight: 600 }}>{formatName(counselorsHash[twilioWorkerId])}</Text>
+                <Text style={{ fontWeight: 600 }}>{formatName(counselorsHash[createdBy])}</Text>
                 <Text style={{ fontStyle: 'italic' }}>{formatStringToDateAndTime(createdAt)}</Text>
               </View>
               <View>

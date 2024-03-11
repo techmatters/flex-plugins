@@ -397,8 +397,6 @@ export type ProfileSection = {
 export type Profile = {
   id: number;
   name: string;
-  contactsCount: number;
-  casesCount: number;
   createdAt?: string;
   updatedAt?: string;
   identifiers?: Identifier[];

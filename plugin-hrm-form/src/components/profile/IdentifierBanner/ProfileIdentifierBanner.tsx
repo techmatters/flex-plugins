@@ -18,7 +18,12 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import { useIdentifierByIdentifier, useProfileProperty, useProfile } from '../../../states/profile/hooks';
+import {
+  useIdentifierByIdentifier,
+  useProfileProperty,
+  useProfile,
+  useProfileRelationshipsByType,
+} from '../../../states/profile/hooks';
 import { YellowBannerContainer, IconContainer, IdentifierContainer, BannerLink } from './styles';
 import { Bold } from '../../../styles';
 import { newOpenModalAction } from '../../../states/routing/actions';
@@ -61,19 +66,33 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
   const identifierIdentifier = getNumberFromTask(task);
   const { identifier } = useIdentifierByIdentifier({ identifierIdentifier, shouldAutoload: true });
 
-  // NOTE: This is a temporary render until we handle multiple identifiers
+  /**
+   * This is a known hack that is OK as long as we ensure that there is only exactly 1 Profile for each Identifier.
+   * When the time comes that's no longer true, below logic should accoutn for all the Profiles related to the Identifier.
+   */
   const profileId = identifier?.profiles?.[0]?.id;
 
   const { canView } = useProfile({ profileId });
 
-  const contactsCount = useProfileProperty(profileId, 'contactsCount') || 0;
-  const casesCount = useProfileProperty(profileId, 'casesCount') || 0;
+  const { total: contactsCount, loading: contactsLoading } = useProfileRelationshipsByType({
+    profileId,
+    page: 0,
+    type: 'contacts',
+  });
+  const { total: casesCount, loading: casesLoading } = useProfileRelationshipsByType({
+    profileId,
+    page: 0,
+    type: 'cases',
+  });
+
+  // const contactsCount = useProfileProperty(profileId, 'contactsCount') || 0;
+  // const casesCount = useProfileProperty(profileId, 'casesCount') || 0;
 
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   // We immediately create a contact when a task is created, so we don't want to show the banner
   const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
-  if (!shouldDisplayBanner) return null;
+  if (!shouldDisplayBanner || contactsLoading || casesLoading) return null;
 
   const handleViewClients = () => {
     openProfileModal(profileId);

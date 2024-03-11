@@ -22,3 +22,4 @@ export * from './useProfileProperty';
 export * from './useProfileSection';
 export * from './useProfilesList';
 export * from './useProfilesListLoader';
+export * from './useProfileRelationshipsBytype';

@@ -290,23 +290,25 @@ const CaseHome: React.FC<Props> = ({
             ),
           )}
       </CaseContainer>
-      <BottomButtonBar>
-        {!enableCaseMerging && (
-          <Box marginRight="15px">
-            <StyledNextStepButton
-              data-testid="CaseHome-CancelButton"
-              secondary="true"
-              roundCorners
-              onClick={handleClose}
-            >
-              <Template code="BottomBar-CancelNewCaseAndClose" />
-            </StyledNextStepButton>
-          </Box>
-        )}
-        <SaveAndEndButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
-          <Template code="BottomBar-SaveAndEnd" />
-        </SaveAndEndButton>
-      </BottomButtonBar>
+      {isCreating && (
+        <BottomButtonBar>
+          {!enableCaseMerging && (
+            <Box marginRight="15px">
+              <StyledNextStepButton
+                data-testid="CaseHome-CancelButton"
+                secondary="true"
+                roundCorners
+                onClick={handleClose}
+              >
+                <Template code="BottomBar-CancelNewCaseAndClose" />
+              </StyledNextStepButton>
+            </Box>
+          )}
+          <SaveAndEndButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
+            <Template code="BottomBar-SaveAndEnd" />
+          </SaveAndEndButton>
+        </BottomButtonBar>
+      )}
     </NavigableContainer>
   );
 };
