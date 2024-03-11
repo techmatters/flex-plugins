@@ -26,7 +26,7 @@ import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { connectToCase } from '../../services/ContactService';
 import { connectToCaseAsyncAction } from '../contacts/saveContact';
 
-export const UPDATE_CASE_OVERVIEW_ACTION = 'case-action/update-overview';
+const UPDATE_CASE_OVERVIEW_ACTION = 'case-action/update-overview';
 
 export const createCaseAsyncAction = createAsyncAction(
   CREATE_CASE_ACTION,
