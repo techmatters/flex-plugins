@@ -96,13 +96,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
     <YellowBannerContainer data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
       <IconContainer>{iconsFromTask[task.channelType]}</IconContainer>
       <IdentifierContainer>
-        {maskIdentifiers ? (
-          <Bold>
-            <Template code="MaskIdentifiers" />
-          </Bold>
-        ) : (
-          <Bold>{contactNumber}</Bold>
-        )}
+        <Bold>{maskIdentifiers ? <Template code="MaskIdentifiers" /> : contactNumber}</Bold>
       </IdentifierContainer>
       <Template code="PreviousContacts-Has" />
       <BannerLink type="button" onClick={handleViewContacts} data-testid="banner-link-contacts">
@@ -112,9 +106,11 @@ const PreviousContactsBanner: React.FC<Props> = ({
       </BannerLink>
       {casesCount > 0 && (
         <>
-          {contactsCount > 0 && ','}&nbsp;
-          <Template code="PreviousContacts-And" />
-          &nbsp;
+          {contactsCount > 0 && <>&nbsp;</>}
+          <div>
+            <Template code="PreviousContacts-And" />
+            &nbsp;
+          </div>
           <BannerLink type="button" onClick={handleViewCases} data-testid="banner-link-cases">
             <Bold>
               {casesCount} <Template code={`PreviousContacts-Case${casesCount === 1 ? '' : 's'}`} />
