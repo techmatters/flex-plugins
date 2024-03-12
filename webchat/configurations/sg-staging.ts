@@ -195,6 +195,10 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "Nothing"
         },
         {
+          value: "more",
+          label: "More than one of the above"
+        },
+        {
           value: "other",
           label: "Other"
         }
