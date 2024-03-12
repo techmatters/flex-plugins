@@ -57,7 +57,7 @@ import { selectDefinitionVersionForCase } from '../../states/configuration/selec
 import selectCaseHelplineData from '../../states/case/selectCaseHelplineData';
 import { selectCounselorName } from '../../states/configuration/selectCounselorsHash';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
-import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
+import { selectFirstContactByCaseId } from '../../states/contacts/selectContactByCaseId';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -75,10 +75,9 @@ const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
   const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
   const routing = selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseRoute;
   const { connectedCase, availableStatusTransitions = [] } = connectedCaseState ?? {};
-  const [firstContact] = connectedCase?.connectedContacts ?? [];
 
-  const contactForLabel = selectContactStateByContactId(state, firstContact?.id)?.savedContact ?? taskContact;
-  const isCreating = Boolean(firstContact && firstContact?.id === taskContact?.id && !taskContact?.finalizedAt);
+  const contactForLabel = selectFirstContactByCaseId(state, routing.caseId)?.savedContact ?? taskContact;
+  const isCreating = Boolean(taskContact && taskContact.caseId === routing.caseId && !taskContact.finalizedAt);
   const activityCount = routing.route === 'case' ? selectCaseActivityCount(state, routing.caseId) : 0;
   const definitionVersion = selectDefinitionVersionForCase(state, connectedCase);
   const counselor = selectCounselorName(state, connectedCase?.twilioWorkerId);
