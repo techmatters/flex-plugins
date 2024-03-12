@@ -78,7 +78,7 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
     if (caseId && !connectedCase) {
       loadCase(caseId);
     }
-  });
+  }, [caseId, connectedCase, loadCase]);
   /*
   TODO: Convert to a custom hook since it has been used in several places within
   the Flex-plugins repo?
