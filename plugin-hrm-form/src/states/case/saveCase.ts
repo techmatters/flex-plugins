@@ -42,7 +42,7 @@ export const updateCaseOverviewAsyncAction = createAsyncAction(
   UPDATE_CASE_OVERVIEW_ACTION,
   async (caseId: Case['id'], overview?: CaseOverview, status?: Case['status']): Promise<Case> => {
     let updatedCase;
-    if (Object.keys(overview).length) {
+    if (Object.keys(overview ?? {}).length) {
       overview.followUpDate = overview.followUpDate || null;
       updatedCase = await updateCaseOverview(caseId, overview);
     }

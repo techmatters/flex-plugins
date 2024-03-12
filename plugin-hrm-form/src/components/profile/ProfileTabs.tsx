@@ -17,8 +17,9 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Tab as TwilioTab, Template } from '@twilio/flex-ui';
+import { CircularProgress } from '@material-ui/core';
 
-import { useProfile, useProfileLoader } from '../../states/profile/hooks';
+import { useProfile, useProfileRelationshipsByType } from '../../states/profile/hooks';
 import * as RoutingTypes from '../../states/routing/types';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import * as RoutingActions from '../../states/routing/actions';
@@ -59,10 +60,17 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfileTab }) => {
-  const { profile, canView } = useProfile({ profileId });
-  const { contactsCount, casesCount } = profile;
-
-  useProfileLoader({ profileId });
+  const { canView } = useProfile({ profileId });
+  const { total: contactsCount, loading: contactsLoading } = useProfileRelationshipsByType({
+    profileId,
+    page: 0,
+    type: 'contacts',
+  });
+  const { total: casesCount, loading: casesLoading } = useProfileRelationshipsByType({
+    profileId,
+    page: 0,
+    type: 'cases',
+  });
 
   const tabs = [
     {
@@ -73,7 +81,8 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
     {
       label: (
         <>
-          <Template code="SearchResultsIndex-Contacts" /> ({contactsCount})
+          <Template code="SearchResultsIndex-Contacts" /> (
+          {contactsLoading ? <CircularProgress size={10} /> : contactsCount})
         </>
       ),
       key: 'contacts',
@@ -82,7 +91,7 @@ const ProfileTabs: React.FC<Props> = ({ profileId, task, currentTab, changeProfi
     {
       label: (
         <>
-          <Template code="SearchResultsIndex-Cases" /> ({casesCount})
+          <Template code="SearchResultsIndex-Cases" /> ({casesLoading ? <CircularProgress size={10} /> : casesCount})
         </>
       ),
       key: 'cases',

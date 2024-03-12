@@ -38,7 +38,11 @@ import { CaseStateEntry } from '../../../states/case/types';
 import { TaskSID, WorkerSID } from '../../../types/twilio';
 import { VALID_EMPTY_CASE } from '../../testCases';
 
-jest.mock('../../../services/CaseService', () => ({ getActivities: jest.fn(() => []), cancelCase: jest.fn() }));
+jest.mock('../../../services/CaseService', () => ({
+  getActivities: jest.fn(() => []),
+  cancelCase: jest.fn(),
+  getCase: jest.fn(),
+}));
 jest.mock('../../../permissions', () => ({
   getInitializedCan: jest.fn(() => () => true),
   PermissionActions: {},
@@ -111,6 +115,7 @@ describe('useState mocked', () => {
       categories: {},
       accountSid: 'AC-accountSid',
       helpline: 'helpline',
+      sections: {},
     },
     availableStatusTransitions: [],
     references: new Set(['x']),
