@@ -320,11 +320,12 @@ AddEditCaseItem.displayName = 'AddEditCaseItem';
 const mapStateToProps = (state: RootState, { task, sectionApi }: AddEditCaseItemProps) => {
   const { workerSid } = getHrmConfig();
   const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
+
   if (isCaseRoute(currentRoute)) {
     const sectionId = isEditCaseSectionRoute(currentRoute) ? currentRoute.id : undefined;
     const { connectedCase, caseWorkingCopy } = selectCaseByCaseId(state, currentRoute.caseId);
     const caseItemHistory = sectionId
-      ? selectCaseItemHistory(state, connectedCase, sectionApi, currentRoute.caseId)
+      ? selectCaseItemHistory(state, connectedCase, sectionApi, sectionId)
       : {
           added: new Date(),
           addingCounsellorName: selectCounselorName(state, workerSid),

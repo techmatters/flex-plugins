@@ -14,12 +14,17 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-export * from './useIdentifier';
-export * from './useProfile';
-export * from './useProfileFlags';
-export * from './useProfileLoader';
-export * from './useProfileProperty';
-export * from './useProfileSection';
-export * from './useProfilesList';
-export * from './useProfilesListLoader';
-export * from './useProfileRelationshipsBytype';
+import { parseISO } from 'date-fns';
+
+import { RootState } from '..';
+import { ContactState } from './existingContacts';
+import { namespace } from '../storeNamespaces';
+import { Case } from '../../types/types';
+
+const selectFirstContactByCaseId = (state: RootState, caseId: Case['id']): ContactState =>
+  Object.values(state[namespace].activeContacts.existingContacts)
+    .filter(cs => cs.savedContact?.caseId === caseId)
+    .sort((a, b) => parseISO(a.savedContact?.createdAt).valueOf() - parseISO(b.savedContact?.createdAt).valueOf())[0] ||
+  null;
+
+export { selectFirstContactByCaseId };
