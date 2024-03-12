@@ -21,13 +21,13 @@ import { Template } from '@twilio/flex-ui';
 import { parseISO } from 'date-fns';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 
-import { DocumentEntry } from '../../types/types';
-import { TimelineRow, TimelineText, TimelineFileName, TimelineDate, ViewButton, RowItemContainer } from './styles';
+import { RowItemContainer, TimelineDate, TimelineFileName, TimelineRow, TimelineText, ViewButton } from './styles';
 import { Box, HiddenText } from '../../styles';
 import { formatFileNameAtAws } from '../../utils';
+import { ApiCaseSection } from '../../services/caseSectionService';
 
 type OwnProps = {
-  documentEntry: DocumentEntry;
+  caseSection: ApiCaseSection;
   onClickView: () => void;
 };
 
@@ -36,8 +36,11 @@ const RowItem: React.FC<{ isName?: boolean }> = ({ children, isName }) => (
 );
 RowItem.displayName = 'RowItem';
 
-const DocumentInformationRow: React.FC<OwnProps> = ({ documentEntry, onClickView }) => {
-  const date = parseISO(documentEntry.createdAt).toLocaleDateString(navigator.language);
+const DocumentInformationRow: React.FC<OwnProps> = ({
+  caseSection: { createdAt, sectionTypeSpecificData: document },
+  onClickView,
+}) => {
+  const date = parseISO(createdAt).toLocaleDateString(navigator.language);
   return (
     <TimelineRow>
       <HiddenText>
@@ -48,11 +51,11 @@ const DocumentInformationRow: React.FC<OwnProps> = ({ documentEntry, onClickView
       <HiddenText>
         <Template code="Case-DocumentFileName" />
       </HiddenText>
-      <TimelineFileName>{formatFileNameAtAws(documentEntry.document.fileName)}</TimelineFileName>
+      <TimelineFileName>{formatFileNameAtAws(document.fileName)}</TimelineFileName>
       <HiddenText>
         <Template code="Case-DocumentComments" />
       </HiddenText>
-      <TimelineText>{documentEntry.document.comments}</TimelineText>
+      <TimelineText>{document.comments}</TimelineText>
       <Box marginLeft="auto">
         <ViewButton onClick={onClickView} data-testid="Case-InformationRow-ViewButton">
           <Template code="Case-ViewButton" />

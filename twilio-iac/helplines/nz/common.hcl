@@ -10,7 +10,12 @@ locals {
     task_language                     = "en-NZ"
     contacts_waiting_channels         = ["voice", "sms", "web"]
 
-
+    channel_attributes = {
+      webchat : "/app/twilio-iac/helplines/nz/templates/channel-attributes/webchat.tftpl"
+      voice   : "/app/twilio-iac/helplines/nz/templates/channel-attributes/voice.tftpl"
+      modica  : "/app/twilio-iac/helplines/nz/templates/channel-attributes/modica.tftpl",
+      default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
+    }
     workflows = {
       master : {
         friendly_name            = "Master Workflow - Messaging"
@@ -30,20 +35,20 @@ locals {
 
     task_queues = {
       youthline_helpline : {
-        "target_workers" = "routing.skills HAS 'Youthline Helpline'",
+        "target_workers" = "roles HAS 'agent' OR roles HAS 'supervisor'",
         "friendly_name"  = "Youthline Helpline"
       },
       priority : {
-        "target_workers" = "routing.skills HAS 'Priority'",
+        "target_workers" = "roles HAS 'agent' OR roles HAS 'supervisor'",
         "friendly_name"  = "Priority Youthline Helpline"
       },
       clinical : {
-        "target_workers" = "routing.skills HAS 'Clinical'",
+        "target_workers" = "routing.skills HAS 'Clinical' OR roles HAS 'supervisor'",
         "friendly_name"  = "Clinical"
       },
       survey : {
         "target_workers" = "1==0",
-        "friendly_name"  = "Survey"
+        "friendly_name"  = "Survey - DO NOT TRANSFER"
       }
     }
 
@@ -51,15 +56,6 @@ locals {
       en_NZ : ["pre_survey"]
     }
 
-    # HRM
-    case_status_transition_rules = [
-      {
-        startingStatus: "submitted",
-        targetStatus: "closed",
-        timeInStatusInterval: "28 days",
-        description: "rule to close submitted cases after 28 days"
-      }
-    ]
 
   }
 }

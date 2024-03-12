@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 import React, { Dispatch, useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { ITask, withTaskContext } from '@twilio/flex-ui';
+import { withTaskContext } from '@twilio/flex-ui';
 import _ from 'lodash';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
@@ -128,7 +128,7 @@ const mapStateToProps = (state: RootState) => {
     ) ||
     Object.values(connectedCase.cases).some(
       ({ caseWorkingCopy }) =>
-        caseWorkingCopy.caseSummary || Object.values(caseWorkingCopy.sections).some(section => section),
+        caseWorkingCopy.caseSummary || Object.values(caseWorkingCopy.sections ?? {}).some(section => section),
     ) ||
     selectAnyContactIsSaving(state);
   return {

@@ -17,13 +17,14 @@
 import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
 import { CounselorsList } from './types';
+import { WorkerSID } from '../../types/twilio';
 
 export const selectCounselorsHash = (state: RootState) => state[namespace].configuration.counselors.hash;
 
 export const selectCounselorsList = (state: RootState): CounselorsList =>
   state[namespace].configuration.counselors.list;
 
-export const selectCounselorName = (state: RootState, counselorId: string): string => {
+export const selectCounselorName = (state: RootState, counselorId: WorkerSID): string => {
   if (counselorId) {
     const counselor = state[namespace].configuration.counselors.hash[counselorId];
     if (counselor) {

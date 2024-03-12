@@ -72,7 +72,7 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
   existingSavedContact,
 }) => {
   /*
-  TODO: Convert to a custom hook since it has been used in several places within 
+  TODO: Convert to a custom hook since it has been used in several places within
   the Flex-plugins repo?
   */
   const can = React.useMemo(() => {
@@ -80,11 +80,13 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
   }, []);
 
   const { workerSid } = getHrmConfig();
-  const canViewContactAndCase = workerSid === contact.twilioWorkerId;
+  const canViewContactAndCase =
+    workerSid === contact.twilioWorkerId && connectedCase && contact.createdBy === contact.twilioWorkerId;
   const canEditAndRemoveCase =
     can(PermissionActions.REMOVE_CONTACT_FROM_CASE, contact) &&
-    can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCase);
-  const canViewcase = can(PermissionActions.VIEW_CASE, connectedCase);
+    can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCase) &&
+    connectedCase;
+  const canViewcase = can(PermissionActions.VIEW_CASE, connectedCase) && connectedCase;
 
   if (connectedCase === undefined && canViewContactAndCase) return null;
 

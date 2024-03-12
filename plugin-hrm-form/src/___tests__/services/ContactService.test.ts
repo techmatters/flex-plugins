@@ -128,8 +128,8 @@ describe('saveContact()', () => {
     defaultFrom: 'Anonymous',
     attributes: { isContactlessTask: false, preEngagementData: { contactType: 'ip', contactIdentifier: 'ip-address' } },
   };
-  const workerSid = 'worker-sid';
-  const uniqueIdentifier = 'uniqueIdentifier';
+  const workerSid = 'WK-worker-sid';
+  const uniqueIdentifier = 'WT-uniqueIdentifier';
   const fetchSuccess = Promise.resolve(<any>{ ok: true, json: jest.fn(), text: jest.fn() });
 
   test('data calltype saves form data', async () => {
@@ -166,8 +166,8 @@ describe('saveContact() (isContactlessTask)', () => {
     defaultFrom: 'Anonymous',
     attributes: { isContactlessTask: true },
   };
-  const workerSid = 'worker-sid';
-  const uniqueIdentifier = 'uniqueIdentifier';
+  const workerSid = 'WK-worker-sid';
+  const uniqueIdentifier = 'WT-uniqueIdentifier';
   const fetchJson = jest.fn();
   const fetchSuccess = Promise.resolve(<any>{
     ok: true,
@@ -326,7 +326,7 @@ describe('saveContact() (externalRecording)', () => {
     };
 
     const { savedContact, metadata } = createContactState({ callType: callTypes.child, childFirstName: 'Jill' });
-    await saveContact(task, savedContact, metadata, 'workerSid', 'uniqueIdentifier');
+    await saveContact(task, savedContact, metadata, 'WK-workerSid', 'WT-uniqueIdentifier');
 
     const formFromPOST = getFormFromMediaPOST(mockedFetch);
     expect(formFromPOST).toStrictEqual([
@@ -441,8 +441,9 @@ describe('handleTwilioTask() (externalRecording)', () => {
       attributes: {},
     };
 
-    await expect(handleTwilioTask(task)).rejects.toThrow(
-      'Error getting external recording info: Could not find call sid',
-    );
+    const returnData = await handleTwilioTask(task);
+    expect(returnData).toStrictEqual({
+      conversationMedia: [{ storeType: 'twilio', storeTypeSpecificData: { reservationSid: undefined } }],
+    });
   });
 });

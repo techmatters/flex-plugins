@@ -16,6 +16,7 @@
 
 import React, { useRef, useState } from 'react';
 
+import { useProfile } from '../../../states/profile/hooks';
 import ClickOutsideInterceptor from '../../common/ClickOutsideInterceptor';
 import ProfileFlagList from './ProfileFlagList';
 import ProfileFlagEdit from './ProfileFlagEdit';
@@ -26,6 +27,7 @@ type Props = ProfileCommonProps;
 
 const ProfileFlagSection: React.FC<Props> = ({ profileId, task }) => {
   const [shouldEditProfileFlags, setShouldEditProfileFlags] = useState(false);
+  const { canFlag, canUnflag } = useProfile({ profileId });
 
   /**
    * We need a ref to attach to the modal so that we can ignore clicks on it
@@ -34,12 +36,16 @@ const ProfileFlagSection: React.FC<Props> = ({ profileId, task }) => {
   const profileFlagsModalRef = useRef(null);
   const profileFlagsEditButtonRef = useRef(null);
 
-  const openEditProfileFlags = () => setShouldEditProfileFlags(true);
+  const openEditProfileFlags = () => {
+    if (canFlag || canUnflag) setShouldEditProfileFlags(true);
+  };
   const closeEditProfileFlags = () => {
     setShouldEditProfileFlags(false);
     // This won't actually focus on the button on click, but if escape is pressed it will
     profileFlagsEditButtonRef.current?.focus();
   };
+
+  const isActionable = canFlag || canUnflag;
 
   const renderViewMode = () => (
     <ProfileFlagsEditButton
@@ -47,6 +53,7 @@ const ProfileFlagSection: React.FC<Props> = ({ profileId, task }) => {
       type="button"
       onClick={openEditProfileFlags}
       ref={profileFlagsEditButtonRef}
+      disabled={!isActionable}
     >
       <ProfileFlagList profileId={profileId} task={task} />
     </ProfileFlagsEditButton>

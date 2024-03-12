@@ -16,16 +16,15 @@
 
 /* eslint-disable import/no-unused-modules */
 import { Dispatch } from 'redux';
-import { ITask } from '@twilio/flex-ui';
 import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
 import * as t from './types';
+import { SearchParams } from './types';
 import { searchContacts as searchContactsApiCall } from '../../services/ContactService';
 import { searchCases as searchCasesApiCall } from '../../services/CaseService';
 import { updateDefinitionVersion } from '../configuration/actions';
-import { getContactsMissingVersions, getCasesMissingVersions } from '../../utils/definitionVersions';
+import { getCasesMissingVersions, getContactsMissingVersions } from '../../utils/definitionVersions';
 import { getNumberFromTask } from '../../utils';
-import { SearchParams } from './types';
 
 // Action creators
 export const handleSearchFormChange = (taskId: string) => <K extends keyof t.SearchFormValues>(

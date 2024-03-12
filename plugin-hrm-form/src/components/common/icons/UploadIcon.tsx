@@ -22,7 +22,7 @@ import React from 'react';
 import { SvgIcon } from '@material-ui/core';
 
 const UploadIcon = props => (
-  <SvgIcon {...props}>
+  <SvgIcon {...props} aria-label="Upload">
     <path d="M5,20h14v-2H5V20z M5,10h4v6h6v-6h4l-7-7L5,10z" />
   </SvgIcon>
 );

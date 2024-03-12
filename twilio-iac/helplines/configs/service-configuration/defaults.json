@@ -49,7 +49,7 @@
             "backend_handled_chat_janitor": true,
             "enable_aselo_messaging_ui": false,
             "enable_canned_responses": true,
-            "enable_case_merging": false,
+            "enable_case_merging": true,
             "enable_client_profiles": false,
             "enable_conferencing": true,
             "enable_confirm_on_browser_close": true,

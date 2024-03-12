@@ -17,6 +17,7 @@
 import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
+import InfoIcon from '@material-ui/icons/Info';
 
 import Pagination from '../pagination';
 import asyncDispatch from '../../states/asyncDispatch';
@@ -25,14 +26,8 @@ import * as ProfileTypes from '../../states/profile/types';
 import * as profileSelectors from '../../states/profile/selectors';
 import { PAGE_SIZE } from '../../states/profile/profiles';
 import { RootState } from '../../states';
-
-type ProfileId = ProfileTypes.Profile['id'];
-
-type OwnProps = {
-  profileId: ProfileId;
-  type: ProfileTypes.ProfileRelationships;
-  renderItem: (d: ProfileTypes.ProfileRelationshipTypes) => React.ReactNode;
-};
+import { SearchResultWarningContainer, Text } from '../search/styles';
+import { Row } from '../../styles';
 
 const mapStateToProps = (state: RootState, { profileId, type }) => {
   const { data, loading, page, total } =
@@ -68,6 +63,14 @@ const mapDispatchToProps = (dispatch, { profileId, type }: OwnProps) => ({
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
+type ProfileId = ProfileTypes.Profile['id'];
+
+type OwnProps = {
+  profileId: ProfileId;
+  type: ProfileTypes.ProfileRelationships;
+  renderItem: (d: ProfileTypes.ProfileRelationshipTypes) => React.ReactNode;
+};
+
 const ProfileRelationshipList: React.FC<Props> = ({
   data,
   loading,
@@ -91,8 +94,17 @@ const ProfileRelationshipList: React.FC<Props> = ({
       return <div>Loading...</div>;
     }
 
-    if (!hasData && page === 0) {
-      return <Template code={type === 'contacts' ? 'Profile-NoContactsFound' : 'Profile-NoCasesFound'} />;
+    if (!hasData && page === 0 && !loading) {
+      return (
+        <SearchResultWarningContainer>
+          <Row style={{ paddingTop: '20px' }}>
+            <InfoIcon style={{ color: '#ffc811' }} />
+            <Text padding="0" fontWeight="700" margin="20px" color="#282a2b">
+              <Template code={type === 'contacts' ? 'Profile-NoContactsFound' : 'Profile-NoCasesFound'} />
+            </Text>
+          </Row>
+        </SearchResultWarningContainer>
+      );
     }
 
     return <>{data.map((d: ProfileTypes.ProfileRelationshipTypes) => renderItem(d))}</>;

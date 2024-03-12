@@ -20,17 +20,20 @@ import { subDays } from 'date-fns';
 
 import * as fetchRulesModule from '../../permissions/fetchRules';
 import {
+  actionsMaps,
+  CaseActions,
+  cleanupInitializedCan,
+  ContactActions,
   getInitializedCan,
   PermissionActions,
-  CaseActions,
-  ContactActions,
-  ViewIdentifiersAction,
-  cleanupInitializedCan,
-  actionsMaps,
+  ProfileActions,
+  ProfileSectionActions,
   TargetKind,
-  ConditionsSets,
+  ViewIdentifiersAction,
 } from '../../permissions';
 import { getHrmConfig } from '../../hrmConfig';
+
+const NOT_CREATOR_WORKER_SID = 'WK-not creator';
 
 const fetchRulesSpy = jest.spyOn(fetchRulesModule, 'fetchRules').mockImplementation(() => {
   throw new Error('fetchRules not mocked!');
@@ -52,7 +55,7 @@ afterEach(() => {
   jest.resetAllMocks();
 });
 
-const addPrettyPrintConditions = (testCase: { conditionsSets: ConditionsSets }) => ({
+const addPrettyPrintConditions = (testCase: { conditionsSets: any[][] }) => ({
   ...testCase,
   prettyConditionsSets: testCase.conditionsSets
     .map(arr => arr.map(e => (typeof e === 'string' ? e : JSON.stringify(e))))
@@ -64,7 +67,7 @@ describe('Test that all actions work fine (everyone)', () => {
   fetchRulesSpy.mockReturnValue(rules);
 
   mockGetHrmConfig.mockReturnValue({
-    workerSid: 'not creator',
+    workerSid: NOT_CREATOR_WORKER_SID,
     isSupervisor: false,
     permissionConfig: 'wareva',
   });
@@ -80,7 +83,7 @@ describe('Test that all actions work fine (everyone)', () => {
   });
 });
 
-describe('Test different scenarios (all CasesActions)', () => {
+describe('CasesActions', () => {
   afterEach(() => {
     cleanupInitializedCan();
   });
@@ -91,7 +94,7 @@ describe('Test different scenarios (all CasesActions)', () => {
         {
           action,
           conditionsSets: [['everyone']],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: false,
           expectedResult: true,
           expectedDescription: 'is not creator nor supervisor, case is open',
@@ -99,7 +102,7 @@ describe('Test different scenarios (all CasesActions)', () => {
         {
           action,
           conditionsSets: [['everyone']],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: false,
           expectedResult: true,
           expectedDescription: 'is not creator nor supervisor, case is close',
@@ -116,7 +119,7 @@ describe('Test different scenarios (all CasesActions)', () => {
         {
           action,
           conditionsSets: [['isSupervisor'], ['isCreator', 'isCaseOpen']],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: true,
           expectedResult: true,
           expectedDescription: 'user is supervisor but not creator, case open',
@@ -124,7 +127,7 @@ describe('Test different scenarios (all CasesActions)', () => {
         {
           action,
           conditionsSets: [['isSupervisor'], ['isCreator', 'isCaseOpen']],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: true,
           expectedResult: true,
           expectedDescription: 'user is supervisor but not creator, case closed',
@@ -133,7 +136,7 @@ describe('Test different scenarios (all CasesActions)', () => {
         {
           action,
           conditionsSets: [['isSupervisor'], ['isCreator', 'isCaseOpen']],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: false,
           expectedResult: false,
           expectedDescription: 'user is not supervisor nor creator',
@@ -158,7 +161,7 @@ describe('Test different scenarios (all CasesActions)', () => {
         {
           action,
           conditionsSets: [['isSupervisor'], ['isCreator', 'isCaseOpen']],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: false,
           expectedResult: false,
           expectedDescription: 'case is open but user is not creator',
@@ -166,7 +169,7 @@ describe('Test different scenarios (all CasesActions)', () => {
         {
           action,
           conditionsSets: [[{ createdHoursAgo: 1 }]],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: false,
           expectedResult: true,
           expectedDescription: 'created less than 1 hour ago',
@@ -175,7 +178,7 @@ describe('Test different scenarios (all CasesActions)', () => {
         {
           action,
           conditionsSets: [[{ createdHoursAgo: 1 }]],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: false,
           expectedResult: false,
           expectedDescription: 'created less than 1 hour ago',
@@ -184,7 +187,7 @@ describe('Test different scenarios (all CasesActions)', () => {
         {
           action,
           conditionsSets: [[{ createdDaysAgo: 1 }]],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: false,
           expectedResult: true,
           expectedDescription: 'created less than 1 day ago',
@@ -193,7 +196,7 @@ describe('Test different scenarios (all CasesActions)', () => {
         {
           action,
           conditionsSets: [[{ createdDaysAgo: 1 }]],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: false,
           expectedResult: false,
           expectedDescription: 'created less than 1 day ago',
@@ -220,7 +223,7 @@ describe('Test different scenarios (all CasesActions)', () => {
   );
 });
 
-describe('Test different scenarios (all ContactActions)', () => {
+describe('ContactActions', () => {
   afterEach(() => {
     cleanupInitializedCan();
   });
@@ -348,7 +351,188 @@ describe('Test different scenarios (all ContactActions)', () => {
     },
   );
 });
-describe('Test different scenarios for ViewIdentifiersAction', () => {
+
+describe('ProfileActions', () => {
+  afterEach(() => {
+    cleanupInitializedCan();
+  });
+
+  each(
+    Object.values(ProfileActions)
+      .flatMap(action => [
+        {
+          action,
+          conditionsSets: [['everyone']],
+          isSupervisor: false,
+          expectedResult: true,
+          expectedDescription: 'is not supervisor',
+        },
+        {
+          action,
+          conditionsSets: [],
+          isSupervisor: true,
+          expectedResult: false,
+          expectedDescription: 'user is supervisor',
+        },
+        {
+          action,
+          conditionsSets: [['isSupervisor']],
+          isSupervisor: true,
+          expectedResult: true,
+          expectedDescription: 'is a supervisor',
+        },
+        {
+          action,
+          conditionsSets: [[{ createdHoursAgo: 1 }]],
+          isSupervisor: false,
+          expectedResult: true,
+          expectedDescription: 'created less than 1 hour ago',
+          createdAt: new Date().toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [[{ createdHoursAgo: 1 }]],
+          isSupervisor: false,
+          expectedResult: false,
+          expectedDescription: 'created more than 1 hour ago',
+          createdAt: subHours(new Date(), 2).toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [[{ createdDaysAgo: 1 }]],
+          isSupervisor: false,
+          expectedResult: true,
+          expectedDescription: 'created less than 1 day ago',
+          createdAt: new Date().toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [[{ createdDaysAgo: 1 }]],
+          isSupervisor: false,
+          expectedResult: false,
+          expectedDescription: 'created more than 1 day ago',
+          createdAt: subDays(new Date(), 2).toISOString(),
+        },
+      ])
+      .map(addPrettyPrintConditions),
+  ).test(
+    `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
+    ({ action, conditionsSets, workerSid = 'workerSid', isSupervisor, expectedResult, createdAt }) => {
+      const rules = buildRules(conditionsSets, 'profile');
+      fetchRulesSpy.mockReturnValueOnce(rules);
+
+      mockGetHrmConfig.mockReturnValueOnce({
+        workerSid,
+        isSupervisor,
+        permissionConfig: 'wareva',
+      });
+
+      const can = getInitializedCan();
+
+      expect(can(action, { createdAt })).toBe(expectedResult);
+    },
+  );
+});
+
+describe('ProfileSectionActions', () => {
+  afterEach(() => {
+    cleanupInitializedCan();
+  });
+
+  each(
+    Object.values(ProfileSectionActions)
+      .flatMap(action => [
+        {
+          action,
+          conditionsSets: [['everyone']],
+          isSupervisor: false,
+          expectedResult: true,
+          expectedDescription: 'is not supervisor',
+        },
+        {
+          action,
+          conditionsSets: [],
+          isSupervisor: true,
+          expectedResult: false,
+          expectedDescription: 'user is supervisor',
+        },
+        {
+          action,
+          conditionsSets: [['isSupervisor']],
+          isSupervisor: true,
+          expectedResult: true,
+          expectedDescription: 'is a supervisor',
+        },
+        {
+          action,
+          conditionsSets: [[{ createdHoursAgo: 1 }]],
+          isSupervisor: false,
+          expectedResult: true,
+          expectedDescription: 'created less than 1 hour ago',
+          createdAt: new Date().toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [[{ createdHoursAgo: 1 }]],
+          isSupervisor: false,
+          expectedResult: false,
+          expectedDescription: 'created more than 1 hour ago',
+          createdAt: subHours(new Date(), 2).toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [[{ createdDaysAgo: 1 }]],
+          isSupervisor: false,
+          expectedResult: true,
+          expectedDescription: 'created less than 1 day ago',
+          createdAt: new Date().toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [[{ createdDaysAgo: 1 }]],
+          isSupervisor: false,
+          expectedResult: false,
+          expectedDescription: 'created more than 1 day ago',
+          createdAt: subDays(new Date(), 2).toISOString(),
+        },
+        {
+          action,
+          conditionsSets: [[{ sectionType: 'sectionType' }]],
+          isSupervisor: false,
+          expectedResult: true,
+          expectedDescription: 'sectionType matches',
+          sectionType: 'sectionType',
+        },
+        {
+          action,
+          conditionsSets: [[{ sectionType: 'sectionType' }]],
+          isSupervisor: false,
+          expectedResult: false,
+          expectedDescription: 'sectionType does not matches',
+          sectionType: 'something else',
+        },
+      ])
+      .map(addPrettyPrintConditions),
+  ).test(
+    `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
+    ({ action, conditionsSets, workerSid = 'workerSid', isSupervisor, expectedResult, createdAt, sectionType }) => {
+      const rules = buildRules(conditionsSets, 'profileSection');
+      fetchRulesSpy.mockReturnValueOnce(rules);
+
+      mockGetHrmConfig.mockReturnValueOnce({
+        workerSid,
+        isSupervisor,
+        permissionConfig: 'wareva',
+      });
+
+      const can = getInitializedCan();
+
+      expect(can(action, { createdAt, sectionType })).toBe(expectedResult);
+    },
+  );
+});
+
+describe('ViewIdentifiersAction', () => {
   afterEach(() => {
     cleanupInitializedCan();
   });

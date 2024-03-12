@@ -15,7 +15,7 @@
  */
 import each from 'jest-each';
 
-import { actionsMaps, validateRules } from '../../permissions';
+import { validateRules } from '../../permissions';
 
 const rulesMapNames = [
   'br',
@@ -43,8 +43,7 @@ const rulesMapNames = [
 ];
 
 describe('Permissions  files are valid', () => {
-  const testCases = rulesMapNames.flatMap(name => Object.keys(actionsMaps).map(kind => ({ name, kind })));
-  each(testCases).test('$name file is valid', ({ name, kind }) => {
-    expect(() => validateRules(name, kind)).not.toThrow();
+  each(rulesMapNames).test('%s file is valid', name => {
+    expect(() => validateRules(name)).not.toThrow();
   });
 });

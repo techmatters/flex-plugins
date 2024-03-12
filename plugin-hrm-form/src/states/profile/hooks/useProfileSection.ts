@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import asyncDispatch from '../../asyncDispatch';
 import { ProfileSection } from '../types';
@@ -23,6 +23,7 @@ import * as ProfileActions from '../profiles';
 import * as ProfileSelectors from '../selectors';
 import { RootState } from '../..';
 import { UseProfileCommonParams } from './types';
+import { PermissionActions, getInitializedCan } from '../../../permissions';
 
 export type UseProfileSectionByType = UseProfileCommonParams & {
   sectionType: string;
@@ -68,19 +69,20 @@ export const useProfileSectionByType = ({ profileId, sectionType }: UseProfileSe
     (state: RootState) => ProfileSelectors.selectProfileSectionByType(state, profileId, sectionType)?.data,
   );
 
+  const can = useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
   return {
     section,
+    canCreate: can(PermissionActions.CREATE_PROFILE_SECTION, section || { sectionType }),
+    canView: can(PermissionActions.VIEW_PROFILE_SECTION, section || { sectionType }),
+    canEdit: section && can(PermissionActions.EDIT_PROFILE_SECTION, section),
     ...useProfileSectionLoaderByType({ profileId, sectionType }),
   };
 };
 
-type UseEditProfileSection = {
-  section: ProfileSection;
-  createProfileSection: (params: ProfileActions.CreateProfileSectionAsyncParams) => void;
-  updateProfileSection: (params: ProfileActions.UpdateProfileSectionAsyncParams) => void;
-};
-
-export const useEditProfileSection = (params: ProfileActions.ProfileSectionCommonParams): UseEditProfileSection => {
+export const useEditProfileSection = (params: ProfileActions.ProfileSectionCommonParams) => {
   const dispatch = useDispatch();
 
   const profileSection = useProfileSectionByType(params);

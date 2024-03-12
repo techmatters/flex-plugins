@@ -19,7 +19,8 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { fetchHrmApi } from './fetchHrmApi';
 import { getQueryParams } from './PaginationParams';
-import { Case, Contact, SearchCaseResult } from '../types/types';
+import { Case, CaseOverview, Contact, SearchCaseResult } from '../types/types';
+import { ApiError, FetchOptions } from './fetchApi';
 
 export async function createCase(contact: Contact, creatingWorkerSid: string, definitionVersion: DefinitionVersionId) {
   const { helpline, rawJson: contactForm } = contact;
@@ -54,13 +55,13 @@ export async function cancelCase(caseId: Case['id']) {
   await fetchHrmApi(`/cases/${caseId}`, options);
 }
 
-export async function updateCase(caseId: Case['id'], body: Partial<Case>): Promise<Case> {
+export async function updateCaseOverview(caseId: Case['id'], body: CaseOverview): Promise<Case> {
   const options = {
     method: 'PUT',
     body: JSON.stringify(body),
   };
 
-  return fetchHrmApi(`/cases/${caseId}`, options);
+  return fetchHrmApi(`/cases/${caseId}/overview`, options);
 }
 
 export async function updateCaseStatus(caseId: Case['id'], status: Case['status']): Promise<Case> {
@@ -73,10 +74,10 @@ export async function updateCaseStatus(caseId: Case['id'], status: Case['status'
 }
 
 export async function getCase(caseId: Case['id']): Promise<Case> {
-  const options = {
+  const options: FetchOptions = {
     method: 'GET',
+    returnNullFor404: true,
   };
-
   return fetchHrmApi(`/cases/${caseId}`, options);
 }
 

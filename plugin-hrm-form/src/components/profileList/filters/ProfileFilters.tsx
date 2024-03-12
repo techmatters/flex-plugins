@@ -40,7 +40,7 @@ const ProfileFilters: React.FC = () => {
     (flags: ProfileFlag[]) => {
       return flags.map(flag => ({
         value: `_${flag.id}`,
-        label: flag.name.charAt(0).toUpperCase() + flag.name.slice(1),
+        label: flag.name,
         checked: filter.statuses.includes(flag.id.toString()),
       }));
     },
@@ -59,8 +59,6 @@ const ProfileFilters: React.FC = () => {
     }
   }, [allProfileFlags, flagsLoading, computeStatusValues]);
 
-  const strings = getTemplateStrings();
-
   const handleApplyStatusFilter = useCallback(
     (values: Item[]) => {
       const checkedItems = filterCheckedItems(values).map(item => item.replace('_', ''));
@@ -76,11 +74,12 @@ const ProfileFilters: React.FC = () => {
     return (
       <MultiSelectFilter
         name="status"
-        text={strings['ProfileList-THStatus']}
+        text={<Template code="ProfileList-THStatus" />}
         defaultValues={statusValues}
         openedFilter={openedFilter}
         applyFilter={handleApplyStatusFilter}
         setOpenedFilter={setOpenedFilter}
+        capitalizeOptions
       />
     );
   };

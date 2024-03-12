@@ -17,7 +17,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
-import { CircularProgress } from '@material-ui/core';
+import { Tab } from '@material-ui/core';
 
 import ProfileFlagPill from '../profile/profileFlag/ProfileFlagPill';
 import { getShortSummary } from '../../utils';
@@ -32,13 +32,12 @@ import {
   DataCell,
   TableBodyFont,
   OpaqueText,
-  ErrorText,
 } from '../../styles';
 import { newOpenModalAction } from '../../states/routing/actions';
 import { useProfileFlags, useProfileSectionByType } from '../../states/profile/hooks';
 import { PermissionActions, getInitializedCan } from '../../permissions';
 
-const CHAR_LIMIT = 200;
+const CHAR_LIMIT = 250;
 
 type Props = {
   profileId: number;
@@ -46,10 +45,13 @@ type Props = {
 
 const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
   const dispatch = useDispatch();
-  const { profile } = useProfile({ profileId });
+  const { profile, canView } = useProfile({ profileId });
   const { combinedProfileFlags } = useProfileFlags(profileId);
 
-  const { section: summarySection, error, loading } = useProfileSectionByType({ profileId, sectionType: 'summary' });
+  const { section: summarySection, canView: canViewSummarySection } = useProfileSectionByType({
+    profileId,
+    sectionType: 'summary',
+  });
 
   const handleViewProfile = async () => {
     dispatch(newOpenModalAction({ route: 'profile', profileId, subroute: 'details' }, 'standalone-task-sid'));
@@ -61,12 +63,27 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   return (
-    <DataTableRow onClick={handleViewProfile}>
+    <DataTableRow onClick={canView && handleViewProfile}>
       <NumericCell>
-        <OpenLinkContainer>
-          <OpenLinkAction tabIndex={0}>{profile?.name ? profile.name : profile?.id}</OpenLinkAction>
-        </OpenLinkContainer>
+        {canView ? (
+          <OpenLinkContainer>
+            <OpenLinkAction tabIndex={0}>{profile?.id}</OpenLinkAction>
+          </OpenLinkContainer>
+        ) : (
+          <TableBodyFont>{profile?.id}</TableBodyFont>
+        )}
       </NumericCell>
+      <DataCell>
+        <TableBodyFont>
+          {profile?.name ? (
+            profile?.name
+          ) : (
+            <OpaqueText>
+              <Template code="ProfileList-ClientName-None" />
+            </OpaqueText>
+          )}
+        </TableBodyFont>
+      </DataCell>
       {combinedProfileFlags.length > 0 ? (
         <PillsCell>
           {combinedProfileFlags
@@ -90,12 +107,9 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
         </DataCell>
       )}
       <SummaryCell>
-        {error && <ErrorText>Please try again later</ErrorText>}
-        {loading ? (
-          <CircularProgress size={14} />
-        ) : (
-          <TableBodyFont>{getShortSummary(summarySection?.content, CHAR_LIMIT, 'profile')}</TableBodyFont>
-        )}
+        <TableBodyFont>
+          {getShortSummary(canViewSummarySection ? summarySection?.content : null, CHAR_LIMIT, 'profile')}
+        </TableBodyFont>
       </SummaryCell>
     </DataTableRow>
   );

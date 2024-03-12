@@ -280,8 +280,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "Chinese"
         },
         {
-          value: "Cook Island Maori",
-          label: "Cook Island Maori"
+          value: "Cook Island Māori",
+          label: "Cook Island Māori"
         },
         {
           value: "Fijian",
@@ -296,8 +296,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "Latin American"
         },
         {
-          value: "Maori",
-          label: "Maori"
+          value: "Māori",
+          label: "Māori"
         },
         {
           value: "Middle Eastern",
@@ -308,8 +308,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "Niuean"
         },
         {
-          value: "NZ European/Pakeha",
-          label: "NZ European/Pakeha"
+          value: "NZ European/Pākehā",
+          label: "NZ European/Pākehā"
         },
         {
           value: "Other",
@@ -357,11 +357,11 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         },
         {
           value: "emergency",
-          label: "I’m facing an emergency"
+          label: "I'm in need of urgent support"
         },
         {
           value: "counselling",
-          label: "I’m looking for support"
+          label: "I'm looking for support"
         },
         {
           value: "Unknown",

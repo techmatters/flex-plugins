@@ -24,7 +24,7 @@ import { perpetratorSectionApi } from './perpetrator';
 import { referralSectionApi } from './referral';
 import { documentSectionApi } from './document';
 
-const apiMap: Record<CaseSectionApiName, CaseSectionApi<unknown>> = {
+const apiMap: Record<CaseSectionApiName, CaseSectionApi> = {
   notes: noteSectionApi,
   incidents: incidentSectionApi,
   households: householdSectionApi,
@@ -33,4 +33,4 @@ const apiMap: Record<CaseSectionApiName, CaseSectionApi<unknown>> = {
   documents: documentSectionApi,
 };
 
-export const lookupApi = (name: CaseSectionApiName): CaseSectionApi<unknown> => apiMap[name];
+export const lookupApi = (name: CaseSectionApiName): CaseSectionApi => apiMap[name];

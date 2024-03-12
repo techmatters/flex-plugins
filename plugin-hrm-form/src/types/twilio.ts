@@ -1,3 +1,5 @@
+import { standaloneTaskSid } from './types';
+
 /**
  * Copyright (C) 2021-2023 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -13,15 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+// We should start using these types in preference to strings for the relevant SIDs to reduce scope for silly errors.
 
-import { HelplineDefinitions } from 'hrm-form-definitions';
+// eslint-disable-next-line prettier/prettier
+export type AccountSID =`AC${string}`;
+export type WorkerSID = `WK${string}`;
+export type TaskSID = typeof standaloneTaskSid | `${'WT'|'offline-contact-task'}${string}`;
 
-/**
- * Gets Helpline Data (Name, Case Manager, etc.)
- * @param helpline Helpline to filter
- * @param helplineInformation Helpline Information Collection
- */
-export const getHelplineData = (helpline?: string, helplineInformation?: HelplineDefinitions) => {
-  if (helpline && helplineInformation) return helplineInformation.helplines.find(x => x.value === helpline);
-  return undefined;
-};

@@ -3,42 +3,42 @@
     "filters": [
       {
         "filter_friendly_name": "Youthline Helpline",
-        "expression": "(((channelType =='web'   AND preEngagementData.reason IN ['counselling','Unknown'] ) OR (channelType =='modica'   AND memory.priority != 'Yes' )) AND transferTargetType =='')  OR  targetSid=='${task_queues.youthline_helpline}'  OR isContactlessTask == true",
+        "expression": "(((channelType =='web'   AND preEngagementData.reason IN ['counselling','Unknown'] ) OR (channelType =='modica'   AND memory.priority != 'Yes' )) AND (transferTargetType =='' OR transferTargetType =='worker') AND clinical != 'true')  OR  targetSid=='${task_queues.youthline_helpline}'  OR isContactlessTask == true",
         "targets": [
           {
-            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.roles HAS 'agent' ) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.roles HAS 'agent' ) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
             "queue": "${task_queues.youthline_helpline}",
             "skip_if": "1==1"
           },
           {
             "queue": "${task_queues.youthline_helpline}",
-            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker')) AND (worker.roles HAS 'supervisor' OR worker.roles HAS 'agent' ) ) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
+            "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker')) AND (worker.roles HAS 'supervisor' OR worker.roles HAS 'agent' ) ) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
           }
         ]
       },
       {
         "filter_friendly_name": "Clinical",
-        "expression": "((channelType IN ['web', 'modica'] ) AND ((preEngagementData.reason == 'clinical' AND transferTargetType =='') OR targetSid=='${task_queues.clinical}'))",
+        "expression": "((channelType IN ['web', 'modica'] ) AND ((clinical == 'true' AND (transferTargetType =='' OR transferTargetType =='worker')) OR targetSid=='${task_queues.clinical}'))",
         "targets": [
           {
-            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
             "queue": "${task_queues.clinical}"
           }
         ]
       },
       {
         "filter_friendly_name": "Priority Youthline Helpline",
-        "expression": "(((channelType=='web' AND preEngagementData.reason == 'emergency') OR (channelType=='modica' AND memory.priority == 'Yes'))  AND transferTargetType =='') OR targetSid=='${task_queues.priority}'",
+        "expression": "(((channelType=='web' AND preEngagementData.reason == 'emergency') OR (channelType=='modica' AND memory.priority == 'Yes'))  AND (transferTargetType =='' OR transferTargetType =='worker')) OR targetSid=='${task_queues.priority}'",
         "targets": [
           {
-            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.roles HAS 'agent' ) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.roles HAS 'agent' ) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
             "queue": "${task_queues.priority}",
             "skip_if": "1==1",
             "priority": 10
           },
           {
             "queue": "${task_queues.priority}",
-            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker')) AND (worker.roles HAS 'supervisor' OR worker.roles HAS 'agent' ) ) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)\t",
+            "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker')) AND (worker.roles HAS 'supervisor' OR worker.roles HAS 'agent' ) ) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)\t",
             "priority": 10
           }
         ]

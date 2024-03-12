@@ -19,7 +19,14 @@ import React from 'react';
 type Props = { color: string };
 
 const InfoIcon: React.FC<Props> = ({ color }: { color: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    aria-label="Information"
+  >
     <path
       fillRule="evenodd"
       clipRule="evenodd"

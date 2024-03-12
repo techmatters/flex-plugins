@@ -1,68 +1,175 @@
 ${
   jsonencode(
     {
-      "description": "Voice Studio Flow",
-      "states": [
+  "description": flow_description,
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
         {
-          "name": "Trigger",
-          "type": "trigger",
-          "transitions": [
-            {
-              "event": "incomingMessage"
-            },
-            {
-              "next": "SendCallToAgent",
-              "event": "incomingCall"
-            },
-            {
-              "event": "incomingConversationMessage"
-            },
-            {
-              "event": "incomingRequest"
-            },
-            {
-              "event": "incomingParent"
-            }
-          ],
-          "properties": {
-            "offset": {
-              "x": 0,
-              "y": -10
-            }
-          }
+          "event": "incomingMessage"
         },
         {
-          "name": "SendCallToAgent",
-          "type": "send-to-flex",
-          "transitions": [
-            {
-              "event": "callComplete"
-            },
-            {
-              "event": "failedToEnqueue"
-            },
-            {
-              "event": "callFailure"
-            }
-          ],
-          "properties": {
-            "waitUrl": channel_flow_vars["wait_url"],
-            "offset": {
-              "x": 270,
-              "y": 340
-            },
-            "attributes": channel_attributes["default"],
-            "workflow":  workflow_sids["master_calls"],
-            "channel": task_channel_sids["voice"]
-            "waitUrlMethod": "GET",
-            "timeout": "3600"
-          }
+          "next": "getProfileFlagsForIdentifier",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
         }
       ],
-      "initial_state": "Trigger",
-      "flags": {
-        "allow_concurrent_calls": true
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": -10
+        }
       }
+    },
+    {
+      "name": "SendCallToAgent",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "waitUrl":channel_flow_vars["wait_url"],
+        "offset": {
+          "x": 80,
+          "y": 1090
+        },
+        "attributes": channel_attributes["default"],
+            "workflow":  workflow_sids["master_calls"],
+            "channel": task_channel_sids["voice"]
+        "waitUrlMethod": "GET",
+        "timeout": "3600"
+      }
+    },
+    {
+      "name": "getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "contact_routing",
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 50,
+          "y": 190
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "body": "{ \"trigger\": {{trigger | to_json}}}",
+        "url": "${serverless_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "SendCallToAgent",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_blocked",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "contains",
+              "value": "blocked"
+            }
+          ]
+        },
+        {
+          "next": "set_clinical",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains case management",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "contains",
+              "value": "case management"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": 150,
+          "y": 490
+        }
+      }
+    },
+    {
+      "name": "set_clinical",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "SendCallToAgent",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "true",
+            "key": "clinical"
+          }
+        ],
+        "offset": {
+          "x": 300,
+          "y": 810
+        }
+      }
+    },
+    {
+      "name": "play_blocked",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": channel_flow_vars["blocked_url"],
+        "offset": {
+          "x": 780,
+          "y": 800
+        },
+        "loop": 1
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
     }
   )
 }

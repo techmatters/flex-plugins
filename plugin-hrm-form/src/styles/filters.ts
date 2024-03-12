@@ -22,8 +22,6 @@ import HrmTheme from './HrmTheme';
 export const FiltersContainer = styled(Flex)`
   align-items: center;
   color: #192b33;
-  margin-left: 15px;
-  margin-right: 10px;
   padding: 10px;
   font-size: 13px;
   border-bottom: 2px solid #e5e6e7;
@@ -200,11 +198,13 @@ export const MultiSelectListItem = styled('li')<MultiSelectListItemProps>`
 `;
 MultiSelectListItem.displayName = 'MultiSelectListItem';
 
-export const MultiSelectCheckboxLabel = styled('span')`
+export const MultiSelectCheckboxLabel = styled('span')<{ capitalize?: boolean }>`
   font-family: 'Open Sans';
   font-size: 13px;
   color: #192b33;
   margin-left: 2px;
+
+  ${({ capitalize }) => (capitalize ? 'text-transform: capitalize;' : '')}
 
   strong {
     font-weight: 700;

@@ -66,7 +66,7 @@ ProfileSectionSubtitle.displayName = 'ProfileSectionSubtitle';
 /**
  * ProfileFlags
  */
-export const ProfileFlagsEditButton = styled('button')`
+export const ProfileFlagsEditButton = styled('button')<{ disabled?: boolean }>`
   background-color: ${HrmTheme.colors.inputBackgroundColor};
   display: flex;
   border: none;
@@ -76,9 +76,8 @@ export const ProfileFlagsEditButton = styled('button')`
   align-content: center;
   width: -webkit-fill-available;
   :focus {
-    background-color: ${HrmTheme.colors.inputBackgroundColor};
-    box-shadow: none;
-    border: 1px solid rgba(0, 59, 129, 0.37);
+    ${props => (props.disabled ? '' : 'box-shadow: none;')}
+    ${props => (props.disabled ? '' : 'border: 1px solid rgba(0, 59, 129, 0.37);')}
   }
 `;
 ProfileFlagsEditButton.displayName = 'ProfileFlagsEditButton';

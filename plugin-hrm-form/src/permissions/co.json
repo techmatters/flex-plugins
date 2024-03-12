@@ -15,9 +15,7 @@
   "editIncident": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "addDocument": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "editDocument": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "editCaseSummary": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "editChildIsAtRisk": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "editFollowUpDate": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
+  "editCaseOverview": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "updateCaseContacts": [["isSupervisor"], ["isCaseOpen"]],
 
   "viewContact": [["everyone"]],
@@ -25,7 +23,14 @@
   "viewExternalTranscript": [["isSupervisor"]],
   "viewRecording": [["isSupervisor"]],
   "addContactToCase": [["isSupervisor"], ["isOwner"]],
-  "removeContactFromCase": [],
+  "removeContactFromCase": [["isSupervisor"], ["isOwner"]],
+  
+  "viewProfile": [],
+  "flagProfile": [],
+  "unflagProfile": [],
+  "createProfileSection": [],
+  "viewProfileSection": [],
+  "editProfileSection": [],
   
   "viewPostSurvey": [["isSupervisor"]],
 
