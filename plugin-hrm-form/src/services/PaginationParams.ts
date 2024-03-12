@@ -34,7 +34,7 @@ export function getQueryParams({
   const appendSortBy = hasSortBy ? `sortBy=${sortBy}` : '';
   const appendSortDirection = hasSortDirection ? `sortDirection=${sortDirection}` : '';
   const appendHelpline = hasHelpline ? `helpline=${helpline}` : '';
-  return `?${[appendLimit, appendOffset, appendSortBy, appendSortDirection, appendHelpline, 'legacyFormat=false']
+  return `?${[appendLimit, appendOffset, appendSortBy, appendSortDirection, appendHelpline, 'onlyEssentialData=true']
     .filter(e => e)
     .join('&')}`;
 }

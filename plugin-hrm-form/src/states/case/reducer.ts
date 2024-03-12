@@ -33,6 +33,7 @@ import { Case } from '../../types/types';
 import { ConfigurationState } from '../configuration/reducer';
 import { caseSectionUpdateReducer } from './sections/caseSectionUpdates';
 import { timelineReducer } from './timeline';
+import { caseSectionReadReducer } from './sections/caseSectionRead';
 
 const initialState: CaseState = {
   cases: {},
@@ -42,6 +43,7 @@ const boundSaveCaseReducer = saveCaseReducer({ connectedCase: initialState } as 
 const boundCaseSectionUpdateReducer = caseSectionUpdateReducer({
   connectedCase: initialState,
 } as HrmState);
+const boundCaseSectionsReadReducer = caseSectionReadReducer({ connectedCase: initialState } as HrmState);
 const boundTimelineReducer = timelineReducer({ connectedCase: initialState } as HrmState);
 
 const dereferenceCase = (state: CaseState, caseId: string, referenceId: string): CaseState => {
@@ -190,6 +192,7 @@ export function reduce(
 ): HrmState {
   let hrmState = boundSaveCaseReducer(inputRootState, action as any);
   hrmState = boundCaseSectionUpdateReducer(hrmState, action);
+  hrmState = boundCaseSectionsReadReducer(hrmState, action);
   hrmState = boundTimelineReducer(hrmState, action);
   hrmState = {
     ...hrmState,

@@ -82,3 +82,10 @@ export async function updateCaseSection(
   });
   return convertApiCaseSectionToCaseSection(rawResponse);
 }
+
+export async function getAllCaseSections(caseId: Case['id'], sectionType: string): Promise<FullCaseSection[]> {
+  const rawResponse = (await fetchHrmApi(`/cases/${caseId}/sections/${sectionType}`, {
+    method: 'GET',
+  })) as FullGenericCaseSection<string>[];
+  return rawResponse.map(fcs => convertApiCaseSectionToCaseSection(fcs) as FullCaseSection);
+}
