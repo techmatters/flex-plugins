@@ -92,18 +92,17 @@ const updateCaseSections = (
     );
     return state;
   }
-  const { connectedCase: existingCase, caseWorkingCopy } = caseState;
-  existingCase.sections = existingCase.sections || {};
-  existingCase.sections[sectionType] = existingCase.sections[sectionType] || [];
-  const list = existingCase.sections[sectionType];
-  const index = list.findIndex(section => section.sectionId === updatedCaseSection.sectionId);
-  if (index === -1) {
-    list.push(updatedCaseSection);
-    delete caseWorkingCopy?.sections?.[sectionType]?.new;
-  } else {
-    list[index] = updatedCaseSection;
+  caseState.sections = caseState.sections || {};
+  const { caseWorkingCopy, sections } = caseState;
+  sections[sectionType] = sections[sectionType] || {};
+  const sectionTypeMap = sections[sectionType];
+  const existingSection = sectionTypeMap[sectionType];
+  if (existingSection) {
     delete caseWorkingCopy?.sections?.[sectionType]?.existing?.[updatedCaseSection.sectionId];
+  } else {
+    delete caseWorkingCopy?.sections?.[sectionType]?.new;
   }
+  sectionTypeMap[sectionType] = { sectionType, ...updatedCaseSection };
   return state;
 };
 

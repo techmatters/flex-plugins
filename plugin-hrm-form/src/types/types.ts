@@ -21,7 +21,6 @@ import type { CallTypes, DefinitionVersionId } from 'hrm-form-definitions';
 import type { ChannelTypes } from '../states/DomainConstants';
 import type { ResourceReferral } from '../states/contacts/resourceReferral';
 import { DateFilterValue } from '../states/caseList/dateFilters';
-import { CaseSection } from '../services/caseSectionService';
 import { AccountSID, TaskSID, WorkerSID } from './twilio';
 
 declare global {
@@ -102,7 +101,6 @@ export type Case = {
   statusUpdatedBy?: WorkerSID;
   previousStatus?: string;
   connectedContacts: Contact[];
-  sections?: { [K in WellKnownCaseSection]?: CaseSection[] };
   categories: Record<string, string[]>;
 };
 

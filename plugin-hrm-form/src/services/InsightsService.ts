@@ -41,6 +41,7 @@ import { generateUrl } from './fetchApi';
 import { generateSignedURLPath } from './fetchHrmApi';
 import { shouldSendInsightsData } from '../utils/shouldSendInsightsData';
 import { ApiCaseSection, CaseSectionTypeSpecificData } from './caseSectionService';
+import { CaseStateEntry } from '../states/case/types';
 
 /*
  * 'Any' is the best we can do, since we're limited by Twilio here.
@@ -58,7 +59,7 @@ const delimiter = ';';
 type InsightsUpdateFunction = (
   attributes: TaskAttributes,
   contactForm: Contact,
-  caseForm: Case,
+  caseForm: CaseStateEntry,
   savedContact: Contact,
 ) => InsightsAttributes;
 
@@ -204,15 +205,18 @@ type InsightsCaseForm = {
 };
 
 const flattenFirstCaseSection = (
-  caseForm: Case,
+  sections: CaseStateEntry['sections'],
   section: WellKnownCaseSection,
 ): Omit<ApiCaseSection, 'sectionTypeSpecificData'> & CaseSectionTypeSpecificData => {
-  if (caseForm.sections?.[section]?.length) {
+  if (sections?.[section] && Object.values(sections[section]).length > 0) {
     /*
      * Flatten out the section object. This can be changed after this is using the
      * customization framework.
      */
-    const { sectionTypeSpecificData, createdAt, updatedAt, eventTimestamp, ...theRest } = caseForm.sections[section][0];
+    const sortedList = Object.values(sections[section]).sort(
+      (a, b) => a.eventTimestamp.getTime() - b.createdAt.getTime(),
+    );
+    const { sectionTypeSpecificData, createdAt, updatedAt, eventTimestamp, ...theRest } = sortedList[0];
     return {
       ...theRest,
       createdAt: createdAt.toISOString(),
@@ -230,7 +234,7 @@ const flattenFirstCaseSection = (
  * As of January 2, 2021, Case has not been moved over to use the
  * customization framework.  When it is, we will need to change this function.
  */
-const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
+const convertCaseFormForInsights = (caseForm: Case, sections: CaseStateEntry['sections']): InsightsCaseForm => {
   const logObject: any = {
     contactsDetails: caseForm?.connectedContacts?.map(({ channel, taskId }) => ({ channelType: channel, taskId })),
     accountSid: caseForm.accountSid,
@@ -238,12 +242,12 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
   };
   try {
     if (!caseForm || Object.keys(caseForm).length === 0) return {};
-    const perpetrator = flattenFirstCaseSection(caseForm, 'perpetrator');
+    const perpetrator = flattenFirstCaseSection(sections, 'perpetrator');
     delete perpetrator?.name;
     delete perpetrator?.location;
-    const incident = flattenFirstCaseSection(caseForm, 'incident');
-    const referral = flattenFirstCaseSection(caseForm, 'referral');
-    const household = flattenFirstCaseSection(caseForm, 'household');
+    const incident = flattenFirstCaseSection(sections, 'incident');
+    const referral = flattenFirstCaseSection(sections, 'referral');
+    const household = flattenFirstCaseSection(sections, 'household');
     const topLevel = {
       id: caseForm.id.toString(),
     };
@@ -266,7 +270,7 @@ const convertCaseFormForInsights = (caseForm: Case): InsightsCaseForm => {
 
 const processHelplineConfig = (
   contactForm: ContactRawJson,
-  caseForm: Case,
+  { connectedCase: caseForm, sections: caseSections }: CaseStateEntry,
   oneToOneConfigSpec: OneToOneConfigSpec,
 ): InsightsAttributes => {
   const logObject: any = {
@@ -291,7 +295,7 @@ const processHelplineConfig = (
       formsToProcess.push([contactSpec, contactForm]);
     }
     if (oneToOneConfigSpec.caseForm) {
-      formsToProcess.push([oneToOneConfigSpec.caseForm, convertCaseFormForInsights(caseForm)]);
+      formsToProcess.push([oneToOneConfigSpec.caseForm, convertCaseFormForInsights(caseForm, caseSections)]);
     }
     formsToProcess.forEach(([spec, form]) => {
       Object.keys(spec).forEach(subform => {
@@ -420,7 +424,7 @@ const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSu
 export const buildInsightsData = (
   task: CustomITask,
   contact: Contact,
-  caseForm: Case,
+  caseState: CaseStateEntry,
   savedContact: Contact,
   externalRecordingInfo: ExternalRecordingInfo | null = null,
 ) => {
@@ -439,7 +443,7 @@ export const buildInsightsData = (
 
     // eslint-disable-next-line sonarjs/prefer-immediate-return
     const finalAttributes: TaskAttributes = getInsightsUpdateFunctionsForConfig(currentDefinitionVersion.insights)
-      .map(f => f(previousAttributes, contact, caseForm, savedContact))
+      .map(f => f(previousAttributes, contact, caseState, savedContact))
       .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
 
     if (isSuccessfulExternalRecordingInfo(externalRecordingInfo)) {

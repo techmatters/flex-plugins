@@ -29,7 +29,7 @@ type CaseSectionsPayload = {
 const GET_ALL_CASE_SECTIONS_ACTION = 'case/section/GET_ALL';
 
 // eslint-disable-next-line import/no-unused-modules
-export const getAllCaseSectionAsyncAction = createAsyncAction(
+export const newGetAllCaseSectionAsyncAction = createAsyncAction(
   GET_ALL_CASE_SECTIONS_ACTION,
   async (caseId: Case['id'], sectionType: WellKnownCaseSection): Promise<CaseSectionsPayload> => {
     return {
@@ -75,7 +75,7 @@ const loadCaseSections = (
 
 export const caseSectionReadReducer = (initialState: HrmState): ((state: HrmState, action) => HrmState) =>
   createReducer(initialState, handleAction => [
-    handleAction(getAllCaseSectionAsyncAction.fulfilled, (state: HrmState, action) => {
+    handleAction(newGetAllCaseSectionAsyncAction.fulfilled, (state: HrmState, action) => {
       const { caseId, sectionType, sections } = action.payload;
       return loadCaseSections(state, caseId, sectionType, sections);
     }),

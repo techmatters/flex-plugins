@@ -26,19 +26,12 @@ import CaseDetails from './CaseDetails';
 import Timeline from './timeline/Timeline';
 import CaseSection from './CaseSection';
 import { PermissionActions, PermissionActionType } from '../../permissions';
-import {
-  AppRoutes,
-  CaseItemAction,
-  CaseRoute,
-  CaseSectionSubroute,
-  NewCaseSubroutes,
-} from '../../states/routing/types';
+import { AppRoutes, CaseItemAction, CaseRoute } from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
 import { RootState } from '../../states';
 import { Case, Contact, CustomITask, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
 import { newCloseModalAction } from '../../states/routing/actions';
-import InformationRow from './InformationRow';
 import IncidentInformationRow from './IncidentInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
 import { getAseloFeatureFlags } from '../../hrmConfig';
@@ -51,8 +44,7 @@ import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute'
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 import CaseCreatedBanner from '../caseMergingBanners/CaseCreatedBanner';
 import AddToCaseBanner from '../caseMergingBanners/AddToCaseBanner';
-import { selectCaseActivityCount } from '../../states/case/timeline';
-import { CaseSection as CaseSectionType } from '../../services/caseSectionService';
+import { selectTimelineCount } from '../../states/case/timeline';
 import { selectDefinitionVersionForCase } from '../../states/configuration/selectDefinitions';
 import selectCaseHelplineData from '../../states/case/selectCaseHelplineData';
 import { selectCounselorName } from '../../states/configuration/selectCounselorsHash';
@@ -69,6 +61,7 @@ export type CaseHomeProps = {
 };
 
 const MAX_ACTIVITIES_IN_TIMELINE_SECTION = 5;
+const MAIN_TIMELINE_ID = 'prime-timeline';
 
 const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
   const connectedCaseState = selectCurrentRouteCaseState(state, task.taskSid);
@@ -78,7 +71,7 @@ const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
 
   const contactForLabel = selectFirstContactByCaseId(state, routing.caseId)?.savedContact ?? taskContact;
   const isCreating = Boolean(taskContact && taskContact.caseId === routing.caseId && !taskContact.finalizedAt);
-  const activityCount = routing.route === 'case' ? selectCaseActivityCount(state, routing.caseId) : 0;
+  const activityCount = routing.route === 'case' ? selectTimelineCount(state, routing.caseId, MAIN_TIMELINE_ID) : 0;
   const definitionVersion = selectDefinitionVersionForCase(state, connectedCase);
   const counselor = selectCounselorName(state, connectedCase?.twilioWorkerId);
 
@@ -134,14 +127,6 @@ const CaseHome: React.FC<Props> = ({
     enable_separate_timeline_view: enableSeparateTimelineView,
   } = getAseloFeatureFlags();
 
-  const onViewCaseItemClick = (targetSubroute: CaseSectionSubroute) => (id: string) => {
-    openModal({ route: 'case', subroute: targetSubroute, action: CaseItemAction.View, id, caseId });
-  };
-
-  const onAddCaseItemClick = (targetSubroute: CaseSectionSubroute) => () => {
-    openModal({ route: 'case', subroute: targetSubroute, action: CaseItemAction.Add, caseId });
-  };
-
   const onViewFullTimelineClick = () => {
     openModal({ route: 'case', subroute: 'timeline', caseId, page: 0 });
   };
@@ -150,7 +135,6 @@ const CaseHome: React.FC<Props> = ({
   const caseLayouts = definitionVersion.layoutVersion.case;
 
   const {
-    sections,
     info: { followUpDate, childIsAtRisk },
     status,
     id,
@@ -160,42 +144,6 @@ const CaseHome: React.FC<Props> = ({
   } = connectedCase;
 
   const statusLabel = definitionVersion.caseStatus[status]?.label ?? status;
-
-  const genericSectionRenderer = (
-    subroute: CaseSectionSubroute,
-    addPermission: PermissionActionType,
-    items: CaseSectionType[] | undefined,
-    itemRowRenderer: (
-      subroute: CaseSectionSubroute,
-      section: CaseSectionType,
-      rowIndex: number,
-    ) => JSX.Element | null = (subroute, { sectionId, sectionTypeSpecificData }, index) => (
-      <InformationRow
-        key={`${subroute}-${index}`}
-        person={sectionTypeSpecificData}
-        onClickView={() => onViewCaseItemClick(subroute)(sectionId)}
-      />
-    ),
-  ): JSX.Element => (
-    <Box margin="25px 0 0 0">
-      <CaseSection
-        canAdd={() => can(addPermission)}
-        onClickAddItem={onAddCaseItemClick(subroute)}
-        // Messy, need to find a neater approach to the case section translation.
-        // Will probably be reworked if & when customisable case section types are introduced.
-        sectionTypeId={subroute.charAt(0).toUpperCase() + subroute.slice(1)}
-      >
-        <>{(items ?? []).map((item, index) => itemRowRenderer(subroute, item, index))}</>
-      </CaseSection>
-    </Box>
-  );
-
-  const {
-    incident: incidentSections,
-    perpetrator: perpetratorSections,
-    household: householdSections,
-    document: documentSections,
-  } = sections ?? {};
 
   const onEditCaseSummaryClick = () => {
     openModal({ route: 'case', subroute: 'caseSummary', action: CaseItemAction.Edit, id: '', caseId });
@@ -245,6 +193,7 @@ const CaseHome: React.FC<Props> = ({
             <Timeline
               taskSid={task.taskSid}
               page={0}
+              timelineId={MAIN_TIMELINE_ID}
               pageSize={enableSeparateTimelineView ? 5 : Number.MAX_SAFE_INTEGER}
               titleCode={
                 hasMoreActivities && enableSeparateTimelineView ? 'Case-Timeline-RecentTitle' : 'Case-Timeline-Title'
@@ -257,35 +206,52 @@ const CaseHome: React.FC<Props> = ({
             )}
           </CaseDetailsBorder>
         </Box>
-        {genericSectionRenderer(NewCaseSubroutes.Household, PermissionActions.ADD_HOUSEHOLD, householdSections)}
-        {genericSectionRenderer(NewCaseSubroutes.Perpetrator, PermissionActions.ADD_PERPETRATOR, perpetratorSections)}
-        {genericSectionRenderer(
-          NewCaseSubroutes.Incident,
-          PermissionActions.ADD_INCIDENT,
-          incidentSections,
-          (subroute, { sectionTypeSpecificData, sectionId }, index) => (
-            <IncidentInformationRow
-              key={`incident-${index}`}
-              onClickView={() => onViewCaseItemClick(subroute)(sectionId)}
-              definition={caseForms.IncidentForm}
-              values={sectionTypeSpecificData}
-              layoutDefinition={caseLayouts.incidents}
-            />
-          ),
-        )}
-        {enableUploadDocuments &&
-          genericSectionRenderer(
-            NewCaseSubroutes.Document,
-            PermissionActions.ADD_DOCUMENT,
-            documentSections,
-            (subroute, item, index) => (
-              <DocumentInformationRow
-                key={`document-${index}`}
-                caseSection={item}
-                onClickView={() => onViewCaseItemClick(NewCaseSubroutes.Document)(item.sectionId)}
+        <Box margin="25px 0 0 0">
+          <CaseSection
+            canAdd={() => can(PermissionActions.ADD_HOUSEHOLD)}
+            taskSid={task.taskSid}
+            sectionType="household"
+          />
+        </Box>
+        <Box margin="25px 0 0 0">
+          <CaseSection
+            canAdd={() => can(PermissionActions.ADD_PERPETRATOR)}
+            taskSid={task.taskSid}
+            sectionType="perpetrator"
+          />
+        </Box>
+        <Box margin="25px 0 0 0">
+          <CaseSection
+            canAdd={() => can(PermissionActions.ADD_INCIDENT)}
+            taskSid={task.taskSid}
+            sectionType="incident"
+            sectionRenderer={({ sectionTypeSpecificData, sectionType, sectionId }, onClickView) => (
+              <IncidentInformationRow
+                key={`incident-${sectionId}`}
+                onClickView={onClickView}
+                definition={caseForms.IncidentForm}
+                values={sectionTypeSpecificData}
+                layoutDefinition={caseLayouts.incidents}
               />
-            ),
-          )}
+            )}
+          />
+        </Box>
+        {enableUploadDocuments && (
+          <Box margin="25px 0 0 0">
+            <CaseSection
+              canAdd={() => can(PermissionActions.ADD_DOCUMENT)}
+              taskSid={task.taskSid}
+              sectionType="document"
+              sectionRenderer={(caseSection, onClickView) => (
+                <DocumentInformationRow
+                  key={`document-${caseSection.sectionId}`}
+                  caseSection={caseSection}
+                  onClickView={onClickView}
+                />
+              )}
+            />
+          </Box>
+        )}
       </CaseContainer>
       {isCreating && (
         <BottomButtonBar>

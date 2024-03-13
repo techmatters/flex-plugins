@@ -16,11 +16,12 @@
 
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-max-depth */
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, useEffect, useState } from 'react';
 import { Document, Page, PDFViewer, View } from '@react-pdf/renderer';
 import { CircularProgress } from '@material-ui/core';
-import { callTypes, DefinitionVersion, HelplineEntry } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-form-definitions';
 import { parseISO } from 'date-fns';
+import { connect, ConnectedProps } from 'react-redux';
 
 import CasePrintSection from './CasePrintSection';
 import CasePrintSummary from './CasePrintSummary';
@@ -35,28 +36,78 @@ import CasePrintCSAMReports from './CasePrintCSAMReports';
 import { getImageAsString, ImageSource } from './images';
 import { getHrmConfig } from '../../../hrmConfig';
 import NavigableContainer from '../../NavigableContainer';
-import { Case, Contact, CustomITask, StandaloneITask } from '../../../types/types';
+import { Case, Contact, CustomITask, StandaloneITask, WellKnownCaseSection } from '../../../types/types';
 import { TimelineActivity } from '../../../states/case/types';
+import { RootState } from '../../../states';
+import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRouteCase';
+import { newGetTimelineAsyncAction, selectTimeline } from '../../../states/case/timeline';
+import { selectDefinitionVersionForCase } from '../../../states/configuration/selectDefinitions';
+import { selectCounselorsHash } from '../../../states/configuration/selectCounselorsHash';
+import selectCaseHelplineData from '../../../states/case/selectCaseHelplineData';
+import * as RoutingActions from '../../../states/routing/actions';
+import { FullCaseSection } from '../../../services/caseSectionService';
 
 type OwnProps = {
-  onClickClose: () => void;
-  connectedCase: Case;
-  definitionVersion: DefinitionVersion;
-  counselorsHash: { [sid: string]: string };
   task: CustomITask | StandaloneITask;
-  office: HelplineEntry | undefined;
-  contactTimeline: TimelineActivity<Contact>[];
 };
-type Props = OwnProps;
+
+const MAX_SECTIONS = 100;
+const MAX_PRINTOUT_CONTACTS = 100;
+const SECTION_NAMES = ['perpetrator', 'incident', 'referral', 'household', 'note'] as const;
+
+const mapStateToProps = (state: RootState, { task }: OwnProps) => {
+  const { connectedCase } = selectCurrentRouteCaseState(state, task.taskSid);
+  const sectionEntries = SECTION_NAMES.map(
+    sectionName =>
+      [
+        sectionName,
+        selectTimeline(state, connectedCase.id, sectionName, { offset: 0, limit: MAX_SECTIONS })?.map(
+          ({ activity }) => activity as FullCaseSection,
+        ),
+      ] as const,
+  );
+  return {
+    office: selectCaseHelplineData(state, connectedCase?.id),
+    definitionVersion: selectDefinitionVersionForCase(state, connectedCase),
+    counselorsHash: selectCounselorsHash(state),
+    connectedCase,
+    sectionTimelines: Object.fromEntries(sectionEntries),
+    contactTimeline: selectTimeline(state, connectedCase?.id, 'print-contacts', {
+      offset: 0,
+      limit: MAX_PRINTOUT_CONTACTS,
+    }) as TimelineActivity<Contact>[],
+  };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => {
+  return {
+    goBack: () => dispatch(RoutingActions.newGoBackAction(task.taskSid)),
+    loadSectionTimeline: (caseId: Case['id'], sectionType: WellKnownCaseSection) =>
+      dispatch(
+        newGetTimelineAsyncAction(caseId, sectionType, [sectionType], false, { offset: 0, limit: MAX_SECTIONS }),
+      ),
+    loadContactTimeline: (caseId: Case['id']) =>
+      dispatch(
+        newGetTimelineAsyncAction(caseId, 'print-contacts', [], true, { offset: 0, limit: MAX_PRINTOUT_CONTACTS }),
+      ),
+  };
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const CasePrintView: React.FC<Props> = ({
-  onClickClose,
+  goBack,
   connectedCase,
   definitionVersion,
   counselorsHash,
   task,
   office,
   contactTimeline,
+  sectionTimelines,
+  loadSectionTimeline,
+  loadContactTimeline,
 }) => {
   const { pdfImagesSource } = getHrmConfig();
 
@@ -69,8 +120,29 @@ const CasePrintView: React.FC<Props> = ({
   const [chkOnBlob, setChkOnBlob] = useState<string>(null);
   const [chkOffBlob, setChkOffBlob] = useState<string>(null);
 
-  const { incident, referral, household, perpetrator, note } = connectedCase?.sections ?? {};
+  useEffect(() => {
+    if (!contactTimeline) {
+      loadContactTimeline(connectedCase.id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connectedCase.id, Boolean(contactTimeline), loadContactTimeline]);
 
+  for (const sectionName of SECTION_NAMES) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useEffect(
+      () => {
+        if (!sectionTimelines[sectionName]) {
+          loadSectionTimeline(connectedCase.id, sectionName);
+        }
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [
+        connectedCase.id,
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        Boolean(sectionTimelines[sectionName]),
+      ],
+    );
+  }
   /*
    * The purpose of this effect is to load all the images at once, to avoid re-renders in PDFViewer that leads to issues
    * https://stackoverflow.com/questions/60614940/unhandled-rejection-typeerror-nbind-externallistnum-dereference-is-not-a-f
@@ -117,8 +189,8 @@ const CasePrintView: React.FC<Props> = ({
     : '';
 
   return (
-    <NavigableContainer task={task} onGoBack={onClickClose}>
-      {loading ? (
+    <NavigableContainer task={task} onGoBack={goBack}>
+      {loading || !SECTION_NAMES.every(sectionName => sectionTimelines[sectionName]) || !contactTimeline ? (
         <CasePrintViewSpinner>
           <CircularProgress size={50} />
         </CasePrintViewSpinner>
@@ -196,24 +268,24 @@ const CasePrintView: React.FC<Props> = ({
                 <CasePrintMultiSection
                   sectionNameTemplateCode="SectionName-HouseholdMember"
                   definitions={definitionVersion.caseForms.HouseholdForm}
-                  values={household}
+                  values={sectionTimelines.household}
                 />
                 <CasePrintMultiSection
                   sectionNameTemplateCode="SectionName-Perpetrator"
                   definitions={definitionVersion.caseForms.PerpetratorForm}
-                  values={perpetrator}
+                  values={sectionTimelines.perpetrator}
                 />
                 <CasePrintMultiSection
                   sectionNameTemplateCode="SectionName-Incident"
                   definitions={definitionVersion.caseForms.IncidentForm}
-                  values={incident}
+                  values={sectionTimelines.incident}
                 />
                 <CasePrintMultiSection
                   sectionNameTemplateCode="SectionName-Referral"
                   definitions={definitionVersion.caseForms.ReferralForm}
-                  values={referral}
+                  values={sectionTimelines.referral}
                 />
-                <CasePrintNotes notes={note} counselorsHash={counselorsHash} />
+                <CasePrintNotes notes={sectionTimelines.note} counselorsHash={counselorsHash} />
                 <CasePrintSummary summary={connectedCase.info.summary} />
                 <CasePrintCSAMReports csamReports={contact?.csamReports} />
               </View>
@@ -228,4 +300,4 @@ const CasePrintView: React.FC<Props> = ({
 
 CasePrintView.displayName = 'CasePrintView';
 
-export default CasePrintView;
+export default connector(CasePrintView);

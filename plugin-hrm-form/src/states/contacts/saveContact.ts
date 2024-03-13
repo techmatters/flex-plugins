@@ -45,6 +45,7 @@ import { getCase } from '../../services/CaseService';
 import { getUnsavedContact } from './getUnsavedContact';
 import * as TransferHelpers from '../../transfer/transferTaskState';
 import { WorkerSID } from '../../types/twilio';
+import { CaseStateEntry } from '../case/types';
 
 export const createContactAsyncAction = createAsyncAction(
   CREATE_CONTACT_ACTION,
@@ -180,14 +181,14 @@ export const removeFromCaseAsyncAction = createAsyncAction(
 
 export const submitContactFormAsyncAction = createAsyncAction(
   SET_SAVED_CONTACT,
-  async (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) => {
-    return submitContactForm(task, contact, metadata, caseForm);
+  async (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) => {
+    return submitContactForm(task, contact, metadata, caseState);
   },
-  (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) => ({
+  (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) => ({
     task,
     contact,
     metadata,
-    caseForm,
+    caseState,
   }),
 );
 

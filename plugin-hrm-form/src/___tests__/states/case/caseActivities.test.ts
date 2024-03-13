@@ -20,15 +20,19 @@ import { parseISO } from 'date-fns';
 import { Case, CaseInfo } from '../../../types/types';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { getDefinitionVersions } from '../../../hrmConfig';
-import { getActivitiesFromCase, getActivitiesFromContacts } from '../../../states/case/caseActivities';
+import { getActivitiesFromContacts } from '../../../states/case/caseActivities';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
-import { Activity, ReferralActivity } from '../../../states/case/types';
+import { Activity, CaseStateEntry, ReferralActivity } from '../../../states/case/types';
 import { WorkerSID } from '../../../types/twilio';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
 
-const createFakeCase = (sections: Case['sections'], info: CaseInfo = {}, connectedContacts: any[] = []): Case => ({
+const createFakeCase = (
+  sections: CaseStateEntry['sections'],
+  info: CaseInfo = {},
+  connectedContacts: any[] = [],
+): Case => ({
   id: '0',
   status: 'borked',
   info: { definitionVersion: DefinitionVersionId.v1, ...info },
@@ -39,7 +43,6 @@ const createFakeCase = (sections: Case['sections'], info: CaseInfo = {}, connect
   updatedAt: new Date().toISOString(),
   categories: {},
   accountSid: 'ACx',
-  sections,
   label: 'Fake Case',
 });
 

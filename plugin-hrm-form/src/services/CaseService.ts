@@ -22,32 +22,13 @@ import { getQueryParams } from './PaginationParams';
 import { Case, CaseOverview, Contact, SearchCaseResult, WellKnownCaseSection } from '../types/types';
 import { FetchOptions } from './fetchApi';
 import { GenericTimelineActivity } from '../states/case/types';
-import {
-  ApiCaseSection,
-  convertApiCaseSectionToCaseSection,
-  FullCaseSection,
-  FullGenericCaseSection,
-} from './caseSectionService';
+import { convertApiCaseSectionToCaseSection, FullGenericCaseSection } from './caseSectionService';
 
-type ApiCaseWithSections = Omit<Case, 'sections'> & { sections: { [cs in WellKnownCaseSection]?: ApiCaseSection[] } };
-type ApiCaseSearchResult = Omit<SearchCaseResult, 'cases'> & { cases: ApiCaseWithSections[] };
-
-const convertCaseSections = (caseObj: ApiCaseWithSections): Case => {
-  if (typeof caseObj === 'object') {
-    if (caseObj.sections) {
-      const convertedCaseSections: { [cs in WellKnownCaseSection]?: FullCaseSection[] } = Object.fromEntries(
-        Object.entries(caseObj.sections).map(([key, value]) => {
-          return [key, value.map(convertApiCaseSectionToCaseSection)];
-        }),
-      );
-      return {
-        ...caseObj,
-        sections: convertedCaseSections,
-      };
-    }
-    return caseObj as any; // TypeScript is poo
-  }
-  return caseObj;
+const convertApiCaseToFlexCase = (apiCase: Case): Case => {
+  return {
+    id: apiCase.id.toString(), // coerce to string type, can be removed once API ios aligned
+    ...apiCase,
+  };
 };
 
 export async function createCase(contact: Contact, creatingWorkerSid: string, definitionVersion: DefinitionVersionId) {
@@ -106,8 +87,8 @@ export async function getCase(caseId: Case['id']): Promise<Case> {
     method: 'GET',
     returnNullFor404: true,
   };
-  const fromApi: ApiCaseWithSections = await fetchHrmApi(`/cases/${caseId}`, options);
-  return convertCaseSections(fromApi);
+  const fromApi: Case = await fetchHrmApi(`/cases/${caseId}`, options);
+  return convertApiCaseToFlexCase(fromApi);
 }
 
 export type TimelineResult<TDate extends string | Date> = {
@@ -160,10 +141,10 @@ export async function listCases(queryParams, listCasesPayload): Promise<SearchCa
     body: JSON.stringify(listCasesPayload),
   };
 
-  const fromApi: ApiCaseSearchResult = await fetchHrmApi(`/cases/search${queryParamsString}`, options);
+  const fromApi: SearchCaseResult = await fetchHrmApi(`/cases/search${queryParamsString}`, options);
 
   return {
     ...fromApi,
-    cases: fromApi.cases.map(convertCaseSections),
+    cases: fromApi.cases.map(convertApiCaseToFlexCase),
   };
 }

@@ -31,5 +31,4 @@ export const VALID_EMPTY_CASE: Case = {
   twilioWorkerId: 'WK',
   status: '',
   categories: {},
-  sections: undefined,
 };

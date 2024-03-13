@@ -16,11 +16,11 @@
 
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { Activity, ContactActivity, NoteActivity } from './types';
-import { Case, Contact, Referral } from '../../types/types';
+import { Activity, ContactActivity } from './types';
+import { Contact } from '../../types/types';
 import { channelTypes } from '../DomainConstants';
 import { getTemplateStrings } from '../../hrmConfig';
-import { CaseSection } from '../../services/caseSectionService';
+import { FullCaseSection } from '../../services/caseSectionService';
 
 const ActivityTypes = {
   createCase: 'create',
@@ -40,71 +40,20 @@ const ActivityTypes = {
 export const isContactActivity = (activity: Activity): activity is ContactActivity =>
   Boolean((activity as ContactActivity).contactId);
 
-const getNoteActivities = (counsellorNotes: CaseSection[], formDefs: DefinitionVersion): NoteActivity[] => {
+export const getSectionText = ({ sectionTypeSpecificData }: FullCaseSection, formDefs: DefinitionVersion): string => {
   let { previewFields } = formDefs.layoutVersion.case.notes ?? {};
   if (!previewFields || !previewFields.length) {
     previewFields = formDefs.caseForms.NoteForm.length ? [formDefs.caseForms.NoteForm[0].name] : [];
   }
-  return (counsellorNotes || [])
-    .map(n => {
-      try {
-        const { sectionId: id, updatedAt, updatedBy, createdBy, sectionTypeSpecificData, eventTimestamp } = n;
-        const text =
-          previewFields
-            .map(pf => sectionTypeSpecificData[pf])
-            .filter(pv => pv)
-            .join(', ') || '--';
-        return {
-          id,
-          updatedAt: updatedAt?.toISOString(),
-          updatedBy,
-          text,
-          date: eventTimestamp?.toISOString(),
-          twilioWorkerId: createdBy,
-          type: ActivityTypes.addNote,
-          note: sectionTypeSpecificData,
-        };
-      } catch (err) {
-        console.warn(`Error processing referral, excluding from data`, n, err);
-        return null;
-      }
-    })
-    .filter(na => na);
+  return (
+    previewFields
+      .map(pf => sectionTypeSpecificData[pf])
+      .filter(pv => pv)
+      .join(', ') || '--'
+  );
 };
 
-const referralActivities = (referrals: CaseSection[]): Activity[] =>
-  (referrals || [])
-    .map(referral => {
-      const {
-        sectionId: id,
-        createdAt,
-        updatedAt,
-        updatedBy,
-        createdBy,
-        sectionTypeSpecificData,
-        eventTimestamp,
-      } = referral;
-      const { referredTo } = sectionTypeSpecificData;
-      try {
-        return {
-          id,
-          date: eventTimestamp?.toISOString(),
-          createdAt: createdAt?.toISOString(),
-          twilioWorkerId: createdBy,
-          updatedAt: updatedAt?.toISOString(),
-          updatedBy,
-          type: ActivityTypes.addReferral,
-          text: referredTo?.toString(),
-          referral: sectionTypeSpecificData as Referral,
-        };
-      } catch (err) {
-        console.warn(`Error processing referral, excluding from data`, referral, err);
-        return null;
-      }
-    })
-    .filter(ra => ra);
-
-const getContactActivityText = (contact: Contact, strings: Record<string, string>): string => {
+export const getContactActivityText = (contact: Contact, strings: Record<string, string>): string => {
   if (contact.rawJson.caseInformation.callSummary) {
     return contact.rawJson.caseInformation.callSummary.toString();
   }
@@ -140,25 +89,6 @@ const connectedContactActivities = (caseContacts: Contact[]): ContactActivity[] 
     .filter(cca => cca);
 };
 
-export const getActivitiesFromCase = (sourceCase: Case, formDefs: DefinitionVersion): Activity[] => {
-  return [
-    ...getNoteActivities(sourceCase?.sections?.note ?? [], formDefs),
-    ...referralActivities(sourceCase?.sections?.referral ?? []),
-  ];
-};
-
 export const getActivitiesFromContacts = (sourceContacts: Contact[]): Activity[] => {
   return connectedContactActivities(sourceContacts);
 };
-
-export const getActivityCount = (sourceCase: Case): number =>
-  (sourceCase?.sections?.note?.length ?? 0) +
-  (sourceCase?.sections?.referral?.length ?? 0) +
-  (sourceCase?.connectedContacts?.length ?? 0);
-
-/**
- * Sort activities from most recent to oldest.
- * @param activities Activities to sort
- */
-export const sortActivities = <T extends Activity = Activity>(activities: T[]): T[] =>
-  activities.sort((a, b) => b.date.localeCompare(a.date));
