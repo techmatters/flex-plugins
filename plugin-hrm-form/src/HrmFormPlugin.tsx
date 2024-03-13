@@ -48,6 +48,7 @@ import { setUpTransferActions } from './transfer/setUpTransferActions';
 import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
 import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
+import { setUpSkillsColumn } from './components/teamsView';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -140,6 +141,7 @@ const setUpComponents = (
   }
 
   Components.setupTeamViewFilters();
+  setUpSkillsColumn();
   Components.setupWorkerDirectoryFilters();
 
   if (featureFlags.enable_conferencing) setupConferenceComponents();

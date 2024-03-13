@@ -15,9 +15,22 @@
  */
 
 import React from 'react';
-import { Tooltip } from '@material-ui/core';
+import { Tooltip, withStyles } from '@material-ui/core';
+import CheckIcon from '@material-ui/icons/Check';
+import DisabledIcon from '@material-ui/icons/Block';
 
-import { ContactTag, TagMiddleDot, TagText } from '../search/styles';
+import { CategoryPillContainer, TagMiddleDot, PillText } from '../search/styles';
+
+const withSmallIcon = Icon => {
+  return withStyles({
+    root: {
+      fontSize: '0.8rem',
+    },
+  })(Icon);
+};
+
+const SmallCheckIcon = withSmallIcon(CheckIcon);
+const SmallDisabledIcon = withSmallIcon(DisabledIcon);
 
 /**
  * Given a category, truncates it (if necessary) to make it fit (aprox) in the space of 'UNSPECIFIED/OTHER' string
@@ -29,29 +42,28 @@ export const getTag = category =>
     : category.substring(0, 17).trim();
 
 // eslint-disable-next-line react/display-name
-const renderTag = (tag: string, color: string) => (
-  <ContactTag color={color}>
-    <TagMiddleDot color={color} />
-    <TagText color={color}>{tag}</TagText>
-  </ContactTag>
+const renderTag = (tag: string, color: string, skillType?: 'active' | 'disabled' | null) => (
+  <CategoryPillContainer color={color} border={skillType !== null && color}>
+    {skillType === null && <TagMiddleDot color={color} />}
+    {skillType === 'active' && <SmallCheckIcon htmlColor={color} fontSize="small" />}
+    {skillType === 'disabled' && <SmallDisabledIcon htmlColor={color} fontSize="small" />}
+    <PillText color={color}>{tag}</PillText>
+  </CategoryPillContainer>
 );
 
 type Props = {
   category: string;
   color?: string;
   fitTag?: boolean;
+  skillType?: 'active' | 'disabled' | null;
 };
 
-const CategoryWithTooltip: React.FC<Props> = ({ category, color, fitTag = true }) => {
+const CategoryWithTooltip: React.FC<Props> = ({ category, color = '#000000', fitTag = true, skillType = null }) => {
   const tag = fitTag ? getTag(category) : category;
 
-  return <Tooltip title={category}>{renderTag(tag, color)}</Tooltip>;
+  return <Tooltip title={category}>{renderTag(tag, color, skillType)}</Tooltip>;
 };
 
 CategoryWithTooltip.displayName = 'CategoryWithTooltip';
-
-CategoryWithTooltip.defaultProps = {
-  color: '#000000',
-};
 
 export default CategoryWithTooltip;
