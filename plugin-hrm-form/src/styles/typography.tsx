@@ -123,3 +123,26 @@ export const PillText = styled(FontOpenSans)<PillTextProps>`
   color: ${props => (props.color ? props.color : '#2f3e44')};
   font-weight: ${props => (props.bold ? 600 : 400)};
 `;
+PillText.displayName = 'PillText';
+
+type ColorProps = {
+  color?: string;
+};
+
+export const CategoryPill = styled(PillBase)<ColorProps>`
+  border-radius: 2px;
+  margin-right: 6px;
+  padding: 5px 12px;
+  background-color: ${props => (props.color ? `${props.color}1a` : '#d8d8d8')};
+`;
+CategoryPill.displayName = 'CategoryPill';
+
+export const TagMiddleDot = styled('div')<ColorProps>`
+  display: inline-block;
+  width: 4px;
+  min-width: 4px;
+  height: 4px;
+  border-radius: 100%;
+  margin-right: 1ch;
+  background-color: ${props => props.color};
+`;

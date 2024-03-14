@@ -18,7 +18,8 @@ import React, { useState } from 'react';
 import { WorkersDataTable, ColumnDefinition, Template } from '@twilio/flex-ui';
 
 import SkillWithTooltip from './SkillWithTooltip';
-import { StyledLink } from '../../styles';
+import { StyledLink } from '../search/styles';
+// import { StyledLink } from '../../styles';
 
 const sortFn = (first, second) => {
   return 0;
@@ -72,7 +73,9 @@ const SkillsListCell = ({ availableSkills, disabledSkills, workerName }) => {
           }}
           aria-label={showMore ? `See less skills for ${workerName}` : `See more skills for ${workerName}`}
         >
-          {showMore ? <Template code="ReadLess" /> : <Template code="ReadMore" />}
+          <p>
+            <Template code={showMore ? 'ReadLess-trail' : 'ReadMore-trail'} />
+          </p>
         </StyledLink>
       )}
     </>

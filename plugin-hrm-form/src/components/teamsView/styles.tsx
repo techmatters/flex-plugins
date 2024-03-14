@@ -28,7 +28,7 @@ export const SkillPill = styled(PillBase)<SkillPillProps>`
   border-radius: 6px;
   margin-top: 6px;
   margin-right: 6px;
-  padding: 4px 8px;
+  padding: 3px 6px;
   background-color: ${props => (props.color ? `${props.color}1a` : '#d8d8d8')};
   border: ${props => (props.color ? `.8px solid ${props.color}` : 'none')};
 `;
