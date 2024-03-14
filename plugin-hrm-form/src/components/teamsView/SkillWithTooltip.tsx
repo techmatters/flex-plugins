@@ -22,18 +22,21 @@ import { SkillPill, SmallCheckIcon, SmallDisabledIcon } from './styles';
 import { PillText } from '../../styles';
 
 const renderTag = (tag: string, skillType?: 'active' | 'disabled') => {
-  let color;
+  let bgColor;
+  let fontColor;
   if (skillType === 'active') {
-    color = '#17bd38';
+    bgColor = '#17bd38';
+    fontColor = '#146C2E';
   } else {
-    color = '#d3d3da';
+    bgColor = '#d3d3da';
+    fontColor = '#606B85';
   }
 
   return (
-    <SkillPill color={color}>
-      {skillType === 'active' && <SmallCheckIcon htmlColor="#146C2E" />}
-      {skillType === 'disabled' && <SmallDisabledIcon htmlColor={color} />}
-      <PillText bold color={skillType === 'active' ? '#146C2E' : '#0d0c0c'}>
+    <SkillPill color={bgColor}>
+      {skillType === 'active' && <SmallCheckIcon htmlColor={fontColor} />}
+      {skillType === 'disabled' && <SmallDisabledIcon htmlColor={fontColor} />}
+      <PillText bold color={fontColor}>
         {tag}
       </PillText>
     </SkillPill>
