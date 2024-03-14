@@ -19,8 +19,8 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { Flex } from '../../styles';
-import { SilentText, SubtitleLabel, SummaryText, TagsWrapper, TagText } from './styles';
+import { Flex, PillText } from '../../styles';
+import { SilentText, SubtitleLabel, SummaryText, TagsWrapper } from './styles';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { getContactTags } from '../../utils/categories';
 
@@ -59,7 +59,7 @@ const TagsAndCounselor: React.FC<Props> = props => {
       <TagsWrapper>
         {props.nonDataCallType && (
           <SilentText>
-            <TagText>{props.nonDataCallType}</TagText>
+            <PillText>{props.nonDataCallType}</PillText>
           </SilentText>
         )}
       </TagsWrapper>
