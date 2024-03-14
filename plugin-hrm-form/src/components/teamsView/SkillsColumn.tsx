@@ -17,7 +17,7 @@
 import React, { useState } from 'react';
 import { WorkersDataTable, ColumnDefinition, Template } from '@twilio/flex-ui';
 
-import CategoryWithTooltip from '../common/CategoryWithTooltip';
+import SkillWithTooltip from './SkillWithTooltip';
 import { StyledLink } from '../../styles';
 
 const sortFn = (first, second) => {
@@ -31,20 +31,22 @@ export const setUpSkillsColumn = () => {
       key="skills"
       header="Skills"
       sortingFn={sortFn}
-      style={{ width: 'calc(18rem)' }}
+      style={{ width: 'calc(14rem)' }}
       content={item => {
         console.log('>>> Skills item', item);
         const availableSkills = item?.worker?.attributes?.routing?.skills ?? [];
         const disabledSkills = item?.worker?.attributes?.disabled_skills?.skills ?? [];
-
-        return <SkillsListCell availableSkills={availableSkills} disabledSkills={disabledSkills} />;
+        const workerName = item?.worker?.attributes?.full_name ?? '';
+        return (
+          <SkillsListCell availableSkills={availableSkills} disabledSkills={disabledSkills} workerName={workerName} />
+        );
       }}
     />,
     { sortOrder: 0 },
   );
 };
 
-const SkillsListCell = ({ availableSkills, disabledSkills }) => {
+const SkillsListCell = ({ availableSkills, disabledSkills, workerName }) => {
   const [showMore, setShowMore] = useState(false);
   const combinedSkills = [
     ...availableSkills.map(skill => ({ skill, type: 'active' })),
@@ -53,12 +55,16 @@ const SkillsListCell = ({ availableSkills, disabledSkills }) => {
 
   const displayedSkills = showMore ? combinedSkills : combinedSkills.slice(0, 3);
 
+  if (combinedSkills.length === 0) {
+    return <Template code="TeamsView-NoSkills" aria-label={`No Skills available for ${workerName}`} />;
+  }
+
   return (
     <>
       {displayedSkills.map(({ skill, type }) => (
-        <CategoryWithTooltip
+        <SkillWithTooltip
           key={skill}
-          category={skill}
+          skill={skill}
           color={type === 'active' ? '#17bd38' : '#a3a0a0'}
           skillType={type}
         />
@@ -69,6 +75,7 @@ const SkillsListCell = ({ availableSkills, disabledSkills }) => {
             e.stopPropagation();
             setShowMore(!showMore);
           }}
+          aria-label={showMore ? `See less skills for ${workerName}` : `See more skills for ${workerName}`}
         >
           {showMore ? <Template code="ReadLess" /> : <Template code="ReadMore" />}
         </StyledLink>

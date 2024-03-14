@@ -17,37 +17,31 @@
 import React from 'react';
 import { Tooltip } from '@material-ui/core';
 
-import { CategoryPill, TagMiddleDot } from '../search/styles';
+import { getTag } from '../common/CategoryWithTooltip';
+import { SkillPill, SmallCheckIcon, SmallDisabledIcon } from './styles';
 import { PillText } from '../../styles';
 
-/**
- * Given a category, truncates it (if necessary) to make it fit (aprox) in the space of 'UNSPECIFIED/OTHER' string
- * @param {string} category
- */
-export const getTag = category =>
-  category.length > 17 && !category.toUpperCase().includes('UNSPECIFIED/OTHER')
-    ? `${category.substring(0, 15).trim()}...`
-    : category.substring(0, 17).trim();
-
-const renderTag = (tag: string, color: string) => (
-  <CategoryPill color={color}>
-    <TagMiddleDot color={color} />
+const renderTag = (tag: string, color: string, skillType?: 'active' | 'disabled') => (
+  <SkillPill color={color}>
+    {skillType === 'active' && <SmallCheckIcon htmlColor={color} />}
+    {skillType === 'disabled' && <SmallDisabledIcon htmlColor={color} />}
     <PillText color={color}>{tag}</PillText>
-  </CategoryPill>
+  </SkillPill>
 );
 
 type Props = {
-  category: string;
+  skill: string;
   color?: string;
   fitTag?: boolean;
+  skillType?: 'active' | 'disabled' | null;
 };
 
-const CategoryWithTooltip: React.FC<Props> = ({ category, color = '#000000', fitTag = true }) => {
-  const tag = fitTag ? getTag(category) : category;
+const SkillWithTooltip: React.FC<Props> = ({ skill, color, fitTag = true, skillType = null }) => {
+  const tag = fitTag ? getTag(skill) : skill;
 
-  return <Tooltip title={category}>{renderTag(tag, color)}</Tooltip>;
+  return <Tooltip title={skill}>{renderTag(tag, color, skillType)}</Tooltip>;
 };
 
-CategoryWithTooltip.displayName = 'CategoryWithTooltip';
+SkillWithTooltip.displayName = 'SkillWithTooltip';
 
-export default CategoryWithTooltip;
+export default SkillWithTooltip;
