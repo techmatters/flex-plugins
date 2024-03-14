@@ -243,10 +243,6 @@ export const loadContactIntoRedux = (
       ...existingContacts,
       [contact.id]: {
         ...existingContacts[contact.id],
-        /*
-          We need to keep the loading status loading in order to make sure that the "Save and end" 
-          button is disabled for the period it takes online contact task to be completed 
-        */
         metadata: { ...metadata, loadingStatus: LoadingStatus.LOADED },
         savedContact: contact,
         references: references ?? existingContacts[contact.id]?.references,
