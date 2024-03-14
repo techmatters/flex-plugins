@@ -426,6 +426,9 @@ export const setupEmojiPicker = () => {
 
 const activityNoOfflineByDefault: FilterDefinitionFactory = (appState, _teamFiltersPanelProps) => {
   const activitiesArray = Array.from(appState.flex.worker.activities.values());
+  // const workerArray = Array.from(appState.flex.worker);
+
+  // console.log('>>> activityNoOfflineByDefault activitiesArray', workerArray);
 
   const options = activitiesArray.map(activity => ({
     value: activity.name,
@@ -442,6 +445,31 @@ const activityNoOfflineByDefault: FilterDefinitionFactory = (appState, _teamFilt
   };
 };
 
+const skillsFilterDefinition: FilterDefinitionFactory = (appState, _teamFiltersPanelProps) => {
+  console.log('>>> skillsFilterDefinition');
+
+  const skillsArray = Flex.Manager.getInstance().serviceConfiguration.taskrouter_skills?.map(skill => ({
+    value: skill.name,
+    label: skill.name,
+    default: false,
+  }));
+  console.log('>>> skillsFilterDefinition, skillsArray', skillsArray);
+
+  const options = skillsArray.map(skill => ({
+    value: skill,
+    label: skill,
+    default: false, // set default value as per your requirement
+  }));
+
+  return {
+    id: 'data.skill_name',
+    fieldName: 'skill',
+    type: Flex.FiltersListItemType.multiValue,
+    title: 'Skills',
+    options,
+  };
+};
+
 export const setupTeamViewFilters = () => {
   Flex.TeamsView.defaultProps.filters = [
     activityNoOfflineByDefault,
@@ -449,12 +477,17 @@ export const setupTeamViewFilters = () => {
      * Omit the default since we already include offline in the above
      * Flex.TeamsView.activitiesFilter
      */
+    skillsFilterDefinition,
   ];
 };
 
 export const setupWorkerDirectoryFilters = () => {
-  const activitiesArray = Array.from(Flex.Manager.getInstance().store.getState().flex.worker.activities.values());
+  console.log('>>> setupWorkerDirectoryFilters');
 
+  const activitiesArray = Array.from(Flex.Manager.getInstance().store.getState().flex.worker.activities.values());
+  const skills = Array.from(Flex.Manager.getInstance().store.getState().flex.worker.attributes.routing.skills.values());
+
+  console.log('>>> skills', skills);
   const availableActivities = activitiesArray.filter(a => a.available).map(a => a.name);
 
   Flex.WorkerDirectoryTabs.defaultProps.hiddenWorkerFilter = `data.activity_name IN ${JSON.stringify(
