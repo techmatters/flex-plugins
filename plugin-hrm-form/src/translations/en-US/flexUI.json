@@ -536,5 +536,7 @@
   "CaseMerging-ContactRemovedFromCase": "Contact removed from case",
   "CaseMerging-CaseCreatedAndContactAdded": "Case #{{caseId}} created and contact added",
   "CaseMerging-CancelCase": "Cancel Case",
-  "CaseMerging-ContactUndoRemovedFromCase": "Undo"
+  "CaseMerging-ContactUndoRemovedFromCase": "Undo",
+
+  "TeamsView-NoSkills": "- No skills listed -"
 }
