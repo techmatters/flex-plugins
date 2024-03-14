@@ -98,3 +98,22 @@ export const Title = styled('h1')`
   align-items: center;
 `;
 Title.displayName = 'Title';
+
+export const PillBase = styled('div')`
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  border-radius: 6px;
+  margin-right: 6px;
+  padding: 5px 12px;
+`;
+PillBase.displayName = 'PillBase';
+
+export const PillText = styled(FontOpenSans)`
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14px;
+  opacity: 1;
+  color: #2f3e44;
+`;
