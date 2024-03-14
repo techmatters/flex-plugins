@@ -19,13 +19,11 @@ import { WorkersDataTable, ColumnDefinition, Template } from '@twilio/flex-ui';
 
 import SkillWithTooltip from './SkillWithTooltip';
 import { StyledLink } from '../search/styles';
-// import { StyledLink } from '../../styles';
 
 const sortFn = (first, second) => {
   return 0;
 };
 
-// eslint-disable-next-line import/no-unused-modules
 export const setUpSkillsColumn = () => {
   WorkersDataTable.Content.add(
     <ColumnDefinition
@@ -34,7 +32,6 @@ export const setUpSkillsColumn = () => {
       sortingFn={sortFn}
       style={{ width: 'calc(14rem)' }}
       content={item => {
-        console.log('>>> Skills item', item);
         const availableSkills = item?.worker?.attributes?.routing?.skills ?? [];
         const disabledSkills = item?.worker?.attributes?.disabled_skills?.skills ?? [];
         const workerName = item?.worker?.attributes?.full_name ?? '';
