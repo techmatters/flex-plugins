@@ -24,7 +24,7 @@ import { PillText } from '../../styles';
  * Given a category, truncates it (if necessary) to make it fit (aprox) in the space of 'UNSPECIFIED/OTHER' string
  * @param {string} category
  */
-export const getTag = category =>
+export const truncateLabel = category =>
   category.length > 17 && !category.toUpperCase().includes('UNSPECIFIED/OTHER')
     ? `${category.substring(0, 15).trim()}...`
     : category.substring(0, 17).trim();
@@ -32,7 +32,7 @@ export const getTag = category =>
 const renderTag = (tag: string, color: string) => (
   <CategoryPill color={color}>
     <TagMiddleDot color={color} />
-    <PillText color={color}>{tag}</PillText>
+    <PillText>{tag}</PillText>
   </CategoryPill>
 );
 
@@ -43,7 +43,7 @@ type Props = {
 };
 
 const CategoryWithTooltip: React.FC<Props> = ({ category, color = '#000000', fitTag = true }) => {
-  const tag = fitTag ? getTag(category) : category;
+  const tag = fitTag ? truncateLabel(category) : category;
 
   return <Tooltip title={category}>{renderTag(tag, color)}</Tooltip>;
 };

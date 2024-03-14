@@ -62,12 +62,7 @@ const SkillsListCell = ({ availableSkills, disabledSkills, workerName }) => {
   return (
     <>
       {displayedSkills.map(({ skill, type }) => (
-        <SkillWithTooltip
-          key={skill}
-          skill={skill}
-          color={type === 'active' ? '#17bd38' : '#a3a0a0'}
-          skillType={type}
-        />
+        <SkillWithTooltip key={skill} skill={skill} skillType={type} />
       ))}
       {combinedSkills.length > 3 && (
         <StyledLink

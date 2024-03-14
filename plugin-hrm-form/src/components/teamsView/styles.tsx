@@ -37,7 +37,7 @@ SkillPill.displayName = 'SkillPill';
 const withSmallIcon = Icon => {
   return withStyles({
     root: {
-      fontSize: '1rem',
+      fontSize: '1.1rem',
       paddingRight: '4px',
     },
   })(Icon);

@@ -17,29 +17,39 @@
 import React from 'react';
 import { Tooltip } from '@material-ui/core';
 
-import { getTag } from '../common/CategoryWithTooltip';
+import { truncateLabel } from '../common/CategoryWithTooltip';
 import { SkillPill, SmallCheckIcon, SmallDisabledIcon } from './styles';
 import { PillText } from '../../styles';
 
-const renderTag = (tag: string, color: string, skillType?: 'active' | 'disabled') => (
-  <SkillPill color={color}>
-    {skillType === 'active' && <SmallCheckIcon htmlColor={color} />}
-    {skillType === 'disabled' && <SmallDisabledIcon htmlColor={color} />}
-    <PillText color={color}>{tag}</PillText>
-  </SkillPill>
-);
+const renderTag = (tag: string, skillType?: 'active' | 'disabled') => {
+  let color;
+  if (skillType === 'active') {
+    color = '#17bd38';
+  } else {
+    color = '#d3d3da';
+  }
+
+  return (
+    <SkillPill color={color}>
+      {skillType === 'active' && <SmallCheckIcon htmlColor="#146C2E" />}
+      {skillType === 'disabled' && <SmallDisabledIcon htmlColor={color} />}
+      <PillText bold color={skillType === 'active' ? '#146C2E' : '#0d0c0c'}>
+        {tag}
+      </PillText>
+    </SkillPill>
+  );
+};
 
 type Props = {
   skill: string;
-  color?: string;
   fitTag?: boolean;
-  skillType?: 'active' | 'disabled' | null;
+  skillType?: 'active' | 'disabled';
 };
 
-const SkillWithTooltip: React.FC<Props> = ({ skill, color, fitTag = true, skillType = null }) => {
-  const tag = fitTag ? getTag(skill) : skill;
+const SkillWithTooltip: React.FC<Props> = ({ skill, fitTag = true, skillType }) => {
+  const tag = fitTag ? truncateLabel(skill) : skill;
 
-  return <Tooltip title={skill}>{renderTag(tag, color, skillType)}</Tooltip>;
+  return <Tooltip title={skill}>{renderTag(tag, skillType)}</Tooltip>;
 };
 
 SkillWithTooltip.displayName = 'SkillWithTooltip';

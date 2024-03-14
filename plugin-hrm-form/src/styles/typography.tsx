@@ -109,11 +109,17 @@ export const PillBase = styled('div')`
 `;
 PillBase.displayName = 'PillBase';
 
-export const PillText = styled(FontOpenSans)`
+type PillTextProps = {
+  color?: string;
+  bold?: boolean;
+};
+
+export const PillText = styled(FontOpenSans)<PillTextProps>`
   display: inline-block;
   font-size: 12px;
   font-weight: 400;
   line-height: 14px;
   opacity: 1;
-  color: #2f3e44;
+  color: ${props => (props.color ? props.color : '#2f3e44')};
+  font-weight: ${props => (props.bold ? 600 : 400)};
 `;
