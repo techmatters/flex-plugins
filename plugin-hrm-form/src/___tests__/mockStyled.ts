@@ -79,7 +79,6 @@ jest.mock('../styles/', () => ({
   FormOption: 'FormOption',
   CategoryCheckbox: 'CategoryCheckbox',
   CategoryCheckboxLabel: 'CategoryCheckboxLabel',
-  CategoryCheckboxField: 'CategoryCheckboxField',
   TaskCanvasOverride: 'TaskCanvasOverride',
   PopoverText: 'PopoverText',
   CannedResponsesContainer: 'CannedResponsesContainer',
@@ -126,6 +125,7 @@ jest.mock('../components/search/styles', () => ({
   StyledFormControlLabel: 'StyledFormControlLabel',
   StyledSwitch: 'StyledSwitch',
   SwitchLabel: 'SwitchLabel',
+  StyledLink: 'StyledLink',
   StyledTabs: 'StyledTabs',
   StyledResultsContainer: 'StyledResultsContainer',
   StyledResultsText: 'StyledResultsText',
@@ -207,3 +207,5 @@ jest.mock('../components/case/styles', () => ({
 jest.mock('../components/profile/styles', () => ({
   YellowBannerContainer: 'YellowBannerContainer',
 }));
+
+export {};
