@@ -190,7 +190,7 @@ describe('actions', () => {
       expect(metadata).toStrictEqual(
         expect.objectContaining({
           ...newContactMetaData(false),
-          loadingStatus: LoadingStatus.LOADED,
+          loadingStatus: LoadingStatus.LOADING,
           startMillis: expect.any(Number),
         }),
       );

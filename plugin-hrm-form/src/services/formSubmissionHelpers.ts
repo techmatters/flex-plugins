@@ -44,7 +44,6 @@ import '../types';
  */
 export const completeContactTask = async (task: RouterTask) => {
   if (!isTwilioTask(task)) return;
-
   const { sid } = task;
 
   if (task.status !== 'wrapping') {
@@ -54,7 +53,6 @@ export const completeContactTask = async (task: RouterTask) => {
       await Actions.invokeAction('WrapupTask', { sid, task });
     }
   }
-
   await Actions.invokeAction('CompleteTask', { sid, task });
 };
 
