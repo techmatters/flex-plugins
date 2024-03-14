@@ -112,7 +112,7 @@ export function contactForm(page: Page) {
         await responsePromise;
       }
 
-      await selectors.tabButton(tab).waitFor({ state: 'detached' });
+      await selectors.tabButton(tab).waitFor({ state: 'hidden' });
     },
     fillCategoriesTab,
     fillStandardTab,
