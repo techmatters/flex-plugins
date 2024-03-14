@@ -18,7 +18,6 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
-import type { FilterDefinitionFactory } from '@twilio/flex-ui/src/components/view/TeamsView';
 
 import * as TransferHelpers from '../transfer/transferTaskState';
 import EmojiPicker from '../components/emojiPicker';
@@ -422,75 +421,4 @@ export const setupCannedResponses = () => {
  */
 export const setupEmojiPicker = () => {
   Flex.MessageInputActions.Content.add(<EmojiPicker key="emoji-picker" />);
-};
-
-const activityNoOfflineByDefault: FilterDefinitionFactory = (appState, _teamFiltersPanelProps) => {
-  const activitiesArray = Array.from(appState.flex.worker.activities.values());
-  // const workerArray = Array.from(appState.flex.worker);
-
-  // console.log('>>> activityNoOfflineByDefault activitiesArray', workerArray);
-
-  const options = activitiesArray.map(activity => ({
-    value: activity.name,
-    label: activity.name,
-    default: activity.name !== 'Offline',
-  }));
-
-  return {
-    id: 'data.activity_name',
-    fieldName: 'activity',
-    type: Flex.FiltersListItemType.multiValue,
-    title: 'Activities',
-    options,
-  };
-};
-
-const skillsFilterDefinition: FilterDefinitionFactory = (appState, _teamFiltersPanelProps) => {
-  console.log('>>> skillsFilterDefinition');
-
-  const skillsArray = Flex.Manager.getInstance().serviceConfiguration.taskrouter_skills?.map(skill => ({
-    value: skill.name,
-    label: skill.name,
-    default: false,
-  }));
-  console.log('>>> skillsFilterDefinition, skillsArray', skillsArray);
-
-  const options = skillsArray.map(skill => ({
-    value: skill,
-    label: skill,
-    default: false, // set default value as per your requirement
-  }));
-
-  return {
-    id: 'data.skill_name',
-    fieldName: 'skill',
-    type: Flex.FiltersListItemType.multiValue,
-    title: 'Skills',
-    options,
-  };
-};
-
-export const setupTeamViewFilters = () => {
-  Flex.TeamsView.defaultProps.filters = [
-    activityNoOfflineByDefault,
-    /*
-     * Omit the default since we already include offline in the above
-     * Flex.TeamsView.activitiesFilter
-     */
-    skillsFilterDefinition,
-  ];
-};
-
-export const setupWorkerDirectoryFilters = () => {
-  console.log('>>> setupWorkerDirectoryFilters');
-
-  const activitiesArray = Array.from(Flex.Manager.getInstance().store.getState().flex.worker.activities.values());
-  const skills = Array.from(Flex.Manager.getInstance().store.getState().flex.worker.attributes.routing.skills.values());
-
-  console.log('>>> skills', skills);
-  const availableActivities = activitiesArray.filter(a => a.available).map(a => a.name);
-
-  Flex.WorkerDirectoryTabs.defaultProps.hiddenWorkerFilter = `data.activity_name IN ${JSON.stringify(
-    availableActivities,
-  )}`;
 };
