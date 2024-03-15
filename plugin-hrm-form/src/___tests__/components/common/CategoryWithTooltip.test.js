@@ -14,17 +14,17 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getTag } from '../../../components/common/CategoryWithTooltip';
+import { truncateLabel } from '../../../components/common/CategoryWithTooltip';
 
-describe('Test getTag with various lengths', () => {
+describe('Test truncateLabel with various lengths', () => {
   test('length =< 17', async () => {
     const category1 = 'category1';
     const category2 = 'category longer';
     const category3 = 'category looonger';
 
-    expect(getTag(category1)).toBe(category1);
-    expect(getTag(category2)).toBe(category2);
-    expect(getTag(category3)).toBe(category3);
+    expect(truncateLabel(category1)).toBe(category1);
+    expect(truncateLabel(category2)).toBe(category2);
+    expect(truncateLabel(category3)).toBe(category3);
   });
 
   test('length > 17', async () => {
@@ -32,8 +32,8 @@ describe('Test getTag with various lengths', () => {
     const category2 = 'category2 with       spaces everywhere';
     const category3 = 'UNSPECIFIED/OTHER - and some various thigs more';
 
-    expect(getTag(category1)).toBe('category1 very...');
-    expect(getTag(category2)).toBe('category2 with...');
-    expect(getTag(category3)).toBe('UNSPECIFIED/OTHER');
+    expect(truncateLabel(category1)).toBe('category1 very...');
+    expect(truncateLabel(category2)).toBe('category2 with...');
+    expect(truncateLabel(category3)).toBe('UNSPECIFIED/OTHER');
   });
 });

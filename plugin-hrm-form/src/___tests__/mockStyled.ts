@@ -79,7 +79,6 @@ jest.mock('../styles/', () => ({
   FormOption: 'FormOption',
   CategoryCheckbox: 'CategoryCheckbox',
   CategoryCheckboxLabel: 'CategoryCheckboxLabel',
-  CategoryCheckboxField: 'CategoryCheckboxField',
   TaskCanvasOverride: 'TaskCanvasOverride',
   PopoverText: 'PopoverText',
   CannedResponsesContainer: 'CannedResponsesContainer',
@@ -95,8 +94,7 @@ jest.mock('../components/search/styles', () => ({
   ContactWrapper: 'ContactWrapper',
   ConnectIcon: 'ConnectIcon',
   ContactButtonsWrapper: 'ContactButtonsWrapper',
-  StyledLink: 'StyledLink',
-  ContactTag: 'ContactTag',
+  CategoryPillContainer: 'CategoryPillContainer',
   ConfirmText: 'ConfirmText',
   CancelButton: 'CancelButton',
   SilentText: 'SilentText',
@@ -108,7 +106,7 @@ jest.mock('../components/search/styles', () => ({
   CaseFooterText: 'CaseFooterText',
   DateText: 'DateText',
   TagsWrapper: 'TagsWrapper',
-  TagText: 'TagText',
+  PillText: 'PillText',
   TagMiddleDot: 'TagMiddleDot',
   ContactDetailsIcon: () => 'ContactDetailsIcon',
   DetailsContainer: 'DetailsContainer',
@@ -209,3 +207,5 @@ jest.mock('../components/case/styles', () => ({
 jest.mock('../components/profile/styles', () => ({
   YellowBannerContainer: 'YellowBannerContainer',
 }));
+
+export {};
