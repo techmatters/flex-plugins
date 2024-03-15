@@ -20,10 +20,4 @@ import { CaseStateEntry } from '../types';
 export const getSectionItemById = (propertyName: WellKnownCaseSection) => (
   sections: CaseStateEntry['sections'],
   id: string,
-): CaseSection | undefined => {
-  const sectionList = sections?.[propertyName];
-  if (Array.isArray(sectionList)) {
-    return sectionList.find(s => s.sectionId === id);
-  }
-  return undefined;
-};
+): CaseSection | undefined => sections?.[propertyName]?.[id];

@@ -23,7 +23,6 @@ import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-ho
 import type { DefinitionVersion } from 'hrm-form-definitions';
 import { isEqual } from 'lodash';
 import { AnyAction, bindActionCreators } from 'redux';
-import { parseISO } from 'date-fns';
 
 import {
   BottomButtonBar,
@@ -102,7 +101,7 @@ const mapStateToProps = (state: RootState, { task, sectionApi }: AddEditCaseItem
   };
 };
 
-const mapDispatchToProps = (dispatch, { sectionApi, task }: AddEditCaseItemProps) => {
+const mapDispatchToProps = (dispatch, { sectionApi, task, definitionVersion }: AddEditCaseItemProps) => {
   const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
     updateCaseSectionWorkingCopy: bindActionCreators(updateCaseSectionWorkingCopy, dispatch),
@@ -117,23 +116,11 @@ const mapDispatchToProps = (dispatch, { sectionApi, task }: AddEditCaseItemProps
       }
     },
 
-    createCaseSection: (
-      caseId: Case['id'],
-      newSection: CaseSectionTypeSpecificData,
-      eventTimestamp: Date | undefined,
-    ) => searchAsyncDispatch(createCaseSectionAsyncAction(caseId, sectionApi.type, newSection, eventTimestamp)),
+    createCaseSection: (caseId: Case['id'], newSection: CaseSectionTypeSpecificData) =>
+      searchAsyncDispatch(createCaseSectionAsyncAction(caseId, sectionApi, newSection, definitionVersion)),
 
-    createCaseSectionCopy: (
-      caseId: Case['id'],
-      targetSectionType: WellKnownCaseSection,
-      newSection: CaseSectionTypeSpecificData,
-    ) => searchAsyncDispatch(createCaseSectionAsyncAction(caseId, targetSectionType, newSection)),
-    updateCaseSection: (
-      caseId: Case['id'],
-      sectionId,
-      update: CaseSectionTypeSpecificData,
-      eventTimestamp: Date | undefined,
-    ) => searchAsyncDispatch(updateCaseSectionAsyncAction(caseId, sectionApi.type, sectionId, update, eventTimestamp)),
+    updateCaseSection: (caseId: Case['id'], sectionId, update: CaseSectionTypeSpecificData) =>
+      searchAsyncDispatch(updateCaseSectionAsyncAction(caseId, sectionApi, sectionId, update, definitionVersion)),
   };
 };
 
@@ -236,7 +223,6 @@ const AddEditCaseItem: React.FC<Props> = ({
   if (!sections || !workingCopy) {
     return null;
   }
-  const eventTimestampSourceItem = formDefinition.find(fd => fd.metadata?.eventTimestampSource);
 
   const { caseId } = currentRoute;
 
@@ -245,14 +231,10 @@ const AddEditCaseItem: React.FC<Props> = ({
     : splitInHalf(disperseInputs(7)(form));
 
   const save = async () => {
-    const eventTimestamp =
-      eventTimestampSourceItem && workingCopy[eventTimestampSourceItem.name]
-        ? parseISO(workingCopy[eventTimestampSourceItem.name].toString())
-        : undefined;
     if (sectionId) {
-      await updateCaseSection(caseId, sectionId, workingCopy, eventTimestamp);
+      await updateCaseSection(caseId, sectionId, workingCopy);
     } else {
-      await createCaseSection(caseId, workingCopy, eventTimestamp);
+      await createCaseSection(caseId, workingCopy);
     }
   };
 

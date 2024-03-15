@@ -38,6 +38,14 @@ import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCas
 import selectCaseItemHistory from '../../states/case/sections/selectCaseItemHistory';
 import { CaseSectionTypeSpecificData } from '../../services/caseSectionService';
 
+export type ViewCaseItemProps = {
+  task: CustomITask | StandaloneITask;
+  definitionVersion: DefinitionVersion;
+  sectionApi: CaseSectionApi;
+  includeAddedTime?: boolean;
+  canEdit: () => boolean;
+};
+
 const mapStateToProps = (
   state: RootState,
   { task, sectionApi }: ViewCaseItemProps,
@@ -54,7 +62,7 @@ const mapStateToProps = (
       caseItemHistory: selectCaseItemHistory(state, currentRoute.caseId, sectionApi, currentRoute.id),
       currentRoute,
       sections,
-      form: sectionApi.getSectionItemById(sections, currentRoute.id).sectionTypeSpecificData.form,
+      form: sectionApi.getSectionItemById(sections, currentRoute.id).sectionTypeSpecificData,
     };
   }
   return {
@@ -63,14 +71,6 @@ const mapStateToProps = (
     caseItemHistory: undefined,
     sections: undefined,
   };
-};
-
-export type ViewCaseItemProps = {
-  task: CustomITask | StandaloneITask;
-  definitionVersion: DefinitionVersion;
-  sectionApi: CaseSectionApi;
-  includeAddedTime?: boolean;
-  canEdit: () => boolean;
 };
 
 const mapToDispatchProps = {

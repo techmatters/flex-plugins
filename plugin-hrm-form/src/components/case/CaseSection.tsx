@@ -31,6 +31,7 @@ import { CaseItemAction, isCaseRoute } from '../../states/routing/types';
 import InformationRow from './InformationRow';
 import { newOpenModalAction } from '../../states/routing/actions';
 import asyncDispatch from '../../states/asyncDispatch';
+import selectCurrentRouteCase from '../../states/case/selectCurrentRouteCase';
 
 type OwnProps = {
   canAdd: () => boolean;
@@ -43,6 +44,8 @@ const MAX_SECTIONS = 100;
 
 const mapStateToProps = (state: RootState, { sectionType, taskSid }: OwnProps) => {
   const route = selectCurrentTopmostRouteForTask(state, taskSid);
+  const { sections } = selectCurrentRouteCase(state, taskSid) ?? {};
+  const sectionIdCsv = Object.keys(sections?.[sectionType] ?? {}).join(','); // Used to trigger re-fetch of sections
   if (isCaseRoute(route)) {
     return {
       sectionsTimeline: selectTimeline(state, route.caseId, sectionType, {
@@ -50,6 +53,7 @@ const mapStateToProps = (state: RootState, { sectionType, taskSid }: OwnProps) =
         limit: MAX_SECTIONS,
       }) as TimelineActivity<FullCaseSection>[],
       caseId: route.caseId,
+      sectionIdCsv,
     };
   }
   return {};
@@ -85,16 +89,16 @@ const CaseSection: React.FC<Props> = ({
   viewCaseSection,
   addCaseSection,
   getTimeline,
+  sectionIdCsv,
 }) => {
-  const timelineLoaded = Boolean(sectionsTimeline);
   useEffect(() => {
-    if (caseId && !timelineLoaded) {
+    if (caseId) {
       // eslint-disable-next-line no-console
       console.log(`Fetching ${sectionType} sections for case ${caseId}`);
       getTimeline(caseId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [caseId, timelineLoaded, sectionType]);
+  }, [caseId, sectionIdCsv, sectionType]);
 
   const capitializedSectionType = sectionType.charAt(0).toUpperCase() + sectionType.slice(1);
   return (

@@ -21,6 +21,7 @@ import { Contact } from '../../types/types';
 import { channelTypes } from '../DomainConstants';
 import { getTemplateStrings } from '../../hrmConfig';
 import { FullCaseSection } from '../../services/caseSectionService';
+import { lookupApiBySectionType } from './sections/lookupApi';
 
 const ActivityTypes = {
   createCase: 'create',
@@ -33,17 +34,15 @@ const ActivityTypes = {
   unknown: 'unknown',
 } as const;
 
-/**
- * Returns true if the activity provided represents a contact that was connected to the case
- * @param activity Timeline Activity
- */
-export const isContactActivity = (activity: Activity): activity is ContactActivity =>
-  Boolean((activity as ContactActivity).contactId);
-
-export const getSectionText = ({ sectionTypeSpecificData }: FullCaseSection, formDefs: DefinitionVersion): string => {
-  let { previewFields } = formDefs.layoutVersion.case.notes ?? {};
+export const getSectionText = (
+  { sectionTypeSpecificData, sectionType }: FullCaseSection,
+  formDefs: DefinitionVersion,
+): string => {
+  const api = lookupApiBySectionType(sectionType);
+  let { previewFields } = api.getSectionLayoutDefinition(formDefs) ?? {};
+  const sectionFormDefinition = api.getSectionFormDefinition(formDefs);
   if (!previewFields || !previewFields.length) {
-    previewFields = formDefs.caseForms.NoteForm.length ? [formDefs.caseForms.NoteForm[0].name] : [];
+    previewFields = sectionFormDefinition?.length ? [sectionFormDefinition[0].name] : [];
   }
   return (
     previewFields

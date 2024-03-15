@@ -16,6 +16,7 @@
 
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 import { DefinitionVersion } from 'hrm-form-definitions';
+import { parseISO } from 'date-fns';
 
 import { Case, WellKnownCaseSection } from '../../../types/types';
 import {
@@ -27,7 +28,7 @@ import {
 import { HrmState } from '../..';
 import { CaseSectionApi } from './api';
 import { lookupApi } from './lookupApi';
-import { copyCaseSectionItem } from './update';
+import { copyCaseSectionItem } from './copySection';
 
 type CaseSectionUpdatePayload = {
   caseId: Case['id'];
@@ -37,17 +38,29 @@ type CaseSectionUpdatePayload = {
   }[];
 };
 
+const lookupEventTimestamp = (
+  formDefinition: DefinitionVersion,
+  sectionApi: CaseSectionApi,
+  sectionData: CaseSectionTypeSpecificData,
+): Date | undefined => {
+  const sectionFormDefinition = sectionApi.getSectionFormDefinition(formDefinition);
+  const eventTimestampSourceItem = sectionFormDefinition.find(fd => fd.metadata?.eventTimestampSource);
+  return eventTimestampSourceItem && sectionData[eventTimestampSourceItem.name]
+    ? parseISO(sectionData[eventTimestampSourceItem.name].toString())
+    : undefined;
+};
+
 const ADD_CASE_SECTION_ACTION = 'case/section/ADD';
 
 export const createCaseSectionAsyncAction = createAsyncAction(
   ADD_CASE_SECTION_ACTION,
   async (
     caseId: Case['id'],
+    sectionApi: CaseSectionApi,
     newSection: CaseSectionTypeSpecificData,
     formDefinition: DefinitionVersion,
-    sectionApi: CaseSectionApi,
-    eventTimestamp?: Date,
   ): Promise<CaseSectionUpdatePayload> => {
+    const eventTimestamp = lookupEventTimestamp(formDefinition, sectionApi, newSection);
     const copyToFields = sectionApi.getSectionFormDefinition(formDefinition).filter(fd => fd.type === 'copy-to');
     const filteredEntries = Object.entries(newSection).filter(([key]) => !copyToFields.some(fd => fd.name === key));
     const filteredSection = Object.fromEntries(filteredEntries);
@@ -78,12 +91,7 @@ export const createCaseSectionAsyncAction = createAsyncAction(
       caseId,
     };
   },
-  (
-    caseId: Case['id'],
-    newSection: CaseSectionTypeSpecificData,
-    formDefinition: DefinitionVersion,
-    sectionApi: CaseSectionApi,
-  ) =>
+  (caseId: Case['id'], sectionApi: CaseSectionApi) =>
     ({
       caseId,
       sectionType: sectionApi.type,
@@ -96,21 +104,25 @@ export const updateCaseSectionAsyncAction = createAsyncAction(
   UPDATE_CASE_SECTION_ACTION,
   async (
     caseId: Case['id'],
-    sectionType: WellKnownCaseSection,
+    sectionApi: CaseSectionApi,
     sectionId: string,
     update: CaseSectionTypeSpecificData,
-    eventTimestamp?: Date,
+    formDefinition: DefinitionVersion,
   ): Promise<CaseSectionUpdatePayload> => {
+    const eventTimestamp = lookupEventTimestamp(formDefinition, sectionApi, update);
     return {
       sections: [
-        { sectionType, section: await updateCaseSection(caseId, sectionType, sectionId, update, eventTimestamp) },
+        {
+          sectionType: sectionApi.type,
+          section: await updateCaseSection(caseId, sectionApi.type, sectionId, update, eventTimestamp),
+        },
       ],
       caseId,
     };
   },
-  (caseId: Case['id'], sectionType: string) => ({
+  (caseId: Case['id'], sectionApi: CaseSectionApi) => ({
     caseId,
-    sectionType,
+    sectionType: sectionApi.type,
   }),
 );
 
@@ -130,13 +142,13 @@ const updateCaseSections = (
   updatedCaseSections.forEach(({ section: updatedCaseSection, sectionType }) => {
     sections[sectionType] = sections[sectionType] || {};
     const sectionTypeMap = sections[sectionType];
-    const existingSection = sectionTypeMap[sectionType];
+    const existingSection = sectionTypeMap[updatedCaseSection.sectionId];
     if (existingSection) {
-      delete caseWorkingCopy?.sections?.[sectionType]?.existing?.[updatedCaseSection.sectionId];
+      delete caseWorkingCopy.sections[sectionType].existing[updatedCaseSection.sectionId];
     } else {
-      delete caseWorkingCopy?.sections?.[sectionType]?.new;
+      delete caseWorkingCopy.sections[sectionType].new;
     }
-    sectionTypeMap[sectionType] = { sectionType, ...updatedCaseSection };
+    sectionTypeMap[updatedCaseSection.sectionId] = { sectionType, ...updatedCaseSection };
   });
   return state;
 };

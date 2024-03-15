@@ -110,7 +110,7 @@ export type GetTimelineAsyncAction = ReturnType<typeof newGetTimelineAsyncAction
   type: typeof GET_CASE_TIMELINE_ACTION;
 };
 
-type UITimelineActivity = TimelineActivity<FullCaseSection | Contact> & { text: string; isDraft: boolean };
+export type UITimelineActivity = TimelineActivity<FullCaseSection | Contact> & { text: string; isDraft: boolean };
 
 export const selectTimeline = (
   state: RootState,
@@ -131,6 +131,7 @@ export const selectTimeline = (
       const section = caseEntry.sections[activity.sectionType]?.[activity.sectionId];
       return {
         ...timelineActivity,
+        activityType: 'case-section',
         activity: section,
         text: getSectionText(section, definitionVersion),
         isDraft: false,
@@ -140,6 +141,7 @@ export const selectTimeline = (
     const contact = state[namespace].activeContacts.existingContacts[activity.contactId]?.savedContact;
     return {
       ...timelineActivity,
+      activityType: 'contact',
       activity: contact,
       text: getContactActivityText(contact, strings),
       isDraft: Boolean(contact.finalizedAt),

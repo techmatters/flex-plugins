@@ -14,9 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { addSeconds } from 'date-fns';
-
-import { getMostRecentSectionItem, getSectionItemById } from '../../../../states/case/sections/get';
+import { getSectionItemById } from '../../../../states/case/sections/get';
 import { Case } from '../../../../types/types';
 import { VALID_EMPTY_CASE } from '../../../testCases';
 import { WorkerSID } from '../../../../types/twilio';
@@ -65,76 +63,6 @@ describe('getSectionItemById', () => {
   test('Non array at specified property name - returns undefined', () => {
     expect(
       getSectionItemById('referral')({ ...inputCase, sections: { referral: <any>'not an array' } }, 'NOT_EXISTS'),
-    ).toBeUndefined();
-  });
-});
-
-describe('getMostRecentSectionItem', () => {
-  const inputCase: Case = {
-    ...VALID_EMPTY_CASE,
-    sections: {
-      household: [
-        {
-          sectionId: 'EARLIEST',
-          createdAt: baselineDate,
-          eventTimestamp: baselineDate,
-          createdBy: WORKER_SID,
-          sectionTypeSpecificData: {},
-        },
-        {
-          sectionId: 'LATEST',
-          createdAt: addSeconds(baselineDate, 100),
-          eventTimestamp: addSeconds(baselineDate, 100),
-          createdBy: WORKER_SID,
-          sectionTypeSpecificData: {},
-        },
-        {
-          sectionId: 'ALSO_EXISTS',
-          createdAt: addSeconds(baselineDate, 10),
-          eventTimestamp: addSeconds(baselineDate, 10),
-          createdBy: WORKER_SID,
-          sectionTypeSpecificData: {},
-        },
-      ],
-    },
-  };
-  test('Populated array at specified property name - returns item with latest createdAt date', () => {
-    expect(getMostRecentSectionItem('household')(inputCase)).toMatchObject(inputCase.sections.household[1]);
-  });
-  test('Empty array at specified property name - returns undefined', () => {
-    expect(getMostRecentSectionItem('household')({ ...VALID_EMPTY_CASE, sections: { household: [] } })).toBeUndefined();
-  });
-  test('Array with unparseable createdAt dates at specified property name - uses remaining dates', () => {
-    expect(
-      getMostRecentSectionItem('household')({
-        ...VALID_EMPTY_CASE,
-        sections: {
-          household: [
-            {
-              sectionId: 'EARLIEST',
-              createdAt: baselineDate,
-              eventTimestamp: baselineDate,
-              createdBy: WORKER_SID,
-              sectionTypeSpecificData: {},
-            },
-            {
-              sectionId: 'PROBLEM',
-              createdAt: 'NOT A DATE' as any,
-              eventTimestamp: baselineDate,
-              createdBy: WORKER_SID,
-              sectionTypeSpecificData: {},
-            },
-          ],
-        },
-      }),
-    ).toMatchObject(inputCase.sections.household[0]);
-  });
-  test('Nothing exists at specified property name - returns undefined', () => {
-    expect(getMostRecentSectionItem('referral')(inputCase)).toBeUndefined();
-  });
-  test('Non array at specified property name - returns undefined', () => {
-    expect(
-      getMostRecentSectionItem('referral')({ ...inputCase, sections: { referral: <any>'not an array' } }),
     ).toBeUndefined();
   });
 });

@@ -26,25 +26,20 @@ import TimelineIcon, { IconType } from './TimelineIcon';
 import { CaseSectionFont, TimelineCallTypeIcon, TimelineDate, TimelineRow, TimelineText, ViewButton } from '../styles';
 import { Box, Row } from '../../../styles';
 import CaseAddButton from '../CaseAddButton';
-import { Case, CustomITask } from '../../../types/types';
-import { isContactActivity } from '../../../states/case/caseActivities';
-import {
-  ContactActivity,
-  isCaseSectionTimelineActivity,
-  isContactTimelineActivity,
-  NoteActivity,
-  ReferralActivity,
-} from '../../../states/case/types';
+import { Case, Contact, CustomITask } from '../../../types/types';
+import { isCaseSectionTimelineActivity, isContactTimelineActivity } from '../../../states/case/types';
 import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { CaseItemAction, CaseSectionSubroute, isCaseRoute, NewCaseSubroutes } from '../../../states/routing/types';
 import { newOpenModalAction } from '../../../states/routing/actions';
 import { RootState } from '../../../states';
-import { newGetTimelineAsyncAction, selectTimeline } from '../../../states/case/timeline';
+import { newGetTimelineAsyncAction, selectTimeline, UITimelineActivity } from '../../../states/case/timeline';
 import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRouteCase';
 import { colors } from '../../../styles/banners';
 import InfoIcon from '../../caseMergingBanners/InfoIcon';
 import { selectCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
 import asyncDispatch from '../../../states/asyncDispatch';
+import { selectContactsByCaseId } from '../../../states/contacts/selectContactByCaseId';
+import { FullCaseSection } from '../../../services/caseSectionService';
 
 type OwnProps = {
   taskSid: CustomITask['taskSid'];
@@ -57,9 +52,15 @@ type OwnProps = {
 const mapStateToProps = (state: RootState, { taskSid, timelineId, pageSize, page }: OwnProps) => {
   const route = selectCurrentTopmostRouteForTask(state, taskSid);
   if (isCaseRoute(route)) {
+    const { connectedCase, sections } = selectCurrentRouteCaseState(state, taskSid);
     return {
       timelineActivities: selectTimeline(state, route.caseId, timelineId, { offset: page * pageSize, limit: pageSize }),
-      connectedCase: selectCurrentRouteCaseState(state, taskSid)?.connectedCase,
+      connectedCase,
+      contactIds: selectContactsByCaseId(state, route.caseId)
+        .map(contact => contact.savedContact.id)
+        .join(),
+      noteIds: Object.keys(sections?.note ?? {}).join(),
+      referralIds: Object.keys(sections?.note ?? {}).join(),
     };
   }
   return {};
@@ -93,6 +94,9 @@ const Timeline: React.FC<Props> = ({
   connectedCase,
   titleCode = 'Case-Timeline-RecentTitle',
   getTimeline,
+  contactIds,
+  noteIds,
+  referralIds,
 }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
 
@@ -100,32 +104,27 @@ const Timeline: React.FC<Props> = ({
     return getInitializedCan();
   }, []);
 
-  const timelineActivitiesLoaded = Boolean(timelineActivities);
   const caseId = connectedCase.id;
 
   useEffect(() => {
-    if (caseId && !timelineActivitiesLoaded) {
+    if (caseId) {
       // eslint-disable-next-line no-console
-      console.log(`Fetching maoin timeline sections for case ${caseId}`);
+      console.log(`Fetching main timeline sections for case ${caseId}`);
       getTimeline(caseId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [caseId, timelineActivitiesLoaded]);
+  }, [caseId, noteIds, referralIds, contactIds]);
 
   if (!connectedCase || !timelineActivities) {
     return null;
   }
 
-  const handleViewNoteClick = ({ id }: NoteActivity) => {
-    openViewCaseSectionModal(caseId, NewCaseSubroutes.Note, id);
+  const handleViewSectionClick = ({ sectionId, sectionType }: FullCaseSection) => {
+    openViewCaseSectionModal(caseId, sectionType, sectionId);
   };
 
-  const handleViewReferralClick = ({ id }: ReferralActivity) => {
-    openViewCaseSectionModal(caseId, NewCaseSubroutes.Referral, id);
-  };
-
-  const handleViewConnectedCaseActivityClick = ({ contactId }: ContactActivity) => {
-    openContactModal(contactId);
+  const handleViewConnectedCaseActivityClick = ({ id }: Contact) => {
+    openContactModal(id);
   };
 
   const handleAddNoteClick = () => {
@@ -136,13 +135,11 @@ const Timeline: React.FC<Props> = ({
     openAddCaseSectionModal(caseId, NewCaseSubroutes.Referral);
   };
 
-  const handleViewClick = activity => {
-    if (activity.type === 'note') {
-      handleViewNoteClick(activity);
-    } else if (activity.type === 'referral') {
-      handleViewReferralClick(activity);
-    } else if (isContactActivity(activity)) {
-      handleViewConnectedCaseActivityClick(activity);
+  const handleViewClick = (timelineActivity: UITimelineActivity) => {
+    if (isCaseSectionTimelineActivity(timelineActivity)) {
+      handleViewSectionClick(timelineActivity.activity);
+    } else if (isContactTimelineActivity(timelineActivity)) {
+      handleViewConnectedCaseActivityClick(timelineActivity.activity);
     } else {
       setMockedMessage(<Template code="NotImplemented" />);
     }
@@ -206,7 +203,7 @@ const Timeline: React.FC<Props> = ({
                   <CallTypeIcon callType={timelineActivity.activity.rawJson.callType} fontSize="18px" />
                 </TimelineCallTypeIcon>
               )}
-              <TimelineText>{timelineActivity?.text}</TimelineText>
+              <TimelineText>{timelineActivity.text}</TimelineText>
               {canViewActivity && (
                 <Box marginLeft="auto">
                   <Box marginLeft="auto">
