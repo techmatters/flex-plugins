@@ -29,7 +29,11 @@ export const agentDesktop = (page: Page) => {
     for (let i = 0; i < 3; i++) {
       try {
         await addOfflineContactButton.click();
-        await expect(addOfflineContactButton).not.toBeEnabled({ timeout: 2000 });
+        await expect(addOfflineContactButton).not.toBeEnabled({ timeout: 5000 });
+        const dataCallTypeButton = page.locator(
+          `//button[@data-testid='DataCallTypeButton-child']`,
+        );
+        await expect(dataCallTypeButton).toBeVisible({ timeout: 5000 });
         break;
       } catch (e) {
         if (i === 2) {
