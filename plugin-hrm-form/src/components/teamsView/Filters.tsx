@@ -54,9 +54,13 @@ export const setUpWorkerDirectoryFilters = () => {
   const managerInstance = Manager.getInstance();
 
   const activitiesArray = Array.from(managerInstance.store.getState().flex.worker.activities.values());
+  console.log('>>> availableArray', activitiesArray);
+
   const availableActivities = activitiesArray.filter(a => a.available).map(a => a.name);
+  console.log('>>> availableActivities', availableActivities);
 
   const skillsArray = managerInstance.serviceConfiguration.taskrouter_skills || [];
+  console.log('>>> skillsArray', skillsArray);
   const skillsNames = skillsArray.map(skill => skill.name);
 
   const activitiesFilter = `data.activity_name IN ${JSON.stringify(availableActivities)}`;
