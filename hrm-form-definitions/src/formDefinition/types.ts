@@ -175,12 +175,11 @@ type CallTypeButtonInputDefinition = {
   category: 'data' | 'non-data';
 } & ItemBase;
 
-type CopyToDefinition = ItemBase &
-  NonSaveable & {
-    type: FormInputType.CopyTo;
-    initialChecked: false;
-    target: CaseSectionApiName;
-  };
+type CopyToDefinition = ItemBase & {
+  type: FormInputType.CopyTo;
+  initialChecked: false;
+  target: CaseSectionApiName;
+};
 
 type CustomContactComponentDefinition = ItemBase &
   NonSaveable & {
