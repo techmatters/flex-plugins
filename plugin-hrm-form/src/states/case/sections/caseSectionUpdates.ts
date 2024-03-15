@@ -102,7 +102,9 @@ export const updateCaseSectionAsyncAction = createAsyncAction(
     eventTimestamp?: Date,
   ): Promise<CaseSectionUpdatePayload> => {
     return {
-      sections: [{ sectionType, section: await updateCaseSection(caseId, sectionType, sectionId, update, eventTimestamp) }],
+      sections: [
+        { sectionType, section: await updateCaseSection(caseId, sectionType, sectionId, update, eventTimestamp) },
+      ],
       caseId,
     };
   },
