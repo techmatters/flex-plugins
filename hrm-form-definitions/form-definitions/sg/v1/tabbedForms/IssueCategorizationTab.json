@@ -209,7 +209,11 @@
     },
     "Boredom": {
       "color": "#f79d8f",
-      "subcategories": []
+      "subcategories": [
+        {
+          "label": "Boredom"
+        }
+      ]
     },
     "Online-related": {
       "color": "#a47fbc",
