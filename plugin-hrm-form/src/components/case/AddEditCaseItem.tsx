@@ -338,8 +338,10 @@ const mapDispatchToProps = (dispatch, { sectionApi, task, definitionVersion }: A
     },
 
     createCaseSection: (caseId: Case['id'], newSection: CaseSectionTypeSpecificData, eventTimestamp: Date) =>
-      searchAsyncDispatch(createCaseSectionAsyncAction(caseId, newSection, definitionVersion, sectionApi, eventTimestamp)),
-    updateCaseSection: (caseId: Case['id'], sectionId, update: CaseSectionTypeSpecificData, , eventTimestamp: Date) =>
+      searchAsyncDispatch(
+        createCaseSectionAsyncAction(caseId, newSection, definitionVersion, sectionApi, eventTimestamp),
+      ),
+    updateCaseSection: (caseId: Case['id'], sectionId, update: CaseSectionTypeSpecificData, eventTimestamp: Date) =>
       searchAsyncDispatch(updateCaseSectionAsyncAction(caseId, sectionApi.type, sectionId, update, eventTimestamp)),
   };
 };
