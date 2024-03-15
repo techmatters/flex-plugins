@@ -60,16 +60,21 @@ const mapStateToProps = (state: RootState, { sectionType, taskSid }: OwnProps) =
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>, { taskSid, sectionType }: OwnProps) => {
+  const asyncDispatcher = asyncDispatch(dispatch);
   return {
     viewCaseSection: (caseId: Case['id'], sectionId: string) =>
-      newOpenModalAction(
-        { route: 'case', subroute: sectionType, action: CaseItemAction.View, id: sectionId, caseId },
-        taskSid,
+      dispatch(
+        newOpenModalAction(
+          { route: 'case', subroute: sectionType, action: CaseItemAction.View, id: sectionId, caseId },
+          taskSid,
+        ),
       ),
     addCaseSection: (caseId: Case['id']) =>
-      newOpenModalAction({ route: 'case', subroute: sectionType, action: CaseItemAction.Add, caseId }, taskSid),
+      dispatch(
+        newOpenModalAction({ route: 'case', subroute: sectionType, action: CaseItemAction.Add, caseId }, taskSid),
+      ),
     getTimeline: (caseId: Case['id']) =>
-      asyncDispatch(dispatch)(
+      asyncDispatcher(
         newGetTimelineAsyncAction(caseId, sectionType, [sectionType], false, { offset: 0, limit: MAX_SECTIONS }),
       ),
   };
