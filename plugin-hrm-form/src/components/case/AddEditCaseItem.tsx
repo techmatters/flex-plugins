@@ -40,13 +40,11 @@ import ActionHeader from './ActionHeader';
 import { RootState } from '../../states';
 import { createStateItem, CustomHandlers, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
-import type { Case, CustomITask, StandaloneITask, WellKnownCaseSection } from '../../types/types';
+import type { Case, CustomITask, StandaloneITask } from '../../types/types';
 import { CaseItemAction, isAddCaseSectionRoute, isCaseRoute, isEditCaseSectionRoute } from '../../states/routing/types';
 import { recordingErrorHandler } from '../../fullStory';
 import CloseCaseDialog from './CloseCaseDialog';
 import { CaseSectionApi } from '../../states/case/sections/api';
-import { lookupApi } from '../../states/case/sections/lookupApi';
-import { copyCaseSectionItem } from '../../states/case/sections/update';
 import { newCloseModalAction, newGoBackAction } from '../../states/routing/actions';
 import {
   initialiseExistingCaseSectionWorkingCopy,
@@ -100,19 +98,13 @@ const AddEditCaseItem: React.FC<Props> = ({
   sectionId,
   updateCaseSection,
   createCaseSection,
-  createCaseSectionCopy,
 }) => {
-  const formDefinition = React.useMemo(
-    () =>
-      sectionApi
-        .getSectionFormDefinition(definitionVersion)
-        // If more 'when adding only' form item types are implemented, we should create a specific property, but there is only one so just check the type for now
-        .filter(fd => !sectionId || fd.type !== 'copy-to'),
-    [definitionVersion, sectionId, sectionApi],
-  );
+  const formDefinition = React.useMemo(() => sectionApi.getSectionFormDefinition(definitionVersion), [
+    definitionVersion,
+    sectionApi,
+  ]);
   const layout = sectionApi.getSectionLayoutDefinition(definitionVersion);
 
-  // Grab initial values in first render only. If getTemporaryFormContent(temporaryCaseInfo), cherrypick the values using formDefinition, if not build the object with getInitialValue
   const savedForm = React.useMemo(() => {
     if (sectionId && connectedCase) {
       const { sectionTypeSpecificData: form } = sectionApi.getSectionItemById(connectedCase, sectionId);
@@ -194,22 +186,6 @@ const AddEditCaseItem: React.FC<Props> = ({
       await updateCaseSection(caseId, sectionId, workingCopy, eventTimestamp);
     } else {
       await createCaseSection(caseId, workingCopy, eventTimestamp);
-      await Promise.all(
-        formDefinition.map(fd => {
-          // A preceding 'filter' call looks nicer but TS type narrowing isn't smart enough to work with that.
-          if (fd.type === 'copy-to' && getValues()[fd.name]) {
-            const toApi = lookupApi(fd.target);
-            const copied = copyCaseSectionItem({
-              definition: definitionVersion,
-              fromSection: workingCopy,
-              fromApi: sectionApi,
-              toApi,
-            });
-            return createCaseSectionCopy(caseId, toApi.type, copied);
-          }
-          return Promise.resolve();
-        }),
-      );
     }
   };
 
@@ -346,7 +322,7 @@ const mapStateToProps = (state: RootState, { task, sectionApi }: AddEditCaseItem
   };
 };
 
-const mapDispatchToProps = (dispatch, { sectionApi, task }: AddEditCaseItemProps) => {
+const mapDispatchToProps = (dispatch, { sectionApi, task, definitionVersion }: AddEditCaseItemProps) => {
   const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
     updateCaseSectionWorkingCopy: bindActionCreators(updateCaseSectionWorkingCopy, dispatch),
@@ -361,23 +337,10 @@ const mapDispatchToProps = (dispatch, { sectionApi, task }: AddEditCaseItemProps
       }
     },
 
-    createCaseSection: (
-      caseId: Case['id'],
-      newSection: CaseSectionTypeSpecificData,
-      eventTimestamp: Date | undefined,
-    ) => searchAsyncDispatch(createCaseSectionAsyncAction(caseId, sectionApi.type, newSection, eventTimestamp)),
-
-    createCaseSectionCopy: (
-      caseId: Case['id'],
-      targetSectionType: WellKnownCaseSection,
-      newSection: CaseSectionTypeSpecificData,
-    ) => searchAsyncDispatch(createCaseSectionAsyncAction(caseId, targetSectionType, newSection)),
-    updateCaseSection: (
-      caseId: Case['id'],
-      sectionId,
-      update: CaseSectionTypeSpecificData,
-      eventTimestamp: Date | undefined,
-    ) => searchAsyncDispatch(updateCaseSectionAsyncAction(caseId, sectionApi.type, sectionId, update, eventTimestamp)),
+    createCaseSection: (caseId: Case['id'], newSection: CaseSectionTypeSpecificData, eventTimestamp: Date) =>
+      searchAsyncDispatch(createCaseSectionAsyncAction(caseId, newSection, definitionVersion, sectionApi, eventTimestamp)),
+    updateCaseSection: (caseId: Case['id'], sectionId, update: CaseSectionTypeSpecificData, , eventTimestamp: Date) =>
+      searchAsyncDispatch(updateCaseSectionAsyncAction(caseId, sectionApi.type, sectionId, update, eventTimestamp)),
   };
 };
 

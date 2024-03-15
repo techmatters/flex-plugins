@@ -535,7 +535,6 @@
     "name": "copyToHousehold",
     "label": "This perpetrator is also a household member",
     "type": "copy-to",
-    "target": "households",
-    "saveable": false
+    "target": "households"
   }
 ]

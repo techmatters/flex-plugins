@@ -29,6 +29,7 @@ import Case from '../case/Case';
 import { useTabbedFormContext } from './hooks/useTabbedForm';
 import { TabbedFormsCommonProps } from './types';
 import { getTemplateStrings } from '../../hrmConfig';
+import TabbedFormsTabs from './TabbedFormsTabs';
 
 type OwnProps = TabbedFormsCommonProps;
 
@@ -50,7 +51,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => ({
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const TabbedFormsCase: React.FC<Props> = ({ task, metadata, savedContact, closeModal, finaliseContact }) => {
+const TabbedFormsCase: React.FC<Props> = props => {
+  const { task, metadata, savedContact, closeModal, finaliseContact } = props;
   const strings = getTemplateStrings();
   const { newSubmitHandler } = useTabbedFormContext();
 
@@ -75,6 +77,12 @@ const TabbedFormsCase: React.FC<Props> = ({ task, metadata, savedContact, closeM
   return (
     <CaseLayout>
       <Case task={task} onNewCaseSaved={onNewCaseSaved} handleClose={closeModal} />
+      <div style={{ display: 'none' }}>
+        {
+          // Hack in order for RHF to validate the complete form on a save from the case form.
+        }
+        <TabbedFormsTabs {...props} />
+      </div>
     </CaseLayout>
   );
 };
