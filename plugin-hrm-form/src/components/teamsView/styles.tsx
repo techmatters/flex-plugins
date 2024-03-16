@@ -24,15 +24,14 @@ import { PillBase } from '../../styles';
 type SkillPillProps = {
   color?: string;
 };
-export const SkillPill = styled(PillBase)<SkillPillProps>`
+export const SkillPillStyled = styled(PillBase)<SkillPillProps>`
   border-radius: 6px;
-  margin-top: 6px;
-  margin-right: 6px;
-  padding: 3px 6px;
+  margin: 4px 0 4px 7px;
+  padding: 3px 7px;
   background-color: ${props => (props.color ? `${props.color}1a` : '#d8d8d8')};
   border: ${props => (props.color ? `.8px solid ${props.color}` : 'none')};
 `;
-SkillPill.displayName = 'SkillPill';
+SkillPillStyled.displayName = 'SkillPillStyled';
 
 const withSmallIcon = Icon => {
   return withStyles({

@@ -146,3 +146,13 @@ export const TagMiddleDot = styled('div')<ColorProps>`
   margin-right: 1ch;
   background-color: ${props => props.color};
 `;
+
+export const SomethingWentWrongText = styled(FontOpenSans)`
+  color: ${HrmTheme.colors.errorColor};
+  font-size: 20px;
+`;
+SomethingWentWrongText.displayName = 'SomethingWentWrongText';
+
+export const OpaqueText = styled('span')`
+  opacity: 0.7;
+`;

@@ -196,13 +196,3 @@ export const OpenLinkAction = styled('button')`
   }
 `;
 OpenLinkAction.displayName = 'OpenLinkAction';
-
-export const SomethingWentWrongText = styled(FontOpenSans)`
-  color: ${HrmTheme.colors.errorColor};
-  font-size: 20px;
-`;
-SomethingWentWrongText.displayName = 'SomethingWentWrongText';
-
-export const OpaqueText = styled('span')`
-  opacity: 0.7;
-`;
