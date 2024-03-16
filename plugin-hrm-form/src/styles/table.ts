@@ -140,12 +140,12 @@ export const SummaryCell = withStyles({
 })(DataCell);
 SummaryCell.displayName = 'SummaryCell';
 
-export const PillsCell = withStyles({
+export const CategoriesCell = withStyles({
   body: {
     display: 'grid',
   },
 })(DataCell);
-PillsCell.displayName = 'PillsCell';
+CategoriesCell.displayName = 'CategoriesCell';
 
 export const TableHeaderFont = styled(FontOpenSans)`
   font-weight: 600;

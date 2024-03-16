@@ -16,15 +16,15 @@
 
 import React from 'react';
 
-import { SkillPillStyled, SmallCheckIcon, SmallDisabledIcon } from './styles';
-import { PillText } from '../../styles';
+import { SkillChipStyled, SmallCheckIcon, SmallDisabledIcon } from './styles';
+import { ChipText } from '../../styles';
 
 type Props = {
   skill: string;
   skillType?: 'active' | 'disabled';
 };
 
-const SkillPill: React.FC<Props> = ({ skill, skillType }) => {
+const SkillChip: React.FC<Props> = ({ skill, skillType }) => {
   let bgColor;
   let fontColor;
   if (skillType === 'active') {
@@ -36,16 +36,16 @@ const SkillPill: React.FC<Props> = ({ skill, skillType }) => {
   }
 
   return (
-    <SkillPillStyled color={bgColor}>
+    <SkillChipStyled color={bgColor}>
       {skillType === 'active' && <SmallCheckIcon htmlColor={fontColor} />}
       {skillType === 'disabled' && <SmallDisabledIcon htmlColor={fontColor} />}
-      <PillText bold color={fontColor}>
+      <ChipText bold color={fontColor}>
         {skill}
-      </PillText>
-    </SkillPillStyled>
+      </ChipText>
+    </SkillChipStyled>
   );
 };
 
-SkillPill.displayName = 'SkillPill';
+SkillChip.displayName = 'SkillChip';
 
-export default SkillPill;
+export default SkillChip;

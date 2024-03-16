@@ -17,7 +17,7 @@
 import React, { useState } from 'react';
 import { WorkersDataTable, ColumnDefinition, Template } from '@twilio/flex-ui';
 
-import SkillPill from './SkillPill';
+import SkillChip from './SkillChip';
 import { StyledLink } from '../search/styles';
 import { OpaqueText } from '../../styles';
 
@@ -66,7 +66,7 @@ const SkillsListCell = ({ availableSkills, disabledSkills, workerName }) => {
   return (
     <>
       {displayedSkills.map(({ skill, type }) => (
-        <SkillPill key={skill} skill={skill} skillType={type} />
+        <SkillChip key={skill} skill={skill} skillType={type} />
       ))}
       {combinedSkills.length > 3 && (
         <StyledLink

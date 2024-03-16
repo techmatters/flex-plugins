@@ -37,7 +37,7 @@ import {
   TableSummaryFont,
   Box,
   HiddenText,
-  PillsCell,
+  CategoriesCell,
 } from '../../styles';
 import { formatName, getShortSummary } from '../../utils';
 import { getContactTags } from '../../utils/categories';
@@ -129,14 +129,14 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
         <SummaryCell>
           <TableSummaryFont>{shortSummary}</TableSummaryFont>
         </SummaryCell>
-        <PillsCell>
+        <CategoriesCell>
           {categories &&
             categories.map(category => (
               <Box key={`category-tag-${category.label}`} marginBottom="5px">
                 <CategoryWithTooltip category={category.label} color={category.color} />
               </Box>
             ))}
-        </PillsCell>
+        </CategoriesCell>
         <DataCell>
           <TableBodyFont style={{ textAlign: 'right' }}>{opened}</TableBodyFont>
         </DataCell>
