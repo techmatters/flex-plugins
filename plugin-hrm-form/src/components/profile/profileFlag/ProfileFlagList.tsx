@@ -24,13 +24,13 @@ import { selectProfileAsyncPropertiesById } from '../../../states/profile/select
 import {
   CloseIconButton,
   DisassociateButton,
-  FlagPill,
+  FlagChip,
   ProfileFlagsUnorderedList,
   ProfileFlagsListItem,
 } from '../styles';
 import { RootState } from '../../../states';
 import { ProfileCommonProps } from '../types';
-import ProfileFlagPill from './ProfileFlagPill';
+import ProfileFlagChip from './ProfileFlagChip';
 
 type OwnProps = ProfileCommonProps & {
   disassociateRef?: React.RefObject<HTMLButtonElement>;
@@ -63,12 +63,12 @@ const ProfileFlagsList: React.FC<Props> = ({ disassociateRef, enableDisassociate
       {combinedProfileFlags?.length ? (
         combinedProfileFlags
           .sort((a, b) => a.name.localeCompare(b.name))
-          .map(flag => <ProfileFlagPill key={flag.id} flag={flag} renderDisassociate={renderDisassociate} />)
+          .map(flag => <ProfileFlagChip key={flag.id} flag={flag} renderDisassociate={renderDisassociate} />)
       ) : (
         <ProfileFlagsListItem>
-          <FlagPill title="No Status Listed">
+          <FlagChip title="No Status Listed">
             <Template code="Profile-NoStatusesListed" />
-          </FlagPill>
+          </FlagChip>
         </ProfileFlagsListItem>
       )}
     </ProfileFlagsUnorderedList>

@@ -20,7 +20,7 @@ import { withStyles, MenuItem, MenuList, Paper, ButtonBase } from '@material-ui/
 import CloseIcon from '@material-ui/icons/Close';
 import BlockOutlinedIcon from '@material-ui/icons/BlockOutlined';
 
-import { FontOpenSans, PillBase } from '../../styles';
+import { FontOpenSans, ChipBase } from '../../styles';
 import HrmTheme from '../../styles/HrmTheme';
 
 export const DetailsWrapper = styled(FontOpenSans)`
@@ -82,12 +82,12 @@ export const ProfileFlagsEditButton = styled('button')<{ disabled?: boolean }>`
 `;
 ProfileFlagsEditButton.displayName = 'ProfileFlagsEditButton';
 
-type FlagPillProps = {
+type FlagChipProps = {
   fillColor?: string;
   isBlocked?: boolean;
 };
 
-export const FlagPill = styled(PillBase)<FlagPillProps>`
+export const FlagChip = styled(ChipBase)<FlagChipProps>`
   margin: 5px 2px 5px 1px;
   padding: 3px 10px;
   background-color: ${props => (props.isBlocked ? `#FCF4F4` : '#F5EEF4')};
@@ -97,15 +97,15 @@ export const FlagPill = styled(PillBase)<FlagPillProps>`
   font-size: 12px;
   text-transform: capitalize;
 `;
-FlagPill.displayName = 'FlagPill';
+FlagChip.displayName = 'FlagChip';
 
-export const FlagPillTime = styled('span')`
+export const FlagChipTime = styled('span')`
   color: #606b85;
   font-style: italic;
   font-size: 10px;
   margin: 0 0 2px 5px;
 `;
-FlagPillTime.displayName = 'FlagPillTime';
+FlagChipTime.displayName = 'FlagChipTime';
 
 export const StyledBlockOutlinedIcon = withStyles({
   root: { width: '.8rem', height: '.8rem', fontSize: 'smaller', marginRight: '7px' },

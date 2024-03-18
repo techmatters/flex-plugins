@@ -19,14 +19,14 @@ import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 
 import { ProfileFlag } from '../../../types/types';
-import { FlagPill, ProfileFlagsListItem, StyledBlockOutlinedIcon, FlagPillTime } from '../styles';
+import { FlagChip, ProfileFlagsListItem, StyledBlockOutlinedIcon, FlagChipTime } from '../styles';
 
 type Props = {
   flag: ProfileFlag;
   renderDisassociate?: (flag: ProfileFlag) => JSX.Element;
 };
 
-const ProfileFlagPill: React.FC<Props> = ({ flag, renderDisassociate }) => {
+const ProfileFlagChip: React.FC<Props> = ({ flag, renderDisassociate }) => {
   let formattedDate = '';
   if (flag.validUntil) {
     formattedDate = `${format(new Date(flag.validUntil), 'MMMM d, yyyy, h:mma')}`;
@@ -34,20 +34,20 @@ const ProfileFlagPill: React.FC<Props> = ({ flag, renderDisassociate }) => {
 
   return (
     <ProfileFlagsListItem key={flag.name}>
-      <FlagPill title={`${flag.name} Status`} key={flag.name} fillColor="#F5EEF4" isBlocked={flag.name === 'blocked'}>
+      <FlagChip title={`${flag.name} Status`} key={flag.name} fillColor="#F5EEF4" isBlocked={flag.name === 'blocked'}>
         {flag.name === 'blocked' && <StyledBlockOutlinedIcon />}
         <Template code={flag.name} />
-        <FlagPillTime>
+        <FlagChipTime>
           {flag.validUntil && (
             <>
               <Template code="Profile-ValidUntil" /> {formattedDate}
             </>
           )}
-        </FlagPillTime>
+        </FlagChipTime>
         {renderDisassociate && renderDisassociate(flag)}
-      </FlagPill>
+      </FlagChip>
     </ProfileFlagsListItem>
   );
 };
 
-export default ProfileFlagPill;
+export default ProfileFlagChip;

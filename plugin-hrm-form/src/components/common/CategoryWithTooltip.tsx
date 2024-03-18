@@ -17,7 +17,7 @@
 import React from 'react';
 import { Tooltip } from '@material-ui/core';
 
-import { CategoryPill, TagMiddleDot, PillText } from '../../styles';
+import { CategoryChip, TagMiddleDot, ChipText } from '../../styles';
 
 /**
  * Given a category, truncates it (if necessary) to make it fit (aprox) in the space of 'UNSPECIFIED/OTHER' string
@@ -29,10 +29,10 @@ export const truncateLabel = category =>
     : category.substring(0, 17).trim();
 
 const renderTag = (tag: string, color: string) => (
-  <CategoryPill color={color}>
+  <CategoryChip color={color}>
     <TagMiddleDot color={color} />
-    <PillText>{tag}</PillText>
-  </CategoryPill>
+    <ChipText>{tag}</ChipText>
+  </CategoryChip>
 );
 
 type Props = {
