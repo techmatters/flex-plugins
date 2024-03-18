@@ -99,7 +99,7 @@ export const Title = styled('h1')`
 `;
 Title.displayName = 'Title';
 
-export const PillBase = styled('div')`
+export const ChipBase = styled('div')`
   display: inline-flex;
   align-items: center;
   white-space: nowrap;
@@ -107,14 +107,14 @@ export const PillBase = styled('div')`
   margin-right: 6px;
   padding: 5px 12px;
 `;
-PillBase.displayName = 'PillBase';
+ChipBase.displayName = 'ChipBase';
 
-type PillTextProps = {
+type ChipTextProps = {
   color?: string;
   bold?: boolean;
 };
 
-export const PillText = styled(FontOpenSans)<PillTextProps>`
+export const ChipText = styled(FontOpenSans)<ChipTextProps>`
   display: inline-block;
   font-size: 12px;
   font-weight: 400;
@@ -123,19 +123,19 @@ export const PillText = styled(FontOpenSans)<PillTextProps>`
   color: ${props => (props.color ? props.color : '#2f3e44')};
   font-weight: ${props => (props.bold ? 600 : 400)};
 `;
-PillText.displayName = 'PillText';
+ChipText.displayName = 'ChipText';
 
 type ColorProps = {
   color?: string;
 };
 
-export const CategoryPill = styled(PillBase)<ColorProps>`
+export const CategoryChip = styled(ChipBase)<ColorProps>`
   border-radius: 2px;
   margin-right: 6px;
   padding: 5px 12px;
   background-color: ${props => (props.color ? `${props.color}1a` : '#d8d8d8')};
 `;
-CategoryPill.displayName = 'CategoryPill';
+CategoryChip.displayName = 'CategoryChip';
 
 export const TagMiddleDot = styled('div')<ColorProps>`
   display: inline-block;
@@ -145,4 +145,14 @@ export const TagMiddleDot = styled('div')<ColorProps>`
   border-radius: 100%;
   margin-right: 1ch;
   background-color: ${props => props.color};
+`;
+
+export const SomethingWentWrongText = styled(FontOpenSans)`
+  color: ${HrmTheme.colors.errorColor};
+  font-size: 20px;
+`;
+SomethingWentWrongText.displayName = 'SomethingWentWrongText';
+
+export const OpaqueText = styled('span')`
+  opacity: 0.7;
 `;
