@@ -25,6 +25,7 @@ import {
   CaseSectionIdentifierTimelineActivity,
   ContactIdentifierTimelineActivity,
   GET_CASE_TIMELINE_ACTION,
+  GET_CASE_TIMELINE_ACTION_FULFILLED,
   isCaseSectionIdentifierTimelineActivity,
   isCaseSectionTimelineActivity,
   isContactTimelineActivity,
@@ -107,7 +108,7 @@ export const timelineReducer = (initialState: HrmState): ((state: HrmState, acti
   ]);
 
 export type GetTimelineAsyncAction = ReturnType<typeof newGetTimelineAsyncAction.fulfilled> & {
-  type: typeof GET_CASE_TIMELINE_ACTION;
+  type: typeof GET_CASE_TIMELINE_ACTION_FULFILLED;
 };
 
 export type UITimelineActivity = TimelineActivity<FullCaseSection | Contact> & { text: string; isDraft: boolean };
@@ -125,28 +126,32 @@ export const selectTimeline = (
   if (!timeline) return undefined;
   const definitionVersion = selectDefinitionVersionForCase(state, caseEntry?.connectedCase);
   const timelineWindow = timeline.slice(offset, offset + limit);
-  return timelineWindow.map(timelineActivity => {
-    if (isCaseSectionIdentifierTimelineActivity(timelineActivity)) {
+  return timelineWindow
+    .map(timelineActivity => {
+      if (isCaseSectionIdentifierTimelineActivity(timelineActivity)) {
+        const { activity } = timelineActivity;
+        const section = caseEntry.sections[activity.sectionType]?.[activity.sectionId];
+        if (!section) return undefined;
+        return {
+          ...timelineActivity,
+          activityType: 'case-section',
+          activity: section,
+          text: getSectionText(section, definitionVersion),
+          isDraft: false,
+        };
+      }
       const { activity } = timelineActivity;
-      const section = caseEntry.sections[activity.sectionType]?.[activity.sectionId];
+      const contact = state[namespace].activeContacts.existingContacts[activity.contactId]?.savedContact;
+      if (!contact) return undefined;
       return {
         ...timelineActivity,
-        activityType: 'case-section',
-        activity: section,
-        text: getSectionText(section, definitionVersion),
-        isDraft: false,
+        activityType: 'contact',
+        activity: contact,
+        text: getContactActivityText(contact, strings),
+        isDraft: !Boolean(contact?.finalizedAt),
       };
-    }
-    const { activity } = timelineActivity;
-    const contact = state[namespace].activeContacts.existingContacts[activity.contactId]?.savedContact;
-    return {
-      ...timelineActivity,
-      activityType: 'contact',
-      activity: contact,
-      text: getContactActivityText(contact, strings),
-      isDraft: Boolean(contact.finalizedAt),
-    };
-  });
+    })
+    .filter(Boolean) as UITimelineActivity[];
 };
 
 // eslint-disable-next-line import/no-unused-modules

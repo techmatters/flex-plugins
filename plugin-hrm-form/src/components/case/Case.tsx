@@ -89,7 +89,6 @@ const Case: React.FC<Props> = ({
   routing,
   loadCase,
   loadContacts,
-  releaseContacts,
   releaseAllContacts,
   openPrintModal,
   onNewCaseSaved = () => Promise.resolve(),
@@ -295,7 +294,6 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     goBack: () => dispatch(RoutingActions.newGoBackAction(task.taskSid)),
     removeConnectedCase: (contactId: string) => caseAsyncDispatch(removeFromCaseAsyncAction(contactId)),
     updateDefinitionVersion: updateCaseDefinition,
-    releaseContacts: bindActionCreators(ContactActions.releaseContacts, dispatch),
     releaseAllContacts: bindActionCreators(ContactActions.releaseAllContacts, dispatch),
     loadContacts: bindActionCreators(ContactActions.loadContacts, dispatch),
     loadCase: (caseId: CaseType['id']) => dispatch(updateCaseOverviewAsyncAction(caseId)), // Empty update loads case into state

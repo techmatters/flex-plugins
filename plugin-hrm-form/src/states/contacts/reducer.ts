@@ -62,7 +62,7 @@ import { loadContactIntoRedux, saveContactReducer } from './saveContact';
 import { ConfigurationState } from '../configuration/reducer';
 import { Contact } from '../../types/types';
 import { SEARCH_CONTACTS_SUCCESS, SearchContactsSuccessAction } from '../search/types';
-import { GET_CASE_TIMELINE_ACTION, isContactTimelineActivity } from '../case/types';
+import { GET_CASE_TIMELINE_ACTION_FULFILLED, isContactTimelineActivity } from '../case/types';
 import { GetTimelineAsyncAction } from '../case/timeline';
 
 export const emptyCategories = [];
@@ -117,9 +117,10 @@ const loadContactListIntoState = (
   configurationState: ConfigurationState,
   contacts: Contact[],
   referenceId: string,
+  releaseExisting: boolean = true,
 ): ContactsState => {
   // Release any contacts currently loaded with the same referenceId - they are being replaced
-  const withoutOldSearchResults = { ...contactsState, existingContacts: releaseAllContactStates(contactsState.existingContacts, referenceId) };
+  const withoutOldSearchResults = releaseExisting ? { ...contactsState, existingContacts: releaseAllContactStates(contactsState.existingContacts, referenceId) } : contactsState;
   if (contacts?.length) {
     return contacts.reduce((acc, newContact) => {
       // TODO: strip the totalCount property in HRM
@@ -244,10 +245,10 @@ export function reduce(
     case SEARCH_CONTACTS_SUCCESS: {
       return loadContactListIntoState(state, rootState.configuration, action.searchResult.contacts, `${action.taskId}-search`);
     }
-    case GET_CASE_TIMELINE_ACTION: {
+    case GET_CASE_TIMELINE_ACTION_FULFILLED: {
       const { payload: { caseId, timelineResult: { activities } } } = action;
       const contacts = activities.filter(isContactTimelineActivity).map(({ activity })=> activity);
-      return loadContactListIntoState(state, rootState.configuration, contacts, `case-${caseId}`);
+      return loadContactListIntoState(state, rootState.configuration, contacts, `case-${caseId}`, false);
     }
     default:
       return state;

@@ -27,6 +27,7 @@ export const CREATE_CASE_ACTION = 'case-action/create-case';
 export const CREATE_CASE_ACTION_FULFILLED = `${CREATE_CASE_ACTION}_FULFILLED` as const;
 export const CANCEL_CASE_ACTION = 'case-action/cancel-case';
 export const GET_CASE_TIMELINE_ACTION = 'case-action/get-timeline';
+export const GET_CASE_TIMELINE_ACTION_FULFILLED = `${GET_CASE_TIMELINE_ACTION}_FULFILLED` as const;
 
 // eslint-disable-next-line prettier/prettier,import/no-unused-modules
 export enum SavedCaseStatus {
@@ -81,7 +82,7 @@ type CoreActivity = {
   twilioWorkerId: WorkerSID;
 };
 
-export type NoteActivity = CoreActivity & {
+type NoteActivity = CoreActivity & {
   id: string;
   date: string;
   type: 'note';
