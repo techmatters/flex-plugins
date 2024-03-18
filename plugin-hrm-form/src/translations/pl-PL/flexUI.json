@@ -566,5 +566,6 @@
     "CaseMerging-RemoveFromCase": "Usuń ze skrzynki",
     "CaseMerging-ContactRemovedFromCase": "Kontakt usunięty ze sprawy",
     "CaseMerging-CaseCreatedAndContactAdded": "Utworzono sprawę nr {{caseId}} i dodano kontakt",
+    "CaseMerging-ContactAddedToExistingCase": "Kontakt dodany do sprawy nr{{caseId}}",
     "CaseMerging-CancelCase": "Anuluj Sprawę"
     }

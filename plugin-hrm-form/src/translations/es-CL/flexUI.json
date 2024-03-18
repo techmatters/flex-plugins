@@ -518,6 +518,7 @@
   "CaseMerging-RemoveFromCase": "Quitar del caso",
   "CaseMerging-ContactRemovedFromCase": "Contacto eliminado del caso",
   "CaseMerging-CaseCreatedAndContactAdded": "Caso #{{caseId}} creado y contacto agregado",
+  "CaseMerging-ContactAddedToExistingCase": "Contacto agregado al Caso #{{caseId}}",
   "CaseMerging-CancelCase": "Cancelar Caso",
   "Something Else": "Enfoque Recomendado",
   "Profile-NoIdentifiersFound": "No se encontraron identificadores",

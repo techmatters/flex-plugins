@@ -593,9 +593,10 @@
   "Service Subcategories": "หมวดหมู่บริการย่อย",
   "Other Relationship to Child": "ความสัมพันธ์อื่นๆกับเด็ก",
   "CaseMerging-ContactAddedTo": "เพิ่มผู้ติดต่อไปที่",
-  "CaseMerging-RemoveFromCase": "Remove from Case",
-  "CaseMerging-ContactRemovedFromCase": "Contact removed from Case",
+  "CaseMerging-RemoveFromCase": "ถอดออกจากเคส",
+  "CaseMerging-ContactRemovedFromCase": "ผู้ติดต่อถูกลบออกจากเคส",
   "CaseMerging-CaseCreatedAndContactAdded": "สร้างเคส #{{caseId}} และเพิ่มผู้ติดต่อแล้ว",
+  "CaseMerging-ContactAddedToExistingCase": "เพิ่มผู้ติดต่อในกรณี #{{caseId}}",
   "CaseMerging-CancelCase": "ยกเลิกกรณี",
 
   "Profile-NoIdentifiersFound": "ไม่พบตัวระบุ",

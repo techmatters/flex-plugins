@@ -176,6 +176,7 @@
   "CaseMerging-RemoveFromCase": "Remove from Incident",
   "CaseMerging-ContactRemovedFromCase": "Contact removed from incident",
   "CaseMerging-CaseCreatedAndContactAdded": "Incident #{{caseId}} created and contact added",
+  "CaseMerging-ContactAddedToExistingCase": "Contact added to Incident #{{caseId}}",
   "CaseMerging-CancelCase": "Cancel Incident",
   "AcceptTaskTooltip": "Accept",
   "AddButtons-Header": "Add",
