@@ -20,7 +20,7 @@ import { withStyles, MenuItem, MenuList, Paper, ButtonBase } from '@material-ui/
 import CloseIcon from '@material-ui/icons/Close';
 import BlockOutlinedIcon from '@material-ui/icons/BlockOutlined';
 
-import { FontOpenSans } from '../../styles';
+import { FontOpenSans, PillBase } from '../../styles';
 import HrmTheme from '../../styles/HrmTheme';
 
 export const DetailsWrapper = styled(FontOpenSans)`
@@ -82,16 +82,12 @@ export const ProfileFlagsEditButton = styled('button')<{ disabled?: boolean }>`
 `;
 ProfileFlagsEditButton.displayName = 'ProfileFlagsEditButton';
 
-type ColorProps = {
+type FlagPillProps = {
   fillColor?: string;
   isBlocked?: boolean;
 };
 
-export const FlagPill = styled('div')<ColorProps>`
-  display: inline-flex;
-  align-items: center;
-  border-radius: 6px;
-  white-space: nowrap;
+export const FlagPill = styled(PillBase)<FlagPillProps>`
   margin: 5px 2px 5px 1px;
   padding: 3px 10px;
   background-color: ${props => (props.isBlocked ? `#FCF4F4` : '#F5EEF4')};
