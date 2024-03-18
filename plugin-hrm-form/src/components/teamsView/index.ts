@@ -22,4 +22,5 @@ const TeamsView = {
   setUpWorkerDirectoryFilters,
 };
 
+// eslint-disable-next-line import/no-unused-modules
 export default TeamsView;

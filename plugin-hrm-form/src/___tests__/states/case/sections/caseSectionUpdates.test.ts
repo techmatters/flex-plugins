@@ -16,6 +16,13 @@
 
 import promiseMiddleware from 'redux-promise-middleware';
 import { configureStore } from '@reduxjs/toolkit';
+import {
+  CaseSectionApiName,
+  DefinitionVersion,
+  DefinitionVersionId,
+  loadDefinition,
+  useFetchDefinitions,
+} from 'hrm-form-definitions';
 
 import { HrmState } from '../../../../states';
 import { RecursivePartial } from '../../../RecursivePartial';
@@ -26,11 +33,14 @@ import {
   updateCaseSectionAsyncAction,
 } from '../../../../states/case/sections/caseSectionUpdates';
 import { VALID_EMPTY_CASE } from '../../../testCases';
+import { lookupApi } from '../../../../states/case/sections/lookupApi';
 
 jest.mock('../../../../services/caseSectionService', () => ({
   createCaseSection: jest.fn(),
   updateCaseSection: jest.fn(),
 }));
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { mockFetchImplementation, buildBaseURL } = useFetchDefinitions();
 
 let state: HrmState;
 const initialState: HrmState = {
@@ -43,6 +53,10 @@ const BASELINE_DATE = new Date('2000-01-01T00:00:00Z');
 const mockCreateSection = createCaseSection as jest.Mock<ReturnType<typeof createCaseSection>>;
 const mockUpdateSection = updateCaseSection as jest.Mock<ReturnType<typeof updateCaseSection>>;
 
+const noteApi = lookupApi(CaseSectionApiName.Notes);
+const referralApi = lookupApi(CaseSectionApiName.Referrals);
+let definitionVersion: DefinitionVersion;
+
 const testStore = (stateChanges: Partial<HrmState> = {}) =>
   configureStore({
     preloadedState: { ...state, ...stateChanges },
@@ -52,6 +66,13 @@ const testStore = (stateChanges: Partial<HrmState> = {}) =>
       promiseMiddleware(),
     ],
   });
+
+beforeAll(async () => {
+  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.demoV1);
+  await mockFetchImplementation(formDefinitionsBaseUrl);
+
+  definitionVersion = await loadDefinition(formDefinitionsBaseUrl);
+});
 
 beforeEach(() => {
   const partial: RecursivePartial<HrmState> = {
@@ -95,19 +116,23 @@ describe('createCaseSectionAsyncAction', () => {
   });
 
   test('calls createCaseSection with parameters taken form the action', async () => {
-    const res = createCaseSectionAsyncAction(CASE_ID, 'note', payload);
+    const res = createCaseSectionAsyncAction(CASE_ID, payload, definitionVersion, noteApi);
     expect(mockCreateSection).toHaveBeenCalledWith(CASE_ID, 'note', payload, undefined);
     const result = await res.payload;
     expect(result).toEqual({
       caseId: CASE_ID,
-      section: {
-        sectionTypeSpecificData: payload,
-        sectionId: 'SECTION_ID',
-        createdBy: 'WK-WORKER_ID',
-        createdAt: BASELINE_DATE,
-        eventTimestamp: BASELINE_DATE,
-      },
-      sectionType: 'note',
+      sections: [
+        {
+          section: {
+            sectionTypeSpecificData: payload,
+            sectionId: 'SECTION_ID',
+            createdBy: 'WK-WORKER_ID',
+            createdAt: BASELINE_DATE,
+            eventTimestamp: BASELINE_DATE,
+          },
+          sectionType: 'note',
+        },
+      ],
     });
   });
 
@@ -123,7 +148,9 @@ describe('createCaseSectionAsyncAction', () => {
     test(`case already has sections of the same type - appends section to the appropriate section type list`, async () => {
       const { dispatch, getState } = testStore({});
 
-      await ((dispatch(createCaseSectionAsyncAction(CASE_ID, 'note', payload)) as unknown) as PromiseLike<unknown>);
+      await ((dispatch(
+        createCaseSectionAsyncAction(CASE_ID, payload, definitionVersion, noteApi),
+      ) as unknown) as PromiseLike<unknown>);
       const state = getState();
       expect(state.connectedCase.cases[CASE_ID].connectedCase.sections.note).toHaveLength(2);
       expect(state.connectedCase.cases[CASE_ID].connectedCase.sections.note[1]).toEqual(EXPECTED_CASE_SECTION);
@@ -131,7 +158,9 @@ describe('createCaseSectionAsyncAction', () => {
     test(`case has no existing sections of the same type - adds an appropriate section type list with the new item as its element`, async () => {
       const { dispatch, getState } = testStore({});
 
-      await ((dispatch(createCaseSectionAsyncAction(CASE_ID, 'referral', payload)) as unknown) as PromiseLike<unknown>);
+      await ((dispatch(
+        createCaseSectionAsyncAction(CASE_ID, payload, definitionVersion, referralApi),
+      ) as unknown) as PromiseLike<unknown>);
       const state = getState();
       expect(state.connectedCase.cases[CASE_ID].connectedCase.sections.note).toHaveLength(1);
       expect(state.connectedCase.cases[CASE_ID].connectedCase.sections.referral).toHaveLength(1);
@@ -153,7 +182,9 @@ describe('createCaseSectionAsyncAction', () => {
         },
       });
 
-      await ((dispatch(createCaseSectionAsyncAction(CASE_ID, 'note', payload)) as unknown) as PromiseLike<unknown>);
+      await ((dispatch(
+        createCaseSectionAsyncAction(CASE_ID, payload, definitionVersion, noteApi),
+      ) as unknown) as PromiseLike<unknown>);
       const state = getState();
       expect(state.connectedCase.cases[CASE_ID].connectedCase.sections).toBeDefined();
       expect(state.connectedCase.cases[CASE_ID].connectedCase.sections.note).toHaveLength(1);
@@ -165,7 +196,7 @@ describe('createCaseSectionAsyncAction', () => {
       const { dispatch, getState } = testStore({});
       const oldState = getState();
       await ((dispatch(
-        createCaseSectionAsyncAction('not existing case', 'referral', payload),
+        createCaseSectionAsyncAction('not existing case', payload, definitionVersion, referralApi),
       ) as unknown) as PromiseLike<unknown>);
       const state = getState();
       expect(state).toStrictEqual(oldState);
@@ -177,9 +208,9 @@ describe('createCaseSectionAsyncAction', () => {
       const oldState = getState();
 
       try {
-        await ((dispatch(createCaseSectionAsyncAction(CASE_ID, 'referral', payload)) as unknown) as PromiseLike<
-          unknown
-        >);
+        await ((dispatch(
+          createCaseSectionAsyncAction(CASE_ID, payload, definitionVersion, referralApi),
+        ) as unknown) as PromiseLike<unknown>);
       } catch (e) {
         // Error still bubbles up so need to swallow it
       }
@@ -209,14 +240,18 @@ describe('updateCaseSectionAsyncAction', () => {
     const result = await res.payload;
     expect(result).toEqual({
       caseId: CASE_ID,
-      section: {
-        sectionTypeSpecificData: payload,
-        sectionId: 'EXISTING_NOTE_ID',
-        createdBy: 'WK-WORKER_ID',
-        createdAt: BASELINE_DATE,
-        eventTimestamp: BASELINE_DATE,
-      },
-      sectionType: 'note',
+      sections: [
+        {
+          section: {
+            sectionTypeSpecificData: payload,
+            sectionId: 'EXISTING_NOTE_ID',
+            createdBy: 'WK-WORKER_ID',
+            createdAt: BASELINE_DATE,
+            eventTimestamp: BASELINE_DATE,
+          },
+          sectionType: 'note',
+        },
+      ],
     });
   });
 

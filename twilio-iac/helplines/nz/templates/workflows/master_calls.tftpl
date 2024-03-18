@@ -6,7 +6,7 @@
         "expression": "(channelType IN ['voice'] AND to IN [${join(", ", formatlist("'%s'", phone_numbers.youthline))}] AND clinical !='true' AND (transferTargetType =='' OR transferTargetType =='worker')) OR  targetSid=='${task_queues.youthline_helpline}'  OR isContactlessTask == true  ",
         "targets": [
           {
-            "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.roles HAS \"agent\" ) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.roles HAS 'agent' ) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
             "queue": "${task_queues.youthline_helpline}",
             "skip_if": "1==1",
             "priority": 5
@@ -20,7 +20,7 @@
       },
       {
         "filter_friendly_name": "Clinical",
-        "expression": "(channelType IN [\"voice\"] AND ( to IN [${join(", ", formatlist("'%s'", phone_numbers.clinical))}]  OR clinical =='true') AND (transferTargetType =='' OR transferTargetType =='worker')) OR  targetSid=='${task_queues.clinical}' ",
+        "expression": "(channelType IN ['voice'] AND ( to IN [${join(", ", formatlist("'%s'", phone_numbers.clinical))}]  OR clinical =='true') AND (transferTargetType =='' OR transferTargetType =='worker')) OR  targetSid=='${task_queues.clinical}' ",
         "targets": [
           {
             "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
@@ -40,7 +40,7 @@
           },
           {
             "queue": "${task_queues.priority}",
-            "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker')) AND (worker.roles HAS 'supervisor' OR worker.roles HAS 'agent' ) ) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)\t",
+            "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker')) AND (worker.roles HAS 'supervisor' OR worker.roles HAS 'agent' ) ) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
             "priority": 10
           }
         ]
