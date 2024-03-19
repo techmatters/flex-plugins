@@ -1,0 +1,88 @@
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+import type { FilterDefinitionFactory } from '@twilio/flex-ui/src/components/view/TeamsView';
+import { Manager, FiltersListItemType, TeamsView, WorkerDirectoryTabs } from '@twilio/flex-ui';
+
+const activityNoOfflineByDefault: FilterDefinitionFactory = (appState, _teamFiltersPanelProps) => {
+  console.log('>>> activityNoOfflineByDefault _teamFiltersPanelProps', _teamFiltersPanelProps);
+  const activitiesArray = Array.from(appState.flex.worker.activities.values());
+
+  const options = activitiesArray.map(activity => ({
+    value: activity.name,
+    label: activity.name,
+    default: activity.name !== 'Offline',
+  }));
+
+  return {
+    id: 'data.activity_name',
+    fieldName: 'activity',
+    type: FiltersListItemType.multiValue,
+    title: 'Activities',
+    options,
+  };
+};
+
+/**
+ * This function returns a list of skills defined in the taskrouter_skills configuration
+ */
+const skillsFilterDefinition: FilterDefinitionFactory = (_appState, _teamFiltersPanelProps) => {
+  console.log('>>> skillsFilterDefinition _teamFiltersPanelProps', _teamFiltersPanelProps);
+  const options = Manager.getInstance().serviceConfiguration.taskrouter_skills?.map(skill => ({
+    value: skill.name,
+    label: skill.name,
+    default: skill.name === 'chat',
+  }));
+
+  return {
+    id: 'data.skill_name',
+    fieldName: 'skill',
+    type: FiltersListItemType.multiValue,
+    title: 'Skills',
+    options,
+  };
+};
+
+export const setUpTeamViewFilters = () => {
+  TeamsView.defaultProps.filters = [
+    activityNoOfflineByDefault,
+    /*
+     * Omit the default since we already include offline in the above
+     * Flex.TeamsView.activitiesFilter
+     */
+    skillsFilterDefinition,
+  ];
+};
+
+export const setUpWorkerDirectoryFilters = () => {
+  const managerInstance = Manager.getInstance();
+
+  const activitiesArray = Array.from(managerInstance.store.getState().flex.worker.activities.values());
+  console.log('>>> availableArray', activitiesArray);
+
+  const availableActivities = activitiesArray.filter(a => a.available).map(a => a.name);
+  console.log('>>> availableActivities', availableActivities);
+
+  const skillsArray = managerInstance.serviceConfiguration.taskrouter_skills || [];
+  console.log('>>> skillsArray', skillsArray);
+  const skillsNames = skillsArray.map(skill => skill.name);
+
+  const activitiesFilter = `data.activity_name IN ${JSON.stringify(availableActivities)}`;
+
+  const skillsFilter = `data.skills_name IN ${JSON.stringify(skillsNames)}`;
+
+  WorkerDirectoryTabs.defaultProps.hiddenWorkerFilter = `(${activitiesFilter}) AND (${skillsFilter})`;
+};

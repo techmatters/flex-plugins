@@ -48,7 +48,7 @@ import { setUpTransferActions } from './transfer/setUpTransferActions';
 import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
 import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
-import { setUpSkillsColumn } from './components/teamsView';
+import TeamsView from './components/teamsView';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -140,9 +140,9 @@ const setUpComponents = (
     if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
   }
 
-  Components.setupTeamViewFilters();
-  setUpSkillsColumn();
-  Components.setupWorkerDirectoryFilters();
+  TeamsView.setUpSkillsColumn();
+  TeamsView.setUpTeamViewFilters();
+  TeamsView.setUpWorkerDirectoryFilters();
 
   if (featureFlags.enable_conferencing) setupConferenceComponents();
 };
