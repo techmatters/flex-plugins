@@ -16,9 +16,11 @@
 
 import type { FilterDefinitionFactory } from '@twilio/flex-ui/src/components/view/TeamsView';
 import { Manager, FiltersListItemType, TeamsView, WorkerDirectoryTabs } from '@twilio/flex-ui';
+import sortBy from 'lodash/sortBy';
+
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 const activityNoOfflineByDefault: FilterDefinitionFactory = (appState, _teamFiltersPanelProps) => {
-  console.log('>>> activityNoOfflineByDefault _teamFiltersPanelProps', _teamFiltersPanelProps);
   const activitiesArray = Array.from(appState.flex.worker.activities.values());
 
   const options = activitiesArray.map(activity => ({
@@ -40,49 +42,49 @@ const activityNoOfflineByDefault: FilterDefinitionFactory = (appState, _teamFilt
  * This function returns a list of skills defined in the taskrouter_skills configuration
  */
 const skillsFilterDefinition: FilterDefinitionFactory = (_appState, _teamFiltersPanelProps) => {
-  console.log('>>> skillsFilterDefinition _teamFiltersPanelProps', _teamFiltersPanelProps);
-  const options = Manager.getInstance().serviceConfiguration.taskrouter_skills?.map(skill => ({
+  const skillsArray = Manager.getInstance().serviceConfiguration.taskrouter_skills?.map(skill => ({
     value: skill.name,
     label: skill.name,
-    default: skill.name === 'chat',
+    default: true,
   }));
 
   return {
-    id: 'data.skill_name',
-    fieldName: 'skill',
-    type: FiltersListItemType.multiValue,
+    id: 'data.attributes.routing.skills',
     title: 'Skills',
-    options,
+    fieldName: 'skills',
+    type: FiltersListItemType.multiValue,
+    options: skillsArray ? sortBy(skillsArray, ['label']) : [],
+    condition: 'IN',
   };
 };
 
 export const setUpTeamViewFilters = () => {
-  TeamsView.defaultProps.filters = [
-    activityNoOfflineByDefault,
-    /*
-     * Omit the default since we already include offline in the above
-     * Flex.TeamsView.activitiesFilter
-     */
-    skillsFilterDefinition,
-  ];
+  // eslint-disable-next-line camelcase
+  const { enable_teams_view } = getAseloFeatureFlags();
+
+  // eslint-disable-next-line camelcase
+  if (enable_teams_view) {
+    TeamsView.defaultProps.filters = [
+      activityNoOfflineByDefault,
+      /*
+       * Omit the default since we already include offline in the above
+       * Flex.TeamsView.activitiesFilter
+       */
+      skillsFilterDefinition,
+    ];
+  } else {
+    TeamsView.defaultProps.filters = [activityNoOfflineByDefault];
+  }
 };
 
 export const setUpWorkerDirectoryFilters = () => {
   const managerInstance = Manager.getInstance();
 
   const activitiesArray = Array.from(managerInstance.store.getState().flex.worker.activities.values());
-  console.log('>>> availableArray', activitiesArray);
 
   const availableActivities = activitiesArray.filter(a => a.available).map(a => a.name);
-  console.log('>>> availableActivities', availableActivities);
-
-  const skillsArray = managerInstance.serviceConfiguration.taskrouter_skills || [];
-  console.log('>>> skillsArray', skillsArray);
-  const skillsNames = skillsArray.map(skill => skill.name);
 
   const activitiesFilter = `data.activity_name IN ${JSON.stringify(availableActivities)}`;
 
-  const skillsFilter = `data.skills_name IN ${JSON.stringify(skillsNames)}`;
-
-  WorkerDirectoryTabs.defaultProps.hiddenWorkerFilter = `(${activitiesFilter}) AND (${skillsFilter})`;
+  WorkerDirectoryTabs.defaultProps.hiddenWorkerFilter = `(${activitiesFilter})`;
 };
