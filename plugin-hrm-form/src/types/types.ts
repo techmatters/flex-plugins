@@ -293,6 +293,7 @@ export type FeatureFlags = {
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
   enable_upload_documents: boolean; // Enables Case Documents
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
+  enable_teams_view: boolean; // Enables custom Teams View UI
 };
 /* eslint-enable camelcase */
 

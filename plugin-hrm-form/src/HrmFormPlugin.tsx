@@ -140,7 +140,7 @@ const setUpComponents = (
     if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
   }
 
-  TeamsView.setUpSkillsColumn();
+  if (featureFlags.enable_teams_view) TeamsView.setUpSkillsColumn();
   TeamsView.setUpTeamViewFilters();
   TeamsView.setUpWorkerDirectoryFilters();
 
