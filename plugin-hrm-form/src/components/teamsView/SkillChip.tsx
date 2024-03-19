@@ -36,7 +36,7 @@ const SkillChip: React.FC<Props> = ({ skill, skillType }) => {
   }
 
   return (
-    <SkillChipStyled color={bgColor}>
+    <SkillChipStyled disabledSkill={skillType === 'disabled'} color={bgColor}>
       {skillType === 'active' && <SmallCheckIcon htmlColor={fontColor} />}
       {skillType === 'disabled' && <SmallDisabledIcon htmlColor={fontColor} />}
       <ChipText bold color={fontColor}>
