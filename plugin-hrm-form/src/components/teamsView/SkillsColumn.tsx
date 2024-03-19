@@ -71,7 +71,7 @@ const SkillsListCell = ({ availableSkills, disabledSkills, workerName }) => {
       ))}
       {combinedSkills.length > 3 && (
         <StyledLink
-          style={{ margin: '4px 0px 10px 6px', padding: '4px' }}
+          style={{ margin: '4px 0px 15px 6px', padding: '3px' }}
           onClick={e => {
             e.stopPropagation();
             setShowMore(!showMore);
