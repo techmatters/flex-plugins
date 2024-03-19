@@ -20,6 +20,7 @@ import { WorkersDataTable, ColumnDefinition, Template } from '@twilio/flex-ui';
 import SkillChip from './SkillChip';
 import { StyledLink } from '../search/styles';
 import { OpaqueText } from '../../styles';
+import { SkillsCell } from './styles';
 
 const sortFn = (first, second) => {
   return 0;
@@ -64,13 +65,13 @@ const SkillsListCell = ({ availableSkills, disabledSkills, workerName }) => {
   }
 
   return (
-    <>
+    <SkillsCell>
       {displayedSkills.map(({ skill, type }) => (
         <SkillChip key={skill} skill={skill} skillType={type} />
       ))}
       {combinedSkills.length > 3 && (
         <StyledLink
-          style={{ margin: '0px 0px 10px 4px', padding: '3px' }}
+          style={{ margin: '4px 0px 10px 6px', padding: '4px' }}
           onClick={e => {
             e.stopPropagation();
             setShowMore(!showMore);
@@ -80,6 +81,6 @@ const SkillsListCell = ({ availableSkills, disabledSkills, workerName }) => {
           <Template code={showMore ? 'ReadLess' : 'ReadMore'} />
         </StyledLink>
       )}
-    </>
+    </SkillsCell>
   );
 };
