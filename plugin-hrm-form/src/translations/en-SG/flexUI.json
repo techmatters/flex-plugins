@@ -507,6 +507,7 @@
   "CaseMerging-RemoveFromCase": "Remove from Case",
   "CaseMerging-ContactRemovedFromCase": "Interaction removed from case",
   "CaseMerging-CaseCreatedAndContactAdded": "Case #{{caseId}} created and interaction added",
+  "CaseMerging-ContactAddedToExistingCase": "Interaction added to Case #{{caseId}}",
   "CaseMerging-CancelCase": "Cancel Case",
   "CaseMerging-ContactUndoRemovedFromCase": "Undo"
 }

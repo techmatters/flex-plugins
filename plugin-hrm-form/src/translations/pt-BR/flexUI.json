@@ -466,5 +466,6 @@
   "CaseMerging-RemoveFromCase": "Remover do Caso",
   "CaseMerging-ContactRemovedFromCase": "Contato removido do caso",
   "CaseMerging-CaseCreatedAndContactAdded": "Case #{{caseId}} criado e contato adicionado",
+  "CaseMerging-ContactAddedToExistingCase": "Contato adicionado ao caso nº{{caseId}}",
   "CaseMerging-CancelCase": "Cancelar Caso"
 }

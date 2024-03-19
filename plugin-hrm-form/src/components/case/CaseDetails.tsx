@@ -23,7 +23,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { DefinitionVersion, StatusInfo } from 'hrm-form-definitions';
-import { format, parseISO } from 'date-fns';
+import { parseISO } from 'date-fns';
 
 import CaseTags from './CaseTags';
 import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
@@ -50,7 +50,6 @@ type Props = {
   office: string | undefined;
   childIsAtRisk: boolean;
   isOrphanedCase: boolean | undefined;
-  isCreating?: boolean;
   editCaseSummary: () => void;
   handlePrintCase: () => void;
   availableStatusTransitions: StatusInfo[];
