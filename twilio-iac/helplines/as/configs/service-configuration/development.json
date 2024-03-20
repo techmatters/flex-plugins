@@ -9,6 +9,7 @@
             "enableUnmaskingCalls": true
         },
         "feature_flags": {
+            "backend_handled_chat_janitor": false,
             "enable_aselo_messaging_ui": true,
             "enable_counselor_toolkits": true,
             "enable_csam_clc_report": true,
@@ -16,13 +17,13 @@
             "enable_client_profiles": true,
             "enable_fullstory_monitoring": true,
             "enable_lex": true,
+            "enable_post_survey": false,
             "enable_resources": true,
             "enable_resources_elastic_search": true,
             "enable_save_insights": true,
+            "enable_teams_view_enhancements": true,
             "enable_transcripts": true,
-            "backend_handled_chat_janitor": false,
-            "enable_voice_recordings": false,
-            "enable_post_survey": false
+            "enable_voice_recordings": false
         },
         "contact_save_frequency": "onTabChange",
         "multipleOfficeSupport": true,

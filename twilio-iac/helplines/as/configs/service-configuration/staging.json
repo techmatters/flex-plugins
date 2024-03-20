@@ -17,6 +17,7 @@
             "enable_csam_report": true,
             "enable_lex": true,
             "enable_save_insights": true,
+            "enable_teams_view_enhancements": true,
             "enable_voice_recordings": true
         },
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",
