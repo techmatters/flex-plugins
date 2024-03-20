@@ -29,7 +29,7 @@ import { PermissionActions, PermissionActionType } from '../../permissions';
 import { AppRoutes, CaseItemAction, CaseRoute } from '../../states/routing/types';
 import CaseSummary from './CaseSummary';
 import { RootState } from '../../states';
-import { Case, Contact, CustomITask, StandaloneITask } from '../../types/types';
+import { CustomITask, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
 import { newCloseModalAction } from '../../states/routing/actions';
 import IncidentInformationRow from './IncidentInformationRow';
@@ -38,8 +38,6 @@ import { getAseloFeatureFlags } from '../../hrmConfig';
 import NavigableContainer from '../NavigableContainer';
 import { isStandaloneITask } from './Case';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
-import asyncDispatch from '../../states/asyncDispatch';
-import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 import CaseCreatedBanner from '../caseMergingBanners/CaseCreatedBanner';
@@ -101,8 +99,6 @@ const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
 const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: CaseHomeProps) => ({
   changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
   openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid)),
-  connectCaseToTaskContact: async (taskContact: Contact, cas: Case) =>
-    asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, cas.id)),
   closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
 });
 

@@ -144,9 +144,9 @@ const updateCaseSections = (
     const sectionTypeMap = sections[sectionType];
     const existingSection = sectionTypeMap[updatedCaseSection.sectionId];
     if (existingSection) {
-      delete caseWorkingCopy.sections[sectionType].existing[updatedCaseSection.sectionId];
+      delete caseWorkingCopy?.sections?.[sectionType]?.existing?.[updatedCaseSection.sectionId];
     } else {
-      delete caseWorkingCopy.sections[sectionType].new;
+      delete caseWorkingCopy?.sections?.[sectionType]?.new;
     }
     sectionTypeMap[updatedCaseSection.sectionId] = { sectionType, ...updatedCaseSection };
   });

@@ -100,8 +100,8 @@ const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => 
             ? getAvailableCaseStatusTransitions(connectedCase, caseDefinitionVersion)
             : [],
           references: state.connectedCase.cases[connectedCase.id]?.references ?? new Set(),
-          sections: state.connectedCase.cases[connectedCase.id]?.sections,
-          timelines: state.connectedCase.cases[connectedCase.id]?.timelines,
+          sections: state.connectedCase.cases[connectedCase.id]?.sections ?? {},
+          timelines: state.connectedCase.cases[connectedCase.id]?.timelines ?? {},
         },
       },
     },

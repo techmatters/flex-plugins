@@ -24,20 +24,20 @@ import { parseISO } from 'date-fns';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { RootState } from '../../states';
 import * as ConfigActions from '../../states/configuration/actions';
-import { Case, CounselorHash } from '../../types/types';
+import { Case } from '../../types/types';
 import {
-  DataTableRow,
-  DataCell,
-  TextCell,
-  SummaryCell,
-  NumericCell,
-  TableBodyFont,
-  OpenLinkContainer,
-  OpenLinkAction,
-  TableSummaryFont,
   Box,
-  HiddenText,
   CategoriesCell,
+  DataCell,
+  DataTableRow,
+  HiddenText,
+  NumericCell,
+  OpenLinkAction,
+  OpenLinkContainer,
+  SummaryCell,
+  TableBodyFont,
+  TableSummaryFont,
+  TextCell,
 } from '../../styles';
 import { formatName, getShortSummary } from '../../utils';
 import { getContactTags } from '../../utils/categories';
@@ -45,19 +45,42 @@ import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import { getHrmConfig } from '../../hrmConfig';
 import { configurationBase, namespace } from '../../states/storeNamespaces';
+import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
+import { selectFirstCaseContact } from '../../states/contacts/selectContactByCaseId';
+import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
 
 const CHAR_LIMIT = 200;
 
-// eslint-disable-next-line react/no-multi-comp
 type OwnProps = {
-  caseItem: Case;
-  counselorsHash: CounselorHash;
+  caseId: Case['id'];
   handleClickViewCase: (currentCase: Case) => () => void;
 };
 
+const mapStateToProps = (state: RootState, { caseId }: OwnProps) => {
+  const caseItem = selectCaseByCaseId(state, caseId)?.connectedCase;
+  return {
+    definitionVersions: state[namespace][configurationBase].definitionVersions,
+    counselorsHash: selectCounselorsHash(state),
+    caseItem,
+    firstConnectedContact: selectFirstCaseContact(state, caseItem),
+  };
+};
+
+const mapDispatchToProps = {
+  updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleClickViewCase, ...props }) => {
+const CaseListTableRow: React.FC<Props> = ({
+  caseItem,
+  firstConnectedContact,
+  counselorsHash,
+  handleClickViewCase,
+  ...props
+}) => {
   const { updateDefinitionVersion, definitionVersions } = props;
   const { definitionVersion } = getHrmConfig();
   let version = caseItem.info.definitionVersion;
@@ -81,6 +104,11 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
       fetchDefinitionVersions();
     }
   }, [definitionVersions, updateDefinitionVersion, version]);
+
+  if (!caseItem) {
+    return null;
+  }
+
   try {
     const { status } = caseItem;
     const statusString = status.charAt(0).toUpperCase() + status.slice(1);
@@ -103,7 +131,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
         : caseStatus;
     };
 
-    const contactLabel = contactLabelFromHrmContact(definitionVersion, caseItem.firstContact);
+    const contactLabel = contactLabelFromHrmContact(definitionVersion, firstConnectedContact);
 
     return (
       <DataTableRow data-testid="CaseList-TableRow" onClick={handleClickViewCase(caseItem)}>
@@ -162,16 +190,6 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
 };
 
 CaseListTableRow.displayName = 'CaseListTableRow';
-
-const mapStateToProps = (state: RootState) => ({
-  definitionVersions: state[namespace][configurationBase].definitionVersions,
-});
-
-const mapDispatchToProps = {
-  updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
 const connected = connector(CaseListTableRow);
 
 export default connected;
