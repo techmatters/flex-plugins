@@ -212,7 +212,11 @@ const TabbedFormsTabs: React.FC<Props> = ({
   } = updatedContact;
 
   const tabsToIndex = mapTabsToIndex(savedContact, updatedContact.rawJson);
-  const tabIndex = tabsToIndex.findIndex(t => t === subroute);
+  // tabIndex -1 doesn't cause user facing errors but it does generate lots of console log noise
+  const tabIndex = Math.max(
+    tabsToIndex.findIndex(t => t === subroute),
+    0,
+  );
   const tabs = tabsToIndex.map(mapTabsComponents(methods.errors));
 
   // TODO: abstract this to a separate file for shared use

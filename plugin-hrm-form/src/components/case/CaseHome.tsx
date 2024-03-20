@@ -49,7 +49,7 @@ import { selectDefinitionVersionForCase } from '../../states/configuration/selec
 import selectCaseHelplineData from '../../states/case/selectCaseHelplineData';
 import { selectCounselorName } from '../../states/configuration/selectCounselorsHash';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
-import { selectFirstContactByCaseId } from '../../states/contacts/selectContactByCaseId';
+import { selectContactsByCaseIdInCreatedOrder, selectFirstCaseContact } from '../../states/contacts/selectContactByCaseId';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -68,15 +68,19 @@ const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
   const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
   const routing = selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseRoute;
   const { connectedCase, availableStatusTransitions = [] } = connectedCaseState ?? {};
+  const caseContacts = selectContactsByCaseIdInCreatedOrder(state, routing.caseId);
 
-  const firstConnectedContact = selectFirstContactByCaseId(state, routing.caseId)?.savedContact;
-  const isCreating = Boolean(taskContact && taskContact.caseId === routing.caseId && !taskContact.finalizedAt);
+  const firstConnectedContact = selectFirstCaseContact(state, connectedCase);
   const activityCount = routing.route === 'case' ? selectTimelineCount(state, routing.caseId, MAIN_TIMELINE_ID) : 0;
+  const contactForLabel = caseContacts[0]?.savedContact ?? taskContact;
+  const isNewContact = Boolean(taskContact && taskContact.caseId === routing.caseId && !taskContact.finalizedAt);
+  const isNewCase = caseContacts.length === 1 && taskContact && taskContact.caseId === routing.caseId;
   const definitionVersion = selectDefinitionVersionForCase(state, connectedCase);
   const counselor = selectCounselorName(state, connectedCase?.twilioWorkerId);
 
   return {
-    isCreating,
+    isNewContact,
+    isNewCase,
     connectedCase,
     availableStatusTransitions,
     taskContact,
@@ -114,7 +118,8 @@ const CaseHome: React.FC<Props> = ({
   can,
   connectedCase,
   availableStatusTransitions,
-  isCreating,
+  isNewContact,
+  isNewCase,
   hasMoreActivities,
   office,
   counselor,
@@ -162,7 +167,7 @@ const CaseHome: React.FC<Props> = ({
       <CaseContainer>
         <AddToCaseBanner task={task} />
 
-        {isCreating && (
+        {isNewCase && (
           <Box marginBottom="14px" width="100%">
             <CaseCreatedBanner caseId={caseId} task={task} />
           </Box>
@@ -184,7 +189,6 @@ const CaseHome: React.FC<Props> = ({
             definitionVersion={definitionVersion}
             isOrphanedCase={isOrphanedCase}
             editCaseSummary={onEditCaseSummaryClick}
-            isCreating={isCreating}
           />
         </Box>
         <Box margin="25px 0 0 0">
@@ -255,7 +259,7 @@ const CaseHome: React.FC<Props> = ({
           </Box>
         )}
       </CaseContainer>
-      {isCreating && (
+      {isNewContact && (
         <BottomButtonBar>
           {!enableCaseMerging && (
             <Box marginRight="15px">

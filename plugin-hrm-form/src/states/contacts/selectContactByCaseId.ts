@@ -22,13 +22,13 @@ import { namespace } from '../storeNamespaces';
 import { Case, Contact } from '../../types/types';
 import selectContactStateByContactId from './selectContactStateByContactId';
 
-export const selectContactsByCaseId = (state: RootState, caseId: Case['id']): ContactState[] =>
+export const selectContactsByCaseIdInCreatedOrder = (state: RootState, caseId: Case['id']): ContactState[] =>
   Object.values(state[namespace].activeContacts.existingContacts)
     .filter(cs => cs.savedContact?.caseId === caseId)
     .sort((a, b) => parseISO(a.savedContact?.createdAt).valueOf() - parseISO(b.savedContact?.createdAt).valueOf());
 
 export const selectFirstContactByCaseId = (state: RootState, caseId: Case['id']): ContactState =>
-  selectContactsByCaseId(state, caseId)[0] || null;
+  selectContactsByCaseIdInCreatedOrder(state, caseId)[0] || null;
 
 export const selectFirstCaseContact = (state: RootState, parentCase: Case): Contact => {
   if (!parentCase.firstContact) return undefined;
