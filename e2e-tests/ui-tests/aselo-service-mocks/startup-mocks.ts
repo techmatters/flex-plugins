@@ -27,6 +27,7 @@ import { mockIssueSyncToken } from './serverless/issueSyncToken';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Page } from '@playwright/test';
 import { mockFormDefinitions } from './form-definitions';
+import hrmContacts from './hrm/contacts';
 
 /**
  * All the mocking required for a new Flex session with Aselo to successfully load
@@ -54,4 +55,5 @@ export const mockStartup = async (page: Page) => {
   await mockListWorkerQueues(page);
   await mockPopulateCounselors(page);
   await mockIssueSyncToken(page);
+  await hrmContacts().mockCaseEndpoints(page);
 };
