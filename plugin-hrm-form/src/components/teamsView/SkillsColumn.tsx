@@ -20,12 +20,15 @@ import { WorkersDataTable, ColumnDefinition, Template } from '@twilio/flex-ui';
 import SkillChip from './SkillChip';
 import { StyledLink } from '../search/styles';
 import { OpaqueText } from '../../styles';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 const sortFn = (first, second) => {
   return 0;
 };
 
 export const setUpSkillsColumn = () => {
+  if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
+
   WorkersDataTable.Content.add(
     <ColumnDefinition
       key="skills"

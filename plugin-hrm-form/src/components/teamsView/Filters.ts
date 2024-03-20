@@ -58,33 +58,24 @@ const skillsFilterDefinition: FilterDefinitionFactory = (_appState, _teamFilters
   };
 };
 
+/**
+ * This function sets up filters for the TeamsView component
+ * The activity filter omits the default since we already include offline in the above, ie Flex.TeamsView.activitiesFilter
+ * The skills filter is included if the feature flag is enabled.
+ */
 export const setUpTeamViewFilters = () => {
-  // eslint-disable-next-line camelcase
-  const { enable_teams_view } = getAseloFeatureFlags();
-
-  // eslint-disable-next-line camelcase
-  if (enable_teams_view) {
-    TeamsView.defaultProps.filters = [
-      activityNoOfflineByDefault,
-      /*
-       * Omit the default since we already include offline in the above
-       * Flex.TeamsView.activitiesFilter
-       */
-      skillsFilterDefinition,
-    ];
-  } else {
-    TeamsView.defaultProps.filters = [activityNoOfflineByDefault];
-  }
+  TeamsView.defaultProps.filters = [
+    activityNoOfflineByDefault,
+    ...(getAseloFeatureFlags().enable_teams_view_enhancements ? [skillsFilterDefinition] : []),
+  ];
 };
 
 export const setUpWorkerDirectoryFilters = () => {
   const managerInstance = Manager.getInstance();
 
   const activitiesArray = Array.from(managerInstance.store.getState().flex.worker.activities.values());
-
   const availableActivities = activitiesArray.filter(a => a.available).map(a => a.name);
 
   const activitiesFilter = `data.activity_name IN ${JSON.stringify(availableActivities)}`;
-
   WorkerDirectoryTabs.defaultProps.hiddenWorkerFilter = `(${activitiesFilter})`;
 };
