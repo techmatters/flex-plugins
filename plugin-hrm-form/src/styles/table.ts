@@ -140,12 +140,12 @@ export const SummaryCell = withStyles({
 })(DataCell);
 SummaryCell.displayName = 'SummaryCell';
 
-export const PillsCell = withStyles({
+export const CategoriesCell = withStyles({
   body: {
     display: 'grid',
   },
 })(DataCell);
-PillsCell.displayName = 'PillsCell';
+CategoriesCell.displayName = 'CategoriesCell';
 
 export const TableHeaderFont = styled(FontOpenSans)`
   font-weight: 600;
@@ -196,13 +196,3 @@ export const OpenLinkAction = styled('button')`
   }
 `;
 OpenLinkAction.displayName = 'OpenLinkAction';
-
-export const SomethingWentWrongText = styled(FontOpenSans)`
-  color: ${HrmTheme.colors.errorColor};
-  font-size: 20px;
-`;
-SomethingWentWrongText.displayName = 'SomethingWentWrongText';
-
-export const OpaqueText = styled('span')`
-  opacity: 0.7;
-`;

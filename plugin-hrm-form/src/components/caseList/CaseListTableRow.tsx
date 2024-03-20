@@ -26,18 +26,18 @@ import { RootState } from '../../states';
 import * as ConfigActions from '../../states/configuration/actions';
 import { Case, CounselorHash } from '../../types/types';
 import {
-  Box,
-  DataCell,
   DataTableRow,
-  HiddenText,
-  NumericCell,
-  OpenLinkAction,
-  OpenLinkContainer,
-  PillsCell,
-  SummaryCell,
-  TableBodyFont,
-  TableSummaryFont,
+  DataCell,
   TextCell,
+  SummaryCell,
+  NumericCell,
+  TableBodyFont,
+  OpenLinkContainer,
+  OpenLinkAction,
+  TableSummaryFont,
+  Box,
+  HiddenText,
+  CategoriesCell,
 } from '../../styles';
 import { formatName, getShortSummary } from '../../utils';
 import { getContactTags } from '../../utils/categories';
@@ -130,14 +130,14 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
         <SummaryCell>
           <TableSummaryFont>{shortSummary}</TableSummaryFont>
         </SummaryCell>
-        <PillsCell>
+        <CategoriesCell>
           {categories &&
             categories.map(category => (
               <Box key={`category-tag-${category.label}`} marginBottom="5px">
                 <CategoryWithTooltip category={category.label} color={category.color} />
               </Box>
             ))}
-        </PillsCell>
+        </CategoriesCell>
         <DataCell>
           <TableBodyFont style={{ textAlign: 'right' }}>{opened}</TableBodyFont>
         </DataCell>

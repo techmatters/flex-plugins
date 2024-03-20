@@ -21,7 +21,7 @@ import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import { ButtonProps } from '@material-ui/core/Button';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
 
-import { BottomButtonBar, Flex, FontOpenSans, PillBase, Row, StyledNextStepButton } from '../../styles';
+import { BottomButtonBar, Flex, FontOpenSans, ChipBase, Row, StyledNextStepButton } from '../../styles';
 import HrmTheme from '../../styles/HrmTheme';
 import { BannerContainerProps, colors } from '../../styles/banners';
 

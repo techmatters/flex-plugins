@@ -17,8 +17,9 @@
 import React, { useState } from 'react';
 import { WorkersDataTable, ColumnDefinition, Template } from '@twilio/flex-ui';
 
-import SkillWithTooltip from './SkillWithTooltip';
+import SkillChip from './SkillChip';
 import { StyledLink } from '../search/styles';
+import { OpaqueText } from '../../styles';
 
 const sortFn = (first, second) => {
   return 0;
@@ -30,7 +31,7 @@ export const setUpSkillsColumn = () => {
       key="skills"
       header="Skills"
       sortingFn={sortFn}
-      style={{ width: 'calc(14rem)' }}
+      style={{ width: 'calc(16rem)' }}
       content={item => {
         const availableSkills = item?.worker?.attributes?.routing?.skills ?? [];
         const disabledSkills = item?.worker?.attributes?.disabled_skills?.skills ?? [];
@@ -46,6 +47,7 @@ export const setUpSkillsColumn = () => {
 
 const SkillsListCell = ({ availableSkills, disabledSkills, workerName }) => {
   const [showMore, setShowMore] = useState(false);
+
   const combinedSkills = [
     ...availableSkills.map(skill => ({ skill, type: 'active' })),
     ...disabledSkills.map(skill => ({ skill, type: 'disabled' })),
@@ -54,25 +56,28 @@ const SkillsListCell = ({ availableSkills, disabledSkills, workerName }) => {
   const displayedSkills = showMore ? combinedSkills : combinedSkills.slice(0, 3);
 
   if (combinedSkills.length === 0) {
-    return <Template code="TeamsView-NoSkills" aria-label={`No Skills available for ${workerName}`} />;
+    return (
+      <OpaqueText>
+        <Template code="TeamsView-NoSkills" aria-label={`No skills available for ${workerName}`} />
+      </OpaqueText>
+    );
   }
 
   return (
     <>
       {displayedSkills.map(({ skill, type }) => (
-        <SkillWithTooltip key={skill} skill={skill} skillType={type} />
+        <SkillChip key={skill} skill={skill} skillType={type} />
       ))}
       {combinedSkills.length > 3 && (
         <StyledLink
+          style={{ margin: '0px 0px 10px 4px', padding: '3px' }}
           onClick={e => {
             e.stopPropagation();
             setShowMore(!showMore);
           }}
           aria-label={showMore ? `See less skills for ${workerName}` : `See more skills for ${workerName}`}
         >
-          <p>
-            <Template code={showMore ? 'ReadLess-trail' : 'ReadMore-trail'} />
-          </p>
+          <Template code={showMore ? 'ReadLess' : 'ReadMore'} />
         </StyledLink>
       )}
     </>
