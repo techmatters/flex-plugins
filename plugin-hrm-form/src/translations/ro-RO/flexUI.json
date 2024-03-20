@@ -566,5 +566,6 @@
     "CaseMerging-RemoveFromCase": "Eliminați din carcasă",
     "CaseMerging-ContactRemovedFromCase": "Contact eliminat din carcasă",
     "CaseMerging-CaseCreatedAndContactAdded": "Cazul #{{caseId}} a fost creat și persoana de contact a fost adăugată",
+    "CaseMerging-ContactAddedToExistingCase": "Persoana de contact a fost adăugată în cazul #{{caseId}}",
     "CaseMerging-CancelCase": "Anulează Cazul"
 }

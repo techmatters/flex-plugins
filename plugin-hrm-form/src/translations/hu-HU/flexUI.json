@@ -513,5 +513,6 @@
   "CaseMerging-RemoveFromCase": "Távolítsa el a tokból",
   "CaseMerging-ContactRemovedFromCase": "Az érintkező eltávolítva a tokból",
   "CaseMerging-CaseCreatedAndContactAdded": "A(z) {{caseId}} számú eset létrehozva, és a kapcsolattartó hozzáadva",
+  "CaseMerging-ContactAddedToExistingCase": "Kapcsolattartó hozzáadva a {{caseId}} számú ügyhöz",
   "CaseMerging-CancelCase": "Törölje az ügyet"
 }
