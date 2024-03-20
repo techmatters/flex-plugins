@@ -20,6 +20,7 @@ import CheckIcon from '@material-ui/icons/Check';
 import DisabledIcon from '@material-ui/icons/Block';
 
 import { ChipBase } from '../../styles';
+import { StyledLink } from '../search/styles';
 
 type SkillChipProps = {
   color: string;

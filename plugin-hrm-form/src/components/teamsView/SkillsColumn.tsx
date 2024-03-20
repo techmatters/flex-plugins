@@ -58,7 +58,7 @@ const SkillsListCell = ({ availableSkills, disabledSkills, workerName }) => {
 
   if (combinedSkills.length === 0) {
     return (
-      <OpaqueText>
+      <OpaqueText style={{ fontSize: '13px' }}>
         <Template code="TeamsView-NoSkills" aria-label={`No skills available for ${workerName}`} />
       </OpaqueText>
     );
@@ -71,7 +71,7 @@ const SkillsListCell = ({ availableSkills, disabledSkills, workerName }) => {
       ))}
       {combinedSkills.length > 3 && (
         <StyledLink
-          style={{ margin: '4px 0px 15px 6px', padding: '3px' }}
+          style={{ margin: '4px 4px 13px 6px', padding: '6px', fontSize: '13px' }}
           onClick={e => {
             e.stopPropagation();
             setShowMore(!showMore);
