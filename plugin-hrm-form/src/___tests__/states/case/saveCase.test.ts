@@ -91,7 +91,6 @@ const mockPayload: Omit<Case, 'sections' | 'label'> = {
   info: {},
   createdAt: '12-05-2023',
   updatedAt: '12-05-2023',
-  connectedContacts: [],
   categories: {},
 };
 
@@ -120,7 +119,6 @@ const nonInitialPartialState: RecursivePartial<HrmState> = {
           info: {},
           createdAt: '12-05-2023',
           updatedAt: '12-05-2023',
-          connectedContacts: [],
           categories: {},
         },
         caseWorkingCopy: {
@@ -231,7 +229,6 @@ describe('createCaseAsyncAction', () => {
             },
             connectedCase: {
               id: '234',
-              connectedContacts: [{ id: 'contact-1' }],
               sections: undefined,
             },
             references: new Set(),

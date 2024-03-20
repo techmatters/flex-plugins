@@ -182,7 +182,6 @@ describe('Working copy reducers', () => {
           info: null,
           createdAt: '2020-07-31T20:39:37.408Z',
           updatedAt: '2020-07-31T20:39:37.408Z',
-          connectedContacts: null,
           categories: {},
         },
         caseWorkingCopy: {

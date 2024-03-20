@@ -61,7 +61,12 @@ import { createCaseAsyncAction } from '../case/saveCase';
 import { loadContactIntoRedux, saveContactReducer } from './saveContact';
 import { ConfigurationState } from '../configuration/reducer';
 import { Contact } from '../../types/types';
-import { SEARCH_CONTACTS_SUCCESS, SearchContactsSuccessAction } from '../search/types';
+import {
+  SEARCH_CASES_SUCCESS,
+  SEARCH_CONTACTS_SUCCESS,
+  SearchCasesSuccessAction,
+  SearchContactsSuccessAction,
+} from '../search/types';
 import { GET_CASE_TIMELINE_ACTION_FULFILLED, isContactTimelineActivity } from '../case/types';
 import { GetTimelineAsyncAction } from '../case/timeline';
 
@@ -91,21 +96,17 @@ type SaveContactReducerAction = Parameters<typeof boundSaveContactReducer>[1] &
 const newCaseReducer = createReducer(initialState, handleAction => [
   handleAction(
     createCaseAsyncAction.fulfilled,
-    (state: ContactsState, { payload: connectedCase }) => {
-      const connectedContacts = connectedCase.connectedContacts
-        .map(({ id }) => state.existingContacts[id])
-        .filter(Boolean);
-      const contactsMap = Object.fromEntries(
-        connectedContacts.map(contact => [
-          contact.savedContact.id,
-          { ...contact, savedContact: { ...contact.savedContact, caseId: connectedCase.id } },
-        ]),
-      );
+    (state: ContactsState, { payload: { newCase: connectedCase, connectedContact } }) => {
+      const existingContactState = state.existingContacts[connectedContact.id];
+      if (!existingContactState) {
+        return state;
+      }
+      existingContactState.savedContact.caseId = connectedCase.id;
       return {
         ...state,
         existingContacts: {
           ...state.existingContacts,
-          ...contactsMap,
+          ...{ [connectedContact.id]: existingContactState },
         },
       };
     },
@@ -144,6 +145,7 @@ export function reduce(
     | t.UpdatedContactAction
     | SaveContactReducerAction
     | SearchContactsSuccessAction
+    | SearchCasesSuccessAction
   | GetTimelineAsyncAction,
 ): ContactsState {
   let state = boundReferralReducer(inputState, inputAction as any);
@@ -244,6 +246,9 @@ export function reduce(
     }
     case SEARCH_CONTACTS_SUCCESS: {
       return loadContactListIntoState(state, rootState.configuration, action.searchResult.contacts, `${action.taskId}-search`);
+    }
+    case SEARCH_CASES_SUCCESS: {
+      return loadContactListIntoState(state, rootState.configuration, action.searchResult.cases.map(c => c.firstContact).filter(Boolean), `${action.taskId}-search`);
     }
     case GET_CASE_TIMELINE_ACTION_FULFILLED: {
       const { payload: { caseId, timelineResult: { activities } } } = action;

@@ -75,7 +75,7 @@ const BottomBar: React.FC<
 }) => {
   const strings = getTemplateStrings();
 
-  const isAddedToCase = savedContact?.caseId !== null;
+  const isAddedToCase = savedContact?.caseId;
 
   const handleOpenNewCase = async () => {
     const { workerSid, definitionVersion } = getHrmConfig();

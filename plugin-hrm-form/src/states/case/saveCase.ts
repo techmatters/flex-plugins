@@ -19,7 +19,7 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 import { CreateHandlerMap } from 'redux-promise-middleware-actions/lib/reducers';
 
 import { cancelCase, createCase, getCase, updateCaseOverview, updateCaseStatus } from '../../services/CaseService';
-import { Case, CaseOverview } from '../../types/types';
+import { Case, CaseOverview, Contact } from '../../types/types';
 import { CANCEL_CASE_ACTION, CREATE_CASE_ACTION } from './types';
 import type { HrmState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
@@ -30,11 +30,18 @@ const UPDATE_CASE_OVERVIEW_ACTION = 'case-action/update-overview';
 
 export const createCaseAsyncAction = createAsyncAction(
   CREATE_CASE_ACTION,
-  async (contact, workerSid: string, definitionVersion: DefinitionVersionId): Promise<Case> => {
+  async (
+    contact,
+    workerSid: string,
+    definitionVersion: DefinitionVersionId,
+  ): Promise<{ newCase: Case; connectedContact: Contact }> => {
     // We should probably update the case POST endpoint to accept a connected contact to simplify this and avoid extra calls and inconsistent state
     const newCase = await createCase(contact, workerSid, definitionVersion);
-    const updatedContact = await connectToCase(contact.id, newCase.id);
-    return { ...newCase, connectedContacts: [...(newCase.connectedContacts ?? []), updatedContact] };
+    await connectToCase(contact.id, newCase.id);
+    return {
+      newCase,
+      connectedContact: contact,
+    };
   },
 );
 
@@ -58,9 +65,9 @@ export const updateCaseOverviewAsyncAction = createAsyncAction(
 
 export const cancelCaseAsyncAction = createAsyncAction(
   CANCEL_CASE_ACTION,
-  async (caseId: Case['id']): Promise<Case> => {
+  async (caseId: Case['id']): Promise<Case['id']> => {
     await cancelCase(caseId);
-    return null;
+    return caseId;
   },
 );
 
@@ -103,14 +110,37 @@ const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => 
 
 const handleFulfilledAction = (
   handleAction: CreateHandlerMap<HrmState>,
-  asyncAction: typeof createCaseAsyncAction.fulfilled,
+  asyncAction: typeof updateCaseOverviewAsyncAction.fulfilled,
 ) => handleAction(asyncAction, (state, { payload }): HrmState => updateConnectedCase(state, payload));
+
+const handleCreateCaseFulfilledAction = (
+  handleAction: CreateHandlerMap<HrmState>,
+  asyncAction: typeof createCaseAsyncAction.fulfilled,
+) => handleAction(asyncAction, (state, { payload }): HrmState => updateConnectedCase(state, payload.newCase));
 
 const handleConnectToCaseFulfilledAction = (
   handleAction: CreateHandlerMap<HrmState>,
   asyncAction: typeof connectToCaseAsyncAction.fulfilled,
 ) =>
   handleAction(asyncAction, (state, { payload: { contact, contactCase } }) => updateConnectedCase(state, contactCase));
+
+const handleCancelCaseFulfilledAction = (
+  handleAction: CreateHandlerMap<HrmState>,
+  asyncAction: typeof cancelCaseAsyncAction.fulfilled,
+) =>
+  handleAction(
+    asyncAction,
+    (state, { payload }): HrmState => {
+      const { [payload]: removed, ...withCancelledCaseRemoved } = state.connectedCase.cases;
+      return {
+        ...state,
+        connectedCase: {
+          ...state.connectedCase,
+          cases: withCancelledCaseRemoved,
+        },
+      };
+    },
+  );
 
 const handleRejectedAction = (
   handleAction: CreateHandlerMap<HrmState>,
@@ -123,14 +153,14 @@ const handleRejectedAction = (
 export const saveCaseReducer = (initialState: HrmState): ((state: HrmState, action) => HrmState) =>
   createReducer(initialState, handleAction => [
     handlePendingAction(handleAction, createCaseAsyncAction.pending),
-    handleFulfilledAction(handleAction, createCaseAsyncAction.fulfilled),
+    handleCreateCaseFulfilledAction(handleAction, createCaseAsyncAction.fulfilled),
     handleRejectedAction(handleAction, createCaseAsyncAction.rejected),
     handlePendingAction(handleAction, updateCaseOverviewAsyncAction.pending),
     handleFulfilledAction(handleAction, updateCaseOverviewAsyncAction.fulfilled),
     handleRejectedAction(handleAction, updateCaseOverviewAsyncAction.rejected),
 
     handlePendingAction(handleAction, cancelCaseAsyncAction.pending),
-    handleFulfilledAction(handleAction, cancelCaseAsyncAction.fulfilled),
+    handleCancelCaseFulfilledAction(handleAction, cancelCaseAsyncAction.fulfilled),
     handleRejectedAction(handleAction, cancelCaseAsyncAction.rejected),
 
     handleConnectToCaseFulfilledAction(handleAction, connectToCaseAsyncAction.fulfilled),

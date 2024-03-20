@@ -23,11 +23,19 @@ import { Case, CaseOverview, Contact, SearchCaseResult, WellKnownCaseSection } f
 import { FetchOptions } from './fetchApi';
 import { GenericTimelineActivity } from '../states/case/types';
 import { convertApiCaseSectionToCaseSection, FullGenericCaseSection } from './caseSectionService';
+import { convertApiContactToFlexContact } from './ContactService';
 
-const convertApiCaseToFlexCase = (apiCase: Case): Case => {
+type ApiCase = Omit<Case, 'firstContact'> & { connectedContacts: Contact[] };
+
+const convertApiCaseToFlexCase = (apiCase: ApiCase): Case => {
+  if (!apiCase) {
+    return apiCase;
+  }
+  const { connectedContacts, ...withoutConnectedContacts } = apiCase;
   return {
-    id: apiCase.id.toString(), // coerce to string type, can be removed once API ios aligned
-    ...apiCase,
+    firstContact: convertApiContactToFlexContact(connectedContacts?.[0]),
+    ...withoutConnectedContacts,
+    id: apiCase.id.toString(), // coerce to string type, can be removed once API is aligned
   };
 };
 
@@ -53,7 +61,7 @@ export async function createCase(contact: Contact, creatingWorkerSid: string, de
     body: JSON.stringify(caseRecord),
   };
 
-  return fetchHrmApi('/cases', options);
+  return convertApiCaseToFlexCase(await fetchHrmApi('/cases', options));
 }
 
 export async function cancelCase(caseId: Case['id']) {
@@ -70,7 +78,7 @@ export async function updateCaseOverview(caseId: Case['id'], body: CaseOverview)
     body: JSON.stringify(body),
   };
 
-  return fetchHrmApi(`/cases/${caseId}/overview`, options);
+  return convertApiCaseToFlexCase(await fetchHrmApi(`/cases/${caseId}/overview`, options));
 }
 
 export async function updateCaseStatus(caseId: Case['id'], status: Case['status']): Promise<Case> {
@@ -79,7 +87,7 @@ export async function updateCaseStatus(caseId: Case['id'], status: Case['status'
     body: JSON.stringify({ status }),
   };
 
-  return fetchHrmApi(`/cases/${caseId}/status`, options);
+  return convertApiCaseToFlexCase(await fetchHrmApi(`/cases/${caseId}/status`, options));
 }
 
 export async function getCase(caseId: Case['id']): Promise<Case> {
@@ -87,7 +95,7 @@ export async function getCase(caseId: Case['id']): Promise<Case> {
     method: 'GET',
     returnNullFor404: true,
   };
-  const fromApi: Case = await fetchHrmApi(`/cases/${caseId}`, options);
+  const fromApi: ApiCase = await fetchHrmApi(`/cases/${caseId}`, options);
   return convertApiCaseToFlexCase(fromApi);
 }
 
@@ -100,6 +108,10 @@ const isApiCaseSectionTimelineActivity = (
   activity: GenericTimelineActivity<any, string>,
 ): activity is GenericTimelineActivity<FullGenericCaseSection<string>, string> =>
   activity.activityType === 'case-section';
+
+const isApiContactTimelineActivity = (
+  activity: GenericTimelineActivity<any, string>,
+): activity is GenericTimelineActivity<Contact, string> => activity.activityType === 'contact';
 
 export async function getCaseTimeline(
   caseId: Case['id'],
@@ -119,13 +131,19 @@ export async function getCaseTimeline(
   );
   return {
     ...rawResult,
-    activities: rawResult.activities.map(activity => ({
-      ...activity,
-      timestamp: new Date(activity.timestamp),
-      activity: isApiCaseSectionTimelineActivity(activity)
-        ? convertApiCaseSectionToCaseSection(activity.activity)
-        : activity.activity,
-    })),
+    activities: rawResult.activities.map(timelineActivity => {
+      let { activity } = timelineActivity;
+      if (isApiCaseSectionTimelineActivity(timelineActivity)) {
+        activity = convertApiCaseSectionToCaseSection(activity);
+      } else if (isApiContactTimelineActivity(timelineActivity)) {
+        activity = convertApiContactToFlexContact(activity);
+      }
+      return {
+        ...timelineActivity,
+        timestamp: new Date(timelineActivity.timestamp),
+        activity,
+      };
+    }),
   };
 }
 

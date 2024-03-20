@@ -236,7 +236,7 @@ const flattenFirstCaseSection = (
  */
 const convertCaseFormForInsights = (caseForm: Case, sections: CaseStateEntry['sections']): InsightsCaseForm => {
   const logObject: any = {
-    contactsDetails: caseForm?.connectedContacts?.map(({ channel, taskId }) => ({ channelType: channel, taskId })),
+    caseId: caseForm.id,
     accountSid: caseForm.accountSid,
     twilioWorkerId: caseForm.twilioWorkerId,
   };
@@ -276,7 +276,7 @@ const processHelplineConfig = (
   const logObject: any = {
     accountSid: caseForm.accountSid,
     twilioWorkerId: caseForm.twilioWorkerId,
-    contactsDetails: caseForm?.connectedContacts?.map(({ channel, taskId }) => ({ channelType: channel, taskId })),
+    caseId: caseForm.id,
   };
   try {
     const insightsAtts: InsightsAttributes = {

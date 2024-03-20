@@ -16,19 +16,27 @@
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import { Case } from '../types/types';
+import { CaseStateEntry } from '../states/case/types';
 
 export const VALID_EMPTY_CASE: Case = {
   id: '1',
   accountSid: 'AC',
-  label: '',
   info: {
     definitionVersion: DefinitionVersionId.v1,
   },
-  connectedContacts: [],
   updatedAt: new Date(2000, 0, 1).toISOString(),
   createdAt: new Date(2000, 0, 1).toISOString(),
   helpline: '',
   twilioWorkerId: 'WK',
   status: '',
   categories: {},
+};
+
+export const VALID_EMPTY_CASE_STATE_ENTRY: CaseStateEntry = {
+  connectedCase: VALID_EMPTY_CASE,
+  sections: {},
+  timelines: {},
+  availableStatusTransitions: [],
+  caseWorkingCopy: undefined,
+  references: new Set<string>(),
 };

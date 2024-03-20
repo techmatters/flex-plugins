@@ -69,7 +69,7 @@ const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
   const routing = selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseRoute;
   const { connectedCase, availableStatusTransitions = [] } = connectedCaseState ?? {};
 
-  const contactForLabel = selectFirstContactByCaseId(state, routing.caseId)?.savedContact ?? taskContact;
+  const firstConnectedContact = selectFirstContactByCaseId(state, routing.caseId)?.savedContact;
   const isCreating = Boolean(taskContact && taskContact.caseId === routing.caseId && !taskContact.finalizedAt);
   const activityCount = routing.route === 'case' ? selectTimelineCount(state, routing.caseId, MAIN_TIMELINE_ID) : 0;
   const definitionVersion = selectDefinitionVersionForCase(state, connectedCase);
@@ -84,7 +84,8 @@ const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
     office: selectCaseHelplineData(state, routing.caseId),
     definitionVersion,
     counselor,
-    label: contactLabelFromHrmContact(definitionVersion, contactForLabel, {
+    isOrphanedCase: !firstConnectedContact,
+    label: contactLabelFromHrmContact(definitionVersion, firstConnectedContact ?? taskContact, {
       placeholder: '',
       substituteForId: false,
     }),
@@ -117,6 +118,7 @@ const CaseHome: React.FC<Props> = ({
   hasMoreActivities,
   office,
   counselor,
+  isOrphanedCase,
   label,
 }) => {
   if (!connectedCase) return null; // narrow type before deconstructing
@@ -180,7 +182,7 @@ const CaseHome: React.FC<Props> = ({
             office={office?.label}
             handlePrintCase={handlePrintCase}
             definitionVersion={definitionVersion}
-            isOrphanedCase={(connectedCase.connectedContacts ?? []).length === 0}
+            isOrphanedCase={isOrphanedCase}
             editCaseSummary={onEditCaseSummaryClick}
             isCreating={isCreating}
           />

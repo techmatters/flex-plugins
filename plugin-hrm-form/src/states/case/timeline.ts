@@ -67,6 +67,8 @@ export const timelineReducer = (initialState: HrmState): ((state: HrmState, acti
       (state, { payload: { caseId, timelineId, timelineResult, pagination } }) => {
         const caseEntry = state.connectedCase.cases[caseId];
         if (!caseEntry) return state;
+        caseEntry.timelines = caseEntry.timelines ?? {};
+        caseEntry.sections = caseEntry.sections ?? {};
         let timeline: (CaseSectionIdentifierTimelineActivity | ContactIdentifierTimelineActivity)[] =
           caseEntry.timelines[timelineId] ?? [];
         if (timeline.length !== timelineResult.count) {
@@ -122,15 +124,16 @@ export const selectTimeline = (
   const strings = getTemplateStrings();
   const caseEntry = state[namespace].connectedCase.cases[caseId];
   if (!caseEntry) return undefined;
-  const timeline = caseEntry.timelines[timelineId];
+  const { connectedCase, sections, timelines } = caseEntry;
+  const timeline = timelines?.[timelineId];
   if (!timeline) return undefined;
-  const definitionVersion = selectDefinitionVersionForCase(state, caseEntry?.connectedCase);
+  const definitionVersion = selectDefinitionVersionForCase(state, connectedCase);
   const timelineWindow = timeline.slice(offset, offset + limit);
   return timelineWindow
     .map(timelineActivity => {
       if (isCaseSectionIdentifierTimelineActivity(timelineActivity)) {
         const { activity } = timelineActivity;
-        const section = caseEntry.sections[activity.sectionType]?.[activity.sectionId];
+        const section = sections?.[activity.sectionType]?.[activity.sectionId];
         if (!section) return undefined;
         return {
           ...timelineActivity,

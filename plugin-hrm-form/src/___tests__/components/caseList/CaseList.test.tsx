@@ -30,7 +30,7 @@ import { getDefinitionVersions } from '../../../hrmConfig';
 import { CaseListState } from '../../../states/caseList/reducer';
 import { caseListContentInitialState, fetchCaseListAsyncAction } from '../../../states/caseList/listContent';
 import { caseListSettingsInitialState } from '../../../states/caseList/settings';
-import { ContactRawJson, Contact, standaloneTaskSid } from '../../../types/types';
+import { Contact, ContactRawJson, standaloneTaskSid } from '../../../types/types';
 import { namespace } from '../../../states/storeNamespaces';
 import { RecursivePartial } from '../../RecursivePartial';
 import { HrmState, RootState } from '../../../states';
@@ -58,16 +58,6 @@ const mockedCases: Record<string, CaseStateEntry> = {
         definitionVersion: DefinitionVersionId.v1,
       },
       helpline: '',
-      connectedContacts: [
-        {
-          rawJson: {
-            childInformation: {
-              firstName: 'Michael',
-              lastName: 'Smith',
-            },
-          } as Partial<ContactRawJson>,
-        } as Contact,
-      ],
       categories: {},
     },
   },

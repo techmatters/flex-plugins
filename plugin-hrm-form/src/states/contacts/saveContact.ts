@@ -161,7 +161,6 @@ export const newRestartOfflineContactAsyncAction = (contact: Contact, createdOnB
 type ConnectToCaseActionPayload = { contactId: string; caseId: string; contact: Contact; contactCase: Case };
 type RemoveFromCaseActionPayload = { contactId: string; contact: Contact };
 
-// TODO: Update connectedContacts on case in redux state
 export const connectToCaseAsyncAction = createAsyncAction(
   CONNECT_TO_CASE,
   async (contactId: string, caseId: string | null): Promise<ConnectToCaseActionPayload> => {
@@ -237,6 +236,12 @@ export const loadContactIntoRedux = (
   const metadata = { ...newContactMetaData(false), ...(newMetadata ?? existingContacts[contact.id]?.metadata) };
   const contactsBeingCreated = new Set(state.contactsBeingCreated);
   contactsBeingCreated.delete(contact.taskId);
+  const existingContact = existingContacts[contact.id]?.savedContact;
+  const existingAssociations = {
+    ...(existingContact?.csamReports ? { csamReports: existingContact.csamReports } : {}),
+    ...(existingContact?.conversationMedia ? { conversationMedia: existingContact.conversationMedia } : {}),
+    ...(existingContact?.referrals ? { referrals: existingContact.referrals } : {}),
+  };
   return {
     ...state,
     contactsBeingCreated,
@@ -245,7 +250,10 @@ export const loadContactIntoRedux = (
       [contact.id]: {
         ...existingContacts[contact.id],
         metadata: { ...metadata, loadingStatus: LoadingStatus.LOADED },
-        savedContact: contact,
+        savedContact: {
+          ...existingAssociations,
+          ...contact,
+        },
         references: references ?? existingContacts[contact.id]?.references,
       },
     },

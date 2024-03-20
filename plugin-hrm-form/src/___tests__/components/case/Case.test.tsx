@@ -111,7 +111,6 @@ describe('useState mocked', () => {
       twilioWorkerId: WORKER_SID,
       status: 'open',
       info: { definitionVersion: DefinitionVersionId.v1 },
-      connectedContacts: [connectedContact],
       categories: {},
       accountSid: 'AC-accountSid',
       helpline: 'helpline',

@@ -26,18 +26,18 @@ import { RootState } from '../../states';
 import * as ConfigActions from '../../states/configuration/actions';
 import { Case, CounselorHash } from '../../types/types';
 import {
-  DataTableRow,
-  DataCell,
-  TextCell,
-  SummaryCell,
-  NumericCell,
-  TableBodyFont,
-  OpenLinkContainer,
-  OpenLinkAction,
-  TableSummaryFont,
   Box,
+  DataCell,
+  DataTableRow,
   HiddenText,
+  NumericCell,
+  OpenLinkAction,
+  OpenLinkContainer,
   PillsCell,
+  SummaryCell,
+  TableBodyFont,
+  TableSummaryFont,
+  TextCell,
 } from '../../styles';
 import { formatName, getShortSummary } from '../../utils';
 import { getContactTags } from '../../utils/categories';
@@ -84,7 +84,6 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
   try {
     const { status } = caseItem;
     const statusString = status.charAt(0).toUpperCase() + status.slice(1);
-    const contact = (caseItem.connectedContacts ?? [])[0];
     const summary = caseItem.info && caseItem.info.summary;
     const shortSummary = getShortSummary(summary, CHAR_LIMIT, 'case');
     const counselor = formatName(counselorsHash[caseItem.twilioWorkerId]);
@@ -104,6 +103,8 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
         : caseStatus;
     };
 
+    const contactLabel = contactLabelFromHrmContact(definitionVersion, caseItem.firstContact);
+
     return (
       <DataTableRow data-testid="CaseList-TableRow" onClick={handleClickViewCase(caseItem)}>
         <NumericCell>
@@ -121,7 +122,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseItem, counselorsHash, handleCli
           </OpenLinkContainer>
         </NumericCell>
         <TextCell>
-          <TableBodyFont>{contactLabelFromHrmContact(definitionVersion, contact)}</TableBodyFont>
+          <TableBodyFont>{contactLabel}</TableBodyFont>
         </TextCell>
         <DataCell>
           <TableBodyFont>{counselor}</TableBodyFont>

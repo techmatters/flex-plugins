@@ -46,6 +46,7 @@ import { selectCounselorsHash } from '../../../states/configuration/selectCounse
 import selectCaseHelplineData from '../../../states/case/selectCaseHelplineData';
 import * as RoutingActions from '../../../states/routing/actions';
 import { FullCaseSection } from '../../../services/caseSectionService';
+import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -183,10 +184,12 @@ const CasePrintView: React.FC<Props> = ({
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   if (definitionVersion.layoutVersion.thaiCharacterPdfSupport) useThaiFontFamily();
-  const contact = connectedCase.connectedContacts?.[0];
   const printedFollowUpDate = connectedCase.info.followUpDate
     ? parseISO(connectedCase.info.followUpDate).toLocaleDateString()
     : '';
+
+  const caseLabel = contactLabelFromHrmContact(definitionVersion, connectedCase.firstContact);
+  const allCsamReports = contactTimeline?.flatMap(({ activity }) => activity?.csamReports ?? []) ?? [];
 
   return (
     <NavigableContainer task={task} onGoBack={goBack}>
@@ -200,7 +203,7 @@ const CasePrintView: React.FC<Props> = ({
             <Page size="A4" style={styles.page}>
               <CasePrintHeader
                 id={connectedCase.id}
-                contactIdentifier={connectedCase.label}
+                contactIdentifier={caseLabel}
                 officeName={office?.label}
                 logoBlob={logoBlob}
               />
@@ -236,15 +239,15 @@ const CasePrintView: React.FC<Props> = ({
                           ...definitionVersion.tabbedForms.CallerInformationTab,
                         ]}
                         values={{
-                          ...contact?.rawJson?.caseInformation,
-                          ...contact?.rawJson?.callerInformation,
+                          ...activity?.rawJson?.caseInformation,
+                          ...activity?.rawJson?.callerInformation,
                         }}
                       />
                       <CasePrintSection
                         sectionNameTemplateCode="SectionName-ChildInformation"
                         sectionNameTemplateValues={sectionNameTemplateValues}
                         definitions={definitionVersion.tabbedForms.ChildInformationTab}
-                        values={contact?.rawJson?.childInformation}
+                        values={activity?.rawJson?.childInformation}
                       />
                     </View>
                   ) : (
@@ -259,8 +262,8 @@ const CasePrintView: React.FC<Props> = ({
                         ...definitionVersion.tabbedForms.ChildInformationTab,
                       ]}
                       values={{
-                        ...contact?.rawJson?.caseInformation,
-                        ...contact?.rawJson?.childInformation,
+                        ...activity?.rawJson?.caseInformation,
+                        ...activity?.rawJson?.childInformation,
                       }}
                     />
                   );
@@ -287,7 +290,7 @@ const CasePrintView: React.FC<Props> = ({
                 />
                 <CasePrintNotes notes={sectionTimelines.note} counselorsHash={counselorsHash} />
                 <CasePrintSummary summary={connectedCase.info.summary} />
-                <CasePrintCSAMReports csamReports={contact?.csamReports} />
+                <CasePrintCSAMReports csamReports={allCsamReports} />
               </View>
               <CasePrintFooter />
             </Page>

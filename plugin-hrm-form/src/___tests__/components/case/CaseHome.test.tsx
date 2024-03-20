@@ -117,7 +117,6 @@ describe('useState mocked', () => {
       },
       status: 'open',
       createdAt: '2020-06-29T22:26:00.208Z',
-      connectedContacts: [VALID_EMPTY_CONTACT],
     };
     initialState = createState({
       configuration: {
