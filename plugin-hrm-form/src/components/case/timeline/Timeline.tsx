@@ -38,7 +38,7 @@ import { colors } from '../../../styles/banners';
 import InfoIcon from '../../caseMergingBanners/InfoIcon';
 import { selectCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
 import asyncDispatch from '../../../states/asyncDispatch';
-import { selectContactsByCaseId } from '../../../states/contacts/selectContactByCaseId';
+import { selectContactsByCaseIdInCreatedOrder } from '../../../states/contacts/selectContactByCaseId';
 import { FullCaseSection } from '../../../services/caseSectionService';
 
 type OwnProps = {
@@ -56,7 +56,7 @@ const mapStateToProps = (state: RootState, { taskSid, timelineId, pageSize, page
     return {
       timelineActivities: selectTimeline(state, route.caseId, timelineId, { offset: page * pageSize, limit: pageSize }),
       connectedCase,
-      contactIds: selectContactsByCaseId(state, route.caseId)
+      contactIds: selectContactsByCaseIdInCreatedOrder(state, route.caseId)
         .map(contact => contact.savedContact.id)
         .join(),
       noteIds: Object.keys(sections?.note ?? {}).join(),

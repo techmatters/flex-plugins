@@ -30,6 +30,7 @@ import { BannerActionLink, BannerContainer, Text } from '../../styles/banners';
 import { getInitializedCan, PermissionActions } from '../../permissions';
 import { selectContactsByCaseIdInCreatedOrder } from '../../states/contacts/selectContactByCaseId';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
+import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 
 type OwnProps = {
   task?: CustomITask | StandaloneITask;
@@ -39,7 +40,7 @@ type OwnProps = {
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
-const mapStateToProps = (state, { task }: OwnProps) => {
+const mapStateToProps = (state, { task, caseId }: OwnProps) => {
   const taskSid = task ? task.taskSid : getOfflineContactTaskSid();
   const cas = selectCaseByCaseId(state, caseId)?.connectedCase;
   const caseContacts = selectContactsByCaseIdInCreatedOrder(state, caseId);

@@ -49,7 +49,10 @@ import { selectDefinitionVersionForCase } from '../../states/configuration/selec
 import selectCaseHelplineData from '../../states/case/selectCaseHelplineData';
 import { selectCounselorName } from '../../states/configuration/selectCounselorsHash';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
-import { selectContactsByCaseIdInCreatedOrder, selectFirstCaseContact } from '../../states/contacts/selectContactByCaseId';
+import {
+  selectContactsByCaseIdInCreatedOrder,
+  selectFirstCaseContact,
+} from '../../states/contacts/selectContactByCaseId';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -72,7 +75,6 @@ const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
 
   const firstConnectedContact = selectFirstCaseContact(state, connectedCase);
   const activityCount = routing.route === 'case' ? selectTimelineCount(state, routing.caseId, MAIN_TIMELINE_ID) : 0;
-  const contactForLabel = caseContacts[0]?.savedContact ?? taskContact;
   const isNewContact = Boolean(taskContact && taskContact.caseId === routing.caseId && !taskContact.finalizedAt);
   const isNewCase = caseContacts.length === 1 && taskContact && taskContact.caseId === routing.caseId;
   const definitionVersion = selectDefinitionVersionForCase(state, connectedCase);
