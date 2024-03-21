@@ -18,9 +18,7 @@ import { StatusInfo } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
 import { Contact, WellKnownCaseSection } from '../../types/types';
-import { ChannelTypes } from '../DomainConstants';
 import { CaseSectionTypeSpecificData, FullCaseSection } from '../../services/caseSectionService';
-import { WorkerSID } from '../../types/twilio';
 
 // Action types
 export const CREATE_CASE_ACTION = 'case-action/create-case';
@@ -75,43 +73,6 @@ export type CaseSectionIdentifierTimelineActivity = TimelineActivity<{
 export const isCaseSectionIdentifierTimelineActivity = (
   activity: TimelineActivity<any>,
 ): activity is CaseSectionIdentifierTimelineActivity => activity.activityType === 'case-section-id';
-
-type CoreActivity = {
-  text: string;
-  type: string;
-  twilioWorkerId: WorkerSID;
-};
-
-type NoteActivity = CoreActivity & {
-  id: string;
-  date: string;
-  type: 'note';
-  note: t.Note;
-  updatedAt?: string;
-  updatedBy?: WorkerSID;
-};
-
-export type ReferralActivity = CoreActivity & {
-  id: string;
-  date: string;
-  createdAt: string;
-  type: 'referral';
-  referral: t.Referral;
-  updatedAt?: string;
-  updatedBy?: WorkerSID;
-};
-
-export type ContactActivity = CoreActivity & {
-  callType: string;
-  contactId: string;
-  date: string;
-  createdAt: string;
-  type: string;
-  channel: ChannelTypes;
-  isDraft: boolean;
-};
-
-export type Activity = NoteActivity | ReferralActivity | ContactActivity;
 
 export type CaseSummaryWorkingCopy = {
   status: string;

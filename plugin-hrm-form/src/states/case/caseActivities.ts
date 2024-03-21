@@ -16,23 +16,9 @@
 
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { Activity, ContactActivity } from './types';
 import { Contact } from '../../types/types';
-import { channelTypes } from '../DomainConstants';
-import { getTemplateStrings } from '../../hrmConfig';
 import { FullCaseSection } from '../../services/caseSectionService';
 import { lookupApiBySectionType } from './sections/lookupApi';
-
-const ActivityTypes = {
-  createCase: 'create',
-  addNote: 'note',
-  addReferral: 'referral',
-  connectContact: {
-    ...channelTypes,
-    default: 'default',
-  },
-  unknown: 'unknown',
-} as const;
 
 export const getSectionText = (
   { sectionTypeSpecificData, sectionType }: FullCaseSection,
@@ -60,34 +46,4 @@ export const getContactActivityText = (contact: Contact, strings: Record<string,
     return strings['Case-Timeline-DraftContactSummaryPlaceholder'] ?? '';
   }
   return '';
-};
-
-const connectedContactActivities = (caseContacts: Contact[]): ContactActivity[] => {
-  const strings = getTemplateStrings();
-  return (caseContacts || [])
-    .map(cc => {
-      try {
-        const type = ActivityTypes.connectContact[cc.channel];
-        const channel = type === ActivityTypes.connectContact.default ? cc.rawJson.contactlessTask.channel : type;
-        return {
-          contactId: cc.id.toString(),
-          date: cc.timeOfContact,
-          createdAt: cc.createdAt,
-          type,
-          text: getContactActivityText(cc, strings),
-          twilioWorkerId: cc.twilioWorkerId,
-          channel,
-          callType: cc.rawJson.callType,
-          isDraft: !cc.finalizedAt,
-        };
-      } catch (err) {
-        console.warn(`Error processing connected contact, excluding from data`, cc, err);
-        return null;
-      }
-    })
-    .filter(cca => cca);
-};
-
-export const getActivitiesFromContacts = (sourceContacts: Contact[]): Activity[] => {
-  return connectedContactActivities(sourceContacts);
 };
