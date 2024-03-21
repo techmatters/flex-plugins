@@ -1,5 +1,8 @@
 {
     "attributes": {
-        "definitionVersion": "demo-v1"
+        "definitionVersion": "demo-v1",
+        "feature_flags": {
+            "enable_fullstory_monitoring": true
+        }
     }
 }

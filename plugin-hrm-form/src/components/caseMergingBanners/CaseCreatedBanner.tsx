@@ -28,6 +28,9 @@ import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
 import { CustomITask, StandaloneITask } from '../../types/types';
 import { BannerActionLink, BannerContainer, Text } from '../../styles/banners';
+import { getInitializedCan, PermissionActions } from '../../permissions';
+import { selectContactsByCaseIdInCreatedOrder } from '../../states/contacts/selectContactByCaseId';
+import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 
 type OwnProps = {
   task?: CustomITask | StandaloneITask;
@@ -40,9 +43,13 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const mapStateToProps = (state, { task, caseId }: OwnProps) => {
   const taskSid = task ? task.taskSid : getOfflineContactTaskSid();
   const cas = selectCaseByCaseId(state, caseId)?.connectedCase;
+  const caseContacts = selectContactsByCaseIdInCreatedOrder(state, caseId);
+  const taskContact = selectContactByTaskSid(state, taskSid)?.savedContact;
   return {
     cas,
     taskSid,
+    hasOtherContacts: Boolean(caseContacts.find(contact => contact.savedContact?.taskId !== taskSid)),
+    taskContact,
   };
 };
 
@@ -57,30 +64,45 @@ const CreatedCaseBanner: React.FC<Props> = ({
   taskSid,
   caseId,
   cas,
+  hasOtherContacts,
+  taskContact,
   removeContactFromCase,
   cancelCase,
   showRemovedFromCaseBanner,
   navigateBack,
 }) => {
+  const can = React.useMemo(() => {
+    return getInitializedCan();
+  }, []);
+
+  const canRemoveContactsFromCase =
+    can(PermissionActions.REMOVE_CONTACT_FROM_CASE, taskContact) && can(PermissionActions.UPDATE_CASE_CONTACTS, cas);
+
   const handleCancelCase = async () => {
-    const contactIds = cas.connectedContacts.map(c => c.id);
-    await Promise.all(contactIds.map(id => removeContactFromCase(id)));
+    await removeContactFromCase(taskContact?.id);
 
     // Navigating back before removing the case provides a better user experience.
     navigateBack(taskSid);
-    contactIds.forEach(id => showRemovedFromCaseBanner(id));
-    await cancelCase(caseId);
+    showRemovedFromCaseBanner(taskContact?.id);
+    if (!hasOtherContacts) {
+      await cancelCase(caseId);
+    }
   };
 
   return (
     <BannerContainer color="blue">
       <InfoIcon color="#001489" />
       <Text>
-        <Template code="CaseMerging-CaseCreatedAndContactAdded" caseId={caseId} />
+        <Template
+          code={hasOtherContacts ? 'CaseMerging-ContactAddedToExistingCase' : 'CaseMerging-CaseCreatedAndContactAdded'}
+          caseId={caseId}
+        />
       </Text>
-      <BannerActionLink type="button" onClick={handleCancelCase} data-fs-id="CancelNewCase-Button">
-        <Template code="CaseMerging-CancelCase" />
-      </BannerActionLink>
+      {canRemoveContactsFromCase && (
+        <BannerActionLink type="button" onClick={handleCancelCase} data-fs-id="CancelNewCase-Button">
+          <Template code={hasOtherContacts ? 'CaseMerging-RemoveFromCase' : 'CaseMerging-CancelCase'} />
+        </BannerActionLink>
+      )}
     </BannerContainer>
   );
 };

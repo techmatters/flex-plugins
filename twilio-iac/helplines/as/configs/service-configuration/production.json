@@ -16,7 +16,6 @@
             "enable_voice_recordings": true,
             "enable_resources": true,
             "enable_csam_report": true,
-            "enable_fullstory_monitoring": true,
             "enable_save_insights": true
         },
         "helplineLanguage": "",

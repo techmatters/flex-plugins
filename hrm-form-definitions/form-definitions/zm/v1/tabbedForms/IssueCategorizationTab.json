@@ -51,6 +51,8 @@
         {"label": "Information seeking about OSE/OSA"},
         {"label": "Physical violence"},
         {"label": "Sexual violence"},
+        {"label": "Sexual exploitation"},
+        {"label": "Sexual harassment"},
         {"label": "Unspecified/Other"}
       ]
     },
@@ -75,6 +77,7 @@
       "color": "#E86B6B",
       "subcategories": [
         {"label": "COVID-19"},
+        {"label": "Cholera"},
         {"label": "General medical or lifestyle concerns"},
         {"label": "Medical or lifestyle information about HIV/AIDS"},
         {"label": "Male circumcision"},
@@ -174,6 +177,7 @@
       "subcategories": [
         {"label": "COVID-19"},
         {"label": "Condom Use"},
+        {"label": "Cholera"},
         {"label": "Medical or lifestyle information about HIV/AIDS"},
         {"label": "Male Circumcision"},
         {"label": "Pregnancy and maternal care"},
@@ -232,6 +236,8 @@
         {"label": "Online sexual exploitation"},
         {"label": "Physical violence"},
         {"label": "Sexual violence"},
+        {"label": "Sexual exploitation"},
+        {"label": "Sexual harassment"},
         {"label": "Unspecified/Other"}
       ]
     },

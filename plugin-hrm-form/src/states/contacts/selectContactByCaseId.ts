@@ -21,10 +21,9 @@ import { ContactState } from './existingContacts';
 import { namespace } from '../storeNamespaces';
 import { Case } from '../../types/types';
 
-const selectFirstContactByCaseId = (state: RootState, caseId: Case['id']): ContactState =>
+const selectContactsByCaseIdInCreatedOrder = (state: RootState, caseId: Case['id']): ContactState[] =>
   Object.values(state[namespace].activeContacts.existingContacts)
     .filter(cs => cs.savedContact?.caseId === caseId)
-    .sort((a, b) => parseISO(a.savedContact?.createdAt).valueOf() - parseISO(b.savedContact?.createdAt).valueOf())[0] ||
-  null;
+    .sort((a, b) => parseISO(a.savedContact?.createdAt).valueOf() - parseISO(b.savedContact?.createdAt).valueOf());
 
-export { selectFirstContactByCaseId };
+export { selectContactsByCaseIdInCreatedOrder };

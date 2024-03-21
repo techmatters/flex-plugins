@@ -19,20 +19,23 @@ import { withStyles } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 import DisabledIcon from '@material-ui/icons/Block';
 
-import { PillBase } from '../../styles';
+import { ChipBase } from '../../styles';
+import { StyledLink } from '../search/styles';
 
-type SkillPillProps = {
-  color?: string;
+type SkillChipProps = {
+  color: string;
+  disabledSkill?: boolean;
 };
-export const SkillPill = styled(PillBase)<SkillPillProps>`
-  border-radius: 6px;
-  margin-top: 6px;
-  margin-right: 6px;
-  padding: 3px 6px;
+export const SkillChipStyled = styled(ChipBase)<SkillChipProps>`
+  border-radius: 4px;
+  margin: 4px 0 4px 7px;
+  padding: 4px 8px;
   background-color: ${props => (props.color ? `${props.color}1a` : '#d8d8d8')};
-  border: ${props => (props.color ? `.8px solid ${props.color}` : 'none')};
+  border-width: 1px;
+  border-style: ${props => (props.disabledSkill ? 'dashed' : 'solid')};
+  border-color: ${props => (props.disabledSkill ? '#606B85' : '#17bd38')};
 `;
-SkillPill.displayName = 'SkillPill';
+SkillChipStyled.displayName = 'SkillChipStyled';
 
 const withSmallIcon = Icon => {
   return withStyles({
@@ -45,3 +48,8 @@ const withSmallIcon = Icon => {
 
 export const SmallCheckIcon = withSmallIcon(CheckIcon);
 export const SmallDisabledIcon = withSmallIcon(DisabledIcon);
+
+export const SkillsCell = styled('div')`
+  padding: 8px 0;
+`;
+SkillsCell.displayName = 'SkillsCell';
