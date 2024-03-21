@@ -37,6 +37,7 @@ import { newCloseModalAction } from '../../../states/routing/actions';
 import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
 import { PreviewRow } from '../styles';
+import selectContactStateByContactId from '../../../states/contacts/selectContactStateByContactId';
 
 type OwnProps = {
   currentCase: Case;
@@ -46,7 +47,10 @@ type OwnProps = {
 };
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
+  const contactId = state[namespace].activeContacts?.standAloneContactId;
+  const taskContact = isStandaloneITask(task)
+    ? selectContactStateByContactId(state, contactId)?.savedContact
+    : selectContactByTaskSid(state, task.taskSid)?.savedContact;
   return {
     definitionVersions: state[namespace].configuration.definitionVersions,
     taskContact,

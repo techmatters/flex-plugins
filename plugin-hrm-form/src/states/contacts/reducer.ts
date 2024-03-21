@@ -75,6 +75,7 @@ export const initialState: ContactsState = {
     [DetailsContext.CASE_DETAILS]: { detailsExpanded: {} },
     [DetailsContext.CONTACT_SEARCH]: { detailsExpanded: {} },
   },
+  standAloneContactId: '',
 };
 
 const boundReferralReducer = resourceReferralReducer(initialState);
@@ -143,7 +144,8 @@ export function reduce(
     | t.UpdatedContactAction
     | SaveContactReducerAction
     | SearchContactsSuccessAction
-  | GetTimelineAsyncAction,
+  | GetTimelineAsyncAction
+  | t.StandAloneContactId,
 ): ContactsState {
   let state = boundReferralReducer(inputState, inputAction as any);
   state = toggleSubCategoriesReducer(state, inputAction as ContactCategoryAction);
@@ -237,6 +239,9 @@ export function reduce(
     }
     case EXISTING_CONTACT_CREATE_DRAFT_ACTION: {
       return { ...state, existingContacts: createDraftReducer(state.existingContacts, action) };
+    }
+    case t.STAND_ALNONE_CONTACT_ID: {
+      return { ...state, standAloneContactId: action.contactId }
     }
     case ADD_EXTERNAL_REPORT_ENTRY: {
       return { ...state, existingContacts: addExternalReportEntryReducer(state.existingContacts, action) };

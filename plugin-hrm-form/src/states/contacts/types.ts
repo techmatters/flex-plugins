@@ -46,6 +46,7 @@ export const CONNECT_TO_CASE_ACTION_FULFILLED = `${CONNECT_TO_CASE}_FULFILLED` a
 export const REMOVE_FROM_CASE_ACTION_FULFILLED = `${REMOVE_FROM_CASE}_FULFILLED` as const;
 export const SET_SAVED_CONTACT = 'contact-action/set-saved-contact' as const;
 export const CASE_CONNECTED_TO_CONTACT = 'CASE_CONNECTED_TO_CONTACT' as const;
+export const STAND_ALNONE_CONTACT_ID = 'contact-action/stand-alone-contact-id' as const;
 
 export const LoadingStatus = {
   LOADING: 'loading',
@@ -73,6 +74,12 @@ export type ContactsState = {
   existingContacts: ExistingContactsState;
   contactsBeingCreated: Set<string>;
   contactDetails: ContactDetailsState;
+  standAloneContactId?: string;
+};
+
+export type StandAloneContactId = {
+  type: typeof STAND_ALNONE_CONTACT_ID;
+  contactId: string;
 };
 
 type SaveEndMillisAction = {

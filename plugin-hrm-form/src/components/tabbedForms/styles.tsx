@@ -43,7 +43,6 @@ TabbedFormTabContainer.displayName = 'TabbedFormTabContainer';
 export const StyledAddNewCaseDropdown = styled('ul')`
   position: absolute;
   right: -12%;
-  bottom: 110%;
   display: flex;
   box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
   -webkit-box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);

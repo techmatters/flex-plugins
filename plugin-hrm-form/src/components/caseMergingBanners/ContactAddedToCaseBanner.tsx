@@ -43,9 +43,8 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 const mapStateToProps = (state: RootState, { taskId, contactId }: OwnProps) => {
   const offlineSavedContact = selectContactByTaskSid(state, taskId)?.savedContact;
   const existingSavedContact = selectContactStateByContactId(state, contactId)?.savedContact;
-  const connectedCase = selectCaseByCaseId(state, offlineSavedContact?.caseId || existingSavedContact?.caseId)
-    ?.connectedCase;
   const caseId = offlineSavedContact?.caseId || existingSavedContact?.caseId;
+  const connectedCase = selectCaseByCaseId(state, caseId)?.connectedCase;
   return {
     contact: offlineSavedContact || existingSavedContact,
     connectedCase,

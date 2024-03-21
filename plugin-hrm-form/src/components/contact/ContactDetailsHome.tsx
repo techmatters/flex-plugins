@@ -52,7 +52,7 @@ import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import { isRouteWithContext } from '../../states/routing/types';
+import { AppRoutes, isRouteWithContext } from '../../states/routing/types';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
 import { selectCaseMergingBanners } from '../../states/case/caseBanners';
@@ -60,6 +60,8 @@ import InfoIcon from '../caseMergingBanners/InfoIcon';
 import { BannerContainer, Text } from '../../styles/banners';
 import { isSmsChannelType } from '../../utils/smsChannels';
 import getCanEditContact from '../../permissions/canEditContact';
+import AddCaseButton from '../tabbedForms/AddCaseButton';
+import { standAloneContactId } from '../../states/contacts/actions';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -127,6 +129,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
   createDraftCsamReport,
   task,
   showRemovedFromCaseBanner,
+  openModal,
+  taskContactId,
 }) {
   const version = savedContact?.rawJson.definitionVersion;
 
@@ -267,12 +271,20 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
+  const openSearchModal = () => {
+    // We need a way to pass the contact ID to the CasePreview component
+    taskContactId(savedContact.id);
+    openModal({ route: 'search', subroute: 'form', action: 'select-case' });
+  };
+
   const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && canView && (
     <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>
       <Icon icon="DefaultAvatar" />
       <Template code="Profile-ViewClient" />
     </SectionActionButton>
   );
+
+  const addedToCaseBanner = () => <ContactAddedToCaseBanner taskId={task.taskSid} contactId={savedContact.id} />;
 
   return (
     <Box data-testid="ContactDetails-Container">
@@ -291,7 +303,14 @@ const ContactDetailsHome: React.FC<Props> = function ({
         </BannerContainer>
       )}
 
-      {caseId && <ContactAddedToCaseBanner taskId={task.taskSid} contactId={savedContact.id} />}
+      {caseId
+        ? addedToCaseBanner()
+        : !showRemovedFromCaseBanner && (
+            <Box display="flex" justifyContent="flex-end">
+              <AddCaseButton position={true} handleNewCaseType={() => '#'} handleExistingCaseType={openSearchModal} />
+            </Box>
+          )}
+
       {showRemovedFromCaseBanner && (
         <ContactRemovedFromCaseBanner
           taskId={task.taskSid}
@@ -490,6 +509,7 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     ),
     isProfileRoute: isRouteWithContext(currentRoute) && currentRoute?.context === 'profile',
     showRemovedFromCaseBanner,
+    routing: currentRoute,
   };
 };
 
@@ -504,6 +524,8 @@ const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) =>
   openProfileModal: id => {
     dispatch(newOpenModalAction({ route: 'profile', profileId: id, subroute: 'details' }, task.taskSid));
   },
+  openModal: (route: AppRoutes) => dispatch(newOpenModalAction(route, task.taskSid)),
+  taskContactId: (contactId: string) => dispatch(standAloneContactId(contactId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);
