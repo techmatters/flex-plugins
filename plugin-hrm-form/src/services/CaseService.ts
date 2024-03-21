@@ -32,8 +32,9 @@ const convertApiCaseToFlexCase = (apiCase: ApiCase): Case => {
     return apiCase;
   }
   const { connectedContacts, ...withoutConnectedContacts } = apiCase;
+  const firstContact = connectedContacts?.[0];
   return {
-    firstContact: convertApiContactToFlexContact(connectedContacts?.[0]),
+    ...(firstContact ? { firstContact: convertApiContactToFlexContact(firstContact) } : {}),
     ...withoutConnectedContacts,
     id: apiCase.id.toString(), // coerce to string type, can be removed once API is aligned
   };

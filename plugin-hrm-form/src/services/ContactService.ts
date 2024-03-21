@@ -51,7 +51,7 @@ export const convertApiContactToFlexContact = (contact: Contact): Contact =>
     ? {
         ...contact,
         id: contact.id.toString(),
-        caseId: contact.caseId?.toString(),
+        ...(contact.caseId ? { caseId: contact.caseId.toString() } : {}),
       }
     : contact;
 

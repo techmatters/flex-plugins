@@ -66,7 +66,7 @@ describe('cancelCase()', () => {
 
 describe('createCase()', () => {
   const baselineResponse = {
-    id: 1,
+    id: '1',
     createdAt: '2022-12-22T07:20:17.042Z',
     updatedAt: '2022-12-22T07:20:17.042Z',
     status: 'open',
@@ -77,6 +77,7 @@ describe('createCase()', () => {
     createdBy: 'creating worker',
     updatedBy: null,
     categories: {},
+    firstContact: undefined,
   };
 
   const baselineContact: Contact = {
@@ -147,7 +148,7 @@ describe('createCase()', () => {
 
 describe('update endpoints', () => {
   const baselineResponse = {
-    id: 1,
+    id: '1',
     createdAt: '2022-12-22T07:20:17.042Z',
     updatedAt: '2022-12-22T07:20:17.042Z',
     status: 'open',
@@ -193,7 +194,7 @@ describe('update endpoints', () => {
 });
 
 test('getCase - Generates a GET HTTP call via fetchHrmApi', async () => {
-  mockFetchHrmAPi.mockResolvedValue({ a: 'case' });
+  mockFetchHrmAPi.mockResolvedValue({ id: 'case' });
   const response = await getCase('case-123');
 
   const expectedUrl = `/cases/case-123`;
@@ -202,5 +203,5 @@ test('getCase - Generates a GET HTTP call via fetchHrmApi', async () => {
     returnNullFor404: true,
   };
   expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl, expectedOptions);
-  expect(response).toStrictEqual({ a: 'case' });
+  expect(response).toStrictEqual({ id: 'case' });
 });
