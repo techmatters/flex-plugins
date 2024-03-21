@@ -6,11 +6,10 @@ locals {
   local_config = {
     #Studio flow
     flow_vars = {
-      operating_hours_function_sid          = "xxxx"
-      operating_hours_function_name         = "operatingHours"
-      capture_channel_with_bot_function_sid = "xxxx"
-      chatbot_callback_cleanup_function_sid = "xxxx"
-      send_message_run_janitor_sid          = "xxxx"
+      operating_hours_function_sid          = "ZHe0432d55b31c8e575d7630694502dd4b"
+      capture_channel_with_bot_function_sid = "ZHe7354fbb19c8bb5b62ad78ddea99eade"
+      chatbot_callback_cleanup_function_sid = "ZH94205e92c6cd6e7f6bb5858ebdbdbb9c"
+      send_message_run_janitor_sid          = "ZH5e37c056ae0dfea42f8febd19d7bbd52"
       bot_language                          = "en-NZ"
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
@@ -42,8 +41,8 @@ locals {
         channel_flow_vars = {
           voice_ivr_greeting_message = "Kia ora, thank you for contacting Youthline. One of our counsellors will get back to you as soon as we can. If you or someone else are in immediate danger, please call 111 immediately."
           voice_ivr_language         = "en-US"
-          wait_url                   = "https://nz-assets-8961.twil.io/busyLine"
-          blocked_url                = "https://nz-assets-8961.twil.io/blocked_number.mp3"
+          wait_url                   = "https://nz-assets-6577.twil.io/busyLine"
+          blocked_url                = "https://nz-assets-6577.twil.io/blocked_number.mp3"
         }
         chatbot_unique_names = []
       },

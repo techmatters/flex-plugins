@@ -7,7 +7,6 @@ locals {
     #Studio flow
     flow_vars = {
       operating_hours_function_sid          = "ZH3ef7c7c03c4533829cc1b53b38197de7"
-      operating_hours_function_name         = "operatingHours"
       capture_channel_with_bot_function_sid = "ZH26e3dd66fd428ae98074f9959a5ec8d3"
       chatbot_callback_cleanup_function_sid = "ZHfba53e17e98107e879e54299fd472796"
       send_message_run_janitor_sid          = "ZH223086290be816e9600ffac5655174ac"
