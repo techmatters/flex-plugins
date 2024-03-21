@@ -40,7 +40,7 @@ jest.mock('../../../components/case/Case');
 const mockUpdateContactInHrm = updateContactInHrm as jest.Mock<ReturnType<typeof updateContactInHrm>>;
 const mockSubmitContactForm = submitContactForm as jest.Mock<ReturnType<typeof submitContactForm>>;
 const mockConnectToCase = connectToCase as jest.Mock<ReturnType<typeof connectToCase>>;
-const mockGetCase = connectToCase as jest.Mock<ReturnType<typeof getCase>>;
+const mockGetCase = getCase as jest.Mock<ReturnType<typeof getCase>>;
 const mockCompleteTask = completeTask as jest.Mock<ReturnType<typeof completeTask>>;
 
 beforeEach(() => {
@@ -174,15 +174,16 @@ describe('actions', () => {
   });
   describe('submitContactFormAsyncAction', () => {
     test('Action calls the submitContactForm helper', async () => {
-      submitContactFormAsyncAction(task, baseContact, baseMetadata, {
+      const caseState = {
         connectedCase: baseCase,
         sections: {},
         timelines: {},
         references: new Set(),
         availableStatusTransitions: [],
         caseWorkingCopy: undefined,
-      });
-      expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, baseMetadata, baseCase);
+      };
+      submitContactFormAsyncAction(task, baseContact, baseMetadata, caseState);
+      expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, baseMetadata, caseState);
     });
 
     test('Updates contact in redux and sets metadata', async () => {
