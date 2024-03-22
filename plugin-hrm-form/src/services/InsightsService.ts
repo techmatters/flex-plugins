@@ -235,13 +235,13 @@ const flattenFirstCaseSection = (
  * customization framework.  When it is, we will need to change this function.
  */
 const convertCaseFormForInsights = (caseForm: Case, sections: CaseStateEntry['sections']): InsightsCaseForm => {
+  if (!caseForm || Object.keys(caseForm).length === 0) return {};
   const logObject: any = {
     caseId: caseForm.id,
     accountSid: caseForm.accountSid,
     twilioWorkerId: caseForm.twilioWorkerId,
   };
   try {
-    if (!caseForm || Object.keys(caseForm).length === 0) return {};
     const perpetrator = flattenFirstCaseSection(sections, 'perpetrator');
     delete perpetrator?.name;
     delete perpetrator?.location;
