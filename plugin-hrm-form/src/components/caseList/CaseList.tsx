@@ -108,7 +108,7 @@ const CaseList: React.FC<Props> = ({
           <Template code="CaseList-SomethingWentWrong" />
         </SomethingWentWrongText>
       </CenteredContainer>
-    );
+    ); 
 
   if (routing.route === 'case') {
     return (

@@ -26,6 +26,7 @@ import { Grid } from '@material-ui/core';
 import { useProfile } from '../../states/profile/hooks';
 import { Box, Flex, Row } from '../../styles';
 import {
+  Contact,
   ContactRawJson,
   CSAMReportEntry,
   CustomITask,
@@ -44,11 +45,11 @@ import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/Co
 import { RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getInitializedCan, PermissionActions } from '../../permissions';
-import { ContactDetailsRoute, createDraft } from '../../states/contacts/existingContacts';
+import { ContactDetailsRoute, ContactDraftChanges, createDraft } from '../../states/contacts/existingContacts';
 import { RecordingSection, TranscriptSection } from './MediaSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import type { ResourceReferral } from '../../states/contacts/resourceReferral';
-import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
@@ -62,6 +63,11 @@ import { isSmsChannelType } from '../../utils/smsChannels';
 import getCanEditContact from '../../permissions/canEditContact';
 import AddCaseButton from '../tabbedForms/AddCaseButton';
 import { standAloneContactId } from '../../states/contacts/actions';
+import { recordBackendError } from '../../fullStory';
+import { createCaseAsyncAction } from '../../states/case/saveCase';
+import { hasTaskControl } from '../../transfer/transferTaskState';
+import asyncDispatch from '../../states/asyncDispatch';
+import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -131,6 +137,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
   showRemovedFromCaseBanner,
   openModal,
   taskContactId,
+  saveUpdates,
+  draftContact
 }) {
   const version = savedContact?.rawJson.definitionVersion;
 
@@ -277,6 +285,22 @@ const ContactDetailsHome: React.FC<Props> = function ({
     openModal({ route: 'search', subroute: 'form', action: 'select-case' });
   };
 
+  const handleOpenNewCase = async () => {
+    const { workerSid, definitionVersion } = getHrmConfig();
+
+    // if (!hasTaskControl(task)) return;
+
+    try {
+      await saveUpdates(savedContact, draftContact);
+      await createCaseAsyncAction(savedContact, workerSid, definitionVersion);
+      openModal({ route: 'case', subroute: 'home', isCreating: true, caseId: undefined });
+      openModal({ route: 'case', subroute: 'home', caseId })
+    } catch (error) {
+      recordBackendError('Open New Case', error);
+      window.alert(strings['Error-Backend']);
+    }
+  };
+
   const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && canView && (
     <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>
       <Icon icon="DefaultAvatar" />
@@ -307,7 +331,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
         ? addedToCaseBanner()
         : !showRemovedFromCaseBanner && (
             <Box display="flex" justifyContent="flex-end">
-              <AddCaseButton position={true} handleNewCaseType={() => '#'} handleExistingCaseType={openSearchModal} />
+              <AddCaseButton position={true} handleNewCaseType={handleOpenNewCase} handleExistingCaseType={openSearchModal} />
             </Box>
           )}
 
@@ -509,7 +533,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     ),
     isProfileRoute: isRouteWithContext(currentRoute) && currentRoute?.context === 'profile',
     showRemovedFromCaseBanner,
-    routing: currentRoute,
   };
 };
 
@@ -526,6 +549,8 @@ const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) =>
   },
   openModal: (route: AppRoutes) => dispatch(newOpenModalAction(route, task.taskSid)),
   taskContactId: (contactId: string) => dispatch(standAloneContactId(contactId)),
+  saveUpdates: (savedContact: Contact, draftContact: ContactDraftChanges) =>
+    asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact, task.taskSid)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);
