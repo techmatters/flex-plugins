@@ -70,26 +70,24 @@ export const createCaseSectionAsyncAction = createAsyncAction(
       sectionType: sectionApi.type,
     }))();
 
-    const createCopySections: Promise<CaseSectionUpdatePayload['sections'][number]>[] = copyToFields
-      .map(async fd => {
-        if (fd.type === 'copy-to' && newSection[fd.name] === true) {
-          const toApi = lookupApi(fd.target);
-          const copied = copyCaseSectionItem({
-            definition: formDefinition,
-            fromSection: filteredSection,
-            fromApi: sectionApi,
-            toApi,
-          });
-          return {
-            section: await createCaseSection(caseId, toApi.type, copied, eventTimestamp),
-            sectionType: toApi.type,
-          };
-        }
-        return undefined;
-      })
-      .filter(Boolean);
+    const createCopySections: Promise<CaseSectionUpdatePayload['sections'][number]>[] = copyToFields.map(async fd => {
+      if (fd.type === 'copy-to' && newSection[fd.name] === true) {
+        const toApi = lookupApi(fd.target);
+        const copied = copyCaseSectionItem({
+          definition: formDefinition,
+          fromSection: filteredSection,
+          fromApi: sectionApi,
+          toApi,
+        });
+        return {
+          section: await createCaseSection(caseId, toApi.type, copied, eventTimestamp),
+          sectionType: toApi.type,
+        };
+      }
+      return undefined;
+    });
     return {
-      sections: await Promise.all([createTargetSection, ...createCopySections]),
+      sections: (await Promise.all([createTargetSection, ...createCopySections])).filter(Boolean),
       caseId,
     };
   },
