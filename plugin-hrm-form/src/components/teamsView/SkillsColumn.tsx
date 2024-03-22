@@ -20,12 +20,16 @@ import { WorkersDataTable, ColumnDefinition, Template } from '@twilio/flex-ui';
 import SkillChip from './SkillChip';
 import { StyledLink } from '../search/styles';
 import { OpaqueText } from '../../styles';
+import { getAseloFeatureFlags } from '../../hrmConfig';
+import { SkillsCell } from './styles';
 
 const sortFn = (first, second) => {
   return 0;
 };
 
 export const setUpSkillsColumn = () => {
+  if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
+
   WorkersDataTable.Content.add(
     <ColumnDefinition
       key="skills"
@@ -57,20 +61,20 @@ const SkillsListCell = ({ availableSkills, disabledSkills, workerName }) => {
 
   if (combinedSkills.length === 0) {
     return (
-      <OpaqueText>
+      <OpaqueText style={{ fontSize: '13px' }}>
         <Template code="TeamsView-NoSkills" aria-label={`No skills available for ${workerName}`} />
       </OpaqueText>
     );
   }
 
   return (
-    <>
+    <SkillsCell>
       {displayedSkills.map(({ skill, type }) => (
         <SkillChip key={skill} skill={skill} skillType={type} />
       ))}
       {combinedSkills.length > 3 && (
         <StyledLink
-          style={{ margin: '0px 0px 10px 4px', padding: '3px' }}
+          style={{ margin: '4px 4px 13px 6px', padding: '6px', fontSize: '13px' }}
           onClick={e => {
             e.stopPropagation();
             setShowMore(!showMore);
@@ -80,6 +84,6 @@ const SkillsListCell = ({ availableSkills, disabledSkills, workerName }) => {
           <Template code={showMore ? 'ReadLess' : 'ReadMore'} />
         </StyledLink>
       )}
-    </>
+    </SkillsCell>
   );
 };
