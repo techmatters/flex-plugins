@@ -80,7 +80,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       name: 'age',
       required: true,
       defaultValue: '',
-       options: [
+      options: [
         {
           value: "",
           label: ""
@@ -153,15 +153,27 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           value: ">20",
           label: "21 and above"
         }
-       ],
-     },  
-     {
-      label: 'What would like to talk about?',
+      ],
+    },
+    {
+      type: 'input-text',
+      name: 'email',
+      label: 'Email Address',
+      placeholder: 'Email Address',
+    },
+    {
+      type: 'input-text',
+      name: 'contactNumber',
+      label: 'Contact Number',
+      placeholder: 'Contact No',
+    },
+    {
+      label: 'What would you like to talk about?',
       type: 'select',
       name: 'reason',
       required: true,
       defaultValue: '',
-       options: [
+      options: [
         {
           value: "",
           label: ""
@@ -202,8 +214,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           value: "other",
           label: "Other"
         }
-       ],
-     },  
+      ],
+    },
     {
       type: 'checkbox',
       name: 'clientPrivacyStatement',
