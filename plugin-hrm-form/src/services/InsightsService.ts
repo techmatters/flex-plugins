@@ -269,14 +269,17 @@ const convertCaseFormForInsights = (caseForm: Case, sections: CaseStateEntry['se
 };
 
 const processHelplineConfig = (
-  contactForm: ContactRawJson,
-  { connectedCase: caseForm, sections: caseSections }: CaseStateEntry,
+  contact: Contact,
+  caseState: CaseStateEntry,
   oneToOneConfigSpec: OneToOneConfigSpec,
 ): InsightsAttributes => {
+  const { connectedCase: caseForm, sections } = caseState ?? {};
+  const { rawJson: contactForm, id: contactId, twilioWorkerId, caseId, accountSid } = contact;
   const logObject: any = {
-    accountSid: caseForm.accountSid,
-    twilioWorkerId: caseForm.twilioWorkerId,
-    caseId: caseForm.id,
+    accountSid,
+    contactId,
+    twilioWorkerId,
+    caseId,
   };
   try {
     const insightsAtts: InsightsAttributes = {
@@ -295,7 +298,7 @@ const processHelplineConfig = (
       formsToProcess.push([contactSpec, contactForm]);
     }
     if (oneToOneConfigSpec.caseForm) {
-      formsToProcess.push([oneToOneConfigSpec.caseForm, convertCaseFormForInsights(caseForm, caseSections)]);
+      formsToProcess.push([oneToOneConfigSpec.caseForm, convertCaseFormForInsights(caseForm, sections)]);
     }
     formsToProcess.forEach(([spec, form]) => {
       Object.keys(spec).forEach(subform => {
@@ -342,10 +345,10 @@ const bindApplyCustomUpdates = (customConfigObject: {
   oneToManyConfigSpecs: OneToManyConfigSpecs;
   oneToOneConfigSpec: OneToOneConfigSpec;
 }): InsightsUpdateFunction[] => {
-  const getProcessedAtts: InsightsUpdateFunction = (attributes, { rawJson }, caseForm) =>
-    isNonDataCallType(rawJson.callType)
+  const getProcessedAtts: InsightsUpdateFunction = (attributes, contact, caseForm) =>
+    isNonDataCallType(contact.rawJson.callType)
       ? {}
-      : processHelplineConfig(rawJson, caseForm, customConfigObject.oneToOneConfigSpec);
+      : processHelplineConfig(contact, caseForm, customConfigObject.oneToOneConfigSpec);
 
   const customUpdatesFuns = customConfigObject.oneToManyConfigSpecs.map(applyCustomUpdate);
 
