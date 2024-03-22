@@ -70,22 +70,24 @@ export const createCaseSectionAsyncAction = createAsyncAction(
       sectionType: sectionApi.type,
     }))();
 
-    const createCopySections: Promise<CaseSectionUpdatePayload['sections'][number]>[] = copyToFields.map(async fd => {
-      if (fd.type === 'copy-to' && newSection[fd.name] === true) {
-        const toApi = lookupApi(fd.target);
-        const copied = copyCaseSectionItem({
-          definition: formDefinition,
-          fromSection: filteredSection,
-          fromApi: sectionApi,
-          toApi,
-        });
-        return {
-          section: await createCaseSection(caseId, toApi.type, copied, eventTimestamp),
-          sectionType: toApi.type,
-        };
-      }
-      return undefined; // should never hit here because the items are already filtered, the if check is just for TS
-    });
+    const createCopySections: Promise<CaseSectionUpdatePayload['sections'][number]>[] = copyToFields
+      .map(async fd => {
+        if (fd.type === 'copy-to' && newSection[fd.name] === true) {
+          const toApi = lookupApi(fd.target);
+          const copied = copyCaseSectionItem({
+            definition: formDefinition,
+            fromSection: filteredSection,
+            fromApi: sectionApi,
+            toApi,
+          });
+          return {
+            section: await createCaseSection(caseId, toApi.type, copied, eventTimestamp),
+            sectionType: toApi.type,
+          };
+        }
+        return undefined;
+      })
+      .filter(Boolean);
     return {
       sections: await Promise.all([createTargetSection, ...createCopySections]),
       caseId,
