@@ -51,7 +51,7 @@ const skillsArray = Manager.getInstance().serviceConfiguration.taskrouter_skills
 const skillsFilterDefinition: FilterDefinitionFactory = () => {
   return {
     id: 'data.attributes.routing.skills',
-    title: 'Available Skills',
+    title: 'Enabled Skills',
     fieldName: 'skills',
     type: FiltersListItemType.multiValue,
     options: skillsArray ? sortBy(skillsArray, ['label']) : [],
@@ -59,7 +59,7 @@ const skillsFilterDefinition: FilterDefinitionFactory = () => {
   };
 };
 
-const disabledskillsFilterDefinition: FilterDefinitionFactory = () => {
+const disabledSkillsFilterDefinition: FilterDefinitionFactory = () => {
   return {
     id: 'data.attributes.disabled_skills.skills',
     title: 'Disabled Skills',
@@ -79,7 +79,7 @@ export const setUpTeamViewFilters = () => {
   TeamsView.defaultProps.filters = [
     activityNoOfflineByDefault,
     ...(getAseloFeatureFlags().enable_teams_view_enhancements
-      ? [skillsFilterDefinition, disabledskillsFilterDefinition]
+      ? [skillsFilterDefinition, disabledSkillsFilterDefinition]
       : []),
   ];
 };
