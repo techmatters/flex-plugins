@@ -74,12 +74,6 @@ export type ContactsState = {
   existingContacts: ExistingContactsState;
   contactsBeingCreated: Set<string>;
   contactDetails: ContactDetailsState;
-  standAloneContactId?: string;
-};
-
-export type StandAloneContactId = {
-  type: typeof STAND_ALNONE_CONTACT_ID;
-  contactId: string;
 };
 
 type SaveEndMillisAction = {

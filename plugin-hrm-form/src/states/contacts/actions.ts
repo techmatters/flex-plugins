@@ -41,8 +41,3 @@ export const prepopulateForm = (
     },
   };
 };
-
-export const standAloneContactId = (contactId: string): t.StandAloneContactId => ({
-  type: t.STAND_ALNONE_CONTACT_ID,
-  contactId,
-});

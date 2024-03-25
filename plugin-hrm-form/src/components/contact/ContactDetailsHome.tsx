@@ -61,7 +61,6 @@ import { BannerContainer, Text } from '../../styles/banners';
 import { isSmsChannelType } from '../../utils/smsChannels';
 import getCanEditContact from '../../permissions/canEditContact';
 import AddCaseButton from '../tabbedForms/AddCaseButton';
-import { standAloneContactId } from '../../states/contacts/actions';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -130,7 +129,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
   task,
   showRemovedFromCaseBanner,
   openModal,
-  taskContactId,
 }) {
   const version = savedContact?.rawJson.definitionVersion;
 
@@ -273,8 +271,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const openSearchModal = () => {
     // We need a way to pass the contact ID to the CasePreview component
-    taskContactId(savedContact.id);
-    openModal({ route: 'search', subroute: 'form', action: 'select-case' });
+    openModal({ contextContactId: savedContact.id, route: 'search', subroute: 'form', action: 'select-case' });
   };
 
   const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && canView && (
@@ -307,7 +304,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
         ? addedToCaseBanner()
         : !showRemovedFromCaseBanner && (
             <Box display="flex" justifyContent="flex-end">
-              <AddCaseButton position={true} handleNewCaseType={() => '#'} handleExistingCaseType={openSearchModal} />
+              <AddCaseButton position="top" handleNewCaseType={() => '#'} handleExistingCaseType={openSearchModal} />
             </Box>
           )}
 
@@ -509,7 +506,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
     ),
     isProfileRoute: isRouteWithContext(currentRoute) && currentRoute?.context === 'profile',
     showRemovedFromCaseBanner,
-    routing: currentRoute,
   };
 };
 
@@ -525,7 +521,6 @@ const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) =>
     dispatch(newOpenModalAction({ route: 'profile', profileId: id, subroute: 'details' }, task.taskSid));
   },
   openModal: (route: AppRoutes) => dispatch(newOpenModalAction(route, task.taskSid)),
-  taskContactId: (contactId: string) => dispatch(standAloneContactId(contactId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);

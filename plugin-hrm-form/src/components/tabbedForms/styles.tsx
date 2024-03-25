@@ -40,10 +40,16 @@ export const TabbedFormTabContainer = styled(({ display, ...rest }: TabbedFormTa
 `;
 TabbedFormTabContainer.displayName = 'TabbedFormTabContainer';
 
-export const StyledAddNewCaseDropdown = styled('ul')`
+type StyledAddNewCaseDropdown = {
+  position?: string;
+  dropdown?: boolean;
+};
+
+export const StyledAddNewCaseDropdown = styled('ul')<StyledAddNewCaseDropdown>`
   position: absolute;
   right: -12%;
-  display: flex;
+  display: ${({ dropdown }) => (dropdown ? 'block' : 'none')};
+  ${({ position }) => (position === 'top' ? 'top: 110%;' : 'bottom: 110%;')}
   box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
   -webkit-box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
   -moz-box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
