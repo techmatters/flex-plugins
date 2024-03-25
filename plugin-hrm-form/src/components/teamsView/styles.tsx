@@ -20,7 +20,6 @@ import CheckIcon from '@material-ui/icons/Check';
 import DisabledIcon from '@material-ui/icons/Block';
 
 import { ChipBase } from '../../styles';
-import { StyledLink } from '../search/styles';
 
 type SkillChipProps = {
   color: string;
@@ -50,6 +49,6 @@ export const SmallCheckIcon = withSmallIcon(CheckIcon);
 export const SmallDisabledIcon = withSmallIcon(DisabledIcon);
 
 export const SkillsCell = styled('div')`
-  padding: 8px 0;
+  padding: 8px 8px 0px 0;
 `;
 SkillsCell.displayName = 'SkillsCell';

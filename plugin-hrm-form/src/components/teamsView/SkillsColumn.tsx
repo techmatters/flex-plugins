@@ -68,7 +68,7 @@ const SkillsListCell = ({ availableSkills, disabledSkills, workerName }) => {
   }
 
   return (
-    <SkillsCell>
+    <SkillsCell style={{ marginBottom: combinedSkills.length <= 3 ? '8px' : '0px' }}>
       {displayedSkills.map(({ skill, type }) => (
         <SkillChip key={skill} skill={skill} skillType={type} />
       ))}
