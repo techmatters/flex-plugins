@@ -15,7 +15,7 @@
  */
 
 import { Configuration } from '../types';
-import { config as nzStaging } from './nz-staging';
+import { config as nzStaging } from '../configurations/nz-staging';
 
 const accountSid = 'AC2825ea172ea83c2e422a9772a27beb29';
 const flexFlowSid = 'FOa14530d4cb09277f40c266a0ae0cffb1';
