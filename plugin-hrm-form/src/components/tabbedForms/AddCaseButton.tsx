@@ -26,7 +26,7 @@ import { StyledNextStepButton } from '../../styles/buttons';
 type OwnProps = {
   handleNewCaseType: () => void;
   handleExistingCaseType: () => void;
-  position?: boolean;
+  position?: string;
 };
 
 type Props = OwnProps;
@@ -47,11 +47,6 @@ const AddCaseButton: React.FC<Props> = ({ handleNewCaseType, handleExistingCaseT
     setDropdown(previous => !previous);
   };
 
-  const conditionalStyles = {
-    display: dropdown ? 'block' : 'none',
-    [position ? 'top' : 'bottom']: '110%',
-  };
-
   return (
     <StyledNextStepButton
       onBlurCapture={event => {
@@ -67,7 +62,7 @@ const AddCaseButton: React.FC<Props> = ({ handleNewCaseType, handleExistingCaseT
       data-testid="BottomBar-SaveAndAddToCase-Button"
       disabled={!enabled}
     >
-      <StyledAddNewCaseDropdown style={conditionalStyles}>
+      <StyledAddNewCaseDropdown position={position} dropdown={dropdown}>
         <StyledAddNewCaseDropdownList
           onMouseDown={event => event.preventDefault}
           onClick={newOptionHandler(handleNewCaseType)}

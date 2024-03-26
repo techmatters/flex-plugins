@@ -15,6 +15,7 @@
  */
 
 import React from 'react';
+import { Tooltip } from '@material-ui/core';
 
 import { SkillChipStyled, SmallCheckIcon, SmallDisabledIcon } from './styles';
 import { ChipText } from '../../styles';
@@ -25,6 +26,8 @@ type Props = {
 };
 
 const SkillChip: React.FC<Props> = ({ skill, skillType }) => {
+  const SKILL_LENGTH = 30;
+
   let bgColor;
   let fontColor;
   if (skillType === 'active') {
@@ -40,7 +43,13 @@ const SkillChip: React.FC<Props> = ({ skill, skillType }) => {
       {skillType === 'active' && <SmallCheckIcon htmlColor={fontColor} />}
       {skillType === 'disabled' && <SmallDisabledIcon htmlColor={fontColor} />}
       <ChipText bold color={fontColor}>
-        {skill}
+        {skill.length > SKILL_LENGTH ? (
+          <Tooltip title={skill}>
+            <span>{`${skill.substring(0, SKILL_LENGTH)}…`}</span>
+          </Tooltip>
+        ) : (
+          skill
+        )}
       </ChipText>
     </SkillChipStyled>
   );

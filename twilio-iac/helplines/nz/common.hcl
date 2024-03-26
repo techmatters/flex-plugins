@@ -5,10 +5,7 @@ locals {
 
   local_config = {
     helpline                          = "Youthline"
-    old_dir_prefix                    = ""
-    default_autopilot_chatbot_enabled = false
     task_language                     = "en-NZ"
-    contacts_waiting_channels         = ["voice", "sms", "web"]
 
     channel_attributes = {
       webchat : "/app/twilio-iac/helplines/nz/templates/channel-attributes/webchat.tftpl"

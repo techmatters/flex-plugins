@@ -62,10 +62,8 @@ import { BannerContainer, Text } from '../../styles/banners';
 import { isSmsChannelType } from '../../utils/smsChannels';
 import getCanEditContact from '../../permissions/canEditContact';
 import AddCaseButton from '../tabbedForms/AddCaseButton';
-import { standAloneContactId } from '../../states/contacts/actions';
 import { recordBackendError } from '../../fullStory';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
-import { hasTaskControl } from '../../transfer/transferTaskState';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 
@@ -136,7 +134,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
   task,
   showRemovedFromCaseBanner,
   openModal,
-  taskContactId,
   saveUpdates,
   draftContact
 }) {
@@ -281,8 +278,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const openSearchModal = () => {
     // We need a way to pass the contact ID to the CasePreview component
-    taskContactId(savedContact.id);
-    openModal({ route: 'search', subroute: 'form', action: 'select-case' });
+    openModal({ contextContactId: savedContact.id, route: 'search', subroute: 'form', action: 'select-case' });
   };
 
   const handleOpenNewCase = async () => {
@@ -294,7 +290,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
       await saveUpdates(savedContact, draftContact);
       await createCaseAsyncAction(savedContact, workerSid, definitionVersion);
       openModal({ route: 'case', subroute: 'home', isCreating: true, caseId: undefined });
-      openModal({ route: 'case', subroute: 'home', caseId })
+      // openModal({ route: 'case', subroute: 'home', caseId })
     } catch (error) {
       recordBackendError('Open New Case', error);
       window.alert(strings['Error-Backend']);
@@ -331,7 +327,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
         ? addedToCaseBanner()
         : !showRemovedFromCaseBanner && (
             <Box display="flex" justifyContent="flex-end">
-              <AddCaseButton position={true} handleNewCaseType={handleOpenNewCase} handleExistingCaseType={openSearchModal} />
+              <AddCaseButton position="top" handleNewCaseType={handleOpenNewCase} handleExistingCaseType={openSearchModal} />
             </Box>
           )}
 
@@ -548,7 +544,6 @@ const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) =>
     dispatch(newOpenModalAction({ route: 'profile', profileId: id, subroute: 'details' }, task.taskSid));
   },
   openModal: (route: AppRoutes) => dispatch(newOpenModalAction(route, task.taskSid)),
-  taskContactId: (contactId: string) => dispatch(standAloneContactId(contactId)),
   saveUpdates: (savedContact: Contact, draftContact: ContactDraftChanges) =>
     asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact, task.taskSid)),
 });

@@ -38,6 +38,7 @@ import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
 import { PreviewRow } from '../styles';
 import selectContactStateByContactId from '../../../states/contacts/selectContactStateByContactId';
+import { getCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
 
 type OwnProps = {
   currentCase: Case;
@@ -47,7 +48,14 @@ type OwnProps = {
 };
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const contactId = state[namespace].activeContacts?.standAloneContactId;
+  let contactId: string;
+
+  const currentRoute = getCurrentTopmostRouteForTask(state[namespace].routing, task.taskSid);
+
+  if (currentRoute.route === 'search' && currentRoute.subroute === 'case-results') {
+    contactId = currentRoute.contextContactId;
+  }
+
   const taskContact = isStandaloneITask(task)
     ? selectContactStateByContactId(state, contactId)?.savedContact
     : selectContactByTaskSid(state, task.taskSid)?.savedContact;

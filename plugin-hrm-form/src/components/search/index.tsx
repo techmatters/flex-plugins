@@ -72,8 +72,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     handleSearchFormChange: bindActionCreators(handleSearchFormChange(taskId), dispatch),
-    changeSearchPage: (subroute: SearchResultRoute['subroute'], action?: SearchRoute['action']) =>
-      dispatch(changeRoute({ route: 'search', subroute, action, casesPage: 0, contactsPage: 0 }, taskId)),
+    changeSearchPage: (subroute: SearchResultRoute['subroute'], action?: SearchRoute['action'], contactId?: string) =>
+      dispatch(
+        changeRoute(
+          { route: 'search', subroute, action, casesPage: 0, contactsPage: 0, contextContactId: contactId },
+          taskId,
+        ),
+      ),
     searchContacts: searchContacts(dispatch)(taskId),
     searchCases: searchCases(dispatch)(taskId),
     closeModal: () => dispatch(newCloseModalAction(taskId)),
@@ -109,7 +114,7 @@ const Search: React.FC<Props> = ({
 
   const setSearchParamsAndHandleSearch = async newSearchParams => {
     if (routing.route === 'search' && routing.action === 'select-case') {
-      changeSearchPage('case-results', 'select-case');
+      changeSearchPage('case-results', 'select-case', routing.contextContactId);
       await Promise.all([handleSearchCases(newSearchParams, 0)]);
       setSearchParams(newSearchParams);
       return;
