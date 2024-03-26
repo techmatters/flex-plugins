@@ -38,12 +38,10 @@ const activityNoOfflineByDefault: FilterDefinitionFactory = (appState, _teamFilt
   };
 };
 
-const skillsArray = Manager.getInstance().serviceConfiguration.taskrouter_skills?.map(skill => {
-  return {
-    value: skill.name,
-    label: skill.name,
-  };
-});
+const getSkillsArray = Manager.getInstance().serviceConfiguration.taskrouter_skills?.map(skill => ({
+  value: skill.name,
+  label: skill.name,
+}));
 
 /**
  * This function returns a list of skills defined in the taskrouter_skills configuration
@@ -54,7 +52,7 @@ const skillsFilterDefinition: FilterDefinitionFactory = () => {
     title: 'Enabled Skills',
     fieldName: 'skills',
     type: FiltersListItemType.multiValue,
-    options: skillsArray ? sortBy(skillsArray, ['label']) : [],
+    options: getSkillsArray ? sortBy(getSkillsArray, ['label']) : [],
     condition: 'IN',
   };
 };
@@ -65,7 +63,7 @@ const disabledSkillsFilterDefinition: FilterDefinitionFactory = () => {
     title: 'Disabled Skills',
     fieldName: 'disabled_skills',
     type: FiltersListItemType.multiValue,
-    options: skillsArray ? sortBy(skillsArray, ['label']) : [],
+    options: getSkillsArray ? sortBy(getSkillsArray, ['label']) : [],
     condition: 'IN',
   };
 };
