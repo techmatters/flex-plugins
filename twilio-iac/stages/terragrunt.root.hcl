@@ -33,7 +33,6 @@ locals {
     environment        = local.environment
     short_environment  = local.short_env_map[local.environment]
     short_helpline     = local.short_helpline
-    old_dir_name       = "${local.env_config.old_dir_prefix}-${local.environment}"
     operating_info_key = local.short_helpline
     aws_account_id     = local.aws_account_id
     role_arn           = local.stage == "external-recordings" ? local.admin_role : local.env_role
