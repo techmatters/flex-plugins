@@ -19,26 +19,7 @@ import { datadogRum } from '@datadog/browser-rum';
 import * as FullStory from '@fullstory/browser';
 import type { Worker } from 'twilio-taskrouter';
 
-import { datadogAccessToken, datadogApplicationID, fullStoryId } from '../private/secret';
-
-function setUpDatadogRum(workerClient: Worker, monitoringEnv: string) {
-  datadogRum.init({
-    applicationId: datadogApplicationID,
-    clientToken: datadogAccessToken,
-    site: 'datadoghq.com',
-    env: monitoringEnv,
-    sampleRate: 100,
-    trackInteractions: true,
-    // service: 'my-web-application',
-  });
-
-  datadogRum.addRumGlobalContext('person', {
-    id: workerClient.sid,
-    account: workerClient.accountSid,
-    workspace: workerClient.workspaceSid,
-    helpline: (workerClient.attributes as any).helpline,
-  });
-}
+import { fullStoryId } from '../private/secret';
 
 function setUpFullStory() {
   FullStory.init({
@@ -58,12 +39,6 @@ function helplineIdentifierFullStory(workerClient) {
 }
 
 export default function setUpMonitoring(workerClient: Worker, serviceConfiguration: ServiceConfiguration) {
-  const monitoringEnv = serviceConfiguration.attributes.monitoringEnv || 'staging';
-
-  if (process.env.ENABLE_MONITORING === 'true') {
-    setUpDatadogRum(workerClient, monitoringEnv);
-  }
-
   if (serviceConfiguration.attributes.feature_flags.enable_fullstory_monitoring) {
     setUpFullStory();
     helplineIdentifierFullStory(workerClient);
