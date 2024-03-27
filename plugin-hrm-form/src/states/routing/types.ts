@@ -37,7 +37,6 @@ export type Contexts = typeof CONTEXTS[number];
 
 export type RouteWithContext = {
   context?: Contexts;
-  contextContactId?: string;
 };
 
 export const isRouteWithContext = (route: any): route is RouteWithContext => {
@@ -60,6 +59,7 @@ export type SearchResultRoute = RouteWithModalSupport & {
   contactsPage: number;
   subroute: 'case-results' | 'contact-results';
   action?: 'select-case';
+  contextContactId?: string;
 };
 
 export type SearchRoute =
@@ -67,6 +67,7 @@ export type SearchRoute =
       route: 'search';
       subroute: 'form';
       action?: 'select-case';
+      contextContactId?: string;
     })
   | SearchResultRoute;
 

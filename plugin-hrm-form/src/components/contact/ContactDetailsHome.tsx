@@ -60,7 +60,7 @@ import InfoIcon from '../caseMergingBanners/InfoIcon';
 import { BannerContainer, Text } from '../../styles/banners';
 import { isSmsChannelType } from '../../utils/smsChannels';
 import getCanEditContact from '../../permissions/canEditContact';
-import AddCaseButton from '../tabbedForms/AddCaseButton';
+import AddCaseButton from '../AddCaseButton';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (

@@ -129,7 +129,6 @@ const updateTopmostRoute = (baseRouteStack: AppRoutes[], newRoute, mode: ChangeR
         {
           ...currentRoute,
           activeModal: updateTopmostRoute(currentRoute.activeModal, newRoute, mode),
-          contextContactId: currentRoute.contextContactId,
         },
       ];
     }
