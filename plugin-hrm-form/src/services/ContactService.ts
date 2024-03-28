@@ -131,6 +131,7 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
         recordingError: externalRecordingInfo.error,
         isCallTask: TaskHelper.isCallTask(task),
         isChatBasedTask: TaskHelper.isChatBasedTask(task),
+        attributes: JSON.stringify(task.attributes),
       });
       return returnData;
     }
@@ -158,11 +159,6 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
     );
   }
   return returnData;
-};
-
-type SaveContactToHrmResponse = {
-  response: Contact;
-  externalRecordingInfo?: ExternalRecordingInfoSuccess;
 };
 
 export const createContact = async (
@@ -218,7 +214,7 @@ const saveContactToHrm = async (
   workerSid: WorkerSID,
   uniqueIdentifier: TaskSID,
   shouldFillEndMillis = true,
-): Promise<SaveContactToHrmResponse> => {
+): Promise<Contact> => {
   // if we got this far, we assume the form is valid and ready to submit
   const metadataForDuration = shouldFillEndMillis ? fillEndMillis(metadata) : metadata;
   const conversationDuration = getConversationDuration(task, metadataForDuration);
@@ -248,9 +244,6 @@ const saveContactToHrm = async (
 
   // This might change if isNonDataCallType, that's why we use rawForm
   const timeOfContact = new Date(getDateTime(form.contactlessTask)).toISOString();
-  const twilioTaskResult = await handleTwilioTask(task);
-  const { channelSid, serviceSid, externalRecordingInfo } = twilioTaskResult;
-  await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
 
   /*
    * We do a transform from the original and then add things.
@@ -267,16 +260,20 @@ const saveContactToHrm = async (
     conversationDuration,
     timeOfContact,
     taskId: uniqueIdentifier,
+  };
+
+  return updateContactInHrm(contact.id, contactToSave, false);
+};
+
+export const finalizeContact = async (task, contact: Contact): Promise<Contact> => {
+  const twilioTaskResult = await handleTwilioTask(task);
+  const { channelSid, serviceSid } = twilioTaskResult;
+  await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
+  const contactUpdates: ContactDraftChanges = {
     channelSid,
     serviceSid,
   };
-
-  const response = await updateContactInHrm(contact.id, contactToSave, true);
-
-  return {
-    response,
-    externalRecordingInfo: externalRecordingInfo ?? null,
-  };
+  return updateContactInHrm(contact.id, contactUpdates, true);
 };
 
 export const saveContact = async (
@@ -287,21 +284,27 @@ export const saveContact = async (
   uniqueIdentifier: TaskSID,
   shouldFillEndMillis = true,
 ) => {
-  const payloads = await saveContactToHrm(task, contact, metadata, workerSid, uniqueIdentifier, shouldFillEndMillis);
-
+  const savedContact = await saveContactToHrm(
+    task,
+    contact,
+    metadata,
+    workerSid,
+    uniqueIdentifier,
+    shouldFillEndMillis,
+  );
   // TODO: add catch clause to handle saving to Sync Doc
   try {
     // Add the old category format back, but leave out all the explicit false values
     const legacyCategories = {};
-    Object.entries(payloads.response.rawJson.categories).forEach(([key, value]) => {
+    Object.entries(contact.rawJson.categories).forEach(([key, value]) => {
       legacyCategories[key] = Object.fromEntries(value.map(category => [category, true]));
     });
     await saveContactToExternalBackend(task, {
-      ...payloads.response,
+      ...savedContact,
       rawJson: {
-        ...payloads.response.rawJson,
+        ...savedContact.rawJson,
         caseInformation: {
-          ...payloads.response.rawJson.caseInformation,
+          ...savedContact.rawJson.caseInformation,
           categories: legacyCategories,
         },
       },
@@ -313,10 +316,7 @@ export const saveContact = async (
     );
   }
 
-  return {
-    contact: payloads.response,
-    externalRecordingInfo: payloads.externalRecordingInfo,
-  };
+  return savedContact;
 };
 
 export async function connectToCase(contactId: string, caseId: string) {
