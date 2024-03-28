@@ -439,7 +439,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           {csamReportEnabled && canEditContact() && (
             <SectionEntry descriptionKey="ContactDetails-GeneralDetails-ExternalReportsFiled">
               {externalReportButton()}
-              {csamReports.map(formatCsamReport)}
+              {csamReports?.map(formatCsamReport)}
             </SectionEntry>
           )}
         </ContactDetailsSection>

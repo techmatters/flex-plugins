@@ -30,11 +30,12 @@ import { getDefinitionVersions } from '../../../hrmConfig';
 import { CaseListState } from '../../../states/caseList/reducer';
 import { caseListContentInitialState, fetchCaseListAsyncAction } from '../../../states/caseList/listContent';
 import { caseListSettingsInitialState } from '../../../states/caseList/settings';
-import { ContactRawJson, Contact, standaloneTaskSid } from '../../../types/types';
+import { Contact, ContactRawJson, standaloneTaskSid } from '../../../types/types';
 import { namespace } from '../../../states/storeNamespaces';
 import { RecursivePartial } from '../../RecursivePartial';
 import { HrmState, RootState } from '../../../states';
 import { CaseStateEntry } from '../../../states/case/types';
+import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
@@ -49,8 +50,8 @@ const mockedCases: Record<string, CaseStateEntry> = {
     availableStatusTransitions: [],
     connectedCase: {
       id: '1',
-      accountSid: '',
-      twilioWorkerId: 'worker 1',
+      accountSid: 'AC',
+      twilioWorkerId: 'WK worker 1',
       createdAt: '2020-07-07T17:38:42.227Z',
       updatedAt: '2020-07-07T19:20:33.339Z',
       status: 'open',
@@ -58,18 +59,13 @@ const mockedCases: Record<string, CaseStateEntry> = {
         definitionVersion: DefinitionVersionId.v1,
       },
       helpline: '',
-      connectedContacts: [
-        {
-          rawJson: {
-            childInformation: {
-              firstName: 'Michael',
-              lastName: 'Smith',
-            },
-          } as Partial<ContactRawJson>,
-        } as Contact,
-      ],
       categories: {},
+      firstContact: {
+        id: 'contact-1',
+      } as Contact,
     },
+    timelines: {},
+    sections: {},
   },
   '2': {
     caseWorkingCopy: undefined,
@@ -77,8 +73,8 @@ const mockedCases: Record<string, CaseStateEntry> = {
     availableStatusTransitions: [],
     connectedCase: {
       id: '2',
-      accountSid: '',
-      twilioWorkerId: 'worker 2',
+      accountSid: 'AC',
+      twilioWorkerId: 'WK-worker 2',
       createdAt: '2020-07-07T17:38:42.227Z',
       updatedAt: '2020-07-07T19:20:33.339Z',
       status: 'closed',
@@ -86,18 +82,19 @@ const mockedCases: Record<string, CaseStateEntry> = {
         definitionVersion: DefinitionVersionId.v1,
       },
       helpline: '',
-      connectedContacts: [
-        {
-          rawJson: {
-            childInformation: {
-              firstName: 'Sonya',
-              lastName: 'Michels',
-            },
-          } as Partial<ContactRawJson>,
-        } as Contact,
-      ],
+      firstContact: {
+        id: 'contact-2',
+        rawJson: {
+          childInformation: {
+            firstName: 'Sonya',
+            lastName: 'Michels',
+          },
+        } as Partial<ContactRawJson>,
+      } as Contact,
       categories: {},
     },
+    timelines: {},
+    sections: {},
   },
 };
 
@@ -203,6 +200,40 @@ test('Should render list if it is populated', async () => {
         caseList: mockedCaseList,
         caseCount: mockedCaseList.length,
         listLoading: false,
+      },
+    },
+    activeContacts: {
+      existingContacts: {
+        'contact-1': {
+          savedContact: {
+            ...VALID_EMPTY_CONTACT,
+            id: 'contact-1',
+            caseId: '1',
+            rawJson: {
+              ...VALID_EMPTY_CONTACT.rawJson,
+              childInformation: {
+                ...VALID_EMPTY_CONTACT.rawJson.childInformation,
+                firstName: 'Michael',
+                lastName: 'Smith',
+              },
+            },
+          },
+        },
+        'contact-2': {
+          savedContact: {
+            ...VALID_EMPTY_CONTACT,
+            id: 'contact-2',
+            caseId: '2',
+            rawJson: {
+              ...VALID_EMPTY_CONTACT.rawJson,
+              childInformation: {
+                ...VALID_EMPTY_CONTACT.rawJson.childInformation,
+                firstName: 'Sonya',
+                lastName: 'Michels',
+              },
+            },
+          },
+        },
       },
     },
     routing: {

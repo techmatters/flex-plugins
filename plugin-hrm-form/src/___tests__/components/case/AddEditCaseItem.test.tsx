@@ -93,7 +93,6 @@ const addingNewHouseholdCaseState: CaseState = {
       connectedCase: {
         helpline: '',
         accountSid: 'ACxxx',
-        connectedContacts: [],
         id: '1',
         createdAt: new Date(1593469560208).toISOString(),
         updatedAt: new Date(1593469560208).toISOString(),
@@ -102,6 +101,9 @@ const addingNewHouseholdCaseState: CaseState = {
         info: null,
         categories: {},
       },
+      sections: {},
+      timelines: {},
+      references: new Set(),
       availableStatusTransitions: [],
     },
   },

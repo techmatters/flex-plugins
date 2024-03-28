@@ -5,8 +5,8 @@
       "subcategories": [
         {"label": "Acoso - Bullying - Cyberbullying"},
         {"label": "Explotación sexual comercial (fuera de línea)"},
-        {"label": "Explotación sexual infantil en línea"},
-        {"label": "Maltrato psicológico"},
+        {"label": "Explotación y abuso sexual infantil en línea"},
+        {"label": "Maltrato psicológico y emocional"},
         {"label": "Negligencia (o tratamiento negligente)"},
         {"label": "Grooming - ASI en línea"},
         {"label": "Maltrato físico"},
@@ -78,6 +78,7 @@
       "color": "#239613",
       "subcategories": [
         {"label": "Adopción, crianza y ubicación en familiar extendida"},
+        {"label": "Problema familiares generales"},
         {"label": "Relación con el cuidador"},
         {"label": "Relación con los hermanos (s)"}
       ]

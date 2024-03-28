@@ -27,7 +27,6 @@ import { getDefinitionVersion } from '../../../services/ServerlessService';
 import { updateDefinitionVersion } from '../../../states/configuration/actions';
 import { RootState } from '../../../states';
 import TagsAndCounselor from '../TagsAndCounselor';
-import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
 import { namespace } from '../../../states/storeNamespaces';
 import asyncDispatch from '../../../states/asyncDispatch';
 import { connectToCaseAsyncAction } from '../../../states/contacts/saveContact';
@@ -39,6 +38,9 @@ import { getAseloFeatureFlags } from '../../../hrmConfig';
 import { PreviewRow } from '../styles';
 import selectContactStateByContactId from '../../../states/contacts/selectContactStateByContactId';
 import selectContextContactId from '../../../states/contacts/selectContextContactId';
+import { selectFirstCaseContact } from '../../../states/contacts/selectContactByCaseId';
+import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
+
 
 type OwnProps = {
   currentCase: Case;
@@ -50,9 +52,12 @@ type OwnProps = {
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const contactId = selectContextContactId(state, task.taskSid, 'search', 'case-results');
   const taskContact = selectContactStateByContactId(state, contactId)?.savedContact;
+  const firstConnectedContact = selectFirstCaseContact(state, currentCase);
   return {
     definitionVersions: state[namespace].configuration.definitionVersions,
     taskContact,
+    firstConnectedContact,
+    isConnectedToTaskContact: Boolean(taskContact?.caseId && taskContact.caseId === currentCase?.id),
   };
 };
 
@@ -73,16 +78,17 @@ const CasePreview: React.FC<Props> = ({
   counselorsHash,
   definitionVersions,
   taskContact,
+  firstConnectedContact,
+  isConnectedToTaskContact,
   connectCaseToTaskContact,
   closeModal,
 }) => {
-  const { id, createdAt, connectedContacts, status, info, twilioWorkerId } = currentCase;
+  const { id, createdAt, status, info, twilioWorkerId, categories } = currentCase;
   const updatedAtObj = getUpdatedDate(currentCase);
   const followUpDateObj = info.followUpDate ? new Date(info.followUpDate) : undefined;
   const { definitionVersion: versionId } = info;
-  const orphanedCase = !connectedContacts || connectedContacts.length === 0;
-  const firstContact = !orphanedCase && connectedContacts[0];
-  const { categories, caseInformation } = (firstContact || {}).rawJson || {};
+  const orphanedCase = !firstConnectedContact;
+  const { caseInformation } = (firstConnectedContact || {}).rawJson || {};
   const { callSummary } = caseInformation || {};
   const summary = info?.summary || callSummary;
   const counselor = counselorsHash[twilioWorkerId];
@@ -100,23 +106,21 @@ const CasePreview: React.FC<Props> = ({
   const definitionVersion = definitionVersions[versionId];
 
   const statusLabel = definitionVersion?.caseStatus[status]?.label ?? status;
-  const contactLabel = contactLabelFromHrmContact(definitionVersion, firstContact, {
-    substituteForId: false,
-    placeholder: '',
-  });
-  let isConnectedToTaskContact = false;
   let showConnectButton = false;
 
   if (getAseloFeatureFlags().enable_case_merging && taskContact) {
-    isConnectedToTaskContact = Boolean(connectedContacts?.find(contact => contact.id === taskContact.id));
-
     showConnectButton = Boolean(
       can(PermissionActions.UPDATE_CASE_CONTACTS, currentCase) &&
         can(PermissionActions.ADD_CONTACT_TO_CASE, taskContact) &&
-        connectedContacts?.length &&
+        !orphanedCase &&
         (!taskContact.caseId || isConnectedToTaskContact),
     );
   }
+  const contactLabel = contactLabelFromHrmContact(definitionVersion, firstConnectedContact, {
+    substituteForId: false,
+    placeholder: '',
+  });
+
   return (
     <Flex width="100%">
       <PreviewWrapper>

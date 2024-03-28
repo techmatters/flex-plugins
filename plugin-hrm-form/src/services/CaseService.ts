@@ -22,32 +22,22 @@ import { getQueryParams } from './PaginationParams';
 import { Case, CaseOverview, Contact, SearchCaseResult, WellKnownCaseSection } from '../types/types';
 import { FetchOptions } from './fetchApi';
 import { GenericTimelineActivity } from '../states/case/types';
-import {
-  ApiCaseSection,
-  convertApiCaseSectionToCaseSection,
-  FullCaseSection,
-  FullGenericCaseSection,
-} from './caseSectionService';
+import { convertApiCaseSectionToCaseSection, FullGenericCaseSection } from './caseSectionService';
+import { convertApiContactToFlexContact } from './ContactService';
 
-type ApiCaseWithSections = Omit<Case, 'sections'> & { sections: { [cs in WellKnownCaseSection]?: ApiCaseSection[] } };
-type ApiCaseSearchResult = Omit<SearchCaseResult, 'cases'> & { cases: ApiCaseWithSections[] };
+type ApiCase = Omit<Case, 'firstContact'> & { connectedContacts: Contact[] };
 
-const convertCaseSections = (caseObj: ApiCaseWithSections): Case => {
-  if (typeof caseObj === 'object') {
-    if (caseObj.sections) {
-      const convertedCaseSections: { [cs in WellKnownCaseSection]?: FullCaseSection[] } = Object.fromEntries(
-        Object.entries(caseObj.sections).map(([key, value]) => {
-          return [key, value.map(convertApiCaseSectionToCaseSection)];
-        }),
-      );
-      return {
-        ...caseObj,
-        sections: convertedCaseSections,
-      };
-    }
-    return caseObj as any; // TypeScript is poo
+const convertApiCaseToFlexCase = (apiCase: ApiCase): Case => {
+  if (!apiCase) {
+    return apiCase;
   }
-  return caseObj;
+  const { connectedContacts, ...withoutConnectedContacts } = apiCase;
+  const firstContact = connectedContacts?.[0];
+  return {
+    ...(firstContact ? { firstContact: convertApiContactToFlexContact(firstContact) } : {}),
+    ...withoutConnectedContacts,
+    id: apiCase.id.toString(), // coerce to string type, can be removed once API is aligned
+  };
 };
 
 export async function createCase(contact: Contact, creatingWorkerSid: string, definitionVersion: DefinitionVersionId) {
@@ -72,7 +62,7 @@ export async function createCase(contact: Contact, creatingWorkerSid: string, de
     body: JSON.stringify(caseRecord),
   };
 
-  return fetchHrmApi('/cases', options);
+  return convertApiCaseToFlexCase(await fetchHrmApi('/cases', options));
 }
 
 export async function cancelCase(caseId: Case['id']) {
@@ -89,7 +79,7 @@ export async function updateCaseOverview(caseId: Case['id'], body: CaseOverview)
     body: JSON.stringify(body),
   };
 
-  return fetchHrmApi(`/cases/${caseId}/overview`, options);
+  return convertApiCaseToFlexCase(await fetchHrmApi(`/cases/${caseId}/overview`, options));
 }
 
 export async function updateCaseStatus(caseId: Case['id'], status: Case['status']): Promise<Case> {
@@ -98,7 +88,7 @@ export async function updateCaseStatus(caseId: Case['id'], status: Case['status'
     body: JSON.stringify({ status }),
   };
 
-  return fetchHrmApi(`/cases/${caseId}/status`, options);
+  return convertApiCaseToFlexCase(await fetchHrmApi(`/cases/${caseId}/status`, options));
 }
 
 export async function getCase(caseId: Case['id']): Promise<Case> {
@@ -106,8 +96,8 @@ export async function getCase(caseId: Case['id']): Promise<Case> {
     method: 'GET',
     returnNullFor404: true,
   };
-  const fromApi: ApiCaseWithSections = await fetchHrmApi(`/cases/${caseId}`, options);
-  return convertCaseSections(fromApi);
+  const fromApi: ApiCase = await fetchHrmApi(`/cases/${caseId}`, options);
+  return convertApiCaseToFlexCase(fromApi);
 }
 
 export type TimelineResult<TDate extends string | Date> = {
@@ -119,6 +109,10 @@ const isApiCaseSectionTimelineActivity = (
   activity: GenericTimelineActivity<any, string>,
 ): activity is GenericTimelineActivity<FullGenericCaseSection<string>, string> =>
   activity.activityType === 'case-section';
+
+const isApiContactTimelineActivity = (
+  activity: GenericTimelineActivity<any, string>,
+): activity is GenericTimelineActivity<Contact, string> => activity.activityType === 'contact';
 
 export async function getCaseTimeline(
   caseId: Case['id'],
@@ -138,13 +132,19 @@ export async function getCaseTimeline(
   );
   return {
     ...rawResult,
-    activities: rawResult.activities.map(activity => ({
-      ...activity,
-      timestamp: new Date(activity.timestamp),
-      activity: isApiCaseSectionTimelineActivity(activity)
-        ? convertApiCaseSectionToCaseSection(activity.activity)
-        : activity.activity,
-    })),
+    activities: rawResult.activities.map(timelineActivity => {
+      let { activity } = timelineActivity;
+      if (isApiCaseSectionTimelineActivity(timelineActivity)) {
+        activity = convertApiCaseSectionToCaseSection(activity);
+      } else if (isApiContactTimelineActivity(timelineActivity)) {
+        activity = convertApiContactToFlexContact(activity);
+      }
+      return {
+        ...timelineActivity,
+        timestamp: new Date(timelineActivity.timestamp),
+        activity,
+      };
+    }),
   };
 }
 
@@ -160,10 +160,10 @@ export async function listCases(queryParams, listCasesPayload): Promise<SearchCa
     body: JSON.stringify(listCasesPayload),
   };
 
-  const fromApi: ApiCaseSearchResult = await fetchHrmApi(`/cases/search${queryParamsString}`, options);
+  const fromApi: SearchCaseResult = await fetchHrmApi(`/cases/search${queryParamsString}`, options);
 
   return {
     ...fromApi,
-    cases: fromApi.cases.map(convertCaseSections),
+    cases: fromApi.cases.map(convertApiCaseToFlexCase),
   };
 }

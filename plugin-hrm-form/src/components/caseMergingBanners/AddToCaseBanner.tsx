@@ -32,17 +32,24 @@ import { newCloseModalAction } from '../../states/routing/actions';
 import { BannerContainer, Text } from '../../styles/banners';
 import selectContextContactId from '../../states/contacts/selectContextContactId';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
+import { selectFirstContactByCaseId } from '../../states/contacts/selectContactByCaseId';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { isCaseRoute } from '../../states/routing/types';
 
 type MyProps = {
   task: CustomITask | StandaloneITask;
 };
 
 const mapStateToProps = (state: RootState, { task }: MyProps) => {
+  const route = selectCurrentTopmostRouteForTask(state, task.taskSid);
   const { connectedCase } = selectCurrentRouteCaseState(state, task.taskSid) ?? {};
   const contactId = selectContextContactId(state, task.taskSid, 'case', 'home');
   const taskContact = selectContactStateByContactId(state, contactId)?.savedContact;
-
-  return { connectedCase, taskContact };
+  return {
+    connectedCase,
+    taskContact,
+    isOrphanedCase: isCaseRoute(route) ? !selectFirstContactByCaseId(state, route.caseId) : true,
+  };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: MyProps) => ({
@@ -60,6 +67,7 @@ const AddToCaseBanner: React.FC<Props> = ({
   connectedCase,
   taskContact,
   connectCaseToTaskContact,
+  isOrphanedCase,
   closeModal,
 }: Props) => {
   const can = React.useMemo(() => {
@@ -72,7 +80,7 @@ const AddToCaseBanner: React.FC<Props> = ({
     taskContact &&
       !taskContact.caseId &&
       !isConnectedToTaskContact &&
-      connectedCase?.connectedContacts?.length &&
+      !isOrphanedCase &&
       can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCase) &&
       can(PermissionActions.ADD_CONTACT_TO_CASE, taskContact),
   );
