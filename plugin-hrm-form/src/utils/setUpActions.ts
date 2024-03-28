@@ -33,7 +33,7 @@ import { getNumberFromTask, getTaskLanguage } from './task';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { newContact } from '../states/contacts/contactState';
 import asyncDispatch from '../states/asyncDispatch';
-import { createContactAsyncAction } from '../states/contacts/saveContact';
+import { createContactAsyncAction, finalizeContactAsyncAction } from '../states/contacts/saveContact';
 import { handleTransferredTask } from '../transfer/setUpTransferActions';
 import { prepopulateForm } from './prepopulateForm';
 import { namespace } from '../states/storeNamespaces';
@@ -224,10 +224,14 @@ export const excludeDeactivateConversationOrchestration = (featureFlags: Feature
   }
 };
 
-export const afterCompleteTask = (payload: ActionPayload): void => {
+export const afterCompleteTask = async ({ task }: ActionPayload): Promise<void> => {
   const manager = Manager.getInstance();
-  const contactState = selectContactByTaskSid(manager.store.getState() as RootState, payload.task.taskSid);
+  const contactState = selectContactByTaskSid(manager.store.getState() as RootState, task.taskSid);
   if (contactState) {
-    manager.store.dispatch(GeneralActions.removeContactState(payload.task.taskSid, contactState.savedContact.id));
+    const { savedContact } = contactState;
+    if (savedContact) {
+      finalizeContactAsyncAction(task, savedContact);
+    }
+    manager.store.dispatch(GeneralActions.removeContactState(task.taskSid, contactState.savedContact.id));
   }
 };

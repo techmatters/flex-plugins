@@ -14,10 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import * as Flex from '@twilio/flex-ui';
+import { ServiceConfiguration } from '@twilio/flex-ui';
 import { datadogRum } from '@datadog/browser-rum';
 import * as FullStory from '@fullstory/browser';
-import { ServiceConfiguration } from '@twilio/flex-ui';
 import type { Worker } from 'twilio-taskrouter';
 
 import { datadogAccessToken, datadogApplicationID, fullStoryId } from '../private/secret';
@@ -65,7 +64,7 @@ export default function setUpMonitoring(workerClient: Worker, serviceConfigurati
     setUpDatadogRum(workerClient, monitoringEnv);
   }
 
-  if (serviceConfiguration.attributes.feature_flags.enable_fullstory_monitoring) {
+  if (process.env.ENABLE_MONITORING === 'true') {
     setUpFullStory();
     helplineIdentifierFullStory(workerClient);
   }

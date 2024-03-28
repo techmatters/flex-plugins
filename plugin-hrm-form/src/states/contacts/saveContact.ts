@@ -21,6 +21,7 @@ import { submitContactForm } from '../../services/formSubmissionHelpers';
 import {
   connectToCase,
   createContact,
+  finalizeContact,
   getContactById,
   getContactByTaskSid,
   removeFromCase,
@@ -32,6 +33,7 @@ import {
   ContactMetadata,
   ContactsState,
   CREATE_CONTACT_ACTION,
+  FINALIZE_CONTACT,
   LOAD_CONTACT_FROM_HRM_BY_ID_ACTION,
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION,
   LoadingStatus,
@@ -189,6 +191,13 @@ export const submitContactFormAsyncAction = createAsyncAction(
     metadata,
     caseForm,
   }),
+);
+
+export const finalizeContactAsyncAction = createAsyncAction(
+  FINALIZE_CONTACT,
+  async (task: CustomITask, contact: Contact) => {
+    return finalizeContact(task, contact);
+  },
 );
 
 export const loadContactFromHrmByTaskSidAsyncAction = createAsyncAction(
@@ -409,6 +418,13 @@ export const saveContactReducer = (initialState: ContactsState) =>
       removeFromCaseAsyncAction.fulfilled,
       (state, { payload: { contact } }): ContactsState => {
         if (!contact) return state;
+        return loadContactIntoRedux(state, contact);
+      },
+    ),
+
+    handleAction(
+      finalizeContactAsyncAction.fulfilled,
+      (state, { payload: contact }): ContactsState => {
         return loadContactIntoRedux(state, contact);
       },
     ),

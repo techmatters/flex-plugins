@@ -44,8 +44,9 @@ export const CONNECT_TO_CASE = 'contact-action/connect-to-case';
 export const REMOVE_FROM_CASE = 'contact-action/remove-from-case';
 export const CONNECT_TO_CASE_ACTION_FULFILLED = `${CONNECT_TO_CASE}_FULFILLED` as const;
 export const REMOVE_FROM_CASE_ACTION_FULFILLED = `${REMOVE_FROM_CASE}_FULFILLED` as const;
-export const SET_SAVED_CONTACT = 'contact-action/set-saved-contact';
-export const CASE_CONNECTED_TO_CONTACT = 'CASE_CONNECTED_TO_CONTACT';
+export const SET_SAVED_CONTACT = 'contact-action/set-saved-contact' as const;
+export const FINALIZE_CONTACT = 'contact-action/finalize-contact' as const;
+export const CASE_CONNECTED_TO_CONTACT = 'CASE_CONNECTED_TO_CONTACT' as const;
 
 export const LoadingStatus = {
   LOADING: 'loading',
