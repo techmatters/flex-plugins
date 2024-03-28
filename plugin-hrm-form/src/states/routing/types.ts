@@ -115,6 +115,7 @@ type CaseCoreRoute = RouteWithContext & {
   caseId: string;
   autoFocus?: boolean;
   isCreating?: boolean;
+  contextContactId?: string;
 };
 
 type CaseHomeRoute = CaseCoreRoute &

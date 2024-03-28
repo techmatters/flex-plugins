@@ -15,19 +15,21 @@
  */
 
 import { RootState } from '..';
-import { getCurrentTopmostRouteForTask } from '../routing/getRoute';
-import { namespace } from '../storeNamespaces';
+import { selectCurrentTopmostRouteForTask } from '../routing/getRoute';
 
-const getContextContactId = (state: RootState, taskSid: string) => {
+type Route = 'case' | 'search';
+type SubRoute = 'form' | 'case-results' | 'home';
+
+const selectContextContactId = (state: RootState, taskSid: string, route: Route, subroute: SubRoute) => {
   let contactId: string;
 
-  const currentRoute = getCurrentTopmostRouteForTask(state[namespace].routing, taskSid);
+  const currentRoute = selectCurrentTopmostRouteForTask(state, taskSid);
 
-  if (currentRoute.route === 'search' && currentRoute.subroute === 'case-results') {
+  if (currentRoute.route === route && currentRoute.subroute === subroute) {
     contactId = currentRoute.contextContactId;
   }
 
   return contactId;
 };
 
-export default getContextContactId;
+export default selectContextContactId;

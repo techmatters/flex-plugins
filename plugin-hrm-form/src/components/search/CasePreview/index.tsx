@@ -38,7 +38,7 @@ import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
 import { PreviewRow } from '../styles';
 import selectContactStateByContactId from '../../../states/contacts/selectContactStateByContactId';
-import getContextContactId from '../../../states/contacts/getContextContactId';
+import selectContextContactId from '../../../states/contacts/selectContextContactId';
 
 type OwnProps = {
   currentCase: Case;
@@ -48,7 +48,7 @@ type OwnProps = {
 };
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const contactId = getContextContactId(state, task.taskSid);
+  const contactId = selectContextContactId(state, task.taskSid, 'search', 'case-results');
   const taskContact = selectContactStateByContactId(state, contactId)?.savedContact;
   return {
     definitionVersions: state[namespace].configuration.definitionVersions,
