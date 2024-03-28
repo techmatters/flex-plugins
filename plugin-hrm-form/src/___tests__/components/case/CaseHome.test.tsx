@@ -33,12 +33,18 @@ import { namespace } from '../../../states/storeNamespaces';
 import { RecursivePartial } from '../../RecursivePartial';
 import { RootState } from '../../../states';
 import { VALID_EMPTY_CASE } from '../../testCases';
-import { ApiCaseSection } from '../../../services/caseSectionService';
+import { FullCaseSection } from '../../../services/caseSectionService';
 import { TaskSID } from '../../../types/twilio';
+import { CaseStateEntry } from '../../../states/case/types';
 
 jest.mock('../../../permissions', () => ({
   ...jest.requireActual('../../../permissions'),
   getInitializedCan: jest.fn(() => () => true),
+}));
+
+// Called by the <Timeline/> subcomponent
+jest.mock('../../../services/CaseService', () => ({
+  getCaseTimeline: jest.fn(() => Promise.resolve({ activities: [], count: 0 })),
 }));
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -63,17 +69,21 @@ const entry = {
   relationshipToChild: 'relationshipToChild',
 };
 
-const perpetratorEntry: ApiCaseSection = {
+const perpetratorEntry: FullCaseSection = {
   sectionId: 'PERPETRATOR_ID',
+  sectionType: 'perpetrator',
   sectionTypeSpecificData: entry,
-  createdAt: '2020-06-29T22:26:00.208Z',
-  twilioWorkerId: 'WK-worker1',
+  createdAt: new Date('2020-06-29T22:26:00.208Z'),
+  eventTimestamp: new Date('2020-06-29T22:26:00.208Z'),
+  createdBy: 'WK-worker1',
 };
-const householdEntry: ApiCaseSection = {
+const householdEntry: FullCaseSection = {
   sectionId: 'HOUSEHOLD_ID',
+  sectionType: 'household',
   sectionTypeSpecificData: entry,
-  createdAt: '2020-06-29T22:26:00.208Z',
-  twilioWorkerId: 'WK-worker1',
+  createdAt: new Date('2020-06-29T22:26:00.208Z'),
+  eventTimestamp: new Date('2020-06-29T22:26:00.208Z'),
+  createdBy: 'WK-worker1',
 };
 
 function createState(state: RecursivePartial<RootState['plugin-hrm-form']>): RootState {
@@ -87,6 +97,8 @@ let ownProps: CaseHomeProps;
 let mockV1;
 let initialState: RootState;
 let caseDetails: Case;
+let sections: CaseStateEntry['sections'];
+let timelines: CaseStateEntry['timelines'];
 
 describe('useState mocked', () => {
   beforeAll(async () => {
@@ -102,14 +114,6 @@ describe('useState mocked', () => {
     caseDetails = {
       ...VALID_EMPTY_CASE,
       id: 'case123',
-      sections: {
-        household: [],
-        incident: [],
-        perpetrator: [],
-        document: [],
-        note: [],
-        referral: [],
-      },
       info: {
         childIsAtRisk: false,
         summary: '',
@@ -117,7 +121,19 @@ describe('useState mocked', () => {
       },
       status: 'open',
       createdAt: '2020-06-29T22:26:00.208Z',
-      connectedContacts: [VALID_EMPTY_CONTACT],
+    };
+    sections = {
+      household: {},
+      incident: {},
+      perpetrator: {},
+      document: {},
+      note: {},
+      referral: {},
+    };
+    timelines = {
+      'prime-timeline': [],
+      perpetrator: [],
+      household: [],
     };
     initialState = createState({
       configuration: {
@@ -155,6 +171,8 @@ describe('useState mocked', () => {
         cases: {
           case123: {
             connectedCase: caseDetails,
+            timelines,
+            sections,
           },
         },
       },
@@ -181,6 +199,7 @@ describe('useState mocked', () => {
       can: () => true,
       handleClose: jest.fn(),
       handleSaveAndEnd: jest.fn(),
+      handlePrintCase: jest.fn(),
     };
   });
 
@@ -289,7 +308,14 @@ describe('useState mocked', () => {
   });
 
   test('click View Household button', async () => {
-    caseDetails.sections.household = [householdEntry];
+    sections.household[householdEntry.sectionId] = householdEntry;
+    timelines.household = [
+      {
+        activity: { sectionId: householdEntry.sectionId, sectionType: 'household' },
+        activityType: 'case-section-id',
+        timestamp: householdEntry.eventTimestamp,
+      },
+    ];
     const store = mockStore(initialState);
     store.dispatch = jest.fn();
 
@@ -317,7 +343,14 @@ describe('useState mocked', () => {
   });
 
   test('click View Perpetrator button', async () => {
-    caseDetails.sections.perpetrator = [perpetratorEntry];
+    sections.perpetrator[perpetratorEntry.sectionId] = perpetratorEntry;
+    timelines.perpetrator = [
+      {
+        activity: { sectionId: perpetratorEntry.sectionId, sectionType: 'perpetrator' },
+        activityType: 'case-section-id',
+        timestamp: perpetratorEntry.eventTimestamp,
+      },
+    ];
     const store = mockStore(initialState);
     store.dispatch = jest.fn();
 

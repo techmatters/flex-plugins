@@ -21,13 +21,14 @@ import { Template } from '@twilio/flex-ui';
 import Edit from '@material-ui/icons/Edit';
 import { DefinitionVersion, isNonSaveable } from 'hrm-form-definitions';
 
+import { CaseStateEntry } from '../../states/case/types';
 import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles';
 import { CaseLayout, FullWidthFormTextContainer } from './styles';
 import { RootState } from '../../states';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
-import { CaseItemAction, isViewCaseSectionRoute } from '../../states/routing/types';
+import { AppRoutes, CaseItemAction, isViewCaseSectionRoute } from '../../states/routing/types';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import { FormTargetObject } from '../common/forms/types';
@@ -35,20 +36,7 @@ import NavigableContainer from '../NavigableContainer';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 import selectCaseItemHistory from '../../states/case/sections/selectCaseItemHistory';
-
-const mapStateToProps = (state: RootState, { task, sectionApi }: ViewCaseItemProps) => {
-  const { connectedCase } = selectCurrentRouteCaseState(state, task.taskSid) || {};
-  const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
-  const caseItemHistory =
-    connectedCase && isViewCaseSectionRoute(currentRoute)
-      ? selectCaseItemHistory(state, connectedCase, sectionApi, currentRoute.id)
-      : undefined;
-  return {
-    caseItemHistory,
-    currentRoute,
-    connectedCase,
-  };
-};
+import { CaseSectionTypeSpecificData } from '../../services/caseSectionService';
 
 export type ViewCaseItemProps = {
   task: CustomITask | StandaloneITask;
@@ -56,6 +44,33 @@ export type ViewCaseItemProps = {
   sectionApi: CaseSectionApi;
   includeAddedTime?: boolean;
   canEdit: () => boolean;
+};
+
+const mapStateToProps = (
+  state: RootState,
+  { task, sectionApi }: ViewCaseItemProps,
+): {
+  caseItemHistory: ReturnType<typeof selectCaseItemHistory>;
+  currentRoute: AppRoutes;
+  sections: CaseStateEntry['sections'];
+  form: CaseSectionTypeSpecificData;
+} => {
+  const { sections } = selectCurrentRouteCaseState(state, task.taskSid) || {};
+  const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
+  if (isViewCaseSectionRoute(currentRoute)) {
+    return {
+      caseItemHistory: selectCaseItemHistory(state, currentRoute.caseId, sectionApi, currentRoute.id),
+      currentRoute,
+      sections,
+      form: sectionApi.getSectionItemById(sections, currentRoute.id).sectionTypeSpecificData,
+    };
+  }
+  return {
+    currentRoute,
+    form: undefined,
+    caseItemHistory: undefined,
+    sections: undefined,
+  };
 };
 
 const mapToDispatchProps = {
@@ -73,16 +88,14 @@ const ViewCaseItem: React.FC<Props> = ({
   changeRoute,
   definitionVersion,
   sectionApi,
-  connectedCase,
+  sections,
   canEdit,
   caseItemHistory,
+  form,
 }) => {
-  if (!isViewCaseSectionRoute(currentRoute) || !connectedCase) {
+  if (!isViewCaseSectionRoute(currentRoute) || !sections) {
     return null;
   }
-
-  const { sectionTypeSpecificData: form } = sectionApi.getSectionItemById(connectedCase, currentRoute.id);
-
   const { addingCounsellorName, added, updatingCounsellorName, updated } = caseItemHistory;
   const formDefinition = sectionApi.getSectionFormDefinition(definitionVersion).filter(fd => !isNonSaveable(fd));
 
@@ -91,7 +104,7 @@ const ViewCaseItem: React.FC<Props> = ({
   };
 
   const targetObject: FormTargetObject = {
-    id: connectedCase?.id,
+    id: currentRoute.id,
     type: 'case',
   };
 

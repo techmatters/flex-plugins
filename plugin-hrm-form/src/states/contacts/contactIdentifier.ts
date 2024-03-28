@@ -16,7 +16,7 @@
 
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { ContactRawJson, Contact } from '../../types/types';
+import { Contact, ContactRawJson } from '../../types/types';
 
 const extractName = (contact: ContactRawJson, placeholder: string) => {
   const { firstName, lastName } = contact?.childInformation ?? {};

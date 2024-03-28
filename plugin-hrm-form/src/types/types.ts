@@ -21,7 +21,6 @@ import type { CallTypes, DefinitionVersionId } from 'hrm-form-definitions';
 import type { ChannelTypes } from '../states/DomainConstants';
 import type { ResourceReferral } from '../states/contacts/resourceReferral';
 import { DateFilterValue } from '../states/caseList/dateFilters';
-import { CaseSection } from '../services/caseSectionService';
 import { AccountSID, TaskSID, WorkerSID } from './twilio';
 
 declare global {
@@ -90,7 +89,6 @@ export type WellKnownCaseSection = 'note' | 'referral' | 'household' | 'perpetra
 export type Case = {
   accountSid: AccountSID;
   id: string;
-  label: string;
   status: string;
   helpline: string;
   twilioWorkerId: WorkerSID;
@@ -101,9 +99,9 @@ export type Case = {
   statusUpdatedAt?: string;
   statusUpdatedBy?: WorkerSID;
   previousStatus?: string;
-  connectedContacts: Contact[];
-  sections?: { [K in WellKnownCaseSection]?: CaseSection[] };
   categories: Record<string, string[]>;
+  firstContact?: Contact;
+
 };
 
 export type TwilioStoredMedia = {
@@ -201,6 +199,7 @@ export type Contact = {
   serviceSid: string;
   caseId?: string;
 };
+
 
 export type SearchContactResult = {
   count: number;

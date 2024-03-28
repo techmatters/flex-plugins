@@ -18,9 +18,17 @@ import { CaseSectionApi } from './api';
 import { RootState } from '../..';
 import { Case } from '../../../types/types';
 import { selectCounselorName } from '../../configuration/selectCounselorsHash';
+import { selectCaseByCaseId } from '../selectCaseStateByCaseId';
 
-const selectCaseItemHistory = (state: RootState, caseObj: Case, caseSectionApi: CaseSectionApi, caseItemId: string) => {
-  const { createdBy, createdAt, updatedAt, updatedBy } = caseSectionApi.getSectionItemById(caseObj, caseItemId) ?? {};
+const selectCaseItemHistory = (
+  state: RootState,
+  caseId: Case['id'],
+  caseSectionApi: CaseSectionApi,
+  caseItemId: string,
+) => {
+  const caseState = selectCaseByCaseId(state, caseId);
+  const { createdBy, createdAt, updatedAt, updatedBy } =
+    caseSectionApi.getSectionItemById(caseState?.sections, caseItemId) ?? {};
   const addingCounsellorName = selectCounselorName(state, createdBy);
   const updatingCounsellorName = selectCounselorName(state, updatedBy);
   return { addingCounsellorName, added: createdAt, updatingCounsellorName, updated: updatedAt };

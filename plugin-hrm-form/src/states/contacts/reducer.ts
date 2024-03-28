@@ -61,8 +61,13 @@ import { createCaseAsyncAction } from '../case/saveCase';
 import { loadContactIntoRedux, saveContactReducer } from './saveContact';
 import { ConfigurationState } from '../configuration/reducer';
 import { Contact } from '../../types/types';
-import { SEARCH_CONTACTS_SUCCESS, SearchContactsSuccessAction } from '../search/types';
-import { GET_CASE_TIMELINE_ACTION, isContactTimelineActivity } from '../case/types';
+import {
+  SEARCH_CASES_SUCCESS,
+  SEARCH_CONTACTS_SUCCESS,
+  SearchCasesSuccessAction,
+  SearchContactsSuccessAction,
+} from '../search/types';
+import { GET_CASE_TIMELINE_ACTION_FULFILLED, isContactTimelineActivity } from '../case/types';
 import { GetTimelineAsyncAction } from '../case/timeline';
 
 export const emptyCategories = [];
@@ -91,21 +96,17 @@ type SaveContactReducerAction = Parameters<typeof boundSaveContactReducer>[1] &
 const newCaseReducer = createReducer(initialState, handleAction => [
   handleAction(
     createCaseAsyncAction.fulfilled,
-    (state: ContactsState, { payload: connectedCase }) => {
-      const connectedContacts = connectedCase.connectedContacts
-        .map(({ id }) => state.existingContacts[id])
-        .filter(Boolean);
-      const contactsMap = Object.fromEntries(
-        connectedContacts.map(contact => [
-          contact.savedContact.id,
-          { ...contact, savedContact: { ...contact.savedContact, caseId: connectedCase.id } },
-        ]),
-      );
+    (state: ContactsState, { payload: { newCase: connectedCase, connectedContact } }) => {
+      const existingContactState = state.existingContacts[connectedContact.id];
+      if (!existingContactState) {
+        return state;
+      }
+      existingContactState.savedContact.caseId = connectedCase.id;
       return {
         ...state,
         existingContacts: {
           ...state.existingContacts,
-          ...contactsMap,
+          ...{ [connectedContact.id]: existingContactState },
         },
       };
     },
@@ -117,9 +118,10 @@ const loadContactListIntoState = (
   configurationState: ConfigurationState,
   contacts: Contact[],
   referenceId: string,
+  releaseExisting: boolean = true,
 ): ContactsState => {
   // Release any contacts currently loaded with the same referenceId - they are being replaced
-  const withoutOldSearchResults = { ...contactsState, existingContacts: releaseAllContactStates(contactsState.existingContacts, referenceId) };
+  const withoutOldSearchResults = releaseExisting ? { ...contactsState, existingContacts: releaseAllContactStates(contactsState.existingContacts, referenceId) } : contactsState;
   if (contacts?.length) {
     return contacts.reduce((acc, newContact) => {
       // TODO: strip the totalCount property in HRM
@@ -143,6 +145,7 @@ export function reduce(
     | t.UpdatedContactAction
     | SaveContactReducerAction
     | SearchContactsSuccessAction
+    | SearchCasesSuccessAction
   | GetTimelineAsyncAction,
 ): ContactsState {
   let state = boundReferralReducer(inputState, inputAction as any);
@@ -244,10 +247,13 @@ export function reduce(
     case SEARCH_CONTACTS_SUCCESS: {
       return loadContactListIntoState(state, rootState.configuration, action.searchResult.contacts, `${action.taskId}-search`);
     }
-    case GET_CASE_TIMELINE_ACTION: {
+    case SEARCH_CASES_SUCCESS: {
+      return loadContactListIntoState(state, rootState.configuration, action.searchResult.cases.map(c => c.firstContact).filter(Boolean), `${action.taskId}-search`);
+    }
+    case GET_CASE_TIMELINE_ACTION_FULFILLED: {
       const { payload: { caseId, timelineResult: { activities } } } = action;
       const contacts = activities.filter(isContactTimelineActivity).map(({ activity })=> activity);
-      return loadContactListIntoState(state, rootState.configuration, contacts, `case-${caseId}`);
+      return loadContactListIntoState(state, rootState.configuration, contacts, `case-${caseId}`, false);
     }
     default:
       return state;

@@ -30,6 +30,7 @@ import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
 import { initialState } from '../../../states/contacts/reducer';
 import { getCase } from '../../../services/CaseService';
 import { newContactMetaData } from '../../../states/contacts/contactState';
+import { VALID_EMPTY_CASE, VALID_EMPTY_CASE_STATE_ENTRY } from '../../testCases';
 
 jest.mock('../../../services/ContactService');
 jest.mock('../../../services/CaseService');
@@ -39,7 +40,7 @@ jest.mock('../../../components/case/Case');
 const mockUpdateContactInHrm = updateContactInHrm as jest.Mock<ReturnType<typeof updateContactInHrm>>;
 const mockSubmitContactForm = submitContactForm as jest.Mock<ReturnType<typeof submitContactForm>>;
 const mockConnectToCase = connectToCase as jest.Mock<ReturnType<typeof connectToCase>>;
-const mockGetCase = connectToCase as jest.Mock<ReturnType<typeof getCase>>;
+const mockGetCase = getCase as jest.Mock<ReturnType<typeof getCase>>;
 const mockCompleteTask = completeTask as jest.Mock<ReturnType<typeof completeTask>>;
 
 beforeEach(() => {
@@ -65,11 +66,11 @@ const testStore = (stateChanges: ContactsState) =>
 const baseContact: Contact = {
   id: '1337',
   profileId: 22,
-  accountSid: '',
+  accountSid: 'AC',
   timeOfContact: '',
   number: '',
   channel: 'default',
-  twilioWorkerId: '',
+  twilioWorkerId: 'WK',
   helpline: 'test helpline',
   conversationDuration: 0,
   createdBy: '',
@@ -79,7 +80,7 @@ const baseContact: Contact = {
   queueName: '',
   channelSid: '',
   serviceSid: '',
-  taskId: 'TASK_ID',
+  taskId: 'WT-TASK_ID',
   conversationMedia: [],
   csamReports: [],
   rawJson: {
@@ -92,20 +93,20 @@ const baseContact: Contact = {
   },
 };
 
-const task = <CustomITask>{ taskSid: 'mock task' };
+const task = <CustomITask>{ taskSid: 'WT-mock task' };
 const baseMetadata = { ...VALID_EMPTY_METADATA } as ContactMetadata;
 
 const baseCase: Case = {
-  accountSid: 'test-id',
+  ...VALID_EMPTY_CASE,
+  accountSid: 'AC-test-id',
   id: '213',
   helpline: 'za',
   status: 'test-st',
-  twilioWorkerId: 'WE2xxx1',
+  twilioWorkerId: 'WK2xxx1',
   info: {},
   categories: {},
   createdAt: '12-05-2023',
   updatedAt: '12-05-2023',
-  connectedContacts: [baseContact] as Contact[],
 };
 
 const baseState: ContactsState = {
@@ -173,8 +174,16 @@ describe('actions', () => {
   });
   describe('submitContactFormAsyncAction', () => {
     test('Action calls the submitContactForm helper', async () => {
-      submitContactFormAsyncAction(task, baseContact, baseMetadata, baseCase);
-      expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, baseMetadata, baseCase);
+      const caseState = {
+        connectedCase: baseCase,
+        sections: {},
+        timelines: {},
+        references: new Set(),
+        availableStatusTransitions: [],
+        caseWorkingCopy: undefined,
+      };
+      submitContactFormAsyncAction(task, baseContact, baseMetadata, caseState);
+      expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, baseMetadata, caseState);
     });
 
     test('Updates contact in redux and sets metadata', async () => {
@@ -183,7 +192,12 @@ describe('actions', () => {
       const updatedContact = { ...baseContact, helpline: 'new helpline' };
       mockSubmitContactForm.mockResolvedValue(updatedContact);
       // Not sure why the extra cast to any is needed here but not for the other actions?
-      await (dispatch(submitContactFormAsyncAction(task, baseContact, baseMetadata, baseCase) as any) as unknown);
+      await (dispatch(
+        submitContactFormAsyncAction(task, baseContact, baseMetadata, {
+          ...VALID_EMPTY_CASE_STATE_ENTRY,
+          connectedCase: baseCase,
+        }) as any,
+      ) as unknown);
       const { metadata, savedContact } = getState().existingContacts[baseContact.id];
       // Check that the difference in startMillis is still insignificant
       expect(Math.abs(metadata.startMillis - newContactMetaData(false).startMillis)).toBeLessThanOrEqual(100);

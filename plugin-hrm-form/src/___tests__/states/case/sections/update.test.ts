@@ -24,7 +24,7 @@ import {
   useFetchDefinitions,
 } from 'hrm-form-definitions';
 
-import { copyCaseSectionItem } from '../../../../states/case/sections/update';
+import { copyCaseSectionItem } from '../../../../states/case/sections/copySection';
 import { CaseSectionApi } from '../../../../states/case/sections/api';
 import { householdSectionApi } from '../../../../states/case/sections/household';
 import { perpetratorSectionApi } from '../../../../states/case/sections/perpetrator';

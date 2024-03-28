@@ -16,95 +16,29 @@
 
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { Activity, ContactActivity, NoteActivity } from './types';
-import { Case, Contact, Referral } from '../../types/types';
-import { channelTypes } from '../DomainConstants';
-import { getTemplateStrings } from '../../hrmConfig';
-import { CaseSection } from '../../services/caseSectionService';
+import { Contact } from '../../types/types';
+import { FullCaseSection } from '../../services/caseSectionService';
+import { lookupApiBySectionType } from './sections/lookupApi';
 
-const ActivityTypes = {
-  createCase: 'create',
-  addNote: 'note',
-  addReferral: 'referral',
-  connectContact: {
-    ...channelTypes,
-    default: 'default',
-  },
-  unknown: 'unknown',
-} as const;
-
-/**
- * Returns true if the activity provided represents a contact that was connected to the case
- * @param activity Timeline Activity
- */
-export const isContactActivity = (activity: Activity): activity is ContactActivity =>
-  Boolean((activity as ContactActivity).contactId);
-
-const getNoteActivities = (counsellorNotes: CaseSection[], formDefs: DefinitionVersion): NoteActivity[] => {
-  let { previewFields } = formDefs.layoutVersion.case.notes ?? {};
+export const getSectionText = (
+  { sectionTypeSpecificData, sectionType }: FullCaseSection,
+  formDefs: DefinitionVersion,
+): string => {
+  const api = lookupApiBySectionType(sectionType);
+  let { previewFields } = api.getSectionLayoutDefinition(formDefs) ?? {};
+  const sectionFormDefinition = api.getSectionFormDefinition(formDefs);
   if (!previewFields || !previewFields.length) {
-    previewFields = formDefs.caseForms.NoteForm.length ? [formDefs.caseForms.NoteForm[0].name] : [];
+    previewFields = sectionFormDefinition?.length ? [sectionFormDefinition[0].name] : [];
   }
-  return (counsellorNotes || [])
-    .map(n => {
-      try {
-        const { sectionId: id, updatedAt, updatedBy, createdBy, sectionTypeSpecificData, eventTimestamp } = n;
-        const text =
-          previewFields
-            .map(pf => sectionTypeSpecificData[pf])
-            .filter(pv => pv)
-            .join(', ') || '--';
-        return {
-          id,
-          updatedAt: updatedAt?.toISOString(),
-          updatedBy,
-          text,
-          date: eventTimestamp?.toISOString(),
-          twilioWorkerId: createdBy,
-          type: ActivityTypes.addNote,
-          note: sectionTypeSpecificData,
-        };
-      } catch (err) {
-        console.warn(`Error processing referral, excluding from data`, n, err);
-        return null;
-      }
-    })
-    .filter(na => na);
+  return (
+    previewFields
+      .map(pf => sectionTypeSpecificData[pf])
+      .filter(pv => pv)
+      .join(', ') || '--'
+  );
 };
 
-const referralActivities = (referrals: CaseSection[]): Activity[] =>
-  (referrals || [])
-    .map(referral => {
-      const {
-        sectionId: id,
-        createdAt,
-        updatedAt,
-        updatedBy,
-        createdBy,
-        sectionTypeSpecificData,
-        eventTimestamp,
-      } = referral;
-      const { referredTo } = sectionTypeSpecificData;
-      try {
-        return {
-          id,
-          date: eventTimestamp?.toISOString(),
-          createdAt: createdAt?.toISOString(),
-          twilioWorkerId: createdBy,
-          updatedAt: updatedAt?.toISOString(),
-          updatedBy,
-          type: ActivityTypes.addReferral,
-          text: referredTo?.toString(),
-          referral: sectionTypeSpecificData as Referral,
-        };
-      } catch (err) {
-        console.warn(`Error processing referral, excluding from data`, referral, err);
-        return null;
-      }
-    })
-    .filter(ra => ra);
-
-const getContactActivityText = (contact: Contact, strings: Record<string, string>): string => {
+export const getContactActivityText = (contact: Contact, strings: Record<string, string>): string => {
   if (contact.rawJson.caseInformation.callSummary) {
     return contact.rawJson.caseInformation.callSummary.toString();
   }
@@ -113,52 +47,3 @@ const getContactActivityText = (contact: Contact, strings: Record<string, string
   }
   return '';
 };
-
-const connectedContactActivities = (caseContacts: Contact[]): ContactActivity[] => {
-  const strings = getTemplateStrings();
-  return (caseContacts || [])
-    .map(cc => {
-      try {
-        const type = ActivityTypes.connectContact[cc.channel];
-        const channel = type === ActivityTypes.connectContact.default ? cc.rawJson.contactlessTask.channel : type;
-        return {
-          contactId: cc.id.toString(),
-          date: cc.timeOfContact,
-          createdAt: cc.createdAt,
-          type,
-          text: getContactActivityText(cc, strings),
-          twilioWorkerId: cc.twilioWorkerId,
-          channel,
-          callType: cc.rawJson.callType,
-          isDraft: !cc.finalizedAt,
-        };
-      } catch (err) {
-        console.warn(`Error processing connected contact, excluding from data`, cc, err);
-        return null;
-      }
-    })
-    .filter(cca => cca);
-};
-
-export const getActivitiesFromCase = (sourceCase: Case, formDefs: DefinitionVersion): Activity[] => {
-  return [
-    ...getNoteActivities(sourceCase?.sections?.note ?? [], formDefs),
-    ...referralActivities(sourceCase?.sections?.referral ?? []),
-  ];
-};
-
-export const getActivitiesFromContacts = (sourceContacts: Contact[]): Activity[] => {
-  return connectedContactActivities(sourceContacts);
-};
-
-export const getActivityCount = (sourceCase: Case): number =>
-  (sourceCase?.sections?.note?.length ?? 0) +
-  (sourceCase?.sections?.referral?.length ?? 0) +
-  (sourceCase?.connectedContacts?.length ?? 0);
-
-/**
- * Sort activities from most recent to oldest.
- * @param activities Activities to sort
- */
-export const sortActivities = <T extends Activity = Activity>(activities: T[]): T[] =>
-  activities.sort((a, b) => b.date.localeCompare(a.date));

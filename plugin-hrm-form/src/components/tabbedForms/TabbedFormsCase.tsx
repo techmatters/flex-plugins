@@ -24,27 +24,30 @@ import { submitContactFormAsyncAction } from '../../states/contacts/saveContact'
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import { newCloseModalAction } from '../../states/routing/actions';
 import { CaseLayout } from '../case/styles';
-import { Case as CaseForm, Contact, CustomITask } from '../../types/types';
+import { Contact, CustomITask } from '../../types/types';
 import Case from '../case/Case';
 import { useTabbedFormContext } from './hooks/useTabbedForm';
 import { TabbedFormsCommonProps } from './types';
 import { getTemplateStrings } from '../../hrmConfig';
+import { CaseStateEntry } from '../../states/case/types';
+import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import TabbedFormsTabs from './TabbedFormsTabs';
 
 type OwnProps = TabbedFormsCommonProps;
 
 const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const { metadata, savedContact } = selectContactByTaskSid(state, taskSid);
-
+  const caseState = selectCaseByCaseId(state, savedContact?.caseId);
   return {
     metadata,
     savedContact,
+    caseState,
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => ({
-  finaliseContact: (contact: Contact, metadata: ContactMetadata, caseForm: CaseForm) =>
-    dispatch(submitContactFormAsyncAction(task as CustomITask, contact, metadata, caseForm)),
+  finaliseContact: (contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) =>
+    dispatch(submitContactFormAsyncAction(task as CustomITask, contact, metadata, caseState)),
   closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
 });
 
@@ -52,13 +55,13 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const TabbedFormsCase: React.FC<Props> = props => {
-  const { task, metadata, savedContact, closeModal, finaliseContact } = props;
+  const { task, metadata, savedContact, caseState, closeModal, finaliseContact } = props;
   const strings = getTemplateStrings();
   const { newSubmitHandler } = useTabbedFormContext();
 
-  const submit = async (caseForm: CaseForm) => {
+  const submit = async () => {
     try {
-      await finaliseContact(savedContact, metadata, caseForm);
+      await finaliseContact(savedContact, metadata, caseState);
       await completeTask(task, savedContact);
     } catch (error) {
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
@@ -70,8 +73,8 @@ const TabbedFormsCase: React.FC<Props> = props => {
     }
     return undefined;
   };
-  const onNewCaseSaved = async (caseForm: CaseForm) => {
-    await newSubmitHandler(() => submit(caseForm))();
+  const onNewCaseSaved = async () => {
+    await newSubmitHandler(() => submit())();
   };
 
   return (

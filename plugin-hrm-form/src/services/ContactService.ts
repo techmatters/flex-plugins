@@ -46,6 +46,15 @@ import { ApiError, FetchOptions } from './fetchApi';
 import { TaskSID, WorkerSID } from '../types/twilio';
 import { recordEvent } from '../fullStory';
 
+export const convertApiContactToFlexContact = (contact: Contact): Contact =>
+  contact
+    ? {
+        ...contact,
+        id: contact.id.toString(),
+        ...(contact.caseId ? { caseId: contact.caseId.toString() } : {}),
+      }
+    : contact;
+
 export async function searchContacts(
   searchParams: SearchParams,
   limit,
@@ -59,8 +68,11 @@ export async function searchContacts(
     method: 'POST',
     body: JSON.stringify(searchParams),
   };
-
-  return fetchHrmApi(`/contacts/search${queryParams}`, options);
+  const response = await fetchHrmApi(`/contacts/search${queryParams}`, options);
+  return {
+    ...response,
+    contacts: response.contacts.map(convertApiContactToFlexContact),
+  };
 }
 
 type HandleTwilioTaskResponse = {
@@ -179,10 +191,10 @@ export const createContact = async (
     body: JSON.stringify(contactForApi),
   };
 
-  return fetchHrmApi(`/contacts?finalize=false`, options);
+  return convertApiContactToFlexContact(await fetchHrmApi(`/contacts?finalize=false`, options));
 };
 
-export const updateContactInHrm = (
+export const updateContactInHrm = async (
   contactId: string,
   body: ContactDraftChanges,
   finalize: boolean = false,
@@ -192,7 +204,7 @@ export const updateContactInHrm = (
     body: JSON.stringify(body),
   };
 
-  return fetchHrmApi(`/contacts/${contactId}?finalize=${finalize}`, options);
+  return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/${contactId}?finalize=${finalize}`, options));
 };
 
 /**
@@ -315,7 +327,7 @@ export async function connectToCase(contactId: string, caseId: string) {
     body: JSON.stringify(body),
   };
 
-  return fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
+  return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/${contactId}/connectToCase`, options));
 }
 
 export async function removeFromCase(contactId: string) {
@@ -323,7 +335,7 @@ export async function removeFromCase(contactId: string) {
     method: 'DELETE',
   };
 
-  return fetchHrmApi(`/contacts/${contactId}/connectToCase`, options);
+  return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/${contactId}/connectToCase`, options));
 }
 
 async function saveConversationMedia(contactId, conversationMedia: ConversationMedia[]) {
@@ -341,7 +353,7 @@ export const getContactByTaskSid = async (taskSid: string): Promise<Contact | un
     returnNullFor404: true,
   };
   try {
-    return fetchHrmApi(`/contacts/byTaskSid/${taskSid}`, options);
+    return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/byTaskSid/${taskSid}`, options));
   } catch (err) {
     if (err instanceof ApiError && err.response.status >= 404) {
       return null;
@@ -356,7 +368,7 @@ export const getContactById = async (contactId: string): Promise<Contact | undef
     returnNullFor404: true,
   };
   try {
-    return fetchHrmApi(`/contacts/${contactId}`, options);
+    return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/${contactId}`, options));
   } catch (err) {
     if (err instanceof ApiError && err.response.status >= 404) {
       return null;

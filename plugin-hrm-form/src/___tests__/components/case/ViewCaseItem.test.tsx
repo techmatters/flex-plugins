@@ -90,28 +90,28 @@ const state: RecursivePartial<RootState> = {
     connectedCase: {
       cases: {
         case1: {
+          sections: {
+            household: {
+              HOUSEHOLD_1: {
+                sectionTypeSpecificData: {},
+                createdAt: BASELINE_DATE,
+                createdBy: WORKER_SID,
+                sectionId: 'HOUSEHOLD_1',
+              },
+              HOUSEHOLD_2: {
+                sectionTypeSpecificData: household as any,
+                createdAt: BASELINE_DATE,
+                createdBy: WORKER_SID,
+                sectionId: 'HOUSEHOLD_2',
+              },
+            },
+          },
           connectedCase: {
             ...VALID_EMPTY_CASE,
             id: 'case1',
             createdAt: new Date(1593469560208).toISOString(),
             twilioWorkerId: WORKER_SID,
             status: 'open',
-            sections: {
-              household: [
-                {
-                  sectionTypeSpecificData: {},
-                  createdAt: BASELINE_DATE,
-                  createdBy: WORKER_SID,
-                  sectionId: 'HOUSEHOLD_1',
-                },
-                {
-                  sectionTypeSpecificData: household as any,
-                  createdAt: BASELINE_DATE,
-                  createdBy: WORKER_SID,
-                  sectionId: 'HOUSEHOLD_2',
-                },
-              ],
-            },
           },
         },
       },

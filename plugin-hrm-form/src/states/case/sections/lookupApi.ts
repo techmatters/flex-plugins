@@ -23,6 +23,7 @@ import { householdSectionApi } from './household';
 import { perpetratorSectionApi } from './perpetrator';
 import { referralSectionApi } from './referral';
 import { documentSectionApi } from './document';
+import { WellKnownCaseSection } from '../../../types/types';
 
 const apiMap: Record<CaseSectionApiName, CaseSectionApi> = {
   notes: noteSectionApi,
@@ -34,3 +35,6 @@ const apiMap: Record<CaseSectionApiName, CaseSectionApi> = {
 };
 
 export const lookupApi = (name: CaseSectionApiName): CaseSectionApi => apiMap[name];
+
+export const lookupApiBySectionType = (sectionType: WellKnownCaseSection): CaseSectionApi =>
+  Object.values(apiMap).find(api => api.type === sectionType);

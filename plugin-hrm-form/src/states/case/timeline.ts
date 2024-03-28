@@ -18,49 +18,22 @@ import { createAsyncAction, createReducer } from 'redux-promise-middleware-actio
 
 import { HrmState, RootState } from '..';
 import { namespace } from '../storeNamespaces';
-import { getActivitiesFromCase, getActivitiesFromContacts, getActivityCount, sortActivities } from './caseActivities';
-import { selectSavedContacts } from './connectedContacts';
+import { getContactActivityText, getSectionText } from './caseActivities';
 import { Case, Contact, WellKnownCaseSection } from '../../types/types';
 import { getCaseTimeline, TimelineResult } from '../../services/CaseService';
 import {
   CaseSectionIdentifierTimelineActivity,
   ContactIdentifierTimelineActivity,
   GET_CASE_TIMELINE_ACTION,
+  GET_CASE_TIMELINE_ACTION_FULFILLED,
   isCaseSectionIdentifierTimelineActivity,
   isCaseSectionTimelineActivity,
   isContactTimelineActivity,
   TimelineActivity,
 } from './types';
 import { FullCaseSection } from '../../services/caseSectionService';
-
-/**
- * @deprecated - This uses the connectedContacts & caseSections within the case to put together an activity timeline
- * These are legacy data locations and will be removed
- * Use selectTimeline instead, this uses the 'timelines' & 'sections' properties on the case state entry and the existing contacts state, populated from the case timeline endpoint
- */
-export const selectCaseActivities = (state: RootState, caseId: string, pageSize: number, page: number) => {
-  const {
-    [namespace]: { configuration, connectedCase },
-  } = state;
-  const { definitionVersions, currentDefinitionVersion } = configuration;
-  const caseState = connectedCase.cases[caseId];
-
-  if (!caseState?.connectedCase) return [];
-
-  const { connectedCase: caseForTask } = caseState;
-
-  const timelineActivities = [
-    ...getActivitiesFromCase(
-      caseForTask,
-      definitionVersions[caseForTask.info.definitionVersion] ?? currentDefinitionVersion,
-    ),
-    ...getActivitiesFromContacts(selectSavedContacts(state, caseForTask)),
-  ];
-  return sortActivities(timelineActivities).slice(page * pageSize, (page + 1) * pageSize);
-};
-
-export const selectCaseActivityCount = ({ [namespace]: { connectedCase } }: RootState, caseId: string) =>
-  getActivityCount(connectedCase.cases[caseId]?.connectedCase) ?? 0;
+import { getTemplateStrings } from '../../hrmConfig';
+import { selectDefinitionVersionForCase } from '../configuration/selectDefinitions';
 
 export type PaginationSettings = { offset: number; limit: number };
 
@@ -94,6 +67,8 @@ export const timelineReducer = (initialState: HrmState): ((state: HrmState, acti
       (state, { payload: { caseId, timelineId, timelineResult, pagination } }) => {
         const caseEntry = state.connectedCase.cases[caseId];
         if (!caseEntry) return state;
+        caseEntry.timelines = caseEntry.timelines ?? {};
+        caseEntry.sections = caseEntry.sections ?? {};
         let timeline: (CaseSectionIdentifierTimelineActivity | ContactIdentifierTimelineActivity)[] =
           caseEntry.timelines[timelineId] ?? [];
         if (timeline.length !== timelineResult.count) {
@@ -135,38 +110,53 @@ export const timelineReducer = (initialState: HrmState): ((state: HrmState, acti
   ]);
 
 export type GetTimelineAsyncAction = ReturnType<typeof newGetTimelineAsyncAction.fulfilled> & {
-  type: typeof GET_CASE_TIMELINE_ACTION;
+  type: typeof GET_CASE_TIMELINE_ACTION_FULFILLED;
 };
+
+export type UITimelineActivity = TimelineActivity<FullCaseSection | Contact> & { text: string; isDraft: boolean };
 
 export const selectTimeline = (
   state: RootState,
   caseId: string,
   timelineId: string,
   { offset, limit }: PaginationSettings,
-): TimelineActivity<FullCaseSection | Contact>[] | undefined => {
+): UITimelineActivity[] | undefined => {
+  const strings = getTemplateStrings();
   const caseEntry = state[namespace].connectedCase.cases[caseId];
   if (!caseEntry) return undefined;
-  const timeline = caseEntry.timelines[timelineId];
+  const { connectedCase, sections, timelines } = caseEntry;
+  const timeline = timelines?.[timelineId];
   if (!timeline) return undefined;
+  const definitionVersion = selectDefinitionVersionForCase(state, connectedCase);
   const timelineWindow = timeline.slice(offset, offset + limit);
-  return timelineWindow.map(timelineActivity => {
-    if (isCaseSectionIdentifierTimelineActivity(timelineActivity)) {
+  return timelineWindow
+    .map(timelineActivity => {
+      if (isCaseSectionIdentifierTimelineActivity(timelineActivity)) {
+        const { activity } = timelineActivity;
+        const section = sections?.[activity.sectionType]?.[activity.sectionId];
+        if (!section) return undefined;
+        return {
+          ...timelineActivity,
+          activityType: 'case-section',
+          activity: section,
+          text: getSectionText(section, definitionVersion),
+          isDraft: false,
+        };
+      }
       const { activity } = timelineActivity;
-      const section = caseEntry.sections[activity.sectionType]?.[activity.sectionId];
+      const contact = state[namespace].activeContacts.existingContacts[activity.contactId]?.savedContact;
+      if (!contact) return undefined;
       return {
         ...timelineActivity,
-        activity: section,
+        activityType: 'contact',
+        activity: contact,
+        text: getContactActivityText(contact, strings),
+        isDraft: !Boolean(contact?.finalizedAt),
       };
-    }
-    const { activity } = timelineActivity;
-    const contact = state[namespace].activeContacts.existingContacts[activity.contactId]?.savedContact;
-    return {
-      ...timelineActivity,
-      activity: contact,
-    };
-  });
+    })
+    .filter(Boolean) as UITimelineActivity[];
 };
 
 // eslint-disable-next-line import/no-unused-modules
 export const selectTimelineCount = (state: RootState, caseId: string, timelineId: string): number | undefined =>
-  state[namespace].connectedCase.cases[caseId]?.timelines[timelineId]?.length;
+  state[namespace].connectedCase.cases[caseId]?.timelines?.[timelineId]?.length;

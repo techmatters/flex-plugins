@@ -53,43 +53,6 @@ const generateMockCases = (toGenerate: number): Case[] => {
       },
       createdAt: time.toISOString(),
       updatedAt: time.toISOString(),
-      connectedContacts: [
-        {
-          id: idxNumber.toString(),
-          twilioWorkerId: flexContext.LOGGED_IN_WORKER_SID,
-          number: sectionIdx.toString().padEnd(8, '0'),
-          conversationDuration: 100,
-          csamReports: [],
-          createdBy: flexContext.LOGGED_IN_WORKER_SID,
-          helpline: 'Fake Helpline',
-          taskId: `TK${sectionIdx}`,
-          channel: 'web',
-          timeOfContact: time.toISOString(),
-          updatedAt: time.toISOString(),
-          updatedBy: flexContext.LOGGED_IN_WORKER_SID,
-          queueName: 'Fake Queue',
-          channelSid: `CH${sectionIdx}`,
-          serviceSid: 'SIxxx',
-          rawJson: {
-            callType: 'Child calling about self',
-            childInformation: {
-              firstName: 'Lorna',
-              lastName: 'Ballantyne',
-            },
-            callerInformation: {},
-            caseInformation: {
-              categories: {
-                'contact category 1': ['subcategory 1'],
-                'contact category 2': ['subcategory 2', 'subcategory 3'],
-              },
-            },
-            conversationMedia: [],
-            contactlessTask: {
-              channel: 'web',
-            },
-          },
-        },
-      ],
     };
   });
 };
