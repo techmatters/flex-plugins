@@ -17,6 +17,8 @@
 import { AgentsDataTable, TaskHelper } from '@twilio/flex-ui';
 import { SupervisorWorkerState } from '@twilio/flex-ui/src/state/State.definition';
 
+import { getAseloFeatureFlags } from '../../hrmConfig';
+
 /**
  * Converts a duration string in the format "HH:MM:SS" or "MM:SS" to seconds.
  */
@@ -39,18 +41,14 @@ const convertDurationToSeconds = (duration: string): number => {
  * If a worker doesn't have a call, they will be sorted to the end.
  */
 const sortWorkersByCallDuration = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
-  // find the call task for each worker if it exists
   const aCallTask = a.tasks.find(task => TaskHelper.isCallTask(task));
   const bCallTask = b.tasks.find(task => TaskHelper.isCallTask(task));
 
   if (!aCallTask && !bCallTask) {
-    // if neither worker has a call task
     return 0;
   } else if (!aCallTask) {
-    // if worker a doesn't have a call task
     return -1;
   } else if (!bCallTask) {
-    // if worker b doesn't have a call task
     return 1;
   }
   const aDuration = convertDurationToSeconds(new TaskHelper(aCallTask).durationSinceUpdate);
@@ -60,5 +58,6 @@ const sortWorkersByCallDuration = (a: SupervisorWorkerState, b: SupervisorWorker
 };
 
 export const setUpSortingCalls = () => {
+  if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
   AgentsDataTable.defaultProps.sortCalls = sortWorkersByCallDuration;
 };
