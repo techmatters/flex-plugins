@@ -20,17 +20,17 @@ import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
-import { StyledAddNewCaseDropdown, StyledAddNewCaseDropdownList } from './styles';
-import { StyledNextStepButton } from '../../styles/buttons';
+import { StyledNextStepButton, StyledAddNewCaseDropdown, StyledAddNewCaseDropdownList } from '../styles/buttons';
 
 type OwnProps = {
   handleNewCaseType: () => void;
   handleExistingCaseType: () => void;
+  position?: string;
 };
 
 type Props = OwnProps;
 
-const AddCaseButton: React.FC<Props> = ({ handleNewCaseType, handleExistingCaseType }) => {
+const AddCaseButton: React.FC<Props> = ({ handleNewCaseType, handleExistingCaseType, position }) => {
   const [dropdown, setDropdown] = useState(false);
 
   const [enabled, setEnabled] = useState(true);
@@ -61,7 +61,7 @@ const AddCaseButton: React.FC<Props> = ({ handleNewCaseType, handleExistingCaseT
       data-testid="BottomBar-SaveAndAddToCase-Button"
       disabled={!enabled}
     >
-      <StyledAddNewCaseDropdown style={{ display: dropdown ? 'block' : 'none' }}>
+      <StyledAddNewCaseDropdown position={position} dropdown={dropdown}>
         <StyledAddNewCaseDropdownList
           onMouseDown={event => event.preventDefault}
           onClick={newOptionHandler(handleNewCaseType)}

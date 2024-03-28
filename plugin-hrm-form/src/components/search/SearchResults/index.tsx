@@ -58,6 +58,7 @@ import { getUnsavedContact } from '../../../states/contacts/getUnsavedContact';
 import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 import { createCaseAsyncAction } from '../../../states/case/saveCase';
 import asyncDispatch from '../../../states/asyncDispatch';
+import selectContextContactId from '../../../states/contacts/selectContextContactId';
 
 export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;
@@ -106,6 +107,7 @@ const SearchResults: React.FC<Props> = ({
   saveUpdates,
   createCaseAsyncAction,
   closeModal,
+  contextContactId,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { subroute: currentResultPage, casesPage, contactsPage } = routing as SearchResultRoute;
@@ -153,7 +155,7 @@ const SearchResults: React.FC<Props> = ({
   };
 
   const handleClickViewCase = currentCase => {
-    viewCaseDetails(currentCase.id);
+    viewCaseDetails(currentCase.id, contextContactId);
   };
 
   const { count: contactsCount, contacts } = searchContactsResults;
@@ -425,14 +427,13 @@ const SearchResults: React.FC<Props> = ({
 };
 SearchResults.displayName = 'SearchResults';
 
-const mapStateToProps = (
-  { [namespace]: { searchContacts, configuration, routing, activeContacts, connectedCase } }: RootState,
-  { task, contactId }: OwnProps,
-) => {
+const mapStateToProps = (state: RootState, { task, contactId }: OwnProps) => {
+  const { searchContacts, configuration, routing, activeContacts } = state[namespace];
   const taskId = task.taskSid;
   const { isRequesting, isRequestingCases, caseRefreshRequired, contactRefreshRequired } = searchContacts.tasks[taskId];
   const { counselors } = configuration;
   const { draftContact, savedContact } = activeContacts.existingContacts[contactId] ?? {};
+  const contextContactId = selectContextContactId(state, taskId, 'search', 'case-results');
 
   return {
     isRequestingContacts: isRequesting,
@@ -443,6 +444,7 @@ const mapStateToProps = (
     routing: getCurrentTopmostRouteForTask(routing, taskId),
     searchCase: searchContacts.tasks[task.taskSid].searchExistingCaseStatus,
     contact: getUnsavedContact(savedContact, draftContact),
+    contextContactId,
   };
 };
 
@@ -458,8 +460,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     changeCaseResultPage: (casesPage: number, currentRoute: SearchResultRoute) => {
       dispatch(changeRoute({ ...currentRoute, subroute: 'case-results', casesPage }, taskId, ChangeRouteMode.Replace));
     },
-    viewCaseDetails: (caseId: string) => {
-      dispatch(newOpenModalAction({ route: 'case', subroute: 'home', isCreating: false, caseId }, taskId));
+    viewCaseDetails: (caseId: string, contextContactId: string) => {
+      dispatch(
+        newOpenModalAction({ contextContactId, route: 'case', subroute: 'home', isCreating: false, caseId }, taskId),
+      );
     },
     newCase: () => {
       dispatch(newOpenModalAction({ route: 'case', subroute: 'home', isCreating: true, caseId: undefined }, taskId));

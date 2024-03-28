@@ -113,6 +113,51 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
 `;
 StyledNextStepButton.displayName = 'StyledNextStepButton';
 
+type StyledAddNewCaseDropdown = {
+  position?: string;
+  dropdown?: boolean;
+};
+
+export const StyledAddNewCaseDropdown = styled('ul')<StyledAddNewCaseDropdown>`
+  position: absolute;
+  right: -12%;
+  display: ${({ dropdown }) => (dropdown ? 'block' : 'none')};
+  ${({ position }) => (position === 'top' ? 'top: 110%;' : 'bottom: 110%;')}
+  box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
+  -webkit-box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
+  -moz-box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
+  font-size: 0.875rem;
+  z-index: 9999;
+  width: 164px;
+  padding: 10px 0 10px 0;
+  flex-direction: column;
+  align-items: flex-start;
+  background: var(--background-color-background-body, #fff);
+  border: 1px solid var(--border-color-border-weaker, #e1e3ea);
+  border-radius: 8px;
+  margin-right: 20px;
+`;
+StyledAddNewCaseDropdown.displayName = 'StyledAddNewCaseDropdown';
+
+export const StyledAddNewCaseDropdownList = styled('button')`
+  position: relative;
+  font-size: 14px;
+  display: flex;
+  color: inherit;
+  min-width: 10.1rem;
+  align-items: flex-start;
+  align-self: stretch;
+  padding: 7px 0 7px 18px;
+  text-decoration: none;
+  &:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
+  }
+  background: none;
+  border: none;
+`;
+StyledAddNewCaseDropdownList.displayName = 'StyledAddNewCaseDropdownList';
+
 // Secondary/tertiary button
 export const SaveAndEndButton = styled(Button)<StyledNextStepButtonProps>`
   display: flex;

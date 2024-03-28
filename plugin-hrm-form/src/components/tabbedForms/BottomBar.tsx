@@ -36,7 +36,7 @@ import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata, LoadingStatus } from '../../states/contacts/types';
 import { AppRoutes } from '../../states/routing/types';
-import AddCaseButton from './AddCaseButton';
+import AddCaseButton from '../AddCaseButton';
 import asyncDispatch from '../../states/asyncDispatch';
 import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
@@ -113,7 +113,7 @@ const BottomBar: React.FC<
   if (!showBottomBar) return null;
 
   const openSearchModal = () => {
-    openModal({ route: 'search', subroute: 'form', action: 'select-case' });
+    openModal({ contextContactId: savedContact.id, route: 'search', subroute: 'form', action: 'select-case' });
   };
 
   const renderCaseButton = () => {

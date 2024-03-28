@@ -36,6 +36,8 @@ type BoxProps = {
   alignSelf?: string;
   textAlign?: string;
   borderBottom?: string;
+  display?: string;
+  justifyContent?: string;
 };
 
 export const Box = styled('div')<BoxProps>`
@@ -53,6 +55,8 @@ export const Box = styled('div')<BoxProps>`
   ${({ paddingRight }) => paddingRight && `padding-right: ${paddingRight};`}
   ${({ alignSelf }) => alignSelf && `align-self: ${alignSelf};`}
   ${({ textAlign }) => textAlign && `text-align: ${textAlign};`}
+  ${({ display }) => display && `display: ${display};`}
+  ${({ justifyContent }) => justifyContent && `justify-content: ${justifyContent};`}
 `;
 Box.displayName = 'Box';
 

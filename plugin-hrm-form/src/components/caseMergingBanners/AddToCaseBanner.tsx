@@ -30,6 +30,8 @@ import asyncDispatch from '../../states/asyncDispatch';
 import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
 import { newCloseModalAction } from '../../states/routing/actions';
 import { BannerContainer, Text } from '../../styles/banners';
+import selectContextContactId from '../../states/contacts/selectContextContactId';
+import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 
 type MyProps = {
   task: CustomITask | StandaloneITask;
@@ -37,14 +39,17 @@ type MyProps = {
 
 const mapStateToProps = (state: RootState, { task }: MyProps) => {
   const { connectedCase } = selectCurrentRouteCaseState(state, task.taskSid) ?? {};
-  const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
+  const contactId = selectContextContactId(state, task.taskSid, 'case', 'home');
+  const taskContact = selectContactStateByContactId(state, contactId)?.savedContact;
+
   return { connectedCase, taskContact };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: MyProps) => ({
   connectCaseToTaskContact: async (taskContact: Contact, cas: Case) =>
     asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, cas.id)),
-  closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
+  closeModal: () =>
+    dispatch(newCloseModalAction(task.taskSid, task.taskSid === 'standalone-task-sid' ? 'contact' : 'tabbed-forms')),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

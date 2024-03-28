@@ -157,7 +157,14 @@ describe('test reducer (specific actions)', () => {
     describe('When modal is open', () => {
       const stateWithModal = (modalRoutes: AppRoutes[]): RoutingState => ({
         tasks: {
-          task1: [{ route: 'tabbed-forms', subroute: 'childInformation', activeModal: modalRoutes }],
+          task1: [
+            {
+              route: 'tabbed-forms',
+              subroute: 'childInformation',
+              activeModal: modalRoutes,
+              contextContactId: undefined,
+            },
+          ],
           [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
         },
         isAddingOfflineContact: false,
