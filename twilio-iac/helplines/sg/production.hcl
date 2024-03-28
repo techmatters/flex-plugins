@@ -8,6 +8,9 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
+
+    helpline_region = "eu-west-1"
+
     custom_task_routing_filter_expression = ""
     flow_vars                             = {}
   }
