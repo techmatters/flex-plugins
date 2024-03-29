@@ -40,7 +40,7 @@ const convertDurationToSeconds = (duration: string): number => {
  * Sorts agents by the duration of their calls.
  * If a worker doesn't have a call, they will be sorted to the end.
  */
-const sortWorkersByCallDuration = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
+const sortAgentCalls = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
   const aCallTask = a.tasks.find(task => TaskHelper.isCallTask(task));
   const bCallTask = b.tasks.find(task => TaskHelper.isCallTask(task));
 
@@ -62,7 +62,26 @@ const sortWorkersByCallDuration = (a: SupervisorWorkerState, b: SupervisorWorker
   return 0;
 };
 
-export const setUpSortingCalls = () => {
+const sortAgentTasks = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
+  const aChatTasks = a.tasks.filter(task => TaskHelper.isChatBasedTask(task));
+  const bChatTasks = b.tasks.filter(task => TaskHelper.isChatBasedTask(task));
+
+  const taskLengthDifference = aChatTasks.length - bChatTasks.length;
+  if (taskLengthDifference !== 0) {
+    return taskLengthDifference;
+  }
+
+  if (aChatTasks.length > 0) {
+    const aDuration = convertDurationToSeconds(new TaskHelper(aChatTasks[0]).durationSinceUpdate);
+    const bDuration = convertDurationToSeconds(new TaskHelper(bChatTasks[0]).durationSinceUpdate);
+    return aDuration - bDuration;
+  }
+
+  return 0;
+};
+
+export const setUpSortingCallsAndChats = () => {
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
-  AgentsDataTable.defaultProps.sortCalls = sortWorkersByCallDuration;
+  AgentsDataTable.defaultProps.sortCalls = sortAgentCalls;
+  AgentsDataTable.defaultProps.sortTasks = sortAgentTasks;
 };

@@ -141,7 +141,7 @@ const setUpComponents = (
   }
 
   TeamsView.setUpSkillsColumn();
-  TeamsView.setUpSortingCalls();
+  TeamsView.setUpSortingCallsAndChats();
   TeamsView.setUpTeamViewFilters();
   TeamsView.setUpWorkerDirectoryFilters();
 
