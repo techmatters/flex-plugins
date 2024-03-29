@@ -66,6 +66,7 @@ import { createCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import AddCaseButton from '../AddCaseButton';
+import { hasTaskControl } from '../../transfer/transferTaskState';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -286,10 +287,11 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
     // if (!hasTaskControl(task)) return;
 
+
     try {
       await saveUpdates(savedContact, draftContact);
       await createCaseAsyncAction(savedContact, workerSid, definitionVersion);
-      openModal({ route: 'case', subroute: 'home', isCreating: true, caseId: undefined });
+      openModal({ contextContactId: savedContact.id, route: 'case', subroute: 'home', isCreating: true, caseId: undefined });
       // openModal({ route: 'case', subroute: 'home', caseId })
     } catch (error) {
       recordBackendError('Open New Case', error);
