@@ -25,7 +25,7 @@ import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
 import { customChannelTypes } from '../states/DomainConstants';
 import * as TransferHelpers from '../transfer/transferTaskState';
-import { CustomITask, FeatureFlags } from '../types/types';
+import { CustomITask, FeatureFlags, isTwilioTask } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
 import type { RootState } from '../states';
@@ -37,6 +37,7 @@ import { createContactAsyncAction, finalizeContactAsyncAction } from '../states/
 import { handleTransferredTask } from '../transfer/setUpTransferActions';
 import { prepopulateForm } from './prepopulateForm';
 import { namespace } from '../states/storeNamespaces';
+import { recordEvent } from '../fullStory';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -180,6 +181,24 @@ export const wrapupTask = (setupObject: SetupObject, getMessage: GetMessage) =>
     await saveEndMillis(payload);
   });
 
+export const recordCallState = ({ task }) => {
+  if (isTwilioTask(task) && TaskHelper.isCallTask(task)) {
+    recordEvent('[Temporary Debug Event] Call Task State', {
+      taskSid: task.taskSid,
+      taskStatus: task.status,
+      reservationSid: task.sid,
+      isCallTask: TaskHelper.isCallTask(task),
+      isChatBasedTask: TaskHelper.isChatBasedTask(task),
+      taskConferenceExists: Boolean(task.conference),
+      taskConferenceSid: task.conference?.conferenceSid,
+      taskConferenceLiveParticipantCount: task.conference?.liveParticipantCount,
+      taskConferenceLiveWorkerCount: task.conference?.liveWorkerCount,
+      taskConferenceAttributes: JSON.stringify(task.attributes.conference),
+      taskConversationAttributes: JSON.stringify(task.attributes.conversations),
+      taskAllAttributes: JSON.stringify(task.attributes),
+    });
+  }
+};
 const decreaseChatCapacity = (featureFlags: FeatureFlags): ActionFunction => async (
   payload: ActionPayload,
 ): Promise<void> => {
