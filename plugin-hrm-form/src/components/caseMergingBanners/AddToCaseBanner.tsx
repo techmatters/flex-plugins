@@ -43,7 +43,7 @@ type MyProps = {
 const mapStateToProps = (state: RootState, { task }: MyProps) => {
   const route = selectCurrentTopmostRouteForTask(state, task.taskSid);
   const { connectedCase } = selectCurrentRouteCaseState(state, task.taskSid) ?? {};
-  const contactId = selectContextContactId(state, task.taskSid, 'case', 'home');
+  const contactId = selectContextContactId(state, task.taskSid, 'search', 'case-results');
   const taskContact = selectContactStateByContactId(state, contactId)?.savedContact;
   return {
     connectedCase,

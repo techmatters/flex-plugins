@@ -30,8 +30,6 @@ import TagsAndCounselor from '../TagsAndCounselor';
 import { namespace } from '../../../states/storeNamespaces';
 import asyncDispatch from '../../../states/asyncDispatch';
 import { connectToCaseAsyncAction } from '../../../states/contacts/saveContact';
-import selectContactByTaskSid from '../../../states/contacts/selectContactByTaskSid';
-import { isStandaloneITask } from '../../case/Case';
 import { newCloseModalAction } from '../../../states/routing/actions';
 import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
@@ -41,7 +39,6 @@ import selectContextContactId from '../../../states/contacts/selectContextContac
 import { selectFirstCaseContact } from '../../../states/contacts/selectContactByCaseId';
 import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
 
-
 type OwnProps = {
   currentCase: Case;
   onClickViewCase: () => void;
@@ -49,7 +46,7 @@ type OwnProps = {
   task: RouterTask;
 };
 
-const mapStateToProps = (state: RootState, { task }: OwnProps) => {
+const mapStateToProps = (state: RootState, { task, currentCase }: OwnProps) => {
   const contactId = selectContextContactId(state, task.taskSid, 'search', 'case-results');
   const taskContact = selectContactStateByContactId(state, contactId)?.savedContact;
   const firstConnectedContact = selectFirstCaseContact(state, currentCase);
