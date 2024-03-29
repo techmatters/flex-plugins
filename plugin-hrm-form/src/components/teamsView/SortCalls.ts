@@ -44,17 +44,22 @@ const sortWorkersByCallDuration = (a: SupervisorWorkerState, b: SupervisorWorker
   const aCallTask = a.tasks.find(task => TaskHelper.isCallTask(task));
   const bCallTask = b.tasks.find(task => TaskHelper.isCallTask(task));
 
-  if (!aCallTask && !bCallTask) {
-    return 0;
-  } else if (!aCallTask) {
-    return -1;
-  } else if (!bCallTask) {
-    return 1;
-  }
-  const aDuration = convertDurationToSeconds(new TaskHelper(aCallTask).durationSinceUpdate);
-  const bDuration = convertDurationToSeconds(new TaskHelper(bCallTask).durationSinceUpdate);
+  const aIsLiveCallTask = TaskHelper.isLiveCall(aCallTask);
+  const bIsLiveCallTask = TaskHelper.isLiveCall(bCallTask);
 
-  return aDuration - bDuration;
+  const aDuration = aCallTask ? convertDurationToSeconds(new TaskHelper(aCallTask).durationSinceUpdate) : 0;
+  const bDuration = bCallTask ? convertDurationToSeconds(new TaskHelper(bCallTask).durationSinceUpdate) : 0;
+
+  if (!aIsLiveCallTask && !bIsLiveCallTask) {
+    return aDuration - bDuration; // both are live calls, longest duration first
+  } else if (aIsLiveCallTask && bIsLiveCallTask) {
+    return aDuration - bDuration; // both are not live calls, longest duration first
+  } else if (aIsLiveCallTask && !bIsLiveCallTask) {
+    return 1; // a is a live call and b is not, a comes first
+  } else if (!aIsLiveCallTask && bIsLiveCallTask) {
+    return -1; // b is a live call and a is not, b comes first
+  }
+  return 0;
 };
 
 export const setUpSortingCalls = () => {
