@@ -36,6 +36,10 @@ locals {
         "target_workers" = "routing.skills HAS 'Prioridad'",
         "friendly_name"  = "Prioridad/Emergencia"
       }
+      everyone : {
+        "target_workers" = "1==1",
+        "friendly_name"  = "Everyone"
+      }
       survey : {
         "target_workers" = "1==0",
         "friendly_name"  = "Survey"

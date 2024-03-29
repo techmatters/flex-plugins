@@ -7,12 +7,12 @@
     "idle_session_ttl_in_seconds": "600",
     "enable_model_improvements": true,
     "abort_statement": {
-      "content": "Skuzani, mhux nista' nassistu f'dan il-ħin",
+      "content": "Jiddispjaċini, ma fhimtx eżatt.",
       "content_type": "PlainText"
     },
     "clarification_prompt": {
       "max_attempts": 2,
-      "content": "Skuzani, ma nifhimtx dak. Jekk jogħġbok erġa' ppwera",
+      "content": "Jiddispjaċini, ma fhimtx eżatt. Jekk jogħġbok erġa pprova.",
       "content_type": "PlainText"
     },
     "intents": [

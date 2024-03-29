@@ -16,8 +16,8 @@
 
 import { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
-import { Case, WellKnownCaseSection } from '../../../types/types';
-import { CaseWorkingCopy } from '../types';
+import { WellKnownCaseSection } from '../../../types/types';
+import { CaseStateEntry, CaseWorkingCopy } from '../types';
 import { CaseSection, CaseSectionTypeSpecificData } from '../../../services/caseSectionService';
 
 // TODO: This interface was created to abstract away the differences between various types of case sections, now the structure of these is standardised the abstraction is largely redundant
@@ -27,8 +27,7 @@ import { CaseSection, CaseSectionTypeSpecificData } from '../../../services/case
 export type CaseSectionApi = {
   readonly label: string; // for logging only
   readonly type: WellKnownCaseSection;
-  getSectionItemById: (caseObj: Case, id: string) => CaseSection | undefined;
-  getMostRecentSectionItem: (caseObj: Case) => CaseSection | undefined;
+  getSectionItemById: (sections: CaseStateEntry['sections'], id: string) => CaseSection | undefined;
   getSectionFormDefinition: (definitions: DefinitionVersion) => FormDefinition;
   getSectionLayoutDefinition: (definitions: DefinitionVersion) => LayoutDefinition;
   getWorkingCopy: (caseInfo: CaseWorkingCopy, id?: string) => CaseSectionTypeSpecificData | undefined;

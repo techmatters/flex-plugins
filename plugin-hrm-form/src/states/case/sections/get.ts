@@ -13,30 +13,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { Case, WellKnownCaseSection } from '../../../types/types';
+import { WellKnownCaseSection } from '../../../types/types';
 import { CaseSection } from '../../../services/caseSectionService';
+import { CaseStateEntry } from '../types';
 
 export const getSectionItemById = (propertyName: WellKnownCaseSection) => (
-  caseObj: Case,
+  sections: CaseStateEntry['sections'],
   id: string,
-): CaseSection | undefined => {
-  const sectionList = caseObj?.sections?.[propertyName];
-  if (Array.isArray(sectionList)) {
-    return sectionList.find(s => s.sectionId === id);
-  }
-  return undefined;
-};
-
-export const getMostRecentSectionItem = (propertyName: WellKnownCaseSection) => (
-  caseObj: Case,
-): CaseSection | undefined => {
-  const sectionList = caseObj?.sections[propertyName];
-  if (Array.isArray(sectionList)) {
-    const sorted = [...sectionList].sort(
-      (a, b) =>
-        ((b.createdAt?.getTime && b.createdAt.getTime()) ?? 0) - ((a.createdAt?.getTime && a.createdAt.getTime()) ?? 0),
-    );
-    return sorted[0];
-  }
-  return undefined;
-};
+): CaseSection | undefined => sections?.[propertyName]?.[id];

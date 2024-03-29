@@ -51,7 +51,6 @@ function createCase(status: string, twilioWorkerId: string): Case {
     twilioWorkerId,
     createdAt: baselineDate.toISOString(),
     updatedAt: baselineDate.toISOString(),
-    connectedContacts: [],
     categories: {},
   };
 }

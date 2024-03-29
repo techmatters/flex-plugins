@@ -29,6 +29,7 @@
       "splitFormAt": 6
     },
     "referrals": {
+      "previewFields": ["referredTo"],
       "splitFormAt": 3
     },
     "documents": {

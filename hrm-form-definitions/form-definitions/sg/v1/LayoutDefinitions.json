@@ -33,6 +33,7 @@
       "splitFormAt": 5
     },
     "referrals": {
+      "previewFields": ["referredTo"],
       "splitFormAt": 2
     },
     "documents": {

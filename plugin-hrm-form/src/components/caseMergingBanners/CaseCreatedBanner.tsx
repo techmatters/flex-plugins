@@ -24,13 +24,13 @@ import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
 import { newGoBackAction } from '../../states/routing/actions';
 import { getOfflineContactTaskSid } from '../../states/contacts/offlineContactTask';
 import { cancelCaseAsyncAction } from '../../states/case/saveCase';
-import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
 import { CustomITask, StandaloneITask } from '../../types/types';
 import { BannerActionLink, BannerContainer, Text } from '../../styles/banners';
 import { getInitializedCan, PermissionActions } from '../../permissions';
 import { selectContactsByCaseIdInCreatedOrder } from '../../states/contacts/selectContactByCaseId';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
+import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 
 type OwnProps = {
   task?: CustomITask | StandaloneITask;
@@ -61,7 +61,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const CreatedCaseBanner: React.FC<Props> = ({
-  taskSid,
+  task: { taskSid },
   caseId,
   cas,
   hasOtherContacts,

@@ -61,11 +61,11 @@ import InfoIcon from '../caseMergingBanners/InfoIcon';
 import { BannerContainer, Text } from '../../styles/banners';
 import { isSmsChannelType } from '../../utils/smsChannels';
 import getCanEditContact from '../../permissions/canEditContact';
-import AddCaseButton from '../tabbedForms/AddCaseButton';
 import { recordBackendError } from '../../fullStory';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
+import AddCaseButton from '../AddCaseButton';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -462,7 +462,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
           {csamReportEnabled && canEditContact() && (
             <SectionEntry descriptionKey="ContactDetails-GeneralDetails-ExternalReportsFiled">
               {externalReportButton()}
-              {csamReports.map(formatCsamReport)}
+              {csamReports?.map(formatCsamReport)}
             </SectionEntry>
           )}
         </ContactDetailsSection>

@@ -29,6 +29,7 @@
       }
     },
     "referrals": {
+      "previewFields": ["referredTo"],
       "splitFormAt": 2
     },
     "documents": {

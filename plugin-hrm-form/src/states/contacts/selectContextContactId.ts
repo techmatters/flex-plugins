@@ -15,15 +15,21 @@
  */
 
 import { RootState } from '..';
-import { namespace } from '../storeNamespaces';
-import { Case, Contact } from '../../types/types';
+import { selectCurrentTopmostRouteForTask } from '../routing/getRoute';
 
-export const selectSavedContacts = (
-  { [namespace]: { activeContacts } }: RootState,
-  caseWithContacts: Case,
-): Contact[] => {
-  if (!caseWithContacts) return [];
-  return Object.values(activeContacts.existingContacts)
-    .filter(contact => contact.savedContact.caseId && caseWithContacts.id === contact.savedContact.caseId)
-    .map(ecs => ecs.savedContact);
+type Route = 'case' | 'search';
+type SubRoute = 'form' | 'case-results' | 'home';
+
+const selectContextContactId = (state: RootState, taskSid: string, route: Route, subroute: SubRoute) => {
+  let contactId: string;
+
+  const currentRoute = selectCurrentTopmostRouteForTask(state, taskSid);
+
+  if (currentRoute.route === route && currentRoute.subroute === subroute) {
+    contactId = currentRoute.contextContactId;
+  }
+
+  return contactId;
 };
+
+export default selectContextContactId;

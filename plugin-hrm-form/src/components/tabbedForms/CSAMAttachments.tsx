@@ -19,7 +19,7 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
 import { Box, Column, Row } from '../../styles';
-import { CSAMAttachmentText, CSAMAttachmentIcon } from '../CSAMReport/styles';
+import { CSAMAttachmentIcon, CSAMAttachmentText } from '../CSAMReport/styles';
 import { formatStringToDateAndTime } from '../../utils';
 import type { CSAMReportEntry } from '../../types/types';
 
@@ -31,7 +31,7 @@ const CSAMAttachments: React.FC<Props> = ({ csamReports }) => {
   return (
     <Box marginTop="10px">
       <Column>
-        {csamReports.map(r => {
+        {csamReports?.map(r => {
           const formattedCreatedAt = formatStringToDateAndTime(r.createdAt);
 
           return (

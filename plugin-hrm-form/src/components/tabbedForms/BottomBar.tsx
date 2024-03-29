@@ -29,18 +29,19 @@ import { hasTaskControl } from '../../transfer/transferTaskState';
 import { RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError } from '../../fullStory';
-import { Case, Contact, CustomITask, RouterTask } from '../../types/types';
+import { Contact, CustomITask, RouterTask } from '../../types/types';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata, LoadingStatus } from '../../states/contacts/types';
 import { AppRoutes } from '../../states/routing/types';
-import AddCaseButton from './AddCaseButton';
+import AddCaseButton from '../AddCaseButton';
 import asyncDispatch from '../../states/asyncDispatch';
 import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { SuccessReportIcon } from '../CSAMReport/styles';
+import { CaseStateEntry } from '../../states/case/types';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => Promise<void>) => () => void;
@@ -65,16 +66,16 @@ const BottomBar: React.FC<
   task,
   openModal,
   nextTab,
-  caseForm,
+  caseState,
   createCaseAsyncAction,
-  submitContactFormAsyncAction,
+  submitContactForm,
   saveUpdates,
   savedContact,
   contactIsSaving,
 }) => {
   const strings = getTemplateStrings();
 
-  const isAddedToCase = savedContact?.caseId !== null;
+  const isAddedToCase = savedContact?.caseId;
 
   const handleOpenNewCase = async () => {
     const { workerSid, definitionVersion } = getHrmConfig();
@@ -95,7 +96,7 @@ const BottomBar: React.FC<
     if (contactIsSaving || !hasTaskControl(task)) return;
 
     try {
-      await submitContactFormAsyncAction(task as CustomITask, contact, metadata, caseForm as Case);
+      await submitContactForm(task as CustomITask, contact, metadata, caseState);
       await completeTask(task, contact);
     } catch (error) {
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
@@ -113,7 +114,7 @@ const BottomBar: React.FC<
   if (!showBottomBar) return null;
 
   const openSearchModal = () => {
-    openModal({ route: 'search', subroute: 'form', action: 'select-case' });
+    openModal({ contextContactId: savedContact.id, route: 'search', subroute: 'form', action: 'select-case' });
   };
 
   const renderCaseButton = () => {
@@ -203,12 +204,12 @@ BottomBar.displayName = 'BottomBar';
 
 const mapStateToProps = (state: RootState, { contactId }: BottomBarProps) => {
   const { draftContact, savedContact, metadata } = selectContactStateByContactId(state, contactId) ?? {};
-  const caseForm = selectCaseByCaseId(state, savedContact.caseId ?? '')?.connectedCase || {};
+  const caseState = selectCaseByCaseId(state, savedContact.caseId ?? '');
   const contactIsSaving = metadata.loadingStatus === LoadingStatus.LOADING || savedContact.finalizedAt !== null;
   return {
     contact: getUnsavedContact(savedContact, draftContact),
     metadata,
-    caseForm,
+    caseState,
     savedContact,
     contactIsSaving,
   };
@@ -223,10 +224,10 @@ const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
       // TODO: Rework error handling to be based on redux state set by the _REJECTED action
       await asyncDispatch(dispatch)(createCaseAsyncAction(contact, workerSid, definitionVersion));
     },
-    submitContactFormAsyncAction: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) =>
+    submitContactForm: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) =>
       // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
       // TODO: Rework error handling to be based on redux state set by the _REJECTED action
-      dispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
+      dispatch(submitContactFormAsyncAction(task, contact, metadata, caseState)),
   };
 };
 

@@ -182,12 +182,13 @@ describe('Working copy reducers', () => {
           info: null,
           createdAt: '2020-07-31T20:39:37.408Z',
           updatedAt: '2020-07-31T20:39:37.408Z',
-          connectedContacts: null,
           categories: {},
         },
         caseWorkingCopy: {
           sections: {},
         },
+        sections: {},
+        timelines: {},
         availableStatusTransitions: [],
         references: new Set(['x']),
       };
@@ -197,21 +198,20 @@ describe('Working copy reducers', () => {
           cases: {
             1: {
               ...initTask,
-              connectedCase: {
-                ...initTask.connectedCase,
-                sections: {
-                  household: [
-                    {
-                      sectionId: 'existingHousehold',
-                      twilioWorkerId: 'WK-other-worker-sid',
-                      sectionTypeSpecificData: { otherProp: 'other-value' },
-                      createdAt: baselineDate.toISOString(),
-                    },
-                  ],
-                },
-              },
               caseWorkingCopy: {
                 sections: {},
+              },
+              sections: {
+                household: {
+                  existingHousehold: {
+                    sectionId: 'existingHousehold',
+                    sectionType: 'household',
+                    createdBy: 'WK-other-worker-sid',
+                    sectionTypeSpecificData: { otherProp: 'other-value' },
+                    createdAt: baselineDate,
+                    eventTimestamp: baselineDate,
+                  },
+                },
               },
             },
           },

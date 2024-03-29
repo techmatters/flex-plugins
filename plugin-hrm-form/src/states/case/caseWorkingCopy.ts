@@ -93,10 +93,7 @@ const initialiseCaseSectionWorkingCopyReducer = (
   state: CaseState,
   action: InitialiseExistingCaseSectionWorkingCopyAction,
 ): CaseState => {
-  const { sectionTypeSpecificData } = action.api.getSectionItemById(
-    state.cases[action.caseId].connectedCase,
-    action.id,
-  );
+  const { sectionTypeSpecificData } = action.api.getSectionItemById(state.cases[action.caseId].sections, action.id);
   return {
     ...state,
     cases: {

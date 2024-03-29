@@ -45,6 +45,7 @@ import { getCase } from '../../services/CaseService';
 import { getUnsavedContact } from './getUnsavedContact';
 import * as TransferHelpers from '../../transfer/transferTaskState';
 import { WorkerSID } from '../../types/twilio';
+import { CaseStateEntry } from '../case/types';
 
 export const createContactAsyncAction = createAsyncAction(
   CREATE_CONTACT_ACTION,
@@ -160,7 +161,6 @@ export const newRestartOfflineContactAsyncAction = (contact: Contact, createdOnB
 type ConnectToCaseActionPayload = { contactId: string; caseId: string; contact: Contact; contactCase: Case };
 type RemoveFromCaseActionPayload = { contactId: string; contact: Contact };
 
-// TODO: Update connectedContacts on case in redux state
 export const connectToCaseAsyncAction = createAsyncAction(
   CONNECT_TO_CASE,
   async (contactId: string, caseId: string | null): Promise<ConnectToCaseActionPayload> => {
@@ -180,14 +180,14 @@ export const removeFromCaseAsyncAction = createAsyncAction(
 
 export const submitContactFormAsyncAction = createAsyncAction(
   SET_SAVED_CONTACT,
-  async (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) => {
-    return submitContactForm(task, contact, metadata, caseForm);
+  async (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) => {
+    return submitContactForm(task, contact, metadata, caseState);
   },
-  (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) => ({
+  (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) => ({
     task,
     contact,
     metadata,
-    caseForm,
+    caseState,
   }),
 );
 
@@ -236,6 +236,12 @@ export const loadContactIntoRedux = (
   const metadata = { ...newContactMetaData(false), ...(newMetadata ?? existingContacts[contact.id]?.metadata) };
   const contactsBeingCreated = new Set(state.contactsBeingCreated);
   contactsBeingCreated.delete(contact.taskId);
+  const existingContact = existingContacts[contact.id]?.savedContact;
+  const existingAssociations = {
+    ...(existingContact?.csamReports ? { csamReports: existingContact.csamReports } : {}),
+    ...(existingContact?.conversationMedia ? { conversationMedia: existingContact.conversationMedia } : {}),
+    ...(existingContact?.referrals ? { referrals: existingContact.referrals } : {}),
+  };
   return {
     ...state,
     contactsBeingCreated,
@@ -244,7 +250,10 @@ export const loadContactIntoRedux = (
       [contact.id]: {
         ...existingContacts[contact.id],
         metadata: { ...metadata, loadingStatus: LoadingStatus.LOADED },
-        savedContact: contact,
+        savedContact: {
+          ...existingAssociations,
+          ...contact,
+        },
         references: references ?? existingContacts[contact.id]?.references,
       },
     },

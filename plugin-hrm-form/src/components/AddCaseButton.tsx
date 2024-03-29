@@ -20,8 +20,7 @@ import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
-import { StyledAddNewCaseDropdown, StyledAddNewCaseDropdownList } from './styles';
-import { StyledNextStepButton } from '../../styles/buttons';
+import { StyledNextStepButton, StyledAddNewCaseDropdown, StyledAddNewCaseDropdownList } from '../styles/buttons';
 
 type OwnProps = {
   handleNewCaseType: () => void;

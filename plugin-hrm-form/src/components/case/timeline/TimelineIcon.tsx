@@ -33,7 +33,7 @@ import SmsIcon from '../../common/icons/SmsIcon';
 import CallIcon from '../../common/icons/CallIcon';
 import { colors } from '../../../channels/colors';
 
-type IconType = ChannelTypes | 'note' | 'referral';
+export type IconType = ChannelTypes | 'note' | 'referral';
 
 export const getIcon = (type: IconType, size: string = '24px') => {
   switch (type) {
