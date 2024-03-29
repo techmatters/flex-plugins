@@ -25,7 +25,7 @@ import {
 import { TaskHelper } from '@twilio/flex-ui';
 
 import { baseMockConfig as mockBaseConfig, mockGetDefinitionsResponse } from '../mockGetConfig';
-import { handleTwilioTask, saveContact, updateContactInHrm } from '../../services/ContactService';
+import { finalizeContact, handleTwilioTask, saveContact, updateContactInHrm } from '../../services/ContactService';
 import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions, getHrmConfig } from '../../hrmConfig';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
@@ -116,10 +116,9 @@ const createContactState = ({ callType, childFirstName }, contactlessTaskInfo = 
   };
 };
 
-const getFormFromMediaPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body);
-const getFormFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[1][1].body).rawJson;
-const getTimeOfContactFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[1][1].body).timeOfContact;
-const getNumberFromPOST = mockedFetch => JSON.parse(mockedFetch.mock.calls[1][1].body).number;
+const getFormFromPATCH = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).rawJson;
+const getTimeOfContactFromPATCH = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).timeOfContact;
+const getNumberFromPATCH = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).number;
 
 describe('saveContact()', () => {
   const task = {
@@ -138,7 +137,7 @@ describe('saveContact()', () => {
 
     await saveContact(task, savedContact, metadata, workerSid, uniqueIdentifier);
 
-    const formFromPOST = getFormFromPOST(mockedFetch);
+    const formFromPOST = getFormFromPATCH(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.child);
     expect(formFromPOST.childInformation.firstName).toEqual('Jill');
 
@@ -151,7 +150,7 @@ describe('saveContact()', () => {
 
     await saveContact(task, savedContact, metadata, workerSid, uniqueIdentifier);
 
-    const formFromPOST = getFormFromPOST(mockedFetch);
+    const formFromPOST = getFormFromPATCH(mockedFetch);
     expect(formFromPOST.callType).toEqual('hang up');
     expect(formFromPOST.childInformation.firstName).toEqual('');
 
@@ -196,10 +195,10 @@ describe('saveContact() (isContactlessTask)', () => {
     fetchJson.mockResolvedValue([]).mockResolvedValue({ ...savedContact, id: 'contact-id' });
     await saveContact(task, savedContact, metadata, workerSid, uniqueIdentifier);
 
-    const formFromPOST = getFormFromPOST(mockedFetch);
+    const formFromPOST = getFormFromPATCH(mockedFetch);
     expect(formFromPOST.callType).toEqual(callTypes.child);
     expect(formFromPOST.childInformation.firstName).toEqual('Jill');
-    expect(getTimeOfContactFromPOST(mockedFetch)).toEqual(new Date(2020, 10, 24, 12, 0).toISOString());
+    expect(getTimeOfContactFromPATCH(mockedFetch)).toEqual(new Date(2020, 10, 24, 12, 0).toISOString());
   });
 
   test('non-data calltype do not save form data (but captures contactlessTask info)', async () => {
@@ -212,11 +211,11 @@ describe('saveContact() (isContactlessTask)', () => {
 
     const expected = { ...contactlessTask };
 
-    const formFromPOST = getFormFromPOST(mockedFetch);
+    const formFromPOST = getFormFromPATCH(mockedFetch);
     expect(formFromPOST.callType).toEqual('hang up');
     expect(formFromPOST.childInformation.firstName).toEqual('');
     expect(formFromPOST.contactlessTask).toStrictEqual(expected);
-    expect(getTimeOfContactFromPOST(mockedFetch)).toEqual(new Date(2020, 10, 24, 12, 0).toISOString());
+    expect(getTimeOfContactFromPATCH(mockedFetch)).toEqual(new Date(2020, 10, 24, 12, 0).toISOString());
   });
 
   test('save IP from web calltype', async () => {
@@ -235,7 +234,7 @@ describe('saveContact() (isContactlessTask)', () => {
 
     await saveContact(webTaskWithIP, savedContact, metadata, workerSid, uniqueIdentifier);
 
-    const numberFromPOST = getNumberFromPOST(mockedFetch);
+    const numberFromPOST = getNumberFromPATCH(mockedFetch);
     expect(numberFromPOST).toEqual(ip);
   });
 
@@ -257,7 +256,7 @@ describe('saveContact() (isContactlessTask)', () => {
 
     await saveContact(webTaskWithIP, savedContact, metadata, workerSid, uniqueIdentifier);
 
-    const numberFromPOST = getNumberFromPOST(mockedFetch);
+    const numberFromPOST = getNumberFromPATCH(mockedFetch);
     expect(numberFromPOST).toEqual(email);
 
     mockedFetch.mockClear();
@@ -278,12 +277,12 @@ describe('saveContact() (isContactlessTask)', () => {
 
     await saveContact(webTaskWithoutIP, savedContact, metadata, workerSid, uniqueIdentifier);
 
-    const numberFromPOST = getNumberFromPOST(mockedFetch);
+    const numberFromPOST = getNumberFromPATCH(mockedFetch);
     expect(numberFromPOST).toEqual('');
   });
 });
 
-describe('saveContact() (externalRecording)', () => {
+describe('finalizeContact() (externalRecording)', () => {
   const fetchSuccess = Promise.resolve(<any>{ ok: true, json: jest.fn(), text: jest.fn() });
   let mockedFetch;
 
@@ -325,11 +324,11 @@ describe('saveContact() (externalRecording)', () => {
       },
     };
 
-    const { savedContact, metadata } = createContactState({ callType: callTypes.child, childFirstName: 'Jill' });
-    await saveContact(task, savedContact, metadata, 'WK-workerSid', 'WT-uniqueIdentifier');
+    const { savedContact } = createContactState({ callType: callTypes.child, childFirstName: 'Jill' });
+    await finalizeContact(task, savedContact);
 
-    const formFromPOST = getFormFromMediaPOST(mockedFetch);
-    expect(formFromPOST).toStrictEqual([
+    const conversationMediaPostRequestBody = JSON.parse(mockedFetch.mock.calls[0][1].body);
+    expect(conversationMediaPostRequestBody).toStrictEqual([
       { storeType: 'twilio', storeTypeSpecificData: {} },
       {
         storeType: 'S3',

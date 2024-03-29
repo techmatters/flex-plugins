@@ -193,7 +193,7 @@ export const submitContactFormAsyncAction = createAsyncAction(
   }),
 );
 
-export const finalizeContactAsyncAction = createAsyncAction(
+export const newFinalizeContactAsyncAction = createAsyncAction(
   FINALIZE_CONTACT,
   async (task: CustomITask, contact: Contact) => {
     return finalizeContact(task, contact);
@@ -423,7 +423,7 @@ export const saveContactReducer = (initialState: ContactsState) =>
     ),
 
     handleAction(
-      finalizeContactAsyncAction.fulfilled,
+      newFinalizeContactAsyncAction.fulfilled,
       (state, { payload: contact }): ContactsState => {
         return loadContactIntoRedux(state, contact);
       },

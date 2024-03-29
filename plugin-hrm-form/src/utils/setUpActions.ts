@@ -33,7 +33,7 @@ import { getNumberFromTask, getTaskLanguage } from './task';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { newContact } from '../states/contacts/contactState';
 import asyncDispatch from '../states/asyncDispatch';
-import { createContactAsyncAction, finalizeContactAsyncAction } from '../states/contacts/saveContact';
+import { createContactAsyncAction, newFinalizeContactAsyncAction } from '../states/contacts/saveContact';
 import { handleTransferredTask } from '../transfer/setUpTransferActions';
 import { prepopulateForm } from './prepopulateForm';
 import { namespace } from '../states/storeNamespaces';
@@ -249,7 +249,7 @@ export const afterCompleteTask = async ({ task }: ActionPayload): Promise<void> 
   if (contactState) {
     const { savedContact } = contactState;
     if (savedContact) {
-      finalizeContactAsyncAction(task, savedContact);
+      manager.store.dispatch(newFinalizeContactAsyncAction(task, savedContact));
     }
     manager.store.dispatch(GeneralActions.removeContactState(task.taskSid, contactState.savedContact.id));
   }
