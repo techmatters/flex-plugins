@@ -382,7 +382,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 };
 
 const translations: Translations = {
-  'en-US': {
+  'en-NZ': {
     WelcomeMessage: 'Welcome to Youthline',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
