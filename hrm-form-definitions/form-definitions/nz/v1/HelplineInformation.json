@@ -5,6 +5,7 @@
         "label": "Youthline",
         "value": "Youthline",
         "default": true,
+        "kmsUrl": "http://www.google.com",
         "manager": {
           "name": "Helen O'Toole",
           "phone": "+123 45 678",
