@@ -42,6 +42,12 @@
     "category": "non-data"
   },
   {
+    "name": "externalIntervention",
+    "label": "External intervention",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
     "name": "test",
     "label": "Test",
     "type": "button",
