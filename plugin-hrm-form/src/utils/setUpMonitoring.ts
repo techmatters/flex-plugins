@@ -14,10 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import * as Flex from '@twilio/flex-ui';
+import { ServiceConfiguration } from '@twilio/flex-ui';
 import { datadogRum } from '@datadog/browser-rum';
 import * as FullStory from '@fullstory/browser';
-import { ServiceConfiguration } from '@twilio/flex-ui';
 import type { Worker } from 'twilio-taskrouter';
 
 import { datadogAccessToken, datadogApplicationID, fullStoryId } from '../private/secret';

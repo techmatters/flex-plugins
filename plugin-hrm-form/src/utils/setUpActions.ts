@@ -25,7 +25,7 @@ import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
 import { customChannelTypes } from '../states/DomainConstants';
 import * as TransferHelpers from '../transfer/transferTaskState';
-import { CustomITask, FeatureFlags } from '../types/types';
+import { CustomITask, FeatureFlags, isTwilioTask } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { subscribeAlertOnConversationJoined } from '../notifications/newMessage';
 import type { RootState } from '../states';
@@ -33,10 +33,11 @@ import { getNumberFromTask, getTaskLanguage } from './task';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { newContact } from '../states/contacts/contactState';
 import asyncDispatch from '../states/asyncDispatch';
-import { createContactAsyncAction } from '../states/contacts/saveContact';
+import { createContactAsyncAction, newFinalizeContactAsyncAction } from '../states/contacts/saveContact';
 import { handleTransferredTask } from '../transfer/setUpTransferActions';
 import { prepopulateForm } from './prepopulateForm';
 import { namespace } from '../states/storeNamespaces';
+import { recordEvent } from '../fullStory';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -180,6 +181,24 @@ export const wrapupTask = (setupObject: SetupObject, getMessage: GetMessage) =>
     await saveEndMillis(payload);
   });
 
+export const recordCallState = ({ task }) => {
+  if (isTwilioTask(task) && TaskHelper.isCallTask(task)) {
+    recordEvent('[Temporary Debug Event] Call Task State', {
+      taskSid: task.taskSid,
+      taskStatus: task.status,
+      reservationSid: task.sid,
+      isCallTask: TaskHelper.isCallTask(task),
+      isChatBasedTask: TaskHelper.isChatBasedTask(task),
+      taskConferenceExists: Boolean(task.conference),
+      taskConferenceSid: task.conference?.conferenceSid,
+      taskConferenceLiveParticipantCount: task.conference?.liveParticipantCount,
+      taskConferenceLiveWorkerCount: task.conference?.liveWorkerCount,
+      taskConferenceAttributes: JSON.stringify(task.attributes.conference),
+      taskConversationAttributes: JSON.stringify(task.attributes.conversations),
+      taskAllAttributes: JSON.stringify(task.attributes),
+    });
+  }
+};
 const decreaseChatCapacity = (featureFlags: FeatureFlags): ActionFunction => async (
   payload: ActionPayload,
 ): Promise<void> => {
@@ -224,10 +243,14 @@ export const excludeDeactivateConversationOrchestration = (featureFlags: Feature
   }
 };
 
-export const afterCompleteTask = (payload: ActionPayload): void => {
+export const afterCompleteTask = async ({ task }: ActionPayload): Promise<void> => {
   const manager = Manager.getInstance();
-  const contactState = selectContactByTaskSid(manager.store.getState() as RootState, payload.task.taskSid);
+  const contactState = selectContactByTaskSid(manager.store.getState() as RootState, task.taskSid);
   if (contactState) {
-    manager.store.dispatch(GeneralActions.removeContactState(payload.task.taskSid, contactState.savedContact.id));
+    const { savedContact } = contactState;
+    if (savedContact) {
+      manager.store.dispatch(newFinalizeContactAsyncAction(task, savedContact));
+    }
+    manager.store.dispatch(GeneralActions.removeContactState(task.taskSid, contactState.savedContact.id));
   }
 };

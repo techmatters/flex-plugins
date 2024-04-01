@@ -15,8 +15,9 @@
  */
 import React from 'react';
 import { ConferenceParticipant } from '@twilio/flex-ui';
-
 import '../../../types';
+import { Conference } from '@twilio/flex-ui/src/state/Conferences';
+
 import { conferenceApi } from '../../../services/ServerlessService';
 import { hasTaskControl, isOriginalReservation, isTransferring } from '../../../transfer/transferTaskState';
 
@@ -29,25 +30,26 @@ type Props = TaskContextProps;
 const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
   const [updating, setUpdating] = React.useState(false);
 
-  const { conferenceSid, participants } = conference?.source || {};
+  const conferenceSource: Partial<Conference> = conference?.source ?? {};
 
   const thisInstanceShouldMonitor =
     Boolean(task) && (hasTaskControl(task) || (isOriginalReservation(task) && isTransferring(task)));
 
-  const shouldDisableEndConferenceOnExit =
+  const shouldDisableEndConferenceOnExit = ({ participants, conferenceSid }: Partial<Conference>) =>
     thisInstanceShouldMonitor &&
-    Boolean(participants) &&
+    Boolean(participants && conferenceSid) &&
     participants.filter(p => p.status === 'joined').length > 2 &&
     participants.some(isJoinedWithEnd);
 
-  const shouldEnableEndConferenceOnExit =
+  const shouldEnableEndConferenceOnExit = ({ participants, conferenceSid }: Partial<Conference>) =>
     thisInstanceShouldMonitor &&
-    Boolean(participants) &&
+    Boolean(participants && conferenceSid) &&
     participants.filter(p => p.status === 'joined').length <= 2 &&
     participants.some(isJoinedWithoutEnd);
 
   const updateEndConferenceOnExit = React.useCallback(
     (endConferenceOnExit: boolean) => async (participant: ConferenceParticipant) => {
+      const { conferenceSid } = conferenceSource;
       if (participant.connecting) return;
       // A participant should always have a callSid, but we are seeing some that don't, and we can't update them
       if (!participant.callSid) {
@@ -67,6 +69,10 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
           conferenceSid,
           updates: { endConferenceOnExit, hold: false }, // if participant in on hold, endConferenceOnExit wont update
         });
+        console.warn(
+          `Set participant endConferenceOnExit ${endConferenceOnExit} for call ${participant.callSid}, conference ${conferenceSid}`,
+          participant,
+        );
 
         if (startedOnHold) {
           await conferenceApi.updateParticipant({
@@ -81,21 +87,22 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
     },
     // Exhaustive deps mandates that we include 'conference', but that's only used for logging
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [conferenceSid],
+    [conferenceSource?.conferenceSid, conferenceSource?.participants, conferenceSource],
   );
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   React.useEffect(
     () => {
+      const { participants, conferenceSid } = conferenceSource;
       if (!conferenceSid || !participants || updating) return;
 
       const monitorEffect = async () => {
-        if (shouldDisableEndConferenceOnExit) {
+        if (shouldDisableEndConferenceOnExit(conferenceSource)) {
           setUpdating(true);
 
           await Promise.all(participants.filter(isJoinedWithEnd).map(updateEndConferenceOnExit(false)));
           setUpdating(false);
-        } else if (shouldEnableEndConferenceOnExit) {
+        } else if (shouldEnableEndConferenceOnExit(conferenceSource)) {
           setUpdating(true);
 
           await Promise.all(participants.filter(isJoinedWithoutEnd).map(updateEndConferenceOnExit(true)));
@@ -108,8 +115,8 @@ const ConferenceMonitor: React.FC<Props> = ({ conference, task }) => {
     // Exhaustive deps mandates that we include 'updating', but this causes an infinite loop if updating the participant fails
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      conferenceSid,
-      participants,
+      conferenceSource?.conferenceSid,
+      conferenceSource?.participants,
       shouldDisableEndConferenceOnExit,
       shouldEnableEndConferenceOnExit,
       updateEndConferenceOnExit,

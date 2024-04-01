@@ -24,6 +24,7 @@ import HrmTheme, { overrides } from './styles/HrmTheme';
 import { initLocalization } from './utils/pluginHelpers';
 import * as Providers from './utils/setUpProviders';
 import * as ActionFunctions from './utils/setUpActions';
+import { recordCallState } from './utils/setUpActions';
 import * as TaskRouterListeners from './utils/setUpTaskRouterListeners';
 import * as Components from './utils/setUpComponents';
 import * as Channels from './channels/setUpChannels';
@@ -161,6 +162,10 @@ const setUpActions = (
   setUpTransferActions(featureFlags.enable_transfers, setupObject);
 
   Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
+  Flex.Manager.getInstance().workerClient.addListener('reservationCreated', reservation => {
+    reservation.addListener('wrapup', recordCallState);
+    reservation.addListener('completed', recordCallState);
+  });
 
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
 
