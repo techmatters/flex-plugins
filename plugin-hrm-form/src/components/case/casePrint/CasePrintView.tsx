@@ -213,7 +213,7 @@ const CasePrintView: React.FC<Props> = ({
                   sectionKey="referral"
                   values={referral}
                 />
-                <CasePrintNotes notes={note} counselorsHash={counselorsHash} />
+                <CasePrintNotes notes={note} counselorsHash={counselorsHash} formDefinition={definitionVersion} />
                 <CasePrintSummary summary={connectedCase.info.summary} />
                 <CasePrintCSAMReports csamReports={contact?.csamReports} />
               </View>

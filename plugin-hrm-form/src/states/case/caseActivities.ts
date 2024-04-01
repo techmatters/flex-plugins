@@ -40,25 +40,29 @@ const ActivityTypes = {
 export const isContactActivity = (activity: Activity): activity is ContactActivity =>
   Boolean((activity as ContactActivity).contactId);
 
-const getNoteActivities = (counsellorNotes: ApiCaseSection[], formDefs: DefinitionVersion): NoteActivity[] => {
+export const getNoteActivityText = (note: ApiCaseSection, formDefs: DefinitionVersion): string => {
   let { previewFields } = formDefs.layoutVersion.case.notes ?? {};
   if (!previewFields || !previewFields.length) {
     previewFields = formDefs.caseForms.NoteForm.length ? [formDefs.caseForms.NoteForm[0].name] : [];
   }
+  return (
+    previewFields
+      .map(pf => note.sectionTypeSpecificData[pf])
+      .filter(pv => pv)
+      .join(', ') || '--'
+  );
+};
+
+const getNoteActivities = (counsellorNotes: ApiCaseSection[], formDefs: DefinitionVersion): NoteActivity[] => {
   return (counsellorNotes || [])
     .map(n => {
       try {
         const { sectionId: id, createdAt: date, updatedAt, updatedBy, createdBy, sectionTypeSpecificData } = n;
-        const text =
-          previewFields
-            .map(pf => sectionTypeSpecificData[pf])
-            .filter(pv => pv)
-            .join(', ') || '--';
         return {
           id,
           updatedAt,
           updatedBy,
-          text,
+          text: getNoteActivityText(n, formDefs),
           date,
           twilioWorkerId: createdBy,
           type: ActivityTypes.addNote,
