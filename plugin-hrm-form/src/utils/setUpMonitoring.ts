@@ -64,7 +64,7 @@ export default function setUpMonitoring(workerClient: Worker, serviceConfigurati
     setUpDatadogRum(workerClient, monitoringEnv);
   }
 
-  if (process.env.ENABLE_MONITORING === 'true') {
+  if (serviceConfiguration.attributes.feature_flags.enable_fullstory_monitoring) {
     setUpFullStory();
     helplineIdentifierFullStory(workerClient);
   }
