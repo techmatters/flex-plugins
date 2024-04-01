@@ -18,20 +18,23 @@
 /* eslint-disable dot-notation */
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { formatName, formatStringToDateAndTime } from '../../../utils';
 import styles from './styles';
 import { getTemplateStrings } from '../../../hrmConfig';
 import { ApiCaseSection } from '../../../services/caseSectionService';
+import { getNoteActivityText } from '../../../states/case/caseActivities';
 
 type OwnProps = {
   notes: ApiCaseSection[];
   counselorsHash: { [sid: string]: string };
+  formDefinition: DefinitionVersion;
 };
 
 type Props = OwnProps;
 
-const CasePrintNotes: React.FC<Props> = ({ notes, counselorsHash }) => {
+const CasePrintNotes: React.FC<Props> = ({ notes, counselorsHash, formDefinition }) => {
   const strings = getTemplateStrings();
 
   if (!notes || notes.length === 0) return null;
@@ -43,15 +46,15 @@ const CasePrintNotes: React.FC<Props> = ({ notes, counselorsHash }) => {
       </View>
       {notes &&
         notes.length > 0 &&
-        notes.map(({ createdBy, sectionTypeSpecificData: note, createdAt }, i) => {
+        notes.map((noteSection, i) => {
           return (
             <View key={i} style={{ ...styles['sectionBody'], ...styles['caseSummaryText'] }}>
               <View style={{ ...styles.flexRow, justifyContent: 'space-between' }}>
-                <Text style={{ fontWeight: 600 }}>{formatName(counselorsHash[createdBy])}</Text>
-                <Text style={{ fontStyle: 'italic' }}>{formatStringToDateAndTime(createdAt)}</Text>
+                <Text style={{ fontWeight: 600 }}>{formatName(counselorsHash[noteSection.createdBy])}</Text>
+                <Text style={{ fontStyle: 'italic' }}>{formatStringToDateAndTime(noteSection.createdAt)}</Text>
               </View>
               <View>
-                <Text style={styles['noteSummaryText']}>{note.text}</Text>
+                <Text style={styles['noteSummaryText']}>{getNoteActivityText(noteSection, formDefinition)}</Text>
               </View>
             </View>
           );
