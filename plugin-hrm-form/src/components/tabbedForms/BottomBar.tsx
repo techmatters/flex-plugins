@@ -85,7 +85,13 @@ const BottomBar: React.FC<
     try {
       await saveUpdates();
       await createCaseAsyncAction(contact, workerSid, definitionVersion);
-      openModal({ route: 'case', subroute: 'home', isCreating: true, caseId: undefined });
+      openModal({
+        contextContactId: savedContact.id,
+        route: 'case',
+        subroute: 'home',
+        isCreating: true,
+        caseId: undefined,
+      });
     } catch (error) {
       recordBackendError('Open New Case', error);
       window.alert(strings['Error-Backend']);

@@ -35,6 +35,7 @@ import { selectCounselorsHash } from '../../../states/configuration/selectCounse
 import selectPreviousContactCounts from '../../../states/search/selectPreviousContactCounts';
 import { iconsFromTask } from './iconsFromTask';
 import selectContextContactId from '../../../states/contacts/selectContextContactId';
+import selectContactByTaskSid from '../../../states/contacts/selectContactByTaskSid';
 
 type OwnProps = {
   task: CustomITask;
@@ -49,7 +50,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   searchCases,
   openContactSearchResults,
   openCaseSearchResults,
-  contextContactId,
+  contact,
 }) => {
   const can = React.useMemo(() => {
     return getInitializedCan();
@@ -87,11 +88,11 @@ const PreviousContactsBanner: React.FC<Props> = ({
   if (!shouldDisplayBanner) return null;
 
   const handleViewContacts = () => {
-    openContactSearchResults(contextContactId);
+    openContactSearchResults(contact.savedContact.id);
   };
 
   const handleViewCases = () => {
-    openCaseSearchResults(contextContactId);
+    openCaseSearchResults(contact.savedContact.id);
   };
 
   return (
@@ -128,12 +129,12 @@ PreviousContactsBanner.displayName = 'PreviousContactsBanner';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const { taskSid } = task;
-  const contextContactId = selectContextContactId(state, taskSid, 'search', 'case-results');
+  const contact = selectContactByTaskSid(state, task.taskSid);
 
   return {
     previousContactCounts: selectPreviousContactCounts(state, taskSid),
     counselorsHash: selectCounselorsHash(state),
-    contextContactId,
+    contact,
   };
 };
 
