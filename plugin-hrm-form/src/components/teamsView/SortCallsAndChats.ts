@@ -50,9 +50,9 @@ const sortAgentCalls = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
   const aDuration = aCallTask ? convertDurationToSeconds(new TaskHelper(aCallTask).durationSinceUpdate) : 0;
   const bDuration = bCallTask ? convertDurationToSeconds(new TaskHelper(bCallTask).durationSinceUpdate) : 0;
 
-  if (!aIsLiveCallTask && !bIsLiveCallTask) {
+  if (aIsLiveCallTask && bIsLiveCallTask) {
     return aDuration - bDuration; // both are live calls, longest duration first
-  } else if (aIsLiveCallTask && bIsLiveCallTask) {
+  } else if (!aIsLiveCallTask && !bIsLiveCallTask) {
     return aDuration - bDuration; // both are not live calls, longest duration first
   } else if (aIsLiveCallTask && !bIsLiveCallTask) {
     return 1; // a is a live call and b is not, a comes first
