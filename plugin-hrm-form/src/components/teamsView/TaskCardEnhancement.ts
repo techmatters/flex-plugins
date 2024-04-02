@@ -13,9 +13,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { DefaultTaskChannels, TaskChannels } from '@twilio/flex-ui';
+import { DefaultTaskChannels } from '@twilio/flex-ui';
 
-import { TwitterChatChannel, InstagramChatChannel, LineChatChannel } from '../../channels/setUpChannels';
+import { setupTwitterChatChannel, setupInstagramChatChannel, setupLineChatChannel } from '../../channels/setUpChannels';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { getInitializedCan, PermissionActions } from '../../permissions';
 
@@ -28,16 +28,18 @@ export const setUpEnhancedTaskCard = () => {
   const strings = getTemplateStrings();
 
   DefaultTaskChannels.Call.templates.TaskCard.firstLine = task => {
-    const truncatedIdentifier = maskIdentifiers ? strings.MaskIdentifiers.slice(-4) : task.defaultFrom.slice(-4);
+    const truncatedIdentifier = maskIdentifiers ? strings.MaskIdentifiers : task.defaultFrom.slice(-4);
     return `${task.queueName} | ...${truncatedIdentifier}`;
   };
 
-  const setTaskCardInfo = channel => {
-    channel.templates.TaskCard.firstLine = task => {
-      const identifier = maskIdentifiers ? strings.MaskIdentifiers : '@';
-      return `${task.queueName} | ${identifier}`;
-    };
-  };
+  const getTwitterChatChannel = setupTwitterChatChannel(maskIdentifiers);
+  const TwitterChatChannel = getTwitterChatChannel();
+
+  const getInstagramChatChannel = setupInstagramChatChannel(maskIdentifiers);
+  const InstagramChatChannel = getInstagramChatChannel();
+
+  const getLineChatChannel = setupLineChatChannel(maskIdentifiers);
+  const LineChatChannel = getLineChatChannel();
 
   const channels = [
     DefaultTaskChannels.Chat,
@@ -49,9 +51,11 @@ export const setUpEnhancedTaskCard = () => {
     InstagramChatChannel,
     LineChatChannel,
   ];
-
+  const setTaskCardInfo = channel => {
+    channel.templates.TaskCard.firstLine = task => {
+      const identifier = maskIdentifiers ? strings.MaskIdentifiers : '@';
+      return `${task.queueName} | ${identifier}`;
+    };
+  };
   channels.forEach(channel => setTaskCardInfo(channel));
-  // TaskChannels.register(LineChatChannel);
-  // TaskChannels.register(InstagramChatChannel);
-  // TaskChannels.register(TwitterChatChannel);
 };

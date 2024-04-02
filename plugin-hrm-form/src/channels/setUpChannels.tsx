@@ -88,11 +88,11 @@ export const expandSMSChannel = () => {
   Flex.DefaultTaskChannels.ChatSms.isApplicable = task => isSmsChannelType(task.channelType);
 };
 
-export const TwitterChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
-  'twitter',
-  task => task.channelType === 'twitter',
-);
 export const setupTwitterChatChannel = maskIdentifiers => {
+  const TwitterChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
+    'twitter',
+    task => task.channelType === 'twitter',
+  );
   const icon = <TwitterIcon width="24px" height="24px" color={colors.twitter} />;
 
   TwitterChatChannel.templates.CallCanvas.firstLine = 'TaskHeaderLineTwitter';
@@ -120,13 +120,14 @@ export const setupTwitterChatChannel = maskIdentifiers => {
   };
 
   Flex.TaskChannels.register(TwitterChatChannel);
+  return () => TwitterChatChannel;
 };
 
-export const InstagramChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
-  'instagram',
-  task => task.channelType === 'instagram',
-);
 export const setupInstagramChatChannel = maskIdentifiers => {
+  const InstagramChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
+    'instagram',
+    task => task.channelType === 'instagram',
+  );
   const icon = <InstagramIcon width="24px" height="24px" color="white" />;
 
   if (maskIdentifiers) maskIdentifiersByChannel(InstagramChatChannel);
@@ -148,13 +149,11 @@ export const setupInstagramChatChannel = maskIdentifiers => {
   };
 
   Flex.TaskChannels.register(InstagramChatChannel);
+  return () => InstagramChatChannel;
 };
 
-export const LineChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
-  'line',
-  task => task.channelType === 'line',
-);
 export const setupLineChatChannel = maskIdentifiers => {
+  const LineChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel('line', task => task.channelType === 'line');
   const icon = <LineIcon width="24px" height="24px" color={colors.line} />;
 
   if (maskIdentifiers) maskIdentifiersByChannel(LineChatChannel);
@@ -176,6 +175,7 @@ export const setupLineChatChannel = maskIdentifiers => {
   };
 
   Flex.TaskChannels.register(LineChatChannel);
+  return () => LineChatChannel;
 };
 
 const maskIdentifiersByChannel = channelType => {
