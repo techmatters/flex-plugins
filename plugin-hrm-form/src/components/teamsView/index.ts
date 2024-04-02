@@ -15,11 +15,13 @@
  */
 import { setUpSkillsColumn } from './SkillsColumn';
 import { setUpSortingCalls } from './SortCalls';
+import { setUpEnhancedTaskCard } from './TaskCardEnhancement';
 import { setUpTeamViewFilters, setUpWorkerDirectoryFilters } from './Filters';
 
 const TeamsView = {
   setUpSkillsColumn,
   setUpSortingCalls,
+  setUpEnhancedTaskCard,
   setUpTeamViewFilters,
   setUpWorkerDirectoryFilters,
 };

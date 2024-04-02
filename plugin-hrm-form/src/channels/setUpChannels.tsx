@@ -88,13 +88,12 @@ export const expandSMSChannel = () => {
   Flex.DefaultTaskChannels.ChatSms.isApplicable = task => isSmsChannelType(task.channelType);
 };
 
+export const TwitterChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
+  'twitter',
+  task => task.channelType === 'twitter',
+);
 export const setupTwitterChatChannel = maskIdentifiers => {
   const icon = <TwitterIcon width="24px" height="24px" color={colors.twitter} />;
-
-  const TwitterChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
-    'twitter',
-    task => task.channelType === 'twitter',
-  );
 
   TwitterChatChannel.templates.CallCanvas.firstLine = 'TaskHeaderLineTwitter';
   TwitterChatChannel.templates.TaskListItem.firstLine = 'TaskHeaderLineTwitter';
@@ -123,13 +122,12 @@ export const setupTwitterChatChannel = maskIdentifiers => {
   Flex.TaskChannels.register(TwitterChatChannel);
 };
 
+export const InstagramChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
+  'instagram',
+  task => task.channelType === 'instagram',
+);
 export const setupInstagramChatChannel = maskIdentifiers => {
   const icon = <InstagramIcon width="24px" height="24px" color="white" />;
-
-  const InstagramChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
-    'instagram',
-    task => task.channelType === 'instagram',
-  );
 
   if (maskIdentifiers) maskIdentifiersByChannel(InstagramChatChannel);
 
@@ -152,10 +150,13 @@ export const setupInstagramChatChannel = maskIdentifiers => {
   Flex.TaskChannels.register(InstagramChatChannel);
 };
 
+export const LineChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
+  'line',
+  task => task.channelType === 'line',
+);
 export const setupLineChatChannel = maskIdentifiers => {
   const icon = <LineIcon width="24px" height="24px" color={colors.line} />;
 
-  const LineChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel('line', task => task.channelType === 'line');
   if (maskIdentifiers) maskIdentifiersByChannel(LineChatChannel);
 
   LineChatChannel.colors.main = {
