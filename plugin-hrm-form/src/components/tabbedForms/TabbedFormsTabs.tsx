@@ -64,7 +64,6 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const {
     [namespace]: { configuration, routing: routingState },
   } = state;
-  const contextContactId = selectContextContactId(state, taskSid, 'search', 'case-results');
   const currentRoute = getCurrentTopmostRouteForTask(routingState, taskSid);
   const { draftContact, savedContact } = selectContactByTaskSid(state, taskSid);
   const contactId = savedContact.id;
@@ -80,7 +79,6 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
     showConnectedToCaseBanner,
     showRemovedFromCaseBanner,
     updatedContact: getUnsavedContact(savedContact, draftContact),
-    contextContactId,
   };
 };
 
@@ -174,7 +172,6 @@ const TabbedFormsTabs: React.FC<Props> = ({
   removeIfOfflineContact,
   saveDraft,
   updateDraftForm,
-  contextContactId,
 }) => {
   const { enable_csam_report: csamReportEnabled, enable_case_merging: caseMergingEnabled } = getAseloFeatureFlags();
   const { contactSaveFrequency } = getHrmConfig();
@@ -240,7 +237,7 @@ const TabbedFormsTabs: React.FC<Props> = ({
       saveDraft(savedContact, draftContact);
     }
     if (tab === 'search') {
-      openSearchModal(contextContactId);
+      openSearchModal(contactId);
     } else {
       navigateToTab(tab);
     }

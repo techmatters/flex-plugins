@@ -19,7 +19,7 @@ import React, { useEffect } from 'react';
 import { format } from 'date-fns';
 import { Actions, Icon, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
-import { callTypes, DataCallTypes, isNonSaveable } from 'hrm-form-definitions';
+import { callTypes, DataCallTypes, DefinitionVersionId, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
@@ -136,7 +136,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
   showRemovedFromCaseBanner,
   openModal,
   saveUpdates,
-  draftContact
+  draftContact,
+  createCaseAsyncActions,
 }) {
   const version = savedContact?.rawJson.definitionVersion;
 
@@ -285,14 +286,18 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const handleOpenNewCase = async () => {
     const { workerSid, definitionVersion } = getHrmConfig();
 
-    // if (!hasTaskControl(task)) return;
-
+    if (!hasTaskControl(task)) return;
 
     try {
       await saveUpdates(savedContact, draftContact);
-      await createCaseAsyncAction(savedContact, workerSid, definitionVersion);
-      openModal({ contextContactId: savedContact.id, route: 'case', subroute: 'home', isCreating: true, caseId: undefined });
-      // openModal({ route: 'case', subroute: 'home', caseId })
+      await createCaseAsyncActions(savedContact, workerSid, definitionVersion);
+      openModal({
+        contextContactId: savedContact.id,
+        route: 'case',
+        subroute: 'home',
+        isCreating: true,
+        caseId: undefined,
+      });
     } catch (error) {
       recordBackendError('Open New Case', error);
       window.alert(strings['Error-Backend']);
@@ -329,7 +334,11 @@ const ContactDetailsHome: React.FC<Props> = function ({
         ? addedToCaseBanner()
         : !showRemovedFromCaseBanner && (
             <Box display="flex" justifyContent="flex-end">
-              <AddCaseButton position="top" handleNewCaseType={handleOpenNewCase} handleExistingCaseType={openSearchModal} />
+              <AddCaseButton
+                position="top"
+                handleNewCaseType={handleOpenNewCase}
+                handleExistingCaseType={openSearchModal}
+              />
             </Box>
           )}
 
@@ -548,6 +557,11 @@ const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) =>
   openModal: (route: AppRoutes) => dispatch(newOpenModalAction(route, task.taskSid)),
   saveUpdates: (savedContact: Contact, draftContact: ContactDraftChanges) =>
     asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact, task.taskSid)),
+  createCaseAsyncActions: async (contact, workerSid: string, definitionVersion: DefinitionVersionId) => {
+    // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
+    // TODO: Rework error handling to be based on redux state set by the _REJECTED action
+    await asyncDispatch(dispatch)(createCaseAsyncAction(contact, workerSid, definitionVersion));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);
