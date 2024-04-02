@@ -62,6 +62,8 @@ import FullTimelineView from './timeline/FullTimelineView';
 import { updateCaseOverviewAsyncAction } from '../../states/case/saveCase';
 import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
 import { CaseStateEntry } from '../../states/case/types';
+import selectContextContactId from '../../states/contacts/selectContextContactId';
+import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -261,6 +263,7 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
   const connectedCaseId = isCaseRoute(currentRoute) ? currentRoute.caseId : undefined;
   const caseState = selectCurrentRouteCaseState(state, task.taskSid);
+  const contactId = selectContextContactId(state, task.taskSid, 'case', 'home');
 
   return {
     connectedCaseId,
@@ -269,7 +272,7 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
     definitionVersions: selectDefinitionVersions(state),
     currentDefinitionVersion: selectCurrentDefinitionVersion(state),
     routing: currentRoute as CaseRoute,
-    taskContact: selectContactByTaskSid(state, task.taskSid)?.savedContact,
+    taskContact: selectContactStateByContactId(state, contactId)?.savedContact,
   };
 };
 

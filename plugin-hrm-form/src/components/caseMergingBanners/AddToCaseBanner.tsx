@@ -21,8 +21,6 @@ import { Case, Contact, CustomITask, StandaloneITask } from '../../types/types';
 import { getInitializedCan, PermissionActions } from '../../permissions';
 import { RootState } from '../../states';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
-import { isStandaloneITask } from '../case/Case';
-import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import { Flex } from '../../styles';
 import InfoIcon from './InfoIcon';
 import ConnectToCaseButton from '../case/ConnectToCaseButton';
@@ -44,16 +42,16 @@ const mapStateToProps = (state: RootState, { task }: MyProps) => {
   const route = selectCurrentTopmostRouteForTask(state, task.taskSid);
   const { connectedCase } = selectCurrentRouteCaseState(state, task.taskSid) ?? {};
   const contactId = selectContextContactId(state, task.taskSid, 'search', 'case-results');
-  const taskContact = selectContactStateByContactId(state, contactId)?.savedContact;
+  const contact = selectContactStateByContactId(state, contactId)?.savedContact;
   return {
     connectedCase,
-    taskContact,
+    contact,
     isOrphanedCase: isCaseRoute(route) ? !selectFirstContactByCaseId(state, route.caseId) : true,
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: MyProps) => ({
-  connectCaseToTaskContact: async (taskContact: Contact, cas: Case) =>
+  connectCaseToContact: async (taskContact: Contact, cas: Case) =>
     asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, cas.id)),
   closeModal: () =>
     dispatch(newCloseModalAction(task.taskSid, task.taskSid === 'standalone-task-sid' ? 'contact' : 'tabbed-forms')),
@@ -65,8 +63,8 @@ type Props = MyProps & ConnectedProps<typeof connector>;
 
 const AddToCaseBanner: React.FC<Props> = ({
   connectedCase,
-  taskContact,
-  connectCaseToTaskContact,
+  contact,
+  connectCaseToContact,
   isOrphanedCase,
   closeModal,
 }: Props) => {
@@ -74,15 +72,15 @@ const AddToCaseBanner: React.FC<Props> = ({
     return getInitializedCan();
   }, []);
 
-  const isConnectedToTaskContact = taskContact && taskContact.caseId === connectedCase.id;
+  const isConnectedToTaskContact = contact && contact.caseId === connectedCase.id;
 
   const showConnectToCaseButton = Boolean(
-    taskContact &&
-      !taskContact.caseId &&
+    contact &&
+      !contact.caseId &&
       !isConnectedToTaskContact &&
       !isOrphanedCase &&
       can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCase) &&
-      can(PermissionActions.ADD_CONTACT_TO_CASE, taskContact),
+      can(PermissionActions.ADD_CONTACT_TO_CASE, contact),
   );
 
   if (!showConnectToCaseButton) {
@@ -102,7 +100,7 @@ const AddToCaseBanner: React.FC<Props> = ({
           caseId={connectedCase.id}
           isConnectedToTaskContact={isConnectedToTaskContact}
           onClickConnectToTaskContact={() => {
-            connectCaseToTaskContact(taskContact, connectedCase);
+            connectCaseToContact(contact, connectedCase);
             closeModal();
           }}
           color="black"
