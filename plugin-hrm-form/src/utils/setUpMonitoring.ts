@@ -15,7 +15,6 @@
  */
 
 import { ServiceConfiguration } from '@twilio/flex-ui';
-import { datadogRum } from '@datadog/browser-rum';
 import * as FullStory from '@fullstory/browser';
 import type { Worker } from 'twilio-taskrouter';
 
