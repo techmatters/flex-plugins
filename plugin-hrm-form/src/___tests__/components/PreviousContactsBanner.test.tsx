@@ -180,12 +180,12 @@ test('calls the correct function when the cases link is clicked', () => {
       searchContacts={searchContacts}
       searchCases={searchCases}
       openContactSearchResults={openContactSearchResults}
-      openCaseSearchResults={openCaseSearchResults(('10001'))}
+      openCaseSearchResults={openCaseSearchResults('10001')}
     />,
   );
 
   fireEvent.click(getByTestId('banner-link-cases'));
-  expect(openCaseSearchResults).toHaveBeenCalledWith(('10001'));
+  expect(openCaseSearchResults).toHaveBeenCalledWith('10001');
 });
 
 test('a11y', async () => {
