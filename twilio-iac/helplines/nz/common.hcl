@@ -43,6 +43,10 @@ locals {
         "target_workers" = "routing.skills HAS 'Clinical' OR roles HAS 'supervisor'",
         "friendly_name"  = "Clinical"
       },
+      counselling : {
+        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND routing.skills HAS 'Counselling'",
+        "friendly_name"  = "Counselling"
+      },
       survey : {
         "target_workers" = "1==0",
         "friendly_name"  = "Survey - DO NOT TRANSFER"
