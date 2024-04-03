@@ -34,6 +34,8 @@ import { CustomITask, isTwilioTask } from '../../../types/types';
 import { selectCounselorsHash } from '../../../states/configuration/selectCounselorsHash';
 import selectPreviousContactCounts from '../../../states/search/selectPreviousContactCounts';
 import { iconsFromTask } from './iconsFromTask';
+import selectContextContactId from '../../../states/contacts/selectContextContactId';
+import selectContactByTaskSid from '../../../states/contacts/selectContactByTaskSid';
 
 type OwnProps = {
   task: CustomITask;
@@ -48,6 +50,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   searchCases,
   openContactSearchResults,
   openCaseSearchResults,
+  contact,
 }) => {
   const can = React.useMemo(() => {
     return getInitializedCan();
@@ -85,11 +88,11 @@ const PreviousContactsBanner: React.FC<Props> = ({
   if (!shouldDisplayBanner) return null;
 
   const handleViewContacts = () => {
-    openContactSearchResults();
+    openContactSearchResults(contact.savedContact.id);
   };
 
   const handleViewCases = () => {
-    openCaseSearchResults();
+    openCaseSearchResults(contact.savedContact.id);
   };
 
   return (
@@ -126,10 +129,12 @@ PreviousContactsBanner.displayName = 'PreviousContactsBanner';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const { taskSid } = task;
+  const contact = selectContactByTaskSid(state, task.taskSid);
 
   return {
     previousContactCounts: selectPreviousContactCounts(state, taskSid),
     counselorsHash: selectCounselorsHash(state),
+    contact,
   };
 };
 
@@ -141,14 +146,24 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     viewPreviousContacts: viewPreviousContactsAction(dispatch)(task),
     searchContacts: searchContactsAction(dispatch)(taskId),
     searchCases: searchCasesAction(dispatch)(taskId),
-    openContactSearchResults: () => {
+    openContactSearchResults: (contextContactId: string) => {
       // We put the form 'under' the search results in the modal stack so the back button takes them to the form without needing custom handlers
-      dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, taskId));
-      dispatch(changeRoute({ route: 'search', subroute: 'contact-results', contactsPage: 0, casesPage: 0 }, taskId));
+      dispatch(newOpenModalAction({ contextContactId, route: 'search', subroute: 'form' }, taskId));
+      dispatch(
+        changeRoute(
+          { contextContactId, route: 'search', subroute: 'contact-results', contactsPage: 0, casesPage: 0 },
+          taskId,
+        ),
+      );
     },
-    openCaseSearchResults: () => {
-      dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, taskId));
-      dispatch(changeRoute({ route: 'search', subroute: 'case-results', contactsPage: 0, casesPage: 0 }, taskId));
+    openCaseSearchResults: (contextContactId: string) => {
+      dispatch(newOpenModalAction({ contextContactId, route: 'search', subroute: 'form' }, taskId));
+      dispatch(
+        changeRoute(
+          { contextContactId, route: 'search', subroute: 'case-results', contactsPage: 0, casesPage: 0 },
+          taskId,
+        ),
+      );
     },
   };
 };
