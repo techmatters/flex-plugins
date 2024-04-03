@@ -30,7 +30,7 @@ import { RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError } from '../../fullStory';
 import { Contact, CustomITask, RouterTask } from '../../types/types';
-import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
+import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
@@ -42,6 +42,7 @@ import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { SuccessReportIcon } from '../CSAMReport/styles';
 import { CaseStateEntry } from '../../states/case/types';
+import selectOpenNewCase from '../../states/case/selectOpenNewCase';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => Promise<void>) => () => void;
@@ -78,24 +79,7 @@ const BottomBar: React.FC<
   const isAddedToCase = savedContact?.caseId;
 
   const handleOpenNewCase = async () => {
-    const { workerSid, definitionVersion } = getHrmConfig();
-
-    if (!hasTaskControl(task)) return;
-
-    try {
-      await saveUpdates();
-      await createCaseAsyncAction(contact, workerSid, definitionVersion);
-      openModal({
-        contextContactId: savedContact.id,
-        route: 'case',
-        subroute: 'home',
-        isCreating: true,
-        caseId: undefined,
-      });
-    } catch (error) {
-      recordBackendError('Open New Case', error);
-      window.alert(strings['Error-Backend']);
-    }
+    await selectOpenNewCase(task, saveUpdates, savedContact, createCaseAsyncAction, contact, openModal);
   };
 
   const handleSubmit = async () => {

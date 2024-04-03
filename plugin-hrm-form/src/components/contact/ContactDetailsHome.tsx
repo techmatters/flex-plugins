@@ -49,7 +49,7 @@ import { ContactDetailsRoute, ContactDraftChanges, createDraft } from '../../sta
 import { RecordingSection, TranscriptSection } from './MediaSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import type { ResourceReferral } from '../../states/contacts/resourceReferral';
-import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
+import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
@@ -61,12 +61,11 @@ import InfoIcon from '../caseMergingBanners/InfoIcon';
 import { BannerContainer, Text } from '../../styles/banners';
 import { isSmsChannelType } from '../../utils/smsChannels';
 import getCanEditContact from '../../permissions/canEditContact';
-import { recordBackendError } from '../../fullStory';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import AddCaseButton from '../AddCaseButton';
-import { hasTaskControl } from '../../transfer/transferTaskState';
+import selectOpenNewCase from '../../states/case/selectOpenNewCase';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -284,24 +283,15 @@ const ContactDetailsHome: React.FC<Props> = function ({
   };
 
   const handleOpenNewCase = async () => {
-    const { workerSid, definitionVersion } = getHrmConfig();
-
-    if (!hasTaskControl(task)) return;
-
-    try {
-      await saveUpdates(savedContact, draftContact);
-      await createCaseAsyncActions(savedContact, workerSid, definitionVersion);
-      openModal({
-        contextContactId: savedContact.id,
-        route: 'case',
-        subroute: 'home',
-        isCreating: true,
-        caseId: undefined,
-      });
-    } catch (error) {
-      recordBackendError('Open New Case', error);
-      window.alert(strings['Error-Backend']);
-    }
+    await selectOpenNewCase(
+      task,
+      saveUpdates,
+      savedContact,
+      createCaseAsyncActions,
+      savedContact,
+      openModal,
+      draftContact,
+    );
   };
 
   const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && canView && (
