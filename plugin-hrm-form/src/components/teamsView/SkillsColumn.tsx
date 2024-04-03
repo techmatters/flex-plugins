@@ -80,6 +80,7 @@ const SkillsListCell = ({ availableSkills, disabledSkills, workerName }) => {
             setShowMore(!showMore);
           }}
           aria-label={showMore ? `See less skills for ${workerName}` : `See more skills for ${workerName}`}
+          data-fs-id="TeamsView-ToggleSkills"
         >
           <Template code={showMore ? 'ReadLess' : 'ReadMore'} />
         </StyledLink>
