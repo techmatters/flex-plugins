@@ -67,7 +67,7 @@ jobs:
       # Change String Case for Helpline Code
       - name: Change String Case for Helpline Code
         id: helpline_code
-        uses: "ASzc/change-string-case-action@v5"
+        uses: "ASzc/change-string-case-action@v6"
         with:
           string: "${{ inputs.helpline_code }}"
       # Set SHORT_ENVIRONMENT_CODE
