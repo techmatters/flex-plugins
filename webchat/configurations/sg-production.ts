@@ -13,15 +13,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { setUpSkillsColumn } from './SkillsColumn';
-import { setUpSortingCalls } from './SortCalls';
-import { setUpTeamViewFilters, setUpWorkerDirectoryFilters } from './Filters';
 
-const TeamsView = {
-  setUpSkillsColumn,
-  setUpSortingCalls,
-  setUpTeamViewFilters,
-  setUpWorkerDirectoryFilters,
+import { Configuration } from '../types';
+import { config as sgStaging } from '../configurations/sg-staging';
+
+const accountSid = 'AC0751f021d17d50f0ee5af094acdee7c8';
+const flexFlowSid = 'FO1f6ef1622a491dd6e8a51daba2f79bb3';
+
+export const config: Configuration = {
+  ...sgStaging,
+  accountSid,
+  flexFlowSid,
 };
-
-export default TeamsView;
