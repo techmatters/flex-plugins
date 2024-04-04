@@ -19,6 +19,10 @@ import { setupTwitterChatChannel, setupInstagramChatChannel, setupLineChatChanne
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { getInitializedCan, PermissionActions } from '../../permissions';
 
+const TRUNCATED_IDENTIFIER_LENGTH = 4;
+const MAX_QUEUE_LENGTH = 13;
+const TRUNCATED_QUEUE_LENGTH = 10;
+
 export const setUpEnhancedTaskCard = () => {
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
 
@@ -28,8 +32,13 @@ export const setUpEnhancedTaskCard = () => {
   const strings = getTemplateStrings();
 
   DefaultTaskChannels.Call.templates.TaskCard.firstLine = task => {
-    const truncatedIdentifier = maskIdentifiers ? 'XXXX' : task.defaultFrom.slice(-4);
-    return `${task.queueName} | ...${truncatedIdentifier}`;
+    const truncatedIdentifier = task.defaultFrom.slice(-TRUNCATED_IDENTIFIER_LENGTH);
+    const queueName =
+      task.queueName.length > MAX_QUEUE_LENGTH
+        ? `${task.queueName.substring(0, TRUNCATED_QUEUE_LENGTH)}…`
+        : task.queueName;
+
+    return maskIdentifiers ? task.queueName : `${queueName} | …${truncatedIdentifier}`;
   };
 
   const getTwitterChatChannel = setupTwitterChatChannel(maskIdentifiers);
@@ -54,7 +63,11 @@ export const setUpEnhancedTaskCard = () => {
   const setTaskCardInfo = channel => {
     channel.templates.TaskCard.firstLine = task => {
       const identifier = maskIdentifiers ? strings.MaskIdentifiers : '@';
-      return `${task.queueName} | ${identifier}`;
+      const queueName =
+        task.queueName.length > MAX_QUEUE_LENGTH
+          ? `${task.queueName.substring(0, TRUNCATED_QUEUE_LENGTH)}…`
+          : task.queueName;
+      return maskIdentifiers ? task.queueName : `${queueName} | ${identifier}`;
     };
   };
   channels.forEach(channel => setTaskCardInfo(channel));
