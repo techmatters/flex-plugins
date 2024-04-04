@@ -56,6 +56,7 @@ import { TabbedFormsCommonProps } from './types';
 import { useTabbedFormContext } from './hooks/useTabbedForm';
 // Ensure we import any custom components that might be used in a form
 import '../contact/ResourceReferralList';
+import selectContextContactId from '../../states/contacts/selectContextContactId';
 
 type OwnProps = TabbedFormsCommonProps;
 
@@ -63,7 +64,6 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const {
     [namespace]: { configuration, routing: routingState },
   } = state;
-
   const currentRoute = getCurrentTopmostRouteForTask(routingState, taskSid);
   const { draftContact, savedContact } = selectContactByTaskSid(state, taskSid);
   const contactId = savedContact.id;
@@ -101,7 +101,8 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => ({
     dispatch(newCSAMReportActionForContact(contactId, csamReportType, true)),
   openCSAMReport: (previousRoute: AppRoutes) =>
     dispatch(changeRoute({ route: 'csam-report', subroute: 'form', previousRoute }, task.taskSid)),
-  openSearchModal: () => dispatch(newOpenModalAction({ route: 'search', subroute: 'form' }, task.taskSid)),
+  openSearchModal: (contextContactId: string) =>
+    dispatch(newOpenModalAction({ contextContactId, route: 'search', subroute: 'form' }, task.taskSid)),
   removeIfOfflineContact: (contact: Contact) => removeOfflineContact(dispatch, contact),
   saveDraft: (savedContact: Contact, draftContact: ContactDraftChanges) =>
     asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact, task.taskSid)),
@@ -236,7 +237,7 @@ const TabbedFormsTabs: React.FC<Props> = ({
       saveDraft(savedContact, draftContact);
     }
     if (tab === 'search') {
-      openSearchModal();
+      openSearchModal(contactId);
     } else {
       navigateToTab(tab);
     }

@@ -126,7 +126,10 @@ const updateTopmostRoute = (baseRouteStack: AppRoutes[], newRoute, mode: ChangeR
     if (isRouteWithModalSupport(currentRoute) && currentRoute.activeModal) {
       return [
         ...baseRouteStack.slice(0, -1),
-        { ...currentRoute, activeModal: updateTopmostRoute(currentRoute.activeModal, newRoute, mode) },
+        {
+          ...currentRoute,
+          activeModal: updateTopmostRoute(currentRoute.activeModal, newRoute, mode),
+        },
       ];
     }
   }

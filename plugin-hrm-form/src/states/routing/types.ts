@@ -59,6 +59,7 @@ export type SearchResultRoute = RouteWithModalSupport & {
   contactsPage: number;
   subroute: 'case-results' | 'contact-results';
   action?: 'select-case';
+  contextContactId?: string;
 };
 
 export type SearchRoute =
@@ -66,6 +67,7 @@ export type SearchRoute =
       route: 'search';
       subroute: 'form';
       action?: 'select-case';
+      contextContactId?: string;
     })
   | SearchResultRoute;
 
@@ -113,6 +115,7 @@ type CaseCoreRoute = RouteWithContext & {
   caseId: string;
   autoFocus?: boolean;
   isCreating?: boolean;
+  contextContactId?: string;
 };
 
 type CaseHomeRoute = CaseCoreRoute &
