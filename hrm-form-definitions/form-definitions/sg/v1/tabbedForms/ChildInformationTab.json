@@ -143,10 +143,10 @@
     "name": "reason",
     "label": "What Client Wants to Talk About",
     "type": "select",
-    "unknownOption": "Unknown",
+    "unknownOption": "",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
@@ -180,6 +180,10 @@
       {
         "value": "other",
         "label": "Other"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ],
     "required": {
