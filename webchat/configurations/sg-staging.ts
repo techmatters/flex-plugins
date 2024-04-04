@@ -176,10 +176,6 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       options: [
         {
           value: "",
-          label: ""
-        },
-        {
-          value: "Unknown",
           label: "Unknown"
         },
         {

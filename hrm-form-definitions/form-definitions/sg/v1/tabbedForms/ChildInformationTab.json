@@ -147,10 +147,6 @@
     "options": [
       {
         "value": "",
-        "label": ""
-      },
-      {
-        "value": "Unknown",
         "label": "Unknown"
       },
       {
