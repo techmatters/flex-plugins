@@ -19,7 +19,7 @@ import { PreEngagementFormDefinition, EMAIL_PATTERN } from '../src/pre-engagemen
 
 const accountSid = 'ACa00e3e32f7ba405cc0f5906906d88e97';
 const flexFlowSid = 'FO468b62cdd84da623f50059a50f01ff92';
-const defaultLanguage = 'en-US';
+const defaultLanguage = 'en-SG';
 const captureIp = true;
 const checkOpenHours = true;
 const contactType: ContactType = 'ip';
@@ -172,11 +172,11 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'select',
       name: 'reason',
       required: true,
-      defaultValue: '',
+      defaultValue: 'Unknown',
       options: [
         {
-          value: "",
-          label: "Unknown"
+          value: "Unknown",
+          label: ""
         },
         {
           value: "school",

@@ -143,11 +143,11 @@
     "name": "reason",
     "label": "What Client Wants to Talk About",
     "type": "select",
-    "unknownOption": "",
+    "unknownOption": "Unknown",
     "options": [
       {
-        "value": "",
-        "label": "Unknown"
+        "value": "Unknown",
+        "label": ""
       },
       {
         "value": "school",
