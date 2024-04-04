@@ -1,3 +1,170 @@
 {
-
+    "contactForm": {
+        "callerInformation": [
+            {
+                "name": "relationshipToChild",
+                "insights": [
+                    "conversations",
+                    "initiated_by"
+                ]
+            },
+            {
+                "name": "gender",
+                "insights": [
+                    "conversations",
+                    "conversation_attribute_4"
+                ]
+            },
+            {
+                "name": "age",
+                "insights": [
+                    "conversations",
+                    "conversation_attribute_3"
+                ]
+            }
+        ],
+        "childInformation": [
+            {
+                "name": "reason",
+                "insights": [
+                    "customers",
+                    "city"
+                ]
+            },
+            {
+                "name": "ethnicity",
+                "insights": [
+                    "customers",
+                    "customer_attribute_2"
+                ]
+            },
+            {
+                "name": "schoolLevel",
+                "insights": [
+                    "customers",
+                    "acquisition_date"
+                ]
+            },
+            {
+                "name": "livingSituation",
+                "insights": [
+                    "customers",
+                    "customer_attribute_1"
+                ]
+            },
+            {
+                "name": "class",
+                "insights": [
+                    "customers",
+                    "email"
+                ]
+            }
+        ],
+        "caseInformation": [
+            {
+                "name": "repeatCaller",
+                "insights": [
+                    "conversations",
+                    "conversation_attribute_7"
+                ],
+                "type": "mixed-checkbox"
+            },
+            {
+                "name": "actionTaken",
+                "insights": [
+                    "conversations",
+                    "initiative"
+                ]
+            }
+        ]
+    },
+    "caseForm": {
+        "topLevel": [
+            {
+                "name": "id",
+                "insights": [
+                    "conversations",
+                    "case"
+                ]
+            }
+        ],
+        "perpetrator": [
+            {
+                "name": "relationshipToChild",
+                "insights": [
+                    "customers",
+                    "organization"
+                ]
+            },
+            {
+                "name": "gender",
+                "insights": [
+                    "conversations",
+                    "followed_by"
+                ]
+            },
+            {
+                "name": "age",
+                "insights": [
+                    "conversations",
+                    "preceded_by"
+                ]
+            }
+        ],
+        "household": [
+            {
+                "name": "relationshipToChild",
+                "insights": [
+                    "conversations",
+                    "conversation_attribute_5"
+                ]
+            },
+            {
+                "name": "gender",
+                "insights": [
+                    "conversations",
+                    "conversation_attribute_6"
+                ]
+            },
+            {
+                "name": "age",
+                "insights": [
+                    "conversations",
+                    "productive"
+                ]
+            }
+        ],
+        "incident": [
+            {
+                "name": "duration",
+                "insights": [
+                    "conversations",
+                    "in_business_hours"
+                ]
+            },
+            {
+                "name": "location",
+                "insights": [
+                    "customers",
+                    "zip"
+                ]
+            },
+            {
+                "name": "frequency",
+                "insights": [
+                    "customers",
+                    "market_segment"
+                ]
+            }
+        ],
+        "referral": [
+            {
+                "name": "referredTo",
+                "insights": [
+                    "customers",
+                    "customer_manager"
+                ]
+            }
+        ]
+    }
 }

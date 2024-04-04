@@ -36,6 +36,16 @@ const convertDurationToSeconds = (duration: string): number => {
   return hours * 60 * 60 + minutes * 60 + seconds;
 };
 
+const getTaskDurationInSeconds = (task): number => {
+  return task ? convertDurationToSeconds(new TaskHelper(task).durationSinceUpdate) : 0;
+};
+
+const sortTasksByDuration = (aTask, bTask): number => {
+  const aDuration = getTaskDurationInSeconds(aTask);
+  const bDuration = getTaskDurationInSeconds(bTask);
+  return aDuration - bDuration;
+};
+
 /**
  * Sorts agents by the duration of their calls.
  * If a worker doesn't have a call, they will be sorted to the end.
@@ -47,13 +57,10 @@ const sortWorkersByCallDuration = (a: SupervisorWorkerState, b: SupervisorWorker
   const aIsLiveCallTask = TaskHelper.isLiveCall(aCallTask);
   const bIsLiveCallTask = TaskHelper.isLiveCall(bCallTask);
 
-  const aDuration = aCallTask ? convertDurationToSeconds(new TaskHelper(aCallTask).durationSinceUpdate) : 0;
-  const bDuration = bCallTask ? convertDurationToSeconds(new TaskHelper(bCallTask).durationSinceUpdate) : 0;
-
   if (aIsLiveCallTask && bIsLiveCallTask) {
-    return aDuration - bDuration; // both are live calls, longest duration first
+    return sortTasksByDuration(aCallTask, bCallTask); // both are live calls, longest duration first
   } else if (!aIsLiveCallTask && !bIsLiveCallTask) {
-    return aDuration - bDuration; // both are not live calls, longest duration first
+    return sortTasksByDuration(aCallTask, bCallTask); // both are not live calls, longest duration first
   } else if (aIsLiveCallTask && !bIsLiveCallTask) {
     return 1; // a is a live call and b is not, a comes first
   } else if (!aIsLiveCallTask && bIsLiveCallTask) {
@@ -62,7 +69,24 @@ const sortWorkersByCallDuration = (a: SupervisorWorkerState, b: SupervisorWorker
   return 0;
 };
 
-export const setUpSortingCalls = () => {
+const sortWorkersByChatDuration = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
+  const aChatTasks = a.tasks.filter(task => TaskHelper.isChatBasedTask(task));
+  const bChatTasks = b.tasks.filter(task => TaskHelper.isChatBasedTask(task));
+
+  const taskLengthDifference = aChatTasks.length - bChatTasks.length;
+  if (taskLengthDifference !== 0) {
+    return taskLengthDifference;
+  }
+
+  if (aChatTasks.length > 0) {
+    return sortTasksByDuration(aChatTasks[0], bChatTasks[0]);
+  }
+
+  return 0;
+};
+
+export const setUpSortingCallsAndChats = () => {
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
   AgentsDataTable.defaultProps.sortCalls = sortWorkersByCallDuration;
+  AgentsDataTable.defaultProps.sortTasks = sortWorkersByChatDuration;
 };
