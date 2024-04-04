@@ -28,7 +28,7 @@ export const setUpEnhancedTaskCard = () => {
   const strings = getTemplateStrings();
 
   DefaultTaskChannels.Call.templates.TaskCard.firstLine = task => {
-    const truncatedIdentifier = maskIdentifiers ? strings.MaskIdentifiers : task.defaultFrom.slice(-4);
+    const truncatedIdentifier = maskIdentifiers ? 'XXXX' : task.defaultFrom.slice(-4);
     return `${task.queueName} | ...${truncatedIdentifier}`;
   };
 
