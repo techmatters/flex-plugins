@@ -19,7 +19,7 @@ import { PreEngagementFormDefinition, EMAIL_PATTERN } from '../src/pre-engagemen
 
 const accountSid = 'ACa00e3e32f7ba405cc0f5906906d88e97';
 const flexFlowSid = 'FO468b62cdd84da623f50059a50f01ff92';
-const defaultLanguage = 'en-US';
+const defaultLanguage = 'en-SG';
 const captureIp = true;
 const checkOpenHours = true;
 const contactType: ContactType = 'ip';
@@ -80,7 +80,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       name: 'age',
       required: true,
       defaultValue: '',
-       options: [
+      options: [
         {
           value: "",
           label: ""
@@ -153,8 +153,65 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           value: ">20",
           label: "21 and above"
         }
-       ],
-     },  
+      ],
+    },
+    {
+      type: 'input-text',
+      name: 'email',
+      label: 'Email Address',
+      placeholder: 'Email Address',
+    },
+    {
+      type: 'input-text',
+      name: 'contactNumber',
+      label: 'Contact Number',
+      placeholder: 'Contact No',
+    },
+    {
+      label: 'What would you like to talk about?',
+      type: 'select',
+      name: 'reason',
+      required: true,
+      defaultValue: 'Unknown',
+      options: [
+        {
+          value: "Unknown",
+          label: ""
+        },
+        {
+          value: "school",
+          label: "School"
+        },
+        {
+          value: "friendship",
+          label: "Friendship"
+        },
+        {
+          value: "family",
+          label: "Family"
+        },
+        {
+          value: "mentalHealth",
+          label: "Mental Health"
+        },
+        {
+          value: "unsafe",
+          label: "Feelings of Being Unsafe"
+        },
+        {
+          value: "nothing",
+          label: "Nothing"
+        },
+        {
+          value: "more",
+          label: "More than one of the above"
+        },
+        {
+          value: "other",
+          label: "Other"
+        }
+      ],
+    },
     {
       type: 'checkbox',
       name: 'clientPrivacyStatement',

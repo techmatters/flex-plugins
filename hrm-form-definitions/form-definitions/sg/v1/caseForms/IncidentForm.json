@@ -117,6 +117,10 @@
       {
         "value": "More than 2 times a month",
         "label": "More than 2 times a month"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ],
     "required": {
@@ -127,34 +131,22 @@
   {
     "name": "isCaregiverAware",
     "label": "Is caregiver aware?",
-    "type": "checkbox",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "type": "mixed-checkbox"
   },
   {
     "name": "wasTheIncidentWitnessedByAnyone",
     "label": "Was the incident witnessed by anyone?",
-    "type": "checkbox",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "type": "mixed-checkbox"
   },
   {
     "name": "hasAbuseBeenReportedElsewhere",
     "label": "Has abuse been reported elsewhere?",
-    "type": "checkbox"
+    "type": "mixed-checkbox"
   },
   {
     "name": "whereElseTheIncidentHasBeenReported",
     "label": "Where else the incident has been reported?",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "type": "input"
   },
   {
     "name": "detailsOfIncident",
