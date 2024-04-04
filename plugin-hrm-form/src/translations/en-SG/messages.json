@@ -1,6 +1,5 @@
 {
   "WelcomeMsg": "Hi, this is Tinkle Friend. How can I help you?",
   "GoodbyeMsg": "Tinkle Friend has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
-
-  "SaferNet-CustomGoodbyeMsg": "This chat has ended. Thank you for reaching out. Please help us improve by rating your experience through the following link: "
+  "EndChatMsg": "This chat has ended. Thank you for reaching out."
 }
