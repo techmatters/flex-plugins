@@ -31,6 +31,7 @@ import { newClearContactAsyncAction, removeFromCaseAsyncAction } from '../states
 import { getOfflineContactTaskSid } from '../states/contacts/offlineContactTask';
 import '../types';
 import { CaseStateEntry } from '../states/case/types';
+import { getExternalRecordingInfo } from './getExternalRecordingInfo';
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
@@ -75,7 +76,7 @@ export const submitContactForm = async (
     const targetWorkerSid = contact.rawJson.contactlessTask.createdOnBehalfOf as string;
     const inBehalfTask = await assignOfflineContactInit(targetWorkerSid, task.attributes);
     try {
-      const { contact: savedContact } = await saveContact(task, contact, metadata, workerSid, inBehalfTask.sid);
+      const savedContact = await saveContact(task, contact, metadata, workerSid, inBehalfTask.sid);
       const finalAttributes = buildInsightsData(inBehalfTask, contact, caseState, savedContact);
       await assignOfflineContactResolve({
         action: 'complete',
@@ -96,15 +97,9 @@ export const submitContactForm = async (
     }
   }
 
-  const { contact: savedContact, externalRecordingInfo } = await saveContact(
-    task,
-    contact,
-    metadata,
-    workerSid,
-    task.taskSid,
-  );
-
-  const finalAttributes = buildInsightsData(task, contact, caseState, savedContact, externalRecordingInfo);
+  const savedContact = await saveContact(task, contact, metadata, workerSid, task.taskSid);
+  const recordingsIfAvailable = await getExternalRecordingInfo(task);
+  const finalAttributes = buildInsightsData(task, contact, caseState, savedContact, recordingsIfAvailable);
   await task.setAttributes(finalAttributes);
   return savedContact;
 };

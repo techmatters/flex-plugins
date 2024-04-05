@@ -14,8 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import * as FullStory from '@fullstory/browser';
 import { ServiceConfiguration } from '@twilio/flex-ui';
+import * as FullStory from '@fullstory/browser';
 import type { Worker } from 'twilio-taskrouter';
 
 import { fullStoryId } from '../private/secret';

@@ -429,7 +429,7 @@ export const buildInsightsData = (
   contact: Contact,
   caseState: CaseStateEntry,
   savedContact: Contact,
-  externalRecordingInfo: ExternalRecordingInfo | null = null,
+  externalRecordingInfo?: ExternalRecordingInfo,
 ) => {
   const logObject: any = {
     taskId: task.taskSid,
@@ -449,6 +449,7 @@ export const buildInsightsData = (
       .map(f => f(previousAttributes, contact, caseState, savedContact))
       .reduce((acc: TaskAttributes, curr: InsightsAttributes) => mergeAttributes(acc, curr), previousAttributes);
 
+    // TODO: replace with a url provider that doesn't require the recording SID, but can use the task ID or contact ID to look it up at query time
     if (isSuccessfulExternalRecordingInfo(externalRecordingInfo)) {
       const urlProviderBlock = generateUrlProviderBlock(externalRecordingInfo, savedContact);
       finalAttributes.conversations = {

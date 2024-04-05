@@ -288,7 +288,11 @@ const CasePrintView: React.FC<Props> = ({
                   definitions={definitionVersion.caseForms.ReferralForm}
                   values={sectionTimelines.referral}
                 />
-                <CasePrintNotes notes={sectionTimelines.note} counselorsHash={counselorsHash} />
+                <CasePrintNotes
+                  notes={sectionTimelines.note}
+                  counselorsHash={counselorsHash}
+                  formDefinition={definitionVersion}
+                />
                 <CasePrintSummary summary={connectedCase.info.summary} />
                 <CasePrintCSAMReports csamReports={allCsamReports} />
               </View>
