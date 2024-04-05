@@ -150,7 +150,7 @@ div.Twilio-Splitter div.Twilio-AgentDesktopView\.Panel2 {
  * Overrides to allow better UX for Reset and Apply (buttons) in the Filter Panel
  */
  .Twilio-FilterListButtons-Container {
-    min-width: 0px;
+    min-width: 325px;
     width: -webkit-fill-available;
     overflow: visible;
     position: fixed;

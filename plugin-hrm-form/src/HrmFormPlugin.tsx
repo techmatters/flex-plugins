@@ -49,7 +49,7 @@ import { setUpTransferActions } from './transfer/setUpTransferActions';
 import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
 import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
-import TeamsView from './components/teamsView';
+import TeamsView from './teamsView';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -88,16 +88,17 @@ const setUpComponents = (
   Components.setUpAddButtons(featureFlags);
   Components.setUpNoTasksUI(featureFlags, setupObject);
   Components.setUpCustomCRMContainer();
-  Channels.customiseDefaultChatChannels();
+  Channels.setupDefaultChannels();
   Channels.setupTwitterChatChannel(maskIdentifiers);
   Channels.setupInstagramChatChannel(maskIdentifiers);
   Channels.setupLineChatChannel(maskIdentifiers);
-  Channels.expandSMSChannel();
 
   if (maskIdentifiers) {
     // Masks TaskInfoPanelContent - TODO: refactor to use a react component
     const strings = getTemplateStrings();
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+    strings.SupervisorTaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+
     strings.CallParticipantCustomerName = strings.MaskIdentifiers;
 
     Channels.maskIdentifiersForDefaultChannels();

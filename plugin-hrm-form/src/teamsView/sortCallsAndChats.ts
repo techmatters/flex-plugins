@@ -17,7 +17,7 @@
 import { AgentsDataTable, TaskHelper } from '@twilio/flex-ui';
 import { SupervisorWorkerState } from '@twilio/flex-ui/src/state/State.definition';
 
-import { getAseloFeatureFlags } from '../../hrmConfig';
+import { getAseloFeatureFlags } from '../hrmConfig';
 
 /**
  * Converts a duration string in the format "HH:MM:SS" or "MM:SS" to seconds.

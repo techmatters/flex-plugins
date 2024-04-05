@@ -19,7 +19,7 @@ import { withStyles } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 import DisabledIcon from '@material-ui/icons/Block';
 
-import { ChipBase } from '../../styles';
+import { ChipBase } from '../styles';
 
 type SkillChipProps = {
   color: string;
