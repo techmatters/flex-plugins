@@ -25,7 +25,7 @@ const checkOpenHours = true;
 const contactType: ContactType = 'ip';
 
 const closedHours: PreEngagementFormDefinition = {
-  description: "We're closed at the moment. Operating hours are 8am-6pm",
+  description: "We're closed at the moment. Operating hours are 2pm-7pm",
   fields: [],
 };
 
@@ -40,7 +40,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
   fields: [
     {
       type: 'input-text',
-      name: 'friendlyName',
+      name: 'firstName',
       label: 'Preferred Name',
       placeholder: 'Name',
       required: true,

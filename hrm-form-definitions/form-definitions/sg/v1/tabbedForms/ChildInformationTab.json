@@ -1,6 +1,6 @@
 [
   {
-    "name": "friendlyName",
+    "name": "firstName",
     "label": "Name / Full Name",
     "type": "input",
     "required": {
