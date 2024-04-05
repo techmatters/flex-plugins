@@ -24,10 +24,11 @@ import { DefinitionVersion } from 'hrm-form-definitions';
 import { formatName } from '../../../utils';
 import styles from './styles';
 import { getTemplateStrings } from '../../../hrmConfig';
-import { CaseSection } from '../../../services/caseSectionService';
+import { FullCaseSection } from '../../../services/caseSectionService';
+import { getSectionText } from '../../../states/case/caseActivities';
 
 type OwnProps = {
-  notes: CaseSection[];
+  notes: FullCaseSection[];
   counselorsHash: { [sid: string]: string };
   formDefinition: DefinitionVersion;
 };
@@ -46,7 +47,8 @@ const CasePrintNotes: React.FC<Props> = ({ notes, counselorsHash, formDefinition
       </View>
       {notes &&
         notes.length > 0 &&
-        notes.map(({ createdBy: twilioWorkerId, sectionTypeSpecificData: note, createdAt }, i) => {
+        notes.map((noteSection, i) => {
+          const { createdBy: twilioWorkerId, createdAt } = noteSection;
           return (
             <View key={i} style={{ ...styles['sectionBody'], ...styles['caseSummaryText'] }}>
               <View style={{ ...styles.flexRow, justifyContent: 'space-between' }}>
@@ -54,7 +56,7 @@ const CasePrintNotes: React.FC<Props> = ({ notes, counselorsHash, formDefinition
                 <Text style={{ fontStyle: 'italic' }}>{`${format(createdAt, 'MMM d, yyyy / h:mm aaaaa')}m`}</Text>
               </View>
               <View>
-                <Text style={styles['noteSummaryText']}>{getNoteActivityText(noteSection, formDefinition)}</Text>
+                <Text style={styles['noteSummaryText']}>{getSectionText(noteSection, formDefinition)}</Text>
               </View>
             </View>
           );
