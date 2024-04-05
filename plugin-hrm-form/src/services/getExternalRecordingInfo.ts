@@ -14,10 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { TaskHelper } from '@twilio/flex-ui';
+
 import { getHrmConfig } from '../hrmConfig';
 import { isVoiceChannel } from '../states/DomainConstants';
 import { CustomITask, InMyBehalfITask, isOfflineContactTask, isTwilioTask } from '../types/types';
 import { getExternalRecordingS3Location } from './ServerlessService';
+import { recordEvent } from '../fullStory';
 
 export type ExternalRecordingInfoSuccess = {
   status: 'success';
@@ -50,11 +53,22 @@ export const shouldGetExternalRecordingInfo = (task: CustomITask): task is InMyB
   if (!isVoiceChannel(channelType)) return false;
 
   const { externalRecordingsEnabled } = getHrmConfig();
-  if (!externalRecordingsEnabled) return false;
-
-  return true;
+  return Boolean(externalRecordingsEnabled);
 };
 /* eslint-enable sonarjs/prefer-single-boolean-return */
+const recordDebugEvent = (task: InMyBehalfITask, message: string, recordingInfo: ExternalRecordingInfo | {} = {}) => {
+  recordEvent(`[Temporary Debug Event] Getting External Recording Info: ${message}`, {
+    ...recordingInfo,
+    taskSid: task.taskSid,
+    taskStatus: task.status,
+    reservationSid: task.sid,
+    isCallTask: TaskHelper.isCallTask(task),
+    isChatBasedTask: TaskHelper.isChatBasedTask(task),
+    conferenceAttributes: JSON.stringify(task.attributes.conference),
+    conversationAttributes: JSON.stringify(task.attributes.conversations),
+    taskAttributes: JSON.stringify(task.attributes),
+  });
+};
 
 export const getExternalRecordingInfo = async (task: CustomITask): Promise<ExternalRecordingInfo> => {
   if (!shouldGetExternalRecordingInfo(task)) {
@@ -64,23 +78,50 @@ export const getExternalRecordingInfo = async (task: CustomITask): Promise<Exter
       error: 'Invalid task',
     };
   }
+  recordDebugEvent(task, 'Starting');
 
   // The call id related to the worker is always the one with the recording, as far as I can tell (rbd)
-  const callSid = isTwilioTask(task) && task.attributes.conference?.participants?.worker;
+  const { conference } = isTwilioTask(task) && task.attributes;
+  if (!conference) {
+    const result: ExternalRecordingInfo = {
+      status: 'failure',
+      name: 'NoConference',
+      error: `Could not find a conference attached to task attributes ${task.taskSid}`,
+    };
+    recordDebugEvent(task, 'Error', result);
+    return result;
+  }
+
+  const { participants } = isTwilioTask(task) && conference;
+  if (!participants) {
+    const result: ExternalRecordingInfo = {
+      status: 'failure',
+      name: 'NoParticipants',
+      error: `Could not find a participants attached to conference for task ${task.taskSid}`,
+    };
+    recordDebugEvent(task, 'Error', result);
+    return result;
+  }
+
+  const callSid = participants.worker;
   if (!callSid) {
-    return {
+    const result: ExternalRecordingInfo = {
       status: 'failure',
       name: 'NoCallSid',
       error: 'Could not find call sid',
     };
+    recordDebugEvent(task, 'Error', result);
+    return result;
   }
 
   const { bucket, key, recordingSid } = await getExternalRecordingS3Location(callSid);
 
-  return {
+  const successResult: ExternalRecordingInfo = {
     status: 'success',
     recordingSid,
     bucket,
     key,
   };
+  recordDebugEvent(task, 'Success', successResult);
+  return successResult;
 };

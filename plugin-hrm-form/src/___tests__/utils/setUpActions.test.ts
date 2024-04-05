@@ -15,14 +15,17 @@
  */
 
 /* eslint-disable camelcase */
-import { ITask, ChatOrchestrator, Manager } from '@twilio/flex-ui';
 
-import { REMOVE_CONTACT_STATE } from '../../states/types';
+import { ChatOrchestrator } from '@twilio/flex-ui';
+
 import { FeatureFlags } from '../../types/types';
+import { REMOVE_CONTACT_STATE } from '../../states/types';
 import { afterCompleteTask, excludeDeactivateConversationOrchestration } from '../../utils/setUpActions';
 import { namespace } from '../../states/storeNamespaces';
+import { FINALIZE_CONTACT as mockFINALIZE_CONTACT } from '../../states/contacts/types';
+import { newFinalizeContactAsyncAction } from '../../states/contacts/saveContact';
 
-const taskSid = 'THIS IS THE TASK SID!';
+const taskSid = 'WT-THIS IS THE TASK SID!';
 
 const mockFlexManager = {
   store: {
@@ -37,6 +40,15 @@ jest.mock('@twilio/flex-ui', () => ({
     getInstance: () => mockFlexManager,
   },
 }));
+
+jest.mock('../../states/contacts/saveContact', () => ({
+  newFinalizeContactAsyncAction: jest.fn(async () => ({ type: mockFINALIZE_CONTACT })),
+  createContactAsyncAction: jest.fn(),
+}));
+
+const mockNewFinalizeContactAsyncAction = newFinalizeContactAsyncAction as jest.MockedFunction<
+  typeof newFinalizeContactAsyncAction
+>;
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -58,12 +70,20 @@ describe('afterCompleteTask', () => {
         },
       },
     });
-    console.log('Fake state', Manager.getInstance().store.getState());
+
     afterCompleteTask({
-      task: <ITask>{
+      task: <any>{
         taskSid,
       },
     });
+    expect(mockFlexManager.store.dispatch).toHaveBeenCalledWith(expect.any(Promise));
+    expect(mockNewFinalizeContactAsyncAction).toHaveBeenCalledWith(
+      { taskSid },
+      {
+        id: '1234',
+        taskId: taskSid,
+      },
+    );
     expect(mockFlexManager.store.dispatch).toHaveBeenCalledWith({
       type: REMOVE_CONTACT_STATE,
       taskId: taskSid,

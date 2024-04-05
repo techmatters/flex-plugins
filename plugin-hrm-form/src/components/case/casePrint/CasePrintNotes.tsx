@@ -19,6 +19,7 @@
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
 import { format } from 'date-fns';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { formatName } from '../../../utils';
 import styles from './styles';
@@ -28,11 +29,12 @@ import { CaseSection } from '../../../services/caseSectionService';
 type OwnProps = {
   notes: CaseSection[];
   counselorsHash: { [sid: string]: string };
+  formDefinition: DefinitionVersion;
 };
 
 type Props = OwnProps;
 
-const CasePrintNotes: React.FC<Props> = ({ notes, counselorsHash }) => {
+const CasePrintNotes: React.FC<Props> = ({ notes, counselorsHash, formDefinition }) => {
   const strings = getTemplateStrings();
 
   if (!notes || notes.length === 0) return null;
@@ -52,7 +54,7 @@ const CasePrintNotes: React.FC<Props> = ({ notes, counselorsHash }) => {
                 <Text style={{ fontStyle: 'italic' }}>{`${format(createdAt, 'MMM d, yyyy / h:mm aaaaa')}m`}</Text>
               </View>
               <View>
-                <Text style={styles['noteSummaryText']}>{note.text}</Text>
+                <Text style={styles['noteSummaryText']}>{getNoteActivityText(noteSection, formDefinition)}</Text>
               </View>
             </View>
           );
