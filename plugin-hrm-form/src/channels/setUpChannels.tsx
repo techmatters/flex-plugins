@@ -27,7 +27,7 @@ import CallIcon from '../components/common/icons/CallIcon';
 import SmsIcon from '../components/common/icons/SmsIcon';
 import * as TransferHelpers from '../transfer/transferTaskState';
 import { colors, mainChannelColor } from './colors';
-import { getTemplateStrings } from '../hrmConfig';
+import { getTemplateStrings, getAseloFeatureFlags } from '../hrmConfig';
 import { isSmsChannelType } from '../utils/smsChannels';
 import { setCallTaskCardString, setChatTaskCardString } from '../teamsView/taskCardEnhancement';
 
@@ -201,8 +201,8 @@ const maskIdentifiersByChannel = channelType => {
   channelType.templates.TaskCanvasHeader.title = 'MaskIdentifiers';
   channelType.templates.MessageListItem = 'MaskIdentifiers';
   // Task Status in Agents page
-  channelType.templates.TaskCard.firstLine = 'MaskIdentifiers';
-  channelType.templates.Supervisor.TaskCard.firstLine = 'MaskIdentifiers';
+  if (!getAseloFeatureFlags().enable_teams_view_enhancements)
+    channelType.templates.TaskCard.firstLine = 'MaskIdentifiers';
 
   // Supervisor
   channelType.templates.Supervisor.TaskCanvasHeader.title = 'MaskIdentifiers';

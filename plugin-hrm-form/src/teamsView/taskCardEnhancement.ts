@@ -30,6 +30,7 @@ export const setCallTaskCardString = channel => {
 
   channel.templates.TaskCard.firstLine = task => {
     const truncatedIdentifier = task.defaultFrom.slice(-TRUNCATED_IDENTIFIER_LENGTH);
+
     const queueName =
       task.queueName.length > MAX_QUEUE_LENGTH
         ? `${task.queueName.substring(0, TRUNCATED_QUEUE_LENGTH)}…`
@@ -41,14 +42,18 @@ export const setCallTaskCardString = channel => {
 
 // This function customises the TaskCard meant for all Chat channels
 export const setChatTaskCardString = channel => {
-  if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
+  if (!getAseloFeatureFlags().enable_teams_view_enhancements) {
+    return;
+  }
 
   const can = getInitializedCan();
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   const strings = getTemplateStrings();
+
   channel.templates.TaskCard.firstLine = task => {
     const identifier = maskIdentifiers ? strings.MaskIdentifiers : '@';
+
     const queueName =
       task.queueName.length > MAX_QUEUE_LENGTH
         ? `${task.queueName.substring(0, TRUNCATED_QUEUE_LENGTH)}…`
