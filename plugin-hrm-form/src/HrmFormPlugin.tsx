@@ -96,6 +96,8 @@ const setUpComponents = (
     // Masks TaskInfoPanelContent - TODO: refactor to use a react component
     const strings = getTemplateStrings();
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+    strings.SupervisorTaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+
     strings.CallParticipantCustomerName = strings.MaskIdentifiers;
 
     Channels.maskIdentifiersForDefaultChannels();
