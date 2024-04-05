@@ -13,9 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { DefaultTaskChannels } from '@twilio/flex-ui';
 
-// import { setupTwitterChatChannel, setupInstagramChatChannel, setupLineChatChannel } from '../../channels/setUpChannels';
 import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
 import { getInitializedCan, PermissionActions } from '../permissions';
 
@@ -23,14 +21,13 @@ const TRUNCATED_IDENTIFIER_LENGTH = 4;
 const MAX_QUEUE_LENGTH = 13;
 const TRUNCATED_QUEUE_LENGTH = 10;
 
-const can = getInitializedCan();
-const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
+// This function customises the TaskCard meant for Call channel
+export const setCallTaskCardString = channel => {
+  if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
 
-const strings = getTemplateStrings();
+  const can = getInitializedCan();
+  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
-// if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
-
-const setCallTaskCardString = channel => {
   channel.templates.TaskCard.firstLine = task => {
     const truncatedIdentifier = task.defaultFrom.slice(-TRUNCATED_IDENTIFIER_LENGTH);
     const queueName =
@@ -43,7 +40,13 @@ const setCallTaskCardString = channel => {
 };
 
 // This function customises the TaskCard meant for all Chat channels
-const setChatTaskCardString = channel => {
+export const setChatTaskCardString = channel => {
+  if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
+
+  const can = getInitializedCan();
+  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
+
+  const strings = getTemplateStrings();
   channel.templates.TaskCard.firstLine = task => {
     const identifier = maskIdentifiers ? strings.MaskIdentifiers : '@';
     const queueName =
