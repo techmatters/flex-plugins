@@ -97,13 +97,7 @@ export const submitContactForm = async (
     }
   }
 
-  const savedContact = await saveContact(
-    task,
-    contact,
-    metadata,
-    workerSid,
-    task.taskSid,
-  );
+  const savedContact = await saveContact(task, contact, metadata, workerSid, task.taskSid);
   const recordingsIfAvailable = await getExternalRecordingInfo(task);
   const finalAttributes = buildInsightsData(task, contact, caseState, savedContact, recordingsIfAvailable);
   await task.setAttributes(finalAttributes);
