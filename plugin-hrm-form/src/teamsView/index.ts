@@ -14,13 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import { setUpSkillsColumn } from './SkillsColumn';
-import { setUpEnhancedTaskCard } from './TaskCardEnhancement';
-import { setUpSortingCallsAndChats } from './SortCallsAndChats';
-import { setUpTeamViewFilters, setUpWorkerDirectoryFilters } from './Filters';
+import { setUpSortingCallsAndChats } from './sortCallsAndChats';
+import { setUpTeamViewFilters, setUpWorkerDirectoryFilters } from './teamsViewFilters';
 
 const TeamsView = {
   setUpSkillsColumn,
-  setUpEnhancedTaskCard,
   setUpSortingCallsAndChats,
   setUpTeamViewFilters,
   setUpWorkerDirectoryFilters,

@@ -18,9 +18,9 @@ import React, { useState } from 'react';
 import { WorkersDataTable, ColumnDefinition, Template } from '@twilio/flex-ui';
 
 import SkillChip from './SkillChip';
-import { StyledLink } from '../search/styles';
-import { OpaqueText } from '../../styles';
-import { getAseloFeatureFlags } from '../../hrmConfig';
+import { StyledLink } from '../components/search/styles';
+import { OpaqueText } from '../styles';
+import { getAseloFeatureFlags } from '../hrmConfig';
 import { SkillsCell } from './styles';
 
 const sortFn = (first, second) => {
