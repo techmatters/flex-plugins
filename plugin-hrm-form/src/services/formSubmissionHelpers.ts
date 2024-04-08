@@ -36,9 +36,10 @@ import { ContactMetadata } from '../states/contacts/types';
 import * as GeneralActions from '../states/actions';
 import asyncDispatch from '../states/asyncDispatch';
 import { newClearContactAsyncAction, removeFromCaseAsyncAction } from '../states/contacts/saveContact';
-import { getOfflineContactTaskSid } from '../states/contacts/offlineContactTask';
+import { getOfflineContactTask, getOfflineContactTaskSid } from '../states/contacts/offlineContactTask';
 import '../types';
 import { getExternalRecordingInfo } from './getExternalRecordingInfo';
+import { afterCompleteTask } from '../utils/setUpActions';
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
@@ -90,6 +91,7 @@ export const submitContactForm = async (
         taskSid: inBehalfTask.sid,
         finalTaskAttributes: finalAttributes,
       });
+      await afterCompleteTask({ task: getOfflineContactTask() });
       return savedContact;
     } catch (err) {
       // If something went wrong remove the task for this offline contact
