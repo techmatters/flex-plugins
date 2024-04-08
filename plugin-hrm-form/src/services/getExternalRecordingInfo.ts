@@ -81,9 +81,7 @@ export const getExternalRecordingInfo = async (task: CustomITask): Promise<Exter
   recordDebugEvent(task, 'Starting');
 
   // The call id related to the worker is always the one with the recording, as far as I can tell (rbd)
-  const { conference, conversation } = isTwilioTask(task) && task.attributes;
-  if (conversation?.segment_link) {
-  }
+  const { conference } = isTwilioTask(task) && task.attributes;
   if (!conference) {
     const result: ExternalRecordingInfo = {
       status: 'failure',
