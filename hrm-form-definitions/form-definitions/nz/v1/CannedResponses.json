@@ -10,5 +10,9 @@
     {
         "label": "Risk from self",
         "text": "If you're feeling unsafe please call us (0800376633), or Need to Talk (txt/call 1737), or 111 for emergencies."
+    },
+    {
+        "label": "Transferring to YL Other Services queue",
+        "text": "We'll transfer you to our Therapy Services team who can support you further. Their office hours are Mon-Fri 9am - 5pm so they'll get back to you within these hours."
     }
 ]
