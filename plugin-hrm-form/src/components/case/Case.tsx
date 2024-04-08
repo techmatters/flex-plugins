@@ -94,7 +94,7 @@ const Case: React.FC<Props> = ({
   releaseAllContacts,
   openPrintModal,
   onNewCaseSaved = () => Promise.resolve(),
-  taskContact,
+  contextContact,
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
@@ -109,8 +109,8 @@ const Case: React.FC<Props> = ({
   const { enable_case_merging: enableCaseMerging } = getAseloFeatureFlags();
 
   useEffect(() => {
-    if (routing.isCreating && !routing.caseId && taskContact?.caseId) {
-      redirectToNewCase(taskContact.caseId);
+    if (routing.isCreating && !routing.caseId && contextContact?.caseId) {
+      redirectToNewCase(contextContact.caseId);
     }
   });
 
@@ -167,8 +167,8 @@ const Case: React.FC<Props> = ({
 
   const handleCloseCase = async () => {
     releaseAllContacts(`case-${connectedCase.id}`);
-    if (!enableCaseMerging && taskContact && taskContact.caseId === connectedCaseId) {
-      await removeConnectedCase(taskContact.id);
+    if (!enableCaseMerging && contextContact && contextContact.caseId === connectedCaseId) {
+      await removeConnectedCase(contextContact.id);
     }
     handleClose();
   };
@@ -272,7 +272,7 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
     definitionVersions: selectDefinitionVersions(state),
     currentDefinitionVersion: selectCurrentDefinitionVersion(state),
     routing: currentRoute as CaseRoute,
-    taskContact: selectContactStateByContactId(state, contactId)?.savedContact,
+    contextContact: selectContactStateByContactId(state, contactId)?.savedContact,
   };
 };
 

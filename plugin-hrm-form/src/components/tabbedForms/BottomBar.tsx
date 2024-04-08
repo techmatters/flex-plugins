@@ -42,7 +42,7 @@ import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { SuccessReportIcon } from '../CSAMReport/styles';
 import { CaseStateEntry } from '../../states/case/types';
-import selectOpenNewCase from '../../states/case/selectOpenNewCase';
+import openNewCase from '../../states/case/selectOpenNewCase';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => Promise<void>) => () => void;
@@ -68,18 +68,19 @@ const BottomBar: React.FC<
   openModal,
   nextTab,
   caseState,
-  createCaseAsyncAction,
   submitContactForm,
   saveUpdates,
   savedContact,
   contactIsSaving,
+  openNewCase,
 }) => {
   const strings = getTemplateStrings();
 
   const isAddedToCase = savedContact?.caseId;
 
   const handleOpenNewCase = async () => {
-    await selectOpenNewCase(task, saveUpdates, savedContact, createCaseAsyncAction, contact, openModal);
+    await saveUpdates();
+    await openNewCase(task, savedContact, contact, openModal);
   };
 
   const handleSubmit = async () => {
@@ -209,15 +210,12 @@ const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
   return {
     changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
     openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid)),
-    createCaseAsyncAction: async (contact, workerSid: string, definitionVersion: DefinitionVersionId) => {
-      // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
-      // TODO: Rework error handling to be based on redux state set by the _REJECTED action
-      await asyncDispatch(dispatch)(createCaseAsyncAction(contact, workerSid, definitionVersion));
-    },
     submitContactForm: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) =>
       // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
       // TODO: Rework error handling to be based on redux state set by the _REJECTED action
       dispatch(submitContactFormAsyncAction(task, contact, metadata, caseState)),
+    openNewCase: async (task: RouterTask, savedContact: Contact, contact: Contact, openModal) =>
+      openNewCase(task, savedContact, contact, openModal, dispatch),
   };
 };
 

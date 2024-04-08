@@ -33,6 +33,7 @@ import {
   isS3StoredRecording,
   isS3StoredTranscript,
   isTwilioStoredMedia,
+  RouterTask,
   StandaloneITask,
 } from '../../types/types';
 import { ContactAddedFont, ContactDetailsIcon, SectionActionButton, SectionValueText } from '../search/styles';
@@ -65,7 +66,7 @@ import { createCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import AddCaseButton from '../AddCaseButton';
-import selectOpenNewCase from '../../states/case/selectOpenNewCase';
+import openNewCase from '../../states/case/selectOpenNewCase';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -134,9 +135,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   task,
   showRemovedFromCaseBanner,
   openModal,
-  saveUpdates,
-  draftContact,
-  createCaseAsyncActions,
+  openNewCase,
 }) {
   const version = savedContact?.rawJson.definitionVersion;
 
@@ -283,15 +282,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   };
 
   const handleOpenNewCase = async () => {
-    await selectOpenNewCase(
-      task,
-      saveUpdates,
-      savedContact,
-      createCaseAsyncActions,
-      savedContact,
-      openModal,
-      draftContact,
-    );
+    await openNewCase(task, savedContact, savedContact, openModal);
   };
 
   const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && canView && (
@@ -547,11 +538,8 @@ const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) =>
   openModal: (route: AppRoutes) => dispatch(newOpenModalAction(route, task.taskSid)),
   saveUpdates: (savedContact: Contact, draftContact: ContactDraftChanges) =>
     asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact, task.taskSid)),
-  createCaseAsyncActions: async (contact, workerSid: string, definitionVersion: DefinitionVersionId) => {
-    // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
-    // TODO: Rework error handling to be based on redux state set by the _REJECTED action
-    await asyncDispatch(dispatch)(createCaseAsyncAction(contact, workerSid, definitionVersion));
-  },
+  openNewCase: async (task: RouterTask, savedContact: Contact, contact: Contact, openModal) =>
+    openNewCase(task, savedContact, contact, openModal, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);

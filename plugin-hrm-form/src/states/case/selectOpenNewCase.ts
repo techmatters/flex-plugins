@@ -18,26 +18,19 @@ import { Contact, RouterTask } from '../../types/types';
 import { recordBackendError } from '../../fullStory';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { hasTaskControl } from '../../transfer/transferTaskState';
-import { ContactDraftChanges } from '../contacts/existingContacts';
+import asyncDispatch from '../asyncDispatch';
+import { createCaseAsyncAction } from './saveCase';
 
-const selectOpenNewCase = async (
-  task: RouterTask,
-  saveUpdates,
-  savedContact: Contact,
-  createCaseAsyncAction,
-  contact: Contact,
-  openModal,
-  draftContact?: ContactDraftChanges,
-) => {
+const openNewCase = async (task: RouterTask, savedContact: Contact, contact: Contact, openModal, dispatch) => {
   const strings = getTemplateStrings();
   const { workerSid, definitionVersion } = getHrmConfig();
 
   if (!hasTaskControl(task)) return;
 
   try {
-    // eslint-disable-next-line no-unused-expressions
-    task.taskSid === 'standalone-task-sid' ? await saveUpdates(savedContact, draftContact) : await saveUpdates();
-    await createCaseAsyncAction(contact, workerSid, definitionVersion);
+    // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
+    // TODO: Rework error handling to be based on redux state set by the _REJECTED action
+    await asyncDispatch(dispatch)(createCaseAsyncAction(contact, workerSid, definitionVersion));
     openModal({
       contextContactId: savedContact.id,
       route: 'case',
@@ -51,4 +44,4 @@ const selectOpenNewCase = async (
   }
 };
 
-export default selectOpenNewCase;
+export default openNewCase;
