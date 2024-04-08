@@ -145,3 +145,22 @@ div.Twilio-Splitter div.Twilio-AgentDesktopView\.Panel2 {
  .Twilio-WorkersDataTable {
     min-width: 900px !important;
  }
+
+/**  
+ * Overrides to allow better UX for Reset and Apply (buttons) in the Filter Panel
+ */
+ .Twilio-FilterListButtons-Container {
+    min-width: 0px;
+    width: -webkit-fill-available;
+    overflow: visible;
+    position: fixed;
+    bottom: 0;
+    background-color: white;
+    margin-left: -1px;
+    border-left: 1px solid #cacdd8;
+    border-top: 1px solid #cacdd8;
+ }
+ .Twilio-TeamFiltersPanel {
+    height: calc(100% - 79px); /* 79px is the height of the Filter Buttons Container */
+    flex-grow: 0;
+ }
