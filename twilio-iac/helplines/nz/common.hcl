@@ -32,16 +32,20 @@ locals {
 
     task_queues = {
       youthline_helpline : {
-        "target_workers" = "roles HAS 'agent' OR roles HAS 'supervisor'",
+        "target_workers" = "roles HAS 'agent' OR (roles HAS 'supervisor' AND 'Counselling' NOT IN routing.skills)",
         "friendly_name"  = "Youthline Helpline"
       },
       priority : {
-        "target_workers" = "roles HAS 'agent' OR roles HAS 'supervisor'",
+        "target_workers" = "roles HAS 'agent' OR (roles HAS 'supervisor' AND 'Counselling' NOT IN routing.skills)" ,
         "friendly_name"  = "Priority Youthline Helpline"
       },
       clinical : {
-        "target_workers" = "routing.skills HAS 'Clinical' OR roles HAS 'supervisor'",
+        "target_workers" = "(routing.skills HAS 'Clinical' OR roles HAS 'supervisor') AND 'Counselling' NOT IN routing.skills",
         "friendly_name"  = "Clinical"
+      },
+      counselling : {
+        "target_workers" = "roles HAS 'supervisor' AND routing.skills HAS 'Counselling'",
+        "friendly_name"  = "YL Other Services"
       },
       survey : {
         "target_workers" = "1==0",
