@@ -90,3 +90,9 @@ export const setUpSortingCallsAndChats = () => {
   AgentsDataTable.defaultProps.sortCalls = sortWorkersByCallDuration;
   AgentsDataTable.defaultProps.sortTasks = sortWorkersByChatDuration;
 };
+
+export const sortSkills = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
+  const aSkills = a?.worker?.source?.attributes?.routing?.skills?.length ?? 0;
+  const bSkills = b?.worker?.source?.attributes?.routing?.skills?.length ?? 0;
+  return aSkills - bSkills;
+};
