@@ -18,10 +18,11 @@ import { Contact, RouterTask } from '../../types/types';
 import { recordBackendError } from '../../fullStory';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { hasTaskControl } from '../../transfer/transferTaskState';
-import asyncDispatch from '../asyncDispatch';
-import { createCaseAsyncAction } from './saveCase';
+import asyncDispatch from '../../states/asyncDispatch';
+import { createCaseAsyncAction } from '../../states/case/saveCase';
+import { newOpenModalAction } from '../../states/routing/actions';
 
-const openNewCase = async (task: RouterTask, savedContact: Contact, contact: Contact, openModal, dispatch) => {
+const openNewCase = async (task: RouterTask, savedContact: Contact, contact: Contact, dispatch) => {
   const strings = getTemplateStrings();
   const { workerSid, definitionVersion } = getHrmConfig();
 
@@ -31,13 +32,18 @@ const openNewCase = async (task: RouterTask, savedContact: Contact, contact: Con
     // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
     // TODO: Rework error handling to be based on redux state set by the _REJECTED action
     await asyncDispatch(dispatch)(createCaseAsyncAction(contact, workerSid, definitionVersion));
-    openModal({
-      contextContactId: savedContact.id,
-      route: 'case',
-      subroute: 'home',
-      isCreating: true,
-      caseId: undefined,
-    });
+    dispatch(
+      newOpenModalAction(
+        {
+          contextContactId: savedContact.id,
+          route: 'case',
+          subroute: 'home',
+          isCreating: true,
+          caseId: undefined,
+        },
+        task.taskSid,
+      ),
+    );
   } catch (error) {
     recordBackendError('Open New Case', error);
     window.alert(strings['Error-Backend']);

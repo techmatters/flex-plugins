@@ -66,7 +66,7 @@ import { createCaseAsyncAction } from '../../states/case/saveCase';
 import asyncDispatch from '../../states/asyncDispatch';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import AddCaseButton from '../AddCaseButton';
-import openNewCase from '../../states/case/selectOpenNewCase';
+import openNewCase from '../case/openNewCase';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -135,7 +135,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   task,
   showRemovedFromCaseBanner,
   openModal,
-  openNewCase,
+  createNewCase,
 }) {
   const version = savedContact?.rawJson.definitionVersion;
 
@@ -282,7 +282,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   };
 
   const handleOpenNewCase = async () => {
-    await openNewCase(task, savedContact, savedContact, openModal);
+    await createNewCase(task, savedContact, savedContact);
   };
 
   const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && canView && (
@@ -538,8 +538,8 @@ const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) =>
   openModal: (route: AppRoutes) => dispatch(newOpenModalAction(route, task.taskSid)),
   saveUpdates: (savedContact: Contact, draftContact: ContactDraftChanges) =>
     asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact, task.taskSid)),
-  openNewCase: async (task: RouterTask, savedContact: Contact, contact: Contact, openModal) =>
-    openNewCase(task, savedContact, contact, openModal, dispatch),
+  createNewCase: async (task: RouterTask, savedContact: Contact, contact: Contact) =>
+    openNewCase(task, savedContact, contact, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);
