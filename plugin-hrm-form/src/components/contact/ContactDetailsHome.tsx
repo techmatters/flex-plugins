@@ -536,8 +536,6 @@ const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) =>
     dispatch(newOpenModalAction({ route: 'profile', profileId: id, subroute: 'details' }, task.taskSid));
   },
   openModal: (route: AppRoutes) => dispatch(newOpenModalAction(route, task.taskSid)),
-  saveUpdates: (savedContact: Contact, draftContact: ContactDraftChanges) =>
-    asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact, task.taskSid)),
   createNewCase: async (task: RouterTask, savedContact: Contact, contact: Contact) =>
     openNewCase(task, savedContact, contact, dispatch),
 });
