@@ -40,3 +40,35 @@ export const getMostRecentSectionItem = (propertyName: WellKnownCaseSection) => 
   }
   return undefined;
 };
+
+export const getSectionItemsSortedByCreatedAt = (
+  caseObj: Case,
+  propertyName: WellKnownCaseSection,
+): ApiCaseSection[] => {
+  const sectionList = caseObj?.sections[propertyName];
+  if (!sectionList) return sectionList;
+  if (Array.isArray(sectionList)) {
+    return [...sectionList].sort((a, b) => parseISO(b.createdAt).getTime() - parseISO(a.createdAt).getTime());
+  }
+  return [];
+};
+
+export const getSectionItemsSortedByFormDate = (
+  caseObj: Case,
+  propertyName: WellKnownCaseSection,
+): ApiCaseSection[] => {
+  const sectionList = caseObj?.sections[propertyName];
+  if (!sectionList) return sectionList;
+  if (Array.isArray(sectionList)) {
+    return [...sectionList].sort((a, b) => {
+      const timeA = a.sectionTypeSpecificData?.date
+        ? parseISO(a.sectionTypeSpecificData?.date.toString()).getTime()
+        : 0;
+      const timeB = b.sectionTypeSpecificData?.date
+        ? parseISO(b.sectionTypeSpecificData?.date.toString()).getTime()
+        : 0;
+      return timeB - timeA;
+    });
+  }
+  return [];
+};

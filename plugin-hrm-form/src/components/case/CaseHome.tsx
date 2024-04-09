@@ -58,6 +58,7 @@ import selectCaseHelplineData from '../../states/case/selectCaseHelplineData';
 import { selectCounselorName } from '../../states/configuration/selectCounselorsHash';
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import { selectContactsByCaseIdInCreatedOrder } from '../../states/contacts/selectContactByCaseId';
+import { getSectionItemsSortedByCreatedAt, getSectionItemsSortedByFormDate } from '../../states/case/sections/get';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -156,7 +157,6 @@ const CaseHome: React.FC<Props> = ({
   const caseLayouts = definitionVersion.layoutVersion.case;
 
   const {
-    sections,
     info: { followUpDate, childIsAtRisk },
     status,
     id,
@@ -195,13 +195,6 @@ const CaseHome: React.FC<Props> = ({
       </CaseSection>
     </Box>
   );
-
-  const {
-    incident: incidentSections,
-    perpetrator: perpetratorSections,
-    household: householdSections,
-    document: documentSections,
-  } = sections ?? {};
 
   const onEditCaseSummaryClick = () => {
     openModal({ route: 'case', subroute: 'caseSummary', action: CaseItemAction.Edit, id: '', caseId });
@@ -262,12 +255,20 @@ const CaseHome: React.FC<Props> = ({
             )}
           </CaseDetailsBorder>
         </Box>
-        {genericSectionRenderer(NewCaseSubroutes.Household, PermissionActions.ADD_HOUSEHOLD, householdSections)}
-        {genericSectionRenderer(NewCaseSubroutes.Perpetrator, PermissionActions.ADD_PERPETRATOR, perpetratorSections)}
+        {genericSectionRenderer(
+          NewCaseSubroutes.Household,
+          PermissionActions.ADD_HOUSEHOLD,
+          getSectionItemsSortedByCreatedAt(connectedCase, NewCaseSubroutes.Household),
+        )}
+        {genericSectionRenderer(
+          NewCaseSubroutes.Perpetrator,
+          PermissionActions.ADD_PERPETRATOR,
+          getSectionItemsSortedByCreatedAt(connectedCase, NewCaseSubroutes.Perpetrator),
+        )}
         {genericSectionRenderer(
           NewCaseSubroutes.Incident,
           PermissionActions.ADD_INCIDENT,
-          incidentSections,
+          getSectionItemsSortedByFormDate(connectedCase, NewCaseSubroutes.Incident),
           (subroute, { sectionTypeSpecificData, sectionId }, index) => (
             <IncidentInformationRow
               key={`incident-${index}`}
@@ -282,7 +283,7 @@ const CaseHome: React.FC<Props> = ({
           genericSectionRenderer(
             NewCaseSubroutes.Document,
             PermissionActions.ADD_DOCUMENT,
-            documentSections,
+            getSectionItemsSortedByCreatedAt(connectedCase, NewCaseSubroutes.Document),
             (subroute, item, index) => (
               <DocumentInformationRow
                 key={`document-${index}`}

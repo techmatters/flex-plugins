@@ -37,6 +37,7 @@ import { getImageAsString, ImageSource } from './images';
 import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 import NavigableContainer from '../../NavigableContainer';
 import { Case, CustomITask, StandaloneITask } from '../../../types/types';
+import { getSectionItemsSortedByCreatedAt, getSectionItemsSortedByFormDate } from '../../../states/case/sections/get';
 
 type OwnProps = {
   onClickClose: () => void;
@@ -68,8 +69,11 @@ const CasePrintView: React.FC<Props> = ({
   const [chkOnBlob, setChkOnBlob] = useState<string>(null);
   const [chkOffBlob, setChkOffBlob] = useState<string>(null);
 
-  const { incident, referral, household, perpetrator, note } = connectedCase?.sections ?? {};
-
+  const sortedIncidents = getSectionItemsSortedByFormDate(connectedCase, 'incident');
+  const sortedHouseholds = getSectionItemsSortedByCreatedAt(connectedCase, 'household');
+  const sortedPerpetrators = getSectionItemsSortedByCreatedAt(connectedCase, 'perpetrator');
+  const sortedNotes = getSectionItemsSortedByCreatedAt(connectedCase, 'note');
+  const sortedReferrals = getSectionItemsSortedByFormDate(connectedCase, 'referral');
   /*
    * The purpose of this effect is to load all the images at once, to avoid re-renders in PDFViewer that leads to issues
    * https://stackoverflow.com/questions/60614940/unhandled-rejection-typeerror-nbind-externallistnum-dereference-is-not-a-f
@@ -193,27 +197,31 @@ const CasePrintView: React.FC<Props> = ({
                   sectionName={strings['SectionName-HouseholdMember']}
                   sectionKey="household"
                   definitions={definitionVersion.caseForms.HouseholdForm}
-                  values={household}
+                  values={sortedHouseholds}
                 />
                 <CasePrintMultiSection
                   sectionName={strings['SectionName-Perpetrator']}
                   sectionKey="perpetrator"
                   definitions={definitionVersion.caseForms.PerpetratorForm}
-                  values={perpetrator}
+                  values={sortedPerpetrators}
                 />
                 <CasePrintMultiSection
                   sectionName={strings['SectionName-Incident']}
                   definitions={definitionVersion.caseForms.IncidentForm}
                   sectionKey="incident"
-                  values={incident}
+                  values={sortedIncidents}
                 />
                 <CasePrintMultiSection
                   sectionName={strings['SectionName-Referral']}
                   definitions={definitionVersion.caseForms.ReferralForm}
                   sectionKey="referral"
-                  values={referral}
+                  values={sortedReferrals}
                 />
-                <CasePrintNotes notes={note} counselorsHash={counselorsHash} formDefinition={definitionVersion} />
+                <CasePrintNotes
+                  notes={sortedNotes}
+                  counselorsHash={counselorsHash}
+                  formDefinition={definitionVersion}
+                />
                 <CasePrintSummary summary={connectedCase.info.summary} />
                 <CasePrintCSAMReports csamReports={contact?.csamReports} />
               </View>
