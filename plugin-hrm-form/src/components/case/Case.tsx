@@ -62,6 +62,8 @@ import FullTimelineView from './timeline/FullTimelineView';
 import { updateCaseOverviewAsyncAction } from '../../states/case/saveCase';
 import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
 import { CaseStateEntry } from '../../states/case/types';
+import selectContextContactId from '../../states/contacts/selectContextContactId';
+import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -92,7 +94,7 @@ const Case: React.FC<Props> = ({
   releaseAllContacts,
   openPrintModal,
   onNewCaseSaved = () => Promise.resolve(),
-  taskContact,
+  contextContact,
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
@@ -107,8 +109,8 @@ const Case: React.FC<Props> = ({
   const { enable_case_merging: enableCaseMerging } = getAseloFeatureFlags();
 
   useEffect(() => {
-    if (routing.isCreating && !routing.caseId && taskContact?.caseId) {
-      redirectToNewCase(taskContact.caseId);
+    if (routing.isCreating && !routing.caseId && contextContact?.caseId) {
+      redirectToNewCase(contextContact.caseId);
     }
   });
 
@@ -165,8 +167,8 @@ const Case: React.FC<Props> = ({
 
   const handleCloseCase = async () => {
     releaseAllContacts(`case-${connectedCase.id}`);
-    if (!enableCaseMerging && taskContact && taskContact.caseId === connectedCaseId) {
-      await removeConnectedCase(taskContact.id);
+    if (!enableCaseMerging && contextContact && contextContact.caseId === connectedCaseId) {
+      await removeConnectedCase(contextContact.id);
     }
     handleClose();
   };
@@ -261,6 +263,7 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
   const connectedCaseId = isCaseRoute(currentRoute) ? currentRoute.caseId : undefined;
   const caseState = selectCurrentRouteCaseState(state, task.taskSid);
+  const contactId = selectContextContactId(state, task.taskSid, 'case', 'home');
 
   return {
     connectedCaseId,
@@ -269,7 +272,7 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
     definitionVersions: selectDefinitionVersions(state),
     currentDefinitionVersion: selectCurrentDefinitionVersion(state),
     routing: currentRoute as CaseRoute,
-    taskContact: selectContactByTaskSid(state, task.taskSid)?.savedContact,
+    contextContact: selectContactStateByContactId(state, contactId)?.savedContact,
   };
 };
 

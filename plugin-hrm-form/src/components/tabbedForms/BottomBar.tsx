@@ -30,7 +30,7 @@ import { RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError } from '../../fullStory';
 import { Contact, CustomITask, RouterTask } from '../../types/types';
-import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
+import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
@@ -42,6 +42,7 @@ import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { SuccessReportIcon } from '../CSAMReport/styles';
 import { CaseStateEntry } from '../../states/case/types';
+import openNewCase from '../case/openNewCase';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => Promise<void>) => () => void;
@@ -67,35 +68,19 @@ const BottomBar: React.FC<
   openModal,
   nextTab,
   caseState,
-  createCaseAsyncAction,
   submitContactForm,
   saveUpdates,
   savedContact,
   contactIsSaving,
+  createNewCase,
 }) => {
   const strings = getTemplateStrings();
 
   const isAddedToCase = savedContact?.caseId;
 
   const handleOpenNewCase = async () => {
-    const { workerSid, definitionVersion } = getHrmConfig();
-
-    if (!hasTaskControl(task)) return;
-
-    try {
-      await saveUpdates();
-      await createCaseAsyncAction(contact, workerSid, definitionVersion);
-      openModal({
-        contextContactId: savedContact.id,
-        route: 'case',
-        subroute: 'home',
-        isCreating: true,
-        caseId: undefined,
-      });
-    } catch (error) {
-      recordBackendError('Open New Case', error);
-      window.alert(strings['Error-Backend']);
-    }
+    await saveUpdates();
+    await createNewCase(task, savedContact, contact);
   };
 
   const handleSubmit = async () => {
@@ -225,15 +210,12 @@ const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
   return {
     changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
     openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid)),
-    createCaseAsyncAction: async (contact, workerSid: string, definitionVersion: DefinitionVersionId) => {
-      // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
-      // TODO: Rework error handling to be based on redux state set by the _REJECTED action
-      await asyncDispatch(dispatch)(createCaseAsyncAction(contact, workerSid, definitionVersion));
-    },
     submitContactForm: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) =>
       // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
       // TODO: Rework error handling to be based on redux state set by the _REJECTED action
       dispatch(submitContactFormAsyncAction(task, contact, metadata, caseState)),
+    createNewCase: async (task: RouterTask, savedContact: Contact, contact: Contact) =>
+      openNewCase(task, savedContact, contact, dispatch),
   };
 };
 

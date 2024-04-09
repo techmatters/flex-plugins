@@ -19,19 +19,21 @@ import React, { useEffect } from 'react';
 import { format } from 'date-fns';
 import { Actions, Icon, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
-import { callTypes, DataCallTypes, isNonSaveable } from 'hrm-form-definitions';
+import { callTypes, DataCallTypes, DefinitionVersionId, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
 import { useProfile } from '../../states/profile/hooks';
 import { Box, Flex, Row } from '../../styles';
 import {
+  Contact,
   ContactRawJson,
   CSAMReportEntry,
   CustomITask,
   isS3StoredRecording,
   isS3StoredTranscript,
   isTwilioStoredMedia,
+  RouterTask,
   StandaloneITask,
 } from '../../types/types';
 import { ContactAddedFont, ContactDetailsIcon, SectionActionButton, SectionValueText } from '../search/styles';
@@ -44,7 +46,7 @@ import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/Co
 import { RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getInitializedCan, PermissionActions } from '../../permissions';
-import { ContactDetailsRoute, createDraft } from '../../states/contacts/existingContacts';
+import { ContactDetailsRoute, ContactDraftChanges, createDraft } from '../../states/contacts/existingContacts';
 import { RecordingSection, TranscriptSection } from './MediaSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import type { ResourceReferral } from '../../states/contacts/resourceReferral';
@@ -60,7 +62,11 @@ import InfoIcon from '../caseMergingBanners/InfoIcon';
 import { BannerContainer, Text } from '../../styles/banners';
 import { isSmsChannelType } from '../../utils/smsChannels';
 import getCanEditContact from '../../permissions/canEditContact';
+import { createCaseAsyncAction } from '../../states/case/saveCase';
+import asyncDispatch from '../../states/asyncDispatch';
+import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import AddCaseButton from '../AddCaseButton';
+import openNewCase from '../case/openNewCase';
 
 const formatResourceReferral = (referral: ResourceReferral) => {
   return (
@@ -129,6 +135,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   task,
   showRemovedFromCaseBanner,
   openModal,
+  createNewCase,
 }) {
   const version = savedContact?.rawJson.definitionVersion;
 
@@ -274,6 +281,10 @@ const ContactDetailsHome: React.FC<Props> = function ({
     openModal({ contextContactId: savedContact.id, route: 'search', subroute: 'form', action: 'select-case' });
   };
 
+  const handleOpenNewCase = async () => {
+    await createNewCase(task, savedContact, savedContact);
+  };
+
   const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && canView && (
     <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>
       <Icon icon="DefaultAvatar" />
@@ -304,7 +315,11 @@ const ContactDetailsHome: React.FC<Props> = function ({
         ? addedToCaseBanner()
         : !showRemovedFromCaseBanner && (
             <Box display="flex" justifyContent="flex-end">
-              <AddCaseButton position="top" handleNewCaseType={() => '#'} handleExistingCaseType={openSearchModal} />
+              <AddCaseButton
+                position="top"
+                handleNewCaseType={handleOpenNewCase}
+                handleExistingCaseType={openSearchModal}
+              />
             </Box>
           )}
 
@@ -521,6 +536,8 @@ const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) =>
     dispatch(newOpenModalAction({ route: 'profile', profileId: id, subroute: 'details' }, task.taskSid));
   },
   openModal: (route: AppRoutes) => dispatch(newOpenModalAction(route, task.taskSid)),
+  createNewCase: async (task: RouterTask, savedContact: Contact, contact: Contact) =>
+    openNewCase(task, savedContact, contact, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);
