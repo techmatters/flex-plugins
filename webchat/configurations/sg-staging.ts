@@ -172,7 +172,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'select',
       name: 'reason',
       required: true,
-      defaultValue: 'Unknown',
+      defaultValue: '',
       options: [
         {
           value: "",
