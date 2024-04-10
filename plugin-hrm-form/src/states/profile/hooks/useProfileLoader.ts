@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from '../..';
@@ -51,7 +51,7 @@ export const useProfileLoader = ({
     asyncDispatch(dispatch)(ProfileActions.loadProfileAsync(profileId));
   }, [dispatch, profileId]);
 
-  const firstFetch = autoload && !loading && !data;
+  const firstFetch = autoload && !loading && !data && !error;
 
   useEffect(() => {
     if (!profileId) return;
@@ -60,6 +60,34 @@ export const useProfileLoader = ({
       loadProfile();
     }
   }, [firstFetch, loadProfile, profileId, refresh]);
+
+  const retryCount = useRef(0);
+  const backoff = useRef(1);
+  const retrying = useRef(false);
+  const timerId = useRef(null);
+
+  useEffect(() => {
+    // should retry
+    if (error && !loading && !retrying.current && retryCount.current < 10) {
+      // don't retry 4xx, the problem is on the client
+      if (error.status >= 400 && error.status < 500) {
+        return;
+      }
+
+      retrying.current = true;
+      timerId.current = setTimeout(() => {
+        loadProfile();
+        retrying.current = false;
+        retryCount.current += 1;
+        backoff.current *= 2;
+      }, 1000 * backoff.current);
+    }
+  }, [error, loadProfile, loading]);
+
+  // cleanup the retry timeout on unmount
+  useEffect(() => {
+    return () => clearTimeout(timerId.current);
+  }, []);
 
   return {
     error,
