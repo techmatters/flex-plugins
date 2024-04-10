@@ -90,9 +90,10 @@ export const getExternalRecordingInfo = async (task: CustomITask): Promise<Exter
       status: 'success',
       recordingSid,
       bucket: getHrmConfig().docsBucket,
-      key: recordingUrl.pathname,
+      key: recordingUrl.pathname.indexOf('/') === 0 ? recordingUrl.pathname.substring(1) : recordingUrl.pathname,
     };
-    recordDebugEvent(task, 'Success', successResult);
+    recordDebugEvent(task, 'Success', { ...successResult, lookupMethod: 'conversation.segment_link' });
+    return successResult;
   }
   if (!conference) {
     const result: ExternalRecordingInfo = {
@@ -134,6 +135,6 @@ export const getExternalRecordingInfo = async (task: CustomITask): Promise<Exter
     bucket,
     key,
   };
-  recordDebugEvent(task, 'Success', successResult);
+  recordDebugEvent(task, 'Success', { ...successResult, lookupMethod: 'conference worker callSid' });
   return successResult;
 };
