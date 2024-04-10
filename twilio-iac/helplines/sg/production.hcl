@@ -13,5 +13,6 @@ locals {
 
     custom_task_routing_filter_expression = ""
     flow_vars                             = {}
+    ui_editable = true
   }
 }
