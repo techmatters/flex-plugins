@@ -21,7 +21,7 @@ import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import { ButtonProps } from '@material-ui/core/Button';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
 
-import { BottomButtonBar, Flex, FontOpenSans, ChipBase, Row, StyledNextStepButton } from '../../styles';
+import { BottomButtonBar, Flex, FontOpenSans, Row, StyledNextStepButton } from '../../styles';
 import HrmTheme from '../../styles/HrmTheme';
 import { BannerContainerProps, colors } from '../../styles/banners';
 
@@ -251,6 +251,7 @@ SectionTitleButton.displayName = 'SectionTitleButton';
 
 type SectionActionButton = {
   padding?: string;
+  disabled?: boolean;
 };
 
 export const SectionActionButton = styled('button')<SectionActionButton>`
@@ -259,7 +260,7 @@ export const SectionActionButton = styled('button')<SectionActionButton>`
   background-color: transparent;
   font-size: 13px;
   font-weight: 600;
-  color: #1976d2;
+  color: ${props => (props.disabled ? HrmTheme.colors.disabledColor : HrmTheme.colors.completeTaskColor)};
   padding: ${props => (props.padding ? props.padding : '0 6px')};
   font-family: 'Open Sans';
   cursor: pointer;

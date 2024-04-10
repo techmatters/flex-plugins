@@ -157,7 +157,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
     [],
   );
 
-  const { canView } = useProfile({ profileId: savedContact?.profileId });
+  const { canView: canViewProfile } = useProfile({ profileId: savedContact?.profileId });
 
   if (!savedContact || !definitionVersion) return null;
 
@@ -285,8 +285,13 @@ const ContactDetailsHome: React.FC<Props> = function ({
     await createNewCase(task, savedContact, savedContact);
   };
 
-  const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && canView && (
-    <SectionActionButton padding="0" type="button" onClick={() => openProfileModal(savedContact.profileId)}>
+  const profileLink = featureFlags.enable_client_profiles && !isProfileRoute && savedContact.profileId && (
+    <SectionActionButton
+      padding="0"
+      type="button"
+      onClick={() => openProfileModal(savedContact.profileId)}
+      disabled={!canViewProfile}
+    >
       <Icon icon="DefaultAvatar" />
       <Template code="Profile-ViewClient" />
     </SectionActionButton>
