@@ -31,6 +31,32 @@
         }
       ]
     },
+    "Child Protection Concerns": {
+      "color": "#db7a34",
+      "subcategories": [
+        {
+          "label": "Physical abuse"
+        },
+        {
+          "label": "Emotional abuse"
+        },
+        {
+          "label": "Sexual abuse and/or exploitation"
+        },
+        {
+          "label": "Neglect"
+        },
+        {
+          "label": "Witness of family violence"
+        },
+        {
+          "label": "Exposure/ witness to substance abuse"
+        },
+        {
+          "label": "Unspecified/Other - CP"
+        }
+      ]
+    },
     "Contact on Behalf": {
       "color": "#e8e9eb",
       "subcategories": [
@@ -254,6 +280,32 @@
         },
         {
           "label": "Pornography"
+        }
+      ]
+    },
+    "Suicide Risk": {
+      "color": "#cc0000",
+      "subcategories": [
+        {
+          "label": "Suicidal thoughts (no intent/ plan)"
+        },
+        {
+          "label": "Suicidal thoughts (method, no plan/ intent)"
+        },
+        {
+          "label": "Suicidal intent (no plan)"
+        },
+        {
+          "label": "Suicidal with plan and intent"
+        },
+        {
+          "label": "Prior suicide attempt"
+        },
+        {
+          "label": "Current suicide attempt"
+        },
+        {
+          "label": "Suicide threats"
         }
       ]
     }
