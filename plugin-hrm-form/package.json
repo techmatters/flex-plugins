@@ -80,7 +80,7 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^14.1.1",
     "@twilio/flex-plugin": "^6.0.3",
-    "@twilio/flex-plugin-scripts": "^6.0.3",
+    "@twilio/flex-plugin-scripts": "^6.3.3",
     "@twilio/flex-ui": "~2.4.1",
     "@twilio/flex-ui-dev-proxy": "^1.1.2",
     "@types/jest": "^27.5.2",
@@ -118,7 +118,7 @@
     "timezoned-date": "^3.0.2",
     "ts-jest": "^26.5.6",
     "ts-node": "^10.9.1",
-    "twilio-cli": "^5.2.2",
+    "twilio-cli": "^5.19.3",
     "typescript": "4.7.4",
     "webpack-bundle-analyzer": "^4.7.0"
   }
