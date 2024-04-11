@@ -48,6 +48,7 @@ import selectPreviousContactCounts from '../../../states/search/selectPreviousCo
 import { selectCounselorsList } from '../../../states/configuration/selectCounselorsHash';
 import { selectCurrentDefinitionVersion } from '../../../states/configuration/selectDefinitions';
 import { CustomITask } from '../../../types/types';
+import { handleClearSearchForm } from '../../../states/search/actions';
 
 const getField = value => ({
   value,
@@ -69,9 +70,11 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => ({
   previousContactCounts: selectPreviousContactCounts(state, task.taskSid) ?? { contacts: 0, cases: 0 },
 });
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
+  clearSearchForm: () => dispatch(handleClearSearchForm(task.taskSid)),
+});
 
-type Props = OwnProps & ConnectedProps<typeof connector>;
+type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 // eslint-disable-next-line complexity
 const SearchForm: React.FC<Props> = ({
@@ -82,6 +85,7 @@ const SearchForm: React.FC<Props> = ({
   helplineInformation,
   task,
   handleSearch,
+  clearSearchForm,
 }) => {
   const can = React.useMemo(() => {
     return getInitializedCan();
@@ -130,7 +134,10 @@ const SearchForm: React.FC<Props> = ({
     (helpline && helpline.value) ||
     contactNumber;
 
-  const submitSearch = () => handleSearch(searchParams);
+  const submitSearch = () => {
+    handleSearch(searchParams);
+    clearSearchForm();
+  };
   const submitOnEnter = event => {
     if (event.key === 'Enter') submitSearch();
   };
@@ -269,4 +276,4 @@ const SearchForm: React.FC<Props> = ({
   );
 };
 
-export default connector(SearchForm);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchForm);

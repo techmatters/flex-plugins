@@ -346,82 +346,94 @@ const SearchResults: React.FC<Props> = ({
     </SearchResultWarningContainer>
   );
 
+  const handleCaseResultsSearch = () => (cases.length === 0 ? handleNoSearchResult() : caseResults());
+
   return (
     <>
-      <ResultsHeader>
-        <Row style={{ justifyContent: 'center', width: '100%' }}>
-          <StyledTabs
-            selectedTabName={currentResultPage}
-            onTabSelected={tabSelected}
-            alignment="center"
-            keepTabsMounted={false}
-          >
-            <TwilioTab
-              key="SearchResultsIndex-Contacts"
-              label={<Template code="SearchResultsIndex-Contacts" />}
-              uniqueName="contact-results"
-            >
-              {[]}
-            </TwilioTab>
-            <TwilioTab
-              key="SearchResultsIndex-Cases"
-              label={<Template code="SearchResultsIndex-Cases" />}
-              uniqueName="case-results"
-            >
-              {[]}
-            </TwilioTab>
-          </StyledTabs>
-        </Row>
-      </ResultsHeader>
-      <ListContainer>
-        <ScrollableList>
-          <StyledResultsContainer>
-            <StyledResultsText data-testid="SearchResultsCount">
-              <>
-                {/* Intentionally we must show the option different at the one currently selected */}
-                {currentResultPage === 'contact-results' ? (
+      {routing.action === 'select-case' ? (
+        handleCaseResultsSearch()
+      ) : (
+        <>
+          <ResultsHeader>
+            <Row style={{ justifyContent: 'center', width: '100%' }}>
+              <StyledTabs
+                selectedTabName={currentResultPage}
+                onTabSelected={tabSelected}
+                alignment="center"
+                keepTabsMounted={false}
+              >
+                <TwilioTab
+                  key="SearchResultsIndex-Contacts"
+                  label={<Template code="SearchResultsIndex-Contacts" />}
+                  uniqueName="contact-results"
+                >
+                  {[]}
+                </TwilioTab>
+                <TwilioTab
+                  key="SearchResultsIndex-Cases"
+                  label={<Template code="SearchResultsIndex-Cases" />}
+                  uniqueName="case-results"
+                >
+                  {[]}
+                </TwilioTab>
+              </StyledTabs>
+            </Row>
+          </ResultsHeader>
+          <ListContainer>
+            <ScrollableList>
+              <StyledResultsContainer>
+                <StyledResultsText data-testid="SearchResultsCount">
                   <>
-                    <Template code={casesCount === 1 ? 'PreviousContacts-ThereIs' : 'PreviousContacts-ThereAre'} />
-                    &nbsp;
-                    <EmphasisedText>
-                      {casesCount}{' '}
-                      <Template code={casesCount === 1 ? 'PreviousContacts-Case' : 'PreviousContacts-Cases'} />
-                    </EmphasisedText>
+                    {/* Intentionally we must show the option different at the one currently selected */}
+                    {currentResultPage === 'contact-results' ? (
+                      <>
+                        <Template code={casesCount === 1 ? 'PreviousContacts-ThereIs' : 'PreviousContacts-ThereAre'} />
+                        &nbsp;
+                        <EmphasisedText>
+                          {casesCount}{' '}
+                          <Template code={casesCount === 1 ? 'PreviousContacts-Case' : 'PreviousContacts-Cases'} />
+                        </EmphasisedText>
+                      </>
+                    ) : (
+                      <>
+                        <Template
+                          code={contactsCount === 1 ? 'PreviousContacts-ThereIs' : 'PreviousContacts-ThereAre'}
+                        />
+                        &nbsp;
+                        <EmphasisedText>
+                          {contactsCount}{' '}
+                          <Template
+                            code={contactsCount === 1 ? 'PreviousContacts-Contact' : 'PreviousContacts-Contacts'}
+                          />
+                        </EmphasisedText>
+                      </>
+                    )}
                   </>
-                ) : (
-                  <>
-                    <Template code={contactsCount === 1 ? 'PreviousContacts-ThereIs' : 'PreviousContacts-ThereAre'} />
-                    &nbsp;
-                    <EmphasisedText>
-                      {contactsCount}{' '}
-                      <Template code={contactsCount === 1 ? 'PreviousContacts-Contact' : 'PreviousContacts-Contacts'} />
-                    </EmphasisedText>
-                  </>
-                )}
-              </>
-              &nbsp;
-              <Template code="PreviousContacts-Returned" />
-              &nbsp;
-            </StyledResultsText>
-            <StyledLink onClick={toggleTabs} data-testid="ViewCasesLink">
-              <Template
-                code={
-                  // Intentionally we must show the option different at the one currently selected
-                  currentResultPage === 'contact-results'
-                    ? 'SearchResultsIndex-ViewCases'
-                    : 'SearchResultsIndex-ViewContacts'
-                }
-              />
-            </StyledLink>
-          </StyledResultsContainer>
-          {currentResultPage === 'contact-results' &&
-            contacts &&
-            (contacts.length === 0 ? handleNoSearchResult() : contactResults())}
-          {currentResultPage === 'case-results' &&
-            cases &&
-            (cases.length === 0 ? handleNoSearchResult() : caseResults())}
-        </ScrollableList>
-      </ListContainer>
+                  &nbsp;
+                  <Template code="PreviousContacts-Returned" />
+                  &nbsp;
+                </StyledResultsText>
+                <StyledLink onClick={toggleTabs} data-testid="ViewCasesLink">
+                  <Template
+                    code={
+                      // Intentionally we must show the option different at the one currently selected
+                      currentResultPage === 'contact-results'
+                        ? 'SearchResultsIndex-ViewCases'
+                        : 'SearchResultsIndex-ViewContacts'
+                    }
+                  />
+                </StyledLink>
+              </StyledResultsContainer>
+              {currentResultPage === 'contact-results' &&
+                contacts &&
+                (contacts.length === 0 ? handleNoSearchResult() : contactResults())}
+              {currentResultPage === 'case-results' &&
+                cases &&
+                (cases.length === 0 ? handleNoSearchResult() : caseResults())}
+            </ScrollableList>
+          </ListContainer>
+        </>
+      )}
     </>
   );
 };

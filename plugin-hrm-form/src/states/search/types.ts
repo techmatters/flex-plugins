@@ -18,6 +18,7 @@ import { Contact, SearchCaseResult } from '../../types/types';
 
 // Action types
 export const HANDLE_SEARCH_FORM_CHANGE = 'HANDLE_SEARCH_FORM_CHANGE';
+export const CLEAR_SEARCH_FORM = 'CLEAR_SEARCH_FORM';
 export const CHANGE_SEARCH_PAGE = 'CHANGE_SEARCH_PAGE';
 export const VIEW_CONTACT_DETAILS = 'VIEW_CONTACT_DETAILS';
 export const SEARCH_CONTACTS_REQUEST = 'SEARCH_CONTACTS_REQUEST';
@@ -61,6 +62,8 @@ type SearchFormChangeAction = {
   };
 }[keyof SearchFormValues] & { type: typeof HANDLE_SEARCH_FORM_CHANGE; taskId: string };
 
+type ClearSearchFormAction = { type: typeof CLEAR_SEARCH_FORM; taskId: string };
+
 type SearchContactsRequestAction = { type: typeof SEARCH_CONTACTS_REQUEST; taskId: string };
 
 export type SearchContactsSuccessAction = {
@@ -102,7 +105,8 @@ export type SearchActionType =
   | SearchCasesRequestAction
   | SearchCasesSuccessAction
   | SearchCasesFailureAction
-  | ViewPreviousContactsAction;
+  | ViewPreviousContactsAction
+  | ClearSearchFormAction;
 
 export type SearchResultReferences = {
   count: number;

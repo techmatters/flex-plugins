@@ -153,6 +153,16 @@ export function reduce(
         },
       };
     }
+    case t.CLEAR_SEARCH_FORM: {
+      const task = state.tasks[action.taskId];
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: { ...task, form: newSearchFormEntry },
+        },
+      };
+    }
     case t.SEARCH_CONTACTS_REQUEST: {
       const task = state.tasks[action.taskId];
       return {

@@ -46,7 +46,7 @@ const mapStateToProps = (state: RootState, { taskId, contactId }: OwnProps) => {
   const connectedCase = selectCaseByCaseId(state, caseId)?.connectedCase;
 
   return {
-    contactId: contact?.savedContact.id ? contact?.savedContact.id : contactId,
+    contactId: savedContact?.id ? savedContact?.id : contact?.savedContact.id,
     caseId,
     savedContact,
     connectedCase,

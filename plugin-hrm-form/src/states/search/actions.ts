@@ -39,6 +39,13 @@ export const handleSearchFormChange = (taskId: string) => <K extends keyof t.Sea
   } as t.SearchActionType; // casting cause inference is not providing enough information, but the restrictions are made in argument types
 };
 
+export const handleClearSearchForm = (taskId: string): t.SearchActionType => {
+  return {
+    type: t.CLEAR_SEARCH_FORM,
+    taskId,
+  } as t.SearchActionType;
+};
+
 export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => async (
   searchParams: SearchParams,
   limit: number,
