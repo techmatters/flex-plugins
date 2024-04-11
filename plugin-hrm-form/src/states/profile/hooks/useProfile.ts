@@ -26,14 +26,9 @@ export type UseProfileParams = UseProfileCommonParams & { autoload?: boolean; re
 
 /**
  * Access a profile by id for the current account
- *
- * @param {UseProfileParams}
- * @returns {UseProfile} - State and actions for the profile
  */
-export const useProfile = (params: UseProfileParams) => {
-  const { profileId } = params;
-
-  useProfileLoader({ profileId, autoload: true });
+export const useProfile = ({ profileId, autoload = true, refresh = false }: UseProfileParams) => {
+  useProfileLoader({ profileId, autoload, refresh });
 
   const can = useMemo(() => {
     return getInitializedCan();

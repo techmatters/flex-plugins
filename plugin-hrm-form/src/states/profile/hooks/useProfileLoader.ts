@@ -22,6 +22,7 @@ import asyncDispatch from '../../asyncDispatch';
 import * as ProfileActions from '../profiles';
 import * as ProfileSelectors from '../selectors';
 import { UseProfileCommonParams } from './types';
+import useFeatureFlags from '../../../hooks/useFeatureFlags';
 
 type UseProfileLoaderParams = UseProfileCommonParams & { autoload?: boolean; refresh?: boolean };
 
@@ -53,9 +54,11 @@ export const useProfileLoader = ({
     asyncDispatch(dispatch)(ProfileActions.loadProfileAsync(profileId));
   }, [dispatch, profileId]);
 
+  const { enable_client_profiles: enableClientProfiles } = useFeatureFlags();
+
   const firstFetch = autoload && !loading && !data && !error;
-  const safeToLoad = Boolean(profileId); // prevent load if there's no profile id
-  const shouldLoad = firstFetch || refresh; // load on initial mount
+  const safeToLoad = enableClientProfiles && Boolean(profileId); // prevent load if there's no profile id
+  const shouldLoad = enableClientProfiles && (firstFetch || refresh); // load on initial mount
 
   useLoadWithRetry({
     error,
