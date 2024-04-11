@@ -164,3 +164,7 @@ div.Twilio-Splitter div.Twilio-AgentDesktopView\.Panel2 {
     height: calc(100% - 79px); /* 79px is the height of the Filter Buttons Container */
     flex-grow: 0;
  }
+ .Twilio-TeamsView-Loaded {
+    width: 100%;
+    overflow-x: auto;
+}
