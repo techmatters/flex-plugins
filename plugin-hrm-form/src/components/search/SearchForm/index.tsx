@@ -276,4 +276,7 @@ const SearchForm: React.FC<Props> = ({
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchForm);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+const connected = connector(SearchForm);
+
+export default connected;
