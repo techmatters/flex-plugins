@@ -55,15 +55,12 @@ import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hr
 import asyncDispatch from '../../states/asyncDispatch';
 import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
-import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 import { selectCurrentDefinitionVersion, selectDefinitionVersions } from '../../states/configuration/selectDefinitions';
 import FullTimelineView from './timeline/FullTimelineView';
-import { updateCaseOverviewAsyncAction } from '../../states/case/saveCase';
 import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
-import { CaseStateEntry } from '../../states/case/types';
 import selectContextContactId from '../../states/contacts/selectContextContactId';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
+import { useCase } from '../../states/case/hooks/useCase';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -72,7 +69,7 @@ export const isStandaloneITask = (task): task is StandaloneITask => {
 type OwnProps = {
   task: CustomITask | StandaloneITask;
   handleClose?: () => void;
-  onNewCaseSaved?: (caseState: CaseStateEntry) => Promise<void>;
+  onNewCaseSaved?: (savedCase: CaseType) => Promise<void>;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -81,7 +78,6 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 const Case: React.FC<Props> = ({
   task,
   connectedCaseId,
-  connectedCaseState,
   counselorsHash,
   removeConnectedCase,
   redirectToNewCase,
@@ -89,7 +85,7 @@ const Case: React.FC<Props> = ({
   goBack,
   handleClose = closeModal,
   routing,
-  loadCase,
+  // loadCase,
   loadContacts,
   releaseAllContacts,
   openPrintModal,
@@ -98,7 +94,11 @@ const Case: React.FC<Props> = ({
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
-  const { connectedCase } = connectedCaseState ?? {};
+  const { connectedCase, loading: loadingCase } = useCase({
+    caseId: connectedCaseId,
+    referenceId: `case-details-${task.taskSid}`,
+    refresh: true, // force a reload
+  });
 
   const can = React.useMemo(() => {
     return action => getInitializedCan()(action, connectedCase);
@@ -114,13 +114,7 @@ const Case: React.FC<Props> = ({
     }
   });
 
-  useEffect(() => {
-    if (!connectedCase && connectedCaseId) {
-      loadCase(connectedCaseId);
-    }
-  }, [connectedCase, connectedCaseId, loadCase]);
-
-  const version = connectedCaseState?.connectedCase.info.definitionVersion;
+  const version = connectedCase?.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;
 
   /**
@@ -139,7 +133,15 @@ const Case: React.FC<Props> = ({
 
   const definitionVersion = props.definitionVersions[version];
 
-  if (!connectedCaseState || !definitionVersion) return null;
+  if (loading || loadingCase) {
+    return (
+      <CenteredContainer>
+        <CircularProgress size={50} />
+      </CenteredContainer>
+    );
+  }
+
+  if (!connectedCase || !definitionVersion) return null;
 
   const currentCounselor = counselorsHash[workerSid];
 
@@ -155,7 +157,7 @@ const Case: React.FC<Props> = ({
       closeModal();
       // Validating that task isn't a StandaloneITask.
       if (isStandaloneITask(task)) return;
-      await onNewCaseSaved(connectedCaseState);
+      await onNewCaseSaved(connectedCase);
     } catch (error) {
       console.error(error);
       recordBackendError('Save and End Case', error);
@@ -241,11 +243,7 @@ const Case: React.FC<Props> = ({
     return <FullTimelineView task={task} />;
   }
 
-  return loading || !definitionVersion ? (
-    <CenteredContainer>
-      <CircularProgress size={50} />
-    </CenteredContainer>
-  ) : (
+  return (
     <CaseHome
       task={task}
       definitionVersion={definitionVersion}
@@ -262,12 +260,10 @@ Case.displayName = 'Case';
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
   const connectedCaseId = isCaseRoute(currentRoute) ? currentRoute.caseId : undefined;
-  const caseState = selectCurrentRouteCaseState(state, task.taskSid);
   const contactId = selectContextContactId(state, task.taskSid, 'case', 'home');
 
   return {
     connectedCaseId,
-    connectedCaseState: caseState,
     counselorsHash: selectCounselorsHash(state),
     definitionVersions: selectDefinitionVersions(state),
     currentDefinitionVersion: selectCurrentDefinitionVersion(state),
@@ -299,7 +295,7 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     updateDefinitionVersion: updateCaseDefinition,
     releaseAllContacts: bindActionCreators(ContactActions.releaseAllContacts, dispatch),
     loadContacts: bindActionCreators(ContactActions.loadContacts, dispatch),
-    loadCase: (caseId: CaseType['id']) => dispatch(updateCaseOverviewAsyncAction(caseId)), // Empty update loads case into state
+    // loadCase: (caseId: CaseType['id']) => dispatch(updateCaseOverviewAsyncAction(caseId)), // Empty update loads case into state
   };
 };
 

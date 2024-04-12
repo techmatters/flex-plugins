@@ -42,6 +42,8 @@ export const loadCaseIntoState = ({
   const existingCase = state.cases[caseId];
   const statusUpdates = { loading, error };
 
+  const existingReferences = existingCase?.references;
+
   if (!existingCase || !existingCase.connectedCase) {
     return {
       ...state,
@@ -51,7 +53,12 @@ export const loadCaseIntoState = ({
           connectedCase: newCase,
           caseWorkingCopy: { sections: {} },
           availableStatusTransitions: getAvailableCaseStatusTransitions(newCase, definitionVersion),
-          references: referenceId ? new Set([referenceId]) : new Set<string>(),
+          // eslint-disable-next-line no-nested-ternary
+          references: existingReferences
+            ? existingReferences.add(referenceId)
+            : referenceId
+            ? new Set([referenceId])
+            : new Set<string>(),
           sections: {},
           timelines: {},
           ...statusUpdates,
