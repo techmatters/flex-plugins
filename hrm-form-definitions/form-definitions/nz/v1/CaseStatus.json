@@ -4,6 +4,18 @@
     "label": "Open",
     "color": "green",
     "transitions": [
+      "cdmrNeeded",
+      "readyForReview",
+      "forHelplineLeadershipReview",
+      "closed"
+    ]
+  },
+  "cdmrNeeded": {
+    "value": "cdmrNeeded",
+    "label": "CDMR Needed",
+    "color": "blue",
+    "transitions": [
+      "open",
       "readyForReview",
       "forHelplineLeadershipReview",
       "closed"
@@ -15,6 +27,7 @@
     "color": "yellow",
     "transitions": [
       "open",
+      "cdmrNeeded",
       "forHelplineLeadershipReview",
       "closed"
     ]
@@ -25,6 +38,7 @@
     "color": "orange",
     "transitions": [
       "open",
+      "cdmrNeeded",
       "readyForReview",
       "closed"
     ]
@@ -35,6 +49,7 @@
     "color": "red",
     "transitions": [
       "open",
+      "cdmrNeeded",
       "readyForReview",
       "forHelplineLeadershipReview"
     ]
