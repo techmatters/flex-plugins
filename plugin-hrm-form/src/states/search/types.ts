@@ -62,15 +62,16 @@ type SearchFormChangeAction = {
   };
 }[keyof SearchFormValues] & { type: typeof HANDLE_SEARCH_FORM_CHANGE; taskId: string };
 
-type ClearSearchFormAction = { type: typeof CLEAR_SEARCH_FORM; taskId: string };
+type ClearSearchFormAction = { type: typeof CLEAR_SEARCH_FORM; taskId: string; contactId?: string };
 
-type SearchContactsRequestAction = { type: typeof SEARCH_CONTACTS_REQUEST; taskId: string };
+type SearchContactsRequestAction = { type: typeof SEARCH_CONTACTS_REQUEST; taskId: string; contactId?: string };
 
 export type SearchContactsSuccessAction = {
   type: typeof SEARCH_CONTACTS_SUCCESS;
   searchResult: DetailedSearchContactsResult;
   taskId: string;
   dispatchedFromPreviousContacts?: boolean;
+  contactId?: string;
 };
 
 type SearchContactsFailureAction = {
@@ -78,23 +79,26 @@ type SearchContactsFailureAction = {
   error: any;
   taskId: string;
   dispatchedFromPreviousContacts?: boolean;
+  contactId?: string;
 };
 
-type SearchCasesRequestAction = { type: typeof SEARCH_CASES_REQUEST; taskId: string };
+type SearchCasesRequestAction = { type: typeof SEARCH_CASES_REQUEST; taskId: string; contactId?: string };
 
 export type SearchCasesSuccessAction = {
   type: typeof SEARCH_CASES_SUCCESS;
   searchResult: SearchCaseResult;
   taskId: string;
   dispatchedFromPreviousContacts?: boolean;
+  contactId?: string;
 };
 
-type SearchCasesFailureAction = { type: typeof SEARCH_CASES_FAILURE; error: any; taskId: string };
+type SearchCasesFailureAction = { type: typeof SEARCH_CASES_FAILURE; error: any; taskId: string; contactId?: string };
 
 type ViewPreviousContactsAction = {
   type: typeof VIEW_PREVIOUS_CONTACTS;
   taskId: string;
   contactNumber: string;
+  contactId?: string;
 };
 
 export type SearchActionType =

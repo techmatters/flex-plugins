@@ -132,7 +132,7 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const contact = selectContactByTaskSid(state, task.taskSid);
 
   return {
-    previousContactCounts: selectPreviousContactCounts(state, taskSid),
+    previousContactCounts: selectPreviousContactCounts(state, taskSid, contact.savedContact?.id),
     counselorsHash: selectCounselorsHash(state),
     contact,
   };

@@ -18,7 +18,10 @@ import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
 import { SearchStateTaskEntry } from './reducer';
 
-const selectSearchStateForTask = (state: RootState, taskId: string): SearchStateTaskEntry | undefined =>
-  taskId ? state[namespace].searchContacts.tasks[taskId] : undefined;
+const selectSearchStateForTask = (
+  state: RootState,
+  taskId: string,
+  contactId: string,
+): SearchStateTaskEntry | undefined => (taskId ? state[namespace].searchContacts.tasks[taskId][contactId] : undefined);
 
 export default selectSearchStateForTask;

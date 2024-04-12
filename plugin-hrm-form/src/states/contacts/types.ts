@@ -112,6 +112,7 @@ export type ContactUpdatingAction = {
     | typeof LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED
     | typeof LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED;
   payload: { contact: Contact; contactCase?: Case; previousContact?: Contact };
+  contactId?: string;
 };
 
 export type ContactCreatingAction = {

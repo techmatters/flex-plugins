@@ -442,7 +442,9 @@ SearchResults.displayName = 'SearchResults';
 const mapStateToProps = (state: RootState, { task, contactId }: OwnProps) => {
   const { searchContacts, configuration, routing, activeContacts } = state[namespace];
   const taskId = task.taskSid;
-  const { isRequesting, isRequestingCases, caseRefreshRequired, contactRefreshRequired } = searchContacts.tasks[taskId];
+  const { isRequesting, isRequestingCases, caseRefreshRequired, contactRefreshRequired } = searchContacts.tasks[taskId][
+    contactId
+  ];
   const { counselors } = configuration;
   const { draftContact, savedContact } = activeContacts.existingContacts[contactId] ?? {};
   const contextContactId = selectContextContactId(state, taskId, 'search', 'case-results');

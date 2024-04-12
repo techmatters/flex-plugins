@@ -47,7 +47,7 @@ type OwnProps = {
   saveUpdates?: () => Promise<void>;
 };
 
-const mapStateToProps = (state: RootState, { task }: OwnProps) => {
+const mapStateToProps = (state: RootState, { task, contactId }: OwnProps) => {
   const {
     [namespace]: { searchContacts, activeContacts, routing },
   } = state;
@@ -59,9 +59,9 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
     activeContacts,
     isRequesting: taskSearchState.isRequesting,
     error: taskSearchState.error,
-    form: taskSearchState.form,
-    searchContactsResults: selectContactsForSearchResults(state, taskId),
-    searchCasesResults: selectCasesForSearchResults(state, taskId),
+    form: taskSearchState[contactId]?.form,
+    searchContactsResults: selectContactsForSearchResults(state, taskId, contactId),
+    searchCasesResults: selectCasesForSearchResults(state, taskId, contactId),
     routing: currentRoute,
     searchCase: taskSearchState.searchExistingCaseStatus,
   };
