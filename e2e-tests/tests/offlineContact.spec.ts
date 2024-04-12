@@ -18,9 +18,9 @@ import { expect, Page, request, test } from '@playwright/test';
 import { Categories, contactForm, ContactFormTab } from '../contactForm';
 import { caseHome } from '../case';
 import { agentDesktop, navigateToAgentDesktop } from '../agent-desktop';
-import { skipTestIfNotTargeted, skipTestIfDataUpdateDisabled } from '../skipTest';
+import { skipTestIfDataUpdateDisabled, skipTestIfNotTargeted } from '../skipTest';
 import { notificationBar } from '../notificationBar';
-import { setupContextAndPage, closePage } from '../browser';
+import { closePage, setupContextAndPage } from '../browser';
 import { apiHrmRequest } from '../hrm/hrmRequest';
 import { clearOfflineTask } from '../hrm/clearOfflineTask';
 
@@ -145,7 +145,7 @@ test.describe.serial('Offline Contact (with Case)', () => {
       async ([caseIdArg]) => {
         const manager = (window as any).Twilio.Flex.Manager.getInstance();
         const token = manager.user.token;
-        const hrmBaseUrl = `${manager.serviceConfiguration.attributes.hrm_base_url}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}`;
+        const hrmBaseUrl = `${manager.serviceConfiguration.attributes.hrm_base_url}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}-aselo_test`;
 
         const url = `${hrmBaseUrl}/cases/${caseIdArg}`;
         const options = {
