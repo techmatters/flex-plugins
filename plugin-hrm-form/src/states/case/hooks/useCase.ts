@@ -28,10 +28,12 @@ const useCaseLoader = ({
   caseId,
   referenceId,
   autoload = true,
+  refresh = true,
 }: {
   caseId: Case['id'];
   referenceId: string;
   autoload?: boolean;
+  refresh?: boolean;
 }) => {
   const dispatch = useDispatch();
 
@@ -63,7 +65,7 @@ const useCaseLoader = ({
   }, [caseId, dispatch, referenceId]);
 
   const safeToLoad = Boolean(caseId) && Boolean(referenceId);
-  const shouldLoad = autoload;
+  const shouldLoad = autoload || refresh;
 
   useLoadWithRetry({
     error,
@@ -89,7 +91,17 @@ const useCaseLoader = ({
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export const useCase = ({ caseId, referenceId }: { caseId: Case['id']; referenceId: string }) => {
+export const useCase = ({
+  caseId,
+  referenceId,
+  autoload = true,
+  refresh = false,
+}: {
+  caseId: Case['id'];
+  referenceId: string;
+  autoload?: boolean;
+  refresh?: boolean;
+}) => {
   // const can = useMemo(() => {
   //   return getInitializedCan();
   // }, []);
@@ -98,6 +110,6 @@ export const useCase = ({ caseId, referenceId }: { caseId: Case['id']; reference
 
   return {
     connectedCase,
-    ...useCaseLoader({ caseId, referenceId, autoload: true }),
+    ...useCaseLoader({ caseId, referenceId, autoload, refresh }),
   };
 };
