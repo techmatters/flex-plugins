@@ -48,8 +48,8 @@ ${
       "properties": {
         "waitUrl":channel_flow_vars["wait_url"],
         "offset": {
-          "x": 80,
-          "y": 1090
+          "x": 420,
+          "y": 1300
         },
         "attributes": channel_attributes["default"],
             "workflow":  workflow_sids["master_calls"],
@@ -86,7 +86,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "SendCallToAgent",
+          "next": "play_initial_message",
           "event": "noMatch"
         },
         {
@@ -131,7 +131,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "SendCallToAgent",
+          "next": "play_initial_message",
           "event": "next"
         }
       ],
@@ -161,6 +161,24 @@ ${
         "offset": {
           "x": 780,
           "y": 800
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "play_initial_message",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "SendCallToAgent",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "play": channel_flow_vars["initial_message_url"],
+        "offset": {
+          "x": 330,
+          "y": 1070
         },
         "loop": 1
       }
