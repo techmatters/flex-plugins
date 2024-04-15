@@ -48,13 +48,13 @@ const useCaseLoader = ({
       return;
     }
 
-    if (exists) {
+    if (exists && !refresh) {
       dispatch(CaseActions.referenceCaseAction({ caseId, referenceId }));
       return;
     }
 
     asyncDispatch(dispatch)(CaseActions.loadCaseAsync({ caseId, referenceId }));
-  }, [caseId, dispatch, exists, referenceId]);
+  }, [caseId, dispatch, exists, referenceId, refresh]);
 
   const unloadCase = useCallback(() => {
     if (!caseId || !referenceId) {
