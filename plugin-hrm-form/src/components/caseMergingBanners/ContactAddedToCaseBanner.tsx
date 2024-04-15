@@ -70,7 +70,7 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
   const { connectedCase } = useCase({
     caseId: contact.caseId,
     referenceId: `contact-added-to-case-banner-${contact.id}`,
-    refresh: true, // force a reload
+    refresh: false,
   });
 
   /*
