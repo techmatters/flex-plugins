@@ -62,9 +62,10 @@ export const useLoadWithRetry = ({
     }
 
     if (error && !loading && !retrying.current && retryCount.current < 10) {
+      console.error('[useLoadWithRetry] calling "loadFunction" resulted in error:', error);
+
       // don't retry 4xx, the problem is on the client
       if (error.status >= 400 && error.status < 500) {
-        console.error('[useLoadWithRetry] calling "loadFunction" resulted in error 4xx:', error);
         return;
       }
 
