@@ -245,10 +245,10 @@ export function reduce(
       return { ...state, existingContacts: addExternalReportEntryReducer(state.existingContacts, action) };
     }
     case SEARCH_CONTACTS_SUCCESS: {
-      return loadContactListIntoState(state, rootState.configuration, action.searchResult.contacts, `${action.taskId}-search`);
+      return loadContactListIntoState(state, rootState.configuration, action.searchResult.contacts, `${action.taskId}-search-contact`);
     }
     case SEARCH_CASES_SUCCESS: {
-      return loadContactListIntoState(state, rootState.configuration, action.searchResult.cases.map(c => c.firstContact).filter(Boolean), `${action.taskId}-search`);
+      return loadContactListIntoState(state, rootState.configuration, action.searchResult.cases.map(c => c.firstContact).filter(Boolean), `${action.taskId}-search-case`);
     }
     case GET_CASE_TIMELINE_ACTION_FULFILLED: {
       const { payload: { caseId, timelineResult: { activities } } } = action;

@@ -22,10 +22,7 @@ import { StyledLink } from '../components/search/styles';
 import { OpaqueText } from '../styles';
 import { getAseloFeatureFlags } from '../hrmConfig';
 import { SkillsCell } from './styles';
-
-const sortFn = (first, second) => {
-  return 0;
-};
+import { sortSkills } from './sortCallsAndChats';
 
 export const setUpSkillsColumn = () => {
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
@@ -34,7 +31,7 @@ export const setUpSkillsColumn = () => {
     <ColumnDefinition
       key="skills"
       header="Skills"
-      sortingFn={sortFn}
+      sortingFn={sortSkills}
       style={{ width: 'calc(16rem)' }}
       content={item => {
         const availableSkills = item?.worker?.attributes?.routing?.skills ?? [];

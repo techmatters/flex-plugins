@@ -52,7 +52,6 @@ export const useLoadWithRetry = ({
 
   // vars used to handle the retry and backoff logic
   const retryCount = useRef(0);
-  const backoff = useRef(1);
   const retrying = useRef(false);
   const timerId = useRef(null);
 
@@ -63,6 +62,8 @@ export const useLoadWithRetry = ({
     }
 
     if (error && !loading && !retrying.current && retryCount.current < 10) {
+      console.error('[useLoadWithRetry] calling "loadFunction" resulted in error:', error);
+
       // don't retry 4xx, the problem is on the client
       if (error.status >= 400 && error.status < 500) {
         return;
@@ -70,13 +71,16 @@ export const useLoadWithRetry = ({
 
       retrying.current = true;
       timerId.current = setTimeout(() => {
-        loadFunction();
+        if (!safeToLoad) return;
+
+        if (shouldLoad) {
+          loadFunction();
+        }
         retrying.current = false;
         retryCount.current += 1;
-        backoff.current *= 2;
-      }, 1000 * backoff.current);
+      }, 1000 * Math.pow(2, retryCount.current));
     }
-  }, [error, loadFunction, loading, retry]);
+  }, [error, loadFunction, loading, retry, safeToLoad, shouldLoad]);
 
   // cleanup the retry timeout on unmount
   useEffect(() => {
