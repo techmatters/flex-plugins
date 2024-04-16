@@ -13,30 +13,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
-import { parseISO } from 'date-fns';
-
-import { Case, WellKnownCaseSection } from '../../../types/types';
-import { ApiCaseSection } from '../../../services/caseSectionService';
+import { WellKnownCaseSection } from '../../../types/types';
+import { CaseSection } from '../../../services/caseSectionService';
+import { CaseStateEntry } from '../types';
 
 export const getSectionItemById = (propertyName: WellKnownCaseSection) => (
-  caseObj: Case,
+  sections: CaseStateEntry['sections'],
   id: string,
-): ApiCaseSection | undefined => {
-  const sectionList = caseObj?.sections?.[propertyName];
-  if (Array.isArray(sectionList)) {
-    return sectionList.find(s => s.sectionId === id);
-  }
-  return undefined;
-};
-
-export const getMostRecentSectionItem = (propertyName: WellKnownCaseSection) => (
-  caseObj: Case,
-): ApiCaseSection | undefined => {
-  const sectionList = caseObj?.sections[propertyName];
-  if (Array.isArray(sectionList)) {
-    const sorted = [...sectionList].sort((a, b) => parseISO(b.createdAt).getTime() - parseISO(a.createdAt).getTime());
-    return sorted[0];
-  }
-  return undefined;
-};
+): CaseSection | undefined => sections?.[propertyName]?.[id];

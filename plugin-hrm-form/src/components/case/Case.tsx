@@ -19,18 +19,18 @@ import React, { useEffect, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import { AnyAction, bindActionCreators } from 'redux';
-import { parseISO } from 'date-fns';
 
 import { RootState } from '../../states';
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import * as RoutingActions from '../../states/routing/actions';
 import * as ConfigActions from '../../states/configuration/actions';
-import { Case as CaseType, Contact, CustomITask, StandaloneITask } from '../../types/types';
+import { Case as CaseType, CustomITask, StandaloneITask } from '../../types/types';
 import CasePrintView from './casePrint/CasePrintView';
 import {
   CaseRoute,
   ChangeRouteMode,
   isAddCaseSectionRoute,
+  isCaseRoute,
   isEditCaseSectionRoute,
   isViewCaseSectionRoute,
   NewCaseSubroutes,
@@ -53,17 +53,17 @@ import { CaseSectionApi } from '../../states/case/sections/api';
 import * as ContactActions from '../../states/contacts/existingContacts';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import asyncDispatch from '../../states/asyncDispatch';
-import { removeFromCaseAsyncAction, submitContactFormAsyncAction } from '../../states/contacts/saveContact';
-import { ContactMetadata } from '../../states/contacts/types';
-import { namespace } from '../../states/storeNamespaces';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import { selectSavedContacts } from '../../states/case/connectedContacts';
+import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
-import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
 import { selectCurrentDefinitionVersion, selectDefinitionVersions } from '../../states/configuration/selectDefinitions';
 import FullTimelineView from './timeline/FullTimelineView';
-import selectCaseHelplineData from '../../states/case/selectCaseHelplineData';
+import { updateCaseOverviewAsyncAction } from '../../states/case/saveCase';
+import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
+import { CaseStateEntry } from '../../states/case/types';
+import selectContextContactId from '../../states/contacts/selectContextContactId';
+import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 
 export const isStandaloneITask = (task): task is StandaloneITask => {
   return task && task.taskSid === 'standalone-task-sid';
@@ -72,7 +72,7 @@ export const isStandaloneITask = (task): task is StandaloneITask => {
 type OwnProps = {
   task: CustomITask | StandaloneITask;
   handleClose?: () => void;
-  onNewCaseSaved?: (caseForm: CaseType) => Promise<void>;
+  onNewCaseSaved?: (caseState: CaseStateEntry) => Promise<void>;
 };
 
 // eslint-disable-next-line no-use-before-define
@@ -80,26 +80,25 @@ type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const Case: React.FC<Props> = ({
   task,
+  connectedCaseId,
+  connectedCaseState,
   counselorsHash,
   removeConnectedCase,
   redirectToNewCase,
   closeModal,
   goBack,
-  isCreating,
   handleClose = closeModal,
   routing,
-  savedContacts,
+  loadCase,
   loadContacts,
-  releaseContacts,
+  releaseAllContacts,
+  openPrintModal,
   onNewCaseSaved = () => Promise.resolve(),
-  submitContactFormAsyncAction,
-  taskContact,
-  office,
+  contextContact,
   ...props
 }) => {
   const [loading, setLoading] = useState(false);
-  const [loadedContactIds, setLoadedContactIds] = useState([]);
-  const { connectedCase } = props?.connectedCaseState ?? {};
+  const { connectedCase } = connectedCaseState ?? {};
 
   const can = React.useMemo(() => {
     return action => getInitializedCan()(action, connectedCase);
@@ -110,22 +109,18 @@ const Case: React.FC<Props> = ({
   const { enable_case_merging: enableCaseMerging } = getAseloFeatureFlags();
 
   useEffect(() => {
-    if (routing.isCreating && !routing.caseId && taskContact?.caseId) {
-      redirectToNewCase(taskContact.caseId);
+    if (routing.isCreating && !routing.caseId && contextContact?.caseId) {
+      redirectToNewCase(contextContact.caseId);
     }
   });
 
   useEffect(() => {
-    if (!connectedCase) return;
-    const connectedContacts = connectedCase.connectedContacts ?? [];
-    if (connectedContacts.length) {
-      loadContacts(connectedContacts, `case-${connectedCase.id}`);
+    if (!connectedCase && connectedCaseId) {
+      loadCase(connectedCaseId);
     }
-    setLoadedContactIds(connectedContacts.map(cc => cc.id));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connectedCase, task, workerSid]);
+  }, [connectedCase, connectedCaseId, loadCase]);
 
-  const version = props.connectedCaseState?.connectedCase.info.definitionVersion;
+  const version = connectedCaseState?.connectedCase.info.definitionVersion;
   const { updateDefinitionVersion, definitionVersions } = props;
 
   /**
@@ -144,20 +139,23 @@ const Case: React.FC<Props> = ({
 
   const definitionVersion = props.definitionVersions[version];
 
-  if (!props.connectedCaseState || !definitionVersion) return null;
+  if (!connectedCaseState || !definitionVersion) return null;
 
   const currentCounselor = counselorsHash[workerSid];
+
+  const handlePrintCase = () => {
+    openPrintModal(connectedCase.id);
+  };
 
   const handleSaveAndEnd = async () => {
     setLoading(true);
 
-    // Validating that task isn't a StandaloneITask.
-    if (isStandaloneITask(task)) return;
-
     try {
-      releaseContacts(loadedContactIds, `case-${connectedCase.id}`);
+      releaseAllContacts(`case-${connectedCase.id}`);
       closeModal();
-      await onNewCaseSaved(connectedCase);
+      // Validating that task isn't a StandaloneITask.
+      if (isStandaloneITask(task)) return;
+      await onNewCaseSaved(connectedCaseState);
     } catch (error) {
       console.error(error);
       recordBackendError('Save and End Case', error);
@@ -168,9 +166,9 @@ const Case: React.FC<Props> = ({
   };
 
   const handleCloseCase = async () => {
-    releaseContacts(loadedContactIds, task.taskSid);
-    if (!enableCaseMerging && taskContact && isCreating) {
-      await removeConnectedCase(taskContact.id);
+    releaseAllContacts(`case-${connectedCase.id}`);
+    if (!enableCaseMerging && contextContact && contextContact.caseId === connectedCaseId) {
+      await removeConnectedCase(contextContact.id);
     }
     handleClose();
   };
@@ -236,18 +234,7 @@ const Case: React.FC<Props> = ({
   }
 
   if (routing.subroute === NewCaseSubroutes.CasePrintView) {
-    return (
-      <CasePrintView
-        {...{
-          connectedCase,
-          counselorsHash,
-          onClickClose: goBack,
-          definitionVersion,
-          task,
-          office,
-        }}
-      />
-    );
+    return <CasePrintView task={task} />;
   }
 
   if (routing.subroute === 'timeline') {
@@ -264,6 +251,7 @@ const Case: React.FC<Props> = ({
       definitionVersion={definitionVersion}
       handleClose={handleCloseCase}
       handleSaveAndEnd={handleSaveAndEnd}
+      handlePrintCase={handlePrintCase}
       can={can}
     />
   );
@@ -272,22 +260,19 @@ const Case: React.FC<Props> = ({
 Case.displayName = 'Case';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
+  const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
+  const connectedCaseId = isCaseRoute(currentRoute) ? currentRoute.caseId : undefined;
   const caseState = selectCurrentRouteCaseState(state, task.taskSid);
-  const { connectedCase } = caseState ?? {};
-  const routing = getCurrentTopmostRouteForTask(state[namespace].routing, task.taskSid) as CaseRoute;
-  const isCreating = routing.route === 'case' && routing.isCreating;
+  const contactId = selectContextContactId(state, task.taskSid, 'case', 'home');
 
   return {
+    connectedCaseId,
     connectedCaseState: caseState,
-    connectedCaseId: connectedCase?.id,
     counselorsHash: selectCounselorsHash(state),
     definitionVersions: selectDefinitionVersions(state),
     currentDefinitionVersion: selectCurrentDefinitionVersion(state),
-    isCreating,
-    routing,
-    savedContacts: selectSavedContacts(state, connectedCase),
-    taskContact: selectContactByTaskSid(state, task.taskSid)?.savedContact,
-    office: selectCaseHelplineData(state, connectedCase?.id),
+    routing: currentRoute as CaseRoute,
+    contextContact: selectContactStateByContactId(state, contactId)?.savedContact,
   };
 };
 
@@ -306,17 +291,15 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
         ),
       ),
     closeModal: () => dispatch(RoutingActions.newCloseModalAction(task.taskSid)),
+    openPrintModal: (caseId: CaseType['id']) => {
+      dispatch(RoutingActions.newOpenModalAction({ route: 'case', subroute: 'case-print-view', caseId }, task.taskSid));
+    },
     goBack: () => dispatch(RoutingActions.newGoBackAction(task.taskSid)),
     removeConnectedCase: (contactId: string) => caseAsyncDispatch(removeFromCaseAsyncAction(contactId)),
     updateDefinitionVersion: updateCaseDefinition,
-    releaseContacts: bindActionCreators(ContactActions.releaseContacts, dispatch),
+    releaseAllContacts: bindActionCreators(ContactActions.releaseAllContacts, dispatch),
     loadContacts: bindActionCreators(ContactActions.loadContacts, dispatch),
-    submitContactFormAsyncAction: (
-      task: CustomITask,
-      contact: Contact,
-      metadata: ContactMetadata,
-      caseForm: CaseType,
-    ) => caseAsyncDispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
+    loadCase: (caseId: CaseType['id']) => dispatch(updateCaseOverviewAsyncAction(caseId)), // Empty update loads case into state
   };
 };
 

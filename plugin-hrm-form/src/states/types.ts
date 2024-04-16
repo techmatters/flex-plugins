@@ -16,8 +16,7 @@
 
 import type { DefinitionVersion } from 'hrm-form-definitions';
 
-import { Contact } from '../types/types';
-import { ContactMetadata } from './contacts/types';
+import { ParseFetchErrorResult } from './parseFetchError';
 
 export type { DefinitionVersion };
 
@@ -28,4 +27,10 @@ export type RemoveContactStateAction = {
   type: typeof REMOVE_CONTACT_STATE;
   taskId: string;
   contactId: string;
+};
+
+export type AsyncCommon<T> = {
+  loading: boolean;
+  error: ParseFetchErrorResult;
+  data: T;
 };

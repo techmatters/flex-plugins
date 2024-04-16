@@ -16,40 +16,32 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Profile } from '../types';
 import * as ProfileSelectors from '../selectors';
 import { RootState } from '../..';
 import { UseProfileCommonParams } from './types';
 import { PermissionActions, getInitializedCan } from '../../../permissions';
+import { useProfileLoader } from './useProfileLoader';
 
-export type UseProfileParams = UseProfileCommonParams;
-
-export type UseProfileReturn = {
-  profile: Profile | undefined;
-  loading: boolean | undefined;
-  canView: boolean;
-  canFlag: boolean;
-  canUnflag: boolean;
-};
+export type UseProfileParams = UseProfileCommonParams & { autoload?: boolean; refresh?: boolean };
 
 /**
  * Access a profile by id for the current account
- *
- * @param {UseProfileParams}
- * @returns {UseProfile} - State and actions for the profile
  */
-export const useProfile = (params: UseProfileParams): UseProfileReturn => {
+export const useProfile = ({ profileId, autoload = true, refresh = false }: UseProfileParams) => {
+  useProfileLoader({ profileId, autoload, refresh });
+
   const can = useMemo(() => {
     return getInitializedCan();
   }, []);
 
-  const { profileId } = params;
   const profile = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.data);
   const loading = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.loading);
+  const error = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.error);
 
   return {
-    loading,
     profile,
+    loading,
+    error,
     canView: profile && can(PermissionActions.VIEW_PROFILE, profile),
     canFlag: profile && can(PermissionActions.FLAG_PROFILE, profile),
     canUnflag: profile && can(PermissionActions.UNFLAG_PROFILE, profile),

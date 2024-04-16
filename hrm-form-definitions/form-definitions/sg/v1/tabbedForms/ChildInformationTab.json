@@ -1,6 +1,6 @@
 [
   {
-    "name": "friendlyName",
+    "name": "firstName",
     "label": "Name / Full Name",
     "type": "input",
     "required": {
@@ -138,6 +138,54 @@
     "name": "postalCode",
     "label": "Postal Code",
     "type": "input"
+  },
+  {
+    "name": "reason",
+    "label": "What Client Wants to Talk About",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "school",
+        "label": "School"
+      },
+      {
+        "value": "friendship",
+        "label": "Friendship"
+      },
+      {
+        "value": "family",
+        "label": "Family"
+      },
+      {
+        "value": "mentalHealth",
+        "label": "Mental Health"
+      },
+      {
+        "value": "unsafe",
+        "label": "Feelings of Being Unsafe"
+      },
+      {
+        "value": "nothing",
+        "label": "Nothing"
+      },
+      {
+        "value": "more",
+        "label": "More than one of the above"
+      },
+      {
+        "value": "other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "ethnicity",

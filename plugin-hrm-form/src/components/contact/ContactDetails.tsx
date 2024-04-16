@@ -127,7 +127,8 @@ const ContactDetails: React.FC<Props> = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   React.useEffect(() => {
-    if (!savedContact && loadingStatus !== 'loading') {
+    // No conversationMedia means we've only loaded contact info required for the list, not the full contact, do a full load
+    if (!savedContact?.conversationMedia && loadingStatus !== 'loading') {
       loadContactFromHrm();
     }
   }, [loadingStatus, savedContact, loadContactFromHrm]);

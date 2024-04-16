@@ -24,6 +24,7 @@ import HrmTheme, { overrides } from './styles/HrmTheme';
 import { initLocalization } from './utils/pluginHelpers';
 import * as Providers from './utils/setUpProviders';
 import * as ActionFunctions from './utils/setUpActions';
+import { recordCallState } from './utils/setUpActions';
 import * as TaskRouterListeners from './utils/setUpTaskRouterListeners';
 import * as Components from './utils/setUpComponents';
 import * as Channels from './channels/setUpChannels';
@@ -48,6 +49,7 @@ import { setUpTransferActions } from './transfer/setUpTransferActions';
 import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
 import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
+import TeamsView from './teamsView';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -86,16 +88,17 @@ const setUpComponents = (
   Components.setUpAddButtons(featureFlags);
   Components.setUpNoTasksUI(featureFlags, setupObject);
   Components.setUpCustomCRMContainer();
-  Channels.customiseDefaultChatChannels();
+  Channels.setupDefaultChannels();
   Channels.setupTwitterChatChannel(maskIdentifiers);
   Channels.setupInstagramChatChannel(maskIdentifiers);
   Channels.setupLineChatChannel(maskIdentifiers);
-  Channels.expandSMSChannel();
 
   if (maskIdentifiers) {
     // Masks TaskInfoPanelContent - TODO: refactor to use a react component
     const strings = getTemplateStrings();
     strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+    strings.SupervisorTaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+
     strings.CallParticipantCustomerName = strings.MaskIdentifiers;
 
     Channels.maskIdentifiersForDefaultChannels();
@@ -139,8 +142,10 @@ const setUpComponents = (
     if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
   }
 
-  Components.setupTeamViewFilters();
-  Components.setupWorkerDirectoryFilters();
+  TeamsView.setUpSkillsColumn();
+  TeamsView.setUpSortingCallsAndChats();
+  TeamsView.setUpTeamViewFilters();
+  TeamsView.setUpWorkerDirectoryFilters();
 
   if (featureFlags.enable_conferencing) setupConferenceComponents();
 };
@@ -161,6 +166,10 @@ const setUpActions = (
   setUpTransferActions(featureFlags.enable_transfers, setupObject);
 
   Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
+  Flex.Manager.getInstance().workerClient.addListener('reservationCreated', reservation => {
+    reservation.addListener('wrapup', recordCallState);
+    reservation.addListener('completed', recordCallState);
+  });
 
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
 

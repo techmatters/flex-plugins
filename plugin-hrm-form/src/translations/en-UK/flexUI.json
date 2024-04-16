@@ -4,5 +4,7 @@
   "CaseMerging-RemoveFromCase": "Remove from Case",
   "CaseMerging-ContactRemovedFromCase": "Contact removed from case",
   "CaseMerging-CaseCreatedAndContactAdded": "Case #{{caseId}} created and contact added",
-  "CaseMerging-CancelCase": "Cancel Case"
+  "CaseMerging-ContactAddedToExistingCase": "Contact added to Case #{{caseId}}",
+  "CaseMerging-CancelCase": "Cancel Case",
+  "TabbedForms-AddChildInfoTab": "Victim"
 }

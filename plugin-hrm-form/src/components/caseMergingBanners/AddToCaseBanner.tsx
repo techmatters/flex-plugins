@@ -21,8 +21,6 @@ import { Case, Contact, CustomITask, StandaloneITask } from '../../types/types';
 import { getInitializedCan, PermissionActions } from '../../permissions';
 import { RootState } from '../../states';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
-import { isStandaloneITask } from '../case/Case';
-import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import { Flex } from '../../styles';
 import InfoIcon from './InfoIcon';
 import ConnectToCaseButton from '../case/ConnectToCaseButton';
@@ -30,21 +28,33 @@ import asyncDispatch from '../../states/asyncDispatch';
 import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
 import { newCloseModalAction } from '../../states/routing/actions';
 import { BannerContainer, Text } from '../../styles/banners';
+import selectContextContactId from '../../states/contacts/selectContextContactId';
+import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
+import { selectFirstContactByCaseId } from '../../states/contacts/selectContactByCaseId';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { isCaseRoute } from '../../states/routing/types';
 
 type MyProps = {
   task: CustomITask | StandaloneITask;
 };
 
 const mapStateToProps = (state: RootState, { task }: MyProps) => {
+  const route = selectCurrentTopmostRouteForTask(state, task.taskSid);
   const { connectedCase } = selectCurrentRouteCaseState(state, task.taskSid) ?? {};
-  const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
-  return { connectedCase, taskContact };
+  const contactId = selectContextContactId(state, task.taskSid, 'case', 'home');
+  const contact = selectContactStateByContactId(state, contactId)?.savedContact;
+  return {
+    connectedCase,
+    contact,
+    isOrphanedCase: isCaseRoute(route) ? !selectFirstContactByCaseId(state, route.caseId) : true,
+  };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: MyProps) => ({
-  connectCaseToTaskContact: async (taskContact: Contact, cas: Case) =>
+  connectCaseToContact: async (taskContact: Contact, cas: Case) =>
     asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, cas.id)),
-  closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
+  closeModal: () =>
+    dispatch(newCloseModalAction(task.taskSid, task.taskSid === 'standalone-task-sid' ? 'contact' : 'tabbed-forms')),
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -53,23 +63,24 @@ type Props = MyProps & ConnectedProps<typeof connector>;
 
 const AddToCaseBanner: React.FC<Props> = ({
   connectedCase,
-  taskContact,
-  connectCaseToTaskContact,
+  contact,
+  connectCaseToContact,
+  isOrphanedCase,
   closeModal,
 }: Props) => {
   const can = React.useMemo(() => {
     return getInitializedCan();
   }, []);
 
-  const isConnectedToTaskContact = taskContact && taskContact.caseId === connectedCase.id;
+  const isConnectedToTaskContact = contact && contact.caseId === connectedCase.id;
 
   const showConnectToCaseButton = Boolean(
-    taskContact &&
-      !taskContact.caseId &&
+    contact &&
+      !contact.caseId &&
       !isConnectedToTaskContact &&
-      connectedCase?.connectedContacts?.length &&
+      !isOrphanedCase &&
       can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCase) &&
-      can(PermissionActions.ADD_CONTACT_TO_CASE, taskContact),
+      can(PermissionActions.ADD_CONTACT_TO_CASE, contact),
   );
 
   if (!showConnectToCaseButton) {
@@ -89,7 +100,7 @@ const AddToCaseBanner: React.FC<Props> = ({
           caseId={connectedCase.id}
           isConnectedToTaskContact={isConnectedToTaskContact}
           onClickConnectToTaskContact={() => {
-            connectCaseToTaskContact(taskContact, connectedCase);
+            connectCaseToContact(contact, connectedCase);
             closeModal();
           }}
           color="black"

@@ -13,18 +13,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useLoadWithRetry } from '../../hooks/useLoadWithRetry';
 import { RootState } from '../..';
 import asyncDispatch from '../../asyncDispatch';
 import * as ProfileActions from '../profiles';
 import * as ProfileSelectors from '../selectors';
 import { UseProfileCommonParams } from './types';
+import useFeatureFlags from '../../../hooks/useFeatureFlags';
 
-type UseProfileLoaderParams = UseProfileCommonParams & {
-  skipAutoload?: boolean;
-};
+type UseProfileLoaderParams = UseProfileCommonParams & { autoload?: boolean; refresh?: boolean };
 
 type UseProfileLoaderReturn = {
   error?: any;
@@ -36,26 +36,38 @@ type UseProfileLoaderReturn = {
  * Tools to load a profile by id into redux, by default it will load the profile automatically
  * @param {UseProfileLoaderParams} params - Parameters for the hook
  * @param params.profileId - The id of the profile to load
- * @param params.skipAutoload - If true, the profile will not be loaded automatically (default: false)
+ * @param params.autoload - If true, the profile will be loaded automatically (default: true)
+ * @param params.refresh - If changed to true, triggers a re-load (default: false)
  * @returns {UseProfileLoaderReturn} - loading state and actions for the profile
  */
 export const useProfileLoader = ({
   profileId,
-  skipAutoload = false,
+  autoload = true,
+  refresh = false,
 }: UseProfileLoaderParams): UseProfileLoaderReturn => {
   const dispatch = useDispatch();
   const error = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.error);
   const loading = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.loading);
+  const data = useSelector((state: RootState) => ProfileSelectors.selectProfileById(state, profileId)?.data);
+
   const loadProfile = useCallback(() => {
     asyncDispatch(dispatch)(ProfileActions.loadProfileAsync(profileId));
   }, [dispatch, profileId]);
 
-  useEffect(() => {
-    if (!skipAutoload && !loading) {
-      loadProfile();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileId, skipAutoload, loadProfile]);
+  const { enable_client_profiles: enableClientProfiles } = useFeatureFlags();
+
+  const firstFetch = autoload && !loading && !data && !error;
+  const safeToLoad = enableClientProfiles && Boolean(profileId); // prevent load if there's no profile id
+  const shouldLoad = enableClientProfiles && (firstFetch || refresh); // load on initial mount
+
+  useLoadWithRetry({
+    error,
+    loadFunction: loadProfile,
+    loading,
+    retry: true,
+    safeToLoad,
+    shouldLoad,
+  });
 
   return {
     error,

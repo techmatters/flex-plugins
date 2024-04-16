@@ -18,15 +18,7 @@
 import { Actions, Manager } from '@twilio/flex-ui';
 import { Dispatch } from 'react';
 
-import {
-  Case,
-  Contact,
-  CustomITask,
-  isOfflineContact,
-  isOfflineContactTask,
-  isTwilioTask,
-  RouterTask,
-} from '../types/types';
+import { Contact, CustomITask, isOfflineContact, isOfflineContactTask, isTwilioTask, RouterTask } from '../types/types';
 import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
 import { saveContact } from './ContactService';
@@ -38,13 +30,14 @@ import asyncDispatch from '../states/asyncDispatch';
 import { newClearContactAsyncAction, removeFromCaseAsyncAction } from '../states/contacts/saveContact';
 import { getOfflineContactTaskSid } from '../states/contacts/offlineContactTask';
 import '../types';
+import { CaseStateEntry } from '../states/case/types';
+import { getExternalRecordingInfo } from './getExternalRecordingInfo';
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
  */
 export const completeContactTask = async (task: RouterTask) => {
   if (!isTwilioTask(task)) return;
-
   const { sid } = task;
 
   if (task.status !== 'wrapping') {
@@ -54,7 +47,6 @@ export const completeContactTask = async (task: RouterTask) => {
       await Actions.invokeAction('WrapupTask', { sid, task });
     }
   }
-
   await Actions.invokeAction('CompleteTask', { sid, task });
 };
 
@@ -76,7 +68,7 @@ export const submitContactForm = async (
   task: CustomITask,
   contact: Contact,
   metadata: ContactMetadata,
-  caseForm: Case,
+  caseState: CaseStateEntry,
 ) => {
   const { workerSid } = getHrmConfig();
 
@@ -84,8 +76,8 @@ export const submitContactForm = async (
     const targetWorkerSid = contact.rawJson.contactlessTask.createdOnBehalfOf as string;
     const inBehalfTask = await assignOfflineContactInit(targetWorkerSid, task.attributes);
     try {
-      const { contact: savedContact } = await saveContact(task, contact, metadata, workerSid, inBehalfTask.sid);
-      const finalAttributes = buildInsightsData(inBehalfTask, contact, caseForm, savedContact);
+      const savedContact = await saveContact(task, contact, metadata, workerSid, inBehalfTask.sid);
+      const finalAttributes = buildInsightsData(inBehalfTask, contact, caseState, savedContact);
       await assignOfflineContactResolve({
         action: 'complete',
         taskSid: inBehalfTask.sid,
@@ -105,15 +97,9 @@ export const submitContactForm = async (
     }
   }
 
-  const { contact: savedContact, externalRecordingInfo } = await saveContact(
-    task,
-    contact,
-    metadata,
-    workerSid,
-    task.taskSid,
-  );
-
-  const finalAttributes = buildInsightsData(task, contact, caseForm, savedContact, externalRecordingInfo);
+  const savedContact = await saveContact(task, contact, metadata, workerSid, task.taskSid);
+  const recordingsIfAvailable = await getExternalRecordingInfo(task);
+  const finalAttributes = buildInsightsData(task, contact, caseState, savedContact, recordingsIfAvailable);
   await task.setAttributes(finalAttributes);
   return savedContact;
 };

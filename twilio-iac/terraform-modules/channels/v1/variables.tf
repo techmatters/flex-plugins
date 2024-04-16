@@ -23,6 +23,16 @@ variable "serverless_url" {
   type        = string
 }
 
+variable "serverless_service_sid" {
+  description = "Serverless Service SID"
+  type        = string
+}
+
+variable "serverless_environment_sid" {
+  description = "Serverless Environment SID"
+  type        = string
+}
+
 variable "task_language" {
   type        = string
   default     = ""

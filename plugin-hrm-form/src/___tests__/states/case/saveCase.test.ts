@@ -91,7 +91,6 @@ const mockPayload: Omit<Case, 'sections' | 'label'> = {
   info: {},
   createdAt: '12-05-2023',
   updatedAt: '12-05-2023',
-  connectedContacts: [],
   categories: {},
 };
 
@@ -120,7 +119,6 @@ const nonInitialPartialState: RecursivePartial<HrmState> = {
           info: {},
           createdAt: '12-05-2023',
           updatedAt: '12-05-2023',
-          connectedContacts: [],
           categories: {},
         },
         caseWorkingCopy: {
@@ -231,9 +229,10 @@ describe('createCaseAsyncAction', () => {
             },
             connectedCase: {
               id: '234',
-              connectedContacts: [{ id: 'contact-1' }],
             },
             references: new Set(),
+            sections: {},
+            timelines: {},
           },
         },
       },
@@ -301,7 +300,7 @@ describe('updateCaseOverviewAsyncAction', () => {
 
   // Jest too crap to handle 2 async calls in a single action apparently
   test.skip('overview and status populated in action - calls both endpoints', async () => {
-    const action = updateCaseOverviewAsyncAction(mockPayload.id, overview, 'new-status');
+    updateCaseOverviewAsyncAction(mockPayload.id, overview, 'new-status');
     expect(updateCaseOverview).toHaveBeenCalledWith(mockPayload.id, overview);
     expect(updateCaseStatus).toHaveBeenCalledWith(mockPayload.id, 'new-status');
     expect(mockGetCase).not.toHaveBeenCalled();
@@ -360,6 +359,8 @@ describe('updateCaseOverviewAsyncAction', () => {
           references: new Set(),
           availableStatusTransitions: [],
           caseWorkingCopy: { sections: {} },
+          sections: {},
+          timelines: {},
         },
       });
     });

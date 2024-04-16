@@ -17,7 +17,7 @@
 /* eslint-disable import/no-unused-modules */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { RegisterOptions } from 'react-hook-form';
-import { OneToOneConfigSpec, OneToManyConfigSpecs } from './insightsConfig';
+import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 import { CallTypeKeys } from './callTypes';
 
 export enum CaseSectionApiName {
@@ -55,6 +55,7 @@ type ItemBase = {
   name: string;
   label: string;
   type: FormInputType;
+  metadata?: Record<string, any>;
 } & RegisterOptions;
 
 type NonSaveable = {
@@ -174,12 +175,11 @@ type CallTypeButtonInputDefinition = {
   category: 'data' | 'non-data';
 } & ItemBase;
 
-type CopyToDefinition = ItemBase &
-  NonSaveable & {
-    type: FormInputType.CopyTo;
-    initialChecked: false;
-    target: CaseSectionApiName;
-  };
+type CopyToDefinition = ItemBase & {
+  type: FormInputType.CopyTo;
+  initialChecked: false;
+  target: CaseSectionApiName;
+};
 
 type CustomContactComponentDefinition = ItemBase &
   NonSaveable & {

@@ -48,7 +48,7 @@ The process for a first run is as follows:
 
 2. Within that directory copy `common.hcl` and `<environment>.hcl` from a helpline that already exists. IE: `/twilio-iac/helplines/pl/common.hcl`, `/twilio-iac/helplines/pl/staging.hcl`
 
-3. Update the `common.hcl` and `<environment>.hcl` files with the correct configuration for the helpline.
+3. Update the `common.hcl` and `<environment>.hcl` files with the correct configuration for the helpline. PS: make sure that the `helpline_region` is set correctly.
 
 > For the following steps, make sure to have the following env vars loaded in your terminal session:
 > ```
@@ -84,14 +84,11 @@ The process for a first run is as follows:
 >
 > *Datadog Access Token* - this is the Datadog Access Token for the Datadog account you are working on. You can find this in the Datadog console, under the "API" section.
 
-6. Run `make HL=<helpline_short_code> HL_ENV=<environment> apply` from the `/twilio-iac/stages/provision` directory and verify that the plan looks correct. Modify the helpline configuration in `common.hcl` and `<environment>.hcl` if necessary.
+6. Run `make HL=<helpline_short_code> HL_ENV=<environment> plan` from the `/twilio-iac/stages/provision` directory and verify that the plan looks correct. Modify the helpline configuration in `common.hcl` and `<environment>.hcl` if necessary. If the plan looks correct then run `make HL=<helpline_short_code> HL_ENV=<environment> apply` from the same directory.
 
-7. Go into Twilio Console -> Autopilot -> demo_chatbot and check if the 'redirect_function' task has the correct serverless url set. If it is not correct, update it manually in Twilio Console.
-    Unfortunately due to this issue with the provider, it may not be updated as part of the second `terraform apply`: https://github.com/twilio/terraform-provider-twilio/issues/92
+7. Once the provision stage has been applied, run `make HL=<helpline_short_code> HL_ENV=<environment> apply` from the `/twilio-iac/stages/lex` and `/twilio-iac/stages/configure` directories making adjustments to the configuration as necessary.
 
-8. Once the provision stage has been applied, run `make HL=<helpline_short_code> HL_ENV=<environment> apply` from the `/twilio-iac/stages/chatbot` and `/twilio-iac/stages/configure` directories making adjustments to the configuration as necessary.
-
-9. Don't forget to raise a PR to merge the new configuration you created
+8. Don't forget to raise a PR to merge the new configuration you created
 
 ## Importing a pre-existing environment
 

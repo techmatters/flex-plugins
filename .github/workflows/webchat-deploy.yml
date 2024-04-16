@@ -67,7 +67,7 @@ jobs:
       # Change String Case for Helpline Code
       - name: Change String Case for Helpline Code
         id: helpline_code
-        uses: "ASzc/change-string-case-action@v5"
+        uses: "ASzc/change-string-case-action@v6"
         with:
           string: "${{ inputs.helpline_code }}"
       # Set SHORT_ENVIRONMENT_CODE
@@ -85,7 +85,7 @@ jobs:
 
       # Setup credentials to access AWS for parameters
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -129,10 +129,10 @@ jobs:
           env_variable_name: "RECAPTCHA_KEY"
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "18.x"
 

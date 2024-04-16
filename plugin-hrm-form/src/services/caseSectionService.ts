@@ -16,30 +16,54 @@
 
 /* eslint-disable sonarjs/prefer-immediate-return */
 
+import { parseISO } from 'date-fns';
+
 import { fetchHrmApi } from './fetchHrmApi';
-import { Case } from '../types/types';
+import { Case, WellKnownCaseSection } from '../types/types';
 import { WorkerSID } from '../types/twilio';
 
 export type CaseSectionTypeSpecificData = Record<string, string | boolean>;
 
-export type ApiCaseSection = {
-  sectionTypeSpecificData: CaseSectionTypeSpecificData;
+// Fully self describing case section that can be used outside the context of the containing case
+export type FullGenericCaseSection<TDate extends string | Date> = {
+  sectionType: WellKnownCaseSection;
   sectionId: string;
-  createdAt: string;
-  twilioWorkerId: WorkerSID;
+  sectionTypeSpecificData: Record<string, any>;
+  createdAt: TDate;
+  createdBy: WorkerSID;
+  updatedAt?: TDate;
   updatedBy?: WorkerSID;
-  updatedAt?: string;
+  eventTimestamp: TDate;
 };
+
+export type FullCaseSection = FullGenericCaseSection<Date>;
+
+export type ApiCaseSection = Omit<FullGenericCaseSection<string>, 'sectionType'>;
+export type CaseSection = Omit<FullCaseSection, 'sectionType'>;
+
+export const convertApiCaseSectionToCaseSection = (
+  section: FullGenericCaseSection<string> | ApiCaseSection,
+): FullCaseSection | CaseSection => ({
+  ...section,
+  createdAt: parseISO(section.createdAt),
+  updatedAt: section.updatedAt ? parseISO(section.updatedAt) : undefined,
+  eventTimestamp: parseISO(section.eventTimestamp),
+});
 
 export async function createCaseSection(
   caseId: Case['id'],
   sectionType: string,
   sectionEntry: CaseSectionTypeSpecificData,
-): Promise<ApiCaseSection> {
-  return fetchHrmApi(`/cases/${caseId}/sections/${sectionType}`, {
+  eventTimestamp?: Date,
+): Promise<CaseSection> {
+  const rawResponse = await fetchHrmApi(`/cases/${caseId}/sections/${sectionType}`, {
     method: 'POST',
-    body: JSON.stringify({ sectionTypeSpecificData: sectionEntry }),
+    body: JSON.stringify({
+      sectionTypeSpecificData: sectionEntry,
+      ...(eventTimestamp ? { eventTimestamp: eventTimestamp.toISOString() } : {}),
+    }),
   });
+  return convertApiCaseSectionToCaseSection(rawResponse);
 }
 
 export async function updateCaseSection(
@@ -47,9 +71,14 @@ export async function updateCaseSection(
   sectionType: string,
   sectionId: string,
   update: CaseSectionTypeSpecificData,
-): Promise<ApiCaseSection> {
-  return fetchHrmApi(`/cases/${caseId}/sections/${sectionType}/${sectionId}`, {
+  eventTimestamp?: Date,
+): Promise<CaseSection> {
+  const rawResponse = await fetchHrmApi(`/cases/${caseId}/sections/${sectionType}/${sectionId}`, {
     method: 'PUT',
-    body: JSON.stringify({ sectionTypeSpecificData: update }),
+    body: JSON.stringify({
+      sectionTypeSpecificData: update,
+      ...(eventTimestamp ? { eventTimestamp: eventTimestamp.toISOString() } : {}),
+    }),
   });
+  return convertApiCaseSectionToCaseSection(rawResponse);
 }

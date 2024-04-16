@@ -26,11 +26,6 @@ inputs = local.config
   * This is the main terragrunt block that defines the stage module and the hooks that run before it.
   */
 terraform {
-  // TODO: remove this once we've migrated all secrets
-  before_hook "migrate_tf_secrets" {
-    commands = ["init"]
-    execute  = ["/app/twilio-iac/scripts/migration/migrateTFSecrets.sh", include.root.locals.config.old_dir_name, include.root.locals.environment, include.root.locals.short_helpline]
-  }
 
   // TODO: make this only happen on provision stage.
   before_hook "manage_tf_secrets" {

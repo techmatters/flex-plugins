@@ -20,18 +20,20 @@ import { subDays } from 'date-fns';
 
 import * as fetchRulesModule from '../../permissions/fetchRules';
 import {
+  actionsMaps,
+  CaseActions,
+  cleanupInitializedCan,
+  ContactActions,
   getInitializedCan,
   PermissionActions,
-  CaseActions,
-  ContactActions,
-  ViewIdentifiersAction,
-  cleanupInitializedCan,
-  actionsMaps,
-  TargetKind,
   ProfileActions,
   ProfileSectionActions,
+  TargetKind,
+  ViewIdentifiersAction,
 } from '../../permissions';
 import { getHrmConfig } from '../../hrmConfig';
+
+const NOT_CREATOR_WORKER_SID = 'WK-not creator';
 
 const fetchRulesSpy = jest.spyOn(fetchRulesModule, 'fetchRules').mockImplementation(() => {
   throw new Error('fetchRules not mocked!');
@@ -65,7 +67,7 @@ describe('Test that all actions work fine (everyone)', () => {
   fetchRulesSpy.mockReturnValue(rules);
 
   mockGetHrmConfig.mockReturnValue({
-    workerSid: 'not creator',
+    workerSid: NOT_CREATOR_WORKER_SID,
     isSupervisor: false,
     permissionConfig: 'wareva',
   });
@@ -92,7 +94,7 @@ describe('CasesActions', () => {
         {
           action,
           conditionsSets: [['everyone']],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: false,
           expectedResult: true,
           expectedDescription: 'is not creator nor supervisor, case is open',
@@ -100,7 +102,7 @@ describe('CasesActions', () => {
         {
           action,
           conditionsSets: [['everyone']],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: false,
           expectedResult: true,
           expectedDescription: 'is not creator nor supervisor, case is close',
@@ -117,7 +119,7 @@ describe('CasesActions', () => {
         {
           action,
           conditionsSets: [['isSupervisor'], ['isCreator', 'isCaseOpen']],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: true,
           expectedResult: true,
           expectedDescription: 'user is supervisor but not creator, case open',
@@ -125,7 +127,7 @@ describe('CasesActions', () => {
         {
           action,
           conditionsSets: [['isSupervisor'], ['isCreator', 'isCaseOpen']],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: true,
           expectedResult: true,
           expectedDescription: 'user is supervisor but not creator, case closed',
@@ -134,7 +136,7 @@ describe('CasesActions', () => {
         {
           action,
           conditionsSets: [['isSupervisor'], ['isCreator', 'isCaseOpen']],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: false,
           expectedResult: false,
           expectedDescription: 'user is not supervisor nor creator',
@@ -159,7 +161,7 @@ describe('CasesActions', () => {
         {
           action,
           conditionsSets: [['isSupervisor'], ['isCreator', 'isCaseOpen']],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: false,
           expectedResult: false,
           expectedDescription: 'case is open but user is not creator',
@@ -167,7 +169,7 @@ describe('CasesActions', () => {
         {
           action,
           conditionsSets: [[{ createdHoursAgo: 1 }]],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: false,
           expectedResult: true,
           expectedDescription: 'created less than 1 hour ago',
@@ -176,7 +178,7 @@ describe('CasesActions', () => {
         {
           action,
           conditionsSets: [[{ createdHoursAgo: 1 }]],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: false,
           expectedResult: false,
           expectedDescription: 'created less than 1 hour ago',
@@ -185,7 +187,7 @@ describe('CasesActions', () => {
         {
           action,
           conditionsSets: [[{ createdDaysAgo: 1 }]],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: false,
           expectedResult: true,
           expectedDescription: 'created less than 1 day ago',
@@ -194,7 +196,7 @@ describe('CasesActions', () => {
         {
           action,
           conditionsSets: [[{ createdDaysAgo: 1 }]],
-          workerSid: 'not creator',
+          workerSid: NOT_CREATOR_WORKER_SID,
           isSupervisor: false,
           expectedResult: false,
           expectedDescription: 'created less than 1 day ago',
@@ -511,7 +513,7 @@ describe('ProfileSectionActions', () => {
         },
       ])
       .map(addPrettyPrintConditions),
-  ).test.only(
+  ).test(
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
     ({ action, conditionsSets, workerSid = 'workerSid', isSupervisor, expectedResult, createdAt, sectionType }) => {
       const rules = buildRules(conditionsSets, 'profileSection');

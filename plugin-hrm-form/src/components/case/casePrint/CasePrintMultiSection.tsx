@@ -20,28 +20,30 @@ import { View } from '@react-pdf/renderer';
 import { FormDefinition } from 'hrm-form-definitions';
 
 import CasePrintSection from './CasePrintSection';
-import { ApiCaseSection } from '../../../services/caseSectionService';
+import { CaseSection } from '../../../services/caseSectionService';
 
 type OwnProps = {
-  sectionName: string;
-  sectionKey: 'household' | 'perpetrator' | 'incident' | 'referral';
-  values: ApiCaseSection[];
+  sectionNameTemplateCode: string;
+  values: CaseSection[];
   definitions: FormDefinition;
 };
 
 type Props = OwnProps;
 
-const CasePrintMultiSection: React.FC<Props> = ({ sectionName, sectionKey, values, definitions }) => {
+const CasePrintMultiSection: React.FC<Props> = ({ sectionNameTemplateCode, values, definitions }) => {
   return (
     <View>
       {values &&
         values.length > 0 &&
         values.map((value, i: number) => {
-          const customSectionName = `${sectionName} ${i + 1} of ${values.length}`;
           return (
             <CasePrintSection
-              key={`${sectionName}_${i}`}
-              sectionName={customSectionName}
+              key={`${sectionNameTemplateCode}_${i}`}
+              sectionNameTemplateCode={sectionNameTemplateCode}
+              sectionNameTemplateValues={{
+                sectionNo: (i + 1).toString(),
+                sectionCount: values.length.toString(),
+              }}
               values={value.sectionTypeSpecificData}
               definitions={definitions}
             />

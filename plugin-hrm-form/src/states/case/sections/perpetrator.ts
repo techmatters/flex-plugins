@@ -17,7 +17,7 @@
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseSectionApi } from './api';
-import { getMostRecentSectionItem, getSectionItemById } from './get';
+import { getSectionItemById } from './get';
 import { getWorkingCopy, setWorkingCopy } from './workingCopy';
 
 const SECTION_PROPERTY = 'perpetrator';
@@ -28,7 +28,6 @@ export const perpetratorSectionApi: CaseSectionApi = {
   getSectionFormDefinition: (definitionVersions: DefinitionVersion) => definitionVersions.caseForms.PerpetratorForm,
   getSectionLayoutDefinition: (definitionVersions: DefinitionVersion) =>
     definitionVersions.layoutVersion.case.perpetrators,
-  getMostRecentSectionItem: getMostRecentSectionItem(SECTION_PROPERTY),
   getSectionItemById: getSectionItemById(SECTION_PROPERTY),
   getWorkingCopy: getWorkingCopy(SECTION_PROPERTY),
   updateWorkingCopy: setWorkingCopy(SECTION_PROPERTY),

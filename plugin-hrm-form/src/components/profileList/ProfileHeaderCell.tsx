@@ -41,7 +41,7 @@ type Props = OwnProps;
  * If column prop is filled, the cell will enable sorting by this column
  */
 const ProfileHeaderCell: React.FC<Props> = ({ column, localizedText, width }) => {
-  const { settings } = useProfilesList();
+  const { settings } = useProfilesList({ autoload: false });
   const dispatch = useDispatch();
 
   const {

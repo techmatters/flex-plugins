@@ -23,6 +23,7 @@ import * as ProfileFlagActions from '../profileFlags';
 import * as ProfileSelectors from '../selectors';
 import { namespace, profileBase } from '../../storeNamespaces';
 import { RootState } from '../..';
+import { useLoadWithRetry } from '../../hooks/useLoadWithRetry';
 
 export type UseAllProfileFlags = {
   allProfileFlags?: ProfileFlag[];
@@ -49,18 +50,22 @@ export type UseProfileFlags = UseAllProfileFlags &
 export const useAllProfileFlags = (): UseAllProfileFlags => {
   const dispatch = useDispatch();
   const flagsState = useSelector((state: RootState) => ProfileSelectors.selectAllProfileFlags(state));
-  const { error, loading, data: allProfileFlags } = flagsState;
+  const { error, loading, data: allProfileFlags } = flagsState || {};
 
   const loadProfileFlags = useCallback(() => {
     asyncDispatch(dispatch)(ProfileFlagActions.loadProfileFlagsAsync());
   }, [dispatch]);
 
-  useEffect(() => {
-    if ((!allProfileFlags || !allProfileFlags.length) && !loading) {
-      loadProfileFlags();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allProfileFlags, loadProfileFlags]);
+  const shouldLoad = (!allProfileFlags || !allProfileFlags.length) && !loading;
+
+  useLoadWithRetry({
+    error,
+    loading,
+    loadFunction: loadProfileFlags,
+    retry: true,
+    safeToLoad: true,
+    shouldLoad,
+  });
 
   return {
     allProfileFlags,

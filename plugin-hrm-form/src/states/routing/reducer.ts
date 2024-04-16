@@ -23,6 +23,7 @@ import {
   ChangeRouteMode,
   CLOSE_MODAL,
   GO_BACK,
+  isRouteWithContext,
   isRouteWithModalSupport,
   OPEN_MODAL,
   RoutingActionType,
@@ -125,7 +126,10 @@ const updateTopmostRoute = (baseRouteStack: AppRoutes[], newRoute, mode: ChangeR
     if (isRouteWithModalSupport(currentRoute) && currentRoute.activeModal) {
       return [
         ...baseRouteStack.slice(0, -1),
-        { ...currentRoute, activeModal: updateTopmostRoute(currentRoute.activeModal, newRoute, mode) },
+        {
+          ...currentRoute,
+          activeModal: updateTopmostRoute(currentRoute.activeModal, newRoute, mode),
+        },
       ];
     }
   }
@@ -200,10 +204,13 @@ const openModalOnTop = (baseRouteStack: AppRoutes[], modalRoute: AppRoutes): App
       {
         ...currentRoute,
         // Use a spread to prevent creating an activeModal property at all in the negative case
+        // eslint-disable-next-line no-nested-ternary
         ...(isRouteWithModalSupport(currentRoute) && currentRoute.activeModal
           ? {
               activeModal: openModalOnTop(currentRoute.activeModal, modalRoute),
             }
+          : isRouteWithContext(currentRoute)
+          ? { activeModal: [{ context: currentRoute.context, ...modalRoute }] as AppRoutes[] }
           : { activeModal: [modalRoute] }),
       },
     ];

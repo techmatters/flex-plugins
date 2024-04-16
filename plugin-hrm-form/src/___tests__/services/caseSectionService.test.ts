@@ -14,6 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { parseISO } from 'date-fns';
+
 import { fetchHrmApi } from '../../services/fetchHrmApi';
 import { ApiCaseSection, createCaseSection, updateCaseSection } from '../../services/caseSectionService';
 
@@ -54,7 +56,8 @@ const response: ApiCaseSection = {
   },
   sectionId: 'section-123',
   createdAt: '2000-01-01T00:00:00.000Z',
-  twilioWorkerId: 'WK-creating',
+  eventTimestamp: '2000-01-01T00:00:00.000Z',
+  createdBy: 'WK-creating',
 };
 
 test('createCaseSection - Generates a POST HTTP call via fetchHrmApi', async () => {
@@ -67,7 +70,12 @@ test('createCaseSection - Generates a POST HTTP call via fetchHrmApi', async () 
     body: expect.jsonStringToParseAs({ sectionTypeSpecificData: { some: 'stuff' } }),
   };
   expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl, expectedOptions);
-  expect(created).toStrictEqual(response);
+  expect(created).toStrictEqual({
+    ...response,
+    createdAt: parseISO(response.createdAt),
+    eventTimestamp: parseISO(response.createdAt),
+    updatedAt: undefined,
+  });
 });
 
 test('updateCaseSection - Generates a POST HTTP call via fetchHrmApi', async () => {
@@ -80,5 +88,10 @@ test('updateCaseSection - Generates a POST HTTP call via fetchHrmApi', async () 
     body: expect.jsonStringToParseAs({ sectionTypeSpecificData: { some: 'stuff' } }),
   };
   expect(fetchHrmApi).toHaveBeenCalledWith(expectedUrl, expectedOptions);
-  expect(created).toStrictEqual(response);
+  expect(created).toStrictEqual({
+    ...response,
+    createdAt: parseISO(response.createdAt),
+    eventTimestamp: parseISO(response.createdAt),
+    updatedAt: undefined,
+  });
 });

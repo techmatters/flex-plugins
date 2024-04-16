@@ -5,10 +5,7 @@ locals {
 
   local_config = {
     helpline                          = "Youthline"
-    old_dir_prefix                    = ""
-    default_autopilot_chatbot_enabled = false
     task_language                     = "en-NZ"
-    contacts_waiting_channels         = ["voice", "sms", "web"]
 
     channel_attributes = {
       webchat : "/app/twilio-iac/helplines/nz/templates/channel-attributes/webchat.tftpl"
@@ -35,16 +32,20 @@ locals {
 
     task_queues = {
       youthline_helpline : {
-        "target_workers" = "roles HAS 'agent' OR roles HAS 'supervisor'",
+        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND email != 'alnrivera@gmail.com'",
         "friendly_name"  = "Youthline Helpline"
       },
       priority : {
-        "target_workers" = "roles HAS 'agent' OR roles HAS 'supervisor'",
+        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND email != 'alnrivera@gmail.com'" ,
         "friendly_name"  = "Priority Youthline Helpline"
       },
       clinical : {
-        "target_workers" = "routing.skills HAS 'Clinical' OR roles HAS 'supervisor'",
+        "target_workers" = "(routing.skills HAS 'Clinical' OR roles HAS 'supervisor') AND email != 'alnrivera@gmail.com'",
         "friendly_name"  = "Clinical"
+      },
+      counselling : {
+        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND email == 'alnrivera@gmail.com'",
+        "friendly_name"  = "YL Other Services"
       },
       survey : {
         "target_workers" = "1==0",

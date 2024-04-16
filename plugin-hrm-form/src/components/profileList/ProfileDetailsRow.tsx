@@ -19,12 +19,12 @@ import { useDispatch } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { Tab } from '@material-ui/core';
 
-import ProfileFlagPill from '../profile/profileFlag/ProfileFlagPill';
+import ProfileFlagChip from '../profile/profileFlag/ProfileFlagChip';
 import { getShortSummary } from '../../utils';
 import { useProfile } from '../../states/profile/hooks/useProfile';
 import {
   DataTableRow,
-  PillsCell,
+  CategoriesCell,
   NumericCell,
   OpenLinkContainer,
   OpenLinkAction,
@@ -85,13 +85,13 @@ const ProfileDetailsRow: React.FC<Props> = ({ profileId }) => {
         </TableBodyFont>
       </DataCell>
       {combinedProfileFlags.length > 0 ? (
-        <PillsCell>
+        <CategoriesCell>
           {combinedProfileFlags
             .sort((a, b) => a.name.localeCompare(b.name))
             .map(flag => (
-              <ProfileFlagPill key={flag.id} flag={flag} />
+              <ProfileFlagChip key={flag.id} flag={flag} />
             ))}
-        </PillsCell>
+        </CategoriesCell>
       ) : (
         <SummaryCell>
           <TableBodyFont>

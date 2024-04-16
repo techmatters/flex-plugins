@@ -21,7 +21,6 @@ import type { CallTypes, DefinitionVersionId } from 'hrm-form-definitions';
 import type { ChannelTypes } from '../states/DomainConstants';
 import type { ResourceReferral } from '../states/contacts/resourceReferral';
 import { DateFilterValue } from '../states/caseList/dateFilters';
-import { ApiCaseSection } from '../services/caseSectionService';
 import { AccountSID, TaskSID, WorkerSID } from './twilio';
 
 declare global {
@@ -47,11 +46,7 @@ export type CaseItemEntry = { form: CaseItemFormValues } & EntryInfo;
 
 export type Household = { [key: string]: string | boolean };
 
-export type HouseholdEntry = { household: Household } & EntryInfo;
-
 export type Perpetrator = { [key: string]: string | boolean };
-
-export type PerpetratorEntry = { perpetrator: Perpetrator } & EntryInfo;
 
 export type Incident = { [key: string]: string | boolean };
 
@@ -94,7 +89,6 @@ export type WellKnownCaseSection = 'note' | 'referral' | 'household' | 'perpetra
 export type Case = {
   accountSid: AccountSID;
   id: string;
-  label: string;
   status: string;
   helpline: string;
   twilioWorkerId: WorkerSID;
@@ -105,9 +99,9 @@ export type Case = {
   statusUpdatedAt?: string;
   statusUpdatedBy?: WorkerSID;
   previousStatus?: string;
-  connectedContacts: Contact[];
-  sections: { [K in WellKnownCaseSection]?: ApiCaseSection[] };
   categories: Record<string, string[]>;
+  firstContact?: Contact;
+
 };
 
 export type TwilioStoredMedia = {
@@ -206,6 +200,7 @@ export type Contact = {
   caseId?: string;
 };
 
+
 export type SearchContactResult = {
   count: number;
   contacts: Contact[];
@@ -293,6 +288,7 @@ export type FeatureFlags = {
   enable_save_insights: boolean; // Enables Saving Aditional Data on Insights
   enable_separate_timeline_view: boolean; // Enables a limited inline case timelinbe with a link to the full timeline
   enable_sort_cases: boolean; // Enables Sorting at Case List
+  enable_teams_view_enhancements: boolean; // Enables custom Teams View UI
   enable_transfers: boolean; // Enables Transfering Contacts
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
   enable_upload_documents: boolean; // Enables Case Documents
@@ -397,8 +393,6 @@ export type ProfileSection = {
 export type Profile = {
   id: number;
   name: string;
-  contactsCount: number;
-  casesCount: number;
   createdAt?: string;
   updatedAt?: string;
   identifiers?: Identifier[];

@@ -37,13 +37,15 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
   definition = templatefile(
     each.value.templatefile,
     {
-      flow_description  = "${title(replace(each.key, "_", " "))} Studio Flow",
-      channel_name      = each.key,
-      helpline          = var.helpline,
-      task_language     = var.task_language,
-      flow_vars         = var.flow_vars,
-      serverless_url    = var.serverless_url,
-      channel_flow_vars = each.value.channel_flow_vars,
+      flow_description           = "${title(replace(each.key, "_", " "))} Studio Flow",
+      channel_name               = each.key,
+      helpline                   = var.helpline,
+      task_language              = var.task_language,
+      flow_vars                  = var.flow_vars,
+      serverless_service_sid     = var.serverless_service_sid,
+      serverless_environment_sid = var.serverless_environment_sid,
+      serverless_url             = var.serverless_url,
+      channel_flow_vars          = each.value.channel_flow_vars,
       channel_chatbots = {
         for chatbot_name in each.value.chatbot_unique_names :
         chatbot_name => var.chatbots[chatbot_name]
@@ -63,7 +65,7 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
         {
           default : templatefile(
             lookup(var.channel_attributes, each.key, var.channel_attributes["default"]),
-          { task_language = var.task_language , helpline = var.helpline})
+          { task_language = var.task_language, helpline = var.helpline })
         }
       )
 

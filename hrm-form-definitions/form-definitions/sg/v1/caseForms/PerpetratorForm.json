@@ -92,8 +92,12 @@
     "name": "gender",
     "label": "Gender",
     "type": "select",
-    "unknownOption": "Unknown",
+    "unknownOption": "",
     "options": [
+      {
+        "value": "",
+        "label": ""
+      },
       {
         "value": "Unknown",
         "label": "Unknown"
@@ -125,8 +129,12 @@
     "name": "language",
     "label": "Language",
     "type": "select",
-    "unknownOption": "Unknown",
+    "unknownOption": "",
     "options": [
+      {
+        "value": "",
+        "label": ""
+      },
       {
         "value": "Unknown",
         "label": "Unknown"
@@ -157,8 +165,12 @@
     "name": "ethnicity",
     "label": "Ethnicity",
     "type": "select",
-    "unknownOption": "Unknown",
+    "unknownOption": "",
     "options": [
+      {
+        "value": "",
+        "label": ""
+      },
       {
         "value": "Unknown",
         "label": "Unknown"
@@ -185,7 +197,6 @@
     "name": "copyToHousehold",
     "label": "This perpetrator is also a household member",
     "type": "copy-to",
-    "target": "households",
-    "saveable": false
+    "target": "households"
   }
 ]

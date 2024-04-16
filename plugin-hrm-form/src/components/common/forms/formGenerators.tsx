@@ -67,7 +67,6 @@ export const getInitialValue = (def: FormItemDefinition) => {
       if (def.initializeWithCurrent) {
         return format(startOfDay(new Date()), 'yyyy-MM-dd');
       }
-
       return '';
     }
     case FormInputType.TimeInput: {

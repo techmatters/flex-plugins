@@ -29,18 +29,20 @@ import { hasTaskControl } from '../../transfer/transferTaskState';
 import { RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError } from '../../fullStory';
-import { Case, Contact, CustomITask, RouterTask } from '../../types/types';
-import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
+import { Contact, CustomITask, RouterTask } from '../../types/types';
+import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { createCaseAsyncAction } from '../../states/case/saveCase';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata, LoadingStatus } from '../../states/contacts/types';
 import { AppRoutes } from '../../states/routing/types';
-import AddCaseButton from './AddCaseButton';
+import AddCaseButton from '../AddCaseButton';
 import asyncDispatch from '../../states/asyncDispatch';
 import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { SuccessReportIcon } from '../CSAMReport/styles';
+import { CaseStateEntry } from '../../states/case/types';
+import openNewCase from '../case/openNewCase';
 
 type BottomBarProps = {
   handleSubmitIfValid: (handleSubmit: () => Promise<void>) => () => void;
@@ -65,37 +67,27 @@ const BottomBar: React.FC<
   task,
   openModal,
   nextTab,
-  caseForm,
-  createCaseAsyncAction,
-  submitContactFormAsyncAction,
+  caseState,
+  submitContactForm,
   saveUpdates,
   savedContact,
   contactIsSaving,
+  createNewCase,
 }) => {
   const strings = getTemplateStrings();
 
-  const isAddedToCase = savedContact?.caseId !== null;
+  const isAddedToCase = savedContact?.caseId;
 
   const handleOpenNewCase = async () => {
-    const { workerSid, definitionVersion } = getHrmConfig();
-
-    if (!hasTaskControl(task)) return;
-
-    try {
-      await saveUpdates();
-      await createCaseAsyncAction(contact, workerSid, definitionVersion);
-      openModal({ route: 'case', subroute: 'home', isCreating: true, caseId: undefined });
-    } catch (error) {
-      recordBackendError('Open New Case', error);
-      window.alert(strings['Error-Backend']);
-    }
+    await saveUpdates();
+    await createNewCase(task, savedContact, contact);
   };
 
   const handleSubmit = async () => {
     if (contactIsSaving || !hasTaskControl(task)) return;
 
     try {
-      await submitContactFormAsyncAction(task as CustomITask, contact, metadata, caseForm as Case);
+      await submitContactForm(task as CustomITask, contact, metadata, caseState);
       await completeTask(task, contact);
     } catch (error) {
       if (window.confirm(strings['Error-ContinueWithoutRecording'])) {
@@ -113,7 +105,7 @@ const BottomBar: React.FC<
   if (!showBottomBar) return null;
 
   const openSearchModal = () => {
-    openModal({ route: 'search', subroute: 'form', action: 'select-case' });
+    openModal({ contextContactId: savedContact.id, route: 'search', subroute: 'form', action: 'select-case' });
   };
 
   const renderCaseButton = () => {
@@ -203,12 +195,12 @@ BottomBar.displayName = 'BottomBar';
 
 const mapStateToProps = (state: RootState, { contactId }: BottomBarProps) => {
   const { draftContact, savedContact, metadata } = selectContactStateByContactId(state, contactId) ?? {};
-  const caseForm = selectCaseByCaseId(state, savedContact.caseId ?? '')?.connectedCase || {};
-  const contactIsSaving = metadata.loadingStatus === LoadingStatus.LOADING;
+  const caseState = selectCaseByCaseId(state, savedContact.caseId ?? '');
+  const contactIsSaving = metadata.loadingStatus === LoadingStatus.LOADING || savedContact.finalizedAt !== null;
   return {
     contact: getUnsavedContact(savedContact, draftContact),
     metadata,
-    caseForm,
+    caseState,
     savedContact,
     contactIsSaving,
   };
@@ -218,15 +210,12 @@ const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
   return {
     changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
     openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid)),
-    createCaseAsyncAction: async (contact, workerSid: string, definitionVersion: DefinitionVersionId) => {
+    submitContactForm: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) =>
       // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
       // TODO: Rework error handling to be based on redux state set by the _REJECTED action
-      await asyncDispatch(dispatch)(createCaseAsyncAction(contact, workerSid, definitionVersion));
-    },
-    submitContactFormAsyncAction: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseForm: Case) =>
-      // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
-      // TODO: Rework error handling to be based on redux state set by the _REJECTED action
-      dispatch(submitContactFormAsyncAction(task, contact, metadata, caseForm)),
+      dispatch(submitContactFormAsyncAction(task, contact, metadata, caseState)),
+    createNewCase: async (task: RouterTask, savedContact: Contact, contact: Contact) =>
+      openNewCase(task, savedContact, contact, dispatch),
   };
 };
 

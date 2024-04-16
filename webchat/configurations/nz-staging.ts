@@ -19,7 +19,7 @@ import { PreEngagementFormDefinition, EMAIL_PATTERN } from '../src/pre-engagemen
 
 const accountSid = 'AC3ee873a0431086e5b1166db5f5e29860';
 const flexFlowSid = 'FO0a4844fcc193072407dad94b76fcc94d';
-const defaultLanguage = 'en-US';
+const defaultLanguage = 'en-NZ';
 const captureIp = true;
 const checkOpenHours = true;
 const contactType: ContactType = 'ip';
@@ -382,7 +382,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 };
 
 const translations: Translations = {
-  'en-US': {
+  'en-NZ': {
     WelcomeMessage: 'Welcome to Youthline',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:

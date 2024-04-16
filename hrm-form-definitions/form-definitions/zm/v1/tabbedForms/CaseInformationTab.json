@@ -25,6 +25,7 @@
       { "value": "Referrals to other organisations", "label": "Referrals to other organisations" },
       { "value": "Referrals to school counsellors", "label": "Referrals to school counsellors" },
       { "value": "Reports to Child Sexual Abuse Material", "label": "Reports to Child Sexual Abuse Material" },
+      { "value": "Reports to PSEA point person", "label": "Reports to PSEA point person" },
       { "value": "Other", "label": "Other" }
     ]
   },

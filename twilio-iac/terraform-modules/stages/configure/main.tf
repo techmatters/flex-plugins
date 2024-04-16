@@ -40,20 +40,22 @@ provider "twilio" {
 }
 
 module "channel" {
-  source                = "../../channels/v1"
-  flex_chat_service_sid = local.services_flex_chat_service_sid
-  workflow_sids         = local.task_router_workflow_sids
-  task_channel_sids     = local.task_router_task_channel_sids
-  channel_attributes    = var.channel_attributes
-  channels              = var.channels
-  enable_post_survey    = var.enable_post_survey
-  environment           = var.environment
-  flow_vars             = var.flow_vars
-  short_environment     = var.short_environment
-  task_language         = var.task_language
-  helpline              = var.helpline
-  short_helpline        = upper(var.short_helpline)
-  serverless_url        = local.serverless_url
+  source                     = "../../channels/v1"
+  flex_chat_service_sid      = local.services_flex_chat_service_sid
+  workflow_sids              = local.task_router_workflow_sids
+  task_channel_sids          = local.task_router_task_channel_sids
+  channel_attributes         = var.channel_attributes
+  channels                   = var.channels
+  enable_post_survey         = var.enable_post_survey
+  environment                = var.environment
+  flow_vars                  = var.flow_vars
+  short_environment          = var.short_environment
+  task_language              = var.task_language
+  helpline                   = var.helpline
+  short_helpline             = upper(var.short_helpline)
+  serverless_url             = local.serverless_url
+  serverless_service_sid     = local.serverless_service_sid
+  serverless_environment_sid = local.serverless_environment_production_sid
 }
 
 

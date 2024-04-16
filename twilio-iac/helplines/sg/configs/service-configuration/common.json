@@ -5,8 +5,9 @@
             "web"
         ],
         "definitionVersion": "sg-v1",
-        "external_recordings_enabled": true,
         "config_flags": {
+            "external_recordings_enabled": true,
+            "enable_post_survey": false
         },
         "feature_flags": {
         },

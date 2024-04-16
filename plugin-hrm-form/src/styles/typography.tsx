@@ -98,3 +98,61 @@ export const Title = styled('h1')`
   align-items: center;
 `;
 Title.displayName = 'Title';
+
+export const ChipBase = styled('div')`
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  border-radius: 6px;
+  margin-right: 6px;
+  padding: 5px 12px;
+`;
+ChipBase.displayName = 'ChipBase';
+
+type ChipTextProps = {
+  color?: string;
+  bold?: boolean;
+};
+
+export const ChipText = styled(FontOpenSans)<ChipTextProps>`
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14px;
+  opacity: 1;
+  color: ${props => (props.color ? props.color : '#2f3e44')};
+  font-weight: ${props => (props.bold ? 600 : 400)};
+`;
+ChipText.displayName = 'ChipText';
+
+type ColorProps = {
+  color?: string;
+};
+
+export const CategoryChip = styled(ChipBase)<ColorProps>`
+  border-radius: 2px;
+  margin-right: 6px;
+  padding: 5px 12px;
+  background-color: ${props => (props.color ? `${props.color}1a` : '#d8d8d8')};
+`;
+CategoryChip.displayName = 'CategoryChip';
+
+export const TagMiddleDot = styled('div')<ColorProps>`
+  display: inline-block;
+  width: 4px;
+  min-width: 4px;
+  height: 4px;
+  border-radius: 100%;
+  margin-right: 1ch;
+  background-color: ${props => props.color};
+`;
+
+export const SomethingWentWrongText = styled(FontOpenSans)`
+  color: ${HrmTheme.colors.errorColor};
+  font-size: 20px;
+`;
+SomethingWentWrongText.displayName = 'SomethingWentWrongText';
+
+export const OpaqueText = styled('span')`
+  opacity: 0.7;
+`;

@@ -21,7 +21,7 @@ import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import { ButtonProps } from '@material-ui/core/Button';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
 
-import { BottomButtonBar, Flex, FontOpenSans, Row, StyledNextStepButton } from '../../styles';
+import { BottomButtonBar, Flex, FontOpenSans, ChipBase, Row, StyledNextStepButton } from '../../styles';
 import HrmTheme from '../../styles/HrmTheme';
 import { BannerContainerProps, colors } from '../../styles/banners';
 
@@ -96,20 +96,6 @@ export const StyledLink = styled(UnstyledLinkButton)<StyledLinkProps>`
 const Tag = styled('div')`
   border-radius: 6px;
   padding: 5px 15px;
-`;
-
-type ColorProps = {
-  color?: string;
-};
-
-export const ContactTag = styled(Tag)<ColorProps>`
-  display: inline-flex;
-  align-items: center;
-  border-radius: 2px;
-  white-space: nowrap;
-  margin-right: 6px;
-  padding: 5px 12px;
-  background-color: ${props => (props.color ? `${props.color}1a` : '#d8d8d8')};
 `;
 
 const PopoverText = styled(FontOpenSans)`
@@ -228,25 +214,6 @@ export const TagsWrapper = styled(Flex)`
   }
 `;
 
-export const TagText = styled(FontOpenSans)`
-  display: inline-block;
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 14px;
-  opacity: 1;
-  color: #2f3e44;
-`;
-
-export const TagMiddleDot = styled('div')<ColorProps>`
-  display: inline-block;
-  width: 4px;
-  min-width: 4px;
-  height: 4px;
-  border-radius: 100%;
-  margin-right: 1ch;
-  background-color: ${props => props.color};
-`;
-
 // ContactDetails styles
 export const ContactDetailsIcon = icon => styled(icon)`
   color: #000000;
@@ -260,6 +227,10 @@ export const DetailsContainer = styled('div')`
   padding-left: ${containerPadding}px;
   padding-right: ${containerPadding}px;
 `;
+
+type ColorProps = {
+  color?: string;
+};
 
 export const SectionTitleContainer = styled(Row)<ColorProps>`
   background-color: #ecedf1;

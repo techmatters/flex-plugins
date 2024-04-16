@@ -26,7 +26,7 @@ import Timeline from './Timeline';
 import { RootState } from '../../../states';
 import { selectCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
 import { CaseTimelineRoute, ChangeRouteMode } from '../../../states/routing/types';
-import { selectCaseActivityCount } from '../../../states/case/timeline';
+import { selectTimelineCount } from '../../../states/case/timeline';
 import Pagination from '../../pagination';
 import { changeRoute } from '../../../states/routing/actions';
 
@@ -35,12 +35,13 @@ type MyProps = {
 };
 
 const TIMELINE_PAGE_SIZE = 25;
+const MAIN_TIMELINE_ID = 'prime-timeline';
 
 const mapStateToProps = (state: RootState, { task }: MyProps) => {
   const { caseId, page = 0 } = selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseTimelineRoute;
   return {
     page,
-    activityCount: selectCaseActivityCount(state, caseId),
+    activityCount: selectTimelineCount(state, caseId, MAIN_TIMELINE_ID),
     caseId,
   };
 };
@@ -70,7 +71,13 @@ const FullTimelineView: React.FC<Props> = ({ task, page, activityCount, changePa
         style={{ textAlign: 'center' }}
       >
         <AddToCaseBanner task={task} />
-        <Timeline taskSid={task.taskSid} pageSize={TIMELINE_PAGE_SIZE} page={page} titleCode="Case-Timeline-Title" />
+        <Timeline
+          taskSid={task.taskSid}
+          timelineId={MAIN_TIMELINE_ID}
+          pageSize={TIMELINE_PAGE_SIZE}
+          page={page}
+          titleCode="Case-Timeline-Title"
+        />
         <p style={{ marginTop: '10px', fontStyle: 'italic' }}>
           <Template
             code="Case-Timeline-PaginationDescription"

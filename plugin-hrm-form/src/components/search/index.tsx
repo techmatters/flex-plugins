@@ -72,8 +72,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     handleSearchFormChange: bindActionCreators(handleSearchFormChange(taskId), dispatch),
-    changeSearchPage: (subroute: SearchResultRoute['subroute'], action?: SearchRoute['action']) =>
-      dispatch(changeRoute({ route: 'search', subroute, action, casesPage: 0, contactsPage: 0 }, taskId)),
+    changeSearchPage: (subroute: SearchResultRoute['subroute'], action?: SearchRoute['action'], contactId?: string) =>
+      dispatch(
+        changeRoute(
+          { route: 'search', subroute, action, casesPage: 0, contactsPage: 0, contextContactId: contactId },
+          taskId,
+        ),
+      ),
     searchContacts: searchContacts(dispatch)(taskId),
     searchCases: searchCases(dispatch)(taskId),
     closeModal: () => dispatch(newCloseModalAction(taskId)),
@@ -85,7 +90,6 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 const Search: React.FC<Props> = ({
   task,
   currentIsCaller,
-  activeContacts,
   searchContacts,
   searchCases,
   handleSearchFormChange,
@@ -109,7 +113,7 @@ const Search: React.FC<Props> = ({
 
   const setSearchParamsAndHandleSearch = async newSearchParams => {
     if (routing.route === 'search' && routing.action === 'select-case') {
-      changeSearchPage('case-results', 'select-case');
+      changeSearchPage('case-results', 'select-case', routing.contextContactId);
       await Promise.all([handleSearchCases(newSearchParams, 0)]);
       setSearchParams(newSearchParams);
       return;
@@ -200,22 +204,14 @@ const Search: React.FC<Props> = ({
         return <Case task={task} />;
       }
       case 'contact':
-        // Find contact in contact search results or connected to one of case search results
-        const contact =
-          searchContactsResults.contacts.find(c => c.id.toString() === routing.id.toString()) ||
-          searchCasesResults.cases.flatMap(c => c.connectedContacts ?? []).find(c => c.id.toString() === routing.id) ||
-          activeContacts.existingContacts[routing.id.toString()]?.savedContact;
-        if (contact) {
-          return (
-            <ContactDetails
-              context={DetailsContext.CONTACT_SEARCH}
-              contactId={contact.id}
-              task={task}
-              data-testid="ContactDetails"
-            />
-          );
-        }
-        break;
+        return (
+          <ContactDetails
+            context={DetailsContext.CONTACT_SEARCH}
+            contactId={routing.id}
+            task={task}
+            data-testid="ContactDetails"
+          />
+        );
       default:
         break;
     }

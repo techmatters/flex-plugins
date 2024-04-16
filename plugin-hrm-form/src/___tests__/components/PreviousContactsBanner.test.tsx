@@ -158,13 +158,13 @@ test('calls the correct function when the contacts link is clicked', () => {
       task={webChatTask}
       searchContacts={searchContacts}
       searchCases={searchCases}
-      openContactSearchResults={openContactSearchResults}
+      openContactSearchResults={openContactSearchResults('10001')}
       openCaseSearchResults={openCaseSearchResults}
     />,
   );
 
   fireEvent.click(getByTestId('banner-link-contacts'));
-  expect(openContactSearchResults).toHaveBeenCalled();
+  expect(openContactSearchResults).toHaveBeenCalledWith('10001');
 });
 
 test('calls the correct function when the cases link is clicked', () => {
@@ -180,12 +180,12 @@ test('calls the correct function when the cases link is clicked', () => {
       searchContacts={searchContacts}
       searchCases={searchCases}
       openContactSearchResults={openContactSearchResults}
-      openCaseSearchResults={openCaseSearchResults}
+      openCaseSearchResults={openCaseSearchResults('10001')}
     />,
   );
 
   fireEvent.click(getByTestId('banner-link-cases'));
-  expect(openCaseSearchResults).toHaveBeenCalled();
+  expect(openCaseSearchResults).toHaveBeenCalledWith('10001');
 });
 
 test('a11y', async () => {

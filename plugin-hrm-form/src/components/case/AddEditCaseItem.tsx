@@ -18,7 +18,7 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { Template } from '@twilio/flex-ui';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
 import type { DefinitionVersion } from 'hrm-form-definitions';
 import { isEqual } from 'lodash';
@@ -39,13 +39,11 @@ import ActionHeader from './ActionHeader';
 import { RootState } from '../../states';
 import { createStateItem, CustomHandlers, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
-import type { Case, CustomITask, StandaloneITask, WellKnownCaseSection } from '../../types/types';
+import type { Case, CustomITask, StandaloneITask } from '../../types/types';
 import { CaseItemAction, isAddCaseSectionRoute, isCaseRoute, isEditCaseSectionRoute } from '../../states/routing/types';
 import { recordingErrorHandler } from '../../fullStory';
 import CloseCaseDialog from './CloseCaseDialog';
 import { CaseSectionApi } from '../../states/case/sections/api';
-import { lookupApi } from '../../states/case/sections/lookupApi';
-import { copyCaseSectionItem } from '../../states/case/sections/update';
 import { newCloseModalAction, newGoBackAction } from '../../states/routing/actions';
 import {
   initialiseExistingCaseSectionWorkingCopy,
@@ -73,8 +71,63 @@ export type AddEditCaseItemProps = {
   reactHookFormOptions?: Partial<{ shouldUnregister: boolean }>;
   sectionApi: CaseSectionApi;
 };
+
+const mapStateToProps = (state: RootState, { task, sectionApi }: AddEditCaseItemProps) => {
+  const { workerSid } = getHrmConfig();
+  const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
+
+  if (isCaseRoute(currentRoute)) {
+    const sectionId = isEditCaseSectionRoute(currentRoute) ? currentRoute.id : undefined;
+    const { caseWorkingCopy, sections } = selectCaseByCaseId(state, currentRoute.caseId);
+    const caseItemHistory = sectionId
+      ? selectCaseItemHistory(state, currentRoute.caseId, sectionApi, sectionId)
+      : {
+          added: new Date(),
+          addingCounsellorName: selectCounselorName(state, workerSid),
+          updated: undefined,
+          updatingCounsellorName: undefined,
+        };
+
+    const workingCopy = sectionApi.getWorkingCopy(caseWorkingCopy, sectionId);
+
+    return { caseItemHistory, workingCopy, currentRoute, sections, sectionId };
+  }
+  return {
+    connectedCase: undefined,
+    sections: undefined,
+    caseItemHistory: undefined,
+    workingCopy: undefined,
+    sectionId: undefined,
+  };
+};
+
+const mapDispatchToProps = (dispatch, { sectionApi, task, definitionVersion }: AddEditCaseItemProps) => {
+  const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
+  return {
+    updateCaseSectionWorkingCopy: bindActionCreators(updateCaseSectionWorkingCopy, dispatch),
+    initialiseCaseSectionWorkingCopy: bindActionCreators(initialiseExistingCaseSectionWorkingCopy, dispatch),
+    initialiseNewCaseSectionWorkingCopy: bindActionCreators(initialiseNewCaseSectionWorkingCopy, dispatch),
+    closeActions: (caseId: Case['id'], id: string, action: DismissAction) => {
+      dispatch(removeCaseSectionWorkingCopy(caseId, sectionApi, id));
+      if (action === DismissAction.BACK) {
+        dispatch(newGoBackAction(task.taskSid));
+      } else if (action === DismissAction.CLOSE) {
+        dispatch(newCloseModalAction(task.taskSid));
+      }
+    },
+
+    createCaseSection: (caseId: Case['id'], newSection: CaseSectionTypeSpecificData) =>
+      searchAsyncDispatch(createCaseSectionAsyncAction(caseId, sectionApi, newSection, definitionVersion)),
+
+    updateCaseSection: (caseId: Case['id'], sectionId, update: CaseSectionTypeSpecificData) =>
+      searchAsyncDispatch(updateCaseSectionAsyncAction(caseId, sectionApi, sectionId, update, definitionVersion)),
+  };
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
 // eslint-disable-next-line no-use-before-define
-type Props = AddEditCaseItemProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type Props = AddEditCaseItemProps & ConnectedProps<typeof connector>;
 
 enum DismissAction {
   NONE,
@@ -86,7 +139,6 @@ const AddEditCaseItem: React.FC<Props> = ({
   definitionVersion,
   task,
   caseItemHistory,
-  connectedCase,
   updateCaseSectionWorkingCopy,
   initialiseCaseSectionWorkingCopy,
   initialiseNewCaseSectionWorkingCopy,
@@ -99,22 +151,17 @@ const AddEditCaseItem: React.FC<Props> = ({
   sectionId,
   updateCaseSection,
   createCaseSection,
-  createCaseSectionCopy,
+  sections,
 }) => {
-  const formDefinition = React.useMemo(
-    () =>
-      sectionApi
-        .getSectionFormDefinition(definitionVersion)
-        // If more 'when adding only' form item types are implemented, we should create a specific property, but there is only one so just check the type for now
-        .filter(fd => !sectionId || fd.type !== 'copy-to'),
-    [definitionVersion, sectionId, sectionApi],
-  );
+  const formDefinition = React.useMemo(() => sectionApi.getSectionFormDefinition(definitionVersion), [
+    definitionVersion,
+    sectionApi,
+  ]);
   const layout = sectionApi.getSectionLayoutDefinition(definitionVersion);
 
-  // Grab initial values in first render only. If getTemporaryFormContent(temporaryCaseInfo), cherrypick the values using formDefinition, if not build the object with getInitialValue
   const savedForm = React.useMemo(() => {
-    if (sectionId && connectedCase) {
-      const { sectionTypeSpecificData: form } = sectionApi.getSectionItemById(connectedCase, sectionId);
+    if (sectionId && sections) {
+      const { sectionTypeSpecificData: form } = sectionApi.getSectionItemById(sections, sectionId);
       return formDefinition.reduce(
         (accum, curr) => ({
           ...accum,
@@ -124,14 +171,14 @@ const AddEditCaseItem: React.FC<Props> = ({
       );
     }
     return formDefinition.reduce(createStateItem, {});
-  }, [connectedCase, formDefinition, sectionId, sectionApi]);
+  }, [sections, formDefinition, sectionId, sectionApi]);
 
   useEffect(() => {
     if (!workingCopy) {
       if (sectionId) {
-        initialiseCaseSectionWorkingCopy(connectedCase.id, sectionApi, sectionId);
+        initialiseCaseSectionWorkingCopy(currentRoute.caseId, sectionApi, sectionId);
       } else {
-        initialiseNewCaseSectionWorkingCopy(connectedCase.id, sectionApi, savedForm);
+        initialiseNewCaseSectionWorkingCopy(currentRoute.caseId, sectionApi, savedForm);
       }
     }
   }, [
@@ -141,7 +188,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     sectionApi,
     workingCopy,
     savedForm,
-    connectedCase.id,
+    currentRoute.caseId,
   ]);
 
   const methods = useForm(reactHookFormOptions);
@@ -163,7 +210,7 @@ const AddEditCaseItem: React.FC<Props> = ({
     updateCallback: () => {
       const form = getValues();
       console.log('Updated case form', form);
-      updateCaseSectionWorkingCopy(connectedCase?.id, sectionApi, { ...workingCopy, ...form }, sectionId);
+      updateCaseSectionWorkingCopy(currentRoute.caseId, sectionApi, { ...workingCopy, ...form }, sectionId);
     },
     customHandlers: customFormHandlers,
     shouldFocusFirstElement: false,
@@ -173,11 +220,11 @@ const AddEditCaseItem: React.FC<Props> = ({
     return null;
   }
 
-  if (!connectedCase || !workingCopy) {
+  if (!sections || !workingCopy) {
     return null;
   }
 
-  const { id: caseId } = connectedCase;
+  const { caseId } = currentRoute;
 
   const [l, r] = layout.splitFormAt
     ? splitAt(layout.splitFormAt)(disperseInputs(7)(form))
@@ -188,22 +235,6 @@ const AddEditCaseItem: React.FC<Props> = ({
       await updateCaseSection(caseId, sectionId, workingCopy);
     } else {
       await createCaseSection(caseId, workingCopy);
-      await Promise.all(
-        formDefinition.map(fd => {
-          // A preceding 'filter' call looks nicer but TS type narrowing isn't smart enough to work with that.
-          if (fd.type === 'copy-to' && getValues()[fd.name]) {
-            const toApi = lookupApi(fd.target);
-            const copied = copyCaseSectionItem({
-              definition: definitionVersion,
-              fromSection: workingCopy,
-              fromApi: sectionApi,
-              toApi,
-            });
-            return createCaseSectionCopy(caseId, toApi.type, copied);
-          }
-          return Promise.resolve();
-        }),
-      );
     }
   };
 
@@ -311,60 +342,4 @@ const AddEditCaseItem: React.FC<Props> = ({
 
 AddEditCaseItem.displayName = 'AddEditCaseItem';
 
-const mapStateToProps = (state: RootState, { task, sectionApi }: AddEditCaseItemProps) => {
-  const { workerSid } = getHrmConfig();
-  const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
-  if (isCaseRoute(currentRoute)) {
-    const sectionId = isEditCaseSectionRoute(currentRoute) ? currentRoute.id : undefined;
-    const { connectedCase, caseWorkingCopy } = selectCaseByCaseId(state, currentRoute.caseId);
-    const caseItemHistory = sectionId
-      ? selectCaseItemHistory(state, connectedCase, sectionApi, currentRoute.caseId)
-      : {
-          added: new Date(),
-          addingCounsellorName: selectCounselorName(state, workerSid),
-          updated: undefined,
-          updatingCounsellorName: undefined,
-        };
-
-    const workingCopy = sectionApi.getWorkingCopy(caseWorkingCopy, sectionId);
-
-    return { connectedCase, caseItemHistory, workingCopy, currentRoute, sectionId };
-  }
-  return {
-    connectedCase: undefined,
-    caseItemHistory: undefined,
-    workingCopy: undefined,
-    currentRoute: undefined,
-    sectionId: undefined,
-  };
-};
-
-const mapDispatchToProps = (dispatch, { sectionApi, task }: AddEditCaseItemProps) => {
-  const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
-  return {
-    updateCaseSectionWorkingCopy: bindActionCreators(updateCaseSectionWorkingCopy, dispatch),
-    initialiseCaseSectionWorkingCopy: bindActionCreators(initialiseExistingCaseSectionWorkingCopy, dispatch),
-    initialiseNewCaseSectionWorkingCopy: bindActionCreators(initialiseNewCaseSectionWorkingCopy, dispatch),
-    closeActions: (caseId: Case['id'], id: string, action: DismissAction) => {
-      dispatch(removeCaseSectionWorkingCopy(caseId, sectionApi, id));
-      if (action === DismissAction.BACK) {
-        dispatch(newGoBackAction(task.taskSid));
-      } else if (action === DismissAction.CLOSE) {
-        dispatch(newCloseModalAction(task.taskSid));
-      }
-    },
-
-    createCaseSection: (caseId: Case['id'], newSection: CaseSectionTypeSpecificData) =>
-      searchAsyncDispatch(createCaseSectionAsyncAction(caseId, sectionApi.type, newSection)),
-
-    createCaseSectionCopy: (
-      caseId: Case['id'],
-      targetSectionType: WellKnownCaseSection,
-      newSection: CaseSectionTypeSpecificData,
-    ) => searchAsyncDispatch(createCaseSectionAsyncAction(caseId, targetSectionType, newSection)),
-    updateCaseSection: (caseId: Case['id'], sectionId, update: CaseSectionTypeSpecificData) =>
-      searchAsyncDispatch(updateCaseSectionAsyncAction(caseId, sectionApi.type, sectionId, update)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddEditCaseItem);
+export default connector(AddEditCaseItem);

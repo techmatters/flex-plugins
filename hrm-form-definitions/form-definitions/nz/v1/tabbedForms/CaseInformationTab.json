@@ -255,11 +255,11 @@
         "label": "Friends"
       },
       {
-        "value": "Youthline Service, e.g. Helpline/Youth Worker/Counselling",
+        "value": "Youthline Service",
         "label": "Youthline Service, e.g. Helpline/Youth Worker/Counselling"
       },
       {
-        "value": "Social Media Post, e.g., Instagram/Facebook",
+        "value": "Social Media Post",
         "label": "Social Media Post, e.g., Instagram/Facebook"
       },
       {
@@ -267,7 +267,7 @@
         "label": "Social Media Influencer"
       },
       {
-        "value": "Online Advertising, e.g., Google",
+        "value": "Online Advertising",
         "label": "Online Advertising, e.g., Google"
       },
       {
@@ -295,7 +295,7 @@
         "label": "Community Event"
       },
       {
-        "value": "Physical Advertisements, e.g., Billboard",
+        "value": "Physical Advertisements",
         "label": "Physical Advertisements, e.g., Billboard"
       },
       {

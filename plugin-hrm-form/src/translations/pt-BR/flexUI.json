@@ -326,13 +326,13 @@
   "ContactDetails-ActionHeaderUpdated": "Atualizado em {{date}} às {{time}} por {{counsellor}}",
   "ContactDetails-UnsavedContact": "Contato não salvo",
 
-  "SectionName-CallerInformation": "Informação do chamador",
-  "SectionName-ChildInformation": "Informação da criança",
-  "SectionName-HouseholdMember": "Membro da família",
-  "SectionName-Incident": "Incidente",
-  "SectionName-Referral": "Encaminhamento",
+  "SectionName-CallerInformation": "Informação do chamador {{sectionNo}} de {{sectionCount}}",
+  "SectionName-ChildInformation": "Informação da criança {{sectionNo}} de {{sectionCount}}",
+  "SectionName-HouseholdMember": "Membro da família {{sectionNo}} de {{sectionCount}}",
+  "SectionName-Incident": "Incidente {{sectionNo}} de {{sectionCount}}",
+  "SectionName-Referral": "Encaminhamento {{sectionNo}} de {{sectionCount}}",
   "SectionName-Notes": "Notas",
-  "SectionName-Perpetrator": "Perpetrador/Autor da violência",
+  "SectionName-Perpetrator": "Perpetrador/Autor da violência {{sectionNo}} de {{sectionCount}}",
   "SectionEntry-No": "Não",
   "SectionEntry-Yes": "Sim",
   "ContactCopyButton": "Copie",
@@ -466,5 +466,6 @@
   "CaseMerging-RemoveFromCase": "Remover do Caso",
   "CaseMerging-ContactRemovedFromCase": "Contato removido do caso",
   "CaseMerging-CaseCreatedAndContactAdded": "Case #{{caseId}} criado e contato adicionado",
+  "CaseMerging-ContactAddedToExistingCase": "Contato adicionado ao caso nº{{caseId}}",
   "CaseMerging-CancelCase": "Cancelar Caso"
 }

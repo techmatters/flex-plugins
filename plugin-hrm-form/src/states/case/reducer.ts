@@ -32,6 +32,7 @@ import { SEARCH_CASES_SUCCESS, SearchCasesSuccessAction } from '../search/types'
 import { Case } from '../../types/types';
 import { ConfigurationState } from '../configuration/reducer';
 import { caseSectionUpdateReducer } from './sections/caseSectionUpdates';
+import { timelineReducer } from './timeline';
 
 const initialState: CaseState = {
   cases: {},
@@ -41,6 +42,7 @@ const boundSaveCaseReducer = saveCaseReducer({ connectedCase: initialState } as 
 const boundCaseSectionUpdateReducer = caseSectionUpdateReducer({
   connectedCase: initialState,
 } as HrmState);
+const boundTimelineReducer = timelineReducer({ connectedCase: initialState } as HrmState);
 
 const dereferenceCase = (state: CaseState, caseId: string, referenceId: string): CaseState => {
   const caseState = state.cases[caseId];
@@ -103,6 +105,8 @@ const loadCaseIntoState = (
           caseWorkingCopy: { sections: {} },
           availableStatusTransitions: getAvailableCaseStatusTransitions(newCase, definitionVersion),
           references: referenceId ? new Set([referenceId]) : new Set<string>(),
+          sections: {},
+          timelines: {},
         },
       },
     };
@@ -144,6 +148,8 @@ const contactUpdatingReducer = (hrmState: HrmState, action: ContactUpdatingActio
               caseWorkingCopy: { sections: {} },
               availableStatusTransitions: getAvailableCaseStatusTransitions(contactCase, caseDefinitionVersion),
               references,
+              sections: {},
+              timelines: {},
             },
           },
         },
@@ -184,6 +190,7 @@ export function reduce(
 ): HrmState {
   let hrmState = boundSaveCaseReducer(inputRootState, action as any);
   hrmState = boundCaseSectionUpdateReducer(hrmState, action);
+  hrmState = boundTimelineReducer(hrmState, action);
   hrmState = {
     ...hrmState,
     connectedCase: caseWorkingCopyReducer(

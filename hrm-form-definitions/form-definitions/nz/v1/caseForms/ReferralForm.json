@@ -6,10 +6,13 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
+    },
+    "metadata": {
+      "eventTimestampSource": true
     }
   },
   {
-    "name": "externalInterventionTo",
+    "name": "referredTo",
     "label": "External Intervention to",
     "type": "listbox-multiselect",
     "options": [

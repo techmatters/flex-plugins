@@ -18,20 +18,21 @@ import { addDays, addSeconds, subSeconds } from 'date-fns';
 
 import { Case, Contact } from '../../types/types';
 import getUpdatedDate from '../../states/getUpdatedDate';
+import { VALID_EMPTY_CONTACT } from '../testContacts';
 
 describe('getUpdatedDate', () => {
   const baselineDate = new Date(2015, 5, 15);
   describe('Case input', () => {
     const baseCase: Case = {
-      accountSid: '',
-      id: 0,
+      accountSid: 'ACx',
+      id: '0',
       status: '',
+      label: '',
       createdAt: new Date(baselineDate).toISOString(),
       helpline: undefined,
-      twilioWorkerId: 'PEGGY',
+      twilioWorkerId: 'WK-PEGGY',
       categories: {},
       updatedAt: new Date(baselineDate).toISOString(),
-      connectedContacts: [],
       info: {},
     };
 
@@ -72,8 +73,9 @@ describe('getUpdatedDate', () => {
     });
 
     const baseContact: Contact = {
+      profileId: 0,
       id: '0',
-      accountSid: '',
+      accountSid: 'ACx',
       helpline: 'helpline',
       createdAt: baselineDate.toISOString(),
       createdBy: 'PEGGY',
@@ -81,9 +83,9 @@ describe('getUpdatedDate', () => {
       updatedBy: '',
       timeOfContact: baselineDate.toISOString(),
       channel: 'default',
-      twilioWorkerId: 'SUE',
+      twilioWorkerId: 'WK-SUE',
       number: '',
-      taskId: '',
+      taskId: 'WT',
       conversationDuration: 0,
       queueName: '',
       channelSid: '',
@@ -97,6 +99,7 @@ describe('getUpdatedDate', () => {
         caseInformation: {},
         categories: {},
         contactlessTask: {
+          ...VALID_EMPTY_CONTACT.rawJson.contactlessTask,
           channel: 'voice',
         },
       },

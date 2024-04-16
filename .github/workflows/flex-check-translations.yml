@@ -30,14 +30,14 @@ jobs:
 
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       
       # Check if localizable strings changed
       - name: Get changed files (plugin-hrm-form/src/translations/en-US)
         id: translations-changed
-        uses: tj-actions/changed-files@v41
+        uses: tj-actions/changed-files@v44
         with:
           files: |
             plugin-hrm-form/src/translations/en-US/*.json   

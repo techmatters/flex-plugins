@@ -20,10 +20,9 @@ import FilterList from '@material-ui/icons/FilterList';
 
 import { ProfileFlag } from '../../../types/types';
 import { useProfilesList, useProfilesListSettings } from '../../../states/profile/hooks/useProfilesList';
-import { getTemplateStrings } from '../../../hrmConfig';
 import MultiSelectFilter, { Item } from '../../caseList/filters/MultiSelectFilter';
 import { CountText, FiltersContainer, FiltersResetAll, FilterTitle, MainTitle } from '../../../styles';
-import { useProfilesListLoader, useAllProfileFlags } from '../../../states/profile/hooks';
+import { useAllProfileFlags } from '../../../states/profile/hooks';
 
 const filterCheckedItems = (items: Item[]): string[] => items.filter(item => item.checked).map(item => item.value);
 
@@ -31,16 +30,15 @@ const ProfileFilters: React.FC = () => {
   const [openedFilter, setOpenedFilter] = useState<string>(null);
   const [statusValues, setStatusValues] = useState<Item[]>([]);
 
-  const { count } = useProfilesList();
+  const { count, updateProfilesListSettings } = useProfilesList({ autoload: false });
   const { allProfileFlags, loading: flagsLoading } = useAllProfileFlags();
   const { filter } = useProfilesListSettings();
-  const { updateProfilesListSettings } = useProfilesListLoader();
 
   const computeStatusValues = useCallback(
     (flags: ProfileFlag[]) => {
       return flags.map(flag => ({
         value: `_${flag.id}`,
-        label: flag.name.charAt(0).toUpperCase() + flag.name.slice(1),
+        label: flag.name,
         checked: filter.statuses.includes(flag.id.toString()),
       }));
     },
@@ -59,8 +57,6 @@ const ProfileFilters: React.FC = () => {
     }
   }, [allProfileFlags, flagsLoading, computeStatusValues]);
 
-  const strings = getTemplateStrings();
-
   const handleApplyStatusFilter = useCallback(
     (values: Item[]) => {
       const checkedItems = filterCheckedItems(values).map(item => item.replace('_', ''));
@@ -76,11 +72,12 @@ const ProfileFilters: React.FC = () => {
     return (
       <MultiSelectFilter
         name="status"
-        text={strings['ProfileList-THStatus']}
+        text={<Template code="ProfileList-THStatus" />}
         defaultValues={statusValues}
         openedFilter={openedFilter}
         applyFilter={handleApplyStatusFilter}
         setOpenedFilter={setOpenedFilter}
+        capitalizeOptions
       />
     );
   };

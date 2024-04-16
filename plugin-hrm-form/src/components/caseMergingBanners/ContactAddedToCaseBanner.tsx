@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
@@ -31,6 +31,7 @@ import { BannerActionLink, BannerContainer, CaseLink, Text } from '../../styles/
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { getInitializedCan, PermissionActions } from '../../permissions';
 import { getHrmConfig } from '../../hrmConfig';
+import { updateCaseOverviewAsyncAction } from '../../states/case/saveCase';
 
 type OwnProps = {
   taskId: string;
@@ -42,9 +43,8 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
 const mapStateToProps = (state: RootState, { taskId, contactId }: OwnProps) => {
   const offlineSavedContact = selectContactByTaskSid(state, taskId)?.savedContact;
   const existingSavedContact = selectContactStateByContactId(state, contactId)?.savedContact;
-  const connectedCase = selectCaseByCaseId(state, offlineSavedContact?.caseId || existingSavedContact?.caseId)
-    ?.connectedCase;
   const caseId = offlineSavedContact?.caseId || existingSavedContact?.caseId;
+  const connectedCase = selectCaseByCaseId(state, caseId)?.connectedCase;
   return {
     contact: offlineSavedContact || existingSavedContact,
     connectedCase,
@@ -61,6 +61,7 @@ const mapDispatchToProps = (dispatch, { taskId }: OwnProps) => ({
     await asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId));
     dispatch(showRemovedFromCaseBannerAction(contactId, caseId));
   },
+  loadCase: (caseId: Case['id']) => dispatch(updateCaseOverviewAsyncAction(caseId)),
 });
 
 const ContactAddedToCaseBanner: React.FC<Props> = ({
@@ -68,9 +69,15 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
   contact,
   viewCaseDetails,
   removeContactFromCase,
+  loadCase,
   caseId,
   existingSavedContact,
 }) => {
+  useEffect(() => {
+    if (caseId && !connectedCase) {
+      loadCase(caseId);
+    }
+  }, [caseId, connectedCase, loadCase]);
   /*
   TODO: Convert to a custom hook since it has been used in several places within
   the Flex-plugins repo?

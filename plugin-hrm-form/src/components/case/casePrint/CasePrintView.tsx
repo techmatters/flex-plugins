@@ -16,11 +16,12 @@
 
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-max-depth */
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, useEffect, useState } from 'react';
 import { Document, Page, PDFViewer, View } from '@react-pdf/renderer';
 import { CircularProgress } from '@material-ui/core';
-import { callTypes, DefinitionVersion, HelplineEntry } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-form-definitions';
 import { parseISO } from 'date-fns';
+import { connect, ConnectedProps } from 'react-redux';
 
 import CasePrintSection from './CasePrintSection';
 import CasePrintSummary from './CasePrintSummary';
@@ -32,31 +33,83 @@ import CasePrintNotes from './CasePrintNotes';
 import CasePrintHeader from './CasePrintHeader';
 import CasePrintFooter from './CasePrintFooter';
 import CasePrintCSAMReports from './CasePrintCSAMReports';
-// import CasePrintContact from './CasePrintContact'; // Removed by ZA request, could be useful for other helplines.
 import { getImageAsString, ImageSource } from './images';
-import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
+import { getHrmConfig } from '../../../hrmConfig';
 import NavigableContainer from '../../NavigableContainer';
-import { Case, CustomITask, StandaloneITask } from '../../../types/types';
+import { Case, Contact, CustomITask, StandaloneITask, WellKnownCaseSection } from '../../../types/types';
+import { TimelineActivity } from '../../../states/case/types';
+import { RootState } from '../../../states';
+import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRouteCase';
+import { newGetTimelineAsyncAction, selectTimeline } from '../../../states/case/timeline';
+import { selectDefinitionVersionForCase } from '../../../states/configuration/selectDefinitions';
+import { selectCounselorsHash } from '../../../states/configuration/selectCounselorsHash';
+import selectCaseHelplineData from '../../../states/case/selectCaseHelplineData';
+import * as RoutingActions from '../../../states/routing/actions';
+import { FullCaseSection } from '../../../services/caseSectionService';
+import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
 
 type OwnProps = {
-  onClickClose: () => void;
-  connectedCase: Case;
-  definitionVersion: DefinitionVersion;
-  counselorsHash: { [sid: string]: string };
   task: CustomITask | StandaloneITask;
-  office: HelplineEntry | undefined;
 };
-type Props = OwnProps;
+
+const MAX_SECTIONS = 100;
+const MAX_PRINTOUT_CONTACTS = 100;
+const SECTION_NAMES = ['perpetrator', 'incident', 'referral', 'household', 'note'] as const;
+
+const mapStateToProps = (state: RootState, { task }: OwnProps) => {
+  const { connectedCase } = selectCurrentRouteCaseState(state, task.taskSid);
+  const sectionEntries = SECTION_NAMES.map(
+    sectionName =>
+      [
+        sectionName,
+        selectTimeline(state, connectedCase.id, sectionName, { offset: 0, limit: MAX_SECTIONS })?.map(
+          ({ activity }) => activity as FullCaseSection,
+        ),
+      ] as const,
+  );
+  return {
+    office: selectCaseHelplineData(state, connectedCase?.id),
+    definitionVersion: selectDefinitionVersionForCase(state, connectedCase),
+    counselorsHash: selectCounselorsHash(state),
+    connectedCase,
+    sectionTimelines: Object.fromEntries(sectionEntries),
+    contactTimeline: selectTimeline(state, connectedCase?.id, 'print-contacts', {
+      offset: 0,
+      limit: MAX_PRINTOUT_CONTACTS,
+    }) as TimelineActivity<Contact>[],
+  };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => {
+  return {
+    goBack: () => dispatch(RoutingActions.newGoBackAction(task.taskSid)),
+    loadSectionTimeline: (caseId: Case['id'], sectionType: WellKnownCaseSection) =>
+      dispatch(
+        newGetTimelineAsyncAction(caseId, sectionType, [sectionType], false, { offset: 0, limit: MAX_SECTIONS }),
+      ),
+    loadContactTimeline: (caseId: Case['id']) =>
+      dispatch(
+        newGetTimelineAsyncAction(caseId, 'print-contacts', [], true, { offset: 0, limit: MAX_PRINTOUT_CONTACTS }),
+      ),
+  };
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type Props = OwnProps & ConnectedProps<typeof connector>;
 
 const CasePrintView: React.FC<Props> = ({
-  onClickClose,
+  goBack,
   connectedCase,
   definitionVersion,
   counselorsHash,
   task,
   office,
+  contactTimeline,
+  sectionTimelines,
+  loadSectionTimeline,
+  loadContactTimeline,
 }) => {
-  const strings = getTemplateStrings();
   const { pdfImagesSource } = getHrmConfig();
 
   const logoSource = `${pdfImagesSource}/helpline-logo.png`;
@@ -68,8 +121,29 @@ const CasePrintView: React.FC<Props> = ({
   const [chkOnBlob, setChkOnBlob] = useState<string>(null);
   const [chkOffBlob, setChkOffBlob] = useState<string>(null);
 
-  const { incident, referral, household, perpetrator, note } = connectedCase?.sections ?? {};
+  useEffect(() => {
+    if (!contactTimeline) {
+      loadContactTimeline(connectedCase.id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connectedCase.id, Boolean(contactTimeline), loadContactTimeline]);
 
+  for (const sectionName of SECTION_NAMES) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useEffect(
+      () => {
+        if (!sectionTimelines[sectionName]) {
+          loadSectionTimeline(connectedCase.id, sectionName);
+        }
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [
+        connectedCase.id,
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        Boolean(sectionTimelines[sectionName]),
+      ],
+    );
+  }
   /*
    * The purpose of this effect is to load all the images at once, to avoid re-renders in PDFViewer that leads to issues
    * https://stackoverflow.com/questions/60614940/unhandled-rejection-typeerror-nbind-externallistnum-dereference-is-not-a-f
@@ -110,14 +184,16 @@ const CasePrintView: React.FC<Props> = ({
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   if (definitionVersion.layoutVersion.thaiCharacterPdfSupport) useThaiFontFamily();
-  const contact = connectedCase.connectedContacts?.[0];
   const printedFollowUpDate = connectedCase.info.followUpDate
     ? parseISO(connectedCase.info.followUpDate).toLocaleDateString()
     : '';
 
+  const caseLabel = contactLabelFromHrmContact(definitionVersion, connectedCase.firstContact);
+  const allCsamReports = contactTimeline?.flatMap(({ activity }) => activity?.csamReports ?? []) ?? [];
+
   return (
-    <NavigableContainer task={task} onGoBack={onClickClose}>
-      {loading ? (
+    <NavigableContainer task={task} onGoBack={goBack}>
+      {loading || !SECTION_NAMES.every(sectionName => sectionTimelines[sectionName]) || !contactTimeline ? (
         <CasePrintViewSpinner>
           <CircularProgress size={50} />
         </CasePrintViewSpinner>
@@ -127,7 +203,7 @@ const CasePrintView: React.FC<Props> = ({
             <Page size="A4" style={styles.page}>
               <CasePrintHeader
                 id={connectedCase.id}
-                contactIdentifier={connectedCase.label}
+                contactIdentifier={caseLabel}
                 officeName={office?.label}
                 logoBlob={logoBlob}
               />
@@ -145,77 +221,80 @@ const CasePrintView: React.FC<Props> = ({
                   chkOffBlob={chkOffBlob}
                   definitionVersion={definitionVersion}
                 />
-                {connectedCase.connectedContacts?.[0]?.rawJson?.callType === callTypes.caller ? (
-                  <View>
+                {contactTimeline.map(({ activity }, idx) => {
+                  const sectionNameTemplateValues = {
+                    sectionNo: (idx + 1).toString(),
+                    sectionCount: contactTimeline.length.toString(),
+                  };
+                  return activity.rawJson.callType === callTypes.caller ? (
+                    <View>
+                      <CasePrintSection
+                        sectionNameTemplateCode="SectionName-CallerInformation"
+                        sectionNameTemplateValues={sectionNameTemplateValues}
+                        definitions={[
+                          ...definitionVersion.tabbedForms.CaseInformationTab.filter(definition => {
+                            // eslint-disable-next-line
+                          return definition['highlightedAtCasePrint'] ? definition : null;
+                          }),
+                          ...definitionVersion.tabbedForms.CallerInformationTab,
+                        ]}
+                        values={{
+                          ...activity?.rawJson?.caseInformation,
+                          ...activity?.rawJson?.callerInformation,
+                        }}
+                      />
+                      <CasePrintSection
+                        sectionNameTemplateCode="SectionName-ChildInformation"
+                        sectionNameTemplateValues={sectionNameTemplateValues}
+                        definitions={definitionVersion.tabbedForms.ChildInformationTab}
+                        values={activity?.rawJson?.childInformation}
+                      />
+                    </View>
+                  ) : (
                     <CasePrintSection
-                      sectionName={strings['SectionName-CallerInformation']}
+                      sectionNameTemplateCode="SectionName-ChildInformation"
+                      sectionNameTemplateValues={sectionNameTemplateValues}
                       definitions={[
                         ...definitionVersion.tabbedForms.CaseInformationTab.filter(definition => {
                           // eslint-disable-next-line
-                          return definition['highlightedAtCasePrint'] ? definition : null;
+                        return definition['highlightedAtCasePrint'] ? definition : null;
                         }),
-                        ...definitionVersion.tabbedForms.CallerInformationTab,
+                        ...definitionVersion.tabbedForms.ChildInformationTab,
                       ]}
                       values={{
-                        ...contact?.rawJson?.caseInformation,
-                        ...contact?.rawJson?.callerInformation,
+                        ...activity?.rawJson?.caseInformation,
+                        ...activity?.rawJson?.childInformation,
                       }}
                     />
-                    <CasePrintSection
-                      sectionName={strings['SectionName-ChildInformation']}
-                      definitions={definitionVersion.tabbedForms.ChildInformationTab}
-                      values={contact?.rawJson?.childInformation}
-                    />
-                  </View>
-                ) : (
-                  <CasePrintSection
-                    sectionName={strings['SectionName-ChildInformation']}
-                    definitions={[
-                      ...definitionVersion.tabbedForms.CaseInformationTab.filter(definition => {
-                        // eslint-disable-next-line
-                        return definition['highlightedAtCasePrint'] ? definition : null;
-                      }),
-                      ...definitionVersion.tabbedForms.ChildInformationTab,
-                    ]}
-                    values={{
-                      ...contact?.rawJson?.caseInformation,
-                      ...contact?.rawJson?.childInformation,
-                    }}
-                  />
-                )}
-                {/* // Removed by ZA request, could be useful for other helplines.
-                <CasePrintContact
-                  sectionName={strings['SectionName-Contact']}
-                  contact={caseDetails.contact}
-                  counselor={caseDetails.caseCounselor}
-                /> */}
+                  );
+                })}
                 <CasePrintMultiSection
-                  sectionName={strings['SectionName-HouseholdMember']}
-                  sectionKey="household"
+                  sectionNameTemplateCode="SectionName-HouseholdMember"
                   definitions={definitionVersion.caseForms.HouseholdForm}
-                  values={household}
+                  values={sectionTimelines.household}
                 />
                 <CasePrintMultiSection
-                  sectionName={strings['SectionName-Perpetrator']}
-                  sectionKey="perpetrator"
+                  sectionNameTemplateCode="SectionName-Perpetrator"
                   definitions={definitionVersion.caseForms.PerpetratorForm}
-                  values={perpetrator}
+                  values={sectionTimelines.perpetrator}
                 />
                 <CasePrintMultiSection
-                  sectionName={strings['SectionName-Incident']}
+                  sectionNameTemplateCode="SectionName-Incident"
                   definitions={definitionVersion.caseForms.IncidentForm}
-                  sectionKey="incident"
-                  values={incident}
+                  values={sectionTimelines.incident}
                 />
                 <CasePrintMultiSection
-                  sectionName={strings['SectionName-Referral']}
+                  sectionNameTemplateCode="SectionName-Referral"
                   definitions={definitionVersion.caseForms.ReferralForm}
-                  sectionKey="referral"
-                  values={referral}
+                  values={sectionTimelines.referral}
                 />
-                <CasePrintNotes notes={note} counselorsHash={counselorsHash} />
+                <CasePrintNotes
+                  notes={sectionTimelines.note}
+                  counselorsHash={counselorsHash}
+                  formDefinition={definitionVersion}
+                />
                 <CasePrintSummary summary={connectedCase.info.summary} />
-                <CasePrintCSAMReports csamReports={contact?.csamReports} />
+                <CasePrintCSAMReports csamReports={allCsamReports} />
               </View>
               <CasePrintFooter />
             </Page>
@@ -228,4 +307,4 @@ const CasePrintView: React.FC<Props> = ({
 
 CasePrintView.displayName = 'CasePrintView';
 
-export default CasePrintView;
+export default connector(CasePrintView);

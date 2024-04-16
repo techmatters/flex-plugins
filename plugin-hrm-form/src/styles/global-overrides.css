@@ -137,8 +137,34 @@ div.Twilio-Splitter div.Twilio-AgentDesktopView\.Panel2 {
  * Teams View CSS Overrides:
  * - Overrides first column (Agent) width from fixed to auto.
  * - Now, column 1 and 3 have auto width, meaning they'll take the available space equally
+ * - Overrides the minimum width of the table to 900px to ensure all the columns are visible without getting cut off
  */
  .Twilio-WorkersDataTable th:first-of-type {
     width: auto !important;
  }
- 
+ .Twilio-WorkersDataTable {
+    min-width: 900px !important;
+ }
+
+/**  
+ * Overrides to allow better UX for Reset and Apply (buttons) in the Filter Panel
+ */
+ .Twilio-FilterListButtons-Container {
+    min-width: 325px;
+    width: -webkit-fill-available;
+    overflow: visible;
+    position: fixed;
+    bottom: 0;
+    background-color: white;
+    margin-left: -1px;
+    border-left: 1px solid #cacdd8;
+    border-top: 1px solid #cacdd8;
+ }
+ .Twilio-TeamFiltersPanel {
+    height: calc(100% - 79px); /* 79px is the height of the Filter Buttons Container */
+    flex-grow: 0;
+ }
+ .Twilio-TeamsView-Loaded {
+    width: 100%;
+    overflow-x: auto;
+}

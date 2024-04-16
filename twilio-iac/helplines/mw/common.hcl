@@ -23,7 +23,7 @@ locals {
     workflows = {
       master : {
         friendly_name : "Master Workflow"
-        templatefile : "/app/twilio-iac/helplines/mw/templates/workflows/master.tftpl"
+        templatefile : "/app/twilio-iac/helplines/mw/templates/workflows/master-prod.tftpl"
       },
       survey : {
         friendly_name : "Survey Workflow"
@@ -47,6 +47,10 @@ locals {
       e2e_test : {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
         "friendly_name"  = "E2E Test Queue"
+      },
+      iwf : {
+        "target_workers" = "1==1",
+        "friendly_name"  = "IWF"
       }
     }
     task_channels = {

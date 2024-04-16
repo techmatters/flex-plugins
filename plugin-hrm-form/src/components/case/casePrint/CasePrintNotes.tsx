@@ -18,20 +18,24 @@
 /* eslint-disable dot-notation */
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
+import { format } from 'date-fns';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { formatName, formatStringToDateAndTime } from '../../../utils';
+import { formatName } from '../../../utils';
 import styles from './styles';
 import { getTemplateStrings } from '../../../hrmConfig';
-import { ApiCaseSection } from '../../../services/caseSectionService';
+import { FullCaseSection } from '../../../services/caseSectionService';
+import { getSectionText } from '../../../states/case/caseActivities';
 
 type OwnProps = {
-  notes: ApiCaseSection[];
+  notes: FullCaseSection[];
   counselorsHash: { [sid: string]: string };
+  formDefinition: DefinitionVersion;
 };
 
 type Props = OwnProps;
 
-const CasePrintNotes: React.FC<Props> = ({ notes, counselorsHash }) => {
+const CasePrintNotes: React.FC<Props> = ({ notes, counselorsHash, formDefinition }) => {
   const strings = getTemplateStrings();
 
   if (!notes || notes.length === 0) return null;
@@ -43,15 +47,16 @@ const CasePrintNotes: React.FC<Props> = ({ notes, counselorsHash }) => {
       </View>
       {notes &&
         notes.length > 0 &&
-        notes.map(({ twilioWorkerId, sectionTypeSpecificData: note, createdAt }, i) => {
+        notes.map((noteSection, i) => {
+          const { createdBy: twilioWorkerId, createdAt } = noteSection;
           return (
             <View key={i} style={{ ...styles['sectionBody'], ...styles['caseSummaryText'] }}>
               <View style={{ ...styles.flexRow, justifyContent: 'space-between' }}>
                 <Text style={{ fontWeight: 600 }}>{formatName(counselorsHash[twilioWorkerId])}</Text>
-                <Text style={{ fontStyle: 'italic' }}>{formatStringToDateAndTime(createdAt)}</Text>
+                <Text style={{ fontStyle: 'italic' }}>{`${format(createdAt, 'MMM d, yyyy / h:mm aaaaa')}m`}</Text>
               </View>
               <View>
-                <Text style={styles['noteSummaryText']}>{note.text}</Text>
+                <Text style={styles['noteSummaryText']}>{getSectionText(noteSection, formDefinition)}</Text>
               </View>
             </View>
           );

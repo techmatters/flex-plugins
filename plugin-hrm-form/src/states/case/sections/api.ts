@@ -16,19 +16,18 @@
 
 import { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
-import { Case, WellKnownCaseSection } from '../../../types/types';
-import { CaseWorkingCopy } from '../types';
-import { ApiCaseSection, CaseSectionTypeSpecificData } from '../../../services/caseSectionService';
+import { WellKnownCaseSection } from '../../../types/types';
+import { CaseStateEntry, CaseWorkingCopy } from '../types';
+import { CaseSection, CaseSectionTypeSpecificData } from '../../../services/caseSectionService';
 
 // TODO: This interface was created to abstract away the differences between various types of case sections, now the structure of these is standardised the abstraction is largely redundant
 // Most of the implementations are identical now, the only difference being the part of the form definition that is used for forms and layouts
-// This API could be replaced with directly specified funcxtions for most of it and a simple map to locate the form defs for each section.
+// This API could be replaced with directly specified functions for most of it and a simple map to locate the form defs for each section.
 // Alternatively, aligning the naming of the form definition sections with the sectionType will eliminate the need for any mapping, and be another step towards 'generic case section types' support.
 export type CaseSectionApi = {
   readonly label: string; // for logging only
   readonly type: WellKnownCaseSection;
-  getSectionItemById: (caseObj: Case, id: string) => ApiCaseSection | undefined;
-  getMostRecentSectionItem: (caseObj: Case) => ApiCaseSection | undefined;
+  getSectionItemById: (sections: CaseStateEntry['sections'], id: string) => CaseSection | undefined;
   getSectionFormDefinition: (definitions: DefinitionVersion) => FormDefinition;
   getSectionLayoutDefinition: (definitions: DefinitionVersion) => LayoutDefinition;
   getWorkingCopy: (caseInfo: CaseWorkingCopy, id?: string) => CaseSectionTypeSpecificData | undefined;

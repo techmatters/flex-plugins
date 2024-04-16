@@ -16,12 +16,12 @@
 
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { TableBody, CircularProgress } from '@material-ui/core';
+import { CircularProgress, TableBody } from '@material-ui/core';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import InfoIcon from '@material-ui/icons/Info';
 
-import { TableContainer, StandardTable, DataTableRow, LoadingCell, DataCell, TableBodyFont } from '../../styles';
+import { DataCell, DataTableRow, LoadingCell, StandardTable, TableContainer } from '../../styles';
 import Filters from './filters/Filters';
 import CaseListTableHead from './CaseListTableHead';
 import CaseListTableRow from './CaseListTableRow';
@@ -29,7 +29,7 @@ import Pagination from '../pagination';
 import { CASES_PER_PAGE } from './CaseList';
 import type { Case } from '../../types/types';
 import * as CaseListSettingsActions from '../../states/caseList/settings';
-import { PermissionActions, getInitializedCan } from '../../permissions';
+import { getInitializedCan, PermissionActions } from '../../permissions';
 import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 
@@ -46,7 +46,7 @@ type OwnProps = {
 type Props = OwnProps & ConnectedProps<typeof connector>;
 
 /**
- * This component is splitted to make it easier to read, but is basically a 8 columns Table (8 for data, 1 for the "expand" button)
+ * This component is split to make it easier to read, but is basically a 8 columns Table (8 for data, 1 for the "expand" button)
  */
 const CaseListTable: React.FC<Props> = ({
   loading,
@@ -55,7 +55,6 @@ const CaseListTable: React.FC<Props> = ({
   currentPage,
   updateCaseListPage,
   handleClickViewCase,
-  counselorsHash,
   currentDefinitionVersion,
 }) => {
   const can = React.useMemo(() => {
@@ -92,12 +91,11 @@ const CaseListTable: React.FC<Props> = ({
                 caseList.map(caseItem => {
                   return (
                     <CaseListTableRow
-                      caseItem={caseItem}
+                      caseId={caseItem.id}
                       key={`CaseListItem-${caseItem.id}`}
                       handleClickViewCase={currentCase =>
                         can(PermissionActions.VIEW_CASE, caseItem) ? handleClickViewCase(currentCase) : () => undefined
                       }
-                      counselorsHash={counselorsHash}
                     />
                   );
                 })
@@ -131,7 +129,6 @@ const CaseListTable: React.FC<Props> = ({
 CaseListTable.displayName = 'CaseListTable';
 
 const mapStateToProps = ({ [namespace]: { configuration, caseList } }: RootState) => ({
-  counselorsHash: configuration.counselors.hash,
   currentDefinitionVersion: configuration.currentDefinitionVersion,
   currentPage: caseList.currentSettings.page,
 });

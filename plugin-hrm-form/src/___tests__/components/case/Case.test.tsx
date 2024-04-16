@@ -30,18 +30,27 @@ import Case from '../../../components/case';
 import { HrmState, RootState } from '../../../states';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { Contact, StandaloneITask, standaloneTaskSid } from '../../../types/types';
-import { LOAD_CONTACT_ACTION } from '../../../states/contacts/existingContacts';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { RecursivePartial } from '../../RecursivePartial';
 import { namespace } from '../../../states/storeNamespaces';
 import { CaseStateEntry } from '../../../states/case/types';
 import { TaskSID, WorkerSID } from '../../../types/twilio';
 import { VALID_EMPTY_CASE } from '../../testCases';
+import { newGetTimelineAsyncAction } from '../../../states/case/timeline';
 
-jest.mock('../../../services/CaseService', () => ({ getActivities: jest.fn(() => []), cancelCase: jest.fn() }));
+jest.mock('../../../services/CaseService', () => ({
+  getActivities: jest.fn(() => []),
+  cancelCase: jest.fn(),
+  getCase: jest.fn(),
+}));
 jest.mock('../../../permissions', () => ({
   getInitializedCan: jest.fn(() => () => true),
   PermissionActions: {},
+}));
+jest.mock('../../../states/case/timeline', () => ({
+  newGetTimelineAsyncAction: jest.fn(),
+  selectTimelineCount: jest.fn(() => 0),
+  selectTimeline: jest.fn(() => []),
 }));
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -49,6 +58,7 @@ const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions
 
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
+const mockNewGetTimelineAction = newGetTimelineAsyncAction as jest.MockedFunction<typeof newGetTimelineAsyncAction>;
 
 function createState(state: RecursivePartial<HrmState>): RootState {
   return {
@@ -70,6 +80,23 @@ beforeEach(() => {
 });
 
 describe('useState mocked', () => {
+  const verifyTimelineActions = () => {
+    ['household', 'incident', 'perpetrator'].forEach(sectionType => {
+      expect(mockNewGetTimelineAction).toHaveBeenCalledWith(case1.connectedCase.id, sectionType, [sectionType], false, {
+        limit: 100,
+        offset: 0,
+      });
+    });
+
+    expect(mockNewGetTimelineAction).toHaveBeenCalledWith(
+      case1.connectedCase.id,
+      'prime-timeline',
+      expect.arrayContaining(['referral', 'note']),
+      true,
+      { limit: Number.MAX_SAFE_INTEGER, offset: 0 },
+    );
+  };
+
   beforeAll(async () => {
     const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
     await mockFetchImplementation(formDefinitionsBaseUrl);
@@ -107,14 +134,18 @@ describe('useState mocked', () => {
       twilioWorkerId: WORKER_SID,
       status: 'open',
       info: { definitionVersion: DefinitionVersionId.v1 },
-      connectedContacts: [connectedContact],
       categories: {},
       accountSid: 'AC-accountSid',
       helpline: 'helpline',
+      firstContact: {
+        id: 'contact1',
+      } as Contact,
     },
     availableStatusTransitions: [],
     references: new Set(['x']),
     caseWorkingCopy: undefined,
+    sections: {},
+    timelines: {},
   };
 
   beforeEach(() => {
@@ -186,13 +217,7 @@ describe('useState mocked', () => {
       BASELINE_DATE.toLocaleDateString(),
     );
     expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe('—');
-
-    expect(store.dispatch).toHaveBeenCalledWith({
-      contacts: [connectedContact],
-      reference: 'case-case1',
-      replaceExisting: false,
-      type: LOAD_CONTACT_ACTION,
-    });
+    verifyTimelineActions();
   });
 
   test('Contact name should render once contact is saved to redux', async () => {
@@ -266,13 +291,7 @@ describe('useState mocked', () => {
     expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe(
       BASELINE_DATE.toLocaleDateString(),
     );
-
-    expect(store.dispatch).toHaveBeenCalledWith({
-      contacts: [connectedContact],
-      reference: 'case-case1',
-      replaceExisting: false,
-      type: LOAD_CONTACT_ACTION,
-    });
+    verifyTimelineActions();
   });
 
   test('a11y', async () => {

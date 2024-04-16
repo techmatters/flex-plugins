@@ -23,9 +23,9 @@ jobs:
 
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Use Node.js 16
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: '16.x'
       - name: Create Temp Files
@@ -52,9 +52,9 @@ jobs:
 
     steps:
     - name: Checkout Branch
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v4
       with:
         node-version: '16.x'
     - name: Install Flex Plugin
@@ -63,7 +63,7 @@ jobs:
       run: npm run test
       working-directory: ./hrm-form-definitions
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
+      uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -94,27 +94,27 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Use Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: '16.x'
-      
+
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-        
-      - name: Set Twilio account SID for E2E
+
+      - name: Set Twilio account SID for UI Tests
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
           ssm_parameter: "/development/twilio/E2E/account_sid"
-          env_variable_name: "TWILIO_ACCOUNT_SID"       
-        
-      - name: Set Twilio Auth Token for E2E
+          env_variable_name: "TWILIO_ACCOUNT_SID"
+
+      - name: Set Twilio Auth Token for UI Tests
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
           ssm_parameter: "/development/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
@@ -154,7 +154,7 @@ jobs:
         run: NODE_ENV=development REACT_APP_FORM_DEFINITIONS_BASE_URL=http://localhost:8090 TWILIO_ACCOUNT_SID=${{env.TWILIO_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{env.TWILIO_AUTH_TOKEN}} npm run start &
         working-directory: ./plugin-hrm-form
 
-      - name: Run e2e tests
+      - name: Run UI tests
         uses: ./.github/actions/run-e2e-tests
         with:
           run-ui-tests: 'true'
