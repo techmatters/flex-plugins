@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import { setUpSkillsColumn } from './SkillsColumn';
-import { setUpSortingCallsAndChats } from './sortCallsAndChats';
+import { setUpSortingCallsAndChats } from './teamsViewSorting';
 import { setUpTeamViewFilters, setUpWorkerDirectoryFilters } from './teamsViewFilters';
 
 const TeamsView = {

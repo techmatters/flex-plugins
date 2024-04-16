@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AgentsDataTable, TaskHelper } from '@twilio/flex-ui';
+import { AgentsDataTable, TaskHelper, Manager } from '@twilio/flex-ui';
 import { SupervisorWorkerState } from '@twilio/flex-ui/src/state/State.definition';
 
 import { getAseloFeatureFlags } from '../hrmConfig';
@@ -85,10 +85,47 @@ const sortWorkersByChatDuration = (a: SupervisorWorkerState, b: SupervisorWorker
   return 0;
 };
 
+const ACTIVITIES = Array.from(Manager.getInstance().store.getState().flex.worker.activities.values()).reduce(
+  (accum, activity, currIndex) => {
+    accum[activity.name] = currIndex;
+    return accum;
+  },
+  {},
+);
+
+const sortWorkersByActivity = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
+  const aActivityValue = ACTIVITIES[a?.worker.activityName];
+  const bActivityValue = ACTIVITIES[b?.worker.activityName];
+
+  // Place workers with "Offline" activity at the end
+  if (aActivityValue === 0 && bActivityValue === 0) {
+    // If both are offline, sort by worker name
+    return a.worker.name > b.worker.name ? 1 : -1;
+  } else if (aActivityValue === 0 && bActivityValue !== 0) {
+    // only a is offline
+    return 1;
+  } else if (bActivityValue === 0 && aActivityValue !== 0) {
+    // only b is offline
+    return -1;
+  }
+
+  // Sort by activity value/index
+  if (aActivityValue > bActivityValue) {
+    return 1;
+  } else if (aActivityValue < bActivityValue) {
+    return -1;
+  }
+
+  // If activities are the same, sort by worker name
+  return a.worker.name > b.worker.name ? 1 : -1;
+};
+
 export const setUpSortingCallsAndChats = () => {
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
   AgentsDataTable.defaultProps.sortCalls = sortWorkersByCallDuration;
   AgentsDataTable.defaultProps.sortTasks = sortWorkersByChatDuration;
+  AgentsDataTable.defaultProps.sortWorkers = sortWorkersByActivity;
+  AgentsDataTable.defaultProps.defaultSortColumn = 'worker';
 };
 
 export const sortSkills = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {

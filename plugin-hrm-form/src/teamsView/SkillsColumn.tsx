@@ -22,7 +22,7 @@ import { StyledLink } from '../components/search/styles';
 import { OpaqueText } from '../styles';
 import { getAseloFeatureFlags } from '../hrmConfig';
 import { SkillsCell } from './styles';
-import { sortSkills } from './sortCallsAndChats';
+import { sortSkills } from './teamsViewSorting';
 
 export const setUpSkillsColumn = () => {
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
