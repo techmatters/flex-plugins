@@ -21,7 +21,7 @@ import InfoIcon from '@material-ui/icons/Info';
 
 import Pagination from '../pagination';
 import { DataCell, DataTableRow, LoadingCell, StandardTable, TableContainer } from '../../styles';
-import { useProfilesList, useProfilesListLoader } from '../../states/profile/hooks';
+import { useProfilesList } from '../../states/profile/hooks';
 import { useAllProfileFlags } from '../../states/profile/hooks/useProfileFlags';
 import ProfileListTableHeader from './ProfileHeader';
 import ProfileDetailsRow from './ProfileDetailsRow';
@@ -32,8 +32,7 @@ const ROW_HEIGHT = 89;
 
 const ProfileListTable: React.FC = () => {
   useAllProfileFlags();
-  const { loading, data: profileIds, count, page } = useProfilesList();
-  const { updateProfilesListPage } = useProfilesListLoader({ autoload: true });
+  const { loading, data: profileIds, count, page, updateProfilesListPage } = useProfilesList({ autoload: true });
 
   const pagesCount = Math.ceil(count / PAGE_SIZE);
 

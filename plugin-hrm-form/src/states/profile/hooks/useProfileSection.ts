@@ -18,12 +18,12 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import asyncDispatch from '../../asyncDispatch';
-import { ProfileSection } from '../types';
 import * as ProfileActions from '../profiles';
 import * as ProfileSelectors from '../selectors';
 import { RootState } from '../..';
 import { UseProfileCommonParams } from './types';
 import { PermissionActions, getInitializedCan } from '../../../permissions';
+import { useLoadWithRetry } from '../../hooks/useLoadWithRetry';
 
 export type UseProfileSectionByType = UseProfileCommonParams & {
   sectionType: string;
@@ -37,25 +37,28 @@ export const useProfileSectionLoaderByType = ({ profileId, sectionType }: UsePro
   );
   const sectionId = profileSection?.id;
 
-  const loadProfileSectionAsync = useCallback(
-    (params: ProfileActions.LoadProfileSectionAsyncParams) => {
-      asyncDispatch(dispatch)(ProfileActions.loadProfileSectionAsync(params));
-    },
-    [dispatch],
-  );
-
-  useEffect(() => {
-    if (!sectionId) return;
-
-    loadProfileSectionAsync({ profileId, sectionType, sectionId });
-  }, [profileId, sectionId, sectionType, loadProfileSectionAsync]);
-
   const loading = useSelector(
     (state: RootState) => ProfileSelectors.selectProfileSectionByType(state, profileId, sectionType)?.loading,
   );
-  const error = useSelector(
-    (state: RootState) => ProfileSelectors.selectProfileSectionByType(state, profileId, sectionType)?.error,
-  );
+  const error = useSelector((state: RootState) =>
+    ProfileSelectors.selectProfileSectionByType(state, profileId, sectionType),
+  )?.error;
+
+  const loadProfileSectionAsync = useCallback(() => {
+    asyncDispatch(dispatch)(ProfileActions.loadProfileSectionAsync({ profileId, sectionType, sectionId }));
+  }, [dispatch, profileId, sectionId, sectionType]);
+
+  const safeToLoad = Boolean(sectionId);
+  const shouldLoad = true;
+
+  useLoadWithRetry({
+    loadFunction: loadProfileSectionAsync,
+    error,
+    loading,
+    retry: true,
+    safeToLoad,
+    shouldLoad,
+  });
 
   return {
     loading,

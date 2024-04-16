@@ -13,13 +13,41 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useCallback } from 'react';
 
 import { ProfilesListState } from '../types';
+import * as profilesListActions from '../profilesList';
 import { selectProfileListState, selectProfileListSettings } from '../selectors';
+import { useProfilesListLoader } from './useProfilesListLoader';
 
-export const useProfilesList = (): ProfilesListState => {
-  return useSelector(selectProfileListState);
+export const useProfilesList = ({ autoload = true }: { autoload?: boolean }) => {
+  const dispatch = useDispatch();
+  useProfilesListLoader({ autoload });
+
+  const updateProfilesListPage = useCallback(
+    (page: number) => {
+      dispatch(
+        profilesListActions.updateProfilesListPage({
+          page,
+        }),
+      );
+    },
+    [dispatch],
+  );
+
+  const updateProfilesListSettings = useCallback(
+    (settings: Partial<ProfilesListState['settings']>) => {
+      dispatch(profilesListActions.updateProfileListSettings(settings));
+    },
+    [dispatch],
+  );
+
+  return {
+    ...useSelector(selectProfileListState),
+    updateProfilesListPage,
+    updateProfilesListSettings,
+  };
 };
 
 export const useProfilesListSettings = (): ProfilesListState['settings'] => {

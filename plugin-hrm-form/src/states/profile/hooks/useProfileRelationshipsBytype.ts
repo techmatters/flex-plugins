@@ -15,7 +15,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectProfileRelationshipsByType } from '../selectors';
@@ -24,6 +24,7 @@ import { ProfileRelationships } from '../types';
 import * as ProfileActions from '../profiles';
 import { RootState } from '../..';
 import { UseProfileCommonParams } from './types';
+import { useLoadWithRetry } from '../../hooks/useLoadWithRetry';
 
 export type UseProfileRelationsByType = UseProfileCommonParams & {
   type: ProfileRelationships;
@@ -33,21 +34,24 @@ export type UseProfileRelationsByType = UseProfileCommonParams & {
 export const useProfileRelationshipsLoaderByType = ({ profileId, type, page }: UseProfileRelationsByType) => {
   const dispatch = useDispatch();
 
-  const loadProfileRelationshipsByTypeAsync = useCallback(
-    (params: ProfileActions.LoadRelationshipAsyncParams) => {
-      asyncDispatch(dispatch)(ProfileActions.loadRelationshipAsync(params));
-    },
-    [dispatch],
-  );
-
-  useEffect(() => {
-    if (!profileId) return;
-
-    loadProfileRelationshipsByTypeAsync({ profileId, type, page });
-  }, [profileId, loadProfileRelationshipsByTypeAsync, type, page]);
-
   const error = useSelector((state: RootState) => selectProfileRelationshipsByType(state, profileId, type))?.error;
   const loading = useSelector((state: RootState) => selectProfileRelationshipsByType(state, profileId, type))?.loading;
+
+  const loadProfileRelationshipsByTypeAsync = useCallback(() => {
+    asyncDispatch(dispatch)(ProfileActions.loadRelationshipAsync({ profileId, type, page }));
+  }, [dispatch, page, profileId, type]);
+
+  const safeToLoad = Boolean(profileId);
+  const shouldLoad = true;
+
+  useLoadWithRetry({
+    loadFunction: loadProfileRelationshipsByTypeAsync,
+    error,
+    loading,
+    retry: true,
+    safeToLoad,
+    shouldLoad,
+  });
 
   return {
     error,
