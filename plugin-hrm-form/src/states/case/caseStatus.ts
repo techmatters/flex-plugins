@@ -23,7 +23,7 @@ export const getAvailableCaseStatusTransitions = (
   connectedCase: Case,
   definitionVersion: DefinitionVersion,
 ): StatusInfo[] => {
-  if (definitionVersion) {
+  if (definitionVersion && connectedCase) {
     const can = getInitializedCan();
     const caseStatusList = Object.values<StatusInfo>(definitionVersion.caseStatus);
     const currentStatusItem = caseStatusList.find(cs => cs.value === connectedCase.status);
