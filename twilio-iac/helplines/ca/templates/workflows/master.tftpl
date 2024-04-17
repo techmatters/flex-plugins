@@ -91,25 +91,25 @@
           "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] AND language CONTAINS \"en-CA\")",
             "targets": [
               {
-                "queue": "WQc92043986a3a474a991125031a0acb55",
+                "queue": "${task_queues.khp_en}",
                 "priority": 3,
                 "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
                 "timeout": 600
               },
               {
-                "queue": "WQc92043986a3a474a991125031a0acb55",
+                "queue": "${task_queues.khp_en}",
                 "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
                 "timeout": 300,
                 "priority": 4
               },
               {
-                "queue": "WQc92043986a3a474a991125031a0acb55",
+                "queue": "${task_queues.khp_en}",
                 "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
                 "timeout": 300,
                 "priority": 5
               },
               {
-                "queue": "WQc92043986a3a474a991125031a0acb55",
+                "queue": "${task_queues.khp_en}",
                 "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
                 "priority": 6
               }
