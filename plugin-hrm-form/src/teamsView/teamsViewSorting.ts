@@ -85,10 +85,7 @@ const sortWorkersByChatDuration = (a: SupervisorWorkerState, b: SupervisorWorker
   return 0;
 };
 
-
-
 const sortWorkersByActivity = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
-
   const ACTIVITIES = Array.from(Manager.getInstance().store.getState().flex.worker.activities.values()).reduce(
     (accum, activity, currIndex) => {
       accum[activity.name] = currIndex;
@@ -96,16 +93,16 @@ const sortWorkersByActivity = (a: SupervisorWorkerState, b: SupervisorWorkerStat
     },
     {},
   );
-  
+
   const aActivityValue = ACTIVITIES[a?.worker.activityName];
   const bActivityValue = ACTIVITIES[b?.worker.activityName];
 
-    // Place available workers at the top
-    if (a.worker.isAvailable && !b.worker.isAvailable) {
-      return -1;
-    } else if (!a.worker.isAvailable && b.worker.isAvailable) {
-      return 1;
-    }
+  // Place available workers at the top
+  const aAvailability = a.worker.isAvailable ? 1 : 0;
+  const bAvailability = b.worker.isAvailable ? 1 : 0;
+
+  const availability = bAvailability - aAvailability;
+  if (availability !== 0) return availability;
 
   // Place workers with "Offline" activity at the end
   if (aActivityValue === 0 && bActivityValue === 0) {
@@ -120,18 +117,17 @@ const sortWorkersByActivity = (a: SupervisorWorkerState, b: SupervisorWorkerStat
   }
 
   // Sort by activity value/index
-  if (aActivityValue > bActivityValue) {
-    return 1;
-  } else if (aActivityValue < bActivityValue) {
-    return -1;
+  if (aActivityValue !== bActivityValue) {
+    return aActivityValue > bActivityValue ? 1 : -1;
   }
 
   // If activities are the same, sort by worker name
-  return a.worker.name > b.worker.name ? 1 : -1;
+  return a.worker.name.localeCompare(b.worker.name);
 };
 
 export const setUpTeamsViewSorting = () => {
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
+
   AgentsDataTable.defaultProps.sortCalls = sortWorkersByCallDuration;
   AgentsDataTable.defaultProps.sortTasks = sortWorkersByChatDuration;
   AgentsDataTable.defaultProps.sortWorkers = sortWorkersByActivity;
