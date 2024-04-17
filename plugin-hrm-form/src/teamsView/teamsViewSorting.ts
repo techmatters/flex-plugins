@@ -85,17 +85,27 @@ const sortWorkersByChatDuration = (a: SupervisorWorkerState, b: SupervisorWorker
   return 0;
 };
 
-const ACTIVITIES = Array.from(Manager.getInstance().store.getState().flex.worker.activities.values()).reduce(
-  (accum, activity, currIndex) => {
-    accum[activity.name] = currIndex;
-    return accum;
-  },
-  {},
-);
+
 
 const sortWorkersByActivity = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
+
+  const ACTIVITIES = Array.from(Manager.getInstance().store.getState().flex.worker.activities.values()).reduce(
+    (accum, activity, currIndex) => {
+      accum[activity.name] = currIndex;
+      return accum;
+    },
+    {},
+  );
+  
   const aActivityValue = ACTIVITIES[a?.worker.activityName];
   const bActivityValue = ACTIVITIES[b?.worker.activityName];
+
+    // Place available workers at the top
+    if (a.worker.isAvailable && !b.worker.isAvailable) {
+      return -1;
+    } else if (!a.worker.isAvailable && b.worker.isAvailable) {
+      return 1;
+    }
 
   // Place workers with "Offline" activity at the end
   if (aActivityValue === 0 && bActivityValue === 0) {
@@ -120,7 +130,7 @@ const sortWorkersByActivity = (a: SupervisorWorkerState, b: SupervisorWorkerStat
   return a.worker.name > b.worker.name ? 1 : -1;
 };
 
-export const setUpSortingCallsAndChats = () => {
+export const setUpTeamsViewSorting = () => {
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
   AgentsDataTable.defaultProps.sortCalls = sortWorkersByCallDuration;
   AgentsDataTable.defaultProps.sortTasks = sortWorkersByChatDuration;
