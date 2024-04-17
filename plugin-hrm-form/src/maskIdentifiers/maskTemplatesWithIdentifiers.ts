@@ -19,7 +19,8 @@ import { DefaultTaskChannels, TaskChannelDefinition } from '@twilio/flex-ui';
 import { getInitializedCan, PermissionActions } from '../permissions';
 import { getAseloFeatureFlags } from '../hrmConfig';
 
-export const maskTemplatesWithIdentifiers = (channelType: TaskChannelDefinition) => {
+// Mask identifiers in the channel templates
+export const maskChannelTemplatesWithIdentifiers = (channelType: TaskChannelDefinition) => {
   const can = getInitializedCan();
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
   if (!maskIdentifiers) return;
