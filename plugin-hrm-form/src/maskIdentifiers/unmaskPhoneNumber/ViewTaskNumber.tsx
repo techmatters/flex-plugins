@@ -17,12 +17,12 @@ import React, { useRef, useState } from 'react';
 import { Template, ThemeProps } from '@twilio/flex-ui';
 import { Paper, Popper } from '@material-ui/core';
 
-import { getFormattedNumberFromTask } from '../../../utils';
+import { getFormattedNumberFromTask } from '../../utils';
 import EyeOpenIcon from './EyeOpenIcon';
 import EyeCloseIcon from './EyeCloseIcon';
 import { PhoneNumberPopperText, UnmaskStyledButton } from './styles';
-import { Box, HiddenText } from '../../../styles';
-import { CloseButton } from '../../callTypeButtons/styles';
+import { Box, HiddenText } from '../../styles';
+import { CloseButton } from '../../components/callTypeButtons/styles';
 
 type Props = ThemeProps & { task?: ITask };
 

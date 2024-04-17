@@ -14,8 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import * as Flex from '@twilio/flex-ui';
-import { ReservationStatuses } from '@twilio/flex-ui';
+import { DefaultTaskChannels, ReservationStatuses, TaskChannelHelper, TaskChannels } from '@twilio/flex-ui';
 import React from 'react';
 
 import TwitterIcon from '../components/common/icons/TwitterIcon';
@@ -27,19 +26,19 @@ import CallIcon from '../components/common/icons/CallIcon';
 import SmsIcon from '../components/common/icons/SmsIcon';
 import * as TransferHelpers from '../transfer/transferTaskState';
 import { colors, mainChannelColor } from './colors';
-import { getTemplateStrings, getAseloFeatureFlags } from '../hrmConfig';
+import { getTemplateStrings } from '../hrmConfig';
 import { isSmsChannelType } from '../utils/smsChannels';
 import { setCallTaskCardString, setChatTaskCardString } from '../teamsView/taskCardEnhancement';
-import { maskTemplatesWithIdentifiers } from '../maskIdentifiers/maskIdentifiersForChannels';
+import { maskTemplatesWithIdentifiers } from '../maskIdentifiers/maskTemplatesWithIdentifiers';
 
 const isIncomingTransfer = task => TransferHelpers.hasTransferStarted(task) && task.status === 'pending';
 
 const setSecondLine = ({ channel, string }: { channel: string; string: string }) => {
   const strings = getTemplateStrings();
 
-  const defaultStrings = Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine;
+  const defaultStrings = DefaultTaskChannels[channel].templates.TaskListItem.secondLine;
 
-  Flex.DefaultTaskChannels[channel].templates.TaskListItem.secondLine = (task, componentType) => {
+  DefaultTaskChannels[channel].templates.TaskListItem.secondLine = (task, componentType) => {
     if (isIncomingTransfer(task)) {
       const { originalCounselorName } = task.attributes.transferMeta;
       const mode = TransferHelpers.isWarmTransfer(task) ? strings['Transfer-Warm'] : strings['Transfer-Cold'];
@@ -53,7 +52,7 @@ const setSecondLine = ({ channel, string }: { channel: string; string: string })
       return baseMessage;
     }
 
-    return Flex.TaskChannelHelper.getTemplateForStatus(task, defaultStrings, componentType);
+    return TaskChannelHelper.getTemplateForStatus(task, defaultStrings, componentType);
   };
 };
 
@@ -77,40 +76,40 @@ const generateIcons = (icon: JSX.Element) => ({
 
 export const setupCallChannel = () => {
   const callIcon = <CallIcon width="24px" height="24px" color={colors.voice} />;
-  Flex.DefaultTaskChannels.Call.icons = generateIcons(callIcon);
-  maskTemplatesWithIdentifiers(Flex.DefaultTaskChannels.Call);
-  setCallTaskCardString(Flex.DefaultTaskChannels.Call);
+  DefaultTaskChannels.Call.icons = generateIcons(callIcon);
+  maskTemplatesWithIdentifiers(DefaultTaskChannels.Call);
+  setCallTaskCardString(DefaultTaskChannels.Call);
 };
 
 export const setupChatChannel = () => {
-  maskTemplatesWithIdentifiers(Flex.DefaultTaskChannels.Chat);
-  setChatTaskCardString(Flex.DefaultTaskChannels.Chat);
+  maskTemplatesWithIdentifiers(DefaultTaskChannels.Chat);
+  setChatTaskCardString(DefaultTaskChannels.Chat);
 };
 
 export const setupDefaultChannel = () => {
-  maskTemplatesWithIdentifiers(Flex.DefaultTaskChannels.Default);
+  maskTemplatesWithIdentifiers(DefaultTaskChannels.Default);
 };
 
 export const setupFacebookChannel = () => {
   const facebookIcon = <FacebookIcon width="24px" height="24px" color={colors.facebook} />;
-  Flex.DefaultTaskChannels.ChatMessenger.icons = generateIcons(facebookIcon);
-  maskTemplatesWithIdentifiers(Flex.DefaultTaskChannels.ChatMessenger);
-  setChatTaskCardString(Flex.DefaultTaskChannels.ChatMessenger);
+  DefaultTaskChannels.ChatMessenger.icons = generateIcons(facebookIcon);
+  maskTemplatesWithIdentifiers(DefaultTaskChannels.ChatMessenger);
+  setChatTaskCardString(DefaultTaskChannels.ChatMessenger);
 };
 
 export const setupWhatsAppChannel = () => {
   const whatsappIcon = <WhatsappIcon width="24px" height="24px" color={colors.whatsapp} />;
-  Flex.DefaultTaskChannels.ChatWhatsApp.icons = generateIcons(whatsappIcon);
-  maskTemplatesWithIdentifiers(Flex.DefaultTaskChannels.ChatWhatsApp);
-  setChatTaskCardString(Flex.DefaultTaskChannels.ChatWhatsApp);
+  DefaultTaskChannels.ChatWhatsApp.icons = generateIcons(whatsappIcon);
+  maskTemplatesWithIdentifiers(DefaultTaskChannels.ChatWhatsApp);
+  setChatTaskCardString(DefaultTaskChannels.ChatWhatsApp);
 };
 
 export const setupSmsChannel = () => {
   const smsIcon = <SmsIcon width="24px" height="24px" color={colors.sms} />;
-  Flex.DefaultTaskChannels.ChatSms.icons = generateIcons(smsIcon);
-  Flex.DefaultTaskChannels.ChatSms.isApplicable = task => isSmsChannelType(task.channelType);
-  maskTemplatesWithIdentifiers(Flex.DefaultTaskChannels.ChatSms);
-  setChatTaskCardString(Flex.DefaultTaskChannels.ChatSms);
+  DefaultTaskChannels.ChatSms.icons = generateIcons(smsIcon);
+  DefaultTaskChannels.ChatSms.isApplicable = task => isSmsChannelType(task.channelType);
+  maskTemplatesWithIdentifiers(DefaultTaskChannels.ChatSms);
+  setChatTaskCardString(DefaultTaskChannels.ChatSms);
 };
 
 export const setupDefaultChannels = () => {
@@ -123,7 +122,7 @@ export const setupDefaultChannels = () => {
 };
 
 export const setupTwitterChatChannel = () => {
-  const TwitterChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
+  const TwitterChatChannel = DefaultTaskChannels.createChatTaskChannel(
     'twitter',
     task => task.channelType === 'twitter',
   );
@@ -145,16 +144,16 @@ export const setupTwitterChatChannel = () => {
     Assigned: colors.twitter,
     Pending: colors.twitter,
     Reserved: colors.twitter,
-    Wrapping: mainChannelColor(Flex.DefaultTaskChannels.Chat, ReservationStatuses.Wrapping),
-    Completed: mainChannelColor(Flex.DefaultTaskChannels.Chat, ReservationStatuses.Completed),
-    Canceled: mainChannelColor(Flex.DefaultTaskChannels.Chat, ReservationStatuses.Canceled),
+    Wrapping: mainChannelColor(DefaultTaskChannels.Chat, ReservationStatuses.Wrapping),
+    Completed: mainChannelColor(DefaultTaskChannels.Chat, ReservationStatuses.Completed),
+    Canceled: mainChannelColor(DefaultTaskChannels.Chat, ReservationStatuses.Canceled),
   };
 
-  Flex.TaskChannels.register(TwitterChatChannel);
+  TaskChannels.register(TwitterChatChannel);
 };
 
 export const setupInstagramChatChannel = () => {
-  const InstagramChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel(
+  const InstagramChatChannel = DefaultTaskChannels.createChatTaskChannel(
     'instagram',
     task => task.channelType === 'instagram',
   );
@@ -170,16 +169,16 @@ export const setupInstagramChatChannel = () => {
     Assigned: colors.instagram,
     Pending: colors.instagram,
     Reserved: colors.instagram,
-    Wrapping: mainChannelColor(Flex.DefaultTaskChannels.Chat, ReservationStatuses.Wrapping),
-    Completed: mainChannelColor(Flex.DefaultTaskChannels.Chat, ReservationStatuses.Completed),
-    Canceled: mainChannelColor(Flex.DefaultTaskChannels.Chat, ReservationStatuses.Canceled),
+    Wrapping: mainChannelColor(DefaultTaskChannels.Chat, ReservationStatuses.Wrapping),
+    Completed: mainChannelColor(DefaultTaskChannels.Chat, ReservationStatuses.Completed),
+    Canceled: mainChannelColor(DefaultTaskChannels.Chat, ReservationStatuses.Canceled),
   };
 
-  Flex.TaskChannels.register(InstagramChatChannel);
+  TaskChannels.register(InstagramChatChannel);
 };
 
 export const setupLineChatChannel = () => {
-  const LineChatChannel = Flex.DefaultTaskChannels.createChatTaskChannel('line', task => task.channelType === 'line');
+  const LineChatChannel = DefaultTaskChannels.createChatTaskChannel('line', task => task.channelType === 'line');
 
   const icon = <LineIcon width="24px" height="24px" color={colors.line} />;
   LineChatChannel.icons = generateIcons(icon);
@@ -192,10 +191,10 @@ export const setupLineChatChannel = () => {
     Assigned: colors.line,
     Pending: colors.line,
     Reserved: colors.line,
-    Wrapping: mainChannelColor(Flex.DefaultTaskChannels.Chat, ReservationStatuses.Wrapping),
-    Completed: mainChannelColor(Flex.DefaultTaskChannels.Chat, ReservationStatuses.Completed),
-    Canceled: mainChannelColor(Flex.DefaultTaskChannels.Chat, ReservationStatuses.Canceled),
+    Wrapping: mainChannelColor(DefaultTaskChannels.Chat, ReservationStatuses.Wrapping),
+    Completed: mainChannelColor(DefaultTaskChannels.Chat, ReservationStatuses.Completed),
+    Canceled: mainChannelColor(DefaultTaskChannels.Chat, ReservationStatuses.Canceled),
   };
 
-  Flex.TaskChannels.register(LineChatChannel);
+  TaskChannels.register(LineChatChannel);
 };

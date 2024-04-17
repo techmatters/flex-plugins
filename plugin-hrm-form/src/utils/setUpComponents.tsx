@@ -33,7 +33,7 @@ import SettingsSideLink from '../components/sideLinks/SettingsSideLink';
 import CaseListSideLink from '../components/sideLinks/CaseListSideLink';
 import StandaloneSearchSideLink from '../components/sideLinks/StandaloneSearchSideLink';
 import ManualPullButton from '../components/ManualPullButton';
-import ViewTaskNumber from '../components/common/MaskingIdentifiers/ViewTaskNumber';
+import ViewTaskNumber from '../maskIdentifiers/unmaskPhoneNumber/ViewTaskNumber';
 import ProfileList from '../components/profileList';
 import ProfileListSideLink from '../components/sideLinks/ProfileListSideLink';
 import { AddOfflineContactButton, OfflineContactTask } from '../components/OfflineContact';
@@ -238,18 +238,6 @@ export const setUpCustomCRMContainer = () => {
     </LocalizationContext.Provider>,
     options,
   );
-};
-
-/**
- * Adds a custom button for voice channel to show the phone number in emergency situations
- */
-export const setUpViewMaskedVoiceNumber = () => {
-  if (!getAseloConfigFlags().enableUnmaskingCalls) return;
-
-  Flex.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" />, {
-    sortOrder: 1,
-    if: props => props.task.channelType === 'voice',
-  });
 };
 
 /**

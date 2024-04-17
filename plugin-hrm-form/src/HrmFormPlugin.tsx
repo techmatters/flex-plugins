@@ -19,6 +19,7 @@ import { FlexPlugin, loadCSS } from '@twilio/flex-plugin';
 
 import './styles/global-overrides.css';
 
+import { setUpViewMaskedVoiceNumber } from './maskIdentifiers/unmaskPhoneNumber';
 import reducers from './states';
 import HrmTheme, { overrides } from './styles/HrmTheme';
 import { initLocalization } from './utils/pluginHelpers';
@@ -112,7 +113,7 @@ const setUpComponents = (
     };
     Flex.MessageList.Content.remove('0');
 
-    Components.setUpViewMaskedVoiceNumber();
+    setUpViewMaskedVoiceNumber();
   }
 
   if (featureFlags.enable_transfers) {
