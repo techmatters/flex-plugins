@@ -81,7 +81,7 @@
     "@testing-library/user-event": "^14.1.1",
     "@twilio/flex-plugin": "^6.0.3",
     "@twilio/flex-plugin-scripts": "^6.3.3",
-    "@twilio/flex-ui": "~2.4.1",
+    "@twilio/flex-ui": "^2.6.1",
     "@twilio/flex-ui-dev-proxy": "^1.1.2",
     "@types/jest": "^27.5.2",
     "@types/react": "^17.0.47",
@@ -121,5 +121,8 @@
     "twilio-cli": "^5.19.3",
     "typescript": "4.7.4",
     "webpack-bundle-analyzer": "^4.7.0"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.3.3"
   }
 }
