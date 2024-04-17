@@ -64,6 +64,7 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   const twilioStrings = { ...manager.strings }; // save the originals
   const setNewStrings = (newStrings: typeof getTemplateStrings) =>
     (manager.strings = { ...manager.strings, ...newStrings });
+
   const afterNewStrings = (language: string) => {
     manager.store.dispatch(changeLanguage(language));
     Flex.Actions.invokeAction('NavigateToView', { viewName: manager.store.getState().flex.view.activeView }); // force a re-render
@@ -88,20 +89,20 @@ const setUpComponents = (
   Components.setUpAddButtons(featureFlags);
   Components.setUpNoTasksUI(featureFlags, setupObject);
   Components.setUpCustomCRMContainer();
+
+  // set up default and custom channels
   Channels.setupDefaultChannels();
-  Channels.setupTwitterChatChannel(maskIdentifiers);
-  Channels.setupInstagramChatChannel(maskIdentifiers);
-  Channels.setupLineChatChannel(maskIdentifiers);
+  Channels.setupTwitterChatChannel();
+  Channels.setupInstagramChatChannel();
+  Channels.setupLineChatChannel();
 
   if (maskIdentifiers) {
     // Masks TaskInfoPanelContent - TODO: refactor to use a react component
     const strings = getTemplateStrings();
-    strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
-    strings.SupervisorTaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+    // strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
+    // strings.SupervisorTaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
 
     strings.CallParticipantCustomerName = strings.MaskIdentifiers;
-
-    Channels.maskIdentifiersForDefaultChannels();
 
     // Mask the username within the messable bubbles in an conversation
     Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
