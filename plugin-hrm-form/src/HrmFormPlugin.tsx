@@ -143,8 +143,8 @@ const setUpComponents = (
   }
 
   TeamsView.setUpSkillsColumn();
-  TeamsView.setUpSortingCallsAndChats();
-  TeamsView.setUpTeamViewFilters();
+  TeamsView.setUpTeamsViewSorting();
+  TeamsView.setUpTeamsViewFilters();
   TeamsView.setUpWorkerDirectoryFilters();
 
   if (featureFlags.enable_conferencing) setupConferenceComponents();
