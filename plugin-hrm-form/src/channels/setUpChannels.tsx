@@ -29,7 +29,7 @@ import { colors, mainChannelColor } from './colors';
 import { getTemplateStrings } from '../hrmConfig';
 import { isSmsChannelType } from '../utils/smsChannels';
 import { setCallTaskCardString, setChatTaskCardString } from '../teamsView/taskCardEnhancement';
-import { maskChannelTemplatesWithIdentifiers } from '../maskIdentifiers/maskChannelTemplatesWithIdentifiers';
+import { maskChannelTemplatesWithIdentifiers } from '../maskIdentifiers';
 
 const isIncomingTransfer = task => TransferHelpers.hasTransferStarted(task) && task.status === 'pending';
 
