@@ -15,12 +15,12 @@
  */
 import { setUpSkillsColumn } from './SkillsColumn';
 import { setUpTeamsViewSorting } from './teamsViewSorting';
-import { setUpTeamViewFilters, setUpWorkerDirectoryFilters } from './teamsViewFilters';
+import { setUpTeamsViewFilters, setUpWorkerDirectoryFilters } from './teamsViewFilters';
 
 const TeamsView = {
   setUpSkillsColumn,
-  setUpSortingCallsAndChats: setUpTeamsViewSorting,
-  setUpTeamViewFilters,
+  setUpTeamsViewSorting,
+  setUpTeamsViewFilters,
   setUpWorkerDirectoryFilters,
 };
 
