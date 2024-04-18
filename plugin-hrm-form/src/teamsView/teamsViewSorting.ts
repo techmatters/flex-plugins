@@ -107,12 +107,12 @@ const sortWorkersByActivity = (a: SupervisorWorkerState, b: SupervisorWorkerStat
   // Place workers with "Offline" activity at the end
   if (aActivityValue === 0 && bActivityValue === 0) {
     // If both are offline, sort by worker name
-    return a.worker.name > b.worker.name ? 1 : -1;
-  } else if (aActivityValue === 0 && bActivityValue !== 0) {
-    // only a is offline
+    return a.worker.name.localeCompare(b.worker.name);
+  } else if (aActivityValue === 0) {
+    // only a is offline, place a at the end
     return 1;
-  } else if (bActivityValue === 0 && aActivityValue !== 0) {
-    // only b is offline
+  } else if (bActivityValue === 0) {
+    // only b is offline, place b at the end
     return -1;
   }
 
@@ -124,6 +124,7 @@ const sortWorkersByActivity = (a: SupervisorWorkerState, b: SupervisorWorkerStat
   // If activities are the same, sort by worker name
   return a.worker.name.localeCompare(b.worker.name);
 };
+
 
 export const setUpTeamsViewSorting = () => {
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
