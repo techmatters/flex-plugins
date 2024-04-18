@@ -19,7 +19,6 @@ import { FlexPlugin, loadCSS } from '@twilio/flex-plugin';
 
 import './styles/global-overrides.css';
 
-import { setUpViewMaskedVoiceNumber } from './maskIdentifiers/unmaskPhoneNumber';
 import reducers from './states';
 import HrmTheme, { overrides } from './styles/HrmTheme';
 import { initLocalization } from './utils/pluginHelpers';
@@ -31,14 +30,7 @@ import * as Components from './utils/setUpComponents';
 import * as Channels from './channels/setUpChannels';
 import setUpMonitoring from './utils/setUpMonitoring';
 import { changeLanguage } from './states/configuration/actions';
-import { getInitializedCan, PermissionActions } from './permissions';
-import {
-  getAseloFeatureFlags,
-  getHrmConfig,
-  getTemplateStrings,
-  initializeConfig,
-  subscribeToConfigUpdates,
-} from './hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig, initializeConfig, subscribeToConfigUpdates } from './hrmConfig';
 import { setUpSharedStateClient } from './utils/sharedState';
 import { FeatureFlags } from './types/types';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
@@ -51,7 +43,8 @@ import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
 import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
 import TeamsView from './teamsView';
-import { maskManagerStringsWithIdentifiers } from './maskIdentifiers';
+import { maskManagerStringsWithIdentifiers, maskMessageListWithIdentifiers } from './maskIdentifiers';
+import { setUpViewMaskedVoiceNumber } from './maskIdentifiers/unmaskPhoneNumber';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -85,9 +78,6 @@ const setUpComponents = (
   setupObject: ReturnType<typeof getHrmConfig>,
   translateUI: (language: string) => Promise<void>,
 ) => {
-  const can = getInitializedCan();
-  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
-
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus(setupObject);
@@ -102,6 +92,7 @@ const setUpComponents = (
   Channels.setupLineChatChannel();
 
   setUpViewMaskedVoiceNumber();
+  maskMessageListWithIdentifiers();
 
   if (featureFlags.enable_transfers) {
     setUpTransferComponents();
