@@ -73,7 +73,7 @@ const disabledSkillsFilterDefinition: FilterDefinitionFactory = () => {
  * The activity filter omits the default since we already include offline in the above, ie Flex.TeamsView.activitiesFilter
  * The skills filter is included if the feature flag is enabled.
  */
-export const setUpTeamViewFilters = () => {
+export const setUpTeamsViewFilters = () => {
   TeamsView.defaultProps.filters = [
     activityNoOfflineByDefault,
     ...(getAseloFeatureFlags().enable_teams_view_enhancements
