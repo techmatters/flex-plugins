@@ -19,11 +19,15 @@ import { Supervisor, TaskCanvasHeader } from '@twilio/flex-ui';
 
 import { getAseloConfigFlags } from '../../hrmConfig';
 import ViewTaskNumber from './ViewTaskNumber';
+import { getInitializedCan, PermissionActions } from '../../permissions';
 
 /**
  * Adds a custom button for voice channel to show the phone number in emergency situations
  */
 export const setUpViewMaskedVoiceNumber = () => {
+  const can = getInitializedCan();
+  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
+  if (!maskIdentifiers) return;
   if (!getAseloConfigFlags().enableUnmaskingCalls) return;
 
   TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" />, {

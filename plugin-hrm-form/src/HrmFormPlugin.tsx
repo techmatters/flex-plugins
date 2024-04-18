@@ -51,6 +51,7 @@ import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
 import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
 import TeamsView from './teamsView';
+import { maskManagerStringsWithIdentifiers } from './maskIdentifiers';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -63,8 +64,11 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   const { counselorLanguage, helplineLanguage } = config;
 
   const twilioStrings = { ...manager.strings }; // save the originals
-  const setNewStrings = (newStrings: typeof getTemplateStrings) =>
-    (manager.strings = { ...manager.strings, ...newStrings });
+
+  const setNewStrings = (newStrings: { [key: string]: string }) => {
+    const maskedTwilioStrings = maskManagerStringsWithIdentifiers(newStrings);
+    manager.strings = { ...manager.strings, ...newStrings, ...maskedTwilioStrings };
+  };
 
   const afterNewStrings = (language: string) => {
     manager.store.dispatch(changeLanguage(language));
@@ -97,24 +101,7 @@ const setUpComponents = (
   Channels.setupInstagramChatChannel();
   Channels.setupLineChatChannel();
 
-  if (maskIdentifiers) {
-    // Masks TaskInfoPanelContent - TODO: refactor to use a react component
-    const strings = getTemplateStrings();
-    // strings.TaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
-    // strings.SupervisorTaskInfoPanelContent = strings.TaskInfoPanelContentMasked;
-
-    strings.CallParticipantCustomerName = strings.MaskIdentifiers;
-
-    // Mask the username within the messable bubbles in an conversation
-    Flex.MessagingCanvas.defaultProps.memberDisplayOptions = {
-      theirDefaultName: 'XXXXXX',
-      theirFriendlyNameOverride: false,
-      yourFriendlyNameOverride: true,
-    };
-    Flex.MessageList.Content.remove('0');
-
-    setUpViewMaskedVoiceNumber();
-  }
+  setUpViewMaskedVoiceNumber();
 
   if (featureFlags.enable_transfers) {
     setUpTransferComponents();
