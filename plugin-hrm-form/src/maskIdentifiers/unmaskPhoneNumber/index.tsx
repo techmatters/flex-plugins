@@ -35,8 +35,8 @@ export const setUpViewMaskedVoiceNumber = () => {
     if: props => props.task.channelType === 'voice',
   });
 
-  Supervisor.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" />, {
-    sortOrder: 0,
-    if: props => props.task.channelType === 'voice',
-  });
+  // Supervisor.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-supervisor-task-number" />, {
+  //   sortOrder: 0,
+  //   if: props => props.task.channelType === 'voice',
+  // });
 };

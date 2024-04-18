@@ -410,9 +410,7 @@
   "BottomBar-SaveOnClose": "Save Changes?",
   "BottomBar-DontSave": "No, Don't Save",
   "BottomBar-Save": "Yes, Save",
-  "TaskLineWebChatAssignedMasked": "{{#if helper.isCustomerOnline}} {{{icon name='GreenIndicator'}}} {{else}} {{{icon name='GreyIndicator'}}} {{/if}}{{helper.durationSinceUpdate}} | {{#if helper.chat.typers.length}} typing …{{else}} {{#if helper.chat.lastMessage}} {{#if helper.chat.lastMessage.source.body}}{{helper.chat.lastMessage.source.body}}{{else}}{{#if helper.chat.lastMessage.error}}<span class='error'>Sending failed</span>{{else}}File sent{{/if}}{{/if}}{{else}}No messages{{/if}}{{/if}}",
-  "TaskLineChatAssignedMasked": 
-  "{{helper.durationSinceUpdate}} | {{#if helper.chat.typers.length}} typing … {{else}} {{#if helper.chat.lastMessage}} {{#if helper.chat.lastMessage.authorName}} {{else}} {{task.attributes.customerName}}: {{/if}}{{#if helper.chat.lastMessage.source.media}} {{#if helper.chat.lastMessage.source.media.filename}} {{helper.chat.lastMessage.source.media.filename}} {{else}} media{{/if}}{{else}} {{helper.chat.lastMessage.source.body}} {{/if}}{{else}} No messages{{/if}}{{/if}}",
+
 
   "Resources-LoadResourceError": "Something went wrong trying to load this resource.",
   "Resources-Search-FormTitle": "Resources",

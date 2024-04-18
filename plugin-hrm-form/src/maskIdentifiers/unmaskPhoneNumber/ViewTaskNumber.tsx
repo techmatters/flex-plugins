@@ -35,7 +35,7 @@ const ViewTaskNumber = ({ task }: Props) => {
   };
 
   return (
-    <>
+    <span>
       <UnmaskStyledButton onClick={toggleViewNumber} ref={viewNumberRef}>
         {viewNumber ? <EyeOpenIcon /> : <EyeCloseIcon />}
       </UnmaskStyledButton>
@@ -54,7 +54,7 @@ const ViewTaskNumber = ({ task }: Props) => {
           </Paper>
         </Popper>
       ) : null}
-    </>
+    </span>
   );
 };
 

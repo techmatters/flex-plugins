@@ -103,7 +103,6 @@ type LocalizationConfig = {
  * @returns {(language: string) => Promise<void>}
  */
 export const initTranslateUI = (localizationConfig: LocalizationConfig) => async language => {
-  console.log('>>> initTranslateUI function is called with language:', language); // Added console log
   const { twilioStrings, setNewStrings, afterNewStrings } = localizationConfig;
   try {
     if (language in bundledTranslations) {

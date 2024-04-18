@@ -14,17 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import {
-  Manager,
-  Strings,
-  DefaultTaskChannels,
-  TaskChannelDefinition,
-  MessagingCanvas,
-  MessageList,
-} from '@twilio/flex-ui';
+import { Strings, TaskChannelDefinition, MessagingCanvas, MessageList } from '@twilio/flex-ui';
 
 import { getInitializedCan, PermissionActions } from '../permissions';
-import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
+import { getAseloFeatureFlags } from '../hrmConfig';
 
 // Mask identifiers in the channel strings
 export const maskChannelStringsWithIdentifiers = (channelType: TaskChannelDefinition) => {
@@ -39,7 +32,6 @@ export const maskChannelStringsWithIdentifiers = (channelType: TaskChannelDefini
     TaskCanvasHeader,
     Supervisor,
     TaskCard,
-    TaskInfoPanel,
   } = channelType.templates;
 
   IncomingTaskCanvas.firstLine = 'MaskIdentifiers';
@@ -48,8 +40,6 @@ export const maskChannelStringsWithIdentifiers = (channelType: TaskChannelDefini
 
   // Task list and panel when a call comes in
   TaskListItem.firstLine = 'MaskIdentifiers';
-  TaskListItem.secondLine =
-    channelType === DefaultTaskChannels.Chat ? 'TaskLineWebChatAssignedMasked' : 'TaskLineChatAssignedMasked';
 
   // Task panel during an active call
   TaskCanvasHeader.title = 'MaskIdentifiers';
@@ -58,10 +48,7 @@ export const maskChannelStringsWithIdentifiers = (channelType: TaskChannelDefini
   // Task Status in Agents page
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) TaskCard.firstLine = 'MaskIdentifiers';
 
-  // TaskInfoPanel.content = 'TaskInfoPanelContentMasked';
-
   Supervisor.TaskOverviewCanvas.firstLine = 'MaskIdentifiers';
-  Supervisor.TaskInfoPanel.content = 'TaskInfoPanelContentMasked';
 };
 
 // Mask identifiers in the manager strings
@@ -72,16 +59,17 @@ export const maskManagerStringsWithIdentifiers = <T extends Strings<string> & { 
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
   if (!maskIdentifiers) return newStrings;
 
-  // const { strings } = Manager.getInstance();
+  if (!newStrings.MaskIdentifiers) return newStrings;
 
-  return Object.entries(newStrings).reduce<T>((accum, [key, value]) => {
-    if (!value || !newStrings.MaskIdentifiers) return accum;
-    // If string does not contains number, just keep going
+  Object.entries(newStrings).forEach(([key, value]) => {
     if (/{{task.defaultFrom}}/g.test(value)) {
-      return { ...accum, [key]: value.replace(/{{task.defaultFrom}}/g, newStrings.MaskIdentifiers) };
+      newStrings[key] = value.replace(/{{task.defaultFrom}}/g, newStrings.MaskIdentifiers);
+    } else if (/{{defaultFrom}}/g.test(value)) {
+      newStrings[key] = value.replace(/{{defaultFrom}}/g, newStrings.MaskIdentifiers);
     }
-    return accum;
-  }, {} as T);
+  });
+
+  return newStrings;
 };
 
 // Mask identifiers in the messaging canvas in chat window
