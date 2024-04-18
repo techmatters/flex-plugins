@@ -74,6 +74,10 @@ export const maskManagerStringsWithIdentifiers = (newStrings: ReturnType<typeof 
 };
 
 export const maskMessageListWithIdentifiers = () => {
+  const can = getInitializedCan();
+  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
+  if (!maskIdentifiers) return;
+
   MessagingCanvas.defaultProps.memberDisplayOptions = {
     theirDefaultName: 'XXXXXX',
     theirFriendlyNameOverride: false,
