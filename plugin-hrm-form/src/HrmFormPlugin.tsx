@@ -59,14 +59,18 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   const twilioStrings = { ...manager.strings }; // save the originals
 
   const setNewStrings = (newStrings: { [key: string]: string }) => {
-    const maskedTwilioStrings = maskManagerStringsWithIdentifiers(newStrings);
-    manager.strings = { ...manager.strings, ...newStrings, ...maskedTwilioStrings };
+    // manager.strings = { ...manager.strings, ...newStrings };
+    // const maskedTwilioStrings = maskManagerStringsWithIdentifiers(newStrings);
+    const overrideStrings = { ...manager.strings, ...newStrings };
+    const maskedStrings = maskManagerStringsWithIdentifiers(overrideStrings);
+    manager.strings = maskedStrings;
   };
 
   const afterNewStrings = (language: string) => {
     manager.store.dispatch(changeLanguage(language));
     Flex.Actions.invokeAction('NavigateToView', { viewName: manager.store.getState().flex.view.activeView }); // force a re-render
   };
+
   const localizationConfig = { twilioStrings, setNewStrings, afterNewStrings };
   const initialLanguage = counselorLanguage || helplineLanguage;
 

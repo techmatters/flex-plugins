@@ -14,7 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { Manager, DefaultTaskChannels, TaskChannelDefinition, MessagingCanvas, MessageList } from '@twilio/flex-ui';
+import {
+  Manager,
+  Strings,
+  DefaultTaskChannels,
+  TaskChannelDefinition,
+  MessagingCanvas,
+  MessageList,
+} from '@twilio/flex-ui';
 
 import { getInitializedCan, PermissionActions } from '../permissions';
 import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
@@ -58,20 +65,23 @@ export const maskChannelStringsWithIdentifiers = (channelType: TaskChannelDefini
 };
 
 // Mask identifiers in the manager strings
-export const maskManagerStringsWithIdentifiers = (newStrings: ReturnType<typeof getTemplateStrings>) => {
+export const maskManagerStringsWithIdentifiers = <T extends Strings<string> & { MaskIdentifiers?: string }>(
+  newStrings: T,
+) => {
   const can = getInitializedCan();
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
-  if (!maskIdentifiers) return;
+  if (!maskIdentifiers) return newStrings;
 
-  const { strings } = Manager.getInstance();
+  // const { strings } = Manager.getInstance();
 
-  // eslint-disable-next-line consistent-return
-  return Object.fromEntries(
-    Object.entries(strings).map(([key, value]) => [
-      key,
-      value.replace(/{{task.defaultFrom}}/g, newStrings.MaskIdentifiers),
-    ]),
-  );
+  return Object.entries(newStrings).reduce<T>((accum, [key, value]) => {
+    if (!value || !newStrings.MaskIdentifiers) return accum;
+    // If string does not contains number, just keep going
+    if (/{{task.defaultFrom}}/g.test(value)) {
+      return { ...accum, [key]: value.replace(/{{task.defaultFrom}}/g, newStrings.MaskIdentifiers) };
+    }
+    return accum;
+  }, {} as T);
 };
 
 // Mask identifiers in the messaging canvas in chat window
