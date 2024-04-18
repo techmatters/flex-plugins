@@ -15,7 +15,7 @@
     "label": "Repeat Caller?",
     "type": "checkbox"
   },
-  {
+  { 
     "name": "actionTaken",
     "label": "Action Taken by TF",
     "type": "listbox-multiselect",

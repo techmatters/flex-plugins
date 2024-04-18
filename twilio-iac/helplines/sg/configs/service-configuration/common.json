@@ -10,6 +10,8 @@
             "enable_post_survey": false
         },
         "feature_flags": {
+            "external_recordings_enabled": true,
+            "enable_post_survey": false
         },
         "helplineLanguage": "en-SG",
         "permissionConfig": "sg"
