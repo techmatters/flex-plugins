@@ -21,7 +21,7 @@ import { Dispatch } from 'react';
 import { Contact, CustomITask, isOfflineContact, isOfflineContactTask, isTwilioTask, RouterTask } from '../types/types';
 import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
-import { saveContact } from './ContactService';
+import { finalizeContact, saveContact } from './ContactService';
 import { assignOfflineContactInit, assignOfflineContactResolve } from './ServerlessService';
 import { getHrmConfig } from '../hrmConfig';
 import { ContactMetadata } from '../states/contacts/types';
@@ -83,6 +83,7 @@ export const submitContactForm = async (
         taskSid: inBehalfTask.sid,
         finalTaskAttributes: finalAttributes,
       });
+      await finalizeContact(task, savedContact);
       return savedContact;
     } catch (err) {
       // If something went wrong remove the task for this offline contact
