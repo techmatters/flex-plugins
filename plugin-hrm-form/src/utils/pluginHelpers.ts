@@ -92,11 +92,18 @@ const bundledMessages = {
 
 const translationErrorMsg = 'Could not translate, using default';
 
+type LocalizationConfig = {
+  twilioStrings: any,
+  setNewStrings: (newStrings: any) => void,
+  afterNewStrings: (language: string) => void,
+};
+
 /**
  * Given localization config object, returns a function that receives a language and fetches the UI translation
  * @returns {(language: string) => Promise<void>}
  */
-export const initTranslateUI = localizationConfig => async language => {
+export const initTranslateUI = (localizationConfig: LocalizationConfig) => async language => {
+  console.log('>>> initTranslateUI function is called with language:', language); // Added console log
   const { twilioStrings, setNewStrings, afterNewStrings } = localizationConfig;
   try {
     if (language in bundledTranslations) {
@@ -150,10 +157,8 @@ export const getMessage = messageKey => async language => {
  * Receives localization config object and initial language. Based on this, translates the UI
  * to match the counselor's preferences (if needed).
  * Returns the functions used for further localization, attaching to them the localization config object
- * @param {{ twilioStrings: any; setNewStrings: (newStrings: any) => void; afterNewStrings: (language: string) => void; }} localizationConfig
- * @param {string} initialLanguage
  */
-export const initLocalization = (localizationConfig, initialLanguage) => {
+export const initLocalization = (localizationConfig:LocalizationConfig, initialLanguage:string) => {
   const translateUI = initTranslateUI(localizationConfig);
 
   const { setNewStrings } = localizationConfig;

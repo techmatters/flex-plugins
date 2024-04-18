@@ -19,8 +19,8 @@ import { Manager, DefaultTaskChannels, TaskChannelDefinition, MessagingCanvas, M
 import { getInitializedCan, PermissionActions } from '../permissions';
 import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
 
-// Mask identifiers in the channel templates
-export const maskChannelTemplatesWithIdentifiers = (channelType: TaskChannelDefinition) => {
+// Mask identifiers in the channel strings
+export const maskChannelStringsWithIdentifiers = (channelType: TaskChannelDefinition) => {
   const can = getInitializedCan();
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
   if (!maskIdentifiers) return;
@@ -51,12 +51,13 @@ export const maskChannelTemplatesWithIdentifiers = (channelType: TaskChannelDefi
   // Task Status in Agents page
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) TaskCard.firstLine = 'MaskIdentifiers';
 
-  TaskInfoPanel.content = 'TaskInfoPanelContentMasked';
+  // TaskInfoPanel.content = 'TaskInfoPanelContentMasked';
 
   Supervisor.TaskOverviewCanvas.firstLine = 'MaskIdentifiers';
   Supervisor.TaskInfoPanel.content = 'TaskInfoPanelContentMasked';
 };
 
+// Mask identifiers in the manager strings
 export const maskManagerStringsWithIdentifiers = (newStrings: ReturnType<typeof getTemplateStrings>) => {
   const can = getInitializedCan();
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
@@ -73,6 +74,7 @@ export const maskManagerStringsWithIdentifiers = (newStrings: ReturnType<typeof 
   );
 };
 
+// Mask identifiers in the messaging canvas in chat window
 export const maskMessageListWithIdentifiers = () => {
   const can = getInitializedCan();
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);

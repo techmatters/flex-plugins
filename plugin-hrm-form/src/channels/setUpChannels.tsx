@@ -29,7 +29,7 @@ import { colors, mainChannelColor } from './colors';
 import { getTemplateStrings } from '../hrmConfig';
 import { isSmsChannelType } from '../utils/smsChannels';
 import { setCallTaskCardString, setChatTaskCardString } from '../teamsView/taskCardEnhancement';
-import { maskChannelTemplatesWithIdentifiers } from '../maskIdentifiers';
+import { maskChannelStringsWithIdentifiers } from '../maskIdentifiers';
 
 const isIncomingTransfer = task => TransferHelpers.hasTransferStarted(task) && task.status === 'pending';
 
@@ -77,30 +77,30 @@ const generateIcons = (icon: JSX.Element) => ({
 export const setupCallChannel = () => {
   const callIcon = <CallIcon width="24px" height="24px" color={colors.voice} />;
   DefaultTaskChannels.Call.icons = generateIcons(callIcon);
-  maskChannelTemplatesWithIdentifiers(DefaultTaskChannels.Call);
+  maskChannelStringsWithIdentifiers(DefaultTaskChannels.Call);
   setCallTaskCardString(DefaultTaskChannels.Call);
 };
 
 export const setupChatChannel = () => {
-  maskChannelTemplatesWithIdentifiers(DefaultTaskChannels.Chat);
+  maskChannelStringsWithIdentifiers(DefaultTaskChannels.Chat);
   setChatTaskCardString(DefaultTaskChannels.Chat);
 };
 
 export const setupDefaultChannel = () => {
-  maskChannelTemplatesWithIdentifiers(DefaultTaskChannels.Default);
+  maskChannelStringsWithIdentifiers(DefaultTaskChannels.Default);
 };
 
 export const setupFacebookChannel = () => {
   const facebookIcon = <FacebookIcon width="24px" height="24px" color={colors.facebook} />;
   DefaultTaskChannels.ChatMessenger.icons = generateIcons(facebookIcon);
-  maskChannelTemplatesWithIdentifiers(DefaultTaskChannels.ChatMessenger);
+  maskChannelStringsWithIdentifiers(DefaultTaskChannels.ChatMessenger);
   setChatTaskCardString(DefaultTaskChannels.ChatMessenger);
 };
 
 export const setupWhatsAppChannel = () => {
   const whatsappIcon = <WhatsappIcon width="24px" height="24px" color={colors.whatsapp} />;
   DefaultTaskChannels.ChatWhatsApp.icons = generateIcons(whatsappIcon);
-  maskChannelTemplatesWithIdentifiers(DefaultTaskChannels.ChatWhatsApp);
+  maskChannelStringsWithIdentifiers(DefaultTaskChannels.ChatWhatsApp);
   setChatTaskCardString(DefaultTaskChannels.ChatWhatsApp);
 };
 
@@ -108,7 +108,7 @@ export const setupSmsChannel = () => {
   const smsIcon = <SmsIcon width="24px" height="24px" color={colors.sms} />;
   DefaultTaskChannels.ChatSms.icons = generateIcons(smsIcon);
   DefaultTaskChannels.ChatSms.isApplicable = task => isSmsChannelType(task.channelType);
-  maskChannelTemplatesWithIdentifiers(DefaultTaskChannels.ChatSms);
+  maskChannelStringsWithIdentifiers(DefaultTaskChannels.ChatSms);
   setChatTaskCardString(DefaultTaskChannels.ChatSms);
 };
 
@@ -136,7 +136,7 @@ export const setupTwitterChatChannel = () => {
   TwitterChatChannel.templates.Supervisor.TaskCanvasHeader.title = 'TaskHeaderLineTwitter';
   TwitterChatChannel.templates.Supervisor.TaskOverviewCanvas.firstLine = 'TaskHeaderLineTwitter';
 
-  maskChannelTemplatesWithIdentifiers(TwitterChatChannel);
+  maskChannelStringsWithIdentifiers(TwitterChatChannel);
   setChatTaskCardString(TwitterChatChannel);
 
   TwitterChatChannel.colors.main = {
@@ -161,7 +161,7 @@ export const setupInstagramChatChannel = () => {
   const icon = <InstagramIcon width="24px" height="24px" color="white" />;
   InstagramChatChannel.icons = generateIcons(icon);
 
-  maskChannelTemplatesWithIdentifiers(InstagramChatChannel);
+  maskChannelStringsWithIdentifiers(InstagramChatChannel);
   setChatTaskCardString(InstagramChatChannel);
 
   InstagramChatChannel.colors.main = {
@@ -183,7 +183,7 @@ export const setupLineChatChannel = () => {
   const icon = <LineIcon width="24px" height="24px" color={colors.line} />;
   LineChatChannel.icons = generateIcons(icon);
 
-  maskChannelTemplatesWithIdentifiers(LineChatChannel);
+  maskChannelStringsWithIdentifiers(LineChatChannel);
   setChatTaskCardString(LineChatChannel);
 
   LineChatChannel.colors.main = {
