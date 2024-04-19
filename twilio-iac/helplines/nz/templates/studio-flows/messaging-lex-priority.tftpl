@@ -148,9 +148,11 @@ ${
       "type": "run-function",
       "transitions": [
         {
+          "next": "attributes",
           "event": "success"
         },
         {
+          "next": "send_message_run_janitor",
           "event": "fail"
         }
       ],
@@ -288,6 +290,42 @@ ${
           },
           {
             "value": channel_flow_vars["blocked_message"],
+            "key": "message"
+          },
+          {
+            "value": "Youthline",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "send_message_run_janitor",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": -50,
+          "y": 1580
+        },
+        "function_sid": flow_vars["send_message_run_janitor_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "I'm sorry, we couldn't receive your message.  Please try texting us again  or call us for free on 0800376633.",
             "key": "message"
           },
           {
