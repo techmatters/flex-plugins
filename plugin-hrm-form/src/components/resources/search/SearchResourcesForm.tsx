@@ -27,13 +27,13 @@ import {
   BottomButtonBar,
   Box,
   Column,
+  FiltersCheckbox,
   FormLabel,
   FormOption,
   FormSelect,
   FormSelectWrapper,
   Row,
   StyledNextStepButton,
-  FiltersCheckbox,
 } from '../../../styles';
 import {
   ResourceSearchFormClearButton,
@@ -50,8 +50,8 @@ import {
   ReferrableResourceSearchState,
   resetSearchFormAction,
   searchResourceAsyncAction,
-  updateSearchFormAction,
   suggestSearchAsyncAction,
+  updateSearchFormAction,
 } from '../../../states/resources/search';
 import SearchInput from '../../caseList/filters/SearchInput';
 import { getTemplateStrings } from '../../../hrmConfig';
@@ -64,6 +64,10 @@ const NO_LOCATION_SELECTED = '__NO_LOCATION_SELECTED__';
 
 type OwnProps = {};
 type FilterName = keyof ReferrableResourceSearchState['parameters']['filterSelections'];
+type LocationFilterName = Extract<
+  keyof ReferrableResourceSearchState['parameters']['filterSelections'],
+  'province' | 'region' | 'city'
+>;
 // This type definition is a bit convoluted but it self checks if the option names change in the state;
 type CheckboxFilterName = keyof Pick<
   ReferrableResourceSearchState['parameters']['filterSelections'],
@@ -93,7 +97,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
       let reduxFilterValue = filterValue;
       if (filterName === 'maxEligibleAge' || filterName === 'minEligibleAge') {
         reduxFilterValue = filterValue === NO_AGE_SELECTED ? undefined : filterValue;
-      } else if (filterName === 'province' || filterName === 'city') {
+      } else if (filterName === 'province' || filterName === 'region' || filterName === 'city') {
         reduxFilterValue = filterValue === NO_LOCATION_SELECTED ? undefined : filterValue;
       }
       dispatch(updateSearchFormAction({ filterSelections: { [filterName]: reduxFilterValue } }));
@@ -129,7 +133,7 @@ const SearchResourcesForm: React.FC<Props> = ({
 }) => {
   const firstElement = useRef(null);
   const strings = getTemplateStrings();
-  const { province, city, maxEligibleAge, minEligibleAge, ...checkboxOptions } = filterOptions;
+  const { province, city, region, maxEligibleAge, minEligibleAge, ...checkboxOptions } = filterOptions;
   const [generalSearchTermBoxText, setGeneralSearchTermBoxText] = React.useState(generalSearchTerm);
 
   const hasValidSearchSettings = () =>
@@ -150,6 +154,29 @@ const SearchResourcesForm: React.FC<Props> = ({
   useEffect(() => {
     setGeneralSearchTermBoxText(generalSearchTerm);
   }, [generalSearchTerm, setGeneralSearchTermBoxText]);
+
+  const locationDropdown = (locationFilterName: LocationFilterName, optionList: FilterOption[]) => {
+    const capitalizedLocationFilterName = locationFilterName.charAt(0).toUpperCase() + locationFilterName.slice(1);
+    return (
+      <FormSelectWrapper style={{ width: '100%' }}>
+        <FormSelect
+          id={`location-${locationFilterName}`}
+          data-testid={`Resources-Search-Location-${capitalizedLocationFilterName}`}
+          name={`location-${locationFilterName}`}
+          onChange={({ target: { value } }) => updateFilterSelection(locationFilterName, value)}
+          value={filterSelections[locationFilterName] ?? NO_LOCATION_SELECTED}
+          style={{ width: '100%' }}
+        >
+          {/* eslint-disable-next-line sonarjs/no-identical-functions */}
+          {optionList.map(({ value, label }) => (
+            <FormOption key={value ?? NO_LOCATION_SELECTED} value={value ?? NO_LOCATION_SELECTED}>
+              {label ?? value}
+            </FormOption>
+          ))}
+        </FormSelect>
+      </FormSelectWrapper>
+    );
+  };
 
   const ageRangeDropDown = (dropdown: 'Min' | 'Max', optionList: FilterOption<number>[]) => {
     const currentSelection =
@@ -269,50 +296,27 @@ const SearchResourcesForm: React.FC<Props> = ({
                 <Template code="Resources-Search-Location" />
               </ResourcesSearchFormFilterHeader>
               <Row key="location" style={{ marginTop: '10px', marginBottom: '10px', gap: '60px' }}>
-                <Column style={{ width: '50%', maxWidth: '250px', gap: '4px' }}>
+                <Column style={{ width: '33%', maxWidth: '166px', gap: '4px' }}>
                   <FormLabel htmlFor="location-province">
                     <Template code="Resources-Search-Location-Province" />
                   </FormLabel>
-                  <FormSelectWrapper style={{ width: '100%' }}>
-                    <FormSelect
-                      id="location-province"
-                      data-testid="Resources-Search-Location-Province"
-                      name="location-province"
-                      onChange={({ target: { value } }) => updateFilterSelection('province', value)}
-                      value={filterSelections.province ?? NO_LOCATION_SELECTED}
-                      style={{ width: '100%' }}
-                    >
-                      {province.map(({ value, label }) => (
-                        <FormOption key={value ?? NO_LOCATION_SELECTED} value={value ?? NO_LOCATION_SELECTED}>
-                          {label ?? value}
-                        </FormOption>
-                      ))}
-                    </FormSelect>
-                  </FormSelectWrapper>
+                  {locationDropdown('province', province)}
                 </Column>
                 <Column
-                  style={{ width: '50%', maxWidth: '250px', opacity: filterSelections.province ? 1 : 0.2, gap: '4px' }}
+                  style={{ width: '33%', maxWidth: '166px', opacity: filterSelections.province ? 1 : 0.2, gap: '4px' }}
+                >
+                  <FormLabel htmlFor="location-region">
+                    <Template code="Resources-Search-Location-Region" />
+                  </FormLabel>
+                  {locationDropdown('region', region)}
+                </Column>
+                <Column
+                  style={{ width: '33%', maxWidth: '166px', opacity: filterSelections.province ? 1 : 0.2, gap: '4px' }}
                 >
                   <FormLabel htmlFor="location-city">
                     <Template code="Resources-Search-Location-City" />
                   </FormLabel>
-                  <FormSelectWrapper style={{ width: '100%' }}>
-                    <FormSelect
-                      id="location-city"
-                      data-testid="Resources-Search-Location-City"
-                      name="location-city"
-                      onChange={({ target: { value } }) => updateFilterSelection('city', value)}
-                      value={filterSelections.city ?? NO_LOCATION_SELECTED}
-                      style={{ width: '100%' }}
-                    >
-                      {/* eslint-disable-next-line sonarjs/no-identical-functions */}
-                      {city.map(({ value, label }) => (
-                        <FormOption key={value ?? NO_LOCATION_SELECTED} value={value ?? NO_LOCATION_SELECTED}>
-                          {label ?? value}
-                        </FormOption>
-                      ))}
-                    </FormSelect>
-                  </FormSelectWrapper>
+                  {locationDropdown('city', city)}
                 </Column>
               </Row>
             </ResourcesSearchFormSettingBox>

@@ -17,7 +17,7 @@
 import { createAction, createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
 import { ReferrableResource, searchResources, suggestSearch } from '../../services/ResourceService';
-import { cityOptions, provinceOptions } from './locations';
+import { cityOptions, provinceOptions, regionOptions } from './locations';
 
 export type SearchSettings = Omit<Partial<ReferrableResourceSearchState['parameters']>, 'filterSelections'> & {
   filterSelections?: Partial<ReferrableResourceSearchState['parameters']['filterSelections']>;
@@ -59,6 +59,7 @@ export type ReferrableResourceSearchState = {
     feeStructure: FilterOption[];
     howServiceIsOffered: FilterOption[];
     province: FilterOption[];
+    region?: FilterOption[];
     city?: FilterOption[];
     minEligibleAge: FilterOption<number>[];
     maxEligibleAge: FilterOption<number>[];
@@ -67,6 +68,7 @@ export type ReferrableResourceSearchState = {
     generalSearchTerm: string;
     filterSelections: {
       city?: string;
+      region?: string;
       province?: string;
       interpretationTranslationServicesAvailable?: true;
       minEligibleAge?: number;
@@ -94,6 +96,7 @@ export const suggestSearchInitialState: TaxonomyLevelNameCompletion = {
   taxonomyLevelNameCompletion: [],
 };
 
+const allRegions: FilterOption[] = [{ label: '', value: undefined }, ...regionOptions];
 const allCities: FilterOption[] = [{ label: '', value: undefined }, ...cityOptions];
 
 export const initialState: ReferrableResourceSearchState = {
@@ -109,6 +112,7 @@ export const initialState: ReferrableResourceSearchState = {
     ],
     howServiceIsOffered: [{ value: 'In-person Support' }, { value: 'Online Support' }, { value: 'Phone Support' }],
     province: [{ label: '', value: undefined }, ...provinceOptions],
+    region: [],
     city: [],
     minEligibleAge: minAgeOptions,
     maxEligibleAge: maxAgeOptions,
@@ -196,8 +200,12 @@ const getFilterOptionsBasedOnSelections = (
       const minSelection = filterSelections.minEligibleAge ?? 0;
       return opt.value === undefined || opt.value >= minSelection;
     }),
-    city: allCities.filter(
+    region: allRegions.filter(
       ({ value }) => filterSelections.province && (!value || value.startsWith(filterSelections.province)),
+    ),
+    city: allCities.filter(
+      ({ value }) =>
+        filterSelections.province && (!value || value.startsWith(filterSelections.region || filterSelections.province)),
     ),
   };
 };
@@ -214,6 +222,7 @@ const ensureFilterSelectionsAreValid = (
         minEligibleAge: filterOptions.minEligibleAge.find(opt => opt.value === filterSelections.minEligibleAge)?.value,
         maxEligibleAge: filterOptions.maxEligibleAge.find(opt => opt.value === filterSelections.maxEligibleAge)?.value,
         province: filterOptions.province.find(opt => opt.value === filterSelections.province)?.value,
+        region: filterOptions.region.find(opt => opt.value === filterSelections.region)?.value,
         city: filterOptions.city.find(opt => opt.value === filterSelections.city)?.value,
       }).filter(([, value]) => value !== undefined),
     ),
