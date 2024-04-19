@@ -43,6 +43,7 @@ locals {
           voice_ivr_language         = "en-US"
           wait_url                   = "https://nz-assets-8961.twil.io/busyLine"
           blocked_url                = "https://nz-assets-8961.twil.io/blocked_number.mp3"
+          initial_message_url        = "https://nz-assets-8961.twil.io/initial_message.mp3"
         }
         chatbot_unique_names = []
       },

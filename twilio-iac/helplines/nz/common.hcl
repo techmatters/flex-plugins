@@ -44,7 +44,7 @@ locals {
         "friendly_name"  = "Clinical"
       },
       counselling : {
-        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND email == 'alnrivera@gmail.com'",
+        "target_workers" = "((roles HAS 'agent' OR roles HAS 'supervisor') AND email == 'alnrivera@gmail.com') OR (roles HAS 'supervisor' AND routing.skills HAS 'YL Other Services')",
         "friendly_name"  = "YL Other Services"
       },
       survey : {
