@@ -84,6 +84,7 @@
   "ReadMore": "see more",
   "ReadLess": "see less",
   "CaseSummary-NoSummaryProvided": "No Summary provided",
+  "CaseSummary-None": "- No case summary -",
   "SectionEntry-Yes": "Yes",
   "SectionEntry-No": "No",
   "SharedStateSaveFormError": "The information stored in the form couldn't be saved. Task will be transferred anyway.",
@@ -459,10 +460,10 @@
   "BottomBar-Save": "Yes, Save",
   "Toolkit-ConfirmTextOne": "You will be redirected to {{helpline}}'s knowledge management system.",
   "Toolkit-ConfirmTextTwo": "Are you sure you want to continue?",
-
-  "CaseSummary-None": "- No case summary -",
-  "MaskIdentifiers": "XXXXXX",
   
+  "MaskIdentifiers": "XXXXXX",
+  "UnmaskPhoneNumber": "Phone Number Revealed",
+
   "RecordingSection-Error": "Something went wrong on our end. Please contact your support team or supervisor.",
 
   "Resources-LoadResourceError": "Something went wrong trying to load this resource.",
