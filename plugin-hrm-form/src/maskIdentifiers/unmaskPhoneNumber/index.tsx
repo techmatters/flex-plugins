@@ -30,13 +30,13 @@ export const setUpViewMaskedVoiceNumber = () => {
   if (!maskIdentifiers) return;
   if (!getAseloConfigFlags().enableUnmaskingCalls) return;
 
-  TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" />, {
+  TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-task-number" isSupervisor={false} />, {
     sortOrder: 1,
     if: props => props.task.channelType === 'voice',
   });
 
-  // Supervisor.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-supervisor-task-number" />, {
-  //   sortOrder: 0,
-  //   if: props => props.task.channelType === 'voice',
-  // });
+  Supervisor.TaskCanvasHeader.Content.add(<ViewTaskNumber key="view-supervisor-task-number" isSupervisor={true} />, {
+    sortOrder: 0,
+    if: props => props.task.channelType === 'voice',
+  });
 };

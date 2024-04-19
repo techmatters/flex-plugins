@@ -24,9 +24,9 @@ import { PhoneNumberPopperText, UnmaskStyledButton } from './styles';
 import { Box, HiddenText } from '../../styles';
 import { CloseButton } from '../../components/callTypeButtons/styles';
 
-type Props = ThemeProps & { task?: ITask };
+type Props = ThemeProps & { task?: ITask; isSupervisor?: boolean };
 
-const ViewTaskNumber = ({ task }: Props) => {
+const ViewTaskNumber = ({ task, isSupervisor }: Props) => {
   const [viewNumber, setViewNumber] = useState(false);
   const viewNumberRef = useRef(null);
 
@@ -35,26 +35,32 @@ const ViewTaskNumber = ({ task }: Props) => {
   };
 
   return (
-    <span>
-      <UnmaskStyledButton onClick={toggleViewNumber} ref={viewNumberRef}>
+    <>
+      <UnmaskStyledButton
+        onClick={toggleViewNumber}
+        ref={viewNumberRef}
+        style={isSupervisor ? { position: 'fixed', alignSelf: 'center', marginRight:'5rem'} : {}}
+      >
         {viewNumber ? <EyeOpenIcon /> : <EyeCloseIcon />}
       </UnmaskStyledButton>
       {viewNumber ? (
-        <Popper open={viewNumber} anchorEl={viewNumberRef.current} placement="bottom-start">
-          <Paper style={{ width: '300px', padding: '20px' }}>
+        <Popper open={viewNumber} anchorEl={viewNumberRef.current} placement="bottom">
+          <Paper style={{ width: '250px', padding: '15px' }}>
             <Box style={{ float: 'right' }}>
               <HiddenText id="CloseButton">
                 <Template code="CloseButton" />
               </HiddenText>
-              <CloseButton aria-label="CloseButton" onClick={toggleViewNumber} />
+              <CloseButton aria-label="CloseButton" fontSizeSmall onClick={toggleViewNumber} />
             </Box>
-            <PhoneNumberPopperText>Phone Number Revealed</PhoneNumberPopperText>
+            <PhoneNumberPopperText>
+              <Template code="UnmaskPhoneNumber" />
+            </PhoneNumberPopperText>
             <br />
             {getFormattedNumberFromTask(task)}
           </Paper>
         </Popper>
       ) : null}
-    </span>
+    </>
   );
 };
 
