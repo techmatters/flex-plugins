@@ -39,7 +39,7 @@ const ViewTaskNumber = ({ task, isSupervisor }: Props) => {
       <UnmaskStyledButton
         onClick={toggleViewNumber}
         ref={viewNumberRef}
-        style={isSupervisor ? { position: 'fixed', alignSelf: 'center', marginRight:'5rem'} : {}}
+        style={isSupervisor ? { position: 'fixed', alignSelf: 'center', marginRight: '5rem' } : {}}
       >
         {viewNumber ? <EyeOpenIcon /> : <EyeCloseIcon />}
       </UnmaskStyledButton>
