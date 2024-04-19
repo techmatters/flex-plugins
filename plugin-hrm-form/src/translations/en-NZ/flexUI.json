@@ -305,7 +305,7 @@
   "NoTaskAssignableNotification": "No task assignable to you at the moment",
   "NoTasks": "NO ACTIVE TASKS",
   "NoTasksHintAvailable": "You are ready to start receiving tasks.",
-  "NoTasksHintNotAvailable": "Change activity state to start receivng tasks",
+  "NoTasksHintNotAvailable": "Change activity state to start receiving tasks",
   "NoTasksTitle": "Status",
   "NotImplemented": "Not implemented yet!",
   "NotURLFieldError": "This field only accepts URLs.",

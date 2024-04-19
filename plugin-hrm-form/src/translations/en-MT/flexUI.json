@@ -14,7 +14,7 @@
   "Error-Backend": "Error from backend system.",
   "NoTasksTitle": "Status",
   "NoTasks": "NO ACTIVE TASKS",
-  "NoTasksHintNotAvailable": "Change activity state to start receivng tasks",
+  "NoTasksHintNotAvailable": "Change activity state to start receiving tasks",
   "NoTasksHintAvailable": "You are ready to start receiving tasks.",
   "AddButtons-Header": "Add",
   "ManualPullButtonText": "Another Task",

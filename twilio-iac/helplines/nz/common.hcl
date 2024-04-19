@@ -32,19 +32,19 @@ locals {
 
     task_queues = {
       youthline_helpline : {
-        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND email != 'alnrivera@gmail.com'",
+        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND email != 'test@gmail.com'",
         "friendly_name"  = "Youthline Helpline"
       },
       priority : {
-        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND email != 'alnrivera@gmail.com'" ,
+        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND email != 'test@gmail.com'" ,
         "friendly_name"  = "Priority Youthline Helpline"
       },
       clinical : {
-        "target_workers" = "(routing.skills HAS 'Clinical' OR roles HAS 'supervisor') AND email != 'alnrivera@gmail.com'",
+        "target_workers" = "(routing.skills HAS 'Clinical') AND email != 'test@gmail.com'",
         "friendly_name"  = "Clinical"
       },
       counselling : {
-        "target_workers" = "((roles HAS 'agent' OR roles HAS 'supervisor') AND email == 'alnrivera@gmail.com') OR (roles HAS 'supervisor' AND routing.skills HAS 'YL Other Services')",
+        "target_workers" = "((roles HAS 'agent' OR roles HAS 'supervisor') AND email == 'test@gmail.com') OR (roles HAS 'supervisor' AND routing.skills HAS 'YL Other Services')",
         "friendly_name"  = "YL Other Services"
       },
       survey : {
