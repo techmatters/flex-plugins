@@ -125,7 +125,6 @@ const sortWorkersByActivity = (a: SupervisorWorkerState, b: SupervisorWorkerStat
   return a.worker.name.localeCompare(b.worker.name);
 };
 
-
 export const setUpTeamsViewSorting = () => {
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
 
