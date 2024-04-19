@@ -48,7 +48,6 @@ import selectPreviousContactCounts from '../../../states/search/selectPreviousCo
 import { selectCounselorsList } from '../../../states/configuration/selectCounselorsHash';
 import { selectCurrentDefinitionVersion } from '../../../states/configuration/selectDefinitions';
 import { CustomITask } from '../../../types/types';
-import { handleClearSearchForm } from '../../../states/search/actions';
 import selectContextContactId from '../../../states/contacts/selectContextContactId';
 
 const getField = value => ({
@@ -74,11 +73,7 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
-  clearSearchForm: () => dispatch(handleClearSearchForm(task.taskSid)),
-});
-
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
 // eslint-disable-next-line complexity
 const SearchForm: React.FC<Props> = ({
@@ -89,7 +84,6 @@ const SearchForm: React.FC<Props> = ({
   helplineInformation,
   task,
   handleSearch,
-  clearSearchForm,
 }) => {
   const can = React.useMemo(() => {
     return getInitializedCan();
@@ -140,7 +134,6 @@ const SearchForm: React.FC<Props> = ({
 
   const submitSearch = () => {
     handleSearch(searchParams);
-    // clearSearchForm();
   };
   const submitOnEnter = event => {
     if (event.key === 'Enter') submitSearch();
@@ -280,7 +273,7 @@ const SearchForm: React.FC<Props> = ({
   );
 };
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(mapStateToProps);
 const connected = connector(SearchForm);
 
 export default connected;

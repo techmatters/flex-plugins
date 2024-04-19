@@ -34,7 +34,6 @@ import { CustomITask, isTwilioTask } from '../../../types/types';
 import { selectCounselorsHash } from '../../../states/configuration/selectCounselorsHash';
 import selectPreviousContactCounts from '../../../states/search/selectPreviousContactCounts';
 import { iconsFromTask } from './iconsFromTask';
-import selectContextContactId from '../../../states/contacts/selectContextContactId';
 import selectContactByTaskSid from '../../../states/contacts/selectContactByTaskSid';
 
 type OwnProps = {
@@ -67,9 +66,10 @@ const PreviousContactsBanner: React.FC<Props> = ({
     const isTraceableNumber = ![null, undefined, '', 'Anonymous'].includes(contactNumber);
 
     if (isTraceableNumber) {
+      const searchRoot = task.taskSid === 'standalone-task-sid' ? 'root' : contact.savedContact.id;
       const searchParams = { contactNumber };
-      searchContacts(searchParams, CONTACTS_PER_PAGE, 0, true);
-      searchCases(searchParams, CASES_PER_PAGE, 0, true);
+      searchContacts(searchRoot)(searchParams, CONTACTS_PER_PAGE, 0, true);
+      searchCases(searchRoot)(searchParams, CASES_PER_PAGE, 0, true);
     }
   };
 
@@ -144,8 +144,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     viewPreviousContacts: viewPreviousContactsAction(dispatch)(task),
-    searchContacts: searchContactsAction(dispatch)(taskId),
-    searchCases: searchCasesAction(dispatch)(taskId),
+    searchContacts: (contactId: string) => searchContactsAction(dispatch)(taskId, contactId),
+    searchCases: (contactId: string) => searchCasesAction(dispatch)(taskId, contactId),
     openContactSearchResults: (contextContactId: string) => {
       // We put the form 'under' the search results in the modal stack so the back button takes them to the form without needing custom handlers
       dispatch(newOpenModalAction({ contextContactId, route: 'search', subroute: 'form' }, taskId));

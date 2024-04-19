@@ -104,6 +104,7 @@ const contactUpdatingReducer = (state: SearchState, action: ContactUpdatingActio
     tasks: {
       ...updatedState.tasks,
       [contact.taskId]: {
+        ...updatedState.tasks[contact.taskId],
         [contact.id]: newTaskEntry,
       },
     },
@@ -157,26 +158,38 @@ export function reduce(
       };
     case t.HANDLE_SEARCH_FORM_CHANGE: {
       const task = state.tasks[action.taskId];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: { ...task, form: { ...task.form, [action.name]: action.value } },
-        },
-      };
-    }
-    case t.CLEAR_SEARCH_FORM: {
-      const task = state.tasks[action.taskId];
-      const contactId = state.tasks[action.taskId][action.contactId];
+      const context = state.tasks[action.taskId][action.context];
+
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            [action.contactId]: {
-              ...contactId,
-              form: newSearchFormEntry,
+            [action.context]: {
+              ...context,
+              form: {
+                ...task[action.context]?.form,
+                [action.name]: action.value,
+              },
+            },
+          },
+        },
+      };
+    }
+    case t.CREATE_NEW_SEARCH: {
+      const task = state.tasks[action.taskId];
+      const context = state.tasks[action.taskId][action.context];
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...task,
+            [action.context]: {
+              ...context,
+              ...newTaskEntry,
             },
           },
         },
@@ -184,15 +197,15 @@ export function reduce(
     }
     case t.SEARCH_CONTACTS_REQUEST: {
       const task = state.tasks[action.taskId];
-      const contactId = state.tasks[action.taskId][action.contactId];
+      const context = state.tasks[action.taskId][action.context];
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            [action.contactId]: {
-              ...contactId,
+            [action.context]: {
+              ...context,
               isRequesting: true,
               contactRefreshRequired: false,
             },
@@ -205,10 +218,10 @@ export function reduce(
         searchResult: { contacts, ...searchResult },
         taskId,
         dispatchedFromPreviousContacts,
-        contactId,
+        context,
       } = action;
       const task = state.tasks[taskId];
-      const contact = state.tasks[taskId][contactId];
+      const contact = state.tasks[taskId][context];
       const newContactsResult = {
         ids: contacts.map(c => c.id),
         count: searchResult.count,
@@ -223,7 +236,7 @@ export function reduce(
           [taskId]: {
             ...task,
             previousContactCounts,
-            [contactId]: {
+            [context]: {
               ...contact,
               searchContactsResult: newContactsResult,
               isRequesting: false,
@@ -235,15 +248,15 @@ export function reduce(
     }
     case t.SEARCH_CONTACTS_FAILURE: {
       const task = state.tasks[action.taskId];
-      const contactId = state.tasks[action.taskId][action.contactId];
+      const context = state.tasks[action.taskId][action.context];
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            [action.contactId]: {
-              ...contactId,
+            [action.context]: {
+              ...context,
               isRequesting: false,
               error: action.error,
             },
@@ -253,15 +266,15 @@ export function reduce(
     }
     case t.SEARCH_CASES_REQUEST: {
       const task = state.tasks[action.taskId];
-      const contactId = state.tasks[action.taskId][action.contactId];
+      const context = state.tasks[action.taskId][action.context];
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            [action.contactId]: {
-              ...contactId,
+            [action.context]: {
+              ...context,
               isRequestingCases: true,
               caseRefreshRequired: false,
             },
@@ -276,7 +289,7 @@ export function reduce(
         dispatchedFromPreviousContacts,
       } = action;
       const task = state.tasks[taskId];
-      const contactId = state.tasks[action.taskId][action.contactId];
+      const context = state.tasks[action.taskId][action.context];
       const newCasesResult = {
         ids: cases.map(c => c.id),
         count,
@@ -291,8 +304,8 @@ export function reduce(
           [action.taskId]: {
             ...task,
             previousContactCounts,
-            [action.contactId]: {
-              ...contactId,
+            [action.context]: {
+              ...context,
               searchCasesResult: newCasesResult,
               isRequestingCases: false,
               casesError: null,
@@ -303,15 +316,15 @@ export function reduce(
     }
     case t.SEARCH_CASES_FAILURE: {
       const task = state.tasks[action.taskId];
-      const contactId = state.tasks[action.taskId][action.contactId];
+      const context = state.tasks[action.taskId][action.context];
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            [action.contactId]: {
-              ...contactId,
+            [action.context]: {
+              ...context,
               isRequestingCases: false,
               casesError: action.error,
             },
@@ -321,7 +334,7 @@ export function reduce(
     }
     case t.VIEW_PREVIOUS_CONTACTS: {
       const task = state.tasks[action.taskId];
-      const contactId = state.tasks[action.taskId][action.contactId];
+      const context = state.tasks[action.taskId][action.context];
       return {
         ...state,
         tasks: {
@@ -330,8 +343,8 @@ export function reduce(
             ...task,
             form: {
               ...task.form,
-              [action.contactId]: {
-                ...contactId,
+              [action.context]: {
+                ...context,
                 contactNumber: action.contactNumber,
               },
             },

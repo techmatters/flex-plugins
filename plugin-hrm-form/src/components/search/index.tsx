@@ -16,7 +16,7 @@
 
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-multi-comp */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Dialog from '@material-ui/core/Dialog';
@@ -29,7 +29,12 @@ import Case from '../case';
 import ProfileRouter, { isProfileRoute } from '../profile/ProfileRouter';
 import { SearchParams } from '../../states/search/types';
 import { CustomITask } from '../../types/types';
-import { handleSearchFormChange, searchCases, searchContacts } from '../../states/search/actions';
+import {
+  handleCreateNewSearchForm,
+  handleSearchFormChange,
+  searchCases,
+  searchContacts,
+} from '../../states/search/actions';
 import { RootState } from '../../states';
 import { namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
@@ -39,6 +44,7 @@ import NavigableContainer from '../NavigableContainer';
 import selectCasesForSearchResults from '../../states/search/selectCasesForSearchResults';
 import selectContactsForSearchResults from '../../states/search/selectContactsForSearchResults';
 import { DetailsContext } from '../../states/contacts/contactDetails';
+import selectContextContactId from '../../states/contacts/selectContextContactId';
 
 type OwnProps = {
   task: CustomITask;
@@ -52,18 +58,23 @@ const mapStateToProps = (state: RootState, { task, contactId }: OwnProps) => {
     [namespace]: { searchContacts, activeContacts, routing },
   } = state;
   const taskId = task.taskSid;
-  const taskSearchState = searchContacts.tasks[taskId];
   const currentRoute = getCurrentTopmostRouteForTask(routing, taskId);
+  const contextContactId = selectContextContactId(state, taskId, 'search', 'form');
+  const searchRootId =
+    currentRoute.route === 'search' && currentRoute.action === 'select-case' ? contextContactId : contactId || 'root';
+  const taskSearchState = searchContacts.tasks[taskId][searchRootId];
 
   return {
     activeContacts,
-    isRequesting: taskSearchState.isRequesting,
-    error: taskSearchState.error,
-    form: taskSearchState[contactId]?.form,
+    isRequesting: taskSearchState?.isRequesting,
+    error: taskSearchState?.error,
+    form: taskSearchState?.form,
     searchContactsResults: selectContactsForSearchResults(state, taskId, contactId),
     searchCasesResults: selectCasesForSearchResults(state, taskId, contactId),
     routing: currentRoute,
-    searchCase: taskSearchState.searchExistingCaseStatus,
+    searchCase: taskSearchState?.searchExistingCaseStatus,
+    contextContactId,
+    searchRootId,
   };
 };
 
@@ -71,7 +82,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   const taskId = ownProps.task.taskSid;
 
   return {
-    handleSearchFormChange: bindActionCreators(handleSearchFormChange(taskId), dispatch),
+    handleSearchFormChange: (contactId: string) =>
+      bindActionCreators(handleSearchFormChange(taskId, contactId || 'root'), dispatch),
     changeSearchPage: (subroute: SearchResultRoute['subroute'], action?: SearchRoute['action'], contactId?: string) =>
       dispatch(
         changeRoute(
@@ -79,9 +91,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           taskId,
         ),
       ),
-    searchContacts: searchContacts(dispatch)(taskId),
-    searchCases: searchCases(dispatch)(taskId),
+    searchContacts: (context: string) => searchContacts(dispatch)(taskId, context),
+    searchCases: searchCases(dispatch)(taskId, ownProps.contactId),
     closeModal: () => dispatch(newCloseModalAction(taskId)),
+    handleCreateNewSearch: (context: string) => dispatch(handleCreateNewSearchForm(taskId, context)),
   };
 };
 
@@ -100,14 +113,23 @@ const Search: React.FC<Props> = ({
   changeSearchPage,
   contactId,
   saveUpdates,
+  contextContactId,
+  handleCreateNewSearch,
+  searchRootId,
 }) => {
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});
 
+  useEffect(() => {
+    if (!form) {
+      handleCreateNewSearch(contextContactId);
+    }
+  }, [form, contextContactId, handleCreateNewSearch]);
+
   const closeDialog = () => setMockedMessage('');
 
   const handleSearchContacts = (newSearchParams: SearchParams, newOffset) =>
-    searchContacts(newSearchParams, CONTACTS_PER_PAGE, newOffset);
+    searchContacts(contextContactId)(newSearchParams, CONTACTS_PER_PAGE, newOffset);
 
   const handleSearchCases = (newSearchParams, newOffset) => searchCases(newSearchParams, CASES_PER_PAGE, newOffset);
 
@@ -170,6 +192,8 @@ const Search: React.FC<Props> = ({
   const renderSearchPages = () => {
     if (isProfileRoute(routing)) return <ProfileRouter task={task} />;
 
+    if (!form) return null;
+
     switch (routing.route) {
       case 'search': {
         if (routing.subroute === 'case-results' || routing.subroute === 'contact-results') {
@@ -227,7 +251,7 @@ const Search: React.FC<Props> = ({
         <SearchForm
           task={task}
           values={form}
-          handleSearchFormChange={handleSearchFormChange}
+          handleSearchFormChange={handleSearchFormChange(searchRootId)}
           handleSearch={setSearchParamsAndHandleSearch}
         />
       </NavigableContainer>
