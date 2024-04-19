@@ -59,8 +59,6 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   const twilioStrings = { ...manager.strings }; // save the originals
 
   const setNewStrings = (newStrings: { [key: string]: string }) => {
-    // manager.strings = { ...manager.strings, ...newStrings };
-    // const maskedTwilioStrings = maskManagerStringsWithIdentifiers(newStrings);
     const overrideStrings = { ...manager.strings, ...newStrings };
     const maskedStrings = maskManagerStringsWithIdentifiers(overrideStrings);
     manager.strings = maskedStrings;

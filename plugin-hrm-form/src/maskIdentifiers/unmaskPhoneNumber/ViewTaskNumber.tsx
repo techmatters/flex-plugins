@@ -24,9 +24,9 @@ import { PhoneNumberPopperText, UnmaskStyledButton } from './styles';
 import { Box, HiddenText } from '../../styles';
 import { CloseButton } from '../../components/callTypeButtons/styles';
 
-type Props = ThemeProps & { task?: ITask; isSupervisor?: boolean };
+type Props = ThemeProps & { task?: ITask; isPositionModified?: boolean };
 
-const ViewTaskNumber = ({ task, isSupervisor }: Props) => {
+const ViewTaskNumber = ({ task, isPositionModified }: Props) => {
   const [viewNumber, setViewNumber] = useState(false);
   const viewNumberRef = useRef(null);
 
@@ -39,7 +39,8 @@ const ViewTaskNumber = ({ task, isSupervisor }: Props) => {
       <UnmaskStyledButton
         onClick={toggleViewNumber}
         ref={viewNumberRef}
-        style={isSupervisor ? { position: 'fixed', alignSelf: 'center', marginRight: '5rem' } : {}}
+        // hack for positioning the button in Teams view page
+        style={isPositionModified ? { position: 'fixed', alignSelf: 'center', marginRight: '5rem' } : {}}
       >
         {viewNumber ? <EyeOpenIcon /> : <EyeCloseIcon />}
       </UnmaskStyledButton>
