@@ -17,16 +17,16 @@ import React, { useRef, useState } from 'react';
 import { Template, ThemeProps } from '@twilio/flex-ui';
 import { Paper, Popper } from '@material-ui/core';
 
-import { getFormattedNumberFromTask } from '../../../utils';
+import { getFormattedNumberFromTask } from '../../utils';
 import EyeOpenIcon from './EyeOpenIcon';
 import EyeCloseIcon from './EyeCloseIcon';
 import { PhoneNumberPopperText, UnmaskStyledButton } from './styles';
-import { Box, HiddenText } from '../../../styles';
-import { CloseButton } from '../../callTypeButtons/styles';
+import { Box, HiddenText } from '../../styles';
+import { CloseButton } from '../../components/callTypeButtons/styles';
 
-type Props = ThemeProps & { task?: ITask };
+type Props = ThemeProps & { task?: ITask; isPositionModified?: boolean };
 
-const ViewTaskNumber = ({ task }: Props) => {
+const ViewTaskNumber = ({ task, isPositionModified }: Props) => {
   const [viewNumber, setViewNumber] = useState(false);
   const viewNumberRef = useRef(null);
 
@@ -36,19 +36,26 @@ const ViewTaskNumber = ({ task }: Props) => {
 
   return (
     <>
-      <UnmaskStyledButton onClick={toggleViewNumber} ref={viewNumberRef}>
+      <UnmaskStyledButton
+        onClick={toggleViewNumber}
+        ref={viewNumberRef}
+        // hack for positioning the button in Teams view page
+        style={isPositionModified ? { position: 'fixed', alignSelf: 'center', marginRight: '5rem' } : {}}
+      >
         {viewNumber ? <EyeOpenIcon /> : <EyeCloseIcon />}
       </UnmaskStyledButton>
       {viewNumber ? (
-        <Popper open={viewNumber} anchorEl={viewNumberRef.current} placement="bottom-start">
-          <Paper style={{ width: '300px', padding: '20px' }}>
+        <Popper open={viewNumber} anchorEl={viewNumberRef.current} placement="bottom">
+          <Paper style={{ width: '250px', padding: '15px' }}>
             <Box style={{ float: 'right' }}>
               <HiddenText id="CloseButton">
                 <Template code="CloseButton" />
               </HiddenText>
-              <CloseButton aria-label="CloseButton" onClick={toggleViewNumber} />
+              <CloseButton aria-label="CloseButton" fontSizeSmall onClick={toggleViewNumber} />
             </Box>
-            <PhoneNumberPopperText>Phone Number Revealed</PhoneNumberPopperText>
+            <PhoneNumberPopperText>
+              <Template code="UnmaskPhoneNumber" />
+            </PhoneNumberPopperText>
             <br />
             {getFormattedNumberFromTask(task)}
           </Paper>
