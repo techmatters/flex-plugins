@@ -54,7 +54,7 @@ import {
 } from '../../../states/resources/search';
 import { FilterOption } from '../../../states/resources/types';
 import SearchInput from '../../caseList/filters/SearchInput';
-import { getTemplateStrings } from '../../../hrmConfig';
+import { getAseloFeatureFlags, getTemplateStrings } from '../../../hrmConfig';
 import asyncDispatch from '../../../states/asyncDispatch';
 import SearchAutoComplete from './SearchAutoComplete';
 import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
@@ -133,6 +133,7 @@ const SearchResourcesForm: React.FC<Props> = ({
 }) => {
   const firstElement = useRef(null);
   const strings = getTemplateStrings();
+  const { enable_region_resource_search: enableRegionResourceSearch } = getAseloFeatureFlags();
   const { province, city, region, maxEligibleAge, minEligibleAge, ...checkboxOptions } = filterOptions;
   const [generalSearchTermBoxText, setGeneralSearchTermBoxText] = React.useState(generalSearchTerm);
 
@@ -295,22 +296,40 @@ const SearchResourcesForm: React.FC<Props> = ({
                 <Template code="Resources-Search-Location" />
               </ResourcesSearchFormFilterHeader>
               <Row key="location" style={{ marginTop: '10px', marginBottom: '10px', gap: '60px' }}>
-                <Column style={{ width: '33%', maxWidth: '166px', gap: '4px' }}>
+                <Column
+                  style={{
+                    width: enableRegionResourceSearch ? '33%' : '50%',
+                    maxWidth: enableRegionResourceSearch ? '166px' : '250px',
+                    gap: '4px',
+                  }}
+                >
                   <FormLabel htmlFor="location-province">
                     <Template code="Resources-Search-Location-Province" />
                   </FormLabel>
                   {locationDropdown('province', province)}
                 </Column>
+                {enableRegionResourceSearch && (
+                  <Column
+                    style={{
+                      width: '33%',
+                      maxWidth: '166px',
+                      opacity: filterSelections.province ? 1 : 0.2,
+                      gap: '4px',
+                    }}
+                  >
+                    <FormLabel htmlFor="location-region">
+                      <Template code="Resources-Search-Location-Region" />
+                    </FormLabel>
+                    {locationDropdown('region', region)}
+                  </Column>
+                )}
                 <Column
-                  style={{ width: '33%', maxWidth: '166px', opacity: filterSelections.province ? 1 : 0.2, gap: '4px' }}
-                >
-                  <FormLabel htmlFor="location-region">
-                    <Template code="Resources-Search-Location-Region" />
-                  </FormLabel>
-                  {locationDropdown('region', region)}
-                </Column>
-                <Column
-                  style={{ width: '33%', maxWidth: '166px', opacity: filterSelections.province ? 1 : 0.2, gap: '4px' }}
+                  style={{
+                    width: enableRegionResourceSearch ? '33%' : '50%',
+                    maxWidth: enableRegionResourceSearch ? '166px' : '250px',
+                    opacity: filterSelections.province ? 1 : 0.2,
+                    gap: '4px',
+                  }}
                 >
                   <FormLabel htmlFor="location-city">
                     <Template code="Resources-Search-Location-City" />
