@@ -46,13 +46,13 @@ import {
   ResourcesSearchTitle,
 } from '../styles';
 import {
-  FilterOption,
   ReferrableResourceSearchState,
   resetSearchFormAction,
   searchResourceAsyncAction,
   suggestSearchAsyncAction,
   updateSearchFormAction,
 } from '../../../states/resources/search';
+import { FilterOption } from '../../../states/resources/types';
 import SearchInput from '../../caseList/filters/SearchInput';
 import { getTemplateStrings } from '../../../hrmConfig';
 import asyncDispatch from '../../../states/asyncDispatch';
@@ -167,7 +167,6 @@ const SearchResourcesForm: React.FC<Props> = ({
           value={filterSelections[locationFilterName] ?? NO_LOCATION_SELECTED}
           style={{ width: '100%' }}
         >
-          {/* eslint-disable-next-line sonarjs/no-identical-functions */}
           {optionList.map(({ value, label }) => (
             <FormOption key={value ?? NO_LOCATION_SELECTED} value={value ?? NO_LOCATION_SELECTED}>
               {label ?? value}

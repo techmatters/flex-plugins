@@ -18,6 +18,7 @@ import { createAction, createAsyncAction, createReducer } from 'redux-promise-mi
 
 import { ReferrableResource, searchResources, suggestSearch } from '../../services/ResourceService';
 import { cityOptions, provinceOptions, regionOptions } from './locations';
+import { FilterOption } from './types';
 
 export type SearchSettings = Omit<Partial<ReferrableResourceSearchState['parameters']>, 'filterSelections'> & {
   filterSelections?: Partial<ReferrableResourceSearchState['parameters']['filterSelections']>;
@@ -41,8 +42,6 @@ export enum ResourceSearchStatus {
   ResultReceived,
   Error,
 }
-
-export type FilterOption<T extends string | number = string> = { value: T; label?: string };
 
 const minAgeOptions: FilterOption<number>[] = [
   { label: '0', value: undefined },
@@ -203,10 +202,14 @@ const getFilterOptionsBasedOnSelections = (
     region: allRegions.filter(
       ({ value }) => filterSelections.province && (!value || value.startsWith(filterSelections.province)),
     ),
-    city: allCities.filter(
-      ({ value }) =>
-        filterSelections.province && (!value || value.startsWith(filterSelections.region || filterSelections.province)),
-    ),
+    city: allCities.filter(({ value }) => {
+      const { region, province } = filterSelections;
+      if (!province) {
+        return false;
+      }
+      const startPrefix = region?.startsWith(province) ? region : province;
+      return !value || value.startsWith(startPrefix);
+    }),
   };
 };
 

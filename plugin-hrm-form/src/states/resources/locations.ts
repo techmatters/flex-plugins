@@ -13,10 +13,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { FilterOption } from './types';
 
 // Temporary until we pull these options from the DB - we could pull them from S3 but not worth it for a temp workaround
 
-export const provinceOptions = [
+// Deduplicate based on value and sort by label
+const dedupAndSort = (arr: FilterOption[]) => {
+  const mapped = arr.reduce((optionMap: Record<string, FilterOption>, option: FilterOption) => {
+    optionMap[option.value] = option;
+    return optionMap;
+  }, {});
+  const deduped = Object.values(mapped);
+  return deduped.sort((a, b) => a.label.localeCompare(b.label));
+};
+
+export const provinceOptions = dedupAndSort([
   {
     label: 'Alberta',
     value: 'CA/AB',
@@ -69,9 +80,9 @@ export const provinceOptions = [
     label: 'Yukon',
     value: 'CA/YT',
   },
-].sort((a, b) => a.label.localeCompare(b.label));
+]);
 
-export const regionOptions = [
+export const regionOptions = dedupAndSort([
   {
     label: 'Acadia',
     value: 'CA/AB/Acadia',
@@ -1812,9 +1823,9 @@ export const regionOptions = [
     label: 'Yukon',
     value: 'CA/YT/Yukon',
   },
-].sort((a, b) => a.label.localeCompare(b.label));
+]);
 
-export const cityOptions = [
+export const cityOptions = dedupAndSort([
   {
     label: 'Acadia Valley',
     value: 'CA/AB/Acadia/Acadia Valley',
@@ -6706,10 +6717,6 @@ export const cityOptions = [
   {
     label: 'Surrey',
     value: 'CA/BC/Metro Vancouver/Surrey',
-  },
-  {
-    label: 'Vancouver',
-    value: 'CA/BC/Metro Vancouver/Vancouver',
   },
   {
     label: 'Vancouver',
@@ -39359,4 +39366,4 @@ export const cityOptions = [
     label: 'Whitehorse',
     value: 'CA/YT/Yukon/Whitehorse',
   },
-].sort((a, b) => a.label.localeCompare(b.label));
+]);
