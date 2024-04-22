@@ -70,6 +70,7 @@ test('PreviousContacts initial search', () => {
         searchCases={searchCases}
         changeRoute={jest.fn()}
         viewPreviousContacts={jest.fn()}
+        handleSearchFormChange={jest.fn()}
       />
     </StorelessThemeProvider>,
   );
@@ -92,6 +93,7 @@ test('Dont repeat initial search calls on PreviousContacts', () => {
         searchCases={searchCases}
         changeRoute={jest.fn()}
         viewPreviousContacts={jest.fn()}
+        handleSearchFormChange={jest.fn()}
       />
     </StorelessThemeProvider>,
   );
@@ -116,6 +118,7 @@ test('Dont render PreviousContacts when there are no previous contacts', () => {
         searchCases={jest.fn()}
         changeRoute={jest.fn()}
         viewPreviousContacts={jest.fn()}
+        handleSearchFormChange={jest.fn()}
       />
     </StorelessThemeProvider>,
   );
@@ -139,6 +142,7 @@ test('Render PreviousContacts when there are previous contacts', () => {
         searchCases={jest.fn()}
         changeRoute={jest.fn()}
         viewPreviousContacts={jest.fn()}
+        handleSearchFormChange={jest.fn()}
       />
     </StorelessThemeProvider>,
   );
@@ -160,6 +164,7 @@ test('calls the correct function when the contacts link is clicked', () => {
       searchCases={searchCases}
       openContactSearchResults={openContactSearchResults('10001')}
       openCaseSearchResults={openCaseSearchResults}
+      handleSearchFormChange={jest.fn()}
     />,
   );
 
@@ -181,6 +186,7 @@ test('calls the correct function when the cases link is clicked', () => {
       searchCases={searchCases}
       openContactSearchResults={openContactSearchResults}
       openCaseSearchResults={openCaseSearchResults('10001')}
+      handleSearchFormChange={jest.fn()}
     />,
   );
 
@@ -199,6 +205,7 @@ test('a11y', async () => {
         searchCases={jest.fn()}
         changeRoute={jest.fn()}
         viewPreviousContacts={jest.fn()}
+        handleSearchFormChange={jest.fn()}
       />
     </StorelessThemeProvider>,
   );
