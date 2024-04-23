@@ -122,11 +122,6 @@
     "type": "input"
   },  
   {
-    "name": "flagged",
-    "label": "Flagged Contact",
-    "type": "checkbox"
-  },
-  {
     "name": "referrals",
     "label": "Referrals",
     "type": "custom-contact-component",
