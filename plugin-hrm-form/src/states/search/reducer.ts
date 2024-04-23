@@ -104,7 +104,6 @@ const contactUpdatingReducer = (state: SearchState, action: ContactUpdatingActio
     tasks: {
       ...updatedState.tasks,
       [contact.taskId]: {
-        ...updatedState.tasks[contact.taskId],
         [contact.id]: newTaskEntry,
       },
     },
@@ -128,7 +127,7 @@ export function reduce(
       tasks: Object.fromEntries(
         Object.entries(state.tasks).map(([key, value]) => [
           key,
-          { ...value, root: { ...value.root, contactRefreshRequired: true } },
+          { ...value, context: { ...value.context, contactRefreshRequired: true } },
         ]),
       ),
     };
@@ -140,7 +139,7 @@ export function reduce(
       tasks: Object.fromEntries(
         Object.entries(state.tasks).map(([key, value]) => [
           key,
-          { ...value, root: { ...value.root, caseRefreshRequired: true } },
+          { ...value, context: { ...value.context, caseRefreshRequired: true } },
         ]),
       ),
     };
@@ -169,7 +168,7 @@ export function reduce(
             [action.context]: {
               ...context,
               form: {
-                ...task[action.context]?.form,
+                ...context?.form,
                 [action.name]: action.value,
               },
             },
@@ -178,7 +177,7 @@ export function reduce(
       };
     }
     case t.CREATE_NEW_SEARCH: {
-      const task = state.tasks[action.taskId];
+      const task = state.tasks[action.taskId] || {};
       const context = state.tasks[action.taskId][action.context];
 
       return {
@@ -221,7 +220,7 @@ export function reduce(
         context,
       } = action;
       const task = state.tasks[taskId];
-      const contact = state.tasks[taskId][context];
+      const searchContext = state.tasks[taskId][context];
       const newContactsResult = {
         ids: contacts.map(c => c.id),
         count: searchResult.count,
@@ -237,7 +236,7 @@ export function reduce(
             ...task,
             previousContactCounts,
             [context]: {
-              ...contact,
+              ...searchContext,
               searchContactsResult: newContactsResult,
               isRequesting: false,
               error: null,

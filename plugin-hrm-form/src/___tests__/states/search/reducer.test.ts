@@ -62,7 +62,7 @@ describe('search reducer', () => {
 
     const { tasks } = result;
     expect(tasks[task.taskSid]).not.toBeUndefined();
-    expect(tasks[task.taskSid][context]).toStrictEqual(newTaskEntry);
+    expect(tasks[task.taskSid]['']).toStrictEqual(newTaskEntry);
   });
 
   test('LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED action (should recreate the state)', () => {

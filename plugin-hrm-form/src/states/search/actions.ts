@@ -40,7 +40,7 @@ export const handleSearchFormChange = (taskId: string, context: string) => <K ex
   } as t.SearchActionType; // casting cause inference is not providing enough information, but the restrictions are made in argument types
 };
 
-export const handleCreateNewSearchForm = (taskId: string, context: string): t.SearchActionType => {
+export const newCreateSearchForm = (taskId: string, context: string): t.SearchActionType => {
   return {
     type: t.CREATE_NEW_SEARCH,
     taskId,

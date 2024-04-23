@@ -21,7 +21,7 @@ import { SearchStateTaskEntry } from './reducer';
 const selectSearchStateForTask = (
   state: RootState,
   taskId: string,
-  contactId: string,
-): SearchStateTaskEntry | undefined => (taskId ? state[namespace].searchContacts.tasks[taskId][contactId] : undefined);
+  context: string,
+): SearchStateTaskEntry | undefined => (taskId ? state[namespace].searchContacts.tasks[taskId]?.[context] : undefined);
 
 export default selectSearchStateForTask;

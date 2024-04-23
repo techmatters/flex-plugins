@@ -19,8 +19,8 @@ import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
 import selectSearchStateForTask from './selectSearchStateForTask';
 
-const selectCasesForSearchResults = (state: RootState, taskSid: string, contactId: string): SearchCaseResult => {
-  const resultReferences = selectSearchStateForTask(state, taskSid, contactId)?.searchCasesResult;
+const selectCasesForSearchResults = (state: RootState, taskSid: string, context: string): SearchCaseResult => {
+  const resultReferences = selectSearchStateForTask(state, taskSid, context)?.searchCasesResult;
   if (!resultReferences) {
     return {
       count: 0,
