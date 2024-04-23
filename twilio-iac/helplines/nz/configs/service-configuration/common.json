@@ -22,6 +22,7 @@
             "enable_resources": false,
             "enable_save_insights": true,
             "enable_separate_timeline_view": false,
+            "enable_teams_view_enhancements": true,
             "enable_transcripts": false,
             "enable_voice_recordings": true,
             "enable_twilio_transcripts": false
