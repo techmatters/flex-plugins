@@ -11,12 +11,12 @@ provider "aws" {
 
 data "aws_ssm_parameter" "alb_http_listener_arn" {
   provider = aws.bucket
-  name = "${var.environment}/hrm/http/${var.region}/alb-listener-https-arn"
+  name = "/${var.environment}/hrm/http/${var.region}/alb-listener-https-arn"
 }
 
 module "message_lambdas" {
   source = "../message-handler-lambda"
-  for_each = var.message_handler_lambdas
+  for_each = toset(var.message_handler_lambdas)
   channel = var.channel
   name = each.value
   environment = var.environment
