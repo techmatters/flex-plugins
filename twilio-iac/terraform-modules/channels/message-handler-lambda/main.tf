@@ -8,7 +8,7 @@ locals {
   aws_account_id = data.aws_caller_identity.current.account_id
   full_name = "${var.environment}-${var.short_helpline}-${var.name}"
 
-  ecr_url  = data.aws_ssm_parameter.ecr_url
+  ecr_url  = data.aws_ssm_parameter.ecr_url.value
 
   env_vars = merge(var.env_vars, {
     NODE_ENV = var.environment

@@ -45,7 +45,6 @@ variable "security_group_ids" {
 variable "alb_listener_arn" {
   description = "ARN of the ALB listener to attach the lambda to"
   type        = string
-  default     = null
 }
 
 variable "alb_paths" {

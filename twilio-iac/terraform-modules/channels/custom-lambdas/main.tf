@@ -11,4 +11,4 @@ module "message_lambdas" {
   region = var.region
   short_helpline = var.short_helpline
   policy_template = ""
-}
+  alb_listener_arn = data.aws_ssm_parameter.alb_http_listener_arn.value
