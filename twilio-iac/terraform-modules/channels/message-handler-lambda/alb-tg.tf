@@ -56,7 +56,7 @@ resource "aws_lb_listener_rule" "main" {
 
   tags = {
     Terraform = true
-    service   = 'custom-channel'
+    service   = "custom-channel"
     channel   = var.channel
     app       = var.name
   }
