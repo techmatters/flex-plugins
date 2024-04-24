@@ -25,5 +25,5 @@ variable "channel" {
 variable "message_handler_lambdas" {
   description = "The list of message handler lambdas"
   type        = list(string)
-  default     = ["native-message-to-flex-message", "flex-message-to-native-message"]
+  default     = ["native-to-flex", "flex-to-native"]
 }
