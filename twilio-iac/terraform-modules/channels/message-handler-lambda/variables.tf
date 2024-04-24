@@ -56,7 +56,7 @@ variable "alb_paths" {
 variable "priority" {
   type        = number
   description = "The priority for the lambda target group"
-  default     = 99999
+  default     = 1
 }
 
 variable "channel" {
