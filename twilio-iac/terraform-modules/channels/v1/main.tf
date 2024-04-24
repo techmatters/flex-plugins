@@ -113,5 +113,5 @@ module "custom_lambdas" {
   short_helpline = var.short_helpline
   region = var.region
   environment = var.environment
-  base_priority = index(values(local.custom_lambda_channels), each.key)
+  base_priority = index(keys(local.custom_lambda_channels), each.key)
 }
