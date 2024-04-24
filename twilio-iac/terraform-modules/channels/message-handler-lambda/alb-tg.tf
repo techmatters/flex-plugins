@@ -41,7 +41,6 @@ resource "aws_lb_target_group_attachment" "main" {
 
 resource "aws_lb_listener_rule" "main" {
   listener_arn = var.alb_listener_arn
-  priority     = var.priority
 
   action {
     type             = "forward"

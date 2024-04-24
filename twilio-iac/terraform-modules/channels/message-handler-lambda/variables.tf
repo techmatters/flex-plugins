@@ -53,12 +53,6 @@ variable "alb_paths" {
   default     = null
 }
 
-variable "priority" {
-  type        = number
-  description = "The priority for the lambda target group"
-  default     = 1
-}
-
 variable "channel" {
   type        = string
   description = "The service name for the lambda"
