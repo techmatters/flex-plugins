@@ -26,13 +26,13 @@ resource "aws_lambda_permission" "alb" {
   action        = "lambda:InvokeFunction"
   function_name = module.lambda.lambda_function_name
   principal     = "elasticloadbalancing.amazonaws.com"
-  qualifier     = aws_lambda_alias.live[0].name
-  source_arn    = aws_lb_target_group.this[0].arn
+  qualifier     = aws_lambda_alias.live.name
+  source_arn    = aws_lb_target_group.this.arn
 }
 
 resource "aws_lb_target_group_attachment" "main" {
-  target_group_arn = aws_lb_target_group.this[0].arn
-  target_id        = aws_lambda_alias.live[0].arn
+  target_group_arn = aws_lb_target_group.this.arn
+  target_id        = aws_lambda_alias.live.arn
   depends_on = [
     aws_lambda_permission.alb,
     aws_lambda_alias.live
@@ -45,7 +45,7 @@ resource "aws_lb_listener_rule" "main" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.this[0].arn
+    target_group_arn = aws_lb_target_group.this.arn
   }
 
   condition {
