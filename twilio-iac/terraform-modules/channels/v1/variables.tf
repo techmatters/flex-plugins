@@ -85,8 +85,12 @@ variable "enable_post_survey" {
   default = false
 }
 
-
 variable "flex_chat_service_sid" {
   description = "Internal Twilio resource SID provided by another module"
   type        = string
+}
+
+variable base_priority {
+  description = "The base priority for the ALB rules"
+  type        = number
 }

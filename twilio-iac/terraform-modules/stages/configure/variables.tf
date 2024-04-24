@@ -134,6 +134,12 @@ variable "channels" {
 
 }
 
+variable "custom_channel_alb_rules_base_priority" {
+  type        = number
+  description = "The base priority for the custom channel ALB rules. Must be different for each helpline."
+  default     = 500
+}
+
 variable "flow_vars" {
   type        = map(string)
   default     = {}

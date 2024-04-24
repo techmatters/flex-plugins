@@ -27,3 +27,8 @@ variable "message_handler_lambdas" {
   type        = list(string)
   default     = ["native-to-flex", "flex-to-native"]
 }
+
+variable base_priority {
+  description = "The base priority for the ALB rules"
+  type        = number
+}
