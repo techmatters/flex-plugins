@@ -15,7 +15,7 @@ resource "aws_lb_target_group" "this" {
 
   tags = {
     Terraform = true
-    service   = 'custom-channel'
+    service   = "custom-channel"
     channel   = var.channel
     app       = var.name
   }

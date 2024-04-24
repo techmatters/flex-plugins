@@ -1,17 +1,7 @@
-terraform {
-  required_providers {
-    aws = {
-      source                = "hashicorp/aws"
-      configuration_aliases = [aws.ssm]
-    }
-  }
-}
-
 data "aws_caller_identity" "current" {}
 
 data "aws_ssm_parameter" "ecr_url" {
   name     = "/${var.environment}/twilio/${var.region}/custom-channel/${var.channel}/lambda/${var.name}/ecr-url"
-  provider = aws.ssm
 }
 
 locals {
@@ -68,7 +58,7 @@ module "lambda" {
   tags = {
     Name = local.full_name
     helpline = var.short_helpline
-    service = 'custom-channel'
+    service = "custom-channel"
     channel = var.channel
     app     = var.name
   }

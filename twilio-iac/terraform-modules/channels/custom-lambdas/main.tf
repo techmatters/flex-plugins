@@ -1,14 +1,4 @@
-terraform {
-  required_providers {
-    aws = {
-      source                = "hashicorp/aws"
-      configuration_aliases = [aws.ssm]
-    }
-  }
-}
-
 data "aws_ssm_parameter" "alb_http_listener_arn" {
-  provider = aws.ssm
   name = "/${var.environment}/hrm/http/${var.region}/alb-listener-https-arn"
 }
 
