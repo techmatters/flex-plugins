@@ -112,12 +112,12 @@ jobs:
 
       - name: Set Build Args
         run: |
-          lambda_full_path="$lambda/{{ inputs.lambda_path }}"
+          lambda_full_path="$lambda/${{ inputs.lambda_path }}"
           # Extracting directory and lambda name from the lambda path
           build_lambda_dir=$(dirname $lambda_full_path)
           build_lambda_name=$(basename $lambda_full_path)
 
-          repo_name=${{lambda_full_path}}
+          repo_name=$lambda_full_path
           echo "ecr_repository=${{ inputs.environment }}/hrm-$repo_name" >> $GITHUB_ENV
           echo "build_lambda_name=$build_lambda_name" >> $GITHUB_ENV
           echo "build_lambda_dir=$build_lambda_dir" >> $GITHUB_ENV
