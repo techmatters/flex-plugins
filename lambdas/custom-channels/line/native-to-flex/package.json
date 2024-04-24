@@ -1,5 +1,5 @@
 {
-  "name": "native-message-to-flex-message",
+  "name": "native-to-flex",
   "version": "1.0.0",
   "dependencies": {
   },
@@ -11,7 +11,7 @@
     "undici": "^5.28.3"
   },
   "scripts": {
-    "docker:build": "docker build -t custom-channels-line-native-message-to-flex-message --build-arg lambda_name=native-message-to-flex-message --build-arg lambda_dir=custom-channels/line -f ../../../Dockerfile ../../../",
+    "docker:build": "docker build -t custom-channels-line-native-to-flex --build-arg lambda_name=native-to-flex --build-arg lambda_dir=custom-channels/line -f ../../../Dockerfile ../../../",
     "test:unit": "jest tests/unit",
     "test": "jest"
   }

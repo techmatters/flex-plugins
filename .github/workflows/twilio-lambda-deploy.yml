@@ -1,0 +1,213 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+name: 'Deploy Twilio Lambda'
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to deploy.
+        default: development
+        required: true
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+      region:
+        description: AWS Region to deploy to.
+        required: true
+        type: choice
+        options:
+          - us-east-1
+          - eu-west-1
+          - ca-central-1
+      helpline_code:
+        description: Helpline to deploy.
+        default: AS
+        required: true
+        type: string
+      lambda_path:
+        description: 'Lambda path'
+        required: true
+        type: choice
+        options:
+          - custom-channels/line/native-to-flex
+          - custom-channels/line/flex-to-native
+
+  workflow_call:
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+    inputs:
+      environment:
+        description: Environment to deploy. E.G = development, staging, production (must match with the AWS environment value). Default value = development
+        type: string
+        default: development
+        required: true
+
+      region:
+        description: AWS Region to deploy to.
+        default: us-east-1
+        required: true
+        type: string
+      helpline_code:
+        description: Helpline to deploy.
+        default: AS
+        required: true
+        type: string
+      lambda_path:
+        description: 'Lambda path'
+        required: true
+        type: string
+      send-slack-message:
+        description: 'Specifies if should send a Slack message at the end of successful run. Defaults to true'
+        required: false
+        default: 'true'
+        type: string
+
+env:
+  # if anything is set as a secret, it can't be used in outputs. So we need to set it as an env var
+  PRIMARY_AWS_REGION: us-east-1
+
+jobs:
+  build_lambda:
+    name: Build Lambda Image
+    runs-on: ubuntu-latest
+
+    outputs:
+      matrix_json: ${{ steps.generate-output.outputs.matrix_json }}
+      docker_image: ${{ steps.generate-output.outputs.docker_image}}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.PRIMARY_AWS_REGION }}
+          # this plugin sets the AWS account ID to a secret which is not allowed in outputs
+          # we have to disable that so repo output will work
+          mask-aws-account-id: 'no'
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set Build Args
+        run: |
+          lambda_full_path="$lambda/{{ inputs.lambda_path }}"
+          # Extracting directory and lambda name from the lambda path
+          build_lambda_dir=$(dirname $lambda_full_path)
+          build_lambda_name=$(basename $lambda_full_path)
+
+          repo_name=${{lambda_full_path}}
+          echo "ecr_repository=${{ inputs.environment }}/hrm-$repo_name" >> $GITHUB_ENV
+          echo "build_lambda_name=$build_lambda_name" >> $GITHUB_ENV
+          echo "build_lambda_dir=$build_lambda_dir" >> $GITHUB_ENV
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./
+          file: ./lambdas/Dockerfile
+          build-args: |
+            lambda_name=${{ env.build_lambda_name }}
+            lambda_dir=${{ env.build_lambda_dir }}
+          push: true
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.ecr_repository }}:live,${{ steps.login-ecr.outputs.registry }}/${{ env.ecr_repository }}:${{ github.sha }}
+
+  deploy_lambdas:
+    needs: build_lambda
+    name: Deploy to Amazon ECS
+    runs-on: ubuntu-latest
+
+    env:
+      DOCKER_IMAGE: ${{ needs.build_lambda.outputs.docker_image }}
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ matrix.region }}
+          # this plugin sets the AWS account ID to a secret which is not allowed in outputs
+          # we have to disable that so repo output will work
+          mask-aws-account-id: 'no'
+
+      # The search and replace is kinda ugly but works. We need to replace the primary region with the region we're deploying to.
+      # because lambdas don't support ECR images in different regions. We use cross region replication in ECR to make the image
+      # that is pushed in the primary region available in all other regions.
+      - name: Update Lambda and Publish
+        run: |
+          DOCKER_IMAGE=$(echo "${{ env.DOCKER_IMAGE }}" | sed -r 's/${{ env.PRIMARY_AWS_REGION }}/${{ inputs.region }}/g')
+          DOCKER_IMAGE_BASE=$(echo "$DOCKER_IMAGE" | cut -d':' -f1)
+          LAMBDA_FUNCTIONS=$(aws lambda list-functions --query "Functions[?contains(Description, 'ecr_image:${DOCKER_IMAGE_BASE}')].FunctionName" --output text)
+
+          if [ -z "$LAMBDA_FUNCTIONS" ]; then
+            echo "Warning: No Lambda functions found for image $DOCKER_IMAGE_BASE"
+            exit 0
+          fi
+
+          for LAMBDA in $LAMBDA_FUNCTIONS; do
+            OUTPUT=$(aws lambda update-function-code --function-name $LAMBDA --image-uri "$DOCKER_IMAGE" --publish)
+            NEW_VERSION=$(echo "$OUTPUT" | jq -r '.Version')
+
+            ALIAS_EXISTS=$(aws lambda get-alias --function-name $LAMBDA --name live || echo "not_exists")
+            if [ "$ALIAS_EXISTS" == "not_exists" ]; then
+              aws lambda create-alias --function-name $LAMBDA --name live --function-version $NEW_VERSION
+            else
+              aws lambda update-alias --function-name $LAMBDA --name live --function-version $NEW_VERSION
+            fi
+          done
+
+      # reconfigure AWS credentials to use the default region for SSM Parameter Store.
+      # aws-actions/configure-aws-credentials@v4 overrides env.AWS_DEFAULT_REGION, so
+      # we name our env var PRIMARY_AWS_REGION to avoid that.
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.PRIMARY_AWS_REGION }}
+
+      # Set any env vars needed from Parameter Store here
+      - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
+        uses: 'marvinpinto/action-inject-ssm-secrets@latest'
+        with:
+          ssm_parameter: 'GITHUB_ACTIONS_SLACK_BOT_TOKEN'
+          env_variable_name: 'GITHUB_ACTIONS_SLACK_BOT_TOKEN'
+
+      - name: Set ASELO_DEPLOYS_CHANNEL_ID
+        uses: 'marvinpinto/action-inject-ssm-secrets@latest'
+        with:
+          ssm_parameter: 'ASELO_DEPLOYS_CHANNEL_ID'
+          env_variable_name: 'ASELO_DEPLOYS_CHANNEL_ID'
+
+      # Send Slack notifying success
+      - name: Slack Aselo channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+          slack-message: '`[HRM lambdas - ${{ inputs.lambda_path }}]` Deployment of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }} to region `${{ matrix.region }}`, environment `${{ inputs.environment }}` :rocket:.'
+        env:
+          SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+        if: ${{ inputs.send-slack-message != 'false' }}
