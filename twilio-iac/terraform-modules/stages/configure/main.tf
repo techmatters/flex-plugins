@@ -1,3 +1,12 @@
+provider "aws" {
+  alias  = "ssm"
+  region = "us-east-1"
+  assume_role {
+    role_arn     = "arn:aws:iam::712893914485:role/tf-twilio-iac-${lower(var.environment)}"
+    session_name = "tf-${basename(abspath(path.module))}"
+  }
+}
+
 data "aws_ssm_parameter" "secrets" {
   name = "/terraform/twilio-iac/${var.environment}/${var.short_helpline}/secrets.json"
 }
