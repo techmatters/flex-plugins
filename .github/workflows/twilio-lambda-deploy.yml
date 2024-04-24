@@ -118,7 +118,7 @@ jobs:
           build_lambda_name=$(basename $lambda_full_path)
 
           repo_name=$lambda_full_path
-          echo "ecr_repository=${{ inputs.environment }}/$repo_name" >> $GITHUB_ENV
+          echo "ecr_repository=${{ inputs.environment }}$repo_name" >> $GITHUB_ENV
           echo "build_lambda_name=$build_lambda_name" >> $GITHUB_ENV
           echo "build_lambda_dir=$build_lambda_dir" >> $GITHUB_ENV
 
