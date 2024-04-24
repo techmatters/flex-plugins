@@ -101,7 +101,7 @@ resource "aws_ssm_parameter" "channel_flex_flow_sid_parameter" {
 }
 
 module "custom_lambdas" {
-  source = "./custom-lambdas"
+  source = "../custom-lambdas"
   for_each = {for key, val in var.channels:
   key => val if val.lambda_channel == true}
 
