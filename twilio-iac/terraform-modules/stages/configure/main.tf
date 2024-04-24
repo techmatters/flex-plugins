@@ -57,6 +57,7 @@ module "channel" {
   serverless_service_sid     = local.serverless_service_sid
   serverless_environment_sid = local.serverless_environment_production_sid
   region                     = var.helpline_region
+  base_priority              = 500
 }
 
 
