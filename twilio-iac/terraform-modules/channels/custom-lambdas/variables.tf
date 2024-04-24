@@ -8,18 +8,7 @@ variable "environment" {
   type        = string
 }
 
-variable "short_environment" {
-  description = "Short upper case environment identifier, typically 'PROD', 'STG' or 'DEV'"
-  type        = string
-}
-
 variable "region" {
-  description = "AWS region to create the resources"
-  type        = string
-}
-
-
-variable "short_region" {
   description = "AWS region to create the resources"
   type        = string
 }

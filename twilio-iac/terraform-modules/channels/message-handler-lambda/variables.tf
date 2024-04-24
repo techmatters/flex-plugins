@@ -3,6 +3,11 @@ variable "environment" {
   description = "The environment name"
 }
 
+variable "short_helpline" {
+  description = "Short (usually 2 letter) upper case code for helpline"
+  type        = string
+}
+
 variable "region" {
   type        = string
   description = "The region to deploy to"
@@ -12,11 +17,6 @@ variable "ssm_region" {
   description = "AWS region where the SSM parameters are located"
   type        = string
   default     = "us-east-1"
-}
-
-variable "short_region" {
-  description = "AWS region to create the resources"
-  type        = string
 }
 
 variable "name" {

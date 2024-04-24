@@ -16,11 +16,7 @@ data "aws_ssm_parameter" "ecr_url" {
 
 locals {
   aws_account_id = data.aws_caller_identity.current.account_id
-  // Some names need to be region specific, but have a length limit, so we use a short region
-  full_name = "${var.environment}-${var.short_region}-${var.name}"
-
-  // Others need to be short, but not region specific
-  short_name = "${var.environment}-${var.name}"
+  full_name = "${var.environment}-${var.short_helpline}-${var.name}"
 
   ecr_url  = data.aws_ssm_parameter.ecr_url
 
@@ -71,7 +67,7 @@ module "lambda" {
 
   tags = {
     Name = local.full_name
-
+    helpline = var.short_helpline
     service = 'custom-channel'
     channel = var.channel
     app     = var.name
@@ -83,6 +79,7 @@ resource "aws_iam_policy" "this" {
   name        = "${local.full_name}-lambda-access"
   description = "Policy lambda microservice access to other AWS resources"
   policy = templatefile(var.policy_template, {
+    helpline       = var.short_helpline
     environment    = var.environment
     region         = var.region
     name           = var.name

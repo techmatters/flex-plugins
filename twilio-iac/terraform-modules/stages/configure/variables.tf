@@ -125,9 +125,10 @@ variable "channels" {
   type = map(object({
     templatefile         = string,
     channel_type         = string,
-    contact_identity     = string
-    channel_flow_vars    = map(string)
-    chatbot_unique_names = list(string)
+    contact_identity     = string,
+    channel_flow_vars    = map(string),
+    chatbot_unique_names = list(string),
+    lambda_channel       = optional(bool),
   }))
   description = "Map of enabled channel objects with their attributes"
 
@@ -163,4 +164,9 @@ variable "case_status_transition_rules" {
     timeInStatusInterval = string
   }))
   default = null
+}
+
+variable "region" {
+  description = "AWS region to create the resources"
+  type        = string
 }

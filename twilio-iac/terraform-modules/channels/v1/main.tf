@@ -99,3 +99,15 @@ resource "aws_ssm_parameter" "channel_flex_flow_sid_parameter" {
   value       = twilio_flex_flex_flows_v1.channel_flow[each.key].sid
   description = "${title(replace(each.key, "_", " "))} Flex Flow SID"
 }
+
+module "custom_lambdas" {
+  source = "./custom-lambdas"
+  for_each = {for key, val in var.channels:
+  key => val if val.lambda_channel == true}
+
+  channel  = each.key
+  helpline = var.helpline
+  short_helpline = var.short_helpline
+  region = var.region
+  environment = var.environment
+}

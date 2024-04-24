@@ -21,6 +21,6 @@ module "message_lambdas" {
   name = each.value
   environment = var.environment
   region = var.region
-  short_region = var.short_region
+  short_helpline = var.short_helpline
   policy_template = ""
 }
