@@ -10,7 +10,7 @@ resource "aws_lambda_alias" "live" {
 }
 
 resource "aws_lb_target_group" "this" {
-  name        = local.short_name
+  name        = local.full_name
   target_type = "lambda"
 
   tags = {
