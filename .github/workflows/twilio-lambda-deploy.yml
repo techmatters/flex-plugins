@@ -89,7 +89,6 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      matrix_json: ${{ steps.generate-output.outputs.matrix_json }}
       docker_image: ${{ steps.generate-output.outputs.docker_image}}
 
     steps:
@@ -133,6 +132,11 @@ jobs:
           push: true
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.ecr_repository }}:live,${{ steps.login-ecr.outputs.registry }}/${{ env.ecr_repository }}:${{ github.sha }}
 
+      -name: Generate output
+       id: generate-output
+       run: |
+         # output to logs
+         echo "docker_image=${{ steps.login-ecr.outputs.registry }}/${{ env.ecr_repository }}:${{ github.sha }}" >> $GITHUB_OUTPUT
   deploy_lambdas:
     needs: build_lambda
     name: Deploy to Amazon ECS
@@ -147,7 +151,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ matrix.region }}
+          aws-region: ${{ inputs.region }}
           # this plugin sets the AWS account ID to a secret which is not allowed in outputs
           # we have to disable that so repo output will work
           mask-aws-account-id: 'no'
@@ -207,7 +211,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.25.0
         with:
           channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-          slack-message: '`[HRM lambdas - ${{ inputs.lambda_path }}]` Deployment of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }} to region `${{ matrix.region }}`, environment `${{ inputs.environment }}` :rocket:.'
+          slack-message: '`[HRM lambdas - ${{ inputs.lambda_path }}]` Deployment of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }} to region `${{ inputs.region }}`, environment `${{ inputs.environment }}` :rocket:.'
         env:
           SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
         if: ${{ inputs.send-slack-message != 'false' }}
