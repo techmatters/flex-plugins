@@ -13,15 +13,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { setUpSkillsColumn } from './SkillsColumn';
-import { setUpTeamsViewSorting } from './teamsViewSorting';
-import { setUpTeamsViewFilters, setUpWorkerDirectoryFilters } from './teamsViewFilters';
 
-const TeamsView = {
-  setUpSkillsColumn,
-  setUpTeamsViewSorting,
-  setUpTeamsViewFilters,
-  setUpWorkerDirectoryFilters,
-};
+/*
+ * Lifted from https://stackoverflow.com/a/51082563
+ * Dont leave calls to it in code long term, it's just for debugging
+ */
 
-export default TeamsView;
+import { useMemo } from 'react';
+
+import { getAseloFeatureFlags } from '../hrmConfig';
+
+/**
+ * This hook is calling on every re-render.
+ * Ideally we'll move FF to live as part of a context provider, so updates will "trigger a re-render"
+ * and not the other way around
+ */
+export default function useFeatureFlags() {
+  return getAseloFeatureFlags();
+}

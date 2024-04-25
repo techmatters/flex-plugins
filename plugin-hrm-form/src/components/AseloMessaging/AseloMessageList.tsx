@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import type { MessageListChildrenProps } from '@twilio/flex-ui-core/src/components/channel/MessageList/MessageList';
+import type { MessageListChildrenProps } from '@twilio/flex-ui-core/src/components/channel/MessageList/MessageList.definitions';
 import { ConversationState, Template } from '@twilio/flex-ui';
 
 import { MessageList } from '../Messaging/MessageList';

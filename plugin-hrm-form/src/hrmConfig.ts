@@ -27,11 +27,15 @@ type ContactSaveFrequency = 'onTabChange' | 'onFinalSaveAndTransfer';
 
 const readConfig = () => {
   const manager = Flex.Manager.getInstance();
+  const { identity, token } = manager.user;
+
+  // This is a really hacky test, need a better way to determine if the user is one of our bots
+  const userIsAseloBot = /aselo.+@techmatters\.org/.test(identity);
 
   const accountSid = manager.serviceConfiguration.account_sid;
   const hrmBaseUrl = `${process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}/${
     manager.serviceConfiguration.attributes.hrm_api_version
-  }/accounts/${accountSid}`;
+  }/accounts/${accountSid}${userIsAseloBot ? '-aselo_test' : ''}`;
   const hrmMicroserviceBaseUrl = process.env.REACT_APP_HRM_MICROSERVICE_BASE_URL
     ? `${process.env.REACT_APP_HRM_MICROSERVICE_BASE_URL}${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${accountSid}`
     : hrmBaseUrl;
@@ -61,7 +65,6 @@ const readConfig = () => {
   const workerSid = manager.workerClient.sid as WorkerSID;
   const { helpline, counselorLanguage, full_name: counselorName, roles } = manager.workerClient.attributes as any;
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
-  const { identity, token } = manager.user;
   const isSupervisor = roles.includes('supervisor');
   const {
     helplineLanguage,

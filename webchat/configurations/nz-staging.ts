@@ -378,6 +378,15 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         message: 'You need to agree with our client privacy statement to start a chat ',
       },
     },
+    {
+      type: 'checkbox',
+      name: 'inNZ',
+      label: 'I am in New Zealand',
+      required: {
+        value: true,
+        message: 'You need to be in New Zealand to receive our service',
+      },
+    },
   ],
 };
 

@@ -1,0 +1,58 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+name: 'Deploy Twilio Lambda'
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to deploy.
+        default: development
+        required: true
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+
+  workflow_call:
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+    inputs:
+      environment:
+        description: Environment to deploy. E.G = development, staging, production (must match with the AWS environment value). Default value = development
+        type: string
+        default: development
+        required: true
+
+env:
+  ECR_REPOSITORY: ${{ inputs.environment }}/e2e-test
+  # if anything is set as a secret, it can't be used in outputs. So we need to set it as an env var
+  PRIMARY_AWS_REGION: us-east-1
+
+jobs:
+  build_lambda:
+    name: Build Lambda Image
+    runs-on: ubuntu-latest
+
+    outputs:
+      matrix_json: ${{ steps.generate-output.outputs.matrix_json }}
+      docker_image: ${{ steps.generate-output.outputs.docker_image}}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4

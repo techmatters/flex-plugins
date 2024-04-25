@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
@@ -25,13 +25,12 @@ import { newOpenModalAction } from '../../states/routing/actions';
 import type { Case } from '../../types/types';
 import InfoIcon from './InfoIcon';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
-import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import { RootState } from '../../states';
 import { BannerActionLink, BannerContainer, CaseLink, Text } from '../../styles/banners';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { getInitializedCan, PermissionActions } from '../../permissions';
 import { getHrmConfig } from '../../hrmConfig';
-import { updateCaseOverviewAsyncAction } from '../../states/case/saveCase';
+import { useCase } from '../../states/case/hooks/useCase';
 
 type OwnProps = {
   taskId: string;
@@ -44,10 +43,8 @@ const mapStateToProps = (state: RootState, { taskId, contactId }: OwnProps) => {
   const offlineSavedContact = selectContactByTaskSid(state, taskId)?.savedContact;
   const existingSavedContact = selectContactStateByContactId(state, contactId)?.savedContact;
   const caseId = offlineSavedContact?.caseId || existingSavedContact?.caseId;
-  const connectedCase = selectCaseByCaseId(state, caseId)?.connectedCase;
   return {
     contact: offlineSavedContact || existingSavedContact,
-    connectedCase,
     caseId,
     existingSavedContact,
   };
@@ -61,23 +58,21 @@ const mapDispatchToProps = (dispatch, { taskId }: OwnProps) => ({
     await asyncDispatch(dispatch)(removeFromCaseAsyncAction(contactId));
     dispatch(showRemovedFromCaseBannerAction(contactId, caseId));
   },
-  loadCase: (caseId: Case['id']) => dispatch(updateCaseOverviewAsyncAction(caseId)),
 });
 
 const ContactAddedToCaseBanner: React.FC<Props> = ({
-  connectedCase,
   contact,
   viewCaseDetails,
   removeContactFromCase,
-  loadCase,
   caseId,
   existingSavedContact,
 }) => {
-  useEffect(() => {
-    if (caseId && !connectedCase) {
-      loadCase(caseId);
-    }
-  }, [caseId, connectedCase, loadCase]);
+  const { connectedCase } = useCase({
+    caseId: contact.caseId,
+    referenceId: `contact-added-to-case-banner-${contact.id}`,
+    refresh: false,
+  });
+
   /*
   TODO: Convert to a custom hook since it has been used in several places within
   the Flex-plugins repo?
@@ -93,7 +88,7 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
     can(PermissionActions.REMOVE_CONTACT_FROM_CASE, contact) &&
     can(PermissionActions.UPDATE_CASE_CONTACTS, connectedCase) &&
     connectedCase;
-  const canViewcase = can(PermissionActions.VIEW_CASE, connectedCase) && connectedCase;
+  const canViewcase = connectedCase && can(PermissionActions.VIEW_CASE, connectedCase) && connectedCase;
 
   if (connectedCase === undefined && canViewContactAndCase) return null;
 

@@ -1,7 +1,6 @@
 {
     "attributes": {
         "feature_flags": {
-
             "enable_transcripts": true,
             "enable_twilio_transcripts": false
         },
@@ -11,5 +10,8 @@
             "semver": "~1.31.2",
             "version": "1.31.2"
         }
-    }
+    },
+    "ui_attributes": {
+      "logLevel": "debug"
+  }
 }

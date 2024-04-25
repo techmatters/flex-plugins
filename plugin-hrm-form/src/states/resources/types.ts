@@ -13,15 +13,5 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { setUpSkillsColumn } from './SkillsColumn';
-import { setUpTeamsViewSorting } from './teamsViewSorting';
-import { setUpTeamsViewFilters, setUpWorkerDirectoryFilters } from './teamsViewFilters';
 
-const TeamsView = {
-  setUpSkillsColumn,
-  setUpTeamsViewSorting,
-  setUpTeamsViewFilters,
-  setUpWorkerDirectoryFilters,
-};
-
-export default TeamsView;
+export type FilterOption<T extends string | number = string> = { value: T; label?: string };

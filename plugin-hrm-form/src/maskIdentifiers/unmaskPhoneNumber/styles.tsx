@@ -14,11 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/* eslint-disable no-nested-ternary */
-import React from 'react';
 import { styled } from '@twilio/flex-ui';
 
-import { TransferStyledButton } from '../../../styles/buttons';
+import { TransferStyledButton } from '../../styles/buttons';
 
 export const PhoneNumberPopperText = styled('p')`
   font-size: 15px;
