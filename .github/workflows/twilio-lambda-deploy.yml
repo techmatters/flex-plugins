@@ -162,25 +162,18 @@ jobs:
       - name: Update Lambda and Publish
         run: |
           DOCKER_IMAGE=$(echo "${{ env.DOCKER_IMAGE }}" | sed -r 's/${{ env.PRIMARY_AWS_REGION }}/${{ inputs.region }}/g')
-          DOCKER_IMAGE_BASE=$(echo "$DOCKER_IMAGE" | cut -d':' -f1)
-          LAMBDA_FUNCTIONS=$(aws lambda list-functions --query "Functions[?contains(Description, 'ecr_image:${DOCKER_IMAGE_BASE}')].FunctionName" --output text)
 
-          if [ -z "$LAMBDA_FUNCTIONS" ]; then
-            echo "Warning: No Lambda functions found for image $DOCKER_IMAGE_BASE"
-            exit 0
+          LAMBDA_NAME=$(basename "./${{ inputs.lambda_path }}")
+          LAMBDA="${{ inputs.environment }}-${{ inputs.helpline_code }}-$LAMBDA_NAME"
+          OUTPUT=$(aws lambda update-function-code --function-name $LAMBDA --image-uri "$DOCKER_IMAGE" --publish)
+          NEW_VERSION=$(echo "$OUTPUT" | jq -r '.Version')
+
+          ALIAS_EXISTS=$(aws lambda get-alias --function-name $LAMBDA --name live || echo "not_exists")
+          if [ "$ALIAS_EXISTS" == "not_exists" ]; then
+            aws lambda create-alias --function-name $LAMBDA --name live --function-version $NEW_VERSION
+          else
+            aws lambda update-alias --function-name $LAMBDA --name live --function-version $NEW_VERSION
           fi
-
-          for LAMBDA in $LAMBDA_FUNCTIONS; do
-            OUTPUT=$(aws lambda update-function-code --function-name $LAMBDA --image-uri "$DOCKER_IMAGE" --publish)
-            NEW_VERSION=$(echo "$OUTPUT" | jq -r '.Version')
-
-            ALIAS_EXISTS=$(aws lambda get-alias --function-name $LAMBDA --name live || echo "not_exists")
-            if [ "$ALIAS_EXISTS" == "not_exists" ]; then
-              aws lambda create-alias --function-name $LAMBDA --name live --function-version $NEW_VERSION
-            else
-              aws lambda update-alias --function-name $LAMBDA --name live --function-version $NEW_VERSION
-            fi
-          done
 
       # reconfigure AWS credentials to use the default region for SSM Parameter Store.
       # aws-actions/configure-aws-credentials@v4 overrides env.AWS_DEFAULT_REGION, so
