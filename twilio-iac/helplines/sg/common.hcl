@@ -28,7 +28,8 @@ locals {
     task_queues = {
       master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "Tinkle Friend"
+        "friendly_name"  = "Tinkle Friend",
+        "max_reserved_workers" = 5
       },
       survey : {
         "target_workers" = "1==0",
