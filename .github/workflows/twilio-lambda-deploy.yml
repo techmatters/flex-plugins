@@ -125,7 +125,7 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: ../lambdas
+          context: ./lambdas
           file: ./lambdas/Dockerfile
           build-args: |
             lambda_name=${{ env.build_lambda_name }}
