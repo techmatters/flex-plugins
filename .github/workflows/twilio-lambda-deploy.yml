@@ -132,11 +132,11 @@ jobs:
           push: true
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.ecr_repository }}:live,${{ steps.login-ecr.outputs.registry }}/${{ env.ecr_repository }}:${{ github.sha }}
 
-      -name: Generate output
-       id: generate-output
-       run: |
-         # output to logs
-         echo "docker_image=${{ steps.login-ecr.outputs.registry }}/${{ env.ecr_repository }}:${{ github.sha }}" >> $GITHUB_OUTPUT
+      - name: Generate output
+        id: generate-output
+        run: |
+          # output to logs
+          echo "docker_image=${{ steps.login-ecr.outputs.registry }}/${{ env.ecr_repository }}:${{ github.sha }}" >> $GITHUB_OUTPUT
   deploy_lambdas:
     needs: build_lambda
     name: Deploy to Amazon ECS
