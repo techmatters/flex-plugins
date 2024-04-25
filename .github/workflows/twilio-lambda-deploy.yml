@@ -112,7 +112,7 @@ jobs:
 
       - name: Set Build Args
         run: |
-          lambda_full_path="$lambda/${{ inputs.lambda_path }}"
+          lambda_full_path="./${{ inputs.lambda_path }}"
           # Extracting directory and lambda name from the lambda path
           build_lambda_dir=$(dirname $lambda_full_path)
           build_lambda_name=$(basename $lambda_full_path)
