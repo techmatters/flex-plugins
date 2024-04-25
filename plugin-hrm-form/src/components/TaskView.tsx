@@ -167,11 +167,9 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const unsavedContact = getUnsavedContact(savedContact, draftContact);
   const contactFormStateExists = Boolean(savedContact);
   const currentRoute = selectCurrentBaseRoute(state, task?.taskSid);
-  const searchStateExists = Boolean(selectSearchStateForTask(state, task?.taskSid, savedContact?.id));
   const contactIsCreating = selectIsContactCreating(state, task?.taskSid);
 
-  const shouldRecreateState =
-    currentDefinitionVersion && (!contactFormStateExists || !currentRoute || !searchStateExists);
+  const shouldRecreateState = currentDefinitionVersion && (!contactFormStateExists || !currentRoute);
 
   return {
     unsavedContact,

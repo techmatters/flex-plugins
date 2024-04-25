@@ -103,9 +103,7 @@ const contactUpdatingReducer = (state: SearchState, action: ContactUpdatingActio
     ...updatedState,
     tasks: {
       ...updatedState.tasks,
-      [contact.taskId]: {
-        [contact.id]: newTaskEntry,
-      },
+      [contact.taskId]: {},
     },
   };
 };
@@ -127,7 +125,9 @@ export function reduce(
       tasks: Object.fromEntries(
         Object.entries(state.tasks).map(([key, value]) => [
           key,
-          { ...value, context: { ...value.context, contactRefreshRequired: true } },
+          Object.fromEntries(
+            Object.entries(value).map(([key, context]) => [key, { ...context, contactRefreshRequired: true }]),
+          ),
         ]),
       ),
     };
@@ -139,7 +139,9 @@ export function reduce(
       tasks: Object.fromEntries(
         Object.entries(state.tasks).map(([key, value]) => [
           key,
-          { ...value, context: { ...value.context, caseRefreshRequired: true } },
+          Object.fromEntries(
+            Object.entries(value).map(([key, context]) => [key, { ...context, caseRefreshRequired: true }]),
+          ),
         ]),
       ),
     };
@@ -226,20 +228,20 @@ export function reduce(
         count: searchResult.count,
       };
       const previousContactCounts = dispatchedFromPreviousContacts
-        ? { ...task.previousContactCounts, contacts: searchResult.count }
-        : task.previousContactCounts;
+        ? { ...searchContext.previousContactCounts, contacts: searchResult.count }
+        : searchContext.previousContactCounts;
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [taskId]: {
             ...task,
-            previousContactCounts,
             [context]: {
               ...searchContext,
               searchContactsResult: newContactsResult,
               isRequesting: false,
               error: null,
+              previousContactCounts,
             },
           },
         },

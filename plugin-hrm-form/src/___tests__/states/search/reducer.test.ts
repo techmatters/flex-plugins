@@ -34,7 +34,7 @@ Object.fromEntries = fromentries;
 
 describe('search reducer', () => {
   const task = { taskSid: 'WT123' };
-  const context = '23456';
+  const context = 'root';
 
   const initialState = {
     tasks: {
@@ -62,7 +62,7 @@ describe('search reducer', () => {
 
     const { tasks } = result;
     expect(tasks[task.taskSid]).not.toBeUndefined();
-    expect(tasks[task.taskSid]['']).toStrictEqual(newTaskEntry);
+    expect(tasks[task.taskSid]).toStrictEqual({});
   });
 
   test('LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED action (should recreate the state)', () => {

@@ -53,7 +53,6 @@ const TabbedFormsSearch: React.FC<Props> = ({ task, draftContact, savedContact, 
     <Search
       task={task}
       currentIsCaller={savedContact?.rawJson?.callType === callTypes.caller}
-      contactId={savedContact?.id}
       saveUpdates={() => saveDraft(savedContact, draftContact)}
     />
   );

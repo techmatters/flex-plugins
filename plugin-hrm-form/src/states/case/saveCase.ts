@@ -79,7 +79,7 @@ const handlePendingAction = (handleAction, asyncAction) =>
 
 const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => {
   const caseDefinitionVersion = state.configuration.definitionVersions[connectedCase?.info?.definitionVersion];
-  const stateCase = state.connectedCase.cases[connectedCase.id]?.connectedCase;
+  const stateCase = state.connectedCase.cases[connectedCase?.id]?.connectedCase;
   const stateInfo = stateCase?.info;
 
   return {

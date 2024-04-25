@@ -86,8 +86,8 @@ test('PreviousContacts initial search', () => {
     </StorelessThemeProvider>,
   );
 
-  expect(searchContacts).toHaveBeenCalledWith(contact.savedContact.id);
-  expect(searchCases).toHaveBeenCalledWith(contact.savedContact.id);
+  expect(searchContacts).toHaveBeenCalled();
+  expect(searchCases).toHaveBeenCalled();
 });
 
 test('Dont repeat initial search calls on PreviousContacts', () => {

@@ -35,6 +35,9 @@ import { selectCounselorsHash } from '../../../states/configuration/selectCounse
 import selectPreviousContactCounts from '../../../states/search/selectPreviousContactCounts';
 import { iconsFromTask } from './iconsFromTask';
 import selectContactByTaskSid from '../../../states/contacts/selectContactByTaskSid';
+import { namespace } from '../../../states/storeNamespaces';
+import { getCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
+import { isCaseRoute } from '../../../states/routing/types';
 
 type OwnProps = {
   task: CustomITask;
@@ -50,6 +53,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
   openContactSearchResults,
   openCaseSearchResults,
   contact,
+  searchContext,
 }) => {
   const can = React.useMemo(() => {
     return getInitializedCan();
@@ -66,10 +70,9 @@ const PreviousContactsBanner: React.FC<Props> = ({
     const isTraceableNumber = ![null, undefined, '', 'Anonymous'].includes(contactNumber);
 
     if (isTraceableNumber) {
-      const searchRoot = task.taskSid === 'standalone-task-sid' ? 'root' : contact.savedContact.id;
       const searchParams = { contactNumber };
-      searchContacts(searchRoot)(searchParams, CONTACTS_PER_PAGE, 0, true);
-      searchCases(searchRoot)(searchParams, CASES_PER_PAGE, 0, true);
+      searchContacts(searchContext)(searchParams, CONTACTS_PER_PAGE, 0, true);
+      searchCases(searchContext)(searchParams, CASES_PER_PAGE, 0, true);
     }
   };
 
@@ -129,12 +132,18 @@ PreviousContactsBanner.displayName = 'PreviousContactsBanner';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const { taskSid } = task;
+  const { routing } = state[namespace];
   const contact = selectContactByTaskSid(state, task.taskSid);
+  const currentRoute = getCurrentTopmostRouteForTask(routing, task.taskSid);
+  const contextContactId =
+    (isCaseRoute(currentRoute) || currentRoute.route === 'search') && currentRoute.contextContactId;
+  const searchContext = contextContactId ? `contact-${contextContactId}` : 'root';
 
   return {
     previousContactCounts: selectPreviousContactCounts(state, taskSid, contact.savedContact?.id),
     counselorsHash: selectCounselorsHash(state),
     contact,
+    searchContext,
   };
 };
 
@@ -144,8 +153,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     viewPreviousContacts: viewPreviousContactsAction(dispatch)(task),
-    searchContacts: (contactId: string) => searchContactsAction(dispatch)(taskId, contactId),
-    searchCases: (contactId: string) => searchCasesAction(dispatch)(taskId, contactId),
+    searchContacts: (context: string) => searchContactsAction(dispatch)(taskId, context),
+    searchCases: (context: string) => searchCasesAction(dispatch)(taskId, context),
     openContactSearchResults: (contextContactId: string) => {
       // We put the form 'under' the search results in the modal stack so the back button takes them to the form without needing custom handlers
       dispatch(newOpenModalAction({ contextContactId, route: 'search', subroute: 'form' }, taskId));
