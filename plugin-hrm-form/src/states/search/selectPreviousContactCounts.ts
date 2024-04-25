@@ -18,7 +18,10 @@ import { RootState } from '..';
 import { PreviousContactCounts } from './types';
 import selectSearchStateForTask from './selectSearchStateForTask';
 
-const selectPreviousContactCounts = (state: RootState, taskId: string): PreviousContactCounts | undefined =>
-  selectSearchStateForTask(state, taskId)?.previousContactCounts;
+const selectPreviousContactCounts = (
+  state: RootState,
+  taskId: string,
+  contactId: string,
+): PreviousContactCounts | undefined => selectSearchStateForTask(state, taskId, contactId)?.previousContactCounts;
 
 export default selectPreviousContactCounts;

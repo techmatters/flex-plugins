@@ -51,7 +51,7 @@ import { RootState } from '../../../states';
 import { getCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
 import * as RoutingActions from '../../../states/routing/actions';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
-import { AppRoutes, ChangeRouteMode, SearchResultRoute } from '../../../states/routing/types';
+import { AppRoutes, ChangeRouteMode, SearchResultRoute, isCaseRoute } from '../../../states/routing/types';
 import { recordBackendError } from '../../../fullStory';
 import { hasTaskControl } from '../../../transfer/transferTaskState';
 import { getUnsavedContact } from '../../../states/contacts/getUnsavedContact';
@@ -74,7 +74,6 @@ type OwnProps = {
   toggleNonDataContacts: () => void;
   toggleClosedCases: () => void;
   handleBack: () => void;
-  contactId: string;
   saveUpdates: () => Promise<void>;
 };
 
@@ -346,94 +345,110 @@ const SearchResults: React.FC<Props> = ({
     </SearchResultWarningContainer>
   );
 
+  const handleCaseResultsSearch = () => (cases.length === 0 ? handleNoSearchResult() : caseResults());
+
   return (
     <>
-      <ResultsHeader>
-        <Row style={{ justifyContent: 'center', width: '100%' }}>
-          <StyledTabs
-            selectedTabName={currentResultPage}
-            onTabSelected={tabSelected}
-            alignment="center"
-            keepTabsMounted={false}
-          >
-            <TwilioTab
-              key="SearchResultsIndex-Contacts"
-              label={<Template code="SearchResultsIndex-Contacts" />}
-              uniqueName="contact-results"
-            >
-              {[]}
-            </TwilioTab>
-            <TwilioTab
-              key="SearchResultsIndex-Cases"
-              label={<Template code="SearchResultsIndex-Cases" />}
-              uniqueName="case-results"
-            >
-              {[]}
-            </TwilioTab>
-          </StyledTabs>
-        </Row>
-      </ResultsHeader>
-      <ListContainer>
-        <ScrollableList>
-          <StyledResultsContainer>
-            <StyledResultsText data-testid="SearchResultsCount">
-              <>
-                {/* Intentionally we must show the option different at the one currently selected */}
-                {currentResultPage === 'contact-results' ? (
+      {routing.action === 'select-case' ? (
+        handleCaseResultsSearch()
+      ) : (
+        <>
+          <ResultsHeader>
+            <Row style={{ justifyContent: 'center', width: '100%' }}>
+              <StyledTabs
+                selectedTabName={currentResultPage}
+                onTabSelected={tabSelected}
+                alignment="center"
+                keepTabsMounted={false}
+              >
+                <TwilioTab
+                  key="SearchResultsIndex-Contacts"
+                  label={<Template code="SearchResultsIndex-Contacts" />}
+                  uniqueName="contact-results"
+                >
+                  {[]}
+                </TwilioTab>
+                <TwilioTab
+                  key="SearchResultsIndex-Cases"
+                  label={<Template code="SearchResultsIndex-Cases" />}
+                  uniqueName="case-results"
+                >
+                  {[]}
+                </TwilioTab>
+              </StyledTabs>
+            </Row>
+          </ResultsHeader>
+          <ListContainer>
+            <ScrollableList>
+              <StyledResultsContainer>
+                <StyledResultsText data-testid="SearchResultsCount">
                   <>
-                    <Template code={casesCount === 1 ? 'PreviousContacts-ThereIs' : 'PreviousContacts-ThereAre'} />
-                    &nbsp;
-                    <EmphasisedText>
-                      {casesCount}{' '}
-                      <Template code={casesCount === 1 ? 'PreviousContacts-Case' : 'PreviousContacts-Cases'} />
-                    </EmphasisedText>
+                    {/* Intentionally we must show the option different at the one currently selected */}
+                    {currentResultPage === 'contact-results' ? (
+                      <>
+                        <Template code={casesCount === 1 ? 'PreviousContacts-ThereIs' : 'PreviousContacts-ThereAre'} />
+                        &nbsp;
+                        <EmphasisedText>
+                          {casesCount}{' '}
+                          <Template code={casesCount === 1 ? 'PreviousContacts-Case' : 'PreviousContacts-Cases'} />
+                        </EmphasisedText>
+                      </>
+                    ) : (
+                      <>
+                        <Template
+                          code={contactsCount === 1 ? 'PreviousContacts-ThereIs' : 'PreviousContacts-ThereAre'}
+                        />
+                        &nbsp;
+                        <EmphasisedText>
+                          {contactsCount}{' '}
+                          <Template
+                            code={contactsCount === 1 ? 'PreviousContacts-Contact' : 'PreviousContacts-Contacts'}
+                          />
+                        </EmphasisedText>
+                      </>
+                    )}
                   </>
-                ) : (
-                  <>
-                    <Template code={contactsCount === 1 ? 'PreviousContacts-ThereIs' : 'PreviousContacts-ThereAre'} />
-                    &nbsp;
-                    <EmphasisedText>
-                      {contactsCount}{' '}
-                      <Template code={contactsCount === 1 ? 'PreviousContacts-Contact' : 'PreviousContacts-Contacts'} />
-                    </EmphasisedText>
-                  </>
-                )}
-              </>
-              &nbsp;
-              <Template code="PreviousContacts-Returned" />
-              &nbsp;
-            </StyledResultsText>
-            <StyledLink onClick={toggleTabs} data-testid="ViewCasesLink">
-              <Template
-                code={
-                  // Intentionally we must show the option different at the one currently selected
-                  currentResultPage === 'contact-results'
-                    ? 'SearchResultsIndex-ViewCases'
-                    : 'SearchResultsIndex-ViewContacts'
-                }
-              />
-            </StyledLink>
-          </StyledResultsContainer>
-          {currentResultPage === 'contact-results' &&
-            contacts &&
-            (contacts.length === 0 ? handleNoSearchResult() : contactResults())}
-          {currentResultPage === 'case-results' &&
-            cases &&
-            (cases.length === 0 ? handleNoSearchResult() : caseResults())}
-        </ScrollableList>
-      </ListContainer>
+                  &nbsp;
+                  <Template code="PreviousContacts-Returned" />
+                  &nbsp;
+                </StyledResultsText>
+                <StyledLink onClick={toggleTabs} data-testid="ViewCasesLink">
+                  <Template
+                    code={
+                      // Intentionally we must show the option different at the one currently selected
+                      currentResultPage === 'contact-results'
+                        ? 'SearchResultsIndex-ViewCases'
+                        : 'SearchResultsIndex-ViewContacts'
+                    }
+                  />
+                </StyledLink>
+              </StyledResultsContainer>
+              {currentResultPage === 'contact-results' &&
+                contacts &&
+                (contacts.length === 0 ? handleNoSearchResult() : contactResults())}
+              {currentResultPage === 'case-results' &&
+                cases &&
+                (cases.length === 0 ? handleNoSearchResult() : caseResults())}
+            </ScrollableList>
+          </ListContainer>
+        </>
+      )}
     </>
   );
 };
 SearchResults.displayName = 'SearchResults';
 
-const mapStateToProps = (state: RootState, { task, contactId }: OwnProps) => {
+const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const { searchContacts, configuration, routing, activeContacts } = state[namespace];
   const taskId = task.taskSid;
-  const { isRequesting, isRequestingCases, caseRefreshRequired, contactRefreshRequired } = searchContacts.tasks[taskId];
+  const currentRoute = getCurrentTopmostRouteForTask(routing, taskId);
+  const contextContactId =
+    (isCaseRoute(currentRoute) || currentRoute.route === 'search') && currentRoute.contextContactId;
+  const searchContext = contextContactId ? `contact-${contextContactId}` : 'root';
+  const { isRequesting, isRequestingCases, caseRefreshRequired, contactRefreshRequired } =
+    searchContacts?.tasks[taskId][searchContext] || {};
   const { counselors } = configuration;
-  const { draftContact, savedContact } = activeContacts.existingContacts[contactId] ?? {};
-  const contextContactId = selectContextContactId(state, taskId, 'search', 'case-results');
+  const { draftContact, savedContact } = activeContacts.existingContacts[searchContext] ?? {};
 
   return {
     isRequestingContacts: isRequesting,
@@ -444,6 +459,7 @@ const mapStateToProps = (state: RootState, { task, contactId }: OwnProps) => {
     routing: getCurrentTopmostRouteForTask(routing, taskId),
     searchCase: searchContacts.tasks[task.taskSid].searchExistingCaseStatus,
     contact: getUnsavedContact(savedContact, draftContact),
+    searchContext,
     contextContactId,
   };
 };
