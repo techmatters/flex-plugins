@@ -7,6 +7,7 @@
             "enable_fullstory_monitoring": true,
             "enable_voice_recordings": false,
             "post_survey_serverless_handled": false
-        }
+        },
+        "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
     }
 }
