@@ -35,9 +35,7 @@ import { selectCounselorsHash } from '../../../states/configuration/selectCounse
 import selectPreviousContactCounts from '../../../states/search/selectPreviousContactCounts';
 import { iconsFromTask } from './iconsFromTask';
 import selectContactByTaskSid from '../../../states/contacts/selectContactByTaskSid';
-import { namespace } from '../../../states/storeNamespaces';
-import { getCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
-import { isCaseRoute } from '../../../states/routing/types';
+import selectContextContactId from '../../../states/contacts/selectContextContactId';
 
 type OwnProps = {
   task: CustomITask;
@@ -132,11 +130,8 @@ PreviousContactsBanner.displayName = 'PreviousContactsBanner';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const { taskSid } = task;
-  const { routing } = state[namespace];
   const contact = selectContactByTaskSid(state, task.taskSid);
-  const currentRoute = getCurrentTopmostRouteForTask(routing, task.taskSid);
-  const contextContactId =
-    (isCaseRoute(currentRoute) || currentRoute.route === 'search') && currentRoute.contextContactId;
+  const contextContactId = selectContextContactId(state, task.taskSid, 'search', 'contact-results');
   const searchContext = contextContactId ? `contact-${contextContactId}` : 'root';
 
   return {
