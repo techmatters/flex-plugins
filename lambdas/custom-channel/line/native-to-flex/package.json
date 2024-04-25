@@ -1,0 +1,18 @@
+{
+  "name": "native-to-flex",
+  "version": "1.0.0",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.108",
+    "@types/node": "^18.16.2",
+    "jest-each": "^29.5.0",
+    "ts-node": "^10.9.1",
+    "undici": "^5.28.3"
+  },
+  "scripts": {
+    "docker:build": "docker build -t custom-channel-line-native-to-flex --build-arg lambda_name=native-to-flex --build-arg lambda_dir=custom-channel/line -f ../../../Dockerfile ../../../",
+    "test:unit": "jest tests/unit",
+    "test": "jest"
+  }
+}
