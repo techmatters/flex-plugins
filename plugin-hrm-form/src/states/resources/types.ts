@@ -14,14 +14,4 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { RootState } from '..';
-import { PreviousContactCounts } from './types';
-import selectSearchStateForTask from './selectSearchStateForTask';
-
-const selectPreviousContactCounts = (
-  state: RootState,
-  taskId: string,
-  contactId: string,
-): PreviousContactCounts | undefined => selectSearchStateForTask(state, taskId, contactId)?.previousContactCounts;
-
-export default selectPreviousContactCounts;
+export type FilterOption<T extends string | number = string> = { value: T; label?: string };

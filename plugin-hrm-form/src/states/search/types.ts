@@ -27,6 +27,7 @@ export const SEARCH_CASES_REQUEST = 'SEARCH_CASES_REQUEST';
 export const SEARCH_CASES_SUCCESS = 'SEARCH_CASES_SUCCESS';
 export const SEARCH_CASES_FAILURE = 'SEARCH_CASES_FAILURE';
 export const VIEW_PREVIOUS_CONTACTS = 'VIEW_PREVIOUS_CONTACTS';
+export const CREATE_NEW_SEARCH = 'CREATE_NEW_SEARCH';
 
 // types and constants used to construct search form
 export const newSearchFormEntry = {
@@ -59,15 +60,18 @@ type SearchFormChangeAction = {
     name: K;
     value: SearchFormValues[K];
   };
-}[keyof SearchFormValues] & { type: typeof HANDLE_SEARCH_FORM_CHANGE; taskId: string };
+}[keyof SearchFormValues] & { type: typeof HANDLE_SEARCH_FORM_CHANGE; taskId: string; context: string };
 
-type SearchContactsRequestAction = { type: typeof SEARCH_CONTACTS_REQUEST; taskId: string };
+type SearchContactsRequestAction = { type: typeof SEARCH_CONTACTS_REQUEST; taskId: string; context: string };
+
+type CreateNewSearchAction = { type: typeof CREATE_NEW_SEARCH; taskId: string; context: string };
 
 export type SearchContactsSuccessAction = {
   type: typeof SEARCH_CONTACTS_SUCCESS;
   searchResult: DetailedSearchContactsResult;
   taskId: string;
   dispatchedFromPreviousContacts?: boolean;
+  context: string;
 };
 
 type SearchContactsFailureAction = {
@@ -75,23 +79,26 @@ type SearchContactsFailureAction = {
   error: any;
   taskId: string;
   dispatchedFromPreviousContacts?: boolean;
+  context: string;
 };
 
-type SearchCasesRequestAction = { type: typeof SEARCH_CASES_REQUEST; taskId: string };
+type SearchCasesRequestAction = { type: typeof SEARCH_CASES_REQUEST; taskId: string; context: string };
 
 export type SearchCasesSuccessAction = {
   type: typeof SEARCH_CASES_SUCCESS;
   searchResult: SearchCaseResult;
   taskId: string;
   dispatchedFromPreviousContacts?: boolean;
+  context: string;
 };
 
-type SearchCasesFailureAction = { type: typeof SEARCH_CASES_FAILURE; error: any; taskId: string };
+type SearchCasesFailureAction = { type: typeof SEARCH_CASES_FAILURE; error: any; taskId: string; context: string };
 
 type ViewPreviousContactsAction = {
   type: typeof VIEW_PREVIOUS_CONTACTS;
   taskId: string;
   contactNumber: string;
+  context: string;
 };
 
 export type SearchActionType =
@@ -102,7 +109,8 @@ export type SearchActionType =
   | SearchCasesRequestAction
   | SearchCasesSuccessAction
   | SearchCasesFailureAction
-  | ViewPreviousContactsAction;
+  | ViewPreviousContactsAction
+  | CreateNewSearchAction;
 
 export type SearchResultReferences = {
   count: number;

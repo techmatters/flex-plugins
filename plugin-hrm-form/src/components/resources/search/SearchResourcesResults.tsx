@@ -130,10 +130,11 @@ const SearchResourcesResults: React.FC<Props> = ({
 
   const locationDescription = () => {
     const {
-      filterSelections: { province, city },
+      filterSelections: { province, city, region },
     } = parameters;
     const location = [
       filterOptions.city.find(({ value }) => value === city)?.label,
+      filterOptions.region.find(({ value }) => value === region)?.label,
       filterOptions.province.find(({ value }) => value === province)?.label,
     ]
       .filter(Boolean)

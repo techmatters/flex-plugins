@@ -49,6 +49,7 @@ let stateOnCasesTab: RecursivePartial<RootState>;
 let store1;
 let storeOnCasesTab;
 let mockV1;
+const context = 'root';
 
 beforeEach(() => {
   mockReset();
