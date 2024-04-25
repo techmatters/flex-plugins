@@ -3,6 +3,7 @@
         "assets_bucket_url": "https://s3.amazonaws.com/assets-staging.tl.techmatters.org",
         "feature_flags": {
             "enable_external_transcripts": false
-        }
+        },
+        "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
     }
 }
