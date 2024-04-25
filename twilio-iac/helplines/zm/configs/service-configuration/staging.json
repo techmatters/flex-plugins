@@ -11,5 +11,8 @@
             "semver": "~1.31.2",
             "version": "1.31.2"
         }
-    }
+    },
+    "ui_attributes": {
+      "logLevel": "debug"
+  }
 }
