@@ -43,8 +43,8 @@ on:
         required: true
         type: choice
         options:
-          - custom-channels/line/native-to-flex
-          - custom-channels/line/flex-to-native
+          - custom-channel/line/native-to-flex
+          - custom-channel/line/flex-to-native
 
   workflow_call:
     secrets:

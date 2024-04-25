@@ -5,8 +5,8 @@
   "author": "",
   "license": "AGPL",
   "workspaces": [
-    "custom-channels/line/*",
-    "custom-channels/packages/*"
+    "custom-channel/line/*",
+    "custom-channel/packages/*"
   ],
   "dependencies": {
     "dotenv": "^16.3.1",
