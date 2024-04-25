@@ -3,6 +3,7 @@
   "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
-    { "path": "custom-channels/packages/message-transform" }
+    { "path": "custom-channels/packages/message-transform" },
+    { "path": "custom-channels/line/native-to-flex" }
   ]
 }

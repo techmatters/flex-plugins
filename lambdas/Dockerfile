@@ -23,10 +23,8 @@ ENV lambda_name ${lambda_name}
 # We must have the full repo context for our docker build so we can
 # copy the hrm-lib package and labmdas folders so that the file: based
 # dependency in package.json can be resolved
-COPY tsconfig.json /tmp/build/tsconfig.json
 COPY ${lambda_dir}/${lambda_name} /tmp/build/${lambda_dir}/${lambda_name}
 COPY ${lambda_dir}/../packages /tmp/build/${lambda_dir}/../packages
-COPY ${lambda_dir}/../../tsconfig.json /tmp/build/${lambda_dir}/../../tsconfig.json
 COPY package.json package-lock.json tsconfig.json tsconfig.base.json ${lambda_dir}/${lambda_name}/tsconfig.build.json /tmp/build/
 
 RUN yum install -y rsync \
