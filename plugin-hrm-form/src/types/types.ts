@@ -62,8 +62,6 @@ export type ReferralEntry = Referral & EntryInfo;
 
 export type Document = { [key: string]: string | boolean };
 
-export type DocumentEntry = { document: Document; id: string | undefined } & EntryInfo;
-
 export type CSAMReportEntry = {
   csamReportId: string;
   id: number;
@@ -285,6 +283,7 @@ export type FeatureFlags = {
   enable_offline_contact: boolean; // Enables Creating Offline Contacts  
   enable_post_survey: boolean; // Enables Post-Survey
   enable_previous_contacts: boolean; // Enables Previous Contacts Yellow Banner
+  enable_region_resource_search: boolean; // Enables specifying a region as well as a province and / or city in Resource Search
   enable_save_insights: boolean; // Enables Saving Aditional Data on Insights
   enable_separate_timeline_view: boolean; // Enables a limited inline case timelinbe with a link to the full timeline
   enable_sort_cases: boolean; // Enables Sorting at Case List
