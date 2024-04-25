@@ -20,11 +20,12 @@ import { getConfigValue, localOverrideEnv } from '../config';
 export const apiHrmRequest =
   (apiRequest: APIRequestContext, flexToken: string) =>
   async (hrmPath: string, method: 'get' | 'delete' | 'patch' = 'get', body?: any) => {
-    const hrmRoot =
+    const hrmRoot = `${
       (getConfigValue('hrmRoot') as string) ||
       `https://hrm-${localOverrideEnv}.tl.techmatters.org/v0/accounts/${getConfigValue(
         'twilioAccountSid',
-      )}`.toString();
+      )}`
+    }-aselo_test`;
     const resp = await apiRequest[method](new URL(`${hrmRoot}/${hrmPath}`).toString(), {
       data: body,
       headers: {
