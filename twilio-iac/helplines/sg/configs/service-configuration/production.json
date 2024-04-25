@@ -3,8 +3,7 @@
         "feature_flags": {
             "enable_fullstory_monitoring": true,
             "enable_save_insights": true,
-            "enable_post_survey": false,
-            "enable_manual_pulling": false
+            "enable_post_survey": false
         },
         "form_definitions_base_url": "https://assets-production.tl.techmatters.org/form-definitions/",
         "resources_base_url": ""
