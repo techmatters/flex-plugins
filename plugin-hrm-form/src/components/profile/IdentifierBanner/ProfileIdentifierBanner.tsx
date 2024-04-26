@@ -18,13 +18,8 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import {
-  useIdentifierByIdentifier,
-  useProfileProperty,
-  useProfile,
-  useProfileRelationshipsByType,
-} from '../../../states/profile/hooks';
-import { YellowBannerContainer, IconContainer, IdentifierContainer, BannerLink } from './styles';
+import { useIdentifierByIdentifier, useProfile, useProfileRelationshipsByType } from '../../../states/profile/hooks';
+import { BannerLink, IconContainer, IdentifierContainer, YellowBannerContainer } from './styles';
 import { Bold } from '../../../styles';
 import { newOpenModalAction } from '../../../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
@@ -88,7 +83,7 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   // We immediately create a contact when a task is created, so we don't want to show the banner
-  const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
+  const shouldDisplayBanner = canView || contactsCount > 0 || casesCount > 0;
   if (!shouldDisplayBanner || contactsLoading || casesLoading) return null;
 
   const handleViewClients = () => {
@@ -137,10 +132,12 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
       )}
       {canView && (
         <>
-          <div>
-            &nbsp;
-            <Template code="PreviousContacts-And" />
-          </div>
+          {contactsCount > 0 && casesCount > 0 && (
+            <div>
+              &nbsp;
+              <Template code="PreviousContacts-And" />
+            </div>
+          )}
           <BannerLink type="button" onClick={handleViewClients}>
             <Bold>
               {'1'} <Template code="Profile-Singular-Client" />
