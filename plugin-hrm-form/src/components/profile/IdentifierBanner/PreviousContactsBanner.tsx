@@ -15,19 +15,18 @@
  */
 
 import React, { useEffect } from 'react';
-import { bindActionCreators } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import {
+  handleSearchFormChange as handleSearchFormChangeAction,
   searchCases as searchCasesAction,
   searchContacts as searchContactsAction,
   viewPreviousContacts as viewPreviousContactsAction,
-  handleSearchFormChange as handleSearchFormChangeAction,
 } from '../../../states/search/actions';
 import { RootState } from '../../../states';
 import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../search/SearchResults';
-import { YellowBannerContainer, BannerLink, IconContainer, IdentifierContainer } from './styles';
+import { BannerLink, IconContainer, IdentifierContainer, YellowBannerContainer } from './styles';
 import { Bold } from '../../../styles';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
@@ -154,7 +153,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     viewPreviousContacts: viewPreviousContactsAction(dispatch)(task),
     searchContacts: (context: string) => searchContactsAction(dispatch)(taskId, context),
     searchCases: (context: string) => searchCasesAction(dispatch)(taskId, context),
-    handleSearchFormChange: bindActionCreators(handleSearchFormChangeAction(taskId), dispatch),
+    handleSearchFormChange: (context: string) => dispatch(handleSearchFormChangeAction(taskId, context)),
     openContactSearchResults: (contextContactId: string) => {
       // We put the form 'under' the search results in the modal stack so the back button takes them to the form without needing custom handlers
       dispatch(newOpenModalAction({ contextContactId, route: 'search', subroute: 'form' }, taskId));
