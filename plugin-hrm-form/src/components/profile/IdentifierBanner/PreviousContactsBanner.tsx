@@ -37,6 +37,7 @@ import selectPreviousContactCounts from '../../../states/search/selectPreviousCo
 import { iconsFromTask } from './iconsFromTask';
 import selectContactByTaskSid from '../../../states/contacts/selectContactByTaskSid';
 import selectContextContactId from '../../../states/contacts/selectContextContactId';
+import { SearchFormValues } from '../../../states/search/types';
 
 type OwnProps = {
   task: CustomITask;
@@ -59,6 +60,8 @@ const PreviousContactsBanner: React.FC<Props> = ({
     return getInitializedCan();
   }, []);
 
+  const handleContextSearchFormChange = handleSearchFormChange(searchContext);
+
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   let contactNumber: ReturnType<typeof getFormattedNumberFromTask>;
@@ -73,7 +76,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
       const searchParams = { contactNumber };
       searchContacts(searchContext)(searchParams, CONTACTS_PER_PAGE, 0, true);
       searchCases(searchContext)(searchParams, CASES_PER_PAGE, 0, true);
-      handleSearchFormChange('contactNumber', contactNumber);
+      handleContextSearchFormChange('contactNumber', contactNumber);
     }
   };
 
@@ -138,7 +141,7 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const searchContext = contextContactId ? `contact-${contextContactId}` : 'root';
 
   return {
-    previousContactCounts: selectPreviousContactCounts(state, taskSid, contact.savedContact?.id),
+    previousContactCounts: selectPreviousContactCounts(state, taskSid, searchContext),
     counselorsHash: selectCounselorsHash(state),
     contact,
     searchContext,
@@ -153,7 +156,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     viewPreviousContacts: viewPreviousContactsAction(dispatch)(task),
     searchContacts: (context: string) => searchContactsAction(dispatch)(taskId, context),
     searchCases: (context: string) => searchCasesAction(dispatch)(taskId, context),
-    handleSearchFormChange: (context: string) => dispatch(handleSearchFormChangeAction(taskId, context)),
+    handleSearchFormChange: (context: string) => (key: keyof SearchFormValues, value: string) =>
+      dispatch(handleSearchFormChangeAction(taskId, context)(key, value)),
     openContactSearchResults: (contextContactId: string) => {
       // We put the form 'under' the search results in the modal stack so the back button takes them to the form without needing custom handlers
       dispatch(newOpenModalAction({ contextContactId, route: 'search', subroute: 'form' }, taskId));
