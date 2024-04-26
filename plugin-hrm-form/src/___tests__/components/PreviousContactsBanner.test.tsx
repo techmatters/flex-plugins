@@ -15,7 +15,7 @@
  */
 
 import * as React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
@@ -81,7 +81,7 @@ test('PreviousContacts initial search', () => {
         searchCases={searchCases}
         changeRoute={jest.fn()}
         viewPreviousContacts={jest.fn()}
-        handleSearchFormChange={jest.fn()}
+        handleSearchFormChange={jest.fn().mockReturnValue(jest.fn())}
         contact={contact}
       />
     </StorelessThemeProvider>,
