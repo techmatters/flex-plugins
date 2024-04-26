@@ -132,7 +132,7 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
       )}
       {canView && (
         <>
-          {contactsCount > 0 && casesCount > 0 && (
+          {(contactsCount > 0 || casesCount > 0) && (
             <div>
               &nbsp;
               <Template code="PreviousContacts-And" />
