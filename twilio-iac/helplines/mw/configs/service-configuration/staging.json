@@ -10,6 +10,7 @@
             "date": "2022-12-05T10:39:38.567Z",
             "semver": "~1.31.2",
             "version": "1.31.2"
-        }
+        },
+        "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
     }
 }

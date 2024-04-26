@@ -16,7 +16,7 @@
 
 /* eslint-disable no-empty-function */
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import FieldText from '../../FieldText';
@@ -48,6 +48,7 @@ import selectPreviousContactCounts from '../../../states/search/selectPreviousCo
 import { selectCounselorsList } from '../../../states/configuration/selectCounselorsHash';
 import { selectCurrentDefinitionVersion } from '../../../states/configuration/selectDefinitions';
 import { CustomITask } from '../../../types/types';
+import selectContextContactId from '../../../states/contacts/selectContextContactId';
 
 const getField = value => ({
   value,
@@ -63,15 +64,16 @@ type OwnProps = {
   task: ITask | CustomITask;
 };
 
-const mapStateToProps = (state: RootState, { task }: OwnProps) => ({
-  counselors: selectCounselorsList(state),
-  helplineInformation: selectCurrentDefinitionVersion(state)?.helplineInformation,
-  previousContactCounts: selectPreviousContactCounts(state, task.taskSid) ?? { contacts: 0, cases: 0 },
-});
+const mapStateToProps = (state: RootState, { task }: OwnProps) => {
+  const contactId = selectContextContactId(state, task.taskSid, 'search', 'form');
+  return {
+    counselors: selectCounselorsList(state),
+    helplineInformation: selectCurrentDefinitionVersion(state)?.helplineInformation,
+    previousContactCounts: selectPreviousContactCounts(state, task.taskSid, contactId) ?? { contacts: 0, cases: 0 },
+  };
+};
 
-const connector = connect(mapStateToProps);
-
-type Props = OwnProps & ConnectedProps<typeof connector>;
+type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
 // eslint-disable-next-line complexity
 const SearchForm: React.FC<Props> = ({
@@ -130,7 +132,9 @@ const SearchForm: React.FC<Props> = ({
     (helpline && helpline.value) ||
     contactNumber;
 
-  const submitSearch = () => handleSearch(searchParams);
+  const submitSearch = () => {
+    handleSearch(searchParams);
+  };
   const submitOnEnter = event => {
     if (event.key === 'Enter') submitSearch();
   };
@@ -269,4 +273,7 @@ const SearchForm: React.FC<Props> = ({
   );
 };
 
-export default connector(SearchForm);
+const connector = connect(mapStateToProps);
+const connected = connector(SearchForm);
+
+export default connected;

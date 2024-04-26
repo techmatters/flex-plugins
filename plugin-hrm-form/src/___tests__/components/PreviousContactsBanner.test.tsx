@@ -24,6 +24,7 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { UnconnectedPreviousContactsBanner } from '../../components/profile/IdentifierBanner/PreviousContactsBanner';
 import { channelTypes } from '../../states/DomainConstants';
 import { PreviousContactCounts } from '../../states/search/types';
+import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
 
 jest.mock('../../components/CSAMReport/CSAMReportFormDefinition');
 
@@ -46,6 +47,12 @@ const webChatTask: any = {
   },
 };
 
+const contact = {
+  savedContact: VALID_EMPTY_CONTACT,
+  references: new Set(['x']),
+  metadata: VALID_EMPTY_METADATA,
+};
+
 const counselor = 'counselor';
 const counselorsHash = {
   'counselor-hash-1': counselor,
@@ -60,6 +67,10 @@ test('PreviousContacts initial search', () => {
   const searchContacts = jest.fn();
   const searchCases = jest.fn();
 
+  // Mocking the behavior of searchContacts and searchCases to return functions
+  searchContacts.mockReturnValueOnce(jest.fn());
+  searchCases.mockReturnValueOnce(jest.fn());
+
   render(
     <StorelessThemeProvider themeConf={{}}>
       <UnconnectedPreviousContactsBanner
@@ -71,6 +82,7 @@ test('PreviousContacts initial search', () => {
         changeRoute={jest.fn()}
         viewPreviousContacts={jest.fn()}
         handleSearchFormChange={jest.fn()}
+        contact={contact}
       />
     </StorelessThemeProvider>,
   );
