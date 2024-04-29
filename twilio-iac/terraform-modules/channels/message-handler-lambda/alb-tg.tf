@@ -1,5 +1,5 @@
 locals {
-  alb_paths        = var.alb_paths == null ? ["/lambda/custom-channel/${var.channel}/${var.name}"] : var.alb_paths
+  alb_paths        = var.alb_paths == null ? ["/lambda/${var.short_helpline}/custom-channel/${var.channel}/${var.name}"] : var.alb_paths
 }
 
 resource "aws_lambda_alias" "live" {
