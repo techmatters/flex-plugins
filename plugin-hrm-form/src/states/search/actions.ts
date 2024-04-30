@@ -27,7 +27,7 @@ import { getCasesMissingVersions, getContactsMissingVersions } from '../../utils
 import { getNumberFromTask } from '../../utils';
 
 // Action creators
-export const handleSearchFormChange = (taskId: string) => <K extends keyof t.SearchFormValues>(
+export const handleSearchFormChange = (taskId: string, context: string) => <K extends keyof t.SearchFormValues>(
   name: K,
   value: t.SearchFormValues[K],
 ): t.SearchActionType => {
@@ -36,24 +36,26 @@ export const handleSearchFormChange = (taskId: string) => <K extends keyof t.Sea
     name,
     value,
     taskId,
+    context,
   } as t.SearchActionType; // casting cause inference is not providing enough information, but the restrictions are made in argument types
 };
 
-export const handleClearSearchForm = (taskId: string): t.SearchActionType => {
+export const newCreateSearchForm = (taskId: string, context: string): t.SearchActionType => {
   return {
-    type: t.CLEAR_SEARCH_FORM,
+    type: t.CREATE_NEW_SEARCH,
     taskId,
+    context,
   } as t.SearchActionType;
 };
 
-export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => async (
+export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
   searchParams: SearchParams,
   limit: number,
   offset: number,
   dispatchedFromPreviousContacts?: boolean,
 ) => {
   try {
-    dispatch({ type: t.SEARCH_CONTACTS_REQUEST, taskId });
+    dispatch({ type: t.SEARCH_CONTACTS_REQUEST, taskId, context });
 
     const { dateFrom, dateTo, ...rest } = searchParams ?? {};
     const searchParamsToSubmit: SearchParams = rest;
@@ -70,20 +72,20 @@ export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string) => a
     const definitions = await getContactsMissingVersions(searchResultRaw.contacts);
     definitions.forEach(d => dispatch(updateDefinitionVersion(d.version, d.definition)));
 
-    dispatch({ type: t.SEARCH_CONTACTS_SUCCESS, searchResult, taskId, dispatchedFromPreviousContacts });
+    dispatch({ type: t.SEARCH_CONTACTS_SUCCESS, searchResult, taskId, dispatchedFromPreviousContacts, context });
   } catch (error) {
-    dispatch({ type: t.SEARCH_CONTACTS_FAILURE, error, taskId, dispatchedFromPreviousContacts });
+    dispatch({ type: t.SEARCH_CONTACTS_FAILURE, error, taskId, dispatchedFromPreviousContacts, context });
   }
 };
 
-export const searchCases = (dispatch: Dispatch<any>) => (taskId: string) => async (
+export const searchCases = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
   searchParams: any,
   limit: number,
   offset: number,
   dispatchedFromPreviousContacts?: boolean,
 ) => {
   try {
-    dispatch({ type: t.SEARCH_CASES_REQUEST, taskId });
+    dispatch({ type: t.SEARCH_CASES_REQUEST, taskId, context });
 
     const { dateFrom, dateTo, ...rest } = searchParams || {};
 
@@ -109,9 +111,10 @@ export const searchCases = (dispatch: Dispatch<any>) => (taskId: string) => asyn
       taskId,
       dispatchedFromPreviousContacts,
       reference: `search-${taskId}`,
+      context,
     });
   } catch (error) {
-    dispatch({ type: t.SEARCH_CASES_FAILURE, error, taskId });
+    dispatch({ type: t.SEARCH_CASES_FAILURE, error, taskId, context });
   }
 };
 

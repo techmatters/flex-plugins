@@ -73,6 +73,7 @@ jest.mock('../../states/case/selectCaseStateByCaseId', () => {
 
 function createState(
   taskId,
+  context: string,
   {
     searchFormValues,
     currentContact,
@@ -120,17 +121,19 @@ function createState(
       searchContacts: {
         tasks: {
           [taskId]: {
-            form: searchFormValues || newSearchFormEntry,
-            previousContactCounts,
-            detailsExpanded: detailsExpanded || {},
-            isRequesting: false,
-            error: null,
-            searchContactsResult: references
-              ? {
-                  count: searchContactsResult?.count,
-                  ids: references,
-                }
-              : undefined,
+            [context]: {
+              form: searchFormValues || newSearchFormEntry,
+              previousContactCounts,
+              detailsExpanded: detailsExpanded || {},
+              isRequesting: false,
+              error: null,
+              searchContactsResult: references
+                ? {
+                    count: searchContactsResult?.count,
+                    ids: references,
+                  }
+                : undefined,
+            },
           },
         },
       },
@@ -188,8 +191,9 @@ test('<Search> should display <SearchForm />', async () => {
     helpline: { label: '', value: '' },
   };
   const task = { taskSid: 'WT123', attributes: { preEngagementData: {} } };
+  const context = 'root';
 
-  const initialState = createState(task.taskSid, {
+  const initialState = createState(task.taskSid, context, {
     searchFormValues,
     detailsExpanded,
     previousContactCounts: undefined,
@@ -233,13 +237,14 @@ test('<Search> should display <SearchForm /> with previous contacts checkbox', a
       preEngagementData: { contactType: 'ip' },
     },
   };
+  const context = 'root';
 
   const previousContactCounts: PreviousContactCounts = {
     contacts: 3,
     cases: 1,
   };
 
-  const initialState = createState(task.taskSid, {
+  const initialState = createState(task.taskSid, context, {
     searchFormValues,
     detailsExpanded,
     previousContactCounts,
@@ -323,8 +328,9 @@ test('<Search> should display <ContactDetails />', async () => {
     },
   };
   const task = { taskSid: 'WT123' };
+  const context = 'root';
 
-  const initialState = createState(task.taskSid, {
+  const initialState = createState(task.taskSid, context, {
     currentContact,
     detailsExpanded,
     searchFormValues: undefined,

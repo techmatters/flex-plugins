@@ -6,6 +6,7 @@
         },
         "pdfImagesSource": "https://tl-public-chat-cl-stg.s3.amazonaws.com",
         "helpline_code": "cl",
-        "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/"
+        "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
+        "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
     }
 }

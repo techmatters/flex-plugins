@@ -51,7 +51,7 @@ import { RootState } from '../../../states';
 import { getCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
 import * as RoutingActions from '../../../states/routing/actions';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
-import { AppRoutes, ChangeRouteMode, SearchResultRoute } from '../../../states/routing/types';
+import { AppRoutes, ChangeRouteMode, SearchResultRoute, isCaseRoute } from '../../../states/routing/types';
 import { recordBackendError } from '../../../fullStory';
 import { hasTaskControl } from '../../../transfer/transferTaskState';
 import { getUnsavedContact } from '../../../states/contacts/getUnsavedContact';
@@ -74,7 +74,6 @@ type OwnProps = {
   toggleNonDataContacts: () => void;
   toggleClosedCases: () => void;
   handleBack: () => void;
-  contactId: string;
   saveUpdates: () => Promise<void>;
 };
 
@@ -439,13 +438,17 @@ const SearchResults: React.FC<Props> = ({
 };
 SearchResults.displayName = 'SearchResults';
 
-const mapStateToProps = (state: RootState, { task, contactId }: OwnProps) => {
+const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const { searchContacts, configuration, routing, activeContacts } = state[namespace];
   const taskId = task.taskSid;
-  const { isRequesting, isRequestingCases, caseRefreshRequired, contactRefreshRequired } = searchContacts.tasks[taskId];
+  const currentRoute = getCurrentTopmostRouteForTask(routing, taskId);
+  const contextContactId =
+    (isCaseRoute(currentRoute) || currentRoute.route === 'search') && currentRoute.contextContactId;
+  const searchContext = contextContactId ? `contact-${contextContactId}` : 'root';
+  const { isRequesting, isRequestingCases, caseRefreshRequired, contactRefreshRequired } =
+    searchContacts?.tasks[taskId][searchContext] || {};
   const { counselors } = configuration;
-  const { draftContact, savedContact } = activeContacts.existingContacts[contactId] ?? {};
-  const contextContactId = selectContextContactId(state, taskId, 'search', 'case-results');
+  const { draftContact, savedContact } = activeContacts.existingContacts[searchContext] ?? {};
 
   return {
     isRequestingContacts: isRequesting,
@@ -456,6 +459,7 @@ const mapStateToProps = (state: RootState, { task, contactId }: OwnProps) => {
     routing: getCurrentTopmostRouteForTask(routing, taskId),
     searchCase: searchContacts.tasks[task.taskSid].searchExistingCaseStatus,
     contact: getUnsavedContact(savedContact, draftContact),
+    searchContext,
     contextContactId,
   };
 };

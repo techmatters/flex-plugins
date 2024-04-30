@@ -32,7 +32,6 @@ type OwnProps = TabbedFormsCommonProps;
 
 const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const { savedContact, draftContact } = selectContactByTaskSid(state, taskSid);
-
   return {
     draftContact,
     savedContact,
@@ -54,7 +53,6 @@ const TabbedFormsSearch: React.FC<Props> = ({ task, draftContact, savedContact, 
     <Search
       task={task}
       currentIsCaller={savedContact?.rawJson?.callType === callTypes.caller}
-      contactId={savedContact?.id}
       saveUpdates={() => saveDraft(savedContact, draftContact)}
     />
   );

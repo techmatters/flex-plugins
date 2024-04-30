@@ -16,7 +16,7 @@
 
 /* eslint-disable no-empty-function */
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import FieldText from '../../FieldText';
@@ -48,7 +48,7 @@ import selectPreviousContactCounts from '../../../states/search/selectPreviousCo
 import { selectCounselorsList } from '../../../states/configuration/selectCounselorsHash';
 import { selectCurrentDefinitionVersion } from '../../../states/configuration/selectDefinitions';
 import { CustomITask } from '../../../types/types';
-import { handleClearSearchForm } from '../../../states/search/actions';
+import selectContextContactId from '../../../states/contacts/selectContextContactId';
 
 const getField = value => ({
   value,
@@ -64,17 +64,16 @@ type OwnProps = {
   task: ITask | CustomITask;
 };
 
-const mapStateToProps = (state: RootState, { task }: OwnProps) => ({
-  counselors: selectCounselorsList(state),
-  helplineInformation: selectCurrentDefinitionVersion(state)?.helplineInformation,
-  previousContactCounts: selectPreviousContactCounts(state, task.taskSid) ?? { contacts: 0, cases: 0 },
-});
+const mapStateToProps = (state: RootState, { task }: OwnProps) => {
+  const contactId = selectContextContactId(state, task.taskSid, 'search', 'form');
+  return {
+    counselors: selectCounselorsList(state),
+    helplineInformation: selectCurrentDefinitionVersion(state)?.helplineInformation,
+    previousContactCounts: selectPreviousContactCounts(state, task.taskSid, contactId) ?? { contacts: 0, cases: 0 },
+  };
+};
 
-const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
-  clearSearchForm: () => dispatch(handleClearSearchForm(task.taskSid)),
-});
-
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
 // eslint-disable-next-line complexity
 const SearchForm: React.FC<Props> = ({
@@ -85,7 +84,6 @@ const SearchForm: React.FC<Props> = ({
   helplineInformation,
   task,
   handleSearch,
-  clearSearchForm,
 }) => {
   const can = React.useMemo(() => {
     return getInitializedCan();
@@ -136,7 +134,6 @@ const SearchForm: React.FC<Props> = ({
 
   const submitSearch = () => {
     handleSearch(searchParams);
-    clearSearchForm();
   };
   const submitOnEnter = event => {
     if (event.key === 'Enter') submitSearch();
@@ -276,4 +273,7 @@ const SearchForm: React.FC<Props> = ({
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchForm);
+const connector = connect(mapStateToProps);
+const connected = connector(SearchForm);
+
+export default connected;
