@@ -2,6 +2,7 @@
     "attributes": {
         "feature_flags": {
             "enable_teams_view_enhancements": true
+            "enable_region_resource_search": true
         },
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
         "resources_base_url": "https://hrm-staging.tl.techmatters.org",
