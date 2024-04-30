@@ -9,9 +9,9 @@ locals {
     enable_external_recordings = true
 
     channel_attributes = {
-      webchat : "/app/twilio-iac/helplines/nz/templates/channel-attributes/webchat.tftpl"
-      voice : "/app/twilio-iac/helplines/nz/templates/channel-attributes/voice.tftpl"
-      modica : "/app/twilio-iac/helplines/nz/templates/channel-attributes/modica.tftpl",
+      webchat : "/app/twilio-iac/helplines/nz/templates/channel-attributes/webchat.tftpl",
+      voice   : "/app/twilio-iac/helplines/nz/templates/channel-attributes/voice.tftpl",
+      modica  : "/app/twilio-iac/helplines/nz/templates/channel-attributes/modica.tftpl",
       default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
     }
     workflows = {
