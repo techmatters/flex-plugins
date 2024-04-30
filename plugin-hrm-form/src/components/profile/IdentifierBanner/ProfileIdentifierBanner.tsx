@@ -68,7 +68,7 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
   const profileId = identifier?.profiles?.[0]?.id;
 
   const { canView, profile } = useProfile({ profileId });
-  const showProfile = canView && profile?.hasContacts !== false; // If the flag is null or undefined, we assume the backend doesn't support it and show the profile to be on the safe side
+  const showProfile = canView && profile && profile.hasContacts !== false; // If the flag is null or undefined, we assume the backend doesn't support it and show the profile to be on the safe side
 
   const { total: contactsCount, loading: contactsLoading } = useProfileRelationshipsByType({
     profileId,
