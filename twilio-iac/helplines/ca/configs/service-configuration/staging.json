@@ -9,6 +9,7 @@
         "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
     },
     "ui_attributes": {
-        "theme": null
+        "theme": null,
+        "internalChatServerlessUrl": "serverless-internal-chat-6272.twil.io"
     }
 }
