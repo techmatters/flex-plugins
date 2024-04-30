@@ -67,7 +67,8 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
    */
   const profileId = identifier?.profiles?.[0]?.id;
 
-  const { canView } = useProfile({ profileId });
+  const { canView, profile } = useProfile({ profileId });
+  const showProfile = canView && profile?.hasContacts !== false; // If the flag is null or undefined, we assume the backend doesn't support it and show the profile to be on the safe side
 
   const { total: contactsCount, loading: contactsLoading } = useProfileRelationshipsByType({
     profileId,
@@ -83,7 +84,7 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   // We immediately create a contact when a task is created, so we don't want to show the banner
-  const shouldDisplayBanner = canView || contactsCount > 0 || casesCount > 0;
+  const shouldDisplayBanner = showProfile || contactsCount > 0 || casesCount > 0;
   if (!shouldDisplayBanner || contactsLoading || casesLoading) return null;
 
   const handleViewClients = () => {
@@ -115,7 +116,7 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
       </BannerLink>
       {casesCount > 0 && (
         <>
-          {canView ? (
+          {showProfile ? (
             contactsCount > 0 && <>, </>
           ) : (
             <div style={{ margin: '1px 0 0 0', alignSelf: 'end' }}>
@@ -130,7 +131,7 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
           </BannerLink>
         </>
       )}
-      {canView && (
+      {showProfile && (
         <>
           {(contactsCount > 0 || casesCount > 0) && (
             <div>
