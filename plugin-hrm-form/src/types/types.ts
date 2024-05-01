@@ -397,6 +397,9 @@ export type Profile = {
   identifiers?: Identifier[];
   profileFlags?: {id: ProfileFlag['id'], name: ProfileFlag['name'], validUntil: ProfileFlag['validUntil']}[];
   profileSections?: ProfileSection[];
+  // This is a flag to indicate if the profile has contacts or not. It will be set to 'true' even if the user as no permission to view any of the contacts.
+  // It is a hack to work around the fact we don't support limited contact view permission. Once we do, this property along with its backend logic should be removed.
+  hasContacts?: boolean;
 };
 
 
