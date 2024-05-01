@@ -161,11 +161,8 @@ const handleLoadIdentifierFulfilledAction = (state: t.ProfilesState, action: any
   let newState = { ...state };
   for (const profile of profiles) {
     const profileUpdate = {
-      data: {
-        ...t.newProfileEntry,
-        ...newState[profile.id]?.data,
-        ...profile,
-      },
+      ...t.newProfileEntry,
+      ...profile,
     };
 
     newState = loadProfileEntryIntoRedux(newState, profile.id, profileUpdate);
