@@ -13,7 +13,7 @@
       "content_type": "PlainText"
     },
     "rejection_statement": {
-      "content": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a practitioner.",
+      "content": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a counsellor.",
       "content_type": "PlainText"
     },
     "slots": {
