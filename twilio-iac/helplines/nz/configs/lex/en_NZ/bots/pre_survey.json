@@ -1,6 +1,6 @@
 {
   "pre_survey": {
-    "description": "General configs/lex/en/bots Pre Survey bot",
+    "description": "Specific nz/configs/lex/en-nz/bots Pre Survey bot",
     "locale": "en-US",
     "process_behavior": "BUILD",
     "child_directed": true,

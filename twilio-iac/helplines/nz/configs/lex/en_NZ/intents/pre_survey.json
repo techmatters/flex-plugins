@@ -1,6 +1,6 @@
 {
   "pre_survey": {
-    "description": "Helpline Specific configs/lex/en_JM/intents Pre Survey Intent Survey intent",
+    "description": "Helpline Specific configs/lex/en_NZ/intents Pre Survey Intent Survey intent",
     "sample_utterances": [
       "Incoming webchat contact",
       "trigger_pre_survey"
