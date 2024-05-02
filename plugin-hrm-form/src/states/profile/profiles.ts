@@ -160,8 +160,11 @@ const handleLoadIdentifierFulfilledAction = (state: t.ProfilesState, action: any
   const { profiles } = action.payload;
   let newState = { ...state };
   for (const profile of profiles) {
+    // Want to reload the profile with the identifier otherwise we might have stale data
+    const { data, ...stateWithoutData } = newState[profile.id] ?? {};
     const profileUpdate = {
       ...t.newProfileEntry,
+      ...stateWithoutData,
       ...profile,
     };
 
