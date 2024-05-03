@@ -4,6 +4,7 @@
             "enable_lex": true,
             "enable_teams_view_enhancements": true,
             "enable_twilio_transcripts": false
-        }
+        },
+        "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
     }
 }

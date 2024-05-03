@@ -33,11 +33,16 @@ jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
 Object.fromEntries = fromentries;
 
 describe('search reducer', () => {
-  const initialState = {
-    tasks: {},
-  };
-
   const task = { taskSid: 'WT123' };
+  const context = 'root';
+
+  const initialState = {
+    tasks: {
+      [task.taskSid]: {
+        [context]: newTaskEntry,
+      },
+    },
+  };
 
   let state = null;
   test('CREATE_CONTACT_STATE_FULFILLED action (should create a new state)', () => {
@@ -57,7 +62,7 @@ describe('search reducer', () => {
 
     const { tasks } = result;
     expect(tasks[task.taskSid]).not.toBeUndefined();
-    expect(tasks[task.taskSid]).toStrictEqual(newTaskEntry);
+    expect(tasks[task.taskSid]).toStrictEqual({});
   });
 
   test('LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED action (should recreate the state)', () => {
@@ -76,7 +81,7 @@ describe('search reducer', () => {
 
     const { tasks } = result;
     expect(tasks[task.taskSid]).not.toBeUndefined();
-    expect(tasks[task.taskSid]).toStrictEqual(newTaskEntry);
+    expect(tasks[task.taskSid][context]).toStrictEqual(newTaskEntry);
     state = result;
   });
 
@@ -92,15 +97,15 @@ describe('search reducer', () => {
       },
     };
     const result1 = reduce(
-      { tasks: { [task.taskSid]: newTaskEntry } },
-      handleSearchFormChange(task.taskSid)('firstName', 'one value'),
+      { tasks: { [task.taskSid]: { [context]: newTaskEntry } } },
+      handleSearchFormChange(task.taskSid, context)('firstName', 'one value'),
     );
 
     const result2 = reduce(result1, action);
 
     const { tasks } = result2;
     expect(tasks[task.taskSid]).not.toStrictEqual(newTaskEntry);
-    expect(tasks[task.taskSid].form.firstName).toBe('one value');
+    expect(tasks[task.taskSid][context].form.firstName).toBe('one value');
 
     // state = result2; we don't want to assing this as a new state
   });
@@ -120,25 +125,27 @@ describe('search reducer', () => {
       taskId: task.taskSid,
       name: 'firstName',
       value: 'Somevalue',
+      context,
     };
     const result = reduce(state, action);
 
     const { tasks } = result;
-    expect(tasks[task.taskSid].form.firstName).toEqual('Somevalue');
+    expect(tasks[task.taskSid][context].form.firstName).toEqual('Somevalue');
     state = result;
   });
 
   test('SEARCH_CONTACTS_REQUEST action', () => {
-    expect(state.tasks[task.taskSid].isRequesting).toBeFalsy();
+    expect(state.tasks[task.taskSid][context].isRequesting).toBeFalsy();
     const action: t.SearchActionType = {
       type: t.SEARCH_CONTACTS_REQUEST,
       taskId: task.taskSid,
+      context,
     };
 
     const result = reduce(state, action);
 
     const { tasks } = result;
-    expect(tasks[task.taskSid].isRequesting).toBeTruthy();
+    expect(tasks[task.taskSid][context].isRequesting).toBeTruthy();
   });
 
   test('SEARCH_CONTACTS_SUCCESS action', () => {
@@ -153,11 +160,12 @@ describe('search reducer', () => {
       type: t.SEARCH_CONTACTS_SUCCESS,
       searchResult,
       taskId: task.taskSid,
+      context,
     };
     const result = reduce(state, action);
 
     const { tasks } = result;
-    expect(tasks[task.taskSid].searchContactsResult).toStrictEqual({
+    expect(tasks[task.taskSid][context].searchContactsResult).toStrictEqual({
       count: 2,
       ids: ['fake contact result 1', 'fake contact result 2'],
     });
@@ -165,25 +173,31 @@ describe('search reducer', () => {
   });
 
   test('SEARCH_CONTACTS_FAILURE action', () => {
-    const action: t.SearchActionType = { type: t.SEARCH_CONTACTS_FAILURE, error: 'Some error', taskId: task.taskSid };
+    const action: t.SearchActionType = {
+      type: t.SEARCH_CONTACTS_FAILURE,
+      error: 'Some error',
+      taskId: task.taskSid,
+      context,
+    };
     const result = reduce(state, action);
 
     const { tasks } = result;
-    expect(tasks[task.taskSid].error).toBe('Some error');
+    expect(tasks[task.taskSid][context].error).toBe('Some error');
     state = result;
   });
 
   test('SEARCH_CASES_REQUEST action', () => {
-    expect(state.tasks[task.taskSid].isRequestingCases).toBeFalsy();
+    expect(state.tasks[task.taskSid][context].isRequestingCases).toBeFalsy();
     const action: t.SearchActionType = {
       type: t.SEARCH_CASES_REQUEST,
       taskId: task.taskSid,
+      context,
     };
 
     const result = reduce(state, action);
 
     const { tasks } = result;
-    expect(tasks[task.taskSid].isRequestingCases).toBeTruthy();
+    expect(tasks[task.taskSid][context].isRequestingCases).toBeTruthy();
   });
 
   test('SEARCH_CASES_SUCCESS action', () => {
@@ -214,11 +228,12 @@ describe('search reducer', () => {
       type: t.SEARCH_CASES_SUCCESS,
       searchResult,
       taskId: task.taskSid,
+      context,
     };
     const result = reduce(state, action);
 
     const { tasks } = result;
-    expect(tasks[task.taskSid].searchCasesResult).toStrictEqual({
+    expect(tasks[task.taskSid][context].searchCasesResult).toStrictEqual({
       count: 2,
       ids: ['case-1', 'case-2'],
     });
@@ -226,11 +241,16 @@ describe('search reducer', () => {
   });
 
   test('SEARCH_CASES_FAILURE action', () => {
-    const action: t.SearchActionType = { type: t.SEARCH_CASES_FAILURE, error: 'Some error', taskId: task.taskSid };
+    const action: t.SearchActionType = {
+      type: t.SEARCH_CASES_FAILURE,
+      error: 'Some error',
+      taskId: task.taskSid,
+      context,
+    };
     const result = reduce(state, action);
 
     const { tasks } = result;
-    expect(tasks[task.taskSid].casesError).toBe('Some error');
+    expect(tasks[task.taskSid][context].casesError).toBe('Some error');
     state = result;
   });
 });

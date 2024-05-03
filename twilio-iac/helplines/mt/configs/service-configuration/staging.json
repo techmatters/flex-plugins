@@ -6,6 +6,7 @@
             "enable_twilio_transcripts": false
         },
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
-        "helplineLanguage": ""
+        "helplineLanguage": "",
+        "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
     }
 }
