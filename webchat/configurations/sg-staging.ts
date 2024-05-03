@@ -82,10 +82,6 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: ""
         },
         {
-          value: "Unknown",
-          label: "Unknown"
-        },
-        {
           value: "06",
           label: "6"
         },
