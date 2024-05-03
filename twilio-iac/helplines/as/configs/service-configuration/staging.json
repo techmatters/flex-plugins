@@ -39,6 +39,6 @@
             "preset": null
         },
         "internalChatServerlessUrl": "serverless-internal-chat-3216.twil.io",
-        "showRealtimeQueuesStats": true,
+        "showRealtimeQueuesStats": true
     }
 }
