@@ -4,7 +4,7 @@
             "enable_fullstory_monitoring": true,
             "enable_manual_pulling": true,
             "enable_post_survey": false,
-            "enable_teams_view_enhancements": true,
+            "enable_teams_view_enhancements": true
         },
         "helpline_code": "sg",
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
