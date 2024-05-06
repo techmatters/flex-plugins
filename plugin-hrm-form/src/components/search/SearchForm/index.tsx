@@ -69,7 +69,10 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   return {
     counselors: selectCounselorsList(state),
     helplineInformation: selectCurrentDefinitionVersion(state)?.helplineInformation,
-    previousContactCounts: selectPreviousContactCounts(state, task.taskSid, contactId) ?? { contacts: 0, cases: 0 },
+    previousContactCounts: selectPreviousContactCounts(state, task.taskSid, `contact-${contactId}`) ?? {
+      contacts: 0,
+      cases: 0,
+    },
   };
 };
 
@@ -115,7 +118,7 @@ const SearchForm: React.FC<Props> = ({
   const { helpline: userHelpline, multipleOfficeSupport } = getHrmConfig();
   const searchParams = {
     ...values,
-    counselor: counselor.value, // backend expects only counselor's SID
+    counselor: counselor?.value, // backend expects only counselor's SID
     // If the user already has a helpline attribute we will hide the dropdown and send the userHelpline to the API
     helpline: multipleOfficeSupport && helpline?.value ? helpline.value : userHelpline,
     onlyDataContacts: false,
@@ -191,7 +194,7 @@ const SearchForm: React.FC<Props> = ({
               name="counselor"
               label={strings['SearchForm-Counselor']}
               placeholder={strings['SearchForm-Name']}
-              field={getField(counselor)}
+              field={getField(counselor ?? '')}
               options={[{ label: '', value: '' }, ...counselorsOptions]}
               {...defaultEventHandlers('counselor')}
               style={{ marginRight: 25 }}
