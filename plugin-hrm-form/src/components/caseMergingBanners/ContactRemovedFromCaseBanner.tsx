@@ -93,7 +93,7 @@ const ContactRemovedFromCaseBanner: React.FC<Props> = ({
           onClick={() => {
             connectCaseToTaskContact(savedContact, caseId);
           }}
-          color="#ffa500"
+          color="#0263e0"
         >
           <Template code="CaseMerging-ContactUndoRemovedFromCase" />
         </CaseLink>
