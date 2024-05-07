@@ -69,6 +69,8 @@
   "ChatInputDisabledText": "Conversation ended",
   "Read": "Read",
   "Transfer-TransferButton": "Transfer",
+  "Transfer-RefreshButton": "Refresh",
+  "Transfer-ErrorLoadingMessages": "Error loading messages.",
   "TaskHeaderEndChat": "End Chat",
   "TaskHeaderendCall": "Hang Up",
   "WorkerDirectoryTitle": "Transfer",
