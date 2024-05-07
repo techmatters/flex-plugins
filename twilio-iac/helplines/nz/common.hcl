@@ -4,12 +4,13 @@ locals {
   config              = merge(local.defaults_config, local.local_config)
 
   local_config = {
-    helpline                          = "Youthline"
-    task_language                     = "en-NZ"
+    helpline                   = "Youthline"
+    task_language              = "en-NZ"
+    enable_external_recordings = true
 
     channel_attributes = {
-      webchat : "/app/twilio-iac/helplines/nz/templates/channel-attributes/webchat.tftpl"
-      voice   : "/app/twilio-iac/helplines/nz/templates/channel-attributes/voice.tftpl"
+      webchat : "/app/twilio-iac/helplines/nz/templates/channel-attributes/webchat.tftpl",
+      voice   : "/app/twilio-iac/helplines/nz/templates/channel-attributes/voice.tftpl",
       modica  : "/app/twilio-iac/helplines/nz/templates/channel-attributes/modica.tftpl",
       default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
     }
@@ -36,7 +37,7 @@ locals {
         "friendly_name"  = "Youthline Helpline"
       },
       priority : {
-        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND email != 'test@gmail.com'" ,
+        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND email != 'test@gmail.com'",
         "friendly_name"  = "Priority Youthline Helpline"
       },
       clinical : {

@@ -71,6 +71,7 @@
             "enable_save_insights": false,
             "enable_separate_timeline_view": true,
             "enable_sort_cases": true,
+            "enable_teams_view_enhancements": true,
             "enable_transfers": true,
             "enable_twilio_transcripts": true,
             "enable_upload_documents": true,

@@ -25,12 +25,12 @@ const checkOpenHours = true;
 const contactType: ContactType = 'ip';
 
 const closedHours: PreEngagementFormDefinition = {
-  description: "We're closed at the moment. Operating hours are 8am-6pm",
+  description: "You've reached the Helpline outside our webchat hours. If you'd like to talk to us now, please txt us for free on 234 or call us for free on 0800376633",
   fields: [],
 };
 
 const holidayHours: PreEngagementFormDefinition = {
-  description: 'We are closed because it is a holiday. Please come back tomorrow',
+  description: 'The helpline is closed due to a holiday.',
   fields: [],
 };
 
@@ -372,7 +372,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       type: 'checkbox',
       name: 'clientPrivacyStatement',
-      label: 'I agree with the <a href="https://www.youthline.co.nz/privacy-statement-for-children-and-young-people.html">client privacy statement</a>',
+      label: 'I agree with the <a href="https://youthline.co.nz/privacy-statements/">client privacy statement</a>',
       required: {
         value: true,
         message: 'You need to agree with our client privacy statement to start a chat ',
@@ -428,6 +428,9 @@ export const config: Configuration = {
   defaultLanguage,
   translations,
   preEngagementConfig,
+  closedHours,
+  holidayHours,
+  checkOpenHours,
   mapHelplineLanguage,
   memberDisplayOptions,
   captureIp,

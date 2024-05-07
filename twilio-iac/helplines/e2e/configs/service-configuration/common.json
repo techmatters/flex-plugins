@@ -15,6 +15,7 @@
             "enable_post_survey": false,
             "enable_resources_elastic_search": true,
             "enable_save_insights": true,
+            "enable_teams_view_enhancements": true,
             "enable_transcripts": false,
             "enable_twilio_transcripts": false,
             "enable_voice_recordings": false,
