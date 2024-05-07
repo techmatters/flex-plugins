@@ -46,7 +46,7 @@ import { newContactMetaData } from './contactState';
 import { getCase } from '../../services/CaseService';
 import { getUnsavedContact } from './getUnsavedContact';
 import * as TransferHelpers from '../../transfer/transferTaskState';
-import { WorkerSID } from '../../types/twilio';
+import { TaskSID, WorkerSID } from '../../types/twilio';
 import { CaseStateEntry } from '../case/types';
 
 export const createContactAsyncAction = createAsyncAction(
@@ -202,7 +202,7 @@ export const newFinalizeContactAsyncAction = createAsyncAction(
 
 export const loadContactFromHrmByTaskSidAsyncAction = createAsyncAction(
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION,
-  async (taskSid: string, reference: string = taskSid) => {
+  async (taskSid: TaskSID, reference: string = taskSid) => {
     const contact = await getContactByTaskSid(taskSid);
     let contactCase: Case | undefined;
     if (contact?.caseId) {
@@ -214,6 +214,9 @@ export const loadContactFromHrmByTaskSidAsyncAction = createAsyncAction(
       reference,
     };
   },
+  (taskSid: TaskSID) => ({
+    taskSid,
+  }),
 );
 
 export const loadContactFromHrmByIdAsyncAction = createAsyncAction(
@@ -230,6 +233,24 @@ export const loadContactFromHrmByIdAsyncAction = createAsyncAction(
   }),
 );
 
+const markContactAsCreatingInRedux = (state: ContactsState, taskSid: string): ContactsState => {
+  const contactsBeingCreated = new Set(state.contactsBeingCreated);
+  contactsBeingCreated.add(taskSid);
+  return {
+    ...state,
+    contactsBeingCreated,
+  };
+};
+
+const markContactAsNotCreatingInRedux = (state: ContactsState, taskSid: string): ContactsState => {
+  const contactsBeingCreated = new Set(state.contactsBeingCreated);
+  contactsBeingCreated.delete(taskSid);
+  return {
+    ...state,
+    contactsBeingCreated,
+  };
+};
+
 // TODO: Consolidate this logic with the loadContactReducer implementation?
 export const loadContactIntoRedux = (
   state: ContactsState,
@@ -243,8 +264,6 @@ export const loadContactIntoRedux = (
     references.add(reference);
   }
   const metadata = { ...newContactMetaData(false), ...(newMetadata ?? existingContacts[contact.id]?.metadata) };
-  const contactsBeingCreated = new Set(state.contactsBeingCreated);
-  contactsBeingCreated.delete(contact.taskId);
   const existingContact = existingContacts[contact.id]?.savedContact;
   const existingAssociations = {
     ...(existingContact?.csamReports ? { csamReports: existingContact.csamReports } : {}),
@@ -252,8 +271,7 @@ export const loadContactIntoRedux = (
     ...(existingContact?.referrals ? { referrals: existingContact.referrals } : {}),
   };
   return {
-    ...state,
-    contactsBeingCreated,
+    ...markContactAsNotCreatingInRedux(state, contact.taskId),
     existingContacts: {
       ...existingContacts,
       [contact.id]: {
@@ -342,20 +360,7 @@ export const saveContactReducer = (initialState: ContactsState) =>
     ),
     handleAction(
       createContactAsyncAction.pending as typeof createContactAsyncAction,
-      (state, { meta: { taskSid } }): ContactsState => {
-        const contactsBeingCreated = new Set(state.contactsBeingCreated);
-        contactsBeingCreated.add(taskSid);
-        return {
-          ...state,
-          contactsBeingCreated,
-        };
-      },
-    ),
-    handleAction(
-      loadContactFromHrmByIdAsyncAction.pending as typeof loadContactFromHrmByIdAsyncAction,
-      (state, { meta: { contactId } }): ContactsState => {
-        return setContactLoadingStateInRedux(state, contactId);
-      },
+      (state, { meta: { taskSid } }): ContactsState => markContactAsCreatingInRedux(state, taskSid),
     ),
     handleAction(
       createContactAsyncAction.fulfilled,
@@ -365,19 +370,22 @@ export const saveContactReducer = (initialState: ContactsState) =>
     ),
     handleAction(
       createContactAsyncAction.rejected,
-      (state, action): ContactsState => {
-        const {
-          meta: { taskSid },
-        } = action as typeof action & {
-          meta: { taskSid: string };
-        };
-        const contactsBeingCreated = new Set(state.contactsBeingCreated);
-        contactsBeingCreated.delete(taskSid);
-        return {
-          ...state,
-          contactsBeingCreated,
-        };
+      (state, { meta: { taskSid } }: any): ContactsState => markContactAsNotCreatingInRedux(state, taskSid),
+    ),
+    handleAction(
+      loadContactFromHrmByTaskSidAsyncAction.pending as typeof loadContactFromHrmByTaskSidAsyncAction,
+      (state, { meta: { taskSid } }): ContactsState => markContactAsCreatingInRedux(state, taskSid),
+    ),
+    handleAction(
+      loadContactFromHrmByTaskSidAsyncAction.fulfilled,
+      (state, { payload: { contact, reference } }): ContactsState => {
+        if (!contact) return state;
+        return loadContactIntoRedux(state, contact, reference, newContactMetaData(true));
       },
+    ),
+    handleAction(
+      loadContactFromHrmByTaskSidAsyncAction.rejected,
+      (state, { meta: { taskSid } }: any): ContactsState => markContactAsNotCreatingInRedux(state, taskSid),
     ),
     handleAction(
       submitContactFormAsyncAction.pending as typeof submitContactFormAsyncAction,
@@ -403,10 +411,9 @@ export const saveContactReducer = (initialState: ContactsState) =>
       },
     ),
     handleAction(
-      loadContactFromHrmByTaskSidAsyncAction.fulfilled,
-      (state, { payload: { contact, reference } }): ContactsState => {
-        if (!contact) return state;
-        return loadContactIntoRedux(state, contact, reference, newContactMetaData(true));
+      loadContactFromHrmByIdAsyncAction.pending as typeof loadContactFromHrmByIdAsyncAction,
+      (state, { meta: { contactId } }): ContactsState => {
+        return setContactLoadingStateInRedux(state, contactId);
       },
     ),
     handleAction(
