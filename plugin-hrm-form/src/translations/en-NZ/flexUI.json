@@ -406,6 +406,8 @@
   "Transfer-TaskLineChatSmsReserved": "Transfer from",
   "Transfer-TaskLineChatWhatsAppReserved": "Transfer from",
   "Transfer-TransferButton": "Transfer",
+  "Transfer-RefreshButton": "Refresh",
+  "Transfer-ErrorLoadingMessages": "Error loading messages.",
   "Transfer-Warm": "Warm",
   "TranslateButtonAriaLabel": "Change language",
   "UploadFile-ButtonText": "Upload File,",
