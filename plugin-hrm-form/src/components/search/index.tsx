@@ -118,10 +118,10 @@ const Search: React.FC<Props> = ({
   const closeDialog = () => setMockedMessage('');
 
   const handleSearchContacts = (newSearchParams: SearchParams, newOffset) =>
-    searchContacts(searchContext)(newSearchParams, CONTACTS_PER_PAGE, newOffset);
+    searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
 
   const handleSearchCases = (newSearchParams, newOffset) =>
-    searchCases(searchContext)(newSearchParams, CASES_PER_PAGE, newOffset);
+    searchCases(searchContext)({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
 
   const setSearchParamsAndHandleSearch = async newSearchParams => {
     if (routing.route === 'search') {

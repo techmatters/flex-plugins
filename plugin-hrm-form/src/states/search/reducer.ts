@@ -296,17 +296,17 @@ export function reduce(
         count,
       };
       const previousContactCounts = dispatchedFromPreviousContacts
-        ? { ...task.previousContactCounts, cases: newCasesResult.count }
-        : task.previousContactCounts;
+        ? { ...context.previousContactCounts, cases: newCasesResult.count }
+        : context.previousContactCounts;
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            previousContactCounts,
             [action.context]: {
               ...context,
+              previousContactCounts,
               searchCasesResult: newCasesResult,
               isRequestingCases: false,
               casesError: null,

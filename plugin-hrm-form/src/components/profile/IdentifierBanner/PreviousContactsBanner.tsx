@@ -36,7 +36,6 @@ import { selectCounselorsHash } from '../../../states/configuration/selectCounse
 import selectPreviousContactCounts from '../../../states/search/selectPreviousContactCounts';
 import { iconsFromTask } from './iconsFromTask';
 import selectContactByTaskSid from '../../../states/contacts/selectContactByTaskSid';
-import selectContextContactId from '../../../states/contacts/selectContextContactId';
 import { SearchFormValues } from '../../../states/search/types';
 
 type OwnProps = {
@@ -137,8 +136,7 @@ PreviousContactsBanner.displayName = 'PreviousContactsBanner';
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const { taskSid } = task;
   const contact = selectContactByTaskSid(state, task.taskSid);
-  const contextContactId = selectContextContactId(state, task.taskSid, 'search', 'contact-results');
-  const searchContext = contextContactId ? `contact-${contextContactId}` : 'root';
+  const searchContext = contact!.savedContact ? `contact-${contact.savedContact.id}` : 'root';
 
   return {
     previousContactCounts: selectPreviousContactCounts(state, taskSid, searchContext),
