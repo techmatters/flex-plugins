@@ -142,17 +142,17 @@ const updateTopmostRoute = (baseRouteStack: AppRoutes[], newRoute, mode: ChangeR
   return [...(baseRouteStack ?? []), newRoute];
 };
 
-const popTopmostRoute = (baseRouteStack: AppRoutes[]): AppRoutes[] => {
+const popTopmostRoute = (baseRouteStack: AppRoutes[], bottomRouteStack = baseRouteStack): AppRoutes[] => {
   if (baseRouteStack?.length) {
     const currentRoute = baseRouteStack[baseRouteStack.length - 1];
     if (isRouteWithModalSupport(currentRoute) && currentRoute.activeModal) {
       return [
         ...baseRouteStack.slice(0, -1),
-        { ...currentRoute, activeModal: popTopmostRoute(currentRoute.activeModal) },
+        { ...currentRoute, activeModal: popTopmostRoute(currentRoute.activeModal, bottomRouteStack) },
       ];
     }
     // Don't empty the base route stack, this will result in Bad Things (TM)
-    if (baseRouteStack.length <= 1 && !isRouteWithModalSupport(currentRoute)) {
+    if (baseRouteStack.length <= 1 && baseRouteStack === bottomRouteStack) {
       console.warn(
         `Tried to go back in the base route stack but there was ${baseRouteStack.length} routes in the stack so doing nothing. This could indicate a routing logic issue in the components.`,
       );

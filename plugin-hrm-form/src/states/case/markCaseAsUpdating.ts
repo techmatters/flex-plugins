@@ -13,31 +13,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { DefinitionVersionId } from 'hrm-form-definitions';
 
-import { Case } from '../types/types';
-import { CaseStateEntry } from '../states/case/types';
+import { HrmState } from '..';
+import { Case } from '../../types/types';
 
-export const VALID_EMPTY_CASE: Case = {
-  id: '1',
-  accountSid: 'AC',
-  info: {
-    definitionVersion: DefinitionVersionId.v1,
+export const markCaseAsUpdating = (state: HrmState, caseId: Case['id'], updating: boolean): HrmState => ({
+  ...state,
+  connectedCase: {
+    ...state.connectedCase,
+    cases: {
+      ...state.connectedCase.cases,
+      [caseId]: {
+        ...state.connectedCase.cases[caseId],
+        outstandingUpdateCount: (state.connectedCase.cases[caseId].outstandingUpdateCount || 0) + (updating ? 1 : -1),
+      },
+    },
   },
-  updatedAt: new Date(2000, 0, 1).toISOString(),
-  createdAt: new Date(2000, 0, 1).toISOString(),
-  helpline: '',
-  twilioWorkerId: 'WK',
-  status: '',
-  categories: {},
-};
-
-export const VALID_EMPTY_CASE_STATE_ENTRY: CaseStateEntry = {
-  connectedCase: VALID_EMPTY_CASE,
-  sections: {},
-  timelines: {},
-  availableStatusTransitions: [],
-  caseWorkingCopy: undefined,
-  references: new Set<string>(),
-  outstandingUpdateCount: 0,
-};
+});
