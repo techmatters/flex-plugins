@@ -90,6 +90,7 @@ beforeEach(() => {
               },
             },
           },
+          outstandingUpdateCount: 0,
           connectedCase: {
             ...VALID_EMPTY_CASE,
           },
@@ -183,6 +184,7 @@ describe('createCaseSectionAsyncAction', () => {
               connectedCase: { ...VALID_EMPTY_CASE },
               timelines: {},
               sections: {},
+              outstandingUpdateCount: 0,
             },
           },
         },
@@ -323,6 +325,7 @@ describe('updateCaseSectionAsyncAction', () => {
               connectedCase: { ...VALID_EMPTY_CASE },
               timelines: {},
               sections: {},
+              outstandingUpdateCount: 0,
             },
           },
         },
