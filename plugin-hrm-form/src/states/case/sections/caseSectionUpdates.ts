@@ -164,6 +164,10 @@ export const caseSectionUpdateReducer = (initialState: HrmState): ((state: HrmSt
       const { caseId, sections } = action.payload;
       return markCaseAsUpdating(updateCaseSections(state, caseId, sections), caseId, false);
     }),
+    handleAction(createCaseSectionAsyncAction.rejected, (state: HrmState, action: any) => {
+      const { caseId } = action.meta;
+      return markCaseAsUpdating(state, caseId, false);
+    }),
     handleAction(updateCaseSectionAsyncAction.pending, (state: HrmState, action: any) => {
       const { caseId } = action.meta;
       return markCaseAsUpdating(state, caseId, true);
@@ -171,5 +175,9 @@ export const caseSectionUpdateReducer = (initialState: HrmState): ((state: HrmSt
     handleAction(updateCaseSectionAsyncAction.fulfilled, (state: HrmState, action) => {
       const { caseId, sections } = action.payload;
       return markCaseAsUpdating(updateCaseSections(state, caseId, sections), caseId, false);
+    }),
+    handleAction(updateCaseSectionAsyncAction.rejected, (state: HrmState, action: any) => {
+      const { caseId } = action.meta;
+      return markCaseAsUpdating(state, caseId, false);
     }),
   ]);

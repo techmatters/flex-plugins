@@ -84,6 +84,7 @@ const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => 
   const caseDefinitionVersion = state.configuration.definitionVersions[connectedCase?.info?.definitionVersion];
   const stateCase = state.connectedCase.cases[connectedCase?.id]?.connectedCase;
   const stateInfo = stateCase?.info;
+  const outstandingUpdateCount = (state.connectedCase.cases[connectedCase.id]?.outstandingUpdateCount ?? 1) - 1;
 
   return {
     ...state,
@@ -105,7 +106,7 @@ const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => 
           references: state.connectedCase.cases[connectedCase.id]?.references ?? new Set(),
           sections: state.connectedCase.cases[connectedCase.id]?.sections ?? {},
           timelines: state.connectedCase.cases[connectedCase.id]?.timelines ?? {},
-          outstandingUpdateCount: state.connectedCase.cases[connectedCase.id]?.outstandingUpdateCount ?? 0,
+          outstandingUpdateCount,
         },
       },
     },
@@ -115,11 +116,7 @@ const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => 
 const handleUpdateCaseOverviewFulfilledAction = (
   handleAction: CreateHandlerMap<HrmState>,
   asyncAction: typeof updateCaseOverviewAsyncAction.fulfilled,
-) =>
-  handleAction(
-    asyncAction,
-    (state, { payload }): HrmState => markCaseAsUpdating(updateConnectedCase(state, payload), payload.id, false),
-  );
+) => handleAction(asyncAction, (state, { payload }): HrmState => updateConnectedCase(state, payload));
 
 const handleCreateCaseFulfilledAction = (
   handleAction: CreateHandlerMap<HrmState>,

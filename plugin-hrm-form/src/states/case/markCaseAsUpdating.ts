@@ -23,10 +23,15 @@ export const markCaseAsUpdating = (state: HrmState, caseId: Case['id'], updating
     ...state.connectedCase,
     cases: {
       ...state.connectedCase.cases,
-      [caseId]: {
-        ...state.connectedCase.cases[caseId],
-        outstandingUpdateCount: (state.connectedCase.cases[caseId].outstandingUpdateCount || 0) + (updating ? 1 : -1),
-      },
+      ...(state.connectedCase.cases[caseId]
+        ? {
+            [caseId]: {
+              ...state.connectedCase.cases[caseId],
+              outstandingUpdateCount:
+                (state.connectedCase.cases[caseId]?.outstandingUpdateCount || 0) + (updating ? 1 : -1),
+            },
+          }
+        : {}),
     },
   },
 });
