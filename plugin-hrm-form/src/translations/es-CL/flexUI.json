@@ -215,7 +215,7 @@
   "TranslateButtonAriaLabel": "Cambiar Idioma",
   "CannedResponses": "Respuestas Preparadas",
   "TaskInfoPanelContent": "<h1>CONTEXTO DE LA TAREA</h1><h2>Tipo de tarea</h2><p>{{task.channelType}}</p><h2>Tarea creada el</h2><p>{{task.dateCreated}}</p><h2>Prioridad de la tarea</h2><p>{{task.priority}}</p><h2>Fila de la tarea</h2><p>{{task.queueName}}</p><h2>Tarea SID</h2><p>{{task.taskSid}}</p><h2>Reservas SID</h2><p>{{task.sid}}</p><hr /><h1>CONTEXTO DEL CLIENTE</h1><h2>Nombre del cliente / número de teléfono</h2><p>{{task.defaultFrom}}</p><h2>País</h2><p>{{task.attributes.caller_country}}</p><hr /><h1>ADDONS</h1><p>No hay add-ons activados. Para mejorar su experiencia, visite </p><a href=\"https://www.twilio.com/marketplaceadd-ons\" target=\"blank\">Twilio Marketplace</a>",
-  "SupervisorTaskInfoPanelContent": "<h1>CONTEXTO DE LA TAREA</h1><h2>Tipo de tarea</h2><p>{{task.channelType}}</p><h2>Tarea creada el</h2><p>{{task.dateCreated}}</p><h2>Prioridad de la tarea</h2><p>{{task.priority}}</p><h2>Fila de la tarea</h2><p>{{task.queueName}}</p><h2>Tarea SID</h2><p>{{task.taskSid}}</p><h2>Reservas SID</h2><p>{{task.sid}}</p><hr /><h1>CONTEXTO DEL CLIENTE</h1><h2>Nombre del cliente / número de teléfono</h2><p>{{task.defaultFrom}}</p><h2>País</h2><p>{{task.attributes.caller_country}}</p><hr /><h1>ADDONS</h1><p>No hay addons activados. Para mejorar su experiencia, visite</p><a href=\"https://www.twilio.com/marketplaceadd-ons\" target=\"blank\">Twilio Marketplace</a>",
+  "SupervisorTaskInfoPanelContent": "<h1>CONTEXTO DE LA TAREA</h1><h2>IP</h2><p>{{task.ip}}</p><h2>Tipo de tarea</h2><p>{{task.channelType}}</p><h2>Tarea creada el</h2><p>{{task.dateCreated}}</p><h2>Prioridad de la tarea</h2><p>{{task.priority}}</p><h2>Fila de la tarea</h2><p>{{task.queueName}}</p><h2>Tarea SID</h2><p>{{task.taskSid}}</p><h2>Reservas SID</h2><p>{{task.sid}}</p><hr /><h1>CONTEXTO DEL CLIENTE</h1><h2>Nombre del cliente / número de teléfono</h2><p>{{task.defaultFrom}}</p><h2>País</h2><p>{{task.attributes.caller_country}}</p><hr /><h1>ADDONS</h1><p>No hay addons activados. Para mejorar su experiencia, visite</p><a href=\"https://www.twilio.com/marketplaceadd-ons\" target=\"blank\">Twilio Marketplace</a>",
   "CallType-child": "Niño llamando por si mismo",
   "CallType-caller": "Alguien llamando por un niño",
   "CallType-silent": "Silencioso",
@@ -636,5 +636,9 @@
   "ProfileList-Summary-None": "- Perfil sin resumen -",
   "ProfileList-Status-None": "- Sin estado -",
   "ProfileList-ClientName-None": "- Sin nombre -",
-  "TeamsView-NoSkills": "- Sin habilidades -"
-}
+  "TeamsView-NoSkills": "- Sin habilidades -",
+  "abusive": "abusivo",
+  "blocked": "bloqueado",
+  "repeated contact": "contacto repetido"
+  }
+  

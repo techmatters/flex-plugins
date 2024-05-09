@@ -6,6 +6,11 @@
   },
   {
     "flag": "blocked",
+    "label": "Bloqueo Contacto Repetido (30 días)",
+    "durationInHours": "720"
+  },
+  {
+    "flag": "blocked",
     "label": "Bloqueo Largo Plazo (1 Año)",
     "durationInHours": "8760"
   }
