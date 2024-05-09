@@ -1,8 +1,8 @@
 [
   {
     "name": "summary",
-    "label": "Summary",
-    "editLabel": "Edit Summary",
+    "label": "Resumen",
+    "editLabel": "Editar Resumen",
     "type": "textarea",
     "rows": 20,
     "width": 500,

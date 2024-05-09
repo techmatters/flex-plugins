@@ -1,0 +1,12 @@
+[
+  {
+    "flag": "blocked",
+    "label": "Bloqueo Temporal (24 Horas)",
+    "durationInHours": "24"
+  },
+  {
+    "flag": "blocked",
+    "label": "Bloqueo Largo Plazo (1 Año)",
+    "durationInHours": "8760"
+  }
+]
