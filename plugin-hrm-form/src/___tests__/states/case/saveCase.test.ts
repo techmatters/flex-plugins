@@ -94,7 +94,7 @@ const mockPayload: Omit<Case, 'sections' | 'label'> = {
   categories: {},
 };
 
-const testStore = (stateChanges: HrmState) =>
+const testStore = (stateChanges: Partial<HrmState> = {}) =>
   configureStore({
     preloadedState: { ...saveCaseState, ...stateChanges },
     reducer: boundSaveCaseReducer,
@@ -316,13 +316,16 @@ describe('updateCaseOverviewAsyncAction', () => {
   describe('fulfilled', () => {
     test('case exists in redux store - updates case overview ', async () => {
       const { getState, dispatch } = testStore(nonInitialState);
-      await ((dispatch(updateCaseOverviewAsyncAction(mockPayload.id, overview, undefined)) as unknown) as PromiseLike<
-        void
-      >);
+      const actionResultPromise = (dispatch(
+        updateCaseOverviewAsyncAction(mockPayload.id, overview, undefined),
+      ) as unknown) as PromiseLike<void>;
+      const pendingState = getState();
+      expect(pendingState.connectedCase.cases[mockPayload.id].outstandingUpdateCount).toEqual(1);
+      await actionResultPromise;
       const {
         connectedCase: {
           cases: {
-            213: { connectedCase: updatedCase },
+            [mockPayload.id]: { connectedCase: updatedCase, outstandingUpdateCount },
           },
         },
       } = getState() as HrmState;
@@ -334,6 +337,7 @@ describe('updateCaseOverviewAsyncAction', () => {
           ...overview,
         },
       });
+      expect(outstandingUpdateCount).toEqual(0);
     });
     test("case doesn't exist in redux store - adds case", async () => {
       const { getState, dispatch } = testStore(nonInitialState);
