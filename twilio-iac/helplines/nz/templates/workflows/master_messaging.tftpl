@@ -22,7 +22,13 @@
         "targets": [
           {
             "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
-            "queue": "${task_queues.clinical}"
+            "queue": "${task_queues.clinical}",
+            "skip_if": "1==1",
+            "priority": 8
+          },
+          {
+            "queue": "${task_queues.youthline_helpline}",
+            "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
           }
         ]
       },
@@ -49,7 +55,8 @@
         "targets": [
           {
             "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
-            "queue": "${task_queues.counselling}"
+            "queue": "${task_queues.counselling}",
+            "priority": 20
           }
         ]
       },

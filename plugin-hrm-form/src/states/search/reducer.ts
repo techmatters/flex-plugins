@@ -50,7 +50,9 @@ export type SearchStateTaskEntry = {
 
 type SearchState = {
   tasks: {
-    [taskId: string]: SearchStateTaskEntry;
+    [taskId: string]: {
+      [context: string]: SearchStateTaskEntry;
+    };
   };
 };
 
@@ -79,7 +81,9 @@ export const newTaskEntry: SearchStateTaskEntry = {
 
 export const initialState: SearchState = {
   tasks: {
-    [standaloneTaskSid]: newTaskEntry,
+    [standaloneTaskSid]: {
+      root: newTaskEntry,
+    },
   },
 };
 
@@ -99,7 +103,7 @@ const contactUpdatingReducer = (state: SearchState, action: ContactUpdatingActio
     ...updatedState,
     tasks: {
       ...updatedState.tasks,
-      [contact.taskId]: newTaskEntry,
+      [contact.taskId]: {},
     },
   };
 };
@@ -119,7 +123,12 @@ export function reduce(
     state = {
       ...state,
       tasks: Object.fromEntries(
-        Object.entries(state.tasks).map(([key, value]) => [key, { ...value, contactRefreshRequired: true }]),
+        Object.entries(state.tasks).map(([key, value]) => [
+          key,
+          Object.fromEntries(
+            Object.entries(value).map(([key, context]) => [key, { ...context, contactRefreshRequired: true }]),
+          ),
+        ]),
       ),
     };
   }
@@ -128,7 +137,12 @@ export function reduce(
     state = {
       ...state,
       tasks: Object.fromEntries(
-        Object.entries(state.tasks).map(([key, value]) => [key, { ...value, caseRefreshRequired: true }]),
+        Object.entries(state.tasks).map(([key, value]) => [
+          key,
+          Object.fromEntries(
+            Object.entries(value).map(([key, context]) => [key, { ...context, caseRefreshRequired: true }]),
+          ),
+        ]),
       ),
     };
   }
@@ -145,24 +159,57 @@ export function reduce(
       };
     case t.HANDLE_SEARCH_FORM_CHANGE: {
       const task = state.tasks[action.taskId];
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: { ...task, form: { ...task.form, [action.name]: action.value } },
-        },
-      };
-    }
-    case t.SEARCH_CONTACTS_REQUEST: {
-      const task = state.tasks[action.taskId];
+      const context = state.tasks[action.taskId][action.context];
+
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            isRequesting: true,
-            contactRefreshRequired: false,
+            [action.context]: {
+              ...context,
+              form: {
+                ...context?.form,
+                [action.name]: action.value,
+              },
+            },
+          },
+        },
+      };
+    }
+    case t.CREATE_NEW_SEARCH: {
+      const task = state.tasks[action.taskId] || {};
+      const context = state.tasks[action.taskId][action.context];
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...task,
+            [action.context]: {
+              ...context,
+              ...newTaskEntry,
+            },
+          },
+        },
+      };
+    }
+    case t.SEARCH_CONTACTS_REQUEST: {
+      const task = state.tasks[action.taskId];
+      const context = state.tasks[action.taskId][action.context];
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...task,
+            [action.context]: {
+              ...context,
+              isRequesting: true,
+              contactRefreshRequired: false,
+            },
           },
         },
       };
@@ -172,53 +219,66 @@ export function reduce(
         searchResult: { contacts, ...searchResult },
         taskId,
         dispatchedFromPreviousContacts,
+        context,
       } = action;
       const task = state.tasks[taskId];
+      const searchContext = state.tasks[taskId][context];
       const newContactsResult = {
         ids: contacts.map(c => c.id),
         count: searchResult.count,
       };
       const previousContactCounts = dispatchedFromPreviousContacts
-        ? { ...task.previousContactCounts, contacts: searchResult.count }
-        : task.previousContactCounts;
+        ? { ...searchContext.previousContactCounts, contacts: searchResult.count }
+        : searchContext.previousContactCounts;
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [taskId]: {
             ...task,
-            searchContactsResult: newContactsResult,
-            previousContactCounts,
-            isRequesting: false,
-            error: null,
+            [context]: {
+              ...searchContext,
+              searchContactsResult: newContactsResult,
+              isRequesting: false,
+              error: null,
+              previousContactCounts,
+            },
           },
         },
       };
     }
     case t.SEARCH_CONTACTS_FAILURE: {
       const task = state.tasks[action.taskId];
+      const context = state.tasks[action.taskId][action.context];
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            isRequesting: false,
-            error: action.error,
+            [action.context]: {
+              ...context,
+              isRequesting: false,
+              error: action.error,
+            },
           },
         },
       };
     }
     case t.SEARCH_CASES_REQUEST: {
       const task = state.tasks[action.taskId];
+      const context = state.tasks[action.taskId][action.context];
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            isRequestingCases: true,
-            caseRefreshRequired: false,
+            [action.context]: {
+              ...context,
+              isRequestingCases: true,
+              caseRefreshRequired: false,
+            },
           },
         },
       };
@@ -230,43 +290,52 @@ export function reduce(
         dispatchedFromPreviousContacts,
       } = action;
       const task = state.tasks[taskId];
+      const context = state.tasks[action.taskId][action.context];
       const newCasesResult = {
         ids: cases.map(c => c.id),
         count,
       };
       const previousContactCounts = dispatchedFromPreviousContacts
-        ? { ...task.previousContactCounts, cases: newCasesResult.count }
-        : task.previousContactCounts;
+        ? { ...context.previousContactCounts, cases: newCasesResult.count }
+        : context.previousContactCounts;
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            searchCasesResult: newCasesResult,
-            previousContactCounts,
-            isRequestingCases: false,
-            casesError: null,
+            [action.context]: {
+              ...context,
+              previousContactCounts,
+              searchCasesResult: newCasesResult,
+              isRequestingCases: false,
+              casesError: null,
+            },
           },
         },
       };
     }
     case t.SEARCH_CASES_FAILURE: {
       const task = state.tasks[action.taskId];
+      const context = state.tasks[action.taskId][action.context];
       return {
         ...state,
         tasks: {
           ...state.tasks,
           [action.taskId]: {
             ...task,
-            isRequestingCases: false,
-            casesError: action.error,
+            [action.context]: {
+              ...context,
+              isRequestingCases: false,
+              casesError: action.error,
+            },
           },
         },
       };
     }
     case t.VIEW_PREVIOUS_CONTACTS: {
       const task = state.tasks[action.taskId];
+      const context = state.tasks[action.taskId][action.context];
       return {
         ...state,
         tasks: {
@@ -275,7 +344,10 @@ export function reduce(
             ...task,
             form: {
               ...task.form,
-              contactNumber: action.contactNumber,
+              [action.context]: {
+                ...context,
+                contactNumber: action.contactNumber,
+              },
             },
           },
         },

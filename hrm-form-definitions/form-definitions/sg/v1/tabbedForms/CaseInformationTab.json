@@ -15,7 +15,7 @@
     "label": "Repeat Caller?",
     "type": "checkbox"
   },
-  {
+  { 
     "name": "actionTaken",
     "label": "Action Taken by TF",
     "type": "listbox-multiselect",
@@ -53,16 +53,8 @@
         "label": "Referrals to School Counsellor"
       },
       {
-        "value": "noReferral",
-        "label": "No Referral was Made"
-      },
-      {
         "value": "Others",
         "label": "Others"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
       }
     ],
     "required": {

@@ -15,7 +15,7 @@
  */
 
 import * as React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
@@ -24,6 +24,7 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { UnconnectedPreviousContactsBanner } from '../../components/profile/IdentifierBanner/PreviousContactsBanner';
 import { channelTypes } from '../../states/DomainConstants';
 import { PreviousContactCounts } from '../../states/search/types';
+import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
 
 jest.mock('../../components/CSAMReport/CSAMReportFormDefinition');
 
@@ -46,6 +47,12 @@ const webChatTask: any = {
   },
 };
 
+const contact = {
+  savedContact: VALID_EMPTY_CONTACT,
+  references: new Set(['x']),
+  metadata: VALID_EMPTY_METADATA,
+};
+
 const counselor = 'counselor';
 const counselorsHash = {
   'counselor-hash-1': counselor,
@@ -60,6 +67,10 @@ test('PreviousContacts initial search', () => {
   const searchContacts = jest.fn();
   const searchCases = jest.fn();
 
+  // Mocking the behavior of searchContacts and searchCases to return functions
+  searchContacts.mockReturnValueOnce(jest.fn());
+  searchCases.mockReturnValueOnce(jest.fn());
+
   render(
     <StorelessThemeProvider themeConf={{}}>
       <UnconnectedPreviousContactsBanner
@@ -70,6 +81,8 @@ test('PreviousContacts initial search', () => {
         searchCases={searchCases}
         changeRoute={jest.fn()}
         viewPreviousContacts={jest.fn()}
+        handleSearchFormChange={jest.fn().mockReturnValue(jest.fn())}
+        contact={contact}
       />
     </StorelessThemeProvider>,
   );
@@ -92,6 +105,7 @@ test('Dont repeat initial search calls on PreviousContacts', () => {
         searchCases={searchCases}
         changeRoute={jest.fn()}
         viewPreviousContacts={jest.fn()}
+        handleSearchFormChange={jest.fn()}
       />
     </StorelessThemeProvider>,
   );
@@ -116,6 +130,7 @@ test('Dont render PreviousContacts when there are no previous contacts', () => {
         searchCases={jest.fn()}
         changeRoute={jest.fn()}
         viewPreviousContacts={jest.fn()}
+        handleSearchFormChange={jest.fn()}
       />
     </StorelessThemeProvider>,
   );
@@ -139,6 +154,7 @@ test('Render PreviousContacts when there are previous contacts', () => {
         searchCases={jest.fn()}
         changeRoute={jest.fn()}
         viewPreviousContacts={jest.fn()}
+        handleSearchFormChange={jest.fn()}
       />
     </StorelessThemeProvider>,
   );
@@ -160,6 +176,7 @@ test('calls the correct function when the contacts link is clicked', () => {
       searchCases={searchCases}
       openContactSearchResults={openContactSearchResults('10001')}
       openCaseSearchResults={openCaseSearchResults}
+      handleSearchFormChange={jest.fn()}
     />,
   );
 
@@ -181,6 +198,7 @@ test('calls the correct function when the cases link is clicked', () => {
       searchCases={searchCases}
       openContactSearchResults={openContactSearchResults}
       openCaseSearchResults={openCaseSearchResults('10001')}
+      handleSearchFormChange={jest.fn()}
     />,
   );
 
@@ -199,6 +217,7 @@ test('a11y', async () => {
         searchCases={jest.fn()}
         changeRoute={jest.fn()}
         viewPreviousContacts={jest.fn()}
+        handleSearchFormChange={jest.fn()}
       />
     </StorelessThemeProvider>,
   );

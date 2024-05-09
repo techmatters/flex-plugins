@@ -18,13 +18,8 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
-import {
-  useIdentifierByIdentifier,
-  useProfileProperty,
-  useProfile,
-  useProfileRelationshipsByType,
-} from '../../../states/profile/hooks';
-import { YellowBannerContainer, IconContainer, IdentifierContainer, BannerLink } from './styles';
+import { useIdentifierByIdentifier, useProfile, useProfileRelationshipsByType } from '../../../states/profile/hooks';
+import { BannerLink, IconContainer, IdentifierContainer, YellowBannerContainer } from './styles';
 import { Bold } from '../../../styles';
 import { newOpenModalAction } from '../../../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
@@ -72,7 +67,8 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
    */
   const profileId = identifier?.profiles?.[0]?.id;
 
-  const { canView } = useProfile({ profileId });
+  const { canView, profile } = useProfile({ profileId });
+  const showProfile = canView && profile && profile.hasContacts !== false; // If the flag is null or undefined, we assume the backend doesn't support it and show the profile to be on the safe side
 
   const { total: contactsCount, loading: contactsLoading } = useProfileRelationshipsByType({
     profileId,
@@ -88,7 +84,7 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   // We immediately create a contact when a task is created, so we don't want to show the banner
-  const shouldDisplayBanner = contactsCount > 0 || casesCount > 0;
+  const shouldDisplayBanner = showProfile || contactsCount > 0 || casesCount > 0;
   if (!shouldDisplayBanner || contactsLoading || casesLoading) return null;
 
   const handleViewClients = () => {
@@ -120,7 +116,7 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
       </BannerLink>
       {casesCount > 0 && (
         <>
-          {canView ? (
+          {showProfile ? (
             contactsCount > 0 && <>, </>
           ) : (
             <div style={{ margin: '1px 0 0 0', alignSelf: 'end' }}>
@@ -135,12 +131,14 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
           </BannerLink>
         </>
       )}
-      {canView && (
+      {showProfile && (
         <>
-          <div>
-            &nbsp;
-            <Template code="PreviousContacts-And" />
-          </div>
+          {(contactsCount > 0 || casesCount > 0) && (
+            <div>
+              &nbsp;
+              <Template code="PreviousContacts-And" />
+            </div>
+          )}
           <BannerLink type="button" onClick={handleViewClients}>
             <Bold>
               {'1'} <Template code="Profile-Singular-Client" />

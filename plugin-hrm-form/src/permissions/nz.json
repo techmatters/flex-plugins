@@ -2,7 +2,7 @@
     "viewCase":  [["isSupervisor"],["isCreator", "isCaseOpen", {"createdDaysAgo": 28}],["isCaseContactOwner", "isCaseOpen", {"createdDaysAgo": 28}]],
     "closeCase":  [["isSupervisor"]],
     "reopenCase":  [["isSupervisor"]],
-    "caseStatusTransition":  [["isSupervisor"]],
+    "caseStatusTransition":  [["isSupervisor"],["isCreator", "isCaseOpen", {"createdDaysAgo": 28}],["isCaseContactOwner", "isCaseOpen", {"createdDaysAgo": 28}]],
     "addNote":  [["isSupervisor", "isCaseOpen"],["isCreator", "isCaseOpen", {"createdHoursAgo": 24}],["isCaseContactOwner", "isCaseOpen", {"createdHoursAgo": 24}]],
     "editNote":  [["isSupervisor", "isCaseOpen"],["isCreator", "isCaseOpen", {"createdHoursAgo": 24}],["isCaseContactOwner", "isCaseOpen", {"createdHoursAgo": 24}]],
     "addReferral":  [["isSupervisor", "isCaseOpen"],["isCreator", "isCaseOpen", {"createdHoursAgo": 24}],["isCaseContactOwner", "isCaseOpen", {"createdHoursAgo": 24}]],

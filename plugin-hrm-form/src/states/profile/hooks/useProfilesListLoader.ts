@@ -15,7 +15,7 @@
  */
 
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useRef } from 'react';
 
 import { RootState } from '../..';
 import * as ProfileSelectors from '../selectors';
@@ -23,7 +23,7 @@ import * as profilesListActions from '../profilesList';
 import { PAGE_SIZE } from '../profiles';
 import asyncDispatch from '../../asyncDispatch';
 import usePrevious from '../../../hooks/usePreviousValue';
-import { ProfilesListState } from '../types';
+import { useLoadWithRetry } from '../../hooks/useLoadWithRetry';
 
 type UseProfilesListLoaderParams = {
   autoload?: boolean;
@@ -41,59 +41,36 @@ export const useProfilesListLoader = ({ autoload = false }: UseProfilesListLoade
 
   const dispatch = useDispatch();
 
-  const updateProfilesListPage = useCallback(
-    (page: number) => {
-      dispatch(
-        profilesListActions.updateProfilesListPage({
-          page,
-        }),
-      );
-    },
-    [dispatch],
-  );
+  const firstLoad = useRef(true);
 
-  const updateProfilesListSettings = useCallback(
-    (settings: Partial<ProfilesListState['settings']>) => {
-      dispatch(profilesListActions.updateProfileListSettings(settings));
-    },
-    [dispatch],
-  );
+  const loadProfileList = useCallback(() => {
+    firstLoad.current = false;
+    const offset = page * PAGE_SIZE;
+    const limit = PAGE_SIZE;
 
-  const loadProfileList = useCallback(
-    (page: number, settings: ProfilesListState['settings']) => {
-      const offset = page * PAGE_SIZE;
-      const limit = PAGE_SIZE;
+    const {
+      sort: { sortBy, sortDirection },
+      filter: { statuses },
+    } = settings;
 
-      const {
-        sort: { sortBy, sortDirection },
-        filter: { statuses },
-      } = settings;
+    asyncDispatch(dispatch)(
+      profilesListActions.loadProfilesListAsync({ offset, limit, sortBy, sortDirection, profileFlagIds: statuses }),
+    );
+  }, [dispatch, page, settings]);
 
-      asyncDispatch(dispatch)(
-        profilesListActions.loadProfilesListAsync({ offset, limit, sortBy, sortDirection, profileFlagIds: statuses }),
-      );
-    },
-    [dispatch],
-  );
+  const safeToLoad = true;
 
-  // Allways trigger load on initial mount
-  useEffect(() => {
-    if (autoload && !loading) {
-      loadProfileList(page, settings);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const isOnFirstLoad = firstLoad.current && autoload && !loading;
+  const shouldTriggerOnUpdate = autoload && (previousPage !== page || previousSettings !== settings); // Trigger load only if the page number or the settings changed
+  const isOnUpdateLoad = shouldTriggerOnUpdate && !loading && !error;
+  const shouldLoad = isOnFirstLoad || isOnUpdateLoad;
 
-  // Trigger load only if the page number or the settings changed
-  useEffect(() => {
-    const shouldTrigger = previousPage !== page || previousSettings !== settings;
-    if (!shouldTrigger || loading || error) return;
-
-    loadProfileList(page, settings);
-  }, [error, loadProfileList, loading, page, previousPage, previousSettings, settings]);
-
-  return {
-    updateProfilesListPage,
-    updateProfilesListSettings,
-  };
+  useLoadWithRetry({
+    error,
+    loading,
+    loadFunction: loadProfileList,
+    retry: true,
+    safeToLoad,
+    shouldLoad,
+  });
 };

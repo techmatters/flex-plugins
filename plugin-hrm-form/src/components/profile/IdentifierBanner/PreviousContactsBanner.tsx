@@ -19,13 +19,14 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 
 import {
+  handleSearchFormChange as handleSearchFormChangeAction,
   searchCases as searchCasesAction,
   searchContacts as searchContactsAction,
   viewPreviousContacts as viewPreviousContactsAction,
 } from '../../../states/search/actions';
 import { RootState } from '../../../states';
 import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../search/SearchResults';
-import { YellowBannerContainer, BannerLink, IconContainer, IdentifierContainer } from './styles';
+import { BannerLink, IconContainer, IdentifierContainer, YellowBannerContainer } from './styles';
 import { Bold } from '../../../styles';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
@@ -34,8 +35,8 @@ import { CustomITask, isTwilioTask } from '../../../types/types';
 import { selectCounselorsHash } from '../../../states/configuration/selectCounselorsHash';
 import selectPreviousContactCounts from '../../../states/search/selectPreviousContactCounts';
 import { iconsFromTask } from './iconsFromTask';
-import selectContextContactId from '../../../states/contacts/selectContextContactId';
 import selectContactByTaskSid from '../../../states/contacts/selectContactByTaskSid';
+import { SearchFormValues } from '../../../states/search/types';
 
 type OwnProps = {
   task: CustomITask;
@@ -48,13 +49,17 @@ const PreviousContactsBanner: React.FC<Props> = ({
   task,
   searchContacts,
   searchCases,
+  handleSearchFormChange,
   openContactSearchResults,
   openCaseSearchResults,
   contact,
+  searchContext,
 }) => {
   const can = React.useMemo(() => {
     return getInitializedCan();
   }, []);
+
+  const handleContextSearchFormChange = handleSearchFormChange(searchContext);
 
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
@@ -68,8 +73,9 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
     if (isTraceableNumber) {
       const searchParams = { contactNumber };
-      searchContacts(searchParams, CONTACTS_PER_PAGE, 0, true);
-      searchCases(searchParams, CASES_PER_PAGE, 0, true);
+      searchContacts(searchContext)(searchParams, CONTACTS_PER_PAGE, 0, true);
+      searchCases(searchContext)(searchParams, CASES_PER_PAGE, 0, true);
+      handleContextSearchFormChange('contactNumber', contactNumber);
     }
   };
 
@@ -130,11 +136,13 @@ PreviousContactsBanner.displayName = 'PreviousContactsBanner';
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const { taskSid } = task;
   const contact = selectContactByTaskSid(state, task.taskSid);
+  const searchContext = contact!.savedContact ? `contact-${contact.savedContact.id}` : 'root';
 
   return {
-    previousContactCounts: selectPreviousContactCounts(state, taskSid),
+    previousContactCounts: selectPreviousContactCounts(state, taskSid, searchContext),
     counselorsHash: selectCounselorsHash(state),
     contact,
+    searchContext,
   };
 };
 
@@ -144,8 +152,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     viewPreviousContacts: viewPreviousContactsAction(dispatch)(task),
-    searchContacts: searchContactsAction(dispatch)(taskId),
-    searchCases: searchCasesAction(dispatch)(taskId),
+    searchContacts: (context: string) => searchContactsAction(dispatch)(taskId, context),
+    searchCases: (context: string) => searchCasesAction(dispatch)(taskId, context),
+    handleSearchFormChange: (context: string) => (key: keyof SearchFormValues, value: string) =>
+      dispatch(handleSearchFormChangeAction(taskId, context)(key, value)),
     openContactSearchResults: (contextContactId: string) => {
       // We put the form 'under' the search results in the modal stack so the back button takes them to the form without needing custom handlers
       dispatch(newOpenModalAction({ contextContactId, route: 'search', subroute: 'form' }, taskId));

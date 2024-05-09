@@ -243,7 +243,7 @@ export const excludeDeactivateConversationOrchestration = (featureFlags: Feature
   }
 };
 
-export const afterCompleteTask = async ({ task }: ActionPayload): Promise<void> => {
+export const afterCompleteTask = async ({ task }: { task: CustomITask }): Promise<void> => {
   const manager = Manager.getInstance();
   const contactState = selectContactByTaskSid(manager.store.getState() as RootState, task.taskSid);
   if (contactState) {

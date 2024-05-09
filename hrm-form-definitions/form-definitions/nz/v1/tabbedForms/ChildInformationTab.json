@@ -231,6 +231,10 @@
       {
         "value": "Southland",
         "label": "Southland"
+      },
+      {
+        "value": "Outside New Zealand",
+        "label": "Outside New Zealand"
       }
     ],
     "required": {

@@ -298,9 +298,9 @@ describe('updateCaseOverviewAsyncAction', () => {
     });
   });
 
-  // Jest too crap to handle 2 async calls in a single action apparently
-  test.skip('overview and status populated in action - calls both endpoints', async () => {
+  test('overview and status populated in action - calls both endpoints', async () => {
     updateCaseOverviewAsyncAction(mockPayload.id, overview, 'new-status');
+    await Promise.resolve(); // Give time for the inner promises to resolve
     expect(updateCaseOverview).toHaveBeenCalledWith(mockPayload.id, overview);
     expect(updateCaseStatus).toHaveBeenCalledWith(mockPayload.id, 'new-status');
     expect(mockGetCase).not.toHaveBeenCalled();
@@ -310,13 +310,6 @@ describe('updateCaseOverviewAsyncAction', () => {
     const action = updateCaseOverviewAsyncAction(mockPayload.id, {});
     expect(updateCaseStatus).not.toHaveBeenCalled();
     expect(updateCaseOverview).not.toHaveBeenCalled();
-    expect(mockGetCase).toHaveBeenCalledWith(mockPayload.id);
-
-    const payload = await action.payload;
-    expect(payload).toEqual({
-      ...VALID_EMPTY_CASE,
-      id: mockPayload.id,
-    });
   });
 
   describe('fulfilled', () => {

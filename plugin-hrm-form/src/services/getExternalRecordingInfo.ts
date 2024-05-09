@@ -81,7 +81,20 @@ export const getExternalRecordingInfo = async (task: CustomITask): Promise<Exter
   recordDebugEvent(task, 'Starting');
 
   // The call id related to the worker is always the one with the recording, as far as I can tell (rbd)
-  const { conference } = isTwilioTask(task) && task.attributes;
+  const { conference, conversations } = isTwilioTask(task) && task.attributes;
+  if (conversations?.segment_link) {
+    // The recording location is already added to the task, lets just use that, no need to go to the API
+    const recordingUrl = new URL(conversations.segment_link);
+    const recordingSid = recordingUrl.pathname.split('/').pop();
+    const successResult: ExternalRecordingInfo = {
+      status: 'success',
+      recordingSid,
+      bucket: getHrmConfig().docsBucket,
+      key: recordingUrl.pathname.indexOf('/') === 0 ? recordingUrl.pathname.substring(1) : recordingUrl.pathname,
+    };
+    recordDebugEvent(task, 'Success', { ...successResult, lookupMethod: 'conversation.segment_link' });
+    return successResult;
+  }
   if (!conference) {
     const result: ExternalRecordingInfo = {
       status: 'failure',
@@ -122,6 +135,6 @@ export const getExternalRecordingInfo = async (task: CustomITask): Promise<Exter
     bucket,
     key,
   };
-  recordDebugEvent(task, 'Success', successResult);
+  recordDebugEvent(task, 'Success', { ...successResult, lookupMethod: 'conference worker callSid' });
   return successResult;
 };

@@ -13,14 +13,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useLoadWithRetry } from '../../hooks/useLoadWithRetry';
 import { RootState } from '../..';
 import asyncDispatch from '../../asyncDispatch';
 import * as ProfileActions from '../profiles';
 import * as ProfileSelectors from '../selectors';
 import { UseProfileCommonParams } from './types';
+import useFeatureFlags from '../../../hooks/useFeatureFlags';
 
 type UseProfileLoaderParams = UseProfileCommonParams & { autoload?: boolean; refresh?: boolean };
 
@@ -34,7 +36,8 @@ type UseProfileLoaderReturn = {
  * Tools to load a profile by id into redux, by default it will load the profile automatically
  * @param {UseProfileLoaderParams} params - Parameters for the hook
  * @param params.profileId - The id of the profile to load
- * @param params.skipAutoload - If true, the profile will not be loaded automatically (default: false)
+ * @param params.autoload - If true, the profile will be loaded automatically (default: true)
+ * @param params.refresh - If changed to true, triggers a re-load (default: false)
  * @returns {UseProfileLoaderReturn} - loading state and actions for the profile
  */
 export const useProfileLoader = ({
@@ -51,15 +54,20 @@ export const useProfileLoader = ({
     asyncDispatch(dispatch)(ProfileActions.loadProfileAsync(profileId));
   }, [dispatch, profileId]);
 
-  const firstFetch = autoload && !loading && !data;
+  const { enable_client_profiles: enableClientProfiles } = useFeatureFlags();
 
-  useEffect(() => {
-    if (!profileId) return;
+  const firstFetch = autoload && !loading && !data && !error;
+  const safeToLoad = enableClientProfiles && Boolean(profileId); // prevent load if there's no profile id
+  const shouldLoad = enableClientProfiles && (firstFetch || refresh); // load on initial mount
 
-    if (firstFetch || refresh) {
-      loadProfile();
-    }
-  }, [firstFetch, loadProfile, profileId, refresh]);
+  useLoadWithRetry({
+    error,
+    loadFunction: loadProfile,
+    loading,
+    retry: true,
+    safeToLoad,
+    shouldLoad,
+  });
 
   return {
     error,

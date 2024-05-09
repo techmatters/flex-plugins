@@ -20,10 +20,9 @@ import FilterList from '@material-ui/icons/FilterList';
 
 import { ProfileFlag } from '../../../types/types';
 import { useProfilesList, useProfilesListSettings } from '../../../states/profile/hooks/useProfilesList';
-import { getTemplateStrings } from '../../../hrmConfig';
 import MultiSelectFilter, { Item } from '../../caseList/filters/MultiSelectFilter';
 import { CountText, FiltersContainer, FiltersResetAll, FilterTitle, MainTitle } from '../../../styles';
-import { useProfilesListLoader, useAllProfileFlags } from '../../../states/profile/hooks';
+import { useAllProfileFlags } from '../../../states/profile/hooks';
 
 const filterCheckedItems = (items: Item[]): string[] => items.filter(item => item.checked).map(item => item.value);
 
@@ -31,10 +30,9 @@ const ProfileFilters: React.FC = () => {
   const [openedFilter, setOpenedFilter] = useState<string>(null);
   const [statusValues, setStatusValues] = useState<Item[]>([]);
 
-  const { count } = useProfilesList();
+  const { count, updateProfilesListSettings } = useProfilesList({ autoload: false });
   const { allProfileFlags, loading: flagsLoading } = useAllProfileFlags();
   const { filter } = useProfilesListSettings();
-  const { updateProfilesListSettings } = useProfilesListLoader();
 
   const computeStatusValues = useCallback(
     (flags: ProfileFlag[]) => {

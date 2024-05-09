@@ -4,7 +4,9 @@
             "enable_aselo_messaging_ui": false,
             "enable_csam_clc_report": false,
             "enable_csam_report": true,
+            "enable_teams_view_enhancements": true,
             "enable_voice_recordings": false
-        }
+        },
+        "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
     }
 }

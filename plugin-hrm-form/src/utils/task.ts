@@ -15,7 +15,7 @@
  */
 import { ITask } from '@twilio/flex-ui';
 
-import { channelTypes } from '../states/DomainConstants';
+import { ChannelTypes, channelTypes } from '../states/DomainConstants';
 import { getHrmConfig } from '../hrmConfig';
 import { CustomITask, isTwilioTask } from '../types/types';
 
@@ -25,18 +25,33 @@ const getContactValueFromWebchat = task => {
   return preEngagementData.contactIdentifier;
 };
 
+const trimSpaces = (s: string) => s.replace(' ', '');
+
+type TransformIdentifierFunction = (c: string) => string;
+const channelTransformations: { [k in ChannelTypes]: TransformIdentifierFunction[] } = {
+  voice: [trimSpaces],
+  sms: [trimSpaces],
+  whatsapp: [s => s.replace('whatsapp:', ''), trimSpaces],
+  modica: [s => s.replace('modica:', ''), trimSpaces],
+  facebook: [s => s.replace('messenger:', '')],
+  instagram: [],
+  line: [],
+  twitter: [],
+  web: [],
+};
+
 export const getNumberFromTask = (task: CustomITask) => {
   if (!isTwilioTask(task)) return null;
-  if (task.channelType === channelTypes.facebook) {
-    return task.defaultFrom.replace('messenger:', '');
-  } else if (task.channelType === channelTypes.whatsapp) {
-    return task.defaultFrom.replace('whatsapp:', '');
-  } else if (task.channelType === channelTypes.modica) {
-    return task.defaultFrom.replace('modica:', '');
-  } else if (task.channelType === channelTypes.web) {
+
+  // webchat is a special case since it does not only depends on channel but in the task attributes too
+  if (task.channelType === channelTypes.web) {
     return getContactValueFromWebchat(task);
   }
-  return task.defaultFrom;
+
+  if (!channelTransformations[task.channelType]) return null;
+
+  // otherwise, return the "defaultFrom" with the transformations on the identifier corresponding to each channel
+  return channelTransformations[task.channelType as ChannelTypes].reduce((accum, f) => f(accum), task.defaultFrom);
 };
 
 /**

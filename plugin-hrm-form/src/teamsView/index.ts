@@ -14,13 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import { setUpSkillsColumn } from './SkillsColumn';
-import { setUpSortingCallsAndChats } from './sortCallsAndChats';
-import { setUpTeamViewFilters, setUpWorkerDirectoryFilters } from './teamsViewFilters';
+import { setUpTeamsViewSorting } from './teamsViewSorting';
+import { setUpTeamsViewFilters, setUpWorkerDirectoryFilters } from './teamsViewFilters';
 
 const TeamsView = {
   setUpSkillsColumn,
-  setUpSortingCallsAndChats,
-  setUpTeamViewFilters,
+  setUpTeamsViewSorting,
+  setUpTeamsViewFilters,
   setUpWorkerDirectoryFilters,
 };
 
