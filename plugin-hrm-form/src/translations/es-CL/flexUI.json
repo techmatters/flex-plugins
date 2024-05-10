@@ -636,5 +636,8 @@
   "ProfileList-Summary-None": "- Perfil sin resumen -",
   "ProfileList-Status-None": "- Sin estado -",
   "ProfileList-ClientName-None": "- Sin nombre -",
-  "TeamsView-NoSkills": "- Sin habilidades -"
-}
+  "TeamsView-NoSkills": "- Sin habilidades -",
+  "abusive": "abusivo",
+  "blocked": "bloqueado",
+  "repeated contact": "contacto repetido"
+  }
