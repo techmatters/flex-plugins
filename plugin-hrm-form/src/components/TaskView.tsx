@@ -43,7 +43,6 @@ import asyncDispatch from '../states/asyncDispatch';
 import { selectIsContactCreating } from '../states/contacts/selectContactSaveStatus';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { selectCurrentDefinitionVersion } from '../states/configuration/selectDefinitions';
-import selectSearchStateForTask from '../states/search/selectSearchStateForTask';
 
 type OwnProps = {
   task: CustomITask;
@@ -165,11 +164,10 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   // Check if the entry for this task exists in each reducer
   const { savedContact, draftContact } = selectContactByTaskSid(state, task?.taskSid) ?? {};
   const unsavedContact = getUnsavedContact(savedContact, draftContact);
-  const contactFormStateExists = Boolean(savedContact);
   const currentRoute = selectCurrentBaseRoute(state, task?.taskSid);
   const contactIsCreating = selectIsContactCreating(state, task?.taskSid);
 
-  const shouldRecreateState = currentDefinitionVersion && (!contactFormStateExists || !currentRoute);
+  const shouldRecreateState = currentDefinitionVersion && !savedContact && !contactIsCreating;
 
   return {
     unsavedContact,
