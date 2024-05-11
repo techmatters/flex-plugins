@@ -14,9 +14,9 @@ locals {
     enable_post_survey                = false
 
     lex_bot_languages = {
-      en_US : ["pre_survey"]
+      en : ["pre_survey"]
     }
-
+ 
     workflows = {
       master : {
         friendly_name : "Master Workflow"

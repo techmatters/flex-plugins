@@ -1,0 +1,45 @@
+{
+  "gender": {
+    "description": "General configs/lex/en/slot_types Gender Female Male Slot Type",
+    "value_selection_strategy": "TOP_RESOLUTION",
+    "values": {
+      "Girl": {
+        "synonyms": [
+          "f",
+          "she",
+          "girl",
+          "lady",
+          "woman",
+          "1"
+        ]
+      },
+      "Boy": {
+        "synonyms": [
+          "m",
+          "dude",
+          "guy",
+          "man",
+          "he",
+          "boy",
+          "2"
+        ]
+      },
+      "Non-Binary": {
+        "synonyms": [
+          "none",
+          "nonbinary",
+          "non binary",
+          "3"
+        ]
+      },
+      "Unknown": {
+        "synonyms": [
+          "not sure",
+          "unsure",
+          "x",
+          "4"
+        ]
+      }
+    }
+  }
+}

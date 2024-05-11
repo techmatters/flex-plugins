@@ -10,13 +10,14 @@ locals {
       environment_sid                       = "ZE68650cb6e34acccd3294458f29edee0f"
       capture_channel_with_bot_function_sid = "ZHd9eb5ce1b230abe29d9eafccc88b16d3"
       chatbot_callback_cleanup_function_id  = "ZH757387715913592aa1938b284411f18b"
+      bot_language                          = "en"
     }
 
     channels = {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/webchat-basic.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
