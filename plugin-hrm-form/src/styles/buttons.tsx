@@ -62,6 +62,20 @@ export const TransferStyledButton = styled('button')<TransferStyledButtonProps>`
 `;
 TransferStyledButton.displayName = 'TransferStyledButton';
 
+export const RefreshStyledSpan = styled(`span`)`
+  align-self: center;
+  font-size: 14px;
+`;
+export const RefreshStyledButton = styled('button')`
+  background: none;
+  border: none;
+  margin-left: 5px;
+  padding: 0;
+  font: inherit;
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+`;
 type StyledNextStepButtonProps = {
   secondary?: string; // string to prevent console errors
   disabled?: boolean;
