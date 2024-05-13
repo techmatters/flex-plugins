@@ -25,7 +25,7 @@ const getContactValueFromWebchat = task => {
   return preEngagementData.contactIdentifier;
 };
 
-const trimSpaces = (s: string) => s.replace(' ', '');
+const trimSpaces = (s: string) => s.replaceAll(' ', '');
 
 type TransformIdentifierFunction = (c: string) => string;
 const channelTransformations: { [k in ChannelTypes]: TransformIdentifierFunction[] } = {
@@ -40,6 +40,9 @@ const channelTransformations: { [k in ChannelTypes]: TransformIdentifierFunction
   web: [],
 };
 
+/**
+ * IMPORTANT: if any logic is changed here, replicate it in serverless/functions/getProfileFlagsForIdentifier.protected.ts
+ */
 export const getNumberFromTask = (task: CustomITask) => {
   if (!isTwilioTask(task)) return null;
 
