@@ -100,6 +100,8 @@
   "SharedStateLoadFormError": "The information stored in the form by previous case worker couldn't be retrieved. Starting current task with clear contact form.",
   "SharedStateSaveContactError": "Could not save pending contact at the Shared State.",
   "Transfer-TransferButton": "Transfer",
+  "Transfer-RefreshButton": "Refresh",
+  "Transfer-ErrorLoadingMessages": "Error loading messages.",
   "Transfer-AcceptTransferButton": "Accept Transfer",
   "Transfer-RejectTransferButton": "Reject Transfer",
   "TaskLineCallTransferWorker": "Transfer from {{task.incomingTransferObject.worker.fullName}} (direct)",

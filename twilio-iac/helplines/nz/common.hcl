@@ -33,19 +33,19 @@ locals {
 
     task_queues = {
       youthline_helpline : {
-        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND email != 'test@gmail.com'",
+        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND email NOT IN ['emmac@youthline.co.nz','ashleigh@youthline.co.nz','tonys@youthline.co.nz']",
         "friendly_name"  = "Youthline Helpline"
       },
       priority : {
-        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND email != 'test@gmail.com'",
+        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND email NOT IN ['emmac@youthline.co.nz','ashleigh@youthline.co.nz','tonys@youthline.co.nz']",
         "friendly_name"  = "Priority Youthline Helpline"
       },
       clinical : {
-        "target_workers" = "(routing.skills HAS 'Clinical') AND email != 'test@gmail.com'",
+        "target_workers" = "(routing.skills HAS 'Clinical') AND email NOT IN ['emmac@youthline.co.nz','ashleigh@youthline.co.nz','tonys@youthline.co.nz']",
         "friendly_name"  = "Clinical"
       },
       counselling : {
-        "target_workers" = "((roles HAS 'agent' OR roles HAS 'supervisor') AND email == 'test@gmail.com') OR (roles HAS 'supervisor' AND routing.skills HAS 'YL Other Services')",
+        "target_workers" = "((roles HAS 'agent' OR roles HAS 'supervisor') AND email IN ['emmac@youthline.co.nz','ashleigh@youthline.co.nz','tonys@youthline.co.nz']) OR (roles HAS 'supervisor' AND routing.skills HAS 'YL Other Services')",
         "friendly_name"  = "YL Other Services"
       },
       survey : {

@@ -17,8 +17,8 @@ locals {
 
     #Task router
     phone_numbers = {
-      youthline : ["+999999", "+888888"],
-      clinical : ["+7777777"]
+      youthline : ["+6498865633"],
+      clinical : ["+6498867045"]
     }
 
     #Channels

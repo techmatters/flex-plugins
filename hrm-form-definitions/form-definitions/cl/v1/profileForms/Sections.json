@@ -1,11 +1,29 @@
 [
   {
     "name": "summary",
-    "label": "Summary",
-    "editLabel": "Edit Summary",
+    "label": "Resumen",
+    "editLabel": "Editar Resumen",
     "type": "textarea",
     "rows": 20,
     "width": 500,
     "placeholder": "Ingrese un resumen del cliente"
+  },
+  {
+    "name": "blockReasons",
+    "label": "Motivo del Bloqueo",
+    "editLabel": "Editar motivo del bloqueo",
+    "type": "textarea",
+    "rows": 20,
+    "width": 500,
+    "placeholder": "Ingrese un motivo del bloqueo"
+  },
+  {
+    "name": "lastAgreement",
+    "label": "Último Acuerdo",
+    "editLabel": "Editar último acuerdo",
+    "type": "textarea",
+    "rows": 20,
+    "width": 500,
+    "placeholder": "Ingrese un último acuerdo"
   }
 ]

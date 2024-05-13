@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getTranslation, getMessages } from '../services/ServerlessService';
+import { getMessages, getTranslation } from '../services/ServerlessService';
 
 // default language to initialize plugin
 export const defaultLanguage = 'en-US';
@@ -55,9 +55,6 @@ const ptBRMessages = require(`../translations/pt-BR/messages.json`);
 const thTHTranslation = require(`../translations/th-TH/flexUI.json`);
 const thTHMessages = require(`../translations/th-TH/messages.json`);
 
-const plPLTranslation = require(`../translations/pl-PL/flexUI.json`);
-const plPLMessages = require(`../translations/pl-PL/messages.json`);
-
 const bundledTranslations = {
   [defaultLanguage]: defaultTranslation,
   'en-CA': enCATranslation,
@@ -71,7 +68,6 @@ const bundledTranslations = {
   'hu-HU': huHUTranslation,
   'pt-BR': ptBRTranslation,
   'th-TH': thTHTranslation,
-  'pl-PL': plPLTranslation,
 };
 
 const bundledMessages = {
@@ -87,7 +83,6 @@ const bundledMessages = {
   'hu-HU': huHUMessages,
   'pt-BR': ptBRMessages,
   'th-TH': thTHMessages,
-  'pl-PL': plPLMessages,
 };
 
 const translationErrorMsg = 'Could not translate, using default';
