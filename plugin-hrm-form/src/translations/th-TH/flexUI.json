@@ -595,7 +595,6 @@
   "CaseMerging-CaseCreatedAndContactAdded": "สร้างเคส #{{caseId}} และเพิ่มผู้ติดต่อแล้ว",
   "CaseMerging-ContactAddedToExistingCase": "เพิ่มผู้ติดต่อในกรณี #{{caseId}}",
   "CaseMerging-CancelCase": "ยกเลิกกรณี",
-
   "Profile-NoIdentifiersFound": "ไม่พบตัวระบุ",
   "Profile-EditButton": "แก้ไข",
   "Profile-DetailsHeader-Overview": "ภาพรวม",
@@ -619,5 +618,7 @@
   "Case-Timeline-DraftContactSummaryPlaceholder": "กำลังดำเนินการ",
   "Profile-ClientTab": "ลูกค้า",
   "Profile-Notes-No": "เลขที่",
-  "Profile-ViewClient": "ดูไคลเอนต์"
+  "Profile-ViewClient": "ดูไคลเอนต์",
+  "Transfer-RefreshButton": "รีเฟรช",
+  "Transfer-ErrorLoadingMessage": "เกิดข้อผิดพลาดในการโหลดข้อความ"
 }
