@@ -1,0 +1,28 @@
+{
+  "name": "aselo-flex-plugin-lambdas",
+  "version": "0.0.1",
+  "private": true,
+  "devDependencies": {
+    "@serverless/typescript": "^3.38.0",
+    "npm-run-all": "^4.1.5",
+    "serverless-certificate-creator": "^1.6.0",
+    "serverless-domain-manager": "^7.3.8",
+    "serverless-plugin-common-excludes": "^4.0.0",
+    "serverless-plugin-include-dependencies": "^6.0.0",
+    "serverless-plugin-typescript": "^2.1.5",
+    "ts-node": "^10.9.2",
+    "tsc-hooks": "^1.1.2",
+    "typescript": "^5.4.5"
+  },
+  "scripts": {
+    "build": "tsc",
+    "deploy": "run-s postinstall deploy:dev",
+    "deploy:dev": "sls deploy --stage dev",
+    "setupDomain": "run-s createCert createDomain",
+    "createCert": "serverless create-cert --stage dev",
+    "createDomain": "serverless create_domain --stage dev",
+    "postinstall": "node install.js",
+    "remove": "sls remove",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

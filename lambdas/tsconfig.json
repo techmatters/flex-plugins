@@ -1,0 +1,20 @@
+{
+  "assets":["**/node_modules/**"],
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "preserveConstEnums": true,
+    "strictNullChecks": true,
+    "sourceMap": true,
+    "allowJs": true,
+    "target": "es5",
+    "outDir": ".build",
+    "moduleResolution": "node",
+    "lib": ["es2015"],
+    "rootDir": "functions",
+  },
+  "include": [
+    "functions/**/*.ts",
+    "functions/**/node_modules"
+  ],
+  "hooks": [ "copy-files"]
+}
