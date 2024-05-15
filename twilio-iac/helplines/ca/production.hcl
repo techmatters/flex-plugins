@@ -176,9 +176,9 @@ locals {
           hcfr_queue_sid: "WQ68c87b0132af573d34ddc0acfb68b35f"
 
           #Recording URLs
-          main_url: "https://twilio-service-4854.twil.io/HCMain.mp3"
-          en_function_url: "https://twilio-service-4854.twil.io/6017_hc_english"
-          fr_function_url: "https://twilio-service-4854.twil.io/6018_hc_french"
+          main_url: "https://twilio-service-4854.twil.io/HC_Closing_Intro.mp3"
+          en_function_url: "https://twilio-service-4854.twil.io/6001_khp_english"
+          fr_function_url: "https://twilio-service-4854.twil.io/6002_khp_french"
           en_tos_url: "https://twilio-service-4854.twil.io/KHPENToS.mp3"
           fr_tos_url: "https://twilio-service-4854.twil.io/KHPFRToS.mp3"
           en_privacy_url: "https://twilio-service-4854.twil.io/KHPENPrivacy.mp3"
