@@ -38,6 +38,7 @@ const channelTransformations: { [k in ChannelTypes]: TransformIdentifierFunction
   line: [],
   twitter: [],
   web: [],
+  email: [],
 };
 
 export const getNumberFromTask = (task: CustomITask) => {

@@ -22,6 +22,7 @@ const defaultChannelTypes = {
   facebook: 'facebook',
   whatsapp: 'whatsapp',
   web: 'web',
+  email: 'email'
 } as const;
 
 export const customChannelTypes = {
@@ -62,6 +63,7 @@ const chatChannels = [
   channelTypes.twitter,
   channelTypes.instagram,
   channelTypes.line,
+  channelTypes.email
 ];
 
 export const isVoiceChannel = (channel: string) => channel === channelTypes.voice;

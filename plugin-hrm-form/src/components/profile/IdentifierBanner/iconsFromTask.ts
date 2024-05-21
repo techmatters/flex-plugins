@@ -31,6 +31,7 @@ export const iconsFromTask: { [channelType in ExtendedChannelTypes]: JSX.Element
     [coreChannelTypes.twitter]: getIcon(coreChannelTypes.twitter, iconSize),
     [coreChannelTypes.instagram]: getIcon(coreChannelTypes.instagram, iconSize),
     [coreChannelTypes.line]: getIcon(coreChannelTypes.line, iconSize),
+    [coreChannelTypes.email]: getIcon(coreChannelTypes.line, iconSize),
   },
   [customSmsChannelTypes.modica]: getIcon(customSmsChannelTypes.modica, iconSize),
 };

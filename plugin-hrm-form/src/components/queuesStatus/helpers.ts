@@ -29,6 +29,7 @@ export const newQueueEntry: QueueEntry = {
   twitter: 0,
   instagram: 0,
   line: 0,
+  email: 0,
   longestWaitingDate: null,
   isChatPending: false,
 };

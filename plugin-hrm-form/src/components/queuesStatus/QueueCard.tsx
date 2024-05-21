@@ -69,6 +69,8 @@ const renderChannel = ({
       return getChannelUI('IG', channelColor, contactsWaiting, true);
     case coreChannelTypes.line:
       return getChannelUI('LN', channelColor, contactsWaiting, true);
+      case coreChannelTypes.email:
+        return getChannelUI('Email', channelColor, contactsWaiting, true);
     default:
       return null;
   }
@@ -84,6 +86,7 @@ type Props = {
   twitter: number;
   instagram: number;
   line: number;
+  email: number;
   longestWaitingDate: string | null;
   colors: ChannelColors;
   contactsWaitingChannels?: CoreChannelTypes[];

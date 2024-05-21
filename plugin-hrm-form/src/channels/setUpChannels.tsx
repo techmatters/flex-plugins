@@ -74,6 +74,8 @@ const generateIcons = (icon: JSX.Element) => ({
   main: icon,
 });
 
+console.log('DefaultTaskChannels in setup:', DefaultTaskChannels)
+
 export const setupCallChannel = () => {
   const callIcon = <CallIcon width="24px" height="24px" color={colors.voice} />;
   DefaultTaskChannels.Call.icons = generateIcons(callIcon);
