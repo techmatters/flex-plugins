@@ -88,7 +88,7 @@
         },
         {
           "filter_friendly_name": "KHP English",
-          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] AND language CONTAINS \"en-CA\")",
+          "expression": "((to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] OR to IN [${join(", ", formatlist("'%s'", phone_numbers.hc))}]) AND language CONTAINS \"en-CA\")",
             "targets": [
               {
                 "queue": "${task_queues.khp_en}",
@@ -123,7 +123,7 @@
         },
         {
           "filter_friendly_name": "KHP French",
-          "expression": "(to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] AND language CONTAINS \"fr-CA\")",
+          "expression": "((to IN [${join(", ", formatlist("'%s'", phone_numbers.khp))}] OR to IN [${join(", ", formatlist("'%s'", phone_numbers.hc))}]) AND language CONTAINS \"fr-CA\")",
           "targets": [
             {
               "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
