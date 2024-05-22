@@ -1,6 +1,6 @@
 ${
   jsonencode(
-  {
+    {
   "description": flow_description,
   "states": [
     {
@@ -11,7 +11,7 @@ ${
           "event": "incomingMessage"
         },
         {
-          "next": "need_bypass",
+          "next": "getProfileFlagsForIdentifier",
           "event": "incomingCall"
         },
         {
@@ -46,14 +46,14 @@ ${
         }
       ],
       "properties": {
-        "waitUrl": channel_flow_vars["wait_url"],
+        "waitUrl":channel_flow_vars["wait_url"],
         "offset": {
-          "x": 890,
-          "y": 1480
+          "x": 420,
+          "y": 1300
         },
         "attributes": channel_attributes["default"],
-        "workflow":  workflow_sids["master_calls"],
-        "channel": task_channel_sids["voice"]
+            "workflow":  workflow_sids["master_calls"],
+            "channel": task_channel_sids["voice"]
         "waitUrlMethod": "GET",
         "timeout": "3600"
       }
@@ -72,12 +72,11 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 700,
-          "y": 500
+          "x": 50,
+          "y": 190
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
-        "add_twilio_auth": false,
         "body": "{ \"trigger\": {{trigger | to_json}}}",
         "url": "${serverless_url}/getProfileFlagsForIdentifier"
       }
@@ -122,8 +121,8 @@ ${
       "properties": {
         "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
         "offset": {
-          "x": 470,
-          "y": 720
+          "x": 150,
+          "y": 490
         }
       }
     },
@@ -144,8 +143,8 @@ ${
           }
         ],
         "offset": {
-          "x": 990,
-          "y": 980
+          "x": 300,
+          "y": 810
         }
       }
     },
@@ -160,8 +159,8 @@ ${
       "properties": {
         "play": channel_flow_vars["blocked_url"],
         "offset": {
-          "x": 1320,
-          "y": 980
+          "x": 780,
+          "y": 800
         },
         "loop": 1
       }
@@ -178,81 +177,10 @@ ${
       "properties": {
         "play": channel_flow_vars["initial_message_url"],
         "offset": {
-          "x": 770,
-          "y": 1190
+          "x": 330,
+          "y": 1070
         },
         "loop": 1
-      }
-    },
-    {
-      "name": "need_bypass",
-      "type": "split-based-on",
-      "transitions": [
-        {
-          "event": "noMatch"
-        },
-        {
-          "next": "SendCallToAgentNoTimeout",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to +6498867045",
-              "arguments": [
-                "{{trigger.call.To}}"
-              ],
-              "type": "equal_to",
-              "value": "+6498867045"
-            }
-          ]
-        },
-        {
-          "next": "getProfileFlagsForIdentifier",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value matches_any_of +6498865633,0800376633 ",
-              "arguments": [
-                "{{trigger.call.To}}"
-              ],
-              "type": "matches_any_of",
-              "value": "+6498865633,0800376633 "
-            }
-          ]
-        }
-      ],
-      "properties": {
-        "input": "{{trigger.call.To}}",
-        "offset": {
-          "x": 100,
-          "y": 230
-        }
-      }
-    },
-    {
-      "name": "SendCallToAgentNoTimeout",
-      "type": "send-to-flex",
-      "transitions": [
-        {
-          "event": "callComplete"
-        },
-        {
-          "event": "failedToEnqueue"
-        },
-        {
-          "event": "callFailure"
-        }
-      ],
-      "properties": {
-        "waitUrl": "",
-        "offset": {
-          "x": 80,
-          "y": 630
-        },
-        "workflow": "WWf408d8ba46dd0c76f24a41a470fbc49b",
-        "channel": "TC85edd60711af32deab3794d1db7a5b8e",
-        "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"Youthline\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\",\n  \"clinical\":  \"{{flow.variables.clinical}}\" \n}",
-        "waitUrlMethod": "GET",
-        "timeout": "3600"
       }
     }
   ],
@@ -260,6 +188,6 @@ ${
   "flags": {
     "allow_concurrent_calls": true
   }
-}
+    }
   )
 }
