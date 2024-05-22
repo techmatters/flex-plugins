@@ -34,7 +34,6 @@ jobs:
     with:
       helpline_code: E2E
       environment_code: development
-      changelog: ${{ inputs.changelog }}
       send-slack-message: 'false'
 
   deploy-webchat:
