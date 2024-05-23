@@ -31,7 +31,15 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
-      }
+      },
+      whatsapp : {
+        flex_messaging_type = "conversations"
+        channel_type         = "whatsapp"
+        contact_identity     = "+18767287042"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
     }
 
     ui_editable = false

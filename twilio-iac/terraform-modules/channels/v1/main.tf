@@ -77,7 +77,7 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
 resource "twilio_flex_flex_flows_v1" "channel_flow" {
   for_each = {
     for idx, channel in var.channels :
-    idx => channel if(channel.channel_type != "voice")
+    idx => channel if(channel.channel_type != "voice" && channel.flex_messaging_type == "legacyFlexFlow")
   }
   channel_type         = each.value.channel_type
   chat_service_sid     = var.flex_chat_service_sid
@@ -88,6 +88,21 @@ resource "twilio_flex_flex_flows_v1" "channel_flow" {
   integration_flow_sid = twilio_studio_flows_v2.channel_studio_flow[each.key].sid
   enabled              = true
 }
+
+resource "twilio_conversations_configuration_addresses_v1" "conversations_address" {
+  for_each = {
+    for idx, channel in var.channels :
+    idx => channel if(channel.channel_type != "voice" && channel.flex_messaging_type == "conversations")
+  }
+  type                                   = each.value.channel_type
+  address                                = each.value.contact_identity
+  friendly_name                          = "${title(replace(each.key, "_", " "))} Conversation Address"
+  auto_creation_enabled                  = true
+  auto_creation_type                     = "studio"
+  auto_creation_conversation_service_sid = var.flex_chat_service_sid
+  auto_creation_studio_flow_sid          = twilio_studio_flows_v2.channel_studio_flow[each.key].sid
+}
+
 
 resource "aws_ssm_parameter" "channel_flex_flow_sid_parameter" {
   for_each = {
