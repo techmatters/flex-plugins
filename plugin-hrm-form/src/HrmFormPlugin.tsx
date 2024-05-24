@@ -137,29 +137,34 @@ const setUpActions = (
   setupObject: ReturnType<typeof getHrmConfig>,
   getMessage: (key: string) => (language: string) => Promise<string>,
 ) => {
-  ActionFunctions.excludeDeactivateConversationOrchestration(featureFlags);
+  try {
+    ActionFunctions.excludeDeactivateConversationOrchestration(featureFlags);
 
-  // bind setupObject to the functions that requires some initialization
-  const wrapupOverride = ActionFunctions.wrapupTask(setupObject, getMessage);
-  const beforeCompleteAction = ActionFunctions.beforeCompleteTask(featureFlags);
+    // bind setupObject to the functions that requires some initialization
+    const wrapupOverride = ActionFunctions.wrapupTask(setupObject, getMessage);
+    const beforeCompleteAction = ActionFunctions.beforeCompleteTask(featureFlags);
 
-  Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(featureFlags, setupObject, getMessage));
+    Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(featureFlags, setupObject, getMessage));
+    console.log('Got here afterAcceptTask', getMessage('WelcomeMsg'), setupObject);
 
-  setUpTransferActions(featureFlags.enable_transfers, setupObject);
+    setUpTransferActions(featureFlags.enable_transfers, setupObject);
 
-  Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
-  Flex.Manager.getInstance().workerClient.addListener('reservationCreated', reservation => {
-    reservation.addListener('wrapup', recordCallState);
-    reservation.addListener('completed', recordCallState);
-  });
+    Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
+    Flex.Manager.getInstance().workerClient.addListener('reservationCreated', reservation => {
+      reservation.addListener('wrapup', recordCallState);
+      reservation.addListener('completed', recordCallState);
+    });
 
-  Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
+    Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
 
-  Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
+    Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
 
-  Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
+    Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
 
-  if (featureFlags.enable_conferencing) setUpConferenceActions();
+    if (featureFlags.enable_conferencing) setUpConferenceActions();
+  } catch (error) {
+    console.log('error in setUpActions', error);
+  }
 };
 
 export default class HrmFormPlugin extends FlexPlugin {
