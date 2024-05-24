@@ -55,19 +55,16 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
       webhook_url_studio_errors = local.webhook_url_studio_errors,
       short_helpline            = var.short_helpline,
       short_environment         = var.short_environment,
-      channel_attributes = merge(
-        {
-          for chatbot_name in each.value.chatbot_unique_names :
-          chatbot_name => templatefile(
-            lookup(var.channel_attributes, each.key, var.channel_attributes["default"]),
-          { chatbot_name = chatbot_name })
-        },
-        {
-          default : templatefile(
-            lookup(var.channel_attributes, each.key, var.channel_attributes["default"]),
-          { task_language = var.task_language, helpline = var.helpline })
-        }
-      )
+      channel_attributes = {
+        default : templatefile(
+          lookup(
+            var.channel_attributes,
+            each.value.flex_messaging_type == "conversations" ? "${each.key}-conversations" : each.key,
+            var.channel_attributes[each.value.flex_messaging_type == "conversations" ? "default-conversations" : "default"]
+          ),
+          { task_language = var.task_language, helpline = var.helpline }
+        )
+      }
 
 
     }
