@@ -34,6 +34,17 @@
         {"label": "Others"}
       ]
     },
+    "Drought": {
+      "color": "#8B0000",
+      "subcategories": [
+        {"label": "Information inquiry"},
+        {"label": "Inquiry on food distribution"},
+        {"label": "Complaints on food distribution"},
+        {"label": "Information inquiry on SRHR"},
+        {"label": "Drought related GBV"},
+        {"label": "Drought related PSEA report"}
+      ]
+    },
     "Violence": {
       "color": "#F5A623",
       "subcategories": [
@@ -209,6 +220,17 @@
         {"label": "Notification"},
         {"label": "Certification"},
         {"label": "Others"}
+      ]
+    },
+    "Drought": {
+      "color": "#8B0000",
+      "subcategories": [
+        {"label": "Information inquiry"},
+        {"label": "Inquiry on food distribution"},
+        {"label": "Complaints on food distribution"},
+        {"label": "Information inquiry on SRHR"},
+        {"label": "Drought related GBV"},
+        {"label": "Drought related PSEA report"}
       ]
     },
     "Mental Health": {
