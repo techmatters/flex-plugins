@@ -21,6 +21,10 @@
     "type": "listbox-multiselect",
     "options": [
       {
+        "value": "No Referral was made",
+        "label": "No Referral was made"
+      },
+      {
         "value": "Referrals to NAVH / Child Protection Services",
         "label": "Referrals to NAVH / Child Protection Services"
       },
