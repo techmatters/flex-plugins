@@ -18,6 +18,11 @@ variable "short_helpline" {
   type        = string
 }
 
+variable "twilio_account_sid" {
+  description = "Twilio Account SID (ACxxxx)"
+  type        = string
+}
+
 variable "serverless_url" {
   description = "Serverless URL"
   type        = string
