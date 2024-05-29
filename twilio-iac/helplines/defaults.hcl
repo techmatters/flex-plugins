@@ -15,10 +15,10 @@ locals {
   enable_external_recordings = false
 
   channel_attributes = {
-    webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
-    voice : "/app/twilio-iac/helplines/templates/channel-attributes/voice.tftpl"
-    twitter : "/app/twilio-iac/helplines/templates/channel-attributes/twitter.tftpl"
-    default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
+    webchat               : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
+    voice                 : "/app/twilio-iac/helplines/templates/channel-attributes/voice.tftpl"
+    twitter               : "/app/twilio-iac/helplines/templates/channel-attributes/twitter.tftpl"
+    default               : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
     default-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
   }
   contacts_waiting_channels = ["voice", "web", "whatsapp", "facebook", "twitter", "instagram", "line"]
