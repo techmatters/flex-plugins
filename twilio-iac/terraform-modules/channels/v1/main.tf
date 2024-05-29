@@ -128,7 +128,7 @@ resource "aws_ssm_parameter" "channel_flex_flow_sid" {
 resource "aws_ssm_parameter" "channel_studio_flow_sid" {
   for_each = {
   for idx, channel in var.channels :
-  idx => channel if(channel.channel_type == "custom")
+  idx => channel if(channel.channel_type == "custom" && channel.flex_messaging_type == "conversations" )
   }
   name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/studio_flow_sid"
   type        = "SecureString"
