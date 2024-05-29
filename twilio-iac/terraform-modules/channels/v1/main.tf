@@ -100,7 +100,7 @@ resource "twilio_conversations_configuration_addresses_v1" "conversations_addres
   auto_creation_studio_flow_sid          = twilio_studio_flows_v2.channel_studio_flow[each.key].sid
 }
 
-
+# Legacy format, remove once serverless & webchat are migrated to the new format below
 resource "aws_ssm_parameter" "channel_flex_flow_sid_parameter" {
   for_each = {
     for idx, channel in var.channels :
@@ -110,4 +110,28 @@ resource "aws_ssm_parameter" "channel_flex_flow_sid_parameter" {
   type        = "SecureString"
   value       = twilio_flex_flex_flows_v1.channel_flow[each.key].sid
   description = "${title(replace(each.key, "_", " "))} Flex Flow SID"
+}
+
+
+resource "aws_ssm_parameter" "channel_flex_flow_sid" {
+  for_each = {
+  for idx, channel in var.channels :
+  idx => channel if(channel.channel_type == "custom")
+  }
+  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/flex_flow_sid"
+  type        = "SecureString"
+  value       = twilio_flex_flex_flows_v1.channel_flow[each.key].sid
+  description = "${title(replace(each.key, "_", " "))} Flex Flow SID"
+}
+
+
+resource "aws_ssm_parameter" "channel_studio_flow_sid" {
+  for_each = {
+  for idx, channel in var.channels :
+  idx => channel if(channel.channel_type == "custom")
+  }
+  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/studio_flow_sid"
+  type        = "SecureString"
+  value       = twilio_studio_flows_v2.channel_studio_flow[each.key].sid
+  description = "${title(replace(each.key, "_", " "))} Studio Flow SID"
 }
