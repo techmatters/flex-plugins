@@ -4,7 +4,7 @@
   "private": true,
   "type": "commonjs",
   "engines": {
-    "node": "^16.20.0"
+    "node": "^18.20.3"
   },
   "scripts": {
     "bundle-analyzer": "cross-env BUNDLE_ANALYZER=true npm run build",
@@ -80,7 +80,7 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^14.1.1",
     "@twilio/flex-plugin": "^6.0.3",
-    "@twilio/flex-plugin-scripts": "^6.3.3",
+    "@twilio/flex-plugin-scripts": "^6.4.1",
     "@twilio/flex-ui": "^2.6.1",
     "@twilio/flex-ui-dev-proxy": "^1.1.2",
     "@types/jest": "^27.5.2",
