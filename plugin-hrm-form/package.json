@@ -33,7 +33,7 @@
     "env:local:microservice-url": "docker run --rm --net=host -e AWS_DEFAULT_REGION=us-east-1 -e AWS_ACCESS_KEY_ID=fake -e AWS_SECRET_ACCESS_KEY=fake interrobangc/awscli2 ssm get-parameter --name '/local/hrm/microservice/api-url' --endpoint-url http://localhost:4566  --region us-east-1 --query 'Parameter.Value' --output text | awk '{print \"REACT_APP_HRM_MICROSERVICE_BASE_URL=\" $0}' >> .env.local",
     "env:dev": "run-s env:clear env:dev:*",
     "env:clear:": "rm -f .env.local",
-    "update-flex-ui-version": "node --loader ts-node/esm src/scripts/updateFlexUiVersion.ts",
+    "update-flex-ui-version": "npx ts-node src/scripts/updateFlexUiVersion.ts",
     "ssm:local": "npm run ssm:local:appConfig && npm run ssm:local:secret",
     "ssm:local:appConfig": "docker run --rm -v ~/.aws:/home/aws/.aws -e AWS_DEFAULT_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY interrobangc/awscli2 ssm get-parameter --name \"/local/flex-plugins/plugin-hrm-form/appConfig.js\" --with-decryption --query \"Parameter.Value\" --output text > ./public/appConfig.js",
     "ssm:local:appConfig:e2e": "docker run --rm -v ~/.aws:/home/aws/.aws -e AWS_DEFAULT_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY interrobangc/awscli2 ssm get-parameter --name \"/local/flex-plugins/plugin-hrm-form/e2e-test/appConfig.js\" --with-decryption --query \"Parameter.Value\" --output text > ./public/appConfig.js",

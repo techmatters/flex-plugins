@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "generate-next-tag": "npm install && node --loader ts-node/esm ./generate-next-tag.ts"
+    "generate-next-tag": "npm install && npx ts-node ./generate-next-tag.ts"
   },
   "author": "",
   "license": "AGPL",
