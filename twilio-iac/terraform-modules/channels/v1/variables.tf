@@ -51,7 +51,7 @@ variable "channels" {
     contact_identity     = string,
     channel_flow_vars    = map(string)
     chatbot_unique_names = list(string)
-    flex_messaging_type  = optional(string,"legacyFlexFlow")
+    messaging_mode       = optional(string, "programmable-chat")
   }))
 
 }

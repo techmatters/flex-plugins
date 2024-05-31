@@ -59,8 +59,8 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
         default : templatefile(
           lookup(
             var.channel_attributes,
-            each.value.flex_messaging_type == "conversations" ? "${each.key}-conversations" : each.key,
-            var.channel_attributes[each.value.flex_messaging_type == "conversations" ? "default-conversations" : "default"]
+            each.value.messaging_mode == "conversations" ? "${each.key}-conversations" : each.key,
+            var.channel_attributes[each.value.messaging_mode == "conversations" ? "default-conversations" : "default"]
           ),
           { task_language = var.task_language, helpline = var.helpline }
         )
@@ -74,7 +74,7 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
 resource "twilio_flex_flex_flows_v1" "channel_flow" {
   for_each = {
     for idx, channel in var.channels :
-    idx => channel if(channel.channel_type != "voice" && channel.flex_messaging_type == "legacyFlexFlow")
+    idx => channel if(channel.channel_type != "voice" && channel.messaging_mode == "programmable-chat")
   }
   channel_type         = each.value.channel_type
   chat_service_sid     = var.flex_chat_service_sid
@@ -89,7 +89,7 @@ resource "twilio_flex_flex_flows_v1" "channel_flow" {
 resource "twilio_conversations_configuration_addresses_v1" "conversations_address" {
   for_each = {
     for idx, channel in var.channels :
-    idx => channel if(channel.channel_type != "voice" && channel.flex_messaging_type == "conversations")
+    idx => channel if(channel.channel_type != "voice" && channel.messaging_mode == "conversations")
   }
   type                                   = each.value.channel_type
   address                                = each.value.contact_identity
@@ -128,10 +128,24 @@ resource "aws_ssm_parameter" "channel_flex_flow_sid" {
 resource "aws_ssm_parameter" "channel_studio_flow_sid" {
   for_each = {
   for idx, channel in var.channels :
-  idx => channel if(channel.channel_type == "custom" && channel.flex_messaging_type == "conversations" )
+  idx => channel if(channel.channel_type == "custom" && channel.messaging_mode == "conversations" )
   }
   name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/studio_flow_sid"
   type        = "SecureString"
   value       = twilio_studio_flows_v2.channel_studio_flow[each.key].sid
   description = "${title(replace(each.key, "_", " "))} Studio Flow SID"
 }
+
+#This will nned to be removed after the conversations migration
+resource "aws_ssm_parameter" "messaging_mode" {
+  for_each = {
+  for idx, channel in var.channels :
+  idx => channel if(channel.channel_type == "custom")
+  }
+  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/studio_flow_sid"
+  type        = "SecureString"
+  value       = each.value.messaging_mode
+  description = "${title(replace(each.key, "_", " "))} Studio Flow SID"
+}
+
+
