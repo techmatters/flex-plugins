@@ -28,7 +28,7 @@ import RefreshButton, { isConversationNotLoaded } from './RefreshButton';
  */
 export const setUpTransferComponents = () => {
   Flex.MessageList.Content.add(<RefreshButton key="refresh-button" />, {
-    if: props => props.conversation && isConversationNotLoaded(props.conversation),
+    if: props => !props || isConversationNotLoaded(props.conversation),
   });
 
   Flex.TaskCanvasHeader.Content.add(<TransferButton key="transfer-button" />, {

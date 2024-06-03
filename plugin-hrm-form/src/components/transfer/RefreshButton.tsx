@@ -16,9 +16,9 @@
 
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { withTaskContext, Manager, ConversationState, Actions, Template } from '@twilio/flex-ui';
+import { withTaskContext, Template } from '@twilio/flex-ui';
 
-import { RefreshStyledSpan, RefreshStyledButton } from '../../styles/buttons';
+import { RefreshStyledSpan } from '../../styles/buttons';
 
 // Checks if there was an error while loading conversation
 export const isConversationNotLoaded = conversationState => {
@@ -35,23 +35,9 @@ const RefreshButton: React.FC<TaskContextProps> = ({ task }) => {
     return null;
   }
 
-  const manager = Manager.getInstance();
-  const conversationSid = task.attributes.channelSid;
-  const conversationState = manager.store.getState().flex.chat.conversations[conversationSid];
-
-  const reInitConversation = () => {
-    const conversationNotLoaded = isConversationNotLoaded(conversationState);
-    if (conversationNotLoaded) {
-      ConversationState.Actions.initWithConversationSid(conversationSid);
-    }
-  };
-
   return (
     <RefreshStyledSpan>
       <Template code="Transfer-ErrorLoadingMessages" />
-      <RefreshStyledButton onClick={() => Actions.addListener('afterSelectTask', reInitConversation)}>
-        <Template code="Transfer-RefreshButton" />
-      </RefreshStyledButton>
     </RefreshStyledSpan>
   );
 };
