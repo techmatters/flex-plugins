@@ -23,7 +23,7 @@ runs:
   using: "composite"
   steps:
     - name: Install the Twilio CLI and plugins
-      run: npm install -g twilio-cli  && twilio plugins:install @twilio-labs/plugin-flex@6.0.3
+      run: npm install -g twilio-cli  && twilio plugins:install @twilio-labs/plugin-flex@6.4.1
       shell: bash
     - name: Install hrm-form-definitions Packages
       run: npm ci
