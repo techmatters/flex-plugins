@@ -14,24 +14,16 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/* eslint-disable react/prop-types */
-import React from 'react';
-import { withTaskContext, Template } from '@twilio/flex-ui';
+// Checks if there was an error while loading conversation
+const isErrorLoadingConversation = conversationState => {
+  if (!conversationState) return true;
 
-import { RefreshStyledSpan } from '../../styles/buttons';
+  const messageError = conversationState.messages.some(item => item.error);
+  const errorLoadingConversations = conversationState.errorWhileLoadingConversation || messageError;
+  const messagesAndParticapantStateEmpty =
+    conversationState.messages.length === 0 && conversationState.participants.size === 0;
 
-const RefreshMessage: React.FC<TaskContextProps> = ({ task }) => {
-  if (!task) {
-    return null;
-  }
-
-  return (
-    <RefreshStyledSpan>
-      <Template code="Transfer-ErrorLoadingMessages" />
-    </RefreshStyledSpan>
-  );
+  return Boolean(messagesAndParticapantStateEmpty || errorLoadingConversations);
 };
 
-RefreshMessage.displayName = 'RefreshMessage';
-
-export default withTaskContext(RefreshMessage);
+export default isErrorLoadingConversation;
