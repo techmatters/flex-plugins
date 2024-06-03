@@ -44,15 +44,16 @@ locals {
           wait_url                   = "https://nz-assets-8961.twil.io/busyLine"
           blocked_url                = "https://nz-assets-8961.twil.io/blocked_number.mp3"
           initial_message_url        = "https://nz-assets-8961.twil.io/initial_message.mp3"
+          external_parties_number    = "+6498867292"
         }
         chatbot_unique_names = []
       },
       modica : {
-        channel_type        = "custom"
-        contact_identity    = "modica"
-        templatefile        = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority.tftpl"
-        channel_flow_vars   = {
-          blocked_message     = "Kia ora, you've been blocked from accessing Youthline's helpline and we are not able to read or receive further messages from you. If you think this is a mistake, please email complaints@youthline.co.nz with your name and contact details for this to be reviewed. If you are unsafe or require urgent support, please call 111 now."
+        channel_type     = "custom"
+        contact_identity = "modica"
+        templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority.tftpl"
+        channel_flow_vars = {
+          blocked_message = "Kia ora, you've been blocked from accessing Youthline's helpline and we are not able to read or receive further messages from you. If you think this is a mistake, please email complaints@youthline.co.nz with your name and contact details for this to be reviewed. If you are unsafe or require urgent support, please call 111 now."
         }
         chatbot_unique_names = []
       }

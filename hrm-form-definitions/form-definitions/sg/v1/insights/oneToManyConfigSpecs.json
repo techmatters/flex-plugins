@@ -1,7 +1,7 @@
 [
     {
         "attributeName": "customer_attribute_3",
-        "insightsObject": "customer",
+        "insightsObject": "customers",
         "paths": [
           "savedContact.id"
         ],

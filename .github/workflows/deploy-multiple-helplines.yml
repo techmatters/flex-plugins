@@ -40,11 +40,6 @@ on:
         description: Send a slack message confirming each deploy
         required: false
         default: true
-      # Change log is only used for deploying Flex
-      changelog:
-        description: Release Changelog - Add a comment about the changes to be included in this release.
-        type: string
-        required: false
       # Recaptcha Verify URL is only used for deploying Webchat
       recaptcha_verify_url:
         description: Recaptcha Verify URL
@@ -64,7 +59,6 @@ jobs:
     with:
       helpline_code: ${{ matrix.short_helplines }}
       environment_code: ${{ matrix.environment }}
-      changelog: ${{ inputs.changelog }}
       send-slack-message: ${{ inputs.send_slack_message_per_deploy }}
 
   deploy-web-chat-helplines:
