@@ -21,7 +21,7 @@ import * as TransferHelpers from '../../transfer/transferTaskState';
 import TransferButton from './TransferButton';
 import AcceptTransferButton from './AcceptTransferButton';
 import RejectTransferButton from './RejectTransferButton';
-import RefreshButton from './RefreshButton';
+import RefreshButton from './RefreshMessage';
 import isErrorLoadingConversation from './isErrorLoadingConversation';
 
 /**
