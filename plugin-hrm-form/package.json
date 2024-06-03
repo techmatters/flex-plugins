@@ -39,6 +39,9 @@
     "ssm:local:appConfig:e2e": "docker run --rm -v ~/.aws:/home/aws/.aws -e AWS_DEFAULT_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY interrobangc/awscli2 ssm get-parameter --name \"/local/flex-plugins/plugin-hrm-form/e2e-test/appConfig.js\" --with-decryption --query \"Parameter.Value\" --output text > ./public/appConfig.js",
     "ssm:local:secret": "docker run --rm -v ~/.aws:/home/aws/.aws -e AWS_DEFAULT_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY interrobangc/awscli2 ssm get-parameter --name \"/local/flex-plugins/plugin-hrm-form/secret.js\" --with-decryption --query \"Parameter.Value\" --output text > ./src/private/secret.js"
   },
+  "optionalDependencies": {
+    "fsevents": "^2.3.3"
+  },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
     "@emoji-mart/react": "^1.1.1",
