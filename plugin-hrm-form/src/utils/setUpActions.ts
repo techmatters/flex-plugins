@@ -176,7 +176,7 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
 
   // If this is the first counsellor that gets the task, say hi
   if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
-    await sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
+    sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
   }
 
   await initializeContactForm(payload);
