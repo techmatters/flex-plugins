@@ -17,5 +17,8 @@
 module.exports = (config, { isProd, isDev, isTest }) => {
   config.transformIgnorePatterns = ['/node_modules/(?!wavesurfer.js)'];
   config.testEnvironment = 'jsdom';
+  config.moduleNameMapper = {
+    axios: 'axios/dist/node/axios.cjs',
+  };
   return config;
 };
