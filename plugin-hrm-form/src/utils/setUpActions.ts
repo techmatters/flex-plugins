@@ -119,14 +119,14 @@ const sendGoodbyeMessage = (taskSid: string) => {
     : sendSystemMessageOfKey('GoodbyeMsg');
 };
 
-const sendWelcomeMessageOnConversationJoined = async (
+const sendWelcomeMessageOnConversationJoined = (
   setupObject: SetupObject,
   getMessage: GetMessage,
   payload: ActionPayload,
 ) => {
   const manager = Manager.getInstance();
   try {
-    const trySendWelcomeMessage = async (convo: Conversation, ms: number, retries: number) => {
+    const trySendWelcomeMessage = (convo: Conversation, ms: number, retries: number) => {
       setTimeout(async () => {
         try {
           const convoState = manager.store.getState().flex.chat.conversations[convo.sid];
@@ -141,9 +141,9 @@ const sendWelcomeMessageOnConversationJoined = async (
               isLoadingParticipants always resolves last so we want to make sure that it resolved before checking for other conditions 
             */
           if (convoState.isLoadingParticipants) {
-            if (retries < 10) await trySendWelcomeMessage(convo, 200, retries + 1);
+            if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
             if (convoState.isLoadingConversation || convoState.isLoadingMessages) {
-              if (retries < 10) await trySendWelcomeMessage(convo, 200, retries + 1);
+              if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
               else console.error('Failed to send welcome message: max retries reached.');
             }
           } else {
@@ -152,7 +152,7 @@ const sendWelcomeMessageOnConversationJoined = async (
         } catch (error) {
           // We want to try again when the internet connection is terribly poor
           if (retries < 10) {
-            await trySendWelcomeMessage(convo, 200, retries + 1);
+            trySendWelcomeMessage(convo, 200, retries + 1);
           } else {
             console.error('Failed to send welcome message: max retries reached due to error.', error);
           }
@@ -160,7 +160,7 @@ const sendWelcomeMessageOnConversationJoined = async (
       }, ms);
     };
     // Ignore event payload as we already have everything we want in afterAcceptTask arguments. Start at 0ms as many users are able to send the message right away
-    manager.conversationsClient.once('conversationJoined', async (c: Conversation) => trySendWelcomeMessage(c, 0, 0));
+    manager.conversationsClient.once('conversationJoined', (c: Conversation) => trySendWelcomeMessage(c, 0, 0));
   } catch (error) {
     console.error('Failed to send welcome message:', error);
   }
