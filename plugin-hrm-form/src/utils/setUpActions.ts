@@ -53,6 +53,7 @@ export const loadCurrentDefinitionVersion = async () => {
 };
 
 /* eslint-enable sonarjs/prefer-single-boolean-return */
+/* eslint-disable sonarjs/cognitive-complexity */
 
 const saveEndMillis = async (payload: ActionPayload) => {
   Manager.getInstance().store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
@@ -125,24 +126,32 @@ const sendWelcomeMessageOnConversationJoined = (
 ) => {
   const manager = Manager.getInstance();
   const trySendWelcomeMessage = (convo: Conversation, ms: number, retries: number) => {
-    setTimeout(() => {
-      const convoState = manager.store.getState().flex.chat.conversations[convo.sid];
-      if (!convoState) {
-        console.warn(
-          `Conversation ${convo.sid}, which should be for task ${payload.task.taskSid} not found in redux store.`,
-        );
-        return;
-      }
-      // if channel is not ready, wait 200ms and retry
-      if (convoState.isLoadingParticipants || convoState.isLoadingConversation || convoState.isLoadingMessages) {
-        if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
-        else console.error('Failed to send welcome message: max retries reached.');
-      } else {
-        sendWelcomeMessage(setupObject, convo, getMessage)(payload);
+    setTimeout(async () => {
+      try {
+        const convoState = manager.store.getState().flex.chat.conversations[convo.sid];
+        if (!convoState) {
+          console.warn(
+            `Conversation ${convo.sid}, which should be for task ${payload.task.taskSid} not found in redux store.`,
+          );
+          return;
+        }
+        // if channel is not ready, wait 200ms and retry
+        if (convoState.isLoadingParticipants || convoState.isLoadingConversation || convoState.isLoadingMessages) {
+          if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
+          else console.error('Failed to send welcome message: max retries reached.');
+        } else {
+          sendWelcomeMessage(setupObject, convo, getMessage)(payload);
+        }
+      } catch (error) {
+        // We want to try again when the internet connection is terribly poor
+        if (retries < 10) {
+          trySendWelcomeMessage(convo, 200, retries + 1);
+        } else {
+          console.error('Failed to send welcome message: max retries reached due to error.', error);
+        }
       }
     }, ms);
   };
-
   // Ignore event payload as we already have everything we want in afterAcceptTask arguments. Start at 0ms as many users are able to send the message right away
   manager.conversationsClient.once('conversationJoined', (c: Conversation) => trySendWelcomeMessage(c, 0, 0));
 };
