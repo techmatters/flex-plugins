@@ -125,45 +125,35 @@ const sendWelcomeMessageOnConversationJoined = (
   payload: ActionPayload,
 ) => {
   const manager = Manager.getInstance();
-  try {
-    const trySendWelcomeMessage = (convo: Conversation, ms: number, retries: number) => {
-      setTimeout(async () => {
-        try {
-          const convoState = manager.store.getState().flex.chat.conversations[convo.sid];
-          if (!convoState) {
-            console.warn(
-              `Conversation ${convo.sid}, which should be for task ${payload.task.taskSid} not found in redux store.`,
-            );
-            return;
-          }
-          /* 
-              if channel is not ready, wait 200ms and retry
-              isLoadingParticipants always resolves last so we want to make sure that it resolved before checking for other conditions 
-            */
-          if (convoState.isLoadingParticipants) {
-            if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
-            if (convoState.isLoadingConversation || convoState.isLoadingMessages) {
-              if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
-              else console.error('Failed to send welcome message: max retries reached.');
-            }
-          } else {
-            sendWelcomeMessage(setupObject, convo, getMessage)(payload);
-          }
-        } catch (error) {
-          // We want to try again when the internet connection is terribly poor
-          if (retries < 10) {
-            trySendWelcomeMessage(convo, 200, retries + 1);
-          } else {
-            console.error('Failed to send welcome message: max retries reached due to error.', error);
-          }
+  const trySendWelcomeMessage = (convo: Conversation, ms: number, retries: number) => {
+    setTimeout(async () => {
+      try {
+        const convoState = manager.store.getState().flex.chat.conversations[convo.sid];
+        if (!convoState) {
+          console.warn(
+            `Conversation ${convo.sid}, which should be for task ${payload.task.taskSid} not found in redux store.`,
+          );
+          return;
         }
-      }, ms);
-    };
-    // Ignore event payload as we already have everything we want in afterAcceptTask arguments. Start at 0ms as many users are able to send the message right away
-    manager.conversationsClient.once('conversationJoined', (c: Conversation) => trySendWelcomeMessage(c, 0, 0));
-  } catch (error) {
-    console.error('Failed to send welcome message:', error);
-  }
+        // if channel is not ready, wait 200ms and retry
+        if (convoState.isLoadingParticipants || convoState.isLoadingConversation || convoState.isLoadingMessages) {
+          if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
+          else console.error('Failed to send welcome message: max retries reached.');
+        } else {
+          sendWelcomeMessage(setupObject, convo, getMessage)(payload);
+        }
+      } catch (error) {
+        // We want to try again when the internet connection is terribly poor
+        if (retries < 10) {
+          trySendWelcomeMessage(convo, 200, retries + 1);
+        } else {
+          console.error('Failed to send welcome message: max retries reached due to error.', error);
+        }
+      }
+    }, ms);
+  };
+  // Ignore event payload as we already have everything we want in afterAcceptTask arguments. Start at 0ms as many users are able to send the message right away
+  manager.conversationsClient.once('conversationJoined', (c: Conversation) => trySendWelcomeMessage(c, 0, 0));
 };
 
 export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupObject, getMessage: GetMessage) => async (
