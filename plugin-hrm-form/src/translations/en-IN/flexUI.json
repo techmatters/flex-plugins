@@ -101,7 +101,7 @@
   "SharedStateSaveContactError": "Could not save pending contact at the Shared State.",
   "Transfer-TransferButton": "Transfer",
   "Transfer-RefreshButton": "Refresh",
-  "Transfer-ErrorLoadingMessages": "Error loading messages.",
+  "Transfer-ErrorLoadingMessages": "Error loading messages. To retry loading them, refresh your browser",
   "Transfer-AcceptTransferButton": "Accept Transfer",
   "Transfer-RejectTransferButton": "Reject Transfer",
   "TaskLineCallTransferWorker": "Transfer from {{task.incomingTransferObject.worker.fullName}} (direct)",

@@ -18,6 +18,11 @@ variable "short_helpline" {
   type        = string
 }
 
+variable "twilio_account_sid" {
+  description = "Twilio Account SID (ACxxxx)"
+  type        = string
+}
+
 variable "serverless_url" {
   description = "Serverless URL"
   type        = string
@@ -46,6 +51,7 @@ variable "channels" {
     contact_identity     = string,
     channel_flow_vars    = map(string)
     chatbot_unique_names = list(string)
+    messaging_mode       = optional(string, "programmable-chat")
   }))
 
 }

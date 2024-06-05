@@ -16,10 +16,6 @@ name: Deploy Flex to all Production Helplines
 
 on:
   workflow_dispatch:
-    inputs:
-      changelog:
-        description: Release Changelog - Add a comment about the changes to be included in this release.
-        required: true
 
 jobs:
   configure:
@@ -49,4 +45,3 @@ jobs:
       project: flex
       helplines: ${{ needs.configure.outputs.target_helplines }}
       environments: '[ "production" ]'
-      changelog: ${{ inputs.changelog }}

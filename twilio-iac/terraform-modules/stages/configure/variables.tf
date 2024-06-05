@@ -128,6 +128,7 @@ variable "channels" {
     contact_identity     = string
     channel_flow_vars    = map(string)
     chatbot_unique_names = list(string)
+    messaging_mode  = optional(string,"programmable-chat")
   }))
   description = "Map of enabled channel objects with their attributes"
 
