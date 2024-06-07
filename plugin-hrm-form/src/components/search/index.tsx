@@ -117,8 +117,10 @@ const Search: React.FC<Props> = ({
 
   const closeDialog = () => setMockedMessage('');
 
-  const handleSearchContacts = (newSearchParams: SearchParams, newOffset) =>
-    searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+  const handleSearchContacts = (newSearchParams: SearchParams, newOffset) =>{
+    console.log('>>> searchContacts', {newSearchParams, newOffset})
+    return searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+  }
 
   const handleSearchCases = (newSearchParams, newOffset) =>
     searchCases(searchContext)({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);

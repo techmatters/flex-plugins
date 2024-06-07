@@ -60,7 +60,7 @@ import { createCaseAsyncAction } from '../../../states/case/saveCase';
 import asyncDispatch from '../../../states/asyncDispatch';
 import selectContextContactId from '../../../states/contacts/selectContextContactId';
 
-export const CONTACTS_PER_PAGE = 20;
+export const CONTACTS_PER_PAGE = 5;
 export const CASES_PER_PAGE = 20;
 
 type OwnProps = {
@@ -134,6 +134,7 @@ const SearchResults: React.FC<Props> = ({
   const setCasesPage = (page: number) => changeCaseResultPage(page, routing);
 
   const handleContactsChangePage = newPage => {
+    console.log('>>> handleContactsChangePage', {newPage, CONTACTS_PER_PAGE});
     setContactsPage(newPage);
     handleSearchContacts(CONTACTS_PER_PAGE * newPage);
   };

@@ -69,9 +69,27 @@ export async function searchContacts(
     body: JSON.stringify(searchParams),
   };
   const response = await fetchHrmApi(`/contacts/search${queryParams}`, options);
+
+  console.log('>>>> searchContacts response', response);
+
+  const responseV2 = await fetchHrmApi(`/contacts/searchV2${queryParams}`, options);
+  // console.log('>>>> searchContacts responseV2', responseV2);
+
+  // Get the first 20 ids
+  const ids = responseV2.slice(0, 20)
+  // console.log('>>>> searchContacts ids', ids);
+  // Call the searchByIds endpoint with the ids
+  const idsOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ids }),
+  };
+  const idsResponse = await fetchHrmApi('/contacts/searchByIds', idsOptions);
+  console.log('>>>> searchContacts idsResponse', idsResponse);
+
   return {
     ...response,
-    contacts: response.contacts.map(convertApiContactToFlexContact),
+    contacts: idsResponse.contacts.map(convertApiContactToFlexContact),
   };
 }
 
