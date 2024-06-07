@@ -9,15 +9,13 @@
             "instagram",
             "line"
         ],
-        "feature_flags": {
-            "enable_aselo_messaging_ui": false,    
+        "feature_flags": {  
             "enable_client_profiles": true,
-            "enable_counselor_toolkits": false,
-            "enable_csam_clc_report": false,
             "enable_csam_report": true,
             "enable_lex": true,
             "enable_save_insights": true,
             "enable_teams_view_enhancements": true,
+            "enable_post_survey": true,
             "enable_voice_recordings": true
         },
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",

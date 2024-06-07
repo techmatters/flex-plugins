@@ -1,7 +1,8 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_fullstory_monitoring": false
+            "enable_fullstory_monitoring": false,
+            "enable_save_insights": true
         }
     },
     "ui_attributes": {

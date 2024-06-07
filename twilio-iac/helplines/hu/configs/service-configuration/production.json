@@ -7,7 +7,7 @@
         "feature_flags": {
             "enable_canned_responses": false,
             "enable_contact_editing": false,
-            "enable_voice_recordings": false
+            "enable_save_insights": true
         },
         "hrm_base_url": "https://hrm-production-eu.tl.techmatters.org"
     }
