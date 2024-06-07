@@ -13,7 +13,6 @@
             "enable_aselo_messaging_ui": true,
             "enable_lex": true,
             "enable_voice_recordings": true,
-            "enable_resources": true,
             "enable_csam_report": true,
             "enable_post_survey": true,
             "enable_save_insights": true

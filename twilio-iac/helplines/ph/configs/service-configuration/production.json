@@ -1,7 +1,9 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_resources": false
+            "enable_save_insights": true,
+            "enable_fullstory_monitoring": true
+
         }
     }
 }

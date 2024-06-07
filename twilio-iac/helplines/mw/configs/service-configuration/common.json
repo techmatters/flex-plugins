@@ -4,7 +4,6 @@
         "feature_flags": {
             "enable_csam_report": true,
             "enable_lex": true,
-            "enable_save_insights": true,
             "enable_twilio_transcripts": false
         },
         "permissionConfig": "mw"

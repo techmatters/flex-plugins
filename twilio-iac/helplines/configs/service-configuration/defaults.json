@@ -62,7 +62,7 @@
             "enable_last_case_status_update_info": true,
             "enable_external_transcripts": true,
             "enable_filter_cases": true,
-            "enable_fullstory_monitoring": false,
+            "enable_fullstory_monitoring": true,
             "enable_lex": false,
             "enable_manual_pulling": true,
             "enable_offline_contact": true,

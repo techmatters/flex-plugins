@@ -1,7 +1,9 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_transcripts": false
+            "enable_transcripts": false,
+            "enable_save_insights": true
+            
         },
         "pdfImagesSource": "https://tl-public-chat-zm-prod.s3.amazonaws.com",
         "previous_ui_version": {
