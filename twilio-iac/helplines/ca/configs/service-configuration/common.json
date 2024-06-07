@@ -12,9 +12,6 @@
         },
         "feature_flags": {
             "enable_aselo_messaging_ui": true,
-            "enable_counselor_toolkits": true,
-            "enable_fullstory_monitoring": true,
-            "enable_lex": false,
             "enable_manual_pulling": false,
             "enable_previous_contacts": false,
             "enable_save_insights": true,

@@ -1,8 +1,7 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_twilio_transcripts": false,
-            "post_survey_serverless_handled": false
+            "enable_twilio_transcripts": false
             
         },
         "hrm_base_url": "https://hrm-staging-eu.tl.techmatters.org",

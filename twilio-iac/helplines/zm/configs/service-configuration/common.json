@@ -3,9 +3,7 @@
         "definitionVersion": "v1",
         "feature_flags": {
             "enable_csam_report": true,
-            "enable_fullstory_monitoring": true,
-            "enable_lex": true,
-            "enable_voice_recordings": false
+            "enable_lex": true
         },
         "permissionConfig": "zm"
     }
