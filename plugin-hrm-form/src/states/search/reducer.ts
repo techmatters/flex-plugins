@@ -68,8 +68,8 @@ export const newTaskEntry: SearchStateTaskEntry = {
     [ContactDetailsSections.EXTERNAL_REPORT]: false,
     [ContactDetailsSections.RECORDING]: false,
   },
-  searchContactsResult: { count: 0, ids: [] },
-  searchCasesResult: { count: 0, ids: [] },
+  searchContactsResult: { count: 0, currentPageIds: [] },
+  searchCasesResult: { count: 0, currentPageIds: [] },
   isRequesting: false,
   isRequestingCases: false,
   caseRefreshRequired: false,
@@ -224,7 +224,7 @@ export function reduce(
       const task = state.tasks[taskId];
       const searchContext = state.tasks[taskId][context];
       const newContactsResult = {
-        ids: contacts.map(c => c.id),
+        currentPageIds: contacts.map(c => c.id),
         count: searchResult.count,
       };
       const previousContactCounts = dispatchedFromPreviousContacts
@@ -292,7 +292,7 @@ export function reduce(
       const task = state.tasks[taskId];
       const context = state.tasks[action.taskId][action.context];
       const newCasesResult = {
-        ids: cases.map(c => c.id),
+        currentPageIds: cases.map(c => c.id),
         count,
       };
       const previousContactCounts = dispatchedFromPreviousContacts

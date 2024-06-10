@@ -114,7 +114,7 @@ export type SearchActionType =
 
 export type SearchResultReferences = {
   count: number;
-  ids: string[];
+  currentPageIds: string[];
 };
 
 export type PreviousContactCounts = {
