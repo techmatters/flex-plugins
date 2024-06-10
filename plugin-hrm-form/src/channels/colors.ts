@@ -41,8 +41,7 @@ const webColor = mainChannelColor(Flex.DefaultTaskChannels.Chat);
 const facebookColor = mainChannelColor(Flex.DefaultTaskChannels.ChatMessenger);
 const smsColor = mainChannelColor(Flex.DefaultTaskChannels.ChatSms);
 const whatsappColor = mainChannelColor(Flex.DefaultTaskChannels.ChatWhatsApp);
-const emailColor = mainChannelColor(Flex.DefaultTaskChannels.ChatEmail)
-const twitterColor = '#1DA1F2';
+const telegramColor = '#1DA1F2';
 const instagramColor = '#833AB4';
 const lineColor = '#00C300';
 
@@ -52,8 +51,7 @@ export const colors: ChannelColors = {
   facebook: facebookColor,
   sms: smsColor,
   whatsapp: whatsappColor,
-  twitter: twitterColor,
+  telegram: telegramColor,
   instagram: instagramColor,
   line: lineColor,
-  email: emailColor
 };

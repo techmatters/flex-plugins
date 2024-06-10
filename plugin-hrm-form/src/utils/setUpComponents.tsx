@@ -56,15 +56,16 @@ type SetupObject = ReturnType<typeof getHrmConfig>;
  * Returns the UI for the "Contacts Waiting" section
  */
 const queuesStatusUI = (setupObject: SetupObject) => {
+  console.log('setupObject', setupObject);
 
-  console.log('setupObject', setupObject)
-  
- return (<QueuesStatus
-    key="queue-status-task-list"
-    colors={colors}
-    contactsWaitingChannels={setupObject.contactsWaitingChannels}
-    paddingRight={false}
-  />)
+  return (
+    <QueuesStatus
+      key="queue-status-task-list"
+      colors={colors}
+      contactsWaitingChannels={setupObject.contactsWaitingChannels}
+      paddingRight={false}
+    />
+  );
 };
 
 const addButtonsUI = (featureFlags: FeatureFlags) => {
