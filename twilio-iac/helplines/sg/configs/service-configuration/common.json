@@ -5,8 +5,11 @@
             "web"
         ],
         "definitionVersion": "sg-v1",
+        "config_flags": {
+            "enableExternalRecordings": true
+        },
         "feature_flags": {
-            "external_recordings_enabled": true,
+            "enable_voice_recordings": true,
             "enable_post_survey": false
         },
         "helplineLanguage": "en-SG",
