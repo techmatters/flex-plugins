@@ -175,9 +175,9 @@ locals {
           hcfr_queue_sid : "WQ2284dc2fe9a382f0b2654596e2e551d0"
 
           #Recording URLs
-          main_url : "https://test-service-dee-4583.twil.io/HCMain.mp3"
-          en_function_url : "https://test-service-dee-4583.twil.io/6017_hc_en"
-          fr_function_url : "https://test-service-dee-4583.twil.io/6018_hc_fr"
+          main_url : "https://test-service-dee-4583.twil.io/HC_Closing_Intro.mp3"
+          en_function_url : "https://test-service-dee-4583.twil.io/6001_khp_english"
+          fr_function_url : "https://test-service-dee-4583.twil.io/6002_khp_french"
           en_tos_url : "https://test-service-dee-4583.twil.io/KHPENToS.mp3"
           fr_tos_url : "https://test-service-dee-4583.twil.io/KHPFRToS.mp3"
           en_privacy_url : "https://test-service-dee-4583.twil.io/KHPENPrivacy.mp3"

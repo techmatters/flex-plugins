@@ -180,7 +180,10 @@ export const setupInstagramChatChannel = () => {
 };
 
 export const setupLineChatChannel = () => {
-  const LineChatChannel = DefaultTaskChannels.createChatTaskChannel('line', task => task.channelType === 'line');
+  const LineChatChannel = DefaultTaskChannels.createChatTaskChannel(
+    'line',
+    task => task.channelType === 'line' || task.attributes.customChannelType === 'line',
+  );
 
   const icon = <LineIcon width="24px" height="24px" color={colors.line} />;
   LineChatChannel.icons = generateIcons(icon);

@@ -4,7 +4,7 @@
   "private": true,
   "type": "commonjs",
   "engines": {
-    "node": "^16.20.0"
+    "node": "^18.20.3"
   },
   "scripts": {
     "bundle-analyzer": "cross-env BUNDLE_ANALYZER=true npm run build",
@@ -33,7 +33,7 @@
     "env:local:microservice-url": "docker run --rm --net=host -e AWS_DEFAULT_REGION=us-east-1 -e AWS_ACCESS_KEY_ID=fake -e AWS_SECRET_ACCESS_KEY=fake interrobangc/awscli2 ssm get-parameter --name '/local/hrm/microservice/api-url' --endpoint-url http://localhost:4566  --region us-east-1 --query 'Parameter.Value' --output text | awk '{print \"REACT_APP_HRM_MICROSERVICE_BASE_URL=\" $0}' >> .env.local",
     "env:dev": "run-s env:clear env:dev:*",
     "env:clear:": "rm -f .env.local",
-    "update-flex-ui-version": "npx ts-node --esm src/scripts/updateFlexUiVersion.ts",
+    "update-flex-ui-version": "npx ts-node src/scripts/updateFlexUiVersion.ts",
     "ssm:local": "npm run ssm:local:appConfig && npm run ssm:local:secret",
     "ssm:local:appConfig": "docker run --rm -v ~/.aws:/home/aws/.aws -e AWS_DEFAULT_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY interrobangc/awscli2 ssm get-parameter --name \"/local/flex-plugins/plugin-hrm-form/appConfig.js\" --with-decryption --query \"Parameter.Value\" --output text > ./public/appConfig.js",
     "ssm:local:appConfig:e2e": "docker run --rm -v ~/.aws:/home/aws/.aws -e AWS_DEFAULT_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY interrobangc/awscli2 ssm get-parameter --name \"/local/flex-plugins/plugin-hrm-form/e2e-test/appConfig.js\" --with-decryption --query \"Parameter.Value\" --output text > ./public/appConfig.js",
@@ -80,7 +80,7 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^14.1.1",
     "@twilio/flex-plugin": "^6.0.3",
-    "@twilio/flex-plugin-scripts": "^6.3.3",
+    "@twilio/flex-plugin-scripts": "^6.4.1",
     "@twilio/flex-ui": "^2.6.1",
     "@twilio/flex-ui-dev-proxy": "^1.1.2",
     "@types/jest": "^27.5.2",
@@ -121,8 +121,5 @@
     "twilio-cli": "^5.19.3",
     "typescript": "4.7.4",
     "webpack-bundle-analyzer": "^4.7.0"
-  },
-  "optionalDependencies": {
-    "fsevents": "^2.3.3"
   }
 }

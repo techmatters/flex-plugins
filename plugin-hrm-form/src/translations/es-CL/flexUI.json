@@ -639,5 +639,7 @@
   "TeamsView-NoSkills": "- Sin habilidades -",
   "abusive": "abusivo",
   "blocked": "bloqueado",
-  "repeated contact": "contacto repetido"
-  }
+  "repeated contact": "contacto repetido",
+  "Transfer-RefreshButton": "Refrescar",
+  "Transfer-ErrorLoadingMessage": "Error cargando mensajes."
+}

@@ -70,7 +70,7 @@
   "Read": "Read",
   "Transfer-TransferButton": "Transfer",
   "Transfer-RefreshButton": "Refresh",
-  "Transfer-ErrorLoadingMessages": "Error loading messages.",
+  "Transfer-ErrorLoadingMessages": "Error loading messages. To retry loading them, refresh your browser",
   "TaskHeaderEndChat": "End Chat",
   "TaskHeaderendCall": "Hang Up",
   "WorkerDirectoryTitle": "Transfer",

@@ -173,7 +173,7 @@ export const createContact = async (
   const { definitionVersion } = getHrmConfig();
   const contactForApi: Contact = {
     ...contact,
-    channel: task.channelType as Contact['channel'],
+    channel: ((task.attributes as any)?.customChannelType || task.channelType) as Contact['channel'],
     rawJson: {
       definitionVersion,
       ...contact.rawJson,
