@@ -10,7 +10,7 @@
             "enableExternalRecordings": true
         },
         "feature_flags": {
-            "enable_aselo_messaging_ui": true,
+            "enable_aselo_messaging_ui": false,
             "enable_conferencing": true,
             "enable_manual_pulling": false,
             "enable_resources": false,
