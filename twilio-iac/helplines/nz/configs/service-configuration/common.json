@@ -6,6 +6,7 @@
             "web"
         ],
         "definitionVersion": "nz-v1",
+        "external_recordings_enabled": true,
         "config_flags": {
             "enableExternalRecordings": true,
             "enableUnmaskingCalls": false
