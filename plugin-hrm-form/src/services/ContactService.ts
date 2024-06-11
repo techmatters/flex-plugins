@@ -75,6 +75,45 @@ export async function searchContacts(
   };
 }
 
+export async function searchContactsByIds(
+  ids: string[],
+  limit,
+  offset,
+): Promise<{
+  count: number;
+  contacts: Contact[];
+}> {
+  const queryParams = getQueryParams({ limit, offset });
+  const options = {
+    method: 'POST',
+    body: JSON.stringify({ ids }),
+  };
+  const response = await fetchHrmApi(`/contacts/searchByIds${queryParams}`, options);
+  return {
+    ...response,
+    contacts: response.contacts.map(convertApiContactToFlexContact),
+  };
+}
+
+export async function searchContactsV2({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}): Promise<{
+  count: number;
+  contacts: Contact[];
+}> {
+  const options = {
+    method: 'POST',
+    body: JSON.stringify({}),
+  };
+  const response = await fetchHrmApi(`/contacts/searchV2`, options);
+  return {
+    ...response,
+    contacts: response.contacts.map(convertApiContactToFlexContact),
+  };
+}
+
 type HandleTwilioTaskResponse = {
   channelSid?: string;
   serviceSid?: string;
