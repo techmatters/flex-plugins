@@ -5,9 +5,14 @@
             "web"
         ],
         "definitionVersion": "sg-v1",
+        "external_recordings_enabled": true,
+        "config_flags": {
+            "enableExternalRecordings": true
+        },
         "feature_flags": {
-            "external_recordings_enabled": true,
-            "enable_post_survey": false
+            "enable_voice_recordings": true,
+            "enable_post_survey": false,
+            "enable_teams_view_enhancements": true
         },
         "helplineLanguage": "en-SG",
         "permissionConfig": "sg"
