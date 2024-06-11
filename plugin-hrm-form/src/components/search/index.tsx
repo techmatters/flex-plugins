@@ -29,7 +29,13 @@ import Case from '../case';
 import ProfileRouter, { isProfileRoute } from '../profile/ProfileRouter';
 import { SearchParams } from '../../states/search/types';
 import { CustomITask } from '../../types/types';
-import { newCreateSearchForm, handleSearchFormChange, searchCases, searchContacts } from '../../states/search/actions';
+import {
+  newCreateSearchForm,
+  handleSearchFormChange,
+  searchCases,
+  searchContacts,
+  searchV2Contacts,
+} from '../../states/search/actions';
 import { RootState } from '../../states';
 import { namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
@@ -83,6 +89,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         ),
       ),
     searchContacts: (context: string) => searchContacts(dispatch)(taskId, context),
+    searchV2Contacts: (context: string) => searchV2Contacts(dispatch)(taskId, context),
     searchCases: (context: string) => searchCases(dispatch)(taskId, context),
     closeModal: () => dispatch(newCloseModalAction(taskId)),
     handleNewCreateSearch: (context: string) => dispatch(newCreateSearchForm(taskId, context)),
@@ -95,6 +102,7 @@ const Search: React.FC<Props> = ({
   task,
   currentIsCaller,
   searchContacts,
+  searchV2Contacts,
   searchCases,
   handleSearchFormChange,
   searchContactsResults,
@@ -117,8 +125,18 @@ const Search: React.FC<Props> = ({
 
   const closeDialog = () => setMockedMessage('');
 
-  const handleSearchContacts = (newSearchParams: SearchParams, newOffset) =>
-    searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+  const handleSearchContacts = (newSearchParams: SearchParams, newOffset: number) => {
+    // TODO: handle legacy
+    // if (enable_search_v2) {
+    searchV2Contacts(searchContext)({
+      searchParams: { ...form, ...newSearchParams },
+      limit: CONTACTS_PER_PAGE,
+      offset: newOffset,
+    });
+    // } else {
+    // searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+    // }
+  };
 
   const handleSearchCases = (newSearchParams, newOffset) =>
     searchCases(searchContext)({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
