@@ -22,6 +22,7 @@ export const CHANGE_SEARCH_PAGE = 'CHANGE_SEARCH_PAGE';
 export const VIEW_CONTACT_DETAILS = 'VIEW_CONTACT_DETAILS';
 export const SEARCH_CONTACTS_REQUEST = 'SEARCH_CONTACTS_REQUEST';
 export const SEARCH_CONTACTS_SUCCESS = 'SEARCH_CONTACTS_SUCCESS';
+export const SEARCH_V2_CONTACTS_SUCCESS = 'SEARCH_V2_CONTACTS_SUCCESS';
 export const SEARCH_CONTACTS_FAILURE = 'SEARCH_CONTACTS_FAILURE';
 export const SEARCH_CASES_REQUEST = 'SEARCH_CASES_REQUEST';
 export const SEARCH_CASES_SUCCESS = 'SEARCH_CASES_SUCCESS';
@@ -74,6 +75,14 @@ export type SearchContactsSuccessAction = {
   context: string;
 };
 
+export type SearchV2ContactsSuccessAction = {
+  type: typeof SEARCH_V2_CONTACTS_SUCCESS;
+  searchMatchIds: string[];
+  taskId: string;
+  dispatchedFromPreviousContacts?: boolean;
+  context: string;
+};
+
 type SearchContactsFailureAction = {
   type: typeof SEARCH_CONTACTS_FAILURE;
   error: any;
@@ -105,6 +114,7 @@ export type SearchActionType =
   | SearchFormChangeAction
   | SearchContactsRequestAction
   | SearchContactsSuccessAction
+  | SearchV2ContactsSuccessAction
   | SearchContactsFailureAction
   | SearchCasesRequestAction
   | SearchCasesSuccessAction
@@ -115,6 +125,8 @@ export type SearchActionType =
 export type SearchResultReferences = {
   count: number;
   currentPageIds: string[];
+  // TODO: this should not be optional, just let it be empty array for legacy search
+  searchMatchIds?: string[];
 };
 
 export type PreviousContactCounts = {

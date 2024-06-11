@@ -247,6 +247,33 @@ export function reduce(
         },
       };
     }
+    case t.SEARCH_V2_CONTACTS_SUCCESS: {
+      const { searchMatchIds, taskId, dispatchedFromPreviousContacts, context } = action;
+      const task = state.tasks[taskId];
+      const searchContext = state.tasks[taskId][context];
+      const newContactsResult = {
+        searchMatchIds,
+        count: searchMatchIds.length,
+        currentPageIds: [],
+      };
+      const previousContactCounts = dispatchedFromPreviousContacts
+        ? { ...searchContext.previousContactCounts, contacts: searchMatchIds.length }
+        : searchContext.previousContactCounts;
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [taskId]: {
+            ...task,
+            [context]: {
+              ...searchContext,
+              searchContactsResult: newContactsResult,
+              previousContactCounts,
+            },
+          },
+        },
+      };
+    }
     case t.SEARCH_CONTACTS_FAILURE: {
       const task = state.tasks[action.taskId];
       const context = state.tasks[action.taskId][action.context];
