@@ -21,13 +21,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { createCallStatusSyncDocument } from '../../../utils/sharedState';
 import { ConferenceNotifications } from '../../../conference/setUpConferenceActions';
-import { conferenceApi } from '../../../services/ServerlessService';
 import PhoneInputDialog from './PhoneInputDialog';
 import { ConferenceButtonWrapper, ConferenceButton } from './styles';
 import { RootState } from '../../../states';
 import { setCallStatusAction, setIsDialogOpenAction, setPhoneNumberAction } from '../../../states/conferencing';
 import { CallStatus, isCallStatusLoading } from '../../../states/conferencing/callStatus';
 import { conferencingBase, namespace } from '../../../states/storeNamespaces';
+import * as conferenceApi from '../../../services/conferenceService';
 
 type Props = TaskContextProps;
 

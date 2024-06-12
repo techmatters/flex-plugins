@@ -18,11 +18,11 @@ import React from 'react';
 import type { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { conferenceApi } from '../../../services/ServerlessService';
 import { RootState } from '../../../states';
 import { addParticipantLabelAction } from '../../../states/conferencing';
 import { ParticipantLabelContainer, ParticipantLabelText } from './styles';
 import { conferencingBase, namespace } from '../../../states/storeNamespaces';
+import * as conferenceApi from '../../../services/conferenceService';
 
 type Props = ParticipantCanvasChildrenProps;
 
