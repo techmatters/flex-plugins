@@ -22,7 +22,7 @@ type MockResponse = {
   json: () => Promise<any>;
 };
 
-const FORM_DEFINITIONS_PATH = '../../form-definitions';
+const FORM_DEFINITIONS_PATH = './form-definitions';
 const BASE_URL_MOCK = 'http://base_url_mock';
 
 const files = [
@@ -54,19 +54,6 @@ const files = [
 const getDefinitionVersionId = (formDefinitionsBaseUrl: string) =>
   formDefinitionsBaseUrl.substring(`${BASE_URL_MOCK}/`.length);
 
-const loadJSON = async (jsonPath: string) => {
-  try {
-    // eslint-disable-next-line import/no-dynamic-require, global-require
-    return require(jsonPath);
-  } catch (e) {
-    const error = e as any;
-    if (error.code === 'MODULE_NOT_FOUND') {
-      return undefined;
-    }
-    throw error;
-  }
-};
-
 // TODO: This should be temporary
 const splitDefinitionVersion = (definitionVersionId: string) => {
   if (definitionVersionId === 'v1') {
@@ -83,7 +70,7 @@ const splitDefinitionVersion = (definitionVersionId: string) => {
     };
   }
 
-  // Assumes definitionVersioId is always in the format <helplineCode>-<version>
+  // Assumes definitionVersionId is always in the format <helplineCode>-<version>
   const [helplineCode, version] = definitionVersionId.split('-');
   return {
     helplineCode,
@@ -95,6 +82,7 @@ const splitDefinitionVersion = (definitionVersionId: string) => {
 const mockFetchImplementationGivenSpy = async (
   formDefinitionsBaseUrl: string,
   fetchSpy: jest.SpyInstance,
+  jsonLoader: (jsonPath: string) => Promise<any>,
 ) => {
   const definitionVersionId = getDefinitionVersionId(formDefinitionsBaseUrl);
   const map: { [remotePath: string]: MockResponse } = {};
@@ -105,7 +93,7 @@ const mockFetchImplementationGivenSpy = async (
     const localPath = `${FORM_DEFINITIONS_PATH}/${helplineCode}/${version}/${file}`;
 
     // eslint-disable-next-line no-await-in-loop
-    const jsonFile = await loadJSON(localPath);
+    const jsonFile = await jsonLoader(localPath);
 
     const fileExists = !!jsonFile;
     map[remotePath] = {
@@ -118,12 +106,12 @@ const mockFetchImplementationGivenSpy = async (
   fetchSpy.mockImplementation((url) => Promise.resolve(map[url.toString()]));
 };
 
-export const useFetchDefinitions = () => {
+export const mockFetchDefinitions = (jsonLoader: (jsonPath: string) => any) => {
   global.fetch = jest.fn();
   const fetchSpy = jest.spyOn(global, 'fetch');
 
   const mockFetchImplementation = async (formDefinitionsBaseUrl: string) => {
-    return mockFetchImplementationGivenSpy(formDefinitionsBaseUrl, fetchSpy);
+    return mockFetchImplementationGivenSpy(formDefinitionsBaseUrl, fetchSpy, jsonLoader);
   };
 
   const buildBaseURL = (definitionVersionId: DefinitionVersionId) =>

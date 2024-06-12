@@ -17,14 +17,15 @@
 /* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable global-require */
 /* eslint-disable camelcase */
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 import { Manager } from '@twilio/flex-ui';
 
+import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
 import { baseMockConfig, mockGetDefinitionsResponse } from '../mockGetConfig';
 import { createTask } from '../helpers';
 import { getDefinitionVersions } from '../../hrmConfig';
 import { ContactState } from '../../states/contacts/existingContacts';
-import { Case, Contact } from '../../types/types';
+import { Contact } from '../../types/types';
 import { ContactMetadata } from '../../states/contacts/types';
 import { VALID_EMPTY_CONTACT } from '../testContacts';
 import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
@@ -68,8 +69,7 @@ const mockUpdateContactInHrmAsyncAction = updateContactInHrmAsyncAction as jest.
   typeof updateContactInHrmAsyncAction
 >;
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, buildBaseURL } = mockLocalFetchDefinitions();
 
 const mockGetState = jest.fn();
 

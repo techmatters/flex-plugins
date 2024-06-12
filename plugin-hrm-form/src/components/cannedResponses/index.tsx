@@ -18,7 +18,6 @@
 import React, { Dispatch } from 'react';
 import { connect, ConnectedProps, useSelector } from 'react-redux';
 import { Actions, withTheme } from '@twilio/flex-ui';
-import { MessageInputChildrenProps } from '@twilio/flex-ui-core/src/components/channel/MessageInput/MessageInputImpl';
 
 import { selectCannedResponses } from '../../states/selectors/hrmStateSelectors';
 import { FormSelect, FormSelectWrapper, FormOption } from '../../styles';
@@ -26,9 +25,11 @@ import { CannedResponsesContainer } from './styles';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { newUpdateDraftMessageTextAction } from '../../states/conversations';
 
+type MessageProps = { conversationSid?: string };
+
 const mapDispatchToProps = (
   dispatch: Dispatch<{ type: string } & Record<string, any>>,
-  { conversationSid }: Partial<MessageInputChildrenProps>,
+  { conversationSid }: MessageProps,
 ) => {
   return {
     updateDraftMessageText: (text: string) => {
@@ -39,7 +40,7 @@ const mapDispatchToProps = (
 
 const connector = connect(null, mapDispatchToProps);
 
-type Props = Partial<MessageInputChildrenProps> & ConnectedProps<typeof connector>;
+type Props = MessageProps & ConnectedProps<typeof connector>;
 
 const CannedResponses: React.FC<Props> = ({ conversationSid, updateDraftMessageText }) => {
   const cannedResponses = useSelector(selectCannedResponses);

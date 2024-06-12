@@ -14,15 +14,17 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import * as ReactPDF from '@react-pdf/renderer';
+import * as fs from 'fs/promises';
 
-const notesStyles: ReactPDF.Styles = {
-  noteSummaryText: {
-    marginLeft: 10,
-    marginRight: 10,
-    marginTop: 10,
-    marginBottom: 10,
-  },
+export const loadLocalJson = async (jsonPath: string) => {
+  try {
+    // eslint-disable-next-line import/no-dynamic-require, global-require
+    return JSON.parse(await fs.readFile(jsonPath, 'utf8'));
+  } catch (e) {
+    const error = e as any;
+    if (error.code === 'ENOENT') {
+      return undefined;
+    }
+    throw error;
+  }
 };
-
-export default notesStyles;

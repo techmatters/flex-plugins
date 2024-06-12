@@ -15,9 +15,9 @@
  */
 
 /* eslint-disable sonarjs/cognitive-complexity */
-import React from 'react';
+import * as React from 'react';
 import each from 'jest-each';
-import { FormItemDefinition } from 'hrm-form-definitions';
+import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -32,7 +32,7 @@ const themeConf = {
 };
 
 const definition: FormItemDefinition = {
-  type: 'listbox-multiselect',
+  type: FormInputType.ListboxMultiselect,
   name: 'test-input',
   label: 'test-input',
   options: [

@@ -14,9 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersion, DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 import each from 'jest-each';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockGetDefinitionsResponse, mockPartialConfiguration } from '../../mockGetConfig';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { initialState, newTaskEntry, reduce } from '../../../states/routing/reducer';
@@ -36,8 +37,7 @@ import {
   RoutingState,
 } from '../../../states/routing/types';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 const task = { taskSid: 'task1' };
 
