@@ -126,17 +126,11 @@ export const setupDefaultChannels = () => {
 export const setupTelegramChatChannel = () => {
   const TelegramChatChannel = DefaultTaskChannels.createChatTaskChannel(
     'telegram',
-    task => task.channelType === 'telegram',
+    task => task.channelType === 'telegram' || task.attributes.customChannelType === 'telegram',
   );
 
   const icon = <TelegramIcon width="24px" height="24px" color={colors.telegram} />;
   TelegramChatChannel.icons = generateIcons(icon);
-
-  TelegramChatChannel.templates.CallCanvas.firstLine = 'TaskHeaderLineTwitter';
-  TelegramChatChannel.templates.TaskListItem.firstLine = 'TaskHeaderLineTwitter';
-  TelegramChatChannel.templates.TaskCard.firstLine = 'TaskHeaderLineTwitter';
-  TelegramChatChannel.templates.Supervisor.TaskCanvasHeader.title = 'TaskHeaderLineTwitter';
-  TelegramChatChannel.templates.Supervisor.TaskOverviewCanvas.firstLine = 'TaskHeaderLineTwitter';
 
   maskChannelStringsWithIdentifiers(TelegramChatChannel);
   setChatTaskCardString(TelegramChatChannel);
