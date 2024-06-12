@@ -15,71 +15,80 @@
  */
 
 import React from 'react';
+import { SelectOption } from 'hrm-form-definitions';
 
 import { Box, Row } from '../../../../styles';
-import { FormError, FormInputBase, FormLabel, RequiredAsterisk } from '../styles';
+import { FormError, FormLabel, FormSelect, FormSelectWrapper, RequiredAsterisk } from '../styles';
 import { FormInputBaseProps } from '../types';
 import useInputContext from '../useInputContext';
+import { generateSelectOptions } from '../select-utils';
 
-type FormInputUIProps = {
+type SelectInputUIProps = {
   inputId: string;
   updateCallback: () => void;
   refFunction: (ref: any) => void;
-  defaultValue: React.HTMLAttributes<HTMLElement>['defaultValue'];
   labelTextComponent: JSX.Element;
   required: boolean;
   disabled: boolean;
   isErrorState: boolean;
   errorId: string;
   errorTextComponent: JSX.Element;
+  options: SelectOption[];
+  initialValue: SelectOption['value'];
 };
 
-/*
- * In this component is less evident cause it's simple, but ideally the "inner component" will be a stateless UI with all what's needed provided as props,
- * and the outer one will be a wrapper that "binds" the inner one with our custom logic (rhf, Twilio Template and all of the dependecies should be injected into it).
- * This way, moving the actual UI components to a component library will be feacible (if we ever want to)
- */
-const FormInputUI: React.FC<FormInputUIProps> = ({
+const SelectInputUI: React.FC<SelectInputUIProps> = ({
   inputId,
   updateCallback,
   refFunction,
-  defaultValue,
   labelTextComponent,
   required,
   disabled,
   isErrorState,
   errorId,
   errorTextComponent,
+  options,
+  initialValue,
 }) => {
   return (
-    <FormLabel htmlFor={inputId} data-testid={`FormInput-${inputId}`}>
+    <FormLabel htmlFor={inputId} data-testid={`${inputId}-label`}>
       <Row>
         <Box marginBottom="8px">
           {labelTextComponent}
           {required && <RequiredAsterisk />}
         </Box>
       </Row>
-      <FormInputBase
-        id={inputId}
-        name={inputId}
-        error={isErrorState}
-        aria-invalid={isErrorState}
-        aria-required={required}
-        aria-errormessage={isErrorState ? errorId : undefined}
-        onBlur={updateCallback}
-        ref={refFunction}
-        defaultValue={defaultValue}
-        disabled={disabled}
-        data-testid={`${inputId}-input`}
-      />
-      {isErrorState && <FormError data-testid={`${inputId}-error`}>{errorTextComponent}</FormError>}
+      <FormSelectWrapper>
+        <FormSelect
+          id={inputId}
+          data-testid={`${inputId}-input`}
+          name={inputId}
+          error={isErrorState}
+          aria-invalid={isErrorState}
+          aria-errormessage={isErrorState ? errorId : undefined}
+          aria-required={required}
+          onChange={updateCallback}
+          ref={refFunction}
+          disabled={disabled}
+        >
+          {generateSelectOptions(inputId, options, initialValue)}
+        </FormSelect>
+      </FormSelectWrapper>
+      {isErrorState && (
+        <FormError>
+          {isErrorState && <FormError data-testid={`${inputId}-error`}>{errorTextComponent}</FormError>}
+        </FormError>
+      )}
     </FormLabel>
   );
 };
 
-type Props = FormInputBaseProps;
+type Props = FormInputBaseProps & {
+  options: SelectOption[];
+  // defaultOption: SelectOption['value'];
+};
 
-const FormInput: React.FC<Props> = ({
+const SelectInput: React.FC<Props> = ({
   inputId,
   label,
   initialValue,
@@ -87,6 +96,8 @@ const FormInput: React.FC<Props> = ({
   updateCallback,
   htmlElRef,
   isEnabled,
+  options,
+  // defaultOption,
 }) => {
   const { refFunction, labelTextComponent, error, errorId, errorTextComponent } = useInputContext({
     htmlElRef,
@@ -95,23 +106,23 @@ const FormInput: React.FC<Props> = ({
     registerOptions,
   });
 
-  const defaultValue = typeof initialValue === 'boolean' ? initialValue.toString() : initialValue;
   const disabled = !isEnabled;
 
   return (
-    <FormInputUI
+    <SelectInputUI
       inputId={inputId}
       updateCallback={updateCallback}
-      refFunction={refFunction(true)}
-      defaultValue={defaultValue}
+      refFunction={refFunction}
       labelTextComponent={labelTextComponent}
       required={Boolean(registerOptions.required)}
       disabled={disabled}
       isErrorState={Boolean(error)}
       errorId={errorId}
       errorTextComponent={errorTextComponent}
+      options={options}
+      initialValue={initialValue}
     />
   );
 };
 
-export default FormInput;
+export default SelectInput;

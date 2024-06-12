@@ -19,10 +19,10 @@ import '@testing-library/jest-dom/extend-expect';
 import each from 'jest-each';
 import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
 
-import * as FormComponents from '../../../components/forms/components';
-import { createInput } from '../../../components/forms/inputGenerator';
-import { createFormMethods, wrapperFormProvider } from '../../../components/forms/test-utils';
-import customContactComponentRegistry from '../../../components/forms/customContactComponentRegistry';
+import * as FormComponents from './components';
+import { createInput } from './inputGenerator';
+import { mockFormMethods, wrapperFormProvider } from './test-utils';
+import customContactComponentRegistry from './customContactComponentRegistry';
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -78,7 +78,7 @@ describe('createInput', () => {
         context: { contactId: 'contact-id' },
       });
 
-      const methods = createFormMethods();
+      const methods = mockFormMethods();
 
       render(createdInput, {
         // Override register to be a plain function as it will fail, don't seem to like jest.fn

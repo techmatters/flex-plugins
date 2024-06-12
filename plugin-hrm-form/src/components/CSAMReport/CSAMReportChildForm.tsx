@@ -33,20 +33,12 @@ type Props = {
   counselor: string;
   onClickClose: () => void;
   onSendReport: () => void;
-  update: (formValues: ChildCSAMReportForm) => void;
+  onUpdateInput: () => void;
   formValues: ChildCSAMReportForm;
-  methods: ReturnType<typeof useForm>;
 };
 
-const CSAMReportChildForm: React.FC<Props> = ({
-  counselor,
-  onClickClose,
-  onSendReport,
-  update,
-  formValues,
-  methods,
-}) => {
-  const generateChildFormElement = generateCSAMFormElement(childInitialValues, formValues, update, methods);
+const CSAMReportChildForm: React.FC<Props> = ({ counselor, onClickClose, onSendReport, onUpdateInput, formValues }) => {
+  const generateChildFormElement = generateCSAMFormElement(childInitialValues, formValues, onUpdateInput);
 
   const focusElementRef = useFocus();
 

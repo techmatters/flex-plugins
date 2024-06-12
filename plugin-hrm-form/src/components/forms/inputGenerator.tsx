@@ -20,7 +20,7 @@ import { pick } from 'lodash';
 import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
 
 import { FormInputBaseProps } from './components/types';
-import { FormInput } from './components';
+import { EmailInput, FormInput, NumericInput, RadioInput, SelectInput } from './components';
 import { CustomHandlers, getInputType } from '../common/forms/formGenerators';
 import { generateCustomContactFormItem } from './components/customContactComponent';
 
@@ -45,7 +45,7 @@ export const createInput = ({
   formItemDefinition,
   parentsPath,
   updateCallback,
-  isItemEnabled,
+  isItemEnabled = () => true,
   initialValue,
   customHandlers,
   htmlElRef,
@@ -68,6 +68,66 @@ export const createInput = ({
           registerOptions={registerOptions}
           isEnabled={isEnabled}
           htmlElRef={htmlElRef}
+        />
+      );
+    }
+    case FormInputType.NumericInput: {
+      return (
+        <NumericInput
+          key={inputId}
+          inputId={inputId}
+          initialValue={initialValue}
+          updateCallback={updateCallback}
+          label={formItemDefinition.label}
+          registerOptions={registerOptions}
+          isEnabled={isEnabled}
+          htmlElRef={htmlElRef}
+        />
+      );
+    }
+    case FormInputType.Email: {
+      return (
+        <EmailInput
+          key={inputId}
+          inputId={inputId}
+          initialValue={initialValue}
+          updateCallback={updateCallback}
+          label={formItemDefinition.label}
+          registerOptions={registerOptions}
+          isEnabled={isEnabled}
+          htmlElRef={htmlElRef}
+        />
+      );
+    }
+    case FormInputType.RadioInput: {
+      return (
+        <RadioInput
+          key={inputId}
+          inputId={inputId}
+          initialValue={initialValue}
+          updateCallback={updateCallback}
+          label={formItemDefinition.label}
+          registerOptions={registerOptions}
+          isEnabled={isEnabled}
+          htmlElRef={htmlElRef}
+          defaultOption={formItemDefinition.defaultOption}
+          options={formItemDefinition.options}
+        />
+      );
+    }
+    case FormInputType.Select: {
+      return (
+        <SelectInput
+          key={inputId}
+          inputId={inputId}
+          initialValue={initialValue}
+          updateCallback={updateCallback}
+          label={formItemDefinition.label}
+          registerOptions={registerOptions}
+          isEnabled={isEnabled}
+          htmlElRef={htmlElRef}
+          options={formItemDefinition.options}
+          // defaultOption={formItemDefinition.defaultOption}
         />
       );
     }

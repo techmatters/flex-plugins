@@ -15,9 +15,9 @@
  */
 
 import React from 'react';
-import { FormProvider, UseFormMethods } from 'react-hook-form';
+import { FormProvider, UseFormMethods, useForm } from 'react-hook-form';
 
-export const createFormMethods = (): UseFormMethods => ({
+export const mockFormMethods = (): UseFormMethods => ({
   clearErrors: jest.fn(),
   control: {} as any,
   errors: {},
@@ -33,6 +33,10 @@ export const createFormMethods = (): UseFormMethods => ({
   watch: jest.fn(),
 });
 
-export const wrapperFormProvider = (methods: UseFormMethods) => ({ children }: { children?: React.ReactNode }) => (
-  <FormProvider {...methods}>{children}</FormProvider>
-);
+export const wrapperFormProvider = (
+  mockedMethods: Partial<UseFormMethods> = {},
+  useFormOptions: Parameters<typeof useForm> = [],
+) => ({ children }: { children?: React.ReactNode }) => {
+  const methods = useForm(...useFormOptions);
+  return <FormProvider {...{ ...methods, ...mockedMethods }}>{children}</FormProvider>;
+};
