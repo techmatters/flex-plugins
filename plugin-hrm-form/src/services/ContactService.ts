@@ -84,11 +84,15 @@ export async function searchContactsByIds(
   contacts: Contact[];
 }> {
   const queryParams = getQueryParams({ limit, offset });
+
+  console.log('>>>>>>>>>>>> searchContactsByIds with ids', ids);
+
   const options = {
     method: 'POST',
     body: JSON.stringify({ ids }),
   };
   const response = await fetchHrmApi(`/contacts/searchByIds${queryParams}`, options);
+  console.log('>>>>>>>>>>>> response.contacts', response.contacts);
   return {
     ...response,
     contacts: response.contacts.map(convertApiContactToFlexContact),

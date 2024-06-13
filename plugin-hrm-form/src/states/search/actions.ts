@@ -161,10 +161,6 @@ export const searchV2Contacts = (dispatch: Dispatch<any>) => (taskId: string, co
     const searchMatchIds = searchResultRaw.contacts.map(c => c.id);
 
     dispatch({ type: t.SEARCH_V2_CONTACTS_SUCCESS, searchMatchIds, taskId, dispatchedFromPreviousContacts, context });
-
-    // search for the first page
-    // const firstPageIds = searchMatchIds.slice(0, limit);
-    // searchContactsByIds(dispatch)(taskId, context)(firstPageIds, limit, offset);
   } catch (error) {
     dispatch({ type: t.SEARCH_CONTACTS_FAILURE, error, taskId, dispatchedFromPreviousContacts, context });
   }

@@ -223,9 +223,14 @@ export function reduce(
       } = action;
       const task = state.tasks[taskId];
       const searchContext = state.tasks[taskId][context];
+      const { searchContactsResult } = state.tasks[taskId][context];
       const newContactsResult = {
+        ...searchContactsResult,
         currentPageIds: contacts.map(c => c.id),
-        count: searchResult.count,
+        // if v2 is enabled, preserve count, else re-compute after every search
+        count: searchContactsResult.searchMatchIds?.length
+          ? searchContactsResult.searchMatchIds.length
+          : searchResult.count,
       };
       const previousContactCounts = dispatchedFromPreviousContacts
         ? { ...searchContext.previousContactCounts, contacts: searchResult.count }
