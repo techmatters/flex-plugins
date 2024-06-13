@@ -43,7 +43,6 @@ import asyncDispatch from '../states/asyncDispatch';
 import { selectIsContactCreating } from '../states/contacts/selectContactSaveStatus';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { selectCurrentDefinitionVersion } from '../states/configuration/selectDefinitions';
-import selectSearchStateForTask from '../states/search/selectSearchStateForTask';
 
 type OwnProps = {
   task: CustomITask;
@@ -70,7 +69,7 @@ const TaskView: React.FC<Props> = props => {
     if (shouldRecreateState) {
       if (isOfflineContactTask(task)) {
         loadContactFromHrmByTaskSid();
-      } else if (TaskHelper.isTaskAccepted(task)) {
+      } else if (TaskHelper.isTaskAccepted(task) && !task.attributes.isContactlessTask) {
         createContact(currentDefinitionVersion);
       }
     }
