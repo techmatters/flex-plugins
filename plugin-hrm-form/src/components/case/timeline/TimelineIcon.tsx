@@ -24,7 +24,7 @@ import ReplyIcon from '@material-ui/icons/Reply';
 
 import { TimelineIconContainer } from '../styles';
 import { channelTypes, ChannelTypes } from '../../../states/DomainConstants';
-import TwitterIcon from '../../common/icons/TwitterIcon';
+import TelegramIcon from '../../common/icons/TelegramIcon';
 import InstagramIcon from '../../common/icons/InstagramIcon';
 import LineIcon from '../../common/icons/LineIcon';
 import WhatsappIcon from '../../common/icons/WhatsappIcon';
@@ -48,8 +48,8 @@ export const getIcon = (type: IconType, size: string = '24px') => {
       return <SmsIcon width={size} height={size} color={colors.sms} />;
     case channelTypes.voice:
       return <CallIcon width={size} height={size} color={colors.voice} />;
-    case channelTypes.twitter:
-      return <TwitterIcon width={size} height={size} color={colors.twitter} />;
+    case channelTypes.telegram:
+      return <TelegramIcon width={size} height={size} color={colors.telegram} />;
     case channelTypes.instagram:
       return <InstagramIcon width={size} height={size} color={colors.instagram} />;
     case channelTypes.line:

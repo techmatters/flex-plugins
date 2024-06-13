@@ -48,8 +48,8 @@ test('Test contact channel mapper', () => {
   const expectCh5 = 'WhatsApp';
   const fmtCh5 = mapChannel(ch5);
 
-  const ch6 = channelTypes.twitter;
-  const expectCh6 = 'Twitter';
+  const ch6 = channelTypes.telegram;
+  const expectCh6 = 'Telegram';
   const fmtCh6 = mapChannel(ch6);
 
   const ch7 = channelTypes.instagram;

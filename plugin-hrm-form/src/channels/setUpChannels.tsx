@@ -17,7 +17,7 @@
 import { DefaultTaskChannels, ReservationStatuses, TaskChannelHelper, TaskChannels } from '@twilio/flex-ui';
 import React from 'react';
 
-import TwitterIcon from '../components/common/icons/TwitterIcon';
+import TelegramIcon from '../components/common/icons/TelegramIcon';
 import InstagramIcon from '../components/common/icons/InstagramIcon';
 import LineIcon from '../components/common/icons/LineIcon';
 import WhatsappIcon from '../components/common/icons/WhatsappIcon';
@@ -74,6 +74,8 @@ const generateIcons = (icon: JSX.Element) => ({
   main: icon,
 });
 
+console.log('DefaultTaskChannels in setup:', DefaultTaskChannels);
+
 export const setupCallChannel = () => {
   const callIcon = <CallIcon width="24px" height="24px" color={colors.voice} />;
   DefaultTaskChannels.Call.icons = generateIcons(callIcon);
@@ -121,35 +123,29 @@ export const setupDefaultChannels = () => {
   setupDefaultChannel();
 };
 
-export const setupTwitterChatChannel = () => {
-  const TwitterChatChannel = DefaultTaskChannels.createChatTaskChannel(
-    'twitter',
-    task => task.channelType === 'twitter',
+export const setupTelegramChatChannel = () => {
+  const TelegramChatChannel = DefaultTaskChannels.createChatTaskChannel(
+    'telegram',
+    task => task.channelType === 'telegram' || task.attributes.customChannelType === 'telegram',
   );
 
-  const icon = <TwitterIcon width="24px" height="24px" color={colors.twitter} />;
-  TwitterChatChannel.icons = generateIcons(icon);
+  const icon = <TelegramIcon width="24px" height="24px" color={colors.telegram} />;
+  TelegramChatChannel.icons = generateIcons(icon);
 
-  TwitterChatChannel.templates.CallCanvas.firstLine = 'TaskHeaderLineTwitter';
-  TwitterChatChannel.templates.TaskListItem.firstLine = 'TaskHeaderLineTwitter';
-  TwitterChatChannel.templates.TaskCard.firstLine = 'TaskHeaderLineTwitter';
-  TwitterChatChannel.templates.Supervisor.TaskCanvasHeader.title = 'TaskHeaderLineTwitter';
-  TwitterChatChannel.templates.Supervisor.TaskOverviewCanvas.firstLine = 'TaskHeaderLineTwitter';
+  maskChannelStringsWithIdentifiers(TelegramChatChannel);
+  setChatTaskCardString(TelegramChatChannel);
 
-  maskChannelStringsWithIdentifiers(TwitterChatChannel);
-  setChatTaskCardString(TwitterChatChannel);
-
-  TwitterChatChannel.colors.main = {
-    Accepted: colors.twitter,
-    Assigned: colors.twitter,
-    Pending: colors.twitter,
-    Reserved: colors.twitter,
+  TelegramChatChannel.colors.main = {
+    Accepted: colors.telegram,
+    Assigned: colors.telegram,
+    Pending: colors.telegram,
+    Reserved: colors.telegram,
     Wrapping: mainChannelColor(DefaultTaskChannels.Chat, ReservationStatuses.Wrapping),
     Completed: mainChannelColor(DefaultTaskChannels.Chat, ReservationStatuses.Completed),
     Canceled: mainChannelColor(DefaultTaskChannels.Chat, ReservationStatuses.Canceled),
   };
 
-  TaskChannels.register(TwitterChatChannel);
+  TaskChannels.register(TelegramChatChannel);
 };
 
 export const setupInstagramChatChannel = () => {

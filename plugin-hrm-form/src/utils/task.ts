@@ -36,7 +36,7 @@ const channelTransformations: { [k in ChannelTypes]: TransformIdentifierFunction
   facebook: [s => s.replace('messenger:', '')],
   instagram: [],
   line: [],
-  twitter: [],
+  telegram: [],
   web: [],
 };
 
@@ -59,7 +59,9 @@ export const getNumberFromTask = (task: CustomITask) => {
  * @param {ITask | CustomITask} task
  */
 export const getFormattedNumberFromTask = (task: CustomITask) => {
-  return task.channelType === channelTypes.twitter ? `@${task.attributes.twitterUserHandle}` : getNumberFromTask(task);
+  return task.channelType === channelTypes.telegram
+    ? `@${task.attributes.telegramUserHandle}`
+    : getNumberFromTask(task);
 };
 
 // eslint-disable-next-line consistent-return

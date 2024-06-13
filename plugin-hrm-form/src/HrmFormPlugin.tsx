@@ -89,7 +89,7 @@ const setUpComponents = (
 
   // set up default and custom channels
   Channels.setupDefaultChannels();
-  Channels.setupTwitterChatChannel();
+  Channels.setupTelegramChatChannel();
   Channels.setupInstagramChatChannel();
   Channels.setupLineChatChannel();
 

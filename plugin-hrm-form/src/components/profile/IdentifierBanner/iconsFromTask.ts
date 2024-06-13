@@ -28,7 +28,7 @@ export const iconsFromTask: { [channelType in ExtendedChannelTypes]: JSX.Element
     [coreChannelTypes.sms]: getIcon(coreChannelTypes.sms, iconSize),
     [coreChannelTypes.whatsapp]: getIcon(coreChannelTypes.whatsapp, iconSize),
     [coreChannelTypes.facebook]: getIcon(coreChannelTypes.facebook, iconSize),
-    [coreChannelTypes.twitter]: getIcon(coreChannelTypes.twitter, iconSize),
+    [coreChannelTypes.telegram]: getIcon(coreChannelTypes.telegram, iconSize),
     [coreChannelTypes.instagram]: getIcon(coreChannelTypes.instagram, iconSize),
     [coreChannelTypes.line]: getIcon(coreChannelTypes.line, iconSize),
   },
