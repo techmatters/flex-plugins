@@ -1,0 +1,16 @@
+{
+  "account_sid": "ACd8a2e89748318adf6ddff7df6948deaf",
+  "appConfig": {
+    "pluginService": {
+      "enabled": true,
+      "url": "/assets/configs/as_plugins.json"
+    },
+    "sso": {
+      "accountSid": "ACd8a2e89748318adf6ddff7df6948deaf"
+    },
+    "ytica": false,
+    "logLevel": "debug",
+    "showSupervisorDesktopView": true,
+    "serviceBaseUrl": "wine-lyrebird-1400.twil.io"
+  }
+}
