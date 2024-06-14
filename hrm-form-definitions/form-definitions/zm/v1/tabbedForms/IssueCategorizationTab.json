@@ -52,6 +52,7 @@
         {"label": "Child/Early/Forced marriage"},
         {"label": "Child labour"},
         {"label": "Commercial sexual exploitation (offline)"},
+        {"label": "Defilement"},
         {"label": "Female Genital Mutilation (FGM)"},
         {"label": "Gender-based harmful traditional practices (other than FGM)"},
         {"label": "Harmful traditional practices other than child marriage and FGM"},
@@ -59,6 +60,7 @@
         {"label": "Neglect (or negligent treatment)"},
         {"label": "Online sexual abuse (OSA)"},
         {"label": "Online sexual exploitation (OSE)"},
+        {"label": "Information seeking about GBV services"},
         {"label": "Information seeking about OSE/OSA"},
         {"label": "Physical violence"},
         {"label": "Sexual violence"},
@@ -179,6 +181,14 @@
         {"label": "Questions about other services"},
         {"label": "\"Thank you for your assistance\""},
         {"label": "Unspecified/Other"}
+      ]
+    },
+    "How did you know about the Helpline": {
+      "color": "#9AD703",
+      "subcategories": [
+        {"label": "Poster"},
+        {"label": "Billboards"},
+        {"label": "Through 667"}
       ]
     }
   },
@@ -346,6 +356,14 @@
         {"label": "Questions about other services"},
         {"label": "\"Thank you for your assistance\""},
         {"label": "Unspecified/Other"}
+      ]
+    },
+    "How did you know about the Helpline": {
+      "color": "#9AD703",
+      "subcategories": [
+        {"label": "Poster"},
+        {"label": "Billboards"},
+        {"label": "Through 667"}
       ]
     }
   }
