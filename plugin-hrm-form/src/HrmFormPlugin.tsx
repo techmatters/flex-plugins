@@ -155,6 +155,8 @@ const setUpActions = (
 
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
 
+  Flex.Actions.replaceAction('CompleteTask', ActionFunctions.completeTaskOverride);
+
   Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
 
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);

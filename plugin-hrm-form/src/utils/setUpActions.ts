@@ -14,7 +14,14 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { ActionFunction, ChatOrchestrator, ChatOrchestratorEvent, Manager, TaskHelper } from '@twilio/flex-ui';
+import {
+  ActionFunction,
+  ChatOrchestrator,
+  ChatOrchestratorEvent,
+  ConversationHelper,
+  Manager,
+  TaskHelper,
+} from '@twilio/flex-ui';
 import { Conversation } from '@twilio/conversations';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
@@ -38,6 +45,7 @@ import { handleTransferredTask } from '../transfer/setUpTransferActions';
 import { prepopulateForm } from './prepopulateForm';
 import { namespace } from '../states/storeNamespaces';
 import { recordEvent } from '../fullStory';
+import { completeConversationTask, wrapupConversationTask } from '../services/twilioTaskService';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -182,13 +190,29 @@ export const hangupCall = fromActionFunction(saveEndMillis);
 /**
  * Override for WrapupTask action. Sends a message before leaving (if it should) and saves the end time of the conversation
  */
-export const wrapupTask = (setupObject: SetupObject, getMessage: GetMessage) =>
-  fromActionFunction(async payload => {
-    if (TaskHelper.isChatBasedTask(payload.task)) {
-      await sendGoodbyeMessage(payload.task.taskSid)(setupObject, getMessage)(payload);
-    }
-    await saveEndMillis(payload);
-  });
+export const wrapupTask = (setupObject: SetupObject, getMessage: GetMessage) => async (
+  payload,
+  original: ActionFunction,
+): Promise<any> => {
+  if (TaskHelper.isChatBasedTask(payload.task)) {
+    await sendGoodbyeMessage(payload.task.taskSid)(setupObject, getMessage)(payload);
+  }
+  await saveEndMillis(payload);
+  if (payload.task.attributes.conversationSid) {
+    return wrapupConversationTask(payload.task.taskSid);
+  }
+  return original(payload);
+};
+
+/**
+ * Override for WrapupTask action. Sends a message before leaving (if it should) and saves the end time of the conversation
+ */
+export const completeTaskOverride = async (payload: ActionPayload, original: ActionFunction): Promise<any> => {
+  if (payload.task.attributes.conversationSid) {
+    return completeConversationTask(payload.task.taskSid);
+  }
+  return original(payload);
+};
 
 export const recordCallState = ({ task }) => {
   if (isTwilioTask(task) && TaskHelper.isCallTask(task)) {
@@ -223,33 +247,28 @@ const isAseloCustomChannelTask = (task: CustomITask) =>
   (<string[]>Object.values(customChannelTypes)).includes(task.channelType);
 
 /**
- * This function manipulates the default chat orchetrations to allow our implementation of post surveys.
+ * This function manipulates the default chat orchestrations to allow our implementation of post surveys.
  * Since we rely on the same chat channel as the original contact for it, we don't want it to be "deactivated" by Flex.
  * Hence this function modifies the following orchestration events:
  * - task wrapup: removes DeactivateConversation
  * - task completed: removes DeactivateConversation
  */
 export const excludeDeactivateConversationOrchestration = (featureFlags: FeatureFlags) => {
-  // TODO: remove conditions once all accounts are updated, since we want this code to be executed in all Flex instances once CHI-2202 is implemented and in place
-  if (featureFlags.backend_handled_chat_janitor || featureFlags.enable_post_survey) {
-    const setExcludedDeactivateConversation = (event: keyof ChatOrchestrationsEvents) => {
-      const excludeDeactivateConversation = (orchestrations: ChatOrchestratorEvent[]) =>
-        orchestrations.filter(e => e !== ChatOrchestratorEvent.DeactivateConversation);
+  const setExcludedDeactivateConversation = (event: keyof ChatOrchestrationsEvents) => {
+    const excludeDeactivateConversation = (orchestrations: ChatOrchestratorEvent[]) =>
+      orchestrations.filter(e => e !== ChatOrchestratorEvent.DeactivateConversation);
 
-      const defaultOrchestrations = ChatOrchestrator.getOrchestrations(event);
+    const defaultOrchestrations = ChatOrchestrator.getOrchestrations(event);
 
-      if (Array.isArray(defaultOrchestrations)) {
-        ChatOrchestrator.setOrchestrations(event, task => {
-          return isAseloCustomChannelTask(task as ITask)
-            ? defaultOrchestrations
-            : excludeDeactivateConversation(defaultOrchestrations);
-        });
-      }
-    };
+    if (Array.isArray(defaultOrchestrations)) {
+      ChatOrchestrator.setOrchestrations(event, task => {
+        return excludeDeactivateConversation(defaultOrchestrations);
+      });
+    }
+  };
 
-    setExcludedDeactivateConversation('wrapup');
-    setExcludedDeactivateConversation('completed');
-  }
+  setExcludedDeactivateConversation('wrapup');
+  setExcludedDeactivateConversation('completed');
 };
 
 export const afterCompleteTask = async ({ task }: { task: CustomITask }): Promise<void> => {
