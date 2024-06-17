@@ -16,11 +16,11 @@
 
 import React from 'react';
 import { TaskContextProps, TaskHelper, Template, withTaskContext } from '@twilio/flex-ui';
-import MicNoneOutlined from '@material-ui/icons/MicNoneOutlined';
 import MicOffOutlined from '@material-ui/icons/MicOffOutlined';
+import MicNoneOutlined from '@material-ui/icons/MicNoneOutlined';
 
-import { conferenceApi } from '../../../services/ServerlessService';
 import { ConferenceButtonWrapper, ConferenceButton } from './styles';
+import * as conferenceApi from '../../../services/conferenceService';
 
 type Props = TaskContextProps;
 

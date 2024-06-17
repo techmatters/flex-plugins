@@ -3,7 +3,8 @@
         "feature_flags": {
             "enable_manual_pulling": false,
             "enable_twilio_transcripts": false,
-            "enable_voice_recordings": true
+            "enable_voice_recordings": true,
+            "enable_client_profiles": true
         },
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",
         "pdfImagesSource": "https://tl-public-chat-jm-stg.s3.amazonaws.com",

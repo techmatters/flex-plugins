@@ -15,7 +15,7 @@
     "editIncident":  [["isSupervisor", "isCaseOpen"],["isCreator", "isCaseOpen", {"createdHoursAgo": 24}],["isCaseContactOwner", "isCaseOpen", {"createdHoursAgo": 24}]],
     "addDocument":  [["isSupervisor", "isCaseOpen"],["isCreator", "isCaseOpen", {"createdHoursAgo": 24}],["isCaseContactOwner", "isCaseOpen", {"createdHoursAgo": 24}]],
     "editDocument":  [["isSupervisor", "isCaseOpen"],["isCreator", "isCaseOpen", {"createdHoursAgo": 24}],["isCaseContactOwner", "isCaseOpen", {"createdHoursAgo": 24}]],
-    "editCaseOverview":  [["isSupervisor", "isCaseOpen"],["isCreator", "isCaseOpen", {"createdHoursAgo": 24}],["isCaseContactOwner", "isCaseOpen", {"createdHoursAgo": 24}]],
+    "editCaseOverview":  [["isSupervisor"],["isCreator", "isCaseOpen", {"createdHoursAgo": 24}],["isCaseContactOwner", "isCaseOpen", {"createdHoursAgo": 24}]],
     "updateCaseContacts": [["isSupervisor", "isCaseOpen"], ["isCaseOpen", {"createdDaysAgo": 28}]],
 
     "viewContact":  [["isSupervisor"],["isOwner",{"createdDaysAgo": 28}]],

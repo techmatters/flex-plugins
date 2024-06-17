@@ -21,14 +21,14 @@ import * as TransferHelpers from '../../transfer/transferTaskState';
 import TransferButton from './TransferButton';
 import AcceptTransferButton from './AcceptTransferButton';
 import RejectTransferButton from './RejectTransferButton';
-import RefreshButton from './RefreshMessage';
+import RefreshMessage from './RefreshMessage';
 import isErrorLoadingConversation from './isErrorLoadingConversation';
 
 /**
  * Add the buttons used to initiate, accept and reject transfers (when it should), and removes the actions button if task is being transferred
  */
 export const setUpTransferComponents = () => {
-  Flex.MessageList.Content.add(<RefreshButton key="refresh-button" />, {
+  Flex.MessageList.Content.add(<RefreshMessage key="refresh-button" />, {
     if: props => !props || isErrorLoadingConversation(props.conversation),
   });
 

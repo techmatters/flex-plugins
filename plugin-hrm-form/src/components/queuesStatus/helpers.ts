@@ -26,7 +26,7 @@ export const newQueueEntry: QueueEntry = {
   voice: 0,
   web: 0,
   whatsapp: 0,
-  twitter: 0,
+  telegram: 0,
   instagram: 0,
   line: 0,
   longestWaitingDate: null,

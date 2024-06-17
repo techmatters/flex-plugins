@@ -89,7 +89,7 @@ const setUpComponents = (
 
   // set up default and custom channels
   Channels.setupDefaultChannels();
-  Channels.setupTwitterChatChannel();
+  Channels.setupTelegramChatChannel();
   Channels.setupInstagramChatChannel();
   Channels.setupLineChatChannel();
 
@@ -154,6 +154,8 @@ const setUpActions = (
   });
 
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
+
+  Flex.Actions.replaceAction('CompleteTask', ActionFunctions.completeTaskOverride);
 
   Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
 
