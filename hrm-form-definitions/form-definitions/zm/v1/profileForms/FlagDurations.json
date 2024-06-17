@@ -1,8 +1,23 @@
 [
   {
     "flag": "blocked",
-    "label": "Short Term Block (24 Hours)",
-    "durationInHours": "24"
+    "label": "Short Term Block (1 Week)",
+    "durationInHours": "168"
+  },
+  {
+    "flag": "blocked",
+    "label": "Short Term Block (1 Month)",
+    "durationInHours": "720"
+  },
+  {
+    "flag": "blocked",
+    "label": "Short Term Block (2 Month)",
+    "durationInHours": "1440"
+  },
+  {
+    "flag": "blocked",
+    "label": "Long Term Block (6 Month)",
+    "durationInHours": "4320"
   },
   {
     "flag": "blocked",
