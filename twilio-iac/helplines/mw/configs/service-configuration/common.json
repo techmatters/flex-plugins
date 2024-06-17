@@ -3,8 +3,7 @@
         "definitionVersion": "mw-v1",
         "feature_flags": {
             "enable_csam_report": true,
-            "enable_lex": true,
-            "enable_twilio_transcripts": false
+            "enable_lex": true
         },
         "permissionConfig": "mw"
     },

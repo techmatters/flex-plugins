@@ -1,7 +1,6 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_twilio_transcripts": false,
             "enable_client_profiles": true
         },
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",

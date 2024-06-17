@@ -1,8 +1,6 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_transcripts": true,
-            "enable_twilio_transcripts": false,
             "enable_client_profiles": true
         },
         "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png",

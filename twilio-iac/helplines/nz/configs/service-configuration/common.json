@@ -18,8 +18,7 @@
             "enable_lex": true,
             "enable_save_insights": true,
             "enable_separate_timeline_view": false,
-            "enable_voice_recordings": true,
-            "enable_twilio_transcripts": false
+            "enable_voice_recordings": true
         },
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
         "helplineLanguage": "en-NZ",

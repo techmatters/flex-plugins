@@ -15,7 +15,6 @@
             "enable_manual_pulling": false,
             "enable_previous_contacts": false,
             "enable_save_insights": true,
-            "enable_twilio_transcripts": false,
             "enable_upload_documents": false,
             "enable_voice_recordings": true,
             "enable_conferencing": true

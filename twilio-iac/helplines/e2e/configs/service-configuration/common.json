@@ -12,7 +12,6 @@
             "enable_lex": true,
             "enable_resources_elastic_search": true,
             "enable_save_insights": true,
-            "enable_twilio_transcripts": false,
             "post_survey_serverless_handled": false
         },
         "permissionConfig": "e2e",

@@ -2,8 +2,7 @@
     "attributes": {
         "definitionVersion": "et-v1",
         "feature_flags": {
-            "enable_lex": true,
-            "enable_twilio_transcripts": false
+            "enable_lex": true
         },
         "helplineLanguage": "en-US",
         "permissionConfig": "et"
