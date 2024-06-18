@@ -56,7 +56,7 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-no-chatbot-operating-hours.tftpl"
         channel_flow_vars = {
-          voice_ivr_language         = "en-SG",
+          voice_ivr_language         = "en-US",
           voice_ivr_greeting_message = "Hello! Tinkle Friend is engaged with other children at the moment. Please hold on for a while and we will attend to you as soon as we can."
         }
         chatbot_unique_names = []
