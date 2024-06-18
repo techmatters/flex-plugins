@@ -14,7 +14,6 @@
             "enable_aselo_messaging_ui": true,
             "enable_manual_pulling": false,
             "enable_previous_contacts": false,
-            "enable_save_insights": true,
             "enable_upload_documents": false,
             "enable_voice_recordings": true,
             "enable_conferencing": true

@@ -12,7 +12,6 @@
         "feature_flags": {  
             "enable_csam_report": true,
             "enable_lex": true,
-            "enable_save_insights": true,
             "enable_post_survey": true,
             "enable_voice_recordings": true
         },
