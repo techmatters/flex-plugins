@@ -1,5 +1,12 @@
 {
     "attributes": {
+        "contacts_waiting_channels": [
+            "voice",
+            "web",
+            "whatsapp",
+            "facebook",
+            "instagram"
+        ],
         "definitionVersion": "jm-v1",
         "feature_flags": {
             "enable_lex": true,
