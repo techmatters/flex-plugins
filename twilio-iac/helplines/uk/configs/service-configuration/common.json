@@ -9,10 +9,7 @@
             "enable_lex": false,
             "enable_save_insights": true,
             "enable_teams_view_enhancements": true,
-            "enable_transcripts": true,
-            "enable_twilio_transcripts": false,
-            "enable_voice_recordings": false,
-            "post_survey_serverless_handled": false
+            "enable_voice_recordings": false
         },
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",
         "multipleOfficeSupport": true,

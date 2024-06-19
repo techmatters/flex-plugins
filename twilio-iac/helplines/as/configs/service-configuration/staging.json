@@ -9,26 +9,17 @@
             "instagram",
             "line"
         ],
-        "feature_flags": {
-            "enable_aselo_messaging_ui": false,    
-            "enable_client_profiles": true,
-            "enable_counselor_toolkits": false,
-            "enable_csam_clc_report": false,
+        "feature_flags": {  
             "enable_csam_report": true,
             "enable_lex": true,
-            "enable_save_insights": true,
-            "enable_teams_view_enhancements": true,
+            "enable_post_survey": true,
             "enable_voice_recordings": true
         },
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",
         "multipleOfficeSupport": true,
         "pdfImagesSource": "https://tl-public-chat-as-stg.s3.amazonaws.com",
         "permissionConfig": "demo",
-        "previous_ui_version": {
-            "date": "2024-04-11T12:56:24.355Z",
-            "semver": "~2.4.1",
-            "version": "2.4.2"
-        },
+        "previous_ui_version": {"date": "2024-06-07T15:24:53.590Z", "semver": "~2.5.2", "version": "2.5.2"},
         "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
     },
     "ui_attributes": {
