@@ -2,8 +2,20 @@
   "task_routing": {
     "filters": [
       {
+        "filter_friendly_name": "Direct Transfers",
+        "expression": "transferTargetType =='worker'",
+        "targets": [
+          {
+            "queue": "${task_queues.youthline_helpline}",
+            "expression": "worker.waitingOfflineContact != true",
+            "known_worker_sid": "task.targetSid",
+            "priority": 100
+          }
+        ]
+      },
+      {
         "filter_friendly_name": "Youthline Helpline",
-        "expression": "(channelType IN ['voice'] AND to IN [${join(", ", formatlist("'%s'", phone_numbers.youthline))}] AND clinical !='true' AND (transferTargetType =='' OR transferTargetType =='worker')) OR  targetSid=='${task_queues.youthline_helpline}'  OR isContactlessTask == true  ",
+        "expression": "(channelType IN ['voice'] AND to IN ['+18645238101', '+6498865661'] AND clinical !='true' AND transferTargetType =='') OR  targetSid=='${task_queues.youthline_helpline}'  OR isContactlessTask == true",
         "targets": [
           {
             "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.roles HAS 'agent' ) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
@@ -20,7 +32,7 @@
       },
       {
         "filter_friendly_name": "Clinical",
-        "expression": "(channelType IN ['voice'] AND (clinical =='true') AND (transferTargetType =='' OR transferTargetType =='worker')) OR  targetSid=='${task_queues.clinical}' ",
+        "expression": "(channelType IN ['voice'] AND clinical =='true' AND transferTargetType =='') OR  targetSid=='${task_queues.clinical}'",
         "targets": [
           {
             "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
@@ -36,7 +48,6 @@
           }
         ]
       },
-      
       {
         "filter_friendly_name": "Priority Youthline Helpline",
         "expression": "targetSid=='${task_queues.priority}'",
@@ -56,7 +67,7 @@
       },
       {
         "filter_friendly_name": "Clinical External Parties",
-        "expression": "(channelType IN ['voice'] AND ( to IN [${join(", ", formatlist("'%s'", phone_numbers.clinical))}] ) AND (transferTargetType =='' OR transferTargetType =='worker')) OR  targetSid=='WQfefa5d81325ec5a4a0a59d8300479c5f'",
+        "expression": "(channelType IN ['voice'] AND  to IN ['+6498867292']  AND transferTargetType =='' )",
         "targets": [
           {
             "queue": "${task_queues.clinical}",
