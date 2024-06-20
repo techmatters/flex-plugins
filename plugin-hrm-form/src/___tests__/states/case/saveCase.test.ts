@@ -15,8 +15,9 @@
  */
 import promiseMiddleware from 'redux-promise-middleware';
 import { configureStore } from '@reduxjs/toolkit';
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import '../../mockGetConfig';
 import { createCaseAsyncAction, saveCaseReducer, updateCaseOverviewAsyncAction } from '../../../states/case/saveCase';
 import { HrmState } from '../../../states';
@@ -30,8 +31,8 @@ import { VALID_EMPTY_CASE } from '../../testCases';
 
 jest.mock('../../../services/CaseService');
 jest.mock('../../../services/ContactService');
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, buildBaseURL } = useFetchDefinitions();
+
+const { mockFetchImplementation, buildBaseURL } = mockLocalFetchDefinitions();
 
 const mockCreateCase = createCase as jest.Mock<ReturnType<typeof createCase>>;
 const mockConnectedCase = connectToCase as jest.Mock<ReturnType<typeof connectToCase>>;

@@ -14,16 +14,19 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// For rapidly running non flex UI dependent tests locally
-const { defaults } = require('jest-config');
+import * as fs from 'fs/promises';
 
-module.exports = (config) => {
-  return (
-    config || {
-      ...defaults,
-      rootDir: './src',
-      // Only run tests in files that end in .test.ts or .spec.ts AND are under the __tests__ directory
-      testMatch: ["**/__tests__/**/?(*.)+(spec|test).[jt]s?(x)"]
+import { mockFetchDefinitions } from 'hrm-form-definitions';
+
+export const mockLocalFetchDefinitions = () =>
+  mockFetchDefinitions(async (jsonPath: string) => {
+    try {
+      return JSON.parse(await fs.readFile(`../hrm-form-definitions/${jsonPath}`, 'utf8'));
+    } catch (e) {
+      const error = e as any;
+      if (error.code === 'ENOENT') {
+        return undefined;
+      }
+      throw error;
     }
-  );
-};
+  });

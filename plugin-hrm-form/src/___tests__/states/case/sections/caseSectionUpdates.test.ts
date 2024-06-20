@@ -16,14 +16,9 @@
 
 import promiseMiddleware from 'redux-promise-middleware';
 import { configureStore } from '@reduxjs/toolkit';
-import {
-  CaseSectionApiName,
-  DefinitionVersion,
-  DefinitionVersionId,
-  loadDefinition,
-  useFetchDefinitions,
-} from 'hrm-form-definitions';
+import { CaseSectionApiName, DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../../mockFetchDefinitions';
 import { HrmState } from '../../../../states';
 import { RecursivePartial } from '../../../RecursivePartial';
 import { createCaseSection, FullCaseSection, updateCaseSection } from '../../../../services/caseSectionService';
@@ -39,8 +34,8 @@ jest.mock('../../../../services/caseSectionService', () => ({
   createCaseSection: jest.fn(),
   updateCaseSection: jest.fn(),
 }));
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, buildBaseURL } = useFetchDefinitions();
+
+const { mockFetchImplementation, buildBaseURL } = mockLocalFetchDefinitions();
 
 let state: HrmState;
 const initialState: HrmState = {

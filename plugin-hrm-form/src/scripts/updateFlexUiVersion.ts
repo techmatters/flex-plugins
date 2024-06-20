@@ -53,7 +53,7 @@ async function setUiVersion(uiVersion) {
 }
 
 async function main() {
-  const uiVersion = packageLock.dependencies['@twilio/flex-ui'].version;
+  const uiVersion = packageLock.packages['@twilio/flex-ui'].version;
   info(`Flex UI Version from lock: ${uiVersion}`);
 
   if (!uiVersion) {
