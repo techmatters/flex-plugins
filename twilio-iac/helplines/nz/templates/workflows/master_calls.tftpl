@@ -15,7 +15,7 @@
       },
       {
         "filter_friendly_name": "Youthline Helpline",
-        "expression": "(channelType IN ['voice'] AND to IN ['+18645238101', '+6498865661'] AND clinical !='true' AND transferTargetType =='') OR  targetSid=='${task_queues.youthline_helpline}'  OR isContactlessTask == true",
+        "expression": "(channelType IN ['voice'] AND to IN [${join(", ", formatlist("'%s'", phone_numbers.youthline))}] AND clinical !='true' AND transferTargetType =='') OR  targetSid=='${task_queues.youthline_helpline}'  OR isContactlessTask == true",
         "targets": [
           {
             "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.roles HAS 'agent' ) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
@@ -67,7 +67,7 @@
       },
       {
         "filter_friendly_name": "Clinical External Parties",
-        "expression": "(channelType IN ['voice'] AND  to IN ['+6498867292']  AND transferTargetType =='' )",
+        "expression": "(channelType IN ['voice'] AND  to IN [${join(", ", formatlist("'%s'", phone_numbers.clinical))}]  AND transferTargetType =='' )",
         "targets": [
           {
             "queue": "${task_queues.clinical}",
