@@ -12,7 +12,7 @@
     },
     "clarification_prompt": {
       "max_attempts": 1,
-      "content": "There is an issue stopping our automatic message from understanding your reply - please try txting us again, call us on 0800376633 if you keep receiving this message, or call 111 if you or anyone else are in danger or not safe right now",
+      "content": "There is an issue stopping our automatic message from understanding your reply - please try txting 'hello' to us again, call us on 0800376633 if you keep receiving this message, or call 111 if you or anyone else are in danger or not safe right now",
       "content_type": "PlainText"
     },
     "intents": [

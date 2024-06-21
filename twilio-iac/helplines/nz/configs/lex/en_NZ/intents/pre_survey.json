@@ -4,15 +4,20 @@
     "sample_utterances": [
       "Incoming webchat contact",
       "trigger_pre_survey",
-      "1",
-      "2",
+      "hello",
+      "Hello",
       "No",
       "Yes",
       "no",
       "nope",
       "yeah",
-      "yes"
-
+      "yes",
+      "yep",
+      "yup",
+      "ya",
+      "accept",
+      "ok",
+      "OK"
     ],
     "fulfillment_activity": {
       "type": "ReturnIntent"
