@@ -1,0 +1,285 @@
+${
+  jsonencode(
+ {
+  "description": "Voice Studio Flow",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": -10
+        }
+      }
+    },
+    {
+      "name": "SendCallToAgent",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "webhook_notify_error",
+          "event": "failedToEnqueue"
+        },
+        {
+          "next": "webhook_notify_error",
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 570,
+          "y": 1230
+        },
+        "workflow": workflow_sids["master"],
+        "channel": task_channel_sids["voice"],
+        "attributes":channel_attributes["default"]
+      }
+    },
+    {
+      "name": "say_welcome_message",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "SendCallToAgent",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Mia-Neural",
+        "offset": {
+          "x": 450,
+          "y": 1020
+        },
+        "loop": 1,
+        "say": channel_flow_vars["voice_ivr_greeting_message"],
+        "language": channel_flow_vars["voice_ivr_language"]
+      }
+    },
+    {
+      "name": "check_operating_hours",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "split_status",
+          "event": "success"
+        },
+        {
+          "next": "webhook_notify_error",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": 60,
+          "y": 590
+        },
+        "function_sid": flow_vars["operating_hours_function_sid"]
+        "parameters": [
+          {
+            "value": "voice",
+            "key": "channel"
+          },
+          {
+            "value": "true",
+            "key": "includeMessageTextInResponse"
+          },
+          {
+            "value": task_language,
+            "key": "language"
+          }
+        ],
+        "url": "${serverless_url}/operatingHours"
+      }
+    },
+    {
+      "name": "split_status",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "webhook_notify_error",
+          "event": "noMatch"
+        },
+        {
+          "next": "say_welcome_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to open",
+              "arguments": [
+                "{{widgets.check_operating_hours.parsed.status}}"
+              ],
+              "type": "equal_to",
+              "value": "open"
+            }
+          ]
+        },
+        {
+            "next": "say_closed",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If matches_any_of closed,holiday",
+                "arguments": [
+                  "{{widgets.check_operating_hours.parsed.status}}"
+                ],
+                "type": "matches_any_of",
+                "value": "closed,holiday"
+              }
+            ]
+          }
+        ],
+      "properties": {
+        "input": "{{widgets.check_operating_hours.parsed.status}}",
+        "offset": {
+          "x": 230,
+          "y": 800
+        }
+      }
+    },
+    {
+      "name": "webhook_notify_error",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 40,
+          "y": 1480
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "url": webhook_url_studio_errors
+      }
+    },
+    {
+      "name": "say_closed",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Mia-Neural",
+        "offset": {
+          "x": 880,
+          "y": 1020
+        },
+        "loop": 1,
+        "say": "{{widgets.check_operating_hours.parsed.message}}",
+        "language": channel_flow_vars["voice_ivr_language"]
+      }
+    },
+    {
+      "name": "getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "check_operating_hours",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 20,
+          "y": 180
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "body": "{ \"trigger\": {{trigger | to_json}}}",
+        "url": "${serverless_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "check_operating_hours",
+          "event": "noMatch"
+        },
+        {
+          "next": "say_blocked",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "contains",
+              "value": "blocked"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": -350,
+          "y": 360
+        }
+      }
+    },
+    {
+      "name": "say_blocked",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Mia-Neural",
+        "offset": {
+          "x": -310,
+          "y": 670
+        },
+        "loop": 1,
+        "say": channel_flow_vars["voice_ivr_blocked_message"],
+        "language": "es-MX"
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+}
+)
+}

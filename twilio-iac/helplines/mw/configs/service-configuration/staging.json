@@ -1,8 +1,7 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_external_transcripts": false,
-            "post_survey_serverless_handled": false
+            "enable_external_transcripts": false
         },
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",
         "pdfImagesSource": "https://tl-public-chat-mw-stg.s3.amazonaws.com",
@@ -10,6 +9,7 @@
             "date": "2022-12-05T10:39:38.567Z",
             "semver": "~1.31.2",
             "version": "1.31.2"
-        }
+        },
+        "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
     }
 }

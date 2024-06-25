@@ -12,22 +12,19 @@
       "color": "#355c7d",
       "subcategories": [
         {
-          "label": "Physical bullying"
+          "label": "Cyberbullying"
         },
         {
-          "label": "Verbal bullying"
+          "label": "Physical bullying"
         },
         {
           "label": "Relational bullying"
         },
         {
-          "label": "Cyberbullying"
+          "label": "Verbal bullying"
         },
         {
           "label": "Witness to bullying"
-        },
-        {
-          "label": "Unspecified/Other - BUL"
         }
       ]
     },
@@ -35,25 +32,19 @@
       "color": "#db7a34",
       "subcategories": [
         {
-          "label": "Physical abuse"
-        },
-        {
           "label": "Emotional abuse"
         },
         {
-          "label": "Sexual abuse and/or exploitation"
+          "label": "Physical abuse"
         },
         {
           "label": "Neglect"
         },
         {
+          "label": "Sexual abuse and/or exploitation"
+        },
+        {
           "label": "Witness of family violence"
-        },
-        {
-          "label": "Exposure/ witness to substance abuse"
-        },
-        {
-          "label": "Unspecified/Other - CP"
         }
       ]
     },
@@ -61,19 +52,19 @@
       "color": "#e8e9eb",
       "subcategories": [
         {
-          "label": "Contact from parents"
-        },
-        {
           "label": "Contact from another child"
-        },
-        {
-          "label": "Contact from teachers"
         },
         {
           "label": "Contact from members of public"
         },
         {
           "label": "Contact from other family members"
+        },        
+        {
+          "label": "Contact from parents"
+        },
+        {
+          "label": "Contact from teachers"
         }
       ]
     },
@@ -81,39 +72,16 @@
       "color": "#c99f7d",
       "subcategories": [
         {
-          "label": "Relationships to caregiver"
+          "label": "Adoption, fostering and extended family placement or alternative placement"
         },
         {
           "label": "Family health and wellbeing"
         },
         {
-          "label": "Adoption, fostering and extended family placement"
+          "label": "Relationships to caregiver"
         },
         {
           "label": "Relationships with sibling(s)"
-        },
-        {
-          "label": "Unspecified/Other - FR"
-        }
-      ]
-    },
-    "LGBTQ-related": {
-      "color": "#a7416a",
-      "subcategories": [
-        {
-          "label": "Sexual orientation"
-        },
-        {
-          "label": "Gender identity"
-        },
-        {
-          "label": "Gender expression"
-        },
-        {
-          "label": "LGBTQ intimate partner relationships"
-        },
-        {
-          "label": "Unspecified/Other - LGBTQ"
         }
       ]
     },
@@ -121,22 +89,22 @@
       "color": "#fac05e",
       "subcategories": [
         {
-          "label": "Addictive behaviours"
+          "label": "Addictive behaviours and substance use"
         },
         {
-          "label": "Emotional distress - Anxiety "
+          "label": "Concerns about self"
         },
         {
-          "label": "Emotional distress - Anger"
+          "label": "Emotional distress - Anger "
+        },
+        {
+          "label": "Emotional distress - Fear & Anxiety"
         },
         {
           "label": "Emotional distress - Mood problems"
         },
         {
-          "label": "Emotional distress - Fear"
-        },
-        {
-          "label": "Sleep issues"
+          "label": "Loneliness"
         },
         {
           "label": "Neurodevelopmental concerns"
@@ -145,19 +113,10 @@
           "label": "Problems with eating behaviour"
         },
         {
+          "label": "Sleep issues"
+        },
+        {
           "label": "Traumatic distress"
-        },
-        {
-          "label": "Substance abuse"
-        },
-        {
-          "label": "Loneliness"
-        },
-        {
-          "label": "Concerns about self"
-        },
-        {
-          "label": "Unspecified/Other - MH"
         }
       ]
     },
@@ -165,22 +124,22 @@
       "color": "#54494b",
       "subcategories": [
         {
-          "label": "Silent"
-        },
-        {
-          "label": "Nuisance/ Abusive"
-        },
-        {
           "label": "Attempt to contact"
-        },
-        {
-          "label": "Positive Feedback about Tinkle Friend"
         },
         {
           "label": "Chit-chat"
         },
         {
           "label": "Complaints about Tinkle Friend"
+        },
+        {
+          "label": "Nuisance/ Abusive"
+        },
+        {
+          "label": "Positive Feedback about Tinkle Friend"
+        },
+        {
+          "label": "Silent"
         },
         {
           "label": "Wrong Contact/ Others"
@@ -191,16 +150,7 @@
       "color": "#a47fbc",
       "subcategories": [
         {
-          "label": "Cyber security-related"
-        },
-        {
-          "label": "Social media"
-        },
-        {
-          "label": "Websites"
-        },
-        {
-          "label": "Unspecified/Other - ON"
+          "label": "Cyber wellness"
         }
       ]
     },
@@ -208,16 +158,13 @@
       "color": "#db7a34",
       "subcategories": [
         {
-          "label": "Friendship disputes"
-        },
-        {
-          "label": "Making friends"
+          "label": "Firends and Friendships"
         },
         {
           "label": "Heterosexual intimate partner relationships"
         },
         {
-          "label": "Unspecified/Other - PR"
+          "label": "Making friends"
         }
       ]
     },
@@ -232,9 +179,6 @@
         },
         {
           "label": "Sexual and reproductive health"
-        },
-        {
-          "label": "Unspecified/Other - PH"
         }
       ]
     },
@@ -252,12 +196,6 @@
         },
         {
           "label": "Transitional stress"
-        },
-        {
-          "label": "Home-based learning"
-        },
-        {
-          "label": "Unspecified/Other - SCH"
         }
       ]
     },
@@ -265,10 +203,21 @@
       "color": "#f8b595",
       "subcategories": [
         {
-          "label": "Self-harm ideation"
+          "label": "Self-harm behaviour"
         },
         {
-          "label": "Self-harm behaviour"
+          "label": "Self-harm ideation"
+        }
+      ]
+    },
+    "Sexuality-related": {
+      "color": "#a7416a",
+      "subcategories": [
+        {
+          "label": "Gender identity or expression and Sexual orientation"
+        },
+        {
+          "label": "LGBTQ relationships"
         }
       ]
     },
@@ -287,25 +236,7 @@
       "color": "#cc0000",
       "subcategories": [
         {
-          "label": "Suicidal thoughts (no intent/ plan)"
-        },
-        {
-          "label": "Suicidal thoughts (method, no plan/ intent)"
-        },
-        {
-          "label": "Suicidal intent (no plan)"
-        },
-        {
-          "label": "Suicidal with plan and intent"
-        },
-        {
-          "label": "Prior suicide attempt"
-        },
-        {
-          "label": "Current suicide attempt"
-        },
-        {
-          "label": "Suicide threats"
+          "label": "Suicidal thoughts and suicide attempts"
         }
       ]
     }

@@ -67,10 +67,6 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         {
           value: "Other",
           label: "Other"
-        },
-        {
-          value: "Unknown",
-          label: "Unknown"
         }
       ],
     },
@@ -84,10 +80,6 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         {
           value: "",
           label: ""
-        },
-        {
-          value: "Unknown",
-          label: "Unknown"
         },
         {
           value: "06",

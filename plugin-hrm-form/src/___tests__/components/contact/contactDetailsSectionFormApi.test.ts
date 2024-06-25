@@ -14,20 +14,14 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  DefinitionVersion,
-  DefinitionVersionId,
-  FormInputType,
-  loadDefinition,
-  useFetchDefinitions,
-} from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, FormInputType, loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { contactDetailsSectionFormApi } from '../../../components/contact/contactDetailsSectionFormApi';
 import { Contact } from '../../../types/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 let definition: DefinitionVersion;
 

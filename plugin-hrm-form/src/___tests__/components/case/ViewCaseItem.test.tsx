@@ -23,9 +23,10 @@ import '@testing-library/jest-dom/extend-expect';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { DefinitionVersion, DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 import { parseISO } from 'date-fns';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import ViewCaseItem, { ViewCaseItemProps } from '../../../components/case/ViewCaseItem';
 import { getDefinitionVersions } from '../../../hrmConfig';
@@ -38,8 +39,7 @@ import { RecursivePartial } from '../../RecursivePartial';
 import { RootState } from '../../../states';
 import { VALID_EMPTY_CASE } from '../../testCases';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);

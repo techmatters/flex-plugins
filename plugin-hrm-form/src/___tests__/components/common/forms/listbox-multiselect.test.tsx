@@ -15,10 +15,10 @@
  */
 
 /* eslint-disable sonarjs/cognitive-complexity */
-import React from 'react';
+import * as React from 'react';
 import each from 'jest-each';
-import { FormItemDefinition } from 'hrm-form-definitions';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FormProvider, useForm } from 'react-hook-form';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
@@ -32,7 +32,7 @@ const themeConf = {
 };
 
 const definition: FormItemDefinition = {
-  type: 'listbox-multiselect',
+  type: FormInputType.ListboxMultiselect,
   name: 'test-input',
   label: 'test-input',
   options: [
@@ -155,7 +155,7 @@ describe('listbox-multiselect', () => {
         description: 'Focus in works as expected when all unchecked (focus first element)',
         def: definition,
         initialValue: [],
-        testCallback: async (optionsInputs, spyUpdateCallback) => {
+        testCallback: async optionsInputs => {
           const inputAbove = screen.getByTestId('input-above');
 
           inputAbove.focus();
@@ -169,7 +169,7 @@ describe('listbox-multiselect', () => {
         description: 'Focus in works as expected when some are checked (focus first selected element)',
         def: definition,
         initialValue: [definition.options[1].value, definition.options[2].value],
-        testCallback: async (optionsInputs, spyUpdateCallback) => {
+        testCallback: async optionsInputs => {
           const inputAbove = screen.getByTestId('input-above');
 
           inputAbove.focus();
@@ -192,7 +192,7 @@ describe('listbox-multiselect', () => {
         },
       ].map(t => ({
         ...t,
-        testCallback: async (optionsInputs, spyUpdateCallback) => {
+        testCallback: async optionsInputs => {
           const inputAbove = screen.getByTestId('input-above');
           const inputBelow = screen.getByTestId('input-below');
 
@@ -246,9 +246,8 @@ describe('listbox-multiselect', () => {
         },
       ].map(t => ({
         ...t,
-        testCallback: async (optionsInputs, spyUpdateCallback) => {
+        testCallback: async optionsInputs => {
           const inputAbove = screen.getByTestId('input-above');
-          const listbox = screen.getByTestId(`listbox-multiselect-${definition.name}`);
 
           inputAbove.focus();
 
@@ -267,12 +266,10 @@ describe('listbox-multiselect', () => {
               : definition.options.length - 1;
 
           // Move in the listbox
-          await userEvent.tab();
-
+          await userEvent.keyboard('{Tab}');
           expect(optionsInputs[expectedFocusedOptionIndex]).toHaveFocus();
 
-          fireEvent.keyDown(optionsInputs[expectedFocusedOptionIndex], { key: t.keyPress });
-
+          await userEvent.keyboard(`[${t.keyPress}]`);
           expect(optionsInputs[expectedNextFocusedOptionIndex]).toHaveFocus();
         },
       })),

@@ -2,12 +2,8 @@
     "attributes": {
         "definitionVersion": "th-v1",
         "feature_flags": {
-            "enable_conferencing": false,
-            "enable_counselor_toolkits": false,
-            "enable_lex": false,
-            "enable_post_survey": false,
-            "enable_save_insights": true,
-            "enable_manual_pulling": false
+            "enable_manual_pulling": false,
+            "enable_aselo_messaging_ui": true
         },
         "helplineLanguage": "th-TH",
         "permissionConfig": "th"

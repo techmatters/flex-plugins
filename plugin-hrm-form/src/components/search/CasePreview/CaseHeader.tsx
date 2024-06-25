@@ -76,7 +76,7 @@ const CaseHeader: React.FC<Props> = ({
           {showConnectButton && (
             <Flex style={{ minWidth: 'fit-content' }}>
               <ConnectToCaseButton
-                caseId={caseId.toString()}
+                caseId={caseId}
                 isConnectedToTaskContact={isConnectedToTaskContact}
                 onClickConnectToTaskContact={onClickConnectToTaskContact}
               />

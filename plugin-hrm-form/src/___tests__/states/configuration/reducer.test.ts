@@ -14,15 +14,16 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { reduce } from '../../../states/configuration/reducer';
 import * as types from '../../../states/configuration/types';
 import * as actions from '../../../states/configuration/actions';
 import { defaultLanguage } from '../../../utils/pluginHelpers';
 import { ConfigurationActionType } from '../../../states/configuration/types';
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, buildBaseURL } = useFetchDefinitions();
+
+const { mockFetchImplementation, buildBaseURL } = mockLocalFetchDefinitions();
 
 describe('test reducer', () => {
   let state = undefined;

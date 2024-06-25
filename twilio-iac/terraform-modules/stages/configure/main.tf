@@ -53,6 +53,7 @@ module "channel" {
   task_language              = var.task_language
   helpline                   = var.helpline
   short_helpline             = upper(var.short_helpline)
+  twilio_account_sid         = local.secrets.twilio_account_sid
   serverless_url             = local.serverless_url
   serverless_service_sid     = local.serverless_service_sid
   serverless_environment_sid = local.serverless_environment_production_sid

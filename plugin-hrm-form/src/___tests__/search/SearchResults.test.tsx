@@ -20,8 +20,9 @@ import '@testing-library/jest-dom/extend-expect';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import SearchResults from '../../components/search/SearchResults';
 import { getDefinitionVersions } from '../../hrmConfig';
@@ -35,8 +36,7 @@ jest.mock('../../permissions', () => ({
   PermissionActions: {},
 }));
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 const themeConf = {};
 

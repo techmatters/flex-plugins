@@ -160,12 +160,12 @@ const handleLoadIdentifierFulfilledAction = (state: t.ProfilesState, action: any
   const { profiles } = action.payload;
   let newState = { ...state };
   for (const profile of profiles) {
+    // Want to reload the profile with the identifier otherwise we might have stale data
+    const { data, ...stateWithoutData } = newState[profile.id] ?? {};
     const profileUpdate = {
-      data: {
-        ...t.newProfileEntry,
-        ...newState[profile.id]?.data,
-        ...profile,
-      },
+      ...t.newProfileEntry,
+      ...stateWithoutData,
+      ...profile,
     };
 
     newState = loadProfileEntryIntoRedux(newState, profile.id, profileUpdate);

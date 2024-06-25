@@ -19,9 +19,10 @@ import { Provider } from 'react-redux';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import configureMockStore from 'redux-mock-store';
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
+import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import Search from '../../components/search';
 import { getDefinitionVersions } from '../../hrmConfig';
@@ -40,8 +41,7 @@ import {
 import { AppRoutes } from '../../states/routing/types';
 import { ContactState, ExistingContactsState } from '../../states/contacts/existingContacts';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 const mockStore = configureMockStore([]);
 let mockV1;
@@ -73,6 +73,7 @@ jest.mock('../../states/case/selectCaseStateByCaseId', () => {
 
 function createState(
   taskId,
+  context: string,
   {
     searchFormValues,
     currentContact,
@@ -120,17 +121,19 @@ function createState(
       searchContacts: {
         tasks: {
           [taskId]: {
-            form: searchFormValues || newSearchFormEntry,
-            previousContactCounts,
-            detailsExpanded: detailsExpanded || {},
-            isRequesting: false,
-            error: null,
-            searchContactsResult: references
-              ? {
-                  count: searchContactsResult?.count,
-                  ids: references,
-                }
-              : undefined,
+            [context]: {
+              form: searchFormValues || newSearchFormEntry,
+              previousContactCounts,
+              detailsExpanded: detailsExpanded || {},
+              isRequesting: false,
+              error: null,
+              searchContactsResult: references
+                ? {
+                    count: searchContactsResult?.count,
+                    ids: references,
+                  }
+                : undefined,
+            },
           },
         },
       },
@@ -188,8 +191,9 @@ test('<Search> should display <SearchForm />', async () => {
     helpline: { label: '', value: '' },
   };
   const task = { taskSid: 'WT123', attributes: { preEngagementData: {} } };
+  const context = 'root';
 
-  const initialState = createState(task.taskSid, {
+  const initialState = createState(task.taskSid, context, {
     searchFormValues,
     detailsExpanded,
     previousContactCounts: undefined,
@@ -233,13 +237,14 @@ test('<Search> should display <SearchForm /> with previous contacts checkbox', a
       preEngagementData: { contactType: 'ip' },
     },
   };
+  const context = 'root';
 
   const previousContactCounts: PreviousContactCounts = {
     contacts: 3,
     cases: 1,
   };
 
-  const initialState = createState(task.taskSid, {
+  const initialState = createState(task.taskSid, context, {
     searchFormValues,
     detailsExpanded,
     previousContactCounts,
@@ -323,8 +328,9 @@ test('<Search> should display <ContactDetails />', async () => {
     },
   };
   const task = { taskSid: 'WT123' };
+  const context = 'root';
 
-  const initialState = createState(task.taskSid, {
+  const initialState = createState(task.taskSid, context, {
     currentContact,
     detailsExpanded,
     searchFormValues: undefined,

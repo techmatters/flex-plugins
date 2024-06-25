@@ -23,6 +23,11 @@ variable "region" {
   type        = string
 }
 
+variable "twilio_account_sid" {
+  description = "Twilio Account SID (ACxxxx)"
+  type        = string
+}
+
 variable "serverless_url" {
   description = "Serverless URL"
   type        = string
@@ -52,6 +57,7 @@ variable "channels" {
     channel_flow_vars    = map(string)
     chatbot_unique_names = list(string)
     lambda_channel       = optional(bool)
+    messaging_mode       = optional(string, "programmable-chat")
   }))
 
 }

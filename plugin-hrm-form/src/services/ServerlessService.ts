@@ -17,12 +17,11 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 /* eslint-disable camelcase */
 import { ITask, Notifications } from '@twilio/flex-ui';
-import { DefinitionVersionId, loadDefinition, DefinitionVersion } from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import fetchProtectedApi from './fetchProtectedApi';
 import type { ChildCSAMReportForm, CounselorCSAMReportForm } from '../states/csam-report/types';
 import { getHrmConfig } from '../hrmConfig';
-import { formatFileNameAtAws } from '../utils';
 
 type PopulateCounselorsReturn = { sid: string; fullName: string }[];
 
@@ -131,45 +130,6 @@ export const getDefinitionVersionsList = async (missingDefinitionVersions: Defin
   );
 
 /**
- * Creates a new task (offline contact) in behalf of targetSid worker with attributes. Other attributes for routing are added to the task in the implementation of assignOfflineContact serverless function
- */
-export const assignOfflineContactInit = async (targetSid: string, taskAttributes: ITask['attributes']) => {
-  const body = {
-    targetSid,
-    taskAttributes: JSON.stringify(taskAttributes),
-  };
-
-  const response = await fetchProtectedApi('/assignOfflineContactInit', body);
-  return response;
-};
-
-type OfflineContactComplete = {
-  action: 'complete';
-  taskSid: string;
-  finalTaskAttributes: ITask['attributes'];
-};
-
-type OfflineContactRemove = {
-  action: 'remove';
-  taskSid: string;
-};
-
-/**
- * Completes or removes the task (offline contact) in behalf of targetSid worker updating with finalTaskAttributes.
- */
-export const assignOfflineContactResolve = async (payload: OfflineContactComplete | OfflineContactRemove) => {
-  const body =
-    payload.action === 'complete'
-      ? {
-          ...payload,
-          finalTaskAttributes: JSON.stringify(payload.finalTaskAttributes),
-        }
-      : payload;
-
-  return fetchProtectedApi('/assignOfflineContactResolve', body);
-};
-
-/**
  * Gets the attributes of the target worker
  */
 export const getWorkerAttributes = async (workerSid: string) => {
@@ -219,73 +179,4 @@ export const selfReportToIWF = async (form: ChildCSAMReportForm, caseNumber: str
 
   const response = await fetchProtectedApi('/selfReportToIWF', body);
   return response;
-};
-
-const validUpdates = ['endConferenceOnExit', 'hold', 'muted'] as const;
-
-type ConferenceAddParticipantParams = {
-  conferenceSid: string;
-  to: string;
-  from: string;
-  callStatusSyncDocumentSid: string;
-  label: string;
-};
-type ConferenceGetParticipantParams = { conferenceSid: string; callSid: string };
-type ConferenceRemoveParticipantParams = { conferenceSid: string; callSid: string };
-type ConferenceUpdateParticipantParams = {
-  conferenceSid: string;
-  callSid: string;
-  updates: { [K in typeof validUpdates[number]]?: boolean };
-};
-
-export const conferenceApi = {
-  addParticipant: async ({
-    conferenceSid,
-    to,
-    from,
-    callStatusSyncDocumentSid,
-    label,
-  }: ConferenceAddParticipantParams) => {
-    const body = {
-      conferenceSid,
-      to,
-      from,
-      callStatusSyncDocumentSid,
-      label,
-    };
-
-    const response = await fetchProtectedApi('/conference/addParticipant', body);
-    return response;
-  },
-
-  getParticipant: async ({ callSid, conferenceSid }: ConferenceGetParticipantParams): Promise<{ participant: any }> => {
-    const body = {
-      conferenceSid,
-      callSid,
-    };
-
-    const response = await fetchProtectedApi('/conference/getParticipant', body);
-    return response;
-  },
-
-  removeParticipant: async ({ conferenceSid, callSid }: ConferenceRemoveParticipantParams) => {
-    const body = {
-      conferenceSid,
-      callSid,
-    };
-
-    const response = await fetchProtectedApi('/conference/removeParticipant', body);
-    return response;
-  },
-
-  updateParticipant: async ({ callSid, conferenceSid, updates }: ConferenceUpdateParticipantParams) => {
-    const body = {
-      conferenceSid,
-      callSid,
-      updates: JSON.stringify(updates),
-    };
-
-    const response = await fetchProtectedApi('/conference/updateParticipant', body);
-    return response;
-  },
 };

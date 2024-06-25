@@ -17,10 +17,8 @@ name: Flex Aselo Development Deploy
 # Controls when the action will run.
 on:
   workflow_dispatch:
-    inputs:
-      changelog:
-        description: Release Changelog - Add a comment about the changes to be included in this release.
-        required: true
+  schedule:
+    - cron: 0 0 * * 0
 
 jobs:
   deploy:
@@ -29,4 +27,3 @@ jobs:
     with:
       helpline_code: AS
       environment_code: development
-      changelog: ${{ inputs.changelog }}

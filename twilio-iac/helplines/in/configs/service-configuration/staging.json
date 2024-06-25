@@ -1,5 +1,7 @@
 {
     "attributes": {
+        "feature_flags": {
+        },
         "helplineLanguage": "en-IN",
         "hrm_base_url": "https://hrm-staging.tl.techmatters.org",
         "pdfImagesSource": "https://tl-public-chat-in-stg.s3.amazonaws.com",
@@ -7,6 +9,7 @@
             "date": "2022-12-02T13:26:43.739Z",
             "semver": "~1.31.2",
             "version": "1.31.2"
-        }
+        },
+        "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
     }
 }
