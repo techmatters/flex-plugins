@@ -44,6 +44,7 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+        lambda_channel       = true
       }
     }
 

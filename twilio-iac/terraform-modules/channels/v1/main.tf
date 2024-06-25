@@ -14,6 +14,8 @@ data "aws_ssm_parameter" "webhook_url_studio_errors" {
 locals {
   #Marking this as non sensitive since we need to see the studio flow definition when running a plan to validate changes.
   webhook_url_studio_errors = nonsensitive(data.aws_ssm_parameter.webhook_url_studio_errors.value)
+  custom_lambda_channels = {for key, val in var.channels:
+  key => val if val.lambda_channel == true}
 }
 
 #I'm not sure about this resource, the idea is to have 1 studio flow json template and also as few as possible
@@ -149,3 +151,17 @@ resource "aws_ssm_parameter" "messaging_mode" {
 }
 
 
+
+
+
+module "custom_lambdas" {
+  source = "../custom-lambdas"
+  for_each = local.custom_lambda_channels
+
+  channel  = each.key
+  helpline = var.helpline
+  short_helpline = var.short_helpline
+  region = var.region
+  environment = var.environment
+  base_priority = var.base_priority + index(keys(local.custom_lambda_channels), each.key)
+}

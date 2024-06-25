@@ -125,13 +125,20 @@ variable "channels" {
   type = map(object({
     templatefile         = string,
     channel_type         = string,
-    contact_identity     = string
-    channel_flow_vars    = map(string)
-    chatbot_unique_names = list(string)
+    contact_identity     = string,
+    channel_flow_vars    = map(string),
+    chatbot_unique_names = list(string),
+    lambda_channel       = optional(bool),
     messaging_mode  = optional(string,"programmable-chat")
   }))
   description = "Map of enabled channel objects with their attributes"
 
+}
+
+variable "custom_channel_alb_rules_base_priority" {
+  type        = number
+  description = "The base priority for the custom channel ALB rules. Must be different for each helpline."
+  default     = 500
 }
 
 variable "flow_vars" {
@@ -164,4 +171,9 @@ variable "case_status_transition_rules" {
     timeInStatusInterval = string
   }))
   default = null
+}
+
+variable "region" {
+  description = "AWS region to create the resources"
+  type        = string
 }
