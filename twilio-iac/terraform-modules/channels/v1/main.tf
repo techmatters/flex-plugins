@@ -130,7 +130,7 @@ resource "aws_ssm_parameter" "channel_studio_flow_sid" {
   for idx, channel in var.channels :
   idx => channel if(channel.channel_type == "custom" && channel.messaging_mode == "conversations")
   }
-  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/studio_flow_sid"
+  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/${each.key}_studio_flow_sid"
   type        = "SecureString"
   value       = twilio_studio_flows_v2.channel_studio_flow[each.key].sid
   description = "${title(replace(each.key, "_", " "))} Studio Flow SID"
@@ -142,7 +142,7 @@ resource "aws_ssm_parameter" "messaging_mode" {
   for idx, channel in var.channels :
   idx => channel if(channel.channel_type == "custom")
   }
-  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/messaging_mode"
+  name        = "/${lower(var.environment)}/${each.key}/${nonsensitive(var.twilio_account_sid)}/messaging_mode"
   type        = "SecureString"
   value       = each.value.messaging_mode
   description = "${title(replace(each.key, "_", " "))} Messaging Mode"
