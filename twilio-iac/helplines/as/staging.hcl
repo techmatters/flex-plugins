@@ -36,6 +36,14 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+      },
+      line : {
+        messaging_mode       = "conversations"
+        channel_type         = "custom"
+        contact_identity     = "line"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
       }
     }
 
