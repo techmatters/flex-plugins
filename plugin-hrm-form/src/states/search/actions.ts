@@ -20,11 +20,16 @@ import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
 import * as t from './types';
 import { SearchParams } from './types';
-import { searchContacts as searchContactsApiCall } from '../../services/ContactService';
+import {
+  searchContacts as searchContactsApiCall,
+  searchContactsByIds as searchContactsByIdsApiCall,
+  searchContactsV2 as searchV2ContactsApiCall,
+} from '../../services/ContactService';
 import { searchCases as searchCasesApiCall } from '../../services/CaseService';
 import { updateDefinitionVersion } from '../configuration/actions';
 import { getCasesMissingVersions, getContactsMissingVersions } from '../../utils/definitionVersions';
 import { getNumberFromTask } from '../../utils';
+import { Contact } from '../../types/types';
 
 // Action creators
 export const handleSearchFormChange = (taskId: string, context: string) => <K extends keyof t.SearchFormValues>(
@@ -48,8 +53,17 @@ export const newCreateSearchForm = (taskId: string, context: string): t.SearchAc
   } as t.SearchActionType;
 };
 
-export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
-  searchParams: SearchParams,
+const searchContactsActionWithSearchService = <T>(
+  searchService: (
+    searchParams: T,
+    limit: any,
+    offset: any,
+  ) => Promise<{
+    count: number;
+    contacts: Contact[];
+  }>,
+) => (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
+  searchParams: T,
   limit: number,
   offset: number,
   dispatchedFromPreviousContacts?: boolean,
@@ -57,16 +71,7 @@ export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string, cont
   try {
     dispatch({ type: t.SEARCH_CONTACTS_REQUEST, taskId, context });
 
-    const { dateFrom, dateTo, ...rest } = searchParams ?? {};
-    const searchParamsToSubmit: SearchParams = rest;
-    if (dateFrom) {
-      searchParamsToSubmit.dateFrom = formatISO(startOfDay(parseISO(dateFrom)));
-    }
-    if (dateTo) {
-      searchParamsToSubmit.dateTo = formatISO(endOfDay(parseISO(dateTo)));
-    }
-
-    const searchResultRaw = await searchContactsApiCall(searchParamsToSubmit, limit, offset);
+    const searchResultRaw = await searchService(searchParams, limit, offset);
     const searchResult = { ...searchResultRaw, contacts: searchResultRaw.contacts };
 
     const definitions = await getContactsMissingVersions(searchResultRaw.contacts);
@@ -77,6 +82,11 @@ export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string, cont
     dispatch({ type: t.SEARCH_CONTACTS_FAILURE, error, taskId, dispatchedFromPreviousContacts, context });
   }
 };
+
+/**
+ * Legacy search actions
+ */
+export const searchContacts = searchContactsActionWithSearchService(searchContactsApiCall);
 
 export const searchCases = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
   searchParams: any,
@@ -115,6 +125,44 @@ export const searchCases = (dispatch: Dispatch<any>) => (taskId: string, context
     });
   } catch (error) {
     dispatch({ type: t.SEARCH_CASES_FAILURE, error, taskId, context });
+  }
+};
+
+/**
+ * Search v2 actions
+ */
+export const searchContactsByIds = searchContactsActionWithSearchService(searchContactsByIdsApiCall);
+
+export const searchV2Contacts = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async ({
+  searchParams,
+  limit,
+  offset,
+  dispatchedFromPreviousContacts,
+}: {
+  searchParams: SearchParams;
+  limit: number;
+  offset: number;
+  dispatchedFromPreviousContacts?: boolean;
+}) => {
+  console.log('>>>>>>>>>>>>> searchV2Contacts callewd')
+  try {
+    dispatch({ type: t.SEARCH_CONTACTS_REQUEST, taskId, context });
+
+    const { dateFrom, dateTo, ...rest } = searchParams ?? {};
+    const searchParamsToSubmit: SearchParams = rest;
+    if (dateFrom) {
+      searchParamsToSubmit.dateFrom = formatISO(startOfDay(parseISO(dateFrom)));
+    }
+    if (dateTo) {
+      searchParamsToSubmit.dateTo = formatISO(endOfDay(parseISO(dateTo)));
+    }
+
+    const searchResultRaw = await searchV2ContactsApiCall({ searchParams: searchParamsToSubmit });
+    const searchMatchIds = searchResultRaw.contacts.map(c => c.id);
+
+    dispatch({ type: t.SEARCH_V2_CONTACTS_SUCCESS, searchMatchIds, taskId, dispatchedFromPreviousContacts, context });
+  } catch (error) {
+    dispatch({ type: t.SEARCH_CONTACTS_FAILURE, error, taskId, dispatchedFromPreviousContacts, context });
   }
 };
 

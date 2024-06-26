@@ -30,7 +30,7 @@ const selectContactsForSearchResults = (state: RootState, taskSid: string, conte
   }
   return {
     count: resultReferences.count,
-    contacts: resultReferences.ids
+    contacts: resultReferences.currentPageIds
       .map(id => state[namespace].activeContacts.existingContacts[id]?.savedContact)
       .filter(c => Boolean(c)),
   };

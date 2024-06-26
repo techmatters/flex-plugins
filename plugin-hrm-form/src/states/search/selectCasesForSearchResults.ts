@@ -29,7 +29,7 @@ const selectCasesForSearchResults = (state: RootState, taskSid: string, context:
   }
   return {
     count: resultReferences.count,
-    cases: resultReferences.ids
+    cases: resultReferences.currentPageIds
       .map(id => state[namespace].connectedCase.cases[id]?.connectedCase)
       .filter(c => Boolean(c)),
   };
