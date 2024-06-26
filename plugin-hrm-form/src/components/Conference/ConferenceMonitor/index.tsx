@@ -18,8 +18,8 @@ import { ConferenceParticipant } from '@twilio/flex-ui';
 import '../../../types';
 import { Conference } from '@twilio/flex-ui/src/state/Conferences';
 
-import { conferenceApi } from '../../../services/ServerlessService';
 import { hasTaskControl, isOriginalReservation, isTransferring } from '../../../transfer/transferTaskState';
+import * as conferenceApi from '../../../services/conferenceService';
 
 const isJoinedWithEnd = (p: ConferenceParticipant) => p.status === 'joined' && p.mediaProperties.endConferenceOnExit;
 const isJoinedWithoutEnd = (p: ConferenceParticipant) =>

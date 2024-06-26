@@ -17,15 +17,15 @@
 import * as React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import configureMockStore from 'redux-mock-store';
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from './mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from './mockGetConfig';
 import { initialState as searchInitialState } from '../states/search/reducer';
 import { standaloneTaskSid } from '../types/types';
 import { getDefinitionVersions } from '../hrmConfig';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 const mockStore = configureMockStore([]);
 

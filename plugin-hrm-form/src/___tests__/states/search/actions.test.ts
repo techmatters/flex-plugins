@@ -14,9 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import * as t from '../../../states/search/types';
 import * as actions from '../../../states/search/actions';
@@ -28,8 +29,7 @@ import { getDefinitionVersions } from '../../../hrmConfig';
 jest.mock('../../../services/ContactService', () => ({ searchContacts: jest.fn() }));
 jest.mock('../../../services/CaseService', () => ({ searchCases: jest.fn() }));
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 const task = { taskSid: 'WT123' };
 const taskId = task.taskSid;

@@ -14,15 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
 import * as types from '../../states/types';
 import * as actions from '../../states/actions';
-import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import { getDefinitionVersions } from '../../hrmConfig';
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 const task = { taskSid: 'task1' };
 

@@ -14,14 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  DefinitionVersion,
-  DefinitionVersionId,
-  FormInputType,
-  loadDefinition,
-  useFetchDefinitions,
-} from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, FormInputType, loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { CaseSectionApi } from '../../../states/case/sections/api';
 import { CaseState, CaseStateEntry, CaseSummaryWorkingCopy, CaseWorkingCopy } from '../../../states/case/types';
 import { householdSectionApi } from '../../../states/case/sections/household';
@@ -40,8 +35,7 @@ import { RecursivePartial } from '../../RecursivePartial';
 import { VALID_EMPTY_CASE } from '../../testCases';
 import { CaseSectionTypeSpecificData } from '../../../services/caseSectionService';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 const partialRootState: RecursivePartial<RootState['plugin-hrm-form']> = {
   configuration: {

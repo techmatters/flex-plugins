@@ -16,8 +16,9 @@
 
 import each from 'jest-each';
 import { pipe } from 'lodash/fp';
-import { DefinitionVersion, DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import {
   reduce,
   setIsDialogOpenAction,
@@ -33,8 +34,7 @@ import {
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
 } from '../../../states/contacts/types';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, buildBaseURL } = mockLocalFetchDefinitions();
 
 let mockV1: DefinitionVersion;
 
