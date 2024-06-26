@@ -3,7 +3,7 @@
     "filters": [
       {
         "filter_friendly_name": "Direct Transfers",
-        "expression": "transferTargetType =='worker'",
+        "expression": "transferTargetType =='worker' AND isContactlessTask != true",
         "targets": [
           {
             "queue": "${task_queues.youthline_helpline}",
