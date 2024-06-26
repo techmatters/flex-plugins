@@ -122,6 +122,8 @@ const Search: React.FC<Props> = ({
 
   const handleSearchCases = (newSearchParams, newOffset) =>
     searchCases(searchContext)({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
+  // const enableSearchV2 = getAseloFeatureFlags().enable_searchV2;
+  const enableSearchV2 = false;
 
   const setSearchParamsAndHandleSearch = async newSearchParams => {
     if (routing.route === 'search') {
@@ -238,12 +240,18 @@ const Search: React.FC<Props> = ({
             : 'SearchContactsAndCases-Title'
         }
       >
-        <SearchForm
-          task={task}
-          values={form}
-          handleSearchFormChange={handleSearchFormChange(searchContext)}
-          handleSearch={setSearchParamsAndHandleSearch}
-        />
+        {enableSearchV2 ? (
+          <>
+            <div>Searchv2</div>
+          </>
+        ) : (
+          <SearchForm
+            task={task}
+            values={form}
+            handleSearchFormChange={handleSearchFormChange(searchContext)}
+            handleSearch={setSearchParamsAndHandleSearch}
+          />
+        )}
       </NavigableContainer>
     );
   };
