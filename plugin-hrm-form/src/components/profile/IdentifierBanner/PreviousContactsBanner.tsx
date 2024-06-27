@@ -34,9 +34,9 @@ import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { CustomITask, isTwilioTask } from '../../../types/types';
 import { selectCounselorsHash } from '../../../states/configuration/selectCounselorsHash';
 import selectPreviousContactCounts from '../../../states/search/selectPreviousContactCounts';
-import { iconsFromTask } from './iconsFromTask';
 import selectContactByTaskSid from '../../../states/contacts/selectContactByTaskSid';
 import { SearchFormValues } from '../../../states/search/types';
+import selectChannelType from './selectChannelType';
 
 type OwnProps = {
   task: CustomITask;
@@ -103,7 +103,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
   return (
     <YellowBannerContainer data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
-      <IconContainer>{iconsFromTask[task.channelType]}</IconContainer>
+      <IconContainer>{selectChannelType(task)}</IconContainer>
       <IdentifierContainer>
         <Bold>{maskIdentifiers ? <Template code="MaskIdentifiers" /> : contactNumber}</Bold>
       </IdentifierContainer>
