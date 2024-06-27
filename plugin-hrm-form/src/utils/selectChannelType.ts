@@ -14,16 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { iconsFromTask } from '../components/profile/IdentifierBanner/iconsFromTask';
 import { CustomITask } from '../types/types';
 
 /* Get the value of the channel from task attribute and return it when 
    task channelType is not returning the correct channelType value 
 */
-const selectChannelType = (task: CustomITask) => {
-  const channelTypeValue = task.attributes.customChannelType || task.attributes.channelType;
-
-  return iconsFromTask[channelTypeValue];
-};
+const selectChannelType = (task: CustomITask) => task.attributes.customChannelType || task.channelType;
 
 export default selectChannelType;

@@ -37,6 +37,7 @@ import selectPreviousContactCounts from '../../../states/search/selectPreviousCo
 import selectContactByTaskSid from '../../../states/contacts/selectContactByTaskSid';
 import { SearchFormValues } from '../../../states/search/types';
 import selectChannelType from '../../../utils/selectChannelType';
+import { iconsFromTask } from './iconsFromTask';
 
 type OwnProps = {
   task: CustomITask;
@@ -103,7 +104,7 @@ const PreviousContactsBanner: React.FC<Props> = ({
 
   return (
     <YellowBannerContainer data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
-      <IconContainer>{selectChannelType(task)}</IconContainer>
+      <IconContainer>{iconsFromTask[selectChannelType(task)]}</IconContainer>
       <IdentifierContainer>
         <Bold>{maskIdentifiers ? <Template code="MaskIdentifiers" /> : contactNumber}</Bold>
       </IdentifierContainer>
