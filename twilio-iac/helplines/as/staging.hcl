@@ -4,7 +4,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-    custom_task_routing_filter_expression = "channelType =='web' or channelType =='whatsapp' OR isContactlessTask == true OR  twilioNumber == 'messenger:131329426738030' "
+    custom_task_routing_filter_expression = "channelType IN ['web','whatsapp','api'] OR isContactlessTask == true OR  twilioNumber == 'messenger:131329426738030' "
 
     #Studio flow
     flow_vars = {
