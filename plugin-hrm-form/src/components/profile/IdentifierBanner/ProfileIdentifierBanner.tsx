@@ -25,7 +25,7 @@ import { newOpenModalAction } from '../../../states/routing/actions';
 import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
 import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { CustomITask } from '../../../types/types';
-import selectChannelType from './selectChannelType';
+import selectChannelType from '../../../utils/selectChannelType';
 
 type OwnProps = {
   task: CustomITask;

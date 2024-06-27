@@ -36,7 +36,7 @@ import { selectCounselorsHash } from '../../../states/configuration/selectCounse
 import selectPreviousContactCounts from '../../../states/search/selectPreviousContactCounts';
 import selectContactByTaskSid from '../../../states/contacts/selectContactByTaskSid';
 import { SearchFormValues } from '../../../states/search/types';
-import selectChannelType from './selectChannelType';
+import selectChannelType from '../../../utils/selectChannelType';
 
 type OwnProps = {
   task: CustomITask;
