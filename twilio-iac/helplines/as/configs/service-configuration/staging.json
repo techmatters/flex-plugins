@@ -7,12 +7,13 @@
             "whatsapp",
             "facebook",
             "instagram",
-            "line"
+            "line",
+            "telegram"
         ],
         "feature_flags": {  
             "enable_csam_report": true,
             "enable_lex": true,
-            "enable_post_survey": true,
+            "enable_post_survey": false,
             "enable_voice_recordings": true
         },
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",
