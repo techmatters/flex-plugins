@@ -56,10 +56,11 @@ export const SearchFormV2: React.FC<OwnProps> = ({
     dateTo: '2024-06-27',
     dateFrom: '2024-06-26',
   };
-  dispatch(handleSearchFormChange('searchInput', '2024-06-26'));
+  // dispatch(handleSearchFormChange('searchInput', '2024-06-26'));
 
-  // const { getValues, register, setError, setValue, watch, errors } = useFormContext();
-  const { getValues, register, setError, setValue, watch, errors } = useForm();
+  // const { getValues, register, setError, setValue, watch, errors } = useForm({ defaultValues: initialValues });
+  const { getValues, register, setError, setValue, watch, errors } = useForm({});
+
   // console.log('>>> SearchFormV2 getValues()', getValues());
 
   const counselorsList = useSelector(state => state[namespace][configurationBase].counselors.list);
@@ -83,7 +84,7 @@ export const SearchFormV2: React.FC<OwnProps> = ({
       // const { isFutureAux, ...contactlessTaskFields } = getValues().contactlessTask;
       console.log('>>>updateCallback');
       Object.entries(values).forEach(([fieldName, fieldValue]) => {
-        dispatch(handleSearchFormChange(fieldName, fieldValue));
+        dispatch(handleSearchFormChange(fieldName, fieldValue.toString()));
       });
     },
     // shouldFocusFirstElement: display && autoFocus,
@@ -93,6 +94,25 @@ export const SearchFormV2: React.FC<OwnProps> = ({
   // useEffect(() => {
   //   console.log('>>>useEffect', getValues());
   // }, [getValues]);
+
+  React.useEffect(() => {
+    console.log('>>> ContactlessTaskTab useEffect', getValues());
+    register('searchInput', {
+      validate: () => {
+        // const { contactlessTask } = getValues();
+        // const { date, time } = contactlessTask;
+        // if (date && time) {
+        //   const [y, m, d] = splitDate(date);
+        //   const [mm, hh] = splitTime(time);
+        //   if (isFuture(new Date(y, m - 1, d, mm, hh))) {
+        //     return 'TimeCantBeGreaterThanNow'; // return non-null to generate an error, using the localized error key
+        //   }
+        // }
+        console.log('>>> searchInput validate');
+        return ''; // null
+      },
+    });
+  }, [getValues, register, setError]);
 
   return (
     <Container formContainer={true}>

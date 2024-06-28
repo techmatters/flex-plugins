@@ -75,6 +75,26 @@ export async function searchContacts(
   };
 }
 
+// eslint-disable-next-line import/no-unused-modules
+export async function searchContactsV2({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}): Promise<{
+  count: number;
+  contacts: Contact[];
+}> {
+  const options = {
+    method: 'POST',
+    body: JSON.stringify({}),
+  };
+  const response = await fetchHrmApi(`/contacts/searchV2`, options);
+  return {
+    ...response,
+    contacts: response.contacts.map(convertApiContactToFlexContact),
+  };
+}
+
 type HandleTwilioTaskResponse = {
   channelSid?: string;
   serviceSid?: string;

@@ -107,9 +107,12 @@ const Search: React.FC<Props> = ({
   handleNewCreateSearch,
   searchContext,
 }) => {
+  // const enableSearchV2 = getAseloFeatureFlags().enable_searchV2;
+  const enableSearchV2 = false;
+
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});
-
+  console.log('>>> Search beofre', { form, searchContext });
   useEffect(() => {
     console.log('>>> Search useEffect', { form, searchContext });
     if (!form) {
@@ -126,8 +129,6 @@ const Search: React.FC<Props> = ({
 
   const handleSearchCases = (newSearchParams, newOffset) =>
     searchCases(searchContext)({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
-  // const enableSearchV2 = getAseloFeatureFlags().enable_searchV2;
-  const enableSearchV2 = false;
 
   const setSearchParamsAndHandleSearch = async newSearchParams => {
     if (routing.route === 'search') {
@@ -185,6 +186,7 @@ const Search: React.FC<Props> = ({
     );
   };
   renderMockDialog.displayName = 'MockDialog';
+  console.log('>>> Search end', { form, searchContext });
 
   const renderSearchPages = () => {
     if (isProfileRoute(routing)) return <ProfileRouter task={task} />;
