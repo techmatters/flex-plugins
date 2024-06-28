@@ -31,6 +31,7 @@ export const handleSearchFormChange = (taskId: string, context: string) => <K ex
   name: K,
   value: t.SearchFormValues[K],
 ): t.SearchActionType => {
+  console.log('>>> handleSearchFormChange: ', taskId, context, name, value);
   return {
     type: t.HANDLE_SEARCH_FORM_CHANGE,
     name,

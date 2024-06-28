@@ -39,6 +39,7 @@ import NavigableContainer from '../NavigableContainer';
 import selectCasesForSearchResults from '../../states/search/selectCasesForSearchResults';
 import selectContactsForSearchResults from '../../states/search/selectContactsForSearchResults';
 import { DetailsContext } from '../../states/contacts/contactDetails';
+import { SearchFormV2 } from './searchv2/SearchForm';
 
 type OwnProps = {
   task: CustomITask;
@@ -106,10 +107,14 @@ const Search: React.FC<Props> = ({
   handleNewCreateSearch,
   searchContext,
 }) => {
+  // const enableSearchV2 = getAseloFeatureFlags().enable_searchV2;
+  const enableSearchV2 = false;
+
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});
-
+  console.log('>>> Search beofre', { form, searchContext });
   useEffect(() => {
+    console.log('>>> Search useEffect', { form, searchContext });
     if (!form) {
       handleNewCreateSearch(searchContext);
     }
@@ -117,8 +122,10 @@ const Search: React.FC<Props> = ({
 
   const closeDialog = () => setMockedMessage('');
 
-  const handleSearchContacts = (newSearchParams: SearchParams, newOffset) =>
-    searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+  const handleSearchContacts = (newSearchParams: SearchParams, newOffset) => {
+    console.log('>>> handleSearchContacts', { form, newSearchParams, newOffset });
+    return searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+  };
 
   const handleSearchCases = (newSearchParams, newOffset) =>
     searchCases(searchContext)({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
@@ -179,6 +186,7 @@ const Search: React.FC<Props> = ({
     );
   };
   renderMockDialog.displayName = 'MockDialog';
+  console.log('>>> Search end', { form, searchContext });
 
   const renderSearchPages = () => {
     if (isProfileRoute(routing)) return <ProfileRouter task={task} />;
@@ -238,12 +246,25 @@ const Search: React.FC<Props> = ({
             : 'SearchContactsAndCases-Title'
         }
       >
-        <SearchForm
-          task={task}
-          values={form}
-          handleSearchFormChange={handleSearchFormChange(searchContext)}
-          handleSearch={setSearchParamsAndHandleSearch}
-        />
+        {enableSearchV2 ? (
+          <>
+            <div>Searchv2</div>
+            <SearchFormV2
+              initialValues={form}
+              autoFocus={true}
+              task={task}
+              handleSearchFormChange={handleSearchFormChange(searchContext)}
+              handleSearch={setSearchParamsAndHandleSearch}
+            />
+          </>
+        ) : (
+          <SearchForm
+            task={task}
+            values={form}
+            handleSearchFormChange={handleSearchFormChange(searchContext)}
+            handleSearch={setSearchParamsAndHandleSearch}
+          />
+        )}
       </NavigableContainer>
     );
   };

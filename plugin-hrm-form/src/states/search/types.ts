@@ -23,6 +23,8 @@ export const VIEW_CONTACT_DETAILS = 'VIEW_CONTACT_DETAILS';
 export const SEARCH_CONTACTS_REQUEST = 'SEARCH_CONTACTS_REQUEST';
 export const SEARCH_CONTACTS_SUCCESS = 'SEARCH_CONTACTS_SUCCESS';
 export const SEARCH_CONTACTS_FAILURE = 'SEARCH_CONTACTS_FAILURE';
+export const SEARCH_V2_CONTACTS_SUCCESS = 'SEARCH_V2_CONTACTS_SUCCESS';
+export const SEARCH_V2_CONTACTS_FAILURE = 'SEARCH_V2_CONTACTS_FAILURE';
 export const SEARCH_CASES_REQUEST = 'SEARCH_CASES_REQUEST';
 export const SEARCH_CASES_SUCCESS = 'SEARCH_CASES_SUCCESS';
 export const SEARCH_CASES_FAILURE = 'SEARCH_CASES_FAILURE';
@@ -39,11 +41,25 @@ export const newSearchFormEntry = {
   dateTo: '',
   contactNumber: '',
   helpline: { label: '', value: '' },
+  searchInput: '',
 };
+
+// export const newSearchFormEntryV2 = {
+//   searchInput: '',
+//   counselor: '',
+//   dateFrom: '',
+//   dateTo: '',
+// };
 
 export type SearchFormValues = {
   [K in keyof typeof newSearchFormEntry]: typeof newSearchFormEntry[K];
 };
+// export type SearchFormValues = Partial<Pick<typeof newSearchFormEntry, 'counselor' | 'helpline'>> &
+//   Omit<typeof newSearchFormEntry, 'counselor' | 'helpline'>;
+
+// export type SearchFormV2Values = {
+//   [K in keyof typeof newSearchFormEntryV2]: typeof newSearchFormEntryV2[K];
+// };
 
 export type SearchParams = Partial<SearchFormValues> & {
   taskSid?: string;
@@ -82,6 +98,22 @@ type SearchContactsFailureAction = {
   context: string;
 };
 
+export type SearchV2ContactsSuccessAction = {
+  type: typeof SEARCH_V2_CONTACTS_SUCCESS;
+  searchMatchIds: string[];
+  taskId: string;
+  dispatchedFromPreviousContacts?: boolean;
+  context: string;
+};
+
+export type SearchV2ContactsFailureAction = {
+  type: typeof SEARCH_V2_CONTACTS_FAILURE;
+  error: any;
+  taskId: string;
+  dispatchedFromPreviousContacts?: boolean;
+  context: string;
+};
+
 type SearchCasesRequestAction = { type: typeof SEARCH_CASES_REQUEST; taskId: string; context: string };
 
 export type SearchCasesSuccessAction = {
@@ -106,6 +138,8 @@ export type SearchActionType =
   | SearchContactsRequestAction
   | SearchContactsSuccessAction
   | SearchContactsFailureAction
+  | SearchV2ContactsSuccessAction
+  | SearchV2ContactsFailureAction
   | SearchCasesRequestAction
   | SearchCasesSuccessAction
   | SearchCasesFailureAction
