@@ -104,7 +104,7 @@ const ViewCaseItem: React.FC<Props> = ({
   };
 
   const targetObject: FormTargetObject = {
-    id: currentRoute.id,
+    id: currentRoute.caseId,
     type: 'case',
   };
 
