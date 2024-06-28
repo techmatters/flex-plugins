@@ -158,6 +158,7 @@ export function reduce(
         tasks: omit(state.tasks, action.taskId),
       };
     case t.HANDLE_SEARCH_FORM_CHANGE: {
+      console.log('>>>reducer HANDLE_SEARCH_FORM_CHANGE', action);
       const task = state.tasks[action.taskId];
       const context = state.tasks[action.taskId][action.context];
 

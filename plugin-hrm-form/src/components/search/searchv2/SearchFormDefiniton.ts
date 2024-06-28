@@ -15,72 +15,88 @@
  */
 
 // Search Input, counselor list, date range
-import { FormDefinition, FormInputType } from 'hrm-form-definitions';
+import { FormDefinition, FormInputType, FormItemDefinition } from 'hrm-form-definitions';
 import { isFuture, isAfter } from 'date-fns';
 
 import type { CounselorsList } from '../../../states/configuration/types';
 import { splitDate } from '../../../utils/helpers';
 
-// eslint-disable-next-line import/no-unused-modules
-export const createSearchFormDefinition = ({ counselorsList }: { counselorsList: CounselorsList }): FormDefinition => {
-  const counsellorOptions = [
-    { label: '', value: '' },
-    ...counselorsList.map(c => ({ label: c.fullName, value: c.sid })),
-  ];
+// export type SearchFormDefinitionObject = {
+//   searchInput: FormItemDefinition;
+//   createdOnBehalfOf: FormItemDefinition;
+//   dateFrom: FormItemDefinition;
+//   dateTo: FormItemDefinition;
+// };
+
+export const createSearchFormDefinition = ({
+  counselorsList,
+}: {
+  counselorsList: CounselorsList;
+  // }): SearchFormDefinitionObject => {
+}): FormDefinition => {
+  console.log('>>> createSearchFormDefinition start');
+  const counsellorOptions = counselorsList
+    ? [{ label: '', value: '' }, ...counselorsList.map(c => ({ label: c.fullName, value: c.sid }))]
+    : [{ label: '', value: '' }];
 
   return [
     {
       name: 'searchInput',
+      label: 'searchInput',
       type: FormInputType.Input,
-      label: 'Search',
-      required: { value: false, message: 'RequiredFieldError' },
+      // required: { value: true, message: 'RequiredFieldError' },
+      maxLength: { value: 500, message: '500 characters max.' },
     },
-    {
-      name: 'createdOnBehalfOf',
-      type: FormInputType.Select,
-      label: 'Counsellor',
-      options: counsellorOptions,
-      // defaultOption: workerSid,
-      required: { value: false, message: 'RequiredFieldError' },
-    },
-    {
-      name: 'dateFrom',
-      type: FormInputType.DateInput,
-      label: 'Date From',
-      initializeWithCurrent: false,
-      required: { value: false, message: 'RequiredFieldError' },
-      validate: date => {
-        const [y, m, d] = splitDate(date);
-        const inputDate = new Date(y, m - 1, d);
+    // {
+    //   name: 'createdOnBehalfOf',
+    //   type: FormInputType.Select,
+    //   label: 'Counsellor',
+    //   options: counsellorOptions,
+    //   // options: [
+    //   //   { value: 'cn1', label: 'counsellor 1' },
+    //   //   { value: 'cn2', label: 'counsellor 2' },
+    //   // ],
+    //   // defaultOption: workerSid,
+    //   required: { value: false, message: 'RequiredFieldError' },
+    // },
+    // {
+    //   name: 'dateFrom',
+    //   type: FormInputType.DateInput,
+    //   label: 'dateFrom',
+    //   initializeWithCurrent: false,
+    //   required: { value: false, message: 'RequiredFieldError' },
+    //   validate: date => {
+    //     const [y, m, d] = splitDate(date);
+    //     const inputDate = new Date(y, m - 1, d);
 
-        // Date is lesser than Unix epoch (00:00:00 UTC on 1 January 1970)
-        if (inputDate.getTime() < 0) return 'DateCantBeLesserThanEpoch';
+    //     // Date is lesser than Unix epoch (00:00:00 UTC on 1 January 1970)
+    //     if (inputDate.getTime() < 0) return 'DateCantBeLesserThanEpoch';
 
-        // TODO: Date is greater than DateTo
-        // if (isAfter(inputDate, dateTo)) {
-        //   return 'InputDateCantBeGreaterThanDateTo';
-        // }
-        return null;
-      },
-    },
-    {
-      name: 'dateTo',
-      type: FormInputType.DateInput,
-      label: 'Date To',
-      initializeWithCurrent: false,
-      required: { value: false, message: 'RequiredFieldError' },
-      validate: date => {
-        const [y, m, d] = splitDate(date);
-        const inputDate = new Date(y, m - 1, d);
+    //     // TODO: Date is greater than DateTo
+    //     // if (isAfter(inputDate, dateTo)) {
+    //     //   return 'InputDateCantBeGreaterThanDateTo';
+    //     // }
+    //     return null;
+    //   },
+    // },
+    // {
+    //   name: 'dateTo',
+    //   type: FormInputType.DateInput,
+    //   label: 'Date To',
+    //   initializeWithCurrent: false,
+    //   required: { value: false, message: 'RequiredFieldError' },
+    //   validate: date => {
+    //     const [y, m, d] = splitDate(date);
+    //     const inputDate = new Date(y, m - 1, d);
 
-        // Date is lesser than Unix epoch (00:00:00 UTC on 1 January 1970)
-        if (inputDate.getTime() < 0) return 'DateCantBeLesserThanEpoch';
+    //     // Date is lesser than Unix epoch (00:00:00 UTC on 1 January 1970)
+    //     if (inputDate.getTime() < 0) return 'DateCantBeLesserThanEpoch';
 
-        // Date is greater than "today"
-        if (isFuture(inputDate)) return 'DateCantBeGreaterThanToday';
+    //     // Date is greater than "today"
+    //     if (isFuture(inputDate)) return 'DateCantBeGreaterThanToday';
 
-        return null;
-      },
-    },
+    //     return null;
+    //   },
+    // },
   ];
 };

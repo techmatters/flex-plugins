@@ -39,6 +39,7 @@ import NavigableContainer from '../NavigableContainer';
 import selectCasesForSearchResults from '../../states/search/selectCasesForSearchResults';
 import selectContactsForSearchResults from '../../states/search/selectContactsForSearchResults';
 import { DetailsContext } from '../../states/contacts/contactDetails';
+import { SearchFormV2 } from './searchv2/SearchForm';
 
 type OwnProps = {
   task: CustomITask;
@@ -110,6 +111,7 @@ const Search: React.FC<Props> = ({
   const [searchParams, setSearchParams] = useState<any>({});
 
   useEffect(() => {
+    console.log('>>> Search useEffect', { form, searchContext });
     if (!form) {
       handleNewCreateSearch(searchContext);
     }
@@ -117,8 +119,10 @@ const Search: React.FC<Props> = ({
 
   const closeDialog = () => setMockedMessage('');
 
-  const handleSearchContacts = (newSearchParams: SearchParams, newOffset) =>
-    searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+  const handleSearchContacts = (newSearchParams: SearchParams, newOffset) => {
+    console.log('>>> handleSearchContacts', { form, newSearchParams, newOffset });
+    return searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+  };
 
   const handleSearchCases = (newSearchParams, newOffset) =>
     searchCases(searchContext)({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
@@ -243,6 +247,13 @@ const Search: React.FC<Props> = ({
         {enableSearchV2 ? (
           <>
             <div>Searchv2</div>
+            <SearchFormV2
+              initialValues={form}
+              autoFocus={true}
+              task={task}
+              handleSearchFormChange={handleSearchFormChange(searchContext)}
+              handleSearch={setSearchParamsAndHandleSearch}
+            />
           </>
         ) : (
           <SearchForm

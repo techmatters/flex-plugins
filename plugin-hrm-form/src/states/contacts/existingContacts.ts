@@ -377,11 +377,14 @@ type UpdateDraftAction = {
   draft?: ContactDraftChanges;
 };
 
-export const updateDraft = (contactId: string, draft: ContactDraftChanges): UpdateDraftAction => ({
-  type: EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
-  contactId,
-  draft,
-});
+export const updateDraft = (contactId: string, draft: ContactDraftChanges): UpdateDraftAction => {
+  console.log('>>> existing Contacts updateDraft', draft);
+  return {
+    type: EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
+    contactId,
+    draft,
+  };
+};
 
 export const clearDraft = (contactId: string): UpdateDraftAction => ({
   type: EXISTING_CONTACT_UPDATE_DRAFT_ACTION,

@@ -14,61 +14,85 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useMemo } from 'react';
-import { FieldError, useFormContext } from 'react-hook-form';
-import { connect, ConnectedProps, useSelector } from 'react-redux';
-import type { DefinitionVersion } from 'hrm-form-definitions';
+import React, { useEffect, useMemo } from 'react';
+import { FieldError, useFormContext, useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import type { DefinitionVersion, FormDefinition } from 'hrm-form-definitions';
 
 import { useCreateFormFromDefinition } from '../../forms';
-import { createSearchFormDefinition } from './SearchFormDefiniton';
+// eslint-disable-next-line prettier/prettier
+import { createSearchFormDefinition} from './SearchFormDefiniton';
 import { configurationBase, namespace } from '../../../states/storeNamespaces';
 import { selectWorkerSid } from '../../../states/selectors/flexSelectors';
 import { Container, ColumnarBlock, TwoColumnLayout, ColumnarContent } from '../../../styles';
 import { disperseInputs } from '../../common/forms/formGenerators';
+import { CustomITask } from '../../../types/types';
+import { SearchFormValues } from '../../../states/search/types';
+import { CounselorsList } from '../../../states/configuration/types';
 
 type OwnProps = {
-  // task: StandaloneITask;
-  // display: boolean;
-  // definition: DefinitionVersion['tabbedForms']['ContactlessTaskTab'];
-  initialValues: any;
+  task: ITask | CustomITask;
+  // definition: { counselorsList: CounselorsList };
+  // // definition: any;
+  initialValues: SearchFormValues;
   autoFocus: boolean;
+  handleSearchFormChange: (fieldName: string, value: string) => void;
+  handleSearch: (searchParams: any) => void;
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export const SearchFormV2: React.FC<OwnProps> = ({ initialValues, autoFocus }) => {
-  const { getValues, register, setError, setValue, watch, errors } = useFormContext();
+export const SearchFormV2: React.FC<OwnProps> = ({
+  task,
+  initialValues,
+  autoFocus,
+  handleSearchFormChange,
+  handleSearch,
+}) => {
+  const dispatch = useDispatch();
+
+  const emptyForm = {
+    searchInput: '',
+    createdOnBehalfOf: '',
+    dateTo: '2024-06-27',
+    dateFrom: '2024-06-26',
+  };
+  dispatch(handleSearchFormChange('searchInput', '2024-06-26'));
+
+  // const { getValues, register, setError, setValue, watch, errors } = useFormContext();
+  const { getValues, register, setError, setValue, watch, errors } = useForm();
+  // console.log('>>> SearchFormV2 getValues()', getValues());
 
   const counselorsList = useSelector(state => state[namespace][configurationBase].counselors.list);
+  // const workerSid = useSelector(selectWorkerSid);
+  // console.log('>>>counselorsList', counselorsList);
 
-  const formDefinition = useMemo(
-    () =>
-      createSearchFormDefinition({
-        counselorsList,
-        // definition
-      }),
-    [
-      counselorsList,
-      // definition,
-    ],
-  );
-  const workerSid = useSelector(selectWorkerSid);
+  const formDefinition: FormDefinition = useMemo(() => createSearchFormDefinition(counselorsList), [counselorsList]);
 
   const form = useCreateFormFromDefinition({
     definition: formDefinition,
     initialValues: {
       ...initialValues,
-      createdOnBehalfOf: initialValues.createdOnBehalfOf || workerSid, // If no createdOnBehalfOf comming from state, we want the current counselor to be the default
+      // TODO: remove this
+      counselor: '',
+      helpline: '',
     },
-    // parentsPath: 'contactlessTask',
-    parentsPath: 'search',
+    parentsPath: '',
     updateCallback: () => {
+      const values = getValues();
+      // console.log('>>>values', values);
       // const { isFutureAux, ...contactlessTaskFields } = getValues().contactlessTask;
-      // updateContactlessTaskDraft(unsavedContact.id, contactlessTaskFields, helpline);
-      console.log('updateCallback');
+      console.log('>>>updateCallback');
+      Object.entries(values).forEach(([fieldName, fieldValue]) => {
+        dispatch(handleSearchFormChange(fieldName, fieldValue));
+      });
     },
     // shouldFocusFirstElement: display && autoFocus,
   });
   const searchV2Form = disperseInputs(5)(form);
+
+  // useEffect(() => {
+  //   console.log('>>>useEffect', getValues());
+  // }, [getValues]);
 
   return (
     <Container formContainer={true}>
