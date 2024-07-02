@@ -58,6 +58,10 @@ locals {
         channel_flow_vars = {
           voice_ivr_language         = "en-US",
           voice_ivr_greeting_message = "Hello! Tinkle Friend is engaged with other children at the moment. Please hold on for a while and we will attend to you as soon as we can."
+
+          welcome_message_url = "https://sg-services-1705.twil.io/welcome_Message.mp3"
+          busy_message_url = "https://sg-services-1705.twil.io/busy_Message.mp3"
+          closed_message_url = "https://sg-services-1705.twil.io/closed_Message.mp3"
         }
         chatbot_unique_names = []
       }
