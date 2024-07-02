@@ -47,8 +47,8 @@ export const mapChannel = (channel: string) => {
       return 'SMS';
     case channelTypes.whatsapp:
       return 'WhatsApp';
-    case channelTypes.twitter:
-      return 'Twitter';
+    case channelTypes.telegram:
+      return 'Telegram';
     case channelTypes.instagram:
       return 'Instagram';
     case channelTypes.line:

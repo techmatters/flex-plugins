@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const DotenvFlow = require('dotenv-flow-webpack');
 
 module.exports = (config, { isProd, isDev, isTest }) => {
@@ -31,9 +31,7 @@ module.exports = (config, { isProd, isDev, isTest }) => {
   );
 
   if (process.env.BUNDLE_ANALYZER === 'true') {
-    config.plugins.push(
-      new BundleAnalyzerPlugin(),
-    );
+    config.plugins.push(new BundleAnalyzerPlugin());
   }
 
   return config;

@@ -25,7 +25,7 @@ const defaultChannelTypes = {
 } as const;
 
 export const customChannelTypes = {
-  twitter: 'twitter',
+  telegram: 'telegram',
   instagram: 'instagram',
   line: 'line',
 } as const;
@@ -59,7 +59,7 @@ const chatChannels = [
   channelTypes.web,
   channelTypes.modica,
   channelTypes.sms,
-  channelTypes.twitter,
+  channelTypes.telegram,
   channelTypes.instagram,
   channelTypes.line,
 ];

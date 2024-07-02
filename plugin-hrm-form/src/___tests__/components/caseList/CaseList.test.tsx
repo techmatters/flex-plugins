@@ -22,8 +22,9 @@ import configureMockStore from 'redux-mock-store';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import CaseList from '../../../components/caseList';
 import { getDefinitionVersions } from '../../../hrmConfig';
@@ -37,8 +38,7 @@ import { HrmState, RootState } from '../../../states';
 import { CaseStateEntry } from '../../../states/case/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 // console.log = () => null;
 console.error = () => null;

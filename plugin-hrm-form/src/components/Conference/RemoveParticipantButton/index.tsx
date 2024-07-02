@@ -18,8 +18,8 @@ import React from 'react';
 import { IconButton, Notifications, TaskHelper } from '@twilio/flex-ui';
 import type { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
 
-import { conferenceApi } from '../../../services/ServerlessService';
 import { ConferenceNotifications } from '../../../conference/setUpConferenceActions';
+import * as conferenceApi from '../../../services/conferenceService';
 
 type Props = Partial<ParticipantCanvasChildrenProps>;
 

@@ -22,7 +22,6 @@ import { Contact, CustomITask, isOfflineContact, isOfflineContactTask, isTwilioT
 import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
 import { finalizeContact, saveContact } from './ContactService';
-import { assignOfflineContactInit, assignOfflineContactResolve } from './ServerlessService';
 import { getHrmConfig } from '../hrmConfig';
 import { ContactMetadata } from '../states/contacts/types';
 import * as GeneralActions from '../states/actions';
@@ -32,6 +31,7 @@ import { getOfflineContactTaskSid } from '../states/contacts/offlineContactTask'
 import '../types';
 import { CaseStateEntry } from '../states/case/types';
 import { getExternalRecordingInfo } from './getExternalRecordingInfo';
+import { assignOfflineContactInit, assignOfflineContactResolve } from './twilioTaskService';
 
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).

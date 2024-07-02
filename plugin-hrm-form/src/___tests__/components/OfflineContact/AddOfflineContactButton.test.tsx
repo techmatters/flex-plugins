@@ -22,8 +22,9 @@ import { Actions, StorelessThemeProvider, withTheme } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import '@testing-library/jest-dom/extend-expect';
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockPartialConfiguration } from '../../mockGetConfig';
 import { AddOfflineContactButton } from '../../../components/OfflineContact';
 import { rerenderAgentDesktop } from '../../../rerenderView';
@@ -49,8 +50,8 @@ jest.mock('@twilio/flex-ui', () => ({
     invokeAction: jest.fn(),
   },
 }));
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 const mockInvokeAction = Actions.invokeAction as jest.MockedFunction<typeof Actions.invokeAction>;
 const mockRerenderAgentDesktop = rerenderAgentDesktop as jest.MockedFunction<typeof rerenderAgentDesktop>;
 const mockCreateContact = createContact as jest.MockedFunction<typeof createContact>;

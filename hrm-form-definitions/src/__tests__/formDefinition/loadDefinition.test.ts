@@ -16,9 +16,10 @@
 
 import { DefinitionVersionId, loadDefinition } from '../../formDefinition';
 
-import { useFetchDefinitions } from '../fetchDefinitionsMock';
+import { mockFetchDefinitions } from '../fetchDefinitionsMock';
+import { loadLocalJson } from '../loadLocalJson';
 
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockFetchDefinitions(loadLocalJson);
 
 beforeEach(() => {
   mockReset();

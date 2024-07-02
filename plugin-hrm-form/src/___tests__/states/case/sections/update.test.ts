@@ -21,17 +21,16 @@ import {
   FormDefinition,
   FormInputType,
   loadDefinition,
-  useFetchDefinitions,
 } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../../mockFetchDefinitions';
 import { copyCaseSectionItem } from '../../../../states/case/sections/copySection';
 import { CaseSectionApi } from '../../../../states/case/sections/api';
 import { householdSectionApi } from '../../../../states/case/sections/household';
 import { perpetratorSectionApi } from '../../../../states/case/sections/perpetrator';
 import { CaseSectionTypeSpecificData } from '../../../../services/caseSectionService';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 beforeEach(() => {
   mockReset();

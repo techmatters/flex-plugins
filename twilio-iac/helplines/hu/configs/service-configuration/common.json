@@ -2,14 +2,8 @@
     "attributes": {
         "definitionVersion": "hu-v1",
         "feature_flags": {
-            "enable_aselo_messaging_ui": false,
-            "enable_conferencing": false,
-            "enable_counselor_toolkits": false,
-            "enable_csam_clc_report": false,
             "enable_csam_report": true,
-            "enable_lex": true,
-            "enable_post_survey": false,
-            "enable_save_insights": true
+            "enable_lex": true
         },
         "helplineLanguage": "hu-HU",
         "permissionConfig": "hu"

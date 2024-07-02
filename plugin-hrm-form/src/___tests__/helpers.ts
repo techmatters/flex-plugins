@@ -169,6 +169,9 @@ export function createTask(attributes = {}, namesNsids = {}): ITask {
     async getChannels() {
       return null;
     },
+    async joinCall() {
+      return null;
+    },
     setAttributes(newAttributes) {
       this.attributes = newAttributes;
       return Promise.resolve(this);

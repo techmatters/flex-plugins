@@ -19,9 +19,10 @@ import { Provider } from 'react-redux';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import configureMockStore from 'redux-mock-store';
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
+import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import Search from '../../components/search';
 import { getDefinitionVersions } from '../../hrmConfig';
@@ -40,8 +41,7 @@ import {
 import { AppRoutes } from '../../states/routing/types';
 import { ContactState, ExistingContactsState } from '../../states/contacts/existingContacts';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 const mockStore = configureMockStore([]);
 let mockV1;
