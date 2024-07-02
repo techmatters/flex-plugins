@@ -896,14 +896,12 @@ ${
         "type": "gather-input-on-call",
         "transitions": [
           {
-            "next": "split_keys_lang",
             "event": "keypress"
           },
           {
             "event": "speech"
           },
           {
-            "next": "intro_set_retry",
             "event": "timeout"
           }
         ],
