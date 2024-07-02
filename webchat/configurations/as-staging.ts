@@ -25,14 +25,6 @@ const contactType: ContactType = 'ip';
 const enableRecaptcha = true;
 
 const translations: Translations = {
-  ar: {
-    MessageCanvasTrayContent: '',
-    AutoFirstMessage: '',
-  },
-  el: {
-    MessageCanvasTrayContent: '',
-    AutoFirstMessage: '',
-  },
   'en-US': {
     WelcomeMessage: 'Welcome to Aselo!',
     MessageCanvasTrayContent: '',
@@ -42,56 +34,6 @@ const translations: Translations = {
     WhatIsYourHelpline: 'What is your helpline?',
     SelectHelpline: 'Select helpline',
     LetsChat: "Let's chat!",
-  },
-  es: {
-    EntryPointTagline: 'Chatea con nosotros',
-    MessageCanvasTrayButton: 'EMPEZAR NUEVO CHAT',
-    InvalidPreEngagementMessage:
-      'Los formularios previos al compromiso no se han establecido y son necesarios para iniciar el chat web. Por favor configúrelos ahora en la configuración.',
-    InvalidPreEngagementButton: 'Aprende más',
-    PredefinedChatMessageAuthorName: 'Bot',
-    PredefinedChatMessageBody: '¡Hola! ¿Cómo podemos ayudarte hoy?',
-    InputPlaceHolder: 'Escribe un mensaje',
-    TypingIndicator: '{0} está escribiendo ... ',
-    Read: 'Visto',
-    MessageSendingDisabled: 'El envío de mensajes ha sido desactivado',
-    Today: 'HOY',
-    Yesterday: 'AYER',
-    Save: 'GUARDAR',
-    Reset: 'RESETEAR',
-    MessageCharacterCountStatus: '{{currentCharCount}} / {{maxCharCount}}',
-    SendMessageTooltip: 'Enviar Mensaje',
-    FieldValidationRequiredField: 'Campo requerido',
-    FieldValidationInvalidEmail: 'Por favor provea una dirección válida de email',
-
-    PreEngagementDescription: 'Comencemos',
-
-    BotGreeting: '¿Cómo puedo ayudar?',
-    WelcomeMessage: '¡Bienvenido a Aselo!',
-    MessageCanvasTrayContent: '',
-    AutoFirstMessage: '',
-
-    // Needs to be translated
-    WhatIsYourHelpline: 'What is your helpline?',
-    SelectHelpline: 'Select helpline',
-    FakeHelpline: 'Fake Helpline',
-    LetsChat: "Let's chat!",
-  },
-  da: {
-    MessageCanvasTrayContent: '',
-    AutoFirstMessage: '',
-  },
-  it: {
-    MessageCanvasTrayContent: '',
-    AutoFirstMessage: '',
-  },
-  km: {
-    MessageCanvasTrayContent: '',
-    AutoFirstMessage: '',
-  },
-  sv: {
-    MessageCanvasTrayContent: '',
-    AutoFirstMessage: '',
   },
 };
 
@@ -189,20 +131,6 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 
 const mapHelplineLanguage: MapHelplineLanguage = (helpline) => {
   switch (helpline) {
-    case 'Børns Vilkår (DK)':
-      return 'da';
-    case 'BRIS (SE)':
-      return 'sv';
-    case 'Child Helpline Cambodia (KH)':
-      return 'km';
-    case 'Jordan River 110 (JO)':
-      return 'ar';
-    case 'Palo Alto Testing (Text)':
-      return 'en-US';
-    case 'SMILE OF THE CHILD (GR)':
-      return 'el';
-    case 'Telefono Azzurro (IT)':
-      return 'it';
     default:
       return defaultLanguage;
   }
