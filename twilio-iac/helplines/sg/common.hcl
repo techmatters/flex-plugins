@@ -18,7 +18,7 @@ locals {
     workflows = {
       master : {
         friendly_name : "Master Workflow"
-        templatefile : "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+        templatefile : "/app/twilio-iac/helplines/sg/templates/workflows/master.tftpl"
       },
       survey : {
         friendly_name : "Survey Workflow"
