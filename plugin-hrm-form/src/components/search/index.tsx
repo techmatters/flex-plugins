@@ -108,7 +108,7 @@ const Search: React.FC<Props> = ({
   searchContext,
 }) => {
   // const enableSearchV2 = getAseloFeatureFlags().enable_searchV2;
-  const enableSearchV2 = false;
+  const enableSearchV2 = true;
 
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});

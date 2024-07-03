@@ -15,9 +15,10 @@
  */
 
 import React, { useEffect, useMemo } from 'react';
-import { FieldError, useFormContext, useForm } from 'react-hook-form';
+import { FieldError, useFormContext, useForm, FormProvider } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import type { DefinitionVersion, FormDefinition } from 'hrm-form-definitions';
+import { pick } from 'lodash';
 
 import { useCreateFormFromDefinition } from '../../forms';
 // eslint-disable-next-line prettier/prettier
@@ -50,18 +51,14 @@ export const SearchFormV2: React.FC<OwnProps> = ({
 }) => {
   const dispatch = useDispatch();
 
-  const emptyForm = {
-    searchInput: '',
-    createdOnBehalfOf: '',
-    dateTo: '2024-06-27',
-    dateFrom: '2024-06-26',
-  };
   // dispatch(handleSearchFormChange('searchInput', '2024-06-26'));
 
-  // const { getValues, register, setError, setValue, watch, errors } = useForm({ defaultValues: initialValues });
-  const { getValues, register, setError, setValue, watch, errors } = useForm({});
+  const methods = useForm();
 
-  // console.log('>>> SearchFormV2 getValues()', getValues());
+  const { getValues, register, setError } = methods;
+
+  const counselor = 'counselor';
+  const formValues = { ...pick(initialValues, ['searchInput', 'dateFrom', 'dateTo']), counselor };
 
   const counselorsList = useSelector(state => state[namespace][configurationBase].counselors.list);
   // const workerSid = useSelector(selectWorkerSid);
@@ -91,10 +88,6 @@ export const SearchFormV2: React.FC<OwnProps> = ({
   });
   const searchV2Form = disperseInputs(5)(form);
 
-  // useEffect(() => {
-  //   console.log('>>>useEffect', getValues());
-  // }, [getValues]);
-
   React.useEffect(() => {
     console.log('>>> ContactlessTaskTab useEffect', getValues());
     register('searchInput', {
@@ -116,13 +109,15 @@ export const SearchFormV2: React.FC<OwnProps> = ({
 
   return (
     <Container formContainer={true}>
-      <TwoColumnLayout>
-        <ColumnarBlock>
-          <ColumnarContent>SearchFormV2</ColumnarContent>
-          <ColumnarContent>{searchV2Form}</ColumnarContent>
-        </ColumnarBlock>
-        <ColumnarBlock />
-      </TwoColumnLayout>
+      <FormProvider {...methods}>
+        <TwoColumnLayout>
+          <ColumnarBlock>
+            <ColumnarContent>SearchFormV2</ColumnarContent>
+            <ColumnarContent>{searchV2Form}</ColumnarContent>
+          </ColumnarBlock>
+          <ColumnarBlock />
+        </TwoColumnLayout>
+      </FormProvider>
     </Container>
   );
 };
