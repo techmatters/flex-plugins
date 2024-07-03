@@ -24,6 +24,7 @@ import { StorelessThemeProvider } from '@twilio/flex-ui';
 import QueuesStatusWriter from '../../../components/queuesStatus/QueuesStatusWriter';
 import { channelTypes } from '../../../states/DomainConstants';
 import { newQueueEntry, initializeQueuesStatus, getNewQueuesStatus } from '../../../components/queuesStatus/helpers';
+import { queuesStatusUpdate } from '../../../states/queuesStatus/actions';
 
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
 
@@ -152,14 +153,12 @@ describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
     error: 'Not initialized',
     loading: true,
   };
-  const queuesStatusUpdate = jest.fn();
-  const queuesStatusFailure = jest.fn();
+  const initialState = createState(queuesStatusState);
+  const store = mockStore(initialState);
+  store.dispatch = jest.fn();
 
   let mounted;
   test('Test render', async () => {
-    const initialState = createState(queuesStatusState);
-    const store = mockStore(initialState);
-    store.dispatch = jest.fn();
     render(
       <StorelessThemeProvider themeConf={{}}>
         <Provider store={store}>
@@ -174,36 +173,32 @@ describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
 
     expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(2);
     expect(store.dispatch).toHaveBeenCalledWith(queuesStatusUpdate({ Admin: queuesStatus.Admin }));
-    expect(queuesStatusFailure).not.toHaveBeenCalled();
-
-    queuesStatusUpdate.mockClear();
   });
 
   test('Test events', () => {
     // simulate new state (adding tasks)
+    store.dispatch.mockClear();
     innerTasks.T4 = newTasks.T4;
     innerTasks.T5 = newTasks.T5;
 
     // simulate update events
     events.itemUpdated({ key: 'T4', value: newTasks.T4 });
-    expect(queuesStatusUpdate).not.toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalled();
 
     events.itemUpdated({ key: 'T5', value: newTasks.T5 });
-    expect(queuesStatusUpdate).toHaveBeenCalledWith({ Admin: newQueuesStatus.Admin });
-    expect(mounted.state().trackedTasks).toStrictEqual({ T1: true, T3: true, T5: true });
-
-    queuesStatusUpdate.mockClear();
+    expect(store.dispatch).toHaveBeenCalledWith(queuesStatusUpdate({ Admin: newQueuesStatus.Admin }));
 
     // simulate new state (removing tasks)
     delete innerTasks.T1;
     delete innerTasks.T2;
 
+    store.dispatch.mockClear();
     // simulate removed events
     events.itemRemoved({ key: 'T2' });
-    expect(queuesStatusUpdate).not.toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalled();
 
     events.itemRemoved({ key: 'T1' });
-    expect(queuesStatusUpdate).toHaveBeenCalledWith({ Admin: afterDeleteQueuesStatus.Admin });
+    expect(store.dispatch).toHaveBeenCalledWith(queuesStatusUpdate({ Admin: afterDeleteQueuesStatus.Admin }));
   });
 
   test('Test unmount', () => {
