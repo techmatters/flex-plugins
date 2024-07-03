@@ -15,16 +15,19 @@
  */
 
 /* eslint-disable camelcase */
-import React from 'react';
-import { mount } from 'enzyme';
+import * as React from 'react';
+import { render } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
+import { Provider } from 'react-redux';
+import { StorelessThemeProvider } from '@twilio/flex-ui';
 
-import { InnerQueuesStatusWriter as QueuesStatusWriter } from '../../../components/queuesStatus/QueuesStatusWriter';
+import QueuesStatusWriter from '../../../components/queuesStatus/QueuesStatusWriter';
 import { channelTypes } from '../../../states/DomainConstants';
 import { newQueueEntry, initializeQueuesStatus, getNewQueuesStatus } from '../../../components/queuesStatus/helpers';
 
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
 
-jest.mock('../../../services/ServerlessService', () => ({
+jest.mock('../../../services/twilioWorkerService', () => ({
   listWorkerQueues: async ({ workerSid }) => {
     if (workerSid === 'worker-admin')
       return { workerQueues: [{ friendlyName: 'Admin' }, { friendlyName: 'Everyone' }] };
@@ -35,6 +38,7 @@ jest.mock('../../../services/ServerlessService', () => ({
 
 console.log = jest.fn();
 console.error = jest.fn();
+const mockStore = configureMockStore([]);
 
 const queues = { Q1: { queue_name: 'Q1' }, Admin: { queue_name: 'Admin' } };
 
@@ -42,7 +46,7 @@ const secondsAgo = new Date();
 const oneMinuteAgo = new Date(secondsAgo.getTime() - 60 * 1000);
 const twoMinutesAgo = new Date(oneMinuteAgo.getTime() - 60 * 1000);
 
-const tasks = {
+const tasks: Record<string, any> = {
   T1: {
     status: 'pending',
     date_created: oneMinuteAgo,
@@ -71,7 +75,7 @@ const tasks = {
   },
 };
 
-const newTasks = {
+const newTasks: Record<string, any> = {
   T4: {
     status: 'pending',
     date_created: secondsAgo,
@@ -84,7 +88,7 @@ const newTasks = {
     queue_name: 'Admin',
     attributes: { channelType: channelTypes.sms },
   },
-  T5: {
+  T6: {
     status: 'pending',
     date_created: secondsAgo,
     channel_type: 'default',
@@ -94,14 +98,22 @@ const newTasks = {
 };
 
 const clearQueuesStatus = initializeQueuesStatus(Object.keys(queues));
-const queuesStatus = getNewQueuesStatus(clearQueuesStatus, tasks);
-const newQueuesStatus = getNewQueuesStatus(clearQueuesStatus, { ...tasks, ...newTasks });
-const afterDeleteQueuesStatus = getNewQueuesStatus(clearQueuesStatus, { T3: tasks.T3, ...newTasks });
+const queuesStatus = getNewQueuesStatus(clearQueuesStatus, Object.values(tasks));
+const newQueuesStatus = getNewQueuesStatus(clearQueuesStatus, Object.values({ ...tasks, ...newTasks }));
+const afterDeleteQueuesStatus = getNewQueuesStatus(clearQueuesStatus, Object.values({ T3: tasks.T3, ...newTasks }));
+
+function createState(queuesStatusState) {
+  return {
+    'plugin-hrm-form': {
+      queuesStatusState,
+    },
+  };
+}
 
 describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
-  const events = {};
+  const events: Record<string, (param: any) => void> = {};
 
-  const innerTasks = {
+  const innerTasks: Record<string, any> = {
     T1: tasks.T1,
     T2: tasks.T2,
     T3: tasks.T3,
@@ -118,8 +130,6 @@ describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
     }),
     close: jest.fn(),
   };
-
-  const spy = jest.spyOn(QueuesStatusWriter.prototype, 'updateQueuesState');
 
   const ownProps = {
     insightsClient: {
@@ -144,29 +154,32 @@ describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
   };
   const queuesStatusUpdate = jest.fn();
   const queuesStatusFailure = jest.fn();
-  const reduxProps = { queuesStatusState, queuesStatusUpdate, queuesStatusFailure };
 
   let mounted;
-  test('Test mount', async () => {
-    mounted = mount(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
+  test('Test render', async () => {
+    const initialState = createState(queuesStatusState);
+    const store = mockStore(initialState);
+    store.dispatch = jest.fn();
+    render(
+      <StorelessThemeProvider themeConf={{}}>
+        <Provider store={store}>
+          <QueuesStatusWriter {...ownProps} />
+        </Provider>
+      </StorelessThemeProvider>,
+    );
 
     await Promise.resolve(); // resolves listWorkerQueues
     await Promise.resolve(); // resolves worker
     await Promise.resolve(); // resolves tasksQuery
 
     expect(ownProps.insightsClient.liveQuery).toHaveBeenCalledTimes(2);
-    expect(spy).toHaveBeenCalledWith(tasksQuery.getItems(), { Admin: newQueueEntry });
-    expect(queuesStatusUpdate).toHaveBeenCalledWith({ Admin: queuesStatus.Admin });
+    expect(store.dispatch).toHaveBeenCalledWith(queuesStatusUpdate({ Admin: queuesStatus.Admin }));
     expect(queuesStatusFailure).not.toHaveBeenCalled();
-    expect(mounted.state('tasksQuery')).not.toBeNull();
 
-    spy.mockClear();
     queuesStatusUpdate.mockClear();
   });
 
   test('Test events', () => {
-    expect(mounted.state().trackedTasks).toStrictEqual({ T1: true, T3: true });
-
     // simulate new state (adding tasks)
     innerTasks.T4 = newTasks.T4;
     innerTasks.T5 = newTasks.T5;
@@ -179,7 +192,6 @@ describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
     expect(queuesStatusUpdate).toHaveBeenCalledWith({ Admin: newQueuesStatus.Admin });
     expect(mounted.state().trackedTasks).toStrictEqual({ T1: true, T3: true, T5: true });
 
-    spy.mockClear();
     queuesStatusUpdate.mockClear();
 
     // simulate new state (removing tasks)
@@ -192,7 +204,6 @@ describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
 
     events.itemRemoved({ key: 'T1' });
     expect(queuesStatusUpdate).toHaveBeenCalledWith({ Admin: afterDeleteQueuesStatus.Admin });
-    expect(mounted.state().trackedTasks).toStrictEqual({ T3: true, T5: true });
   });
 
   test('Test unmount', () => {
@@ -202,9 +213,9 @@ describe('QueuesStatusWriter should subscribe to Admin queue only', () => {
 });
 
 describe('QueuesStatusWriter should subscribe to Q1 queue only', () => {
-  const events = {};
+  const events: Record<string, (param: any) => void> = {};
 
-  const innerTasks = {
+  const innerTasks: Record<string, any> = {
     T1: tasks.T1,
     T2: tasks.T2,
     T3: tasks.T3,
@@ -252,7 +263,7 @@ describe('QueuesStatusWriter should subscribe to Q1 queue only', () => {
 
   let mounted;
   test('Test mount', async () => {
-    mounted = mount(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
+    mounted = render(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
 
     await Promise.resolve(); // resolves listWorkerQueues
     await Promise.resolve(); // resolves worker
@@ -336,7 +347,7 @@ describe('QueuesStatusWriter should fail trying to subscribe', () => {
     const queuesStatusFailure = jest.fn();
     const reduxProps = { queuesStatusState, queuesStatusUpdate, queuesStatusFailure };
 
-    const mounted = mount(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
+    const mounted = render(<QueuesStatusWriter {...ownProps} {...reduxProps} />);
 
     await Promise.resolve(); // resolves listWorkerQueues
     await Promise.resolve(); // resolves worker

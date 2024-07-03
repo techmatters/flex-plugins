@@ -70,8 +70,7 @@ test('Test <QueuesStatus> with initial state (display Not initialized)', () => {
   const store = mockStore(initialState);
 
   render(
-    // @ts-ignore
-    <StorelessThemeProvider themeConf={themeConf}>
+    <StorelessThemeProvider themeConf={{}}>
       <Provider store={store}>
         <QueuesStatus {...ownProps} />
       </Provider>
