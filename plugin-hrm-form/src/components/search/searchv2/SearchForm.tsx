@@ -19,13 +19,21 @@ import { FieldError, useFormContext, useForm, FormProvider } from 'react-hook-fo
 import { useDispatch, useSelector } from 'react-redux';
 import type { DefinitionVersion, FormDefinition } from 'hrm-form-definitions';
 import { pick } from 'lodash';
+import { Template } from '@twilio/flex-ui';
 
 import { useCreateFormFromDefinition } from '../../forms';
 // eslint-disable-next-line prettier/prettier
 import { createSearchFormDefinition} from './SearchFormDefiniton';
 import { configurationBase, namespace } from '../../../states/storeNamespaces';
 import { selectWorkerSid } from '../../../states/selectors/flexSelectors';
-import { Container, ColumnarBlock, TwoColumnLayout, ColumnarContent } from '../../../styles';
+import {
+  Container,
+  ColumnarBlock,
+  TwoColumnLayout,
+  ColumnarContent,
+  BottomButtonBar,
+  StyledNextStepButton,
+} from '../../../styles';
 import { disperseInputs } from '../../common/forms/formGenerators';
 import { CustomITask } from '../../../types/types';
 import { SearchFormValues } from '../../../states/search/types';
@@ -51,73 +59,53 @@ export const SearchFormV2: React.FC<OwnProps> = ({
 }) => {
   const dispatch = useDispatch();
 
-  // dispatch(handleSearchFormChange('searchInput', '2024-06-26'));
-
   const methods = useForm();
 
   const { getValues, register, setError } = methods;
 
-  const counselor = 'counselor';
-  const formValues = { ...pick(initialValues, ['searchInput', 'dateFrom', 'dateTo']), counselor };
+  const counselor =
+    typeof initialValues.counselor === 'string' ? initialValues.counselor : initialValues.counselor.value;
+  const sanitizedInitialValues = { ...pick(initialValues, ['searchInput', 'dateFrom', 'dateTo']), counselor };
 
   const counselorsList = useSelector(state => state[namespace][configurationBase].counselors.list);
-  // const workerSid = useSelector(selectWorkerSid);
-  // console.log('>>>counselorsList', counselorsList);
+  console.log('>>> counselorsList', counselorsList);
 
   const formDefinition: FormDefinition = useMemo(() => createSearchFormDefinition(counselorsList), [counselorsList]);
 
   const form = useCreateFormFromDefinition({
     definition: formDefinition,
-    initialValues: {
-      ...initialValues,
-      // TODO: remove this
-      counselor: '',
-      helpline: '',
-    },
+    initialValues: sanitizedInitialValues,
     parentsPath: '',
     updateCallback: () => {
       const values = getValues();
-      // console.log('>>>values', values);
+      console.log('>>> updateCallback values', values);
       // const { isFutureAux, ...contactlessTaskFields } = getValues().contactlessTask;
       console.log('>>>updateCallback');
       Object.entries(values).forEach(([fieldName, fieldValue]) => {
         dispatch(handleSearchFormChange(fieldName, fieldValue.toString()));
       });
     },
-    // shouldFocusFirstElement: display && autoFocus,
   });
   const searchV2Form = disperseInputs(5)(form);
 
-  React.useEffect(() => {
-    console.log('>>> ContactlessTaskTab useEffect', getValues());
-    register('searchInput', {
-      validate: () => {
-        // const { contactlessTask } = getValues();
-        // const { date, time } = contactlessTask;
-        // if (date && time) {
-        //   const [y, m, d] = splitDate(date);
-        //   const [mm, hh] = splitTime(time);
-        //   if (isFuture(new Date(y, m - 1, d, mm, hh))) {
-        //     return 'TimeCantBeGreaterThanNow'; // return non-null to generate an error, using the localized error key
-        //   }
-        // }
-        console.log('>>> searchInput validate');
-        return ''; // null
-      },
-    });
-  }, [getValues, register, setError]);
-
   return (
-    <Container formContainer={true}>
-      <FormProvider {...methods}>
-        <TwoColumnLayout>
-          <ColumnarBlock>
-            <ColumnarContent>SearchFormV2</ColumnarContent>
-            <ColumnarContent>{searchV2Form}</ColumnarContent>
-          </ColumnarBlock>
-          <ColumnarBlock />
-        </TwoColumnLayout>
-      </FormProvider>
-    </Container>
+    <>
+      <Container data-testid="SearchForm" data-fs-id="SearchForm" formContainer={true}>
+        <FormProvider {...methods}>
+          <TwoColumnLayout>
+            <ColumnarBlock>
+              <ColumnarContent>{searchV2Form}</ColumnarContent>
+            </ColumnarBlock>
+            <ColumnarBlock />
+          </TwoColumnLayout>
+        </FormProvider>
+      </Container>
+      <BottomButtonBar>
+        {/* disabled={!isTouched}s */}
+        <StyledNextStepButton type="button" roundCorners={true} onClick={handleSearch}>
+          <Template code="SearchForm-Button" />
+        </StyledNextStepButton>
+      </BottomButtonBar>
+    </>
   );
 };

@@ -42,7 +42,7 @@ export const createSearchFormDefinition = ({
   return [
     {
       name: 'searchInput',
-      label: 'searchInput',
+      label: 'Search',
       type: FormInputType.Input,
       required: { value: true, message: 'RequiredFieldError' },
       maxLength: { value: 500, message: '500 characters max.' },
@@ -50,19 +50,14 @@ export const createSearchFormDefinition = ({
     {
       name: 'counselor',
       type: FormInputType.Select,
-      label: 'counselor',
+      label: 'Counselor',
       options: counsellorOptions,
-      // options: [
-      //   { value: 'cn1', label: 'counsellor 1' },
-      //   { value: 'cn2', label: 'counsellor 2' },
-      // ],
-      // defaultOption: workerSid,
       required: { value: false, message: 'RequiredFieldError' },
     },
     {
       name: 'dateFrom',
       type: FormInputType.DateInput,
-      label: 'dateFrom',
+      label: 'Date From',
       initializeWithCurrent: false,
       required: { value: false, message: 'RequiredFieldError' },
       validate: date => {
@@ -71,6 +66,9 @@ export const createSearchFormDefinition = ({
 
         // Date is lesser than Unix epoch (00:00:00 UTC on 1 January 1970)
         if (inputDate.getTime() < 0) return 'DateCantBeLesserThanEpoch';
+
+        // Date is greater than "today"
+        if (isFuture(inputDate)) return 'DateCantBeGreaterThanToday';
 
         // TODO: Date is greater than DateTo
         // if (isAfter(inputDate, dateTo)) {

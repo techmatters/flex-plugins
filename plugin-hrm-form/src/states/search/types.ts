@@ -35,7 +35,7 @@ export const CREATE_NEW_SEARCH = 'CREATE_NEW_SEARCH';
 export const newSearchFormEntry = {
   firstName: '',
   lastName: '',
-  counselor: { label: '', value: '' },
+  counselor: { label: '', value: '' } as { label: string; value: string } | string,
   phoneNumber: '',
   dateFrom: '',
   dateTo: '',
@@ -44,22 +44,9 @@ export const newSearchFormEntry = {
   searchInput: '',
 };
 
-// export const newSearchFormEntryV2 = {
-//   searchInput: '',
-//   counselor: '',
-//   dateFrom: '',
-//   dateTo: '',
-// };
-
 export type SearchFormValues = {
   [K in keyof typeof newSearchFormEntry]: typeof newSearchFormEntry[K];
 };
-// export type SearchFormValues = Partial<Pick<typeof newSearchFormEntry, 'counselor' | 'helpline'>> &
-//   Omit<typeof newSearchFormEntry, 'counselor' | 'helpline'>;
-
-// export type SearchFormV2Values = {
-//   [K in keyof typeof newSearchFormEntryV2]: typeof newSearchFormEntryV2[K];
-// };
 
 export type SearchParams = Partial<SearchFormValues> & {
   taskSid?: string;

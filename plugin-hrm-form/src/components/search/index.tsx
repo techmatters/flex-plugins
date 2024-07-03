@@ -247,16 +247,13 @@ const Search: React.FC<Props> = ({
         }
       >
         {enableSearchV2 ? (
-          <>
-            <div>Searchv2</div>
-            <SearchFormV2
-              initialValues={form}
-              autoFocus={true}
-              task={task}
-              handleSearchFormChange={handleSearchFormChange(searchContext)}
-              handleSearch={setSearchParamsAndHandleSearch}
-            />
-          </>
+          <SearchFormV2
+            initialValues={form}
+            autoFocus={true}
+            task={task}
+            handleSearchFormChange={handleSearchFormChange(searchContext)}
+            handleSearch={setSearchParamsAndHandleSearch}
+          />
         ) : (
           <SearchForm
             task={task}
