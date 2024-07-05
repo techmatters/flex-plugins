@@ -144,3 +144,30 @@ export const AvatarContainer = styled('div')<{ withBackground: boolean }>`
   -webkit-box-pack: center;
 `;
 AvatarContainer.displayName = 'AvatarContainer';
+
+export const MediaItemContainer = styled('a')`
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  border: 1px solid #8891aa;
+  outline: none;
+  cursor: pointer;
+  width: 250px;
+  max-width: calc(100% - 0.5rem);
+  padding: 0px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+  border-radius: 4px;
+  font-size: 10px;
+  position: relative;
+`;
+MediaItemContainer.displayName = 'MediaItemContainer';
+
+export const OpenMediaIconContainer = styled('p')`
+  position: absolute;
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+`;
+OpenMediaIconContainer.displayName = 'OpenMediaIconContainer';

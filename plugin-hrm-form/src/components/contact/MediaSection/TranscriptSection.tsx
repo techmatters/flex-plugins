@@ -29,6 +29,7 @@ import { GroupedMessage } from '../../Messaging/MessageItem';
 import { MessageList } from '../../Messaging/MessageList';
 import { ErrorFont, ItalicFont, LoadMediaButton, LoadMediaButtonText } from './styles';
 import { contactFormsBase, namespace } from '../../../states/storeNamespaces';
+import { getMediaUrl } from '../../../services/ServerlessService';
 
 type OwnProps = {
   contactId: string;
@@ -92,6 +93,7 @@ const TranscriptSection: React.FC<Props> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [updatedGroupMessages, setUpdatedGroupMessages] = useState<GroupedMessage[]>([]);
 
   // Currently this should only really catch errors when we try to download the file from the signed link.
   const isErrTemporary = err => {
@@ -175,13 +177,36 @@ const TranscriptSection: React.FC<Props> = ({
     );
   }
 
-  // Preferred case, external transcript is already in local state
   if (transcript) {
-    const groupedMessages = groupMessagesAndAddSenderInfo(transcript);
+    const fetchUpdatedGroupMessages = async () => {
+      const groupedMessages = groupMessagesAndAddSenderInfo(transcript);
+
+      const updatedMessages = await Promise.all(
+        groupedMessages.map(async message => {
+          if (message.media) {
+            const mediaUrl = await getMediaUrl(transcript.serviceSid, message.media.sid);
+            const contentType = message.media.content_type?.split('/')[1];
+            message.mediaUrl = mediaUrl.links.content_direct_temporary;
+            message.contentType = contentType;
+
+            if (message.media.filename) {
+              message.body = message.media.filename;
+            } else {
+              message.body = `untitled.${contentType}`;
+            }
+          }
+          return message;
+        }),
+      );
+
+      setUpdatedGroupMessages(updatedMessages);
+    };
+
+    fetchUpdatedGroupMessages();
 
     return (
       <Box padding="0 3.75% 50px 3.75%" width="100%">
-        <MessageList messages={groupedMessages} />
+        <MessageList messages={updatedGroupMessages} />
       </Box>
     );
   }

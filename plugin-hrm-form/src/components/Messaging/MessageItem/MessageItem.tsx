@@ -32,13 +32,19 @@ import {
   MessageItemInnerContainer,
   AvatarColumn,
   MessageBubbleTextContainer,
+  OpenMediaIconContainer,
+  MediaItemContainer,
 } from './styles';
 import { TranscriptMessage } from '../../../states/contacts/existingContacts';
+import { ContentType, displayMediaSize, selectMediaIcon } from '../../../utils/selectMediaIcon';
+import OpenPageIcon from '../../common/icons/OpenPageIcon';
 
 export type GroupedMessage = TranscriptMessage & {
   friendlyName: string;
   isCounselor: boolean;
   isGroupedWithPrevious: boolean;
+  mediaUrl?: string;
+  contentType?: ContentType;
 };
 
 type Props = {
@@ -46,8 +52,37 @@ type Props = {
 };
 
 const MessageItem: React.FC<Props> = ({ message }) => {
-  const { body, dateCreated, friendlyName, from, isCounselor, isGroupedWithPrevious } = message;
+  const {
+    body,
+    dateCreated,
+    friendlyName,
+    from,
+    isCounselor,
+    isGroupedWithPrevious,
+    mediaUrl,
+    media,
+    contentType,
+  } = message;
   const renderIcon = !isCounselor && !isGroupedWithPrevious;
+
+  const setMessageItem = () => {
+    if (mediaUrl) {
+      return (
+        <MediaItemContainer href={mediaUrl} target='_blank' >
+          <span>{selectMediaIcon(contentType)}</span>
+          <span>
+            <p>{body}</p>
+            <p>{displayMediaSize(media.size)}</p>
+          </span>
+          <OpenMediaIconContainer>
+            <OpenPageIcon width="20px" height="20px" color="#8891AA" />
+          </OpenMediaIconContainer>
+        </MediaItemContainer>
+      );
+    }
+    return body;
+  };
+
   return (
     <MessageItemContainer isCounselor={isCounselor} isGroupedWithPrevious={isGroupedWithPrevious} role="listitem">
       <MessageItemInnerContainer>
@@ -71,7 +106,7 @@ const MessageItem: React.FC<Props> = ({ message }) => {
                 </MessageBubbleDateText>
               </MessageBubbleHeader>
               <MessageBubbleBody>
-                <MessageBubbleBodyText isCounselor={isCounselor}>{body}</MessageBubbleBodyText>
+                <MessageBubbleBodyText isCounselor={isCounselor}>{setMessageItem()}</MessageBubbleBodyText>
               </MessageBubbleBody>
             </MessageBubbleTextContainer>
           </MessageBubleInnerContainer>

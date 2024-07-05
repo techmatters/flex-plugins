@@ -180,3 +180,10 @@ export const selfReportToIWF = async (form: ChildCSAMReportForm, caseNumber: str
   const response = await fetchProtectedApi('/selfReportToIWF', body);
   return response;
 };
+
+export const getMediaUrl = async (serviceSid: string, mediaSid: string) => {
+  const body = { serviceSid, mediaSid };
+
+  const response = await fetchProtectedApi('/getMediaUrl', body);
+  return response;
+};
