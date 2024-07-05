@@ -48,18 +48,21 @@ const useCreateFormFromDefinition = ({
   isItemEnabled = alwaysEnabled,
   context = {},
 }: UseFormFromDefinition) => {
-  // console.log('>>> useCreateFormFromDefinition start:');
-
   const firstElementRef = useFocus(shouldFocusFirstElement);
-  // console.log('>>> firstElementRef ', firstElementRef);
   if (!initialValues) return [];
-
+  console.log('>>> useCreateFormFromDefinition start', {
+    definition,
+    parentsPath,
+    initialValues,
+    shouldFocusFirstElement,
+    customHandlers,
+    isItemEnabled,
+    context,
+  });
   return definition.map((e: FormItemDefinition, index: number) => {
     const elementRef = index === 0 ? firstElementRef : null;
     const maybeValue = get(initialValues, e.name);
     const initialValue = maybeValue === undefined ? getInitialValue(e) : maybeValue;
-
-    // console.log('>>> formItemDefinition:', e);
 
     return createInput({
       formItemDefinition: e,

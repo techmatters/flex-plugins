@@ -112,9 +112,7 @@ const Search: React.FC<Props> = ({
 
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});
-  console.log('>>> Search beofre', { form, searchContext });
   useEffect(() => {
-    console.log('>>> Search useEffect', { form, searchContext });
     if (!form) {
       handleNewCreateSearch(searchContext);
     }
@@ -122,10 +120,8 @@ const Search: React.FC<Props> = ({
 
   const closeDialog = () => setMockedMessage('');
 
-  const handleSearchContacts = (newSearchParams: SearchParams, newOffset) => {
-    console.log('>>> handleSearchContacts', { form, newSearchParams, newOffset });
-    return searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
-  };
+  const handleSearchContacts = (newSearchParams: SearchParams, newOffset) =>
+    searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
 
   const handleSearchCases = (newSearchParams, newOffset) =>
     searchCases(searchContext)({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
@@ -186,7 +182,6 @@ const Search: React.FC<Props> = ({
     );
   };
   renderMockDialog.displayName = 'MockDialog';
-  console.log('>>> Search end', { form, searchContext });
 
   const renderSearchPages = () => {
     if (isProfileRoute(routing)) return <ProfileRouter task={task} />;

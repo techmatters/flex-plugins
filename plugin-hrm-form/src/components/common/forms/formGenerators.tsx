@@ -206,7 +206,6 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     if (htmlElRef) {
                       htmlElRef.current = ref;
                     }
-                    console.log('>>> FormInput ref', rules, ref);
 
                     register(rules)(ref);
                   }}
@@ -523,8 +522,6 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                       if (htmlElRef) {
                         htmlElRef.current = ref;
                       }
-                      console.log('>>> FormInput ref', { rules, ref });
-
                       register(rules)(ref);
                     }}
                     disabled={!isEnabled}
@@ -597,7 +594,6 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                       if (htmlElRef) {
                         htmlElRef.current = ref;
                       }
-                      console.log('>>> FormInput Selelct ref', rules, ref);
 
                       register({ validate })(ref);
                     }}

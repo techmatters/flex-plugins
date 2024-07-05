@@ -288,6 +288,11 @@ export const FormRadioInput = styled('input')<FormInputProps>`
 FormRadioInput.displayName = 'FormRadioInput';
 
 export const FormDateInput = styled(FormInput)`
+  input: {
+    width: 100%;
+    flex-grow: 1;
+    display: flex;
+  }
   &[type='date']::-webkit-clear-button,
   &[type='date']::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -296,6 +301,13 @@ export const FormDateInput = styled(FormInput)`
   &[type='date']::placeholder {
     color: '#AEAEAE';
     opacity: 1;
+  }
+  // move icon to end
+  &[type='date']::-webkit-calendar-picker-indicator {
+    background-color: pink;
+    display: flex;
+    justify-content: end;
+    align-items: end;
   }
   /* &[type='date'] {} */
   /* &[type='date']::-webkit-calendar-picker-indicator {} */

@@ -21,24 +21,20 @@ import { isFuture, isAfter } from 'date-fns';
 import type { CounselorsList } from '../../../states/configuration/types';
 import { splitDate } from '../../../utils/helpers';
 
-// export type SearchFormDefinitionObject = {
-//   searchInput: FormItemDefinition;
-//   createdOnBehalfOf: FormItemDefinition;
-//   dateFrom: FormItemDefinition;
-//   dateTo: FormItemDefinition;
-// };
-
 export const createSearchFormDefinition = ({
   counselorsList,
 }: {
   counselorsList: CounselorsList;
   // }): SearchFormDefinitionObject => {
 }): FormDefinition => {
-  console.log('>>> createSearchFormDefinition start');
-  const counsellorOptions = counselorsList
-    ? [{ label: '', value: '' }, ...counselorsList.map(c => ({ label: c.fullName, value: c.sid }))]
-    : [{ label: '', value: '' }];
-
+  console.log('>>> createSearchFormDefinition start', counselorsList);
+  const counsellorOptions = [
+    { label: '', value: '' },
+    ...(counselorsList?.length > 2
+      ? counselorsList.map(c => ({ label: c.fullName, value: c.sid }))
+      : [{ label: 'Default', value: 'default' }]),
+  ];
+  console.log('>>> createSearchFormDefinition counsellorOptions:', counsellorOptions);
   return [
     {
       name: 'searchInput',

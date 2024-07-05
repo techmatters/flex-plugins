@@ -46,7 +46,6 @@ type OwnProps = {
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   const { savedContact, draftContact } = selectContactByTaskSid(state, task.taskSid) ?? {};
-  console.log('>>> ContactlessTaskTab mapStateToProps', { savedContact, draftContact });
   return {
     counselorsList: state[namespace][configurationBase].counselors.list,
     unsavedContact: getUnsavedContact(savedContact, draftContact),
@@ -54,7 +53,6 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => {
-  console.log('>>> ContactlessTaskTab mapDispatchToProps');
   return {
     updateContactlessTaskDraft: (
       contactId: string,
@@ -79,7 +77,6 @@ const ContactlessTaskTab: React.FC<Props> = ({
   updateContactlessTaskDraft,
 }) => {
   const { getValues, register, setError, setValue, watch, errors } = useFormContext();
-  // console.log('>>> ContactlessTaskTab getValues()', getValues());
 
   const workerSid = useSelector(selectWorkerSid);
 
@@ -96,7 +93,6 @@ const ContactlessTaskTab: React.FC<Props> = ({
     },
     parentsPath: 'contactlessTask',
     updateCallback: () => {
-      console.log('>>> ContactlessTaskTab updateCallback', getValues().contactlessTask);
       const { isFutureAux, helpline, ...contactlessTaskFields } = getValues().contactlessTask;
       updateContactlessTaskDraft(unsavedContact.id, contactlessTaskFields, helpline);
     },
@@ -107,7 +103,6 @@ const ContactlessTaskTab: React.FC<Props> = ({
 
   // Add invisible field that errors if date + time are future (triggered by validaiton)
   React.useEffect(() => {
-    console.log('>>> ContactlessTaskTab useEffect', getValues());
     register('contactlessTask.isFutureAux', {
       validate: () => {
         const { contactlessTask } = getValues();

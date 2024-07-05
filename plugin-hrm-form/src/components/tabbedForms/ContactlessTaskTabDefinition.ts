@@ -38,6 +38,7 @@ export const createContactlessTaskTabDefinition = ({
   helplineInformation: DefinitionVersion['helplineInformation'];
   definition: DefinitionVersion['tabbedForms']['ContactlessTaskTab'];
 }): FormDefinition => {
+  console.log('>>> createContactlessTaskTabDefinition start', counselorsList);
   const counsellorOptions = [
     { label: '', value: '' },
     ...counselorsList.map(c => ({ label: c.fullName, value: c.sid })),

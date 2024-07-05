@@ -90,7 +90,6 @@ const FormInput: React.FC<Props> = ({
   htmlElRef,
   isEnabled,
 }) => {
-  console.log('>>> FormInput', { inputId, label, initialValue, registerOptions, htmlElRef, isEnabled });
   // TODO factor out into a custom hook to make easier sharing this chunk of code
   const { errors, register } = useFormContext();
   const error = get(errors, inputId);
