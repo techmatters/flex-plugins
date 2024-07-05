@@ -68,6 +68,7 @@ const MessageItem: React.FC<Props> = ({ message }) => {
   const setMessageItem = () => {
     if (mediaUrl) {
       return (
+        // Handle UI modification for media on transcript
         <MediaItemContainer href={mediaUrl} target='_blank' >
           <span>{selectMediaIcon(contentType)}</span>
           <span>

@@ -184,6 +184,7 @@ const TranscriptSection: React.FC<Props> = ({
       const updatedMessages = await Promise.all(
         groupedMessages.map(async message => {
           if (message.media) {
+            // This updates the message object with the media data to be used on transcript
             const mediaUrl = await getMediaUrl(transcript.serviceSid, message.media.sid);
             const contentType = message.media.content_type?.split('/')[1];
             message.mediaUrl = mediaUrl.links.content_direct_temporary;
