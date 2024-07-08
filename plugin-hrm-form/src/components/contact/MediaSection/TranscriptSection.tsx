@@ -178,36 +178,26 @@ const TranscriptSection: React.FC<Props> = ({
   }
 
   if (transcript) {
-    const fetchUpdatedGroupMessages = async () => {
-      const groupedMessages = groupMessagesAndAddSenderInfo(transcript);
+    const groupedMessages = groupMessagesAndAddSenderInfo(transcript);
+    const updatedMessages = groupedMessages.map(message => {
+      if (message.media) {
+        // This updates the message object with the media data to be used on transcript
+        const contentType = message.media.content_type?.split('/')[1];
+        message.serviceSid = transcript.serviceSid;
+        message.contentType = contentType;
 
-      const updatedMessages = await Promise.all(
-        groupedMessages.map(async message => {
-          if (message.media) {
-            // This updates the message object with the media data to be used on transcript
-            const mediaUrl = await getMediaUrl(transcript.serviceSid, message.media.sid);
-            const contentType = message.media.content_type?.split('/')[1];
-            message.mediaUrl = mediaUrl.links.content_direct_temporary;
-            message.contentType = contentType;
-
-            if (message.media.filename) {
-              message.body = message.media.filename;
-            } else {
-              message.body = `untitled.${contentType}`;
-            }
-          }
-          return message;
-        }),
-      );
-
-      setUpdatedGroupMessages(updatedMessages);
-    };
-
-    fetchUpdatedGroupMessages();
+        if (message.media.filename) {
+          message.body = message.media.filename;
+        } else {
+          message.body = `untitled.${contentType}`;
+        }
+      }
+      return message;
+    });
 
     return (
       <Box padding="0 3.75% 50px 3.75%" width="100%">
-        <MessageList messages={updatedGroupMessages} />
+        <MessageList messages={updatedMessages} />
       </Box>
     );
   }

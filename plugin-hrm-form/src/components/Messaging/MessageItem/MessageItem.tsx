@@ -38,12 +38,13 @@ import {
 import { TranscriptMessage } from '../../../states/contacts/existingContacts';
 import { ContentType, displayMediaSize, selectMediaIcon } from '../../../utils/selectMediaIcon';
 import OpenPageIcon from '../../common/icons/OpenPageIcon';
+import { getMediaUrl } from '../../../services/ServerlessService';
 
 export type GroupedMessage = TranscriptMessage & {
   friendlyName: string;
   isCounselor: boolean;
   isGroupedWithPrevious: boolean;
-  mediaUrl?: string;
+  serviceSid?: string;
   contentType?: ContentType;
 };
 
@@ -59,17 +60,22 @@ const MessageItem: React.FC<Props> = ({ message }) => {
     from,
     isCounselor,
     isGroupedWithPrevious,
-    mediaUrl,
+    serviceSid,
     media,
     contentType,
   } = message;
   const renderIcon = !isCounselor && !isGroupedWithPrevious;
 
   const setMessageItem = () => {
-    if (mediaUrl) {
+    if (media && serviceSid) {
+      const mediaUrl = async () => {
+        const mediaUrl = await getMediaUrl(serviceSid, media.sid);
+        window.open(mediaUrl, '_blank');
+      };
+
       return (
         // Handle UI modification for media on transcript
-        <MediaItemContainer href={mediaUrl} target="_blank">
+        <MediaItemContainer onClick={mediaUrl}>
           <span>{selectMediaIcon(contentType)}</span>
           <span>
             <p>{body}</p>

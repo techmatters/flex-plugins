@@ -145,9 +145,7 @@ export const AvatarContainer = styled('div')<{ withBackground: boolean }>`
 `;
 AvatarContainer.displayName = 'AvatarContainer';
 
-export const MediaItemContainer = styled('a')`
-  text-decoration: none;
-  color: inherit;
+export const MediaItemContainer = styled('p')`
   display: flex;
   align-items: center;
   border: 1px solid #8891aa;
