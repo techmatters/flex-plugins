@@ -100,8 +100,8 @@ ${
                 }
             ],
             "properties": {
-                "service_sid": flow_vars["service_sid"],
-                "environment_sid": flow_vars["environment_sid"],
+                "service_sid": serverless_service_sid,
+                "environment_sid": serverless_environment_sid,
                 "offset": {
                  "x": -130,
                  "y": 500
@@ -158,13 +158,13 @@ ${
                 }
             ],
             "properties": {
-                "service_sid": flow_vars["service_sid"],
-                "environment_sid": flow_vars["environment_sid"],
+                "service_sid": serverless_service_sid,
+                "environment_sid": serverless_environment_sid,
                 "offset": {
                  "x": -60,
                  "y": 720
                 },
-                "function_sid": flow_vars["chatbot_callback_cleanup_function_id"],
+                "function_sid": flow_vars["chatbot_callback_cleanup_function_sid"],
                 "parameters": [
                 {
                     "value": "{{flow.channel.address}}",
