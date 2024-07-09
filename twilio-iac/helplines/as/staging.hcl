@@ -19,14 +19,14 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
       facebook : {
         channel_type         = "facebook"
         contact_identity     = "messenger:131329426738030"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
