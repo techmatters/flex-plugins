@@ -43,19 +43,19 @@ export const createSearchFormDefinition = ({
     {
       name: 'searchInput',
       label: '',
-      type: FormInputType.Input,
+      type: FormInputType.SearchInput,
       maxLength: { value: 500, message: '500 characters max.' },
     },
     {
       name: 'counselor',
       type: FormInputType.Select,
-      label: 'Counselor',
+      label: 'Counselor Name',
       options: counsellorOptions,
     },
     {
       name: 'dateFrom',
       type: FormInputType.DateInput,
-      label: 'Date From',
+      label: 'Start Date',
       initializeWithCurrent: false,
       validate: date => {
         const [y, m, d] = splitDate(date);
@@ -77,7 +77,7 @@ export const createSearchFormDefinition = ({
     {
       name: 'dateTo',
       type: FormInputType.DateInput,
-      label: 'Date To',
+      label: 'End Date',
       initializeWithCurrent: false,
       validate: date => {
         const [y, m, d] = splitDate(date);

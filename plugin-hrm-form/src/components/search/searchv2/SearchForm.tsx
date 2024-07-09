@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, Fragment, useRef, useState } from 'react';
 import { FieldError, useFormContext, useForm, FormProvider } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import type { DefinitionVersion, FormDefinition } from 'hrm-form-definitions';
@@ -33,8 +33,12 @@ import {
   ColumnarContent,
   BottomButtonBar,
   StyledNextStepButton,
+  FontOpenSans,
+  Bold,
+  DateRangeSpacer,
+  TwoColumnLayoutResponsive,
 } from '../../../styles';
-import { arrangeSearchFormItems } from '../../common/forms/formGenerators';
+import { addMargin } from '../../common/forms/formGenerators';
 import { CustomITask } from '../../../types/types';
 import { SearchFormValues } from '../../../states/search/types';
 import { CounselorsList } from '../../../states/configuration/types';
@@ -57,6 +61,23 @@ export const SearchFormV2: React.FC<OwnProps> = ({
   handleSearchFormChange,
   handleSearch,
 }) => {
+  const layoutRef = useRef(null); // Step 1: Create a ref
+  const [layoutWidth, setLayoutWidth] = useState(0); // State to store the width
+
+  const isNarrow = layoutWidth < 1000;
+  useEffect(() => {
+    const updateWidth = () => {
+      if (layoutRef.current) {
+        setLayoutWidth(layoutRef.current.offsetWidth);
+      }
+    };
+
+    window.addEventListener('resize', updateWidth);
+    updateWidth(); // Initial measurement
+
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
+
   const dispatch = useDispatch();
 
   const methods = useForm();
@@ -85,18 +106,33 @@ export const SearchFormV2: React.FC<OwnProps> = ({
       });
     },
   });
+
+  const arrangeSearchFormItems = (margin: number) => (formItems: JSX.Element[]) => {
+    const itemsWithMargin = formItems.map(item => addMargin(margin)(item));
+
+    return [
+      <TwoColumnLayout key="searchInput" style={{ margin: '10px 0 20px 0' }}>
+        {itemsWithMargin[0]}
+      </TwoColumnLayout>,
+      <FontOpenSans key="filter-subtitle " style={{ marginBottom: '20px' }}>
+        <Bold>Optional Filters</Bold>
+      </FontOpenSans>,
+      <ColumnarContent key="counselor">{itemsWithMargin[1]}</ColumnarContent>,
+      <TwoColumnLayoutResponsive key="dateRange">
+        <ColumnarBlock>{itemsWithMargin[2]}</ColumnarBlock>
+        <DateRangeSpacer>-</DateRangeSpacer>
+        <ColumnarBlock>{itemsWithMargin[3]}</ColumnarBlock>
+      </TwoColumnLayoutResponsive>,
+    ];
+  };
+
   const searchV2Form = arrangeSearchFormItems(5)(form);
 
   return (
     <>
       <Container data-testid="SearchForm" data-fs-id="SearchForm" formContainer={true}>
         <FormProvider {...methods}>
-          <TwoColumnLayout>
-            <ColumnarBlock>
-              <ColumnarContent>{searchV2Form}</ColumnarContent>
-            </ColumnarBlock>
-            <ColumnarBlock />
-          </TwoColumnLayout>
+          <ColumnarContent>{searchV2Form}</ColumnarContent>
         </FormProvider>
       </Container>
       <BottomButtonBar>

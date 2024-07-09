@@ -23,6 +23,7 @@ import { get, pick } from 'lodash';
 import { format, startOfDay } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import { FormInputType, FormItemDefinition, InputOption, MixedOrBool, SelectOption } from 'hrm-form-definitions';
+import SearchIcon from '@material-ui/icons/Search';
 
 import {
   Box,
@@ -47,6 +48,8 @@ import {
   FormTextArea,
   FormTimeInput,
   Row,
+  FormSearchInput,
+  IconContainer,
 } from '../../../styles';
 import type { HTMLElementRef } from './types';
 import UploadFileInput from './UploadFileInput';
@@ -196,6 +199,50 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   </Box>
                 </Row>
                 <FormInput
+                  id={path}
+                  data-testid={path}
+                  name={path}
+                  error={Boolean(error)}
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={`${path}-error`}
+                  onBlur={updateCallback}
+                  ref={ref => {
+                    if (htmlElRef) {
+                      htmlElRef.current = ref;
+                    }
+
+                    register(rules)(ref);
+                  }}
+                  defaultValue={initialValue}
+                  disabled={!isEnabled}
+                />
+                {error && (
+                  <FormError>
+                    <Template id={`${path}-error`} code={error.message} />
+                  </FormError>
+                )}
+              </FormLabel>
+            );
+          }}
+        </ConnectForm>
+      );
+    case FormInputType.SearchInput:
+      return (
+        <ConnectForm key={path}>
+          {({ errors, register }) => {
+            const error = get(errors, path);
+            return (
+              <FormLabel htmlFor={path}>
+                <Row>
+                  <Box marginBottom="8px">
+                    {labelTextComponent}
+                    {rules.required && <RequiredAsterisk />}
+                  </Box>
+                </Row>
+                <IconContainer>
+                  <SearchIcon fontSize="small" />
+                </IconContainer>
+                <FormSearchInput
                   id={path}
                   data-testid={path}
                   name={path}
@@ -882,25 +929,6 @@ export const addMargin = (margin: number) => (i: JSX.Element) => (
 );
 
 export const disperseInputs = (margin: number) => (formItems: JSX.Element[]) => formItems.map(addMargin(margin));
-
-export const arrangeSearchFormItems = (margin: number) => (formItems: JSX.Element[]) => {
-  const itemsWithMargin = formItems.map(item => addMargin(margin)(item));
-
-  const searchInput = <div>{itemsWithMargin[0]}</div>;
-
-  const optionalFiltersTitle = <h3>Optional Filters</h3>;
-
-  const counselor = <div>{itemsWithMargin[1]}</div>;
-
-  const dateRange = (
-    <>
-      <div>{itemsWithMargin[2]}</div>
-      <div>{itemsWithMargin[3]}</div>
-    </>
-  );
-
-  return [searchInput, optionalFiltersTitle, counselor, dateRange];
-};
 
 export const splitInHalf = (formItems: JSX.Element[]) => {
   const m = Math.ceil(formItems.length / 2);
