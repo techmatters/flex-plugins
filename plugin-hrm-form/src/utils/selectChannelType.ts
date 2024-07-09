@@ -14,16 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// For rapidly running non flex UI dependent tests locally
-const { defaults } = require('jest-config');
+import { CustomITask } from '../types/types';
 
-module.exports = (config) => {
-  return (
-    config || {
-      ...defaults,
-      rootDir: './src',
-      // Only run tests in files that end in .test.ts or .spec.ts AND are under the __tests__ directory
-      testMatch: ["**/__tests__/**/?(*.)+(spec|test).[jt]s?(x)"]
-    }
-  );
-};
+/* Get the value of the channel from task attribute and return it when 
+   task channelType is not returning the correct channelType value 
+*/
+const selectChannelType = (task: CustomITask) => task.attributes.customChannelType || task.channelType;
+
+export default selectChannelType;

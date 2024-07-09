@@ -14,9 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { fetchApi, FetchOptions } from './fetchApi';
+import { ApiError, fetchApi, FetchOptions } from './fetchApi';
 import { getHrmConfig } from '../hrmConfig';
 import { GenerateSignedUrlPathParams } from '../types/types';
+import { getValidToken } from '../authentication';
 
 /**
  * Factored out function that handles api calls hosted in HRM backend.
@@ -26,7 +27,9 @@ import { GenerateSignedUrlPathParams } from '../types/types';
  * @returns {Promise<any>} the api response (if not error)
  */
 export const fetchHrmApi = (endPoint: string, options: Partial<FetchOptions> = {}): Promise<any> => {
-  const { hrmBaseUrl, token } = getHrmConfig();
+  const { hrmBaseUrl } = getHrmConfig();
+  const token = getValidToken();
+  if (token instanceof Error) throw new ApiError(`Aborting request due to token issue: ${token.message}`, {}, token);
 
   return fetchApi(new URL(hrmBaseUrl), endPoint, {
     ...options,

@@ -14,16 +14,16 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// For rapidly running non flex UI dependent tests locally
-const { defaults } = require('jest-config');
+import { Manager } from '@twilio/flex-ui';
+import { isAfter } from 'date-fns';
 
-module.exports = (config) => {
-  return (
-    config || {
-      ...defaults,
-      rootDir: './src',
-      // Only run tests in files that end in .test.ts or .spec.ts AND are under the __tests__ directory
-      testMatch: ["**/__tests__/**/?(*.)+(spec|test).[jt]s?(x)"]
-    }
-  );
+/**
+ * Pulls info directly from manager to ensure it is up to date
+ */
+export const getValidToken = (): string | Error => {
+  const { token, tokenExpirationDate } = Manager.getInstance().user;
+  if (!tokenExpirationDate || isAfter(tokenExpirationDate, new Date())) {
+    return token || new Error('Token not found');
+  }
+  return new Error('Token expired');
 };

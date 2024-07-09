@@ -23,7 +23,6 @@ import { DefinitionVersion } from 'hrm-form-definitions';
 
 import TaskView from './TaskView';
 import { Absolute } from '../styles';
-import { populateCounselors } from '../services/ServerlessService';
 import { populateCounselorsState } from '../states/configuration/actions';
 import { RootState } from '../states';
 import { getOfflineContactTask, getOfflineContactTaskSid } from '../states/contacts/offlineContactTask';
@@ -35,6 +34,7 @@ import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { newContact } from '../states/contacts/contactState';
 import { selectAnyContactIsSaving } from '../states/contacts/selectContactSaveStatus';
 import selectCurrentOfflineContact from '../states/contacts/selectCurrentOfflineContact';
+import { populateCounselors } from '../services/twilioWorkerService';
 
 type OwnProps = {
   task?: ITask;

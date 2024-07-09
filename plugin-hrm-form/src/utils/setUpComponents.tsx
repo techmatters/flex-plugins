@@ -41,7 +41,7 @@ import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles';
 import HrmTheme from '../styles/HrmTheme';
 import { TLHPaddingLeft } from '../styles/GlobalOverrides';
 import { Container } from '../components/queuesStatus/styles';
-import { FeatureFlags, isInMyBehalfITask, standaloneTaskSid } from '../types/types';
+import { FeatureFlags, standaloneTaskSid } from '../types/types';
 import { colors } from '../channels/colors';
 import { getHrmConfig } from '../hrmConfig';
 import { AseloMessageInput, AseloMessageList } from '../components/AseloMessaging';
@@ -106,7 +106,8 @@ const setUpRerenderOnReservation = () => {
 
   manager.workerClient.on('reservationCreated', reservation => {
     const { tasks } = manager.store.getState().flex.worker;
-    if (tasks.size === 1 && !isInMyBehalfITask(reservation.task))
+    const { attributes } = reservation.task;
+    if (tasks.size === 1 && !(attributes?.isContactlessTask && !attributes?.isInMyBehalf))
       Flex.Actions.invokeAction('SelectTask', { sid: reservation.sid });
   });
 };
