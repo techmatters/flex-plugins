@@ -145,14 +145,25 @@ export const ColumnarBlock = styled('div')`
 `;
 ColumnarBlock.displayName = 'ColumnarBlock';
 
-export const TwoColumnLayout = styled('div')`
+type TwoColumnLayoutProps = {
+  responsiveRow?: boolean;
+};
+
+export const TwoColumnLayout = styled('div')<TwoColumnLayoutProps>`
   display: flex;
-  flex-direction: row;
+  flex-direction: ${({ responsiveRow }) => (responsiveRow ? 'row' : 'column')};
   justify-content: space-between;
   background-color: inherit;
   box-sizing: border-box;
 `;
 TwoColumnLayout.displayName = 'TwoColumnLayout';
+
+export const TwoColumnLayoutResponsive = styled(TwoColumnLayout)`
+  @media screen and (max-width: 1100px) {
+    flex-direction: column;
+  }
+`;
+TwoColumnLayoutResponsive.displayName = 'TwoColumnLayoutResponsive';
 
 export const ColumnarContent = styled('div')`
   width: 217px;
