@@ -15,26 +15,16 @@
  */
 
 // Search Input, counselor list, date range
-import { FormDefinition, FormInputType, FormItemDefinition } from 'hrm-form-definitions';
-import { isFuture, isAfter } from 'date-fns';
+import { FormDefinition, FormInputType } from 'hrm-form-definitions';
 
 import type { CounselorsList } from '../../../states/configuration/types';
-import { splitDate } from '../../../utils/helpers';
 
-export const createSearchFormDefinition = ({
-  counselorsList,
-}: {
-  counselorsList: CounselorsList;
-  // }): SearchFormDefinitionObject => {
-}): FormDefinition => {
-  console.log('>>> createSearchFormDefinition start', counselorsList);
+export const createSearchFormDefinition = ({ counselorsList }: { counselorsList: CounselorsList }): FormDefinition => {
   const counsellorOptions = [
     { label: '', value: '' },
-    ...(counselorsList?.length > 2
-      ? counselorsList.map(c => ({ label: c.fullName, value: c.sid }))
-      : [{ label: 'Default', value: 'default' }]),
+    ...counselorsList?.map(c => ({ label: c.fullName, value: c.sid })),
   ];
-  console.log('>>> createSearchFormDefinition counsellorOptions:', counsellorOptions);
+
   return [
     {
       name: 'searchInput',
@@ -56,22 +46,6 @@ export const createSearchFormDefinition = ({
       label: 'Date From',
       initializeWithCurrent: false,
       required: { value: false, message: 'RequiredFieldError' },
-      validate: date => {
-        const [y, m, d] = splitDate(date);
-        const inputDate = new Date(y, m - 1, d);
-
-        // Date is lesser than Unix epoch (00:00:00 UTC on 1 January 1970)
-        if (inputDate.getTime() < 0) return 'DateCantBeLesserThanEpoch';
-
-        // Date is greater than "today"
-        if (isFuture(inputDate)) return 'DateCantBeGreaterThanToday';
-
-        // TODO: Date is greater than DateTo
-        // if (isAfter(inputDate, dateTo)) {
-        //   return 'InputDateCantBeGreaterThanDateTo';
-        // }
-        return null;
-      },
     },
     {
       name: 'dateTo',
@@ -79,18 +53,6 @@ export const createSearchFormDefinition = ({
       label: 'Date To',
       initializeWithCurrent: false,
       required: { value: false, message: 'RequiredFieldError' },
-      validate: date => {
-        const [y, m, d] = splitDate(date);
-        const inputDate = new Date(y, m - 1, d);
-
-        // Date is lesser than Unix epoch (00:00:00 UTC on 1 January 1970)
-        if (inputDate.getTime() < 0) return 'DateCantBeLesserThanEpoch';
-
-        // Date is greater than "today"
-        if (isFuture(inputDate)) return 'DateCantBeGreaterThanToday';
-
-        return null;
-      },
     },
   ];
 };

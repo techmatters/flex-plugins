@@ -15,17 +15,16 @@
  */
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { FieldError, useFormContext, useForm, FormProvider } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import type { DefinitionVersion, FormDefinition } from 'hrm-form-definitions';
+import type { FormDefinition } from 'hrm-form-definitions';
 import { pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
 
+import type { RootState } from '../../../states';
 import { useCreateFormFromDefinition } from '../../forms';
-// eslint-disable-next-line prettier/prettier
-import { createSearchFormDefinition} from './SearchFormDefiniton';
+import { createSearchFormDefinition } from './SearchFormDefiniton';
 import { configurationBase, namespace } from '../../../states/storeNamespaces';
-import { selectWorkerSid } from '../../../states/selectors/flexSelectors';
 import {
   Container,
   ColumnarBlock,
@@ -37,7 +36,6 @@ import {
 import { disperseInputs } from '../../common/forms/formGenerators';
 import { CustomITask } from '../../../types/types';
 import { SearchFormValues } from '../../../states/search/types';
-import { CounselorsList } from '../../../states/configuration/types';
 
 type OwnProps = {
   task: ITask | CustomITask;
@@ -45,7 +43,7 @@ type OwnProps = {
   // // definition: any;
   initialValues: SearchFormValues;
   autoFocus: boolean;
-  handleSearchFormChange: (fieldName: string, value: string) => void;
+  handleSearchFormUpdate: (values: Partial<SearchFormValues>) => void;
   handleSearch: (searchParams: any) => void;
 };
 
@@ -54,21 +52,20 @@ export const SearchFormV2: React.FC<OwnProps> = ({
   task,
   initialValues,
   autoFocus,
-  handleSearchFormChange,
+  handleSearchFormUpdate,
   handleSearch,
 }) => {
   const dispatch = useDispatch();
 
-  const methods = useForm();
+  const methods = useForm<Pick<SearchFormValues, 'searchInput' | 'dateFrom' | 'dateTo' | 'counselor'>>();
 
-  const { getValues, register, setError } = methods;
+  const { getValues } = methods;
 
   const counselor =
     typeof initialValues.counselor === 'string' ? initialValues.counselor : initialValues.counselor.value;
   const sanitizedInitialValues = { ...pick(initialValues, ['searchInput', 'dateFrom', 'dateTo']), counselor };
 
-  const counselorsList = useSelector(state => state[namespace][configurationBase].counselors.list);
-  console.log('>>> SearchForm counselorsList', counselorsList);
+  const counselorsList = useSelector((state: RootState) => state[namespace][configurationBase].counselors.list);
 
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -78,19 +75,9 @@ export const SearchFormV2: React.FC<OwnProps> = ({
     }
   }, [counselorsList]);
 
-  const formDefinition: FormDefinition = useMemo(() => {
-    if (isLoaded) {
-      return createSearchFormDefinition(counselorsList);
-    }
-    // wait and do the same in 2 seconds
-    setTimeout(() => {
-      if (counselorsList && counselorsList.length > 0) {
-        console.log('>>> SearchForm counselorsList', counselorsList);
-        setIsLoaded(true);
-      }
-    }, 2000);
-    return null; // Add a return statement at the end of the arrow function
-  }, [isLoaded, counselorsList]);
+  const formDefinition: FormDefinition = useMemo(() => createSearchFormDefinition({ counselorsList }), [
+    counselorsList,
+  ]);
 
   const form = useCreateFormFromDefinition({
     definition: formDefinition,
@@ -98,10 +85,7 @@ export const SearchFormV2: React.FC<OwnProps> = ({
     parentsPath: '',
     updateCallback: () => {
       const values = getValues();
-      console.log('>>> updateCallback values', { values, formDefinition, sanitizedInitialValues });
-      Object.entries(values).forEach(([fieldName, fieldValue]) => {
-        dispatch(handleSearchFormChange(fieldName, fieldValue.toString()));
-      });
+      dispatch(handleSearchFormUpdate(values));
     },
   });
 

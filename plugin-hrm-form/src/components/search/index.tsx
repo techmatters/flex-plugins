@@ -29,7 +29,13 @@ import Case from '../case';
 import ProfileRouter, { isProfileRoute } from '../profile/ProfileRouter';
 import { SearchParams } from '../../states/search/types';
 import { CustomITask } from '../../types/types';
-import { newCreateSearchForm, handleSearchFormChange, searchCases, searchContacts } from '../../states/search/actions';
+import {
+  newCreateSearchForm,
+  handleSearchFormChange,
+  searchCases,
+  searchContacts,
+  handleSearchFormUpdate,
+} from '../../states/search/actions';
 import { RootState } from '../../states';
 import { namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
@@ -76,6 +82,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     handleSearchFormChange: (context: string) => bindActionCreators(handleSearchFormChange(taskId, context), dispatch),
+    handleSearchFormUpdate: (context: string) => bindActionCreators(handleSearchFormUpdate(taskId, context), dispatch),
     changeSearchPage: (subroute: SearchResultRoute['subroute'], action?: SearchRoute['action'], contactId?: string) =>
       dispatch(
         changeRoute(
@@ -98,6 +105,7 @@ const Search: React.FC<Props> = ({
   searchContacts,
   searchCases,
   handleSearchFormChange,
+  handleSearchFormUpdate,
   searchContactsResults,
   searchCasesResults,
   form,
@@ -246,7 +254,7 @@ const Search: React.FC<Props> = ({
             initialValues={form}
             autoFocus={true}
             task={task}
-            handleSearchFormChange={handleSearchFormChange(searchContext)}
+            handleSearchFormUpdate={handleSearchFormUpdate(searchContext)}
             handleSearch={setSearchParamsAndHandleSearch}
           />
         ) : (
