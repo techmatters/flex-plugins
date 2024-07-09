@@ -378,7 +378,6 @@ type UpdateDraftAction = {
 };
 
 export const updateDraft = (contactId: string, draft: ContactDraftChanges): UpdateDraftAction => {
-  console.log('>>> existing Contacts updateDraft', draft);
   return {
     type: EXISTING_CONTACT_UPDATE_DRAFT_ACTION,
     contactId,

@@ -18,6 +18,7 @@ import { Contact, SearchCaseResult } from '../../types/types';
 
 // Action types
 export const HANDLE_SEARCH_FORM_CHANGE = 'HANDLE_SEARCH_FORM_CHANGE';
+export const HANDLE_FORM_UPDATE = 'HANDLE_FORM_UPDATE';
 export const CHANGE_SEARCH_PAGE = 'CHANGE_SEARCH_PAGE';
 export const VIEW_CONTACT_DETAILS = 'VIEW_CONTACT_DETAILS';
 export const SEARCH_CONTACTS_REQUEST = 'SEARCH_CONTACTS_REQUEST';
@@ -64,6 +65,10 @@ type SearchFormChangeAction = {
     value: SearchFormValues[K];
   };
 }[keyof SearchFormValues] & { type: typeof HANDLE_SEARCH_FORM_CHANGE; taskId: string; context: string };
+
+type SearchFormUpdate = {
+  values: Partial<SearchFormValues>;
+} & { type: typeof HANDLE_FORM_UPDATE; taskId: string; context: string };
 
 type SearchContactsRequestAction = { type: typeof SEARCH_CONTACTS_REQUEST; taskId: string; context: string };
 
@@ -122,6 +127,7 @@ type ViewPreviousContactsAction = {
 
 export type SearchActionType =
   | SearchFormChangeAction
+  | SearchFormUpdate
   | SearchContactsRequestAction
   | SearchContactsSuccessAction
   | SearchContactsFailureAction
