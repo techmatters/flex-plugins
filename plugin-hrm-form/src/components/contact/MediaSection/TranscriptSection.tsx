@@ -29,7 +29,6 @@ import { GroupedMessage } from '../../Messaging/MessageItem';
 import { MessageList } from '../../Messaging/MessageList';
 import { ErrorFont, ItalicFont, LoadMediaButton, LoadMediaButtonText } from './styles';
 import { contactFormsBase, namespace } from '../../../states/storeNamespaces';
-import { getMediaUrl } from '../../../services/ServerlessService';
 
 type OwnProps = {
   contactId: string;
