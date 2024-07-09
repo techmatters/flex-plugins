@@ -137,7 +137,7 @@ const setUpActions = (
   setupObject: ReturnType<typeof getHrmConfig>,
   getMessage: (key: string) => (language: string) => Promise<string>,
 ) => {
-  ActionFunctions.excludeDeactivateConversationOrchestration(featureFlags);
+  ActionFunctions.excludeDeactivateConversationOrchestration();
 
   // bind setupObject to the functions that requires some initialization
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject, getMessage);

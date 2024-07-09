@@ -24,7 +24,7 @@ import { newQueueEntry, initializeQueuesStatus, getNewQueuesStatus } from '../..
 
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
 
-jest.mock('../../../services/ServerlessService', () => ({
+jest.mock('../../../services/twilioWorkerService', () => ({
   listWorkerQueues: async ({ workerSid }) => {
     if (workerSid === 'worker-admin')
       return { workerQueues: [{ friendlyName: 'Admin' }, { friendlyName: 'Everyone' }] };
@@ -84,7 +84,7 @@ const newTasks = {
     queue_name: 'Admin',
     attributes: { channelType: channelTypes.sms },
   },
-  T5: {
+  T6: {
     status: 'pending',
     date_created: secondsAgo,
     channel_type: 'default',
