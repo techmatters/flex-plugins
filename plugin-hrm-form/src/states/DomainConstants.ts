@@ -24,7 +24,7 @@ const defaultChannelTypes = {
   web: 'web',
 } as const;
 
-export const customChannelTypes = {
+const customChannelTypes = {
   telegram: 'telegram',
   instagram: 'instagram',
   line: 'line',
