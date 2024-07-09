@@ -44,7 +44,7 @@ export const FormError = styled('span')`
 `;
 FormError.displayName = 'FormError';
 
-type FormInputBaseProps = { error?: boolean; width?: number | string; fullWidth?: boolean };
+type FormInputBaseProps = { error?: boolean; width?: number | string; fullWidth?: boolean; searchIcon?: boolean };
 
 export const FormInputBase = styled('input')<FormInputBaseProps>`
   /* ---------- Input ---------- */
@@ -70,5 +70,28 @@ export const FormInputBase = styled('input')<FormInputBaseProps>`
     box-shadow: none;
     border: 1px solid rgba(0, 59, 129, 0.37);
   }
+  &::before {
+    content: '🔍';
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: ${HrmTheme.colors.darkTextColor};
+    pointer-events: none;
+  }
+  ${props =>
+    props.searchIcon &&
+    `
+    &::before {
+      content: '🔍';
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: ${HrmTheme.colors.darkTextColor};
+      pointer-events: none;
+    }
+    padding-left: 30px; /* Adjust padding to prevent text overlap */
+  `}
 `;
 FormInputBase.displayName = 'FormInputBase';

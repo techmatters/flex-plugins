@@ -188,6 +188,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
             const error = get(errors, path);
             return (
               <FormLabel htmlFor={path}>
+                \{' '}
                 <Row>
                   <Box marginBottom="8px">
                     {labelTextComponent}
@@ -881,6 +882,25 @@ export const addMargin = (margin: number) => (i: JSX.Element) => (
 );
 
 export const disperseInputs = (margin: number) => (formItems: JSX.Element[]) => formItems.map(addMargin(margin));
+
+export const arrangeSearchFormItems = (margin: number) => (formItems: JSX.Element[]) => {
+  const itemsWithMargin = formItems.map(item => addMargin(margin)(item));
+
+  const searchInput = <div>{itemsWithMargin[0]}</div>;
+
+  const optionalFiltersTitle = <h3>Optional Filters</h3>;
+
+  const counselor = <div>{itemsWithMargin[1]}</div>;
+
+  const dateRange = (
+    <>
+      <div>{itemsWithMargin[2]}</div>
+      <div>{itemsWithMargin[3]}</div>
+    </>
+  );
+
+  return [searchInput, optionalFiltersTitle, counselor, dateRange];
+};
 
 export const splitInHalf = (formItems: JSX.Element[]) => {
   const m = Math.ceil(formItems.length / 2);

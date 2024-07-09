@@ -288,10 +288,8 @@ export const FormRadioInput = styled('input')<FormInputProps>`
 FormRadioInput.displayName = 'FormRadioInput';
 
 export const FormDateInput = styled(FormInput)`
-  input: {
-    width: 100%;
-    flex-grow: 1;
-    display: flex;
+  & {
+    display: block;
   }
   &[type='date']::-webkit-clear-button,
   &[type='date']::-webkit-inner-spin-button {
@@ -302,23 +300,19 @@ export const FormDateInput = styled(FormInput)`
     color: '#AEAEAE';
     opacity: 1;
   }
-  // move icon to end
-  &[type='date']::-webkit-calendar-picker-indicator {
-    background-color: pink;
-    display: flex;
-    justify-content: end;
-    align-items: end;
-  }
   /* &[type='date'] {} */
   /* &[type='date']::-webkit-calendar-picker-indicator {} */
 `;
 FormDateInput.displayName = 'FormDateInput';
 
 export const FormTimeInput = styled(FormInput)`
+  & {
+    display: block;
+  }
   &[type='time']::-webkit-datetime-edit-fields-wrapper {
     display: flex;
   }
-  &[type='time']::-webkit-clear-button,
+  &[type='time']::-webkit-clear-button {
     -webkit-appearance: none;
     display: none;
   }

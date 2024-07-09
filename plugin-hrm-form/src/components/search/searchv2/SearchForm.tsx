@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { FieldError, useFormContext, useForm, FormProvider } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import type { DefinitionVersion, FormDefinition } from 'hrm-form-definitions';
@@ -34,7 +34,7 @@ import {
   BottomButtonBar,
   StyledNextStepButton,
 } from '../../../styles';
-import { disperseInputs } from '../../common/forms/formGenerators';
+import { arrangeSearchFormItems } from '../../common/forms/formGenerators';
 import { CustomITask } from '../../../types/types';
 import { SearchFormValues } from '../../../states/search/types';
 import { CounselorsList } from '../../../states/configuration/types';
@@ -70,27 +70,7 @@ export const SearchFormV2: React.FC<OwnProps> = ({
   const counselorsList = useSelector(state => state[namespace][configurationBase].counselors.list);
   console.log('>>> SearchForm counselorsList', counselorsList);
 
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    if (counselorsList && counselorsList.length > 0) {
-      setIsLoaded(true);
-    }
-  }, [counselorsList]);
-
-  const formDefinition: FormDefinition = useMemo(() => {
-    if (isLoaded) {
-      return createSearchFormDefinition(counselorsList);
-    }
-    // wait and do the same in 2 seconds
-    setTimeout(() => {
-      if (counselorsList && counselorsList.length > 0) {
-        console.log('>>> SearchForm counselorsList', counselorsList);
-        setIsLoaded(true);
-      }
-    }, 2000);
-    return null; // Add a return statement at the end of the arrow function
-  }, [isLoaded, counselorsList]);
+  const formDefinition: FormDefinition = useMemo(() => createSearchFormDefinition(counselorsList), [counselorsList]);
 
   const form = useCreateFormFromDefinition({
     definition: formDefinition,
@@ -98,14 +78,14 @@ export const SearchFormV2: React.FC<OwnProps> = ({
     parentsPath: '',
     updateCallback: () => {
       const values = getValues();
-      console.log('>>> updateCallback values', { values, formDefinition, sanitizedInitialValues });
+      console.log('>>> updateCallback values', values, formDefinition);
+      // const { isFutureAux, ...contactlessTaskFields } = getValues().contactlessTask;
       Object.entries(values).forEach(([fieldName, fieldValue]) => {
         dispatch(handleSearchFormChange(fieldName, fieldValue.toString()));
       });
     },
   });
-
-  const searchV2Form = isLoaded ? disperseInputs(5)(form) : null;
+  const searchV2Form = arrangeSearchFormItems(5)(form);
 
   return (
     <>
