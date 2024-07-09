@@ -5,7 +5,7 @@ locals {
 
   local_config = {
     enable_post_survey                    = true
-    custom_task_routing_filter_expression = "channelType =='web' or channelType =='whatsapp' OR isContactlessTask == true OR  twilioNumber == 'messenger:131329426738030' "
+    custom_task_routing_filter_expression = "channelType IN ['web','whatsapp','telegram','line'] OR isContactlessTask == true OR  twilioNumber == 'messenger:131329426738030' "
 
     #Studio flow
     flow_vars = {
@@ -34,6 +34,22 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "whatsapp"
         contact_identity     = "whatsapp:+12055189944"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      line : {
+        messaging_mode       = "conversations"
+        channel_type         = "custom"
+        contact_identity     = "line"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      telegram : {
+        messaging_mode       = "conversations"
+        channel_type         = "custom"
+        contact_identity     = "telegram"
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
