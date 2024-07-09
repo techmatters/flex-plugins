@@ -4,6 +4,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
+    enable_post_survey                    = true
     custom_task_routing_filter_expression = "channelType =='web' or channelType =='whatsapp' OR isContactlessTask == true OR  twilioNumber == 'messenger:131329426738030' "
 
     #Studio flow
@@ -18,14 +19,14 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/webchat-basic.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
       facebook : {
         channel_type         = "facebook"
         contact_identity     = "messenger:131329426738030"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
