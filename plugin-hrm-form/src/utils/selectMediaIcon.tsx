@@ -22,14 +22,16 @@ import UnsupportedFileIcon from '../components/common/icons/UnsupportedFileIcon'
 
 const contentType = {
   pdf: 'pdf',
-  image: 'jpeg' || 'jpg' || 'png',
+  jpg: 'jpg',
+  png: 'png',
+  jpeg: 'jpeg',
 } as const;
 
 export type ContentType = typeof contentType[keyof typeof contentType];
 
 export const displayMediaSize = (bytes: number) => {
   if (bytes === 0) return '0 B';
-  const k = 1000;
+  const k = 1024;
   const sizes = ['B', 'KB', 'MB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
@@ -37,7 +39,9 @@ export const displayMediaSize = (bytes: number) => {
 
 export const selectMediaIcon = (type: ContentType) => {
   switch (type) {
-    case contentType.image:
+    case contentType.jpeg:
+    case contentType.jpg:
+    case contentType.png:
       return <ImageIcon width="48px" height="48px" />;
     case contentType.pdf:
       return <PdfIcon width="48px" height="48px" />;
