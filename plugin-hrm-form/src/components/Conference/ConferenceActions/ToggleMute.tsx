@@ -41,9 +41,10 @@ const ToggleMute: React.FC<Props> = ({ call, task, conference }) => {
       const currentMutedState = workerParticipant.muted;
       const toggleMute = !currentMutedState;
 
+      console.log(`conferenceSid from attributes: ${task?.attributes?.conference?.sid}`);
       await conferenceApi.updateParticipant({
         callSid: call?.parameters?.CallSid,
-        conferenceSid: task?.attributes?.conference?.sid,
+        conferenceSid: conference?.source?.conferenceSid,
         updates: { muted: toggleMute },
       });
 
