@@ -85,6 +85,16 @@ locals {
     survey : "Survey"
   }
 
+  s3_lifecycle_rules = {
+    hrm_export_expiry : {
+      id                 = "HRM Exported Data Expiration Policy"
+      expiration_in_days = 30
+      prefix             = "hrm-data/"
+      status             = "Enabled"
+    }
+  }
+
+
   mock_outputs = {
     chatbot = {
       chatbot_languages_selector_sid = "chatbot_languages_selector_sid"
