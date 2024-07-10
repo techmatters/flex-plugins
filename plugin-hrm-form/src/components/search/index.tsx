@@ -16,8 +16,8 @@
 
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-multi-comp */
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect, useRef } from 'react';
+import { connect, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -28,8 +28,16 @@ import ContactDetails from '../contact/ContactDetails';
 import Case from '../case';
 import ProfileRouter, { isProfileRoute } from '../profile/ProfileRouter';
 import { SearchParams } from '../../states/search/types';
+import selectSearchStateForTask from '../../states/search/selectSearchStateForTask';
 import { CustomITask } from '../../types/types';
-import { newCreateSearchForm, handleSearchFormChange, searchCases, searchContacts } from '../../states/search/actions';
+import {
+  newCreateSearchForm,
+  handleSearchFormChange,
+  searchCases,
+  searchContacts,
+  searchV2Contacts,
+  searchContactsByIds,
+} from '../../states/search/actions';
 import { RootState } from '../../states';
 import { namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
@@ -83,6 +91,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         ),
       ),
     searchContacts: (context: string) => searchContacts(dispatch)(taskId, context),
+    searchContactsByIds: (context: string) => searchContactsByIds(dispatch)(taskId, context),
+    searchV2Contacts: (context: string) => searchV2Contacts(dispatch)(taskId, context),
     searchCases: (context: string) => searchCases(dispatch)(taskId, context),
     closeModal: () => dispatch(newCloseModalAction(taskId)),
     handleNewCreateSearch: (context: string) => dispatch(newCreateSearchForm(taskId, context)),
@@ -95,6 +105,8 @@ const Search: React.FC<Props> = ({
   task,
   currentIsCaller,
   searchContacts,
+  searchContactsByIds,
+  searchV2Contacts,
   searchCases,
   handleSearchFormChange,
   searchContactsResults,
@@ -109,6 +121,15 @@ const Search: React.FC<Props> = ({
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});
 
+  const [contactsOffset, setContactsOffset] = useState(0);
+  const prevContactsOffset = useRef(-1);
+
+  const searchState = useSelector((state: RootState) => selectSearchStateForTask(state, task.taskSid, searchContext));
+  const {
+    isRequesting,
+    searchContactsResult: { searchMatchIds: contactSearchMatchIds, currentPageIds: contactsCurrentPageIds },
+  } = searchState;
+
   useEffect(() => {
     if (!form) {
       handleNewCreateSearch(searchContext);
@@ -117,8 +138,18 @@ const Search: React.FC<Props> = ({
 
   const closeDialog = () => setMockedMessage('');
 
-  const handleSearchContacts = (newSearchParams: SearchParams, newOffset) =>
-    searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+  const handleSearchContacts = (newSearchParams: SearchParams, newOffset: number) => {
+    // TODO: handle legacy
+    // if (enable_search_v2) {
+    searchV2Contacts(searchContext)({
+      searchParams: { ...form, ...newSearchParams },
+      limit: CONTACTS_PER_PAGE,
+      offset: newOffset,
+    });
+    // } else {
+    // searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+    // }
+  };
 
   const handleSearchCases = (newSearchParams, newOffset) =>
     searchCases(searchContext)({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
@@ -137,7 +168,42 @@ const Search: React.FC<Props> = ({
     }
   };
 
-  const setOffsetAndHandleSearchContacts = newOffset => handleSearchContacts(searchParams, newOffset);
+  const setOffsetAndHandleSearchContacts = setContactsOffset;
+
+  // On page change, trigger a new search
+  useEffect(() => {
+    console.log('>>>>>>>>>>> triggered effect');
+    const handlePageChange = (newSearchParams: SearchParams, newOffset: number) => {
+      // if (enable_search_v2) {
+
+      const targetIds = contactSearchMatchIds?.slice(newOffset, newOffset + CONTACTS_PER_PAGE);
+      console.log('>>>>>>>>>>> contactsOffset', contactsOffset);
+      console.log('>>>>>>>>>>> prevContactsOffset', prevContactsOffset.current);
+      console.log('>>>>>>>>>>> isRequesting', isRequesting);
+      console.log('>>>>>>>>>>> targetIds', targetIds);
+      // const targetsChanged: boolean =
+      //   Boolean(targetIds) && targetIds.every((id, index) => contactsCurrentPageIds[index] !== id);
+      // if (targetIds && targetsChanged && !isRequesting) {
+      if (targetIds && prevContactsOffset.current !== newOffset) {
+        console.log('>>>>>>>>>>> inner if condition of effect reached');
+        prevContactsOffset.current = contactsOffset;
+        searchContactsByIds(searchContext)(targetIds, CONTACTS_PER_PAGE, newOffset);
+      }
+      // } else {
+      // searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+      // }
+    };
+
+    handlePageChange(searchParams, contactsOffset);
+  }, [
+    contactSearchMatchIds,
+    contactsCurrentPageIds,
+    contactsOffset,
+    isRequesting,
+    searchContactsByIds,
+    searchContext,
+    searchParams,
+  ]);
 
   const setOffsetAndHandleSearchCases = newOffset => handleSearchCases(searchParams, newOffset);
 

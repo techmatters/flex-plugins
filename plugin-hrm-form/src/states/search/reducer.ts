@@ -68,8 +68,8 @@ export const newTaskEntry: SearchStateTaskEntry = {
     [ContactDetailsSections.EXTERNAL_REPORT]: false,
     [ContactDetailsSections.RECORDING]: false,
   },
-  searchContactsResult: { count: 0, ids: [] },
-  searchCasesResult: { count: 0, ids: [] },
+  searchContactsResult: { count: 0, currentPageIds: [] },
+  searchCasesResult: { count: 0, currentPageIds: [] },
   isRequesting: false,
   isRequestingCases: false,
   caseRefreshRequired: false,
@@ -223,9 +223,14 @@ export function reduce(
       } = action;
       const task = state.tasks[taskId];
       const searchContext = state.tasks[taskId][context];
+      const { searchContactsResult } = state.tasks[taskId][context];
       const newContactsResult = {
-        ids: contacts.map(c => c.id),
-        count: searchResult.count,
+        ...searchContactsResult,
+        currentPageIds: contacts.map(c => c.id),
+        // if v2 is enabled, preserve count, else re-compute after every search
+        count: searchContactsResult.searchMatchIds?.length
+          ? searchContactsResult.searchMatchIds.length
+          : searchResult.count,
       };
       const previousContactCounts = dispatchedFromPreviousContacts
         ? { ...searchContext.previousContactCounts, contacts: searchResult.count }
@@ -241,6 +246,33 @@ export function reduce(
               searchContactsResult: newContactsResult,
               isRequesting: false,
               error: null,
+              previousContactCounts,
+            },
+          },
+        },
+      };
+    }
+    case t.SEARCH_V2_CONTACTS_SUCCESS: {
+      const { searchMatchIds, taskId, dispatchedFromPreviousContacts, context } = action;
+      const task = state.tasks[taskId];
+      const searchContext = state.tasks[taskId][context];
+      const newContactsResult = {
+        searchMatchIds,
+        count: searchMatchIds.length,
+        currentPageIds: [],
+      };
+      const previousContactCounts = dispatchedFromPreviousContacts
+        ? { ...searchContext.previousContactCounts, contacts: searchMatchIds.length }
+        : searchContext.previousContactCounts;
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [taskId]: {
+            ...task,
+            [context]: {
+              ...searchContext,
+              searchContactsResult: newContactsResult,
               previousContactCounts,
             },
           },
@@ -292,7 +324,7 @@ export function reduce(
       const task = state.tasks[taskId];
       const context = state.tasks[action.taskId][action.context];
       const newCasesResult = {
-        ids: cases.map(c => c.id),
+        currentPageIds: cases.map(c => c.id),
         count,
       };
       const previousContactCounts = dispatchedFromPreviousContacts
