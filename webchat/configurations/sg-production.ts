@@ -22,6 +22,7 @@ const flexFlowSid = 'FO1f6ef1622a491dd6e8a51daba2f79bb3';
 
 export const config: Configuration = {
   ...sgStaging,
+  checkOpenHours: true,
   accountSid,
   flexFlowSid,
 };

@@ -12,6 +12,11 @@ locals {
     helpline_region = "eu-west-1"
 
     custom_task_routing_filter_expression = ""
-    flow_vars                             = {}
+    flow_vars = {
+      service_sid                   = "ZSbfebd43b19b4db9e3bd763b72b101eaf"
+      environment_sid               = "ZE12ad6d59ba95d24d43e184a21cfe3669"
+      operating_hours_function_sid  = "ZH95bf7c7442969d4577caa5b656957f53"
+      operating_hours_function_name = "operatingHours"
+    }
   }
 }
