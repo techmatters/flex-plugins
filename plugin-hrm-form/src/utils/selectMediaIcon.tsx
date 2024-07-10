@@ -30,6 +30,15 @@ export const displayMediaSize = (bytes: number) => {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 };
 
+export const abbreviateMediaFilename = (filename: string): string => {
+  const text = filename.split('');
+  if (text.length > 20) {
+    // Create the abbreviated string
+    return `${text.slice(0, 14).join('')}...${text.slice(-6).join('')}`;
+  }
+  return filename;
+};
+
 export const selectMediaIcon = (contentType: string, mediaType: string) => {
   switch (contentType) {
     case `image/${mediaType}`:

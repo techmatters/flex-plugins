@@ -36,7 +36,7 @@ import {
   MediaItemContainer,
 } from './styles';
 import { TranscriptMessage } from '../../../states/contacts/existingContacts';
-import { displayMediaSize, selectMediaIcon } from '../../../utils/selectMediaIcon';
+import { abbreviateMediaFilename, displayMediaSize, selectMediaIcon } from '../../../utils/selectMediaIcon';
 import OpenPageIcon from '../../common/icons/OpenPageIcon';
 import { getMediaUrl } from '../../../services/ServerlessService';
 
@@ -78,7 +78,7 @@ const MessageItem: React.FC<Props> = ({ message }) => {
         <MediaItemContainer onClick={mediaUrl}>
           <span>{selectMediaIcon(media.content_type, mediaType)}</span>
           <span>
-            <p>{body}</p>
+            <p>{abbreviateMediaFilename(body)}</p>
             <p>{displayMediaSize(media.size)}</p>
           </span>
           <OpenMediaIconContainer>
