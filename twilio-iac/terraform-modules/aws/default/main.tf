@@ -80,7 +80,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "s3_lifecycle_rules" {
       prefix = each.value.prefix
     }
     id     = each.value.id
-    status = try(each.value.status, "Enabled") 
+    status = "Enabled"
   }
 
 }

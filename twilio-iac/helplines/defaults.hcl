@@ -90,7 +90,6 @@ locals {
       id                 = "HRM Exported Data Expiration Policy"
       expiration_in_days = 30
       prefix             = "hrm-data/"
-      status             = "Enabled"
     }
   }
 
