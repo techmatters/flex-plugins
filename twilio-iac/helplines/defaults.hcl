@@ -87,7 +87,7 @@ locals {
 
   s3_lifecycle_rules = {
     hrm_export_expiry : {
-      id                 = "HRM Exported Data Expiration Policy"
+      id                 = "HRM Exported Data Expiration Rule"
       expiration_in_days = 30
       prefix             = "hrm-data/"
     }
