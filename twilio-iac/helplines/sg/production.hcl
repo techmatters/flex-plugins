@@ -29,6 +29,7 @@ locals {
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours.tftpl"
         channel_flow_vars = {
           chat_greeting_message = "Hello! Tinkle Friend is engaged with other children at the moment. Please hold on for a while and we will attend to you as soon as we can."
+          widget_from           = "Tinkle Friend"
         }
         chatbot_unique_names = []
       },
