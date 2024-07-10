@@ -160,8 +160,7 @@ export async function listCases(queryParams, listCasesPayload): Promise<SearchCa
     body: JSON.stringify(listCasesPayload),
   };
 
-  // const fromApi: SearchCaseResult = await fetchHrmApi(`/cases/search${queryParamsString}`, options);
-  const fromApi: SearchCaseResult = await fetchHrmApi(`/cases/generalisedSearch${queryParamsString}`, options);
+  const fromApi: SearchCaseResult = await fetchHrmApi(`/cases/search${queryParamsString}`, options);
 
   return {
     ...fromApi,

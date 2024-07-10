@@ -76,7 +76,7 @@ export async function searchContacts(
 }
 
 // eslint-disable-next-line import/no-unused-modules
-export async function searchContactsV2({
+export async function generalisedSearch({
   searchParams,
 }: {
   searchParams: SearchParams;
