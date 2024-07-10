@@ -32,13 +32,20 @@ import {
   MessageItemInnerContainer,
   AvatarColumn,
   MessageBubbleTextContainer,
+  OpenMediaIconContainer,
+  MediaItemContainer,
 } from './styles';
 import { TranscriptMessage } from '../../../states/contacts/existingContacts';
+import { ContentType, displayMediaSize, selectMediaIcon } from '../../../utils/selectMediaIcon';
+import OpenPageIcon from '../../common/icons/OpenPageIcon';
+import { getMediaUrl } from '../../../services/ServerlessService';
 
 export type GroupedMessage = TranscriptMessage & {
   friendlyName: string;
   isCounselor: boolean;
   isGroupedWithPrevious: boolean;
+  serviceSid?: string;
+  contentType?: ContentType;
 };
 
 type Props = {
@@ -46,8 +53,43 @@ type Props = {
 };
 
 const MessageItem: React.FC<Props> = ({ message }) => {
-  const { body, dateCreated, friendlyName, from, isCounselor, isGroupedWithPrevious } = message;
+  const {
+    body,
+    dateCreated,
+    friendlyName,
+    from,
+    isCounselor,
+    isGroupedWithPrevious,
+    serviceSid,
+    media,
+    contentType,
+  } = message;
   const renderIcon = !isCounselor && !isGroupedWithPrevious;
+
+  const setMessageItem = () => {
+    if (media && serviceSid) {
+      const mediaUrl = async () => {
+        const mediaUrl = await getMediaUrl(serviceSid, media.sid);
+        window.open(mediaUrl, '_blank');
+      };
+
+      return (
+        // Handle UI modification for media on transcript
+        <MediaItemContainer onClick={mediaUrl}>
+          <span>{selectMediaIcon(contentType)}</span>
+          <span>
+            <p>{body}</p>
+            <p>{displayMediaSize(media.size)}</p>
+          </span>
+          <OpenMediaIconContainer>
+            <OpenPageIcon width="20px" height="20px" color="#8891AA" />
+          </OpenMediaIconContainer>
+        </MediaItemContainer>
+      );
+    }
+    return body;
+  };
+
   return (
     <MessageItemContainer isCounselor={isCounselor} isGroupedWithPrevious={isGroupedWithPrevious} role="listitem">
       <MessageItemInnerContainer>
@@ -71,7 +113,7 @@ const MessageItem: React.FC<Props> = ({ message }) => {
                 </MessageBubbleDateText>
               </MessageBubbleHeader>
               <MessageBubbleBody>
-                <MessageBubbleBodyText isCounselor={isCounselor}>{body}</MessageBubbleBodyText>
+                <MessageBubbleBodyText isCounselor={isCounselor}>{setMessageItem()}</MessageBubbleBodyText>
               </MessageBubbleBody>
             </MessageBubbleTextContainer>
           </MessageBubleInnerContainer>
