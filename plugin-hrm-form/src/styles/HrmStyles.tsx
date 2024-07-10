@@ -302,9 +302,7 @@ export const FormDateInput = styled(FormInput)`
     color: '#AEAEAE';
     opacity: 1;
   }
-  // move icon to end
   &[type='date']::-webkit-calendar-picker-indicator {
-    background-color: pink;
     display: flex;
     justify-content: end;
     align-items: end;

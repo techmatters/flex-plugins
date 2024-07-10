@@ -45,7 +45,7 @@ import NavigableContainer from '../NavigableContainer';
 import selectCasesForSearchResults from '../../states/search/selectCasesForSearchResults';
 import selectContactsForSearchResults from '../../states/search/selectContactsForSearchResults';
 import { DetailsContext } from '../../states/contacts/contactDetails';
-import { SearchFormV2 } from './searchv2/SearchForm';
+import { GeneralizedSearchForm } from './GeneralizedSearchForm';
 
 type OwnProps = {
   task: CustomITask;
@@ -250,7 +250,7 @@ const Search: React.FC<Props> = ({
         }
       >
         {enableSearchV2 ? (
-          <SearchFormV2
+          <GeneralizedSearchForm
             initialValues={form}
             autoFocus={true}
             task={task}

@@ -39,8 +39,6 @@ import { SearchFormValues } from '../../../states/search/types';
 
 type OwnProps = {
   task: ITask | CustomITask;
-  // definition: { counselorsList: CounselorsList };
-  // // definition: any;
   initialValues: SearchFormValues;
   autoFocus: boolean;
   handleSearchFormUpdate: (values: Partial<SearchFormValues>) => void;
@@ -48,7 +46,7 @@ type OwnProps = {
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export const SearchFormV2: React.FC<OwnProps> = ({
+export const GeneralizedSearchForm: React.FC<OwnProps> = ({
   task,
   initialValues,
   autoFocus,
@@ -89,7 +87,7 @@ export const SearchFormV2: React.FC<OwnProps> = ({
     },
   });
 
-  const searchV2Form = isLoaded ? disperseInputs(5)(form) : null;
+  const searchForm = isLoaded ? disperseInputs(5)(form) : null;
 
   return (
     <>
@@ -97,7 +95,7 @@ export const SearchFormV2: React.FC<OwnProps> = ({
         <FormProvider {...methods}>
           <TwoColumnLayout>
             <ColumnarBlock>
-              <ColumnarContent>{searchV2Form}</ColumnarContent>
+              <ColumnarContent>{searchForm}</ColumnarContent>
             </ColumnarBlock>
             <ColumnarBlock />
           </TwoColumnLayout>

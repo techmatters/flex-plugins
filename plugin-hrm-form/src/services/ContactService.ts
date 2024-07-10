@@ -88,7 +88,7 @@ export async function searchContactsV2({
     method: 'POST',
     body: JSON.stringify({}),
   };
-  const response = await fetchHrmApi(`/contacts/searchV2`, options);
+  const response = await fetchHrmApi(`/contacts/generalisedSearch`, options);
   return {
     ...response,
     contacts: response.contacts.map(convertApiContactToFlexContact),

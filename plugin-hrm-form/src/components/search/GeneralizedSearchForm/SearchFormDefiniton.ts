@@ -14,7 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// Search Input, counselor list, date range
 import { FormDefinition, FormInputType } from 'hrm-form-definitions';
 
 import type { CounselorsList } from '../../../states/configuration/types';
@@ -28,9 +27,8 @@ export const createSearchFormDefinition = ({ counselorsList }: { counselorsList:
   return [
     {
       name: 'searchInput',
-      label: 'Search',
+      label: '',
       type: FormInputType.Input,
-      required: { value: true, message: 'RequiredFieldError' },
       maxLength: { value: 500, message: '500 characters max.' },
     },
     {
@@ -38,21 +36,18 @@ export const createSearchFormDefinition = ({ counselorsList }: { counselorsList:
       type: FormInputType.Select,
       label: 'Counselor',
       options: counsellorOptions,
-      required: { value: false, message: 'RequiredFieldError' },
     },
     {
       name: 'dateFrom',
       type: FormInputType.DateInput,
       label: 'Date From',
       initializeWithCurrent: false,
-      required: { value: false, message: 'RequiredFieldError' },
     },
     {
       name: 'dateTo',
       type: FormInputType.DateInput,
       label: 'Date To',
       initializeWithCurrent: false,
-      required: { value: false, message: 'RequiredFieldError' },
     },
   ];
 };
