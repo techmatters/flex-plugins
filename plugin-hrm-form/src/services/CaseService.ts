@@ -167,3 +167,19 @@ export async function listCases(queryParams, listCasesPayload): Promise<SearchCa
     cases: fromApi.cases.map(convertApiCaseToFlexCase),
   };
 }
+
+export async function generalisedSearch(queryParams, listCasesPayload): Promise<SearchCaseResult> {
+  const queryParamsString = getQueryParams(queryParams);
+
+  const options = {
+    method: 'POST',
+    body: JSON.stringify(listCasesPayload),
+  };
+
+  const fromApi: SearchCaseResult = await fetchHrmApi(`/cases/generalisedSearch${queryParamsString}`, options);
+
+  return {
+    ...fromApi,
+    cases: fromApi.cases.map(convertApiCaseToFlexCase),
+  };
+}

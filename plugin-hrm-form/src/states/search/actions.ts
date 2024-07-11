@@ -20,8 +20,14 @@ import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
 import * as t from './types';
 import { SearchParams } from './types';
-import { searchContacts as searchContactsApiCall } from '../../services/ContactService';
-import { searchCases as searchCasesApiCall } from '../../services/CaseService';
+import {
+  searchContacts as searchContactsApiCall,
+  generalisedSearch as generalisedContactsSearchApi,
+} from '../../services/ContactService';
+import {
+  searchCases as searchCasesApiCall,
+  generalisedSearch as generalisedCasesSearchApi,
+} from '../../services/CaseService';
 import { updateDefinitionVersion } from '../configuration/actions';
 import { getCasesMissingVersions, getContactsMissingVersions } from '../../utils/definitionVersions';
 import { getNumberFromTask } from '../../utils';
@@ -89,6 +95,36 @@ export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string, cont
   }
 };
 
+export const generalisedSearchContacts = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
+  searchParams: SearchParams,
+  limit: number,
+  offset: number,
+  dispatchedFromPreviousContacts?: boolean,
+) => {
+  try {
+    dispatch({ type: t.SEARCH_CONTACTS_REQUEST, taskId, context });
+
+    const { dateFrom, dateTo, ...rest } = searchParams ?? {};
+    const searchParamsToSubmit: SearchParams = rest;
+    if (dateFrom) {
+      searchParamsToSubmit.dateFrom = formatISO(startOfDay(parseISO(dateFrom)));
+    }
+    if (dateTo) {
+      searchParamsToSubmit.dateTo = formatISO(endOfDay(parseISO(dateTo)));
+    }
+
+    const searchResultRaw = await generalisedContactsSearchApi({ searchParams: {} });
+    const searchResult = { ...searchResultRaw, contacts: searchResultRaw.contacts };
+
+    const definitions = await getContactsMissingVersions(searchResultRaw.contacts);
+    definitions.forEach(d => dispatch(updateDefinitionVersion(d.version, d.definition)));
+
+    dispatch({ type: t.SEARCH_CONTACTS_SUCCESS, searchResult, taskId, dispatchedFromPreviousContacts, context });
+  } catch (error) {
+    dispatch({ type: t.SEARCH_CONTACTS_FAILURE, error, taskId, dispatchedFromPreviousContacts, context });
+  }
+};
+
 export const searchCases = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
   searchParams: any,
   limit: number,
@@ -112,6 +148,46 @@ export const searchCases = (dispatch: Dispatch<any>) => (taskId: string, context
     };
 
     const searchResult = await searchCasesApiCall(searchCasesPayload, limit, offset);
+
+    const definitions = await getCasesMissingVersions(searchResult.cases);
+    definitions.forEach(d => dispatch(updateDefinitionVersion(d.version, d.definition)));
+
+    dispatch({
+      type: t.SEARCH_CASES_SUCCESS,
+      searchResult,
+      taskId,
+      dispatchedFromPreviousContacts,
+      reference: `search-${taskId}`,
+      context,
+    });
+  } catch (error) {
+    dispatch({ type: t.SEARCH_CASES_FAILURE, error, taskId, context });
+  }
+};
+
+export const generalisedSearchCases = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
+  searchParams: any,
+  limit: number,
+  offset: number,
+  dispatchedFromPreviousContacts?: boolean,
+) => {
+  try {
+    dispatch({ type: t.SEARCH_CASES_REQUEST, taskId, context });
+
+    const { dateFrom, dateTo, ...rest } = searchParams || {};
+
+    // Adapt dateFrom and dateTo to what is expected in the search endpoint
+    const searchCasesPayload = {
+      ...rest,
+      filters: {
+        createdAt: {
+          from: dateFrom ? formatISO(startOfDay(parseISO(dateFrom))) : undefined,
+          to: dateTo ? formatISO(endOfDay(parseISO(dateTo))) : undefined,
+        },
+      },
+    };
+
+    const searchResult = await generalisedCasesSearchApi(searchCasesPayload, limit);
 
     const definitions = await getCasesMissingVersions(searchResult.cases);
     definitions.forEach(d => dispatch(updateDefinitionVersion(d.version, d.definition)));

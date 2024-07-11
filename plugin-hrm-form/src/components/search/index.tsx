@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-multi-comp */
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -34,10 +34,13 @@ import {
   handleSearchFormChange,
   searchCases,
   searchContacts,
+  generalisedSearchContacts,
+  generalisedSearchCases,
   handleSearchFormUpdate,
 } from '../../states/search/actions';
 import { RootState } from '../../states';
 import { namespace } from '../../states/storeNamespaces';
+import selectSearchStateForTask from '../../states/search/selectSearchStateForTask';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { changeRoute, newCloseModalAction } from '../../states/routing/actions';
 import { SearchResultRoute, SearchRoute, isCaseRoute } from '../../states/routing/types';
@@ -46,6 +49,7 @@ import selectCasesForSearchResults from '../../states/search/selectCasesForSearc
 import selectContactsForSearchResults from '../../states/search/selectContactsForSearchResults';
 import { DetailsContext } from '../../states/contacts/contactDetails';
 import { GeneralizedSearchForm } from './GeneralizedSearchForm';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 type OwnProps = {
   task: CustomITask;
@@ -92,6 +96,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       ),
     searchContacts: (context: string) => searchContacts(dispatch)(taskId, context),
     searchCases: (context: string) => searchCases(dispatch)(taskId, context),
+    generalisedSearchContacts: (context: string) => generalisedSearchContacts(dispatch)(taskId, context),
+    generalisedSearchCases: (context: string) => generalisedSearchCases(dispatch)(taskId, context),
     closeModal: () => dispatch(newCloseModalAction(taskId)),
     handleNewCreateSearch: (context: string) => dispatch(newCreateSearchForm(taskId, context)),
   };
@@ -104,6 +110,8 @@ const Search: React.FC<Props> = ({
   currentIsCaller,
   searchContacts,
   searchCases,
+  generalisedSearchContacts,
+  generalisedSearchCases,
   handleSearchFormChange,
   handleSearchFormUpdate,
   searchContactsResults,
@@ -115,11 +123,19 @@ const Search: React.FC<Props> = ({
   handleNewCreateSearch,
   searchContext,
 }) => {
-  // const enableSearchV2 = getAseloFeatureFlags().enable_searchV2;
-  const enableSearchV2 = true;
+  // const enableGeneralisedSearch = getAseloFeatureFlags().enable_generalised_search;
+  const enableGeneralisedSearch = true;
 
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});
+
+  // const [contactsOffset, setContactsOffset] = useState(0);
+  // const prevContactsOffset = useRef(-1);
+
+  const searchState = useSelector((state: RootState) => selectSearchStateForTask(state, task.taskSid, searchContext));
+
+  console.log('>>>searchState', searchState);
+
   useEffect(() => {
     if (!form) {
       handleNewCreateSearch(searchContext);
@@ -128,12 +144,21 @@ const Search: React.FC<Props> = ({
 
   const closeDialog = () => setMockedMessage('');
 
-  const handleSearchContacts = (newSearchParams: SearchParams, newOffset) =>
-    searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+  const handleSearchContacts = (newSearchParams: SearchParams, newOffset) => {
+    if (enableGeneralisedSearch) {
+      // return generalisedSearchContacts({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+    }
 
-  const handleSearchCases = (newSearchParams, newOffset) =>
-    searchCases(searchContext)({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
+    return searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+  };
 
+  const handleSearchCases = (newSearchParams, newOffset) => {
+    if (enableGeneralisedSearch) {
+      // return generalisedSearchCases({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
+    }
+
+    return searchCases(searchContext)({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
+  };
   const setSearchParamsAndHandleSearch = async newSearchParams => {
     if (routing.route === 'search') {
       if (routing.subroute === 'form' && routing.action === 'select-case') {
@@ -249,7 +274,7 @@ const Search: React.FC<Props> = ({
             : 'SearchContactsAndCases-Title'
         }
       >
-        {enableSearchV2 ? (
+        {enableGeneralisedSearch ? (
           <GeneralizedSearchForm
             initialValues={form}
             autoFocus={true}
