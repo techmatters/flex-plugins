@@ -24,7 +24,7 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/et/templates/studio-flows/messaging-chatbot-operating-hours.tftpl"
         channel_flow_vars = {
-
+          chat_blocked_message = "Sorry, you're not able to contact ${local.helpline} from this device or account"
         }
         chatbot_unique_names = []
       },
@@ -33,6 +33,7 @@ locals {
         contact_identity = "messenger:110628727963549"
         templatefile     = "/app/twilio-iac/helplines/et/templates/studio-flows/messaging-chatbot-operating-hours.tftpl"
         channel_flow_vars = {
+          chat_blocked_message = "Sorry, you're not able to contact ${local.helpline} from this device or account"
         }
         chatbot_unique_names = []
       }
