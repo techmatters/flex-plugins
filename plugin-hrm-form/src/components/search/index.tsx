@@ -123,15 +123,11 @@ const Search: React.FC<Props> = ({
   handleNewCreateSearch,
   searchContext,
 }) => {
-  const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
-  // const enableGeneralizedSearch = true;
+  // const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
+  const enableGeneralizedSearch = true;
 
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});
-
-  const searchState = useSelector((state: RootState) => selectSearchStateForTask(state, task.taskSid, searchContext));
-
-  console.log('>>>searchState', searchState);
 
   useEffect(() => {
     if (!form) {
@@ -143,7 +139,7 @@ const Search: React.FC<Props> = ({
 
   const handleSearchContacts = (newSearchParams: SearchParams, newOffset) => {
     if (enableGeneralizedSearch) {
-      // return generalizedSearchContacts({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+      return generalizedSearchContacts(searchContext);
     }
 
     return searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
@@ -151,7 +147,7 @@ const Search: React.FC<Props> = ({
 
   const handleSearchCases = (newSearchParams, newOffset) => {
     if (enableGeneralizedSearch) {
-      // return generalizedSearchCases({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
+      return generalizedSearchCases(searchContext);
     }
 
     return searchCases(searchContext)({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
