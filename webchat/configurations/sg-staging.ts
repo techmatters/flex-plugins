@@ -207,7 +207,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "Unknown"
         }
       ],
-    },,
+    },
     {
       label: 'How did you hear about Tinkle Friend?',
       type: 'select',
