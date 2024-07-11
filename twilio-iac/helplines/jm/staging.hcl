@@ -35,9 +35,9 @@ locals {
         chatbot_unique_names = []
       },
       whatsapp : {
-        flex_messaging_type = "conversations"
+        messaging_mode       = "conversations"
         channel_type         = "whatsapp"
-        contact_identity     = "+18767287042"
+        contact_identity     = "whatsapp:+18767287042"
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
