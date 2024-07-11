@@ -37,7 +37,6 @@ import {
   DateRangeSpacer,
   TwoColumnLayoutResponsive,
 } from '../../../styles';
-import { disperseInputs } from '../../common/forms/formGenerators';
 import { addMargin } from '../../common/forms/formGenerators';
 import { CustomITask } from '../../../types/types';
 import { SearchFormValues } from '../../../states/search/types';
@@ -58,10 +57,11 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
   handleSearchFormUpdate,
   handleSearch,
 }) => {
-  const layoutRef = useRef(null); // Step 1: Create a ref
-  const [layoutWidth, setLayoutWidth] = useState(0); // State to store the width
+  const layoutRef = useRef(null);
+  const [layoutWidth, setLayoutWidth] = useState(0);
 
   const isNarrow = layoutWidth < 1000;
+
   useEffect(() => {
     const updateWidth = () => {
       if (layoutRef.current) {
@@ -70,7 +70,7 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
     };
 
     window.addEventListener('resize', updateWidth);
-    updateWidth(); // Initial measurement
+    updateWidth();
 
     return () => window.removeEventListener('resize', updateWidth);
   }, []);

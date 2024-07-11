@@ -21,13 +21,6 @@ import { isFuture, isAfter } from 'date-fns';
 import type { CounselorsList } from '../../../states/configuration/types';
 import { splitDate } from '../../../utils/helpers';
 
-// export type SearchFormDefinitionObject = {
-//   searchInput: FormItemDefinition;
-//   createdOnBehalfOf: FormItemDefinition;
-//   dateFrom: FormItemDefinition;
-//   dateTo: FormItemDefinition;
-// };
-
 export const createSearchFormDefinition = ({
   counselorsList,
 }: {
