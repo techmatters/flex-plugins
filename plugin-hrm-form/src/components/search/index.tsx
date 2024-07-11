@@ -34,8 +34,8 @@ import {
   handleSearchFormChange,
   searchCases,
   searchContacts,
-  generalisedSearchContacts,
-  generalisedSearchCases,
+  generalizedSearchContacts,
+  generalizedSearchCases,
   handleSearchFormUpdate,
 } from '../../states/search/actions';
 import { RootState } from '../../states';
@@ -96,8 +96,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       ),
     searchContacts: (context: string) => searchContacts(dispatch)(taskId, context),
     searchCases: (context: string) => searchCases(dispatch)(taskId, context),
-    generalisedSearchContacts: (context: string) => generalisedSearchContacts(dispatch)(taskId, context),
-    generalisedSearchCases: (context: string) => generalisedSearchCases(dispatch)(taskId, context),
+    generalizedSearchContacts: (context: string) => generalizedSearchContacts(dispatch)(taskId, context),
+    generalizedSearchCases: (context: string) => generalizedSearchCases(dispatch)(taskId, context),
     closeModal: () => dispatch(newCloseModalAction(taskId)),
     handleNewCreateSearch: (context: string) => dispatch(newCreateSearchForm(taskId, context)),
   };
@@ -110,8 +110,8 @@ const Search: React.FC<Props> = ({
   currentIsCaller,
   searchContacts,
   searchCases,
-  generalisedSearchContacts,
-  generalisedSearchCases,
+  generalizedSearchContacts,
+  generalizedSearchCases,
   handleSearchFormChange,
   handleSearchFormUpdate,
   searchContactsResults,
@@ -123,14 +123,11 @@ const Search: React.FC<Props> = ({
   handleNewCreateSearch,
   searchContext,
 }) => {
-  // const enableGeneralisedSearch = getAseloFeatureFlags().enable_generalised_search;
-  const enableGeneralisedSearch = true;
+  const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
+  // const enableGeneralizedSearch = true;
 
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});
-
-  // const [contactsOffset, setContactsOffset] = useState(0);
-  // const prevContactsOffset = useRef(-1);
 
   const searchState = useSelector((state: RootState) => selectSearchStateForTask(state, task.taskSid, searchContext));
 
@@ -145,16 +142,16 @@ const Search: React.FC<Props> = ({
   const closeDialog = () => setMockedMessage('');
 
   const handleSearchContacts = (newSearchParams: SearchParams, newOffset) => {
-    if (enableGeneralisedSearch) {
-      // return generalisedSearchContacts({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+    if (enableGeneralizedSearch) {
+      // return generalizedSearchContacts({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
     }
 
     return searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
   };
 
   const handleSearchCases = (newSearchParams, newOffset) => {
-    if (enableGeneralisedSearch) {
-      // return generalisedSearchCases({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
+    if (enableGeneralizedSearch) {
+      // return generalizedSearchCases({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
     }
 
     return searchCases(searchContext)({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
@@ -274,7 +271,7 @@ const Search: React.FC<Props> = ({
             : 'SearchContactsAndCases-Title'
         }
       >
-        {enableGeneralisedSearch ? (
+        {enableGeneralizedSearch ? (
           <GeneralizedSearchForm
             initialValues={form}
             autoFocus={true}

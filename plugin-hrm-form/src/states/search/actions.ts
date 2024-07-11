@@ -22,11 +22,11 @@ import * as t from './types';
 import { SearchParams } from './types';
 import {
   searchContacts as searchContactsApiCall,
-  generalisedSearch as generalisedContactsSearchApi,
+  generalizedSearch as generalisedContactsSearchApi,
 } from '../../services/ContactService';
 import {
   searchCases as searchCasesApiCall,
-  generalisedSearch as generalisedCasesSearchApi,
+  generalizedSearch as generalisedCasesSearchApi,
 } from '../../services/CaseService';
 import { updateDefinitionVersion } from '../configuration/actions';
 import { getCasesMissingVersions, getContactsMissingVersions } from '../../utils/definitionVersions';
@@ -95,7 +95,7 @@ export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string, cont
   }
 };
 
-export const generalisedSearchContacts = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
+export const generalizedSearchContacts = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
   searchParams: SearchParams,
   limit: number,
   offset: number,
@@ -165,7 +165,7 @@ export const searchCases = (dispatch: Dispatch<any>) => (taskId: string, context
   }
 };
 
-export const generalisedSearchCases = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
+export const generalizedSearchCases = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
   searchParams: any,
   limit: number,
   offset: number,

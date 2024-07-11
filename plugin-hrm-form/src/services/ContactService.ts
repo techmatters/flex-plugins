@@ -76,7 +76,7 @@ export async function searchContacts(
 }
 
 // eslint-disable-next-line import/no-unused-modules
-export async function generalisedSearch({
+export async function generalizedSearch({
   searchParams,
 }: {
   searchParams: SearchParams;
@@ -88,7 +88,7 @@ export async function generalisedSearch({
     method: 'POST',
     body: JSON.stringify(searchParams),
   };
-  const response = await fetchHrmApi(`/contacts/generalisedSearch${searchParams}`, options);
+  const response = await fetchHrmApi(`/contacts/generalizedSearch${searchParams}`, options);
   return {
     ...response,
     contacts: response.contacts.map(convertApiContactToFlexContact),

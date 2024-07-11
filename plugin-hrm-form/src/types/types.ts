@@ -277,7 +277,7 @@ export type FeatureFlags = {
   enable_external_transcripts: boolean; // Enables Viewing Transcripts Stored Outside of Twilio
   enable_filter_cases: boolean; // Enables Filters at Case List
   enable_fullstory_monitoring: boolean; // Enables Full Story
-  enable_generalised_search: boolean; // Enables Generalized Search
+  enable_generalized_search: boolean; // Enables Generalized Search
   enable_last_case_status_update_info: boolean; // Enables showing the time, user and changed status of the most recent case status update on the 'Edit Case Summary' page
   enable_lex: boolean; // Enables consuming from Lex bots
   enable_manual_pulling: boolean; // Enables Adding Another Task

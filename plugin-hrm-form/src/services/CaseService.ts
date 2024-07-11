@@ -168,7 +168,7 @@ export async function listCases(queryParams, listCasesPayload): Promise<SearchCa
   };
 }
 
-export async function generalisedSearch(queryParams, listCasesPayload): Promise<SearchCaseResult> {
+export async function generalizedSearch(queryParams, listCasesPayload): Promise<SearchCaseResult> {
   const queryParamsString = getQueryParams(queryParams);
 
   const options = {
@@ -176,7 +176,7 @@ export async function generalisedSearch(queryParams, listCasesPayload): Promise<
     body: JSON.stringify(listCasesPayload),
   };
 
-  const fromApi: SearchCaseResult = await fetchHrmApi(`/cases/generalisedSearch${queryParamsString}`, options);
+  const fromApi: SearchCaseResult = await fetchHrmApi(`/cases/generalizedSearch${queryParamsString}`, options);
 
   return {
     ...fromApi,
