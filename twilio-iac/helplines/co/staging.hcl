@@ -40,6 +40,7 @@ locals {
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-no-chatbot-operating-hours.tftpl"
         channel_flow_vars = {
           voice_ivr_greeting_message = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
+          voice_ivr_blocked_message = "Lamentablemente el número del cual llamas se encuentra bloqueado en nuestro sistema."
           voice_ivr_language         = "es-MX"
         }
         chatbot_unique_names = []
