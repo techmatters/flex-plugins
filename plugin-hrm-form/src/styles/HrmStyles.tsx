@@ -301,9 +301,7 @@ export const FormDateInput = styled(FormInput)`
     opacity: 1;
   }
   &[type='date']::-webkit-calendar-picker-indicator {
-    display: flex;
-    justify-content: end;
-    align-items: end;
+    font-size: 20px;
   }
   /* &[type='date'] {} */
   /* &[type='date']::-webkit-calendar-picker-indicator {} */
@@ -321,9 +319,11 @@ export const FormTimeInput = styled(FormInput)`
     -webkit-appearance: none;
     display: none;
   }
+  &[type='time']::-webkit-calendar-picker-indicator {
+    font-size: 20px;
+  }
   /* Other pseudoelements that can be styled
    &[type='time'] {}
-   &[type='time']::-webkit-calendar-picker-indicator {}
    &[type='time']::-webkit-datetime-edit-hour-field {}
    &[type='time']::-webkit-datetime-edit-minute-field {}
    &[type='time']::-webkit-datetime-edit-ampm-field {}
@@ -521,7 +521,7 @@ FormOption.displayName = 'FormOption';
 
 export const SearchIconContainer = styled('div')`
   position: absolute;
-  transform: translateX(20%) translateY(53%);
+  transform: translateX(25%) translateY(63%);
   opacity: 0.4;
   z-index: 2;
 `;

@@ -239,7 +239,8 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   </Box>
                 </Row>
                 <SearchIconContainer>
-                  <SearchIcon fontSize="small" />
+                  {/* <SearchIcon fontSize="small" /> */}
+                  <SearchIcon style={{ fontSize: '20px' }} />
                 </SearchIconContainer>
                 <FormSearchInput
                   id={path}
