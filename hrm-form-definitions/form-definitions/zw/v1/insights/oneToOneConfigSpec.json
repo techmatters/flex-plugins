@@ -32,6 +32,10 @@
         "insights": ["customers", "region"]
       },
       {
+        "name": "suburb",
+        "insights": ["customers", "state"]
+      },
+      {
         "name": "livingSituation",
         "insights": ["customers", "zip"]
       },

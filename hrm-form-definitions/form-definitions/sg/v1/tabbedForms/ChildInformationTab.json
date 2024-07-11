@@ -188,6 +188,54 @@
     }
   },
   {
+    "name": "howDidYouHearAboutUs",
+    "label": "How did you Client hear about us?",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "eAssemblyTalk",
+        "label": "E-assembly talk"
+      },
+      {
+        "value": "school",
+        "label": "School - Tinkle Friend Poster / Student Handbook"
+      },
+      {
+        "value": "familyFriend",
+        "label": "Family / Friend"
+      },
+      {
+        "value": "teacherCounsellor",
+        "label": "Teacher/ school counsellor"
+      },
+      {
+        "value": "unsafe",
+        "label": "Feelings of Being Unsafe"
+      },
+      {
+        "value": "nothing",
+        "label": "Nothing"
+      },
+      {
+        "value": "news",
+        "label": "News article"
+      },
+      {
+        "value": "other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
     "name": "ethnicity",
     "label": "Ethnicity",
     "type": "select",

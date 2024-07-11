@@ -209,6 +209,51 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       ],
     },
     {
+      label: 'How did you hear about Tinkle Friend?',
+      type: 'select',
+      name: 'howDidYouHearAboutUs',
+      required: true,
+      defaultValue: '',
+      options: [
+        {
+          value: "",
+          label: ""
+        },
+        {
+          value: "eAssemblyTalk",
+          label: "E-assembly talk"
+        },
+        {
+          value: "school",
+          label: "School - Tinkle Friend Poster / Student Handbook"
+        },
+        {
+          value: "familyFriend",
+          label: "Family / Friend"
+        },
+        {
+          value: "teacherCounsellor",
+          label: "Teacher/ school counsellor"
+        },
+        {
+          value: "unsafe",
+          label: "Feelings of Being Unsafe"
+        },
+        {
+          value: "nothing",
+          label: "Nothing"
+        },
+        {
+          value: "news",
+          label: "News article"
+        },
+        {
+          value: "other",
+          label: "Other"
+        }
+      ],
+    },
+    {
       type: 'checkbox',
       name: 'clientPrivacyStatement',
       label: 'I agree with the <a href="https://tinklefriend.sg/terms">Terms of Use</a>',
