@@ -8,7 +8,7 @@ ${
       "type": "trigger",
       "transitions": [
         {
-          "next": "pre_survey_complete",
+          "next": "getProfileFlagsForIdentifier",
           "event": "incomingMessage"
         },
         {
@@ -40,7 +40,7 @@ ${
           "event": "success"
         },
         {
-          "next": "check_operating_hours",
+          "next": "pre_survey_complete",
           "event": "failed"
         }
       ],
@@ -73,7 +73,7 @@ ${
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
-        "from": "Linea Libre",
+        "from": channel_flow_vars¨["widget_from"],
         "to": "{{contact.channel.address}}",
         "body":  channel_flow_vars["chat_blocked_message"]
       }
@@ -83,7 +83,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "check_operating_hours",
+          "next": "pre_survey_complete",
           "event": "noMatch"
         },
         {

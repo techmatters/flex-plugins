@@ -251,7 +251,7 @@ ${
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
-        "from": "Linea Libre",
+        "from": channel_flow_vars¨["widget_from"],
         "to": "{{contact.channel.address}}",
         "body":  channel_flow_vars["chat_blocked_message"]
       }
