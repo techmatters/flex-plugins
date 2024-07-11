@@ -123,8 +123,8 @@ const Search: React.FC<Props> = ({
   handleNewCreateSearch,
   searchContext,
 }) => {
-  // const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
-  const enableGeneralizedSearch = true;
+  const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
+  // const enableGeneralizedSearch = true;
 
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});
@@ -138,21 +138,22 @@ const Search: React.FC<Props> = ({
   const closeDialog = () => setMockedMessage('');
 
   const handleSearchContacts = (newSearchParams: SearchParams, newOffset) => {
-    if (enableGeneralizedSearch) {
-      return generalizedSearchContacts(searchContext);
-    }
+    // if (enableGeneralizedSearch) {
+    //   return generalizedSearchContacts(searchContext);
+    // }
 
     return searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
   };
 
   const handleSearchCases = (newSearchParams, newOffset) => {
-    if (enableGeneralizedSearch) {
-      return generalizedSearchCases(searchContext);
-    }
+    // if (enableGeneralizedSearch) {
+    //   return generalizedSearchCases(searchContext);
+    // }
 
     return searchCases(searchContext)({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
   };
   const setSearchParamsAndHandleSearch = async newSearchParams => {
+    console.log('>>> newSearchParams', newSearchParams);
     if (routing.route === 'search') {
       if (routing.subroute === 'form' && routing.action === 'select-case') {
         changeSearchPage('case-results', 'select-case', routing.contextContactId);

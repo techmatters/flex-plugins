@@ -302,6 +302,7 @@ export const FormDateInput = styled(FormInput)`
   }
   &[type='date']::-webkit-calendar-picker-indicator {
     font-size: 20px;
+    opacity: 0.8;
   }
   /* &[type='date'] {} */
   /* &[type='date']::-webkit-calendar-picker-indicator {} */
@@ -321,6 +322,7 @@ export const FormTimeInput = styled(FormInput)`
   }
   &[type='time']::-webkit-calendar-picker-indicator {
     font-size: 20px;
+    opacity: 0.8;
   }
   /* Other pseudoelements that can be styled
    &[type='time'] {}
