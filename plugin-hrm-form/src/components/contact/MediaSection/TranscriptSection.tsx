@@ -181,14 +181,14 @@ const TranscriptSection: React.FC<Props> = ({
     const updatedMessages = groupedMessages.map(message => {
       if (message.media) {
         // This updates the message object with the media data to be used on transcript
-        const contentType = message.media.content_type?.split('/')[1];
+        const mediaType = message.media.content_type?.split('/')[1];
         message.serviceSid = transcript.serviceSid;
-        message.contentType = contentType;
+        message.mediaType = mediaType;
 
         if (message.media.filename) {
           message.body = message.media.filename;
         } else {
-          message.body = `untitled.${contentType}`;
+          message.body = `untitled.${mediaType}`;
         }
       }
       return message;
