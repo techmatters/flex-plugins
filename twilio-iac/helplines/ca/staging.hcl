@@ -163,41 +163,6 @@ locals {
         }
         chatbot_unique_names = []
       },
-      hc : {
-        channel_type     = "voice"
-        contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/ca/templates/studio-flows/hc.tftpl"
-        channel_flow_vars = {
-
-          #Twilio things
-          check_counsellors_function_sid : "ZHa0218fd2a7b2e3aa800ab78e0367acf7"
-          check_counsellors_function_url : "https://test-service-dee-4583.twil.io/check_counsellors"
-          hcfr_queue_sid : "WQ2284dc2fe9a382f0b2654596e2e551d0"
-
-          #Recording URLs
-          main_url : "https://test-service-dee-4583.twil.io/HC_Closing_Intro.mp3"
-          en_function_url : "https://test-service-dee-4583.twil.io/6001_khp_english"
-          fr_function_url : "https://test-service-dee-4583.twil.io/6002_khp_french"
-          en_tos_url : "https://test-service-dee-4583.twil.io/KHPENToS.mp3"
-          fr_tos_url : "https://test-service-dee-4583.twil.io/KHPFRToS.mp3"
-          en_privacy_url : "https://test-service-dee-4583.twil.io/KHPENPrivacy.mp3"
-          fr_privacy_url : "https://test-service-dee-4583.twil.io/KHPFRPrivacy.mp3"
-          en_invalid_url : "https://test-service-dee-4583.twil.io/EnInvalid.mp3"
-          fr_invalid_url : "https://test-service-dee-4583.twil.io/FrInvalid.mp3"
-          en_disconnect_url : "https://test-service-dee-4583.twil.io/EnDisconnect.mp3"
-          fr_disconnect_url : "https://test-service-dee-4583.twil.io/FrDisconnect.mp3"
-          en_intro_url : "https://test-service-dee-4583.twil.io/Msg10006E.mp3"
-          fr_intro_url : "https://test-service-dee-4583.twil.io/MSG10006F.mp3"
-          en_inflight_url : "https://test-service-dee-4583.twil.io/Msg60011E.mp3"
-          fr_inflight_url : "https://test-service-dee-4583.twil.io/Msg60021.mp3"
-          fr_issues_url : "https://test-service-dee-4583.twil.io/FrTechIssuesmp3"
-          fr_switch_english_url : "https://test-service-dee-4583.twil.io/FrSwitchEnglish.mp3"
-          fr_nocounsellors_url : "https://test-service-dee-4583.twil.io/Msg60025.mp3"
-          fr_switch_url : "https://test-service-dee-4583.twil.io/FrSwitchInterpreter.mp3"
-          frtr_function_url : "https://test-service-dee-4583.twil.io/6004_khp_french_int"
-        }
-        chatbot_unique_names = []
-      },
       ab211 : {
         channel_type     = "voice"
         contact_identity = ""
@@ -255,7 +220,6 @@ locals {
       g2ttr : ["+18882913868", "+18559768844"],
       g2tns : ["+15814810744", "+15812215204"],
       ab211 : ["+13656495517"],
-      hc : ["+12264070015", "+17787663852"],
       training : ["+15878407089"],
       "988_camh" : ["+13656595751", "+13656011530"],
       "988_ns" : ["+17823120134"]
