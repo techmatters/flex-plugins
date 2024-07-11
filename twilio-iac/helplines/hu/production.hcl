@@ -19,7 +19,9 @@ locals {
         channel_type         = "web"
         contact_identity     = ""
         templatefile         = "/app/twilio-iac/helplines/hu/templates/studio-flows/messaging-lex.tftpl"
-        channel_flow_vars    = {}
+        channel_flow_vars    = {
+          chat_blocked_message = "Зараз ми не можемо підключити вас до послуги. Сейчас мы не можем подключить вас к сервису."
+        }
         chatbot_unique_names = []
       },
       voice : {
