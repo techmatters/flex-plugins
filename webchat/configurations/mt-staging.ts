@@ -392,8 +392,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "70"
         },
         {
-          value: ">70",
-          label: ">70"
+          value: "70+",
+          label: "70+"
         },
         {
           value: "Unknown",
