@@ -23,6 +23,7 @@ import { get, pick } from 'lodash';
 import { format, startOfDay } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import { FormInputType, FormItemDefinition, InputOption, MixedOrBool, SelectOption } from 'hrm-form-definitions';
+import SearchIcon from '@material-ui/icons/Search';
 
 import {
   Box,
@@ -46,6 +47,8 @@ import {
   FormSelectWrapper,
   FormTextArea,
   FormTimeInput,
+  FormSearchInput,
+  IconContainer,
   Row,
 } from '../../../styles';
 import type { HTMLElementRef } from './types';
@@ -195,6 +198,50 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   </Box>
                 </Row>
                 <FormInput
+                  id={path}
+                  data-testid={path}
+                  name={path}
+                  error={Boolean(error)}
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={`${path}-error`}
+                  onBlur={updateCallback}
+                  ref={ref => {
+                    if (htmlElRef) {
+                      htmlElRef.current = ref;
+                    }
+
+                    register(rules)(ref);
+                  }}
+                  defaultValue={initialValue}
+                  disabled={!isEnabled}
+                />
+                {error && (
+                  <FormError>
+                    <Template id={`${path}-error`} code={error.message} />
+                  </FormError>
+                )}
+              </FormLabel>
+            );
+          }}
+        </ConnectForm>
+      );
+    case FormInputType.SearchInput:
+      return (
+        <ConnectForm key={path}>
+          {({ errors, register }) => {
+            const error = get(errors, path);
+            return (
+              <FormLabel htmlFor={path}>
+                <Row>
+                  <Box marginBottom="8px">
+                    {labelTextComponent}
+                    {rules.required && <RequiredAsterisk />}
+                  </Box>
+                </Row>
+                <IconContainer>
+                  <SearchIcon fontSize="small" />
+                </IconContainer>
+                <FormSearchInput
                   id={path}
                   data-testid={path}
                   name={path}

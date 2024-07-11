@@ -32,8 +32,12 @@ import {
   ColumnarContent,
   BottomButtonBar,
   StyledNextStepButton,
+  FontOpenSans,
+  Bold,
+  DateRangeSpacer,
+  TwoColumnLayoutResponsive,
 } from '../../../styles';
-import { disperseInputs } from '../../common/forms/formGenerators';
+import { addMargin } from '../../common/forms/formGenerators';
 import { CustomITask } from '../../../types/types';
 import { SearchFormValues } from '../../../states/search/types';
 
@@ -87,18 +91,32 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
     },
   });
 
-  const searchForm = isLoaded ? disperseInputs(5)(form) : null;
+  const arrangeSearchFormItems = (margin: number) => (formItems: JSX.Element[]) => {
+    const itemsWithMargin = formItems.map(item => addMargin(margin)(item));
+
+    return [
+      <TwoColumnLayout key="searchInput" style={{ margin: '10px 0 20px 0' }}>
+        {itemsWithMargin[0]}
+      </TwoColumnLayout>,
+      <FontOpenSans key="filter-subtitle " style={{ marginBottom: '20px' }}>
+        <Bold>Optional Filters</Bold>
+      </FontOpenSans>,
+      <ColumnarContent key="counselor">{itemsWithMargin[1]}</ColumnarContent>,
+      <TwoColumnLayoutResponsive key="dateRange">
+        <ColumnarBlock>{itemsWithMargin[2]}</ColumnarBlock>
+        <DateRangeSpacer>-</DateRangeSpacer>
+        <ColumnarBlock>{itemsWithMargin[3]}</ColumnarBlock>
+      </TwoColumnLayoutResponsive>,
+    ];
+  };
+
+  const searchForm = arrangeSearchFormItems(5)(form);
 
   return (
     <>
       <Container data-testid="SearchForm" data-fs-id="SearchForm" formContainer={true}>
         <FormProvider {...methods}>
-          <TwoColumnLayout>
-            <ColumnarBlock>
-              <ColumnarContent>{searchForm}</ColumnarContent>
-            </ColumnarBlock>
-            <ColumnarBlock />
-          </TwoColumnLayout>
+          <ColumnarContent>{searchForm}</ColumnarContent>
         </FormProvider>
       </Container>
       <BottomButtonBar>

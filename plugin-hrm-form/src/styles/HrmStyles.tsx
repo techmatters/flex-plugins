@@ -288,10 +288,8 @@ export const FormRadioInput = styled('input')<FormInputProps>`
 FormRadioInput.displayName = 'FormRadioInput';
 
 export const FormDateInput = styled(FormInput)`
-  input: {
-    width: 100%;
-    flex-grow: 1;
-    display: flex;
+  & {
+    display: block;
   }
   &[type='date']::-webkit-clear-button,
   &[type='date']::-webkit-inner-spin-button {
@@ -313,10 +311,13 @@ export const FormDateInput = styled(FormInput)`
 FormDateInput.displayName = 'FormDateInput';
 
 export const FormTimeInput = styled(FormInput)`
+  & {
+    display: block;
+  }
   &[type='time']::-webkit-datetime-edit-fields-wrapper {
     display: flex;
   }
-  &[type='time']::-webkit-clear-button,
+  &[type='time']::-webkit-clear-button {
     -webkit-appearance: none;
     display: none;
   }
@@ -517,6 +518,37 @@ export const FormOption = styled('option')<FormOptionProps>`
   ${props => props.disabled && `background-color: ${HrmTheme.colors.disabledColor};`}
 `;
 FormOption.displayName = 'FormOption';
+
+export const IconContainer = styled('div')`
+  position: absolute;
+  transform: translateX(20%) translateY(53%);
+  opacity: 0.6;
+  z-index: 2;
+`;
+IconContainer.displayName = 'IconContainer';
+
+export const FormSearchInput = styled(FormInput)`
+  position: relative;
+  & {
+    width: 460px;
+    padding-left: 30px;
+  }
+  @media screen and (max-width: 1100px) {
+    & {
+      width: 217px;
+    }
+  }
+`;
+FormSearchInput.displayName = 'FormSearchInput';
+
+export const DateRangeSpacer = styled('span')`
+  align-content: space-around;
+  padding-top: 25px;
+  margin: 20px;
+  @media screen and (max-width: 1100px) {
+    display: none;
+  }
+`;
 
 type CategoryCheckboxProps = { disabled: boolean };
 // eslint-disable-next-line import/no-unused-modules
