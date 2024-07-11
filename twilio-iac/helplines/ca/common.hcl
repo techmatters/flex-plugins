@@ -74,14 +74,6 @@ locals {
         "target_workers" = "routing.skills HAS 'Training'",
         "friendly_name"  = "Training"
       },
-      hc_en : {
-        "target_workers" = "routing.skills HAS 'HCENG'",
-        "friendly_name"  = "Health Canada English"
-      },
-      hc_fr : {
-        "target_workers" = "routing.skills HAS 'HCFR'",
-        "friendly_name"  = "Health Canada French"
-      },
       chat_en : {
         "target_workers" = "routing.skills HAS 'Chat English'",
         "friendly_name"  = "Chat English"
