@@ -7,7 +7,8 @@
             "whatsapp",
             "facebook",
             "instagram",
-            "line"
+            "line",
+            "telegram"
         ],
         "feature_flags": {  
             "enable_csam_report": true,

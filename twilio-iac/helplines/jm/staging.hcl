@@ -12,7 +12,7 @@ locals {
       environment_sid                        = "ZE82cbf2bcb65cf4e44c436a24d3024fb5"
       capture_channel_with_bot_function_sid  = "ZH07b25b75594049950f1b4384ceeedfcb"
       capture_channel_with_bot_function_name = "channelCapture/captureChannelWithBot"
-      chatbot_callback_cleanup_function_id   = "ZHd8e7e7801687a833b4377b5c90305452"
+      chatbot_callback_cleanup_function_sid   = "ZHd8e7e7801687a833b4377b5c90305452"
       chatbot_callback_cleanup_function_name = "channelCapture/chatbotCallbackCleanup"
       bot_language                           = "en-JM"
     }
