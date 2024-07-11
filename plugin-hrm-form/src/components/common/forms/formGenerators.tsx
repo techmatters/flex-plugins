@@ -48,7 +48,7 @@ import {
   FormTextArea,
   FormTimeInput,
   FormSearchInput,
-  IconContainer,
+  SearchIconContainer,
   Row,
 } from '../../../styles';
 import type { HTMLElementRef } from './types';
@@ -238,9 +238,9 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>
-                <IconContainer>
+                <SearchIconContainer>
                   <SearchIcon fontSize="small" />
-                </IconContainer>
+                </SearchIconContainer>
                 <FormSearchInput
                   id={path}
                   data-testid={path}

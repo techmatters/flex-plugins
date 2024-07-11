@@ -519,13 +519,13 @@ export const FormOption = styled('option')<FormOptionProps>`
 `;
 FormOption.displayName = 'FormOption';
 
-export const IconContainer = styled('div')`
+export const SearchIconContainer = styled('div')`
   position: absolute;
   transform: translateX(20%) translateY(53%);
-  opacity: 0.6;
+  opacity: 0.4;
   z-index: 2;
 `;
-IconContainer.displayName = 'IconContainer';
+SearchIconContainer.displayName = 'SearchIconContainer';
 
 export const FormSearchInput = styled(FormInput)`
   position: relative;
