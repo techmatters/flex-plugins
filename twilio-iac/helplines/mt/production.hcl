@@ -12,11 +12,13 @@ locals {
     }
     #Studio flow
     flow_vars = {
-      service_sid                           = "ZSdb37ba82eecdad41e21c71d1f2461052"
-      environment_sid                       = "ZE93e3c9f4e1f94fb6e3ea97dc98b5129e"
-      capture_channel_with_bot_function_sid = "ZH95285b8e20b443a167ada3db38b1ff99"
+      service_sid                            = "ZSdb37ba82eecdad41e21c71d1f2461052"
+      environment_sid                        = "ZE93e3c9f4e1f94fb6e3ea97dc98b5129e"
+      capture_channel_with_bot_function_sid  = "ZH95285b8e20b443a167ada3db38b1ff99"
       chatbot_callback_cleanup_function_sid  = "ZHe8f285fc47fc1150a87bb46a8eb467be"
-      send_message_janitor_function_sid     = "ZH91ec531cde681192daf63e306db90d88"
+      send_message_janitor_function_sid      = "ZH91ec531cde681192daf63e306db90d88"
+      widget_from                            = "Kellimni"
+      chat_blocked_message                   = "Sorry, you're not able to contact Kellimni from this device or account"
     }
 
 

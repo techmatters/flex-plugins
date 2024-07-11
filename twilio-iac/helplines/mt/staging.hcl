@@ -19,6 +19,8 @@ locals {
       capture_channel_with_bot_function_sid = "ZH75af18446e362dd58e4fd76cc4e1dca1"
       chatbot_callback_cleanup_function_sid  = "ZH85433c3fc77c22dc1c6cf385853598d8"
       send_message_janitor_function_sid     = "ZH19f41d74c3c64c23b5d624ab84d1ddde"
+      widget_from                            = "Kellimni"
+      chat_blocked_message                   = "Sorry, you're not able to contact Kellimni from this device or account"
     }
 
     channels = {
