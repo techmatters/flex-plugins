@@ -19,7 +19,9 @@ locals {
         channel_type         = "web"
         contact_identity     = ""
         templatefile         = "/app/twilio-iac/helplines/hu/templates/studio-flows/messaging-lex.tftpl"
-        channel_flow_vars    = {}
+        channel_flow_vars    = {
+          chat_blocked_message = "Зараз ми не можемо підключити вас до послуги. Сейчас мы не можем подключить вас к сервису."
+        }
         chatbot_unique_names = []
       },
       voice : {
@@ -31,6 +33,8 @@ locals {
           test_service_sid             = "ZS0334b33f8c50e894e7647aa368bedb0e"
           test_service_environment_sid = "ZE96e60d55af1b2e503a2b37e2cffb1230"
           test_service_url             = "https://test-service-1476.twil.io"
+          voice_ivr_blocked_message    = "Зараз ми не можемо підключити вас до послуги."
+          voice_ivr_language           = "uk-UA"
 
         }
         chatbot_unique_names = []

@@ -68,21 +68,23 @@ resource "aws_s3_bucket_ownership_controls" "docs" {
   }
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "hrm_export_expiry" {
-  bucket = aws_s3_bucket.docs.bucket
+resource "aws_s3_bucket_lifecycle_configuration" "s3_lifecycle_rules" {
+  for_each = var.s3_lifecycle_rules
+  bucket   = aws_s3_bucket.docs.bucket
   provider = aws.bucket
   rule {
     expiration {
-      days = 30
+      days = each.value.expiration_in_days
     }
     filter {
-      prefix = "hrm-data/"
+      prefix = each.value.prefix
     }
-    id = "HRM Exported Data Expiration Policy"
+    id     = each.value.id
     status = "Enabled"
   }
 
 }
+
 
 resource "aws_s3_bucket" "chat" {
   bucket   = local.chat_s3_location
@@ -143,7 +145,7 @@ locals {
     OPERATING_INFO_KEY = jsonencode(["TWILIO", var.operating_info_key, "Twilio account - Operating Key info"])
     APP_ID             = jsonencode(["DATADOG", var.datadog_app_id, "Datadog - Application ID"])
     ACCESS_TOKEN       = jsonencode(["DATADOG", var.datadog_access_token, "Datadog - Access Token"])
-    }
+  }
 }
 
 /****************************************************************

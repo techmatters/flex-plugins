@@ -36,7 +36,7 @@ import {
   MediaItemContainer,
 } from './styles';
 import { TranscriptMessage } from '../../../states/contacts/existingContacts';
-import { ContentType, displayMediaSize, selectMediaIcon } from '../../../utils/selectMediaIcon';
+import { abbreviateMediaFilename, displayMediaSize, selectMediaIcon } from '../../../utils/selectMediaIcon';
 import OpenPageIcon from '../../common/icons/OpenPageIcon';
 import { getMediaUrl } from '../../../services/ServerlessService';
 
@@ -45,7 +45,7 @@ export type GroupedMessage = TranscriptMessage & {
   isCounselor: boolean;
   isGroupedWithPrevious: boolean;
   serviceSid?: string;
-  contentType?: ContentType;
+  mediaType?: string;
 };
 
 type Props = {
@@ -62,7 +62,7 @@ const MessageItem: React.FC<Props> = ({ message }) => {
     isGroupedWithPrevious,
     serviceSid,
     media,
-    contentType,
+    mediaType,
   } = message;
   const renderIcon = !isCounselor && !isGroupedWithPrevious;
 
@@ -76,9 +76,9 @@ const MessageItem: React.FC<Props> = ({ message }) => {
       return (
         // Handle UI modification for media on transcript
         <MediaItemContainer onClick={mediaUrl}>
-          <span>{selectMediaIcon(contentType)}</span>
+          <span>{selectMediaIcon(media.content_type, mediaType)}</span>
           <span>
-            <p>{body}</p>
+            <p>{abbreviateMediaFilename(body)}</p>
             <p>{displayMediaSize(media.size)}</p>
           </span>
           <OpenMediaIconContainer>

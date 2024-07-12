@@ -18,16 +18,9 @@ import React from 'react';
 
 import ImageIcon from '../components/common/icons/ImageIcon';
 import PdfIcon from '../components/common/icons/PdfIcon';
+import AudioIcon from '../components/common/icons/AudioIcon';
+import VideoIcon from '../components/common/icons/VideoIcon';
 import UnsupportedFileIcon from '../components/common/icons/UnsupportedFileIcon';
-
-const contentType = {
-  pdf: 'pdf',
-  jpg: 'jpg',
-  png: 'png',
-  jpeg: 'jpeg',
-} as const;
-
-export type ContentType = typeof contentType[keyof typeof contentType];
 
 export const displayMediaSize = (bytes: number) => {
   if (bytes === 0) return '0 B';
@@ -37,14 +30,25 @@ export const displayMediaSize = (bytes: number) => {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 };
 
-export const selectMediaIcon = (type: ContentType) => {
-  switch (type) {
-    case contentType.jpeg:
-    case contentType.jpg:
-    case contentType.png:
+export const abbreviateMediaFilename = (filename: string): string => {
+  const text = filename.split('');
+  if (text.length > 20) {
+    // Create the abbreviated string
+    return `${text.slice(0, 14).join('')}...${text.slice(-6).join('')}`;
+  }
+  return filename;
+};
+
+export const selectMediaIcon = (contentType: string, mediaType: string) => {
+  switch (contentType) {
+    case `image/${mediaType}`:
       return <ImageIcon width="48px" height="48px" />;
-    case contentType.pdf:
+    case `application/pdf`:
       return <PdfIcon width="48px" height="48px" />;
+    case `audio/${mediaType}`:
+      return <AudioIcon width="40px" height="40px" />;
+    case `video/${mediaType}`:
+      return <VideoIcon width="40px" height="40px" />;
     default:
       return <UnsupportedFileIcon width="48px" height="48px" />;
   }
