@@ -8,7 +8,7 @@
       "type": "ReturnIntent"
     },
     "conclusion_statement": {
-      "content": "We'll transfer you now. Please hold for a professional.",
+      "content": "Thank you for reaching out. We are currently assisting other clients, but we will do our utmost to respond to you shortly. Kindly wait for assistance. If this is an emergency, please contact 112, until we are in a position to assist you.",
       "content_type": "PlainText"
     },
     "rejection_statement": {
