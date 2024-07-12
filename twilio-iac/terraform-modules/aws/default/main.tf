@@ -68,6 +68,22 @@ resource "aws_s3_bucket_ownership_controls" "docs" {
   }
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "hrm_export_expiry" {
+  bucket = aws_s3_bucket.docs.bucket
+  provider = aws.bucket
+  rule {
+    expiration {
+      days = 30
+    }
+    filter {
+      prefix = "hrm-data/"
+    }
+    id = "HRM Exported Data Expiration Policy"
+    status = "Enabled"
+  }
+
+}
+
 resource "aws_s3_bucket_lifecycle_configuration" "s3_lifecycle_rules" {
   for_each = var.s3_lifecycle_rules
   bucket   = aws_s3_bucket.docs.bucket
