@@ -69,20 +69,24 @@ resource "aws_s3_bucket_ownership_controls" "docs" {
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "s3_lifecycle_rules" {
-  for_each = var.s3_lifecycle_rules
-  bucket   = aws_s3_bucket.docs.bucket
+  bucket = aws_s3_bucket.docs.bucket
   provider = aws.bucket
-  rule {
-    expiration {
-      days = each.value.expiration_in_days
-    }
-    filter {
-      prefix = each.value.prefix
-    }
-    id     = each.value.id
-    status = "Enabled"
-  }
 
+  dynamic "rule" {
+    for_each = var.s3_lifecycle_rules
+    content {
+      id     = rule.value.id
+      status = "Enabled"
+      
+      filter {
+        prefix = rule.value.prefix
+      }
+
+      expiration {
+        days = rule.value.expiration_in_days
+      }
+    }
+  }
 }
 
 
