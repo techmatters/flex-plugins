@@ -14,6 +14,8 @@
             "baseName": null,
             "preset": null,
             "overrides": null
-        }
+        },
+        "internalChatServerlessUrl": "serverless-internal-chat-7504.twil.io",
+        "appianAddonUrl": "vps.appiancloud.com/suite/webapi"
     }
 }

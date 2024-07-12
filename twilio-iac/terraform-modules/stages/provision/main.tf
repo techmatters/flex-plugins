@@ -78,8 +78,9 @@ module "aws" {
   # we need to add a non-valid workflow sid.
   survey_workflow_sid = try(module.taskRouter.workflow_sids.survey, "NOTVALIDWORKFLOWSID")
   #TODO: convert bucket_region to helpline_region (or, better yet,  pass in the correct provider)
-  bucket_region   = var.helpline_region
-  helpline_region = var.helpline_region
+  bucket_region      = var.helpline_region
+  helpline_region    = var.helpline_region
+  s3_lifecycle_rules = var.s3_lifecycle_rules
 }
 
 #TODO: Remove the provider and moved once this has been applied everywhere
