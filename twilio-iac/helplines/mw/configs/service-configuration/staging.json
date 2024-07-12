@@ -1,7 +1,8 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_external_transcripts": false
+            "enable_external_transcripts": false,
+            "enable_client_profiles": true
         },
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",
         "pdfImagesSource": "https://tl-public-chat-mw-stg.s3.amazonaws.com",
