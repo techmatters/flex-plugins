@@ -24,8 +24,8 @@ export const VIEW_CONTACT_DETAILS = 'VIEW_CONTACT_DETAILS';
 export const SEARCH_CONTACTS_REQUEST = 'SEARCH_CONTACTS_REQUEST';
 export const SEARCH_CONTACTS_SUCCESS = 'SEARCH_CONTACTS_SUCCESS';
 export const SEARCH_CONTACTS_FAILURE = 'SEARCH_CONTACTS_FAILURE';
-export const SEARCH_V2_CONTACTS_SUCCESS = 'SEARCH_V2_CONTACTS_SUCCESS';
-export const SEARCH_V2_CONTACTS_FAILURE = 'SEARCH_V2_CONTACTS_FAILURE';
+export const GENERALIZED_SEARCH_CONTACTS_SUCCESS = 'GENERALIZED_SEARCH_CONTACTS_SUCCESS';
+export const GENERALIZED_SEARCH_CONTACTS_FAILURE = 'GENERALIZED_SEARCH_CONTACTS_FAILURE';
 export const SEARCH_CASES_REQUEST = 'SEARCH_CASES_REQUEST';
 export const SEARCH_CASES_SUCCESS = 'SEARCH_CASES_SUCCESS';
 export const SEARCH_CASES_FAILURE = 'SEARCH_CASES_FAILURE';
@@ -91,7 +91,7 @@ type SearchContactsFailureAction = {
 };
 
 export type SearchV2ContactsSuccessAction = {
-  type: typeof SEARCH_V2_CONTACTS_SUCCESS;
+  type: typeof GENERALIZED_SEARCH_CONTACTS_SUCCESS;
   searchMatchIds: string[];
   taskId: string;
   dispatchedFromPreviousContacts?: boolean;
@@ -99,7 +99,7 @@ export type SearchV2ContactsSuccessAction = {
 };
 
 export type SearchV2ContactsFailureAction = {
-  type: typeof SEARCH_V2_CONTACTS_FAILURE;
+  type: typeof GENERALIZED_SEARCH_CONTACTS_FAILURE;
   error: any;
   taskId: string;
   dispatchedFromPreviousContacts?: boolean;
