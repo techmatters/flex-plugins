@@ -16,6 +16,7 @@
             "enable_csam_report": true,
             "enable_client_profiles": true,
             "enable_lex": true,
+            "enable_generalized_search": true,
             "enable_post_survey": true,
             "enable_resources": true,
             "enable_resources_elastic_search": true,
