@@ -50,7 +50,7 @@
             "enable_aselo_messaging_ui": false,
             "enable_canned_responses": true,
             "enable_case_merging": true,
-            "enable_client_profiles": false,
+            "enable_client_profiles": true,
             "enable_conferencing": false,
             "enable_confirm_on_browser_close": true,
             "enable_contact_editing": true,

@@ -64,7 +64,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "attributes",
+          "next": "is_bot",
           "event": "match",
           "conditions": [
             {
@@ -334,6 +334,36 @@ ${
           }
         ],
         "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "is_bot",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "attributes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value starts_with Bot",
+              "arguments": [
+                "{{trigger.message.From}}"
+              ],
+              "type": "starts_with",
+              "value": "Bot"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.From}}",
+        "offset": {
+          "x": 570,
+          "y": 1170
+        }
       }
     }
   ],

@@ -76,6 +76,7 @@ export const maskManagerStringsWithIdentifiers = <T extends Strings<string> & { 
 export const maskMessageListWithIdentifiers = () => {
   const can = getInitializedCan();
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
+
   if (!maskIdentifiers) return;
 
   MessagingCanvas.defaultProps.memberDisplayOptions = {
@@ -83,5 +84,7 @@ export const maskMessageListWithIdentifiers = () => {
     theirFriendlyNameOverride: false,
     yourFriendlyNameOverride: true,
   };
-  MessageList.Content.remove('0');
+  MessageList.Content.remove('0', {
+    if: ({ conversation }) => conversation?.source?.attributes?.channel_type === 'web',
+  });
 };

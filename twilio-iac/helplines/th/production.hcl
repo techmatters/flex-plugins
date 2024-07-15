@@ -12,6 +12,8 @@ locals {
       service_sid                  = "ZS6afa8bf5e4d982ddeab17b7e0dba9977"
       environment_sid              = "ZE9c5728dc8ad714c6c26ba90fddf41bc1"
       operating_hours_function_sid = "ZH5147ef61e945cf01b85804663b481a58"
+      widget_from                  = "Childline Thailand"
+      chat_blocked_message         = "Sorry, you're not able to contact Childline Thailand from this device or account"
 
     }
 
@@ -26,14 +28,14 @@ locals {
       instagram : {
         channel_type         = "custom"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
       line : {
         channel_type         = "custom"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }
