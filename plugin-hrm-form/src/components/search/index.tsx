@@ -123,8 +123,8 @@ const Search: React.FC<Props> = ({
   handleNewCreateSearch,
   searchContext,
 }) => {
-  const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
-  // const enableGeneralizedSearch = true;
+  // const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
+  const enableGeneralizedSearch = true;
 
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});
