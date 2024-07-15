@@ -203,7 +203,8 @@ ${
           "method": "POST",
           "content_type": "application/json;charset=utf-8",
           "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
-          "url": webhook_url_studio_errors
+          "url": webhook_url_studio_errors,
+          "add_twilio_auth" = "false"
         }
       },
     {
