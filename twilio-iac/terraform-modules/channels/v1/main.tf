@@ -74,7 +74,7 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
 resource "twilio_flex_flex_flows_v1" "channel_flow" {
   for_each = {
     for idx, channel in var.channels :
-    idx => channel if(channel.channel_type != "voice"  && channel.channel_type != "custom" && channel.messaging_mode == "programmable-chat")
+    idx => channel if(channel.channel_type != "voice" && channel.messaging_mode == "programmable-chat")
   }
   channel_type         = each.value.channel_type
   chat_service_sid     = var.flex_chat_service_sid
