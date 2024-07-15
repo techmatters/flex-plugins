@@ -288,10 +288,8 @@ export const FormRadioInput = styled('input')<FormInputProps>`
 FormRadioInput.displayName = 'FormRadioInput';
 
 export const FormDateInput = styled(FormInput)`
-  input: {
-    width: 100%;
-    flex-grow: 1;
-    display: flex;
+  & {
+    display: block;
   }
   &[type='date']::-webkit-clear-button,
   &[type='date']::-webkit-inner-spin-button {
@@ -303,9 +301,8 @@ export const FormDateInput = styled(FormInput)`
     opacity: 1;
   }
   &[type='date']::-webkit-calendar-picker-indicator {
-    display: flex;
-    justify-content: end;
-    align-items: end;
+    font-size: 20px;
+    opacity: 0.8;
   }
   /* &[type='date'] {} */
   /* &[type='date']::-webkit-calendar-picker-indicator {} */
@@ -313,16 +310,22 @@ export const FormDateInput = styled(FormInput)`
 FormDateInput.displayName = 'FormDateInput';
 
 export const FormTimeInput = styled(FormInput)`
+  & {
+    display: block;
+  }
   &[type='time']::-webkit-datetime-edit-fields-wrapper {
     display: flex;
   }
-  &[type='time']::-webkit-clear-button,
+  &[type='time']::-webkit-clear-button {
     -webkit-appearance: none;
     display: none;
   }
+  &[type='time']::-webkit-calendar-picker-indicator {
+    font-size: 20px;
+    opacity: 0.8;
+  }
   /* Other pseudoelements that can be styled
    &[type='time'] {}
-   &[type='time']::-webkit-calendar-picker-indicator {}
    &[type='time']::-webkit-datetime-edit-hour-field {}
    &[type='time']::-webkit-datetime-edit-minute-field {}
    &[type='time']::-webkit-datetime-edit-ampm-field {}
@@ -517,6 +520,37 @@ export const FormOption = styled('option')<FormOptionProps>`
   ${props => props.disabled && `background-color: ${HrmTheme.colors.disabledColor};`}
 `;
 FormOption.displayName = 'FormOption';
+
+export const SearchIconContainer = styled('div')`
+  position: absolute;
+  transform: translateX(25%) translateY(63%);
+  opacity: 0.4;
+  z-index: 2;
+`;
+SearchIconContainer.displayName = 'SearchIconContainer';
+
+export const FormSearchInput = styled(FormInput)`
+  position: relative;
+  & {
+    width: 460px;
+    padding-left: 30px;
+  }
+  @media screen and (max-width: 1100px) {
+    & {
+      width: 217px;
+    }
+  }
+`;
+FormSearchInput.displayName = 'FormSearchInput';
+
+export const DateRangeSpacer = styled('span')`
+  align-content: space-around;
+  padding-top: 25px;
+  margin: 20px;
+  @media screen and (max-width: 1100px) {
+    display: none;
+  }
+`;
 
 type CategoryCheckboxProps = { disabled: boolean };
 // eslint-disable-next-line import/no-unused-modules
