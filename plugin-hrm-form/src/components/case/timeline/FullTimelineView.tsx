@@ -26,7 +26,7 @@ import Timeline from './Timeline';
 import { RootState } from '../../../states';
 import { selectCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
 import { CaseTimelineRoute, ChangeRouteMode } from '../../../states/routing/types';
-import { selectTimelineCount } from '../../../states/case/timeline';
+import { newGetTimelineAsyncAction, selectTimelineCount } from '../../../states/case/timeline';
 import Pagination from '../../pagination';
 import { changeRoute } from '../../../states/routing/actions';
 
@@ -48,10 +48,17 @@ const mapStateToProps = (state: RootState, { task }: MyProps) => {
 
 const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: MyProps) => {
   return {
-    changePage: (caseId: string) => (page: number) =>
+    changePage: (caseId: string) => (page: number) => {
       dispatch(
         changeRoute({ route: 'case', subroute: 'timeline', caseId, page }, task.taskSid, ChangeRouteMode.Replace),
-      ),
+      );
+      dispatch(
+        newGetTimelineAsyncAction(caseId, 'prime-timeline', ['note', 'referral'], true, {
+          offset: page * TIMELINE_PAGE_SIZE,
+          limit: TIMELINE_PAGE_SIZE,
+        }),
+      );
+    },
   };
 };
 

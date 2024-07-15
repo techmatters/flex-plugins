@@ -14,6 +14,8 @@ locals {
       capture_channel_with_bot_function_sid = "ZH38f084d1b19886c2f1dfdc9829ce5d42"
       operating_hours_function_sid          = "ZH2890f1db05c6162f65100d2f08e25b76"
       send_message_run_janitor_function_sid = "ZHd26fbb04d70461a1846391ce40755cf4"
+      widget_from                            = "SaferNet"
+      chat_blocked_message                   = "Sorry, you're not able to contact SaferNet from this device or account"
     }
 
     #Channels

@@ -16,7 +16,9 @@
             "enable_previous_contacts": false,
             "enable_upload_documents": false,
             "enable_voice_recordings": true,
-            "enable_conferencing": true
+            "enable_conferencing": true,
+            "enable_region_resource_search": true,
+            "enable_client_profiles": false
         },
         "helplineLanguage": "en-CA",
         "permissionConfig": "ca"
