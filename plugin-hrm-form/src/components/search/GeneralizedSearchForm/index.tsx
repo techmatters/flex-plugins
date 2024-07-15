@@ -49,14 +49,7 @@ type OwnProps = {
   handleSearch: (searchParams: any) => void;
 };
 
-// eslint-disable-next-line import/no-unused-modules
-export const GeneralizedSearchForm: React.FC<OwnProps> = ({
-  task,
-  initialValues,
-  autoFocus,
-  handleSearchFormUpdate,
-  handleSearch,
-}) => {
+export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handleSearchFormUpdate, handleSearch }) => {
   const dispatch = useDispatch();
 
   const methods = useForm<Pick<SearchFormValues, 'searchTerm' | 'dateFrom' | 'dateTo' | 'counselor'>>();
@@ -68,14 +61,6 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
   const sanitizedInitialValues = { ...pick(initialValues, ['searchTerm', 'dateFrom', 'dateTo']), counselor };
 
   const counselorsList = useSelector((state: RootState) => state[namespace][configurationBase].counselors.list);
-
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    if (counselorsList && counselorsList.length > 0) {
-      setIsLoaded(true);
-    }
-  }, [counselorsList]);
 
   const formDefinition: FormDefinition = useMemo(() => createSearchFormDefinition({ counselorsList }), [
     counselorsList,
@@ -120,7 +105,6 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
         </FormProvider>
       </Container>
       <BottomButtonBar>
-        {/* disabled={!isTouched}s */}
         <StyledNextStepButton type="button" roundCorners={true} onClick={handleSearch}>
           <Template code="SearchForm-Button" />
         </StyledNextStepButton>
