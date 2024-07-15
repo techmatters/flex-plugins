@@ -22,11 +22,11 @@ import * as t from './types';
 import { SearchParams } from './types';
 import {
   searchContacts as searchContactsApiCall,
-  generalizedSearch as generalisedContactsSearchApi,
+  generalizedSearch as generalizedContactsSearchApi,
 } from '../../services/ContactService';
 import {
   searchCases as searchCasesApiCall,
-  generalizedSearch as generalisedCasesSearchApi,
+  generalizedSearch as generalizedCasesSearchApi,
 } from '../../services/CaseService';
 import { updateDefinitionVersion } from '../configuration/actions';
 import { getCasesMissingVersions, getContactsMissingVersions } from '../../utils/definitionVersions';
@@ -113,7 +113,11 @@ export const generalizedSearchContacts = (dispatch: Dispatch<any>) => (taskId: s
       searchParamsToSubmit.dateTo = formatISO(endOfDay(parseISO(dateTo)));
     }
 
-    const searchResultRaw = await generalisedContactsSearchApi({ searchParams: {} });
+    const searchResultRaw = await generalizedContactsSearchApi({
+      searchParameters: searchParamsToSubmit,
+      limit,
+      offset,
+    });
     const searchResult = { ...searchResultRaw, contacts: searchResultRaw.contacts };
 
     const definitions = await getContactsMissingVersions(searchResultRaw.contacts);
@@ -166,7 +170,7 @@ export const searchCases = (dispatch: Dispatch<any>) => (taskId: string, context
 };
 
 export const generalizedSearchCases = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
-  searchParams: any,
+  searchParams: SearchParams,
   limit: number,
   offset: number,
   dispatchedFromPreviousContacts?: boolean,
@@ -174,20 +178,16 @@ export const generalizedSearchCases = (dispatch: Dispatch<any>) => (taskId: stri
   try {
     dispatch({ type: t.SEARCH_CASES_REQUEST, taskId, context });
 
-    const { dateFrom, dateTo, ...rest } = searchParams || {};
+    const { dateFrom, dateTo, ...rest } = searchParams ?? {};
+    const searchParamsToSubmit: SearchParams = rest;
+    if (dateFrom) {
+      searchParamsToSubmit.dateFrom = formatISO(startOfDay(parseISO(dateFrom)));
+    }
+    if (dateTo) {
+      searchParamsToSubmit.dateTo = formatISO(endOfDay(parseISO(dateTo)));
+    }
 
-    // Adapt dateFrom and dateTo to what is expected in the search endpoint
-    const searchCasesPayload = {
-      ...rest,
-      filters: {
-        createdAt: {
-          from: dateFrom ? formatISO(startOfDay(parseISO(dateFrom))) : undefined,
-          to: dateTo ? formatISO(endOfDay(parseISO(dateTo))) : undefined,
-        },
-      },
-    };
-
-    const searchResult = await generalisedCasesSearchApi(searchCasesPayload, limit);
+    const searchResult = await generalizedCasesSearchApi({ searchParameters: searchParamsToSubmit, limit, offset });
 
     const definitions = await getCasesMissingVersions(searchResult.cases);
     definitions.forEach(d => dispatch(updateDefinitionVersion(d.version, d.definition)));

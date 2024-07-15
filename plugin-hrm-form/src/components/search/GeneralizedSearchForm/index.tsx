@@ -55,13 +55,13 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
 }) => {
   const dispatch = useDispatch();
 
-  const methods = useForm<Pick<SearchFormValues, 'searchInput' | 'dateFrom' | 'dateTo' | 'counselor'>>();
+  const methods = useForm<Pick<SearchFormValues, 'searchTerm' | 'dateFrom' | 'dateTo' | 'counselor'>>();
 
   const { getValues } = methods;
 
   const counselor =
     typeof initialValues.counselor === 'string' ? initialValues.counselor : initialValues.counselor.value;
-  const sanitizedInitialValues = { ...pick(initialValues, ['searchInput', 'dateFrom', 'dateTo']), counselor };
+  const sanitizedInitialValues = { ...pick(initialValues, ['searchTerm', 'dateFrom', 'dateTo']), counselor };
 
   const counselorsList = useSelector((state: RootState) => state[namespace][configurationBase].counselors.list);
 

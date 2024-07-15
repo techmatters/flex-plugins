@@ -42,7 +42,7 @@ export const newSearchFormEntry = {
   dateTo: '',
   contactNumber: '',
   helpline: { label: '', value: '' },
-  searchInput: '',
+  searchTerm: '',
 };
 
 export type SearchFormValues = {

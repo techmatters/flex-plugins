@@ -75,20 +75,25 @@ export async function searchContacts(
   };
 }
 
-// eslint-disable-next-line import/no-unused-modules
 export async function generalizedSearch({
-  searchParams,
+  searchParameters,
+  limit,
+  offset,
 }: {
-  searchParams: SearchParams;
+  searchParameters: SearchParams;
+  limit: number;
+  offset: number;
 }): Promise<{
   count: number;
   contacts: Contact[];
 }> {
+  const queryParams = getQueryParams({ limit, offset });
   const options = {
     method: 'POST',
-    body: JSON.stringify(searchParams),
+    body: JSON.stringify({ searchParameters }),
   };
-  const response = await fetchHrmApi(`/contacts/generalizedSearch${searchParams}`, options);
+
+  const response = await fetchHrmApi(`/contacts/generalizedSearch${queryParams}`, options);
   return {
     ...response,
     contacts: response.contacts.map(convertApiContactToFlexContact),

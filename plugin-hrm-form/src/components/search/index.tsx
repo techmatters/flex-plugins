@@ -139,7 +139,7 @@ const Search: React.FC<Props> = ({
 
   const handleSearchContacts = (newSearchParams: SearchParams, newOffset) => {
     if (enableGeneralizedSearch) {
-      return generalizedSearchContacts(searchContext);
+      return generalizedSearchContacts(searchContext)(form, CONTACTS_PER_PAGE, newOffset);
     }
 
     return searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
@@ -147,7 +147,7 @@ const Search: React.FC<Props> = ({
 
   const handleSearchCases = (newSearchParams, newOffset) => {
     if (enableGeneralizedSearch) {
-      return generalizedSearchCases(searchContext);
+      return generalizedSearchCases(searchContext)(form, CONTACTS_PER_PAGE, newOffset);
     }
 
     return searchCases(searchContext)({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);

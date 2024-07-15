@@ -26,7 +26,7 @@ export const createSearchFormDefinition = ({ counselorsList }: { counselorsList:
 
   return [
     {
-      name: 'searchInput',
+      name: 'searchTerm',
       label: '',
       type: FormInputType.Input,
       maxLength: { value: 500, message: '500 characters max.' },

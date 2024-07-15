@@ -17,11 +17,12 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
+import type { SearchParams } from '../states/search/types';
+import type { Case, CaseOverview, Contact, SearchCaseResult, WellKnownCaseSection } from '../types/types';
+import type { FetchOptions } from './fetchApi';
+import type { GenericTimelineActivity } from '../states/case/types';
 import { fetchHrmApi } from './fetchHrmApi';
 import { getQueryParams } from './PaginationParams';
-import { Case, CaseOverview, Contact, SearchCaseResult, WellKnownCaseSection } from '../types/types';
-import { FetchOptions } from './fetchApi';
-import { GenericTimelineActivity } from '../states/case/types';
 import { convertApiCaseSectionToCaseSection, FullGenericCaseSection } from './caseSectionService';
 import { convertApiContactToFlexContact } from './ContactService';
 
@@ -168,12 +169,20 @@ export async function listCases(queryParams, listCasesPayload): Promise<SearchCa
   };
 }
 
-export async function generalizedSearch(queryParams, listCasesPayload): Promise<SearchCaseResult> {
-  const queryParamsString = getQueryParams(queryParams);
+export async function generalizedSearch({
+  searchParameters,
+  limit,
+  offset,
+}: {
+  searchParameters: SearchParams;
+  limit: number;
+  offset: number;
+}): Promise<SearchCaseResult> {
+  const queryParamsString = getQueryParams({ limit, offset });
 
   const options = {
     method: 'POST',
-    body: JSON.stringify(listCasesPayload),
+    body: JSON.stringify({ searchParameters }),
   };
 
   const fromApi: SearchCaseResult = await fetchHrmApi(`/cases/generalizedSearch${queryParamsString}`, options);
