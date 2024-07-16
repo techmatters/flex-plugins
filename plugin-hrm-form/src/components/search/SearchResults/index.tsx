@@ -27,18 +27,13 @@ import CasePreview from '../CasePreview';
 import { Contact, CustomITask, SearchCaseResult, SearchContactResult } from '../../../types/types';
 import { Row } from '../../../styles';
 import {
-  EmphasisedText,
   ListContainer,
   NoResultTextLink,
   ResultsHeader,
   ScrollableList,
   SearchResultWarningContainer,
-  StyledCount,
   StyledFormControlLabel,
-  StyledLink,
-  StyledResultsContainer,
   StyledResultsHeader,
-  StyledResultsText,
   StyledSwitch,
   StyledTabs,
   SwitchLabel,
@@ -58,7 +53,6 @@ import { getUnsavedContact } from '../../../states/contacts/getUnsavedContact';
 import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 import { createCaseAsyncAction } from '../../../states/case/saveCase';
 import asyncDispatch from '../../../states/asyncDispatch';
-import selectContextContactId from '../../../states/contacts/selectContextContactId';
 
 export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;
@@ -107,6 +101,7 @@ const SearchResults: React.FC<Props> = ({
   createCaseAsyncAction,
   closeModal,
   contextContactId,
+  // formContext,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { subroute: currentResultPage, casesPage, contactsPage } = routing as SearchResultRoute;
@@ -170,8 +165,6 @@ const SearchResults: React.FC<Props> = ({
     }
   };
 
-  const toggleTabs = () => tabSelected(currentResultPage === 'contact-results' ? 'case-results' : 'contact-results');
-
   const openSearchModal = () => {
     if (routing.action) {
       openModal({ route: 'search', subroute: 'form', action: 'select-case' });
@@ -196,13 +189,28 @@ const SearchResults: React.FC<Props> = ({
     }
   };
 
+  // const contextTemplate = () => {
+  //   // const { searchTerm, counselor, dateFrom, dateTo } = formContext;
+  //   return (
+  //     <>
+  //       {currentResultPage === 'contact-results' ? (
+  //         <>
+  //           {contactsCount} Contacts for {searchTerm}. Counselor Name {counselor}. Start Date {dateFrom} to End Date
+  //           {dateTo}
+  //         </>
+  //       ) : (
+  //         <>
+  //           {casesCount} Cases for {searchTerm}. Counselor Name {counselor}. Start Date {dateFrom} to End Date {dateTo}
+  //         </>
+  //       )}
+  //     </>
+  //   );
+  // };
+
   const caseResults = () => (
     <>
       <StyledResultsHeader>
-        <StyledCount data-testid="CasesCount">
-          {casesCount}{' '}
-          {casesCount === 1 ? <Template code="PreviousContacts-Case" /> : <Template code="SearchResultsIndex-Cases" />}{' '}
-        </StyledCount>
+        {/* {contextTemplate()} */}
         <StyledFormControlLabel
           control={
             <StyledSwitch
@@ -254,14 +262,7 @@ const SearchResults: React.FC<Props> = ({
   const contactResults = () => (
     <>
       <StyledResultsHeader>
-        <StyledCount data-testid="ContactsCount">
-          {contactsCount}&nbsp;
-          {contactsCount === 1 ? (
-            <Template code="PreviousContacts-Contact" />
-          ) : (
-            <Template code="SearchResultsIndex-Contacts" />
-          )}
-        </StyledCount>
+        {/* {contextTemplate()} */}
         <StyledFormControlLabel
           control={
             <StyledSwitch
@@ -363,14 +364,22 @@ const SearchResults: React.FC<Props> = ({
               >
                 <TwilioTab
                   key="SearchResultsIndex-Contacts"
-                  label={<Template code="SearchResultsIndex-Contacts" />}
+                  label={
+                    <>
+                      <Template code="SearchResultsIndex-Contacts" /> ({contactsCount})
+                    </>
+                  }
                   uniqueName="contact-results"
                 >
                   {[]}
                 </TwilioTab>
                 <TwilioTab
                   key="SearchResultsIndex-Cases"
-                  label={<Template code="SearchResultsIndex-Cases" />}
+                  label={
+                    <>
+                      <Template code="SearchResultsIndex-Cases" /> ({casesCount})
+                    </>
+                  }
                   uniqueName="case-results"
                 >
                   {[]}
@@ -380,49 +389,6 @@ const SearchResults: React.FC<Props> = ({
           </ResultsHeader>
           <ListContainer>
             <ScrollableList>
-              <StyledResultsContainer>
-                <StyledResultsText data-testid="SearchResultsCount">
-                  <>
-                    {/* Intentionally we must show the option different at the one currently selected */}
-                    {currentResultPage === 'contact-results' ? (
-                      <>
-                        <Template code={casesCount === 1 ? 'PreviousContacts-ThereIs' : 'PreviousContacts-ThereAre'} />
-                        &nbsp;
-                        <EmphasisedText>
-                          {casesCount}{' '}
-                          <Template code={casesCount === 1 ? 'PreviousContacts-Case' : 'PreviousContacts-Cases'} />
-                        </EmphasisedText>
-                      </>
-                    ) : (
-                      <>
-                        <Template
-                          code={contactsCount === 1 ? 'PreviousContacts-ThereIs' : 'PreviousContacts-ThereAre'}
-                        />
-                        &nbsp;
-                        <EmphasisedText>
-                          {contactsCount}{' '}
-                          <Template
-                            code={contactsCount === 1 ? 'PreviousContacts-Contact' : 'PreviousContacts-Contacts'}
-                          />
-                        </EmphasisedText>
-                      </>
-                    )}
-                  </>
-                  &nbsp;
-                  <Template code="PreviousContacts-Returned" />
-                  &nbsp;
-                </StyledResultsText>
-                <StyledLink onClick={toggleTabs} data-testid="ViewCasesLink">
-                  <Template
-                    code={
-                      // Intentionally we must show the option different at the one currently selected
-                      currentResultPage === 'contact-results'
-                        ? 'SearchResultsIndex-ViewCases'
-                        : 'SearchResultsIndex-ViewContacts'
-                    }
-                  />
-                </StyledLink>
-              </StyledResultsContainer>
               {currentResultPage === 'contact-results' &&
                 contacts &&
                 (contacts.length === 0 ? handleNoSearchResult() : contactResults())}
@@ -461,6 +427,7 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
     contact: getUnsavedContact(savedContact, draftContact),
     searchContext,
     contextContactId,
+    // formContext: searchContacts.tasks[task.taskSid].root.form,
   };
 };
 
