@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-multi-comp */
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -29,9 +29,18 @@ import Case from '../case';
 import ProfileRouter, { isProfileRoute } from '../profile/ProfileRouter';
 import { SearchParams } from '../../states/search/types';
 import { CustomITask } from '../../types/types';
-import { newCreateSearchForm, handleSearchFormChange, searchCases, searchContacts } from '../../states/search/actions';
+import {
+  newCreateSearchForm,
+  handleSearchFormChange,
+  searchCases,
+  searchContacts,
+  generalizedSearchContacts,
+  generalizedSearchCases,
+  handleSearchFormUpdate,
+} from '../../states/search/actions';
 import { RootState } from '../../states';
 import { namespace } from '../../states/storeNamespaces';
+import selectSearchStateForTask from '../../states/search/selectSearchStateForTask';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { changeRoute, newCloseModalAction } from '../../states/routing/actions';
 import { SearchResultRoute, SearchRoute, isCaseRoute } from '../../states/routing/types';
@@ -39,6 +48,8 @@ import NavigableContainer from '../NavigableContainer';
 import selectCasesForSearchResults from '../../states/search/selectCasesForSearchResults';
 import selectContactsForSearchResults from '../../states/search/selectContactsForSearchResults';
 import { DetailsContext } from '../../states/contacts/contactDetails';
+import { GeneralizedSearchForm } from './GeneralizedSearchForm';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 type OwnProps = {
   task: CustomITask;
@@ -75,6 +86,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     handleSearchFormChange: (context: string) => bindActionCreators(handleSearchFormChange(taskId, context), dispatch),
+    handleSearchFormUpdate: (context: string) => bindActionCreators(handleSearchFormUpdate(taskId, context), dispatch),
     changeSearchPage: (subroute: SearchResultRoute['subroute'], action?: SearchRoute['action'], contactId?: string) =>
       dispatch(
         changeRoute(
@@ -84,6 +96,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       ),
     searchContacts: (context: string) => searchContacts(dispatch)(taskId, context),
     searchCases: (context: string) => searchCases(dispatch)(taskId, context),
+    generalizedSearchContacts: (context: string) => generalizedSearchContacts(dispatch)(taskId, context),
+    generalizedSearchCases: (context: string) => generalizedSearchCases(dispatch)(taskId, context),
     closeModal: () => dispatch(newCloseModalAction(taskId)),
     handleNewCreateSearch: (context: string) => dispatch(newCreateSearchForm(taskId, context)),
   };
@@ -96,7 +110,10 @@ const Search: React.FC<Props> = ({
   currentIsCaller,
   searchContacts,
   searchCases,
+  generalizedSearchContacts,
+  generalizedSearchCases,
   handleSearchFormChange,
+  handleSearchFormUpdate,
   searchContactsResults,
   searchCasesResults,
   form,
@@ -106,6 +123,8 @@ const Search: React.FC<Props> = ({
   handleNewCreateSearch,
   searchContext,
 }) => {
+  const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
+
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});
 
@@ -117,12 +136,21 @@ const Search: React.FC<Props> = ({
 
   const closeDialog = () => setMockedMessage('');
 
-  const handleSearchContacts = (newSearchParams: SearchParams, newOffset) =>
-    searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+  const handleSearchContacts = (newSearchParams: SearchParams, newOffset) => {
+    if (enableGeneralizedSearch) {
+      return generalizedSearchContacts(searchContext)(form, CONTACTS_PER_PAGE, newOffset);
+    }
 
-  const handleSearchCases = (newSearchParams, newOffset) =>
-    searchCases(searchContext)({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
+    return searchContacts(searchContext)({ ...form, ...newSearchParams }, CONTACTS_PER_PAGE, newOffset);
+  };
 
+  const handleSearchCases = (newSearchParams, newOffset) => {
+    if (enableGeneralizedSearch) {
+      return generalizedSearchCases(searchContext)(form, CONTACTS_PER_PAGE, newOffset);
+    }
+
+    return searchCases(searchContext)({ ...form, ...newSearchParams }, CASES_PER_PAGE, newOffset);
+  };
   const setSearchParamsAndHandleSearch = async newSearchParams => {
     if (routing.route === 'search') {
       if (routing.subroute === 'form' && routing.action === 'select-case') {
@@ -238,12 +266,22 @@ const Search: React.FC<Props> = ({
             : 'SearchContactsAndCases-Title'
         }
       >
-        <SearchForm
-          task={task}
-          values={form}
-          handleSearchFormChange={handleSearchFormChange(searchContext)}
-          handleSearch={setSearchParamsAndHandleSearch}
-        />
+        {enableGeneralizedSearch ? (
+          <GeneralizedSearchForm
+            initialValues={form}
+            autoFocus={true}
+            task={task}
+            handleSearchFormUpdate={handleSearchFormUpdate(searchContext)}
+            handleSearch={setSearchParamsAndHandleSearch}
+          />
+        ) : (
+          <SearchForm
+            task={task}
+            values={form}
+            handleSearchFormChange={handleSearchFormChange(searchContext)}
+            handleSearch={setSearchParamsAndHandleSearch}
+          />
+        )}
       </NavigableContainer>
     );
   };

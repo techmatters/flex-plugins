@@ -119,7 +119,7 @@ const SearchForm: React.FC<Props> = ({
   const { helpline: userHelpline, multipleOfficeSupport } = getHrmConfig();
   const searchParams = {
     ...values,
-    counselor: counselor?.value, // backend expects only counselor's SID
+    counselor: typeof values.counselor === 'string' ? values.counselor : values.counselor?.value, // backend expects only counselor's SID
     // If the user already has a helpline attribute we will hide the dropdown and send the userHelpline to the API
     helpline: multipleOfficeSupport && helpline?.value ? helpline.value : userHelpline,
     onlyDataContacts: false,
@@ -127,14 +127,9 @@ const SearchForm: React.FC<Props> = ({
   };
 
   const isTouched =
-    firstName ||
-    lastName ||
-    (counselor && counselor.value) ||
-    phoneNumber ||
-    dateFrom ||
-    dateTo ||
-    (helpline && helpline.value) ||
-    contactNumber;
+    firstName || lastName || typeof values.counselor === 'string'
+      ? values.counselor
+      : values.counselor?.value || phoneNumber || dateFrom || dateTo || (helpline && helpline.value) || contactNumber;
 
   const submitSearch = () => {
     handleSearch(searchParams);

@@ -340,8 +340,16 @@
       {
         "value": "70+",
         "label": "70+"
+      },
+      {
+        "value": "Unknown",
+        "label": "Rather not say"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "gender",
