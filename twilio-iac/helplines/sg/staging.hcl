@@ -23,10 +23,12 @@ locals {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/sg/templates/studio-flows/messaging-greeting-message.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking.tftpl"
         channel_flow_vars = {
-          chat_greeting_message = "Hello! Tinkle Friend is engaged with other children at the moment. Please hold on for a while and we will attend to you as soon as we can."
+          chat_greeting_message = "Hello! Tinkle Friend is engaged with other children at the moment. Please hold on for a while and we will attend to you as soon as we can. While waiting, you can check out our BUZZ magazine at https://www.tinklefriend.sg/buzz-magazine/. Thank you for your patience!"
         }
+        widget_from = "Tinkle Friend"
+        chat_blocked_message = "Hi, you've been blocked from accessing Tinkle Friend services and we are not able to read or receive further messages from you."
         chatbot_unique_names = []
       },
       voice : {

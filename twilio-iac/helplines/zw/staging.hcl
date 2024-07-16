@@ -21,14 +21,18 @@ locals {
         channel_flow_vars = {
           chat_greeting_message = "Thank you for contacting Childline Zimbabwe, a counsellor will be with you shortly. If this is an emergency or you wait longer than 30 min, we recommend you call us for free at 116."
         }
+        widget_from          = "Childline Zimbabwe"
+        chat_blocked_message = "Hi, you've been blocked from accessing Childline services and we are not able to read or receive further messages from you."
         chatbot_unique_names = []
       },
       facebook : {
         channel_type         = "facebook"
         contact_identity     = "messenger:103260519220529"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+        widget_from          = "Childline Zimbabwe"
+        chat_blocked_message = "Hi, you've been blocked from accessing Childline services and we are not able to read or receive further messages from you."
       },
       voice : {
         channel_type         = "voice"
