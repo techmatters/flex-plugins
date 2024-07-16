@@ -1,0 +1,23 @@
+[
+  {
+    "flag": "abusive profanity",
+    "label": "Abusive - Profanity"
+  },
+  {
+    "flag": "risk level low green",
+    "label": "Risk Level : Low (Green)"
+  },
+  {
+    "flag": "risk level moderate amber",
+    "label": "Risk Level : Moderate (Amber)"
+  },
+  {
+    "flag": "risk level high red",
+    "label": "Risk Level : High (Red)"
+  },
+  {
+    "flag": "blocked",
+    "label": "Short Term Block (24 Hours)",
+    "durationInHours": "24"
+  }
+]
