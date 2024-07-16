@@ -11,7 +11,7 @@ ${
             "event": "incomingMessage"
           },
           {
-            "next": "check_operating_hours",
+            "next": "getProfileFlagsForIdentifier",
             "event": "incomingCall"
           },
           {
@@ -50,8 +50,8 @@ ${
         "properties": {
           "waitUrl": channel_flow_vars["busy_message_url"],
           "offset": {
-            "x": 520,
-            "y": 1160
+            "x": 460,
+            "y": 1670
           },
           "workflow": workflow_sids["master"],
           "channel": task_channel_sids["voice"],
@@ -70,8 +70,8 @@ ${
         ],
         "properties": {
           "offset": {
-            "x": 440,
-            "y": 880
+            "x": 380,
+            "y": 1390
           },
           "loop": 1,
           "play": channel_flow_vars["welcome_message_url"]
@@ -94,8 +94,8 @@ ${
           "service_sid": flow_vars["service_sid"],
           "environment_sid": flow_vars["environment_sid"],
           "offset": {
-            "x": 130,
-            "y": 240
+            "x": 70,
+            "y": 750
           },
           "function_sid": flow_vars["operating_hours_function_sid"]
           "parameters": [
@@ -155,8 +155,8 @@ ${
         "properties": {
           "input": "{{widgets.check_operating_hours.parsed.status}}",
           "offset": {
-            "x": 250,
-            "y": 530
+            "x": 190,
+            "y": 1040
           }
         }
       },
@@ -173,8 +173,8 @@ ${
         ],
         "properties": {
           "offset": {
-            "x": 30,
-            "y": 1430
+            "x": -30,
+            "y": 1940
           },
           "method": "POST",
           "content_type": "application/json;charset=utf-8",
@@ -191,12 +191,86 @@ ${
           }
         ],
         "properties": {
+        "play": channel_flow_vars["closed_message_url"],
+        "offset": {
+          "x": 700,
+          "y": 1410
+        },
+        "loop": 2
+      }
+    },
+    {
+      "name": "getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "contact_routing",
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 150,
+          "y": 220
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"trigger\" : {{trigger | to_json}}}",
+        "url": "${serverless_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "check_operating_hours",
+          "event": "noMatch"
+        },
+        {
+          "next": "blocked",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed}}"
+              ],
+              "type": "contains",
+              "value": "blocked"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed}}",
+        "offset": {
+          "x": 170,
+          "y": 460
+        }
+      }
+    },
+    {
+      "name": "blocked",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "default",
           "offset": {
-            "x": 760,
-            "y": 900
+            "x": 590,
+            "y": 710
           },
-          "loop": 2,
-          "play": channel_flow_vars["closed_message_url"]
+          "loop": 1,
+          "say": channel_flow_vars["voice_ivr_blocked_message"],
+          "language": channel_flow_vars["voice_ivr_language"]
         }
       }
     ],

@@ -8,7 +8,7 @@ ${
       "type": "trigger",
       "transitions": [
         {
-          "next": "pre_survey_complete",
+          "next": "getProfileFlagsForIdentifiers",
           "event": "incomingMessage"
         },
         {
@@ -47,8 +47,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 600,
-          "y": -100
+          "x": 860,
+          "y": 430
         },
         "workflow": workflow_sids["master"],
         "channel": task_channel_sids["chat"],
@@ -94,8 +94,8 @@ ${
       "properties": {
         "input": "{{trigger.message.Body}}",
         "offset": {
-          "x": -580,
-          "y": -150
+          "x": -350,
+          "y": 450
         }
       }
     },
@@ -114,8 +114,8 @@ ${
         "service_sid": flow_vars["service_sid"],
         "environment_sid": flow_vars["environment_sid"],
         "offset": {
-          "x": 180,
-          "y": 80
+          "x": 340,
+          "y": 690
         },
         "function_sid": flow_vars["send_message_janitor_function_sid"],
         "parameters": [
@@ -152,8 +152,8 @@ ${
           }
         ],
         "offset": {
-          "x": -1470,
-          "y": 950
+          "x": -300,
+          "y": 1390
         }
       }
     },
@@ -174,8 +174,8 @@ ${
           }
         ],
         "offset": {
-          "x": -1150,
-          "y": 950
+          "x": -630,
+          "y": 1390
         }
       }
     },
@@ -196,8 +196,8 @@ ${
           }
         ],
         "offset": {
-          "x": -830,
-          "y": 950
+          "x": 1460,
+          "y": 1400
         }
       }
     },
@@ -218,8 +218,8 @@ ${
           }
         ],
         "offset": {
-          "x": -500,
-          "y": 950
+          "x": 1110,
+          "y": 1390
         }
       }
     },
@@ -240,8 +240,8 @@ ${
           }
         ],
         "offset": {
-          "x": -170,
-          "y": 950
+          "x": 770,
+          "y": 1390
         }
       }
     },
@@ -262,8 +262,8 @@ ${
           }
         ],
         "offset": {
-          "x": 160,
-          "y": 950
+          "x": 420,
+          "y": 1390
         }
       }
     },
@@ -284,8 +284,8 @@ ${
           }
         ],
         "offset": {
-          "x": 500,
-          "y": 950
+          "x": 50,
+          "y": 1390
         }
       }
     },
@@ -304,8 +304,8 @@ ${
         "service_sid": flow_vars["service_sid"],
         "environment_sid": flow_vars["environment_sid"],
         "offset": {
-          "x": -510,
-          "y": 1230
+          "x": 420,
+          "y": 1900
         },
         "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
         "parameters": [
@@ -371,8 +371,8 @@ ${
       "properties": {
         "input": "{{trigger.message.ChannelAttributes.preSurveyComplete}}",
         "offset": {
-          "x": 20,
-          "y": -380
+          "x": -170,
+          "y": 170
         }
       }
     },
@@ -402,8 +402,8 @@ ${
       "properties": {
         "input": "{{trigger.message.ChannelAttributes.isSelectLanguageComplete}}",
         "offset": {
-          "x": -620,
-          "y": 160
+          "x": -180,
+          "y": 730
         }
       }
     },
@@ -422,8 +422,8 @@ ${
         "service_sid": flow_vars["service_sid"],
         "environment_sid": flow_vars["environment_sid"],
         "offset": {
-          "x": -850,
-          "y": 470
+          "x": -590,
+          "y": 1020
         },
         "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
         "parameters": [
@@ -577,9 +577,88 @@ ${
       "properties": {
         "input": "{{trigger.message.ChannelAttributes.languageMemory.language}}",
         "offset": {
-          "x": -360,
-          "y": 470
+          "x": -20,
+          "y": 1020
         }
+      }
+    },
+    {
+      "name": "getProfileFlagsForIdentifiers",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "pre_survey_complete",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -50,
+          "y": -330
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"trigger\": {{trigger | to_json}}}",
+        "url": "${serverless_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "pre_survey_complete",
+          "event": "noMatch"
+        },
+        {
+          "next": "blocked",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifiers.parsed}}"
+              ],
+              "type": "contains",
+              "value": "blocked"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagsForIdentifiers.parsed}}",
+        "offset": {
+          "x": 190,
+          "y": -100
+        }
+      }
+    },
+    {
+      "name": "blocked",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 440,
+          "y": 160
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": flow_vars["widget_from"],
+        "to": "{{contact.channel.address}}",
+        "body": flow_vars["chat_blocked_message"]
       }
     }
   ],
