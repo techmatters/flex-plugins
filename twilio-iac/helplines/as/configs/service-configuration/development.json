@@ -10,7 +10,6 @@
         },
         "feature_flags": {
             "backend_handled_chat_janitor": false,
-            "enable_aselo_messaging_ui": false,
             "enable_counselor_toolkits": true,
             "enable_csam_clc_report": true,
             "enable_csam_report": true,

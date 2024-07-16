@@ -10,7 +10,6 @@
             "enableExternalRecordings": true
         },
         "feature_flags": {
-            "enable_aselo_messaging_ui": false,
             "enable_manual_pulling": false,
             "enable_lex": true,
             "enable_post_survey": true,
