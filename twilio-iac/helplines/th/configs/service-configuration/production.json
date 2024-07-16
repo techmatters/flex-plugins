@@ -1,6 +1,7 @@
 {
     "attributes": {
         "feature_flags": {
+            "enable_aselo_messaging_ui": true
         },
         "pdfImagesSource": "https://tl-public-chat-th-prod.s3.amazonaws.com"
     }

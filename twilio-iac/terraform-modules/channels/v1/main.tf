@@ -118,7 +118,7 @@ resource "aws_ssm_parameter" "channel_flex_flow_sid" {
   for idx, channel in var.channels :
   idx => channel if(channel.channel_type == "custom" && channel.messaging_mode == "programmable-chat")
   }
-  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/flex_flow_sid"
+  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/${each.key}_flex_flow_sid"
   type        = "SecureString"
   value       = twilio_flex_flex_flows_v1.channel_flow[each.key].sid
   description = "${title(replace(each.key, "_", " "))} Flex Flow SID"

@@ -309,6 +309,14 @@ ${
             {
               "value": "preSurveyComplete",
               "key": "releaseFlag"
+            },
+            {
+              "value": "{{trigger.message.ChannelAttributes.channel_type | downcase}}",
+              "key": "channelType"
+            },
+            {
+              "value": "false",
+              "key": "isConversation"
             }
           ],
           "url": "${serverless_url}/channelCapture/captureChannelWithBot"
