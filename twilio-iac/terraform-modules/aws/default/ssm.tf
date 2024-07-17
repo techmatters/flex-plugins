@@ -95,6 +95,19 @@ resource "aws_ssm_parameter" "twilio_chat_workflow_sid" {
   }
 }
 
+resource "aws_ssm_parameter" "twilio_conversations_chat_transfer_workflow_sid" {
+  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/conversations_chat_transfer_workflow_sid"
+  type        = "SecureString"
+  value       = "WWxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  description = "Twilio account - Conversations Chat Transfer Workflow SID"
+
+  tags = {
+    Environment = lower(var.environment)
+    Name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/conversations_chat_transfer_workflow_sid"
+    Terraform   = true
+  }
+}
+
 
 resource "aws_ssm_parameter" "twilio_sync_sid" {
   name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/sync_sid"
