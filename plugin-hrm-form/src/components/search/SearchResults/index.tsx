@@ -107,8 +107,8 @@ const SearchResults: React.FC<Props> = ({
 }) => {
   const { subroute: currentResultPage, casesPage, contactsPage } = routing as SearchResultRoute;
 
-  const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
-  // const enableGeneralizedSearch = false;
+  // const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
+  const enableGeneralizedSearch = false;
 
   const can = React.useMemo(() => {
     return getInitializedCan();
@@ -203,24 +203,43 @@ const SearchResults: React.FC<Props> = ({
 
   const countString = (subroute, casesCount: number, contactsCount: number) => {
     if (subroute === 'case-results') {
-      return casesCount === 1 ? '1 Case' : `${casesCount} Cases`;
+      return casesCount === 1 ? (
+        <Template code="SearchResults-Case" />
+      ) : (
+        <>
+          {casesCount}
+          <Template code="SearchResults-Cases" />
+        </>
+      );
     }
-    return contactsCount === 1 ? '1 Contact' : `${contactsCount} Contacts`;
+    return contactsCount === 1 ? (
+      <Template code="SearchResults-Contact" />
+    ) : (
+      <>
+        {contactsCount}
+        <Template code="SearchResults-Contacts" />
+      </>
+    );
   };
 
   const counselorNameString = (counselor, counselorsHash) => {
     if (enableGeneralizedSearch && counselor !== '') {
+      console.log('>>> counselor', { enableGeneralizedSearch, counselor });
       return (
         <>
-          Counselor Name <Bold>{counselorsHash[counselor]}.</Bold>
+          {' '}
+          <Template code="SearchResults-CounselorName" /> <Bold>{counselorsHash[counselor]}.</Bold>
         </>
       );
     }
 
-    if (counselor?.label !== '') {
+    if (!enableGeneralizedSearch && counselor?.label !== '') {
+      console.log('>>> counselor', { enableGeneralizedSearch, counselor });
+
       return (
         <>
-          Counselor Name <Bold>{counselor?.label}.</Bold>
+          {' '}
+          <Template code="SearchResults-CounselorName" /> <Bold>{counselor?.label}.</Bold>
         </>
       );
     }
@@ -245,35 +264,44 @@ const SearchResults: React.FC<Props> = ({
           {countString(subroute, casesCount, contactsCount)}
           {firstName && (
             <>
-              First Name <Bold>{firstName}. </Bold>
+              {' '}
+              <Template code="SearchResults-FirstName" /> <Bold>{firstName}. </Bold>
             </>
           )}
           {lastName && (
             <>
-              Last Name <Bold>{lastName}. </Bold>
+              {' '}
+              <Template code="SearchResults-LastName" /> <Bold>{lastName}. </Bold>
             </>
           )}
           {phoneNumber && (
             <>
-              Phone Number <Bold>{phoneNumber}. </Bold>
+              {' '}
+              <Template code="SearchResults-PhoneNumber" /> <Bold>{phoneNumber}. </Bold>
             </>
           )}
 
-          {enableGeneralizedSearch && (
+          {enableGeneralizedSearch ? (
             <>
               {' '}
-              for <Bold>{searchTerm}. </Bold>
+              for <Bold>&quot;{searchTerm}&quot;. </Bold>
             </>
+          ) : (
+            <>. </>
           )}
           {counselorNameString(counselor, counselorsHash)}
           {dateFrom && (
             <>
-              Date From <Bold>{enableGeneralizedSearch ? dateFrom : transformDate(dateFrom)}. </Bold>{' '}
+              {' '}
+              <Template code="SearchResults-DateFrom" />{' '}
+              <Bold>{enableGeneralizedSearch ? dateFrom : transformDate(dateFrom)}. </Bold>{' '}
             </>
           )}
           {dateTo && (
             <>
-              Date To <Bold>{enableGeneralizedSearch ? dateTo : transformDate(dateTo)}. </Bold>
+              {' '}
+              <Template code="SearchResults-DateTo" />{' '}
+              <Bold>{enableGeneralizedSearch ? dateTo : transformDate(dateTo)}. </Bold>
             </>
           )}
         </FontOpenSans>
