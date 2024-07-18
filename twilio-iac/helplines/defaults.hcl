@@ -17,9 +17,11 @@ locals {
   channel_attributes = {
     webchat               : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
     voice                 : "/app/twilio-iac/helplines/templates/channel-attributes/voice.tftpl"
-    twitter               : "/app/twilio-iac/helplines/templates/channel-attributes/twitter.tftpl"
     default               : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
     default-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
+    line-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/line-conversations.tftpl"
+    telegram-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/telegram-conversations.tftpl"
+    instagram-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/instagram-conversations.tftpl"
   }
   contacts_waiting_channels = ["voice", "web", "whatsapp", "facebook", "twitter", "instagram", "line"]
 
