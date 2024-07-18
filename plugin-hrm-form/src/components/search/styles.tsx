@@ -152,27 +152,27 @@ export const StyledTabs = styled((props: Partial<TabsProps> & { children?: any }
 `;
 StyledTabs.displayName = 'StyledTabs';
 
-export const StyledResultsContainer = styled('div')`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  margin-top: 10px;
-`;
-StyledResultsContainer.displayName = 'StyledResultsContainer';
+// export const StyledResultsContainer = styled('div')`
+//   display: flex;
+//   align-items: center;
+//   width: 100%;
+//   margin-top: 10px;
+// `;
+// StyledResultsContainer.displayName = 'StyledResultsContainer';
 
-export const StyledResultsText = styled('div')`
-  display: flex;
-  padding-right: 5px;
-`;
-StyledResultsText.displayName = 'StyledResultsText';
+// export const StyledResultsText = styled('div')`
+//   display: flex;
+//   padding-right: 5px;
+// `;
+// StyledResultsText.displayName = 'StyledResultsText';
 
-export const EmphasisedText = styled('div')`
-  font-weight: 600;
-  color: #000000;
-  font-family: Open Sans;
-  text-align: left;
-`;
-EmphasisedText.displayName = 'EmphasisedText';
+// export const EmphasisedText = styled('div')`
+//   font-weight: 600;
+//   color: #000000;
+//   font-family: Open Sans;
+//   text-align: left;
+// `;
+// EmphasisedText.displayName = 'EmphasisedText';
 
 export const SummaryText = styled(FontOpenSans)`
   font-size: 13px;
@@ -373,10 +373,10 @@ export const ListContainer = styled(BottomButtonBar)`
   margin: 2px 5px 0 5px;
 `;
 
-export const ScrollableList = styled('div')`
+export const ResultsSubheader = styled('div')`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
   width: 100%;
   height: 100%;
   overflow-y: auto;
@@ -388,17 +388,9 @@ export const StyledFormControlLabel = styled(FormControlLabel)`
 `;
 StyledFormControlLabel.displayName = 'StyledFormControlLabel';
 
-export const StyledCount = styled('p')`
-  font-weight: 600;
-`;
-StyledCount.displayName = 'StyledCount';
-
 export const StyledResultsHeader = styled('div')`
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  width: 600px;
+  flex-flow: column;
 `;
 
 StyledResultsHeader.displayName = 'StyledCaseResultsHeader';

@@ -25,12 +25,12 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
 import { Contact, CustomITask, SearchCaseResult, SearchContactResult } from '../../../types/types';
-import { Row } from '../../../styles';
+import { Bold, FontOpenSans, Row } from '../../../styles';
 import {
   ListContainer,
   NoResultTextLink,
   ResultsHeader,
-  ScrollableList,
+  ResultsSubheader,
   SearchResultWarningContainer,
   StyledFormControlLabel,
   StyledResultsHeader,
@@ -50,7 +50,7 @@ import { AppRoutes, ChangeRouteMode, SearchResultRoute, isCaseRoute } from '../.
 import { recordBackendError } from '../../../fullStory';
 import { hasTaskControl } from '../../../transfer/transferTaskState';
 import { getUnsavedContact } from '../../../states/contacts/getUnsavedContact';
-import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 import { createCaseAsyncAction } from '../../../states/case/saveCase';
 import asyncDispatch from '../../../states/asyncDispatch';
 
@@ -101,10 +101,14 @@ const SearchResults: React.FC<Props> = ({
   createCaseAsyncAction,
   closeModal,
   contextContactId,
-  // formContext,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
+  searchFormQuery,
+  agentFormQuery,
+  activeView,
 }) => {
   const { subroute: currentResultPage, casesPage, contactsPage } = routing as SearchResultRoute;
+
+  const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
+  // const enableGeneralizedSearch = false;
 
   const can = React.useMemo(() => {
     return getInitializedCan();
@@ -189,28 +193,98 @@ const SearchResults: React.FC<Props> = ({
     }
   };
 
-  // const contextTemplate = () => {
-  //   // const { searchTerm, counselor, dateFrom, dateTo } = formContext;
-  //   return (
-  //     <>
-  //       {currentResultPage === 'contact-results' ? (
-  //         <>
-  //           {contactsCount} Contacts for {searchTerm}. Counselor Name {counselor}. Start Date {dateFrom} to End Date
-  //           {dateTo}
-  //         </>
-  //       ) : (
-  //         <>
-  //           {casesCount} Cases for {searchTerm}. Counselor Name {counselor}. Start Date {dateFrom} to End Date {dateTo}
-  //         </>
-  //       )}
-  //     </>
-  //   );
-  // };
+  const transformDate = date => {
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+  };
+
+  const countString = (subroute, casesCount: number, contactsCount: number) => {
+    if (subroute === 'case-results') {
+      return casesCount === 1 ? '1 Case' : `${casesCount} Cases`;
+    }
+    return contactsCount === 1 ? '1 Contact' : `${contactsCount} Contacts`;
+  };
+
+  const counselorNameString = (counselor, counselorsHash) => {
+    if (enableGeneralizedSearch && counselor !== '') {
+      return (
+        <>
+          Counselor Name <Bold>{counselorsHash[counselor]}.</Bold>
+        </>
+      );
+    }
+
+    if (counselor?.label !== '') {
+      return (
+        <>
+          Counselor Name <Bold>{counselor?.label}.</Bold>
+        </>
+      );
+    }
+    return null;
+  };
+
+  const contextTemplate = () => {
+    console.log('>>> FormQuery', { searchFormQuery, agentFormQuery, activeView, routing });
+
+    let currentContext;
+    if (activeView === 'search') {
+      currentContext = searchFormQuery;
+    } else if (activeView === 'agent-desktop') {
+      currentContext = agentFormQuery;
+    }
+    const { subroute } = routing;
+    const { dateFrom, dateTo, counselor, firstName, lastName, phoneNumber, searchTerm } = currentContext;
+
+    return (
+      <p>
+        <FontOpenSans>
+          {countString(subroute, casesCount, contactsCount)}
+          {firstName && (
+            <>
+              First Name <Bold>{firstName}. </Bold>
+            </>
+          )}
+          {lastName && (
+            <>
+              Last Name <Bold>{lastName}. </Bold>
+            </>
+          )}
+          {phoneNumber && (
+            <>
+              Phone Number <Bold>{phoneNumber}. </Bold>
+            </>
+          )}
+
+          {enableGeneralizedSearch && (
+            <>
+              {' '}
+              for <Bold>{searchTerm}. </Bold>
+            </>
+          )}
+          {counselorNameString(counselor, counselorsHash)}
+          {dateFrom && (
+            <>
+              Date From <Bold>{enableGeneralizedSearch ? dateFrom : transformDate(dateFrom)}. </Bold>{' '}
+            </>
+          )}
+          {dateTo && (
+            <>
+              Date To <Bold>{enableGeneralizedSearch ? dateTo : transformDate(dateTo)}. </Bold>
+            </>
+          )}
+        </FontOpenSans>
+      </p>
+    );
+  };
 
   const caseResults = () => (
     <>
       <StyledResultsHeader>
-        {/* {contextTemplate()} */}
+        {contextTemplate()}
         <StyledFormControlLabel
           control={
             <StyledSwitch
@@ -262,7 +336,7 @@ const SearchResults: React.FC<Props> = ({
   const contactResults = () => (
     <>
       <StyledResultsHeader>
-        {/* {contextTemplate()} */}
+        {contextTemplate()}
         <StyledFormControlLabel
           control={
             <StyledSwitch
@@ -387,16 +461,16 @@ const SearchResults: React.FC<Props> = ({
               </StyledTabs>
             </Row>
           </ResultsHeader>
-          <ListContainer>
-            <ScrollableList>
-              {currentResultPage === 'contact-results' &&
-                contacts &&
-                (contacts.length === 0 ? handleNoSearchResult() : contactResults())}
-              {currentResultPage === 'case-results' &&
-                cases &&
-                (cases.length === 0 ? handleNoSearchResult() : caseResults())}
-            </ScrollableList>
-          </ListContainer>
+          {/* <ListContainer> */}
+          <ResultsSubheader>
+            {currentResultPage === 'contact-results' &&
+              contacts &&
+              (contacts.length === 0 ? handleNoSearchResult() : contactResults())}
+            {currentResultPage === 'case-results' &&
+              cases &&
+              (cases.length === 0 ? handleNoSearchResult() : caseResults())}
+          </ResultsSubheader>
+          {/* </ListContainer> */}
         </>
       )}
     </>
@@ -405,6 +479,7 @@ const SearchResults: React.FC<Props> = ({
 SearchResults.displayName = 'SearchResults';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
+  const { activeView } = state.flex.view;
   const { searchContacts, configuration, routing, activeContacts } = state[namespace];
   const taskId = task.taskSid;
   const currentRoute = getCurrentTopmostRouteForTask(routing, taskId);
@@ -427,7 +502,9 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
     contact: getUnsavedContact(savedContact, draftContact),
     searchContext,
     contextContactId,
-    // formContext: searchContacts.tasks[task.taskSid].root.form,
+    searchFormQuery: searchContacts.tasks[task.taskSid]?.root?.form || {},
+    agentFormQuery: searchContacts.tasks[task.taskSid][searchContext]?.form || {},
+    activeView,
   };
 };
 

@@ -298,3 +298,14 @@ export const StandaloneContainer = styled('div')`
   background-color: ${HrmTheme.colors.base2};
 `;
 StandaloneContainer.displayName = 'StandaloneContainer';
+
+export const SearchFormTopRule = styled('hr')`
+  color: #d8d8d8;
+  background-color: #d8d8d8;
+  height: 1px;
+  width: 100%;
+  margin: 0 5px 0 5px;
+  border: 0;
+  border-top: 1px solid #d8d8d8;
+`;
+SearchFormTopRule.displayName = 'SearchFormTopRule';

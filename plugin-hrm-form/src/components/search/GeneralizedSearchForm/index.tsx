@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import type { FormDefinition } from 'hrm-form-definitions';
@@ -36,6 +36,7 @@ import {
   Bold,
   DateRangeSpacer,
   TwoColumnLayoutResponsive,
+  SearchFormTopRule,
 } from '../../../styles';
 import { addMargin } from '../../common/forms/formGenerators';
 import { CustomITask } from '../../../types/types';
@@ -99,13 +100,19 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
 
   return (
     <>
+      <SearchFormTopRule />
       <Container data-testid="SearchForm" data-fs-id="SearchForm" formContainer={true}>
         <FormProvider {...methods}>
           <ColumnarContent>{searchForm}</ColumnarContent>
         </FormProvider>
       </Container>
       <BottomButtonBar>
-        <StyledNextStepButton type="button" roundCorners={true} onClick={handleSearch}>
+        <StyledNextStepButton
+          type="button"
+          roundCorners={true}
+          onClick={handleSearch}
+          disabled={initialValues.searchTerm === ''}
+        >
           <Template code="SearchForm-Button" />
         </StyledNextStepButton>
       </BottomButtonBar>

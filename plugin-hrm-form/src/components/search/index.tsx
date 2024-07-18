@@ -40,7 +40,6 @@ import {
 } from '../../states/search/actions';
 import { RootState } from '../../states';
 import { namespace } from '../../states/storeNamespaces';
-import selectSearchStateForTask from '../../states/search/selectSearchStateForTask';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { changeRoute, newCloseModalAction } from '../../states/routing/actions';
 import { SearchResultRoute, SearchRoute, isCaseRoute } from '../../states/routing/types';
@@ -124,6 +123,7 @@ const Search: React.FC<Props> = ({
   searchContext,
 }) => {
   const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
+  // const enableGeneralizedSearch = false;
 
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});

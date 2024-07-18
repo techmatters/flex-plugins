@@ -146,16 +146,6 @@ export const ResourcesSearchFormContainer = styled(Column)`
   color: black;
 `;
 
-export const ResourcesSearchFormTopRule = styled('hr')`
-  color: #d8d8d8;
-  background-color: #d8d8d8;
-  height: 1px;
-  width: 100%;
-  margin: 0 5px 0 5px;
-  border: 0;
-  border-top: 1px solid #d8d8d8;
-`;
-
 export const ResourcesSearchTitle = styled(FontOpenSans)`
   font-size: 24px;
   line-height: 32px;
