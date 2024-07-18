@@ -120,7 +120,7 @@ jest.mock('../components/search/styles', () => ({
   SectionValueText: 'SectionValueText',
   ResultsHeader: 'ResultsHeader',
   ListContainer: 'ListContainer',
-  ScrollableList: 'ScrollableList',
+  ResultsSubheader: 'ResultsSubheader',
   StyledButtonBase: 'StyledButtonBase',
   StyledFormControlLabel: 'StyledFormControlLabel',
   StyledSwitch: 'StyledSwitch',
