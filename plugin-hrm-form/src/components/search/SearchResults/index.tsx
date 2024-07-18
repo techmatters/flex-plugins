@@ -102,9 +102,7 @@ const SearchResults: React.FC<Props> = ({
   createCaseAsyncAction,
   closeModal,
   contextContactId,
-  searchFormQuery,
-  agentFormQuery,
-  activeView,
+  searchContext,
 }) => {
   const { subroute: currentResultPage, casesPage, contactsPage } = routing as SearchResultRoute;
 
@@ -195,8 +193,8 @@ const SearchResults: React.FC<Props> = ({
     <>
       <StyledResultsHeader>
         <SearchResultsQueryTemplate
-          searchFormQuery={searchFormQuery}
-          agentFormQuery={agentFormQuery}
+          task={task}
+          searchContext={searchContext}
           subroute={routing.subroute}
           casesCount={casesCount}
           contactsCount={contactsCount}
@@ -254,8 +252,8 @@ const SearchResults: React.FC<Props> = ({
     <>
       <StyledResultsHeader>
         <SearchResultsQueryTemplate
-          searchFormQuery={searchFormQuery}
-          agentFormQuery={agentFormQuery}
+          task={task}
+          searchContext={searchContext}
           subroute={routing.subroute}
           casesCount={casesCount}
           contactsCount={contactsCount}
@@ -343,7 +341,7 @@ const SearchResults: React.FC<Props> = ({
       </Row>
     </SearchResultWarningContainer>
   );
-
+  
   const handleCaseResultsSearch = () => (cases.length === 0 ? handleNoSearchResult() : caseResults());
 
   return (
@@ -403,7 +401,6 @@ const SearchResults: React.FC<Props> = ({
 SearchResults.displayName = 'SearchResults';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const { activeView } = state.flex.view;
   const { searchContacts, configuration, routing, activeContacts } = state[namespace];
   const taskId = task.taskSid;
   const currentRoute = getCurrentTopmostRouteForTask(routing, taskId);
@@ -426,9 +423,6 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
     contact: getUnsavedContact(savedContact, draftContact),
     searchContext,
     contextContactId,
-    searchFormQuery: searchContacts.tasks[task.taskSid]?.root?.form || {},
-    agentFormQuery: searchContacts.tasks[task.taskSid][searchContext]?.form || {},
-    activeView,
   };
 };
 

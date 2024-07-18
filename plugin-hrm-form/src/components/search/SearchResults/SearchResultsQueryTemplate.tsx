@@ -20,11 +20,10 @@ import { Template } from '@twilio/flex-ui';
 import { RootState } from '../../../states';
 import { Bold, FontOpenSans } from '../../../styles';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
-import { SearchFormValues } from '../../../states/search/types';
 
 type SearchResultsQueryTemplateProps = {
-  searchFormQuery: SearchFormValues | {};
-  agentFormQuery: SearchFormValues | {};
+  task: any;
+  searchContext: any;
   subroute: string;
   casesCount: any;
   contactsCount: any;
@@ -32,8 +31,8 @@ type SearchResultsQueryTemplateProps = {
 };
 
 export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProps> = ({
-  searchFormQuery,
-  agentFormQuery,
+  task,
+  searchContext,
   subroute,
   casesCount,
   contactsCount,
@@ -41,10 +40,17 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
 }) => {
   const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
 
-  const { activeView } = useSelector((state: RootState) => state.flex.view);
-  const transformDate = date => {
-    return new Date(date).toLocaleDateString();
-  };
+  const { activeView, searchFormQuery, agentFormQuery } = useSelector((state: RootState) => {
+    const { taskSid } = task;
+    const pluginHrmForm = state['plugin-hrm-form'].searchContacts.tasks[taskSid];
+    return {
+      activeView: state.flex.view.activeView,
+      searchFormQuery: pluginHrmForm?.root?.form,
+      agentFormQuery: pluginHrmForm?.[searchContext]?.form,
+    };
+  });
+
+  const transformDate = date => new Date(date).toLocaleDateString();
 
   const countString = (subroute, casesCount: number, contactsCount: number) => {
     if (subroute === 'case-results') {

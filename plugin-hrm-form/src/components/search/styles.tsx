@@ -361,17 +361,17 @@ export const ResultsHeader = styled('div')`
   flex-grow: 0;
 `;
 
-export const ListContainer = styled(BottomButtonBar)`
-  box-shadow: none;
-  background-color: #ffffff;
-  flex-basis: 0;
-  flex-grow: 1;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 0;
-  padding-right: 0;
-  margin: 2px 5px 0 5px;
-`;
+// export const ListContainer = styled(BottomButtonBar)`
+//   box-shadow: none;
+//   background-color: #ffffff;
+//   flex-basis: 0;
+//   flex-grow: 1;
+//   padding-top: 10px;
+//   padding-bottom: 10px;
+//   padding-left: 0;
+//   padding-right: 0;
+//   margin: 2px 5px 0 5px;
+// `;
 
 export const ResultsSubheader = styled('div')`
   display: flex;
