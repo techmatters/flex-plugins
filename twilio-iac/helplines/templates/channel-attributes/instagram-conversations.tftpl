@@ -1,6 +1,6 @@
 {
   "name": "{{trigger.conversation.ChannelAttributes.from}}",
-  "channelType": "{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}",
+  "channelType": "{{trigger.conversation.ChannelAttributes.channelType}}",
   "customChannelType": "{{trigger.conversation.ChannelAttributes.channelType}}", 
   "channelSid": "{{trigger.conversation.ChannelSid}}",
   "twilioNumber": "{{trigger.conversation.ChannelAttributes.twilioNumber}}",

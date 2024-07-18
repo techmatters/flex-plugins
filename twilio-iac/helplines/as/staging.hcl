@@ -5,7 +5,7 @@ locals {
 
   local_config = {
     enable_post_survey                    = true
-    custom_task_routing_filter_expression = "channelType IN ['web','whatsapp','telegram','line','voice'] OR isContactlessTask == true OR  twilioNumber == 'messenger:131329426738030' "
+    custom_task_routing_filter_expression = "channelType IN ['messenger','web','whatsapp','telegram','line','voice'] OR isContactlessTask == true OR  twilioNumber == 'messenger:131329426738030' "
 
     #Studio flow
     flow_vars = {
@@ -24,9 +24,10 @@ locals {
         chatbot_unique_names = []
       },
       facebook : {
-        channel_type         = "facebook"
+        messaging_mode       = "conversations"
+        channel_type         = "messenger"
         contact_identity     = "messenger:131329426738030"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
