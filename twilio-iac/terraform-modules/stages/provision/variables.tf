@@ -105,9 +105,3 @@ variable "ui_editable" {
   type        = bool
   default     = false
 }
-
-variable "queue_transfers_workflow_sid" {
-  description = "queue_transfers_workflow_sid"
-  type        = string
-  default     = "WWxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-}

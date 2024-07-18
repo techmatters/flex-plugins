@@ -71,6 +71,7 @@ module "aws" {
   datadog_access_token               = local.secrets.datadog_access_token
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
   master_workflow_sid                = module.taskRouter.workflow_sids["master"]
+  queue_transfers_workflow_sid       = module.taskRouter.workflow_sids["queue_transfers"]
   shared_state_sync_service_sid      = module.services.shared_state_sync_service_sid
   flex_chat_service_sid              = module.services.flex_chat_service_sid
   flex_proxy_service_sid             = module.services.flex_proxy_service_sid
@@ -78,10 +79,10 @@ module "aws" {
   # we need to add a non-valid workflow sid.
   survey_workflow_sid = try(module.taskRouter.workflow_sids.survey, "NOTVALIDWORKFLOWSID")
   #TODO: convert bucket_region to helpline_region (or, better yet,  pass in the correct provider)
-  bucket_region                 = var.helpline_region
-  helpline_region               = var.helpline_region
-  s3_lifecycle_rules            = var.s3_lifecycle_rules
-  queue_transfers_workflow_sid  = var.queue_transfers_workflow_sid
+  bucket_region       = var.helpline_region
+  helpline_region     = var.helpline_region
+  s3_lifecycle_rules  = var.s3_lifecycle_rules
+  
 }
 
 #TODO: Remove the provider and moved once this has been applied everywhere
