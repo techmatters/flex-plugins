@@ -99,3 +99,9 @@ variable "s3_lifecycle_rules" {
     status             = optional(string)
   }))
 }
+
+variable "queue_transfers_workflow_sid" {
+  description = "queue_transfers_workflow_sid"
+  type        = string
+  default     = "WWxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+}
