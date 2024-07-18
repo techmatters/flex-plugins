@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unused-modules */
 /**
  * Copyright (C) 2021-2023 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -25,9 +26,8 @@ import { DefinitionVersionId } from 'hrm-form-definitions';
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
 import { Contact, CustomITask, SearchCaseResult, SearchContactResult } from '../../../types/types';
-import { Bold, FontOpenSans, Row } from '../../../styles';
+import { Row } from '../../../styles';
 import {
-  ListContainer,
   NoResultTextLink,
   ResultsHeader,
   ResultsSubheader,
@@ -50,9 +50,10 @@ import { AppRoutes, ChangeRouteMode, SearchResultRoute, isCaseRoute } from '../.
 import { recordBackendError } from '../../../fullStory';
 import { hasTaskControl } from '../../../transfer/transferTaskState';
 import { getUnsavedContact } from '../../../states/contacts/getUnsavedContact';
-import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
+import { getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 import { createCaseAsyncAction } from '../../../states/case/saveCase';
 import asyncDispatch from '../../../states/asyncDispatch';
+import { SearchResultsQueryTemplate } from './SearchResultsQueryTemplate';
 
 export const CONTACTS_PER_PAGE = 20;
 export const CASES_PER_PAGE = 20;
@@ -106,9 +107,6 @@ const SearchResults: React.FC<Props> = ({
   activeView,
 }) => {
   const { subroute: currentResultPage, casesPage, contactsPage } = routing as SearchResultRoute;
-
-  // const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
-  const enableGeneralizedSearch = false;
 
   const can = React.useMemo(() => {
     return getInitializedCan();
@@ -193,126 +191,17 @@ const SearchResults: React.FC<Props> = ({
     }
   };
 
-  const transformDate = date => {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    });
-  };
-
-  const countString = (subroute, casesCount: number, contactsCount: number) => {
-    if (subroute === 'case-results') {
-      return casesCount === 1 ? (
-        <Template code="SearchResults-Case" />
-      ) : (
-        <>
-          {casesCount}
-          <Template code="SearchResults-Cases" />
-        </>
-      );
-    }
-    return contactsCount === 1 ? (
-      <Template code="SearchResults-Contact" />
-    ) : (
-      <>
-        {contactsCount}
-        <Template code="SearchResults-Contacts" />
-      </>
-    );
-  };
-
-  const counselorNameString = (counselor, counselorsHash) => {
-    if (enableGeneralizedSearch && counselor !== '') {
-      console.log('>>> counselor', { enableGeneralizedSearch, counselor });
-      return (
-        <>
-          {' '}
-          <Template code="SearchResults-CounselorName" /> <Bold>{counselorsHash[counselor]}.</Bold>
-        </>
-      );
-    }
-
-    if (!enableGeneralizedSearch && counselor?.label !== '') {
-      console.log('>>> counselor', { enableGeneralizedSearch, counselor });
-
-      return (
-        <>
-          {' '}
-          <Template code="SearchResults-CounselorName" /> <Bold>{counselor?.label}.</Bold>
-        </>
-      );
-    }
-    return null;
-  };
-
-  const contextTemplate = () => {
-    console.log('>>> FormQuery', { searchFormQuery, agentFormQuery, activeView, routing });
-
-    let currentContext;
-    if (activeView === 'search') {
-      currentContext = searchFormQuery;
-    } else if (activeView === 'agent-desktop') {
-      currentContext = agentFormQuery;
-    }
-    const { subroute } = routing;
-    const { dateFrom, dateTo, counselor, firstName, lastName, phoneNumber, searchTerm } = currentContext;
-
-    return (
-      <p>
-        <FontOpenSans>
-          {countString(subroute, casesCount, contactsCount)}
-          {firstName && (
-            <>
-              {' '}
-              <Template code="SearchResults-FirstName" /> <Bold>{firstName}. </Bold>
-            </>
-          )}
-          {lastName && (
-            <>
-              {' '}
-              <Template code="SearchResults-LastName" /> <Bold>{lastName}. </Bold>
-            </>
-          )}
-          {phoneNumber && (
-            <>
-              {' '}
-              <Template code="SearchResults-PhoneNumber" /> <Bold>{phoneNumber}. </Bold>
-            </>
-          )}
-
-          {enableGeneralizedSearch ? (
-            <>
-              {' '}
-              for <Bold>&quot;{searchTerm}&quot;. </Bold>
-            </>
-          ) : (
-            <>. </>
-          )}
-          {counselorNameString(counselor, counselorsHash)}
-          {dateFrom && (
-            <>
-              {' '}
-              <Template code="SearchResults-DateFrom" />{' '}
-              <Bold>{enableGeneralizedSearch ? dateFrom : transformDate(dateFrom)}. </Bold>{' '}
-            </>
-          )}
-          {dateTo && (
-            <>
-              {' '}
-              <Template code="SearchResults-DateTo" />{' '}
-              <Bold>{enableGeneralizedSearch ? dateTo : transformDate(dateTo)}. </Bold>
-            </>
-          )}
-        </FontOpenSans>
-      </p>
-    );
-  };
-
   const caseResults = () => (
     <>
       <StyledResultsHeader>
-        {contextTemplate()}
+        <SearchResultsQueryTemplate
+          searchFormQuery={searchFormQuery}
+          agentFormQuery={agentFormQuery}
+          subroute={routing.subroute}
+          casesCount={casesCount}
+          contactsCount={contactsCount}
+          counselorsHash={counselorsHash}
+        />
         <StyledFormControlLabel
           control={
             <StyledSwitch
@@ -364,7 +253,14 @@ const SearchResults: React.FC<Props> = ({
   const contactResults = () => (
     <>
       <StyledResultsHeader>
-        {contextTemplate()}
+        <SearchResultsQueryTemplate
+          searchFormQuery={searchFormQuery}
+          agentFormQuery={agentFormQuery}
+          subroute={routing.subroute}
+          casesCount={casesCount}
+          contactsCount={contactsCount}
+          counselorsHash={counselorsHash}
+        />
         <StyledFormControlLabel
           control={
             <StyledSwitch

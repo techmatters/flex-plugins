@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-multi-comp */
 import React, { useState, useEffect } from 'react';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -122,8 +122,8 @@ const Search: React.FC<Props> = ({
   handleNewCreateSearch,
   searchContext,
 }) => {
-  // const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
-  const enableGeneralizedSearch = false;
+  const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
+  // const enableGeneralizedSearch = false;
 
   const [mockedMessage, setMockedMessage] = useState('');
   const [searchParams, setSearchParams] = useState<any>({});
