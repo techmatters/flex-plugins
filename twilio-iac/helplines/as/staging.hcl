@@ -5,7 +5,7 @@ locals {
 
   local_config = {
     enable_post_survey                    = true
-    custom_task_routing_filter_expression = "channelType IN ['web','whatsapp','telegram','line','voice'] OR isContactlessTask == true OR  twilioNumber == 'messenger:131329426738030' "
+    custom_task_routing_filter_expression = "channelType IN ['messenger','web','whatsapp','telegram','line','voice'] OR isContactlessTask == true OR  twilioNumber == 'messenger:131329426738030' "
 
     #Studio flow
     flow_vars = {
