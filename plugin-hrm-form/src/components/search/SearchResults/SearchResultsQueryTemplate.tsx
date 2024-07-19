@@ -45,7 +45,7 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
     const { taskSid } = task;
     const pluginHrmForm = state['plugin-hrm-form'].searchContacts.tasks[taskSid];
     return {
-      activeView: state.flex.view.activeView,
+      activeView: state.flex?.view?.activeView,
       searchFormQuery: pluginHrmForm?.root?.form,
       agentFormQuery: pluginHrmForm?.[searchContext]?.form,
     };
@@ -101,58 +101,63 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
     currentContext = searchFormQuery;
   } else if (activeView === 'agent-desktop') {
     currentContext = agentFormQuery;
-  } else {
-    currentContext = null;
   }
-  const { dateFrom, dateTo, counselor, firstName, lastName, phoneNumber, searchTerm } = currentContext;
 
   return (
-    <p>
-      <FontOpenSans>
-        {countString(subroute, casesCount, contactsCount)}
-        {firstName && (
-          <>
-            {' '}
-            <Template code="SearchResults-FirstName" /> <Bold>{firstName}. </Bold>
-          </>
-        )}
-        {lastName && (
-          <>
-            {' '}
-            <Template code="SearchResults-LastName" /> <Bold>{lastName}. </Bold>
-          </>
-        )}
-        {phoneNumber && (
-          <>
-            {' '}
-            <Template code="SearchResults-PhoneNumber" /> <Bold>{phoneNumber}. </Bold>
-          </>
-        )}
+    <FontOpenSans>
+      <span data-testid="SearchResultsCount">{countString(subroute, casesCount, contactsCount)}</span>
+      {currentContext?.firstName && (
+        <>
+          {' '}
+          <Template code="SearchResults-FirstName" /> <Bold>{currentContext?.firstName}. </Bold>
+        </>
+      )}
+      {currentContext?.lastName && (
+        <>
+          {' '}
+          <Template code="SearchResults-LastName" /> <Bold>{currentContext?.lastName}. </Bold>
+        </>
+      )}
+      {currentContext?.phoneNumber && (
+        <>
+          {' '}
+          <Template code="SearchResults-PhoneNumber" /> <Bold>{currentContext?.phoneNumber}. </Bold>
+        </>
+      )}
 
-        {enableGeneralizedSearch ? (
-          <>
-            {' '}
-            <Template code="SearchResults-For" /> <Bold>&quot;{searchTerm}&quot;. </Bold>
-          </>
-        ) : (
-          <>. </>
-        )}
-        {counselorNameString(counselor, counselorsHash)}
-        {dateFrom && (
-          <>
-            {' '}
-            <Template code="SearchResults-DateFrom" />{' '}
-            <Bold>{enableGeneralizedSearch && dateFrom ? dateFrom : transformDate(dateFrom)}. </Bold>{' '}
-          </>
-        )}
-        {dateTo && (
-          <>
-            {' '}
-            <Template code="SearchResults-DateTo" />{' '}
-            <Bold>{enableGeneralizedSearch && dateTo ? dateTo : transformDate(dateTo)}. </Bold>
-          </>
-        )}
-      </FontOpenSans>
-    </p>
+      {enableGeneralizedSearch ? (
+        <>
+          {' '}
+          <Template code="SearchResults-For" /> <Bold>&quot;{currentContext?.searchTerm}&quot;. </Bold>
+        </>
+      ) : (
+        <>. </>
+      )}
+      {counselorNameString(currentContext?.counselor, counselorsHash)}
+      {currentContext?.dateFrom && (
+        <>
+          {' '}
+          <Template code="SearchResults-DateFrom" />{' '}
+          <Bold>
+            {enableGeneralizedSearch && currentContext?.dateFrom
+              ? currentContext?.dateFrom
+              : transformDate(currentContext?.dateFrom)}
+            .{' '}
+          </Bold>{' '}
+        </>
+      )}
+      {currentContext?.dateTo && (
+        <>
+          {' '}
+          <Template code="SearchResults-DateTo" />{' '}
+          <Bold>
+            {enableGeneralizedSearch && currentContext?.dateTo
+              ? currentContext?.dateTo
+              : transformDate(currentContext?.dateTo)}
+            .{' '}
+          </Bold>
+        </>
+      )}
+    </FontOpenSans>
   );
 };

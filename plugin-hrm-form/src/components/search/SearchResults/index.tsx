@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unused-modules */
 /**
  * Copyright (C) 2021-2023 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -72,9 +71,7 @@ type OwnProps = {
   saveUpdates: () => Promise<void>;
 };
 
-// eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-// eslint-disable-next-line complexity
 const SearchResults: React.FC<Props> = ({
   task,
   searchContactsResults,
@@ -191,7 +188,7 @@ const SearchResults: React.FC<Props> = ({
 
   const caseResults = () => (
     <>
-      <StyledResultsHeader>
+      <StyledResultsHeader key="case-header">
         <SearchResultsQueryTemplate
           task={task}
           searchContext={searchContext}
@@ -250,7 +247,7 @@ const SearchResults: React.FC<Props> = ({
 
   const contactResults = () => (
     <>
-      <StyledResultsHeader>
+      <StyledResultsHeader key="contact-header">
         <SearchResultsQueryTemplate
           task={task}
           searchContext={searchContext}
