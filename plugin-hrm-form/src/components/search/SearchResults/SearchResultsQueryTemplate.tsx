@@ -39,8 +39,7 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
   contactsCount,
   counselorsHash,
 }) => {
-  // const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
-  const enableGeneralizedSearch = false;
+  const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
 
   const { activeView, searchFormQuery, agentFormQuery } = useSelector((state: RootState) => {
     const { taskSid } = task;
