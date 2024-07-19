@@ -21,6 +21,7 @@ import type { FormDefinition } from 'hrm-form-definitions';
 import { pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
 
+import { ResourcesSearchFormArea, SearchFormClearButton } from '../../resources/styles';
 import type { RootState } from '../../../states';
 import { useCreateFormFromDefinition } from '../../forms';
 import { createSearchFormDefinition } from './SearchFormDefiniton';
@@ -28,8 +29,6 @@ import { configurationBase, namespace } from '../../../states/storeNamespaces';
 import {
   Container,
   ColumnarBlock,
-  TwoColumnLayout,
-  ColumnarContent,
   BottomButtonBar,
   StyledNextStepButton,
   FontOpenSans,
@@ -82,13 +81,11 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
     const itemsWithMargin = formItems.map(item => addMargin(margin)(item));
 
     return [
-      <TwoColumnLayout key="searchInput" style={{ margin: '10px 0 20px 0' }}>
-        {itemsWithMargin[0]}
-      </TwoColumnLayout>,
+      <div key="searchTerm">{itemsWithMargin[0]}</div>,
       <FontOpenSans key="filter-subtitle " style={{ marginBottom: '20px' }}>
         <Bold>Optional Filters</Bold>
       </FontOpenSans>,
-      <ColumnarContent key="counselor">{itemsWithMargin[1]}</ColumnarContent>,
+      <div key="counselor">{itemsWithMargin[1]}</div>,
       <TwoColumnLayoutResponsive key="dateRange">
         <ColumnarBlock>{itemsWithMargin[2]}</ColumnarBlock>
         <DateRangeSpacer>-</DateRangeSpacer>
@@ -147,12 +144,13 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
   return (
     <>
       <SearchFormTopRule />
-      <Container data-testid="SearchForm" data-fs-id="SearchForm" formContainer={true}>
-        <FormProvider {...methods}>
-          <ColumnarContent>{searchForm}</ColumnarContent>
-        </FormProvider>
+      <Container data-testid="GeneralizedSearchForm" data-fs-id="SearchForm" formContainer={true}>
+        <FormProvider {...methods}>{searchForm}</FormProvider>
       </Container>
       <BottomButtonBar>
+        {/* <SearchFormClearButton type="button" secondary="true" roundCorners={true} onClick={() => {}}> */}
+        {/* <Template code="Search-ClearFormButton" />
+        </SearchFormClearButton> */}
         <StyledNextStepButton
           type="button"
           roundCorners={true}

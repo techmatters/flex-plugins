@@ -231,36 +231,36 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
           {({ errors, register }) => {
             const error = get(errors, path);
             return (
-              <FormLabel htmlFor={path}>
-                <Row>
-                  <Box marginBottom="8px">
-                    {/* visually hidden but still accessible to screen readers*/}
-                    <span
-                      style={{
-                        position: 'absolute',
-                        width: '1px',
-                        height: '1px',
-                        margin: '-1px',
-                        padding: '0',
-                        overflow: 'hidden',
-                        clip: 'rect(0, 0, 0, 0)',
-                        border: '0',
-                      }}
-                    >
-                      {labelTextComponent}
-                    </span>
-                    {rules.required && <RequiredAsterisk />}
-                  </Box>
-                </Row>
+              <>
+                <FormLabel htmlFor={path}>
+                  <Row>
+                    <Box marginBottom="8px">
+                      {/* visually hidden but still accessible to screen readers*/}
+                      <span
+                        style={{
+                          position: 'absolute',
+                          width: '1px',
+                          height: '1px',
+                          margin: '-1px',
+                          padding: '0',
+                          overflow: 'hidden',
+                          clip: 'rect(0, 0, 0, 0)',
+                          border: '0',
+                        }}
+                      >
+                        {labelTextComponent}
+                      </span>
+                      {rules.required && <RequiredAsterisk />}
+                    </Box>
+                  </Row>
+                </FormLabel>
                 <SearchIconContainer>
-                  {/* <SearchIcon fontSize="small" /> */}
-                  <SearchIcon style={{ fontSize: '20px' }} />
+                  <SearchIcon style={{ fontSize: '18px' }} />
                 </SearchIconContainer>
                 <FormSearchInput
                   id={path}
                   data-testid={path}
                   name={path}
-                  error={Boolean(error)}
                   aria-invalid={Boolean(error)}
                   aria-describedby={`${path}-error`}
                   onBlur={updateCallback}
@@ -274,12 +274,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   defaultValue={initialValue}
                   disabled={!isEnabled}
                 />
-                {error && (
-                  <FormError>
-                    <Template id={`${path}-error`} code={error.message} />
-                  </FormError>
-                )}
-              </FormLabel>
+              </>
             );
           }}
         </ConnectForm>
