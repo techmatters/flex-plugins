@@ -15,8 +15,10 @@
  */
 
 import { FormDefinition, FormInputType } from 'hrm-form-definitions';
+import { isFuture } from 'date-fns';
 
 import type { CounselorsList } from '../../../states/configuration/types';
+import { splitDate } from '../../../utils/helpers';
 
 export const createSearchFormDefinition = ({ counselorsList }: { counselorsList: CounselorsList }): FormDefinition => {
   const counsellorOptions = [
@@ -42,12 +44,38 @@ export const createSearchFormDefinition = ({ counselorsList }: { counselorsList:
       type: FormInputType.DateInput,
       label: 'Date From',
       initializeWithCurrent: false,
+      // validate: date => {
+      //   const [y, m, d] = splitDate(date);
+      //   const inputDate = new Date(y, m - 1, d);
+
+      //   // Date is lesser than Unix epoch (00:00:00 UTC on 1 January 1970)
+      //   if (inputDate.getTime() < 0) return 'DateCantBeLesserThanEpoch';
+
+      //   // Date is greater than "today"
+      //   if (isFuture(inputDate)) return 'DateCantBeGreaterThanToday';
+
+      //   return null;
+      // },
     },
     {
       name: 'dateTo',
       type: FormInputType.DateInput,
       label: 'Date To',
-      initializeWithCurrent: false,
+      // required: { value: true, message: 'RequiredFieldError' },
+      initializeWithCurrent: true,
+      validate: date => {
+        const [y, m, d] = splitDate(date);
+        const inputDate = new Date(y, m - 1, d);
+        console.log('>>> dateTo inputDate', inputDate);
+
+        // Date is lesser than Unix epoch (00:00:00 UTC on 1 January 1970)
+        if (inputDate.getTime() < 0) return 'DateCantBeLesserThanEpoch';
+
+        // Date is greater than "today"
+        if (isFuture(inputDate)) return 'DateCantBeGreaterThanToday';
+
+        return null;
+      },
     },
   ];
 };

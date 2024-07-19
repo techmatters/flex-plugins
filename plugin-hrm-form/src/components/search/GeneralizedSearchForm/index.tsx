@@ -14,12 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect, useMemo, useState } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import React, { useMemo, useEffect } from 'react';
+import { useForm, FormProvider, FieldError } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import type { FormDefinition } from 'hrm-form-definitions';
-import { pick } from 'lodash';
+import { pick, get } from 'lodash';
 import { Template } from '@twilio/flex-ui';
+import { isFuture } from 'date-fns';
 
 import type { RootState } from '../../../states';
 import { useCreateFormFromDefinition } from '../../forms';
@@ -40,6 +41,8 @@ import {
 import { addMargin } from '../../common/forms/formGenerators';
 import { CustomITask } from '../../../types/types';
 import { SearchFormValues } from '../../../states/search/types';
+import useFocus from '../../../utils/useFocus';
+import { splitDate } from '../../../utils/helpers';
 
 type OwnProps = {
   task: ITask | CustomITask;
@@ -51,10 +54,38 @@ type OwnProps = {
 
 export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handleSearchFormUpdate, handleSearch }) => {
   const dispatch = useDispatch();
+  const focusElementRef = useFocus();
 
   const methods = useForm<Pick<SearchFormValues, 'searchTerm' | 'dateFrom' | 'dateTo' | 'counselor'>>();
+  const { register, getValues, watch, setError, errors } = methods;
 
-  const { getValues } = methods;
+  // Custom validation for date inputs in the search form to prevent future dates and invalid date ranges
+  useEffect(() => {
+    register('isFutureAux', {
+      validate: () => {
+        const { dateFrom, dateTo } = getValues();
+
+        console.log('>>> dates to validate', { dateFrom, dateTo });
+
+        if (dateFrom && dateTo) {
+          const [yFrom, mFrom, dFrom] = splitDate(dateFrom);
+          const [yTo, mTo, dTo] = splitDate(dateTo);
+
+          const fromDate = new Date(yFrom, mFrom - 1, dFrom);
+          const toDate = new Date(yTo, mTo - 1, dTo);
+
+          if (fromDate.getTime() > toDate.getTime()) return 'DateFromCantBeGreaterThanDateTo';
+        }
+
+        return null;
+      },
+    });
+  }, [register, getValues, watch, setError]);
+
+  const isFutureError: FieldError = get(errors, 'search.isFutureAux');
+  React.useEffect(() => {
+    if (isFutureError) setError('search.dateFrom', { message: isFutureError.message, type: 'isFutureAux' });
+  }, [isFutureError, setError]);
 
   const counselor =
     typeof initialValues.counselor === 'string' ? initialValues.counselor : initialValues.counselor.value;
@@ -69,7 +100,7 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
   const form = useCreateFormFromDefinition({
     definition: formDefinition,
     initialValues: sanitizedInitialValues,
-    parentsPath: '',
+    parentsPath: 'search',
     updateCallback: () => {
       const values = getValues();
       dispatch(handleSearchFormUpdate(values));
@@ -80,7 +111,13 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
     const itemsWithMargin = formItems.map(item => addMargin(margin)(item));
 
     return [
-      <TwoColumnLayout key="searchInput" style={{ margin: '10px 0 20px 0' }}>
+      <TwoColumnLayout
+        key="searchTerm"
+        ref={ref => {
+          focusElementRef.current = ref;
+        }}
+        style={{ margin: '10px 0 20px 0' }}
+      >
         {itemsWithMargin[0]}
       </TwoColumnLayout>,
       <FontOpenSans key="filter-subtitle " style={{ marginBottom: '20px' }}>
@@ -97,6 +134,8 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
 
   const searchForm = arrangeSearchFormItems(5)(form);
 
+  console.log('>>> searchForm', initialValues, watch('searchTerm'), watch('dateFrom'), watch('dateTo'));
+
   return (
     <>
       <Container data-testid="SearchForm" data-fs-id="SearchForm" formContainer={true}>
@@ -105,7 +144,12 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
         </FormProvider>
       </Container>
       <BottomButtonBar>
-        <StyledNextStepButton type="button" roundCorners={true} onClick={handleSearch}>
+        <StyledNextStepButton
+          type="button"
+          roundCorners={true}
+          onClick={handleSearch}
+          disabled={watch('searchTerm') === ''}
+        >
           <Template code="SearchForm-Button" />
         </StyledNextStepButton>
       </BottomButtonBar>
