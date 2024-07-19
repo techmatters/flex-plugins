@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import type { FormDefinition } from 'hrm-form-definitions';
@@ -51,6 +51,23 @@ type OwnProps = {
 };
 
 export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handleSearchFormUpdate, handleSearch }) => {
+  const containerRef = useRef(null);
+  const [containerWidth, setContainerWidth] = useState(0);
+
+  const updateWidth = () => {
+    if (containerRef.current) {
+      setContainerWidth(containerRef.current.offsetWidth);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', updateWidth);
+    updateWidth(); // Initial width update
+
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
+  console.log('>>>containerWidth', containerWidth);
+
   const dispatch = useDispatch();
 
   const methods = useForm<Pick<SearchFormValues, 'searchTerm' | 'dateFrom' | 'dateTo' | 'counselor'>>();
@@ -86,9 +103,9 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
         <Bold>Optional Filters</Bold>
       </FontOpenSans>,
       <div key="counselor">{itemsWithMargin[1]}</div>,
-      <TwoColumnLayoutResponsive key="dateRange">
+      <TwoColumnLayoutResponsive key="dateRange" width={containerWidth}>
         <ColumnarBlock>{itemsWithMargin[2]}</ColumnarBlock>
-        <DateRangeSpacer>-</DateRangeSpacer>
+        <DateRangeSpacer width={containerWidth}>-</DateRangeSpacer>
         <ColumnarBlock>{itemsWithMargin[3]}</ColumnarBlock>
       </TwoColumnLayoutResponsive>,
     ];
@@ -141,10 +158,15 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watch, setError, clearErrors]);
 
+  const clearForm = () => reset({ searchTerm: '', counselor: '', dateFrom: '', dateTo: '' });
+
+  const validateEmptyForm =
+    watch().searchTerm === '' && watch().counselor === '' && watch().dateFrom === '' && watch().dateTo === '';
+
   return (
     <>
       <SearchFormTopRule />
-      <Container data-testid="GeneralizedSearchForm" data-fs-id="SearchForm" formContainer={true}>
+      <Container data-testid="GeneralizedSearchForm" data-fs-id="SearchForm" formContainer={true} ref={containerRef}>
         <FormProvider {...methods}>{searchForm}</FormProvider>
       </Container>
       <BottomButtonBar>
@@ -152,16 +174,14 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
           type="button"
           secondary="true"
           roundCorners={true}
-          onClick={() => reset({ searchTerm: '', counselor: '', dateFrom: '', dateTo: '' })}
+          onClick={clearForm}
+          style={{
+            opacity: validateEmptyForm ? 0.3 : 1,
+          }}
         >
           <Template code="Search-ClearFormButton" />
         </SearchFormClearButton>
-        <StyledNextStepButton
-          type="button"
-          roundCorners={true}
-          onClick={handleSearch}
-          disabled={watch().searchTerm === ''}
-        >
+        <StyledNextStepButton type="button" roundCorners={true} onClick={handleSearch} disabled={validateEmptyForm}>
           <Template code="SearchForm-Button" />
         </StyledNextStepButton>
       </BottomButtonBar>

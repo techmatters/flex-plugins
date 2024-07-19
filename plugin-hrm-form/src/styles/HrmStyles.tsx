@@ -540,13 +540,12 @@ export const FormSearchInput = styled(MultiSelectSearchInput)`
 `;
 FormSearchInput.displayName = 'FormSearchInput';
 
-export const DateRangeSpacer = styled('span')`
+type DateRangeSpacerProps = { width?: number };
+export const DateRangeSpacer = styled('span')<DateRangeSpacerProps>`
   align-content: space-around;
   padding-top: 25px;
   margin: 20px;
-  @media screen and (max-width: 1100px) {
-    display: none;
-  }
+  display: ${({ width }) => (width > 440 ? 'block' : 'none')};
 `;
 
 type CategoryCheckboxProps = { disabled: boolean };

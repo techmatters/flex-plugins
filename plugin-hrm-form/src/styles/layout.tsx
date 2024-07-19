@@ -154,10 +154,11 @@ export const TwoColumnLayout = styled('div')`
 `;
 TwoColumnLayout.displayName = 'TwoColumnLayout';
 
-export const TwoColumnLayoutResponsive = styled(TwoColumnLayout)`
-  @media screen and (max-width: 1100px) {
-    flex-direction: column;
-  }
+type TwoColumnLayoutProps = { width?: any };
+export const TwoColumnLayoutResponsive = styled(TwoColumnLayout)<TwoColumnLayoutProps>`
+  flex-wrap: wrap;
+  align-self: flex-start;
+  width: ${({ width }) => width};
 `;
 TwoColumnLayoutResponsive.displayName = 'TwoColumnLayoutResponsive';
 
