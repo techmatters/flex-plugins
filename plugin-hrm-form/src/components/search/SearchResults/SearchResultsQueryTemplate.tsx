@@ -39,7 +39,8 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
   contactsCount,
   counselorsHash,
 }) => {
-  const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
+  // const enableGeneralizedSearch = getAseloFeatureFlags().enable_generalized_search;
+  const enableGeneralizedSearch = false;
 
   const { activeView, searchFormQuery, agentFormQuery } = useSelector((state: RootState) => {
     const { taskSid } = task;
@@ -57,23 +58,27 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
     if (subroute === 'case-results') {
       return casesCount === 1 ? (
         <>
-          <Template code="SearchResults-Case" />.
+          <Template code="SearchResults-Case" />
+          .&nbsp;
         </>
       ) : (
         <>
           {casesCount}
-          <Template code="SearchResults-Cases" />.
+          <Template code="SearchResults-Cases" />
+          .&nbsp;
         </>
       );
     }
     return contactsCount === 1 ? (
       <>
-        <Template code="SearchResults-Contact" />.
+        <Template code="SearchResults-Contact" />
+        .&nbsp;
       </>
     ) : (
       <>
         {contactsCount}
-        <Template code="SearchResults-Contacts" />.
+        <Template code="SearchResults-Contacts" />
+        .&nbsp;
       </>
     );
   };
@@ -82,7 +87,7 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
     if (enableGeneralizedSearch && counselor !== '') {
       return (
         <>
-          <Template code="SearchResults-CounselorName" /> <Bold>{counselorsHash[counselor]}.</Bold>
+          <Template code="SearchResults-CounselorName" /> <Bold>{counselorsHash[counselor]}.&nbsp;</Bold>
         </>
       );
     }
@@ -90,14 +95,12 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
     if (!enableGeneralizedSearch && counselor?.label !== '') {
       return (
         <>
-          <Template code="SearchResults-CounselorName" /> <Bold>{counselor?.label}.</Bold>
+          <Template code="SearchResults-CounselorName" /> <Bold>{counselor?.label}.&nbsp;</Bold>
         </>
       );
     }
     return null;
   };
-
-  // When rendering the final string, ensure that the periods are correctly placed as per the updated functions above.
 
   let currentContext;
   if (activeView === 'search') {
@@ -111,53 +114,50 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
       <span data-testid="SearchResultsCount">{countString(subroute, casesCount, contactsCount)}</span>
       {currentContext?.firstName && (
         <>
-          {' '}
-          <Template code="SearchResults-FirstName" /> <Bold>{currentContext?.firstName}. </Bold>
+          <Template code="SearchResults-FirstName" /> <Bold>{currentContext?.firstName}.&nbsp;</Bold>
         </>
       )}
       {currentContext?.lastName && (
         <>
-          {' '}
-          <Template code="SearchResults-LastName" /> <Bold>{currentContext?.lastName}. </Bold>
+          <Template code="SearchResults-LastName" /> <Bold>{currentContext?.lastName}.&nbsp;</Bold>
         </>
       )}
       {currentContext?.phoneNumber && (
         <>
-          {' '}
-          <Template code="SearchResults-PhoneNumber" /> <Bold>{currentContext?.phoneNumber}. </Bold>
+          <Template code="SearchResults-PhoneNumber" /> <Bold>{currentContext?.phoneNumber}.&nbsp;</Bold>
         </>
       )}
-
-      {enableGeneralizedSearch ? (
+      {/* TODO: add this conditional logic after legacy search is removed. Also refactor count logic */}
+      {/* {enableGeneralizedSearch ? (
         <>
-          {' '}
+          &nbsp;
           <Template code="SearchResults-For" /> <Bold>&quot;{currentContext?.searchTerm}&quot;. </Bold>
         </>
       ) : (
         <>. </>
-      )}
+      )} */}
       {counselorNameString(currentContext?.counselor, counselorsHash)}
       {currentContext?.dateFrom && (
         <>
-          {' '}
-          <Template code="SearchResults-DateFrom" />{' '}
+          <Template code="SearchResults-DateFrom" />
+          &nbsp;
           <Bold>
             {enableGeneralizedSearch && currentContext?.dateFrom
               ? currentContext?.dateFrom
               : transformDate(currentContext?.dateFrom)}
-            .{' '}
-          </Bold>{' '}
+            .&nbsp;
+          </Bold>
         </>
       )}
       {currentContext?.dateTo && (
         <>
-          {' '}
-          <Template code="SearchResults-DateTo" />{' '}
+          <Template code="SearchResults-DateTo" />
+          &nbsp;
           <Bold>
             {enableGeneralizedSearch && currentContext?.dateTo
               ? currentContext?.dateTo
               : transformDate(currentContext?.dateTo)}
-            .{' '}
+            .&nbsp;
           </Bold>
         </>
       )}

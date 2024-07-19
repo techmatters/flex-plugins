@@ -357,6 +357,7 @@ StyledFormControlLabel.displayName = 'StyledFormControlLabel';
 export const StyledResultsHeader = styled('div')`
   display: flex;
   flex-flow: column;
+  padding: 0 20px;
 `;
 
 StyledResultsHeader.displayName = 'StyledCaseResultsHeader';

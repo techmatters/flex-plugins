@@ -380,7 +380,6 @@ const SearchResults: React.FC<Props> = ({
               </StyledTabs>
             </Row>
           </ResultsHeader>
-          {/* <ListContainer> */}
           <ResultsSubheader>
             {currentResultPage === 'contact-results' &&
               contacts &&
@@ -389,7 +388,6 @@ const SearchResults: React.FC<Props> = ({
               cases &&
               (cases.length === 0 ? handleNoSearchResult() : caseResults())}
           </ResultsSubheader>
-          {/* </ListContainer> */}
         </>
       )}
     </>
