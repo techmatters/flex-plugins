@@ -20,13 +20,14 @@ import { Template } from '@twilio/flex-ui';
 import { RootState } from '../../../states';
 import { Bold, FontOpenSans } from '../../../styles';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
+import { CustomITask } from '../../../types/types';
 
 type SearchResultsQueryTemplateProps = {
-  task: any;
+  task: CustomITask;
   searchContext: any;
   subroute: string;
-  casesCount: any;
-  contactsCount: any;
+  casesCount: number;
+  contactsCount: number;
   counselorsHash: { [sid: string]: string };
 };
 
@@ -100,6 +101,8 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
     currentContext = searchFormQuery;
   } else if (activeView === 'agent-desktop') {
     currentContext = agentFormQuery;
+  } else {
+    currentContext = null;
   }
   const { dateFrom, dateTo, counselor, firstName, lastName, phoneNumber, searchTerm } = currentContext;
 
@@ -139,14 +142,14 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
           <>
             {' '}
             <Template code="SearchResults-DateFrom" />{' '}
-            <Bold>{enableGeneralizedSearch ? dateFrom : transformDate(dateFrom)}. </Bold>{' '}
+            <Bold>{enableGeneralizedSearch && dateFrom ? dateFrom : transformDate(dateFrom)}. </Bold>{' '}
           </>
         )}
         {dateTo && (
           <>
             {' '}
             <Template code="SearchResults-DateTo" />{' '}
-            <Bold>{enableGeneralizedSearch ? dateTo : transformDate(dateTo)}. </Bold>
+            <Bold>{enableGeneralizedSearch && dateTo ? dateTo : transformDate(dateTo)}. </Bold>
           </>
         )}
       </FontOpenSans>

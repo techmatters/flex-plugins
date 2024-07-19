@@ -341,7 +341,7 @@ const SearchResults: React.FC<Props> = ({
       </Row>
     </SearchResultWarningContainer>
   );
-  
+
   const handleCaseResultsSearch = () => (cases.length === 0 ? handleNoSearchResult() : caseResults());
 
   return (
