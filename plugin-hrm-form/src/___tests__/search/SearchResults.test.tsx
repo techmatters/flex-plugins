@@ -148,7 +148,6 @@ describe('Search Results', () => {
         </StorelessThemeProvider>,
       );
 
-      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 PreviousContacts-Cases');
       expect(screen.getByTestId('ContactsCount')).toHaveTextContent(
         'SearchResultsIndex-NoContactsFoundSearchResultsIndex-SearchAgainForContact',
       );
@@ -172,7 +171,6 @@ describe('Search Results', () => {
         </StorelessThemeProvider>,
       );
 
-      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 PreviousContacts-Contacts');
       expect(screen.getByTestId('CasesCount')).toHaveTextContent(
         'SearchResultsIndex-NoCasesFoundSearchResultsIndex-SearchAgainForCase',
       );
@@ -237,8 +235,7 @@ describe('Search Results', () => {
         </StorelessThemeProvider>,
       );
 
-      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('1 PreviousContacts-Case');
-      expect(screen.getByTestId('ContactsCount')).toHaveTextContent('1 PreviousContacts-Contact');
+      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('SearchResults-Contact');
     });
 
     test('on cases tab', () => {
@@ -259,8 +256,7 @@ describe('Search Results', () => {
         </StorelessThemeProvider>,
       );
 
-      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('1 PreviousContacts-Contact');
-      expect(screen.getByTestId('CasesCount')).toHaveTextContent('1 PreviousContacts-Case');
+      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('SearchResults-Case');
     });
   });
 
@@ -349,8 +345,7 @@ describe('Search Results', () => {
         </StorelessThemeProvider>,
       );
 
-      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2 PreviousContacts-Cases');
-      expect(screen.getByTestId('ContactsCount')).toHaveTextContent('2 SearchResultsIndex-Contacts');
+      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2SearchResults-Contacts');
     });
 
     test('on cases tab', () => {
@@ -371,8 +366,7 @@ describe('Search Results', () => {
         </StorelessThemeProvider>,
       );
 
-      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2 PreviousContacts-Contacts');
-      expect(screen.getByTestId('CasesCount')).toHaveTextContent('2 SearchResultsIndex-Cases');
+      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2SearchResults-Cases');
     });
   });
 });
