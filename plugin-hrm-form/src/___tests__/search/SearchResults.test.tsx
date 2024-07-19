@@ -30,7 +30,6 @@ import { namespace } from '../../states/storeNamespaces';
 import { RootState } from '../../states';
 import { RecursivePartial } from '../RecursivePartial';
 import { VALID_EMPTY_METADATA } from '../testContacts';
-import { SearchCaseResult } from '../../types/types';
 
 jest.mock('../../permissions', () => ({
   getInitializedCan: jest.fn(() => () => true),
@@ -94,9 +93,9 @@ describe('Search Results', () => {
             case1: {
               connectedCase: {
                 createdAt: new Date(1593469560208).toISOString(),
-                twilioWorkerId: 'WKworker1',
+                twilioWorkerId: 'worker1',
                 status: 'open',
-                info: {},
+                info: null,
               },
             },
           },
@@ -108,7 +107,7 @@ describe('Search Results', () => {
         },
         routing: {
           tasks: {
-            [`WTtask1`]: [{ route: 'search', subroute: 'case-results' }],
+            task1: [{ route: 'search', subroute: 'contact-results' }],
           },
         },
       },
@@ -181,7 +180,7 @@ describe('Search Results', () => {
   });
 
   describe('<SearchResults> with 1 result', () => {
-    const searchContactsResults: SearchContactResult = {
+    const searchContactsResults = {
       count: 1,
       contacts: [
         {
@@ -201,11 +200,6 @@ describe('Search Results', () => {
             },
             categories: { category1: ['Tag1', 'Tag2'] },
           },
-          accountSid: '',
-          conversationDuration: 0,
-          csamReports: [],
-          createdAt: '',
-          // Add the missing properties here
         },
       ],
     };
@@ -313,15 +307,10 @@ describe('Search Results', () => {
       ],
     };
 
-    const searchCasesResults: SearchCaseResult = {
+    const searchCasesResults = {
       count: 2,
       cases: [
         {
-          id: 'case1',
-          accountSid: '',
-          status: '',
-          twilioWorkerId: '',
-          categories: [],
           createdAt: '2020-11-23T17:38:42.227Z',
           updatedAt: '2020-11-23T17:38:42.227Z',
           helpline: '',
@@ -331,11 +320,6 @@ describe('Search Results', () => {
           },
         },
         {
-          id: 'case2',
-          accountSid: '',
-          status: '',
-          twilioWorkerId: '',
-          categories: [],
           createdAt: '2020-11-23T17:38:42.227Z',
           updatedAt: '2020-11-23T17:38:42.227Z',
           helpline: '',
