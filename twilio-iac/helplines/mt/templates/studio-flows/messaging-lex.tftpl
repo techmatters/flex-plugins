@@ -176,8 +176,8 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": -850,
           "y": 570
@@ -276,8 +276,8 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": 720,
           "y": 1670
@@ -364,8 +364,8 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": -710,
           "y": 990
@@ -546,8 +546,8 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": -330,
           "y": 1000
@@ -638,8 +638,8 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": 1070,
           "y": 1670
@@ -880,8 +880,8 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": -440,
           "y": 1680
@@ -916,8 +916,8 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": -20,
           "y": 1680
@@ -952,8 +952,8 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": 330,
           "y": 1680
@@ -1014,8 +1014,8 @@ ${
                 }
             ],
             "properties": {
-                "service_sid": flow_vars["service_sid"],
-                "environment_sid": flow_vars["environment_sid"],
+                "service_sid": serverless_service_sid,
+                "environment_sid": serverless_environment_sid,
                 "offset": {
                  "x": -740,
                  "y": 1990
@@ -1029,7 +1029,68 @@ ${
                 ],
                 "url": "${serverless_url}/channelCapture/chatbotCallbackCleanup"
             }
+        },
+    {
+      "name": "send_message_run_janitor",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "webhook_notify_error_cleanup",
+          "event": "success"
+        },
+        {
+          "next": "webhook_notify_error_cleanup",
+          "event": "fail"
         }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": -360,
+          "y": 2260
+        },
+        "function_sid": flow_vars["send_message_janitor_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "Apologies, were were unable to receive your messages. Please try contacting us again.",
+            "key": "message"
+          },
+          {
+            "value": "Kellimni",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "webhook_notify_error_cleanup",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -150,
+          "y": 2550
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"text\": \"Issue detected [Chatbot and Cleanup failure] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \"  }",
+        "url": webhook_url_studio_errors
+      }
+    }
   ],
   "initial_state": "Trigger",
   "flags": {
