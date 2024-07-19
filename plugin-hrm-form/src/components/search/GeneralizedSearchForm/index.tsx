@@ -55,7 +55,7 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
 
   const methods = useForm<Pick<SearchFormValues, 'searchTerm' | 'dateFrom' | 'dateTo' | 'counselor'>>();
 
-  const { getValues, watch, setError, clearErrors } = methods;
+  const { getValues, watch, setError, clearErrors, reset } = methods;
 
   const counselor =
     typeof initialValues.counselor === 'string' ? initialValues.counselor : initialValues.counselor.value;
@@ -148,9 +148,14 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
         <FormProvider {...methods}>{searchForm}</FormProvider>
       </Container>
       <BottomButtonBar>
-        {/* <SearchFormClearButton type="button" secondary="true" roundCorners={true} onClick={() => {}}> */}
-        {/* <Template code="Search-ClearFormButton" />
-        </SearchFormClearButton> */}
+        <SearchFormClearButton
+          type="button"
+          secondary="true"
+          roundCorners={true}
+          onClick={() => reset({ searchTerm: '', counselor: '', dateFrom: '', dateTo: '' })}
+        >
+          <Template code="Search-ClearFormButton" />
+        </SearchFormClearButton>
         <StyledNextStepButton
           type="button"
           roundCorners={true}
