@@ -234,7 +234,21 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
               <FormLabel htmlFor={path}>
                 <Row>
                   <Box marginBottom="8px">
-                    {labelTextComponent}
+                    {/* visually hidden but still accessible to screen readers*/}
+                    <span
+                      style={{
+                        position: 'absolute',
+                        width: '1px',
+                        height: '1px',
+                        margin: '-1px',
+                        padding: '0',
+                        overflow: 'hidden',
+                        clip: 'rect(0, 0, 0, 0)',
+                        border: '0',
+                      }}
+                    >
+                      {labelTextComponent}
+                    </span>
                     {rules.required && <RequiredAsterisk />}
                   </Box>
                 </Row>

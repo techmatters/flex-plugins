@@ -15,8 +15,10 @@
  */
 
 import { FormDefinition, FormInputType } from 'hrm-form-definitions';
+import { isFuture } from 'date-fns';
 
 import type { CounselorsList } from '../../../states/configuration/types';
+import { splitDate } from '../../../utils/helpers';
 
 export const createSearchFormDefinition = ({ counselorsList }: { counselorsList: CounselorsList }): FormDefinition => {
   const counsellorOptions = [
@@ -27,7 +29,7 @@ export const createSearchFormDefinition = ({ counselorsList }: { counselorsList:
   return [
     {
       name: 'searchTerm',
-      label: '',
+      label: 'Search Term',
       type: FormInputType.SearchInput,
       maxLength: { value: 500, message: '500 characters max.' },
     },

@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import type { FormDefinition } from 'hrm-form-definitions';
@@ -41,6 +41,7 @@ import {
 import { addMargin } from '../../common/forms/formGenerators';
 import { CustomITask } from '../../../types/types';
 import { SearchFormValues } from '../../../states/search/types';
+import { splitDate } from '../../../utils/helpers';
 
 type OwnProps = {
   task: ITask | CustomITask;
@@ -55,7 +56,7 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
 
   const methods = useForm<Pick<SearchFormValues, 'searchTerm' | 'dateFrom' | 'dateTo' | 'counselor'>>();
 
-  const { getValues } = methods;
+  const { getValues, watch, setError, clearErrors } = methods;
 
   const counselor =
     typeof initialValues.counselor === 'string' ? initialValues.counselor : initialValues.counselor.value;
@@ -98,6 +99,51 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
 
   const searchForm = arrangeSearchFormItems(5)(form);
 
+  const validateDate = (date: string, errorKey: string, errorMessage: string) => {
+    if (date) {
+      const [y, m, d] = splitDate(date);
+      const dateValue = new Date(y, m - 1, d);
+
+      if (dateValue > new Date()) {
+        setError(errorKey, { type: 'manual', message: errorMessage });
+      } else {
+        clearErrors(errorKey);
+      }
+    }
+  };
+
+  const validateDateRange = (dateFrom: string, dateTo: string) => {
+    if (dateFrom && dateTo) {
+      const [yFrom, mFrom, dFrom] = splitDate(dateFrom);
+      const [yTo, mTo, dTo] = splitDate(dateTo);
+      const dateFromValue = new Date(yFrom, mFrom - 1, dFrom);
+      const dateToValue = new Date(yTo, mTo - 1, dTo);
+
+      if (dateFromValue > dateToValue) {
+        setError('dateTo', { type: 'manual', message: 'DateToCantBeGreaterThanFrom' });
+      }
+      if (dateFromValue > new Date()) {
+        setError('dateFrom', { type: 'manual', message: 'DateCantBeGreaterThanToday' });
+      }
+      if (dateToValue > new Date()) {
+        setError('dateTo', { type: 'manual', message: 'DateCantBeGreaterThanToday' });
+      }
+      if (!(dateFromValue > dateToValue) && !(dateFromValue > new Date()) && !(dateToValue > new Date())) {
+        clearErrors('dateTo');
+      }
+    }
+  };
+
+  useEffect(() => {
+    const dateFrom = watch('dateFrom');
+    const dateTo = watch('dateTo');
+
+    validateDate(dateFrom, 'dateFrom', 'DateCantBeGreaterThanToday');
+    validateDate(dateTo, 'dateTo', 'DateCantBeGreaterThanToday');
+    validateDateRange(dateFrom, dateTo);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watch, setError, clearErrors]);
+
   return (
     <>
       <SearchFormTopRule />
@@ -111,7 +157,7 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
           type="button"
           roundCorners={true}
           onClick={handleSearch}
-          disabled={initialValues.searchTerm === ''}
+          disabled={watch().searchTerm === ''}
         >
           <Template code="SearchForm-Button" />
         </StyledNextStepButton>
