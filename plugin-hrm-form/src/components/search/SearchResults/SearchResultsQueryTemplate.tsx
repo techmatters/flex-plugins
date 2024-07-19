@@ -56,30 +56,32 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
   const countString = (subroute, casesCount: number, contactsCount: number) => {
     if (subroute === 'case-results') {
       return casesCount === 1 ? (
-        <Template code="SearchResults-Case" />
+        <>
+          <Template code="SearchResults-Case" />.
+        </>
       ) : (
         <>
           {casesCount}
-          <Template code="SearchResults-Cases" />
+          <Template code="SearchResults-Cases" />.
         </>
       );
     }
     return contactsCount === 1 ? (
-      <Template code="SearchResults-Contact" />
+      <>
+        <Template code="SearchResults-Contact" />.
+      </>
     ) : (
       <>
         {contactsCount}
-        <Template code="SearchResults-Contacts" />
+        <Template code="SearchResults-Contacts" />.
       </>
     );
   };
 
   const counselorNameString = (counselor, counselorsHash) => {
     if (enableGeneralizedSearch && counselor !== '') {
-      console.log('>>> counselor', { enableGeneralizedSearch, counselor });
       return (
         <>
-          {' '}
           <Template code="SearchResults-CounselorName" /> <Bold>{counselorsHash[counselor]}.</Bold>
         </>
       );
@@ -88,13 +90,14 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
     if (!enableGeneralizedSearch && counselor?.label !== '') {
       return (
         <>
-          {' '}
           <Template code="SearchResults-CounselorName" /> <Bold>{counselor?.label}.</Bold>
         </>
       );
     }
     return null;
   };
+
+  // When rendering the final string, ensure that the periods are correctly placed as per the updated functions above.
 
   let currentContext;
   if (activeView === 'search') {

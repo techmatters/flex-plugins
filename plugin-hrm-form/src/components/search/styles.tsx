@@ -152,28 +152,6 @@ export const StyledTabs = styled((props: Partial<TabsProps> & { children?: any }
 `;
 StyledTabs.displayName = 'StyledTabs';
 
-// export const StyledResultsContainer = styled('div')`
-//   display: flex;
-//   align-items: center;
-//   width: 100%;
-//   margin-top: 10px;
-// `;
-// StyledResultsContainer.displayName = 'StyledResultsContainer';
-
-// export const StyledResultsText = styled('div')`
-//   display: flex;
-//   padding-right: 5px;
-// `;
-// StyledResultsText.displayName = 'StyledResultsText';
-
-// export const EmphasisedText = styled('div')`
-//   font-weight: 600;
-//   color: #000000;
-//   font-family: Open Sans;
-//   text-align: left;
-// `;
-// EmphasisedText.displayName = 'EmphasisedText';
-
 export const SummaryText = styled(FontOpenSans)`
   font-size: 13px;
   font-weight: 400;
@@ -360,18 +338,6 @@ export const ResultsHeader = styled('div')`
   flex-basis: 0;
   flex-grow: 0;
 `;
-
-// export const ListContainer = styled(BottomButtonBar)`
-//   box-shadow: none;
-//   background-color: #ffffff;
-//   flex-basis: 0;
-//   flex-grow: 1;
-//   padding-top: 10px;
-//   padding-bottom: 10px;
-//   padding-left: 0;
-//   padding-right: 0;
-//   margin: 2px 5px 0 5px;
-// `;
 
 export const ResultsSubheader = styled('div')`
   display: flex;
