@@ -21,9 +21,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-import { Template } from '@twilio/flex-ui';
 
-import { ResourcesSearchFormContainer, ResourcesSearchTitle } from '../resources/styles';
 import SearchForm from './SearchForm';
 import SearchResults, { CASES_PER_PAGE, CONTACTS_PER_PAGE } from './SearchResults';
 import ContactDetails from '../contact/ContactDetails';
@@ -266,6 +264,7 @@ const Search: React.FC<Props> = ({
             ? 'SearchContactsAndCases-TitleExistingCase'
             : 'SearchContactsAndCases-Title'
         }
+        noOverflow={enableGeneralizedSearch}
       >
         {enableGeneralizedSearch ? (
           <GeneralizedSearchForm

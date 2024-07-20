@@ -176,7 +176,8 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
           roundCorners={true}
           onClick={clearForm}
           style={{
-            opacity: validateEmptyForm ? 0.3 : 1,
+            opacity: validateEmptyForm ? 0.5 : 1,
+            color: '#000000', // Change the foreground color to improve contrast
           }}
         >
           <Template code="Search-ClearFormButton" />
