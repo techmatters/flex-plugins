@@ -15,10 +15,8 @@
  */
 
 import { FormDefinition, FormInputType } from 'hrm-form-definitions';
-import { isFuture } from 'date-fns';
 
 import type { CounselorsList } from '../../../states/configuration/types';
-import { splitDate } from '../../../utils/helpers';
 
 export const createSearchFormDefinition = ({ counselorsList }: { counselorsList: CounselorsList }): FormDefinition => {
   const counsellorOptions = [
