@@ -62,11 +62,10 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
 
   useEffect(() => {
     window.addEventListener('resize', updateWidth);
-    updateWidth(); // Initial width update
+    updateWidth();
 
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
-  console.log('>>>containerWidth', containerWidth);
 
   const dispatch = useDispatch();
 
