@@ -158,6 +158,7 @@ type TwoColumnLayoutProps = { width?: any };
 export const TwoColumnLayoutResponsive = styled(TwoColumnLayout)<TwoColumnLayoutProps>`
   flex-wrap: wrap;
   align-self: flex-start;
+  float: inline-start;
   width: ${({ width }) => width};
 `;
 TwoColumnLayoutResponsive.displayName = 'TwoColumnLayoutResponsive';

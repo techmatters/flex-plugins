@@ -70,7 +70,9 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
 
   const methods = useForm<Pick<SearchFormValues, 'searchTerm' | 'dateFrom' | 'dateTo' | 'counselor'>>();
 
-  const { getValues, watch, setError, clearErrors, reset } = methods;
+  const { getValues, watch, setError, clearErrors, reset, handleSubmit } = methods;
+
+  const onSubmit = handleSubmit(handleSearch);
 
   const counselor =
     typeof initialValues.counselor === 'string' ? initialValues.counselor : initialValues.counselor.value;
@@ -162,7 +164,7 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
     watch().searchTerm === '' && watch().counselor === '' && watch().dateFrom === '' && watch().dateTo === '';
 
   return (
-    <>
+    <FormProvider {...methods}>
       <SearchFormTopRule />
       <Container
         data-testid="GeneralizedSearchForm"
@@ -171,7 +173,7 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
         tabIndex={-1}
         ref={containerRef}
       >
-        <FormProvider {...methods}>{searchForm}</FormProvider>
+        <form onSubmit={onSubmit}>{searchForm}</form>
       </Container>
       <BottomButtonBar>
         <SearchFormClearButton
@@ -183,10 +185,10 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
         >
           <Template code="Search-ClearFormButton" />
         </SearchFormClearButton>
-        <StyledNextStepButton type="button" roundCorners={true} onClick={handleSearch} disabled={validateEmptyForm}>
+        <StyledNextStepButton type="submit" roundCorners={true} disabled={validateEmptyForm}>
           <Template code="SearchForm-Button" />
         </StyledNextStepButton>
       </BottomButtonBar>
-    </>
+    </FormProvider>
   );
 };

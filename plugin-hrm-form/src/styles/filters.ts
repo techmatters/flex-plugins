@@ -225,8 +225,6 @@ export const MultiSelectSearchInput = styled('input')`
   height: 40px;
   background-color: ${HrmTheme.colors.inputBackgroundColor};
   color: #192b33;
-  border: 1px solid #657292;
-  border-radius: 4px;
   box-shadow: none;
   padding: 0 34px;
 
