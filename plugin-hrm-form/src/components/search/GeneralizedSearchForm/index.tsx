@@ -166,29 +166,25 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
   return (
     <FormProvider {...methods}>
       <SearchFormTopRule />
-      <Container
-        data-testid="GeneralizedSearchForm"
-        data-fs-id="SearchForm"
-        formContainer={true}
-        tabIndex={-1}
-        ref={containerRef}
-      >
-        <form onSubmit={onSubmit}>{searchForm}</form>
-      </Container>
-      <BottomButtonBar>
-        <SearchFormClearButton
-          type="button"
-          secondary="true"
-          roundCorners={true}
-          onClick={clearForm}
-          disabled={validateEmptyForm}
-        >
-          <Template code="Search-ClearFormButton" />
-        </SearchFormClearButton>
-        <StyledNextStepButton type="submit" roundCorners={true} disabled={validateEmptyForm}>
-          <Template code="SearchForm-Button" />
-        </StyledNextStepButton>
-      </BottomButtonBar>
+      <form onSubmit={onSubmit} style={{ height: '97%' }}>
+        <Container data-testid="GeneralizedSearchForm" data-fs-id="SearchForm" formContainer={true} ref={containerRef}>
+          {searchForm}
+        </Container>
+        <BottomButtonBar>
+          <SearchFormClearButton
+            type="button"
+            secondary="true"
+            roundCorners={true}
+            onClick={clearForm}
+            disabled={validateEmptyForm}
+          >
+            <Template code="Search-ClearFormButton" />
+          </SearchFormClearButton>
+          <StyledNextStepButton type="submit" roundCorners={true} disabled={validateEmptyForm}>
+            <Template code="SearchForm-Button" />
+          </StyledNextStepButton>
+        </BottomButtonBar>
+      </form>
     </FormProvider>
   );
 };
