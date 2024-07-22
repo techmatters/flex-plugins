@@ -524,7 +524,7 @@ FormOption.displayName = 'FormOption';
 
 export const SearchIconContainer = styled('div')`
   position: absolute;
-  transform: translateX(25%) translateY(50%);
+  transform: translateX(35%) translateY(43%);
   opacity: 0.4;
   z-index: 2;
 `;
@@ -533,7 +533,7 @@ SearchIconContainer.displayName = 'SearchIconContainer';
 export const FormSearchInput = styled(MultiSelectSearchInput)`
   position: relative;
   & {
-    width: 90%;
+    width: 100%;
     min-width: 217px;
     padding-left: 30px;
   }

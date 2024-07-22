@@ -21,7 +21,7 @@ import type { FormDefinition } from 'hrm-form-definitions';
 import { pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
 
-import { ResourcesSearchFormArea, SearchFormClearButton } from '../../resources/styles';
+import { SearchFormClearButton } from '../../resources/styles';
 import type { RootState } from '../../../states';
 import { useCreateFormFromDefinition } from '../../forms';
 import { createSearchFormDefinition } from './SearchFormDefiniton';
@@ -45,7 +45,6 @@ import { splitDate } from '../../../utils/helpers';
 type OwnProps = {
   task: ITask | CustomITask;
   initialValues: SearchFormValues;
-  autoFocus: boolean;
   handleSearchFormUpdate: (values: Partial<SearchFormValues>) => void;
   handleSearch: (searchParams: any) => void;
 };
@@ -98,7 +97,7 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
 
     return [
       <div key="searchTerm">{itemsWithMargin[0]}</div>,
-      <FontOpenSans key="filter-subtitle " style={{ marginBottom: '20px' }}>
+      <FontOpenSans key="filter-subtitle " style={{ marginTop: '10px', marginBottom: '10px' }}>
         <Bold>Optional Filters</Bold>
       </FontOpenSans>,
       <div key="counselor">{itemsWithMargin[1]}</div>,
@@ -165,7 +164,13 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
   return (
     <>
       <SearchFormTopRule />
-      <Container data-testid="GeneralizedSearchForm" data-fs-id="SearchForm" formContainer={true} ref={containerRef}>
+      <Container
+        data-testid="GeneralizedSearchForm"
+        data-fs-id="SearchForm"
+        formContainer={true}
+        tabIndex={-1}
+        ref={containerRef}
+      >
         <FormProvider {...methods}>{searchForm}</FormProvider>
       </Container>
       <BottomButtonBar>
