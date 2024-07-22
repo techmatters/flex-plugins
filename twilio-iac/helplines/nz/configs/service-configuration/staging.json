@@ -1,6 +1,7 @@
 {
     "attributes": {
         "feature_flags": {
+            "enable_backend_manual_pulling": true
         },
         "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
     }
