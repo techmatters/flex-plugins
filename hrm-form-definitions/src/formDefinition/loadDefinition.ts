@@ -20,6 +20,7 @@ import path from 'path';
 import {
   CallTypeButtonsDefinitions,
   CannedResponsesDefinitions,
+  CategoriesDefinition,
   DefinitionVersion,
   FormDefinition,
   FormItemDefinition,
@@ -29,9 +30,8 @@ import {
   isDependentSelectDefinitionWithReferenceOptions,
   isSelectDefinitionWithReferenceOptions,
   LayoutVersion,
-  CategoriesDefinition,
-  ProfileSectionDefinition,
   ProfileFlagDurationDefinition,
+  ProfileSectionDefinition,
 } from './types';
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 
@@ -52,8 +52,6 @@ export enum DefinitionVersionId {
   clV1 = 'cl-v1', // Línea Libre (CL) v1
   coV1 = 'co-v1', // Te Guío (CO) v1
   zwV1 = 'zw-v1', // Childline Zimbabwe v1
-  plV1 = 'pl-v1', // Telefon Zaufania (PL) v1
-  roV1 = 'ro-v1', // Telefonul Copilului Romania v1
   mtV1 = 'mt-v1', // Kellimni Malta v1
   nzV1 = 'nz-v1', // Youthline (NZ) v1
 }

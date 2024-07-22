@@ -5,20 +5,13 @@
         },
         "definitionVersion": "e2e-v1",
         "feature_flags": {
-            "enable_aselo_messaging_ui": false,
             "enable_contact_editing": false,
             "enable_counselor_toolkits": false,
-            "enable_csam_clc_report": false,
             "enable_csam_report": true,
             "enable_external_transcripts": false,
             "enable_lex": true,
-            "enable_post_survey": false,
             "enable_resources_elastic_search": true,
-            "enable_save_insights": true,
-            "enable_transcripts": false,
-            "enable_twilio_transcripts": false,
-            "enable_voice_recordings": false,
-            "post_survey_serverless_handled": false
+            "enable_save_insights": true
         },
         "permissionConfig": "e2e",
         "previous_ui_version": {

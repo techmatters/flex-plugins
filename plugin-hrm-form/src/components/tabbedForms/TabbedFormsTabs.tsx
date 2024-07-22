@@ -69,7 +69,6 @@ const mapStateToProps = (state: RootState, { task: { taskSid } }: OwnProps) => {
   const contactId = savedContact.id;
   const { showConnectedToCaseBanner, showRemovedFromCaseBanner } = selectCaseMergingBanners(state, contactId);
   const { currentDefinitionVersion } = configuration;
-
   return {
     contactId,
     currentDefinitionVersion,

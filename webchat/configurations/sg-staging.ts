@@ -236,14 +236,6 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "Teacher/ school counsellor"
         },
         {
-          value: "unsafe",
-          label: "Feelings of Being Unsafe"
-        },
-        {
-          value: "nothing",
-          label: "Nothing"
-        },
-        {
           value: "news",
           label: "News article"
         },

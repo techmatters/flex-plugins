@@ -158,10 +158,13 @@
       "color": "#db7a34",
       "subcategories": [
         {
-          "label": "Friends and Friendships"
+          "label": "Firends and Friendships"
         },
         {
           "label": "Heterosexual intimate partner relationships"
+        },
+        {
+          "label": "Making friends"
         }
       ]
     },

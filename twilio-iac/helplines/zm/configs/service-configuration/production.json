@@ -1,7 +1,7 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_transcripts": false
+            
         },
         "pdfImagesSource": "https://tl-public-chat-zm-prod.s3.amazonaws.com",
         "previous_ui_version": {

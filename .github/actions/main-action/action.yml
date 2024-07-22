@@ -100,7 +100,7 @@ runs:
         shell: bash
       # Install the Twilio CLI and the flex plugin, then deploy the plugin
       - name: Install Twilio CLI
-        run: npm install twilio-cli@5.2.2 -g && twilio plugins:install @twilio-labs/plugin-flex@6.0.3
+        run: npm install twilio-cli@5.20.1 -g && twilio plugins:install @twilio-labs/plugin-flex@7.0.0
         working-directory: ./plugin-hrm-form
         shell: bash
       # Runs a single command using the runners shell
@@ -113,7 +113,7 @@ runs:
         env:
           TWILIO_ACCOUNT_SID: ${{ inputs.account-sid }}
           TWILIO_AUTH_TOKEN: ${{ inputs.auth-token }}
-        run: twilio flex:plugins:deploy --changelog "${{ github.event.inputs.changelog }} (commit ${{ github.sha }})"
+        run: twilio flex:plugins:deploy --bypass-validation --changelog "commit ${{ github.sha }}"
         working-directory: ./plugin-hrm-form
         shell: bash
       # Release flex plugin

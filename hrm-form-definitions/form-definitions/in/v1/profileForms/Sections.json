@@ -1,0 +1,11 @@
+[
+  {
+    "name": "summary",
+    "label": "Summary",
+    "editLabel": "Edit Summary",
+    "type": "textarea",
+    "rows": 20,
+    "width": 500,
+    "placeholder": "Enter a summary of the client"
+  }
+]

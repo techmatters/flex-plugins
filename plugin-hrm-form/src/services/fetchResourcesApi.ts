@@ -17,7 +17,8 @@
 import * as path from 'path';
 
 import { getReferrableResourceConfig } from '../hrmConfig';
-import { fetchApi } from './fetchApi';
+import { ApiError, fetchApi } from './fetchApi';
+import { getValidToken } from '../authentication';
 
 /**
  * Factored out function that handles api calls hosted in the resources service.
@@ -27,7 +28,9 @@ import { fetchApi } from './fetchApi';
  * @returns {Promise<any>} the api response (if not error)
  */
 const fetchResourcesApi = (endPoint: string, options: Partial<RequestInit> = {}): Promise<any> => {
-  const { resourcesBaseUrl, token } = getReferrableResourceConfig();
+  const { resourcesBaseUrl } = getReferrableResourceConfig();
+  const token = getValidToken();
+  if (token instanceof Error) throw new ApiError(`Aborting request due to token issue: ${token.message}`, {}, token);
 
   return fetchApi(new URL(resourcesBaseUrl), path.join('resources', endPoint), {
     ...options,

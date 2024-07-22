@@ -12,6 +12,8 @@ locals {
     environment_sid                       = "ZE23e7e655d8037662a53530e7fcc98ed2"
     capture_channel_with_bot_function_sid = "ZHcca7605b98d421e9a6ca3056117cdf44"
     operating_hours_function_sid          = "ZH6a5fd13e2faf9d0ff507b3dbdec53612"
+    widget_from                           = "ECPAT"
+    chat_blocked_message                  = "Sorry, you're not able to contact ECPAT from this device or account"
   }
 
 

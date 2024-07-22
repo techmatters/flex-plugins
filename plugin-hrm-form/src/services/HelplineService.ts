@@ -15,8 +15,8 @@
  */
 
 import { CustomITask, isOfflineContactTask, ContactRawJson } from '../types/types';
-import { getWorkerAttributes } from './ServerlessService';
 import { getHrmConfig } from '../hrmConfig';
+import { getWorkerAttributes } from './twilioWorkerService';
 
 /**
  * Helper used to be the source of truth for the helpline value being passed to HRM and Insights

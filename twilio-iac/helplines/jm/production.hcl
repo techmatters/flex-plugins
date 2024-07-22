@@ -11,21 +11,21 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
       facebook : {
         channel_type         = "facebook"
         contact_identity     = "messenger:107246798170317"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
       instagram : {
         channel_type         = "custom"
         contact_identity     = "instagram"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }
@@ -37,9 +37,11 @@ locals {
       environment_sid                        = "ZE471872ba9e5a44ea96c773adb2b9076c"
       capture_channel_with_bot_function_sid  = "ZH211708560ea265161b4ad235d2d99922"
       capture_channel_with_bot_function_name = "channelCapture/captureChannelWithBot"
-      chatbot_callback_cleanup_function_id   = "ZH269e007928bfa8d3dbd4e7b806d8d690"
+      chatbot_callback_cleanup_function_sid   = "ZH269e007928bfa8d3dbd4e7b806d8d690"
       chatbot_callback_cleanup_function_name = "channelCapture/chatbotCallbackCleanup"
       bot_language                           = "en-JM"
+      widget_from                            = "SafeSpot"
+      chat_blocked_message                   = "Sorry, you're not able to contact SafeSpot from this device or account"
     }
 
 

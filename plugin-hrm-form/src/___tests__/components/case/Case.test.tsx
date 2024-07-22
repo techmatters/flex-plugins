@@ -23,8 +23,9 @@ import '@testing-library/jest-dom/extend-expect';
 import configureMockStore from 'redux-mock-store';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockGetDefinitionsResponse, mockPartialConfiguration } from '../../mockGetConfig';
 import Case from '../../../components/case';
 import { HrmState, RootState } from '../../../states';
@@ -53,8 +54,7 @@ jest.mock('../../../states/case/timeline', () => ({
   selectTimeline: jest.fn(() => []),
 }));
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);

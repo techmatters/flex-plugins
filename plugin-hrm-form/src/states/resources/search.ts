@@ -264,7 +264,7 @@ export const suggestSearchReducer = createReducer(suggestSearchInitialState, han
 export const resourceSearchReducer = createReducer(initialState, handleAction => [
   /*
    * Cast is a workaround for https://github.com/omichelsen/redux-promise-middleware-actions/issues/13
-   * TODO: create a generalised type to put meta property back into all 3 actions for any async action set
+   * TODO: create a generalized type to put meta property back into all 3 actions for any async action set
    */
   handleAction(searchResourceAsyncAction.pending as typeof searchResourceAsyncAction, (state, action) => {
     return {

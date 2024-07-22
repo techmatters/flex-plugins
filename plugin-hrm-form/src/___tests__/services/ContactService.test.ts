@@ -20,10 +20,10 @@ import {
   CategoryEntry,
   DefinitionVersionId,
   loadDefinition,
-  useFetchDefinitions,
 } from 'hrm-form-definitions';
 import { TaskHelper } from '@twilio/flex-ui';
 
+import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
 import { baseMockConfig as mockBaseConfig, mockGetDefinitionsResponse } from '../mockGetConfig';
 import { finalizeContact, handleTwilioTask, saveContact, updateContactInHrm } from '../../services/ContactService';
 import { channelTypes } from '../../states/DomainConstants';
@@ -61,8 +61,11 @@ jest.mock('@twilio/flex-ui', () => ({
   },
 }));
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+jest.mock('../../authentication', () => ({
+  getValidToken: () => 'valid token',
+}));
+
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 /**
  * Adds a category with the corresponding subcategories set to false to the provided object (obj)

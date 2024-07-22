@@ -126,7 +126,7 @@ const baseUpdates: InsightsUpdateFunction = (
 ): CoreAttributes => {
   const communication_channel = taskAttributes.isContactlessTask
     ? mapChannelForInsights(contactlessTask.channel)
-    : mapChannelForInsights(taskAttributes.channelType);
+    : mapChannelForInsights(taskAttributes.customChannelType || taskAttributes.channelType);
 
   // First add the data we add whether or not there's contact form data
   const coreAttributes: CoreAttributes = {

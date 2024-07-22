@@ -277,6 +277,7 @@ export type FeatureFlags = {
   enable_external_transcripts: boolean; // Enables Viewing Transcripts Stored Outside of Twilio
   enable_filter_cases: boolean; // Enables Filters at Case List
   enable_fullstory_monitoring: boolean; // Enables Full Story
+  enable_generalized_search: boolean; // Enables Generalized Search
   enable_last_case_status_update_info: boolean; // Enables showing the time, user and changed status of the most recent case status update on the 'Edit Case Summary' page
   enable_lex: boolean; // Enables consuming from Lex bots
   enable_manual_pulling: boolean; // Enables Adding Another Task
@@ -292,6 +293,7 @@ export type FeatureFlags = {
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
   enable_upload_documents: boolean; // Enables Case Documents
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
+  enable_backend_manual_pulling: boolean; // Enables Backend Manual Pulling
 };
 /* eslint-enable camelcase */
 
@@ -329,6 +331,7 @@ export type OfflineContactTask = {
     helplineToSave?: string;
     preEngagementData?: Record<string, string>;
     skipInsights?: boolean;
+    customChannelType?: string;
   };
   channelType: 'default';
 };

@@ -14,9 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { MessageInputChildrenProps } from '@twilio/flex-ui-core/src/components/channel/MessageInput/MessageInputImpl';
 import React, { Dispatch, useCallback, useEffect, useRef, useState } from 'react';
-import { Template, withTheme } from '@twilio/flex-ui';
+import { ConversationState, Template, withTheme } from '@twilio/flex-ui';
 import { useForm } from 'react-hook-form';
 import debounce from 'lodash/debounce';
 import { connect } from 'react-redux';
@@ -58,7 +57,7 @@ const MAX_LINES = 5;
 const MIN_HEIGHT = MIN_LINES * LINE_HEIGHT + PADDING_VERTICAL * 2 + BORDER_WIDTH * 2;
 const MAX_HEIGHT = MAX_LINES * LINE_HEIGHT + PADDING_VERTICAL * 2 + BORDER_WIDTH * 2;
 
-type MessageProps = Partial<MessageInputChildrenProps>;
+type MessageProps = { conversationSid?: string; conversation?: ConversationState.ConversationState };
 
 const mapDispatchToProps = (
   dispatch: Dispatch<{ type: string } & Record<string, any>>,
