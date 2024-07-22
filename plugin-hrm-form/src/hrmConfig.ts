@@ -27,7 +27,7 @@ type ContactSaveFrequency = 'onTabChange' | 'onFinalSaveAndTransfer';
 
 const readConfig = () => {
   const manager = Flex.Manager.getInstance();
-  const { identity, token } = manager.user;
+  const { identity } = manager.user;
 
   // This is a really hacky test, need a better way to determine if the user is one of our bots
   const userIsAseloBot = /aselo.+@techmatters\.org/.test(identity);
@@ -112,7 +112,6 @@ const readConfig = () => {
       counselorLanguage,
       helplineLanguage,
       identity,
-      token,
       counselorName,
       isSupervisor,
       definitionVersion,
@@ -128,7 +127,6 @@ const readConfig = () => {
     },
     referrableResources: {
       resourcesBaseUrl,
-      token,
     },
   };
 };

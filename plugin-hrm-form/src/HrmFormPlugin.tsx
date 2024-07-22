@@ -89,7 +89,7 @@ const setUpComponents = (
 
   // set up default and custom channels
   Channels.setupDefaultChannels();
-  Channels.setupTwitterChatChannel();
+  Channels.setupTelegramChatChannel();
   Channels.setupInstagramChatChannel();
   Channels.setupLineChatChannel();
 
@@ -137,7 +137,7 @@ const setUpActions = (
   setupObject: ReturnType<typeof getHrmConfig>,
   getMessage: (key: string) => (language: string) => Promise<string>,
 ) => {
-  ActionFunctions.excludeDeactivateConversationOrchestration(featureFlags);
+  ActionFunctions.excludeDeactivateConversationOrchestration();
 
   // bind setupObject to the functions that requires some initialization
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject, getMessage);
@@ -154,6 +154,8 @@ const setUpActions = (
   });
 
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);
+
+  Flex.Actions.replaceAction('CompleteTask', ActionFunctions.completeTaskOverride);
 
   Flex.Actions.addListener('beforeCompleteTask', beforeCompleteAction);
 

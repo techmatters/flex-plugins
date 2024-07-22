@@ -34,7 +34,6 @@ jobs:
     with:
       helpline_code: E2E
       environment_code: development
-      changelog: ${{ inputs.changelog }}
       send-slack-message: 'false'
 
   deploy-webchat:
@@ -57,7 +56,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '16.x'
+          node-version: '18.x'
 
       - name: Install Flex Plugin
         uses: ./.github/actions/install-flex-plugin

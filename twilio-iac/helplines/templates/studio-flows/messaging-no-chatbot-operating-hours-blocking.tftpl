@@ -91,21 +91,21 @@ ${
             }
           ]
         },
-        {
-          "next": "send_closed",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to closed",
-              "arguments": [
-                "{{widgets.check_operating_hours.parsed.status}}"
-              ],
-              "type": "equal_to",
-              "value": "closed"
-            }
-          ]
-        }
-      ],
+         {
+            "next": "send_closed",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If matches_any_of closed,holiday",
+                "arguments": [
+                  "{{widgets.check_operating_hours.parsed.status}}"
+                ],
+                "type": "matches_any_of",
+                "value": "closed,holiday"
+              }
+            ]
+          }
+        ],
       "properties": {
         "input": "{{widgets.check_operating_hours.parsed.status}}",
         "offset": {
@@ -251,7 +251,7 @@ ${
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
-        "from": "Linea Libre",
+        "from": channel_flow_vars["widget_from"],
         "to": "{{contact.channel.address}}",
         "body":  channel_flow_vars["chat_blocked_message"]
       }

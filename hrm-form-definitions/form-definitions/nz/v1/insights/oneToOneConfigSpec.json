@@ -27,7 +27,7 @@
         ],
         "referral": [
             {
-                "name": "externalInterventionTo",
+                "name": "referredTo",
                 "insights": [
                     "customers",
                     "customer_manager"

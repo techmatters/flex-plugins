@@ -331,7 +331,7 @@
   "PreviousContacts-Returned": "returned in this search.",
   "PreviousContacts-ThereAre": "There are",
   "PreviousContacts-ThereIs": "There is",
-  "PreviousContacts-TwitterUser": "Twitter user",
+  "PreviousContacts-TelegramUser": "Telegram user",
   "PreviousContacts-WhatsappNumber": "WhatsApp number",
 
   "QueueCard-LessThanMinute": "less than a minute",
@@ -407,7 +407,7 @@
   "Transfer-TaskLineChatWhatsAppReserved": "Transfer from",
   "Transfer-TransferButton": "Transfer",
   "Transfer-RefreshButton": "Refresh",
-  "Transfer-ErrorLoadingMessages": "Error loading messages.",
+  "Transfer-ErrorLoadingMessages": "Error loading messages. To retry loading them, refresh your browser",
   "Transfer-Warm": "Warm",
   "TranslateButtonAriaLabel": "Change language",
   "UploadFile-ButtonText": "Upload File,",

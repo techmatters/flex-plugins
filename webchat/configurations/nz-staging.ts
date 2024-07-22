@@ -372,7 +372,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       type: 'checkbox',
       name: 'clientPrivacyStatement',
-      label: 'I agree with the <a href="https://www.youthline.co.nz/privacy-statement-for-children-and-young-people.html">client privacy statement</a>',
+      label: 'I agree with the <a href="https://youthline.co.nz/privacy-statements/">client privacy statement</a>',
       required: {
         value: true,
         message: 'You need to agree with our client privacy statement to start a chat ',

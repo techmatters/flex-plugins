@@ -9,7 +9,7 @@ locals {
       service_sid                           = "ZSbda78b753fe2ae2de4b3ef3e49f793ea"
       environment_sid                       = "ZE68650cb6e34acccd3294458f29edee0f"
       capture_channel_with_bot_function_sid = "ZHd9eb5ce1b230abe29d9eafccc88b16d3"
-      chatbot_callback_cleanup_function_id  = "ZH757387715913592aa1938b284411f18b"
+      chatbot_callback_cleanup_function_sid = "ZH757387715913592aa1938b284411f18b"
     }
 
     channels = {

@@ -75,6 +75,31 @@ export async function searchContacts(
   };
 }
 
+export async function generalizedSearch({
+  searchParameters,
+  limit,
+  offset,
+}: {
+  searchParameters: SearchParams;
+  limit: number;
+  offset: number;
+}): Promise<{
+  count: number;
+  contacts: Contact[];
+}> {
+  const queryParams = getQueryParams({ limit, offset });
+  const options = {
+    method: 'POST',
+    body: JSON.stringify({ searchParameters }),
+  };
+
+  const response = await fetchHrmApi(`/contacts/generalizedSearch${queryParams}`, options);
+  return {
+    ...response,
+    contacts: response.contacts.map(convertApiContactToFlexContact),
+  };
+}
+
 type HandleTwilioTaskResponse = {
   channelSid?: string;
   serviceSid?: string;
@@ -173,7 +198,7 @@ export const createContact = async (
   const { definitionVersion } = getHrmConfig();
   const contactForApi: Contact = {
     ...contact,
-    channel: task.channelType as Contact['channel'],
+    channel: ((task.attributes as any)?.customChannelType || task.channelType) as Contact['channel'],
     rawJson: {
       definitionVersion,
       ...contact.rawJson,

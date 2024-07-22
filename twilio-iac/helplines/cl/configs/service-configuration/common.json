@@ -10,13 +10,12 @@
             "enableExternalRecordings": true
         },
         "feature_flags": {
-            "enable_aselo_messaging_ui": true,
-            "enable_conferencing": true,
             "enable_manual_pulling": false,
-            "enable_resources": false,
             "enable_lex": true,
+            "enable_post_survey": true,
             "enable_voice_recordings": true,
-            "enable_client_profiles":true
+            "enable_client_profiles":true,
+            "enable_conferencing": true
         },
         "helplineLanguage": "es-CL",
         "permissionConfig": "cl"

@@ -1,5 +1,7 @@
 {
     "attributes": {
+        "feature_flags": {
+        },
         "helplineLanguage": "en-IN",
         "hrm_base_url": "https://hrm-staging.tl.techmatters.org",
         "pdfImagesSource": "https://tl-public-chat-in-stg.s3.amazonaws.com",

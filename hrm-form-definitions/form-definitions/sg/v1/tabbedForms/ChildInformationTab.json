@@ -189,7 +189,7 @@
   },
   {
     "name": "howDidYouHearAboutUs",
-    "label": "How did you Client hear about us?",
+    "label": "How did the Client hear about us?",
     "type": "select",
     "unknownOption": "Unknown",
     "options": [
@@ -212,14 +212,6 @@
       {
         "value": "teacherCounsellor",
         "label": "Teacher/ school counsellor"
-      },
-      {
-        "value": "unsafe",
-        "label": "Feelings of Being Unsafe"
-      },
-      {
-        "value": "nothing",
-        "label": "Nothing"
       },
       {
         "value": "news",

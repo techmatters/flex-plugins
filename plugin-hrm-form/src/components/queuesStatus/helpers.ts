@@ -26,7 +26,7 @@ export const newQueueEntry: QueueEntry = {
   voice: 0,
   web: 0,
   whatsapp: 0,
-  twitter: 0,
+  telegram: 0,
   instagram: 0,
   line: 0,
   longestWaitingDate: null,
@@ -49,10 +49,15 @@ const subscribedToQueue = (queue: string, queues: QueuesStatus) => Boolean(queue
  * This function is used to determine the channel of a task.
  * It handles additional SMS channels, such as Modica.
  */
-const getChannel = (task: any): CoreChannelTypes => {
-  if (task.channel_type === 'voice') return 'voice';
+const getChannel = ({
+  channel_type: taskChannelType,
+  attributes: { channelType, customChannelType },
+}: any): CoreChannelTypes => {
+  if (taskChannelType === 'voice') return 'voice';
 
-  return isSmsChannelType(task.attributes.channelType) ? 'sms' : task.attributes.channelType;
+  if (isSmsChannelType(customChannelType || channelType)) return 'sms';
+
+  return customChannelType || channelType;
 };
 
 /**

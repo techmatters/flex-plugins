@@ -14,14 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  DefinitionVersion,
-  DefinitionVersionId,
-  loadDefinition,
-  StatusInfo,
-  useFetchDefinitions,
-} from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, loadDefinition, StatusInfo } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { Case } from '../../../types/types';
 import { getAvailableCaseStatusTransitions } from '../../../states/case/caseStatus';
@@ -36,8 +31,7 @@ jest.mock('../../../permissions', () => ({
   getInitializedCan: jest.fn(),
 }));
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 let mockV1: DefinitionVersion;
 const baselineDate = new Date(2010, 1, 1);
