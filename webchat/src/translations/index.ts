@@ -20,6 +20,7 @@ import fr from './fr';
 import hu from './hu';
 import ru from './ru';
 import ukr from './ukr';
+import mt from './mt';
 
 export default {
   en,
@@ -28,4 +29,5 @@ export default {
   hu,
   ru,
   ukr,
+  mt,
 } as Record<string, Record<string, string>>;
