@@ -34,6 +34,7 @@ import {
   FormSelectWrapper,
   Row,
   StyledNextStepButton,
+  SearchFormTopRule,
 } from '../../../styles';
 import {
   ResourceSearchFormClearButton,
@@ -42,7 +43,6 @@ import {
   ResourcesSearchFormFilterHeader,
   ResourcesSearchFormSectionHeader,
   ResourcesSearchFormSettingBox,
-  ResourcesSearchFormTopRule,
   ResourcesSearchTitle,
 } from '../styles';
 import {
@@ -255,7 +255,7 @@ const SearchResourcesForm: React.FC<Props> = ({
             <Template code="Resources-Search-FormTitle" />
           </ResourcesSearchTitle>
         </Box>
-        <ResourcesSearchFormTopRule />
+        <SearchFormTopRule />
         <ResourcesSearchFormArea>
           <ResourcesSearchFormSettingBox style={{ border: 'none' }}>
             <Column>

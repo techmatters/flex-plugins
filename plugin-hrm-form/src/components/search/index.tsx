@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-multi-comp */
 import React, { useState, useEffect } from 'react';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -40,7 +40,6 @@ import {
 } from '../../states/search/actions';
 import { RootState } from '../../states';
 import { namespace } from '../../states/storeNamespaces';
-import selectSearchStateForTask from '../../states/search/selectSearchStateForTask';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { changeRoute, newCloseModalAction } from '../../states/routing/actions';
 import { SearchResultRoute, SearchRoute, isCaseRoute } from '../../states/routing/types';
