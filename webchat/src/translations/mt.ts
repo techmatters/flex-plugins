@@ -14,20 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import en from './en';
-import es from './es';
-import fr from './fr';
-import hu from './hu';
-import ru from './ru';
-import ukr from './ukr';
-import mt from './mt';
-
 export default {
-  en,
-  es,
-  fr,
-  hu,
-  ru,
-  ukr,
-  mt,
-} as Record<string, Record<string, string>>;
+  EndChatButtonLabel: 'Ħruġ mill-chat',
+  QuickExitButtonLabel: 'Ħruġ malajr',
+  QuickExitDescription: 'Għandek bżonn titlaq malajr?',
+  ChatWithUs: 'Chat magħna',
+} as Record<string, string>;
