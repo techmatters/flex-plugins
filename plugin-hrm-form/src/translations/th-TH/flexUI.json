@@ -673,5 +673,7 @@
   "NavigableContainer-BackButton": "กลับ",
   "NavigableContainer-CloseButton": "ปิด",
   "CaseMerging-ContactUndoRemovedFromCase": "ยกเลิก",
-  "TeamsView-NoSkills": "- ไม่มีทักษะที่ระบุ -"
+  "TeamsView-NoSkills": "- ไม่มีทักษะที่ระบุ -",
+  "blocked":"ถูกบล็อก",
+  "Long Term Block (100 Years)":"การบล็อกระยะยาว (100 ปี)"
 }
