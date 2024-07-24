@@ -1,7 +1,7 @@
 [
   {
     "name": "summary",
-    "label": "Summary",
+    "label": "Summary - General Assessment of Case and Plan",
     "editLabel": "Edit Summary",
     "type": "textarea",
     "rows": 20,
