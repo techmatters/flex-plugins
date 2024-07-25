@@ -21,7 +21,6 @@ import { styled } from '@twilio/flex-ui';
 
 import { Row, Flex } from './layout';
 import HrmTheme from './HrmTheme';
-import { MultiSelectSearchInput } from './filters';
 
 const StyledInput = styled(Input)`
   display: flex;
@@ -530,7 +529,7 @@ export const SearchIconContainer = styled('div')`
 `;
 SearchIconContainer.displayName = 'SearchIconContainer';
 
-export const FormSearchInput = styled(MultiSelectSearchInput)`
+export const FormSearchInput = styled(FormInput)<FormInputProps>`
   position: relative;
   & {
     width: 100%;
