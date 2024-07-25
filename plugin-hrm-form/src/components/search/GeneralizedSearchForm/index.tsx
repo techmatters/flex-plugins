@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-autofocus */
 /**
  * Copyright (C) 2021-2023 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -96,7 +97,7 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
 
     return [
       <div key="searchTerm">{itemsWithMargin[0]}</div>,
-      <FontOpenSans key="filter-subtitle " style={{ marginTop: '10px', marginBottom: '10px' }}>
+      <FontOpenSans key="filter-subtitle " style={{ margin: '10px' }}>
         <Bold>Optional Filters</Bold>
       </FontOpenSans>,
       <div key="counselor">{itemsWithMargin[1]}</div>,
@@ -172,7 +173,13 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
     <FormProvider {...methods}>
       <SearchFormTopRule />
       <form onSubmit={onSubmit} style={{ height: '96%' }}>
-        <Container data-testid="GeneralizedSearchForm" data-fs-id="SearchForm" formContainer={true} ref={containerRef}>
+        <Container
+          data-testid="GeneralizedSearchForm"
+          data-fs-id="SearchForm"
+          formContainer={true}
+          ref={containerRef}
+          autoFocus={false}
+        >
           {searchForm}
         </Container>
         <BottomButtonBar>

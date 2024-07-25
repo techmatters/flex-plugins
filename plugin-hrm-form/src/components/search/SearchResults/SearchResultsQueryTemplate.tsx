@@ -56,28 +56,20 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
   const countString = (subroute, casesCount: number, contactsCount: number) => {
     if (subroute === 'case-results') {
       return casesCount === 1 ? (
-        <>
-          <Template code="SearchResults-Case" />
-          .&nbsp;
-        </>
+        <Template code="SearchResults-Case" />
       ) : (
         <>
           {casesCount}
           <Template code="SearchResults-Cases" />
-          .&nbsp;
         </>
       );
     }
     return contactsCount === 1 ? (
-      <>
-        <Template code="SearchResults-Contact" />
-        .&nbsp;
-      </>
+      <Template code="SearchResults-Contact" />
     ) : (
       <>
         {contactsCount}
         <Template code="SearchResults-Contacts" />
-        .&nbsp;
       </>
     );
   };
@@ -126,15 +118,19 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
           <Template code="SearchResults-PhoneNumber" /> <Bold>{currentContext?.phoneNumber}.&nbsp;</Bold>
         </>
       )}
-      {/* TODO: add this conditional logic after legacy search is removed. Also refactor count logic */}
-      {/* {enableGeneralizedSearch ? (
+      {currentContext?.email && (
         <>
-          &nbsp;
+          <Template code="SearchResults-" /> <Bold>{currentContext?.email}.&nbsp;</Bold>
+        </>
+      )}
+      {/* TODO: add this conditional logic after legacy search is removed. Also refactor count logic */}
+      {enableGeneralizedSearch ? (
+        <>
           <Template code="SearchResults-For" /> <Bold>&quot;{currentContext?.searchTerm}&quot;. </Bold>
         </>
       ) : (
-        <>. </>
-      )} */}
+        <>.&nbsp;</>
+      )}
       {counselorNameString(currentContext?.counselor, counselorsHash)}
       {currentContext?.dateFrom && (
         <>

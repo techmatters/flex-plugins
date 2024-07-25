@@ -523,7 +523,7 @@ FormOption.displayName = 'FormOption';
 
 export const SearchIconContainer = styled('div')`
   position: absolute;
-  transform: translateX(35%) translateY(43%);
+  transform: translateX(35%) translateY(30%);
   opacity: 0.4;
   z-index: 2;
 `;
