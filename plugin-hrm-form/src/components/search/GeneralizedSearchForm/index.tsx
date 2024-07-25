@@ -70,7 +70,14 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
   const methods = useForm<Pick<SearchFormValues, 'searchTerm' | 'dateFrom' | 'dateTo' | 'counselor'>>();
   const { getValues, watch, setError, clearErrors, reset, handleSubmit } = methods;
 
-  const onSubmit = handleSubmit(handleSearch);
+  const validateEmptyForm =
+    watch().searchTerm === '' && watch().counselor === '' && watch().dateFrom === '' && watch().dateTo === '';
+
+  const onSubmit = handleSubmit(values => {
+    if (!validateEmptyForm) {
+      handleSearch(values);
+    }
+  });
 
   const counselor =
     typeof initialValues.counselor === 'string' ? initialValues.counselor : initialValues.counselor.value;
@@ -166,23 +173,23 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
 
   const clearForm = () => reset({ searchTerm: '', counselor: '', dateFrom: '', dateTo: '' });
 
-  const validateEmptyForm =
-    watch().searchTerm === '' && watch().counselor === '' && watch().dateFrom === '' && watch().dateTo === '';
-
   return (
     <FormProvider {...methods}>
       <SearchFormTopRule />
-      <form onSubmit={onSubmit} style={{ height: '96%' }}>
+      <form onSubmit={onSubmit}>
         <Container
           data-testid="GeneralizedSearchForm"
           data-fs-id="SearchForm"
           formContainer={true}
           ref={containerRef}
           autoFocus={false}
+          style={{ border: 'none' }}
         >
           {searchForm}
         </Container>
-        <BottomButtonBar>
+        <BottomButtonBar
+          style={{ position: 'fixed', bottom: '0', width: containerWidth + 40, borderTop: '1px solid #e1e3ea' }}
+        >
           <SearchFormClearButton
             type="button"
             secondary="true"

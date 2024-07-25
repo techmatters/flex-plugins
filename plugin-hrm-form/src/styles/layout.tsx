@@ -131,7 +131,7 @@ export const BottomButtonBar = styled('div')`
   height: ${BottomButtonBarHeight}px;
   flex-shrink: 0;
   background-color: #ffffff;
-  padding: 0 20px;
+  padding: 5px 20px;
   z-index: 1;
 `;
 BottomButtonBar.displayName = 'BottomButtonBar';

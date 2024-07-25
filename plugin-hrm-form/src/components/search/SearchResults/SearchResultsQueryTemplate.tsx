@@ -123,14 +123,15 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
           <Template code="SearchResults-" /> <Bold>{currentContext?.email}.&nbsp;</Bold>
         </>
       )}
-      {/* TODO: add this conditional logic after legacy search is removed. Also refactor count logic */}
       {enableGeneralizedSearch ? (
         <>
-          <Template code="SearchResults-For" /> <Bold>&quot;{currentContext?.searchTerm}&quot;. </Bold>
+          <Template code="SearchResults-For" />
+          &nbsp;
         </>
       ) : (
         <>.&nbsp;</>
       )}
+      {currentContext?.searchTerm && <Bold>&quot;{currentContext?.searchTerm}&quot;.&nbsp;</Bold>}
       {counselorNameString(currentContext?.counselor, counselorsHash)}
       {currentContext?.dateFrom && (
         <>
