@@ -7,11 +7,12 @@ locals {
 
   local_config = {
 
-   custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true OR  twilioNumber == 'messenger:123236277715368'"
+    custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true OR  twilioNumber == 'messenger:123236277715368'"
 
 
     flow_vars = {
-
+      widget_from          = "Childline Zimbabwe"
+      chat_blocked_message = "Hi, you've been blocked from accessing Childline services and we are not able to read or receive further messages from you."
     }
 
     channels = {
@@ -29,6 +30,16 @@ locals {
         contact_identity     = "messenger:123236277715368"
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging.tftpl"
         channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      voice : {
+        channel_type     = "voice"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/zw/templates/studio-flows/voice-ac.tftpl"
+        channel_flow_vars = {
+          voice_ivr_language        = "en-US",
+          voice_ivr_blocked_message = "Hi, you've been blocked from accessing Childline services and we are not able to receive further calls from you."
+        }
         chatbot_unique_names = []
       }
     }
