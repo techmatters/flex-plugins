@@ -86,7 +86,7 @@ type StyledNextStepButtonProps = {
 export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
   display: flex;
   align-items: center;
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: normal;
   color: ${props =>
     props.secondary?.toLowerCase() === 'true'

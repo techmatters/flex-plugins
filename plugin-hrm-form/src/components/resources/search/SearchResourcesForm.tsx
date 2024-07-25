@@ -37,7 +37,7 @@ import {
   SearchFormTopRule,
 } from '../../../styles';
 import {
-  ResourceSearchFormClearButton,
+  SearchFormClearButton,
   ResourcesSearchFormArea,
   ResourcesSearchFormContainer,
   ResourcesSearchFormFilterHeader,
@@ -379,7 +379,7 @@ const SearchResourcesForm: React.FC<Props> = ({
         </ResourcesSearchFormArea>
       </Box>
       <BottomButtonBar>
-        <ResourceSearchFormClearButton
+        <SearchFormClearButton
           type="button"
           secondary="true"
           roundCorners={true}
@@ -391,8 +391,8 @@ const SearchResourcesForm: React.FC<Props> = ({
             opacity: hasValidSearchSettings() ? 1 : 0.3,
           }}
         >
-          <Template code="Resources-Search-ClearFormButton" />
-        </ResourceSearchFormClearButton>
+          <Template code="Search-ClearFormButton" />
+        </SearchFormClearButton>
         <StyledNextStepButton
           style={{ opacity: hasValidSearchSettings() ? 1 : 0.3 }}
           type="button"

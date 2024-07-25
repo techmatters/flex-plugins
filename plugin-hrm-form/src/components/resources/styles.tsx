@@ -176,7 +176,7 @@ export const ResourcesSearchFormFilterHeader = styled(FontOpenSans)`
 `;
 ResourcesSearchFormFilterHeader.displayName = 'ResourcesSearchFormFilterHeader';
 
-export const ResourceSearchFormClearButton = styled(StyledNextStepButton)`
+export const SearchFormClearButton = styled(StyledNextStepButton)`
   margin-right: 15px;
   background: transparent !important; // Not sure why the important flag is needed here to override a style with less specificity
 `;

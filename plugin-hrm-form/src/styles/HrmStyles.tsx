@@ -21,6 +21,7 @@ import { styled } from '@twilio/flex-ui';
 
 import { Row, Flex } from './layout';
 import HrmTheme from './HrmTheme';
+import { MultiSelectSearchInput } from './filters';
 
 const StyledInput = styled(Input)`
   display: flex;
@@ -523,33 +524,27 @@ FormOption.displayName = 'FormOption';
 
 export const SearchIconContainer = styled('div')`
   position: absolute;
-  transform: translateX(25%) translateY(63%);
+  transform: translateX(35%) translateY(43%);
   opacity: 0.4;
   z-index: 2;
 `;
 SearchIconContainer.displayName = 'SearchIconContainer';
 
-export const FormSearchInput = styled(FormInput)`
+export const FormSearchInput = styled(MultiSelectSearchInput)`
   position: relative;
   & {
-    width: 460px;
+    width: 100%;
+    min-width: 217px;
     padding-left: 30px;
-  }
-  @media screen and (max-width: 1100px) {
-    & {
-      width: 217px;
-    }
   }
 `;
 FormSearchInput.displayName = 'FormSearchInput';
 
-export const DateRangeSpacer = styled('span')`
-  align-content: space-around;
+type DateRangeSpacerProps = { width?: number };
+export const DateRangeSpacer = styled('span')<DateRangeSpacerProps>`
   padding-top: 25px;
   margin: 20px;
-  @media screen and (max-width: 1100px) {
-    display: none;
-  }
+  display: ${({ width }) => (width > 440 ? 'block' : 'none')};
 `;
 
 type CategoryCheckboxProps = { disabled: boolean };

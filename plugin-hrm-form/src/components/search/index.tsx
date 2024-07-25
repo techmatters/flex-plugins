@@ -264,11 +264,11 @@ const Search: React.FC<Props> = ({
             ? 'SearchContactsAndCases-TitleExistingCase'
             : 'SearchContactsAndCases-Title'
         }
+        noOverflow={enableGeneralizedSearch}
       >
         {enableGeneralizedSearch ? (
           <GeneralizedSearchForm
             initialValues={form}
-            autoFocus={true}
             task={task}
             handleSearchFormUpdate={handleSearchFormUpdate(searchContext)}
             handleSearch={setSearchParamsAndHandleSearch}

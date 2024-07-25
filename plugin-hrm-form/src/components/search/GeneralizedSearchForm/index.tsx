@@ -14,13 +14,14 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import type { FormDefinition } from 'hrm-form-definitions';
 import { pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
 
+import { SearchFormClearButton } from '../../resources/styles';
 import type { RootState } from '../../../states';
 import { useCreateFormFromDefinition } from '../../forms';
 import { createSearchFormDefinition } from './SearchFormDefiniton';
@@ -28,8 +29,6 @@ import { configurationBase, namespace } from '../../../states/storeNamespaces';
 import {
   Container,
   ColumnarBlock,
-  TwoColumnLayout,
-  ColumnarContent,
   BottomButtonBar,
   StyledNextStepButton,
   FontOpenSans,
@@ -41,21 +40,36 @@ import {
 import { addMargin } from '../../common/forms/formGenerators';
 import { CustomITask } from '../../../types/types';
 import { SearchFormValues } from '../../../states/search/types';
+import { splitDate } from '../../../utils/helpers';
 
 type OwnProps = {
   task: ITask | CustomITask;
   initialValues: SearchFormValues;
-  autoFocus: boolean;
   handleSearchFormUpdate: (values: Partial<SearchFormValues>) => void;
   handleSearch: (searchParams: any) => void;
 };
 
 export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handleSearchFormUpdate, handleSearch }) => {
+  const containerRef = useRef(null);
+  const [containerWidth, setContainerWidth] = useState(0);
+  const updateWidth = () => {
+    if (containerRef.current) {
+      setContainerWidth(containerRef.current.offsetWidth);
+    }
+  };
+  useEffect(() => {
+    window.addEventListener('resize', updateWidth);
+    updateWidth();
+
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
+
   const dispatch = useDispatch();
 
   const methods = useForm<Pick<SearchFormValues, 'searchTerm' | 'dateFrom' | 'dateTo' | 'counselor'>>();
+  const { getValues, watch, setError, clearErrors, reset, handleSubmit } = methods;
 
-  const { getValues } = methods;
+  const onSubmit = handleSubmit(handleSearch);
 
   const counselor =
     typeof initialValues.counselor === 'string' ? initialValues.counselor : initialValues.counselor.value;
@@ -81,16 +95,14 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
     const itemsWithMargin = formItems.map(item => addMargin(margin)(item));
 
     return [
-      <TwoColumnLayout key="searchInput" style={{ margin: '10px 0 20px 0' }}>
-        {itemsWithMargin[0]}
-      </TwoColumnLayout>,
-      <FontOpenSans key="filter-subtitle " style={{ marginBottom: '20px' }}>
+      <div key="searchTerm">{itemsWithMargin[0]}</div>,
+      <FontOpenSans key="filter-subtitle " style={{ marginTop: '10px', marginBottom: '10px' }}>
         <Bold>Optional Filters</Bold>
       </FontOpenSans>,
-      <ColumnarContent key="counselor">{itemsWithMargin[1]}</ColumnarContent>,
-      <TwoColumnLayoutResponsive key="dateRange">
+      <div key="counselor">{itemsWithMargin[1]}</div>,
+      <TwoColumnLayoutResponsive key="dateRange" width={containerWidth}>
         <ColumnarBlock>{itemsWithMargin[2]}</ColumnarBlock>
-        <DateRangeSpacer>-</DateRangeSpacer>
+        <DateRangeSpacer width={containerWidth}>-</DateRangeSpacer>
         <ColumnarBlock>{itemsWithMargin[3]}</ColumnarBlock>
       </TwoColumnLayoutResponsive>,
     ];
@@ -98,24 +110,86 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
 
   const searchForm = arrangeSearchFormItems(5)(form);
 
+  const [dateFrom, setDateFrom] = useState<string | null>(null);
+  const [dateTo, setDateTo] = useState<string | null>(null);
+
+  useEffect(() => {
+    const dateFromValue = watch('dateFrom');
+    const dateToValue = watch('dateTo');
+
+    setDateFrom(dateFromValue);
+    setDateTo(dateToValue);
+  }, [watch]);
+
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+  useEffect(() => {
+    const validateDate = (date: string, errorKey: string) => {
+      if (date) {
+        const [y, m, d] = splitDate(date);
+        const dateValue = new Date(y, m - 1, d);
+
+        if (dateValue > new Date()) {
+          setError(errorKey, { type: 'manual', message: 'DateCantBeGreaterThanToday' });
+        } else {
+          clearErrors(errorKey);
+        }
+      }
+    };
+
+    const validateDateRange = (dateFrom: string, dateTo: string) => {
+      if (dateFrom && dateTo) {
+        const [yFrom, mFrom, dFrom] = splitDate(dateFrom);
+        const [yTo, mTo, dTo] = splitDate(dateTo);
+        const dateFromValue = new Date(yFrom, mFrom - 1, dFrom);
+        const dateToValue = new Date(yTo, mTo - 1, dTo);
+
+        if (dateFromValue > dateToValue) {
+          setError('dateTo', { type: 'manual', message: 'DateToCantBeGreaterThanFrom' });
+        }
+        if (dateFromValue > new Date()) {
+          setError('dateFrom', { type: 'manual', message: 'DateCantBeGreaterThanToday' });
+        }
+        if (dateToValue > new Date()) {
+          setError('dateTo', { type: 'manual', message: 'DateCantBeGreaterThanToday' });
+        }
+        if (!(dateFromValue > dateToValue) && !(dateFromValue > new Date()) && !(dateToValue > new Date())) {
+          clearErrors('dateTo');
+        }
+      }
+    };
+
+    validateDate(dateFrom, 'dateFrom');
+    validateDate(dateTo, 'dateTo');
+    validateDateRange(dateFrom, dateTo);
+  }, [dateFrom, dateTo, setError, clearErrors]);
+
+  const clearForm = () => reset({ searchTerm: '', counselor: '', dateFrom: '', dateTo: '' });
+
+  const validateEmptyForm =
+    watch().searchTerm === '' && watch().counselor === '' && watch().dateFrom === '' && watch().dateTo === '';
+
   return (
-    <>
+    <FormProvider {...methods}>
       <SearchFormTopRule />
-      <Container data-testid="SearchForm" data-fs-id="SearchForm" formContainer={true}>
-        <FormProvider {...methods}>
-          <ColumnarContent>{searchForm}</ColumnarContent>
-        </FormProvider>
-      </Container>
-      <BottomButtonBar>
-        <StyledNextStepButton
-          type="button"
-          roundCorners={true}
-          onClick={handleSearch}
-          disabled={initialValues.searchTerm === ''}
-        >
-          <Template code="SearchForm-Button" />
-        </StyledNextStepButton>
-      </BottomButtonBar>
-    </>
+      <form onSubmit={onSubmit} style={{ height: '96%' }}>
+        <Container data-testid="GeneralizedSearchForm" data-fs-id="SearchForm" formContainer={true} ref={containerRef}>
+          {searchForm}
+        </Container>
+        <BottomButtonBar>
+          <SearchFormClearButton
+            type="button"
+            secondary="true"
+            roundCorners={true}
+            onClick={clearForm}
+            disabled={validateEmptyForm}
+          >
+            <Template code="Search-ClearFormButton" />
+          </SearchFormClearButton>
+          <StyledNextStepButton type="submit" roundCorners={true} disabled={validateEmptyForm}>
+            <Template code="SearchForm-Button" />
+          </StyledNextStepButton>
+        </BottomButtonBar>
+      </form>
+    </FormProvider>
   );
 };

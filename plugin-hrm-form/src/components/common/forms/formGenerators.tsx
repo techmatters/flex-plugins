@@ -228,28 +228,34 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
     case FormInputType.SearchInput:
       return (
         <ConnectForm key={path}>
-          {({ errors, register }) => {
-            const error = get(errors, path);
+          {({ register }) => {
             return (
-              <FormLabel htmlFor={path}>
-                <Row>
-                  <Box marginBottom="8px">
-                    {labelTextComponent}
-                    {rules.required && <RequiredAsterisk />}
-                  </Box>
-                </Row>
+              <>
+                <FormLabel htmlFor={path}>
+                  <Row>
+                    <Box marginBottom="8px">
+                      {/* visually hidden but still accessible to screen readers*/}
+                      <span
+                        style={{
+                          position: 'absolute',
+                          width: '1px',
+                          height: '1px',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        {labelTextComponent}
+                      </span>
+                      {rules.required && <RequiredAsterisk />}
+                    </Box>
+                  </Row>
+                </FormLabel>
                 <SearchIconContainer>
-                  {/* <SearchIcon fontSize="small" /> */}
                   <SearchIcon style={{ fontSize: '20px' }} />
                 </SearchIconContainer>
                 <FormSearchInput
                   id={path}
                   data-testid={path}
                   name={path}
-                  error={Boolean(error)}
-                  aria-invalid={Boolean(error)}
-                  aria-describedby={`${path}-error`}
-                  onBlur={updateCallback}
                   ref={ref => {
                     if (htmlElRef) {
                       htmlElRef.current = ref;
@@ -259,13 +265,15 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   }}
                   defaultValue={initialValue}
                   disabled={!isEnabled}
+                  role="search"
+                  aria-label="Search"
                 />
-                {error && (
-                  <FormError>
-                    <Template id={`${path}-error`} code={error.message} />
-                  </FormError>
+                {labelTextComponent && (
+                  <span id={`${path}-label`} style={{ display: 'none' }}>
+                    {labelTextComponent}
+                  </span>
                 )}
-              </FormLabel>
+              </>
             );
           }}
         </ConnectForm>
