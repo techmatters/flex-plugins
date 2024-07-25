@@ -542,7 +542,6 @@ FormSearchInput.displayName = 'FormSearchInput';
 
 type DateRangeSpacerProps = { width?: number };
 export const DateRangeSpacer = styled('span')<DateRangeSpacerProps>`
-  align-content: space-around;
   padding-top: 25px;
   margin: 20px;
   display: ${({ width }) => (width > 440 ? 'block' : 'none')};

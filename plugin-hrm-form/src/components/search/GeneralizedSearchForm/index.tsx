@@ -52,13 +52,11 @@ type OwnProps = {
 export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handleSearchFormUpdate, handleSearch }) => {
   const containerRef = useRef(null);
   const [containerWidth, setContainerWidth] = useState(0);
-
   const updateWidth = () => {
     if (containerRef.current) {
       setContainerWidth(containerRef.current.offsetWidth);
     }
   };
-
   useEffect(() => {
     window.addEventListener('resize', updateWidth);
     updateWidth();
@@ -69,7 +67,6 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
   const dispatch = useDispatch();
 
   const methods = useForm<Pick<SearchFormValues, 'searchTerm' | 'dateFrom' | 'dateTo' | 'counselor'>>();
-
   const { getValues, watch, setError, clearErrors, reset, handleSubmit } = methods;
 
   const onSubmit = handleSubmit(handleSearch);
@@ -113,18 +110,26 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
 
   const searchForm = arrangeSearchFormItems(5)(form);
 
+  const [dateFrom, setDateFrom] = useState<string | null>(null);
+  const [dateTo, setDateTo] = useState<string | null>(null);
+
+  useEffect(() => {
+    const dateFromValue = watch('dateFrom');
+    const dateToValue = watch('dateTo');
+
+    setDateFrom(dateFromValue);
+    setDateTo(dateToValue);
+  }, [watch]);
+
   // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
-    const dateFrom = watch('dateFrom');
-    const dateTo = watch('dateTo');
-
-    const validateDate = (date: string, errorKey: string, errorMessage: string) => {
+    const validateDate = (date: string, errorKey: string) => {
       if (date) {
         const [y, m, d] = splitDate(date);
         const dateValue = new Date(y, m - 1, d);
 
         if (dateValue > new Date()) {
-          setError(errorKey, { type: 'manual', message: errorMessage });
+          setError(errorKey, { type: 'manual', message: 'DateCantBeGreaterThanToday' });
         } else {
           clearErrors(errorKey);
         }
@@ -153,10 +158,10 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
       }
     };
 
-    validateDate(dateFrom, 'dateFrom', 'DateCantBeGreaterThanToday');
-    validateDate(dateTo, 'dateTo', 'DateCantBeGreaterThanToday');
+    validateDate(dateFrom, 'dateFrom');
+    validateDate(dateTo, 'dateTo');
     validateDateRange(dateFrom, dateTo);
-  }, [watch, setError, clearErrors]);
+  }, [dateFrom, dateTo, setError, clearErrors]);
 
   const clearForm = () => reset({ searchTerm: '', counselor: '', dateFrom: '', dateTo: '' });
 
