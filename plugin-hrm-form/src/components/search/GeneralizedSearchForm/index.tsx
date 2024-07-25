@@ -113,6 +113,7 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
 
   const searchForm = arrangeSearchFormItems(5)(form);
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
     const dateFrom = watch('dateFrom');
     const dateTo = watch('dateTo');
@@ -121,7 +122,7 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
       if (date) {
         const [y, m, d] = splitDate(date);
         const dateValue = new Date(y, m - 1, d);
-  
+
         if (dateValue > new Date()) {
           setError(errorKey, { type: 'manual', message: errorMessage });
         } else {
@@ -129,14 +130,14 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
         }
       }
     };
-  
+
     const validateDateRange = (dateFrom: string, dateTo: string) => {
       if (dateFrom && dateTo) {
         const [yFrom, mFrom, dFrom] = splitDate(dateFrom);
         const [yTo, mTo, dTo] = splitDate(dateTo);
         const dateFromValue = new Date(yFrom, mFrom - 1, dFrom);
         const dateToValue = new Date(yTo, mTo - 1, dTo);
-  
+
         if (dateFromValue > dateToValue) {
           setError('dateTo', { type: 'manual', message: 'DateToCantBeGreaterThanFrom' });
         }
