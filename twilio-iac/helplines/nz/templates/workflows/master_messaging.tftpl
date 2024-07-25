@@ -63,17 +63,6 @@
         ]
       },
       {
-        "filter_friendly_name": "Counselling",
-        "expression": " targetSid=='${task_queues.counselling}'",
-        "targets": [
-          {
-            "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
-            "queue": "${task_queues.counselling}",
-            "priority": 20
-          }
-        ]
-      },
-      {
         "filter_friendly_name": "Youthline Helpline - SMS No Valid Response",
         "expression": "channelType IN [ 'modica','web']",
         "targets": [

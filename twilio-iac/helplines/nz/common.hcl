@@ -33,20 +33,16 @@ locals {
 
     task_queues = {
       youthline_helpline : {
-        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND email NOT IN ['emmac@youthline.co.nz','ashleigh@youthline.co.nz','tonys@youthline.co.nz']",
+        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor')",
         "friendly_name"  = "Youthline Helpline"
       },
       priority : {
-        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor') AND email NOT IN ['emmac@youthline.co.nz','ashleigh@youthline.co.nz','tonys@youthline.co.nz']",
+        "target_workers" = "(roles HAS 'agent' OR roles HAS 'supervisor')",
         "friendly_name"  = "Priority Youthline Helpline"
       },
       clinical : {
-        "target_workers" = "(routing.skills HAS 'Clinical') AND email NOT IN ['emmac@youthline.co.nz','ashleigh@youthline.co.nz','tonys@youthline.co.nz']",
+        "target_workers" = "(routing.skills HAS 'Clinical')",
         "friendly_name"  = "Clinical"
-      },
-      counselling : {
-        "target_workers" = "((roles HAS 'agent' OR roles HAS 'supervisor') AND email IN ['emmac@youthline.co.nz','ashleigh@youthline.co.nz','tonys@youthline.co.nz']) OR (roles HAS 'supervisor' AND routing.skills HAS 'YL Other Services')",
-        "friendly_name"  = "YL Other Services"
       },
       survey : {
         "target_workers" = "1==0",
