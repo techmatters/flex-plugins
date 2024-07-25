@@ -17,7 +17,7 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
-import type { SearchParams } from '../states/search/types';
+import type { GeneralizedSearchParams, SearchParams } from '../states/search/types';
 import type { Case, CaseOverview, Contact, SearchCaseResult, WellKnownCaseSection } from '../types/types';
 import type { FetchOptions } from './fetchApi';
 import type { GenericTimelineActivity } from '../states/case/types';
@@ -174,7 +174,7 @@ export async function generalizedSearch({
   limit,
   offset,
 }: {
-  searchParameters: SearchParams;
+  searchParameters: GeneralizedSearchParams;
   limit: number;
   offset: number;
 }): Promise<SearchCaseResult> {
