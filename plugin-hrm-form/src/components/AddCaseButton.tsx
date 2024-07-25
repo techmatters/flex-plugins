@@ -20,7 +20,7 @@ import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
-import { StyledNextStepButton, StyledAddNewCaseDropdown, StyledAddNewCaseDropdownList } from '../styles/buttons';
+import { PrimaryButton, StyledAddNewCaseDropdown, StyledAddNewCaseDropdownList } from '../styles/buttons';
 
 type OwnProps = {
   handleNewCaseType: () => void;
@@ -47,7 +47,7 @@ const AddCaseButton: React.FC<Props> = ({ handleNewCaseType, handleExistingCaseT
   };
 
   return (
-    <StyledNextStepButton
+    <PrimaryButton
       onBlurCapture={event => {
         if (!event.currentTarget.contains(event.relatedTarget)) {
           setDropdown(false);
@@ -88,7 +88,7 @@ const AddCaseButton: React.FC<Props> = ({ handleNewCaseType, handleExistingCaseT
       {!dropdown && (
         <KeyboardArrowDownIcon style={{ fontSize: '20px', marginLeft: '10px', width: '24px', height: '24px' }} />
       )}
-    </StyledNextStepButton>
+    </PrimaryButton>
   );
 };
 

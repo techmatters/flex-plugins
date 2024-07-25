@@ -18,7 +18,7 @@ import { styled } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 
 import { Box, Column, Flex, Row, FontOpenSans, PreviewWrapper } from '../../styles';
-import { StyledNextStepButton } from '../../styles/buttons';
+import { PrimaryButton } from '../../styles/buttons';
 import HrmTheme from '../../styles/HrmTheme';
 
 export const ResourcePreviewWrapper = styled(PreviewWrapper)`
@@ -176,7 +176,7 @@ export const ResourcesSearchFormFilterHeader = styled(FontOpenSans)`
 `;
 ResourcesSearchFormFilterHeader.displayName = 'ResourcesSearchFormFilterHeader';
 
-export const ResourceSearchFormClearButton = styled(StyledNextStepButton)`
+export const ResourceSearchFormClearButton = styled(PrimaryButton)`
   margin-right: 15px;
   background: transparent !important; // Not sure why the important flag is needed here to override a style with less specificity
 `;

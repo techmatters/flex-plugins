@@ -20,7 +20,7 @@ import DownloadIcon from '@material-ui/icons/GetApp';
 import { Template } from '@twilio/flex-ui';
 
 import { getHrmConfig } from '../../../hrmConfig';
-import { Flex, Box, HiddenText, StyledNextStepButton } from '../../../styles';
+import { Flex, Box, HiddenText, PrimaryButton } from '../../../styles';
 import { formatFileNameAtAws } from '../../../utils';
 import { fetchHrmApi, generateSignedURLPath } from '../../../services/fetchHrmApi';
 import { FormTargetObject } from './types';
@@ -72,10 +72,10 @@ const DownloadFile: React.FC<Props> = ({ fileNameAtAws, targetObject }) => {
   return (
     <Flex flexDirection="column" alignItems="flex-start">
       <Box marginBottom="5px">
-        <StyledNextStepButton secondary="true" onClick={handleClick}>
+        <PrimaryButton secondary="true" onClick={handleClick}>
           <DownloadIcon style={{ fontSize: '20px', marginRight: 5 }} />
           <Template code="DownloadFile-ButtonText" />
-        </StyledNextStepButton>
+        </PrimaryButton>
       </Box>
       {fileName}
       <HiddenText>

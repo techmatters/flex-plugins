@@ -31,7 +31,7 @@ import {
   TwoColumnLayout,
   ColumnarContent,
   BottomButtonBar,
-  StyledNextStepButton,
+  PrimaryButton,
   FontOpenSans,
   Bold,
   DateRangeSpacer,
@@ -107,14 +107,14 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
         </FormProvider>
       </Container>
       <BottomButtonBar>
-        <StyledNextStepButton
+        <PrimaryButton
           type="button"
           roundCorners={true}
           onClick={handleSearch}
           disabled={initialValues.searchTerm === ''}
         >
           <Template code="SearchForm-Button" />
-        </StyledNextStepButton>
+        </PrimaryButton>
       </BottomButtonBar>
     </>
   );

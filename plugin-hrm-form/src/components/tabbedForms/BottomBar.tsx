@@ -20,7 +20,7 @@ import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
 
-import { BottomButtonBar, Box, SaveAndEndButton, StyledNextStepButton } from '../../styles';
+import { BottomButtonBar, Box, SaveAndEndButton, PrimaryButton } from '../../styles';
 import { AddedToCaseButton } from './styles';
 import * as RoutingActions from '../../states/routing/actions';
 import { completeTask } from '../../services/formSubmissionHelpers';
@@ -129,7 +129,7 @@ const BottomBar: React.FC<
     }
     return isAddedToCase ? null : (
       <Box marginRight="15px">
-        <StyledNextStepButton
+        <PrimaryButton
           type="button"
           roundCorners
           secondary="true"
@@ -139,7 +139,7 @@ const BottomBar: React.FC<
         >
           <FolderIcon style={{ fontSize: '16px', marginRight: '10px', width: '24px', height: '24px' }} />
           <Template code="BottomBar-AddContactToNewCase" />
-        </StyledNextStepButton>
+        </PrimaryButton>
       </Box>
     );
   };
@@ -149,7 +149,7 @@ const BottomBar: React.FC<
       {optionalButtons &&
         optionalButtons.map((i, index) => (
           <Box key={`optional-button-${index}`} marginRight="15px">
-            <StyledNextStepButton
+            <PrimaryButton
               type="button"
               roundCorners
               secondary="true"
@@ -157,14 +157,14 @@ const BottomBar: React.FC<
               disabled={contactIsSaving}
             >
               <Template code={i.label} />
-            </StyledNextStepButton>
+            </PrimaryButton>
           </Box>
         ))}
 
       {showNextButton && (
-        <StyledNextStepButton type="button" roundCorners={true} onClick={nextTab}>
+        <PrimaryButton type="button" roundCorners={true} onClick={nextTab}>
           <Template code="BottomBar-Next" />
-        </StyledNextStepButton>
+        </PrimaryButton>
       )}
       {showSubmitButton && (
         <>

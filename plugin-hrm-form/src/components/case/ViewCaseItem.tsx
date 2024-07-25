@@ -22,7 +22,7 @@ import Edit from '@material-ui/icons/Edit';
 import { DefinitionVersion, isNonSaveable } from 'hrm-form-definitions';
 
 import { CaseStateEntry } from '../../states/case/types';
-import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles';
+import { BottomButtonBar, Box, PrimaryButton } from '../../styles';
 import { CaseLayout, FullWidthFormTextContainer } from './styles';
 import { RootState } from '../../states';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
@@ -135,7 +135,7 @@ const ViewCaseItem: React.FC<Props> = ({
         {canEdit() && (
           <BottomButtonBar>
             <Box marginRight="15px">
-              <StyledNextStepButton
+              <PrimaryButton
                 secondary="true"
                 roundCorners
                 onClick={onEditCaseItemClick}
@@ -143,7 +143,7 @@ const ViewCaseItem: React.FC<Props> = ({
               >
                 <Edit fontSize="inherit" style={{ marginRight: 5 }} />
                 <Template code="EditButton" />
-              </StyledNextStepButton>
+              </PrimaryButton>
             </Box>
           </BottomButtonBar>
         )}

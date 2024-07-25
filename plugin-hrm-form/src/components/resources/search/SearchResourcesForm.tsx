@@ -33,7 +33,7 @@ import {
   FormSelect,
   FormSelectWrapper,
   Row,
-  StyledNextStepButton,
+  PrimaryButton,
   SearchFormTopRule,
 } from '../../../styles';
 import {
@@ -393,7 +393,7 @@ const SearchResourcesForm: React.FC<Props> = ({
         >
           <Template code="Resources-Search-ClearFormButton" />
         </ResourceSearchFormClearButton>
-        <StyledNextStepButton
+        <PrimaryButton
           style={{ opacity: hasValidSearchSettings() ? 1 : 0.3 }}
           type="button"
           roundCorners={true}
@@ -401,7 +401,7 @@ const SearchResourcesForm: React.FC<Props> = ({
           data-testid="search-button"
         >
           <Template code="SearchForm-Button" />
-        </StyledNextStepButton>
+        </PrimaryButton>
       </BottomButtonBar>
     </ResourcesSearchFormContainer>
   );

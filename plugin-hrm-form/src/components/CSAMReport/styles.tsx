@@ -20,7 +20,7 @@ import { withStyles } from '@material-ui/core';
 import { AttachFile, CheckCircle, FileCopyOutlined, OpenInNew } from '@material-ui/icons';
 
 import { FontOpenSans } from '../../styles';
-import { StyledNextStepButton } from '../../styles/buttons';
+import { PrimaryButton } from '../../styles/buttons';
 import HrmTheme from '../../styles/HrmTheme';
 
 export const CSAMReportContainer = styled('div')`
@@ -54,7 +54,7 @@ export const CenterContent = styled('div')`
 `;
 CenterContent.displayName = 'CenterContent';
 
-export const CopyCodeButton = styled(StyledNextStepButton)`
+export const CopyCodeButton = styled(PrimaryButton)`
   padding: 7px;
 `;
 CopyCodeButton.displayName = 'CopyCodeButton';
