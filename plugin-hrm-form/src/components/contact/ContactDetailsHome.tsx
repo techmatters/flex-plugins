@@ -291,7 +291,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const addedToCaseBanner = () => <ContactAddedToCaseBanner taskId={task.taskSid} contactId={savedContact.id} />;
   const showAddToCaseButton = !isDraft && !caseId && !showRemovedFromCaseBanner;
 
-  const renderCaseButton = () => {
+  const renderCaseBanners = () => {
     if (featureFlags.enable_case_merging) {
       return (
         <>
@@ -336,7 +336,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
         </BannerContainer>
       )}
 
-      {renderCaseButton()}
+      {renderCaseBanners()}
 
       <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}
