@@ -40,6 +40,7 @@ type OwnProps = {
   onGoBack?: () => void;
   onCloseModal?: () => void;
   focusPriority: FocusTarget[];
+  autofocus: boolean;
   noOverflow?: boolean;
 };
 
@@ -81,6 +82,7 @@ const NavigableContainer: React.FC<Props> = ({
   hasHistory,
   isModal,
   focusPriority = ['back', 'close'],
+  autofocus = true,
   routing,
   noOverflow,
   ...boxProps
@@ -88,9 +90,9 @@ const NavigableContainer: React.FC<Props> = ({
   const validFocusPriority = (focusPriority ?? []).filter(
     target => (target === 'back' && hasHistory) || (target === 'close' && isModal),
   );
-  const initialFocusRef = useFocus(Boolean(validFocusPriority.length), [routing]);
+  const initialFocusRef = useFocus(autofocus && Boolean(validFocusPriority.length), [routing]);
 
-  const shouldFocus = (target: FocusTarget): boolean => validFocusPriority.indexOf(target) === 0;
+  const shouldFocus = (target: FocusTarget): boolean => autofocus && validFocusPriority.indexOf(target) === 0;
 
   return (
     <NavigableContainerBox modal={isModal} {...boxProps}>

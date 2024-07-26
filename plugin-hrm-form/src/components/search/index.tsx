@@ -265,6 +265,7 @@ const Search: React.FC<Props> = ({
             : 'SearchContactsAndCases-Title'
         }
         noOverflow={enableGeneralizedSearch}
+        autofocus={!enableGeneralizedSearch}
       >
         {enableGeneralizedSearch ? (
           <GeneralizedSearchForm
