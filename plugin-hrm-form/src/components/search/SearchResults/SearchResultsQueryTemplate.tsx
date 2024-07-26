@@ -100,29 +100,24 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
     currentContext = agentFormQuery;
   }
 
+  const ContextItem = ({ label, value }) => {
+    if (!value) return null;
+
+    const formattedValue = enableGeneralizedSearch || !transformDate ? value : transformDate(value);
+    return (
+      <>
+        <Template code={`SearchResults-${label}`} /> <Bold>{formattedValue}.&nbsp;</Bold>
+      </>
+    );
+  };
+
   return (
     <FontOpenSans>
       <span data-testid="SearchResultsCount">{countString(subroute, casesCount, contactsCount)}</span>
-      {currentContext?.firstName && (
-        <>
-          <Template code="SearchResults-FirstName" /> <Bold>{currentContext?.firstName}.&nbsp;</Bold>
-        </>
-      )}
-      {currentContext?.lastName && (
-        <>
-          <Template code="SearchResults-LastName" /> <Bold>{currentContext?.lastName}.&nbsp;</Bold>
-        </>
-      )}
-      {currentContext?.phoneNumber && (
-        <>
-          <Template code="SearchResults-PhoneNumber" /> <Bold>{currentContext?.phoneNumber}.&nbsp;</Bold>
-        </>
-      )}
-      {currentContext?.email && (
-        <>
-          <Template code="SearchResults-" /> <Bold>{currentContext?.email}.&nbsp;</Bold>
-        </>
-      )}
+      <ContextItem label="FirstName" value={currentContext?.firstName} />
+      <ContextItem label="LastName" value={currentContext?.lastName} />
+      <ContextItem label="PhoneNumber" value={currentContext?.phoneNumber} />
+      <ContextItem label="Email" value={currentContext?.email} />
       {enableGeneralizedSearch ? (
         <>
           <Template code="SearchResults-For" />
@@ -133,30 +128,8 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
       )}
       {currentContext?.searchTerm && <Bold>&quot;{currentContext?.searchTerm}&quot;.&nbsp;</Bold>}
       {counselorNameString(currentContext?.counselor, counselorsHash)}
-      {currentContext?.dateFrom && (
-        <>
-          <Template code="SearchResults-DateFrom" />
-          &nbsp;
-          <Bold>
-            {enableGeneralizedSearch && currentContext?.dateFrom
-              ? currentContext?.dateFrom
-              : transformDate(currentContext?.dateFrom)}
-            .&nbsp;
-          </Bold>
-        </>
-      )}
-      {currentContext?.dateTo && (
-        <>
-          <Template code="SearchResults-DateTo" />
-          &nbsp;
-          <Bold>
-            {enableGeneralizedSearch && currentContext?.dateTo
-              ? currentContext?.dateTo
-              : transformDate(currentContext?.dateTo)}
-            .&nbsp;
-          </Bold>
-        </>
-      )}
+      <ContextItem label="DateFrom" value={currentContext?.dateFrom} />
+      <ContextItem label="DateTo" value={currentContext?.dateTo} />
     </FontOpenSans>
   );
 };
