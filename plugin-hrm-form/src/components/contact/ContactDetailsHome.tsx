@@ -19,7 +19,7 @@ import React, { useEffect } from 'react';
 import { format } from 'date-fns';
 import { Actions, Icon, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
-import { callTypes, DataCallTypes, DefinitionVersionId, isNonSaveable } from 'hrm-form-definitions';
+import { callTypes, DataCallTypes, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
@@ -46,7 +46,6 @@ import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/Co
 import { RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getInitializedCan, PermissionActions } from '../../permissions';
-import { ContactDetailsRoute, ContactDraftChanges, createDraft } from '../../states/contacts/existingContacts';
 import { RecordingSection, TranscriptSection } from './MediaSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import type { ResourceReferral } from '../../states/contacts/resourceReferral';
@@ -62,9 +61,6 @@ import InfoIcon from '../caseMergingBanners/InfoIcon';
 import { BannerContainer, Text } from '../../styles/banners';
 import { isSmsChannelType } from '../../utils/smsChannels';
 import getCanEditContact from '../../permissions/canEditContact';
-import { createCaseAsyncAction } from '../../states/case/saveCase';
-import asyncDispatch from '../../states/asyncDispatch';
-import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import AddCaseButton from '../AddCaseButton';
 import openNewCase from '../case/openNewCase';
 
@@ -293,6 +289,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   );
 
   const addedToCaseBanner = () => <ContactAddedToCaseBanner taskId={task.taskSid} contactId={savedContact.id} />;
+  const showAddToCaseButton = !isDraft && !caseId && !showRemovedFromCaseBanner;
 
   const renderCaseButton = () => {
     if (featureFlags.enable_case_merging) {
@@ -300,7 +297,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
         <>
           {caseId
             ? addedToCaseBanner()
-            : !showRemovedFromCaseBanner && (
+            : showAddToCaseButton && (
                 <Box display="flex" justifyContent="flex-end" marginBottom="4px">
                   <AddCaseButton
                     position="top"
@@ -538,7 +535,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) => ({
   toggleSectionExpandedForContext: (section: ContactDetailsSectionsType) =>
     dispatch(toggleDetailSectionExpanded(context, section)),
-  createContactDraft: (draftRoute: ContactDetailsRoute) => dispatch(createDraft(contactId, draftRoute)),
   createDraftCsamReport: () => dispatch(newCSAMReportActionForContact(contactId)),
   navigate: (
     form: keyof Pick<ContactRawJson, 'caseInformation' | 'callerInformation' | 'categories' | 'childInformation'>,
