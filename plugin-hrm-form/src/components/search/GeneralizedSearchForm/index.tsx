@@ -97,7 +97,6 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
       const values = getValues();
       dispatch(handleSearchFormUpdate(values));
     },
-    shouldFocusFirstElement: false,
   });
 
   const arrangeSearchFormItems = (margin: number) => (formItems: JSX.Element[]) => {
