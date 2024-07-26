@@ -228,7 +228,8 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
     case FormInputType.SearchInput:
       return (
         <ConnectForm key={path}>
-          {({ register }) => {
+          {({ errors, register }) => {
+            const error = get(errors, path);
             return (
               <>
                 <FormLabel htmlFor={path}>
@@ -267,6 +268,9 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   disabled={!isEnabled}
                   role="search"
                   aria-label="Search"
+                  error={Boolean(error)}
+                  aria-describedby={`${path}-error`}
+                  onBlur={updateCallback}
                 />
                 {labelTextComponent && (
                   <span id={`${path}-label`} style={{ display: 'none' }}>

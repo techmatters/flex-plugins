@@ -39,7 +39,7 @@ import {
   isFailureExternalRecordingInfo,
   shouldGetExternalRecordingInfo,
 } from './getExternalRecordingInfo';
-import { SearchParams } from '../states/search/types';
+import { GeneralizedSearchParams, SearchParams } from '../states/search/types';
 import { ContactDraftChanges } from '../states/contacts/existingContacts';
 import { newContactState } from '../states/contacts/contactState';
 import { ApiError, FetchOptions } from './fetchApi';
@@ -80,7 +80,7 @@ export async function generalizedSearch({
   limit,
   offset,
 }: {
-  searchParameters: SearchParams;
+  searchParameters: GeneralizedSearchParams;
   limit: number;
   offset: number;
 }): Promise<{

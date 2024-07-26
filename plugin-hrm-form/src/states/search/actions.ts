@@ -19,7 +19,7 @@ import { Dispatch } from 'redux';
 import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
 import * as t from './types';
-import { SearchParams } from './types';
+import { GeneralizedSearchParams, SearchParams } from './types';
 import {
   searchContacts as searchContactsApiCall,
   generalizedSearch as generalizedContactsSearchApi,
@@ -95,6 +95,14 @@ export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string, cont
   }
 };
 
+const pickGeneralizedSearchParams = (searchParams: SearchParams): GeneralizedSearchParams => ({
+  ...searchParams,
+  counselor: typeof searchParams.counselor === 'string' ? searchParams.counselor : searchParams.counselor.value,
+  helpline: typeof searchParams.helpline === 'string' ? searchParams.helpline : searchParams.helpline.value,
+  dateFrom: searchParams.dateFrom ? formatISO(startOfDay(parseISO(searchParams.dateFrom))) : searchParams.dateFrom,
+  dateTo: searchParams.dateTo ? formatISO(startOfDay(parseISO(searchParams.dateTo))) : searchParams.dateTo,
+});
+
 export const generalizedSearchContacts = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
   searchParams: SearchParams,
   limit: number,
@@ -104,14 +112,7 @@ export const generalizedSearchContacts = (dispatch: Dispatch<any>) => (taskId: s
   try {
     dispatch({ type: t.SEARCH_CONTACTS_REQUEST, taskId, context });
 
-    const { dateFrom, dateTo, ...rest } = searchParams ?? {};
-    const searchParamsToSubmit: SearchParams = rest;
-    if (dateFrom) {
-      searchParamsToSubmit.dateFrom = formatISO(startOfDay(parseISO(dateFrom)));
-    }
-    if (dateTo) {
-      searchParamsToSubmit.dateTo = formatISO(endOfDay(parseISO(dateTo)));
-    }
+    const searchParamsToSubmit = pickGeneralizedSearchParams(searchParams);
 
     const searchResultRaw = await generalizedContactsSearchApi({
       searchParameters: searchParamsToSubmit,
@@ -178,14 +179,7 @@ export const generalizedSearchCases = (dispatch: Dispatch<any>) => (taskId: stri
   try {
     dispatch({ type: t.SEARCH_CASES_REQUEST, taskId, context });
 
-    const { dateFrom, dateTo, ...rest } = searchParams ?? {};
-    const searchParamsToSubmit: SearchParams = rest;
-    if (dateFrom) {
-      searchParamsToSubmit.dateFrom = formatISO(startOfDay(parseISO(dateFrom)));
-    }
-    if (dateTo) {
-      searchParamsToSubmit.dateTo = formatISO(endOfDay(parseISO(dateTo)));
-    }
+    const searchParamsToSubmit = pickGeneralizedSearchParams(searchParams);
 
     const searchResult = await generalizedCasesSearchApi({ searchParameters: searchParamsToSubmit, limit, offset });
 

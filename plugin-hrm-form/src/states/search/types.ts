@@ -53,6 +53,10 @@ export type SearchParams = Partial<SearchFormValues> & {
   taskSid?: string;
 };
 
+export type GeneralizedSearchParams = {
+  [K in keyof SearchParams]: SearchParams[K] extends { value: infer U } ? U : SearchParams[K];
+};
+
 export type DetailedSearchContactsResult = {
   count: number;
   contacts: Contact[];

@@ -56,28 +56,20 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
   const countString = (subroute, casesCount: number, contactsCount: number) => {
     if (subroute === 'case-results') {
       return casesCount === 1 ? (
-        <>
-          <Template code="SearchResults-Case" />
-          .&nbsp;
-        </>
+        <Template code="SearchResults-Case" />
       ) : (
         <>
           {casesCount}
           <Template code="SearchResults-Cases" />
-          .&nbsp;
         </>
       );
     }
     return contactsCount === 1 ? (
-      <>
-        <Template code="SearchResults-Contact" />
-        .&nbsp;
-      </>
+      <Template code="SearchResults-Contact" />
     ) : (
       <>
         {contactsCount}
         <Template code="SearchResults-Contacts" />
-        .&nbsp;
       </>
     );
   };
@@ -108,58 +100,36 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
     currentContext = agentFormQuery;
   }
 
+  const ContextItem = ({ label, value }) => {
+    if (!value) return null;
+
+    const formattedValue = enableGeneralizedSearch || !transformDate ? value : transformDate(value);
+    return (
+      <>
+        <Template code={`SearchResults-${label}`} /> <Bold>{formattedValue}.&nbsp;</Bold>
+      </>
+    );
+  };
+
   return (
     <FontOpenSans>
       <span data-testid="SearchResultsCount">{countString(subroute, casesCount, contactsCount)}</span>
-      {currentContext?.firstName && (
+      <ContextItem label="FirstName" value={currentContext?.firstName} />
+      <ContextItem label="LastName" value={currentContext?.lastName} />
+      <ContextItem label="PhoneNumber" value={currentContext?.phoneNumber} />
+      <ContextItem label="Email" value={currentContext?.email} />
+      {enableGeneralizedSearch ? (
         <>
-          <Template code="SearchResults-FirstName" /> <Bold>{currentContext?.firstName}.&nbsp;</Bold>
-        </>
-      )}
-      {currentContext?.lastName && (
-        <>
-          <Template code="SearchResults-LastName" /> <Bold>{currentContext?.lastName}.&nbsp;</Bold>
-        </>
-      )}
-      {currentContext?.phoneNumber && (
-        <>
-          <Template code="SearchResults-PhoneNumber" /> <Bold>{currentContext?.phoneNumber}.&nbsp;</Bold>
-        </>
-      )}
-      {/* TODO: add this conditional logic after legacy search is removed. Also refactor count logic */}
-      {/* {enableGeneralizedSearch ? (
-        <>
+          <Template code="SearchResults-For" />
           &nbsp;
-          <Template code="SearchResults-For" /> <Bold>&quot;{currentContext?.searchTerm}&quot;. </Bold>
         </>
       ) : (
-        <>. </>
-      )} */}
+        <>.&nbsp;</>
+      )}
+      {currentContext?.searchTerm && <Bold>&quot;{currentContext?.searchTerm}&quot;.&nbsp;</Bold>}
       {counselorNameString(currentContext?.counselor, counselorsHash)}
-      {currentContext?.dateFrom && (
-        <>
-          <Template code="SearchResults-DateFrom" />
-          &nbsp;
-          <Bold>
-            {enableGeneralizedSearch && currentContext?.dateFrom
-              ? currentContext?.dateFrom
-              : transformDate(currentContext?.dateFrom)}
-            .&nbsp;
-          </Bold>
-        </>
-      )}
-      {currentContext?.dateTo && (
-        <>
-          <Template code="SearchResults-DateTo" />
-          &nbsp;
-          <Bold>
-            {enableGeneralizedSearch && currentContext?.dateTo
-              ? currentContext?.dateTo
-              : transformDate(currentContext?.dateTo)}
-            .&nbsp;
-          </Bold>
-        </>
-      )}
+      <ContextItem label="DateFrom" value={currentContext?.dateFrom} />
+      <ContextItem label="DateTo" value={currentContext?.dateTo} />
     </FontOpenSans>
   );
 };
