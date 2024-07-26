@@ -295,17 +295,16 @@ const ContactDetailsHome: React.FC<Props> = function ({
     if (featureFlags.enable_case_merging) {
       return (
         <>
-          {caseId
-            ? addedToCaseBanner()
-            : showAddToCaseButton && (
-                <Box display="flex" justifyContent="flex-end" marginBottom="4px">
-                  <AddCaseButton
-                    position="top"
-                    handleNewCaseType={handleOpenNewCase}
-                    handleExistingCaseType={openSearchModal}
-                  />
-                </Box>
-              )}
+          {caseId && addedToCaseBanner()}
+          {showAddToCaseButton && (
+            <Box display="flex" justifyContent="flex-end" marginBottom="4px">
+              <AddCaseButton
+                position="top"
+                handleNewCaseType={handleOpenNewCase}
+                handleExistingCaseType={openSearchModal}
+              />
+            </Box>
+          )}
 
           {showRemovedFromCaseBanner && (
             <ContactRemovedFromCaseBanner
