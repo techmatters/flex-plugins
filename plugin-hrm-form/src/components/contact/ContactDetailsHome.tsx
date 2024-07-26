@@ -117,7 +117,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   contactId,
   detailsExpanded,
   showActionIcons = false,
-  handleOpenConnectDialog,
+  handleOpenConnectDialog = () => null,
   definitionVersions,
   counselorsHash,
   savedContact,
@@ -508,11 +508,6 @@ const ContactDetailsHome: React.FC<Props> = function ({
 };
 
 ContactDetailsHome.displayName = 'Details';
-
-ContactDetailsHome.defaultProps = {
-  handleOpenConnectDialog: () => null,
-  showActionIcons: false,
-};
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
   const currentRoute = getCurrentTopmostRouteForTask(state[namespace].routing, ownProps.task.taskSid);
