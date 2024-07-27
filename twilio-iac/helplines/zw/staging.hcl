@@ -10,8 +10,8 @@ locals {
 
 
     flow_vars = {
-        widget_from          = "Childline Zimbabwe"
-        chat_blocked_message = "Hi, you've been blocked from accessing Childline services and we are not able to read or receive further messages from you."
+      widget_from          = "Childline Zimbabwe"
+      chat_blocked_message = "Hi, you've been blocked from accessing Childline services and we are not able to read or receive further messages from you."
     }
 
     channels = {
@@ -21,6 +21,7 @@ locals {
         templatefile     = "/app/twilio-iac/helplines/zw/templates/studio-flows/messaging-greeting-message-blocking.tftpl"
         channel_flow_vars = {
           chat_greeting_message = "Thank you for contacting Childline Zimbabwe, a counsellor will be with you shortly. If this is an emergency or you wait longer than 30 min, we recommend you call us for free at 116."
+
         }
         chatbot_unique_names = []
       },
@@ -32,10 +33,13 @@ locals {
         chatbot_unique_names = []
       },
       voice : {
-        channel_type         = "voice"
-        contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/zw/templates/studio-flows/voice-ac.tftpl"
-        channel_flow_vars    = {}
+        channel_type     = "voice"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/zw/templates/studio-flows/voice-ac.tftpl"
+        channel_flow_vars = {
+          voice_ivr_language        = "en-US",
+          voice_ivr_blocked_message = "Hi, you've been blocked from accessing Childline services and we are not able to receive further calls from you."
+        }
         chatbot_unique_names = []
       }
     }
