@@ -542,8 +542,8 @@ FormSearchInput.displayName = 'FormSearchInput';
 type DateRangeSpacerProps = { width?: number };
 export const DateRangeSpacer = styled('span')<DateRangeSpacerProps>`
   padding-top: 25px;
-  margin: 20px;
-  display: ${({ width }) => (width > 440 ? 'block' : 'none')};
+  margin: 15px;
+  display: ${({ width }) => (width > 480 ? 'block' : 'none')};
 `;
 
 type CategoryCheckboxProps = { disabled: boolean };
