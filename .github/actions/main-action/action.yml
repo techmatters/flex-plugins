@@ -146,9 +146,9 @@ runs:
       - name: Update deployment matrix
         uses: ./.github/actions/deployment-matrix
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          aws-access-key-id: ${{ inputs.aws-access-key-id }}
+          aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+          aws-region: ${{ inputs.aws-region }}
           identifier: ${{ inputs.helpline-id }}
           service_repo: 'flex-plugins'
           environment: ${{ inputs.environment}}
