@@ -239,16 +239,6 @@ jobs:
         run: |
           CF_DISTRO=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].DomainName}[?origin=='assets-${{ inputs.environment }}.tl.techmatters.org.s3-website.us-east-1.amazonaws.com'].id" --output text)
           aws cloudfront create-invalidation --distribution-id $CF_DISTRO --paths /webchat/${{ steps.helpline_code.outputs.lowercase }}/*
-      # Update deployment matrix with script and ssm parameters
-      - name: Update deployment matrix
-        uses: ./.github/actions/deployment-matrix
-        with:
-          identifier: ${{ inputs.helpline-code }}
-          service_repo: 'webchat'
-          environment: ${{ inputs.environment}}
-          version_tag: ${{ github.ref_name }}
-          GOOGLE_SHEETS_CREDENTIALS: ${{ env.GOOGLE_SHEETS_CREDENTIALS }}
-          GOOGLE_SHEET_ID: ${{ env.GOOGLE_SHEET_ID }}
       # Send Slack notifying success
       - name: Slack Aselo channel
         id: slack
@@ -259,3 +249,14 @@ jobs:
           slack-message: "`[WEBCHAT]` Deployment to `${{inputs.helpline_code}}-${{inputs.environment}}` of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed using workflow '${{ github.workflow }}' with SHA ${{ github.sha }} :rocket:."
         env:
           SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+      # Update deployment matrix with script and ssm parameters
+      - name: Update deployment matrix
+        uses: ./.github/actions/deployment-matrix
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          identifier: ${{ inputs.helpline-code }}
+          service_repo: 'webchat'
+          environment: ${{ inputs.environment}}
+          version_tag: ${{ github.ref_name }}

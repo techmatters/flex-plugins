@@ -52,9 +52,9 @@ def main():
     current_time = datetime.now().strftime("%H:%M:%S")
 
     service_repo = os.getenv('SERVICE_REPO')
-    helpline = os.getenv('HELPLINE_CODE') 
+    helpline = os.getenv('IDENTIFIER') 
     environment = os.getenv('ENVIRONMENT')
-    version_tag = os.getenv('GITHUB_REF_NAME')
+    version_tag = os.getenv('VERSION_TAG')
 
     print("Environment variables loaded successfully.")
 

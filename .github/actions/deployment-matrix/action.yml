@@ -72,13 +72,11 @@ runs:
     - name: Add deployment to Google Sheets to update matrix
       shell: bash
       env:
-        identifier: ${{ inputs.helpline_code }}
-        environment: ${{ inputs.environment }}
-        service_repo: ${{ inputs.service_repo }}
-        version_tag: ${{ github.ref_name }}
+        IDENTIFIER: ${{ inputs.helpline_code }}
+        ENVIRONMENT: ${{ inputs.environment }}
+        SERVICE_REPO: ${{ inputs.service_repo }}
+        VERSION_TAG: ${{ github.ref_name }}
         GOOGLE_SHEETS_CREDENTIALS: ${{ env.GOOGLE_SHEETS_CREDENTIALS }}
         GOOGLE_SHEET_ID: ${{ env.GOOGLE_SHEET_ID }}
-
       run: |
-        echo "${GOOGLE_SHEETS_CREDENTIALS}" > credentials.json
         python update_matrix.py

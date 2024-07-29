@@ -73,16 +73,6 @@ runs:
         with:
           ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
           env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
-      - name: Set Google Sheets credentials
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
-        with:
-          ssm_parameter: "GOOGLE_SHEETS_CREDENTIALS"
-          env_variable_name: "GOOGLE_SHEETS_CREDENTIALS"
-      - name: Set Google Sheets ID
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
-        with:
-          ssm_parameter: "CD_GOOGLE_SHEET_ID"
-          env_variable_name: "GOOGLE_SHEET_ID"
       # Create temporal files for the release
       - name: Create appConfig.js
         run: cp ./public/appConfig.template.deploy.js ./public/appConfig.js
@@ -156,9 +146,10 @@ runs:
       - name: Update deployment matrix
         uses: ./.github/actions/deployment-matrix
         with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           identifier: ${{ inputs.helpline-id }}
           service_repo: 'flex-plugins'
           environment: ${{ inputs.environment}}
           version_tag: ${{ github.ref_name }}
-          GOOGLE_SHEETS_CREDENTIALS: ${{ env.GOOGLE_SHEETS_CREDENTIALS }}
-          GOOGLE_SHEET_ID: ${{ env.GOOGLE_SHEET_ID }}
