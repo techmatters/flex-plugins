@@ -78,5 +78,6 @@ runs:
         VERSION_TAG: ${{ github.ref_name }}
         GOOGLE_SHEETS_CREDENTIALS: ${{ env.GOOGLE_SHEETS_CREDENTIALS }}
         GOOGLE_SHEET_ID: ${{ env.GOOGLE_SHEET_ID }}
+      working-directory: ${{ github.action_path }}
       run: |
         python update_matrix.py
