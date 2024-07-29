@@ -72,7 +72,7 @@ runs:
     - name: Add deployment to Google Sheets to update matrix
       shell: bash
       env:
-        IDENTIFIER: ${{ inputs.helpline_code }}
+        IDENTIFIER: ${{ inputs.identifier }}
         ENVIRONMENT: ${{ inputs.environment }}
         SERVICE_REPO: ${{ inputs.service_repo }}
         VERSION_TAG: ${{ github.ref_name }}
