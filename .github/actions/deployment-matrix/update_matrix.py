@@ -52,13 +52,13 @@ def main():
     current_time = datetime.now().strftime("%H:%M:%S")
 
     service_repo = os.getenv('SERVICE_REPO')
-    helpline = os.getenv('IDENTIFIER') 
+    identifier = os.getenv('IDENTIFIER') 
     environment = os.getenv('ENVIRONMENT')
     version_tag = os.getenv('VERSION_TAG')
 
     print("Environment variables loaded successfully.")
 
-    new_row = [current_date, current_time, service_repo, helpline, environment, version_tag]
+    new_row = [current_date, current_time, service_repo, identifier, environment, version_tag]
     append_row = sheet.append_row(new_row)
     print("Row added to Deploys sheet.")
 
