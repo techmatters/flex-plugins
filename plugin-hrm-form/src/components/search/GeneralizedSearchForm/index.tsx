@@ -109,7 +109,7 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
       </FontOpenSans>,
       <div key="counselor">{itemsWithMargin[1]}</div>,
       <TwoColumnLayoutResponsive key="dateRange" width={containerWidth}>
-        <ColumnarBlock>{itemsWithMargin[2]}</ColumnarBlock>
+        <ColumnarBlock style={{ paddingRight: '5px'}}>{itemsWithMargin[2]}</ColumnarBlock>
         <DateRangeSpacer width={containerWidth}>-</DateRangeSpacer>
         <ColumnarBlock>{itemsWithMargin[3]}</ColumnarBlock>
       </TwoColumnLayoutResponsive>,
