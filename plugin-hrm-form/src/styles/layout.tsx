@@ -159,7 +159,7 @@ export const TwoColumnLayoutResponsive = styled(TwoColumnLayout)<TwoColumnLayout
   flex-wrap: wrap;
   align-self: flex-start;
   float: inline-start;
-  width: ${({ width }) => width};
+  max-width: ${({ width }) => width};
 `;
 TwoColumnLayoutResponsive.displayName = 'TwoColumnLayoutResponsive';
 
