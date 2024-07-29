@@ -128,17 +128,6 @@ jobs:
           ssm_parameter: "/global/google/recaptcha/site_key"
           env_variable_name: "RECAPTCHA_KEY"
 
-      - name: Set Google Sheets credentials
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
-        with:
-          ssm_parameter: "GOOGLE_SHEETS_CREDENTIALS"
-          env_variable_name: "GOOGLE_SHEETS_CREDENTIALS"
-      - name: Set Google Sheets ID
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
-        with:
-          ssm_parameter: "CD_GOOGLE_SHEET_ID"
-          env_variable_name: "GOOGLE_SHEET_ID"
-
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
