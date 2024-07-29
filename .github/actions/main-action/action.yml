@@ -142,3 +142,14 @@ runs:
           slack-message: "`[FLEX]` Deployment to `${{ inputs.helpline-id }}` of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed using workflow '${{ github.workflow }}' with SHA ${{ github.sha }} :rocket:."
         env:
           SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+      # Update deployment matrix
+      - name: Update deployment matrix
+        uses: ./.github/actions/deployment-matrix
+        working-directory: ./.github/actions/deployment-matrix
+        with:
+          identifier: ${{ inputs.helpline-id }}
+          service_repo: 'flex-plugins'
+          environment: ${{ inputs.environment}}
+          version_tag: ${{ github.ref_name }}
+          GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
