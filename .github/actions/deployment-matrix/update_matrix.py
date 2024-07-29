@@ -58,7 +58,7 @@ def main():
 
     print("Environment variables loaded successfully.")
 
-    new_row = [current_date, current_time, service_repo, identifier, environment, version_tag]
+    new_row = [current_date, current_time, identifier, environment, service_repo, version_tag]
     append_row = sheet.append_row(new_row)
     print("Row added to Deploys sheet.")
 

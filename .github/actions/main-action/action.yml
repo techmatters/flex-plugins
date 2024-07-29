@@ -33,6 +33,12 @@ inputs:
   helpline-id:
     description: 'Identifies the helpline / environment for slack message'
     default: '??'
+  helpline_code:
+    description: 'Identifies the helpline / environment for slack message'
+    default: '??'
+  environment:
+    description: 'Identifies the environment for slack message'
+    default: '??'
   send-slack-message:
     description: 'Specifies if should send a Slack message at the end of successful run. Defaults to true'
     required: false
@@ -74,7 +80,6 @@ runs:
           ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
           env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
 
-
       # Update deployment matrix with script and ssm parameters
       - name: Update deployment matrix
         uses: ./.github/actions/deployment-matrix
@@ -82,11 +87,10 @@ runs:
           aws-access-key-id: ${{ inputs.aws-access-key-id }}
           aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
           aws-region: ${{ inputs.aws-region }}
-          identifier: ${{ inputs.helpline-id }}
-          service_repo: 'flex-plugins'
+          identifier: ${{ inputs.helpline_code }}
           environment: ${{ inputs.environment}}
+          service_repo: 'flex-plugins'
           version_tag: ${{ github.ref_name }}
-
 
       # Create temporal files for the release
       - name: Create appConfig.js
@@ -164,7 +168,7 @@ runs:
           aws-access-key-id: ${{ inputs.aws-access-key-id }}
           aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
           aws-region: ${{ inputs.aws-region }}
-          identifier: ${{ inputs.helpline-id }}
-          service_repo: 'flex-plugins'
+          identifier: ${{ inputs.helpline_code }}
           environment: ${{ inputs.environment}}
+          service_repo: 'flex-plugins'
           version_tag: ${{ github.ref_name }}
