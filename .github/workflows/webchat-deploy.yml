@@ -238,7 +238,7 @@ jobs:
           slack-message: "`[WEBCHAT]` Deployment to `${{inputs.helpline_code}}-${{inputs.environment}}` of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed using workflow '${{ github.workflow }}' with SHA ${{ github.sha }} :rocket:."
         env:
           SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
-      # Update deployment matrix with script and ssm parameters
+      # Update deployment matrix 
       - name: Update deployment matrix
         uses: ./.github/actions/deployment-matrix
         with:
