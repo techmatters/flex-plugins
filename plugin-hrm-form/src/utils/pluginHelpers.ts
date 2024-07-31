@@ -28,6 +28,9 @@ const enCAMessages = require(`../translations/en-CA/messages.json`);
 const enINTranslation = require(`../translations/en-IN/flexUI.json`);
 const enINMessages = require(`../translations/en-IN/messages.json`);
 
+const enJMTranslation = require(`../translations/en-JM/flexUI.json`);
+const enJMMessages = require(`../translations/en-US/messages.json`);
+
 const enMTTranslation = require(`../translations/en-MT/flexUI.json`);
 const enMTMessages = require(`../translations/en-MT/messages.json`);
 
@@ -59,6 +62,7 @@ const bundledTranslations = {
   [defaultLanguage]: defaultTranslation,
   'en-CA': enCATranslation,
   'en-IN': enINTranslation,
+  'en-JM': enJMTranslation,
   'en-MT': enMTTranslation,
   'en-NZ': enNZTranslation,
   'en-SG': enSGTranslation,
@@ -74,6 +78,7 @@ const bundledMessages = {
   [defaultLanguage]: defaultMessages,
   'en-CA': enCAMessages,
   'en-IN': enINMessages,
+  'en-JM': enJMMessages,
   'en-MT': enMTMessages,
   'en-NZ': enNZMessages,
   'en-SG': enSGMessages,
