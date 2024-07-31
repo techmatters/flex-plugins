@@ -11,6 +11,7 @@
         "feature_flags": {
             "enable_lex": true       
         },
+        "helplineLanguage": "us-JM",
         "permissionConfig": "jm"
     },
     "ui_attributes": {
