@@ -13,6 +13,7 @@ ACTIONS = {
     'PLAN': 'plan',
     'SHOW': 'show',
     'SHOW_REMOTE': 'show_remote',
+    'SHOW_FF': 'show_ff',
     'SHOW_LOCAL': 'show_local',
     'SHOW_NEW': 'show_new',
     'SHOW_DIFF': 'show_diff',
@@ -43,6 +44,10 @@ ACTION_CONFIGS: dict[str, ActionConfigsDict] = {
         'json_available': True,
     },
     ACTIONS['SHOW_REMOTE']: {
+        'json_available': True,
+        'skip_local_config': True,
+    },
+    ACTIONS['SHOW_FF']: {
         'json_available': True,
         'skip_local_config': True,
     },
