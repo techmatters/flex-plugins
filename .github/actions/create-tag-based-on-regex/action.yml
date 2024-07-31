@@ -1,0 +1,95 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+name: Create tag based on regex
+inputs:
+  search_text:
+    description: Search text
+    required: true
+    type: string
+
+  regex:
+    description: Regex to match
+    required: true
+    type: string
+
+  tag_prefix:
+    description: Tag prefix
+    required: false
+    type: string
+    default: 'qa/'
+
+outputs:
+  tag_created:
+    description: 'Indicates whether a tag was created'
+    value: ${{ jobs.create-tags-based-on-regex.outputs.tag_created }}
+
+jobs:
+  create-tags-based-on-regex:
+    runs-on: ubuntu-latest
+    outputs:
+      tag_created: ${{ steps.create-or-replace-tag.outputs.tag_created }}
+
+    steps:
+      - name: Create or replace tag based on regex
+        id: create-or-replace-tag
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const core = require('@actions/core');
+            const search_text = "${{ inputs.search_text }}";
+            const regexString = "${{ inputs.regex }}";
+            const tagPrefix = "${{ inputs.tag_prefix }}";
+
+            const regex = new RegExp(regexString);
+
+            let tagName;
+            const match = search_text.match(regex);
+
+            if (match) {
+              tagName = `${tagPrefix}${match[0]}`;
+            } else {
+              console.log("No matching pattern found in the search text. Skipping this step.");
+              core.setOutput('tag_created', false);
+              return;
+            }
+
+            try {
+              await github.rest.git.getRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `tags/${tagName}`
+              });
+
+              console.log(`Tag ${tagName} already exists. Deleting it before recreate.`);
+              await github.rest.git.deleteRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `tags/${tagName}`
+              });
+            } catch (error) {
+              if (error.status !== 404) {
+                throw error;
+              }
+            }
+
+            console.log(`Creating new tag: ${tagName}`);
+            await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/${tagName}`,
+              sha: context.sha
+            });
+
+            core.setOutput('tag_created', true);
