@@ -122,7 +122,7 @@ def show_remote(service_config: ServiceConfiguration):
 
 def show_ff(service_config: ServiceConfiguration):
     print_text("Remote:")
-    print_json(service_config.remote_state.attributes.feature_flags)
+    print_json(service_config.remote_state['attributes']['features_flags'])
 
 
 def show_local(service_config: ServiceConfiguration):
