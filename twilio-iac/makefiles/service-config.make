@@ -6,8 +6,11 @@ service-config-show: ## Show the current remote service configuration, local ser
 service-config-show-remote: ## Show the current remote service configuration
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/python_tools/manageServiceConfig.py show_remote
 
-service-config-show_flags: ## Show the current remote service configuration
+service-config-show-flags: ## Show the current remote service configuration
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/python_tools/manageServiceConfig.py show_flags
+
+service-config-show-flags-by-account: ## Show the current remote service configuration
+	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/python_tools/manageServiceConfig.py show_flags_by_account
 
 service-config-plan: ## Show the plan to sync the local service configuration with the remote service configuration
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/python_tools/manageServiceConfig.py plan

@@ -14,6 +14,7 @@ ACTIONS = {
     'SHOW': 'show',
     'SHOW_REMOTE': 'show_remote',
     'show_flags': 'show_flags',
+    'show_flags_by_account': 'show_flags_by_account',
     'SHOW_LOCAL': 'show_local',
     'SHOW_NEW': 'show_new',
     'SHOW_DIFF': 'show_diff',
@@ -50,6 +51,10 @@ ACTION_CONFIGS: dict[str, ActionConfigsDict] = {
     ACTIONS['show_flags']: {
         'json_available': True,
         'skip_local_config': True,
+    },
+    ACTIONS['show_flags_by_account']: {
+        # in matrix or csv format
+        'json_available': True,
     },
     ACTIONS['SHOW_LOCAL']: {
         'json_available': True,
