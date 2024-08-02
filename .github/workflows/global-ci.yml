@@ -14,7 +14,7 @@
 
 name: Flex Plugins CI
 
-on: [push]
+# on: [push]
 
 jobs:
   flex-ci:
