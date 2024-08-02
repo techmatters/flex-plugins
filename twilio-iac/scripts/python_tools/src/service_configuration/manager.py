@@ -127,19 +127,21 @@ def show_flags(service_config: ServiceConfiguration):
     print_json(service_config.config_flags)
 
 def show_flags_by_account(service_config: ServiceConfiguration):
-    matrix = []
+    # matrix = []
         # Assuming remote_state contains account information
     remote_state = service_config.remote_state
+
+    print(remote_state.items())
     
-    for account_id, account_info in remote_state.items():
-        print(f"Account {account_id}:", account_info)
-        account_data = {
-            "account_id": account_id,
-            "feature_flags": account_info.get("attributes", {}).get("feature_flags", {}),
-            "config_flags": account_info.get("attributes", {}).get("config_flags", {})
-        }
-        matrix.append(account_data)
-    matrix
+    # for account_id, account_info in remote_state.items():
+    #     print(f"Index Account {account_id}:", account_info, "\n")
+    #     account_data = {
+    #         "account_id": account_id,
+    #         "feature_flags": account_info.get("attributes", {}).get("feature_flags", {}),
+    #         "config_flags": account_info.get("attributes", {}).get("config_flags", {})
+    #     }
+    #     matrix.append(account_data)
+    # matrix
     # print_text("Remote Flags Matrix:")
     # for account_data in matrix:
     #     print(f"Account {account_data['account_id']}:")
