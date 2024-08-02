@@ -123,15 +123,18 @@ def show_remote(service_config: ServiceConfiguration):
 
 def show_flags(service_config: ServiceConfiguration):
     print_text("Remote Flags:")
+    print("Feature Flags:", service_config.feature_flags)
+    print("Config Flags:", service_config.config_flags)
     print_json(service_config.feature_flags)
     print_json(service_config.config_flags)
 
 def show_flags_by_account(service_config: ServiceConfiguration):
     # matrix = []
         # Assuming remote_state contains account information
-    remote_state = service_config.remote_state
+    attributes = service_config.remote_state.get("attributes", {})
+    print(attributes)
 
-    print(remote_state.items())
+    # print(remote_state.items())
     
     # for account_id, account_info in remote_state.items():
     #     print(f"Index Account {account_id}:", account_info, "\n")
