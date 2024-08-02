@@ -121,10 +121,37 @@ def show_remote(service_config: ServiceConfiguration):
     print_text("Remote:")
     print_json(service_config.remote_state)
 
+def parse_flags(output):
+    matrix = {}
+    current_env = ""
+    current_helpline = ""
+    
+    for line in output.split('\n'):
+        if line.startswith("Environment:"):
+            current_env = line.split(":")[1].strip()
+        elif line.startswith("Helpline Code:"):
+            current_helpline = line.split(":")[1].strip()
+        elif line.startswith("Feature Flags:"):
+            feature_flags = eval(line.split(":", 1)[1].strip())
+        elif line.startswith("Config Flags:"):
+            config_flags = eval(line.split(":", 1)[1].strip())
+            
+            # Combine feature flags and config flags
+            combined_flags = dict(feature_flags)
+            combined_flags.update(config_flags)
+            
+            # Add to matrix
+            matrix[f"{current_helpline} {current_env}"] = combined_flags
+    
+    return matrix
+
 def show_flags(service_config: ServiceConfiguration):
-    print_text("Remote Flags:")
-    print("Feature Flags:", service_config.feature_flags)
-    print("Config Flags:", service_config.config_flags)
+    print_text("Show_flags Flags:")
+    output = service_config.remote_state
+    parsed_flags = parse_flags(output)
+    print('Feature Flags and Config Flags:', parsed_flags)
+    for key, flags in parsed_flags.items():
+        print(f"{key}: {flags}")
 
 def show_flags_by_account(service_config: ServiceConfiguration):
     # matrix = []
