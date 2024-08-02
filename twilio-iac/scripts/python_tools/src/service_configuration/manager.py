@@ -122,6 +122,10 @@ def show_remote(service_config: ServiceConfiguration):
     print_json(service_config.remote_state)
 
 def parse_flags(output):
+    if isinstance(output, dict):
+        # Convert dictionary to string format
+        output = "\n".join([f"{key}: {value}" for key, value in output.items()])
+    
     matrix = {}
     current_env = ""
     current_helpline = ""
