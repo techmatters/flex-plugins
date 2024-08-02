@@ -122,6 +122,7 @@ def show_remote(service_config: ServiceConfiguration):
     print_json(service_config.remote_state)
 
 def parse_flags(output):
+    print("Parsing flags start", output)
     if isinstance(output, dict):
         # Convert dictionary to string format
         output = "\n".join([f"{key}: {value}" for key, value in output.items()])
@@ -132,31 +133,31 @@ def parse_flags(output):
     
     print("Debug: Output received:", output)
     
-    for line in output.split('\n'):
-        print("Debug: Processing line:", line)
-        if line.startswith("Environment:"):
-            current_env = line.split(":")[1].strip()
-            print("Debug: Current environment set to:", current_env)
-        elif line.startswith("Helpline Code:"):
-            current_helpline = line.split(":")[1].strip()
-            print("Debug: Current helpline code set to:", current_helpline)
-        elif line.startswith("Feature Flags:"):
-            feature_flags = eval(line.split(":", 1)[1].strip())
-            print("Debug: Feature flags set to:", feature_flags)
-        elif line.startswith("Config Flags:"):
-            config_flags = eval(line.split(":", 1)[1].strip())
-            print("Debug: Config flags set to:", config_flags)
+    # for line in output.split('\n'):
+    #     print("Debug: Processing line:", line)
+    #     if line.startswith("Environment:"):
+    #         current_env = line.split(":")[1].strip()
+    #         print("Debug: Current environment set to:", current_env)
+    #     elif line.startswith("Helpline Code:"):
+    #         current_helpline = line.split(":")[1].strip()
+    #         print("Debug: Current helpline code set to:", current_helpline)
+    #     elif line.startswith("Feature Flags:"):
+    #         feature_flags = eval(line.split(":", 1)[1].strip())
+    #         print("Debug: Feature flags set to:", feature_flags)
+    #     elif line.startswith("Config Flags:"):
+    #         config_flags = eval(line.split(":", 1)[1].strip())
+    #         print("Debug: Config flags set to:", config_flags)
             
-            # Combine feature flags and config flags
-            combined_flags = dict(feature_flags)
-            combined_flags.update(config_flags)
+    #         # Combine feature flags and config flags
+    #         combined_flags = dict(feature_flags)
+    #         combined_flags.update(config_flags)
             
-            # Add to matrix
-            matrix[f"{current_helpline} {current_env}"] = combined_flags
-            print("Debug: Combined flags added to matrix:", combined_flags)
+    #         # Add to matrix
+    #         matrix[f"{current_helpline} {current_env}"] = combined_flags
+    #         print("Debug: Combined flags added to matrix:", combined_flags)
     
-    print("Debug: Final matrix:", matrix)
-    return matrix
+    # print("Debug: Final matrix:", matrix)
+    # return matrix
 
 def show_flags(service_config: ServiceConfiguration):
     output = {**service_config.feature_flags, **service_config.config_flags}
