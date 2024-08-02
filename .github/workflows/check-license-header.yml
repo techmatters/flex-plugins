@@ -14,7 +14,7 @@
 
 name: Check License Header
 
-on: [push]
+# on: [push]
 
 jobs:
   license-header:

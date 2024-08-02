@@ -130,11 +130,9 @@ def parse_flags(output):
     current_env = ""
     current_helpline = ""
     
-    print("Debug: Starting to parse flags")
     print("Debug: Output received:", output)
     
     for line in output.split('\n'):
-        print("Debug: Processing line:", line)
         if line.startswith("Environment:"):
             current_env = line.split(":")[1].strip()
             print("Debug: Current environment set to:", current_env)
