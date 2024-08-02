@@ -1,3 +1,4 @@
+import csv
 import json
 import os
 import signal
@@ -126,29 +127,21 @@ def show_flags(service_config: ServiceConfiguration):
     print_json(service_config.config_flags)
 
 def show_flags_by_account(service_config: ServiceConfiguration):
-    print_text("Remote Flags:")
-    for account_sid in config.get_account_sids():
-        print_text(f"Account SID: {account_sid}")
-        feature_flags = service_config.feature_flags(account_sid)
-        config_flags = service_config.config_flags(account_sid)
-        print("Feature Flags:", feature_flags)
-        print("Config Flags:", config_flags)
-        flags_matrix = [[key, feature_flags.get(key, ""), config_flags.get(key, "")] for key in set(feature_flags) | set(config_flags)]
-        print("Flags_matrix:", flags_matrix)
-        print_matrix("Print matrix", flags_matrix)
-        print_csv("Print CSV:",flags_matrix)
-
-def print_matrix(matrix):
-    max_lengths = [max(len(str(item)) for item in column) for column in zip(*matrix)]
-    for row in matrix:
-        row_str = "  ".join(f"{item:{length}}" for item, length in zip(row, max_lengths))
-        print(row_str)
-
-def print_csv(matrix):
-    with open('flags.csv', 'w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerows(matrix)
-    print("CSV file 'flags.csv' created.")
+    matrix = []
+    
+    for account_id, account_info in service_config.items():
+        account_data = {
+            "account_id": account_id,
+            "feature_flags": account_info.get("feature_flags", {}),
+            "config_flags": account_info.get("config_flags", {})
+        }
+        matrix.append(account_data)
+    print(matrix)
+    # print_text("Remote Flags Matrix:")
+    # for account_data in matrix:
+    #     print(f"Account {account_data['account_id']}:")
+    #     print_json(account_data["feature_flags"])
+    #     print_json(account_data["config_flags"])
 
 
 def show_local(service_config: ServiceConfiguration):
