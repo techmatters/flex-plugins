@@ -160,7 +160,7 @@ def parse_flags(output):
     return matrix
 
 def show_flags(service_config: ServiceConfiguration):
-    output = service_config.feature_flags + service_config.config_flags
+    output = {**service_config.feature_flags, **service_config.config_flags}
     parsed_flags = parse_flags(output)
     print('Feature Flags and Config Flags:', parsed_flags)
     for key, flags in parsed_flags.items():
