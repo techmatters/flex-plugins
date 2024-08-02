@@ -130,15 +130,23 @@ def parse_flags(output):
     current_env = ""
     current_helpline = ""
     
+    print("Debug: Starting to parse flags")
+    print("Debug: Output received:", output)
+    
     for line in output.split('\n'):
+        print("Debug: Processing line:", line)
         if line.startswith("Environment:"):
             current_env = line.split(":")[1].strip()
+            print("Debug: Current environment set to:", current_env)
         elif line.startswith("Helpline Code:"):
             current_helpline = line.split(":")[1].strip()
+            print("Debug: Current helpline code set to:", current_helpline)
         elif line.startswith("Feature Flags:"):
             feature_flags = eval(line.split(":", 1)[1].strip())
+            print("Debug: Feature flags set to:", feature_flags)
         elif line.startswith("Config Flags:"):
             config_flags = eval(line.split(":", 1)[1].strip())
+            print("Debug: Config flags set to:", config_flags)
             
             # Combine feature flags and config flags
             combined_flags = dict(feature_flags)
@@ -146,11 +154,12 @@ def parse_flags(output):
             
             # Add to matrix
             matrix[f"{current_helpline} {current_env}"] = combined_flags
+            print("Debug: Combined flags added to matrix:", combined_flags)
     
+    print("Debug: Final matrix:", matrix)
     return matrix
 
 def show_flags(service_config: ServiceConfiguration):
-    print_text("Show_flags Flags:")
     output = service_config.remote_state
     parsed_flags = parse_flags(output)
     print('Feature Flags and Config Flags:', parsed_flags)
