@@ -44,6 +44,9 @@ locals {
           welcome_message_url = "https://sg-services-4304.twil.io/welcome_Message.mp3"
           busy_message_url    = "https://sg-services-4304.twil.io/waiting_music_sg.mp3"
           closed_message_url  = "https://sg-services-4304.twil.io/closed_Message.mp3"
+          
+          widget_from           = "Tinkle Friend"
+          voice_ivr_blocked_message  = "Hi, you've been blocked from accessing Tinkle Friend services and we are not able to read or receive further messages from you."
         }
         chatbot_unique_names = []
       }
