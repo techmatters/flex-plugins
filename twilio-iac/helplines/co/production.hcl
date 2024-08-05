@@ -22,6 +22,9 @@ locals {
         contact_identity     = ""
         templatefile         = "/app/twilio-iac/helplines/co/templates/studio-flows/messaging-flow.tftpl"
         channel_flow_vars    = {
+          widget_from           = "Te Guío"
+          chat_greeting_message = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
+          chat_blocked_message = "Lamentablemente el número del cual llamas se encuentra bloqueado en nuestro sistema."
         }
         chatbot_unique_names = []
       },
@@ -30,6 +33,9 @@ locals {
         contact_identity     = "messenger:103538615719253"
         templatefile         = "/app/twilio-iac/helplines/co/templates/studio-flows/messaging-flow.tftpl"
         channel_flow_vars    = {
+          widget_from           = "Te Guío"
+          chat_greeting_message = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
+          chat_blocked_message = "Lamentablemente el número del cual llamas se encuentra bloqueado en nuestro sistema."
         }
         chatbot_unique_names = []
       },
