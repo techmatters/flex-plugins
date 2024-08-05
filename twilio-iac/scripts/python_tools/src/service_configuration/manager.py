@@ -21,9 +21,8 @@ signal.signal(signal.SIGINT, signal_handler)
 
 def main():
     try:
-        if config.argument == 'service_config' and config.action == 'show_flags_by_account':
-            service_config = config.get_service_config(service_config)
-            show_flags_by_account(service_config)
+        if config.action == 'show_flags_by_account':
+            show_flags_by_account()
         elif config.argument == 'service_config':
             run_service_config_action()
         elif config.argument == 'syncer':
@@ -155,7 +154,7 @@ def show_flags(service_config: ServiceConfiguration):
     parsed_flags = parse_flags(output)
     print("show_flags: Parsed flags:", parsed_flags)
 
-def show_flags_by_account(service_config: ServiceConfiguration):
+def show_flags_by_account():
     for account_sid in config.get_account_sids():
         service_config = config.get_service_config(
             account_sid)
