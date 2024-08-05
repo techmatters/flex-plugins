@@ -1,15 +1,13 @@
-import csv
 import json
 import os
 import signal
 from copy import deepcopy
 from pygments import highlight, lexers, formatters
-from scripts.python_tools.src import export_to_sheets
 from termcolor import colored
 from .config import config
 from .remote_syncer import RemoteSyncer
 from .service_configuration import DeepDiff, ServiceConfiguration, get_dot_notation_path, set_nested_key
-
+from . import export_to_sheets
 
 def signal_handler(signal, frame):
     print('\n\nYou pressed Ctrl+C! Cleaning up...')

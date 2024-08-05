@@ -1,6 +1,5 @@
 import gspread
 import json
-from googleapiclient.discovery import build
 from google.oauth2.service_account import Credentials
 from google.auth.exceptions import GoogleAuthError
 from aws.ssm_client import SSMClient
@@ -65,3 +64,5 @@ def export_to_sheets(matrix:dict):
 
   except (GoogleAuthError, gspread.exceptions.GSpreadException) as e:
     raise Exception(f"Error while exporting data to Google Sheets: {e}")
+  
+# export
