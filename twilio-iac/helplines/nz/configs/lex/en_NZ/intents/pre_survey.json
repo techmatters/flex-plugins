@@ -3,21 +3,7 @@
     "description": "Helpline Specific configs/lex/en_NZ/intents Pre Survey Intent Survey intent",
     "sample_utterances": [
       "Incoming webchat contact",
-      "trigger_pre_survey",
-      "hello",
-      "Hello",
-      "No",
-      "Yes",
-      "no",
-      "nope",
-      "yeah",
-      "yes",
-      "yep",
-      "yup",
-      "ya",
-      "accept",
-      "ok",
-      "OK"
+      "trigger_pre_survey"
     ],
     "fulfillment_activity": {
       "type": "ReturnIntent"
