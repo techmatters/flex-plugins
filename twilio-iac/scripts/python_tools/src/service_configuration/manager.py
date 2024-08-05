@@ -123,37 +123,6 @@ def show_remote(service_config: ServiceConfiguration):
     print_text("Remote:")
     print_json(service_config.remote_state)
 
-def parse_flags(output):
-    if isinstance(output, dict):
-        # Convert dictionary to string format
-        output = "\n".join([f"{key}: {value}" for key, value in output.items()])
-    
-    matrix = {}
-    current_env = ""
-    current_helpline = ""
-        
-    for line in output.split("\n"):
-        if "Environment" in line:
-            current_env = line.split(":")[1].strip()
-            matrix[current_env] = {}
-        elif "Helpline Code" in line:
-            current_helpline = line.split(":")[1].strip()
-            matrix[current_env][current_helpline] = {}
-        else:
-            key, value = line.split(":")
-            key = key.strip()
-            value = value.strip()
-            matrix[current_env][current_helpline][key] = value
-    
-    print("Debug: Final matrix:", matrix)
-    return matrix
-
-def show_flags(service_config: ServiceConfiguration):
-    output = {**service_config.feature_flags, **service_config.config_flags}
-    print("show_flags: Output received:", output)
-    parsed_flags = parse_flags(output)
-    print("show_flags: Parsed flags:", parsed_flags)
-
 def show_flags_by_account():
     matrix = {}
     for account_sid in config.get_account_sids():
@@ -163,6 +132,7 @@ def show_flags_by_account():
         flag_output = {**service_config.feature_flags, **service_config.config_flags}
         matrix[account] = flag_output
     print("show_flags_by_account: Matrix:", matrix)
+    return matrix
 
 def show_local(service_config: ServiceConfiguration):
     print_text("Local:")
