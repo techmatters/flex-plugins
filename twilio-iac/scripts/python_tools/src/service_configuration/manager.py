@@ -128,7 +128,7 @@ def show_flags(service_config: ServiceConfiguration):
     print_json(service_config.config_flags)
 
 def show_flags_by_account():
-    from . import export_to_sheets
+    from .. import export_to_sheets
     matrix = {}
     for account_sid in config.get_account_sids():
         service_config = config.get_service_config(
