@@ -124,8 +124,10 @@ def show_remote(service_config: ServiceConfiguration):
     print_json(service_config.remote_state)
 
 def show_flags(service_config: ServiceConfiguration):
-    print_json("Feature Flags:", service_config.feature_flags)
-    print_json("Config Flags:", service_config.config_flags)
+    print_text("Remote Feature Flags:")
+    print_json(service_config.feature_flags)
+    print_text("Remote Config Flags:")
+    print_json(service_config.config_flags)
 
 def show_flags_by_account():
     matrix = {}
