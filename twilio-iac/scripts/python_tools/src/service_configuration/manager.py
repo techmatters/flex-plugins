@@ -152,7 +152,7 @@ def show_flags(service_config: ServiceConfiguration):
     parsed_flags = parse_flags(output)
     print("show_flags: Parsed flags:", parsed_flags)
 
-def show_flags_by_account():
+def show_flags_by_account(service_config: ServiceConfiguration):
     for account_sid in config.get_account_sids():
         service_config = config.get_service_config(
             account_sid)
