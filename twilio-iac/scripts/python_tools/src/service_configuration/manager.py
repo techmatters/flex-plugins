@@ -22,7 +22,8 @@ signal.signal(signal.SIGINT, signal_handler)
 def main():
     try:
         if config.argument == 'service_config' and config.action == 'show_flags_by_account':
-            show_flags_by_account()
+            service_config = config.get_service_config(service_config)
+            show_flags_by_account(service_config)
         elif config.argument == 'service_config':
             run_service_config_action()
         elif config.argument == 'syncer':
