@@ -50,7 +50,6 @@ locals {
       service_sid                      = "ZSbf1bb881cc2e8db613ee6bca0e8e2c29"
       environment_sid                  = "ZE339938daa781b8e21baa45feae0e1afe"
       operating_hours_function_sid     = "ZH5fcc5dee5089c176acd0bd24e7fa873e"
-      send_studio_message_function_sid = "ZH17fe6e2472401c1e5e6565818dfcfb6a"
 
     }
 
