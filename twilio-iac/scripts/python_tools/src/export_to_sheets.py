@@ -1,9 +1,9 @@
 import json
-from google.oauth2.service_account import Credentials
-from google.auth.exceptions import GoogleAuthError
 from aws.ssm_client import SSMClient
 from datetime import datetime
-import gspread
+# from google.oauth2.service_account import Credentials
+# from google.auth.exceptions import GoogleAuthError
+# import gspread
 
 def export_to_sheets(matrix:dict):
   if not matrix:
