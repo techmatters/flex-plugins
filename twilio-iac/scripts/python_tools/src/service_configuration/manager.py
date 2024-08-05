@@ -158,7 +158,9 @@ def show_flags_by_account():
     for account_sid in config.get_account_sids():
         service_config = config.get_service_config(
             account_sid)
-        print('\n',account_sid, {service_config.feature_flags, service_config.config_flags}, '\n')
+        print(service_config)
+        output = {**service_config.feature_flags, **service_config.config_flags}
+        print('\n',account_sid, output)
 
 def show_local(service_config: ServiceConfiguration):
     print_text("Local:")
