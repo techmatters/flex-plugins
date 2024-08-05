@@ -155,12 +155,14 @@ def show_flags(service_config: ServiceConfiguration):
     print("show_flags: Parsed flags:", parsed_flags)
 
 def show_flags_by_account():
+    matrix = {}
     for account_sid in config.get_account_sids():
         service_config = config.get_service_config(
             account_sid)
-        print(service_config)
-        output = {**service_config.feature_flags, **service_config.config_flags}
-        print('\n',account_sid, output)
+        account = f"{service_config.helpline_code}_{service_config.environment}"
+        flag_output = {**service_config.feature_flags, **service_config.config_flags}
+        matrix[account] = flag_output
+    print("show_flags_by_account: Matrix:", matrix)
 
 def show_local(service_config: ServiceConfiguration):
     print_text("Local:")
