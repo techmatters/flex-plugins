@@ -4,9 +4,14 @@ from googleapiclient.discovery import build
 from google.oauth2.service_account import Credentials
 from google.auth.exceptions import GoogleAuthError
 from aws.ssm_client import SSMClient
+from datetime import datetime
 
 def export_to_sheets(matrix:dict):
+    
+  if not matrix:
+    raise ValueError("Matrix is empty.")
 
+  try:
     # Fetch SSM parameters
     ssm_client = SSMClient()
     credentials_json = ssm_client.get_parameter('/GOOGLE_SHEETS_CREDENTIALS')
@@ -33,7 +38,30 @@ def export_to_sheets(matrix:dict):
 
     sheet = client.open_by_key(sheet_id).worksheet("Flags Matrix")
     print("Google Sheet opened successfully.")
-    
-    sheet
 
+    current_date = datetime.now().strftime("%m/%d/%Y")
+    current_time = datetime.now().strftime("%H:%M:%S")
     
+    time_added = sheet.update_cell(1, 1, f"Last Updated: {current_date} {current_time}")
+    if not time_added:
+      raise ValueError("Failed to add date to Google Sheet.")
+    print("Date updated added successfully.")
+
+    for key in matrix.keys():
+      # Get the column name for the account
+      account = key
+      column = sheet.find(account).col
+
+      # Get the row name for the flag
+      for flag, value in matrix[key].items():
+        row = sheet.find(flag).row
+
+        # Update the cell with the flag value
+        sheet.update_cell(row, column, value)
+        # print(f"Updated cell {row}, {column} with value {value}.")
+    
+    if not sheet:
+      raise ValueError("Failed to update Google Sheet.")
+
+  except (GoogleAuthError, gspread.exceptions.GSpreadException) as e:
+    raise Exception(f"Error while exporting data to Google Sheets: {e}")

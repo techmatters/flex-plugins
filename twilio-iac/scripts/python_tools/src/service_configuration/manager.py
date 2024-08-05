@@ -4,6 +4,7 @@ import os
 import signal
 from copy import deepcopy
 from pygments import highlight, lexers, formatters
+from scripts.python_tools.src import export_to_sheets
 from termcolor import colored
 from .config import config
 from .remote_syncer import RemoteSyncer
@@ -124,9 +125,9 @@ def show_remote(service_config: ServiceConfiguration):
     print_json(service_config.remote_state)
 
 def show_flags(service_config: ServiceConfiguration):
-    print_text("Remote Feature Flags:")
+    print_text("Feature Flags:")
     print_json(service_config.feature_flags)
-    print_text("Remote Config Flags:")
+    print_text("Config Flags:")
     print_json(service_config.config_flags)
 
 def show_flags_by_account():
@@ -138,7 +139,7 @@ def show_flags_by_account():
         flag_output = {**service_config.feature_flags, **service_config.config_flags}
         matrix[account] = flag_output
     print("show_flags_by_account: Matrix:", matrix)
-    return matrix
+    export_to_sheets(matrix)    
 
 def show_local(service_config: ServiceConfiguration):
     print_text("Local:")
