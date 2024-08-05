@@ -131,7 +131,6 @@ def parse_flags(output):
     current_helpline = ""
         
     for line in output.split("\n"):
-        # print("Debug: Line:", line)
         if "Environment" in line:
             current_env = line.split(":")[1].strip()
             matrix[current_env] = {}
@@ -153,11 +152,11 @@ def show_flags(service_config: ServiceConfiguration):
     parsed_flags = parse_flags(output)
     print("show_flags: Parsed flags:", parsed_flags)
 
-def show_flags_by_account(service_config: ServiceConfiguration):
-    # matrix = []
-        # Assuming remote_state contains account information
-    attributes = service_config.remote_state.get("attributes", {})
-    print(attributes)
+def show_flags_by_account():
+    for account_sid in config.get_account_sids():
+        service_config = config.get_service_config(
+            account_sid)
+        print('\n',account_sid, {service_config.feature_flags, service_config.config_flags}, '\n')
 
 def show_local(service_config: ServiceConfiguration):
     print_text("Local:")
