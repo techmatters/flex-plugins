@@ -123,6 +123,10 @@ def show_remote(service_config: ServiceConfiguration):
     print_text("Remote:")
     print_json(service_config.remote_state)
 
+def show_flags(service_config: ServiceConfiguration):
+    print_text("Remote Feature & Config Flags:")
+    print_json(service_config.feature_flags, service_config.config_flags)
+
 def show_flags_by_account():
     matrix = {}
     for account_sid in config.get_account_sids():
