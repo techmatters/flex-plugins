@@ -1,19 +1,19 @@
-import json
-from aws.ssm_client import SSMClient
-from datetime import datetime
-# from google.oauth2.service_account import Credentials
 # from google.auth.exceptions import GoogleAuthError
-# import gspread
+from google.oauth2.credentials import Credentials
+import gspread
+import json
+from ..aws import SSMClient
+from datetime import datetime
 
 def export_to_sheets(matrix:dict):
+  print("\n Start Exporting to Google Sheets...\n")
   if not matrix:
     raise ValueError("Matrix is empty.")
 
   try:
     # Fetch SSM parameters
-    ssm_client = SSMClient()
-    credentials_json = ssm_client.get_parameter('/GOOGLE_SHEETS_CREDENTIALS')
-    sheet_id = ssm_client.get_parameter('/CD_GOOGLE_SHEET_ID')
+    credentials_json = SSMClient().get_parameter('GOOGLE_SHEETS_CREDENTIALS')
+    sheet_id = SSMClient().get_parameter('CD_GOOGLE_SHEET_ID')
 
     if not credentials_json:
       raise ValueError("Credentials JSON not found in environment variable.")
@@ -28,6 +28,7 @@ def export_to_sheets(matrix:dict):
       'https://www.googleapis.com/auth/spreadsheets',
       'https://www.googleapis.com/auth/drive.file'
     ]
+    # Credentials.from_service_account_info
     credentials = Credentials.from_service_account_info(credentials_data, scopes=scopes)
     print("Credentials initialized successfully.")
 
@@ -60,8 +61,9 @@ def export_to_sheets(matrix:dict):
     
     if not sheet:
       raise ValueError("Failed to update Google Sheet.")
-
-  except (GoogleAuthError, gspread.exceptions.GSpreadException) as e:
+  except Exception as e:
     raise Exception(f"Error while exporting data to Google Sheets: {e}")
+
+  # except (GoogleAuthError, gspread.exceptions.GSpreadException) as e:
+  #   raise Exception(f"Error while exporting data to Google Sheets: {e}")
   
-# export

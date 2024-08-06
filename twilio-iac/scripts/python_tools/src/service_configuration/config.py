@@ -364,12 +364,15 @@ class Config():
                 f'ERROR: The {self.action} action does not accept an environment argument.')
             exit(1)
 
-    def validate_all_helplines(self):
+    def validate_all_helplines(self, skip_confirmation=False):
         if not (self.environment or self.helpline_code or self.account_sid):
-            confirm = input(
-                'No environment or helpline provided. '
-                'Do you want to run this command for ALL helplines in ALL environments? (y/N): '
-            )
+            if skip_confirmation:
+                confirm = 'y'
+            else:
+                confirm = input(
+                    'No environment or helpline provided. '
+                    'Do you want to run this command for ALL helplines in ALL environments? (y/N): '
+                )
             if confirm != 'y':
                 print('Please re-run the script to try again')
                 exit(1)
