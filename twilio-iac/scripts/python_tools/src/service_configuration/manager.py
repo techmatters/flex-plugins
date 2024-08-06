@@ -7,8 +7,6 @@ from termcolor import colored
 from .config import config
 from .remote_syncer import RemoteSyncer
 from .service_configuration import DeepDiff, ServiceConfiguration, get_dot_notation_path, set_nested_key
-# from tabulate import tabulate
-# from pandas import DataFrame
 from ..gsheets import export_to_sheets
 
 def signal_handler(signal, frame):
@@ -124,6 +122,7 @@ def show_remote(service_config: ServiceConfiguration):
     print_text("Remote:")
     print_json(service_config.remote_state)
 
+
 def show_flags(service_config: ServiceConfiguration):
     print_text("Feature Flags:")
     print_json(service_config.feature_flags)
@@ -137,16 +136,7 @@ def show_flags_by_account():
         account = f"{service_config.helpline_code}_{service_config.environment}"
         flag_output = {**service_config.feature_flags, **service_config.config_flags}
         matrix[account] = flag_output
-    print("Trying to export to google sheets", matrix)
     export_to_sheets(matrix)
-    # headers = ["Key"] + list(matrix[next(iter(matrix))].keys())
-    # rows = []
-    # for key, values in matrix.items():
-    #     rows.append([key] + [value for value in values.values()])
-
-    # print(tabulate(rows, headers=headers, tablefmt='grid'))
-    # df = DataFrame(matrix)
-    # print(df) 
 
 
 def show_local(service_config: ServiceConfiguration):
