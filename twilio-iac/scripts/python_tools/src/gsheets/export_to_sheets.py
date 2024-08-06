@@ -1,19 +1,26 @@
-# from google.auth.exceptions import GoogleAuthError
-from google.oauth2.credentials import Credentials
+import os
+from google.oauth2.service_account import Credentials
 import gspread
 import json
-from ..aws import SSMClient
+# from ..aws import SSMClient
 from datetime import datetime
 
 def export_to_sheets(matrix:dict):
-  print("\n Start Exporting to Google Sheets...\n")
   if not matrix:
     raise ValueError("Matrix is empty.")
 
   try:
     # Fetch SSM parameters
-    credentials_json = SSMClient().get_parameter('GOOGLE_SHEETS_CREDENTIALS')
-    sheet_id = SSMClient().get_parameter('CD_GOOGLE_SHEET_ID')
+    # credentials_json = SSMClient().get_parameters_by_path('GOOGLE_SHEETS_CREDENTIALS')
+    # sheet_id = SSMClient().get_parameter('CD_GOOGLE_SHEET_ID')
+
+    script_dir = os.path.dirname(__file__)
+    credentials_path = os.path.join(script_dir, 'credentials.json')
+    
+    # Read the credentials.json file
+    with open(credentials_path, 'r') as file:
+        credentials_json = file.read()
+    sheet_id = ''
 
     if not credentials_json:
       raise ValueError("Credentials JSON not found in environment variable.")
@@ -46,24 +53,38 @@ def export_to_sheets(matrix:dict):
       raise ValueError("Failed to add date to Google Sheet.")
     print("Date updated added successfully.")
 
-    for key in matrix.keys():
-      # Get the column name for the account
-      account = key
-      column = sheet.find(account).col
+    # Fetch all data at once to minimize read requests
+    all_data = sheet.get_all_values()
+    headers = all_data[0]
+    flags_list = [row[0] for row in all_data]
 
-      # Get the row name for the flag
-      for flag, value in matrix[key].items():
-        row = sheet.find(flag).row
+    # Prepare batch updates
+    updates = []
+    for account, flags in matrix.items():
+      try:
+        column = headers.index(account.lower()) + 1
+      except ValueError:
+        continue
 
-        # Update the cell with the flag value
-        sheet.update_cell(row, column, value)
-        # print(f"Updated cell {row}, {column} with value {value}.")
-    
+      for flag, value in flags.items():
+        try:
+          row = flags_list.index(flag) + 1
+          updates.append({
+            'range': gspread.utils.rowcol_to_a1(row, column),
+            'values': [[str(value)]]
+          })
+        except ValueError:
+          print(f"Flag {flag} not found in the sheet.")
+
+    # Execute batch update
+    if updates:
+        sheet.batch_update(updates)
+        print(f"Batch update successful for {len(matrix.items())} accounts.")
+    else:
+        print("No updates to make.")
     if not sheet:
       raise ValueError("Failed to update Google Sheet.")
   except Exception as e:
     raise Exception(f"Error while exporting data to Google Sheets: {e}")
-
-  # except (GoogleAuthError, gspread.exceptions.GSpreadException) as e:
-  #   raise Exception(f"Error while exporting data to Google Sheets: {e}")
   
+
