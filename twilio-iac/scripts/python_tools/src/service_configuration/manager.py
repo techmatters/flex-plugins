@@ -7,7 +7,7 @@ from termcolor import colored
 from .config import config
 from .remote_syncer import RemoteSyncer
 from .service_configuration import DeepDiff, ServiceConfiguration, get_dot_notation_path, set_nested_key
-
+from ..gsheet import export_flags_matrix
 
 def signal_handler(signal, frame):
     print('\n\nYou pressed Ctrl+C! Cleaning up...')
@@ -20,7 +20,9 @@ signal.signal(signal.SIGINT, signal_handler)
 
 def main():
     try:
-        if config.argument == 'service_config':
+        if config.action == 'generate_flags_matrix':
+            generate_flags_matrix()
+        elif config.argument == 'service_config':
             run_service_config_action()
         elif config.argument == 'syncer':
             run_syncer_action()
@@ -120,6 +122,12 @@ def show_remote(service_config: ServiceConfiguration):
     print_text("Remote:")
     print_json(service_config.remote_state)
 
+def show_flags(service_config: ServiceConfiguration):
+    print_text("Feature Flags:")
+    print_json(service_config.feature_flags)
+    print_text("Config Flags:")
+    print_json(service_config.config_flags)
+
 
 def show_local(service_config: ServiceConfiguration):
     print_text("Local:")
@@ -216,6 +224,21 @@ def update_prop(service_config: ServiceConfiguration):
 
     apply(service_config)
 
+def generate_flags_matrix():
+    matrix = {}
+    for account_sid in config.get_account_sids():
+        service_config = config.get_service_config(account_sid)
+        account = f"{service_config.helpline_code}_{service_config.environment}"
+        flag_output = {**service_config.feature_flags, **service_config.config_flags}
+        matrix[account] = flag_output
+
+    ssm_client = config.get_ssm_client(service_config.environment)
+ 
+    google_parameters = {
+       'google_sheets_credentials': ssm_client.get_parameter(name='/GOOGLE_SHEETS_CREDENTIALS', with_decryption=True),
+       'google_sheet_id': ssm_client.get_parameter(name='/CD_GOOGLE_SHEET_ID', with_decryption=True)
+    }
+    export_flags_matrix(matrix, google_parameters)
 
 def cleanup_and_exit(code: int = 0):
     print_text('Cleaning up...')
