@@ -29,7 +29,7 @@ const enINTranslation = require(`../translations/en-IN/flexUI.json`);
 const enINMessages = require(`../translations/en-IN/messages.json`);
 
 const enJMTranslation = require(`../translations/en-JM/flexUI.json`);
-const enJMMessages = require(`../translations/en-US/messages.json`);
+const enJMMessages = require(`../translations/en-JM/messages.json`);
 
 const enMTTranslation = require(`../translations/en-MT/flexUI.json`);
 const enMTMessages = require(`../translations/en-MT/messages.json`);
