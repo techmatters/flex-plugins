@@ -98,7 +98,7 @@ resource "aws_ssm_parameter" "twilio_chat_workflow_sid" {
 resource "aws_ssm_parameter" "twilio_conversations_chat_transfer_workflow_sid" {
   name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/conversations_chat_transfer_workflow_sid"
   type        = "SecureString"
-  value       = "WWxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  value       = var.queue_transfers_workflow_sid
   description = "Twilio account - Conversations Chat Transfer Workflow SID"
 
   tags = {
