@@ -6,9 +6,6 @@ locals {
 
   local_config = {
     helpline                          = "SafeSpot"
-    old_dir_prefix                    = "safespot"
-    definition_version                = "jm-v1"
-    default_autopilot_chatbot_enabled = false
     task_language                     = "en-JM"
     voice_ivr_language                = ""
     enable_post_survey                = false
