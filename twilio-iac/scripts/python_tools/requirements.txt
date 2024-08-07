@@ -13,7 +13,7 @@ twilio==8.5.0
 twilio-stubs==0.2.0
 typing-extensions==4.7.1
 google-api-python-client==2.137.0
-google-auth-httplib2>=0.2.0,<1.0.0
+google-auth-httplib2==0.2.0
 google-auth-oauthlib==0.4.6
 gspread==4.0.1
 google-auth==2.3.0
