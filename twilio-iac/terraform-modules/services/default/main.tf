@@ -18,7 +18,7 @@ resource "twilio_chat_services_v2" "flex_chat_service" {
   friendly_name    = var.uses_conversation_service == true ? "Flex Conversation Service" : "Flex Chat Service"
   post_webhook_url = "${var.serverless_url}/webhooks/serviceConversationListener"
   webhook_method   = "POST"
-  webhook_filters  = ["onMessageAdded"]
+  webhook_filters  = ["onMessageSent"]
 
 }
 
