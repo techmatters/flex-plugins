@@ -5,10 +5,10 @@ locals {
 
 
   local_config = {
-    helpline                          = "SafeSpot"
-    task_language                     = "en-JM"
-    voice_ivr_language                = ""
-    enable_post_survey                = false
+    helpline           = "SafeSpot"
+    task_language      = "en-JM"
+    voice_ivr_language = ""
+    enable_post_survey = false
 
 
     lex_bot_languages = {
@@ -51,7 +51,7 @@ locals {
       survey : "Survey"
     }
 
-    
+
 
     phone_numbers = {}
 
