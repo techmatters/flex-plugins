@@ -16,62 +16,67 @@ def export_flags_matrix(matrix:dict, google_parameters:dict):
   try:
     
     credentials_data = json.loads(google_sheets_credentials)
-    print("Credentials loaded successfully.")
     
     # Google Sheets setup
     scopes = [
       'https://www.googleapis.com/auth/spreadsheets',
       'https://www.googleapis.com/auth/drive.file'
     ]
-    # Credentials.from_service_account_info
+
     credentials = Credentials.from_service_account_info(credentials_data, scopes=scopes)
-    print("Credentials initialized successfully.")
+    if not credentials:
+      raise ValueError("Failed to load Google Sheets json credentials.")
 
     client = gspread.authorize(credentials)
+    if not client:
+      raise ValueError("Failed to authorize Google Sheets client.")
     print("Google Sheets client authorized successfully.")
 
-    sheet = client.open_by_key(google_sheet_id).worksheet("Flags Matrix")
-    print("Google Sheet opened successfully.")
+    staging_sheet = client.open_by_key(google_sheet_id).worksheet("STG Flags Matrix")
+    production_sheet = client.open_by_key(google_sheet_id).worksheet("PROD Flags Matrix")
+    if not staging_sheet or not production_sheet:
+      raise ValueError(f'Failed to open {staging_sheet} or {production_sheet} worksheet.')
 
     current_date = datetime.now().strftime("%m/%d/%Y")
     current_time = datetime.now().strftime("%H:%M:%S")
     
-    time_added = sheet.update_cell(1, 1, f"Last Updated: {current_date} {current_time}")
-    if not time_added:
-      raise ValueError("Failed to add date to Google Sheet.")
-    print("Date updated added successfully.")
+    def process_sheet(sheet, accounts):
+      all_data = sheet.get_all_values()
+      headers = all_data[0]
+      flags_list = [row[0] for row in all_data[1:]]  # Exclude header row
 
-    # Fetch all data at once to minimize read requests
-    all_data = sheet.get_all_values()
-    headers = all_data[0]
-    flags_list = [row[0] for row in all_data]
-
-    # Prepare batch updates
-    updates = []
-    for account, flags in matrix.items():
-      try:
-        column = headers.index(account.lower()) + 1
-      except ValueError:
-        continue
-
-      for flag, value in flags.items():
+      updates = []
+      for account, flags in accounts.items():
         try:
-          row = flags_list.index(flag) + 1
-          updates.append({
-            'range': gspread.utils.rowcol_to_a1(row, column),
-            'values': [[str(value)]]
-          })
+          column = headers.index(account.lower()) + 1
         except ValueError:
-          print(f"Flag {flag} not found in the sheet.")
+          print(f"Account {account} not found in {sheet.title}")
+          continue
 
-    # Execute batch update
-    if updates:
+        for flag, value in flags.items():
+          try:
+            row = flags_list.index(flag) + 2 # Include header row
+            updates.append({
+              'range': gspread.utils.rowcol_to_a1(row, column),
+              'values': [[str(value)]]
+            })
+          except ValueError:
+            print(f"Flag {flag} not found in {sheet.title}")
+
+      if updates:
         sheet.batch_update(updates)
-        print(f"Batch update successful for {len(matrix.items())} accounts.")
-    else:
-        print("No updates to make.")
-    if not sheet:
-      raise ValueError("Failed to update Google Sheet.")
+        time_added = sheet.update_cell(1, 1, f"Last Updated: {current_date} {current_time} UTC")
+        if not time_added:
+          raise ValueError(f"Failed to add date to {sheet.title}")
+        print(f"Batch update successful for {len(accounts)} accounts in {sheet.title}")
+      else:
+        print(f"No updates to make in {sheet.title}")
+
+    staging_accounts = {k: v for k, v in matrix.items() if k.endswith(('_staging', '_development'))}
+    production_accounts = {k: v for k, v in matrix.items() if k.endswith('_production')}
+
+    process_sheet(staging_sheet, staging_accounts)
+    process_sheet(production_sheet, production_accounts)
   except Exception as e:
     raise Exception(f"Error while exporting data to Google Sheets: {e}")
   
