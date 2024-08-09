@@ -52,7 +52,11 @@ const testStore = (stateChanges: Partial<ReferrableResourceSearchState> = {}) =>
   });
 
 const nonInitialState: ReferrableResourceSearchState = {
-  filterOptions: initialState.filterOptions,
+  filterOptions: {
+    ...initialState.filterOptions,
+    region: [{ label: '', value: undefined }],
+    city: [{ label: '', value: undefined }],
+  },
   currentPage: 2,
   status: ResourceSearchStatus.ResultPending,
   parameters: {
@@ -69,6 +73,11 @@ const nonInitialState: ReferrableResourceSearchState = {
     { name: '6', id: '6', attributes: {} },
   ],
   suggesters: { names: ['something else entirely'] },
+  referenceLocations: {
+    cityOptions: [],
+    provinceOptions: [],
+    regionOptions: [],
+  },
 };
 
 describe('actions', () => {
