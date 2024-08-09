@@ -1,0 +1,19 @@
+{
+  "task_routing": {
+    "filters": 
+    [
+      %{ for key, value in task_queues }
+        {
+          "filter_friendly_name": "${key}",
+          "expression": "task.transferTargetType == 'queue' AND task.targetSid == '${value}'",
+          "targets": [
+            {
+              "queue": "${key == "survey" ? task_queues.master : value}"
+            }
+          ]
+        }%{ if length(task_queues) > 1 && key != keys(task_queues)[length(task_queues)-1] },%{ endif }
+      %{ endfor }
+    ]
+    
+  } 
+}
