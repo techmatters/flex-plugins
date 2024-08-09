@@ -33,17 +33,17 @@ import {
   FormSelect,
   FormSelectWrapper,
   Row,
-  StyledNextStepButton,
   SearchFormTopRule,
+  StyledNextStepButton,
 } from '../../../styles';
 import {
-  SearchFormClearButton,
   ResourcesSearchFormArea,
   ResourcesSearchFormContainer,
   ResourcesSearchFormFilterHeader,
   ResourcesSearchFormSectionHeader,
   ResourcesSearchFormSettingBox,
   ResourcesSearchTitle,
+  SearchFormClearButton,
 } from '../styles';
 import {
   ReferrableResourceSearchState,
@@ -58,6 +58,11 @@ import { getAseloFeatureFlags, getTemplateStrings } from '../../../hrmConfig';
 import asyncDispatch from '../../../states/asyncDispatch';
 import SearchAutoComplete from './SearchAutoComplete';
 import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
+import {
+  loadReferenceLocationsAsyncAction,
+  ReferenceLocationList,
+  ReferenceLocationState,
+} from '../../../states/resources/referenceLocations';
 
 const NO_AGE_SELECTED = -1;
 const NO_LOCATION_SELECTED = '__NO_LOCATION_SELECTED__';
@@ -78,6 +83,7 @@ const mapStateToProps = (state: RootState) => {
   const {
     parameters: { generalSearchTerm, pageSize, filterSelections },
     filterOptions,
+    referenceLocations,
   } = state[namespace][referrableResourcesBase].search;
   const { suggestSearch } = state[namespace][referrableResourcesBase];
   return {
@@ -86,6 +92,7 @@ const mapStateToProps = (state: RootState) => {
     filterSelections,
     filterOptions,
     suggestSearch,
+    referenceLocations,
   };
 };
 
@@ -112,6 +119,17 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
       leading: true,
       trailing: true,
     }),
+    loadReferenceLocations: (referenceLocations: ReferenceLocationState) => {
+      if (!referenceLocations.provinceOptions?.length) {
+        searchAsyncDispatch(loadReferenceLocationsAsyncAction(ReferenceLocationList.Provinces));
+      }
+      if (!referenceLocations.regionOptions?.length) {
+        searchAsyncDispatch(loadReferenceLocationsAsyncAction(ReferenceLocationList.Regions));
+      }
+      if (!referenceLocations.cityOptions?.length) {
+        searchAsyncDispatch(loadReferenceLocationsAsyncAction(ReferenceLocationList.Cities));
+      }
+    },
   };
 };
 
@@ -130,6 +148,8 @@ const SearchResourcesForm: React.FC<Props> = ({
   filterSelections,
   suggestSearch,
   updateSuggestSearch,
+  loadReferenceLocations,
+  referenceLocations,
 }) => {
   const firstElement = useRef(null);
   const strings = getTemplateStrings();
@@ -155,6 +175,11 @@ const SearchResourcesForm: React.FC<Props> = ({
   useEffect(() => {
     setGeneralSearchTermBoxText(generalSearchTerm);
   }, [generalSearchTerm, setGeneralSearchTermBoxText]);
+
+  useEffect(() => {
+    loadReferenceLocations(referenceLocations);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const locationDropdown = (locationFilterName: LocationFilterName, optionList: FilterOption[]) => {
     const capitalizedLocationFilterName = locationFilterName.charAt(0).toUpperCase() + locationFilterName.slice(1);
