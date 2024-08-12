@@ -19,7 +19,24 @@ import { withStyles } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 import DisabledIcon from '@material-ui/icons/Block';
 
-import { ChipBase } from '../../styles';
+import { ChipBase, FontOpenSans } from '../../styles';
+
+/**
+ * Status Column
+ */
+
+export const StatusActivityName = styled(FontOpenSans)`
+  font-size: 12px;
+  white-space: nowrap; /* Prevents the text from wrapping to the next line */
+  overflow: hidden; /* Hides the overflowed content */
+  text-overflow: ellipsis; /* Adds ellipsis (...) at the end of the truncated text */
+  width: 70px; /* Set a specific width */
+`;
+StatusActivityName.displayName = 'StatusActivityName';
+
+/**
+ * Skill Column
+ */
 
 type SkillChipProps = {
   color: string;

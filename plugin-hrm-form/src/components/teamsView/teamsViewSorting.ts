@@ -22,7 +22,7 @@ import { getAseloFeatureFlags } from '../../hrmConfig';
 /**
  * Converts a duration string in the format "HH:MM:SS" or "MM:SS" to seconds.
  */
-const convertDurationToSeconds = (duration: string): number => {
+const convertTaskDurationToSeconds = (duration: string): number => {
   const timeParts = duration.split(':').map(Number);
   let hours = 0;
   let minutes = 0;
@@ -37,7 +37,7 @@ const convertDurationToSeconds = (duration: string): number => {
 };
 
 const getTaskDurationInSeconds = (task): number => {
-  return task ? convertDurationToSeconds(new TaskHelper(task).durationSinceUpdate) : 0;
+  return task ? convertTaskDurationToSeconds(new TaskHelper(task).durationSinceUpdate) : 0;
 };
 
 const sortTasksByDuration = (aTask, bTask): number => {
@@ -138,4 +138,55 @@ export const sortSkills = (a: SupervisorWorkerState, b: SupervisorWorkerState) =
   const aSkills = a?.worker?.source?.attributes?.routing?.skills?.length ?? 0;
   const bSkills = b?.worker?.source?.attributes?.routing?.skills?.length ?? 0;
   return aSkills - bSkills;
+};
+
+/**
+ * Converts a duration string in the format "59s", "59:59", "23h" or "23h 59min", "59d" or "5d 3h"  to seconds.
+ */
+const convertDurationToSeconds = (duration: string): number => {
+  const timeParts = duration.split(' ');
+
+  let seconds = 0;
+
+  // "59:59" is a duration with hours and minutes
+  if (timeParts.length === 1 && timeParts[0].includes(':')) {
+    const [hours, minutes] = timeParts[0].split(':').map(Number);
+    seconds = hours * 60 * 60 + minutes * 60;
+    return seconds;
+  }
+
+  timeParts.forEach(timePart => {
+    const [value, unit] = timePart.split(/(?=[a-zA-Z])/);
+
+    switch (unit) {
+      case 's':
+        seconds += Number(value);
+        break;
+      case 'min':
+        seconds += Number(value) * 60;
+        break;
+      case 'h':
+        seconds += Number(value) * 60 * 60;
+        break;
+      case 'd':
+        seconds += Number(value) * 60 * 60 * 24;
+        break;
+      default:
+        break;
+    }
+  });
+
+  return seconds;
+};
+
+export const sortStatus = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
+  // sort first by worker?.isAvailable (top), then by activityName, then by activityDuration
+  if (a.worker.isAvailable && !b.worker.isAvailable) return -1;
+  if (!a.worker.isAvailable && b.worker.isAvailable) return 1;
+  if (a.worker.activityName < b.worker.activityName) return -1;
+  if (a.worker.activityName > b.worker.activityName) return 1;
+  const aDuration = convertDurationToSeconds(a.worker.activityDuration);
+  const bDuration = convertDurationToSeconds(b.worker.activityDuration);
+  console.log('a workerName', a.worker, '>>> aDuration:', aDuration, 'bDuration:', bDuration);
+  return aDuration - bDuration;
 };

@@ -14,10 +14,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import { setUpSkillsColumn } from './SkillsColumn';
+import { setUpStatusColumn } from './StatusColumn';
 import { setUpTeamsViewSorting } from './teamsViewSorting';
 import { setUpTeamsViewFilters, setUpWorkerDirectoryFilters } from './teamsViewFilters';
 
 const TeamsView = {
+  setUpStatusColumn,
   setUpSkillsColumn,
   setUpTeamsViewSorting,
   setUpTeamsViewFilters,
