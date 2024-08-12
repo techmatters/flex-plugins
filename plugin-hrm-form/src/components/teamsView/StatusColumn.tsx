@@ -19,7 +19,7 @@ import { WorkersDataTable, ColumnDefinition } from '@twilio/flex-ui';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import { getAseloFeatureFlags } from '../../hrmConfig';
-import { sortStatus } from './teamsViewSorting';
+import { sortStatusColumn } from './teamsViewSorting';
 import { FontOpenSans, TagMiddleDot } from '../../styles';
 import { StatusActivityName } from './styles';
 
@@ -30,7 +30,7 @@ export const setUpStatusColumn = () => {
     <ColumnDefinition
       key="status"
       header="Status"
-      sortingFn={sortStatus}
+      sortingFn={sortStatusColumn}
       style={{ width: 'calc(5rem)' }}
       content={item => <StatusCell item={item} />}
     />,
@@ -41,12 +41,9 @@ export const setUpStatusColumn = () => {
 const StatusCell = ({ item }) => {
   const [time, setTime] = useState(item?.worker?.activityDuration ?? '');
 
-  const isAvailable = item?.worker?.isAvailable ?? false;
-  const activityName = item?.worker?.activityName ?? '';
-
   useEffect(() => {
     const isUnderOneHour = time.includes(':') || time.endsWith('s');
-    const intervalTimeout = isUnderOneHour ? 1000 : 180000; // 1 second or 3 minutes
+    const intervalTimeout = isUnderOneHour ? 1000 : 100000; // 1 second or 1 minute
 
     const interval = setInterval(() => {
       setTime(item?.worker?.activityDuration);
@@ -55,11 +52,14 @@ const StatusCell = ({ item }) => {
     return () => clearInterval(interval);
   }, [time, item]);
 
+  const isAvailable = item?.worker?.isAvailable ?? false;
+  const activityName = item?.worker?.activityName ?? '';
+
   return (
     <>
       <div style={{ display: '-webkit-box' }}>
         <TagMiddleDot style={{ margin: '0px 5px 3px 1px' }} color={isAvailable ? '#14B053' : '#AEB2C1'} size="8" />
-        {activityName.length > 11 ? (
+        {activityName.length > 12 ? (
           <Tooltip title={activityName} enterDelay={1000} enterTouchDelay={1000}>
             <StatusActivityName>{activityName}</StatusActivityName>
           </Tooltip>

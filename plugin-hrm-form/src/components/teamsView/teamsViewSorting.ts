@@ -144,34 +144,35 @@ export const sortSkills = (a: SupervisorWorkerState, b: SupervisorWorkerState) =
  * Converts a duration string in the format "59s", "59:59", "23h" or "23h 59min", "59d" or "5d 3h"  to seconds.
  */
 const convertDurationToSeconds = (duration: string): number => {
-  const timeParts = duration.split(' ');
-
-  let seconds = 0;
-
-  // "59:59" is a duration with hours and minutes
-  if (timeParts.length === 1 && timeParts[0].includes(':')) {
-    const [hours, minutes] = timeParts[0].split(':').map(Number);
-    seconds = hours * 60 * 60 + minutes * 60;
-    return seconds;
+  // Handle the "59:59" format (minutes and seconds)
+  if (duration.includes(':')) {
+    const [minutes, secs] = duration.split(':').map(Number);
+    return (minutes || 0) * 60 + (secs || 0);
   }
 
+  // Handle all other formats
+  const timeParts = duration.match(/\d+\s*[a-z]+/gi);
+  let seconds = 0;
+
   timeParts.forEach(timePart => {
-    const [value, unit] = timePart.split(/(?=[a-zA-Z])/);
+    const value = parseInt(timePart, 10);
+    const unit = timePart.match(/[a-z]+/)![0];
 
     switch (unit) {
       case 's':
-        seconds += Number(value);
+        seconds += value;
         break;
       case 'min':
-        seconds += Number(value) * 60;
+        seconds += value * 60;
         break;
       case 'h':
-        seconds += Number(value) * 60 * 60;
+        seconds += value * 60 * 60;
         break;
       case 'd':
-        seconds += Number(value) * 60 * 60 * 24;
+        seconds += value * 60 * 60 * 24;
         break;
       default:
+        console.warn(`>>> Unrecognized time unit: ${unit} for value: ${value}`);
         break;
     }
   });
@@ -179,14 +180,12 @@ const convertDurationToSeconds = (duration: string): number => {
   return seconds;
 };
 
-export const sortStatus = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
-  // sort first by worker?.isAvailable (top), then by activityName, then by activityDuration
+export const sortStatusColumn = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
   if (a.worker.isAvailable && !b.worker.isAvailable) return -1;
   if (!a.worker.isAvailable && b.worker.isAvailable) return 1;
   if (a.worker.activityName < b.worker.activityName) return -1;
   if (a.worker.activityName > b.worker.activityName) return 1;
   const aDuration = convertDurationToSeconds(a.worker.activityDuration);
   const bDuration = convertDurationToSeconds(b.worker.activityDuration);
-  console.log('a workerName', a.worker, '>>> aDuration:', aDuration, 'bDuration:', bDuration);
-  return aDuration - bDuration;
+  return bDuration - aDuration;
 };
