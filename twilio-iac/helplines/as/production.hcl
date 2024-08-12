@@ -21,9 +21,10 @@ locals {
         chatbot_unique_names = []
       },
       facebook : {
+        messaging_mode       = "conversations"
         channel_type         = "facebook"
         contact_identity     = "messenger:105642325869250"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -36,9 +37,10 @@ locals {
         chatbot_unique_names = []
       },
       instagram : {
+        messaging_mode       = "conversations"
         channel_type         = "custom"
         contact_identity     = "instagram"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
