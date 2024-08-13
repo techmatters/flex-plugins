@@ -19,6 +19,14 @@ import { SupervisorWorkerState } from '@twilio/flex-ui/src/state/State.definitio
 
 import { getAseloFeatureFlags } from '../../hrmConfig';
 
+const ACTIVITIES = Array.from(Manager.getInstance().store.getState().flex.worker.activities.values()).reduce(
+  (accum, activity, currIndex) => {
+    accum[activity.name] = currIndex;
+    return accum;
+  },
+  {},
+);
+
 /**
  * Converts a duration string in the format "HH:MM:SS" or "MM:SS" to seconds.
  */
@@ -86,14 +94,6 @@ const sortWorkersByChatDuration = (a: SupervisorWorkerState, b: SupervisorWorker
 };
 
 const sortWorkersByActivity = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
-  const ACTIVITIES = Array.from(Manager.getInstance().store.getState().flex.worker.activities.values()).reduce(
-    (accum, activity, currIndex) => {
-      accum[activity.name] = currIndex;
-      return accum;
-    },
-    {},
-  );
-
   const aActivityValue = ACTIVITIES[a?.worker.activityName];
   const bActivityValue = ACTIVITIES[b?.worker.activityName];
 
@@ -125,18 +125,13 @@ const sortWorkersByActivity = (a: SupervisorWorkerState, b: SupervisorWorkerStat
   return a.worker.name.localeCompare(b.worker.name);
 };
 
-export const setUpTeamsViewSorting = () => {
-  if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
-
-  AgentsDataTable.defaultProps.sortCalls = sortWorkersByCallDuration;
-  AgentsDataTable.defaultProps.sortTasks = sortWorkersByChatDuration;
-  AgentsDataTable.defaultProps.sortWorkers = sortWorkersByActivity;
-  AgentsDataTable.defaultProps.defaultSortColumn = 'worker';
-};
-
 export const sortSkills = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
-  const aSkills = a?.worker?.source?.attributes?.routing?.skills?.length ?? 0;
-  const bSkills = b?.worker?.source?.attributes?.routing?.skills?.length ?? 0;
+  const getSkillLength = (workerState: SupervisorWorkerState): number =>
+    workerState?.worker?.source?.attributes?.routing?.skills?.length ?? 0;
+
+  const aSkills = getSkillLength(a);
+  const bSkills = getSkillLength(b);
+
   return aSkills - bSkills;
 };
 
@@ -180,12 +175,53 @@ const convertDurationToSeconds = (duration: string): number => {
   return seconds;
 };
 
+/**
+ * Sort by Status/Activity column
+ *
+ * Sort available workers first, offline workers last, then by activity name by the helpline's activity index,
+ * then within each activity by duration, with longest to shortest
+ */
 export const sortStatusColumn = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
-  if (a.worker.isAvailable && !b.worker.isAvailable) return -1;
-  if (!a.worker.isAvailable && b.worker.isAvailable) return 1;
-  if (a.worker.activityName < b.worker.activityName) return -1;
-  if (a.worker.activityName > b.worker.activityName) return 1;
+  // Handle undefined values
+  if (!a || !b) return 0;
+
+  // Place available workers at the top
+  if (a.worker.isAvailable !== b.worker.isAvailable) {
+    return a.worker.isAvailable ? 1 : -1;
+  }
+
+  const aActivityValue = ACTIVITIES[a.worker.activityName] || 0;
+  const bActivityValue = ACTIVITIES[b.worker.activityName] || 0;
+
+  // Place workers with "Offline" activity at the end
+  if (aActivityValue === 0 && bActivityValue === 0) {
+    // If both are offline, sort by duration
+    const aDuration = convertDurationToSeconds(a.worker.activityDuration);
+    const bDuration = convertDurationToSeconds(b.worker.activityDuration);
+    return aDuration - bDuration;
+  } else if (aActivityValue === 0) {
+    return -1;
+  } else if (bActivityValue === 0) {
+    return 1;
+  }
+
+  // Sort alphabetically by activity name
+  if (a.worker.activityName !== b.worker.activityName) {
+    return a.worker.activityName.localeCompare(b.worker.activityName);
+  }
+
+  // Sort by duration within the same activity
   const aDuration = convertDurationToSeconds(a.worker.activityDuration);
   const bDuration = convertDurationToSeconds(b.worker.activityDuration);
-  return bDuration - aDuration;
+  return aDuration - bDuration;
+};
+
+// Set up the sorting for default Teams View columns (Workers, Calls, Tasks)
+export const setUpTeamsViewSorting = () => {
+  if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
+
+  AgentsDataTable.defaultProps.sortCalls = sortWorkersByCallDuration;
+  AgentsDataTable.defaultProps.sortTasks = sortWorkersByChatDuration;
+  AgentsDataTable.defaultProps.sortWorkers = sortWorkersByActivity;
+  AgentsDataTable.defaultProps.defaultSortColumn = 'worker';
 };

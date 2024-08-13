@@ -39,21 +39,21 @@ export const setUpStatusColumn = () => {
 };
 
 const StatusCell = ({ item }) => {
+  const isAvailable = item?.worker?.isAvailable ?? false;
+  const activityName = item?.worker?.activityName ?? '';
   const [time, setTime] = useState(item?.worker?.activityDuration ?? '');
 
   useEffect(() => {
     const isUnderOneHour = time.includes(':') || time.endsWith('s');
     const intervalTimeout = isUnderOneHour ? 1000 : 100000; // 1 second or 1 minute
+    setTime(item?.worker?.activityDuration);
 
     const interval = setInterval(() => {
       setTime(item?.worker?.activityDuration);
     }, intervalTimeout);
 
     return () => clearInterval(interval);
-  }, [time, item]);
-
-  const isAvailable = item?.worker?.isAvailable ?? false;
-  const activityName = item?.worker?.activityName ?? '';
+  }, [time, item, activityName]);
 
   return (
     <>
