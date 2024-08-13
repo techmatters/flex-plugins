@@ -10,6 +10,7 @@
         },
         "feature_flags": {
             "backend_handled_chat_janitor": false,
+            "enable_backend_manual_pulling": true,
             "enable_counselor_toolkits": true,
             "enable_csam_clc_report": true,
             "enable_csam_report": true,
