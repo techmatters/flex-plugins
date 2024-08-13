@@ -45,9 +45,12 @@ const StatusCell = ({ item }) => {
 
   useEffect(() => {
     const isUnderOneHour = time.includes(':') || time.endsWith('s');
-    const intervalTimeout = isUnderOneHour ? 1000 : 100000; // 1 second or 1 minute
+    const intervalTimeout = isUnderOneHour ? 1000 : 60000; // 1 second or 1 minute
+
+    // initial render at 0 seconds
     setTime(item?.worker?.activityDuration);
 
+    // update when time or activity changes
     const interval = setInterval(() => {
       setTime(item?.worker?.activityDuration);
     }, intervalTimeout);
@@ -56,9 +59,9 @@ const StatusCell = ({ item }) => {
   }, [time, item, activityName]);
 
   return (
-    <>
+    <div style={{ color: '#121C2D', lineHeight: 'normal' }}>
       <div style={{ display: '-webkit-box' }}>
-        <TagMiddleDot style={{ margin: '0px 5px 3px 1px' }} color={isAvailable ? '#14B053' : '#AEB2C1'} size="8" />
+        <TagMiddleDot style={{ margin: '0px 5px 2px 1px' }} color={isAvailable ? '#14B053' : '#AEB2C1'} size="8" />
         {activityName.length > 12 ? (
           <Tooltip title={activityName} enterDelay={1000} enterTouchDelay={1000}>
             <StatusActivityName>{activityName}</StatusActivityName>
@@ -68,6 +71,6 @@ const StatusCell = ({ item }) => {
         )}
       </div>
       <FontOpenSans style={{ fontSize: '12px', marginLeft: '2ch' }}>{time}</FontOpenSans>
-    </>
+    </div>
   );
 };
