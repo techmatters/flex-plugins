@@ -77,6 +77,12 @@ const sortWorkersByCallDuration = (a: SupervisorWorkerState, b: SupervisorWorker
   return 0;
 };
 
+/**
+ * Sorts agents by the duration of their chat tasks.
+ * If a worker has multiple chat tasks, they will be sorted by the duration of the first chat task.
+ * If a worker doesn't have a chat task, they will be sorted to the end.
+ */
+
 const sortWorkersByChatDuration = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
   const aChatTasks = a.tasks.filter(task => TaskHelper.isChatBasedTask(task));
   const bChatTasks = b.tasks.filter(task => TaskHelper.isChatBasedTask(task));
@@ -125,6 +131,9 @@ const sortWorkersByActivity = (a: SupervisorWorkerState, b: SupervisorWorkerStat
   return a.worker.name.localeCompare(b.worker.name);
 };
 
+/**
+ * Sorts agents by the number of available skills they have.
+ */
 export const sortSkills = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
   const getSkillLength = (workerState: SupervisorWorkerState): number =>
     workerState?.worker?.source?.attributes?.routing?.skills?.length ?? 0;
@@ -178,7 +187,7 @@ const convertDurationToSeconds = (duration: string): number => {
 /**
  * Sort by Status/Activity column
  *
- * Sort available workers first, offline workers last, then by activity name by the helpline's activity index,
+ * Sort available workers first, offline workers last, then by helpline's activity index,
  * then within each activity by duration, with longest to shortest
  */
 export const sortStatusColumn = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
