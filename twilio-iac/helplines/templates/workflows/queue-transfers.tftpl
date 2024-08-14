@@ -5,7 +5,7 @@
       %{ for key, value in task_queues }
         {
           "filter_friendly_name": "${key}",
-          "expression": "task.transferTargetType == 'queue' AND task.targetSid == '${value}'",
+          "expression": "transferTargetType == 'queue' AND targetSid == '${value}'",
           "targets": [
             {
               "queue": "${key == "survey" ? task_queues.master : value}"
