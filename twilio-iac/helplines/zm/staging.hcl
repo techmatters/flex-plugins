@@ -21,9 +21,10 @@ locals {
         chatbot_unique_names = []
       },
       whatsapp : {
+        messaging_mode       = "conversations"
         channel_type         = "whatsapp"
-        contact_identity     = "whatsapp:+447450769014"
-        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging.tftpl"
+        contact_identity     = "whatsapp:+17035961454"
+        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-conv.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }
