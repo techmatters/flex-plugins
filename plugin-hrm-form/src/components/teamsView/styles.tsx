@@ -22,6 +22,18 @@ import DisabledIcon from '@material-ui/icons/Block';
 import { ChipBase, FontOpenSans } from '../../styles';
 
 /**
+ * Agent Column
+ */
+
+export const AgentFullName = styled(FontOpenSans)`
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap; /* Prevents the text from wrapping to the next line */
+  overflow: hidden; /* Hides the overflowed content */
+  text-overflow: ellipsis; /* Adds ellipsis (...) at the end of the truncated text */
+`;
+AgentFullName.displayName = 'AgentFullName';
+/**
  * Status Column
  */
 

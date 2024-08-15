@@ -124,6 +124,7 @@ const setUpComponents = (
     if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
   }
 
+  TeamsView.setUpAgentColumn();
   TeamsView.setUpStatusColumn();
   TeamsView.setUpSkillsColumn();
   TeamsView.setUpTeamsViewSorting();
