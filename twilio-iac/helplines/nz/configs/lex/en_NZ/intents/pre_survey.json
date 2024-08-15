@@ -9,7 +9,7 @@
       "type": "ReturnIntent"
     },
     "conclusion_statement": {
-      "content": "Thanks for that, the next message you get will be from one of our counsellors. In the meantime, if you are interested here's a link to our privacy statement: https://youthline.co.nz/privacy-statements/",
+      "content": "Thank you, the next message will be from one of our counsellors. Your conversation will be recorded and may be monitored for quality purposes. For more information, here's a link to our privacy statement: https://youthline.co.nz/privacy-statements/",
       "content_type": "PlainText"
     },
     "rejection_statement": {

@@ -1,10 +1,6 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_aselo_messaging_ui": false,
-            "enable_fullstory_monitoring": true,
-            "enable_transcripts": false,
-            "enable_voice_recordings": false
         },
         "multipleOfficeSupport": true,
         "previous_ui_version": {

@@ -19,8 +19,9 @@ import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import IssueCategorizationSectionForm from '../../../components/contact/IssueCategorizationSectionForm';
 import { ToggleViewButton } from '../../../styles';
 import { setCategoriesGridView } from '../../../states/contacts/existingContacts';
@@ -39,8 +40,7 @@ jest.mock('react-hook-form', () => ({
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
 jest.mock('../../../hrmConfig');
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 let mockV1;
 const helpline = 'ChildLine Zambia (ZM)';

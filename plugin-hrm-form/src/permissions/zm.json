@@ -27,10 +27,10 @@
 
   "viewProfile": [["everyone"]],
   "flagProfile": [["everyone"]],
-  "unflagProfile": [["everyone"]],
+  "unflagProfile": [["isSupervisor"]],
   "createProfileSection": [["everyone"]],
   "viewProfileSection": [["everyone"]],
-  "editProfileSection": [["everyone"]],
+  "editProfileSection": [["isSupervisor"]],
   
   "viewPostSurvey": [["isSupervisor"]],
 

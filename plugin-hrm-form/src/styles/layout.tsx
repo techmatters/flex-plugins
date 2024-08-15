@@ -131,7 +131,7 @@ export const BottomButtonBar = styled('div')`
   height: ${BottomButtonBarHeight}px;
   flex-shrink: 0;
   background-color: #ffffff;
-  padding: 0 20px;
+  padding: 5px 20px;
   z-index: 1;
 `;
 BottomButtonBar.displayName = 'BottomButtonBar';
@@ -153,6 +153,15 @@ export const TwoColumnLayout = styled('div')`
   box-sizing: border-box;
 `;
 TwoColumnLayout.displayName = 'TwoColumnLayout';
+
+type TwoColumnLayoutProps = { width?: any };
+export const TwoColumnLayoutResponsive = styled(TwoColumnLayout)<TwoColumnLayoutProps>`
+  flex-wrap: wrap;
+  align-self: flex-start;
+  float: inline-start;
+  max-width: ${({ width }) => width};
+`;
+TwoColumnLayoutResponsive.displayName = 'TwoColumnLayoutResponsive';
 
 export const ColumnarContent = styled('div')`
   width: 217px;
@@ -291,3 +300,14 @@ export const StandaloneContainer = styled('div')`
   background-color: ${HrmTheme.colors.base2};
 `;
 StandaloneContainer.displayName = 'StandaloneContainer';
+
+export const SearchFormTopRule = styled('hr')`
+  color: #d8d8d8;
+  background-color: #d8d8d8;
+  height: 1px;
+  width: 100%;
+  margin: 0 5px 0 5px;
+  border: 0;
+  border-top: 1px solid #d8d8d8;
+`;
+SearchFormTopRule.displayName = 'SearchFormTopRule';

@@ -4,15 +4,15 @@
     "locale": "en-US",
     "process_behavior": "BUILD",
     "child_directed": true,
-    "idle_session_ttl_in_seconds": "18000",
+    "idle_session_ttl_in_seconds": "28800",
     "enable_model_improvements": true,
     "abort_statement": {
-      "content": "Thanks for that, the next message you get will be from one of our counsellors. In the meantime, if you are interested here's a link to our privacy statement: https://youthline.co.nz/privacy-statements/",
+      "content": "Thank you, the next message will be from one of our counsellors. Your conversation will be recorded and may be monitored for quality purposes. For more information, here's a link to our privacy statement: https://youthline.co.nz/privacy-statements/",
       "content_type": "PlainText"
     },
     "clarification_prompt": {
-      "max_attempts": 2,
-      "content": "There is an issue stopping our automatic message from understanding your reply - please try txting us again, call us on 0800376633 if you keep receiving this message, or call 111 if you or anyone else are in danger or not safe right now",
+      "max_attempts": 1,
+      "content": "There is an issue stopping our automatic message from understanding your reply - please try txting 'hello' to us again, call us on 0800376633 if you keep receiving this message, or call 111 if you or anyone else are in danger or not safe right now",
       "content_type": "PlainText"
     },
     "intents": [

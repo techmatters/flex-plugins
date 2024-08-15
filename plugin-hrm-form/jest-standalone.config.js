@@ -26,8 +26,9 @@ module.exports = config => {
     testTimeout: 2 * 60 * 1000, // 2 minutes in ms
     transformIgnorePatterns: [`/node_modules/(?!uuid/.+\\.js)`],
     moduleNameMapper: {
-      "\\.css$": "identity-obj-proxy"
-    }
+      '\\.css$': 'identity-obj-proxy',
+      '^axios$': 'axios/dist/node/axios.cjs',
+    },
   };
 
   return config;

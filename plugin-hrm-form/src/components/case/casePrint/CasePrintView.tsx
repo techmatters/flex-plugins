@@ -57,7 +57,10 @@ const MAX_PRINTOUT_CONTACTS = 100;
 const SECTION_NAMES = ['perpetrator', 'incident', 'referral', 'household', 'note'] as const;
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
-  const { connectedCase } = selectCurrentRouteCaseState(state, task.taskSid);
+  const { connectedCase, sections } = selectCurrentRouteCaseState(state, task.taskSid);
+  const sectionIdCsvsEntries = SECTION_NAMES.map(
+    sectionName => [sectionName, Object.keys(sections?.[sectionName] ?? {}).join(',')], // Used to trigger re-fetch of sections
+  );
   const sectionEntries = SECTION_NAMES.map(
     sectionName =>
       [
@@ -73,6 +76,7 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
     counselorsHash: selectCounselorsHash(state),
     connectedCase,
     sectionTimelines: Object.fromEntries(sectionEntries),
+    sectionIdCsvs: Object.fromEntries(sectionIdCsvsEntries),
     contactTimeline: selectTimeline(state, connectedCase?.id, 'print-contacts', {
       offset: 0,
       limit: MAX_PRINTOUT_CONTACTS,
@@ -107,6 +111,7 @@ const CasePrintView: React.FC<Props> = ({
   office,
   contactTimeline,
   sectionTimelines,
+  sectionIdCsvs,
   loadSectionTimeline,
   loadContactTimeline,
 }) => {
@@ -131,17 +136,9 @@ const CasePrintView: React.FC<Props> = ({
   for (const sectionName of SECTION_NAMES) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(
-      () => {
-        if (!sectionTimelines[sectionName]) {
-          loadSectionTimeline(connectedCase.id, sectionName);
-        }
-      },
+      () => loadSectionTimeline(connectedCase.id, sectionName),
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      [
-        connectedCase.id,
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        Boolean(sectionTimelines[sectionName]),
-      ],
+      [connectedCase.id, sectionIdCsvs[sectionName]],
     );
   }
   /*

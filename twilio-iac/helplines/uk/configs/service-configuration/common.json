@@ -2,17 +2,13 @@
     "attributes": {
         "definitionVersion": "uk-v1",
         "feature_flags": {
-            "enable_aselo_messaging_ui": false,
             "enable_conferencing": false,
             "enable_counselor_toolkits": false,
             "enable_csam_clc_report": false,
             "enable_lex": false,
             "enable_save_insights": true,
             "enable_teams_view_enhancements": true,
-            "enable_transcripts": true,
-            "enable_twilio_transcripts": false,
-            "enable_voice_recordings": false,
-            "post_survey_serverless_handled": false
+            "enable_voice_recordings": false
         },
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",
         "multipleOfficeSupport": true,

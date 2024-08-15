@@ -3,12 +3,12 @@ ${
 {
   "description": flow_description,
   "states": [
-    {
+     {
       "name": "Trigger",
       "type": "trigger",
       "transitions": [
         {
-          "next": "check_image",
+          "next": "getProfileFlagsForIdentifier",
           "event": "incomingMessage"
         },
         {
@@ -26,7 +26,85 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": -500,
+          "x": -190,
+          "y": -1660
+        }
+      }
+    },
+    {
+      "name": "getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "check_image",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -440,
+          "y": -1460
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "body": "{ \"trigger\": {{trigger | to_json}}}",
+        "url": "${serverless_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "send_blocked_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -880,
+          "y": -1000
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": flow_vars["widget_from"],
+        "to": "{{contact.channel.address}}",
+        "body":  flow_vars["chat_blocked_message"]
+      }
+    },
+    {
+      "name": "contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "check_image",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_blocked_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "contains",
+              "value": "blocked"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": -800,
           "y": -1260
         }
       }
@@ -445,6 +523,14 @@ ${
           {
             "value": "contactReasonMemory",
             "key": "memoryAttribute"
+          },
+          {
+            "value": "{{trigger.message.ChannelAttributes.channel_type | downcase}}",
+            "key": "channelType"
+          },
+          {
+            "value": "false",
+            "key": "isConversation"
           }
         ],
         "url": "${serverless_url}/channelCapture/captureChannelWithBot"
@@ -501,6 +587,14 @@ ${
           {
             "value": "preSurveyComplete",
             "key": "releaseFlag"
+          },
+          {
+            "value": "{{trigger.message.ChannelAttributes.channel_type | downcase}}",
+            "key": "channelType"
+          },
+          {
+            "value": "false",
+            "key": "isConversation"
           }
         ],
         "url": "${serverless_url}/channelCapture/captureChannelWithBot"

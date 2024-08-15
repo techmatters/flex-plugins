@@ -61,6 +61,7 @@ export const loadCaseIntoState = ({
             : new Set<string>(),
           sections: {},
           timelines: {},
+          outstandingUpdateCount: 0,
           ...statusUpdates,
         },
       },

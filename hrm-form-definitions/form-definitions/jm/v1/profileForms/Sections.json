@@ -1,0 +1,11 @@
+[
+  {
+    "name": "summary",
+    "label": "Summary - General Assessment of Case and Plan",
+    "editLabel": "Edit Summary",
+    "type": "textarea",
+    "rows": 20,
+    "width": 500,
+    "placeholder": "General Assessment of Case and Plan"
+  }
+]

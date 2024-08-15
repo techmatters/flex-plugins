@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import * as React from 'react';
 import renderer from 'react-test-renderer';
 import { getByTestId, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -30,14 +30,14 @@ const getLastElement = component => component.getInstance().lastElementRef.curre
  * firstElement and lastElement tests
  */
 
-test('<TabPressWrapper> with no children, and it should have no element that can be focused', () => {
+test('<TabPressWrapper> with no children, and it should have no element that can be focused', async () => {
   const { container } = render(<TabPressWrapper />);
-  userEvent.tab();
+  await userEvent.tab();
   expect(container).not.toHaveFocus();
   expect(container.getAttribute('tabIndex')).toBeNull();
 });
 
-test('<TabPressWrapper> with no children with a tabIndex, and not tabbable, this should have no elements that can be focused', () => {
+test('<TabPressWrapper> with no children with a tabIndex, and not tabbable, this should have no elements that can be focused', async () => {
   const { container } = render(
     <TabPressWrapper>
       <div id="noTabIndex1" data-testid="noTabIndex1" />
@@ -46,17 +46,17 @@ test('<TabPressWrapper> with no children with a tabIndex, and not tabbable, this
   );
 
   const firstElement = getByTestId(container, 'noTabIndex1');
-  userEvent.tab();
+  await userEvent.tab();
   expect(firstElement).not.toHaveFocus();
   expect(firstElement.getAttribute('tabIndex')).toBeNull();
 
   const secondElement = getByTestId(container, 'noTabIndex2');
-  userEvent.tab();
+  await userEvent.tab();
   expect(secondElement).not.toHaveFocus();
   expect(secondElement.getAttribute('tabIndex')).toBeNull();
 });
 
-test('<TabPressWrapper> children with only one tabIndex, and after tabbing once, should focus on the first element', () => {
+test('<TabPressWrapper> children with only one tabIndex, and after tabbing once, should focus on the first element', async () => {
   const { container } = render(
     <TabPressWrapper>
       <button id="tabIndex1" data-testid="tabbableButton" type="button" tabIndex={1} />
@@ -64,11 +64,11 @@ test('<TabPressWrapper> children with only one tabIndex, and after tabbing once,
   );
 
   const firstElement = getByTestId(container, 'tabbableButton');
-  userEvent.tab();
+  await userEvent.tab();
   expect(firstElement).toHaveFocus();
 });
 
-test('<TabPressWrapper> children with tabIndexes: 1, 2 and 3. Tabbing through each element will show focus based on tabIndex', () => {
+test('<TabPressWrapper> children with tabIndexes: 1, 2 and 3. Tabbing through each element will show focus based on tabIndex', async () => {
   const { container } = render(
     <TabPressWrapper>
       <button id="tabIndex1" data-testid="tabIndex1" type="button" tabIndex={1} />
@@ -78,19 +78,19 @@ test('<TabPressWrapper> children with tabIndexes: 1, 2 and 3. Tabbing through ea
   );
 
   const firstElement = getByTestId(container, 'tabIndex1');
-  userEvent.tab();
+  await userEvent.tab();
   expect(firstElement).toHaveFocus();
 
   const secondElement = getByTestId(container, 'tabIndex2');
-  userEvent.tab();
+  await userEvent.tab();
   expect(secondElement).toHaveFocus();
 
   const lastElement = getByTestId(container, 'tabIndex3');
-  userEvent.tab();
+  await userEvent.tab();
   expect(lastElement).toHaveFocus();
 });
 
-test('<TabPressWrapper> with second and third level children with tabIndexes: 1, 2 and 3. Tabbing through each element will show focus based on tabIndex', () => {
+test('<TabPressWrapper> with second and third level children with tabIndexes: 1, 2 and 3. Tabbing through each element will show focus based on tabIndex', async () => {
   const { container } = render(
     <TabPressWrapper>
       <div>
@@ -106,19 +106,19 @@ test('<TabPressWrapper> with second and third level children with tabIndexes: 1,
   );
 
   const firstElement = getByTestId(container, 'tabIndex1');
-  userEvent.tab();
+  await userEvent.tab();
   expect(firstElement).toHaveFocus();
 
   const secondElement = getByTestId(container, 'tabIndex2');
-  userEvent.tab();
+  await userEvent.tab();
   expect(secondElement).toHaveFocus();
 
   const lastElement = getByTestId(container, 'tabIndex3');
-  userEvent.tab();
+  await userEvent.tab();
   expect(lastElement).toHaveFocus();
 });
 
-test('<TabPressWrapper> children with tabIndexes: 1 and 3. Tabbing through each element will cycle focus based on tabIndex', () => {
+test('<TabPressWrapper> children with tabIndexes: 1 and 3. Tabbing through each element will cycle focus based on tabIndex', async () => {
   const { container } = render(
     <TabPressWrapper>
       <button id="tabIndex1" data-testid="tabIndex1" type="button" tabIndex={1} />
@@ -127,15 +127,15 @@ test('<TabPressWrapper> children with tabIndexes: 1 and 3. Tabbing through each 
   );
 
   const firstElement = getByTestId(container, 'tabIndex1');
-  userEvent.tab();
+  await userEvent.tab();
   expect(firstElement).toHaveFocus();
 
   const secondElement = getByTestId(container, 'tabIndex3');
-  userEvent.tab();
+  await userEvent.tab();
   expect(secondElement).toHaveFocus();
 });
 
-test('<TabPressWrapper> children with tabIndexes: 5 and 4. Given 4 has higher priority, first element focused will be tabIndex of 4, followed by element with tabIndex of 5', () => {
+test('<TabPressWrapper> children with tabIndexes: 5 and 4. Given 4 has higher priority, first element focused will be tabIndex of 4, followed by element with tabIndex of 5', async () => {
   const { container } = render(
     <TabPressWrapper>
       <button id="tabIndex5" data-testid="tabIndex5" type="button" tabIndex={5} />
@@ -144,15 +144,15 @@ test('<TabPressWrapper> children with tabIndexes: 5 and 4. Given 4 has higher pr
   );
 
   const firstElement = getByTestId(container, 'tabIndex4');
-  userEvent.tab();
+  await userEvent.tab();
   expect(firstElement).toHaveFocus();
 
   const secondElement = getByTestId(container, 'tabIndex5');
-  userEvent.tab();
+  await userEvent.tab();
   expect(secondElement).toHaveFocus();
 });
 
-test('<TabPressWrapper> children with two tabIndexs out of order.  Given 1 has higher priority, first & second elements focused will be tabIndex of 1, followed by element with tabIndex of 2', () => {
+test('<TabPressWrapper> children with two tabIndexs out of order.  Given 1 has higher priority, first & second elements focused will be tabIndex of 1, followed by element with tabIndex of 2', async () => {
   const { container } = render(
     <TabPressWrapper>
       <button id="tabIndex1" data-testid="tabIndex1" type="button" tabIndex={1} />
@@ -162,19 +162,19 @@ test('<TabPressWrapper> children with two tabIndexs out of order.  Given 1 has h
   );
 
   const firstElement = getByTestId(container, 'tabIndex1');
-  userEvent.tab();
+  await userEvent.tab();
   expect(firstElement).toHaveFocus();
 
   const secondElement = getByTestId(container, 'tabIndex1Again');
-  userEvent.tab();
+  await userEvent.tab();
   expect(secondElement).toHaveFocus();
 
   const lastElement = getByTestId(container, 'tabIndex2');
-  userEvent.tab();
+  await userEvent.tab();
   expect(lastElement).toHaveFocus();
 });
 
-test('<TabPressWrapper> children with tabIndexes with repeating tabIndexes. Tabbing through each element will cycle focus based on tabIndex chronology', () => {
+test('<TabPressWrapper> children with tabIndexes with repeating tabIndexes. Tabbing through each element will cycle focus based on tabIndex chronology', async () => {
   const { container } = render(
     <TabPressWrapper>
       <button id="tabIndex1" data-testid="tabIndex1" type="button" tabIndex={1} />
@@ -184,15 +184,15 @@ test('<TabPressWrapper> children with tabIndexes with repeating tabIndexes. Tabb
   );
 
   const firstElement = getByTestId(container, 'tabIndex1');
-  userEvent.tab();
+  await userEvent.tab();
   expect(firstElement).toHaveFocus();
 
   const secondElement = getByTestId(container, 'tabIndex2');
-  userEvent.tab();
+  await userEvent.tab();
   expect(secondElement).toHaveFocus();
 
   const lastElement = getByTestId(container, 'tabIndex2Again');
-  userEvent.tab();
+  await userEvent.tab();
   expect(lastElement).toHaveFocus();
 });
 
@@ -221,11 +221,11 @@ test('<TabPressWrapper> complex children structure. Tabbing through each element
   );
 
   const firstElement = getByTestId(container, 'tabIndex2');
-  userEvent.tab();
+  await userEvent.tab();
   expect(firstElement).toHaveFocus();
 
   const secondElement = getByTestId(container, 'tabIndex2Again');
-  userEvent.tab();
+  await userEvent.tab();
   expect(secondElement).toHaveFocus();
 
   const elementCount = await screen.findAllByRole('button');
@@ -233,7 +233,7 @@ test('<TabPressWrapper> complex children structure. Tabbing through each element
 
   // Out of 9 focusable button elements, 2 have already been focused on, hence 7 more tab cycles will focus on the last element
   for (let i = 0; i < 9 - 2; i++) {
-    userEvent.tab();
+    await userEvent.tab();
   }
 
   const lastElement = getByTestId(container, 'tabIndex7Again');
@@ -260,7 +260,7 @@ const assertCalledFocusElementWith = (component, element) => {
   expect(firstArgument.current).toEqual(element);
 };
 
-test('<TabPressWrapper> lastElement focused and hit "tab"', () => {
+test('<TabPressWrapper> lastElement focused and hit "tab"', async () => {
   const component = renderer.create(
     <TabPressWrapper>
       <button id="firstElement" type="button" tabIndex={1} />
@@ -280,7 +280,7 @@ test('<TabPressWrapper> lastElement focused and hit "tab"', () => {
   assertCalledFocusElementWith(component, firstElement);
 });
 
-test('<TabPressWrapper> firstElement focused and hit "shift+tab"', () => {
+test('<TabPressWrapper> firstElement focused and hit "shift+tab"', async () => {
   const component = renderer.create(
     <TabPressWrapper>
       <button id="firstElement" type="button" tabIndex={1} />
@@ -300,7 +300,7 @@ test('<TabPressWrapper> firstElement focused and hit "shift+tab"', () => {
   assertCalledFocusElementWith(component, lastElement);
 });
 
-test('<TabPressWrapper> single element hit "tab"', () => {
+test('<TabPressWrapper> single element hit "tab"', async () => {
   const component = renderer.create(
     <TabPressWrapper>
       <button id="singleElement" type="button" tabIndex={1} />
@@ -318,7 +318,7 @@ test('<TabPressWrapper> single element hit "tab"', () => {
   assertCalledFocusElementWith(component, firstElement);
 });
 
-test('<TabPressWrapper> single element hit "shift+tab"', () => {
+test('<TabPressWrapper> single element hit "shift+tab"', async () => {
   const component = renderer.create(
     <TabPressWrapper>
       <button id="singleElement" type="button" tabIndex={2} />

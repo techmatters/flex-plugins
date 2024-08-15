@@ -21,9 +21,10 @@ import { connect } from 'react-redux';
 
 import { RootState } from '../../states';
 import { isAnyChatPending } from '../queuesStatus/helpers';
-import { adjustChatCapacity } from '../../services/ServerlessService';
 import AddTaskButton from '../common/AddTaskButton';
 import { configurationBase, namespace, queuesStatusBase } from '../../states/storeNamespaces';
+import { adjustChatCapacity, pullNextTask } from '../../services/twilioWorkerService';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 type OwnProps = {
   workerClient: import('@twilio/flex-ui').Manager['workerClient'];
@@ -33,6 +34,7 @@ type OwnProps = {
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
 const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapacity, worker, workerClient }) => {
+  const { enable_backend_manual_pulling: enableBackendManualPulling } = getAseloFeatureFlags();
   const [isWaitingNewTask, setWaitingNewTask] = useState(false);
 
   // Increase chat capacity, if no reservation is created within 5 seconds, capacity is decreased and shows a notification.
@@ -57,6 +59,18 @@ const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapac
     await adjustChatCapacity('increase');
   };
 
+  const pullTask = async () => {
+    setWaitingNewTask(true);
+    try {
+      const nextTaskSid = await pullNextTask();
+      if (!nextTaskSid) {
+        Notifications.showNotification('NoTaskAssignableNotification');
+      }
+    } finally {
+      setWaitingNewTask(false);
+    }
+  };
+
   const { maxMessageCapacity } = worker.attributes;
   const maxCapacityReached = chatChannelCapacity >= parseInt(maxMessageCapacity, 10);
   const { isAvailable } = worker.worker;
@@ -72,7 +86,7 @@ const ManualPullButton: React.FC<Props> = ({ queuesStatusState, chatChannelCapac
   return (
     <AddTaskButton
       id="ManualPullButton"
-      onClick={increaseChatCapacity}
+      onClick={enableBackendManualPulling ? pullTask : increaseChatCapacity}
       disabled={disabled}
       isLoading={isWaitingNewTask}
       label="ManualPullButtonText"

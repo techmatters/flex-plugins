@@ -32,9 +32,10 @@ import {
   FormFileSpecification,
   loadDefinition,
 } from '../..';
-import { useFetchDefinitions } from '../fetchDefinitionsMock';
+import { mockFetchDefinitions } from '../fetchDefinitionsMock';
+import { loadLocalJson } from '../loadLocalJson';
 
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockFetchDefinitions(loadLocalJson);
 
 /**
  * Given a DefinitionSpecification and a CategoriesDefinition, will expect that the CategoriesDefinition is valid under the DefinitionSpecification.

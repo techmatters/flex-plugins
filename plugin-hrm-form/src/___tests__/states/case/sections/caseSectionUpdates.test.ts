@@ -16,14 +16,9 @@
 
 import promiseMiddleware from 'redux-promise-middleware';
 import { configureStore } from '@reduxjs/toolkit';
-import {
-  CaseSectionApiName,
-  DefinitionVersion,
-  DefinitionVersionId,
-  loadDefinition,
-  useFetchDefinitions,
-} from 'hrm-form-definitions';
+import { CaseSectionApiName, DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../../mockFetchDefinitions';
 import { HrmState } from '../../../../states';
 import { RecursivePartial } from '../../../RecursivePartial';
 import { createCaseSection, FullCaseSection, updateCaseSection } from '../../../../services/caseSectionService';
@@ -39,8 +34,8 @@ jest.mock('../../../../services/caseSectionService', () => ({
   createCaseSection: jest.fn(),
   updateCaseSection: jest.fn(),
 }));
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, buildBaseURL } = useFetchDefinitions();
+
+const { mockFetchImplementation, buildBaseURL } = mockLocalFetchDefinitions();
 
 let state: HrmState;
 const initialState: HrmState = {
@@ -90,6 +85,7 @@ beforeEach(() => {
               },
             },
           },
+          outstandingUpdateCount: 0,
           connectedCase: {
             ...VALID_EMPTY_CASE,
           },
@@ -148,22 +144,27 @@ describe('createCaseSectionAsyncAction', () => {
 
     test(`case already has sections of the same type - appends section to the appropriate section type list`, async () => {
       const { dispatch, getState } = testStore({});
-
-      await ((dispatch(
+      const actionResultPromise = (dispatch(
         createCaseSectionAsyncAction(CASE_ID, noteApi, payload, definitionVersion),
-      ) as unknown) as PromiseLike<unknown>);
+      ) as unknown) as PromiseLike<unknown>;
+      const pendingState = getState();
+      expect(pendingState.connectedCase.cases[CASE_ID].outstandingUpdateCount).toBe(1);
+      await actionResultPromise;
       const state = getState();
       expect(Object.keys(state.connectedCase.cases[CASE_ID].sections.note)).toHaveLength(2);
       expect(state.connectedCase.cases[CASE_ID].sections.note[EXPECTED_CASE_SECTION.sectionId]).toEqual(
         EXPECTED_CASE_SECTION,
       );
+      expect(state.connectedCase.cases[CASE_ID].outstandingUpdateCount).toBe(0);
     });
     test(`case has no existing sections of the same type - adds an appropriate section type list with the new item as its element`, async () => {
       const { dispatch, getState } = testStore({});
-
-      await ((dispatch(
+      const actionResultPromise = (dispatch(
         createCaseSectionAsyncAction(CASE_ID, referralApi, payload, definitionVersion),
-      ) as unknown) as PromiseLike<unknown>);
+      ) as unknown) as PromiseLike<unknown>;
+      const pendingState = getState();
+      expect(pendingState.connectedCase.cases[CASE_ID].outstandingUpdateCount).toBe(1);
+      await actionResultPromise;
       const state = getState();
       expect(Object.keys(state.connectedCase.cases[CASE_ID].sections.note)).toHaveLength(1);
       expect(Object.keys(state.connectedCase.cases[CASE_ID].sections.referral)).toHaveLength(1);
@@ -171,6 +172,7 @@ describe('createCaseSectionAsyncAction', () => {
         ...EXPECTED_CASE_SECTION,
         sectionType: 'referral',
       });
+      expect(state.connectedCase.cases[CASE_ID].outstandingUpdateCount).toBe(0);
     });
     test(`case has no existing sections object - adds a sections object with an appropriate section type list with the new item as its element`, async () => {
       const { dispatch, getState } = testStore({
@@ -183,6 +185,7 @@ describe('createCaseSectionAsyncAction', () => {
               connectedCase: { ...VALID_EMPTY_CASE },
               timelines: {},
               sections: {},
+              outstandingUpdateCount: 0,
             },
           },
         },
@@ -274,28 +277,36 @@ describe('updateCaseSectionAsyncAction', () => {
 
     test(`case with caseId exists & section with sectionId exists - updates the section in the appropriate type list`, async () => {
       const { dispatch, getState } = testStore({});
-      await ((dispatch(
+      const actionResultPromise = (dispatch(
         updateCaseSectionAsyncAction(CASE_ID, noteApi, 'EXISTING_NOTE_ID', payload, definitionVersion),
-      ) as unknown) as PromiseLike<unknown>);
+      ) as unknown) as PromiseLike<unknown>;
+      const pendingState = getState();
+      expect(pendingState.connectedCase.cases[CASE_ID].outstandingUpdateCount).toBe(1);
+      await actionResultPromise;
       const state = getState();
       expect(Object.keys(state.connectedCase.cases[CASE_ID].sections.note)).toHaveLength(1);
       expect(state.connectedCase.cases[CASE_ID].sections.note[EXPECTED_CASE_SECTION.sectionId]).toEqual(
         EXPECTED_CASE_SECTION,
       );
+      expect(state.connectedCase.cases[CASE_ID].outstandingUpdateCount).toBe(0);
     });
 
     test(`case with caseId exists but section with sectionId does not exist - appends section to the appropriate section type list`, async () => {
       const { dispatch, getState } = testStore({});
 
-      await ((dispatch(
+      const actionResultPromise = (dispatch(
         updateCaseSectionAsyncAction(CASE_ID, noteApi, 'NEW_NOTE_ID', payload, definitionVersion),
-      ) as unknown) as PromiseLike<unknown>);
+      ) as unknown) as PromiseLike<unknown>;
+      const pendingState = getState();
+      expect(pendingState.connectedCase.cases[CASE_ID].outstandingUpdateCount).toBe(1);
+      await actionResultPromise;
       const state = getState();
       expect(Object.keys(state.connectedCase.cases[CASE_ID].sections.note)).toHaveLength(2);
       expect(state.connectedCase.cases[CASE_ID].sections.note.NEW_NOTE_ID).toEqual({
         ...EXPECTED_CASE_SECTION,
         sectionId: 'NEW_NOTE_ID',
       });
+      expect(state.connectedCase.cases[CASE_ID].outstandingUpdateCount).toBe(0);
     });
     test(`case has no existing sections of the same type - adds an appropriate section type list with the new item as its element`, async () => {
       const { dispatch, getState } = testStore({});
@@ -323,6 +334,7 @@ describe('updateCaseSectionAsyncAction', () => {
               connectedCase: { ...VALID_EMPTY_CASE },
               timelines: {},
               sections: {},
+              outstandingUpdateCount: 0,
             },
           },
         },
