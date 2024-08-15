@@ -7,7 +7,7 @@
     "idle_session_ttl_in_seconds": "600",
     "enable_model_improvements": true,
     "abort_statement": {
-      "content": "Lo siento, no puedo ayudarte en este momento.",
+      "content": "Lo siento, no puedo ayudarte en este momento. Te transferiré a un consejero",
       "content_type": "PlainText"
     },
     "clarification_prompt": {

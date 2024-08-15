@@ -1,0 +1,26 @@
+{
+  "task_routing": {
+    "filters": [
+      {
+        "filter_friendly_name": "${helpline}",
+        "expression": "${task_routing_filter_expression}",
+        "targets": [
+          {
+            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0 AND worker.routing.skills HAS \"Calls\") OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0 AND worker.routing.skills HAS \"Chat\")) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "queue": "${task_queues.master}"
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "E2E Test",
+        "expression": "channelType=='web' AND e2eTestMode=='true'",
+        "targets": [
+          {
+            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "queue": "${task_queues.e2e_test}"
+          }
+        ]
+      }
+    ]
+  } 
+}

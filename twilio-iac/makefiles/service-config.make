@@ -20,3 +20,9 @@ service-config-sync-plan:	## Show the plan to update the local json to match the
 
 service-config-sync-apply: ## Apply the plan to update the local json to match the remote service configuration
 	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/python_tools/manageServiceConfig.py sync_apply
+
+service-config-show-flags: ## Show just the feature and config flags in service configuration
+	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/python_tools/manageServiceConfig.py show_flags
+
+service-config-generate-flags-matrix: ## Generate 'Flags Matrix' gsheet for all accounts
+	docker run -it --rm $(DEFAULT_ARGS) $(DOCKER_IMAGE):$(TF_VER) $(TF_ROOT_PATH)/scripts/python_tools/manageServiceConfig.py generate_flags_matrix

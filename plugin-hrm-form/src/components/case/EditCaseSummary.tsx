@@ -66,8 +66,9 @@ const mapStateToProps = (state: RootState, { task }: EditCaseSummaryProps) => {
   const connectedCaseState = selectCurrentRouteCaseState(state, task.taskSid);
   const historyDetails = selectCaseHistoryDetails(state, connectedCaseState?.connectedCase);
   const workingCopy = connectedCaseState?.caseWorkingCopy.caseSummary;
+  const isUpdating = (connectedCaseState?.outstandingUpdateCount ?? 0) > 0;
   const definitionVersion = selectDefinitionVersionForCase(state, connectedCaseState?.connectedCase);
-  return { connectedCaseState, workingCopy, definitionVersion, historyDetails };
+  return { connectedCaseState, workingCopy, definitionVersion, historyDetails, isUpdating };
 };
 
 const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
@@ -103,6 +104,7 @@ const EditCaseSummary: React.FC<Props> = ({
   closeActions,
   can,
   updateCaseAsyncAction,
+  isUpdating,
 }) => {
   const { connectedCase, availableStatusTransitions } = connectedCaseState ?? {};
 
@@ -221,6 +223,7 @@ const EditCaseSummary: React.FC<Props> = ({
         <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
         <BottomButtonBar>
           <StyledNextStepButton
+            disabled={isUpdating}
             data-testid="Case-EditCaseScreen-SaveItem"
             roundCorners
             onClick={methods.handleSubmit(saveAndLeave, onError)}

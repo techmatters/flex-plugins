@@ -12,3 +12,5 @@ termcolor==2.3.0
 twilio==8.5.0
 twilio-stubs==0.2.0
 typing-extensions==4.7.1
+gspread==6.1.2
+google-auth==2.33.0

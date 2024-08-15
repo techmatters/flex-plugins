@@ -33,6 +33,12 @@ inputs:
   helpline-id:
     description: 'Identifies the helpline / environment for slack message'
     default: '??'
+  helpline_code:
+    description: 'Identifies the helpline / environment for slack message'
+    default: '??'
+  environment:
+    description: 'Identifies the environment for slack message'
+    default: '??'
   send-slack-message:
     description: 'Specifies if should send a Slack message at the end of successful run. Defaults to true'
     required: false
@@ -73,6 +79,7 @@ runs:
         with:
           ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
           env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
+
       # Create temporal files for the release
       - name: Create appConfig.js
         run: cp ./public/appConfig.template.deploy.js ./public/appConfig.js
@@ -113,7 +120,7 @@ runs:
         env:
           TWILIO_ACCOUNT_SID: ${{ inputs.account-sid }}
           TWILIO_AUTH_TOKEN: ${{ inputs.auth-token }}
-        run: twilio flex:plugins:deploy --changelog "commit ${{ github.sha }}"
+        run: twilio flex:plugins:deploy --bypass-validation --changelog "commit ${{ github.sha }}"
         working-directory: ./plugin-hrm-form
         shell: bash
       # Release flex plugin
@@ -142,3 +149,15 @@ runs:
           slack-message: "`[FLEX]` Deployment to `${{ inputs.helpline-id }}` of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed using workflow '${{ github.workflow }}' with SHA ${{ github.sha }} :rocket:."
         env:
           SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+
+      # Update deployment matrix with script and ssm parameters
+      - name: Update deployment matrix
+        uses: ./.github/actions/deployment-matrix
+        with:
+          aws-access-key-id: ${{ inputs.aws-access-key-id }}
+          aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+          aws-region: ${{ inputs.aws-region }}
+          identifier: ${{ inputs.helpline_code }}
+          environment: ${{ inputs.environment}}
+          service_repo: 'flex-plugins'
+          version_tag: ${{ github.ref_name }}

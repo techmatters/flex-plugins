@@ -61,6 +61,10 @@ jest.mock('@twilio/flex-ui', () => ({
   },
 }));
 
+jest.mock('../../authentication', () => ({
+  getValidToken: () => 'valid token',
+}));
+
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 /**

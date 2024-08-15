@@ -101,6 +101,31 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
   await TransferHelpers.setTransferMeta(payload, counselorName);
 
   if (TaskHelper.isCallTask(payload.task)) {
+    /**
+     * Temporary Fix:
+     * - Sometimes a call task comes without the conference object set in its attributes.
+     * - The code below updates the task attributes to include the conference information
+     *   if it is missing.
+     */
+    const { conferenceSid } = payload.task.conference || {};
+    const conferenceSidFromAttributes = payload.task.attributes?.conference?.sid;
+    if (!conferenceSid && !conferenceSidFromAttributes) {
+      console.log('>> Could not find any conferenceSid');
+    } else if (conferenceSid && !conferenceSidFromAttributes) {
+      console.log('>> Updating task attributes with conferenceSid');
+      const customer = payload.task.conference?.participants.find(p => p.participantType === 'customer').participantSid;
+      await payload.task.setAttributes({
+        ...payload.task.attributes,
+        conference: {
+          sid: conferenceSid,
+          // TODO: Do we need to set any participants as well?
+          // participants: {
+          //   customer,
+          // },
+        },
+      });
+    }
+
     const disableTransfer = !TransferHelpers.canTransferConference(payload.task);
 
     if (disableTransfer) {

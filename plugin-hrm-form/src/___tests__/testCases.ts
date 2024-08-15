@@ -39,4 +39,5 @@ export const VALID_EMPTY_CASE_STATE_ENTRY: CaseStateEntry = {
   availableStatusTransitions: [],
   caseWorkingCopy: undefined,
   references: new Set<string>(),
+  outstandingUpdateCount: 0,
 };

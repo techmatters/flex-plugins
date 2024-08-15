@@ -10,41 +10,5 @@
         "label": "Someone calling about a child",
         "type": "button",
         "category": "data"
-    },
-    {
-        "name": "silent",
-        "label": "Silent",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
-        "name": "hangup",
-        "label": "Hang up",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
-        "name": "abusive",
-        "label": "Abusive",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
-        "name": "thanks",
-        "label": "Thank you",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
-        "name": "questions",
-        "label": "Questions",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
-        "name": "emergency",
-        "label": "Emergency",
-        "type": "button",
-        "category": "non-data"
     }
 ]

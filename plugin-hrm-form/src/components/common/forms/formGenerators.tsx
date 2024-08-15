@@ -23,6 +23,7 @@ import { get, pick } from 'lodash';
 import { format, startOfDay } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
 import { FormInputType, FormItemDefinition, InputOption, MixedOrBool, SelectOption } from 'hrm-form-definitions';
+import SearchIcon from '@material-ui/icons/Search';
 
 import {
   Box,
@@ -46,6 +47,8 @@ import {
   FormSelectWrapper,
   FormTextArea,
   FormTimeInput,
+  FormSearchInput,
+  SearchIconContainer,
   Row,
 } from '../../../styles';
 import type { HTMLElementRef } from './types';
@@ -218,6 +221,63 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   </FormError>
                 )}
               </FormLabel>
+            );
+          }}
+        </ConnectForm>
+      );
+    case FormInputType.SearchInput:
+      return (
+        <ConnectForm key={path}>
+          {({ errors, register }) => {
+            const error = get(errors, path);
+            return (
+              <>
+                <FormLabel htmlFor={path}>
+                  <Row>
+                    <Box marginBottom="8px">
+                      {/* visually hidden but still accessible to screen readers*/}
+                      <span
+                        style={{
+                          position: 'absolute',
+                          width: '1px',
+                          height: '1px',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        {labelTextComponent}
+                      </span>
+                      {rules.required && <RequiredAsterisk />}
+                    </Box>
+                  </Row>
+                </FormLabel>
+                <SearchIconContainer>
+                  <SearchIcon style={{ fontSize: '20px' }} />
+                </SearchIconContainer>
+                <FormSearchInput
+                  id={path}
+                  data-testid={path}
+                  name={path}
+                  ref={ref => {
+                    if (htmlElRef) {
+                      htmlElRef.current = ref;
+                    }
+
+                    register(rules)(ref);
+                  }}
+                  defaultValue={initialValue}
+                  disabled={!isEnabled}
+                  role="search"
+                  aria-label="Search"
+                  error={Boolean(error)}
+                  aria-describedby={`${path}-error`}
+                  onBlur={updateCallback}
+                />
+                {labelTextComponent && (
+                  <span id={`${path}-label`} style={{ display: 'none' }}>
+                    {labelTextComponent}
+                  </span>
+                )}
+              </>
             );
           }}
         </ConnectForm>
@@ -522,7 +582,6 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                       if (htmlElRef) {
                         htmlElRef.current = ref;
                       }
-
                       register(rules)(ref);
                     }}
                     disabled={!isEnabled}
