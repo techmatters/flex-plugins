@@ -137,6 +137,14 @@ ${
             {
                 "value": "preSurveyComplete",
                 "key": "releaseFlag"
+            },
+            {
+                "value": "{{trigger.message.ChannelAttributes.channel_type | downcase}}",
+                "key": "channelType"
+            },
+            {
+                "value": "false",
+                "key": "isConversation"
             }
             ],
             "url": "${serverless_url}/${flow_vars["capture_channel_with_bot_function_name"]}"

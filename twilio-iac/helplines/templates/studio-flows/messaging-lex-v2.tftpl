@@ -100,8 +100,8 @@ ${
                 }
             ],
             "properties": {
-                "service_sid": flow_vars["service_sid"],
-                "environment_sid": flow_vars["environment_sid"],
+                "service_sid": serverless_service_sid,
+                "environment_sid": serverless_environment_sid,
                 "offset": {
                  "x": -130,
                  "y": 500
@@ -139,6 +139,14 @@ ${
                 {
                     "value": "preSurveyComplete",
                     "key": "releaseFlag"
+                },
+                {
+                  "value": "{{trigger.message.ChannelAttributes.channel_type | downcase}}",
+                  "key": "channelType"
+                },
+                {
+                  "value": "false",
+                  "key": "isConversation"
                 }
                 ],
                 "url": "${serverless_url}/channelCapture/captureChannelWithBot"
@@ -158,13 +166,13 @@ ${
                 }
             ],
             "properties": {
-                "service_sid": flow_vars["service_sid"],
-                "environment_sid": flow_vars["environment_sid"],
+                "service_sid": serverless_service_sid,
+                "environment_sid": serverless_environment_sid,
                 "offset": {
                  "x": -60,
                  "y": 720
                 },
-                "function_sid": flow_vars["chatbot_callback_cleanup_function_id"],
+                "function_sid": flow_vars["chatbot_callback_cleanup_function_sid"],
                 "parameters": [
                 {
                     "value": "{{flow.channel.address}}",
@@ -195,7 +203,8 @@ ${
           "method": "POST",
           "content_type": "application/json;charset=utf-8",
           "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
-          "url": webhook_url_studio_errors
+          "url": webhook_url_studio_errors,
+          "add_twilio_auth" = false
         }
       },
     {
@@ -217,7 +226,8 @@ ${
           "method": "POST",
           "content_type": "application/json;charset=utf-8",
           "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
-          "url": webhook_url_studio_errors
+          "url": webhook_url_studio_errors,
+          "add_twilio_auth" = false
         }
       } 
     ],

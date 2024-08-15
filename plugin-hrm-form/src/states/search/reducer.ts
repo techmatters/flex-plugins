@@ -178,6 +178,27 @@ export function reduce(
         },
       };
     }
+    case t.HANDLE_FORM_UPDATE: {
+      const task = state.tasks[action.taskId];
+      const context = state.tasks[action.taskId][action.context];
+
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: {
+            ...task,
+            [action.context]: {
+              ...context,
+              form: {
+                ...context?.form,
+                ...action.values,
+              },
+            },
+          },
+        },
+      };
+    }
     case t.CREATE_NEW_SEARCH: {
       const task = state.tasks[action.taskId] || {};
       const context = state.tasks[action.taskId][action.context];

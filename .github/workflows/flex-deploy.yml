@@ -94,6 +94,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           helpline-id: ${{inputs.helpline_code}}_${{inputs.environment_code}}
+          helpline_code: ${{inputs.helpline_code}}
+          environment: ${{inputs.environment_code}}
           send-slack-message: ${{ inputs.send-slack-message }}
 
   deploy_form_definitions:

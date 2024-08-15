@@ -33,6 +33,16 @@ variable "aws_monitoring_region" {
   description = "The region for the AWS monitoring."
 }
 
+variable "s3_lifecycle_rules" {
+  description = "S3 Bucket Lifecycle Rules"
+  type = map(object({
+    id                 = string
+    expiration_in_days = number
+    prefix             = string
+    status             = optional(string)
+  }))
+}
+
 variable "manage_github_secrets" {
   type        = bool
   description = "Whether to manage the github secrets for the helpline."

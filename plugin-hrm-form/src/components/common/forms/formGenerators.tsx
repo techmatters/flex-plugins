@@ -18,35 +18,38 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react/display-name */
 import React from 'react';
-import { useFormContext, RegisterOptions } from 'react-hook-form';
+import { RegisterOptions, useFormContext } from 'react-hook-form';
 import { get, pick } from 'lodash';
 import { format, startOfDay } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
-import { FormItemDefinition, InputOption, SelectOption, MixedOrBool, FormInputType } from 'hrm-form-definitions';
+import { FormInputType, FormItemDefinition, InputOption, MixedOrBool, SelectOption } from 'hrm-form-definitions';
+import SearchIcon from '@material-ui/icons/Search';
 
 import {
   Box,
-  FormLabel,
   DependentSelectLabel,
-  FormError,
-  Row,
-  FormInput,
-  FormDateInput,
-  FormTimeInput,
-  FormCheckBoxWrapper,
   FormCheckbox,
-  FormMixedCheckbox,
-  FormSelect,
-  FormOption,
-  FormSelectWrapper,
-  FormTextArea,
-  FormRadioInput,
+  FormCheckBoxWrapper,
+  FormDateInput,
+  FormError,
   FormFieldset,
+  FormInput,
+  FormLabel,
   FormLegend,
   FormListboxMultiselect,
-  FormListboxMultiselectOptionsContainer,
   FormListboxMultiselectOption,
   FormListboxMultiselectOptionLabel,
+  FormListboxMultiselectOptionsContainer,
+  FormMixedCheckbox,
+  FormOption,
+  FormRadioInput,
+  FormSelect,
+  FormSelectWrapper,
+  FormTextArea,
+  FormTimeInput,
+  FormSearchInput,
+  SearchIconContainer,
+  Row,
 } from '../../../styles';
 import type { HTMLElementRef } from './types';
 import UploadFileInput from './UploadFileInput';
@@ -218,6 +221,63 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   </FormError>
                 )}
               </FormLabel>
+            );
+          }}
+        </ConnectForm>
+      );
+    case FormInputType.SearchInput:
+      return (
+        <ConnectForm key={path}>
+          {({ errors, register }) => {
+            const error = get(errors, path);
+            return (
+              <>
+                <FormLabel htmlFor={path}>
+                  <Row>
+                    <Box marginBottom="8px">
+                      {/* visually hidden but still accessible to screen readers*/}
+                      <span
+                        style={{
+                          position: 'absolute',
+                          width: '1px',
+                          height: '1px',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        {labelTextComponent}
+                      </span>
+                      {rules.required && <RequiredAsterisk />}
+                    </Box>
+                  </Row>
+                </FormLabel>
+                <SearchIconContainer>
+                  <SearchIcon style={{ fontSize: '20px' }} />
+                </SearchIconContainer>
+                <FormSearchInput
+                  id={path}
+                  data-testid={path}
+                  name={path}
+                  ref={ref => {
+                    if (htmlElRef) {
+                      htmlElRef.current = ref;
+                    }
+
+                    register(rules)(ref);
+                  }}
+                  defaultValue={initialValue}
+                  disabled={!isEnabled}
+                  role="search"
+                  aria-label="Search"
+                  error={Boolean(error)}
+                  aria-describedby={`${path}-error`}
+                  onBlur={updateCallback}
+                />
+                {labelTextComponent && (
+                  <span id={`${path}-label`} style={{ display: 'none' }}>
+                    {labelTextComponent}
+                  </span>
+                )}
+              </>
             );
           }}
         </ConnectForm>
@@ -422,7 +482,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
 
             const handleOnBlur: React.FocusEventHandler<HTMLUListElement> = event => {
               // If this element lost "focus-within" (none of it's childrens is focused), reset focus controls and recompute next tab
-              if (!event.currentTarget.matches(':focus-within')) {
+              if (!event.currentTarget.contains(event.relatedTarget)) {
                 setOptionsTabIndexes(calculateOptionsTabIndexes(get(getValues(), path), def.options));
                 setFocusedOption(-1);
                 setComputeFocus(false);
@@ -522,7 +582,6 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                       if (htmlElRef) {
                         htmlElRef.current = ref;
                       }
-
                       register(rules)(ref);
                     }}
                     disabled={!isEnabled}
@@ -655,7 +714,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
           }}
         </ConnectForm>
       );
-    case 'mixed-checkbox':
+    case FormInputType.MixedCheckbox:
       return (
         <ConnectForm key={path}>
           {({ errors, register, setValue }) => {

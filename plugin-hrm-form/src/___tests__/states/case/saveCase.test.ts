@@ -15,8 +15,9 @@
  */
 import promiseMiddleware from 'redux-promise-middleware';
 import { configureStore } from '@reduxjs/toolkit';
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import '../../mockGetConfig';
 import { createCaseAsyncAction, saveCaseReducer, updateCaseOverviewAsyncAction } from '../../../states/case/saveCase';
 import { HrmState } from '../../../states';
@@ -24,14 +25,14 @@ import { reduce } from '../../../states/case/reducer';
 import { createCase, getCase, updateCaseOverview, updateCaseStatus } from '../../../services/CaseService';
 import { connectToCase } from '../../../services/ContactService';
 import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
-import { Case } from '../../../types/types';
+import { Case, Contact } from '../../../types/types';
 import { RecursivePartial } from '../../RecursivePartial';
 import { VALID_EMPTY_CASE } from '../../testCases';
 
 jest.mock('../../../services/CaseService');
 jest.mock('../../../services/ContactService');
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, buildBaseURL } = useFetchDefinitions();
+
+const { mockFetchImplementation, buildBaseURL } = mockLocalFetchDefinitions();
 
 const mockCreateCase = createCase as jest.Mock<ReturnType<typeof createCase>>;
 const mockConnectedCase = connectToCase as jest.Mock<ReturnType<typeof connectToCase>>;
@@ -75,9 +76,9 @@ beforeAll(async () => {
 
 beforeEach(() => {
   mockCreateCase.mockReset();
-  mockCreateCase.mockResolvedValue({ id: '234' });
+  mockCreateCase.mockResolvedValue({ id: '234' } as Case);
   mockConnectedCase.mockReset();
-  mockConnectedCase.mockResolvedValue({ id: 'contact-1' });
+  mockConnectedCase.mockResolvedValue({ id: 'contact-1' } as Contact);
 });
 
 const boundSaveCaseReducer = saveCaseReducer(saveCaseState);
@@ -94,7 +95,7 @@ const mockPayload: Omit<Case, 'sections' | 'label'> = {
   categories: {},
 };
 
-const testStore = (stateChanges: HrmState) =>
+const testStore = (stateChanges: Partial<HrmState> = {}) =>
   configureStore({
     preloadedState: { ...saveCaseState, ...stateChanges },
     reducer: boundSaveCaseReducer,
@@ -233,6 +234,7 @@ describe('createCaseAsyncAction', () => {
             references: new Set(),
             sections: {},
             timelines: {},
+            outstandingUpdateCount: 0,
           },
         },
       },
@@ -272,7 +274,7 @@ describe('updateCaseOverviewAsyncAction', () => {
   });
 
   test('overview populated in action but status omitted - just calls updateCaseOverview with case ID and overview object', async () => {
-    const action = updateCaseOverviewAsyncAction(mockPayload.id, overview);
+    const action = updateCaseOverviewAsyncAction(mockPayload.id, overview, undefined);
     expect(updateCaseOverview).toHaveBeenCalledWith(mockPayload.id, overview);
     expect(updateCaseStatus).not.toHaveBeenCalled();
 
@@ -307,7 +309,7 @@ describe('updateCaseOverviewAsyncAction', () => {
   });
 
   test('neither overview and status populated in action - just calls get to refresh case', async () => {
-    const action = updateCaseOverviewAsyncAction(mockPayload.id, {});
+    updateCaseOverviewAsyncAction(mockPayload.id, {}, undefined);
     expect(updateCaseStatus).not.toHaveBeenCalled();
     expect(updateCaseOverview).not.toHaveBeenCalled();
   });
@@ -315,11 +317,16 @@ describe('updateCaseOverviewAsyncAction', () => {
   describe('fulfilled', () => {
     test('case exists in redux store - updates case overview ', async () => {
       const { getState, dispatch } = testStore(nonInitialState);
-      await ((dispatch(updateCaseOverviewAsyncAction(mockPayload.id, overview)) as unknown) as PromiseLike<void>);
+      const actionResultPromise = (dispatch(
+        updateCaseOverviewAsyncAction(mockPayload.id, overview, undefined),
+      ) as unknown) as PromiseLike<void>;
+      const pendingState = getState();
+      expect(pendingState.connectedCase.cases[mockPayload.id].outstandingUpdateCount).toEqual(1);
+      await actionResultPromise;
       const {
         connectedCase: {
           cases: {
-            213: { connectedCase: updatedCase },
+            [mockPayload.id]: { connectedCase: updatedCase, outstandingUpdateCount },
           },
         },
       } = getState() as HrmState;
@@ -331,13 +338,16 @@ describe('updateCaseOverviewAsyncAction', () => {
           ...overview,
         },
       });
+      expect(outstandingUpdateCount).toEqual(0);
     });
     test("case doesn't exist in redux store - adds case", async () => {
       const { getState, dispatch } = testStore(nonInitialState);
       const {
         connectedCase: { cases: originalCases },
       } = getState() as HrmState;
-      await ((dispatch(updateCaseOverviewAsyncAction('ANOTHER_CASE', overview)) as unknown) as PromiseLike<void>);
+      await ((dispatch(updateCaseOverviewAsyncAction('ANOTHER_CASE', overview, undefined)) as unknown) as PromiseLike<
+        void
+      >);
       const {
         connectedCase: { cases: updatedCases },
       } = getState() as HrmState;
@@ -354,6 +364,7 @@ describe('updateCaseOverviewAsyncAction', () => {
           caseWorkingCopy: { sections: {} },
           sections: {},
           timelines: {},
+          outstandingUpdateCount: 0,
         },
       });
     });

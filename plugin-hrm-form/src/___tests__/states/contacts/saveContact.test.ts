@@ -16,12 +16,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import promiseMiddleware from 'redux-promise-middleware';
 
-import { connectToCase, updateContactInHrm } from '../../../services/ContactService';
+import { connectToCase, getContactByTaskSid, updateContactInHrm } from '../../../services/ContactService';
 import { completeTask, submitContactForm } from '../../../services/formSubmissionHelpers';
 import { Case, Contact, CustomITask } from '../../../types/types';
 import { ContactMetadata, ContactsState, LoadingStatus } from '../../../states/contacts/types';
 import {
   connectToCaseAsyncAction,
+  loadContactFromHrmByTaskSidAsyncAction,
   saveContactReducer,
   submitContactFormAsyncAction,
   updateContactInHrmAsyncAction,
@@ -37,6 +38,7 @@ jest.mock('../../../services/CaseService');
 jest.mock('../../../services/formSubmissionHelpers');
 jest.mock('../../../components/case/Case');
 
+const mockGetContactByTaskSid = getContactByTaskSid as jest.MockedFunction<typeof getContactByTaskSid>;
 const mockUpdateContactInHrm = updateContactInHrm as jest.Mock<ReturnType<typeof updateContactInHrm>>;
 const mockSubmitContactForm = submitContactForm as jest.Mock<ReturnType<typeof submitContactForm>>;
 const mockConnectToCase = connectToCase as jest.Mock<ReturnType<typeof connectToCase>>;
@@ -123,6 +125,29 @@ const baseState: ContactsState = {
 // const dispatch = jest.fn();
 
 describe('actions', () => {
+  describe('loadContactFromHrmByTaskSidAsyncAction', () => {
+    test('Finds a contact with no attached case - loads ', async () => {
+      const { dispatch, getState } = testStore(baseState);
+      const taskContact: Contact = {
+        ...VALID_EMPTY_CONTACT,
+        id: '666',
+        taskId: 'WT-load-me',
+      };
+      mockGetContactByTaskSid.mockResolvedValue(taskContact);
+      const actionPromiseResult = (dispatch(
+        loadContactFromHrmByTaskSidAsyncAction('WT-load-me', 'mock-ref'),
+      ) as unknown) as Promise<void>;
+      const pendingState = getState();
+      expect(pendingState.contactsBeingCreated.has('WT-load-me')).toBe(true);
+      await actionPromiseResult;
+      const state = getState();
+      expect(state.contactsBeingCreated.has('WT-load-me')).toBe(false);
+      expect(state.existingContacts['666'].savedContact).toEqual(taskContact);
+      expect(state.existingContacts['666'].references.has('mock-ref')).toBe(true);
+      expect(mockGetCase).not.toHaveBeenCalled();
+      expect(mockGetContactByTaskSid).toHaveBeenCalledWith('WT-load-me');
+    });
+  });
   test('Calls the updateContactsFormInHrmAsyncAction action, and update a contact', async () => {
     const { dispatch, getState } = testStore(baseState);
     const startingState = getState();
@@ -178,9 +203,10 @@ describe('actions', () => {
         connectedCase: baseCase,
         sections: {},
         timelines: {},
-        references: new Set(),
+        references: new Set<string>(),
         availableStatusTransitions: [],
         caseWorkingCopy: undefined,
+        outstandingUpdateCount: 0,
       };
       submitContactFormAsyncAction(task, baseContact, baseMetadata, caseState);
       expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, baseMetadata, caseState);

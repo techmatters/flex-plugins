@@ -31,7 +31,7 @@ type OwnProps = {
 const ResourceIdCopyButton: React.FC<OwnProps> = ({ resourceId, height = '36px' }) => {
   const strings = getTemplateStrings();
   const [justCopied, setJustCopied] = useState(false);
-  let copiedStateTimerId: NodeJS.Timer;
+  let copiedStateTimerId: NodeJS.Timeout;
 
   const copyClicked = async () => {
     await navigator.clipboard.writeText(resourceId);

@@ -78,7 +78,7 @@ const mapStateToProps = (state: RootState, { task, sectionApi }: AddEditCaseItem
 
   if (isCaseRoute(currentRoute)) {
     const sectionId = isEditCaseSectionRoute(currentRoute) ? currentRoute.id : undefined;
-    const { caseWorkingCopy, sections } = selectCaseByCaseId(state, currentRoute.caseId);
+    const { caseWorkingCopy, sections, outstandingUpdateCount } = selectCaseByCaseId(state, currentRoute.caseId);
     const caseItemHistory = sectionId
       ? selectCaseItemHistory(state, currentRoute.caseId, sectionApi, sectionId)
       : {
@@ -90,7 +90,7 @@ const mapStateToProps = (state: RootState, { task, sectionApi }: AddEditCaseItem
 
     const workingCopy = sectionApi.getWorkingCopy(caseWorkingCopy, sectionId);
 
-    return { caseItemHistory, workingCopy, currentRoute, sections, sectionId };
+    return { caseItemHistory, workingCopy, currentRoute, sections, sectionId, isUpdating: outstandingUpdateCount > 0 };
   }
   return {
     connectedCase: undefined,
@@ -98,6 +98,7 @@ const mapStateToProps = (state: RootState, { task, sectionApi }: AddEditCaseItem
     caseItemHistory: undefined,
     workingCopy: undefined,
     sectionId: undefined,
+    isUpdating: false,
   };
 };
 
@@ -152,6 +153,7 @@ const AddEditCaseItem: React.FC<Props> = ({
   updateCaseSection,
   createCaseSection,
   sections,
+  isUpdating,
 }) => {
   const formDefinition = React.useMemo(() => sectionApi.getSectionFormDefinition(definitionVersion), [
     definitionVersion,
@@ -310,6 +312,7 @@ const AddEditCaseItem: React.FC<Props> = ({
                 secondary="true"
                 roundCorners
                 onClick={methods.handleSubmit(saveAndStay, onError)}
+                disabled={isUpdating}
               >
                 <Template code={`BottomBar-SaveAndAddAnother${sectionApi.label}`} />
               </StyledNextStepButton>
@@ -319,6 +322,7 @@ const AddEditCaseItem: React.FC<Props> = ({
             data-testid="Case-AddEditItemScreen-SaveItem"
             roundCorners
             onClick={methods.handleSubmit(() => saveAndLeave(DismissAction.BACK), onError)}
+            disabled={isUpdating}
           >
             <Template code={`BottomBar-Save${sectionApi.label}`} />
           </StyledNextStepButton>

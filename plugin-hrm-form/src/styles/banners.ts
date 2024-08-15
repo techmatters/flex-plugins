@@ -63,7 +63,6 @@ type ButtonProps = {
 export const CaseLink = styled('button')<ButtonProps>`
   color: ${({ color }) => (color ? color : '#0263e0')};
   font-size: 14px;
-  text-decoration: ${({ permission }) => (permission ? permission : 'underline')};
   background: none;
   border: none;
   cursor: ${({ permission }) => (permission ? 'default' : 'pointer')};

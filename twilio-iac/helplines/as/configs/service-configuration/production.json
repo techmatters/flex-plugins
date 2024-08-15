@@ -7,10 +7,10 @@
             "whatsapp",
             "facebook",
             "instagram",
-            "line"
+            "line",
+            "telegram"
         ],
         "feature_flags": {
-            "enable_aselo_messaging_ui": true,
             "enable_lex": true,
             "enable_voice_recordings": true,
             "enable_csam_report": true,

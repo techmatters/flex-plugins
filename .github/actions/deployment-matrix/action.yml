@@ -1,0 +1,83 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+# Auxiliary Github Action to add deploys to google sheets
+name: 'deployment-matrix-action'
+description: Add deployment tag to Google Sheets to update matrix
+inputs:
+  aws-access-key-id:
+    description: AWS credentials for Aselo user
+    required: true
+  aws-secret-access-key:
+    description: AWS credentials for Aselo user
+    required: true
+  aws-region:
+    description: AWS region where Aselo documents bucket is hosted
+    required: true
+  identifier:
+    description: helpline code or region in hrm
+    required: true
+  service_repo:
+    description: Repository/service deployed. e.g flex-plugins, webchat, serverless, hrm-service, search-index-consumer
+    required: true
+  environment:
+    description: The environment to deploy to, e.g. staging, production, development
+    required: true
+  version_tag:
+    description: The version tag to deploy (e.g. v1.0.0). In some cases, this could be a branch name
+    required: true
+runs:
+  using: "composite"
+  steps:
+    # Setup credentials to access AWS for parameters
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+        aws-region: ${{ inputs.aws-region }}
+    - name: Set Google Sheets credentials
+      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      with:
+        ssm_parameter: "GOOGLE_SHEETS_CREDENTIALS"
+        env_variable_name: "GOOGLE_SHEETS_CREDENTIALS"
+    - name: Set Google Sheets ID
+      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      with:
+        ssm_parameter: "CD_GOOGLE_SHEET_ID"
+        env_variable_name: "GOOGLE_SHEET_ID"
+    - name: Checkout code
+      uses: actions/checkout@v4
+    # Setup python for running the script
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.8'
+    - name: Install dependencies
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip
+        pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client gspread
+    - name: Add deployment to Google Sheets to update matrix
+      shell: bash
+      env:
+        IDENTIFIER: ${{ inputs.identifier }}
+        ENVIRONMENT: ${{ inputs.environment }}
+        SERVICE_REPO: ${{ inputs.service_repo }}
+        VERSION_TAG: ${{ github.ref_name }}
+        GOOGLE_SHEETS_CREDENTIALS: ${{ env.GOOGLE_SHEETS_CREDENTIALS }}
+        GOOGLE_SHEET_ID: ${{ env.GOOGLE_SHEET_ID }}
+      working-directory: ${{ github.action_path }}
+      run: |
+        python update_matrix.py
