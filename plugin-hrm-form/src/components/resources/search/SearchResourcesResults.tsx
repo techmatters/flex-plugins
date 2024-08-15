@@ -20,11 +20,10 @@ import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
 
 import { RootState } from '../../../states';
-import { Box, Column } from '../../../styles';
+import { Box, Column, SearchFormTopRule } from '../../../styles';
 import SearchResultsBackButton from '../../search/SearchResults/SearchResultsBackButton';
 import {
   ResourcesSearchArea,
-  ResourcesSearchFormTopRule,
   ResourcesSearchResultsDescription,
   ResourcesSearchResultsDescriptionItem,
   ResourcesSearchResultsHeader,
@@ -171,7 +170,7 @@ const SearchResourcesResults: React.FC<Props> = ({
             handleBack={returnToForm}
           />
         </Box>
-        <ResourcesSearchFormTopRule />
+        <SearchFormTopRule />
         <ResourcesSearchResultsHeader>
           <ResourcesSearchTitle data-testid="SearchResources-Title">
             <Template code="Resources-Search-ResultsTitle" />

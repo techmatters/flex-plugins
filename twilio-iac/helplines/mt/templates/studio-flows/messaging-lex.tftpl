@@ -2,12 +2,12 @@ ${
   jsonencode( {
   "description": "Messaging Flow - Lex - MT",
   "states": [
-    {
+   {
       "name": "Trigger",
       "type": "trigger",
       "transitions": [
         {
-          "next": "split_web",
+          "next": "getProfileFlagsForIdentifier",
           "event": "incomingMessage"
         },
         {
@@ -25,8 +25,99 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": -250,
-          "y": -200
+          "x": -160,
+          "y": -460
+        }
+      }
+    },
+    {
+      "name": "getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "split_web",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -350,
+          "y": -280
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "body": "{ \"trigger\": {{trigger | to_json}}}",
+        "url": "${serverless_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "send_blocked_message",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": -640,
+          "y": 210
+        },
+        "function_sid": flow_vars["send_message_janitor_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": flow_vars["chat_blocked_message"],
+            "key": "message"
+          },
+          {
+            "value": flow_vars["widget_from"],
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "split_web",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_blocked_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "contains",
+              "value": "blocked"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": -690,
+          "y": -60
         }
       }
     },
@@ -98,8 +189,8 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": -850,
           "y": 570
@@ -141,6 +232,14 @@ ${
           {
             "value": "languageMemory",
             "key": "memoryAttribute"
+          },
+          {
+            "value": "{{trigger.message.ChannelAttributes.channel_type | downcase}}",
+            "key": "channelType"
+          },
+          {
+            "value": "false",
+            "key": "isConversation"
           }
         ],
         "url": "${serverless_url}/channelCapture/captureChannelWithBot"
@@ -190,8 +289,8 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": 720,
           "y": 1670
@@ -229,6 +328,14 @@ ${
           {
             "value": "preSurveyComplete",
             "key": "releaseFlag"
+          },
+          {
+            "value": "{{trigger.message.ChannelAttributes.channel_type | downcase}}",
+            "key": "channelType"
+          },
+          {
+            "value": "false",
+            "key": "isConversation"
           }
         ],
         "url": "${serverless_url}/channelCapture/captureChannelWithBot"
@@ -278,8 +385,8 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": -710,
           "y": 990
@@ -321,6 +428,14 @@ ${
           {
             "value": "termsConditionsMemory",
             "key": "memoryAttribute"
+          },
+          {
+            "value": "{{trigger.message.ChannelAttributes.channel_type | downcase}}",
+            "key": "channelType"
+          },
+          {
+            "value": "false",
+            "key": "isConversation"
           }
         ],
         "url": "${serverless_url}/channelCapture/captureChannelWithBot"
@@ -460,8 +575,8 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": -330,
           "y": 1000
@@ -503,6 +618,14 @@ ${
           {
             "value": "termsConditionsMemory",
             "key": "memoryAttribute"
+          },
+          {
+            "value": "{{trigger.message.ChannelAttributes.channel_type | downcase}}",
+            "key": "channelType"
+          },
+          {
+            "value": "false",
+            "key": "isConversation"
           }
         ],
         "url": "${serverless_url}/channelCapture/captureChannelWithBot"
@@ -552,8 +675,8 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": 1070,
           "y": 1670
@@ -591,6 +714,14 @@ ${
           {
             "value": "preSurveyComplete",
             "key": "releaseFlag"
+          },
+          {
+            "value": "{{trigger.message.ChannelAttributes.channel_type | downcase}}",
+            "key": "channelType"
+          },
+          {
+            "value": "false",
+            "key": "isConversation"
           }
         ],
         "url": "${serverless_url}/channelCapture/captureChannelWithBot"
@@ -707,7 +838,7 @@ ${
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "Kellimni",
         "to": "{{contact.channel.address}}",
-        "body": "We'll transfer you now, please hold for a professional."
+        "body": "Thank you for reaching out. We are currently assisting other clients, but we will do our utmost to respond to you shortly. Kindly wait for assistance. If this is an emergency, please contact 112, until we are in a position to assist you."
       }
     },
     {
@@ -731,7 +862,7 @@ ${
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "Kellimni",
         "to": "{{contact.channel.address}}",
-        "body": "Ha nittrasferuk lil wieħed Proffesjonist/a tagħna.."
+        "body": "Grazzi talli kkuntatjajtna. Bħalissa qed ngħinu klijenti oħra, iżda aħna se nagħmlu l-almu tagħna biex nirrisponduk fl-iqsar ħin possibli. Jekk jogħġbok stenna għall-assistenza. Jekk din hija emerġenza, ikkuntattja lill-112, sakemm inkunu f'pożizzjoni li ngħinuk."
       }
     },
     {
@@ -755,7 +886,7 @@ ${
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "Kellimni",
         "to": "{{contact.channel.address}}",
-        "body": "Ми переведемо вас зараз, будь ласка, чекайте спеціаліста."
+        "body": "Дякуємо за звернення. Зараз ми допомагаємо іншим клієнтам, але зробимо все можливе, щоб відповісти вам найближчим часом. Будь ласка, чекайте допомоги. Якщо це екстрена ситуація, зв’яжіться з нами за номером 112, поки ми не зможемо вам допомогти."
       }
     },
     {
@@ -794,8 +925,8 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": -440,
           "y": 1680
@@ -830,8 +961,8 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": -20,
           "y": 1680
@@ -866,8 +997,8 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": 330,
           "y": 1680
@@ -923,18 +1054,18 @@ ${
                 "event": "success"
                 },
                 {
-                "next": "webhook_notify_error",
+                "next": "send_message_run_janitor",
                 "event": "fail"
                 }
             ],
             "properties": {
-                "service_sid": flow_vars["service_sid"],
-                "environment_sid": flow_vars["environment_sid"],
+                "service_sid": serverless_service_sid,
+                "environment_sid": serverless_environment_sid,
                 "offset": {
                  "x": -740,
                  "y": 1990
                 },
-                "function_sid": flow_vars["chatbot_callback_cleanup_function_id"],
+                "function_sid": flow_vars["chatbot_callback_cleanup_function_sid"],
                 "parameters": [
                 {
                     "value": "{{flow.channel.address}}",
@@ -943,7 +1074,68 @@ ${
                 ],
                 "url": "${serverless_url}/channelCapture/chatbotCallbackCleanup"
             }
+        },
+    {
+      "name": "send_message_run_janitor",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "webhook_notify_error_cleanup",
+          "event": "success"
+        },
+        {
+          "next": "webhook_notify_error_cleanup",
+          "event": "fail"
         }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": -360,
+          "y": 2260
+        },
+        "function_sid": flow_vars["send_message_janitor_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "Apologies, were were unable to receive your messages. Please try contacting us again.",
+            "key": "message"
+          },
+          {
+            "value": "Kellimni",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "webhook_notify_error_cleanup",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -150,
+          "y": 2550
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"text\": \"Issue detected [Chatbot and Cleanup failure] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \"  }",
+        "url": webhook_url_studio_errors
+      }
+    }
   ],
   "initial_state": "Trigger",
   "flags": {

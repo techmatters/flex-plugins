@@ -11,7 +11,7 @@ ${
           "event": "incomingMessage"
         },
         {
-          "next": "operating_hours",
+          "next": "getProfileFlagsForIdentifier",
           "event": "incomingCall"
         },
         {
@@ -453,6 +453,80 @@ ${
           "x": 150,
           "y": 490
         }
+      }
+    },
+   {
+      "name": "getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "operating_hours",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 20,
+          "y": 180
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "body": "{ \"trigger\": {{trigger | to_json}}}",
+        "url": "${serverless_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "operating_hours",
+          "event": "noMatch"
+        },
+        {
+          "next": "say_blocked",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "contains",
+              "value": "blocked"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": -350,
+          "y": 360
+        }
+      }
+    },
+    {
+      "name": "say_blocked",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Mia-Neural",
+        "offset": {
+          "x": -310,
+          "y": 670
+        },
+        "loop": 1,
+        "say": channel_flow_vars["voice_ivr_blocked_message"],
+        "language": "uk-UA"
       }
     }
   ],

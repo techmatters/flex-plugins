@@ -25,6 +25,7 @@ import type { HrmState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { connectToCase } from '../../services/ContactService';
 import { connectToCaseAsyncAction } from '../contacts/saveContact';
+import { markCaseAsUpdating } from './markCaseAsUpdating';
 
 const UPDATE_CASE_OVERVIEW_ACTION = 'case-action/update-overview';
 
@@ -83,6 +84,7 @@ const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => 
   const caseDefinitionVersion = state.configuration.definitionVersions[connectedCase?.info?.definitionVersion];
   const stateCase = state.connectedCase.cases[connectedCase?.id]?.connectedCase;
   const stateInfo = stateCase?.info;
+  const outstandingUpdateCount = (state.connectedCase.cases[connectedCase.id]?.outstandingUpdateCount ?? 1) - 1;
 
   return {
     ...state,
@@ -104,6 +106,7 @@ const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => 
           references: state.connectedCase.cases[connectedCase.id]?.references ?? new Set(),
           sections: state.connectedCase.cases[connectedCase.id]?.sections ?? {},
           timelines: state.connectedCase.cases[connectedCase.id]?.timelines ?? {},
+          outstandingUpdateCount,
         },
       },
     },
@@ -158,9 +161,13 @@ export const saveCaseReducer = (initialState: HrmState): ((state: HrmState, acti
     handleCreateCaseFulfilledAction(handleAction, createCaseAsyncAction.fulfilled),
     handleRejectedAction(handleAction, createCaseAsyncAction.rejected),
 
-    handlePendingAction(handleAction, updateCaseOverviewAsyncAction.pending),
+    handleAction(updateCaseOverviewAsyncAction.pending, (state, { meta: { caseId } }: any) =>
+      markCaseAsUpdating(state, caseId, true),
+    ),
     handleUpdateCaseOverviewFulfilledAction(handleAction, updateCaseOverviewAsyncAction.fulfilled),
-    handleRejectedAction(handleAction, updateCaseOverviewAsyncAction.rejected),
+    handleAction(updateCaseOverviewAsyncAction.rejected, (state, { meta: { caseId } }: any) =>
+      markCaseAsUpdating(state, caseId, false),
+    ),
 
     handlePendingAction(handleAction, cancelCaseAsyncAction.pending),
     handleCancelCaseFulfilledAction(handleAction, cancelCaseAsyncAction.fulfilled),

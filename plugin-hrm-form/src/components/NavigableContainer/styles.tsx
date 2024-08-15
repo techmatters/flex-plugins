@@ -21,6 +21,7 @@ import { FontOpenSans } from '../../styles';
 
 type NavigableContainerProps = {
   modal?: boolean;
+  noOverflow?: boolean;
 };
 
 export const NavigableContainerBox = styled('div')<NavigableContainerProps>`
@@ -38,12 +39,12 @@ export const NavigableContainerBox = styled('div')<NavigableContainerProps>`
 NavigableContainerBox.displayName = 'NavigableContainerBox';
 
 export const NavigableContainerContentBox = styled('div')<NavigableContainerProps>`
-  padding: 0 30px 0 30px;
+  padding: 0 30px;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
   height: 100%;
-  overflow-y: auto;
+  overflow-y: ${({ noOverflow }) => (noOverflow ? 'unset' : 'auto')};
 `;
 
 NavigableContainerContentBox.displayName = 'NavigableContainerContentBox';

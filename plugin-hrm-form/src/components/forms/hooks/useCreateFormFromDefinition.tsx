@@ -49,7 +49,6 @@ const useCreateFormFromDefinition = ({
   context = {},
 }: UseFormFromDefinition) => {
   const firstElementRef = useFocus(shouldFocusFirstElement);
-
   if (!initialValues) return [];
 
   return definition.map((e: FormItemDefinition, index: number) => {

@@ -82,7 +82,6 @@ const Case: React.FC<Props> = ({
   removeConnectedCase,
   redirectToNewCase,
   closeModal,
-  goBack,
   handleClose = closeModal,
   routing,
   // loadCase,
@@ -290,12 +289,10 @@ const mapDispatchToProps = (dispatch, { task }: OwnProps) => {
     openPrintModal: (caseId: CaseType['id']) => {
       dispatch(RoutingActions.newOpenModalAction({ route: 'case', subroute: 'case-print-view', caseId }, task.taskSid));
     },
-    goBack: () => dispatch(RoutingActions.newGoBackAction(task.taskSid)),
     removeConnectedCase: (contactId: string) => caseAsyncDispatch(removeFromCaseAsyncAction(contactId)),
     updateDefinitionVersion: updateCaseDefinition,
     releaseAllContacts: bindActionCreators(ContactActions.releaseAllContacts, dispatch),
     loadContacts: bindActionCreators(ContactActions.loadContacts, dispatch),
-    // loadCase: (caseId: CaseType['id']) => dispatch(updateCaseOverviewAsyncAction(caseId)), // Empty update loads case into state
   };
 };
 
