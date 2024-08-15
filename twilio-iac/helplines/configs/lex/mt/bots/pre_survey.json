@@ -7,7 +7,7 @@
     "idle_session_ttl_in_seconds": "600",
     "enable_model_improvements": true,
     "abort_statement": {
-      "content": "Jiddispjaċini, ma fhimtx eżatt.",
+      "content": "Jiddispjaċini, ma fhimtx eżatt. Se nikkonnettjak ma' proffesjonist/a issa.",
       "content_type": "PlainText"
     },
     "clarification_prompt": {

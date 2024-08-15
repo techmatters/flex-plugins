@@ -17,7 +17,12 @@
 import { createAction, createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 
 import { ReferrableResource, searchResources, suggestSearch } from '../../services/ResourceService';
-import { cityOptions, provinceOptions, regionOptions } from './locations';
+import {
+  loadReferenceLocationsAsyncAction,
+  ReferenceLocationList,
+  referenceLocationsInitialState,
+  ReferenceLocationState,
+} from './referenceLocations';
 import { FilterOption } from './types';
 
 export type SearchSettings = Omit<Partial<ReferrableResourceSearchState['parameters']>, 'filterSelections'> & {
@@ -53,7 +58,7 @@ const maxAgeOptions: FilterOption<number>[] = [
   { value: undefined, label: '30+' },
 ];
 export type ReferrableResourceSearchState = {
-  // eslint-disable-next-line prettier/prettier
+  referenceLocations: ReferenceLocationState;
   filterOptions: {
     feeStructure: FilterOption[];
     howServiceIsOffered: FilterOption[];
@@ -95,10 +100,8 @@ export const suggestSearchInitialState: TaxonomyLevelNameCompletion = {
   taxonomyLevelNameCompletion: [],
 };
 
-const allRegions: FilterOption[] = [{ label: '', value: undefined }, ...regionOptions];
-const allCities: FilterOption[] = [{ label: '', value: undefined }, ...cityOptions];
-
 export const initialState: ReferrableResourceSearchState = {
+  referenceLocations: referenceLocationsInitialState,
   filterOptions: {
     feeStructure: [
       { value: 'Free' },
@@ -110,7 +113,7 @@ export const initialState: ReferrableResourceSearchState = {
       { value: 'Covered by Health Insurance' },
     ],
     howServiceIsOffered: [{ value: 'In-person Support' }, { value: 'Online Support' }, { value: 'Phone Support' }],
-    province: [{ label: '', value: undefined }, ...provinceOptions],
+    province: [{ label: '', value: undefined }],
     region: [],
     city: [],
     minEligibleAge: minAgeOptions,
@@ -174,7 +177,6 @@ export const searchResourceAsyncAction = createAsyncAction(
 export const sanitizeInputForSuggestions = (input: string): string =>
   input.trim().replaceAll(/"/g, '').toLocaleLowerCase();
 
-// eslint-disable-next-line import/no-unused-modules
 export const suggestSearchAsyncAction = createAsyncAction(SUGGEST_ACTION, async (prefix: string) => {
   return { ...(await suggestSearch(sanitizeInputForSuggestions(prefix))) };
 });
@@ -188,6 +190,7 @@ const HARD_SEARCH_RESULT_LIMIT = 10000;
 
 const getFilterOptionsBasedOnSelections = (
   filterSelections: ReferrableResourceSearchState['parameters']['filterSelections'],
+  { provinceOptions, regionOptions, cityOptions }: ReferenceLocationState,
 ): ReferrableResourceSearchState['filterOptions'] => {
   return {
     ...initialState.filterOptions,
@@ -199,17 +202,24 @@ const getFilterOptionsBasedOnSelections = (
       const minSelection = filterSelections.minEligibleAge ?? 0;
       return opt.value === undefined || opt.value >= minSelection;
     }),
-    region: allRegions.filter(
-      ({ value }) => filterSelections.province && (!value || value.startsWith(filterSelections.province)),
-    ),
-    city: allCities.filter(({ value }) => {
-      const { region, province } = filterSelections;
-      if (!province) {
-        return false;
-      }
-      const startPrefix = region?.startsWith(province) ? region : province;
-      return !value || value.startsWith(startPrefix);
-    }),
+    province: [{ label: '', value: undefined }, ...provinceOptions],
+    region: [
+      { label: '', value: undefined },
+      ...regionOptions.filter(
+        ({ value }) => filterSelections.province && (!value || value.startsWith(filterSelections.province)),
+      ),
+    ],
+    city: [
+      { label: '', value: undefined },
+      ...cityOptions.filter(({ value }) => {
+        const { region, province } = filterSelections;
+        if (!province) {
+          return false;
+        }
+        const startPrefix = region?.startsWith(province) ? region : province;
+        return !value || value.startsWith(startPrefix);
+      }),
+    ],
   };
 };
 
@@ -264,7 +274,7 @@ export const suggestSearchReducer = createReducer(suggestSearchInitialState, han
 export const resourceSearchReducer = createReducer(initialState, handleAction => [
   /*
    * Cast is a workaround for https://github.com/omichelsen/redux-promise-middleware-actions/issues/13
-   * TODO: create a generalised type to put meta property back into all 3 actions for any async action set
+   * TODO: create a generalized type to put meta property back into all 3 actions for any async action set
    */
   handleAction(searchResourceAsyncAction.pending as typeof searchResourceAsyncAction, (state, action) => {
     return {
@@ -293,10 +303,13 @@ export const resourceSearchReducer = createReducer(initialState, handleAction =>
   rejectedAsyncAction(handleAction, searchResourceAsyncAction.rejected),
 
   handleAction(updateSearchFormAction, (state, { payload }) => {
-    const updatedFilterOptions = getFilterOptionsBasedOnSelections({
-      ...state.parameters.filterSelections,
-      ...(payload.filterSelections ?? {}),
-    });
+    const updatedFilterOptions = getFilterOptionsBasedOnSelections(
+      {
+        ...state.parameters.filterSelections,
+        ...(payload.filterSelections ?? {}),
+      },
+      state.referenceLocations,
+    );
     const validatedFilterSelections = ensureFilterSelectionsAreValid(
       { ...state.parameters.filterSelections, ...payload.filterSelections },
       updatedFilterOptions,
@@ -328,6 +341,38 @@ export const resourceSearchReducer = createReducer(initialState, handleAction =>
       ...state,
       status: ResourceSearchStatus.NotSearched,
       currentPage: 0,
+    };
+  }),
+  handleAction(loadReferenceLocationsAsyncAction.fulfilled, (state, { payload }) => {
+    const { list, options } = payload;
+    let { referenceLocations } = state;
+    switch (list) {
+      case ReferenceLocationList.Provinces:
+        referenceLocations = { ...state.referenceLocations, provinceOptions: options };
+        break;
+      case ReferenceLocationList.Regions:
+        referenceLocations = { ...state.referenceLocations, regionOptions: options };
+        break;
+      case ReferenceLocationList.Cities:
+        referenceLocations = { ...state.referenceLocations, cityOptions: options };
+        break;
+      default:
+    }
+
+    const updatedFilterOptions = getFilterOptionsBasedOnSelections(
+      state.parameters.filterSelections,
+      state.referenceLocations,
+    );
+    const validatedFilterSelections = ensureFilterSelectionsAreValid(
+      state.parameters.filterSelections,
+      updatedFilterOptions,
+    );
+
+    return {
+      ...state,
+      filterOptions: updatedFilterOptions,
+      filterSelections: validatedFilterSelections,
+      referenceLocations,
     };
   }),
 ]);

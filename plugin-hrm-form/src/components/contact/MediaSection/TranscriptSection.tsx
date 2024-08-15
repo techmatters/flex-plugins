@@ -92,6 +92,7 @@ const TranscriptSection: React.FC<Props> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [updatedGroupMessages, setUpdatedGroupMessages] = useState<GroupedMessage[]>([]);
 
   // Currently this should only really catch errors when we try to download the file from the signed link.
   const isErrTemporary = err => {
@@ -175,13 +176,27 @@ const TranscriptSection: React.FC<Props> = ({
     );
   }
 
-  // Preferred case, external transcript is already in local state
   if (transcript) {
     const groupedMessages = groupMessagesAndAddSenderInfo(transcript);
+    const updatedMessages = groupedMessages.map(message => {
+      if (message.media) {
+        // This updates the message object with the media data to be used on transcript
+        const mediaType = message.media.content_type?.split('/')[1];
+        message.serviceSid = transcript.serviceSid;
+        message.mediaType = mediaType;
+
+        if (message.media.filename) {
+          message.body = message.media.filename;
+        } else {
+          message.body = `untitled.${mediaType}`;
+        }
+      }
+      return message;
+    });
 
     return (
       <Box padding="0 3.75% 50px 3.75%" width="100%">
-        <MessageList messages={groupedMessages} />
+        <MessageList messages={updatedMessages} />
       </Box>
     );
   }

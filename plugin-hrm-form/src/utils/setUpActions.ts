@@ -14,23 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  ActionFunction,
-  ChatOrchestrator,
-  ChatOrchestratorEvent,
-  ConversationHelper,
-  Manager,
-  TaskHelper,
-} from '@twilio/flex-ui';
+import { ActionFunction, ChatOrchestrator, ChatOrchestratorEvent, Manager, TaskHelper } from '@twilio/flex-ui';
 import { Conversation } from '@twilio/conversations';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
-import { adjustChatCapacity, getDefinitionVersion, sendSystemMessage } from '../services/ServerlessService';
+import { getDefinitionVersion, sendSystemMessage } from '../services/ServerlessService';
 import * as Actions from '../states/contacts/actions';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
-import { customChannelTypes } from '../states/DomainConstants';
 import * as TransferHelpers from '../transfer/transferTaskState';
 import { CustomITask, FeatureFlags, isTwilioTask } from '../types/types';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
@@ -46,6 +38,7 @@ import { prepopulateForm } from './prepopulateForm';
 import { namespace } from '../states/storeNamespaces';
 import { recordEvent } from '../fullStory';
 import { completeConversationTask, wrapupConversationTask } from '../services/twilioTaskService';
+import { adjustChatCapacity } from '../services/twilioWorkerService';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -236,15 +229,17 @@ const decreaseChatCapacity = (featureFlags: FeatureFlags): ActionFunction => asy
   payload: ActionPayload,
 ): Promise<void> => {
   const { task } = payload;
-  if (featureFlags.enable_manual_pulling && task.taskChannelUniqueName === 'chat') await adjustChatCapacity('decrease');
+  if (
+    featureFlags.enable_manual_pulling &&
+    !featureFlags.enable_backend_manual_pulling &&
+    task.taskChannelUniqueName === 'chat'
+  )
+    await adjustChatCapacity('decrease');
 };
 
 export const beforeCompleteTask = (featureFlags: FeatureFlags) => async (payload: ActionPayload): Promise<void> => {
   await decreaseChatCapacity(featureFlags)(payload);
 };
-
-const isAseloCustomChannelTask = (task: CustomITask) =>
-  (<string[]>Object.values(customChannelTypes)).includes(task.channelType);
 
 /**
  * This function manipulates the default chat orchestrations to allow our implementation of post surveys.
@@ -253,7 +248,7 @@ const isAseloCustomChannelTask = (task: CustomITask) =>
  * - task wrapup: removes DeactivateConversation
  * - task completed: removes DeactivateConversation
  */
-export const excludeDeactivateConversationOrchestration = (featureFlags: FeatureFlags) => {
+export const excludeDeactivateConversationOrchestration = () => {
   const setExcludedDeactivateConversation = (event: keyof ChatOrchestrationsEvents) => {
     const excludeDeactivateConversation = (orchestrations: ChatOrchestratorEvent[]) =>
       orchestrations.filter(e => e !== ChatOrchestratorEvent.DeactivateConversation);

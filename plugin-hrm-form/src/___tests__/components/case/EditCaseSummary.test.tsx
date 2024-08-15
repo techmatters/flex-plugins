@@ -22,8 +22,9 @@ import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { DefinitionVersion, DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import EditCaseSummary, { EditCaseSummaryProps } from '../../../components/case/EditCaseSummary';
 import { getDefinitionVersions } from '../../../hrmConfig';
@@ -34,8 +35,7 @@ import { namespace } from '../../../states/storeNamespaces';
 import { RecursivePartial } from '../../RecursivePartial';
 import { RootState } from '../../../states';
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 let mockV1: DefinitionVersion;
 
