@@ -89,15 +89,19 @@ const toCsv = (...args: string[]) => {
 const extractPrimaryLocation = (attributes: Attributes, language: Language) => {
   const address1 = getAttributeValue(attributes, language, 'primaryLocationAddress1');
   const address2 = getAttributeValue(attributes, language, 'primaryLocationAddress2');
-  const county = getAttributeValue(attributes, language, 'primaryLocationCounty');
-  const city = getAttributeData(attributes, language, 'primaryLocationCity')?.info?.name;
+  const county =
+    getAttributeData(attributes, language, 'primaryLocationRegion')?.info?.name ??
+    getAttributeValue(attributes, language, 'primaryLocationCounty');
+  const city =
+    getAttributeData(attributes, language, 'primaryLocationRegionCity')?.info?.name ??
+    getAttributeValue(attributes, language, 'primaryLocationCity');
   const province = getAttributeData(attributes, language, 'primaryLocationProvince')?.info?.name;
   const postalCode = getAttributeValue(attributes, language, 'primaryLocationPostalCode');
   const phone = getAttributeValue(attributes, language, 'primaryLocationPhone');
   // eslint-disable-next-line prefer-named-capture-group
   const formattedPhone = phone?.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
 
-  return `${toCsv(address1, address2)}${toCsv(county, city)}${toCsv(province, postalCode)}${formattedPhone}`;
+  return `${toCsv(address1, address2)}${toCsv(city, county)}${toCsv(province, postalCode)}${formattedPhone}`;
 };
 
 const extractMainContact = (mainContact: Attributes, language: Language) => {
@@ -176,8 +180,11 @@ const extractSiteLocation = (site: Attributes) => {
   return {
     address1: getAttributeValue(location, '', 'address1'),
     address2: getAttributeValue(location, '', 'address2'),
-    city: getAttributeData(location, '', 'city')?.info?.name || '',
-    county: getAttributeValue(location, '', 'county'),
+    city:
+      getAttributeData(location, '', 'region-city')?.info?.name ||
+      getAttributeData(location, '', 'city')?.info?.name ||
+      '',
+    county: getAttributeData(location, '', 'region')?.info?.name || getAttributeValue(location, '', 'county'),
     postalCode: getAttributeValue(location, '', 'postalCode'),
     province: getAttributeData(location, '', 'province')?.info?.name || '',
     country: getAttributeValue(location, '', 'country'),

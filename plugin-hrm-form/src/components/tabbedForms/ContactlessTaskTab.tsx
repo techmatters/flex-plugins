@@ -114,7 +114,6 @@ const ContactlessTaskTab: React.FC<Props> = ({
             return 'TimeCantBeGreaterThanNow'; // return non-null to generate an error, using the localized error key
           }
         }
-
         return null;
       },
     });

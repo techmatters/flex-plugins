@@ -62,7 +62,7 @@ export const FormInputBase = styled('input')<FormInputBaseProps>`
     background-color: ${HrmTheme.colors.inputBackgroundColor};
     color: ${HrmTheme.colors.darkTextColor};
     border: ${props => (props.error ? '1px solid #CB3232' : 'none')};
-    boxshadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
+    box-shadow: ${props => (props.error ? '0px 0px 0px 2px rgba(234,16,16,0.2)' : 'none')};
     padding: 0 7px;
   }
   &:focus {

@@ -22,8 +22,8 @@ import { omit } from 'lodash';
 
 import { queuesStatusUpdate, queuesStatusFailure } from '../../states/queuesStatus/actions';
 import * as h from './helpers';
-import { listWorkerQueues } from '../../services/ServerlessService';
 import { namespace, queuesStatusBase } from '../../states/storeNamespaces';
+import { listWorkerQueues } from '../../services/twilioWorkerService';
 
 export class InnerQueuesStatusWriter extends React.Component {
   static displayName = 'QueuesStatusWriter';
@@ -143,13 +143,13 @@ export class InnerQueuesStatusWriter extends React.Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = state => {
   const queuesStatusState = state[namespace][queuesStatusBase];
 
   return { queuesStatusState };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = dispatch => {
   return {
     queuesStatusUpdate: bindActionCreators(queuesStatusUpdate, dispatch),
     queuesStatusFailure: bindActionCreators(queuesStatusFailure, dispatch),

@@ -16,6 +16,8 @@ locals {
       capture_channel_with_bot_function_sid  = "ZH59fec96902ac870dddc110366ea97522"
       capture_channel_with_bot_function_name = "channelCapture/captureChannelWithBot"
       bot_language                           = "en_MW"
+      widget_from                            = "Tithandizane"
+      chat_blocked_message                   = "Sorry, you're not able to contact Tithandizane from this device or account"
     }
 
     #Channels
@@ -23,7 +25,7 @@ locals {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/webchat-basic.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking.tftpl"
         channel_flow_vars = {
 
         }

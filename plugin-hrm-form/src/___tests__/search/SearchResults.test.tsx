@@ -20,8 +20,9 @@ import '@testing-library/jest-dom/extend-expect';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
+import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import SearchResults from '../../components/search/SearchResults';
 import { getDefinitionVersions } from '../../hrmConfig';
@@ -35,8 +36,7 @@ jest.mock('../../permissions', () => ({
   PermissionActions: {},
 }));
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
 const themeConf = {};
 
@@ -49,7 +49,6 @@ let stateOnCasesTab: RecursivePartial<RootState>;
 let store1;
 let storeOnCasesTab;
 let mockV1;
-const context = 'root';
 
 beforeEach(() => {
   mockReset();
@@ -149,7 +148,6 @@ describe('Search Results', () => {
         </StorelessThemeProvider>,
       );
 
-      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 PreviousContacts-Cases');
       expect(screen.getByTestId('ContactsCount')).toHaveTextContent(
         'SearchResultsIndex-NoContactsFoundSearchResultsIndex-SearchAgainForContact',
       );
@@ -173,7 +171,6 @@ describe('Search Results', () => {
         </StorelessThemeProvider>,
       );
 
-      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('0 PreviousContacts-Contacts');
       expect(screen.getByTestId('CasesCount')).toHaveTextContent(
         'SearchResultsIndex-NoCasesFoundSearchResultsIndex-SearchAgainForCase',
       );
@@ -238,8 +235,7 @@ describe('Search Results', () => {
         </StorelessThemeProvider>,
       );
 
-      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('1 PreviousContacts-Case');
-      expect(screen.getByTestId('ContactsCount')).toHaveTextContent('1 PreviousContacts-Contact');
+      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('SearchResults-Contact');
     });
 
     test('on cases tab', () => {
@@ -260,8 +256,7 @@ describe('Search Results', () => {
         </StorelessThemeProvider>,
       );
 
-      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('1 PreviousContacts-Contact');
-      expect(screen.getByTestId('CasesCount')).toHaveTextContent('1 PreviousContacts-Case');
+      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('SearchResults-Case');
     });
   });
 
@@ -350,8 +345,7 @@ describe('Search Results', () => {
         </StorelessThemeProvider>,
       );
 
-      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2 PreviousContacts-Cases');
-      expect(screen.getByTestId('ContactsCount')).toHaveTextContent('2 SearchResultsIndex-Contacts');
+      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2SearchResults-Contacts');
     });
 
     test('on cases tab', () => {
@@ -372,8 +366,7 @@ describe('Search Results', () => {
         </StorelessThemeProvider>,
       );
 
-      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2 PreviousContacts-Contacts');
-      expect(screen.getByTestId('CasesCount')).toHaveTextContent('2 SearchResultsIndex-Cases');
+      expect(screen.getByTestId('SearchResultsCount')).toHaveTextContent('2SearchResults-Cases');
     });
   });
 });

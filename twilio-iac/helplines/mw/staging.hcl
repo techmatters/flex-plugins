@@ -13,6 +13,9 @@ locals {
       environment_sid                        = "ZEa0a7fc38616a1934a04b9e13c678df53"
       capture_channel_with_bot_function_sid  = "ZHbabcecf88565b1288514afe30d0e73f3"
       capture_channel_with_bot_function_name = "channelCapture/captureChannelWithBot"
+      bot_language                           = "en_MW"
+      widget_from                            = "Tithandizane"
+      chat_blocked_message                   = "Sorry, you're not able to contact Tithandizane from this device or account"
     }
 
     #Channels
@@ -20,7 +23,7 @@ locals {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/webchat-basic.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking.tftpl"
         channel_flow_vars = {
 
         }
@@ -29,7 +32,7 @@ locals {
       facebook : {
         channel_type     = "facebook"
         contact_identity = "messenger:103647528912458"
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/mw/templates/studio-flows/mw-lex.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []

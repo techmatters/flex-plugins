@@ -22,6 +22,18 @@
     "label": "Hang up",
     "type": "button",
     "category": "non-data"
+  },    
+  {
+    "name": "abuse",
+    "label": "Direct Abuse to Counsellor",
+    "type": "button",
+    "category": "non-data"
+  },  
+  {
+    "name": "arousal",
+    "label": "Arousal Caller",
+    "type": "button",
+    "category": "non-data"
   },  
   {
     "name": "abuse",

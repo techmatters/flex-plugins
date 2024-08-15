@@ -4,7 +4,7 @@
   "private": true,
   "type": "commonjs",
   "engines": {
-    "node": "^18.20.3"
+    "node": "^18.20.0"
   },
   "scripts": {
     "bundle-analyzer": "cross-env BUNDLE_ANALYZER=true npm run build",
@@ -47,9 +47,9 @@
     "@fullstory/browser": "^1.4.9",
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
-    "@react-pdf/renderer": "^2.3.0",
+    "@react-pdf/renderer": "3.4.4",
     "date-fns": "^2.11.1",
-    "emoji-mart": "^5.5.2",
+    "emoji-mart": "5.3.2",
     "handlebars": "^4.7.8",
     "hrm-form-definitions": "file:../hrm-form-definitions",
     "lodash": "^4.17.19",
@@ -69,6 +69,15 @@
     "stylis": "^4.1.3",
     "uuid": "^8.3.2"
   },
+  "optionalDependencies": {
+    "fsevents": "^2.3.3"
+  },
+  "overrides": {
+    "@react-pdf/layout": "3.6.4",
+    "@react-pdf/textkit": "4.3.0",
+    "@react-pdf/image": "2.2.2",
+    "@react-pdf/pdfkit": "3.1.2"
+  },
   "devDependencies": {
     "@actions/core": "^1.9.0",
     "@babel/core": "^7.18.5",
@@ -79,9 +88,9 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^14.1.1",
-    "@twilio/flex-plugin": "^6.0.3",
-    "@twilio/flex-plugin-scripts": "^6.4.1",
-    "@twilio/flex-ui": "^2.6.1",
+    "@twilio/flex-plugin": "^7.0.0",
+    "@twilio/flex-plugin-scripts": "^7.0.0",
+    "@twilio/flex-ui": "^2.8.2",
     "@twilio/flex-ui-dev-proxy": "^1.1.2",
     "@types/jest": "^27.5.2",
     "@types/react": "^17.0.47",
@@ -118,8 +127,8 @@
     "timezoned-date": "^3.0.2",
     "ts-jest": "^26.5.6",
     "ts-node": "^10.9.1",
-    "twilio-cli": "^5.19.3",
+    "twilio-cli": "^5.20.1",
     "typescript": "4.7.4",
-    "webpack-bundle-analyzer": "^4.7.0"
+    "webpack-bundle-analyzer": "^4.10.2"
   }
 }

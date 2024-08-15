@@ -16,13 +16,14 @@
 
 // @ts-ignore
 import React from 'react';
-import { DefinitionVersionId, loadDefinition, useFetchDefinitions } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 import { render, screen } from '@testing-library/react';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import each from 'jest-each';
 
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import CaseHome, { CaseHomeProps } from '../../../components/case/CaseHome';
 import { Case, CustomITask } from '../../../types/types';
@@ -47,8 +48,7 @@ jest.mock('../../../services/CaseService', () => ({
   getCaseTimeline: jest.fn(() => Promise.resolve({ activities: [], count: 0 })),
 }));
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { mockFetchImplementation, mockReset, buildBaseURL } = useFetchDefinitions();
+const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 const TASK_SID: TaskSID = 'WT-task1';
 const mockStore = configureMockStore([]);
 

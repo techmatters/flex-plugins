@@ -29,16 +29,17 @@ export type Attributes = {
   [key: string]: AttributeData[] | Attributes;
 };
 
-export type ReferrableResourceAttributeValue =
-  | string
-  | string[]
-  | { id: string; value: string }[]
-  | { info: string; value: string; language: string }[];
-
 export type ReferrableResource = {
   id: string;
   name: string;
   attributes: Record<string, Attributes>;
+};
+
+export type ReferenceAttributeStringValue = {
+  value: string;
+  id: string;
+  info: any;
+  language: string;
 };
 
 export const referrableResourcesEnabled = () => Boolean(getReferrableResourceConfig().resourcesBaseUrl);
@@ -69,4 +70,15 @@ export const searchResources = async (
 
 export const suggestSearch = async (prefix: string): Promise<TaxonomyLevelNameCompletion> => {
   return fetchResourceApi(`suggest?prefix=${prefix}`);
+};
+
+export const getReferenceAttributeList = async (
+  list: string,
+  language?: string,
+  valueStartsWith?: string,
+): Promise<ReferenceAttributeStringValue[]> => {
+  const queryItems = Object.entries({ valueStartsWith, language }).filter(([, value]) => value);
+  const queryString = queryItems.map(([k, v]) => `${k}=${v}`).join('&');
+  // Lists can contain slashes, but we only want them as one path section
+  return fetchResourceApi(`reference-attributes/${encodeURIComponent(list)}?${queryString}`);
 };

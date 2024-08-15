@@ -294,6 +294,35 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const addedToCaseBanner = () => <ContactAddedToCaseBanner taskId={task.taskSid} contactId={savedContact.id} />;
 
+  const renderCaseButton = () => {
+    if (featureFlags.enable_case_merging) {
+      return (
+        <>
+          {caseId
+            ? addedToCaseBanner()
+            : !showRemovedFromCaseBanner && (
+                <Box display="flex" justifyContent="flex-end" marginBottom="4px">
+                  <AddCaseButton
+                    position="top"
+                    handleNewCaseType={handleOpenNewCase}
+                    handleExistingCaseType={openSearchModal}
+                  />
+                </Box>
+              )}
+
+          {showRemovedFromCaseBanner && (
+            <ContactRemovedFromCaseBanner
+              taskId={task.taskSid}
+              contactId={savedContact.id}
+              showUndoButton={showRemovedFromCaseBanner}
+            />
+          )}
+        </>
+      );
+    }
+    return null;
+  };
+
   return (
     <Box data-testid="ContactDetails-Container">
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
@@ -311,25 +340,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
         </BannerContainer>
       )}
 
-      {caseId
-        ? addedToCaseBanner()
-        : !showRemovedFromCaseBanner && (
-            <Box display="flex" justifyContent="flex-end">
-              <AddCaseButton
-                position="top"
-                handleNewCaseType={handleOpenNewCase}
-                handleExistingCaseType={openSearchModal}
-              />
-            </Box>
-          )}
-
-      {showRemovedFromCaseBanner && (
-        <ContactRemovedFromCaseBanner
-          taskId={task.taskSid}
-          contactId={savedContact.id}
-          showUndoButton={showRemovedFromCaseBanner}
-        />
-      )}
+      {renderCaseButton()}
 
       <ContactDetailsSection
         sectionTitle={<Template code="ContactDetails-GeneralDetails" />}

@@ -89,3 +89,13 @@ variable "serverless_url" {
   description = "URL used to access Aselo Twilio serverless functions"
   type        = string
 }
+
+variable "s3_lifecycle_rules" {
+  description = "S3 Bucket Lifecycle Rules"
+  type = map(object({
+    id                 = string
+    expiration_in_days = number
+    prefix             = string
+    status             = optional(string)
+  }))
+}
