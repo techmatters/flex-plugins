@@ -677,6 +677,36 @@ ${
       "transitions": [
         {
         
+          "next": "attributes",
+          "event": "success"
+        },
+        {
+          "next": "send_message_run_janitor",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": 1280,
+          "y": 830
+        },
+        "function_sid": flow_vars["chatbot_callback_cleanup_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          }
+        ],
+        "url": "${serverless_url}/channelCapture/chatbotCallbackCleanup"
+      }
+    },
+    {
+      "name": "send_message_run_janitor",
+      "type": "run-function",
+      "transitions": [
+        {
           "event": "success"
         },
         {
@@ -687,17 +717,25 @@ ${
         "service_sid": serverless_service_sid,
         "environment_sid": serverless_environment_sid,
         "offset": {
-          "x": -60,
-          "y": 720
+          "x": 1450,
+          "y": 1030
         },
-        "function_sid": flow_vars["chatbot_callback_cleanup_function_sid"],
+        "function_sid": flow_vars["send_message_janitor_function_sid"],
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
             "key": "channelSid"
+          },
+          {
+            "value": "There has been an error with your message, please try writing us again.",
+            "key": "message"
+          },
+          {
+            "value": flow_vars["widget_from"],
+            "key": "from"
           }
         ],
-        "url": "${serverless_url}/channelCapture/chatbotCallbackCleanup"
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
       }
     }
   ],
