@@ -111,8 +111,8 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": 340,
           "y": 690
@@ -297,12 +297,13 @@ ${
           "event": "success"
         },
         {
+          "next": "channel_cleanup",
           "event": "fail"
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": 420,
           "y": 1900
@@ -423,12 +424,13 @@ ${
           "event": "success"
         },
         {
+          "next": "channel_cleanup",
           "event": "fail"
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": -590,
           "y": 1020
@@ -667,6 +669,35 @@ ${
         "from": flow_vars["widget_from"],
         "to": "{{contact.channel.address}}",
         "body": flow_vars["chat_blocked_message"]
+      }
+    },
+    {
+      "name": "channel_cleanup",
+      "type": "run-function",
+      "transitions": [
+        {
+        
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": -60,
+          "y": 720
+        },
+        "function_sid": flow_vars["chatbot_callback_cleanup_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          }
+        ],
+        "url": "${serverless_url}/channelCapture/chatbotCallbackCleanup"
       }
     }
   ],
