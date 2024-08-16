@@ -29,5 +29,3 @@ const StatusChip: React.FC<Props> = ({ statusText, statusType }) => {
 };
 
 StatusChip.displayName = 'StatusChip';
-
-export default StatusChip;

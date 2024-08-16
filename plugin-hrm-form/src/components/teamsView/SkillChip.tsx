@@ -17,7 +17,7 @@
 import React from 'react';
 import { Tooltip } from '@material-ui/core';
 
-import { SkillChipStyled, SmallCheckIcon, SmallDisabledIcon } from './styles';
+// import { SkillChipStyled, SmallCheckIcon, SmallDisabledIcon } from './styles';
 import { ChipText } from '../../styles';
 
 type Props = {
@@ -39,9 +39,10 @@ const SkillChip: React.FC<Props> = ({ skill, skillType }) => {
   }
 
   return (
-    <SkillChipStyled disabledSkill={skillType === 'disabled'} color={bgColor}>
-      {skillType === 'active' && <SmallCheckIcon htmlColor={fontColor} />}
-      {skillType === 'disabled' && <SmallDisabledIcon htmlColor={fontColor} />}
+    // <div disabledSkill={skillType === 'disabled'} color={bgColor}>
+    <div>
+      {/* {skillType === 'active' && <SmallCheckIcon htmlColor={fontColor} />}
+      {skillType === 'disabled' && <SmallDisabledIcon htmlColor={fontColor} />} */}
       <ChipText bold color={fontColor}>
         {skill.length > SKILL_LENGTH ? (
           <Tooltip title={skill}>
@@ -51,7 +52,7 @@ const SkillChip: React.FC<Props> = ({ skill, skillType }) => {
           skill
         )}
       </ChipText>
-    </SkillChipStyled>
+    </div>
   );
 };
 
