@@ -343,7 +343,7 @@ ${
             "key": "releaseFlag"
           },
           {
-            "value": "{{trigger.conversation.ChannelAttributes.channel_type | downcase}}",
+            "value": "{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}",
             "key": "channelType"
           },
           {
@@ -472,6 +472,10 @@ ${
           {
             "value": "languageMemory",
             "key": "memoryAttribute"
+          },
+           {
+            "value": "{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}",
+            "key": "channelType"
           },
           {
             "value": "true",
