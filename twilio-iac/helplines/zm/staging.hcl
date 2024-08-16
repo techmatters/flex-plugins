@@ -31,9 +31,9 @@ locals {
     }
     #Studio flow
     flow_vars = {
-      service_sid                   = "ZSe4567a77a4d25e4d539aa715c46f0202"
-      environment_sid               = "ZEb5f4d53708997b098f3c7456435c2083"
-      send_message_janitor_function_sid = "ZH0b9f111cb63b53f265d487aa63bb4818"
+      service_sid                           = "ZSe4567a77a4d25e4d539aa715c46f0202"
+      environment_sid                       = "ZEb5f4d53708997b098f3c7456435c2083"
+      send_message_janitor_function_sid     = "ZH0b9f111cb63b53f265d487aa63bb4818"
       capture_channel_with_bot_function_sid = "ZHca6a97b33320c5efd5430fb9f1a5480b"
       widget_from                           = "Lifeline/Childline Zambia"
       chat_blocked_message                  = "Hi, you've been blocked from accessing Childline/Lifeline services and we are not able to read or receive further messages from you."
