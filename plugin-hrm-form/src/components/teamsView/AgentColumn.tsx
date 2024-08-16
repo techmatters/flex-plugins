@@ -20,7 +20,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { AgentFullName, StyledChip } from './styles';
-import StatusChip from './StatusChip';
 
 export const setUpAgentColumn = () => {
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
@@ -36,7 +35,7 @@ export const setUpAgentColumn = () => {
       key="agent"
       header="Agent"
       sortingFn={agentSortingFn}
-      style={{ width: 'calc(10rem)' }}
+      style={{ width: 'calc(11rem)' }}
       content={item => <AgentCell item={item} />}
     />,
     { sortOrder: 0 },
@@ -58,11 +57,11 @@ const AgentCell = ({ item }) => {
     return (
       <>
         {Object.entries(labelsObj).map(([labelAbbr, labelName]) => (
-          <div key={labelAbbr} style={{ display: 'inline-flex' }}>
-            <Tooltip title={labelName} enterDelay={1000} enterTouchDelay={1000}>
-              <StatusChip statusText={labelAbbr} statusType="label" />
+          <p key={labelAbbr} style={{ display: 'inline-flex' }}>
+            <Tooltip title={labelName} enterDelay={500} enterTouchDelay={500}>
+              <StyledChip status="label">{labelAbbr}</StyledChip>
             </Tooltip>
-          </div>
+          </p>
         ))}
       </>
     );
