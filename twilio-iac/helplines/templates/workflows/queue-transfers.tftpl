@@ -9,6 +9,7 @@
           "targets": [
             {
               "queue": "${key == "survey" ?  task_queues[keys(task_queues)[0]]: value }"
+              "queue": "${key == "survey" ? (task_queues.master ? task_queues.master :task_queues.survey) : value}"
             }
           ]
         }%{ if length(task_queues) > 1 && key != keys(task_queues)[length(task_queues)-1] },%{ endif }
