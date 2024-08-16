@@ -8,7 +8,6 @@
           "expression": "transferTargetType == 'queue' AND targetSid == '${value}'",
           "targets": [
             {
-              "queue": "${key == "survey" ?  task_queues[keys(task_queues)[0]]: value }"
               "queue": "${key == "survey" ? (task_queues.master ? task_queues.master :task_queues.survey) : value}"
             }
           ]
