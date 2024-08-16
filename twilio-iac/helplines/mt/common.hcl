@@ -23,6 +23,10 @@ locals {
         templatefile             = "/app/twilio-iac/helplines/mt/templates/workflows/master.tftpl"
         task_reservation_timeout = 86400
       },
+      queue_transfers : {
+        friendly_name = "Queue Transfers Workflow"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
+      },
       survey : {
         friendly_name = "Survey Workflow"
         templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
@@ -57,10 +61,10 @@ locals {
       survey : "Survey"
     }
 
- lex_bot_languages = {
-      en_MT : ["pre_survey", "language_selector","terms_conditions_acceptance"],
-      mt_MT : ["pre_survey","terms_conditions_acceptance"],
-      uk : ["pre_survey","terms_conditions_acceptance"]
+    lex_bot_languages = {
+      en_MT : ["pre_survey", "language_selector", "terms_conditions_acceptance"],
+      mt_MT : ["pre_survey", "terms_conditions_acceptance"],
+      uk : ["pre_survey", "terms_conditions_acceptance"]
     }
 
 
