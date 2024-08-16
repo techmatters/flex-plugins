@@ -8,7 +8,7 @@
           "expression": "transferTargetType == 'queue' AND targetSid == '${value}'",
           "targets": [
             {
-              "queue": "${key == "survey" ? (task_queues.master ? task_queues.master :task_queues.survey) : value}"
+               "queue": "${key == "survey" ? (contains(keys(task_queues), "master") ? task_queues.master : task_queues.survey) : value}"
             }
           ]
         }%{ if length(task_queues) > 1 && key != keys(task_queues)[length(task_queues)-1] },%{ endif }
