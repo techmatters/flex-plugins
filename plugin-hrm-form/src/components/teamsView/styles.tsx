@@ -76,7 +76,7 @@ const statusStyles = {
 };
 
 type StyledChipProps = {
-  status: 'active' | 'disabled' | 'label';
+  chipType: 'active' | 'disabled' | 'label';
 };
 
 export const StyledChip = styled(ChipBase)<StyledChipProps>`
@@ -86,10 +86,10 @@ export const StyledChip = styled(ChipBase)<StyledChipProps>`
   padding: 2px 10px;
   border-width: 1px;
   font-size: 12px;
-  background-color: ${props => statusStyles[props.status].bgColor};
-  color: ${props => statusStyles[props.status].fontColor};
-  border-style: ${props => statusStyles[props.status].borderStyle};
-  border-color: ${props => statusStyles[props.status].borderColor};
+  background-color: ${props => statusStyles[props.chipType].bgColor};
+  color: ${props => statusStyles[props.chipType].fontColor};
+  border-style: ${props => statusStyles[props.chipType].borderStyle};
+  border-color: ${props => statusStyles[props.chipType].borderColor};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -14,15 +14,16 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { WorkersDataTable, ColumnDefinition, Template } from '@twilio/flex-ui';
+import { Tooltip } from '@material-ui/core';
 
-import SkillChip from './SkillChip';
-import { StyledLink } from '../search/styles';
 import { OpaqueText } from '../../styles';
 import { getAseloFeatureFlags } from '../../hrmConfig';
-import { SkillsCell } from './styles';
+import { SkillsCell, StyledChip } from './styles';
 import { sortSkills } from './teamsViewSorting';
+
+const SKILL_LENGTH = 12;
 
 export const setUpSkillsColumn = () => {
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
@@ -32,7 +33,7 @@ export const setUpSkillsColumn = () => {
       key="skills"
       header="Skills"
       sortingFn={sortSkills}
-      style={{ width: 'auto !important' }}
+      style={{ width: 'auto !important', minWidth: '14rem' }}
       content={item => {
         const availableSkills = item?.worker?.attributes?.routing?.skills ?? [];
         const disabledSkills = item?.worker?.attributes?.disabled_skills?.skills ?? [];
@@ -47,40 +48,31 @@ export const setUpSkillsColumn = () => {
 };
 
 const SkillsListCell = ({ availableSkills, disabledSkills, workerName }) => {
-  const [showMore, setShowMore] = useState(false);
-
   const combinedSkills = [
     ...availableSkills.map(skill => ({ skill, type: 'active' })),
     ...disabledSkills.map(skill => ({ skill, type: 'disabled' })),
   ];
 
-  const displayedSkills = showMore ? combinedSkills : combinedSkills.slice(0, 3);
-
   if (combinedSkills.length === 0) {
     return (
-      <OpaqueText style={{ fontSize: '13px' }}>
+      <OpaqueText style={{ fontSize: '12px' }}>
         <Template code="TeamsView-NoSkills" aria-label={`No skills available for ${workerName}`} />
       </OpaqueText>
     );
   }
 
   return (
-    <SkillsCell style={{ marginBottom: combinedSkills.length <= 3 ? '8px' : '0px' }}>
-      {displayedSkills.map(({ skill, type }) => (
-        <SkillChip key={skill} skill={skill} skillType={type} />
-      ))}
-      {combinedSkills.length > 3 && (
-        <StyledLink
-          style={{ margin: '4px 4px 13px 6px', padding: '6px', fontSize: '13px' }}
-          onClick={e => {
-            e.stopPropagation();
-            setShowMore(!showMore);
-          }}
-          aria-label={showMore ? `See less skills for ${workerName}` : `See more skills for ${workerName}`}
-          data-fs-id="TeamsView-ToggleSkills"
-        >
-          <Template code={showMore ? 'ReadLess' : 'ReadMore'} />
-        </StyledLink>
+    <SkillsCell style={{ marginBottom: '6px' }}>
+      {combinedSkills.map(({ skill, type }) =>
+        skill.length > SKILL_LENGTH ? (
+          <Tooltip key={skill} title={skill}>
+            <StyledChip chipType={type}>{`${skill.substring(0, SKILL_LENGTH)}…`}</StyledChip>
+          </Tooltip>
+        ) : (
+          <StyledChip key={skill} chipType={type}>
+            {skill}
+          </StyledChip>
+        ),
       )}
     </SkillsCell>
   );

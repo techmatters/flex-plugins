@@ -59,7 +59,7 @@ const AgentCell = ({ item }) => {
         {Object.entries(labelsObj).map(([labelAbbr, labelName]) => (
           <p key={labelAbbr} style={{ display: 'inline-flex' }}>
             <Tooltip title={labelName} enterDelay={500} enterTouchDelay={500}>
-              <StyledChip status="label">{labelAbbr}</StyledChip>
+              <StyledChip chipType="label">{labelAbbr}</StyledChip>
             </Tooltip>
           </p>
         ))}
