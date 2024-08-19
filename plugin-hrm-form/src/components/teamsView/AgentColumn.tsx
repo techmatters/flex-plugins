@@ -21,6 +21,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { AgentFullName, StyledChip } from './styles';
 
+const NAME_LENGTH = 18;
+
 export const setUpAgentColumn = () => {
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
 
@@ -57,11 +59,11 @@ const AgentCell = ({ item }) => {
     return (
       <>
         {Object.entries(labelsObj).map(([labelAbbr, labelName]) => (
-          <p key={labelAbbr} style={{ display: 'inline-flex' }}>
+          <span key={labelAbbr} style={{ display: 'inline-flex' }}>
             <Tooltip title={labelName} enterDelay={500} enterTouchDelay={500}>
               <StyledChip chipType="label">{labelAbbr}</StyledChip>
             </Tooltip>
-          </p>
+          </span>
         ))}
       </>
     );
@@ -71,9 +73,15 @@ const AgentCell = ({ item }) => {
 
   return (
     <>
-      <Tooltip title={fullName} enterDelay={1000} enterTouchDelay={1000}>
-        <AgentFullName>{fullName}</AgentFullName>
-      </Tooltip>
+      <p>
+        {fullName.length > NAME_LENGTH ? (
+          <Tooltip title={fullName} enterDelay={1000} enterTouchDelay={1000} className="agent-name">
+            <span>{`${fullName.substring(0, NAME_LENGTH)}…`}</span>
+          </Tooltip>
+        ) : (
+          fullName
+        )}
+      </p>
       <Labels />
     </>
   );

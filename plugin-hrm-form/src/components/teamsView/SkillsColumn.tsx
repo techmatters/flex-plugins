@@ -20,7 +20,7 @@ import { Tooltip } from '@material-ui/core';
 
 import { OpaqueText } from '../../styles';
 import { getAseloFeatureFlags } from '../../hrmConfig';
-import { SkillsCell, StyledChip } from './styles';
+import { SkillsList, StyledChip } from './styles';
 import { sortSkills } from './teamsViewSorting';
 
 const SKILL_LENGTH = 12;
@@ -38,16 +38,14 @@ export const setUpSkillsColumn = () => {
         const availableSkills = item?.worker?.attributes?.routing?.skills ?? [];
         const disabledSkills = item?.worker?.attributes?.disabled_skills?.skills ?? [];
         const workerName = item?.worker?.attributes?.full_name ?? '';
-        return (
-          <SkillsListCell availableSkills={availableSkills} disabledSkills={disabledSkills} workerName={workerName} />
-        );
+        return <SkillsCell availableSkills={availableSkills} disabledSkills={disabledSkills} workerName={workerName} />;
       }}
     />,
     { sortOrder: 0 },
   );
 };
 
-const SkillsListCell = ({ availableSkills, disabledSkills, workerName }) => {
+const SkillsCell = ({ availableSkills, disabledSkills, workerName }) => {
   const combinedSkills = [
     ...availableSkills.map(skill => ({ skill, type: 'active' })),
     ...disabledSkills.map(skill => ({ skill, type: 'disabled' })),
@@ -62,7 +60,7 @@ const SkillsListCell = ({ availableSkills, disabledSkills, workerName }) => {
   }
 
   return (
-    <SkillsCell style={{ marginBottom: '6px' }}>
+    <SkillsList>
       {combinedSkills.map(({ skill, type }) =>
         skill.length > SKILL_LENGTH ? (
           <Tooltip key={skill} title={skill}>
@@ -74,6 +72,6 @@ const SkillsListCell = ({ availableSkills, disabledSkills, workerName }) => {
           </StyledChip>
         ),
       )}
-    </SkillsCell>
+    </SkillsList>
   );
 };

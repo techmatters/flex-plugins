@@ -153,7 +153,7 @@ const convertDurationToSeconds = (duration: string): number => {
     const [minutes, secs] = duration.split(':').map(Number);
     return (minutes || 0) * 60 + (secs || 0);
   }
-  
+
   // Handle the "30+d" format
   if (duration.includes('+d')) {
     const days = parseInt(duration.split('d')[0], 10);
@@ -161,7 +161,7 @@ const convertDurationToSeconds = (duration: string): number => {
   }
 
   // Handle all other formats
-  const timeParts = duration.match(/\d+\s*[a-z]+/gi); // e.g. "23h 59min" or "59s"
+  const timeParts = duration.match(/\d+\s*[a-z]+/gi); // e.g. "23h 59min" or "59min"
   let seconds = 0;
 
   timeParts.forEach(timePart => {

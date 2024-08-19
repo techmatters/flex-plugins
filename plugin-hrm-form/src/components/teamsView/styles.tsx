@@ -15,9 +15,6 @@
  */
 
 import { styled } from '@twilio/flex-ui';
-import { withStyles } from '@material-ui/core';
-import CheckIcon from '@material-ui/icons/Check';
-import DisabledIcon from '@material-ui/icons/Block';
 
 import { ChipBase, FontOpenSans } from '../../styles';
 
@@ -28,9 +25,6 @@ import { ChipBase, FontOpenSans } from '../../styles';
 export const AgentFullName = styled(FontOpenSans)`
   font-size: 14px;
   font-weight: 700;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 `;
 AgentFullName.displayName = 'AgentFullName';
 
@@ -39,17 +33,15 @@ AgentFullName.displayName = 'AgentFullName';
  */
 export const StatusActivityName = styled(FontOpenSans)`
   font-size: 12px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   width: 85px;
 `;
 StatusActivityName.displayName = 'StatusActivityName';
 
-export const SkillsCell = styled('div')`
+export const SkillsList = styled('div')`
   padding: 8px 8px 0px 0;
+  margin-bottom: 6px;
 `;
-SkillsCell.displayName = 'SkillsCell';
+SkillsList.displayName = 'SkillsList';
 
 /**
  * Teams View Styled Chip for Skills(enabled/active and disabled skills) and Labels
