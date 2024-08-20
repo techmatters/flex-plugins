@@ -33,7 +33,7 @@ export const setUpSkillsColumn = () => {
       key="skills"
       header="Skills"
       sortingFn={sortSkills}
-      style={{ width: 'auto !important', minWidth: '14rem' }}
+      style={{ width: 'auto !important', minWidth: 'calc(13rem)' }}
       content={item => {
         const availableSkills = item?.worker?.attributes?.routing?.skills ?? [];
         const disabledSkills = item?.worker?.attributes?.disabled_skills?.skills ?? [];

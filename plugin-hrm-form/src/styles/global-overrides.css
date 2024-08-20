@@ -138,21 +138,30 @@ div.Twilio-Splitter div.Twilio-AgentDesktopView\.Panel2 {
  * - Hide the Agent column in the Teams View
  */
 
- .Twilio-WorkersDataTable {
+.Twilio-WorkersDataTable {
     min-width: 900px !important;
- }
- .Twilio-TeamsView-Loaded {
+}
+.Twilio-TeamsView-Loaded {
     width: 100%;
     overflow-x: auto;
     padding: .5rem;
- }
- .Twilio-UserCard-AvatarContainer {
+}
+.Twilio-UserCard-AvatarContainer {
     display: none;
- }
- .Twilio-UserCard-InfoContainer {
+}
+.Twilio-UserCard-InfoContainer {
     margin: 0;
     padding: 0;
- }
+}
+.Twilio-WorkersDataTable td.MuiTableCell-root.MuiTableCell-body.Twilio-DataTable-Cell:nth-last-child(-n+2) > div {
+    margin: 0;
+}
+th.MuiTableCell-root.MuiTableCell-head.Twilio-DataTable-Header:nth-last-child(-n+2) {
+    width: calc(12.5rem)
+}
+.Twilio-TeamsView-Filter {
+    margin: .75rem .25rem;
+}
 
 /**  
  * Overrides to allow better UX for Reset and Apply (buttons) in the Filter Panel

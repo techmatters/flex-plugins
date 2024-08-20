@@ -74,7 +74,7 @@ const AgentCell = ({ item }) => {
   return (
     <div>
       {fullName.length > MAX_NAME_LENGTH ? (
-        <Tooltip title={fullName} enterDelay={1000} enterTouchDelay={1000} className="agent-name">
+        <Tooltip title={fullName} enterDelay={500} enterTouchDelay={500}>
           <AgentFullName>{`${fullName.substring(0, MAX_NAME_LENGTH)}…`}</AgentFullName>
         </Tooltip>
       ) : (
