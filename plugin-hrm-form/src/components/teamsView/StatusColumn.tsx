@@ -23,7 +23,7 @@ import { sortStatusColumn } from './teamsViewSorting';
 import { FontOpenSans, TagMiddleDot } from '../../styles';
 import { StatusActivityName } from './styles';
 
-const STATUS_LENGTH = 12;
+const MAX_STATUS_LENGTH = 12;
 
 export const setUpStatusColumn = () => {
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
@@ -66,7 +66,7 @@ const StatusCell = ({ item }) => {
         <TagMiddleDot style={{ margin: '0px 5px 2px 1px' }} color={isAvailable ? '#14B053' : '#AEB2C1'} size="8" />
         {activityName.length > 12 ? (
           <Tooltip title={activityName} enterDelay={1000} enterTouchDelay={1000}>
-            <StatusActivityName>{`${activityName.substring(0, STATUS_LENGTH)}...`}</StatusActivityName>
+            <StatusActivityName>{`${activityName.substring(0, MAX_STATUS_LENGTH)}…`}</StatusActivityName>
           </Tooltip>
         ) : (
           <StatusActivityName>{activityName}</StatusActivityName>

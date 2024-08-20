@@ -99,38 +99,6 @@ const sortWorkersByChatDuration = (a: SupervisorWorkerState, b: SupervisorWorker
   return 0;
 };
 
-const sortWorkersByActivity = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
-  const aActivityValue = ACTIVITIES[a?.worker.activityName];
-  const bActivityValue = ACTIVITIES[b?.worker.activityName];
-
-  // Place available workers at the top
-  const aAvailability = a.worker.isAvailable ? 1 : 0;
-  const bAvailability = b.worker.isAvailable ? 1 : 0;
-
-  const availability = bAvailability - aAvailability;
-  if (availability !== 0) return availability;
-
-  // Place workers with "Offline" activity at the end
-  if (aActivityValue === 0 && bActivityValue === 0) {
-    // If both are offline, sort by worker name
-    return a.worker.name.localeCompare(b.worker.name);
-  } else if (aActivityValue === 0) {
-    // only a is offline, place a at the end
-    return 1;
-  } else if (bActivityValue === 0) {
-    // only b is offline, place b at the end
-    return -1;
-  }
-
-  // Sort by activity value/index
-  if (aActivityValue !== bActivityValue) {
-    return aActivityValue > bActivityValue ? 1 : -1;
-  }
-
-  // If activities are the same, sort by worker name
-  return a.worker.name.localeCompare(b.worker.name);
-};
-
 /**
  * Sorts agents by the number of available skills they have.
  */
@@ -238,6 +206,5 @@ export const setUpTeamsViewSorting = () => {
 
   AgentsDataTable.defaultProps.sortCalls = sortWorkersByCallDuration;
   AgentsDataTable.defaultProps.sortTasks = sortWorkersByChatDuration;
-  AgentsDataTable.defaultProps.sortWorkers = sortWorkersByActivity;
   AgentsDataTable.defaultProps.defaultSortColumn = 'worker';
 };

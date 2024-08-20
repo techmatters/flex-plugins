@@ -23,7 +23,7 @@ import { getAseloFeatureFlags } from '../../hrmConfig';
 import { SkillsList, StyledChip } from './styles';
 import { sortSkills } from './teamsViewSorting';
 
-const SKILL_LENGTH = 12;
+const MAX_SKILL_LENGTH = 12;
 
 export const setUpSkillsColumn = () => {
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
@@ -62,9 +62,9 @@ const SkillsCell = ({ availableSkills, disabledSkills, workerName }) => {
   return (
     <SkillsList>
       {combinedSkills.map(({ skill, type }) =>
-        skill.length > SKILL_LENGTH ? (
+        skill.length > MAX_SKILL_LENGTH ? (
           <Tooltip key={skill} title={skill}>
-            <StyledChip chipType={type}>{`${skill.substring(0, SKILL_LENGTH)}…`}</StyledChip>
+            <StyledChip chipType={type}>{`${skill.substring(0, MAX_SKILL_LENGTH)}…`}</StyledChip>
           </Tooltip>
         ) : (
           <StyledChip key={skill} chipType={type}>

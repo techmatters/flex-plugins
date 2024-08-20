@@ -21,7 +21,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { AgentFullName, StyledChip } from './styles';
 
-const NAME_LENGTH = 18;
+const MAX_NAME_LENGTH = 18;
 
 export const setUpAgentColumn = () => {
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
@@ -37,7 +37,7 @@ export const setUpAgentColumn = () => {
       key="agent"
       header="Agent"
       sortingFn={agentSortingFn}
-      style={{ width: 'calc(11rem)' }}
+      style={{ width: 'calc(10rem)' }}
       content={item => <AgentCell item={item} />}
     />,
     { sortOrder: 0 },
@@ -72,17 +72,15 @@ const AgentCell = ({ item }) => {
   const fullName = item?.worker?.fullName ?? '';
 
   return (
-    <>
-      <p>
-        {fullName.length > NAME_LENGTH ? (
-          <Tooltip title={fullName} enterDelay={1000} enterTouchDelay={1000} className="agent-name">
-            <span>{`${fullName.substring(0, NAME_LENGTH)}…`}</span>
-          </Tooltip>
-        ) : (
-          fullName
-        )}
-      </p>
+    <div>
+      {fullName.length > MAX_NAME_LENGTH ? (
+        <Tooltip title={fullName} enterDelay={1000} enterTouchDelay={1000} className="agent-name">
+          <AgentFullName>{`${fullName.substring(0, MAX_NAME_LENGTH)}…`}</AgentFullName>
+        </Tooltip>
+      ) : (
+        <AgentFullName>{fullName}</AgentFullName>
+      )}
       <Labels />
-    </>
+    </div>
   );
 };

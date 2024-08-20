@@ -33,7 +33,6 @@ AgentFullName.displayName = 'AgentFullName';
  */
 export const StatusActivityName = styled(FontOpenSans)`
   font-size: 12px;
-  width: 85px;
 `;
 StatusActivityName.displayName = 'StatusActivityName';
 
