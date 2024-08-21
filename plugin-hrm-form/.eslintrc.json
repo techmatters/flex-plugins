@@ -1,5 +1,9 @@
 {
-  "extends": ["twilio-react", "plugin:sonarjs/recommended"],
+  "extends": [
+    "twilio-react",
+    "plugin:sonarjs/recommended",
+    "plugin:storybook/recommended"
+  ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": 2019,
