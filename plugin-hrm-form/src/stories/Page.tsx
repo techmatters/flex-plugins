@@ -14,6 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+/* eslint-disable react/no-unescaped-entities */
+
 import React from 'react';
 
 import { Header } from './Header';
