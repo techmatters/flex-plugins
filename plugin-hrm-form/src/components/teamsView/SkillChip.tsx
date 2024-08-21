@@ -38,10 +38,7 @@ const SkillChip: React.FC<Props> = ({ skill, skillType }) => {
   }
 
   return (
-    // <div disabledSkill={skillType === 'disabled'} color={bgColor}>
     <div>
-      {/* {skillType === 'active' && <SmallCheckIcon htmlColor={fontColor} />}
-      {skillType === 'disabled' && <SmallDisabledIcon htmlColor={fontColor} />} */}
       <ChipText bold color={fontColor}>
         {skill.length > SKILL_LENGTH ? (
           <Tooltip title={skill}>
