@@ -13,12 +13,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { setUpAgentColumn } from './AgentColumn';
 import { setUpSkillsColumn } from './SkillsColumn';
 import { setUpStatusColumn } from './StatusColumn';
 import { setUpTeamsViewSorting } from './teamsViewSorting';
 import { setUpTeamsViewFilters, setUpWorkerDirectoryFilters } from './teamsViewFilters';
 
 const TeamsView = {
+  setUpAgentColumn,
   setUpStatusColumn,
   setUpSkillsColumn,
   setUpTeamsViewSorting,

@@ -15,57 +15,74 @@
  */
 
 import { styled } from '@twilio/flex-ui';
-import { withStyles } from '@material-ui/core';
-import CheckIcon from '@material-ui/icons/Check';
-import DisabledIcon from '@material-ui/icons/Block';
 
 import { ChipBase, FontOpenSans } from '../../styles';
 
 /**
- * Status Column
+ * Agent Column
  */
 
+export const AgentFullName = styled(FontOpenSans)`
+  font-size: 14px;
+  font-weight: 700;
+`;
+AgentFullName.displayName = 'AgentFullName';
+
+/**
+ * Status Column
+ */
 export const StatusActivityName = styled(FontOpenSans)`
   font-size: 12px;
-  white-space: nowrap; /* Prevents the text from wrapping to the next line */
-  overflow: hidden; /* Hides the overflowed content */
-  text-overflow: ellipsis; /* Adds ellipsis (...) at the end of the truncated text */
-  width: 70px; /* Set a specific width */
 `;
 StatusActivityName.displayName = 'StatusActivityName';
 
-/**
- * Skill Column
- */
-
-type SkillChipProps = {
-  color: string;
-  disabledSkill?: boolean;
-};
-export const SkillChipStyled = styled(ChipBase)<SkillChipProps>`
-  border-radius: 4px;
-  margin: 4px 0 4px 7px;
-  padding: 4px 8px;
-  background-color: ${props => (props.color ? `${props.color}1a` : '#d8d8d8')};
-  border-width: 1px;
-  border-style: ${props => (props.disabledSkill ? 'dashed' : 'solid')};
-  border-color: ${props => (props.disabledSkill ? '#606B85' : '#17bd38')};
-`;
-SkillChipStyled.displayName = 'SkillChipStyled';
-
-const withSmallIcon = Icon => {
-  return withStyles({
-    root: {
-      fontSize: '1.1rem',
-      paddingRight: '4px',
-    },
-  })(Icon);
-};
-
-export const SmallCheckIcon = withSmallIcon(CheckIcon);
-export const SmallDisabledIcon = withSmallIcon(DisabledIcon);
-
-export const SkillsCell = styled('div')`
+export const SkillsList = styled('div')`
   padding: 8px 8px 0px 0;
+  margin-bottom: 6px;
 `;
-SkillsCell.displayName = 'SkillsCell';
+SkillsList.displayName = 'SkillsList';
+
+/**
+ * Teams View Styled Chip for Skills(enabled/active and disabled skills) and Labels
+ */
+const statusStyles = {
+  active: {
+    bgColor: '#E8F8EB',
+    fontColor: '#146C2E',
+    borderColor: '#17BD38',
+    borderStyle: 'solid',
+  },
+  disabled: {
+    bgColor: '#F5F5F7',
+    fontColor: '#606B85',
+    borderColor: '#606B85',
+    borderStyle: 'dashed',
+  },
+  label: {
+    bgColor: '#FAF7FD',
+    fontColor: '#4A10A7',
+    borderColor: '#E7DCFA',
+    borderStyle: 'solid',
+  },
+};
+
+type StyledChipProps = {
+  chipType: 'active' | 'disabled' | 'label';
+};
+
+export const StyledChip = styled(ChipBase)<StyledChipProps>`
+  border-radius: 4px;
+  margin: 4px 6px 1px 0px;
+  line-height: normal;
+  padding: 2px 10px;
+  border-width: 1px;
+  font-size: 12px;
+  background-color: ${props => statusStyles[props.chipType].bgColor};
+  color: ${props => statusStyles[props.chipType].fontColor};
+  border-style: ${props => statusStyles[props.chipType].borderStyle};
+  border-color: ${props => statusStyles[props.chipType].borderColor};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+StyledChip.displayName = 'StyledChip';
