@@ -145,7 +145,7 @@ export const sortSkills = (a: SupervisorWorkerState, b: SupervisorWorkerState) =
 };
 
 /**
- * Converts a duration string in the format "59s", "59:59", "23h" or "23h 59min", "59d" or "5d 3h"  to seconds.
+ * Converts a duration string in the format "59s", "59:59", "23h" or "23h 59min", "59d" or "5d 3h" to seconds, and '30+d' to seconds.
  */
 const convertDurationToSeconds = (duration: string): number => {
   // Handle the "59:59" format (minutes and seconds)
@@ -154,19 +154,26 @@ const convertDurationToSeconds = (duration: string): number => {
     return (minutes || 0) * 60 + (secs || 0);
   }
 
+  // Handle the "30+d" format
+  if (duration.includes('+d')) {
+    const days = parseInt(duration.split('d')[0], 10);
+    return days * 60 * 60 * 24 * 30;
+  }
+
   // Handle all other formats
-  const timeParts = duration.match(/\d+\s*[a-z]+/gi);
+  const timeParts = duration.match(/\d+\s*[a-z]+/gi); // e.g. "23h 59min" or "59min"
   let seconds = 0;
 
   timeParts.forEach(timePart => {
     const value = parseInt(timePart, 10);
-    const unit = timePart.match(/[a-z]+/)![0];
+    const unit = timePart.match(/[a-z]+/i)[0];
 
     switch (unit) {
       case 's':
         seconds += value;
         break;
       case 'min':
+      case 'm':
         seconds += value * 60;
         break;
       case 'h':
@@ -176,7 +183,7 @@ const convertDurationToSeconds = (duration: string): number => {
         seconds += value * 60 * 60 * 24;
         break;
       default:
-        console.warn(`>>> Unrecognized time unit: ${unit} for value: ${value}`);
+        console.warn(`Unrecognized time unit: ${unit} for value: ${value}`);
         break;
     }
   });
