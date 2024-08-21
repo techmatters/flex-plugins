@@ -17,7 +17,6 @@
 import React from 'react';
 import { Tooltip } from '@material-ui/core';
 
-// import { SkillChipStyled, SmallCheckIcon, SmallDisabledIcon } from './styles';
 import { ChipText } from '../../styles';
 
 type Props = {
