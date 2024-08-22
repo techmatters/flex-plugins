@@ -26,7 +26,7 @@ const activityNoOfflineByDefault: FilterDefinitionFactory = (appState, _teamFilt
   const options = activitiesArray.map(activity => ({
     value: activity.name,
     label: activity.name,
-    default: activity.name !== 'Offline',
+    // default: activity.name !== 'Offline',
   }));
 
   return {
