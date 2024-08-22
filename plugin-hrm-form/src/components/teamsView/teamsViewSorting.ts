@@ -16,6 +16,7 @@
 
 import { AgentsDataTable, TaskHelper, Manager } from '@twilio/flex-ui';
 import { SupervisorWorkerState } from '@twilio/flex-ui/src/state/State.definition';
+import { differenceInSeconds } from 'date-fns';
 
 import { getAseloFeatureFlags } from '../../hrmConfig';
 
@@ -145,53 +146,6 @@ export const sortSkills = (a: SupervisorWorkerState, b: SupervisorWorkerState) =
 };
 
 /**
- * Converts a duration string in the format "59s", "59:59", "23h" or "23h 59min", "59d" or "5d 3h" to seconds, and '30+d' to seconds.
- */
-const convertDurationToSeconds = (duration: string): number => {
-  // Handle the "59:59" format (minutes and seconds)
-  if (duration.includes(':')) {
-    const [minutes, secs] = duration.split(':').map(Number);
-    return (minutes || 0) * 60 + (secs || 0);
-  }
-
-  // Handle the "30+d" format
-  if (duration.includes('+d')) {
-    const days = parseInt(duration.split('d')[0], 10);
-    return days * 60 * 60 * 24 * 30;
-  }
-
-  // Handle all other formats
-  const timeParts = duration.match(/\d+\s*[a-z]+/gi); // e.g. "23h 59min" or "59min"
-  let seconds = 0;
-
-  timeParts.forEach(timePart => {
-    const value = parseInt(timePart, 10);
-    const unit = timePart.match(/[a-z]+/i)[0];
-
-    switch (unit) {
-      case 's':
-        seconds += value;
-        break;
-      case 'min':
-      case 'm':
-        seconds += value * 60;
-        break;
-      case 'h':
-        seconds += value * 60 * 60;
-        break;
-      case 'd':
-        seconds += value * 60 * 60 * 24;
-        break;
-      default:
-        console.warn(`Unrecognized time unit: ${unit} for value: ${value}`);
-        break;
-    }
-  });
-
-  return seconds;
-};
-
-/**
  * Sort by Status/Activity column
  *
  * Sort available workers first, offline workers last, then by helpline's activity index,
@@ -209,12 +163,14 @@ export const sortStatusColumn = (a: SupervisorWorkerState, b: SupervisorWorkerSt
   const aActivityValue = ACTIVITIES[a.worker.activityName] || 0;
   const bActivityValue = ACTIVITIES[b.worker.activityName] || 0;
 
+  // dateUpdated is a string in the format "YYYY-MM-DDTHH:MM:SSZ"
+  const aUpdatedAt = differenceInSeconds(new Date(), new Date(a.worker.dateUpdated));
+  const bUpdatedAt = differenceInSeconds(new Date(), new Date(b.worker.dateUpdated));
+
   // Place workers with "Offline" activity at the end
   if (aActivityValue === 0 && bActivityValue === 0) {
     // If both are offline, sort by duration
-    const aDuration = convertDurationToSeconds(a.worker.activityDuration);
-    const bDuration = convertDurationToSeconds(b.worker.activityDuration);
-    return aDuration - bDuration;
+    return aUpdatedAt - bUpdatedAt;
   } else if (aActivityValue === 0) {
     return -1;
   } else if (bActivityValue === 0) {
@@ -227,9 +183,7 @@ export const sortStatusColumn = (a: SupervisorWorkerState, b: SupervisorWorkerSt
   }
 
   // Sort by duration within the same activity
-  const aDuration = convertDurationToSeconds(a.worker.activityDuration);
-  const bDuration = convertDurationToSeconds(b.worker.activityDuration);
-  return aDuration - bDuration;
+  return aUpdatedAt - bUpdatedAt;
 };
 
 // Set up the sorting for default Teams View columns (Workers, Calls, Tasks)

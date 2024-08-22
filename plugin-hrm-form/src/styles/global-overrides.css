@@ -139,7 +139,13 @@ div.Twilio-Splitter div.Twilio-AgentDesktopView\.Panel2 {
  */
 
 .Twilio-WorkersDataTable {
-    min-width: 900px !important;
+    min-width: 950px !important;
+}
+.Twilio-WorkersDataTable th.MuiTableCell-root.MuiTableCell-head.Twilio-DataTable-Header:nth-last-child(-n+2) {
+    width: calc(12.5rem)
+}
+.Twilio-WorkersDataTable td.MuiTableCell-root.MuiTableCell-body.Twilio-DataTable-Cell:nth-last-child(-n+2) > div {
+    margin: 0;
 }
 .Twilio-TeamsView-Loaded {
     width: 100%;
@@ -152,12 +158,6 @@ div.Twilio-Splitter div.Twilio-AgentDesktopView\.Panel2 {
 .Twilio-UserCard-InfoContainer {
     margin: 0;
     padding: 0;
-}
-.Twilio-WorkersDataTable td.MuiTableCell-root.MuiTableCell-body.Twilio-DataTable-Cell:nth-last-child(-n+2) > div {
-    margin: 0;
-}
-th.MuiTableCell-root.MuiTableCell-head.Twilio-DataTable-Header:nth-last-child(-n+2) {
-    width: calc(12.5rem)
 }
 .Twilio-TeamsView-Filter {
     margin: .75rem .25rem;

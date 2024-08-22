@@ -37,7 +37,7 @@ export const StatusActivityName = styled(FontOpenSans)`
 StatusActivityName.displayName = 'StatusActivityName';
 
 export const SkillsList = styled('div')`
-  padding: 8px 8px 0px 0;
+  padding: 8px;
   margin-bottom: 6px;
 `;
 SkillsList.displayName = 'SkillsList';

@@ -37,7 +37,7 @@ export const setUpAgentColumn = () => {
       key="agent"
       header="Agent"
       sortingFn={agentSortingFn}
-      style={{ width: 'calc(10rem)' }}
+      style={{ width: '17%' }}
       content={item => <AgentCell item={item} />}
     />,
     { sortOrder: 0 },

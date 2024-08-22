@@ -33,7 +33,7 @@ export const setUpStatusColumn = () => {
       key="status"
       header="Status"
       sortingFn={sortStatusColumn}
-      style={{ width: 'calc(7rem)' }}
+      style={{ width: '13%' }}
       content={item => <StatusCell item={item} />}
     />,
     { sortOrder: 0 },
