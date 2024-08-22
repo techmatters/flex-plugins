@@ -16,13 +16,22 @@
 
 import { AgentsDataTable, TaskHelper, Manager } from '@twilio/flex-ui';
 import { SupervisorWorkerState } from '@twilio/flex-ui/src/state/State.definition';
+import { differenceInSeconds } from 'date-fns';
 
-import { getAseloFeatureFlags } from '../hrmConfig';
+import { getAseloFeatureFlags } from '../../hrmConfig';
+
+const ACTIVITIES = Array.from(Manager.getInstance().store.getState().flex.worker.activities.values()).reduce(
+  (accum, activity, currIndex) => {
+    accum[activity.name] = currIndex;
+    return accum;
+  },
+  {},
+);
 
 /**
  * Converts a duration string in the format "HH:MM:SS" or "MM:SS" to seconds.
  */
-const convertDurationToSeconds = (duration: string): number => {
+const convertTaskDurationToSeconds = (duration: string): number => {
   const timeParts = duration.split(':').map(Number);
   let hours = 0;
   let minutes = 0;
@@ -37,7 +46,7 @@ const convertDurationToSeconds = (duration: string): number => {
 };
 
 const getTaskDurationInSeconds = (task): number => {
-  return task ? convertDurationToSeconds(new TaskHelper(task).durationSinceUpdate) : 0;
+  return task ? convertTaskDurationToSeconds(new TaskHelper(task).durationSinceUpdate) : 0;
 };
 
 const sortTasksByDuration = (aTask, bTask): number => {
@@ -69,6 +78,12 @@ const sortWorkersByCallDuration = (a: SupervisorWorkerState, b: SupervisorWorker
   return 0;
 };
 
+/**
+ * Sorts agents by the duration of their chat tasks.
+ * If a worker has multiple chat tasks, they will be sorted by the duration of the first chat task.
+ * If a worker doesn't have a chat task, they will be sorted to the end.
+ */
+
 const sortWorkersByChatDuration = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
   const aChatTasks = a.tasks.filter(task => TaskHelper.isChatBasedTask(task));
   const bChatTasks = b.tasks.filter(task => TaskHelper.isChatBasedTask(task));
@@ -86,14 +101,6 @@ const sortWorkersByChatDuration = (a: SupervisorWorkerState, b: SupervisorWorker
 };
 
 const sortWorkersByActivity = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
-  const ACTIVITIES = Array.from(Manager.getInstance().store.getState().flex.worker.activities.values()).reduce(
-    (accum, activity, currIndex) => {
-      accum[activity.name] = currIndex;
-      return accum;
-    },
-    {},
-  );
-
   const aActivityValue = ACTIVITIES[a?.worker.activityName];
   const bActivityValue = ACTIVITIES[b?.worker.activityName];
 
@@ -125,6 +132,61 @@ const sortWorkersByActivity = (a: SupervisorWorkerState, b: SupervisorWorkerStat
   return a.worker.name.localeCompare(b.worker.name);
 };
 
+/**
+ * Sorts agents by the number of available skills they have.
+ */
+export const sortSkills = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
+  const getSkillLength = (workerState: SupervisorWorkerState): number =>
+    workerState?.worker?.source?.attributes?.routing?.skills?.length ?? 0;
+
+  const aSkills = getSkillLength(a);
+  const bSkills = getSkillLength(b);
+
+  return aSkills - bSkills;
+};
+
+/**
+ * Sort by Status/Activity column
+ *
+ * Sort available workers first, offline workers last, then by helpline's activity index,
+ * then within each activity by duration, with longest to shortest
+ */
+export const sortStatusColumn = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
+  // Handle undefined values
+  if (!a || !b) return 0;
+
+  // Place available workers at the top
+  if (a.worker.isAvailable !== b.worker.isAvailable) {
+    return a.worker.isAvailable ? 1 : -1;
+  }
+
+  const aActivityValue = ACTIVITIES[a.worker.activityName] || 0;
+  const bActivityValue = ACTIVITIES[b.worker.activityName] || 0;
+
+  // dateUpdated is a string in the format "YYYY-MM-DDTHH:MM:SSZ"
+  const aUpdatedAt = differenceInSeconds(new Date(), new Date(a.worker.dateUpdated));
+  const bUpdatedAt = differenceInSeconds(new Date(), new Date(b.worker.dateUpdated));
+
+  // Place workers with "Offline" activity at the end
+  if (aActivityValue === 0 && bActivityValue === 0) {
+    // If both are offline, sort by duration
+    return aUpdatedAt - bUpdatedAt;
+  } else if (aActivityValue === 0) {
+    return -1;
+  } else if (bActivityValue === 0) {
+    return 1;
+  }
+
+  // Sort alphabetically by activity name
+  if (a.worker.activityName !== b.worker.activityName) {
+    return a.worker.activityName.localeCompare(b.worker.activityName);
+  }
+
+  // Sort by duration within the same activity
+  return aUpdatedAt - bUpdatedAt;
+};
+
+// Set up the sorting for default Teams View columns (Workers, Calls, Tasks)
 export const setUpTeamsViewSorting = () => {
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
 
@@ -132,10 +194,4 @@ export const setUpTeamsViewSorting = () => {
   AgentsDataTable.defaultProps.sortTasks = sortWorkersByChatDuration;
   AgentsDataTable.defaultProps.sortWorkers = sortWorkersByActivity;
   AgentsDataTable.defaultProps.defaultSortColumn = 'worker';
-};
-
-export const sortSkills = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
-  const aSkills = a?.worker?.source?.attributes?.routing?.skills?.length ?? 0;
-  const bSkills = b?.worker?.source?.attributes?.routing?.skills?.length ?? 0;
-  return aSkills - bSkills;
 };

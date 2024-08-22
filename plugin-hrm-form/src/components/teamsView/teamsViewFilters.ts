@@ -18,7 +18,7 @@ import type { FilterDefinitionFactory } from '@twilio/flex-ui/src/components/vie
 import { Manager, FiltersListItemType, TeamsView, WorkerDirectoryTabs } from '@twilio/flex-ui';
 import sortBy from 'lodash/sortBy';
 
-import { getAseloFeatureFlags } from '../hrmConfig';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 const activityNoOfflineByDefault: FilterDefinitionFactory = (appState, _teamFiltersPanelProps) => {
   const activitiesArray = Array.from(appState.flex.worker.activities.values());

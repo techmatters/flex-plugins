@@ -34,15 +34,15 @@ import { getAseloFeatureFlags, getHrmConfig, initializeConfig, subscribeToConfig
 import { setUpSharedStateClient } from './utils/sharedState';
 import { FeatureFlags } from './types/types';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
+import TeamsView from './components/teamsView';
+import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
+import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
 import { subscribeNewMessageAlertOnPluginInit } from './notifications/newMessage';
 import { subscribeReservedTaskAlert } from './notifications/reservedTask';
-import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
 import { setUpConferenceActions, setupConferenceComponents } from './conference';
 import { setUpTransferActions } from './transfer/setUpTransferActions';
 import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
-import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
-import TeamsView from './teamsView';
 import { maskManagerStringsWithIdentifiers, maskMessageListWithIdentifiers } from './maskIdentifiers';
 import { setUpViewMaskedVoiceNumber } from './maskIdentifiers/unmaskPhoneNumber';
 
@@ -124,6 +124,8 @@ const setUpComponents = (
     if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
   }
 
+  TeamsView.setUpAgentColumn();
+  TeamsView.setUpStatusColumn();
   TeamsView.setUpSkillsColumn();
   TeamsView.setUpTeamsViewSorting();
   TeamsView.setUpTeamsViewFilters();
