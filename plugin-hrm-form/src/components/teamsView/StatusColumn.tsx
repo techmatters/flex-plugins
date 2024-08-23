@@ -25,7 +25,6 @@ import { StatusActivityName } from './styles';
 const MAX_STATUS_LENGTH = 12;
 
 export const setUpStatusColumn = () => {
-
   WorkersDataTable.Content.add(
     <ColumnDefinition
       key="status"

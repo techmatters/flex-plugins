@@ -25,7 +25,6 @@ import { sortSkills } from './teamsViewSorting';
 const MAX_SKILL_LENGTH = 12;
 
 export const setUpSkillsColumn = () => {
-
   WorkersDataTable.Content.add(
     <ColumnDefinition
       key="skills"

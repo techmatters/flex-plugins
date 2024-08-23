@@ -74,11 +74,7 @@ const disabledSkillsFilterDefinition: FilterDefinitionFactory = () => {
  * The skills filter is included if the feature flag is enabled.
  */
 export const setUpTeamsViewFilters = () => {
-  TeamsView.defaultProps.filters = [
-    activityNoOfflineByDefault,
-    skillsFilterDefinition,
-    disabledSkillsFilterDefinition,
-  ];
+  TeamsView.defaultProps.filters = [activityNoOfflineByDefault, skillsFilterDefinition, disabledSkillsFilterDefinition];
 };
 
 export const setUpWorkerDirectoryFilters = () => {

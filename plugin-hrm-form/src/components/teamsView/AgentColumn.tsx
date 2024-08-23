@@ -23,7 +23,6 @@ import { AgentFullName, StyledChip } from './styles';
 const MAX_NAME_LENGTH = 18;
 
 export const setUpAgentColumn = () => {
-
   const agentSortingFn = (a: any, b: any): number => {
     return a > b ? 1 : -1;
   };
