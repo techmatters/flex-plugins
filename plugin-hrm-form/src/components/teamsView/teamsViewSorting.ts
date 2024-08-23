@@ -17,8 +17,6 @@
 import { AgentsDataTable, TaskHelper, Manager } from '@twilio/flex-ui';
 import { SupervisorWorkerState } from '@twilio/flex-ui/src/state/State.definition';
 
-import { getAseloFeatureFlags } from '../../hrmConfig';
-
 const activities = Manager.getInstance()?.store.getState()?.flex?.worker?.activities;
 const WORKER_ACTIVITIES = activities
   ? Array.from(activities.values()).reduce((accum, activity, currIndex) => {
@@ -232,8 +230,6 @@ export const sortStatusColumn = (a: SupervisorWorkerState, b: SupervisorWorkerSt
 
 // Set up the sorting for default Teams View columns (Workers, Calls, Tasks)
 export const setUpTeamsViewSorting = () => {
-  if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
-
   AgentsDataTable.defaultProps.sortCalls = sortWorkersByCallDuration;
   AgentsDataTable.defaultProps.sortTasks = sortWorkersByChatDuration;
   AgentsDataTable.defaultProps.sortWorkers = sortWorkersByActivity;

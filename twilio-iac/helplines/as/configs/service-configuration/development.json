@@ -21,7 +21,6 @@
             "enable_resources": true,
             "enable_resources_elastic_search": true,
             "enable_save_insights": true,
-            "enable_teams_view_enhancements": true,
             "enable_teams_view_enhancements2": true,
             "enable_voice_recordings": false
         },
