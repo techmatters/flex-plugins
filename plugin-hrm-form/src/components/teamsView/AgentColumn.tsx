@@ -75,10 +75,15 @@ const AgentCell = ({ item }) => {
     <div style={{ marginRight: '4px', padding: '4px' }}>
       {fullName.length > MAX_NAME_LENGTH ? (
         <Tooltip title={fullName} enterDelay={500} enterTouchDelay={500}>
-          <AgentFullName role="button" tabIndex={0} aria-label={fullName}>{`${fullName.substring(0, MAX_NAME_LENGTH)}…`}</AgentFullName>
+          <AgentFullName role="button" tabIndex={0} aria-label={fullName}>{`${fullName.substring(
+            0,
+            MAX_NAME_LENGTH,
+          )}…`}</AgentFullName>
         </Tooltip>
       ) : (
-        <AgentFullName role="button" tabIndex={0} aria-label={fullName}>{fullName}</AgentFullName>
+        <AgentFullName role="button" tabIndex={0} aria-label={fullName}>
+          {fullName}
+        </AgentFullName>
       )}
       <Labels />
     </div>
