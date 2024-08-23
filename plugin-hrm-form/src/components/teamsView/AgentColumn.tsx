@@ -27,7 +27,6 @@ export const setUpAgentColumn = () => {
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
   if (!getAseloFeatureFlags().enable_teams_view_enhancements2) return;
 
-
   const agentSortingFn = (a: any, b: any): number => {
     return a.worker.fullName.localeCompare(b.worker.fullName);
   };
