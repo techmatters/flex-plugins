@@ -28,6 +28,7 @@ const MAX_STATUS_LENGTH = 12;
 
 export const setUpStatusColumn = () => {
   if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
+  if (!getAseloFeatureFlags().enable_teams_view_enhancements2) return;
 
   WorkersDataTable.Content.add(
     <ColumnDefinition
