@@ -17,7 +17,6 @@
 import { Strings, TaskChannelDefinition, MessagingCanvas, MessageList } from '@twilio/flex-ui';
 
 import { getInitializedCan, PermissionActions } from '../permissions';
-import { getAseloFeatureFlags } from '../hrmConfig';
 
 // Mask identifiers in the channel strings
 export const maskChannelStringsWithIdentifiers = (channelType: TaskChannelDefinition) => {

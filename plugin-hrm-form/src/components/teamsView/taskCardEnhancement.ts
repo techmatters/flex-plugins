@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
+import { getTemplateStrings } from '../../hrmConfig';
 import { getInitializedCan, PermissionActions } from '../../permissions';
 
 const TRUNCATED_IDENTIFIER_LENGTH = 4;

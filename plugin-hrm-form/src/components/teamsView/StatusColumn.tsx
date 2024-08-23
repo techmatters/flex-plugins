@@ -21,10 +21,13 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { sortStatusColumn } from './teamsViewSorting';
 import { FontOpenSans, TagMiddleDot } from '../../styles';
 import { StatusActivityName } from './styles';
+import { getAseloFeatureFlags } from 'hrmConfig';
 
 const MAX_STATUS_LENGTH = 12;
 
 export const setUpStatusColumn = () => {
+  if (!getAseloFeatureFlags().enable_teams_view_enhancements2) return;
+
   WorkersDataTable.Content.add(
     <ColumnDefinition
       key="status"

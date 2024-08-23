@@ -161,4 +161,5 @@ SomethingWentWrongText.displayName = 'SomethingWentWrongText';
 
 export const OpaqueText = styled('span')`
   opacity: 0.7;
+  font-size: 12px;
 `;
