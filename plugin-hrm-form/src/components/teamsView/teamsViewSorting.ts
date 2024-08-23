@@ -19,8 +19,8 @@ import { SupervisorWorkerState } from '@twilio/flex-ui/src/state/State.definitio
 
 import { getAseloFeatureFlags } from '../../hrmConfig';
 
-const activities = Manager.getInstance()?.store?.getState().flex.worker.activities;
-const ACTIVITIES = activities
+const activities = Manager.getInstance()?.store.getState()?.flex?.worker?.activities;
+const WORKER_ACTIVITIES = activities
   ? Array.from(activities.values()).reduce((accum, activity, currIndex) => {
       accum[activity.name] = currIndex;
       return accum;
@@ -100,8 +100,8 @@ const sortWorkersByChatDuration = (a: SupervisorWorkerState, b: SupervisorWorker
 };
 
 const sortWorkersByActivity = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
-  const aActivityValue = ACTIVITIES[a?.worker.activityName];
-  const bActivityValue = ACTIVITIES[b?.worker.activityName];
+  const aActivityValue = WORKER_ACTIVITIES[a?.worker.activityName];
+  const bActivityValue = WORKER_ACTIVITIES[b?.worker.activityName];
 
   // Place available workers at the top
   const aAvailability = a.worker.isAvailable ? 1 : 0;
@@ -206,8 +206,8 @@ export const sortStatusColumn = (a: SupervisorWorkerState, b: SupervisorWorkerSt
     return a.worker.isAvailable ? 1 : -1;
   }
 
-  const aActivityValue = ACTIVITIES[a.worker.activityName] || 0;
-  const bActivityValue = ACTIVITIES[b.worker.activityName] || 0;
+  const aActivityValue = WORKER_ACTIVITIES[a.worker.activityName] || 0;
+  const bActivityValue = WORKER_ACTIVITIES[b.worker.activityName] || 0;
 
   const aUpdatedAt = convertDurationToSeconds(a?.worker?.activityDuration || '');
   const bUpdatedAt = convertDurationToSeconds(b?.worker?.activityDuration || '');
