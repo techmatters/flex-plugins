@@ -19,14 +19,12 @@ import { WorkersDataTable, ColumnDefinition, Template } from '@twilio/flex-ui';
 import { Tooltip } from '@material-ui/core';
 
 import { OpaqueText } from '../../styles';
-import { getAseloFeatureFlags } from '../../hrmConfig';
 import { SkillsList, StyledChip } from './styles';
 import { sortSkills } from './teamsViewSorting';
 
 const MAX_SKILL_LENGTH = 12;
 
 export const setUpSkillsColumn = () => {
-  if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
 
   WorkersDataTable.Content.add(
     <ColumnDefinition

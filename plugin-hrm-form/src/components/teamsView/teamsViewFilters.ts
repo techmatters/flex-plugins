@@ -76,9 +76,8 @@ const disabledSkillsFilterDefinition: FilterDefinitionFactory = () => {
 export const setUpTeamsViewFilters = () => {
   TeamsView.defaultProps.filters = [
     activityNoOfflineByDefault,
-    ...(getAseloFeatureFlags().enable_teams_view_enhancements
-      ? [skillsFilterDefinition, disabledSkillsFilterDefinition]
-      : []),
+    skillsFilterDefinition,
+    disabledSkillsFilterDefinition,
   ];
 };
 

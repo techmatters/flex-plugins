@@ -18,7 +18,6 @@ import React, { useState, useEffect } from 'react';
 import { WorkersDataTable, ColumnDefinition } from '@twilio/flex-ui';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { getAseloFeatureFlags } from '../../hrmConfig';
 import { sortStatusColumn } from './teamsViewSorting';
 import { FontOpenSans, TagMiddleDot } from '../../styles';
 import { StatusActivityName } from './styles';
@@ -26,7 +25,6 @@ import { StatusActivityName } from './styles';
 const MAX_STATUS_LENGTH = 12;
 
 export const setUpStatusColumn = () => {
-  if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
 
   WorkersDataTable.Content.add(
     <ColumnDefinition

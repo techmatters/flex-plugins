@@ -23,7 +23,6 @@ const TRUNCATED_QUEUE_LENGTH = 10;
 
 // This function customises the TaskCard meant for Call channel
 export const setCallTaskCardString = channel => {
-  if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
 
   const can = getInitializedCan();
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
@@ -42,7 +41,6 @@ export const setCallTaskCardString = channel => {
 
 // This function customises the TaskCard meant for all Chat channels
 export const setChatTaskCardString = channel => {
-  if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
 
   const can = getInitializedCan();
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
