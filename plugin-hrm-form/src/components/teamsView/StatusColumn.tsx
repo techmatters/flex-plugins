@@ -18,10 +18,10 @@ import React, { useState, useEffect } from 'react';
 import { WorkersDataTable, ColumnDefinition } from '@twilio/flex-ui';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import { getAseloFeatureFlags } from '../../hrmConfig';
 import { sortStatusColumn } from './teamsViewSorting';
 import { FontOpenSans, TagMiddleDot } from '../../styles';
 import { StatusActivityName } from './styles';
-import { getAseloFeatureFlags } from 'hrmConfig';
 
 const MAX_STATUS_LENGTH = 12;
 

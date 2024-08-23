@@ -18,8 +18,8 @@ import React from 'react';
 import { WorkersDataTable, ColumnDefinition } from '@twilio/flex-ui';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import { getAseloFeatureFlags } from '../../hrmConfig';
 import { AgentFullName, StyledChip } from './styles';
-import { getAseloFeatureFlags } from 'hrmConfig';
 
 const MAX_NAME_LENGTH = 18;
 
