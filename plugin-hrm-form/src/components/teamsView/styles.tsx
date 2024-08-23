@@ -22,9 +22,12 @@ import { ChipBase, FontOpenSans } from '../../styles';
  * Agent Column
  */
 
-export const AgentFullName = styled(FontOpenSans)`
+export const AgentFullName = styled('div')`
   font-size: 14px;
   font-weight: 700;
+  color: #000000;
+  font-family: Open Sans;
+  text-align: left;
 `;
 AgentFullName.displayName = 'AgentFullName';
 
@@ -37,8 +40,7 @@ export const StatusActivityName = styled(FontOpenSans)`
 StatusActivityName.displayName = 'StatusActivityName';
 
 export const SkillsList = styled('div')`
-  padding: 8px;
-  margin-bottom: 6px;
+  padding: 4px;
 `;
 SkillsList.displayName = 'SkillsList';
 
@@ -77,6 +79,7 @@ export const StyledChip = styled(ChipBase)<StyledChipProps>`
   padding: 2px 10px;
   border-width: 1px;
   font-size: 12px;
+  font-family: Open Sans;
   background-color: ${props => statusStyles[props.chipType].bgColor};
   color: ${props => statusStyles[props.chipType].fontColor};
   border-style: ${props => statusStyles[props.chipType].borderStyle};

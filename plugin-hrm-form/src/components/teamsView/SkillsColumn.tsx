@@ -51,27 +51,19 @@ const SkillsCell = ({ availableSkills, disabledSkills, workerName }) => {
     ...disabledSkills.map(skill => ({ skill, type: 'disabled' })),
   ];
 
-  if (combinedSkills.length === 0) {
-    return (
-      <OpaqueText style={{ fontSize: '12px' }}>
-        <Template code="TeamsView-NoSkills" aria-label={`No skills available for ${workerName}`} />
-      </OpaqueText>
-    );
-  }
-
-  return (
+  return combinedSkills.length === 0 ? (
+    <OpaqueText style={{ paddingLeft: '4px' }}>
+      <Template code="TeamsView-NoSkills" aria-label={`No skills available for ${workerName}`} />
+    </OpaqueText>
+  ) : (
     <SkillsList>
-      {combinedSkills.map(({ skill, type }) =>
-        skill.length > MAX_SKILL_LENGTH ? (
-          <Tooltip key={skill} title={skill}>
-            <StyledChip chipType={type}>{`${skill.substring(0, MAX_SKILL_LENGTH)}…`}</StyledChip>
-          </Tooltip>
-        ) : (
-          <StyledChip key={skill} chipType={type}>
-            {skill}
+      {combinedSkills.map(({ skill, type }) => (
+        <Tooltip key={skill} title={skill}>
+          <StyledChip chipType={type}>
+            {skill.length > MAX_SKILL_LENGTH ? `${skill.substring(0, MAX_SKILL_LENGTH)}…` : skill}
           </StyledChip>
-        ),
-      )}
+        </Tooltip>
+      ))}
     </SkillsList>
   );
 };
