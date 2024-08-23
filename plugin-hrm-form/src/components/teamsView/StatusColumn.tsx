@@ -17,7 +17,6 @@
 import React, { useState, useEffect } from 'react';
 import { WorkersDataTable, ColumnDefinition } from '@twilio/flex-ui';
 import Tooltip from '@material-ui/core/Tooltip';
-import { differenceInSeconds } from 'date-fns';
 
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { sortStatusColumn } from './teamsViewSorting';
