@@ -46,7 +46,7 @@ ${
             {
               "friendly_name": "If value equal_to English",
               "arguments": [
-                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
               "value": "English"
@@ -60,7 +60,7 @@ ${
             {
               "friendly_name": "If value equal_to Bemba",
               "arguments": [
-                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
               "value": "Bemba"
@@ -74,7 +74,7 @@ ${
             {
               "friendly_name": "If value equal_to Tonga",
               "arguments": [
-                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
               "value": "Tonga"
@@ -88,7 +88,7 @@ ${
             {
               "friendly_name": "If value equal_to Lunda",
               "arguments": [
-                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
               "value": "Lunda"
@@ -102,7 +102,7 @@ ${
             {
               "friendly_name": "If value equal_to Nyanja",
               "arguments": [
-                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
               "value": "Nyanja"
@@ -116,7 +116,7 @@ ${
             {
               "friendly_name": "If value equal_to Kaonde",
               "arguments": [
-                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
               "value": "Kaonde"
@@ -130,7 +130,7 @@ ${
             {
               "friendly_name": "If value equal_to Lozi",
               "arguments": [
-                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
               ],
               "type": "equal_to",
               "value": "Lozi"
@@ -139,7 +139,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}",
+        "input": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}",
         "offset": {
           "x": -670,
           "y": -90
@@ -167,7 +167,7 @@ ${
         },
         "workflow": workflow_sids["master"],
         "channel": task_channel_sids["chat"],
-        "attributes": "{\n  \"ip\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\n  \"name\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"helpline\": \"{{ trigger.message.ChannelAttributes.memory .helpline}}\",\n  \"ignoreAgent\": \"\",\n  \"transferTargetType\": \"\",\n  \"language\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.language | default: 'en-US' }}\",\n \"memory\": {{ trigger.message.ChannelAttributes.memory | to_json }},\n \"preEngagementData\": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}} \n}"
+        "attributes": "{\n  \"ip\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.ip}}\",\n  \"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"helpline\": \"{{ trigger.conversation.ChannelAttributes.memory .helpline}}\",\n  \"ignoreAgent\": \"\",\n  \"transferTargetType\": \"\",\n  \"language\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.language | default: 'en-US' }}\",\n \"memory\": {{ trigger.conversation.ChannelAttributes.memory | to_json }},\n \"preEngagementData\": {{trigger.conversation.ChannelAttributes.pre_engagement_data | to_json}} \n}"
       }
     },
     {
@@ -336,8 +336,8 @@ ${
         }
       ],
       "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
+        "service_sid": flow_vars["service_sid"],
+        "environment_sid": flow_vars["environment_sid"],
         "offset": {
           "x": -780,
           "y": 650
@@ -377,7 +377,7 @@ ${
             "key": "releaseFlag"
           },
           {
-            "value": "{{trigger.message.ChannelAttributes.channel_type | downcase}}",
+            "value": "{{trigger.conversation.ChannelAttributes.channel_type | downcase}}",
             "key": "channelType"
           },
           {
@@ -403,7 +403,7 @@ ${
             {
               "friendly_name": "If value equal_to true",
               "arguments": [
-                "{{trigger.message.ChannelAttributes.preSurveyComplete}}"
+                "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}"
               ],
               "type": "equal_to",
               "value": "true"
@@ -412,7 +412,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{trigger.message.ChannelAttributes.preSurveyComplete}}",
+        "input": "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}",
         "offset": {
           "x": 20,
           "y": -380
