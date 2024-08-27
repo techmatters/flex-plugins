@@ -31,36 +31,41 @@ export const setUpSkillsColumn = () => {
       header="Skills"
       sortingFn={sortSkills}
       style={{ width: 'auto !important' }}
-      content={item => {
-        const availableSkills = item?.worker?.attributes?.routing?.skills ?? [];
-        const disabledSkills = item?.worker?.attributes?.disabled_skills?.skills ?? [];
-        const workerName = item?.worker?.attributes?.full_name ?? '';
-        return <SkillsCell availableSkills={availableSkills} disabledSkills={disabledSkills} workerName={workerName} />;
-      }}
+      content={item => <SkillsCell item={item} />}
     />,
     { sortOrder: 0 },
   );
 };
 
-const SkillsCell = ({ availableSkills, disabledSkills, workerName }) => {
+const SkillsCell = ({ item }) => {
+  const availableSkills = item?.worker?.attributes?.routing?.skills ?? [];
+  const disabledSkills = item?.worker?.attributes?.disabled_skills?.skills ?? [];
+  const workerName = item?.worker?.attributes?.full_name ?? '';
+
   const combinedSkills = [
     ...availableSkills.map(skill => ({ skill, type: 'active' })),
     ...disabledSkills.map(skill => ({ skill, type: 'disabled' })),
   ];
 
   return combinedSkills.length === 0 ? (
-    <OpaqueText style={{ paddingLeft: '4px' }}>
+    <OpaqueText>
       <Template code="TeamsView-NoSkills" aria-label={`No skills available for ${workerName}`} />
     </OpaqueText>
   ) : (
     <SkillsList>
-      {combinedSkills.map(({ skill, type }) => (
-        <Tooltip key={skill} title={skill}>
-          <StyledChip chipType={type}>
-            {skill.length > MAX_SKILL_LENGTH ? `${skill.substring(0, MAX_SKILL_LENGTH)}…` : skill}
+      {combinedSkills.map(({ skill, type }) =>
+        skill.length > MAX_SKILL_LENGTH ? (
+          <Tooltip key={skill} title={skill}>
+            <StyledChip chipType={type} aria-label={skill}>
+              {skill.slice(0, MAX_SKILL_LENGTH)}...
+            </StyledChip>
+          </Tooltip>
+        ) : (
+          <StyledChip key={skill} chipType={type} aria-label={skill}>
+            {skill}
           </StyledChip>
-        </Tooltip>
-      ))}
+        ),
+      )}
     </SkillsList>
   );
 };
