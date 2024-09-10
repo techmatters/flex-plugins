@@ -131,6 +131,8 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
       )}
       {currentContext?.searchTerm && <Bold>&quot;{currentContext?.searchTerm}&quot;.&nbsp;</Bold>}
       {counselorNameString(currentContext?.counselor, counselorsHash)}
+
+      {/* The following are for both types of search fields */}
       <ContextItem label="DateFrom" value={currentContext?.dateFrom} />
       <ContextItem label="DateTo" value={currentContext?.dateTo} />
     </FontOpenSans>
