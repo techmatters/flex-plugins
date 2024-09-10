@@ -51,7 +51,7 @@ ${
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
-        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"whatsapp\" }",
+        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\" }",
         "url": "${serverless_url}/getProfileFlagsForIdentifier"
       }
     },
