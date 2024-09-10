@@ -51,8 +51,6 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
     };
   });
 
-  const transformDate = date => new Date(date).toLocaleDateString();
-
   const countString = (subroute, casesCount: number, contactsCount: number) => {
     if (subroute === 'case-results') {
       return casesCount === 1 ? (
@@ -100,10 +98,12 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
     currentContext = agentFormQuery;
   }
 
+  const transformDate = date => new Date(date).toLocaleDateString();
+
   const ContextItem = ({ label, value }) => {
     if (!value) return null;
-
-    const formattedValue = enableGeneralizedSearch || !transformDate ? value : transformDate(value);
+    const formattedValue =
+      !enableGeneralizedSearch && (label === 'DateFrom' || label === 'DateTo') ? transformDate(value) : value;
     return (
       <>
         <Template code={`SearchResults-${label}`} /> <Bold>{formattedValue}.&nbsp;</Bold>
@@ -114,17 +114,20 @@ export const SearchResultsQueryTemplate: React.FC<SearchResultsQueryTemplateProp
   return (
     <FontOpenSans>
       <span data-testid="SearchResultsCount">{countString(subroute, casesCount, contactsCount)}</span>
+
+      {/* The following are for legacy search fields */}
+      {!enableGeneralizedSearch && <>.&nbsp;</>}
       <ContextItem label="FirstName" value={currentContext?.firstName} />
       <ContextItem label="LastName" value={currentContext?.lastName} />
       <ContextItem label="PhoneNumber" value={currentContext?.phoneNumber} />
       <ContextItem label="Email" value={currentContext?.email} />
-      {enableGeneralizedSearch ? (
+
+      {/* The following are for generalized search fields */}
+      {enableGeneralizedSearch && (
         <>
           <Template code="SearchResults-For" />
           &nbsp;
         </>
-      ) : (
-        <>.&nbsp;</>
       )}
       {currentContext?.searchTerm && <Bold>&quot;{currentContext?.searchTerm}&quot;.&nbsp;</Bold>}
       {counselorNameString(currentContext?.counselor, counselorsHash)}
