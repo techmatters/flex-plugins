@@ -45,6 +45,7 @@ ${
         }
       ],
       "properties": {
+        "add_twilio_auth" = false,
         "offset": {
           "x": -350,
           "y": -280
@@ -187,7 +188,7 @@ ${
                 },
                 {
                 "event": "fail",
-                "next": "channel_cleanup",
+                "next": "webhook_notify_error",
                 }
             ],
             "properties": {
@@ -287,6 +288,7 @@ ${
           }
         ],
         "properties": {
+          "add_twilio_auth" = false,
           "offset": {
             "x": -40,
             "y": 740
@@ -309,6 +311,7 @@ ${
           }
         ],
         "properties": {
+          "add_twilio_auth" = false,
           "offset": {
             "x": 660,
             "y": 1360
