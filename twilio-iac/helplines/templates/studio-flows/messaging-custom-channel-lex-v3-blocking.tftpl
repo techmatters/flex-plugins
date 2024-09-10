@@ -1,7 +1,7 @@
 ${
   jsonencode(
     {
-    "description": "Messaging Flow - Lex",
+    "description": flow_description,
     "states": [
          {
       "name": "Trigger",
@@ -45,13 +45,14 @@ ${
         }
       ],
       "properties": {
+        "add_twilio_auth" = false,
         "offset": {
           "x": -350,
           "y": -280
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
-        "body": "{ \"trigger\": {{trigger | to_json}}}",
+        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"${channel_name}\"}",
         "url": "${serverless_url}/getProfileFlagsForIdentifier"
       }
     },
@@ -187,7 +188,7 @@ ${
                 },
                 {
                 "event": "fail",
-                "next": "channel_cleanup",
+                "next": "webhook_notify_error",
                 }
             ],
             "properties": {
@@ -247,21 +248,21 @@ ${
             "name": "channel_cleanup",
             "type": "run-function",
             "transitions": [
-                {
-                "next": "webhook_notify_error",
+              {
+                "next": "attributes",
                 "event": "success"
-                },
-                {
-                "next": "webhook_notify_error",
+              },
+              {
+                "next": "send_message_run_janitor",
                 "event": "fail"
-                }
+              }
             ],
             "properties": {
                 "service_sid": serverless_service_sid,
                 "environment_sid": serverless_environment_sid,
                 "offset": {
-                 "x": -60,
-                 "y": 720
+                 "x": 30,
+                 "y": 980
                 },
                 "function_sid": flow_vars["chatbot_callback_cleanup_function_sid"],
                 "parameters": [
@@ -278,18 +279,19 @@ ${
         "type": "make-http-request",
         "transitions": [
           {
-            "next": "attributes",
+            "next": "channel_cleanup",
             "event": "success"
           },
           {
-            "next": "attributes",
+            "next": "channel_cleanup",
             "event": "failed"
           }
         ],
         "properties": {
+          "add_twilio_auth" = false,
           "offset": {
-            "x": 70,
-            "y": 1250
+            "x": -40,
+            "y": 740
           },
           "method": "POST",
           "content_type": "application/json;charset=utf-8",
@@ -309,16 +311,53 @@ ${
           }
         ],
         "properties": {
+          "add_twilio_auth" = false,
           "offset": {
-            "x": 540,
-            "y": 1250
+            "x": 660,
+            "y": 1360
           },
           "method": "POST",
           "content_type": "application/json;charset=utf-8",
           "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
           "url": webhook_url_studio_errors
         }
-      } 
+      },
+    {
+      "name": "send_message_run_janitor",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": 110,
+          "y": 1260
+        },
+        "function_sid": flow_vars["send_message_janitor_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": flow_vars["error_message"],
+            "key": "message"
+          },
+          {
+            "value": flow_vars["widget_from"],
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    }
     ],
     "initial_state": "Trigger",
     "flags": {
