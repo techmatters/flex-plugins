@@ -272,6 +272,7 @@ const Search: React.FC<Props> = ({
             task={task}
             handleSearchFormUpdate={handleSearchFormUpdate(searchContext)}
             handleSearch={setSearchParamsAndHandleSearch}
+            onlyDataContacts={Boolean(searchParams?.onlyDataContacts)}
           />
         ) : (
           <SearchForm

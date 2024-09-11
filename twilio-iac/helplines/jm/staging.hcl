@@ -16,6 +16,7 @@ locals {
       bot_language                          = "en-JM"
       widget_from                           = "SafeSpot"
       chat_blocked_message                  = "Sorry, you're not able to contact SafeSpot from this device or account"
+      error_message                         = "There has been an error with your message, please try writing us again."
     }
     #Channels
     channels = {

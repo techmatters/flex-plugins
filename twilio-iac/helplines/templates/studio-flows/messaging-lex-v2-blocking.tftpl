@@ -1,7 +1,7 @@
 ${
   jsonencode(
     {
-    "description": "Messaging Flow - Lex",
+    "description": flow_description,
     "states": [
          {
       "name": "Trigger",
@@ -51,6 +51,7 @@ ${
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
         "body": "{ \"trigger\": {{trigger | to_json}}}",
         "url": "${serverless_url}/getProfileFlagsForIdentifier"
       }
@@ -126,8 +127,8 @@ ${
         ],
         "properties": {
             "offset": {
-             "x": 420,
-             "y": 970
+              "x": 510,
+              "y": 1110
             },
             "workflow": workflow_sids["master"],
             "channel": task_channel_sids["chat"],
@@ -174,7 +175,7 @@ ${
                 },
                 {
                 "event": "fail",
-                "next": "channel_cleanup",
+                "next": "webhook_notify_error",
                 }
             ],
             "properties": {
@@ -234,21 +235,21 @@ ${
             "name": "channel_cleanup",
             "type": "run-function",
             "transitions": [
-                {
-                "next": "webhook_notify_error",
-                "event": "success"
-                },
-                {
-                "next": "webhook_notify_error",
-                "event": "fail"
-                }
+                  {
+                    "next": "attributes",
+                    "event": "success"
+                  },
+                  {
+                    "next": "send_message_run_janitor",
+                    "event": "fail"
+                  }
             ],
             "properties": {
                 "service_sid": serverless_service_sid,
                 "environment_sid": serverless_environment_sid,
                 "offset": {
-                 "x": -60,
-                 "y": 720
+                  "x": 70,
+                  "y": 1000
                 },
                 "function_sid": flow_vars["chatbot_callback_cleanup_function_sid"],
                 "parameters": [
@@ -264,22 +265,23 @@ ${
         "name": "webhook_notify_error",
         "type": "make-http-request",
         "transitions": [
-          {
-            "next": "attributes",
-            "event": "success"
+         {
+          "next": "channel_cleanup",
+          "event": "success"
           },
           {
-            "next": "attributes",
+            "next": "channel_cleanup",
             "event": "failed"
           }
         ],
         "properties": {
           "offset": {
-            "x": 70,
-            "y": 1250
+            "x": -40,
+            "y": 740
           },
           "method": "POST",
           "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
           "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
           "url": webhook_url_studio_errors
         }
@@ -297,15 +299,52 @@ ${
         ],
         "properties": {
           "offset": {
-            "x": 540,
-            "y": 1250
+            "x": 620,
+            "y": 1370
           },
           "method": "POST",
           "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
           "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
           "url": webhook_url_studio_errors
         }
-      } 
+      },
+    {
+      "name": "send_message_run_janitor",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": 130,
+          "y": 1250
+        },
+        "function_sid":flow_vars["send_message_janitor_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": flow_vars["error_message"],
+            "key": "message"
+          },
+          {
+            "value": flow_vars["widget_from"],
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    } 
     ],
     "initial_state": "Trigger",
     "flags": {

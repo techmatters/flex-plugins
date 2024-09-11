@@ -43,6 +43,7 @@ export const newSearchFormEntry = {
   contactNumber: '',
   helpline: { label: '', value: '' },
   searchTerm: '',
+  onlyDataContacts: false,
 };
 
 export type SearchFormValues = {
