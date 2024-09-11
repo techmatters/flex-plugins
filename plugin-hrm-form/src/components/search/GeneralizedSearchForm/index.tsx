@@ -15,7 +15,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import type { FormDefinition } from 'hrm-form-definitions';
@@ -73,7 +73,13 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
   const validateEmptyForm =
     watch().searchTerm === '' && watch().counselor === '' && watch().dateFrom === '' && watch().dateTo === '';
 
+  const updateCallback = useCallback(() => {
+    const values = getValues();
+    dispatch(handleSearchFormUpdate(values));
+  }, [dispatch, getValues, handleSearchFormUpdate]);
+
   const onSubmit = handleSubmit(values => {
+    updateCallback(); // make sure all changes has been flushed before submitting
     if (!validateEmptyForm) {
       handleSearch(values);
     }
@@ -93,10 +99,7 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
     definition: formDefinition,
     initialValues: sanitizedInitialValues,
     parentsPath: '',
-    updateCallback: () => {
-      const values = getValues();
-      dispatch(handleSearchFormUpdate(values));
-    },
+    updateCallback,
   });
 
   const arrangeSearchFormItems = (margin: number) => (formItems: JSX.Element[]) => {

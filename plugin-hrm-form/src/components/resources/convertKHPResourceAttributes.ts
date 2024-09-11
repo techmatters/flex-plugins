@@ -192,10 +192,11 @@ const extractSiteLocation = (site: Attributes) => {
   };
 };
 
-const extractPhoneNumbers = (phoneObj: Attributes) => {
+const extractPhoneNumbers = (phoneObj: Attributes): Record<string, string> => {
   const phoneNumbers = {};
   Object.keys(phoneObj ?? {}).forEach(key => {
-    phoneNumbers[key] = getAttributeValue(phoneObj, '', key);
+    const { info } = getAttributeData(phoneObj, '', key);
+    phoneNumbers[(info.type ?? key).toLowerCase()] = `${info.number}${info.name ? ` (${info.name})` : ''}`;
   });
   return phoneNumbers;
 };
@@ -256,7 +257,7 @@ const extractSiteDetails = (resource: Attributes, sites: Attributes, language: L
       operations: extractSiteOperatingHours(siteId, operationsAttributes, siteOperations, language),
       isActive: getBooleanAttributeValue(site, 'isActive'),
       details: getAttributeData(site, language, 'details')?.info?.details ?? '',
-      phoneNumbers: extractPhoneNumbers(getAttributeNode(site, 'phoneNumbers')),
+      phoneNumbers: extractPhoneNumbers(getAttributeNode(site, 'phone')),
       coverage: extractCoverage(coverageAttributes, siteId),
     });
   }
