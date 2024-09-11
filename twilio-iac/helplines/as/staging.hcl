@@ -11,7 +11,11 @@ locals {
     flow_vars = {
       capture_channel_with_bot_function_sid = "ZH979fc67a70a4a9572552c81a0d5d41d7"
       chatbot_callback_cleanup_function_sid = "ZH31416a207f81bf504a1391ed7649400e"
+      send_message_janitor_function_sid     = "ZH91e33557d45b6dd60100876452e2428b"
       bot_language                          = "en-US"
+      widget_from                           = "Aselo"
+      chat_blocked_message                  = "Sorry, you're not able to contact SafeSpot from this device or account"
+      error_message                         = "There has been an error with your message, please try writing us again."
 
     }
 
