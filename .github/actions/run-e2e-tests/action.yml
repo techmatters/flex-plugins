@@ -79,7 +79,7 @@ runs:
       working-directory: ${{ inputs.path }}/e2e-tests
       shell: bash
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       if: ${{ always() }}
       with:
         name: test-artifacts
