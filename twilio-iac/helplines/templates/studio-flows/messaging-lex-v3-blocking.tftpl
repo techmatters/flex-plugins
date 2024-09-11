@@ -26,8 +26,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 160,
-          "y": -90
+         "x": -60,
+         "y": -540
         }
       }
     },
@@ -174,7 +174,7 @@ ${
           "event": "success"
         },
         {
-          "next": "channel_cleanup",
+          "next": "webhook_notify_error",
           "event": "fail"
         }
       ],
@@ -248,8 +248,8 @@ ${
         "service_sid": serverless_service_sid,
         "environment_sid": serverless_environment_sid,
         "offset": {
-          "x": -60,
-          "y": 720
+          "x": -210,
+          "y": 1080
         },
         "function_sid": flow_vars["chatbot_callback_cleanup_function_sid"],
         "parameters": [
@@ -276,8 +276,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 70,
-          "y": 1250
+          "x": 0,
+          "y": 730
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
