@@ -1,7 +1,7 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_client_profiles": true
+            "enable_client_profiles": false
         },
         "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png",
         "previous_ui_version": {
