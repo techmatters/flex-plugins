@@ -8,13 +8,13 @@ ${
       "type": "trigger",
       "transitions": [
         {
-          "next": "getProfileFlagsForIdentifier",
           "event": "incomingMessage"
         },
         {
           "event": "incomingCall"
         },
         {
+          "next": "getProfileFlagsForIdentifier",
           "event": "incomingConversationMessage"
         },
         {
@@ -45,38 +45,51 @@ ${
         }
       ],
       "properties": {
+        "add_twilio_auth" = false,
         "offset": {
           "x": -350,
           "y": -280
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
-        "add_twilio_auth": false,
-        "body": "{ \"trigger\": {{trigger | to_json}}}",
+        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"${channel_name}\"}",
         "url": "${serverless_url}/getProfileFlagsForIdentifier"
       }
     },
-    {
+   {
       "name": "send_blocked_message",
-      "type": "send-message",
+      "type": "run-function",
       "transitions": [
         {
-          "event": "sent"
+          "event": "success"
         },
         {
-          "event": "failed"
+          "event": "fail"
         }
       ],
       "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": -640,
           "y": 210
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": flow_vars["widget_from"],
-        "to": "{{contact.channel.address}}",
-        "body":  flow_vars["chat_blocked_message"]
+        "function_sid": flow_vars["send_message_janitor_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": flow_vars["chat_blocked_message"],
+            "key": "message"
+          },
+          {
+            "value": flow_vars["widget_from"],
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
       }
     },
     {
@@ -127,8 +140,8 @@ ${
         ],
         "properties": {
             "offset": {
-              "x": 510,
-              "y": 1110
+             "x": 420,
+             "y": 970
             },
             "workflow": workflow_sids["master"],
             "channel": task_channel_sids["chat"],
@@ -150,7 +163,7 @@ ${
                 {
                 "friendly_name": "If value equal_to true",
                 "arguments": [
-                    "{{trigger.message.ChannelAttributes.preSurveyComplete}}"
+                    "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}"
                 ],
                 "type": "equal_to",
                 "value": "true"
@@ -159,7 +172,7 @@ ${
             }
         ],
         "properties": {
-            "input": "{{trigger.message.ChannelAttributes.preSurveyComplete}}",
+            "input": "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}",
             "offset": {
             "x": 150,
             "y": 200
@@ -220,11 +233,11 @@ ${
                     "key": "releaseFlag"
                 },
                 {
-                  "value": "{{trigger.message.ChannelAttributes.channel_type | downcase}}",
+                  "value": "{{trigger.conversation.ChannelAttributes.channel_type | downcase}}",
                   "key": "channelType"
                 },
                 {
-                  "value": "false",
+                  "value": "true",
                   "key": "isConversation"
                 }
                 ],
@@ -235,21 +248,21 @@ ${
             "name": "channel_cleanup",
             "type": "run-function",
             "transitions": [
-                  {
-                    "next": "attributes",
-                    "event": "success"
-                  },
-                  {
-                    "next": "send_message_run_janitor",
-                    "event": "fail"
-                  }
+              {
+                "next": "attributes",
+                "event": "success"
+              },
+              {
+                "next": "send_message_run_janitor",
+                "event": "fail"
+              }
             ],
             "properties": {
                 "service_sid": serverless_service_sid,
                 "environment_sid": serverless_environment_sid,
                 "offset": {
-                  "x": 70,
-                  "y": 1000
+                 "x": 30,
+                 "y": 980
                 },
                 "function_sid": flow_vars["chatbot_callback_cleanup_function_sid"],
                 "parameters": [
@@ -265,9 +278,9 @@ ${
         "name": "webhook_notify_error",
         "type": "make-http-request",
         "transitions": [
-         {
-          "next": "channel_cleanup",
-          "event": "success"
+          {
+            "next": "channel_cleanup",
+            "event": "success"
           },
           {
             "next": "channel_cleanup",
@@ -275,13 +288,13 @@ ${
           }
         ],
         "properties": {
+          "add_twilio_auth" = false,
           "offset": {
             "x": -40,
             "y": 740
           },
           "method": "POST",
           "content_type": "application/json;charset=utf-8",
-          "add_twilio_auth": false,
           "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
           "url": webhook_url_studio_errors
         }
@@ -298,13 +311,13 @@ ${
           }
         ],
         "properties": {
+          "add_twilio_auth" = false,
           "offset": {
-            "x": 620,
-            "y": 1370
+            "x": 660,
+            "y": 1360
           },
           "method": "POST",
           "content_type": "application/json;charset=utf-8",
-          "add_twilio_auth": false,
           "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
           "url": webhook_url_studio_errors
         }
@@ -324,10 +337,10 @@ ${
         "service_sid": serverless_service_sid,
         "environment_sid": serverless_environment_sid,
         "offset": {
-          "x": 130,
-          "y": 1250
+          "x": 110,
+          "y": 1260
         },
-        "function_sid":flow_vars["send_message_janitor_function_sid"],
+        "function_sid": flow_vars["send_message_janitor_function_sid"],
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -344,7 +357,7 @@ ${
         ],
         "url": "${serverless_url}/sendMessageAndRunJanitor"
       }
-    } 
+    }
     ],
     "initial_state": "Trigger",
     "flags": {

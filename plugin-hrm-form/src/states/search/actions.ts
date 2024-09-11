@@ -101,6 +101,7 @@ const pickGeneralizedSearchParams = (searchParams: SearchParams): GeneralizedSea
   helpline: typeof searchParams.helpline === 'string' ? searchParams.helpline : searchParams.helpline.value,
   dateFrom: searchParams.dateFrom ? formatISO(startOfDay(parseISO(searchParams.dateFrom))) : searchParams.dateFrom,
   dateTo: searchParams.dateTo ? formatISO(startOfDay(parseISO(searchParams.dateTo))) : searchParams.dateTo,
+  onlyDataContacts: searchParams.onlyDataContacts,
 });
 
 export const generalizedSearchContacts = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (

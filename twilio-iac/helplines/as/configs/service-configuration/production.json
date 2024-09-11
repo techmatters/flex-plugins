@@ -14,7 +14,7 @@
             "enable_lex": true,
             "enable_voice_recordings": true,
             "enable_csam_report": true,
-            "enable_post_survey": true
+            "enable_post_survey": false
         },
         "helplineLanguage": "",
         "permissionConfig": "demo",
