@@ -48,9 +48,15 @@ type OwnProps = {
   initialValues: SearchFormValues;
   handleSearchFormUpdate: (values: Partial<SearchFormValues>) => void;
   handleSearch: (searchParams: any) => void;
+  onlyDataContacts: boolean;
 };
 
-export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handleSearchFormUpdate, handleSearch }) => {
+export const GeneralizedSearchForm: React.FC<OwnProps> = ({
+  initialValues,
+  handleSearchFormUpdate,
+  handleSearch,
+  onlyDataContacts,
+}) => {
   const containerRef = useRef(null);
   const [containerWidth, setContainerWidth] = useState(0);
   const updateWidth = () => {
@@ -68,7 +74,7 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
   const dispatch = useDispatch();
 
   const methods = useForm<Pick<SearchFormValues, 'searchTerm' | 'dateFrom' | 'dateTo' | 'counselor'>>();
-  const { getValues, watch, setError, clearErrors, reset, handleSubmit } = methods;
+  const { getValues, watch, setError, clearErrors, reset, handleSubmit, register, setValue } = methods;
 
   const validateEmptyForm =
     watch().searchTerm === '' && watch().counselor === '' && watch().dateFrom === '' && watch().dateTo === '';
@@ -84,6 +90,14 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
       handleSearch(values);
     }
   });
+
+  useEffect(() => {
+    register('onlyDataContacts');
+  }, [register]);
+
+  useEffect(() => {
+    setValue('onlyDataContacts', onlyDataContacts);
+  }, [onlyDataContacts, setValue]);
 
   const counselor =
     typeof initialValues.counselor === 'string' ? initialValues.counselor : initialValues.counselor.value;

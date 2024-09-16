@@ -305,38 +305,50 @@ const SearchResults: React.FC<Props> = ({
       : 'SearchResultsIndex-SearchAgainForCase';
 
   const handleNoSearchResult = () => (
-    <SearchResultWarningContainer
-      data-testid={currentResultPage === 'contact-results' ? 'ContactsCount' : 'CasesCount'}
-    >
-      <Row style={{ paddingTop: '20px' }}>
-        <InfoIcon style={{ color: '#ffc811' }} />
-        <Text padding="0" fontWeight="700" margin="20px" color="#282a2b">
-          <Template code={noResultsTemplateCode} />
-        </Text>
-      </Row>
+    <>
+      <div style={{ padding: '0 20px' }}>
+        <SearchResultsQueryTemplate
+          task={task}
+          searchContext={searchContext}
+          subroute={routing.subroute}
+          casesCount={casesCount}
+          contactsCount={contactsCount}
+          counselorsHash={counselorsHash}
+        />
+      </div>
+      <SearchResultWarningContainer
+        data-testid={currentResultPage === 'contact-results' ? 'ContactsCount' : 'CasesCount'}
+      >
+        <Row style={{ paddingTop: '20px' }}>
+          <InfoIcon style={{ color: '#ffc811' }} />
+          <Text padding="0" fontWeight="700" margin="20px" color="#282a2b">
+            <Template code={noResultsTemplateCode} />
+          </Text>
+        </Row>
 
-      <Row>
-        <NoResultTextLink
-          margin="44px"
-          decoration="underline"
-          color="#1976D2"
-          cursor="pointer"
-          onClick={openSearchModal}
-        >
-          <Template code={searchAgainTemplateCode} />
-        </NoResultTextLink>
-        {routing.action && (
-          <>
-            <Text>
-              <Template code="SearchResultsIndex-Or" />
-            </Text>
-            <NoResultTextLink decoration="underline" color="#1976D2" cursor="pointer" onClick={handleOpenNewCase}>
-              <Template code="SearchResultsIndex-SaveToNewCase" />
-            </NoResultTextLink>
-          </>
-        )}
-      </Row>
-    </SearchResultWarningContainer>
+        <Row>
+          <NoResultTextLink
+            margin="44px"
+            decoration="underline"
+            color="#1976D2"
+            cursor="pointer"
+            onClick={openSearchModal}
+          >
+            <Template code={searchAgainTemplateCode} />
+          </NoResultTextLink>
+          {routing.action && (
+            <>
+              <Text>
+                <Template code="SearchResultsIndex-Or" />
+              </Text>
+              <NoResultTextLink decoration="underline" color="#1976D2" cursor="pointer" onClick={handleOpenNewCase}>
+                <Template code="SearchResultsIndex-SaveToNewCase" />
+              </NoResultTextLink>
+            </>
+          )}
+        </Row>
+      </SearchResultWarningContainer>
+    </>
   );
 
   const handleCaseResultsSearch = () => (cases.length === 0 ? handleNoSearchResult() : caseResults());

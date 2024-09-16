@@ -37,7 +37,7 @@ jobs:
       # Check if localizable strings changed
       - name: Get changed files (plugin-hrm-form/src/translations/en-US)
         id: translations-changed
-        uses: tj-actions/changed-files@v44
+        uses: tj-actions/changed-files@v45
         with:
           files: |
             plugin-hrm-form/src/translations/en-US/*.json   
