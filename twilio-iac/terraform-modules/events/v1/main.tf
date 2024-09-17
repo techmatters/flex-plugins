@@ -11,8 +11,10 @@ locals {
   additional_events = flatten([
     for subscription,sub_value  in var.subscriptions : [
       for additional_event in sub_value.additional_events : {
+        "${subscription}_${additional_event}" = {
         subscription = subscription
         event = additional_event
+        }
       }
     ]
   ])
