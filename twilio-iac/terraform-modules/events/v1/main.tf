@@ -8,17 +8,10 @@ terraform {
 }
 
 locals {
-  additional_events = flatten([
-    for subscription,sub_value  in var.subscriptions : [
-      for additional_event in sub_value.additional_events : {
-        subscription = subscription
-        event = additional_event
-      }
-    ]
-  ])
+
 }
 
-resource "twilio_events_sinks_v1" "webhook" {
+resource "twilio_events_sinks_v1" "webhook_sink" {
   description = "${title(var.helpline)} ${title(var.environment)} Webhook Sink"
   sink_configuration = jsonencode({
     destination : var.webhook_url,
@@ -30,17 +23,17 @@ resource "twilio_events_sinks_v1" "webhook" {
 
 
 resource "twilio_events_subscriptions_v1" "subscription" {
-  for_each    = var.subscriptions
-  description = "${title(replace(each.key, "_", " "))} Events Subscription"
+  description = "${title(var.helpline)} ${title(var.environment)} Events Subscription"
   sink_sid    = twilio_events_sinks_v1.webhook.sid
   types = [jsonencode({
-    type = each.value.event
+    type = var.subscription.event
   })]
 }
 
 resource "twilio_events_subscriptions_subscribed_events_v1" "additional_event" {
-  for_each    = { for idx, additional_event in local.additional_events :  "${additional_event.subscription}_${additional_event.event}" => additional_event }
-  subscription_sid = twilio_events_subscriptions_v1.subscription[each.value.subscription].sid
-  type             = each.value.event
+  #In order to create a resource we need to create a map from the tuple
+  for_each    = { for idx, additional_event in var.additional_events :  "${additional_event}" => additional_event }
+  subscription_sid = twilio_events_subscriptions_v1.subscription.sid
+  type             = each.value
 }
 
