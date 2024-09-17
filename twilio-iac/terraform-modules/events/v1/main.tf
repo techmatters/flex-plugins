@@ -11,10 +11,8 @@ locals {
   additional_events = flatten([
     for subscription,sub_value  in var.subscriptions : [
       for additional_event in sub_value.additional_events : {
-        "${subscription}_${additional_event}" = {
         subscription = subscription
         event = additional_event
-        }
       }
     ]
   ])
@@ -41,7 +39,7 @@ resource "twilio_events_subscriptions_v1" "subscription" {
 }
 
 resource "twilio_events_subscriptions_subscribed_events_v1" "additional_event" {
-  for_each = local.additional_events
+  for_each    = { for idx, additional_event in local.additional_events :  "${additional_event.subscription}_${additional_event.event}" => additional_event }
   subscription_sid = twilio_events_subscriptions_v1.subscription[each.value.subscription].sid
   type             = each.value.event
 }
