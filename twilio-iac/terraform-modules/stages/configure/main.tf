@@ -90,6 +90,6 @@ module event {
   source        = "../../events/v1"
   webhook_url   = var.webhook_url
   subscriptions = var.subscriptions
-  helpline      = var.helpline
-  environment   = var.environment
+  short_helpline      = var.short_helpline
+  short_environment   = var.short_environment
 }
