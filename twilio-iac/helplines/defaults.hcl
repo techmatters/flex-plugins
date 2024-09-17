@@ -94,17 +94,19 @@ locals {
       prefix             = "hrm-data/"
     }
   }
-  
-  subscription = {
-    event  = "com.twilio.studio.flow.execution.started"
+
+  subscriptions = {
+    default : {
+      event = "com.twilio.studio.flow.execution.started",
+      additional_events = [
+        "com.twilio.studio.flow.execution.ended",
+        "com.twilio.studio.flow.step.ended",
+        "com.twilio.taskrouter.reservation.created",
+        "com.twilio.taskrouter.reservation.accepted",
+        "com.twilio.taskrouter.reservation.rejected"
+      ]
+    }
   }
-  additional_events = [
-      "com.twilio.studio.flow.execution.ended",
-      "com.twilio.studio.flow.step.ended",
-      "com.twilio.taskrouter.reservation.created",
-      "com.twilio.taskrouter.reservation.accepted",
-      "com.twilio.taskrouter.reservation.rejected"
-      ]	
 
 
   mock_outputs = {

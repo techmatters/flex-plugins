@@ -172,12 +172,15 @@ variable "webhook_url" {
   default     = "https://hrm-development.tl.techmatters.org/lambda/twilioEventStreams"
 }
 
-variable "subscription" {
+variable "subscriptions" {
   type = map(object({
-    event         = string
+    event         = string,
+    additional_events     = list(string), 
   }))
-}
-
-variable "additional_events" {
-  type = list(string)
+  default ={
+      default_subscription : {
+      event  = "com.twilio.studio.flow.execution.started",
+        additional_events = ["com.twilio.studio.flow.execution.ended","com.twilio.studio.flow.step.ended"]	
+      }
+    }
 }
