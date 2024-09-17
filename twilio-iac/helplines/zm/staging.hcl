@@ -27,6 +27,14 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-conv.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+      },
+      voice : {
+        channel_type     = "voice"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/zm/templates/studio-flows/voice-ac.tftpl"
+        channel_flow_vars = {
+        }
+        chatbot_unique_names = []
       }
     }
     #Studio flow
@@ -36,6 +44,8 @@ locals {
       chatbot_callback_cleanup_function_sid = "ZHc633e352ec3541df3eea9f9ae4af1ad4"
       widget_from                           = "Lifeline/Childline Zambia"
       chat_blocked_message                  = "Hi, you've been blocked from accessing Childline/Lifeline services and we are not able to read or receive further messages from you."
+      voice_ivr_language                    = "en-US",
+      voice_ivr_blocked_message             = "Hi, you've been blocked from accessing Childline/Lifeline services and we are not able to receive further calls from you."
     }
 
     ui_editable = true

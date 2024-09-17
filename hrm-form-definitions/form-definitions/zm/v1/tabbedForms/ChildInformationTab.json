@@ -361,6 +361,10 @@
     "type": "listbox-multiselect",
     "options": [
       {
+        "value": "Asylum seeker",
+        "label": "Asylum seeker"
+      },
+      {
         "value": "HIV Positive?",
         "label": "HIV Positive?"
       },
@@ -399,6 +403,10 @@
       {
         "value": "Out-of-school child",
         "label": "Out-of-school child"
+      },
+      {
+        "value": "Refugees",
+        "label": "Refugees"
       },
       {
         "value": "Other",
