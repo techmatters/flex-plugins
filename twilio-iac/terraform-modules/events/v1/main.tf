@@ -7,7 +7,16 @@ terraform {
   }
 }
 
-locals {}
+locals {
+  additional_events = flatten([
+    for subscription,sub_value  in var.subscriptions : [
+      for additional_event in sub_value.additional_events : {
+        subscription = subscription
+        event = additional_event
+      }
+    ]
+  ])
+}
 
 resource "twilio_events_sinks_v1" "webhook" {
   description = "${title(var.helpline)} ${title(var.environment)} Webhook Sink"
@@ -30,15 +39,8 @@ resource "twilio_events_subscriptions_v1" "subscription" {
 }
 
 resource "twilio_events_subscriptions_subscribed_events_v1" "additional_event" {
-  for_each = {
-  for sub_name, sub in var.subscriptions : sub_name => {
-    for event in sub.additional_events : "${sub_name}_${event}" => {
-        subscription_sid = twilio_events_subscriptions_v1.subscription[sub_name].sid
-        event            = event
-      }
-    }
-  }
-  subscription_sid = each.value["subscription_sid"]
-  type             = each.value["event"]
+  for_each = local.additional_events
+  subscription_sid = twilio_events_subscriptions_v1[each.value.subscription].sid
+  type             = each.value.event
 }
 
