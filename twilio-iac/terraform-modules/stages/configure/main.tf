@@ -85,3 +85,11 @@ resource "aws_ssm_parameter" "case_status_transition" {
     Terraform   = true
   }
 }
+
+module event {
+  source        = "../../events/v1"
+  webhook_url   = var.webhook_url
+  subscriptions = var.subscriptions
+  helpline      = var.helpline
+  environment   = var.environment
+}

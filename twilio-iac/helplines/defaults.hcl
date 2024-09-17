@@ -15,9 +15,9 @@ locals {
   enable_external_recordings = false
 
   channel_attributes = {
-    webchat               : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
-    voice                 : "/app/twilio-iac/helplines/templates/channel-attributes/voice.tftpl"
-    default               : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
+    webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
+    voice : "/app/twilio-iac/helplines/templates/channel-attributes/voice.tftpl"
+    default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
     default-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
     line-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/line-conversations.tftpl"
     telegram-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/telegram-conversations.tftpl"
@@ -92,6 +92,17 @@ locals {
       id                 = "HRM Exported Data Expiration Rule"
       expiration_in_days = 30
       prefix             = "hrm-data/"
+    }
+  }
+  
+  subscriptions = {
+    studio_flow : {
+    event  = "com.twilio.studio.flow.execution.started",
+      additional_events = ["com.twilio.studio.flow.execution.ended","com.twilio.studio.flow.step.ended"]	
+    },
+    task_router :{
+      event  = "com.twilio.taskrouter.reservation.created",
+      additional_events = ["com.twilio.taskrouter.reservation.accepted","com.twilio.taskrouter.reservation.rejected"]	
     }
   }
 
