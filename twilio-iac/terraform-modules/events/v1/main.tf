@@ -38,7 +38,7 @@ resource "twilio_events_subscriptions_subscribed_events_v1" "additional_event" {
       }
     }
   }
-  subscription_sid = each.value.subscription_sid
-  type             = each.value.event
+  subscription_sid = each.value["subscription_sid"]
+  type             = each.value["event"]
 }
 
