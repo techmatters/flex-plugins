@@ -40,7 +40,7 @@ resource "twilio_events_subscriptions_v1" "subscription" {
 
 resource "twilio_events_subscriptions_subscribed_events_v1" "additional_event" {
   for_each = local.additional_events
-  subscription_sid = twilio_events_subscriptions_v1[each.value.subscription].sid
+  subscription_sid = twilio_events_subscriptions_v1.subscription[each.value.subscription].sid
   type             = each.value.event
 }
 
