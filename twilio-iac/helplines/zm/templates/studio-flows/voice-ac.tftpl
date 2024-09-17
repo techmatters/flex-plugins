@@ -1,0 +1,147 @@
+${
+  jsonencode(
+{
+    "description": flow_description,
+    "states": [
+      {
+        "name": "Trigger",
+        "type": "trigger",
+        "transitions": [
+          {
+            "event": "incomingMessage"
+          },
+          {
+            "next": "getProfileFlagsForIdentifier",
+            "event": "incomingCall"
+          },
+          {
+            "event": "incomingConversationMessage"
+          },
+          {
+            "event": "incomingRequest"
+          },
+          {
+            "event": "incomingParent"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -10,
+            "y": 0
+          }
+        }
+      },
+      {
+        "name": "SendCallToAgent",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 300,
+            "y": 760
+          },
+          "workflow": workflow_sids[
+            "master"
+          ],
+          "channel": task_channel_sids[
+            "voice"
+          ],
+          "attributes": "{ \"type\": \"inbound\", \"name_old\": \"{{trigger.call.From}}\",\"name\":\"{{trigger.call.From | replace: 'sip:', '' | split: '@' | first}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"aseloCallId\": \"{{trigger.call.SipHeader_X-Aselo-Call-Id}}\",\"aseloHostId\": \"{{trigger.call.SipHeader_X-Aselo-Call-Id | split: ':' | last}}\", \"helpline\":\"{{trigger.call.SipHeader_X-Aselo-Helpline}}\"}"
+        }
+      },
+      {
+        "name": "getProfileFlagsForIdentifier",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "next": "contact_routing",
+            "event": "success"
+          },
+          {
+            "next": "SendCallToAgent",
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 130,
+            "y": 190
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{\"trigger\": {{trigger | to_json}}}",
+          "url": "${serverless_url}/getProfileFlagsForIdentifier"
+        }
+      },
+      {
+        "name": "contact_routing",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "SendCallToAgent",
+            "event": "noMatch"
+          },
+          {
+            "next": "blocked",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value contains blocked",
+                "arguments": [
+                  "{{widgets.getProfileFlagsForIdentifier.parsed}}"
+                ],
+                "type": "contains",
+                "value": "blocked"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.getProfileFlagsForIdentifier.parsed}}",
+          "offset": {
+            "x": -220,
+            "y": 400
+          }
+        }
+      },
+      {
+        "name": "blocked",
+        "type": "say-play",
+        "transitions": [
+          {
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -300,
+            "y": 710
+          },
+          "loop": 1,
+          "say": flow_vars[
+            "voice_ivr_blocked_message"
+          ],
+          "language": flow_vars[
+            "voice_ivr_language"
+          ]
+        }
+      }
+    ],
+    "initial_state": "Trigger",
+    "flags": {
+      "allow_concurrent_calls": true
+    }
+  }
+)
+}
