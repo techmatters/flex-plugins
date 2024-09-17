@@ -9,14 +9,18 @@ locals {
     flow_vars = {
       capture_channel_with_bot_function_sid = "ZHd9eb5ce1b230abe29d9eafccc88b16d3"
       chatbot_callback_cleanup_function_sid = "ZH757387715913592aa1938b284411f18b"
+      send_message_janitor_function_sid     = "ZHdfbbef84918d1e31fab54ab0cab8d0f7"
       bot_language                          = "en-US"
+      widget_from                           = "Aselo"
+      chat_blocked_message                  = "Sorry, you're not able to contact SafeSpot from this device or account"
+      error_message                         = "There has been an error with your message, please try writing us again."
     }
 
     channels = {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -24,7 +28,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "facebook"
         contact_identity     = "messenger:105642325869250"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -32,7 +36,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "whatsapp"
         contact_identity     = "whatsapp:+15079441697"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -40,7 +44,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "custom"
         contact_identity     = "instagram"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -48,7 +52,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "custom"
         contact_identity     = "line"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
