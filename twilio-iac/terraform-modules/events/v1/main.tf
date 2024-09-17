@@ -33,7 +33,7 @@ resource "twilio_events_subscriptions_subscribed_events_v1" "additional_event" {
   for_each = {
   for sub_name, sub in var.subscriptions : sub_name => {
     for event in sub.additional_events : "${sub_name}_${event}" => {
-        subscription_sid = twilio_events_subscriptions_v1[sub_name].sid
+        subscription_sid = twilio_events_subscriptions_v1.subscription[sub_name].sid
         event            = event
       }
     }
