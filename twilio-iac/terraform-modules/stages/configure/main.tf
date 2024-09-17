@@ -87,9 +87,9 @@ resource "aws_ssm_parameter" "case_status_transition" {
 }
 
 module event {
-  source        = "../../events/v1"
-  webhook_url   = var.webhook_url
-  subscriptions = var.subscriptions
+  source              = "../../events/v1"
+  webhook_url         = var.webhook_url
+  subscriptions       = var.subscriptions
   short_helpline      = var.short_helpline
   short_environment   = var.short_environment
 }
