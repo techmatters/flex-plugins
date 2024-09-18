@@ -23,9 +23,10 @@ locals {
         chatbot_unique_names = []
       },
       instagram : {
+        messaging_mode       = "conversations"
         channel_type         = "custom"
         contact_identity     = "instagram"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v2-blocking.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }
