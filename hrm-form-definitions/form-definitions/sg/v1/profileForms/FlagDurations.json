@@ -1,7 +1,7 @@
 [
   {
     "flag": "blocked",
-    "label": "Short Term Block (1 Hours)",
-    "durationInHours": "1"
+    "label": "Short Term Block (3 Hours)",
+    "durationInHours": "3"
   }
 ]
