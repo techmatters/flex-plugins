@@ -11,7 +11,6 @@ variable "short_helpline" {
 variable "webhook_url" {
   description = "The human readable helpline name."
   type        = string
-  default     = "https://hrm-development.tl.techmatters.org/lambda/twilioEventStreams"
 }
 
 variable "subscriptions" {
@@ -19,10 +18,4 @@ variable "subscriptions" {
     event         = string,
     additional_events     = list(string), 
   }))
-  default ={
-      default : {
-      event  = "com.twilio.studio.flow.execution.started",
-        additional_events = ["com.twilio.studio.flow.execution.ended","com.twilio.studio.flow.step.ended"]	
-      }
-      }
 }
