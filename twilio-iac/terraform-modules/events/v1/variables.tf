@@ -8,14 +8,15 @@ variable "short_helpline" {
   type        = string
 }
 
-variable "webhook_url" {
+variable "default_webhook_url" {
   description = "The human readable helpline name."
   type        = string
 }
 
 variable "subscriptions" {
   type = map(object({
-    event         = string,
-    additional_events     = list(string), 
+    webhook_url         = optional(string),
+    event               = string,
+    additional_events   = list(string), 
   }))
 }

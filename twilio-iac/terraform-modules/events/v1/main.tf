@@ -23,7 +23,7 @@ resource "twilio_events_sinks_v1" "webhook_sink" {
   for_each    = var.subscriptions
   description = "${title(replace(each.key, "_", " "))} ${upper(var.short_helpline)}_${upper(var.short_environment)} Webhook Sink"
   sink_configuration = jsonencode({
-    destination : var.webhook_url,
+    destination = each.value.webhook_url != null ? each.value.webhook_url : var.default_webhook_url
     method : "POST",
     batch_events : false
   })
