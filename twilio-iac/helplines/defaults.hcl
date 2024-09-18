@@ -6,7 +6,6 @@ locals {
   region                = "us-east-1"
   helpline_region       = "us-east-1"
   aws_monitoring_region = "us-east-1"
-
   enable_post_survey = false
   target_task_name   = "greeting"
   twilio_numbers     = []
@@ -96,14 +95,14 @@ locals {
   }
 
   subscriptions = {
-    studio_flow : {
+    studio_flow_test : {
       event = "com.twilio.studio.flow.execution.started",
       additional_events = [
         "com.twilio.studio.flow.execution.ended",
         "com.twilio.studio.flow.step.ended"
       ]
     },
-    task_router :{
+    task_router_test :{
       event = "com.twilio.taskrouter.reservation.created",
       additional_events = [
         "com.twilio.taskrouter.reservation.accepted",
