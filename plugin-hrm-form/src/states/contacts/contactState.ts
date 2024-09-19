@@ -101,6 +101,7 @@ export const newContact = (definitions: DefinitionVersion, task?: ITask | Offlin
     queueName: '',
     number: '',
     conversationDuration: 0,
+    identifierId: null,
     profileId: null,
     csamReports: [],
     conversationMedia: [],

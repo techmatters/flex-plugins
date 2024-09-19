@@ -50,10 +50,22 @@ export const getNumberFromTask = (task: CustomITask) => {
 
   // webchat is a special case since it does not only depends on channel but in the task attributes too
   if (channelType === channelTypes.web) {
-    return getContactValueFromWebchat(task);
+    const ip = getContactValueFromWebchat(task);
+    if (!ip || ip === '') {
+      console.warn('CHI-2742 - No identifier/ip found in webchat task', ip);
+    }
+    return ip;
   }
 
-  if (!channelTransformations[channelType]) return null;
+  if (!channelTransformations[channelType]) {
+    console.warn(`CHI-2742 - Channel transformation for type ${channelType} not found`);
+    return null;
+  }
+
+  // if task.defaultFrom is missing
+  if (!task.defaultFrom || task.defaultFrom === '') {
+    console.warn('CHI-2742 - No defaultFrom found in task', task);
+  }
 
   // otherwise, return the "defaultFrom" with the transformations on the identifier corresponding to each channel
   return channelTransformations[channelType].reduce((accum, f) => f(accum), task.defaultFrom);
