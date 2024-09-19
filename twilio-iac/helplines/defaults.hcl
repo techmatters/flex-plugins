@@ -95,18 +95,18 @@ locals {
   }
 
   subscriptions = {
-    studio_flow_test : {
-      event = "com.twilio.studio.flow.execution.started",
-      additional_events = [
-        "com.twilio.studio.flow.execution.ended",
-        "com.twilio.studio.flow.step.ended"
+    studio_flow : {
+      events = [ 
+        {type:"com.twilio.studio.flow.execution.started"},
+        {type:"com.twilio.studio.flow.execution.ended"},
+        {type:"com.twilio.studio.flow.step.ended"} 
       ]
     },
-    task_router_test :{
-      event = "com.twilio.taskrouter.reservation.created",
-      additional_events = [
-        "com.twilio.taskrouter.reservation.accepted",
-        "com.twilio.taskrouter.reservation.rejected"
+    task_router :{
+      events = [
+        {type:"com.twilio.taskrouter.reservation.created"},
+        {type:"com.twilio.taskrouter.reservation.accepted"},
+        {type:"com.twilio.taskrouter.reservation.rejected"} 
       ]
     }
   }

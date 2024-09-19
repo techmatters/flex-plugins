@@ -168,7 +168,10 @@ variable "case_status_transition_rules" {
 
 variable "subscriptions" {
   type = map(object({
-    event         = string,
-    additional_events     = list(string), 
+    webhook_url         = optional(string),
+    events               = list(object({
+      type = string,
+      schema_version = optional(string)
+    }))
   }))
 }

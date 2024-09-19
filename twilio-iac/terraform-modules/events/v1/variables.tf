@@ -16,7 +16,9 @@ variable "default_webhook_url" {
 variable "subscriptions" {
   type = map(object({
     webhook_url         = optional(string),
-    event               = string,
-    additional_events   = list(string), 
+    events               = list(object({
+      type = string,
+      schema_version = optional(string)
+    }))
   }))
 }

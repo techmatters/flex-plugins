@@ -17,6 +17,7 @@ locals {
       }
     ]
   ])
+
 }
 
 resource "twilio_events_sinks_v1" "webhook_sink" {
@@ -34,11 +35,11 @@ resource "twilio_events_subscriptions_v1" "subscription" {
   for_each    = var.subscriptions
   description = "${title(replace(each.key, "_", " "))} ${upper(var.short_helpline)}_${upper(var.short_environment)} Events Subscription"
   sink_sid    = twilio_events_sinks_v1.webhook_sink[each.key].sid
-  types = [jsonencode({
-    type = each.value.event
-  })]
+  types = each.value.events
 }
-
+/*
+I'm leaving this out as this resource doesn't work well. 
+An apply will show to be successful but some resources will fail the be created.
 resource "twilio_events_subscriptions_subscribed_events_v1" "additional_event" {
   #In order to create a resource we need to create a map from the tuple
   for_each    = { for idx, additional_event in local.additional_events :  "${additional_event.subscription}_${additional_event.event}" => additional_event }
@@ -46,3 +47,4 @@ resource "twilio_events_subscriptions_subscribed_events_v1" "additional_event" {
   type             = each.value.event
 }
 
+*/
