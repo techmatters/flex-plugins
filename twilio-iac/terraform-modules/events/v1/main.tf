@@ -8,16 +8,6 @@ terraform {
 }
 
 locals {
-  #Flatten to create a tuple of subscription and event
-  additional_events = flatten([
-    for subscription,sub_value  in var.subscriptions : [
-      for additional_event in sub_value.additional_events : {
-        subscription = subscription
-        event = additional_event
-      }
-    ]
-  ])
-
 }
 
 resource "twilio_events_sinks_v1" "webhook_sink" {
@@ -35,7 +25,7 @@ resource "twilio_events_subscriptions_v1" "subscription" {
   for_each    = var.subscriptions
   description = "${title(replace(each.key, "_", " "))} ${upper(var.short_helpline)}_${upper(var.short_environment)} Events Subscription"
   sink_sid    = twilio_events_sinks_v1.webhook_sink[each.key].sid
-  types = each.value.events
+  types = jsonencode(each.value.events)
 }
 /*
 I'm leaving this out as this resource doesn't work well. 
