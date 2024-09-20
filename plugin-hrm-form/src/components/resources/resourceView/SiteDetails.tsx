@@ -75,26 +75,26 @@ const SiteDetails: React.FC<Props> = ({ sites }) => {
 };
 
 const PhoneNumbersDisplay = ({ phoneNumbers }) => {
-  const { businessLine, afterHoursLine, tty } = phoneNumbers;
+  const { business, 'after hours': afterHours, tty } = phoneNumbers;
   return (
     <ResourceAttributeContent>
-      {businessLine && (
+      {business && (
         <tr>
           <td style={{ padding: '0 4px', width: '0', lineBreak: 'anywhere' }}>
             <ResourceSubtitle>Business</ResourceSubtitle>
           </td>
           <td style={{ padding: '0 4px', fontSize: '12px' }}>
-            <FontOpenSans>{businessLine}</FontOpenSans>
+            <FontOpenSans>{business}</FontOpenSans>
           </td>
         </tr>
       )}
-      {afterHoursLine && (
+      {afterHours && (
         <tr>
           <td style={{ padding: '0 4px', width: '0' }}>
             <ResourceSubtitle>After Hours</ResourceSubtitle>
           </td>
           <td style={{ padding: '0 4px', fontSize: '12px' }}>
-            <FontOpenSans>{afterHoursLine}</FontOpenSans>
+            <FontOpenSans>{afterHours}</FontOpenSans>
           </td>
         </tr>
       )}

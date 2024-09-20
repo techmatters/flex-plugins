@@ -1,6 +1,7 @@
 {
     "attributes": {
         "feature_flags": {
+            "enable_generalized_search": true
         },
         "helplineLanguage": "en-IN",
         "hrm_base_url": "https://hrm-staging.tl.techmatters.org",

@@ -180,7 +180,7 @@ ${
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
-        "from": "Linea Libre",
+        "from": channel_flow_vars["widget_from"],
         "to": "{{contact.channel.address}}",
         "body": "{{widgets.check_operating_hours.parsed.message}}"
       }
