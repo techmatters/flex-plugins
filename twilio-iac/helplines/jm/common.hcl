@@ -19,15 +19,15 @@ locals {
     workflows = {
       master : {
         friendly_name = "Master Workflow"
-        templatefile = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
       },
       queue_transfers : {
         friendly_name = "Queue Transfers Workflow"
-        templatefile = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
       },
       survey : {
         friendly_name = "Survey Workflow"
-        templatefile = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
 
