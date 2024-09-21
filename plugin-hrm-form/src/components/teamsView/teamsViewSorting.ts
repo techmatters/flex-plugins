@@ -17,12 +17,18 @@
 import { AgentsDataTable, TaskHelper, Manager } from '@twilio/flex-ui';
 import { SupervisorWorkerState } from '@twilio/flex-ui/src/state/State.definition';
 
-import { getAseloFeatureFlags } from '../hrmConfig';
+const activities = Manager.getInstance()?.store.getState()?.flex?.worker?.activities;
+const WORKER_ACTIVITIES = activities
+  ? Array.from(activities.values()).reduce((accum, activity, currIndex) => {
+      accum[activity.name] = currIndex;
+      return accum;
+    }, {})
+  : {};
 
 /**
  * Converts a duration string in the format "HH:MM:SS" or "MM:SS" to seconds.
  */
-const convertDurationToSeconds = (duration: string): number => {
+const convertTaskDurationToSeconds = (duration: string): number => {
   const timeParts = duration.split(':').map(Number);
   let hours = 0;
   let minutes = 0;
@@ -37,7 +43,7 @@ const convertDurationToSeconds = (duration: string): number => {
 };
 
 const getTaskDurationInSeconds = (task): number => {
-  return task ? convertDurationToSeconds(new TaskHelper(task).durationSinceUpdate) : 0;
+  return task ? convertTaskDurationToSeconds(new TaskHelper(task).durationSinceUpdate) : 0;
 };
 
 const sortTasksByDuration = (aTask, bTask): number => {
@@ -69,6 +75,12 @@ const sortWorkersByCallDuration = (a: SupervisorWorkerState, b: SupervisorWorker
   return 0;
 };
 
+/**
+ * Sorts agents by the duration of their chat tasks.
+ * If a worker has multiple chat tasks, they will be sorted by the duration of the first chat task.
+ * If a worker doesn't have a chat task, they will be sorted to the end.
+ */
+
 const sortWorkersByChatDuration = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
   const aChatTasks = a.tasks.filter(task => TaskHelper.isChatBasedTask(task));
   const bChatTasks = b.tasks.filter(task => TaskHelper.isChatBasedTask(task));
@@ -86,16 +98,8 @@ const sortWorkersByChatDuration = (a: SupervisorWorkerState, b: SupervisorWorker
 };
 
 const sortWorkersByActivity = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
-  const ACTIVITIES = Array.from(Manager.getInstance().store.getState().flex.worker.activities.values()).reduce(
-    (accum, activity, currIndex) => {
-      accum[activity.name] = currIndex;
-      return accum;
-    },
-    {},
-  );
-
-  const aActivityValue = ACTIVITIES[a?.worker.activityName];
-  const bActivityValue = ACTIVITIES[b?.worker.activityName];
+  const aActivityValue = WORKER_ACTIVITIES[a?.worker.activityName];
+  const bActivityValue = WORKER_ACTIVITIES[b?.worker.activityName];
 
   // Place available workers at the top
   const aAvailability = a.worker.isAvailable ? 1 : 0;
@@ -125,17 +129,109 @@ const sortWorkersByActivity = (a: SupervisorWorkerState, b: SupervisorWorkerStat
   return a.worker.name.localeCompare(b.worker.name);
 };
 
-export const setUpTeamsViewSorting = () => {
-  if (!getAseloFeatureFlags().enable_teams_view_enhancements) return;
+/**
+ * Sorts agents by the number of available skills they have.
+ */
+export const sortSkills = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
+  const getSkillLength = (workerState: SupervisorWorkerState): number =>
+    workerState?.worker?.source?.attributes?.routing?.skills?.length ?? 0;
 
+  const aSkills = getSkillLength(a);
+  const bSkills = getSkillLength(b);
+
+  return aSkills - bSkills;
+};
+
+/**
+ * Converts a duration string in the format "59s", "59:59", "23h" or "23h 59min", "59d" or "5d 3h" to seconds, and '30+d' to seconds.
+ */
+export const convertDurationToSeconds = (duration: string): number => {
+  // Handle the "59:59" format (minutes and seconds)
+  if (duration.includes(':')) {
+    const [minutes, secs] = duration.split(':').map(Number);
+    return (minutes || 0) * 60 + (secs || 0);
+  }
+
+  // Handle the "30+d" format
+  if (duration.includes('+d')) {
+    const days = parseInt(duration.split('d')[0], 10);
+    return days * 60 * 60 * 24;
+  }
+
+  // Handle all other formats
+  const timeParts = duration.match(/\d+\s*[a-z]+/gi); // e.g. "23h 59min" or "59min"
+  let seconds = 0;
+
+  timeParts.forEach(timePart => {
+    const value = parseInt(timePart, 10);
+    const unit = timePart.match(/[a-z]+/i)[0];
+
+    switch (unit) {
+      case 's':
+        seconds += value;
+        break;
+      case 'min':
+      case 'm':
+        seconds += value * 60;
+        break;
+      case 'h':
+        seconds += value * 60 * 60;
+        break;
+      case 'd':
+        seconds += value * 60 * 60 * 24;
+        break;
+      default:
+        console.warn(`Unrecognized time unit: ${unit} for value: ${value}`);
+        break;
+    }
+  });
+
+  return seconds;
+};
+
+/**
+ * Sort by Status/Activity column
+ *
+ * Sort available workers first, offline workers last, then by helpline's activity index,
+ * then within each activity by duration, with longest to shortest
+ */
+export const sortStatusColumn = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
+  // Handle undefined values
+  if (!a || !b) return 0;
+
+  // Place available workers at the top
+  if (a.worker.isAvailable !== b.worker.isAvailable) {
+    return a.worker.isAvailable ? 1 : -1;
+  }
+
+  const aActivityValue = WORKER_ACTIVITIES[a.worker.activityName] || 0;
+  const bActivityValue = WORKER_ACTIVITIES[b.worker.activityName] || 0;
+
+  const aUpdatedAt = convertDurationToSeconds(a?.worker?.activityDuration || '');
+  const bUpdatedAt = convertDurationToSeconds(b?.worker?.activityDuration || '');
+
+  // Place workers with "Offline" activity at the end
+  if (aActivityValue === 0 && bActivityValue === 0) {
+    // If both are offline, sort by duration
+    return aUpdatedAt - bUpdatedAt;
+  } else if (aActivityValue === 0) {
+    return -1;
+  } else if (bActivityValue === 0) {
+    return 1;
+  }
+
+  // Sort alphabetically by activity name
+  if (a.worker.activityName !== b.worker.activityName) {
+    return a.worker.activityName.localeCompare(b.worker.activityName);
+  }
+  // Sort by duration within the same activity
+  return aUpdatedAt - bUpdatedAt;
+};
+
+// Set up the sorting for default Teams View columns (Workers, Calls, Tasks)
+export const setUpTeamsViewSorting = () => {
   AgentsDataTable.defaultProps.sortCalls = sortWorkersByCallDuration;
   AgentsDataTable.defaultProps.sortTasks = sortWorkersByChatDuration;
   AgentsDataTable.defaultProps.sortWorkers = sortWorkersByActivity;
   AgentsDataTable.defaultProps.defaultSortColumn = 'worker';
-};
-
-export const sortSkills = (a: SupervisorWorkerState, b: SupervisorWorkerState) => {
-  const aSkills = a?.worker?.source?.attributes?.routing?.skills?.length ?? 0;
-  const bSkills = b?.worker?.source?.attributes?.routing?.skills?.length ?? 0;
-  return aSkills - bSkills;
 };

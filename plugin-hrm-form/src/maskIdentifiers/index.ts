@@ -17,7 +17,6 @@
 import { Strings, TaskChannelDefinition, MessagingCanvas, MessageList } from '@twilio/flex-ui';
 
 import { getInitializedCan, PermissionActions } from '../permissions';
-import { getAseloFeatureFlags } from '../hrmConfig';
 
 // Mask identifiers in the channel strings
 export const maskChannelStringsWithIdentifiers = (channelType: TaskChannelDefinition) => {
@@ -46,7 +45,7 @@ export const maskChannelStringsWithIdentifiers = (channelType: TaskChannelDefini
   Supervisor.TaskCanvasHeader.title = 'MaskIdentifiers';
 
   // Task Status in Agents page
-  if (!getAseloFeatureFlags().enable_teams_view_enhancements) TaskCard.firstLine = 'MaskIdentifiers';
+  TaskCard.firstLine = 'MaskIdentifiers';
 
   Supervisor.TaskOverviewCanvas.firstLine = 'MaskIdentifiers';
 };

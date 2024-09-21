@@ -1,16 +1,7 @@
 [
   {
     "name": "firstName",
-    "label": "First Name",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "lastName",
-    "label": "Last Name",
+    "label": "Name",
     "type": "input",
     "required": {
       "value": true,
@@ -89,11 +80,7 @@
   {
     "name": "emailAddress",
     "label": "Email Address",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "type": "input"
   },
   {
     "name": "gender",

@@ -10,6 +10,7 @@
         },
         "feature_flags": {
             "backend_handled_chat_janitor": false,
+            "enable_backend_manual_pulling": true,
             "enable_counselor_toolkits": true,
             "enable_csam_clc_report": true,
             "enable_csam_report": true,
@@ -17,10 +18,8 @@
             "enable_lex": true,
             "enable_generalized_search": true,
             "enable_post_survey": true,
-            "enable_resources": true,
-            "enable_resources_elastic_search": true,
             "enable_save_insights": true,
-            "enable_teams_view_enhancements": true,
+            "enable_teams_view_enhancements2": true,
             "enable_voice_recordings": false
         },
         "contact_save_frequency": "onTabChange",

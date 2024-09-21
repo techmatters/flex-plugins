@@ -5,10 +5,11 @@
       %{ for key, value in task_queues }
         {
           "filter_friendly_name": "${key}",
-          "expression": "task.transferTargetType == 'queue' AND task.targetSid == '${value}'",
+          "expression": "transferTargetType == 'queue' AND targetSid == '${value}'",
           "targets": [
             {
-              "queue": "${key == "survey" ? task_queues.master : value}"
+              "queue": "${key == "survey" ? (contains(keys(task_queues), "master") ? task_queues.master : task_queues.survey) : value}",
+              "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
             }
           ]
         }%{ if length(task_queues) > 1 && key != keys(task_queues)[length(task_queues)-1] },%{ endif }

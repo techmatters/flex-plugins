@@ -15,7 +15,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import type { FormDefinition } from 'hrm-form-definitions';
@@ -48,9 +48,15 @@ type OwnProps = {
   initialValues: SearchFormValues;
   handleSearchFormUpdate: (values: Partial<SearchFormValues>) => void;
   handleSearch: (searchParams: any) => void;
+  onlyDataContacts: boolean;
 };
 
-export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handleSearchFormUpdate, handleSearch }) => {
+export const GeneralizedSearchForm: React.FC<OwnProps> = ({
+  initialValues,
+  handleSearchFormUpdate,
+  handleSearch,
+  onlyDataContacts,
+}) => {
   const containerRef = useRef(null);
   const [containerWidth, setContainerWidth] = useState(0);
   const updateWidth = () => {
@@ -68,16 +74,30 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
   const dispatch = useDispatch();
 
   const methods = useForm<Pick<SearchFormValues, 'searchTerm' | 'dateFrom' | 'dateTo' | 'counselor'>>();
-  const { getValues, watch, setError, clearErrors, reset, handleSubmit } = methods;
+  const { getValues, watch, setError, clearErrors, reset, handleSubmit, register, setValue } = methods;
 
   const validateEmptyForm =
     watch().searchTerm === '' && watch().counselor === '' && watch().dateFrom === '' && watch().dateTo === '';
 
+  const updateCallback = useCallback(() => {
+    const values = getValues();
+    dispatch(handleSearchFormUpdate(values));
+  }, [dispatch, getValues, handleSearchFormUpdate]);
+
   const onSubmit = handleSubmit(values => {
+    updateCallback(); // make sure all changes has been flushed before submitting
     if (!validateEmptyForm) {
       handleSearch(values);
     }
   });
+
+  useEffect(() => {
+    register('onlyDataContacts');
+  }, [register]);
+
+  useEffect(() => {
+    setValue('onlyDataContacts', onlyDataContacts);
+  }, [onlyDataContacts, setValue]);
 
   const counselor =
     typeof initialValues.counselor === 'string' ? initialValues.counselor : initialValues.counselor.value;
@@ -93,10 +113,7 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({ initialValues, handl
     definition: formDefinition,
     initialValues: sanitizedInitialValues,
     parentsPath: '',
-    updateCallback: () => {
-      const values = getValues();
-      dispatch(handleSearchFormUpdate(values));
-    },
+    updateCallback,
   });
 
   const arrangeSearchFormItems = (margin: number) => (formItems: JSX.Element[]) => {
