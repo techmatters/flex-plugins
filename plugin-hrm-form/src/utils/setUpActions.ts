@@ -138,13 +138,18 @@ const sendWelcomeMessageOnConversationJoined = (
         }
         // if channel is not ready, wait 200ms and retry
         if (convoState.isLoadingParticipants || convoState.isLoadingConversation || convoState.isLoadingMessages) {
+          console.log('>>>>>>>>>>>> channel not ready')
+          console.log('convoState.isLoadingParticipants', convoState.isLoadingParticipants)
+          console.log('convoState.isLoadingConversation', convoState.isLoadingConversation)
+          console.log('convoState.isLoadingMessages', convoState.isLoadingMessages)
+          console.log('retry count: ', retries)
           if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
           else console.error('Failed to send welcome message: max retries reached.');
         } else {
           sendWelcomeMessage(setupObject, convo, getMessage)(payload);
         }
       } catch (error) {
-        console.error('>>>>>>>>>>>>', error)
+        console.error('>>>>>>>>>>>> retry count: ', retries, error)
         // We want to try again when the internet connection is terribly poor
         if (retries < 10) {
           trySendWelcomeMessage(convo, 200, retries + 1);
