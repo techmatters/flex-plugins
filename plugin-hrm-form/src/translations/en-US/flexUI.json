@@ -365,6 +365,7 @@
   "Contact-EditSummary": "Edit Summary",
   "Contact-ExternalReport": "File External Report",
   "Contact-DraftStatus": "In Progress",
+  "Contact-ResolvedStatus": "Contact has been saved",
 
   "ContactCopyButton": "Copy",
   "ManualPullButtonText": "Another Task",

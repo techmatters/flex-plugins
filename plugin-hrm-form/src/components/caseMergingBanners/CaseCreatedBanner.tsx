@@ -26,7 +26,7 @@ import { getOfflineContactTaskSid } from '../../states/contacts/offlineContactTa
 import { cancelCaseAsyncAction } from '../../states/case/saveCase';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
 import { CustomITask, StandaloneITask } from '../../types/types';
-import { BannerActionLink, BannerContainer, Text } from '../../styles/banners';
+import { BannerAction, BannerContainer, BannerText } from '../../styles/banners';
 import { getInitializedCan, PermissionActions } from '../../permissions';
 import { selectContactsByCaseIdInCreatedOrder } from '../../states/contacts/selectContactByCaseId';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
@@ -92,16 +92,16 @@ const CreatedCaseBanner: React.FC<Props> = ({
   return (
     <BannerContainer color="blue">
       <InfoIcon color="#001489" />
-      <Text>
+      <BannerText>
         <Template
           code={hasOtherContacts ? 'CaseMerging-ContactAddedToExistingCase' : 'CaseMerging-CaseCreatedAndContactAdded'}
           caseId={caseId}
         />
-      </Text>
+      </BannerText>
       {canRemoveContactsFromCase && (
-        <BannerActionLink type="button" onClick={handleCancelCase} data-fs-id="CancelNewCase-Button">
+        <BannerAction type="button" onClick={handleCancelCase} data-fs-id="CancelNewCase-Button">
           <Template code={hasOtherContacts ? 'CaseMerging-RemoveFromCase' : 'CaseMerging-CancelCase'} />
-        </BannerActionLink>
+        </BannerAction>
       )}
     </BannerContainer>
   );

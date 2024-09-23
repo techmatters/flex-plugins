@@ -15,16 +15,16 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { Actions, Icon, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
-import { callTypes, DataCallTypes, DefinitionVersionId, isNonSaveable } from 'hrm-form-definitions';
+import { callTypes, DataCallTypes, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
 import { useProfile } from '../../states/profile/hooks';
-import { Box, Flex, Row } from '../../styles';
+import { Box, Flex, HeaderCloseButton, Row, SaveAndEndButton } from '../../styles';
 import {
   Contact,
   ContactRawJson,
@@ -46,7 +46,7 @@ import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/Co
 import { RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getInitializedCan, PermissionActions } from '../../permissions';
-import { ContactDetailsRoute, ContactDraftChanges, createDraft } from '../../states/contacts/existingContacts';
+import { ContactDetailsRoute, createDraft } from '../../states/contacts/existingContacts';
 import { RecordingSection, TranscriptSection } from './MediaSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import type { ResourceReferral } from '../../states/contacts/resourceReferral';
@@ -59,12 +59,9 @@ import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBa
 import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
 import { selectCaseMergingBanners } from '../../states/case/caseBanners';
 import InfoIcon from '../caseMergingBanners/InfoIcon';
-import { BannerContainer, Text } from '../../styles/banners';
+import { BannerAction, BannerContainer, BannerText } from '../../styles/banners';
 import { isSmsChannelType } from '../../utils/smsChannels';
 import getCanEditContact from '../../permissions/canEditContact';
-import { createCaseAsyncAction } from '../../states/case/saveCase';
-import asyncDispatch from '../../states/asyncDispatch';
-import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import AddCaseButton from '../AddCaseButton';
 import openNewCase from '../case/openNewCase';
 
@@ -137,10 +134,10 @@ const ContactDetailsHome: React.FC<Props> = function ({
   openModal,
   createNewCase,
 }) {
+  const [showResolvedBanner, setShowResolvedBanner] = useState(true);
+
   const version = savedContact?.rawJson.definitionVersion;
-
   const definitionVersion = definitionVersions[version];
-
   const featureFlags = getAseloFeatureFlags();
   const strings = getTemplateStrings();
 
@@ -324,6 +321,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
     return null;
   };
 
+  console.log('>>>ContactDetailsHome', { isDraft, savedContact });
+
   return (
     <Box data-testid="ContactDetails-Container">
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
@@ -331,12 +330,32 @@ const ContactDetailsHome: React.FC<Props> = function ({
       {isDraft && (
         <BannerContainer color="yellow" style={{ paddingTop: '12px', paddingBottom: '12px', marginTop: '10px' }}>
           <Flex width="100%" justifyContent="space-between">
-            <Flex alignItems="center">
-              <InfoIcon color="#fed44b" />
-              <Text>
-                <Template code="Contact-DraftStatus" />
-              </Text>
-            </Flex>
+            {/* <Flex alignItems="center"> */}
+            <InfoIcon color="#fed44b" />
+            <BannerText>
+              <Template code="Contact-DraftStatus" />
+            </BannerText>
+            <BannerAction alignRight={true} onClick={() => console.log('>>>save and end')}>
+              <SaveAndEndButton>
+                <Template code="BottomBar-SaveAndEnd" />
+              </SaveAndEndButton>
+            </BannerAction>
+            {/* </Flex> */}
+          </Flex>
+        </BannerContainer>
+      )}
+      {showResolvedBanner && (
+        <BannerContainer color="blue" style={{ paddingTop: '12px', paddingBottom: '12px', marginTop: '10px' }}>
+          <Flex width="100%" justifyContent="space-between">
+            {/* <Flex alignItems="center">  */}
+            <InfoIcon color="#001489" />
+            <BannerText>
+              <Template code="Contact-ResolvedStatus" />
+            </BannerText>
+            <BannerAction onClick={() => console.log('>>>close')} alignRight={true}>
+              <HeaderCloseButton />
+            </BannerAction>
+            {/* </Flex> */}
           </Flex>
         </BannerContainer>
       )}

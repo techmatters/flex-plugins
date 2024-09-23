@@ -26,7 +26,7 @@ import type { Case } from '../../types/types';
 import InfoIcon from './InfoIcon';
 import { showRemovedFromCaseBannerAction } from '../../states/case/caseBanners';
 import { RootState } from '../../states';
-import { BannerActionLink, BannerContainer, CaseLink, Text } from '../../styles/banners';
+import { BannerAction, BannerContainer, CaseLink, BannerText } from '../../styles/banners';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { getInitializedCan, PermissionActions } from '../../permissions';
 import { getHrmConfig } from '../../hrmConfig';
@@ -103,9 +103,9 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
   return (
     <BannerContainer color="blue">
       <InfoIcon color="#001489" />
-      <Text>
+      <BannerText>
         <Template code="CaseMerging-ContactAddedTo" />
-      </Text>
+      </BannerText>
       <CaseLink
         type="button"
         color={!canViewcase && '#000'}
@@ -117,9 +117,9 @@ const ContactAddedToCaseBanner: React.FC<Props> = ({
         {caseId}
       </CaseLink>
       {canEditAndRemoveCase && (
-        <BannerActionLink type="button" onClick={handleRemoveContactFromCase} data-fs-id="RemoveContactFromCase-Button">
+        <BannerAction type="button" onClick={handleRemoveContactFromCase} data-fs-id="RemoveContactFromCase-Button">
           <Template code="CaseMerging-RemoveFromCase" />
-        </BannerActionLink>
+        </BannerAction>
       )}
     </BannerContainer>
   );

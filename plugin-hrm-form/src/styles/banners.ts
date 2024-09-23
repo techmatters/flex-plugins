@@ -46,18 +46,20 @@ export const BannerContainer = styled('div')<BannerContainerProps>`
 
 BannerContainer.displayName = 'BannerContainer';
 
-export const Text = styled('span')`
+export const BannerText = styled('span')`
   color: #282a2b;
   font-weight: 700;
   margin-left: 8px;
   margin-right: 1ch;
 `;
 
-Text.displayName = 'Text';
+BannerText.displayName = 'BannerText';
+
 type ButtonProps = {
   onClick: () => void;
   color?: string;
   permission?: string;
+  alignRight?: boolean;
 };
 
 export const CaseLink = styled('button')<ButtonProps>`
@@ -71,12 +73,13 @@ export const CaseLink = styled('button')<ButtonProps>`
 
 CaseLink.displayName = 'CaseLink';
 
-export const BannerActionLink = styled('button')<ButtonProps>`
+export const BannerAction = styled('button')<ButtonProps>`
   color: #0263e0;
   margin-left: auto;
   background: none;
   border: none;
   cursor: pointer;
+  align-items: ${({ alignRight }) => (alignRight ? 'flex-end' : 'none')};
 `;
 
-BannerActionLink.displayName = 'BannerActionLink';
+BannerAction.displayName = 'BannerAction';
