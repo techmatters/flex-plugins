@@ -23,9 +23,10 @@ locals {
         chatbot_unique_names = []
       },
       instagram : {
+        messaging_mode       = "conversations"
         channel_type         = "custom"
         contact_identity     = "instagram"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v2-blocking.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-lex-v3-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }
@@ -41,6 +42,7 @@ locals {
       bot_language                           = "en-JM"
       widget_from                            = "SafeSpot"
       chat_blocked_message                   = "Sorry, you're not able to contact SafeSpot from this device or account"
+      error_message                         = "There has been an error with your message, please try writing us again."
     }
 
 
