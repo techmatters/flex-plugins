@@ -28,7 +28,9 @@ resource "twilio_events_subscriptions_v1" "subscription" {
   types       = [for event in each.value.events : jsonencode({ type = event.type })]
 }
 /*
-I'm leaving this out as this resource doesn't work well. 
+I'm leaving this out as this resource doesn't work well.
+This is only needed if we would want to add or modify exising events in a subscription wihtout altering the subscription. 
+Right now the way to do that is to re-create the subscription.
 An apply will show to be successful but some resources will fail the be created.
 resource "twilio_events_subscriptions_subscribed_events_v1" "additional_event" {
   #In order to create a resource we need to create a map from the tuple

@@ -9,7 +9,7 @@ variable "short_helpline" {
 }
 
 variable "default_webhook_url" {
-  description = "The human readable helpline name."
+  description = "The default webhook url."
   type        = string
 }
 
