@@ -74,7 +74,7 @@ export const CaseLink = styled('button')<ButtonProps>`
 CaseLink.displayName = 'CaseLink';
 
 export const BannerAction = styled('button')<ButtonProps>`
-  color: #0263e0;
+  color: ${({ color }) => (color ? color : '#0263e0')};
   margin-left: auto;
   background: none;
   border: none;

@@ -15,16 +15,17 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { format } from 'date-fns';
 import { Actions, Icon, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes, DataCallTypes, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
+import Close from '@material-ui/icons/Close';
 
 import { useProfile } from '../../states/profile/hooks';
-import { Box, Flex, HeaderCloseButton, Row, SaveAndEndButton } from '../../styles';
+import { Box, Flex, HeaderCloseButton, HiddenText, Row, SaveAndEndButton } from '../../styles';
 import {
   Contact,
   ContactRawJson,
@@ -49,7 +50,7 @@ import { getInitializedCan, PermissionActions } from '../../permissions';
 import { ContactDetailsRoute, createDraft } from '../../states/contacts/existingContacts';
 import { RecordingSection, TranscriptSection } from './MediaSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
-import type { ResourceReferral } from '../../states/contacts/resourceReferral';
+// import type { ResourceReferral } from '../../states/contacts/resourceReferral';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
@@ -64,41 +65,7 @@ import { isSmsChannelType } from '../../utils/smsChannels';
 import getCanEditContact from '../../permissions/canEditContact';
 import AddCaseButton from '../AddCaseButton';
 import openNewCase from '../case/openNewCase';
-
-const formatResourceReferral = (referral: ResourceReferral) => {
-  return (
-    <Box marginBottom="5px">
-      <SectionValueText>
-        {referral.resourceName}
-        <br />
-        <Row>ID #{referral.resourceId}</Row>
-      </SectionValueText>
-    </Box>
-  );
-};
-
-const formatCsamReport = (report: CSAMReportEntry) => {
-  const template =
-    report.reportType === 'counsellor-generated' ? (
-      <Template code="CSAMReportForm-Counsellor-Attachment" />
-    ) : (
-      <Template code="CSAMReportForm-Self-Attachment" />
-    );
-
-  const date = `${format(new Date(report.createdAt), 'yyyy MM dd h:mm aaaaa')}m`;
-
-  return (
-    <Box marginBottom="5px">
-      <SectionValueText>
-        {template}
-        <br />
-        {date}
-        <br />
-        {`#${report.csamReportId}`}
-      </SectionValueText>
-    </Box>
-  );
-};
+import { formatCsamReport, formatResourceReferral } from './helpers';
 
 // TODO: complete this type
 type OwnProps = {
@@ -142,10 +109,11 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const strings = getTemplateStrings();
 
   // Permission to edit is based the counselor who created the contact - identified by Twilio worker ID
-  const can = React.useMemo(() => {
+  const can = useMemo(() => {
     return action => getInitializedCan()(action, savedContact);
   }, [savedContact]);
-  const canEditContact = React.useMemo(() => getCanEditContact(savedContact), [savedContact]);
+  // const canEditContact = useMemo(() => getCanEditContact(savedContact), [savedContact]);
+  const canEditContact = () => true;
 
   useEffect(
     () => () => {
@@ -321,41 +289,48 @@ const ContactDetailsHome: React.FC<Props> = function ({
     return null;
   };
 
-  console.log('>>>ContactDetailsHome', { isDraft, savedContact });
-
+  console.log('>>>ContactDetailsHome', { isDraft, savedContact }, canEditContact());
+  // savedContact.finalizedAt = '2022-01-01T00:00:00.000Z';
   return (
     <Box data-testid="ContactDetails-Container">
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
       {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
       {isDraft && (
-        <BannerContainer color="yellow" style={{ paddingTop: '12px', paddingBottom: '12px', marginTop: '10px' }}>
-          <Flex width="100%" justifyContent="space-between">
-            {/* <Flex alignItems="center"> */}
+        <BannerContainer color="yellow">
+          <Flex width="100%" alignItems="center">
             <InfoIcon color="#fed44b" />
             <BannerText>
               <Template code="Contact-DraftStatus" />
             </BannerText>
-            <BannerAction alignRight={true} onClick={() => console.log('>>>save and end')}>
-              <SaveAndEndButton>
-                <Template code="BottomBar-SaveAndEnd" />
-              </SaveAndEndButton>
-            </BannerAction>
-            {/* </Flex> */}
+            {canEditContact() && (
+              <BannerAction
+                alignRight={true}
+                onClick={() => {
+                  console.log('>>>save and end');
+                }}
+              >
+                <SaveAndEndButton>
+                  <Template code="BottomBar-SaveAndEnd" />
+                </SaveAndEndButton>
+              </BannerAction>
+            )}
           </Flex>
         </BannerContainer>
       )}
       {showResolvedBanner && (
         <BannerContainer color="blue" style={{ paddingTop: '12px', paddingBottom: '12px', marginTop: '10px' }}>
-          <Flex width="100%" justifyContent="space-between">
-            {/* <Flex alignItems="center">  */}
+          <Flex width="100%" justifyContent="space-between" alignItems="center">
             <InfoIcon color="#001489" />
             <BannerText>
               <Template code="Contact-ResolvedStatus" />
             </BannerText>
-            <BannerAction onClick={() => console.log('>>>close')} alignRight={true}>
+            <BannerAction onClick={() => setShowResolvedBanner(false)} alignRight={true} color="black">
               <HeaderCloseButton />
+              <HiddenText>
+                <Template code="CloseButton" />
+              </HiddenText>
+              <Close fontSize="small" />
             </BannerAction>
-            {/* </Flex> */}
           </Flex>
         </BannerContainer>
       )}
