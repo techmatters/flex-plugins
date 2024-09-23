@@ -138,18 +138,12 @@ const sendWelcomeMessageOnConversationJoined = (
         }
         // if channel is not ready, wait 200ms and retry
         if (convoState.isLoadingParticipants || convoState.isLoadingConversation || convoState.isLoadingMessages) {
-          console.log('>>>>>>>>>>>> channel not ready');
-          console.log('convoState.isLoadingParticipants', convoState.isLoadingParticipants);
-          console.log('convoState.isLoadingConversation', convoState.isLoadingConversation);
-          console.log('convoState.isLoadingMessages', convoState.isLoadingMessages);
-          console.log('retry count: ', retries);
           if (retries < 10) trySendWelcomeMessage(convo, 200, retries + 1);
           else console.error('Failed to send welcome message: max retries reached.');
         } else {
           sendWelcomeMessage(setupObject, convo, getMessage)(payload);
         }
       } catch (error) {
-        console.error('>>>>>>>>>>>> retry count: ', retries, error);
         // We want to try again when the internet connection is terribly poor
         if (retries < 10) {
           trySendWelcomeMessage(convo, 200, retries + 1);
@@ -164,17 +158,20 @@ const sendWelcomeMessageOnConversationJoined = (
 };
 
 export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupObject, getMessage: GetMessage) => {
-  console.log('>>>>>>>>>>>> afterAcceptTask event listener ready to party')
+  console.log('>>>>>>>>>>>> afterAcceptTask event listener ready to party');
   return async (payload: ActionPayload) => {
-    console.log('>>>>>>>>>>>> afterAcceptTask event listener triggered')
+    console.log('>>>>>>>>>>>> afterAcceptTask event listener triggered');
     const { task } = payload;
-    if (TaskHelper.isChatBasedTask(task)) {
-      subscribeAlertOnConversationJoined(task);
-    }
-
+    console.log('>>>>>>>>>>>> TaskHelper.isChatBasedTask(task)', TaskHelper.isChatBasedTask(task));
+    console.log('>>>>>>>>>>>> TransferHelpers.hasTransferStarted(task)', TransferHelpers.hasTransferStarted(task));
     // If this is the first counsellor that gets the task, say hi
     if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
+      console.log('>>>>>>>>>>>> send welcome message triggered');
       sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
+    }
+
+    if (TaskHelper.isChatBasedTask(task)) {
+      subscribeAlertOnConversationJoined(task);
     }
 
     await initializeContactForm(payload);
