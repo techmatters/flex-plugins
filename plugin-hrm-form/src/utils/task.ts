@@ -46,29 +46,15 @@ const channelTransformations: { [k in ChannelTypes]: TransformIdentifierFunction
 export const getNumberFromTask = (task: CustomITask) => {
   if (!isTwilioTask(task)) return null;
 
-  const channelType: ChannelTypes = task.attributes.customChannelType || task.channelType;
-
   // webchat is a special case since it does not only depends on channel but in the task attributes too
-  if (channelType === channelTypes.web) {
-    const ip = getContactValueFromWebchat(task);
-    if (!ip || ip === '') {
-      console.warn('CHI-2742 - No identifier/ip found in webchat task', ip);
-    }
-    return ip;
+  if (task.channelType === channelTypes.web) {
+    return getContactValueFromWebchat(task);
   }
 
-  if (!channelTransformations[channelType]) {
-    console.warn(`CHI-2742 - Channel transformation for type ${channelType} not found`);
-    return null;
-  }
-
-  // if task.defaultFrom is missing
-  if (!task.defaultFrom || task.defaultFrom === '') {
-    console.warn('CHI-2742 - No defaultFrom found in task', task);
-  }
+  if (!channelTransformations[task.channelType]) return null;
 
   // otherwise, return the "defaultFrom" with the transformations on the identifier corresponding to each channel
-  return channelTransformations[channelType].reduce((accum, f) => f(accum), task.defaultFrom);
+  return channelTransformations[task.channelType as ChannelTypes].reduce((accum, f) => f(accum), task.defaultFrom);
 };
 
 /**
