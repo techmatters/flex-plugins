@@ -144,6 +144,7 @@ const sendWelcomeMessageOnConversationJoined = (
           sendWelcomeMessage(setupObject, convo, getMessage)(payload);
         }
       } catch (error) {
+        console.error('>>>>>>>>>>>>', error)
         // We want to try again when the internet connection is terribly poor
         if (retries < 10) {
           trySendWelcomeMessage(convo, 200, retries + 1);
