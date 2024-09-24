@@ -8,7 +8,8 @@
         "external_recordings_enabled": true,
         "config_flags": {
             "enableExternalRecordings": true,
-            "enableUnmaskingCalls": true
+            "enableUnmaskingCalls": true,
+            "enable_generalized_search": true
         },
         "feature_flags": {
             "enable_manual_pulling": false,
