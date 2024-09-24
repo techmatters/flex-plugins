@@ -89,5 +89,6 @@ locals {
         description : "system - 'In Progress' cases are closed after 5 minutes"
       }
     ]
+      subscriptions = {}
   }
 }
