@@ -17,12 +17,16 @@ locals {
     custom_task_routing_filter_expression = "channelType =='voice' OR channelType =='web' OR isContactlessTask == true"
     workflows = {
       master : {
-        friendly_name : "Master Workflow"
-        templatefile : "/app/twilio-iac/helplines/sg/templates/workflows/master.tftpl"
+        friendly_name = "Master Workflow"
+        templatefile = "/app/twilio-iac/helplines/sg/templates/workflows/master.tftpl"
+      },
+      queue_transfers : {
+        friendly_name = "Queue Transfers Workflow"
+        templatefile = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
       },
       survey : {
-        friendly_name : "Survey Workflow"
-        templatefile : "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+        friendly_name = "Survey Workflow"
+        templatefile = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
     task_queues = {
