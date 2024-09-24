@@ -8,8 +8,7 @@
         "external_recordings_enabled": true,
         "config_flags": {
             "enableExternalRecordings": true,
-            "enableUnmaskingCalls": true,
-            "enable_generalized_search": true
+            "enableUnmaskingCalls": true
         },
         "feature_flags": {
             "enable_manual_pulling": false,
@@ -18,7 +17,8 @@
             "enable_voice_recordings": true,
             "enable_conferencing": true,
             "enable_region_resource_search": true,
-            "enable_client_profiles": false
+            "enable_client_profiles": false,
+            "enable_generalized_search": true
         },
         "helplineLanguage": "en-CA",
         "permissionConfig": "ca"
