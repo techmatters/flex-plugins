@@ -16,35 +16,34 @@
 
 /* eslint-disable import/no-unused-modules */
 import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
+import { within, userEvent, expect } from '@storybook/test';
 
-import { Header } from './Header';
+import { Page } from './Page';
 
-const meta: Meta<typeof Header> = {
-  title: 'Example/Header',
-  component: Header,
-  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
-  tags: ['autodocs'],
+const meta: Meta<typeof Page> = {
+  title: 'Sample/SamplePage',
+  component: Page,
   parameters: {
     // More on Story layout: https://storybook.js.org/docs/configure/story-layout
     layout: 'fullscreen',
   },
-  args: {
-    onLogin: fn(),
-    onLogout: fn(),
-    onCreateAccount: fn(),
-  },
 };
 
 export default meta;
-type Story = StoryObj<typeof Header>;
-
-export const LoggedIn: Story = {
-  args: {
-    user: {
-      name: 'Jane Doe',
-    },
-  },
-};
+type Story = StoryObj<typeof Page>;
 
 export const LoggedOut: Story = {};
+
+// More on interaction testing: https://storybook.js.org/docs/writing-tests/interaction-testing
+export const LoggedIn: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const loginButton = canvas.getByRole('button', { name: /Log in/i });
+    await expect(loginButton).toBeInTheDocument();
+    await userEvent.click(loginButton);
+    await expect(loginButton).not.toBeInTheDocument();
+
+    const logoutButton = canvas.getByRole('button', { name: /Log out/i });
+    await expect(logoutButton).toBeInTheDocument();
+  },
+};

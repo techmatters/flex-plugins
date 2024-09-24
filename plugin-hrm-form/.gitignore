@@ -69,4 +69,8 @@ build/
 
 #test file
 test.jsx
+
+# Storybook
+.storybook
+storybook-static
 *storybook.log
