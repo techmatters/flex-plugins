@@ -14,11 +14,17 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-export * from './buttons';
-export * from './filters';
-export * from './layout';
-export * from './table';
-export * from './typography';
-export * from './constants';
-// TODO: Remove this once HrmStyles is removed
-export * from './HrmStyles';
+import type { Preview } from '@storybook/react';
+
+const preview: Preview = {
+  parameters: {
+    controls: {
+      matchers: {
+        color: /(background|color)$/i,
+        date: /Date$/i,
+      },
+    },
+  },
+};
+
+export default preview;

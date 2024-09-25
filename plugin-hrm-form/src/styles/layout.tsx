@@ -17,7 +17,7 @@ import React from 'react';
 import { styled } from '@twilio/flex-ui';
 import { Tab, TabProps, Tabs, withStyles } from '@material-ui/core';
 
-import { BottomButtonBarHeight } from '.';
+import { BottomButtonBarHeight } from './constants';
 import HrmTheme from './HrmTheme';
 
 type BoxProps = {

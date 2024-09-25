@@ -14,11 +14,21 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-export * from './buttons';
-export * from './filters';
-export * from './layout';
-export * from './table';
-export * from './typography';
-export * from './constants';
-// TODO: Remove this once HrmStyles is removed
-export * from './HrmStyles';
+import type { StorybookConfig } from '@storybook/react-webpack5';
+
+const config: StorybookConfig = {
+  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
+  addons: [
+    '@storybook/addon-webpack5-compiler-swc',
+    '@storybook/addon-onboarding',
+    '@storybook/addon-links',
+    '@storybook/addon-essentials',
+    '@chromatic-com/storybook',
+    '@storybook/addon-interactions',
+  ],
+  framework: {
+    name: '@storybook/react-webpack5',
+    options: {},
+  },
+};
+export default config;
