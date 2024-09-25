@@ -90,7 +90,7 @@
     "@testing-library/user-event": "^14.1.1",
     "@twilio/flex-plugin": "^7.0.0",
     "@twilio/flex-plugin-scripts": "^7.0.0",
-    "@twilio/flex-ui": "^2.8.2",
+    "@twilio/flex-ui": "^2.8.4",
     "@twilio/flex-ui-dev-proxy": "^1.1.2",
     "@types/jest": "^27.5.2",
     "@types/react": "^17.0.47",
