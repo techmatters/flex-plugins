@@ -89,7 +89,7 @@ export const Destructive: Story = {
   },
 };
 
-export const withIcons: Story = {
+export const WithIcons: Story = {
   args: {
     variant: 'primary',
     size: 'medium',
@@ -97,14 +97,13 @@ export const withIcons: Story = {
     disabled: false,
     isLoading: false,
   },
-  render: (args: Props) => 
+  render: (args: Props) => (
     <Button
       {...args}
-      iconLeft={
-        <FolderIcon style={{ fontSize: '16px', marginRight: '15px', width: '16px', height: '16px' }}/>
-      }
+      iconLeft={<FolderIcon style={{ fontSize: '16px', marginRight: '15px', width: '16px', height: '16px' }} />}
       iconRight={
         <KeyboardArrowDownIcon style={{ fontSize: '20px', marginLeft: '15px', width: '16px', height: '16px' }} />
       }
-    />,
+    />
+  ),
 };
