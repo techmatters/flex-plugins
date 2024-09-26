@@ -27,7 +27,7 @@ import {
   removeFromCase,
   updateContactInHrm,
 } from '../../services/ContactService';
-import { Case, Contact, CustomITask, isOfflineContactTask } from '../../types/types';
+import { Case, Contact, CustomITask, isOfflineContactTask, RouterTask } from '../../types/types';
 import {
   CONNECT_TO_CASE,
   ContactMetadata,
@@ -195,7 +195,7 @@ export const submitContactFormAsyncAction = createAsyncAction(
 
 export const newFinalizeContactAsyncAction = createAsyncAction(
   FINALIZE_CONTACT,
-  async (task: CustomITask, contact: Contact) => {
+  async (task: RouterTask, contact: Contact) => {
     return finalizeContact(task, contact);
   },
 );

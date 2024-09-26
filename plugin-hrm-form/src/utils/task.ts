@@ -54,7 +54,10 @@ export const getNumberFromTask = (task: CustomITask) => {
 
   // webchat is a special case since it does not only depends on channel but in the task attributes too
   if (channelType === channelTypes.web) {
-    return getContactValueFromWebchat(task);
+    // eslint-disable-next-line sonarjs/prefer-immediate-return
+    const ip = getContactValueFromWebchat(task);
+    // console.log('>>> getNumberFromTask web', ip);
+    return ip;
   }
 
   if (!channelTransformations[channelType]) return null;

@@ -61,6 +61,7 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
   const formattedIdentifier = getFormattedNumberFromTask(task);
   const identifierIdentifier = getNumberFromTask(task);
   const { identifier } = useIdentifierByIdentifier({ identifierIdentifier, shouldAutoload: true });
+  // console.log('>>> identifierIdentifier', { formattedIdentifier, identifierIdentifier, identifier });
 
   /**
    * This is a known hack that is OK as long as we ensure that there is only exactly 1 Profile for each Identifier.

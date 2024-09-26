@@ -24,8 +24,10 @@ import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 import Close from '@material-ui/icons/Close';
 
+import { ReferralLookupStatus } from '../../states/contacts/resourceReferral';
+import { ContactMetadata } from '../../states/contacts/types';
 import { useProfile } from '../../states/profile/hooks';
-import { Box, Flex, HeaderCloseButton, HiddenText, Row, SaveAndEndButton } from '../../styles';
+import { Box, Flex, HeaderCloseButton, HiddenText, SaveAndEndButton } from '../../styles';
 import {
   Contact,
   ContactRawJson,
@@ -47,7 +49,7 @@ import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/Co
 import { RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getInitializedCan, PermissionActions } from '../../permissions';
-import { ContactDetailsRoute, createDraft } from '../../states/contacts/existingContacts';
+import { ContactDetailsRoute, ContactDraftChanges, createDraft } from '../../states/contacts/existingContacts';
 import { RecordingSection, TranscriptSection } from './MediaSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 // import type { ResourceReferral } from '../../states/contacts/resourceReferral';
@@ -66,6 +68,9 @@ import getCanEditContact from '../../permissions/canEditContact';
 import AddCaseButton from '../AddCaseButton';
 import openNewCase from '../case/openNewCase';
 import { formatCsamReport, formatResourceReferral } from './helpers';
+import { newFinalizeContactAsyncAction, updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
+import asyncDispatch from '../../states/asyncDispatch';
+import { completeTaskOverride } from '../../utils/setUpActions';
 
 // TODO: complete this type
 type OwnProps = {
@@ -100,8 +105,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
   showRemovedFromCaseBanner,
   openModal,
   createNewCase,
+  saveFinalizedContact,
 }) {
-  const [showResolvedBanner, setShowResolvedBanner] = useState(true);
+  const [showResolvedBanner, setShowResolvedBanner] = useState(false);
 
   const version = savedContact?.rawJson.definitionVersion;
   const definitionVersion = definitionVersions[version];
@@ -112,8 +118,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const can = useMemo(() => {
     return action => getInitializedCan()(action, savedContact);
   }, [savedContact]);
-  // const canEditContact = useMemo(() => getCanEditContact(savedContact), [savedContact]);
-  const canEditContact = () => true;
+  const canEditContact = useMemo(() => getCanEditContact(savedContact), [savedContact]);
 
   useEffect(
     () => () => {
@@ -289,8 +294,37 @@ const ContactDetailsHome: React.FC<Props> = function ({
     return null;
   };
 
-  console.log('>>>ContactDetailsHome', { isDraft, savedContact }, canEditContact());
-  // savedContact.finalizedAt = '2022-01-01T00:00:00.000Z';
+  const handleSaveAndEnd = async () => {
+    // completeTaskOverride();
+    const updatedContact = {
+      ...savedContact,
+      rawJson: {
+        ...savedContact.rawJson,
+        callType: 'Uncategorized',
+      },
+    };
+    await saveFinalizedContact(task, updatedContact);
+
+    // Complete the task
+    // const taskWithSid = {
+    //   ...task,
+    //   sid: savedContact.taskId,
+    //   status: 'accepted',
+    //   channelType: savedContact.channel,
+    // };
+    // await completeTask(taskWithSid as CustomITask, savedContact);
+
+    // savedContact.finalizedAt = new Date().toISOString(); // actually set to true
+    /** TODO:
+     *  [ ] saveContact() with required and validated draft
+     *  [ ] display confirmation dialog if task is active
+     *  [ ]
+     */
+
+    console.log('>>>save and end', updatedContact);
+  };
+  console.log('>>>ContactDetailsHome', savedContact);
+
   return (
     <Box data-testid="ContactDetails-Container">
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
@@ -302,13 +336,9 @@ const ContactDetailsHome: React.FC<Props> = function ({
             <BannerText>
               <Template code="Contact-DraftStatus" />
             </BannerText>
+            {/*  */}
             {canEditContact() && (
-              <BannerAction
-                alignRight={true}
-                onClick={() => {
-                  console.log('>>>save and end');
-                }}
-              >
+              <BannerAction alignRight={true} onClick={handleSaveAndEnd}>
                 <SaveAndEndButton>
                   <Template code="BottomBar-SaveAndEnd" />
                 </SaveAndEndButton>
@@ -544,6 +574,10 @@ const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) =>
   openModal: (route: AppRoutes) => dispatch(newOpenModalAction(route, task.taskSid)),
   createNewCase: async (task: RouterTask, savedContact: Contact, contact: Contact) =>
     openNewCase(task, savedContact, contact, dispatch),
+  // saveContactChangesInHrm: (contact: Contact, changes: ContactDraftChanges) =>
+  //   asyncDispatch(dispatch)(updateContactInHrmAsyncAction(contact, changes, task.taskSid)),
+  saveFinalizedContact: (task: RouterTask, contact: Contact) =>
+    asyncDispatch(dispatch)(newFinalizeContactAsyncAction(task, contact)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);
