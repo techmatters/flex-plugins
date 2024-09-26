@@ -24,7 +24,7 @@ const captureIp = true;
 const checkOpenHours = true;
 const contactType = 'ip';
 const showEmojiPicker = true;
-const enableRecaptcha = true;
+const enableRecaptcha = false;
 
 const translations: Translations = {
   'en-US': {
@@ -78,25 +78,7 @@ const translations: Translations = {
 const preEngagementConfig: PreEngagementFormDefinition = {
   description: 'PreEngagementDescription',
   submitLabel: 'LetsChat',
-  fields: [
-    {
-      type: 'input-text',
-      name: 'name',
-      label: 'First Name',
-      placeholder: 'John',
-      required: true,
-    },
-    {
-      type: 'checkbox',
-      name: 'termsAndConditions',
-      label:
-        'Accept <a href="https://www.redpapaz.org/wp-content/uploads/2019/02/Politica_de_Tratamiento_de_Informacion_-_Red_PaPaz.pdf">terms and conditions</a>',
-      required: {
-        value: true,
-        message: 'You need to accept the terms and conditions',
-      },
-    },
-  ],
+  fields: [],
 };
 
 const closedHours: PreEngagementFormDefinition = {
