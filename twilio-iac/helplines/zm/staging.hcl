@@ -15,7 +15,7 @@ locals {
       },
       facebook : {
         messaging_mode       = "conversations"
-        channel_type         = "facebook"
+        channel_type         = "messenger"
         contact_identity     = "messenger:106338277501244"
         templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-conv.tftpl"
         channel_flow_vars    = {}
