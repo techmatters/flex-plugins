@@ -27,9 +27,10 @@ locals {
         chatbot_unique_names = []
       },
       facebook : {
-        channel_type         = "facebook"
+        messaging_mode       = "conversations"
+        channel_type         = "messenger"
         contact_identity     = "messenger:108893035300837"
-        templatefile         = "/app/twilio-iac/helplines/th/templates/studio-flows/facebook-flow.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/th/templates/studio-flows/facebook-flow-conv.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
