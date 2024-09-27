@@ -82,10 +82,6 @@ export const StyledLink = styled(UnstyledLinkButton)<StyledLinkProps>`
       outline: auto;
       background-color: ${props => (props.underline ? 'transparent' : HrmTheme.colors.hyperlinkHoverBackgroundColor)};
     }
-
-    :visited {
-      color: #18e14a;
-    }
   }
 
   span {

@@ -46,12 +46,23 @@ const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefin
 const mockStore = configureMockStore([]);
 let mockV1;
 
+const mockFlexManager = {
+  workerClient: {
+    attributes: {
+      roles: [''],
+    },
+  },
+};
+
 jest.mock('../../services/ServerlessService', () => ({
   populateCounselors: async () => [],
 }));
 
 jest.mock('@twilio/flex-ui', () => ({
   ...(jest.requireActual('@twilio/flex-ui') as any),
+  Manager: {
+    getInstance: () => mockFlexManager,
+  },
   Actions: {
     invokeAction: jest.fn(),
   },
@@ -102,6 +113,7 @@ function createState(
       },
     ]),
   );
+
   return {
     'plugin-hrm-form': {
       configuration: {
