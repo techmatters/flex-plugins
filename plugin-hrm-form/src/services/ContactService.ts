@@ -299,6 +299,7 @@ export const finalizeContact = async (task, contact: Contact): Promise<Contact> 
     channelSid,
     serviceSid,
   };
+  console.log('>>> ContactService finalizeContact', contactUpdates);
   return updateContactInHrm(contact.id, contactUpdates, true);
 };
 

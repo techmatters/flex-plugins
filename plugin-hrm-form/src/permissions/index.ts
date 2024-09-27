@@ -47,7 +47,7 @@ export const CaseActions = {
 export const ContactActions = {
   VIEW_CONTACT: 'viewContact',
   EDIT_CONTACT: 'editContact',
-  // EDIT_IN_PROGRESS_CONTACT: 'editInProgressContact',
+  EDIT_IN_PROGRESS_CONTACT: 'editInProgressContact',
   VIEW_EXTERNAL_TRANSCRIPT: 'viewExternalTranscript',
   VIEW_RECORDING: 'viewRecording',
   ADD_CONTACT_TO_CASE: 'addContactToCase',
