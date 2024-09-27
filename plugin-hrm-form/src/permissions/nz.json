@@ -20,6 +20,7 @@
 
     "viewContact":  [["isSupervisor"],["isOwner",{"createdDaysAgo": 28}]],
     "editContact":  [["isSupervisor"],["isOwner", {"createdHoursAgo": 24}]],
+  "editInProgressContact": [["isSupervisor"], ["isOwner"]],
     "viewExternalTranscript":  [["isSupervisor"]],
     "viewRecording":  [["isSupervisor"]],
     "addContactToCase": [["isSupervisor"], ["isOwner", {"createdHoursAgo": 24}]],
