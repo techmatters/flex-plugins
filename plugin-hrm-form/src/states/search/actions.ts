@@ -100,7 +100,7 @@ const pickGeneralizedSearchParams = (searchParams: SearchParams): GeneralizedSea
   counselor: typeof searchParams.counselor === 'string' ? searchParams.counselor : searchParams.counselor.value,
   helpline: typeof searchParams.helpline === 'string' ? searchParams.helpline : searchParams.helpline.value,
   dateFrom: searchParams.dateFrom ? formatISO(startOfDay(parseISO(searchParams.dateFrom))) : searchParams.dateFrom,
-  dateTo: searchParams.dateTo ? formatISO(startOfDay(parseISO(searchParams.dateTo))) : searchParams.dateTo,
+  dateTo: searchParams.dateTo ? formatISO(endOfDay(parseISO(searchParams.dateTo))) : searchParams.dateTo,
   onlyDataContacts: searchParams.onlyDataContacts,
 });
 
