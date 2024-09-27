@@ -377,7 +377,7 @@
   "NotURLFieldError": "This field only accepts URLs.",
   "DateCantBeGreaterThanToday": "Date can't be greater than today.",
   "DateCantBeLesserThanEpoch": "Date can't be lesser than 00:00:00 UTC on 1 January 1970.",
-  "DateToCantBeGreaterThanFrom": "End date can't be greater than start date.",
+  "DateToCantBeGreaterThanFrom": "End date can't be lesser than start date.",
   "TimeCantBeGreaterThanNow": "Time can't be greater than now.",
   "NoCaseSummary": "No case summary",
   "CannedResponses": "Canned Responses",
