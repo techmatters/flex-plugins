@@ -17,13 +17,13 @@ import { getInitializedCan, PermissionActions } from '.';
 import { Contact } from '../types/types';
 import { getHrmConfig } from '../hrmConfig';
 
-const getCanEditInProgressContact = (contact: Contact, workerRoles:string[]): (() => boolean) => {
+const getCanEditInProgressContact = (contact: Contact, workerRoles: string[]): (() => boolean) => {
   // const worker = Manager.getInstance().workerClient
-  console.log('>>> getCanEditInProgressContact', {workerRoles});
+  console.log('>>> getCanEditInProgressContact', { workerRoles });
   if (!contact.finalizedAt) {
     // If the contact is a draft, we use the hardcoded rule that only its owner or creator can edit it
     const { workerSid } = getHrmConfig();
-    const permitted = contact.twilioWorkerId === workerSid || contact.createdBy === workerSid 
+    const permitted = contact.twilioWorkerId === workerSid || contact.createdBy === workerSid;
     // || workerRoles.includes('supervisor');
     return () => permitted;
   }
@@ -32,4 +32,3 @@ const getCanEditInProgressContact = (contact: Contact, workerRoles:string[]): ((
 };
 
 export default getCanEditInProgressContact;
-
