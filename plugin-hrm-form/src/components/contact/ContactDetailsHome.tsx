@@ -15,10 +15,9 @@
  */
 
 /* eslint-disable react/prop-types */
-import {Manager} from '@twilio/flex-ui';
 import React, { useEffect, useState, useMemo } from 'react';
 import { format } from 'date-fns';
-import { Actions, Icon, Insights, Template } from '@twilio/flex-ui';
+import { Actions, Icon, Insights, Template, Manager } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes, DataCallTypes, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
@@ -65,7 +64,7 @@ import { selectCaseMergingBanners } from '../../states/case/caseBanners';
 import InfoIcon from '../caseMergingBanners/InfoIcon';
 import { BannerAction, BannerContainer, BannerText } from '../../styles/banners';
 import { isSmsChannelType } from '../../utils/smsChannels';
-// import getCanEditContact from '../../permissions/canEditContact';
+import getCanEditContact from '../../permissions/canEditContact';
 import getCanEditInProgressContact from '../../permissions/canEditInProgressContact';
 import AddCaseButton from '../AddCaseButton';
 import openNewCase from '../case/openNewCase';
@@ -116,15 +115,17 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const featureFlags = getAseloFeatureFlags();
   const strings = getTemplateStrings();
 
-  const workerRoles = Manager.getInstance().workerClient.attributes.roles
-  console.log('>>>workerRoles', {workerRoles});
-
-
   // Permission to edit is based the counselor who created the contact - identified by Twilio worker ID
   const can = useMemo(() => {
     return action => getInitializedCan()(action, savedContact);
   }, [savedContact]);
-  const canEditContact = useMemo(() => getCanEditInProgressContact(savedContact, workerRoles), [savedContact]);
+
+  const workerRoles = Manager.getInstance().workerClient.attributes.roles;
+
+  const canEditContact = useMemo(() => getCanEditInProgressContact(savedContact, workerRoles), [
+    savedContact,
+    workerRoles,
+  ]);
 
   useEffect(
     () => () => {
