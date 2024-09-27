@@ -20,6 +20,7 @@
 
   "viewContact": [["everyone"]],
   "editContact": [["everyone"]],
+  "editInProgressContact": [],
   "viewExternalTranscript": [["everyone"]],
   "viewRecording": [["everyone"]],
   "addContactToCase": [["everyone"]],
