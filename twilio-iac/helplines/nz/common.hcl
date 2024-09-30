@@ -53,7 +53,7 @@ locals {
     lex_bot_languages = {
       en_NZ : ["pre_survey"]
     }
-    subscriptions = {}
+    //subscriptions = {}
 
   }
 }

@@ -89,7 +89,7 @@ locals {
     lex_bot_languages = {
       es_CL : ["post_survey"]
     }
-    subscriptions = {}
+    //subscriptions = {}
 
   }
 }

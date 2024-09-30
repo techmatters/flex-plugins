@@ -56,7 +56,7 @@ locals {
     }
 
     
-    subscriptions = {}
+    //subscriptions = {}
     phone_numbers = {}
 
   }
