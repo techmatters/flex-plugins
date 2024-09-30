@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { FormDefinition } from 'hrm-form-definitions';
 import { pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
+import isFuture from 'date-fns/isFuture';
 
 import { SearchFormClearButton } from '../../resources/styles';
 import type { RootState } from '../../../states';
@@ -76,8 +77,12 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
   const methods = useForm<Pick<SearchFormValues, 'searchTerm' | 'dateFrom' | 'dateTo' | 'counselor'>>();
   const { getValues, watch, setError, clearErrors, reset, handleSubmit, register, setValue } = methods;
 
-  const validateEmptyForm =
-    watch().searchTerm === '' && watch().counselor === '' && watch().dateFrom === '' && watch().dateTo === '';
+  const searchTermValue = watch('searchTerm');
+  const counselorValue = watch('counselor');
+  const dateFromValue = watch('dateFrom');
+  const dateToValue = watch('dateTo');
+
+  const formInvalid = searchTermValue === '' && counselorValue === '' && dateFromValue === '' && dateToValue === '';
 
   const updateCallback = useCallback(() => {
     const values = getValues();
@@ -86,7 +91,7 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
 
   const onSubmit = handleSubmit(values => {
     updateCallback(); // make sure all changes has been flushed before submitting
-    if (!validateEmptyForm) {
+    if (!formInvalid) {
       handleSearch(values);
     }
   });
@@ -135,16 +140,20 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
 
   const searchForm = arrangeSearchFormItems(5)(form);
 
-  const [dateFrom, setDateFrom] = useState<string | null>(null);
-  const [dateTo, setDateTo] = useState<string | null>(null);
-
-  useEffect(() => {
-    const dateFromValue = watch('dateFrom');
-    const dateToValue = watch('dateTo');
-
-    setDateFrom(dateFromValue);
-    setDateTo(dateToValue);
-  }, [watch]);
+  // Add invisible field that errors if date + time are future (triggered by validaiton)
+  React.useEffect(() => {
+    register('isFutureAux', {
+      validate: () => {
+        if (dateToValue) {
+          const [y, m, d] = splitDate(dateToValue);
+          if (isFuture(new Date(y, m - 1, d))) {
+            return 'DateCantBeGreaterThanToday'; // return non-null to generate an error, using the localized error key
+          }
+        }
+        return null;
+      },
+    });
+  }, [dateToValue, getValues, register, setError]);
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
@@ -183,10 +192,10 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
       }
     };
 
-    validateDate(dateFrom, 'dateFrom');
-    validateDate(dateTo, 'dateTo');
-    validateDateRange(dateFrom, dateTo);
-  }, [dateFrom, dateTo, setError, clearErrors]);
+    validateDate(dateFromValue, 'dateFrom');
+    validateDate(dateToValue, 'dateTo');
+    validateDateRange(dateFromValue, dateToValue);
+  }, [setError, clearErrors, dateFromValue, dateToValue]);
 
   const clearForm = () => reset({ searchTerm: '', counselor: '', dateFrom: '', dateTo: '' });
 
@@ -212,11 +221,11 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
             secondary="true"
             roundCorners={true}
             onClick={clearForm}
-            disabled={validateEmptyForm}
+            disabled={formInvalid}
           >
             <Template code="Search-ClearFormButton" />
           </SearchFormClearButton>
-          <StyledNextStepButton type="submit" roundCorners={true} disabled={validateEmptyForm}>
+          <StyledNextStepButton type="submit" roundCorners={true} disabled={formInvalid}>
             <Template code="SearchForm-Button" />
           </StyledNextStepButton>
         </BottomButtonBar>
