@@ -35,12 +35,12 @@ import { Contact, RouterTask } from '../../types/types';
 import getCanEditInProgressContact from '../../permissions/canEditInProgressContact';
 import { newFinalizeContactAsyncAction } from '../../states/contacts/saveContact';
 
-type DraftAndResolvedContactBannersProps = {
+type ContactBannersProps = {
   savedContact: Contact;
   task: RouterTask;
 };
 
-const ContactInProgressBanners: React.FC<DraftAndResolvedContactBannersProps> = ({ savedContact, task }) => {
+const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ savedContact, task }) => {
   const [showResolvedBanner, setShowResolvedBanner] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
