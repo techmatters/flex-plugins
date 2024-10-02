@@ -15,9 +15,9 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
-import { Actions, Icon, Insights, Template, Manager } from '@twilio/flex-ui';
+import { Actions, Icon, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { callTypes, DataCallTypes, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';

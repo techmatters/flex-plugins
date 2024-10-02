@@ -33,6 +33,7 @@ import {
 import { Contact, RouterTask } from '../../types/types';
 import getCanEditInProgressContact from '../../permissions/canEditInProgressContact';
 import { newFinalizeContactAsyncAction } from '../../states/contacts/saveContact';
+import SaveContactCallTypeDialog from '../callTypeButtons/SaveContactCallTypeDialog';
 
 type DraftAndResolvedContactBannersProps = {
   savedContact: Contact;
@@ -41,25 +42,22 @@ type DraftAndResolvedContactBannersProps = {
 
 const DraftAndResolvedContactBanners: React.FC<DraftAndResolvedContactBannersProps> = ({ savedContact, task }) => {
   const [showResolvedBanner, setShowResolvedBanner] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const dispatch = useDispatch();
+  const workerRoles = Manager.getInstance().workerClient.attributes.roles;
+  const isDraft = !savedContact.finalizedAt;
 
   const saveFinalizedContact = (task: RouterTask, contact: Contact) => {
     dispatch(newFinalizeContactAsyncAction(task, contact));
   };
-
-  const isDraft = !savedContact.finalizedAt;
-
-  const workerRoles = Manager.getInstance().workerClient.attributes.roles;
 
   const canEditContact = useMemo(() => getCanEditInProgressContact(savedContact, workerRoles), [
     savedContact,
     workerRoles,
   ]);
 
-  const handleSaveAndEnd = async () => {
-    const status = await checkTaskAssignment(savedContact.taskId);
-
+  const updateAndSaveContact = async () => {
     const updatedContact = {
       ...savedContact,
       rawJson: {
@@ -67,15 +65,28 @@ const DraftAndResolvedContactBanners: React.FC<DraftAndResolvedContactBannersPro
         callType: 'Uncategorized',
       },
     };
-
-    if (status) {
-      // dialog box to confirm if the user wants to save and end the contact
-
-      await completeTaskAssignment(savedContact.taskId);
-    }
-
+    await completeTaskAssignment(savedContact.taskId);
     await saveFinalizedContact(task, updatedContact);
     setShowResolvedBanner(true);
+  };
+
+  const handleSaveAndEnd = async () => {
+    const status = await checkTaskAssignment(savedContact.taskId);
+
+    if (status) {
+      setIsDialogOpen(true);
+    } else {
+      await updateAndSaveContact();
+    }
+  };
+
+  const handleConfirm = async () => {
+    await updateAndSaveContact();
+    setIsDialogOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsDialogOpen(false);
   };
 
   return (
@@ -114,6 +125,12 @@ const DraftAndResolvedContactBanners: React.FC<DraftAndResolvedContactBannersPro
           </Flex>
         </BannerContainer>
       )}
+      <SaveContactCallTypeDialog
+        isOpen={isDialogOpen}
+        isEnabled={true}
+        handleConfirm={handleConfirm}
+        handleCancel={handleCancel}
+      />
     </>
   );
 };
