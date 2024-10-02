@@ -31,7 +31,7 @@ import TabPressWrapper from '../TabPressWrapper';
 type OwnProps = {
   isOpen: boolean;
   isCallTask?: boolean;
-  isEnabled: boolean;
+  isEnabled?: boolean;
   isInWrapupMode?: boolean;
   handleConfirm: () => Promise<any>;
   handleCancel: () => void;

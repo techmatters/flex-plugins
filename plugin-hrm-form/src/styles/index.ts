@@ -21,5 +21,6 @@ export * from './table';
 export * from './typography';
 // TODO: Remove this once HrmStyles is removed
 export * from './HrmStyles';
+export * from './banners';
 
 export const BottomButtonBarHeight = 55;

@@ -22,14 +22,9 @@ import { connect } from 'react-redux';
 import { callTypes, DataCallTypes, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
-import Close from '@material-ui/icons/Close';
 
-import SaveContactCallTypeDialog from '../callTypeButtons/SaveContactCallTypeDialog';
-import { checkTaskAssignment, completeTaskAssignment } from '../../services/ServerlessService';
-import { ReferralLookupStatus } from '../../states/contacts/resourceReferral';
-import { ContactMetadata } from '../../states/contacts/types';
 import { useProfile } from '../../states/profile/hooks';
-import { Box, Flex, HeaderCloseButton, HiddenText, SaveAndEndButton } from '../../styles';
+import { Box, Flex } from '../../styles';
 import {
   Contact,
   ContactRawJson,
@@ -54,7 +49,6 @@ import { getInitializedCan, PermissionActions } from '../../permissions';
 import { ContactDetailsRoute, ContactDraftChanges, createDraft } from '../../states/contacts/existingContacts';
 import { RecordingSection, TranscriptSection } from './MediaSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
-// import type { ResourceReferral } from '../../states/contacts/resourceReferral';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
@@ -63,17 +57,12 @@ import { AppRoutes, isRouteWithContext } from '../../states/routing/types';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
 import { selectCaseMergingBanners } from '../../states/case/caseBanners';
-import InfoIcon from '../caseMergingBanners/InfoIcon';
-import { BannerAction, BannerContainer, BannerText } from '../../styles/banners';
 import { isSmsChannelType } from '../../utils/smsChannels';
 import getCanEditContact from '../../permissions/canEditContact';
-import getCanEditInProgressContact from '../../permissions/canEditInProgressContact';
 import AddCaseButton from '../AddCaseButton';
 import openNewCase from '../case/openNewCase';
 import { formatCsamReport, formatResourceReferral } from './helpers';
-import { newFinalizeContactAsyncAction, updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
-import asyncDispatch from '../../states/asyncDispatch';
-import { completeTaskOverride } from '../../utils/setUpActions';
+import DraftAndResolvedBanners from './DraftAndResolvedContactBanners';
 
 // TODO: complete this type
 type OwnProps = {
@@ -108,10 +97,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
   showRemovedFromCaseBanner,
   openModal,
   createNewCase,
-  saveFinalizedContact,
 }) {
-  const [showResolvedBanner, setShowResolvedBanner] = useState(false);
-
   const version = savedContact?.rawJson.definitionVersion;
   const definitionVersion = definitionVersions[version];
   const featureFlags = getAseloFeatureFlags();
@@ -122,12 +108,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
     return action => getInitializedCan()(action, savedContact);
   }, [savedContact]);
 
-  const workerRoles = Manager.getInstance().workerClient.attributes.roles;
-
-  const canEditContact = useMemo(() => getCanEditInProgressContact(savedContact, workerRoles), [
-    savedContact,
-    workerRoles,
-  ]);
+  const canEditContact = useMemo(() => getCanEditContact(savedContact), [savedContact]);
 
   useEffect(
     () => () => {
@@ -303,67 +284,11 @@ const ContactDetailsHome: React.FC<Props> = function ({
     return null;
   };
 
-  const handleSaveAndEnd = async () => {
-    const status = await checkTaskAssignment(savedContact.taskId);
-
-    const updatedContact = {
-      ...savedContact,
-      rawJson: {
-        ...savedContact.rawJson,
-        callType: 'Uncategorized',
-      },
-    };
-
-    if (status) {
-      // dialog box to confirm if the user wants to save and end the contact
-
-      await completeTaskAssignment(savedContact.taskId);
-    }
-
-    await saveFinalizedContact(task, updatedContact);
-  };
-  console.log('>>>ContactDetailsHome', savedContact);
-
   return (
     <Box data-testid="ContactDetails-Container">
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
       {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
-      {isDraft && (
-        <BannerContainer color="yellow">
-          <Flex width="100%" alignItems="center">
-            <InfoIcon color="#fed44b" />
-            <BannerText>
-              <Template code="Contact-DraftStatus" />
-            </BannerText>
-            {/*  */}
-            {canEditContact() && (
-              <BannerAction alignRight={true} onClick={handleSaveAndEnd}>
-                <SaveAndEndButton>
-                  <Template code="BottomBar-SaveAndEnd" />
-                </SaveAndEndButton>
-              </BannerAction>
-            )}
-          </Flex>
-        </BannerContainer>
-      )}
-      {showResolvedBanner && (
-        <BannerContainer color="blue" style={{ paddingTop: '12px', paddingBottom: '12px', marginTop: '10px' }}>
-          <Flex width="100%" justifyContent="space-between" alignItems="center">
-            <InfoIcon color="#001489" />
-            <BannerText>
-              <Template code="Contact-ResolvedStatus" />
-            </BannerText>
-            <BannerAction onClick={() => setShowResolvedBanner(false)} alignRight={true} color="black">
-              <HeaderCloseButton />
-              <HiddenText>
-                <Template code="CloseButton" />
-              </HiddenText>
-              <Close fontSize="small" />
-            </BannerAction>
-          </Flex>
-        </BannerContainer>
-      )}
-
+      <DraftAndResolvedBanners savedContact={savedContact} task={task} />
       {renderCaseBanners()}
 
       <ContactDetailsSection
@@ -573,10 +498,6 @@ const mapDispatchToProps = (dispatch, { contactId, context, task }: OwnProps) =>
   openModal: (route: AppRoutes) => dispatch(newOpenModalAction(route, task.taskSid)),
   createNewCase: async (task: RouterTask, savedContact: Contact, contact: Contact) =>
     openNewCase(task, savedContact, contact, dispatch),
-  // saveContactChangesInHrm: (contact: Contact, changes: ContactDraftChanges) =>
-  //   asyncDispatch(dispatch)(updateContactInHrmAsyncAction(contact, changes, task.taskSid)),
-  saveFinalizedContact: (task: RouterTask, contact: Contact) =>
-    asyncDispatch(dispatch)(newFinalizeContactAsyncAction(task, contact)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsHome);

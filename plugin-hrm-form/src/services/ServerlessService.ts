@@ -149,4 +149,4 @@ export const completeTaskAssignment = async (taskSid: string) => {
 
   const response = await fetchProtectedApi('/completeTaskAssignment', body);
   return response;
-}
+};
