@@ -17,7 +17,8 @@
             "enable_voice_recordings": true,
             "enable_conferencing": true,
             "enable_region_resource_search": true,
-            "enable_client_profiles": false
+            "enable_client_profiles": false,
+            "enable_generalized_search": true
         },
         "helplineLanguage": "en-CA",
         "permissionConfig": "ca"

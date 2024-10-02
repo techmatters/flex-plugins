@@ -85,3 +85,11 @@ resource "aws_ssm_parameter" "case_status_transition" {
     Terraform   = true
   }
 }
+
+module event {
+  source              = "../../events/v1"
+  default_webhook_url = "https://hrm-${lower(var.environment)}.tl.techmatters.org/lambda/twilioEventStreams" 
+  subscriptions       = var.subscriptions
+  short_helpline      = var.short_helpline
+  short_environment   = var.short_environment
+}

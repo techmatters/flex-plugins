@@ -165,3 +165,13 @@ variable "case_status_transition_rules" {
   }))
   default = null
 }
+
+variable "subscriptions" {
+  type = map(object({
+    webhook_url         = optional(string),
+    events               = list(object({
+      type = string,
+      schema_version = optional(string)
+    }))
+  }))
+}
