@@ -28,7 +28,6 @@ import { Box, Flex } from '../../styles';
 import {
   Contact,
   ContactRawJson,
-  CSAMReportEntry,
   CustomITask,
   isS3StoredRecording,
   isS3StoredTranscript,
@@ -36,7 +35,7 @@ import {
   RouterTask,
   StandaloneITask,
 } from '../../types/types';
-import { ContactAddedFont, ContactDetailsIcon, SectionActionButton, SectionValueText } from '../search/styles';
+import { ContactAddedFont, ContactDetailsIcon, SectionActionButton } from '../search/styles';
 import ContactDetailsSection from './ContactDetailsSection';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';
@@ -46,7 +45,7 @@ import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/Co
 import { RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getInitializedCan, PermissionActions } from '../../permissions';
-import { ContactDetailsRoute, ContactDraftChanges, createDraft } from '../../states/contacts/existingContacts';
+import { ContactDetailsRoute, createDraft } from '../../states/contacts/existingContacts';
 import { RecordingSection, TranscriptSection } from './MediaSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
@@ -62,7 +61,7 @@ import getCanEditContact from '../../permissions/canEditContact';
 import AddCaseButton from '../AddCaseButton';
 import openNewCase from '../case/openNewCase';
 import { formatCsamReport, formatResourceReferral } from './helpers';
-import DraftAndResolvedBanners from './DraftAndResolvedContactBanners';
+import ContactInProgressBanners from './ContactInProgressBanners';
 
 // TODO: complete this type
 type OwnProps = {
@@ -288,7 +287,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
     <Box data-testid="ContactDetails-Container">
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
       {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
-      <DraftAndResolvedBanners savedContact={savedContact} task={task} />
+      <ContactInProgressBanners savedContact={savedContact} task={task} />
       {renderCaseBanners()}
 
       <ContactDetailsSection

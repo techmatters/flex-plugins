@@ -19,28 +19,28 @@ import { Close } from '@material-ui/icons';
 import { Template, Manager } from '@twilio/flex-ui';
 import { useDispatch } from 'react-redux';
 
-import { checkTaskAssignment, completeTaskAssignment } from '../../services/ServerlessService';
 import InfoIcon from '../caseMergingBanners/InfoIcon';
+import SaveContactCallTypeDialog from '../callTypeButtons/SaveContactCallTypeDialog';
 import {
-  HeaderCloseButton,
-  SaveAndEndButton,
-  HiddenText,
-  Flex,
-  BannerContainer,
   BannerAction,
+  BannerContainer,
   BannerText,
+  Flex,
+  HeaderCloseButton,
+  HiddenText,
+  SaveAndEndButton,
 } from '../../styles';
+import { checkTaskAssignment, completeTaskAssignment } from '../../services/ServerlessService';
 import { Contact, RouterTask } from '../../types/types';
 import getCanEditInProgressContact from '../../permissions/canEditInProgressContact';
 import { newFinalizeContactAsyncAction } from '../../states/contacts/saveContact';
-import SaveContactCallTypeDialog from '../callTypeButtons/SaveContactCallTypeDialog';
 
 type DraftAndResolvedContactBannersProps = {
   savedContact: Contact;
   task: RouterTask;
 };
 
-const DraftAndResolvedContactBanners: React.FC<DraftAndResolvedContactBannersProps> = ({ savedContact, task }) => {
+const ContactInProgressBanners: React.FC<DraftAndResolvedContactBannersProps> = ({ savedContact, task }) => {
   const [showResolvedBanner, setShowResolvedBanner] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -66,14 +66,14 @@ const DraftAndResolvedContactBanners: React.FC<DraftAndResolvedContactBannersPro
       },
     };
     await completeTaskAssignment(savedContact.taskId);
-    await saveFinalizedContact(task, updatedContact);
+    saveFinalizedContact(task, updatedContact);
     setShowResolvedBanner(true);
   };
 
   const handleSaveAndEnd = async () => {
     const status = await checkTaskAssignment(savedContact.taskId);
 
-    if (status) {
+    if (status === true) {
       setIsDialogOpen(true);
     } else {
       await updateAndSaveContact();
@@ -135,5 +135,4 @@ const DraftAndResolvedContactBanners: React.FC<DraftAndResolvedContactBannersPro
   );
 };
 
-// eslint-disable-next-line import/no-unused-modules
-export default DraftAndResolvedContactBanners;
+export default ContactInProgressBanners;
