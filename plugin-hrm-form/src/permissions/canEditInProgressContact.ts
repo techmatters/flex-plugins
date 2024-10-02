@@ -23,8 +23,8 @@ const getCanEditInProgressContact = (contact: Contact, workerRoles: string[]): (
   if (!contact.finalizedAt) {
     // If the contact is a draft, we use the hardcoded rule that only its owner or creator can edit it
     const { workerSid } = getHrmConfig();
-    const permitted = contact.twilioWorkerId === workerSid || contact.createdBy === workerSid;
-    // || workerRoles.includes('supervisor');
+    const permitted =
+      contact.twilioWorkerId === workerSid || contact.createdBy === workerSid || workerRoles.includes('supervisor');
     return () => permitted;
   }
   const initializedCan = getInitializedCan();

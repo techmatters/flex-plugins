@@ -24,6 +24,8 @@ import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 import Close from '@material-ui/icons/Close';
 
+import SaveContactCallTypeDialog from '../callTypeButtons/SaveContactCallTypeDialog';
+import { checkTaskAssignment, completeTaskAssignment } from '../../services/ServerlessService';
 import { ReferralLookupStatus } from '../../states/contacts/resourceReferral';
 import { ContactMetadata } from '../../states/contacts/types';
 import { useProfile } from '../../states/profile/hooks';
@@ -302,7 +304,8 @@ const ContactDetailsHome: React.FC<Props> = function ({
   };
 
   const handleSaveAndEnd = async () => {
-    // completeTaskOverride();
+    const status = await checkTaskAssignment(savedContact.taskId);
+
     const updatedContact = {
       ...savedContact,
       rawJson: {
@@ -310,25 +313,14 @@ const ContactDetailsHome: React.FC<Props> = function ({
         callType: 'Uncategorized',
       },
     };
+
+    if (status) {
+      // dialog box to confirm if the user wants to save and end the contact
+
+      await completeTaskAssignment(savedContact.taskId);
+    }
+
     await saveFinalizedContact(task, updatedContact);
-
-    // Complete the task
-    // const taskWithSid = {
-    //   ...task,
-    //   sid: savedContact.taskId,
-    //   status: 'accepted',
-    //   channelType: savedContact.channel,
-    // };
-    // await completeTask(taskWithSid as CustomITask, savedContact);
-
-    // savedContact.finalizedAt = new Date().toISOString(); // actually set to true
-    /** TODO:
-     *  [ ] saveContact() with required and validated draft
-     *  [ ] display confirmation dialog if task is active
-     *  [ ]
-     */
-
-    console.log('>>>save and end', updatedContact);
   };
   console.log('>>>ContactDetailsHome', savedContact);
 

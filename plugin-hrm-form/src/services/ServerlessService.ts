@@ -136,3 +136,17 @@ export const getMediaUrl = async (serviceSid: string, mediaSid: string) => {
   const response = await fetchProtectedApi('/getMediaUrl', body);
   return response;
 };
+
+export const checkTaskAssignment = async (taskSid: string) => {
+  const body = { taskSid };
+
+  const response = await fetchProtectedApi('/checkTaskAssignment', body);
+  return response;
+};
+
+export const completeTaskAssignment = async (taskSid: string) => {
+  const body = { taskSid };
+
+  const response = await fetchProtectedApi('/completeTaskAssignment', body);
+  return response;
+}
