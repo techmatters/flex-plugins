@@ -49,7 +49,7 @@
         }
       ]
     },
-    "Commercial exploitation": {
+    "Child labour": {
       "color": "#F8E900",
       "subcategories": [
         {
@@ -143,7 +143,7 @@
           "label": "Divorce"
         },
         {
-          "label": "Mental ilness - parent"
+          "label": "Mental illness - parent"
         },
         {
           "label": "Parents working away from home"
@@ -152,7 +152,7 @@
           "label": "Problem with siblings"
         },
         {
-          "label": "Seperation"
+          "label": "Separation"
         },
         {
           "label": "Single Parent"
@@ -279,13 +279,13 @@
           "label": "Circumstantial - Child uncared for emotionally"
         },
         {
-          "label": "Circumstantial - Child uncared for pysically"
+          "label": "Circumstantial - Child uncared for physically"
         },
         {
           "label": "Deliberate - Child uncared for emotionally"
         },
         {
-          "label": "Deliberate - Child uncared for pysically"
+          "label": "Deliberate - Child uncared for physically"
         }
       ]
     },
@@ -470,7 +470,7 @@
           "label": "Sexual problem"
         },
         {
-          "label": "Sexulized behaviour"
+          "label": "Sexualized behaviour"
         },
         {
           "label": "Sexually Transmitted Infections"

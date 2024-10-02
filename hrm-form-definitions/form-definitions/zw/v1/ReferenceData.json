@@ -81,8 +81,8 @@
           "label": "Mbire"
         },
         {
-          "value": "Mukumbura",
-          "label": "Mukumbura"
+          "value": "Mount Darwin",
+          "label": "Mount Darwin"
         },
         {
           "value": "Muzarabani",
@@ -95,10 +95,6 @@
         {
           "value": "Shamva",
           "label": "Shamva"
-        },
-        {
-          "value": "Centenary",
-          "label": "Centenary"
         }
       ],
       "MSW": [
@@ -111,10 +107,6 @@
           "label": "Hurungwe"
         },
         {
-          "value": "Kadoma",
-          "label": "Kadoma"
-        },
-        {
           "value": "Kariba",
           "label": "Kariba"
         },
@@ -123,12 +115,16 @@
           "label": "Makonde"
         },
         {
-          "value": "Zvimba",
-          "label": "Zvimba"
+          "value": "Sanyati",
+          "label": "Sanyati"
         },
         {
-          "value": "Norton",
-          "label": "Norton"
+          "value": "Mhondoro-Ngezi",
+          "label": "Mhondoro-Ngezi"
+        },
+        {
+          "value": "Zvimba",
+          "label": "Zvimba"
         }
       ],
       "MTN": [
@@ -159,13 +155,17 @@
         {
           "value": "Umguza",
           "label": "Umguza"
-        },
-        {
-          "value": "Victoria Falls",
-          "label": "Victoria Falls"
         }
       ],
       "MTS": [
+        {
+          "value": "Beitbridge",
+          "label": "Beitbridge"
+        },
+        {
+          "value": "Bulilima",
+          "label": "Bulilima"
+        },
         {
           "value": "Gwanda",
           "label": "Gwanda"
@@ -175,20 +175,16 @@
           "label": "Insiza"
         },
         {
-          "value": "Matobo",
-          "label": "Matobo"
+          "value": "Mangwe",
+          "label": "Mangwe"
         },
         {
           "value": "Umzingwane",
           "label": "Umzingwane"
         },
         {
-          "value": "Beitbrigde",
-          "label": "Beitbrigde"
-        },
-        {
-          "value": "Plumtree",
-          "label": "Plumtree"
+          "value": "Matobo",
+          "label": "Matobo"
         }
       ],
       "MSE": [
@@ -315,8 +311,8 @@
           "label": "Chivi"
         },
         {
-          "value": "Mwenzi",
-          "label": "Mwenzi"
+          "value": "Mwenezi",
+          "label": "Mwenezi"
         },
         {
           "value": "Zaka",
