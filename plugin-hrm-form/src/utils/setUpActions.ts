@@ -157,25 +157,30 @@ const sendWelcomeMessageOnConversationJoined = (
   manager.conversationsClient.once('conversationJoined', (c: Conversation) => trySendWelcomeMessage(c, 0, 0));
 };
 
-export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupObject, getMessage: GetMessage) => async (
-  payload: ActionPayload,
-) => {
-  const { task } = payload;
-  if (TaskHelper.isChatBasedTask(task)) {
-    subscribeAlertOnConversationJoined(task);
-  }
+export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupObject, getMessage: GetMessage) => {
+  console.log('>>>>>>>>>>>> afterAcceptTask event listener ready to party');
+  return async (payload: ActionPayload) => {
+    console.log('>>>>>>>>>>>> afterAcceptTask event listener triggered');
+    const { task } = payload;
+    console.log('>>>>>>>>>>>> TaskHelper.isChatBasedTask(task)', TaskHelper.isChatBasedTask(task));
+    console.log('>>>>>>>>>>>> TransferHelpers.hasTransferStarted(task)', TransferHelpers.hasTransferStarted(task));
+    // If this is the first counsellor that gets the task, say hi
+    if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
+      console.log('>>>>>>>>>>>> send welcome message triggered');
+      sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
+    }
 
-  // If this is the first counsellor that gets the task, say hi
-  if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
-    sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
-  }
+    if (TaskHelper.isChatBasedTask(task)) {
+      subscribeAlertOnConversationJoined(task);
+    }
 
-  await initializeContactForm(payload);
-  if (getAseloFeatureFlags().enable_transfers && TransferHelpers.hasTransferStarted(task)) {
-    await handleTransferredTask(task);
-  } else {
-    await prepopulateForm(task);
-  }
+    await initializeContactForm(payload);
+    if (getAseloFeatureFlags().enable_transfers && TransferHelpers.hasTransferStarted(task)) {
+      await handleTransferredTask(task);
+    } else {
+      await prepopulateForm(task);
+    }
+  };
 };
 
 export const hangupCall = fromActionFunction(saveEndMillis);
