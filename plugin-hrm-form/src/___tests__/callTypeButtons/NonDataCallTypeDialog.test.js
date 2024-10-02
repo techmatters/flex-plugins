@@ -20,7 +20,7 @@ import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
 import HrmTheme from '../../styles/HrmTheme';
-import NonDataCallTypeDialog from '../../components/callTypeButtons/NonDataCallTypeDialog';
+import SaveContactCallTypeDialog from '../../components/callTypeButtons/SaveContactCallTypeDialog';
 
 expect.extend(toHaveNoViolations);
 
@@ -31,7 +31,7 @@ test('a11y', async () => {
 
   const wrapper = mount(
     <StorelessThemeProvider themeConf={themeConf}>
-      <NonDataCallTypeDialog isOpen={true} handleConfirm={() => null} handleCancel={() => null} isCallTask={true} />
+      <SaveContactCallTypeDialog isOpen={true} handleConfirm={() => null} handleCancel={() => null} isCallTask={true} />
     </StorelessThemeProvider>,
   );
 
