@@ -6,8 +6,9 @@ The Flags Matrix is a tool used by the Aselo product team to easily view feature
 ## How to Generate Flags Matrix
 
 1. Access [Devops instance](https://github.com/techmatters/infrastructure-config/blob/master/terraform/modules/devops-instance/README.md)
-2. Run `make service-config-generate-flags-matrix` with or without an option like `HL_ENV=development`
-3. After running the generation script, check the corresponding Flags Matrix in [Google Sheets](https://docs.google.com/spreadsheets/d/1UccoRr51TiQR6tUsq3SrNsP9FVm0tMfhdWX7VvHXkbQ/edit?gid=1480518226#gid=285517452). Ensure that the matrix has been updated correctly with the date and cross reference information like the number of accounts mentioned in the logs with the spreadsheet. There is also a command added `make service-config-show-flags` to view configurations by account.
+2. In the terminal, go to `flex-plugins/twilio-iac`. Be sure that you're on master branch and have pulled the most recent version (`git pull origin master`).
+4. Run `make service-config-generate-flags-matrix` with or without an option like `HL_ENV=development`
+5. After running the generation script, check the corresponding Flags Matrix in [Google Sheets](https://docs.google.com/spreadsheets/d/1UccoRr51TiQR6tUsq3SrNsP9FVm0tMfhdWX7VvHXkbQ/edit?gid=1480518226#gid=285517452). Ensure that the matrix has been updated correctly with the date and cross reference information like the number of accounts mentioned in the logs with the spreadsheet. There is also a command added `make service-config-show-flags` to view configurations by account.
 
 - Note that development and staging accounts are reflected in [STG Flags Matrix](https://docs.google.com/spreadsheets/d/1UccoRr51TiQR6tUsq3SrNsP9FVm0tMfhdWX7VvHXkbQ/edit?gid=285517452#gid=285517452) and production accounts are in [PROD Flags Matrix](https://docs.google.com/spreadsheets/d/1UccoRr51TiQR6tUsq3SrNsP9FVm0tMfhdWX7VvHXkbQ/edit?gid=285517452#gid=97934865)
 
