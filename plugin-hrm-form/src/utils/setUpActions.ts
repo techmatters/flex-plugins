@@ -70,25 +70,10 @@ const fromActionFunction = (fun: ActionFunction) => async (payload: ActionPayloa
  */
 const initializeContactForm = async ({ task }: ActionPayload) => {
   const { currentDefinitionVersion } = (Manager.getInstance().store.getState() as RootState)[namespace].configuration;
-
-  const getValidNumberFromTask = (task): string => {
-    let number: string;
-    let retries = 0;
-    do {
-      number = getNumberFromTask(task);
-      console.log('>>>> Number from task', number, retries);
-      retries += 1;
-    } while ((!number || number === '') && retries < 3);
-    return number;
-  };
-
-  const number = getValidNumberFromTask(task);
-
   const contact = {
     ...newContact(currentDefinitionVersion, task),
-    number,
+    number: getNumberFromTask(task),
   };
-  console.log('>>>> Initializing contact form for task', contact);
   const { workerSid } = getHrmConfig();
 
   await asyncDispatch(Manager.getInstance().store.dispatch)(createContactAsyncAction(contact, workerSid, task));
