@@ -71,9 +71,9 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ savedContact,
   };
 
   const handleSaveAndEnd = async () => {
-    const status = await checkTaskAssignment(savedContact.taskId);
+    const isTaskAssigned = await checkTaskAssignment(savedContact.taskId);
 
-    if (status === true) {
+    if (isTaskAssigned === true) {
       setIsDialogOpen(true);
     } else {
       await updateAndSaveContact();
