@@ -200,6 +200,7 @@ ${
           "y": 130
         },
         "method": "POST",
+        "add_twilio_auth": false,
         "content_type": "application/json;charset=utf-8",
         "body": "{ \"trigger\": {{trigger | to_json}}}",
         "url": "${serverless_url}/getProfileFlagsForIdentifier"
@@ -263,7 +264,8 @@ ${
         "variables": [
           {
             "value": "true",
-            "key": "clinical"
+            "key": "clinical",
+            "type": "string"
           }
         ],
         "offset": {
