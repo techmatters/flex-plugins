@@ -185,6 +185,7 @@ export type Contact = {
   createdBy: string;
   helpline: string;
   taskId: TaskSID;
+  // taskReservationSid: string;
   profileId: Profile['id'] | null;
   channel: ChannelTypes | 'default';
   updatedBy: string;

@@ -30,16 +30,16 @@ import TabPressWrapper from '../TabPressWrapper';
 
 type OwnProps = {
   isOpen: boolean;
-  isCallTask: boolean;
+  isCallTask?: boolean;
   isEnabled: boolean;
-  isInWrapupMode: boolean;
+  isInWrapupMode?: boolean;
   handleConfirm: () => Promise<any>;
   handleCancel: () => void;
 };
 
 type Props = OwnProps;
 
-const NonDataCallTypeDialog: React.FC<Props> = ({
+const SaveContactCallTypeDialog: React.FC<Props> = ({
   isOpen,
   isCallTask,
   isEnabled,
@@ -85,6 +85,6 @@ const NonDataCallTypeDialog: React.FC<Props> = ({
   </CloseTaskDialog>
 );
 
-NonDataCallTypeDialog.displayName = 'NonDataCallTypeDialog';
+SaveContactCallTypeDialog.displayName = 'SaveContactCallTypeDialog';
 
-export default NonDataCallTypeDialog;
+export default SaveContactCallTypeDialog;

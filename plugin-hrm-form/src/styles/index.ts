@@ -20,5 +20,6 @@ export * from './layout';
 export * from './table';
 export * from './typography';
 export * from './constants';
+export * from './banners';
 // TODO: Remove this once HrmStyles is removed
 export * from './HrmStyles';

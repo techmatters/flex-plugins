@@ -244,6 +244,7 @@ const saveContactToHrm = async (
   const metadataForDuration = shouldFillEndMillis ? fillEndMillis(metadata) : metadata;
   const conversationDuration = getConversationDuration(task, metadataForDuration);
   const { callType } = contact.rawJson;
+
   const number = getNumberFromTask(task);
 
   let form = contact.rawJson;

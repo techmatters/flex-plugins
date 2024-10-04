@@ -15,20 +15,19 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
 import { Actions, Icon, Insights, Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
-import { callTypes, DataCallTypes, DefinitionVersionId, isNonSaveable } from 'hrm-form-definitions';
+import { callTypes, DataCallTypes, isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
 import { useProfile } from '../../states/profile/hooks';
-import { Box, Flex, Row } from '../../styles';
+import { Box, Flex } from '../../styles';
 import {
   Contact,
   ContactRawJson,
-  CSAMReportEntry,
   CustomITask,
   isS3StoredRecording,
   isS3StoredTranscript,
@@ -36,7 +35,7 @@ import {
   RouterTask,
   StandaloneITask,
 } from '../../types/types';
-import { ContactAddedFont, ContactDetailsIcon, SectionActionButton, SectionValueText } from '../search/styles';
+import { ContactAddedFont, ContactDetailsIcon, SectionActionButton } from '../search/styles';
 import ContactDetailsSection from './ContactDetailsSection';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';
@@ -46,10 +45,9 @@ import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/Co
 import { RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
 import { getInitializedCan, PermissionActions } from '../../permissions';
-import { ContactDetailsRoute, ContactDraftChanges, createDraft } from '../../states/contacts/existingContacts';
+import { ContactDetailsRoute, createDraft } from '../../states/contacts/existingContacts';
 import { RecordingSection, TranscriptSection } from './MediaSection';
 import { newCSAMReportActionForContact } from '../../states/csam-report/actions';
-import type { ResourceReferral } from '../../states/contacts/resourceReferral';
 import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
 import { configurationBase, contactFormsBase, namespace } from '../../states/storeNamespaces';
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
@@ -58,50 +56,12 @@ import { AppRoutes, isRouteWithContext } from '../../states/routing/types';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
 import { selectCaseMergingBanners } from '../../states/case/caseBanners';
-import InfoIcon from '../caseMergingBanners/InfoIcon';
-import { BannerContainer, Text } from '../../styles/banners';
 import { isSmsChannelType } from '../../utils/smsChannels';
 import getCanEditContact from '../../permissions/canEditContact';
-import { createCaseAsyncAction } from '../../states/case/saveCase';
-import asyncDispatch from '../../states/asyncDispatch';
-import { updateContactInHrmAsyncAction } from '../../states/contacts/saveContact';
 import AddCaseButton from '../AddCaseButton';
 import openNewCase from '../case/openNewCase';
-
-const formatResourceReferral = (referral: ResourceReferral) => {
-  return (
-    <Box marginBottom="5px">
-      <SectionValueText>
-        {referral.resourceName}
-        <br />
-        <Row>ID #{referral.resourceId}</Row>
-      </SectionValueText>
-    </Box>
-  );
-};
-
-const formatCsamReport = (report: CSAMReportEntry) => {
-  const template =
-    report.reportType === 'counsellor-generated' ? (
-      <Template code="CSAMReportForm-Counsellor-Attachment" />
-    ) : (
-      <Template code="CSAMReportForm-Self-Attachment" />
-    );
-
-  const date = `${format(new Date(report.createdAt), 'yyyy MM dd h:mm aaaaa')}m`;
-
-  return (
-    <Box marginBottom="5px">
-      <SectionValueText>
-        {template}
-        <br />
-        {date}
-        <br />
-        {`#${report.csamReportId}`}
-      </SectionValueText>
-    </Box>
-  );
-};
+import { formatCsamReport, formatResourceReferral } from './helpers';
+import ContactInProgressBanners from './ContactInProgressBanners';
 
 // TODO: complete this type
 type OwnProps = {
@@ -138,17 +98,16 @@ const ContactDetailsHome: React.FC<Props> = function ({
   createNewCase,
 }) {
   const version = savedContact?.rawJson.definitionVersion;
-
   const definitionVersion = definitionVersions[version];
-
   const featureFlags = getAseloFeatureFlags();
   const strings = getTemplateStrings();
 
   // Permission to edit is based the counselor who created the contact - identified by Twilio worker ID
-  const can = React.useMemo(() => {
+  const can = useMemo(() => {
     return action => getInitializedCan()(action, savedContact);
   }, [savedContact]);
-  const canEditContact = React.useMemo(() => getCanEditContact(savedContact), [savedContact]);
+
+  const canEditContact = useMemo(() => getCanEditContact(savedContact), [savedContact]);
 
   useEffect(
     () => () => {
@@ -328,19 +287,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
     <Box data-testid="ContactDetails-Container">
       {auditMessage(timeOfContact, createdBy, 'ContactDetails-ActionHeaderAdded')}
       {auditMessage(updatedAt, updatedBy, 'ContactDetails-ActionHeaderUpdated')}
-      {isDraft && (
-        <BannerContainer color="yellow" style={{ paddingTop: '12px', paddingBottom: '12px', marginTop: '10px' }}>
-          <Flex width="100%" justifyContent="space-between">
-            <Flex alignItems="center">
-              <InfoIcon color="#fed44b" />
-              <Text>
-                <Template code="Contact-DraftStatus" />
-              </Text>
-            </Flex>
-          </Flex>
-        </BannerContainer>
-      )}
-
+      <ContactInProgressBanners savedContact={savedContact} task={task} />
       {renderCaseBanners()}
 
       <ContactDetailsSection
