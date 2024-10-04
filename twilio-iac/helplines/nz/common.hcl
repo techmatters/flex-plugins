@@ -12,6 +12,7 @@ locals {
       webchat : "/app/twilio-iac/helplines/nz/templates/channel-attributes/webchat.tftpl",
       voice   : "/app/twilio-iac/helplines/nz/templates/channel-attributes/voice.tftpl",
       modica  : "/app/twilio-iac/helplines/nz/templates/channel-attributes/modica.tftpl",
+      modica-conversations  : "/app/twilio-iac/helplines/nz/templates/channel-attributes/modica-conversations.tftpl",
       default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
     }
     workflows = {

@@ -21,7 +21,6 @@ locals {
     line-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/custom-channel-conversations.tftpl"
     telegram-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/custom-channel-conversations.tftpl"
     instagram-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/custom-channel-conversations.tftpl"
-    modica-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/custom-channel-conversations.tftpl"
   }
   contacts_waiting_channels = ["voice", "web", "whatsapp", "facebook", "twitter", "instagram", "line"]
 
