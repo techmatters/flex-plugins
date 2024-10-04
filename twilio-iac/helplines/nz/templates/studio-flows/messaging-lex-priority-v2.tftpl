@@ -202,7 +202,7 @@ ${
         "method": "POST",
         "add_twilio_auth": false,
         "content_type": "application/json;charset=utf-8",
-        "body": "{ \"trigger\": {{trigger | to_json}}}",
+        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"${channel_name}\" }",
         "url": "${serverless_url}/getProfileFlagsForIdentifier"
       }
     },
