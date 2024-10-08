@@ -1,0 +1,119 @@
+# Copyright (C) 2021-2024 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+name: 'main-action'
+description: 'Publish Twilio Flex-Plugins'
+inputs:
+  account-sid:
+    description: 'Twilio Account SID'
+    required: true
+  auth-token:
+    description: 'Twilio Token'
+    required: true
+  aws-access-key-id:
+    description: 'AWS credentials for Aselo user'
+    required: true
+  aws-secret-access-key:
+    description: 'AWS credentials for Aselo user'
+    required: true
+  environment:
+    description: 'Identifies the environment for target bucket'
+    default: 'development'
+  git-reference:
+    description: 'Identifies the git reference for target key'
+    default: ''
+  git-reference-type:
+    description: 'Identifies if the git reference is a branch or tag'
+    default: 'tag'
+runs:
+  using: "composite"
+  steps:
+    # Setup credentials to access AWS for parameters
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+        aws-region: ${{ ${{ secrets.AWS_DEFAULT_REGION }} }}
+    # Get AWS parameters
+    - name: Set Datadog Application ID
+      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      with:
+        ssm_parameter: "DEV_DATADOG_AS_APP_ID"
+        env_variable_name: "DATADOG_APP_ID"
+    - name: Set Datadog Client Access token
+      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      with:
+        ssm_parameter: "DEV_DATADOG_AS_ACCESS_TOKEN"
+        env_variable_name: "DATADOG_ACCESS_TOKEN"
+    - name: Set Fullstory org id
+      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      with:
+        ssm_parameter: "FULLSTORY_ID"
+        env_variable_name: "FULLSTORY_ID"
+    - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
+      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      with:
+        ssm_parameter: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
+        env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
+    - name: Set ASELO_DEPLOYS_CHANNEL_ID
+      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      with:
+        ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
+        env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
+
+    - name: Create secret.js
+      run: |
+        touch ./src/private/secret.js
+      working-directory: ./plugin-hrm-form
+      shell: bash
+    - name: Fill secret.js
+      run: |
+        cat <<EOT >> ./src/private/secret.js
+        export const datadogAccessToken = '$DATADOG_ACCESS_TOKEN';
+        export const datadogApplicationID = '$DATADOG_APP_ID';
+        export const fullStoryId = '$FULLSTORY_ID';
+        EOT
+      working-directory: ./plugin-hrm-form
+      shell: bash
+    # Install the Twilio CLI and the flex plugin, then deploy the plugin
+    - name: Install Twilio CLI
+      run: npm install twilio-cli@5.20.1 -g && twilio plugins:install @twilio-labs/plugin-flex@7.0.0
+      working-directory: ./plugin-hrm-form
+      shell: bash
+    # Runs a single command using the runners shell
+    - name: Install dependencies for the flex-plugins
+      run: npm ci
+      working-directory: ./plugin-hrm-form
+      shell: bash
+    # Build flex plugin
+    - name: Run build command
+      env:
+        TWILIO_ACCOUNT_SID: ${{ inputs.account-sid }}
+        TWILIO_AUTH_TOKEN: ${{ inputs.auth-token }}
+      run: twilio flex:plugins:build | grep -E '(files were compiled)|(exceeds allowed limit of 10MB)'
+      working-directory: ./plugin-hrm-form
+      shell: bash
+    # Upload plugin to S3 bucket
+    - name: Upload Webchat to S3 bucket
+      uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --acl public-read --follow-symlinks --exclude '*' --include '*.js' --content-type 'application/javascript; charset=utf-8'
+      env:
+        AWS_S3_BUCKET: assets-${{ inputs.environment }}.tl.techmatters.org
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+        SOURCE_DIR: "plugin-hrm-form/build"
+        DEST_DIR: plugins/${{inputs.git-reference-type}}/${{inputs.git-reference}}
