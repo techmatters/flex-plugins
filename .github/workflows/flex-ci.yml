@@ -193,7 +193,7 @@ jobs:
           ssm_parameter: "/development/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
           env_variable_name: "TWILIO_AUTH_TOKEN"
       - name: Build and Upload Flex Plugin
-        uses: ./.github/actions/install-flex-plugin
+        uses: ./.github/actions/build-and-upload-plugin
         with:
           environment: development
           github-reference-type: ${{ github.ref_type }}
