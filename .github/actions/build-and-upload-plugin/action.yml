@@ -136,6 +136,7 @@ runs:
         SOURCE_DIR: "plugin-hrm-form/build"
         DEST_DIR: plugins/hrm-form/${{inputs.git-reference-type}}/${{inputs.git-reference}}
     - name: Clear cloudfront caches
+      shell: bash
       run: |
         CF_DISTRO=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].DomainName}[?origin=='assets-development.tl.techmatters.org.s3-website.us-east-1.amazonaws.com'].id" --output text)
         aws cloudfront create-invalidation --distribution-id $CF_DISTRO --paths /plugins/hrm-form/${{inputs.git-reference-type}}/${{inputs.git-reference}}/*
