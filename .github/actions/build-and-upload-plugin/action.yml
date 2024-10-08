@@ -95,9 +95,15 @@ runs:
       env:
         TWILIO_ACCOUNT_SID: ${{ inputs.account-sid }}
         TWILIO_AUTH_TOKEN: ${{ inputs.auth-token }}
-      run: twilio flex:plugins:build | grep -E '(files were compiled)|(exceeds allowed limit of 10MB)'
+      run: twilio flex:plugins:build
       working-directory: ./plugin-hrm-form
       shell: bash
+    - name: Check bundle was built
+      if: ${{ hashFiles('plugin-hrm-form/build/plugin-hrm-form.js') == '' }}
+      uses: actions/github-script@v3
+      with:
+        script: |
+          core.setFailed('Bundle was not built!')
     # Upload plugin to S3 bucket
     - name: Upload Webchat to S3 bucket
       uses: jakejarvis/s3-sync-action@master
