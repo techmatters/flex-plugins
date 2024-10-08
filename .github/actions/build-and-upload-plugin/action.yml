@@ -87,16 +87,6 @@ runs:
         EOT
       working-directory: ./plugin-hrm-form
       shell: bash
-    # Install the Twilio CLI and the flex plugin, then deploy the plugin
-    - name: Install Twilio CLI
-      run: npm install twilio-cli@5.20.1 -g && twilio plugins:install @twilio-labs/plugin-flex@7.0.0
-      working-directory: ./plugin-hrm-form
-      shell: bash
-    # Runs a single command using the runners shell
-    - name: Install dependencies for the flex-plugins
-      run: npm ci
-      working-directory: ./plugin-hrm-form
-      shell: bash
     # Build flex plugin
     - name: Run build command
       env:
