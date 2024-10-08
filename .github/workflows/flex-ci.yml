@@ -198,4 +198,8 @@ jobs:
           environment: development
           github-reference-type: ${{ github.ref_type }}
           github-reference: ${{ github.ref_name }}
-          auth-token: $TWILIO_ACCOUNT_SID
+          auth-token: $TWILIO_AUTH_TOKEN
+          account-sid: $TWILIO_ACCOUNT_SID
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}

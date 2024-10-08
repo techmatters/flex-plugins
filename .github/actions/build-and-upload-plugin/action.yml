@@ -27,6 +27,9 @@ inputs:
   aws-secret-access-key:
     description: 'AWS credentials for Aselo user'
     required: true
+  aws-region:
+    description: 'AWS credentials for Aselo user'
+    required: true
   environment:
     description: 'Identifies the environment for target bucket'
     default: 'development'
@@ -45,7 +48,7 @@ runs:
       with:
         aws-access-key-id: ${{ inputs.aws-access-key-id }}
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
-        aws-region: ${{ ${{ secrets.AWS_DEFAULT_REGION }} }}
+        aws-region: ${{ inputs.aws-region }}
     # Get AWS parameters
     - name: Set Datadog Application ID
       uses: "marvinpinto/action-inject-ssm-secrets@latest"
@@ -102,8 +105,8 @@ runs:
         args: --acl public-read --follow-symlinks --exclude '*' --include '*.js' --content-type 'application/javascript; charset=utf-8'
       env:
         AWS_S3_BUCKET: assets-${{ inputs.environment }}.tl.techmatters.org
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+        AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws-secret-access-key }}
+        AWS_REGION: ${{ inputs.aws-region }}
         SOURCE_DIR: "plugin-hrm-form/build"
         DEST_DIR: plugins/hrm-form/${{inputs.git-reference-type}}/${{inputs.git-reference}}
