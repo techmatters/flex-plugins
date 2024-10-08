@@ -197,8 +197,8 @@ jobs:
         with:
           git-reference-type: ${{ github.ref_type }}
           git-reference: ${{ github.ref_name }}
-          auth-token: $TWILIO_AUTH_TOKEN
-          account-sid: $TWILIO_ACCOUNT_SID
+          auth-token: ${{ env.TWILIO_AUTH_TOKEN }}
+          account-sid: ${{ env.TWILIO_ACCOUNT_SID }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
