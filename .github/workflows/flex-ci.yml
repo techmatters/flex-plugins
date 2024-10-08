@@ -162,6 +162,9 @@ jobs:
 
   upload-plugin:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env: [development, staging, production]
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v4
@@ -195,7 +198,7 @@ jobs:
       - name: Build and Upload Flex Plugin
         uses: ./.github/actions/build-and-upload-plugin
         with:
-          environment: development
+          environment: ${{ matrix.env }}
           github-reference-type: ${{ github.ref_type }}
           github-reference: ${{ github.ref_name }}
           auth-token: $TWILIO_AUTH_TOKEN
