@@ -30,9 +30,6 @@ inputs:
   aws-region:
     description: 'AWS credentials for Aselo user'
     required: true
-  environment:
-    description: 'Identifies the environment for target bucket'
-    default: 'development'
   git-reference:
     description: 'Identifies the git reference for target key'
     default: ''
@@ -104,13 +101,35 @@ runs:
       with:
         script: |
           core.setFailed('Bundle was not built!')
-    # Upload plugin to S3 bucket
-    - name: Upload Webchat to S3 bucket
+    # Upload plugin to S3 buckets
+    - name: Upload Webchat to Development S3 bucket
       uses: jakejarvis/s3-sync-action@master
       with:
         args: --acl public-read --follow-symlinks --exclude '*' --include '*.js' --content-type 'application/javascript; charset=utf-8'
       env:
-        AWS_S3_BUCKET: assets-${{ inputs.environment }}.tl.techmatters.org
+        AWS_S3_BUCKET: assets-development.tl.techmatters.org
+        AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws-secret-access-key }}
+        AWS_REGION: ${{ inputs.aws-region }}
+        SOURCE_DIR: "plugin-hrm-form/build"
+        DEST_DIR: plugins/hrm-form/${{inputs.git-reference-type}}/${{inputs.git-reference}}
+    - name: Upload Webchat to Staging S3 bucket
+      uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --acl public-read --follow-symlinks --exclude '*' --include '*.js' --content-type 'application/javascript; charset=utf-8'
+      env:
+        AWS_S3_BUCKET: assets-staging.tl.techmatters.org
+        AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws-secret-access-key }}
+        AWS_REGION: ${{ inputs.aws-region }}
+        SOURCE_DIR: "plugin-hrm-form/build"
+        DEST_DIR: plugins/hrm-form/${{inputs.git-reference-type}}/${{inputs.git-reference}}
+    - name: Upload Webchat to Production S3 bucket
+      uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --acl public-read --follow-symlinks --exclude '*' --include '*.js' --content-type 'application/javascript; charset=utf-8'
+      env:
+        AWS_S3_BUCKET: assets-production.tl.techmatters.org
         AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
         AWS_SECRET_ACCESS_KEY: ${{ inputs.aws-secret-access-key }}
         AWS_REGION: ${{ inputs.aws-region }}
