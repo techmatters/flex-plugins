@@ -95,7 +95,7 @@ runs:
       env:
         TWILIO_ACCOUNT_SID: ${{ inputs.account-sid }}
         TWILIO_AUTH_TOKEN: ${{ inputs.auth-token }}
-      run: twilio flex:plugins:build || true
+      run: twilio flex:plugins:build -l debug || true
       working-directory: ./plugin-hrm-form
       shell: bash
     - name: Check bundle was built
