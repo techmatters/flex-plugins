@@ -12,8 +12,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
-name: 'main-action'
-description: 'Publish Twilio Flex-Plugins'
+name: build-and-upload-plugin
+description: 'Build Twilio Flex-Plugin and upload to S3 bucket'
 inputs:
   account-sid:
     description: 'Twilio Account SID'
@@ -116,4 +116,4 @@ runs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
         SOURCE_DIR: "plugin-hrm-form/build"
-        DEST_DIR: plugins/${{inputs.git-reference-type}}/${{inputs.git-reference}}
+        DEST_DIR: plugins/hrm-form/${{inputs.git-reference-type}}/${{inputs.git-reference}}
