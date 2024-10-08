@@ -733,6 +733,78 @@ ${
         ],
         "url": "${serverless_url}/sendMessageAndRunJanitor"
       }
+    },
+    {
+      "name": "closed",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": flow_vars["service_sid"],
+        "environment_sid": flow_vars["environment_sid"],
+        "offset": {
+          "x": 380,
+          "y": 320
+        },
+        "function_sid": flow_vars["send_message_run_janitor_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "No momento não há atendentes disponíveis. Nosso canal de ajuda está aberto Segunda, Quarta e Sexta, das 14h às 18h, Terça e Quinta, das 9h às 13h. Você pode nos enviar um email: https://new.safernet.org.br/contato#",
+            "key": "message"
+          },
+          {
+            "value": "SaferNet",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "holiday",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": flow_vars["service_sid"],
+        "environment_sid": flow_vars["environment_sid"],
+        "offset": {
+          "x": 710,
+          "y": 320
+        },
+        "function_sid": flow_vars["send_message_run_janitor_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "Nosso canal de ajuda está aberto em feriados não oficiais: Segunda, Quarta e Sexta, das 14h às 18h, Terça e Quinta, das 9h às 13h. Você pode nos enviar um email: https://new.safernet.org.br/contato#",
+            "key": "message"
+          },
+          {
+            "value": "SaferNet",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
     }
   ],
   "initial_state": "Trigger",
