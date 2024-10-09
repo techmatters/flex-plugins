@@ -58,9 +58,6 @@ jobs:
         with:
           node-version: '18.x'
 
-      - name: Install Flex Plugin
-        uses: ./.github/actions/install-flex-plugin
-
       - name: Run e2e tests
         uses: ./.github/actions/run-e2e-tests
         with:
@@ -95,7 +92,7 @@ jobs:
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           source-git-reference-type: ${{ github.ref_type }}
           source-git-reference: ${{ github.ref_name }}
-          target-git-tag-tag: ${{ steps.create_pre_release.outputs.generated-pre-release-tag }}
+          target-git-tag: ${{ steps.create_pre_release.outputs.generated-pre-release-tag }}
 
       # Send Slack notifying success
       - name: Slack aselo-deploys channel
