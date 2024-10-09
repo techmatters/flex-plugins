@@ -128,7 +128,7 @@ jobs:
           --data '{
               "account_sid": "${{env.TWILIO_ACCOUNT_SID}}",
               "plugin_service_attributes":{
-                  "custom_plugins": [{"name": "HRM Forms", "version": "0.0.1", "src": "https://assets-${{ inputs.environment_code }}.tl.techmatters.org/plugins/hrm-form/${{ github.ref_type }}/${{ github.ref_name }}plugin-hrm-form.js"}]
+                  "custom_plugins": [{"name": "HRM Forms", "version": "0.0.1", "src": "https://assets-${{ inputs.environment_code }}.tl.techmatters.org/plugins/hrm-form/${{ github.ref_type }}/${{ github.ref_name }}/plugin-hrm-form.js"}]
               }
           }'
 
