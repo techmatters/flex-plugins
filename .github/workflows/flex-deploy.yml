@@ -59,10 +59,10 @@ jobs:
 
     steps:
       # Only need the source for twilio deploys
-      - if: github.event.inputs.self-hosted-deploy != 'true'
+      - if: inputs.self-hosted-deploy != 'true'
         uses: actions/checkout@v4
 
-      - if: github.event.inputs.self-hosted-deploy != 'true'
+      - if: inputs.self-hosted-deploy != 'true'
         name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -92,7 +92,7 @@ jobs:
           env_variable_name: "TWILIO_AUTH_TOKEN"
 
       # Call main-action to compile and deploy secrets.AS_DEV_ACCOUNT_SID
-      - if: github.event.inputs.self-hosted-deploy != 'true'
+      - if: inputs.self-hosted-deploy != 'true'
         name: Executing main-action
         uses: ./.github/actions/main-action
         with:
@@ -106,7 +106,7 @@ jobs:
           environment: ${{inputs.environment_code}}
           send-slack-message: ${{ inputs.send-slack-message }}
 
-      - if: github.event.inputs.self-hosted-deploy != 'true'
+      - if: inputs.self-hosted-deploy != 'true'
         name: Configure Account to use Twilio Hosted Plugin
         shell: bash
         run: |
@@ -118,7 +118,7 @@ jobs:
               "plugin_service_attributes":null
           }'
 
-      - if: github.event.inputs.self-hosted-deploy == 'true'
+      - if: inputs.self-hosted-deploy == 'true'
         name: Configure Account to point to S3 Hosted Plugin
         shell: bash
         run: |
