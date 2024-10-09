@@ -15,22 +15,25 @@
       },
       {
         "filter_friendly_name": "Youthline Helpline",
-        "expression": "(((channelType =='web'   AND preEngagementData.reason IN ['counselling','Unknown'] ) OR (channelType IN ['modica','instagram','whatsapp']   AND memory.priority != 'Yes' )) AND transferTargetType =='' AND clinical != 'true')  OR  targetSid=='${task_queues.youthline_helpline}'  OR isContactlessTask == true",
+        "expression": "(((channelType =='web'   AND preEngagementData.reason IN ['counselling','Unknown'] ) OR (customChannelType IN ['modica','instagram','whatsapp']   AND memory.priority != 'Yes' )) AND transferTargetType =='' AND clinical != 'true')  OR  targetSid=='${task_queues.youthline_helpline}'  OR isContactlessTask == true",
         "targets": [
           {
             "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.roles HAS 'agent' ) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
             "queue": "${task_queues.youthline_helpline}",
-            "skip_if": "1==1"
+            "skip_if": "1==1",
+            "priority": 1
           },
           {
             "queue": "${task_queues.youthline_helpline}",
-            "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker')) AND (worker.roles HAS 'supervisor' OR worker.roles HAS 'agent' ) ) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)"
+            "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker')) AND (worker.roles HAS 'supervisor' OR worker.roles HAS 'agent' ) ) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "priority": 1
+          
           }
         ]
       },
       {
         "filter_friendly_name": "Clinical",
-        "expression": "((channelType IN ['web','modica','instagram','whatsapp'] ) AND ((clinical == 'true' AND transferTargetType =='') OR targetSid=='${task_queues.clinical}'))",
+        "expression": "(clinical == 'true' AND transferTargetType =='') OR targetSid=='${task_queues.clinical}'",
         "targets": [
           {
             "expression": "(worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
@@ -47,7 +50,7 @@
       },
       {
         "filter_friendly_name": "Priority Youthline Helpline",
-        "expression": "(((channelType=='web' AND preEngagementData.reason == 'emergency') OR (channelType IN ['modica','instagram','whatsapp']' AND memory.priority == 'Yes'))  AND transferTargetType =='' ) OR targetSid=='${task_queues.priority}'",
+        "expression": "(((channelType=='web' AND preEngagementData.reason == 'emergency') OR (customChannelType IN ['modica','instagram','whatsapp']' AND memory.priority == 'Yes'))  AND transferTargetType =='' ) OR targetSid=='${task_queues.priority}'",
         "targets": [
           {
             "queue": "${task_queues.priority}",
