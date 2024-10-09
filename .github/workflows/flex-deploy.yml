@@ -151,7 +151,7 @@ jobs:
 
   deploy_form_definitions:
     uses: ./.github/workflows/deploy-form-definitions.yml
-    if: job.release-s3-hosted.status == 'success' || job.release-to-twilio.status == 'success'
+    if: jobs.release-s3-hosted.status == 'success' || jobs.release-to-twilio.status == 'success'
     secrets: inherit
     with:
       helpline_code: ${{ inputs.helpline_code }}
