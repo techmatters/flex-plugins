@@ -107,6 +107,7 @@ runs:
       run: |
         gzip -9 -v plugin-hrm-form.js
         gzip -9 -v plugin-hrm-form.js.map
+        ls .
         mv plugin-hrm-form.js.gz plugin-hrm-form.js
         mv plugin-hrm-form.js.gz plugin-hrm-form.js.map
       working-directory: ./plugin-hrm-form/build
