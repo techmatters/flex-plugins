@@ -45,6 +45,10 @@ on:
         description: Recaptcha Verify URL
         type: string
         required: false
+      self-hosted-deploy:
+        description: If set to true, we will point the account at our s3 hosted version of the plugin rather than uploading it to Twilio.
+        default: 'false'
+        type: string
 
 jobs:
   deploy-flex-helplines:
@@ -60,6 +64,7 @@ jobs:
       helpline_code: ${{ matrix.short_helplines }}
       environment_code: ${{ matrix.environment }}
       send-slack-message: ${{ inputs.send_slack_message_per_deploy }}
+      self-hosted-deploy: ${{ inputs.self-hosted-deploy }}
 
   deploy-web-chat-helplines:
     if: inputs.project == 'webchat'

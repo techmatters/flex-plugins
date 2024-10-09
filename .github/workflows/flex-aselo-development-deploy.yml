@@ -27,3 +27,4 @@ jobs:
     with:
       helpline_code: AS
       environment_code: development
+      self-hosted-deploy: true
