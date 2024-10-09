@@ -50,8 +50,9 @@ locals {
       },
       modica : {
         channel_type     = "custom"
+        messaging_mode   = "conversations"
         contact_identity = "modica"
-        templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v2.tftpl"
         channel_flow_vars = {
           blocked_message = "Kia ora, you've been blocked from accessing Youthline's helpline and we are not able to read or receive further messages from you. If you think this is a mistake, please email complaints@youthline.co.nz with your name and contact details for this to be reviewed. If you are unsafe or require urgent support, please call 111 now."
         }

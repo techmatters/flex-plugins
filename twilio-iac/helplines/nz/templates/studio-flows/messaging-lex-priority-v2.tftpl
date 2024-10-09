@@ -8,13 +8,13 @@ ${
       "type": "trigger",
       "transitions": [
         {
-          "next": "getProfileFlagsForIdentifier",
           "event": "incomingMessage"
         },
         {
           "event": "incomingCall"
         },
         {
+          "next": "getProfileFlagsForIdentifier",
           "event": "incomingConversationMessage"
         },
         {
@@ -70,7 +70,7 @@ ${
             {
               "friendly_name": "If value equal_to true",
               "arguments": [
-                "{{trigger.message.ChannelAttributes.preSurveyComplete}}"
+                "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}"
               ],
               "type": "equal_to",
               "value": "true"
@@ -79,7 +79,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{trigger.message.ChannelAttributes.preSurveyComplete}}",
+        "input": "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}",
         "offset": {
           "x": -80,
           "y": 800
@@ -140,11 +140,11 @@ ${
             "key": "releaseFlag"
           },
           {
-            "value": "{{trigger.message.ChannelAttributes.channel_type | downcase}}",
+            "value": "{{trigger.conversation.ChannelAttributes.channel_type | downcase}}",
             "key": "channelType"
           },
           {
-            "value": "false",
+            "value": "true",
             "key": "isConversation"
           }
         ],
@@ -199,10 +199,10 @@ ${
           "x": 30,
           "y": 130
         },
-        "add_twilio_auth": false,
         "method": "POST",
+        "add_twilio_auth": false,
         "content_type": "application/json;charset=utf-8",
-        "body": "{ \"trigger\": {{trigger | to_json}}}",
+        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"${channel_name}\" }",
         "url": "${serverless_url}/getProfileFlagsForIdentifier"
       }
     },
@@ -264,7 +264,8 @@ ${
         "variables": [
           {
             "value": "true",
-            "key": "clinical"
+            "key": "clinical",
+            "type": "string"
           }
         ],
         "offset": {
@@ -359,7 +360,7 @@ ${
             {
               "friendly_name": "If value starts_with Bot",
               "arguments": [
-                "{{trigger.message.From}}"
+                "{{trigger.conversation.From}}"
               ],
               "type": "starts_with",
               "value": "Bot"
@@ -368,7 +369,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{trigger.message.From}}",
+        "input": "{{trigger.conversation.From}}",
         "offset": {
           "x": 570,
           "y": 1170

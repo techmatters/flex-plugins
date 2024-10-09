@@ -9,10 +9,12 @@ locals {
     enable_external_recordings = true
 
     channel_attributes = {
-      webchat : "/app/twilio-iac/helplines/nz/templates/channel-attributes/webchat.tftpl",
-      voice   : "/app/twilio-iac/helplines/nz/templates/channel-attributes/voice.tftpl",
-      modica  : "/app/twilio-iac/helplines/nz/templates/channel-attributes/modica.tftpl",
-      default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
+      webchat               = "/app/twilio-iac/helplines/nz/templates/channel-attributes/webchat.tftpl",
+      voice                 = "/app/twilio-iac/helplines/nz/templates/channel-attributes/voice.tftpl",
+      modica                = "/app/twilio-iac/helplines/nz/templates/channel-attributes/modica.tftpl",
+      modica-conversations  = "/app/twilio-iac/helplines/nz/templates/channel-attributes/modica-conversations.tftpl",
+      default               = "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
+      default-conversations = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
     }
     workflows = {
       master : {
@@ -25,9 +27,13 @@ locals {
         templatefile             = "/app/twilio-iac/helplines/nz/templates/workflows/master_calls.tftpl",
         task_reservation_timeout = 30
       },
+      queue_transfers : {
+        friendly_name = "Queue Transfers Workflow"
+        templatefile  = "/app/twilio-iac/helplines/nz/templates/workflows/queue-transfers.tftpl"
+      },
       survey : {
-        friendly_name : "Survey Workflow"
-        templatefile : "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+        friendly_name = "Survey Workflow"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
 
