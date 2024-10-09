@@ -30,6 +30,9 @@ on:
           - development
           - staging
           - production
+      self-hosted-deploy:
+        description: If set to true, we will point the account at our s3 hosted version of the plugin rather than uploading it to Twilio.
+        type: boolean
   workflow_call:
     inputs:
       helpline_code:
@@ -44,11 +47,16 @@ on:
         description: If set to false a slack message will not be sent - useful for E2E test deploys.
         default: 'true'
         type: string
+      self-hosted-deploy:
+        description: If set to true, we will point the account at our s3 hosted version of the plugin rather than uploading it to Twilio.
+        default: 'false'
+        type: string
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  release-to-twilio:
+    if: github.event.inputs.self-hosted-deploy != 'true'
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -97,6 +105,47 @@ jobs:
           helpline_code: ${{inputs.helpline_code}}
           environment: ${{inputs.environment_code}}
           send-slack-message: ${{ inputs.send-slack-message }}
+
+      - name: Configure Account to use Twilio Hosted Plugin
+        shell: bash
+        run: |
+          curl --location 'https://flex-api.twilio.com/v1/Configuration' \
+          --header 'Content-Type: application/json' \
+          -u '${{env.TWILIO_ACCOUNT_SID}}:${{env.TWILIO_AUTH_TOKEN}}' \
+          --data '{
+              "account_sid": "${{env.TWILIO_ACCOUNT_SID}}",
+              "plugin_service_attributes":null
+          }'
+  release-s3-hosted:
+    if: github.event.inputs.self-hosted-deploy == 'true'
+    # Set ENVIRONMENT_NAME
+    - name: Set Helpline Environment
+      run: echo "ENVIRONMENT_NAME=${{inputs.environment_code}}" >> $GITHUB_ENV
+
+    - name: Set Twilio account SID
+      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      with:
+        ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/twilio/${{inputs.helpline_code}}/account_sid"
+        env_variable_name: "TWILIO_ACCOUNT_SID"
+
+    - name: Set Twilio Auth Token
+      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      with:
+        ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
+        env_variable_name: "TWILIO_AUTH_TOKEN"
+
+    - name: Configure Account to point to S3 Hosted Plugin
+      shell: bash
+      run: |
+        curl --location 'https://flex-api.twilio.com/v1/Configuration' \
+        --header 'Content-Type: application/json' \
+        -u '${{env.TWILIO_ACCOUNT_SID}}:${{env.TWILIO_AUTH_TOKEN}}' \
+        --data '{
+            "account_sid": "${{env.TWILIO_ACCOUNT_SID}}",
+            "plugin_service_attributes":{
+                "custom_plugins": [{"name": "HRM Forms", "version": "0.0.1", "src": "https://assets-${{ inputs.environment_code }}.tl.techmatters.org/plugins/hrm-form/${{ github.ref_type }}/${{ github.ref_name }}plugin-hrm-form.js"}]
+            }
+        }'
 
   deploy_form_definitions:
     uses: ./.github/workflows/deploy-form-definitions.yml

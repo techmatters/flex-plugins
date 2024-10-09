@@ -50,10 +50,6 @@ runs:
         aws s3api copy-object --copy-source assets-development.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js --bucket assets-development.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js
         aws s3api copy-object --copy-source assets-development.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js --bucket assets-development.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js.map
         aws s3api copy-object --copy-source assets-development.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js --bucket assets-development.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js.LICENSE.txt
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
     - name: Copy plugin to Staging S3 release folder
       shell: bash
@@ -61,10 +57,6 @@ runs:
         aws s3api copy-object --copy-source assets-staging.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js --bucket assets-staging.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js
         aws s3api copy-object --copy-source assets-staging.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js --bucket assets-staging.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js.map
         aws s3api copy-object --copy-source assets-staging.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js --bucket assets-staging.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js.LICENSE.txt
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
     - name: Copy plugin to Development S3 release folder
       shell: bash
@@ -72,10 +64,6 @@ runs:
         aws s3api copy-object --copy-source assets-production.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js --bucket assets-production.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js
         aws s3api copy-object --copy-source assets-production.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js --bucket assets-production.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js.map
         aws s3api copy-object --copy-source assets-production.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js --bucket assets-production.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js.LICENSE.txt
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
     - name: Clear cloudfront caches
       shell: bash
