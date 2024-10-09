@@ -118,6 +118,8 @@ jobs:
           }'
   release-s3-hosted:
     if: github.event.inputs.self-hosted-deploy == 'true'
+    runs-on: ubuntu-latest
+    steps:
     # Set ENVIRONMENT_NAME
     - name: Set Helpline Environment
       run: echo "ENVIRONMENT_NAME=${{inputs.environment_code}}" >> $GITHUB_ENV
@@ -149,7 +151,7 @@ jobs:
 
   deploy_form_definitions:
     uses: ./.github/workflows/deploy-form-definitions.yml
-    needs: build
+    if: job.release-s3-hosted.status == 'success' || job.release-to-twilio.status == 'success'
     secrets: inherit
     with:
       helpline_code: ${{ inputs.helpline_code }}
