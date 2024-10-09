@@ -93,7 +93,7 @@ runs:
       shell: bash
     # Build flex plugin
     - name: Run build command
-      run: twilio flex:plugins:build -l debug || true
+      run: ENABLE_MONITORING=true twilio flex:plugins:build -l debug || true
       working-directory: ./plugin-hrm-form
       shell: bash
     - name: Check bundle was built
