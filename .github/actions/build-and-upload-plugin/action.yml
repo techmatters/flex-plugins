@@ -102,11 +102,21 @@ runs:
       with:
         script: |
           core.setFailed('Bundle was not built!')
+    # Zip the plugin files individually
+    - name: Zip plugin files
+      run: |
+        zip plugin-hrm-form.js.zip plugin-hrm-form.js
+        zip plugin-hrm-form.js.map.zip plugin-hrm-form.js.map
+        rm plugin-hrm-form.js plugin-hrm-form.js.map
+        mv plugin-hrm-form.js.zip plugin-hrm-form.js
+        mv plugin-hrm-form.js.map.zip plugin-hrm-form.js.map
+      working-directory: ./plugin-hrm-form/build
+      shell: bash
     # Upload plugin to S3 buckets
     - name: Upload Plugin to Development S3 bucket
       uses: jakejarvis/s3-sync-action@master
       with:
-        args: --acl public-read --follow-symlinks --exclude '*' --include '*' --content-type 'application/javascript; charset=utf-8'
+        args: --acl public-read --follow-symlinks --exclude '*' --include '*' --content-type 'application/javascript; charset=utf-8' --content-encoding 'gzip'
       env:
         AWS_S3_BUCKET: assets-development.tl.techmatters.org
         AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
