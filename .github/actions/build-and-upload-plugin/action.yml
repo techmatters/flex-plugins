@@ -15,12 +15,6 @@
 name: build-and-upload-plugin
 description: 'Build Twilio Flex-Plugin and upload to S3 bucket'
 inputs:
-  account-sid:
-    description: 'Twilio Account SID'
-    required: true
-  auth-token:
-    description: 'Twilio Token'
-    required: true
   aws-access-key-id:
     description: 'AWS credentials for Aselo user'
     required: true
@@ -47,6 +41,16 @@ runs:
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
         aws-region: ${{ inputs.aws-region }}
     # Get AWS parameters
+    - name: Set Twilio account SID for AS DEV
+      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      with:
+        ssm_parameter: "/development/twilio/AS/account_sid"
+        env_variable_name: "TWILIO_ACCOUNT_SID"
+    - name: Set Twilio Auth Token for AS DEV
+      uses: "marvinpinto/action-inject-ssm-secrets@latest"
+      with:
+        ssm_parameter: "/development/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
+        env_variable_name: "TWILIO_AUTH_TOKEN"
     - name: Set Datadog Application ID
       uses: "marvinpinto/action-inject-ssm-secrets@latest"
       with:
@@ -89,9 +93,6 @@ runs:
       shell: bash
     # Build flex plugin
     - name: Run build command
-      env:
-        TWILIO_ACCOUNT_SID: ${{ inputs.account-sid }}
-        TWILIO_AUTH_TOKEN: ${{ inputs.auth-token }}
       run: twilio flex:plugins:build -l debug || true
       working-directory: ./plugin-hrm-form
       shell: bash
@@ -102,7 +103,7 @@ runs:
         script: |
           core.setFailed('Bundle was not built!')
     # Upload plugin to S3 buckets
-    - name: Upload Webchat to Development S3 bucket
+    - name: Upload Plugin to Development S3 bucket
       uses: jakejarvis/s3-sync-action@master
       with:
         args: --acl public-read --follow-symlinks --exclude '*' --include '*' --content-type 'application/javascript; charset=utf-8'
@@ -113,7 +114,7 @@ runs:
         AWS_REGION: ${{ inputs.aws-region }}
         SOURCE_DIR: "plugin-hrm-form/build"
         DEST_DIR: plugins/hrm-form/${{inputs.git-reference-type}}/${{inputs.git-reference}}
-    - name: Upload Webchat to Staging S3 bucket
+    - name: Upload Plugin to Staging S3 bucket
       uses: jakejarvis/s3-sync-action@master
       with:
         args: --acl public-read --follow-symlinks --exclude '*' --include '*' --content-type 'application/javascript; charset=utf-8'
@@ -124,7 +125,7 @@ runs:
         AWS_REGION: ${{ inputs.aws-region }}
         SOURCE_DIR: "plugin-hrm-form/build"
         DEST_DIR: plugins/hrm-form/${{inputs.git-reference-type}}/${{inputs.git-reference}}
-    - name: Upload Webchat to Production S3 bucket
+    - name: Upload Plugin to Production S3 bucket
       uses: jakejarvis/s3-sync-action@master
       with:
         args: --acl public-read --follow-symlinks --include '*' --content-type 'application/javascript; charset=utf-8'

@@ -1,0 +1,90 @@
+# Copyright (C) 2021-2024 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+name: build-and-upload-plugin
+description: 'Build Twilio Flex-Plugin and upload to S3 bucket'
+inputs:
+  aws-access-key-id:
+    description: 'AWS credentials for Aselo user'
+    required: true
+  aws-secret-access-key:
+    description: 'AWS credentials for Aselo user'
+    required: true
+  aws-region:
+    description: 'AWS credentials for Aselo user'
+    required: true
+  source-git-reference:
+    description: 'Identifies the git reference for target key'
+    required: true
+  source-git-reference-type:
+    description: 'Identifies if the git reference is a branch or tag'
+    required: true
+  target-git-tag:
+    description: 'Identifies the release tag for the plugin'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    # Setup credentials to access AWS for parameters
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+        aws-region: ${{ inputs.aws-region }}
+
+    - name: Copy plugin to Development S3 release folder
+      shell: bash
+      run: |
+        aws s3api copy-object --copy-source assets-development.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js --bucket assets-development.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js
+        aws s3api copy-object --copy-source assets-development.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js --bucket assets-development.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js.map
+        aws s3api copy-object --copy-source assets-development.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js --bucket assets-development.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js.LICENSE.txt
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+    - name: Copy plugin to Staging S3 release folder
+      shell: bash
+      run: |
+        aws s3api copy-object --copy-source assets-staging.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js --bucket assets-staging.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js
+        aws s3api copy-object --copy-source assets-staging.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js --bucket assets-staging.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js.map
+        aws s3api copy-object --copy-source assets-staging.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js --bucket assets-staging.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js.LICENSE.txt
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+    - name: Copy plugin to Development S3 release folder
+      shell: bash
+      run: |
+        aws s3api copy-object --copy-source assets-production.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js --bucket assets-production.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js
+        aws s3api copy-object --copy-source assets-production.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js --bucket assets-production.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js.map
+        aws s3api copy-object --copy-source assets-production.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js --bucket assets-production.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js.LICENSE.txt
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+    - name: Clear cloudfront caches
+      shell: bash
+      run: |
+        CF_DISTRO=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].DomainName}[?origin=='assets-development.tl.techmatters.org.s3-website.us-east-1.amazonaws.com'].id" --output text)
+        aws cloudfront create-invalidation --distribution-id $CF_DISTRO --paths /plugins/hrm-form/tag/${{ inputs.target-git-tag }}/*
+
+        CF_DISTRO=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].DomainName}[?origin=='assets-staging.tl.techmatters.org.s3-website.us-east-1.amazonaws.com'].id" --output text)
+        aws cloudfront create-invalidation --distribution-id $CF_DISTRO --paths /plugins/hrm-form/tag/${{ inputs.target-git-tag }}/*
+
+        CF_DISTRO=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].DomainName}[?origin=='assets-production.tl.techmatters.org.s3-website.us-east-1.amazonaws.com'].id" --output text)
+        aws cloudfront create-invalidation --distribution-id $CF_DISTRO --paths /plugins/hrm-form/tag/${{ inputs.target-git-tag }}/*

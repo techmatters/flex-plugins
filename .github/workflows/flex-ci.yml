@@ -174,31 +174,12 @@ jobs:
       - name: Run hrm-form-definitions Tests
         run: npm run test
         working-directory: ./hrm-form-definitions
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
 
-      - name: Set Twilio account SID for AS DEV
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
-        with:
-          ssm_parameter: "/development/twilio/AS/account_sid"
-          env_variable_name: "TWILIO_ACCOUNT_SID"
-
-      - name: Set Twilio Auth Token for AS DEV
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
-        with:
-          ssm_parameter: "/development/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
-          env_variable_name: "TWILIO_AUTH_TOKEN"
       - name: Build and Upload Flex Plugin
         uses: ./.github/actions/build-and-upload-plugin
         with:
           git-reference-type: ${{ github.ref_type }}
           git-reference: ${{ github.ref_name }}
-          auth-token: ${{ env.TWILIO_AUTH_TOKEN }}
-          account-sid: ${{ env.TWILIO_ACCOUNT_SID }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
