@@ -35,6 +35,7 @@ jobs:
       helpline_code: E2E
       environment_code: development
       send-slack-message: 'false'
+      self-hosted-deploy: 'true'
 
   deploy-webchat:
     uses: ./.github/workflows/webchat-deploy.yml
