@@ -105,8 +105,8 @@ runs:
     # Zip the plugin files individually
     - name: Zip plugin files
       run: |
-        gzip -9 plugin-hrm-form.js
-        gzip -9 plugin-hrm-form.js.map
+        gzip -9 -v plugin-hrm-form.js
+        gzip -9 -v plugin-hrm-form.js.map
         mv plugin-hrm-form.js.gz plugin-hrm-form.js
         mv plugin-hrm-form.js.gz plugin-hrm-form.js.map
       working-directory: ./plugin-hrm-form/build
