@@ -103,6 +103,7 @@ runs:
         script: |
           core.setFailed('Bundle was not built!')
     # Zip the plugin files individually
+    # Cloudfront only zips files under 10000000 bytes on the fly, so we need to store these zipped
     - name: Zip plugin files
       run: |
         gzip -9 -v plugin-hrm-form.js
