@@ -14,7 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import type { Case } from 'plugin-hrm-form/src/types/types';
 import flexContext from '../../flex-in-a-box/global-context';
 import { addSeconds, subHours } from 'date-fns';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -61,10 +60,10 @@ let newCaseId = 0;
 
 const hrmCases = () => {
   const PATH_PREFIX = `/v0/accounts/${flexContext.ACCOUNT_SID}/cases`;
-  const mockCases: Case[] = generateMockCases(55);
+  const mockCases: any[] = generateMockCases(55);
 
   return {
-    getMockCases: (): Case[] => mockCases,
+    getMockCases: (): any[] => mockCases,
     mockCaseEndpoints: async (page: Page) => {
       await page.route(
         new URL(path.join(PATH_PREFIX, '*'), context.HRM_BASE_URL).toString(),
