@@ -54,7 +54,7 @@ EXCLUDED_FIELDS = [
 
 OVERRIDE_FIELDS = [
     'attributes',
-    #'ui_attributes',
+    'ui_attributes.colorTheme',
 ]
 
 REGION_URL_POSTFIX_MAP = {
