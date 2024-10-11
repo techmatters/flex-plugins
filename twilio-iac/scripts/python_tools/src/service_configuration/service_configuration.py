@@ -48,6 +48,8 @@ EXCLUDED_FIELDS = [
     "service_version",
     "taskrouter_offline_activity_sid",
     "status",
+    'ui_attributes.appianApiKey',
+    'ui_attributes.flexAddonKey',
 ]
 
 OVERRIDE_FIELDS = [
