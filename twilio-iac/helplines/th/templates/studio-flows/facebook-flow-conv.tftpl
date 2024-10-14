@@ -1,0 +1,324 @@
+${
+  jsonencode( 
+    {
+  "description": "Facebook Messaging Flow",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -250,
+          "y": -760
+        }
+      }
+    },
+    {
+      "name": "getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "check_image",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -440,
+          "y": -580
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"${channel_name}\"}",
+        "url": "${serverless_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "send_blocked_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -730,
+          "y": -110
+        },
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
+        "from": flow_vars["widget_from"],
+        "to": "{{contact.channel.address}}",
+        "body":  flow_vars["chat_blocked_message"]
+      }
+    },
+    {
+      "name": "contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "check_image",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_blocked_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "contains",
+              "value": "blocked"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": -780,
+          "y": -360
+        }
+      }
+    },
+    {
+      "name": "attributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 360,
+          "y": 900
+        },
+        "workflow": workflow_sids["master"],
+        "channel": task_channel_sids["chat"],
+        "attributes": channel_attributes["default"],
+        "timeout": "432000"
+      }
+    },
+    {
+      "name": "check_image",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "chat_hours",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "{{trigger.conversation.Body}}",
+              "arguments": [
+                "{{trigger.conversation.Body}}"
+              ],
+              "type": "is_not_blank",
+              "value": "Is Not Blank"
+            }
+          ]
+        },
+        {
+          "next": "no_img_msg",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "{{trigger.conversation.Body}}",
+              "arguments": [
+                "{{trigger.conversation.Body}}"
+              ],
+              "type": "is_blank",
+              "value": "Is Blank"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.Body}}",
+        "offset": {
+          "x": -100,
+          "y": -110
+        }
+      }
+    },
+    {
+      "name": "no_img_msg",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 320,
+          "y": 150
+        },
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "ขณะนี้ยังไม่สามารถรับไฟล์ภาพหรือมีเดียผ่าน Messenger ได้ในขณะนี้ กรุณาส่งข้อความเท่านั้น"
+      }
+    },
+    {
+      "name": "chat_hours",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "split_chat_hours",
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": flow_vars["service_sid"],
+        "environment_sid": flow_vars["environment_sid"],
+        "offset": {
+          "x": -110,
+          "y": 160
+        },
+        "function_sid": flow_vars["operating_hours_function_sid"],
+        "parameters": [
+          {
+            "value": "facebook",
+            "key": "channel"
+          }
+        ],
+        "url": "${serverless_url}/operatingHours"
+      }
+    },
+    {
+      "name": "split_chat_hours",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "attributes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains open",
+              "arguments": [
+                "{{widgets.chat_hours.body}}"
+              ],
+              "type": "contains",
+              "value": "open"
+            }
+          ]
+        },
+        {
+          "next": "send_closed_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains holiday",
+              "arguments": [
+                "{{widgets.chat_hours.body}}"
+              ],
+              "type": "contains",
+              "value": "holiday"
+            }
+          ]
+        },
+        {
+          "next": "send_closed_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains closed",
+              "arguments": [
+                "{{widgets.chat_hours.body}}"
+              ],
+              "type": "contains",
+              "value": "closed"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.chat_hours.body}}",
+        "offset": {
+          "x": -80,
+          "y": 410
+        }
+      }
+    },
+    {
+      "name": "send_closed_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "attributes",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 490,
+          "y": 680
+        },
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "สวัสดีค่ะ ได้เวลาพักสายตา เข้านอนกันแล้วนะคะ กลับมาเจอกับพี่สายเด็กอีกครั้งเวลา 06:00 น. นะคะ \nการใช้สายตาอยู่กับโทรศัพท์และหน้าจอคอมพ์ในที่มืด นอกจากส่งผลอันตรายต่อโรคเกี่ยวกับสายตา ยังเพิ่มความเสี่ยงต่อโรคซึมเศร้า, โรคอ้วน, ไมเกรน, โรคเบาหวาน, โรคความดันโลหิตสูง, โรคหัวใจ และเสี่ยงต่อการเกิดมะเร็งเต้านมนะคะ\nแต่หากน้องๆ มีเหตุด่วน กรุณาโทรมาหาพี่ๆ ที่สายด่วน 1387 นะคะ พี่ๆ พร้อมรับสาย 24 ชั่วโมงค่ะ ☺"
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+}
+
+
+  )
+}
