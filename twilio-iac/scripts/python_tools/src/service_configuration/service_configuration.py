@@ -47,14 +47,12 @@ EXCLUDED_FIELDS = [
     "taskrouter_workspace_sid",
     "service_version",
     "taskrouter_offline_activity_sid",
-    "status",
-    'ui_attributes.appianApiKey',
-    'ui_attributes.flexAddonKey',
+    "status"
 ]
 
 OVERRIDE_FIELDS = [
     'attributes',
-    'ui_attributes.colorTheme',
+    'ui_attributes',
 ]
 
 REGION_URL_POSTFIX_MAP = {
