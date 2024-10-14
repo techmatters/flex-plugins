@@ -27,6 +27,10 @@ locals {
         templatefile             = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
         task_reservation_timeout = 300
       },
+      queue_transfers : {
+        friendly_name = "Queue Transfers Workflow"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
+      },
       survey : {
         friendly_name = "Survey Workflow"
         templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
