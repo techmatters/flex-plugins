@@ -36,7 +36,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - id: determine-target-helplines
-        name: Executing main-action
+        name: Determining helplines to deploy to
         uses: ./.github/actions/determine-target-helplines-action
         with:
           environment: production
