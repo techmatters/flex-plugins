@@ -92,7 +92,7 @@ jobs:
 
 
       - name: Invalidate CloudFront cache
-        if: ${{ inputs.invalidate_cache != 'false' }}
+        if: ${{ inputs.invalidate-cache != 'false' }}
         run: |
           CF_DISTRO=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].DomainName}[?origin=='${{ env.s3_bucket }}.s3-website.us-east-1.amazonaws.com'].id" --output text)
           aws cloudfront create-invalidation --distribution-id $CF_DISTRO --paths /${{ env.path }}/*
