@@ -5,7 +5,8 @@
             "enable_fullstory_monitoring": true,
             "enable_client_profiles": true,
             "enable_conferencing": true,
-            "enable_region_resource_search": true
+            "enable_region_resource_search": true,
+            "enable_generalized_search": true
         }
     }
 }
