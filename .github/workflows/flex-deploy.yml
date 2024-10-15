@@ -51,6 +51,12 @@ on:
         description: If set to true, we will point the account at our s3 hosted version of the plugin rather than uploading it to Twilio.
         default: 'false'
         type: string
+      invalidate-forms-cache:
+        description: 'Specifies if should invalidate CloudFront cache for form data. Defaults to true, set to false if the caller will handle cache invalidation.'
+        required: false
+        default: 'true'
+        type: string
+
 env:
   SELF_HOSTED_DEPLOY: ${{ inputs.self-hosted-deploy || inputs.self-hosted-deploy-bool }}
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -141,3 +147,4 @@ jobs:
       helpline_code: ${{ inputs.helpline_code }}
       environment: ${{ inputs.environment_code }}
       send-slack-message: 'false'
+      invalidate-cache: ${{ inputs.invalidate-forms-cache }}
