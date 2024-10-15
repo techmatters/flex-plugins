@@ -12,8 +12,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
-name: build-and-upload-plugin
-description: 'Build Twilio Flex-Plugin and upload to S3 bucket'
+name: copy-plugin-to-release-location
+description: 'Copy the plugin from the build location to the release location'
 inputs:
   aws-access-key-id:
     description: 'AWS credentials for Aselo user'
