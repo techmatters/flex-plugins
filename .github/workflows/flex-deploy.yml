@@ -126,11 +126,9 @@ jobs:
 
       # Install the Twilio CLI and the flex plugin, then disable the twilio hosted plugin
       # These steps can be removed once Twilio hosted flex plugins are fully retired
-      - if: env.SELF_HOSTED_DEPLOY == 'true'
-        name: Install Twilio CLI
-        run: npm install twilio-cli@5.20.1 -g && twilio plugins:install @twilio-labs/plugin-flex@7.0.0
-        shell: bash
-        working-directory: ./plugin-hrm-form
+      # Ridiculous that we need top run from the plugin source with dependencies installed just to disable it on Twilio, but that seems to be the situation
+      - name: Install Flex Plugin
+        uses: ./.github/actions/install-flex-plugin
       - if: env.SELF_HOSTED_DEPLOY == 'true'
         name: Disable the Aselo plugin deployed to Twilio, if there is one.
         run: twilio flex:plugins:release --disable-plugin=plugin-hrm-form -l debug || true
