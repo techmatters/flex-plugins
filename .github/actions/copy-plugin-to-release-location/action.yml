@@ -58,7 +58,7 @@ runs:
         aws s3api copy-object --copy-source assets-staging.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js.map --bucket assets-staging.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js.map
         aws s3api copy-object --copy-source assets-staging.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js.LICENSE.txt --bucket assets-staging.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js.LICENSE.txt
 
-    - name: Copy plugin to Development S3 release folder
+    - name: Copy plugin to Production S3 release folder
       shell: bash
       run: |
         aws s3api copy-object --copy-source assets-production.tl.techmatters.org/plugins/hrm-form/${{ inputs.source-git-reference-type }}/${{ inputs.source-git-reference }}/plugin-hrm-form.js --bucket assets-production.tl.techmatters.org --key plugins/hrm-form/tag/${{ inputs.target-git-tag }}/plugin-hrm-form.js
