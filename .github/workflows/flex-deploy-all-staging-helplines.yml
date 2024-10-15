@@ -59,4 +59,5 @@ jobs:
       - name: Invalidate CloudFront cache
         run: |
           CF_DISTRO=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].DomainName}[?origin=='assets-staging.tl.techmatters.org.s3-website.us-east-1.amazonaws.com'].id" --output text)
+          echo "Invalidating CloudFront cache for distribution $CF_DISTRO"
           aws cloudfront create-invalidation --distribution-id $CF_DISTRO --paths /form-definitions/*
