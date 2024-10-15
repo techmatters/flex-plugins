@@ -65,9 +65,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Can be removed once we drop support for Twilio hosted plugins
       - if: env.SELF_HOSTED_DEPLOY != 'true'
         uses: actions/checkout@v4
+      - if: env.SELF_HOSTED_DEPLOY == 'true'
+        uses: actions/checkout@v4
+        with:
+          - filter: '.github/actions/**'
 
       # Can be removed once we drop support for Twilio hosted plugins
       - name: Use Node.js
