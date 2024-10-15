@@ -60,6 +60,12 @@ on:
         default: 'true'
         type: string
 
+      invalidate-cache:
+        description: 'Specifies if should invalidate CloudFront cache. Defaults to true, set to false if the caller will handle cache invalidation.'
+        required: false
+        default: 'true'
+        type: string
+
 
 jobs:
   deploy_form_definitions:
@@ -83,6 +89,11 @@ jobs:
       - name: Deploy form-definitions to S3
         run: |
           aws s3 sync ${{ env.helpline_dir }} s3://${{ env.s3_bucket }}/${{ env.path }} --acl public-read
+
+
+      - name: Invalidate CloudFront cache
+        if: ${{ inputs.invalidate_cache != 'false' }}
+        run: |
           CF_DISTRO=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].DomainName}[?origin=='${{ env.s3_bucket }}.s3-website.us-east-1.amazonaws.com'].id" --output text)
           aws cloudfront create-invalidation --distribution-id $CF_DISTRO --paths /${{ env.path }}/*
 
