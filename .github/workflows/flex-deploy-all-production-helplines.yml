@@ -53,6 +53,7 @@ jobs:
       invalidate-forms-cache: false
   invalidate-forms-cache:
     name: Invalidate CloudFront cache for all production forms
+    needs: deploy-helplines
     runs-on: ubuntu-latest
     steps:
       - name: Invalidate CloudFront cache
