@@ -17,6 +17,9 @@ name: Flex Aselo Development Deploy
 # Controls when the action will run.
 on:
   workflow_dispatch:
+    self-hosted-deploy:
+      description: If set to true, we will point the account at our s3 hosted version of the plugin rather than uploading it to Twilio.
+      type: boolean
   schedule:
     - cron: 0 0 * * 0
 
@@ -27,3 +30,4 @@ jobs:
     with:
       helpline_code: AS
       environment_code: development
+      self-hosted-deploy: ${{ inputs.self-hosted-deploy == 'false' && 'false' || 'true'  }}

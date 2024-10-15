@@ -16,6 +16,9 @@ name: Deploy Flex to all Staging Helplines
 
 on:
   workflow_dispatch:
+    self-hosted-deploy:
+      description: If set to true, we will point the account at our s3 hosted version of the plugin rather than uploading it to Twilio.
+      type: boolean
 
 jobs:
   configure:
@@ -45,3 +48,4 @@ jobs:
       project: flex
       helplines: ${{ needs.configure.outputs.target_helplines }}
       environments: '[ "staging" ]'
+      self-hosted-deploy: ${{ inputs.self-hosted-deploy }}
