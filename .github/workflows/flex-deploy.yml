@@ -157,13 +157,14 @@ jobs:
 
       # Update deployment matrix with script and ssm parameters
       - name: Update deployment matrix
+        if: env.SELF_HOSTED_DEPLOY == 'true'
         uses: ./.github/actions/deployment-matrix
         with:
           account-sid: ${{env.TWILIO_ACCOUNT_SID}}
           auth-token: ${{env.TWILIO_AUTH_TOKEN}}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           identifier: ${{ inputs.helpline_code }}
-          environment: ${{ inputs.environment}}
+          environment: ${{ inputs.environment_code}}
           service_repo: 'flex-plugins'
           version_tag: ${{ github.ref_name }}
 
