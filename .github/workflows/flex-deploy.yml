@@ -66,11 +66,12 @@ jobs:
 
     steps:
       # Can be removed once we drop support for Twilio hosted plugins
-      #- if: env.SELF_HOSTED_DEPLOY != 'true'
+      - if: env.SELF_HOSTED_DEPLOY != 'true'
         uses: actions/checkout@v4
 
-      - if: env.SELF_HOSTED_DEPLOY != 'true'
-        name: Use Node.js
+      # Can be removed once we drop support for Twilio hosted plugins
+      - name: Use Node.js
+      # if: env.SELF_HOSTED_DEPLOY != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '18.x'
@@ -130,12 +131,10 @@ jobs:
       - if: env.SELF_HOSTED_DEPLOY == 'true'
         name: Install Twilio CLI
         run: npm install twilio-cli@5.20.1 -g && twilio plugins:install @twilio-labs/plugin-flex@7.0.0
-        working-directory: ./plugin-hrm-form
         shell: bash
       - if: env.SELF_HOSTED_DEPLOY == 'true'
         name: Disable the Aselo plugin deployed to Twilio, if there is one.
         run: twilio flex:plugins:release --disable-plugin plugin-hrm-form || true
-        working-directory: ./plugin-hrm-form
         shell: bash
       # Point the account at the s3 hosted plugin
       - if: env.SELF_HOSTED_DEPLOY == 'true'
