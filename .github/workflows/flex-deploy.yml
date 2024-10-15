@@ -65,8 +65,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Only need the source for twilio deploys
-      - if: env.SELF_HOSTED_DEPLOY != 'true'
+      # Can be removed once we drop support for Twilio hosted plugins
+      #- if: env.SELF_HOSTED_DEPLOY != 'true'
         uses: actions/checkout@v4
 
       - if: env.SELF_HOSTED_DEPLOY != 'true'
