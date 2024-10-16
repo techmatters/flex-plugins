@@ -6,7 +6,7 @@ locals {
 
   local_config = {
 
-    custom_task_routing_filter_expression = "channelType IN ['web','messenger']  OR isContactlessTask == true OR  twilioNumber == 'messenger:111279668497853'"
+    custom_task_routing_filter_expression = "channelType IN ['web','messenger', 'telegram']  OR isContactlessTask == true OR  twilioNumber == 'messenger:111279668497853'"
 
     workflow_vars = {
       helpline_webchat_location = "https://tl-public-chat-mt-stg.s3.eu-west-1.amazonaws.com/mt-chat-staging.html"
@@ -41,6 +41,14 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "whatsapp"
         contact_identity     = "whatsapp:+18179525098"
+        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-conv.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      telegram : {
+        messaging_mode       = "conversations"
+        channel_type         = "custom"
+        contact_identity     = "telegram"
         templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-conv.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
