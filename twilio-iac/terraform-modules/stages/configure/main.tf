@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    datadog = {
-      source = "DataDog/datadog"
-      version = "3.46.0"
-    }
-  }
-}
-
 data "aws_ssm_parameter" "secrets" {
   name = "/terraform/twilio-iac/${var.environment}/${var.short_helpline}/secrets.json"
 }
