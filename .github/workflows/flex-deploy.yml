@@ -65,12 +65,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Only need the source for twilio deploys
-      - if: env.SELF_HOSTED_DEPLOY != 'true'
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - if: env.SELF_HOSTED_DEPLOY != 'true'
-        name: Use Node.js
+      # Can be removed once we drop support for Twilio hosted plugins
+      - name: Use Node.js
+      # if: env.SELF_HOSTED_DEPLOY != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '18.x'
@@ -125,6 +124,17 @@ jobs:
               "plugin_service_attributes":null
           }'
 
+      # Install the Twilio CLI and the flex plugin, then disable the twilio hosted plugin
+      # These steps can be removed once Twilio hosted flex plugins are fully retired
+      # Ridiculous that we need top run from the plugin source with dependencies installed just to disable it on Twilio, but that seems to be the situation
+      - name: Install Flex Plugin
+        uses: ./.github/actions/install-flex-plugin
+      - if: env.SELF_HOSTED_DEPLOY == 'true'
+        name: Disable the Aselo plugin deployed to Twilio, if there is one.
+        run: twilio flex:plugins:release --disable-plugin=plugin-hrm-form -l debug || true
+        shell: bash
+        working-directory: ./plugin-hrm-form
+      # Point the account at the s3 hosted plugin
       - if: env.SELF_HOSTED_DEPLOY == 'true'
         name: Configure Account to point to S3 Hosted Plugin
         shell: bash
@@ -138,6 +148,19 @@ jobs:
                   "custom_plugins": [{"name": "HRM Forms", "version": "0.0.1", "src": "https://assets-${{ inputs.environment_code }}.tl.techmatters.org/plugins/hrm-form/${{ github.ref_type }}/${{ github.ref_name }}/plugin-hrm-form.js"}]
               }
           }'
+
+      # Update deployment matrix with script and ssm parameters
+      - name: Update deployment matrix
+        if: env.SELF_HOSTED_DEPLOY == 'true'
+        uses: ./.github/actions/deployment-matrix
+        with:
+          account-sid: ${{env.TWILIO_ACCOUNT_SID}}
+          auth-token: ${{env.TWILIO_AUTH_TOKEN}}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          identifier: ${{ inputs.helpline_code }}
+          environment: ${{ inputs.environment_code}}
+          service_repo: 'flex-plugins'
+          version_tag: ${{ github.ref_name }}
 
   deploy_form_definitions:
     uses: ./.github/workflows/deploy-form-definitions.yml
