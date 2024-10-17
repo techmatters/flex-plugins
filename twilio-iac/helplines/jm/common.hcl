@@ -5,10 +5,10 @@ locals {
 
 
   local_config = {
-    helpline                          = "SafeSpot"
-    task_language                     = "en-JM"
-    voice_ivr_language                = ""
-    enable_post_survey                = false
+    helpline           = "SafeSpot"
+    task_language      = "en-JM"
+    voice_ivr_language = ""
+    enable_post_survey = false
 
 
     lex_bot_languages = {
@@ -19,15 +19,15 @@ locals {
     workflows = {
       master : {
         friendly_name = "Master Workflow"
-        templatefile = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
       },
       queue_transfers : {
         friendly_name = "Queue Transfers Workflow"
-        templatefile = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
       },
       survey : {
         friendly_name = "Survey Workflow"
-        templatefile = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
 
@@ -55,7 +55,7 @@ locals {
       survey : "Survey"
     }
 
-    
+
 
     phone_numbers = {}
 

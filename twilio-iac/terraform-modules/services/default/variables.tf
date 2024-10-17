@@ -35,3 +35,8 @@ variable "stage" {
   type = string
   default = ""
 }
+
+variable "serverless_url" {
+  description = "URL used to access Aselo Twilio serverless functions"
+  type        = string
+}
