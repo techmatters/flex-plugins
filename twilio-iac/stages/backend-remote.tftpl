@@ -4,6 +4,10 @@ terraform {
       source  = "twilio/twilio"
       version = "0.17.0"
     }
+    datadog = {
+      source  = "datadog/datadog"
+      version = "3.46.0"
+    }
   }
 
   backend "s3" {
