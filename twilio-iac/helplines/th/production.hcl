@@ -4,7 +4,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-
+    enable_datadog_monitoring             = true
     custom_task_routing_filter_expression = "channelType IN ['web','instagram','line']  OR isContactlessTask == true OR  twilioNumber IN ['messenger:59591583805', 'twitter:1154628838472597505', 'instagram:59591583805', 'line:U65333e6b8ca9e96e41252ecb27c44cf9']"
 
 
@@ -41,6 +41,16 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-blocking-conv.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_1d):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=23;BYMINUTE=0;BYDAY=MO,TU,WE,TH,FR,SA,SU"
+            timezone = "Asia/Bangkok"
+          }
+        }
+        c
+
       }
     }
 
