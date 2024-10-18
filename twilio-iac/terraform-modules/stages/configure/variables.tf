@@ -125,10 +125,15 @@ variable "channels" {
   type = map(object({
     templatefile         = string,
     channel_type         = string,
-    contact_identity     = string
+    contact_identity     = string,
     channel_flow_vars    = map(string)
     chatbot_unique_names = list(string)
-    messaging_mode  = optional(string,"programmable-chat")
+    messaging_mode       = optional(string, "programmable-chat")
+    enable_datadig_monitor = optional(bool, false)
+    custom_schedule      = optional(object({
+      rrule = string
+      timezone = string
+    }),{})
   }))
   description = "Map of enabled channel objects with their attributes"
 

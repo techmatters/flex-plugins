@@ -52,8 +52,12 @@ variable "channels" {
     channel_flow_vars    = map(string)
     chatbot_unique_names = list(string)
     messaging_mode       = optional(string, "programmable-chat")
+    enable_datadig_monitor = optional(bool, false)
+    custom_schedule      = optional(object({
+      rrule = string
+      timezone = string
+    }),{})
   }))
-
 }
 variable "workflow_sids" {
   type = map(string)
