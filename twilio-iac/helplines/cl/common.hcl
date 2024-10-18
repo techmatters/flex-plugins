@@ -62,6 +62,7 @@ locals {
         channel_type           = "web"
         enable_datadog_monitor = true
         custom_monitor = {
+          query = "sum(last_1d):sum:<metric>{*}.as_count() == 0"
           custom_schedule = {
             rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=23;BYMINUTE=0;BYDAY=MO,TU,WE,TH,FR"
             timezone = "America/Santiago"
