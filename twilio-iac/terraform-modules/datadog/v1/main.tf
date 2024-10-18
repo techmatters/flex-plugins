@@ -23,7 +23,7 @@ resource "datadog_logs_metric" "channel_logs_metric" {
   }
   group_by {
     path     = "@data.flow_sid"
-    tag_name = "${var.short_helpline}_${var.short_environment}_${each.key}"
+    tag_name = "${lower(var.short_helpline)}_${lower(var.short_environment)}_${each.key}"
   }
 }
 
@@ -37,8 +37,8 @@ resource "datadog_monitor" "nr_of_executions_threshold" {
   scheduling_options {
     custom_schedule {
       recurrence {
-        rrule = each.value.custom_schedule.rrule
-        timezone = each.value.custom_schedule.timezone
+        rrule = each.value.custom_monitor.custom_schedule.rrule
+        timezone = each.value.custom_monitor.custom_schedule.timezone
       }
     }
   }
