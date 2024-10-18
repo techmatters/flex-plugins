@@ -10,7 +10,18 @@ variable "short_helpline" {
 
 variable channel_studio_flow_sids {
     description = "Channel studio flow sids"
-    type = map(string)
+    type = map(object({
+    flow_sid         = string,
+    enable_datadig_monitor = optional(bool, false)
+    custom_monitor = optional(object({
+      query = optional(string)
+      custom_schedule = optional(object({
+        rrule = optional(string)
+        timezone = optional(string)
+      }),{    })
+    }))
+    
+  }))
 }
 
 variable "enable_datadog_monitoring" {
