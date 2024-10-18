@@ -19,7 +19,10 @@ variable channel_studio_flow_sids {
         rrule = optional(string)
         timezone = optional(string)
       }),null)
-    }))
+    }), {
+      query = null
+      custom_schedule = null
+    })
     
   }))
 }
