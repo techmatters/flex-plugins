@@ -54,13 +54,12 @@ variable "channels" {
     messaging_mode       = optional(string, "programmable-chat")
     enable_datadig_monitor = optional(bool, false)
     custom_schedule      = optional(object({
-      rrule = string
-      timezone = string
-    }),{
-      rrule = null
-      timezone = null
-    })
+      rrule = optional(string)
+      timezone = optional(string)
+    }),{    })
   }))
+  description = "Map of enabled channel objects with their attributes"
+
 }
 variable "workflow_sids" {
   type = map(string)
