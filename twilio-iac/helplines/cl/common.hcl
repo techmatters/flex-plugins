@@ -78,6 +78,7 @@ locals {
       },
       voice : {
         channel_type     = "voice"
+        enable_datadog_monitor = true
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-no-chatbot-operating-hours-blocking.tftpl"
         channel_flow_vars = {
