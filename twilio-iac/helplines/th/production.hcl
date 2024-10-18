@@ -49,7 +49,6 @@ locals {
             timezone = "Asia/Bangkok"
           }
         }
-        c
 
       }
     }
