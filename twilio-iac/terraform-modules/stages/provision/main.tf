@@ -34,7 +34,6 @@ module "services" {
   short_helpline    = upper(var.short_helpline)
   environment       = title(var.environment)
   short_environment = var.short_environment
-  serverless_url    = module.serverless.serverless_environment_production_url
   stage             = local.stage
 }
 
