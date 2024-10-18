@@ -34,11 +34,15 @@ resource "datadog_monitor" "nr_of_executions_threshold" {
     if config.enable_datadog_monitor == true
   } : {}
   include_tags = false
-  scheduling_options {
-    custom_schedule {
-      recurrence {
-        rrule = each.value.custom_monitor.custom_schedule.rrule
-        timezone = each.value.custom_monitor.custom_schedule.timezone
+  dynamic "scheduling_options" {
+    for_each = each.value.custom_monitor.custom_schedule != null ? [1] : []
+
+    content {
+      custom_schedule {
+        recurrence {
+          rrule    = each.value.custom_monitor.custom_schedule.rrule
+          timezone = each.value.custom_monitor.custom_schedule.timezone
+        }
       }
     }
   }
