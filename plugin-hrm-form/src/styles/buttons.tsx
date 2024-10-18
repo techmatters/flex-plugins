@@ -17,7 +17,7 @@
 import React from 'react';
 import { ButtonBase, Tooltip, withStyles } from '@material-ui/core';
 import { styled, Button } from '@twilio/flex-ui';
-import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
+// import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
 import HrmTheme from './HrmTheme';
@@ -104,17 +104,16 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
       ? HrmTheme.colors.secondaryButtonColor
       : HrmTheme.colors.defaultButtonColor};
   cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
-  ${p =>
-    getBackgroundWithHoverCSS(
+
+  &&:hover {
+    background-color: ${p =>
       p.disabled
-        ? HrmTheme.colors.base5
+        ? `${HrmTheme.colors.base5}CC`
         : p.secondary?.toLowerCase() === 'true'
-        ? HrmTheme.colors.secondaryButtonColor
-        : HrmTheme.colors.defaultButtonColor,
-      true,
-      false,
-      p.disabled,
-    )};
+        ? `${HrmTheme.colors.secondaryButtonColor}CC`
+        : `${HrmTheme.colors.defaultButtonColor}CC`};
+    background-blend-mode: color;
+  }
 
   &&:focus {
     outline-style: auto;
