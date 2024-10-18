@@ -47,12 +47,14 @@ EXCLUDED_FIELDS = [
     "taskrouter_workspace_sid",
     "service_version",
     "taskrouter_offline_activity_sid",
-    "status"
+    "status",
+    'ui_attributes.appianApiKey',
+    'ui_attributes.flexAddonKey',
 ]
 
 OVERRIDE_FIELDS = [
     'attributes',
-    'ui_attributes',
+    'ui_attributes.colorTheme',
 ]
 
 REGION_URL_POSTFIX_MAP = {
@@ -91,20 +93,22 @@ def get_nested_key(data, key):
 
 
 def delete_nested_key(data, key):
-    """Delete a nested key in a dict"""
-
+    """Delete a nested key in a dict if it exists"""
     path = key.split('.')
     if len(path) == 1:
-        # base case: remove the key from the dictionary and check if it's empty
-        del data[path[0]]
+        # base case: check if the key exists, then remove it
+        if path[0] in data:
+            del data[path[0]]
         return not bool(data)
     else:
         # recursive case: go one level deeper
         sub_key = '.'.join(path[1:])
-        if path[0] in data and delete_nested_key(data[path[0]], sub_key):
-            # if the sub-dictionary is empty after the deletion, remove it
-            del data[path[0]]
+        if path[0] in data and isinstance(data[path[0]], dict):
+            if delete_nested_key(data[path[0]], sub_key):
+                # if the sub-dictionary is empty after the deletion, remove it
+                del data[path[0]]
         return not bool(data)
+
 
 
 def get_dot_notation_path(change) -> str:
