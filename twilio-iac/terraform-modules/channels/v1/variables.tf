@@ -56,7 +56,10 @@ variable "channels" {
     custom_schedule      = optional(object({
       rrule = string
       timezone = string
-    }),{})
+    }),{
+      rrule = null
+      timezone = null
+    })
   }))
 }
 variable "workflow_sids" {

@@ -27,17 +27,22 @@ resource "datadog_logs_metric" "channel_logs_metric" {
   }
 }
 
-resource "datadog_monitor" "nr_of_executions_on_webchatCLPRO" {
+resource "datadog_monitor" "nr_of_executions_threshold" {
+  for_each = var.enable_datadog_monitoring ? {
+    for channel, config in var.channel_studio_flow_sids :
+    channel => config
+    if config.enable_datadog_monitor == true
+  } : {}
   include_tags = false
   scheduling_options {
     custom_schedule {
       recurrence {
-        rrule = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=23;BYMINUTE=0;BYDAY=MO,TU,WE,TH,FR"
-        timezone = "America/Santiago"
+        rrule = each.value.custom_schedule.rrule
+        timezone = each.value.custom_schedule.timezone
       }
     }
   }
-  name = "nr of executions on webchat.CL.PROD"
+  name = "Nr of executions on ${var.short_helpline}_${var.short_environment}_${each.key}"
   type = "query alert"
   query = "sum(last_1d):sum:studio_flows.started.by.channel.webchat.CL.PROD{*}.as_count() == 0"
   message = "Notify: @slack-aselo-customer-support @alejandro@techmatters.org"

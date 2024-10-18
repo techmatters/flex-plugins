@@ -133,7 +133,10 @@ variable "channels" {
     custom_schedule      = optional(object({
       rrule = string
       timezone = string
-    }),{})
+    }),{
+      rrule = null
+      timezone = null
+    })
   }))
   description = "Map of enabled channel objects with their attributes"
 
