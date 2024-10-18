@@ -94,7 +94,6 @@ def get_nested_key(data, key):
 
 def delete_nested_key(data, key):
     """Delete a nested key in a dict if it exists"""
-    
     path = key.split('.')
     if len(path) == 1:
         # base case: check if the key exists, then remove it
