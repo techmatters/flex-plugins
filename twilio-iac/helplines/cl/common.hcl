@@ -79,7 +79,7 @@ locals {
       },
       voice : {
         channel_type     = "voice"
-        enable_datadog_monitor = true
+        enable_datadog_monitor = false
         custom_monitor = {
           query = "sum(last_1d):sum:<metric>{*}.as_count() == 0"
           custom_schedule = {
