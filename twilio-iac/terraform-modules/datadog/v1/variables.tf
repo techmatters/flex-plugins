@@ -14,11 +14,11 @@ variable channel_studio_flow_sids {
     flow_sid         = string,
     enable_datadog_monitor = optional(bool, false)
     custom_monitor = optional(object({
-      query = optional(string)
+      query = optional(string,null)
       custom_schedule = optional(object({
         rrule = optional(string)
         timezone = optional(string)
-      }),{    })
+      }),null)
     }))
     
   }))
