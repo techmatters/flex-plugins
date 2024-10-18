@@ -59,11 +59,13 @@ locals {
     #Channels
     channels = {
       webchat : {
-        channel_type     = "web"
-        enable_datadig_monitor = true
-        custom_schedule = {
-          rrule = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=23;BYMINUTE=0;BYDAY=MO,TU,WE,TH,FR"
-          timezone = "America/Santiago"
+        channel_type           = "web"
+        enable_datadog_monitor = true
+        custom_monitor = {
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=23;BYMINUTE=0;BYDAY=MO,TU,WE,TH,FR"
+            timezone = "America/Santiago"
+          }
         }
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking.tftpl"
