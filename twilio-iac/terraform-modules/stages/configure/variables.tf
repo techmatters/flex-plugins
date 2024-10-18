@@ -149,6 +149,11 @@ variable "enable_post_survey" {
   default = false
 }
 
+variable "enable_datadog_monitoring" {
+  type    = bool
+  default = false
+}
+
 variable "hrm_transcript_retention_days_override" {
   description = "Number of days to retain HRM Contact Job Cleanup logs"
   type        = number

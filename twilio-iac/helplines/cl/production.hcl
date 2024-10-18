@@ -4,7 +4,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-
+    enable_datadog_monitoring = false
     #Studio flow
     flow_vars = {
       service_sid                   = "ZSe84c8040f76f6e331310f132b88c25d8"

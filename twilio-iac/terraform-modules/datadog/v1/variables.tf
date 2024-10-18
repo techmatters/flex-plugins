@@ -12,3 +12,8 @@ variable channel_studio_flow_sids {
     description = "Channel studio flow sids"
     type = map(string)
 }
+
+variable "enable_datadog_monitoring" {
+  type    = bool
+  default = false
+}
