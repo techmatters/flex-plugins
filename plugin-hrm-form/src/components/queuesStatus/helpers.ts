@@ -21,7 +21,7 @@ import { isSmsChannelType } from '../../utils/smsChannels';
 type QueueEntry = { [K in CoreChannelTypes]: number } & { longestWaitingDate: string; isChatPending: boolean };
 
 export const newQueueEntry: QueueEntry = {
-  facebook: 0,
+  messenger: 0,
   sms: 0,
   voice: 0,
   web: 0,

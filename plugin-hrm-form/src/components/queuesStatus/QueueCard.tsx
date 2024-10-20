@@ -57,7 +57,7 @@ const renderChannel = ({
       return getChannelUI('Calls', channelColor, contactsWaiting, false);
     case coreChannelTypes.sms:
       return getChannelUI('SMS', channelColor, contactsWaiting, true);
-    case coreChannelTypes.facebook:
+    case coreChannelTypes.messenger:
       return getChannelUI('FB', channelColor, contactsWaiting, true, 'Facebook');
     case coreChannelTypes.whatsapp:
       return getChannelUI('WA', channelColor, contactsWaiting, true, 'Whatsapp');
@@ -76,7 +76,7 @@ const renderChannel = ({
 
 type Props = {
   qName: string;
-  facebook: number;
+  messenger: number;
   sms: number;
   voice: number;
   web: number;

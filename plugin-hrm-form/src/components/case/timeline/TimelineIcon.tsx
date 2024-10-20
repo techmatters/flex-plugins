@@ -39,8 +39,8 @@ export const getIcon = (type: IconType, size: string = '24px') => {
   switch (type) {
     case channelTypes.whatsapp:
       return <WhatsappIcon width={size} height={size} color={colors.whatsapp} />;
-    case channelTypes.facebook:
-      return <FacebookIcon width={size} height={size} color={colors.facebook} />;
+    case channelTypes.messenger:
+      return <FacebookIcon width={size} height={size} color={colors.messenger} />;
     case channelTypes.web:
       return <DefaultIcon defaultTaskChannel={Flex.DefaultTaskChannels.Chat} color={colors.web} />;
     case channelTypes.sms:

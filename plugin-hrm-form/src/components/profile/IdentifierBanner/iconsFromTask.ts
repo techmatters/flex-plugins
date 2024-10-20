@@ -21,13 +21,14 @@ import { customSmsChannelTypes } from '../../../utils/smsChannels';
 type ExtendedChannelTypes = CoreChannelTypes | keyof typeof customSmsChannelTypes;
 
 const iconSize = '18px';
+// eslint-disable-next-line import/no-unused-modules
 export const iconsFromTask: { [channelType in ExtendedChannelTypes]: JSX.Element } = {
   ...{
     [coreChannelTypes.web]: getIcon(coreChannelTypes.web, iconSize),
     [coreChannelTypes.voice]: getIcon(coreChannelTypes.voice, iconSize),
     [coreChannelTypes.sms]: getIcon(coreChannelTypes.sms, iconSize),
     [coreChannelTypes.whatsapp]: getIcon(coreChannelTypes.whatsapp, iconSize),
-    [coreChannelTypes.facebook]: getIcon(coreChannelTypes.facebook, iconSize),
+    [coreChannelTypes.messenger]: getIcon(coreChannelTypes.messenger, iconSize),
     [coreChannelTypes.telegram]: getIcon(coreChannelTypes.telegram, iconSize),
     [coreChannelTypes.instagram]: getIcon(coreChannelTypes.instagram, iconSize),
     [coreChannelTypes.line]: getIcon(coreChannelTypes.line, iconSize),

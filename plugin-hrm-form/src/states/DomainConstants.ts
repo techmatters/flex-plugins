@@ -19,7 +19,7 @@ import { customSmsChannelTypes } from '../utils/smsChannels';
 const defaultChannelTypes = {
   voice: 'voice',
   sms: 'sms',
-  facebook: 'facebook',
+  messenger: 'messenger',
   whatsapp: 'whatsapp',
   web: 'web',
 } as const;
@@ -55,7 +55,7 @@ export type CoreChannelTypes = typeof coreChannelTypes[keyof typeof coreChannelT
 
 const chatChannels = [
   channelTypes.whatsapp,
-  channelTypes.facebook,
+  channelTypes.messenger,
   channelTypes.web,
   channelTypes.modica,
   channelTypes.sms,

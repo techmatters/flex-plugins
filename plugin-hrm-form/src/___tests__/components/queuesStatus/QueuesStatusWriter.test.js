@@ -60,7 +60,7 @@ const tasks = {
     status: 'pending',
     date_created: twoMinutesAgo,
     queue_name: 'Admin',
-    attributes: { channelType: channelTypes.facebook },
+    attributes: { channelType: channelTypes.messenger },
   },
   T4: {
     status: 'pending',

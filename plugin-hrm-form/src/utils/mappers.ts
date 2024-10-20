@@ -36,7 +36,7 @@ export const mapChannel = (channel: string) => {
     return channel;
   }
   switch (channel) {
-    case channelTypes.facebook:
+    case channelTypes.messenger:
       return 'Facebook Messenger';
     case channelTypes.web:
       return 'Chat';
@@ -61,7 +61,7 @@ export const mapChannel = (channel: string) => {
 // Flex Insights reporting uses slightly different channel names than other uses
 export const mapChannelForInsights = (channel: string) => {
   switch (channel) {
-    case channelTypes.facebook:
+    case channelTypes.messenger:
       return 'Facebook';
     case channelTypes.web:
       return 'Web';

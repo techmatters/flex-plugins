@@ -28,7 +28,7 @@ test('Test contact call type mapper', () => {
 });
 
 test('Test contact channel mapper', () => {
-  const ch1 = channelTypes.facebook;
+  const ch1 = channelTypes.messenger;
   const expectCh1 = 'Facebook Messenger';
   const fmtCh1 = mapChannel(ch1);
 

@@ -37,7 +37,7 @@ const channelTransformations: { [k in ChannelTypes]: TransformIdentifierFunction
   sms: [phoneNumberStandardization],
   whatsapp: [s => s.replace('whatsapp:', ''), phoneNumberStandardization],
   modica: [s => s.replace('modica:', ''), phoneNumberStandardization],
-  facebook: [s => s.replace('messenger:', '')],
+  messenger: [s => s.replace('messenger:', '')],
   instagram: [],
   line: [],
   telegram: [],

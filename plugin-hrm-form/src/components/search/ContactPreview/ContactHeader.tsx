@@ -52,7 +52,7 @@ type Props = OwnProps;
 
 const getNumber = (channel, number) => {
   switch (channel) {
-    case channelTypes.facebook:
+    case channelTypes.messenger:
       return `FB: ${number}`;
     case channelTypes.web:
       return 'Web';

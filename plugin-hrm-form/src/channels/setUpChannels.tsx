@@ -93,7 +93,7 @@ export const setupDefaultChannel = () => {
 };
 
 export const setupFacebookChannel = () => {
-  const facebookIcon = <FacebookIcon width="24px" height="24px" color={colors.facebook} />;
+  const facebookIcon = <FacebookIcon width="24px" height="24px" color={colors.messenger} />;
   DefaultTaskChannels.ChatMessenger.icons = generateIcons(facebookIcon);
   maskChannelStringsWithIdentifiers(DefaultTaskChannels.ChatMessenger);
   setChatTaskCardString(DefaultTaskChannels.ChatMessenger);
