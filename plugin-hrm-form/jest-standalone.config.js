@@ -22,7 +22,7 @@ module.exports = config => {
     ...defaults,
     rootDir: '.',
     setupFilesAfterEnv: ['./src/setupTests.js'],
-    testEnvironment: 'jest-environment-jsdom',
+    testEnvironment: 'node',
     testTimeout: 2 * 60 * 1000, // 2 minutes in ms
     transformIgnorePatterns: [`/node_modules/(?!uuid/.+\\.js)`],
     moduleNameMapper: {

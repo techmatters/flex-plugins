@@ -16,6 +16,6 @@
 
 module.exports = (config, { isProd, isDev, isTest }) => {
   config.transformIgnorePatterns = ['/node_modules/(?!wavesurfer.js)'];
-  config.testEnvironment = 'jsdom';
+  config.testEnvironment = 'node';
   return config;
 };
