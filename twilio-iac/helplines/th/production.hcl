@@ -25,6 +25,14 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/th/templates/studio-flows/facebook-flow.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_2d):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=23;BYMINUTE=0;BYDAY=MO,TU,WE,TH,FR,SA,SU"
+            timezone = "Asia/Bangkok"
+          }
+        }
       },
       instagram : {
         messaging_mode       = "conversations"
@@ -33,6 +41,14 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-blocking-conv.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_1d):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=23;BYMINUTE=0;BYDAY=MO,TU,WE,TH,FR,SA,SU"
+            timezone = "Asia/Bangkok"
+          }
+        }
       },
       line : {
         messaging_mode       = "conversations"
