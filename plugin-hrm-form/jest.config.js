@@ -14,8 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+// NOTE: seems like this ain't used at all, can we just delete it?
 module.exports = (config, { isProd, isDev, isTest }) => {
   config.transformIgnorePatterns = ['/node_modules/(?!wavesurfer.js)'];
-  config.testEnvironment = 'node';
+  config.testEnvironment = 'jsdom';
+  config.testURL = 'http://localhost/';
+  // config.testEnvironmentOptions = {};
   return config;
 };
