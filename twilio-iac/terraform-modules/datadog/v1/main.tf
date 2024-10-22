@@ -49,5 +49,6 @@ resource "datadog_monitor" "nr_of_executions_threshold" {
   name = "Nr of executions on ${var.short_helpline}_${var.short_environment}_${each.key}"
   type = "query alert"
   query = each.value.custom_monitor.query != null ? replace(each.value.custom_monitor.query,"<metric>",datadog_logs_metric.channel_logs_metric[each.key].name) :  "sum(last_1h):sum:${datadog_logs_metric.channel_logs_metric[each.key].name}{*}.as_count() == 0"
-message = "Notify: @slack-aselo-customer-support @alejandro@techmatters.org"
+  message = "Notify: @slack-aselo-customer-support @alejandro@techmatters.org"
+  tags = ["env:${lower(var.short_environment)}","type:studio-flow-executions"]
 }
