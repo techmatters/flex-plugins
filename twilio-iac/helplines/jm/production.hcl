@@ -23,7 +23,6 @@ locals {
             timezone = "America/Santiago"
           }
         }
-      }
       },
       facebook : {
         channel_type         = "facebook"
@@ -48,7 +47,7 @@ locals {
           }
         }
       }
-    
+    }
 
     #Studio flow
     flow_vars = {
