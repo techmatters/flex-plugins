@@ -4,6 +4,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
+    enable_datadog_monitoring             = true
     custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true OR  twilioNumber IN ['instagram:17841400289612325', 'messenger:325981127456443', 'whatsapp:+15077097720']"
 
     workflow_vars = {
@@ -28,6 +29,14 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_1w):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=10;BYMINUTE=0;BYDAY=MO"
+            timezone = "America/Santiago"
+          }
+        }
       },
       facebook : {
         channel_type         = "facebook"
@@ -35,6 +44,14 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_1w):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=10;BYMINUTE=0;BYDAY=MO"
+            timezone = "America/Santiago"
+          }
+        }
       },
       whatsapp : {
         messaging_mode       = "conversations"
@@ -50,6 +67,14 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_1w):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=10;BYMINUTE=0;BYDAY=MO"
+            timezone = "America/Santiago"
+          }
+        }
       }
     }
   }

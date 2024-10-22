@@ -4,29 +4,53 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-
+    enable_datadog_monitoring = true
     channels = {
       webchat : {
-        channel_type         = "web"
-        contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-webchat.tftpl"
-        channel_flow_vars    = {}
-        chatbot_unique_names = []
+        channel_type           = "web"
+        contact_identity       = ""
+        templatefile           = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-webchat.tftpl"
+        channel_flow_vars      = {}
+        chatbot_unique_names   = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_1w):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=10;BYMINUTE=0;BYDAY=MO"
+            timezone = "America/Santiago"
+          }
+        }
       },
       facebook : {
-        channel_type         = "facebook"
-        contact_identity     = "messenger:261976427221327"
-        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging.tftpl"
-        channel_flow_vars    = {}
-        chatbot_unique_names = []
+        channel_type           = "facebook"
+        contact_identity       = "messenger:261976427221327"
+        templatefile           = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging.tftpl"
+        channel_flow_vars      = {}
+        chatbot_unique_names   = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_1w):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=10;BYMINUTE=0;BYDAY=MO"
+            timezone = "America/Santiago"
+          }
+        }
       },
       whatsapp : {
-        messaging_mode       = "conversations"
-        channel_type         = "whatsapp"
-        contact_identity     = "whatsapp:+260973553422"
-        templatefile         = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-conv.tftpl"
-        channel_flow_vars    = {}
-        chatbot_unique_names = []
+        messaging_mode         = "conversations"
+        channel_type           = "whatsapp"
+        contact_identity       = "whatsapp:+260973553422"
+        templatefile           = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-conv.tftpl"
+        channel_flow_vars      = {}
+        chatbot_unique_names   = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_1w):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=10;BYMINUTE=0;BYDAY=MO"
+            timezone = "America/Santiago"
+          }
+        }
       },
       voice : {
         channel_type     = "voice"
@@ -47,7 +71,7 @@ locals {
       widget_from                           = "Lifeline/Childline Zambia"
       chat_blocked_message                  = "Hi, you've been blocked from accessing Childline/Lifeline services and we are not able to read or receive further messages from you."
       voice_ivr_language                    = "en-US",
-      voice_ivr_blocked_message            = "Hi, you've been blocked from accessing Childline/Lifeline services and we are not able to receive further calls from you."
+      voice_ivr_blocked_message             = "Hi, you've been blocked from accessing Childline/Lifeline services and we are not able to receive further calls from you."
     }
   }
 }
