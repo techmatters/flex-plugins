@@ -48,7 +48,7 @@ locals {
           }
         }
       }
-    }
+    
 
     #Studio flow
     flow_vars = {
