@@ -76,11 +76,7 @@
         "value": "Stone",
         "label": "Stoneridge"
       }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    ]
   },
   {
     "name": "department",
