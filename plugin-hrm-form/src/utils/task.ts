@@ -50,15 +50,20 @@ const channelTransformations: { [k in ChannelTypes]: TransformIdentifierFunction
 export const getNumberFromTask = (task: CustomITask) => {
   if (!isTwilioTask(task)) return null;
 
+  const { channelType, defaultFrom } = task;
+
   // webchat is a special case since it does not only depends on channel but in the task attributes too
-  if (task.channelType === channelTypes.web) {
+  if (channelType === channelTypes.web) {
     return getContactValueFromWebchat(task);
   }
 
-  if (!channelTransformations[task.channelType]) return null;
+  if (!channelTransformations[channelType]) {
+    console.error(`Channel type ${channelType} is not supported`);
+    throw new Error(`Channel type ${channelType} is not supported`);
+  }
 
   // otherwise, return the "defaultFrom" with the transformations on the identifier corresponding to each channel
-  return channelTransformations[task.channelType as ChannelTypes].reduce((accum, f) => f(accum), task.defaultFrom);
+  return channelTransformations[channelType as ChannelTypes].reduce((accum, f) => f(accum), defaultFrom);
 };
 
 /**
