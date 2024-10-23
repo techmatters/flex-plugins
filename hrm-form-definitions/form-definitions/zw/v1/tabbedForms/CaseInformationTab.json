@@ -20,6 +20,65 @@
     "type": "mixed-checkbox"
   },
   {
+    "name": "dispositions",
+    "label": "Project-specific Dispositions",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Centenary",
+        "label": "Centenary"
+      },
+      {
+        "value": "Cowdry Park",
+        "label": "Cowdry Park (DCA1)"
+      },
+      {
+        "value": "Old Magwegwe",
+        "label": "Old Magwegwe (DCA2)"
+      },
+      {
+        "value": "Hopley",
+        "label": "Hopley"
+      },
+      {
+        "value": "Mbare",
+        "label": "Mbare Call"
+      },
+      {
+        "value": "Kuwadzana",
+        "label": "Kuwadzana (OAK)"
+      },
+      {
+        "value": "Epworth",
+        "label": "Epworth (OAK1)"
+      },
+      {
+        "value": "Dziravasekwa",
+        "label": "Dziravasekwa (OAK2)"
+      },
+      {
+        "value": "Mtoko",
+        "label": "Mtoko etc (Plan)"
+      },
+      {
+        "value": "Mangwe",
+        "label": "Mangwe (SAVE1)"
+      },
+      {
+        "value": "Bulilima",
+        "label": "Bulilima (SAVE2)"
+      },
+      {
+        "value": "Stone",
+        "label": "Stoneridge"
+      }
+    ]
+  },
+  {
     "name": "department",
     "label": "Department",
     "type": "select",
