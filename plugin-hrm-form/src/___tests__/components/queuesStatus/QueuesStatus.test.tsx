@@ -47,7 +47,7 @@ function createState(queuesStatusState) {
 const colors = {
   voice: '#000000',
   web: '#000000',
-  messenger: '#000000',
+  facebook: '#000000',
   sms: '#000000',
   whatsapp: '#000000',
   telegram: '#000000',
@@ -105,7 +105,7 @@ test('Test <QueuesStatus> after update', () => {
   const queuesStatusState = {
     queuesStatus: {
       Q1: {
-        messenger: 1,
+        facebook: 1,
         sms: 2,
         voice: 3,
         web: 4,
@@ -116,7 +116,7 @@ test('Test <QueuesStatus> after update', () => {
         longestWaitingDate: secondsAgo.toISOString(),
       },
       Q2: {
-        messenger: 5,
+        facebook: 5,
         sms: 4,
         voice: 3,
         web: 2,
@@ -127,7 +127,7 @@ test('Test <QueuesStatus> after update', () => {
         longestWaitingDate: oneMinuteAgo.toISOString(),
       },
       Q3: {
-        messenger: 2,
+        facebook: 2,
         sms: 2,
         voice: 2,
         web: 2,
@@ -138,7 +138,7 @@ test('Test <QueuesStatus> after update', () => {
         longestWaitingDate: twoMinutesAgo.toISOString(),
       },
       Q4: {
-        messenger: 0,
+        facebook: 0,
         sms: 0,
         voice: 0,
         web: 0,
@@ -149,7 +149,7 @@ test('Test <QueuesStatus> after update', () => {
         longestWaitingDate: null,
       },
       Admin: {
-        messenger: 9,
+        facebook: 9,
         sms: 9,
         voice: 9,
         web: 9,
@@ -219,7 +219,7 @@ each([
     const queuesStatusState = {
       queuesStatus: {
         Q1: {
-          messenger: 1,
+          facebook: 1,
           sms: 2,
           voice: 3,
           web: 4,
@@ -277,7 +277,7 @@ test('Test <QueuesStatus> after error', () => {
   const queuesStatusState = {
     queuesStatus: {
       Q1: {
-        messenger: 1,
+        facebook: 1,
         sms: 2,
         voice: 3,
         web: 4,
@@ -288,7 +288,7 @@ test('Test <QueuesStatus> after error', () => {
         longestWaitingDate: secondsAgo.toISOString(),
       },
       Admin: {
-        messenger: 9,
+        facebook: 9,
         sms: 9,
         voice: 9,
         web: 9,
@@ -331,7 +331,7 @@ test('a11y', async () => {
   const queuesStatusState = {
     queuesStatus: {
       Q1: {
-        messenger: 1,
+        facebook: 1,
         sms: 2,
         voice: 3,
         web: 4,
