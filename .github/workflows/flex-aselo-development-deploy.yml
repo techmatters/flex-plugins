@@ -31,4 +31,4 @@ jobs:
     with:
       helpline_code: AS
       environment_code: development
-      self-hosted-deploy: ${{ github.event_name != 'workflow_dispatch' }} && 'true' || ${{ inputs.self-hosted-deploy }}
+      self-hosted-deploy: ${{ github.event_name != 'workflow_dispatch' && 'true' || inputs.self-hosted-deploy }}
