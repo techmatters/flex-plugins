@@ -37,6 +37,7 @@ const channelTransformations: { [k in ChannelTypes]: TransformIdentifierFunction
   sms: [phoneNumberStandardization],
   whatsapp: [s => s.replace('whatsapp:', ''), phoneNumberStandardization],
   modica: [s => s.replace('modica:', ''), phoneNumberStandardization],
+  facebook: [s => s.replace('messenger:', '')],
   messenger: [s => s.replace('messenger:', '')],
   instagram: [],
   line: [],
@@ -57,13 +58,20 @@ export const getNumberFromTask = (task: CustomITask) => {
     return getContactValueFromWebchat(task);
   }
 
-  if (!channelTransformations[channelType]) {
-    console.error(`Channel type ${channelType} is not supported`);
-    throw new Error(`Channel type ${channelType} is not supported`);
+  const transformedNumber = channelTransformations[channelType as ChannelTypes];
+
+  // Ensure transformedNumber is an array before calling reduce
+  if ((!Array.isArray(transformedNumber) || transformedNumber.length === 0) && channelType !== undefined) {
+    console.error(`Channel type ${channelType} is not supported or transformation array is invalid`, transformedNumber);
+    return null;
   }
 
-  // otherwise, return the "defaultFrom" with the transformations on the identifier corresponding to each channel
-  return channelTransformations[channelType as ChannelTypes].reduce((accum, f) => f(accum), defaultFrom);
+  if (defaultFrom === undefined || defaultFrom === null || !defaultFrom) {
+    console.error(`defaultFrom is undefined for channelType ${channelType}`);
+    return null;
+  }
+
+  return transformedNumber.reduce((accum, f) => f(accum), defaultFrom);
 };
 
 /**
