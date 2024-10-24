@@ -16,7 +16,7 @@
 
 import type { QueuesStatus } from '../../states/queuesStatus/types';
 import { CoreChannelTypes } from '../../states/DomainConstants';
-import { isSmsChannelType } from '../../utils/smsChannels';
+import { isFacebookChannelType, isSmsChannelType } from '../../utils/groupedChannels';
 
 type QueueEntry = { [K in CoreChannelTypes]: number } & { longestWaitingDate: string; isChatPending: boolean };
 
@@ -54,6 +54,8 @@ const getChannel = ({
   attributes: { channelType, customChannelType },
 }: any): CoreChannelTypes => {
   if (taskChannelType === 'voice') return 'voice';
+
+  if (isFacebookChannelType(customChannelType || channelType)) return 'facebook';
 
   if (isSmsChannelType(customChannelType || channelType)) return 'sms';
 
