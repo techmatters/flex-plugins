@@ -58,13 +58,14 @@ export const getNumberFromTask = (task: CustomITask) => {
     return getContactValueFromWebchat(task);
   }
 
-  if (!channelTransformations[channelType] && channelType !== 'undefined') {
-    console.error(`Channel type ${channelType} is not supported`);
-    return null;
+  if (channelTransformations[channelType]) {
+    // return the "defaultFrom" with the transformations on the identifier corresponding to each channel
+    return channelTransformations[channelType as ChannelTypes].reduce((accum, f) => f(accum), defaultFrom);
   }
 
-  // otherwise, return the "defaultFrom" with the transformations on the identifier corresponding to each channel
-  return channelTransformations[channelType as ChannelTypes].reduce((accum, f) => f(accum), defaultFrom);
+  if (channelType === undefined) return null;
+  console.error(`Channel type ${channelType} is not supported`, typeof channelType, channelType, task);
+  return null;
 };
 
 /**
