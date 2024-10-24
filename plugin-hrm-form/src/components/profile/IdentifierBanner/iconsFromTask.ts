@@ -16,9 +16,12 @@
 
 import { getIcon } from '../../case/timeline/TimelineIcon';
 import { CoreChannelTypes, coreChannelTypes } from '../../../states/DomainConstants';
-import { customSmsChannelTypes } from '../../../utils/smsChannels';
+import { customSmsChannelTypes, customFacebookChannelTypes } from '../../../utils/groupedChannels';
 
-type ExtendedChannelTypes = CoreChannelTypes | keyof typeof customSmsChannelTypes;
+type ExtendedChannelTypes =
+  | CoreChannelTypes
+  | keyof typeof customSmsChannelTypes
+  | keyof typeof customFacebookChannelTypes;
 
 const iconSize = '18px';
 // eslint-disable-next-line import/no-unused-modules
@@ -28,10 +31,11 @@ export const iconsFromTask: { [channelType in ExtendedChannelTypes]: JSX.Element
     [coreChannelTypes.voice]: getIcon(coreChannelTypes.voice, iconSize),
     [coreChannelTypes.sms]: getIcon(coreChannelTypes.sms, iconSize),
     [coreChannelTypes.whatsapp]: getIcon(coreChannelTypes.whatsapp, iconSize),
-    [coreChannelTypes.messenger]: getIcon(coreChannelTypes.messenger, iconSize),
+    [coreChannelTypes.facebook]: getIcon(coreChannelTypes.facebook, iconSize),
     [coreChannelTypes.telegram]: getIcon(coreChannelTypes.telegram, iconSize),
     [coreChannelTypes.instagram]: getIcon(coreChannelTypes.instagram, iconSize),
     [coreChannelTypes.line]: getIcon(coreChannelTypes.line, iconSize),
   },
   [customSmsChannelTypes.modica]: getIcon(customSmsChannelTypes.modica, iconSize),
+  [customFacebookChannelTypes.messenger]: getIcon(customFacebookChannelTypes.messenger, iconSize),
 };

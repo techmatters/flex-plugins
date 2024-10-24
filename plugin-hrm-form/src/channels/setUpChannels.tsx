@@ -27,7 +27,7 @@ import SmsIcon from '../components/common/icons/SmsIcon';
 import * as TransferHelpers from '../transfer/transferTaskState';
 import { colors, mainChannelColor } from './colors';
 import { getTemplateStrings } from '../hrmConfig';
-import { isSmsChannelType } from '../utils/smsChannels';
+import { isFacebookChannelType, isSmsChannelType } from '../utils/groupedChannels';
 import { setCallTaskCardString, setChatTaskCardString } from '../components/teamsView/taskCardEnhancement';
 import { maskChannelStringsWithIdentifiers } from '../maskIdentifiers';
 
@@ -93,8 +93,9 @@ export const setupDefaultChannel = () => {
 };
 
 export const setupFacebookChannel = () => {
-  const facebookIcon = <FacebookIcon width="24px" height="24px" color={colors.messenger} />;
+  const facebookIcon = <FacebookIcon width="24px" height="24px" color={colors.facebook} />;
   DefaultTaskChannels.ChatMessenger.icons = generateIcons(facebookIcon);
+  DefaultTaskChannels.ChatMessenger.isApplicable = task => isFacebookChannelType(task.channelType);
   maskChannelStringsWithIdentifiers(DefaultTaskChannels.ChatMessenger);
   setChatTaskCardString(DefaultTaskChannels.ChatMessenger);
 };

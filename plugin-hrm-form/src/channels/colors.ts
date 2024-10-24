@@ -48,7 +48,7 @@ const lineColor = '#00C300';
 export const colors: ChannelColors = {
   voice: voiceColor,
   web: webColor,
-  messenger: facebookColor,
+  facebook: facebookColor,
   sms: smsColor,
   whatsapp: whatsappColor,
   telegram: telegramColor,
