@@ -154,8 +154,8 @@ jobs:
         if: env.SELF_HOSTED_DEPLOY == 'true'
         uses: ./.github/actions/deployment-matrix
         with:
-          account-sid: ${{env.TWILIO_ACCOUNT_SID}}
-          auth-token: ${{env.TWILIO_AUTH_TOKEN}}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           identifier: ${{ inputs.helpline_code }}
           environment: ${{ inputs.environment_code}}
