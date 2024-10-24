@@ -6,7 +6,7 @@ locals {
 
 
   local_config = {
-
+    enable_datadog_monitoring             = true
     custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true OR  twilioNumber == 'messenger:123236277715368'"
 
 
@@ -32,6 +32,14 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_1w):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=10;BYMINUTE=0;BYDAY=MO"
+            timezone = "America/Santiago"
+          }
+        }
       },
       voice : {
         channel_type     = "voice"

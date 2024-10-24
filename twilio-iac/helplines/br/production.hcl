@@ -4,7 +4,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-
+    enable_datadog_monitoring             = true
     custom_task_routing_filter_expression = "helpline=='SaferNet' or isContactlessTask==true OR channelType=='web' OR twilioNumber=='messenger:175804982467404' OR channelType=='facebook'"
 
     #Studio flow
@@ -26,6 +26,14 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/br/templates/studio-flows/messaging.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_1w):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=10;BYMINUTE=0;BYDAY=MO"
+            timezone = "America/Santiago"
+          }
+        }
       }
     }
   }

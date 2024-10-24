@@ -2,6 +2,18 @@ data "aws_ssm_parameter" "secrets" {
   name = "/terraform/twilio-iac/${var.environment}/${var.short_helpline}/secrets.json"
 }
 
+data "aws_ssm_parameter" "datadog_app_key" {
+  name ="/terraform/infrastructure-config/datadog/app_key"
+}
+
+data "aws_ssm_parameter" "datadog_api_key" {
+  name ="/terraform/infrastructure-config/datadog/api_key"
+}
+
+provider "datadog" {
+  api_key = data.aws_ssm_parameter.datadog_api_key.value
+  app_key = data.aws_ssm_parameter.datadog_app_key.value
+}
 data "aws_caller_identity" "current" {}
 
 locals {
@@ -59,6 +71,13 @@ module "channel" {
   serverless_environment_sid = local.serverless_environment_production_sid
 }
 
+module "datadog" {
+  source = "../../datadog/v1"
+  enable_datadog_monitoring = var.enable_datadog_monitoring
+  short_helpline    = upper(var.short_helpline)
+  short_environment = var.short_environment
+  channel_studio_flow_sids = module.channel.channel_studio_flows_sids
+}
 
 
 resource "aws_ssm_parameter" "transcript_retention_override" {

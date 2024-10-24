@@ -52,7 +52,17 @@ variable "channels" {
     channel_flow_vars    = map(string)
     chatbot_unique_names = list(string)
     messaging_mode       = optional(string, "programmable-chat")
+    enable_datadog_monitor = optional(bool, false)
+    custom_monitor = optional(object({
+      query = optional(string)
+      custom_schedule      = optional(object({
+      rrule = optional(string)
+      timezone = optional(string)
+    }),{    })
+    }))
+    
   }))
+  description = "Map of enabled channel objects with their attributes"
 
 }
 variable "workflow_sids" {

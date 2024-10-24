@@ -32,6 +32,14 @@ locals {
           blocked_message       = "Kia ora, you've been blocked from accessing Youthline's helpline and we are not able to read or receive further messages from you. If you think this is a mistake, please email complaints@youthline.co.nz with your name and contact details for this to be reviewed. If you are unsafe or require urgent support, please call 111 now."
           widget_from           = "Youthline"
         }
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_12h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=2;BYHOUR=4;BYMINUTE=0"
+            timezone = "Pacific/Auckland"
+          }
+        }
         chatbot_unique_names = []
       },
       voice : {
@@ -46,6 +54,14 @@ locals {
           initial_message_url        = "https://nz-assets-6577.twil.io/initial_message.mp3"
           external_parties_number    = "+6498867045"
         }
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_12h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=2;BYHOUR=4;BYMINUTE=0"
+            timezone = "Pacific/Auckland"
+          }
+        }
         chatbot_unique_names = []
       },
       modica : {
@@ -56,6 +72,14 @@ locals {
           blocked_message     = "Kia ora, you've been blocked from accessing Youthline's helpline and we are not able to read or receive further messages from you. If you think this is a mistake, please email complaints@youthline.co.nz with your name and contact details for this to be reviewed. If you are unsafe or require urgent support, please call 111 now."
         }
         chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_12h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=2;BYHOUR=4;BYMINUTE=0"
+            timezone = "Pacific/Auckland"
+          }
+        }
       }
     }
   }
