@@ -46,7 +46,6 @@ export enum DefinitionVersionId {
   jmV1 = 'jm-v1', // SafeSpot v1
   caV1 = 'ca-v1', // Kids Help Phone Canada v1
   phV1 = 'ph-v1', // ECPAT Phillippines v1
-  ukV1 = 'uk-v1', // Revenge Porn UK v1
   huV1 = 'hu-v1', // Kek Vonal v1
   thV1 = 'th-v1', // Childline Thailand v1
   clV1 = 'cl-v1', // Línea Libre (CL) v1
