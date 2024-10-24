@@ -23,7 +23,6 @@ const smsChannelTypes = ['sms', ...Object.values(customSmsChannelTypes)] as cons
 export const isSmsChannelType = channelType =>
   Boolean(smsChannelTypes.find(smsChannelType => smsChannelType === channelType));
 
-
 export const customFacebookChannelTypes = {
   messenger: 'messenger',
 } as const;
