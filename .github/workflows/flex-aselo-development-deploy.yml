@@ -24,15 +24,11 @@ on:
   schedule:
     - cron: 0 0 * * 0
 
-
 jobs:
   deploy:
     uses: ./.github/workflows/flex-deploy.yml
     secrets: inherit
-    env:
-      # Always use self-hosted deploys for cases where the action is triggered by something other than a user's manual intervention
-      SELF_HOSTED_DEPLOY: ${{ github.event_name != 'workflow_dispatch' }} && 'true' || ${{ inputs.self-hosted-deploy }}
     with:
       helpline_code: AS
       environment_code: development
-      self-hosted-deploy: ${{ env.SELF_HOSTED_DEPLOY }}
+      self-hosted-deploy: ${{ github.event_name != 'workflow_dispatch' }} && 'true' || ${{ inputs.self-hosted-deploy }}
