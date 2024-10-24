@@ -58,20 +58,13 @@ export const getNumberFromTask = (task: CustomITask) => {
     return getContactValueFromWebchat(task);
   }
 
-  const transformedNumber = channelTransformations[channelType as ChannelTypes];
-
-  // Ensure transformedNumber is an array before calling reduce
-  if ((!Array.isArray(transformedNumber) || transformedNumber.length === 0) && channelType !== undefined) {
-    console.error(`Channel type ${channelType} is not supported or transformation array is invalid`, transformedNumber);
+  if (!channelTransformations[channelType] && channelType !== 'undefined') {
+    console.error(`Channel type ${channelType} is not supported`);
     return null;
   }
 
-  if (defaultFrom === undefined || defaultFrom === null || !defaultFrom) {
-    console.error(`defaultFrom is undefined for channelType ${channelType}`);
-    return null;
-  }
-
-  return transformedNumber.reduce((accum, f) => f(accum), defaultFrom);
+  // otherwise, return the "defaultFrom" with the transformations on the identifier corresponding to each channel
+  return channelTransformations[channelType as ChannelTypes].reduce((accum, f) => f(accum), defaultFrom);
 };
 
 /**

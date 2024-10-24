@@ -151,7 +151,7 @@ const SearchForm: React.FC<Props> = ({
     [channelTypes.voice]: 'PreviousContacts-PhoneNumber',
     [channelTypes.sms]: 'PreviousContacts-PhoneNumber',
     [channelTypes.whatsapp]: 'PreviousContacts-WhatsappNumber',
-    [channelTypes.messenger]: 'PreviousContacts-FacebookUser',
+    [channelTypes.facebook]: 'PreviousContacts-FacebookUser',
     [channelTypes.telegram]: 'PreviousContacts-TelegramUser',
     [channelTypes.instagram]: 'PreviousContacts-InstagramUser',
     [channelTypes.line]: 'PreviousContacts-LineUser',
