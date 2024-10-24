@@ -190,7 +190,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "country_check",
           "event": "noMatch"
         },
         {
@@ -241,6 +241,36 @@ ${
         "channel": task_channel_sids["voice"],
         "waitUrlMethod": "GET",
         "timeout": "3600"
+      },
+    {
+      "name": "country_check",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "noMatch"
+        },
+        {
+          "next": "play_blocked",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value does_not_start_with +64",
+              "arguments": [
+                "{{trigger.call.From}}"
+              ],
+              "type": "does_not_start_with",
+              "value": "+64"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.call.From}}",
+        "offset": {
+          "x": 1030,
+          "y": 270
+        }
       }
     }
   ],
