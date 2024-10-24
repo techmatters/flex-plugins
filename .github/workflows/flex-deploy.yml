@@ -83,7 +83,16 @@ jobs:
         with:
           ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
           env_variable_name: "TWILIO_AUTH_TOKEN"
-
+      - name: Configure Account to use Twilio Hosted Plugin
+        shell: bash
+        run: |
+          curl --location 'https://flex-api.twilio.com/v1/Configuration' \
+          --header 'Content-Type: application/json' \
+          -u '${{env.TWILIO_ACCOUNT_SID}}:${{env.TWILIO_AUTH_TOKEN}}' \
+          --data '{
+              "account_sid": "${{env.TWILIO_ACCOUNT_SID}}",
+              "plugin_service_attributes":null
+          }'
       # Call main-action to compile and deploy secrets.AS_DEV_ACCOUNT_SID
       - name: Executing main-action
         uses: ./.github/actions/main-action
