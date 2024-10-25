@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { customSmsChannelTypes } from '../utils/smsChannels';
+import { customSmsChannelTypes, customFacebookChannelTypes } from '../utils/groupedChannels';
 
 const defaultChannelTypes = {
   voice: 'voice',
@@ -48,6 +48,7 @@ export const coreChannelTypes = {
 export const channelTypes = {
   ...coreChannelTypes,
   ...customSmsChannelTypes,
+  ...customFacebookChannelTypes,
 };
 
 export type ChannelTypes = typeof channelTypes[keyof typeof channelTypes];

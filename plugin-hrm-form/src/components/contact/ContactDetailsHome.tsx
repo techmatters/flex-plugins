@@ -56,7 +56,7 @@ import { AppRoutes, isRouteWithContext } from '../../states/routing/types';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
 import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFromCaseBanner';
 import { selectCaseMergingBanners } from '../../states/case/caseBanners';
-import { isSmsChannelType } from '../../utils/smsChannels';
+import { isSmsChannelType } from '../../utils/groupedChannels';
 import getCanEditContact from '../../permissions/canEditContact';
 import AddCaseButton from '../AddCaseButton';
 import openNewCase from '../case/openNewCase';

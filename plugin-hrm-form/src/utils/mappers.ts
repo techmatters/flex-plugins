@@ -36,6 +36,7 @@ export const mapChannel = (channel: string) => {
     return channel;
   }
   switch (channel) {
+    case channelTypes.messenger:
     case channelTypes.facebook:
       return 'Facebook Messenger';
     case channelTypes.web:
