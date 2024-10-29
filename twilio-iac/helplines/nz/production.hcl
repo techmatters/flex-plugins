@@ -17,7 +17,7 @@ locals {
 
     #Task router
     phone_numbers = {
-      youthline : ["+6498865633","0800376633"],
+      youthline : ["+6498865633", "0800376633"],
       clinical : ["+6498867045"]
     }
 
@@ -65,13 +65,14 @@ locals {
         chatbot_unique_names = []
       },
       modica : {
-        channel_type        = "custom"
-        contact_identity    = "modica"
-        templatefile        = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority.tftpl"
-        channel_flow_vars   = {
-          blocked_message     = "Kia ora, you've been blocked from accessing Youthline's helpline and we are not able to read or receive further messages from you. If you think this is a mistake, please email complaints@youthline.co.nz with your name and contact details for this to be reviewed. If you are unsafe or require urgent support, please call 111 now."
+        messaging_mode   = "conversations"
+        channel_type     = "custom"
+        contact_identity = "modica"
+        templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v2.tftpl"
+        channel_flow_vars = {
+          blocked_message = "Kia ora, you've been blocked from accessing Youthline's helpline and we are not able to read or receive further messages from you. If you think this is a mistake, please email complaints@youthline.co.nz with your name and contact details for this to be reviewed. If you are unsafe or require urgent support, please call 111 now."
         }
-        chatbot_unique_names = []
+        chatbot_unique_names   = []
         enable_datadog_monitor = true
         custom_monitor = {
           query = "sum(last_12h):sum:<metric>{*}.as_count() == 0"
