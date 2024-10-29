@@ -697,7 +697,7 @@ ${
         "transitions": [
           {
             "event": "noMatch",
-            "next": "Msg60011E-Inflight"
+            "next": "split_Inflight_retry"
           },
           {
             "next": "Msg60011E-Inflight",
@@ -1344,7 +1344,7 @@ ${
         "transitions": [
           {
             "event": "noMatch",
-            "next": "Msg60011E-Inflight"
+            "next": "retry_split_Inflight_2"
           },
           {
             "next": "sendToQ6001_English",
@@ -1414,7 +1414,7 @@ ${
       "type": "gather-input-on-call",
       "transitions": [
         {
-          "next": "split_main_menu",
+          "next": "retry_split_main_menu",
           "event": "keypress"
         },
         {
@@ -1439,6 +1439,183 @@ ${
         "gather_language": "en",
         "profanity_filter": "true",
         "timeout": 5
+      }
+    },
+    {
+      "name": "retry_split_main_menu",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "main_set_retry",
+          "event": "noMatch"
+        },
+        {
+          "next": "Msg10006E-Info",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains en_number",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "Msg10006E-InfoOtherLanguages",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains tr_number",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "4"
+            }
+          ]
+        },
+        {
+          "next": "Msg10006F-InfoMessage2",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains fr_number",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "Msg10006E-Info",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 4",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.MainMenuB_Retry.Digits}}",
+        "offset": {
+          "x": -1700,
+          "y": -1730
+        }
+      }
+    },
+    {
+      "name": "split_Inflight_retry",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "Msg60011E-Inflight",
+          "event": "noMatch"
+        },
+        {
+          "next": "Msg60011E-Inflight",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 2",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "contains",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "Msg60011I-Inflight",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 3",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "contains",
+              "value": "4"
+            }
+          ]
+        },
+        {
+          "next": "SubIntro_Indigenous",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 4",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "contains",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.MainMenuB_Retry.Digits}}",
+        "offset": {
+          "x": -2310,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "retry_split_Inflight_2",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "sendToQ6001_English",
+          "event": "noMatch"
+        },
+        {
+          "next": "sendToQ6001_English",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 2",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "contains",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "sendToQ6005_Indigenous",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 4",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "contains",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.MainMenuB_Retry.Digits}}",
+        "offset": {
+          "x": -2550,
+          "y": 1120
+        }
       }
     }
     ],
