@@ -18,6 +18,7 @@
             "enable_lex": true,
             "enable_generalized_search": true,
             "enable_post_survey": true,
+            "enable_save_in_progress_contacts": true,
             "enable_save_insights": true,
             "enable_teams_view_enhancements2": true,
             "enable_voice_recordings": false
