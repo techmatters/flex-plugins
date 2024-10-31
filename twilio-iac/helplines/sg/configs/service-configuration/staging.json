@@ -1,6 +1,7 @@
 {
     "attributes": {
         "feature_flags": {
+            "enable_conferencing":true
         },
         "helpline_code": "sg",
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
