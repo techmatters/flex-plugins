@@ -5,7 +5,7 @@ locals {
 
   local_config = {
     enable_datadog_monitoring             = true
-    custom_task_routing_filter_expression = "channelType IN ['web', 'messenger', 'whatsapp']  OR isContactlessTask == true OR  twilioNumber IN ['instagram:17841400289612325', 'messenger:325981127456443', 'whatsapp:+15077097720']"
+    custom_task_routing_filter_expression = "channelType IN ['web', 'messenger', 'whatsapp']  OR isContactlessTask == true OR  twilioNumber == 'instagram:17841400289612325', 'messenger:325981127456443', 'whatsapp:+15077097720'"
 
     workflow_vars = {
       helpline_webchat_location = "https://kellimni.com/"
