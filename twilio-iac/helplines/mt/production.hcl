@@ -5,7 +5,7 @@ locals {
 
   local_config = {
     enable_datadog_monitoring             = true
-    custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true OR  twilioNumber IN ['instagram:17841400289612325', 'messenger:325981127456443', 'whatsapp:+15077097720']"
+    custom_task_routing_filter_expression = "channelType IN ['web', 'messenger', 'whatsapp']  OR isContactlessTask == true OR  twilioNumber IN ['instagram:17841400289612325', 'messenger:325981127456443', 'whatsapp:+15077097720']"
 
     workflow_vars = {
       helpline_webchat_location = "https://kellimni.com/"
@@ -39,9 +39,10 @@ locals {
         }
       },
       facebook : {
-        channel_type         = "facebook"
+        messaging_mode       = "conversations"
+        channel_type         = "messenger"
         contact_identity     = "messenger:325981127456443"
-        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-conv.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
         enable_datadog_monitor = true
