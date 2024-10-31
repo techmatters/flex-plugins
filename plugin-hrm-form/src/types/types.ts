@@ -287,6 +287,7 @@ export type FeatureFlags = {
   enable_post_survey: boolean; // Enables Post-Survey
   enable_previous_contacts: boolean; // Enables Previous Contacts Yellow Banner
   enable_region_resource_search: boolean; // Enables specifying a region as well as a province and / or city in Resource Search
+  enable_save_in_progress_contacts: boolean; // Enables Saving In Progress Contacts
   enable_save_insights: boolean; // Enables Saving Aditional Data on Insights
   enable_separate_timeline_view: boolean; // Enables a limited inline case timelinbe with a link to the full timeline
   enable_sort_cases: boolean; // Enables Sorting at Case List

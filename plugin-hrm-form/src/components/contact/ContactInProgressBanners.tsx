@@ -34,6 +34,7 @@ import { checkTaskAssignment, completeTaskAssignment } from '../../services/Serv
 import { Contact, RouterTask } from '../../types/types';
 import getCanEditInProgressContact from '../../permissions/canEditInProgressContact';
 import { newFinalizeContactAsyncAction } from '../../states/contacts/saveContact';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 type ContactBannersProps = {
   savedContact: Contact;
@@ -47,6 +48,8 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ savedContact,
   const dispatch = useDispatch();
   const workerRoles = Manager.getInstance().workerClient.attributes.roles;
   const isDraft = !savedContact.finalizedAt;
+
+  const enableInProgressContacts = getAseloFeatureFlags().enable_save_in_progress_contacts;
 
   const saveFinalizedContact = (task: RouterTask, contact: Contact) => {
     dispatch(newFinalizeContactAsyncAction(task, contact));
@@ -98,7 +101,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ savedContact,
             <BannerText>
               <Template code="Contact-DraftStatus" />
             </BannerText>
-            {canEditContact() && (
+            {enableInProgressContacts && canEditContact() && (
               <BannerAction alignRight={true} onClick={handleSaveAndEnd}>
                 <SaveAndEndButton>
                   <Template code="BottomBar-SaveAndEnd" />
