@@ -22,9 +22,10 @@ locals {
         }
       },
       facebook : {
-        channel_type           = "facebook"
+        messaging_mode       = "conversations"
+        channel_type         = "messenger"
         contact_identity       = "messenger:261976427221327"
-        templatefile           = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging.tftpl"
+        templatefile           = "/app/twilio-iac/helplines/zm/templates/studio-flows/messaging-conv.tftpl"
         channel_flow_vars      = {}
         chatbot_unique_names   = []
         enable_datadog_monitor = true
