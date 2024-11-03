@@ -7,7 +7,7 @@ locals {
     helpline                   = "Youthline"
     task_language              = "en-NZ"
     enable_external_recordings = true
-    enable_datadog_monitoring  = true
+    enable_datadog_monitoring  = false
 
     channel_attributes = {
       webchat               = "/app/twilio-iac/helplines/nz/templates/channel-attributes/webchat.tftpl",
