@@ -1,15 +1,15 @@
 {
-  "pre_survey": {
-    "description": "Helpline Specific configs/lex/en_NZ/intents Pre Survey Intent Survey intent",
+  "counsel_check": {
+    "description": "Helpline Specific configs/lex/en_NZ/intents Counsel Check Intent Survey intent",
     "sample_utterances": [
       "Incoming webchat contact",
-      "trigger_pre_survey"
+      "trigger_counsel_check"
     ],
     "fulfillment_activity": {
       "type": "ReturnIntent"
     },
     "conclusion_statement": {
-      "content": "Thank you, the next message will be from one of our counsellors. Your conversation will be recorded and may be monitored for quality purposes. For more information, here's a link to our privacy statement: https://youthline.co.nz/privacy-statements/",
+      "content": "Thank you.",
       "content_type": "PlainText"
     },
     "rejection_statement": {
@@ -17,14 +17,14 @@
       "content_type": "PlainText"
     },
     "slots": {
-      "priority": {
+      "counselling": {
         "priority": 1,
-        "description": "Emergency support",
+        "description": "Needs counselling",
         "slot_constraint": "Required",
         "slot_type": "yes_no",
         "value_elicitation_prompt": {
           "max_attempts": 2,
-          "content": "Kia ora, Welcome to Youthline. Before we link you in with one of our counsellors, this is a quick automatic message - do you need urgent support? Respond 1 for 'Yes' or 2 for 'No'",
+          "content": "kia ora and welcome to Youthline! If you are seeking support from our Helpline or counselling services please respond 1 for 'Yes' or 2 for 'No'",
           "content_type": "PlainText"
         }
       }
