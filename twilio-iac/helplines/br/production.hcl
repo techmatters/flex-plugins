@@ -5,7 +5,7 @@ locals {
 
   local_config = {
     enable_datadog_monitoring             = true
-    custom_task_routing_filter_expression = "helpline=='SaferNet' or isContactlessTask==true OR channelType=='web' OR twilioNumber=='messenger:175804982467404' OR channelType=='facebook'"
+    custom_task_routing_filter_expression = "helpline=='SaferNet' or isContactlessTask==true OR channelType IN ['web', 'messenger'] OR twilioNumber=='messenger:175804982467404'"
 
     #Studio flow
     flow_vars = {
@@ -21,9 +21,10 @@ locals {
     #Channels
     channels = {
       facebook : {
-        channel_type         = "facebook"
+        messaging_mode       = "conversations"
+        channel_type         = "messenger"
         contact_identity     = "messenger:175804982467404"
-        templatefile         = "/app/twilio-iac/helplines/br/templates/studio-flows/messaging.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/br/templates/studio-flows/messaging-conv.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
         enable_datadog_monitor = true
