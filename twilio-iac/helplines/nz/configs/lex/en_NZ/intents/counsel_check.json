@@ -24,7 +24,7 @@
         "slot_type": "yes_no",
         "value_elicitation_prompt": {
           "max_attempts": 2,
-          "content": "Kia ora and welcome to Youthline! If you are seeking support from our Helpline or counselling services please respond 1 for 'Yes' or 2 for 'No'",
+          "content": "Kia ora and welcome to Youthline! If you are seeking support from our Helpline or counselling services please respond 'Yes' or 'No'",
           "content_type": "PlainText"
         }
       }

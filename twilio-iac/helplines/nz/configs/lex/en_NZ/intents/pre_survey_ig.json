@@ -24,7 +24,7 @@
         "slot_type": "yes_no",
         "value_elicitation_prompt": {
           "max_attempts": 2,
-          "content": "Before we link you in with one of our counsellors, this is a quick automatic message - do you need urgent support? Respond 1 for 'Yes' or 2 for 'No'",
+          "content": "Before we link you in with one of our counsellors, this is a quick automatic message - do you need urgent support? Please respond 'Yes' or 'No'",
           "content_type": "PlainText"
         }
       }
