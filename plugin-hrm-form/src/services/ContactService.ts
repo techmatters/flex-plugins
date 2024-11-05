@@ -31,7 +31,7 @@ import {
   isTwilioTask,
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
-import { getNumberFromTask } from '../utils';
+import { getNumberFromTask, getTaskChannelType } from '../utils';
 import { ContactMetadata } from '../states/contacts/types';
 import {
   ExternalRecordingInfoSuccess,
@@ -198,7 +198,7 @@ export const createContact = async (
   const { definitionVersion } = getHrmConfig();
   const contactForApi: Contact = {
     ...contact,
-    channel: ((task.attributes as any)?.customChannelType || task.channelType) as Contact['channel'],
+    channel: getTaskChannelType(task) as Contact['channel'],
     rawJson: {
       definitionVersion,
       ...contact.rawJson,

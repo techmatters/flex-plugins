@@ -28,7 +28,7 @@ import {
 } from 'hrm-form-definitions';
 
 import { isNonDataCallType } from '../states/validationRules';
-import { formatCategories, mapChannelForInsights } from '../utils';
+import { formatCategories, getTaskChannelType, mapChannelForInsights } from '../utils';
 import { getDateTime } from '../utils/helpers';
 import { Case, Contact, ContactRawJson, CustomITask, WellKnownCaseSection } from '../types/types';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
@@ -126,7 +126,7 @@ const baseUpdates: InsightsUpdateFunction = (
 ): CoreAttributes => {
   const communication_channel = taskAttributes.isContactlessTask
     ? mapChannelForInsights(contactlessTask.channel)
-    : mapChannelForInsights(taskAttributes.customChannelType || taskAttributes.channelType);
+    : mapChannelForInsights(getTaskChannelType({ attributes: taskAttributes }));
 
   // First add the data we add whether or not there's contact form data
   const coreAttributes: CoreAttributes = {

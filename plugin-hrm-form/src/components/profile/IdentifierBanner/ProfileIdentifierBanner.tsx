@@ -22,10 +22,9 @@ import { useIdentifierByIdentifier, useProfile, useProfileRelationshipsByType } 
 import { BannerLink, IconContainer, IdentifierContainer, YellowBannerContainer } from './styles';
 import { Bold } from '../../../styles';
 import { newOpenModalAction } from '../../../states/routing/actions';
-import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
+import { getFormattedNumberFromTask, getNumberFromTask, getTaskChannelType } from '../../../utils';
 import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { CustomITask } from '../../../types/types';
-import selectChannelType from '../../../utils/selectChannelType';
 import { iconsFromTask } from './iconsFromTask';
 
 type OwnProps = {
@@ -100,7 +99,7 @@ const ProfileIdentifierBanner: React.FC<Props> = ({ task, openProfileModal, open
 
   return (
     <YellowBannerContainer data-testid="PreviousContacts-Container" className="hiddenWhenModalOpen">
-      <IconContainer>{iconsFromTask[selectChannelType(task)]}</IconContainer>
+      <IconContainer>{iconsFromTask[getTaskChannelType(task)]}</IconContainer>
       <IdentifierContainer>
         <Bold>{maskIdentifiers ? <Template code="MaskIdentifiers" /> : formattedIdentifier}</Bold>
       </IdentifierContainer>

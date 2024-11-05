@@ -45,13 +45,20 @@ const channelTransformations: { [k in ChannelTypes]: TransformIdentifierFunction
   web: [],
 };
 
+export const getTaskChannelType = (task: { channelType?: string; attributes: Record<string, any> }) =>
+  task.attributes.customChannelType || task.channelType || task.attributes.channelType;
+
 /**
  * IMPORTANT: if any logic is changed here, replicate it in serverless/functions/getProfileFlagsForIdentifier.protected.ts
  */
 export const getNumberFromTask = (task: CustomITask) => {
   if (!isTwilioTask(task)) return null;
 
-  const { channelType, defaultFrom } = task;
+  const { defaultFrom } = task;
+
+  const channelType = getTaskChannelType(task);
+
+  if (!channelType) return null;
 
   // webchat is a special case since it does not only depends on channel but in the task attributes too
   if (channelType === channelTypes.web) {
@@ -62,8 +69,6 @@ export const getNumberFromTask = (task: CustomITask) => {
     // return the "defaultFrom" with the transformations on the identifier corresponding to each channel
     return channelTransformations[channelType as ChannelTypes].reduce((accum, f) => f(accum), defaultFrom);
   }
-
-  if (channelType === undefined) return null;
   console.error(`Channel type ${channelType} is not supported`, typeof channelType, channelType, task);
   return null;
 };
