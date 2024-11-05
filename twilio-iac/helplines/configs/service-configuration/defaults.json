@@ -70,7 +70,7 @@
             "enable_offline_contact": true,
             "enable_post_survey": false,
             "enable_previous_contacts": true,
-            "enable_save_in_progress_contacts": false,
+            "enable_save_in_progress_contacts": true,
             "enable_save_insights": true,
             "enable_separate_timeline_view": true,
             "enable_sort_cases": true,
