@@ -14,7 +14,7 @@ ${
           "event": "incomingCall"
         },
         {
-          "next": "counsel_check_complete",
+          "next": "getProfileFlagsForIdentifier",
           "event": "incomingConversationMessage"
         },
         {
@@ -47,7 +47,7 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 430,
+          "x": 440,
           "y": 1560
         },
         "workflow": workflow_sids["master"],
@@ -81,7 +81,7 @@ ${
       "properties": {
         "input": "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}",
         "offset": {
-          "x": -80,
+          "x": -160,
           "y": 800
         }
       }
@@ -102,8 +102,8 @@ ${
         "service_sid": serverless_service_sid,
         "environment_sid": serverless_environment_sid,
         "offset": {
-          "x": -320,
-          "y": 1040
+          "x": -360,
+          "y": 1100
         },
         "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
         "parameters": [
@@ -112,7 +112,7 @@ ${
             "key": "channelSid"
           },
           {
-            "value": "trigger_pre_survey__ig",
+            "value": "trigger_pre_survey_ig",
             "key": "message"
           },
           {
@@ -196,8 +196,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 30,
-          "y": 130
+          "x": -190,
+          "y": -400
         },
         "method": "POST",
         "add_twilio_auth": false,
@@ -211,7 +211,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "pre_survey_complete",
+          "next": "counsel_check_complete",
           "event": "noMatch"
         },
         {
@@ -246,8 +246,8 @@ ${
       "properties": {
         "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
         "offset": {
-          "x": -40,
-          "y": 390
+          "x": -50,
+          "y": -150
         }
       }
     },
@@ -269,8 +269,8 @@ ${
           }
         ],
         "offset": {
-          "x": 320,
-          "y": 800
+          "x": 380,
+          "y": 790
         }
       }
     },
@@ -289,8 +289,8 @@ ${
         "service_sid": serverless_service_sid,
         "environment_sid": serverless_environment_sid,
         "offset": {
-          "x": 670,
-          "y": 800
+          "x": 370,
+          "y": 130
         },
         "function_sid": flow_vars["send_message_run_janitor_sid"],
         "parameters": [
@@ -402,8 +402,8 @@ ${
       "properties": {
         "input": "{{trigger.conversation.ChannelAttributes.counselCheckComplete}}",
         "offset": {
-          "x": -220,
-          "y": -450
+          "x": -180,
+          "y": 130
         }
       }
     },
@@ -423,8 +423,8 @@ ${
         "service_sid": serverless_service_sid,
         "environment_sid": serverless_environment_sid,
         "offset": {
-          "x": -320,
-          "y": -170
+          "x": -450,
+          "y": 500
         },
         "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
         "parameters": [
@@ -477,11 +477,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "pre_survey_complete",
           "event": "noMatch"
         },
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "pre_survey_complete",
           "event": "match",
           "conditions": [
             {
@@ -512,8 +512,8 @@ ${
       "properties": {
         "input": "{{trigger.conversation.ChannelAttributes.memory.counselling}}",
         "offset": {
-          "x": 210,
-          "y": -240
+          "x": -80,
+          "y": 490
         }
       }
     },
@@ -522,6 +522,7 @@ ${
       "type": "run-function",
       "transitions": [
         {
+           "next": "channel_cleanup",
           "event": "success"
         },
         {
@@ -532,8 +533,8 @@ ${
         "service_sid": serverless_service_sid,
         "environment_sid": serverless_environment_sid,
         "offset": {
-          "x": 530,
-          "y": 60
+          "x": 990,
+          "y": 800
         },
         "function_sid": flow_vars["send_message_run_janitor_sid"],
         "parameters": [
