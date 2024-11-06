@@ -57,6 +57,7 @@ export type CoreChannelTypes = typeof coreChannelTypes[keyof typeof coreChannelT
 const chatChannels = [
   channelTypes.whatsapp,
   channelTypes.facebook,
+  channelTypes.messenger,
   channelTypes.web,
   channelTypes.modica,
   channelTypes.sms,

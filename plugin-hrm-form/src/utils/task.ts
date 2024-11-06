@@ -42,7 +42,7 @@ const channelTransformations: { [k in ChannelTypes]: TransformIdentifierFunction
   messenger: [s => s.replace('messenger:', '')],
   instagram: [s => s.replace('instagram:', '')],
   line: [],
-  telegram: [],
+  telegram: [s => s.replace('telegram:', '')],
   web: [],
 };
 
