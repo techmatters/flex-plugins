@@ -10,12 +10,14 @@ locals {
     enable_datadog_monitoring  = false
 
     channel_attributes = {
-      webchat               = "/app/twilio-iac/helplines/nz/templates/channel-attributes/webchat.tftpl",
-      voice                 = "/app/twilio-iac/helplines/nz/templates/channel-attributes/voice.tftpl",
-      modica                = "/app/twilio-iac/helplines/nz/templates/channel-attributes/modica.tftpl",
-      modica-conversations  = "/app/twilio-iac/helplines/nz/templates/channel-attributes/modica-conversations.tftpl",
-      default               = "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
-      default-conversations = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
+      webchat                 = "/app/twilio-iac/helplines/nz/templates/channel-attributes/webchat.tftpl",
+      voice                   = "/app/twilio-iac/helplines/nz/templates/channel-attributes/voice.tftpl",
+      modica                  = "/app/twilio-iac/helplines/nz/templates/channel-attributes/modica.tftpl",
+      modica-conversations    = "/app/twilio-iac/helplines/nz/templates/channel-attributes/custom-conversations.tftpl",
+      instagram-conversations = "/app/twilio-iac/helplines/nz/templates/channel-attributes/custom-conversations.tftpl",
+      whatsapp-conversations  = "/app/twilio-iac/helplines/nz/templates/channel-attributes/whatsapp-conversations.tftpl",
+      default                 = "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
+      default-conversations   = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
     }
     workflows = {
       master : {
