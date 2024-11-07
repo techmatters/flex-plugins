@@ -51,7 +51,7 @@ jobs:
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           source-git-reference-type: ${{ github.ref_type }}
           source-git-reference: ${{ github.ref_name }}
-          target-git-tag: ${{ imputs.tag-name }}
+          target-git-tag: ${{ inputs.tag-name }}
 
       # Send Slack notifying success
       - name: Slack aselo-deploys channel
