@@ -48,7 +48,7 @@ jobs:
     with:
       project: flex
       helplines: ${{ needs.configure.outputs.target_helplines }}
-      environments:
+      environments: '[ "production" ]'
       self-hosted-deploy: ${{ inputs.self-hosted-deploy }}
       invalidate-forms-cache: false
   invalidate-forms-cache:
