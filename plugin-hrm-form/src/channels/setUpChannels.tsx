@@ -152,7 +152,7 @@ export const setupTelegramChatChannel = () => {
 export const setupInstagramChatChannel = () => {
   const InstagramChatChannel = DefaultTaskChannels.createChatTaskChannel(
     'instagram',
-    task => task.channelType === 'instagram',
+    task => task.channelType === 'instagram' || task.attributes.customChannelType === 'instagram',
   );
 
   const icon = <InstagramIcon width="24px" height="24px" color="white" />;
