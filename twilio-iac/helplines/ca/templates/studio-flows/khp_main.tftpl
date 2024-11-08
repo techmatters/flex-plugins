@@ -696,7 +696,8 @@ ${
         "type": "split-based-on",
         "transitions": [
           {
-            "event": "noMatch"
+            "event": "noMatch",
+            "next": "split_Inflight_retry"
           },
           {
             "next": "Msg60011E-Inflight",
@@ -1219,7 +1220,7 @@ ${
           "stop_gather": true,
           "gather_language": "en",
           "profanity_filter": "true",
-          "timeout": 2
+          "timeout": 5
         }
       },
       {
@@ -1249,7 +1250,7 @@ ${
         "type": "split-based-on",
         "transitions": [
           {
-            "next": "main_disconnect",
+            "next": "Msg10006E-Info",
             "event": "noMatch"
           },
           {
@@ -1262,7 +1263,7 @@ ${
                   "{{flow.variables.retry_counter}}"
                 ],
                 "type": "less_than",
-                "value": "3"
+                "value": "2"
               }
             ]
           }
@@ -1289,23 +1290,6 @@ ${
           "offset": {
             "x": -1060,
             "y": -1780
-          },
-          "loop": 1
-        }
-      },
-      {
-        "name": "main_disconnect",
-        "type": "say-play",
-        "transitions": [
-          {
-            "event": "audioComplete"
-          }
-        ],
-        "properties": {
-          "play": channel_flow_vars["en_disconnect_url"],
-          "offset": {
-            "x": -1840,
-            "y": -1540
           },
           "loop": 1
         }
@@ -1359,7 +1343,8 @@ ${
         "type": "split-based-on",
         "transitions": [
           {
-            "event": "noMatch"
+            "event": "noMatch",
+            "next": "retry_split_Inflight_2"
           },
           {
             "next": "sendToQ6001_English",
@@ -1423,7 +1408,216 @@ ${
           "attributes": "{\"language\": \"en-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"interpreter\": \"indigenous\"}",
           "waitUrlMethod": "GET"
         }
+      },
+    {
+      "name": "MainMenuB_Retry",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "retry_split_main_menu",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "split_main_menu",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "play": "https://twilio-service-4854.twil.io/MSG10000B.mp3",
+        "number_of_digits": 1,
+        "speech_timeout": "auto",
+        "offset": {
+          "x": -1070,
+          "y": -1810
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "en",
+        "profanity_filter": "true",
+        "timeout": 5
       }
+    },
+    {
+      "name": "retry_split_main_menu",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "main_set_retry",
+          "event": "noMatch"
+        },
+        {
+          "next": "Msg10006E-Info",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains en_number",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "Msg10006E-InfoOtherLanguages",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains tr_number",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "4"
+            }
+          ]
+        },
+        {
+          "next": "Msg10006F-InfoMessage2",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains fr_number",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "Msg10006E-Info",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 4",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.MainMenuB_Retry.Digits}}",
+        "offset": {
+          "x": -1700,
+          "y": -1730
+        }
+      }
+    },
+    {
+      "name": "split_Inflight_retry",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "Msg60011E-Inflight",
+          "event": "noMatch"
+        },
+        {
+          "next": "Msg60011E-Inflight",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 2",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "contains",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "Msg60011I-Inflight",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 3",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "contains",
+              "value": "4"
+            }
+          ]
+        },
+        {
+          "next": "SubIntro_Indigenous",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 4",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "contains",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.MainMenuB_Retry.Digits}}",
+        "offset": {
+          "x": -2310,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "retry_split_Inflight_2",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "sendToQ6001_English",
+          "event": "noMatch"
+        },
+        {
+          "next": "sendToQ6001_English",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 2",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "contains",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "sendToQ6005_Indigenous",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 4",
+              "arguments": [
+                "{{widgets.MainMenuB_Retry.Digits}}"
+              ],
+              "type": "contains",
+              "value": "3"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.MainMenuB_Retry.Digits}}",
+        "offset": {
+          "x": -2550,
+          "y": 1120
+        }
+      }
+    }
     ],
     "initial_state": "Trigger",
     "flags": {
