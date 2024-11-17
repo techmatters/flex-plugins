@@ -1,7 +1,7 @@
 [
   {
     "name": "callSummary",
-    "label": "Contact Summary",
+    "label": "Nature of Incident",
     "type": "textarea",
     "required": { "value": true, "message": "RequiredFieldError" }
   },
@@ -28,15 +28,9 @@
     "label": "Action Taken",
     "type": "listbox-multiselect",
     "options": [
-      { "value": "Direct interventions by the child helpline", "label": "Direct interventions by the child helpline" },
-      { "value": "Recommendations of resources", "label": "Recommendations of resources" },
-      { "value": "Referrals to child protection agencies", "label": "Referrals to child protection agencies" },
-      { "value": "Referrals to general healthcare professionals", "label": "Referrals to general healthcare services" },
-      { "value": "Referrals to law enforcement agencies", "label": "Referrals to law enforcement agencies" },
-      { "value": "Referrals to mental health services", "label": "Referrals to mental health services" },
-      { "value": "Referrals to other organisations", "label": "Referrals to other organisations" },
-      { "value": "Referrals to school counsellors", "label": "Referrals to school counsellors" },
-      { "value": "Reports to Child Sexual Abuse Material", "label": "Reports to Child Sexual Abuse Material" },
+      { "value": "Direct interventions by the child helpline", "label": "Send to dispatch" },
+      { "value": "Recommendations of resources", "label": "Hold for follow-up" },
+      { "value": "Referrals to child protection agencies", "label": "No assistance needed" },
       { "value": "Other", "label": "Other" }
     ]
   },
@@ -67,21 +61,6 @@
   {
     "name": "okForCaseWorkerToCall",
     "label": "Is it okay for case worker to call?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "didYouDiscussRightsWithTheChild",
-    "label": "Did you discuss rights with the child?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "didTheChildFeelWeSolvedTheirProblem",
-    "label": "Did the child feel we solved their problem?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "wouldTheChildRecommendUsToAFriend",
-    "label": "Would the child recommend us to a friend?",
     "type": "mixed-checkbox"
   },
   {

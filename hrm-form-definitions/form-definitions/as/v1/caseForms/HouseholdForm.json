@@ -14,13 +14,13 @@
   {
     "name": "relationshipToChild",
     "type": "select",
-    "label": "Relationship to Child",
+    "label": "Relationship to Client",
     "options": [
       { "value": "", "label": "" },
       { "value": "Peer", "label": "Peer" },
       { "value": "Caregiver", "label": "Caregiver" },
       { "value": "Partner", "label": "Partner" },
-      { "value": "OtherAdultKnownToChild", "label": "Other adult known to the child" },
+      { "value": "OtherAdultKnownToChild", "label": "Other adult known to the client" },
       { "value": "Sibling", "label": "Sibling(s)" },
       { "value": "Stranger", "label": "Stranger" },
       { "value": "Person in a position of responsibility", "label": "Person in a position of responsibility" },

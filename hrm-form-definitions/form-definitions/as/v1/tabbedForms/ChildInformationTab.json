@@ -72,7 +72,7 @@
   },
   {
     "name": "province",
-    "label": "Province",
+    "label": "State",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
@@ -86,7 +86,7 @@
   },
   {
     "name": "district",
-    "label": "District",
+    "label": "County",
     "type": "dependent-select",
     "dependsOn": "province",
     "defaultOption": { "value": "", "label": "" },
@@ -120,7 +120,7 @@
   },
   {
     "name": "postalCode",
-    "label": "Postal Code",
+    "label": "ZIP Code",
     "type": "input"
   },
   {
