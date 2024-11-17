@@ -15,8 +15,8 @@
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "Boy", "label": "Boy" },
-      { "value": "Girl", "label": "Girl" },
+      { "value": "Boy", "label": "Male" },
+      { "value": "Girl", "label": "Female" },
       { "value": "Non-Binary", "label": "Non-Binary" },
       { "value": "Unknown", "label": "Unknown" }
     ],
