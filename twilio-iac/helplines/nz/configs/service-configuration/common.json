@@ -3,9 +3,7 @@
         "contacts_waiting_channels": [
             "voice",
             "sms",
-            "web",
-            "whatsapp",
-            "instagram"
+            "web"
         ],
         "definitionVersion": "nz-v1",
         "external_recordings_enabled": true,
