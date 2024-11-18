@@ -138,7 +138,6 @@ jobs:
         name: Disable the Aselo plugin deployed to Twilio, if there is one.
         run: twilio flex:plugins:release --disable-plugin=plugin-hrm-form -l debug || true
         shell: bash
-        working-directory: ./plugin-hrm-form
       # Point the account at the s3 hosted plugin
       - if: env.SELF_HOSTED_DEPLOY == 'true'
         name: Configure Account to point to S3 Hosted Plugin
