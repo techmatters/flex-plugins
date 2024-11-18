@@ -70,7 +70,6 @@ jobs:
       - if: env.SELF_HOSTED_DEPLOY == 'true'
         uses: actions/checkout@v4
         with:
-          filter: '.github/actions/**'
           sparse-checkout: |
             .github/actions
       # Can be removed once we drop support for Twilio hosted plugins
