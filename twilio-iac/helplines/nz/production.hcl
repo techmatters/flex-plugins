@@ -4,7 +4,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-    enable_datadog_monitoring  = true
+    enable_datadog_monitoring = true
     #Studio flow
     flow_vars = {
       operating_hours_function_sid          = "ZHe0432d55b31c8e575d7630694502dd4b"
@@ -12,6 +12,7 @@ locals {
       chatbot_callback_cleanup_function_sid = "ZH94205e92c6cd6e7f6bb5858ebdbdbb9c"
       send_message_run_janitor_sid          = "ZH5e37c056ae0dfea42f8febd19d7bbd52"
       bot_language                          = "en-NZ"
+      blocked_message                       = "Kia ora, you've been blocked from accessing Youthline's helpline and we are not able to read or receive further messages from you. If you think this is a mistake, please email complaints@youthline.co.nz with your name and contact details for this to be reviewed. If you are unsafe or require urgent support, please call 111 now."
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
@@ -30,7 +31,6 @@ locals {
         templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-no-chatbot-operating-hours-flags-routing.tftpl"
         channel_flow_vars = {
           chat_greeting_message = "Kia ora, thank you for contacting Youthline. One of our counsellors will get back to you as soon as we can. If you or someone else are in immediate danger, please call 111 immediately."
-          blocked_message       = "Kia ora, you've been blocked from accessing Youthline's helpline and we are not able to read or receive further messages from you. If you think this is a mistake, please email complaints@youthline.co.nz with your name and contact details for this to be reviewed. If you are unsafe or require urgent support, please call 111 now."
           widget_from           = "Youthline"
         }
         enable_datadog_monitor = true
@@ -66,13 +66,11 @@ locals {
         chatbot_unique_names = []
       },
       modica : {
-        messaging_mode   = "conversations"
-        channel_type     = "custom"
-        contact_identity = "modica"
-        templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v2.tftpl"
-        channel_flow_vars = {
-          blocked_message = "Kia ora, you've been blocked from accessing Youthline's helpline and we are not able to read or receive further messages from you. If you think this is a mistake, please email complaints@youthline.co.nz with your name and contact details for this to be reviewed. If you are unsafe or require urgent support, please call 111 now."
-        }
+        messaging_mode         = "conversations"
+        channel_type           = "custom"
+        contact_identity       = "modica"
+        templatefile           = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v2.tftpl"
+        channel_flow_vars      = {}
         chatbot_unique_names   = []
         enable_datadog_monitor = true
         custom_monitor = {
