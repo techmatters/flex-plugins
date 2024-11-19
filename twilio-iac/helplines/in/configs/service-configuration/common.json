@@ -3,7 +3,8 @@
         "definitionVersion": "in-v1",
         "feature_flags": {
             "enable_csam_clc_report": true,
-            "enable_csam_report": true
+            "enable_csam_report": true,
+            "enable_generalized_search": true
         },
         "helplineLanguage": "en-IN",
         "permissionConfig": "in"
