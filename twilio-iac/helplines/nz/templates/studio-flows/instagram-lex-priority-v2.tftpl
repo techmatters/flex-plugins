@@ -1,0 +1,565 @@
+${
+  jsonencode(
+  {
+  "description": flow_description,
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 170,
+          "y": -620
+        }
+      }
+    },
+    {
+      "name": "attributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 440,
+          "y": 1560
+        },
+        "workflow": workflow_sids["master"],
+        "channel": task_channel_sids["chat"],
+        "attributes":channel_attributes["default"]
+      }
+    },
+    {
+      "name": "pre_survey_complete",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "capture_channel_with_bot",
+          "event": "noMatch"
+        },
+        {
+          "next": "is_bot",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}",
+        "offset": {
+          "x": -160,
+          "y": 800
+        }
+      }
+    },
+    {
+      "name": "capture_channel_with_bot",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "next": "channel_cleanup",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": -360,
+          "y": 1100
+        },
+        "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "trigger_pre_survey_ig",
+            "key": "message"
+          },
+          {
+            "value": "{{flow.flow_sid}}",
+            "key": "studioFlowSid"
+          },
+          {
+            "value": "en-NZ",
+            "key": "language"
+          },
+          {
+            "value": "pre_survey_ig",
+            "key": "botSuffix"
+          },
+          {
+            "value": "withUserMessage",
+            "key": "triggerType"
+          },
+          {
+            "value": "triggerStudioFlow",
+            "key": "releaseType"
+          },
+          {
+            "value": "preSurveyComplete",
+            "key": "releaseFlag"
+          },
+          {
+            "value": "{{trigger.conversation.ChannelAttributes.channel_type | downcase}}",
+            "key": "channelType"
+          },
+          {
+            "value": "true",
+            "key": "isConversation"
+          }
+        ],
+        "url": "${serverless_url}/channelCapture/captureChannelWithBot"
+      }
+    },
+    {
+      "name": "channel_cleanup",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "attributes",
+          "event": "success"
+        },
+        {
+          "next": "send_message_run_janitor",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": -220,
+          "y": 1330
+        },
+        "function_sid": flow_vars["chatbot_callback_cleanup_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          }
+        ],
+        "url": "${serverless_url}/channelCapture/chatbotCallbackCleanup"
+      }
+    },
+    {
+      "name": "getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "contact_routing",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -190,
+          "y": -400
+        },
+        "method": "POST",
+        "add_twilio_auth": false,
+        "content_type": "application/json;charset=utf-8",
+        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"${channel_name}\" }",
+        "url": "${serverless_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "counsel_check_complete",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_blocked_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "contains",
+              "value": "blocked"
+            }
+          ]
+        },
+        {
+          "next": "set_clinical",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains case management",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "contains",
+              "value": "case management"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": -50,
+          "y": -150
+        }
+      }
+    },
+    {
+      "name": "set_clinical",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "attributes",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "true",
+            "key": "clinical",
+            "type": "string"
+          }
+        ],
+        "offset": {
+          "x": 380,
+          "y": 790
+        }
+      }
+    },
+    {
+      "name": "send_blocked_message",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": 370,
+          "y": 130
+        },
+        "function_sid": flow_vars["send_message_run_janitor_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": flow_vars["blocked_message"],
+            "key": "message"
+          },
+          {
+            "value": "Youthline",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "send_message_run_janitor",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": -50,
+          "y": 1580
+        },
+        "function_sid": flow_vars["send_message_run_janitor_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "I'm sorry, we couldn't receive your message.  Please try texting us again  or call us for free on 0800376633.",
+            "key": "message"
+          },
+          {
+            "value": "Youthline",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "is_bot",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "attributes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value starts_with Bot",
+              "arguments": [
+                "{{trigger.conversation.From}}"
+              ],
+              "type": "starts_with",
+              "value": "Bot"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.From}}",
+        "offset": {
+          "x": 570,
+          "y": 1170
+        }
+      }
+    },
+    {
+      "name": "counsel_check_complete",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "capture_channel_with_counsel_bot",
+          "event": "noMatch"
+        },
+        {
+          "next": "if_counselling",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.counselCheckComplete}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.ChannelAttributes.counselCheckComplete}}",
+        "offset": {
+          "x": -180,
+          "y": 130
+        }
+      }
+    },
+    {
+      "name": "capture_channel_with_counsel_bot",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "next": "channel_cleanup",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": -450,
+          "y": 500
+        },
+        "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "trigger_counsel_check",
+            "key": "message"
+          },
+          {
+            "value": "{{flow.flow_sid}}",
+            "key": "studioFlowSid"
+          },
+          {
+            "value": "en-NZ",
+            "key": "language"
+          },
+          {
+            "value": "counsel_check",
+            "key": "botSuffix"
+          },
+          {
+            "value": "withUserMessage",
+            "key": "triggerType"
+          },
+          {
+            "value": "triggerStudioFlow",
+            "key": "releaseType"
+          },
+          {
+            "value": "counselCheckComplete",
+            "key": "releaseFlag"
+          },
+          {
+            "value": "{{trigger.conversation.ChannelAttributes.channel_type | downcase}}",
+            "key": "channelType"
+          },
+          {
+            "value": "true",
+            "key": "isConversation"
+          }
+        ],
+        "url": "${serverless_url}/channelCapture/captureChannelWithBot"
+      }
+    },
+    {
+      "name": "if_counselling",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "pre_survey_complete",
+          "event": "noMatch"
+        },
+        {
+          "next": "pre_survey_complete",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to Yes",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.memory.counselling}}"
+              ],
+              "type": "equal_to",
+              "value": "Yes"
+            }
+          ]
+        },
+        {
+          "next": "send_marketing_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to No",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.memory.counselling}}"
+              ],
+              "type": "equal_to",
+              "value": "No"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.ChannelAttributes.memory.counselling}}",
+        "offset": {
+          "x": -80,
+          "y": 490
+        }
+      }
+    },
+    {
+      "name": "send_marketing_message",
+      "type": "run-function",
+      "transitions": [
+        {
+           "next": "channel_cleanup",
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": 990,
+          "y": 800
+        },
+        "function_sid": flow_vars["send_message_run_janitor_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "If you are wanting to contact our  Fundraising and Marketing team  please email us at donate@youthline.co.nz",
+            "key": "message"
+          },
+          {
+            "value": "Youthline",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+}
+
+  )
+}
