@@ -1,7 +1,7 @@
 {
   "attributes": {
     "feature_flags": {
-      "enable_aselo_messaging_ui": true
+      "enable_aselo_messaging_ui": false
     },
     "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
     "resources_base_url": "https://hrm-staging.tl.techmatters.org",
