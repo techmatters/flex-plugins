@@ -1,13 +1,15 @@
 {
   "attributes": {
-    "feature_flags": {
-    },
+    "feature_flags": {},
     "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
     "resources_base_url": "https://hrm-staging.tl.techmatters.org",
     "logo_url": "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
   },
   "ui_attributes": {
     "theme": null,
-    "internalChatServerlessUrl": "serverless-internal-chat-6272.twil.io"
+    "internalChatServerlessUrl": "serverless-internal-chat-6272.twil.io",
+    "appianAddonUrl": "vps.appiancloud.com/suite/webapi",
+    "flexAddonKey": "testing",
+    "appianApiKey": "testing"
   }
 }
