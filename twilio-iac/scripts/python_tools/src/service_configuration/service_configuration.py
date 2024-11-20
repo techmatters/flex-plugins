@@ -48,8 +48,6 @@ EXCLUDED_FIELDS = [
     "service_version",
     "taskrouter_offline_activity_sid",
     "status",
-    'ui_attributes.appianApiKey',
-    'ui_attributes.flexAddonKey',
 ]
 
 OVERRIDE_FIELDS = [
@@ -108,7 +106,6 @@ def delete_nested_key(data, key):
                 # if the sub-dictionary is empty after the deletion, remove it
                 del data[path[0]]
         return not bool(data)
-
 
 
 def get_dot_notation_path(change) -> str:
