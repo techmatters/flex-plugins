@@ -48,6 +48,8 @@ EXCLUDED_FIELDS = [
     "service_version",
     "taskrouter_offline_activity_sid",
     "status",
+    'ui_attributes.appianApiKey',
+    'ui_attributes.flexAddonKey',
 ]
 
 OVERRIDE_FIELDS = [
@@ -290,7 +292,7 @@ class ServiceConfiguration():
         # self.new_state for the changelog
         for field in EXCLUDED_FIELDS:
             delete_nested_key(new_state, field)
-
+        print(new_state)
         self._twilio_client.update_flex_configuration(new_state)
 
         # add a new version for the new state
