@@ -302,10 +302,6 @@ class ServiceConfiguration():
         for field in EXCLUDED_FIELDS:
             delete_nested_key(new_state, field)
 
-        print("new state")
-        print(json.dumps(new_state, indent=4))
-        print("remote state")
-        print(json.dumps(self.remote_state, indent=4))
         self._twilio_client.update_flex_configuration(new_state)
 
         # add a new version for the new state
