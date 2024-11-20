@@ -80,7 +80,6 @@ def set_nested_key(data, key, value):
         current = current[path_key]
 
     current[path[-1]] = value
-    print(current)
 
 
 def get_nested_key(data, key):
