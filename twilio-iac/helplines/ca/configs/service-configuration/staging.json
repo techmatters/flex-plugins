@@ -1,7 +1,7 @@
 {
   "attributes": {
     "feature_flags": {
-      "enable_aselo_messaging_ui": true
+      "enable_aselo_messaging_ui": false
     },
     "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
     "resources_base_url": "https://hrm-staging.tl.techmatters.org",
@@ -10,6 +10,8 @@
   "ui_attributes": {
     "theme": null,
     "internalChatServerlessUrl": "serverless-internal-chat-6272.twil.io",
-    "appianAddonUrl": "vps.appiancloud.com/suite/webapi"
+    "appianAddonUrl": "vps.appiancloud.com/suite/webapi",
+    "flexAddonKey": "testing",
+    "appianApiKey": "testing"
   }
 }

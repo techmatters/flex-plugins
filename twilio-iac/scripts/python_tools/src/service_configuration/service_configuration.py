@@ -48,8 +48,7 @@ EXCLUDED_FIELDS = [
     "service_version",
     "taskrouter_offline_activity_sid",
     "status",
-    'ui_attributes.appianApiKey',
-    'ui_attributes.flexAddonKey',
+
 ]
 
 OVERRIDE_FIELDS = [
@@ -82,6 +81,7 @@ def set_nested_key(data, key, value):
         current = current[path_key]
 
     current[path[-1]] = value
+    print(current)
 
 
 def get_nested_key(data, key):
@@ -237,8 +237,10 @@ class ServiceConfiguration():
         for field in FORCE_KEEP_FIELDS:
             remote_value = get_nested_key(self.remote_state, field)
             if remote_value:
+                print("Adding {} from remote state to new state".format(field))
+                print("Value: {}".format(remote_value))
                 set_nested_key(self.new_state, field, remote_value)
-
+        
         for key, value in self.template_config.items():
             local_value = get_nested_key(self.local_state, key)
             # We want to allow the user to override the template value with a
