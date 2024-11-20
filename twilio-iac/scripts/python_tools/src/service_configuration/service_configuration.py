@@ -231,12 +231,10 @@ class ServiceConfiguration():
 
         self.init_ssm_fields()
         self.init_template_fields()
-
+        # override fields in the new state with the remote state
         for field in FORCE_KEEP_FIELDS:
             remote_value = get_nested_key(self.remote_state, field)
             if remote_value:
-                print("Adding {} from remote state to new state".format(field))
-                print("Value: {}".format(remote_value))
                 set_nested_key(self.new_state, field, remote_value)
         
         for key, value in self.template_config.items():
