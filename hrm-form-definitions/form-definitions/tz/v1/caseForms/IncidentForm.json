@@ -1,0 +1,101 @@
+[
+  {
+    "name": "date",
+    "label": "Date",
+    "type": "date-input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "duration",
+    "label": "Duration",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Ongoing",
+        "label": "Ongoing"
+      },
+      {
+        "value": "Once Off",
+        "label": "Once Off"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "location",
+    "label": "Location",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      },
+      {
+        "value": "School",
+        "label": "School"
+      },
+      {
+        "value": "Home",
+        "label": "Home"
+      },
+      {
+        "value": "Institution",
+        "label": "Institution"
+      },
+      {
+        "value": "Online",
+        "label": "Online"
+      },
+      {
+        "value": "Public Place",
+        "label": "Public Place"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "isCaregiverAware",
+    "label": "Is caregiver aware?",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "incidentWitnessed",
+    "label": "Was the incident witnessed by anyone?",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "abuseReportedElsewhere",
+    "label": "Has abuse been reported elsewhere?",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "whereElseBeenReported",
+    "label": "Where else the incident has been reported?",
+    "type": "mixed-checkbox"
+  }
+]
