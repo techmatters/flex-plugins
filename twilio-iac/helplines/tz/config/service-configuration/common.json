@@ -1,0 +1,45 @@
+{
+    "attributes": {
+        "contacts_waiting_channels": [
+            "web"
+        ],
+        "definitionVersion": "tz-v1",
+        "helplineLanguage": "en-US",
+        "permissionConfig": "tz"
+    },
+    "ui_attributes": {
+        "colorTheme": {
+            "baseName": "GreyLight",
+            "overrides": {
+                "MainHeader": {
+                    "Button": {
+                        "color": "#000000"
+                    },
+                    "Container": {
+                        "background": "#FFFFFF",
+                        "color": "#000000"
+                    },
+                    "Icon": {
+                        "color": "#000000"
+                    }
+                },
+                "SideNav": {
+                    "Button": {
+                        "background": "#FFFFFF"
+                    },
+                    "Container": {
+                        "background": "#FFFFFF"
+                    },
+                    "Icon": {
+                        "color": "#000000"
+                    }
+                }
+            },
+            "preset": {
+                "id": "mono-light",
+                "name": "Simple Light"
+            }
+        },
+        "theme": null
+    }
+}
