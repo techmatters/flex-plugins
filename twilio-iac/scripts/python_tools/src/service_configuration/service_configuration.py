@@ -163,6 +163,7 @@ class ServiceConfiguration():
         self.environment = self._twilio_client.environment
         self.aws_role_arn = get_aws_role_arn(self.environment)
         self.remote_state: dict[str, object] = self._twilio_client.get_flex_configuration()
+        print(self.remote_state)
         self.feature_flags = get_nested_key(self.remote_state, "attributes.feature_flags")
         self.config_flags = get_nested_key(self.remote_state, "attributes.config_flags")
         self.init_version()
