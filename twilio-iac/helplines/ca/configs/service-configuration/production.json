@@ -1,24 +1,24 @@
 {
-    "attributes": {
-        "feature_flags": {
-            "enable_aselo_messaging_ui": true
-        },
-        "form_definitions_base_url": "https://assets-production.tl.techmatters.org/form-definitions/",
-        "resources_base_url": "https://hrm-production-ca.tl.techmatters.org",
-        "previous_ui_version": {
-            "date": "2023-08-08T17:58:25.241Z",
-            "semver": "~2.0.0",
-            "version": "2.0.3"
-        }
+  "attributes": {
+    "feature_flags": {
+      "enable_aselo_messaging_ui": true
     },
-    "ui_attributes": {
-        "colorTheme": {
-            "light": null,
-            "baseName": null,
-            "preset": null,
-            "overrides": null
-        },
-        "internalChatServerlessUrl": "serverless-internal-chat-7504.twil.io",
-        "appianAddonUrl": "vps.appiancloud.com/suite/webapi"
+    "form_definitions_base_url": "https://assets-production.tl.techmatters.org/form-definitions/",
+    "resources_base_url": "https://hrm-production-ca.tl.techmatters.org",
+    "previous_ui_version": {
+      "date": "2023-08-08T17:58:25.241Z",
+      "semver": "~2.0.0",
+      "version": "2.0.3"
     }
+  },
+  "ui_attributes": {
+    "colorTheme": {
+      "light": null,
+      "baseName": null,
+      "preset": null,
+      "overrides": null
+    },
+    "internalChatServerlessUrl": "serverless-internal-chat-7504.twil.io",
+    "appianAddonUrl": "vps.appiancloud.com/suite/webapi"
+  }
 }

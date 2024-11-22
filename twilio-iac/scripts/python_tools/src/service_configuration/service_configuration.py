@@ -48,13 +48,17 @@ EXCLUDED_FIELDS = [
     "service_version",
     "taskrouter_offline_activity_sid",
     "status",
-    'ui_attributes.appianApiKey',
-    'ui_attributes.flexAddonKey',
 ]
 
 OVERRIDE_FIELDS = [
     'attributes',
     'ui_attributes.colorTheme',
+]
+
+# These are fields that will be kept from the remote state and added to the new state 
+FORCE_KEEP_FIELDS = [
+    'ui_attributes.appianApiKey',
+    'ui_attributes.flexAddonKey',
 ]
 
 REGION_URL_POSTFIX_MAP = {
@@ -107,7 +111,6 @@ def delete_nested_key(data, key):
                 # if the sub-dictionary is empty after the deletion, remove it
                 del data[path[0]]
         return not bool(data)
-
 
 
 def get_dot_notation_path(change) -> str:
@@ -227,7 +230,12 @@ class ServiceConfiguration():
 
         self.init_ssm_fields()
         self.init_template_fields()
-
+        # override fields in the new state with the remote state
+        for field in FORCE_KEEP_FIELDS:
+            remote_value = get_nested_key(self.remote_state, field)
+            if remote_value:
+                set_nested_key(self.new_state, field, remote_value)
+        
         for key, value in self.template_config.items():
             local_value = get_nested_key(self.local_state, key)
             # We want to allow the user to override the template value with a
