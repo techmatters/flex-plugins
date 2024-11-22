@@ -87,7 +87,7 @@ def get_nested_key(data, key):
     
     for path_key in path:
         print(path_key)
-        if path_key not in current:
+        if not isinstance(current, dict) or path_key not in current:
             return None
         current = current[path_key]
 
