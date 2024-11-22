@@ -18,6 +18,7 @@
         "resources_base_url": ""
     },
     "ui_attributes": {
+        "logLevel": "debug",
         "colorTheme": {
             "baseName": "GreyLight",
             "overrides": {
