@@ -83,8 +83,10 @@ def get_nested_key(data, key):
 
     path = key.split('.')
     current = data
-
+    print(json.dumps(current, indent=4))
+    
     for path_key in path:
+        print(path_key)
         if path_key not in current:
             return None
         current = current[path_key]
