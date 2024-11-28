@@ -112,6 +112,10 @@ ${
             "key": "channelSid"
           },
           {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
             "value": "trigger_pre_survey",
             "key": "message"
           },
@@ -176,6 +180,10 @@ ${
           {
             "value": "{{flow.channel.address}}",
             "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
           }
         ],
         "url": "${serverless_url}/channelCapture/chatbotCallbackCleanup"
@@ -298,6 +306,10 @@ ${
             "key": "channelSid"
           },
           {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
             "value": channel_flow_vars["blocked_message"],
             "key": "message"
           },
@@ -332,6 +344,10 @@ ${
           {
             "value": "{{flow.channel.address}}",
             "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
           },
           {
             "value": "I'm sorry, we couldn't receive your message.  Please try texting us again  or call us for free on 0800376633.",
