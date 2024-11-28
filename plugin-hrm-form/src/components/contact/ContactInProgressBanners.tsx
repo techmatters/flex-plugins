@@ -35,7 +35,7 @@ import { newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction } from '..
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { RootState } from '../../states';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
-import { checkTaskAssignment, completeTaskAssignment } from '../../services/twilioTaskService';
+import { checkTaskAssignment } from '../../services/twilioTaskService';
 
 type ContactBannersProps = {
   contactId: string;
@@ -65,7 +65,6 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
         ...savedContact.rawJson,
       },
     };
-    await completeTaskAssignment(savedContact.taskId);
     dispatch(newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction(updatedContact));
     setShowResolvedBanner(true);
   };

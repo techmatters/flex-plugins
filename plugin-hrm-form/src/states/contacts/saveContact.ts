@@ -50,7 +50,7 @@ import * as TransferHelpers from '../../transfer/transferTaskState';
 import { TaskSID, WorkerSID } from '../../types/twilio';
 import { CaseStateEntry } from '../case/types';
 import { getOfflineContactTask } from './offlineContactTask';
-import { getTask } from '../../services/twilioTaskService';
+import { completeTaskAssignment, getTask } from '../../services/twilioTaskService';
 import { setConversationDurationFromMetadata } from '../../utils/conversationDuration';
 
 export const createContactAsyncAction = createAsyncAction(
@@ -228,10 +228,14 @@ export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = crea
       caseState = { connectedCase, sections };
     }
     if (task) {
-      return submitContactForm(task, contact, caseState);
+      const updatedContact = await submitContactForm(task, contact, caseState);
+      await completeTaskAssignment(task.taskSid);
+      return finalizeContact(task, updatedContact);
     }
+
     return finalizeContact(task, contact);
   },
+  (contact: Contact) => contact,
 );
 
 export const loadContactFromHrmByTaskSidAsyncAction = createAsyncAction(
@@ -440,6 +444,27 @@ export const saveContactReducer = (initialState: ContactsState) =>
           meta: { contact },
         } = action as typeof action & {
           meta: { contact: Contact; changes: ContactDraftChanges };
+        };
+        return rollbackSavingStateInRedux(state, contact, undefined);
+      },
+    ),
+    handleAction(
+      newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction.pending as typeof newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction,
+      (state, { meta: contact }): ContactsState => {
+        return setContactLoadingStateInRedux(state, contact, contact);
+      },
+    ),
+    handleAction(
+      newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction.fulfilled,
+      (state, { payload }): ContactsState => {
+        return loadContactIntoRedux(state, payload, undefined, newContactMetaData(false));
+      },
+    ),
+    handleAction(
+      newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction.rejected,
+      (state, action): ContactsState => {
+        const { meta: contact } = action as typeof action & {
+          meta: Contact;
         };
         return rollbackSavingStateInRedux(state, contact, undefined);
       },
