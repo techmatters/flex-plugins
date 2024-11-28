@@ -14,6 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+// WE ARE TRYING TO BREAK THIS FILE UP! NO NEW METHODS IN HERE PLEASE!
+// Add to one of the other function specific serverless service files that already exist like twilioTaskService.ts or twilioWorkerService.ts
+// If an appropriate file doesn't exist, start another one, and move any existing functions here that should also be in there into it
+
 /* eslint-disable sonarjs/prefer-immediate-return */
 /* eslint-disable camelcase */
 import { ITask, Notifications } from '@twilio/flex-ui';
@@ -134,19 +138,5 @@ export const getMediaUrl = async (serviceSid: string, mediaSid: string) => {
   const body = { serviceSid, mediaSid };
 
   const response = await fetchProtectedApi('/getMediaUrl', body);
-  return response;
-};
-
-export const checkTaskAssignment = async (taskSid: string) => {
-  const body = { taskSid };
-
-  const response = await fetchProtectedApi('/checkTaskAssignment', body);
-  return response;
-};
-
-export const completeTaskAssignment = async (taskSid: string) => {
-  const body = { taskSid };
-
-  const response = await fetchProtectedApi('/completeTaskAssignment', body);
   return response;
 };

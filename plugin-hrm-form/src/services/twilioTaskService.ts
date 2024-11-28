@@ -14,8 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { ITask } from '@twilio/flex-ui';
-
 import fetchProtectedApi from './fetchProtectedApi';
 import { TaskSID } from '../types/twilio';
 
@@ -69,3 +67,23 @@ export const wrapupConversationTask = async (taskSid: TaskSID) =>
  */
 export const completeConversationTask = async (taskSid: TaskSID) =>
   fetchProtectedApi('/interaction/transitionAgentParticipants', { taskSid, targetStatus: 'closed' });
+
+export const checkTaskAssignment = async (taskSid: string) => {
+  const body = { taskSid };
+
+  return fetchProtectedApi('/checkTaskAssignment', body);
+};
+
+export const getTask = async (taskSid: string): Promise<ITask> => {
+  const body = { taskSid };
+  return {
+    taskSid,
+    ...(await fetchProtectedApi('/getTask', body)),
+  };
+};
+
+export const completeTaskAssignment = async (taskSid: string) => {
+  const body = { taskSid };
+
+  return fetchProtectedApi('/completeTaskAssignment', body);
+};

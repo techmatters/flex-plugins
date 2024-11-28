@@ -42,8 +42,6 @@ export type EntryInfo = {
 
 export type CaseItemFormValues = { [key: string]: string | boolean };
 
-export type CaseItemEntry = { form: CaseItemFormValues } & EntryInfo;
-
 export type Household = { [key: string]: string | boolean };
 
 export type Perpetrator = { [key: string]: string | boolean };

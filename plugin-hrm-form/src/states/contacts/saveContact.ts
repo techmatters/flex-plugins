@@ -27,7 +27,7 @@ import {
   removeFromCase,
   updateContactInHrm,
 } from '../../services/ContactService';
-import { Case, Contact, CustomITask, isOfflineContactTask, RouterTask } from '../../types/types';
+import { Case, Contact, CustomITask, isOfflineContact, isOfflineContactTask, RouterTask } from '../../types/types';
 import {
   CONNECT_TO_CASE,
   ContactMetadata,
@@ -39,15 +39,19 @@ import {
   LoadingStatus,
   REMOVE_FROM_CASE,
   SET_SAVED_CONTACT,
+  SUBMIT_AND_FINALIZE_CONTACT_FROM_OUTSIDE_TASK_CONTEXT,
   UPDATE_CONTACT_ACTION,
 } from './types';
 import { ContactDraftChanges } from './existingContacts';
 import { newContactMetaData } from './contactState';
-import { getCase } from '../../services/CaseService';
+import { getCase, getCaseTimeline } from '../../services/CaseService';
 import { getUnsavedContact } from './getUnsavedContact';
 import * as TransferHelpers from '../../transfer/transferTaskState';
 import { TaskSID, WorkerSID } from '../../types/twilio';
 import { CaseStateEntry } from '../case/types';
+import { getOfflineContactTask } from './offlineContactTask';
+import { getTask } from '../../services/twilioTaskService';
+import { setConversationDurationFromMetadata } from '../../utils/conversationDuration';
 
 export const createContactAsyncAction = createAsyncAction(
   CREATE_CONTACT_ACTION,
@@ -183,7 +187,8 @@ export const removeFromCaseAsyncAction = createAsyncAction(
 export const submitContactFormAsyncAction = createAsyncAction(
   SET_SAVED_CONTACT,
   async (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) => {
-    return submitContactForm(task, contact, metadata, caseState);
+    const contactWithConversationDuration = setConversationDurationFromMetadata(contact, metadata);
+    return submitContactForm(task, contactWithConversationDuration, caseState);
   },
   (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) => ({
     task,
@@ -196,6 +201,35 @@ export const submitContactFormAsyncAction = createAsyncAction(
 export const newFinalizeContactAsyncAction = createAsyncAction(
   FINALIZE_CONTACT,
   async (task: RouterTask, contact: Contact) => {
+    return finalizeContact(task, contact);
+  },
+);
+
+export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = createAsyncAction(
+  SUBMIT_AND_FINALIZE_CONTACT_FROM_OUTSIDE_TASK_CONTEXT,
+  async (contact: Contact) => {
+    const { taskId: taskSid } = contact;
+    let task: CustomITask | undefined;
+    let caseState: Pick<CaseStateEntry, 'sections' | 'connectedCase'> | undefined = undefined;
+    if (isOfflineContact(contact)) {
+      task = getOfflineContactTask();
+    } else {
+      task = await getTask(taskSid);
+    }
+    if (contact.caseId) {
+      const [connectedCase, timeline] = await Promise.all([
+        getCase(contact.caseId),
+        getCaseTimeline(contact.caseId, ['household', 'perpetrator', 'incident', 'referral'], false, {
+          offset: 0,
+          limit: 1,
+        }),
+      ]);
+      const sections = Object.fromEntries(timeline.activities.map(({ activity }) => [activity.sectionType, activity]));
+      caseState = { connectedCase, sections };
+    }
+    if (task) {
+      return submitContactForm(task, contact, caseState);
+    }
     return finalizeContact(task, contact);
   },
 );

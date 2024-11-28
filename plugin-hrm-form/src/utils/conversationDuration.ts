@@ -15,10 +15,10 @@
  */
 
 import { isNullOrUndefined } from './checkers';
-import { isOfflineContactTask } from '../types/types';
+import { Contact, isOfflineContact } from '../types/types';
 import { ContactMetadata } from '../states/contacts/types';
 
-export const fillEndMillis = (metadata: ContactMetadata): ContactMetadata => ({
+const fillEndMillis = (metadata: ContactMetadata): ContactMetadata => ({
   ...metadata,
   endMillis: metadata.endMillis || new Date().getTime(),
 });
@@ -27,16 +27,25 @@ export const fillEndMillis = (metadata: ContactMetadata): ContactMetadata => ({
  * Metrics will be invalid if:
  * - page was reloaded (form recreated and thus initial information will be lost)
  * - endMillis was not set
- * @param {ITask} task
  * @param {{ startMillis: number, endMillis: number, recreated: boolean }} metadata
  */
-export const getConversationDuration = (task: ITask, { startMillis, endMillis, recreated }) => {
-  if (isOfflineContactTask(task)) return null;
-
-  const validMetrics = !recreated && !isNullOrUndefined(endMillis);
+const getConversationDuration = ({ startMillis, endMillis, recreated }) => {
+  const validMetrics = !recreated && !isNullOrUndefined(endMillis) && !isNullOrUndefined(startMillis);
 
   if (!validMetrics) return null;
 
   const milisecondsElapsed = endMillis - startMillis;
   return Math.floor(milisecondsElapsed / 1000);
+};
+
+export const setConversationDurationFromMetadata = (contact: Contact, metadata: ContactMetadata): Contact => {
+  if (!isOfflineContact(contact)) {
+    const metadataForDuration = fillEndMillis(metadata);
+    const conversationDuration = getConversationDuration(metadataForDuration);
+    return {
+      ...contact,
+      conversationDuration: conversationDuration || contact.conversationDuration,
+    };
+  }
+  return contact;
 };
