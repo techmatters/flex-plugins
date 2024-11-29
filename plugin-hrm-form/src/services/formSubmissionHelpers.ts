@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable import/no-unused-modules */
-import { Actions, Manager } from '@twilio/flex-ui';
+import { Actions, Manager, TaskReservationStatus } from '@twilio/flex-ui';
 import { Dispatch } from 'react';
 
 import { Contact, CustomITask, isOfflineContact, isOfflineContactTask, isTwilioTask, RouterTask } from '../types/types';
@@ -23,7 +23,6 @@ import { channelTypes } from '../states/DomainConstants';
 import { buildInsightsData } from './InsightsService';
 import { finalizeContact, saveContact } from './ContactService';
 import { getHrmConfig } from '../hrmConfig';
-import { ContactMetadata } from '../states/contacts/types';
 import * as GeneralActions from '../states/actions';
 import asyncDispatch from '../states/asyncDispatch';
 import { newClearContactAsyncAction, removeFromCaseAsyncAction } from '../states/contacts/saveContact';
@@ -33,6 +32,7 @@ import { CaseStateEntry } from '../states/case/types';
 import { getExternalRecordingInfo } from './getExternalRecordingInfo';
 import { assignOfflineContactInit, assignOfflineContactResolve } from './twilioTaskService';
 
+const FINISHED_TASK_STATES: TaskReservationStatus[] = ['completed', 'canceled'];
 /**
  * Function used to manually complete a task (making sure it transitions to wrapping state first).
  */
@@ -67,8 +67,7 @@ export const completeTask = (task: RouterTask, contact: Contact) =>
 export const submitContactForm = async (
   task: CustomITask,
   contact: Contact,
-  metadata: ContactMetadata,
-  caseState: CaseStateEntry,
+  caseState: Pick<CaseStateEntry, 'sections' | 'connectedCase'>,
 ) => {
   const { workerSid } = getHrmConfig();
 
@@ -76,7 +75,7 @@ export const submitContactForm = async (
     const targetWorkerSid = contact.rawJson.contactlessTask.createdOnBehalfOf as string;
     const inBehalfTask = await assignOfflineContactInit(targetWorkerSid, task.attributes);
     try {
-      const savedContact = await saveContact(task, contact, metadata, workerSid, inBehalfTask.sid);
+      const savedContact = await saveContact(task, contact, workerSid, inBehalfTask.sid);
       const finalAttributes = buildInsightsData(inBehalfTask, contact, caseState, savedContact);
       await assignOfflineContactResolve({
         action: 'complete',
@@ -98,9 +97,11 @@ export const submitContactForm = async (
     }
   }
 
-  const savedContact = await saveContact(task, contact, metadata, workerSid, task.taskSid);
-  const recordingsIfAvailable = await getExternalRecordingInfo(task);
-  const finalAttributes = buildInsightsData(task, contact, caseState, savedContact, recordingsIfAvailable);
-  await task.setAttributes(finalAttributes);
+  const savedContact = await saveContact(task, contact, workerSid, task.taskSid);
+  if (FINISHED_TASK_STATES.includes(task.status)) {
+    const recordingsIfAvailable = await getExternalRecordingInfo(task);
+    const finalAttributes = buildInsightsData(task, contact, caseState, savedContact, recordingsIfAvailable);
+    await task.setAttributes(finalAttributes);
+  }
   return savedContact;
 };

@@ -16,7 +16,7 @@
 
 import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
-import { Case } from '../../types/types';
+import { Case, Contact } from '../../types/types';
 
 export const selectDefinitionVersions = (state: RootState) => state[namespace].configuration.definitionVersions;
 
@@ -26,3 +26,6 @@ export const selectCurrentDefinitionVersion = (state: RootState) =>
 export const selectDefinitionVersionForCase = ({ [namespace]: { configuration } }: RootState, connectedCase: Case) =>
   configuration.definitionVersions[connectedCase?.info?.definitionVersion ?? ''] ??
   configuration.currentDefinitionVersion;
+
+export const selectDefinitionVersionForContact = ({ [namespace]: { configuration } }: RootState, contact: Contact) =>
+  configuration.definitionVersions[contact?.rawJson?.definitionVersion ?? ''] ?? configuration.currentDefinitionVersion;

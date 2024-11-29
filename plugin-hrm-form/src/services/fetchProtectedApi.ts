@@ -24,6 +24,8 @@ export class ProtectedApiError extends ApiError {
 
     this.name = 'ProtectedApiError';
     this.serverStack = this.body?.stack;
+
+    Object.setPrototypeOf(this, ProtectedApiError.prototype);
   }
 
   serverStack: any;

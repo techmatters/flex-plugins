@@ -42,8 +42,6 @@ export type EntryInfo = {
 
 export type CaseItemFormValues = { [key: string]: string | boolean };
 
-export type CaseItemEntry = { form: CaseItemFormValues } & EntryInfo;
-
 export type Household = { [key: string]: string | boolean };
 
 export type Perpetrator = { [key: string]: string | boolean };
@@ -367,7 +365,7 @@ export function isOfflineContact(contact: Contact): boolean {
  * Checks if the task is issued by someone else to avoid showing certain things in the UI. This is done by checking isInMyBehalf task attribute (attached while creating offline contacts)
  */
 export function isInMyBehalfITask(task: RouterTask): task is InMyBehalfITask {
-  return task.attributes && task.attributes.isContactlessTask && (task.attributes as any).isInMyBehalf;
+  return task?.attributes && task.attributes.isContactlessTask && (task.attributes as any).isInMyBehalf;
 }
 
 export function isTwilioTask(task: RouterTask): task is ITask {
