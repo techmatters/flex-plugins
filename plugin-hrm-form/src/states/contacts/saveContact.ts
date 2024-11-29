@@ -53,6 +53,7 @@ import { CaseStateEntry } from '../case/types';
 import { getOfflineContactTask } from './offlineContactTask';
 import { completeTaskAssignment, getTask } from '../../services/twilioTaskService';
 import { setConversationDurationFromMetadata } from '../../utils/conversationDuration';
+import { ProtectedApiError } from '../../services/fetchProtectedApi';
 
 export const createContactAsyncAction = createAsyncAction(
   CREATE_CONTACT_ACTION,
@@ -230,19 +231,19 @@ export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = crea
     }
     if (isOfflineContact(contact)) {
       try {
-        return submitContactForm(task, contact, caseState);
+        // 'await' is used here to ensure that the error is thrown and caught in the try-catch block
+        return await submitContactForm(task, contact, caseState);
       } catch (error) {
-        console.error(
-          'Error creating Twilio task for offline contact, attempting to save with placeholder task SID',
-          error,
-        );
-        await saveContact(
-          task,
-          contact,
-          contact.twilioWorkerId,
-          `WT-taskless-offline-contact-${contact.accountSid}-${contact.id}`,
-        );
-        return finalizeContact(task, contact);
+        if (error instanceof ProtectedApiError) {
+          const tasklessSid: TaskSID = `WT-taskless-offline-contact-${contact.accountSid}-${contact.id}`;
+          console.error(
+            `Error creating Twilio task for offline contact, attempting to save with placeholder task SID '${tasklessSid}'`,
+            error,
+          );
+          await saveContact(task, contact, contact.twilioWorkerId, tasklessSid);
+          return finalizeContact(task, contact);
+        }
+        throw error;
       }
     } else if (task) {
       await completeTaskAssignment(task.taskSid);
