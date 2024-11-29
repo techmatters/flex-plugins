@@ -25,6 +25,7 @@ import {
   getContactById,
   getContactByTaskSid,
   removeFromCase,
+  saveContact,
   updateContactInHrm,
 } from '../../services/ContactService';
 import { Case, Contact, CustomITask, isOfflineContact, isOfflineContactTask, RouterTask } from '../../types/types';
@@ -227,12 +228,27 @@ export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = crea
       const sections = Object.fromEntries(timeline.activities.map(({ activity }) => [activity.sectionType, activity]));
       caseState = { connectedCase, sections };
     }
-    if (task) {
-      const updatedContact = await submitContactForm(task, contact, caseState);
+    if (isOfflineContact(contact)) {
+      try {
+        return submitContactForm(task, contact, caseState);
+      } catch (error) {
+        console.error(
+          'Error creating Twilio task for offline contact, attempting to save with placeholder task SID',
+          error,
+        );
+        await saveContact(
+          task,
+          contact,
+          contact.twilioWorkerId,
+          `WT-taskless-offline-contact-${contact.accountSid}-${contact.id}`,
+        );
+        return finalizeContact(task, contact);
+      }
+    } else if (task) {
       await completeTaskAssignment(task.taskSid);
+      const updatedContact = await submitContactForm(task, contact, caseState);
       return finalizeContact(task, updatedContact);
     }
-
     return finalizeContact(task, contact);
   },
   (contact: Contact) => contact,
