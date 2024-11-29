@@ -31,6 +31,7 @@ export enum CaseSectionApiName {
 
 export enum FormInputType {
   Input = 'input',
+  SearchInput = 'search-input',
   NumericInput = 'numeric-input',
   Email = 'email',
   RadioInput = 'radio-input',
@@ -67,6 +68,10 @@ export const isNonSaveable = (item: any): item is NonSaveable =>
 
 type InputDefinition = {
   type: FormInputType.Input;
+} & ItemBase;
+
+type SearchInputDefinition = {
+  type: FormInputType.SearchInput;
 } & ItemBase;
 
 type NumericInputDefinition = {
@@ -206,6 +211,7 @@ export declare type ProfileFlagDurationDefinition = {
 
 export type FormItemDefinition =
   | InputDefinition
+  | SearchInputDefinition
   | NumericInputDefinition
   | EmailInputDefinition
   | RadioInputDefinition

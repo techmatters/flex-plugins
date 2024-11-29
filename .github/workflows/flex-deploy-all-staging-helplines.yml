@@ -16,6 +16,10 @@ name: Deploy Flex to all Staging Helplines
 
 on:
   workflow_dispatch:
+    inputs:
+      self-hosted-deploy:
+        description: If set to true, we will point the account at our s3 hosted version of the plugin rather than uploading it to Twilio.
+        type: boolean
 
 jobs:
   configure:
@@ -32,7 +36,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - id: determine-target-helplines
-        name: Executing main-action
+        name: Determining helplines to deploy to
         uses: ./.github/actions/determine-target-helplines-action
         with:
           environment: staging
@@ -45,3 +49,21 @@ jobs:
       project: flex
       helplines: ${{ needs.configure.outputs.target_helplines }}
       environments: '[ "staging" ]'
+      self-hosted-deploy: ${{ inputs.self-hosted-deploy }}
+      invalidate-forms-cache: false
+  invalidate-forms-cache:
+    name: Invalidate CloudFront cache for all staging forms
+    needs: deploy-helplines
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Invalidate CloudFront cache
+        run: |
+          CF_DISTRO=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].DomainName}[?origin=='assets-staging.tl.techmatters.org.s3-website.us-east-1.amazonaws.com'].id" --output text)
+          echo "Invalidating CloudFront cache for distribution $CF_DISTRO"
+          aws cloudfront create-invalidation --distribution-id $CF_DISTRO --paths /form-definitions/*

@@ -2,8 +2,7 @@
     "attributes": {
         "definitionVersion": "th-v1",
         "feature_flags": {
-            "enable_manual_pulling": false,
-            "enable_aselo_messaging_ui": true
+            "enable_manual_pulling": false
         },
         "helplineLanguage": "th-TH",
         "permissionConfig": "th"

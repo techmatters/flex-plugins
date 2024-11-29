@@ -58,7 +58,17 @@ variable "channels" {
     chatbot_unique_names = list(string)
     lambda_channel       = optional(bool)
     messaging_mode       = optional(string, "programmable-chat")
+    enable_datadog_monitor = optional(bool, false)
+    custom_monitor = optional(object({
+      query = optional(string)
+      custom_schedule      = optional(object({
+      rrule = optional(string)
+      timezone = optional(string)
+    }),{    })
+    }))
+    
   }))
+  description = "Map of enabled channel objects with their attributes"
 
 }
 variable "workflow_sids" {

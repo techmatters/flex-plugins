@@ -46,12 +46,23 @@ const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefin
 const mockStore = configureMockStore([]);
 let mockV1;
 
+const mockFlexManager = {
+  workerClient: {
+    attributes: {
+      roles: [''],
+    },
+  },
+};
+
 jest.mock('../../services/ServerlessService', () => ({
   populateCounselors: async () => [],
 }));
 
 jest.mock('@twilio/flex-ui', () => ({
   ...(jest.requireActual('@twilio/flex-ui') as any),
+  Manager: {
+    getInstance: () => mockFlexManager,
+  },
   Actions: {
     invokeAction: jest.fn(),
   },
@@ -102,6 +113,7 @@ function createState(
       },
     ]),
   );
+
   return {
     'plugin-hrm-form': {
       configuration: {
@@ -213,9 +225,7 @@ test('<Search> should display <SearchForm />', async () => {
   expect(screen.getByTestId('SearchForm')).toBeInTheDocument();
   expect(screen.queryByTestId('ContactDetails')).not.toBeInTheDocument();
 
-  expect(screen.getAllByRole('textbox')).toHaveLength(5);
   expect(screen.queryByRole('button', { name: 'Counsellor Name' })).toBeDefined();
-  expect(screen.getByDisplayValue('Jill')).toBeDefined();
 });
 
 test('<Search> should display <SearchForm /> with previous contacts checkbox', async () => {
@@ -263,7 +273,6 @@ test('<Search> should display <SearchForm /> with previous contacts checkbox', a
 
   expect(screen.queryByTestId('SearchForm')).toBeInTheDocument();
   expect(screen.queryByTestId('ContactDetails')).not.toBeInTheDocument();
-  expect(screen.getAllByRole('textbox')).toHaveLength(5);
   expect(screen.queryByRole('checkbox', { name: 'Search-PreviousContactsCheckbox' })).toBeDefined();
   expect(screen.queryByRole('button', { name: 'Counsellor Name' })).toBeDefined();
 });

@@ -91,7 +91,7 @@ resource "twilio_flex_flex_flows_v1" "channel_flow" {
 resource "twilio_conversations_configuration_addresses_v1" "conversations_address" {
   for_each = {
     for idx, channel in var.channels :
-    idx => channel if(channel.channel_type != "voice" && channel.messaging_mode == "conversations")
+    idx => channel if(channel.channel_type != "voice" && channel.channel_type != "custom" && channel.messaging_mode == "conversations")
   }
   type                                   = each.value.channel_type
   address                                = each.value.contact_identity
@@ -106,7 +106,7 @@ resource "twilio_conversations_configuration_addresses_v1" "conversations_addres
 resource "aws_ssm_parameter" "channel_flex_flow_sid_parameter" {
   for_each = {
     for idx, channel in var.channels :
-    idx => channel if(channel.channel_type == "custom")
+    idx => channel if(channel.channel_type == "custom" && channel.messaging_mode == "programmable-chat")
   }
   name        = "${var.short_environment}_TWILIO_${var.short_helpline}_${upper(each.key)}_FLEX_FLOW_SID"
   type        = "SecureString"
@@ -118,9 +118,9 @@ resource "aws_ssm_parameter" "channel_flex_flow_sid_parameter" {
 resource "aws_ssm_parameter" "channel_flex_flow_sid" {
   for_each = {
   for idx, channel in var.channels :
-  idx => channel if(channel.channel_type == "custom")
+  idx => channel if(channel.channel_type == "custom" && channel.messaging_mode == "programmable-chat")
   }
-  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/flex_flow_sid"
+  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/${each.key}_flex_flow_sid"
   type        = "SecureString"
   value       = twilio_flex_flex_flows_v1.channel_flow[each.key].sid
   description = "${title(replace(each.key, "_", " "))} Flex Flow SID"
@@ -130,24 +130,24 @@ resource "aws_ssm_parameter" "channel_flex_flow_sid" {
 resource "aws_ssm_parameter" "channel_studio_flow_sid" {
   for_each = {
   for idx, channel in var.channels :
-  idx => channel if(channel.channel_type == "custom" && channel.messaging_mode == "conversations" )
+  idx => channel if(channel.channel_type == "custom" && channel.messaging_mode == "conversations")
   }
-  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/studio_flow_sid"
+  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/${each.key}_studio_flow_sid"
   type        = "SecureString"
   value       = twilio_studio_flows_v2.channel_studio_flow[each.key].sid
   description = "${title(replace(each.key, "_", " "))} Studio Flow SID"
 }
 
-#This will nned to be removed after the conversations migration
+#This will need to be removed after the conversations migration
 resource "aws_ssm_parameter" "messaging_mode" {
   for_each = {
   for idx, channel in var.channels :
   idx => channel if(channel.channel_type == "custom")
   }
-  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/studio_flow_sid"
+  name        = "/${lower(var.environment)}/${each.key}/${nonsensitive(var.twilio_account_sid)}/messaging_mode"
   type        = "SecureString"
   value       = each.value.messaging_mode
-  description = "${title(replace(each.key, "_", " "))} Studio Flow SID"
+  description = "${title(replace(each.key, "_", " "))} Messaging Mode"
 }
 
 

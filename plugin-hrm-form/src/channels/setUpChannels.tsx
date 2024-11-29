@@ -27,8 +27,8 @@ import SmsIcon from '../components/common/icons/SmsIcon';
 import * as TransferHelpers from '../transfer/transferTaskState';
 import { colors, mainChannelColor } from './colors';
 import { getTemplateStrings } from '../hrmConfig';
-import { isSmsChannelType } from '../utils/smsChannels';
-import { setCallTaskCardString, setChatTaskCardString } from '../teamsView/taskCardEnhancement';
+import { isFacebookChannelType, isSmsChannelType } from '../utils/groupedChannels';
+import { setCallTaskCardString, setChatTaskCardString } from '../components/teamsView/taskCardEnhancement';
 import { maskChannelStringsWithIdentifiers } from '../maskIdentifiers';
 
 const isIncomingTransfer = task => TransferHelpers.hasTransferStarted(task) && task.status === 'pending';
@@ -95,6 +95,7 @@ export const setupDefaultChannel = () => {
 export const setupFacebookChannel = () => {
   const facebookIcon = <FacebookIcon width="24px" height="24px" color={colors.facebook} />;
   DefaultTaskChannels.ChatMessenger.icons = generateIcons(facebookIcon);
+  DefaultTaskChannels.ChatMessenger.isApplicable = task => isFacebookChannelType(task.channelType);
   maskChannelStringsWithIdentifiers(DefaultTaskChannels.ChatMessenger);
   setChatTaskCardString(DefaultTaskChannels.ChatMessenger);
 };
@@ -151,7 +152,7 @@ export const setupTelegramChatChannel = () => {
 export const setupInstagramChatChannel = () => {
   const InstagramChatChannel = DefaultTaskChannels.createChatTaskChannel(
     'instagram',
-    task => task.channelType === 'instagram',
+    task => task.channelType === 'instagram' || task.attributes.customChannelType === 'instagram',
   );
 
   const icon = <InstagramIcon width="24px" height="24px" color="white" />;

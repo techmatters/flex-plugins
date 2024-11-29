@@ -42,6 +42,17 @@ jobs:
           title: ${{ inputs.title }}
         id: create_prod_release
 
+
+      - name: Copy plugin to S3 release folders
+        uses: ./.github/actions/copy-plugin-to-release-location
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          source-git-reference-type: ${{ github.ref_type }}
+          source-git-reference: ${{ github.ref_name }}
+          target-git-tag: ${{ inputs.tag-name }}
+
       # Send Slack notifying success
       - name: Slack aselo-deploys channel
         uses: ./.github/actions/notify-deploys

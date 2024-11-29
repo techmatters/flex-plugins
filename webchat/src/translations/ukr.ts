@@ -19,5 +19,5 @@ export default {
   EndChatButtonLabel: 'Вийти із чату',
   QuickExitButtonLabel: 'Швидкий вихід',
   QuickExitDescription: 'Потрібно швидко піти?',
-  ChatWithUs: 'Kék Vonal',
+  ChatWithUs: 'Спілкуйтеся з нами',
 } as Record<string, string>;

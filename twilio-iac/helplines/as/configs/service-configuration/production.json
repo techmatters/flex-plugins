@@ -7,14 +7,14 @@
             "whatsapp",
             "facebook",
             "instagram",
-            "line"
+            "line",
+            "telegram"
         ],
         "feature_flags": {
-            "enable_aselo_messaging_ui": true,
             "enable_lex": true,
             "enable_voice_recordings": true,
             "enable_csam_report": true,
-            "enable_post_survey": true
+            "enable_post_survey": false
         },
         "helplineLanguage": "",
         "permissionConfig": "demo",

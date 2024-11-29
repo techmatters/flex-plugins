@@ -29,6 +29,7 @@ import { HrmState } from '../..';
 import { CaseSectionApi } from './api';
 import { lookupApi } from './lookupApi';
 import { copyCaseSectionItem } from './copySection';
+import { markCaseAsUpdating } from '../markCaseAsUpdating';
 
 type CaseSectionUpdatePayload = {
   caseId: Case['id'];
@@ -155,12 +156,28 @@ const updateCaseSections = (
 
 export const caseSectionUpdateReducer = (initialState: HrmState): ((state: HrmState, action) => HrmState) =>
   createReducer(initialState, handleAction => [
+    handleAction(createCaseSectionAsyncAction.pending, (state: HrmState, action: any) => {
+      const { caseId } = action.meta;
+      return markCaseAsUpdating(state, caseId, true);
+    }),
     handleAction(createCaseSectionAsyncAction.fulfilled, (state: HrmState, action) => {
       const { caseId, sections } = action.payload;
-      return updateCaseSections(state, caseId, sections);
+      return markCaseAsUpdating(updateCaseSections(state, caseId, sections), caseId, false);
+    }),
+    handleAction(createCaseSectionAsyncAction.rejected, (state: HrmState, action: any) => {
+      const { caseId } = action.meta;
+      return markCaseAsUpdating(state, caseId, false);
+    }),
+    handleAction(updateCaseSectionAsyncAction.pending, (state: HrmState, action: any) => {
+      const { caseId } = action.meta;
+      return markCaseAsUpdating(state, caseId, true);
     }),
     handleAction(updateCaseSectionAsyncAction.fulfilled, (state: HrmState, action) => {
       const { caseId, sections } = action.payload;
-      return updateCaseSections(state, caseId, sections);
+      return markCaseAsUpdating(updateCaseSections(state, caseId, sections), caseId, false);
+    }),
+    handleAction(updateCaseSectionAsyncAction.rejected, (state: HrmState, action: any) => {
+      const { caseId } = action.meta;
+      return markCaseAsUpdating(state, caseId, false);
     }),
   ]);

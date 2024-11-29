@@ -137,15 +137,21 @@ export const CategoryChip = styled(ChipBase)<ColorProps>`
 `;
 CategoryChip.displayName = 'CategoryChip';
 
-export const TagMiddleDot = styled('div')<ColorProps>`
+type TagMiddleDotProps = {
+  color?: string;
+  size?: string;
+};
+
+export const TagMiddleDot = styled('div')<TagMiddleDotProps>`
+  background-color: ${props => props.color};
+  width: ${props => (props.size ? `${props.size}px` : '4px')};
+  height: ${props => (props.size ? `${props.size}px` : '4px')};
   display: inline-block;
-  width: 4px;
   min-width: 4px;
-  height: 4px;
   border-radius: 100%;
   margin-right: 1ch;
-  background-color: ${props => props.color};
 `;
+TagMiddleDot.displayName = 'TagMiddleDot';
 
 export const SomethingWentWrongText = styled(FontOpenSans)`
   color: ${HrmTheme.colors.errorColor};
@@ -155,4 +161,5 @@ SomethingWentWrongText.displayName = 'SomethingWentWrongText';
 
 export const OpaqueText = styled('span')`
   opacity: 0.7;
+  font-size: 12px;
 `;

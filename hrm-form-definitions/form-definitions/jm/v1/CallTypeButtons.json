@@ -55,6 +55,12 @@
       "category": "non-data"
   },
   {
+      "name": "information",
+      "label": "General Public Information",
+      "type": "button",
+      "category": "non-data"
+  },
+  {
       "name": "missed",
       "label": "Missed Contact",
       "type": "button",

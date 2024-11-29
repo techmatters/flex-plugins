@@ -19,9 +19,15 @@ import { Dispatch } from 'redux';
 import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
 import * as t from './types';
-import { SearchParams } from './types';
-import { searchContacts as searchContactsApiCall } from '../../services/ContactService';
-import { searchCases as searchCasesApiCall } from '../../services/CaseService';
+import { GeneralizedSearchParams, SearchParams } from './types';
+import {
+  searchContacts as searchContactsApiCall,
+  generalizedSearch as generalizedContactsSearchApi,
+} from '../../services/ContactService';
+import {
+  searchCases as searchCasesApiCall,
+  generalizedSearch as generalizedCasesSearchApi,
+} from '../../services/CaseService';
 import { updateDefinitionVersion } from '../configuration/actions';
 import { getCasesMissingVersions, getContactsMissingVersions } from '../../utils/definitionVersions';
 import { getNumberFromTask } from '../../utils';
@@ -38,6 +44,17 @@ export const handleSearchFormChange = (taskId: string, context: string) => <K ex
     taskId,
     context,
   } as t.SearchActionType; // casting cause inference is not providing enough information, but the restrictions are made in argument types
+};
+
+export const handleSearchFormUpdate = (taskId: string, context: string) => (
+  values: t.SearchFormValues,
+): t.SearchActionType => {
+  return {
+    type: t.HANDLE_FORM_UPDATE,
+    values,
+    taskId,
+    context,
+  };
 };
 
 export const newCreateSearchForm = (taskId: string, context: string): t.SearchActionType => {
@@ -78,6 +95,42 @@ export const searchContacts = (dispatch: Dispatch<any>) => (taskId: string, cont
   }
 };
 
+const pickGeneralizedSearchParams = (searchParams: SearchParams): GeneralizedSearchParams => ({
+  ...searchParams,
+  counselor: typeof searchParams.counselor === 'string' ? searchParams.counselor : searchParams.counselor.value,
+  helpline: typeof searchParams.helpline === 'string' ? searchParams.helpline : searchParams.helpline.value,
+  dateFrom: searchParams.dateFrom ? formatISO(startOfDay(parseISO(searchParams.dateFrom))) : searchParams.dateFrom,
+  dateTo: searchParams.dateTo ? formatISO(endOfDay(parseISO(searchParams.dateTo))) : searchParams.dateTo,
+  onlyDataContacts: searchParams.onlyDataContacts,
+});
+
+export const generalizedSearchContacts = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
+  searchParams: SearchParams,
+  limit: number,
+  offset: number,
+  dispatchedFromPreviousContacts?: boolean,
+) => {
+  try {
+    dispatch({ type: t.SEARCH_CONTACTS_REQUEST, taskId, context });
+
+    const searchParamsToSubmit = pickGeneralizedSearchParams(searchParams);
+
+    const searchResultRaw = await generalizedContactsSearchApi({
+      searchParameters: searchParamsToSubmit,
+      limit,
+      offset,
+    });
+    const searchResult = { ...searchResultRaw, contacts: searchResultRaw.contacts };
+
+    const definitions = await getContactsMissingVersions(searchResultRaw.contacts);
+    definitions.forEach(d => dispatch(updateDefinitionVersion(d.version, d.definition)));
+
+    dispatch({ type: t.SEARCH_CONTACTS_SUCCESS, searchResult, taskId, dispatchedFromPreviousContacts, context });
+  } catch (error) {
+    dispatch({ type: t.SEARCH_CONTACTS_FAILURE, error, taskId, dispatchedFromPreviousContacts, context });
+  }
+};
+
 export const searchCases = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
   searchParams: any,
   limit: number,
@@ -101,6 +154,35 @@ export const searchCases = (dispatch: Dispatch<any>) => (taskId: string, context
     };
 
     const searchResult = await searchCasesApiCall(searchCasesPayload, limit, offset);
+
+    const definitions = await getCasesMissingVersions(searchResult.cases);
+    definitions.forEach(d => dispatch(updateDefinitionVersion(d.version, d.definition)));
+
+    dispatch({
+      type: t.SEARCH_CASES_SUCCESS,
+      searchResult,
+      taskId,
+      dispatchedFromPreviousContacts,
+      reference: `search-${taskId}`,
+      context,
+    });
+  } catch (error) {
+    dispatch({ type: t.SEARCH_CASES_FAILURE, error, taskId, context });
+  }
+};
+
+export const generalizedSearchCases = (dispatch: Dispatch<any>) => (taskId: string, context: string) => async (
+  searchParams: SearchParams,
+  limit: number,
+  offset: number,
+  dispatchedFromPreviousContacts?: boolean,
+) => {
+  try {
+    dispatch({ type: t.SEARCH_CASES_REQUEST, taskId, context });
+
+    const searchParamsToSubmit = pickGeneralizedSearchParams(searchParams);
+
+    const searchResult = await generalizedCasesSearchApi({ searchParameters: searchParamsToSubmit, limit, offset });
 
     const definitions = await getCasesMissingVersions(searchResult.cases);
     definitions.forEach(d => dispatch(updateDefinitionVersion(d.version, d.definition)));

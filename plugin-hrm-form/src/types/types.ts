@@ -42,8 +42,6 @@ export type EntryInfo = {
 
 export type CaseItemFormValues = { [key: string]: string | boolean };
 
-export type CaseItemEntry = { form: CaseItemFormValues } & EntryInfo;
-
 export type Household = { [key: string]: string | boolean };
 
 export type Perpetrator = { [key: string]: string | boolean };
@@ -185,7 +183,9 @@ export type Contact = {
   createdBy: string;
   helpline: string;
   taskId: TaskSID;
+  // taskReservationSid: string;
   profileId: Profile['id'] | null;
+  identifierId: Identifier['id'] | null;
   channel: ChannelTypes | 'default';
   updatedBy: string;
   updatedAt?: string;
@@ -277,6 +277,7 @@ export type FeatureFlags = {
   enable_external_transcripts: boolean; // Enables Viewing Transcripts Stored Outside of Twilio
   enable_filter_cases: boolean; // Enables Filters at Case List
   enable_fullstory_monitoring: boolean; // Enables Full Story
+  enable_generalized_search: boolean; // Enables Generalized Search
   enable_last_case_status_update_info: boolean; // Enables showing the time, user and changed status of the most recent case status update on the 'Edit Case Summary' page
   enable_lex: boolean; // Enables consuming from Lex bots
   enable_manual_pulling: boolean; // Enables Adding Another Task
@@ -284,14 +285,16 @@ export type FeatureFlags = {
   enable_post_survey: boolean; // Enables Post-Survey
   enable_previous_contacts: boolean; // Enables Previous Contacts Yellow Banner
   enable_region_resource_search: boolean; // Enables specifying a region as well as a province and / or city in Resource Search
+  enable_save_in_progress_contacts: boolean; // Enables Saving In Progress Contacts
   enable_save_insights: boolean; // Enables Saving Aditional Data on Insights
   enable_separate_timeline_view: boolean; // Enables a limited inline case timelinbe with a link to the full timeline
   enable_sort_cases: boolean; // Enables Sorting at Case List
-  enable_teams_view_enhancements: boolean; // Enables custom Teams View UI
+  enable_teams_view_enhancements2: boolean; // Enables custom Teams View UI with labels
   enable_transfers: boolean; // Enables Transfering Contacts
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
   enable_upload_documents: boolean; // Enables Case Documents
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
+  enable_backend_manual_pulling: boolean; // Enables Backend Manual Pulling
 };
 /* eslint-enable camelcase */
 
@@ -329,6 +332,7 @@ export type OfflineContactTask = {
     helplineToSave?: string;
     preEngagementData?: Record<string, string>;
     skipInsights?: boolean;
+    customChannelType?: string;
   };
   channelType: 'default';
 };
@@ -361,7 +365,7 @@ export function isOfflineContact(contact: Contact): boolean {
  * Checks if the task is issued by someone else to avoid showing certain things in the UI. This is done by checking isInMyBehalf task attribute (attached while creating offline contacts)
  */
 export function isInMyBehalfITask(task: RouterTask): task is InMyBehalfITask {
-  return task.attributes && task.attributes.isContactlessTask && (task.attributes as any).isInMyBehalf;
+  return task?.attributes && task.attributes.isContactlessTask && (task.attributes as any).isInMyBehalf;
 }
 
 export function isTwilioTask(task: RouterTask): task is ITask {

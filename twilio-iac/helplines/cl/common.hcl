@@ -59,7 +59,15 @@ locals {
     #Channels
     channels = {
       webchat : {
-        channel_type     = "web"
+        channel_type           = "web"
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_1d):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=23;BYMINUTE=0;BYDAY=MO,TU,WE,TH,FR"
+            timezone = "America/Santiago"
+          }
+        }
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking.tftpl"
         channel_flow_vars = {
@@ -71,6 +79,14 @@ locals {
       },
       voice : {
         channel_type     = "voice"
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_1d):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=WEEKLY;INTERVAL=1;BYHOUR=23;BYMINUTE=0;BYDAY=MO,TU,WE,TH,FR"
+            timezone = "America/Santiago"
+          }
+        }
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-no-chatbot-operating-hours-blocking.tftpl"
         channel_flow_vars = {

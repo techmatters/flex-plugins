@@ -20,7 +20,6 @@ import Dialog from '@material-ui/core/Dialog';
 import ClearIcon from '@material-ui/icons/Clear';
 import { IconButton } from '@material-ui/core';
 import { styled, Button } from '@twilio/flex-ui';
-import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
 
 import HrmTheme from '../../styles/HrmTheme';
 
@@ -138,7 +137,11 @@ export const ConfirmButton = styled(CloseDialogButton)<ConfirmButtonProps>`
   text-transform: uppercase;
   color: ${props => HrmTheme.colors.declineTextColor};
   background: linear-gradient(to top, ${HrmTheme.colors.declineColor}, ${HrmTheme.colors.declineColor});
-  ${p => getBackgroundWithHoverCSS(HrmTheme.colors.declineColor, true, false, p.disabled)};
+
+  &:hover {
+    background-color: ${HrmTheme.colors.declineColor}CC;
+    background-blend-mode: color;
+  }
 
   &:focus {
     outline-style: auto;

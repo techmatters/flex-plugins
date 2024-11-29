@@ -53,7 +53,7 @@ jobs:
     steps:
     - name: Checkout Branch
       uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Use Node.js 18
       uses: actions/setup-node@v4
       with:
         node-version: '18.x'
@@ -158,3 +158,28 @@ jobs:
         uses: ./.github/actions/run-e2e-tests
         with:
           run-ui-tests: 'true'
+
+
+  upload-plugin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v4
+      - name: Use Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+      - name: Install Flex Plugin
+        uses: ./.github/actions/install-flex-plugin
+      - name: Run hrm-form-definitions Tests
+        run: npm run test
+        working-directory: ./hrm-form-definitions
+
+      - name: Build and Upload Flex Plugin
+        uses: ./.github/actions/build-and-upload-plugin
+        with:
+          git-reference-type: ${{ github.ref_type }}
+          git-reference: ${{ github.ref_name }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}

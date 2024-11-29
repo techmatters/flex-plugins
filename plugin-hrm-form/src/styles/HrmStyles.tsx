@@ -288,6 +288,9 @@ export const FormRadioInput = styled('input')<FormInputProps>`
 FormRadioInput.displayName = 'FormRadioInput';
 
 export const FormDateInput = styled(FormInput)`
+  & {
+    display: block;
+  }
   &[type='date']::-webkit-clear-button,
   &[type='date']::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -297,22 +300,32 @@ export const FormDateInput = styled(FormInput)`
     color: '#AEAEAE';
     opacity: 1;
   }
+  &[type='date']::-webkit-calendar-picker-indicator {
+    font-size: 20px;
+    opacity: 0.8;
+  }
   /* &[type='date'] {} */
   /* &[type='date']::-webkit-calendar-picker-indicator {} */
 `;
 FormDateInput.displayName = 'FormDateInput';
 
 export const FormTimeInput = styled(FormInput)`
+  & {
+    display: block;
+  }
   &[type='time']::-webkit-datetime-edit-fields-wrapper {
     display: flex;
   }
-  &[type='time']::-webkit-clear-button,
+  &[type='time']::-webkit-clear-button {
     -webkit-appearance: none;
     display: none;
   }
+  &[type='time']::-webkit-calendar-picker-indicator {
+    font-size: 20px;
+    opacity: 0.8;
+  }
   /* Other pseudoelements that can be styled
    &[type='time'] {}
-   &[type='time']::-webkit-calendar-picker-indicator {}
    &[type='time']::-webkit-datetime-edit-hour-field {}
    &[type='time']::-webkit-datetime-edit-minute-field {}
    &[type='time']::-webkit-datetime-edit-ampm-field {}
@@ -507,6 +520,31 @@ export const FormOption = styled('option')<FormOptionProps>`
   ${props => props.disabled && `background-color: ${HrmTheme.colors.disabledColor};`}
 `;
 FormOption.displayName = 'FormOption';
+
+export const SearchIconContainer = styled('div')`
+  position: absolute;
+  transform: translateX(35%) translateY(30%);
+  opacity: 0.4;
+  z-index: 2;
+`;
+SearchIconContainer.displayName = 'SearchIconContainer';
+
+export const FormSearchInput = styled(FormInput)<FormInputProps>`
+  position: relative;
+  & {
+    width: 100%;
+    min-width: 217px;
+    padding-left: 30px;
+  }
+`;
+FormSearchInput.displayName = 'FormSearchInput';
+
+type DateRangeSpacerProps = { width?: number };
+export const DateRangeSpacer = styled('span')<DateRangeSpacerProps>`
+  padding-top: 25px;
+  margin: 15px;
+  display: ${({ width }) => (width > 480 ? 'block' : 'none')};
+`;
 
 type CategoryCheckboxProps = { disabled: boolean };
 // eslint-disable-next-line import/no-unused-modules

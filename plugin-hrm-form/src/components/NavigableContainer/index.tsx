@@ -40,6 +40,7 @@ type OwnProps = {
   onGoBack?: () => void;
   onCloseModal?: () => void;
   focusPriority: FocusTarget[];
+  noOverflow?: boolean;
 };
 
 const mapStateToProps = ({ [namespace]: { routing } }: RootState, { task: { taskSid } }: OwnProps) => {
@@ -81,6 +82,7 @@ const NavigableContainer: React.FC<Props> = ({
   isModal,
   focusPriority = ['back', 'close'],
   routing,
+  noOverflow,
   ...boxProps
 }) => {
   const validFocusPriority = (focusPriority ?? []).filter(
@@ -133,7 +135,7 @@ const NavigableContainer: React.FC<Props> = ({
           </HeaderCloseButton>
         )}
       </Row>
-      <NavigableContainerContentBox>{children}</NavigableContainerContentBox>
+      <NavigableContainerContentBox noOverflow={noOverflow}>{children}</NavigableContainerContentBox>
     </NavigableContainerBox>
   );
 };

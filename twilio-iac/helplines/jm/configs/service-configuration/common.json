@@ -9,8 +9,10 @@
         ],
         "definitionVersion": "jm-v1",
         "feature_flags": {
-            "enable_lex": true       
+            "enable_lex": true,
+            "enable_generalized_search": true       
         },
+        "helplineLanguage": "en-JM",
         "permissionConfig": "jm"
     },
     "ui_attributes": {

@@ -30,6 +30,10 @@
     "unknownOption": "",
     "options": [
       {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
         "value": ">=16",
         "label": ">=16"
       },
@@ -47,11 +51,15 @@
     "name": "age",
     "label": "Age",
     "type": "select",
-    "unknownOption": "Unknown",
+    "unknownOption": "",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
+      },
+      {
+        "value": "Unknown",
+        "label": "Rather not say"
       },
       {
         "value": "00",
@@ -338,10 +346,14 @@
         "label": "70"
       },
       {
-        "value": "70+",
-        "label": "70+"
+        "value": ">70",
+        "label": ">70"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "gender",

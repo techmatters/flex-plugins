@@ -126,10 +126,19 @@ variable "channels" {
     templatefile         = string,
     channel_type         = string,
     contact_identity     = string,
-    channel_flow_vars    = map(string),
-    chatbot_unique_names = list(string),
+    channel_flow_vars    = map(string)
+    chatbot_unique_names = list(string)
     lambda_channel       = optional(bool),
-    messaging_mode  = optional(string,"programmable-chat")
+    messaging_mode       = optional(string, "programmable-chat")
+    enable_datadog_monitor = optional(bool, false)
+    custom_monitor = optional(object({
+      query = optional(string)
+      custom_schedule      = optional(object({
+      rrule = optional(string)
+      timezone = optional(string)
+    }),{    })
+    }))
+
   }))
   description = "Map of enabled channel objects with their attributes"
 
@@ -156,6 +165,11 @@ variable "enable_post_survey" {
   default = false
 }
 
+variable "enable_datadog_monitoring" {
+  type    = bool
+  default = false
+}
+
 variable "hrm_transcript_retention_days_override" {
   description = "Number of days to retain HRM Contact Job Cleanup logs"
   type        = number
@@ -171,6 +185,16 @@ variable "case_status_transition_rules" {
     timeInStatusInterval = string
   }))
   default = null
+}
+
+variable "subscriptions" {
+  type = map(object({
+    webhook_url         = optional(string),
+    events               = list(object({
+      type = string,
+      schema_version = optional(string)
+    }))
+  }))
 }
 
 variable "region" {

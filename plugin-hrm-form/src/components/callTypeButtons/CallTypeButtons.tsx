@@ -28,7 +28,7 @@ import { withLocalization } from '../../contexts/LocalizationContext';
 import { Box, Flex } from '../../styles';
 import { Container, DataCallTypeButton, Label, NonDataCallTypeButton } from './styles';
 import { isNonDataCallType } from '../../states/validationRules';
-import NonDataCallTypeDialog from './NonDataCallTypeDialog';
+import SaveContactCallTypeDialog from './SaveContactCallTypeDialog';
 import { hasTaskControl } from '../../transfer/transferTaskState';
 import { completeTask } from '../../services/formSubmissionHelpers';
 import CallTypeIcon from '../common/icons/CallTypeIcon';
@@ -174,7 +174,7 @@ const CallTypeButtons: React.FC<Props> = ({
             ))}
         </Box>
       </Container>
-      <NonDataCallTypeDialog
+      <SaveContactCallTypeDialog
         isOpen={isDialogOpen(task, draftContact)}
         isEnabled={loadingStatus === LoadingStatus.LOADED}
         isCallTask={!isOfflineContactTask(task) && isCallTask(task)}

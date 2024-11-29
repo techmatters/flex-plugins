@@ -3,7 +3,7 @@
     "filters": [
       {
         "filter_friendly_name": "ECPAT",
-        "expression": "isContactlessTask==true OR ( channelType==\"facebook\" AND taskQueue ==\"ECPAT\")",
+        "expression": "isContactlessTask==true OR ( channelType==\"messenger\" AND taskQueue ==\"ECPAT\")",
         "targets": [
           {
             "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
@@ -13,7 +13,7 @@
       },
       {
         "filter_friendly_name": "Non Counselling",
-        "expression": " channelType==\"facebook\" AND taskQueue ==\"Non Counselling\"",
+        "expression": " channelType==\"messenger\" AND taskQueue ==\"Non Counselling\"",
         "targets": [
           { 
             "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
@@ -23,7 +23,7 @@
       },
       {
         "filter_friendly_name": "Outside Operating Hours",
-        "expression": " channelType==\"facebook\" AND taskQueue ==\"Outside Operating Hours\"",
+        "expression": " channelType==\"messenger\" AND taskQueue ==\"Outside Operating Hours\"",
         "targets": [
           {
             "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",

@@ -64,7 +64,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "attributes",
+          "next": "is_bot",
           "event": "match",
           "conditions": [
             {
@@ -138,6 +138,14 @@ ${
           {
             "value": "preSurveyComplete",
             "key": "releaseFlag"
+          },
+          {
+            "value": "{{trigger.message.ChannelAttributes.channel_type | downcase}}",
+            "key": "channelType"
+          },
+          {
+            "value": "false",
+            "key": "isConversation"
           }
         ],
         "url": "${serverless_url}/channelCapture/captureChannelWithBot"
@@ -191,6 +199,7 @@ ${
           "x": 30,
           "y": 130
         },
+        "add_twilio_auth": false,
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "body": "{ \"trigger\": {{trigger | to_json}}}",
@@ -334,6 +343,36 @@ ${
           }
         ],
         "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "is_bot",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "attributes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value starts_with Bot",
+              "arguments": [
+                "{{trigger.message.From}}"
+              ],
+              "type": "starts_with",
+              "value": "Bot"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.From}}",
+        "offset": {
+          "x": 570,
+          "y": 1170
+        }
       }
     }
   ],

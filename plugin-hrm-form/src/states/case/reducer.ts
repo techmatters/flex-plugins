@@ -14,8 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { omit } from 'lodash';
-
 import {
   CaseActionType,
   CaseState,
@@ -25,7 +23,7 @@ import {
   LOAD_CASE_ACTION_REJECTED,
   REFERENCE_CASE_ACTION,
 } from './types';
-import { DefinitionVersion, REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
+import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import { CaseWorkingCopyActionType, caseWorkingCopyReducer } from './caseWorkingCopy';
 import { HrmState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
@@ -104,6 +102,7 @@ const contactUpdatingReducer = (hrmState: HrmState, action: ContactUpdatingActio
               references,
               sections: {},
               timelines: {},
+              outstandingUpdateCount: 0,
             },
           },
         },

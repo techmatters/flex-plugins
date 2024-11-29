@@ -1,0 +1,33 @@
+{
+  "counsel_check": {
+    "description": "Helpline Specific configs/lex/en_NZ/intents Counsel Check Intent Survey intent",
+    "sample_utterances": [
+      "Incoming webchat contact",
+      "trigger_counsel_check"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "Thank you.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "The next message you get will be from one of our counsellors. In the meantime, if you are interested here's a link to our privacy statement: https://youthline.co.nz/privacy-statements/",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "counselling": {
+        "priority": 1,
+        "description": "Needs counselling",
+        "slot_constraint": "Required",
+        "slot_type": "yes_no",
+        "value_elicitation_prompt": {
+          "max_attempts": 2,
+          "content": "Kia ora and welcome to Youthline! If you are seeking support from our Helpline or counselling services please respond 'Yes' or 'No'",
+          "content_type": "PlainText"
+        }
+      }
+    }
+  }
+}

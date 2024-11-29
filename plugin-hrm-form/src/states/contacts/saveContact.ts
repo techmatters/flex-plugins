@@ -25,9 +25,10 @@ import {
   getContactById,
   getContactByTaskSid,
   removeFromCase,
+  saveContact,
   updateContactInHrm,
 } from '../../services/ContactService';
-import { Case, Contact, CustomITask, isOfflineContactTask } from '../../types/types';
+import { Case, Contact, CustomITask, isOfflineContact, isOfflineContactTask, RouterTask } from '../../types/types';
 import {
   CONNECT_TO_CASE,
   ContactMetadata,
@@ -39,15 +40,20 @@ import {
   LoadingStatus,
   REMOVE_FROM_CASE,
   SET_SAVED_CONTACT,
+  SUBMIT_AND_FINALIZE_CONTACT_FROM_OUTSIDE_TASK_CONTEXT,
   UPDATE_CONTACT_ACTION,
 } from './types';
 import { ContactDraftChanges } from './existingContacts';
 import { newContactMetaData } from './contactState';
-import { getCase } from '../../services/CaseService';
+import { getCase, getCaseTimeline } from '../../services/CaseService';
 import { getUnsavedContact } from './getUnsavedContact';
 import * as TransferHelpers from '../../transfer/transferTaskState';
-import { WorkerSID } from '../../types/twilio';
+import { TaskSID, WorkerSID } from '../../types/twilio';
 import { CaseStateEntry } from '../case/types';
+import { getOfflineContactTask } from './offlineContactTask';
+import { completeTaskAssignment, getTask } from '../../services/twilioTaskService';
+import { setConversationDurationFromMetadata } from '../../utils/conversationDuration';
+import { ProtectedApiError } from '../../services/fetchProtectedApi';
 
 export const createContactAsyncAction = createAsyncAction(
   CREATE_CONTACT_ACTION,
@@ -183,7 +189,8 @@ export const removeFromCaseAsyncAction = createAsyncAction(
 export const submitContactFormAsyncAction = createAsyncAction(
   SET_SAVED_CONTACT,
   async (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) => {
-    return submitContactForm(task, contact, metadata, caseState);
+    const contactWithConversationDuration = setConversationDurationFromMetadata(contact, metadata);
+    return submitContactForm(task, contactWithConversationDuration, caseState);
   },
   (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) => ({
     task,
@@ -195,14 +202,62 @@ export const submitContactFormAsyncAction = createAsyncAction(
 
 export const newFinalizeContactAsyncAction = createAsyncAction(
   FINALIZE_CONTACT,
-  async (task: CustomITask, contact: Contact) => {
+  async (task: RouterTask, contact: Contact) => {
     return finalizeContact(task, contact);
   },
 );
 
+export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = createAsyncAction(
+  SUBMIT_AND_FINALIZE_CONTACT_FROM_OUTSIDE_TASK_CONTEXT,
+  async (contact: Contact) => {
+    const { taskId: taskSid } = contact;
+    let task: CustomITask | undefined;
+    let caseState: Pick<CaseStateEntry, 'sections' | 'connectedCase'> | undefined = undefined;
+    if (isOfflineContact(contact)) {
+      task = getOfflineContactTask();
+    } else {
+      task = await getTask(taskSid);
+    }
+    if (contact.caseId) {
+      const [connectedCase, timeline] = await Promise.all([
+        getCase(contact.caseId),
+        getCaseTimeline(contact.caseId, ['household', 'perpetrator', 'incident', 'referral'], false, {
+          offset: 0,
+          limit: 1,
+        }),
+      ]);
+      const sections = Object.fromEntries(timeline.activities.map(({ activity }) => [activity.sectionType, activity]));
+      caseState = { connectedCase, sections };
+    }
+    if (isOfflineContact(contact)) {
+      try {
+        // 'await' is used here to ensure that the error is thrown and caught in the try-catch block
+        return await submitContactForm(task, contact, caseState);
+      } catch (error) {
+        if (error instanceof ProtectedApiError) {
+          const tasklessSid: TaskSID = `WT-taskless-offline-contact-${contact.accountSid}-${contact.id}`;
+          console.error(
+            `Error creating Twilio task for offline contact, attempting to save with placeholder task SID '${tasklessSid}'`,
+            error,
+          );
+          await saveContact(task, contact, contact.twilioWorkerId, tasklessSid);
+          return finalizeContact(task, contact);
+        }
+        throw error;
+      }
+    } else if (task) {
+      await completeTaskAssignment(task.taskSid);
+      const updatedContact = await submitContactForm(task, contact, caseState);
+      return finalizeContact(task, updatedContact);
+    }
+    return finalizeContact(task, contact);
+  },
+  (contact: Contact) => contact,
+);
+
 export const loadContactFromHrmByTaskSidAsyncAction = createAsyncAction(
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION,
-  async (taskSid: string, reference: string = taskSid) => {
+  async (taskSid: TaskSID, reference: string = taskSid) => {
     const contact = await getContactByTaskSid(taskSid);
     let contactCase: Case | undefined;
     if (contact?.caseId) {
@@ -214,6 +269,9 @@ export const loadContactFromHrmByTaskSidAsyncAction = createAsyncAction(
       reference,
     };
   },
+  (taskSid: TaskSID) => ({
+    taskSid,
+  }),
 );
 
 export const loadContactFromHrmByIdAsyncAction = createAsyncAction(
@@ -230,6 +288,24 @@ export const loadContactFromHrmByIdAsyncAction = createAsyncAction(
   }),
 );
 
+const markContactAsCreatingInRedux = (state: ContactsState, taskSid: string): ContactsState => {
+  const contactsBeingCreated = new Set(state.contactsBeingCreated);
+  contactsBeingCreated.add(taskSid);
+  return {
+    ...state,
+    contactsBeingCreated,
+  };
+};
+
+const markContactAsNotCreatingInRedux = (state: ContactsState, taskSid: string): ContactsState => {
+  const contactsBeingCreated = new Set(state.contactsBeingCreated);
+  contactsBeingCreated.delete(taskSid);
+  return {
+    ...state,
+    contactsBeingCreated,
+  };
+};
+
 // TODO: Consolidate this logic with the loadContactReducer implementation?
 export const loadContactIntoRedux = (
   state: ContactsState,
@@ -243,8 +319,6 @@ export const loadContactIntoRedux = (
     references.add(reference);
   }
   const metadata = { ...newContactMetaData(false), ...(newMetadata ?? existingContacts[contact.id]?.metadata) };
-  const contactsBeingCreated = new Set(state.contactsBeingCreated);
-  contactsBeingCreated.delete(contact.taskId);
   const existingContact = existingContacts[contact.id]?.savedContact;
   const existingAssociations = {
     ...(existingContact?.csamReports ? { csamReports: existingContact.csamReports } : {}),
@@ -252,8 +326,7 @@ export const loadContactIntoRedux = (
     ...(existingContact?.referrals ? { referrals: existingContact.referrals } : {}),
   };
   return {
-    ...state,
-    contactsBeingCreated,
+    ...markContactAsNotCreatingInRedux(state, contact.taskId),
     existingContacts: {
       ...existingContacts,
       [contact.id]: {
@@ -342,20 +415,7 @@ export const saveContactReducer = (initialState: ContactsState) =>
     ),
     handleAction(
       createContactAsyncAction.pending as typeof createContactAsyncAction,
-      (state, { meta: { taskSid } }): ContactsState => {
-        const contactsBeingCreated = new Set(state.contactsBeingCreated);
-        contactsBeingCreated.add(taskSid);
-        return {
-          ...state,
-          contactsBeingCreated,
-        };
-      },
-    ),
-    handleAction(
-      loadContactFromHrmByIdAsyncAction.pending as typeof loadContactFromHrmByIdAsyncAction,
-      (state, { meta: { contactId } }): ContactsState => {
-        return setContactLoadingStateInRedux(state, contactId);
-      },
+      (state, { meta: { taskSid } }): ContactsState => markContactAsCreatingInRedux(state, taskSid),
     ),
     handleAction(
       createContactAsyncAction.fulfilled,
@@ -365,19 +425,22 @@ export const saveContactReducer = (initialState: ContactsState) =>
     ),
     handleAction(
       createContactAsyncAction.rejected,
-      (state, action): ContactsState => {
-        const {
-          meta: { taskSid },
-        } = action as typeof action & {
-          meta: { taskSid: string };
-        };
-        const contactsBeingCreated = new Set(state.contactsBeingCreated);
-        contactsBeingCreated.delete(taskSid);
-        return {
-          ...state,
-          contactsBeingCreated,
-        };
+      (state, { meta: { taskSid } }: any): ContactsState => markContactAsNotCreatingInRedux(state, taskSid),
+    ),
+    handleAction(
+      loadContactFromHrmByTaskSidAsyncAction.pending as typeof loadContactFromHrmByTaskSidAsyncAction,
+      (state, { meta: { taskSid } }): ContactsState => markContactAsCreatingInRedux(state, taskSid),
+    ),
+    handleAction(
+      loadContactFromHrmByTaskSidAsyncAction.fulfilled,
+      (state, { payload: { contact, reference } }): ContactsState => {
+        if (!contact) return state;
+        return loadContactIntoRedux(state, contact, reference, newContactMetaData(true));
       },
+    ),
+    handleAction(
+      loadContactFromHrmByTaskSidAsyncAction.rejected,
+      (state, { meta: { taskSid } }: any): ContactsState => markContactAsNotCreatingInRedux(state, taskSid),
     ),
     handleAction(
       submitContactFormAsyncAction.pending as typeof submitContactFormAsyncAction,
@@ -403,10 +466,30 @@ export const saveContactReducer = (initialState: ContactsState) =>
       },
     ),
     handleAction(
-      loadContactFromHrmByTaskSidAsyncAction.fulfilled,
-      (state, { payload: { contact, reference } }): ContactsState => {
-        if (!contact) return state;
-        return loadContactIntoRedux(state, contact, reference, newContactMetaData(true));
+      newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction.pending as typeof newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction,
+      (state, { meta: contact }): ContactsState => {
+        return setContactLoadingStateInRedux(state, contact, contact);
+      },
+    ),
+    handleAction(
+      newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction.fulfilled,
+      (state, { payload }): ContactsState => {
+        return loadContactIntoRedux(state, payload, undefined, newContactMetaData(false));
+      },
+    ),
+    handleAction(
+      newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction.rejected,
+      (state, action): ContactsState => {
+        const { meta: contact } = action as typeof action & {
+          meta: Contact;
+        };
+        return rollbackSavingStateInRedux(state, contact, undefined);
+      },
+    ),
+    handleAction(
+      loadContactFromHrmByIdAsyncAction.pending as typeof loadContactFromHrmByIdAsyncAction,
+      (state, { meta: { contactId } }): ContactsState => {
+        return setContactLoadingStateInRedux(state, contactId);
       },
     ),
     handleAction(

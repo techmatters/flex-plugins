@@ -16,6 +16,7 @@
 
 import { ApiError, fetchApi } from './fetchApi';
 import { getHrmConfig } from '../hrmConfig';
+import { getValidToken } from '../authentication';
 
 export class ProtectedApiError extends ApiError {
   constructor(message, options: Pick<ApiError, 'body' | 'response'>, cause?: Error) {
@@ -23,6 +24,8 @@ export class ProtectedApiError extends ApiError {
 
     this.name = 'ProtectedApiError';
     this.serverStack = this.body?.stack;
+
+    Object.setPrototypeOf(this, ProtectedApiError.prototype);
   }
 
   serverStack: any;
@@ -36,7 +39,9 @@ export class ProtectedApiError extends ApiError {
  * @returns {Promise<any>} the api response (if not error)
  */
 const fetchProtectedApi = async (endPoint, body: Record<string, string> = {}) => {
-  const { serverlessBaseUrl, token } = getHrmConfig();
+  const { serverlessBaseUrl } = getHrmConfig();
+  const token = getValidToken();
+  if (token instanceof Error) throw new ApiError(`Aborting request due to token issue: ${token.message}`, {}, token);
   const options: RequestInit = {
     method: 'POST',
     body: new URLSearchParams({ ...body, Token: token }),

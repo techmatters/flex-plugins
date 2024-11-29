@@ -8,7 +8,7 @@ ${
       "type": "trigger",
       "transitions": [
         {
-          "next": "pre_survey_complete",
+          "next": "getProfileFlagForIdentifier",
           "event": "incomingMessage"
         },
         {
@@ -26,8 +26,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": -240,
-          "y": -620
+          "x": -170,
+          "y": -1100
         }
       }
     },
@@ -336,8 +336,8 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": -780,
           "y": 650
@@ -375,6 +375,14 @@ ${
           {
             "value": "preSurveyComplete",
             "key": "releaseFlag"
+          },
+          {
+            "value": "{{trigger.message.ChannelAttributes.channel_type | downcase}}",
+            "key": "channelType"
+          },
+          {
+            "value": "false",
+            "key": "isConversation"
           }
         ],
         "url": "${serverless_url}/channelCapture/captureChannelWithBot"
@@ -409,6 +417,85 @@ ${
           "x": 20,
           "y": -380
         }
+      }
+    },
+    {
+      "name": "getProfileFlagForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "pre_survey_complete",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -140,
+          "y": -930
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"trigger\": {{trigger | to_json}}}",
+        "url": "${serverless_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "pre_survey_complete",
+          "event": "noMatch"
+        },
+        {
+          "next": "blocked",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains Blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagForIdentifier.parsed}}"
+              ],
+              "type": "contains",
+              "value": "Blocked"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagForIdentifier.parsed}}",
+        "offset": {
+          "x": 270,
+          "y": -710
+        }
+      }
+    },
+    {
+      "name": "blocked",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 620,
+          "y": -470
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": flow_vars["widget_from"],
+        "to": "{{contact.channel.address}}",
+        "body": flow_vars["chat_blocked_message"]
       }
     }
   ],

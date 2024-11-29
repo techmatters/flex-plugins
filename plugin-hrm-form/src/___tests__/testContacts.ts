@@ -27,6 +27,7 @@ export const VALID_EMPTY_CONTACT: Contact = {
   serviceSid: '',
   channelSid: '',
   profileId: null,
+  identifierId: null,
   number: '',
   createdBy: '',
   createdAt: '',
@@ -57,8 +58,8 @@ export const VALID_EMPTY_CONTACT: Contact = {
 };
 
 export const VALID_EMPTY_METADATA: ContactMetadata = {
-  startMillis: 0,
-  endMillis: 0,
+  startMillis: undefined,
+  endMillis: undefined,
   categories: { gridView: false, expanded: {} },
   recreated: false,
   draft: {

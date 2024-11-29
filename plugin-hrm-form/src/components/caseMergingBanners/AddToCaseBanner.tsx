@@ -27,7 +27,7 @@ import ConnectToCaseButton from '../case/ConnectToCaseButton';
 import asyncDispatch from '../../states/asyncDispatch';
 import { connectToCaseAsyncAction } from '../../states/contacts/saveContact';
 import { newCloseModalAction } from '../../states/routing/actions';
-import { BannerContainer, Text } from '../../styles/banners';
+import { BannerContainer, BannerText } from '../../styles/banners';
 import selectContextContactId from '../../states/contacts/selectContextContactId';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { selectFirstContactByCaseId } from '../../states/contacts/selectContactByCaseId';
@@ -92,9 +92,9 @@ const AddToCaseBanner: React.FC<Props> = ({
       <Flex width="100%" justifyContent="space-between">
         <Flex alignItems="center">
           <InfoIcon color="#fed44b" />
-          <Text>
+          <BannerText>
             <Template code="CaseMerging-AddContactToCase" />
-          </Text>
+          </BannerText>
         </Flex>
         <ConnectToCaseButton
           caseId={connectedCase.id}

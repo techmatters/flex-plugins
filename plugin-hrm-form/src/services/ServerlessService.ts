@@ -14,6 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+// WE ARE TRYING TO BREAK THIS FILE UP! NO NEW METHODS IN HERE PLEASE!
+// Add to one of the other function specific serverless service files that already exist like twilioTaskService.ts or twilioWorkerService.ts
+// If an appropriate file doesn't exist, start another one, and move any existing functions here that should also be in there into it
+
 /* eslint-disable sonarjs/prefer-immediate-return */
 /* eslint-disable camelcase */
 import { ITask, Notifications } from '@twilio/flex-ui';
@@ -22,23 +26,6 @@ import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form
 import fetchProtectedApi from './fetchProtectedApi';
 import type { ChildCSAMReportForm, CounselorCSAMReportForm } from '../states/csam-report/types';
 import { getHrmConfig } from '../hrmConfig';
-
-type PopulateCounselorsReturn = { sid: string; fullName: string }[];
-
-/**
- * [Protected] Fetches the workers within a workspace and helpline.
- */
-export const populateCounselors = async (): Promise<PopulateCounselorsReturn> => {
-  const { helpline, currentWorkspace } = getHrmConfig();
-  const body = {
-    workspaceSID: currentWorkspace,
-    helpline: helpline || '',
-  };
-
-  const { workerSummaries } = await fetchProtectedApi('/populateCounselors', body);
-
-  return workerSummaries;
-};
 
 type GetTranslationBody = { language: string };
 
@@ -83,35 +70,11 @@ export const issueSyncToken = async (): Promise<string> => {
   return syncToken;
 };
 
-export const adjustChatCapacity = async (adjustment: 'increase' | 'decrease'): Promise<void> => {
-  const { workerSid } = getHrmConfig();
-
-  const body = {
-    workerSid,
-    adjustment,
-  };
-
-  const response = await fetchProtectedApi('/adjustChatCapacity', body);
-
-  return response;
-};
-
 /**
  * Sends a new message to the channel bounded to the provided taskSid. Optionally you can change the "from" value (defaul is "system").
  */
 export const sendSystemMessage = async (body: { taskSid: ITask['taskSid']; message: string; from?: string }) => {
   const response = await fetchProtectedApi('/sendSystemMessage', body);
-
-  return response;
-};
-
-/**
- * Returns the task queues list for a given worker.
- */
-export const listWorkerQueues = async (body: {
-  workerSid: string;
-}): Promise<{ workerQueues: { friendlyName: string }[] }> => {
-  const response = await fetchProtectedApi('/listWorkerQueues', body);
 
   return response;
 };
@@ -128,16 +91,6 @@ export const getDefinitionVersionsList = async (missingDefinitionVersions: Defin
       return { version, definition };
     }),
   );
-
-/**
- * Gets the attributes of the target worker
- */
-export const getWorkerAttributes = async (workerSid: string) => {
-  const body = { workerSid };
-
-  const response = await fetchProtectedApi('/getWorkerAttributes', body);
-  return response;
-};
 
 /**
  * Gets a recording s3 information from the corresponding call sid
@@ -178,5 +131,12 @@ export const selfReportToIWF = async (form: ChildCSAMReportForm, caseNumber: str
   };
 
   const response = await fetchProtectedApi('/selfReportToIWF', body);
+  return response;
+};
+
+export const getMediaUrl = async (serviceSid: string, mediaSid: string) => {
+  const body = { serviceSid, mediaSid };
+
+  const response = await fetchProtectedApi('/getMediaUrl', body);
   return response;
 };

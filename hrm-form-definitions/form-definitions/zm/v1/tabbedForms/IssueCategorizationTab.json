@@ -34,6 +34,17 @@
         {"label": "Others"}
       ]
     },
+    "Drought": {
+      "color": "#8B0000",
+      "subcategories": [
+        {"label": "Information inquiry"},
+        {"label": "Inquiry on food distribution"},
+        {"label": "Complaints on food distribution"},
+        {"label": "Information inquiry on SRHR"},
+        {"label": "Drought related GBV"},
+        {"label": "Drought related PSEA report"}
+      ]
+    },
     "Violence": {
       "color": "#F5A623",
       "subcategories": [
@@ -41,6 +52,7 @@
         {"label": "Child/Early/Forced marriage"},
         {"label": "Child labour"},
         {"label": "Commercial sexual exploitation (offline)"},
+        {"label": "Defilement"},
         {"label": "Female Genital Mutilation (FGM)"},
         {"label": "Gender-based harmful traditional practices (other than FGM)"},
         {"label": "Harmful traditional practices other than child marriage and FGM"},
@@ -48,6 +60,7 @@
         {"label": "Neglect (or negligent treatment)"},
         {"label": "Online sexual abuse (OSA)"},
         {"label": "Online sexual exploitation (OSE)"},
+        {"label": "Information seeking about GBV services"},
         {"label": "Information seeking about OSE/OSA"},
         {"label": "Physical violence"},
         {"label": "Sexual violence"},
@@ -122,6 +135,41 @@
         {"label": "Unspecified/Other"}
       ]
     },
+    "Keeping Girls in School (KGS)": {
+      "color": "#239613",
+      "subcategories": [
+        {"label": "Inclusion - KGS"},
+        {"label": "Exclusion - KGS"},
+        {"label": "Service Standard - KGS"},
+        {"label": "Payment - KGS"},
+        {"label": "Serious Complaints - KGS"},
+        {"label": "Fraud and Corruption - KGS"},
+        {"label": "Unspecified/Other - KGS"}
+      ]
+    },
+    "Social Cash Transfer (SCT)": {
+      "color": "#9AD703",
+      "subcategories": [
+        {"label": "Inclusion - SCT"},
+        {"label": "Exclusion - SCT"},
+        {"label": "Service Standard - SCT"},
+        {"label": "Payment - SCT"},
+        {"label": "Serious Complaints - SCT"},
+        {"label": "Exit - SCT"},
+        {"label": "Unspecified/Other - SCT"}
+      ]
+    },
+    "Trafficking in Persons (TIP)": {
+      "color": "#9AD703",
+      "subcategories": [
+        {"label": "Sexual exploitation"},
+        {"label": "Organ removal"},
+        {"label": "Human trafficking for drug trafficking"},
+        {"label": "Forced labour"},
+        {"label": "Forced marriage"},
+        {"label": "Domestic servitude"}
+      ]
+    },
     "Peer Relationships": {
       "color": "#9AD703",
       "subcategories": [
@@ -169,6 +217,14 @@
         {"label": "\"Thank you for your assistance\""},
         {"label": "Unspecified/Other"}
       ]
+    },
+    "How did you know about the Helpline": {
+      "color": "#9AD703",
+      "subcategories": [
+        {"label": "Poster"},
+        {"label": "Billboards"},
+        {"label": "Through 667"}
+      ]
     }
   },
   "LifeLine Zambia (ZM)": {
@@ -209,6 +265,17 @@
         {"label": "Notification"},
         {"label": "Certification"},
         {"label": "Others"}
+      ]
+    },
+    "Drought": {
+      "color": "#8B0000",
+      "subcategories": [
+        {"label": "Information inquiry"},
+        {"label": "Inquiry on food distribution"},
+        {"label": "Complaints on food distribution"},
+        {"label": "Information inquiry on SRHR"},
+        {"label": "Drought related GBV"},
+        {"label": "Drought related PSEA report"}
       ]
     },
     "Mental Health": {
@@ -294,6 +361,17 @@
         {"label": "Unspecified/Other - SCT"}
       ]
     },
+    "Trafficking in Persons (TIP)": {
+      "color": "#9AD703",
+      "subcategories": [
+        {"label": "Sexual exploitation"},
+        {"label": "Organ removal"},
+        {"label": "Human trafficking for drug trafficking"},
+        {"label": "Forced labour"},
+        {"label": "Forced marriage"},
+        {"label": "Domestic servitude"}
+      ]
+    },
     "RDA Project": {
       "color": "#47BA5E",
       "subcategories": [
@@ -324,6 +402,14 @@
         {"label": "Questions about other services"},
         {"label": "\"Thank you for your assistance\""},
         {"label": "Unspecified/Other"}
+      ]
+    },
+    "How did you know about the Helpline": {
+      "color": "#9AD703",
+      "subcategories": [
+        {"label": "Poster"},
+        {"label": "Billboards"},
+        {"label": "Through 667"}
       ]
     }
   }

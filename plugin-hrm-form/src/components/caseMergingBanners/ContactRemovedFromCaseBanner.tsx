@@ -21,7 +21,7 @@ import { Close } from '@material-ui/icons';
 
 import { HiddenText } from '../../styles';
 import { HeaderCloseButton } from '../../styles/buttons';
-import { BannerContainer, CaseLink, Text } from '../../styles/banners';
+import { BannerContainer, CaseLink, BannerText } from '../../styles/banners';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import WarningIcon from './WarningIcon';
 import { closeRemovedFromCaseBannerAction, selectCaseMergingBanners } from '../../states/case/caseBanners';
@@ -85,15 +85,15 @@ const ContactRemovedFromCaseBanner: React.FC<Props> = ({
   return (
     <BannerContainer color="orange">
       <WarningIcon />
-      <Text>
+      <BannerText>
         <Template code="CaseMerging-ContactRemovedFromCase" />
-      </Text>
+      </BannerText>
       {canUndo && (
         <CaseLink
           onClick={() => {
             connectCaseToTaskContact(savedContact, caseId);
           }}
-          color="#ffa500"
+          color="#0263e0"
         >
           <Template code="CaseMerging-ContactUndoRemovedFromCase" />
         </CaseLink>
