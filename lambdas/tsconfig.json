@@ -6,5 +6,6 @@
     { "path": "custom-channel/packages/message-transform" },
     { "path": "custom-channel/line/flex-to-native" },
     { "path": "custom-channel/line/native-to-flex" },
+    { "path": "twilio-account-scoped" }
   ]
 }
