@@ -80,10 +80,6 @@ ${
             "key": "channelSid"
           },
           {
-            "value": "{{flow.channel.address}}",
-            "key": "conversationSid"
-          },
-          {
             "value": flow_vars["chat_blocked_message"],
             "key": "message"
           },
@@ -208,10 +204,6 @@ ${
                     "key": "channelSid"
                 },
                 {
-                  "value": "{{flow.channel.address}}",
-                  "key": "conversationSid"
-                },
-                {
                     "value": "trigger_pre_survey",
                     "key": "message"
                 },
@@ -276,10 +268,6 @@ ${
                 {
                     "value": "{{flow.channel.address}}",
                     "key": "channelSid"
-                },
-                {
-                  "value": "{{flow.channel.address}}",
-                  "key": "conversationSid"
                 }
                 ],
                 "url": "${serverless_url}/channelCapture/chatbotCallbackCleanup"
