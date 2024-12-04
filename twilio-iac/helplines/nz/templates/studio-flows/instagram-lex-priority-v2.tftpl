@@ -112,6 +112,10 @@ ${
             "key": "channelSid"
           },
           {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
             "value": "trigger_pre_survey_ig",
             "key": "message"
           },
@@ -176,6 +180,10 @@ ${
           {
             "value": "{{flow.channel.address}}",
             "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
           }
         ],
         "url": "${serverless_url}/channelCapture/chatbotCallbackCleanup"
@@ -299,6 +307,10 @@ ${
             "key": "channelSid"
           },
           {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
             "value": flow_vars["blocked_message"],
             "key": "message"
           },
@@ -333,6 +345,10 @@ ${
           {
             "value": "{{flow.channel.address}}",
             "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
           },
           {
             "value": "I'm sorry, we couldn't receive your message.  Please try texting us again  or call us for free on 0800376633.",
@@ -433,6 +449,10 @@ ${
             "key": "channelSid"
           },
           {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
             "value": "trigger_counsel_check",
             "key": "message"
           },
@@ -522,7 +542,6 @@ ${
       "type": "run-function",
       "transitions": [
         {
-           "next": "channel_cleanup",
           "event": "success"
         },
         {
@@ -541,6 +560,10 @@ ${
           {
             "value": "{{flow.channel.address}}",
             "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
           },
           {
             "value": "If you are wanting to contact our  Fundraising and Marketing team  please email us at donate@youthline.co.nz",
