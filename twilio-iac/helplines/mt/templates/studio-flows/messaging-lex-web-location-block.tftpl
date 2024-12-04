@@ -1,0 +1,384 @@
+${
+  jsonencode( {
+  "description": "Messaging Flow - Lex - MT",
+  "states": [
+   {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -160,
+          "y": -930
+        }
+      }
+    },
+    {
+      "name": "getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "language_split_web",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -350,
+          "y": -280
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "body": "{ \"trigger\": {{trigger | to_json}}}",
+        "url": "${serverless_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "send_blocked_message",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": -640,
+          "y": 210
+        },
+        "function_sid": flow_vars["send_message_janitor_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": flow_vars["chat_blocked_message"],
+            "key": "message"
+          },
+          {
+            "value": flow_vars["widget_from"],
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "language_split_web",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_blocked_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "contains",
+              "value": "blocked"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": -690,
+          "y": -60
+        }
+      }
+    },
+    {
+      "name": "language_split_web",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_message_en_mt",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_message_en_mt",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to en-MT",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+              ],
+              "type": "equal_to",
+              "value": "en-MT"
+            }
+          ]
+        },
+        {
+          "next": "send_message_mt_mt",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to mt-MT",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+              ],
+              "type": "equal_to",
+              "value": "mt-MT"
+            }
+          ]
+        },
+        {
+          "next": "send_message_uk",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to ukr-MT",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
+              ],
+              "type": "equal_to",
+              "value": "ukr-MT"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}",
+        "offset": {
+          "x": 470,
+          "y": 200
+        }
+      }
+    },
+    {
+      "name": "send_message_en_mt",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "web_attributes",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 430,
+          "y": 480
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Kellimni",
+        "to": "{{contact.channel.address}}",
+        "body": "Thank you for reaching out. We are currently assisting other clients, but we will do our utmost to respond to you shortly. Kindly wait for assistance. If this is an emergency, please contact 112, until we are in a position to assist you."
+      }
+    },
+    {
+      "name": "send_message_mt_mt",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "web_attributes",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 770,
+          "y": 480
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Kellimni",
+        "to": "{{contact.channel.address}}",
+        "body": "Grazzi talli kkuntatjajtna. Bħalissa qed ngħinu klijenti oħra, iżda aħna se nagħmlu l-almu tagħna biex nirrisponduk fl-iqsar ħin possibli. Jekk jogħġbok stenna għall-assistenza. Jekk din hija emerġenza, ikkuntattja lill-112, sakemm inkunu f'pożizzjoni li ngħinuk."
+      }
+    },
+    {
+      "name": "send_message_uk",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "web_attributes",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1120,
+          "y": 480
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "Kellimni",
+        "to": "{{contact.channel.address}}",
+        "body": "Дякуємо за звернення. Зараз ми допомагаємо іншим клієнтам, але зробимо все можливе, щоб відповісти вам найближчим часом. Будь ласка, чекайте допомоги. Якщо це екстрена ситуація, зв’яжіться з нами за номером 112, поки ми не зможемо вам допомогти."
+      }
+    },
+    {
+      "name": "web_attributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 930,
+          "y": 790
+        },
+        "workflow": workflow_sids["master"],
+        "channel": task_channel_sids["chat"],
+        "attributes": "{\n  \"name\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"language\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.language  | default: 'en-MT'}}\",\n  \"transferTargetType\": \"\",\n \"preEngagementData\": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}}, \n  \"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}\n}"
+      }
+    },
+    {
+      "name": "ipLocationFinder",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "block_non_MT_contacts",
+          "event": "success"
+        },
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -310,
+          "y": -660
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"trigger\": {{trigger | to_json}}}",
+        "url": "https://hrm-staging.tl.techmatters.org/lambda/ipLocationFinder"
+      }
+    },
+    {
+      "name": "block_non_MT_contacts",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_blocked_location_message",
+          "event": "noMatch"
+        },
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If equal to MT",
+              "arguments": [
+                "{{widgets.ipLocationFinder.parsed.country_code}}"
+              ],
+              "type": "equal_to",
+              "value": "MT"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.ipLocationFinder.parsed.country_code}}",
+        "offset": {
+          "x": -750,
+          "y": -460
+        }
+      }
+    },
+    {
+      "name": "send_blocked_location_message",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "ZS2cf2a4933a3f9782a2907146287f3f1a",
+        "environment_sid": "ZE512e22f5abb4cc30757b4db4181ab40b",
+        "offset": {
+          "x": -1000,
+          "y": -210
+        },
+        "function_sid": "ZH19f41d74c3c64c23b5d624ab84d1ddde",
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "Sorry, you're not able to contact Kellimni from your location",
+            "key": "message"
+          },
+          {
+            "value": "Kellimni",
+            "key": "from"
+          }
+        ],
+        "url": "https://serverless-5079-production.twil.io/sendMessageAndRunJanitor"
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+}
+
+
+  )
+}
