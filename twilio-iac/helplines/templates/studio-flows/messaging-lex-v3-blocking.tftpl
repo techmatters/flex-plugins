@@ -192,6 +192,10 @@ ${
             "key": "channelSid"
           },
           {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
             "value": "trigger_pre_survey",
             "key": "message"
           },
@@ -256,6 +260,10 @@ ${
           {
             "value": "{{flow.channel.address}}",
             "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
           }
         ],
         "url": "${serverless_url}/channelCapture/chatbotCallbackCleanup"
@@ -332,6 +340,10 @@ ${
           {
             "value": "{{flow.channel.address}}",
             "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
           },
           {
             "value": flow_vars["error_message"],
