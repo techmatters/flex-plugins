@@ -18,7 +18,7 @@ import promiseMiddleware from 'redux-promise-middleware';
 
 import { connectToCase, getContactByTaskSid, updateContactInHrm } from '../../../services/ContactService';
 import { completeTask, submitContactForm } from '../../../services/formSubmissionHelpers';
-import { Case, Contact, CustomITask } from '../../../types/types';
+import { Case, Contact } from '../../../types/types';
 import { ContactMetadata, ContactsState, LoadingStatus } from '../../../states/contacts/types';
 import {
   connectToCaseAsyncAction,
@@ -66,25 +66,11 @@ const testStore = (stateChanges: ContactsState) =>
   });
 
 const baseContact: Contact = {
+  ...VALID_EMPTY_CONTACT,
   id: '1337',
   profileId: 22,
-  accountSid: 'AC',
-  timeOfContact: '',
-  number: '',
-  channel: 'default',
-  twilioWorkerId: 'WK',
   helpline: 'test helpline',
-  conversationDuration: 0,
-  createdBy: '',
-  createdAt: '',
-  updatedBy: '',
-  updatedAt: '',
-  queueName: '',
-  channelSid: '',
-  serviceSid: '',
   taskId: 'WT-TASK_ID',
-  conversationMedia: [],
-  csamReports: [],
   rawJson: {
     callType: 'Child calling about self',
     caseInformation: {},
@@ -95,7 +81,7 @@ const baseContact: Contact = {
   },
 };
 
-const task = <CustomITask>{ taskSid: 'WT-mock task' };
+const task = <ITask>(<unknown>{ taskSid: 'WT-mock task' });
 const baseMetadata = { ...VALID_EMPTY_METADATA } as ContactMetadata;
 
 const baseCase: Case = {
@@ -209,7 +195,38 @@ describe('actions', () => {
         outstandingUpdateCount: 0,
       };
       submitContactFormAsyncAction(task, baseContact, baseMetadata, caseState);
-      expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, baseMetadata, caseState);
+
+      expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, caseState);
+    });
+    test('Action sets the conversation duration', async () => {
+      let conversatioonDurationPassedToSubmitContactForm: number | undefined;
+      mockSubmitContactForm.mockImplementation((task, contact) => {
+        conversatioonDurationPassedToSubmitContactForm = contact.conversationDuration;
+        return Promise.resolve(contact);
+      });
+      const caseState = {
+        connectedCase: baseCase,
+        sections: {},
+        timelines: {},
+        references: new Set<string>(),
+        availableStatusTransitions: [],
+        caseWorkingCopy: undefined,
+        outstandingUpdateCount: 0,
+      };
+      submitContactFormAsyncAction(
+        task,
+        baseContact,
+        { ...baseMetadata, startMillis: Date.now() - 1000 * 100 },
+        caseState,
+      );
+
+      // The conversation duration should
+      expect(submitContactForm).toHaveBeenCalledWith(
+        task,
+        { ...baseContact, conversationDuration: expect.any(Number) },
+        caseState,
+      );
+      expect(conversatioonDurationPassedToSubmitContactForm).toBeGreaterThanOrEqual(100);
     });
 
     test('Updates contact in redux and sets metadata', async () => {

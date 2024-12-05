@@ -14,10 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { ITask } from '@twilio/flex-ui';
-
 import fetchProtectedApi from './fetchProtectedApi';
 import { TaskSID } from '../types/twilio';
+import { ApiError } from './fetchApi';
 
 /**
  * Creates a new task (offline contact) in behalf of targetSid worker with attributes. Other attributes for routing are added to the task in the implementation of assignOfflineContact serverless function
@@ -69,3 +68,30 @@ export const wrapupConversationTask = async (taskSid: TaskSID) =>
  */
 export const completeConversationTask = async (taskSid: TaskSID) =>
   fetchProtectedApi('/interaction/transitionAgentParticipants', { taskSid, targetStatus: 'closed' });
+
+export const checkTaskAssignment = async (taskSid: string) => {
+  const body = { taskSid };
+
+  return fetchProtectedApi('/checkTaskAssignment', body);
+};
+
+export const getTask = async (taskSid: string): Promise<ITask> => {
+  const body = { taskSid };
+  try {
+    return {
+      taskSid,
+      ...(await fetchProtectedApi('/getTask', body)),
+    };
+  } catch (error) {
+    if (error instanceof ApiError && error.response.status === 404) {
+      return null;
+    }
+    throw error;
+  }
+};
+
+export const completeTaskAssignment = async (taskSid: string) => {
+  const body = { taskSid };
+
+  return fetchProtectedApi('/completeTaskAssignment', body);
+};

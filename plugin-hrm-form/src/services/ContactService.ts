@@ -18,7 +18,6 @@ import { TaskHelper } from '@twilio/flex-ui';
 
 import { isNonDataCallType } from '../states/validationRules';
 import { getQueryParams } from './PaginationParams';
-import { fillEndMillis, getConversationDuration } from '../utils/conversationDuration';
 import { fetchHrmApi } from './fetchHrmApi';
 import { getDateTime } from '../utils/helpers';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
@@ -32,7 +31,6 @@ import {
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
 import { getNumberFromTask } from '../utils';
-import { ContactMetadata } from '../states/contacts/types';
 import {
   ExternalRecordingInfoSuccess,
   getExternalRecordingInfo,
@@ -235,14 +233,10 @@ export const updateContactInHrm = async (
 const saveContactToHrm = async (
   task,
   contact: Contact,
-  metadata: ContactMetadata,
   workerSid: WorkerSID,
   uniqueIdentifier: TaskSID,
-  shouldFillEndMillis = true,
 ): Promise<Contact> => {
   // if we got this far, we assume the form is valid and ready to submit
-  const metadataForDuration = shouldFillEndMillis ? fillEndMillis(metadata) : metadata;
-  const conversationDuration = getConversationDuration(task, metadataForDuration);
   const { callType } = contact.rawJson;
 
   const number = getNumberFromTask(task);
@@ -283,7 +277,6 @@ const saveContactToHrm = async (
     twilioWorkerId,
     queueName: task.queueName,
     number,
-    conversationDuration,
     timeOfContact,
     taskId: uniqueIdentifier,
   };
@@ -302,22 +295,8 @@ export const finalizeContact = async (task, contact: Contact): Promise<Contact> 
   return updateContactInHrm(contact.id, contactUpdates, true);
 };
 
-export const saveContact = async (
-  task,
-  contact: Contact,
-  metadata: ContactMetadata,
-  workerSid: WorkerSID,
-  uniqueIdentifier: TaskSID,
-  shouldFillEndMillis = true,
-) => {
-  const savedContact = await saveContactToHrm(
-    task,
-    contact,
-    metadata,
-    workerSid,
-    uniqueIdentifier,
-    shouldFillEndMillis,
-  );
+export const saveContact = async (task, contact: Contact, workerSid: WorkerSID, uniqueIdentifier: TaskSID) => {
+  const savedContact = await saveContactToHrm(task, contact, workerSid, uniqueIdentifier);
   // TODO: add catch clause to handle saving to Sync Doc
   try {
     // Add the old category format back, but leave out all the explicit false values

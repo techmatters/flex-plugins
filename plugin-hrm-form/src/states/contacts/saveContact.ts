@@ -25,9 +25,10 @@ import {
   getContactById,
   getContactByTaskSid,
   removeFromCase,
+  saveContact,
   updateContactInHrm,
 } from '../../services/ContactService';
-import { Case, Contact, CustomITask, isOfflineContactTask, RouterTask } from '../../types/types';
+import { Case, Contact, CustomITask, isOfflineContact, isOfflineContactTask, RouterTask } from '../../types/types';
 import {
   CONNECT_TO_CASE,
   ContactMetadata,
@@ -39,15 +40,20 @@ import {
   LoadingStatus,
   REMOVE_FROM_CASE,
   SET_SAVED_CONTACT,
+  SUBMIT_AND_FINALIZE_CONTACT_FROM_OUTSIDE_TASK_CONTEXT,
   UPDATE_CONTACT_ACTION,
 } from './types';
 import { ContactDraftChanges } from './existingContacts';
 import { newContactMetaData } from './contactState';
-import { getCase } from '../../services/CaseService';
+import { getCase, getCaseTimeline } from '../../services/CaseService';
 import { getUnsavedContact } from './getUnsavedContact';
 import * as TransferHelpers from '../../transfer/transferTaskState';
 import { TaskSID, WorkerSID } from '../../types/twilio';
 import { CaseStateEntry } from '../case/types';
+import { getOfflineContactTask } from './offlineContactTask';
+import { completeTaskAssignment, getTask } from '../../services/twilioTaskService';
+import { setConversationDurationFromMetadata } from '../../utils/conversationDuration';
+import { ProtectedApiError } from '../../services/fetchProtectedApi';
 
 export const createContactAsyncAction = createAsyncAction(
   CREATE_CONTACT_ACTION,
@@ -183,7 +189,8 @@ export const removeFromCaseAsyncAction = createAsyncAction(
 export const submitContactFormAsyncAction = createAsyncAction(
   SET_SAVED_CONTACT,
   async (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) => {
-    return submitContactForm(task, contact, metadata, caseState);
+    const contactWithConversationDuration = setConversationDurationFromMetadata(contact, metadata);
+    return submitContactForm(task, contactWithConversationDuration, caseState);
   },
   (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) => ({
     task,
@@ -198,6 +205,54 @@ export const newFinalizeContactAsyncAction = createAsyncAction(
   async (task: RouterTask, contact: Contact) => {
     return finalizeContact(task, contact);
   },
+);
+
+export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = createAsyncAction(
+  SUBMIT_AND_FINALIZE_CONTACT_FROM_OUTSIDE_TASK_CONTEXT,
+  async (contact: Contact) => {
+    const { taskId: taskSid } = contact;
+    let task: CustomITask | undefined;
+    let caseState: Pick<CaseStateEntry, 'sections' | 'connectedCase'> | undefined = undefined;
+    if (isOfflineContact(contact)) {
+      task = getOfflineContactTask();
+    } else {
+      task = await getTask(taskSid);
+    }
+    if (contact.caseId) {
+      const [connectedCase, timeline] = await Promise.all([
+        getCase(contact.caseId),
+        getCaseTimeline(contact.caseId, ['household', 'perpetrator', 'incident', 'referral'], false, {
+          offset: 0,
+          limit: 1,
+        }),
+      ]);
+      const sections = Object.fromEntries(timeline.activities.map(({ activity }) => [activity.sectionType, activity]));
+      caseState = { connectedCase, sections };
+    }
+    if (isOfflineContact(contact)) {
+      try {
+        // 'await' is used here to ensure that the error is thrown and caught in the try-catch block
+        return await submitContactForm(task, contact, caseState);
+      } catch (error) {
+        if (error instanceof ProtectedApiError) {
+          const tasklessSid: TaskSID = `WT-taskless-offline-contact-${contact.accountSid}-${contact.id}`;
+          console.error(
+            `Error creating Twilio task for offline contact, attempting to save with placeholder task SID '${tasklessSid}'`,
+            error,
+          );
+          await saveContact(task, contact, contact.twilioWorkerId, tasklessSid);
+          return finalizeContact(task, contact);
+        }
+        throw error;
+      }
+    } else if (task) {
+      await completeTaskAssignment(task.taskSid);
+      const updatedContact = await submitContactForm(task, contact, caseState);
+      return finalizeContact(task, updatedContact);
+    }
+    return finalizeContact(task, contact);
+  },
+  (contact: Contact) => contact,
 );
 
 export const loadContactFromHrmByTaskSidAsyncAction = createAsyncAction(
@@ -406,6 +461,27 @@ export const saveContactReducer = (initialState: ContactsState) =>
           meta: { contact },
         } = action as typeof action & {
           meta: { contact: Contact; changes: ContactDraftChanges };
+        };
+        return rollbackSavingStateInRedux(state, contact, undefined);
+      },
+    ),
+    handleAction(
+      newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction.pending as typeof newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction,
+      (state, { meta: contact }): ContactsState => {
+        return setContactLoadingStateInRedux(state, contact, contact);
+      },
+    ),
+    handleAction(
+      newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction.fulfilled,
+      (state, { payload }): ContactsState => {
+        return loadContactIntoRedux(state, payload, undefined, newContactMetaData(false));
+      },
+    ),
+    handleAction(
+      newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction.rejected,
+      (state, action): ContactsState => {
+        const { meta: contact } = action as typeof action & {
+          meta: Contact;
         };
         return rollbackSavingStateInRedux(state, contact, undefined);
       },

@@ -59,7 +59,7 @@ const delimiter = ';';
 type InsightsUpdateFunction = (
   attributes: TaskAttributes,
   contactForm: Contact,
-  caseForm: CaseStateEntry,
+  caseForm: Pick<CaseStateEntry, 'sections' | 'connectedCase'>,
   savedContact: Contact,
 ) => InsightsAttributes;
 
@@ -270,7 +270,7 @@ const convertCaseFormForInsights = (caseForm: Case, sections: CaseStateEntry['se
 
 const processHelplineConfig = (
   contact: Contact,
-  caseState: CaseStateEntry,
+  caseState: Pick<CaseStateEntry, 'sections' | 'connectedCase'>,
   oneToOneConfigSpec: OneToOneConfigSpec,
 ): InsightsAttributes => {
   const { connectedCase: caseForm, sections } = caseState ?? {};
@@ -427,7 +427,7 @@ const generateUrlProviderBlock = (externalRecordingInfo: ExternalRecordingInfoSu
 export const buildInsightsData = (
   task: CustomITask,
   contact: Contact,
-  caseState: CaseStateEntry,
+  caseState: Pick<CaseStateEntry, 'sections' | 'connectedCase'>,
   savedContact: Contact,
   externalRecordingInfo?: ExternalRecordingInfo,
 ) => {

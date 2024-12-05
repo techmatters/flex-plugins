@@ -17,7 +17,7 @@
 import React, { useMemo, useState } from 'react';
 import { Close } from '@material-ui/icons';
 import { Template, Manager } from '@twilio/flex-ui';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import InfoIcon from '../caseMergingBanners/InfoIcon';
 import SaveContactCallTypeDialog from '../callTypeButtons/SaveContactCallTypeDialog';
@@ -30,18 +30,19 @@ import {
   HiddenText,
   SaveAndEndButton,
 } from '../../styles';
-import { checkTaskAssignment, completeTaskAssignment } from '../../services/ServerlessService';
-import { Contact, RouterTask } from '../../types/types';
 import getCanEditInProgressContact from '../../permissions/canEditInProgressContact';
-import { newFinalizeContactAsyncAction } from '../../states/contacts/saveContact';
+import { newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction } from '../../states/contacts/saveContact';
 import { getAseloFeatureFlags } from '../../hrmConfig';
+import { RootState } from '../../states';
+import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
+import { checkTaskAssignment } from '../../services/twilioTaskService';
 
 type ContactBannersProps = {
-  savedContact: Contact;
-  task: RouterTask;
+  contactId: string;
 };
 
-const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ savedContact, task }) => {
+const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) => {
+  const savedContact = useSelector((state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact);
   const [showResolvedBanner, setShowResolvedBanner] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -50,10 +51,6 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ savedContact,
   const isDraft = !savedContact.finalizedAt;
 
   const enableInProgressContacts = getAseloFeatureFlags().enable_save_in_progress_contacts;
-
-  const saveFinalizedContact = (task: RouterTask, contact: Contact) => {
-    dispatch(newFinalizeContactAsyncAction(task, contact));
-  };
 
   const canEditContact = useMemo(() => getCanEditInProgressContact(savedContact, workerRoles), [
     savedContact,
@@ -64,12 +61,11 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ savedContact,
     const updatedContact = {
       ...savedContact,
       rawJson: {
-        ...savedContact.rawJson,
         callType: 'Uncategorized',
+        ...savedContact.rawJson,
       },
     };
-    await completeTaskAssignment(savedContact.taskId);
-    saveFinalizedContact(task, updatedContact);
+    dispatch(newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction(updatedContact));
     setShowResolvedBanner(true);
   };
 
