@@ -26,7 +26,7 @@ locals {
       },
       facebook : {
         messaging_mode       = "conversations"
-        channel_type         = "facebook"
+        channel_type         = "messenger"
         contact_identity     = "messenger:105642325869250"
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking.tftpl"
         channel_flow_vars    = {}
