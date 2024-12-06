@@ -25,6 +25,26 @@ on:
           - development
           - staging
           - production
+      region:
+        description: AWS Region to deploy to.
+        required: true
+        type: choice
+        options:
+          - us-east-1
+          - eu-west-1
+          - ca-central-1
+      helpline_code:
+        description: Helpline to deploy.
+        default: AS
+        required: true
+        type: string
+      lambda_path:
+        description: 'Lambda path'
+        required: true
+        type: choice
+        options:
+          - custom-channel/line/native-to-flex
+          - custom-channel/line/flex-to-native
 
   workflow_call:
     secrets:
@@ -39,8 +59,27 @@ on:
         default: development
         required: true
 
+      region:
+        description: AWS Region to deploy to.
+        default: us-east-1
+        required: true
+        type: string
+      helpline_code:
+        description: Helpline to deploy.
+        default: AS
+        required: true
+        type: string
+      lambda_path:
+        description: 'Lambda path'
+        required: true
+        type: string
+      send-slack-message:
+        description: 'Specifies if should send a Slack message at the end of successful run. Defaults to true'
+        required: false
+        default: 'true'
+        type: string
+
 env:
-  ECR_REPOSITORY: ${{ inputs.environment }}/e2e-test
   # if anything is set as a secret, it can't be used in outputs. So we need to set it as an env var
   PRIMARY_AWS_REGION: us-east-1
 
@@ -50,9 +89,122 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      matrix_json: ${{ steps.generate-output.outputs.matrix_json }}
       docker_image: ${{ steps.generate-output.outputs.docker_image}}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.PRIMARY_AWS_REGION }}
+          # this plugin sets the AWS account ID to a secret which is not allowed in outputs
+          # we have to disable that so repo output will work
+          mask-aws-account-id: 'no'
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set Build Args
+        run: |
+          lambda_full_path="./${{ inputs.lambda_path }}"
+          # Extracting directory and lambda name from the lambda path
+          build_lambda_dir=$(dirname $lambda_full_path)
+          build_lambda_name=$(basename $lambda_full_path)
+
+          repo_name="${{ inputs.lambda_path }}"
+          echo "ecr_repository=${{ inputs.environment }}/$repo_name" >> $GITHUB_ENV
+          echo "build_lambda_name=$build_lambda_name" >> $GITHUB_ENV
+          echo "build_lambda_dir=$build_lambda_dir" >> $GITHUB_ENV
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./lambdas
+          file: ./lambdas/Dockerfile
+          build-args: |
+            lambda_name=${{ env.build_lambda_name }}
+            lambda_dir=${{ env.build_lambda_dir }}
+          push: true
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.ecr_repository }}:live,${{ steps.login-ecr.outputs.registry }}/${{ env.ecr_repository }}:${{ github.sha }}
+
+      - name: Generate output
+        id: generate-output
+        run: |
+          # output to logs
+          echo "docker_image=${{ steps.login-ecr.outputs.registry }}/${{ env.ecr_repository }}:${{ github.sha }}" >> $GITHUB_OUTPUT
+  deploy_lambdas:
+    needs: build_lambda
+    name: Deploy to Amazon ECS
+    runs-on: ubuntu-latest
+
+    env:
+      DOCKER_IMAGE: ${{ needs.build_lambda.outputs.docker_image }}
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ inputs.region }}
+          # this plugin sets the AWS account ID to a secret which is not allowed in outputs
+          # we have to disable that so repo output will work
+          mask-aws-account-id: 'no'
+
+      # The search and replace is kinda ugly but works. We need to replace the primary region with the region we're deploying to.
+      # because lambdas don't support ECR images in different regions. We use cross region replication in ECR to make the image
+      # that is pushed in the primary region available in all other regions.
+      - name: Update Lambda and Publish
+        run: |
+          DOCKER_IMAGE=$(echo "${{ env.DOCKER_IMAGE }}" | sed -r 's/${{ env.PRIMARY_AWS_REGION }}/${{ inputs.region }}/g')
+
+          LAMBDA_NAME=$(basename "./${{ inputs.lambda_path }}")
+          LAMBDA="${{ inputs.environment }}-${{ inputs.helpline_code }}-$LAMBDA_NAME"
+          OUTPUT=$(aws lambda update-function-code --function-name $LAMBDA --image-uri "$DOCKER_IMAGE" --publish)
+          NEW_VERSION=$(echo "$OUTPUT" | jq -r '.Version')
+
+          ALIAS_EXISTS=$(aws lambda get-alias --function-name $LAMBDA --name live || echo "not_exists")
+          if [ "$ALIAS_EXISTS" == "not_exists" ]; then
+            aws lambda create-alias --function-name $LAMBDA --name live --function-version $NEW_VERSION
+          else
+            aws lambda update-alias --function-name $LAMBDA --name live --function-version $NEW_VERSION
+          fi
+
+      # reconfigure AWS credentials to use the default region for SSM Parameter Store.
+      # aws-actions/configure-aws-credentials@v4 overrides env.AWS_DEFAULT_REGION, so
+      # we name our env var PRIMARY_AWS_REGION to avoid that.
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.PRIMARY_AWS_REGION }}
+
+      # Set any env vars needed from Parameter Store here
+      - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
+        uses: 'marvinpinto/action-inject-ssm-secrets@latest'
+        with:
+          ssm_parameter: 'GITHUB_ACTIONS_SLACK_BOT_TOKEN'
+          env_variable_name: 'GITHUB_ACTIONS_SLACK_BOT_TOKEN'
+
+      - name: Set ASELO_DEPLOYS_CHANNEL_ID
+        uses: 'marvinpinto/action-inject-ssm-secrets@latest'
+        with:
+          ssm_parameter: 'ASELO_DEPLOYS_CHANNEL_ID'
+          env_variable_name: 'ASELO_DEPLOYS_CHANNEL_ID'
+
+      # Send Slack notifying success
+      - name: Slack Aselo channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+          slack-message: '`[HRM lambdas - ${{ inputs.lambda_path }}]` Deployment of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }} to region `${{ inputs.region }}`, environment `${{ inputs.environment }}` :rocket:.'
+        env:
+          SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+        if: ${{ inputs.send-slack-message != 'false' }}
