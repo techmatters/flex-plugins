@@ -45,7 +45,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'input-text',
       name: 'friendlyName',
       label: 'WhatIsYourName',
-      placeholder: 'Guest',
+      placeholder: 'Your name',
       required: true,
     },
   ],
