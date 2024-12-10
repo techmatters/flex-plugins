@@ -298,7 +298,7 @@ ${
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
         "body": "{ \"trigger\": {{trigger | to_json}}}",
-        "url": "https://hrm-staging.tl.techmatters.org/lambda/ipLocationFinder"
+        "url": flow_vars["ip_location_finder_url"]
       }
     },
     {
@@ -344,13 +344,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": "ZS2cf2a4933a3f9782a2907146287f3f1a",
-        "environment_sid": "ZE512e22f5abb4cc30757b4db4181ab40b",
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": -1000,
           "y": -210
         },
-        "function_sid": "ZH19f41d74c3c64c23b5d624ab84d1ddde",
+        "function_sid": flow_vars["send_message_janitor_function_sid"],
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -369,7 +369,7 @@ ${
             "key": "from"
           }
         ],
-        "url": "https://serverless-5079-production.twil.io/sendMessageAndRunJanitor"
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
       }
     }
   ],

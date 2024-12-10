@@ -19,6 +19,7 @@ locals {
       send_message_janitor_function_sid     = "ZH19f41d74c3c64c23b5d624ab84d1ddde"
       widget_from                           = "Kellimni"
       chat_blocked_message                  = "Sorry, you're not able to contact Kellimni from this device or account"
+      ip_location_finder_url                = "https://hrm-staging.tl.techmatters.org/lambda/ipLocationFinder"
     }
 
     channels = {
