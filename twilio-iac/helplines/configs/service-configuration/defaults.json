@@ -48,7 +48,7 @@
         "feature_flags": {
             "backend_handled_chat_janitor": true,
             "enable_aselo_messaging_ui": false,
-            "enable_backend_manual_pulling": false,
+            "enable_backend_manual_pulling": true,
             "enable_canned_responses": true,
             "enable_case_merging": true,
             "enable_client_profiles": true,
