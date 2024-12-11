@@ -16,11 +16,19 @@
 
 import { API_KEY } from '../private/secret';
 
-const url = `https://api.ipfind.co/me?auth=${API_KEY}`; // Free Tier is 100 requests/day
+const url = `https://api.ipfind.com/me?auth=${API_KEY}`; // Free Tier is 100 requests/day
+
+const CORS_HEADERS = {
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Origin': '*', // Allow from anywhere
+  'Access-Control-Allow-Methods': 'GET',
+};
 
 export const getUserIp = async (): Promise<string> => {
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: CORS_HEADERS,
+    });
     const responseBody = await response.json();
     return responseBody.ip_address;
   } catch (error) {
