@@ -15,8 +15,8 @@
  */
 
 /* eslint-disable react/prop-types */
-import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { TaskHelper } from '@twilio/flex-ui';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
@@ -31,8 +31,12 @@ import { isStandaloneITask } from './case/Case';
 import { getHelplineToSave } from '../services/HelplineService';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 import { rerenderAgentDesktop } from '../rerenderView';
-import { updateDraft } from '../states/contacts/existingContacts';
-import { createContactAsyncAction, loadContactFromHrmByTaskSidAsyncAction } from '../states/contacts/saveContact';
+import { ContactState, updateDraft } from '../states/contacts/existingContacts';
+import {
+  createContactAsyncAction,
+  loadContactFromHrmByIdAsyncAction,
+  loadContactFromHrmByTaskSidAsyncAction,
+} from '../states/contacts/saveContact';
 import { isRouteModal } from '../states/routing/types';
 import { selectCurrentBaseRoute } from '../states/routing/getRoute';
 import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
@@ -44,36 +48,55 @@ import { selectIsContactCreating } from '../states/contacts/selectContactSaveSta
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { selectCurrentDefinitionVersion } from '../states/configuration/selectDefinitions';
 
-type OwnProps = {
+type Props = {
   task: CustomITask;
 };
 
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const TaskView: React.FC<Props> = props => {
-  const {
-    shouldRecreateState,
-    currentDefinitionVersion,
-    task,
-    unsavedContact,
-    updateHelpline,
-    loadContactFromHrmByTaskSid,
-    createContact,
-    isModalOpen,
-    contactIsCreating,
-  } = props;
+const TaskView: React.FC<Props> = ({ task }) => {
+  const currentDefinitionVersion = useSelector((state: RootState) => selectCurrentDefinitionVersion(state));
+  // Check if the entry for this task exists in each reducer
+  const { savedContact, draftContact } = useSelector(
+    (state: RootState) => selectContactByTaskSid(state, task?.taskSid) ?? ({} as ContactState),
+  );
+  const unsavedContact = getUnsavedContact(savedContact, draftContact);
+  const currentRoute = useSelector((state: RootState) => selectCurrentBaseRoute(state, task?.taskSid));
+  const isModalOpen = currentRoute && isRouteModal(currentRoute);
+  const contactIsCreating = useSelector((state: RootState) => selectIsContactCreating(state, task?.taskSid));
+  const shouldRecreateState = currentDefinitionVersion && !savedContact && !contactIsCreating;
 
+  const { enable_backend_hrm_contact_creation: enableBackendHrmContactCreation } = getAseloFeatureFlags();
+
+  const dispatch = useDispatch();
+  const asyncDispatcher = asyncDispatch(dispatch);
+  const createContact = useCallback(
+    (definition: DefinitionVersion) =>
+      asyncDispatcher(createContactAsyncAction(newContact(definition, task), getHrmConfig().workerSid, task)),
+    [asyncDispatcher, task],
+  );
+  const updateHelpline = (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline }));
+  const taskContactId = (task?.attributes as any)?.contactId;
   React.useEffect(() => {
     if (shouldRecreateState) {
       if (isOfflineContactTask(task)) {
-        loadContactFromHrmByTaskSid();
+        asyncDispatcher(loadContactFromHrmByTaskSidAsyncAction(task.taskSid, `${task.taskSid}-active`));
+      } else if (enableBackendHrmContactCreation) {
+        if (taskContactId) {
+          loadContactFromHrmByIdAsyncAction(task.attributes.contactId, `${task.taskSid}-active`);
+        }
       } else if (TaskHelper.isTaskAccepted(task) && !task.attributes.isContactlessTask) {
         createContact(currentDefinitionVersion);
       }
     }
-  }, [createContact, currentDefinitionVersion, loadContactFromHrmByTaskSid, shouldRecreateState, task]);
+  }, [
+    createContact,
+    currentDefinitionVersion,
+    asyncDispatcher,
+    enableBackendHrmContactCreation,
+    shouldRecreateState,
+    task,
+    taskContactId,
+  ]);
 
   // Force a re-render on unmount (temporary fix NoTaskView issue with Offline Contacts)
   React.useEffect(() => {
@@ -158,33 +181,4 @@ const TaskView: React.FC<Props> = props => {
 
 TaskView.displayName = 'TaskView';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const { task } = ownProps;
-  const currentDefinitionVersion = selectCurrentDefinitionVersion(state);
-  // Check if the entry for this task exists in each reducer
-  const { savedContact, draftContact } = selectContactByTaskSid(state, task?.taskSid) ?? {};
-  const unsavedContact = getUnsavedContact(savedContact, draftContact);
-  const currentRoute = selectCurrentBaseRoute(state, task?.taskSid);
-  const contactIsCreating = selectIsContactCreating(state, task?.taskSid);
-
-  const shouldRecreateState = currentDefinitionVersion && !savedContact && !contactIsCreating;
-
-  return {
-    unsavedContact,
-    shouldRecreateState,
-    currentDefinitionVersion,
-    isModalOpen: currentRoute && isRouteModal(currentRoute),
-    contactIsCreating,
-  };
-};
-
-const mapDispatchToProps = (dispatch, { task }: OwnProps) => ({
-  loadContactFromHrmByTaskSid: () =>
-    dispatch(loadContactFromHrmByTaskSidAsyncAction(task.taskSid, `${task.taskSid}-active`)),
-  createContact: (definition: DefinitionVersion) =>
-    asyncDispatch(dispatch)(createContactAsyncAction(newContact(definition, task), getHrmConfig().workerSid, task)),
-  updateHelpline: (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline })),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-export default connector(TaskView);
+export default TaskView;
