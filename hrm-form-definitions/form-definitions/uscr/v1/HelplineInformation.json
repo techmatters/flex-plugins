@@ -1,0 +1,16 @@
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "LA CIRCLE",
+      "value": "LA CIRCLE",
+      "default": true,
+      "kmsUrl": "http://www.google.com",
+      "manager": {
+        "name": "Helpline Manager",
+        "phone": "+123 45 678",
+        "email": "supervisor@helpline.org"
+      }
+    }
+  ]
+}
