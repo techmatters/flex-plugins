@@ -1,7 +1,7 @@
 {
     "attributes": {
         "contacts_waiting_channels": [
-            "web"
+            "voice"
         ],
         "definitionVersion": "uscr-v1",
         "helplineLanguage": "en-US",
