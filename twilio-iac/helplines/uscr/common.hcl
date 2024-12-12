@@ -9,10 +9,12 @@ locals {
 
 
   local_config = {
-    helpline                   = "<helpline name>"
+    helpline                   = "LA CIRCLE"
     task_language              = "en-US"
     enable_post_survey         = false
     enable_external_recordings = true
+    enable_datadog_monitoring  = false
+
     workflows = {
       master : {
         friendly_name = "Master Workflow"
@@ -30,7 +32,7 @@ locals {
     task_queues = {
       master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "<helpline name>"
+        "friendly_name"  = "LA CIRCLE"
       },
       survey : {
         "target_workers" = "1==0",
@@ -41,15 +43,6 @@ locals {
         "friendly_name"  = "E2E Test Queue"
       }
     }
-    #Channels
-    channels = {
-      webchat : {
-        channel_type     = "web"
-        contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/webchat-basic.tftpl"
-        channel_flow_vars = {}
-        chatbot_unique_names = []
-      }
-    }
+   
   }
 }
