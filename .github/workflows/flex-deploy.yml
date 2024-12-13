@@ -73,7 +73,7 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             .github/actions
-            plugin-form-hrm/package-lock.json
+            plugin-hrm-form/package-lock.json
       # Can be removed once we drop support for Twilio hosted plugins
       - name: Use Node.js
         if: env.SELF_HOSTED_DEPLOY != 'true'
