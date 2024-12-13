@@ -70,6 +70,7 @@ jobs:
       - if: env.SELF_HOSTED_DEPLOY == 'true'
         uses: actions/checkout@v4
         with:
+          sparse-checkout-cone-mode: false
           sparse-checkout: |
             .github/actions
             plugin-form-hrm/package-lock.json
