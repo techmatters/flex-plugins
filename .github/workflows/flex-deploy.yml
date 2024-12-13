@@ -156,7 +156,7 @@ jobs:
               "plugin_service_attributes":{
                   "custom_plugins": [{"name": "HRM Forms", "version": "0.0.1", "src": "https://assets-${{ inputs.environment_code }}.tl.techmatters.org/plugins/hrm-form/${{ github.ref_type }}/${{ github.ref_name }}/plugin-hrm-form.js"}]
               }
-              "ui_version": $(jq -c '.node_modules.@twilio.flex-ui.version' ./plugin-form-hrm/package-lock.json)
+              "ui_version": $(jq '.packages."node_modules/@twilio/flex-ui".version' ./plugin-hrm-form/package-lock.json)
           }'
 
       # Send Slack notifying success
