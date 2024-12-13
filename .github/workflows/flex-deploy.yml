@@ -72,6 +72,7 @@ jobs:
         with:
           sparse-checkout: |
             .github/actions
+            plugin-form-hrm/package-lock.json
       # Can be removed once we drop support for Twilio hosted plugins
       - name: Use Node.js
         if: env.SELF_HOSTED_DEPLOY != 'true'
@@ -155,8 +156,19 @@ jobs:
               "plugin_service_attributes":{
                   "custom_plugins": [{"name": "HRM Forms", "version": "0.0.1", "src": "https://assets-${{ inputs.environment_code }}.tl.techmatters.org/plugins/hrm-form/${{ github.ref_type }}/${{ github.ref_name }}/plugin-hrm-form.js"}]
               }
+              "ui_version": $(jq -c '.node_modules.@twilio.flex-ui.version' ./plugin-form-hrm/package-lock.json)
           }'
 
+      # Send Slack notifying success
+      - name: Slack Aselo channel
+        if: env.SELF_HOSTED_DEPLOY == 'true' && ${{ inputs.send-slack-message != 'false' }}
+        id: slack
+        uses: slackapi/slack-github-action@v1.14.0
+        with:
+          channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+          slack-message: "`[FLEX]` Deployment to `${{ inputs.helpline-id }}` of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed using workflow '${{ github.workflow }}' with SHA ${{ github.sha }} :rocket:."
+        env:
+          SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
       # Update deployment matrix with script and ssm parameters
       - name: Update deployment matrix
         uses: ./.github/actions/deployment-matrix
