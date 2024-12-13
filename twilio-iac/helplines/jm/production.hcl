@@ -24,13 +24,6 @@ locals {
           }
         }
       },
-      facebook : {
-        channel_type         = "facebook"
-        contact_identity     = "messenger:107246798170317"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2-blocking.tftpl"
-        channel_flow_vars    = {}
-        chatbot_unique_names = []
-      },
       instagram : {
         messaging_mode         = "conversations"
         channel_type           = "custom"
