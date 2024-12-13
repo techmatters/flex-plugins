@@ -46,7 +46,7 @@ const getHelplineCodeFromDefinitionVersionId = (definitionVersionId: string) => 
   if (definitionVersionId === 'e2e-v1') return 'e2e';
   if (definitionVersionId === 'v1') return 'zm';
 
-  return definitionVersionId.substring(0, 2);
+  return definitionVersionId.split('-')[0];
 };
 
 const getVersionFromDefinitionVersionId = (definitionVersionId: string) => {
