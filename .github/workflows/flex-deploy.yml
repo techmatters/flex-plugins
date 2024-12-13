@@ -104,6 +104,13 @@ jobs:
           ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
           env_variable_name: "TWILIO_AUTH_TOKEN"
 
+      # Set any env vars needed from Parameter Store here
+      # Slack env
+      - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
+          env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
       - name: Set ASELO_DEPLOYS_CHANNEL_ID
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
