@@ -115,8 +115,9 @@ jobs:
         id: slack
         uses: slackapi/slack-github-action@v2.0.0
         with:
-          channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-          slack-message: '`[Flex]` Deployment of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}, helpine: `${{ env.helpline_code }}, environment `${{ env.environment }}` :rocket:.'
-        env:
-          SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+          method: chat.postMessage
+          token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+            text: "`[Flex]` Deployment of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}, helpine: `${{ env.helpline_code }}, environment `${{ env.environment }}` :rocket:."
         if: ${{ inputs.send-slack-message != 'false' }}
