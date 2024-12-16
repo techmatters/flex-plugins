@@ -180,7 +180,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.14.0
         with:
           channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-          slack-message: "`[FLEX]` Deployment to `${{ inputs.helpline-id }}` of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed using workflow '${{ github.workflow }}' with SHA ${{ github.sha }} :rocket:."
+          slack-message: "`[FLEX]` Deployment to `${{ inputs.helpline_code }}_${{ inputs.environment_code }}` of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed using workflow `${{ github.workflow }}` with SHA ${{ github.sha }} :rocket:."
         env:
           SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
       # Update deployment matrix with script and ssm parameters
