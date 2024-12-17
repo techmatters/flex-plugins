@@ -22,7 +22,8 @@
         "pdfImagesSource": "https://tl-public-chat-as-stg.s3.amazonaws.com",
         "permissionConfig": "demo",
         "previous_ui_version": {"date": "2024-06-07T15:24:53.590Z", "semver": "~2.5.2", "version": "2.5.2"},
-        "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
+        "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png",
+        "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/as/v1"
     },
     "ui_attributes": {
         "colorTheme": {

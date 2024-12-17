@@ -32,6 +32,7 @@ import { FETCH_CASE_LIST_FULFILLED_ACTION, FetchCaseListFulfilledAction } from '
 import {
   ContactUpdatingAction,
   CREATE_CONTACT_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED,
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
 } from '../contacts/types';
 import { SEARCH_CASES_SUCCESS, SearchCasesSuccessAction } from '../search/types';
@@ -170,6 +171,7 @@ export function reduce(
       return handleLoadCaseRejectedAction(hrmState, action);
     }
     case CREATE_CONTACT_ACTION_FULFILLED:
+    case LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED:
     case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED: {
       return contactUpdatingReducer(hrmState, action as ContactUpdatingAction);
     }

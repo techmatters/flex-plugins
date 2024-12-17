@@ -35,6 +35,7 @@ import { getOfflineContactTaskSid } from '../contacts/offlineContactTask';
 import {
   ContactUpdatingAction,
   CREATE_CONTACT_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED,
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
   UPDATE_CONTACT_ACTION_FULFILLED,
 } from '../contacts/types';
@@ -58,6 +59,7 @@ export const initialState: RoutingState = {
 const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingAction): RoutingState => {
   const recreated =
     action.type === LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED ||
+    action.type === LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED ||
     action.type === UPDATE_CONTACT_ACTION_FULFILLED;
 
   const { contact, previousContact } = action.payload;
@@ -225,6 +227,7 @@ export function reduce(
   switch (action.type) {
     case CREATE_CONTACT_ACTION_FULFILLED:
     case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED:
+    case LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED:
     case UPDATE_CONTACT_ACTION_FULFILLED:
       return contactUpdatingReducer(state, action);
     case REMOVE_CONTACT_STATE:

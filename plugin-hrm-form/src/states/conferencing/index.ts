@@ -21,6 +21,7 @@ import { RemoveContactStateAction } from '../types';
 import { removeContactState } from '../actions';
 import {
   createContactAsyncAction,
+  loadContactFromHrmByIdAsyncAction,
   loadContactFromHrmByTaskSidAsyncAction,
   updateContactInHrmAsyncAction,
 } from '../contacts/saveContact';
@@ -105,6 +106,7 @@ const conferencingReducer = createReducer(initialState, handleAction => [
   // Handle GeneralActionType
   handleAction(createContactAsyncAction.fulfilled, createNewEntryForTaskId),
   handleAction(loadContactFromHrmByTaskSidAsyncAction.fulfilled, createNewEntryForTaskId),
+  handleAction(loadContactFromHrmByIdAsyncAction.fulfilled, createNewEntryForTaskId),
   handleAction(updateContactInHrmAsyncAction.fulfilled, (state, action) => {
     const {
       payload: { contact, previousContact },

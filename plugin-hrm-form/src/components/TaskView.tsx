@@ -47,6 +47,8 @@ import asyncDispatch from '../states/asyncDispatch';
 import { selectIsContactCreating } from '../states/contacts/selectContactSaveStatus';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { selectCurrentDefinitionVersion } from '../states/configuration/selectDefinitions';
+import { LoadingStatus } from '../states/contacts/types';
+import selectContactStateByContactId from '../states/contacts/selectContactStateByContactId';
 
 type Props = {
   task: CustomITask;
@@ -54,18 +56,25 @@ type Props = {
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const TaskView: React.FC<Props> = ({ task }) => {
+  const { enable_backend_hrm_contact_creation: enableBackendHrmContactCreation } = getAseloFeatureFlags();
+  const taskContactId = (task?.attributes as any)?.contactId;
   const currentDefinitionVersion = useSelector((state: RootState) => selectCurrentDefinitionVersion(state));
   // Check if the entry for this task exists in each reducer
-  const { savedContact, draftContact } = useSelector(
-    (state: RootState) => selectContactByTaskSid(state, task?.taskSid) ?? ({} as ContactState),
+  const { savedContact, draftContact, metadata } = useSelector(
+    (state: RootState) =>
+      (enableBackendHrmContactCreation
+        ? selectContactStateByContactId(state, taskContactId)
+        : selectContactByTaskSid(state, task?.taskSid)) ?? ({} as ContactState),
   );
   const unsavedContact = getUnsavedContact(savedContact, draftContact);
   const currentRoute = useSelector((state: RootState) => selectCurrentBaseRoute(state, task?.taskSid));
   const isModalOpen = currentRoute && isRouteModal(currentRoute);
-  const contactIsCreating = useSelector((state: RootState) => selectIsContactCreating(state, task?.taskSid));
-  const shouldRecreateState = currentDefinitionVersion && !savedContact && !contactIsCreating;
-
-  const { enable_backend_hrm_contact_creation: enableBackendHrmContactCreation } = getAseloFeatureFlags();
+  const contactIsLoading = useSelector((state: RootState) => selectIsContactCreating(state, task?.taskSid));
+  const shouldRecreateState =
+    currentDefinitionVersion &&
+    !savedContact &&
+    !(metadata?.loadingStatus === LoadingStatus.LOADING) &&
+    !contactIsLoading;
 
   const dispatch = useDispatch();
   const asyncDispatcher = asyncDispatch(dispatch);
@@ -75,16 +84,17 @@ const TaskView: React.FC<Props> = ({ task }) => {
     [asyncDispatcher, task],
   );
   const updateHelpline = (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline }));
-  const taskContactId = (task?.attributes as any)?.contactId;
   React.useEffect(() => {
     if (shouldRecreateState) {
       if (isOfflineContactTask(task)) {
         asyncDispatcher(loadContactFromHrmByTaskSidAsyncAction(task.taskSid, `${task.taskSid}-active`));
-      } else if (enableBackendHrmContactCreation) {
-        if (taskContactId) {
-          loadContactFromHrmByIdAsyncAction(task.attributes.contactId, `${task.taskSid}-active`);
-        }
-      } else if (TaskHelper.isTaskAccepted(task) && !task.attributes.isContactlessTask) {
+      } else if (enableBackendHrmContactCreation && taskContactId) {
+        asyncDispatcher(loadContactFromHrmByIdAsyncAction(taskContactId, `${task.taskSid}-active`));
+      } else if (
+        !enableBackendHrmContactCreation &&
+        TaskHelper.isTaskAccepted(task) &&
+        !task.attributes.isContactlessTask
+      ) {
         createContact(currentDefinitionVersion);
       }
     }
@@ -144,7 +154,11 @@ const TaskView: React.FC<Props> = ({ task }) => {
     return (
       <ContactNotLoaded
         onReload={async () => {
-          await createContact(currentDefinitionVersion);
+          if (enableBackendHrmContactCreation) {
+            await asyncDispatcher(loadContactFromHrmByIdAsyncAction(taskContactId, `${task.taskSid}-active`));
+          } else {
+            await createContact(currentDefinitionVersion);
+          }
         }}
         onFinish={async () => {
           await completeTask(task, unsavedContact);
@@ -152,7 +166,7 @@ const TaskView: React.FC<Props> = ({ task }) => {
       />
     );
   // If state is partially loaded, don't render until everything settles
-  if (shouldRecreateState || contactIsCreating) {
+  if (shouldRecreateState || contactIsLoading) {
     return null;
   }
 

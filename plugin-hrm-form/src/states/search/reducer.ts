@@ -26,6 +26,7 @@ import {
   ContactConnectingAction,
   ContactUpdatingAction,
   CREATE_CONTACT_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED,
   LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
   UPDATE_CONTACT_ACTION_FULFILLED,
 } from '../contacts/types';
@@ -149,6 +150,7 @@ export function reduce(
   switch (action.type) {
     case CREATE_CONTACT_ACTION_FULFILLED:
     case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED:
+    case LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED:
     case UPDATE_CONTACT_ACTION_FULFILLED: {
       return contactUpdatingReducer(state, action as ContactUpdatingAction);
     }

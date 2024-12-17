@@ -277,8 +277,15 @@ export const loadContactFromHrmByTaskSidAsyncAction = createAsyncAction(
 export const loadContactFromHrmByIdAsyncAction = createAsyncAction(
   LOAD_CONTACT_FROM_HRM_BY_ID_ACTION,
   async (contactId: string, reference: string = contactId) => {
+    const contact = await getContactById(contactId);
+
+    let contactCase: Case | undefined;
+    if (contact?.caseId) {
+      contactCase = await getCase(contact.caseId);
+    }
     return {
       contact: await getContactById(contactId),
+      contactCase,
       reference,
     };
   },
