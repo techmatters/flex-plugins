@@ -4,7 +4,7 @@
             "voice"
         ],
         "definitionVersion": "uscr-v1",
-        "helplineLanguage": "en-US",
+        "helplineLanguage": "en-uscr",
         "permissionConfig": "uscr"
     }
 }
