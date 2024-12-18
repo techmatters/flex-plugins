@@ -121,7 +121,11 @@ describe('actions', () => {
       };
       mockGetContactByTaskSid.mockResolvedValue(taskContact);
       const actionPromiseResult = (dispatch(
-        newLoadContactFromHrmForTaskAsyncAction({ taskSid: 'WT-load-me' } as CustomITask, 'WK', 'mock-ref'),
+        newLoadContactFromHrmForTaskAsyncAction(
+          { taskSid: 'WT-load-me', attributes: {} } as CustomITask,
+          'WK',
+          'mock-ref',
+        ),
       ) as unknown) as Promise<void>;
       const pendingState = getState();
       expect(pendingState.contactsBeingCreated.has('WT-load-me')).toBe(true);
