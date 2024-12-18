@@ -278,6 +278,8 @@ export const newLoadContactFromHrmForTaskAsyncAction = createAsyncAction(
       // If the contact is being transferred from a client that doesn't set the contactId on the task, we need to update the contact with the task id and worker id
       contact = await updateContactInHrm(contact.id, { taskId: taskSid, twilioWorkerId: workerSid }, false);
     }
+    if (isTwilioTask(task) && TransferHelpers.isColdTransfer(task) && !TransferHelpers.hasTaskControl(task))
+      await TransferHelpers.takeTaskControl(task);
     let contactCase: Case | undefined;
     if (contact?.caseId) {
       contactCase = await getCase(contact.caseId);
