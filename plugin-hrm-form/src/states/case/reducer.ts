@@ -32,8 +32,7 @@ import { FETCH_CASE_LIST_FULFILLED_ACTION, FetchCaseListFulfilledAction } from '
 import {
   ContactUpdatingAction,
   CREATE_CONTACT_ACTION_FULFILLED,
-  LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED,
-  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
 } from '../contacts/types';
 import { SEARCH_CASES_SUCCESS, SearchCasesSuccessAction } from '../search/types';
 import type { Case } from '../../types/types';
@@ -82,7 +81,7 @@ const dereferenceAllCases = (state: CaseState, referenceId: string): CaseState =
 const contactUpdatingReducer = (hrmState: HrmState, action: ContactUpdatingAction): HrmState => {
   if (
     action.type === CREATE_CONTACT_ACTION_FULFILLED ||
-    action.type === LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED
+    action.type === LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED
   ) {
     const { configuration, connectedCase } = hrmState;
     const { contact, contactCase } = action.payload;
@@ -171,8 +170,7 @@ export function reduce(
       return handleLoadCaseRejectedAction(hrmState, action);
     }
     case CREATE_CONTACT_ACTION_FULFILLED:
-    case LOAD_CONTACT_FROM_HRM_BY_ID_ACTION_FULFILLED:
-    case LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED: {
+    case LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED: {
       return contactUpdatingReducer(hrmState, action as ContactUpdatingAction);
     }
     case REMOVE_CONTACT_STATE: {

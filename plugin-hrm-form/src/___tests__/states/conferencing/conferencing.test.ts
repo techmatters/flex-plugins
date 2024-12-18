@@ -31,7 +31,7 @@ import { removeContactState } from '../../../states/actions';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
 import {
   CREATE_CONTACT_ACTION_FULFILLED,
-  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
 } from '../../../states/contacts/types';
 
 const { mockFetchImplementation, buildBaseURL } = mockLocalFetchDefinitions();
@@ -56,12 +56,12 @@ const MOCK_99999_CREATE_ACTION: any = {
 };
 
 const MOCK_LOAD_ACTION: any = {
-  type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+  type: LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
   payload: { contact: { ...VALID_EMPTY_CONTACT, taskId: 'WT12345', id: 12345 } },
 };
 
 const MOCK_99999_LOAD_ACTION: any = {
-  type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+  type: LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
   payload: { contact: { ...VALID_EMPTY_CONTACT, taskId: 'WT99999', id: 99999 } },
 };
 
