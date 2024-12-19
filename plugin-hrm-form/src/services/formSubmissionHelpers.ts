@@ -98,7 +98,9 @@ export const submitContactForm = async (
   }
 
   const savedContact = await saveContact(task, contact, workerSid, task.taskSid);
-  if (!FINISHED_TASK_STATES.includes(task.status)) {
+  // Need to check setAttributes is a function because it won't be if it's not a current task in Flex (i.e. it was retrived by 'getTask' to be finished by a supervisor)
+  // This is a quick fix, we should add a setAttributes serverless function to use here instead so we can save the attributes in the contact
+  if (!FINISHED_TASK_STATES.includes(task.status) && typeof task.setAttributes === 'function') {
     const recordingsIfAvailable = await getExternalRecordingInfo(task);
     const finalAttributes = buildInsightsData(task, contact, caseState, savedContact, recordingsIfAvailable);
     await task.setAttributes(finalAttributes);
