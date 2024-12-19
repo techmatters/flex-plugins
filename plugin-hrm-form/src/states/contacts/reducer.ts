@@ -22,7 +22,6 @@ import * as t from './types';
 import {
   ContactsState,
   CREATE_CONTACT_ACTION,
-  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION,
   SET_SAVED_CONTACT,
   UPDATE_CONTACT_ACTION,
 } from './types';
@@ -89,7 +88,6 @@ type SaveContactReducerAction = Parameters<typeof boundSaveContactReducer>[1] &
     // eslint-disable-next-line prettier/prettier
       `${typeof CREATE_CONTACT_ACTION
       | typeof UPDATE_CONTACT_ACTION
-      | typeof LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION
       | typeof SET_SAVED_CONTACT}_${string}`
   };
 

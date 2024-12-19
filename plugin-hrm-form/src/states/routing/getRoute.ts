@@ -33,7 +33,7 @@ export const getCurrentTopmostRouteStackForTask = (state: RoutingState, taskSid:
 
 export const getCurrentTopmostRouteForTask = (state: RoutingState, taskSid: string): AppRoutes | undefined => {
   const topStack = getCurrentTopmostRouteStack(state.tasks[taskSid]);
-  return topStack.length ? topStack[topStack.length - 1] : undefined;
+  return topStack?.length ? topStack[topStack.length - 1] : undefined;
 };
 
 export const selectCurrentTopmostRouteForTask = (state: RootState, taskSid: string): AppRoutes | undefined =>

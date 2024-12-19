@@ -169,11 +169,16 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
     sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
   }
-
-  await initializeContactForm(payload);
-  if (getAseloFeatureFlags().enable_transfers && TransferHelpers.hasTransferStarted(task)) {
+  const {
+    enable_transfers: enableTransfers,
+    enable_backend_hrm_contact_creation: enableBackendHrmContactCreation,
+  } = featureFlags;
+  if (!enableBackendHrmContactCreation) {
+    await initializeContactForm(payload);
+  }
+  if (enableTransfers && TransferHelpers.hasTransferStarted(task)) {
     await handleTransferredTask(task);
-  } else {
+  } else if (!enableBackendHrmContactCreation) {
     await prepopulateForm(task);
   }
 };
@@ -256,7 +261,7 @@ export const excludeDeactivateConversationOrchestration = () => {
     const defaultOrchestrations = ChatOrchestrator.getOrchestrations(event);
 
     if (Array.isArray(defaultOrchestrations)) {
-      ChatOrchestrator.setOrchestrations(event, task => {
+      ChatOrchestrator.setOrchestrations(event, () => {
         return excludeDeactivateConversation(defaultOrchestrations);
       });
     }

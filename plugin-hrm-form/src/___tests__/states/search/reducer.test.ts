@@ -24,7 +24,7 @@ import { newTaskEntry, reduce } from '../../../states/search/reducer';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
 import {
   CREATE_CONTACT_ACTION_FULFILLED,
-  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
 } from '../../../states/contacts/types';
 
 jest.mock('../../../components/CSAMReport/CSAMReportFormDefinition');
@@ -65,9 +65,9 @@ describe('search reducer', () => {
     expect(tasks[task.taskSid]).toStrictEqual({});
   });
 
-  test('LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED action (should recreate the state)', () => {
+  test('LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED action (should recreate the state)', () => {
     const action: any = {
-      type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+      type: LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
       payload: {
         reference: 'x',
         contact: {
@@ -85,9 +85,9 @@ describe('search reducer', () => {
     state = result;
   });
 
-  test('LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED action (should do nothing)', () => {
+  test('LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED action (should do nothing)', () => {
     const action: any = {
-      type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+      type: LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
       payload: {
         reference: 'x',
         contact: {
