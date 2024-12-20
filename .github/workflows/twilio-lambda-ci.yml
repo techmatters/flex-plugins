@@ -71,7 +71,8 @@ jobs:
             lambda_name=${{ env.build_lambda_name }}
             lambda_dir=${{ env.build_lambda_dir }}
           push: true
-          tags: ${{ env.ECR_URL }}:${{ github.ref_type }}.${{ github.ref_name }},${{ env.ECR_URL }}:${{ github.sha }}
+          # 'latest' is never used, but it keeps terraform happy
+          tags: ${{ env.ECR_URL }}:${{ github.ref_type }}.${{ github.ref_name }},${{ env.ECR_URL }}:${{ github.sha }},${{ env.ECR_URL }}:latest
 
       - name: Generate output
         id: generate-output
