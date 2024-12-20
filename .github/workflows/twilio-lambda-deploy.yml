@@ -33,18 +33,6 @@ on:
           - us-east-1
           - eu-west-1
           - ca-central-1
-      helpline_code:
-        description: Helpline to deploy.
-        default: AS
-        required: true
-        type: string
-      lambda_path:
-        description: 'Lambda path'
-        required: true
-        default: account-scoped
-        type: choice
-        options:
-          - account-scoped
 
   workflow_call:
     secrets:
@@ -58,19 +46,9 @@ on:
         type: string
         default: development
         required: true
-
       region:
         description: AWS Region to deploy to.
         default: us-east-1
-        required: true
-        type: string
-      helpline_code:
-        description: Helpline to deploy.
-        default: AS
-        required: true
-        type: string
-      lambda_path:
-        description: 'Lambda path'
         required: true
         type: string
       send-slack-message:
@@ -84,67 +62,14 @@ env:
   PRIMARY_AWS_REGION: us-east-1
 
 jobs:
-  build_lambda:
-    name: Build Lambda Image
-    runs-on: ubuntu-latest
-
-    outputs:
-      docker_image: ${{ steps.generate-output.outputs.docker_image}}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.PRIMARY_AWS_REGION }}
-          # this plugin sets the AWS account ID to a secret which is not allowed in outputs
-          # we have to disable that so repo output will work
-          mask-aws-account-id: 'no'
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-      - name: Read ECR url from SSM
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
-        with:
-          ssm_parameter: /${{ inputs.environment }}/twilio/lambda/${{ inputs.lambda_path }}/ecr-url/
-          env_variable_name: "ECR_URL"
-      - name: Set Build Args
-        run: |
-          lambda_full_path="./${{ inputs.lambda_path }}"
-          # Extracting directory and lambda name from the lambda path
-          build_lambda_dir=$(dirname $lambda_full_path)
-          build_lambda_name=$(basename $lambda_full_path)
-
-          repo_name="${{ inputs.lambda_path }}"
-          echo "build_lambda_name=$build_lambda_name" >> $GITHUB_ENV
-          echo "build_lambda_dir=$build_lambda_dir" >> $GITHUB_ENV
-
-      - name: Build and Push Docker Image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./lambdas
-          file: ./lambdas/Dockerfile
-          build-args: |
-            lambda_name=${{ env.build_lambda_name }}
-            lambda_dir=${{ env.build_lambda_dir }}
-          push: true
-          tags: ${{ env.ECR_URL }}:live,${{ env.ECR_URL }}:${{ github.sha }}
-
-      - name: Generate output
-        id: generate-output
-        run: |
-          # output to logs
-          echo "docker_image=${{ env.ECR_URL }}:${{ github.sha }}" >> $GITHUB_OUTPUT
   deploy_lambdas:
     needs: build_lambda
     name: Deploy to Amazon ECS
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        lambda_path:
+          - account-scoped
     env:
       DOCKER_IMAGE: ${{ needs.build_lambda.outputs.docker_image }}
 
@@ -162,15 +87,15 @@ jobs:
       - name: Read ECR url from SSM
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
-          ssm_parameter: /${{ inputs.environment }}/twilio/lambda/${{ inputs.lambda_path }}/ecr-url/
+          ssm_parameter: /${{ inputs.environment }}/twilio/lambda/${{ matrix.lambda_path }}/ecr-url/
       # The search and replace is kinda ugly but works. We need to replace the primary region with the region we're deploying to.
       # because lambdas don't support ECR images in different regions. We use cross region replication in ECR to make the image
       # that is pushed in the primary region available in all other regions.
       - name: Update Lambda and Publish
         run: |
-          DOCKER_IMAGE=$(echo "${{ env.ECR_URL }}:${{ github.ref_type }}/${{ github.ref_name }}" | sed -r 's/${{ env.PRIMARY_AWS_REGION }}/${{ inputs.region }}/g')
+          DOCKER_IMAGE=$(echo "${{ env.ECR_URL }}:${{ github.ref_type }}.${{ github.ref_name }}" | sed -r 's/${{ env.PRIMARY_AWS_REGION }}/${{ inputs.region }}/g')
 
-          LAMBDA_NAME=$(basename "./${{ inputs.lambda_path }}")
+          LAMBDA_NAME=$(basename "./${{ matrix.lambda_path }}")
           LAMBDA="${{ inputs.environment }}-${{ inputs.region }}-$LAMBDA_NAME"
           OUTPUT=$(aws lambda update-function-code --function-name $LAMBDA --image-uri "$DOCKER_IMAGE" --publish)
           NEW_VERSION=$(echo "$OUTPUT" | jq -r '.Version')
@@ -211,7 +136,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.25.0
         with:
           channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-          slack-message: '`[HRM lambdas - ${{ inputs.lambda_path }}]` Deployment of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }} to region `${{ inputs.region }}`, environment `${{ inputs.environment }}` :rocket:.'
+          slack-message: '`[HRM lambdas - ${{ matrix.lambda_path }}]` Deployment of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }} to region `${{ inputs.region }}`, environment `${{ inputs.environment }}` :rocket:.'
         env:
           SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
         if: ${{ inputs.send-slack-message != 'false' }}
