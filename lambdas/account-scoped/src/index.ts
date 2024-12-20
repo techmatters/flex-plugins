@@ -54,11 +54,17 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
     }
     return {
       statusCode: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(result.unwrap()),
     };
   }
   return {
     statusCode: 404,
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({
       message: `Route not found ${event.httpMethod} - ${event.path}`,
     }),
