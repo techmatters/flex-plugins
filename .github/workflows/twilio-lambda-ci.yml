@@ -51,7 +51,7 @@ jobs:
       - name: Read ECR url from SSM
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
-          ssm_parameter: /twilio/lambda/${{ matrix.lambda_path }}/ecr-url/
+          ssm_parameter: /twilio/lambda/${{ matrix.lambda_path }}/ecr-url
           env_variable_name: "ECR_URL"
       - name: Set Build Args
         run: |
