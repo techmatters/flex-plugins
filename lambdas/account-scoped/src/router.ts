@@ -24,6 +24,8 @@ import { ErrorResult, newErr, Result } from './Result';
  * At that point we should decide whether to evolve this router or replace it with a 3rd party one
  */
 
+const ROUTE_PREFIX = '/lambda/twilio/account-scoped';
+
 export type HttpError = {
   statusCode: number;
   cause?: Error;
@@ -64,9 +66,16 @@ const ROUTES: Record<string, FunctionRoute> = {
 };
 
 export const lookupRoute = (event: HttpRequest): AccountScopedRoute => {
-  const [accountSid, ...applicationPathParts] = event.path.split('/');
-  return {
-    accountSid,
-    ...ROUTES[applicationPathParts.join('/')],
-  };
+  if (event.path.startsWith(ROUTE_PREFIX)) {
+    const path = event.path.substring(ROUTE_PREFIX.length);
+    const [accountSid, ...applicationPathParts] = path.split('/');
+    const functionRoute = ROUTES[applicationPathParts.join('/')];
+    if (functionRoute) {
+      return {
+        accountSid,
+        ...functionRoute,
+      };
+    }
+  }
+  return null;
 };
