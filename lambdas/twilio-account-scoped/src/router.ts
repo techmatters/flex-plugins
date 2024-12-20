@@ -41,13 +41,17 @@ export type Handler = (
 
 type PipelineStep<Item> = (item: Item) => Promise<Result<ErrorResult<HttpError>, Item>>;
 
-export type Route = {
+export type FunctionRoute = {
   requestPipeline: PipelineStep<HttpRequest>[];
   handler: Handler;
 };
 
-const ROUTES: Record<string, Route> = {
-  '/custom-channel/line/flex-to-native': {
+export type AccountScopedRoute = FunctionRoute & {
+  accountSid: string;
+};
+
+const ROUTES: Record<string, FunctionRoute> = {
+  'webhooks/taskrouterCallback': {
     requestPipeline: [],
     handler: async (event: HttpRequest) =>
       newErr({
@@ -59,4 +63,10 @@ const ROUTES: Record<string, Route> = {
   },
 };
 
-export const lookupRoute = (event: HttpRequest): Route => ROUTES[event.path];
+export const lookupRoute = (event: HttpRequest): AccountScopedRoute => {
+  const [accountSid, ...applicationPathParts] = event.path.split('/');
+  return {
+    accountSid,
+    ...ROUTES[applicationPathParts.join('/')],
+  };
+};

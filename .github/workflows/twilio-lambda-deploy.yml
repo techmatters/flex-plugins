@@ -41,10 +41,10 @@ on:
       lambda_path:
         description: 'Lambda path'
         required: true
+        default: twilio-account-scoped
         type: choice
         options:
-          - custom-channel/line/native-to-flex
-          - custom-channel/line/flex-to-native
+          - twilio-account-scoped
 
   workflow_call:
     secrets:
@@ -108,7 +108,11 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-
+      - name: Read ECR url from SSM
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: /${{ inputs.environment }}/twilio/lambda/${{ inputs.lambda_path }}/ecr-url/
+          env_variable_name: "ECR_URL"
       - name: Set Build Args
         run: |
           lambda_full_path="./${{ inputs.lambda_path }}"
@@ -117,7 +121,6 @@ jobs:
           build_lambda_name=$(basename $lambda_full_path)
 
           repo_name="${{ inputs.lambda_path }}"
-          echo "ecr_repository=${{ inputs.environment }}/$repo_name" >> $GITHUB_ENV
           echo "build_lambda_name=$build_lambda_name" >> $GITHUB_ENV
           echo "build_lambda_dir=$build_lambda_dir" >> $GITHUB_ENV
 
@@ -130,13 +133,13 @@ jobs:
             lambda_name=${{ env.build_lambda_name }}
             lambda_dir=${{ env.build_lambda_dir }}
           push: true
-          tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.ecr_repository }}:live,${{ steps.login-ecr.outputs.registry }}/${{ env.ecr_repository }}:${{ github.sha }}
+          tags: ${{ env.ECR_URL }}:live,${{ env.ECR_URL }}:${{ github.sha }}
 
       - name: Generate output
         id: generate-output
         run: |
           # output to logs
-          echo "docker_image=${{ steps.login-ecr.outputs.registry }}/${{ env.ecr_repository }}:${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "docker_image=${{ env.ECR_URL }}:${{ github.sha }}" >> $GITHUB_OUTPUT
   deploy_lambdas:
     needs: build_lambda
     name: Deploy to Amazon ECS
@@ -156,15 +159,19 @@ jobs:
           # we have to disable that so repo output will work
           mask-aws-account-id: 'no'
 
+      - name: Read ECR url from SSM
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: /${{ inputs.environment }}/twilio/lambda/${{ inputs.lambda_path }}/ecr-url/
       # The search and replace is kinda ugly but works. We need to replace the primary region with the region we're deploying to.
       # because lambdas don't support ECR images in different regions. We use cross region replication in ECR to make the image
       # that is pushed in the primary region available in all other regions.
       - name: Update Lambda and Publish
         run: |
-          DOCKER_IMAGE=$(echo "${{ env.DOCKER_IMAGE }}" | sed -r 's/${{ env.PRIMARY_AWS_REGION }}/${{ inputs.region }}/g')
+          DOCKER_IMAGE=$(echo "${{ env.ECR_URL }}:${{ github.ref_type }}/${{ github.ref_name }}" | sed -r 's/${{ env.PRIMARY_AWS_REGION }}/${{ inputs.region }}/g')
 
           LAMBDA_NAME=$(basename "./${{ inputs.lambda_path }}")
-          LAMBDA="${{ inputs.environment }}-${{ inputs.helpline_code }}-$LAMBDA_NAME"
+          LAMBDA="${{ inputs.environment }}-${{ inputs.region }}-$LAMBDA_NAME"
           OUTPUT=$(aws lambda update-function-code --function-name $LAMBDA --image-uri "$DOCKER_IMAGE" --publish)
           NEW_VERSION=$(echo "$OUTPUT" | jq -r '.Version')
 
