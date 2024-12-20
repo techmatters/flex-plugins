@@ -41,10 +41,10 @@ on:
       lambda_path:
         description: 'Lambda path'
         required: true
-        default: twilio-account-scoped
+        default: account-scoped
         type: choice
         options:
-          - twilio-account-scoped
+          - account-scoped
 
   workflow_call:
     secrets:

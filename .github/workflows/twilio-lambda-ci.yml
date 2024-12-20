@@ -26,7 +26,7 @@ jobs:
     strategy:
       matrix:
         lambda_path:
-          - twilio-account-scoped
+          - account-scoped
 
     outputs:
       docker_image: ${{ steps.generate-output.outputs.docker_image}}

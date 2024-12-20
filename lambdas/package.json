@@ -5,9 +5,7 @@
   "author": "",
   "license": "AGPL",
   "workspaces": [
-    "custom-channel/line/*",
-    "custom-channel/packages/*",
-    "twilio-account-scoped/*"
+    "account-scoped/*"
   ],
   "dependencies": {
     "dotenv": "^16.3.1",

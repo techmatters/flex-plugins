@@ -3,7 +3,6 @@
   "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
-    { "path": "custom-channel/packages/message-transform" },
-    { "path": "custom-channel/line/flex-to-native" }
+    { "path": "account-scoped" },
   ]
 }
