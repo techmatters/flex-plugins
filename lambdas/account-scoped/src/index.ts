@@ -21,6 +21,9 @@ import { ErrorResult, isErr } from './Result';
 const convertHttpErrorResultToALBResult = (
   result: ErrorResult<HttpError>,
 ): ALBResult => ({
+  headers: {
+    'Content-Type': 'application/json',
+  },
   statusCode: result.error.statusCode,
   body: JSON.stringify({
     message: result.message,

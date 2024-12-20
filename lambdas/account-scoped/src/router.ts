@@ -24,7 +24,7 @@ import { ErrorResult, newErr, Result } from './Result';
  * At that point we should decide whether to evolve this router or replace it with a 3rd party one
  */
 
-const ROUTE_PREFIX = '/lambda/twilio/account-scoped';
+const ROUTE_PREFIX = '/lambda/twilio/account-scoped/';
 
 export type HttpError = {
   statusCode: number;
