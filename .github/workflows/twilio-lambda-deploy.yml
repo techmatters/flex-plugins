@@ -63,7 +63,6 @@ env:
 
 jobs:
   deploy_lambdas:
-    needs: build_lambda
     name: Deploy to Amazon ECS
     runs-on: ubuntu-latest
     strategy:

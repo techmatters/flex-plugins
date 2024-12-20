@@ -9,7 +9,7 @@
     "undici": "^5.28.3"
   },
   "scripts": {
-    "docker:build": "docker build -t custom-channel-line-flex-to-native --build-arg lambda_name=flex-to-native --build-arg lambda_dir=custom-channel/line -f ../../../Dockerfile ../../../",
+    "docker:build": "docker build -t account-scoped --build-arg lambda_name=account-scoped --build-arg lambda_dir=. -f ../Dockerfile ../",
     "test:unit": "jest tests/unit",
     "test": "jest"
   }
