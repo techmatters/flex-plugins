@@ -65,7 +65,7 @@ const ROUTES: Record<string, FunctionRoute> = {
   },
 };
 
-export const lookupRoute = (event: HttpRequest): AccountScopedRoute => {
+export const lookupRoute = (event: HttpRequest): AccountScopedRoute | undefined => {
   if (event.path.startsWith(ROUTE_PREFIX)) {
     const path = event.path.substring(ROUTE_PREFIX.length);
     const [accountSid, ...applicationPathParts] = path.split('/');
@@ -77,5 +77,4 @@ export const lookupRoute = (event: HttpRequest): AccountScopedRoute => {
       };
     }
   }
-  return null;
 };
