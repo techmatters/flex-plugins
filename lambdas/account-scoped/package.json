@@ -12,5 +12,9 @@
     "docker:build": "docker build -t account-scoped --build-arg lambda_name=account-scoped --build-arg lambda_dir=. -f ../Dockerfile ../",
     "test:unit": "jest tests/unit",
     "test": "jest"
+  },
+  "dependencies": {
+    "@aws-sdk/client-ssm": "^3.716.0",
+    "twilio": "^5.4.0"
   }
 }

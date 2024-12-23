@@ -116,15 +116,13 @@ export const newOk = <TData>(data: TData): SuccessResult<TData> => ({
   unwrap: () => data,
 });
 
-export type Result<TErrorResult extends ErrorResult<any>, TData> =
-  | TErrorResult
-  | SuccessResult<TData>;
+export type Result<TError, TData> = ErrorResult<TError> | SuccessResult<TData>;
 
 const isResult = (r: unknown): r is Result<any, any> => (r as any)?._tag === 'Result';
 
-export const isErr = <TError extends ErrorResult<any>>(
-  result: Result<ErrorResult<any>, any>,
-): result is TError => isResult(result) && result.status === 'error';
+export const isErr = <TError>(
+  result: Result<TError, any>,
+): result is ErrorResult<TError> => isResult(result) && result.status === 'error';
 
 export const isOk = <TData>(result: Result<any, TData>): result is SuccessResult<TData> =>
   isResult(result) && result.status === 'success';

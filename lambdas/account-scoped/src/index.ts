@@ -15,8 +15,9 @@
  */
 
 import { ALBEvent, ALBResult } from 'aws-lambda';
-import { HttpError, lookupRoute } from './router';
+import { lookupRoute } from './router';
 import { ErrorResult, isErr } from './Result';
+import { HttpError } from './httpTypes';
 
 const convertHttpErrorResultToALBResult = (
   result: ErrorResult<HttpError>,
@@ -41,18 +42,19 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
     method: event.httpMethod,
     path: event.path,
     body: JSON.parse(event.body || 'null'),
+    headers: event.headers ?? {},
   };
   const route = lookupRoute(request);
   if (route) {
     let processedRequest = request;
     for (const step of route.requestPipeline) {
-      const stepResult = await step(processedRequest);
+      const stepResult = await step(processedRequest, route);
       if (isErr(stepResult)) {
         return convertHttpErrorResultToALBResult(stepResult);
       }
       processedRequest = stepResult.unwrap();
     }
-    const result = await route.handler(processedRequest);
+    const result = await route.handler(processedRequest, route.accountSid);
     if (isErr(result)) {
       return convertHttpErrorResultToALBResult(result);
     }

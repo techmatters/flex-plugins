@@ -14,7 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { ErrorResult, newErr, Result } from './Result';
+import { validateWebhookRequest } from './validation/webhook';
+import { AccountScopedRoute, FunctionRoute, HttpRequest } from './httpTypes';
+import { validateRequestMethod } from './validation/method';
+import { isAccountSID } from './twilioTypes';
+import { handleTaskRouterEvent } from './taskrouterEventHandler';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -26,42 +30,12 @@ import { ErrorResult, newErr, Result } from './Result';
 
 const ROUTE_PREFIX = '/lambda/twilio/account-scoped/';
 
-export type HttpError = {
-  statusCode: number;
-  cause?: Error;
-};
-
-type HttpRequest = {
-  method: string;
-  path: string;
-  body: any;
-};
-
-export type Handler = (
-  event: HttpRequest,
-) => Promise<Result<ErrorResult<HttpError>, any>>;
-
-type PipelineStep<Item> = (item: Item) => Promise<Result<ErrorResult<HttpError>, Item>>;
-
-export type FunctionRoute = {
-  requestPipeline: PipelineStep<HttpRequest>[];
-  handler: Handler;
-};
-
-export type AccountScopedRoute = FunctionRoute & {
-  accountSid: string;
-};
+const INITIAL_PIPELINE = [validateRequestMethod];
 
 const ROUTES: Record<string, FunctionRoute> = {
   'webhooks/taskrouterCallback': {
-    requestPipeline: [],
-    handler: async (event: HttpRequest) =>
-      newErr({
-        message: `Not implemented: ${event.method} - ${event.path}`,
-        error: {
-          statusCode: 405,
-        },
-      }),
+    requestPipeline: [validateWebhookRequest],
+    handler: handleTaskRouterEvent,
   },
 };
 
@@ -70,10 +44,11 @@ export const lookupRoute = (event: HttpRequest): AccountScopedRoute | undefined 
     const path = event.path.substring(ROUTE_PREFIX.length);
     const [accountSid, ...applicationPathParts] = path.split('/');
     const functionRoute = ROUTES[applicationPathParts.join('/')];
-    if (functionRoute) {
+    if (functionRoute && isAccountSID(accountSid)) {
       return {
         accountSid,
         ...functionRoute,
+        requestPipeline: [...INITIAL_PIPELINE, ...functionRoute.requestPipeline],
       };
     }
   }
