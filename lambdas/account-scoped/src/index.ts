@@ -35,7 +35,8 @@ const convertHttpErrorResultToALBResult = (
 });
 
 export const handler = async (event: ALBEvent): Promise<ALBResult> => {
-  console.debug('twilio/account-scoped: Triggered by event:', JSON.stringify(event));
+  console.info('twilio/account-scoped: Triggered by path:', event.path);
+  console.debug('twilio/account-scoped event:', JSON.stringify(event));
   const request = {
     method: event.httpMethod,
     path: event.path,
