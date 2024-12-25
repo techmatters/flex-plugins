@@ -53,6 +53,14 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-conv.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+      },
+      instagram : {
+        messaging_mode       = "conversations"
+        channel_type         = "custom"
+        contact_identity     = "instagram"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
       }
     }
 
