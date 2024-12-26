@@ -279,6 +279,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 const translations: Translations = {
   'en-US': {
     WelcomeMessage: 'CIRCLE BID Request',
+    EntryPointTagline: 'Submit a request',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
       "Thank you very much for this information. We'll transfer you now. Please hold for an agent.",
