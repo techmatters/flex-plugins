@@ -1,6 +1,6 @@
 {
     "attributes": {
-        "definitionVersion": "demo-v1",
+        "definitionVersion": "as-v1",
         "feature_flags": {
             "enable_fullstory_monitoring": true,
             "enable_client_profiles": true,
