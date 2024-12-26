@@ -9,9 +9,12 @@ locals {
 
   local_config = {
     custom_task_routing_filter_expression = "channelType IN ['web','voice'] OR isContactlessTask == true"
-    flow_vars                             = {}
+    flow_vars = {
+      widget_from          = "LA CIRCLE"
+      chat_blocked_message = "Sorry, you're not able to contact LA CIRCLE from this device or account"
+    }
 
-     #Channels
+    #Channels
     channels = {
       webchat : {
         channel_type         = "web"
