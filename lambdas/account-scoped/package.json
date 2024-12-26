@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.108",
+    "@types/lodash": "^4.17.13",
     "@types/node": "^18.16.2",
     "jest-each": "^29.5.0",
     "ts-node": "^10.9.1",
@@ -15,6 +16,8 @@
   },
   "dependencies": {
     "@aws-sdk/client-ssm": "^3.716.0",
+    "@twilio-labs/serverless-runtime-types": "^4.0.1",
+    "date-fns": "^4.1.0",
     "twilio": "^5.4.0"
   }
 }

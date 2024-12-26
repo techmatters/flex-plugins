@@ -14,18 +14,24 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AccountScopedHandler } from './httpTypes';
-import { AccountSID } from './twilioTypes';
-import { newOk } from './Result';
+import { AccountScopedHandler } from '../httpTypes';
+import { AccountSID } from '../twilioTypes';
+import { newOk } from '../Result';
+import { EventType } from './eventTypes';
+import twilio, { Twilio } from 'twilio';
+import { getSsmParameter } from '../ssmCache';
 
-const eventHandlers: Record<
-  string,
-  ((event: any, accountSid: AccountSID) => Promise<void>)[]
-> = {};
+export type TaskRouterEventHandler = (
+  event: any,
+  accountSid: AccountSID,
+  twilioClient: Twilio,
+) => Promise<void>;
+
+const eventHandlers: Record<string, TaskRouterEventHandler[]> = {};
 
 export const registerTaskRouterEventHandler = (
-  eventTypes: string[],
-  handler: (event: any, accountSid: AccountSID) => Promise<void>,
+  eventTypes: EventType[],
+  handler: TaskRouterEventHandler,
 ) => {
   for (const eventType of eventTypes) {
     if (!eventHandlers[eventType]) {
@@ -43,7 +49,15 @@ export const handleTaskRouterEvent: AccountScopedHandler = async (
   console.info(
     `Handling task router event: ${body.EventType} for account: ${accountSid} - executing ${handlers.length} registered handlers.`,
   );
-  await Promise.all(handlers.map(handler => handler(body, accountSid)));
+  await Promise.all(
+    handlers.map(async handler => {
+      const authToken = await getSsmParameter(
+        `/${process.env.NODE_ENV}/twilio/${accountSid}/auth_token`,
+      );
+      const client = await twilio(accountSid, authToken);
+      return handler(body, accountSid, client);
+    }),
+  );
   console.debug(
     `Successfully executed ${handlers.length} registered handlers task router event: ${body.EventType} for account: ${accountSid}.`,
   );
