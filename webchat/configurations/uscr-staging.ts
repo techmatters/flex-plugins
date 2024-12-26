@@ -41,7 +41,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       type: 'checkbox',
       name: 'iAmTrainedBID',
-      label:  `I am a trained BID partner`,
+      label:  `I am a trained BID partner or trained City staff`,
       required: {
         value: true,
         message: 'Check the box if you are a trained BID partner.',
@@ -135,57 +135,71 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       name: 'operatorId',
       label: 'Operator ID #',
       placeholder: 'Operator ID #',
-      required: true,
+      required: false,
     },
     {
       type: 'input-text',
       name: 'incidentNumber',
       label: 'Incident #',
       placeholder: 'Incident #',
-      required: true,
+      required: false,
     },
     {
       type: 'input-text',
       name: 'specificLocation',
       label: 'What is the specific location of the individual or encampment?',
-      placeholder: 'What is the specific location of the individual or encampment?',
+      placeholder: 'Specific location',
       required: true,
     },
     {
       type: 'input-text',
       name: 'description',
       label: 'Please provide a description of the encampment or individual(s) and any particular issues/needs and any relevant history or upcoming operations that will impact the location',
-      placeholder: 'Please provide a description of the encampment or individual(s) and any particular issues/needs and any relevant history or upcoming operations that will impact the location',
+      placeholder: 'Please provide a description',
       required: true,
     },
     {
       type: 'input-text',
       name: 'otherOrganizations',
       label: 'Are other outreach organizations currently working with the individual(s)? If so, please provide the organization and a POC',
-      placeholder: 'Are other outreach organizations currently working with the individual(s)? If so, please provide the organization and a POC',
+      placeholder: 'Provide the organizations and a POC',
       required: false,
     },
     {
       type: 'input-text',
       name: 'additionalDetails',
       label: 'Please provide additional details regarding your request',
-      placeholder: 'Please provide additional details regarding your request',
+      placeholder: 'Please provide additional details',
       required: false,
     },
     {
       type: 'input-text',
       name: 'desiredOutcome',
       label: 'What is the desired outcome?',
-      placeholder: 'What is the desired outcome?',
+      placeholder: 'Desired outcome',
       required: true,
     },
     {
-      type: 'input-text',
+      type: 'select',
       name: 'priority',
       label: 'Priority',
-      placeholder: 'Priority',
+      defaultValue: '',
       required: false,
-    },
+      options: [
+        {
+          value: "",
+          label: ""
+        },
+        {
+          value: "High",
+          label: "High"
+        },
+        {
+          value: "Normal",
+          label: "Normal"
+        }
+      ],
+    },  
   ],
 };
 
