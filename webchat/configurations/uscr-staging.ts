@@ -41,15 +41,19 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       type: 'checkbox',
       name: 'iAmTrainedBID',
-      label:  `This form is only for use by trained Business Improvement District Partners for eligible non-urgent incidents involving unhoused individuals in areas serviced by the CIRCLE program. 
-      Incidents that are violent, criminal, or medically urgent are not eligible for a CIRCLE response. Eligible incidents are those related to unhoused individuals and involve well-being checks, loitering, indecent exposure (excluding lewd behavior), noise disturbances, and needle/hazardous waste disposal. See your organization's MOU for more details.
-      Please verify that the location is within the service area by checking the  <a href="https://lahub.maps.arcgis.com/apps/mapviewer/index.html?webmap=0675f8e77b7149e99f954510d3f6dada">CIRCLE map</a>.
-      Please provide a detailed description of the person(s) and/or encampment; any specific location at the address (alley, rear, front, north side of the property, etc.); indicate any specific services that the person experiencing homelessness may need.
-      Members of the public can request CIRCLE by calling 877-ASK-LAPD.
-      Check the box if you are a trained BID partner.`,
+      label:  `I am a trained BID partner`,
       required: {
         value: true,
         message: 'Check the box if you are a trained BID partner.',
+      },
+    },
+    {
+      type: 'checkbox',
+      name: 'locationWithinServiceArea',
+      label:  `Incident location is within the service area. Check <a href="https://lahub.maps.arcgis.com/apps/mapviewer/index.html?webmap=0675f8e77b7149e99f954510d3f6dada">CIRCLE map</a> to confirm.`,
+      required: {
+        value: true,
+        message: 'Confirm that the incident location is within the service area.',
       },
     },
     {
