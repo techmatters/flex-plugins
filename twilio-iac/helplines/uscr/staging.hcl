@@ -13,6 +13,13 @@ locals {
 
      #Channels
     channels = {
+      webchat : {
+        channel_type         = "web"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
       voice : {
         channel_type     = "voice"
         contact_identity = ""
