@@ -19,13 +19,14 @@ locals {
       send_message_janitor_function_sid     = "ZH19f41d74c3c64c23b5d624ab84d1ddde"
       widget_from                           = "Kellimni"
       chat_blocked_message                  = "Sorry, you're not able to contact Kellimni from this device or account"
+      ip_location_finder_url                = "https://hrm-staging.tl.techmatters.org/lambda/ipLocationFinder"
     }
 
     channels = {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-web-location-block.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -50,6 +51,14 @@ locals {
         channel_type         = "custom"
         contact_identity     = "telegram"
         templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-conv.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      instagram : {
+        messaging_mode       = "conversations"
+        channel_type         = "custom"
+        contact_identity     = "instagram"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }

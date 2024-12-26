@@ -1,0 +1,10 @@
+{
+    "attributes": {
+        "contacts_waiting_channels": [
+            "voice"
+        ],
+        "definitionVersion": "uscr-v1",
+        "helplineLanguage": "en-USCR",
+        "permissionConfig": "uscr"
+    }
+}

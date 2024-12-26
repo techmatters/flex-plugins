@@ -27,7 +27,7 @@ import { standaloneTaskSid } from '../../../types/types';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../../testContacts';
 import {
   CREATE_CONTACT_ACTION_FULFILLED,
-  LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+  LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
 } from '../../../states/contacts/types';
 import {
   AppRoutes,
@@ -580,7 +580,7 @@ describe('test reducer (specific actions)', () => {
     expect(result).toStrictEqual(expected);
   });
 
-  test('should handle LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED and recreate the state as loaded', async () => {
+  test('should handle LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED and recreate the state as loaded', async () => {
     const expected = {
       tasks: {
         'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
@@ -590,7 +590,7 @@ describe('test reducer (specific actions)', () => {
     };
 
     const result = reduce(initialState, {
-      type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+      type: LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
       payload: {
         contact: { ...VALID_EMPTY_CONTACT, taskId: task.taskSid },
         metadata: VALID_EMPTY_METADATA,
@@ -599,7 +599,7 @@ describe('test reducer (specific actions)', () => {
     expect(result).toStrictEqual(expected);
   });
 
-  test('should handle LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED and do nothing', async () => {
+  test('should handle LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED and do nothing', async () => {
     const expected = {
       tasks: {
         'WT-task1': [{ route: 'case', subroute: 'home', caseId: '' }],
@@ -614,7 +614,7 @@ describe('test reducer (specific actions)', () => {
     );
 
     const result2 = reduce(result1, {
-      type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+      type: LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
       payload: {
         contact: { ...VALID_EMPTY_CONTACT, taskId: task.taskSid },
         metadata: VALID_EMPTY_METADATA,
@@ -623,7 +623,7 @@ describe('test reducer (specific actions)', () => {
     expect(result2).toStrictEqual(expected);
   });
 
-  test('should handle LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED and change isAddingOfflineContact to true', async () => {
+  test('should handle LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED and change isAddingOfflineContact to true', async () => {
     const expected = {
       tasks: {
         'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
@@ -634,7 +634,7 @@ describe('test reducer (specific actions)', () => {
     };
 
     const result = reduce(stateWithTask, {
-      type: LOAD_CONTACT_FROM_HRM_BY_TASK_ID_ACTION_FULFILLED,
+      type: LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED,
       payload: {
         contact: {
           ...VALID_EMPTY_CONTACT,
