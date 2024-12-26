@@ -8,11 +8,21 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-    custom_task_routing_filter_expression = ""
-    flow_vars                             = {}
+    custom_task_routing_filter_expression = "channelType IN ['web','voice'] OR isContactlessTask == true"
+    flow_vars = {
+      widget_from          = "LA CIRCLE"
+      chat_blocked_message = "Sorry, you're not able to contact LA CIRCLE from this device or account"
+    }
 
-     #Channels
+    #Channels
     channels = {
+      webchat : {
+        channel_type         = "web"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
       voice : {
         channel_type     = "voice"
         contact_identity = ""
