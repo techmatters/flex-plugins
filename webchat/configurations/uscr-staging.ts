@@ -97,6 +97,79 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: 'select',
+      name: 'officeDepartment',
+      label: 'Your Office/Department',
+      defaultValue: '',
+      required: false,
+      options: [
+        {
+          "label": "N/A",
+          "value": ""
+        },
+        {
+          "label": "CAO",
+          "value": "cao_office_dept"
+        },
+        {
+          "label": "LAPD",
+          "value": "lapd_office_dept"
+        },
+        {
+          "label": "CD1",
+          "value": "cd1_office_dept"
+        },
+        {
+          "label": "CD4",
+          "value": "cd4_office_dept"
+        },
+        {
+          "label": "CD5",
+          "value": "cd5_office_dept"
+        },
+        {
+          "label": "CD6",
+          "value": "cd6_office_dept"
+        },
+        {
+          "label": "CD7",
+          "value": "cd7_office_dept"
+        },
+        {
+          "label": "CD8",
+          "value": "cd8_office_dept"
+        },
+        {
+          "label": "CD9",
+          "value": "cd9_office_dept"
+        },
+        {
+          "label": "CD10",
+          "value": "cd10_office_dept"
+        },
+        {
+          "label": "CD11",
+          "value": "cd11_office_dept"
+        },
+        {
+          "label": "CD13",
+          "value": "cd13_office_dept"
+        },
+        {
+          "label": "CD14",
+          "value": "cd14_office_dept"
+        },
+        {
+          "label": "CD15",
+          "value": "cd15_office_dept"
+        },
+        {
+          "label": "Mayor's Office",
+          "value": "mayor_s_office_dept"
+        }
+      ],
+    },
+    {
+      type: 'select',
       name: 'bid',
       label: 'Business Improvement District',
       defaultValue: '',
