@@ -1,13 +1,13 @@
 [
     {
         "name": "child",
-        "label": "Person calling about self",
+        "label": "Call Transferred from 911",
         "type": "button",
         "category": "data"
     },
     {
         "name": "caller",
-        "label": "Someone calling about a person",
+        "label": "Circle BID/City Request",
         "type": "button",
         "category": "data"
     },
