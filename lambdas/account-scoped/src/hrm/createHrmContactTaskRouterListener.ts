@@ -118,7 +118,7 @@ export const handleEvent = async (
     getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/static_key`),
     getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/workspace_sid`),
   ]);
-  const contactUrl = `${process.env.INTERNAL_HRM_URL}/${hrmApiVersion}/accounts/${accountSid}/contacts`;
+  const contactUrl = `${process.env.INTERNAL_HRM_URL}/admin/${hrmApiVersion}/accounts/${accountSid}/contacts`;
 
   console.debug('Creating HRM contact for task', taskSid, contactUrl);
 
