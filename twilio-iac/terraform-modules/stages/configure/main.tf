@@ -80,14 +80,14 @@ module "datadog" {
 }
 
 resource "aws_ssm_parameter" "permission_config" {
-  name        = "/${lower(var.environment)}/aws/${nonsensitive(local.secrets.twilio_account_sid)}/permission_config"
+  name        = "/${lower(var.environment)}/config/${nonsensitive(local.secrets.twilio_account_sid)}/permission_config"
   type        = "SecureString"
   value       = var.permission_config
   description = "Twilio account - permission config to use for the given account"
 
   tags = {
     Environment = lower(var.environment)
-    Name        = "/${lower(var.environment)}/aws/${nonsensitive(local.secrets.twilio_account_sid)}/region"
+    Name        = "/${lower(var.environment)}/config/${nonsensitive(local.secrets.twilio_account_sid)}/permission_config"
     Terraform   = true
   }
 }
