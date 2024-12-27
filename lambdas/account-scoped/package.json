@@ -18,6 +18,7 @@
     "@aws-sdk/client-ssm": "^3.716.0",
     "@twilio-labs/serverless-runtime-types": "^4.0.1",
     "date-fns": "^4.1.0",
+    "lodash": "^4.17.21",
     "twilio": "^5.4.0"
   }
 }
