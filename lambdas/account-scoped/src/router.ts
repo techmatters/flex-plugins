@@ -18,7 +18,7 @@ import { validateWebhookRequest } from './validation/twilioWebhook';
 import { AccountScopedRoute, FunctionRoute, HttpRequest } from './httpTypes';
 import { validateRequestMethod } from './validation/method';
 import { isAccountSID } from './twilioTypes';
-import { handleTaskRouterEvent } from './taskrouter/taskrouterEventHandler';
+import { handleTaskRouterEvent } from './taskrouter';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions

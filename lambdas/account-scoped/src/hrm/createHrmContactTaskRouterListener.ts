@@ -22,7 +22,7 @@ import {
 } from './populateHrmContactFormFromTask';
 import { registerTaskRouterEventHandler } from '../taskrouter/taskrouterEventHandler';
 import { EventType, RESERVATION_ACCEPTED } from '../taskrouter/eventTypes';
-import { EventFields } from '../taskrouter/eventFields';
+import type { EventFields } from '../taskrouter';
 import twilio from 'twilio';
 import { AccountSID } from '../twilioTypes';
 import { getSsmParameter } from '../ssmCache';
