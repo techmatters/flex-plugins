@@ -7,7 +7,6 @@
     "ChildInformationTab": [],
     "CallerInformationTab": [
       "requestType",
-      "",
       "contactIdentifier",
       "friendlyName",
       "officeDepartment",
