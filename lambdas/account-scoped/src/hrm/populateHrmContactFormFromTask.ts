@@ -20,7 +20,7 @@ import { startOfDay, format } from 'date-fns';
 type MapperFunction = (options: string[]) => (value: string) => string;
 
 // When we move this into the flex repo we can depend on hrm-form-definitions for these types & enums
-enum FormInputType {
+export enum FormInputType {
   Input = 'input',
   SearchInput = 'search-input',
   NumericInput = 'numeric-input',
@@ -40,7 +40,7 @@ enum FormInputType {
   CustomContactComponent = 'custom-contact-component',
 }
 
-type FormItemDefinition = {
+export type FormItemDefinition = {
   name: string;
   unknownOption?: string;
   options?: { value: string }[];
@@ -59,7 +59,8 @@ type FormItemDefinition = {
     }
 );
 
-type PrepopulateKeys = {
+// Exported for testing purposes
+export type PrepopulateKeys = {
   preEngagement: {
     ChildInformationTab: string[];
     CallerInformationTab: string[];
