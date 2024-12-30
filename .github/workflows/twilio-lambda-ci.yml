@@ -39,7 +39,7 @@ jobs:
 
       - name: Run Unit Tests
         run: |
-          npm test:unit
+          npm run test:unit
         working-directory: ./lambdas
   build_lambda:
     name: Build Lambda Image
