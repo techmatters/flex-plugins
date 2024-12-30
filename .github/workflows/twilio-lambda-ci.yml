@@ -40,7 +40,7 @@ jobs:
       - name: Run Unit Tests
         run: |
           npm test:unit
-        working-directory: ./lambda
+        working-directory: ./lambdas
   build_lambda:
     name: Build Lambda Image
     runs-on: ubuntu-latest
