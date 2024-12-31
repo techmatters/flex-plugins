@@ -12,8 +12,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
-# Publish a Twilio Flex-plugins with Github Actions
-name: 'Run testRigor Smoke Tests'
+name: Run testRigor Smoke Tests
 on:
   workflow_dispatch:
     inputs:
