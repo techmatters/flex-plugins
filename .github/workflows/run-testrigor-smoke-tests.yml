@@ -18,13 +18,13 @@ name: testRigor Smoke Tests
 on:
   workflow_dispatch:
   inputs:
-      environment_code:
-        description: Aselo environment to test
-        required: true
-        type: choice
-        options:
-        - staging
-        default: staging
+    environment_code:
+      description: Aselo environment to test
+      required: true
+      type: choice
+      options:
+      - staging
+      default: staging
 
 jobs:
   deploy:
