@@ -1,0 +1,98 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+name: Run testRigor Smoke Tests
+on:
+  workflow_dispatch:
+    inputs:
+      environment_code:
+        description: Aselo environment to test
+        required: true
+        type: choice
+        options:
+        - staging
+        default: staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set Helpline Environment
+        run: echo "ENVIRONMENT_NAME=${{inputs.environment_code}}" >> $GITHUB_ENV
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Set Test Rigor Auth Token
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/test_rigor/auth_token"
+          env_variable_name: "TEST_RIGOR_AUTH_TOKEN"
+      - name: Set Test Rigor Suite ID
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/test_rigor/smoke_tests/test_suite_id"
+          env_variable_name: "TEST_RIGOR_SUITE_ID"
+      - name: Run Test Rigor Smoke Tests
+        shell: bash
+        run: |
+          curl -X POST \
+          -H 'Content-type: application/json' \
+          -H 'auth-token: ${{env.TEST_RIGOR_AUTH_TOKEN}}' \
+          --data '{"forceCancelPreviousTesting":true,"storedValues":{"storedValueName1":"Value"}}' \
+          https://api.testrigor.com/api/v1/apps/${{env.TEST_RIGOR_SUITE_ID}}/retest
+
+          sleep 10
+
+          while true
+          do
+            echo " "
+            echo "==================================="
+            echo " Checking TestRigor retest"
+            echo "==================================="
+            response=$(curl -i -o - -s -X GET 'https://api.testrigor.com/api/v1/apps/${{env.TEST_RIGOR_SUITE_ID}}/status' -H 'auth-token: ${{env.TEST_RIGOR_AUTH_TOKEN}}' -H 'Accept: application/json')
+            code=$(echo "$response" | grep HTTP |  awk '{print $2}')
+            body=$(echo "$response" | sed -n '/{/,/}/p')
+            echo "Status code: " $code
+            echo "Response: " $body
+            case $code in
+              4*|5*)
+                # 400 or 500 errors
+                echo "Error calling API"
+                exit 1
+                ;;
+              200)
+                # 200: successfully finished
+                echo "Test finished successfully"
+                exit 0
+                ;;
+              227|228)
+                # 227: New - 228: In progress
+                echo "Test is not finished yet"
+                ;;
+              230)
+                # 230: Failed
+                echo "Test finished but failed"
+                exit 1
+                ;;
+              *)
+                echo "Unknown status"
+                exit 1
+              esac
+            sleep 10
+          done
+
