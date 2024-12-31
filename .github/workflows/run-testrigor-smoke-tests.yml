@@ -25,11 +25,11 @@ on:
         default: staging
 
 jobs:
-  deploy:
+  run-smoke-tests-suite:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set Helpline Environment
+     - name: Set Helpline Environment
         run: echo "ENVIRONMENT_NAME=${{inputs.environment_code}}" >> $GITHUB_ENV
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -37,16 +37,17 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - name: Set Test Rigor Auth Token
-        uses: "marvinpinto/action-inject-ssm-secrets@latest"
-        with:
-          ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/test_rigor/auth_token"
-          env_variable_name: "TEST_RIGOR_AUTH_TOKEN"
       - name: Set Test Rigor Suite ID
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
           ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/test_rigor/smoke_tests/test_suite_id"
           env_variable_name: "TEST_RIGOR_SUITE_ID"
+      - name: Set Test Rigor Auth Token
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/test_rigor/auth_token"
+          env_variable_name: "TEST_RIGOR_AUTH_TOKEN"
+      
       - name: Run Test Rigor Smoke Tests
         shell: bash
         run: |
@@ -96,3 +97,27 @@ jobs:
             sleep 10
           done
 
+  send-slack-message:
+    runs-on: ubuntu-latest
+    steps:
+     
+      - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
+          env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
+      - name: Set ASELO_DEPLOYS_CHANNEL_ID
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
+          env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
+   # Send Slack notifying success
+      - name: Slack Aselo channel
+        id: slack
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          method: chat.postMessage
+          token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+            text: '`[testRigor]` Smoke tests for `${{inputs.environment}}` requested by `${{ github.triggering_actor }}` completed using workflow '${{ github.workflow }}' with SHA ${{ github.sha }} :rocket:.'
