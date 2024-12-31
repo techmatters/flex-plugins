@@ -106,13 +106,11 @@ jobs:
               esac
             sleep 10
           done
-   # Send Slack notifying success
-      - name: Slack Aselo channel
+   - name: Slack Aselo channel
         id: slack
-        uses: slackapi/slack-github-action@v2.0.0
+        uses: slackapi/slack-github-action@v1.14.0
         with:
-          method: chat.postMessage
-          token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
-          payload: |
-            channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-            text: '`[testRigor]` Smoke tests for `${{inputs.environment_code}}` requested by `${{ github.triggering_actor }}` completed using workflow '${{ github.workflow }}' with SHA ${{ github.sha }} :rocket:.'
+          channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+          slack-message: "`[testRigor]` Deployment to `${{ inputs.environment_code }}` of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed using workflow `${{ github.workflow }}` with SHA ${{ github.sha }} :rocket:."
+        env:
+          SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
