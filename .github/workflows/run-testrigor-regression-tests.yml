@@ -36,7 +36,7 @@ on:
         default: all
 
 jobs:
-  run-smoke-tests-suite:
+  run-regression-tests-suite:
     runs-on: ubuntu-latest
 
     steps:
@@ -69,7 +69,7 @@ jobs:
           ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
           env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
             
-      - name: Run Test Rigor Smoke Tests
+      - name: Run Test Rigor Regression Tests
         shell: bash
         run: |
           curl -X POST \
