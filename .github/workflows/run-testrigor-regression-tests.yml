@@ -29,10 +29,13 @@ on:
         type: choice
         options:
         - all
-        - online contact - webchat
-        - offline contact
-        - general search
-        - case list
+        - online-contact-webchat
+        - offline-contact
+        - yellow-banner
+        - general-search
+        - case-list
+        - teams
+        - client-profiles
         default: all
 
 jobs:
@@ -86,7 +89,7 @@ jobs:
             echo "==================================="
             echo " Checking TestRigor retest"
             echo "==================================="
-            response=$(curl -i -o - -s -X GET 'https://api.testrigor.com/api/v1/apps/${{env.TEST_RIGOR_SUITE_ID}}/status' -H 'auth-token: ${{env.TEST_RIGOR_AUTH_TOKEN}}' -H 'Accept: application/json')
+            response=$(curl -i -o - -s -X GET 'https://api.testrigor.com/api/v1/apps/${{env.TEST_RIGOR_SUITE_ID}}/status?labels=${{inputs.section}}' -H 'auth-token: ${{env.TEST_RIGOR_AUTH_TOKEN}}' -H 'Accept: application/json')
             code=$(echo "$response" | grep HTTP |  awk '{print $2}')
             body=$(echo "$response" | sed -n '/{/,/}/p')
             echo "Status code: " $code
