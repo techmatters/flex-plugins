@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
-name: Run testRigor Smoke Tests
+name: Run testRigor Regression Tests
 on:
   workflow_dispatch:
     inputs:
@@ -23,6 +23,17 @@ on:
         options:
         - staging
         default: staging
+      section:
+        description: Section or feature to test
+        required: true
+        type: choice
+        options:
+        - all
+        - online contact - webchat
+        - offline contact
+        - general search
+        - case list
+        default: all
 
 jobs:
   run-smoke-tests-suite:
@@ -40,12 +51,12 @@ jobs:
       - name: Set Test Rigor Suite ID
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
-          ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/test_rigor/smoke_tests/test_suite_id"
+          ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/test_rigor/regression_tests/test_suite_id"
           env_variable_name: "TEST_RIGOR_SUITE_ID"
       - name: Set Test Rigor Auth Token
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
-          ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/test_rigor/smoke_tests/auth_token"
+          ssm_parameter: "/${{env.ENVIRONMENT_NAME}}/test_rigor/regression_tests/auth_token"
           env_variable_name: "TEST_RIGOR_AUTH_TOKEN"
       - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
@@ -64,7 +75,7 @@ jobs:
           curl -X POST \
           -H 'Content-type: application/json' \
           -H 'auth-token: ${{env.TEST_RIGOR_AUTH_TOKEN}}' \
-          --data '{"forceCancelPreviousTesting":true,"storedValues":{"storedValueName1":"Value"}}' \
+          --data '{"forceCancelPreviousTesting":true,"labels": [ "${{inputs.section}}"]}' \
           https://api.testrigor.com/api/v1/apps/${{env.TEST_RIGOR_SUITE_ID}}/retest
 
           sleep 10
@@ -111,6 +122,6 @@ jobs:
         uses: slackapi/slack-github-action@v1.14.0
         with:
           channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-          slack-message: "`[testRigor]` Smoke Tests for environment `${{ inputs.environment_code }}` of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed using workflow `${{ github.workflow }}` with SHA ${{ github.sha }} :rocket:."
+          slack-message: "`[testRigor]` Regression Tests (${{ inputs.section }}) for environment `${{ inputs.environment_code }}` of ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed using workflow `${{ github.workflow }}` with SHA ${{ github.sha }} :rocket:."
         env:
           SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
