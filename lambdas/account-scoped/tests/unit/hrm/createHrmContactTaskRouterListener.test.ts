@@ -21,13 +21,34 @@ import {
   ConfigurationContext,
   ConfigurationInstance,
 } from 'twilio/lib/rest/flexApi/v1/configuration';
+/**
+ * Copyright (C) 2021-2023 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
 import { WorkspaceContext } from 'twilio/lib/rest/taskrouter/v1/workspace';
-import { AccountSID, TaskSID, WorkerSID } from '../../../src/twilioTypes';
 import { BLANK_CONTACT } from './testContacts';
 import { EventFields } from '../../../src/taskrouter';
 import { getSsmParameter } from '../../../src/ssmCache';
 import { handleEvent } from '../../../src/hrm/createHrmContactTaskRouterListener';
 import { populateHrmContactFormFromTask } from '../../../src/hrm/populateHrmContactFormFromTask';
+import {
+  TEST_ACCOUNT_SID,
+  TEST_CONTACT_ID,
+  TEST_TASK_SID,
+  TEST_WORKER_SID,
+} from '../testTwilioValues';
 
 const mockFetch: jest.MockedFunction<typeof fetch> = jest.fn();
 global.fetch = mockFetch;
@@ -74,11 +95,6 @@ const DEFAULT_CONFIGURATION: AseloServiceConfigurationAttributes = {
     enable_backend_hrm_contact_creation: true,
   },
 };
-
-const TEST_ACCOUT_SID: AccountSID = 'ACut';
-const TEST_TASK_SID: TaskSID = 'WTut';
-const TEST_WORKER_SID: WorkerSID = 'WKut';
-const TEST_CONTACT_ID = '1337';
 
 const setConfigurationAttributes = (
   attributes: RecursivePartial<AseloServiceConfigurationAttributes>,
@@ -189,7 +205,7 @@ describe('handleEvent', () => {
   test('offline contact task - does nothing', async () => {
     const eventFields = newEventFields({ isContactlessTask: true });
     setTaskReturnedByFetch(eventFields);
-    await handleEvent(eventFields, TEST_ACCOUT_SID, twilioClient);
+    await handleEvent(eventFields, TEST_ACCOUNT_SID, twilioClient);
     expect(mockFetch).not.toHaveBeenCalled();
     expect(mockUpdateTask).not.toHaveBeenCalled();
   });
@@ -197,7 +213,7 @@ describe('handleEvent', () => {
   test('transfer task - does nothing', async () => {
     const eventFields = newEventFields({ transferTargetType: 'queue' });
     setTaskReturnedByFetch(eventFields);
-    await handleEvent(eventFields, TEST_ACCOUT_SID, twilioClient);
+    await handleEvent(eventFields, TEST_ACCOUNT_SID, twilioClient);
     expect(mockFetch).not.toHaveBeenCalled();
     expect(mockUpdateTask).not.toHaveBeenCalled();
   });
@@ -210,7 +226,7 @@ describe('handleEvent', () => {
     });
     const eventFields = newEventFields({});
     setTaskReturnedByFetch(eventFields);
-    await handleEvent(eventFields, TEST_ACCOUT_SID, twilioClient);
+    await handleEvent(eventFields, TEST_ACCOUNT_SID, twilioClient);
     expect(mockFetch).not.toHaveBeenCalled();
     expect(mockUpdateTask).not.toHaveBeenCalled();
   });
@@ -218,7 +234,7 @@ describe('handleEvent', () => {
   test('enable_backend_hrm_contact_creation set, not a transfer or offline contact - creates contact and updates task attributes with contact ID', async () => {
     const eventFields = newEventFields({});
     setTaskReturnedByFetch(eventFields);
-    await handleEvent(eventFields, TEST_ACCOUT_SID, twilioClient);
+    await handleEvent(eventFields, TEST_ACCOUNT_SID, twilioClient);
     expect(mockFetch).toHaveBeenCalled();
     expect(mockUpdateTask).toHaveBeenCalled();
   });
