@@ -81,7 +81,7 @@ type ChannelTypes =
   | 'line'
   | 'modica';
 
-const callTypes = {
+export const callTypes = {
   child: 'Child calling about self',
   caller: 'Someone calling about a child',
 };

@@ -25,7 +25,7 @@ import {
 import { BLANK_CONTACT } from './testContacts';
 import { RecursivePartial } from '../RecursivePartial';
 import each from 'jest-each';
-import { callTypes } from '../../../../../hrm-form-definitions';
+import { callTypes } from '../../../src/hrm/populateHrmContactFormFromTask';
 
 type FormDefinitionSet = {
   childInformation: FormItemDefinition[];
