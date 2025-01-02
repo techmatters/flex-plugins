@@ -44,7 +44,7 @@ jobs:
 
       - name: Install lambda dependencies
         run: |
-          npm run test:unit
+          npm ci
         working-directory: ./lambdas
 
       - name: Run Unit Tests
