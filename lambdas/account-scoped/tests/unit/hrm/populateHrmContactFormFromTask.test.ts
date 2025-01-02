@@ -20,6 +20,7 @@ import {
   FormInputType,
   PrepopulateKeys,
   HrmContact,
+  clearDefinitionCache,
 } from '../../../src/hrm/populateHrmContactFormFromTask';
 import { BLANK_CONTACT } from './testContacts';
 import { RecursivePartial } from '../RecursivePartial';
@@ -40,51 +41,54 @@ type FormDefinitionSet = {
   };
 };
 
+const BASE_PERSON_FORM_DEFINITION: FormItemDefinition[] = [
+  {
+    name: 'firstName',
+    type: FormInputType.Input,
+  },
+  {
+    name: 'age',
+    type: FormInputType.Select,
+    options: [
+      {
+        value: '',
+      },
+      {
+        value: '11',
+      },
+      {
+        value: '>12',
+      },
+      {
+        value: 'Unknown',
+      },
+    ],
+  },
+  {
+    name: 'gender',
+    defaultOption: 'Unknown',
+    type: FormInputType.Select,
+    options: [
+      {
+        value: 'Agender',
+      },
+      {
+        value: 'Non-Binary/Genderqueer/Gender fluid',
+      },
+      {
+        value: 'Unknown',
+      },
+    ],
+  },
+  {
+    name: 'otherGender',
+    type: FormInputType.Input,
+  },
+];
+
 const BASE_FORM_DEFINITION: FormDefinitionSet = {
-  childInformation: [
-    {
-      name: 'firstName',
-      type: FormInputType.Input,
-    },
-    {
-      name: 'age',
-      type: FormInputType.Select,
-      options: [
-        {
-          value: '',
-        },
-        {
-          value: '11',
-        },
-        {
-          value: '>12',
-        },
-        {
-          value: 'Unknown',
-        },
-      ],
-    },
-    {
-      name: 'gender',
-      type: FormInputType.ListboxMultiselect,
-      options: [
-        {
-          value: 'Agender',
-        },
-        {
-          value: 'Non-Binary/Genderqueer/Gender fluid',
-        },
-        {
-          value: 'Unknown',
-        },
-      ],
-    },
-    {
-      name: 'otherGender',
-      type: FormInputType.Input,
-    },
-  ],
-  callerInformation: [],
+  childInformation: BASE_PERSON_FORM_DEFINITION,
+  callerInformation: BASE_PERSON_FORM_DEFINITION,
   caseInformation: [],
   prepopulateKeys: {
     preEngagement: {
@@ -178,7 +182,13 @@ const mockFormDefinitions = (definitionSet: FormDefinitionPatch) => {
 };
 
 global.fetch = mockFetch;
+
 describe('populateHrmContactFormFromTask', () => {
+  beforeEach(() => {
+    mockFetch.mockClear();
+    clearDefinitionCache();
+  });
+
   type TestParams = {
     description: string;
     preEngagementData?: Record<string, string>;
@@ -193,6 +203,30 @@ describe('populateHrmContactFormFromTask', () => {
   };
 
   const testCases: TestParams[] = [
+    {
+      description:
+        'nothing set - sets callType as child and childInformation includes preEngagement data specified in prepopulateKeys',
+      formDefinitionSet: {
+        prepopulateKeys: {
+          preEngagement: {
+            ChildInformationTab: ['age', 'gender'],
+          },
+        },
+      },
+      expectedChildInformation: {
+        age: '',
+        gender: 'Unknown',
+        firstName: '', // firstName is always added whether in the form def or not
+        otherGender: '',
+      },
+      expectedCallerInformation: {
+        age: '',
+        gender: 'Unknown',
+        firstName: '', // firstName is always added whether in the form def or not
+        otherGender: '',
+      },
+      expectedCallType: '',
+    },
     {
       description:
         'preEngagement only, child caller - sets callType as child and childInformation includes preEngagement data specified in prepopulateKeys',
@@ -215,11 +249,17 @@ describe('populateHrmContactFormFromTask', () => {
         firstName: '', // firstName is always added whether in the form def or not
         otherGender: '',
       },
+      expectedCallerInformation: {
+        age: '',
+        gender: 'Unknown',
+        firstName: '', // firstName is always added whether in the form def or not
+        otherGender: '',
+      },
       expectedCallType: callTypes.child,
     },
     {
       description:
-        'chatbot memory only, child calling about self - sets callType as child and childInformation includes preEngagement data specified in prepopulateKeys',
+        'chatbot memory only, child calling about self - sets callType as child and childInformation includes chatbot data specified in prepopulateKeys',
       memory: {
         aboutSelf: 'Yes',
         upsetLevel: '1',
@@ -240,7 +280,116 @@ describe('populateHrmContactFormFromTask', () => {
         firstName: '', // firstName is always added whether in the form def or not
         otherGender: '',
       },
+      expectedCallerInformation: {
+        age: '',
+        gender: 'Unknown',
+        firstName: '', // firstName is always added whether in the form def or not
+        otherGender: '',
+      },
       expectedCallType: callTypes.child,
+    },
+    {
+      description:
+        'chatbot memory only, calling about child - sets callType as caller and childInformation includes preEngagement data specified in prepopulateKeys',
+      memory: {
+        aboutSelf: 'No',
+        upsetLevel: '1',
+        gender: 'Agender',
+        friendlyName: 'Anonymous',
+        age: '11',
+      },
+      formDefinitionSet: {
+        prepopulateKeys: {
+          survey: {
+            CallerInformationTab: ['age', 'gender'],
+          },
+        },
+      },
+      expectedChildInformation: {
+        age: '',
+        gender: 'Unknown',
+        firstName: '', // firstName is always added whether in the form def or not
+        otherGender: '',
+      },
+      expectedCallerInformation: {
+        age: '11',
+        gender: 'Agender',
+        firstName: '', // firstName is always added whether in the form def or not
+        otherGender: '',
+      },
+      expectedCallType: callTypes.caller,
+    },
+    {
+      description:
+        'chatbot memory and pre-engagement, child calling about self - sets callType as child and childInformation includes both sets of data specified in prepopulateKeys',
+      memory: {
+        aboutSelf: 'Yes',
+        friendlyName: 'Anonymous',
+        age: '11',
+      },
+      preEngagementData: {
+        upsetLevel: '1',
+        gender: 'Agender',
+      },
+      formDefinitionSet: {
+        prepopulateKeys: {
+          survey: {
+            ChildInformationTab: ['age'],
+          },
+          preEngagement: {
+            ChildInformationTab: ['gender'],
+          },
+        },
+      },
+      expectedChildInformation: {
+        age: '11',
+        gender: 'Agender',
+        firstName: '', // firstName is always added whether in the form def or not
+        otherGender: '',
+      },
+      expectedCallerInformation: {
+        age: '',
+        gender: 'Unknown',
+        firstName: '', // firstName is always added whether in the form def or not
+        otherGender: '',
+      },
+      expectedCallType: callTypes.child,
+    },
+    {
+      description:
+        'chatbot memory and pre-engagement, caller calling about child - sets callType as caller and callerInformation includes both sets of data specified in prepopulateKeys',
+      memory: {
+        aboutSelf: 'No',
+        friendlyName: 'Anonymous',
+        age: '11',
+      },
+      preEngagementData: {
+        upsetLevel: '1',
+        gender: 'Agender',
+      },
+      formDefinitionSet: {
+        prepopulateKeys: {
+          survey: {
+            CallerInformationTab: ['age'],
+          },
+          preEngagement: {
+            CallerInformationTab: ['gender'],
+          },
+        },
+      },
+      expectedChildInformation: {
+        age: '',
+        gender: 'Unknown',
+        firstName: '', // firstName is always added whether in the form def or not
+        otherGender: '',
+      },
+      expectedCallerInformation: {
+        age: '11',
+        gender: 'Agender',
+        firstName: '', // firstName is always added whether in the form def or not
+        otherGender: '',
+      },
+      expectedCallType: callTypes.caller,
     },
   ];
 

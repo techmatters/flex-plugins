@@ -315,8 +315,13 @@ const getValuesFromPreEngagementData = (
   // Get values from task attributes
   const values: Record<string, string | boolean> = {};
   const prepopulateKeys = Array.from(prepopulateKeySet);
-  tabFormDefinition.forEach((field: FormItemDefinition) => {
-    if (prepopulateKeys.indexOf(field.name) > -1) {
+  const specifiedKeys = Object.keys(preEngagementData);
+  tabFormDefinition
+    .filter(
+      (field: FormItemDefinition) =>
+        prepopulateKeys.includes(field.name) && specifiedKeys.includes(field.name),
+    )
+    .forEach((field: FormItemDefinition) => {
       if (['mixed-checkbox', 'checkbox'].includes(field.type)) {
         const fieldValue = preEngagementData[field.name]?.toLowerCase();
         if (fieldValue === 'yes') {
@@ -327,8 +332,7 @@ const getValuesFromPreEngagementData = (
         return;
       }
       values[field.name] = preEngagementData[field.name] || '';
-    }
-  });
+    });
   return values;
 };
 
@@ -440,6 +444,32 @@ export const populateHrmContactFormFromTask = async (
     // eslint-disable-next-line no-param-reassign
     contact.rawJson.callType = callTypes.child;
   }
+
+  if (isValidSurvey) {
+    if (isAboutSelf) {
+      await populateContactSection(
+        contact.rawJson.childInformation,
+        answers,
+        new Set<string>([...MANDATORY_CHATBOT_FIELDS, ...surveyKeys.ChildInformationTab]),
+        formDefinitionRootUrl,
+        'ChildInformationTab',
+        getValuesFromAnswers,
+      );
+    } else {
+      await populateContactSection(
+        contact.rawJson.callerInformation,
+        answers,
+        new Set<string>([
+          ...MANDATORY_CHATBOT_FIELDS,
+          ...surveyKeys.CallerInformationTab,
+        ]),
+        formDefinitionRootUrl,
+        'CallerInformationTab',
+        getValuesFromAnswers,
+      );
+    }
+  }
+
   if (preEngagementData) {
     await populateContactSection(
       contact.rawJson.caseInformation,
@@ -471,33 +501,19 @@ export const populateHrmContactFormFromTask = async (
     }
   }
 
-  if (isValidSurvey) {
-    if (isAboutSelf) {
-      await populateContactSection(
-        contact.rawJson.childInformation,
-        answers,
-        new Set<string>([...MANDATORY_CHATBOT_FIELDS, ...surveyKeys.ChildInformationTab]),
-        formDefinitionRootUrl,
-        'ChildInformationTab',
-        getValuesFromAnswers,
-      );
-    } else {
-      await populateContactSection(
-        contact.rawJson.callerInformation,
-        answers,
-        new Set<string>([
-          ...MANDATORY_CHATBOT_FIELDS,
-          ...surveyKeys.CallerInformationTab,
-        ]),
-        formDefinitionRootUrl,
-        'CallerInformationTab',
-        getValuesFromAnswers,
-      );
-    }
-  }
   return contact;
 };
 
 export type PrepopulateForm = {
   populateHrmContactFormFromTask: typeof populateHrmContactFormFromTask;
+};
+
+/**
+ * This function is used to clear the cache of loaded config jsons.
+ * This is used for testing purposes.
+ */
+export const clearDefinitionCache = () => {
+  Object.keys(loadedConfigJsons).forEach(key => {
+    delete loadedConfigJsons[key];
+  });
 };
