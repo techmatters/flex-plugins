@@ -19,9 +19,12 @@ import {
   FormItemDefinition,
   FormInputType,
   PrepopulateKeys,
+  HrmContact,
 } from '../../../src/hrm/populateHrmContactFormFromTask';
 import { BLANK_CONTACT } from './testContacts';
 import { RecursivePartial } from '../RecursivePartial';
+import each from 'jest-each';
+import { callTypes } from '../../../../../hrm-form-definitions';
 
 type FormDefinitionSet = {
   childInformation: FormItemDefinition[];
@@ -37,8 +40,50 @@ type FormDefinitionSet = {
   };
 };
 
-const BLANK_FORM_DEFINITION: FormDefinitionSet = {
-  childInformation: [],
+const BASE_FORM_DEFINITION: FormDefinitionSet = {
+  childInformation: [
+    {
+      name: 'firstName',
+      type: FormInputType.Input,
+    },
+    {
+      name: 'age',
+      type: FormInputType.Select,
+      options: [
+        {
+          value: '',
+        },
+        {
+          value: '11',
+        },
+        {
+          value: '>12',
+        },
+        {
+          value: 'Unknown',
+        },
+      ],
+    },
+    {
+      name: 'gender',
+      type: FormInputType.ListboxMultiselect,
+      options: [
+        {
+          value: 'Agender',
+        },
+        {
+          value: 'Non-Binary/Genderqueer/Gender fluid',
+        },
+        {
+          value: 'Unknown',
+        },
+      ],
+    },
+    {
+      name: 'otherGender',
+      type: FormInputType.Input,
+    },
+  ],
   callerInformation: [],
   caseInformation: [],
   prepopulateKeys: {
@@ -88,43 +133,42 @@ const fetchFormDefinition = async (
 
 const mockFetch: jest.MockedFunction<typeof fetch> = jest.fn();
 
-const mockFormDefinitions = (
-  definitionSet: Partial<Omit<FormDefinitionSet, 'prepopulateKeys'>> & {
-    prepopulateKeys?: RecursivePartial<PrepopulateKeys>;
-  },
-) => {
+type FormDefinitionPatch = Partial<Omit<FormDefinitionSet, 'prepopulateKeys'>> & {
+  prepopulateKeys?: RecursivePartial<PrepopulateKeys>;
+};
+
+const mockFormDefinitions = (definitionSet: FormDefinitionPatch) => {
   mockFetch.mockImplementation((url: string | URL | Request) =>
     Promise.resolve({
       json: () =>
         Promise.resolve(
           fetchFormDefinition(url.toString(), {
-            ...BLANK_FORM_DEFINITION,
+            ...BASE_FORM_DEFINITION,
             ...definitionSet,
             prepopulateKeys: {
               preEngagement: {
                 ChildInformationTab:
                   (definitionSet.prepopulateKeys?.preEngagement
                     ?.ChildInformationTab as string[]) ??
-                  BLANK_FORM_DEFINITION.prepopulateKeys.preEngagement.ChildInformationTab,
+                  BASE_FORM_DEFINITION.prepopulateKeys.preEngagement.ChildInformationTab,
                 CallerInformationTab:
                   (definitionSet.prepopulateKeys?.preEngagement
                     ?.CallerInformationTab as string[]) ??
-                  BLANK_FORM_DEFINITION.prepopulateKeys.preEngagement
-                    .CallerInformationTab,
+                  BASE_FORM_DEFINITION.prepopulateKeys.preEngagement.CallerInformationTab,
                 CaseInformationTab:
                   (definitionSet.prepopulateKeys?.preEngagement
                     ?.CaseInformationTab as string[]) ??
-                  BLANK_FORM_DEFINITION.prepopulateKeys.preEngagement.CaseInformationTab,
+                  BASE_FORM_DEFINITION.prepopulateKeys.preEngagement.CaseInformationTab,
               },
               survey: {
                 ChildInformationTab:
                   (definitionSet.prepopulateKeys?.survey
                     ?.ChildInformationTab as string[]) ??
-                  BLANK_FORM_DEFINITION.prepopulateKeys.survey.ChildInformationTab,
+                  BASE_FORM_DEFINITION.prepopulateKeys.survey.ChildInformationTab,
                 CallerInformationTab:
                   (definitionSet.prepopulateKeys?.survey
                     ?.CallerInformationTab as string[]) ??
-                  BLANK_FORM_DEFINITION.prepopulateKeys.survey.CallerInformationTab,
+                  BASE_FORM_DEFINITION.prepopulateKeys.survey.CallerInformationTab,
               },
             },
           }),
@@ -135,80 +179,112 @@ const mockFormDefinitions = (
 
 global.fetch = mockFetch;
 describe('populateHrmContactFormFromTask', () => {
-  test('preEngagement only, child caller - sets callType as child and childInformation to blanks and pore', async () => {
-    const preEngagementData = {
-      upsetLevel: '1',
-      gender: 'Agender',
-      friendlyName: 'Anonymous',
-      age: '11',
-    };
-    const tabFormDefinition: FormItemDefinition[] = [
-      {
-        name: 'firstName',
-        type: FormInputType.Input,
-      },
-      {
-        name: 'age',
-        type: FormInputType.Select,
-        options: [
-          {
-            value: '',
-          },
-          {
-            value: '11',
-          },
-          {
-            value: '>12',
-          },
-          {
-            value: 'Unknown',
-          },
-        ],
-      },
-      {
-        name: 'gender',
-        type: FormInputType.ListboxMultiselect,
-        options: [
-          {
-            value: 'Agender',
-          },
-          {
-            value: 'Non-Binary/Genderqueer/Gender fluid',
-          },
-          {
-            value: 'Unknown',
-          },
-        ],
-      },
-      {
-        name: 'otherGender',
-        type: FormInputType.Input,
-      },
-    ];
-    const prepopulateKeys1 = ['age', 'gender'];
+  type TestParams = {
+    description: string;
+    preEngagementData?: Record<string, string>;
+    memory?: Record<string, string>;
+    firstName?: string;
+    language?: string;
+    formDefinitionSet: FormDefinitionPatch;
+    expectedChildInformation?: HrmContact['rawJson']['childInformation'];
+    expectedCallerInformation?: HrmContact['rawJson']['callerInformation'];
+    expectedCaseInformation?: HrmContact['rawJson']['caseInformation'];
+    expectedCallType?: HrmContact['rawJson']['callType'];
+  };
 
-    mockFormDefinitions({
-      childInformation: tabFormDefinition,
-      prepopulateKeys: {
-        preEngagement: {
-          ChildInformationTab: prepopulateKeys1,
+  const testCases: TestParams[] = [
+    {
+      description:
+        'preEngagement only, child caller - sets callType as child and childInformation includes preEngagement data specified in prepopulateKeys',
+      preEngagementData: {
+        upsetLevel: '1',
+        gender: 'Agender',
+        friendlyName: 'Anonymous',
+        age: '11',
+      },
+      formDefinitionSet: {
+        prepopulateKeys: {
+          preEngagement: {
+            ChildInformationTab: ['age', 'gender'],
+          },
         },
       },
-    });
+      expectedChildInformation: {
+        age: '11',
+        gender: 'Agender',
+        firstName: '', // firstName is always added whether in the form def or not
+        otherGender: '',
+      },
+      expectedCallType: callTypes.child,
+    },
+    {
+      description:
+        'chatbot memory only, child calling about self - sets callType as child and childInformation includes preEngagement data specified in prepopulateKeys',
+      memory: {
+        aboutSelf: 'Yes',
+        upsetLevel: '1',
+        gender: 'Agender',
+        friendlyName: 'Anonymous',
+        age: '11',
+      },
+      formDefinitionSet: {
+        prepopulateKeys: {
+          survey: {
+            ChildInformationTab: ['age', 'gender'],
+          },
+        },
+      },
+      expectedChildInformation: {
+        age: '11',
+        gender: 'Agender',
+        firstName: '', // firstName is always added whether in the form def or not
+        otherGender: '',
+      },
+      expectedCallType: callTypes.child,
+    },
+  ];
 
-    const populatedContact = await populateHrmContactFormFromTask(
-      { preEngagementData },
-      BLANK_CONTACT,
-      MOCK_FORM_DEFINITION_URL,
-    );
+  each(testCases).test(
+    '$description',
+    async ({
+      formDefinitionSet,
+      preEngagementData,
+      memory,
+      firstName,
+      language,
+      expectedChildInformation,
+      expectedCallerInformation,
+      expectedCallType,
+      expectedCaseInformation,
+    }: TestParams) => {
+      mockFormDefinitions(formDefinitionSet);
 
-    const expectedValues = {
-      age: '11',
-      gender: 'Agender',
-      firstName: '', // firstName is always added whether in the form def or not
-      otherGender: '',
-    };
-
-    expect(populatedContact.rawJson.childInformation).toEqual(expectedValues);
-  });
+      const populatedContact = await populateHrmContactFormFromTask(
+        {
+          ...(preEngagementData ? { preEngagementData } : {}),
+          ...(memory ? { memory } : {}),
+          ...(firstName ? { firstName } : {}),
+          ...(language ? { language } : {}),
+        },
+        BLANK_CONTACT,
+        MOCK_FORM_DEFINITION_URL,
+      );
+      if (expectedChildInformation) {
+        expect(populatedContact.rawJson.childInformation).toEqual(
+          expectedChildInformation,
+        );
+      }
+      if (expectedCallerInformation) {
+        expect(populatedContact.rawJson.callerInformation).toEqual(
+          expectedCallerInformation,
+        );
+      }
+      if (expectedCaseInformation) {
+        expect(populatedContact.rawJson.caseInformation).toEqual(expectedCaseInformation);
+      }
+      if (expectedCallType) {
+        expect(populatedContact.rawJson.callType).toEqual(expectedCallType);
+      }
+    },
+  );
 });

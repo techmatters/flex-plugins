@@ -436,6 +436,9 @@ export const populateHrmContactFormFromTask = async (
   if (isValidSurvey) {
     // eslint-disable-next-line no-param-reassign
     contact.rawJson.callType = isAboutSelf ? callTypes.child : callTypes.caller;
+  } else {
+    // eslint-disable-next-line no-param-reassign
+    contact.rawJson.callType = callTypes.child;
   }
   if (preEngagementData) {
     await populateContactSection(
