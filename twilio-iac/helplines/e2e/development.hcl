@@ -6,6 +6,7 @@ locals {
 
   local_config = {
     enable_external_recordings            = true
+    permission_config = "e2e"
     custom_task_routing_filter_expression = "helpline IN ['Childline', ''] OR channelType =='web' OR isContactlessTask == true"
     flow_vars = {
       service_sid                           = "ZS43ea9fdb2e1901c2fc23b4654b285202"

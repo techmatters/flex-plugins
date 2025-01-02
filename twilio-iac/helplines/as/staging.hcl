@@ -7,6 +7,7 @@ locals {
     enable_post_survey                    = true
     enable_datadog_monitoring                = false
     custom_task_routing_filter_expression = "channelType IN ['instagram','messenger','web','whatsapp','telegram','line','voice'] OR isContactlessTask == true OR  twilioNumber == 'messenger:131329426738030' "
+    permission_config = "demo"
 
     #Studio flow
     flow_vars = {

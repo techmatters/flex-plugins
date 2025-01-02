@@ -82,7 +82,6 @@ module "aws" {
   bucket_region       = var.helpline_region
   helpline_region     = var.helpline_region
   s3_lifecycle_rules  = var.s3_lifecycle_rules
-  
 }
 
 #TODO: Remove the provider and moved once this has been applied everywhere

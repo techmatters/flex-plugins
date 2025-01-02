@@ -108,7 +108,6 @@ resource "aws_ssm_parameter" "twilio_conversations_chat_transfer_workflow_sid" {
   }
 }
 
-
 resource "aws_ssm_parameter" "twilio_sync_sid" {
   name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/sync_sid"
   type        = "SecureString"
