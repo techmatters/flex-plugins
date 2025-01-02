@@ -74,7 +74,13 @@ export const handleEvent = async (
   client: twilio.Twilio,
 ): Promise<void> => {
   const taskAttributes = taskAttributesString ? JSON.parse(taskAttributesString) : {};
-  const { channelSid, isContactlessTask, transferTargetType } = taskAttributes;
+  const {
+    channelSid,
+    isContactlessTask,
+    transferTargetType,
+    channelType,
+    customChannelType,
+  } = taskAttributes;
 
   if (isContactlessTask) {
     console.debug(
@@ -98,8 +104,6 @@ export const handleEvent = async (
     form_definitions_version_url: configFormDefinitionsVersionUrl,
     assets_bucket_url: assetsBucketUrl,
     helpline_code: helplineCode,
-    channelType,
-    customChannelType,
     feature_flags: {
       enable_backend_hrm_contact_creation: enableBackendHrmContactCreation,
     },
