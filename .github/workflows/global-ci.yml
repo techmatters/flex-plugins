@@ -23,3 +23,6 @@ jobs:
   webchat-ci:
     uses: ./.github/workflows/webchat-ci.yml
     secrets: inherit
+  twilio-lambda-ci:
+    uses: ./.github/workflows/twilio-lambda-ci.yml
+    secrets: inherit
