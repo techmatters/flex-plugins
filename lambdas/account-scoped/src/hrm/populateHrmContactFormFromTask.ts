@@ -346,7 +346,7 @@ const loadConfigJson = async (
   if (!loadedConfigJsons[section]) {
     const url = `${formDefinitionRootUrl}/${section}.json`;
     console.debug('Loading forms at:', url);
-    const response = await fetch(url, { method: 'GET' });
+    const response = await fetch(url);
     if (!response.ok) {
       if (response.status === 404) {
         console.warn(`No config json found at ${url}`);

@@ -56,6 +56,8 @@ const mockFetch: jest.MockedFunction<typeof fetch> = jest.fn();
 const mockFormDefinitions = (definitionSet: FormDefinitionPatch) => {
   mockFetch.mockImplementation((url: string | URL | Request) =>
     Promise.resolve({
+      ok: true,
+      text: () => Promise.resolve('Text response'),
       json: () =>
         Promise.resolve(
           fetchFormDefinition(url.toString(), {
