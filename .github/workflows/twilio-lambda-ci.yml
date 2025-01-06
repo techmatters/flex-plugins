@@ -51,6 +51,11 @@ jobs:
         run: |
           npm run test:unit
         working-directory: ./lambdas
+
+      - name: Run Service Tests
+        run: |
+          npm run test:service
+        working-directory: ./lambdas
   build_lambda:
     name: Build Lambda Image
     runs-on: ubuntu-latest
