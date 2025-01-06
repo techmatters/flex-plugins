@@ -15,18 +15,18 @@
  */
 
 // eslint-disable-next-line import/no-extraneous-dependencies,prettier/prettier
-import type { Mockttp } from 'mockttp';
+import type {MockedEndpoint, Mockttp} from 'mockttp';
 import { HrmContact } from '../../../src/hrm/populateHrmContactFormFromTask';
 import { AccountSID } from '../../../src/twilioTypes';
 
 const mockContacts: Record<AccountSID, Record<string, HrmContact>> = {};
 const contactRootPathRegex = new RegExp(
-  `${process.env.INTERNAL_HRM_URL!.replace('/', '\\')}\\/v1\/accounts\\/([^/]+)\\/contacts`,
+  `${process.env.INTERNAL_HRM_URL!.replace('/', '\\/')}\\/internal\\/v1\\/accounts\\/([^\\/]+)\\/contacts`,
 );
 let idCounter = 0;
 
 export const mockHrmContacts = async (mockttp: Mockttp) => {
-  await mockttp.forPost(contactRootPathRegex).thenCallback(async req => {
+  return mockttp.forPost(contactRootPathRegex).thenCallback(async req => {
     const accountSid = req.url.match(contactRootPathRegex)![1] as AccountSID;
     mockContacts[accountSid] = mockContacts[accountSid] || {};
     const id = `mock-contact-${idCounter++}`;
@@ -36,4 +36,15 @@ export const mockHrmContacts = async (mockttp: Mockttp) => {
     };
     return { json: mockContacts[accountSid][id], statusCode: 200 };
   });
+};
+
+export const verifyCreateContactRequest = async (
+  createEndpoint: MockedEndpoint,
+  expectedContact: HrmContact,
+) => {
+  const requests = await createEndpoint.getSeenRequests();
+  expect(requests.length).toBe(1);
+  const [request] = requests;
+  expect(request.method).toBe('POST');
+  expect(await request.body.getJson()).toEqual(expectedContact);
 };

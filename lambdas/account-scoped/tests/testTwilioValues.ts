@@ -38,7 +38,7 @@ export const EMPTY_TASK: TaskResource = {
   account_sid: TEST_ACCOUNT_SID,
   age: 0,
   assignment_status: 'pending',
-  attributes: '',
+  attributes: '{}',
   addons: '',
   date_created: new Date(0),
   date_updated: new Date(0),

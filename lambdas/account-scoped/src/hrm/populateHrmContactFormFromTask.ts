@@ -16,6 +16,7 @@
 
 import { capitalize } from 'lodash';
 import { startOfDay, format } from 'date-fns';
+import {TaskSID} from "../twilioTypes";
 
 type MapperFunction = (options: string[]) => (value: string) => string;
 
@@ -114,7 +115,7 @@ export type HrmContact = {
   createdAt: string;
   createdBy: string;
   helpline: string;
-  taskId: `WT${string}` | null;
+  taskId: TaskSID | null;
   profileId?: string;
   identifierId?: string;
   channel: ChannelTypes | 'default';
