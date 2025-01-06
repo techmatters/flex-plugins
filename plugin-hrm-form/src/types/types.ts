@@ -342,6 +342,7 @@ export const standaloneTaskSid = 'standalone-task-sid';
 
 export type StandaloneITask = {
   taskSid: typeof standaloneTaskSid;
+  queueName?: string;
   attributes: {
     isContactlessTask: boolean;
   };

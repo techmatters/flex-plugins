@@ -38,7 +38,7 @@ import { newCSAMReportActionForContact } from '../../states/csam-report/actions'
 import { CSAMReportType, CSAMReportTypes } from '../../states/csam-report/types';
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 import { AppRoutes, ChangeRouteMode, TabbedFormRoute, TabbedFormSubroutes } from '../../states/routing/types';
-import { Box, Row, StyledTabs } from '../../styles';
+import { Box, Row, StyledTabs, FontOpenSans, OpaqueText, Bold } from '../../styles';
 import { TabbedFormsContainer, TabbedFormTabContainer } from './styles';
 import { hasTaskControl } from '../../transfer/transferTaskState';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
@@ -267,6 +267,14 @@ const TabbedFormsTabs: React.FC<Props> = ({
   return (
     <div role="form" style={{ height: '100%' }}>
       <TabbedFormsContainer>
+          <Box paddingLeft="20px">
+            <Row>
+              <FontOpenSans>
+                <Bold># {contactId}</Bold>
+                {!isOfflineContactTask(task) && (<OpaqueText style={{ fontStyle: 'italic' }}> ({task.queueName})</OpaqueText> )}
+              </FontOpenSans>
+            </Row>
+          </Box>
         <HeaderControlButtons />
         <StyledTabs
           className="hiddenWhenModalOpen"
