@@ -1,1 +1,15 @@
-{}
+{
+    "label": "Helpline",
+    "helplines": [
+      {
+        "label": "Helpline Centre",
+        "value": "Helpline Centre",
+        "default": true,
+        "manager": {
+          "name": "Helpline Manager",
+          "phone": "0812345678",
+          "email": "helpline@hildline.org"
+        }
+      }
+    ]
+}
