@@ -267,14 +267,16 @@ const TabbedFormsTabs: React.FC<Props> = ({
   return (
     <div role="form" style={{ height: '100%' }}>
       <TabbedFormsContainer>
-          <Box paddingLeft="20px">
-            <Row>
-              <FontOpenSans>
-                <Bold># {contactId}</Bold>
-                {!isOfflineContactTask(task) && (<OpaqueText style={{ fontStyle: 'italic' }}> ({task.queueName})</OpaqueText> )}
-              </FontOpenSans>
-            </Row>
-          </Box>
+        <Box paddingLeft="20px">
+          <Row>
+            <FontOpenSans>
+              <Bold># {contactId}</Bold>
+              {!isOfflineContactTask(task) && (
+                <OpaqueText style={{ fontStyle: 'italic' }}> ({task.queueName})</OpaqueText>
+              )}
+            </FontOpenSans>
+          </Row>
+        </Box>
         <HeaderControlButtons />
         <StyledTabs
           className="hiddenWhenModalOpen"
