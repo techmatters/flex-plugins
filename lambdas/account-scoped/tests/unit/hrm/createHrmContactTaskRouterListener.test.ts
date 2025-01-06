@@ -36,7 +36,6 @@ import {
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
 import { WorkspaceContext } from 'twilio/lib/rest/taskrouter/v1/workspace';
 import { BLANK_CONTACT } from './testContacts';
 import { EventFields } from '../../../src/taskrouter';
@@ -44,11 +43,14 @@ import { getSsmParameter } from '../../../src/ssmCache';
 import { handleEvent } from '../../../src/hrm/createHrmContactTaskRouterListener';
 import { populateHrmContactFormFromTask } from '../../../src/hrm/populateHrmContactFormFromTask';
 import {
+  DEFAULT_CONFIGURATION_ATTRIBUTES,
   TEST_ACCOUNT_SID,
   TEST_CONTACT_ID,
   TEST_TASK_SID,
   TEST_WORKER_SID,
-} from '../testTwilioValues';
+  TEST_WORKSPACE_SID,
+} from '../../testTwilioValues';
+import { AseloServiceConfigurationAttributes } from '../../testTwilioTypes';
 
 const mockFetch: jest.MockedFunction<typeof fetch> = jest.fn();
 global.fetch = mockFetch;
@@ -70,40 +72,15 @@ const mockPopulateHrmContactFormFromTask =
 
 const mockServiceConfigurationFetch: jest.MockedFunction<ConfigurationContext['fetch']> =
   jest.fn();
-const CONFIG_FIELDS = [
-  'definitionVersion',
-  'hrm_api_version',
-  'form_definitions_version_url',
-  'assets_bucket_url',
-  'helpline_code',
-] as const;
-
-type AseloServiceConfigurationAttributes = Record<
-  (typeof CONFIG_FIELDS)[number],
-  string
-> & {
-  feature_flags: Record<string, boolean | undefined>;
-};
-
-const DEFAULT_CONFIGURATION: AseloServiceConfigurationAttributes = {
-  definitionVersion: 'ut-v1',
-  hrm_api_version: 'v1',
-  form_definitions_version_url: 'http://example.com/form-definitions',
-  assets_bucket_url: 'http://example.com/assets',
-  helpline_code: 'ut',
-  feature_flags: {
-    enable_backend_hrm_contact_creation: true,
-  },
-};
 
 const setConfigurationAttributes = (
   attributes: RecursivePartial<AseloServiceConfigurationAttributes>,
 ) => {
   const updatedConfiguration: AseloServiceConfigurationAttributes = {
-    ...DEFAULT_CONFIGURATION,
+    ...DEFAULT_CONFIGURATION_ATTRIBUTES,
     ...attributes,
     feature_flags: {
-      ...DEFAULT_CONFIGURATION.feature_flags,
+      ...DEFAULT_CONFIGURATION_ATTRIBUTES.feature_flags,
       ...attributes.feature_flags,
     },
   };
@@ -158,7 +135,7 @@ describe('handleEvent', () => {
         v1: {
           workspaces: {
             get: (workspaceSid: string) => {
-              if (workspaceSid === 'WSut') {
+              if (workspaceSid === TEST_WORKSPACE_SID) {
                 return {
                   tasks: {
                     get: (taskSid: string) => {
@@ -184,7 +161,7 @@ describe('handleEvent', () => {
       if (path.endsWith('/static_key')) {
         return Promise.resolve('unit_test_static_key');
       } else if (path.endsWith('/workspace_sid')) {
-        return Promise.resolve('WSut');
+        return Promise.resolve(TEST_WORKSPACE_SID);
       }
       throw new Error(`Unexpected SSM parameter path: ${path}`);
     });

@@ -43,8 +43,14 @@ export const lookupRoute = (event: HttpRequest): AccountScopedRoute | undefined 
   if (event.path.startsWith(ROUTE_PREFIX)) {
     const path = event.path.substring(ROUTE_PREFIX.length);
     const [accountSid, ...applicationPathParts] = path.split('/');
+    console.debug(
+      `Looking up route for account ${accountSid} and path ${applicationPathParts.join('/')}`,
+    );
     const functionRoute = ROUTES[applicationPathParts.join('/')];
     if (functionRoute && isAccountSID(accountSid)) {
+      console.debug(
+        `Found route for account ${accountSid} and path ${applicationPathParts.join('/')}`,
+      );
       return {
         accountSid,
         ...functionRoute,

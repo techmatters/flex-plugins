@@ -14,10 +14,25 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AccountSID, TaskSID, WorkerSID } from '../../src/twilioTypes';
+import {
+  FormItemDefinition,
+  PrepopulateKeys,
+} from '../src/hrm/populateHrmContactFormFromTask';
+import { RecursivePartial } from './unit/RecursivePartial';
 
-export const TEST_ACCOUNT_SID: AccountSID = 'ACut';
-export const TEST_AUTH_TOKEN: string = 'unit_test_auth_token';
-export const TEST_TASK_SID: TaskSID = 'WTut';
-export const TEST_WORKER_SID: WorkerSID = 'WKut';
-export const TEST_CONTACT_ID = '1337';
+export type FormDefinitionSet = {
+  childInformation: FormItemDefinition[];
+  callerInformation: FormItemDefinition[];
+  caseInformation: FormItemDefinition[];
+  prepopulateKeys: PrepopulateKeys;
+  helplineInformation: {
+    label: string;
+    helplines: {
+      label: string;
+      value: string;
+    }[];
+  };
+};
+export type FormDefinitionPatch = Partial<Omit<FormDefinitionSet, 'prepopulateKeys'>> & {
+  prepopulateKeys?: RecursivePartial<PrepopulateKeys>;
+};

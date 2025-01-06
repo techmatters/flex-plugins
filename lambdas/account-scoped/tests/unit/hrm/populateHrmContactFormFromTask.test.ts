@@ -15,99 +15,15 @@
  */
 
 import {
-  populateHrmContactFormFromTask,
-  FormItemDefinition,
-  FormInputType,
-  PrepopulateKeys,
-  HrmContact,
+  callTypes,
   clearDefinitionCache,
+  HrmContact,
+  populateHrmContactFormFromTask,
 } from '../../../src/hrm/populateHrmContactFormFromTask';
 import { BLANK_CONTACT } from './testContacts';
-import { RecursivePartial } from '../RecursivePartial';
 import each from 'jest-each';
-import { callTypes } from '../../../src/hrm/populateHrmContactFormFromTask';
-
-type FormDefinitionSet = {
-  childInformation: FormItemDefinition[];
-  callerInformation: FormItemDefinition[];
-  caseInformation: FormItemDefinition[];
-  prepopulateKeys: PrepopulateKeys;
-  helplineInformation: {
-    label: string;
-    helplines: {
-      label: string;
-      value: string;
-    }[];
-  };
-};
-
-const BASE_PERSON_FORM_DEFINITION: FormItemDefinition[] = [
-  {
-    name: 'firstName',
-    type: FormInputType.Input,
-  },
-  {
-    name: 'age',
-    type: FormInputType.Select,
-    options: [
-      {
-        value: '',
-      },
-      {
-        value: '11',
-      },
-      {
-        value: '>12',
-      },
-      {
-        value: 'Unknown',
-      },
-    ],
-  },
-  {
-    name: 'gender',
-    defaultOption: 'Unknown',
-    type: FormInputType.Select,
-    options: [
-      {
-        value: 'Agender',
-      },
-      {
-        value: 'Non-Binary/Genderqueer/Gender fluid',
-      },
-      {
-        value: 'Unknown',
-      },
-    ],
-  },
-  {
-    name: 'otherGender',
-    type: FormInputType.Input,
-  },
-];
-
-const BASE_FORM_DEFINITION: FormDefinitionSet = {
-  childInformation: BASE_PERSON_FORM_DEFINITION,
-  callerInformation: BASE_PERSON_FORM_DEFINITION,
-  caseInformation: [],
-  prepopulateKeys: {
-    preEngagement: {
-      ChildInformationTab: [],
-      CallerInformationTab: [],
-      CaseInformationTab: [],
-    },
-    survey: {
-      ChildInformationTab: [],
-      CallerInformationTab: [],
-    },
-  },
-  helplineInformation: {
-    label: '',
-    helplines: [{ label: '', value: '' }],
-  },
-};
-
-const MOCK_FORM_DEFINITION_URL = new URL('https://example.com/formDefinition');
+import { FormDefinitionPatch, FormDefinitionSet } from '../../testHrmTypes';
+import { BASE_FORM_DEFINITION, MOCK_FORM_DEFINITION_URL } from '../../testHrmValues';
 
 const fetchFormDefinition = async (
   url: string,
@@ -136,10 +52,6 @@ const fetchFormDefinition = async (
 };
 
 const mockFetch: jest.MockedFunction<typeof fetch> = jest.fn();
-
-type FormDefinitionPatch = Partial<Omit<FormDefinitionSet, 'prepopulateKeys'>> & {
-  prepopulateKeys?: RecursivePartial<PrepopulateKeys>;
-};
 
 const mockFormDefinitions = (definitionSet: FormDefinitionPatch) => {
   mockFetch.mockImplementation((url: string | URL | Request) =>

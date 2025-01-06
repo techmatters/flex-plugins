@@ -5,13 +5,16 @@
     "@types/aws-lambda": "^8.10.108",
     "@types/lodash": "^4.17.13",
     "@types/node": "^18.16.2",
+    "global-agent": "^3.0.0",
     "jest-each": "^29.5.0",
+    "mockttp": "^3.15.5",
     "ts-node": "^10.9.1",
     "undici": "^5.28.3"
   },
   "scripts": {
     "docker:build": "docker build -t account-scoped --build-arg lambda_name=account-scoped --build-arg lambda_dir=. -f ../Dockerfile ../",
     "test:unit": "jest tests/unit",
+    "test:service": "jest tests/service",
     "test": "jest"
   },
   "dependencies": {
