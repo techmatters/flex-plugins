@@ -2,13 +2,13 @@
     "label": "Helpline",
     "helplines": [
       {
-        "label": "Helpline Centre",
-        "value": "Helpline Centre",
+        "label": "C-Sema",
+        "value": "C-Sema",
         "default": true,
         "manager": {
           "name": "Helpline Manager",
-          "phone": "0812345678",
-          "email": "helpline@hildline.org"
+          "phone": "+255222936576",
+          "email": "info@sematanzania.org"
         }
       }
     ]
