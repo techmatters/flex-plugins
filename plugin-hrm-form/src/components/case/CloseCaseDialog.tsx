@@ -20,7 +20,7 @@ import WarningIcon from '@material-ui/icons/Warning';
 
 import TabPressWrapper from '../TabPressWrapper';
 import { Box, Row, HiddenText, StyledNextStepButton } from '../../styles';
-import { CloseButton, CloseTaskDialog } from '../callTypeButtons/styles';
+import { CloseButton, DialogStyled } from '../callTypeButtons/styles';
 import { CloseDialogText } from './styles';
 
 type OwnProps = {
@@ -34,7 +34,7 @@ type Props = OwnProps;
 const CloseCaseDialog: React.FC<Props> = ({ setDialog, handleDontSaveClose, handleSaveUpdate, openDialog }) => {
   return (
     <>
-      <CloseTaskDialog open={openDialog} onClose={setDialog}>
+      <DialogStyled open={openDialog} onClose={setDialog}>
         <TabPressWrapper>
           <Box textAlign="end" onClick={setDialog} tabIndex={3}>
             <HiddenText id="CloseButton">
@@ -62,7 +62,7 @@ const CloseCaseDialog: React.FC<Props> = ({ setDialog, handleDontSaveClose, hand
           </Row>
           <Box marginBottom="25px" />
         </TabPressWrapper>
-      </CloseTaskDialog>
+      </DialogStyled>
     </>
   );
 };
