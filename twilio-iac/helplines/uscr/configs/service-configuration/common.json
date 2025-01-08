@@ -1,8 +1,12 @@
 {
     "attributes": {
         "contacts_waiting_channels": [
-            "voice"
+            "voice",
+            "web"
         ],
+        "feature_flags": {
+            "enable_conferencing": true
+        },
         "definitionVersion": "uscr-v1",
         "helplineLanguage": "en-USCR",
         "permissionConfig": "uscr"
