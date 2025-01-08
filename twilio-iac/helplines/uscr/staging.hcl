@@ -35,7 +35,7 @@ locals {
         }
         chatbot_unique_names = []
       },
-      outbound_calls : {
+      outbound_number : {
         channel_type     = "voice"
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/uscr/templates/studio-flows/incoming_to_outbound_number.tftpl"
