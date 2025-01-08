@@ -12,7 +12,7 @@ locals {
     helpline                   = "LA CIRCLE"
     task_language              = "en-US"
     enable_post_survey         = false
-    enable_external_recordings = true
+    enable_external_recordings = false
     enable_datadog_monitoring  = false
 
     workflows = {
