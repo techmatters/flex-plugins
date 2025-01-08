@@ -5,6 +5,7 @@
             "web"
         ],
         "config_flags": {
+            "enableExternalRecordings": "False"
         },
         "feature_flags": {
             "enable_voice_recordings": true,
