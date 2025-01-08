@@ -4,7 +4,12 @@
             "voice",
             "web"
         ],
+        "config_flags": {
+            "enableExternalRecordings": true
+        },
         "feature_flags": {
+            "enable_voice_recordings": true,
+            "enable_client_profiles":true,
             "enable_conferencing": true
         },
         "definitionVersion": "uscr-v1",
