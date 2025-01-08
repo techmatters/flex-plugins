@@ -16,10 +16,22 @@
 
 import React, { useState } from 'react';
 import { QueuesStats, Template, Manager } from '@twilio/flex-ui';
-import { FormLabel, FormGroup, FormControlLabel, FormControl, FormHelperText, Switch } from '@material-ui/core';
+import {
+  FormLabel,
+  FormGroup,
+  FormControlLabel,
+  FormControl,
+  FormHelperText,
+  Switch,
+  Modal,
+  Tab,
+  IconButton,
+} from '@material-ui/core';
 
 import { getAseloFeatureFlags } from '../../hrmConfig';
+import TabPressWrapper from '../TabPressWrapper';
 import { Box } from '../../styles';
+import { CloseButton, DialogContainer, DialogStyled } from '../callTypeButtons/styles';
 
 // eslint-disable-next-line import/no-unused-modules
 export const setUpSwitchboarding = () => {
@@ -32,49 +44,66 @@ export const setUpSwitchboarding = () => {
 
 const SwitchboardingTile = () => {
   const [isSwitchboarding, setIsSwitchboarding] = useState(false);
-  const [openQueuesModal, setOpenQueuesModal] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // setIsSwitchboarding(!isSwitchboarding);
-    setOpenQueuesModal(!openQueuesModal);
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   const renderSwitch = () => (
-    <FormControl component="fieldset" variant="standard">
-      <FormLabel component="legend">Switchboardingfl</FormLabel>
+    <FormControl component="fieldset">
       <FormGroup>
         <FormControlLabel
-          control={<Switch checked={isSwitchboarding} color="primary" onChange={handleChange} />}
-          label="Switchboardingl"
+          labelPlacement="start"
+          control={<Switch checked={isSwitchboarding} color="primary" onChange={handleOpenModal} />}
+          label="Switchboarding"
         />
       </FormGroup>
     </FormControl>
   );
 
   const queues = Manager.getInstance()?.store.getState()?.flex?.realtimeQueues?.queuesList;
-  const queuesConfig = Manager.getInstance()?.store.getState()?.flex?.realtimeQueues?.queuesConfig;
-  console.log('>>> queues', queues, queuesConfig);
+
+  const filteredQueues = queues
+    ? Object.values(queues).filter(
+        (queue: any) => queue.friendly_name !== 'Survey' && queue.friendly_name !== 'Switchboard Queue',
+      )
+    : [];
 
   return (
     <>
       <Box>{renderSwitch()}</Box>
-      {openQueuesModal && (
-        <dialog>
-          <h1>Queues</h1>
-          <ul>
-            {Array.isArray(queues) &&
-              queues.map((queue: any) => (
-                <li key={queue.sid}>
-                  <span>{queue.friendlyName}</span>
-                  <span>{queue.sid}</span>
-                  <span>{queuesConfig[queue.sid]?.config?.targetWorkersExpression}</span>
-                </li>
-              ))}
-          </ul>
-          <button type="button" onClick={() => setOpenQueuesModal(false)}>
-            Close
-          </button>
-        </dialog>
+      {isModalOpen && (
+        <DialogStyled open={isModalOpen} onClose={handleCloseModal}>
+          <TabPressWrapper>
+            <DialogContainer>
+              <Box marginLeft="auto">
+                <Template code="CloseButton" />
+                <CloseButton tabIndex={3} aria-label="CloseButton" onClick={handleCloseModal} />
+              </Box>
+
+              <div>
+                <h1>Queues</h1>
+                <form>
+                  {queues &&
+                    Object.values(filteredQueues).map((queue: any) => (
+                      <div key={queue.key}>
+                        <input type="radio" id={queue.key} name="queue" value={queue.key} />
+                        <label htmlFor={queue.key}>{queue.friendly_name}</label>
+                      </div>
+                    ))}
+                </form>
+                <button type="button" onClick={handleCloseModal}>
+                  Close
+                </button>
+              </div>
+            </DialogContainer>
+          </TabPressWrapper>
+        </DialogStyled>
       )}
     </>
   );
