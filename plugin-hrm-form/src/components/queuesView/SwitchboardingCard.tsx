@@ -32,6 +32,7 @@ import { getAseloFeatureFlags } from '../../hrmConfig';
 import TabPressWrapper from '../TabPressWrapper';
 import { Box } from '../../styles';
 import { CloseButton, DialogContainer, DialogStyled } from '../callTypeButtons/styles';
+import { switchboardingQueue } from '../../services/SwitchboardingService';
 
 // eslint-disable-next-line import/no-unused-modules
 export const setUpSwitchboarding = () => {
@@ -52,6 +53,12 @@ const SwitchboardingTile = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+
+  const handleSwitchboarding = async (task, queue) => {
+    const taskSid = 'your-valid-task-sid';
+    await switchboardingQueue(task.taskSid, queue);
+    setIsSwitchboarding(!isSwitchboarding);
   };
 
   const renderSwitch = () => (
@@ -96,10 +103,11 @@ const SwitchboardingTile = () => {
                         <label htmlFor={queue.key}>{queue.friendly_name}</label>
                       </div>
                     ))}
+                  {/* use selected queue key */}
+                  <button type="button" onClick={() => handleSwitchboarding('task', selectedQueue)}>
+                    Assign Switchboard
+                  </button>
                 </form>
-                <button type="button" onClick={handleCloseModal}>
-                  Close
-                </button>
               </div>
             </DialogContainer>
           </TabPressWrapper>
