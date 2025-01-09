@@ -25,7 +25,7 @@ import { RootState } from '../../states';
 import asyncDispatch from '../../states/asyncDispatch';
 import { namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import { Contact, ContactRawJson, isOfflineContact, isOfflineContactTask } from '../../types/types';
+import { Contact, ContactRawJson, isOfflineContact, isOfflineContactTask, isStandaloneITask } from '../../types/types';
 import { isNonDataCallType } from '../../states/validationRules';
 import { selectCaseMergingBanners } from '../../states/case/caseBanners';
 import { ContactDraftChanges, updateDraft } from '../../states/contacts/existingContacts';
@@ -264,7 +264,9 @@ const TabbedFormsTabs: React.FC<Props> = ({
       <Row style={{ paddingLeft: '9px', paddingTop: '3px' }}>
         <FontOpenSans>
           <Bold>#{contactId}</Bold>
-          {!isOfflineContactTask(task) && <OpaqueText style={{ fontStyle: 'italic' }}> ({task.queueName})</OpaqueText>}
+          {!isOfflineContactTask(task) && !isStandaloneITask(task) && (
+            <OpaqueText style={{ fontStyle: 'italic' }}> ({task.queueName})</OpaqueText>
+          )}
         </FontOpenSans>
       </Row>
     </Box>
