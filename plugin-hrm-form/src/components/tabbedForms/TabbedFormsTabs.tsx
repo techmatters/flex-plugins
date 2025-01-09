@@ -243,7 +243,7 @@ const TabbedFormsTabs: React.FC<Props> = ({
   };
 
   const HeaderControlButtons = () => (
-    <Box marginTop="10px" marginBottom="10px" paddingLeft="20px">
+    <Box marginTop="10px" marginBottom="5px" paddingLeft="20px">
       <Row>
         <SearchResultsBackButton handleBack={handleBackButton} text={<Template code="TabbedForms-BackButton" />} />
         {csamReportEnabled && (
@@ -261,22 +261,18 @@ const TabbedFormsTabs: React.FC<Props> = ({
           </Box>
         )}
       </Row>
+      <Row style={{ paddingLeft: '9px', paddingTop: '3px' }}>
+        <FontOpenSans>
+          <Bold>#{contactId}</Bold>
+          {!isOfflineContactTask(task) && <OpaqueText style={{ fontStyle: 'italic' }}> ({task.queueName})</OpaqueText>}
+        </FontOpenSans>
+      </Row>
     </Box>
   );
 
   return (
     <div role="form" style={{ height: '100%' }}>
       <TabbedFormsContainer>
-        <Box paddingLeft="20px">
-          <Row>
-            <FontOpenSans>
-              <Bold># {contactId}</Bold>
-              {!isOfflineContactTask(task) && (
-                <OpaqueText style={{ fontStyle: 'italic' }}> ({task.queueName})</OpaqueText>
-              )}
-            </FontOpenSans>
-          </Row>
-        </Box>
         <HeaderControlButtons />
         <StyledTabs
           className="hiddenWhenModalOpen"
