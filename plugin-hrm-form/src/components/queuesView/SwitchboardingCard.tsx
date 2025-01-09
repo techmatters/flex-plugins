@@ -46,6 +46,7 @@ export const setUpSwitchboarding = () => {
 const SwitchboardingTile = () => {
   const [isSwitchboarding, setIsSwitchboarding] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedQueue, setSelectedQueue] = useState<string | null>(null);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -55,10 +56,12 @@ const SwitchboardingTile = () => {
     setIsModalOpen(false);
   };
 
-  const handleSwitchboarding = async (task, queue) => {
-    const taskSid = 'your-valid-task-sid';
-    await switchboardingQueue(task.taskSid, queue);
+  const handleSwitchboarding = async queue => {
+    console.log('>>>>> handleSwitchboarding input', { queue });
+    const result = await switchboardingQueue(queue);
+    console.log('>>>>> handleSwitchboarding result', result);
     setIsSwitchboarding(!isSwitchboarding);
+    setSelectedQueue(queue); // Update state after the operation if needed
   };
 
   const renderSwitch = () => (
@@ -96,15 +99,25 @@ const SwitchboardingTile = () => {
               <div>
                 <h1>Queues</h1>
                 <form>
-                  {queues &&
-                    Object.values(filteredQueues).map((queue: any) => (
+                  {filteredQueues &&
+                    filteredQueues.map(queue => (
                       <div key={queue.key}>
-                        <input type="radio" id={queue.key} name="queue" value={queue.key} />
+                        <input
+                          type="radio"
+                          id={queue.key}
+                          name="queue"
+                          value={queue.key}
+                          checked={selectedQueue === queue.key}
+                          onChange={e => setSelectedQueue(e.target.value)}
+                        />
                         <label htmlFor={queue.key}>{queue.friendly_name}</label>
                       </div>
                     ))}
-                  {/* use selected queue key */}
-                  <button type="button" onClick={() => handleSwitchboarding('task', selectedQueue)}>
+                  <button
+                    type="button"
+                    onClick={() => handleSwitchboarding('WQb4a3a7e8808c61d11d344e5b28fa53ef')}
+                    // disabled={!selectedQueue}
+                  >
                     Assign Switchboard
                   </button>
                 </form>

@@ -24,7 +24,7 @@ import { ApiError } from './fetchApi';
  */
 
 // eslint-disable-next-line import/no-unused-modules
-export const switchboardingQueue = async (taskSid: TaskSID, queueSid: string): Promise<void> => {
+export const switchboardingQueue = async (queueSid: string): Promise<void> => {
   // export type Body = {
   //   taskSid?: string;
   //   originalQueueSid?: string;
@@ -34,12 +34,13 @@ export const switchboardingQueue = async (taskSid: TaskSID, queueSid: string): P
   // };
 
   const body = {
-    taskSid,
+    // taskSid,
     originalQueueSid: queueSid,
   };
 
   // return fetchProtectedApi('/assignSwitchboarding', body);
   try {
+    console.log('>>>switchboardingQueue', body);
     return await fetchProtectedApi('/assignSwitchboarding', body);
   } catch (err) {
     throw new ApiError(err.message, { response: err.response, body: err.body });
