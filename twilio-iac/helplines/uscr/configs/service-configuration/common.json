@@ -5,7 +5,7 @@
             "web"
         ],
         "config_flags": {
-            "enableExternalRecordings": true
+            "enableExternalRecordings": false
         },
         "feature_flags": {
             "enable_voice_recordings": true,
@@ -14,7 +14,7 @@
             "enable_generalized_search": true
         },
         "definitionVersion": "uscr-v1",
-        "external_recordings_enabled": true,
+        "external_recordings_enabled": false,
         "helplineLanguage": "en-USCR",
         "permissionConfig": "uscr"
     }
