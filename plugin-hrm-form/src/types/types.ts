@@ -347,6 +347,10 @@ export type StandaloneITask = {
   };
 };
 
+export function isStandaloneTask(task: RouterTask): task is StandaloneITask {
+  return task.taskSid === standaloneTaskSid;
+}
+
 // Whilst this is the same as ITask<{ isContactlessTask: true; isInMyBehalf: true }>, TS can distinguish this one from a Twilio ITask
 export type InMyBehalfITask = ITask & { attributes: { isContactlessTask: true; isInMyBehalf: true } };
 
