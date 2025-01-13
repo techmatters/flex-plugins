@@ -25,7 +25,7 @@ import { RootState } from '../../states';
 import asyncDispatch from '../../states/asyncDispatch';
 import { namespace } from '../../states/storeNamespaces';
 import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
-import { Contact, ContactRawJson, isOfflineContact, isOfflineContactTask } from '../../types/types';
+import { Contact, ContactRawJson, isOfflineContact, isOfflineContactTask, isStandaloneITask } from '../../types/types';
 import { isNonDataCallType } from '../../states/validationRules';
 import { selectCaseMergingBanners } from '../../states/case/caseBanners';
 import { ContactDraftChanges, updateDraft } from '../../states/contacts/existingContacts';
@@ -38,7 +38,7 @@ import { newCSAMReportActionForContact } from '../../states/csam-report/actions'
 import { CSAMReportType, CSAMReportTypes } from '../../states/csam-report/types';
 import { changeRoute, newOpenModalAction } from '../../states/routing/actions';
 import { AppRoutes, ChangeRouteMode, TabbedFormRoute, TabbedFormSubroutes } from '../../states/routing/types';
-import { Box, Row, StyledTabs } from '../../styles';
+import { Box, Row, StyledTabs, FontOpenSans, OpaqueText, Bold } from '../../styles';
 import { TabbedFormsContainer, TabbedFormTabContainer } from './styles';
 import { hasTaskControl } from '../../transfer/transferTaskState';
 import ContactAddedToCaseBanner from '../caseMergingBanners/ContactAddedToCaseBanner';
@@ -243,7 +243,7 @@ const TabbedFormsTabs: React.FC<Props> = ({
   };
 
   const HeaderControlButtons = () => (
-    <Box marginTop="10px" marginBottom="10px" paddingLeft="20px">
+    <Box marginTop="10px" marginBottom="5px" paddingLeft="20px">
       <Row>
         <SearchResultsBackButton handleBack={handleBackButton} text={<Template code="TabbedForms-BackButton" />} />
         {csamReportEnabled && (
@@ -260,6 +260,14 @@ const TabbedFormsTabs: React.FC<Props> = ({
             />
           </Box>
         )}
+      </Row>
+      <Row style={{ paddingLeft: '9px', paddingTop: '3px' }}>
+        <FontOpenSans>
+          <Bold>#{contactId}</Bold>
+          {!isOfflineContactTask(task) && !isStandaloneITask(task) && (
+            <OpaqueText style={{ fontStyle: 'italic' }}> ({task.queueName})</OpaqueText>
+          )}
+        </FontOpenSans>
       </Row>
     </Box>
   );

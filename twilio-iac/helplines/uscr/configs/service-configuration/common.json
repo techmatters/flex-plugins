@@ -1,9 +1,20 @@
 {
     "attributes": {
         "contacts_waiting_channels": [
-            "voice"
+            "voice",
+            "web"
         ],
+        "config_flags": {
+            "enableExternalRecordings": false
+        },
+        "feature_flags": {
+            "enable_voice_recordings": true,
+            "enable_client_profiles":true,
+            "enable_conferencing": true,
+            "enable_generalized_search": true
+        },
         "definitionVersion": "uscr-v1",
+        "external_recordings_enabled": false,
         "helplineLanguage": "en-USCR",
         "permissionConfig": "uscr"
     }
