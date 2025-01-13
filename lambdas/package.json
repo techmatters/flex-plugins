@@ -1,0 +1,61 @@
+{
+  "name": "@tech-matters/flex-lambda-base",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "AGPL",
+  "workspaces": [
+    "account-scoped"
+  ],
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "node-fetch": "^2.7.0",
+    "twilio": "^5.4.0"
+  },
+  "devDependencies": {
+    "@tsconfig/node16": "^1.0.3",
+    "@tsconfig/node18": "^18.2.1",
+    "@types/aws-lambda": "^8.10.119",
+    "@types/jest": "^26.0.24",
+    "@types/node": "^18.16.2",
+    "@types/node-fetch": "^2.5.10",
+    "@types/redis": "^4.0.10",
+    "@types/ws": "8.5.4",
+    "@typescript-eslint/eslint-plugin": "^5.13.0",
+    "@typescript-eslint/parser": "^5.13.0",
+    "aws-cdk": "^2.87.0",
+    "aws-cdk-local": "^2.18.0",
+    "cross-env": "^7.0.3",
+    "esbuild": "^0.18.11",
+    "eslint": "^8.44.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-import-resolver-typescript": "^3.5.5",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jest": "^27.2.2",
+    "eslint-plugin-prettier": "^5.0.0",
+    "jest": "^28.1.3",
+    "jest-config": "^28.1.3",
+    "jest-mock": "^28.1.3",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.0.0",
+    "ts-jest": "^28.0.8",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4",
+    "wait-on": "^7.2.0"
+  },
+  "scripts": {
+    "build": "tsc -b --verbose",
+    "docker:build": "npm run docker:build --workspaces --if-present",
+    "es:create-index": "npm run es:create-index:local --workspaces --if-present",
+    "lint": "cross-env eslint .",
+    "lint:fix": "npm run lint -- --fix",
+    "license:add": "docker run --rm -v ${PWD}:/src ghcr.io/google/addlicense -c \"Technology Matters\" -y \"2021-2023\" -ignore \".idea/**\" -ignore \"**/node_modules/**\" -ignore \"**/dist/**\" -ignore \"**/coverage/**\" -ignore \"cdk.out/**\" -f license-header.tpl .",
+    "license:check": "docker run --rm -v ${PWD}:/src ghcr.io/google/addlicense -check -c \"Technology Matters\" -y \"2021-2023\" -ignore \".idea/**\" -ignore \"**/node_modules/**\" -ignore \"**/dist/**\" -ignore \"**/coverage/**\" -f license-header.tpl .",
+    "license:add:windows": "docker run --rm -v %cd%:/src ghcr.io/google/addlicense -c \"Technology Matters\" -y \"2021-2023\" -ignore \".idea/**\" -ignore \"**/node_modules/**\" -ignore \"**/dist/**\" -ignore \"**/coverage/**\" -f license-header.tpl .",
+    "license:check:windows": "docker run --rm -v %cd%:/src ghcr.io/google/addlicense -check -c \"Technology Matters\" -y \"2021-2023\" -ignore \".idea/**\" -ignore \"**/node_modules/**\" -ignore \"**/dist/**\" -ignore \"**/coverage/**\" -f license-header.tpl .",
+    "license:add:windows:local": "addlicense -c \"Technology Matters\" -y \"2021-2023\" -ignore .idea\\\\** -ignore node_modules\\\\** -ignore \"**\\\\node_modules\\\\**\" -ignore \"**\\\\dist\\\\**\" -ignore \"**\\\\coverage\\\\**\" -f license-header.tpl .",
+    "license:check:windows:local": "addlicense -check -c \"Technology Matters\" -y \"2021-2023\" -ignore .idea\\\\** -ignore node_modules\\\\** -ignore \"**\\\\node_modules\\\\**\" -ignore \"**\\\\dist\\\\**\" -ignore \"**\\\\coverage\\\\**\" -f license-header.tpl ."
+  }
+}
