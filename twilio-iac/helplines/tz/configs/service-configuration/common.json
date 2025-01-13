@@ -1,7 +1,10 @@
 {
     "attributes": {
         "contacts_waiting_channels": [
-            "web"
+            "web",
+            "whatsapp",
+            "facebook",
+            "instagram"
         ],
         "definitionVersion": "tz-v1",
         "helplineLanguage": "en-US",
