@@ -14,11 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { validateWebhookRequest } from './validation/webhook';
+import { validateWebhookRequest } from './validation/twilioWebhook';
 import { AccountScopedRoute, FunctionRoute, HttpRequest } from './httpTypes';
 import { validateRequestMethod } from './validation/method';
 import { isAccountSID } from './twilioTypes';
-import { handleTaskRouterEvent } from './taskrouterEventHandler';
+import { handleTaskRouterEvent } from './taskrouter';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
