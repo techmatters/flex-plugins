@@ -11,7 +11,7 @@ locals {
     voice_ivr_language                = "es-MX"
     enable_post_survey                = true
     enable_external_recordings        = true
-
+    permission_config                 = "cl"
     workflows = {
       master : {
         friendly_name : "Master Workflow"

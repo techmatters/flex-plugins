@@ -13,6 +13,7 @@ locals {
     voice_ivr_language                = ""
     contacts_waiting_channels         = ["web", "whatsapp", "facebook", "instagram", "voice"]
     enable_post_survey                = false
+    permission_config                 = "zw"
 
     workflows = {
       master : {
