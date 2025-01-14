@@ -248,7 +248,7 @@ type NestedStringValues<T> = T extends object
   ? { [K in keyof T]: T[K] extends string ? T[K] : NestedStringValues<T[K]> }[keyof T]
   : never;
 type Action = NestedStringValues<typeof actionsMaps>;
-type RulesFile = { [k in Action]: TKConditionsSets<TargetKind> };
+export type RulesFile = { [k in Action]: TKConditionsSets<TargetKind> };
 
 const isValidTKConditionsSets = <T extends TargetKind>(kind: T) => (
   css: TKConditionsSets<TargetKind>,
