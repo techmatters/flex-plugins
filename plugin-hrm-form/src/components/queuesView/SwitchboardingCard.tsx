@@ -100,22 +100,25 @@ const SwitchboardingTile = () => {
                 <h1>Queues</h1>
                 <form>
                   {filteredQueues &&
-                    filteredQueues.map(queue => (
-                      <div key={queue.key}>
-                        <input
-                          type="radio"
-                          id={queue.key}
-                          name="queue"
-                          value={queue.key}
-                          checked={selectedQueue === queue.key}
-                          onChange={e => setSelectedQueue(e.target.value)}
-                        />
-                        <label htmlFor={queue.key}>{queue.friendly_name}</label>
-                      </div>
-                    ))}
+                    filteredQueues.map(queue => {
+                      console.log('>>> Queue:', queue);
+                      return (
+                        <div key={queue.key}>
+                          <input
+                            type="radio"
+                            id={queue.key}
+                            name="queue"
+                            value={queue.key}
+                            checked={selectedQueue === queue.key}
+                            onChange={e => setSelectedQueue(e.target.value)}
+                          />
+                          <label htmlFor={queue.key}>{queue.friendly_name}</label>
+                        </div>
+                      );
+                    })}
                   <button
                     type="button"
-                    onClick={() => handleSwitchboarding('WQb4a3a7e8808c61d11d344e5b28fa53ef')}
+                    onClick={() => handleSwitchboarding('WQ55df346e2986acff362141c83f5cdf29')}
                     // disabled={!selectedQueue}
                   >
                     Assign Switchboard
