@@ -187,7 +187,7 @@ resource "aws_ssm_parameter" "twilio_short_helpline_to_account_sid" {
   }
 }
 
-resource "aws_ssm_parameter" "twilio__account_sid_to_short_helpline" {
+resource "aws_ssm_parameter" "twilio_account_sid_to_short_helpline" {
   name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/short_helpline"
   type        = "SecureString"
   value       = var.short_helpline
@@ -200,7 +200,7 @@ resource "aws_ssm_parameter" "twilio__account_sid_to_short_helpline" {
   }
 }
 
-resource "aws_ssm_parameter" "twilio__account_sid_to_helpline_name" {
+resource "aws_ssm_parameter" "twilio_account_sid_to_helpline_name" {
   name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/helpline_name"
   type        = "SecureString"
   value       = var.helpline
