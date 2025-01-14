@@ -75,9 +75,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ inputs.region }}
-          # this plugin sets the AWS account ID to a secret which is not allowed in outputs
-          # we have to disable that so repo output will work
+          aws-region: ${{ env.PRIMARY_AWS_REGION }}
           mask-aws-account-id: 'no'
 
       - name: Read ECR url from SSM
@@ -85,6 +83,14 @@ jobs:
         with:
           ssm_parameter: /twilio/lambda/${{ matrix.lambda_path }}/ecr-url
           env_variable_name: ECR_URL
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ inputs.region }}
+          mask-aws-account-id: 'no'
       # The search and replace is kinda ugly but works. We need to replace the primary region with the region we're deploying to.
       # because lambdas don't support ECR images in different regions. We use cross region replication in ECR to make the image
       # that is pushed in the primary region available in all other regions.
