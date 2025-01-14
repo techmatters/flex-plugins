@@ -99,7 +99,7 @@ jobs:
           DOCKER_IMAGE=$(echo "${{ env.ECR_URL }}:${{ github.ref_type }}.${{ github.ref_name }}" | sed -r 's/${{ env.PRIMARY_AWS_REGION }}/${{ inputs.region }}/g')
 
           LAMBDA_NAME=$(basename "./${{ matrix.lambda_path }}")
-          LAMBDA="${{ inputs.environment }}-$LAMBDA_NAME"
+          LAMBDA="${{ inputs.environment }}-${{ inputs.region }}-$LAMBDA_NAME"
           OUTPUT=$(aws lambda update-function-code --function-name $LAMBDA --image-uri "$DOCKER_IMAGE" --publish)
           NEW_VERSION=$(echo "$OUTPUT" | jq -r '.Version')
 
