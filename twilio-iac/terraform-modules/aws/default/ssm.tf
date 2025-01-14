@@ -187,6 +187,34 @@ resource "aws_ssm_parameter" "twilio_short_helpline_to_account_sid" {
   }
 }
 
+resource "aws_ssm_parameter" "twilio__account_sid_to_short_helpline" {
+  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/short_helpline"
+  type        = "SecureString"
+  value       = var.short_helpline
+  description = "Twilio account -  short helpline by account SID "
+
+  tags = {
+    Environment = lower(var.environment)
+    Name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/short_helpline"
+    Terraform   = true
+  }
+}
+
+resource "aws_ssm_parameter" "twilio__account_sid_to_helpline_name" {
+  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/helpline_name"
+  type        = "SecureString"
+  value       = var.helpline
+  description = "Twilio account -  helpline name by account SID "
+
+  tags = {
+    Environment = lower(var.environment)
+    Name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/helpline_name"
+    Terraform   = true
+  }
+}
+
+
+
 resource "aws_ssm_parameter" "aws_region" {
   name        = "/${lower(var.environment)}/aws/${nonsensitive(var.twilio_account_sid)}/region"
   type        = "SecureString"
