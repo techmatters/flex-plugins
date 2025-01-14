@@ -29,3 +29,4 @@ export const referrableResourcesBase = 'referrableResources';
 export const conferencingBase = 'conferencing';
 export const caseMergingBannersBase = 'caseMergingBanners';
 export const profileBase = 'profile';
+export const permissionRulesBase = 'permissionRules';

@@ -46,8 +46,10 @@ import {
   queuesStatusBase,
   referrableResourcesBase,
   routingBase,
+  permissionRulesBase,
 } from './storeNamespaces';
 import { reduce as CaseMergingBannersReducer } from './case/caseBanners';
+import { reduce as PermissionRulesReducer } from './permissionRules/reducer';
 
 const reducers = {
   searchContacts: SearchFormReducer,
@@ -62,6 +64,7 @@ const reducers = {
   [conferencingBase]: ConferencingReducer,
   [caseMergingBannersBase]: CaseMergingBannersReducer,
   [profileBase]: ProfileReducer,
+  [permissionRulesBase]: PermissionRulesReducer,
 
   /*
    * [csamClcReportBase]: CSAMCLCReportReducer,
