@@ -14,6 +14,7 @@ locals {
     task_language                         = "en-SG"
     enable_post_survey                    = false
     enable_external_recordings            = true
+    permission_config                     = "sg"
     custom_task_routing_filter_expression = "channelType =='voice' OR channelType =='web' OR isContactlessTask == true"
     workflows = {
       master : {

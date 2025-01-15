@@ -12,6 +12,7 @@ locals {
     helpline_language                 = "th-TH"
     contacts_waiting_channels         = ["facebook", "instagram", "line"]
     enable_post_survey                = false
+    permission_config                 = "th"
     
 
 

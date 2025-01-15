@@ -14,6 +14,7 @@ locals {
     enable_post_survey         = false
     enable_external_recordings = false
     enable_datadog_monitoring  = false
+    permission_config          = "uscr"
 
     workflows = {
       master : {
