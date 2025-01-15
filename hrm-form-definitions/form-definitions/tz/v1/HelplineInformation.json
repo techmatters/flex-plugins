@@ -1,1 +1,15 @@
-{}
+{
+    "label": "Helpline",
+    "helplines": [
+      {
+        "label": "C-Sema",
+        "value": "C-Sema",
+        "default": true,
+        "manager": {
+          "name": "Helpline Manager",
+          "phone": "+255222936576",
+          "email": "info@sematanzania.org"
+        }
+      }
+    ]
+}

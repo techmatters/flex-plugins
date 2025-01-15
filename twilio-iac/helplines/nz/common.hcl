@@ -8,6 +8,7 @@ locals {
     task_language              = "en-NZ"
     enable_external_recordings = true
     enable_datadog_monitoring  = false
+    permission_config          = "nz"
 
     channel_attributes = {
       webchat                 = "/app/twilio-iac/helplines/nz/templates/channel-attributes/webchat.tftpl",
@@ -60,7 +61,7 @@ locals {
     }
 
     lex_bot_languages = {
-      en_NZ : ["pre_survey","pre_survey_ig","counsel_check"]
+      en_NZ : ["pre_survey", "pre_survey_ig", "counsel_check"]
     }
 
 

@@ -1,94 +1,207 @@
 [
   {
-    "name": "callSummary",
-    "label": "Contact Summary",
+    "name": "incidentSummary",
+    "label": "Incident Summary",
     "type": "textarea",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "rows": 20,
+    "width": 289,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "repeatCaller",
-    "label": "Repeat Caller?",
-    "type": "checkbox"
+    "name": "responseTime",
+    "label": "Response Time ",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "urgencyLevel",
-    "label": "Urgency Level",
-    "type": "select",
-    "required": { "value": true, "message": "RequiredFieldError" },
-    "options": [
-      { "value": "", "label": "" },
-      { "value": "Urgent", "label": "Urgent" },
-      { "value": "Critical", "label": "Critical" },
-      { "value": "Non-critical", "label": "Non-critical" },
-      { "value": "Other", "label": "Other" }
-    ]
-  },
-  {
-    "name": "actionTaken",
-    "label": "Action Taken",
-    "type": "listbox-multiselect",
-    "options": [
-      { "value": "Direct interventions by the child helpline", "label": "Direct interventions by the child helpline" },
-      { "value": "Recommendations of resources", "label": "Recommendations of resources" },
-      { "value": "Referrals to child protection agencies", "label": "Referrals to child protection agencies" },
-      { "value": "Referrals to general healthcare professionals", "label": "Referrals to general healthcare services" },
-      { "value": "Referrals to law enforcement agencies", "label": "Referrals to law enforcement agencies" },
-      { "value": "Referrals to mental health services", "label": "Referrals to mental health services" },
-      { "value": "Referrals to other organisations", "label": "Referrals to other organisations" },
-      { "value": "Referrals to school counsellors", "label": "Referrals to school counsellors" },
-      { "value": "Reports to Child Sexual Abuse Material", "label": "Reports to Child Sexual Abuse Material" },
-      { "value": "Other", "label": "Other" }
-    ]
-  },
-  {
-    "name": "howDidYouKnowAboutOurLine",
-    "label": "How did you know about our line/number?",
-    "type": "select",
-    "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Word of mouth", "label": "Word of mouth" },
-      { "value": "Media", "label": "Media" },
-      { "value": "Friend", "label": "Friend" },
-      { "value": "School", "label": "School" },
-      { "value": "Others", "label": "Others" }
-    ]
+    "name": "outcomeSubTag",
+    "label": "Outcome (sub tag) ",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "keepConfidential",
     "label": "Keep confidential?",
-    "type": "mixed-checkbox",
-    "initialChecked": true
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "mustCallBack",
-    "label": "Is it necessary for a case worker to call back?",
-    "type": "mixed-checkbox"
+    "name": "circleStaffFeltSafe",
+    "label": "CIRCLE Staff felt safe? ",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "okForCaseWorkerToCall",
-    "label": "Is it okay for case worker to call?",
-    "type": "mixed-checkbox"
+    "name": "numberOfPehAtIncidentLocation",
+    "label": "Number of PEH at Incident Location",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "01",
+        "label": "1"
+      },
+      {
+        "value": "02",
+        "label": "2"
+      },
+      {
+        "value": "03",
+        "label": "3"
+      },
+      {
+        "value": "04",
+        "label": "4"
+      },
+      {
+        "value": "05",
+        "label": "5"
+      },
+      {
+        "value": "06",
+        "label": "6"
+      },
+      {
+        "value": "07",
+        "label": "7"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "didYouDiscussRightsWithTheChild",
-    "label": "Did you discuss rights with the child?",
-    "type": "mixed-checkbox"
+    "name": "referralType",
+    "label": "Referral Type",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "HMIS Profile Completed",
+        "label": "HMIS Profile Completed"
+      },
+      {
+        "value": "CES Assessment",
+        "label": "CES Assessment"
+      },
+      {
+        "value": "Hotel/Motel Voucher",
+        "label": "Hotel/Motel Voucher"
+      },
+      {
+        "value": "EHV Application submitted",
+        "label": "EHV Application submitted"
+      },
+      {
+        "value": "Permanent Housing",
+        "label": "Permanent Housing"
+      },
+      {
+        "value": "Homeless Service ",
+        "label": "Homeless Service "
+      },
+      {
+        "value": "Medical LAFD",
+        "label": "Medical LAFD"
+      },
+      {
+        "value": "Medical Provider",
+        "label": "Medical Provider"
+      },
+      {
+        "value": "Mental Health",
+        "label": "Mental Health"
+      },
+      {
+        "value": "Substance Use Treatment Provider",
+        "label": "Substance Use Treatment Provider"
+      },
+      {
+        "value": "Screening form completed",
+        "label": "Screening form completed"
+      },
+      {
+        "value": "Worksource Dev Resource",
+        "label": "Worksource Dev Resource"
+      },
+      {
+        "value": "GR Application ",
+        "label": "GR Application "
+      },
+      {
+        "value": "MediCal App",
+        "label": "MediCal App"
+      },
+      {
+        "value": "GCalFresh App",
+        "label": "GCalFresh App"
+      },
+      {
+        "value": "CBEST ",
+        "label": "CBEST "
+      },
+      {
+        "value": "Domestic Violence Services",
+        "label": "Domestic Violence Services"
+      },
+      {
+        "value": "Move-in Assistance",
+        "label": "Move-in Assistance"
+      },
+      {
+        "value": "DMH Access Center/FIT",
+        "label": "DMH Access Center/FIT"
+      },
+      {
+        "value": "CA ID/DL request",
+        "label": "CA ID/DL request"
+      },
+      {
+        "value": "Birth Certificate/SS Card",
+        "label": "Birth Certificate/SS Card"
+      },
+      {
+        "value": "Veteran Services",
+        "label": "Veteran Services"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "didTheChildFeelWeSolvedTheirProblem",
-    "label": "Did the child feel we solved their problem?",
-    "type": "mixed-checkbox"
+    "name": "transportationProvided",
+    "label": "Transportation Provided",
+    "type": "input"
   },
   {
-    "name": "wouldTheChildRecommendUsToAFriend",
-    "label": "Would the child recommend us to a friend?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "referrals",
-    "label": "referrals",
-    "type": "custom-contact-component",
-    "component": "resource-referral-list",
-    "saveable": false
+    "name": "followup",
+    "label": "Follow-Up",
+    "type": "input"
   }
 ]

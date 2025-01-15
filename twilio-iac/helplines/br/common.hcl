@@ -14,7 +14,7 @@ locals {
     voice_ivr_language                = ""
     contacts_waiting_channels         = ["facebook", "instagram"]
     enable_post_survey                = false
-
+    permission_config                 = "br"
 
     lex_bot_languages = {
       pt_br : ["pre_survey", "contact_reason"]

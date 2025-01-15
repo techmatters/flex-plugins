@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.base.json",
+  "include": [".eslintrc.js", "jest.config.js", "**/*.ts", "**/*.js", "**/index.d.ts"],
+  "exclude": ["cdk.out/**", "**/dist/**", "**/coverage/**", "node_modules/**", "**/node_modules/**"]
+}

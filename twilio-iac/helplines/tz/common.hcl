@@ -7,34 +7,30 @@ locals {
 
   local_config = {
     helpline                          = "C-Sema"
-    old_dir_prefix                    = ""
-    default_autopilot_chatbot_enabled = false
     task_language                     = "en-US"
-    voice_ivr_language                = ""
     enable_post_survey                = false
+    permission_config                 = "tz"
 
-    lex_bot_languages = {
-    }
 
     workflows = {
       master : {
         friendly_name = "Master Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+        templatefile = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
       },
-      queue_transfers : {
+      queue_transfers = {
         friendly_name = "Queue Transfers Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
+        templatefile = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
       },
       survey : {
         friendly_name = "Survey Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+        templatefile = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
 
     task_queues = {
       master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "Aselo"
+        "friendly_name"  = "C-Sema"
       },
       survey : {
         "target_workers" = "1==0",
@@ -44,15 +40,6 @@ locals {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
         "friendly_name"  = "E2E Test Queue"
       }
-    }
-    task_channels = {
-      default : "Default"
-      chat : "Programmable Chat"
-      voice : "Voice"
-      sms : "SMS"
-      video : "Video"
-      email : "Email"
-      survey : "Survey"
     }
 
   }

@@ -1,0 +1,8 @@
+// This file is copied to the lambda root at build time, so all paths are relative to the root
+{
+  "extends": "./tsconfig.base.json",
+  "files": [],
+  "references": [
+    { "path": "account-scoped" },
+  ]
+}
