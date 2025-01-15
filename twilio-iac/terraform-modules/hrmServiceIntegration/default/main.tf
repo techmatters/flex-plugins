@@ -21,3 +21,21 @@ resource "null_resource" "hrm_static_api_key" {
     }
   }
 }
+
+resource "null_resource" "hrm_static_api_key_v2" {
+  triggers = {
+    helpline          = var.helpline
+    short_helpline    = var.short_helpline
+    environment       = var.environment
+    short_environment = var.short_environment
+    twilio_account_sid = var.twilio_account_sid
+  }
+  provisioner "local-exec" {
+    working_dir = "/app/scripts"
+    command     = "npm run twilioResources -- new-key-with-ssm-secret --ssmRole=\"arn:aws:iam::712893914485:role/tf-twilio-iac-${lower(var.environment)}\" ${local.cmd_args} hrm-static-key /${lower(var.environment)}/twilio/${var.twilio_account_sid}/static_key \"${var.helpline}\" ${var.environment}"
+    interpreter = local.sync_key_provisioner_interpreter
+    environment = {
+      LOG_LEVEL = "debug"
+    }
+  }
+}
