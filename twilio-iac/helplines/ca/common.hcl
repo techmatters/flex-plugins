@@ -10,7 +10,7 @@ locals {
     task_language                     = "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
     enable_external_recordings        = true
     contacts_waiting_channels         = ["voice", "web"]
-
+    permission_config                 = "ca"
     workflows = {
       master : {
         friendly_name = "Master Workflow"

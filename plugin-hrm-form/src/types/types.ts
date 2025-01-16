@@ -262,6 +262,7 @@ export type ConfigFlags = {
 export type FeatureFlags = {
   // Please keep this in alphabetical order!
   backend_handled_chat_janitor: boolean; // [Temporary flag until all accounts are migrated] Enables handling the janitor from taskrouter event listeners
+  enable_active_contact_header: boolean; // Enables Active Contact Header
   enable_aselo_messaging_ui: boolean; // Enables Aselo Messaging UI iinstead of the default Twilio one - reduced functionality for low spec clients.
   enable_canned_responses: boolean; // Enables Canned Responses
   enable_case_merging: boolean; // Enables adding contacts to existing cases

@@ -5,6 +5,7 @@ locals {
 
   local_config = {
     enable_post_survey                    = true
+    permission_config = "demo"
     custom_task_routing_filter_expression = "channelType IN ['instagram','messenger','web','whatsapp','telegram','line','voice']  OR isContactlessTask == true OR  twilioNumber == 'messenger:105642325869250', 'instagram:17841459369720372' "
     flow_vars = {
       capture_channel_with_bot_function_sid = "ZHd9eb5ce1b230abe29d9eafccc88b16d3"

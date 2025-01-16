@@ -13,12 +13,13 @@ provider "twilio" {
 }
 
 module "hrmServiceIntegration" {
-  source            = "../../hrmServiceIntegration/default"
-  helpline          = var.helpline
-  short_helpline    = upper(var.short_helpline)
-  environment       = title(var.environment)
-  short_environment = var.short_environment
-  stage             = local.stage
+  source              = "../../hrmServiceIntegration/default"
+  twilio_account_sid  = local.secrets.twilio_account_sid
+  helpline            = var.helpline
+  short_helpline      = upper(var.short_helpline)
+  environment         = title(var.environment)
+  short_environment   = var.short_environment
+  stage               = local.stage
 }
 
 module "serverless" {
@@ -71,7 +72,7 @@ module "aws" {
   datadog_access_token               = local.secrets.datadog_access_token
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
   master_workflow_sid                = module.taskRouter.workflow_sids["master"]
-  queue_transfers_workflow_sid       = module.taskRouter.workflow_sids["queue_transfers"]
+  queue_transfers_workflow_sid       = try(module.taskRouter.workflow_sids["queue_transfers"],"NOTVALIDWORKFLOWSID")
   shared_state_sync_service_sid      = module.services.shared_state_sync_service_sid
   flex_chat_service_sid              = module.services.flex_chat_service_sid
   flex_proxy_service_sid             = module.services.flex_proxy_service_sid
@@ -82,7 +83,6 @@ module "aws" {
   bucket_region       = var.helpline_region
   helpline_region     = var.helpline_region
   s3_lifecycle_rules  = var.s3_lifecycle_rules
-  
 }
 
 #TODO: Remove the provider and moved once this has been applied everywhere

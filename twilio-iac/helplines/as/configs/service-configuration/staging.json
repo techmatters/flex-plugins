@@ -10,7 +10,8 @@
             "line",
             "telegram"
         ],
-        "feature_flags": {  
+        "feature_flags": {
+            "enable_active_contact_header": true,
             "enable_csam_report": true,
             "enable_lex": true,
             "enable_generalized_search": true,

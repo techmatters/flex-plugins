@@ -13,6 +13,7 @@ locals {
     voice_ivr_language                = ""
     enable_post_survey                = false
     helpline_region                   = "us-east-1"
+    permission_config                 = "in"
 
      
 

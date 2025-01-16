@@ -12,6 +12,7 @@ locals {
     helpline_language                 = "en-US"
     voice_ivr_language                = ""
     enable_post_survey                = false
+    permission_config                 = "ph"
 
 
     lex_bot_languages = {
