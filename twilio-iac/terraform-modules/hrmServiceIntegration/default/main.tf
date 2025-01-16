@@ -29,6 +29,7 @@ resource "null_resource" "hrm_static_api_key_v2" {
     environment       = var.environment
     short_environment = var.short_environment
     twilio_account_sid = var.twilio_account_sid
+    force_trigger     = timestamp()  # This is a dummy change to force the execution
   }
   provisioner "local-exec" {
     working_dir = "/app/scripts"
