@@ -2,12 +2,14 @@
   {
     "name": "firstName",
     "label": "First Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gender",
@@ -63,7 +65,8 @@
   {
     "name": "streetAddress",
     "label": "Street Address",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "city",
@@ -126,12 +129,14 @@
   {
     "name": "phone1",
     "label": "Phone #1",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "phone2",
     "label": "Phone #2",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "language",

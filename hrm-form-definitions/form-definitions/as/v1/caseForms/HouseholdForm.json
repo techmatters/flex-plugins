@@ -3,13 +3,15 @@
     "name": "firstName",
     "type": "input",
     "label": "First Name",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": true
   },
   {
     "name": "lastName",
     "type": "input",
     "label": "Last Name",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": true
   },
   {
     "name": "relationshipToChild",
@@ -32,7 +34,8 @@
   {
     "name": "streetAddress",
     "label": "Street Address",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "province",
