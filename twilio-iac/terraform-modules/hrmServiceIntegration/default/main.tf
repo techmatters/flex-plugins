@@ -22,15 +22,19 @@ resource "null_resource" "hrm_static_api_key" {
   }
 }
 
+output "hrm_static_api_key_name" {
+  value = "${var.short_environment}_TWILIO_${var.short_helpline}_HRM_STATIC_KEY"
+}
+
+
 data "aws_ssm_parameter" "hrm_static_api_key_legacy" {
-  name     = "${var.short_environment}_TWILIO_${var.short_helpline}_HRM_STATIC_KEY"
-  depends_on = null_resource.hrm_static_api_key
+  name = output.hrm_static_api_key_name
 }
 
 resource "aws_ssm_parameter" "hrm_static_api_key_v2" {
   name        = "/${lower(var.environment)}/twilio/${var.twilio_account_sid}/static_key"
   type        = "SecureString"
-  value       = data.aws_ssm_parameter.hrm_static_api_key_legacy
+  value       = data.aws_ssm_parameter.hrm_static_api_key_legacy.value
   description = "Twilio API Key"
 
   tags = {
