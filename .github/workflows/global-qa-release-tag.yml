@@ -98,18 +98,7 @@ jobs:
           source-git-reference-type: ${{ github.ref_type }}
           source-git-reference: ${{ github.ref_name }}
           target-git-tag: ${{ steps.create_pre_release.outputs.generated-pre-release-tag }}
-          
 
-      # Send Slack notifying success
-      - name: Slack aselo-deploys channel
-        uses: ./.github/actions/notify-deploys
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
-          slack-message: "`[Flex]` Release from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}. Release tag is `${{ steps.create_pre_release.outputs.generated-pre-release-tag }}` :rocket:."
-        env:
-          SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
   tag-images:
     needs: generate-pre-release
     runs-on: ubuntu-latest
@@ -142,3 +131,26 @@ jobs:
           REPOSITORY_NAME="twilio/lambda/${{matrix.lambda_path}}"
           MANIFEST=$(aws ecr batch-get-image --repository-name $REPOSITORY_NAME --image-ids imageTag="${{ github.ref_type }}.$REF_NAME_FOR_DOCKER_TAG" --output text --query 'images[].imageManifest')
           aws ecr put-image --repository-name $REPOSITORY_NAME --image-tag tag.${{ needs.generate-pre-release.outputs.qa-version }} --image-manifest "$MANIFEST"
+  send-slack-message:
+    needs: tag-images
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github/actions
+
+      # Send Slack notifying success
+      - name: Slack aselo-deploys channel
+        uses: ./.github/actions/notify-deploys
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          slack-message: "`[Flex]` Release from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}. Release tag is `${{ steps.create_pre_release.outputs.generated-pre-release-tag }}` :rocket:."
+        env:
+          SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
