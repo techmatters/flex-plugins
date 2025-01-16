@@ -115,7 +115,7 @@ locals {
         { type : "com.twilio.taskrouter.reservation.failed" },
         { type : "com.twilio.taskrouter.workflow.entered" },
         { type : "com.twilio.taskrouter.workflow.timeout" },
-        //{type:"com.twilio.taskrouter.workflow.skipped"},
+        {type:"com.twilio.taskrouter.workflow.skipped"},
         //{type:"com.twilio.taskrouter.workflow.target-matched"},
         { type : "com.twilio.taskrouter.task-queue.created" },
         { type : "com.twilio.taskrouter.task-queue.deleted" },
