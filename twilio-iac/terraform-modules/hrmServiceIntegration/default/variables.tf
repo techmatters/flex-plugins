@@ -29,3 +29,8 @@ variable "stage" {
   type = string
   default = ""
 }
+
+variable "twilio_account_sid" {
+  description = "Twilio Account SID (ACxxxx)"
+  type        = string
+}

@@ -13,12 +13,13 @@ provider "twilio" {
 }
 
 module "hrmServiceIntegration" {
-  source            = "../../hrmServiceIntegration/default"
-  helpline          = var.helpline
-  short_helpline    = upper(var.short_helpline)
-  environment       = title(var.environment)
-  short_environment = var.short_environment
-  stage             = local.stage
+  source              = "../../hrmServiceIntegration/default"
+  twilio_account_sid  = local.secrets.twilio_account_sid
+  helpline            = var.helpline
+  short_helpline      = upper(var.short_helpline)
+  environment         = title(var.environment)
+  short_environment   = var.short_environment
+  stage               = local.stage
 }
 
 module "serverless" {
