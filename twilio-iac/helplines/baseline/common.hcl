@@ -18,7 +18,8 @@ locals {
         friendly_name = "Master Workflow"
         templatefile = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
       },
-      queue_transfers = {
+      //NOTE: MAKE SURE TO ADD THIS IF THE ACCOUNT USES A CONVERSATION CHANNEL
+      queue_transfers : {
         friendly_name = "Queue Transfers Workflow"
         templatefile = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
       },
