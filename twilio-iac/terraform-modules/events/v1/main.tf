@@ -28,7 +28,7 @@ resource "twilio_events_subscriptions_v1" "subscription" {
   types       = [for event in each.value.events : jsonencode({ type = event.type })]
    lifecycle {
     replace_triggered_by = [
-      each.value.events,  # Replace if the webhook URL changes
+      each.value.events,  # Replace if the events change
     ]
   }
 }

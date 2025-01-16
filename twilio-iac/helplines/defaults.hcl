@@ -129,7 +129,7 @@ locals {
         { type : "com.twilio.taskrouter.task.updated" },
         { type : "com.twilio.taskrouter.task.deleted" },
         {type:"com.twilio.taskrouter.task.completed"},
-        //{type:"com.twilio.taskrouter.task.wrapup"},
+        {type:"com.twilio.taskrouter.task.wrapup"},
         { type : "com.twilio.taskrouter.task.transfer-initiated" },
         { type : "com.twilio.taskrouter.task.transfer-failed" },
         { type : "com.twilio.taskrouter.task.transfer-attempt-failed" },
