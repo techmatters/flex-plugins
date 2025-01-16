@@ -22,14 +22,22 @@ resource "twilio_events_sinks_v1" "webhook_sink" {
   sink_type = "webhook"
 }
 
+resource "null_resource" "event_hash_trigger" {
+  for_each = local.events_hash
+  triggers = {
+    hash = each.value
+  }
+}
+
 resource "twilio_events_subscriptions_v1" "subscription" {
   for_each    = var.subscriptions
   description = "${title(replace(each.key, "_", " "))} ${upper(var.short_helpline)}_${upper(var.short_environment)} Events Subscription"
   sink_sid    = twilio_events_sinks_v1.webhook_sink[each.key].sid
   types       = [for event in each.value.events : jsonencode({ type = event.type })]
-   lifecycle {
+
+  lifecycle {
     replace_triggered_by = [
-      local.events_hash[each.key],  # Trigger replacement if the hash changes,  # Replace if the events change
+      null_resource.event_hash_trigger[each.key].triggers.hash, # Trigger replacement if the hash changes
     ]
   }
 }
