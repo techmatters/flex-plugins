@@ -22,20 +22,15 @@ resource "null_resource" "hrm_static_api_key" {
   }
 }
 
-# Create a local variable to store the parameter name
-locals {
-  hrm_static_api_key_name = "${var.short_environment}_TWILIO_${var.short_helpline}_HRM_STATIC_KEY"
-}
-
-
 data "aws_ssm_parameter" "hrm_static_api_key_legacy" {
-  name = local.hrm_static_api_key_name
+  name     = "${var.short_environment}_TWILIO_${var.short_helpline}_HRM_STATIC_KEY"
+  depends_on = [null_resource.hrm_static_api_key]
 }
 
 resource "aws_ssm_parameter" "hrm_static_api_key_v2" {
   name        = "/${lower(var.environment)}/twilio/${var.twilio_account_sid}/static_key"
   type        = "SecureString"
-  value       = data.aws_ssm_parameter.hrm_static_api_key_legacy.value
+  value       = data.aws_ssm_parameter.hrm_static_api_key_legacy
   description = "Twilio API Key"
 
   tags = {
