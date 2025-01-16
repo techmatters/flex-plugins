@@ -98,7 +98,7 @@ jobs:
           ref_name=${{ github.ref_name }}
           echo "build_lambda_name=$build_lambda_name" >> $GITHUB_ENV
           echo "build_lambda_dir=$build_lambda_dir" >> $GITHUB_ENV
-          echo "ref_name_for_docker=${ref_name//$'\/'/_-}" >> $GITHUB_ENV
+          echo "ref_name_for_docker=${ref_name//\//_-}" >> $GITHUB_ENV
         shell: bash
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
