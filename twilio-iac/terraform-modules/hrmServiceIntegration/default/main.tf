@@ -30,7 +30,7 @@ data "aws_ssm_parameter" "hrm_static_api_key_legacy" {
 resource "aws_ssm_parameter" "hrm_static_api_key_v2" {
   name        = "/${lower(var.environment)}/twilio/${var.twilio_account_sid}/static_key"
   type        = "SecureString"
-  value       = data.aws_ssm_parameter.hrm_static_api_key_legacy
+  value       = data.aws_ssm_parameter.hrm_static_api_key_legacy.value
   description = "Twilio API Key"
 
   tags = {
