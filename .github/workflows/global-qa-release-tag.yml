@@ -64,15 +64,20 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-
   generate-pre-release:
     needs: run-e2e-tests
 
     runs-on: ubuntu-latest
+    outputs:
+      qa-version: ${{ steps.create_pre_release.outputs.generated-pre-release-tag }}
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github/actions
 
       - name: Create pre release
         uses: ./.github/actions/generate-pre-release
@@ -93,6 +98,7 @@ jobs:
           source-git-reference-type: ${{ github.ref_type }}
           source-git-reference: ${{ github.ref_name }}
           target-git-tag: ${{ steps.create_pre_release.outputs.generated-pre-release-tag }}
+          
 
       # Send Slack notifying success
       - name: Slack aselo-deploys channel
@@ -104,3 +110,37 @@ jobs:
           slack-message: "`[Flex]` Release from ${{ github.ref_type }} `${{ github.ref_name }}` requested by `${{ github.triggering_actor }}` completed with SHA ${{ github.sha }}. Release tag is `${{ steps.create_pre_release.outputs.generated-pre-release-tag }}` :rocket:."
         env:
           SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+  tag-images:
+    needs: generate-pre-release
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        lambda_path:
+          - account-scoped
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.PRIMARY_AWS_REGION }}
+          # this plugin sets the AWS account ID to a secret which is not allowed in outputs
+          # we have to disable that so repo output will work
+          mask-aws-account-id: 'no'
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Read ECR url from SSM
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: /twilio/lambda/${{ matrix.lambda_path }}/ecr-url
+          env_variable_name: ECR_URL
+
+      - name: Tag Image with version
+        run: |
+          REF_NAME="${{ github.ref_name }}"
+          REF_NAME_FOR_DOCKER_TAG="${REF_NAME//\//_-}"
+          MANIFEST=$(aws ecr batch-get-image --repository-name $ECR_URL --image-ids imageTag=$REF_NAME_FOR_DOCKER_TAG --output text --query 'images[].imageManifest')
+          aws ecr describe-images --repository-name ${{ needs.generate-pre-release.outputs.qa-version }}
