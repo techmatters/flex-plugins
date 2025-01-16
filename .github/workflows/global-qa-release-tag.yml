@@ -140,5 +140,5 @@ jobs:
           REF_NAME="${{ github.ref_name }}"
           REF_NAME_FOR_DOCKER_TAG="${REF_NAME//\//_-}"
           REPOSITORY_NAME="twilio/lambda/${{matrix.lambda_path}}"
-          MANIFEST=$(aws ecr batch-get-image --repository-name $REPOSITORY_NAME --image-ids imageTag="$REF_NAME_FOR_DOCKER_TAG" --output text --query 'images[].imageManifest')
-          aws ecr put-image --repository-name $REPOSITORY_NAME --image-tag ${{ needs.generate-pre-release.outputs.qa-version }} --image-manifest "$MANIFEST"
+          MANIFEST=$(aws ecr batch-get-image --repository-name $REPOSITORY_NAME --image-ids imageTag="${{ github.ref_type }}.$REF_NAME_FOR_DOCKER_TAG" --output text --query 'images[].imageManifest')
+          aws ecr put-image --repository-name $REPOSITORY_NAME --image-tag tag.${{ needs.generate-pre-release.outputs.qa-version }} --image-manifest "$MANIFEST"
