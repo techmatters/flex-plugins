@@ -22,13 +22,14 @@ resource "null_resource" "hrm_static_api_key" {
   }
 }
 
-output "hrm_static_api_key_name" {
-  value = "${var.short_environment}_TWILIO_${var.short_helpline}_HRM_STATIC_KEY"
+# Create a local variable to store the parameter name
+locals {
+  hrm_static_api_key_name = "${var.short_environment}_TWILIO_${var.short_helpline}_HRM_STATIC_KEY"
 }
 
 
 data "aws_ssm_parameter" "hrm_static_api_key_legacy" {
-  name = output.hrm_static_api_key_name
+  name = local.hrm_static_api_key_name
 }
 
 resource "aws_ssm_parameter" "hrm_static_api_key_v2" {
