@@ -26,6 +26,11 @@ resource "twilio_events_subscriptions_v1" "subscription" {
   description = "${title(replace(each.key, "_", " "))} ${upper(var.short_helpline)}_${upper(var.short_environment)} Events Subscription"
   sink_sid    = twilio_events_sinks_v1.webhook_sink[each.key].sid
   types       = [for event in each.value.events : jsonencode({ type = event.type })]
+   lifecycle {
+    replace_triggered_by = [
+      each.value.events,  # Replace if the webhook URL changes
+    ]
+  }
 }
 /*
 I'm leaving this out as this resource doesn't work well.
