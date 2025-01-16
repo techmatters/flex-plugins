@@ -27,7 +27,7 @@ data "aws_ssm_parameter" "hrm_static_api_key_legacy" {
   depends_on = null_resource.hrm_static_api_key
 }
 
-resource "aws_ssm_parameter" "datadog_app_id" {
+resource "aws_ssm_parameter" "hrm_static_api_key_v2" {
   name        = "/${lower(var.environment)}/twilio/${var.twilio_account_sid}/static_key"
   type        = "SecureString"
   value       = data.aws_ssm_parameter.hrm_static_api_key_legacy
