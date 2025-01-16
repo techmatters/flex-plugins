@@ -96,7 +96,9 @@ jobs:
       # that is pushed in the primary region available in all other regions.
       - name: Update Lambda and Publish
         run: |
-          DOCKER_IMAGE=$(echo "${{ env.ECR_URL }}:${{ github.ref_type }}.${{ github.ref_name }}" | sed -r 's/${{ env.PRIMARY_AWS_REGION }}/${{ inputs.region }}/g')
+          REF_NAME="${{ github.ref }}"
+          REF_NAME_FOR_DOCKER_TAG="${ref_name//$'\/'/_-}"
+          DOCKER_IMAGE=$(echo "${{ env.ECR_URL }}:${{ github.ref_type }}.$REF_NAME_FOR_DOCKER_TAG" | sed -r 's/${{ env.PRIMARY_AWS_REGION }}/${{ inputs.region }}/g')
 
           LAMBDA_NAME=$(basename "./${{ matrix.lambda_path == 'account-scoped' && 'acctscpe' || matrix.lambda_path }}")
           SHORT_LAMBDA_NAME=${{ matrix.lambda_path== 'account-scoped' }}
