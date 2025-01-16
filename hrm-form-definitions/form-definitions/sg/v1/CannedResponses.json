@@ -1,7 +1,7 @@
 [
   {
     "label": "2gather",
-    "text": "There is a youth platform 2Gather by our friends from Singapore Children's Society, It is a virtual space for youth to take part in different activities and/or speak to a staff online about their issues in private. This platform is meant for youth aged between 13 to 21.You can click on the link https:"
+    "text": "There is a youth platform 2Gather by our friends from Singapore Children's Society. It is a virtual space for youth to take part in different activities and/or speak to a staff online about their issues in private. This platform is meant for youth aged between 13 to 21. You can click on the link https://linktr.ee/vox.44cc to access."
   },
   {
     "label": "Abusive language",
@@ -17,7 +17,7 @@
   },
   {
     "label": "Buzz",
-    "text": "Check out our latest BUZZ magazines at www.tinklefriend.sg/activities "
+    "text": "Our BUZZ magazines cover topics relavent to children's wellbeing. Check it out at https://www.tinklefriend.sg/buzz-magazine/!"
   },
   {
     "label": "Child's identifiable information (for abuse & suicide risk)_address",
@@ -34,14 +34,6 @@
   {
     "label": "Child's identifiable information (for abuse & suicide risk)_school class",
     "text": "Can I know which school and class you belong to?\r\n"
-  },
-  {
-    "label": "Closing",
-    "text": "To close Tinkle Friend online chat, you may click on the 'X' to end the chat. It was a pleasure talking to you! "
-  },
-  {
-    "label": "Contest",
-    "text": "Our friends from the Flourishing Minds team is running a “How Have You Bean?” sticker contest, and we want to invite you to create and design an image that represents how we all can achieve good mental health! More details can be found on page 14 of our Feb 2024 BUZZ magazine @ https://tinklefriend.sg/activity/buzzfebruary2024mentalhealth "
   },
   {
     "label": "Coping_54321 grounding",
@@ -69,7 +61,7 @@
   },
   {
     "label": "Emergency",
-    "text": "If you are in immediate danger, please call 999 or 995. "
+    "text": "If you find yourself in an unsafe situation, please call our friends from the National Anti-Violence & Sexual Harassment Helpline (NAVH) at 1800-777-000 or the police at 999."
   },
   {
     "label": "End chat",
@@ -108,6 +100,10 @@
     "text": "Tinkle Friend helpline (1800-2744-788) is open from Monday to Friday, 2.30pm to 5.00pm."
   },
   {
+    "label": "Help Seeking",
+    "text": "It is okay to ask for help from your trusted adults! Trusted adults should be accessible, listen, believe, and help you when you need help. For example, they can be your parents/guardians, teacher, or school counsellor. Asking for help is a sign of strength and you have been brave to have reached out to Tinkle Friend too!"
+  },
+  {
     "label": "Inactive",
     "text": "Seems like you are away now. Tinkle Friend will leave this chat first. You can talk to Tinkle Friend again when you are ready. Goodbye!"
   },
@@ -117,11 +113,15 @@
   },
   {
     "label": "Mental health check-in",
-    "text": "There is a 30-minute mental health check-in session with our friends from Flourishing Minds at https://bit.ly/oms_booking to understand about and receive information and resources to promote your mental wellness. You can choose to have the check-in session through phone call, whatsapp, telegram, email or in-person; you can also remain anonymous or change your name – what makes you feel more comfortable. Would you prefer for Tinkle Friend to do the booking for you, or would you prefer to do it by yourself?"
+    "text": "There is a 30-minute mental health check-in session to understand about and receive information and resources to promote your mental wellness. You can choose to have the check-in session through whatsapp, telegram, Tinkle Friend chat platform, Zoom, phone call or in-person; you can also remain anonymous or change your name – what makes you feel more comfortable. Would you be open to make a booking?"
   },
   {
     "label": "Mental health check-in booking",
     "text": "To help facilitate the booking, can you share with me your name, your preferred mode of contact, and preferred day of the week (Monday to Friday) for them to contact you?"
+  },
+  {
+    "label": "Mental health",
+    "text": "Mental health is one of the foundation to our overall health and well-being. It affects how we think, feel, and act. For example, how we perform our daily activities, manage stress, make decisions, and our relationships with family and friends. Mental health can be thought of positively too! Just like how we want to have good physical health, we also want to have good mental health. We take care of our physical health by eating healthy food, drinking lots of water, staying active, and sleeping well. These are also things that we do everyday to keep our bodies healthy and strong, and not only after we fall sick. Similarly, we need to take care of our mental health to ensure that we stay happy, energetic, and ready to learn and have fun. We do not need to wait until we feel stressed or anxious before we start doing things to promote our mental health. We can take care of our mental health by having enough sleep, exercising regularly, eating well, talking about our feelings, spending time with our family and friends, and engaging in hobbies that we enjoy!"
   },
   {
     "label": "Mental health helpline",
@@ -173,11 +173,7 @@
   },
   {
     "label": "Youth_vox",
-    "text": "We have our friends from VOX who are trained to support youths like you. Please hold on for a while."
-  },
-  {
-    "label": "Youth_vox engaged",
-    "text": "All our youth workers at Tinkle Friend are currently engaged. You may consider to DM our youth worker on VOX Instagram https://www.instagram.com/vox.44cc/ instead."
+    "text": "We have our friends from VOX who are trained to support youths like you. You can consider to DM them at their VOX instagram https://www.instagram.com/vox44cc/. Or if you would like them to reach out to you, you can let me know your preferred name, preferred mode of contact and your contact information."
   },
   {
     "label": "Youthline",
