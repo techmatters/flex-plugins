@@ -8,6 +8,7 @@ terraform {
 }
 
 locals {
+   events_hash = { for k, v in var.subscriptions : k => md5(jsonencode(v.events)) }
 }
 
 resource "twilio_events_sinks_v1" "webhook_sink" {
@@ -28,7 +29,7 @@ resource "twilio_events_subscriptions_v1" "subscription" {
   types       = [for event in each.value.events : jsonencode({ type = event.type })]
    lifecycle {
     replace_triggered_by = [
-      each.value.events,  # Replace if the events change
+      local.events_hash[each.key],  # Trigger replacement if the hash changes,  # Replace if the events change
     ]
   }
 }
