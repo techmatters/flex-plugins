@@ -97,8 +97,8 @@ jobs:
       - name: Update Lambda and Publish
         run: |
           REF_NAME="${{ github.ref }}"
-          REF_NAME_FOR_DOCKER_TAG="${ref_name//$'\/'/_-}"
-          DOCKER_IMAGE=$(echo "${{ env.ECR_URL }}:${{ github.ref_type }}.$REF_NAME_FOR_DOCKER_TAG" | sed -r 's/${{ env.PRIMARY_AWS_REGION }}/${{ inputs.region }}/g')
+          REF_NAME_FOR_DOCKER_TAG="${REF_NAME//$'\/'/_-}"
+          DOCKER_IMAGE=$(echo "${{ env.ECR_URL }}:${{ github.ref_type }}.$REF_NAME_FOR_DOCKER_TAG" | sed -r 's/${{ env.PRIMARY_AWS_REGION }}/${{ inputs.region }}/g | sed -r 's/\/\//\//g')
 
           LAMBDA_NAME=$(basename "./${{ matrix.lambda_path == 'account-scoped' && 'acctscpe' || matrix.lambda_path }}")
           SHORT_LAMBDA_NAME=${{ matrix.lambda_path== 'account-scoped' }}
