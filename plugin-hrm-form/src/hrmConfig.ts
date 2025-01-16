@@ -170,3 +170,8 @@ export const getAseloFeatureFlags = (): FeatureFlags => cachedConfig.featureFlag
 export const getDefinitionVersions = () => {
   return (Flex.Manager.getInstance().store.getState() as RootState)[namespace].configuration;
 };
+
+// eslint-disable-next-line import/no-unused-modules
+export const getPermissionRules = () => {
+  return (Flex.Manager.getInstance().store.getState() as RootState)[namespace].permissionRules;
+};

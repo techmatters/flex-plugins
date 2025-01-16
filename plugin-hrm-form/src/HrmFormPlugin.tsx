@@ -45,6 +45,7 @@ import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
 import { maskManagerStringsWithIdentifiers, maskMessageListWithIdentifiers } from './maskIdentifiers';
 import { setUpViewMaskedVoiceNumber } from './maskIdentifiers/unmaskPhoneNumber';
+import { populatePermissionRulesState } from './states/permissionRules/actions';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -194,6 +195,7 @@ export default class HrmFormPlugin extends FlexPlugin {
      */
     const { translateUI, getMessage } = setUpLocalization(config);
     ActionFunctions.loadCurrentDefinitionVersion();
+    ActionFunctions.loadPermissionRules();
 
     setUpSharedStateClient();
     setUpComponents(featureFlags, config, translateUI);

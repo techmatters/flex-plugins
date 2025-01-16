@@ -19,6 +19,7 @@ import { Conversation } from '@twilio/conversations';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
 import { getDefinitionVersion, sendSystemMessage } from '../services/ServerlessService';
+import { getPermissionRules } from '../services/PermissionsService';
 import * as Actions from '../states/contacts/actions';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
@@ -51,6 +52,18 @@ export const loadCurrentDefinitionVersion = async () => {
   Manager.getInstance().store.dispatch(populateCurrentDefinitionVersion(definitions));
   // already populate this to be consumed for data display components
   Manager.getInstance().store.dispatch(updateDefinitionVersion(definitionVersion, definitions));
+};
+
+export const loadPermissionRules = async () => {
+  try {
+    const rules = await getPermissionRules();
+    console.log('>>>> rules', rules);
+    return rules;
+  } catch (err) {
+    const errorMessage = err.message ?? err;
+    console.error('Error fetching rules, using fallback rules. ', errorMessage);
+    return null; // or return a default value
+  }
 };
 
 /* eslint-enable sonarjs/prefer-single-boolean-return */
