@@ -48,7 +48,9 @@
   "scripts": {
     "build": "tsc -b --verbose",
     "docker:build": "npm run docker:build --workspaces --if-present",
-    "es:create-index": "npm run es:create-index:local --workspaces --if-present",
+
+    "test:unit": "npm run test:unit --workspaces --if-present",
+    "test:service": "npm run test:service --workspaces --if-present",
     "lint": "cross-env eslint .",
     "lint:fix": "npm run lint -- --fix",
     "license:add": "docker run --rm -v ${PWD}:/src ghcr.io/google/addlicense -c \"Technology Matters\" -y \"2021-2023\" -ignore \".idea/**\" -ignore \"**/node_modules/**\" -ignore \"**/dist/**\" -ignore \"**/coverage/**\" -ignore \"cdk.out/**\" -f license-header.tpl .",

@@ -18,13 +18,13 @@ import { AccountScopedHandler } from '../httpTypes';
 import { AccountSID } from '../twilioTypes';
 import { newOk } from '../Result';
 import { EventType } from './eventTypes';
-import twilio, { Twilio } from 'twilio';
+import twilio from 'twilio';
 import { getSsmParameter } from '../ssmCache';
 
 export type TaskRouterEventHandler = (
   event: any,
   accountSid: AccountSID,
-  twilioClient: Twilio,
+  twilioClient: twilio.Twilio,
 ) => Promise<void>;
 
 const eventHandlers: Record<string, TaskRouterEventHandler[]> = {};
@@ -41,6 +41,12 @@ export const registerTaskRouterEventHandler = (
   }
 };
 
+export const clearTaskRouterEventHandlers = () => {
+  for (const eventType in eventHandlers) {
+    delete eventHandlers[eventType];
+  }
+};
+
 export const handleTaskRouterEvent: AccountScopedHandler = async (
   { body },
   accountSid,
@@ -54,7 +60,7 @@ export const handleTaskRouterEvent: AccountScopedHandler = async (
       const authToken = await getSsmParameter(
         `/${process.env.NODE_ENV}/twilio/${accountSid}/auth_token`,
       );
-      const client = await twilio(accountSid, authToken);
+      const client = twilio(accountSid, authToken);
       return handler(body, accountSid, client);
     }),
   );

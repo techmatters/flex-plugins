@@ -20,6 +20,42 @@ env:
   PRIMARY_AWS_REGION: us-east-1
 
 jobs:
+  run_tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.PRIMARY_AWS_REGION }}
+          # this plugin sets the AWS account ID to a secret which is not allowed in outputs
+          # we have to disable that so repo output will work
+          mask-aws-account-id: 'no'
+
+      - name: Install lambda dependencies
+        run: |
+          npm ci
+        working-directory: ./lambdas
+
+      - name: Run Unit Tests
+        run: |
+          npm run test:unit
+        working-directory: ./lambdas
+
+      - name: Run Service Tests
+        run: |
+          npm run test:service
+        working-directory: ./lambdas
   build_lambda:
     name: Build Lambda Image
     runs-on: ubuntu-latest
@@ -59,9 +95,11 @@ jobs:
           # Extracting directory and lambda name from the lambda path
           build_lambda_dir=$(dirname $lambda_full_path)
           build_lambda_name=$(basename $lambda_full_path)
+          ref_name=${{ github.ref_name }}
           echo "build_lambda_name=$build_lambda_name" >> $GITHUB_ENV
           echo "build_lambda_dir=$build_lambda_dir" >> $GITHUB_ENV
-
+          echo "ref_name_for_docker=${ref_name//\//_-}" >> $GITHUB_ENV
+        shell: bash
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
@@ -72,7 +110,7 @@ jobs:
             lambda_dir=${{ env.build_lambda_dir }}
           push: true
           # 'latest' is never used, but it keeps terraform happy
-          tags: ${{ env.ECR_URL }}:${{ github.ref_type }}.${{ github.ref_name }},${{ env.ECR_URL }}:${{ github.sha }},${{ env.ECR_URL }}:latest
+          tags: ${{ env.ECR_URL }}:${{ github.ref_type }}.${{ env.ref_name_for_docker }},${{ env.ECR_URL }}:${{ github.sha }},${{ env.ECR_URL }}:latest
 
       - name: Generate output
         id: generate-output

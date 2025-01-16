@@ -14,12 +14,21 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// Temporary duplication, these should be shared with the same types in the flex plugin
-export type AccountSID = `AC${string}`;
-export type WorkspaceSID = `WS${string}`;
-export type WorkerSID = `WK${string}`;
-export type TaskSID = `${'WT' | 'offline-contact-task'}${string}`;
+import { TaskPage } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 
-export const isAccountSID = (value: string): value is AccountSID =>
-  // This regex could be stricter if we only wanted to catch 'real' account SIDs, but our test account sids have non hexadecimal characters
-  /^AC[0-9a-zA-Z_]+$/.test(value);
+const CONFIG_FIELDS = [
+  'definitionVersion',
+  'hrm_api_version',
+  'form_definitions_version_url',
+  'assets_bucket_url',
+  'helpline_code',
+] as const;
+
+export type AseloServiceConfigurationAttributes = Record<
+  (typeof CONFIG_FIELDS)[number],
+  string
+> & {
+  feature_flags: Record<string, boolean | undefined>;
+};
+
+export type TaskResource = TaskPage['_payload']['tasks'][number];

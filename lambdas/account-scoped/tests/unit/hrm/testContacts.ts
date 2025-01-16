@@ -14,12 +14,37 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// Temporary duplication, these should be shared with the same types in the flex plugin
-export type AccountSID = `AC${string}`;
-export type WorkspaceSID = `WS${string}`;
-export type WorkerSID = `WK${string}`;
-export type TaskSID = `${'WT' | 'offline-contact-task'}${string}`;
+import { HrmContact } from '../../../src/hrm/populateHrmContactFormFromTask';
 
-export const isAccountSID = (value: string): value is AccountSID =>
-  // This regex could be stricter if we only wanted to catch 'real' account SIDs, but our test account sids have non hexadecimal characters
-  /^AC[0-9a-zA-Z_]+$/.test(value);
+export const BLANK_CONTACT: HrmContact = {
+  id: '',
+  timeOfContact: new Date().toISOString(),
+  taskId: null,
+  helpline: '',
+  rawJson: {
+    childInformation: {},
+    callerInformation: {},
+    caseInformation: {},
+    callType: '',
+    contactlessTask: {
+      channel: 'web',
+      date: '',
+      time: '',
+      createdOnBehalfOf: '',
+      helpline: '',
+    },
+    categories: {},
+  },
+  channelSid: '',
+  serviceSid: '',
+  channel: 'default',
+  createdBy: '',
+  createdAt: '',
+  updatedBy: '',
+  updatedAt: '',
+  queueName: '',
+  number: '',
+  conversationDuration: 0,
+  csamReports: [],
+  conversationMedia: [],
+};

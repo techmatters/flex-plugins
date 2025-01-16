@@ -14,12 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// Temporary duplication, these should be shared with the same types in the flex plugin
-export type AccountSID = `AC${string}`;
-export type WorkspaceSID = `WS${string}`;
-export type WorkerSID = `WK${string}`;
-export type TaskSID = `${'WT' | 'offline-contact-task'}${string}`;
-
-export const isAccountSID = (value: string): value is AccountSID =>
-  // This regex could be stricter if we only wanted to catch 'real' account SIDs, but our test account sids have non hexadecimal characters
-  /^AC[0-9a-zA-Z_]+$/.test(value);
+process.env.AWS_REGION = 'xx-fake-1';
+process.env.AWS_ACCESS_KEY_ID = 'mock-access-key';
+process.env.AWS_SECRET_ACCESS_KEY = 'mock-secret-key';
+process.env.SSM_ENDPOINT = 'http://mock-ssm/';
+process.env.INTERNAL_HRM_URL = 'http://mock-hrm';
