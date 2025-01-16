@@ -72,7 +72,7 @@ module "aws" {
   datadog_access_token               = local.secrets.datadog_access_token
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
   master_workflow_sid                = module.taskRouter.workflow_sids["master"]
-  queue_transfers_workflow_sid       = module.taskRouter.workflow_sids["queue_transfers"]
+  queue_transfers_workflow_sid       = try(module.taskRouter.workflow_sids["queue_transfers"],"NOTVALIDWORKFLOWSID")
   shared_state_sync_service_sid      = module.services.shared_state_sync_service_sid
   flex_chat_service_sid              = module.services.flex_chat_service_sid
   flex_proxy_service_sid             = module.services.flex_proxy_service_sid
