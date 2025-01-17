@@ -272,20 +272,22 @@ const validateTKActions = (rules: RulesFile) =>
 
 const isValidTargetKindActions = (validated: { [k in Action]: boolean }) => Object.values(validated).every(Boolean);
 
-export const validateRules = (permissionConfig: string) => {
-  const rules = fetchRules(permissionConfig);
+export const validateRules = (permissionConfig: string): Promise<RulesFile> => {
+  return fetchRules().then(rules => {
+    const validated = validateTKActions(rules);
 
-  const validated = validateTKActions(rules);
-
-  if (!isValidTargetKindActions(validated)) {
-    const invalidActions = Object.entries(validated)
-      .filter(([, val]) => !val)
-      .map(([key]) => key);
-    throw new Error(
-      `Error: rules file for ${permissionConfig} contains invalid actions mappings: ${JSON.stringify(invalidActions)}`,
-    );
-  }
-  return rules;
+    if (!isValidTargetKindActions(validated)) {
+      const invalidActions = Object.entries(validated)
+        .filter(([, val]) => !val)
+        .map(([key]) => key);
+      throw new Error(
+        `Error: rules file for ${permissionConfig} contains invalid actions mappings: ${JSON.stringify(
+          invalidActions,
+        )}`,
+      );
+    }
+    return rules;
+  });
 };
 
 type TwilioUser = {
@@ -450,4 +452,5 @@ export const getInitializedCan = () => {
   return (action: Action, target?: any) => initializedCan(performer, action, target);
 };
 
+// eslint-disable-next-line import/no-unused-modules
 export const cleanupInitializedCan = () => (initializedCan = null);

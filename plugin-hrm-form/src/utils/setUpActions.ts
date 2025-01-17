@@ -20,7 +20,7 @@ import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestra
 
 import { RulesFile } from '../permissions';
 import { getDefinitionVersion, sendSystemMessage } from '../services/ServerlessService';
-import { getPermissionRules } from '../services/PermissionsService';
+import { fetchPermissionRules } from '../services/PermissionsService';
 import * as Actions from '../states/contacts/actions';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
@@ -57,7 +57,7 @@ export const loadCurrentDefinitionVersion = async () => {
 };
 
 export const loadPermissionRules = async () => {
-  const rules: RulesFile = await getPermissionRules();
+  const rules: RulesFile = await fetchPermissionRules();
   Manager.getInstance().store.dispatch(populatePermissionRulesState(rules));
 };
 

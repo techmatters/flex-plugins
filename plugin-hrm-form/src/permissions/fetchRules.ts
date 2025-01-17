@@ -14,24 +14,22 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { RulesFile } from '.';
-import { getPermissionRules } from '../services/PermissionsService';
+import type { RulesFile } from '.';
+import { fetchPermissionRules } from '../services/PermissionsService';
 
-const zmRules = require('./zm.json');
+const defaultRules = require('./closed.json');
 
 // TODO: do this once, on initialization, then consume from the global state.
-export const fetchRules = (permissionConfig: string): RulesFile => {
-  let rules: RulesFile = zmRules;
+export const fetchRules = async (): Promise<RulesFile> => {
+  let rules: RulesFile = defaultRules;
 
-  getPermissionRules()
-    .then((fetchedRules: RulesFile) => {
-      if (!fetchedRules) throw new Error(`Cannot find rules for ${permissionConfig}`);
-      rules = fetchedRules;
-    })
-    .catch(err => {
-      const errorMessage = err.message ?? err;
-      console.error('Error fetching rules, using fallback rules. ', errorMessage);
-    });
+  try {
+    rules = await fetchPermissionRules();
+    console.log('>>>> Fetched rules:', rules);
+  } catch (err) {
+    console.error('Error fetching rules:', err);
+    rules = defaultRules;
+  }
 
   return rules;
 };

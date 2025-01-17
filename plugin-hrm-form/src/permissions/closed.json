@@ -1,0 +1,39 @@
+{
+  "viewCase": [],
+  "closeCase": [],
+  "reopenCase": [],
+  "caseStatusTransition": [],
+  "addNote": [],
+  "editNote": [],
+  "addReferral": [],
+  "editReferral": [],
+  "addHousehold": [],
+  "editHousehold": [],
+  "addPerpetrator": [],
+  "editPerpetrator": [],
+  "addIncident": [],
+  "editIncident": [],
+  "addDocument": [],
+  "editDocument": [],
+  "editCaseOverview": [],
+  "updateCaseContacts": [],
+
+  "viewContact": [],
+  "editContact": [],
+  "editInProgressContact": [],
+  "viewExternalTranscript": [],
+  "viewRecording": [],
+  "addContactToCase": [],
+  "removeContactFromCase": [],
+
+  "viewProfile": [],
+  "flagProfile": [],
+  "unflagProfile": [],
+  "createProfileSection": [],
+  "viewProfileSection": [],
+  "editProfileSection": [],
+  
+  "viewPostSurvey": [],
+
+  "viewIdentifiers": []
+}
