@@ -16,8 +16,7 @@
 
 import type { RulesFile } from '.';
 import { fetchPermissionRules } from '../services/PermissionsService';
-
-const defaultRules = require('./closed.json');
+import defaultRules from './closed.json';
 
 // TODO: do this once, on initialization, then consume from the global state.
 export const fetchRules = async (): Promise<RulesFile> => {

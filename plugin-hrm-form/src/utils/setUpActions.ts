@@ -18,9 +18,9 @@ import { ActionFunction, ChatOrchestrator, ChatOrchestratorEvent, Manager, TaskH
 import { Conversation } from '@twilio/conversations';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
-import { RulesFile } from '../permissions';
+// import { RulesFile } from '../permissions';
 import { getDefinitionVersion, sendSystemMessage } from '../services/ServerlessService';
-import { fetchPermissionRules } from '../services/PermissionsService';
+// import { fetchPermissionRules } from '../services/PermissionsService';
 import * as Actions from '../states/contacts/actions';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
@@ -41,7 +41,7 @@ import { namespace } from '../states/storeNamespaces';
 import { recordEvent } from '../fullStory';
 import { completeConversationTask, wrapupConversationTask } from '../services/twilioTaskService';
 import { adjustChatCapacity } from '../services/twilioWorkerService';
-import { populatePermissionRulesState } from '../states/permissionRules/actions';
+// import { populatePermissionRulesState } from '../states/permissionRules/actions';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -56,10 +56,10 @@ export const loadCurrentDefinitionVersion = async () => {
   Manager.getInstance().store.dispatch(updateDefinitionVersion(definitionVersion, definitions));
 };
 
-export const loadPermissionRules = async () => {
-  const rules: RulesFile = await fetchPermissionRules();
-  Manager.getInstance().store.dispatch(populatePermissionRulesState(rules));
-};
+// export const loadPermissionRules = async () => {
+//   const rules: RulesFile = await fetchPermissionRules();
+//   Manager.getInstance().store.dispatch(populatePermissionRulesState(rules));
+// };
 
 /* eslint-enable sonarjs/prefer-single-boolean-return */
 /* eslint-disable sonarjs/cognitive-complexity */

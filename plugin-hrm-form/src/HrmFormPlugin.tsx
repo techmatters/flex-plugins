@@ -195,7 +195,7 @@ export default class HrmFormPlugin extends FlexPlugin {
      */
     const { translateUI, getMessage } = setUpLocalization(config);
     ActionFunctions.loadCurrentDefinitionVersion();
-    ActionFunctions.loadPermissionRules();
+    // ActionFunctions.loadPermissionRules();
 
     setUpSharedStateClient();
     setUpComponents(featureFlags, config, translateUI);
