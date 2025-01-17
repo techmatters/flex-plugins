@@ -18,10 +18,10 @@
 import {registerTaskRouterEventHandler, TaskRouterEventHandler} from '../taskrouter/taskrouterEventHandler';
 import { AccountSID, TaskSID, WorkspaceSID } from '../twilioTypes';
 import { Twilio } from 'twilio';
-import { getSsmParameter } from '../ssmCache';
 import { TASK_CREATED, TASK_UPDATED } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
-import { retrieveFeatureFlags } from '../configuration/flexConfiguration';
+import { retrieveFeatureFlags } from '../configuration/aseloConfiguration';
+import { getWorkspaceSid } from '../configuration/twilioConfiguration';
 
 type EnvVars = {
   TWILIO_WORKSPACE_SID: WorkspaceSID;
@@ -78,9 +78,7 @@ const addCustomerExternalId: TaskRouterEventHandler = async (
     return;
   }
 
-  const workspaceSid: WorkspaceSID = (await getSsmParameter(
-    `${process.env.NODE_ENV}/twilio/${accountSid}/workspace_sid`,
-  )) as WorkspaceSID;
+  const workspaceSid: WorkspaceSID = await getWorkspaceSid(accountSid);
   console.info('Adding external_id to task', taskSid);
 
   if (!taskSid) throw new Error('TaskSid missing in event object');

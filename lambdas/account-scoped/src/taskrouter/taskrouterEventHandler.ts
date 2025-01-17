@@ -19,7 +19,7 @@ import { AccountSID } from '../twilioTypes';
 import { newOk } from '../Result';
 import { EventType } from './eventTypes';
 import twilio from 'twilio';
-import { getSsmParameter } from '../ssmCache';
+import { getAccountAuthToken } from '../configuration/twilioConfiguration';
 
 export type TaskRouterEventHandler = (
   event: any,
@@ -57,9 +57,7 @@ export const handleTaskRouterEvent: AccountScopedHandler = async (
   );
   await Promise.all(
     handlers.map(async handler => {
-      const authToken = await getSsmParameter(
-        `/${process.env.NODE_ENV}/twilio/${accountSid}/auth_token`,
-      );
+      const authToken = await getAccountAuthToken(accountSid);
       const client = twilio(accountSid, authToken);
       return handler(body, accountSid, client);
     }),

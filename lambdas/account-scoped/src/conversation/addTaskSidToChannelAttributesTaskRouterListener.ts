@@ -18,11 +18,11 @@ import {
   registerTaskRouterEventHandler,
   TaskRouterEventHandler,
 } from '../taskrouter/taskrouterEventHandler';
-import { AccountSID, ChatServiceSID, TaskSID, WorkspaceSID } from '../twilioTypes';
+import { AccountSID, TaskSID } from '../twilioTypes';
 import { Twilio } from 'twilio';
-import { getSsmParameter } from '../ssmCache';
-import { retrieveFeatureFlags } from '../configuration/flexConfiguration';
+import { retrieveFeatureFlags } from '../configuration/aseloConfiguration';
 import { TASK_CREATED } from '../taskrouter/eventTypes';
+import { getChatServiceSid, getWorkspaceSid } from '../configuration/twilioConfiguration';
 
 type RelevantTaskAttributes = {
   isContactlessTask?: boolean;
@@ -79,12 +79,8 @@ const addTaskSidToChannelAttributes: TaskRouterEventHandler = async (
   }
 
   const [workspaceSid, chatServiceSid] = await Promise.all([
-    (await getSsmParameter(
-      `${process.env.NODE_ENV}/twilio/${accountSid}/workspace_sid`,
-    )) as WorkspaceSID,
-    (await getSsmParameter(
-      `${process.env.NODE_ENV}/twilio/${accountSid}/chat_service_sid`,
-    )) as ChatServiceSID,
+    await getWorkspaceSid(accountSid),
+    await getChatServiceSid(accountSid),
   ]);
 
   const task = await client.taskrouter.v1.workspaces(workspaceSid).tasks(TaskSid).fetch();
