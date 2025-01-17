@@ -272,22 +272,20 @@ const validateTKActions = (rules: RulesFile) =>
 
 const isValidTargetKindActions = (validated: { [k in Action]: boolean }) => Object.values(validated).every(Boolean);
 
-export const validateRules = (permissionConfig: string): Promise<RulesFile> => {
-  return fetchRules().then(rules => {
-    const validated = validateTKActions(rules);
+export const validateRules = async (permissionConfig: string) => {
+  const rules = await fetchRules();
 
-    if (!isValidTargetKindActions(validated)) {
-      const invalidActions = Object.entries(validated)
-        .filter(([, val]) => !val)
-        .map(([key]) => key);
-      throw new Error(
-        `Error: rules file for ${permissionConfig} contains invalid actions mappings: ${JSON.stringify(
-          invalidActions,
-        )}`,
-      );
-    }
-    return rules;
-  });
+  const validated = validateTKActions(rules);
+
+  if (!isValidTargetKindActions(validated)) {
+    const invalidActions = Object.entries(validated)
+      .filter(([, val]) => !val)
+      .map(([key]) => key);
+    throw new Error(
+      `Error: rules file for ${permissionConfig} contains invalid actions mappings: ${JSON.stringify(invalidActions)}`,
+    );
+  }
+  return rules;
 };
 
 type TwilioUser = {
@@ -441,10 +439,11 @@ const initializeCanForRules = (rules: RulesFile) => {
 };
 
 let initializedCan: (performer: TwilioUser, action: Action, target?: any) => boolean = null;
-export const getInitializedCan = () => {
+
+export const getInitializedCan = async () => {
   const { workerSid, isSupervisor, permissionConfig } = getHrmConfig();
   if (initializedCan === null) {
-    const rules = validateRules(permissionConfig);
+    const rules = await validateRules(permissionConfig);
     initializedCan = initializeCanForRules(rules);
   }
 
