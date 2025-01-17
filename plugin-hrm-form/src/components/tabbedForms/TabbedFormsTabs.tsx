@@ -56,7 +56,6 @@ import { TabbedFormsCommonProps } from './types';
 import { useTabbedFormContext } from './hooks/useTabbedForm';
 // Ensure we import any custom components that might be used in a form
 import '../contact/ResourceReferralList';
-import selectContextContactId from '../../states/contacts/selectContextContactId';
 
 type OwnProps = TabbedFormsCommonProps;
 
@@ -172,7 +171,11 @@ const TabbedFormsTabs: React.FC<Props> = ({
   saveDraft,
   updateDraftForm,
 }) => {
-  const { enable_csam_report: csamReportEnabled, enable_case_merging: caseMergingEnabled } = getAseloFeatureFlags();
+  const {
+    enable_csam_report: csamReportEnabled,
+    enable_case_merging: caseMergingEnabled,
+    enable_active_contact_header: enableContactHeader,
+  } = getAseloFeatureFlags();
   const { contactSaveFrequency } = getHrmConfig();
   const { subroute, autoFocus } = currentRoute as TabbedFormRoute;
 
@@ -261,14 +264,16 @@ const TabbedFormsTabs: React.FC<Props> = ({
           </Box>
         )}
       </Row>
-      <Row style={{ paddingLeft: '9px', paddingTop: '3px' }}>
-        <FontOpenSans>
-          <Bold>#{contactId}</Bold>
-          {!isOfflineContactTask(task) && !isStandaloneITask(task) && (
-            <OpaqueText style={{ fontStyle: 'italic' }}> ({task.queueName})</OpaqueText>
-          )}
-        </FontOpenSans>
-      </Row>
+      {enableContactHeader && (
+        <Row style={{ paddingLeft: '9px', paddingTop: '3px' }}>
+          <FontOpenSans>
+            <Bold>#{contactId}</Bold>
+            {!isOfflineContactTask(task) && !isStandaloneITask(task) && (
+              <OpaqueText style={{ fontStyle: 'italic' }}> ({task.queueName})</OpaqueText>
+            )}
+          </FontOpenSans>
+        </Row>
+      )}
     </Box>
   );
 

@@ -19,7 +19,8 @@ locals {
     task_language                     = "es-CO"
     voice_ivr_language                = "es-MX"
     enable_post_survey                = false
-   
+    permission_config                 = "co"
+    
     workflows = {
       master : {
         friendly_name = "Master Workflow"

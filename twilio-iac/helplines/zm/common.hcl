@@ -10,6 +10,7 @@ locals {
     task_language                     = "en-US"
     voice_ivr_language                = ""
     enable_post_survey                = false
+    permission_config                 = "zm"
 
     workflows = {
       master : {

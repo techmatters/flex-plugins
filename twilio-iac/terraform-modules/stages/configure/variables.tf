@@ -48,7 +48,6 @@ variable "enable_voice_channel" {
   default     = false
 }
 
-
 variable "task_router_config" {
   description = "The task router config for the helpline."
   type = object({
@@ -195,6 +194,11 @@ variable "subscriptions" {
       schema_version = optional(string)
     }))
   }))
+}
+
+variable "permission_config" {
+  description = "permission_config"
+  type        = string
 }
 
 variable "region" {
