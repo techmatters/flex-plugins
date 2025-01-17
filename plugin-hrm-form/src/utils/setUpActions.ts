@@ -18,6 +18,7 @@ import { ActionFunction, ChatOrchestrator, ChatOrchestratorEvent, Manager, TaskH
 import { Conversation } from '@twilio/conversations';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
+import { RulesFile } from '../permissions';
 import { getDefinitionVersion, sendSystemMessage } from '../services/ServerlessService';
 import { getPermissionRules } from '../services/PermissionsService';
 import * as Actions from '../states/contacts/actions';
@@ -40,6 +41,7 @@ import { namespace } from '../states/storeNamespaces';
 import { recordEvent } from '../fullStory';
 import { completeConversationTask, wrapupConversationTask } from '../services/twilioTaskService';
 import { adjustChatCapacity } from '../services/twilioWorkerService';
+import { populatePermissionRulesState } from '../states/permissionRules/actions';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -55,15 +57,9 @@ export const loadCurrentDefinitionVersion = async () => {
 };
 
 export const loadPermissionRules = async () => {
-  try {
-    const rules = await getPermissionRules();
-    console.log('>>>> rules', rules);
-    return rules;
-  } catch (err) {
-    const errorMessage = err.message ?? err;
-    console.error('Error fetching rules, using fallback rules. ', errorMessage);
-    return null; // or return a default value
-  }
+  const rules: RulesFile = await getPermissionRules();
+  console.log('>>>> rules', rules);
+  Manager.getInstance().store.dispatch(populatePermissionRulesState(rules));
 };
 
 /* eslint-enable sonarjs/prefer-single-boolean-return */

@@ -26,10 +26,7 @@ export const getPermissionRules = async (): Promise<RulesFile> => {
         'Content-Type': 'application/json',
       },
     });
-    if (!response.ok) {
-      throw new Error(`>>> Error fetching permission rules: ${response.statusText}`);
-    }
-    return await response.json();
+    return await response;
   } catch (error) {
     console.error('>>> Failed to fetch permission rules:', error);
     throw error;
