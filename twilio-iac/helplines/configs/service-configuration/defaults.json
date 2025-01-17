@@ -47,6 +47,7 @@
         },
         "feature_flags": {
             "backend_handled_chat_janitor": true,
+            "enable_active_contact_header": true,
             "enable_aselo_messaging_ui": false,
             "enable_backend_manual_pulling": true,
             "enable_canned_responses": true,
