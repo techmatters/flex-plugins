@@ -58,7 +58,6 @@ export const loadCurrentDefinitionVersion = async () => {
 
 export const loadPermissionRules = async () => {
   const rules: RulesFile = await getPermissionRules();
-  console.log('>>>> rules', rules);
   Manager.getInstance().store.dispatch(populatePermissionRulesState(rules));
 };
 

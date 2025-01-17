@@ -20,15 +20,9 @@ import { fetchHrmApi } from './fetchHrmApi';
 // eslint-disable-next-line import/no-unused-modules
 export const getPermissionRules = async (): Promise<RulesFile> => {
   try {
-    const response = await fetchHrmApi('/permissions', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    return await response;
+    return await fetchHrmApi('/permissions');
   } catch (error) {
-    console.error('>>> Failed to fetch permission rules:', error);
+    console.error('Failed to fetch permission rules:', error);
     throw error;
   }
 };
