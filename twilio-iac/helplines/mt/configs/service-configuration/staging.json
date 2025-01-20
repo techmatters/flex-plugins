@@ -2,7 +2,7 @@
     "attributes": {
         "feature_flags": {
             "enable_client_profiles": true,
-            "enable_backend_hrm_contact_creation": true
+            "enable_backend_hrm_contact_creation": false
         },
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
         "helplineLanguage": "",
