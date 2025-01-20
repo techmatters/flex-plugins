@@ -34,7 +34,7 @@ type TargetRule = Partial<Record<keyof RulesFile, string[]>>;
  */
 const checkRule = (targetRule: TargetRule) => {
   const { permissionConfig } = getHrmConfig();
-  const rulesFile = fetchRules(permissionConfig);
+  const rulesFile = fetchRules();
 
   const rule = Object.keys(targetRule)[0];
   const conditionSetIsEqual = conditionSet => isEqual(sortBy(conditionSet), sortBy(targetRule[rule]));

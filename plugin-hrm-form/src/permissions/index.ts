@@ -19,6 +19,7 @@ import { differenceInDays, differenceInHours } from 'date-fns';
 
 import { fetchRules } from './fetchRules';
 import { getHrmConfig } from '../hrmConfig';
+// import { permissionRules } from '../HrmFormPlugin';
 import { ProfileSection } from '../types/types';
 
 export { canOnlyViewOwnCases, canOnlyViewOwnContacts } from './search-permissions';
@@ -272,7 +273,11 @@ const validateTKActions = (rules: RulesFile) =>
 
 const isValidTargetKindActions = (validated: { [k in Action]: boolean }) => Object.values(validated).every(Boolean);
 
-export const validateRules = async (permissionConfig: string) => {
+const rules: RulesFile = null;
+const getRules = () => rules;
+
+export const validateRules = async () => {
+  console.log('>>>>> Calling fetchRules at validateRules');
   const rules = await fetchRules();
 
   const validated = validateTKActions(rules);
@@ -281,9 +286,7 @@ export const validateRules = async (permissionConfig: string) => {
     const invalidActions = Object.entries(validated)
       .filter(([, val]) => !val)
       .map(([key]) => key);
-    throw new Error(
-      `Error: rules file for ${permissionConfig} contains invalid actions mappings: ${JSON.stringify(invalidActions)}`,
-    );
+    throw new Error(`Error: rules file contains invalid actions mappings: ${JSON.stringify(invalidActions)}`);
   }
   return rules;
 };
@@ -440,10 +443,13 @@ const initializeCanForRules = (rules: RulesFile) => {
 
 let initializedCan: (performer: TwilioUser, action: Action, target?: any) => boolean = null;
 
-export const getInitializedCan = async () => {
+export const getInitializedCan = () => {
   const { workerSid, isSupervisor, permissionConfig } = getHrmConfig();
   if (initializedCan === null) {
-    const rules = await validateRules(permissionConfig);
+    // getRules();
+    console.log('>>>>> Initializing Can with rules from permissions module:', rules);
+    // console.log('>>>>> Initializing Can with rules at init:', permissionRules);
+
     initializedCan = initializeCanForRules(rules);
   }
 
