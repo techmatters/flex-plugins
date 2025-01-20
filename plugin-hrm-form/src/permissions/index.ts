@@ -276,12 +276,8 @@ const isValidTargetKindActions = (validated: { [k in Action]: boolean }) => Obje
 let rules: RulesFile = null;
 export const getRules = () => rules;
 
-export const validateRules = async () => {
-  console.log('>>>>> Calling fetchRules at validateRules');
+export const validateAndSetPermissionRules = async () => {
   rules = await fetchRules();
-
-  console.log('>>>>>>>>>> rules', rules);
-
   const validated = validateTKActions(rules);
 
   if (!isValidTargetKindActions(validated)) {
@@ -446,11 +442,9 @@ const initializeCanForRules = (rules: RulesFile) => {
 let initializedCan: (performer: TwilioUser, action: Action, target?: any) => boolean = null;
 
 export const getInitializedCan = () => {
-  const { workerSid, isSupervisor, permissionConfig } = getHrmConfig();
+  const { workerSid, isSupervisor } = getHrmConfig();
   if (initializedCan === null) {
     const rules = getRules();
-    console.log('>>>>> Initializing Can with rules from permissions module:', rules);
-
     initializedCan = initializeCanForRules(rules);
   }
 

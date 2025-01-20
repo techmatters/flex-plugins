@@ -15,7 +15,7 @@
  */
 import each from 'jest-each';
 
-import { validateRules } from '../../permissions';
+import { validateAndSetPermissionRules } from '../../permissions';
 
 const rulesMapNames = [
   'br',
@@ -44,6 +44,6 @@ const rulesMapNames = [
 
 describe('Permissions  files are valid', () => {
   each(rulesMapNames).test('%s file is valid', name => {
-    expect(() => validateRules(name)).not.toThrow();
+    expect(() => validateAndSetPermissionRules(name)).not.toThrow();
   });
 });

@@ -46,10 +46,8 @@ import {
   queuesStatusBase,
   referrableResourcesBase,
   routingBase,
-  permissionRulesBase,
 } from './storeNamespaces';
 import { reduce as CaseMergingBannersReducer } from './case/caseBanners';
-import { reduce as PermissionRulesReducer } from './permissionRules/reducer';
 
 const reducers = {
   searchContacts: SearchFormReducer,
@@ -64,8 +62,6 @@ const reducers = {
   [conferencingBase]: ConferencingReducer,
   [caseMergingBannersBase]: CaseMergingBannersReducer,
   [profileBase]: ProfileReducer,
-  [permissionRulesBase]: PermissionRulesReducer,
-
   /*
    * [csamClcReportBase]: CSAMCLCReportReducer,
    * [connectedCaseBase] - this is going to be combined manually, rather than using 'combineReducers', so isn't in this map

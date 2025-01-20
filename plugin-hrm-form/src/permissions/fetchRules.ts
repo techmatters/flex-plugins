@@ -24,7 +24,6 @@ export const fetchRules = async (): Promise<RulesFile> => {
 
   try {
     rules = await fetchPermissionRules();
-    console.log('>>>> Fetched rules:', rules);
   } catch (err) {
     console.error('Error fetching rules:', err);
     rules = defaultRules;

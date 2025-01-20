@@ -45,8 +45,7 @@ import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
 import { maskManagerStringsWithIdentifiers, maskMessageListWithIdentifiers } from './maskIdentifiers';
 import { setUpViewMaskedVoiceNumber } from './maskIdentifiers/unmaskPhoneNumber';
-import { populatePermissionRulesState } from './states/permissionRules/actions';
-import { validateRules } from './permissions';
+import { validateAndSetPermissionRules } from './permissions';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -180,9 +179,7 @@ export default class HrmFormPlugin extends FlexPlugin {
   async init(flex: typeof Flex, manager: Flex.Manager) {
     loadCSS('https://use.fontawesome.com/releases/v5.15.4/css/solid.css');
 
-    console.log('>>>>> Calling validateRules at init');
-    await validateRules();
-    console.log('>>>>> Called validateRules at init');
+    await validateAndSetPermissionRules();
 
     setUpMonitoring(manager.workerClient, manager.serviceConfiguration);
 
@@ -201,10 +198,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     const { translateUI, getMessage } = setUpLocalization(config);
     ActionFunctions.loadCurrentDefinitionVersion();
 
-    // ActionFunctions.loadPermissionRules();
-
     setUpSharedStateClient();
-    console.log('>>>>> Calling setUpComponents');
     setUpComponents(featureFlags, config, translateUI);
     setUpActions(featureFlags, config, getMessage);
 

@@ -41,7 +41,6 @@ import { namespace } from '../states/storeNamespaces';
 import { recordEvent } from '../fullStory';
 import { completeConversationTask, wrapupConversationTask } from '../services/twilioTaskService';
 import { adjustChatCapacity } from '../services/twilioWorkerService';
-// import { populatePermissionRulesState } from '../states/permissionRules/actions';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
