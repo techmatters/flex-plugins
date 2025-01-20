@@ -17,10 +17,8 @@
 import isEqual from 'lodash/isEqual';
 import sortBy from 'lodash/sortBy';
 
-import { fetchRules } from './fetchRules';
+import { getRules, RulesFile } from '.';
 import { getHrmConfig } from '../hrmConfig';
-
-type RulesFile = ReturnType<typeof fetchRules>;
 
 type TargetRule = Partial<Record<keyof RulesFile, string[]>>;
 
@@ -33,8 +31,7 @@ type TargetRule = Partial<Record<keyof RulesFile, string[]>>;
  * checkRule({ viewCase: ['isCreator'] });  // returns true or false
  */
 const checkRule = (targetRule: TargetRule) => {
-  const { permissionConfig } = getHrmConfig();
-  const rulesFile = fetchRules();
+  const rulesFile = getRules();
 
   const rule = Object.keys(targetRule)[0];
   const conditionSetIsEqual = conditionSet => isEqual(sortBy(conditionSet), sortBy(targetRule[rule]));

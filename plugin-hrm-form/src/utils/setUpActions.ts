@@ -18,7 +18,7 @@ import { ActionFunction, ChatOrchestrator, ChatOrchestratorEvent, Manager, TaskH
 import { Conversation } from '@twilio/conversations';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
-// import { RulesFile } from '../permissions';
+import { RulesFile } from '../permissions';
 import { getDefinitionVersion, sendSystemMessage } from '../services/ServerlessService';
 // import { fetchPermissionRules } from '../services/PermissionsService';
 import * as Actions from '../states/contacts/actions';
@@ -56,10 +56,10 @@ export const loadCurrentDefinitionVersion = async () => {
   Manager.getInstance().store.dispatch(updateDefinitionVersion(definitionVersion, definitions));
 };
 
-export const loadPermissionRules = async () => {
-  const rules: RulesFile = await fetchPermissionRules();
-  Manager.getInstance().store.dispatch(populatePermissionRulesState(rules));
-};
+// export const loadPermissionRules = async () => {
+//   const rules: RulesFile = await fetchPermissionRules();
+//   Manager.getInstance().store.dispatch(populatePermissionRulesState(rules));
+// };
 
 /* eslint-enable sonarjs/prefer-single-boolean-return */
 /* eslint-disable sonarjs/cognitive-complexity */

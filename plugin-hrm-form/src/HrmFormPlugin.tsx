@@ -182,6 +182,7 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     console.log('>>>>> Calling validateRules at init');
     await validateRules();
+    console.log('>>>>> Called validateRules at init');
 
     setUpMonitoring(manager.workerClient, manager.serviceConfiguration);
 
