@@ -19,7 +19,6 @@ import { differenceInDays, differenceInHours } from 'date-fns';
 
 import { fetchRules } from './fetchRules';
 import { getHrmConfig } from '../hrmConfig';
-// import { permissionRules } from '../HrmFormPlugin';
 import { ProfileSection } from '../types/types';
 
 export { canOnlyViewOwnCases, canOnlyViewOwnContacts } from './search-permissions';
@@ -277,7 +276,9 @@ let rules: RulesFile = null;
 export const getRules = () => rules;
 
 export const validateAndSetPermissionRules = async () => {
-  rules = await fetchRules();
+  const { permissionConfig } = getHrmConfig();
+
+  rules = await fetchRules(permissionConfig);
   const validated = validateTKActions(rules);
 
   if (!isValidTargetKindActions(validated)) {
@@ -452,7 +453,7 @@ const initializeCanForRules = (rules: RulesFile) => {
 let initializedCan: (performer: TwilioUser, action: Action, target?: any) => boolean = null;
 
 export const getInitializedCan = () => {
-  const { workerSid, isSupervisor } = getHrmConfig();
+  const { workerSid, isSupervisor, permissionConfig } = getHrmConfig();
   if (initializedCan === null) {
     const rules = getRules();
     console.log(`getInitializedCan rules: ${rules}`);
