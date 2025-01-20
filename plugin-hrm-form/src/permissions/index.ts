@@ -428,12 +428,22 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
 };
 
 const initializeCanForRules = (rules: RulesFile) => {
+  if (!rules) {
+    throw new Error('Rules not loaded for initializeCanForRules');
+  }
   const actionCheckers = {} as { [action in Action]: ReturnType<typeof setupAllow> };
 
   const targetKinds = Object.keys(actionsMaps);
   targetKinds.forEach((targetKind: TargetKind) => {
     const actionsForTK = Object.values(actionsMaps[targetKind]) as Action[];
-    actionsForTK.forEach(action => (actionCheckers[action] = setupAllow(targetKind, rules[action])));
+    actionsForTK.forEach(action => {
+      console.log(`rules[action]: ${rules}, action: ${action}`);
+      if (rules[action]) {
+        actionCheckers[action] = setupAllow(targetKind, rules[action]);
+      } else {
+        console.warn(`No rules defined for action: ${action}`);
+      }
+    });
   });
 
   return (performer: TwilioUser, action: Action, target: any) => actionCheckers[action](performer, target);
@@ -445,6 +455,7 @@ export const getInitializedCan = () => {
   const { workerSid, isSupervisor } = getHrmConfig();
   if (initializedCan === null) {
     const rules = getRules();
+    console.log(`getInitializedCan rules: ${rules}`);
     initializedCan = initializeCanForRules(rules);
   }
 

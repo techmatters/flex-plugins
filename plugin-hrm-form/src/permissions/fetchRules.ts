@@ -16,17 +16,23 @@
 
 import type { RulesFile } from '.';
 import { fetchPermissionRules } from '../services/PermissionsService';
-import defaultRules from './closed.json';
+// import defaultRules from './e2e.json';
+
+// import defaultRules from './closed.json';
+
+const closedRules = require('./closed.json');
+const e2eRules = require('./e2e.json');
+
 
 // TODO: do this once, on initialization, then consume from the global state.
 export const fetchRules = async (): Promise<RulesFile> => {
-  let rules: RulesFile = defaultRules;
+  let rules: RulesFile = null;
 
   try {
     rules = await fetchPermissionRules();
   } catch (err) {
     console.error('Error fetching rules:', err);
-    rules = defaultRules;
+    rules = e2eRules;
   }
 
   return rules;
