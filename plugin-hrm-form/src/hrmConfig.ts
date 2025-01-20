@@ -115,7 +115,7 @@ const readConfig = () => {
       identity,
       counselorName,
       isSupervisor,
-      definitionVersion:'as-v1',
+      definitionVersion,
       pdfImagesSource,
       multipleOfficeSupport,
       permissionConfig,
