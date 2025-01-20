@@ -262,7 +262,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       type: 'select',
       name: 'province',
-      label: 'Región',
+      label: 'Province',
       required: false,
       defaultValue: '',
       options: [
@@ -276,7 +276,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       name: 'district',
-      label: 'Comuna',
+      label: 'District',
       type: 'dependent-select',
       dependsOn: 'province',
       required: false,
