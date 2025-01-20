@@ -79,7 +79,7 @@ jobs:
           echo "Test started with taskId: $task_id"
       - name: Slack Aselo channel
         id: slack
-        uses: slackapi/slack-github-action@v1.14.0
+        uses: slackapi/slack-github-action@v2.0.0
         with:
           channel-id: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
           slack-message: "`[testRigor]` Smoke Tests for environment `${{ inputs.environment_code }}` requested by `${{ github.triggering_actor }}` started using workflow `${{ github.workflow }}` :rocket:. \n Test Run: https://app.testrigor.com/test-suites/${{ env.TEST_RIGOR_SUITE_ID }}/runs/${{ env.TASK_ID }}"
