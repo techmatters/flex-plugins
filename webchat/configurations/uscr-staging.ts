@@ -57,27 +57,6 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       },
     },
     {
-      type: 'select',
-      name: 'requestType',
-      label: 'Please select your request type',
-      defaultValue: 'CIRCLE BID Request',
-      required: true,
-      options: [
-        {
-          value: "",
-          label: ""
-        },
-        {
-          value: "CIRCLE BID Request",
-          label: "CIRCLE BID Request"
-        },
-        {
-          value: "City CIRCLE Request",
-          label: "City CIRCLE Request"
-        }
-      ],
-    }, 
-    {
       type: 'input-text',
       name: 'contactIdentifier',
       label: 'Your email address',
@@ -97,13 +76,13 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: 'select',
-      name: 'officeDepartment',
-      label: 'Your Office/Department',
+      name: 'officeDepartmentBid',
+      label: 'Your Office/Department or BID',
       defaultValue: '',
       required: false,
       options: [
         {
-          "label": "N/A",
+          "label": "",
           "value": ""
         },
         {
@@ -165,57 +144,30 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         {
           "label": "Mayor's Office",
           "value": "mayor_s_office_dept"
-        }
-      ],
-    },
-    {
-      type: 'select',
-      name: 'bid',
-      label: 'Business Improvement District',
-      defaultValue: '',
-      required: true,
-      options: [
-        {
-          value: "",
-          label: ""
         },
         {
           value: "The Hollywood Partnership",
           label: "The Hollywood Partnership"
         },
         {
+          value: "Venice",
+          label: "Venice"
+        },
+        {
           value: "Other",
           label: "Other"
-        }
+        },
       ],
-    },  
-    {
-      type: 'input-text',
-      name: 'citizenReportingName',
-      label: 'Citizen Reporting Name',
-      placeholder: 'Citizen Reporting Name',
       required: true,
     },
     {
-      type: 'input-text',
-      name: 'citizenReportingPhoneNumber',
-      label: 'Citizen Reporting Phone Number',
-      placeholder: 'Citizen Reporting Phone Number',
-      required: true,
-    },
-    {
-      type: 'input-text',
-      name: 'operatorId',
-      label: 'Operator ID #',
-      placeholder: 'Operator ID #',
-      required: false,
-    },
-    {
-      type: 'input-text',
-      name: 'incidentNumber',
-      label: 'Incident #',
-      placeholder: 'Incident #',
-      required: false,
+      type: 'checkbox',
+      name: 'firsthandWitness',
+      label:  `To ensure the incident is appropriate and safe for unarmed responders, verify that you or a representative of your team are witnessing the incident firsthand`,
+      required: {
+        value: true,
+        message: 'Please verify that you or a representative of your team are witnessing the incident firsthand',
+      },
     },
     {
       type: 'input-text',
@@ -226,31 +178,17 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: 'input-text',
-      name: 'description',
+      name: 'personDescription',
       label: 'Please provide a description of the encampment or individual(s) and any particular issues/needs and any relevant history or upcoming operations that will impact the location',
       placeholder: 'Please provide a description',
       required: true,
     },
     {
       type: 'input-text',
-      name: 'otherOrganizations',
-      label: 'Are other outreach organizations currently working with the individual(s)? If so, please provide the organization and a POC',
-      placeholder: 'Provide the organizations and a POC',
-      required: false,
-    },
-    {
-      type: 'input-text',
-      name: 'additionalDetails',
-      label: 'Please provide additional details regarding your request',
+      name: 'incidentSummary',
+      label: 'Please provide additional details regarding your request and describe your desired outcome.',
       placeholder: 'Please provide additional details',
       required: false,
-    },
-    {
-      type: 'input-text',
-      name: 'desiredOutcome',
-      label: 'What is the desired outcome?',
-      placeholder: 'Desired outcome',
-      required: true,
     },
     {
       type: 'select',
