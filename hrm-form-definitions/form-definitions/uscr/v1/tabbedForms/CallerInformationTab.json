@@ -25,6 +25,16 @@
       "value": true,
       "message": "RequiredFieldError"
     }
+  },  
+  {
+    "name": "officerRequest",
+    "label": "Request from Officer?",
+    "type": "checkbox"
+  },
+  {
+    "name": "officerStandby",
+    "label": "If request from officer, is officer on standby?",
+    "type": "checkbox"
   },
   {
     "name": "friendlyName",
@@ -127,7 +137,7 @@
   },
   {
     "name": "callbackRequested",
-    "label": "Does requestor want a call back??",
+    "label": "Does requestor want a call back?",
     "type": "checkbox"
   }
 ]
