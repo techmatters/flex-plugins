@@ -49,6 +49,10 @@ export enum FormInputType {
   CustomContactComponent = 'custom-contact-component',
 }
 
+type IsPIIFlag = {
+  isPII?: boolean;
+};
+
 /**
  * Types used for customizable forms
  */
@@ -57,7 +61,8 @@ type ItemBase = {
   label: string;
   type: FormInputType;
   metadata?: Record<string, any>;
-} & RegisterOptions;
+} & IsPIIFlag &
+  RegisterOptions;
 
 type NonSaveable = {
   saveable: false;
@@ -201,7 +206,7 @@ export declare type ProfileSectionDefinition = {
   rows: number;
   placeholder: string;
   width: number;
-};
+} & IsPIIFlag;
 
 export declare type ProfileFlagDurationDefinition = {
   flag: string;
@@ -307,11 +312,23 @@ export type StatusInfo = {
   transitions: string[]; // possible statuses this one can transition to (further update may be to include who can make such a transition for a more granular control)
 };
 
+export type CaseOverviewDefinition = {
+  followUpDate?: IsPIIFlag;
+  childIsAtRisk?: IsPIIFlag;
+  summary?: IsPIIFlag;
+};
+
+export type ProfileOverviewDefinition = {
+  name?: IsPIIFlag;
+  identifiers?: IsPIIFlag;
+};
+
 /**
  * Type that defines a complete version for all the customizable forms used across the app
  */
 export type DefinitionVersion = {
   caseForms: {
+    // CaseOverview: CaseOverviewDefinition;
     HouseholdForm: FormDefinition;
     IncidentForm: FormDefinition;
     NoteForm: FormDefinition;
@@ -352,6 +369,7 @@ export type DefinitionVersion = {
   referenceData?: Record<string, any>;
   blockedEmojis: string[];
   profileForms?: {
+    // ProfileOverview: ProfileOverviewDefinition;
     Sections: ProfileSectionDefinition[];
     FlagDurations: ProfileFlagDurationDefinition[];
   };

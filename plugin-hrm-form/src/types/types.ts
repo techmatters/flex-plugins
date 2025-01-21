@@ -69,7 +69,6 @@ export type CSAMReportEntry = {
 } & Omit<EntryInfo, 'id'>;
 
 export type CaseOverview = {
-
   followUpDate?: string;
   childIsAtRisk?: boolean;
   summary?: string;
@@ -97,7 +96,6 @@ export type Case = {
   previousStatus?: string;
   categories: Record<string, string[]>;
   firstContact?: Contact;
-
 };
 
 export type TwilioStoredMedia = {
