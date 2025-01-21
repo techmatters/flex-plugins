@@ -1,31 +1,25 @@
 [
   {
-    "name": "requestType",
-    "label": "Request type",
-    "type": "select",
-    "unknownOption": "",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "CIRCLE BID Request",
-        "label": "CIRCLE BID Request"
-      },
-      {
-        "value": "City CIRCLE Request",
-        "label": "City CIRCLE Request"
-      }
-    ],
+    "name": "operatorId",
+    "label": "Operator #",
+    "type": "input",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
     }
   },
   {
-    "name": "contactIdentifier",
-    "label": "Email",
+    "name": "identifier911",
+    "label": "911 Incident #",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "circleId",
+    "label": "CIRCLE Incident #",
     "type": "input",
     "required": {
       "value": true,
@@ -34,21 +28,27 @@
   },
   {
     "name": "friendlyName",
-    "label": "Name",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "label": "Reporter Name",
+    "type": "input"
   },
   {
-    "name": "officeDepartment",
-    "label": "Office/Department",
+    "name": "contactIdentifier",
+    "label": "Reporter Email",
+    "type": "input"
+  },
+  {
+    "name": "phone",
+    "label": "Reporter Phone",
+    "type": "input"
+  },
+  {
+    "name": "officeDepartmentBid",
+    "label": "Office/Department or BID",
     "type": "select",
     "unknownOption": "Unknown",
     "options": [
       {
-        "label": "N/A",
+        "label": "",
         "value": ""
       },
       {
@@ -110,116 +110,24 @@
       {
         "label": "Mayor's Office",
         "value": "mayor_s_office_dept"
-      }
-    ]
-  },
-  {
-    "name": "bid",
-    "label": "Business Improvement District",
-    "type": "select",
-    "unknownOption": "",
-    "options": [
-      {
-        "value": "",
-        "label": ""
       },
       {
         "value": "The Holloywood Partnership",
         "label": "The Holloywood Partnership"
       },
       {
+        "value": "Venice",
+        "label": "Venice"
+      },
+      {
         "value": "Other",
         "label": "Other"
       }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "citizenReportingName",
-    "label": "Citizen Reporting Name",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "citizenReportingPhoneNumber",
-    "label": "Citizen Reporting Phone Number",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "operatorId",
-    "label": "Operator ID",
-    "type": "input"
-  },
-  {
-    "name": "incidentNumber",
-    "label": "Incident #",
-    "type": "input"
-  },
-  {
-    "name": "specificLocation",
-    "label": "Specific Location",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "description",
-    "label": "Description of encampment or individual",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "otherOrganizations",
-    "label": "Other organization(s) involved? If so, provide POC/organizations",
-    "type": "input"
-  },
-  {
-    "name": "additionalDetails",
-    "label": "Provide any other additional details",
-    "type": "input"
-  },
-  {
-    "name": "desiredOutcome",
-    "label": "What is the desired outcome? ",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "priority",
-    "label": "Priority",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "High",
-        "label": "High"
-      },
-      {
-        "value": "Normal",
-        "label": "Normal"
-      }
     ]
+  },
+  {
+    "name": "callbackRequested",
+    "label": "Does requestor want a call back??",
+    "type": "checkbox"
   }
 ]
