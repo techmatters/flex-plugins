@@ -328,7 +328,7 @@ export type ProfileOverviewDefinition = {
  */
 export type DefinitionVersion = {
   caseForms: {
-    CaseOverview: CaseOverviewDefinition;
+    // CaseOverview: CaseOverviewDefinition;
     HouseholdForm: FormDefinition;
     IncidentForm: FormDefinition;
     NoteForm: FormDefinition;
@@ -369,7 +369,7 @@ export type DefinitionVersion = {
   referenceData?: Record<string, any>;
   blockedEmojis: string[];
   profileForms?: {
-    ProfileOverview: ProfileOverviewDefinition;
+    // ProfileOverview: ProfileOverviewDefinition;
     Sections: ProfileSectionDefinition[];
     FlagDurations: ProfileFlagDurationDefinition[];
   };

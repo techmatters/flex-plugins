@@ -20,7 +20,6 @@ import path from 'path';
 import {
   CallTypeButtonsDefinitions,
   CannedResponsesDefinitions,
-  CaseOverviewDefinition,
   CategoriesDefinition,
   DefinitionVersion,
   FormDefinition,
@@ -32,7 +31,6 @@ import {
   isSelectDefinitionWithReferenceOptions,
   LayoutVersion,
   ProfileFlagDurationDefinition,
-  ProfileOverviewDefinition,
   ProfileSectionDefinition,
 } from './types';
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
@@ -148,7 +146,6 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
    */
   const [
     layoutVersion,
-    caseOverview,
     householdForm,
     incidentForm,
     noteForm,
@@ -169,12 +166,10 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     prepopulateKeys,
     referenceData,
     blockedEmojis,
-    profileOverview,
     profileSections,
     profileFlagDurations,
   ] = await Promise.all([
     fetchDefinition<LayoutVersion>('LayoutDefinitions.json'),
-    fetchDefinition<CaseOverviewDefinition>('caseForms/CaseOverview.json', {}),
     fetchDefinition<FormItemJsonDefinition[]>('caseForms/HouseholdForm.json'),
     fetchDefinition<FormItemJsonDefinition[]>('caseForms/IncidentForm.json'),
     fetchDefinition<FormItemJsonDefinition[]>('caseForms/NoteForm.json'),
@@ -201,7 +196,6 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     ),
     fetchDefinition<Record<string, any>>('ReferenceData.json', {}),
     fetchDefinition<string[]>('BlockedEmojis.json', []),
-    fetchDefinition<ProfileOverviewDefinition>('profileForms/ProfileOverview.json', {}),
     fetchDefinition<ProfileSectionDefinition[]>('profileForms/Sections.json', []),
     fetchDefinition<ProfileFlagDurationDefinition[]>('profileForms/FlagDurations.json', []),
   ]);
@@ -212,7 +206,6 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     helplines[0].value;
   return {
     caseForms: {
-      CaseOverview: caseOverview,
       HouseholdForm: expandFormDefinition(householdForm, referenceData),
       IncidentForm: expandFormDefinition(incidentForm, referenceData),
       NoteForm: expandFormDefinition(noteForm, referenceData),
@@ -241,7 +234,6 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     referenceData,
     blockedEmojis,
     profileForms: {
-      ProfileOverview: profileOverview,
       Sections: profileSections,
       FlagDurations: profileFlagDurations,
     },
