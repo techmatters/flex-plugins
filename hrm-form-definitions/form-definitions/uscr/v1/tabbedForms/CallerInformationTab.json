@@ -18,26 +18,6 @@
     }
   },
   {
-    "name": "officerRequest",
-    "label": "Request from Officer?",
-    "type": "checkbox"
-  },
-  {
-    "name": "friendlyName",
-    "label": "Name of Person Reporting",
-    "type": "input"
-  },
-  {
-    "name": "contactIdentifier",
-    "label": "Email of Person Reporting",
-    "type": "input"
-  },
-  {
-    "name": "phone",
-    "label": "Phone of Person Reporting",
-    "type": "input"
-  },
-  {
     "name": "officeDepartmentBid",
     "label": "Office/Department or BID",
     "type": "select",
@@ -120,6 +100,26 @@
         "label": "Other"
       }
     ]
+  },
+  {
+    "name": "officerRequest",
+    "label": "Request from Officer?",
+    "type": "checkbox"
+  },
+  {
+    "name": "friendlyName",
+    "label": "Name of Person Reporting",
+    "type": "input"
+  },
+  {
+    "name": "contactIdentifier",
+    "label": "Email of Person Reporting",
+    "type": "input"
+  },
+  {
+    "name": "phone",
+    "label": "Phone of Person Reporting",
+    "type": "input"
   },
   {
     "name": "callbackRequested",
