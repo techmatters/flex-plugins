@@ -12,7 +12,7 @@ locals {
       send_message_run_janitor_sid          = "ZH223086290be816e9600ffac5655174ac"
       bot_language                          = "en-NZ"
       blocked_message                       = "Kia ora, you've been blocked from accessing Youthline's helpline and we are not able to read or receive further messages from you. If you think this is a mistake, please email complaints@youthline.co.nz with your name and contact details for this to be reviewed. If you are unsafe or require urgent support, please call 111 now."
-
+      ip_location_finder_url                = "https://hrm-staging.tl.techmatters.org/lambda/ipLocationFinder"
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
@@ -46,7 +46,7 @@ locals {
           blocked_url                = "https://nz-assets-8961.twil.io/blocked_number.mp3"
           initial_message_url        = "https://nz-assets-8961.twil.io/initial_message.mp3"
           external_parties_number    = "+6498867292"
-          ip_location_finder_url     = "https://hrm-staging.tl.techmatters.org/lambda/ipLocationFinder"
+
         }
         chatbot_unique_names = []
       },
