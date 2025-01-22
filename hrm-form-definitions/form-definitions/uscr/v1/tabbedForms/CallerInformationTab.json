@@ -23,11 +23,6 @@
     "type": "checkbox"
   },
   {
-    "name": "officerStandby",
-    "label": "If request from officer, is officer on standby?",
-    "type": "checkbox"
-  },
-  {
     "name": "friendlyName",
     "label": "Reporter Name",
     "type": "input"
