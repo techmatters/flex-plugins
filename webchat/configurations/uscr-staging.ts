@@ -177,17 +177,10 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: 'input-text',
-      name: 'personDescription',
-      label: 'Please provide a description of the encampment or individual(s) and any particular issues/needs and any relevant history or upcoming operations that will impact the location',
+      name: 'incidentSummary',
+      label: 'Please provide a description of the situation, encampment, or individual(s) and any particular issues/needs and any relevant history or upcoming operations that will impact the location',
       placeholder: 'Please provide a description',
       required: true,
-    },
-    {
-      type: 'input-text',
-      name: 'incidentSummary',
-      label: 'Please provide additional details regarding your request and describe your desired outcome.',
-      placeholder: 'Please provide additional details',
-      required: false,
     },
     {
       type: 'select',
