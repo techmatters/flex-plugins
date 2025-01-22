@@ -79,7 +79,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       name: 'officeDepartmentBid',
       label: 'Your Office/Department or BID',
       defaultValue: '',
-      required: false,
+      required: true,
       options: [
         {
           "label": "",
@@ -158,7 +158,6 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: "Other"
         },
       ],
-      required: true,
     },
     {
       type: 'checkbox',
