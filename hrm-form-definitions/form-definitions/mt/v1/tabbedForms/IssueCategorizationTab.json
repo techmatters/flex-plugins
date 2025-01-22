@@ -25,6 +25,7 @@
         {"label": "Economic abuse"},
         {"label": "Psychological abuse"},
         {"label": "(AV) Sexual abuse"},
+        {"label": "Rape"},
         {"label": "Witness to violence"},
         {"label": "(AV) Unspecified / Other"}
       ]
@@ -340,6 +341,7 @@
         {"label": "Lack of motivation"},
         {"label": "Lack of confidence"},
         {"label": "Loneliness"},
+        {"label": "Miscarriage"},
         {"label": "Multiple psychiatric / Psychological issues"},
         {"label": "Other psychiatric / Psychological issues"},
         {"label": "Panic attacks"},
