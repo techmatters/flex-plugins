@@ -1,24 +1,4 @@
 [
-  {
-    "name": "incidentSummary",
-    "label": "Incident Description",
-    "type": "textarea",
-    "rows": 20,
-    "width": 289,
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
- {
-    "name": "specificLocation",
-    "label": "Specific Location",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
  {
     "name": "reportingDistrict",
     "label": "Reporting District",
@@ -118,5 +98,10 @@
         "label": "Normal"
       }
     ]
- }
+ },  
+  {
+    "name": "officerStandby",
+    "label": "If request from officer, is officer on standby?",
+    "type": "checkbox"
+  }
 ]
