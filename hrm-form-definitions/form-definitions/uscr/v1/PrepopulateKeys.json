@@ -5,19 +5,16 @@
   },
   "preEngagement": {
     "ChildInformationTab": [
-      "personDescription"
+      "incidentSummary",
+      "specificLocation"
     ],
     "CallerInformationTab": [
-      "requestType",
       "contactIdentifier",
       "friendlyName",
       "officeDepartmentBid"
 
     ],
     "CaseInformationTab": [
-      "specificLocation",
-      "incidentSummary",
-      "desiredOutcome",
       "priority"
     ]
   }
