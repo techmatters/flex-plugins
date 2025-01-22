@@ -33,7 +33,7 @@ locals {
     task_queues = {
       master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "LA CIRCLE"
+        "friendly_name"  = "CIRCLE"
       },
       survey : {
         "target_workers" = "1==0",
