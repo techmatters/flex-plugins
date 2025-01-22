@@ -1,4 +1,24 @@
 [
+    {
+    "name": "incidentSummary",
+    "label": "Incident or Person Description",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+ {
+    "name": "specificLocation",
+    "label": "Specific Location",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
   {
     "name": "firstName",
     "label": "First Name",
@@ -304,25 +324,5 @@
         "label": "Other"
       }
     ]
-  },
-  {
-    "name": "incidentSummary",
-    "label": "Incident or Person Description",
-    "type": "textarea",
-    "rows": 20,
-    "width": 289,
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
- {
-    "name": "specificLocation",
-    "label": "Specific Location",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
   }
 ]
