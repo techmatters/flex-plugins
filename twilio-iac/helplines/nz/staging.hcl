@@ -28,7 +28,7 @@ locals {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-no-chatbot-operating-hours-flags-routing.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-no-chatbot-operating-hours-flags-routing-v2.tftpl"
         channel_flow_vars = {
           chat_greeting_message = "Kia ora, thank you for contacting Youthline. One of our counsellors will get back to you as soon as we can. If you or someone else are in immediate danger, please call 111 immediately."
           widget_from           = "Youthline"
@@ -46,6 +46,7 @@ locals {
           blocked_url                = "https://nz-assets-8961.twil.io/blocked_number.mp3"
           initial_message_url        = "https://nz-assets-8961.twil.io/initial_message.mp3"
           external_parties_number    = "+6498867292"
+          ip_location_finder_url     = "https://hrm-staging.tl.techmatters.org/lambda/ipLocationFinder"
         }
         chatbot_unique_names = []
       },
@@ -53,7 +54,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "custom"
         contact_identity     = "modica"
-        templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v2.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -69,7 +70,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "whatsapp"
         contact_identity     = "whatsapp:+6498865661"
-        templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v2.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }

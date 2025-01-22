@@ -8,7 +8,7 @@ ${
       "type": "trigger",
       "transitions": [
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "ipLocationFinder",
           "event": "incomingMessage"
         },
         {
@@ -325,6 +325,103 @@ ${
           "x": 40,
           "y": 660
         }
+      }
+    },
+    {
+      "name": "ipLocationFinder",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "block_non_MT_contacts",
+          "event": "success"
+        },
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -310,
+          "y": -660
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"trigger\": {{trigger | to_json}}}",
+        "url": flow_vars["ip_location_finder_url"]
+      }
+    },
+    {
+      "name": "block_non_NZ_contacts",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_blocked_location_message",
+          "event": "noMatch"
+        },
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If equal to NZ",
+              "arguments": [
+                "{{widgets.ipLocationFinder.parsed.country_code}}"
+              ],
+              "type": "equal_to",
+              "value": "NZ"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.ipLocationFinder.parsed.country_code}}",
+        "offset": {
+          "x": -750,
+          "y": -460
+        }
+      }
+    },
+    {
+      "name": "send_blocked_location_message",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": -1000,
+          "y": -210
+        },
+        "function_sid": flow_vars["send_message_janitor_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+
+            "value": "Kia ora, Only numbers from NZ can reach Youthline's helpline. We are not able to read or receive further messages from you. If you think this is a mistake, please email complaints@youthline.co.nz with your name and contact details for this to be reviewed. If you are unsafe or require urgent support, please call 111 now.",
+            "key": "message"
+          },
+          {
+            "value": "Kellimni",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
       }
     }
   ],
