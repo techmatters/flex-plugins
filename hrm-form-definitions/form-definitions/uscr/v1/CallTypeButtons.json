@@ -1,13 +1,13 @@
 [
     {
         "name": "child",
-        "label": "Incident in the Field",
+        "label": "RESPONDERS: Incident in the Field",
         "type": "button",
         "category": "data"
     },
     {
         "name": "caller",
-        "label": "Incident Requested",
+        "label": "OPERATORS: Incident Requested",
         "type": "button",
         "category": "data"
     },
