@@ -1,4 +1,29 @@
-[
+[ 
+ {
+    "name": "priority",
+    "label": "Priority",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "High",
+        "label": "High"
+      },
+      {
+        "value": "Normal",
+        "label": "Normal"
+      }
+    ]
+ },  
+  {
+    "name": "officerStandby",
+    "label": "If request from officer, is officer on standby?",
+    "type": "checkbox"
+  },
  {
     "name": "reportingDistrict",
     "label": "Reporting District",
@@ -78,30 +103,5 @@
         "label": "East"
       }
     ]
- },
- {
-    "name": "priority",
-    "label": "Priority",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "High",
-        "label": "High"
-      },
-      {
-        "value": "Normal",
-        "label": "Normal"
-      }
-    ]
- },  
-  {
-    "name": "officerStandby",
-    "label": "If request from officer, is officer on standby?",
-    "type": "checkbox"
-  }
+ }
 ]
