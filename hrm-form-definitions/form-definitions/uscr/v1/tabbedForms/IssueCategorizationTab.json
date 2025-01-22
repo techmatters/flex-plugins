@@ -55,6 +55,14 @@
           "label": "Mental Health Crisis"
         }
       ]
+    },
+    "Declined Incident": {
+      "color": "#767777",
+      "subcategories": [
+          {"label": "Declined Incident - Out of Scope"},
+          {"label": "Declined Incident - Out of Area"},
+          {"label": "Declined Incident - No Responders Available"}
+      ]
     }
   }
 }
