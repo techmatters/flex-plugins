@@ -24,17 +24,17 @@
   },
   {
     "name": "friendlyName",
-    "label": "Reporter Name",
+    "label": "Name of Person Reporting",
     "type": "input"
   },
   {
     "name": "contactIdentifier",
-    "label": "Reporter Email",
+    "label": "Email of Person Reporting",
     "type": "input"
   },
   {
     "name": "phone",
-    "label": "Reporter Phone",
+    "label": "Phone of Person Reporting",
     "type": "input"
   },
   {
