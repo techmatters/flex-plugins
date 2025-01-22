@@ -18,15 +18,6 @@
     }
   },
   {
-    "name": "circleId",
-    "label": "CIRCLE Incident #",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },  
-  {
     "name": "officerRequest",
     "label": "Request from Officer?",
     "type": "checkbox"
