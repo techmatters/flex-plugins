@@ -15,6 +15,8 @@
  */
 
 import '../hrm/createHrmContactTaskRouterListener';
+import '../task/addCustomerExternalIdTaskRouterListener';
+import '../conversation/addTaskSidToChannelAttributesTaskRouterListener';
 
 export { handleTaskRouterEvent } from './taskrouterEventHandler';
 

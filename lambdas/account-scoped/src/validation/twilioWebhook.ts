@@ -15,18 +15,16 @@
  */
 
 import twilio from 'twilio';
-import { getSsmParameter } from '../ssmCache';
 import { newErr, newOk } from '../Result';
 import { HttpRequestPipelineStep } from '../httpTypes';
+import { getAccountAuthToken } from '../configuration/twilioConfiguration';
 
 export const validateWebhookRequest: HttpRequestPipelineStep = async (
   request,
   { accountSid },
 ) => {
   const { headers, body, path } = request;
-  const authToken = await getSsmParameter(
-    `/${process.env.NODE_ENV}/twilio/${accountSid}/auth_token`,
-  );
+  const authToken = await getAccountAuthToken(accountSid);
   const {
     'x-twilio-signature': twiloSignature,
     'x-original-webhook-url': originalWebhookUrl,

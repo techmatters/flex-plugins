@@ -14,13 +14,20 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// Temporary duplication, these should be shared with the same types in the flex plugin
-export type AccountSID = `AC${string}`;
-export type WorkspaceSID = `WS${string}`;
-export type WorkerSID = `WK${string}`;
-export type TaskSID = `WT${string}`;
-export type ChatServiceSID = `IS${string}`;
+import { AccountSID, ChatServiceSID, WorkspaceSID } from '../twilioTypes';
+import { getSsmParameter } from '../ssmCache';
 
-export const isAccountSID = (value: string): value is AccountSID =>
-  // This regex could be stricter if we only wanted to catch 'real' account SIDs, but our test account sids have non hexadecimal characters
-  /^AC[0-9a-zA-Z_]+$/.test(value);
+export const getWorkspaceSid = async (accountSid: AccountSID): Promise<WorkspaceSID> =>
+  (await getSsmParameter(
+    `/${process.env.NODE_ENV}/twilio/${accountSid}/workspace_sid`,
+  )) as WorkspaceSID;
+
+export const getChatServiceSid = async (
+  accountSid: AccountSID,
+): Promise<ChatServiceSID> =>
+  (await getSsmParameter(
+    `/${process.env.NODE_ENV}/twilio/${accountSid}/chat_service_sid`,
+  )) as ChatServiceSID;
+
+export const getAccountAuthToken = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/auth_token`);

@@ -26,6 +26,7 @@ import type { EventFields } from '../taskrouter';
 import twilio from 'twilio';
 import { AccountSID } from '../twilioTypes';
 import { getSsmParameter } from '../ssmCache';
+import {getWorkspaceSid} from "../configuration/twilioConfiguration";
 
 export const eventTypes: EventType[] = [RESERVATION_ACCEPTED];
 
@@ -120,7 +121,7 @@ export const handleEvent = async (
 
   const [hrmStaticKey, twilioWorkspaceSid] = await Promise.all([
     getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/static_key`),
-    getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/workspace_sid`),
+    getWorkspaceSid(accountSid),
   ]);
   const contactUrl = `${process.env.INTERNAL_HRM_URL}/internal/${hrmApiVersion}/accounts/${accountSid}/contacts`;
 
