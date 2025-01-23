@@ -1,100 +1,67 @@
 {
-  "LA CIRCLE": {
-    "Housing": {
+  "CIRCLE": {
+    "Indecent Exposure": {
       "color": "#085f63",
       "subcategories": [
         {
-          "label": "CES Access Center/Point"
-        },
-        {
-          "label": "Interim Housing "
-        },
-        {
-          "label": "Emergency Shelter"
+          "label": "Indecent Exposure"
         }
       ]
     },
-    "Social Services": {
+    "Loitering": {
       "color": "#14919b",
       "subcategories": [
         {
-          "label": "Water/Coffee"
-        },
-        {
-          "label": "Meal/Snack"
-        },
-        {
-          "label": "Hygiene Kit"
-        },
-        {
-          "label": "Blanket/Clothing"
-        },
-        {
-          "label": "Circle Facility Visit"
-        },
-        {
-          "label": "Mobile Hygiene Program "
-        },
-        {
-          "label": "Public Benefits (GR, Callresh, Medi-Cal)"
-        },
-        {
-          "label": "CBEST"
-        },
-        {
-          "label": "Job/Employment"
-        },
-        {
-          "label": "Education"
-        },
-        {
-          "label": "Immigration"
-        },
-        {
-          "label": "Veteran Services"
-        },
-        {
-          "label": "Domestic Violence Service Services"
-        },
-        {
-          "label": "Vital Documents"
+          "label": "Loitering"
         }
       ]
     },
-    "Medical ": {
+    "Syringe Disposal ": {
       "color": "#fac05e",
       "subcategories": [
         {
-          "label": "Narcan for OD Reversal"
-        },
-        {
-          "label": "Fentanyl Test Strips"
-        },
-        {
-          "label": "Medical Care Provider"
+          "label": "Syringe Disposal"
         }
       ]
     },
-    "Behavioral Health": {
+    "Well-being Check": {
       "color": "#f79d8f",
       "subcategories": [
         {
-          "label": "SUD Services (Treatment or Recovery Program)"
-        },
-        {
-          "label": "Metal Health Provider"
+          "label": "Well-being Check"
         }
       ]
     },
-    "Other Activities": {
+    "Intoxication": {
       "color": "#f0817c",
       "subcategories": [
         {
-          "label": "Other"
-        },
-        {
-          "label": "Example"
+          "label": "Intoxication"
         }
+      ]
+    },
+    "Disturbance": {
+      "color": "#506BA5",
+      "subcategories": [
+        {
+          "label": "Disturbance"
+        }
+      ]
+    },
+    "Mental Health Crisis": {
+      "color": "#55AFAF",
+      "subcategories": [
+        {
+          "label": "Mental Health Crisis"
+        }
+      ]
+    },
+    "Declined Incident": {
+      "color": "#767777",
+      "subcategories": [
+          {"label": "Declined Incident - Out of Scope"},
+          {"label": "Declined Incident - Out of Area"},
+          {"label": "Declined Incident - No Responders Available"}
       ]
     }
   }

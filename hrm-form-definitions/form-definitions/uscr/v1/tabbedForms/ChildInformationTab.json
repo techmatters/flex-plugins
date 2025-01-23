@@ -1,4 +1,24 @@
 [
+    {
+    "name": "incidentSummary",
+    "label": "Incident or Person Description",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+ {
+    "name": "specificLocation",
+    "label": "Specific Location",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
   {
     "name": "firstName",
     "label": "First Name",
@@ -7,87 +27,6 @@
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input"
-  },
-  {
-    "name": "officedepartment",
-    "label": "Office/Department",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "LAPD",
-        "label": "LAPD"
-      },
-      {
-        "value": "CAO",
-        "label": "CAO"
-      },
-      {
-        "value": "CD1",
-        "label": "CD1"
-      },
-      {
-        "value": "CD4",
-        "label": "CD4"
-      },
-      {
-        "value": "CD5",
-        "label": "CD5"
-      },
-      {
-        "value": "CD6",
-        "label": "CD6"
-      },
-      {
-        "value": "CD7",
-        "label": "CD7"
-      },
-      {
-        "value": "CD8",
-        "label": "CD8"
-      },
-      {
-        "value": "CD9",
-        "label": "CD9"
-      },
-      {
-        "value": "CD10",
-        "label": "CD10"
-      },
-      {
-        "value": "CD11",
-        "label": "CD11"
-      },
-      {
-        "value": "CD13",
-        "label": "CD13"
-      },
-      {
-        "value": "CD14",
-        "label": "CD14"
-      },
-      {
-        "value": "CD15",
-        "label": "CD15"
-      },
-      {
-        "value": "Mayor's Office",
-        "label": "Mayor's Office"
-      },
-      {
-        "value": "N/A",
-        "label": "N/A"
-      }
-    ]
-  },
-  {
-    "name": "callerIncidentOutcome",
-    "label": "Caller Incident Outcome",
     "type": "input"
   },
   {
@@ -385,50 +324,5 @@
         "label": "Other"
       }
     ]
-  },
-  {
-    "name": "language",
-    "label": "Language",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Language",
-        "label": "Language"
-      },
-      {
-        "value": "English",
-        "label": "English"
-      },
-      {
-        "value": "Spanish",
-        "label": "Spanish"
-      }
-    ]
-  },
-  {
-    "name": "requestType",
-    "label": "Request Type",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "CIRCLE BID Request",
-        "label": "CIRCLE BID Request"
-      },
-      {
-        "value": "City CIRCLE Request",
-        "label": "City CIRCLE Request"
-      }
-    ]
-  },
-  {
-    "name": "specificLocation",
-    "label": "Specific Location",
-    "type": "input"
   }
 ]
