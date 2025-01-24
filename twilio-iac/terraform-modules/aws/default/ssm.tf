@@ -231,7 +231,7 @@ resource "aws_ssm_parameter" "aws_region" {
 moved {
   from = module.hrmServiceIntegration.aws_ssm_parameter.hrm_static_api_key_v2
   to   = module.aws.aws_ssm_parameter.hrm_static_api_key_v2
-}
+  }
 
 data "aws_ssm_parameter" "hrm_static_api_key_legacy" {
   name     = "${var.short_environment}_TWILIO_${var.short_helpline}_HRM_STATIC_KEY"
