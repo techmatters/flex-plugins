@@ -65,6 +65,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
         ...savedContact.rawJson,
       },
     };
+    console.log('>>> updatedContact', updatedContact);
     dispatch(newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction(updatedContact));
     setShowResolvedBanner(true);
   };

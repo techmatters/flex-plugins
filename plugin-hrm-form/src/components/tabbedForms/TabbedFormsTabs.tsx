@@ -56,6 +56,7 @@ import { TabbedFormsCommonProps } from './types';
 import { useTabbedFormContext } from './hooks/useTabbedForm';
 // Ensure we import any custom components that might be used in a form
 import '../contact/ResourceReferralList';
+import { handleTwilioTask } from '../../services/ContactService';
 
 type OwnProps = TabbedFormsCommonProps;
 
@@ -236,7 +237,10 @@ const TabbedFormsTabs: React.FC<Props> = ({
   const handleTabsChange = async (t: number) => {
     const tab = tabsToIndex[t];
     if (contactSaveFrequency === 'onTabChange') {
+      const { conversationMedia } = await handleTwilioTask(task as ITask);
+      const draftContact = { ...updatedContact, conversationMedia };
       saveDraft(savedContact, draftContact);
+      console.log('>>> handleTabsChange > Saved draft on tab change', draftContact);
     }
     if (tab === 'search') {
       openSearchModal(contactId);
