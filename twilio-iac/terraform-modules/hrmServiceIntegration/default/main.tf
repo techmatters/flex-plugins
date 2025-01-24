@@ -21,4 +21,3 @@ resource "null_resource" "hrm_static_api_key" {
     }
   }
 }
-
