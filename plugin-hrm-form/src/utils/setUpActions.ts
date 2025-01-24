@@ -55,14 +55,8 @@ export const loadCurrentDefinitionVersion = async () => {
   Manager.getInstance().store.dispatch(updateDefinitionVersion(definitionVersion, definitions));
 };
 
-// export const loadPermissionRules = async () => {
-//   const rules: RulesFile = await fetchPermissionRules();
-//   Manager.getInstance().store.dispatch(populatePermissionRulesState(rules));
-// };
-
 /* eslint-enable sonarjs/prefer-single-boolean-return */
 /* eslint-disable sonarjs/cognitive-complexity */
-
 const saveEndMillis = async (payload: ActionPayload) => {
   Manager.getInstance().store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
 };
