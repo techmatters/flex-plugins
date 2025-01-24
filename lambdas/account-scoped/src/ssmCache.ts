@@ -18,8 +18,6 @@ import {
   SSMClient,
   SSMClientConfig,
   GetParameterCommand,
-  GetParametersByPathCommand,
-  GetParametersByPathCommandInput,
   Parameter as SsmParameter,
   ParameterNotFound,
 } from '@aws-sdk/client-ssm';
@@ -81,24 +79,18 @@ export class SsmParameterNotFound extends Error {
   }
 }
 
-export const hasParameterExpired = (parameter: SsmCacheParameter | undefined) => {
+const hasParameterExpired = (parameter: SsmCacheParameter | undefined) => {
   return !!(parameter?.expiryDate && new Date() > parameter.expiryDate);
 };
 
-export const hasCacheExpired = () =>
-  !!(ssmCache.expiryDate && new Date() > ssmCache.expiryDate);
-
-export const isConfigNotEmpty = () => !!Object.keys(ssmCache.values).length;
-
-export const setCacheDurationMilliseconds = (cacheDurationMilliseconds: number) => {
+const setCacheDurationMilliseconds = (cacheDurationMilliseconds: number) => {
   ssmCache.cacheDurationMilliseconds = cacheDurationMilliseconds;
 };
 
 // If the value is falsy, we take that to means that the parameter doesn't exist in addition to just a missing name
-export const parameterExistsInCache = (name: string): boolean =>
-  !!ssmCache.values[name]?.value;
+const parameterExistsInCache = (name: string): boolean => !!ssmCache.values[name]?.value;
 
-export const getSsmClient = () => {
+const getSsmClient = () => {
   if (!ssm) {
     ssm = new SSMClient(getSsmConfig());
   }
@@ -106,7 +98,7 @@ export const getSsmClient = () => {
   return ssm;
 };
 
-export const addToCache = (regex: RegExp | undefined, { Name, Value }: SsmParameter) => {
+const addToCache = (regex: RegExp | undefined, { Name, Value }: SsmParameter) => {
   if (!Name) return;
   if (regex && !regex.test(Name)) return;
 
@@ -156,63 +148,4 @@ export const getSsmParameter = async (
   }
 
   return ssmCache.values[name]?.value || '';
-};
-
-type LoadPaginatedParameters = {
-  path: string;
-  regex?: RegExp;
-  nextToken?: string;
-};
-
-export const loadPaginated = async ({
-  path,
-  regex,
-  nextToken,
-}: LoadPaginatedParameters): Promise<void> => {
-  const params: GetParametersByPathCommandInput = {
-    MaxResults: 10, // 10 is max allowed by AWS
-    Path: path,
-    Recursive: true,
-    WithDecryption: true,
-  };
-
-  if (nextToken) params.NextToken = nextToken;
-
-  const command = new GetParametersByPathCommand(params);
-
-  const resp = await getSsmClient().send(command);
-
-  resp.Parameters?.forEach(p => addToCache(regex, p));
-
-  if (resp.NextToken) {
-    await loadPaginated({
-      path,
-      regex,
-      nextToken: resp.NextToken,
-    });
-  }
-};
-
-export type SsmCacheConfig = {
-  path: string;
-  regex?: RegExp;
-};
-
-export type LoadSsmCacheParameters = {
-  cacheDurationMilliseconds?: number;
-  // We accept an array of types to allow loading parameters from multiple paths
-  configs: SsmCacheConfig[];
-};
-
-export const loadSsmCache = async ({
-  cacheDurationMilliseconds,
-  configs,
-}: LoadSsmCacheParameters) => {
-  if (isConfigNotEmpty() && !hasCacheExpired()) return;
-  if (cacheDurationMilliseconds) setCacheDurationMilliseconds(cacheDurationMilliseconds);
-
-  ssmCache.expiryDate = new Date(Date.now() + ssmCache.cacheDurationMilliseconds);
-
-  const promises = configs.map(async config => loadPaginated(config));
-  await Promise.all(promises);
 };
