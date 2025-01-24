@@ -3,7 +3,7 @@
 # }
 
 module "lex" {
-  source = "../../lex/v1"
+  source = "../../lex/v2"
 
   providers = {
     aws           = aws
