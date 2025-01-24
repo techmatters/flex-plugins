@@ -69,6 +69,8 @@ module "channel" {
   serverless_url             = local.serverless_url
   serverless_service_sid     = local.serverless_service_sid
   serverless_environment_sid = local.serverless_environment_production_sid
+  region                     = var.helpline_region
+  base_priority              = 500
 }
 
 module "datadog" {
@@ -79,6 +81,18 @@ module "datadog" {
   channel_studio_flow_sids = module.channel.channel_studio_flows_sids
 }
 
+resource "aws_ssm_parameter" "permission_config" {
+  name        = "/${lower(var.environment)}/config/${nonsensitive(local.secrets.twilio_account_sid)}/permission_config"
+  type        = "SecureString"
+  value       = var.permission_config
+  description = "Twilio account - permission config to use for the given account"
+
+  tags = {
+    Environment = lower(var.environment)
+    Name        = "/${lower(var.environment)}/config/${nonsensitive(local.secrets.twilio_account_sid)}/permission_config"
+    Terraform   = true
+  }
+}
 
 resource "aws_ssm_parameter" "transcript_retention_override" {
   count = var.hrm_transcript_retention_days_override >= 0 ? 1 : 0
@@ -87,8 +101,6 @@ resource "aws_ssm_parameter" "transcript_retention_override" {
   type  = "String"
   value = var.hrm_transcript_retention_days_override
 }
-
-
 
 resource "aws_ssm_parameter" "case_status_transition" {
   count       = var.case_status_transition_rules != null ? 1 : 0

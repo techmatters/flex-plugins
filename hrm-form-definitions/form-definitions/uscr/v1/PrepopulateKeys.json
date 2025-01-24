@@ -4,25 +4,18 @@
     "CallerInformationTab": []
   },
   "preEngagement": {
-    "ChildInformationTab": [],
+    "ChildInformationTab": [
+      "incidentSummary",
+      "specificLocation"
+    ],
     "CallerInformationTab": [
-      "requestType",
       "contactIdentifier",
       "friendlyName",
-      "officeDepartment",
-      "bid",
-      "citizenReportingName",
-      "citizenReportingPhoneNumber",
-      "operatorId",
-      "incidentNumber",
-      "specificLocation",
-      "description",
-      "otherOrganizations",
-      "additionalDetails",
-      "desiredOutcome",
-      "priority"
+      "officeDepartmentBid"
 
     ],
-    "CaseInformationTab": []
+    "CaseInformationTab": [
+      "priority"
+    ]
   }
 }

@@ -9,6 +9,7 @@ locals {
     helpline                          = "C-Sema"
     task_language                     = "en-US"
     enable_post_survey                = false
+    permission_config                 = "tz"
 
 
     workflows = {

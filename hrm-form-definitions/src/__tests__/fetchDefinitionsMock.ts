@@ -27,6 +27,7 @@ const BASE_URL_MOCK = 'http://base_url_mock';
 
 const files = [
   'LayoutDefinitions.json',
+  'caseForms/CaseOverview.json',
   'caseForms/HouseholdForm.json',
   'caseForms/IncidentForm.json',
   'caseForms/NoteForm.json',
@@ -47,6 +48,7 @@ const files = [
   'PrepopulateKeys.json',
   'ReferenceData.json',
   'BlockedEmojis.json',
+  'profileForms/ProfileOverview.json',
   'profileForms/Sections.json',
   'profileForms/FlagDurations.json',
 ];

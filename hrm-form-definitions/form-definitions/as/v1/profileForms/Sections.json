@@ -24,6 +24,7 @@
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "Enter Details"
+    "placeholder": "Enter Details",
+    "isPII": true
   }
 ]

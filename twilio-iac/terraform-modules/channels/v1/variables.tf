@@ -18,6 +18,11 @@ variable "short_helpline" {
   type        = string
 }
 
+variable "region" {
+  description = "AWS region to create the resources"
+  type        = string
+}
+
 variable "twilio_account_sid" {
   description = "Twilio Account SID (ACxxxx)"
   type        = string
@@ -51,6 +56,7 @@ variable "channels" {
     contact_identity     = string,
     channel_flow_vars    = map(string)
     chatbot_unique_names = list(string)
+    lambda_channel       = optional(bool)
     messaging_mode       = optional(string, "programmable-chat")
     enable_datadog_monitor = optional(bool, false)
     custom_monitor = optional(object({
@@ -95,8 +101,12 @@ variable "enable_post_survey" {
   default = false
 }
 
-
 variable "flex_chat_service_sid" {
   description = "Internal Twilio resource SID provided by another module"
   type        = string
+}
+
+variable base_priority {
+  description = "The base priority for the ALB rules"
+  type        = number
 }

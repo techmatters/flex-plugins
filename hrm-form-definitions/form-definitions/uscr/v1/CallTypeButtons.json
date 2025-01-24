@@ -1,18 +1,18 @@
 [
     {
         "name": "child",
-        "label": "Call Transferred from 911",
+        "label": "RESPONDERS: Incident in the Field",
         "type": "button",
         "category": "data"
     },
     {
         "name": "caller",
-        "label": "Circle BID/City Request",
+        "label": "OPERATORS: Incident Requested",
         "type": "button",
         "category": "data"
     },
     {
-        "name": "silent",
+        "name": "declined",
         "label": "Declined Incident",
         "type": "button",
         "category": "non-data"
@@ -24,25 +24,19 @@
         "category": "non-data"
     },
     {
-        "name": "abusive",
+        "name": "silent",
         "label": "Services not needed",
         "type": "button",
         "category": "non-data"
     },
     {
-        "name": "thanks",
+        "name": "returned",
         "label": "Returned to 911",
         "type": "button",
         "category": "non-data"
     },
     {
-        "name": "questions",
-        "label": "Gone on arrival",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
-        "name": "emergency",
+        "name": "test",
         "label": "Test",
         "type": "button",
         "category": "non-data"

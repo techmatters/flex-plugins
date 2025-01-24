@@ -1,0 +1,113 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+name: 'Twilio Lambda CI'
+on:
+  workflow_call:
+env:
+  # if anything is set as a secret, it can't be used in outputs. So we need to set it as an env var
+  PRIMARY_AWS_REGION: us-east-1
+
+jobs:
+  run_tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.PRIMARY_AWS_REGION }}
+          # this plugin sets the AWS account ID to a secret which is not allowed in outputs
+          # we have to disable that so repo output will work
+          mask-aws-account-id: 'no'
+
+      - name: Install lambda dependencies
+        run: |
+          npm ci
+        working-directory: ./lambdas
+
+      - name: Run Unit Tests
+        run: |
+          npm run test:unit
+        working-directory: ./lambdas
+
+      - name: Run Service Tests
+        run: |
+          npm run test:service
+        working-directory: ./lambdas
+  build_lambda:
+    name: Build Lambda Image
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        lambda_path:
+          - account-scoped
+
+    outputs:
+      docker_image: ${{ steps.generate-output.outputs.docker_image}}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.PRIMARY_AWS_REGION }}
+          # this plugin sets the AWS account ID to a secret which is not allowed in outputs
+          # we have to disable that so repo output will work
+          mask-aws-account-id: 'no'
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Read ECR url from SSM
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: /twilio/lambda/${{ matrix.lambda_path }}/ecr-url
+          env_variable_name: ECR_URL
+      - name: Set Build Args
+        run: |
+          lambda_full_path="./${{ matrix.lambda_path }}"
+          # Extracting directory and lambda name from the lambda path
+          build_lambda_dir=$(dirname $lambda_full_path)
+          build_lambda_name=$(basename $lambda_full_path)
+          ref_name=${{ github.ref_name }}
+          echo "build_lambda_name=$build_lambda_name" >> $GITHUB_ENV
+          echo "build_lambda_dir=$build_lambda_dir" >> $GITHUB_ENV
+          echo "ref_name_for_docker=${ref_name//\//_-}" >> $GITHUB_ENV
+        shell: bash
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./lambdas
+          file: ./lambdas/Dockerfile
+          build-args: |
+            lambda_name=${{ env.build_lambda_name }}
+            lambda_dir=${{ env.build_lambda_dir }}
+          push: true
+          # 'latest' is never used, but it keeps terraform happy
+          tags: ${{ env.ECR_URL }}:${{ github.ref_type }}.${{ env.ref_name_for_docker }},${{ env.ECR_URL }}:${{ github.sha }},${{ env.ECR_URL }}:latest
