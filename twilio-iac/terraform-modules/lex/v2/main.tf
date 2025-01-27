@@ -40,6 +40,7 @@ resource "aws_lexv2models_bot_locale" "this" {
 }
 
 resource "aws_lexv2models_bot_version" "this" {
+  for_each                         = var.bots
   bot_id = aws_lexv2models_bot.this["${each.key}"].id
   locale_specification = {
     "en_US" = {
@@ -49,16 +50,26 @@ resource "aws_lexv2models_bot_version" "this" {
 }
 
 resource "aws_lexv2models_intent" "this" {
+  for_each                         = var.bots
   bot_id      = aws_lexv2models_bot.this["${each.key}"].id
-  bot_version = aws_lexv2models_bot_locale.this.bot_version
+  bot_version = aws_lexv2models_bot_locale.this["${each.key}"].bot_version
   name        = "${each.key}_intent"
-  locale_id   = aws_lexv2models_bot_locale.this.locale_id
+  locale_id   = aws_lexv2models_bot_locale.this["${each.key}"].locale_id
 }
 
 resource "aws_lexv2models_slot" "this" {
+  for_each                         = var.bots
   bot_id      = aws_lexv2models_bot.this["${each.key}"].id
   bot_version = aws_lexv2models_bot_version.this["${each.key}"].bot_version
   intent_id   = aws_lexv2models_intent.this["${each.key}"].id
   locale_id   = aws_lexv2models_bot_locale.this["${each.key}"].locale_id
   name        = "${each.key}_slot"
+}
+
+resource "aws_lexv2models_slot_type" "this" {
+  for_each                         = var.bots
+  bot_id      = aws_lexv2models_bot.this["${each.key}"].id
+  bot_version = aws_lexv2models_bot_locale.this["${each.key}"].bot_version
+  name        = "${each.key}_slot_type"
+  locale_id   = aws_lexv2models_bot_locale.this["${each.key}"].locale_id
 }
