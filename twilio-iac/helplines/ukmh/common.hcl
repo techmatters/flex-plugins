@@ -7,7 +7,7 @@ locals {
 
   local_config = {
     helpline                          = "Mental Health Innovations"
-    task_language                     = "en-UK"
+    task_language                     = "en-GB"
     enable_post_survey                = true
     permission_config                 = "ukmh"
     helpline_region                   = "eu-west-1"
