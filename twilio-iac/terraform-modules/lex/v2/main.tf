@@ -54,3 +54,11 @@ resource "aws_lexv2models_intent" "this" {
   name        = "${each.key}_intent"
   locale_id   = aws_lexv2models_bot_locale.this.locale_id
 }
+
+resource "aws_lexv2models_slot" "this" {
+  bot_id      = aws_lexv2models_bot.this["${each.key}"].id
+  bot_version = aws_lexv2models_bot_version.this["${each.key}"].bot_version
+  intent_id   = aws_lexv2models_intent.this["${each.key}"].id
+  locale_id   = aws_lexv2models_bot_locale.this["${each.key}"].locale_id
+  name        = "${each.key}_slot"
+}
