@@ -12,7 +12,7 @@ locals {
 }
 
 data "aws_iam_role" "role-lex-v2-bot" {
-  name = "role-lex-v2-bot"
+  name = "lex-v2-bot"
 }
 
 resource "aws_lexv2models_bot" "test_bot" {
