@@ -79,7 +79,6 @@ describe('Test that all actions work fine (everyone)', () => {
     mockPartialConfiguration({
       workerSid: NOT_CREATOR_WORKER_SID,
       isSupervisor: false,
-      permissionConfig: 'wareva',
     });
 
     fetchRulesSpy.mockResolvedValue(rules);
@@ -221,7 +220,6 @@ describe('CasesActions', () => {
       mockPartialConfiguration({
         workerSid,
         isSupervisor,
-        permissionConfig: 'wareva',
       });
 
       await validateAndSetPermissionRules();
@@ -352,7 +350,6 @@ describe('ContactActions', () => {
       mockPartialConfiguration({
         workerSid,
         isSupervisor,
-        permissionConfig: 'wareva',
       });
 
       await validateAndSetPermissionRules();
@@ -436,7 +433,6 @@ describe('ProfileActions', () => {
       mockPartialConfiguration({
         workerSid,
         isSupervisor,
-        permissionConfig: 'wareva',
       });
 
       await validateAndSetPermissionRules();
@@ -544,7 +540,6 @@ describe('ProfileSectionActions', () => {
       mockPartialConfiguration({
         workerSid,
         isSupervisor,
-        permissionConfig: 'wareva',
       });
 
       await validateAndSetPermissionRules();
@@ -609,7 +604,6 @@ describe('ViewIdentifiersAction', () => {
       mockPartialConfiguration({
         workerSid: NOT_CREATOR_WORKER_SID,
         isSupervisor,
-        permissionConfig: 'wareva',
       });
 
       await validateAndSetPermissionRules();
