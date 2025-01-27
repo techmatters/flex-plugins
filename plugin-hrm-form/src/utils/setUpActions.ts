@@ -18,9 +18,7 @@ import { ActionFunction, ChatOrchestrator, ChatOrchestratorEvent, Manager, TaskH
 import { Conversation } from '@twilio/conversations';
 import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestrator';
 
-import { RulesFile } from '../permissions';
 import { getDefinitionVersion, sendSystemMessage } from '../services/ServerlessService';
-// import { fetchPermissionRules } from '../services/PermissionsService';
 import * as Actions from '../states/contacts/actions';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';

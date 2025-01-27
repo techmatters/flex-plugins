@@ -17,7 +17,6 @@
 import { RulesFile } from '../permissions';
 import { fetchHrmApi } from './fetchHrmApi';
 
-// eslint-disable-next-line import/no-unused-modules
 export const fetchPermissionRules = async (): Promise<RulesFile> => {
   try {
     return await fetchHrmApi('/permissions');

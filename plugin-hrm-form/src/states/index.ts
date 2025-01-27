@@ -62,6 +62,7 @@ const reducers = {
   [conferencingBase]: ConferencingReducer,
   [caseMergingBannersBase]: CaseMergingBannersReducer,
   [profileBase]: ProfileReducer,
+
   /*
    * [csamClcReportBase]: CSAMCLCReportReducer,
    * [connectedCaseBase] - this is going to be combined manually, rather than using 'combineReducers', so isn't in this map
