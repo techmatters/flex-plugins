@@ -7,39 +7,26 @@ terraform {
   }
 }
 
+locals {
+  name_prefix = "${var.environment}_${var.short_helpline}_${var.language}"
+}
+
+data "aws_iam_role" "role-lex-v2-bot" {
+  name = "role-lex-v2-bot"
+}
+
 resource "aws_lexv2models_bot" "test_bot" {
-  name        = "example"
+  for_each = var.bots
+  name     = replace("${local.name_prefix}_${each.key}", "2", "")
   description = "Example description"
   data_privacy {
-    child_directed = false
+    child_directed = true
   }
   idle_session_ttl_in_seconds = 60
-  role_arn                    = aws_iam_role.test_role.arn
+  role_arn                    = data.aws_iam_role.role-lex-v2-bot.arn
   type                        = "Bot"
 
   tags = {
     foo = "bar"
-  }
-}
-
-resource "aws_iam_role" "test_role" {
-  name = "example"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Sid    = ""
-        Principal = {
-          Service = "lexv2.amazonaws.com"
-        }
-      },
-    ]
-  })
-
-  tags = {
-    created_by = "aws"
   }
 }
