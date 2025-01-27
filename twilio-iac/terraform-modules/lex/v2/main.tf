@@ -48,9 +48,9 @@ resource "aws_lexv2models_bot_version" "this" {
   }
 }
 
-resource "aws_lexv2models_intent" "example" {
+resource "aws_lexv2models_intent" "this" {
   bot_id      = aws_lexv2models_bot.this["${each.key}"].id
   bot_version = aws_lexv2models_bot_locale.this.bot_version
-  name        = 
+  name        = "${each.key}_intent"
   locale_id   = aws_lexv2models_bot_locale.this.locale_id
 }
