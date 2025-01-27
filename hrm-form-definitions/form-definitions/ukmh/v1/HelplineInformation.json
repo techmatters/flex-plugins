@@ -1,0 +1,15 @@
+{
+    "label": "Helpline",
+    "helplines": [
+      {
+        "label": "Mental Health Innovations",
+        "value": "Mental Health Innovations",
+        "default": true,
+        "manager": {
+          "name": "Helpline Manager",
+          "phone": "+12345678910",
+          "email": "info@helpline.org"
+        }
+      }
+    ]
+}
