@@ -438,7 +438,6 @@ const initializeCanForRules = (rules: RulesFile) => {
   targetKinds.forEach((targetKind: TargetKind) => {
     const actionsForTK = Object.values(actionsMaps[targetKind]) as Action[];
     actionsForTK.forEach(action => {
-      console.log(`rules[action]: ${rules}, action: ${action}`);
       if (rules[action]) {
         actionCheckers[action] = setupAllow(targetKind, rules[action]);
       } else {
@@ -452,11 +451,11 @@ const initializeCanForRules = (rules: RulesFile) => {
 
 let initializedCan: (performer: TwilioUser, action: Action, target?: any) => boolean = null;
 
+// Permission check function
 export const getInitializedCan = () => {
-  const { workerSid, isSupervisor, permissionConfig } = getHrmConfig();
+  const { workerSid, isSupervisor } = getHrmConfig();
   if (initializedCan === null) {
     const rules = getRules();
-    console.log(`getInitializedCan rules: ${rules}`);
     initializedCan = initializeCanForRules(rules);
   }
 

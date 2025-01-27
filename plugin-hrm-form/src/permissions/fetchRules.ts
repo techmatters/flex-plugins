@@ -14,7 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getHrmConfig } from '../hrmConfig';
 import type { RulesFile } from '.';
 import { fetchPermissionRules } from '../services/PermissionsService';
 
@@ -23,12 +22,9 @@ const e2eRules = require('./e2e.json');
 
 // TODO: do this once, on initialization, then consume from the global state.
 export const fetchRules = async (permissionConfig): Promise<RulesFile> => {
-  console.log('>>>  permissionConfig:', { permissionConfig });
-
   try {
-    if (permissionConfig === 'e2e') {
-      return e2eRules;
-    }
+    if (permissionConfig === 'e2e') return e2eRules;
+
     return await fetchPermissionRules();
   } catch (err) {
     console.error('Error fetching rules:', err);
