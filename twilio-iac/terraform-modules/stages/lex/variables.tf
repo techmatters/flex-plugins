@@ -143,3 +143,9 @@ variable "lex_v2_config" {
 
   default = null
 }
+
+variable "enable_lex_v2" {
+  description = "Flag to enable or disable the lex_v2 module"
+  type        = bool
+  default     = false
+}
