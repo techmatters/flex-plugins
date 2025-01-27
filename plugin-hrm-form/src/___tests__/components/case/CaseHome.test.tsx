@@ -25,7 +25,7 @@ import each from 'jest-each';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { fetchRules } from '../../../permissions/fetchRules';
-import { validateAndSetPermissionRules, getInitializedCan } from '../../../permissions';
+import { validateAndSetPermissionRules } from '../../../permissions';
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import CaseHome, { CaseHomeProps } from '../../../components/case/CaseHome';
 import { Case, CustomITask } from '../../../types/types';
@@ -54,18 +54,12 @@ beforeEach(async () => {
   const fetchRulesSpy = fetchRules as jest.MockedFunction<typeof fetchRules>;
   fetchRulesSpy.mockResolvedValueOnce(e2eRules);
   await validateAndSetPermissionRules();
-  // getInitializedCan();
 
   jest.mock('../../../permissions', () => ({
     ...jest.requireActual('../../../permissions'),
     getInitializedCan: jest.fn(() => () => true),
   }));
 });
-
-// jest.mock('../../../permissions', () => ({
-//   ...jest.requireActual('../../../permissions'),
-//   getInitializedCan: jest.fn(() => () => true),
-// }));
 
 // Called by the <Timeline/> subcomponent
 jest.mock('../../../services/CaseService', () => ({
