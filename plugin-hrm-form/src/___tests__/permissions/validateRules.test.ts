@@ -15,35 +15,16 @@
  */
 import each from 'jest-each';
 
+import { mockPartialConfiguration } from '../mockGetConfig';
 import { validateAndSetPermissionRules } from '../../permissions';
 
-const rulesMapNames = [
-  'br',
-  'ca',
-  'cl',
-  'co',
-  'et',
-  'hu',
-  'in',
-  'jm',
-  'mt',
-  'mw',
-  'nz',
-  'ph',
-  'pl',
-  'ro',
-  'th',
-  'uk',
-  'za',
-  'zm',
-  'zw',
-  'demo',
-  'dev',
-  'e2e',
-];
+const rulesMapNames = ['closed', 'e2e'];
 
 describe('Permissions  files are valid', () => {
   each(rulesMapNames).test('%s file is valid', name => {
-    expect(() => validateAndSetPermissionRules(name)).not.toThrow();
+    mockPartialConfiguration({
+      permissionConfig: name,
+    });
+    expect(() => validateAndSetPermissionRules()).not.toThrow();
   });
 });

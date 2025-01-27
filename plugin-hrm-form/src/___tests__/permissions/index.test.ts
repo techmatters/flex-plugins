@@ -18,7 +18,8 @@ import each from 'jest-each';
 import subHours from 'date-fns/subHours';
 import { subDays } from 'date-fns';
 
-import * as fetchRulesModule from '../../permissions/fetchRules';
+import { mockPartialConfiguration } from '../mockGetConfig';
+import { fetchRules } from '../../permissions/fetchRules';
 import {
   actionsMaps,
   CaseActions,
@@ -30,16 +31,21 @@ import {
   ProfileSectionActions,
   TargetKind,
   ViewIdentifiersAction,
+  validateAndSetPermissionRules,
 } from '../../permissions';
-import { getHrmConfig } from '../../hrmConfig';
 
 const NOT_CREATOR_WORKER_SID = 'WK-not creator';
 
-const fetchRulesSpy = jest.spyOn(fetchRulesModule, 'fetchRules').mockImplementation(() => {
-  throw new Error('fetchRules not mocked!');
+jest.mock('../../permissions/fetchRules', () => {
+  return {
+    fetchRules: jest.fn(() => {
+      throw new Error('fetchRules not mocked!');
+    }),
+  };
 });
-jest.mock('../../hrmConfig');
-const mockGetHrmConfig = getHrmConfig as jest.Mock<Partial<ReturnType<typeof getHrmConfig>>>;
+
+const fetchRulesSpy = fetchRules as jest.MockedFunction<typeof fetchRules>;
+
 const buildRules = (conditionsSets, kind: TargetKind | 'all') => {
   const actionsForTK = kind === 'all' ? [] : Object.values(actionsMaps[kind]);
   return Object.values(PermissionActions).reduce(
@@ -63,22 +69,24 @@ const addPrettyPrintConditions = (testCase: { conditionsSets: any[][] }) => ({
 });
 
 describe('Test that all actions work fine (everyone)', () => {
-  const rules = buildRules([['everyone']], 'all');
-  fetchRulesSpy.mockReturnValue(rules);
-
-  mockGetHrmConfig.mockReturnValue({
-    workerSid: NOT_CREATOR_WORKER_SID,
-    isSupervisor: false,
-    permissionConfig: 'wareva',
-  });
-
-  const can = getInitializedCan();
-
   each(
     Object.values(PermissionActions).map(action => ({
       action,
     })),
-  ).test(`Action $action should return true`, ({ action }) => {
+  ).test(`Action $action should return true`, async ({ action }) => {
+    const rules = buildRules([['everyone']], 'all');
+
+    mockPartialConfiguration({
+      workerSid: NOT_CREATOR_WORKER_SID,
+      isSupervisor: false,
+      permissionConfig: 'wareva',
+    });
+
+    fetchRulesSpy.mockResolvedValue(rules);
+
+    await validateAndSetPermissionRules();
+    const can = getInitializedCan();
+
     expect(can(action, { status: 'open', twilioWorkerId: 'some one' })).toBeTruthy();
   });
 });
@@ -206,15 +214,17 @@ describe('CasesActions', () => {
       .map(addPrettyPrintConditions),
   ).test(
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
-    ({ action, conditionsSets, workerSid, isSupervisor, status = 'open', expectedResult, createdAt }) => {
+    async ({ action, conditionsSets, workerSid, isSupervisor, status = 'open', expectedResult, createdAt }) => {
       const rules = buildRules(conditionsSets, 'case');
-      fetchRulesSpy.mockReturnValueOnce(rules);
+      fetchRulesSpy.mockResolvedValue(rules);
 
-      mockGetHrmConfig.mockReturnValueOnce({
+      mockPartialConfiguration({
         workerSid,
         isSupervisor,
         permissionConfig: 'wareva',
       });
+
+      await validateAndSetPermissionRules();
 
       const can = getInitializedCan();
 
@@ -335,15 +345,17 @@ describe('ContactActions', () => {
       .map(addPrettyPrintConditions),
   ).test(
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
-    ({ action, conditionsSets, workerSid, isSupervisor, expectedResult, createdAt }) => {
+    async ({ action, conditionsSets, workerSid, isSupervisor, expectedResult, createdAt }) => {
       const rules = buildRules(conditionsSets, 'contact');
-      fetchRulesSpy.mockReturnValueOnce(rules);
+      fetchRulesSpy.mockResolvedValue(rules);
 
-      mockGetHrmConfig.mockReturnValueOnce({
+      mockPartialConfiguration({
         workerSid,
         isSupervisor,
         permissionConfig: 'wareva',
       });
+
+      await validateAndSetPermissionRules();
 
       const can = getInitializedCan();
 
@@ -417,15 +429,17 @@ describe('ProfileActions', () => {
       .map(addPrettyPrintConditions),
   ).test(
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
-    ({ action, conditionsSets, workerSid = 'workerSid', isSupervisor, expectedResult, createdAt }) => {
+    async ({ action, conditionsSets, workerSid = 'workerSid', isSupervisor, expectedResult, createdAt }) => {
       const rules = buildRules(conditionsSets, 'profile');
-      fetchRulesSpy.mockReturnValueOnce(rules);
+      fetchRulesSpy.mockResolvedValue(rules);
 
-      mockGetHrmConfig.mockReturnValueOnce({
+      mockPartialConfiguration({
         workerSid,
         isSupervisor,
         permissionConfig: 'wareva',
       });
+
+      await validateAndSetPermissionRules();
 
       const can = getInitializedCan();
 
@@ -515,16 +529,25 @@ describe('ProfileSectionActions', () => {
       .map(addPrettyPrintConditions),
   ).test(
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
-    ({ action, conditionsSets, workerSid = 'workerSid', isSupervisor, expectedResult, createdAt, sectionType }) => {
+    async ({
+      action,
+      conditionsSets,
+      workerSid = 'workerSid',
+      isSupervisor,
+      expectedResult,
+      createdAt,
+      sectionType,
+    }) => {
       const rules = buildRules(conditionsSets, 'profileSection');
-      fetchRulesSpy.mockReturnValueOnce(rules);
+      fetchRulesSpy.mockResolvedValue(rules);
 
-      mockGetHrmConfig.mockReturnValueOnce({
+      mockPartialConfiguration({
         workerSid,
         isSupervisor,
         permissionConfig: 'wareva',
       });
 
+      await validateAndSetPermissionRules();
       const can = getInitializedCan();
 
       expect(can(action, { createdAt, sectionType })).toBe(expectedResult);
@@ -579,14 +602,17 @@ describe('ViewIdentifiersAction', () => {
       .map(addPrettyPrintConditions),
   ).test(
     `Should return $expectedResult for action $action when $expectedDescription and conditionsSets are $prettyConditionsSets`,
-    ({ action, conditionsSets, isSupervisor, expectedResult }) => {
+    async ({ action, conditionsSets, isSupervisor, expectedResult }) => {
       const rules = buildRules(conditionsSets, 'viewIdentifiers');
-      fetchRulesSpy.mockReturnValueOnce(rules);
+      fetchRulesSpy.mockResolvedValue(rules);
 
-      mockGetHrmConfig.mockReturnValueOnce({
+      mockPartialConfiguration({
+        workerSid: NOT_CREATOR_WORKER_SID,
         isSupervisor,
         permissionConfig: 'wareva',
       });
+
+      await validateAndSetPermissionRules();
 
       const can = getInitializedCan();
 
