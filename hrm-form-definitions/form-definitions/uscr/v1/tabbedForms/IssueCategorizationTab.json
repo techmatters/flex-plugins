@@ -61,7 +61,7 @@
       "subcategories": [
           {"label": "Declined Incident - Out of Scope"},
           {"label": "Declined Incident - Out of Area"},
-          {"label": "Declined Incident - No Responders Available"}
+          {"label": "Cancelled by 911"}
       ]
     }
   }

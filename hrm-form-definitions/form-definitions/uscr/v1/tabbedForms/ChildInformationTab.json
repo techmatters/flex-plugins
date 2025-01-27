@@ -70,22 +70,6 @@
     ]
   },
   {
-    "name": "race",
-    "label": "Race ",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Unknown",
-        "label": ""
-      }
-    ]
-  },
-  {
     "name": "gender",
     "label": "Gender",
     "type": "select",
@@ -102,8 +86,64 @@
       {
         "value": "Female",
         "label": "Female"
+      },      
+        {
+        "value": "Agender",
+        "label": "Agender"
+      },
+        {
+        "value": "Non-Binary",
+        "label": "Non-Binary"
       },
       {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
+    "name": "race",
+    "label": "Race ",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Asian",
+        "label": "Asian"
+      },     
+        {
+        "value": "Black",
+        "label": "Black"
+      },
+      {
+        "value": "Hispanic/Latino",
+        "label": "Hispanic/Latino"
+      },
+      {
+        "value": "Indigenous American",
+        "label": "Indigenous American"
+      },
+        {
+        "value": "Middle Eastern",
+        "label": "Middle Eastern"
+      },
+        {
+        "value": "Multi-Ethnic",
+        "label": "Multi-Ethnic"
+      },
+        {
+        "value": "Native Hawaiian or other Pacific Islander",
+        "label": "Native Hawaiian or other Pacific Islander"
+      },
+        {
+        "value": "White",
+        "label": "White"
+      },
+        {
         "value": "Other",
         "label": "Other"
       }
