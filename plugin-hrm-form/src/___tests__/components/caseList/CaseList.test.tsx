@@ -24,8 +24,10 @@ import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
-import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
+import { fetchRules } from '../../../permissions/fetchRules';
+import { validateAndSetPermissionRules, getInitializedCan } from '../../../permissions';
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import CaseList from '../../../components/caseList';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { CaseListState } from '../../../states/caseList/reducer';
@@ -39,6 +41,22 @@ import { CaseStateEntry } from '../../../states/case/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
+const e2eRules = require('../../../permissions/e2e.json');
+
+jest.mock('../../../permissions/fetchRules', () => {
+  return {
+    fetchRules: jest.fn(() => {
+      throw new Error('fetchRules not mocked!');
+    }),
+  };
+});
+
+beforeEach(async () => {
+  const fetchRulesSpy = fetchRules as jest.MockedFunction<typeof fetchRules>;
+  fetchRulesSpy.mockResolvedValueOnce(e2eRules);
+  await validateAndSetPermissionRules();
+  getInitializedCan();
+});
 
 // console.log = () => null;
 console.error = () => null;

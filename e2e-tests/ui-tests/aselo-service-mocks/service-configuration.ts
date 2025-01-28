@@ -44,7 +44,7 @@ export const serviceConfigurationAttributes = () => ({
     enable_post_survey: true,
   },
   seenOnboarding: true,
-  permissionConfig: 'dev',
+  permissionConfig: 'e2e',
   definitionVersion: 'demo-v1',
   hrm_api_version: 'v0',
   monitoringEnv: 'production',

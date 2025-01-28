@@ -24,6 +24,8 @@ import { DeepPartial } from 'redux';
 
 import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
+import { fetchRules } from '../../permissions/fetchRules';
+import { getInitializedCan, validateAndSetPermissionRules } from '../../permissions';
 import ContactPreview from '../../components/search/ContactPreview';
 import ContactHeader from '../../components/search/ContactPreview/ContactHeader';
 import TagsAndCounselor from '../../components/search/TagsAndCounselor';
@@ -40,7 +42,22 @@ const mockStore = configureMockStore([]);
 const NonExisting = () => <>NonExisting</>;
 NonExisting.displayName = 'NonExisting';
 
-beforeEach(() => {
+const e2eRules = require('../../permissions/e2e.json');
+
+jest.mock('../../permissions/fetchRules', () => {
+  return {
+    fetchRules: jest.fn(() => {
+      throw new Error('fetchRules not mocked!');
+    }),
+  };
+});
+
+beforeEach(async () => {
+  const fetchRulesSpy = fetchRules as jest.MockedFunction<typeof fetchRules>;
+  fetchRulesSpy.mockResolvedValueOnce(e2eRules);
+  await validateAndSetPermissionRules();
+  getInitializedCan();
+
   mockReset();
 });
 

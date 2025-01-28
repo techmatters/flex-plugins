@@ -14,21 +14,19 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-const zmRules = require('./zm.json');
+import type { RulesFile } from '.';
+import { fetchPermissionRules } from '../services/PermissionsService';
+
+const e2eRules = require('./e2e.json');
 
 // TODO: do this once, on initialization, then consume from the global state.
-export const fetchRules = (permissionConfig: string) => {
+export const fetchRules = async (permissionConfig): Promise<RulesFile> => {
   try {
-    // eslint-disable-next-line global-require
-    const rules = require(`./${permissionConfig}.json`);
+    if (permissionConfig === 'e2e') return e2eRules;
 
-    if (!rules) throw new Error(`Cannot find rules for ${permissionConfig}`);
-
-    return rules;
+    return await fetchPermissionRules();
   } catch (err) {
-    const errorMessage = err.message ?? err;
-    console.error('Error fetching rules, using fallback rules. ', errorMessage);
-
-    return zmRules;
+    console.error('Error fetching rules:', err);
+    return null;
   }
 };

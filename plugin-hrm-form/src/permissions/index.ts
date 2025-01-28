@@ -248,7 +248,7 @@ type NestedStringValues<T> = T extends object
   ? { [K in keyof T]: T[K] extends string ? T[K] : NestedStringValues<T[K]> }[keyof T]
   : never;
 type Action = NestedStringValues<typeof actionsMaps>;
-type RulesFile = { [k in Action]: TKConditionsSets<TargetKind> };
+export type RulesFile = { [k in Action]: TKConditionsSets<TargetKind> };
 
 const isValidTKConditionsSets = <T extends TargetKind>(kind: T) => (
   css: TKConditionsSets<TargetKind>,
@@ -272,18 +272,20 @@ const validateTKActions = (rules: RulesFile) =>
 
 const isValidTargetKindActions = (validated: { [k in Action]: boolean }) => Object.values(validated).every(Boolean);
 
-export const validateRules = (permissionConfig: string) => {
-  const rules = fetchRules(permissionConfig);
+let rules: RulesFile = null;
+export const getRules = () => rules;
 
+export const validateAndSetPermissionRules = async () => {
+  const { permissionConfig } = getHrmConfig();
+
+  rules = await fetchRules(permissionConfig);
   const validated = validateTKActions(rules);
 
   if (!isValidTargetKindActions(validated)) {
     const invalidActions = Object.entries(validated)
       .filter(([, val]) => !val)
       .map(([key]) => key);
-    throw new Error(
-      `Error: rules file for ${permissionConfig} contains invalid actions mappings: ${JSON.stringify(invalidActions)}`,
-    );
+    throw new Error(`Error: rules file contains invalid actions mappings: ${JSON.stringify(invalidActions)}`);
   }
   return rules;
 };
@@ -427,22 +429,34 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
 };
 
 const initializeCanForRules = (rules: RulesFile) => {
+  if (!rules) {
+    console.warn('Rules not loaded for initializeCanForRules');
+    return () => false;
+  }
   const actionCheckers = {} as { [action in Action]: ReturnType<typeof setupAllow> };
 
   const targetKinds = Object.keys(actionsMaps);
   targetKinds.forEach((targetKind: TargetKind) => {
     const actionsForTK = Object.values(actionsMaps[targetKind]) as Action[];
-    actionsForTK.forEach(action => (actionCheckers[action] = setupAllow(targetKind, rules[action])));
+    actionsForTK.forEach(action => {
+      if (rules[action]) {
+        actionCheckers[action] = setupAllow(targetKind, rules[action]);
+      } else {
+        console.warn(`No rules defined for action: ${action}`);
+      }
+    });
   });
 
   return (performer: TwilioUser, action: Action, target: any) => actionCheckers[action](performer, target);
 };
 
 let initializedCan: (performer: TwilioUser, action: Action, target?: any) => boolean = null;
+
+// Permission check function
 export const getInitializedCan = () => {
-  const { workerSid, isSupervisor, permissionConfig } = getHrmConfig();
+  const { workerSid, isSupervisor } = getHrmConfig();
   if (initializedCan === null) {
-    const rules = validateRules(permissionConfig);
+    const rules = getRules();
     initializedCan = initializeCanForRules(rules);
   }
 
@@ -450,4 +464,5 @@ export const getInitializedCan = () => {
   return (action: Action, target?: any) => initializedCan(performer, action, target);
 };
 
+// eslint-disable-next-line import/no-unused-modules
 export const cleanupInitializedCan = () => (initializedCan = null);

@@ -13,37 +13,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import each from 'jest-each';
 
-import { validateRules } from '../../permissions';
+import { RulesFile } from '../permissions';
+import { fetchHrmApi } from './fetchHrmApi';
 
-const rulesMapNames = [
-  'br',
-  'ca',
-  'cl',
-  'co',
-  'et',
-  'hu',
-  'in',
-  'jm',
-  'mt',
-  'mw',
-  'nz',
-  'ph',
-  'pl',
-  'ro',
-  'th',
-  'uk',
-  'za',
-  'zm',
-  'zw',
-  'demo',
-  'dev',
-  'e2e',
-];
-
-describe('Permissions  files are valid', () => {
-  each(rulesMapNames).test('%s file is valid', name => {
-    expect(() => validateRules(name)).not.toThrow();
-  });
-});
+export const fetchPermissionRules = async (): Promise<RulesFile> => {
+  try {
+    return await fetchHrmApi('/permissions');
+  } catch (error) {
+    console.error('Failed to fetch permission rules:', error);
+    throw error;
+  }
+};

@@ -1,21 +1,21 @@
 {
   "viewCase": [["everyone"]],
-  "closeCase": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
+  "closeCase": [["everyone"]],
   "reopenCase": [["isSupervisor"]],
   "caseStatusTransition": [],
-  "addNote": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "editNote": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "addReferral": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "editReferral": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "addHousehold": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "editHousehold": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "addPerpetrator": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "editPerpetrator": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "addIncident": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "editIncident": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "addDocument": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "editDocument": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "editCaseOverview": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
+  "addNote": [["everyone"]],
+  "editNote": [["everyone"]],
+  "addReferral": [["everyone"]],
+  "editReferral": [["everyone"]],
+  "addHousehold": [["everyone"]],
+  "editHousehold": [["everyone"]],
+  "addPerpetrator": [["everyone"]],
+  "editPerpetrator": [["everyone"]],
+  "addIncident": [["everyone"]],
+  "editIncident": [["everyone"]],
+  "addDocument": [["everyone"]],
+  "editDocument": [["everyone"]],
+  "editCaseOverview": [["everyone"]],
   "updateCaseContacts": [["isSupervisor"], ["isCaseOpen"]],
 
   "viewContact": [["everyone"]],
@@ -25,8 +25,8 @@
   "viewRecording": [],
   "addContactToCase": [["isSupervisor"], ["isOwner"]],
   "removeContactFromCase": [["isSupervisor"], ["isOwner"]],
-
-  "viewProfile": [],
+  
+  "viewProfile": [["everyone"]],
   "flagProfile": [],
   "unflagProfile": [],
   "createProfileSection": [],
@@ -35,5 +35,5 @@
   
   "viewPostSurvey": [["isSupervisor"]],
 
-  "viewIdentifiers": [["everyone"]]
+  "viewIdentifiers": []
 }
