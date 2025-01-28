@@ -26,7 +26,7 @@ import type { EventFields } from '../taskrouter';
 import twilio from 'twilio';
 import { AccountSID } from '../twilioTypes';
 import { getSsmParameter } from '../ssmCache';
-import {getWorkspaceSid} from "../configuration/twilioConfiguration";
+import { getWorkspaceSid } from '../configuration/twilioConfiguration';
 
 export const eventTypes: EventType[] = [RESERVATION_ACCEPTED];
 
@@ -34,7 +34,7 @@ export const eventTypes: EventType[] = [RESERVATION_ACCEPTED];
 
 const BLANK_CONTACT: HrmContact = {
   id: '',
-  timeOfContact: new Date().toISOString(),
+  timeOfContact: '',
   taskId: null,
   helpline: '',
   rawJson: {
@@ -140,6 +140,7 @@ export const handleEvent = async (
     serviceSid: (channelSid && serviceConfig.chatServiceInstanceSid) ?? '',
     // We set createdBy to the workerSid because the contact is 'created' by the worker who accepts the task
     createdBy: workerSid as HrmContact['createdBy'],
+    timeOfContact: new Date().toISOString(),
   };
 
   const populatedContact = await populateHrmContactFormFromTask(
