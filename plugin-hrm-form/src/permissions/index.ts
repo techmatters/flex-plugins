@@ -430,7 +430,8 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
 
 const initializeCanForRules = (rules: RulesFile) => {
   if (!rules) {
-    throw new Error('Rules not loaded for initializeCanForRules');
+    console.warn('Rules not loaded for initializeCanForRules');
+    return () => false;
   }
   const actionCheckers = {} as { [action in Action]: ReturnType<typeof setupAllow> };
 
