@@ -41,6 +41,7 @@ export const registerTaskRouterEventHandler = (
   }
 };
 
+// For testing purposes
 export const clearTaskRouterEventHandlers = () => {
   for (const eventType in eventHandlers) {
     delete eventHandlers[eventType];

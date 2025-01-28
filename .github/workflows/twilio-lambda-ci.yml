@@ -64,9 +64,6 @@ jobs:
         lambda_path:
           - account-scoped
 
-    outputs:
-      docker_image: ${{ steps.generate-output.outputs.docker_image}}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
