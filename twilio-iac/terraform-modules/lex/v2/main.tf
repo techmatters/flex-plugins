@@ -143,12 +143,39 @@ resource "aws_lexv2models_slot" "this" {
 
 resource "aws_lexv2models_slot_type" "this" {
   for_each                         = var.bots
-  bot_id      = aws_lexv2models_bot.this["${each.key}"].id
-  bot_version = aws_lexv2models_bot_locale.this["${each.key}"].bot_version
-  name        = "${each.key}_slot_type"
-  locale_id   = aws_lexv2models_bot_locale.this["${each.key}"].locale_id
-}
+  bot_id                           = aws_lexv2models_bot.this["${each.key}"].id
+  bot_version                      = aws_lexv2models_bot_locale.this["${each.key}"].bot_version
+  name                             = "${each.key}_slot_type"
+  locale_id                        = aws_lexv2models_bot_locale.this["${each.key}"].locale_id
 
+  value_selection_setting {
+    resolution_strategy = "TopResolution"
+  }
+
+  slot_type_values {
+    sample_value {
+      value = "Boy"
+    }
+    synonyms {
+      value = "Guy"
+    }
+    synonyms {
+      value = "Male Child"
+    }
+  }
+
+  slot_type_values {
+    sample_value {
+      value = "Girl"
+    }
+    synonyms {
+      value = "Gal"
+    }
+    synonyms {
+      value = "Female Child"
+    }
+  }
+}
 
 /*
 aws lexv2-models describe-bot --bot-id C6HUSTIFBR
@@ -753,7 +780,103 @@ aws lexv2-models list-slot-types --bot-id C6HUSTIFBR --bot-version DRAFT --local
         }
     ]
 }
+aws lexv2-models describe-slot-type --bot-id C6HUSTIFBR --bot-version DRAFT --locale-id en_US --slot-type-id BYJ3H59AY2
 
+{
+    "slotTypeId": "BYJ3H59AY2",
+    "slotTypeName": "Gender",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "Boy"
+            },
+            "synonyms": [
+                {
+                    "value": "Boy"
+                },
+                {
+                    "value": "Male"
+                },
+                {
+                    "value": "Dude"
+                },
+                {
+                    "value": "Guy"
+                },
+                {
+                    "value": "Man"
+                },
+                {
+                    "value": "M"
+                },
+                {
+                    "value": "He"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Girl"
+            },
+            "synonyms": [
+                {
+                    "value": "Woman"
+                },
+                {
+                    "value": "Lady"
+                },
+                {
+                    "value": "Female"
+                },
+                {
+                    "value": "She"
+                },
+                {
+                    "value": "F"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Non-Binary"
+            },
+            "synonyms": [
+                {
+                    "value": "None"
+                },
+                {
+                    "value": "non binary"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Unknown"
+            },
+            "synonyms": [
+                {
+                    "value": "x"
+                },
+                {
+                    "value": "not sure"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "prefer not to answer"
+            }
+        }
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    },
+    "botId": "C6HUSTIFBR",
+    "botVersion": "DRAFT",
+    "localeId": "en_US",
+    "creationDateTime": 1677861117.996,
+    "lastUpdatedDateTime": 1683634802.813
+}
 
 
 */
