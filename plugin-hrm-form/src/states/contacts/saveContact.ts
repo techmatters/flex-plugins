@@ -119,6 +119,7 @@ export const updateContactInHrmAsyncAction = createAsyncAction(
     reference?: string,
   ): Promise<FulfilledUpdatedContactActionPayload> => {
     const contact = await updateContactInHrm(previousContact.id, body);
+    console.log('>>> updateContactInHrmAsyncAction contact:', contact);
     return {
       contact,
       previousContact,

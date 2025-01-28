@@ -222,6 +222,7 @@ export const updateContactInHrm = async (
     method: 'PATCH',
     body: JSON.stringify(body),
   };
+  console.log('>>> updateContactInHrm body', body);
 
   return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/${contactId}?finalize=${finalize}`, options));
 };
@@ -287,11 +288,12 @@ const saveContactToHrm = async (
 export const finalizeContact = async (task, contact: Contact): Promise<Contact> => {
   const twilioTaskResult = await handleTwilioTask(task);
   const { channelSid, serviceSid } = twilioTaskResult;
-  await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
+  const media = await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
   const contactUpdates: ContactDraftChanges = {
     channelSid,
     serviceSid,
   };
+  console.log('>>> finalizeContact media', media);
   return updateContactInHrm(contact.id, contactUpdates, true);
 };
 
