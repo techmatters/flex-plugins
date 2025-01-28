@@ -9,7 +9,6 @@
   ],
   "dependencies": {
     "dotenv": "^16.3.1",
-    "node-fetch": "^2.7.0",
     "twilio": "^5.4.0"
   },
   "devDependencies": {
@@ -48,7 +47,6 @@
   "scripts": {
     "build": "tsc -b --verbose",
     "docker:build": "npm run docker:build --workspaces --if-present",
-
     "test:unit": "npm run test:unit --workspaces --if-present",
     "test:service": "npm run test:service --workspaces --if-present",
     "lint": "cross-env eslint .",

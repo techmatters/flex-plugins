@@ -101,7 +101,7 @@ jobs:
           echo "ref_name_for_docker=${ref_name//\//_-}" >> $GITHUB_ENV
         shell: bash
       - name: Build and Push Docker Image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./lambdas
           file: ./lambdas/Dockerfile
