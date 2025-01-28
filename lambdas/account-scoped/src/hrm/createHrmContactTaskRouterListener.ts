@@ -142,7 +142,7 @@ export const handleEvent = async (
     createdBy: workerSid as HrmContact['createdBy'],
     timeOfContact: new Date().toISOString(),
   };
-
+  console.debug('Creating HRM contact with timeOfContact:', newContact.timeOfContact);
   const populatedContact = await populateHrmContactFormFromTask(
     taskAttributes,
     newContact,
