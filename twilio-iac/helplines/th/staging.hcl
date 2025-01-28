@@ -49,6 +49,7 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-blocking-conv.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
+        lambda_channel       = true
       }
     }
 

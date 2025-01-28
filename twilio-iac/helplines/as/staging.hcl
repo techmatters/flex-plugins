@@ -7,6 +7,7 @@ locals {
     enable_post_survey                    = true
     enable_datadog_monitoring                = false
     custom_task_routing_filter_expression = "channelType IN ['instagram','messenger','web','whatsapp','telegram','line','voice'] OR isContactlessTask == true OR  twilioNumber == 'messenger:131329426738030' "
+    permission_config = "demo"
 
     #Studio flow
     flow_vars = {
@@ -24,7 +25,7 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v2-blocking.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },

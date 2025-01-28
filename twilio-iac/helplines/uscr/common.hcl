@@ -14,6 +14,7 @@ locals {
     enable_post_survey         = false
     enable_external_recordings = false
     enable_datadog_monitoring  = false
+    permission_config          = "uscr"
 
     workflows = {
       master : {
@@ -32,7 +33,7 @@ locals {
     task_queues = {
       master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "LA CIRCLE"
+        "friendly_name"  = "CIRCLE"
       },
       survey : {
         "target_workers" = "1==0",

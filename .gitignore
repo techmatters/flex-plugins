@@ -3,5 +3,6 @@
 .DS_Store
 .vscode/settings.json
 **/node_modules/
+**/dist
 
 **/__pycache__/

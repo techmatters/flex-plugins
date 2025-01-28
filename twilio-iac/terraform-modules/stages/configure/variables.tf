@@ -48,7 +48,6 @@ variable "enable_voice_channel" {
   default     = false
 }
 
-
 variable "task_router_config" {
   description = "The task router config for the helpline."
   type = object({
@@ -128,6 +127,7 @@ variable "channels" {
     contact_identity     = string,
     channel_flow_vars    = map(string)
     chatbot_unique_names = list(string)
+    lambda_channel       = optional(bool),
     messaging_mode       = optional(string, "programmable-chat")
     enable_datadog_monitor = optional(bool, false)
     custom_monitor = optional(object({
@@ -137,10 +137,16 @@ variable "channels" {
       timezone = optional(string)
     }),{    })
     }))
-    
+
   }))
   description = "Map of enabled channel objects with their attributes"
 
+}
+
+variable "custom_channel_alb_rules_base_priority" {
+  type        = number
+  description = "The base priority for the custom channel ALB rules. Must be different for each helpline."
+  default     = 500
 }
 
 variable "flow_vars" {
@@ -188,4 +194,14 @@ variable "subscriptions" {
       schema_version = optional(string)
     }))
   }))
+}
+
+variable "permission_config" {
+  description = "permission_config"
+  type        = string
+}
+
+variable "region" {
+  description = "AWS region to create the resources"
+  type        = string
 }

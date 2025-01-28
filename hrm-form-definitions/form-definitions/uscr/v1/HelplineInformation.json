@@ -2,8 +2,8 @@
   "label": "Helpline",
   "helplines": [
     {
-      "label": "LA CIRCLE",
-      "value": "LA CIRCLE",
+      "label": "CIRCLE",
+      "value": "CIRCLE",
       "default": true,
       "kmsUrl": "http://www.google.com",
       "manager": {

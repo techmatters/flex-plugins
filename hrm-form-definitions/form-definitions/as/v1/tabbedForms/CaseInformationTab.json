@@ -3,7 +3,8 @@
     "name": "callSummary",
     "label": "Contact Summary",
     "type": "textarea",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": true
   },
   {
     "name": "repeatCaller",
