@@ -107,6 +107,11 @@
     "type": "checkbox"
   },
   {
+    "name": "officerStandby",
+    "label": "If request from officer, is officer on standby?",
+    "type": "checkbox"
+  },
+  {
     "name": "friendlyName",
     "label": "Name of Person Reporting",
     "type": "input"

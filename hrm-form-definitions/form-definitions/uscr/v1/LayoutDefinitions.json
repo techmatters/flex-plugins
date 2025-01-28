@@ -1,7 +1,7 @@
 {
   "contact": {
     "callerInformation": {
-        "splitFormAt": 4
+        "splitFormAt": 5
     },
     "childInformation": {
       "splitFormAt": 2
