@@ -61,10 +61,10 @@ resource "aws_lexv2models_slot" "this" {
   for_each                         = var.bots
   bot_id      = aws_lexv2models_bot.this["${each.key}"].id
   bot_version = aws_lexv2models_bot_version.this["${each.key}"].bot_version
-  intent_id   = aws_lexv2models_intent.this["${each.key}"].id
+  intent_id   = split(":", aws_lexv2models_intent.this["${each.key}"].id)[0] 
   locale_id   = aws_lexv2models_bot_locale.this["${each.key}"].locale_id
   name        = "${each.key}_slot"
-  
+
   value_elicitation_setting {
     slot_constraint = "Required"
     prompt_specification {
