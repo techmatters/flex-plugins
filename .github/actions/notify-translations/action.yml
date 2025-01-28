@@ -48,9 +48,10 @@ runs:
 
       # Send Slack message to dedicated channel
       - name: Slack aselo-translations channel if above listed files changed
-        uses: slackapi/slack-github-action@v1.14.0
+        uses: slackapi/slack-github-action@v2.0.0
         with:
-          channel-id: ${{ env.ASELO_TRANSLATIONS_CHANNEL_ID }}
-          slack-message: "Changes on strings files in commit with SHA ${{ github.sha }}. See the changes at https://github.com/techmatters/flex-plugins/commit/${{ github.sha }}"
-        env:
-          SLACK_BOT_TOKEN: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+          method: chat.postMessage
+          token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+            text: 'Changes on strings files in commit with SHA ${{ github.sha }}. See the changes at https://github.com/techmatters/flex-plugins/commit/${{ github.sha }}'
