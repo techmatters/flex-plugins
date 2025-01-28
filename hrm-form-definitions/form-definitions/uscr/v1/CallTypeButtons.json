@@ -12,32 +12,8 @@
         "category": "data"
     },
     {
-        "name": "declined",
-        "label": "Declined Incident",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
-        "name": "hangup",
-        "label": "Attempted to Engage",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
-        "name": "silent",
-        "label": "Services not needed",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
-        "name": "returned",
-        "label": "Returned to 911",
-        "type": "button",
-        "category": "non-data"
-    },
-    {
         "name": "test",
-        "label": "Test",
+        "label": "Test/Informational",
         "type": "button",
         "category": "non-data"
     }
