@@ -85,10 +85,24 @@ resource "aws_lexv2models_slot" "this" {
         map_block_key   = "Initial"
 
         allowed_input_types {
-          allow_audio_input = false
-          allow_dtmf_input  = false
+          allow_audio_input = true
+          allow_dtmf_input  = true
         }
 
+        audio_and_dtmf_input_specification {
+          start_timeout_ms = 4000
+          audio_specification {
+            max_length_ms = 15000
+            end_timeout_ms = 640
+          }
+          dtmf_specification {
+            max_length = 513
+            end_timeout_ms = 5000
+            deletion_character = "*"
+            end_character = "#"
+          }
+          
+        }
         text_input_specification {
           start_timeout_ms = 30000
         }
@@ -98,9 +112,24 @@ resource "aws_lexv2models_slot" "this" {
         allow_interrupt = true
         map_block_key   = "Retry1"
 
-        allowed_input_types {
-          allow_audio_input = false
-          allow_dtmf_input  = false
+       allowed_input_types {
+          allow_audio_input = true
+          allow_dtmf_input  = true
+        }
+
+        audio_and_dtmf_input_specification {
+          start_timeout_ms = 4000
+          audio_specification {
+            max_length_ms = 15000
+            end_timeout_ms = 640
+          }
+          dtmf_specification {
+            max_length = 513
+            end_timeout_ms = 5000
+            deletion_character = "*"
+            end_character = "#"
+          }
+          
         }
 
         text_input_specification {
