@@ -44,6 +44,13 @@ module "lex_v2" {
 }
 
 
+output "lex_v2_bot_details" {
+  value = {
+    for bot_key, bot_value in var.lex_v2_bots : 
+    bot_key => bot_value
+  }
+}
+
 # module "lexv2" {
 #   source = "../../lex/v2"
 #   count  = var.lex_v2_config == null ? 0 : 1
