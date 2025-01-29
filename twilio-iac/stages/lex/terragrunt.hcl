@@ -126,7 +126,7 @@ locals {
       ]...
     )
   }) : {}
-
+  print = run_cmd("echo", "lex_v2_bots is: ${local.lex_v2_bots}")
   lex_v2_slot_types_names = local.enable_lex_v2 ? tomap({
     for language, bots in local.lex_bot_languages :
       language => distinct(
@@ -206,4 +206,3 @@ terraform {
   source = "../../terraform-modules//stages/${include.root.locals.stage}"
 }
 
-run_cmd("echo", "lex_v2_bots is: ${local.lex_v2_bots}")
