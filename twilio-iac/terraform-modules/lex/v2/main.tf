@@ -52,40 +52,33 @@ resource "aws_lexv2models_bot_version" "this" {
 resource "aws_lexv2models_slot_type" "this" {
   for_each = {
     for idx, slot_type in var.lex_v2_slot_types :
-    "${slot_type.bot_name}-${slot_type.config.slotTypeName}" => slot_type
+    "${slot_type.bot_name}_${slot_type.config.slotTypeName}" => slot_type
   }
-  bot_id                           = aws_lexv2models_bot.this["${each.key}"].id
-  bot_version                      = aws_lexv2models_bot_locale.this["${each.key}"].bot_version
-  name                             = "${each.key}_slot_type"
-  locale_id                        = aws_lexv2models_bot_locale.this["${each.key}"].locale_id
+  bot_id                           = aws_lexv2models_bot.this["${each.value.bot_name}"].id
+  bot_version                      = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].bot_version
+  name                             = "${slot_type.config.slotTypeName}"
+  locale_id                        = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].locale_id
 
   value_selection_setting {
-    resolution_strategy = "TopResolution"
+    resolution_strategy = each.value.config.valueSelectionSetting.resolutionStrategy
   }
 
-  slot_type_values {
-    sample_value {
-      value = "Boy"
-    }
-    synonyms {
-      value = "Guy"
-    }
-    synonyms {
-      value = "Male Child"
+  dynamic "slot_type_values" {
+    for_each = each.value.config.slotTypeValues
+    content {
+      sample_value {
+        value = slot_type_values.value.sampleValue.value
+      }
+
+      dynamic "synonyms" {
+        for_each = lookup(slot_type_values.value, "synonyms", [])
+        content {
+          value = synonyms.value
+        }
+      }
     }
   }
 
-  slot_type_values {
-    sample_value {
-      value = "Girl"
-    }
-    synonyms {
-      value = "Gal"
-    }
-    synonyms {
-      value = "Female Child"
-    }
-  }
 }
 
 
