@@ -149,13 +149,13 @@ locals {
           for slot_type in local.lex_v2_slot_types_names[language] :{
           bot_name = slot_type.bot_name,
           slot_type_config = jsondecode(file("/app/twilio-iac/helplines/configs/lex_v2/${substr(language, 0, 2)}/slot_types/${slot_type.name}.json"))
-          /*fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/slot_types/${slot_type.name}.json") ?
-          jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/slot_types/${slot_type.name}.json")) :
-          fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/slot_types/${slot_type.name}.json") ?
-          jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/slot_types/${slot_type.name}.json")) :
-          fileexists("/app/twilio-iac/helplines/configs/lex/${language}/slot_types/${slot_type.name}.json") ?
-          jsondecode(file("/app/twilio-iac/helplines/configs/lex/${language}/slot_types/${slot_type.name}.json")) :
-          jsondecode(file("/app/twilio-iac/helplines/configs/lex/${substr(language, 0, 2)}/slot_types/${slot_type.name}.json"))*/
+          /*fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/slot_types/${slot_type.name}.json") ?
+          jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/slot_types/${slot_type.name}.json")) :
+          fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/slot_types/${slot_type.name}.json") ?
+          jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/slot_types/${slot_type.name}.json")) :
+          fileexists("/app/twilio-iac/helplines/configs/lex_v2/${language}/slot_types/${slot_type.name}.json") ?
+          jsondecode(file("/app/twilio-iac/helplines/configs/lex_v2/${language}/slot_types/${slot_type.name}.json")) :
+          jsondecode(file("/app/twilio-iac/helplines/configs/lex_v2/${substr(language, 0, 2)}/slot_types/${slot_type.name}.json"))*/
           }
         ]...
       )
@@ -205,3 +205,5 @@ inputs = local.config
 terraform {
   source = "../../terraform-modules//stages/${include.root.locals.stage}"
 }
+
+run_cmd("echo", "lex_v2_bots is: ${local.lex_v2_bots}")
