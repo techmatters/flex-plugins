@@ -44,105 +44,105 @@ include "root" {
   * We can override the root config with local configuration options if we need to.
   */
 locals {
-  short_helpline = include.root.locals.config.short_helpline
-  environment = include.root.locals.config.environment
+  short_helpline    = include.root.locals.config.short_helpline
+  environment       = include.root.locals.config.environment
   lex_bot_languages = include.root.locals.config.lex_bot_languages
-  enable_lex_v2 = include.root.locals.config.enable_lex_v2
+  enable_lex_v2     = include.root.locals.config.enable_lex_v2
 
   lex_bots = tomap({
     for language, bots in local.lex_bot_languages :
     language => merge(
       [
         for bot in bots :
-          fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/bots/${bot}.json") ?
-          jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/bots/${bot}.json")) :
-          fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/bots/${bot}.json") ?
-          jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/bots/${bot}.json")) :
-          fileexists("/app/twilio-iac/helplines/configs/lex/${language}/bots/${bot}.json") ?
-          jsondecode(file("/app/twilio-iac/helplines/configs/lex/${language}/bots/${bot}.json")) :
-          jsondecode(file("/app/twilio-iac/helplines/configs/lex/${substr(language, 0, 2)}/bots/${bot}.json"))
+        fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/bots/${bot}.json") ?
+        jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/bots/${bot}.json")) :
+        fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/bots/${bot}.json") ?
+        jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/bots/${bot}.json")) :
+        fileexists("/app/twilio-iac/helplines/configs/lex/${language}/bots/${bot}.json") ?
+        jsondecode(file("/app/twilio-iac/helplines/configs/lex/${language}/bots/${bot}.json")) :
+        jsondecode(file("/app/twilio-iac/helplines/configs/lex/${substr(language, 0, 2)}/bots/${bot}.json"))
       ]...
     )
   })
 
   lex_intents = tomap({
     for language, bots in local.lex_bot_languages :
-      language => merge(
-        [
-          for bot in bots :
-            fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/intents/${bot}.json") ?
-            jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/intents/${bot}.json")) :
-            fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/intents/${bot}.json") ?
-            jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/intents/${bot}.json")) :
-            fileexists("/app/twilio-iac/helplines/configs/lex/${language}/intents/${bot}.json") ?
-            jsondecode(file("/app/twilio-iac/helplines/configs/lex/${language}/intents/${bot}.json")) :
-            jsondecode(file("/app/twilio-iac/helplines/configs/lex/${substr(language, 0, 2)}/intents/${bot}.json"))
-        ]...
-      )
+    language => merge(
+      [
+        for bot in bots :
+        fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/intents/${bot}.json") ?
+        jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/intents/${bot}.json")) :
+        fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/intents/${bot}.json") ?
+        jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/intents/${bot}.json")) :
+        fileexists("/app/twilio-iac/helplines/configs/lex/${language}/intents/${bot}.json") ?
+        jsondecode(file("/app/twilio-iac/helplines/configs/lex/${language}/intents/${bot}.json")) :
+        jsondecode(file("/app/twilio-iac/helplines/configs/lex/${substr(language, 0, 2)}/intents/${bot}.json"))
+      ]...
+    )
   })
 
 
 
   slot_types_names = tomap({
     for language, bots in local.lex_bot_languages :
-      language => distinct(
-        flatten([
-          for obj_key, obj_value in local.lex_intents[language] : [
-            for slot_name, slot_data in obj_value["slots"] :
-             slot_data["slot_type"] if !startswith(slot_data["slot_type"], "AMAZON.")
-          ]
-        ])
-      )
+    language => distinct(
+      flatten([
+        for obj_key, obj_value in local.lex_intents[language] : [
+          for slot_name, slot_data in obj_value["slots"] :
+          slot_data["slot_type"] if !startswith(slot_data["slot_type"], "AMAZON.")
+        ]
+      ])
+    )
   })
 
   lex_slot_types = tomap({
     for language, bots in local.lex_bot_languages :
-      language => merge(
-        [
-          for slot_type in local.slot_types_names[language] :
-          fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/slot_types/${slot_type}.json") ?
-          jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/slot_types/${slot_type}.json")) :
-          fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/slot_types/${slot_type}.json") ?
-          jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/slot_types/${slot_type}.json")) :
-          fileexists("/app/twilio-iac/helplines/configs/lex/${language}/slot_types/${slot_type}.json") ?
-          jsondecode(file("/app/twilio-iac/helplines/configs/lex/${language}/slot_types/${slot_type}.json")) :
-          jsondecode(file("/app/twilio-iac/helplines/configs/lex/${substr(language, 0, 2)}/slot_types/${slot_type}.json"))
-        ]...
-      )
+    language => merge(
+      [
+        for slot_type in local.slot_types_names[language] :
+        fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/slot_types/${slot_type}.json") ?
+        jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/slot_types/${slot_type}.json")) :
+        fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/slot_types/${slot_type}.json") ?
+        jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/slot_types/${slot_type}.json")) :
+        fileexists("/app/twilio-iac/helplines/configs/lex/${language}/slot_types/${slot_type}.json") ?
+        jsondecode(file("/app/twilio-iac/helplines/configs/lex/${language}/slot_types/${slot_type}.json")) :
+        jsondecode(file("/app/twilio-iac/helplines/configs/lex/${substr(language, 0, 2)}/slot_types/${slot_type}.json"))
+      ]...
+    )
   })
-  
+
   lex_v2_bots = local.enable_lex_v2 ? tomap({
     for language, bots in local.lex_bot_languages :
     language => merge(
       [
         for bot in bots :
-          fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/bots/${bot}.json") ?
-          jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/bots/${bot}.json")) :
-          fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/bots/${bot}.json") ?
-          jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/bots/${bot}.json")) :
-          fileexists("/app/twilio-iac/helplines/configs/lex_v2/${language}/bots/${bot}.json") ?
-          jsondecode(file("/app/twilio-iac/helplines/configs/lex_v2/${language}/bots/${bot}.json")) :
-          jsondecode(file("/app/twilio-iac/helplines/configs/lex_v2/${substr(language, 0, 2)}/bots/${bot}.json"))
+        fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/bots/${bot}.json") ?
+        jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/bots/${bot}.json")) :
+        fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/bots/${bot}.json") ?
+        jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/bots/${bot}.json")) :
+        fileexists("/app/twilio-iac/helplines/configs/lex_v2/${language}/bots/${bot}.json") ?
+        jsondecode(file("/app/twilio-iac/helplines/configs/lex_v2/${language}/bots/${bot}.json")) :
+        jsondecode(file("/app/twilio-iac/helplines/configs/lex_v2/${substr(language, 0, 2)}/bots/${bot}.json"))
       ]...
     )
   }) : {}
-  
-  print = run_cmd("echo", "lex_v2_bots is:")
+
+  print  = run_cmd("echo", "lex_v2_bots is:")
   print2 = run_cmd("echo", jsonencode(local.lex_v2_bots))
 
   lex_v2_slot_types_names = local.enable_lex_v2 ? tomap({
     for language, bots in local.lex_bot_languages :
-      language => distinct(
-        flatten([
-          for bot_name, bot_config in local.lex_v2_bots[language] : [
-            for slot_type in bot_config.slot_types : 
-              {
-                bot_name = bot_name,
-                name = slot_type
-              }           
-          ]
-        ])
-      )
+    language => distinct(
+      flatten([
+        for bot_name, bot_config in local.lex_v2_bots[language] : [
+          for slot_type in bot_config.slot_types :
+          {
+            bot_name = bot_name,
+            name     = slot_type
+          }
+        ]
+      ])
+    )
   }) : {}
 
   print3 = run_cmd("echo", "lex_v2_slot_types_names is:")
@@ -150,21 +150,20 @@ locals {
 
   lex_v2_slot_types = local.enable_lex_v2 ? tomap({
     for language, bots in local.lex_bot_languages :
-      language => 
-        [
-          for slot_type in local.lex_v2_slot_types_names[language] :{
-          bot_name = slot_type.bot_name,
-          //config = jsondecode(file("/app/twilio-iac/helplines/configs/lex_v2/${substr(language, 0, 2)}/slot_types/${slot_type.name}.json"))
-         config = (fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/slot_types/${slot_type.name}.json") ?
+    language =>
+    [
+      for slot_type in local.lex_v2_slot_types_names[language] : {
+        bot_name = slot_type.bot_name,
+        config = (fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/slot_types/${slot_type.name}.json") ?
           jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/slot_types/${slot_type.name}.json")) :
           fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/slot_types/${slot_type.name}.json") ?
           jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/slot_types/${slot_type.name}.json")) :
           fileexists("/app/twilio-iac/helplines/configs/lex_v2/${language}/slot_types/${slot_type.name}.json") ?
           jsondecode(file("/app/twilio-iac/helplines/configs/lex_v2/${language}/slot_types/${slot_type.name}.json")) :
-          jsondecode(file("/app/twilio-iac/helplines/configs/lex_v2/${substr(language, 0, 2)}/slot_types/${slot_type.name}.json")))
-          }
-        ]
-      
+        jsondecode(file("/app/twilio-iac/helplines/configs/lex_v2/${substr(language, 0, 2)}/slot_types/${slot_type.name}.json")))
+      }
+    ]
+
 
   }) : {}
 
@@ -172,7 +171,7 @@ locals {
   print6 = run_cmd("echo", jsonencode(local.lex_v2_slot_types))
 
   lex_v2_intents = {}
-/*
+  /*
   lex_v2_intents = local.enable_lex_v2 ? tomap({
     for language, bots in local.lex_bot_languages :
       language => merge(
@@ -190,11 +189,11 @@ locals {
   }) : {}
 */
   local_config = {
-    lex_bots = local.lex_bots
-    lex_intents = local.lex_intents
-    lex_slot_types = local.lex_slot_types
-    lex_v2_bots = local.lex_v2_bots
-    lex_v2_intents = local.lex_v2_intents
+    lex_bots          = local.lex_bots
+    lex_intents       = local.lex_intents
+    lex_slot_types    = local.lex_slot_types
+    lex_v2_bots       = local.lex_v2_bots
+    lex_v2_intents    = local.lex_v2_intents
     lex_v2_slot_types = local.lex_v2_slot_types
   }
 
