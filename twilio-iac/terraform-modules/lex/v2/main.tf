@@ -71,7 +71,7 @@ resource "aws_lexv2models_slot_type" "this" {
       }
 
       dynamic "synonyms" {
-        for_each = lookup(slot_type_values.value, "synonyms", [])
+        for_each = length(lookup(slot_type_values.value, "synonyms", [])) > 0 ? lookup(slot_type_values.value, "synonyms", []) : []
         content {
           value = synonyms.value
         }
