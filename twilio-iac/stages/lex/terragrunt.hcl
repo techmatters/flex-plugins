@@ -145,6 +145,9 @@ locals {
       )
   }) : {}
 
+  print3 = run_cmd("echo", "lex_v2_slot_types_names is:")
+  print4 = run_cmd("echo", jsonencode(local.lex_v2_slot_types_names))
+
   lex_v2_slot_types = local.enable_lex_v2 ? tomap({
     for language, bots in local.lex_bot_languages :
       language => merge(
@@ -165,7 +168,8 @@ locals {
 
   }) : {}
 
-
+  print5 = run_cmd("echo", "lex_v2_slot_types is:")
+  print6 = run_cmd("echo", jsonencode(local.lex_v2_slot_types))
 
   lex_v2_intents = {}
 /*

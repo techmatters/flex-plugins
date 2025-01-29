@@ -161,3 +161,28 @@ variable "lex_v2_bots" {
   })))
   default = null
   }
+
+  variable "lex_v2_slot_types" {
+  description = "The slot types for the helpline."
+  type = map(list(
+   object({
+      bot_name = string
+      slot_type_config = object({
+        slotTypeName = string,
+        valueSelectionSetting = object({
+          resolutionStrategy = string
+        })
+        slotTypeValues = list( object({
+          sampleValue = object({
+            value    = string
+          })
+          synonyms = optional(list(object(
+              {
+                value = string
+              }
+            )), null)
+        }))
+      })  
+    })
+    ))
+}
