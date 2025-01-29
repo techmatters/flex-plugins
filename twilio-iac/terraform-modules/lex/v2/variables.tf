@@ -35,7 +35,7 @@ variable "lex_v2_slot_types" {
   type = list(
    object({
       bot_name = string
-      slot_type_config = object({
+      config = object({
         slotTypeName = string,
         valueSelectionSetting = object({
           resolutionStrategy = string

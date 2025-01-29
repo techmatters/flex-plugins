@@ -167,7 +167,7 @@ variable "lex_v2_bots" {
   type = map(list(
    object({
       bot_name = string
-      slot_type_config = object({
+      config = object({
         slotTypeName = string,
         valueSelectionSetting = object({
           resolutionStrategy = string

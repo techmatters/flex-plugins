@@ -50,7 +50,10 @@ resource "aws_lexv2models_bot_version" "this" {
 }
 
 resource "aws_lexv2models_slot_type" "this" {
-  for_each                         = var.lex_v2_slot_types
+  for_each = {
+    for idx, slot_type in var.lex_v2_slot_types :
+    "${slot_type.bot_name}-${slot_type.config.slotTypeName}" => slot_type
+  }
   bot_id                           = aws_lexv2models_bot.this["${each.key}"].id
   bot_version                      = aws_lexv2models_bot_locale.this["${each.key}"].bot_version
   name                             = "${each.key}_slot_type"
