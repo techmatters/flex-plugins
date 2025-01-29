@@ -131,7 +131,7 @@ locals {
     for language, bots in local.lex_bot_languages :
       language => distinct(
         flatten([
-          for bot_name, bot_config in lex_v2_bots[language] : [
+          for bot_name, bot_config in local.lex_v2_bots[language] : [
             for slot_type in bot_config.slot_types : 
               {
                 bot_name = bot_name,
