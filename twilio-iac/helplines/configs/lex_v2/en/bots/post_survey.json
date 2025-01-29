@@ -1,7 +1,7 @@
 {
   "post_survey": {
     "description": "General configs/lex/en/bots Post Survey bot",
-    "locale": "en-US",
+    "locale": "en_US",
     "child_directed": true,
     "idle_session_ttl_in_seconds": "600",
     "type": "Bot",
