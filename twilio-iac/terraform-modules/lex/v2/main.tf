@@ -56,7 +56,7 @@ resource "aws_lexv2models_slot_type" "this" {
   }
   bot_id                           = aws_lexv2models_bot.this["${each.value.bot_name}"].id
   bot_version                      = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].bot_version
-  name                             = "${slot_type.config.slotTypeName}"
+  name                             = "${each.value.config.slotTypeName}"
   locale_id                        = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].locale_id
 
   value_selection_setting {
