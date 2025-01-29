@@ -81,6 +81,17 @@ resource "aws_lexv2models_slot_type" "this" {
 
 }
 
+output "slot_types" {
+    value = {
+        for_each = {
+        for idx, slot_type in var.lex_v2_slot_types :
+        "${slot_type.bot_name}_${slot_type.config.slotTypeName}" => slot_type
+    }  
+    
+  }
+
+
+}
 
 
 
