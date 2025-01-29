@@ -49,6 +49,46 @@ resource "aws_lexv2models_bot_version" "this" {
   }
 }
 
+resource "aws_lexv2models_slot_type" "this" {
+  for_each                         = var.lex_v2_slot_types
+  bot_id                           = aws_lexv2models_bot.this["${each.key}"].id
+  bot_version                      = aws_lexv2models_bot_locale.this["${each.key}"].bot_version
+  name                             = "${each.key}_slot_type"
+  locale_id                        = aws_lexv2models_bot_locale.this["${each.key}"].locale_id
+
+  value_selection_setting {
+    resolution_strategy = "TopResolution"
+  }
+
+  slot_type_values {
+    sample_value {
+      value = "Boy"
+    }
+    synonyms {
+      value = "Guy"
+    }
+    synonyms {
+      value = "Male Child"
+    }
+  }
+
+  slot_type_values {
+    sample_value {
+      value = "Girl"
+    }
+    synonyms {
+      value = "Gal"
+    }
+    synonyms {
+      value = "Female Child"
+    }
+  }
+}
+
+
+
+
+/*
 resource "aws_lexv2models_intent" "this" {
   for_each    = var.lex_v2_bots
   bot_id      = aws_lexv2models_bot.this["${each.key}"].id
@@ -216,42 +256,8 @@ resource "aws_lexv2models_slot" "this" {
     }
   }
 }
+*/
 
-resource "aws_lexv2models_slot_type" "this" {
-  for_each                         = var.lex_v2_bots
-  bot_id                           = aws_lexv2models_bot.this["${each.key}"].id
-  bot_version                      = aws_lexv2models_bot_locale.this["${each.key}"].bot_version
-  name                             = "${each.key}_slot_type"
-  locale_id                        = aws_lexv2models_bot_locale.this["${each.key}"].locale_id
-
-  value_selection_setting {
-    resolution_strategy = "TopResolution"
-  }
-
-  slot_type_values {
-    sample_value {
-      value = "Boy"
-    }
-    synonyms {
-      value = "Guy"
-    }
-    synonyms {
-      value = "Male Child"
-    }
-  }
-
-  slot_type_values {
-    sample_value {
-      value = "Girl"
-    }
-    synonyms {
-      value = "Gal"
-    }
-    synonyms {
-      value = "Female Child"
-    }
-  }
-}
 
 /*
 aws lexv2-models describe-bot --bot-id C6HUSTIFBR

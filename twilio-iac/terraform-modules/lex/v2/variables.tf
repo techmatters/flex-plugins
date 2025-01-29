@@ -18,47 +18,6 @@ variable "language" {
   type        = string
 }
 
-variable "slot_types" {
-  description = "The slot types for the helpline."
-  type = map(object({
-    description              = string
-    value_selection_strategy = string
-    values = map(object({
-      synonyms = optional(list(string), []),
-    }))
-  }))
-}
-
-variable "intents" {
-  description = "The intents for the helpline."
-  type = map(object({
-    description       = string
-    sample_utterances = list(string)
-    fulfillment_activity = object({
-      type = string
-    })
-    conclusion_statement = object({
-      content      = string
-      content_type = string
-    })
-    rejection_statement = object({
-      content      = string
-      content_type = string
-    })
-    slots = map(object({
-      priority        = number
-      description     = string
-      slot_constraint = string
-      slot_type       = string
-      value_elicitation_prompt = object({
-        max_attempts = number
-        content      = string
-        content_type = string
-      })
-    }))
-  }))
-}
-
 variable "lex_v2_bots" {
   description = "The bots for the helpline."
   type = map(object({
@@ -71,8 +30,34 @@ variable "lex_v2_bots" {
   default = null
   }
 
+variable "lex_v2_slot_types" {
+  description = "The slot types for the helpline."
+  type = list(
+   object({
+      bot_name = string
+      slot_type_config = object({
+        slotTypeName = string,
+        valueSelectionSetting = object({
+          resolutionStrategy = string
+        })
+        slotTypeValues = list( object({
+          sampleValue = object({
+            value    = string
+          })
+          synonyms = optional(list(object(
+              {
+                value = string
+              }
+            )), null)
+        }))
+      })  
+    })
+    )
+}
+
 variable "lex_v2_intents" {
   description = "The intents for the helpline."
+  default = {}
   type = map(object({
     description       = string
     sampleUtterances = list(string)

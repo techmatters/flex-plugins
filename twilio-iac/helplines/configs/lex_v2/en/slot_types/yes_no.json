@@ -1,0 +1,46 @@
+{
+    "slotTypeName": "yes_no",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "Yes"
+            },
+            "synonyms": [
+                {
+                    "value": "Yah"
+                },
+                {
+                    "value": "Y"
+                },
+                {
+                    "value": "Yeah"
+                },
+                {
+                    "value": "Ya"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "No"
+            },
+            "synonyms": [
+                {
+                    "value": "Na"
+                },
+                {
+                    "value": "Nah"
+                },
+                {
+                    "value": "Noo"
+                },
+                {
+                    "value": "N"
+                }
+            ]
+        }
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}
