@@ -73,7 +73,7 @@ resource "aws_lexv2models_slot_type" "this" {
       dynamic "synonyms" {
         for_each =  slot_type_values.value.synonyms != null ? slot_type_values.value.synonyms : []
         content {
-          value = tostring(synonyms.value)
+          value = synonyms.value.value
         }
       }
     }
