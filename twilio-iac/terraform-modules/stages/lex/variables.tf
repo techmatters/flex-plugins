@@ -149,3 +149,15 @@ variable "enable_lex_v2" {
   type        = bool
   default     = false
 }
+
+variable "lex_v2_bots" {
+  description = "The bots for the helpline."
+  type = map(object({
+    description                 = string
+    locale                      = optional(string, "en-US")
+    child_directed              = optional(bool, true)
+    idle_session_ttl_in_seconds = optional(number, 300)
+    type                        = optional(string, "Bot")
+  }))
+  default = null
+  }

@@ -1,0 +1,22 @@
+{
+  "pre_survey": {
+    "description": "General configs/lex_v2/en/bots Pre Survey bot",
+    "locale": "en-US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "type": "Bot",
+    "intents": [
+      "pre_survey"
+    ],
+    "slots": [
+      "callerType",
+      "age",
+      "gender"
+    ],
+    "slot_types" :[
+      "yes_no",
+      "age",
+      "gender"
+    ]
+  }
+}

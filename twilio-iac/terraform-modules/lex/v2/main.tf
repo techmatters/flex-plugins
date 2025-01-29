@@ -16,15 +16,15 @@ data "aws_iam_role" "role-lex-v2-bot" {
 }
 
 resource "aws_lexv2models_bot" "this" {
-  for_each = var.bots
+  for_each = var.lex_v2_bots
   name     = replace("${local.name_prefix}_${each.key}", "2", "")
   description = each.value.description
   data_privacy {
-    child_directed = true
+    child_directed = each.value.child_directed
   }
-  idle_session_ttl_in_seconds = 60
+  idle_session_ttl_in_seconds = each.value.idle_session_ttl_in_seconds
   role_arn                    = data.aws_iam_role.role-lex-v2-bot.arn
-  type                        = "Bot"
+  type                        = each.value.type
 
   tags = {
     foo = "terraform"
@@ -32,15 +32,15 @@ resource "aws_lexv2models_bot" "this" {
 }
 
 resource "aws_lexv2models_bot_locale" "this" {
-  for_each                         = var.bots
+  for_each                         = var.lex_v2_bots
   bot_id                           = aws_lexv2models_bot.this["${each.key}"].id
   bot_version                      = "DRAFT"
-  locale_id                        = "en_US"
+  locale_id                        = each.value.locale
   n_lu_intent_confidence_threshold = 0.70
 }
 
 resource "aws_lexv2models_bot_version" "this" {
-  for_each                         = var.bots
+  for_each                         = var.lex_v2_bots
   bot_id = aws_lexv2models_bot.this["${each.key}"].id
   locale_specification = {
     "en_US" = {
@@ -50,15 +50,91 @@ resource "aws_lexv2models_bot_version" "this" {
 }
 
 resource "aws_lexv2models_intent" "this" {
-  for_each                         = var.bots
+  for_each    = var.lex_v2_bots
   bot_id      = aws_lexv2models_bot.this["${each.key}"].id
   bot_version = aws_lexv2models_bot_locale.this["${each.key}"].bot_version
   name        = "${each.key}_intent"
   locale_id   = aws_lexv2models_bot_locale.this["${each.key}"].locale_id
+  
+  dynamic "utterances" {
+    for_each = var.lex_v2_intents[each.key].sampleUtterances
+      sample_utterances {
+        utterance = utterances.value
+      }
+  }
+  dynamic "slot_priorities" {
+    for_each = var.lex_v2_intents[each.key].slotPriorities
+      slot_priority {
+        priority = slot_priorities.value.priority
+        slot_id = aws_lexv2models_slot.this["${slot_priorities.value.slot_name}"].id
+      }
+  }
+
+  closing_setting {
+    active = var.lex_v2_intents[each.key].intentClosingSetting.active
+    closing_response {
+      allow_interrupt = var.lex_v2_intents[each.key].intentClosingSetting.closingResponse.allowInterrupt
+      message_group {
+        message {
+          plain_text_message {
+            value = var.lex_v2_intents[each.key].intentClosingSetting.closingResponse.messageGroups.message.plainTextMessage.value
+          }
+        } 
+      }
+    }
+    next_step {
+      dialog_action {
+        type = var.lex_v2_intents[each.key].intentClosingSetting.nextStep.dialogAction.type
+      }
+    }
+  }
+  initial_response_setting {
+    initial_response {
+      allow_interrupt = var.lex_v2_intents[each.key].initialResponseSetting.initialResponse.allowInterrupt
+      message_group {
+        message {
+          plain_text_message {
+            value = var.lex_v2_intents[each.key].initialResponseSetting.initialResponse.messageGroups.message.plainTextMessage.value
+          }
+        }
+      }
+    }
+    next_step {
+      dialog_action {
+        type = var.lex_v2_intents[each.key].initialResponseSetting.nextStep.dialogAction.type
+      }
+    }
+    code_hook {
+      enable_code_hook_invocation = var.lex_v2_intents[each.key].initialResponseSetting.codeHook.enableCodeHookInvocation
+      active = var.lex_v2_intents[each.key].initialResponseSetting.codeHook.active
+      post_code_hook_specification {
+        success_next_step {
+          dialog_action {
+            type = var.lex_v2_intents[each.key].initialResponseSetting.codeHook.postCodeHookSpecification.successNextStep.dialogAction.type
+          }
+        }
+        failure_next_step {
+          dialog_action {
+            type = var.lex_v2_intents[each.key].initialResponseSetting.codeHook.postCodeHookSpecification.failureNextStep.dialogAction.type
+          }
+        }
+        timeout_next_step {
+          dialog_action {
+            type = var.lex_v2_intents[each.key].initialResponseSetting.codeHook.postCodeHookSpecification.timeoutNextStep.dialogAction.type
+          }
+        }
+      }
+    }
+
+  }
+
+
+
+
 }
 
 resource "aws_lexv2models_slot" "this" {
-  for_each                         = var.bots
+  for_each                         = var.lex_v2_bots
   bot_id      = aws_lexv2models_bot.this["${each.key}"].id
   bot_version = aws_lexv2models_bot_locale.this["${each.key}"].bot_version
   intent_id   = split(":", aws_lexv2models_intent.this["${each.key}"].id)[0] 
@@ -142,7 +218,7 @@ resource "aws_lexv2models_slot" "this" {
 }
 
 resource "aws_lexv2models_slot_type" "this" {
-  for_each                         = var.bots
+  for_each                         = var.lex_v2_bots
   bot_id                           = aws_lexv2models_bot.this["${each.key}"].id
   bot_version                      = aws_lexv2models_bot_locale.this["${each.key}"].bot_version
   name                             = "${each.key}_slot_type"
@@ -193,6 +269,28 @@ aws lexv2-models describe-bot --bot-id C6HUSTIFBR
     "lastUpdatedDateTime": 1683820369.397,
     "botType": "Bot"
 }
+
+aws lexv2-models describe-bot-locale --bot-id C6HUSTIFBR --bot-version DRAFT --locale-id en_US
+{
+    "botId": "C6HUSTIFBR",
+    "botVersion": "DRAFT",
+    "localeId": "en_US",
+    "localeName": "English (US)",
+    "nluIntentConfidenceThreshold": 0.4,
+    "voiceSettings": {
+        "voiceId": "Ivy",
+        "engine": "neural"
+    },
+    "intentsCount": 2,
+    "slotTypesCount": 3,
+    "botLocaleStatus": "Built",
+    "creationDateTime": 1677858910.877,
+    "lastUpdatedDateTime": 1677858914.677,
+    "lastBuildSubmittedDateTime": 1686174053.068
+}
+
+
+
 aws lexv2-models describe-intent --intent-id PBKSDSQGK0 --bot-id C6HUSTIFBR --bot-version DRAFT --locale-id en_US
 
 {
@@ -323,9 +421,224 @@ aws lexv2-models describe-intent --intent-id PBKSDSQGK0 --bot-id C6HUSTIFBR --bo
         }
     }
 }
+aws lexv2-models describe-slot --intent-id PBKSDSQGK0 --bot-id C6HUSTIFBR --bot-version DRAFT --locale-id en_US
+{
+    "slotId": "1WMLGAXGMT",
+    "slotName": "age",
+    "slotTypeId": "UMWO7VEHGT",
+    "valueElicitationSetting": {
+        "slotConstraint": "Required",
+        "promptSpecification": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Thank you. You can say ‘prefer not to answer’ (or type X) to any question."
+                        }
+                    }
+                },
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "How old are you? "
+                        }
+                    },
+                    "variations": []
+                }
+            ],
+            "maxRetries": 4,
+            "allowInterrupt": true,
+            "messageSelectionStrategy": "Random",
+            "promptAttemptsSpecification": {
+                "Initial": {
+                    "allowInterrupt": true,
+                    "allowedInputTypes": {
+                        "allowAudioInput": true,
+                        "allowDTMFInput": true
+                    },
+                    "audioAndDTMFInputSpecification": {
+                        "startTimeoutMs": 4000,
+                        "audioSpecification": {
+                            "maxLengthMs": 15000,
+                            "endTimeoutMs": 640
+                        },
+                        "dtmfSpecification": {
+                            "maxLength": 513,
+                            "endTimeoutMs": 5000,
+                            "deletionCharacter": "*",
+                            "endCharacter": "#"
+                        }
+                    },
+                    "textInputSpecification": {
+                        "startTimeoutMs": 30000
+                    }
+                },
+                "Retry1": {
+                    "allowInterrupt": true,
+                    "allowedInputTypes": {
+                        "allowAudioInput": true,
+                        "allowDTMFInput": true
+                    },
+                    "audioAndDTMFInputSpecification": {
+                        "startTimeoutMs": 4000,
+                        "audioSpecification": {
+                            "maxLengthMs": 15000,
+                            "endTimeoutMs": 640
+                        },
+                        "dtmfSpecification": {
+                            "maxLength": 513,
+                            "endTimeoutMs": 5000,
+                            "deletionCharacter": "*",
+                            "endCharacter": "#"
+                        }
+                    },
+                    "textInputSpecification": {
+                        "startTimeoutMs": 30000
+                    }
+                },
+                "Retry2": {
+                    "allowInterrupt": true,
+                    "allowedInputTypes": {
+                        "allowAudioInput": true,
+                        "allowDTMFInput": true
+                    },
+                    "audioAndDTMFInputSpecification": {
+                        "startTimeoutMs": 4000,
+                        "audioSpecification": {
+                            "maxLengthMs": 15000,
+                            "endTimeoutMs": 640
+                        },
+                        "dtmfSpecification": {
+                            "maxLength": 513,
+                            "endTimeoutMs": 5000,
+                            "deletionCharacter": "*",
+                            "endCharacter": "#"
+                        }
+                    },
+                    "textInputSpecification": {
+                        "startTimeoutMs": 30000
+                    }
+                },
+                "Retry3": {
+                    "allowInterrupt": true,
+                    "allowedInputTypes": {
+                        "allowAudioInput": true,
+                        "allowDTMFInput": true
+                    },
+                    "audioAndDTMFInputSpecification": {
+                        "startTimeoutMs": 4000,
+                        "audioSpecification": {
+                            "maxLengthMs": 15000,
+                            "endTimeoutMs": 640
+                        },
+                        "dtmfSpecification": {
+                            "maxLength": 513,
+                            "endTimeoutMs": 5000,
+                            "deletionCharacter": "*",
+                            "endCharacter": "#"
+                        }
+                    },
+                    "textInputSpecification": {
+                        "startTimeoutMs": 30000
+                    }
+                },
+                "Retry4": {
+                    "allowInterrupt": true,
+                    "allowedInputTypes": {
+                        "allowAudioInput": true,
+                        "allowDTMFInput": true
+                    },
+                    "audioAndDTMFInputSpecification": {
+                        "startTimeoutMs": 4000,
+                        "audioSpecification": {
+                            "maxLengthMs": 15000,
+                            "endTimeoutMs": 640
+                        },
+                        "dtmfSpecification": {
+                            "maxLength": 513,
+                            "endTimeoutMs": 5000,
+                            "deletionCharacter": "*",
+                            "endCharacter": "#"
+                        }
+                    },
+                    "textInputSpecification": {
+                        "startTimeoutMs": 30000
+                    }
+                }
+            }
+        },
+        "sampleUtterances": [
+            {
+                "utterance": "Yeah"
+            },
+            {
+                "utterance": "Yea"
+            },
+            {
+                "utterance": "Y"
+            },
+            {
+                "utterance": "N"
+            },
+            {
+                "utterance": "No"
+            },
+            {
+                "utterance": "Na"
+            },
+            {
+                "utterance": "Nah"
+            },
+            {
+                "utterance": "Nooo"
+            },
+            {
+                "utterance": "Yah"
+            }
+        ],
+        "slotCaptureSetting": {
+            "captureNextStep": {
+                "dialogAction": {
+                    "type": "ElicitSlot",
+                    "slotToElicit": "gender"
+                },
+                "intent": {}
+            },
+            "failureResponse": {
+                "messageGroups": [
+                    {
+                        "message": {
+                            "plainTextMessage": {
+                                "value": "Sorry, I didn't understand that. Please respond with a number."
+                            }
+                        }
+                    }
+                ],
+                "allowInterrupt": true
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "ElicitSlot",
+                    "slotToElicit": "age"
+                },
+                "intent": {}
+            },
+            "elicitationCodeHook": {
+                "enableCodeHookInvocation": true
+            }
+        }
+    },
+    "botId": "C6HUSTIFBR",
+    "botVersion": "DRAFT",
+    "localeId": "en_US",
+    "intentId": "PBKSDSQGK0",
+    "creationDateTime": 1683615199.088,
+    "lastUpdatedDateTime": 1683820222.651
+}
 
 
- aws lexv2-models list-slots --intent-id PBKSDSQGK0 --bot-id C6HUSTIFBR --bot-version DRAFT --locale-id en_US
+
+ aws lexv2-models list-slots --intent-id PBKSDSQGK0 --bot-id C6HUSTIFBR --bot-version DRAFT --locale-id en_US --slot-id 1WMLGAXGMT
 {
     "botId": "C6HUSTIFBR",
     "botVersion": "DRAFT",

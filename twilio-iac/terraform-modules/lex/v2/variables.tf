@@ -59,24 +59,85 @@ variable "intents" {
   }))
 }
 
-variable "bots" {
+variable "lex_v2_bots" {
   description = "The bots for the helpline."
   type = map(object({
     description                 = string
     locale                      = optional(string, "en-US")
-    process_behavior            = optional(string, "BUILD")
     child_directed              = optional(bool, true)
     idle_session_ttl_in_seconds = optional(number, 300)
-    enable_model_improvements   = optional(bool, true)
-    abort_statement = object({
-      content      = string
-      content_type = string
+    type                        = optional(string, "Bot")
+  }))
+  default = null
+  }
+
+variable "lex_v2_intents" {
+  description = "The intents for the helpline."
+  type = map(object({
+    description       = string
+    sampleUtterances = list(string)
+    slotPriorities = list(object({
+      priority  = number
+      slotName = string
+    }))
+    intentClosingSetting = object({
+      closingResponse = object({
+        messageGroups = object({
+          message = object({
+            plainTextMessage = object({
+              value = string
+            })
+          })
+        })
+        allowInterrupt = bool
+      })
+      active = bool
+      nextStep = object({
+        dialogAction = object({
+          type = string
+        })
+      
+      })
     })
-    clarification_prompt = object({
-      max_attempts = number
-      content      = string
-      content_type = string
+    initialResponseSetting = object({
+      initialResponse = object({
+        messageGroups = object({
+          message = object({
+            plainTextMessage = object({
+              value = string
+            })
+          })
+        })
+        allowInterrupt = bool
+      })
+      nextStep = object({
+        dialogAction = object({
+          type = string
+        })
+      })
+      codeHook = object({
+        enableCodeHookInvocation = bool
+        active = bool
+        postCodeHookSpecification = object({
+          successNextStep = object({
+            dialogAction = object({
+              type = string
+              slotToElicit = string
+            })
+          })
+        })
+        failureNextStep = object({
+          dialogAction = object({
+            type = string
+          })
+        })
+        timeoutNextStep = object({
+          dialogAction = object({
+            type = string
+          })
+        })
+      })
     })
-    intents = list(string)
+
   }))
 }

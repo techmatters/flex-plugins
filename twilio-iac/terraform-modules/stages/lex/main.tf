@@ -36,9 +36,10 @@ module "lex_v2" {
   environment    = var.environment
   language       = each.key
 
-  bots       = var.lex_bots[each.key]
-  intents    = var.lex_intents[each.key]
-  slot_types = var.lex_slot_types[each.key]
+  lex_v2_bots = var.lex_v2_bots[each.key]
+  lex_v2_intents    = var.lex_intents[each.key]
+  lex_v2_slots = var.lex_slots[each.key]
+  lex_v2_slot_types = var.lex_slot_types[each.key]
 }
 
 
