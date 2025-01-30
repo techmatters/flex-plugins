@@ -219,7 +219,7 @@ variable "lex_v2_intents" {
           
           })
         })
-        initialResponseSetting = object({
+        initialResponseSetting = optional(object({
           initialResponse = object({
             messageGroups = object({
               message = object({
@@ -258,6 +258,7 @@ variable "lex_v2_intents" {
             })
           })
         })
+      )
       })
   })))
 }
