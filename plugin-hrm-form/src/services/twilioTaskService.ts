@@ -75,7 +75,11 @@ export const checkTaskAssignment = async (taskSid: string) => {
   return fetchProtectedApi('/checkTaskAssignment', body);
 };
 
-export const getTask = async (taskSid: string): Promise<ITask> => {
+type GetTaskAndReservationResponse = {
+  task: ITask;
+  reservationSid?: string | undefined;
+};
+export const getTaskAndReservation = async (taskSid: string): Promise<GetTaskAndReservationResponse> => {
   const body = { taskSid };
   try {
     return {

@@ -16,6 +16,7 @@
 
 import { TaskHelper } from '@twilio/flex-ui';
 
+import { isChatChannel, isVoiceChannel } from '../states/DomainConstants';
 import { isNonDataCallType } from '../states/validationRules';
 import { getQueryParams } from './PaginationParams';
 import { fetchHrmApi } from './fetchHrmApi';
@@ -105,7 +106,11 @@ type HandleTwilioTaskResponse = {
   externalRecordingInfo?: ExternalRecordingInfoSuccess;
 };
 
-export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> => {
+export const handleTwilioTask = async (
+  task,
+  contact?: Contact,
+  reservationSid?: string | undefined,
+): Promise<HandleTwilioTaskResponse> => {
   const returnData: HandleTwilioTaskResponse = {
     conversationMedia: [],
   };
@@ -114,8 +119,10 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
     return returnData;
   }
 
+  const finalReservationSid = reservationSid ? reservationSid : task.sid;
+
   try {
-    if (TaskHelper.isChatBasedTask(task)) {
+    if (TaskHelper.isChatBasedTask(task) || isChatChannel(contact.channel)) {
       // Store a pending transcript
       returnData.conversationMedia.push({
         storeType: 'S3',
@@ -126,12 +133,17 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
       });
     }
 
-    if (TaskHelper.isChatBasedTask(task) || TaskHelper.isCallTask(task)) {
+    if (
+      TaskHelper.isChatBasedTask(task) ||
+      TaskHelper.isCallTask(task) ||
+      isChatChannel(contact.channel) ||
+      isVoiceChannel(contact.channel)
+    ) {
       // Store reservation sid to use Twilio insights overlay (recordings/transcript)
       returnData.conversationMedia.push({
         storeType: 'twilio',
         storeTypeSpecificData: {
-          reservationSid: task.sid,
+          reservationSid: finalReservationSid,
         },
       });
     }
@@ -150,10 +162,10 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
       );
       recordEvent('Backend Error: Get External Recording Info', {
         taskSid: task.taskSid,
-        reservationSid: task.sid,
+        reservationSid: finalReservationSid,
         recordingError: externalRecordingInfo.error,
-        isCallTask: TaskHelper.isCallTask(task),
-        isChatBasedTask: TaskHelper.isChatBasedTask(task),
+        isCallTask: TaskHelper.isCallTask(task) || isVoiceChannel(contact.channel),
+        isChatBasedTask: TaskHelper.isChatBasedTask(task) || isChatChannel(contact.channel),
         attributes: JSON.stringify(task.attributes),
       });
       return returnData;
@@ -171,6 +183,7 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
         },
       },
     });
+    console.log('>>> Added external recording info to returnData:', returnData);
   } catch (err) {
     console.error(
       'Error processing contact media during finalization:',
@@ -181,6 +194,8 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
       returnData,
     );
   }
+
+  console.log('>>> Final returnData:', returnData);
   return returnData;
 };
 
@@ -284,8 +299,12 @@ const saveContactToHrm = async (
   return updateContactInHrm(contact.id, contactToSave, false);
 };
 
-export const finalizeContact = async (task, contact: Contact): Promise<Contact> => {
-  const twilioTaskResult = await handleTwilioTask(task);
+export const finalizeContact = async (
+  task,
+  contact: Contact,
+  reservationSid?: string | undefined,
+): Promise<Contact> => {
+  const twilioTaskResult = await handleTwilioTask(task, contact, reservationSid);
   const { channelSid, serviceSid } = twilioTaskResult;
   await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
   const contactUpdates: ContactDraftChanges = {
