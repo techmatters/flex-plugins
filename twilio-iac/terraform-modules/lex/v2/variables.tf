@@ -59,71 +59,75 @@ variable "lex_v2_intents" {
   description = "The intents for the helpline."
   type = list(
     object({
-    name             = string
-    description       = string
-    sampleUtterances = list(string)
-    slotPriorities = list(object({
-      priority  = number
-      slotName = string
-    }))
-    intentClosingSetting = object({
-      closingResponse = object({
-        messageGroups = object({
-          message = object({
-            plainTextMessage = object({
-              value = string
+      bot_name = string
+      config = object({
+        name             = string
+        description       = string
+        sampleUtterances = list(string)
+        slotPriorities = list(object({
+          priority  = number
+          slotName = string
+        }))
+        intentClosingSetting = object({
+          closingResponse = object({
+            messageGroups = object({
+              message = object({
+                plainTextMessage = object({
+                  value = string
+                })
+              })
             })
+            allowInterrupt = bool
           })
-        })
-        allowInterrupt = bool
-      })
-      active = bool
-      nextStep = object({
-        dialogAction = object({
-          type = string
-        })
-      
-      })
-    })
-    initialResponseSetting = object({
-      initialResponse = object({
-        messageGroups = object({
-          message = object({
-            plainTextMessage = object({
-              value = string
-            })
-          })
-        })
-        allowInterrupt = bool
-      })
-      nextStep = object({
-        dialogAction = object({
-          type = string
-        })
-      })
-      codeHook = object({
-        enableCodeHookInvocation = bool
-        active = bool
-        postCodeHookSpecification = object({
-          successNextStep = object({
+          active = bool
+          nextStep = object({
             dialogAction = object({
               type = string
-              slotToElicit = string
+            })
+          
+          })
+        })
+        initialResponseSetting = object({
+          initialResponse = object({
+            messageGroups = object({
+              message = object({
+                plainTextMessage = object({
+                  value = string
+                })
+              })
+            })
+            allowInterrupt = bool
+          })
+          nextStep = object({
+            dialogAction = object({
+              type = string
+            })
+          })
+          codeHook = object({
+            enableCodeHookInvocation = bool
+            active = bool
+            postCodeHookSpecification = object({
+              successNextStep = object({
+                dialogAction = object({
+                  type = string
+                  slotToElicit = string
+                })
+              })
+            })
+            failureNextStep = object({
+              dialogAction = object({
+                type = string
+              })
+            })
+            timeoutNextStep = object({
+              dialogAction = object({
+                type = string
+              })
             })
           })
         })
-        failureNextStep = object({
-          dialogAction = object({
-            type = string
-          })
-        })
-        timeoutNextStep = object({
-          dialogAction = object({
-            type = string
-          })
-        })
       })
-    })
+    
 
   }))
 }
