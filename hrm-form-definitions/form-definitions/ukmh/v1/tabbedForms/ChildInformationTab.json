@@ -31,43 +31,43 @@
         "label": "Unborn"
       },
       {
-        "value": "0",
+        "value": "00",
         "label": "0"
       },
       {
-        "value": "1",
+        "value": "01",
         "label": "1"
       },
       {
-        "value": "2",
+        "value": "02",
         "label": "2"
       },
       {
-        "value": "3",
+        "value": "03",
         "label": "3"
       },
       {
-        "value": "4",
+        "value": "04",
         "label": "4"
       },
       {
-        "value": "5",
+        "value": "05",
         "label": "5"
       },
       {
-        "value": "6",
+        "value": "06",
         "label": "6"
       },
       {
-        "value": "7",
+        "value": "07",
         "label": "7"
       },
       {
-        "value": "8",
+        "value": "08",
         "label": "8"
       },
       {
-        "value": "9",
+        "value": "09",
         "label": "9"
       },
       {
@@ -193,18 +193,12 @@
     "label": "Province",
     "type": "select",
     "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Central",
-        "label": "Central"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
+      { "value": "", "label": "" },
+      { "value": "Northern", "label": "Northern" },
+      { "value": "Eastern", "label": "Eastern" },
+      { "value": "Western", "label": "Western" },
+      { "value": "Southern", "label": "Southern" },
+      { "value": "Unknown", "label": "Unknown"}
     ],
     "required": {
       "value": true,
@@ -221,25 +215,29 @@
       "label": ""
     },
     "options": {
-      "District1": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
+      "Northern": [
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" },
+        { "value": "Unknown", "label": "Unknown"}
       ],
-      "District2": [
-        {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
+      "Eastern": [
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" },
+        { "value": "Unknown", "label": "Unknown"}
+      ],
+      "Western": [
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" },
+        { "value": "Unknown", "label": "Unknown"}
+      ],
+      "Southern": [
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" },
+        { "value": "Unknown", "label": "Unknown"}
       ]
     },
     "required": {
