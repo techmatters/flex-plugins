@@ -19,7 +19,6 @@ import { TaskHelper } from '@twilio/flex-ui';
 import { isNonDataCallType } from '../states/validationRules';
 import { getQueryParams } from './PaginationParams';
 import { fetchHrmApi } from './fetchHrmApi';
-import { getDateTime } from '../utils/helpers';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import {
   Contact,
@@ -261,10 +260,6 @@ const saveContactToHrm = async (
 
   // If isOfflineContactTask, send the target Sid as twilioWorkerId value and store workerSid (issuer) in rawForm
   const twilioWorkerId = isOfflineContactTask(task) ? form.contactlessTask.createdOnBehalfOf : workerSid;
-
-  // This might change if isNonDataCallType, that's why we use rawForm
-  const timeOfContact = new Date(getDateTime(form.contactlessTask)).toISOString();
-
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.
@@ -277,7 +272,6 @@ const saveContactToHrm = async (
     twilioWorkerId,
     queueName: task.queueName,
     number,
-    timeOfContact,
     taskId: uniqueIdentifier,
   };
 
