@@ -95,8 +95,8 @@ output "slot_types" {
 
 resource "aws_lexv2models_intent" "this" {
   for_each = {
-    for idx, intent in var.lex_v2_intents :
-    "${intent.bot_name}_${intent.config.name}" => intent
+    //for idx, intent in var.lex_v2_intents :
+    //"${intent.bot_name}_${intent.config.name}" => intent
   }
   bot_id         = aws_lexv2models_bot.this["${each.value.bot_name}"].id
   bot_version    = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].bot_version
