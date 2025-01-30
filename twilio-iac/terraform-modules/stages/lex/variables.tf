@@ -201,7 +201,7 @@ variable "lex_v2_intents" {
           slotName = string
         }))*/
         intentClosingSetting = object({
-          closingResponse = object({
+          closingResponse = optional{object({
             messageGroups = object({
               message = object({
                 plainTextMessage = object({
@@ -211,6 +211,7 @@ variable "lex_v2_intents" {
             })
             allowInterrupt = bool
           })
+        }
           active = bool
           nextStep = optional(object({
             dialogAction = object({

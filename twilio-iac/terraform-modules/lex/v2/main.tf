@@ -124,15 +124,19 @@ resource "aws_lexv2models_intent" "this" {
 
   closing_setting {
     active = each.value.config.intentClosingSetting.active
-    closing_response {
-      allow_interrupt = each.value.config.intentClosingSetting.closingResponse.allowInterrupt
-      message_group {
+    dynamic "closing_response" {
+      for_each = can(each.value.config.intentClosingSetting.closingResponse) ? [each.value.config.intentClosingSetting.closingResponse] : []
+      content {
+        allow_interrupt = each.value.config.intentClosingSetting.closingResponse.allowInterrupt
+        message_group {
         message {
           plain_text_message {
             value = each.value.config.intentClosingSetting.closingResponse.messageGroups.message.plainTextMessage.value
           }
         } 
       }
+      }
+     
     }
     dynamic "next_step" {
         for_each = can(each.value.config.intentClosingSetting.nextStep) ? [each.value.config.intentClosingSetting.nextStep] : []
