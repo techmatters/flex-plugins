@@ -103,15 +103,11 @@ resource "aws_lexv2models_intent" "this" {
   name           = "${each.value.config.name}"
   locale_id      = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].locale_id
   
-  sample_utterance {
-        utterance = "test"
-      }
-  dynamic "sample_utterances" {
+  dynamic "sample_utterance" {
   for_each = each.value.config.sampleUtterances
   content {
-    sample_utterance {
-      utterance = sample_utterances.value
-    }
+      utterance = sample_utterance.value
+
   }
 }
   
