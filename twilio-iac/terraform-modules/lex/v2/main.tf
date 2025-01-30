@@ -134,10 +134,13 @@ resource "aws_lexv2models_intent" "this" {
         } 
       }
     }
-    next_step {
-      dialog_action {
-        type = each.value.config.intentClosingSetting.nextStep.dialogAction.type
-      }
+    dynamic "next_step" {
+        for_each = can(each.value.config.intentClosingSetting.nextStep) ? [each.value.config.intentClosingSetting.nextStep] : []
+        content{
+            dialog_action {
+                type = each.value.config.intentClosingSetting.nextStep.dialogAction.type
+            }
+        }
     }
   }
     dynamic "initial_response_setting" {

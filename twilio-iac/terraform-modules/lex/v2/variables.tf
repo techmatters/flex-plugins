@@ -80,12 +80,12 @@ variable "lex_v2_intents" {
             allowInterrupt = bool
           })
           active = bool
-          nextStep = object({
+          nextStep = optional(object({
             dialogAction = object({
               type = string
             })
           
-          })
+          }))
         })
         initialResponseSetting =optional(object({
           initialResponse = object({
