@@ -31,7 +31,6 @@ import {
 } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import { standaloneTaskSid } from '../../types/types';
-import { getOfflineContactTaskSid } from '../contacts/offlineContactTask';
 import {
   ContactUpdatingAction,
   CREATE_CONTACT_ACTION_FULFILLED,
@@ -52,7 +51,6 @@ export const initialState: RoutingState = {
   tasks: {
     [standaloneTaskSid]: [{ route: getPathFromUrl(window.location), subroute: getPathFromUrl(window.location) }],
   },
-  isAddingOfflineContact: false,
 };
 
 const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingAction): RoutingState => {
@@ -68,8 +66,6 @@ const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingActi
     stateWithoutPreviousContact = {
       ...state,
       tasks: omit(state.tasks, previousContact.taskId),
-      isAddingOfflineContact:
-        previousContact.taskId === getOfflineContactTaskSid() ? false : state.isAddingOfflineContact,
     };
   }
   const { taskId, rawJson } = contact;
@@ -95,10 +91,6 @@ const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingActi
           ? stateWithoutPreviousContact.tasks[taskId]
           : [initialEntry],
     },
-    isAddingOfflineContact:
-      taskId === getOfflineContactTaskSid() && contact?.rawJson?.contactlessTask?.createdOnBehalfOf
-        ? true
-        : stateWithoutPreviousContact.isAddingOfflineContact,
   };
 };
 
@@ -230,7 +222,6 @@ export function reduce(
       return {
         ...state,
         tasks: omit(state.tasks, action.taskId),
-        isAddingOfflineContact: action.taskId === getOfflineContactTaskSid() ? false : state.isAddingOfflineContact,
       };
     case CHANGE_ROUTE: {
       const { routing, mode, taskId } = action;

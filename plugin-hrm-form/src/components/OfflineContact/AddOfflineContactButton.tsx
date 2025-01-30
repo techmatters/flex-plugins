@@ -60,7 +60,9 @@ const AddOfflineContactButton: React.FC<Props> = ({
 
   const onClick = async () => {
     console.log('Onclick - creating contact');
-    await createContactState(newContact(currentDefinitionVersion));
+    const contactToCreate = newContact(currentDefinitionVersion);
+    contactToCreate.rawJson.contactlessTask.createdOnBehalfOf = getHrmConfig().workerSid;
+    await createContactState(contactToCreate);
     await Actions.invokeAction('SelectTask', { task: undefined });
     // This is a temporary hack to show an error if it hasn't opened an offline contact to edit in 5 seconds
     // When we add proper loading / error state to our redux contacts we can replace this

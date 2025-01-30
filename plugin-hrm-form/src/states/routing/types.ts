@@ -292,5 +292,4 @@ export type RoutingState = {
   tasks: {
     [taskId in TaskSID]?: AppRoutes[];
   };
-  isAddingOfflineContact: boolean;
 };

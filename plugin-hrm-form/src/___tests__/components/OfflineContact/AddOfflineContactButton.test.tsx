@@ -43,6 +43,7 @@ jest.mock('../../../rerenderView', () => ({
 }));
 jest.mock('../../../services/ContactService', () => ({
   createContact: jest.fn(),
+  updateContactInHrm: jest.fn(),
 }));
 jest.mock('@twilio/flex-ui', () => ({
   ...jest.requireActual('@twilio/flex-ui'),
@@ -61,24 +62,21 @@ beforeAll(async () => {
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-  mockPartialConfiguration({ workerSid: 'mock-worker' });
+  mockPartialConfiguration({ workerSid: 'WK123' });
   baseState = {
     flex: {
-      view: { selectedTaskSid: '123' },
+      view: { selectedTaskSid: 'WT123' },
     },
     [namespace]: {
       configuration: {
         currentDefinitionVersion: mockV1,
-      },
-      routing: {
-        isAddingOfflineContact: false,
       },
       activeContacts: {
         existingContacts: {
           contact1: {
             savedContact: {
               id: 'contact1',
-              taskId: '123',
+              taskId: 'WT123',
             },
           },
         },
@@ -117,7 +115,7 @@ test('click on button', async () => {
   screen.getByText('OfflineContactButtonText').click();
   await waitFor(
     () => {
-      expect(mockCreateContact).toHaveBeenCalledWith(expect.anything(), 'mock-worker', getOfflineContactTask());
+      expect(mockCreateContact).toHaveBeenCalledWith(expect.anything(), 'WK123', getOfflineContactTask());
       expect(Actions.invokeAction).toHaveBeenCalledTimes(1);
     },
     { timeout: 1000 },
@@ -138,9 +136,6 @@ test('button should be disabled (default task exists)', () => {
     },
     [namespace]: {
       ...baseState[namespace],
-      routing: {
-        isAddingOfflineContact: true,
-      },
     },
   };
 
@@ -169,7 +164,7 @@ test('a11y', async () => {
   const state: RecursivePartial<RootState> = {
     ...baseState,
     flex: {
-      view: { selectedTaskSid: '123', activeView: 'some-view' },
+      view: { selectedTaskSid: 'WT123', activeView: 'some-view' },
       ...baseState.flex,
     },
   };
