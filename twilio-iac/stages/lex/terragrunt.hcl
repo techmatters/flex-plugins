@@ -167,7 +167,6 @@ locals {
 
   }) : {}
 
-  print5 = run_cmd("/bin/sh", "-c", "echo -e 'lex_v2_slot_types is: \n\n${jsonencode(local.lex_v2_slot_types)}'")
   print6 = run_cmd("echo", jsonencode(local.lex_v2_slot_types))
 
   
@@ -205,7 +204,7 @@ locals {
 
 
   }) : {}
-  print7 = run_cmd("/bin/sh", "-c", "echo -e 'lex_v2_intents is: \n\n${jsonencode(local.lex_v2_intents)}'")
+
   print8 = run_cmd("echo", jsonencode(local.lex_v2_intents))
 
   local_config = {
