@@ -64,10 +64,10 @@ variable "lex_v2_intents" {
         name             = string
         description       = string
         sampleUtterances = list(string)
-        slotPriorities = list(object({
+        /*slotPriorities = list(object({
           priority  = number
           slotName = string
-        }))
+        }))*/
         intentClosingSetting = object({
           closingResponse = object({
             messageGroups = object({
