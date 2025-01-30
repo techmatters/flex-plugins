@@ -16,7 +16,7 @@
 
 import { capitalize } from 'lodash';
 import { startOfDay, format } from 'date-fns';
-import {TaskSID} from "../twilioTypes";
+import { TaskSID } from '../twilioTypes';
 
 type MapperFunction = (options: string[]) => (value: string) => string;
 
@@ -96,8 +96,6 @@ type HrmContactRawJson = {
   categories: Record<string, string[]>;
   contactlessTask: {
     channel: ChannelTypes;
-    date: string;
-    time: string;
     createdOnBehalfOf: `WK${string}` | '';
     [key: string]: string | boolean;
   };
@@ -389,16 +387,6 @@ const populateInitialValues = async (contact: HrmContact, formDefinitionRootUrl:
     helplineInformation.helplines[0]
   ).value;
   Object.assign(contact.rawJson.contactlessTask, {
-    date: getInitialValue({
-      type: FormInputType.DateInput,
-      initializeWithCurrent: true,
-      name: 'date',
-    }),
-    time: getInitialValue({
-      type: FormInputType.TimeInput,
-      initializeWithCurrent: true,
-      name: 'time',
-    }),
     helpline: defaultHelplineOption,
   });
 };
