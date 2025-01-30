@@ -36,6 +36,7 @@ import { getAseloFeatureFlags } from '../../hrmConfig';
 import { RootState } from '../../states';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { checkTaskAssignment } from '../../services/twilioTaskService';
+import { getContactById } from '../../services/ContactService';
 
 type ContactBannersProps = {
   contactId: string;
@@ -57,6 +58,21 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
     workerRoles,
   ]);
 
+  const checkContactFinalization = async (contactId: string, retries = 3, delay = 1000) => {
+    try {
+      const contact = await getContactById(contactId);
+      if (contact?.finalizedAt !== null) {
+        setShowResolvedBanner(true);
+        return;
+      }
+      if (retries > 0) {
+        setTimeout(() => checkContactFinalization(contactId, retries - 1, delay), delay);
+      }
+    } catch (error) {
+      console.error('Failed to check contact finalization status:', error);
+    }
+  };
+
   const updateAndSaveContact = async () => {
     const updatedContact = {
       ...savedContact,
@@ -65,8 +81,12 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
         ...savedContact.rawJson,
       },
     };
-    dispatch(newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction(updatedContact));
-    setShowResolvedBanner(true);
+    try {
+      await dispatch(newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction(updatedContact)).payload;
+      checkContactFinalization(savedContact.id);
+    } catch (error) {
+      console.error('Failed to save and finalize contact:', error);
+    }
   };
 
   const handleSaveAndEnd = async () => {
