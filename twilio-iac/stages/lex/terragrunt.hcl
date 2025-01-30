@@ -167,7 +167,7 @@ locals {
 
   }) : {}
 
-  print5 = run_cmd("echo -e", "lex_v2_slot_types is: \n"+jsonencode(local.lex_v2_slot_types))
+  print5 = run_cmd("echo -e", "lex_v2_slot_types is: \n\n${jsonencode(local.lex_v2_slot_types)}")
   print6 = run_cmd("echo", jsonencode(local.lex_v2_slot_types))
 
   
@@ -206,7 +206,7 @@ locals {
 
   }) : {}
 
-  print7 = run_cmd("echo -e", "lex_v2_intents is: \n"+jsonencode(local.lex_v2_intents))
+  print7 = run_cmd("echo -e", "lex_v2_intents is: \n${jsonencode(local.lex_v2_intents)}")
   print8 = run_cmd("echo", jsonencode(local.lex_v2_intents))
 
   local_config = {
