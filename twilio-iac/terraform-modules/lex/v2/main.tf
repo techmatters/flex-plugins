@@ -91,7 +91,7 @@ output "slot_types" {
 }
 
 
-/*
+
 
 resource "aws_lexv2models_intent" "this" {
   for_each = {
@@ -111,12 +111,7 @@ resource "aws_lexv2models_intent" "this" {
   }
 }
   
-  /*dynamic "sample_utterances" {
-    for_each = each.value.config.sampleUtterances
-      sample_utterance {
-        utterance = utterances.value
-      }
-  }*/
+
   /*
   dynamic "slot_priorities" {
     for_each = each.value.config.slotPriorities
@@ -126,7 +121,7 @@ resource "aws_lexv2models_intent" "this" {
       }
   }
 */
-/*
+
   closing_setting {
     active = each.value.config.intentClosingSetting.active
     closing_response {
