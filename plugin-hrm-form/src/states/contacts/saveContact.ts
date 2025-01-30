@@ -16,6 +16,7 @@
 
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 import { format } from 'date-fns';
+import { TaskHelper } from '@twilio/flex-ui';
 
 import { submitContactForm } from '../../services/formSubmissionHelpers';
 import {
@@ -59,7 +60,7 @@ import * as TransferHelpers from '../../transfer/transferTaskState';
 import { TaskSID, WorkerSID } from '../../types/twilio';
 import { CaseStateEntry } from '../case/types';
 import { getOfflineContactTask } from './offlineContactTask';
-import { completeTaskAssignment, getTask } from '../../services/twilioTaskService';
+import { completeTaskAssignment, getTaskAndReservation } from '../../services/twilioTaskService';
 import { setConversationDurationFromMetadata } from '../../utils/conversationDuration';
 import { ProtectedApiError } from '../../services/fetchProtectedApi';
 
@@ -219,13 +220,20 @@ export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = crea
   SUBMIT_AND_FINALIZE_CONTACT_FROM_OUTSIDE_TASK_CONTEXT,
   async (contact: Contact) => {
     const { taskId: taskSid } = contact;
-    let task: CustomITask | undefined;
+    let task: CustomITask | ITask | undefined;
+    let reservationSid: string | undefined;
     let caseState: Pick<CaseStateEntry, 'sections' | 'connectedCase'> | undefined = undefined;
+
     if (isOfflineContact(contact)) {
       task = getOfflineContactTask();
     } else {
-      task = await getTask(taskSid);
+      const taskResponse = await getTaskAndReservation(taskSid);
+      if (isTwilioTask(taskResponse.task)) {
+        ({ task } = taskResponse);
+        reservationSid = taskResponse?.reservationSid;
+      }
     }
+
     if (contact.caseId) {
       const [connectedCase, timeline] = await Promise.all([
         getCase(contact.caseId),
@@ -253,10 +261,10 @@ export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = crea
         }
         throw error;
       }
-    } else if (task) {
-      await completeTaskAssignment(task.taskSid);
+    } else if (isTwilioTask(task)) {
+      await completeTaskAssignment(task.taskSid || task.sid);
       const updatedContact = await submitContactForm(task, contact, caseState);
-      return finalizeContact(task, updatedContact);
+      return finalizeContact(task, updatedContact, reservationSid);
     }
     return finalizeContact(task, contact);
   },
