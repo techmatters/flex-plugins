@@ -37,7 +37,7 @@ module "lex_v2" {
   language       = each.key
 
   lex_v2_bots = var.lex_v2_bots[each.key]
-  lex_v2_intents    = var.lex_intents[each.key]
+  lex_v2_intents    = var.lex_v2_intents[each.key]
   //lex_v2_slots = var.lex_slots[each.key]
   lex_v2_slot_types = var.lex_v2_slot_types[each.key]
 }
