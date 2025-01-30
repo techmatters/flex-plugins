@@ -106,6 +106,15 @@ resource "aws_lexv2models_intent" "this" {
   sample_utterance {
         utterance = "test"
       }
+  dynamic "sample_utterances" {
+  for_each = each.value.config.sampleUtterances
+  content {
+    sample_utterance {
+      utterance = sample_utterances.value
+    }
+  }
+}
+  
   /*dynamic "sample_utterances" {
     for_each = each.value.config.sampleUtterances
       sample_utterance {
