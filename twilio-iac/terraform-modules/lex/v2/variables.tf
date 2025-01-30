@@ -58,7 +58,8 @@ variable "lex_v2_slot_types" {
 variable "lex_v2_intents" {
   description = "The intents for the helpline."
   default = {}
-  type = map(object({
+  type = list(
+    object({
     name             = string
     description       = string
     sampleUtterances = list(string)
