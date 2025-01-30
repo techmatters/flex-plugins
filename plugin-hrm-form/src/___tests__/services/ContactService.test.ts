@@ -33,6 +33,7 @@ import { ContactState } from '../../states/contacts/existingContacts';
 
 const helpline = 'ChildLine';
 const mockGetHrmConfig = getHrmConfig as jest.Mock;
+
 // eslint-disable-next-line no-empty-function
 global.fetch = global.fetch ? global.fetch : () => Promise.resolve(<any>{ ok: true });
 
@@ -289,17 +290,26 @@ describe('finalizeContact() (externalRecording)', () => {
   let mockedFetch;
 
   beforeEach(() => {
-    mockGetHrmConfig.mockImplementation(() => ({
-      ...mockBaseConfig,
-      externalRecordingsEnabled: true,
-    }));
-    TaskHelper.isChatBasedTask = () => false;
-    TaskHelper.isCallTask = () => true;
     mockedFetch = jest.spyOn(global, 'fetch').mockImplementation(() => fetchSuccess);
   });
 
   afterEach(() => {
     mockedFetch.mockClear();
+  });
+
+  beforeAll(() => {
+    mockGetHrmConfig.mockReturnValue({
+      ...mockBaseConfig,
+      externalRecordingsEnabled: true,
+    });
+
+    TaskHelper.isChatBasedTask = () => false;
+    TaskHelper.isCallTask = () => true;
+  });
+
+  afterAll(() => {
+    jest.unmock('../../hrmConfig');
+    jest.unmock('@twilio/flex-ui');
   });
 
   test('should send conversatonMedia when external recording is enabled', async () => {
@@ -364,11 +374,12 @@ test('updateContactInHrm - calls a PATCH HRM endpoint using the supplied contact
 });
 
 describe('handleTwilioTask() (externalRecording)', () => {
-  beforeEach(() => {
-    mockGetHrmConfig.mockImplementation(() => ({
+  // eslint-disable-next-line sonarjs/no-identical-functions
+  beforeAll(() => {
+    mockGetHrmConfig.mockReturnValue({
       ...mockBaseConfig,
       externalRecordingsEnabled: true,
-    }));
+    });
 
     TaskHelper.isChatBasedTask = () => false;
     TaskHelper.isCallTask = () => true;
