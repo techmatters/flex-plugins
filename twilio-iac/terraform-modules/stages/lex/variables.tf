@@ -193,7 +193,7 @@ variable "lex_v2_intents" {
     object({
       bot_name = string
       config = object({
-        name             = string
+        intentName             = string
         description       = string
         sampleUtterances = list(string)
         /*slotPriorities = list(object({

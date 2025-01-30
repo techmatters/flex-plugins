@@ -140,45 +140,48 @@ resource "aws_lexv2models_intent" "this" {
       }
     }
   }
-  initial_response_setting {
-    initial_response {
-      allow_interrupt = each.value.config.initialResponseSetting.initialResponse.allowInterrupt
-      message_group {
-        message {
-          plain_text_message {
-            value = each.value.config.initialResponseSetting.initialResponse.messageGroups.message.plainTextMessage.value
-          }
+    dynamic "initial_response_setting" {
+        for_each = can(each.value.config.initialResponseSetting) ? [each.value.config.initialResponseSetting] : []
+        content {
+            initial_response {
+            allow_interrupt = each.value.config.initialResponseSetting.initialResponse.allowInterrupt
+            message_group {
+                message {
+                plain_text_message {
+                    value = each.value.config.initialResponseSetting.initialResponse.messageGroups.message.plainTextMessage.value
+                }
+                }
+            }
+            }
+            next_step {
+            dialog_action {
+                type = each.value.config.initialResponseSetting.nextStep.dialogAction.type
+            }
+            }
+            code_hook {
+                enable_code_hook_invocation = each.value.config.initialResponseSetting.codeHook.enableCodeHookInvocation
+                active = each.value.config.initialResponseSetting.codeHook.active
+                post_code_hook_specification {
+                    success_next_step {
+                        dialog_action {
+                            type = each.value.config.initialResponseSetting.codeHook.postCodeHookSpecification.successNextStep.dialogAction.type
+                        }
+                    }
+                    failure_next_step {
+                        dialog_action {
+                            type = each.value.config.initialResponseSetting.codeHook.postCodeHookSpecification.failureNextStep.dialogAction.type
+                        }
+                    }
+                    timeout_next_step {
+                        dialog_action {
+                            type = each.value.config.initialResponseSetting.codeHook.postCodeHookSpecification.timeoutNextStep.dialogAction.type
+                        }
+                    }
+                }
+            }
         }
-      }
+  
     }
-    next_step {
-      dialog_action {
-        type = each.value.config.initialResponseSetting.nextStep.dialogAction.type
-      }
-    }
-    code_hook {
-      enable_code_hook_invocation = each.value.config.initialResponseSetting.codeHook.enableCodeHookInvocation
-      active = each.value.config.initialResponseSetting.codeHook.active
-      post_code_hook_specification {
-        success_next_step {
-          dialog_action {
-            type = each.value.config.initialResponseSetting.codeHook.postCodeHookSpecification.successNextStep.dialogAction.type
-          }
-        }
-        failure_next_step {
-          dialog_action {
-            type = each.value.config.initialResponseSetting.codeHook.postCodeHookSpecification.failureNextStep.dialogAction.type
-          }
-        }
-        timeout_next_step {
-          dialog_action {
-            type = each.value.config.initialResponseSetting.codeHook.postCodeHookSpecification.timeoutNextStep.dialogAction.type
-          }
-        }
-      }
-    }
-
-  }
 
 
 
