@@ -86,6 +86,14 @@ jobs:
       working-directory: ./plugin-hrm-form
       env:
         CI: true
+
+    - name: Publish Test Reports
+      uses: dorny/test-reporter@v1
+      if: success() || failure() # always run even if the previous step fails
+      with:
+        name: Unit Tests Report
+        path: '!(node_modules)/**/junit.xml'
+        reporter: jest-junit
   ui-test:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -159,6 +167,14 @@ jobs:
         with:
           run-ui-tests: 'true'
 
+
+      - name: Publish Test Reports
+        uses: dorny/test-reporter@v1
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          name: UI Tests Report
+          path: '!(node_modules)/**/junit.xml'
+          reporter: jest-junit
 
   upload-plugin:
     runs-on: ubuntu-latest
