@@ -63,7 +63,7 @@ variable "lex_v2_intents" {
       config = object({
         intentName             = string
         description       = string
-        sampleUtterances = optional(list(string))
+        sampleUtterances = optional(list(object( {utterance = string})))
         /*slotPriorities = list(object({
           priority  = number
           slotName = string
