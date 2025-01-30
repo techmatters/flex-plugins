@@ -92,79 +92,83 @@ output "slot_types" {
 
 
 
-/*
+
 resource "aws_lexv2models_intent" "this" {
-  for_each    = var.lex_v2_bots
-  bot_id      = aws_lexv2models_bot.this["${each.key}"].id
-  bot_version = aws_lexv2models_bot_locale.this["${each.key}"].bot_version
-  name        = "${each.key}_intent"
-  locale_id   = aws_lexv2models_bot_locale.this["${each.key}"].locale_id
+  for_each = {
+    for idx, intent in var.lex_v2_intents :
+    "${intent.bot_name}_${intent.config.name}" => intent
+  }
+  bot_id         = aws_lexv2models_bot.this["${each.value.bot_name}"].id
+  bot_version    = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].bot_version
+  name           = "${each.value.config.name}"
+  locale_id      = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].locale_id
   
   dynamic "utterances" {
-    for_each = var.lex_v2_intents[each.key].sampleUtterances
+    for_each = each.value.config.sampleUtterances
       sample_utterances {
         utterance = utterances.value
       }
   }
+  /*
   dynamic "slot_priorities" {
-    for_each = var.lex_v2_intents[each.key].slotPriorities
+    for_each = each.value.config.slotPriorities
       slot_priority {
         priority = slot_priorities.value.priority
         slot_id = aws_lexv2models_slot.this["${slot_priorities.value.slot_name}"].id
       }
   }
-
+*/
   closing_setting {
-    active = var.lex_v2_intents[each.key].intentClosingSetting.active
+    active = each.value.config.intentClosingSetting.active
     closing_response {
-      allow_interrupt = var.lex_v2_intents[each.key].intentClosingSetting.closingResponse.allowInterrupt
+      allow_interrupt = each.value.config.intentClosingSetting.closingResponse.allowInterrupt
       message_group {
         message {
           plain_text_message {
-            value = var.lex_v2_intents[each.key].intentClosingSetting.closingResponse.messageGroups.message.plainTextMessage.value
+            value = each.value.config.intentClosingSetting.closingResponse.messageGroups.message.plainTextMessage.value
           }
         } 
       }
     }
     next_step {
       dialog_action {
-        type = var.lex_v2_intents[each.key].intentClosingSetting.nextStep.dialogAction.type
+        type = each.value.config.intentClosingSetting.nextStep.dialogAction.type
       }
     }
   }
   initial_response_setting {
     initial_response {
-      allow_interrupt = var.lex_v2_intents[each.key].initialResponseSetting.initialResponse.allowInterrupt
+      allow_interrupt = each.value.config.initialResponseSetting.initialResponse.allowInterrupt
       message_group {
         message {
           plain_text_message {
-            value = var.lex_v2_intents[each.key].initialResponseSetting.initialResponse.messageGroups.message.plainTextMessage.value
+            value = each.value.config.initialResponseSetting.initialResponse.messageGroups.message.plainTextMessage.value
           }
         }
       }
     }
     next_step {
       dialog_action {
-        type = var.lex_v2_intents[each.key].initialResponseSetting.nextStep.dialogAction.type
+        type = each.value.config.initialResponseSetting.nextStep.dialogAction.type
       }
     }
     code_hook {
-      enable_code_hook_invocation = var.lex_v2_intents[each.key].initialResponseSetting.codeHook.enableCodeHookInvocation
-      active = var.lex_v2_intents[each.key].initialResponseSetting.codeHook.active
+      enable_code_hook_invocation = each.value.config.initialResponseSetting.codeHook.enableCodeHookInvocation
+      active = each.value.config.initialResponseSetting.codeHook.active
       post_code_hook_specification {
         success_next_step {
           dialog_action {
-            type = var.lex_v2_intents[each.key].initialResponseSetting.codeHook.postCodeHookSpecification.successNextStep.dialogAction.type
+            type = each.value.config.initialResponseSetting.codeHook.postCodeHookSpecification.successNextStep.dialogAction.type
           }
         }
         failure_next_step {
           dialog_action {
-            type = var.lex_v2_intents[each.key].initialResponseSetting.codeHook.postCodeHookSpecification.failureNextStep.dialogAction.type
+            type = each.value.config.initialResponseSetting.codeHook.postCodeHookSpecification.failureNextStep.dialogAction.type
           }
         }
         timeout_next_step {
           dialog_action {
-            type = var.lex_v2_intents[each.key].initialResponseSetting.codeHook.postCodeHookSpecification.timeoutNextStep.dialogAction.type
+            type = each.value.config.initialResponseSetting.codeHook.postCodeHookSpecification.timeoutNextStep.dialogAction.type
           }
         }
       }
@@ -176,7 +180,7 @@ resource "aws_lexv2models_intent" "this" {
 
 
 }
-
+/*
 resource "aws_lexv2models_slot" "this" {
   for_each                         = var.lex_v2_bots
   bot_id      = aws_lexv2models_bot.this["${each.key}"].id

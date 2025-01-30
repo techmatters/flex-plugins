@@ -167,27 +167,48 @@ locals {
 
   }) : {}
 
-  print5 = run_cmd("echo", "lex_v2_slot_types is:")
+  print5 = run_cmd("echo -e", "lex_v2_slot_types is: \n"+jsonencode(local.lex_v2_slot_types))
   print6 = run_cmd("echo", jsonencode(local.lex_v2_slot_types))
 
-  lex_v2_intents = {}
-  /*
-  lex_v2_intents = local.enable_lex_v2 ? tomap({
+  
+  lex_v2_intent_names = local.enable_lex_v2 ? tomap({
     for language, bots in local.lex_bot_languages :
-      language => merge(
-        [
-          for bot in bots :
-            fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/intents/${bot}.json") ?
-            jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/${language}/intents/${bot}.json")) :
-            fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/intents/${bot}.json") ?
-            jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex/common/intents/${bot}.json")) :
-            fileexists("/app/twilio-iac/helplines/configs/lex/${language}/intents/${bot}.json") ?
-            jsondecode(file("/app/twilio-iac/helplines/configs/lex/${language}/intents/${bot}.json")) :
-            jsondecode(file("/app/twilio-iac/helplines/configs/lex/${substr(language, 0, 2)}/intents/${bot}.json"))
-        ]...
-      )
+    language => distinct(
+      flatten([
+        for bot_name, bot_config in local.lex_v2_bots[language] : [
+          for intent in bot_config.intents :
+          {
+            bot_name = bot_name,
+            name     = intent
+          }
+        ]
+      ])
+    )
   }) : {}
-*/
+
+
+ lex_v2_intents = local.enable_lex_v2 ? tomap({
+    for language, bots in local.lex_bot_languages :
+    language =>
+    [
+      for intent in local.lex_v2_intent_names[language] : {
+        bot_name = intent.bot_name,
+        config = (fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/intents/${intent.name}.json") ?
+          jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/intents/${intent.name}.json")) :
+          fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/intents/${intent.name}.json") ?
+          jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/intents/${intent.name}.json")) :
+          fileexists("/app/twilio-iac/helplines/configs/lex_v2/${language}/intents/${intent.name}.json") ?
+          jsondecode(file("/app/twilio-iac/helplines/configs/lex_v2/${language}/intents/${intent.name}.json")) :
+        jsondecode(file("/app/twilio-iac/helplines/configs/lex_v2/${substr(language, 0, 2)}/intents/${intent.name}.json")))
+      }
+    ]
+
+
+  }) : {}
+
+  print7 = run_cmd("echo -e", "lex_v2_intents is: \n"+jsonencode(local.lex_v2_intents))
+  print8 = run_cmd("echo", jsonencode(local.lex_v2_intents))
+
   local_config = {
     lex_bots          = local.lex_bots
     lex_intents       = local.lex_intents

@@ -1,4 +1,6 @@
 {
+  "intentName": "pre_survey",
+  "description": "Pre Survey Intent",
   "pre_survey": {
     "sampleUtterances": [
       {
