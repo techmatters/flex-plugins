@@ -142,8 +142,6 @@ const BLANK_CONTACT_CHANGES: ContactDraftChanges = {
     contactlessTask: {
       channel: null,
       createdOnBehalfOf: null,
-      date: null,
-      time: null,
     },
   },
 };

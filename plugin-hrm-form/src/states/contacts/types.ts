@@ -23,15 +23,7 @@ import { ContactDetailsState } from './contactDetails';
 
 // Action types
 export const SAVE_END_MILLIS = 'SAVE_END_MILLIS';
-export const SET_CATEGORIES_GRID_VIEW = 'SET_CATEGORIES_GRID_VIEW';
-export const HANDLE_EXPAND_CATEGORY = 'HANDLE_EXPAND_CATEGORY';
-export const HANDLE_SELECT_SEARCH_RESULT = 'HANDLE_SELECT_SEARCH_RESULT';
 export const PREPOPULATE_FORM = 'PREPOPULATE_FORM';
-export const RESTORE_ENTIRE_FORM = 'RESTORE_ENTIRE_FORM';
-export const UPDATE_HELPLINE = 'UPDATE_HELPLINE';
-export const ADD_CSAM_REPORT_ENTRY = 'contacts/ADD_CSAM_REPORT_ENTRY';
-export const SET_EDITING_CONTACT = 'SET_EDITING_CONTACT';
-export const SET_CALL_TYPE = 'SET_CALL_TYPE';
 export const CREATE_CONTACT_ACTION = 'contact-action/create-contact' as const;
 export const CREATE_CONTACT_ACTION_FULFILLED = `${CREATE_CONTACT_ACTION}_FULFILLED` as const;
 export const UPDATE_CONTACT_ACTION = 'contact-action/update-contact' as const;
@@ -110,14 +102,6 @@ export type ContactUpdatingAction = {
     | typeof UPDATE_CONTACT_ACTION_FULFILLED
     | typeof CONNECT_TO_CASE_ACTION_FULFILLED
     | typeof REMOVE_FROM_CASE_ACTION_FULFILLED
-    | typeof LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED;
-  payload: { contact: Contact; contactCase?: Case; previousContact?: Contact };
-};
-
-export type ContactCreatingAction = {
-  type:
-    | typeof CREATE_CONTACT_ACTION_FULFILLED
-    | typeof UPDATE_CONTACT_ACTION_FULFILLED
     | typeof LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED;
   payload: { contact: Contact; contactCase?: Case; previousContact?: Contact };
 };

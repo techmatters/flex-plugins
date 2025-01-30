@@ -42,8 +42,6 @@ export const VALID_EMPTY_CONTACT: Contact = {
     contactlessTask: {
       channel: 'voice',
       createdOnBehalfOf: undefined,
-      date: '',
-      time: '',
     },
     childInformation: {},
     callerInformation: {},
