@@ -26,13 +26,10 @@ import { getOfflineContactTask, getOfflineContactTaskSid } from '../../states/co
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import { newContact } from '../../states/contacts/contactState';
 import asyncDispatch from '../../states/asyncDispatch';
-import {
-  createContactAsyncAction,
-  newRestartOfflineContactAsyncAction,
-  removeFromCaseAsyncAction,
-} from '../../states/contacts/saveContact';
+import { createContactAsyncAction } from '../../states/contacts/saveContact';
 import { namespace } from '../../states/storeNamespaces';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
+import selectCurrentOfflineContact from '../../states/contacts/selectCurrentOfflineContact';
 
 type OwnProps = {};
 
@@ -43,8 +40,6 @@ const AddOfflineContactButton: React.FC<Props> = ({
   isAddingOfflineContact,
   currentDefinitionVersion,
   createContactState,
-  restartContact,
-  draftOfflineContact,
 }) => {
   const [errorTimer, setErrorTimer] = React.useState<any>(null);
 
@@ -65,11 +60,7 @@ const AddOfflineContactButton: React.FC<Props> = ({
 
   const onClick = async () => {
     console.log('Onclick - creating contact');
-    if (draftOfflineContact) {
-      await restartContact(draftOfflineContact);
-    } else {
-      await createContactState(newContact(currentDefinitionVersion));
-    }
+    await createContactState(newContact(currentDefinitionVersion));
     await Actions.invokeAction('SelectTask', { task: undefined });
     // This is a temporary hack to show an error if it hasn't opened an offline contact to edit in 5 seconds
     // When we add proper loading / error state to our redux contacts we can replace this
@@ -96,7 +87,7 @@ AddOfflineContactButton.displayName = 'AddOfflineContactButton';
 const mapStateToProps = (state: RootState) => {
   const draftOfflineContact = selectContactByTaskSid(state, getOfflineContactTaskSid())?.savedContact;
   const { currentDefinitionVersion } = state[namespace].configuration;
-  const { isAddingOfflineContact } = state[namespace].routing;
+  const isAddingOfflineContact = Boolean(selectCurrentOfflineContact(state));
 
   return {
     isAddingOfflineContact,
@@ -110,12 +101,6 @@ const mapDispatchToProps = dispatch => {
   return {
     createContactState: (contact: Contact) =>
       asyncDispatcher(createContactAsyncAction(contact, getHrmConfig().workerSid, getOfflineContactTask())),
-    restartContact: async (contact: Contact) => {
-      if (contact.caseId) {
-        await asyncDispatcher(removeFromCaseAsyncAction(contact.id));
-      }
-      await asyncDispatcher(newRestartOfflineContactAsyncAction(contact, getHrmConfig().workerSid));
-    },
   };
 };
 
