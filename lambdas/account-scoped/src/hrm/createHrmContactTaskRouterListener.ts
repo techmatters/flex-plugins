@@ -26,7 +26,7 @@ import type { EventFields } from '../taskrouter';
 import twilio from 'twilio';
 import { AccountSID } from '../twilioTypes';
 import { getSsmParameter } from '../ssmCache';
-import {getWorkspaceSid} from "../configuration/twilioConfiguration";
+import { getWorkspaceSid } from '../configuration/twilioConfiguration';
 
 export const eventTypes: EventType[] = [RESERVATION_ACCEPTED];
 
@@ -34,6 +34,7 @@ export const eventTypes: EventType[] = [RESERVATION_ACCEPTED];
 
 const BLANK_CONTACT: HrmContact = {
   id: '',
+  definitionVersion: '',
   timeOfContact: new Date().toISOString(),
   taskId: null,
   helpline: '',
@@ -129,6 +130,7 @@ export const handleEvent = async (
 
   const newContact: HrmContact = {
     ...BLANK_CONTACT,
+    definitionVersion,
     channel: (customChannelType || channelType) as HrmContact['channel'],
     rawJson: {
       definitionVersion,
