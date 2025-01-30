@@ -122,7 +122,7 @@ export const handleTwilioTask = async (
   const finalReservationSid = reservationSid ? reservationSid : task.sid;
 
   try {
-    if (TaskHelper.isChatBasedTask(task) || isChatChannel(contact.channel)) {
+    if (TaskHelper.isChatBasedTask(task) || (contact && isChatChannel(contact.channel))) {
       // Store a pending transcript
       returnData.conversationMedia.push({
         storeType: 'S3',
@@ -136,8 +136,7 @@ export const handleTwilioTask = async (
     if (
       TaskHelper.isChatBasedTask(task) ||
       TaskHelper.isCallTask(task) ||
-      isChatChannel(contact.channel) ||
-      isVoiceChannel(contact.channel)
+      (contact && (isChatChannel(contact.channel) || isVoiceChannel(contact.channel)))
     ) {
       // Store reservation sid to use Twilio insights overlay (recordings/transcript)
       returnData.conversationMedia.push({
@@ -164,8 +163,8 @@ export const handleTwilioTask = async (
         taskSid: task.taskSid,
         reservationSid: finalReservationSid,
         recordingError: externalRecordingInfo.error,
-        isCallTask: TaskHelper.isCallTask(task) || isVoiceChannel(contact.channel),
-        isChatBasedTask: TaskHelper.isChatBasedTask(task) || isChatChannel(contact.channel),
+        isCallTask: TaskHelper.isCallTask(task) || (contact && isVoiceChannel(contact.channel)),
+        isChatBasedTask: TaskHelper.isChatBasedTask(task) || (contact && isChatChannel(contact.channel)),
         attributes: JSON.stringify(task.attributes),
       });
       return returnData;
