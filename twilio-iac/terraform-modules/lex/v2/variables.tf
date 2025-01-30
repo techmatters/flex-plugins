@@ -57,7 +57,6 @@ variable "lex_v2_slot_types" {
 
 variable "lex_v2_intents" {
   description = "The intents for the helpline."
-  default = {}
   type = list(
     object({
     name             = string
