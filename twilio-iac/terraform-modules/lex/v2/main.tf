@@ -105,7 +105,7 @@ resource "aws_lexv2models_intent" "this" {
   
   dynamic "utterances" {
     for_each = each.value.config.sampleUtterances
-      sample_utterances {
+      sample_utterance {
         utterance = utterances.value
       }
   }
