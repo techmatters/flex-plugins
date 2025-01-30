@@ -119,11 +119,13 @@ export const handleTwilioTask = async (
     return returnData;
   }
 
-  const finalReservationSid = reservationSid ? reservationSid : task.sid;
+  const finalReservationSid = reservationSid ?? task.sid;
+  const isChatTask = TaskHelper.isChatBasedTask(task) || (contact && isChatChannel(contact.channel));
+  const isCallOrChatTask = isChatTask || TaskHelper.isCallTask(task) || (contact && isVoiceChannel(contact.channel));
+  const isVoiceTask = TaskHelper.isCallTask(task) || (contact && isVoiceChannel(contact.channel));
 
   try {
-    if (TaskHelper.isChatBasedTask(task) || (contact && isChatChannel(contact.channel))) {
-      // Store a pending transcript
+    if (isChatTask) {
       returnData.conversationMedia.push({
         storeType: 'S3',
         storeTypeSpecificData: {
@@ -133,12 +135,7 @@ export const handleTwilioTask = async (
       });
     }
 
-    if (
-      TaskHelper.isChatBasedTask(task) ||
-      TaskHelper.isCallTask(task) ||
-      (contact && (isChatChannel(contact.channel) || isVoiceChannel(contact.channel)))
-    ) {
-      // Store reservation sid to use Twilio insights overlay (recordings/transcript)
+    if (isCallOrChatTask) {
       returnData.conversationMedia.push({
         storeType: 'twilio',
         storeTypeSpecificData: {
@@ -147,54 +144,38 @@ export const handleTwilioTask = async (
       });
     }
 
-    if (!shouldGetExternalRecordingInfo(task)) return returnData;
+    if (!shouldGetExternalRecordingInfo(task)) {
+      return returnData;
+    }
 
-    const externalRecordingInfo = await getExternalRecordingInfo(task);
-    if (isFailureExternalRecordingInfo(externalRecordingInfo)) {
-      console.error(
-        'Failed to get external recording info',
-        externalRecordingInfo.error,
-        'Task:',
-        task,
-        'Return data captured so far:',
-        returnData,
-      );
+    const recordingInfo = await getExternalRecordingInfo(task);
+    if (isFailureExternalRecordingInfo(recordingInfo)) {
+      const error = `Failed to get external recording info: ${recordingInfo.error}`;
+      console.error(error, 'Task:', task);
       recordEvent('Backend Error: Get External Recording Info', {
         taskSid: task.taskSid,
         reservationSid: finalReservationSid,
-        recordingError: externalRecordingInfo.error,
-        isCallTask: TaskHelper.isCallTask(task) || (contact && isVoiceChannel(contact.channel)),
-        isChatBasedTask: TaskHelper.isChatBasedTask(task) || (contact && isChatChannel(contact.channel)),
+        recordingError: recordingInfo.error,
+        isCallTask: isVoiceTask,
+        isChatBasedTask: isChatTask,
         attributes: JSON.stringify(task.attributes),
       });
       return returnData;
     }
 
-    returnData.externalRecordingInfo = externalRecordingInfo;
-    const { bucket, key } = externalRecordingInfo;
+    returnData.externalRecordingInfo = recordingInfo;
+    const { bucket, key } = recordingInfo;
     returnData.conversationMedia.push({
       storeType: 'S3',
       storeTypeSpecificData: {
         type: 'recording',
-        location: {
-          bucket,
-          key,
-        },
+        location: { bucket, key },
       },
     });
-    console.log('>>> Added external recording info to returnData:', returnData);
   } catch (err) {
-    console.error(
-      'Error processing contact media during finalization:',
-      err,
-      'Task:',
-      task,
-      'Return data captured so far:',
-      returnData,
-    );
+    console.error('Error processing contact media during finalization:', err, 'Task:', task);
   }
 
-  console.log('>>> Final returnData:', returnData);
   return returnData;
 };
 
