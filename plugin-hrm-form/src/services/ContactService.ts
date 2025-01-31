@@ -121,8 +121,8 @@ export const handleTwilioTask = async (
 
   const finalReservationSid = reservationSid ?? task.sid;
   const isChatTask = TaskHelper.isChatBasedTask(task) || (contact && isChatChannel(contact.channel));
-  const isCallOrChatTask = isChatTask || TaskHelper.isCallTask(task) || (contact && isVoiceChannel(contact.channel));
   const isVoiceTask = TaskHelper.isCallTask(task) || (contact && isVoiceChannel(contact.channel));
+  const isCallOrChatTask = isChatTask || isVoiceTask;
 
   try {
     if (isChatTask) {
