@@ -134,3 +134,81 @@ variable "lex_v2_intents" {
 
   }))
 }
+
+
+variable "lex_v2_slots" {
+  description = "List of Lex V2 slots"
+  type = list(
+    object({
+      slotName     = string
+      slotTypeName = string
+      description  = string
+      valueElicitationSetting = object({
+        slotConstraint = string
+        promptSpecification = optional(object({
+          messageGroups = list(object({
+            message = object({
+              plainTextMessage = object({
+                value = string
+              })
+            })
+          }))
+          maxRetries                 = number
+          allowInterrupt             = bool
+          messageSelectionStrategy   = string
+          promptAttemptsSpecification = optional(map(object({
+            allowInterrupt = bool
+            allowedInputTypes = object({
+              allowAudioInput = bool
+              allowDTMFInput  = bool
+            })
+            audioAndDTMFInputSpecification = optional(object({
+              startTimeoutMs = number
+              audioSpecification = optional(object({
+                maxLengthMs = number
+                endTimeoutMs = number
+              }))
+              dtmfSpecification = optional(object({
+                maxLength          = number
+                endTimeoutMs       = number
+                deletionCharacter  = string
+                endCharacter       = string
+              }))
+            }))
+            textInputSpecification = optional(object({
+              startTimeoutMs = number
+            }))
+          })))
+        }))
+        slotCaptureSetting = optional(object({
+          captureNextStep = object({
+            dialogAction = object({
+              type = string
+            })
+            intent = optional(map(string)) # Placeholder for intent object
+          })
+          failureResponse = object({
+            messageGroups = list(object({
+              message = object({
+                plainTextMessage = object({
+                  value = string
+                })
+              })
+            }))
+            allowInterrupt = bool
+          })
+          failureNextStep = object({
+            dialogAction = object({
+              type         = string
+              slotToElicit = optional(string)
+            })
+            intent = optional(map(string)) # Placeholder for intent object
+          })
+          elicitationCodeHook = optional(object({
+            enableCodeHookInvocation = bool
+          }))
+        }))
+      })
+    })
+  )
+}

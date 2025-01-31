@@ -98,29 +98,19 @@ resource "aws_lexv2models_intent" "this" {
     for idx, intent in var.lex_v2_intents :
     "${intent.bot_name}_${intent.config.intentName}" => intent
   }
-  bot_id         = aws_lexv2models_bot.this["${each.value.bot_name}"].id
-  bot_version    = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].bot_version
-  name           = "${each.value.config.intentName}"
-  locale_id      = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].locale_id
-  
-  dynamic "sample_utterance" {
-  for_each =  each.value.config.sampleUtterances != null ? each.value.config.sampleUtterances : []
-  content {
-      utterance = sample_utterance.value.utterance
+    bot_id         = aws_lexv2models_bot.this["${each.value.bot_name}"].id
+    bot_version    = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].bot_version
+    name           = "${each.value.config.intentName}"
+    locale_id      = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].locale_id
+    
+    dynamic "sample_utterance" {
+        for_each =  each.value.config.sampleUtterances != null ? each.value.config.sampleUtterances : []
+        content {
+            utterance = sample_utterance.value.utterance
 
-  }
-}
+        }
+    }
   
-
-  /*
-  dynamic "slot_priorities" {
-    for_each = each.value.config.slotPriorities
-      slot_priority {
-        priority = slot_priorities.value.priority
-        slot_id = aws_lexv2models_slot.this["${slot_priorities.value.slot_name}"].id
-      }
-  }
-*/
 
     closing_setting {
         active = each.value.config.intentClosingSetting.active
@@ -196,11 +186,131 @@ resource "aws_lexv2models_intent" "this" {
         }
   
     }
-
-
-
-
 }
+
+resource "aws_lexv2models_slot" "this" {
+  for_each = {
+    for idx, slot in var.lex_v2_slots :
+    "${slot.intentName}_${slot.slotName}" => slot
+  }
+
+  bot_id      = aws_lexv2models_bot.this["${each.value.bot_name}"].id
+  bot_version = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].bot_version
+  intent_id   = aws_lexv2models_intent.this["${each.value.intentName}"].id
+  locale_id   = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].locale_id
+  name        = each.value.slotName
+  slot_type_id = aws_lexv2models_slot_type.this["${each.value.slotTypeName}"].id
+  description  = each.value.description
+
+  value_elicitation_setting {
+    slot_constraint = each.value.valueElicitationSetting.slotConstraint
+
+    dynamic "prompt_specification" {
+      for_each = each.value.valueElicitationSetting.promptSpecification != null ? [each.value.valueElicitationSetting.promptSpecification] : []
+      content {
+        allow_interrupt           = prompt_specification.value.allowInterrupt
+        max_retries               = prompt_specification.value.maxRetries
+        message_selection_strategy = prompt_specification.value.messageSelectionStrategy
+
+        dynamic "message_groups" {
+          for_each = prompt_specification.value.messageGroups
+          content {
+            message {
+              plain_text_message {
+                value = message_groups.value.message.plainTextMessage.value
+              }
+            }
+          }
+        }
+
+        dynamic "prompt_attempts_specification" {
+          for_each = prompt_specification.value.promptAttemptsSpecification
+          content {
+            map_block_key = prompt_attempts_specification.key
+            allow_interrupt = prompt_attempts_specification.value.allowInterrupt
+
+            allowed_input_types {
+              allow_audio_input = prompt_attempts_specification.value.allowedInputTypes.allowAudioInput
+              allow_dtmf_input  = prompt_attempts_specification.value.allowedInputTypes.allowDTMFInput
+            }
+
+            dynamic "audio_and_dtmf_input_specification" {
+              for_each = prompt_attempts_specification.value.audioAndDTMFInputSpecification != null ? [prompt_attempts_specification.value.audioAndDTMFInputSpecification] : []
+              content {
+                start_timeout_ms = audio_and_dtmf_input_specification.value.startTimeoutMs
+
+                dynamic "audio_specification" {
+                  for_each = audio_and_dtmf_input_specification.value.audioSpecification != null ? [audio_and_dtmf_input_specification.value.audioSpecification] : []
+                  content {
+                    max_length_ms = audio_specification.value.maxLengthMs
+                    end_timeout_ms = audio_specification.value.endTimeoutMs
+                  }
+                }
+
+                dynamic "dtmf_specification" {
+                  for_each = audio_and_dtmf_input_specification.value.dtmfSpecification != null ? [audio_and_dtmf_input_specification.value.dtmfSpecification] : []
+                  content {
+                    max_length         = dtmf_specification.value.maxLength
+                    end_timeout_ms     = dtmf_specification.value.endTimeoutMs
+                    deletion_character = dtmf_specification.value.deletionCharacter
+                    end_character      = dtmf_specification.value.endCharacter
+                  }
+                }
+              }
+            }
+
+            dynamic "text_input_specification" {
+              for_each = prompt_attempts_specification.value.textInputSpecification != null ? [prompt_attempts_specification.value.textInputSpecification] : []
+              content {
+                start_timeout_ms = text_input_specification.value.startTimeoutMs
+              }
+            }
+          }
+        }
+      }
+    }
+
+    dynamic "slot_capture_setting" {
+      for_each = each.value.valueElicitationSetting.slotCaptureSetting != null ? [each.value.valueElicitationSetting.slotCaptureSetting] : []
+      content {
+        capture_next_step {
+          dialog_action {
+            type = slot_capture_setting.value.captureNextStep.dialogAction.type
+          }
+        }
+
+        failure_response {
+          allow_interrupt = slot_capture_setting.value.failureResponse.allowInterrupt
+
+          dynamic "message_groups" {
+            for_each = slot_capture_setting.value.failureResponse.messageGroups
+            content {
+              message {
+                plain_text_message {
+                  value = message_groups.value.message.plainTextMessage.value
+                }
+              }
+            }
+          }
+        }
+
+        failure_next_step {
+          dialog_action {
+            type         = slot_capture_setting.value.failureNextStep.dialogAction.type
+            slot_to_elicit = slot_capture_setting.value.failureNextStep.dialogAction.slotToElicit
+          }
+        }
+
+        elicitation_code_hook {
+          enable_code_hook_invocation = slot_capture_setting.value.elicitationCodeHook.enableCodeHookInvocation
+        }
+      }
+    }
+  }
+}
+
+
+
 /*
 resource "aws_lexv2models_slot" "this" {
   for_each                         = var.lex_v2_bots
@@ -456,7 +566,7 @@ aws lexv2-models describe-intent --intent-id PBKSDSQGK0 --bot-id C6HUSTIFBR --bo
         }
     }
 }
-aws lexv2-models describe-slot --intent-id PBKSDSQGK0 --bot-id C6HUSTIFBR --bot-version DRAFT --locale-id en_US
+aws lexv2-models describe-slot --intent-id PBKSDSQGK0 --bot-id C6HUSTIFBR --bot-version DRAFT --locale-id en_US --slot-id QG013POPRB
 {
     "slotId": "1WMLGAXGMT",
     "slotName": "age",

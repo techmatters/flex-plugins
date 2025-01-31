@@ -1,8 +1,8 @@
 {
-    "slotName": "age",
-    "slotTypeName": "age",
+    "slotName": "CallerType",
+    "slotTypeName": "yes_no",
+    "description": "CallerType",
     "intentName": "pre_survey",
-    "description": "age",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,17 +10,9 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Thank you. You can say ‘prefer not to answer’ (or type X) to any question."
+                            "value": "Are you calling about yourself? Please answer Yes or No."
                         }
                     }
-                },
-                {
-                    "message": {
-                        "plainTextMessage": {
-                            "value": "How old are you? "
-                        }
-                    },
-                    "variations": []
                 }
             ],
             "maxRetries": 4,
@@ -144,40 +136,11 @@
                 }
             }
         },
-        "sampleUtterances": [
-            {
-                "utterance": "Yeah"
-            },
-            {
-                "utterance": "Yea"
-            },
-            {
-                "utterance": "Y"
-            },
-            {
-                "utterance": "N"
-            },
-            {
-                "utterance": "No"
-            },
-            {
-                "utterance": "Na"
-            },
-            {
-                "utterance": "Nah"
-            },
-            {
-                "utterance": "Nooo"
-            },
-            {
-                "utterance": "Yah"
-            }
-        ],
         "slotCaptureSetting": {
             "captureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "gender"
+                    "slotToElicit": "age"
                 },
                 "intent": {}
             },
@@ -186,7 +149,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "Sorry, I didn't understand that. Please respond with a number."
+                                "value": "Sorry, I didn't understand that."
                             }
                         }
                     }
@@ -196,7 +159,7 @@
             "failureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "age"
+                    "slotToElicit": "CallerType"
                 },
                 "intent": {}
             },
