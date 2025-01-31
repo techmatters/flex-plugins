@@ -141,7 +141,7 @@ resource "aws_lexv2models_intent" "this" {
             }
         }
         dynamic "next_step" {
-            for_each = can(each.value.config.intentClosingSetting.nextStep) ? [each.value.config.intentClosingSetting.nextStep] : []
+            for_each = each.value.config.intentClosingSetting.nextStep != null ? [each.value.config.intentClosingSetting.nextStep] : []
             content{
                 dialog_action {
                     type = next_step.value.dialogAction.type
