@@ -60,7 +60,7 @@ import * as TransferHelpers from '../../transfer/transferTaskState';
 import { TaskSID, WorkerSID } from '../../types/twilio';
 import { CaseStateEntry } from '../case/types';
 import { getOfflineContactTask } from './offlineContactTask';
-import { completeTaskAssignment, getTaskAndReservation } from '../../services/twilioTaskService';
+import { completeTaskAssignment, getTaskAndReservations } from '../../services/twilioTaskService';
 import { setConversationDurationFromMetadata } from '../../utils/conversationDuration';
 import { ProtectedApiError } from '../../services/fetchProtectedApi';
 
@@ -227,10 +227,14 @@ export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = crea
     if (isOfflineContact(contact)) {
       task = getOfflineContactTask();
     } else {
-      const taskResponse = await getTaskAndReservation(taskSid);
-      if (isTwilioTask(taskResponse.task)) {
+      const taskResponse = await getTaskAndReservations(taskSid);
+      if (taskResponse !== null && isTwilioTask(taskResponse.task)) {
         ({ task } = taskResponse);
-        reservationSid = taskResponse?.reservationSid;
+        reservationSid = taskResponse?.reservations?.[0]?.sid;
+      } else {
+        console.warn(
+          `Task and reservation not found, likely because the task is no longer stored in Twilio: ${taskSid}`,
+        );
       }
     }
 
