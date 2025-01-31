@@ -152,7 +152,7 @@ resource "aws_lexv2models_intent" "this" {
     
   
     dynamic "initial_response_setting" {
-        for_each = can(each.value.config.initialResponseSetting) ? [each.value.config.initialResponseSetting] : []
+        for_each = each.value.config.initialResponseSetting != null ? [each.value.config.initialResponseSetting] : []
         content {
             initial_response {
                 allow_interrupt = initial_response_setting.value.initialResponse.allowInterrupt
