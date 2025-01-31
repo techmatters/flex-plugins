@@ -221,7 +221,7 @@ variable "lex_v2_intents" {
           }))
         })
         initialResponseSetting = optional(object({
-          initialResponse = object({
+          initialResponse = optional(object({
             messageGroups = list(object({
               message = object({
                 plainTextMessage = object({
@@ -230,13 +230,13 @@ variable "lex_v2_intents" {
               })
             }))
             allowInterrupt = bool
-          })
-          nextStep = object({
+          }))
+          nextStep = optional(object({
             dialogAction = object({
               type = string
             })
-          })
-          codeHook = object({
+          }))
+          codeHook = optional(object({
             enableCodeHookInvocation = bool
             active = bool
             postCodeHookSpecification = object({
@@ -246,18 +246,19 @@ variable "lex_v2_intents" {
                   slotToElicit = string
                 })
               })
-            })
-            failureNextStep = object({
-              dialogAction = object({
-                type = string
+            
+              failureNextStep = object({
+                dialogAction = object({
+                  type = string
+                })
+              })
+              timeoutNextStep = object({
+                dialogAction = object({
+                  type = string
+                })
               })
             })
-            timeoutNextStep = object({
-              dialogAction = object({
-                type = string
-              })
-            })
-          })
+          }))
         })
       )
       })
