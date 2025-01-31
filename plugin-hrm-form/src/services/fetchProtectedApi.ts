@@ -19,7 +19,7 @@ import { getHrmConfig } from '../hrmConfig';
 import { getValidToken } from '../authentication';
 
 export class ProtectedApiError extends ApiError {
-  constructor(message, options: Pick<ApiError, 'body' | 'response'>, cause?: Error) {
+  constructor(message: string, options: Pick<ApiError, 'body' | 'response'>, cause?: Error) {
     super(message, options, cause);
 
     this.name = 'ProtectedApiError';
@@ -53,8 +53,22 @@ const fetchProtectedApi = async (endPoint, body: Record<string, string> = {}) =>
     return await fetchApi(new URL(serverlessBaseUrl), endPoint, options);
   } catch (error) {
     if (error instanceof ApiError) {
-      const message = error.response?.status === 403 ? 'Server responded with 403 status (Forbidden)' : error.message;
-      throw new ProtectedApiError(message, { response: error.response, body: error.body }, error);
+      const { status } = error.response;
+      let message;
+      if (status === 403) {
+        message = 'Server responded with 403 status (Forbidden)';
+      } else if (status === 404) {
+        message = error.body?.message || 'The requested resource was not found';
+      } else {
+        message = error.body?.message || `Server responded with ${status} status`;
+      }
+      const protectedError = new ProtectedApiError(message, { response: error.response, body: error.body }, error);
+      if (status === 404) {
+        // Return null for 404s instead of throwing to allow graceful UI handling
+        console.warn(`Resource not found at ${endPoint}:`, protectedError);
+        return null;
+      }
+      throw protectedError;
     } else throw error;
   }
 };
