@@ -202,13 +202,13 @@ variable "lex_v2_intents" {
         }))*/
         intentClosingSetting = object({
           closingResponse = optional(object({
-            messageGroups = object({
+            messageGroups = list(object({
               message = object({
                 plainTextMessage = object({
                   value = string
                 })
               })
-            })
+            }))
             allowInterrupt = bool
           })
           )
@@ -222,13 +222,13 @@ variable "lex_v2_intents" {
         })
         initialResponseSetting = optional(object({
           initialResponse = object({
-            messageGroups = object({
+            messageGroups = list(object({
               message = object({
                 plainTextMessage = object({
                   value = string
                 })
               })
-            })
+            }))
             allowInterrupt = bool
           })
           nextStep = object({
