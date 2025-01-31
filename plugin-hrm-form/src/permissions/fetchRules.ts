@@ -16,17 +16,30 @@
 
 import type { RulesFile } from '.';
 import { fetchPermissionRules } from '../services/PermissionsService';
+import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 
-const e2eRules = require('./e2e.json');
+export const fetchRules = async (): Promise<RulesFile> => {
+  const { enable_permissions_from_backend: enablePermissionsFromBackend } = getAseloFeatureFlags();
 
-// TODO: do this once, on initialization, then consume from the global state.
-export const fetchRules = async (permissionConfig): Promise<RulesFile> => {
   try {
-    if (permissionConfig === 'e2e') return e2eRules;
+    if (enablePermissionsFromBackend) {
+      return await fetchPermissionRules();
+    }
 
-    return await fetchPermissionRules();
+    // If backend permissions are disabled, load the appropriate permission config
+    const { permissionConfig } = getHrmConfig();
+    if (!permissionConfig) {
+      throw new Error('>>> No permission config specified in HRM config');
+    }
+
+    try {
+      // eslint-disable-next-line global-require
+      return require(`./${permissionConfig}.json`);
+    } catch (err) {
+      throw new Error(`>>> Failed to load permission config "${permissionConfig}". Error: ${err.message}`);
+    }
   } catch (err) {
     console.error('Error fetching rules:', err);
-    return null;
+    throw err;
   }
 };
