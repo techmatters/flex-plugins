@@ -1,0 +1,39 @@
+{
+  "viewCase": [["isSupervisor"], ["isCreator"]],
+  "closeCase": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
+  "reopenCase": [["isSupervisor"]],
+  "caseStatusTransition": [],
+  "addNote": [["isSupervisor"], ["isCreator"]],
+  "editNote": [["isCreator"],["isSupervisor"]],
+  "addReferral": [["isSupervisor"], ["isCreator"]],
+  "editReferral": [["isCreator"],["isSupervisor"]],
+  "addHousehold": [["isSupervisor"], ["isCreator"]],
+  "editHousehold": [["isCreator"],["isSupervisor"]],
+  "addPerpetrator": [["isSupervisor"], ["isCreator"]],
+  "editPerpetrator": [["isCreator"],["isSupervisor"]],
+  "addIncident": [["isSupervisor"], ["isCreator"]],
+  "editIncident": [["isCreator"],["isSupervisor"]],
+  "addDocument": [["isSupervisor"], ["isCreator"]],
+  "editDocument": [["isSupervisor"]],
+  "editCaseOverview": [["isSupervisor"], ["isCreator"]],
+  "updateCaseContacts": [["isSupervisor"], ["isCaseOpen"]],
+
+  "viewContact": [["isSupervisor"], ["isOwner"]],
+  "editContact": [["isOwner"],["isSupervisor"]],
+  "editInProgressContact": [["isSupervisor"], ["isOwner"]], 
+  "viewExternalTranscript": [["isSupervisor"], ["isOwner"]],
+  "viewRecording": [["isSupervisor"], ["isOwner"]],
+  "addContactToCase": [["isSupervisor"], ["isOwner"]],
+  "removeContactFromCase": [["isSupervisor"], ["isOwner"]],
+  
+  "viewProfile": [["everyone"]],
+  "flagProfile": [],
+  "unflagProfile": [],
+  "createProfileSection": [],
+  "viewProfileSection": [],
+  "editProfileSection": [],
+  
+  "viewPostSurvey": [["isSupervisor"]],
+
+  "viewIdentifiers": []
+}
