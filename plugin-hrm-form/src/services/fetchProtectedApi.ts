@@ -53,18 +53,14 @@ const fetchProtectedApi = async (endPoint, body: Record<string, string> = {}) =>
     return await fetchApi(new URL(serverlessBaseUrl), endPoint, options);
   } catch (error) {
     if (error instanceof ApiError) {
-      const { status } = error.response;
-      let message;
-      if (status === 403) {
-        message = 'Server responded with 403 status (Forbidden)';
-      } else if (status === 404) {
-        message = error.body?.message || 'The requested resource was not found';
-      } else {
-        message = error.body?.message || `Server responded with ${status} status`;
-      }
+      const {
+        response: { status, statusText },
+        body,
+      } = error;
+
+      const message = body?.message || `Error response: ${status} (${statusText})`;
       const protectedError = new ProtectedApiError(message, { response: error.response, body: error.body }, error);
-      if (status === 404) {
-        // Return null for 404s instead of throwing to allow graceful UI handling
+      if (status === 404 && options.method === 'GET') {
         console.warn(`Resource not found at ${endPoint}:`, protectedError);
         return null;
       }
