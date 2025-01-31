@@ -135,6 +135,7 @@ export const handleTwilioTask = async (
       });
     }
 
+    // Store reservation sid to use Twilio insights overlay (recordings/transcript)
     if (isCallOrChatTask) {
       returnData.conversationMedia.push({
         storeType: 'twilio',
@@ -144,18 +145,16 @@ export const handleTwilioTask = async (
       });
     }
 
-    if (!shouldGetExternalRecordingInfo(task)) {
-      return returnData;
-    }
+    if (!shouldGetExternalRecordingInfo(task)) return returnData;
 
-    const recordingInfo = await getExternalRecordingInfo(task);
-    if (isFailureExternalRecordingInfo(recordingInfo)) {
-      const error = `Failed to get external recording info: ${recordingInfo.error}`;
+    const externalRecordingInfo = await getExternalRecordingInfo(task);
+    if (isFailureExternalRecordingInfo(externalRecordingInfo)) {
+      const error = `Failed to get external recording info: ${externalRecordingInfo.error}`;
       console.error(error, 'Task:', task);
       recordEvent('Backend Error: Get External Recording Info', {
         taskSid: task.taskSid,
         reservationSid: finalReservationSid,
-        recordingError: recordingInfo.error,
+        recordingError: externalRecordingInfo.error,
         isCallTask: isVoiceTask,
         isChatBasedTask: isChatTask,
         attributes: JSON.stringify(task.attributes),
@@ -163,8 +162,8 @@ export const handleTwilioTask = async (
       return returnData;
     }
 
-    returnData.externalRecordingInfo = recordingInfo;
-    const { bucket, key } = recordingInfo;
+    returnData.externalRecordingInfo = externalRecordingInfo;
+    const { bucket, key } = externalRecordingInfo;
     returnData.conversationMedia.push({
       storeType: 'S3',
       storeTypeSpecificData: {
@@ -173,7 +172,14 @@ export const handleTwilioTask = async (
       },
     });
   } catch (err) {
-    console.error('Error processing contact media during finalization:', err, 'Task:', task);
+    console.error(
+      'Error processing contact media during finalization:',
+      err,
+      'Task:',
+      task,
+      'Return data captured so far:',
+      returnData,
+    );
   }
 
   return returnData;
