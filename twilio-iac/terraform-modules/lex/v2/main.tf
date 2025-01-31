@@ -122,34 +122,34 @@ resource "aws_lexv2models_intent" "this" {
   }
 */
 
-  closing_setting {
-    active = each.value.config.intentClosingSetting.active
-    dynamic "closing_response" {
-      for_each = can(each.value.config.intentClosingSetting.closingResponse) ? [each.value.config.intentClosingSetting.closingResponse] : []
-      content {
-        allow_interrupt = each.value.config.intentClosingSetting.closingResponse.allowInterrupt
-        message_group {
-            dynamic "message" {
-                for_each = each.value.config.intentClosingSetting.closingResponse.messageGroups
-                content {
-                    plain_text_message {
-                    value = message.value.message.plainTextMessage.value
+    closing_setting {
+        active = each.value.config.intentClosingSetting.active
+        dynamic "closing_response" {
+            for_each = can(each.value.config.intentClosingSetting.closingResponse) ? [each.value.config.intentClosingSetting.closingResponse] : []
+            content {
+                allow_interrupt = closing_response.value.config.intentClosingSetting.closingResponse.allowInterrupt
+                message_group {
+                    dynamic "message" {
+                        for_each = each.value.config.intentClosingSetting.closingResponse.messageGroups
+                        content {
+                            plain_text_message {
+                            value = message.value.message.plainTextMessage.value
+                            }
+                        }
                     }
-                }
+                } 
             }
-        } 
-      }
-      }
-     
-    }
-    dynamic "next_step" {
-        for_each = can(each.value.config.intentClosingSetting.nextStep) ? [each.value.config.intentClosingSetting.nextStep] : []
-        content{
-            dialog_action {
-                type = each.value.config.intentClosingSetting.nextStep.dialogAction.type
+        }
+        dynamic "next_step" {
+            for_each = can(each.value.config.intentClosingSetting.nextStep) ? [each.value.config.intentClosingSetting.nextStep] : []
+            content{
+                dialog_action {
+                    type = each.value.config.intentClosingSetting.nextStep.dialogAction.type
+                }
             }
         }
     }
+    
   
     dynamic "initial_response_setting" {
         for_each = can(each.value.config.initialResponseSetting) ? [each.value.config.initialResponseSetting] : []
