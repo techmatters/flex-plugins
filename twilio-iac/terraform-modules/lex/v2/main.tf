@@ -127,10 +127,10 @@ resource "aws_lexv2models_intent" "this" {
         dynamic "closing_response" {
             for_each = can(each.value.config.intentClosingSetting.closingResponse) ? [each.value.config.intentClosingSetting.closingResponse] : []
             content {
-                allow_interrupt = closing_response.value.config.intentClosingSetting.closingResponse.allowInterrupt
+                allow_interrupt = closing_response.value.allowInterrupt
                 message_group {
                     dynamic "message" {
-                        for_each = each.value.config.intentClosingSetting.closingResponse.messageGroups
+                        for_each = closing_response.value.messageGroups
                         content {
                             plain_text_message {
                             value = message.value.message.plainTextMessage.value
@@ -144,7 +144,7 @@ resource "aws_lexv2models_intent" "this" {
             for_each = can(each.value.config.intentClosingSetting.nextStep) ? [each.value.config.intentClosingSetting.nextStep] : []
             content{
                 dialog_action {
-                    type = each.value.config.intentClosingSetting.nextStep.dialogAction.type
+                    type = next_step.value.dialogAction.type
                 }
             }
         }
@@ -155,10 +155,10 @@ resource "aws_lexv2models_intent" "this" {
         for_each = can(each.value.config.initialResponseSetting) ? [each.value.config.initialResponseSetting] : []
         content {
             initial_response {
-                allow_interrupt = each.value.config.initialResponseSetting.initialResponse.allowInterrupt
+                allow_interrupt = initial_response_setting.value.initialResponse.allowInterrupt
                 message_group {
                     dynamic "message" {
-                        for_each = each.value.config.intentClosingSetting.closingResponse.messageGroups
+                        for_each = initial_response_setting.value.initialResponse.messageGroups
                         content {
                             plain_text_message {
                             value = message.value.message.plainTextMessage.value
@@ -169,26 +169,26 @@ resource "aws_lexv2models_intent" "this" {
             }
             next_step {
             dialog_action {
-                type = each.value.config.initialResponseSetting.nextStep.dialogAction.type
+                type = initial_response_setting.value.nextStep.dialogAction.type
             }
             }
             code_hook {
-                enable_code_hook_invocation = each.value.config.initialResponseSetting.codeHook.enableCodeHookInvocation
+                enable_code_hook_invocation =initial_response_setting.value.codeHook.enableCodeHookInvocation
                 active = each.value.config.initialResponseSetting.codeHook.active
                 post_code_hook_specification {
                     success_next_step {
                         dialog_action {
-                            type = each.value.config.initialResponseSetting.codeHook.postCodeHookSpecification.successNextStep.dialogAction.type
+                            type = initial_response_setting.value.codeHook.postCodeHookSpecification.successNextStep.dialogAction.type
                         }
                     }
                     failure_next_step {
                         dialog_action {
-                            type = each.value.config.initialResponseSetting.codeHook.postCodeHookSpecification.failureNextStep.dialogAction.type
+                            type = initial_response_setting.value.codeHook.postCodeHookSpecification.failureNextStep.dialogAction.type
                         }
                     }
                     timeout_next_step {
                         dialog_action {
-                            type = each.value.config.initialResponseSetting.codeHook.postCodeHookSpecification.timeoutNextStep.dialogAction.type
+                            type = initial_response_setting.value.codeHook.postCodeHookSpecification.timeoutNextStep.dialogAction.type
                         }
                     }
                 }
