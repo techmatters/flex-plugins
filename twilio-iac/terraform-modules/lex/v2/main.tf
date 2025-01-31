@@ -129,10 +129,14 @@ resource "aws_lexv2models_intent" "this" {
       content {
         allow_interrupt = each.value.config.intentClosingSetting.closingResponse.allowInterrupt
         message_group {
-        message {
-          plain_text_message {
-            value = each.value.config.intentClosingSetting.closingResponse.messageGroups.message.plainTextMessage.value
-          }
+            dynamic "message" {
+                for_each = each.value.config.intentClosingSetting.closingResponse.messageGroups
+                content {
+                    plain_text_message {
+                    value = message.value.message.plainTextMessage.value
+                    }
+                }
+            }
         } 
       }
       }
@@ -146,19 +150,22 @@ resource "aws_lexv2models_intent" "this" {
             }
         }
     }
-  }
+  
     dynamic "initial_response_setting" {
         for_each = can(each.value.config.initialResponseSetting) ? [each.value.config.initialResponseSetting] : []
         content {
             initial_response {
-            allow_interrupt = each.value.config.initialResponseSetting.initialResponse.allowInterrupt
-            message_group {
-                message {
-                plain_text_message {
-                    value = each.value.config.initialResponseSetting.initialResponse.messageGroups.message.plainTextMessage.value
+                allow_interrupt = each.value.config.initialResponseSetting.initialResponse.allowInterrupt
+                message_group {
+                    dynamic "message" {
+                        for_each = each.value.config.intentClosingSetting.closingResponse.messageGroups
+                        content {
+                            plain_text_message {
+                            value = message.value.message.plainTextMessage.value
+                            }
+                        }
+                    }
                 }
-                }
-            }
             }
             next_step {
             dialog_action {
