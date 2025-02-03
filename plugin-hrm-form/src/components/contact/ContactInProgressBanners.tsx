@@ -16,7 +16,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { Close } from '@material-ui/icons';
-import { Template, Manager } from '@twilio/flex-ui';
+import { Template, Manager, Notifications, NotificationType, NotificationBar } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
 
 import InfoIcon from '../caseMergingBanners/InfoIcon';
@@ -61,8 +61,17 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
   const checkContactFinalization = async (contactId: string, retries = 3, delay = 1000) => {
     try {
       const contact = await getContactById(contactId);
-      if (contact?.finalizedAt !== null) {
+      if (contact?.finalizedAt) {
         setShowResolvedBanner(true);
+        if (!contact?.conversationMedia.length) {
+          Notifications.registerNotification({
+            id: 'NoConversationMediaNotification',
+            closeButton: true,
+            content: <Template code="ContactDetails-NoConversationMediaNotification" />,
+            type: NotificationType.warning,
+          });
+          Notifications.showNotification('NoConversationMediaNotification');
+        }
         return;
       }
       if (retries > 0) {
