@@ -39,7 +39,6 @@ export const generateUrl = (baseUrl: URL, endpointPath: string): URL => {
 
 export type FetchOptions = RequestInit & {
   returnNullFor404?: boolean;
-  returnUndefinedFor404?: boolean;
 };
 
 /**
@@ -51,7 +50,7 @@ export type FetchOptions = RequestInit & {
  */
 export const fetchApi = async (baseUrl: URL, endpointPath: string, options: FetchOptions): Promise<any> => {
   const url = generateUrl(baseUrl, endpointPath);
-  const { returnNullFor404, returnUndefinedFor404, ...requestInit } = options;
+  const { returnNullFor404, ...requestInit } = options;
   const defaultOptions = {
     method: 'GET',
     headers: {

@@ -222,7 +222,6 @@ export const updateContactInHrm = async (
   const options = {
     method: 'PATCH',
     body: JSON.stringify(body),
-    returnNullFor404: true,
   };
 
   return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/${contactId}?finalize=${finalize}`, options));
