@@ -351,7 +351,7 @@ ${
             "key": "conversationSid"
           },
           {
-            "value": "I'm sorry, we couldn't receive your message.  Please try texting us again  or call us for free on 0800376633.",
+            "value":flow_vars["outside_country_message"],
             "key": "message"
           },
           {
@@ -411,6 +411,34 @@ ${
               ],
               "type": "starts_with",
               "value": "${channel_name}:+64"
+            }
+          ]
+        },
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to modica:111",
+              "arguments": [
+                "{{trigger.conversation.From}}"
+              ],
+              "type": "equal_to",
+              "value": "modica:111"
+            }
+          ]
+        },
+        {
+          "next": "attributes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to Bot",
+              "arguments": [
+                "{{trigger.conversation.From}}"
+              ],
+              "type": "equal_to",
+              "value": "Bot"
             }
           ]
         }
