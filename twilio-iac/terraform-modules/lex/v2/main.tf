@@ -199,7 +199,7 @@ resource "aws_lexv2models_slot" "this" {
   intent_id   = split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intentName}"].id)[0] 
   locale_id   = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].locale_id
   name        = each.value.config.slotName
-  slot_type_id = aws_lexv2models_slot_type.this["${each.value.bot_name}_${each.value.config.slotTypeName}"].id
+  slot_type_id = split(",", aws_lexv2models_slot_type.this["${each.value.bot_name}_${each.value.config.slotTypeName}"].id)[3]
   description  = each.value.config.description
 
   value_elicitation_setting {
