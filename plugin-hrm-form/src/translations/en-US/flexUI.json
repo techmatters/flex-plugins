@@ -346,6 +346,7 @@
   "ContactDetails-ActionHeaderUpdated": "Updated on {{date}} at {{time}} by {{counsellor}}",
   "ContactDetails-NoCategoryProvided": "No category provided",
   "ContactDetails-UnsavedContact": "Unsaved Contact",
+  "ContactDetails-NoConversationMediaNotification": "Transcript/Recording is not available. Transcript/Recording expire after 30 days for privacy and security reasons.",
   "SectionName-CallerInformation": "Caller Information {{sectionNo}} of {{sectionCount}}",
   "SectionName-ChildInformation": "Child Information {{sectionNo}} of {{sectionCount}}",
   "SectionName-Contact": "Contact",
