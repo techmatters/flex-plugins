@@ -90,7 +90,7 @@ describe('fetchProtectedApi', () => {
     };
     mockFetch.mockResolvedValue(mockResponse);
     await expect(fetchProtectedApi('/areBelongToUs', requestBody)).rejects.toThrow(
-      new ProtectedApiError('Error response: 403 (Forbidden)', {
+      new ProtectedApiError('Server responded with 403 status (Forbidden)', {
         body: { error: 'message' },
         response: mockResponse as Response,
       }),

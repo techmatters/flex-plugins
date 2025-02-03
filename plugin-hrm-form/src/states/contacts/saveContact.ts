@@ -218,6 +218,7 @@ export const newFinalizeContactAsyncAction = createAsyncAction(
 
 export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = createAsyncAction(
   SUBMIT_AND_FINALIZE_CONTACT_FROM_OUTSIDE_TASK_CONTEXT,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   async (contact: Contact) => {
     const { taskId: taskSid } = contact;
     let task: CustomITask | ITask | undefined;
@@ -228,7 +229,7 @@ export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = crea
       task = getOfflineContactTask();
     } else {
       const taskResponse = await getTaskAndReservations(taskSid);
-      if (taskResponse !== null && isTwilioTask(taskResponse.task)) {
+      if (taskResponse) {
         ({ task } = taskResponse);
         reservationSid = taskResponse?.reservations?.[0]?.sid;
       } else {
@@ -265,8 +266,8 @@ export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = crea
         }
         throw error;
       }
-    } else if (isTwilioTask(task)) {
-      await completeTaskAssignment(task.taskSid || task.sid);
+    } else if (task) {
+      await completeTaskAssignment(task.taskSid || (isTwilioTask(task) && task.sid));
       const updatedContact = await submitContactForm(task, contact, caseState);
       return finalizeContact(task, updatedContact, reservationSid);
     }
