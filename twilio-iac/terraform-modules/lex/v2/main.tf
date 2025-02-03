@@ -212,15 +212,15 @@ resource "aws_lexv2models_slot" "this" {
         max_retries               = prompt_specification.value.maxRetries
         message_selection_strategy = prompt_specification.value.messageSelectionStrategy
 
-        dynamic "message_groups" {
-          for_each = prompt_specification.value.messageGroups
-          content {
-            message {
-              plain_text_message {
-                value = message_groups.value.message.plainTextMessage.value
-              }
+        message_group {
+            dynamic "message" {
+                for_each = prompt_specification.value.initialResponse.messageGroups
+                content {
+                    plain_text_message {
+                    value = message.value.message.plainTextMessage.value
+                    }
+                }
             }
-          }
         }
 
         dynamic "prompt_attempts_specification" {
