@@ -57,14 +57,12 @@ const fetchProtectedApi = async (endPoint, body: Record<string, string> = {}) =>
         response: { status, statusText },
         body,
       } = error;
-
       const message = body?.message || `Error response: ${status} (${statusText})`;
-      const protectedError = new ProtectedApiError(message, { response: error.response, body: error.body }, error);
       if (status === 404 && options.method === 'GET') {
-        console.warn(`Resource not found at ${endPoint}:`, protectedError);
+        console.warn(`Resource not found at ${endPoint}:`, message);
         return null;
       }
-      throw protectedError;
+      throw new ProtectedApiError(message, { response: error.response, body: error.body }, error);
     } else throw error;
   }
 };
