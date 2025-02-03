@@ -10,13 +10,6 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Thank you. You can say ‘prefer not to answer’ (or type X) to any question."
-                        }
-                    }
-                },
-                {
-                    "message": {
-                        "plainTextMessage": {
                             "value": "How old are you? "
                         }
                     },
