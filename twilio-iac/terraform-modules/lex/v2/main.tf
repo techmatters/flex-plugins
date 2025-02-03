@@ -191,22 +191,22 @@ resource "aws_lexv2models_intent" "this" {
 resource "aws_lexv2models_slot" "this" {
   for_each = {
     for idx, slot in var.lex_v2_slots :
-    "${slot.intentName}_${slot.slotName}" => slot
+    "${slot.config.intentName}_${slot.config.slotName}" => slot
   }
 
   bot_id      = aws_lexv2models_bot.this["${each.value.bot_name}"].id
   bot_version = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].bot_version
-  intent_id   = aws_lexv2models_intent.this["${each.value.intentName}"].id
+  intent_id   = aws_lexv2models_intent.this["${each.value.config.intentName}"].id
   locale_id   = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].locale_id
-  name        = each.value.slotName
-  slot_type_id = aws_lexv2models_slot_type.this["${each.value.slotTypeName}"].id
-  description  = each.value.description
+  name        = each.value.config.slotName
+  slot_type_id = aws_lexv2models_slot_type.this["${each.value.config.slotTypeName}"].id
+  description  = each.value.config.description
 
   value_elicitation_setting {
-    slot_constraint = each.value.valueElicitationSetting.slotConstraint
+    slot_constraint = each.value.config.valueElicitationSetting.slotConstraint
 
     dynamic "prompt_specification" {
-      for_each = each.value.valueElicitationSetting.promptSpecification != null ? [each.value.valueElicitationSetting.promptSpecification] : []
+      for_each = each.value.config.valueElicitationSetting.promptSpecification != null ? [each.value.config.valueElicitationSetting.promptSpecification] : []
       content {
         allow_interrupt           = prompt_specification.value.allowInterrupt
         max_retries               = prompt_specification.value.maxRetries
@@ -273,7 +273,7 @@ resource "aws_lexv2models_slot" "this" {
     
   /*
     dynamic "capture_setting" {
-      for_each = each.value.valueElicitationSetting.slotCaptureSetting != null ? [each.value.valueElicitationSetting.slotCaptureSetting] : []
+      for_each = each.value.config.valueElicitationSetting.slotCaptureSetting != null ? [each.value.config.valueElicitationSetting.slotCaptureSetting] : []
       content {
         capture_next_step {
           dialog_action {
