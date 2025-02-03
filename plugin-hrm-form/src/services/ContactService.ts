@@ -222,6 +222,7 @@ export const updateContactInHrm = async (
   const options = {
     method: 'PATCH',
     body: JSON.stringify(body),
+    returnNullFor404: true,
   };
 
   return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/${contactId}?finalize=${finalize}`, options));
@@ -290,14 +291,19 @@ export const finalizeContact = async (
   contact: Contact,
   reservationSid?: string | undefined,
 ): Promise<Contact> => {
-  const twilioTaskResult = await handleTwilioTask(task, contact, reservationSid);
-  const { channelSid, serviceSid } = twilioTaskResult;
-  await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
-  const contactUpdates: ContactDraftChanges = {
-    channelSid,
-    serviceSid,
-  };
-  return updateContactInHrm(contact.id, contactUpdates, true);
+  try {
+    const twilioTaskResult = await handleTwilioTask(task, contact, reservationSid);
+    const { channelSid, serviceSid } = twilioTaskResult;
+    await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
+    const contactUpdates: ContactDraftChanges = {
+      channelSid,
+      serviceSid,
+    };
+    return await updateContactInHrm(contact.id, contactUpdates, true);
+  } catch (error) {
+    console.error('Error finalizing contact:', error);
+    throw new Error('Failed to finalize contact');
+  }
 };
 
 export const saveContact = async (task, contact: Contact, workerSid: WorkerSID, uniqueIdentifier: TaskSID) => {

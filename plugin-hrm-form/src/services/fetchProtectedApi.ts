@@ -14,12 +14,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { ApiError, fetchApi } from './fetchApi';
+import { ApiError, fetchApi, FetchOptions } from './fetchApi';
 import { getHrmConfig } from '../hrmConfig';
 import { getValidToken } from '../authentication';
 
 export class ProtectedApiError extends ApiError {
-  constructor(message: string, options: Pick<ApiError, 'body' | 'response'>, cause?: Error) {
+  constructor(message, options: Pick<ApiError, 'body' | 'response'>, cause?: Error) {
     super(message, options, cause);
 
     this.name = 'ProtectedApiError';
@@ -38,7 +38,7 @@ export class ProtectedApiError extends ApiError {
  * @param {{ [k: string]: any }} body Same options object that will be passed to the fetch function (here you can include the BODY of the request)
  * @returns {Promise<any>} the api response (if not error)
  */
-const fetchProtectedApi = async (endPoint, body: Record<string, string> = {}) => {
+const fetchProtectedApi = async (endPoint, body: Record<string, string> = {}, fetchOptions?: FetchOptions) => {
   const { serverlessBaseUrl } = getHrmConfig();
   const token = getValidToken();
   if (token instanceof Error) throw new ApiError(`Aborting request due to token issue: ${token.message}`, {}, token);
@@ -48,20 +48,13 @@ const fetchProtectedApi = async (endPoint, body: Record<string, string> = {}) =>
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
     },
+    ...fetchOptions,
   };
   try {
     return await fetchApi(new URL(serverlessBaseUrl), endPoint, options);
   } catch (error) {
     if (error instanceof ApiError) {
-      const {
-        response: { status, statusText },
-        body,
-      } = error;
-      const message = body?.message || `Error response: ${status} (${statusText})`;
-      if (status === 404 && options.method === 'GET') {
-        console.warn(`Resource not found at ${endPoint}:`, message);
-        return null;
-      }
+      const message = error.response?.status === 403 ? 'Server responded with 403 status (Forbidden)' : error.message;
       throw new ProtectedApiError(message, { response: error.response, body: error.body }, error);
     } else throw error;
   }
