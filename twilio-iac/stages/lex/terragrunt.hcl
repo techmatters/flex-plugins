@@ -252,7 +252,7 @@ lex_v2_slot_names = local.enable_lex_v2 ? tomap({
     lex_v2_bots       = local.lex_v2_bots
     lex_v2_intents    = local.lex_v2_intents
     lex_v2_slot_types = local.lex_v2_slot_types
-    lex_v2_slot_types = local.lex_v2_slots
+    lex_v2_slots = local.lex_v2_slots
   }
 
   config = merge(include.root.locals.config, local.local_config)
