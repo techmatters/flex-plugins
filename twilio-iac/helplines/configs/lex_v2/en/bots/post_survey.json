@@ -10,8 +10,8 @@
       "post_survey_no"
     ],
     "slots": [
-      "wasHelpful",
-      "wouldRecommend"
+      "was_helpful",
+      "would-recommend"
     ],
     "slot_types" :[
       "yes_no"
