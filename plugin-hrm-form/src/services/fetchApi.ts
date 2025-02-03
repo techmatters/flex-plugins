@@ -39,6 +39,7 @@ export const generateUrl = (baseUrl: URL, endpointPath: string): URL => {
 
 export type FetchOptions = RequestInit & {
   returnNullFor404?: boolean;
+  returnUndefinedFor404?: boolean;
 };
 
 /**
@@ -50,7 +51,7 @@ export type FetchOptions = RequestInit & {
  */
 export const fetchApi = async (baseUrl: URL, endpointPath: string, options: FetchOptions): Promise<any> => {
   const url = generateUrl(baseUrl, endpointPath);
-  const { returnNullFor404, ...requestInit } = options;
+  const { returnNullFor404, returnUndefinedFor404, ...requestInit } = options;
   const defaultOptions = {
     method: 'GET',
     headers: {
@@ -72,11 +73,18 @@ export const fetchApi = async (baseUrl: URL, endpointPath: string, options: Fetc
   } catch (err) {
     throw new ApiError(err.message, {}, err);
   }
+
   if (!response.ok) {
-    if (response.status === 404) {
-      return null;
+    let body;
+    try {
+      body = await response.json();
+    } catch (err) {
+      body = await response.text();
     }
-    throw new Error(`Error: ${response.status} ${response.statusText}`);
+    if (returnNullFor404 && response.status === 404) {
+      return undefined;
+    }
+    throw new ApiError(`Error response: ${response.status} (${response.statusText})`, { response, body });
   }
 
   if ((response.headers?.get('Content-Type') ?? '').toLowerCase().includes('json')) {
