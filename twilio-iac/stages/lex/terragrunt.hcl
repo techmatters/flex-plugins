@@ -244,6 +244,7 @@ lex_v2_slot_names = local.enable_lex_v2 ? tomap({
 
   }) : {}
 
+print9 = run_cmd("echo", jsonencode(local.lex_v2_slots))
 
   local_config = {
     lex_bots          = local.lex_bots

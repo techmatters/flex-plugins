@@ -143,6 +143,7 @@ variable "lex_v2_slots" {
       slotName     = string
       slotTypeName = string
       description  = string
+      intentName   = string
       valueElicitationSetting = object({
         slotConstraint = string
         promptSpecification = optional(object({

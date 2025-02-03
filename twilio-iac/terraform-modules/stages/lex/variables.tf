@@ -273,6 +273,7 @@ variable "lex_v2_slots" {
       slotName     = string
       slotTypeName = string
       description  = string
+      intentName   = string
       valueElicitationSetting = object({
         slotConstraint = string
         promptSpecification = optional(object({
@@ -310,7 +311,7 @@ variable "lex_v2_slots" {
             }))
           })))
         }))
-        slotCaptureSetting = optional(object({
+        /*slotCaptureSetting = optional(object({
           captureNextStep = object({
             dialogAction = object({
               type = string
@@ -337,7 +338,7 @@ variable "lex_v2_slots" {
           elicitationCodeHook = optional(object({
             enableCodeHookInvocation = bool
           }))
-        }))
+        }))*/
       })
     })
   ))
