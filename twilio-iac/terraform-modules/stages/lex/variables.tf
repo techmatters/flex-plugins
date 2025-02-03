@@ -270,6 +270,8 @@ variable "lex_v2_slots" {
   description = "List of Lex V2 slots"
   type = map(list(
     object({
+      bot_name = string
+      config = object({
       slotName     = string
       slotTypeName = string
       description  = string
@@ -341,5 +343,7 @@ variable "lex_v2_slots" {
         }))*/
       })
     })
-  ))
+}))
+  )
+
 }
