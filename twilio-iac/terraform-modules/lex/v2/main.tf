@@ -214,7 +214,7 @@ resource "aws_lexv2models_slot" "this" {
 
         message_group {
             dynamic "message" {
-                for_each = prompt_specification.value.initialResponse.messageGroups
+                for_each = prompt_specification.value.messageGroups
                 content {
                     plain_text_message {
                     value = message.value.message.plainTextMessage.value
