@@ -271,7 +271,7 @@ resource "aws_lexv2models_slot" "this" {
     }
  
     
-
+  /*
     dynamic "capture_setting" {
       for_each = each.value.valueElicitationSetting.slotCaptureSetting != null ? [each.value.valueElicitationSetting.slotCaptureSetting] : []
       content {
@@ -308,6 +308,7 @@ resource "aws_lexv2models_slot" "this" {
         }
       }
     }
+    */
   }
 }
 
