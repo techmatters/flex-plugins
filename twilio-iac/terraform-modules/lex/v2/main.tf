@@ -269,21 +269,23 @@ resource "aws_lexv2models_slot" "this" {
         }
       }
     }
+ 
+    
 
-    dynamic "slot_capture_setting" {
+    dynamic "capture_setting" {
       for_each = each.value.valueElicitationSetting.slotCaptureSetting != null ? [each.value.valueElicitationSetting.slotCaptureSetting] : []
       content {
         capture_next_step {
           dialog_action {
-            type = slot_capture_setting.value.captureNextStep.dialogAction.type
+            type = capture_setting.value.captureNextStep.dialogAction.type
           }
         }
 
         failure_response {
-          allow_interrupt = slot_capture_setting.value.failureResponse.allowInterrupt
+          allow_interrupt = capture_setting.value.failureResponse.allowInterrupt
 
           dynamic "message_groups" {
-            for_each = slot_capture_setting.value.failureResponse.messageGroups
+            for_each = capture_setting.value.failureResponse.messageGroups
             content {
               message {
                 plain_text_message {
@@ -296,13 +298,13 @@ resource "aws_lexv2models_slot" "this" {
 
         failure_next_step {
           dialog_action {
-            type         = slot_capture_setting.value.failureNextStep.dialogAction.type
-            slot_to_elicit = slot_capture_setting.value.failureNextStep.dialogAction.slotToElicit
+            type         = capture_setting.value.failureNextStep.dialogAction.type
+            slot_to_elicit = capture_setting.value.failureNextStep.dialogAction.slotToElicit
           }
         }
 
         elicitation_code_hook {
-          enable_code_hook_invocation = slot_capture_setting.value.elicitationCodeHook.enableCodeHookInvocation
+          enable_code_hook_invocation = capture_setting.value.elicitationCodeHook.enableCodeHookInvocation
         }
       }
     }
