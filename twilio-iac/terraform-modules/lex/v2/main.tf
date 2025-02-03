@@ -52,7 +52,7 @@ resource "aws_lexv2models_bot_version" "this" {
 resource "aws_lexv2models_slot_type" "this" {
   for_each = {
     for idx, slot_type in var.lex_v2_slot_types :
-    "${slot_type.config.slotTypeName}" => slot_type
+    "${slot_type.bot_name}_${slot_type.config.slotTypeName}" => slot_type
   }
   bot_id                           = aws_lexv2models_bot.this["${each.value.bot_name}"].id
   bot_version                      = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].bot_version
@@ -96,7 +96,7 @@ output "slot_types" {
 resource "aws_lexv2models_intent" "this" {
   for_each = {
     for idx, intent in var.lex_v2_intents :
-    "${intent.config.intentName}" => intent
+    "${slot_type.bot_name}_${intent.config.intentName}" => intent
   }
     bot_id         = aws_lexv2models_bot.this["${each.value.bot_name}"].id
     bot_version    = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].bot_version
@@ -196,10 +196,10 @@ resource "aws_lexv2models_slot" "this" {
 
   bot_id      = aws_lexv2models_bot.this["${each.value.bot_name}"].id
   bot_version = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].bot_version
-  intent_id   = aws_lexv2models_intent.this["${each.value.config.intentName}"].id
+  intent_id   = aws_lexv2models_intent.this["${slot_type.bot_name}_${each.value.config.intentName}"].id
   locale_id   = aws_lexv2models_bot_locale.this["${each.value.bot_name}"].locale_id
   name        = each.value.config.slotName
-  slot_type_id = aws_lexv2models_slot_type.this["${each.value.config.slotTypeName}"].id
+  slot_type_id = aws_lexv2models_slot_type.this["${slot_type.bot_name}_${each.value.config.slotTypeName}"].id
   description  = each.value.config.description
 
   value_elicitation_setting {
