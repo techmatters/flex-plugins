@@ -72,18 +72,11 @@ export const fetchApi = async (baseUrl: URL, endpointPath: string, options: Fetc
   } catch (err) {
     throw new ApiError(err.message, {}, err);
   }
-
   if (!response.ok) {
-    let body;
-    try {
-      body = await response.json();
-    } catch (err) {
-      body = await response.text();
+    if (response.status === 404) {
+      return null;
     }
-    if (returnNullFor404 && response.status === 404) {
-      return undefined;
-    }
-    throw new ApiError(`Error response: ${response.status} (${response.statusText})`, { response, body });
+    throw new Error(`Error: ${response.status} ${response.statusText}`);
   }
 
   if ((response.headers?.get('Content-Type') ?? '').toLowerCase().includes('json')) {
