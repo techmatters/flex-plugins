@@ -11,7 +11,7 @@
     ],
     "slots": [
       "was_helpful",
-      "would-recommend"
+      "would_recommend"
     ],
     "slot_types" :[
       "yes_no"
