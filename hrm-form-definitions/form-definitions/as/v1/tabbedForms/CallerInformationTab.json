@@ -29,7 +29,7 @@
       { "value": "Other", "label": "Other" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" },
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "streetAddress",
@@ -50,7 +50,7 @@
       { "value": "Unknown", "label": "Unknown"}
     ],
     "required": { "value": true, "message": "RequiredFieldError" },
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "district",
@@ -85,25 +85,25 @@
       ]
     },
     "required": { "value": true, "message": "RequiredFieldError" },
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "postalCode",
     "label": "Postal Code",
     "type": "input",
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "phone1",
     "label": "Phone #1",
     "type": "input",
-    "isPii": true
+    "isPII": true
   },
   {
     "name": "phone2",
     "label": "Phone #2",
     "type": "input",
-    "isPii": true
+    "isPII": true
   },
   {
     "name": "gender",
@@ -115,7 +115,7 @@
       { "value": "Girl", "label": "Girl" },
       { "value": "Non-Binary", "label": "Non-Binary" }
     ],
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "age",
@@ -188,7 +188,7 @@
       { "value": "Unknown", "label": "Unknown" },
       { "value": "Other", "label": "Other" }
     ],
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "language",
@@ -202,12 +202,12 @@
       { "value": "Bemba", "label": "Bemba" },
       { "value": "Other", "label": "Other" }
     ] ,
-    "isPii": false 
+    "isPII": false 
   },
   {
     "name": "ethnicity",
     "label": "Ethnicity",
     "type": "input",
-    "isPii": false
+    "isPII": false
   }
 ]

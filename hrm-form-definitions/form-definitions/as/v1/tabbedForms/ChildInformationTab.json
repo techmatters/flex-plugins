@@ -74,7 +74,7 @@
     "name": "city",
     "label": "City",
     "type": "input",
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "province",
@@ -89,7 +89,7 @@
       { "value": "Unknown", "label": "Unknown"}
     ],
     "required": { "value": true, "message": "RequiredFieldError" },
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "district",
@@ -124,13 +124,13 @@
       ]
     },
     "required": { "value": true, "message": "RequiredFieldError" },
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "postalCode",
     "label": "Postal Code",
     "type": "input",
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "phone1",
@@ -156,19 +156,19 @@
       { "value": "Bemba", "label": "Bemba" },
       { "value": "Other", "label": "Other" }
     ] ,
-    "isPii": false 
+    "isPII": false 
   },
   {
     "name": "ethnicity",
     "label": "Ethnicity",
     "type": "input",
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "schoolName",
     "label": "School Name",
     "type": "input",
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "gradeLevel",
@@ -182,7 +182,7 @@
       { "value": "Grade 10 to 12", "label": "Grade 10 to 12" },
       { "value": "Out of school", "label": "Out of school" }
     ],
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "livingSituation",
@@ -199,7 +199,7 @@
       { "value": "With relatives", "label": "With relatives" },
       { "value": "Other", "label": "Other" }
     ],
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "vulnerableGroups",
@@ -247,7 +247,7 @@
         "label": "Other"
       }
     ],
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "region",
@@ -259,6 +259,6 @@
       { "value": "Rural areas", "label": "Rural areas" },
       { "value": "Town & semi-dense areas", "label": "Town & semi-dense areas" }
     ],
-    "isPii": false
+    "isPII": false
   }
 ]

@@ -10,7 +10,7 @@
     "name": "repeatCaller",
     "label": "Repeat Caller?",
     "type": "checkbox",
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "urgencyLevel",
@@ -24,7 +24,7 @@
       { "value": "Non-critical", "label": "Non-critical" },
       { "value": "Other", "label": "Other" }
     ],
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "actionTaken",
@@ -42,7 +42,7 @@
       { "value": "Reports to Child Sexual Abuse Material", "label": "Reports to Child Sexual Abuse Material" },
       { "value": "Other", "label": "Other" }
     ],
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "howDidYouKnowAboutOurLine",
@@ -56,44 +56,44 @@
       { "value": "School", "label": "School" },
       { "value": "Others", "label": "Others" }
     ],
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "keepConfidential",
     "label": "Keep confidential?",
     "type": "mixed-checkbox",
     "initialChecked": true,
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "mustCallBack",
     "label": "Is it necessary for a case worker to call back?",
     "type": "mixed-checkbox",
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "okForCaseWorkerToCall",
     "label": "Is it okay for case worker to call?",
     "type": "mixed-checkbox",
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "didYouDiscussRightsWithTheChild",
     "label": "Did you discuss rights with the child?",
     "type": "mixed-checkbox",
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "didTheChildFeelWeSolvedTheirProblem",
     "label": "Did the child feel we solved their problem?",
     "type": "mixed-checkbox",
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "wouldTheChildRecommendUsToAFriend",
     "label": "Would the child recommend us to a friend?",
     "type": "mixed-checkbox",
-    "isPii": false
+    "isPII": false
   },
   {
     "name": "referrals",
@@ -101,6 +101,6 @@
     "type": "custom-contact-component",
     "component": "resource-referral-list",
     "saveable": false,
-    "isPii": false
+    "isPII": false
   }
 ]
