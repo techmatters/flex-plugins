@@ -31,12 +31,15 @@ import {
   SaveAndEndButton,
 } from '../../styles';
 import getCanEditInProgressContact from '../../permissions/canEditInProgressContact';
-import { newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction } from '../../states/contacts/saveContact';
+import {
+  newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction,
+  loadContactFromHrmByIdAsyncAction,
+} from '../../states/contacts/saveContact';
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { RootState } from '../../states';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { checkTaskAssignment } from '../../services/twilioTaskService';
-import { getContactById } from '../../services/ContactService';
+import { Contact } from '../../types/types';
 
 type ContactBannersProps = {
   contactId: string;
@@ -59,8 +62,9 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
   ]);
 
   const checkContactFinalization = async (contactId: string, retries = 3, delay = 1000) => {
+    const { contact } = await loadContactFromHrmByIdAsyncAction(savedContact.id).payload;
+
     try {
-      const contact = await getContactById(contactId);
       if (contact?.finalizedAt) {
         setShowResolvedBanner(true);
         if (!contact?.conversationMedia.length) {
