@@ -16,7 +16,7 @@
 
 import { capitalize } from 'lodash';
 import { startOfDay, format } from 'date-fns';
-import {TaskSID} from "../twilioTypes";
+import { TaskSID } from '../twilioTypes';
 
 type MapperFunction = (options: string[]) => (value: string) => string;
 
@@ -128,6 +128,7 @@ export type HrmContact = {
   channelSid: string;
   serviceSid: string;
   caseId?: string;
+  definitionVersion: string;
 };
 
 type FormValue = string | string[] | boolean | null;

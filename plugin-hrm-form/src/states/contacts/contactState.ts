@@ -80,6 +80,7 @@ export const newContact = (definitions: DefinitionVersion, task?: ITask | Offlin
   return {
     accountSid: null,
     id: '',
+    definitionVersion: '',
     twilioWorkerId: null,
     timeOfContact: new Date().toISOString(),
     taskId: null,
