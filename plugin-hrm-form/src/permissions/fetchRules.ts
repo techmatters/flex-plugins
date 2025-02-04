@@ -18,7 +18,7 @@ import type { RulesFile } from '.';
 import { fetchPermissionRules } from '../services/PermissionsService';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 
-export const fetchRules = async (permissionConfig?: string): Promise<RulesFile> => {
+export const fetchRules = async (): Promise<RulesFile> => {
   const { enable_permissions_from_backend: enablePermissionsFromBackend } = getAseloFeatureFlags();
 
   try {
@@ -28,9 +28,6 @@ export const fetchRules = async (permissionConfig?: string): Promise<RulesFile> 
 
     // If backend permissions are disabled, load the appropriate permission config
     const { permissionConfig } = getHrmConfig();
-    if (!permissionConfig) {
-      throw new Error('>>> No permission config specified in HRM config');
-    }
 
     try {
       console.log('>>> Loading permission config', permissionConfig);
