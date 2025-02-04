@@ -125,7 +125,7 @@ resource "aws_lexv2models_intent" "this" {
     closing_setting {
         active = each.value.config.intentClosingSetting.active
         dynamic "closing_response" {
-            for_each = can(each.value.config.intentClosingSetting.closingResponse) ? [each.value.config.intentClosingSetting.closingResponse] : []
+            for_each = each.value.config.intentClosingSetting.closingResponse != null ? [each.value.config.intentClosingSetting.closingResponse] : []
             content {
                 allow_interrupt = closing_response.value.allowInterrupt
                 message_group {
