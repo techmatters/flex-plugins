@@ -348,7 +348,7 @@ resource "null_resource" "update_intent_slots" {
         --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
         --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.intent_name}"].id)[0]} \
         --intent-name ${each.value.intent_name} \
-        --slot-priorities "[{\"priority\": ${each.value.priority}, \"slotId\": \"${aws_lexv2models_slot.this["${each.value.intent_name}_${each.value.slot_name}"].id}\"}]"
+        --slot-priorities "[{\"priority\": ${each.value.priority}, \"slotId\": \"${split(",", aws_lexv2models_slot.this["${each.value.intent_name}_${each.value.slot_name}"].id)[4]}\"}]"
         EOT
     }
     depends_on = [
