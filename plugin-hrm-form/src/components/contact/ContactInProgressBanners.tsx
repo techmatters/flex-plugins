@@ -129,7 +129,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
         </BannerContainer>
       )}
       {showResolvedBanner && (
-        <BannerContainer color="blue" style={{ paddingY: '12px', marginY: '10px' }}>
+        <BannerContainer color="blue" style={{ padding: '12px 0', margin: '10px 0' }}>
           <Flex width="100%" justifyContent="space-between" alignItems="center">
             <InfoIcon color="#001489" />
             <BannerText>
