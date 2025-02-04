@@ -16,7 +16,7 @@
 
 import fetchProtectedApi from './fetchProtectedApi';
 import { TaskSID } from '../types/twilio';
-import { ApiError } from './fetchApi';
+import { FetchOptions } from './fetchApi';
 
 /**
  * Creates a new task (offline contact) in behalf of targetSid worker with attributes. Other attributes for routing are added to the task in the implementation of assignOfflineContact serverless function
@@ -75,17 +75,20 @@ export const checkTaskAssignment = async (taskSid: string) => {
   return fetchProtectedApi('/checkTaskAssignment', body);
 };
 
-export const getTask = async (taskSid: string): Promise<ITask> => {
+type GetTaskAndReservationsResponse = {
+  task?: ITask;
+  reservations?: any[] | undefined;
+} | null;
+
+export const getTaskAndReservations = async (taskSid: string): Promise<GetTaskAndReservationsResponse> => {
   const body = { taskSid };
+  const options: FetchOptions = {
+    returnNullFor404: true,
+  };
   try {
-    return {
-      taskSid,
-      ...(await fetchProtectedApi('/getTask', body)),
-    };
+    return await fetchProtectedApi('/getTaskAndReservations', body, options);
   } catch (error) {
-    if (error instanceof ApiError && error.response.status === 404) {
-      return null;
-    }
+    console.error('An error occurred while fetching task and reservations:', error);
     throw error;
   }
 };

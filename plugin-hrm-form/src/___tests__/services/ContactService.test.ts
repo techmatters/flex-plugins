@@ -33,6 +33,7 @@ import { ContactState } from '../../states/contacts/existingContacts';
 
 const helpline = 'ChildLine';
 const mockGetHrmConfig = getHrmConfig as jest.Mock;
+
 // eslint-disable-next-line no-empty-function
 global.fetch = global.fetch ? global.fetch : () => Promise.resolve(<any>{ ok: true });
 
