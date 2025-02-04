@@ -84,7 +84,6 @@ export const getTaskAndReservations = async (taskSid: string): Promise<GetTaskAn
   const body = { taskSid };
   const options: FetchOptions = {
     returnNullFor404: true,
-    returnUndefinedFor404: true,
   };
   try {
     return await fetchProtectedApi('/getTaskAndReservations', body, options);
