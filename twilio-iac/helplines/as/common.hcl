@@ -18,7 +18,7 @@ locals {
     }
 
     lex_v2_bot_languages = {
-      en_US : ["pre_survey", "post_survey"]
+      en_US : []
     }
 
     workflows = {
