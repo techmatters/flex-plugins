@@ -1,0 +1,119 @@
+{
+  "intentName": "pre_survey",
+  "description": "Pre Survey Intent",
+  "sampleUtterances": [
+    {
+      "utterance": "Hi"
+    },
+    {
+      "utterance": "Hello"
+    },
+    {
+      "utterance": "H"
+    },
+    {
+      "utterance": "I need help"
+    },
+    {
+      "utterance": "help"
+    },
+    {
+      "utterance": "Incoming webchat contact"
+    },
+    {
+      "utterance": "pls"
+    },
+    {
+      "utterance": "Please"
+    },
+    {
+      "utterance": "kill"
+    },
+    {
+      "utterance": "hurt"
+    },
+    {
+      "utterance": "me"
+    }
+  ],
+  "slotPriorities": [
+    {
+      "priority": 1,
+      "slotName": "about_self"
+    },
+    {
+      "priority": 2,
+      "slotName": "age"
+    },
+    {
+      "priority": 3,
+      "slotName": "gender"
+    }
+  ],
+  "intentClosingSetting": {
+    "closingResponse": {
+      "messageGroups": [
+        {
+          "message": {
+            "plainTextMessage": {
+              "value": "We'll transfer you now. Please hold for a counsellor."
+            }
+          }
+        }
+      ],
+      "allowInterrupt": true
+    },
+    "active": true,
+    "nextStep": {
+      "dialogAction": {
+        "type": "EndConversation"
+      },
+      "intent": {}
+    }
+  },
+  "initialResponseSetting": {
+    "initialResponse": {
+      "messageGroups": [
+        {
+          "message": {
+            "plainTextMessage": {
+              "value": "Welcome to the helpline. To help us better serve you, please answer the following three questions."
+            }
+          }
+        }
+      ],
+      "allowInterrupt": true
+    },
+    "nextStep": {
+      "dialogAction": {
+        "type": "InvokeDialogCodeHook"
+      },
+      "intent": {}
+    },
+    "codeHook": {
+      "enableCodeHookInvocation": true,
+      "active": true,
+      "postCodeHookSpecification": {
+        "successNextStep": {
+          "dialogAction": {
+            "type": "ElicitSlot",
+            "slotToElicit": "caller_type"
+          },
+          "intent": {}
+        },
+        "failureNextStep": {
+          "dialogAction": {
+            "type": "EndConversation"
+          },
+          "intent": {}
+        },
+        "timeoutNextStep": {
+          "dialogAction": {
+            "type": "EndConversation"
+          },
+          "intent": {}
+        }
+      }
+    }
+  }
+}

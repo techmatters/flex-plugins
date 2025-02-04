@@ -1,119 +1,111 @@
 {
-  "intentName": "pre_survey",
-  "description": "Pre Survey Intent",
-  "sampleUtterances": [
-    {
-      "utterance": "Hi"
-    },
-    {
-      "utterance": "Hello"
-    },
-    {
-      "utterance": "H"
-    },
-    {
-      "utterance": "I need help"
-    },
-    {
-      "utterance": "help"
-    },
-    {
-      "utterance": "Incoming webchat contact"
-    },
-    {
-      "utterance": "pls"
-    },
-    {
-      "utterance": "Please"
-    },
-    {
-      "utterance": "kill"
-    },
-    {
-      "utterance": "hurt"
-    },
-    {
-      "utterance": "me"
-    }
-  ],
-  "slotPriorities": [
-    {
-      "priority": 1,
-      "slotName": "caller_type"
-    },
-    {
-      "priority": 2,
-      "slotName": "age"
-    },
-    {
-      "priority": 3,
-      "slotName": "gender"
-    }
-  ],
-  "intentClosingSetting": {
-    "closingResponse": {
-      "messageGroups": [
+    "intentName": "staging_as_en_US_pre_survey",
+    "description": "Survey intent",
+    "sampleUtterances": [
         {
-          "message": {
-            "plainTextMessage": {
-              "value": "We'll transfer you now. Please hold for a counsellor."
-            }
-          }
-        }
-      ],
-      "allowInterrupt": true
-    },
-    "active": true,
-    "nextStep": {
-      "dialogAction": {
-        "type": "EndConversation"
-      },
-      "intent": {}
-    }
-  },
-  "initialResponseSetting": {
-    "initialResponse": {
-      "messageGroups": [
+            "utterance": "trigger_pre_survey"
+        },
         {
-          "message": {
-            "plainTextMessage": {
-              "value": "Welcome to the helpline. To help us better serve you, please answer the following three questions."
+            "utterance": "Incoming webchat contact"
+        }
+    ],
+    "dialogCodeHook": {
+        "enabled": false
+    },
+    "fulfillmentCodeHook": {
+        "enabled": false,
+        "postFulfillmentStatusSpecification": {
+            "successNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "timeoutNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
             }
-          }
         }
-      ],
-      "allowInterrupt": true
     },
-    "nextStep": {
-      "dialogAction": {
-        "type": "InvokeDialogCodeHook"
-      },
-      "intent": {}
-    },
-    "codeHook": {
-      "enableCodeHookInvocation": true,
-      "active": true,
-      "postCodeHookSpecification": {
-        "successNextStep": {
-          "dialogAction": {
-            "type": "ElicitSlot",
-            "slotToElicit": "caller_type"
-          },
-          "intent": {}
+    "slotPriorities": [
+        {
+            "priority": 3,
+            "slotName": "age"
         },
-        "failureNextStep": {
-          "dialogAction": {
-            "type": "EndConversation"
-          },
-          "intent": {}
+        {
+            "priority": 1,
+            "slotName": "about_self"
         },
-        "timeoutNextStep": {
-          "dialogAction": {
-            "type": "EndConversation"
-          },
-          "intent": {}
+        {
+            "priority": 2,
+            "slotName": "gender"
         }
-      }
+    ],
+    "intentClosingSetting": {
+        "closingResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "We'll transfer you now. Please hold for a counsellor."
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "EndConversation"
+            },
+            "intent": {}
+        }
+    },
+    "botId": "WVEUGTTVHH",
+    "botVersion": "DRAFT",
+    "localeId": "en_US",
+    "creationDateTime": 1738682320.391,
+    "lastUpdatedDateTime": 1738682730.642,
+    "initialResponseSetting": {
+        "nextStep": {
+            "dialogAction": {
+                "type": "InvokeDialogCodeHook"
+            },
+            "intent": {}
+        },
+        "codeHook": {
+            "enableCodeHookInvocation": true,
+            "active": true,
+            "postCodeHookSpecification": {
+                "successNextStep": {
+                    "dialogAction": {
+                        "type": "ElicitSlot",
+                        "slotToElicit": "aboutSelf"
+                    },
+                    "intent": {}
+                },
+                "failureNextStep": {
+                    "dialogAction": {
+                        "type": "EndConversation"
+                    },
+                    "intent": {}
+                },
+                "timeoutNextStep": {
+                    "dialogAction": {
+                        "type": "EndConversation"
+                    },
+                    "intent": {}
+                }
+            }
+        }
     }
-  }
 }

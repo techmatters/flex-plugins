@@ -9,7 +9,7 @@
       "pre_survey"
     ],
     "slots": [
-      "caller_type",
+      "about_self",
       "age",
       "gender"
     ],

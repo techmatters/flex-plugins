@@ -484,7 +484,7 @@ aws lexv2-models describe-bot-locale --bot-id C6HUSTIFBR --bot-version DRAFT --l
 
 
 
-aws lexv2-models describe-intent --intent-id PBKSDSQGK0 --bot-id C6HUSTIFBR --bot-version DRAFT --locale-id en_US
+aws lexv2-models describe-intent --intent-id IOCGXECPOX --bot-id C6HUSTIFBR --bot-version DRAFT --locale-id en_US
 
 {
     "intentId": "PBKSDSQGK0",
