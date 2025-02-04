@@ -277,21 +277,20 @@ export const getRules = () => rules;
 
 export const validateAndSetPermissionRules = async () => {
   try {
-    const { enable_permissions_from_backend } = getAseloFeatureFlags();
+    const { enable_permissions_from_backend: enablePermissionsFromBackend } = getAseloFeatureFlags();
 
-    if (!enable_permissions_from_backend) {
-      // If new permissions service is enabled, fetch rules from backend
+    if (enablePermissionsFromBackend) {
+      // If permissions service is enabled, fetch rules from backend
       console.log('>>> Fetching permission rules from backend');
       const rulesFile = await fetchRules();
       validateTKActions(rulesFile);
       rules = rulesFile;
     } else {
-      // If new permissions service is not enabled, load local rules
+      // If permissions service is not enabled, load local rules
       const { permissionConfig } = getHrmConfig();
-      const rulesFile = await fetchRules();
-      console.log('>>> Fetched permission rules from local file', permissionConfig, rulesFile);
-      validateTKActions(rulesFile);
-      rules = rulesFile;
+      console.log('>>> Using permission rules from local config', permissionConfig);
+      validateTKActions(permissionConfig);
+      rules = permissionConfig;
     }
     return rules;
   } catch (err) {
