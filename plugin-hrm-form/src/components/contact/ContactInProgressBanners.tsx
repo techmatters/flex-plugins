@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Close } from '@material-ui/icons';
 import { Template, Manager, Notifications, NotificationType, NotificationBar } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
@@ -49,6 +49,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
   const savedContact = useSelector((state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact);
   const [showResolvedBanner, setShowResolvedBanner] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [finalizeRequested, setFinalizeRequested] = useState(false);
 
   const dispatch = useDispatch();
   const workerRoles = Manager.getInstance().workerClient.attributes.roles;
@@ -61,30 +62,20 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
     workerRoles,
   ]);
 
-  const checkContactFinalization = async (contactId: string, retries = 3, delay = 1000) => {
-    const { contact } = await loadContactFromHrmByIdAsyncAction(savedContact.id).payload;
-
-    try {
-      if (contact?.finalizedAt) {
-        setShowResolvedBanner(true);
-        if (!contact?.conversationMedia.length) {
-          Notifications.registerNotification({
-            id: 'NoConversationMediaNotification',
-            closeButton: true,
-            content: <Template code="ContactDetails-NoConversationMediaNotification" />,
-            type: NotificationType.warning,
-          });
-          Notifications.showNotification('NoConversationMediaNotification');
-        }
-        return;
+  useEffect(() => {
+    if (finalizeRequested && savedContact.finalizedAt) {
+      setShowResolvedBanner(true);
+      if (!savedContact.conversationMedia.length) {
+        Notifications.registerNotification({
+          id: 'NoConversationMediaNotification',
+          closeButton: true,
+          content: <Template code="ContactDetails-NoConversationMediaNotification" />,
+          type: NotificationType.warning,
+        });
+        Notifications.showNotification('NoConversationMediaNotification');
       }
-      if (retries > 0) {
-        setTimeout(() => checkContactFinalization(contactId, retries - 1, delay), delay);
-      }
-    } catch (error) {
-      console.error('Failed to check contact finalization status:', error);
     }
-  };
+  }, [finalizeRequested, savedContact]);
 
   const updateAndSaveContact = async () => {
     const updatedContact = {
@@ -96,7 +87,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
     };
     try {
       await dispatch(newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction(updatedContact)).payload;
-      checkContactFinalization(savedContact.id);
+      setFinalizeRequested(true);
     } catch (error) {
       console.error('Failed to save and finalize contact:', error);
     }
