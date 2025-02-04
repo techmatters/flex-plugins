@@ -18,13 +18,14 @@
 import React from 'react';
 import AssignmentIcon from '@material-ui/icons/AssignmentOutlined';
 import { useDispatch } from 'react-redux';
+import { TaskHelper } from '@twilio/flex-ui';
 
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { Row, StyledCSAMReportButton } from '../../styles';
 import { CSAMReportButtonText } from './styles';
 import asyncDispatch from '../../states/asyncDispatch';
 import { newGenerateSummaryAsyncAction } from '../../states/contacts/llmAssistant';
-import { isInMyBehalfITask, isTwilioTask, RouterTask} from '../../types/types';
+import { isInMyBehalfITask, isTwilioTask, RouterTask } from '../../types/types';
 
 type Props = {
   task: RouterTask;
@@ -33,7 +34,7 @@ type Props = {
 const GenerateSummaryButton: React.FC<Props> = ({ task }) => {
   const { enable_llm_summary: enableLlmSummary } = getAseloFeatureFlags();
   const dispatch = asyncDispatch(useDispatch());
-  if (!enableLlmSummary || !isTwilioTask(task) || isInMyBehalfITask(task)) return null;
+  if (!enableLlmSummary || !isTwilioTask(task) || isInMyBehalfITask(task) || TaskHelper.isCallTask(task)) return null;
 
   const handleClick = async () => {
     await dispatch(newGenerateSummaryAsyncAction(task));
