@@ -313,9 +313,7 @@ export const newLoadContactFromHrmForTaskAsyncAction = createAsyncAction(
 export const loadContactFromHrmByIdAsyncAction = createAsyncAction(
   LOAD_CONTACT_FROM_HRM_BY_ID_ACTION,
   async (contactId: string, reference: string = contactId) => {
-    console.log('>>> startloadContactFromHrmByIdAsyncAction', contactId);
     const contact = await getContactById(contactId);
-    console.log('>>> endloadContactFromHrmByIdAsyncAction', contact);
     return {
       contact,
       reference,
