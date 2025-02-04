@@ -31,15 +31,11 @@ import {
   SaveAndEndButton,
 } from '../../styles';
 import getCanEditInProgressContact from '../../permissions/canEditInProgressContact';
-import {
-  newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction,
-  loadContactFromHrmByIdAsyncAction,
-} from '../../states/contacts/saveContact';
+import { newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction } from '../../states/contacts/saveContact';
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { RootState } from '../../states';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { checkTaskAssignment } from '../../services/twilioTaskService';
-import { Contact } from '../../types/types';
 
 type ContactBannersProps = {
   contactId: string;
@@ -133,7 +129,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
         </BannerContainer>
       )}
       {showResolvedBanner && (
-        <BannerContainer color="blue" style={{ paddingTop: '12px', paddingBottom: '12px', margin: '10px' }}>
+        <BannerContainer color="blue" style={{ paddingY: '12px', marginY: '10px' }}>
           <Flex width="100%" justifyContent="space-between" alignItems="center">
             <InfoIcon color="#001489" />
             <BannerText>
