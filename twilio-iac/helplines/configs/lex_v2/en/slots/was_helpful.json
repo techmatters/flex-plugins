@@ -1,6 +1,6 @@
 {
-    "slotName": "wasHelpful",
-    "description": "wasHelpful",
+    "slotName": "was_helpful",
+    "description": "was_helpful",
     "slotTypeName": "yes_no",
     "intentName": "post_survey_yes",
     "valueElicitationSetting": {

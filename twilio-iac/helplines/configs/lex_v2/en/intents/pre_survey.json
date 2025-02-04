@@ -39,7 +39,7 @@
   "slotPriorities": [
     {
       "priority": 1,
-      "slotName": "callerType"
+      "slotName": "caller_type"
     },
     {
       "priority": 2,

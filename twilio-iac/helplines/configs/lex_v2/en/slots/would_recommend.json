@@ -1,6 +1,6 @@
 {
-    "slotName": "wouldRecommend",
-    "description": "wasHelpful",
+    "slotName": "would_recommend",
+    "description": "would_recommend",
     "slotTypeName": "yes_no",
     "intentName": "post_survey_yes",
     "valueElicitationSetting": {

@@ -1,7 +1,7 @@
 {
-    "slotName": "CallerType",
+    "slotName": "caller_type",
     "slotTypeName": "yes_no",
-    "description": "CallerType",
+    "description": "caller_type",
     "intentName": "pre_survey",
     "valueElicitationSetting": {
         "slotConstraint": "Required",

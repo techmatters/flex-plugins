@@ -9,6 +9,16 @@ terraform {
 
 locals {
   name_prefix = "${var.environment}_${var.short_helpline}_${var.language}"
+  intent_slot_pairs = flatten([
+    for intent in var.lex_v2_intents : [
+      for slot in intent.config.slotPriorities : {
+        bot_name     = intent.bot_name
+        intent_name  = intent.config.intentName
+        priority     = slot.priority
+        slot_name    = slot.slotName
+      }
+    ]
+  ])
 }
 
 data "aws_iam_role" "role-lex-v2-bot" {
@@ -321,6 +331,30 @@ resource "aws_lexv2models_slot" "this" {
     }
     */
   }
+}
+
+
+resource "null_resource" "update_intent_slots" {
+    triggers = {
+        always_run = timestamp()
+    }
+    for_each = { for item in local.intent_slot_pairs : "${item.bot_name}_${item.intent_name}_${item.slot_name}" => item }
+
+    provisioner "local-exec" {
+        command = <<EOT
+        aws lexv2-models update-intent \
+        --bot-id ${aws_lexv2models_bot.this[each.value.bot_name].id} \
+        --bot-version ${aws_lexv2models_bot_locale.this[each.value.bot_name].bot_version} \
+        --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
+        --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.intent_name}"].id)[0]} \
+        --intent-name ${each.value.intent_name} \
+        --slot-priorities "[{\"priority\": ${each.value.priority}, \"slotId\": \"${aws_lexv2models_slot.this["${each.value.intent_name}_${each.value.slot_name}"].id}\"}]"
+        EOT
+    }
+    depends_on = [
+    aws_lexv2models_intent.this,
+    aws_lexv2models_slot.this
+  ]
 }
 
 

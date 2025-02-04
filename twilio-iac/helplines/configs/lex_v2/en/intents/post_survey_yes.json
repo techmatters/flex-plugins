@@ -33,11 +33,11 @@
   "slotPriorities": [
     {
       "priority": 1,
-      "slotName": "wasHelpul"
+      "slotName": "was_helpful"
     },
     {
       "priority": 1,
-      "slotName": "wouldRecommend"
+      "slotName": "would_recommend"
     }
   ],
   "intentClosingSetting": {
