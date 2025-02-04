@@ -29,7 +29,8 @@
       { "value": "Other", "label": "Other" },
       { "value": "Unknown", "label": "Unknown" }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPii": false
   },
   {
     "name": "streetAddress",
@@ -48,7 +49,8 @@
       { "value": "Western", "label": "Western" },
       { "value": "Southern", "label": "Southern" }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPii": false
   },
   {
     "name": "district",
@@ -78,22 +80,26 @@
         { "value": "District C", "label": "District C" }
       ]
     },
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPii": false
   },
   {
     "name": "postalCode",
     "label": "Postal Code",
-    "type": "input"
+    "type": "input",
+    "isPii": false
   },    
   {
     "name": "phone1",
     "label": "Phone #1",
-    "type": "input"
+    "type": "input",
+    "isPii": true
   },
   {
     "name": "phone2",
     "label": "Phone #2",
-    "type": "input"
+    "type": "input",
+    "isPii": true
   },
   {
     "name": "gender",
@@ -106,7 +112,8 @@
       { "value": "Non-Binary", "label": "Non-Binary" },
       { "value": "Unknown", "label": "Unknown" }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPii": false
   },
   {
     "name": "age",
@@ -179,7 +186,8 @@
       { "value": "Unknown", "label": "Unknown" },
       { "value": "Other", "label": "Other" }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPii": false
   },
   {
     "name": "language",
@@ -192,17 +200,20 @@
       { "value": "Xhosa", "label": "Xhosa" },
       { "value": "Bemba", "label": "Bemba" },
       { "value": "Other", "label": "Other" }
-    ]  
+    ] ,
+    "isPii": false 
   },
   {
     "name": "ethnicity",
     "label": "Ethnicity",
-    "type": "input"
+    "type": "input",
+    "isPii": false
   },
   {
     "name": "copyToHousehold",
     "label": "This perpetrator is also a household member",
     "type": "copy-to",
-    "target": "households"
+    "target": "households",
+    "isPii": false
   }
 ]

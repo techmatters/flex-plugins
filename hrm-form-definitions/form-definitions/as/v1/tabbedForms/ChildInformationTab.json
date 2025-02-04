@@ -22,7 +22,8 @@
       { "value": "Non-Binary", "label": "Non-Binary" },
       { "value": "Unknown", "label": "Unknown" }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": false
   },
   {
     "name": "age",
@@ -60,7 +61,8 @@
       { "value": ">25", "label": ">25" },
       { "value": "Unknown", "label": "Unknown" }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": false
   },
   {
     "name": "streetAddress",
@@ -71,7 +73,8 @@
   {
     "name": "city",
     "label": "City",
-    "type": "input"
+    "type": "input",
+    "isPii": false
   },
   {
     "name": "province",
@@ -85,7 +88,8 @@
       { "value": "Southern", "label": "Southern" },
       { "value": "Unknown", "label": "Unknown"}
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPii": false
   },
   {
     "name": "district",
@@ -119,12 +123,14 @@
         { "value": "Unknown", "label": "Unknown"}
       ]
     },
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPii": false
   },
   {
     "name": "postalCode",
     "label": "Postal Code",
-    "type": "input"
+    "type": "input",
+    "isPii": false
   },
   {
     "name": "phone1",
@@ -149,17 +155,20 @@
       { "value": "Xhosa", "label": "Xhosa" },
       { "value": "Bemba", "label": "Bemba" },
       { "value": "Other", "label": "Other" }
-    ]  
+    ] ,
+    "isPii": false 
   },
   {
     "name": "ethnicity",
     "label": "Ethnicity",
-    "type": "input"
+    "type": "input",
+    "isPii": false
   },
   {
     "name": "schoolName",
     "label": "School Name",
-    "type": "input"
+    "type": "input",
+    "isPii": false
   },
   {
     "name": "gradeLevel",
@@ -172,7 +181,8 @@
       { "value": "Grade 8 to 9", "label": "Grade 8 to 9" },
       { "value": "Grade 10 to 12", "label": "Grade 10 to 12" },
       { "value": "Out of school", "label": "Out of school" }
-    ]
+    ],
+    "isPii": false
   },
   {
     "name": "livingSituation",
@@ -188,7 +198,8 @@
       { "value": "With parent(s)", "label": "With parent(s)" },
       { "value": "With relatives", "label": "With relatives" },
       { "value": "Other", "label": "Other" }
-    ]
+    ],
+    "isPii": false
   },
   {
     "name": "vulnerableGroups",
@@ -235,7 +246,8 @@
         "value": "Other",
         "label": "Other"
       }
-    ]
+    ],
+    "isPii": false
   },
   {
     "name": "region",
@@ -246,6 +258,7 @@
       { "value": "Cities", "label": "Cities" },
       { "value": "Rural areas", "label": "Rural areas" },
       { "value": "Town & semi-dense areas", "label": "Town & semi-dense areas" }
-    ]
+    ],
+    "isPii": false
   }
 ]
