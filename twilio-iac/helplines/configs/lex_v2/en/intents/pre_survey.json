@@ -84,7 +84,7 @@
                 "successNextStep": {
                     "dialogAction": {
                         "type": "ElicitSlot",
-                        "slotToElicit": "aboutSelf"
+                        "slotToElicit": "about_self"
                     },
                     "intent": {}
                 },
