@@ -154,7 +154,9 @@ resource "aws_lexv2models_intent" "this" {
     dynamic "initial_response_setting" {
         for_each = each.value.config.initialResponseSetting != null ? [each.value.config.initialResponseSetting] : []
         content {
-            initial_response {
+            dynamic "initial_response" {
+                for_each = each.value.config.initialResponseSetting.initialResponse != null ? [each.value.config.initialResponseSetting.initialResponse] : []
+                content {
                 allow_interrupt = initial_response_setting.value.initialResponse.allowInterrupt
                 message_group {
                     dynamic "message" {
@@ -165,6 +167,7 @@ resource "aws_lexv2models_intent" "this" {
                             }
                         }
                     }
+                }
                 }
             }
             next_step {
