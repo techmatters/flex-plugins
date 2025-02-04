@@ -97,7 +97,7 @@
         "successNextStep": {
           "dialogAction": {
             "type": "ElicitSlot",
-            "slotToElicit": "callerType"
+            "slotToElicit": "caller_type"
           },
           "intent": {}
         },
