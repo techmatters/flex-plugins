@@ -295,6 +295,7 @@ export type FeatureFlags = {
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
   enable_backend_manual_pulling: boolean; // Enables Backend Manual Pulling
   enable_backend_hrm_contact_creation: boolean; // If this is enabled, HRM contact creation is initiated from a task router handler rather than from the Flex plugin
+  enable_llm_summary: boolean; // Enables generation of suggested contact summaries via an LLM
 };
 /* eslint-enable camelcase */
 

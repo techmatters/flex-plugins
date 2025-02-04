@@ -68,6 +68,7 @@ import {
 } from '../search/types';
 import { GET_CASE_TIMELINE_ACTION_FULFILLED, isContactTimelineActivity } from '../case/types';
 import { GetTimelineAsyncAction } from '../case/timeline';
+import {llmAssistantReducer} from "./llmAssistant";
 
 export const emptyCategories = [];
 
@@ -83,6 +84,8 @@ export const initialState: ContactsState = {
 
 const boundReferralReducer = resourceReferralReducer(initialState);
 const boundSaveContactReducer = saveContactReducer(initialState);
+const boundLlmAssistantReducer = llmAssistantReducer(initialState);
+
 type SaveContactReducerAction = Parameters<typeof boundSaveContactReducer>[1] &
   { type:
     // eslint-disable-next-line prettier/prettier
@@ -90,6 +93,8 @@ type SaveContactReducerAction = Parameters<typeof boundSaveContactReducer>[1] &
       | typeof UPDATE_CONTACT_ACTION
       | typeof SET_SAVED_CONTACT}_${string}`
   };
+
+type LlmAssistantReducerAction = Parameters<typeof boundLlmAssistantReducer>[1]
 
 const newCaseReducer = createReducer(initialState, handleAction => [
   handleAction(
@@ -150,6 +155,8 @@ export function reduce(
   state = toggleSubCategoriesReducer(state, inputAction as ContactCategoryAction);
   state = newCaseReducer(state, inputAction as any);
   state = boundSaveContactReducer(state, inputAction as SaveContactReducerAction);
+  state = boundLlmAssistantReducer(state, inputAction as LlmAssistantReducerAction);
+
   const action: Exclude<typeof inputAction, SaveContactReducerAction> = inputAction as any;
   switch (action.type) {
     case REMOVE_CONTACT_STATE: {
