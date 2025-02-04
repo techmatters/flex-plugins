@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { ApiError, fetchApi } from './fetchApi';
+import { ApiError, fetchApi, FetchOptions } from './fetchApi';
 import { getHrmConfig } from '../hrmConfig';
 import { getValidToken } from '../authentication';
 
@@ -38,7 +38,7 @@ export class ProtectedApiError extends ApiError {
  * @param {{ [k: string]: any }} body Same options object that will be passed to the fetch function (here you can include the BODY of the request)
  * @returns {Promise<any>} the api response (if not error)
  */
-const fetchProtectedApi = async (endPoint, body: Record<string, string> = {}) => {
+const fetchProtectedApi = async (endPoint, body: Record<string, string> = {}, fetchOptions?: FetchOptions) => {
   const { serverlessBaseUrl } = getHrmConfig();
   const token = getValidToken();
   if (token instanceof Error) throw new ApiError(`Aborting request due to token issue: ${token.message}`, {}, token);
@@ -48,6 +48,7 @@ const fetchProtectedApi = async (endPoint, body: Record<string, string> = {}) =>
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
     },
+    ...fetchOptions,
   };
   try {
     return await fetchApi(new URL(serverlessBaseUrl), endPoint, options);

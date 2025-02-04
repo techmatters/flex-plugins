@@ -34,6 +34,7 @@ export const eventTypes: EventType[] = [RESERVATION_ACCEPTED];
 
 const BLANK_CONTACT: HrmContact = {
   id: '',
+  definitionVersion: '',
   timeOfContact: '',
   taskId: null,
   helpline: '',
@@ -129,6 +130,7 @@ export const handleEvent = async (
 
   const newContact: HrmContact = {
     ...BLANK_CONTACT,
+    definitionVersion,
     channel: (customChannelType || channelType) as HrmContact['channel'],
     rawJson: {
       definitionVersion,

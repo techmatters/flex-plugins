@@ -186,6 +186,7 @@ export type Contact = {
   channelSid: string;
   serviceSid: string;
   caseId?: string;
+  definitionVersion: string;
 };
 
 

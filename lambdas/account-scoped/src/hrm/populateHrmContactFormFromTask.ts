@@ -126,6 +126,7 @@ export type HrmContact = {
   channelSid: string;
   serviceSid: string;
   caseId?: string;
+  definitionVersion: string;
 };
 
 type FormValue = string | string[] | boolean | null;

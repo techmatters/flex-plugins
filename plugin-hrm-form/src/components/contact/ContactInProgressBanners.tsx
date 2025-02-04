@@ -14,9 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Close } from '@material-ui/icons';
-import { Template, Manager } from '@twilio/flex-ui';
+import { Template, Manager, Notifications, NotificationType, NotificationBar } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
 
 import InfoIcon from '../caseMergingBanners/InfoIcon';
@@ -45,10 +45,11 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
   const savedContact = useSelector((state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact);
   const [showResolvedBanner, setShowResolvedBanner] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [finalizeRequested, setFinalizeRequested] = useState(false);
 
   const dispatch = useDispatch();
   const workerRoles = Manager.getInstance().workerClient.attributes.roles;
-  const isDraft = !savedContact.finalizedAt;
+  const isDraftContact = savedContact.finalizedAt;
 
   const enableInProgressContacts = getAseloFeatureFlags().enable_save_in_progress_contacts;
 
@@ -56,6 +57,22 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
     savedContact,
     workerRoles,
   ]);
+
+  useEffect(() => {
+    if (finalizeRequested && savedContact.finalizedAt) {
+      setShowResolvedBanner(true);
+      if (!savedContact.conversationMedia.length) {
+        Notifications.registerNotification({
+          id: 'NoConversationMediaNotification',
+          closeButton: true,
+          content: <Template code="ContactDetails-NoConversationMediaNotification" />,
+          type: NotificationType.warning,
+        });
+        Notifications.showNotification('NoConversationMediaNotification');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [finalizeRequested, isDraftContact]);
 
   const updateAndSaveContact = async () => {
     const updatedContact = {
@@ -65,8 +82,12 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
         ...savedContact.rawJson,
       },
     };
-    dispatch(newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction(updatedContact));
-    setShowResolvedBanner(true);
+    try {
+      await dispatch(newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction(updatedContact)).payload;
+      setFinalizeRequested(true);
+    } catch (error) {
+      console.error('Failed to save and finalize contact:', error);
+    }
   };
 
   const handleSaveAndEnd = async () => {
@@ -90,7 +111,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
 
   return (
     <>
-      {isDraft && (
+      {!isDraftContact && (
         <BannerContainer color="yellow">
           <Flex width="100%" alignItems="center">
             <InfoIcon color="#fed44b" />
@@ -108,7 +129,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
         </BannerContainer>
       )}
       {showResolvedBanner && (
-        <BannerContainer color="blue" style={{ paddingTop: '12px', paddingBottom: '12px', marginTop: '10px' }}>
+        <BannerContainer color="blue" style={{ padding: '12px 0', margin: '10px 0' }}>
           <Flex width="100%" justifyContent="space-between" alignItems="center">
             <InfoIcon color="#001489" />
             <BannerText>
