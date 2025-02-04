@@ -48,15 +48,9 @@ export type Perpetrator = { [key: string]: string | boolean };
 
 export type Incident = { [key: string]: string | boolean };
 
-export type IncidentEntry = { incident: Incident } & EntryInfo;
-
 export type Note = { [key: string]: string | boolean };
 
-export type NoteEntry = Note & EntryInfo;
-
 export type Referral = { date: string; referredTo: string; [key: string]: string | boolean };
-
-export type ReferralEntry = Referral & EntryInfo;
 
 export type Document = { [key: string]: string | boolean };
 
@@ -161,8 +155,6 @@ export type ContactRawJson = {
   categories: Record<string, string[]>;
   contactlessTask: {
     channel: ChannelTypes;
-    date: string;
-    time: string;
     createdOnBehalfOf: WorkerSID;
     [key: string]: string | boolean;
   };

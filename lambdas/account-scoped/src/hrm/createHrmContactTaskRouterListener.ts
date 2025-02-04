@@ -35,7 +35,7 @@ export const eventTypes: EventType[] = [RESERVATION_ACCEPTED];
 const BLANK_CONTACT: HrmContact = {
   id: '',
   definitionVersion: '',
-  timeOfContact: new Date().toISOString(),
+  timeOfContact: '',
   taskId: null,
   helpline: '',
   rawJson: {
@@ -142,8 +142,9 @@ export const handleEvent = async (
     serviceSid: (channelSid && serviceConfig.chatServiceInstanceSid) ?? '',
     // We set createdBy to the workerSid because the contact is 'created' by the worker who accepts the task
     createdBy: workerSid as HrmContact['createdBy'],
+    timeOfContact: new Date().toISOString(),
   };
-
+  console.debug('Creating HRM contact with timeOfContact:', newContact.timeOfContact);
   const populatedContact = await populateHrmContactFormFromTask(
     taskAttributes,
     newContact,

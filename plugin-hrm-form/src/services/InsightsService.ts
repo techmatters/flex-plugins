@@ -26,10 +26,10 @@ import {
   OneToManyConfigSpecs,
   OneToOneConfigSpec,
 } from 'hrm-form-definitions';
+import { parseISO } from 'date-fns';
 
 import { isNonDataCallType } from '../states/validationRules';
 import { formatCategories, mapChannelForInsights } from '../utils';
-import { getDateTime } from '../utils/helpers';
 import { Case, Contact, ContactRawJson, CustomITask, WellKnownCaseSection } from '../types/types';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import {
@@ -169,13 +169,12 @@ const baseUpdates: InsightsUpdateFunction = (
 
 const contactlessTaskUpdates: InsightsUpdateFunction = (
   attributes: TaskAttributes,
-  { rawJson: { contactlessTask } }: Contact,
+  { timeOfContact }: Contact,
 ): InsightsAttributes => {
   if (!attributes.isContactlessTask) {
     return {};
   }
-  const { date, time } = contactlessTask;
-  const dateTime = getDateTime({ date: date as string, time: time as string });
+  const dateTime = parseISO(timeOfContact).getTime();
 
   return {
     conversations: {
