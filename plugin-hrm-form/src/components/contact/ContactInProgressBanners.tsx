@@ -53,7 +53,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
 
   const dispatch = useDispatch();
   const workerRoles = Manager.getInstance().workerClient.attributes.roles;
-  const isDraft = !savedContact.finalizedAt;
+  const isDraftContact = savedContact.finalizedAt;
 
   const enableInProgressContacts = getAseloFeatureFlags().enable_save_in_progress_contacts;
 
@@ -75,7 +75,8 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
         Notifications.showNotification('NoConversationMediaNotification');
       }
     }
-  }, [finalizeRequested, savedContact]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [finalizeRequested, isDraftContact]);
 
   const updateAndSaveContact = async () => {
     const updatedContact = {
@@ -114,7 +115,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
 
   return (
     <>
-      {isDraft && (
+      {!isDraftContact && (
         <BannerContainer color="yellow">
           <Flex width="100%" alignItems="center">
             <InfoIcon color="#fed44b" />
