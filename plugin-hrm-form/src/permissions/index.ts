@@ -289,8 +289,10 @@ export const validateAndSetPermissionRules = async () => {
       // If permissions service is not enabled, load local rules
       const { permissionConfig } = getHrmConfig();
       console.log('>>> Using permission rules from local config', permissionConfig);
-      validateTKActions(permissionConfig);
-      rules = permissionConfig;
+      const rulesFile = await fetchRules(permissionConfig);
+
+      validateTKActions(rulesFile);
+      rules = rulesFile;
     }
     return rules;
   } catch (err) {

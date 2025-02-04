@@ -18,7 +18,7 @@ import type { RulesFile } from '.';
 import { fetchPermissionRules } from '../services/PermissionsService';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 
-export const fetchRules = async (): Promise<RulesFile> => {
+export const fetchRules = async (permissionConfig?: string): Promise<RulesFile> => {
   const { enable_permissions_from_backend: enablePermissionsFromBackend } = getAseloFeatureFlags();
 
   try {
@@ -33,6 +33,7 @@ export const fetchRules = async (): Promise<RulesFile> => {
     }
 
     try {
+      console.log('>>> Loading permission config', permissionConfig);
       // eslint-disable-next-line global-require
       return require(`./${permissionConfig}.json`);
     } catch (err) {
