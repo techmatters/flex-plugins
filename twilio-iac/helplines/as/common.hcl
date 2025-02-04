@@ -17,6 +17,10 @@ locals {
       en_US : ["pre_survey", "post_survey"]
     }
 
+    lex_v2_bot_languages = {
+      en_US : []
+    }
+
     workflows = {
       master : {
         friendly_name = "Master Workflow"

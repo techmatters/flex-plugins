@@ -47,6 +47,7 @@ locals {
   short_helpline    = include.root.locals.config.short_helpline
   environment       = include.root.locals.config.environment
   lex_bot_languages = include.root.locals.config.lex_bot_languages
+  lex_v2_bot_languages = include.root.locals.config.lex_v2_bot_languages
   enable_lex_v2     = include.root.locals.config.enable_lex_v2
 
   lex_bots = tomap({
@@ -112,7 +113,7 @@ locals {
   })
 
   lex_v2_bots = local.enable_lex_v2 ? tomap({
-    for language, bots in local.lex_bot_languages :
+    for language, bots in local.lex_v2_bot_languages :
     language => merge(
       [
         for bot in bots :
@@ -131,7 +132,7 @@ locals {
   print2 = run_cmd("echo", jsonencode(local.lex_v2_bots))
 
   lex_v2_slot_types_names = local.enable_lex_v2 ? tomap({
-    for language, bots in local.lex_bot_languages :
+    for language, bots in local.lex_v2_bot_languages :
     language => distinct(
       flatten([
         for bot_name, bot_config in local.lex_v2_bots[language] : [
@@ -149,7 +150,7 @@ locals {
   print4 = run_cmd("echo", jsonencode(local.lex_v2_slot_types_names))
 
   lex_v2_slot_types = local.enable_lex_v2 ? tomap({
-    for language, bots in local.lex_bot_languages :
+    for language, bots in local.lex_v2_bot_languages :
     language =>
     [
       for slot_type in local.lex_v2_slot_types_names[language] : {
@@ -171,7 +172,7 @@ locals {
 
   
   lex_v2_intent_names = local.enable_lex_v2 ? tomap({
-    for language, bots in local.lex_bot_languages :
+    for language, bots in local.lex_v2_bot_languages :
     language => distinct(
       flatten([
         for bot_name, bot_config in local.lex_v2_bots[language] : [
@@ -187,7 +188,7 @@ locals {
 
 
  lex_v2_intents = local.enable_lex_v2 ? tomap({
-    for language, bots in local.lex_bot_languages :
+    for language, bots in local.lex_v2_bot_languages :
     language =>
     [
       for intent in local.lex_v2_intent_names[language] : {
@@ -210,7 +211,7 @@ locals {
 
 
 lex_v2_slot_names = local.enable_lex_v2 ? tomap({
-    for language, bots in local.lex_bot_languages :
+    for language, bots in local.lex_v2_bot_languages :
     language => distinct(
       flatten([
         for bot_name, bot_config in local.lex_v2_bots[language] : [
@@ -226,7 +227,7 @@ lex_v2_slot_names = local.enable_lex_v2 ? tomap({
 
 
  lex_v2_slots = local.enable_lex_v2 ? tomap({
-    for language, bots in local.lex_bot_languages :
+    for language, bots in local.lex_v2_bot_languages :
     language =>
     [
       for slot in local.lex_v2_slot_names[language] : {
