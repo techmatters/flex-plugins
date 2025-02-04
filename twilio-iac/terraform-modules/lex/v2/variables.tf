@@ -64,10 +64,10 @@ variable "lex_v2_intents" {
         intentName             = string
         description       = string
         sampleUtterances = optional(list(object( {utterance = string})))
-        /*slotPriorities = list(object({
+        slotPriorities = optional(list(object({
           priority  = number
           slotName = string
-        }))*/
+        })))
         intentClosingSetting = object({
           closingResponse = optional(object({
             messageGroups = list(object({
@@ -88,7 +88,7 @@ variable "lex_v2_intents" {
           
           }))
         })
-         initialResponseSetting = optional(object({
+        initialResponseSetting = optional(object({
           initialResponse = optional(object({
             messageGroups = list(object({
               message = object({
