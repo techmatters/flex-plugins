@@ -21,9 +21,6 @@
   "dialogCodeHook": {
     "enabled": false
   },
-  "fulfillmentCodeHook": {
-    "enabled": false
-  },
   "slotPriorities": [],
   "intentClosingSetting": {
     "closingResponse": {

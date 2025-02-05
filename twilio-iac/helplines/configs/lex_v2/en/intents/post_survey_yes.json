@@ -27,9 +27,6 @@
   "dialogCodeHook": {
     "enabled": false
   },
-  "fulfillmentCodeHook": {
-    "enabled": false
-  },
   "slotPriorities": [
     {
       "priority": 1,
