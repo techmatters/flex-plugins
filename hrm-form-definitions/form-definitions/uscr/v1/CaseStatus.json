@@ -9,7 +9,7 @@
     "value": "closed",
     "label": "Closed - No Follow-Up",
     "color": "red",
-    "transitions": ["open", "supportTeamFollowUp", "managedBySupportTeam", "responseTeamFollowUp", ]
+    "transitions": ["open", "supportTeamFollowUp", "managedBySupportTeam", "responseTeamFollowUp"]
   },
   "responseTeamFollowUp": {
     "value": "responseTeamFollowUp",
