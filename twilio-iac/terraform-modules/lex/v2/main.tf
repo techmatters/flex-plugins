@@ -381,8 +381,8 @@ resource "null_resource" "add_intent_utterances" {
         --bot-id ${aws_lexv2models_bot.this[each.value.bot_name].id} \
         --bot-version ${aws_lexv2models_bot_locale.this[each.value.bot_name].bot_version} \
         --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
-        --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intent_name}"].id)[0]} \
-        --intent-name ${each.value.config.intent_name} \
+        --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intentName}"].id)[0]} \
+        --intent-name ${each.value.config.intentName} \
         --sample-utterances ${each.value.config.sampleUtterances}
         EOT
     }
