@@ -42,6 +42,12 @@ resource "aws_lexv2models_bot" "this" {
 }
 
 /*
+If a bot is deleted it might not delete the DRAFT version (this is a bug).
+We can't import it because it fails a constraint that it needs to be a number (this is bug).
+We can't delete it from the console nor using the API AWS command.
+What I ended up doing was to comment this next resource and the reference in the resource that follows
+*/
+
 resource "aws_lexv2models_bot_version" "this" {
   for_each                         = var.lex_v2_bots
   bot_id = aws_lexv2models_bot.this["${each.key}"].id
@@ -50,7 +56,7 @@ resource "aws_lexv2models_bot_version" "this" {
       source_bot_version = "DRAFT"
     }
   }
-}*/
+}
 
 resource "aws_lexv2models_bot_locale" "this" {
   for_each                         = var.lex_v2_bots
@@ -58,7 +64,7 @@ resource "aws_lexv2models_bot_locale" "this" {
   bot_version                      = "DRAFT"
   locale_id                        = each.value.locale
   n_lu_intent_confidence_threshold = 0.70
-  depends_on = [aws_lexv2models_bot.this/*, aws_lexv2models_bot_version.this*/]
+  depends_on = [aws_lexv2models_bot.this, aws_lexv2models_bot_version.this]
 }
 
 resource "aws_lexv2models_slot_type" "this" {
@@ -103,7 +109,9 @@ output "slot_types" {
 }
 
 
-
+/*
+Intents are pretty buggy, nothing is actually added to the intent when the resource is created. *facepalm*
+*/
 
 resource "aws_lexv2models_intent" "this" {
   for_each = {
@@ -285,7 +293,9 @@ resource "aws_lexv2models_slot" "this" {
       }
     }
  
-    
+    /*
+    This is actually documented in the structure, but it is not supported by terraform, no explanation as to why this is *facepalm*
+    */
   /*
     dynamic "capture_setting" {
       for_each = each.value.config.valueElicitationSetting.slotCaptureSetting != null ? [each.value.config.valueElicitationSetting.slotCaptureSetting] : []
@@ -327,7 +337,13 @@ resource "aws_lexv2models_slot" "this" {
   }
 }
 
+/*
+There is a circular dependency here between slots and intents.
+A slot needs to be created with an intent id, and an intent needs to be created with the slot priorities.
+Since I can't reference the slot ids when creating the intent I need to update the intent with the slot priorities as the last step.
+This command doesn't always work, sometimes it only add just one dependency, so I usually run the apply twice.
 
+ */
 resource "null_resource" "update_intent_slots" {
     triggers = {
         always_run = timestamp()
@@ -351,93 +367,32 @@ resource "null_resource" "update_intent_slots" {
   ]
 }
 
-
-
-/*
-resource "aws_lexv2models_slot" "this" {
-  for_each                         = var.lex_v2_bots
-  bot_id      = aws_lexv2models_bot.this["${each.key}"].id
-  bot_version = aws_lexv2models_bot_locale.this["${each.key}"].bot_version
-  intent_id   = split(":", aws_lexv2models_intent.this["${each.key}"].id)[0] 
-  locale_id   = aws_lexv2models_bot_locale.this["${each.key}"].locale_id
-  name        = "${each.key}_slot"
-
-  value_elicitation_setting {
-    slot_constraint = "Required"
-    prompt_specification {
-      allow_interrupt            = true
-      max_retries                = 1
-      message_selection_strategy = "Random"
-
-      message_group {
-        message {
-          plain_text_message {
-            value = "What is your favorite color?"
-          }
-        }
-      }
-
-      prompt_attempts_specification {
-        allow_interrupt = true
-        map_block_key   = "Initial"
-
-        allowed_input_types {
-          allow_audio_input = true
-          allow_dtmf_input  = true
-        }
-
-        audio_and_dtmf_input_specification {
-          start_timeout_ms = 4000
-          audio_specification {
-            max_length_ms = 15000
-            end_timeout_ms = 640
-          }
-          dtmf_specification {
-            max_length = 513
-            end_timeout_ms = 5000
-            deletion_character = "*"
-            end_character = "#"
-          }
-          
-        }
-        text_input_specification {
-          start_timeout_ms = 30000
-        }
-      }
-
-      prompt_attempts_specification {
-        allow_interrupt = true
-        map_block_key   = "Retry1"
-
-       allowed_input_types {
-          allow_audio_input = true
-          allow_dtmf_input  = true
-        }
-
-        audio_and_dtmf_input_specification {
-          start_timeout_ms = 4000
-          audio_specification {
-            max_length_ms = 15000
-            end_timeout_ms = 640
-          }
-          dtmf_specification {
-            max_length = 513
-            end_timeout_ms = 5000
-            deletion_character = "*"
-            end_character = "#"
-          }
-          
-        }
-
-        text_input_specification {
-          start_timeout_ms = 30000
-        }
-      }
-
+resource "null_resource" "add_intent_utterances" {
+    triggers = {
+        always_run = timestamp()
     }
-  }
+    for_each = { for item in local.intent_slot_pairs : "${item.bot_name}_${item.intent_name}_${item.slot_name}" => item }
+
+    provisioner "local-exec" {
+        command = <<EOT
+        aws lexv2-models update-intent \
+        --bot-id ${aws_lexv2models_bot.this[each.value.bot_name].id} \
+        --bot-version ${aws_lexv2models_bot_locale.this[each.value.bot_name].bot_version} \
+        --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
+        --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.intent_name}"].id)[0]} \
+        --intent-name ${each.value.intent_name} \
+        --sample-utterances "[{\"utterance\": \"trigger_pre_survey\"},{\"utterance\": \"Incoming webchat contact\"}]"
+        EOT
+    }
+    depends_on = [
+    aws_lexv2models_intent.this,
+    aws_lexv2models_slot.this
+  ]
 }
-*/
+
+
+
+
 
 
 /*
@@ -446,7 +401,7 @@ aws lexv2-models describe-bot --bot-id C6HUSTIFBR
 {
     "botId": "C6HUSTIFBR",
     "botName": "PreSurveyBot-test",
-    "roleArn": "arn:aws:iam::712893914485:role/aws-service-role/lexv2.amazonaws.com/AWSServiceRoleForLexV2Bots_3KBQGRB7KCE",
+    "roleArn": "arn:aws:iam::123123123:role/aws-service-role/lexv2.amazonaws.com/AWSServiceRoleForLexV2Bots_3KBQGRB7KCE",
     "dataPrivacy": {
         "childDirected": true
     },
