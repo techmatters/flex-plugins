@@ -128,8 +128,8 @@ locals {
     )
   }) : {}
 
-  print  = run_cmd("echo", "lex_v2_bots is:")
-  print2 = run_cmd("echo", jsonencode(local.lex_v2_bots))
+  //leaving for debugging purposes
+  //print2 = run_cmd("echo", jsonencode(local.lex_v2_bots))
 
   lex_v2_slot_types_names = local.enable_lex_v2 ? tomap({
     for language, bots in local.lex_v2_bot_languages :
@@ -146,8 +146,8 @@ locals {
     )
   }) : {}
 
-  print3 = run_cmd("echo", "lex_v2_slot_types_names is:")
-  print4 = run_cmd("echo", jsonencode(local.lex_v2_slot_types_names))
+  //leaving for debugging purposes
+  //print4 = run_cmd("echo", jsonencode(local.lex_v2_slot_types_names))
 
   lex_v2_slot_types = local.enable_lex_v2 ? tomap({
     for language, bots in local.lex_v2_bot_languages :
@@ -167,8 +167,8 @@ locals {
 
 
   }) : {}
-
-  print6 = run_cmd("echo", jsonencode(local.lex_v2_slot_types))
+  //leaving for debugging purposes
+  //print6 = run_cmd("echo", jsonencode(local.lex_v2_slot_types))
 
   
   lex_v2_intent_names = local.enable_lex_v2 ? tomap({
@@ -206,8 +206,8 @@ locals {
 
   }) : {}
 
-
-  print8 = run_cmd("echo", jsonencode(local.lex_v2_intents))
+  //leaving for debugging purposes
+  //print8 = run_cmd("echo", jsonencode(local.lex_v2_intents))
 
 
 lex_v2_slot_names = local.enable_lex_v2 ? tomap({
@@ -244,8 +244,8 @@ lex_v2_slot_names = local.enable_lex_v2 ? tomap({
 
 
   }) : {}
-
-print9 = run_cmd("echo", jsonencode(local.lex_v2_slots))
+//leaving for debugging purposes
+//print9 = run_cmd("echo", jsonencode(local.lex_v2_slots))
 
   local_config = {
     lex_bots          = local.lex_bots

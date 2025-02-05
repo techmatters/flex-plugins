@@ -210,7 +210,7 @@ variable "lex_v2_slots" {
             dialogAction = object({
               type = string
             })
-            intent = optional(map(string)) # Placeholder for intent object
+            intent = optional(map(string))
           })
           failureResponse = object({
             messageGroups = list(object({
@@ -227,7 +227,7 @@ variable "lex_v2_slots" {
               type         = string
               slotToElicit = optional(string)
             })
-            intent = optional(map(string)) # Placeholder for intent object
+            intent = optional(map(string)) 
           })
           elicitationCodeHook = optional(object({
             enableCodeHookInvocation = bool

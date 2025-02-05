@@ -335,34 +335,7 @@ variable "lex_v2_slots" {
             }))
           })))
         }))
-        /*slotCaptureSetting = optional(object({
-          captureNextStep = object({
-            dialogAction = object({
-              type = string
-            })
-            intent = optional(map(string)) # Placeholder for intent object
-          })
-          failureResponse = object({
-            messageGroups = list(object({
-              message = object({
-                plainTextMessage = object({
-                  value = string
-                })
-              })
-            }))
-            allowInterrupt = bool
-          })
-          failureNextStep = object({
-            dialogAction = object({
-              type         = string
-              slotToElicit = optional(string)
-            })
-            intent = optional(map(string)) # Placeholder for intent object
-          })
-          elicitationCodeHook = optional(object({
-            enableCodeHookInvocation = bool
-          }))
-        }))*/
+       
       })
     })
 }))

@@ -49,13 +49,3 @@ output "lex_v2_bot_details" {
     bot_key => bot_value
   }
 }
-
-# module "lexv2" {
-#   source = "../../lex/v2"
-#   count  = var.lex_v2_config == null ? 0 : 1
-
-#   helpline       = var.helpline
-#   short_helpline = var.short_helpline
-#   environment    = var.environment
-#   lex_config     = var.lex_v2_config
-# }
