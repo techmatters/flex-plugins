@@ -383,7 +383,7 @@ resource "null_resource" "add_intent_utterances" {
         --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
         --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intent_name}"].id)[0]} \
         --intent-name ${each.value.config.intent_name} \
-        --sample-utterances "[{\"utterance\": \"trigger_pre_survey\"},{\"utterance\": \"Incoming webchat contact\"}]"
+        --sample-utterances ${each.value.config.sampleUtterances}
         EOT
     }
     depends_on = [
