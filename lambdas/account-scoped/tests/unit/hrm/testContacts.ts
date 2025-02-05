@@ -18,6 +18,7 @@ import { HrmContact } from '../../../src/hrm/populateHrmContactFormFromTask';
 
 export const BLANK_CONTACT: HrmContact = {
   id: '',
+  definitionVersion: '',
   timeOfContact: new Date().toISOString(),
   taskId: null,
   helpline: '',

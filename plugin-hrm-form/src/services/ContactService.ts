@@ -16,10 +16,10 @@
 
 import { TaskHelper } from '@twilio/flex-ui';
 
+import { isChatChannel, isVoiceChannel } from '../states/DomainConstants';
 import { isNonDataCallType } from '../states/validationRules';
 import { getQueryParams } from './PaginationParams';
 import { fetchHrmApi } from './fetchHrmApi';
-import { getDateTime } from '../utils/helpers';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import {
   Contact,
@@ -105,7 +105,11 @@ type HandleTwilioTaskResponse = {
   externalRecordingInfo?: ExternalRecordingInfoSuccess;
 };
 
-export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> => {
+export const handleTwilioTask = async (
+  task,
+  contact?: Contact,
+  reservationSid?: string | undefined,
+): Promise<HandleTwilioTaskResponse> => {
   const returnData: HandleTwilioTaskResponse = {
     conversationMedia: [],
   };
@@ -114,9 +118,13 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
     return returnData;
   }
 
+  const finalReservationSid = reservationSid ?? task.sid;
+  const isChatTask = TaskHelper.isChatBasedTask(task) || (contact && isChatChannel(contact.channel));
+  const isVoiceTask = TaskHelper.isCallTask(task) || (contact && isVoiceChannel(contact.channel));
+  const isCallOrChatTask = isChatTask || isVoiceTask;
+
   try {
-    if (TaskHelper.isChatBasedTask(task)) {
-      // Store a pending transcript
+    if (isChatTask) {
       returnData.conversationMedia.push({
         storeType: 'S3',
         storeTypeSpecificData: {
@@ -126,12 +134,12 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
       });
     }
 
-    if (TaskHelper.isChatBasedTask(task) || TaskHelper.isCallTask(task)) {
-      // Store reservation sid to use Twilio insights overlay (recordings/transcript)
+    // Store reservation sid to use Twilio insights overlay (recordings/transcript)
+    if (isCallOrChatTask) {
       returnData.conversationMedia.push({
         storeType: 'twilio',
         storeTypeSpecificData: {
-          reservationSid: task.sid,
+          reservationSid: finalReservationSid,
         },
       });
     }
@@ -140,20 +148,14 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
 
     const externalRecordingInfo = await getExternalRecordingInfo(task);
     if (isFailureExternalRecordingInfo(externalRecordingInfo)) {
-      console.error(
-        'Failed to get external recording info',
-        externalRecordingInfo.error,
-        'Task:',
-        task,
-        'Return data captured so far:',
-        returnData,
-      );
+      const error = `Failed to get external recording info: ${externalRecordingInfo.error}`;
+      console.error(error, 'Task:', task);
       recordEvent('Backend Error: Get External Recording Info', {
         taskSid: task.taskSid,
-        reservationSid: task.sid,
+        reservationSid: finalReservationSid,
         recordingError: externalRecordingInfo.error,
-        isCallTask: TaskHelper.isCallTask(task),
-        isChatBasedTask: TaskHelper.isChatBasedTask(task),
+        isCallTask: isVoiceTask,
+        isChatBasedTask: isChatTask,
         attributes: JSON.stringify(task.attributes),
       });
       return returnData;
@@ -165,10 +167,7 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
       storeType: 'S3',
       storeTypeSpecificData: {
         type: 'recording',
-        location: {
-          bucket,
-          key,
-        },
+        location: { bucket, key },
       },
     });
   } catch (err) {
@@ -181,6 +180,7 @@ export const handleTwilioTask = async (task): Promise<HandleTwilioTaskResponse> 
       returnData,
     );
   }
+
   return returnData;
 };
 
@@ -196,6 +196,7 @@ export const createContact = async (
   const { definitionVersion } = getHrmConfig();
   const contactForApi: Contact = {
     ...contact,
+    definitionVersion,
     channel: ((task.attributes as any)?.customChannelType || task.channelType) as Contact['channel'],
     rawJson: {
       definitionVersion,
@@ -261,10 +262,6 @@ const saveContactToHrm = async (
 
   // If isOfflineContactTask, send the target Sid as twilioWorkerId value and store workerSid (issuer) in rawForm
   const twilioWorkerId = isOfflineContactTask(task) ? form.contactlessTask.createdOnBehalfOf : workerSid;
-
-  // This might change if isNonDataCallType, that's why we use rawForm
-  const timeOfContact = new Date(getDateTime(form.contactlessTask)).toISOString();
-
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.
@@ -277,22 +274,30 @@ const saveContactToHrm = async (
     twilioWorkerId,
     queueName: task.queueName,
     number,
-    timeOfContact,
     taskId: uniqueIdentifier,
   };
 
   return updateContactInHrm(contact.id, contactToSave, false);
 };
 
-export const finalizeContact = async (task, contact: Contact): Promise<Contact> => {
-  const twilioTaskResult = await handleTwilioTask(task);
-  const { channelSid, serviceSid } = twilioTaskResult;
-  await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
-  const contactUpdates: ContactDraftChanges = {
-    channelSid,
-    serviceSid,
-  };
-  return updateContactInHrm(contact.id, contactUpdates, true);
+export const finalizeContact = async (
+  task,
+  contact: Contact,
+  reservationSid?: string | undefined,
+): Promise<Contact> => {
+  try {
+    const twilioTaskResult = await handleTwilioTask(task, contact, reservationSid);
+    const { channelSid, serviceSid } = twilioTaskResult;
+    await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
+    const contactUpdates: ContactDraftChanges = {
+      channelSid,
+      serviceSid,
+    };
+    return await updateContactInHrm(contact.id, contactUpdates, true);
+  } catch (error) {
+    console.error('Error finalizing contact:', error);
+    throw new Error('Failed to finalize contact');
+  }
 };
 
 export const saveContact = async (task, contact: Contact, workerSid: WorkerSID, uniqueIdentifier: TaskSID) => {

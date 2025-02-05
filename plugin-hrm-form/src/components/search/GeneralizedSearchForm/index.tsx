@@ -17,11 +17,12 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import type { FormDefinition } from 'hrm-form-definitions';
 import { pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
 import isFuture from 'date-fns/isFuture';
+import { parse } from 'date-fns';
 
 import { SearchFormClearButton } from '../../resources/styles';
 import type { RootState } from '../../../states';
@@ -42,7 +43,6 @@ import {
 import { addMargin } from '../../common/forms/formGenerators';
 import { CustomITask } from '../../../types/types';
 import { SearchFormValues } from '../../../states/search/types';
-import { splitDate } from '../../../utils/helpers';
 
 type OwnProps = {
   task: ITask | CustomITask;
@@ -72,8 +72,6 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
 
-  const dispatch = useDispatch();
-
   const methods = useForm<Pick<SearchFormValues, 'searchTerm' | 'dateFrom' | 'dateTo' | 'counselor'>>();
   const { getValues, watch, setError, clearErrors, reset, handleSubmit, register, setValue } = methods;
 
@@ -86,8 +84,8 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
 
   const updateCallback = useCallback(() => {
     const values = getValues();
-    dispatch(handleSearchFormUpdate(values));
-  }, [dispatch, getValues, handleSearchFormUpdate]);
+    handleSearchFormUpdate(values);
+  }, [getValues, handleSearchFormUpdate]);
 
   const onSubmit = handleSubmit(values => {
     updateCallback(); // make sure all changes has been flushed before submitting
@@ -144,11 +142,8 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
   React.useEffect(() => {
     register('isFutureAux', {
       validate: () => {
-        if (dateToValue) {
-          const [y, m, d] = splitDate(dateToValue);
-          if (isFuture(new Date(y, m - 1, d))) {
-            return 'DateCantBeGreaterThanToday'; // return non-null to generate an error, using the localized error key
-          }
+        if (dateToValue && isFuture(parse(dateToValue, 'yyyy-MM-dd', new Date()))) {
+          return 'DateCantBeGreaterThanToday'; // return non-null to generate an error, using the localized error key
         }
         return null;
       },
@@ -159,8 +154,7 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
   useEffect(() => {
     const validateDate = (date: string, errorKey: string) => {
       if (date) {
-        const [y, m, d] = splitDate(date);
-        const dateValue = new Date(y, m - 1, d);
+        const dateValue = parse(date, 'yyyy-MM-dd', new Date());
 
         if (dateValue > new Date()) {
           setError(errorKey, { type: 'manual', message: 'DateCantBeGreaterThanToday' });
@@ -172,10 +166,8 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
 
     const validateDateRange = (dateFrom: string, dateTo: string) => {
       if (dateFrom && dateTo) {
-        const [yFrom, mFrom, dFrom] = splitDate(dateFrom);
-        const [yTo, mTo, dTo] = splitDate(dateTo);
-        const dateFromValue = new Date(yFrom, mFrom - 1, dFrom);
-        const dateToValue = new Date(yTo, mTo - 1, dTo);
+        const dateFromValue = parse(dateFrom, 'yyyy-MM-dd', new Date());
+        const dateToValue = parse(dateTo, 'yyyy-MM-dd', new Date());
 
         if (dateFromValue > dateToValue) {
           setError('dateTo', { type: 'manual', message: 'DateToCantBeGreaterThanFrom' });

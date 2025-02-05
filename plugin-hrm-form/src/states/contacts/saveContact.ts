@@ -16,6 +16,7 @@
 
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 import { format } from 'date-fns';
+import { TaskHelper } from '@twilio/flex-ui';
 
 import { submitContactForm } from '../../services/formSubmissionHelpers';
 import {
@@ -59,7 +60,7 @@ import * as TransferHelpers from '../../transfer/transferTaskState';
 import { TaskSID, WorkerSID } from '../../types/twilio';
 import { CaseStateEntry } from '../case/types';
 import { getOfflineContactTask } from './offlineContactTask';
-import { completeTaskAssignment, getTask } from '../../services/twilioTaskService';
+import { completeTaskAssignment, getTaskAndReservations } from '../../services/twilioTaskService';
 import { setConversationDurationFromMetadata } from '../../utils/conversationDuration';
 import { ProtectedApiError } from '../../services/fetchProtectedApi';
 
@@ -142,8 +143,6 @@ const BLANK_CONTACT_CHANGES: ContactDraftChanges = {
     contactlessTask: {
       channel: null,
       createdOnBehalfOf: null,
-      date: null,
-      time: null,
     },
   },
 };
@@ -217,15 +216,27 @@ export const newFinalizeContactAsyncAction = createAsyncAction(
 
 export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = createAsyncAction(
   SUBMIT_AND_FINALIZE_CONTACT_FROM_OUTSIDE_TASK_CONTEXT,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   async (contact: Contact) => {
     const { taskId: taskSid } = contact;
-    let task: CustomITask | undefined;
+    let task: CustomITask | ITask | undefined;
+    let reservationSid: string | undefined;
     let caseState: Pick<CaseStateEntry, 'sections' | 'connectedCase'> | undefined = undefined;
+
     if (isOfflineContact(contact)) {
       task = getOfflineContactTask();
     } else {
-      task = await getTask(taskSid);
+      const taskResponse = await getTaskAndReservations(taskSid);
+      if (taskResponse) {
+        ({ task } = taskResponse);
+        reservationSid = taskResponse?.reservations?.[0]?.sid;
+      } else {
+        console.warn(
+          `Task and reservation not found, likely because the task is no longer stored in Twilio: ${taskSid}`,
+        );
+      }
     }
+
     if (contact.caseId) {
       const [connectedCase, timeline] = await Promise.all([
         getCase(contact.caseId),
@@ -254,9 +265,9 @@ export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = crea
         throw error;
       }
     } else if (task) {
-      await completeTaskAssignment(task.taskSid);
+      await completeTaskAssignment(task.taskSid || (isTwilioTask(task) && task.sid));
       const updatedContact = await submitContactForm(task, contact, caseState);
-      return finalizeContact(task, updatedContact);
+      return finalizeContact(task, updatedContact, reservationSid);
     }
     return finalizeContact(task, contact);
   },
