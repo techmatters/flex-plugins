@@ -433,7 +433,8 @@ resource "null_resource" "add_intent_closing_response" {
         EOT
     }
     depends_on = [
-    time_sleep.wait_10_seconds
+    time_sleep.wait_10_seconds,
+    null_resource.update_intent_slots
   ]
 }
 
