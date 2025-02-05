@@ -14,6 +14,7 @@
     },
     "fulfillmentCodeHook": {
         "enabled": false,
+        "active": true,
         "postFulfillmentStatusSpecification": {
             "successNextStep": {
                 "dialogAction": {

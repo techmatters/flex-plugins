@@ -10,7 +10,7 @@
         {
           "message": {
             "plainTextMessage": {
-              "value": "Welcome. To help us better serve you, please answer the following questions.Are you calling about yourself? Please answer Yes or No."
+              "value": "Are you calling about yourself? Please answer Yes or No."
             }
           }
         }
