@@ -40,6 +40,7 @@ const files = [
   'tabbedForms/IssueCategorizationTab.json',
   'tabbedForms/ContactlessTaskTab.json',
   'CallTypeButtons.json',
+  'CaseSections.json',
   'HelplineInformation.json',
   'CannedResponses.json',
   'insights/oneToOneConfigSpec.json',

@@ -1,0 +1,26 @@
+{
+  "note": {
+    "label": "Notes",
+    "formPath": "caseForms/NoteForm.json"
+  },
+  "referral": {
+    "label": "Referrals",
+    "formPath": "caseForms/ReferralForm.json"
+  },
+  "household": {
+    "label": "Household Members",
+    "formPath": "caseForms/HouseholdForm.json"
+  },
+  "perpetrator": {
+    "label": "Perpetrators",
+    "formPath": "caseForms/PerpetratorForm.json"
+  },
+  "incident": {
+    "label": "Incidents",
+    "formPath": "caseForms/IncidentForm.json"
+  },
+  "document": {
+    "label": "Documents",
+    "formPath": "caseForms/DocumentForm.json"
+  }
+}
