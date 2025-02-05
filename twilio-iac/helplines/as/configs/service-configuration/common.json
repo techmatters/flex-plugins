@@ -8,7 +8,8 @@
             "enable_conferencing": true,
             "enable_region_resource_search": true,
             "enable_generalized_search": true,
-            "enable_save_in_progress_contacts": true
+            "enable_save_in_progress_contacts": true,
+            "enable_permissions_from_backend": true
         }
     }
 }
