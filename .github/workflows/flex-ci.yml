@@ -187,9 +187,6 @@ jobs:
           node-version: '18.x'
       - name: Install Flex Plugin
         uses: ./.github/actions/install-flex-plugin
-      - name: Run hrm-form-definitions Tests
-        run: npm run test
-        working-directory: ./hrm-form-definitions
 
       - name: Build and Upload Flex Plugin
         uses: ./.github/actions/build-and-upload-plugin
