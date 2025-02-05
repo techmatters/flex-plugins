@@ -298,8 +298,8 @@ resource "aws_lexv2models_slot" "this" {
 
 /*
 There is a circular dependency here between slots and intents.
-A slot needs to be created with an intent id, and an intent needs to be created with the slot priorities.
-Since I can't reference the slot ids when creating the intent I need to update the intent with the slot priorities as the last step.
+A slot needs to be created with an intent id, and an intent needs have the slot priorities.
+Since I can't reference the slot ids when creating the intent I need to update the intent with the slot priorities as a later step.
 This command doesn't always work, sometimes it only add just one dependency, so I usually run the apply twice.
 
  */
