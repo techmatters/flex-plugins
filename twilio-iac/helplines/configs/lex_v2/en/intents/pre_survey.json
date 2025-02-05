@@ -71,6 +71,19 @@
         }
     },
     "initialResponseSetting": {
+        "initialResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Welcome. To help us better serve you, please answer the following questions."
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
         "nextStep": {
             "dialogAction": {
                 "type": "InvokeDialogCodeHook"
