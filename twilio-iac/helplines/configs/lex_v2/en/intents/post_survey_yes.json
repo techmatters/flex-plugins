@@ -53,6 +53,12 @@
       ],
       "allowInterrupt": true
     },
-    "active": true
+    "active": true,
+    "nextStep": {
+        "dialogAction": {
+            "type": "EndConversation"
+        },
+        "intent": {}
+    }
   }
 }
