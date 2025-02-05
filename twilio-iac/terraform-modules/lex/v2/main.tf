@@ -422,7 +422,7 @@ resource "null_resource" "add_intent_closing_response" {
     for_each = {
         for idx, intent in var.lex_v2_intents :
         "${intent.bot_name}_${intent.config.intentName}" => intent
-        if intent.config.intentClosingSetting != null
+       // if intent.config.intentClosingSetting != null
     }
 
     provisioner "local-exec" {
@@ -433,7 +433,8 @@ resource "null_resource" "add_intent_closing_response" {
         --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
         --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intentName}"].id)[0]} \
         --intent-name ${each.value.config.intentName} \
-        --intent-closing-setting '${jsonencode(each.value.config.intentClosingSetting)}'
+        ${each.value.config.intentClosingSetting != null ? "--intent-closing-setting '${jsonencode(each.value.config.intentClosingSetting)}'" : ""} \
+         ${each.value.config.sampleUtterances != null ? "--sample-utterances '${jsonencode(each.value.config.sampleUtterances)}'" : ""} 
         EOT
     }
     depends_on = [
