@@ -422,7 +422,7 @@ resource "null_resource" "add_intent_closing_response" {
         --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
         --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intentName}"].id)[0]} \
         --intent-name ${each.value.config.intentName} \
-        --intent-confirmation-setting '${jsonencode(each.value.config.intentClosingSetting)}'
+        --intent-closing-setting '${jsonencode(each.value.config.intentClosingSetting)}'
         EOT
     }
     depends_on = [
