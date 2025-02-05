@@ -410,7 +410,11 @@ resource "null_resource" "add_intent_utterances" {
     time_sleep.wait_5_seconds
   ]
 }
+resource "time_sleep" "wait_10_seconds" {
+  create_duration = "10s"
 
+  depends_on = [null_resource.update_intent_slots]
+}
 resource "null_resource" "add_intent_closing_response" {
     triggers = {
         always_run = timestamp()
