@@ -375,6 +375,7 @@ resource "null_resource" "add_intent_utterances" {
     for idx, intent in var.lex_v2_intents :
     "${intent.bot_name}_${intent.config.intentName}" => intent
   }
+
     provisioner "local-exec" {
         command = <<EOT
         aws lexv2-models update-intent \
@@ -383,12 +384,13 @@ resource "null_resource" "add_intent_utterances" {
         --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
         --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intentName}"].id)[0]} \
         --intent-name ${each.value.config.intentName} \
-        --sample-utterances '${jsonencode(each.value.config.sampleUtterances)}'
+        --sample-utterances "[{\"utterance\": \"trigger_pre_survey\"},{\"utterance\": \"Incoming webchat contact\"}]"
         EOT
     }
     depends_on = [
     aws_lexv2models_intent.this,
-    aws_lexv2models_slot.this
+    aws_lexv2models_slot.this,
+    null_resource.update_intent_slots
   ]
 }
 
