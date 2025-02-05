@@ -404,7 +404,31 @@ resource "null_resource" "add_intent_utterances" {
   ]
 }
 
+resource "null_resource" "add_intent_closing_response" {
+    triggers = {
+        always_run = timestamp()
+    }
+    for_each = {
+        for idx, intent in var.lex_v2_intents :
+        "${intent.bot_name}_${intent.config.intentName}" => intent
+        if intent.config.intentClosingSetting != null
+    }
 
+    provisioner "local-exec" {
+        command = <<EOT
+        aws lexv2-models update-intent \
+        --bot-id ${aws_lexv2models_bot.this[each.value.bot_name].id} \
+        --bot-version ${aws_lexv2models_bot_locale.this[each.value.bot_name].bot_version} \
+        --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
+        --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intentName}"].id)[0]} \
+        --intent-name ${each.value.config.intentName} \
+        --intent-confirmation-setting '${jsonencode(each.value.config.intentClosingSetting)}'
+        EOT
+    }
+    depends_on = [
+    null_resource.add_intent_utterances
+  ]
+}
 
 
 
