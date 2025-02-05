@@ -371,16 +371,18 @@ resource "null_resource" "add_intent_utterances" {
     triggers = {
         always_run = timestamp()
     }
-    for_each = { for item in local.intent_slot_pairs : "${item.bot_name}_${item.intent_name}_${item.slot_name}" => item }
-
+    for_each = {
+    for idx, intent in var.lex_v2_intents :
+    "${intent.bot_name}_${intent.config.intentName}" => intent
+  }
     provisioner "local-exec" {
         command = <<EOT
         aws lexv2-models update-intent \
         --bot-id ${aws_lexv2models_bot.this[each.value.bot_name].id} \
         --bot-version ${aws_lexv2models_bot_locale.this[each.value.bot_name].bot_version} \
         --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
-        --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.intent_name}"].id)[0]} \
-        --intent-name ${each.value.intent_name} \
+        --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intent_name}"].id)[0]} \
+        --intent-name ${each.value.config.intent_name} \
         --sample-utterances "[{\"utterance\": \"trigger_pre_survey\"},{\"utterance\": \"Incoming webchat contact\"}]"
         EOT
     }
