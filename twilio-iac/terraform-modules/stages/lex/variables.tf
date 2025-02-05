@@ -200,6 +200,27 @@ variable "lex_v2_intents" {
           priority  = number
           slotName = string
         })))
+        fulfillmentCodeHook = optional(object({
+          enabled = bool
+          active = bool
+          postFulfillmentStatusSpecification = object({
+            failureNextStep = object({
+              dialogAction = object({
+                type = string
+              })
+            })
+            timeoutNextStep = object({
+              dialogAction = object({
+                type = string
+              })
+            })
+          })
+          successNextStep = object({
+            dialogAction = object({
+              type = string
+            })
+          })
+        }))
         intentClosingSetting = object({
           closingResponse = optional(object({
             messageGroups = list(object({
