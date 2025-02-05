@@ -406,7 +406,8 @@ resource "null_resource" "add_intent_utterances" {
     depends_on = [
     aws_lexv2models_intent.this,
     aws_lexv2models_slot.this,
-    null_resource.update_intent_slots
+    null_resource.update_intent_slots,
+    time_sleep.wait_5_seconds
   ]
 }
 
