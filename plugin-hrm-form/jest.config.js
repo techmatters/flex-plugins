@@ -19,6 +19,7 @@ module.exports = (config, { isProd, isDev, isTest }) => {
   config.transformIgnorePatterns = ['/node_modules/(?!wavesurfer.js)'];
   config.testEnvironment = 'jsdom';
   config.testURL = 'http://localhost/';
+  config.reporters = ['default', 'jest-junit'];
   // config.testEnvironmentOptions = {};
   return config;
 };

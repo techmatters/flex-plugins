@@ -31,6 +31,7 @@ module.exports = config => {
     moduleNameMapper: {
       '\\.css$': 'identity-obj-proxy',
     },
+    reporters: ['default', 'jest-junit'],
   };
 
   return config;
