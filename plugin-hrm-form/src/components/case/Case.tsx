@@ -40,7 +40,7 @@ import AddEditCaseItem, { AddEditCaseItemProps } from './AddEditCaseItem';
 import ViewCaseItem from './ViewCaseItem';
 import { bindFileUploadCustomHandlers } from './documentUploadHandler';
 import { recordBackendError } from '../../fullStory';
-import { getInitializedCan, PermissionActions } from '../../permissions';
+import { getInitializedCan } from '../../permissions';
 import { CenteredContainer } from './styles';
 import EditCaseSummary from './EditCaseSummary';
 import { documentSectionApi } from '../../states/case/sections/document';
@@ -183,13 +183,9 @@ const Case: React.FC<Props> = ({
       definitionVersion,
     };
 
-    const renderCaseItemPage = (
-      sectionApi: CaseSectionApi,
-      editPermission: typeof PermissionActions[keyof typeof PermissionActions],
-      extraAddEditProps: Partial<AddEditCaseItemProps> = {},
-    ) => {
+    const renderCaseItemPage = (sectionApi: CaseSectionApi, extraAddEditProps: Partial<AddEditCaseItemProps> = {}) => {
       if (isViewCaseSectionRoute(routing)) {
-        return <ViewCaseItem {...addScreenProps} sectionApi={sectionApi} canEdit={() => can(editPermission)} />;
+        return <ViewCaseItem {...addScreenProps} sectionApi={sectionApi} />;
       }
       return (
         <AddEditCaseItem
@@ -204,17 +200,17 @@ const Case: React.FC<Props> = ({
 
     switch (subroute) {
       case NewCaseSubroutes.Note:
-        return renderCaseItemPage(noteSectionApi, PermissionActions.EDIT_NOTE);
+        return renderCaseItemPage(noteSectionApi);
       case NewCaseSubroutes.Referral:
-        return renderCaseItemPage(referralSectionApi, PermissionActions.EDIT_REFERRAL);
+        return renderCaseItemPage(referralSectionApi);
       case NewCaseSubroutes.Household:
-        return renderCaseItemPage(householdSectionApi, PermissionActions.EDIT_HOUSEHOLD);
+        return renderCaseItemPage(householdSectionApi);
       case NewCaseSubroutes.Perpetrator:
-        return renderCaseItemPage(perpetratorSectionApi, PermissionActions.EDIT_PERPETRATOR);
+        return renderCaseItemPage(perpetratorSectionApi);
       case NewCaseSubroutes.Incident:
-        return renderCaseItemPage(incidentSectionApi, PermissionActions.EDIT_INCIDENT);
+        return renderCaseItemPage(incidentSectionApi);
       case NewCaseSubroutes.Document:
-        return renderCaseItemPage(documentSectionApi, PermissionActions.EDIT_DOCUMENT, {
+        return renderCaseItemPage(documentSectionApi, {
           customFormHandlers: bindFileUploadCustomHandlers(connectedCase.id),
           reactHookFormOptions: {
             shouldUnregister: false,
