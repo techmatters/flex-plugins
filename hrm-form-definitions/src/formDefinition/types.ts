@@ -255,6 +255,18 @@ export type CallTypeButtonsEntry = {
 
 export type CallTypeButtonsDefinitions = CallTypeButtonsEntry[];
 
+export type CaseSectionTypeJsonEntry = {
+  label: string;
+  formPath: string;
+};
+
+type CaseSectionTypeEntry = {
+  label: string;
+  form: FormDefinition;
+};
+
+export type CaseSectionTypeDefinitions = Record<string, CaseSectionTypeEntry>;
+
 export type HelplineEntry = {
   label: string;
   value: string;
@@ -312,23 +324,11 @@ export type StatusInfo = {
   transitions: string[]; // possible statuses this one can transition to (further update may be to include who can make such a transition for a more granular control)
 };
 
-export type CaseOverviewDefinition = {
-  followUpDate?: IsPIIFlag;
-  childIsAtRisk?: IsPIIFlag;
-  summary?: IsPIIFlag;
-};
-
-export type ProfileOverviewDefinition = {
-  name?: IsPIIFlag;
-  identifiers?: IsPIIFlag;
-};
-
 /**
  * Type that defines a complete version for all the customizable forms used across the app
  */
 export type DefinitionVersion = {
   caseForms: {
-    // CaseOverview: CaseOverviewDefinition;
     HouseholdForm: FormDefinition;
     IncidentForm: FormDefinition;
     NoteForm: FormDefinition;
@@ -336,6 +336,7 @@ export type DefinitionVersion = {
     ReferralForm: FormDefinition;
     DocumentForm: FormDefinition;
   };
+  caseSectionTypes: CaseSectionTypeDefinitions;
   // TODO: change this property to contactForms to be consistent (though that may create confusion with the component name)
   tabbedForms: {
     CallerInformationTab: FormDefinition;
@@ -369,7 +370,6 @@ export type DefinitionVersion = {
   referenceData?: Record<string, any>;
   blockedEmojis: string[];
   profileForms?: {
-    // ProfileOverview: ProfileOverviewDefinition;
     Sections: ProfileSectionDefinition[];
     FlagDurations: ProfileFlagDurationDefinition[];
   };

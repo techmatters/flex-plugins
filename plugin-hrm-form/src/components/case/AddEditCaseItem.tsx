@@ -70,6 +70,7 @@ export type AddEditCaseItemProps = {
   customFormHandlers?: CustomHandlers;
   reactHookFormOptions?: Partial<{ shouldUnregister: boolean }>;
   sectionApi: CaseSectionApi;
+  sectionTypeName: string;
 };
 
 const mapStateToProps = (state: RootState, { task, sectionApi }: AddEditCaseItemProps) => {
@@ -147,6 +148,7 @@ const AddEditCaseItem: React.FC<Props> = ({
   customFormHandlers,
   reactHookFormOptions,
   sectionApi,
+  sectionTypeName,
   workingCopy,
   currentRoute,
   sectionId,
@@ -155,10 +157,7 @@ const AddEditCaseItem: React.FC<Props> = ({
   sections,
   isUpdating,
 }) => {
-  const formDefinition = React.useMemo(() => sectionApi.getSectionFormDefinition(definitionVersion), [
-    definitionVersion,
-    sectionApi,
-  ]);
+  const formDefinition = definitionVersion.caseSectionTypes[sectionTypeName].form;
   const layout = sectionApi.getSectionLayoutDefinition(definitionVersion);
 
   const savedForm = React.useMemo(() => {

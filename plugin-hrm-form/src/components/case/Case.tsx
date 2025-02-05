@@ -193,6 +193,7 @@ const Case: React.FC<Props> = ({
             ...addScreenProps,
             ...extraAddEditProps,
             sectionApi,
+            sectionTypeName: sectionApi.type,
           }}
         />
       );
