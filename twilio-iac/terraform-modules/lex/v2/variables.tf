@@ -90,8 +90,8 @@ variable "lex_v2_intents" {
         })
         fulfillmentCodeHook = optional(object({
           enabled = bool
-          active = bool
-          postFulfillmentStatusSpecification = object({
+          active = optional(bool)
+          postFulfillmentStatusSpecification = optional(object({
             failureNextStep = object({
               dialogAction = object({
                 type = string
@@ -102,12 +102,13 @@ variable "lex_v2_intents" {
                 type = string
               })
             })
-          })
-          successNextStep = object({
+            successNextStep = object({
             dialogAction = object({
               type = string
             })
           })
+          }))
+          
         }))
         initialResponseSetting = optional(object({
           initialResponse = optional(object({
