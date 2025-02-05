@@ -367,12 +367,7 @@ resource "null_resource" "update_intent_slots" {
   ]
 }
 
-resource "time_sleep" "wait_5_seconds" {
-  create_duration = "5s"
-
-  depends_on = [null_resource.update_intent_slots]
-}
-
+/*
 resource "null_resource" "add_intent_utterances" {
     triggers = {
         always_run = timestamp()
@@ -382,7 +377,7 @@ resource "null_resource" "add_intent_utterances" {
     "${intent.bot_name}_${intent.config.intentName}" => intent
   }
 
-    provisioner "local-exec" {
+    provisioner "local-exec" {*/
         /*command = <<EOT
         aws lexv2-models update-intent \
         --bot-id ${aws_lexv2models_bot.this[each.value.bot_name].id} \
@@ -393,7 +388,7 @@ resource "null_resource" "add_intent_utterances" {
         --sample-utterances "[{\"utterance\": \"trigger_pre_survey\"},{\"utterance\": \"Incoming webchat contact\"}]"
         EOT
         */
-        command = <<EOT
+     /*   command = <<EOT
         aws lexv2-models update-intent \
         --bot-id ${aws_lexv2models_bot.this[each.value.bot_name].id} \
         --bot-version ${aws_lexv2models_bot_locale.this[each.value.bot_name].bot_version} \
@@ -409,7 +404,7 @@ resource "null_resource" "add_intent_utterances" {
     null_resource.update_intent_slots,
     time_sleep.wait_5_seconds
   ]
-}
+}*/
 resource "time_sleep" "wait_10_seconds" {
   create_duration = "10s"
 
@@ -434,11 +429,11 @@ resource "null_resource" "add_intent_closing_response" {
         --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intentName}"].id)[0]} \
         --intent-name ${each.value.config.intentName} \
         ${each.value.config.intentClosingSetting != null ? "--intent-closing-setting '${jsonencode(each.value.config.intentClosingSetting)}'" : ""} \
-         ${each.value.config.sampleUtterances != null ? "--sample-utterances '${jsonencode(each.value.config.sampleUtterances)}'" : ""} 
+        ${each.value.config.sampleUtterances != null ? "--sample-utterances '${jsonencode(each.value.config.sampleUtterances)}'" : ""} 
         EOT
     }
     depends_on = [
-    null_resource.add_intent_utterances
+    time_sleep.wait_10_seconds
   ]
 }
 
