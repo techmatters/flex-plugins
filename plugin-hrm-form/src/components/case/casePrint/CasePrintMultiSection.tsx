@@ -17,20 +17,24 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { View } from '@react-pdf/renderer';
-import { FormDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 import CasePrintSection from './CasePrintSection';
 import { CaseSection } from '../../../services/caseSectionService';
 
 type OwnProps = {
-  sectionNameTemplateCode: string;
+  sectionType: string;
+  definition: DefinitionVersion;
   values: CaseSection[];
-  definitions: FormDefinition;
 };
 
 type Props = OwnProps;
 
-const CasePrintMultiSection: React.FC<Props> = ({ sectionNameTemplateCode, values, definitions }) => {
+const CasePrintMultiSection: React.FC<Props> = ({ sectionType, values, definition }) => {
+  const { form, label } = definition.caseSectionTypes[sectionType];
+  const sectionNameTemplateCode =
+    definition.layoutVersion.case.sectionTypes[sectionType]?.printTitleTemplateCode ?? `SectionName-Generic`;
+
   return (
     <View>
       {values &&
@@ -43,9 +47,10 @@ const CasePrintMultiSection: React.FC<Props> = ({ sectionNameTemplateCode, value
               sectionNameTemplateValues={{
                 sectionNo: (i + 1).toString(),
                 sectionCount: values.length.toString(),
+                sectionLabel: label,
               }}
               values={value.sectionTypeSpecificData}
-              definitions={definitions}
+              definitions={form}
             />
           );
         })}

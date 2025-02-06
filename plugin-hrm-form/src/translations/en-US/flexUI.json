@@ -354,6 +354,7 @@
   "SectionName-Perpetrator": "Perpetrator {{sectionNo}} of {{sectionCount}}",
   "SectionName-Incident": "Incident {{sectionNo}} of {{sectionCount}}",
   "SectionName-Referral": "Referral {{sectionNo}} of {{sectionCount}}",
+  "SectionName-Generic": "{{sectionLabel}} {{sectionNo}} of {{sectionCount}}",
   "SectionName-Notes": "Notes",
   "SectionName-CaseSummary": "Case Summary",
   "TranscriptSection-PermanentError": "Something went wrong on our end. Please contact your support team or supervisor.",

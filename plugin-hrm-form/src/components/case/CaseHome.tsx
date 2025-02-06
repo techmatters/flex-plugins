@@ -51,6 +51,8 @@ import {
   selectContactsByCaseIdInCreatedOrder,
   selectFirstCaseContact,
 } from '../../states/contacts/selectContactByCaseId';
+import InformationRow from './InformationRow';
+import { FullCaseSection } from '../../services/caseSectionService';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -127,10 +129,16 @@ const CaseHome: React.FC<Props> = ({
   if (!connectedCase) return null; // narrow type before deconstructing
   const caseId = connectedCase.id;
   const {
-    enable_upload_documents: enableUploadDocuments,
     enable_case_merging: enableCaseMerging,
     enable_separate_timeline_view: enableSeparateTimelineView,
   } = getAseloFeatureFlags();
+
+  const orderedListSections = Object.entries(definitionVersion.layoutVersion.case.sectionTypes)
+    .filter(([sectionType]) => !['note', 'referral'].includes(sectionType))
+    .sort(
+      ([, layout1], [, layout2]) =>
+        (layout1.caseHomerOrder ?? Number.MAX_SAFE_INTEGER) - (layout2.caseHomerOrder ?? Number.MAX_SAFE_INTEGER),
+    );
 
   const onViewFullTimelineClick = () => {
     openModal({ route: 'case', subroute: 'timeline', caseId, page: 0 });
@@ -203,59 +211,63 @@ const CaseHome: React.FC<Props> = ({
                 hasMoreActivities && enableSeparateTimelineView ? 'Case-Timeline-RecentTitle' : 'Case-Timeline-Title'
               }
             />
-            {enableSeparateTimelineView && hasMoreActivities && (
+            {hasMoreActivities && (
               <ViewButton style={{ marginTop: '10px' }} withDivider={false} onClick={onViewFullTimelineClick}>
                 <Template code="Case-Timeline-OpenFullTimelineButton" />
               </ViewButton>
             )}
           </CaseDetailsBorder>
         </Box>
-        <Box margin="25px 0 0 0">
-          <CaseSection
-            canAdd={() => can(PermissionActions.ADD_CASE_SECTION)}
-            taskSid={task.taskSid}
-            sectionType="household"
-          />
-        </Box>
-        <Box margin="25px 0 0 0">
-          <CaseSection
-            canAdd={() => can(PermissionActions.ADD_CASE_SECTION)}
-            taskSid={task.taskSid}
-            sectionType="perpetrator"
-          />
-        </Box>
-        <Box margin="25px 0 0 0">
-          <CaseSection
-            canAdd={() => can(PermissionActions.ADD_CASE_SECTION)}
-            taskSid={task.taskSid}
-            sectionType="incident"
-            sectionRenderer={({ sectionTypeSpecificData, sectionType, sectionId }, onClickView) => (
-              <IncidentInformationRow
-                key={`incident-${sectionId}`}
-                onClickView={onClickView}
-                definition={caseSectionTypes[sectionType].form}
-                values={sectionTypeSpecificData}
-                layoutDefinition={caseLayouts.incidents || {}}
-              />
-            )}
-          />
-        </Box>
-        {enableUploadDocuments && (
-          <Box margin="25px 0 0 0">
-            <CaseSection
-              canAdd={() => can(PermissionActions.ADD_CASE_SECTION)}
-              taskSid={task.taskSid}
-              sectionType="document"
-              sectionRenderer={(caseSection, onClickView) => (
+        {orderedListSections.map(([sectionType]) => {
+          let sectionRenderer: (section: FullCaseSection, onView: () => void) => JSX.Element | null;
+          switch (sectionType) {
+            case 'document': {
+              sectionRenderer = (caseSection, onClickView) => (
                 <DocumentInformationRow
                   key={`document-${caseSection.sectionId}`}
                   caseSection={caseSection}
                   onClickView={onClickView}
                 />
-              )}
-            />
-          </Box>
-        )}
+              );
+              break;
+            }
+            case 'household':
+            case 'perpetrator': {
+              sectionRenderer = ({ sectionTypeSpecificData, sectionId, sectionType }, viewHandler) => (
+                <InformationRow
+                  key={`${sectionType}-${sectionId}`}
+                  person={sectionTypeSpecificData}
+                  onClickView={viewHandler}
+                />
+              );
+              break;
+            }
+            default: {
+              // Use IncidentInformationRow for all other sections as it is more configurable
+              sectionRenderer = ({ sectionTypeSpecificData, sectionType, sectionId }, onClickView) => (
+                <IncidentInformationRow
+                  key={`incident-${sectionId}`}
+                  onClickView={onClickView}
+                  definition={caseSectionTypes[sectionType].form}
+                  values={sectionTypeSpecificData}
+                  layoutDefinition={caseLayouts[sectionType] || {}}
+                />
+              );
+              break;
+            }
+          }
+
+          return (
+            <Box margin="25px 0 0 0" key={sectionType}>
+              <CaseSection
+                canAdd={() => can(PermissionActions.ADD_CASE_SECTION)}
+                taskSid={task.taskSid}
+                sectionType={sectionType}
+                sectionRenderer={sectionRenderer}
+              />
+            </Box>
+          );
+        })}
       </CaseContainer>
       {isNewContact && (
         <BottomButtonBar>
