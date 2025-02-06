@@ -212,21 +212,21 @@ const CaseHome: React.FC<Props> = ({
         </Box>
         <Box margin="25px 0 0 0">
           <CaseSection
-            canAdd={() => can(PermissionActions.ADD_HOUSEHOLD)}
+            canAdd={() => can(PermissionActions.ADD_CASE_SECTION)}
             taskSid={task.taskSid}
             sectionType="household"
           />
         </Box>
         <Box margin="25px 0 0 0">
           <CaseSection
-            canAdd={() => can(PermissionActions.ADD_PERPETRATOR)}
+            canAdd={() => can(PermissionActions.ADD_CASE_SECTION)}
             taskSid={task.taskSid}
             sectionType="perpetrator"
           />
         </Box>
         <Box margin="25px 0 0 0">
           <CaseSection
-            canAdd={() => can(PermissionActions.ADD_INCIDENT)}
+            canAdd={() => can(PermissionActions.ADD_CASE_SECTION)}
             taskSid={task.taskSid}
             sectionType="incident"
             sectionRenderer={({ sectionTypeSpecificData, sectionType, sectionId }, onClickView) => (
@@ -243,7 +243,7 @@ const CaseHome: React.FC<Props> = ({
         {enableUploadDocuments && (
           <Box margin="25px 0 0 0">
             <CaseSection
-              canAdd={() => can(PermissionActions.ADD_DOCUMENT)}
+              canAdd={() => can(PermissionActions.ADD_CASE_SECTION)}
               taskSid={task.taskSid}
               sectionType="document"
               sectionRenderer={(caseSection, onClickView) => (

@@ -3,18 +3,30 @@
     "value": "open",
     "label": "Open",
     "color": "green",
-    "transitions": ["inProgress", "closed"]
+    "transitions": ["responseTeamFollowUp", "supportTeamFollowUp", "managedBySupportTeam", "closed"]
   },
   "closed": {
     "value": "closed",
-    "label": "Closed",
+    "label": "Closed - No Follow-Up",
     "color": "red",
-    "transitions": ["inProgress"]
+    "transitions": ["open", "supportTeamFollowUp", "managedBySupportTeam", "responseTeamFollowUp"]
   },
-  "inProgress": {
-    "value": "inProgress",
-    "label": "In Progress",
+  "responseTeamFollowUp": {
+    "value": "responseTeamFollowUp",
+    "label": "Response Team Follow-Up",
     "color": "blue",
-    "transitions": ["closed"]
+    "transitions": ["closed", "supportTeamFollowUp", "managedBySupportTeam", "open"]
+  },
+   "supportTeamFollowUp": {
+    "value": "supportTeamFollowUp",
+    "label": "Support Team Follow-Up",
+    "color": "blue",
+    "transitions": ["closed","responseTeamFollowUp", "managedBySupportTeam", "open"]
+  },
+   "managedBySupportTeam": {
+    "value": "managedBySupportTeam",
+    "label": "Managed By Support Team",
+    "color": "blue",
+    "transitions": ["closed", "responseTeamFollowUp", "supportTeamFollowUp", "open"]
   }
 }
