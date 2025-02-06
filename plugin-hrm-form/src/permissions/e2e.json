@@ -1,23 +1,11 @@
 {
   "viewCase": [["everyone"]],
-  "closeCase": [["everyone"]],
+  "closeCase": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "reopenCase": [["isSupervisor"]],
   "caseStatusTransition": [],
-  "addCaseSection":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
-  "editCaseSection":  [["isSupervisor"],["isCreator", "isCaseOpen"]],
-  "addNote": [["everyone"]],
-  "editNote": [["everyone"]],
-  "addReferral": [["everyone"]],
-  "editReferral": [["everyone"]],
-  "addHousehold": [["everyone"]],
-  "editHousehold": [["everyone"]],
-  "addPerpetrator": [["everyone"]],
-  "editPerpetrator": [["everyone"]],
-  "addIncident": [["everyone"]],
-  "editIncident": [["everyone"]],
-  "addDocument": [["everyone"]],
-  "editDocument": [["everyone"]],
-  "editCaseOverview": [["everyone"]],
+  "addCaseSection": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
+  "editCaseSection": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
+  "editCaseOverview": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "updateCaseContacts": [["isSupervisor"], ["isCaseOpen"]],
 
   "viewContact": [["everyone"]],
@@ -37,5 +25,5 @@
   
   "viewPostSurvey": [["isSupervisor"]],
 
-  "viewIdentifiers": []
+  "viewIdentifiers": [["everyone"]]
 }
