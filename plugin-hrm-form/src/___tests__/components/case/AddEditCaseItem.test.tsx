@@ -223,6 +223,7 @@ describe('Test AddHousehold', () => {
         task: { taskSid: TASK_SID } as CustomITask,
         sectionApi: householdSectionApi,
         definitionVersion: mockV1,
+        sectionTypeName: 'household',
       }),
   );
   test('Test close functionality', async () => {
