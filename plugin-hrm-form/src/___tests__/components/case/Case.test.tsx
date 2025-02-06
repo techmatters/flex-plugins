@@ -93,7 +93,7 @@ describe('useState mocked', () => {
       'prime-timeline',
       expect.arrayContaining(['referral', 'note']),
       true,
-      { limit: Number.MAX_SAFE_INTEGER, offset: 0 },
+      { limit: 5, offset: 0 },
     );
   };
 
@@ -146,6 +146,7 @@ describe('useState mocked', () => {
     caseWorkingCopy: undefined,
     sections: {},
     timelines: {},
+    outstandingUpdateCount: 0,
   };
 
   beforeEach(() => {

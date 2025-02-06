@@ -10,52 +10,67 @@
     }
   },
   "case": {
-
-  "sectionTypes": {
-
-     "household": {
-      "splitFormAt": 7,
-      "caseHomeOrder": 1,
-      "printOrder": 1
-    },
-    "perpetrator": {
-      "splitFormAt": 7,
-      "caseHomeOrder": 2,
-      "printOrder": 2
-    },
-    "incident": {
-      "previewFields": ["date", "duration", "location"],
-      "layout": {
-        "date":  {
+    "sectionTypes": {
+      "household": {
+        "splitFormAt": 7,
+        "caseHomeOrder": 1,
+        "printOrder": 1
+      },
+      "perpetrator": {
+        "splitFormAt": 7,
+        "caseHomeOrder": 2,
+        "printOrder": 2
+      },
+      "incident": {
+        "previewFields": [
+          "date",
+          "duration",
+          "location"
+        ],
+        "layout": {
+          "date": {
             "includeLabel": false,
             "format": "date"
           },
-        "duration":  {
+          "duration": {
             "includeLabel": true
           },
-        "location":  {
-          "includeLabel": true
-        }
+          "location": {
+            "includeLabel": true
+          }
+        },
+        "caseHomeOrder": 3,
+        "printOrder": 3,
+        "splitFormAt": 3
       },
-      "caseHomeOrder": 3,
-      "printOrder":3,
-      "splitFormAt": 3
-    },
-    "referral": {
-      "previewFields": ["referredTo"],
-      "caseHomeOrder": 2,
-      "splitFormAt": 2,
-      "printOrder": 4
-    },
-    "document": {
-      "splitFormAt": 1,
-      "caseHomeOrder": 4
-    },
-    "notes": {
-      "printOrder": 5
+      "referral": {
+        "previewFields": [
+          "referredTo"
+        ],
+        "caseHomeOrder": 4,
+        "splitFormAt": 2,
+        "printOrder": 4
+      },
+      "document": {
+        "splitFormAt": 1,
+        "caseHomeOrder": 5
+      },
+      "note": {
+        "printOrder": 6
+      },
+      "chicken": {
+        "previewFields": [
+          "boc"
+        ],
+        "layout": {
+          "boc": {
+            "includeLabel": true
+          }
+        },
+        "caseHomeOrder": 2,
+        "splitFormAt": 2,
+        "printOrder": 0
+      }
     }
   }
-
-    }
-
-  }
+}

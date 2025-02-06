@@ -34,7 +34,6 @@ import * as RoutingActions from '../../states/routing/actions';
 import { newCloseModalAction } from '../../states/routing/actions';
 import IncidentInformationRow from './IncidentInformationRow';
 import DocumentInformationRow from './DocumentInformationRow';
-import { getAseloFeatureFlags } from '../../hrmConfig';
 import NavigableContainer from '../NavigableContainer';
 import { isStandaloneITask } from './Case';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
@@ -128,16 +127,16 @@ const CaseHome: React.FC<Props> = ({
 }) => {
   if (!connectedCase) return null; // narrow type before deconstructing
   const caseId = connectedCase.id;
-  const {
-    enable_case_merging: enableCaseMerging,
-    enable_separate_timeline_view: enableSeparateTimelineView,
-  } = getAseloFeatureFlags();
 
-  const orderedListSections = Object.entries(definitionVersion.layoutVersion.case.sectionTypes)
+  const orderedListSections = Object.entries(definitionVersion.caseSectionTypes)
     .filter(([sectionType]) => !['note', 'referral'].includes(sectionType))
+    .map(([sectionType]) => ({
+      sectionType,
+      layout: definitionVersion.layoutVersion.case.sectionTypes[sectionType] ?? {},
+    }))
     .sort(
-      ([, layout1], [, layout2]) =>
-        (layout1.caseHomerOrder ?? Number.MAX_SAFE_INTEGER) - (layout2.caseHomerOrder ?? Number.MAX_SAFE_INTEGER),
+      ({ layout: layout1 }, { layout: layout2 }) =>
+        (layout1.caseHomeOrder ?? Number.MAX_SAFE_INTEGER) - (layout2.caseHomeOrder ?? Number.MAX_SAFE_INTEGER),
     );
 
   const onViewFullTimelineClick = () => {
@@ -206,10 +205,8 @@ const CaseHome: React.FC<Props> = ({
               taskSid={task.taskSid}
               page={0}
               timelineId={MAIN_TIMELINE_ID}
-              pageSize={enableSeparateTimelineView ? 5 : Number.MAX_SAFE_INTEGER}
-              titleCode={
-                hasMoreActivities && enableSeparateTimelineView ? 'Case-Timeline-RecentTitle' : 'Case-Timeline-Title'
-              }
+              pageSize={5}
+              titleCode={hasMoreActivities ? 'Case-Timeline-RecentTitle' : 'Case-Timeline-Title'}
             />
             {hasMoreActivities && (
               <ViewButton style={{ marginTop: '10px' }} withDivider={false} onClick={onViewFullTimelineClick}>
@@ -218,7 +215,7 @@ const CaseHome: React.FC<Props> = ({
             )}
           </CaseDetailsBorder>
         </Box>
-        {orderedListSections.map(([sectionType]) => {
+        {orderedListSections.map(({ sectionType }) => {
           let sectionRenderer: (section: FullCaseSection, onView: () => void) => JSX.Element | null;
           switch (sectionType) {
             case 'document': {
@@ -271,18 +268,16 @@ const CaseHome: React.FC<Props> = ({
       </CaseContainer>
       {isNewContact && (
         <BottomButtonBar>
-          {!enableCaseMerging && (
-            <Box marginRight="15px">
-              <StyledNextStepButton
-                data-testid="CaseHome-CancelButton"
-                secondary="true"
-                roundCorners
-                onClick={handleClose}
-              >
-                <Template code="BottomBar-CancelNewCaseAndClose" />
-              </StyledNextStepButton>
-            </Box>
-          )}
+          <Box marginRight="15px">
+            <StyledNextStepButton
+              data-testid="CaseHome-CancelButton"
+              secondary="true"
+              roundCorners
+              onClick={handleClose}
+            >
+              <Template code="BottomBar-CancelNewCaseAndClose" />
+            </StyledNextStepButton>
+          </Box>
           <SaveAndEndButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
             <Template code="BottomBar-SaveAndEnd" />
           </SaveAndEndButton>

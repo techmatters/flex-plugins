@@ -184,7 +184,7 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
     }))
     .sort(
       ({ layout: layout1 }, { layout: layout2 }) =>
-        (layout1.caseHomerOrder ?? Number.MAX_SAFE_INTEGER) - (layout2.caseHomerOrder ?? Number.MAX_SAFE_INTEGER),
+        (layout1.printOrder ?? Number.MAX_SAFE_INTEGER) - (layout2.printOrder ?? Number.MAX_SAFE_INTEGER),
     );
 
   return (

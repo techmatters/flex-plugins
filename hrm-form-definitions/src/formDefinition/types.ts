@@ -297,7 +297,7 @@ export type LayoutDefinition = {
   previewFields?: ItemBase['name'][];
   layout?: { [name: string]: LayoutValue };
   splitFormAt?: number;
-  caseHomerOrder?: number;
+  caseHomeOrder?: number;
   printOrder?: number;
   printTitleTemplateCode?: string;
 };
