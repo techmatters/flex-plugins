@@ -70,9 +70,27 @@ export const caseList = (page: Page) => {
   };
 
   async function openFilter(filter: Filter): Promise<void> {
+    console.log(`[DEBUG] Starting to open filter: ${filter}`);
+    await caseListPage.waitFor({ state: 'visible', timeout: 10000 });
+    console.log(`[DEBUG] Parent container is visible`);
+
+    // Debug: Check what elements are present in the container
+    const html = await caseListPage.evaluate((el) => el.innerHTML);
+    console.log('[DEBUG] Container HTML:', html);
+
     const openFilterButton = selectors.filterButton(filter);
-    await openFilterButton.waitFor({ state: 'visible' });
+    console.log(`[DEBUG] Got filter button locator for: ${filter}`);
+    console.log(`[DEBUG] Selector used: //button[@data-testid='FilterBy-${filter}-Button']`);
+
+    // Debug: Check if button exists at all, even if not visible
+    const exists = (await openFilterButton.count()) > 0;
+    console.log(`[DEBUG] Filter button exists: ${exists}`);
+
+    console.log(`[DEBUG] Waiting for filter button to be visible: ${filter}`);
+    await openFilterButton.waitFor({ state: 'visible', timeout: 10000 });
+    console.log(`[DEBUG] Filter button is visible, attempting to click: ${filter}`);
     await openFilterButton.click();
+    console.log(`[DEBUG] Successfully clicked filter button: ${filter}`);
   }
 
   const closeFilter = openFilter;
