@@ -38,6 +38,14 @@ import { newGoBackAction } from '../../../states/routing/actions';
 import { RecursivePartial } from '../../RecursivePartial';
 import { RootState } from '../../../states';
 import { VALID_EMPTY_CASE } from '../../testCases';
+import { getInitializedCan } from '../../../permissions';
+
+jest.mock('../../../permissions', () => ({
+  getInitializedCan: jest.fn(),
+  PermissionActions: {},
+}));
+
+const mockGetInitializedCan = getInitializedCan as jest.MockedFunction<typeof getInitializedCan>;
 
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
@@ -139,6 +147,7 @@ describe('Test ViewHousehold', () => {
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);
     mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+    mockGetInitializedCan.mockReturnValue(() => true);
   });
 
   beforeEach(async () => {
@@ -146,7 +155,6 @@ describe('Test ViewHousehold', () => {
       definitionVersion: mockV1,
       task: task as StandaloneITask,
       sectionApi: householdSectionApi,
-      canEdit: () => true,
     };
   });
 
@@ -166,10 +174,11 @@ describe('Test ViewHousehold', () => {
     expect(store.dispatch).toHaveBeenCalledWith(newGoBackAction(task.taskSid));
   });
   test('Test no edit permissions', async () => {
+    mockGetInitializedCan.mockReturnValue(() => false);
     render(
       <StorelessThemeProvider themeConf={themeConf}>
         <Provider store={store}>
-          <ViewCaseItem {...ownProps} canEdit={() => false} />
+          <ViewCaseItem {...ownProps} />
         </Provider>
       </StorelessThemeProvider>,
     );
