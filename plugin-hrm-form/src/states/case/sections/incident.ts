@@ -27,7 +27,7 @@ export const incidentSectionApi: CaseSectionApi = {
   type: SECTION_PROPERTY,
   getSectionFormDefinition: (definitionVersions: DefinitionVersion) => definitionVersions.caseForms.IncidentForm,
   getSectionLayoutDefinition: (definitionVersions: DefinitionVersion) =>
-    definitionVersions.layoutVersion.case.incidents,
+    definitionVersions.layoutVersion.case.sectionTypes.incident,
   getSectionItemById: getSectionItemById(SECTION_PROPERTY),
   getWorkingCopy: getWorkingCopy(SECTION_PROPERTY),
   updateWorkingCopy: setWorkingCopy(SECTION_PROPERTY),

@@ -136,8 +136,8 @@ const CaseHome: React.FC<Props> = ({
     openModal({ route: 'case', subroute: 'timeline', caseId, page: 0 });
   };
 
-  const { caseForms } = definitionVersion;
-  const caseLayouts = definitionVersion.layoutVersion.case;
+  const { caseSectionTypes } = definitionVersion;
+  const caseLayouts = definitionVersion.layoutVersion.case.sectionTypes;
 
   const {
     info: { followUpDate, childIsAtRisk },
@@ -233,9 +233,9 @@ const CaseHome: React.FC<Props> = ({
               <IncidentInformationRow
                 key={`incident-${sectionId}`}
                 onClickView={onClickView}
-                definition={caseForms.IncidentForm}
+                definition={caseSectionTypes[sectionType].form}
                 values={sectionTypeSpecificData}
-                layoutDefinition={caseLayouts.incidents}
+                layoutDefinition={caseLayouts.incidents || {}}
               />
             )}
           />

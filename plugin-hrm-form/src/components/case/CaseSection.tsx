@@ -21,7 +21,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Box, Row } from '../../styles';
 import { CaseDetailsBorder, CaseSectionFont, PlaceHolderText, TimelineRow } from './styles';
 import CaseAddButton from './CaseAddButton';
-import { Case, WellKnownCaseSection } from '../../types/types';
+import { Case } from '../../types/types';
 import { RootState } from '../../states';
 import { newGetTimelineAsyncAction, selectTimeline } from '../../states/case/timeline';
 import { TimelineActivity } from '../../states/case/types';
@@ -36,7 +36,7 @@ import selectCurrentRouteCase from '../../states/case/selectCurrentRouteCase';
 type OwnProps = {
   canAdd: () => boolean;
   taskSid: string;
-  sectionType: WellKnownCaseSection;
+  sectionType: string;
   sectionRenderer?: (section: FullCaseSection, onView: () => void) => JSX.Element | null;
 };
 
@@ -65,13 +65,16 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { taskSid, sectionType }: O
     viewCaseSection: (caseId: Case['id'], sectionId: string) =>
       dispatch(
         newOpenModalAction(
-          { route: 'case', subroute: sectionType, action: CaseItemAction.View, id: sectionId, caseId },
+          { route: 'case', subroute: `section/${sectionType}`, action: CaseItemAction.View, id: sectionId, caseId },
           taskSid,
         ),
       ),
     addCaseSection: (caseId: Case['id']) =>
       dispatch(
-        newOpenModalAction({ route: 'case', subroute: sectionType, action: CaseItemAction.Add, caseId }, taskSid),
+        newOpenModalAction(
+          { route: 'case', subroute: `section/${sectionType}`, action: CaseItemAction.Add, caseId },
+          taskSid,
+        ),
       ),
     getTimeline: (caseId: Case['id']) =>
       asyncDispatcher(

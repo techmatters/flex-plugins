@@ -27,7 +27,7 @@ export const noteSectionApi: CaseSectionApi = {
   type: SECTION_PROPERTY,
   getSectionFormDefinition: (definitionVersions: DefinitionVersion) => definitionVersions.caseForms.NoteForm,
   getSectionLayoutDefinition: (definitionVersions: DefinitionVersion) =>
-    definitionVersions.layoutVersion.case.notes ?? {},
+    definitionVersions.layoutVersion.case.sectionTypes.note || {},
   getSectionItemById: getSectionItemById(SECTION_PROPERTY),
   getWorkingCopy: getWorkingCopy(SECTION_PROPERTY),
   updateWorkingCopy: setWorkingCopy(SECTION_PROPERTY),

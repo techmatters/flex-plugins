@@ -188,7 +188,7 @@ type CallTypeButtonInputDefinition = {
 type CopyToDefinition = ItemBase & {
   type: FormInputType.CopyTo;
   initialChecked: false;
-  target: CaseSectionApiName;
+  target: string;
 };
 
 type CustomContactComponentDefinition = ItemBase &
@@ -307,12 +307,7 @@ export type LayoutVersion = {
   };
   case: {
     hideCounselorDetails?: boolean;
-    households: LayoutDefinition;
-    perpetrators: LayoutDefinition;
-    incidents: LayoutDefinition;
-    referrals: LayoutDefinition;
-    documents: LayoutDefinition;
-    notes?: LayoutDefinition;
+    sectionTypes: Record<string, LayoutDefinition>;
   };
   thaiCharacterPdfSupport?: boolean;
 };

@@ -27,7 +27,7 @@ export const referralSectionApi: CaseSectionApi = {
   type: SECTION_PROPERTY,
   getSectionFormDefinition: (definitionVersions: DefinitionVersion) => definitionVersions.caseForms.ReferralForm,
   getSectionLayoutDefinition: (definitionVersions: DefinitionVersion) =>
-    definitionVersions.layoutVersion.case.referrals,
+    definitionVersions.layoutVersion.case.sectionTypes.referral,
   getSectionItemById: getSectionItemById(SECTION_PROPERTY),
   getWorkingCopy: getWorkingCopy(SECTION_PROPERTY),
   updateWorkingCopy: setWorkingCopy(SECTION_PROPERTY),

@@ -27,7 +27,7 @@ export const householdSectionApi: CaseSectionApi = {
   type: SECTION_PROPERTY,
   getSectionFormDefinition: (definitionVersions: DefinitionVersion) => definitionVersions.caseForms.HouseholdForm,
   getSectionLayoutDefinition: (definitionVersions: DefinitionVersion) =>
-    definitionVersions.layoutVersion.case.households,
+    definitionVersions.layoutVersion.case.sectionTypes.household,
   getSectionItemById: getSectionItemById(SECTION_PROPERTY),
   getWorkingCopy: getWorkingCopy(SECTION_PROPERTY),
   updateWorkingCopy: setWorkingCopy(SECTION_PROPERTY),

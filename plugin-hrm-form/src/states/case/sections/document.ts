@@ -27,7 +27,7 @@ export const documentSectionApi: CaseSectionApi = {
   type: SECTION_PROPERTY,
   getSectionFormDefinition: (definitionVersions: DefinitionVersion) => definitionVersions.caseForms.DocumentForm,
   getSectionLayoutDefinition: (definitionVersions: DefinitionVersion) =>
-    definitionVersions.layoutVersion.case.documents,
+    definitionVersions.layoutVersion.case.sectionTypes.document,
   getSectionItemById: getSectionItemById(SECTION_PROPERTY),
   getWorkingCopy: getWorkingCopy(SECTION_PROPERTY),
   updateWorkingCopy: setWorkingCopy(SECTION_PROPERTY),

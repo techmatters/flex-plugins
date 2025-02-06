@@ -17,8 +17,8 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 import { DefinitionVersionId } from 'hrm-form-definitions';
 
-import type { GeneralizedSearchParams, SearchParams } from '../states/search/types';
-import type { Case, CaseOverview, Contact, SearchCaseResult, WellKnownCaseSection } from '../types/types';
+import type { GeneralizedSearchParams } from '../states/search/types';
+import type { Case, CaseOverview, Contact, SearchCaseResult } from '../types/types';
 import type { FetchOptions } from './fetchApi';
 import type { GenericTimelineActivity } from '../states/case/types';
 import { fetchHrmApi } from './fetchHrmApi';
@@ -117,7 +117,7 @@ const isApiContactTimelineActivity = (
 
 export async function getCaseTimeline(
   caseId: Case['id'],
-  sectionTypes: WellKnownCaseSection[],
+  sectionTypes: string[],
   includeContacts: boolean,
   paginationSettings: { offset: number; limit: number },
 ): Promise<TimelineResult<Date>> {

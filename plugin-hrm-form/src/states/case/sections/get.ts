@@ -13,11 +13,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { WellKnownCaseSection } from '../../../types/types';
 import { CaseSection } from '../../../services/caseSectionService';
 import { CaseStateEntry } from '../types';
 
-export const getSectionItemById = (propertyName: WellKnownCaseSection) => (
+export const getSectionItemById = (propertyName: string) => (
   sections: CaseStateEntry['sections'],
   id: string,
 ): CaseSection | undefined => sections?.[propertyName]?.[id];

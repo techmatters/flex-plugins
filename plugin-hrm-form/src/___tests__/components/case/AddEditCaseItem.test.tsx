@@ -31,7 +31,6 @@ import AddEditCaseItem, { AddEditCaseItemProps } from '../../../components/case/
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { CustomITask } from '../../../types/types';
 import { CaseItemAction } from '../../../states/routing/types';
-import { householdSectionApi } from '../../../states/case/sections/household';
 import { newGoBackAction } from '../../../states/routing/actions';
 import { ReferralLookupStatus } from '../../../states/contacts/resourceReferral';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
@@ -221,7 +220,6 @@ describe('Test AddHousehold', () => {
     () =>
       (ownProps = {
         task: { taskSid: TASK_SID } as CustomITask,
-        sectionApi: householdSectionApi,
         definitionVersion: mockV1,
         sectionTypeName: 'household',
       }),

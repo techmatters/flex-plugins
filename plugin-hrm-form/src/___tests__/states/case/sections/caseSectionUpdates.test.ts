@@ -16,7 +16,7 @@
 
 import promiseMiddleware from 'redux-promise-middleware';
 import { configureStore } from '@reduxjs/toolkit';
-import { CaseSectionApiName, DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../../mockFetchDefinitions';
 import { HrmState } from '../../../../states';
@@ -28,7 +28,6 @@ import {
   updateCaseSectionAsyncAction,
 } from '../../../../states/case/sections/caseSectionUpdates';
 import { VALID_EMPTY_CASE } from '../../../testCases';
-import { lookupApi } from '../../../../states/case/sections/lookupApi';
 
 jest.mock('../../../../services/caseSectionService', () => ({
   createCaseSection: jest.fn(),
@@ -48,8 +47,6 @@ const BASELINE_DATE = new Date('2000-01-01T00:00:00Z');
 const mockCreateSection = createCaseSection as jest.Mock<ReturnType<typeof createCaseSection>>;
 const mockUpdateSection = updateCaseSection as jest.Mock<ReturnType<typeof updateCaseSection>>;
 
-const noteApi = lookupApi(CaseSectionApiName.Notes);
-const referralApi = lookupApi(CaseSectionApiName.Referrals);
 let definitionVersion: DefinitionVersion;
 
 const testStore = (stateChanges: Partial<HrmState> = {}) =>
@@ -112,7 +109,7 @@ describe('createCaseSectionAsyncAction', () => {
   });
 
   test('calls createCaseSection with parameters taken form the action', async () => {
-    const res = createCaseSectionAsyncAction(CASE_ID, noteApi, payload, definitionVersion);
+    const res = createCaseSectionAsyncAction(CASE_ID, 'note', payload, definitionVersion);
     expect(mockCreateSection).toHaveBeenCalledWith(CASE_ID, 'note', payload, undefined);
     const result = await res.payload;
     expect(result).toEqual({
@@ -145,7 +142,7 @@ describe('createCaseSectionAsyncAction', () => {
     test(`case already has sections of the same type - appends section to the appropriate section type list`, async () => {
       const { dispatch, getState } = testStore({});
       const actionResultPromise = (dispatch(
-        createCaseSectionAsyncAction(CASE_ID, noteApi, payload, definitionVersion),
+        createCaseSectionAsyncAction(CASE_ID, 'note', payload, definitionVersion),
       ) as unknown) as PromiseLike<unknown>;
       const pendingState = getState();
       expect(pendingState.connectedCase.cases[CASE_ID].outstandingUpdateCount).toBe(1);
@@ -160,7 +157,7 @@ describe('createCaseSectionAsyncAction', () => {
     test(`case has no existing sections of the same type - adds an appropriate section type list with the new item as its element`, async () => {
       const { dispatch, getState } = testStore({});
       const actionResultPromise = (dispatch(
-        createCaseSectionAsyncAction(CASE_ID, referralApi, payload, definitionVersion),
+        createCaseSectionAsyncAction(CASE_ID, 'referral', payload, definitionVersion),
       ) as unknown) as PromiseLike<unknown>;
       const pendingState = getState();
       expect(pendingState.connectedCase.cases[CASE_ID].outstandingUpdateCount).toBe(1);
@@ -192,7 +189,7 @@ describe('createCaseSectionAsyncAction', () => {
       });
 
       await ((dispatch(
-        createCaseSectionAsyncAction(CASE_ID, noteApi, payload, definitionVersion),
+        createCaseSectionAsyncAction(CASE_ID, 'note', payload, definitionVersion),
       ) as unknown) as PromiseLike<unknown>);
       const state = getState();
       expect(state.connectedCase.cases[CASE_ID].sections).toBeDefined();
@@ -206,7 +203,7 @@ describe('createCaseSectionAsyncAction', () => {
       const { dispatch, getState } = testStore({});
       const oldState = getState();
       await ((dispatch(
-        createCaseSectionAsyncAction('not existing case', referralApi, payload, definitionVersion),
+        createCaseSectionAsyncAction('not existing case', 'referral', payload, definitionVersion),
       ) as unknown) as PromiseLike<unknown>);
       const state = getState();
       expect(state).toStrictEqual(oldState);
@@ -219,7 +216,7 @@ describe('createCaseSectionAsyncAction', () => {
 
       try {
         await ((dispatch(
-          createCaseSectionAsyncAction(CASE_ID, referralApi, payload, definitionVersion),
+          createCaseSectionAsyncAction(CASE_ID, 'referral', payload, definitionVersion),
         ) as unknown) as PromiseLike<unknown>);
       } catch (e) {
         // Error still bubbles up so need to swallow it
@@ -245,7 +242,7 @@ describe('updateCaseSectionAsyncAction', () => {
   });
 
   test('calls updateCaseSection with parameters taken form the action', async () => {
-    const res = updateCaseSectionAsyncAction(CASE_ID, noteApi, 'EXISTING_NOTE_ID', payload, definitionVersion);
+    const res = updateCaseSectionAsyncAction(CASE_ID, 'note', 'EXISTING_NOTE_ID', payload, definitionVersion);
     expect(mockUpdateSection).toHaveBeenCalledWith(CASE_ID, 'note', 'EXISTING_NOTE_ID', payload, undefined);
     const result = await res.payload;
     expect(result).toEqual({
@@ -278,7 +275,7 @@ describe('updateCaseSectionAsyncAction', () => {
     test(`case with caseId exists & section with sectionId exists - updates the section in the appropriate type list`, async () => {
       const { dispatch, getState } = testStore({});
       const actionResultPromise = (dispatch(
-        updateCaseSectionAsyncAction(CASE_ID, noteApi, 'EXISTING_NOTE_ID', payload, definitionVersion),
+        updateCaseSectionAsyncAction(CASE_ID, 'note', 'EXISTING_NOTE_ID', payload, definitionVersion),
       ) as unknown) as PromiseLike<unknown>;
       const pendingState = getState();
       expect(pendingState.connectedCase.cases[CASE_ID].outstandingUpdateCount).toBe(1);
@@ -295,7 +292,7 @@ describe('updateCaseSectionAsyncAction', () => {
       const { dispatch, getState } = testStore({});
 
       const actionResultPromise = (dispatch(
-        updateCaseSectionAsyncAction(CASE_ID, noteApi, 'NEW_NOTE_ID', payload, definitionVersion),
+        updateCaseSectionAsyncAction(CASE_ID, 'note', 'NEW_NOTE_ID', payload, definitionVersion),
       ) as unknown) as PromiseLike<unknown>;
       const pendingState = getState();
       expect(pendingState.connectedCase.cases[CASE_ID].outstandingUpdateCount).toBe(1);
@@ -312,7 +309,7 @@ describe('updateCaseSectionAsyncAction', () => {
       const { dispatch, getState } = testStore({});
 
       await ((dispatch(
-        updateCaseSectionAsyncAction(CASE_ID, referralApi, 'NEW_REFERRAL_ID', payload, definitionVersion),
+        updateCaseSectionAsyncAction(CASE_ID, 'referral', 'NEW_REFERRAL_ID', payload, definitionVersion),
       ) as unknown) as PromiseLike<unknown>);
       const state = getState();
       expect(Object.keys(state.connectedCase.cases[CASE_ID].sections.note)).toHaveLength(1);
@@ -341,7 +338,7 @@ describe('updateCaseSectionAsyncAction', () => {
       });
 
       await ((dispatch(
-        updateCaseSectionAsyncAction(CASE_ID, noteApi, 'EXISTING_NOTE_ID', payload, definitionVersion),
+        updateCaseSectionAsyncAction(CASE_ID, 'note', 'EXISTING_NOTE_ID', payload, definitionVersion),
       ) as unknown) as PromiseLike<unknown>);
       const state = getState();
       expect(state.connectedCase.cases[CASE_ID].sections).toBeDefined();
@@ -356,7 +353,7 @@ describe('updateCaseSectionAsyncAction', () => {
       const oldState = getState();
 
       await ((dispatch(
-        updateCaseSectionAsyncAction('not existing case', referralApi, 'EXISTING_NOTE_ID', payload, definitionVersion),
+        updateCaseSectionAsyncAction('not existing case', 'referral', 'EXISTING_NOTE_ID', payload, definitionVersion),
       ) as unknown) as PromiseLike<unknown>);
       const state = getState();
       expect(state).toStrictEqual(oldState);
@@ -368,7 +365,7 @@ describe('updateCaseSectionAsyncAction', () => {
       const oldState = getState();
       try {
         await ((dispatch(
-          updateCaseSectionAsyncAction(CASE_ID, referralApi, 'EXISTING_NOTE_ID', payload, definitionVersion),
+          updateCaseSectionAsyncAction(CASE_ID, 'referral', 'EXISTING_NOTE_ID', payload, definitionVersion),
         ) as unknown) as PromiseLike<unknown>);
       } catch (e) {
         // Error still bubbles up so need to swallow it

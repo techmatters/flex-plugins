@@ -10,13 +10,16 @@
     }
   },
   "case": {
-    "households": {
+
+  "sectionTypes": {
+
+     "household": {
       "splitFormAt": 7
     },
-    "perpetrators": {
+    "perpetrator": {
       "splitFormAt": 7
     },
-    "incidents": {
+    "incident": {
       "previewFields": ["date", "duration", "location"],
       "layout": {
         "date":  {
@@ -32,12 +35,15 @@
       },
       "splitFormAt": 5
     },
-    "referrals": {
+    "referral": {
       "previewFields": ["referredTo"],
       "splitFormAt": 2
     },
-    "documents": {
+    "document": {
       "splitFormAt": 1
     }
   }
-}
+
+    }
+
+  }

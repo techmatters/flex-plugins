@@ -223,7 +223,7 @@ describe('useState mocked', () => {
       routing: {
         route: 'case',
         caseId: 'case123',
-        subroute: NewCaseSubroutes.Note,
+        subroute: 'section/note',
         action: CaseItemAction.Add,
       },
       taskId: TASK_SID,
@@ -248,7 +248,7 @@ describe('useState mocked', () => {
       routing: {
         route: 'case',
         caseId: 'case123',
-        subroute: NewCaseSubroutes.Referral,
+        subroute: 'section/referral',
         action: CaseItemAction.Add,
       },
       taskId: TASK_SID,
@@ -273,7 +273,7 @@ describe('useState mocked', () => {
       routing: {
         route: 'case',
         caseId: 'case123',
-        subroute: NewCaseSubroutes.Household,
+        subroute: 'section/household',
         action: CaseItemAction.Add,
       },
       taskId: TASK_SID,
@@ -298,7 +298,7 @@ describe('useState mocked', () => {
       routing: {
         route: 'case',
         caseId: 'case123',
-        subroute: NewCaseSubroutes.Perpetrator,
+        subroute: 'section/perpetrator',
         action: CaseItemAction.Add,
       },
       taskId: TASK_SID,
@@ -332,7 +332,7 @@ describe('useState mocked', () => {
       routing: {
         route: 'case',
         caseId: 'case123',
-        subroute: NewCaseSubroutes.Household,
+        subroute: 'section/household',
         action: CaseItemAction.View,
         id: 'HOUSEHOLD_ID',
       },
@@ -367,7 +367,7 @@ describe('useState mocked', () => {
       routing: {
         route: 'case',
         caseId: 'case123',
-        subroute: NewCaseSubroutes.Perpetrator,
+        subroute: 'section/perpetrator',
         action: CaseItemAction.View,
         id: 'PERPETRATOR_ID',
       },

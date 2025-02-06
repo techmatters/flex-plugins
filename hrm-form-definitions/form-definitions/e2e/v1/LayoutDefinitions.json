@@ -9,35 +9,38 @@
       "splitFormAt": 4
     }
   },
+
   "case": {
-    "households": {
-      "splitFormAt": 7
-    },
-    "perpetrators": {
-      "splitFormAt": 7
-    },
-    "incidents": {
-      "previewFields": ["date", "duration", "location"],
-      "layout": {
-        "date":  {
+    "sections": {
+      "household": {
+        "splitFormAt": 7
+      },
+      "perpetrator": {
+        "splitFormAt": 7
+      },
+      "incident": {
+        "previewFields": ["date", "duration", "location"],
+        "layout": {
+          "date":  {
             "includeLabel": false,
             "format": "date"
           },
-        "duration":  {
+          "duration":  {
             "includeLabel": true
           },
-        "location":  {
-          "includeLabel": true
-        }
+          "location":  {
+            "includeLabel": true
+          }
+        },
+        "splitFormAt": 3
       },
-      "splitFormAt": 3
-    },
-    "referrals": {
-      "previewFields": ["referredTo"],
-      "splitFormAt": 2
-    },
-    "documents": {
-      "splitFormAt": 1
+      "referral": {
+        "previewFields": ["referredTo"],
+        "splitFormAt": 2
+      },
+      "document": {
+        "splitFormAt": 1
+      }
     }
   }
 }

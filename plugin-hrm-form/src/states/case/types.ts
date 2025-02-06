@@ -123,7 +123,7 @@ export type CaseStateEntry = {
   availableStatusTransitions: StatusInfo[];
   references: Set<string>;
   timelines: Record<string, (ContactIdentifierTimelineActivity | CaseSectionIdentifierTimelineActivity)[]>;
-  sections: { [sectionType in WellKnownCaseSection]?: { [sectionId: string]: FullCaseSection } };
+  sections: Record<string, { [sectionId: string]: FullCaseSection }>;
   loading?: boolean;
   outstandingUpdateCount: number;
   error?: ParseFetchErrorResult;

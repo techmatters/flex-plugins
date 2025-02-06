@@ -32,7 +32,6 @@ import ViewCaseItem, { ViewCaseItemProps } from '../../../components/case/ViewCa
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { StandaloneITask } from '../../../types/types';
 import { CaseItemAction, NewCaseSubroutes } from '../../../states/routing/types';
-import { householdSectionApi } from '../../../states/case/sections/household';
 import { namespace } from '../../../states/storeNamespaces';
 import { newGoBackAction } from '../../../states/routing/actions';
 import { RecursivePartial } from '../../RecursivePartial';
@@ -154,7 +153,7 @@ describe('Test ViewHousehold', () => {
     ownProps = {
       definitionVersion: mockV1,
       task: task as StandaloneITask,
-      sectionApi: householdSectionApi,
+      sectionTypeName: 'household',
     };
   });
 

@@ -10,37 +10,45 @@
     }
   },
   "case": {
-    "households": {
-      "splitFormAt": 7
-    },
-    "perpetrators": {
-      "splitFormAt": 7
-    },
-    "incidents": {
-      "previewFields": ["date", "duration", "location"],
-      "layout": {
-        "date":  {
+    "sectionTypes": {
+      "household": {
+        "splitFormAt": 7
+      },
+      "perpetrator": {
+        "splitFormAt": 7
+      },
+      "incident": {
+        "previewFields": [
+          "date",
+          "duration",
+          "location"
+        ],
+        "layout": {
+          "date": {
             "includeLabel": false,
             "format": "date"
           },
-        "duration":  {
+          "duration": {
             "includeLabel": true
           },
-        "location":  {
-          "includeLabel": true
-        }
+          "location": {
+            "includeLabel": true
+          }
+        },
+        "splitFormAt": 3
       },
-      "splitFormAt": 3
-    },
-    "referrals": {
-      "previewFields": ["referredTo"],
-      "splitFormAt": 2
-    },
-    "documents": {
-      "splitFormAt": 1
-    },
-    "notes": {
-      "splitFormAt": 1
+      "referral": {
+        "previewFields": [
+          "referredTo"
+        ],
+        "splitFormAt": 2
+      },
+      "document": {
+        "splitFormAt": 1
+      },
+      "note": {
+        "splitFormAt": 1
+      }
     }
   }
 }

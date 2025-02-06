@@ -48,7 +48,6 @@ import {
 } from '../../states/routing/types';
 import { recordingErrorHandler } from '../../fullStory';
 import CloseCaseDialog from './CloseCaseDialog';
-import { CaseSectionApi } from '../../states/case/sections/api';
 import { newCloseModalAction, newGoBackAction } from '../../states/routing/actions';
 import {
   initialiseExistingCaseSectionWorkingCopy,
@@ -67,13 +66,14 @@ import {
   createCaseSectionAsyncAction,
   updateCaseSectionAsyncAction,
 } from '../../states/case/sections/caseSectionUpdates';
+import { getWorkingCopy } from '../../states/case/sections/workingCopy';
+import { getSectionItemById } from '../../states/case/sections/get';
 
 export type AddEditCaseItemProps = {
   task: CustomITask | StandaloneITask;
   definitionVersion: DefinitionVersion;
   customFormHandlers?: CustomHandlers;
   reactHookFormOptions?: Partial<{ shouldUnregister: boolean }>;
-  sectionApi: CaseSectionApi;
   sectionTypeName: string;
 };
 
@@ -88,7 +88,6 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
   task,
   customFormHandlers,
   reactHookFormOptions,
-  sectionApi,
   sectionTypeName,
 }) => {
   const { workerSid } = getHrmConfig();
@@ -101,10 +100,10 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
   );
   const isUpdating = outstandingUpdateCount > 0;
   const sectionId = isEditCaseSectionRoute(currentRoute) ? currentRoute.id : undefined;
-  const workingCopy = sectionApi.getWorkingCopy(caseWorkingCopy, sectionId);
+  const workingCopy = getWorkingCopy(sectionTypeName)(caseWorkingCopy, sectionId);
   const caseItemHistory = useSelector((state: RootState) =>
     sectionId
-      ? selectCaseItemHistory(state, currentRoute.caseId, sectionApi, sectionId)
+      ? selectCaseItemHistory(state, currentRoute.caseId, sectionTypeName, sectionId)
       : {
           added: new Date(),
           addingCounsellorName: selectCounselorName(state, workerSid),
@@ -112,14 +111,14 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
           updatingCounsellorName: undefined,
         },
   );
-  const formDefinition = definitionVersion.caseSectionTypes[sectionTypeName].form;
-  const layout = sectionApi.getSectionLayoutDefinition(definitionVersion);
+  const { form: formDefinition, label } = definitionVersion.caseSectionTypes[sectionTypeName];
+  const layout = definitionVersion.layoutVersion.case.sectionTypes[sectionTypeName] || {};
   const dispatch = useDispatch();
   const asyncDispatcher = asyncDispatch(dispatch);
 
   const savedForm = React.useMemo(() => {
     if (sectionId && sections) {
-      const { sectionTypeSpecificData: form } = sectionApi.getSectionItemById(sections, sectionId);
+      const { sectionTypeSpecificData: form } = getSectionItemById(sectionTypeName)(sections, sectionId);
       return formDefinition.reduce(
         (accum, curr) => ({
           ...accum,
@@ -129,17 +128,17 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
       );
     }
     return formDefinition.reduce(createStateItem, {});
-  }, [sections, formDefinition, sectionId, sectionApi]);
+  }, [sectionId, sections, formDefinition, sectionTypeName]);
 
   useEffect(() => {
     if (!workingCopy) {
       if (sectionId) {
-        dispatch(initialiseExistingCaseSectionWorkingCopy(currentRoute.caseId, sectionApi, sectionId));
+        dispatch(initialiseExistingCaseSectionWorkingCopy(currentRoute.caseId, sectionTypeName, sectionId));
       } else {
-        dispatch(initialiseNewCaseSectionWorkingCopy(currentRoute.caseId, sectionApi, savedForm));
+        dispatch(initialiseNewCaseSectionWorkingCopy(currentRoute.caseId, sectionTypeName, savedForm));
       }
     }
-  }, [sectionId, sectionApi, workingCopy, savedForm, currentRoute.caseId, dispatch]);
+  }, [sectionId, workingCopy, savedForm, currentRoute.caseId, dispatch, sectionTypeName]);
 
   const methods = useForm(reactHookFormOptions);
 
@@ -160,7 +159,9 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
     updateCallback: () => {
       const form = getValues();
       console.log('Updated case form', form);
-      dispatch(updateCaseSectionWorkingCopy(currentRoute.caseId, sectionApi, { ...workingCopy, ...form }, sectionId));
+      dispatch(
+        updateCaseSectionWorkingCopy(currentRoute.caseId, sectionTypeName, { ...workingCopy, ...form }, sectionId),
+      );
     },
     customHandlers: customFormHandlers,
     shouldFocusFirstElement: false,
@@ -181,7 +182,7 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
     : splitInHalf(disperseInputs(7)(form));
 
   const closeActions = (caseId: Case['id'], id: string, action: DismissAction) => {
-    dispatch(removeCaseSectionWorkingCopy(caseId, sectionApi, id));
+    dispatch(removeCaseSectionWorkingCopy(caseId, sectionTypeName, id));
     if (action === DismissAction.BACK) {
       dispatch(newGoBackAction(task.taskSid));
     } else if (action === DismissAction.CLOSE) {
@@ -192,10 +193,10 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
   const save = async () => {
     if (sectionId) {
       await asyncDispatcher(
-        updateCaseSectionAsyncAction(caseId, sectionApi, sectionId, workingCopy, definitionVersion),
+        updateCaseSectionAsyncAction(caseId, sectionTypeName, sectionId, workingCopy, definitionVersion),
       );
     } else {
-      await asyncDispatcher(createCaseSectionAsyncAction(caseId, sectionApi, workingCopy, definitionVersion));
+      await asyncDispatcher(createCaseSectionAsyncAction(caseId, sectionTypeName, workingCopy, definitionVersion));
     }
   };
 
@@ -218,7 +219,7 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
 
   const strings = getTemplateStrings();
   const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler(
-    currentRoute.action === CaseItemAction.Edit ? `Case: Edit ${sectionApi.label}` : `Case: Add ${sectionApi.label}`,
+    currentRoute.action === CaseItemAction.Edit ? `Case: Edit ${label}` : `Case: Add ${label}`,
     () => {
       window.alert(strings['Error-Form']);
       if (dialogState !== DialogState.CLOSED) setDialogState(DialogState.CLOSED);
@@ -235,9 +236,7 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
   return (
     <FormProvider {...methods}>
       <NavigableContainer
-        titleCode={
-          currentRoute.action === CaseItemAction.Edit ? `Case-Edit${sectionApi.label}` : `Case-Add${sectionApi.label}`
-        }
+        titleCode={currentRoute.action === CaseItemAction.Edit ? `Case-Edit${label}` : `Case-Add${label}`}
         onGoBack={() => checkForEdits(DismissAction.BACK)}
         onCloseModal={() => checkForEdits(DismissAction.CLOSE)}
         task={task}
@@ -273,7 +272,7 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
                 onClick={methods.handleSubmit(saveAndStay, onError)}
                 disabled={isUpdating}
               >
-                <Template code={`BottomBar-SaveAndAddAnother${sectionApi.label}`} />
+                <Template code={`BottomBar-SaveAndAddAnother${label}`} />
               </StyledNextStepButton>
             </Box>
           )}
@@ -283,7 +282,7 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
             onClick={methods.handleSubmit(() => saveAndLeave(DismissAction.BACK), onError)}
             disabled={isUpdating}
           >
-            <Template code={`BottomBar-Save${sectionApi.label}`} />
+            <Template code={`BottomBar-Save${label}`} />
           </StyledNextStepButton>
         </BottomButtonBar>
         <CloseCaseDialog
