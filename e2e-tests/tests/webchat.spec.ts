@@ -69,7 +69,6 @@ test.describe.serial('Web chat caller', () => {
     await chatPage.fillPreEngagementForm();
 
     const chatScript = getWebchatScript();
-    console.log('Using chat script:', JSON.stringify(chatScript, null, 2));
 
     const webchatProgress = chatPage.chat(chatScript);
     const flexChatProgress: AsyncIterator<ChatStatement> = flexChat(pluginPage).chat(chatScript);
@@ -79,6 +78,7 @@ test.describe.serial('Web chat caller', () => {
     // And each time flexChatProgress.next(), the flex chat processes statements until it yields
     // Should be moved out to it's own function in time, and a cleaner was of injecting actions to be taken partway through the chat should be implemented.
     for await (const expectedCounselorStatement of webchatProgress) {
+      console.log('Statement for flex chat to process', expectedCounselorStatement);
       if (expectedCounselorStatement) {
         switch (expectedCounselorStatement.origin) {
           case ChatStatementOrigin.COUNSELOR_AUTO:

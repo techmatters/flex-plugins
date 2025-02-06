@@ -23,7 +23,7 @@ import { Page } from '@playwright/test';
 import context from '../global-context';
 import * as path from 'path';
 
-const generateMockCases = (toGenerate: number): any[] => {
+const generateMockCases = (toGenerate: number): Case[] => {
   const hourAgo = subHours(new Date(), 10);
   return Object.keys(new Array(toGenerate).fill(null)).map((idx) => {
     const idxNumber = Number.parseInt(idx);

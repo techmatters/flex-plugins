@@ -70,46 +70,13 @@ export const caseList = (page: Page) => {
   };
 
   async function openFilter(filter: Filter): Promise<void> {
-    console.log(`[DEBUG] Starting to open filter: ${filter}`);
-
-    try {
-      // First wait for the page to be ready
-      await caseListPage.waitFor({ state: 'attached', timeout: 20000 });
-
-      // Then wait for it to be visible
-      await caseListPage.waitFor({ state: 'visible', timeout: 20000 });
-      console.log(`[DEBUG] Parent container is visible`);
-
-      // Add a small delay to ensure dynamic content is loaded
-      await page.waitForTimeout(2000);
-
-      const openFilterButton = selectors.filterButton(filter);
-      console.log(`[DEBUG] Got filter button locator for: ${filter}`);
-      console.log(`[DEBUG] Selector used: //button[@data-testid='FilterBy-${filter}-Button']`);
-
-      // Wait for network requests to settle
-      await page.waitForLoadState('networkidle');
-
-      // Debug: Check if button exists at all, even if not visible
-      const exists = (await openFilterButton.count()) > 0;
-      console.log(`[DEBUG] Filter button exists: ${exists}`);
-
-      if (!exists) {
-        throw new Error(`Filter button for ${filter} not found in DOM`);
-      }
-
-      console.log(`[DEBUG] Waiting for filter button to be visible: ${filter}`);
-      await openFilterButton.waitFor({ state: 'visible', timeout: 20000 });
-      console.log(`[DEBUG] Filter button is visible, attempting to click: ${filter}`);
-      await openFilterButton.click();
-      console.log(`[DEBUG] Successfully clicked filter button: ${filter}`);
-    } catch (error) {
-      console.error(`[ERROR] Failed to open filter ${filter}:`, error);
-      // Log the page HTML for debugging
-      const html = await caseListPage.evaluate((el) => el.innerHTML);
-      console.log('[DEBUG] Container HTML at time of error:', html);
-      throw error;
+    const openFilterButton = selectors.filterButton(filter);
+    const exists = (await openFilterButton.count()) > 0;
+    if (!exists) {
+      throw new Error(`Filter button for ${filter} not found in DOM`);
     }
+    await openFilterButton.waitFor({ state: 'visible' });
+    await openFilterButton.click();
   }
 
   const closeFilter = openFilter;
