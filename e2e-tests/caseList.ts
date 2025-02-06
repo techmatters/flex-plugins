@@ -71,11 +71,11 @@ export const caseList = (page: Page) => {
 
   async function openFilter(filter: Filter): Promise<void> {
     console.log(`[DEBUG] Starting to open filter: ${filter}`);
-    
+
     try {
       // First wait for the page to be ready
       await caseListPage.waitFor({ state: 'attached', timeout: 20000 });
-      
+
       // Then wait for it to be visible
       await caseListPage.waitFor({ state: 'visible', timeout: 20000 });
       console.log(`[DEBUG] Parent container is visible`);
@@ -93,7 +93,7 @@ export const caseList = (page: Page) => {
       // Debug: Check if button exists at all, even if not visible
       const exists = (await openFilterButton.count()) > 0;
       console.log(`[DEBUG] Filter button exists: ${exists}`);
-      
+
       if (!exists) {
         throw new Error(`Filter button for ${filter} not found in DOM`);
       }
