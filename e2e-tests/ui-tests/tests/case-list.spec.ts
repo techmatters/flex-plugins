@@ -21,6 +21,7 @@ import * as mockServer from '../flex-in-a-box/proxied-endpoints';
 
 import '../flex-in-a-box/local-resources';
 import hrmCases from '../aselo-service-mocks/hrm/cases';
+import hrmPermissions from '../aselo-service-mocks/hrm/permissions';
 import { caseList, Filter } from '../../caseList';
 import AxeBuilder from '@axe-core/playwright';
 import { aseloPage } from '../aselo-service-mocks/aselo-page';
@@ -29,11 +30,13 @@ import type { AxeResults } from 'axe-core';
 test.describe.serial('Case List', () => {
   let page: Page;
   const cases = hrmCases();
+  const permissions = hrmPermissions();
 
   test.beforeAll(async ({ browser }) => {
     await mockServer.start();
     page = await aseloPage(browser);
     await cases.mockCaseEndpoints(page);
+    await permissions.mockPermissionEndpoint(page);
   });
 
   test.afterAll(async () => {
