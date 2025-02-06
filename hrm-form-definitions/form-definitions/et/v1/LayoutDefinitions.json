@@ -9,7 +9,7 @@
     }
   },
   "case": {
-    "sections": {
+    "sectionTypes": {
       "household": {
         "splitFormAt": 7
       },

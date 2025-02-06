@@ -148,7 +148,9 @@ describe('Validate form definitions', () => {
       test('Validating layoutDefinition', () => {
         const {
           case: {
-            incidents: { previewFields, layout },
+            sectionTypes: {
+              incident: { previewFields, layout },
+            },
           },
         } = layoutDefinition;
         expect(Array.isArray(previewFields)).toBe(true);
