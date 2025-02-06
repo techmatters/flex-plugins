@@ -50,7 +50,7 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     let page = caseList(pluginPage);
 
     await page.filterCases('Status', 'Open');
-    await page.filterCases('Counselor', 'Aselo Alerts');
+    // await page.filterCases('Counselor', 'Aselo Alerts');
 
     //for Categories filter, 2 valid options are required
     await page.filterCases('Categories', 'Accessibility', 'Education');

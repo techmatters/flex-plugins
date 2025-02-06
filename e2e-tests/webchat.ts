@@ -104,7 +104,9 @@ export async function open(browser: Browser | BrowserContext): Promise<WebChatPa
             await selectors.chatSendButton.click();
             break;
           case ChatStatementOrigin.BOT:
+            console.log('Waiting for bot message:', text);
             await selectors.messageWithText(text).waitFor({ timeout: 60000, state: 'attached' });
+            console.log('Found bot message:', text);
             break;
           default:
             yield statementItem;
