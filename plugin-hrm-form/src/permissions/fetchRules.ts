@@ -26,18 +26,13 @@ export const fetchRules = async (): Promise<RulesFile> => {
       return await fetchPermissionRules();
     }
 
-    // If backend permissions are disabled, load the appropriate permission config
     const { permissionConfig } = getHrmConfig();
-
-    try {
-      console.log('>>> Loading permission config', permissionConfig);
-      // eslint-disable-next-line global-require
-      return require(`./${permissionConfig}.json`);
-    } catch (err) {
-      throw new Error(`>>> Failed to load permission config "${permissionConfig}". Error: ${err.message}`);
-    }
+    // eslint-disable-next-line global-require
+    return require(`./${permissionConfig}.json`);
   } catch (err) {
-    console.error('Error fetching rules:', err);
-    throw err;
+    const context = enablePermissionsFromBackend ? 'backend' : 'local config';
+    const errorMessage = `Failed to load permissions from ${context}: ${err.message}`;
+    console.error(errorMessage);
+    throw new Error(errorMessage);
   }
 };
