@@ -17,7 +17,7 @@
 import type { StatusInfo } from 'hrm-form-definitions';
 
 import type * as t from '../../types/types';
-import type { Contact, WellKnownCaseSection } from '../../types/types';
+import type { Contact } from '../../types/types';
 import type { CaseSectionTypeSpecificData, FullCaseSection } from '../../services/caseSectionService';
 import type { ParseFetchErrorResult } from '../parseFetchError';
 import type { DereferenceCaseAction, LoadCaseAsync, ReferenceCaseAction } from './singleCase';
@@ -90,7 +90,7 @@ export type ContactIdentifierTimelineActivity = TimelineActivity<{ contactId: Co
 };
 
 export type CaseSectionIdentifierTimelineActivity = TimelineActivity<{
-  sectionType: WellKnownCaseSection;
+  sectionType: string;
   sectionId: string;
 }> & {
   activityType: 'case-section-id';
@@ -108,12 +108,14 @@ export type CaseSummaryWorkingCopy = {
 };
 
 export type CaseWorkingCopy = {
-  sections: {
-    [section in WellKnownCaseSection]?: {
+  sections: Record<
+    string,
+    {
       new?: CaseSectionTypeSpecificData;
       existing: { [id: string]: CaseSectionTypeSpecificData };
-    };
-  };
+    }
+  >;
+
   caseSummary?: CaseSummaryWorkingCopy;
 };
 

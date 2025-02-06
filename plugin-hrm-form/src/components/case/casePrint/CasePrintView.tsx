@@ -36,7 +36,7 @@ import CasePrintCSAMReports from './CasePrintCSAMReports';
 import { getImageAsString, ImageSource } from './images';
 import { getHrmConfig } from '../../../hrmConfig';
 import NavigableContainer from '../../NavigableContainer';
-import { Case, Contact, CustomITask, StandaloneITask, WellKnownCaseSection } from '../../../types/types';
+import { Case, Contact, CustomITask, StandaloneITask } from '../../../types/types';
 import { TimelineActivity } from '../../../states/case/types';
 import { RootState } from '../../../states';
 import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRouteCase';
@@ -87,7 +87,7 @@ const mapStateToProps = (state: RootState, { task }: OwnProps) => {
 const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: OwnProps) => {
   return {
     goBack: () => dispatch(RoutingActions.newGoBackAction(task.taskSid)),
-    loadSectionTimeline: (caseId: Case['id'], sectionType: WellKnownCaseSection) =>
+    loadSectionTimeline: (caseId: Case['id'], sectionType: string) =>
       dispatch(
         newGetTimelineAsyncAction(caseId, sectionType, [sectionType], false, { offset: 0, limit: MAX_SECTIONS }),
       ),

@@ -30,7 +30,7 @@ import { parseISO } from 'date-fns';
 
 import { isNonDataCallType } from '../states/validationRules';
 import { formatCategories, mapChannelForInsights } from '../utils';
-import { Case, Contact, ContactRawJson, CustomITask, WellKnownCaseSection } from '../types/types';
+import { Case, Contact, ContactRawJson, CustomITask } from '../types/types';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import {
   ExternalRecordingInfo,
@@ -205,7 +205,7 @@ type InsightsCaseForm = {
 
 const flattenFirstCaseSection = (
   sections: CaseStateEntry['sections'],
-  section: WellKnownCaseSection,
+  section: string,
 ): Omit<ApiCaseSection, 'sectionTypeSpecificData'> & CaseSectionTypeSpecificData => {
   if (sections?.[section] && Object.values(sections[section]).length > 0) {
     /*

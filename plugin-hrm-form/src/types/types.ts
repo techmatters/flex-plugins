@@ -73,8 +73,6 @@ export type CaseInfo = CaseOverview & {
   offlineContactCreator?: string;
 };
 
-export type WellKnownCaseSection = 'note' | 'referral' | 'household' | 'perpetrator' | 'incident' | 'document';
-
 export type Case = {
   accountSid: AccountSID;
   id: string;
@@ -133,9 +131,6 @@ export type S3StoredRecording = {
 };
 
 export type S3StoredMedia = S3StoredTranscript | S3StoredRecording;
-
-// Extract the 'type' property from S3StoredMedia to create ContactMediaType
-export type ContactMediaType = S3StoredMedia['storeTypeSpecificData']['type'];
 
 export type ConversationMedia = TwilioStoredMedia | S3StoredMedia;
 

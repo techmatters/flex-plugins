@@ -26,7 +26,6 @@ import { newGetTimelineAsyncAction, PaginationSettings, timelineReducer } from '
 import { RecursivePartial } from '../../RecursivePartial';
 import { CaseSectionIdentifierTimelineActivity, CaseStateEntry, TimelineActivity } from '../../../states/case/types';
 import { FullCaseSection } from '../../../services/caseSectionService';
-import { WellKnownCaseSection } from '../../../types/types';
 
 jest.mock('../../../services/CaseService', () => ({
   getCaseTimeline: jest.fn(),
@@ -76,7 +75,7 @@ const testStore = (stateChanges: HrmState) =>
 const mockGetCaseTimeline = getCaseTimeline as jest.MockedFunction<typeof getCaseTimeline>;
 
 const newSampleCaseSection = (
-  sectionType: WellKnownCaseSection,
+  sectionType: string,
   sectionId: string,
   eventTimestampHoursAfterBaseline: number = 0,
 ): FullCaseSection => ({
