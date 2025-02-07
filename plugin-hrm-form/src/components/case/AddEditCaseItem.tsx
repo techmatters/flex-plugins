@@ -112,7 +112,7 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
         },
   );
   const { form: formDefinition, label } = definitionVersion.caseSectionTypes[sectionTypeName];
-  const layout = definitionVersion.layoutVersion.case.sectionTypes[sectionTypeName] || {};
+  const layout = definitionVersion.layoutVersion.case.sectionTypes[sectionTypeName] || { splitFormAt: undefined };
   const dispatch = useDispatch();
   const asyncDispatcher = asyncDispatch(dispatch);
 
