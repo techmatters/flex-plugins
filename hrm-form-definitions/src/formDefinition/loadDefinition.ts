@@ -225,15 +225,6 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     helplineInformation.helplines.find((helpline: HelplineEntry) => helpline.default)?.value ||
     helplines[0].value;
   return {
-    // Legacy hardcoded case forms
-    caseForms: {
-      HouseholdForm: expandedCaseSections.household.form,
-      IncidentForm: expandedCaseSections.incident.form,
-      NoteForm: expandedCaseSections.note.form,
-      PerpetratorForm: expandedCaseSections.perpetrator.form,
-      ReferralForm: expandedCaseSections.referral.form,
-      DocumentForm: expandedCaseSections.document.form,
-    },
     caseSectionTypes: expandedCaseSections,
     tabbedForms: {
       CallerInformationTab: expandFormDefinition(callerInformationTab, referenceData),

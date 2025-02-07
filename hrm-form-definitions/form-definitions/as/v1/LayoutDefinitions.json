@@ -49,14 +49,18 @@
         ],
         "caseHomeOrder": 4,
         "splitFormAt": 2,
-        "printOrder": 4
+        "printOrder": 4,
+        "caseHomeLocation": "timeline"
       },
       "document": {
         "splitFormAt": 1,
-        "caseHomeOrder": 5
+        "caseHomeOrder": 5,
+        "printFormat": "hidden"
       },
       "note": {
-        "printOrder": 6
+        "printOrder": 6,
+        "caseHomeLocation": "timeline",
+        "printFormat": "list"
       },
       "chicken": {
         "previewFields": [

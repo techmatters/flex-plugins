@@ -290,6 +290,8 @@ export type LayoutDefinition = {
   splitFormAt?: number;
   caseHomeOrder?: number;
   printOrder?: number;
+  caseHomeLocation: 'list' | 'timeline' | 'hidden';
+  printFormat: 'tabular' | 'list' | 'hidden';
 };
 
 export type LayoutVersion = {
@@ -316,14 +318,6 @@ export type StatusInfo = {
  * Type that defines a complete version for all the customizable forms used across the app
  */
 export type DefinitionVersion = {
-  caseForms: {
-    HouseholdForm: FormDefinition;
-    IncidentForm: FormDefinition;
-    NoteForm: FormDefinition;
-    PerpetratorForm: FormDefinition;
-    ReferralForm: FormDefinition;
-    DocumentForm: FormDefinition;
-  };
   caseSectionTypes: CaseSectionTypeDefinitions;
   // TODO: change this property to contactForms to be consistent (though that may create confusion with the component name)
   tabbedForms: {
