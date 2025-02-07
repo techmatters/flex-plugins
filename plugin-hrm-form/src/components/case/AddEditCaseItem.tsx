@@ -236,7 +236,11 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
   return (
     <FormProvider {...methods}>
       <NavigableContainer
-        titleCode={currentRoute.action === CaseItemAction.Edit ? `Case-Edit${label}` : `Case-Add${label}`}
+        titleCode={
+          currentRoute.action === CaseItemAction.Edit
+            ? `CaseSection-Edit/${sectionTypeName}`
+            : `CaseSection-Add/${sectionTypeName}`
+        }
         onGoBack={() => checkForEdits(DismissAction.BACK)}
         onCloseModal={() => checkForEdits(DismissAction.CLOSE)}
         task={task}
@@ -272,7 +276,7 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
                 onClick={methods.handleSubmit(saveAndStay, onError)}
                 disabled={isUpdating}
               >
-                <Template code={`BottomBar-SaveAndAddAnother${label}`} />
+                <Template code={`CaseSection-BottomBar-SaveAndAddAnother/${sectionTypeName}`} />
               </StyledNextStepButton>
             </Box>
           )}
@@ -282,7 +286,7 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
             onClick={methods.handleSubmit(() => saveAndLeave(DismissAction.BACK), onError)}
             disabled={isUpdating}
           >
-            <Template code={`BottomBar-Save${label}`} />
+            <Template code={`CaseSection-BottomBar-Save/${sectionTypeName}`} />
           </StyledNextStepButton>
         </BottomButtonBar>
         <CloseCaseDialog

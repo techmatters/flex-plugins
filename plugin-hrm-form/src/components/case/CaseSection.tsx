@@ -108,16 +108,15 @@ const CaseSection: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [caseId, sectionIdCsv, sectionType]);
 
-  const capitializedSectionType = sectionType.charAt(0).toUpperCase() + sectionType.slice(1);
   return (
     <CaseDetailsBorder sectionTypeId={sectionType === 'document'}>
       <Box marginBottom="10px">
         <Row>
-          <CaseSectionFont id={`Case-Add${capitializedSectionType}Section-label`}>
-            <Template code={`Case-Add${capitializedSectionType}Section`} />
+          <CaseSectionFont id={`Case-AddSection-label-${sectionType}`}>
+            <Template code={`Case-SectionList-Title/${sectionType}`} />
           </CaseSectionFont>
           <CaseAddButton
-            templateCode={`Case-${capitializedSectionType}`}
+            templateCode={`Case-SectionList-Add/${sectionType}`}
             onClick={() => addCaseSection(caseId)}
             disabled={!canAdd()}
           />
@@ -130,7 +129,7 @@ const CaseSection: React.FC<Props> = ({
       ) : (
         <TimelineRow>
           <PlaceHolderText>
-            <Template code={`Case-No${capitializedSectionType}s`} />
+            <Template code={`Case-NoSections/${sectionType}`} />
           </PlaceHolderText>
         </TimelineRow>
       )}
