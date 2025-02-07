@@ -37,8 +37,9 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     );
 
     // Open Case List
-    await pluginPage.goto('/case-list', { waitUntil: 'networkidle', timeout: 20000 });
-    console.log('Case List plugin page visited.');
+    await pluginPage.goto('/case-list', { waitUntil: 'load', timeout: 20000 });
+    await pluginPage.waitForSelector('div.Twilio-ViewCollection', { timeout: 20000 });
+    console.log('Case List table is visible.');
   });
 
   test.afterAll(async () => {
