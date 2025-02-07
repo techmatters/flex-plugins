@@ -44,7 +44,7 @@ import { getInitializedCan } from '../../permissions';
 import { CenteredContainer } from './styles';
 import EditCaseSummary from './EditCaseSummary';
 import * as ContactActions from '../../states/contacts/existingContacts';
-import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
+import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import asyncDispatch from '../../states/asyncDispatch';
 import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
@@ -98,7 +98,6 @@ const Case: React.FC<Props> = ({
 
   const { workerSid } = getHrmConfig();
   const strings = getTemplateStrings();
-  const { enable_case_merging: enableCaseMerging } = getAseloFeatureFlags();
 
   useEffect(() => {
     if (routing.isCreating && !routing.caseId && contextContact?.caseId) {
@@ -161,9 +160,6 @@ const Case: React.FC<Props> = ({
 
   const handleCloseCase = async () => {
     releaseAllContacts(`case-${connectedCase.id}`);
-    if (!enableCaseMerging && contextContact && contextContact.caseId === connectedCaseId) {
-      await removeConnectedCase(contextContact.id);
-    }
     handleClose();
   };
 

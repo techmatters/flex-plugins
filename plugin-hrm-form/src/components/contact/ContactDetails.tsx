@@ -40,7 +40,7 @@ import {
 } from '../../states/contacts/existingContacts';
 import CSAMReport from '../CSAMReport/CSAMReport';
 import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
-import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
+import { getTemplateStrings } from '../../hrmConfig';
 import { namespace } from '../../states/storeNamespaces';
 import { ContactRawJson, CustomITask, StandaloneITask } from '../../types/types';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
@@ -134,7 +134,6 @@ const ContactDetails: React.FC<Props> = ({
   }, [loadingStatus, savedContact, loadContactFromHrm]);
   const version = savedContact?.rawJson.definitionVersion;
 
-  const featureFlags = getAseloFeatureFlags();
   const strings = getTemplateStrings();
   /**
    * Check if the definitionVersion for this case exists in redux, and look for it if not.
@@ -316,7 +315,7 @@ const ContactDetails: React.FC<Props> = ({
         showActionIcons={Boolean(taskContact)}
         contactId={contactId}
         handleOpenConnectDialog={handleOpenConnectDialog}
-        enableEditing={enableEditing && featureFlags.enable_contact_editing}
+        enableEditing={enableEditing}
       />
     </NavigableContainer>
   );

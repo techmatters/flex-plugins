@@ -34,6 +34,7 @@ const files = [
   'caseForms/PerpetratorForm.json',
   'caseForms/ReferralForm.json',
   'caseForms/DocumentForm.json',
+  'caseForms/ChickenForm.json',
   'tabbedForms/CallerInformationTab.json',
   'tabbedForms/CaseInformationTab.json',
   'tabbedForms/ChildInformationTab.json',

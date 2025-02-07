@@ -251,11 +251,9 @@ export type FeatureFlags = {
   enable_active_contact_header: boolean; // Enables Active Contact Header
   enable_aselo_messaging_ui: boolean; // Enables Aselo Messaging UI iinstead of the default Twilio one - reduced functionality for low spec clients.
   enable_canned_responses: boolean; // Enables Canned Responses
-  enable_case_merging: boolean; // Enables adding contacts to existing cases
   enable_client_profiles: boolean; // Enables Client Profiles
   enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior  
   enable_confirm_on_browser_close: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
-  enable_contact_editing: boolean; // Enables Editing Contacts
   enable_counselor_toolkits: boolean; // Enables Counselor Toolkits
   enable_csam_clc_report: boolean; // Enables CSAM child Reports
   enable_csam_report: boolean; // Enables CSAM Reports
@@ -274,12 +272,10 @@ export type FeatureFlags = {
   enable_region_resource_search: boolean; // Enables specifying a region as well as a province and / or city in Resource Search
   enable_save_in_progress_contacts: boolean; // Enables Saving In Progress Contacts
   enable_save_insights: boolean; // Enables Saving Aditional Data on Insights
-  enable_separate_timeline_view: boolean; // Enables a limited inline case timelinbe with a link to the full timeline
   enable_sort_cases: boolean; // Enables Sorting at Case List
   enable_teams_view_enhancements2: boolean; // Enables custom Teams View UI with labels
   enable_transfers: boolean; // Enables Transfering Contacts
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
-  enable_upload_documents: boolean; // Enables Case Documents
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
   enable_backend_manual_pulling: boolean; // Enables Backend Manual Pulling
   enable_backend_hrm_contact_creation: boolean; // If this is enabled, HRM contact creation is initiated from a task router handler rather than from the Flex plugin

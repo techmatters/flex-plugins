@@ -21,7 +21,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseContainer, CaseDetailsBorder, ViewButton } from './styles';
-import { BottomButtonBar, Box, SaveAndEndButton, StyledNextStepButton } from '../../styles';
+import { BottomButtonBar, Box, SaveAndEndButton } from '../../styles';
 import CaseDetails from './CaseDetails';
 import Timeline from './timeline/Timeline';
 import CaseSection from './CaseSection';
@@ -268,16 +268,6 @@ const CaseHome: React.FC<Props> = ({
       </CaseContainer>
       {isNewContact && (
         <BottomButtonBar>
-          <Box marginRight="15px">
-            <StyledNextStepButton
-              data-testid="CaseHome-CancelButton"
-              secondary="true"
-              roundCorners
-              onClick={handleClose}
-            >
-              <Template code="BottomBar-CancelNewCaseAndClose" />
-            </StyledNextStepButton>
-          </Box>
           <SaveAndEndButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
             <Template code="BottomBar-SaveAndEnd" />
           </SaveAndEndButton>

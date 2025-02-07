@@ -32,7 +32,6 @@ import asyncDispatch from '../../../states/asyncDispatch';
 import { connectToCaseAsyncAction } from '../../../states/contacts/saveContact';
 import { newCloseModalAction } from '../../../states/routing/actions';
 import { getInitializedCan, PermissionActions } from '../../../permissions';
-import { getAseloFeatureFlags } from '../../../hrmConfig';
 import { PreviewRow } from '../styles';
 import selectContactStateByContactId from '../../../states/contacts/selectContactStateByContactId';
 import selectContextContactId from '../../../states/contacts/selectContextContactId';
@@ -105,7 +104,7 @@ const CasePreview: React.FC<Props> = ({
   const statusLabel = definitionVersion?.caseStatus[status]?.label ?? status;
   let showConnectButton = false;
 
-  if (getAseloFeatureFlags().enable_case_merging && taskContact) {
+  if (taskContact) {
     showConnectButton = Boolean(
       can(PermissionActions.UPDATE_CASE_CONTACTS, currentCase) &&
         can(PermissionActions.ADD_CONTACT_TO_CASE, taskContact) &&
