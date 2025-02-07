@@ -18,7 +18,7 @@ import parseISO from 'date-fns/parseISO';
 import { differenceInDays, differenceInHours } from 'date-fns';
 
 import { fetchRules } from './fetchRules';
-import { getHrmConfig } from '../hrmConfig';
+import { getHrmConfig, getAseloFeatureFlags } from '../hrmConfig';
 import { ProfileSection } from '../types/types';
 
 export { canOnlyViewOwnCases, canOnlyViewOwnContacts } from './search-permissions';
@@ -266,18 +266,15 @@ let rules: RulesFile = null;
 export const getRules = () => rules;
 
 export const validateAndSetPermissionRules = async () => {
-  const { permissionConfig } = getHrmConfig();
-
-  rules = await fetchRules(permissionConfig);
-  const validated = validateTKActions(rules);
-
-  if (!isValidTargetKindActions(validated)) {
-    const invalidActions = Object.entries(validated)
-      .filter(([, val]) => !val)
-      .map(([key]) => key);
-    throw new Error(`Error: rules file contains invalid actions mappings: ${JSON.stringify(invalidActions)}`);
+  try {
+    const rulesFile = await fetchRules();
+    validateTKActions(rulesFile);
+    rules = rulesFile;
+    return rules;
+  } catch (err) {
+    console.error('Error validating and setting permission rules:', err);
+    throw err;
   }
-  return rules;
 };
 
 type TwilioUser = {
@@ -440,14 +437,20 @@ const initializeCanForRules = (rules: RulesFile) => {
   return (performer: TwilioUser, action: Action, target: any) => actionCheckers[action](performer, target);
 };
 
-let initializedCan: (performer: TwilioUser, action: Action, target?: any) => boolean = null;
+let initializedCan: ((performer: TwilioUser, action: Action, target?: any) => boolean) | null = null;
 
 // Permission check function
 export const getInitializedCan = () => {
   const { workerSid, isSupervisor } = getHrmConfig();
+
   if (initializedCan === null) {
-    const rules = getRules();
-    initializedCan = initializeCanForRules(rules);
+    // Get rules that should have been initialized during plugin startup
+    const rulesFile = getRules();
+    if (!rulesFile) {
+      console.warn('Rules not initialized. Make sure validateAndSetPermissionRules was called during plugin init');
+      return () => false;
+    }
+    initializedCan = initializeCanForRules(rulesFile);
   }
 
   const performer = { isSupervisor, workerSid, roles: null };

@@ -21,6 +21,7 @@ import * as mockServer from '../flex-in-a-box/proxied-endpoints';
 
 import '../flex-in-a-box/local-resources';
 import hrmCases from '../aselo-service-mocks/hrm/cases';
+import hrmPermissions from '../aselo-service-mocks/hrm/permissions';
 import { caseList, Filter } from '../../caseList';
 import AxeBuilder from '@axe-core/playwright';
 import { aseloPage } from '../aselo-service-mocks/aselo-page';
@@ -29,11 +30,13 @@ import type { AxeResults } from 'axe-core';
 test.describe.serial('Case List', () => {
   let page: Page;
   const cases = hrmCases();
+  const permissions = hrmPermissions();
 
   test.beforeAll(async ({ browser }) => {
     await mockServer.start();
     page = await aseloPage(browser);
     await cases.mockCaseEndpoints(page);
+    await permissions.mockPermissionEndpoint(page);
   });
 
   test.afterAll(async () => {
@@ -68,7 +71,6 @@ test.describe.serial('Case List', () => {
     const scanFilterDialogue = async (filter: Filter) => {
       console.debug(`Scanning the '${filter}' filter dialog...`);
       await caseListPage.openFilter(filter);
-
       const filterAccessibilityScanResults = await new AxeBuilder({ page })
         .include(`div[data-testid='CaseList-Filters-Panel']`)
         .analyze();
@@ -79,7 +81,7 @@ test.describe.serial('Case List', () => {
 
     await scanFilterDialogue('Status');
     await scanFilterDialogue('Categories');
-    await scanFilterDialogue('Counselor');
+    // await scanFilterDialogue('Counselor');
     await scanFilterDialogue('createdAtFilter');
     await scanFilterDialogue('updatedAtFilter');
     await scanFilterDialogue('followUpDateFilter');

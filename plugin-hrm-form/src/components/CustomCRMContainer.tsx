@@ -19,7 +19,6 @@ import React, { Dispatch, useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { withTaskContext } from '@twilio/flex-ui';
 import _ from 'lodash';
-import { DefinitionVersion } from 'hrm-form-definitions';
 
 import TaskView from './TaskView';
 import { Absolute } from '../styles';
@@ -29,9 +28,8 @@ import { getOfflineContactTask, getOfflineContactTaskSid } from '../states/conta
 import { namespace } from '../states/storeNamespaces';
 import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
 import asyncDispatch from '../states/asyncDispatch';
-import { createContactAsyncAction } from '../states/contacts/saveContact';
+import { newLoadContactFromHrmForTaskAsyncAction } from '../states/contacts/saveContact';
 import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
-import { newContact } from '../states/contacts/contactState';
 import { selectAnyContactIsSaving } from '../states/contacts/selectContactSaveStatus';
 import selectCurrentOfflineContact from '../states/contacts/selectCurrentOfflineContact';
 import { populateCounselors } from '../services/twilioWorkerService';
@@ -47,13 +45,11 @@ let handleUnloadRef = null;
 
 const CustomCRMContainer: React.FC<Props> = ({
   selectedTaskSid,
-  isAddingOfflineContact,
   task,
   hasUnsavedChanges,
   populateCounselorList,
   currentOfflineContact,
-  definitionVersion,
-  loadOrCreateDraftOfflineContact,
+  loadDraftOfflineContact,
 }) => {
   const { enable_confirm_on_browser_close: enableConfirmOnBrowserClose } = getAseloFeatureFlags();
   useEffect(() => {
@@ -71,10 +67,10 @@ const CustomCRMContainer: React.FC<Props> = ({
   }, [populateCounselorList]);
 
   useEffect(() => {
-    if (!currentOfflineContact && definitionVersion) {
-      loadOrCreateDraftOfflineContact(definitionVersion);
+    if (!currentOfflineContact) {
+      loadDraftOfflineContact();
     }
-  }, [currentOfflineContact, definitionVersion, loadOrCreateDraftOfflineContact]);
+  }, [currentOfflineContact, loadDraftOfflineContact]);
 
   useEffect(() => {
     if (!enableConfirmOnBrowserClose) {
@@ -100,7 +96,7 @@ const CustomCRMContainer: React.FC<Props> = ({
   }, [enableConfirmOnBrowserClose, hasUnsavedChanges]);
 
   const renderITask = selectedTaskSid && task;
-  const renderOfflineContactTask = !selectedTaskSid && isAddingOfflineContact;
+  const renderOfflineContactTask = !selectedTaskSid && currentOfflineContact;
 
   return (
     <Absolute top="0" bottom="0" left="0" right="0">
@@ -116,11 +112,10 @@ CustomCRMContainer.displayName = 'CustomCRMContainer';
 
 const mapStateToProps = (state: RootState) => {
   const {
-    [namespace]: { routing, activeContacts, configuration, connectedCase },
+    [namespace]: { activeContacts, connectedCase },
     flex,
   } = state;
   const { selectedTaskSid } = flex.view;
-  const { isAddingOfflineContact } = routing;
   const currentOfflineContact = selectCurrentOfflineContact(state);
   const hasUnsavedChanges =
     Object.values(activeContacts.existingContacts).some(
@@ -133,18 +128,16 @@ const mapStateToProps = (state: RootState) => {
     selectAnyContactIsSaving(state);
   return {
     selectedTaskSid,
-    isAddingOfflineContact,
     currentOfflineContact,
-    definitionVersion: configuration.currentDefinitionVersion,
     hasUnsavedChanges,
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => {
   return {
-    loadOrCreateDraftOfflineContact: (definition: DefinitionVersion) =>
+    loadDraftOfflineContact: () =>
       asyncDispatch(dispatch)(
-        createContactAsyncAction(newContact(definition), getHrmConfig().workerSid, getOfflineContactTask()),
+        newLoadContactFromHrmForTaskAsyncAction(getOfflineContactTask(), getHrmConfig().workerSid),
       ),
     populateCounselorList: (listPayload: Awaited<ReturnType<typeof populateCounselors>>) =>
       dispatch(populateCounselorsState(listPayload)),

@@ -71,6 +71,10 @@ export const caseList = (page: Page) => {
 
   async function openFilter(filter: Filter): Promise<void> {
     const openFilterButton = selectors.filterButton(filter);
+    const exists = (await openFilterButton.count()) > 0;
+    if (!exists) {
+      throw new Error(`Filter button for ${filter} not found in DOM`);
+    }
     await openFilterButton.waitFor({ state: 'visible' });
     await openFilterButton.click();
   }

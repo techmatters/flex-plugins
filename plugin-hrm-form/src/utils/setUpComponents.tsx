@@ -45,11 +45,11 @@ import { FeatureFlags, standaloneTaskSid } from '../types/types';
 import { colors } from '../channels/colors';
 import { getHrmConfig } from '../hrmConfig';
 import { AseloMessageInput, AseloMessageList } from '../components/AseloMessaging';
-import { namespace, routingBase } from '../states/storeNamespaces';
 import { changeRoute } from '../states/routing/actions';
 import { AppRoutes, ChangeRouteMode } from '../states/routing/types';
 import { selectCurrentBaseRoute } from '../states/routing/getRoute';
 import { RootState } from '../states';
+import selectCurrentOfflineContact from '../states/contacts/selectCurrentOfflineContact';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
@@ -168,7 +168,7 @@ const setUpOfflineContact = () => {
     if: props =>
       props.route.location.pathname === '/agent-desktop/' &&
       !props.selectedTaskSid &&
-      manager.store.getState()[namespace][routingBase].isAddingOfflineContact, // while this is inefficient because of calling getState several times in a short period of time (re-renders), the impact is minimized by the short-circuit evaluation of the AND operator
+      Boolean(selectCurrentOfflineContact(manager.store.getState() as RootState)), // while this is inefficient because of calling getState several times in a short period of time (re-renders), the impact is minimized by the short-circuit evaluation of the AND operator
   });
 };
 

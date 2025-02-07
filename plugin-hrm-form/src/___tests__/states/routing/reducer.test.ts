@@ -64,7 +64,6 @@ describe('test reducer (specific actions)', () => {
       'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
       [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
     },
-    isAddingOfflineContact: false,
   };
 
   test('should return initial state', async () => {
@@ -80,7 +79,6 @@ describe('test reducer (specific actions)', () => {
         'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
-      isAddingOfflineContact: false,
     };
 
     const result = reduce(initialState, {
@@ -113,7 +111,6 @@ describe('test reducer (specific actions)', () => {
       'WT-task1': baseRoutes,
       [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
     },
-    isAddingOfflineContact: false,
   });
 
   describe('CHANGE_ROUTE action', () => {
@@ -166,7 +163,6 @@ describe('test reducer (specific actions)', () => {
           ],
           [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
         },
-        isAddingOfflineContact: false,
       });
 
       each([...tests(stateWithModal, 'modal')]).test('$description', genericRoutingTest);
@@ -586,7 +582,6 @@ describe('test reducer (specific actions)', () => {
         'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
-      isAddingOfflineContact: false,
     };
 
     const result = reduce(initialState, {
@@ -605,7 +600,6 @@ describe('test reducer (specific actions)', () => {
         'WT-task1': [{ route: 'case', subroute: 'home', caseId: '' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
-      isAddingOfflineContact: false,
     };
 
     const result1 = reduce(
@@ -630,7 +624,6 @@ describe('test reducer (specific actions)', () => {
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
         [offlineContactTaskSid]: [{ ...newTaskEntry, route: 'tabbed-forms', subroute: 'childInformation' }],
       },
-      isAddingOfflineContact: true,
     };
 
     const result = reduce(stateWithTask, {
@@ -659,7 +652,6 @@ describe('test reducer (specific actions)', () => {
         'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
-      isAddingOfflineContact: false,
     };
 
     const result = reduce(
@@ -668,7 +660,6 @@ describe('test reducer (specific actions)', () => {
           ...stateWithTask.tasks,
           [offlineContactTaskSid]: [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         },
-        isAddingOfflineContact: true,
       },
       GeneralActions.removeContactState(offlineContactTaskSid, ''),
     );
