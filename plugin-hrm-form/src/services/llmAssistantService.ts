@@ -19,7 +19,7 @@ import { getValidToken } from '../authentication';
 import { ApiError, fetchApi } from './fetchApi';
 
 export type TranscriptForLlmAssistant = { role: string; content: string }[];
-export type LlmAssistantSummary = { summaryText: string; id: string };
+type LlmAssistantSummary = { summaryText: string; id: string };
 
 export const generateSummary = (
   contactId: string,

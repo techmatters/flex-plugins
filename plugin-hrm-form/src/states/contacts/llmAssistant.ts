@@ -27,9 +27,14 @@ export const newGenerateSummaryAsyncAction = createAsyncAction(
   AUTO_GENERATE_SUMMARY_ACTION,
   async (task: ITask) => {
     const { conversationSid, channelSid, contactId } = task.attributes;
-    const conversation = await Manager.getInstance().conversationsClient.getConversationBySid(conversationSid ?? channelSid);
+    const conversation = await Manager.getInstance().conversationsClient.getConversationBySid(
+      conversationSid ?? channelSid,
+    );
     const messages = await conversation.getMessages(1000);
-    const forTranscript: TranscriptForLlmAssistant = messages.items.map(({ author, body })=>({ role: author, content: body }));
+    const forTranscript: TranscriptForLlmAssistant = messages.items.map(({ author, body }) => ({
+      role: author,
+      content: body,
+    }));
     const { summaryText } = await generateSummary(contactId, forTranscript);
     return { contactId, summaryText };
   },
