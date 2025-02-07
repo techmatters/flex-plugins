@@ -56,5 +56,7 @@ runs:
         method: chat.postMessage
         token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
         payload: |
-          channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-          text: ${{ inputs.slack-message }}
+          {
+            "channel": "${{ env.ASELO_DEPLOYS_CHANNEL_ID }}",
+            "text": "${{ inputs.slack-message }}"
+          }
