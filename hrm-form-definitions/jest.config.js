@@ -23,7 +23,8 @@ module.exports = (config) => {
       ...defaults,
       rootDir: './src',
       // Only run tests in files that end in .test.ts or .spec.ts AND are under the __tests__ directory
-      testMatch: ["**/__tests__/**/?(*.)+(spec|test).[jt]s?(x)"]
+      testMatch: ["**/__tests__/**/?(*.)+(spec|test).[jt]s?(x)"],
+      reporters: ['default', 'jest-junit'],
     }
   );
 };

@@ -88,6 +88,7 @@ const playwrightConfig: PlaywrightTestConfig = {
   testDir: './tests',
   retries: inLambda ? 0 : 1,
   timeout: 60000,
+  reporter: [['junit', { outputFile: 'junit.xml' }]],
 };
 
 // Only /tmp is writable in a lambda

@@ -23,12 +23,15 @@ module.exports = config => {
     rootDir: '.',
     setupFilesAfterEnv: ['./src/setupTests.js'],
     testEnvironment: 'jest-environment-jsdom',
-    testURL: 'http://localhost/',
+    testEnvironmentOptions: {
+      url: 'http://localhost/',
+    },
     testTimeout: 2 * 60 * 1000, // 2 minutes in ms
     transformIgnorePatterns: ['/node_modules/(?!(uuid|axios|@twilio-paste/icons)/)'],
     moduleNameMapper: {
       '\\.css$': 'identity-obj-proxy',
     },
+    reporters: ['default', 'jest-junit'],
   };
 
   return config;

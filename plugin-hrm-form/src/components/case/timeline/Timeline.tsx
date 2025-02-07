@@ -24,7 +24,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import TimelineIcon, { IconType } from './TimelineIcon';
 import { CaseSectionFont, TimelineCallTypeIcon, TimelineDate, TimelineRow, TimelineText, ViewButton } from '../styles';
-import { Box, Row } from '../../../styles';
+import { Box, Row, colors } from '../../../styles';
 import CaseAddButton from '../CaseAddButton';
 import { Case, Contact, CustomITask } from '../../../types/types';
 import { isCaseSectionTimelineActivity, isContactTimelineActivity } from '../../../states/case/types';
@@ -34,7 +34,6 @@ import { newOpenModalAction } from '../../../states/routing/actions';
 import { RootState } from '../../../states';
 import { newGetTimelineAsyncAction, selectTimeline, UITimelineActivity } from '../../../states/case/timeline';
 import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRouteCase';
-import { colors } from '../../../styles/banners';
 import InfoIcon from '../../caseMergingBanners/InfoIcon';
 import { selectCurrentTopmostRouteForTask } from '../../../states/routing/getRoute';
 import asyncDispatch from '../../../states/asyncDispatch';
@@ -159,12 +158,12 @@ const Timeline: React.FC<Props> = ({
             <CaseAddButton
               templateCode="Case-Note"
               onClick={handleAddNoteClick}
-              disabled={!can(PermissionActions.ADD_NOTE, connectedCase)}
+              disabled={!can(PermissionActions.ADD_CASE_SECTION, connectedCase)}
             />
             <CaseAddButton
               templateCode="Case-Referral"
               onClick={handleAddReferralClick}
-              disabled={!can(PermissionActions.ADD_REFERRAL, connectedCase)}
+              disabled={!can(PermissionActions.ADD_CASE_SECTION, connectedCase)}
               withDivider
             />
           </Box>

@@ -48,15 +48,9 @@ export type Perpetrator = { [key: string]: string | boolean };
 
 export type Incident = { [key: string]: string | boolean };
 
-export type IncidentEntry = { incident: Incident } & EntryInfo;
-
 export type Note = { [key: string]: string | boolean };
 
-export type NoteEntry = Note & EntryInfo;
-
 export type Referral = { date: string; referredTo: string; [key: string]: string | boolean };
-
-export type ReferralEntry = Referral & EntryInfo;
 
 export type Document = { [key: string]: string | boolean };
 
@@ -161,8 +155,6 @@ export type ContactRawJson = {
   categories: Record<string, string[]>;
   contactlessTask: {
     channel: ChannelTypes;
-    date: string;
-    time: string;
     createdOnBehalfOf: WorkerSID;
     [key: string]: string | boolean;
   };
@@ -194,6 +186,7 @@ export type Contact = {
   channelSid: string;
   serviceSid: string;
   caseId?: string;
+  definitionVersion: string;
 };
 
 
@@ -262,6 +255,8 @@ export type FeatureFlags = {
   backend_handled_chat_janitor: boolean; // [Temporary flag until all accounts are migrated] Enables handling the janitor from taskrouter event listeners
   enable_active_contact_header: boolean; // Enables Active Contact Header
   enable_aselo_messaging_ui: boolean; // Enables Aselo Messaging UI iinstead of the default Twilio one - reduced functionality for low spec clients.
+  enable_backend_hrm_contact_creation: boolean; // If this is enabled, HRM contact creation is initiated from a task router handler rather than from the Flex plugin
+  enable_backend_manual_pulling: boolean; // Enables Backend Manual Pulling
   enable_canned_responses: boolean; // Enables Canned Responses
   enable_case_merging: boolean; // Enables adding contacts to existing cases
   enable_client_profiles: boolean; // Enables Client Profiles
@@ -281,6 +276,7 @@ export type FeatureFlags = {
   enable_lex: boolean; // Enables consuming from Lex bots
   enable_manual_pulling: boolean; // Enables Adding Another Task
   enable_offline_contact: boolean; // Enables Creating Offline Contacts  
+  enable_permissions_from_backend: boolean; // Enables fetching permissions from backend service
   enable_post_survey: boolean; // Enables Post-Survey
   enable_previous_contacts: boolean; // Enables Previous Contacts Yellow Banner
   enable_region_resource_search: boolean; // Enables specifying a region as well as a province and / or city in Resource Search
@@ -293,8 +289,6 @@ export type FeatureFlags = {
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
   enable_upload_documents: boolean; // Enables Case Documents
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
-  enable_backend_manual_pulling: boolean; // Enables Backend Manual Pulling
-  enable_backend_hrm_contact_creation: boolean; // If this is enabled, HRM contact creation is initiated from a task router handler rather than from the Flex plugin
 };
 /* eslint-enable camelcase */
 

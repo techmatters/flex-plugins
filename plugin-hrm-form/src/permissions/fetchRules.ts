@@ -14,21 +14,25 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-const zmRules = require('./zm.json');
+import type { RulesFile } from '.';
+import { fetchPermissionRules } from '../services/PermissionsService';
+import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 
-// TODO: do this once, on initialization, then consume from the global state.
-export const fetchRules = (permissionConfig: string) => {
+export const fetchRules = async (): Promise<RulesFile> => {
+  const { enable_permissions_from_backend: enablePermissionsFromBackend } = getAseloFeatureFlags();
+
   try {
+    if (enablePermissionsFromBackend) {
+      return await fetchPermissionRules();
+    }
+
+    const { permissionConfig } = getHrmConfig();
     // eslint-disable-next-line global-require
-    const rules = require(`./${permissionConfig}.json`);
-
-    if (!rules) throw new Error(`Cannot find rules for ${permissionConfig}`);
-
-    return rules;
+    return require(`./${permissionConfig}.json`);
   } catch (err) {
-    const errorMessage = err.message ?? err;
-    console.error('Error fetching rules, using fallback rules. ', errorMessage);
-
-    return zmRules;
+    const context = enablePermissionsFromBackend ? 'backend' : 'local config';
+    const errorMessage = `Failed to load permissions from ${context}: ${err.message}`;
+    console.error(errorMessage);
+    throw new Error(errorMessage);
   }
 };

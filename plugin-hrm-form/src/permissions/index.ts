@@ -18,7 +18,7 @@ import parseISO from 'date-fns/parseISO';
 import { differenceInDays, differenceInHours } from 'date-fns';
 
 import { fetchRules } from './fetchRules';
-import { getHrmConfig } from '../hrmConfig';
+import { getHrmConfig, getAseloFeatureFlags } from '../hrmConfig';
 import { ProfileSection } from '../types/types';
 
 export { canOnlyViewOwnCases, canOnlyViewOwnContacts } from './search-permissions';
@@ -28,18 +28,8 @@ export const CaseActions = {
   CLOSE_CASE: 'closeCase',
   REOPEN_CASE: 'reopenCase',
   CASE_STATUS_TRANSITION: 'caseStatusTransition',
-  ADD_NOTE: 'addNote',
-  EDIT_NOTE: 'editNote',
-  ADD_REFERRAL: 'addReferral',
-  EDIT_REFERRAL: 'editReferral',
-  ADD_HOUSEHOLD: 'addHousehold',
-  EDIT_HOUSEHOLD: 'editHousehold',
-  ADD_PERPETRATOR: 'addPerpetrator',
-  EDIT_PERPETRATOR: 'editPerpetrator',
-  ADD_INCIDENT: 'addIncident',
-  EDIT_INCIDENT: 'editIncident',
-  ADD_DOCUMENT: 'addDocument',
-  EDIT_DOCUMENT: 'editDocument',
+  ADD_CASE_SECTION: 'addCaseSection',
+  EDIT_CASE_SECTION: 'editCaseSection',
   EDIT_CASE_OVERVIEW: 'editCaseOverview',
   UPDATE_CASE_CONTACTS: 'updateCaseContacts',
 } as const;
@@ -248,7 +238,7 @@ type NestedStringValues<T> = T extends object
   ? { [K in keyof T]: T[K] extends string ? T[K] : NestedStringValues<T[K]> }[keyof T]
   : never;
 type Action = NestedStringValues<typeof actionsMaps>;
-type RulesFile = { [k in Action]: TKConditionsSets<TargetKind> };
+export type RulesFile = { [k in Action]: TKConditionsSets<TargetKind> };
 
 const isValidTKConditionsSets = <T extends TargetKind>(kind: T) => (
   css: TKConditionsSets<TargetKind>,
@@ -272,20 +262,19 @@ const validateTKActions = (rules: RulesFile) =>
 
 const isValidTargetKindActions = (validated: { [k in Action]: boolean }) => Object.values(validated).every(Boolean);
 
-export const validateRules = (permissionConfig: string) => {
-  const rules = fetchRules(permissionConfig);
+let rules: RulesFile = null;
+export const getRules = () => rules;
 
-  const validated = validateTKActions(rules);
-
-  if (!isValidTargetKindActions(validated)) {
-    const invalidActions = Object.entries(validated)
-      .filter(([, val]) => !val)
-      .map(([key]) => key);
-    throw new Error(
-      `Error: rules file for ${permissionConfig} contains invalid actions mappings: ${JSON.stringify(invalidActions)}`,
-    );
+export const validateAndSetPermissionRules = async () => {
+  try {
+    const rulesFile = await fetchRules();
+    validateTKActions(rulesFile);
+    rules = rulesFile;
+    return rules;
+  } catch (err) {
+    console.error('Error validating and setting permission rules:', err);
+    throw err;
   }
-  return rules;
 };
 
 type TwilioUser = {
@@ -427,27 +416,46 @@ const setupAllow = <T extends TargetKind>(kind: T, conditionsSets: TKConditionsS
 };
 
 const initializeCanForRules = (rules: RulesFile) => {
+  if (!rules) {
+    console.warn('Rules not loaded for initializeCanForRules');
+    return () => false;
+  }
   const actionCheckers = {} as { [action in Action]: ReturnType<typeof setupAllow> };
 
   const targetKinds = Object.keys(actionsMaps);
   targetKinds.forEach((targetKind: TargetKind) => {
     const actionsForTK = Object.values(actionsMaps[targetKind]) as Action[];
-    actionsForTK.forEach(action => (actionCheckers[action] = setupAllow(targetKind, rules[action])));
+    actionsForTK.forEach(action => {
+      if (rules[action]) {
+        actionCheckers[action] = setupAllow(targetKind, rules[action]);
+      } else {
+        console.warn(`No rules defined for action: ${action}`);
+      }
+    });
   });
 
   return (performer: TwilioUser, action: Action, target: any) => actionCheckers[action](performer, target);
 };
 
-let initializedCan: (performer: TwilioUser, action: Action, target?: any) => boolean = null;
+let initializedCan: ((performer: TwilioUser, action: Action, target?: any) => boolean) | null = null;
+
+// Permission check function
 export const getInitializedCan = () => {
-  const { workerSid, isSupervisor, permissionConfig } = getHrmConfig();
+  const { workerSid, isSupervisor } = getHrmConfig();
+
   if (initializedCan === null) {
-    const rules = validateRules(permissionConfig);
-    initializedCan = initializeCanForRules(rules);
+    // Get rules that should have been initialized during plugin startup
+    const rulesFile = getRules();
+    if (!rulesFile) {
+      console.warn('Rules not initialized. Make sure validateAndSetPermissionRules was called during plugin init');
+      return () => false;
+    }
+    initializedCan = initializeCanForRules(rulesFile);
   }
 
   const performer = { isSupervisor, workerSid, roles: null };
   return (action: Action, target?: any) => initializedCan(performer, action, target);
 };
 
+// eslint-disable-next-line import/no-unused-modules
 export const cleanupInitializedCan = () => (initializedCan = null);

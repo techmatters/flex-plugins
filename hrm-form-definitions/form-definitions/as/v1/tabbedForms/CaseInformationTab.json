@@ -9,7 +9,8 @@
   {
     "name": "repeatCaller",
     "label": "Repeat Caller?",
-    "type": "checkbox"
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "urgencyLevel",
@@ -22,7 +23,8 @@
       { "value": "Critical", "label": "Critical" },
       { "value": "Non-critical", "label": "Non-critical" },
       { "value": "Other", "label": "Other" }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "actionTaken",
@@ -39,7 +41,8 @@
       { "value": "Referrals to school counsellors", "label": "Referrals to school counsellors" },
       { "value": "Reports to Child Sexual Abuse Material", "label": "Reports to Child Sexual Abuse Material" },
       { "value": "Other", "label": "Other" }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "howDidYouKnowAboutOurLine",
@@ -52,44 +55,52 @@
       { "value": "Friend", "label": "Friend" },
       { "value": "School", "label": "School" },
       { "value": "Others", "label": "Others" }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "keepConfidential",
     "label": "Keep confidential?",
     "type": "mixed-checkbox",
-    "initialChecked": true
+    "initialChecked": true,
+    "isPII": false
   },
   {
     "name": "mustCallBack",
     "label": "Is it necessary for a case worker to call back?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "okForCaseWorkerToCall",
     "label": "Is it okay for case worker to call?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "didYouDiscussRightsWithTheChild",
     "label": "Did you discuss rights with the child?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "didTheChildFeelWeSolvedTheirProblem",
     "label": "Did the child feel we solved their problem?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "wouldTheChildRecommendUsToAFriend",
     "label": "Would the child recommend us to a friend?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "referrals",
     "label": "referrals",
     "type": "custom-contact-component",
     "component": "resource-referral-list",
-    "saveable": false
+    "saveable": false,
+    "isPII": false
   }
 ]

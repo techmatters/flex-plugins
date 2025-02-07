@@ -32,5 +32,6 @@ const config: PlaywrightTestConfig = {
   },
   testDir: './tests',
   timeout: 60000,
+  reporter: [['junit', { outputFile: 'junit.xml' }]],
 };
 export default config;

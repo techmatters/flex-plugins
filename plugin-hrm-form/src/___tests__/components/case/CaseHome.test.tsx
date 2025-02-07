@@ -23,8 +23,8 @@ import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import each from 'jest-each';
 
-import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
+import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import CaseHome, { CaseHomeProps } from '../../../components/case/CaseHome';
 import { Case, CustomITask } from '../../../types/types';
 import { getDefinitionVersions } from '../../../hrmConfig';
@@ -39,10 +39,9 @@ import { TaskSID } from '../../../types/twilio';
 import { CaseStateEntry } from '../../../states/case/types';
 
 jest.mock('../../../permissions', () => ({
-  ...jest.requireActual('../../../permissions'),
   getInitializedCan: jest.fn(() => () => true),
+  PermissionActions: {},
 }));
-
 // Called by the <Timeline/> subcomponent
 jest.mock('../../../services/CaseService', () => ({
   getCaseTimeline: jest.fn(() => Promise.resolve({ activities: [], count: 0 })),

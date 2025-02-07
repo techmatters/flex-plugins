@@ -2,3 +2,5 @@
 temp/
 .env
 test-results/
+ui-tests/junit.xml
+junit.xml

@@ -17,11 +17,11 @@
 import isEqual from 'lodash/isEqual';
 import sortBy from 'lodash/sortBy';
 
+import { getRules } from '.';
 import { fetchRules } from './fetchRules';
-import { getHrmConfig } from '../hrmConfig';
+import { getHrmConfig, getAseloFeatureFlags } from '../hrmConfig';
 
-type RulesFile = ReturnType<typeof fetchRules>;
-
+type RulesFile = Awaited<ReturnType<typeof fetchRules>>;
 type TargetRule = Partial<Record<keyof RulesFile, string[]>>;
 
 /**
@@ -32,27 +32,49 @@ type TargetRule = Partial<Record<keyof RulesFile, string[]>>;
  * checkRule({ viewContact: ['isOwner'] }); // returns true or false
  * checkRule({ viewCase: ['isCreator'] });  // returns true or false
  */
-const checkRule = (targetRule: TargetRule) => {
-  const { permissionConfig } = getHrmConfig();
-  const rulesFile = fetchRules(permissionConfig);
+const checkRule = async (targetRule: TargetRule): Promise<boolean> => {
+  try {
+    const { enable_permissions_from_backend: enablePermissionsFromBackend } = getAseloFeatureFlags();
 
-  const rule = Object.keys(targetRule)[0];
-  const conditionSetIsEqual = conditionSet => isEqual(sortBy(conditionSet), sortBy(targetRule[rule]));
-  return rulesFile[rule].some(conditionSetIsEqual);
+    // For backend permissions, use getRules which is already initialized
+    if (enablePermissionsFromBackend) {
+      const rulesFile = getRules();
+      if (!rulesFile) {
+        console.warn('Rules not initialized for backend permissions');
+        return false;
+      }
+      const rule = Object.keys(targetRule)[0];
+      const conditionSetIsEqual = conditionSet => isEqual(sortBy(conditionSet), sortBy(targetRule[rule]));
+      return rulesFile[rule]?.some(conditionSetIsEqual) || false;
+    }
+
+    // For local permissions, fetch directly from file
+    const rulesFile = await fetchRules();
+    if (!rulesFile) {
+      console.warn('Failed to fetch local permission rules');
+      return false;
+    }
+    const rule = Object.keys(targetRule)[0];
+    const conditionSetIsEqual = conditionSet => isEqual(sortBy(conditionSet), sortBy(targetRule[rule]));
+    return rulesFile[rule]?.some(conditionSetIsEqual) || false;
+  } catch (err) {
+    console.error('Error checking rule:', err);
+    return false;
+  }
 };
 
-export const canOnlyViewOwnCases = (): boolean => {
+export const canOnlyViewOwnCases = async (): Promise<boolean> => {
   const { isSupervisor } = getHrmConfig();
 
-  const canViewAsSupervisor = isSupervisor && checkRule({ viewCase: ['isSupervisor'] });
-  const canViewAsOwner = checkRule({ viewCase: ['isCreator'] });
+  const canViewAsSupervisor = isSupervisor && (await checkRule({ viewCase: ['isSupervisor'] }));
+  const canViewAsOwner = await checkRule({ viewCase: ['isCreator'] });
   return !canViewAsSupervisor && canViewAsOwner;
 };
 
-export const canOnlyViewOwnContacts = (): boolean => {
+export const canOnlyViewOwnContacts = async (): Promise<boolean> => {
   const { isSupervisor } = getHrmConfig();
 
-  const canViewAsSupervisor = isSupervisor && checkRule({ viewContact: ['isSupervisor'] });
-  const canViewAsOwner = checkRule({ viewContact: ['isOwner'] });
+  const canViewAsSupervisor = isSupervisor && (await checkRule({ viewContact: ['isSupervisor'] }));
+  const canViewAsOwner = await checkRule({ viewContact: ['isOwner'] });
   return !canViewAsSupervisor && canViewAsOwner;
 };

@@ -1,38 +1,28 @@
 {
-  "viewCase": [["everyone"]],
+  "viewCase": [["isSupervisor"], ["isCreator"]],
   "closeCase": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "reopenCase": [["isSupervisor"]],
   "caseStatusTransition": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "addNote": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "editNote": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "addReferral": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "editReferral": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "addHousehold": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "editHousehold": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "addPerpetrator": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "editPerpetrator": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "addIncident": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "editIncident": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "addDocument": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
-  "editDocument": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
+  "addCaseSection": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
+  "editCaseSection": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "editCaseOverview": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "updateCaseContacts": [["isSupervisor"], ["isCaseOpen"]],
 
   "viewContact": [["everyone"]],
   "editContact": [["isSupervisor"], ["isOwner"]],
   "editInProgressContact": [["isSupervisor"], ["isOwner"]],
-  "viewExternalTranscript": [["everyone"]],
+ "viewExternalTranscript": [["everyone"]],
   "viewRecording": [["everyone"]],
   "addContactToCase": [["isSupervisor"], ["isOwner"]],
   "removeContactFromCase": [["isSupervisor"], ["isOwner"]],
-
+  
   "viewProfile": [["everyone"]],
   "flagProfile": [["everyone"]],
   "unflagProfile": [["everyone"]],
   "createProfileSection": [["everyone"]],
   "viewProfileSection": [["everyone", { "sectionType": "summary" }], ["isSupervisor"]],
   "editProfileSection": [["everyone", { "sectionType": "summary" }], ["isSupervisor"]],
-
+  
   "viewPostSurvey": [["isSupervisor"]],
 
   "viewIdentifiers": [["everyone"]]

@@ -110,7 +110,8 @@ export const setupWhatsAppChannel = () => {
 export const setupSmsChannel = () => {
   const smsIcon = <SmsIcon width="24px" height="24px" color={colors.sms} />;
   DefaultTaskChannels.ChatSms.icons = generateIcons(smsIcon);
-  DefaultTaskChannels.ChatSms.isApplicable = task => isSmsChannelType(task.channelType);
+  DefaultTaskChannels.ChatSms.isApplicable = task =>
+    isSmsChannelType(task.attributes.customChannelType || task.channelType);
   maskChannelStringsWithIdentifiers(DefaultTaskChannels.ChatSms);
   setChatTaskCardString(DefaultTaskChannels.ChatSms);
 };

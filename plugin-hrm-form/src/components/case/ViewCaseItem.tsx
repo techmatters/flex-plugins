@@ -16,19 +16,18 @@
 
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import Edit from '@material-ui/icons/Edit';
 import { DefinitionVersion, isNonSaveable } from 'hrm-form-definitions';
 
-import { CaseStateEntry } from '../../states/case/types';
 import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles';
 import { CaseLayout, FullWidthFormTextContainer } from './styles';
 import { RootState } from '../../states';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
-import { AppRoutes, CaseItemAction, isViewCaseSectionRoute } from '../../states/routing/types';
+import { CaseItemAction, isViewCaseSectionRoute } from '../../states/routing/types';
 import * as RoutingActions from '../../states/routing/actions';
 import { CaseSectionApi } from '../../states/case/sections/api';
 import { FormTargetObject } from '../common/forms/types';
@@ -36,71 +35,44 @@ import NavigableContainer from '../NavigableContainer';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 import selectCaseItemHistory from '../../states/case/sections/selectCaseItemHistory';
-import { CaseSectionTypeSpecificData } from '../../services/caseSectionService';
+import { getInitializedCan, PermissionActions } from '../../permissions';
 
 export type ViewCaseItemProps = {
   task: CustomITask | StandaloneITask;
   definitionVersion: DefinitionVersion;
   sectionApi: CaseSectionApi;
   includeAddedTime?: boolean;
-  canEdit: () => boolean;
 };
 
-const mapStateToProps = (
-  state: RootState,
-  { task, sectionApi }: ViewCaseItemProps,
-): {
-  caseItemHistory: ReturnType<typeof selectCaseItemHistory>;
-  currentRoute: AppRoutes;
-  sections: CaseStateEntry['sections'];
-  form: CaseSectionTypeSpecificData;
-} => {
-  const { sections } = selectCurrentRouteCaseState(state, task.taskSid) || {};
-  const currentRoute = selectCurrentTopmostRouteForTask(state, task.taskSid);
-  if (isViewCaseSectionRoute(currentRoute)) {
-    return {
-      caseItemHistory: selectCaseItemHistory(state, currentRoute.caseId, sectionApi, currentRoute.id),
-      currentRoute,
-      sections,
-      form: sectionApi.getSectionItemById(sections, currentRoute.id).sectionTypeSpecificData,
-    };
-  }
-  return {
-    currentRoute,
-    form: undefined,
-    caseItemHistory: undefined,
-    sections: undefined,
-  };
-};
+const ViewCaseItem: React.FC<ViewCaseItemProps> = ({ task, definitionVersion, sectionApi }) => {
+  // Hooks
+  const { sections, connectedCase } = useSelector(
+    (state: RootState) =>
+      selectCurrentRouteCaseState(state, task.taskSid) || { sections: undefined, connectedCase: undefined },
+  );
 
-const mapToDispatchProps = {
-  changeRoute: RoutingActions.changeRoute,
-  goBack: RoutingActions.newGoBackAction,
-};
+  const currentRoute = useSelector((state: RootState) => selectCurrentTopmostRouteForTask(state, task.taskSid));
+  const caseItemHistory = useSelector((state: RootState) =>
+    isViewCaseSectionRoute(currentRoute)
+      ? selectCaseItemHistory(state, currentRoute.caseId, sectionApi, currentRoute.id)
+      : null,
+  );
 
-const connector = connect(mapStateToProps, mapToDispatchProps);
+  const dispatch = useDispatch();
 
-type Props = ViewCaseItemProps & ConnectedProps<typeof connector>;
-
-const ViewCaseItem: React.FC<Props> = ({
-  task,
-  currentRoute,
-  changeRoute,
-  definitionVersion,
-  sectionApi,
-  sections,
-  canEdit,
-  caseItemHistory,
-  form,
-}) => {
+  // Conditional returns allowed from here
   if (!isViewCaseSectionRoute(currentRoute) || !sections) {
     return null;
   }
+
+  const canEdit = getInitializedCan()(PermissionActions.EDIT_CASE_SECTION, connectedCase);
+  const form = sectionApi.getSectionItemById(sections, currentRoute.id).sectionTypeSpecificData;
+
   const { addingCounsellorName, added, updatingCounsellorName, updated } = caseItemHistory;
   const formDefinition = sectionApi.getSectionFormDefinition(definitionVersion).filter(fd => !isNonSaveable(fd));
 
   const onEditCaseItemClick = () => {
-    changeRoute({ ...currentRoute, action: CaseItemAction.Edit }, task.taskSid);
+    dispatch(RoutingActions.changeRoute({ ...currentRoute, action: CaseItemAction.Edit }, task.taskSid));
   };
 
   const targetObject: FormTargetObject = {
@@ -132,7 +104,7 @@ const ViewCaseItem: React.FC<Props> = ({
             </Box>
           )}
         </Box>
-        {canEdit() && (
+        {canEdit && (
           <BottomButtonBar>
             <Box marginRight="15px">
               <StyledNextStepButton
@@ -154,4 +126,4 @@ const ViewCaseItem: React.FC<Props> = ({
 
 ViewCaseItem.displayName = 'ViewCaseItem';
 
-export default connector(ViewCaseItem);
+export default ViewCaseItem;

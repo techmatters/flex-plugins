@@ -63,8 +63,6 @@ export const newContact = (definitions: DefinitionVersion, task?: ITask | Offlin
   });
   const contactlessTask: ContactRawJson['contactlessTask'] = {
     channel: 'web', // default, should be overwritten
-    date: new Date().toISOString(),
-    time: new Date().toTimeString(),
     createdOnBehalfOf: null,
     ...Object.fromEntries(initialContactlessTaskTabDefinition.map(d => [d.name, getInitialValue(d)])),
   };
@@ -80,6 +78,7 @@ export const newContact = (definitions: DefinitionVersion, task?: ITask | Offlin
   return {
     accountSid: null,
     id: '',
+    definitionVersion: '',
     twilioWorkerId: null,
     timeOfContact: new Date().toISOString(),
     taskId: null,

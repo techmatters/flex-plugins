@@ -3,8 +3,8 @@
     "name": "incidentSummary",
     "label": "Incident or Person Description",
     "type": "textarea",
-    "rows": 20,
-    "width": 289,
+    "rows": 21,
+    "width": 217,
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -30,6 +30,11 @@
     "type": "input"
   },
   {
+    "name": "nickname",
+    "label": "Nickname",
+    "type": "input"
+  },
+  {
     "name": "age",
     "label": "Age",
     "type": "select",
@@ -40,12 +45,8 @@
         "label": ""
       },
       {
-        "value": "01-9",
-        "label": "1-9"
-      },
-      {
-        "value": "10-19",
-        "label": "10-19"
+        "value": "18-19",
+        "label": "18-19"
       },
       {
         "value": "20-29",
@@ -70,22 +71,6 @@
     ]
   },
   {
-    "name": "race",
-    "label": "Race ",
-    "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Unknown",
-        "label": ""
-      }
-    ]
-  },
-  {
     "name": "gender",
     "label": "Gender",
     "type": "select",
@@ -102,8 +87,64 @@
       {
         "value": "Female",
         "label": "Female"
+      },      
+        {
+        "value": "Agender",
+        "label": "Agender"
+      },
+        {
+        "value": "Non-Binary",
+        "label": "Non-Binary"
       },
       {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
+    "name": "race",
+    "label": "Race ",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Asian",
+        "label": "Asian"
+      },     
+        {
+        "value": "Black",
+        "label": "Black"
+      },
+      {
+        "value": "Hispanic/Latino",
+        "label": "Hispanic/Latino"
+      },
+      {
+        "value": "Indigenous American",
+        "label": "Indigenous American"
+      },
+        {
+        "value": "Middle Eastern",
+        "label": "Middle Eastern"
+      },
+        {
+        "value": "Multi-Ethnic",
+        "label": "Multi-Ethnic"
+      },
+        {
+        "value": "Native Hawaiian or other Pacific Islander",
+        "label": "Native Hawaiian or other Pacific Islander"
+      },
+        {
+        "value": "White",
+        "label": "White"
+      },
+        {
         "value": "Other",
         "label": "Other"
       }
