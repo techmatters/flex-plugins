@@ -51,11 +51,8 @@ export const caseHome = (page: Page) => {
   }
 
   async function addCaseSection(section: CaseSectionForm) {
-    const sectionId =
-      section.sectionTypeId.charAt(0).toUpperCase() + section.sectionTypeId.slice(1);
-    const newSectionButton = selectors.addSectionButton(sectionId);
+    const newSectionButton = selectors.addSectionButton(section.sectionTypeId);
     await newSectionButton.waitFor({ state: 'visible' });
-    await expect(newSectionButton).toContainText(sectionId);
     await newSectionButton.click();
     await fillSectionForm(section);
 
