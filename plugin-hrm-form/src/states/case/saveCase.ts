@@ -95,6 +95,7 @@ const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => 
         [connectedCase.id]: {
           connectedCase: {
             ...connectedCase,
+            firstContact: stateCase?.firstContact,
             ...((stateInfo || connectedCase.info) && {
               info: { ...stateInfo, ...connectedCase.info },
             }),
