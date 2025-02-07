@@ -179,8 +179,6 @@ export default class HrmFormPlugin extends FlexPlugin {
   async init(flex: typeof Flex, manager: Flex.Manager) {
     loadCSS('https://use.fontawesome.com/releases/v5.15.4/css/solid.css');
 
-    await validateAndSetPermissionRules();
-
     setUpMonitoring(manager.workerClient, manager.serviceConfiguration);
 
     console.log(`Welcome to ${PLUGIN_NAME}`);
@@ -190,7 +188,10 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     const config = getHrmConfig();
     const featureFlags = getAseloFeatureFlags();
+    // eslint-disable-next-line camelcase
+    featureFlags.enable_permissions_from_backend = true;
 
+    await validateAndSetPermissionRules();
     /*
      * localization setup (translates the UI if necessary)
      * WARNING: the way this is done right now is "hacky". More info in initLocalization declaration

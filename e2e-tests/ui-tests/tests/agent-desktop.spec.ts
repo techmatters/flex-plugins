@@ -20,6 +20,7 @@ import { expect, Page, test } from '@playwright/test';
 import * as mockServer from '../flex-in-a-box/proxied-endpoints';
 import AxeBuilder from '@axe-core/playwright';
 import { addTaskToWorker } from '../aselo-service-mocks/task';
+import hrmPermissions from '../aselo-service-mocks/hrm/permissions';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { preload, useUnminifiedFlex } from '../flex-in-a-box/local-resources';
@@ -28,9 +29,12 @@ import { delay } from 'mockttp/dist/util/util';
 
 test.describe.serial('Agent Desktop', () => {
   let page: Page;
+  const permissions = hrmPermissions();
+
   test.beforeAll(async ({ browser }) => {
     await mockServer.start();
     page = await aseloPage(browser);
+    await permissions.mockPermissionEndpoint(page);
   });
 
   test.afterAll(async () => {

@@ -42,6 +42,7 @@ export const serviceConfigurationAttributes = () => ({
     post_survey_serverless_handled: true,
     enable_voice_recordings: true,
     enable_post_survey: true,
+    enable_permissions_from_backend: true,
   },
   seenOnboarding: true,
   permissionConfig: 'e2e',
