@@ -1,7 +1,7 @@
 {
   "contact": {
     "callerInformation": {
-        "splitFormAt": 5
+      "splitFormAt": 5
     },
     "childInformation": {
       "splitFormAt": 2
@@ -11,40 +11,47 @@
     }
   },
   "case": {
-
-  "sectionTypes": {
-
-     "household": {
-      "splitFormAt": 7
-    },
-    "perpetrator": {
-      "splitFormAt": 7
-    },
-    "incident": {
-      "previewFields": ["date", "duration", "location"],
-      "layout": {
-        "date":  {
+    "sectionTypes": {
+      "household": {
+        "splitFormAt": 7,
+        "printOrder": 1
+      },
+      "perpetrator": {
+        "splitFormAt": 7,
+        "printOrder": 2
+      },
+      "incident": {
+        "previewFields": [
+          "date",
+          "duration",
+          "location"
+        ],
+        "layout": {
+          "date": {
             "includeLabel": false,
             "format": "date"
           },
-        "duration":  {
+          "duration": {
             "includeLabel": true
           },
-        "location":  {
-          "includeLabel": true
-        }
+          "location": {
+            "includeLabel": true
+          }
+        },
+        "splitFormAt": 3,
+        "printOrder": 3
       },
-      "splitFormAt": 3
-    },
-    "referral": {
-      "previewFields": ["referredTo"],
-      "splitFormAt": 2
-    },
-    "document": {
-      "splitFormAt": 1
+      "referral": {
+        "previewFields": [
+          "referredTo"
+        ],
+        "splitFormAt": 2,
+        "printOrder": 4
+      },
+      "document": {
+        "splitFormAt": 1,
+        "caseHomeOrder": 4
+      }
     }
   }
-
-    }
-
-  }
+}

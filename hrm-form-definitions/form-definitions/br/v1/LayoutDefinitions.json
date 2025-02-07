@@ -10,40 +10,50 @@
     }
   },
   "case": {
-
-  "sectionTypes": {
-
-     "household": {
-      "splitFormAt": 2
-    },
-    "perpetrator": {
-      "splitFormAt": 2
-    },
-    "incident": {
-      "previewFields": ["date", "duration", "location"],
-      "layout": {
-        "date":  {
+    "sectionTypes": {
+      "household": {
+        "splitFormAt": 2,
+        "caseHomeOrder": 1,
+        "printOrder": 1
+      },
+      "perpetrator": {
+        "splitFormAt": 2,
+        "caseHomeOrder": 2,
+        "printOrder": 2
+      },
+      "incident": {
+        "previewFields": [
+          "date",
+          "duration",
+          "location"
+        ],
+        "layout": {
+          "date": {
             "includeLabel": false,
             "format": "date"
           },
-        "duration":  {
+          "duration": {
             "includeLabel": true
           },
-        "location":  {
-          "includeLabel": true
-        }
+          "location": {
+            "includeLabel": true
+          }
+        },
+        "splitFormAt": 2,
+        "caseHomeOrder": 3,
+        "printOrder": 3
       },
-      "splitFormAt": 2
-    },
-    "referral": {
-      "previewFields": ["referredTo"],
-      "splitFormAt": 2
-    },
-    "document": {
-      "splitFormAt": 1
+      "referral": {
+        "previewFields": [
+          "referredTo"
+        ],
+        "splitFormAt": 2,
+        "printOrder": 4
+      },
+      "document": {
+        "splitFormAt": 1,
+        "caseHomeOrder": 4
+      }
     }
   }
-
-    }
-
-  }
+}

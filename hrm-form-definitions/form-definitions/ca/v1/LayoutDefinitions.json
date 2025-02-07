@@ -7,44 +7,50 @@
       "splitFormAt": 8
     },
     "caseInformation": {
-       "splitFormAt": 9
+      "splitFormAt": 9
     }
   },
   "case": {
-
-  "sectionTypes": {
-
-     "household": {
-      "splitFormAt": 7
-    },
-    "perpetrator": {
-      "splitFormAt": 8
-    },
-    "incident": {
-      "previewFields": [
-        "date",
-        "location"
-      ],
-      "layout": {
-        "date":  {
-          "includeLabel": false,
-          "format": "date"
-        },
-        "location":  {
-          "includeLabel": true
-        }
+    "sectionTypes": {
+      "household": {
+        "splitFormAt": 7,
+        "caseHomeOrder": 1,
+        "printOrder": 1
       },
-      "splitFormAt": 6
-    },
-    "referral": {
-      "previewFields": ["referredTo"],
-      "splitFormAt": 5
-    },
-    "document": {
-      "splitFormAt": 1
+      "perpetrator": {
+        "splitFormAt": 8,
+        "caseHomeOrder": 2,
+        "printOrder": 2
+      },
+      "incident": {
+        "previewFields": [
+          "date",
+          "location"
+        ],
+        "layout": {
+          "date": {
+            "includeLabel": false,
+            "format": "date"
+          },
+          "location": {
+            "includeLabel": true
+          }
+        },
+        "splitFormAt": 6,
+        "caseHomeOrder": 3,
+        "printOrder": 3
+      },
+      "referral": {
+        "previewFields": [
+          "referredTo"
+        ],
+        "splitFormAt": 5,
+        "printOrder": 4
+      },
+      "document": {
+        "splitFormAt": 1,
+        "caseHomeOrder": 4
+      }
     }
   }
-
-    }
-
-  }
+}

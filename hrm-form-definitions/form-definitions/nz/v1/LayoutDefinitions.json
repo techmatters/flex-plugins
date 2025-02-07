@@ -7,39 +7,45 @@
     }
   },
   "case": {
-
-  "sectionTypes": {
-
-     "household": {
-      "splitFormAt": 13
-    },
-    "perpetrator": {
-      "splitFormAt": 9
-    },
-    "incident": {
-      "previewFields": [
-        "whoPresentsRisk",
-        "typeOfHarm"
-      ],
-      "layout": {
-        "whoPresentsRisk": {
-          "includeLabel": true
-        },
-        "typeOfHarm": {
-          "includeLabel": true
-        }
+    "sectionTypes": {
+      "household": {
+        "splitFormAt": 13,
+        "caseHomeOrder": 1,
+        "printOrder": 1
       },
-      "splitFormAt": 6
-    },
-    "referral": {
-      "previewFields": ["referredTo"],
-      "splitFormAt": 3
-    },
-    "document": {
-      "splitFormAt": 1
+      "perpetrator": {
+        "splitFormAt": 9,
+        "caseHomeOrder": 2,
+        "printOrder": 2
+      },
+      "incident": {
+        "previewFields": [
+          "whoPresentsRisk",
+          "typeOfHarm"
+        ],
+        "layout": {
+          "whoPresentsRisk": {
+            "includeLabel": true
+          },
+          "typeOfHarm": {
+            "includeLabel": true
+          }
+        },
+        "splitFormAt": 6,
+        "caseHomeOrder": 3,
+        "printOrder": 3
+      },
+      "referral": {
+        "previewFields": [
+          "referredTo"
+        ],
+        "splitFormAt": 3,
+        "printOrder": 4
+      },
+      "document": {
+        "splitFormAt": 1,
+        "caseHomeOrder": 4
+      }
     }
   }
-
-    }
-
-  }
+}

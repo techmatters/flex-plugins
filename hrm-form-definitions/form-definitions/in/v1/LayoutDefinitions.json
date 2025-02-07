@@ -5,41 +5,51 @@
     "childInformation": {
     },
     "caseInformation": {
-        "splitFormAt": 6
+      "splitFormAt": 6
     }
   },
   "case": {
-
-  "sectionTypes": {
-
-     "household": {
-    },
-    "perpetrator": {
-    },
-    "incident": {
-      "previewFields": ["date", "duration", "location"],
-      "layout": {
-        "date":  {
+    "sectionTypes": {
+      "household": {
+        "caseHomeOrder": 1,
+        "printOrder": 1
+      },
+      "perpetrator": {
+        "caseHomeOrder": 2,
+        "printOrder": 2
+      },
+      "incident": {
+        "previewFields": [
+          "date",
+          "duration",
+          "location"
+        ],
+        "layout": {
+          "date": {
             "includeLabel": false,
             "format": "date"
           },
-        "duration":  {
+          "duration": {
             "includeLabel": true
           },
-        "location":  {
-          "includeLabel": true
-        }
+          "location": {
+            "includeLabel": true
+          }
+        },
+        "caseHomeOrder": 3,
+        "printOrder": 3
+      },
+      "referral": {
+        "previewFields": [
+          "referredTo"
+        ],
+        "splitFormAt": 2,
+        "printOrder": 4
+      },
+      "document": {
+        "splitFormAt": 1,
+        "caseHomeOrder": 4
       }
-    },
-    "referral": {
-      "previewFields": ["referredTo"],
-      "splitFormAt": 2
-    },
-    "document": {
-      "splitFormAt": 1
     }
   }
-
-    }
-
-  }
+}
