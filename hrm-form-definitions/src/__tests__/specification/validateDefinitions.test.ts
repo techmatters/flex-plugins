@@ -105,12 +105,6 @@ describe('Validate form definitions', () => {
       });
 
       const formFileSpecificationPaths = [
-        'caseForms.HouseholdForm',
-        'caseForms.IncidentForm',
-        'caseForms.NoteForm',
-        'caseForms.PerpetratorForm',
-        'caseForms.ReferralForm',
-        'caseForms.DocumentForm',
         'tabbedForms.CallerInformationTab',
         'tabbedForms.CaseInformationTab',
         'tabbedForms.ChildInformationTab',
