@@ -40,7 +40,7 @@ import {
 import { generateUrl } from './fetchApi';
 import { generateSignedURLPath } from './fetchHrmApi';
 import { shouldSendInsightsData } from '../utils/shouldSendInsightsData';
-import { ApiCaseSection, CaseSectionTypeSpecificData } from './caseSectionService';
+import { ApiCaseSection, CaseSectionTypeSpecificData, FullCaseSection } from './caseSectionService';
 import { CaseStateEntry } from '../states/case/types';
 
 /*
@@ -195,34 +195,27 @@ const convertMixedCheckbox = (v: string | boolean): number => {
   return null;
 };
 
-type InsightsCaseForm = {
-  topLevel?: { [key: string]: string };
-  perpetrator?: { [key: string]: string | boolean };
-  incident?: { [key: string]: string | boolean };
-  referral?: { [key: string]: string | boolean };
-  household?: { [key: string]: string | boolean };
-};
+type InsightsCaseForm = Record<string, { [key: string]: string | boolean }>;
 
 const flattenFirstCaseSection = (
-  sections: CaseStateEntry['sections'],
-  section: string,
+  sections: Record<string, FullCaseSection>,
 ): Omit<ApiCaseSection, 'sectionTypeSpecificData'> & CaseSectionTypeSpecificData => {
-  if (sections?.[section] && Object.values(sections[section]).length > 0) {
+  if (sections) {
     /*
      * Flatten out the section object. This can be changed after this is using the
      * customization framework.
      */
-    const sortedList = Object.values(sections[section]).sort(
-      (a, b) => a.eventTimestamp.getTime() - b.createdAt.getTime(),
-    );
-    const { sectionTypeSpecificData, createdAt, updatedAt, eventTimestamp, ...theRest } = sortedList[0];
-    return {
-      ...theRest,
-      createdAt: createdAt.toISOString(),
-      updatedAt: updatedAt?.toISOString(),
-      eventTimestamp: eventTimestamp?.toISOString(),
-      ...sectionTypeSpecificData,
-    };
+    const sortedList = Object.values(sections).sort((a, b) => a.eventTimestamp.getTime() - b.createdAt.getTime());
+    if (sortedList.length) {
+      const { sectionTypeSpecificData, createdAt, updatedAt, eventTimestamp, ...theRest } = sortedList[0];
+      return {
+        ...theRest,
+        createdAt: createdAt.toISOString(),
+        updatedAt: updatedAt?.toISOString(),
+        eventTimestamp: eventTimestamp?.toISOString(),
+        ...sectionTypeSpecificData,
+      };
+    }
   }
   return undefined;
 };
@@ -241,12 +234,9 @@ const convertCaseFormForInsights = (caseForm: Case, sections: CaseStateEntry['se
     twilioWorkerId: caseForm.twilioWorkerId,
   };
   try {
-    const perpetrator = flattenFirstCaseSection(sections, 'perpetrator');
-    delete perpetrator?.name;
-    delete perpetrator?.location;
-    const incident = flattenFirstCaseSection(sections, 'incident');
-    const referral = flattenFirstCaseSection(sections, 'referral');
-    const household = flattenFirstCaseSection(sections, 'household');
+    const flattenedSectionEntries = Object.entries(sections).map(
+      ([sectionTypeName, sectionsForType]) => [sectionTypeName, flattenFirstCaseSection(sectionsForType)] as const,
+    );
     const topLevel = {
       id: caseForm.id.toString(),
     };
@@ -254,11 +244,8 @@ const convertCaseFormForInsights = (caseForm: Case, sections: CaseStateEntry['se
     console.warn(`[InsightsService] converting case form:`, logObject);
 
     return {
+      ...Object.fromEntries(flattenedSectionEntries),
       topLevel,
-      perpetrator,
-      incident,
-      household,
-      referral,
     };
   } catch (error) {
     logObject.message = error;

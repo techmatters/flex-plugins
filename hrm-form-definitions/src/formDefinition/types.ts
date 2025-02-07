@@ -20,15 +20,6 @@ import { RegisterOptions } from 'react-hook-form';
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 import { CallTypeKeys } from './callTypes';
 
-export enum CaseSectionApiName {
-  Notes = 'notes',
-  Households = 'households',
-  Perpetrators = 'perpetrators',
-  Incidents = 'incidents',
-  Referrals = 'referrals',
-  Documents = 'documents',
-}
-
 export enum FormInputType {
   Input = 'input',
   SearchInput = 'search-input',
