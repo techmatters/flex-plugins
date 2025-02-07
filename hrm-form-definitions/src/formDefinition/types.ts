@@ -290,7 +290,6 @@ export type LayoutDefinition = {
   splitFormAt?: number;
   caseHomeOrder?: number;
   printOrder?: number;
-  printTitleTemplateCode?: string;
 };
 
 export type LayoutVersion = {
