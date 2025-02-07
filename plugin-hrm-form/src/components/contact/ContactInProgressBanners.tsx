@@ -36,6 +36,7 @@ import { getAseloFeatureFlags } from '../../hrmConfig';
 import { RootState } from '../../states';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { checkTaskAssignment } from '../../services/twilioTaskService';
+import { isOfflineContact } from '../../types/types';
 
 type ContactBannersProps = {
   contactId: string;
@@ -61,12 +62,14 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
   useEffect(() => {
     if (finalizeRequested && savedContact.finalizedAt) {
       setShowResolvedBanner(true);
-      if (!savedContact.conversationMedia.length) {
+      // Show the notification if the contact is not offline or has no conversation media
+      if (!isOfflineContact(savedContact) || savedContact.conversationMedia.length <= 0) {
         Notifications.registerNotification({
           id: 'NoConversationMediaNotification',
           closeButton: true,
           content: <Template code="ContactDetails-NoConversationMediaNotification" />,
           type: NotificationType.warning,
+          timeout: 15000,
         });
         Notifications.showNotification('NoConversationMediaNotification');
       }
