@@ -26,11 +26,7 @@ export const caseHome = (page: Page) => {
   // const caseHomeArea = page.locator('div.Twilio-CRMContainer');
   const selectors = {
     addSectionButton: (sectionTypeId: string) =>
-      page.locator(
-        `//button[@data-testid='Case-${
-          sectionTypeId.charAt(0).toUpperCase() + sectionTypeId.slice(1)
-        }-AddButton']`,
-      ),
+      page.locator(`//button[@data-testid='Case-SectionList-Add/${sectionTypeId}-AddButton']`),
     formItem: (itemId: string) => page.locator(`#${itemId}`),
     formInput: (itemId: string) => page.locator(`input#${itemId}`),
     formSelect: (itemId: string) => page.locator(`select#${itemId}`),

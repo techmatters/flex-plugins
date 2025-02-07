@@ -268,7 +268,7 @@ describe('useState mocked', () => {
       </StorelessThemeProvider>,
     );
 
-    screen.getByText('Case-Household').click();
+    screen.getByText('Case-SectionList-Add/household').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'case',
@@ -293,7 +293,7 @@ describe('useState mocked', () => {
       </StorelessThemeProvider>,
     );
 
-    screen.getByText('Case-Perpetrator').click();
+    screen.getByText('Case-SectionList-Add/perpetrator').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'case',
