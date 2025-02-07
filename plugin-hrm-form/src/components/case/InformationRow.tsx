@@ -19,13 +19,13 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import { Household, Perpetrator } from '../../types/types';
+import { CaseItemFormValues } from '../../types/types';
 import { TimelineRow, InformationBoldText, TimelineText, ViewButton, RowItemContainer } from './styles';
 import { Box, HiddenText } from '../../styles';
 import { formatName } from '../../utils';
 
 type OwnProps = {
-  person: Household | Perpetrator;
+  person: CaseItemFormValues;
   onClickView: () => void;
 };
 

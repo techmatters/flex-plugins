@@ -23,11 +23,11 @@ import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 import { RowItemContainer, TimelineLabel, TimelineRow, TimelineText, ViewButton } from './styles';
 import { Box, HiddenText } from '../../styles';
 import { formatValue } from '../common/forms/helpers';
-import type { Incident } from '../../types/types';
+import { CaseItemFormValues } from '../../types/types';
 
 type OwnProps = {
   definition: FormDefinition;
-  values: Incident; // expand this type to make this reusable (perpetrators, hh)
+  values: CaseItemFormValues;
   layoutDefinition: LayoutDefinition;
   onClickView: () => void;
 };

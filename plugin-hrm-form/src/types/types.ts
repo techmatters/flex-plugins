@@ -42,18 +42,6 @@ export type EntryInfo = {
 
 export type CaseItemFormValues = { [key: string]: string | boolean };
 
-export type Household = { [key: string]: string | boolean };
-
-export type Perpetrator = { [key: string]: string | boolean };
-
-export type Incident = { [key: string]: string | boolean };
-
-export type Note = { [key: string]: string | boolean };
-
-export type Referral = { date: string; referredTo: string; [key: string]: string | boolean };
-
-export type Document = { [key: string]: string | boolean };
-
 export type CSAMReportEntry = {
   csamReportId: string;
   id: number;
@@ -402,8 +390,6 @@ export type ProfileFlag = {
   updatedAt?: string;
   validUntil?: Date;
 };
-
-export type ProfilesList = Profile[];
 
 export enum ProfilesListSortBy {
   ID = 'id',
