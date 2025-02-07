@@ -82,8 +82,8 @@ const TaskView: React.FC<Props> = ({ task }) => {
   );
   const updateHelpline = (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline }));
   React.useEffect(() => {
-    if (shouldRecreateState) {
-      if (isOfflineContactTask(task) || (enableBackendHrmContactCreation && taskContactId)) {
+    if (shouldRecreateState && !isOfflineContactTask(task)) {
+      if (enableBackendHrmContactCreation && taskContactId) {
         asyncDispatcher(newLoadContactFromHrmForTaskAsyncAction(task, workerSid, `${task.taskSid}-active`));
       } else if (
         !enableBackendHrmContactCreation &&
@@ -161,8 +161,9 @@ const TaskView: React.FC<Props> = ({ task }) => {
         }}
       />
     );
-  // If state is partially loaded, don't render until everything settles
-  if (shouldRecreateState || contactIsLoading) {
+  // If state is partially loaded, don't render until everything settles.
+  // Also don't show the form if the contact is finalized
+  if (shouldRecreateState || contactIsLoading || unsavedContact.finalizedAt) {
     return null;
   }
 

@@ -71,6 +71,25 @@ export const createContactAsyncAction = createAsyncAction(
     const { taskSid } = task;
     if (isOfflineContactTask(task)) {
       contact = await createContact(contactToCreate, workerSid, task);
+      if (!contact.rawJson.contactlessTask.createdOnBehalfOf) {
+        const now = new Date();
+        const time = format(now, 'HH:mm');
+        const date = format(now, 'yyyy-MM-dd');
+        contact = await updateContactInHrm(contact.id, {
+          ...BLANK_CONTACT_CHANGES,
+          timeOfContact: now.toISOString(),
+          rawJson: {
+            ...BLANK_CONTACT_CHANGES.rawJson,
+            contactlessTask: {
+              channel: null,
+              createdOnBehalfOf: workerSid,
+              date,
+              time,
+            },
+          },
+          channel: 'default',
+        });
+      }
     } else {
       const attributes = task.attributes ?? {};
       const { contactId } = attributes;
@@ -79,16 +98,11 @@ export const createContactAsyncAction = createAsyncAction(
         contact = await updateContactInHrm(contactId, { taskId: taskSid, twilioWorkerId: workerSid }, false);
       } else {
         contact = await createContact(contactToCreate, workerSid, task);
-        if (contact.taskId! !== taskSid || contact.twilioWorkerId !== workerSid) {
-          // If the contact is being transferred from a client that doesn't set the contactId on the task, we need to update the contact with the task id and worker id
-          contact = await updateContactInHrm(contact.id, { taskId: taskSid, twilioWorkerId: workerSid }, false);
-        }
         await task.setAttributes({ ...attributes, contactId: contact.id });
       }
       if (TransferHelpers.isColdTransfer(task) && !TransferHelpers.hasTaskControl(task))
         await TransferHelpers.takeTaskControl(task);
     }
-
     let contactCase: Case | undefined;
     if (contact.caseId) {
       contactCase = await getCase(contact.caseId);
@@ -152,26 +166,6 @@ export const newClearContactAsyncAction = (contact: Contact) =>
     ...BLANK_CONTACT_CHANGES,
     timeOfContact: new Date().toISOString(),
   });
-
-export const newRestartOfflineContactAsyncAction = (contact: Contact, createdOnBehalfOf: WorkerSID) => {
-  const now = new Date();
-  const time = format(now, 'HH:mm');
-  const date = format(now, 'yyyy-MM-dd');
-  return updateContactInHrmAsyncAction(contact, {
-    ...BLANK_CONTACT_CHANGES,
-    timeOfContact: now.toISOString(),
-    rawJson: {
-      ...BLANK_CONTACT_CHANGES.rawJson,
-      contactlessTask: {
-        channel: null,
-        createdOnBehalfOf,
-        date,
-        time,
-      },
-    },
-    channel: 'default',
-  });
-};
 
 type ConnectToCaseActionPayload = { contactId: string; caseId: string; contact: Contact; contactCase: Case };
 type RemoveFromCaseActionPayload = { contactId: string; contact: Contact };
@@ -465,7 +459,8 @@ export const saveContactReducer = (initialState: ContactsState) =>
     handleAction(
       submitContactFormAsyncAction.pending as typeof submitContactFormAsyncAction,
       (state, { meta: { contact } }): ContactsState => {
-        return setContactLoadingStateInRedux(state, contact, contact);
+        // Add a temporary finalizedAt to the contact to ensure the UI updates promptly
+        return setContactLoadingStateInRedux(state, contact, { ...contact, finalizedAt: new Date().toISOString() });
       },
     ),
     handleAction(
