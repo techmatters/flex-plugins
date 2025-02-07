@@ -1,0 +1,29 @@
+{
+  "viewCase": [["isSupervisor"], ["isCreator"]],
+  "closeCase": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
+  "reopenCase": [["isSupervisor"]],
+  "caseStatusTransition": [],
+  "addCaseSection": [["isSupervisor"], ["isCreator"]],
+  "editCaseSection": [["isCreator"],["isSupervisor"]],
+  "editCaseOverview": [["isSupervisor"], ["isCreator"]],
+  "updateCaseContacts": [["isSupervisor"], ["isCaseOpen"]],
+
+  "viewContact": [["isSupervisor"], ["isOwner"]],
+  "editContact": [["isOwner"],["isSupervisor"]],
+  "editInProgressContact": [["isSupervisor"], ["isOwner"]], 
+  "viewExternalTranscript": [["isSupervisor"], ["isOwner"]],
+  "viewRecording": [["isSupervisor"], ["isOwner"]],
+  "addContactToCase": [["isSupervisor"], ["isOwner"]],
+  "removeContactFromCase": [["isSupervisor"], ["isOwner"]],
+  
+  "viewProfile": [["everyone"]],
+  "flagProfile": [],
+  "unflagProfile": [],
+  "createProfileSection": [],
+  "viewProfileSection": [],
+  "editProfileSection": [],
+  
+  "viewPostSurvey": [["isSupervisor"]],
+
+  "viewIdentifiers": []
+}

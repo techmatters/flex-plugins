@@ -16,24 +16,12 @@
 
 import { ALBEvent, ALBResult } from 'aws-lambda';
 import { lookupRoute } from './router';
-import { ErrorResult, isErr } from './Result';
-import { HttpError } from './httpTypes';
-
-const convertHttpErrorResultToALBResult = (
-  result: ErrorResult<HttpError>,
-): ALBResult => ({
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  statusCode: result.error.statusCode,
-  body: JSON.stringify({
-    message: result.message,
-    cause: {
-      message: result.error.cause?.message,
-      stack: result.error.cause?.stack,
-    },
-  }),
-});
+import { isErr } from './Result';
+import {
+  convertHttpErrorResultToALBResult,
+  notFoundResponse,
+  okJsonResponse,
+} from './albResponses';
 
 export const handler = async (event: ALBEvent): Promise<ALBResult> => {
   console.info('twilio/account-scoped: Triggered by path:', event.path);
@@ -44,6 +32,9 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
     body: JSON.parse(event.body || 'null'),
     headers: event.headers ?? {},
   };
+  if (request.method === 'OPTIONS') {
+    return okJsonResponse();
+  }
   const route = lookupRoute(request);
   if (route) {
     let processedRequest = request;
@@ -58,21 +49,7 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
     if (isErr(result)) {
       return convertHttpErrorResultToALBResult(result);
     }
-    return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(result.unwrap()),
-    };
+    return okJsonResponse(result.unwrap());
   }
-  return {
-    statusCode: 404,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      message: `Route not found ${event.httpMethod} - ${event.path}`,
-    }),
-  };
+  return notFoundResponse(event);
 };

@@ -33,7 +33,7 @@ import {
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import { getOfflineContactTaskSid } from '../../states/contacts/offlineContactTask';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
-import { namespace, routingBase } from '../../states/storeNamespaces';
+import selectCurrentOfflineContact from '../../states/contacts/selectCurrentOfflineContact';
 
 type OwnProps = { selectedTaskSid?: string };
 
@@ -48,7 +48,7 @@ const OfflineContactTask: React.FC<Props> = ({ isAddingOfflineContact, selectedT
     await Actions.invokeAction('SelectTask', { task: undefined });
   };
 
-  const selected = !selectedTaskSid && isAddingOfflineContact;
+  const selected = !selectedTaskSid;
   const name =
     offlineContactForms &&
     (offlineContactForms.childInformation.firstName || offlineContactForms.childInformation.lastName) &&
@@ -82,7 +82,7 @@ OfflineContactTask.displayName = 'OfflineContactTask';
 const mapStateToProps = (state: RootState) => {
   const { savedContact, draftContact } = selectContactByTaskSid(state, getOfflineContactTaskSid()) || {};
   return {
-    isAddingOfflineContact: state[namespace][routingBase].isAddingOfflineContact,
+    isAddingOfflineContact: selectCurrentOfflineContact(state),
     offlineContact: savedContact ? getUnsavedContact(savedContact, draftContact) : undefined,
   };
 };

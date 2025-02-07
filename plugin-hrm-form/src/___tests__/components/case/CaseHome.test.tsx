@@ -24,8 +24,6 @@ import configureMockStore from 'redux-mock-store';
 import each from 'jest-each';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
-import { fetchRules } from '../../../permissions/fetchRules';
-import { validateAndSetPermissionRules } from '../../../permissions';
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import CaseHome, { CaseHomeProps } from '../../../components/case/CaseHome';
 import { Case, CustomITask } from '../../../types/types';
@@ -40,27 +38,10 @@ import { FullCaseSection } from '../../../services/caseSectionService';
 import { TaskSID } from '../../../types/twilio';
 import { CaseStateEntry } from '../../../states/case/types';
 
-const e2eRules = require('../../../permissions/e2e.json');
-
-jest.mock('../../../permissions/fetchRules', () => {
-  return {
-    fetchRules: jest.fn(() => {
-      throw new Error('fetchRules not mocked!');
-    }),
-  };
-});
-
-beforeEach(async () => {
-  const fetchRulesSpy = fetchRules as jest.MockedFunction<typeof fetchRules>;
-  fetchRulesSpy.mockResolvedValueOnce(e2eRules);
-  await validateAndSetPermissionRules();
-
-  jest.mock('../../../permissions', () => ({
-    ...jest.requireActual('../../../permissions'),
-    getInitializedCan: jest.fn(() => () => true),
-  }));
-});
-
+jest.mock('../../../permissions', () => ({
+  getInitializedCan: jest.fn(() => () => true),
+  PermissionActions: {},
+}));
 // Called by the <Timeline/> subcomponent
 jest.mock('../../../services/CaseService', () => ({
   getCaseTimeline: jest.fn(() => Promise.resolve({ activities: [], count: 0 })),

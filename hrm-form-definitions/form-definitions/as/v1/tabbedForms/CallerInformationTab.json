@@ -28,7 +28,8 @@
       { "value": "Stranger", "label": "Stranger" },
       { "value": "Other", "label": "Other" }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": false
   },
   {
     "name": "streetAddress",
@@ -48,7 +49,8 @@
       { "value": "Southern", "label": "Southern" },
       { "value": "Unknown", "label": "Unknown"}
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": false
   },
   {
     "name": "district",
@@ -82,22 +84,26 @@
         { "value": "Unknown", "label": "Unknown"}
       ]
     },
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": false
   },
   {
     "name": "postalCode",
     "label": "Postal Code",
-    "type": "input"
+    "type": "input",
+    "isPII": false
   },
   {
     "name": "phone1",
     "label": "Phone #1",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "phone2",
     "label": "Phone #2",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gender",
@@ -108,7 +114,8 @@
       { "value": "Boy", "label": "Boy" },
       { "value": "Girl", "label": "Girl" },
       { "value": "Non-Binary", "label": "Non-Binary" }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "age",
@@ -180,7 +187,8 @@
       { "value": ">60", "label": ">60" },
       { "value": "Unknown", "label": "Unknown" },
       { "value": "Other", "label": "Other" }
-    ]
+    ],
+    "isPII": false
   },
   {
     "name": "language",
@@ -193,11 +201,13 @@
       { "value": "Xhosa", "label": "Xhosa" },
       { "value": "Bemba", "label": "Bemba" },
       { "value": "Other", "label": "Other" }
-    ]  
+    ] ,
+    "isPII": false 
   },
   {
     "name": "ethnicity",
     "label": "Ethnicity",
-    "type": "input"
+    "type": "input",
+    "isPII": false
   }
 ]

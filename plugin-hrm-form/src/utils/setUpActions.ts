@@ -274,10 +274,10 @@ export const afterCompleteTask = async ({ task }: { task: CustomITask }): Promis
   const manager = Manager.getInstance();
   const contactState = selectContactByTaskSid(manager.store.getState() as RootState, task.taskSid);
   if (contactState) {
+    manager.store.dispatch(GeneralActions.removeContactState(task.taskSid, contactState.savedContact.id));
     const { savedContact } = contactState;
     if (savedContact) {
-      manager.store.dispatch(newFinalizeContactAsyncAction(task, savedContact));
+      await asyncDispatch(manager.store.dispatch)(newFinalizeContactAsyncAction(task, savedContact));
     }
-    manager.store.dispatch(GeneralActions.removeContactState(task.taskSid, contactState.savedContact.id));
   }
 };

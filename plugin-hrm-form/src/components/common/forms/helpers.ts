@@ -15,8 +15,7 @@
  */
 
 import { LayoutValue } from 'hrm-form-definitions';
-
-import { splitDate } from '../../../utils/helpers';
+import { parse } from 'date-fns';
 
 /**
  * Given a displayValue spec for a certain form field and a value (current state of such field),
@@ -24,8 +23,7 @@ import { splitDate } from '../../../utils/helpers';
  */
 export const formatValue = (displayValue: LayoutValue) => (value: string | number | boolean) => {
   if (displayValue && displayValue.format === 'date' && typeof value === 'string') {
-    const [y, m, d] = splitDate(value);
-    return new Date(y, m - 1, d).toLocaleDateString(navigator.language);
+    return parse(value, 'yyyy-MM-dd', new Date()).toLocaleDateString(navigator.language);
   }
   return value;
 };

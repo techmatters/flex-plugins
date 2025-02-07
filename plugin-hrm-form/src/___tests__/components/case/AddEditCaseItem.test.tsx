@@ -167,7 +167,6 @@ const hrmState: Partial<RootState[typeof namespace]> = {
     tasks: {
       [TASK_SID]: [{ route: 'case', subroute: 'household', caseId: 'case1', action: CaseItemAction.Add }],
     },
-    isAddingOfflineContact: false,
   },
 };
 
@@ -200,7 +199,6 @@ const routing3: RootState[typeof namespace]['routing'] = {
   tasks: {
     [TASK_SID]: [{ route: 'case', subroute: 'household', action: CaseItemAction.Add }],
   },
-  isAddingOfflineContact: true,
 };
 
 const state3 = {
