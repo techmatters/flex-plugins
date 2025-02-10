@@ -46,10 +46,10 @@ const DocumentInformationRow: React.FC<OwnProps> = ({
         <Template code="Case-DocumentDate" />
       </HiddenText>
       <TimelineDate>{date}</TimelineDate>
-      <AttachFileIcon style={{ fontSize: '20px', marginRight: 5 }} />
       <HiddenText>
         <Template code="Case-DocumentFileName" />
       </HiddenText>
+      <AttachFileIcon style={{ fontSize: '20px', marginRight: 5 }} />
       <TimelineFileName>{formatFileNameAtAws(document.fileName)}</TimelineFileName>
       <HiddenText>
         <Template code="Case-DocumentComments" />

@@ -19,15 +19,25 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
+import { parseISO } from 'date-fns';
+import AttachFileIcon from '@material-ui/icons/AttachFile';
 
-import { RowItemContainer, TimelineLabel, TimelineRow, TimelineText, ViewButton } from './styles';
+import {
+  RowItemContainer,
+  TimelineDate,
+  TimelineFileName,
+  TimelineLabel,
+  TimelineRow,
+  TimelineText,
+  ViewButton,
+} from './styles';
 import { Box, HiddenText } from '../../styles';
-import { formatValue } from '../common/forms/helpers';
-import { CaseItemFormValues } from '../../types/types';
+import { CaseSection } from '../../services/caseSectionService';
+import { formatFileNameAtAws } from '../../utils';
 
 type OwnProps = {
   definition: FormDefinition;
-  values: CaseItemFormValues;
+  section: CaseSection;
   layoutDefinition: LayoutDefinition;
   onClickView: () => void;
 };
@@ -35,13 +45,42 @@ type OwnProps = {
 const RowItem: React.FC = ({ children }) => <RowItemContainer style={{ flex: 1 }}>{children}</RowItemContainer>;
 RowItem.displayName = 'RowItem';
 
-const IncidentInformationRow: React.FC<OwnProps> = ({ definition, values, layoutDefinition, onClickView }) => {
+const IncidentInformationRow: React.FC<OwnProps> = ({ definition, section, layoutDefinition, onClickView }) => {
+  const renderValue = (name: string): JSX.Element => {
+    const layout = layoutDefinition.layout[name];
+    const fieldDef = definition.find(e => e.name === name);
+    switch (layout.format) {
+      case 'date': {
+        let value: Date | string = section.sectionTypeSpecificData[fieldDef.name];
+        if (!value) {
+          value = section.sectionTypeSpecificData[fieldDef.name];
+        }
+        if (!(value instanceof Date)) {
+          value = parseISO(value);
+        }
+        return <TimelineDate>{value.toLocaleDateString(navigator.language)}</TimelineDate>;
+      }
+      case 'file': {
+        return (
+          <>
+            <AttachFileIcon style={{ fontSize: '20px', marginRight: 5 }} />
+            <TimelineFileName>{formatFileNameAtAws(section.sectionTypeSpecificData[fieldDef.name])}</TimelineFileName>
+          </>
+        );
+      }
+      case 'string':
+      default:
+        if (layout.valueTemplateCode) {
+          return <Template code={layout.valueTemplateCode} {...section.sectionTypeSpecificData} />;
+        }
+        return <TimelineText>{section.sectionTypeSpecificData[fieldDef.name]}</TimelineText>;
+    }
+  };
   return (
     <TimelineRow>
       {layoutDefinition.previewFields.map((name, index) => {
         const fieldDef = definition.find(e => e.name === name);
         const layout = layoutDefinition.layout[name];
-        const formattedValue = formatValue(layout)(values[fieldDef.name]);
 
         return (
           <RowItem key={`item-${fieldDef.label}-${index}`}>
@@ -49,8 +88,12 @@ const IncidentInformationRow: React.FC<OwnProps> = ({ definition, values, layout
               <Template code={fieldDef.label} />
             </HiddenText>
             <div style={{ display: 'inline-block' }}>
-              {layout.includeLabel && <TimelineLabel>{fieldDef.label}: </TimelineLabel>}
-              <TimelineText>{formattedValue}</TimelineText>
+              {layout.includeLabel && (
+                <TimelineLabel>
+                  <Template code={layout.labelTemplateCode ?? fieldDef.label} />:{' '}
+                </TimelineLabel>
+              )}
+              {renderValue(name)}
             </div>
           </RowItem>
         );

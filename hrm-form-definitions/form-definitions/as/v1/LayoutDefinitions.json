@@ -14,7 +14,26 @@
       "household": {
         "splitFormAt": 7,
         "caseHomeOrder": 1,
-        "printOrder": 1
+        "printOrder": 1,
+        "previewFields": [
+          "name",
+          "gender",
+          "age",
+          "relationshipToChild"
+        ],
+        "layout": {
+          "name": {
+            "includeLabel": true,
+            "label": "Case-SectionList-PreviewNameLabel",
+            "template": "{{firstName}} {{lastName}}"
+          },
+          "age": {
+            "includeLabel": true
+          },
+          "gender": {
+            "includeLabel": true
+          }
+        }
       },
       "perpetrator": {
         "splitFormAt": 7,
