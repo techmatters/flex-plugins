@@ -290,6 +290,8 @@ export type LayoutDefinition = {
   splitFormAt?: number;
   caseHomeOrder?: number;
   printOrder?: number;
+  caseHomeLocation?: 'list' | 'timeline' | 'hidden';
+  printFormat?: 'tabular' | 'list' | 'hidden';
 };
 
 export type LayoutVersion = {
