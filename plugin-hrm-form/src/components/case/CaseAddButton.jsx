@@ -22,7 +22,7 @@ import { Template } from '@twilio/flex-ui';
 import { CaseAddButtonFont, CaseAddButton as CaseAddButtonStyled } from './styles';
 import HrmTheme from '../../styles/HrmTheme';
 
-const CaseAddButton = ({ disabled, templateCode, onClick, withDivider }) => {
+const CaseAddButton = ({ disabled, templateCode, onClick }) => {
   const color = disabled ? HrmTheme.colors.disabledColor : 'initial';
   return (
     <CaseAddButtonStyled disabled={disabled} onClick={onClick} data-testid={`${templateCode}-AddButton`}>

@@ -166,12 +166,12 @@ const Timeline: React.FC<Props> = ({
           </CaseSectionFont>
           <Box marginLeft="auto">
             <CaseAddButton
-              templateCode="Case-Note"
+              templateCode="Case-SectionList-Add/note"
               onClick={handleAddNoteClick}
               disabled={!can(PermissionActions.ADD_CASE_SECTION, connectedCase)}
             />
             <CaseAddButton
-              templateCode="Case-Referral"
+              templateCode="Case-SectionList-Add/referral"
               onClick={handleAddReferralClick}
               disabled={!can(PermissionActions.ADD_CASE_SECTION, connectedCase)}
               withDivider
