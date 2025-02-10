@@ -218,7 +218,7 @@ describe('useState mocked', () => {
       </StorelessThemeProvider>,
     );
 
-    screen.getByText('Case-Note').click();
+    screen.getByText('Case-SectionList-Add/note').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'case',
@@ -243,7 +243,7 @@ describe('useState mocked', () => {
       </StorelessThemeProvider>,
     );
 
-    screen.getByText('Case-Referral').click();
+    screen.getByText('Case-SectionList-Add/referral').click();
     expect(store.dispatch).toHaveBeenCalledWith({
       routing: {
         route: 'case',

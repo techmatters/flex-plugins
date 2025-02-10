@@ -121,6 +121,7 @@ export const caseList = (page: Page) => {
   }
 
   //Check print view
+  // TODO: Move to case.ts
   async function viewClosePrintView() {
     const openPrintButton = selectors.casePrintButton;
     await openPrintButton.waitFor({ state: 'visible' });
@@ -134,6 +135,7 @@ export const caseList = (page: Page) => {
   }
 
   //Edit Case
+  // TODO: Move to case.ts
   async function editCase() {
     const editCaseButton = selectors.caseEditButton;
     await editCaseButton.waitFor({ state: 'visible' });
@@ -145,6 +147,7 @@ export const caseList = (page: Page) => {
   const currentTime = new Date();
 
   // Add/Update Summary
+  // TODO: Move to case.ts
   async function updateCaseSummary() {
     const summaryTextArea = selectors.caseSummaryTextArea;
     await summaryTextArea.waitFor({ state: 'visible' });
