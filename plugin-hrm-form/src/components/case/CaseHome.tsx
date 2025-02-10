@@ -18,7 +18,7 @@
 import React, { Dispatch } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
-import { DefinitionVersion, LayoutDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseContainer, CaseDetailsBorder, ViewButton } from './styles';
 import { BottomButtonBar, Box, SaveAndEndButton } from '../../styles';
@@ -130,7 +130,7 @@ const CaseHome: React.FC<Props> = ({
 
   const orderedListSections = Object.entries(definitionVersion.caseSectionTypes)
     .filter(([sectionType]) => !['note', 'referral'].includes(sectionType))
-    .map(([sectionType]): { sectionType: string; layout: LayoutDefinition } => ({
+    .map(([sectionType]) => ({
       sectionType,
       layout: definitionVersion.layoutVersion.case.sectionTypes[sectionType] ?? {},
     }))
