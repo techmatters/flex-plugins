@@ -174,7 +174,7 @@ jobs:
         with:
           name: UI Tests Report
           path: '!(node_modules)/**/junit.xml'
-          reporter: jest-junit
+          reporter: java-junit
 
   upload-plugin:
     runs-on: ubuntu-latest
