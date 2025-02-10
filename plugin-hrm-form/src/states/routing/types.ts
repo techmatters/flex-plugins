@@ -72,16 +72,11 @@ export type SearchRoute =
   | SearchResultRoute;
 
 export const NewCaseSectionSubroutes = {
-  Note: 'note',
-  Referral: 'referral',
-  Household: 'household',
-  Perpetrator: 'perpetrator',
-  Incident: 'incident',
-  Document: 'document',
   CaseSummary: 'caseSummary',
 } as const;
 
-export type CaseSectionSubroute = typeof NewCaseSectionSubroutes[keyof typeof NewCaseSectionSubroutes];
+// eslint-disable-next-line prettier/prettier
+export type CaseSectionSubroute = 'caseSummary' | `section/${string}`;
 
 export const NewCaseSubroutes = Object.freeze({
   ...NewCaseSectionSubroutes,

@@ -29,22 +29,22 @@ import ActionHeader from './ActionHeader';
 import type { CustomITask, StandaloneITask } from '../../types/types';
 import { CaseItemAction, isViewCaseSectionRoute } from '../../states/routing/types';
 import * as RoutingActions from '../../states/routing/actions';
-import { CaseSectionApi } from '../../states/case/sections/api';
 import { FormTargetObject } from '../common/forms/types';
 import NavigableContainer from '../NavigableContainer';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 import selectCaseItemHistory from '../../states/case/sections/selectCaseItemHistory';
 import { getInitializedCan, PermissionActions } from '../../permissions';
+import { getSectionItemById } from '../../states/case/sections/get';
 
 export type ViewCaseItemProps = {
   task: CustomITask | StandaloneITask;
   definitionVersion: DefinitionVersion;
-  sectionApi: CaseSectionApi;
+  sectionTypeName: string;
   includeAddedTime?: boolean;
 };
 
-const ViewCaseItem: React.FC<ViewCaseItemProps> = ({ task, definitionVersion, sectionApi }) => {
+const ViewCaseItem: React.FC<ViewCaseItemProps> = ({ task, definitionVersion, sectionTypeName }) => {
   // Hooks
   const { sections, connectedCase } = useSelector(
     (state: RootState) =>
@@ -54,9 +54,11 @@ const ViewCaseItem: React.FC<ViewCaseItemProps> = ({ task, definitionVersion, se
   const currentRoute = useSelector((state: RootState) => selectCurrentTopmostRouteForTask(state, task.taskSid));
   const caseItemHistory = useSelector((state: RootState) =>
     isViewCaseSectionRoute(currentRoute)
-      ? selectCaseItemHistory(state, currentRoute.caseId, sectionApi, currentRoute.id)
+      ? selectCaseItemHistory(state, currentRoute.caseId, sectionTypeName, currentRoute.id)
       : null,
   );
+
+  const caseSectionDefinition = definitionVersion.caseSectionTypes[sectionTypeName];
 
   const dispatch = useDispatch();
 
@@ -66,10 +68,10 @@ const ViewCaseItem: React.FC<ViewCaseItemProps> = ({ task, definitionVersion, se
   }
 
   const canEdit = getInitializedCan()(PermissionActions.EDIT_CASE_SECTION, connectedCase);
-  const form = sectionApi.getSectionItemById(sections, currentRoute.id).sectionTypeSpecificData;
+  const form = getSectionItemById(sectionTypeName)(sections, currentRoute.id).sectionTypeSpecificData;
+  const formDefinition = caseSectionDefinition.form.filter(fd => !isNonSaveable(fd));
 
   const { addingCounsellorName, added, updatingCounsellorName, updated } = caseItemHistory;
-  const formDefinition = sectionApi.getSectionFormDefinition(definitionVersion).filter(fd => !isNonSaveable(fd));
 
   const onEditCaseItemClick = () => {
     dispatch(RoutingActions.changeRoute({ ...currentRoute, action: CaseItemAction.Edit }, task.taskSid));
@@ -82,7 +84,7 @@ const ViewCaseItem: React.FC<ViewCaseItemProps> = ({ task, definitionVersion, se
 
   return (
     <CaseLayout>
-      <NavigableContainer task={task} titleCode={`Case-View${sectionApi.label}`}>
+      <NavigableContainer task={task} titleCode={`CaseSection-View-Title/${caseSectionDefinition.label}`}>
         <Box height="100%" style={{ overflowY: 'auto' }}>
           <ActionHeader
             addingCounsellor={addingCounsellorName}

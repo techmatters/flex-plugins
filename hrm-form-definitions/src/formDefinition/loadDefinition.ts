@@ -20,6 +20,8 @@ import path from 'path';
 import {
   CallTypeButtonsDefinitions,
   CannedResponsesDefinitions,
+  CaseSectionTypeDefinitions,
+  CaseSectionTypeJsonEntry,
   CategoriesDefinition,
   DefinitionVersion,
   FormDefinition,
@@ -76,6 +78,30 @@ const expandFormDefinition = (
     }
     return json;
   });
+
+const loadAndExpandCaseSections = async (
+  caseSectionsJsonDefinition: Record<string, CaseSectionTypeJsonEntry>,
+  referenceData: Record<string, any>,
+  fetchDefinition: <T>(jsonPath: string, placeholder?: T) => Promise<T>,
+): Promise<CaseSectionTypeDefinitions> => {
+  const caseSectionJsonEntries = Object.entries(caseSectionsJsonDefinition);
+  const caseSectionExpandedEntries = await Promise.all(
+    caseSectionJsonEntries.map(
+      async ([key, value]) =>
+        [
+          key,
+          {
+            label: value.label,
+            form: expandFormDefinition(
+              await fetchDefinition<FormItemJsonDefinition[]>(value.formPath),
+              referenceData,
+            ),
+          },
+        ] as const,
+    ),
+  );
+  return Object.fromEntries(caseSectionExpandedEntries);
+};
 
 /**
  * Fetches a definition file.
@@ -146,12 +172,6 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
    */
   const [
     layoutVersion,
-    householdForm,
-    incidentForm,
-    noteForm,
-    perpetratorForm,
-    referralForm,
-    documentForm,
     callerInformationTab,
     caseInformationTab,
     childInformationTab,
@@ -159,6 +179,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     contactlessTaskTab,
     callTypeButtons,
     helplineInformation,
+    caseSections,
     cannedResponses,
     oneToOneConfigSpec,
     oneToManyConfigSpecs,
@@ -170,12 +191,6 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     profileFlagDurations,
   ] = await Promise.all([
     fetchDefinition<LayoutVersion>('LayoutDefinitions.json'),
-    fetchDefinition<FormItemJsonDefinition[]>('caseForms/HouseholdForm.json'),
-    fetchDefinition<FormItemJsonDefinition[]>('caseForms/IncidentForm.json'),
-    fetchDefinition<FormItemJsonDefinition[]>('caseForms/NoteForm.json'),
-    fetchDefinition<FormItemJsonDefinition[]>('caseForms/PerpetratorForm.json'),
-    fetchDefinition<FormItemJsonDefinition[]>('caseForms/ReferralForm.json'),
-    fetchDefinition<FormItemJsonDefinition[]>('caseForms/DocumentForm.json'),
     fetchDefinition<FormItemJsonDefinition[]>('tabbedForms/CallerInformationTab.json'),
     fetchDefinition<FormItemJsonDefinition[]>('tabbedForms/CaseInformationTab.json'),
     fetchDefinition<FormItemJsonDefinition[]>('tabbedForms/ChildInformationTab.json'),
@@ -186,6 +201,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     ),
     fetchDefinition<CallTypeButtonsDefinitions>('CallTypeButtons.json'),
     fetchDefinition<HelplineDefinitions>('HelplineInformation.json'),
+    fetchDefinition<Record<string, CaseSectionTypeJsonEntry>>('CaseSections.json'),
     fetchDefinition<CannedResponsesDefinitions>('CannedResponses.json', []),
     fetchDefinition<OneToOneConfigSpec>('insights/oneToOneConfigSpec.json'),
     fetchDefinition<OneToManyConfigSpecs>('insights/oneToManyConfigSpecs.json'),
@@ -198,21 +214,18 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     fetchDefinition<string[]>('BlockedEmojis.json', []),
     fetchDefinition<ProfileSectionDefinition[]>('profileForms/Sections.json', []),
     fetchDefinition<ProfileFlagDurationDefinition[]>('profileForms/FlagDurations.json', []),
-  ]);
-
+  ] as const);
+  const expandedCaseSections: CaseSectionTypeDefinitions = await loadAndExpandCaseSections(
+    caseSections,
+    referenceData,
+    fetchDefinition,
+  );
   const { helplines } = helplineInformation;
   const defaultHelpline =
     helplineInformation.helplines.find((helpline: HelplineEntry) => helpline.default)?.value ||
     helplines[0].value;
   return {
-    caseForms: {
-      HouseholdForm: expandFormDefinition(householdForm, referenceData),
-      IncidentForm: expandFormDefinition(incidentForm, referenceData),
-      NoteForm: expandFormDefinition(noteForm, referenceData),
-      PerpetratorForm: expandFormDefinition(perpetratorForm, referenceData),
-      ReferralForm: expandFormDefinition(referralForm, referenceData),
-      DocumentForm: expandFormDefinition(documentForm, referenceData),
-    },
+    caseSectionTypes: expandedCaseSections,
     tabbedForms: {
       CallerInformationTab: expandFormDefinition(callerInformationTab, referenceData),
       CaseInformationTab: expandFormDefinition(caseInformationTab, referenceData),

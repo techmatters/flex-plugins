@@ -19,7 +19,7 @@ import { createAsyncAction, createReducer } from 'redux-promise-middleware-actio
 import { HrmState, RootState } from '..';
 import { namespace } from '../storeNamespaces';
 import { getContactActivityText, getSectionText } from './caseActivities';
-import { Case, Contact, WellKnownCaseSection } from '../../types/types';
+import { Case, Contact } from '../../types/types';
 import { getCaseTimeline, TimelineResult } from '../../services/CaseService';
 import {
   CaseSectionIdentifierTimelineActivity,
@@ -42,7 +42,7 @@ export const newGetTimelineAsyncAction = createAsyncAction(
   async (
     caseId: Case['id'],
     timelineId: string,
-    sectionTypes: WellKnownCaseSection[],
+    sectionTypes: string[],
     includeContacts: boolean,
     pagination: PaginationSettings,
   ): Promise<{

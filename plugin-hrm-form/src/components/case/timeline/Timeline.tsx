@@ -29,7 +29,7 @@ import CaseAddButton from '../CaseAddButton';
 import { Case, Contact, CustomITask } from '../../../types/types';
 import { isCaseSectionTimelineActivity, isContactTimelineActivity } from '../../../states/case/types';
 import { getInitializedCan, PermissionActions } from '../../../permissions';
-import { CaseItemAction, CaseSectionSubroute, isCaseRoute, NewCaseSubroutes } from '../../../states/routing/types';
+import { CaseItemAction, isCaseRoute } from '../../../states/routing/types';
 import { newOpenModalAction } from '../../../states/routing/actions';
 import { RootState } from '../../../states';
 import { newGetTimelineAsyncAction, selectTimeline, UITimelineActivity } from '../../../states/case/timeline';
@@ -68,10 +68,20 @@ const mapStateToProps = (state: RootState, { taskSid, timelineId, pageSize, page
 const mapDispatchToProps = (dispatch, { taskSid, timelineId, page, pageSize }: OwnProps) => ({
   openContactModal: (contactId: string) =>
     dispatch(newOpenModalAction({ route: 'contact', subroute: 'view', id: contactId }, taskSid)),
-  openAddCaseSectionModal: (caseId: string, subroute: CaseSectionSubroute) =>
-    dispatch(newOpenModalAction({ route: 'case', subroute, action: CaseItemAction.Add, caseId }, taskSid)),
-  openViewCaseSectionModal: (caseId: string, subroute: CaseSectionSubroute, id: string) =>
-    dispatch(newOpenModalAction({ route: 'case', subroute, id, action: CaseItemAction.View, caseId }, taskSid)),
+  openAddCaseSectionModal: (caseId: string, section: string) =>
+    dispatch(
+      newOpenModalAction(
+        { route: 'case', subroute: `section/${section}`, action: CaseItemAction.Add, caseId },
+        taskSid,
+      ),
+    ),
+  openViewCaseSectionModal: (caseId: string, section: string, id: string) =>
+    dispatch(
+      newOpenModalAction(
+        { route: 'case', subroute: `section/${section}`, id, action: CaseItemAction.View, caseId },
+        taskSid,
+      ),
+    ),
   getTimeline: (caseId: Case['id']) =>
     asyncDispatch(dispatch)(
       newGetTimelineAsyncAction(caseId, timelineId, ['note', 'referral'], true, {
@@ -127,11 +137,11 @@ const Timeline: React.FC<Props> = ({
   };
 
   const handleAddNoteClick = () => {
-    openAddCaseSectionModal(caseId, NewCaseSubroutes.Note);
+    openAddCaseSectionModal(caseId, 'note');
   };
 
   const handleAddReferralClick = () => {
-    openAddCaseSectionModal(caseId, NewCaseSubroutes.Referral);
+    openAddCaseSectionModal(caseId, 'referral');
   };
 
   const handleViewClick = (timelineActivity: UITimelineActivity) => {
@@ -156,12 +166,12 @@ const Timeline: React.FC<Props> = ({
           </CaseSectionFont>
           <Box marginLeft="auto">
             <CaseAddButton
-              templateCode="Case-Note"
+              templateCode="Case-SectionList-Add/note"
               onClick={handleAddNoteClick}
               disabled={!can(PermissionActions.ADD_CASE_SECTION, connectedCase)}
             />
             <CaseAddButton
-              templateCode="Case-Referral"
+              templateCode="Case-SectionList-Add/referral"
               onClick={handleAddReferralClick}
               disabled={!can(PermissionActions.ADD_CASE_SECTION, connectedCase)}
               withDivider

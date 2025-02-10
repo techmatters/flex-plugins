@@ -21,7 +21,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Box, Row } from '../../styles';
 import { CaseDetailsBorder, CaseSectionFont, PlaceHolderText, TimelineRow } from './styles';
 import CaseAddButton from './CaseAddButton';
-import { Case, WellKnownCaseSection } from '../../types/types';
+import { Case } from '../../types/types';
 import { RootState } from '../../states';
 import { newGetTimelineAsyncAction, selectTimeline } from '../../states/case/timeline';
 import { TimelineActivity } from '../../states/case/types';
@@ -36,7 +36,7 @@ import selectCurrentRouteCase from '../../states/case/selectCurrentRouteCase';
 type OwnProps = {
   canAdd: () => boolean;
   taskSid: string;
-  sectionType: WellKnownCaseSection;
+  sectionType: string;
   sectionRenderer?: (section: FullCaseSection, onView: () => void) => JSX.Element | null;
 };
 
@@ -65,13 +65,16 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { taskSid, sectionType }: O
     viewCaseSection: (caseId: Case['id'], sectionId: string) =>
       dispatch(
         newOpenModalAction(
-          { route: 'case', subroute: sectionType, action: CaseItemAction.View, id: sectionId, caseId },
+          { route: 'case', subroute: `section/${sectionType}`, action: CaseItemAction.View, id: sectionId, caseId },
           taskSid,
         ),
       ),
     addCaseSection: (caseId: Case['id']) =>
       dispatch(
-        newOpenModalAction({ route: 'case', subroute: sectionType, action: CaseItemAction.Add, caseId }, taskSid),
+        newOpenModalAction(
+          { route: 'case', subroute: `section/${sectionType}`, action: CaseItemAction.Add, caseId },
+          taskSid,
+        ),
       ),
     getTimeline: (caseId: Case['id']) =>
       asyncDispatcher(
@@ -105,16 +108,15 @@ const CaseSection: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [caseId, sectionIdCsv, sectionType]);
 
-  const capitializedSectionType = sectionType.charAt(0).toUpperCase() + sectionType.slice(1);
   return (
     <CaseDetailsBorder sectionTypeId={sectionType === 'document'}>
       <Box marginBottom="10px">
         <Row>
-          <CaseSectionFont id={`Case-Add${capitializedSectionType}Section-label`}>
-            <Template code={`Case-Add${capitializedSectionType}Section`} />
+          <CaseSectionFont id={`Case-AddSection-label-${sectionType}`}>
+            <Template code={`Case-SectionList-Title/${sectionType}`} />
           </CaseSectionFont>
           <CaseAddButton
-            templateCode={`Case-${capitializedSectionType}`}
+            templateCode={`Case-SectionList-Add/${sectionType}`}
             onClick={() => addCaseSection(caseId)}
             disabled={!canAdd()}
           />
@@ -127,7 +129,7 @@ const CaseSection: React.FC<Props> = ({
       ) : (
         <TimelineRow>
           <PlaceHolderText>
-            <Template code={`Case-No${capitializedSectionType}s`} />
+            <Template code={`Case-NoSections/${sectionType}`} />
           </PlaceHolderText>
         </TimelineRow>
       )}

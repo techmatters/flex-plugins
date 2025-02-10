@@ -42,18 +42,6 @@ export type EntryInfo = {
 
 export type CaseItemFormValues = { [key: string]: string | boolean };
 
-export type Household = { [key: string]: string | boolean };
-
-export type Perpetrator = { [key: string]: string | boolean };
-
-export type Incident = { [key: string]: string | boolean };
-
-export type Note = { [key: string]: string | boolean };
-
-export type Referral = { date: string; referredTo: string; [key: string]: string | boolean };
-
-export type Document = { [key: string]: string | boolean };
-
 export type CSAMReportEntry = {
   csamReportId: string;
   id: number;
@@ -72,8 +60,6 @@ export type CaseInfo = CaseOverview & {
   definitionVersion?: DefinitionVersionId;
   offlineContactCreator?: string;
 };
-
-export type WellKnownCaseSection = 'note' | 'referral' | 'household' | 'perpetrator' | 'incident' | 'document';
 
 export type Case = {
   accountSid: AccountSID;
@@ -133,9 +119,6 @@ export type S3StoredRecording = {
 };
 
 export type S3StoredMedia = S3StoredTranscript | S3StoredRecording;
-
-// Extract the 'type' property from S3StoredMedia to create ContactMediaType
-export type ContactMediaType = S3StoredMedia['storeTypeSpecificData']['type'];
 
 export type ConversationMedia = TwilioStoredMedia | S3StoredMedia;
 
@@ -258,11 +241,9 @@ export type FeatureFlags = {
   enable_backend_hrm_contact_creation: boolean; // If this is enabled, HRM contact creation is initiated from a task router handler rather than from the Flex plugin
   enable_backend_manual_pulling: boolean; // Enables Backend Manual Pulling
   enable_canned_responses: boolean; // Enables Canned Responses
-  enable_case_merging: boolean; // Enables adding contacts to existing cases
   enable_client_profiles: boolean; // Enables Client Profiles
   enable_conferencing: boolean; // Enables Conferencing UI and replaces default Twilio components and behavior  
   enable_confirm_on_browser_close: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
-  enable_contact_editing: boolean; // Enables Editing Contacts
   enable_counselor_toolkits: boolean; // Enables Counselor Toolkits
   enable_csam_clc_report: boolean; // Enables CSAM child Reports
   enable_csam_report: boolean; // Enables CSAM Reports
@@ -282,12 +263,10 @@ export type FeatureFlags = {
   enable_region_resource_search: boolean; // Enables specifying a region as well as a province and / or city in Resource Search
   enable_save_in_progress_contacts: boolean; // Enables Saving In Progress Contacts
   enable_save_insights: boolean; // Enables Saving Aditional Data on Insights
-  enable_separate_timeline_view: boolean; // Enables a limited inline case timelinbe with a link to the full timeline
   enable_sort_cases: boolean; // Enables Sorting at Case List
   enable_teams_view_enhancements2: boolean; // Enables custom Teams View UI with labels
   enable_transfers: boolean; // Enables Transfering Contacts
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
-  enable_upload_documents: boolean; // Enables Case Documents
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
 };
 /* eslint-enable camelcase */
@@ -412,8 +391,6 @@ export type ProfileFlag = {
   updatedAt?: string;
   validUntil?: Date;
 };
-
-export type ProfilesList = Profile[];
 
 export enum ProfilesListSortBy {
   ID = 'id',
