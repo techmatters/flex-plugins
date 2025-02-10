@@ -15,21 +15,32 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Add } from '@material-ui/icons';
 import { Template } from '@twilio/flex-ui';
 
 import { CaseAddButtonFont, CaseAddButton as CaseAddButtonStyled } from './styles';
 import HrmTheme from '../../styles/HrmTheme';
 
-const CaseAddButton = ({ disabled, templateCode, onClick }) => {
+type Props = {
+  disabled: boolean;
+  templateCode: string;
+  onClick: () => void;
+  withDivider?: boolean;
+};
+
+const CaseAddButton: React.FC<Props> = ({ disabled, templateCode, onClick, withDivider = false }) => {
   const color = disabled ? HrmTheme.colors.disabledColor : 'initial';
   return (
-    <CaseAddButtonStyled disabled={disabled} onClick={onClick} data-testid={`${templateCode}-AddButton`}>
+    <CaseAddButtonStyled
+      disabled={disabled}
+      onClick={onClick}
+      data-testid={`${templateCode}-AddButton`}
+      withDivider={withDivider}
+    >
       {!disabled && (
         <>
           <Add style={{ marginLeft: 20, marginRight: 10, fontSize: 16, height: 17, color }} />
-          <CaseAddButtonFont>
+          <CaseAddButtonFont disabled={disabled}>
             <Template code={templateCode} />
           </CaseAddButtonFont>
         </>
@@ -39,14 +50,5 @@ const CaseAddButton = ({ disabled, templateCode, onClick }) => {
 };
 
 CaseAddButton.displayName = 'CaseAddButton';
-CaseAddButton.propTypes = {
-  disabled: PropTypes.bool.isRequired,
-  templateCode: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
-  withDivider: PropTypes.bool,
-};
-CaseAddButton.defaultProps = {
-  withDivider: false,
-};
 
 export default CaseAddButton;
