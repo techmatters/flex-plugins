@@ -288,6 +288,7 @@ export type LayoutValue = {
   format?: 'date' | 'string' | 'file';
   valueTemplateCode?: string; // If specified, this template code will be used to render a value, with all form values passed as parameters
   labelTemplateCode?: string; // If specified, this template code will be used to render a label
+  widthRatio?: number;
 };
 export type LayoutDefinition = {
   previewFields?: ItemBase['name'][];

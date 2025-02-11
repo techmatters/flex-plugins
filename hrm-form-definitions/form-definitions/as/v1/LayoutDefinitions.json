@@ -23,22 +23,43 @@
         ],
         "layout": {
           "name": {
-            "includeLabel": true,
-            "label": "Case-SectionList-PreviewNameLabel",
-            "template": "{{firstName}} {{lastName}}"
+            "widthRatio": 1.5,
+            "labelTemplateCode": "Case-PerpetratorName",
+            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
           },
           "age": {
-            "includeLabel": true
+            "labelTemplateCode": "Case-PerpetratorAge"
           },
           "gender": {
-            "includeLabel": true
+            "labelTemplateCode": "Case-PerpetratorGender"
+          },
+          "relationshipToChild": {
+            "labelTemplateCode": "Case-PerpetratorRelationship"
           }
         }
       },
       "perpetrator": {
         "splitFormAt": 7,
         "caseHomeOrder": 2,
-        "printOrder": 2
+        "printOrder": 2,
+        "previewFields": [
+          "name",
+          "gender",
+          "age",
+          "relationshipToChild"
+        ],
+        "layout": {
+          "name": {
+            "labelTemplateCode": "Case-PerpetratorName",
+            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
+          },
+          "age": {
+            "labelTemplateCode": "Case-PerpetratorAge"
+          },
+          "gender": {
+            "labelTemplateCode": "Case-PerpetratorGender"
+          }
+        }
       },
       "incident": {
         "previewFields": [
@@ -74,7 +95,27 @@
       "document": {
         "splitFormAt": 1,
         "caseHomeOrder": 5,
-        "printFormat": "hidden"
+        "printFormat": "hidden",
+        "previewFields": [
+          "createdAt",
+          "fileName",
+          "comments"
+        ],
+        "layout": {
+          "createdAt": {
+            "labelTemplateCode": "Case-DocumentFileName",
+            "format": "date"
+          },
+          "fileName": {
+            "labelTemplateCode": "Case-DocumentDate",
+            "format": "file",
+            "widthRatio": 2
+          },
+          "comments": {
+            "labelTemplateCode": "Case-DocumentComments",
+            "widthRatio": 2
+          }
+        }
       },
       "note": {
         "printOrder": 6,

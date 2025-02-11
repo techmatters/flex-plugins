@@ -28,7 +28,6 @@ import { TimelineActivity } from '../../states/case/types';
 import { FullCaseSection } from '../../services/caseSectionService';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { CaseItemAction, isCaseRoute } from '../../states/routing/types';
-import InformationRow from './InformationRow';
 import { newOpenModalAction } from '../../states/routing/actions';
 import asyncDispatch from '../../states/asyncDispatch';
 import selectCurrentRouteCase from '../../states/case/selectCurrentRouteCase';
@@ -89,9 +88,7 @@ type Props = ConnectedProps<typeof connector> & OwnProps;
 const CaseSection: React.FC<Props> = ({
   canAdd,
   sectionType,
-  sectionRenderer = ({ sectionTypeSpecificData, sectionId, sectionType }, viewHandler) => (
-    <InformationRow key={`${sectionType}-${sectionId}`} person={sectionTypeSpecificData} onClickView={viewHandler} />
-  ),
+  sectionRenderer,
   caseId,
   sectionsTimeline,
   viewCaseSection,
@@ -129,7 +126,7 @@ const CaseSection: React.FC<Props> = ({
       ) : (
         <TimelineRow>
           <PlaceHolderText>
-            <Template code={`Case-NoSections/${sectionType}`} />
+            <Template code={`Case-SectionList-NoItems/${sectionType}`} />
           </PlaceHolderText>
         </TimelineRow>
       )}

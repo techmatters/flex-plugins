@@ -33,7 +33,6 @@ import { CustomITask, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
 import { newCloseModalAction } from '../../states/routing/actions';
 import IncidentInformationRow from './IncidentInformationRow';
-import DocumentInformationRow from './DocumentInformationRow';
 import NavigableContainer from '../NavigableContainer';
 import { isStandaloneITask } from './Case';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
@@ -50,7 +49,6 @@ import {
   selectContactsByCaseIdInCreatedOrder,
   selectFirstCaseContact,
 } from '../../states/contacts/selectContactByCaseId';
-import InformationRow from './InformationRow';
 import { FullCaseSection } from '../../services/caseSectionService';
 
 export type CaseHomeProps = {
@@ -216,43 +214,15 @@ const CaseHome: React.FC<Props> = ({
           </CaseDetailsBorder>
         </Box>
         {orderedListSections.map(({ sectionType }) => {
-          let sectionRenderer: (section: FullCaseSection, onView: () => void) => JSX.Element | null;
-          switch (sectionType) {
-            case 'document': {
-              sectionRenderer = (caseSection, onClickView) => (
-                <DocumentInformationRow
-                  key={`document-${caseSection.sectionId}`}
-                  caseSection={caseSection}
-                  onClickView={onClickView}
-                />
-              );
-              break;
-            }
-            case 'household':
-            case 'perpetrator': {
-              sectionRenderer = ({ sectionTypeSpecificData, sectionId, sectionType }, viewHandler) => (
-                <InformationRow
-                  key={`${sectionType}-${sectionId}`}
-                  person={sectionTypeSpecificData}
-                  onClickView={viewHandler}
-                />
-              );
-              break;
-            }
-            default: {
-              // Use IncidentInformationRow for all other sections as it is more configurable
-              sectionRenderer = ({ sectionTypeSpecificData, sectionType, sectionId }, onClickView) => (
-                <IncidentInformationRow
-                  key={`incident-${sectionId}`}
-                  onClickView={onClickView}
-                  definition={caseSectionTypes[sectionType].form}
-                  values={sectionTypeSpecificData}
-                  layoutDefinition={caseLayouts[sectionType] || {}}
-                />
-              );
-              break;
-            }
-          }
+          const sectionRenderer = (caseSection: FullCaseSection, onClickView: () => void) => (
+            <IncidentInformationRow
+              key={`${sectionType}-${caseSection.sectionId}`}
+              onClickView={onClickView}
+              definition={caseSectionTypes[sectionType].form}
+              section={caseSection}
+              layoutDefinition={caseLayouts[sectionType] || {}}
+            />
+          );
 
           return (
             <Box margin="25px 0 0 0" key={sectionType}>
