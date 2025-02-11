@@ -39,7 +39,7 @@ const RowItem: React.FC<{ flexWidthRatio: number }> = ({ children, flexWidthRati
 );
 RowItem.displayName = 'RowItem';
 
-const IncidentInformationRow: React.FC<OwnProps> = ({ definition, section, layoutDefinition, onClickView }) => {
+const CaseSectionListRow: React.FC<OwnProps> = ({ definition, section, layoutDefinition, onClickView }) => {
   const layouts = layoutDefinition.layout ?? { createdAt: { format: 'date' } };
   const previewFields = layoutDefinition.previewFields ?? Object.values(layouts);
 
@@ -109,6 +109,6 @@ const IncidentInformationRow: React.FC<OwnProps> = ({ definition, section, layou
   );
 };
 
-IncidentInformationRow.displayName = 'IncidentInformationRow';
+CaseSectionListRow.displayName = 'IncidentInformationRow';
 
-export default IncidentInformationRow;
+export default CaseSectionListRow;

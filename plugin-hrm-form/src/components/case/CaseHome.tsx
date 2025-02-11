@@ -32,7 +32,7 @@ import { RootState } from '../../states';
 import { CustomITask, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
 import { newCloseModalAction } from '../../states/routing/actions';
-import IncidentInformationRow from './IncidentInformationRow';
+import CaseSectionListRow from './CaseSectionListRow';
 import NavigableContainer from '../NavigableContainer';
 import { isStandaloneITask } from './Case';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
@@ -215,7 +215,7 @@ const CaseHome: React.FC<Props> = ({
         </Box>
         {orderedListSections.map(({ sectionType }) => {
           const sectionRenderer = (caseSection: FullCaseSection, onClickView: () => void) => (
-            <IncidentInformationRow
+            <CaseSectionListRow
               key={`${sectionType}-${caseSection.sectionId}`}
               onClickView={onClickView}
               definition={caseSectionTypes[sectionType].form}
