@@ -298,6 +298,7 @@ export type LayoutDefinition = {
   printOrder?: number;
   caseHomeLocation?: 'list' | 'timeline' | 'hidden';
   printFormat?: 'tabular' | 'list' | 'hidden';
+  timelineIcon?: string;
 };
 
 export type LayoutVersion = {

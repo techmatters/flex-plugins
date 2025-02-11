@@ -87,6 +87,9 @@
         "previewFields": [
           "referredTo"
         ],
+        "layout": {
+            "referredTo": {}
+        },
         "caseHomeOrder": 4,
         "splitFormAt": 2,
         "printOrder": 4,

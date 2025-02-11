@@ -23,7 +23,7 @@ export const getSectionText = (
   { sectionTypeSpecificData, sectionType }: FullCaseSection,
   formDefs: DefinitionVersion,
 ): string => {
-  let { previewFields } = formDefs.layoutVersion.case[sectionType] ?? {};
+  let { previewFields } = formDefs.layoutVersion.case.sectionTypes[sectionType] ?? {};
   const sectionFormDefinition = formDefs.caseSectionTypes[sectionType]?.form;
   if (!previewFields || !previewFields.length) {
     previewFields = sectionFormDefinition?.length ? [sectionFormDefinition[0].name] : [];
