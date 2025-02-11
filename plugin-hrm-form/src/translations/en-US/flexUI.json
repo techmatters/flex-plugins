@@ -359,6 +359,7 @@
   "CasePrint-TabularSection-Header/perpetrator": "Perpetrator {{sectionNo}} of {{sectionCount}}",
   "CasePrint-TabularSection-Header/incident": "Incident {{sectionNo}} of {{sectionCount}}",
   "CasePrint-TabularSection-Header/referral": "Referral {{sectionNo}} of {{sectionCount}}",
+  "CasePrint-TabularSection-Header/chicken": "Chicken {{sectionNo}} of {{sectionCount}}",
   "SectionName-Generic": "{{sectionLabel}} {{sectionNo}} of {{sectionCount}}",
   "SectionName-Notes": "Notes",
   "SectionName-CaseSummary": "Case Summary",
