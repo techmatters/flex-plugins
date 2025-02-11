@@ -84,7 +84,7 @@ const ViewCaseItem: React.FC<ViewCaseItemProps> = ({ task, definitionVersion, se
 
   return (
     <CaseLayout>
-      <NavigableContainer task={task} titleCode={`CaseSection-View-Title/${caseSectionDefinition.label}`}>
+      <NavigableContainer task={task} titleCode={`CaseSection-View-Title/${sectionTypeName}`}>
         <Box height="100%" style={{ overflowY: 'auto' }}>
           <ActionHeader
             addingCounsellor={addingCounsellorName}

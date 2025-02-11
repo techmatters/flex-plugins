@@ -42,12 +42,15 @@ const CasePrintSection: React.FC<Props> = ({
 }) => {
   // <Template .../> tags don't render in the PDF it seems
   const strings = getTemplateStrings();
+  const sectionTitleTemplate = strings[sectionNameTemplateCode];
 
   return (
     <View>
       <View style={styles['sectionHeader']}>
         <Text style={styles['whiteText']}>
-          {Handlebars.compile(strings[sectionNameTemplateCode])(sectionNameTemplateValues)}
+          {sectionTitleTemplate
+            ? Handlebars.compile(sectionTitleTemplate)(sectionNameTemplateValues)
+            : sectionNameTemplateCode}
         </Text>
       </View>
       <View style={styles['sectionBody']}>
