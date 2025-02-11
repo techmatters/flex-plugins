@@ -208,11 +208,6 @@ export const TimelineCallTypeIcon = styled('div')`
 `;
 TimelineCallTypeIcon.displayName = 'TimelineCallTypeIcon';
 
-export const InformationBoldText = styled(TimelineDate)`
-  text-align: left;
-`;
-InformationBoldText.displayName = 'InformationBoldText';
-
 export const PlaceHolderText = styled(TimelineText)`
   ${placeHolderTextStyle}
   opacity: 0.5;
