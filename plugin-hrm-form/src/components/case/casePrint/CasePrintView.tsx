@@ -29,7 +29,7 @@ import styles, { useThaiFontFamily } from './styles';
 import { CasePrintViewSpinner } from '../../../styles';
 import CasePrintDetails from './CasePrintDetails';
 import CasePrintMultiSection from './CasePrintMultiSection';
-import CasePrintNotes from './CasePrintNotes';
+import CasePrintSectionsList from './CasePrintSectionsList';
 import CasePrintHeader from './CasePrintHeader';
 import CasePrintFooter from './CasePrintFooter';
 import CasePrintCSAMReports from './CasePrintCSAMReports';
@@ -177,7 +177,7 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
   const allCsamReports = contactTimeline?.flatMap(({ activity }) => activity?.csamReports ?? []) ?? [];
 
   const orderedListSections = Object.entries(definitionVersion.caseSectionTypes)
-    .filter(([sectionType]) => !['note', 'document'].includes(sectionType))
+    .filter(([sectionType]) => sectionType !== 'document')
     .map(([sectionType]) => ({
       sectionType,
       layout: definitionVersion.layoutVersion.case.sectionTypes[sectionType] ?? {},
@@ -264,20 +264,24 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
                     />
                   );
                 })}
-                {orderedListSections.map(({ sectionType }) => (
-                  <CasePrintMultiSection
-                    key={sectionType}
-                    sectionType={sectionType}
-                    definition={definitionVersion}
-                    values={sectionTimelines[sectionType]}
-                  />
-                ))}
+                {orderedListSections.map(({ sectionType }) =>
+                  sectionType === 'note' ? (
+                    <CasePrintSectionsList
+                      key={sectionType}
+                      sections={sectionTimelines[sectionType]}
+                      counselorsHash={counselorsHash}
+                      formDefinition={definitionVersion}
+                    />
+                  ) : (
+                    <CasePrintMultiSection
+                      key={sectionType}
+                      sectionType={sectionType}
+                      definition={definitionVersion}
+                      sections={sectionTimelines[sectionType]}
+                    />
+                  ),
+                )}
 
-                <CasePrintNotes
-                  notes={sectionTimelines.note}
-                  counselorsHash={counselorsHash}
-                  formDefinition={definitionVersion}
-                />
                 <CasePrintSummary summary={connectedCase.info.summary} />
                 <CasePrintCSAMReports csamReports={allCsamReports} />
               </View>
