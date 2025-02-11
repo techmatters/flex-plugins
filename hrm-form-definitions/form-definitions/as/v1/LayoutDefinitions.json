@@ -58,6 +58,9 @@
           },
           "gender": {
             "labelTemplateCode": "Case-PerpetratorGender"
+          },
+          "relationshipToChild": {
+            "labelTemplateCode": "Case-PerpetratorRelationship"
           }
         }
       },
@@ -90,7 +93,6 @@
         "layout": {
             "referredTo": {}
         },
-        "caseHomeOrder": 4,
         "splitFormAt": 2,
         "printOrder": 4,
         "caseHomeLocation": "timeline"
@@ -123,7 +125,11 @@
       "note": {
         "printOrder": 6,
         "caseHomeLocation": "timeline",
-        "printFormat": "list"
+        "printFormat": "list",
+        "previewFields": ["note"],
+        "layout": {
+          "note": {}
+        }
       },
       "chicken": {
         "previewFields": [
