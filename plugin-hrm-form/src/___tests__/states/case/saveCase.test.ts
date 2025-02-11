@@ -229,6 +229,7 @@ describe('createCaseAsyncAction', () => {
               sections: {},
             },
             connectedCase: {
+              firstContact: undefined,
               id: '234',
             },
             references: new Set(),
