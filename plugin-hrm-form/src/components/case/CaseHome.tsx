@@ -32,7 +32,6 @@ import { RootState } from '../../states';
 import { CustomITask, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
 import { newCloseModalAction } from '../../states/routing/actions';
-import CaseSectionListRow from './CaseSectionListRow';
 import NavigableContainer from '../NavigableContainer';
 import { isStandaloneITask } from './Case';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
@@ -49,7 +48,6 @@ import {
   selectContactsByCaseIdInCreatedOrder,
   selectFirstCaseContact,
 } from '../../states/contacts/selectContactByCaseId';
-import { FullCaseSection } from '../../services/caseSectionService';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -141,9 +139,6 @@ const CaseHome: React.FC<Props> = ({
     openModal({ route: 'case', subroute: 'timeline', caseId, page: 0 });
   };
 
-  const { caseSectionTypes } = definitionVersion;
-  const caseLayouts = definitionVersion.layoutVersion.case.sectionTypes;
-
   const {
     info: { followUpDate, childIsAtRisk },
     status,
@@ -214,23 +209,12 @@ const CaseHome: React.FC<Props> = ({
           </CaseDetailsBorder>
         </Box>
         {orderedListSections.map(({ sectionType }) => {
-          const sectionRenderer = (caseSection: FullCaseSection, onClickView: () => void) => (
-            <CaseSectionListRow
-              key={`${sectionType}-${caseSection.sectionId}`}
-              onClickView={onClickView}
-              definition={caseSectionTypes[sectionType].form}
-              section={caseSection}
-              layoutDefinition={caseLayouts[sectionType] || {}}
-            />
-          );
-
           return (
             <Box margin="25px 0 0 0" key={sectionType}>
               <CaseSection
                 canAdd={() => can(PermissionActions.ADD_CASE_SECTION)}
                 taskSid={task.taskSid}
                 sectionType={sectionType}
-                sectionRenderer={sectionRenderer}
               />
             </Box>
           );

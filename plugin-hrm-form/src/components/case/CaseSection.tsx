@@ -31,12 +31,13 @@ import { CaseItemAction, isCaseRoute } from '../../states/routing/types';
 import { newOpenModalAction } from '../../states/routing/actions';
 import asyncDispatch from '../../states/asyncDispatch';
 import selectCurrentRouteCase from '../../states/case/selectCurrentRouteCase';
+import CaseSectionListRow from './CaseSectionListRow';
+import { selectDefinitionVersionForCase } from '../../states/configuration/selectDefinitions';
 
 type OwnProps = {
   canAdd: () => boolean;
   taskSid: string;
   sectionType: string;
-  sectionRenderer?: (section: FullCaseSection, onView: () => void) => JSX.Element | null;
 };
 
 const MAX_SECTIONS = 100;
@@ -53,6 +54,7 @@ const mapStateToProps = (state: RootState, { sectionType, taskSid }: OwnProps) =
       }) as TimelineActivity<FullCaseSection>[],
       caseId: route.caseId,
       sectionIdCsv,
+      definitionVersion: selectDefinitionVersionForCase(state, selectCurrentRouteCase(state, taskSid).connectedCase),
     };
   }
   return {};
@@ -88,7 +90,7 @@ type Props = ConnectedProps<typeof connector> & OwnProps;
 const CaseSection: React.FC<Props> = ({
   canAdd,
   sectionType,
-  sectionRenderer,
+  definitionVersion,
   caseId,
   sectionsTimeline,
   viewCaseSection,
@@ -105,6 +107,8 @@ const CaseSection: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [caseId, sectionIdCsv, sectionType]);
 
+  const { caseSectionTypes } = definitionVersion;
+  const caseLayouts = definitionVersion.layoutVersion.case.sectionTypes;
   return (
     <CaseDetailsBorder sectionTypeId={sectionType === 'document'}>
       <Box marginBottom="10px">
@@ -120,9 +124,15 @@ const CaseSection: React.FC<Props> = ({
         </Row>
       </Box>
       {sectionsTimeline && sectionsTimeline.length ? (
-        sectionsTimeline.map(({ activity }) =>
-          sectionRenderer(activity, () => viewCaseSection(caseId, activity.sectionId)),
-        )
+        sectionsTimeline.map(({ activity }) => (
+          <CaseSectionListRow
+            key={`${sectionType}-${activity.sectionId}`}
+            onClickView={() => viewCaseSection(caseId, activity.sectionId)}
+            definition={caseSectionTypes[sectionType].form}
+            section={activity}
+            layoutDefinition={caseLayouts[sectionType] || {}}
+          />
+        ))
       ) : (
         <TimelineRow>
           <PlaceHolderText>
