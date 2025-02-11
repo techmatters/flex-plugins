@@ -69,7 +69,9 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
         limit: MAX_PRINTOUT_CONTACTS,
       }) as TimelineActivity<Contact>[],
   );
-  const sectionTypeNames = Object.keys(definitionVersion.caseSectionTypes);
+  const sectionTypeNames = Object.keys(definitionVersion.caseSectionTypes).filter(
+    sectionType => definitionVersion.layoutVersion.case.sectionTypes?.[sectionType]?.printFormat !== 'hidden',
+  );
 
   const sectionEntries = useSelector((state: RootState) =>
     sectionTypeNames.map(
@@ -177,7 +179,6 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
   const allCsamReports = contactTimeline?.flatMap(({ activity }) => activity?.csamReports ?? []) ?? [];
 
   const orderedListSections = Object.entries(definitionVersion.caseSectionTypes)
-    .filter(([sectionType]) => sectionType !== 'document')
     .map(([sectionType]) => ({
       sectionType,
       layout: definitionVersion.layoutVersion.case.sectionTypes[sectionType] ?? {},
@@ -264,10 +265,11 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
                     />
                   );
                 })}
-                {orderedListSections.map(({ sectionType }) =>
-                  sectionType === 'note' ? (
+                {orderedListSections.map(({ sectionType, layout }) =>
+                  layout.printFormat === 'list' ? (
                     <CasePrintSectionsList
                       key={sectionType}
+                      sectionType={sectionType}
                       sections={sectionTimelines[sectionType]}
                       counselorsHash={counselorsHash}
                       formDefinition={definitionVersion}

@@ -28,6 +28,7 @@ import { FullCaseSection } from '../../../services/caseSectionService';
 import { getSectionText } from '../../../states/case/caseActivities';
 
 type OwnProps = {
+  sectionType: string;
   sections: FullCaseSection[];
   counselorsHash: { [sid: string]: string };
   formDefinition: DefinitionVersion;
@@ -35,7 +36,7 @@ type OwnProps = {
 
 type Props = OwnProps;
 
-const CasePrintSectionsList: React.FC<Props> = ({ sections, counselorsHash, formDefinition }) => {
+const CasePrintSectionsList: React.FC<Props> = ({ sectionType, sections, counselorsHash, formDefinition }) => {
   const strings = getTemplateStrings();
 
   if (!sections || sections.length === 0) return null;
@@ -43,7 +44,7 @@ const CasePrintSectionsList: React.FC<Props> = ({ sections, counselorsHash, form
   return (
     <View>
       <View style={styles['sectionHeader']}>
-        <Text style={styles['whiteText']}>{strings['Case-Notes']}</Text>
+        <Text style={styles['whiteText']}>{strings[`CasePrint-TabularSection-Header/${sectionType}`]}</Text>
       </View>
       {sections &&
         sections.length > 0 &&

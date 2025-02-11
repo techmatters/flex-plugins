@@ -125,11 +125,11 @@ const CaseHome: React.FC<Props> = ({
   const caseId = connectedCase.id;
 
   const orderedListSections = Object.entries(definitionVersion.caseSectionTypes)
-    .filter(([sectionType]) => !['note', 'referral'].includes(sectionType))
     .map(([sectionType]) => ({
       sectionType,
       layout: definitionVersion.layoutVersion.case.sectionTypes[sectionType] ?? {},
     }))
+    .filter(({ layout }) => layout.caseHomeLocation === 'list' || !layout.caseHomeLocation)
     .sort(
       ({ layout: layout1 }, { layout: layout2 }) =>
         (layout1.caseHomeOrder ?? Number.MAX_SAFE_INTEGER) - (layout2.caseHomeOrder ?? Number.MAX_SAFE_INTEGER),

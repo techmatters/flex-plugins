@@ -117,14 +117,16 @@ const Timeline: React.FC<Props> = ({
     return getInitializedCan();
   }, []);
 
-  const TIMELINE_CASE_SECTION_TYPES = ['note', 'referral'];
+  const timelineCaseSectionTypes = Object.entries(definitionVersion.layoutVersion.case.sectionTypes)
+    .filter(([, { caseHomeLocation }]) => caseHomeLocation === 'timeline')
+    .map(([sectionTypeName]) => sectionTypeName);
 
   const caseId = connectedCase.id;
 
   useEffect(() => {
     if (caseId) {
       console.log(`Fetching main timeline sections for case ${caseId}`);
-      getTimeline(caseId, TIMELINE_CASE_SECTION_TYPES);
+      getTimeline(caseId, timelineCaseSectionTypes);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [caseId, scopedSectionIds, contactIds]);
@@ -166,7 +168,7 @@ const Timeline: React.FC<Props> = ({
             <Template code={titleCode} />
           </CaseSectionFont>
           <Box marginLeft="auto">
-            {TIMELINE_CASE_SECTION_TYPES.map(sectionType => (
+            {timelineCaseSectionTypes.map(sectionType => (
               <CaseAddButton
                 key={sectionType}
                 templateCode={`Case-SectionList-Add/${sectionType}`}

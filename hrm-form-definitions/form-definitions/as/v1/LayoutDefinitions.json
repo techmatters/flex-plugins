@@ -136,7 +136,8 @@
         },
         "caseHomeOrder": 2,
         "splitFormAt": 2,
-        "printOrder": 0
+        "printOrder": 0,
+        "printFormat": "list"
       }
     }
   }
