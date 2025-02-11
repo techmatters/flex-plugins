@@ -30,6 +30,7 @@ export const VALID_EMPTY_CASE: Case = {
   twilioWorkerId: 'WK',
   status: '',
   categories: {},
+  firstContact: undefined,
 };
 
 export const VALID_EMPTY_CASE_STATE_ENTRY: CaseStateEntry = {

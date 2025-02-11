@@ -229,7 +229,6 @@ describe('createCaseAsyncAction', () => {
               sections: {},
             },
             connectedCase: {
-              firstContact: undefined,
               id: '234',
             },
             references: new Set(),
@@ -354,7 +353,6 @@ describe('updateCaseOverviewAsyncAction', () => {
       } = getState() as HrmState;
       expect(updatedCases).toStrictEqual({
         ...originalCases,
-        firstContact: undefined,
         ANOTHER_CASE: {
           connectedCase: {
             ...VALID_EMPTY_CASE,
