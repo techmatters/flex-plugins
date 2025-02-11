@@ -105,12 +105,6 @@ describe('Validate form definitions', () => {
       });
 
       const formFileSpecificationPaths = [
-        'caseForms.HouseholdForm',
-        'caseForms.IncidentForm',
-        'caseForms.NoteForm',
-        'caseForms.PerpetratorForm',
-        'caseForms.ReferralForm',
-        'caseForms.DocumentForm',
         'tabbedForms.CallerInformationTab',
         'tabbedForms.CaseInformationTab',
         'tabbedForms.ChildInformationTab',
@@ -132,6 +126,24 @@ describe('Validate form definitions', () => {
           });
         },
       );
+
+      test('Validating case section form definitions', () => {
+        Object.entries(definitionVersion.caseSectionTypes).forEach(
+          ([sectionType, sectionTypeInfo]) => {
+            const assertFun = testFormFileSpecification(definitionId, sectionType);
+            const specification: FormFileSpecification = { definitionFilePath: '', items: {} };
+            const definition = sectionTypeInfo.form;
+
+            const result = assertFun(specification, definition);
+            expect(result).toEqual({
+              valid: true,
+              issues: [],
+              itemReports: expect.anything(),
+            });
+          },
+        );
+      });
+
       // Would like to 'each' per helpline, but jest doesn't support loading an array for pass to the 'each' function asynchronously
       // See https://github.com/facebook/jest/issues/9709
       test('Validating categories for all helplines', () => {
@@ -148,7 +160,9 @@ describe('Validate form definitions', () => {
       test('Validating layoutDefinition', () => {
         const {
           case: {
-            incidents: { previewFields, layout },
+            sectionTypes: {
+              incident: { previewFields, layout },
+            },
           },
         } = layoutDefinition;
         expect(Array.isArray(previewFields)).toBe(true);

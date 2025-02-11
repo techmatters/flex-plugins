@@ -18,15 +18,13 @@ import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { Contact } from '../../types/types';
 import { FullCaseSection } from '../../services/caseSectionService';
-import { lookupApiBySectionType } from './sections/lookupApi';
 
 export const getSectionText = (
   { sectionTypeSpecificData, sectionType }: FullCaseSection,
   formDefs: DefinitionVersion,
 ): string => {
-  const api = lookupApiBySectionType(sectionType);
-  let { previewFields } = api.getSectionLayoutDefinition(formDefs) ?? {};
-  const sectionFormDefinition = api.getSectionFormDefinition(formDefs);
+  let { previewFields } = formDefs.layoutVersion.case[sectionType] ?? {};
+  const sectionFormDefinition = formDefs.caseSectionTypes[sectionType]?.form;
   if (!previewFields || !previewFields.length) {
     previewFields = sectionFormDefinition?.length ? [sectionFormDefinition[0].name] : [];
   }

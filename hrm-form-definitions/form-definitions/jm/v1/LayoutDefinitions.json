@@ -1,46 +1,65 @@
 {
-    "contact": {
-      "callerInformation": {
-      },
-      "childInformation": {
-      },
-      "caseInformation": {
-        "splitFormAt": 5
-      }
+  "contact": {
+    "callerInformation": {
     },
-    "case": {
-      "households": {
-        "splitFormAt": 5
+    "childInformation": {
+    },
+    "caseInformation": {
+      "splitFormAt": 5
+    }
+  },
+  "case": {
+    "sectionTypes": {
+      "household": {
+        "splitFormAt": 5,
+        "caseHomeOrder": 1,
+        "printOrder": 1
       },
-      "perpetrators": {
-        "splitFormAt": 5
+      "perpetrator": {
+        "splitFormAt": 5,
+        "caseHomeOrder": 2,
+        "printOrder": 2
       },
-      "incidents": {
-        "previewFields": ["date", "duration", "location"],
+      "incident": {
+        "previewFields": [
+          "date",
+          "duration",
+          "location"
+        ],
         "layout": {
-          "date":  {
-              "includeLabel": false,
-              "format": "date"
-            },
-          "duration":  {
-              "includeLabel": true
-            },
-          "location":  {
+          "date": {
+            "includeLabel": false,
+            "format": "date"
+          },
+          "duration": {
+            "includeLabel": true
+          },
+          "location": {
             "includeLabel": true
           }
         },
-        "splitFormAt": 4
+        "splitFormAt": 4,
+        "caseHomeOrder": 3,
+        "printOrder": 3
       },
-      "referrals": {
-        "previewFields": ["referredTo"],
-        "splitFormAt": 3
+      "referral": {
+        "previewFields": [
+          "referredTo"
+        ],
+        "splitFormAt": 3,
+        "printOrder": 4
       },
-      "documents": {
-        "splitFormAt": 1
+      "document": {
+        "splitFormAt": 1,
+        "caseHomeOrder": 4
       },
-      "notes": {
-        "previewFields": ["assessment"]
+      "note": {
+        "previewFields": [
+          "assessment"
+        ],
+        "printOrder": 5
       },
       "hideCounselorDetails": true
     }
   }
+}

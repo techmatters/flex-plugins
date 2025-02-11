@@ -43,15 +43,8 @@ import { recordBackendError } from '../../fullStory';
 import { getInitializedCan } from '../../permissions';
 import { CenteredContainer } from './styles';
 import EditCaseSummary from './EditCaseSummary';
-import { documentSectionApi } from '../../states/case/sections/document';
-import { incidentSectionApi } from '../../states/case/sections/incident';
-import { perpetratorSectionApi } from '../../states/case/sections/perpetrator';
-import { householdSectionApi } from '../../states/case/sections/household';
-import { referralSectionApi } from '../../states/case/sections/referral';
-import { noteSectionApi } from '../../states/case/sections/note';
-import { CaseSectionApi } from '../../states/case/sections/api';
 import * as ContactActions from '../../states/contacts/existingContacts';
-import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../hrmConfig';
+import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import asyncDispatch from '../../states/asyncDispatch';
 import { removeFromCaseAsyncAction } from '../../states/contacts/saveContact';
 import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
@@ -105,7 +98,6 @@ const Case: React.FC<Props> = ({
 
   const { workerSid } = getHrmConfig();
   const strings = getTemplateStrings();
-  const { enable_case_merging: enableCaseMerging } = getAseloFeatureFlags();
 
   useEffect(() => {
     if (routing.isCreating && !routing.caseId && contextContact?.caseId) {
@@ -168,9 +160,6 @@ const Case: React.FC<Props> = ({
 
   const handleCloseCase = async () => {
     releaseAllContacts(`case-${connectedCase.id}`);
-    if (!enableCaseMerging && contextContact && contextContact.caseId === connectedCaseId) {
-      await removeConnectedCase(contextContact.id);
-    }
     handleClose();
   };
 
@@ -183,50 +172,39 @@ const Case: React.FC<Props> = ({
       definitionVersion,
     };
 
-    const renderCaseItemPage = (sectionApi: CaseSectionApi, extraAddEditProps: Partial<AddEditCaseItemProps> = {}) => {
+    const renderCaseItemPage = (sectionTypeName, extraAddEditProps: Partial<AddEditCaseItemProps> = {}) => {
       if (isViewCaseSectionRoute(routing)) {
-        return <ViewCaseItem {...addScreenProps} sectionApi={sectionApi} />;
+        return <ViewCaseItem {...addScreenProps} sectionTypeName={sectionTypeName} />;
       }
       return (
         <AddEditCaseItem
           {...{
             ...addScreenProps,
             ...extraAddEditProps,
-            sectionApi,
+            sectionTypeName,
           }}
         />
       );
     };
+    if (subroute.startsWith('section/')) {
+      const [, sectionTypeName] = subroute.split('/');
 
-    switch (subroute) {
-      case NewCaseSubroutes.Note:
-        return renderCaseItemPage(noteSectionApi);
-      case NewCaseSubroutes.Referral:
-        return renderCaseItemPage(referralSectionApi);
-      case NewCaseSubroutes.Household:
-        return renderCaseItemPage(householdSectionApi);
-      case NewCaseSubroutes.Perpetrator:
-        return renderCaseItemPage(perpetratorSectionApi);
-      case NewCaseSubroutes.Incident:
-        return renderCaseItemPage(incidentSectionApi);
-      case NewCaseSubroutes.Document:
-        return renderCaseItemPage(documentSectionApi, {
-          customFormHandlers: bindFileUploadCustomHandlers(connectedCase.id),
-          reactHookFormOptions: {
-            shouldUnregister: false,
-          },
-        });
-      case NewCaseSubroutes.CaseSummary:
-        return (
-          <EditCaseSummary
-            {...{
-              ...addScreenProps,
-              can,
-            }}
-          />
-        );
-      default:
-      // Fall through to next switch for other routes without actions
+      return renderCaseItemPage(sectionTypeName, {
+        customFormHandlers: bindFileUploadCustomHandlers(connectedCase.id),
+        reactHookFormOptions: {
+          shouldUnregister: false,
+        },
+      });
+    }
+    if (subroute === NewCaseSubroutes.CaseSummary) {
+      return (
+        <EditCaseSummary
+          {...{
+            ...addScreenProps,
+            can,
+          }}
+        />
+      );
     }
   }
 

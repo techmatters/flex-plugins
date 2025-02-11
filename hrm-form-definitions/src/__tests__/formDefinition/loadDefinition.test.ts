@@ -35,15 +35,6 @@ describe('loadDefinition', () => {
       const definitions = await loadDefinition(formDefinitionsBaseUrl);
       expect(definitions.cannedResponses).toBeInstanceOf(Array);
       expect(definitions.callTypeButtons).toContainEqual(expect.anything());
-
-      expect(definitions.caseForms).toMatchObject({
-        DocumentForm: expect.anything(),
-        HouseholdForm: expect.anything(),
-        IncidentForm: expect.anything(),
-        NoteForm: expect.anything(),
-        PerpetratorForm: expect.anything(),
-        ReferralForm: expect.anything(),
-      });
       expect(definitions.tabbedForms).toMatchObject({
         CallerInformationTab: expect.anything(),
         CaseInformationTab: expect.anything(),

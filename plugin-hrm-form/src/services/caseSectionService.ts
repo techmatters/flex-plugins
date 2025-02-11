@@ -19,14 +19,14 @@
 import { parseISO } from 'date-fns';
 
 import { fetchHrmApi } from './fetchHrmApi';
-import { Case, WellKnownCaseSection } from '../types/types';
+import { Case } from '../types/types';
 import { WorkerSID } from '../types/twilio';
 
 export type CaseSectionTypeSpecificData = Record<string, string | boolean>;
 
 // Fully self describing case section that can be used outside the context of the containing case
 export type FullGenericCaseSection<TDate extends string | Date> = {
-  sectionType: WellKnownCaseSection;
+  sectionType: string;
   sectionId: string;
   sectionTypeSpecificData: Record<string, any>;
   createdAt: TDate;

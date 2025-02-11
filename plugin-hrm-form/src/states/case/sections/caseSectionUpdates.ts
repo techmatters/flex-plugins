@@ -18,7 +18,7 @@ import { createAsyncAction, createReducer } from 'redux-promise-middleware-actio
 import { DefinitionVersion } from 'hrm-form-definitions';
 import { parseISO } from 'date-fns';
 
-import { Case, WellKnownCaseSection } from '../../../types/types';
+import { Case } from '../../../types/types';
 import {
   CaseSection,
   CaseSectionTypeSpecificData,
@@ -26,8 +26,6 @@ import {
   updateCaseSection,
 } from '../../../services/caseSectionService';
 import { HrmState } from '../..';
-import { CaseSectionApi } from './api';
-import { lookupApi } from './lookupApi';
 import { copyCaseSectionItem } from './copySection';
 import { markCaseAsUpdating } from '../markCaseAsUpdating';
 
@@ -35,16 +33,16 @@ type CaseSectionUpdatePayload = {
   caseId: Case['id'];
   sections: {
     section: CaseSection;
-    sectionType: WellKnownCaseSection;
+    sectionType: string;
   }[];
 };
 
 const lookupEventTimestamp = (
   formDefinition: DefinitionVersion,
-  sectionApi: CaseSectionApi,
+  caseSectionType: string,
   sectionData: CaseSectionTypeSpecificData,
 ): Date | undefined => {
-  const sectionFormDefinition = sectionApi.getSectionFormDefinition(formDefinition);
+  const sectionFormDefinition = formDefinition.caseSectionTypes[caseSectionType].form;
   const eventTimestampSourceItem = sectionFormDefinition.find(fd => fd.metadata?.eventTimestampSource);
   return eventTimestampSourceItem && sectionData[eventTimestampSourceItem.name]
     ? parseISO(sectionData[eventTimestampSourceItem.name].toString())
@@ -57,32 +55,31 @@ export const createCaseSectionAsyncAction = createAsyncAction(
   ADD_CASE_SECTION_ACTION,
   async (
     caseId: Case['id'],
-    sectionApi: CaseSectionApi,
+    caseSectionType: string,
     newSection: CaseSectionTypeSpecificData,
     formDefinition: DefinitionVersion,
   ): Promise<CaseSectionUpdatePayload> => {
-    const eventTimestamp = lookupEventTimestamp(formDefinition, sectionApi, newSection);
-    const copyToFields = sectionApi.getSectionFormDefinition(formDefinition).filter(fd => fd.type === 'copy-to');
+    const eventTimestamp = lookupEventTimestamp(formDefinition, caseSectionType, newSection);
+    const copyToFields = formDefinition.caseSectionTypes[caseSectionType].form.filter(fd => fd.type === 'copy-to');
     const filteredEntries = Object.entries(newSection).filter(([key]) => !copyToFields.some(fd => fd.name === key));
     const filteredSection = Object.fromEntries(filteredEntries);
 
     const createTargetSection: Promise<CaseSectionUpdatePayload['sections'][number]> = (async () => ({
-      section: await createCaseSection(caseId, sectionApi.type, filteredSection, eventTimestamp),
-      sectionType: sectionApi.type,
+      section: await createCaseSection(caseId, caseSectionType, filteredSection, eventTimestamp),
+      sectionType: caseSectionType,
     }))();
 
     const createCopySections: Promise<CaseSectionUpdatePayload['sections'][number]>[] = copyToFields.map(async fd => {
       if (fd.type === 'copy-to' && newSection[fd.name] === true) {
-        const toApi = lookupApi(fd.target);
         const copied = copyCaseSectionItem({
           definition: formDefinition,
           fromSection: filteredSection,
-          fromApi: sectionApi,
-          toApi,
+          fromSectionType: caseSectionType,
+          toSectionType: fd.target,
         });
         return {
-          section: await createCaseSection(caseId, toApi.type, copied, eventTimestamp),
-          sectionType: toApi.type,
+          section: await createCaseSection(caseId, fd.target, copied, eventTimestamp),
+          sectionType: fd.target,
         };
       }
       return undefined;
@@ -92,10 +89,10 @@ export const createCaseSectionAsyncAction = createAsyncAction(
       caseId,
     };
   },
-  (caseId: Case['id'], sectionApi: CaseSectionApi) =>
+  (caseId: Case['id'], caseSectionType: string) =>
     ({
       caseId,
-      sectionType: sectionApi.type,
+      sectionType: caseSectionType,
     } as const),
 );
 
@@ -105,25 +102,25 @@ export const updateCaseSectionAsyncAction = createAsyncAction(
   UPDATE_CASE_SECTION_ACTION,
   async (
     caseId: Case['id'],
-    sectionApi: CaseSectionApi,
+    caseSectionType: string,
     sectionId: string,
     update: CaseSectionTypeSpecificData,
     formDefinition: DefinitionVersion,
   ): Promise<CaseSectionUpdatePayload> => {
-    const eventTimestamp = lookupEventTimestamp(formDefinition, sectionApi, update);
+    const eventTimestamp = lookupEventTimestamp(formDefinition, caseSectionType, update);
     return {
       sections: [
         {
-          sectionType: sectionApi.type,
-          section: await updateCaseSection(caseId, sectionApi.type, sectionId, update, eventTimestamp),
+          sectionType: caseSectionType,
+          section: await updateCaseSection(caseId, caseSectionType, sectionId, update, eventTimestamp),
         },
       ],
       caseId,
     };
   },
-  (caseId: Case['id'], sectionApi: CaseSectionApi) => ({
+  (caseId: Case['id'], caseSectionType: string) => ({
     caseId,
-    sectionType: sectionApi.type,
+    sectionType: caseSectionType,
   }),
 );
 

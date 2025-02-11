@@ -107,4 +107,4 @@ jobs:
         with:
           name: E2E Tests Report
           path: '!(node_modules)/**/junit.xml'
-          reporter: jest-junit
+          reporter: java-junit

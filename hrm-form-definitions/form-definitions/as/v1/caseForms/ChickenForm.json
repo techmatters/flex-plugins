@@ -1,0 +1,20 @@
+[
+  {
+    "name": "boc",
+    "label": "Boc",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Boc", "label": "Boc" },
+      { "value": "Bwaaaaak", "label": "Bwaaaaak" },
+      { "value": "BocARGHHH", "label": "BocARGHHH" }
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" }
+  }
+]
+
+
+
+
+
+

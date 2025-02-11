@@ -277,32 +277,29 @@ const ContactDetailsHome: React.FC<Props> = function ({
   const showAddcaseButton = !isDraft && !showRemovedFromCaseBanner;
 
   const renderCaseBanners = () => {
-    if (featureFlags.enable_case_merging) {
-      return (
-        <>
-          {caseId
-            ? addedToCaseBanner()
-            : showAddcaseButton && (
-                <Box display="flex" justifyContent="flex-end" marginBottom="4px">
-                  <AddCaseButton
-                    position="top"
-                    handleNewCaseType={handleOpenNewCase}
-                    handleExistingCaseType={openSearchModal}
-                  />
-                </Box>
-              )}
+    return (
+      <>
+        {caseId
+          ? addedToCaseBanner()
+          : showAddcaseButton && (
+              <Box display="flex" justifyContent="flex-end" marginBottom="4px">
+                <AddCaseButton
+                  position="top"
+                  handleNewCaseType={handleOpenNewCase}
+                  handleExistingCaseType={openSearchModal}
+                />
+              </Box>
+            )}
 
-          {showRemovedFromCaseBanner && (
-            <ContactRemovedFromCaseBanner
-              taskId={task.taskSid}
-              contactId={savedContact.id}
-              showUndoButton={showRemovedFromCaseBanner}
-            />
-          )}
-        </>
-      );
-    }
-    return null;
+        {showRemovedFromCaseBanner && (
+          <ContactRemovedFromCaseBanner
+            taskId={task.taskSid}
+            contactId={savedContact.id}
+            showUndoButton={showRemovedFromCaseBanner}
+          />
+        )}
+      </>
+    );
   };
 
   return (
