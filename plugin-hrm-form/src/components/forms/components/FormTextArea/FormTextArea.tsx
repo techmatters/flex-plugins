@@ -19,12 +19,11 @@ import { Template } from '@twilio/flex-ui';
 import { get } from 'lodash';
 import { useFormContext } from 'react-hook-form';
 
-import { Box, Row } from '../../../../styles';
+import { Box, Row, FormTextArea as StyledTextArea } from '../../../../styles';
 import { FormError, FormLabel, RequiredAsterisk } from '../styles';
 import { FormInputBaseProps } from '../types';
-import { StyledFormInput } from './styles';
 
-type FormInputUIProps = {
+type FormTextAreaUIProps = {
   inputId: string;
   updateCallback: () => void;
   refFunction: (ref: any) => void;
@@ -35,6 +34,9 @@ type FormInputUIProps = {
   isErrorState: boolean;
   errorId: string;
   errorTextComponent: JSX.Element;
+  rows?: number;
+  width?: number | string;
+  placeholder?: string;
 };
 
 /*
@@ -42,7 +44,7 @@ type FormInputUIProps = {
  * and the outer one will be a wrapper that "binds" the inner one with our custom logic (rhf, Twilio Template and all of the dependecies should be injected into it).
  * This way, moving the actual UI components to a component library will be feacible (if we ever want to)
  */
-const FormInputUI: React.FC<FormInputUIProps> = ({
+const FormTextAreaUI: React.FC<FormTextAreaUIProps> = ({
   inputId,
   updateCallback,
   refFunction,
@@ -51,27 +53,31 @@ const FormInputUI: React.FC<FormInputUIProps> = ({
   required,
   disabled,
   isErrorState,
-  errorId,
   errorTextComponent,
+  rows,
+  width,
+  placeholder,
 }) => {
   return (
-    <FormLabel htmlFor={inputId} data-testid={`FormInput-${inputId}`}>
+    <FormLabel htmlFor={inputId}>
       <Row>
         <Box marginBottom="8px">
           {labelTextComponent}
           {required && <RequiredAsterisk />}
         </Box>
       </Row>
-      <StyledFormInput
+      <StyledTextArea
         id={inputId}
         data-testid={inputId}
         name={inputId}
         error={isErrorState}
         aria-invalid={isErrorState}
-        aria-required={required}
-        aria-errormessage={isErrorState ? errorId : undefined}
+        aria-describedby={`${inputId}-error`}
         onBlur={updateCallback}
+        placeholder={placeholder}
         ref={refFunction}
+        rows={rows ? rows : 10}
+        width={width}
         defaultValue={defaultValue}
         disabled={disabled}
       />
@@ -80,9 +86,9 @@ const FormInputUI: React.FC<FormInputUIProps> = ({
   );
 };
 
-type Props = FormInputBaseProps;
+type Props = FormInputBaseProps & { rows?: number; width?: number | string; placeholder?: string };
 
-const FormInput: React.FC<Props> = ({
+const FormTextArea: React.FC<Props> = ({
   inputId,
   label,
   initialValue,
@@ -90,6 +96,9 @@ const FormInput: React.FC<Props> = ({
   updateCallback,
   htmlElRef,
   isEnabled,
+  rows,
+  width,
+  placeholder,
 }) => {
   // TODO factor out into a custom hook to make easier sharing this chunk of code
   const { errors, register } = useFormContext();
@@ -116,19 +125,22 @@ const FormInput: React.FC<Props> = ({
   const disabled = !isEnabled;
 
   return (
-    <FormInputUI
+    <FormTextAreaUI
       inputId={inputId}
       updateCallback={updateCallback}
+      errorId={errorId}
       refFunction={refFunction}
       defaultValue={defaultValue}
       labelTextComponent={labelTextComponent}
-      required={Boolean(registerOptions.required)}
-      disabled={disabled}
-      isErrorState={Boolean(error)}
-      errorId={errorId}
       errorTextComponent={errorTextComponent}
+      disabled={disabled}
+      required={Boolean(registerOptions.required)}
+      isErrorState={Boolean(error)}
+      rows={rows}
+      width={width}
+      placeholder={placeholder}
     />
   );
 };
 
-export default FormInput;
+export default FormTextArea;
