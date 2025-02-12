@@ -5,10 +5,6 @@
       "type": "listbox-multiselect",
       "options": [
         {
-          "value": "Unknown",
-          "label": ""
-        },
-        {
           "value": "Alcoholic beverages (beer, wine, spirits, etc.)",
           "label": "Alcoholic beverages (beer, wine, spirits, etc.)"
         },
@@ -104,10 +100,6 @@
       "label": "There are several options for substance use disorder treatment. Which are you interested in?",
       "type": "listbox-multiselect",
       "options": [
-        {
-          "value": "Unknown",
-          "label": ""
-        },
         {
           "value": "Safe use (e.g., narcan, drug test strips)",
           "label": "Safe use (e.g., narcan, drug test strips)"
