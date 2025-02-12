@@ -56,46 +56,6 @@
         "label": ""
       },
       "options": {
-        "Gone on Arrival": [
-          {
-            "value": "",
-            "label": ""
-          },
-          {
-            "value": "N/A",
-            "label": "N/A"
-          }
-        ],
-        "Engaged - Assisted": [
-          {
-            "value": "",
-            "label": ""
-          },
-          {
-            "value": "N/A",
-            "label": "N/A"
-          }
-        ],
-        "Engaged - Unable to assist": [
-          {
-            "value": "",
-            "label": ""
-          },
-          {
-            "value": "N/A",
-            "label": "N/A"
-          }
-        ],
-        "Engaged - Return to 911 - Reported issue unresolved": [
-          {
-            "value": "",
-            "label": ""
-          },
-          {
-            "value": "N/A",
-            "label": "N/A"
-          }
-        ],
         "Engaged - Emergency Services Requested": [
           {
             "value": "",
@@ -112,26 +72,6 @@
           {
             "value": "DMH",
             "label": "DMH"
-          }
-        ],
-        "Returned to 911 - Out of Scope": [
-          {
-            "value": "",
-            "label": ""
-          },
-          {
-            "value": "N/A",
-            "label": "N/A"
-          }
-        ],
-        "Returned to 911 - Out of Area": [
-          {
-            "value": "",
-            "label": ""
-          },
-          {
-            "value": "N/A",
-            "label": "N/A"
           }
         ]
       },

@@ -5,10 +5,6 @@
       "type": "listbox-multiselect",
       "options": [
         {
-          "value": "Unknown",
-          "label": ""
-        },
-        {
           "value": "Blanket / Clothing",
           "label": "Blanket / Clothing"
         },
@@ -80,10 +76,6 @@
       "type": "listbox-multiselect",
       "options": [
         {
-          "value": "Unknown",
-          "label": ""
-        },
-        {
           "value": "Basic Needs",
           "label": "Basic Needs"
         },
@@ -142,10 +134,6 @@
       "label": "Referral Provided",
       "type": "listbox-multiselect",
       "options": [
-        {
-          "value": "Unknown",
-          "label": ""
-        },
         {
           "value": "DV Services",
           "label": "DV Services"
@@ -249,10 +237,6 @@
       "label": "Service Obtained",
       "type": "listbox-multiselect",
       "options": [
-        {
-          "value": "Unknown",
-          "label": ""
-        },
         {
           "value": "Employment/Education Enrollment Established",
           "label": "Employment/Education Enrollment Established"
