@@ -160,6 +160,7 @@ type TextareaDefinition = {
   placeholder?: string;
   rows?: number;
   width?: number | string;
+  additionalActions?: CustomContactComponentDefinition[];
 } & ItemBase;
 
 type TimeRelatedInput = {
