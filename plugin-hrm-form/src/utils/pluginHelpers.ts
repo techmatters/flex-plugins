@@ -116,9 +116,11 @@ export const initTranslateUI = (localizationConfig: LocalizationConfig) => async
     } else {
       const body = { language };
       const translationJSON = await getTranslation(body);
+      console.log('>>> initTranslateUI translationJSON', { translationJSON });
       const translation = await (typeof translationJSON === 'string'
         ? JSON.parse(translationJSON)
         : Promise.resolve(translationJSON));
+      console.log('>>> initTranslateUI translation', { translation });
       setNewStrings(translation);
     }
     afterNewStrings(language);
@@ -169,6 +171,7 @@ export const initLocalization = (localizationConfig: LocalizationConfig, initial
 
   setNewStrings(defaultTranslation);
   if (initialLanguage && initialLanguage !== defaultLanguage) translateUI(initialLanguage);
+  console.log('>>> initLocalization setNewStrings');
 
   return {
     translateUI,

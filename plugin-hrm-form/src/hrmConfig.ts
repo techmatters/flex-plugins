@@ -63,7 +63,9 @@ const readConfig = () => {
 
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid as WorkerSID;
-  const { helpline, counselorLanguage, full_name: counselorName, roles } = manager.workerClient.attributes as any;
+  const workerClientAttributes = manager.workerClient.attributes as any;
+  console.log('>>> getHrmConfig Worker client attributes:', workerClientAttributes);
+  const { helpline, counselorLanguage, full_name: counselorName, roles } = workerClientAttributes;
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const isSupervisor = roles.includes('supervisor');
   const {

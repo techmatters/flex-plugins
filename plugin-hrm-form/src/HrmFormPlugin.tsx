@@ -56,6 +56,7 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   const manager = Flex.Manager.getInstance();
 
   const { counselorLanguage, helplineLanguage } = config;
+  console.log('>>> setUpLocalization config', { counselorLanguage, helplineLanguage });
 
   const twilioStrings = { ...manager.strings }; // save the originals
 
@@ -192,6 +193,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     featureFlags.enable_permissions_from_backend = true;
 
     await validateAndSetPermissionRules();
+
     /*
      * localization setup (translates the UI if necessary)
      * WARNING: the way this is done right now is "hacky". More info in initLocalization declaration
