@@ -1,26 +1,22 @@
 {
-  "note": {
-    "label": "Note",
-    "formPath": "caseForms/NoteForm.json"
+  "primaryDisposition": {
+    "label": "Primary Disposition",
+    "formPath": "caseForms/primaryDispositionForm.json"
   },
-  "referral": {
-    "label": "Referral",
-    "formPath": "caseForms/ReferralForm.json"
+  "secondaryDisposition": {
+    "label": "Secondary Disposition",
+    "formPath": "caseForms/secondaryDispositionForm.json"
   },
-  "household": {
-    "label": "Household Member",
-    "formPath": "caseForms/HouseholdForm.json"
+  "narrativeSummary": {
+    "label": "Narrative / Summary",
+    "formPath": "caseForms/narrativeSummaryForm.json"
   },
-  "perpetrator": {
-    "label": "Perpetrator",
-    "formPath": "caseForms/PerpetratorForm.json"
+  "safetyPlan": {
+    "label": "Safety Plan",
+    "formPath": "caseForms/safetyPlanForm.json"
   },
-  "incident": {
-    "label": "Incident",
-    "formPath": "caseForms/IncidentForm.json"
-  },
-  "document": {
-    "label": "Document",
-    "formPath": "caseForms/DocumentForm.json"
+  "sudSurvey": {
+    "label": "Collaborative SUD Survey ",
+    "formPath": "caseForms/sudSurvey.json"
   }
 }

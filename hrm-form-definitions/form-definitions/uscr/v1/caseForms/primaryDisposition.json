@@ -1,0 +1,143 @@
+[
+    {
+      "name": "primarydisposition",
+      "label": "Primary Disposition",
+      "type": "select",
+      "defaultOption": {
+        "value": "",
+        "label": ""
+      },
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Gone on Arrival",
+          "label": "Gone on Arrival"
+        },
+        {
+          "value": "Engaged - Assisted",
+          "label": "Engaged - Assisted"
+        },
+        {
+          "value": "Engaged - Unable to assist",
+          "label": "Engaged - Unable to assist"
+        },
+        {
+          "value": "Engaged - Return to 911 - Reported issue unresolved",
+          "label": "Engaged - Return to 911 - Reported issue unresolved"
+        },
+        {
+          "value": "Engaged - Emergency Services Requested",
+          "label": "Engaged - Emergency Services Requested"
+        },
+        {
+          "value": "Returned to 911 - Out of Scope",
+          "label": "Returned to 911 - Out of Scope"
+        },
+        {
+          "value": "Returned to 911 - Out of Area",
+          "label": "Returned to 911 - Out of Area"
+        }
+      ],
+      "required": {
+        "value": true,
+        "message": "RequiredFieldError"
+      }
+    },
+    {
+      "name": "servicerequested",
+      "label": "Service Requested",
+      "type": "dependent-select",
+      "dependsOn": "primarydisposition",
+      "defaultOption": {
+        "value": "",
+        "label": ""
+      },
+      "options": {
+        "Gone on Arrival": [
+          {
+            "value": "",
+            "label": ""
+          },
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Engaged - Assisted": [
+          {
+            "value": "",
+            "label": ""
+          },
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Engaged - Unable to assist": [
+          {
+            "value": "",
+            "label": ""
+          },
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Engaged - Return to 911 - Reported issue unresolved": [
+          {
+            "value": "",
+            "label": ""
+          },
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Engaged - Emergency Services Requested": [
+          {
+            "value": "",
+            "label": ""
+          },
+          {
+            "value": "LAPD",
+            "label": "LAPD"
+          },
+          {
+            "value": "LAFD/EMS",
+            "label": "LAFD/EMS"
+          },
+          {
+            "value": "DMH",
+            "label": "DMH"
+          }
+        ],
+        "Returned to 911 - Out of Scope": [
+          {
+            "value": "",
+            "label": ""
+          },
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Returned to 911 - Out of Area": [
+          {
+            "value": "",
+            "label": ""
+          },
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ]
+      },
+      "required": {
+        "value": true,
+        "message": "RequiredFieldError"
+      }
+    }
+  ]

@@ -12,45 +12,46 @@
   },
   "case": {
     "sectionTypes": {
-      "household": {
-        "splitFormAt": 7,
-        "printOrder": 1
-      },
-      "perpetrator": {
-        "splitFormAt": 7,
-        "printOrder": 2
-      },
-      "incident": {
-        "previewFields": [
-          "date",
-          "duration",
-          "location"
-        ],
-        "layout": {
-          "date": {
-            "includeLabel": false,
-            "format": "date"
-          },
-          "duration": {
-            "includeLabel": true
-          },
-          "location": {
-            "includeLabel": true
-          }
-        },
-        "splitFormAt": 3,
-        "printOrder": 3
-      },
-      "referral": {
-        "previewFields": [
-          "referredTo"
-        ],
+      "primaryDisposition": {
         "splitFormAt": 2,
-        "printOrder": 4
+        "printOrder": 1,
+        "caseHomeOrder": 1,
+        "previewFields": [
+          "primarydisposition"
+        ]
       },
-      "document": {
-        "splitFormAt": 1,
-        "caseHomeOrder": 4
+      "secondaryDisposition": {
+        "splitFormAt": 2,
+        "printOrder": 2,
+        "caseHomeOrder": 2,
+        "previewFields": [
+          "tangibleResourcesProvided"
+        ]
+      },
+
+      "narrativeSummary": {
+        "splitFormAt": 2,
+        "printOrder": 3,
+        "caseHomeOrder": 3,
+        "previewFields": [
+          "behavior"
+        ]
+      },
+      "safetyPlan": {
+        "splitFormAt": 3,
+        "printOrder": 4,
+        "caseHomeOrder": 4,
+        "previewFields": [
+          "warningSigns"
+        ]
+      },
+      "sudSurvey": {
+        "splitFormAt": 4,
+        "printOrder": 5,
+        "caseHomeOrder": 5,
+        "previewFields": [
+          "substancesUsed"
+        ]
       }
     }
   }
