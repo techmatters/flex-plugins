@@ -371,7 +371,7 @@ export const loadContactIntoRedux = (
   };
 };
 
-const setContactLoadingStateInRedux = (
+export const setContactLoadingStateInRedux = (
   state: ContactsState,
   contact: Contact | string,
   updates: ContactDraftChanges = undefined,

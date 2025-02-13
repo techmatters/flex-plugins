@@ -18,10 +18,12 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { get } from 'lodash';
 import { useFormContext } from 'react-hook-form';
+import { CustomContactComponentDefinition } from 'hrm-form-definitions';
 
 import { Box, Row, FormTextArea as StyledTextArea } from '../../../../styles';
 import { FormError, FormLabel, RequiredAsterisk } from '../styles';
 import { FormInputBaseProps } from '../types';
+import { generateCustomContactFormItem } from '../customContactComponent';
 
 type FormTextAreaUIProps = {
   inputId: string;
@@ -37,13 +39,9 @@ type FormTextAreaUIProps = {
   rows?: number;
   width?: number | string;
   placeholder?: string;
+  additionalActionComponents?: JSX.Element[];
 };
 
-/*
- * In this component is less evident cause it's simple, but ideally the "inner component" will be a stateless UI with all what's needed provided as props,
- * and the outer one will be a wrapper that "binds" the inner one with our custom logic (rhf, Twilio Template and all of the dependecies should be injected into it).
- * This way, moving the actual UI components to a component library will be feacible (if we ever want to)
- */
 const FormTextAreaUI: React.FC<FormTextAreaUIProps> = ({
   inputId,
   updateCallback,
@@ -57,6 +55,7 @@ const FormTextAreaUI: React.FC<FormTextAreaUIProps> = ({
   rows,
   width,
   placeholder,
+  additionalActionComponents = [],
 }) => {
   return (
     <FormLabel htmlFor={inputId}>
@@ -65,6 +64,7 @@ const FormTextAreaUI: React.FC<FormTextAreaUIProps> = ({
           {labelTextComponent}
           {required && <RequiredAsterisk />}
         </Box>
+        <Box>{additionalActionComponents}</Box>
       </Row>
       <StyledTextArea
         id={inputId}
@@ -86,7 +86,16 @@ const FormTextAreaUI: React.FC<FormTextAreaUIProps> = ({
   );
 };
 
-type Props = FormInputBaseProps & { rows?: number; width?: number | string; placeholder?: string };
+type Props = FormInputBaseProps & {
+  rows?: number;
+  width?: number | string;
+  placeholder?: string;
+  additionalActionDefinitions?: CustomContactComponentDefinition[];
+  additionalActionContext?: {
+    taskSid?: string;
+    contactId?: string;
+  };
+};
 
 const FormTextArea: React.FC<Props> = ({
   inputId,
@@ -98,6 +107,8 @@ const FormTextArea: React.FC<Props> = ({
   isEnabled,
   rows,
   width,
+  additionalActionDefinitions = [],
+  additionalActionContext = {},
   placeholder,
 }) => {
   // TODO factor out into a custom hook to make easier sharing this chunk of code
@@ -120,7 +131,9 @@ const FormTextArea: React.FC<Props> = ({
     [htmlElRef, register, registerOptions],
   );
   // ====== //
-
+  const additionalActionComponents = additionalActionDefinitions.map(actionDefinition =>
+    generateCustomContactFormItem(actionDefinition, `${inputId}.${actionDefinition.name}`, additionalActionContext),
+  );
   const defaultValue = typeof initialValue === 'boolean' ? initialValue.toString() : initialValue;
   const disabled = !isEnabled;
 
@@ -139,6 +152,7 @@ const FormTextArea: React.FC<Props> = ({
       rows={rows}
       width={width}
       placeholder={placeholder}
+      additionalActionComponents={additionalActionComponents}
     />
   );
 };

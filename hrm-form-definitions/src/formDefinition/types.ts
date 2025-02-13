@@ -192,7 +192,7 @@ type CopyToDefinition = ItemBase & {
   target: CaseSectionApiName;
 };
 
-type CustomContactComponentDefinition = ItemBase &
+export type CustomContactComponentDefinition = ItemBase &
   NonSaveable & {
     type: FormInputType.CustomContactComponent;
     component: string;

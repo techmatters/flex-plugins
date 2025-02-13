@@ -17,19 +17,18 @@
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 import { Manager } from '@twilio/flex-ui';
 
-import { ContactsState } from './types';
+import { ContactMetadata, ContactsState, LoadingStatus } from './types';
 import { ContactDraftChanges } from './existingContacts';
 import { generateSummary, TranscriptForLlmAssistant } from '../../services/llmAssistantService';
+import { Contact } from '../../types/types';
+import { setContactLoadingStateInRedux } from './saveContact';
 
 const AUTO_GENERATE_SUMMARY_ACTION = 'contact-actions/auto-generate-summary-action';
 
 export const newGenerateSummaryAsyncAction = createAsyncAction(
   AUTO_GENERATE_SUMMARY_ACTION,
-  async (task: ITask) => {
-    const { conversationSid, channelSid, contactId } = task.attributes;
-    const conversation = await Manager.getInstance().conversationsClient.getConversationBySid(
-      conversationSid ?? channelSid,
-    );
+  async ({ id: contactId, channelSid }: Contact, form: string, item: string) => {
+    const conversation = await Manager.getInstance().conversationsClient.getConversationBySid(channelSid);
     const messages = await conversation.getMessages(1000);
     const forTranscript: TranscriptForLlmAssistant = messages.items.map(({ author, body }) => ({
       role: author,
@@ -38,13 +37,17 @@ export const newGenerateSummaryAsyncAction = createAsyncAction(
     const { summaryText } = await generateSummary(contactId, forTranscript);
     return { contactId, summaryText };
   },
-  (task: ITask) => ({
-    contactId: task.attributes.contactId,
+  (contact: Contact) => ({
+    contactId: contact.id,
   }),
 );
 
 export const llmAssistantReducer = (initialState: ContactsState) =>
   createReducer(initialState, handleAction => [
+    handleAction(
+      newGenerateSummaryAsyncAction.pending,
+      (state, action): ContactsState => setContactLoadingStateInRedux(state, (action as any).meta.contactId),
+    ),
     handleAction(
       newGenerateSummaryAsyncAction.fulfilled,
       (state, { payload: { contactId, summaryText } }): ContactsState => {
@@ -59,6 +62,11 @@ export const llmAssistantReducer = (initialState: ContactsState) =>
             },
           },
         };
+        const updatedMetadata: ContactMetadata = {
+          ...state.existingContacts[contactId].metadata,
+          loadingStatus: LoadingStatus.LOADED,
+        };
+
         return {
           ...state,
           existingContacts: {
@@ -66,6 +74,7 @@ export const llmAssistantReducer = (initialState: ContactsState) =>
             [contactId]: {
               ...state.existingContacts[contactId],
               draftContact: updatedDraft,
+              metadata: updatedMetadata,
             },
           },
         };
@@ -87,6 +96,10 @@ export const llmAssistantReducer = (initialState: ContactsState) =>
             },
           },
         };
+        const updatedMetadata: ContactMetadata = {
+          ...state.existingContacts[contactId].metadata,
+          loadingStatus: LoadingStatus.LOADED,
+        };
         return {
           ...state,
           existingContacts: {
@@ -94,6 +107,7 @@ export const llmAssistantReducer = (initialState: ContactsState) =>
             [contactId]: {
               ...state.existingContacts[contactId],
               draftContact: updatedDraft,
+              metadata: updatedMetadata,
             },
           },
         };

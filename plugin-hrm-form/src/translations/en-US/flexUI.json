@@ -368,6 +368,9 @@
   "Contact-DraftStatus": "In Progress",
   "Contact-ResolvedStatus": "Contact has been saved",
 
+  "ContactForms-TextArea-GenerateSummary": "Summarize",
+  "ContactForms-TextArea-LoadingSummary": "Loading",
+
   "ContactCopyButton": "Copy",
   "ManualPullButtonText": "Another Task",
   "NoTaskAssignableNotification": "No task assignable to you at the moment.",

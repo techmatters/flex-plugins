@@ -20,6 +20,7 @@ import { get } from 'lodash';
 import { createInput, CreateInputParams } from '../inputGenerator';
 import useFocus from '../../../utils/useFocus';
 import { getInitialValue } from '../../common/forms/formGenerators';
+import { TaskSID } from '../../../types/twilio';
 
 type UseFormFromDefinition = {
   definition: FormDefinition;
@@ -30,7 +31,7 @@ type UseFormFromDefinition = {
   customHandlers?: CreateInputParams['customHandlers'];
   isItemEnabled?: (item: FormItemDefinition) => boolean;
   context?: {
-    taskSid?: string;
+    taskSid?: TaskSID;
     contactId?: string;
     caseId?: string;
   };

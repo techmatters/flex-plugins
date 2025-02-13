@@ -4,7 +4,20 @@
     "label": "Contact Summary",
     "type": "textarea",
     "required": { "value": true, "message": "RequiredFieldError" },
-    "isPII": true
+    "isPII": true,
+    "additionalActions": [
+      {
+        "name": "generateSummary",
+        "label": "Generate Summary",
+        "type": "custom-contact-component",
+        "component": "generate-summary-button",
+        "saveable": false,
+        "props": {
+          "form": "caseInformation",
+          "item": "callSummary"
+        }
+      }
+    ]
   },
   {
     "name": "repeatCaller",

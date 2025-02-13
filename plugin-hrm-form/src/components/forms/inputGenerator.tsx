@@ -24,6 +24,7 @@ import { FormInput } from './components';
 import { CustomHandlers, getInputType } from '../common/forms/formGenerators';
 import { generateCustomContactFormItem } from './components/customContactComponent';
 import FormTextArea from './components/FormTextArea/FormTextArea';
+import { TaskSID } from '../../types/twilio';
 
 const getRegisterOptions = (formItemDefinition: FormItemDefinition): RegisterOptions =>
   pick(formItemDefinition, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
@@ -37,7 +38,7 @@ export type CreateInputParams = {
   htmlElRef?: FormInputBaseProps['htmlElRef'];
   customHandlers?: CustomHandlers;
   context?: {
-    taskSid?: string;
+    taskSid?: TaskSID;
     contactId?: string;
   };
 };
@@ -82,6 +83,8 @@ export const createInput = ({
           label={formItemDefinition.label}
           rows={formItemDefinition.rows}
           width={formItemDefinition.width}
+          additionalActionDefinitions={formItemDefinition.additionalActions ?? []}
+          additionalActionContext={context}
           registerOptions={registerOptions}
           isEnabled={isEnabled}
           htmlElRef={htmlElRef}
