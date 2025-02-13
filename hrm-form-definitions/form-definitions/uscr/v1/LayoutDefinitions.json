@@ -17,7 +17,7 @@
         "printOrder": 1,
         "caseHomeOrder": 1,
         "previewFields": [
-          "primarydisposition"
+          "primaryDisposition"
         ]
       },
       "secondaryDisposition": {

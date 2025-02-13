@@ -1,6 +1,6 @@
 [
     {
-      "name": "primarydisposition",
+      "name": "primaryDisposition",
       "label": "Primary Disposition",
       "type": "select",
       "defaultOption": {
@@ -47,10 +47,10 @@
       }
     },
     {
-      "name": "servicerequested",
+      "name": "serviceRequested",
       "label": "Service Requested",
       "type": "dependent-select",
-      "dependsOn": "primarydisposition",
+      "dependsOn": "primaryDisposition",
       "defaultOption": {
         "value": "",
         "label": ""
