@@ -201,6 +201,6 @@
     "name": "copyToPerpetrator",
     "label": "This household member is also a perpetrator/facilitator",
     "type": "copy-to",
-    "target": "perpetrators"
+    "target": "perpetrator"
   }
 ]

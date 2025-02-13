@@ -14,12 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { CaseSectionApi } from './sections/api';
 import { CaseItemFormValues } from '../../types/types';
 import { CaseState, CaseSummaryWorkingCopy } from './types';
 import { ConfigurationState } from '../configuration/reducer';
 import { transformValues } from '../contacts/contactDetailsAdapter';
 import { CaseSectionTypeSpecificData } from '../../services/caseSectionService';
+import { setWorkingCopy } from './sections/workingCopy';
+import { getSectionItemById } from './sections/get';
 
 // Update a section of a case's working copy
 const UPDATE_CASE_SECTION_WORKING_COPY = 'UPDATE_CASE_SECTION_WORKING_COPY';
@@ -27,20 +28,20 @@ const UPDATE_CASE_SECTION_WORKING_COPY = 'UPDATE_CASE_SECTION_WORKING_COPY';
 type UpdateCaseSectionWorkingCopyAction = {
   type: typeof UPDATE_CASE_SECTION_WORKING_COPY;
   caseId: string;
-  api: CaseSectionApi;
+  caseSectionType: string;
   id?: string;
   sectionItem: CaseSectionTypeSpecificData;
 };
 
 export const updateCaseSectionWorkingCopy = (
   caseId: string,
-  api: CaseSectionApi,
+  caseSectionType: string,
   sectionItem: CaseSectionTypeSpecificData,
   id?: string,
 ): UpdateCaseSectionWorkingCopyAction => ({
   type: UPDATE_CASE_SECTION_WORKING_COPY,
   caseId,
-  api,
+  caseSectionType,
   sectionItem,
   id,
 });
@@ -48,21 +49,25 @@ export const updateCaseSectionWorkingCopy = (
 const updateCaseSectionWorkingCopyReducer = (
   state: CaseState,
   configState: ConfigurationState,
-  { sectionItem, caseId, id, api }: UpdateCaseSectionWorkingCopyAction,
+  { sectionItem, caseId, id, caseSectionType }: UpdateCaseSectionWorkingCopyAction,
 ): CaseState => {
   const definition =
     configState.definitionVersions[state.cases[caseId].connectedCase.info.definitionVersion] ??
     configState.currentDefinitionVersion;
-  const transformedSectionItem: CaseSectionTypeSpecificData = transformValues(api.getSectionFormDefinition(definition))(
-    sectionItem,
-  );
+  const transformedSectionItem: CaseSectionTypeSpecificData = transformValues(
+    definition.caseSectionTypes[caseSectionType].form,
+  )(sectionItem);
   return {
     ...state,
     cases: {
       ...state.cases,
       [caseId]: {
         ...state.cases[caseId],
-        caseWorkingCopy: api.updateWorkingCopy(state.cases[caseId]?.caseWorkingCopy, transformedSectionItem, id),
+        caseWorkingCopy: setWorkingCopy(caseSectionType)(
+          state.cases[caseId]?.caseWorkingCopy,
+          transformedSectionItem,
+          id,
+        ),
       },
     },
   };
@@ -74,36 +79,36 @@ const INIT_EXISTING_CASE_SECTION_WORKING_COPY = 'INIT_EXISTING_CASE_SECTION_WORK
 type InitialiseExistingCaseSectionWorkingCopyAction = {
   type: typeof INIT_EXISTING_CASE_SECTION_WORKING_COPY;
   caseId: string;
-  api: CaseSectionApi;
+  caseSectionType: string;
   id: string;
 };
 
 export const initialiseExistingCaseSectionWorkingCopy = (
   caseId: string,
-  api: CaseSectionApi,
+  caseSectionType: string,
   id: string,
 ): InitialiseExistingCaseSectionWorkingCopyAction => ({
   type: INIT_EXISTING_CASE_SECTION_WORKING_COPY,
   caseId,
-  api,
+  caseSectionType,
   id,
 });
 
 const initialiseCaseSectionWorkingCopyReducer = (
   state: CaseState,
-  action: InitialiseExistingCaseSectionWorkingCopyAction,
+  { caseId, caseSectionType, id }: InitialiseExistingCaseSectionWorkingCopyAction,
 ): CaseState => {
-  const { sectionTypeSpecificData } = action.api.getSectionItemById(state.cases[action.caseId].sections, action.id);
+  const { sectionTypeSpecificData } = getSectionItemById(caseSectionType)(state.cases[caseId].sections, id);
   return {
     ...state,
     cases: {
       ...state.cases,
-      [action.caseId]: {
-        ...state.cases[action.caseId],
-        caseWorkingCopy: action.api.updateWorkingCopy(
-          state.cases[action.caseId]?.caseWorkingCopy,
+      [caseId]: {
+        ...state.cases[caseId],
+        caseWorkingCopy: setWorkingCopy(caseSectionType)(
+          state.cases[caseId]?.caseWorkingCopy,
           sectionTypeSpecificData,
-          action.id,
+          id,
         ),
       },
     },
@@ -115,18 +120,18 @@ const INIT_NEW_CASE_SECTION_WORKING_COPY = 'INIT_NEW_CASE_SECTION_WORKING_COPY';
 type InitialiseNewCaseSectionWorkingCopyAction = {
   type: typeof INIT_NEW_CASE_SECTION_WORKING_COPY;
   caseId: string;
-  api: CaseSectionApi;
+  caseSectionType: string;
   form: CaseItemFormValues;
 };
 
 export const initialiseNewCaseSectionWorkingCopy = (
   caseId: string,
-  api: CaseSectionApi,
+  caseSectionType: string,
   form: CaseItemFormValues,
 ): InitialiseNewCaseSectionWorkingCopyAction => ({
   type: INIT_NEW_CASE_SECTION_WORKING_COPY,
   caseId,
-  api,
+  caseSectionType,
   form,
 });
 
@@ -140,7 +145,10 @@ const initialiseNewCaseSectionWorkingCopyReducer = (
       ...state.cases,
       [action.caseId]: {
         ...state.cases[action.caseId],
-        caseWorkingCopy: action.api.updateWorkingCopy(state.cases[action.caseId]?.caseWorkingCopy, action.form),
+        caseWorkingCopy: setWorkingCopy(action.caseSectionType)(
+          state.cases[action.caseId]?.caseWorkingCopy,
+          action.form,
+        ),
       },
     },
   };
@@ -152,34 +160,34 @@ const REMOVE_CASE_SECTION_WORKING_COPY = 'REMOVE_CASE_SECTION_WORKING_COPY';
 type RemoveCaseSectionWorkingCopyAction = {
   type: typeof REMOVE_CASE_SECTION_WORKING_COPY;
   caseId: string;
-  api: CaseSectionApi;
+  caseSectionType: string;
   id?: string;
 };
 
 export const removeCaseSectionWorkingCopy = (
   caseId: string,
-  api: CaseSectionApi,
+  caseSectionType: string,
   id?: string,
 ): RemoveCaseSectionWorkingCopyAction => ({
   type: REMOVE_CASE_SECTION_WORKING_COPY,
   caseId,
-  api,
+  caseSectionType,
   id,
 });
 
 const removeCaseSectionWorkingCopyReducer = (
   state: CaseState,
-  action: RemoveCaseSectionWorkingCopyAction,
+  { caseId, caseSectionType, id }: RemoveCaseSectionWorkingCopyAction,
 ): CaseState => {
-  const caseWorkingCopy = state.cases[action.caseId]?.caseWorkingCopy;
+  const caseWorkingCopy = state.cases[caseId]?.caseWorkingCopy;
   if (caseWorkingCopy) {
     return {
       ...state,
       cases: {
         ...state.cases,
-        [action.caseId]: {
-          ...state.cases[action.caseId],
-          caseWorkingCopy: action.api.updateWorkingCopy(caseWorkingCopy, undefined, action.id),
+        [caseId]: {
+          ...state.cases[caseId],
+          caseWorkingCopy: setWorkingCopy(caseSectionType)(caseWorkingCopy, undefined, id),
         },
       },
     };

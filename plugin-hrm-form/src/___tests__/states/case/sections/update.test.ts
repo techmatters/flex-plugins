@@ -25,9 +25,6 @@ import {
 
 import { mockLocalFetchDefinitions } from '../../../mockFetchDefinitions';
 import { copyCaseSectionItem } from '../../../../states/case/sections/copySection';
-import { CaseSectionApi } from '../../../../states/case/sections/api';
-import { householdSectionApi } from '../../../../states/case/sections/household';
-import { perpetratorSectionApi } from '../../../../states/case/sections/perpetrator';
 import { CaseSectionTypeSpecificData } from '../../../../services/caseSectionService';
 
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
@@ -54,8 +51,6 @@ describe('copyCaseSection', () => {
     sourceDefinition: FormDefinition;
     targetDefinition: FormDefinition;
     fromId?: string;
-    fromApiOverrides?: Partial<CaseSectionApi>;
-    toApiOverrides?: Partial<CaseSectionApi>;
     description: string;
   };
 
@@ -266,19 +261,25 @@ describe('copyCaseSection', () => {
 
   each(testCaseParameters).test(
     '$description',
-    ({ sourceSection, expectedCopy, sourceDefinition, targetDefinition, fromApiOverrides, toApiOverrides }: Params) => {
+    ({ sourceSection, expectedCopy, sourceDefinition, targetDefinition }: Params) => {
       const result = copyCaseSectionItem({
         definition: {
           ...demoV1,
-          caseForms: {
-            ...demoV1.caseForms,
-            HouseholdForm: sourceDefinition,
-            PerpetratorForm: targetDefinition,
+          caseSectionTypes: {
+            ...demoV1.caseSectionTypes,
+            household: {
+              ...demoV1.caseSectionTypes.household,
+              form: sourceDefinition,
+            },
+            perpetrator: {
+              ...demoV1.caseSectionTypes.perpetrator,
+              form: targetDefinition,
+            },
           },
         },
         fromSection: sourceSection,
-        fromApi: { ...householdSectionApi, ...fromApiOverrides },
-        toApi: { ...perpetratorSectionApi, ...toApiOverrides },
+        fromSectionType: 'household',
+        toSectionType: 'perpetrator',
       });
       expect(result).toStrictEqual(expectedCopy);
     },

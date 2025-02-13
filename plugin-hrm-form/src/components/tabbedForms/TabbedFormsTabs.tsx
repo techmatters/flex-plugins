@@ -174,7 +174,6 @@ const TabbedFormsTabs: React.FC<Props> = ({
 }) => {
   const {
     enable_csam_report: csamReportEnabled,
-    enable_case_merging: caseMergingEnabled,
     enable_active_contact_header: enableContactHeader,
   } = getAseloFeatureFlags();
   const { contactSaveFrequency } = getHrmConfig();
@@ -292,13 +291,8 @@ const TabbedFormsTabs: React.FC<Props> = ({
         >
           {tabs}
         </StyledTabs>
-        {/* eslint-disable-next-line camelcase */}
-        {caseMergingEnabled && (
-          <>
-            {showConnectedToCaseBanner && <ContactAddedToCaseBanner taskId={task.taskSid} />}
-            {showRemovedFromCaseBanner && <ContactRemovedFromCaseBanner taskId={task.taskSid} />}
-          </>
-        )}
+        {showConnectedToCaseBanner && <ContactAddedToCaseBanner taskId={task.taskSid} />}
+        {showRemovedFromCaseBanner && <ContactRemovedFromCaseBanner taskId={task.taskSid} />}
         <div style={{ height: '100%', overflow: 'hidden' }}>
           {isOfflineContactTask(task) && (
             <TabbedFormTabContainer display={subroute === 'contactlessTask'}>

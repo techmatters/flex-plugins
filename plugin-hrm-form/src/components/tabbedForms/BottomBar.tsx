@@ -18,7 +18,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
-import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
 
 import { BottomButtonBar, Box, SaveAndEndButton, StyledNextStepButton } from '../../styles';
 import { AddedToCaseButton } from './styles';
@@ -29,7 +28,7 @@ import { RootState } from '../../states';
 import { isNonDataCallType } from '../../states/validationRules';
 import { recordBackendError } from '../../fullStory';
 import { Contact, CustomITask, RouterTask } from '../../types/types';
-import { getAseloFeatureFlags, getTemplateStrings } from '../../hrmConfig';
+import { getTemplateStrings } from '../../hrmConfig';
 import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata, LoadingStatus } from '../../states/contacts/types';
@@ -97,7 +96,6 @@ const BottomBar: React.FC<
   };
 
   const showBottomBar = showNextButton || showSubmitButton;
-  const featureFlags = getAseloFeatureFlags();
 
   if (!showBottomBar) return null;
 
@@ -106,42 +104,25 @@ const BottomBar: React.FC<
   };
 
   const renderCaseButton = () => {
-    if (featureFlags.enable_case_merging) {
-      if (isAddedToCase) {
-        return (
-          <Box marginRight="25px">
-            <AddedToCaseButton>
-              <Box marginRight="10px">
-                <SuccessReportIcon style={{ verticalAlign: 'middle' }} />
-              </Box>
-              <Template code="BottomBar-AddedToCase" />
-            </AddedToCaseButton>
-          </Box>
-        );
-      } else if (!isNonDataCallType(contact.rawJson.callType)) {
-        return (
-          <Box marginRight="15px">
-            <AddCaseButton handleNewCaseType={handleOpenNewCase} handleExistingCaseType={openSearchModal} />
-          </Box>
-        );
-      }
-      return null;
+    if (isAddedToCase) {
+      return (
+        <Box marginRight="25px">
+          <AddedToCaseButton>
+            <Box marginRight="10px">
+              <SuccessReportIcon style={{ verticalAlign: 'middle' }} />
+            </Box>
+            <Template code="BottomBar-AddedToCase" />
+          </AddedToCaseButton>
+        </Box>
+      );
+    } else if (!isNonDataCallType(contact.rawJson.callType)) {
+      return (
+        <Box marginRight="15px">
+          <AddCaseButton handleNewCaseType={handleOpenNewCase} handleExistingCaseType={openSearchModal} />
+        </Box>
+      );
     }
-    return isAddedToCase ? null : (
-      <Box marginRight="15px">
-        <StyledNextStepButton
-          type="button"
-          roundCorners
-          secondary="true"
-          onClick={handleSubmitIfValid(handleOpenNewCase)}
-          data-fs-id="Contact-SaveAndAddToCase-Button"
-          data-testid="BottomBar-SaveAndAddToCase-Button"
-        >
-          <FolderIcon style={{ fontSize: '16px', marginRight: '10px', width: '24px', height: '24px' }} />
-          <Template code="BottomBar-AddContactToNewCase" />
-        </StyledNextStepButton>
-      </Box>
-    );
+    return null;
   };
 
   return (

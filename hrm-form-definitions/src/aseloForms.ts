@@ -58,6 +58,7 @@ export type AseloFormTemplateDefinitions = {
   callTypeButtons: FormFileSpecification;
   layoutVersion: JsonFileSpecification;
   helplineInformation: FormItemFileSpecification;
+  caseSectionTypes: JsonFileSpecification;
   cannedResponses: JsonFileSpecification<{ label: string; text: string }[]>;
   insights: {
     oneToOneConfigSpec: JsonFileSpecification<OneToOneConfigSpec>;
@@ -1250,6 +1251,10 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
         },
       },
     },
+  },
+  caseSectionTypes: {
+    definitionFilePath: './CaseSections.json',
+    required: true,
   },
   helplineInformation: {
     definitionFilePath: './HelplineInformation.json',
