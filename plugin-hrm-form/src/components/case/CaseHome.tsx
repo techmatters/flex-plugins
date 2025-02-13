@@ -48,7 +48,7 @@ import { selectCounselorName } from '../../states/configuration/selectCounselors
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import {
   selectContactsByCaseIdInCreatedOrder,
-  selectFirstCaseContact,
+  selectFirstContactByCaseId,
 } from '../../states/contacts/selectContactByCaseId';
 import InformationRow from './InformationRow';
 import { FullCaseSection } from '../../services/caseSectionService';
@@ -72,7 +72,7 @@ const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
   const { connectedCase, availableStatusTransitions = [] } = connectedCaseState ?? {};
   const caseContacts = selectContactsByCaseIdInCreatedOrder(state, routing.caseId);
 
-  const firstConnectedContact = selectFirstCaseContact(state, connectedCase);
+  const firstConnectedContact = selectFirstContactByCaseId(state, routing.caseId)?.savedContact;
   const activityCount = routing.route === 'case' ? selectTimelineCount(state, routing.caseId, MAIN_TIMELINE_ID) : 0;
   const isNewContact = Boolean(taskContact && taskContact.caseId === routing.caseId && !taskContact.finalizedAt);
   const isNewCase = caseContacts.length === 1 && taskContact && taskContact.caseId === routing.caseId;
