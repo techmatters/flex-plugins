@@ -18,9 +18,5 @@
   "incident": {
     "label": "Incident",
     "formPath": "caseForms/IncidentForm.json"
-  },
-  "document": {
-    "label": "Document",
-    "formPath": "caseForms/DocumentForm.json"
   }
 }

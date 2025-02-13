@@ -39,6 +39,7 @@ import { selectCurrentTopmostRouteForTask } from '../../../states/routing/getRou
 import asyncDispatch from '../../../states/asyncDispatch';
 import { selectContactsByCaseIdInCreatedOrder } from '../../../states/contacts/selectContactByCaseId';
 import { FullCaseSection } from '../../../services/caseSectionService';
+import { selectDefinitionVersionForCase } from '../../../states/configuration/selectDefinitions';
 
 type OwnProps = {
   taskSid: CustomITask['taskSid'];
@@ -52,14 +53,17 @@ const mapStateToProps = (state: RootState, { taskSid, timelineId, pageSize, page
   const route = selectCurrentTopmostRouteForTask(state, taskSid);
   if (isCaseRoute(route)) {
     const { connectedCase, sections } = selectCurrentRouteCaseState(state, taskSid);
+    const scopedSectionIds = Object.entries(sections ?? {}).flatMap(([sectionType, sectionEntries]) =>
+      Object.keys(sectionEntries).map(sectionEntry => `${sectionType}/${sectionEntry}`),
+    );
     return {
       timelineActivities: selectTimeline(state, route.caseId, timelineId, { offset: page * pageSize, limit: pageSize }),
       connectedCase,
       contactIds: selectContactsByCaseIdInCreatedOrder(state, route.caseId)
         .map(contact => contact.savedContact.id)
         .join(),
-      noteIds: Object.keys(sections?.note ?? {}).join(),
-      referralIds: Object.keys(sections?.note ?? {}).join(),
+      scopedSectionIds: scopedSectionIds.join(),
+      definitionVersion: selectDefinitionVersionForCase(state, connectedCase),
     };
   }
   return {};
@@ -82,9 +86,9 @@ const mapDispatchToProps = (dispatch, { taskSid, timelineId, page, pageSize }: O
         taskSid,
       ),
     ),
-  getTimeline: (caseId: Case['id']) =>
+  getTimeline: (caseId: Case['id'], caseSectionTypes: string[]) =>
     asyncDispatch(dispatch)(
-      newGetTimelineAsyncAction(caseId, timelineId, ['note', 'referral'], true, {
+      newGetTimelineAsyncAction(caseId, timelineId, caseSectionTypes, true, {
         offset: page * pageSize,
         limit: pageSize,
       }),
@@ -104,8 +108,8 @@ const Timeline: React.FC<Props> = ({
   titleCode = 'Case-Timeline-RecentTitle',
   getTimeline,
   contactIds,
-  noteIds,
-  referralIds,
+  scopedSectionIds,
+  definitionVersion,
 }) => {
   const [mockedMessage, setMockedMessage] = useState(null);
 
@@ -113,16 +117,19 @@ const Timeline: React.FC<Props> = ({
     return getInitializedCan();
   }, []);
 
+  const timelineCaseSectionTypes = Object.entries(definitionVersion.layoutVersion.case.sectionTypes)
+    .filter(([, { caseHomeLocation }]) => caseHomeLocation === 'timeline')
+    .map(([sectionTypeName]) => sectionTypeName);
+
   const caseId = connectedCase.id;
 
   useEffect(() => {
     if (caseId) {
-      // eslint-disable-next-line no-console
       console.log(`Fetching main timeline sections for case ${caseId}`);
-      getTimeline(caseId);
+      getTimeline(caseId, timelineCaseSectionTypes);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [caseId, noteIds, referralIds, contactIds]);
+  }, [caseId, scopedSectionIds, contactIds]);
 
   if (!connectedCase || !timelineActivities) {
     return null;
@@ -136,12 +143,8 @@ const Timeline: React.FC<Props> = ({
     openContactModal(id);
   };
 
-  const handleAddNoteClick = () => {
-    openAddCaseSectionModal(caseId, 'note');
-  };
-
-  const handleAddReferralClick = () => {
-    openAddCaseSectionModal(caseId, 'referral');
+  const handleAddCaseSectionClick = (caseSectionType: string) => {
+    openAddCaseSectionModal(caseId, caseSectionType);
   };
 
   const handleViewClick = (timelineActivity: UITimelineActivity) => {
@@ -165,17 +168,14 @@ const Timeline: React.FC<Props> = ({
             <Template code={titleCode} />
           </CaseSectionFont>
           <Box marginLeft="auto">
-            <CaseAddButton
-              templateCode="Case-SectionList-Add/note"
-              onClick={handleAddNoteClick}
-              disabled={!can(PermissionActions.ADD_CASE_SECTION, connectedCase)}
-            />
-            <CaseAddButton
-              templateCode="Case-SectionList-Add/referral"
-              onClick={handleAddReferralClick}
-              disabled={!can(PermissionActions.ADD_CASE_SECTION, connectedCase)}
-              withDivider
-            />
+            {timelineCaseSectionTypes.map(sectionType => (
+              <CaseAddButton
+                key={sectionType}
+                templateCode={`Case-SectionList-Add/${sectionType}`}
+                onClick={() => handleAddCaseSectionClick(sectionType)}
+                disabled={!can(PermissionActions.ADD_CASE_SECTION, connectedCase)}
+              />
+            ))}
           </Box>
         </Row>
       </Box>
@@ -186,7 +186,8 @@ const Timeline: React.FC<Props> = ({
           if (isContactTimelineActivity(timelineActivity)) {
             iconType = timelineActivity.activity.channel as IconType;
           } else if (isCaseSectionTimelineActivity(timelineActivity)) {
-            iconType = timelineActivity.activity.sectionType as IconType;
+            const layout = definitionVersion.layoutVersion.case.sectionTypes[timelineActivity.activity.sectionType];
+            iconType = (layout?.timelineIcon || timelineActivity.activity.sectionType) as IconType;
           }
           const date = timelineActivity.timestamp.toLocaleDateString(navigator.language);
           let canViewActivity = true;

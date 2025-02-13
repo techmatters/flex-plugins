@@ -28,26 +28,27 @@ import { FullCaseSection } from '../../../services/caseSectionService';
 import { getSectionText } from '../../../states/case/caseActivities';
 
 type OwnProps = {
-  notes: FullCaseSection[];
+  sectionType: string;
+  sections: FullCaseSection[];
   counselorsHash: { [sid: string]: string };
   formDefinition: DefinitionVersion;
 };
 
 type Props = OwnProps;
 
-const CasePrintNotes: React.FC<Props> = ({ notes, counselorsHash, formDefinition }) => {
+const CasePrintSectionsList: React.FC<Props> = ({ sectionType, sections, counselorsHash, formDefinition }) => {
   const strings = getTemplateStrings();
 
-  if (!notes || notes.length === 0) return null;
+  if (!sections || sections.length === 0) return null;
 
   return (
     <View>
       <View style={styles['sectionHeader']}>
-        <Text style={styles['whiteText']}>{strings['Case-Notes']}</Text>
+        <Text style={styles['whiteText']}>{strings[`CasePrint-TabularSection-Header/${sectionType}`]}</Text>
       </View>
-      {notes &&
-        notes.length > 0 &&
-        notes.map((noteSection, i) => {
+      {sections &&
+        sections.length > 0 &&
+        sections.map((noteSection, i) => {
           const { createdBy: twilioWorkerId, createdAt } = noteSection;
           return (
             <View key={i} style={{ ...styles['sectionBody'], ...styles['caseSummaryText'] }}>
@@ -65,6 +66,6 @@ const CasePrintNotes: React.FC<Props> = ({ notes, counselorsHash, formDefinition
   );
 };
 
-CasePrintNotes.displayName = 'CasePrintNotes';
+CasePrintSectionsList.displayName = 'CasePrintNotes';
 
-export default CasePrintNotes;
+export default CasePrintSectionsList;

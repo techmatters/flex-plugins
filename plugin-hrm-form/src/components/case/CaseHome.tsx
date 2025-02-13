@@ -32,8 +32,6 @@ import { RootState } from '../../states';
 import { CustomITask, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
 import { newCloseModalAction } from '../../states/routing/actions';
-import IncidentInformationRow from './IncidentInformationRow';
-import DocumentInformationRow from './DocumentInformationRow';
 import NavigableContainer from '../NavigableContainer';
 import { isStandaloneITask } from './Case';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
@@ -50,8 +48,6 @@ import {
   selectContactsByCaseIdInCreatedOrder,
   selectFirstContactByCaseId,
 } from '../../states/contacts/selectContactByCaseId';
-import InformationRow from './InformationRow';
-import { FullCaseSection } from '../../services/caseSectionService';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -129,11 +125,11 @@ const CaseHome: React.FC<Props> = ({
   const caseId = connectedCase.id;
 
   const orderedListSections = Object.entries(definitionVersion.caseSectionTypes)
-    .filter(([sectionType]) => !['note', 'referral'].includes(sectionType))
     .map(([sectionType]) => ({
       sectionType,
       layout: definitionVersion.layoutVersion.case.sectionTypes[sectionType] ?? {},
     }))
+    .filter(({ layout }) => layout.caseHomeLocation === 'list' || !layout.caseHomeLocation)
     .sort(
       ({ layout: layout1 }, { layout: layout2 }) =>
         (layout1.caseHomeOrder ?? Number.MAX_SAFE_INTEGER) - (layout2.caseHomeOrder ?? Number.MAX_SAFE_INTEGER),
@@ -142,9 +138,6 @@ const CaseHome: React.FC<Props> = ({
   const onViewFullTimelineClick = () => {
     openModal({ route: 'case', subroute: 'timeline', caseId, page: 0 });
   };
-
-  const { caseSectionTypes } = definitionVersion;
-  const caseLayouts = definitionVersion.layoutVersion.case.sectionTypes;
 
   const {
     info: { followUpDate, childIsAtRisk },
@@ -216,51 +209,12 @@ const CaseHome: React.FC<Props> = ({
           </CaseDetailsBorder>
         </Box>
         {orderedListSections.map(({ sectionType }) => {
-          let sectionRenderer: (section: FullCaseSection, onView: () => void) => JSX.Element | null;
-          switch (sectionType) {
-            case 'document': {
-              sectionRenderer = (caseSection, onClickView) => (
-                <DocumentInformationRow
-                  key={`document-${caseSection.sectionId}`}
-                  caseSection={caseSection}
-                  onClickView={onClickView}
-                />
-              );
-              break;
-            }
-            case 'household':
-            case 'perpetrator': {
-              sectionRenderer = ({ sectionTypeSpecificData, sectionId, sectionType }, viewHandler) => (
-                <InformationRow
-                  key={`${sectionType}-${sectionId}`}
-                  person={sectionTypeSpecificData}
-                  onClickView={viewHandler}
-                />
-              );
-              break;
-            }
-            default: {
-              // Use IncidentInformationRow for all other sections as it is more configurable
-              sectionRenderer = ({ sectionTypeSpecificData, sectionType, sectionId }, onClickView) => (
-                <IncidentInformationRow
-                  key={`incident-${sectionId}`}
-                  onClickView={onClickView}
-                  definition={caseSectionTypes[sectionType].form}
-                  values={sectionTypeSpecificData}
-                  layoutDefinition={caseLayouts[sectionType] || {}}
-                />
-              );
-              break;
-            }
-          }
-
           return (
             <Box margin="25px 0 0 0" key={sectionType}>
               <CaseSection
                 canAdd={() => can(PermissionActions.ADD_CASE_SECTION)}
                 taskSid={task.taskSid}
                 sectionType={sectionType}
-                sectionRenderer={sectionRenderer}
               />
             </Box>
           );

@@ -29,7 +29,7 @@ import styles, { useThaiFontFamily } from './styles';
 import { CasePrintViewSpinner } from '../../../styles';
 import CasePrintDetails from './CasePrintDetails';
 import CasePrintMultiSection from './CasePrintMultiSection';
-import CasePrintNotes from './CasePrintNotes';
+import CasePrintSectionsList from './CasePrintSectionsList';
 import CasePrintHeader from './CasePrintHeader';
 import CasePrintFooter from './CasePrintFooter';
 import CasePrintCSAMReports from './CasePrintCSAMReports';
@@ -69,7 +69,9 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
         limit: MAX_PRINTOUT_CONTACTS,
       }) as TimelineActivity<Contact>[],
   );
-  const sectionTypeNames = Object.keys(definitionVersion.caseSectionTypes);
+  const sectionTypeNames = Object.keys(definitionVersion.caseSectionTypes).filter(
+    sectionType => definitionVersion.layoutVersion.case.sectionTypes?.[sectionType]?.printFormat !== 'hidden',
+  );
 
   const sectionEntries = useSelector((state: RootState) =>
     sectionTypeNames.map(
@@ -177,7 +179,6 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
   const allCsamReports = contactTimeline?.flatMap(({ activity }) => activity?.csamReports ?? []) ?? [];
 
   const orderedListSections = Object.entries(definitionVersion.caseSectionTypes)
-    .filter(([sectionType]) => !['note', 'document'].includes(sectionType))
     .map(([sectionType]) => ({
       sectionType,
       layout: definitionVersion.layoutVersion.case.sectionTypes[sectionType] ?? {},
@@ -264,20 +265,25 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
                     />
                   );
                 })}
-                {orderedListSections.map(({ sectionType }) => (
-                  <CasePrintMultiSection
-                    key={sectionType}
-                    sectionType={sectionType}
-                    definition={definitionVersion}
-                    values={sectionTimelines[sectionType]}
-                  />
-                ))}
+                {orderedListSections.map(({ sectionType, layout }) =>
+                  layout.printFormat === 'list' ? (
+                    <CasePrintSectionsList
+                      key={sectionType}
+                      sectionType={sectionType}
+                      sections={sectionTimelines[sectionType]}
+                      counselorsHash={counselorsHash}
+                      formDefinition={definitionVersion}
+                    />
+                  ) : (
+                    <CasePrintMultiSection
+                      key={sectionType}
+                      sectionType={sectionType}
+                      definition={definitionVersion}
+                      sections={sectionTimelines[sectionType]}
+                    />
+                  ),
+                )}
 
-                <CasePrintNotes
-                  notes={sectionTimelines.note}
-                  counselorsHash={counselorsHash}
-                  formDefinition={definitionVersion}
-                />
                 <CasePrintSummary summary={connectedCase.info.summary} />
                 <CasePrintCSAMReports csamReports={allCsamReports} />
               </View>
