@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Template } from '@twilio/flex-ui';
 import { get } from 'lodash';
 import { useFormContext } from 'react-hook-form';
@@ -28,8 +28,9 @@ import { generateCustomContactFormItem } from '../customContactComponent';
 type FormTextAreaUIProps = {
   inputId: string;
   updateCallback: () => void;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   refFunction: (ref: any) => void;
-  defaultValue: React.HTMLAttributes<HTMLElement>['defaultValue'];
+  value: React.HTMLAttributes<HTMLElement>['defaultValue'];
   labelTextComponent: JSX.Element;
   required: boolean;
   disabled: boolean;
@@ -45,8 +46,9 @@ type FormTextAreaUIProps = {
 const FormTextAreaUI: React.FC<FormTextAreaUIProps> = ({
   inputId,
   updateCallback,
+  onChange,
   refFunction,
-  defaultValue,
+  value,
   labelTextComponent,
   required,
   disabled,
@@ -74,12 +76,13 @@ const FormTextAreaUI: React.FC<FormTextAreaUIProps> = ({
         aria-invalid={isErrorState}
         aria-describedby={`${inputId}-error`}
         onBlur={updateCallback}
+        onChange={onChange}
         placeholder={placeholder}
         ref={refFunction}
         rows={rows ? rows : 10}
         width={width}
-        defaultValue={defaultValue}
         disabled={disabled}
+        value={value}
       />
       {isErrorState && <FormError>{errorTextComponent}</FormError>}
     </FormLabel>
@@ -136,14 +139,18 @@ const FormTextArea: React.FC<Props> = ({
   );
   const defaultValue = typeof initialValue === 'boolean' ? initialValue.toString() : initialValue;
   const disabled = !isEnabled;
-
+  const [currentValue, setCurrentValue] = useState(defaultValue ?? '');
+  useEffect(() => {
+    setCurrentValue(defaultValue);
+  }, [defaultValue]);
   return (
     <FormTextAreaUI
       inputId={inputId}
       updateCallback={updateCallback}
+      onChange={e => setCurrentValue(e.target.value)}
       errorId={errorId}
       refFunction={refFunction}
-      defaultValue={defaultValue}
+      value={currentValue}
       labelTextComponent={labelTextComponent}
       errorTextComponent={errorTextComponent}
       disabled={disabled}

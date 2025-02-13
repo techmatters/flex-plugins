@@ -35,26 +35,34 @@ type Props = {
 
 const GenerateSummaryButton: React.FC<Props> = ({ contactId, form, item }) => {
   const dispatch = useDispatch();
-  const { savedContact: contact, metadata } = useSelector(
-    (state: RootState) => selectContactStateByContactId(state, contactId) ?? ({} as ContactState),
+  const metadata = useSelector(
+    (state: RootState) => (selectContactStateByContactId(state, contactId) ?? ({} as ContactState)).metadata,
+  );
+  const draftContact = useSelector(
+    (state: RootState) => (selectContactStateByContactId(state, contactId) ?? ({} as ContactState)).draftContact,
+  );
+  const savedContact = useSelector(
+    (state: RootState) => (selectContactStateByContactId(state, contactId) ?? ({} as ContactState)).savedContact,
   );
 
   if (
     !getAseloFeatureFlags().enable_llm_summary ||
-    !contact ||
-    isOfflineContact(contact) ||
-    !contact.taskId ||
-    contact.finalizedAt
+    !savedContact ||
+    isOfflineContact(savedContact) ||
+    !savedContact.taskId ||
+    savedContact.finalizedAt
   ) {
     return null;
   }
   const loading = metadata?.loadingStatus === LoadingStatus.LOADING;
-  const alreadySummarized = (contact.rawJson.aiSupportedEntries?.[form] ?? []).includes(item);
+  const llmSupportedEntries =
+    draftContact?.rawJson?.llmSupportedEntries ?? savedContact.rawJson.llmSupportedEntries ?? {};
+  const alreadySummarized = (llmSupportedEntries[form] ?? []).includes(item);
 
   return (
     <TransferStyledButton
-      disabled={alreadySummarized || loading}
-      onClick={() => dispatch(newGenerateSummaryAsyncAction(contact, form, item))}
+      disabled={loading}
+      onClick={() => dispatch(newGenerateSummaryAsyncAction(savedContact, form, item))}
     >
       <Template code={loading ? 'ContactForms-TextArea-LoadingSummary' : 'ContactForms-TextArea-GenerateSummary'} />
     </TransferStyledButton>

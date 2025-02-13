@@ -141,7 +141,7 @@ export type ContactRawJson = {
     createdOnBehalfOf: WorkerSID;
     [key: string]: string | boolean;
   };
-  aiSupportedEntries?: Record<'childInformation'|'callerInformation'|'caseInformation', string[]>
+  llmSupportedEntries?: { [key in 'childInformation'|'callerInformation'|'caseInformation']?: string[] }
 };
 
 export type Contact = {
