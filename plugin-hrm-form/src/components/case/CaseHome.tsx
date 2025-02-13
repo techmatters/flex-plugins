@@ -44,7 +44,7 @@ import { selectCounselorName } from '../../states/configuration/selectCounselors
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import {
   selectContactsByCaseIdInCreatedOrder,
-  selectFirstCaseContact,
+  selectFirstContactByCaseId,
 } from '../../states/contacts/selectContactByCaseId';
 
 export type CaseHomeProps = {
@@ -69,7 +69,7 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
   const routing = useSelector((state: RootState) => selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseRoute);
 
   const caseContacts = useSelector((state: RootState) => selectContactsByCaseIdInCreatedOrder(state, routing.caseId));
-  const firstConnectedContact = useSelector((state: RootState) => selectFirstCaseContact(state, connectedCase));
+  const firstConnectedContact = useSelector((state: RootState) => selectFirstContactByCaseId(state, routing.caseId)?.savedContact);
   const activityCount = useSelector((state: RootState) =>
     routing.route === 'case' ? selectTimelineCount(state, routing.caseId, MAIN_TIMELINE_ID) : 0,
   );
