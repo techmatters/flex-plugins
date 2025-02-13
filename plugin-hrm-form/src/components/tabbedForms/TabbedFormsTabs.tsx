@@ -56,6 +56,7 @@ import { TabbedFormsCommonProps } from './types';
 import { useTabbedFormContext } from './hooks/useTabbedForm';
 // Ensure we import any custom components that might be used in a form
 import '../contact/ResourceReferralList';
+import GenerateSummaryButton from './GenerateSummaryButton';
 
 type OwnProps = TabbedFormsCommonProps;
 
@@ -260,6 +261,7 @@ const TabbedFormsTabs: React.FC<Props> = ({
                 openCSAMReport(currentRoute);
               }}
             />
+            <GenerateSummaryButton task={task} />
           </Box>
         )}
       </Row>
