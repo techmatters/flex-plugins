@@ -562,5 +562,10 @@
   "Case-NoSections/sudSurvey": "No surveys listed",
   "Case-SectionList-Add/sudSurvey": "Add Survey",
   "CaseSection-BottomBar-SaveAndAddAnother/sudSurvey": "Save and add another",
-  "CaseSection-BottomBar-Save/sudSurvey": "Save"
+  "CaseSection-BottomBar-Save/sudSurvey": "Save",
+  "CaseSection-Add/primaryDisposition": "Add Primary Disposition",
+  "CaseSection-Add/secondaryDisposition": "Add Secondary Disposition",
+  "CaseSection-Add/narrativeSummary": "Add Narrative / Summary",
+  "CaseSection-Add/safetyPlan": "Add Safety Plan",
+  "CaseSection-Add/sudSurvey": "Add Collaborative SUD Survey"
 }

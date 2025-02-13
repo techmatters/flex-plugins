@@ -52,6 +52,19 @@
         "previewFields": [
           "substancesUsed"
         ]
+      },
+       "referral": {
+        "previewFields": [
+          "referredTo"
+        ],
+        "splitFormAt": 2,
+        "printOrder": 6,
+        "caseHomeLocation": "timeline"
+      },
+      "note": {
+        "printOrder": 7,
+        "caseHomeLocation": "timeline",
+        "printFormat": "list"
       }
     }
   }
