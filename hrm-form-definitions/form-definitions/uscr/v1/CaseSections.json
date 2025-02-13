@@ -15,6 +15,10 @@
     "label": "Safety Plan",
     "formPath": "caseForms/SafetyPlanForm.json"
   },
+  "sudSurvey": {
+    "label": "Collaborative SUD Survey",
+    "formPath": "caseForms/SudSurveyForm.json"
+  },
   "note": {
     "label": "Note",
     "formPath": "caseForms/NoteForm.json"
