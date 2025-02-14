@@ -82,6 +82,8 @@ const colors = {
   notificationIconColorWarning: '#ea6c00',
   secondaryButtonColor: '#ecedf1',
   secondaryButtonTextColor: '#192b33',
+  tertiaryButtonColor: 'rgb(246, 246, 246)',
+  tertiaryButtonTextColor: '#192b33',
   selectedItemBorderColor: '#56a6f6',
   tabSelectedColor: '#009cff',
   userAvailableColor: '#31aa71',

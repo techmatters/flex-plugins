@@ -16,8 +16,9 @@
 import * as React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
+import { CircularProgress } from '@material-ui/core';
 
-import { TransferStyledButton } from '../../../styles';
+import { TertiaryButton } from '../../../styles';
 import { newGenerateSummaryAsyncAction } from '../../../states/contacts/llmAssistant';
 import { RootState } from '../../../states';
 import selectContactStateByContactId from '../../../states/contacts/selectContactStateByContactId';
@@ -26,6 +27,7 @@ import { ContactState } from '../../../states/contacts/existingContacts';
 import { LoadingStatus } from '../../../states/contacts/types';
 import customContactComponentRegistry from '../../forms/customContactComponentRegistry';
 import { isOfflineContact } from '../../../types/types';
+import GenerateSummaryIcon from './GenerateSummaryIcon';
 
 type Props = {
   contactId: string;
@@ -60,12 +62,30 @@ const GenerateSummaryButton: React.FC<Props> = ({ contactId, form, item }) => {
   const alreadySummarized = (llmSupportedEntries[form] ?? []).includes(item);
 
   return (
-    <TransferStyledButton
-      disabled={loading}
+    <TertiaryButton
+      disabled={loading || alreadySummarized}
       onClick={() => dispatch(newGenerateSummaryAsyncAction(savedContact, form, item))}
+      style={{}}
     >
-      <Template code={loading ? 'ContactForms-TextArea-LoadingSummary' : 'ContactForms-TextArea-GenerateSummary'} />
-    </TransferStyledButton>
+      {loading ? (
+        <>
+          <CircularProgress size={12} style={{ marginRight: '8px' }} />
+          <span style={{ minWidth: '80px' }}>
+            <Template code="ContactForms-TextArea-LoadingSummary" />
+          </span>
+        </>
+      ) : (
+        <>
+          <span style={{ marginRight: '8px', marginTop: '2px' }}>
+            <GenerateSummaryIcon width="14" height="14" />
+          </span>
+
+          <span style={{ minWidth: '80px' }}>
+            <Template code="ContactForms-TextArea-GenerateSummary" />
+          </span>
+        </>
+      )}
+    </TertiaryButton>
   );
 };
 

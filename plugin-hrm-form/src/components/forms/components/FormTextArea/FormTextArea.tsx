@@ -59,8 +59,8 @@ const FormTextAreaUI: React.FC<FormTextAreaUIProps> = ({
 }) => {
   return (
     <FormLabel htmlFor={inputId}>
-      <Row>
-        <Box marginBottom="8px">
+      <Row style={{ justifyContent: 'space-between', marginBottom: '8px', width }}>
+        <Box>
           {labelTextComponent}
           {required && <RequiredAsterisk />}
         </Box>
@@ -77,7 +77,7 @@ const FormTextAreaUI: React.FC<FormTextAreaUIProps> = ({
         placeholder={placeholder}
         ref={refFunction}
         rows={rows ? rows : 10}
-        width={width}
+        style={{ width }}
         disabled={disabled}
         defaultValue={initialValue}
       />
@@ -112,7 +112,7 @@ const FormTextArea: React.FC<Props> = ({
   placeholder,
 }) => {
   // TODO factor out into a custom hook to make easier sharing this chunk of code
-  const { errors, register } = useFormContext();
+  const { errors, register, trigger } = useFormContext();
   const error = get(errors, inputId);
   const labelTextComponent = React.useMemo(() => <Template code={`${label}`} className=".fullstory-unmask" />, [label]);
   const errorId = `${inputId}-error`;
@@ -138,10 +138,17 @@ const FormTextArea: React.FC<Props> = ({
   const disabled = !isEnabled;
   const initialStringValue = (initialValue ?? '').toString();
   useEffect(() => {
-    if (internalRef.current) {
-      internalRef.current.value = initialStringValue;
+    if (internalRef.current.value !== initialStringValue) {
+      // Sync the textarea content the value changes in redux independently of user input
+      // Making the textarea controlled results in weird cursor and deletion behaviour (probably due to race conditions between redux and UI updates)
+      // This approach might involve a bit of dirty direct DOM manipulation, but it seems to work.
+      if (internalRef.current) {
+        internalRef.current.value = initialStringValue;
+      }
+      // retrigger validation if the value changes in redux independently of user input
+      trigger(inputId);
     }
-  }, [initialStringValue]);
+  }, [initialStringValue, inputId, trigger]);
   return (
     <FormTextAreaUI
       inputId={inputId}

@@ -1,25 +1,5 @@
 [
   {
-    "name": "callSummary",
-    "label": "Contact Summary",
-    "type": "textarea",
-    "required": { "value": true, "message": "RequiredFieldError" },
-    "isPII": true,
-    "additionalActions": [
-      {
-        "name": "generateSummary",
-        "label": "Generate Summary",
-        "type": "custom-contact-component",
-        "component": "generate-summary-button",
-        "saveable": false,
-        "props": {
-          "form": "caseInformation",
-          "item": "callSummary"
-        }
-      }
-    ]
-  },
-  {
     "name": "repeatCaller",
     "label": "Repeat Caller?",
     "type": "checkbox",
@@ -115,5 +95,27 @@
     "component": "resource-referral-list",
     "saveable": false,
     "isPII": false
+  },
+  {
+    "name": "callSummary",
+    "label": "Contact Summary",
+    "type": "textarea",
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": true,
+    "width": "300px",
+    "rows": "40",
+    "additionalActions": [
+      {
+        "name": "generateSummary",
+        "label": "Generate Summary",
+        "type": "custom-contact-component",
+        "component": "generate-summary-button",
+        "saveable": false,
+        "props": {
+          "form": "caseInformation",
+          "item": "callSummary"
+        }
+      }
+    ]
   }
 ]
