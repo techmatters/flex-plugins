@@ -52,6 +52,7 @@ const GenerateSummaryButton: React.FC<Props> = ({ contactId, form, item }) => {
     !savedContact ||
     isOfflineContact(savedContact) ||
     !savedContact.taskId ||
+    !savedContact.channelSid ||
     savedContact.finalizedAt
   ) {
     return null;
