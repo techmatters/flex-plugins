@@ -36,7 +36,7 @@ import { getAseloFeatureFlags } from '../../hrmConfig';
 import { RootState } from '../../states';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { checkTaskAssignment } from '../../services/twilioTaskService';
-import { isOfflineContact, isTwilioTask } from '../../types/types';
+import { isOfflineContact } from '../../types/types';
 
 type ContactBannersProps = {
   contactId: string;
