@@ -565,5 +565,7 @@
   "CaseMerging-CancelCase": "Cancel Case",
   "CaseMerging-ContactUndoRemovedFromCase": "Undo",
 
-  "TeamsView-NoSkills": "- No skills listed -"
+  "TeamsView-NoSkills": "- No skills listed -",
+
+  "LlmAssistant-Notifications-SummaryGenerationError": "There was an error generating the summary: {{errorMessage}}"
 }

@@ -17,7 +17,7 @@
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 import { Manager } from '@twilio/flex-ui';
 
-import { ContactMetadata, ContactsState, LoadingStatus } from './types';
+import { ContactMetadata, ContactsState, LlmAssistantStatus } from './types';
 import { ContactDraftChanges } from './existingContacts';
 import { generateSummary, TranscriptForLlmAssistant } from '../../services/llmAssistantService';
 import { Contact, ContactRawJson } from '../../types/types';
@@ -57,7 +57,6 @@ export const newGenerateSummaryAsyncAction = createAsyncAction(
       dateCreated: dateCreated.toISOString(),
     }));
     const { summaryText } = await generateSummary(contactId, forTranscript);
-
     return { contactId, summaryText, form, item };
   },
   (contact: Contact, form: string, item: string) => ({
@@ -79,7 +78,13 @@ export const llmAssistantReducer = (initialState: ContactsState) =>
             ...state.existingContacts,
             [contactId]: {
               ...state.existingContacts[contactId],
-              metadata: { ...state.existingContacts[contactId].metadata, loadingStatus: LoadingStatus.LOADING },
+              metadata: {
+                ...state.existingContacts[contactId].metadata,
+                llmAssistant: {
+                  ...state.existingContacts[contactId].metadata.llmAssistant,
+                  status: LlmAssistantStatus.WORKING,
+                },
+              },
             },
           },
         };
@@ -108,7 +113,10 @@ export const llmAssistantReducer = (initialState: ContactsState) =>
         };
         const updatedMetadata: ContactMetadata = {
           ...state.existingContacts[contactId].metadata,
-          loadingStatus: LoadingStatus.LOADED,
+          llmAssistant: {
+            ...state.existingContacts[contactId].metadata.llmAssistant,
+            status: LlmAssistantStatus.READY,
+          },
         };
 
         return {
@@ -128,21 +136,13 @@ export const llmAssistantReducer = (initialState: ContactsState) =>
       newGenerateSummaryAsyncAction.rejected,
       (state, action): ContactsState => {
         const { payload } = action;
-        const { contactId, form, item } = (action as any).meta;
-        const currentDraft = state.existingContacts[contactId].draftContact;
-        const updatedDraft: ContactDraftChanges = {
-          ...currentDraft,
-          rawJson: {
-            ...currentDraft?.rawJson,
-            [form]: {
-              ...currentDraft?.rawJson.caseInformation,
-              [item]: payload.toString(),
-            },
-          },
-        };
+        const { contactId } = (action as any).meta;
         const updatedMetadata: ContactMetadata = {
           ...state.existingContacts[contactId].metadata,
-          loadingStatus: LoadingStatus.LOADED,
+          llmAssistant: {
+            status: LlmAssistantStatus.ERROR,
+            lastError: payload,
+          },
         };
         return {
           ...state,
@@ -150,7 +150,6 @@ export const llmAssistantReducer = (initialState: ContactsState) =>
             ...state.existingContacts,
             [contactId]: {
               ...state.existingContacts[contactId],
-              draftContact: updatedDraft,
               metadata: updatedMetadata,
             },
           },
