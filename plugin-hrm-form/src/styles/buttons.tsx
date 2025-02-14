@@ -77,7 +77,6 @@ export const RefreshStyledButton = styled('button')`
   cursor: pointer;
 `;
 
-
 type ButtonProps = {
   secondary?: string; // string to prevent console errors
   disabled?: boolean;
