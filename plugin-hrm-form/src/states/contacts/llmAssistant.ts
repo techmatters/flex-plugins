@@ -24,6 +24,22 @@ import { Contact, ContactRawJson } from '../../types/types';
 
 const AUTO_GENERATE_SUMMARY_ACTION = 'contact-actions/auto-generate-summary-action';
 
+const roles = {
+  Chatbot: 'chatbot',
+  Caller: 'caller',
+  Counselor: 'counselor',
+} as const;
+
+type Role = typeof roles[keyof typeof roles];
+
+const inferRole = (author: string): Role => {
+  if (author.toLowerCase() === 'bot') {
+    return roles.Chatbot;
+  }
+  // super dirty check for role - ok until we know we need this long term?
+  return author.includes('_40') ? roles.Counselor : roles.Caller;
+};
+
 export const newGenerateSummaryAsyncAction = createAsyncAction(
   AUTO_GENERATE_SUMMARY_ACTION,
   async (
@@ -33,10 +49,12 @@ export const newGenerateSummaryAsyncAction = createAsyncAction(
   ) => {
     const conversation = await Manager.getInstance().conversationsClient.getConversationBySid(channelSid);
     const messages = await conversation.getMessages(1000);
-    const forTranscript: TranscriptForLlmAssistant = messages.items.map(({ author, body }) => ({
-      role: author,
+    const forTranscript: TranscriptForLlmAssistant = messages.items.map(({ author, body, index, dateCreated }) => ({
+      role: inferRole(author),
       from: author,
       content: body,
+      index,
+      dateCreated: dateCreated.toISOString(),
     }));
     const { summaryText } = await generateSummary(contactId, forTranscript);
 
