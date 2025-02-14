@@ -61,9 +61,12 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
 
   useEffect(() => {
     if (finalizeRequested && savedContact.finalizedAt) {
+      if (Notifications.isNotificationActive('NoConversationMediaNotification')) {
+        Notifications.dismissNotificationById('NoConversationMediaNotification');
+      }
+
       setShowResolvedBanner(true);
-      // Show the notification if the contact is not offline or has no conversation media
-      if (!isOfflineContact(savedContact) || savedContact.conversationMedia.length <= 0) {
+      if (!isOfflineContact(savedContact) && savedContact.conversationMedia.length === 0) {
         Notifications.registerNotification({
           id: 'NoConversationMediaNotification',
           closeButton: true,
