@@ -18,40 +18,33 @@
         "caseHomeOrder": 1,
         "previewFields": [
           "primaryDisposition"
-        ]
+        ],
+        "layout": {
+          "primaryDisposition": {
+            "includeLabel": true
+          }
+        }
       },
       "secondaryDisposition": {
         "splitFormAt": 2,
         "printOrder": 2,
-        "caseHomeOrder": 2,
-        "previewFields": [
-          "tangibleResourcesProvided"
-        ]
+        "caseHomeOrder": 2
       },
 
       "narrativeSummary": {
         "splitFormAt": 2,
         "printOrder": 3,
-        "caseHomeOrder": 3,
-        "previewFields": [
-          "behavior"
-        ]
+        "caseHomeOrder": 3
       },
       "safetyPlan": {
         "splitFormAt": 3,
         "printOrder": 4,
-        "caseHomeOrder": 4,
-        "previewFields": [
-          "warningSigns"
-        ]
+        "caseHomeOrder": 4
       },
       "sudSurvey": {
         "splitFormAt": 4,
         "printOrder": 5,
-        "caseHomeOrder": 5,
-        "previewFields": [
-          "substancesUsed"
-        ]
+        "caseHomeOrder": 5
       },
        "referral": {
         "previewFields": [
