@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { get } from 'lodash';
 import { useFormContext } from 'react-hook-form';
@@ -28,9 +28,8 @@ import { generateCustomContactFormItem } from '../customContactComponent';
 type FormTextAreaUIProps = {
   inputId: string;
   updateCallback: () => void;
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   refFunction: (ref: any) => void;
-  value: React.HTMLAttributes<HTMLElement>['defaultValue'];
+  initialValue: React.HTMLAttributes<HTMLElement>['defaultValue'];
   labelTextComponent: JSX.Element;
   required: boolean;
   disabled: boolean;
@@ -46,9 +45,8 @@ type FormTextAreaUIProps = {
 const FormTextAreaUI: React.FC<FormTextAreaUIProps> = ({
   inputId,
   updateCallback,
-  onChange,
   refFunction,
-  value,
+  initialValue,
   labelTextComponent,
   required,
   disabled,
@@ -76,13 +74,12 @@ const FormTextAreaUI: React.FC<FormTextAreaUIProps> = ({
         aria-invalid={isErrorState}
         aria-describedby={`${inputId}-error`}
         onBlur={updateCallback}
-        onChange={onChange}
         placeholder={placeholder}
         ref={refFunction}
         rows={rows ? rows : 10}
         width={width}
         disabled={disabled}
-        value={value}
+        defaultValue={initialValue}
       />
       {isErrorState && <FormError>{errorTextComponent}</FormError>}
     </FormLabel>
@@ -123,12 +120,13 @@ const FormTextArea: React.FC<Props> = ({
     error,
     errorId,
   ]);
+  const internalRef = useRef<HTMLTextAreaElement>(null);
   const refFunction = React.useCallback(
     ref => {
       if (htmlElRef && ref) {
         htmlElRef.current = ref;
       }
-
+      internalRef.current = ref;
       register(registerOptions)(ref);
     },
     [htmlElRef, register, registerOptions],
@@ -137,20 +135,20 @@ const FormTextArea: React.FC<Props> = ({
   const additionalActionComponents = additionalActionDefinitions.map(actionDefinition =>
     generateCustomContactFormItem(actionDefinition, `${inputId}.${actionDefinition.name}`, additionalActionContext),
   );
-  const defaultValue = typeof initialValue === 'boolean' ? initialValue.toString() : initialValue;
   const disabled = !isEnabled;
-  const [currentValue, setCurrentValue] = useState(defaultValue ?? '');
+  const initialStringValue = (initialValue ?? '').toString();
   useEffect(() => {
-    setCurrentValue(defaultValue);
-  }, [defaultValue]);
+    if (internalRef.current) {
+      internalRef.current.value = initialStringValue;
+    }
+  }, [initialStringValue]);
   return (
     <FormTextAreaUI
       inputId={inputId}
       updateCallback={updateCallback}
-      onChange={e => setCurrentValue(e.target.value)}
       errorId={errorId}
       refFunction={refFunction}
-      value={currentValue}
+      initialValue={initialStringValue}
       labelTextComponent={labelTextComponent}
       errorTextComponent={errorTextComponent}
       disabled={disabled}
