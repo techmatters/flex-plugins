@@ -17,8 +17,8 @@
 import React from 'react';
 import type { FormItemDefinition, LayoutValue } from 'hrm-form-definitions';
 import { Template } from '@twilio/flex-ui';
+import { parse } from 'date-fns';
 
-import { formatValue } from '../helpers';
 import { FormTargetObject } from '../types';
 import { presentValue } from '../../../../utils';
 import DownloadFile from '../DownloadFile';
@@ -42,19 +42,25 @@ const SectionEntryValue: React.FC<Props> = ({ value, definition, layout, notBold
     return <DownloadFile fileNameAtAws={value} targetObject={targetObject} />;
   }
 
-  const presentValueTemplate = presentValue(
-    code => (
-      <SectionValueText notBold={notBold}>
-        <Template code={code} />
-      </SectionValueText>
-    ),
-    codes => (
-      <Flex flexDirection="column">
-        <SectionValueText notBold={notBold}>{codes}</SectionValueText>
-      </Flex>
-    ),
-  );
-  return <>{presentValueTemplate(formatValue(layout)(value))(definition)}</>;
+  const renderValue = (displayValue: LayoutValue, value: string | number | boolean) => {
+    const formattedValue =
+      displayValue && displayValue.format === 'date' && typeof value === 'string'
+        ? parse(value, 'yyyy-MM-dd', new Date()).toLocaleDateString(navigator.language)
+        : value;
+    return presentValue(
+      code => (
+        <SectionValueText notBold={notBold}>
+          <Template code={code} />
+        </SectionValueText>
+      ),
+      codes => (
+        <Flex flexDirection="column">
+          <SectionValueText notBold={notBold}>{codes}</SectionValueText>
+        </Flex>
+      ),
+    )(formattedValue)(definition);
+  };
+  return <>{renderValue(layout, value)}</>;
 };
 
 export default SectionEntryValue;

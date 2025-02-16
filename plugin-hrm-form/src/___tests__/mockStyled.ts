@@ -201,7 +201,6 @@ jest.mock('../components/case/styles', () => ({
   StyledInputField: 'StyledInputField',
   StyledSelectWrapper: 'StyledSelectWrapper',
   StyledSelectField: 'StyledSelectField',
-  TimelineFileName: 'TimelineFileName',
 }));
 
 jest.mock('../components/profile/styles', () => ({

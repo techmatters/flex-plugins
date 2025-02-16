@@ -39,6 +39,9 @@ const readConfig = () => {
   const hrmMicroserviceBaseUrl = process.env.REACT_APP_HRM_MICROSERVICE_BASE_URL
     ? `${process.env.REACT_APP_HRM_MICROSERVICE_BASE_URL}${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${accountSid}`
     : hrmBaseUrl;
+  const llmAssistantBaseUrl = `${
+    process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url
+  }/lambda/ai/llm-service/${accountSid}`;
   const resourcesConfiguredBaseUrl =
     process.env.REACT_APP_RESOURCES_BASE_URL || manager.serviceConfiguration.attributes.resources_base_url;
   const resourcesBaseUrl = resourcesConfiguredBaseUrl
@@ -100,6 +103,9 @@ const readConfig = () => {
     configFlags,
     featureFlags,
     strings,
+    llm: {
+      assistantBaseUrl: llmAssistantBaseUrl,
+    },
     hrm: {
       accountSid,
       hrmBaseUrl,
@@ -159,6 +165,8 @@ export const subscribeToConfigUpdates = (manager: Flex.Manager) => {
 
 export const getHrmConfig = () => cachedConfig.hrm;
 export const getReferrableResourceConfig = () => cachedConfig.referrableResources;
+export const getLlmConfig = () => cachedConfig.llm;
+
 export const getTemplateStrings = () => cachedConfig.strings;
 export const getAseloConfigFlags = (): ConfigFlags => cachedConfig.configFlags;
 export const getAseloFeatureFlags = (): FeatureFlags => cachedConfig.featureFlags;

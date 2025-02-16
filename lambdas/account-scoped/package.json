@@ -9,7 +9,7 @@
     "jest-each": "^29.5.0",
     "mockttp": "^3.15.5",
     "ts-node": "^10.9.1",
-    "undici": "^5.28.3"
+    "undici": "^5.28.5"
   },
   "scripts": {
     "docker:build": "docker build -t account-scoped --build-arg lambda_name=account-scoped --build-arg lambda_dir=. -f ../Dockerfile ../",
