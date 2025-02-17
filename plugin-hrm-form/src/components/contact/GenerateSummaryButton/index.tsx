@@ -56,7 +56,7 @@ const GenerateSummaryButton: React.FC<Props> = ({ contactId, form, item }) => {
     if (llmAssistantStatus === LlmAssistantStatus.ERROR) {
       Notifications.showNotification(LlmNotifications.SummaryGenerationErrorNotification, { error: llmAssistantError });
     }
-  }, [llmAssistantStatus]);
+  }, [llmAssistantStatus, llmAssistantError]);
 
   if (
     !getAseloFeatureFlags().enable_llm_summary ||
