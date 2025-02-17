@@ -1,0 +1,11 @@
+{
+  "messages": {
+    "hu": {
+      "WelcomeMsg": "Szia, a Kék Vonal ügyelője vagyok. Hogyan tudok segíteni Neked?",
+      "GoodbyeMsg": "Az ügyelő lezárta a beszélgetést. Köszönjük, hogy megkerestél minket. Jelentkezz újra, ha segítségre van szükséged"
+    }
+  },
+  "translations": {
+    "en": {}
+  }
+}

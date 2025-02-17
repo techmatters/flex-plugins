@@ -1,0 +1,11 @@
+{
+  "messages": {
+    "en": {
+      "WelcomeMsg": "Hi, this is the professional. How can I help you?",
+      "GoodbyeMsg": "Thank you for contacting us. Feel free to come again, we are available 24/7."
+    }
+  },
+  "translations": {
+    "en": {}
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "messages": {
+    "es": {
+      "WelcomeMsg": "¡Hola, te doy la bienvenida a Línea Libre! Este es un espacio seguro donde podemos conversar con tranquilidad y confianza. Estamos para escucharte, apoyarte y orientarte. Antes de conversar, nos gustaría contarte que trabajamos bajo el Principio de Protección, donde en caso que percibamos que tu integridad o la de un tercero pueda estar en riesgo, nuestro equipo tomará las medidas necesarias para asegurar tu protección y bienestar. Cuéntanos ¿tienes alguna duda sobre esto?",
+      "GoodbyeMsg": "El agente ha abandonado el chat. Gracias por comunicarse. Por favor, póngase en contacto con nosotros de nuevo si necesita más ayuda."
+    }
+    
+  },
+  "translations": {
+    "en": {}
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "messages": {
+    "en": {
+      "WelcomeMsg": "Hi, you've reached a counsellor. What would you like to talk about?",  
+      "GoodbyeMsg": "Would you have 5 minutes to answer a few questions to help us improve the service? The survey is optional. We appreciate your help if you choose to participate! You can also find more information about data usage & the survey by clicking the link: https://survey.alchemer-ca.com/s3/50188874/Post-Chat-Survey"
+    },
+    "fr": {
+      "WelcomeMsg": "Bonjour, vous avez atteint un conseiller. Qu'est-ce que vous souhaitez discuter?",  
+      "GoodbyeMsg": "Voulez-vous avoir 5 minutes pour répondre à quelques questions pour aider nous à améliorer le service? Le sondage est facultatif. Nous apprécions votre aide si vous choisissez de participer! Vous pouvez aussi trouver plus d'informations sur l'utilisation des données et le sondage en cliquant sur le lien suivant: https://survey.alchemer-ca.com/s3/50188874/Post-Chat-Survey"
+    }
+  },
+  "translations": {
+    "en": {},
+    "fr": {}
+  }
+}
+

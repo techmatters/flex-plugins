@@ -22,4 +22,3 @@
 | zw   |                  | en                         |
 
 * either use or delete counselorLanugage - it is not being used now
-
