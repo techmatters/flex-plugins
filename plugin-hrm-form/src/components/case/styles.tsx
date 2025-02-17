@@ -196,12 +196,6 @@ export const TimelineText = styled(FontOpenSans)`
 `;
 TimelineText.displayName = 'TimelineText';
 
-export const TimelineFileName = styled(TimelineText)`
-  max-width: 100px;
-  min-width: 100px;
-`;
-TimelineFileName.displayName = 'TimelineFileName';
-
 export const TimelineLabel = styled(TimelineText)`
   color: #9b9b9b;
 `;
@@ -213,11 +207,6 @@ export const TimelineCallTypeIcon = styled('div')`
   flex-direction: row;
 `;
 TimelineCallTypeIcon.displayName = 'TimelineCallTypeIcon';
-
-export const InformationBoldText = styled(TimelineDate)`
-  text-align: left;
-`;
-InformationBoldText.displayName = 'InformationBoldText';
 
 export const PlaceHolderText = styled(TimelineText)`
   ${placeHolderTextStyle}

@@ -14,10 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/* eslint-disable react/prop-types */
-import React, { Dispatch } from 'react';
+import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseContainer, CaseDetailsBorder, ViewButton } from './styles';
@@ -31,9 +30,6 @@ import CaseSummary from './CaseSummary';
 import { RootState } from '../../states';
 import { CustomITask, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
-import { newCloseModalAction } from '../../states/routing/actions';
-import IncidentInformationRow from './IncidentInformationRow';
-import DocumentInformationRow from './DocumentInformationRow';
 import NavigableContainer from '../NavigableContainer';
 import { isStandaloneITask } from './Case';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
@@ -48,10 +44,8 @@ import { selectCounselorName } from '../../states/configuration/selectCounselors
 import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
 import {
   selectContactsByCaseIdInCreatedOrder,
-  selectFirstCaseContact,
+  selectFirstContactByCaseId,
 } from '../../states/contacts/selectContactByCaseId';
-import InformationRow from './InformationRow';
-import { FullCaseSection } from '../../services/caseSectionService';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -65,75 +59,49 @@ export type CaseHomeProps = {
 const MAX_ACTIVITIES_IN_TIMELINE_SECTION = 5;
 const MAIN_TIMELINE_ID = 'prime-timeline';
 
-const mapStateToProps = (state: RootState, { task }: CaseHomeProps) => {
-  const connectedCaseState = selectCurrentRouteCaseState(state, task.taskSid);
-  const taskContact = isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact;
-  const routing = selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseRoute;
+const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose, handleSaveAndEnd, can }) => {
+  // Hooks
+  const connectedCaseState = useSelector((state: RootState) => selectCurrentRouteCaseState(state, task.taskSid));
   const { connectedCase, availableStatusTransitions = [] } = connectedCaseState ?? {};
-  const caseContacts = selectContactsByCaseIdInCreatedOrder(state, routing.caseId);
+  const taskContact = useSelector((state: RootState) =>
+    isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact,
+  );
+  const routing = useSelector((state: RootState) => selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseRoute);
 
-  const firstConnectedContact = selectFirstCaseContact(state, connectedCase);
-  const activityCount = routing.route === 'case' ? selectTimelineCount(state, routing.caseId, MAIN_TIMELINE_ID) : 0;
+  const caseContacts = useSelector((state: RootState) => selectContactsByCaseIdInCreatedOrder(state, routing.caseId));
+  const firstConnectedContact = useSelector(
+    (state: RootState) => selectFirstContactByCaseId(state, routing.caseId)?.savedContact,
+  );
+  const activityCount = useSelector((state: RootState) =>
+    routing.route === 'case' ? selectTimelineCount(state, routing.caseId, MAIN_TIMELINE_ID) : 0,
+  );
+
+  const definitionVersion = useSelector((state: RootState) => selectDefinitionVersionForCase(state, connectedCase));
+  const counselor = useSelector((state: RootState) => selectCounselorName(state, connectedCase?.twilioWorkerId));
+  const office = useSelector((state: RootState) => selectCaseHelplineData(state, routing.caseId));
+
+  const dispatch = useDispatch();
+  const openModal = (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid));
+  // End Hooks
+  if (!connectedCase) return null; // narrow type before deconstructing
+
   const isNewContact = Boolean(taskContact && taskContact.caseId === routing.caseId && !taskContact.finalizedAt);
   const isNewCase = caseContacts.length === 1 && taskContact && taskContact.caseId === routing.caseId;
-  const definitionVersion = selectDefinitionVersionForCase(state, connectedCase);
-  const counselor = selectCounselorName(state, connectedCase?.twilioWorkerId);
+  const isOrphanedCase = !firstConnectedContact;
+  const label = contactLabelFromHrmContact(definitionVersion, firstConnectedContact ?? taskContact, {
+    placeholder: '',
+    substituteForId: false,
+  });
+  const hasMoreActivities = activityCount > MAX_ACTIVITIES_IN_TIMELINE_SECTION;
 
-  return {
-    isNewContact,
-    isNewCase,
-    connectedCase,
-    availableStatusTransitions,
-    taskContact,
-    hasMoreActivities: activityCount > MAX_ACTIVITIES_IN_TIMELINE_SECTION,
-    office: selectCaseHelplineData(state, routing.caseId),
-    definitionVersion,
-    counselor,
-    isOrphanedCase: !firstConnectedContact,
-    label: contactLabelFromHrmContact(definitionVersion, firstConnectedContact ?? taskContact, {
-      placeholder: '',
-      substituteForId: false,
-    }),
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: CaseHomeProps) => ({
-  changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
-  openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid)),
-  closeModal: () => dispatch(newCloseModalAction(task.taskSid, 'tabbed-forms')),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type Props = CaseHomeProps & ConnectedProps<typeof connector>;
-
-const CaseHome: React.FC<Props> = ({
-  definitionVersion,
-  task,
-  openModal,
-  handlePrintCase,
-  handleClose,
-  handleSaveAndEnd,
-  can,
-  connectedCase,
-  availableStatusTransitions,
-  isNewContact,
-  isNewCase,
-  hasMoreActivities,
-  office,
-  counselor,
-  isOrphanedCase,
-  label,
-}) => {
-  if (!connectedCase) return null; // narrow type before deconstructing
   const caseId = connectedCase.id;
 
   const orderedListSections = Object.entries(definitionVersion.caseSectionTypes)
-    .filter(([sectionType]) => !['note', 'referral'].includes(sectionType))
     .map(([sectionType]) => ({
       sectionType,
       layout: definitionVersion.layoutVersion.case.sectionTypes[sectionType] ?? {},
     }))
+    .filter(({ layout }) => layout.caseHomeLocation === 'list' || !layout.caseHomeLocation)
     .sort(
       ({ layout: layout1 }, { layout: layout2 }) =>
         (layout1.caseHomeOrder ?? Number.MAX_SAFE_INTEGER) - (layout2.caseHomeOrder ?? Number.MAX_SAFE_INTEGER),
@@ -142,9 +110,6 @@ const CaseHome: React.FC<Props> = ({
   const onViewFullTimelineClick = () => {
     openModal({ route: 'case', subroute: 'timeline', caseId, page: 0 });
   };
-
-  const { caseSectionTypes } = definitionVersion;
-  const caseLayouts = definitionVersion.layoutVersion.case.sectionTypes;
 
   const {
     info: { followUpDate, childIsAtRisk },
@@ -216,51 +181,12 @@ const CaseHome: React.FC<Props> = ({
           </CaseDetailsBorder>
         </Box>
         {orderedListSections.map(({ sectionType }) => {
-          let sectionRenderer: (section: FullCaseSection, onView: () => void) => JSX.Element | null;
-          switch (sectionType) {
-            case 'document': {
-              sectionRenderer = (caseSection, onClickView) => (
-                <DocumentInformationRow
-                  key={`document-${caseSection.sectionId}`}
-                  caseSection={caseSection}
-                  onClickView={onClickView}
-                />
-              );
-              break;
-            }
-            case 'household':
-            case 'perpetrator': {
-              sectionRenderer = ({ sectionTypeSpecificData, sectionId, sectionType }, viewHandler) => (
-                <InformationRow
-                  key={`${sectionType}-${sectionId}`}
-                  person={sectionTypeSpecificData}
-                  onClickView={viewHandler}
-                />
-              );
-              break;
-            }
-            default: {
-              // Use IncidentInformationRow for all other sections as it is more configurable
-              sectionRenderer = ({ sectionTypeSpecificData, sectionType, sectionId }, onClickView) => (
-                <IncidentInformationRow
-                  key={`incident-${sectionId}`}
-                  onClickView={onClickView}
-                  definition={caseSectionTypes[sectionType].form}
-                  values={sectionTypeSpecificData}
-                  layoutDefinition={caseLayouts[sectionType] || {}}
-                />
-              );
-              break;
-            }
-          }
-
           return (
             <Box margin="25px 0 0 0" key={sectionType}>
               <CaseSection
                 canAdd={() => can(PermissionActions.ADD_CASE_SECTION)}
                 taskSid={task.taskSid}
                 sectionType={sectionType}
-                sectionRenderer={sectionRenderer}
               />
             </Box>
           );
@@ -278,6 +204,5 @@ const CaseHome: React.FC<Props> = ({
 };
 
 CaseHome.displayName = 'CaseHome';
-const connected = connector(CaseHome);
 
-export default connected;
+export default CaseHome;

@@ -25,26 +25,26 @@ import { CaseSection } from '../../../services/caseSectionService';
 type OwnProps = {
   sectionType: string;
   definition: DefinitionVersion;
-  values: CaseSection[];
+  sections: CaseSection[];
 };
 
 type Props = OwnProps;
 
-const CasePrintMultiSection: React.FC<Props> = ({ sectionType, values, definition }) => {
+const CasePrintMultiSection: React.FC<Props> = ({ sectionType, sections, definition }) => {
   const { form, label } = definition.caseSectionTypes[sectionType];
 
   return (
     <View>
-      {values &&
-        values.length > 0 &&
-        values.map((value, i: number) => {
+      {sections &&
+        sections.length > 0 &&
+        sections.map((value, i: number) => {
           return (
             <CasePrintSection
               key={`${sectionType}_${value.sectionId}`}
               sectionNameTemplateCode={`CasePrint-TabularSection-Header/${sectionType}`}
               sectionNameTemplateValues={{
                 sectionNo: (i + 1).toString(),
-                sectionCount: values.length.toString(),
+                sectionCount: sections.length.toString(),
                 sectionLabel: label,
               }}
               values={value.sectionTypeSpecificData}
