@@ -15,6 +15,7 @@
  */
 
 import { getMessages, getTranslation } from '../services/ServerlessService';
+import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
 
 // default language to initialize plugin
 export const defaultLanguage = 'en-US';
@@ -99,34 +100,86 @@ const translationErrorMsg = 'Could not translate, using default';
 
 type LocalizationConfig = {
   twilioStrings: any;
-  setNewStrings: (newStrings: any) => void;
+  setNewStrings: (newStrings: { [key: string]: string }) => void;
   afterNewStrings: (language: string) => void;
+};
+
+const loadV2Translations = async (language: string) => {
+  // Split language code to get base language and locale
+  const [baseLanguage, locale] = language.split('-');
+
+  try {
+    // Load base language translations
+    const baseTranslationModule = await import(`../translations/1baseLanguage/${baseLanguage}.json`);
+    const baseTranslation = baseTranslationModule.default;
+
+    // Try to load locale overrides if they exist
+    let localeOverrides = {};
+    try {
+      const localeOverridesModule = await import(`../translations/2localeOverrides/${language}.json`);
+      localeOverrides = localeOverridesModule.default;
+    } catch (e) {
+      console.log(`No locale overrides found for ${language}`);
+    }
+
+    // Try to load helpline overrides if they exist
+    let helplineOverrides = {};
+    try {
+      const config = getHrmConfig();
+      if (config.helpline) {
+        const helplineOverridesModule = await import(`../translations/3helplineOverrides/${config.helpline}.json`);
+        helplineOverrides = helplineOverridesModule.default;
+      }
+    } catch (e) {
+      console.log(`No helpline overrides found for helpline`);
+    }
+
+    // Merge translations with overrides taking precedence
+    return {
+      ...baseTranslation,
+      ...localeOverrides,
+      ...helplineOverrides,
+    };
+  } catch (e) {
+    console.error('Error loading V2 translations:', e);
+    return null;
+  }
 };
 
 /**
  * Given localization config object, returns a function that receives a language and fetches the UI translation
  * @returns {(language: string) => Promise<void>}
  */
-export const initTranslateUI = (localizationConfig: LocalizationConfig) => async language => {
+export const initTranslateUI = (localizationConfig: LocalizationConfig) => async (language: string): Promise<void> => {
   const { twilioStrings, setNewStrings, afterNewStrings } = localizationConfig;
+
   try {
-    if (language in bundledTranslations) {
-      const translation = bundledTranslations[language];
-      setNewStrings({ ...twilioStrings, ...translation });
+    const featureFlags = getAseloFeatureFlags();
+
+    let strings;
+    if (featureFlags.enable_translations_v2) {
+      // Use V2 translations
+      strings = await loadV2Translations(language);
+      if (!strings) {
+        console.error(`Could not load V2 translations for ${language}, falling back to legacy translations`);
+        strings = bundledTranslations[language];
+      }
     } else {
-      const body = { language };
-      const translationJSON = await getTranslation(body);
-      console.log('>>> initTranslateUI translationJSON', { translationJSON });
-      const translation = await (typeof translationJSON === 'string'
-        ? JSON.parse(translationJSON)
-        : Promise.resolve(translationJSON));
-      console.log('>>> initTranslateUI translation', { translation });
-      setNewStrings(translation);
+      // Use legacy translations
+      strings = bundledTranslations[language];
     }
+
+    if (!strings) {
+      console.error(translationErrorMsg);
+      setNewStrings(twilioStrings);
+      return;
+    }
+
+    setNewStrings(strings);
     afterNewStrings(language);
   } catch (err) {
-    window.alert(translationErrorMsg);
     console.error(translationErrorMsg, err);
+    setNewStrings(twilioStrings);
   }
 };
 
