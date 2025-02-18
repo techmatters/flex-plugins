@@ -9,8 +9,7 @@
             "enable_region_resource_search": true,
             "enable_generalized_search": true,
             "enable_save_in_progress_contacts": true,
-            "enable_permissions_from_backend": true,
-            "enable_task_router_event_delegation": true
+            "enable_permissions_from_backend": true
         }
     }
 }
