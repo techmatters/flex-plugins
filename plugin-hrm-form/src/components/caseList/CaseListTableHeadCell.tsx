@@ -55,7 +55,6 @@ const CaseListTableHeadCell: React.FC<Props> = ({
   updateCaseListSort,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-
   const drawSort = () => {
     if (!currentSort || !column || column !== currentSort.sortBy) return null;
 

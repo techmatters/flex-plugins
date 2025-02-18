@@ -134,7 +134,6 @@ beforeEach(async () => {
 });
 
 describe('saveFormSharedState', () => {
-
   test('Has draft changes - should save them', async () => {
     await saveFormSharedState({ ...contactState, draftContact: { channel: 'whatsapp' } }, task);
     expect(updateContactInHrmAsyncAction).toHaveBeenCalledWith(
