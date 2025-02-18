@@ -14,9 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import * as React from 'react';
-import { Template } from '@twilio/flex-ui';
+import { Notifications, Template } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
+import { useEffect } from 'react';
 
 import { TertiaryButton } from '../../../styles';
 import { newGenerateSummaryAsyncAction } from '../../../states/contacts/llmAssistant';
@@ -24,10 +25,12 @@ import { RootState } from '../../../states';
 import selectContactStateByContactId from '../../../states/contacts/selectContactStateByContactId';
 import { getAseloFeatureFlags } from '../../../hrmConfig';
 import { ContactState } from '../../../states/contacts/existingContacts';
-import { LoadingStatus } from '../../../states/contacts/types';
+import { LlmAssistantStatus } from '../../../states/contacts/types';
 import customContactComponentRegistry from '../../forms/customContactComponentRegistry';
 import { isOfflineContact } from '../../../types/types';
 import GenerateSummaryIcon from './GenerateSummaryIcon';
+import { LlmNotifications } from './setUpLlmNotifications';
+import asyncDispatch from '../../../states/asyncDispatch';
 
 type Props = {
   contactId: string;
@@ -36,7 +39,7 @@ type Props = {
 };
 
 const GenerateSummaryButton: React.FC<Props> = ({ contactId, form, item }) => {
-  const dispatch = useDispatch();
+  const asyncDispatcher = asyncDispatch(useDispatch());
   const metadata = useSelector(
     (state: RootState) => (selectContactStateByContactId(state, contactId) ?? ({} as ContactState)).metadata,
   );
@@ -46,6 +49,14 @@ const GenerateSummaryButton: React.FC<Props> = ({ contactId, form, item }) => {
   const savedContact = useSelector(
     (state: RootState) => (selectContactStateByContactId(state, contactId) ?? ({} as ContactState)).savedContact,
   );
+
+  const { status: llmAssistantStatus, lastError: llmAssistantError } = metadata?.llmAssistant ?? {};
+
+  useEffect(() => {
+    if (llmAssistantStatus === LlmAssistantStatus.ERROR) {
+      Notifications.showNotification(LlmNotifications.SummaryGenerationErrorNotification, { error: llmAssistantError });
+    }
+  }, [llmAssistantStatus, llmAssistantError]);
 
   if (
     !getAseloFeatureFlags().enable_llm_summary ||
@@ -57,18 +68,18 @@ const GenerateSummaryButton: React.FC<Props> = ({ contactId, form, item }) => {
   ) {
     return null;
   }
-  const loading = metadata?.loadingStatus === LoadingStatus.LOADING;
+  const assistantWorking = metadata?.llmAssistant.status === LlmAssistantStatus.WORKING;
   const llmSupportedEntries =
     draftContact?.rawJson?.llmSupportedEntries ?? savedContact.rawJson.llmSupportedEntries ?? {};
   const alreadySummarized = (llmSupportedEntries[form] ?? []).includes(item);
 
   return (
     <TertiaryButton
-      disabled={loading || alreadySummarized}
-      onClick={() => dispatch(newGenerateSummaryAsyncAction(savedContact, form, item))}
+      disabled={assistantWorking || alreadySummarized}
+      onClick={() => asyncDispatcher(newGenerateSummaryAsyncAction(savedContact, form, item))}
       style={{}}
     >
-      {loading ? (
+      {assistantWorking ? (
         <>
           <CircularProgress size={12} style={{ marginRight: '8px' }} />
           <span style={{ minWidth: '80px' }}>
