@@ -132,8 +132,8 @@ type LocalizationConfig = {
 export const initTranslateUI = (localizationConfig: LocalizationConfig) => async (language: string): Promise<void> => {
   const { twilioStrings, setNewStrings, afterNewStrings } = localizationConfig;
   // TODO: remove this when translations are ready
-  // const { enable_translations_v2: enableTranslationsV2 } = getAseloFeatureFlags();
-  const enableTranslationsV2 = true;
+  const { enable_translations_v2: enableTranslationsV2 } = getAseloFeatureFlags();
+  // const enableTranslationsV2 = true;
 
   try {
     let customStrings;
@@ -164,7 +164,6 @@ export const initTranslateUI = (localizationConfig: LocalizationConfig) => async
 
     if (!customStrings) {
       console.error(translationErrorMsg);
-      setNewStrings(twilioStrings);
       return;
     }
 
@@ -188,8 +187,8 @@ export const initTranslateUI = (localizationConfig: LocalizationConfig) => async
  */
 export const getMessage = messageKey => async language => {
   // TODO: remove this when translations are ready
-  // const { enable_translations_v2: enableTranslationsV2 } = getAseloFeatureFlags();
-  const enableTranslationsV2 = true;
+  const { enable_translations_v2: enableTranslationsV2 } = getAseloFeatureFlags();
+  // const enableTranslationsV2 = true;
 
   try {
     if (enableTranslationsV2) {
