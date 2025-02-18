@@ -9,7 +9,6 @@
             "enableUnmaskingCalls": true
         },
         "feature_flags": {
-            "backend_handled_chat_janitor": false,
             "enable_backend_manual_pulling": true,
             "enable_counselor_toolkits": true,
             "enable_csam_clc_report": true,
@@ -21,9 +20,7 @@
             "enable_save_in_progress_contacts": true,
             "enable_save_insights": true,
             "enable_teams_view_enhancements2": true,
-            "enable_voice_recordings": false,
-            "enable_backend_hrm_contact_creation": true,
-            "lambda_task_created_handler": true
+            "enable_voice_recordings": false
         },
         "contact_save_frequency": "onTabChange",
         "multipleOfficeSupport": true,
