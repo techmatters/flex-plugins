@@ -76,10 +76,15 @@ export const RefreshStyledButton = styled('button')`
   text-decoration: underline;
   cursor: pointer;
 `;
-type StyledNextStepButtonProps = {
+
+type ButtonProps = {
   secondary?: string; // string to prevent console errors
   disabled?: boolean;
   margin?: string;
+};
+
+type StyledNextStepButtonProps = ButtonProps & {
+  secondary?: string;
 };
 
 // Primary button
@@ -112,6 +117,38 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
         : p.secondary?.toLowerCase() === 'true'
         ? `${HrmTheme.colors.secondaryButtonColor}CC`
         : `${HrmTheme.colors.defaultButtonColor}CC`};
+    background-blend-mode: color;
+  }
+
+  &&:focus {
+    outline-style: auto;
+    outline-width: initial;
+  }
+
+  &&:active {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+`;
+StyledNextStepButton.displayName = 'StyledNextStepButton';
+
+// Primary button
+export const TertiaryButton = styled(Button)<ButtonProps>`
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: normal;
+  color: ${HrmTheme.colors.tertiaryButtonTextColor};
+  border: none;
+  border-radius: 4px;
+  margin: ${props => (props.margin ? props.margin : '0')};
+  padding: 4px 10px;
+  min-width: auto;
+  background-color: ${props => (props.disabled ? HrmTheme.colors.disabledColor : HrmTheme.colors.tertiaryButtonColor)};
+  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
+
+  &&:hover {
+    background-color: ${p => (p.disabled ? `${HrmTheme.colors.base5}CC` : `${HrmTheme.colors.tertiaryButtonColor}CC`)};
     background-blend-mode: color;
   }
 
