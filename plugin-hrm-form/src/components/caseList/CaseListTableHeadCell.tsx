@@ -55,10 +55,8 @@ const CaseListTableHeadCell: React.FC<Props> = ({
   updateCaseListSort,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const featureFlags = getAseloFeatureFlags();
 
   const drawSort = () => {
-    if (!featureFlags.enable_sort_cases) return null;
     if (!currentSort || !column || column !== currentSort.sortBy) return null;
 
     return (
@@ -74,17 +72,13 @@ const CaseListTableHeadCell: React.FC<Props> = ({
   };
 
   const borderBottom = () => {
-    if (!featureFlags.enable_sort_cases || !column) return 'none';
+    if (!column) return 'none';
     return currentSort?.sortBy === column ? '3px solid #000000' : 'none';
   };
 
-  const cursor = () => {
-    if (!featureFlags.enable_sort_cases) return 'auto';
-    return column ? 'pointer' : 'auto';
-  };
+  const cursor = () => (column ? 'pointer' : 'auto');
 
   const handleClick = async () => {
-    if (!featureFlags.enable_sort_cases) return;
     if (!column) return;
 
     const isDifferentColumn = column !== currentSort?.sortBy;

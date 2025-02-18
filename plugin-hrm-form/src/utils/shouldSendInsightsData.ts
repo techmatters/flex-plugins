@@ -23,7 +23,7 @@ export const shouldSendInsightsData = (task: CustomITask) => {
 
   if (!featureFlags.enable_save_insights) return false;
   if (task.attributes?.skipInsights) return false;
-  if (featureFlags.enable_transfers && !TransferHelpers.hasTaskControl(task)) return false;
+  if (!TransferHelpers.hasTaskControl(task)) return false;
 
   return true;
 };

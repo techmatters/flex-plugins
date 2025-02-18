@@ -21,7 +21,7 @@ import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 import { Manager } from '@twilio/flex-ui';
 
 import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
-import { baseMockConfig, mockGetDefinitionsResponse } from '../mockGetConfig';
+import { mockGetDefinitionsResponse } from '../mockGetConfig';
 import { createTask } from '../helpers';
 import { getDefinitionVersions } from '../../hrmConfig';
 import { ContactState } from '../../states/contacts/existingContacts';
@@ -131,23 +131,9 @@ beforeEach(async () => {
       originalTask: 'transferred-task-id',
     },
   });
-  baseMockConfig.featureFlags.enable_transfers = true;
 });
 
 describe('saveFormSharedState', () => {
-  test('flag disabled - does nothing', async () => {
-    baseMockConfig.featureFlags.enable_transfers = false;
-
-    await saveFormSharedState(
-      {
-        ...contactState,
-        savedContact: { ...contactState.savedContact, caseId: '1234' },
-        draftContact: { channel: 'whatsapp' },
-      },
-      task,
-    );
-    expect(updateContactInHrmAsyncAction).not.toHaveBeenCalled();
-  });
 
   test('Has draft changes - should save them', async () => {
     await saveFormSharedState({ ...contactState, draftContact: { channel: 'whatsapp' } }, task);
