@@ -99,7 +99,6 @@ const bundledMessages = {
 
 // TODO: potentially move Zambia messages to flex from serverless https://github.com/techmatters/serverless/pull/51/files
 
-// eslint-disable-next-line import/no-unused-modules
 export const loadV2Translations = (language: string): Record<string, string> => {
   console.log('>>> 3 - loadV2Translations', language);
   const [baseLanguage] = language.split('-');
@@ -216,7 +215,6 @@ export const getMessage = messageKey => async language => {
   }
 };
 
-// eslint-disable-next-line import/no-unused-modules
 export const initLocalization = (localizationConfig: LocalizationConfig, initialLanguage: string) => {
   console.log('>>> 2 - initLocalization', { localizationConfig, initialLanguage });
   const translateUI = initTranslateUI(localizationConfig);
