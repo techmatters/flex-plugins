@@ -17,7 +17,7 @@
 import { ITask, Manager } from '@twilio/flex-ui';
 
 import { saveContactToSaferNet } from '../services/ServerlessService';
-import { getMessage } from '../translations/localizationHelpers';
+import { getMessage } from '../translations';
 import { setCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import { getHrmConfig } from '../hrmConfig';
 import { getTaskLanguage } from '../utils';
