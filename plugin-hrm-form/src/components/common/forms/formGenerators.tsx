@@ -45,7 +45,6 @@ import {
   FormRadioInput,
   FormSelect,
   FormSelectWrapper,
-  FormTextArea,
   FormTimeInput,
   FormSearchInput,
   SearchIconContainer,
@@ -167,6 +166,7 @@ const calculateOptionsTabIndexes = (currentValue: any[], options: InputOption[])
   options.map((option, index) => (index === calculateNextFocusable(currentValue, options) ? undefined : -1));
 
 /**
+ * @deprecated - use createInput from inputGenerator.tsx instead, this method only renders components yet to be ported
  * Creates a Form with each input connected to RHF's wrapping Context, based on the definition.
  * @param parents Array of parents. Allows you to easily create nested form fields. https://react-hook-form.com/api#register.
  * @param updateCallback Callback called to update form state. When is the callback called is specified in the input type.
@@ -184,47 +184,6 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
   const labelTextComponent = <Template code={`${def.label}`} className=".fullstory-unmask" />;
 
   switch (def.type) {
-    case FormInputType.Input:
-      return (
-        <ConnectForm key={path}>
-          {({ errors, register }) => {
-            const error = get(errors, path);
-            return (
-              <FormLabel htmlFor={path}>
-                <Row>
-                  <Box marginBottom="8px">
-                    {labelTextComponent}
-                    {rules.required && <RequiredAsterisk />}
-                  </Box>
-                </Row>
-                <FormInput
-                  id={path}
-                  data-testid={path}
-                  name={path}
-                  error={Boolean(error)}
-                  aria-invalid={Boolean(error)}
-                  aria-describedby={`${path}-error`}
-                  onBlur={updateCallback}
-                  ref={ref => {
-                    if (htmlElRef) {
-                      htmlElRef.current = ref;
-                    }
-
-                    register(rules)(ref);
-                  }}
-                  defaultValue={initialValue}
-                  disabled={!isEnabled}
-                />
-                {error && (
-                  <FormError>
-                    <Template id={`${path}-error`} code={error.message} />
-                  </FormError>
-                )}
-              </FormLabel>
-            );
-          }}
-        </ConnectForm>
-      );
     case FormInputType.SearchInput:
       return (
         <ConnectForm key={path}>
@@ -761,49 +720,6 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
                   {labelTextComponent}
                   {rules.required && <RequiredAsterisk />}
                 </FormCheckBoxWrapper>
-                {error && (
-                  <FormError>
-                    <Template id={`${path}-error`} code={error.message} />
-                  </FormError>
-                )}
-              </FormLabel>
-            );
-          }}
-        </ConnectForm>
-      );
-    case FormInputType.Textarea:
-      return (
-        <ConnectForm key={path}>
-          {({ errors, register }) => {
-            const error = get(errors, path);
-            return (
-              <FormLabel htmlFor={path}>
-                <Row>
-                  <Box marginBottom="8px">
-                    {labelTextComponent}
-                    {rules.required && <RequiredAsterisk />}
-                  </Box>
-                </Row>
-                <FormTextArea
-                  id={path}
-                  data-testid={path}
-                  name={path}
-                  error={Boolean(error)}
-                  aria-invalid={Boolean(error)}
-                  aria-describedby={`${path}-error`}
-                  onBlur={updateCallback}
-                  ref={ref => {
-                    if (htmlElRef) {
-                      htmlElRef.current = ref;
-                    }
-
-                    register(rules)(ref);
-                  }}
-                  rows={def.rows ? def.rows : 10}
-                  width={def.width}
-                  defaultValue={initialValue}
-                  disabled={!isEnabled}
-                />
                 {error && (
                   <FormError>
                     <Template id={`${path}-error`} code={error.message} />

@@ -30,7 +30,6 @@ type UseFormFromDefinition = {
   customHandlers?: CreateInputParams['customHandlers'];
   isItemEnabled?: (item: FormItemDefinition) => boolean;
   context?: {
-    taskSid?: string;
     contactId?: string;
     caseId?: string;
   };

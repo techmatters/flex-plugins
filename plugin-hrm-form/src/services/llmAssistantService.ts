@@ -18,7 +18,7 @@ import { getLlmConfig } from '../hrmConfig';
 import { getValidToken } from '../authentication';
 import { ApiError, fetchApi } from './fetchApi';
 
-export type TranscriptForLlmAssistant = { role: string; content: string }[];
+export type TranscriptForLlmAssistant = { from: string; role: string; content: string }[];
 type LlmAssistantSummary = { summaryText: string; id: string };
 
 export const generateSummary = (
