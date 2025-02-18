@@ -90,9 +90,6 @@ const readConfig = () => {
   const featureFlagsFromEnv = Object.fromEntries(featureFlagsFromEnvEntries);
   const featureFlagsFromServiceConfig: FeatureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
 
-  // TODO: remove this when translations are ready
-  // eslint-disable-next-line camelcase
-  featureFlagsFromServiceConfig.enable_translations_v2 = true;
   const featureFlags = {
     ...featureFlagsFromServiceConfig,
     ...featureFlagsFromEnv,

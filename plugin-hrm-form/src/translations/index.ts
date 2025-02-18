@@ -97,17 +97,16 @@ const bundledMessages = {
   'th-TH': thTHMessages,
 };
 
-// TODO: potentially move Zambia messages to flex from serverless https://github.com/techmatters/serverless/pull/51/files
+// TODO(mythily): potentially move Zambia messages to flex from serverless https://github.com/techmatters/serverless/pull/51/files
 /* eslint-disable import/no-unused-modules */
 export const loadV2Translations = (language: string): Record<string, string> => {
-  console.log('>>> 3 - loadV2Translations', language);
   const [baseLanguage] = language.split('-');
 
   try {
-    const baseTranslation = require(`./1baseLanguage/${baseLanguage}.json`);
-    const localeOverrides = require(`./2localeOverrides/${language}.json`);
+    const baseTranslation = require(`./baseLanguage/${baseLanguage}.json`);
+    const localeOverrides = require(`./localeOverrides/${language}.json`);
     const { helplineCode } = getHrmConfig();
-    const helplineModule = require(`./3helplineOverrides/${helplineCode}.json`);
+    const helplineModule = require(`./helplineOverrides/${helplineCode}.json`);
     const helplineOverrides = helplineModule.translations[baseLanguage];
 
     return { ...baseTranslation, ...localeOverrides, ...helplineOverrides };
@@ -131,9 +130,7 @@ type LocalizationConfig = {
  */
 export const initTranslateUI = (localizationConfig: LocalizationConfig) => async (language: string): Promise<void> => {
   const { twilioStrings, setNewStrings, afterNewStrings } = localizationConfig;
-  // TODO: remove this when translations are ready
   const { enable_translations_v2: enableTranslationsV2 } = getAseloFeatureFlags();
-  // const enableTranslationsV2 = true;
 
   try {
     let customStrings;
@@ -186,13 +183,11 @@ export const initTranslateUI = (localizationConfig: LocalizationConfig) => async
  * @returns {(language: string) => Promise<string>} - Function that takes a language code and returns the translated message
  */
 export const getMessage = messageKey => async language => {
-  // TODO: remove this when translations are ready
   const { enable_translations_v2: enableTranslationsV2 } = getAseloFeatureFlags();
-  // const enableTranslationsV2 = true;
 
   try {
     if (enableTranslationsV2) {
-      const messages = require(`./3helplineOverrides/${language}.json`);
+      const messages = require(`./helplineOverrides/${language}.json`);
       return messages[messageKey];
     }
     if (!language) return defaultMessages[messageKey];
@@ -215,7 +210,6 @@ export const getMessage = messageKey => async language => {
 };
 
 export const initLocalization = (localizationConfig: LocalizationConfig, initialLanguage: string) => {
-  console.log('>>> 2 - initLocalization', { localizationConfig, initialLanguage });
   const translateUI = initTranslateUI(localizationConfig);
   const { setNewStrings } = localizationConfig;
 
