@@ -2,6 +2,7 @@
     "attributes": {
         "definitionVersion": "demo-v1",
         "feature_flags": {
+            "enable_active_contact_header": true,
             "enable_fullstory_monitoring": true,
             "enable_client_profiles": true,
             "enable_conferencing": true,
