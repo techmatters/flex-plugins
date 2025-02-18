@@ -25,10 +25,12 @@ console.error = jest.fn();
 
 const mockGetAseloFeatureFlags = getAseloFeatureFlags as jest.Mock;
 
-mockGetAseloFeatureFlags.mockReturnValue(
-  // eslint-disable-next-line camelcase
-  { enable_translations_v2: true } as FeatureFlags,
-);
+beforeEach(() => {
+  mockGetAseloFeatureFlags.mockReturnValue({
+    // eslint-disable-next-line camelcase
+    enable_translations_v2: false,
+  } as FeatureFlags);
+});
 
 const defaultTranslation = require(`../../translations/${defaultLanguage}/flexUI.json`);
 const defaultMessages = require(`../../translations/${defaultLanguage}/messages.json`);
@@ -128,10 +130,6 @@ describe('Test getMessage', () => {
 
 strings = { ...twilioStrings };
 describe('Test initLocalization', () => {
-  afterEach(() => {
-    mockGetAseloFeatureFlags.mockReturnValue({ enable_translations_v2: false } as FeatureFlags);
-  });
-
   test('Default language', () => {
     const unused = initLocalization(localizationConfig, defaultLanguage);
 
@@ -143,7 +141,6 @@ describe('Test initLocalization', () => {
   });
 
   test('Default language with translations v2 enabled', () => {
-    mockGetAseloFeatureFlags.mockReturnValue({ enable_translations_v2: true } as FeatureFlags);
     const unused = initLocalization(localizationConfig, defaultLanguage);
 
     expect(strings).toStrictEqual({ ...twilioStrings, ...defaultTranslation });
