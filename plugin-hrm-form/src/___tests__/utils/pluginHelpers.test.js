@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { initTranslateUI, getMessage, initLocalization, defaultLanguage } from '../../utils/pluginHelpers';
+import { initTranslateUI, getMessage, initLocalization, defaultLanguage } from '../../translations/localizationHelpers';
 
 console.log = jest.fn();
 console.error = jest.fn();
