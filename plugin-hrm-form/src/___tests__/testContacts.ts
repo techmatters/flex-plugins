@@ -17,7 +17,7 @@
 import { callTypes, DefinitionVersionId } from 'hrm-form-definitions';
 
 import { Contact } from '../types/types';
-import { ContactMetadata, LoadingStatus } from '../states/contacts/types';
+import { ContactMetadata, LlmAssistantStatus, LoadingStatus } from '../states/contacts/types';
 import { ReferralLookupStatus } from '../states/contacts/resourceReferral';
 
 export const VALID_EMPTY_CONTACT: Contact = {
@@ -66,4 +66,7 @@ export const VALID_EMPTY_METADATA: ContactMetadata = {
     dialogsOpen: {},
   },
   loadingStatus: LoadingStatus.LOADED,
+  llmAssistant: {
+    status: LlmAssistantStatus.READY,
+  },
 };

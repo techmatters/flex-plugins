@@ -17,7 +17,7 @@
 import type { DefinitionVersion } from 'hrm-form-definitions';
 import { TaskHelper } from '@twilio/flex-ui';
 
-import { ContactMetadata, LoadingStatus } from './types';
+import { ContactMetadata, LlmAssistantStatus, LoadingStatus } from './types';
 import { ReferralLookupStatus } from './resourceReferral';
 import type { ContactState } from './existingContacts';
 import { Contact, ContactRawJson, isOfflineContactTask, OfflineContactTask } from '../../types/types';
@@ -44,6 +44,9 @@ export const newContactMetaData = (recreated: boolean): ContactMetadata => {
     recreated,
     categories: categoriesMeta,
     loadingStatus: LoadingStatus.LOADED,
+    llmAssistant: {
+      status: LlmAssistantStatus.READY,
+    },
   };
 };
 
