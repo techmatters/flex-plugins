@@ -32,14 +32,12 @@ type GetTranslationBody = { language: string };
 // Returns translations json for Flex in string format
 export const getTranslation = async (body: GetTranslationBody): Promise<string> => {
   const translation = await fetchProtectedApi('/getTranslation', body);
-  console.log('>>> getTranslation', { translation, body });
   return translation;
 };
 
 // Returns translations json for system messages in string format
 export const getMessages = async (body: GetTranslationBody): Promise<string> => {
   const messages = await fetchProtectedApi('/getMessages', body);
-  console.log('>>> getMessages', { messages, body });
   return messages;
 };
 
