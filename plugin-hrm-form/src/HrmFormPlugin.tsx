@@ -21,7 +21,7 @@ import './styles/global-overrides.css';
 
 import reducers from './states';
 import HrmTheme, { overrides } from './styles/HrmTheme';
-import { initLocalization } from './utils/pluginHelpers';
+import { initLocalization } from './translations/localizationHelpers';
 import * as Providers from './utils/setUpProviders';
 import * as ActionFunctions from './utils/setUpActions';
 import { recordCallState } from './utils/setUpActions';
@@ -56,7 +56,7 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   const manager = Flex.Manager.getInstance();
 
   const { counselorLanguage, helplineLanguage } = config;
-  console.log('>>> setUpLocalization config', { counselorLanguage, helplineLanguage });
+  console.log('>>> 1 - setUpLocalization config', { counselorLanguage, helplineLanguage });
 
   const twilioStrings = { ...manager.strings }; // save the originals
 

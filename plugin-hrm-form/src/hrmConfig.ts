@@ -67,7 +67,6 @@ const readConfig = () => {
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid as WorkerSID;
   const workerClientAttributes = manager.workerClient.attributes as any;
-  console.log('>>> getHrmConfig Worker client attributes:', workerClientAttributes);
   const { helpline, counselorLanguage, full_name: counselorName, roles } = workerClientAttributes;
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const isSupervisor = roles.includes('supervisor');
@@ -91,6 +90,9 @@ const readConfig = () => {
   const featureFlagsFromEnv = Object.fromEntries(featureFlagsFromEnvEntries);
   const featureFlagsFromServiceConfig: FeatureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
 
+  // TODO: remove this when translations are ready
+  // eslint-disable-next-line camelcase
+  featureFlagsFromServiceConfig.enable_translations_v2 = true;
   const featureFlags = {
     ...featureFlagsFromServiceConfig,
     ...featureFlagsFromEnv,
