@@ -2,14 +2,14 @@
     "attributes": {
         "definitionVersion": "demo-v1",
         "feature_flags": {
-            "enable_active_contact_header": true,
             "enable_fullstory_monitoring": true,
             "enable_client_profiles": true,
             "enable_conferencing": true,
             "enable_region_resource_search": true,
             "enable_generalized_search": true,
             "enable_save_in_progress_contacts": true,
-            "enable_permissions_from_backend": true
+            "enable_permissions_from_backend": true,
+            "enable_translations_v2": true
         }
     }
 }
