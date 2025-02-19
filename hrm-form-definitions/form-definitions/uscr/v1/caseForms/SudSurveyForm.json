@@ -1,0 +1,162 @@
+[
+    {
+      "name": "substancesUsed",
+      "label": "In the past 3 months, have you used any of the following substances (check all that apply)",
+      "type": "listbox-multiselect",
+      "options": [
+        {
+          "value": "Alcoholic beverages (beer, wine, spirits, etc.)",
+          "label": "Alcoholic beverages (beer, wine, spirits, etc.)"
+        },
+        {
+          "value": "Cannabis (marijuana, pot, grass, hash, etc.)",
+          "label": "Cannabis (marijuana, pot, grass, hash, etc.)"
+        },
+        {
+          "value": "Cocaine (coke, crack, etc.)",
+          "label": "Cocaine (coke, crack, etc.)"
+        },
+        {
+          "value": "Amphetamine type stimulants (speed, diet pills, ecstasy, etc.)",
+          "label": "Amphetamine type stimulants (speed, diet pills, ecstasy, etc.)"
+        },
+        {
+          "value": "Inhalants (nitrous, glue, petrol, paint thinner, etc.)",
+          "label": "Inhalants (nitrous, glue, petrol, paint thinner, etc.)"
+        },
+        {
+          "value": "Sedatives or Sleeping Pills (Valium, Serepax, Rohypnol, etc.)",
+          "label": "Sedatives or Sleeping Pills (Valium, Serepax, Rohypnol, etc.)"
+        },
+        {
+          "value": "Hallucinogens (LSD, acid, mushrooms, PCP, Special K, etc.)",
+          "label": "Hallucinogens (LSD, acid, mushrooms, PCP, Special K, etc.)"
+        },
+        {
+          "value": "Opioids (heroin, morphine, methadone, codeine, fentanyl etc.)",
+          "label": "Opioids (heroin, morphine, methadone, codeine, fentanyl etc.)"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
+        }
+      ]
+    },
+    {
+      "name": "otherSubstancesUsed",
+      "label": "If 'Other' has been checked, please specify",
+      "type": "input"
+    },
+    {
+      "name": "failedToControlSubstances",
+      "label": "In the past 3 months, have you ever tried and failed to control, cut down, or stop using the substances listed above?",
+      "type": "select",
+      "unknownOption": "Unknown",
+      "options": [
+        {
+          "value": "Unknown",
+          "label": ""
+        },
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        },
+        {
+          "value": "Unsure",
+          "label": "Unsure"
+        }
+      ]
+    },
+    {
+      "name": "treatmentInterest",
+      "label": "Are you interested in treatment for substance use disorder? If yes, continue with survey.",
+      "type": "select",
+      "unknownOption": "Unknown",
+      "options": [
+        {
+          "value": "Unknown",
+          "label": ""
+        },
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        },
+        {
+          "value": "Unsure",
+          "label": "Unsure"
+        }
+      ]
+    },
+    {
+      "name": "treatmentPreferences",
+      "label": "There are several options for substance use disorder treatment. Which are you interested in?",
+      "type": "listbox-multiselect",
+      "options": [
+        {
+          "value": "Safe use (e.g., narcan, drug test strips)",
+          "label": "Safe use (e.g., narcan, drug test strips)"
+        },
+        {
+          "value": "Outpatient treatment",
+          "label": "Outpatient treatment"
+        },
+        {
+          "value": "Inpatient treatment pilot",
+          "label": "Inpatient treatment pilot"
+        }
+      ]
+    },
+    {
+      "name": "hasServiceAnimal",
+      "label": "Do you have a pet(s)/service animal(s)?",
+      "type": "select",
+      "unknownOption": "Unknown",
+      "options": [
+        {
+          "value": "Unknown",
+          "label": ""
+        },
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "name": "petType",
+      "label": "What type of pet(s)/service animal(s)?",
+      "type": "input"
+    },
+    {
+      "name": "petSeparationBarrier",
+      "label": "Is separating from your pet(s)/service animal a barrier to participating in the pilot program?",
+      "type": "select",
+      "unknownOption": "Unknown",
+      "options": [
+        {
+          "value": "Unknown",
+          "label": ""
+        },
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        }
+      ]
+    }
+  ]
