@@ -3,6 +3,10 @@
     "label": "Person Experiencing Homelessness",
     "formPath": "caseForms/PersonExperiencingHomelessnessForm.json"
   },
+  "incidentReport": {
+    "label": "Incident Report",
+    "formPath": "caseForms/IncidentReportForm.json"
+  },
   "safetyPlan": {
     "label": "Safety Plan",
     "formPath": "caseForms/SafetyPlanForm.json"

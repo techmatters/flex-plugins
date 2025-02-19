@@ -12,7 +12,7 @@
   },
   "case": {
     "sectionTypes": {
-      "peopleExperiencingHomelessness": {
+      "personExperiencingHomelessness": {
         "splitFormAt": 3,
         "printOrder": 1,
         "caseHomeOrder": 1,
