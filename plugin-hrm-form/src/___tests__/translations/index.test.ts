@@ -28,7 +28,7 @@ const mockGetAseloFeatureFlags = getAseloFeatureFlags as jest.Mock;
 beforeEach(() => {
   mockGetAseloFeatureFlags.mockReturnValue({
     // eslint-disable-next-line camelcase
-    enable_translations_v2: false,
+    enable_hierarchical_translations: false,
   } as FeatureFlags);
 });
 
@@ -172,3 +172,11 @@ describe('Test initLocalization', () => {
     afterNewStrings.mockClear();
   });
 });
+
+
+// We should test this more comprehensively. We should test edge cases like
+
+// base file present, locale file present, helpline specific missing,
+// base file present, locale file missing, helpline specific present,
+// base file present, locale file missing, helpline specific missing
+// We should also validate by looking up specific translations and comparing them to what is expected. At the moment your test code looks an awful lot like your implementation code, which you should try to avoid. It means you risk replicating the same mistake in your test as you have in your code

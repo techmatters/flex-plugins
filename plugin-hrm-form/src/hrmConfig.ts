@@ -66,8 +66,7 @@ const readConfig = () => {
 
   const chatServiceSid = manager.serviceConfiguration.chat_service_instance_sid;
   const workerSid = manager.workerClient.sid as WorkerSID;
-  const workerClientAttributes = manager.workerClient.attributes as any;
-  const { helpline, counselorLanguage, full_name: counselorName, roles } = workerClientAttributes;
+  const { helpline, counselorLanguage, full_name: counselorName, roles } = manager.workerClient.attributes as any;
   const currentWorkspace = manager.serviceConfiguration.taskrouter_workspace_sid;
   const isSupervisor = roles.includes('supervisor');
   const {

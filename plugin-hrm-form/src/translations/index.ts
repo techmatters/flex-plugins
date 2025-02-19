@@ -99,17 +99,36 @@ const bundledMessages = {
 
 // TODO(mythily): potentially move Zambia messages to flex from serverless https://github.com/techmatters/serverless/pull/51/files
 /* eslint-disable import/no-unused-modules */
-export const loadV2Translations = (language: string): Record<string, string> => {
+export const loadTranslations = (language: string): Record<string, string> => {
   const [baseLanguage] = language.split('-');
 
   try {
-    const baseTranslation = require(`./baseLanguage/${baseLanguage}.json`);
-    const localeOverrides = require(`./localeOverrides/${language}.json`);
-    const { helplineCode } = getHrmConfig();
-    const helplineModule = require(`./helplineOverrides/${helplineCode}.json`);
-    const helplineOverrides = helplineModule.translations[baseLanguage];
+    // Load base language translations
+    let translations = {};
+    try {
+      translations = require(`./locales/${baseLanguage}.json`);
+    } catch (error) {
+      console.error(`Base language file not found for ${baseLanguage}`);
+    }
 
-    return { ...baseTranslation, ...localeOverrides, ...helplineOverrides };
+    // Load locale-specific overrides if they exist
+    if (language !== baseLanguage) {
+      const localeOverrides = require(`./locales/${language}.json`);
+      translations = { ...translations, ...localeOverrides };
+    }
+
+    // Load helpline-specific overrides from hrm-form-definitions
+    const { helplineCode } = getHrmConfig();
+    try {
+      const helplineTranslations = require(`../../../hrm-form-definitions/form-definitions/${helplineCode}/Translations.json`);
+      if (helplineTranslations[baseLanguage]) {
+        translations = { ...translations, ...helplineTranslations[baseLanguage] };
+      }
+    } catch (error) {
+      console.warn(`Helpline translations not found in hrm-form-definitions for helpline: ${helplineCode}`);
+    }
+
+    return translations;
   } catch (error) {
     console.error('Error loading translations:', error);
     return {};
@@ -130,14 +149,14 @@ type LocalizationConfig = {
  */
 export const initTranslateUI = (localizationConfig: LocalizationConfig) => async (language: string): Promise<void> => {
   const { twilioStrings, setNewStrings, afterNewStrings } = localizationConfig;
-  const { enable_translations_v2: enableTranslationsV2 } = getAseloFeatureFlags();
+  const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
 
   try {
     let customStrings;
-    if (enableTranslationsV2) {
-      customStrings = loadV2Translations(language);
+    if (enableHierarchicalTranslations) {
+      customStrings = loadTranslations(language);
       if (!customStrings) {
-        console.error(`Could not load V2 translations for ${language}`);
+        console.error(`Could not load translations for ${language}`);
       }
     } else {
       // Use legacy translations
@@ -174,21 +193,18 @@ export const initTranslateUI = (localizationConfig: LocalizationConfig) => async
 /**
  * Function that receives a message key and returns a function to fetch the appropriate translation.
  * If V2 translations are enabled, it will look for the message in the helpline overrides.
- * Otherwise, it will:
- * 1. Return default message if no language is provided
- * 2. Use bundled messages if available for the language
- * 3. Fetch from server if not bundled
- * 4. Fall back to default message if none found
  * @param {string} messageKey - The key to look up in the translation files
  * @returns {(language: string) => Promise<string>} - Function that takes a language code and returns the translated message
  */
 export const getMessage = messageKey => async language => {
-  const { enable_translations_v2: enableTranslationsV2 } = getAseloFeatureFlags();
+  const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
 
   try {
-    if (enableTranslationsV2) {
-      const messages = require(`./helplineOverrides/${language}.json`);
-      return messages[messageKey];
+    if (enableHierarchicalTranslations) {
+      const { helplineCode } = getHrmConfig();
+      const helplineTranslations = require(`../../../hrm-form-definitions/form-definitions/${helplineCode}/Translations.json`);
+
+      return helplineTranslations[language][messageKey];
     }
     if (!language) return defaultMessages[messageKey];
 

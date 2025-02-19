@@ -267,7 +267,7 @@ export type FeatureFlags = {
   enable_sort_cases: boolean; // Enables Sorting at Case List
   enable_teams_view_enhancements2: boolean; // Enables custom Teams View UI with labels
   enable_transfers: boolean; // Enables Transfering Contacts
-  enable_translations_v2: boolean; // Enables new translation structure with base language, locale overrides, and helpline overrides. When false, uses legacy helpline-based translation files
+  enable_hierarchical_translations: boolean; // Enables new translation structure with base language, locale overrides, and helpline overrides. When false, uses legacy helpline-based translation files
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
   enable_llm_summary: boolean; // Enables generation of suggested contact summaries via an LLM
