@@ -17,8 +17,7 @@
         "targets": [
           {
             "expression": "((worker.waitingOfflineContact != true AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)) AND worker.roles HAS \"supervisor\"",
-            "queue": "${task_queues.master}",
-            "skip_if": "1==1"
+            "queue": "${task_queues.master}"
           }
         ]
       },
