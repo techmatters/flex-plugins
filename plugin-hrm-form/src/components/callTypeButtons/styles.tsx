@@ -96,20 +96,20 @@ export const NonDataCallTypeButton = styled(Button)<NonDataCallTypeButtonProps>`
   }
 `;
 
-export const CloseTaskDialog = styled(props => <Dialog {...props} classes={{ paper: 'paper' }} />)`
+export const DialogStyled = styled(props => <Dialog {...props} classes={{ paper: 'paper' }} />)`
   && .paper {
     width: 360px;
   }
 `;
 
-export const NonDataCallTypeDialogContainer = styled('div')`
+export const DialogContainer = styled('div')`
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 5px;
 `;
 
-export const CloseTaskDialogText = styled('p')`
+export const DialogStyledText = styled('p')`
   font-size: 14px;
   font-weight: 700;
   margin-bottom: 36px;

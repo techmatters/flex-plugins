@@ -30,7 +30,7 @@ export const setUpSkillsColumn = () => {
       key="skills"
       header="Skills"
       sortingFn={sortSkills}
-      style={{ width: 'auto !important' }}
+      style={{ width: 'auto !important', minWidth: '13%' }}
       content={item => <SkillsCell item={item} />}
     />,
     { sortOrder: 0 },

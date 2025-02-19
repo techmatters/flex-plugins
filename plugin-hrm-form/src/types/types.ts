@@ -265,6 +265,7 @@ export type FeatureFlags = {
   enable_save_in_progress_contacts: boolean; // Enables Saving In Progress Contacts
   enable_save_insights: boolean; // Enables Saving Aditional Data on Insights
   enable_sort_cases: boolean; // Enables Sorting at Case List
+  enable_switchboarding: boolean; // Enables Switchboarding
   enable_teams_view_enhancements2: boolean; // Enables custom Teams View UI with labels
   enable_transfers: boolean; // Enables Transfering Contacts
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio

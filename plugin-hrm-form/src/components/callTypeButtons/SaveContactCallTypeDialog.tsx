@@ -19,9 +19,9 @@ import { Template } from '@twilio/flex-ui';
 
 import { Box, Row, HiddenText } from '../../styles';
 import {
-  CloseTaskDialog,
-  CloseTaskDialogText,
-  NonDataCallTypeDialogContainer,
+  DialogStyled,
+  DialogStyledText,
+  DialogContainer,
   ConfirmButton,
   CancelButton,
   CloseButton,
@@ -47,18 +47,18 @@ const SaveContactCallTypeDialog: React.FC<Props> = ({
   handleConfirm,
   handleCancel,
 }) => (
-  <CloseTaskDialog onClose={handleCancel} open={isOpen}>
+  <DialogStyled onClose={handleCancel} open={isOpen}>
     <TabPressWrapper>
-      <NonDataCallTypeDialogContainer>
+      <DialogContainer>
         <Box marginLeft="auto">
           <HiddenText id="CloseButton">
             <Template code="CloseButton" />
           </HiddenText>
           <CloseButton tabIndex={3} aria-label="CloseButton" onClick={handleCancel} />
         </Box>
-        <CloseTaskDialogText>
+        <DialogStyledText>
           <Template code="NonDataCallTypeDialog-CloseConfirm" />
-        </CloseTaskDialogText>
+        </DialogStyledText>
         <Box marginBottom="32px">
           <Row>
             <ConfirmButton
@@ -80,9 +80,9 @@ const SaveContactCallTypeDialog: React.FC<Props> = ({
             </CancelButton>
           </Row>
         </Box>
-      </NonDataCallTypeDialogContainer>
+      </DialogContainer>
     </TabPressWrapper>
-  </CloseTaskDialog>
+  </DialogStyled>
 );
 
 SaveContactCallTypeDialog.displayName = 'SaveContactCallTypeDialog';

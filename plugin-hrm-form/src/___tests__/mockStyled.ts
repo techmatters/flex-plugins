@@ -150,12 +150,12 @@ jest.mock('../components/callTypeButtons/styles', () => ({
   Label: 'Label',
   DataCallTypeButton: 'DataCallTypeButton',
   NonDataCallTypeButton: 'NonDataCallTypeButton',
-  CloseTaskDialog: 'CloseTaskDialog',
-  CloseTaskDialogText: 'CloseTaskDialogText',
+  DialogStyled: 'DialogStyled',
+  DialogStyledText: 'DialogStyledText',
   ConfirmButton: 'ConfirmButton',
   CancelButton: 'CancelButton',
   CloseButton: 'CloseButton',
-  NonDataCallTypeDialogContainer: 'NonDataCallTypeDialogContainer',
+  DialogContainer: 'DialogContainer',
 }));
 
 jest.mock('../components/queuesStatus/styles', () => ({
