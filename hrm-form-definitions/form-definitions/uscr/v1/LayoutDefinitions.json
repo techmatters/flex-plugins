@@ -50,6 +50,9 @@
         "previewFields": [
           "referredTo"
         ],
+        "layout": {
+          "referredTo": {}
+        },
         "splitFormAt": 2,
         "printOrder": 6,
         "caseHomeLocation": "timeline"

@@ -23,8 +23,10 @@ import { FormInputBaseProps } from './components/types';
 import { FormInput } from './components';
 import { CustomHandlers, getInputType } from '../common/forms/formGenerators';
 import { generateCustomContactFormItem } from './components/customContactComponent';
+import FormTextArea from './components/FormTextArea/FormTextArea';
+import { TaskSID } from '../../types/twilio';
 
-const getregisterOptions = (formItemDefinition: FormItemDefinition): RegisterOptions =>
+const getRegisterOptions = (formItemDefinition: FormItemDefinition): RegisterOptions =>
   pick(formItemDefinition, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
 
 export type CreateInputParams = {
@@ -33,10 +35,10 @@ export type CreateInputParams = {
   updateCallback: FormInputBaseProps['updateCallback'];
   isItemEnabled?: (item: FormItemDefinition) => boolean;
   initialValue: FormInputBaseProps['initialValue'];
-  htmlElRef: FormInputBaseProps['htmlElRef'];
+  htmlElRef?: FormInputBaseProps['htmlElRef'];
   customHandlers?: CustomHandlers;
   context?: {
-    taskSid?: string;
+    taskSid?: TaskSID;
     contactId?: string;
   };
 };
@@ -45,15 +47,15 @@ export const createInput = ({
   formItemDefinition,
   parentsPath,
   updateCallback,
-  isItemEnabled,
+  isItemEnabled = () => true,
   initialValue,
   customHandlers,
-  htmlElRef,
+  htmlElRef = null,
   context = {},
 }: CreateInputParams): JSX.Element => {
   const isEnabled = isItemEnabled(formItemDefinition);
   const inputId = [parentsPath, formItemDefinition.name].filter(Boolean).join('.');
-  const registerOptions = getregisterOptions(formItemDefinition);
+  const registerOptions = getRegisterOptions(formItemDefinition);
 
   // eslint-disable-next-line sonarjs/no-small-switch
   switch (formItemDefinition.type) {
@@ -65,6 +67,24 @@ export const createInput = ({
           initialValue={initialValue}
           updateCallback={updateCallback}
           label={formItemDefinition.label}
+          registerOptions={registerOptions}
+          isEnabled={isEnabled}
+          htmlElRef={htmlElRef}
+        />
+      );
+    }
+    case FormInputType.Textarea: {
+      return (
+        <FormTextArea
+          key={inputId}
+          inputId={inputId}
+          initialValue={initialValue}
+          updateCallback={updateCallback}
+          label={formItemDefinition.label}
+          rows={formItemDefinition.rows}
+          width={formItemDefinition.width}
+          additionalActionDefinitions={formItemDefinition.additionalActions ?? []}
+          additionalActionContext={context}
           registerOptions={registerOptions}
           isEnabled={isEnabled}
           htmlElRef={htmlElRef}

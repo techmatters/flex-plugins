@@ -48,6 +48,14 @@ export const LoadingStatus = {
 
 export type LoadingStatus = typeof LoadingStatus[keyof typeof LoadingStatus];
 
+export const LlmAssistantStatus = {
+  READY: 'ready',
+  WORKING: 'working',
+  ERROR: 'error',
+} as const;
+
+export type LlmAssistantStatus = typeof LlmAssistantStatus[keyof typeof LlmAssistantStatus];
+
 export type ContactMetadata = {
   startMillis: number;
   endMillis: number;
@@ -61,6 +69,10 @@ export type ContactMetadata = {
     dialogsOpen: { [key: string]: boolean };
   };
   loadingStatus: LoadingStatus;
+  llmAssistant: {
+    status: LlmAssistantStatus;
+    lastError?: Error;
+  };
 };
 
 export type ContactsState = {

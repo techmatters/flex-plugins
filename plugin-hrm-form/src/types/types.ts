@@ -141,6 +141,7 @@ export type ContactRawJson = {
     createdOnBehalfOf: WorkerSID;
     [key: string]: string | boolean;
   };
+  llmSupportedEntries?: { [key in 'childInformation'|'callerInformation'|'caseInformation']?: string[] }
 };
 
 export type Contact = {
@@ -268,6 +269,7 @@ export type FeatureFlags = {
   enable_transfers: boolean; // Enables Transfering Contacts
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
+  enable_llm_summary: boolean; // Enables generation of suggested contact summaries via an LLM
 };
 /* eslint-enable camelcase */
 

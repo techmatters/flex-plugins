@@ -15,12 +15,55 @@
       "household": {
         "splitFormAt": 7,
         "caseHomeOrder": 1,
-        "printOrder": 1
+        "printOrder": 1,
+        "previewFields": [
+          "name",
+          "gender",
+          "age",
+          "relationshipToChild"
+        ],
+        "layout": {
+          "name": {
+            "widthRatio": 1.5,
+            "labelTemplateCode": "Case-PerpetratorName",
+            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
+          },
+          "age": {
+            "labelTemplateCode": "Case-PerpetratorAge"
+          },
+          "gender": {
+            "labelTemplateCode": "Case-PerpetratorGender"
+          },
+          "relationshipToChild": {
+            "labelTemplateCode": "Case-PerpetratorRelationship"
+          }
+        }
       },
       "perpetrator": {
         "splitFormAt": 8,
         "caseHomeOrder": 2,
-        "printOrder": 2
+        "printOrder": 2,
+        "previewFields": [
+          "name",
+          "gender",
+          "age",
+          "relationshipToChild"
+        ],
+        "layout": {
+          "name": {
+            "labelTemplateCode": "Case-PerpetratorName",
+            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
+          },
+          "age": {
+            "labelTemplateCode": "Case-PerpetratorAge"
+          },
+          "gender": {
+            "labelTemplateCode": "Case-PerpetratorGender"
+          },
+          "relationshipToChild": {
+            "labelTemplateCode": "Case-PerpetratorRelationship"
+          }
+        }
       },
       "incident": {
         "previewFields": [
@@ -47,9 +90,14 @@
         "splitFormAt": 5,
         "printOrder": 4
       },
-      "document": {
-        "splitFormAt": 1,
-        "caseHomeOrder": 4
+      "note": {
+        "printOrder": 5,
+        "caseHomeLocation": "timeline",
+        "printFormat": "list",
+        "previewFields": ["note"],
+        "layout": {
+          "note": {}
+        }
       }
     }
   }

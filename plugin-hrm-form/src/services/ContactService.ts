@@ -99,8 +99,6 @@ export async function generalizedSearch({
 }
 
 type HandleTwilioTaskResponse = {
-  channelSid?: string;
-  serviceSid?: string;
   conversationMedia: ConversationMedia[];
   externalRecordingInfo?: ExternalRecordingInfoSuccess;
 };
@@ -287,13 +285,8 @@ export const finalizeContact = async (
 ): Promise<Contact> => {
   try {
     const twilioTaskResult = await handleTwilioTask(task, contact, reservationSid);
-    const { channelSid, serviceSid } = twilioTaskResult;
     await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
-    const contactUpdates: ContactDraftChanges = {
-      channelSid,
-      serviceSid,
-    };
-    return await updateContactInHrm(contact.id, contactUpdates, true);
+    return await updateContactInHrm(contact.id, {}, true);
   } catch (error) {
     console.error('Error finalizing contact:', error);
     throw new Error('Failed to finalize contact');
@@ -348,7 +341,7 @@ export async function removeFromCase(contactId: string) {
   return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/${contactId}/connectToCase`, options));
 }
 
-async function saveConversationMedia(contactId, conversationMedia: ConversationMedia[]) {
+async function saveConversationMedia(contactId: string, conversationMedia: ConversationMedia[]) {
   const options = {
     method: 'POST',
     body: JSON.stringify(conversationMedia),

@@ -98,11 +98,11 @@ describe('useState mocked', () => {
   };
 
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.demoV1);
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.demoV1, mockV1);
     mockPartialConfiguration({ workerSid: CURRENT_WORKER_SID });
   });
 

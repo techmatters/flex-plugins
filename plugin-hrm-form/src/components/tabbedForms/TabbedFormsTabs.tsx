@@ -56,6 +56,7 @@ import { TabbedFormsCommonProps } from './types';
 import { useTabbedFormContext } from './hooks/useTabbedForm';
 // Ensure we import any custom components that might be used in a form
 import '../contact/ResourceReferralList';
+import '../contact/GenerateSummaryButton';
 
 type OwnProps = TabbedFormsCommonProps;
 
