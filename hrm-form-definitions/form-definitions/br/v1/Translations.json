@@ -1,0 +1,13 @@
+{
+  "messages": {
+    "pt": {
+      "WelcomeMsg": "Olá, sou da equipe da SaferNet, precisa de ajuda?",
+      "GoodbyeMsg": "O atendente saiu do chat. Obrigado por nos contactar. Por favor, entre em contato novamente se precisar de mais ajuda",
+      "SaferNet-CustomGoodbyeMsg": "Essa conversa foi finalizada. Obrigada por nos contatar. Por favor, nos ajude a melhorar o canal avaliando a orientação que recebeu clicando no link ao lado: "
+    }
+  },
+  "translations": {
+    "pt": {},
+    "en": {}
+  }
+}

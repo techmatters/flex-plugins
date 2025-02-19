@@ -14,10 +14,23 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { initTranslateUI, getMessage, initLocalization, defaultLanguage } from '../../utils/pluginHelpers';
+import { initTranslateUI, getMessage, initLocalization, defaultLanguage } from '../../translations';
+import { getAseloFeatureFlags } from '../../hrmConfig';
+import { FeatureFlags } from '../../types/types';
+
+jest.mock('../../hrmConfig');
 
 console.log = jest.fn();
 console.error = jest.fn();
+
+const mockGetAseloFeatureFlags = getAseloFeatureFlags as jest.Mock;
+
+beforeEach(() => {
+  mockGetAseloFeatureFlags.mockReturnValue({
+    // eslint-disable-next-line camelcase
+    enable_hierarchical_translations: false,
+  } as FeatureFlags);
+});
 
 const defaultTranslation = require(`../../translations/${defaultLanguage}/flexUI.json`);
 const defaultMessages = require(`../../translations/${defaultLanguage}/messages.json`);
@@ -127,6 +140,12 @@ describe('Test initLocalization', () => {
     afterNewStrings.mockClear();
   });
 
+  test('Default language with translations v2 enabled', () => {
+    const unused = initLocalization(localizationConfig, defaultLanguage);
+
+    expect(strings).toStrictEqual({ ...twilioStrings, ...defaultTranslation });
+  });
+
   test('Non default language', async () => {
     const unused = initLocalization(localizationConfig, 'es');
 
@@ -153,3 +172,11 @@ describe('Test initLocalization', () => {
     afterNewStrings.mockClear();
   });
 });
+
+
+// We should test this more comprehensively. We should test edge cases like
+
+// base file present, locale file present, helpline specific missing,
+// base file present, locale file missing, helpline specific present,
+// base file present, locale file missing, helpline specific missing
+// We should also validate by looking up specific translations and comparing them to what is expected. At the moment your test code looks an awful lot like your implementation code, which you should try to avoid. It means you risk replicating the same mistake in your test as you have in your code
