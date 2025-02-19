@@ -46,6 +46,7 @@
         "splitFormAt": 7,
         "printOrder": 1,
         "caseHomeOrder": 1,
+        "caseHomeLocation": "timeline",
         "previewFields": [
           "primaryDisposition"
         ],
