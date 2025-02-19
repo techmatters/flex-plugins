@@ -3,7 +3,9 @@
     "feature_flags": {
       "enable_manual_pulling": false,
       "enable_voice_recordings": true,
-      "enable_client_profiles": true
+      "enable_client_profiles": true,
+      "enable_backend_hrm_contact_creation": true,
+      "lambda_task_created_handler": true
     },
     "hrm_base_url": "https://hrm-test.tl.techmatters.org",
     "pdfImagesSource": "https://tl-public-chat-jm-stg.s3.amazonaws.com",

@@ -16,8 +16,7 @@
             "enable_lex": true,
             "enable_generalized_search": true,
             "enable_post_survey": true,
-            "enable_voice_recordings": true,
-            "enable_backend_hrm_contact_creation": true
+            "enable_voice_recordings": true
         },
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",
         "multipleOfficeSupport": true,

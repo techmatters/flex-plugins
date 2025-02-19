@@ -9,7 +9,9 @@
             "enable_region_resource_search": true,
             "enable_generalized_search": true,
             "enable_save_in_progress_contacts": true,
-            "enable_permissions_from_backend": true
+            "enable_permissions_from_backend": true,
+            "enable_backend_hrm_contact_creation": true,
+            "lambda_task_created_handler": true
         }
     }
 }
