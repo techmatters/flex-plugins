@@ -85,7 +85,5 @@ export const setTaskWrapupEventListeners = (featureFlags: FeatureFlags) => {
   /**
    * If transfers are on, after a task is transferred remove all the conversation listeners to prevent message notifications
    */
-  if (featureFlags.enable_transfers) {
-    manager.events.addListener('taskCompleted', deactivateConversationListenersForTransferred);
-  }
+  manager.events.addListener('taskCompleted', deactivateConversationListenersForTransferred);
 };

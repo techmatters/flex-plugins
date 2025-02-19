@@ -1,0 +1,61 @@
+{
+  "intentName": "post_survey_yes",
+  "description": "Post Survey Intent - Yes",
+  "sampleUtterances": [
+    {
+      "utterance": "yah"
+    },
+    {
+      "utterance": "ya"
+    },
+    {
+      "utterance": "yeah"
+    },
+    {
+      "utterance": "y"
+    },
+    {
+      "utterance": "yes"
+    },
+    {
+      "utterance": "yep"
+    },
+    {
+      "utterance": "yup"
+    }
+  ],
+  "dialogCodeHook": {
+    "enabled": false
+  },
+  "slotPriorities": [
+    {
+      "priority": 1,
+      "slotName": "was_helpful"
+    },
+    {
+      "priority": 1,
+      "slotName": "would_recommend"
+    }
+  ],
+  "intentClosingSetting": {
+    "closingResponse": {
+      "messageGroups": [
+        {
+          "message": {
+            "plainTextMessage": {
+              "value": "Thank you for reaching out. Please contact us again if you need more help."
+            }
+          }
+        }
+      ],
+      "allowInterrupt": true
+    },
+    "active": true,
+    "nextStep": {
+        "dialogAction": {
+            "type": "EndConversation"
+        },
+        "intent": {}
+    }
+  }
+}

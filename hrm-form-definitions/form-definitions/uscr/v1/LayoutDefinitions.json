@@ -12,81 +12,41 @@
   },
   "case": {
     "sectionTypes": {
-      "household": {
-        "splitFormAt": 7,
-        "caseHomeOrder": 1,
+      "primaryDisposition": {
+        "splitFormAt": 2,
         "printOrder": 1,
+        "caseHomeOrder": 1,
         "previewFields": [
-          "name",
-          "gender",
-          "age",
-          "relationshipToChild"
+          "primaryDisposition"
         ],
         "layout": {
-          "name": {
-            "widthRatio": 1.5,
-            "labelTemplateCode": "Case-PerpetratorName",
-            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
-          },
-          "age": {
-            "labelTemplateCode": "Case-PerpetratorAge"
-          },
-          "gender": {
-            "labelTemplateCode": "Case-PerpetratorGender"
-          },
-          "relationshipToChild": {
-            "labelTemplateCode": "Case-PerpetratorRelationship"
+          "primaryDisposition": {
+            "includeLabel": true
           }
         }
       },
-      "perpetrator": {
-        "splitFormAt": 7,
-        "caseHomeOrder": 2,
+      "secondaryDisposition": {
+        "splitFormAt": 2,
         "printOrder": 2,
-        "previewFields": [
-          "name",
-          "gender",
-          "age",
-          "relationshipToChild"
-        ],
-        "layout": {
-          "name": {
-            "labelTemplateCode": "Case-PerpetratorName",
-            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
-          },
-          "age": {
-            "labelTemplateCode": "Case-PerpetratorAge"
-          },
-          "gender": {
-            "labelTemplateCode": "Case-PerpetratorGender"
-          },
-          "relationshipToChild": {
-            "labelTemplateCode": "Case-PerpetratorRelationship"
-          }
-        }
+        "caseHomeOrder": 2
       },
-      "incident": {
-        "previewFields": [
-          "date",
-          "duration",
-          "location"
-        ],
-        "layout": {
-          "date": {
-            "includeLabel": false,
-            "format": "date"
-          },
-          "duration": {
-            "includeLabel": true
-          },
-          "location": {
-            "includeLabel": true
-          }
-        },
+
+      "narrativeSummary": {
+        "splitFormAt": 2,
+        "printOrder": 3,
+        "caseHomeOrder": 3
+      },
+      "safetyPlan": {
         "splitFormAt": 3,
-        "printOrder": 3
+        "printOrder": 4,
+        "caseHomeOrder": 4
       },
-     "referral": {
+      "sudSurvey": {
+        "splitFormAt": 4,
+        "printOrder": 5,
+        "caseHomeOrder": 5
+      },
+       "referral": {
         "previewFields": [
           "referredTo"
         ],
@@ -94,42 +54,13 @@
           "referredTo": {}
         },
         "splitFormAt": 2,
-        "printOrder": 4,
+        "printOrder": 6,
         "caseHomeLocation": "timeline"
       },
-      "document": {
-        "splitFormAt": 1,
-        "caseHomeOrder": 4,
-        "printFormat": "hidden",
-        "previewFields": [
-          "createdAt",
-          "fileName",
-          "comments"
-        ],
-        "layout": {
-          "createdAt": {
-            "labelTemplateCode": "Case-DocumentFileName",
-            "format": "date"
-          },
-          "fileName": {
-            "labelTemplateCode": "Case-DocumentDate",
-            "format": "file",
-            "widthRatio": 2
-          },
-          "comments": {
-            "labelTemplateCode": "Case-DocumentComments",
-            "widthRatio": 2
-          }
-        }
-      },
       "note": {
-        "printOrder": 5,
+        "printOrder": 7,
         "caseHomeLocation": "timeline",
-        "printFormat": "list",
-        "previewFields": ["note"],
-        "layout": {
-          "note": {}
-        }
+        "printFormat": "list"
       }
     }
   }

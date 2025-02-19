@@ -62,8 +62,7 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
 
   const setNewStrings = (newStrings: { [key: string]: string }) => {
     const overrideStrings = { ...manager.strings, ...newStrings };
-    const maskedStrings = maskManagerStringsWithIdentifiers(overrideStrings);
-    manager.strings = maskedStrings;
+    manager.strings = maskManagerStringsWithIdentifiers(overrideStrings);
   };
 
   const afterNewStrings = (language: string) => {
@@ -98,10 +97,8 @@ const setUpComponents = (
   setUpViewMaskedVoiceNumber();
   maskMessageListWithIdentifiers();
 
-  if (featureFlags.enable_transfers) {
-    setUpTransferComponents();
-    Channels.setUpIncomingTransferMessage();
-  }
+  setUpTransferComponents();
+  Channels.setUpIncomingTransferMessage();
 
   Components.setUpCaseList();
   if (featureFlags.enable_client_profiles) Components.setUpClientProfileList();
@@ -111,10 +108,8 @@ const setUpComponents = (
   // remove dynamic components
   Components.removeTaskCanvasHeaderActions(featureFlags);
   Components.setLogo(setupObject.logoUrl);
-  if (featureFlags.enable_transfers) {
-    Components.removeDirectoryButton();
-    Components.removeActionsIfTransferring();
-  }
+  Components.removeDirectoryButton();
+  Components.removeActionsIfTransferring();
 
   Components.setUpStandaloneSearch();
   setUpReferrableResources();
@@ -149,7 +144,7 @@ const setUpActions = (
 
   Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(featureFlags, setupObject, getMessage));
 
-  setUpTransferActions(featureFlags.enable_transfers, setupObject);
+  setUpTransferActions(setupObject);
 
   Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
   Flex.Manager.getInstance().workerClient.addListener('reservationCreated', reservation => {

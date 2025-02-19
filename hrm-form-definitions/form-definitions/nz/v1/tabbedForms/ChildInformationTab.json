@@ -402,6 +402,10 @@
       {
         "value": "LGBTQI+/SOGIESC",
         "label": "LGBTQI+/SOGIESC"
+      },
+      {
+        "value": "Refugee",
+        "label": "Refugee"
       }
     ]
   }

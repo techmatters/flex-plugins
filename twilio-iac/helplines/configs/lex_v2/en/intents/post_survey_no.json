@@ -1,0 +1,46 @@
+{
+  "intentName": "post_survey_no",
+  "description": "Post Survey Intent - Yes",
+  "sampleUtterances": [
+    {
+      "utterance": "not"
+    },
+    {
+      "utterance": "n"
+    },
+    {
+      "utterance": "nope"
+    },
+    {
+      "utterance": "nah"
+    },
+    {
+      "utterance": "no"
+    }
+  ],
+  "dialogCodeHook": {
+    "enabled": false
+  },
+  "slotPriorities": [],
+  "intentClosingSetting": {
+    "closingResponse": {
+      "messageGroups": [
+        {
+          "message": {
+            "plainTextMessage": {
+              "value": "Thank you for reaching out. Please contact us again if you need more help."
+            }
+          }
+        }
+      ],
+      "allowInterrupt": true
+    },
+    "active": true,
+    "nextStep": {
+        "dialogAction": {
+            "type": "EndConversation"
+        },
+        "intent": {}
+    }
+  }
+}

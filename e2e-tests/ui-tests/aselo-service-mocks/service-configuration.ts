@@ -31,7 +31,6 @@ export const serviceConfigurationAttributes = () => ({
     enable_offline_contact: true,
     enable_filter_cases: true,
     enable_sort_cases: true,
-    enable_transfers: true,
     enable_manual_pulling: true,
     enable_csam_clc_report: true,
     enable_canned_responses: true,
