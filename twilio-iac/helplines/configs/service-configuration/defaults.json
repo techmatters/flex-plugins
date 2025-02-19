@@ -80,6 +80,7 @@
             "enable_task_router_event_delegation": true,
             "enable_teams_view_enhancements2": true,
             "enable_transfers": true,
+            "enable_translations_v2": false,
             "enable_twilio_transcripts": false,
             "enable_upload_documents": true,
             "enable_voice_recordings": false
