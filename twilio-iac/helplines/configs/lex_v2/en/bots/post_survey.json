@@ -1,0 +1,20 @@
+{
+  "post_survey": {
+    "description": "General configs/lex/en/bots Post Survey bot",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "type": "Bot",
+    "intents": [
+      "post_survey_yes",
+      "post_survey_no"
+    ],
+    "slots": [
+      "was_helpful",
+      "would_recommend"
+    ],
+    "slot_types" :[
+      "yes_no"
+    ]
+  }
+}

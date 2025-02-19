@@ -1,0 +1,120 @@
+{
+    "intentName": "pre_survey",
+    "description": "Survey intent",
+    "sampleUtterances": [
+        {
+            "utterance": "trigger_pre_survey"
+        },
+        {
+            "utterance": "Incoming webchat contact"
+        }
+    ],
+    "dialogCodeHook": {
+        "enabled": false
+    },
+    "fulfillmentCodeHook": {
+        "enabled": false,
+        "active": true,
+        "postFulfillmentStatusSpecification": {
+            "successNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "timeoutNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            }
+        }
+    },
+    "slotPriorities": [
+        {
+            "priority": 3,
+            "slotName": "age"
+        },
+        {
+            "priority": 1,
+            "slotName": "about_self"
+        },
+        {
+            "priority": 2,
+            "slotName": "gender"
+        }
+    ],
+    "intentClosingSetting": {
+        "closingResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "We will transfer you now. Please hold for a counsellor."
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "EndConversation"
+            },
+            "intent": {}
+        }
+    },
+    "initialResponseSetting": {
+        "initialResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Welcome. To help us better serve you, please answer the following questions."
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "InvokeDialogCodeHook"
+            },
+            "intent": {}
+        },
+        "codeHook": {
+            "enableCodeHookInvocation": true,
+            "active": true,
+            "postCodeHookSpecification": {
+                "successNextStep": {
+                    "dialogAction": {
+                        "type": "ElicitSlot",
+                        "slotToElicit": "about_self"
+                    },
+                    "intent": {}
+                },
+                "failureNextStep": {
+                    "dialogAction": {
+                        "type": "EndConversation"
+                    },
+                    "intent": {}
+                },
+                "timeoutNextStep": {
+                    "dialogAction": {
+                        "type": "EndConversation"
+                    },
+                    "intent": {}
+                }
+            }
+        }
+    }
+}
