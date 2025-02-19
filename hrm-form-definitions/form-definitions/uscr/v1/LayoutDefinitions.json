@@ -12,8 +12,38 @@
   },
   "case": {
     "sectionTypes": {
-      "primaryDisposition": {
-        "splitFormAt": 2,
+      "peopleExperiencingHomelessness": {
+        "splitFormAt": 3,
+        "printOrder": 1,
+        "caseHomeOrder": 1,
+        "previewFields": [
+          "firstName",
+          "lastName",
+          "nickname",
+          "gender",
+          "age"
+        ],
+        "layout": {
+          "firstName": {
+            "includeLabel": true
+          },
+          "lastName": {
+            "includeLabel": true
+          },
+          "nickname": {
+            "includeLabel": true
+          },
+          "gender": {
+            "includeLabel": true
+          },
+          "age": {
+            "includeLabel": true
+          }
+        }
+        
+      },
+      "incidentReport": {
+        "splitFormAt": 7,
         "printOrder": 1,
         "caseHomeOrder": 1,
         "previewFields": [
@@ -24,17 +54,6 @@
             "includeLabel": true
           }
         }
-      },
-      "secondaryDisposition": {
-        "splitFormAt": 2,
-        "printOrder": 2,
-        "caseHomeOrder": 2
-      },
-
-      "narrativeSummary": {
-        "splitFormAt": 2,
-        "printOrder": 3,
-        "caseHomeOrder": 3
       },
       "safetyPlan": {
         "splitFormAt": 3,

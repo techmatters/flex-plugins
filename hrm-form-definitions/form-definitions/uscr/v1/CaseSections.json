@@ -1,15 +1,7 @@
 {
-  "primaryDisposition": {
-    "label": "Primary Disposition",
-    "formPath": "caseForms/PrimaryDispositionForm.json"
-  },
-  "secondaryDisposition": {
-    "label": "Secondary Disposition",
-    "formPath": "caseForms/SecondaryDispositionForm.json"
-  },
-  "narrativeSummary": {
-    "label": "Narrative / Summary",
-    "formPath": "caseForms/NarrativeSummaryForm.json"
+  "personExperiencingHomelessness": {
+    "label": "Person Experiencing Homelessness",
+    "formPath": "caseForms/PersonExperiencingHomelessnessForm.json"
   },
   "safetyPlan": {
     "label": "Safety Plan",
