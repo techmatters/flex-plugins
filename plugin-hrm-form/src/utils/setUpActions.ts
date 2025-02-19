@@ -168,14 +168,11 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
     sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
   }
-  const {
-    enable_transfers: enableTransfers,
-    enable_backend_hrm_contact_creation: enableBackendHrmContactCreation,
-  } = featureFlags;
+  const { enable_backend_hrm_contact_creation: enableBackendHrmContactCreation } = featureFlags;
   if (!enableBackendHrmContactCreation) {
     await initializeContactForm(payload);
   }
-  if (enableTransfers && TransferHelpers.hasTransferStarted(task)) {
+  if (TransferHelpers.hasTransferStarted(task)) {
     await handleTransferredTask(task);
   } else if (!enableBackendHrmContactCreation) {
     await prepopulateForm(task);

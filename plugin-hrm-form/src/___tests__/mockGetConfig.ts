@@ -45,7 +45,6 @@ export const baseMockConfig = {
     'TabbedForms-AddCaseInfoTab': 'Summary',
   },
   featureFlags: {
-    enable_transfers: true,
     enable_save_insights: true,
     enable_counselor_toolkits: true,
     enable_permissions_from_backend: true,

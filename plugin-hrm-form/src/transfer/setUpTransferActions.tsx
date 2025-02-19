@@ -113,7 +113,7 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
       console.log('>> Could not find any conferenceSid');
     } else if (conferenceSid && !conferenceSidFromAttributes) {
       console.log('>> Updating task attributes with conferenceSid');
-      const customer = payload.task.conference?.participants.find(p => p.participantType === 'customer').participantSid;
+      // const customer = payload.task.conference?.participants.find(p => p.participantType === 'customer').participantSid;
       await payload.task.setAttributes({
         ...payload.task.attributes,
         conference: {
@@ -163,8 +163,8 @@ export const handleTransferredTask = async (task: ITask) => {
   }
 };
 
-export const setUpTransferActions = (transfersEnabled: boolean, setupObject: SetupObject) => {
+export const setUpTransferActions = (setupObject: SetupObject) => {
   setUpTransfersNotifications();
-  if (transfersEnabled) Flex.Actions.replaceAction('TransferTask', customTransferTask(setupObject));
+  Flex.Actions.replaceAction('TransferTask', customTransferTask(setupObject));
   Flex.Actions.addListener('afterCancelTransfer', afterCancelTransfer);
 };
