@@ -21,14 +21,13 @@ import {
   populateHrmContactFormFromTask,
 } from './populateHrmContactFormFromTask';
 import { registerTaskRouterEventHandler } from '../taskrouter/taskrouterEventHandler';
-import { EventType, RESERVATION_ACCEPTED } from '../taskrouter/eventTypes';
+import { RESERVATION_ACCEPTED } from '../taskrouter/eventTypes';
 import type { EventFields } from '../taskrouter';
 import twilio from 'twilio';
 import { AccountSID } from '../twilioTypes';
-import { getSsmParameter } from '../ssmCache';
 import { getWorkspaceSid } from '../configuration/twilioConfiguration';
-
-export const eventTypes: EventType[] = [RESERVATION_ACCEPTED];
+import { postToInternalHrmEndpoint } from './internalHrmRequest';
+import { isErr } from '../Result';
 
 // Temporarily copied to this repo, will share the flex types when we move them into the same repo
 
@@ -120,10 +119,7 @@ export const handleEvent = async (
     return;
   }
 
-  const [hrmStaticKey, twilioWorkspaceSid] = await Promise.all([
-    getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/static_key`),
-    getWorkspaceSid(accountSid),
-  ]);
+  const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
   const contactUrl = `${process.env.INTERNAL_HRM_URL}/internal/${hrmApiVersion}/accounts/${accountSid}/contacts`;
 
   console.debug('Creating HRM contact for task', taskSid, contactUrl);
@@ -150,23 +146,20 @@ export const handleEvent = async (
     newContact,
     formDefinitionsVersionUrl,
   );
-  const options: RequestInit = {
-    method: 'POST',
-    body: JSON.stringify(populatedContact),
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Basic ${hrmStaticKey}`,
-    },
-  };
-  const response = await fetch(contactUrl, options);
-  if (!response.ok) {
+  const responseResult = await postToInternalHrmEndpoint<HrmContact, HrmContact>(
+    accountSid,
+    hrmApiVersion,
+    'contact',
+    populatedContact,
+  );
+  if (isErr(responseResult)) {
     console.error(
-      `Failed to create HRM contact for task ${taskSid} - status: ${response.status} - ${response.statusText}`,
-      await response.text(),
+      `Failed to create HRM contact for task ${taskSid} - status: ${responseResult.status}`,
+      responseResult.message,
     );
     return;
   }
-  const { id } = (await response.json()) as HrmContact;
+  const { id } = responseResult.data;
   console.info(`Created HRM contact with id ${id} for task ${taskSid}`);
 
   const taskContext = client.taskrouter.v1.workspaces
