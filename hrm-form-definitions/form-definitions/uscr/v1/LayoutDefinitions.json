@@ -43,7 +43,7 @@
         
       },
       "incidentReport": {
-        "splitFormAt": 7,
+        "splitFormAt": 9,
         "printOrder": 1,
         "caseHomeOrder": 1,
         "caseHomeLocation": "timeline",
