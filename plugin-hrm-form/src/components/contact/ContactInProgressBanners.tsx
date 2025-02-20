@@ -61,23 +61,28 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
 
   useEffect(() => {
     if (finalizeRequested && savedContact.finalizedAt) {
-      if (Notifications.isNotificationActive('NoConversationMediaNotification')) {
-        Notifications.dismissNotificationById('NoConversationMediaNotification');
-      }
-
       setShowResolvedBanner(true);
+      
       if (!isOfflineContact(savedContact) && savedContact.conversationMedia.length === 0) {
-        Notifications.registerNotification({
-          id: 'NoConversationMediaNotification',
-          closeButton: true,
-          content: <Template code="ContactDetails-NoConversationMediaNotification" />,
-          type: NotificationType.warning,
-          timeout: 15000,
-        });
-        Notifications.showNotification('NoConversationMediaNotification');
+        try {
+          Notifications.registerNotification({
+            id: 'NoConversationMediaNotification',
+            closeButton: true,
+            content: <Template code="ContactDetails-NoConversationMediaNotification" />,
+            type: NotificationType.warning,
+            timeout: 15000,
+          });
+          Notifications.showNotification('NoConversationMediaNotification');
+        } catch (error) {
+          console.error('Error showing notification:', error);
+        }
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    // Clean up notification if it exists
+    return () => {
+      Notifications.dismissNotificationById('NoConversationMediaNotification');
+    };
   }, [finalizeRequested, isDraftContact]);
 
   const updateAndSaveContact = async () => {
