@@ -62,7 +62,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
   useEffect(() => {
     if (finalizeRequested && savedContact.finalizedAt) {
       setShowResolvedBanner(true);
-      
+
       if (!isOfflineContact(savedContact) && savedContact.conversationMedia.length === 0) {
         try {
           Notifications.registerNotification({
@@ -83,6 +83,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
     return () => {
       Notifications.dismissNotificationById('NoConversationMediaNotification');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [finalizeRequested, isDraftContact]);
 
   const updateAndSaveContact = async () => {
