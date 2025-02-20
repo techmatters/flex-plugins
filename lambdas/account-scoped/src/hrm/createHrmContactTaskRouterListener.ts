@@ -71,6 +71,7 @@ export const handleEvent = async (
     TaskAttributes: taskAttributesString,
     TaskSid: taskSid,
     WorkerSid: workerSid,
+    WorkerName: workerName,
   }: EventFields,
   accountSid: AccountSID,
   client: twilio.Twilio,
@@ -110,6 +111,9 @@ export const handleEvent = async (
       enable_backend_hrm_contact_creation: enableBackendHrmContactCreation,
     },
   } = serviceConfig.attributes;
+  // This is a really hacky test, need a better way to determine if the user is one of our bots
+  const userIsAseloBot = /aselo.+@techmatters\.org/.test(workerName);
+  const hrmAccountId = userIsAseloBot ? `${accountSid}-aselo_test` : accountSid;
   const formDefinitionsVersionUrl =
     configFormDefinitionsVersionUrl ||
     `${assetsBucketUrl}/form-definitions/${helplineCode}/v1`;
@@ -124,7 +128,7 @@ export const handleEvent = async (
     getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/static_key`),
     getWorkspaceSid(accountSid),
   ]);
-  const contactUrl = `${process.env.INTERNAL_HRM_URL}/internal/${hrmApiVersion}/accounts/${accountSid}/contacts`;
+  const contactUrl = `${process.env.INTERNAL_HRM_URL}/internal/${hrmApiVersion}/accounts/${hrmAccountId}/contacts`;
 
   console.debug('Creating HRM contact for task', taskSid, contactUrl);
 

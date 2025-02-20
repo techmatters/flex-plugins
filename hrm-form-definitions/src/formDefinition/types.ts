@@ -47,6 +47,14 @@ type IsPIIFlag = {
 /**
  * Types used for customizable forms
  */
+
+/**
+ * Base type for all form items
+ * @param name - the name of the field, used to reference this field in code and other parts of the form definitions such as LayoutDefinition.json
+ * @param label - the label to display for this field, can (should) be a translation key
+ * @param type - the type of the field, this determines the basic behaviour of the generated form element and which additional properties are supported
+ * @param metadata - additional properties that don't directly affect
+ */
 type ItemBase = {
   name: string;
   label: string;
@@ -62,30 +70,58 @@ type NonSaveable = {
 export const isNonSaveable = (item: any): item is NonSaveable =>
   typeof item.saveable === 'boolean' && !item.saveable;
 
+/**
+ * Type for single line text inputs
+ */
 type InputDefinition = {
   type: FormInputType.Input;
 } & ItemBase;
 
+/**
+ * Specialised single line text input for search fields
+ */
 type SearchInputDefinition = {
   type: FormInputType.SearchInput;
 } & ItemBase;
 
+/**
+ * Specialised single line text input that only accepts numbers
+ */
 type NumericInputDefinition = {
   type: FormInputType.NumericInput;
 } & ItemBase;
 
+/**
+ * Specialised single line text input that requires an email address
+ */
 type EmailInputDefinition = {
   type: FormInputType.Email;
 } & ItemBase;
 
+/**
+ * Option type used for lists and radio button selections
+ * @param value - the value to use when this option is selected
+ * @param label - the label to display for this option in the UI - doesn't currently support translation keys but should do
+ */
 export type InputOption = { value: any; label: string };
 
+/**
+ * A set of radio buttons, where only one option can be selected
+ * @param options - the options to display as radio buttons
+ * @param defaultOption - the value of the option that should be selected by default - if not set, no option will be selected by default
+ */
 type RadioInputDefinition = {
   type: FormInputType.RadioInput;
   options: InputOption[];
   defaultOption?: InputOption['value'];
 } & ItemBase;
 
+/**
+ * A list box that allows multiple options to be selected
+ * @param options - the options to display in the list box
+ * @param height - the height of the list box in pixels - should support strings to allow for other units
+ * @param width - the width of the list box in pixels - should support strings to allow for other units
+ */
 type ListboxMultiselectDefinition = {
   type: FormInputType.ListboxMultiselect;
   options: InputOption[];
