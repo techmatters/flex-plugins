@@ -1,14 +1,9 @@
 {
-  "messages": {
-    "en": {
-      "GoodbyeMsg": "The counselor has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
-      "EndChatMsg": "You ended the chat. Thank you for reaching out. Please contact us again if you need more help.",
-      "ClosedOutOfShift": "The helpline is out of shift, please reach us later.",
-      "ClosedHolidays": "The helpline is closed due to a holiday.",
-      "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
-    }
-  },
-  "translations": {
-    "en": {}
+  "en": {
+    "GoodbyeMsg": "The counselor has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "EndChatMsg": "You ended the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "ClosedOutOfShift": "The helpline is out of shift, please reach us later.",
+    "ClosedHolidays": "The helpline is closed due to a holiday.",
+    "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
   }
 }

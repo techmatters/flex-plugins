@@ -1,14 +1,10 @@
 {
-  "messages": {
-    "en": {
-      "WelcomeMsg": "Hi, this is Tinkle Friend!",
-      "GoodbyeMsg": "Tinkle Friend has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
-      "EndChatMsg": "This chat has ended. Thank you for reaching out.",
-      "ClosedOutOfShift": "Hello! Tinkle Friend is currently closed. We are available from Monday to Thursday from 2.30pm to 7pm, and Friday from 2.30pm to 5pm (closed on public holidays).\nDo check out our BUZZ magazine at https://www.tinklefriend.sg/buzz-magazine/ and come back again later to chat with us! Alternatively, you can email us at tinklefriend@childrensociety.org.sg and we will respond to you in 3 working days.\nHowever, if you are facing a crisis and thinking about suicide, you can WhatsApp our friends from Samaritans of Singapore (SOS) at 9151 1767.\nIf you are in immediate danger, please call the Police at 999.",
-      "ClosedHolidays": "The helpline is closed due to a holiday."
-    }
-  },
-  "translations": {
-    "en": {}
+  "en": {
+    "WelcomeMsg": "Hi, this is Tinkle Friend!",
+    "GoodbyeMsg": "Tinkle Friend has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "EndChatMsg": "This chat has ended. Thank you for reaching out.",
+    "ClosedOutOfShift": "Hello! Tinkle Friend is currently closed. We are available from Monday to Thursday from 2.30pm to 7pm, and Friday from 2.30pm to 5pm (closed on public holidays).\nDo check out our BUZZ magazine at https://www.tinklefriend.sg/buzz-magazine/ and come back again later to chat with us! Alternatively, you can email us at tinklefriend@childrensociety.org.sg and we will respond to you in 3 working days.\nHowever, if you are facing a crisis and thinking about suicide, you can WhatsApp our friends from Samaritans of Singapore (SOS) at 9151 1767.\nIf you are in immediate danger, please call the Police at 999.",
+    "ClosedHolidays": "The helpline is closed due to a holiday.",
+    "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
   }
 }

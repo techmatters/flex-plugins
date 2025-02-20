@@ -1,12 +1,10 @@
 {
-  "messages": {
-    "es": {
-      "WelcomeMsg": "¡Hola, te doy la bienvenida a Línea Libre! Este es un espacio seguro donde podemos conversar con tranquilidad y confianza. Estamos para escucharte, apoyarte y orientarte. Antes de conversar, nos gustaría contarte que trabajamos bajo el Principio de Protección, donde en caso que percibamos que tu integridad o la de un tercero pueda estar en riesgo, nuestro equipo tomará las medidas necesarias para asegurar tu protección y bienestar. Cuéntanos ¿tienes alguna duda sobre esto?",
-      "GoodbyeMsg": "El agente ha abandonado el chat. Gracias por comunicarse. Por favor, póngase en contacto con nosotros de nuevo si necesita más ayuda."
-    }
-    
-  },
-  "translations": {
-    "en": {}
+  "es": {
+    "WelcomeMsg": "¡Hola, te doy la bienvenida a Línea Libre! Este es un espacio seguro donde podemos conversar con tranquilidad y confianza. Estamos para escucharte, apoyarte y orientarte. Antes de conversar, nos gustaría contarte que trabajamos bajo el Principio de Protección, donde en caso que percibamos que tu integridad o la de un tercero pueda estar en riesgo, nuestro equipo tomará las medidas necesarias para asegurar tu protección y bienestar. Cuéntanos ¿tienes alguna duda sobre esto?",
+    "GoodbyeMsg": "El psicólog@ ha abandonado el chat. Gracias por comunicarte con nosotros. Por favor, póngase en contacto con nosotros de nuevo si necesita más ayuda.",
+    "EndChatMsg": "El usuario a abandonado el chat. Gracias por contactarse con nosotros. Por favor contáctenos de nuevo si necesita más ayuda.",
+    "ClosedOutOfShift": "Hola, te damos la bienvenida a Línea Libre. Gracias por escribirnos. Recibimos tu mensaje exitosamente. En estos momentos nos encontramos fuera del horario de atención. Te recordamos que éste es de lunes a viernes entre las 10:00 y las 16:30 hrs. Nuestr@s psicólog@s estarán disponibles para ti una vez iniciada la jornada. En caso de tener alguna emergencia, te sugerimos llamar a: Salud Responde 600 360 7777 - Línea de Prevención del Suicdio *4141- Fono niñ@s 147 - Fono familia 149.",
+    "ClosedHolidays": "Hola,te damos la bienvenida a Línea Libre. Gracias por escribirnos. Recibimos tu mensaje exitosamente. Por ser feriado legal, nuestros psicólog@s no se encuentran atendiendo, pero estarán disponibles para ti una vez que retomemos el horario habitual. Te recordamos que éste es de lunes a viernes entre las 10:00 y las 16:30 hrs. En caso de tener alguna emergencia, te sugerimos llamar a: Salud Responde 600 360 7777 - Línea de Prevención del Suicdio *4141- Fono niñ@s 147 - Fono familia 149.",
+    "UnsupportedMediaErrorMsg": "Lo sentimos, el mensaje que acaba de enviar no es compatible y no se pudo entregar."
   }
 }

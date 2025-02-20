@@ -1,11 +1,9 @@
 {
-  "messages": {
-    "en": {
-      "WelcomeMsg": "Hi, this is the agent. How can I help you?",
-      "GoodbyeMsg": "The agent has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
-      "SaferNet-CustomGoodbyeMsg": "This chat has ended. Thank you for reaching out. Please help us improve by rating your experience through the following link: "
-    }
-  },
-  "translations": {
+  "en": {
+    "GoodbyeMsg": "The agent has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "EndChatMsg": "You ended the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "ClosedOutOfShift": "The helpline is out of shift, please reach us later.",
+    "ClosedHolidays": "The helpline is closed due to a holiday.",
+    "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
   }
 }

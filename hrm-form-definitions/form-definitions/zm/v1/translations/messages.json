@@ -1,12 +1,30 @@
 {
-  "messages": {
-    "en": {
-      "WelcomeMsg": "Hi, this is the agent. How can I help you?",
-      "GoodbyeMsg": "The agent has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
-      "SaferNet-CustomGoodbyeMsg": "This chat has ended. Thank you for reaching out. Please help us improve by rating your experience through the following link: "
-    }
+  "en": {
+    "WelcomeMsg": "Hi, this is the agent. How can I help you?",
+    "GoodbyeMsg": "The agent has left the chat. Thank you for reaching out. Please contact us again if you need more help."
   },
-  "translations": {
-    "en": {}
-  }
+  "Bemba": {
+    "WelcomeMsg": "Mulishani,ine ndi Chimbusa,nalamwafwilishako shani mukwai?",
+    "GoodbyeMsg": "Ichimbusa chapwisha imilimo yakulanda. Twatotela pakutuma kuno.Mukatutumine nakabili nga mwafwaya ubwafwilisho kuli baifwe."
+  },
+  "Kaonde": {
+    "WelcomeMsg": "Baji byepi amuwa nenkwasho,ne mikwashe byepi?",
+    "GoodbyeMsg": "Nkwasho wafumapo twasanta pakufika kwiatweba, mwakonsha kutuma lamya kimye kiji kyonse nga mwena kukeba bukwasho buji bonse."
+  },
+  "Lozi": {
+    "WelcomeMsg": "Ha, kina mwelezi nikatusa cwani?",
+    "GoodbyeMsg": "Mwelezi ufelize kwambola. Nitumezi ku amboliÂsana,nikupa kuti ululizeze a katokwa tuso."
+  },
+  "Lunda": {
+    "WelcomeMsg": "Nayimushi mwani ami nidi nkhong'u chuyikwashiku mwani?",
+    "GoodbyeMsg": "Ankhong'u adihu wanyi kusakililaku mwani, hakushika kudechu, mwani anachweshi kuchuma mpinji yidi yakazhima yana kukeng'a wukwashu."
+  },
+  "Nyanja": {
+    "WelcomeMsg": "Hello ine ndine wauphungu kodi tingakuthandizeni bwanji?",
+    "GoodbyeMsg": "Wauphungu achoka mkukambitsana nanu. Zikomo kwambili pa kukwanisa kukambisana ndi ife. Telo muli omasuka kutuma phone nthawi ina yonse pa thandizo lililonse?"
+  },
+  "Tonga": {
+    "WelcomeMsg": "Mooni,ndime sikulaya naa sikuyumyayumya. Inga ndamugwasya buti?",
+    "GoodbyeMsg": "Sikulaya/sikuyumyayumya wazwa lino amubandi. Twalumba kukwabana andiswe,Inga mwatuma lubo naa muciyanda lumbi lugwasyo."
+  } 
 }
