@@ -44,9 +44,106 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       type: 'input-text',
       name: 'friendlyName',
-      label: 'WhatIsYourName',
-      placeholder: 'Your name',
+      label: 'Nickname',
+      placeholder: 'Nickname',
       required: true,
+    },
+    {
+      type: 'select',
+      name: 'Age',
+      label: 'age',
+      defaultValue: '',
+      options: [
+        {
+          value: "",
+          label: ""
+        },
+        {
+          value: "01",
+          label: "1"
+        },
+        {
+          value: "02",
+          label: "2"
+        },
+        {
+          value: "03",
+          label: "3"
+        },
+        {
+          value: "04",
+          label: "4"
+        },
+        {
+          value: "05",
+          label: "5"
+        },
+        {
+          value: "06",
+          label: "6"
+        },
+        {
+          value: "07",
+          label: "7"
+        },
+        {
+          value: "08",
+          label: "8"
+        },
+        {
+          value: "09",
+          label: "9"
+        },
+        {
+          value: "10",
+          label: "10"
+        },
+        {
+          value: "11",
+          label: "11"
+        },
+        {
+          value: "12",
+          label: "12"
+        },
+        {
+          value: ">12",
+          label: ">12"
+        }],
+      required: true,
+    },
+    {
+      type: 'select',
+      name: 'Gender',
+      label: 'gender',
+      defaultValue: '',
+      options: [
+        {
+          value: "Unknown",
+          label: ""
+        },
+        {
+          value: "Male",
+          label: "Male"
+        },
+        {
+          value: "Female",
+          label: "Female"
+        },
+        {
+          value: "Others",
+          label: "Others"
+        }],
+    },
+    {
+      type: 'checkbox',
+      name: 'termsAndConditions',
+      label:
+        'I agree with the <a href="https://tinklefriend.sg/terms">Terms of Use</a>',
+      required: {
+        value: true,
+        message: '<message>',
+      },
     },
   ],
 };
