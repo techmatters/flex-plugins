@@ -173,7 +173,6 @@ describe('Test initLocalization', () => {
   });
 });
 
-
 // We should test this more comprehensively. We should test edge cases like
 
 // base file present, locale file present, helpline specific missing,
