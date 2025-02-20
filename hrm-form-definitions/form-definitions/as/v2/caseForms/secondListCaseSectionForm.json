@@ -1,0 +1,56 @@
+[
+  {
+    "name": "secondListCaseSectionConfig",
+    "label": "Here is how this is configured",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289
+  },
+  {
+    "name": "splitFormAt",
+    "label": "splitFormAt",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "caseHomeOrder",
+    "label": "caseHomeOrder",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "printOrder",
+    "label": "printOrder",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "select",
+    "label": "select",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "selection1", "label": "selection1" },
+      { "value": "selection2", "label": "selection2" },
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": false
+  },
+  {
+    "name": "multiselect",
+    "label": "multiselect",
+    "type": "listbox-multiselect",
+    "options": [
+      { "value": "selection1", "label": "selection1" },
+      { "value": "selection2", "label": "selection2" },
+      { "value": "selection3", "label": "selection3" }
+    ],
+    "isPII": false
+  }
+]
+
+
+
+
+
+

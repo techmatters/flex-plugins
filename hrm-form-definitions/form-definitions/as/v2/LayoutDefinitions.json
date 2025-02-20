@@ -1,0 +1,67 @@
+{
+  "contact": {
+    "callerInformation": {
+    },
+    "childInformation": {
+      "splitFormAt": 12
+    },
+    "caseInformation": {
+      "splitFormAt": 11
+    }
+  },
+  "case": {
+    "sectionTypes": {
+    
+      "timelineCaseSection": {
+        "previewFields": [
+          "timelineCaseSectionConfig"
+        ],
+        "layout": {
+            "referredTo": {}
+        },
+        "splitFormAt": 2,
+        "printOrder": 1,
+        "caseHomeLocation": "timeline"
+      }
+    }
+  },
+  "firstListCaseSection": {
+    "splitFormAt": 4,
+    "caseHomeOrder": 1,
+    "printOrder": 2,
+    "previewFields": [
+      "date",
+      "input",
+      "text"
+    ],
+    "layout": {
+      "date": {
+        "includeLabel": true,
+        "format": "date"
+      },
+      "input": {
+       "includeLabel": true
+      },
+      "text": {
+        "includeLabel": true
+      }
+    }
+  },
+  "secondListCaseSection": {
+    "splitFormAt": 2,
+    "caseHomeOrder": 2,
+    "printOrder": 3,
+    "previewFields": [
+      "select",
+      "multiselect"
+    ],
+    "layout": {
+      "select": {
+        "includeLabel": true
+      },
+      "multiselect": {
+       "includeLabel": true
+      }
+    }
+  }
+}

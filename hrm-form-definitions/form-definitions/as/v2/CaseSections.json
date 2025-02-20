@@ -1,0 +1,6 @@
+{
+  "timelineCaseSection": {
+    "label": "Timeline Case Section",
+    "formPath": "caseForms/TimelineCaseSectionForm.json"
+  }
+}
