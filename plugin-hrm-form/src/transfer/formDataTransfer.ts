@@ -17,9 +17,8 @@
 import { ITask, Manager } from '@twilio/flex-ui';
 
 import { ContactState } from '../states/contacts/existingContacts';
-import { getAseloFeatureFlags } from '../hrmConfig';
 import asyncDispatch from '../states/asyncDispatch';
-import { connectToCaseAsyncAction, updateContactInHrmAsyncAction } from '../states/contacts/saveContact';
+import { updateContactInHrmAsyncAction } from '../states/contacts/saveContact';
 
 /**
  * Ensures the contact is saved in HRM and disconnected from any case it might have been connected to
@@ -27,7 +26,6 @@ import { connectToCaseAsyncAction, updateContactInHrmAsyncAction } from '../stat
  * @param task
  */
 export const saveFormSharedState = async (contactState: ContactState, { taskSid }: ITask): Promise<void> => {
-  if (!getAseloFeatureFlags().enable_transfers) return;
   const { draftContact, savedContact } = contactState;
   const asyncDispatcher = asyncDispatch(Manager.getInstance().store.dispatch);
   if (draftContact) {

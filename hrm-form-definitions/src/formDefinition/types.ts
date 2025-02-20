@@ -151,6 +151,7 @@ type TextareaDefinition = {
   placeholder?: string;
   rows?: number;
   width?: number | string;
+  additionalActions?: CustomContactComponentDefinition[];
 } & ItemBase;
 
 type TimeRelatedInput = {
@@ -182,7 +183,7 @@ type CopyToDefinition = ItemBase & {
   target: string;
 };
 
-type CustomContactComponentDefinition = ItemBase &
+export type CustomContactComponentDefinition = ItemBase &
   NonSaveable & {
     type: FormInputType.CustomContactComponent;
     component: string;

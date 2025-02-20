@@ -141,6 +141,7 @@ export type ContactRawJson = {
     createdOnBehalfOf: WorkerSID;
     [key: string]: string | boolean;
   };
+  llmSupportedEntries?: { [key in 'childInformation'|'callerInformation'|'caseInformation']?: string[] }
 };
 
 export type Contact = {
@@ -254,7 +255,6 @@ export type FeatureFlags = {
   enable_fullstory_monitoring: boolean; // Enables Full Story
   enable_generalized_search: boolean; // Enables Generalized Search
   enable_last_case_status_update_info: boolean; // Enables showing the time, user and changed status of the most recent case status update on the 'Edit Case Summary' page
-  enable_lex: boolean; // Enables consuming from Lex bots
   enable_manual_pulling: boolean; // Enables Adding Another Task
   enable_offline_contact: boolean; // Enables Creating Offline Contacts  
   enable_permissions_from_backend: boolean; // Enables fetching permissions from backend service
@@ -263,9 +263,7 @@ export type FeatureFlags = {
   enable_region_resource_search: boolean; // Enables specifying a region as well as a province and / or city in Resource Search
   enable_save_in_progress_contacts: boolean; // Enables Saving In Progress Contacts
   enable_save_insights: boolean; // Enables Saving Aditional Data on Insights
-  enable_sort_cases: boolean; // Enables Sorting at Case List
   enable_teams_view_enhancements2: boolean; // Enables custom Teams View UI with labels
-  enable_transfers: boolean; // Enables Transfering Contacts
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
   enable_llm_summary: boolean; // Enables generation of suggested contact summaries via an LLM

@@ -377,6 +377,9 @@
   "Contact-DraftStatus": "In Progress",
   "Contact-ResolvedStatus": "Contact has been saved",
 
+  "ContactForms-TextArea-GenerateSummary": "Summarize",
+  "ContactForms-TextArea-LoadingSummary": "Loading",
+
   "ContactCopyButton": "Copy",
   "ManualPullButtonText": "Another Task",
   "NoTaskAssignableNotification": "No task assignable to you at the moment.",
@@ -564,5 +567,7 @@
   "CaseMerging-CancelCase": "Cancel Case",
   "CaseMerging-ContactUndoRemovedFromCase": "Undo",
 
-  "TeamsView-NoSkills": "- No skills listed -"
+  "TeamsView-NoSkills": "- No skills listed -",
+
+  "LlmAssistant-Notifications-SummaryGenerationError": "There was an error generating the summary: {{errorMessage}}"
 }

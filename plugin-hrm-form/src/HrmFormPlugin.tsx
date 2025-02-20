@@ -46,6 +46,7 @@ import { namespace } from './states/storeNamespaces';
 import { maskManagerStringsWithIdentifiers, maskMessageListWithIdentifiers } from './maskIdentifiers';
 import { setUpViewMaskedVoiceNumber } from './maskIdentifiers/unmaskPhoneNumber';
 import { validateAndSetPermissionRules } from './permissions';
+import { setupLlmNotifications } from './components/contact/GenerateSummaryButton/setUpLlmNotifications';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -61,8 +62,7 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
 
   const setNewStrings = (newStrings: { [key: string]: string }) => {
     const overrideStrings = { ...manager.strings, ...newStrings };
-    const maskedStrings = maskManagerStringsWithIdentifiers(overrideStrings);
-    manager.strings = maskedStrings;
+    manager.strings = maskManagerStringsWithIdentifiers(overrideStrings);
   };
 
   const afterNewStrings = (language: string) => {
@@ -97,10 +97,8 @@ const setUpComponents = (
   setUpViewMaskedVoiceNumber();
   maskMessageListWithIdentifiers();
 
-  if (featureFlags.enable_transfers) {
-    setUpTransferComponents();
-    Channels.setUpIncomingTransferMessage();
-  }
+  setUpTransferComponents();
+  Channels.setUpIncomingTransferMessage();
 
   Components.setUpCaseList();
   if (featureFlags.enable_client_profiles) Components.setUpClientProfileList();
@@ -110,10 +108,8 @@ const setUpComponents = (
   // remove dynamic components
   Components.removeTaskCanvasHeaderActions(featureFlags);
   Components.setLogo(setupObject.logoUrl);
-  if (featureFlags.enable_transfers) {
-    Components.removeDirectoryButton();
-    Components.removeActionsIfTransferring();
-  }
+  Components.removeDirectoryButton();
+  Components.removeActionsIfTransferring();
 
   Components.setUpStandaloneSearch();
   setUpReferrableResources();
@@ -148,7 +144,7 @@ const setUpActions = (
 
   Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(featureFlags, setupObject, getMessage));
 
-  setUpTransferActions(featureFlags.enable_transfers, setupObject);
+  setUpTransferActions(setupObject);
 
   Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
   Flex.Manager.getInstance().workerClient.addListener('reservationCreated', reservation => {
@@ -165,6 +161,7 @@ const setUpActions = (
   Flex.Actions.addListener('afterCompleteTask', ActionFunctions.afterCompleteTask);
 
   if (featureFlags.enable_conferencing) setUpConferenceActions();
+  if (featureFlags.enable_llm_summary) setupLlmNotifications();
 };
 
 export default class HrmFormPlugin extends FlexPlugin {

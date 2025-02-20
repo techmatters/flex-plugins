@@ -1,0 +1,44 @@
+[
+    {
+      "name": "warningSigns",
+      "label": "What are 3 warning signs (thoughts, mood, situation, behavior) that a crisis may be developing?",
+      "type": "textarea",
+      "rows": 20,
+      "width": 289
+    },
+    {
+      "name": "copingStrategies",
+      "label": "What are 3 coping strategies that can take your mind off your problems?",
+      "type": "textarea",
+      "rows": 20,
+      "width": 289
+    },
+    {
+      "name": "distractions",
+      "label": "Who/what are 3 people or places that provide distraction?",
+      "type": "textarea",
+      "rows": 20,
+      "width": 289
+    },
+    {
+      "name": "whoCanHelp",
+      "label": "Who can you ask for help?",
+      "type": "textarea",
+      "rows": 20,
+      "width": 289
+    },
+    {
+      "name": "crisisAgencies",
+      "label": "Who/what are some professionals or agencies you can contact during a crisis?",
+      "type": "textarea",
+      "rows": 20,
+      "width": 289
+    },
+    {
+      "name": "safeEnvironment",
+      "label": "How can you make your environment safe?",
+      "type": "textarea",
+      "rows": 20,
+      "width": 289
+    }
+  ]

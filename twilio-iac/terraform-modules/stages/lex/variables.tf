@@ -143,3 +143,202 @@ variable "lex_v2_config" {
 
   default = null
 }
+
+variable "enable_lex_v2" {
+  description = "Flag to enable or disable the lex_v2 module"
+  type        = bool
+  default     = false
+}
+
+variable "lex_v2_bots" {
+  description = "The bots for the helpline."
+  type = map(map(object({
+    description                 = string
+    locale                      = optional(string, "en-US")
+    child_directed              = optional(bool, true)
+    idle_session_ttl_in_seconds = optional(number, 300)
+    type                        = optional(string, "Bot")
+  })))
+  default = null
+  }
+
+  variable "lex_v2_slot_types" {
+  description = "The slot types for the helpline."
+  type = map(list(
+   object({
+      bot_name = string
+      config = object({
+        slotTypeName = string,
+        valueSelectionSetting = object({
+          resolutionStrategy = string
+        })
+        slotTypeValues = list( object({
+          sampleValue = object({
+            value    = string
+          })
+          synonyms = optional(list(object(
+              {
+                value = string
+              }
+            )), null)
+        }))
+      })  
+    })
+    ))
+}
+variable "lex_v2_intents" {
+  description = "The intents for the helpline."
+  default = {}
+  type = map(list(
+    object({
+      bot_name = string
+      config = object({
+        intentName             = string
+        description       = string
+        sampleUtterances = optional(list(object( {utterance = string})))
+        slotPriorities = optional(list(object({
+          priority  = number
+          slotName = string
+        })))
+        fulfillmentCodeHook = optional(object({
+          enabled = bool
+          active = optional(bool)
+          postFulfillmentStatusSpecification = optional(object({
+            failureNextStep = object({
+              dialogAction = object({
+                type = string
+              })
+            })
+            timeoutNextStep = object({
+              dialogAction = object({
+                type = string
+              })
+            })
+            successNextStep = object({
+            dialogAction = object({
+              type = string
+            })
+          })
+          }))
+          
+        }))
+        intentClosingSetting = object({
+          closingResponse = optional(object({
+            messageGroups = list(object({
+              message = object({
+                plainTextMessage = object({
+                  value = string
+                })
+              })
+            }))
+            allowInterrupt = bool
+          })
+          )
+          active = bool
+          nextStep = optional(object({
+            dialogAction = object({
+              type = string
+            })
+          
+          }))
+        })
+        initialResponseSetting = optional(object({
+          initialResponse = optional(object({
+            messageGroups = list(object({
+              message = object({
+                plainTextMessage = object({
+                  value = string
+                })
+              })
+            }))
+            allowInterrupt = bool
+          }))
+          nextStep = optional(object({
+            dialogAction = object({
+              type = string
+            })
+          }))
+          codeHook = optional(object({
+            enableCodeHookInvocation = bool
+            active = bool
+            postCodeHookSpecification = object({
+              successNextStep = object({
+                dialogAction = object({
+                  type = string
+                  slotToElicit = string
+                })
+              })
+            
+              failureNextStep = object({
+                dialogAction = object({
+                  type = string
+                })
+              })
+              timeoutNextStep = object({
+                dialogAction = object({
+                  type = string
+                })
+              })
+            })
+          }))
+        })
+      )
+      })
+  })))
+}
+
+
+variable "lex_v2_slots" {
+  description = "List of Lex V2 slots"
+  type = map(list(
+    object({
+      bot_name = string
+      config = object({
+      slotName     = string
+      slotTypeName = string
+      description  = string
+      intentName   = string
+      valueElicitationSetting = object({
+        slotConstraint = string
+        promptSpecification = optional(object({
+          messageGroups = list(object({
+            message = object({
+              plainTextMessage = object({
+                value = string
+              })
+            })
+          }))
+          maxRetries                 = number
+          allowInterrupt             = bool
+          messageSelectionStrategy   = string
+          promptAttemptsSpecification = optional(map(object({
+            allowInterrupt = bool
+            allowedInputTypes = object({
+              allowAudioInput = bool
+              allowDTMFInput  = bool
+            })
+            audioAndDTMFInputSpecification = optional(object({
+              startTimeoutMs = number
+              audioSpecification = optional(object({
+                maxLengthMs = number
+                endTimeoutMs = number
+              }))
+              dtmfSpecification = optional(object({
+                maxLength          = number
+                endTimeoutMs       = number
+                deletionCharacter  = string
+                endCharacter       = string
+              }))
+            }))
+            textInputSpecification = optional(object({
+              startTimeoutMs = number
+            }))
+          })))
+        }))
+       
+      })
+    })
+}))
+  )
+
+}

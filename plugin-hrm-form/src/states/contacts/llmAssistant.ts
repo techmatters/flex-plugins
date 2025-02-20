@@ -17,48 +17,108 @@
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
 import { Manager } from '@twilio/flex-ui';
 
-import { ContactsState } from './types';
+import { ContactMetadata, ContactsState, LlmAssistantStatus } from './types';
 import { ContactDraftChanges } from './existingContacts';
 import { generateSummary, TranscriptForLlmAssistant } from '../../services/llmAssistantService';
+import { Contact, ContactRawJson } from '../../types/types';
 
 const AUTO_GENERATE_SUMMARY_ACTION = 'contact-actions/auto-generate-summary-action';
 
+const roles = {
+  Chatbot: 'chatbot',
+  Caller: 'caller',
+  Counselor: 'counselor',
+} as const;
+
+type Role = typeof roles[keyof typeof roles];
+
+const inferRole = (author: string): Role => {
+  if (author.toLowerCase() === 'bot') {
+    return roles.Chatbot;
+  }
+  // super dirty check for role - ok until we know we need this long term?
+  return author.includes('_40') ? roles.Counselor : roles.Caller;
+};
+
 export const newGenerateSummaryAsyncAction = createAsyncAction(
   AUTO_GENERATE_SUMMARY_ACTION,
-  async (task: ITask) => {
-    const { conversationSid, channelSid, contactId } = task.attributes;
-    const conversation = await Manager.getInstance().conversationsClient.getConversationBySid(
-      conversationSid ?? channelSid,
-    );
+  async (
+    { id: contactId, channelSid }: Contact,
+    form: keyof Pick<ContactRawJson, 'caseInformation' | 'childInformation' | 'callerInformation'>,
+    item: string,
+  ) => {
+    const conversation = await Manager.getInstance().conversationsClient.getConversationBySid(channelSid);
     const messages = await conversation.getMessages(1000);
-    const forTranscript: TranscriptForLlmAssistant = messages.items.map(({ author, body }) => ({
-      role: author,
+    const forTranscript: TranscriptForLlmAssistant = messages.items.map(({ author, body, index, dateCreated }) => ({
+      role: inferRole(author),
+      from: author,
       content: body,
+      index,
+      dateCreated: dateCreated.toISOString(),
     }));
     const { summaryText } = await generateSummary(contactId, forTranscript);
-    return { contactId, summaryText };
+    return { contactId, summaryText, form, item };
   },
-  (task: ITask) => ({
-    contactId: task.attributes.contactId,
+  (contact: Contact, form: string, item: string) => ({
+    contactId: contact.id,
+    form,
+    item,
   }),
 );
 
 export const llmAssistantReducer = (initialState: ContactsState) =>
   createReducer(initialState, handleAction => [
     handleAction(
-      newGenerateSummaryAsyncAction.fulfilled,
-      (state, { payload: { contactId, summaryText } }): ContactsState => {
-        const currentDraft = state.existingContacts[contactId].draftContact;
-        const updatedDraft: ContactDraftChanges = {
-          ...currentDraft,
-          rawJson: {
-            ...currentDraft?.rawJson,
-            caseInformation: {
-              ...currentDraft?.rawJson.caseInformation,
-              callSummary: summaryText,
+      newGenerateSummaryAsyncAction.pending,
+      (state, action): ContactsState => {
+        const { contactId } = (action as any).meta;
+        return {
+          ...state,
+          existingContacts: {
+            ...state.existingContacts,
+            [contactId]: {
+              ...state.existingContacts[contactId],
+              metadata: {
+                ...state.existingContacts[contactId].metadata,
+                llmAssistant: {
+                  ...state.existingContacts[contactId].metadata.llmAssistant,
+                  status: LlmAssistantStatus.WORKING,
+                },
+              },
             },
           },
         };
+      },
+    ),
+    handleAction(
+      newGenerateSummaryAsyncAction.fulfilled,
+      (state, { payload: { contactId, summaryText, form, item } }): ContactsState => {
+        const { draftContact, savedContact } = state.existingContacts[contactId];
+        const llmSupportedEntries =
+          draftContact?.rawJson?.llmSupportedEntries ?? savedContact.rawJson.llmSupportedEntries ?? {};
+        llmSupportedEntries[form] = Array.from(new Set([...(llmSupportedEntries[form] ?? []), item]));
+        const existingText = draftContact?.rawJson[form]?.[item] ?? savedContact.rawJson[form]?.[item] ?? '';
+        const updatedText = `${existingText}${existingText ? '\n\n' : ''}${summaryText}`;
+
+        const updatedDraft: ContactDraftChanges = {
+          ...draftContact,
+          rawJson: {
+            ...draftContact?.rawJson,
+            [form]: {
+              ...draftContact?.rawJson[form],
+              [item]: updatedText,
+            },
+            llmSupportedEntries,
+          },
+        };
+        const updatedMetadata: ContactMetadata = {
+          ...state.existingContacts[contactId].metadata,
+          llmAssistant: {
+            ...state.existingContacts[contactId].metadata.llmAssistant,
+            status: LlmAssistantStatus.READY,
+          },
+        };
+
         return {
           ...state,
           existingContacts: {
@@ -66,6 +126,7 @@ export const llmAssistantReducer = (initialState: ContactsState) =>
             [contactId]: {
               ...state.existingContacts[contactId],
               draftContact: updatedDraft,
+              metadata: updatedMetadata,
             },
           },
         };
@@ -76,15 +137,11 @@ export const llmAssistantReducer = (initialState: ContactsState) =>
       (state, action): ContactsState => {
         const { payload } = action;
         const { contactId } = (action as any).meta;
-        const currentDraft = state.existingContacts[contactId].draftContact;
-        const updatedDraft: ContactDraftChanges = {
-          ...currentDraft,
-          rawJson: {
-            ...currentDraft?.rawJson,
-            caseInformation: {
-              ...currentDraft?.rawJson.caseInformation,
-              callSummary: payload.toString(),
-            },
+        const updatedMetadata: ContactMetadata = {
+          ...state.existingContacts[contactId].metadata,
+          llmAssistant: {
+            status: LlmAssistantStatus.ERROR,
+            lastError: payload,
           },
         };
         return {
@@ -93,7 +150,7 @@ export const llmAssistantReducer = (initialState: ContactsState) =>
             ...state.existingContacts,
             [contactId]: {
               ...state.existingContacts[contactId],
-              draftContact: updatedDraft,
+              metadata: updatedMetadata,
             },
           },
         };

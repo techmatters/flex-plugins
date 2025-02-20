@@ -64,6 +64,7 @@ const FormInputUI: React.FC<FormInputUIProps> = ({
       </Row>
       <StyledFormInput
         id={inputId}
+        data-testid={inputId}
         name={inputId}
         error={isErrorState}
         aria-invalid={isErrorState}
