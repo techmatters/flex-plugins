@@ -8,5 +8,6 @@
   "CallType-joke": "Joke",
   "CallType-hangup": "Hang up",
   "CallType-wrongnumber": "Wrong Number",
-  "CallType-abusive": "Abusive"
+  "CallType-abusive": "Abusive",
+  "abusive": "Abusive - Indecent Exposure"
 }
