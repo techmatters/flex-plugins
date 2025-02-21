@@ -41,7 +41,7 @@ import { bindFileUploadCustomHandlers } from './documentUploadHandler';
 import { recordBackendError } from '../../fullStory';
 import { getInitializedCan } from '../../permissions';
 import { CenteredContainer } from './styles';
-import EditCaseSummary from './caseDetails/EditCaseSummary';
+import EditCaseOverview from './caseDetails/EditCaseOverview';
 import * as ContactActions from '../../states/contacts/existingContacts';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import asyncDispatch from '../../states/asyncDispatch';
@@ -197,7 +197,7 @@ const Case: React.FC<Props> = ({
     }
     if (subroute === NewCaseSubroutes.CaseSummary) {
       return (
-        <EditCaseSummary
+        <EditCaseOverview
           {...{
             ...addScreenProps,
             can,

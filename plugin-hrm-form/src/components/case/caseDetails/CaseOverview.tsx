@@ -21,7 +21,7 @@ import { DefinitionVersion, StatusInfo } from 'hrm-form-definitions';
 import { parseISO } from 'date-fns';
 
 import { CustomITask, StandaloneITask } from '../../../types/types';
-import CaseTags from '../casePrint/CasePrintTags';
+import CaseTags from '../CaseTags';
 import CaseDetailsHeader from './CaseDetailsHeader';
 import { CaseDetailsBorder, CaseSectionFont, DetailsContainer, ViewButton } from '../styles';
 import { Box } from '../../../styles';
@@ -70,8 +70,6 @@ const CaseDetails: React.FC<Props> = ({
   const formattedUpdatedAt = createdAt === updatedAt ? '—' : parseISO(updatedAt).toLocaleDateString();
   const editButton = can(PermissionActions.EDIT_CASE_OVERVIEW) || availableStatusTransitions.length > 1; // availableStatusTransitions always includes current status, if that's the only one available, you cannot change it
   const formatFollowUpDate = parseISO(followUpDate).toLocaleDateString();
-
-  console.log('>>> CaseDetailsHeader', { caseId, categoriesKeys: Object.keys(categories), isOrphanedCase });
 
   return (
     <>

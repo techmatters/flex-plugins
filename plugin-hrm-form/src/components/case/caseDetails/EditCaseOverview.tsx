@@ -108,8 +108,6 @@ const EditCaseSummary: React.FC<Props> = ({
 }) => {
   const { connectedCase, availableStatusTransitions } = connectedCaseState ?? {};
 
-  console.log('>>> connectedCase:', { categories: Object.keys(connectedCase?.categories) });
-
   const formDefinition: FormDefinition = useMemo(() => {
     try {
       return [

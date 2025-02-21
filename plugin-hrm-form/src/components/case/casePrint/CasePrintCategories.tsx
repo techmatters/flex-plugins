@@ -20,7 +20,7 @@ import { Text, View } from '@react-pdf/renderer';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import styles from './styles';
-import CaseTags from './CasePrintTags';
+import CaseTags from '../CaseTags';
 import { getTemplateStrings } from '../../../hrmConfig';
 
 type OwnProps = {

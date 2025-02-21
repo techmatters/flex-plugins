@@ -21,12 +21,11 @@ import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseContainer, CaseDetailsBorder, ViewButton } from './styles';
 import { BottomButtonBar, Box, SaveAndEndButton } from '../../styles';
-import CaseDetails from './caseDetails/CaseDetails';
+import CaseDetails from './caseDetails/CaseOverview';
 import Timeline from './timeline/Timeline';
 import CaseSection from './CaseSection';
 import { PermissionActions, PermissionActionType } from '../../permissions';
 import { AppRoutes, CaseItemAction, CaseRoute } from '../../states/routing/types';
-import CaseSummary from './caseDetails/CaseSummary';
 import { RootState } from '../../states';
 import { CustomITask, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
