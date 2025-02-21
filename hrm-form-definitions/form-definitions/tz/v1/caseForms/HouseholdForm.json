@@ -107,10 +107,6 @@
         {
           "value": "District III",
           "label": "District III"
-        },
-        {
-          "value": "District IV",
-          "label": "District IV"
         }
       ],
       "Region B": [
@@ -133,14 +129,122 @@
         {
           "value": "District VIII",
           "label": "District VIII"
+        }
+      ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "ward",
+    "label": "Ward",
+    "type": "dependent-select",
+    "dependsOn": "district",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "District I": [
+        {
+          "value": "",
+          "label": ""
         },
         {
-          "value": "District IX",
-          "label": "District IX"
+          "value": "Unknown",
+          "label": "Unknown"
         },
         {
-          "value": "District X",
-          "label": "District X"
+          "value": "Ward 1A",
+          "label": "Ward 1A"
+        },
+        {
+          "value": "Ward 2A",
+          "label": "Ward 2A"
+        }
+      ],
+      "District II": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        },
+        {
+          "value": "Ward 1B",
+          "label": "Ward 1B"
+        },
+        {
+          "value": "Ward 2B",
+          "label": "Ward 2B"
+        }
+      ],
+      "District III": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        },
+        {
+          "value": "Ward 1C",
+          "label": "Ward 1C"
+        }
+      ],
+      "District VI": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        },
+        {
+          "value": "Ward 1D",
+          "label": "Ward 1D"
+        },
+        {
+          "value": "Ward 2D",
+          "label": "Ward 2D"
+        }
+      ],
+      "District VII": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        },
+        {
+          "value": "Ward 1E",
+          "label": "Ward 1E"
+        },
+        {
+          "value": "Ward 2E",
+          "label": "Ward 2E"
+        }
+      ],
+      "District VIII": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        },
+        {
+          "value": "Ward 1F",
+          "label": "Ward 1F"
         }
       ]
     },
