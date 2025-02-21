@@ -31,7 +31,7 @@
     "options": [
       { "value": "", "label": "" },
       { "value": "selection1", "label": "selection1" },
-      { "value": "selection2", "label": "selection2" },
+      { "value": "selection2", "label": "selection2" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" },
     "isPII": false

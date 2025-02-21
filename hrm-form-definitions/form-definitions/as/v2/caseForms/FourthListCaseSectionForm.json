@@ -1,6 +1,6 @@
 [
   {
-    "name": "firstListCaseSectionConfig",
+    "name": "fourthListCaseSectionConfig",
     "label": "Here is how this is configured",
     "type": "textarea",
     "rows": 20,
@@ -25,26 +25,16 @@
     "isPII": true
   },
   {
-    "name": "input",
-    "label": "input",
+    "name": "withIncludeLabel",
+    "label": "withIncludeLabel",
     "type": "input",
     "isPII": true
   },
   {
-    "name": "text",
-    "label": "text",
-    "type": "textarea",
-    "rows": 20,
-    "width": 289
-  },
-  {
-    "name": "date",
-    "type": "date-input",
-    "label": "Date",
-    "required": { "value": true, "message": "RequiredFieldError" },
-    "metadata": {
-      "eventTimestampSource": true
-    }
+    "name": "noIncludeLabel",
+    "label": "noIncludeLabel",
+    "type": "input",
+    "isPII": true
   }
 
 ]

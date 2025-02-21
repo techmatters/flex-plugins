@@ -569,5 +569,8 @@
 
   "TeamsView-NoSkills": "- No skills listed -",
 
-  "LlmAssistant-Notifications-SummaryGenerationError": "There was an error generating the summary: {{errorMessage}}"
+  "LlmAssistant-Notifications-SummaryGenerationError": "There was an error generating the summary: {{errorMessage}}",
+
+  "Case-labelTemplateCode": "Changed label via template code",
+  "Case-valueTemplateCode": "Field 1: {{field1}}, Field 2:{{field2}} "
 }

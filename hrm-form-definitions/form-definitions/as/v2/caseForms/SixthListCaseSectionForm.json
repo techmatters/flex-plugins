@@ -1,6 +1,6 @@
 [
   {
-    "name": "firstListCaseSectionConfig",
+    "name": "sixthListCaseSectionConfig",
     "label": "Here is how this is configured",
     "type": "textarea",
     "rows": 20,
@@ -25,19 +25,6 @@
     "isPII": true
   },
   {
-    "name": "input",
-    "label": "input",
-    "type": "input",
-    "isPII": true
-  },
-  {
-    "name": "text",
-    "label": "text",
-    "type": "textarea",
-    "rows": 20,
-    "width": 289
-  },
-  {
     "name": "date",
     "type": "date-input",
     "label": "Date",
@@ -45,8 +32,21 @@
     "metadata": {
       "eventTimestampSource": true
     }
+  },
+  {
+    "name": "fileName",
+    "type": "file-upload",
+    "label": "Document",
+    "description": "Accepted file formats: Word, PDFs, or JPGs.\nFile size not to exceed 5MB",
+    "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
+    "name": "string",
+    "label": "string",
+    "type": "input",
+    "isPII": true
   }
-
+  
 ]
 
 
