@@ -97,8 +97,6 @@ const bundledMessages = {
   'th-TH': thTHMessages,
 };
 
-// TODO(mythily): potentially move Zambia messages to flex from serverless https://github.com/techmatters/serverless/pull/51/files
-/* eslint-disable import/no-unused-modules */
 export const loadTranslations = (language: string): Record<string, string> => {
   const [baseLanguage] = language.split('-');
 
@@ -107,6 +105,7 @@ export const loadTranslations = (language: string): Record<string, string> => {
     let translations = {};
     try {
       translations = require(`./locales/${baseLanguage}.json`);
+      console.log('>>> baseTranslations', translations);
     } catch (error) {
       console.error(`Base language file not found for ${baseLanguage}`);
     }
@@ -114,14 +113,16 @@ export const loadTranslations = (language: string): Record<string, string> => {
     // Load locale-specific overrides if they exist
     if (language !== baseLanguage) {
       const localeOverrides = require(`./locales/${language}.json`);
+      console.log('>>> localeOverrides', localeOverrides);
       translations = { ...translations, ...localeOverrides };
     }
 
     // Load helpline-specific overrides from hrm-form-definitions
     const { helplineCode } = getHrmConfig();
     try {
-      const helplineTranslations = require(`../../../hrm-form-definitions/form-definitions/${helplineCode}/Translations.json`);
+      const helplineTranslations = require(`../../../hrm-form-definitions/form-definitions/${helplineCode}/v1/translations/Substitutions.json`);
       if (helplineTranslations[baseLanguage]) {
+        console.log('>>> helplineTranslations', helplineTranslations[baseLanguage]);
         translations = { ...translations, ...helplineTranslations[baseLanguage] };
       }
     } catch (error) {
@@ -149,8 +150,9 @@ type LocalizationConfig = {
  */
 export const initTranslateUI = (localizationConfig: LocalizationConfig) => async (language: string): Promise<void> => {
   const { twilioStrings, setNewStrings, afterNewStrings } = localizationConfig;
-  const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
-
+  // const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
+  const enableHierarchicalTranslations = true;
+  console.log('>>> initTranslateUI', { language, enableHierarchicalTranslations });
   try {
     let customStrings;
     if (enableHierarchicalTranslations) {
@@ -197,12 +199,12 @@ export const initTranslateUI = (localizationConfig: LocalizationConfig) => async
  * @returns {(language: string) => Promise<string>} - Function that takes a language code and returns the translated message
  */
 export const getMessage = messageKey => async language => {
-  const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
-
+  // const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
+  const enableHierarchicalTranslations = true;
   try {
     if (enableHierarchicalTranslations) {
       const { helplineCode } = getHrmConfig();
-      const helplineTranslations = require(`../../../hrm-form-definitions/form-definitions/${helplineCode}/Translations.json`);
+      const helplineTranslations = require(`../../../hrm-form-definitions/form-definitions/${helplineCode}/v1/translations/Messages.json`);
 
       return helplineTranslations[language][messageKey];
     }
@@ -226,10 +228,11 @@ export const getMessage = messageKey => async language => {
 };
 
 export const initLocalization = (localizationConfig: LocalizationConfig, initialLanguage: string) => {
+  console.log('>>> initLocalization', initialLanguage);
   const translateUI = initTranslateUI(localizationConfig);
   const { setNewStrings } = localizationConfig;
 
   setNewStrings(defaultTranslation);
-  if (initialLanguage && initialLanguage !== defaultLanguage) translateUI(initialLanguage);
+  if (initialLanguage) translateUI(initialLanguage);
   return { translateUI, getMessage };
 };
