@@ -1,5 +1,6 @@
 {
     "attributes": {
+        "definitionVersion": "demo-v2",
         "contacts_waiting_channels": [
             "voice",
             "sms",
