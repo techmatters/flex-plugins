@@ -25,171 +25,173 @@
         "printOrder": 1,
         "printFormat": "list",
         "caseHomeLocation": "timeline"
+      },
+      "firstListCaseSection": {
+        "splitFormAt": 4,
+        "caseHomeOrder": 1,
+        "caseHomeLocation": "list",
+        "printOrder": 3,
+        "previewFields": [
+          "date",
+          "input",
+          "text"
+        ],
+        "layout": {
+          "date": {
+            "includeLabel": true,
+            "format": "date"
+          },
+          "input": {
+           "includeLabel": true
+          },
+          "text": {
+            "includeLabel": true
+          }
+        }
+      },
+      "secondListCaseSection": {
+        "splitFormAt": 4,
+        "caseHomeOrder": 2,
+        "caseHomeLocation": "list",
+        "printOrder": 4,
+        "previewFields": [
+          "select",
+          "multiselect"
+        ],
+        "layout": {
+          "select": {
+            "includeLabel": true
+          },
+          "multiselect": {
+           "includeLabel": true
+          }
+        }
+      },
+      "thirdListCaseSection": {
+        "splitFormAt": 4,
+        "caseHomeOrder": 3,
+        "caseHomeLocation": "list",
+        "printOrder": 5,
+        "previewFields": [
+          "checkbox",
+          "mixedCheckbox"
+        ],
+        "layout": {
+          "checkbox": {
+            "includeLabel": true
+          },
+          "mixedCheckbox": {
+           "includeLabel": true
+          }
+        }
+      },
+      "fourthListCaseSection": {
+        "splitFormAt": 4,
+        "caseHomeOrder": 4,
+        "caseHomeLocation": "list",
+        "printOrder": 6,
+        "previewFields": [
+          "withIncludeLabel",
+          "noIncludeLabel"
+        ],
+        "layout": {
+          "withIncludeLabel": {
+            "includeLabel": true
+          },
+          "noIncludeLabel": {
+           "includeLabel": false
+          }
+        }
+      },
+      "fifthListCaseSection": {
+        "splitFormAt": 4,
+        "caseHomeOrder": 5,
+        "caseHomeLocation": "list",
+        "printOrder": 7,
+        "previewFields": [
+          "1widthRatio",
+          "1_5widthRatio",
+          "2widthRatio"
+        ],
+        "layout": {
+          "1widthRatio": {
+            "widthRatio": 1
+          },
+          "1_5widthRatio": {
+            "widthRatio": 1.5
+          },
+          "2widthRatio": {
+            "widthRatio": 2
+          }
+        }
+      },
+      "sixthListCaseSection": {
+        "splitFormAt": 4,
+        "caseHomeOrder": 6,
+        "caseHomeLocation": "list",
+        "printFormat": "hidden",
+        "previewFields": [
+          "date",
+          "fileName",
+          "string"
+        ],
+        "layout": {
+          "date": {
+            "format": "date"
+          },
+          "fileName": {
+            "format": "file",
+            "widthRatio": 2
+          },
+          "string": {
+            "format": "string",
+            "widthRatio": 1
+          }
+        }
+      },
+      "sevenththListCaseSection": {
+        "splitFormAt": 4,
+        "caseHomeOrder": 7,
+        "caseHomeLocation": "list",
+        "printOrder": 2,
+        "printFormat": "tabular",
+        "previewFields": [
+          "printFormatTabularColumn1",
+          "printFormatTabularColumn2"
+        ],
+        "layout": {
+          "printFormatTabularColumn1": {
+            "includeLabel": true
+          },
+          "printFormatTabularColumn2": {
+            "includeLabel": true
+          }
+        }
+      },
+      "eighthListCaseSection": {
+        "splitFormAt": 4,
+        "caseHomeOrder": 8,
+        "caseHomeLocation": "list",
+        "printOrder": 8,
+        "previewFields": [
+          "labelTemplateCode",
+          "valueTemplateCode"
+        ],
+        "layout": {
+          "labelTemplateCode": {
+            "labelTemplateCode": "Case-labelTemplateCode"
+          },
+          "valueTemplateCode": {
+            "valueTemplateCode": "Case-valueTemplateCode"
+          },
+          "newCompoundField": {
+            "labelTemplateCode": "Case-newCompoundFieldLabel",
+            "valueTemplateCode": "Case-newCompoundFieldValue"
+          }
+        }
       }
     }
-  },
-  "firstListCaseSection": {
-    "splitFormAt": 4,
-    "caseHomeOrder": 1,
-    "caseHomeLocation": "list",
-    "printOrder": 3,
-    "previewFields": [
-      "date",
-      "input",
-      "text"
-    ],
-    "layout": {
-      "date": {
-        "includeLabel": true,
-        "format": "date"
-      },
-      "input": {
-       "includeLabel": true
-      },
-      "text": {
-        "includeLabel": true
-      }
-    }
-  },
-  "secondListCaseSection": {
-    "splitFormAt": 4,
-    "caseHomeOrder": 2,
-    "caseHomeLocation": "list",
-    "printOrder": 4,
-    "previewFields": [
-      "select",
-      "multiselect"
-    ],
-    "layout": {
-      "select": {
-        "includeLabel": true
-      },
-      "multiselect": {
-       "includeLabel": true
-      }
-    }
-  },
-  "thirdListCaseSection": {
-    "splitFormAt": 4,
-    "caseHomeOrder": 3,
-    "caseHomeLocation": "list",
-    "printOrder": 5,
-    "previewFields": [
-      "checkbox",
-      "mixedCheckbox"
-    ],
-    "layout": {
-      "checkbox": {
-        "includeLabel": true
-      },
-      "mixedCheckbox": {
-       "includeLabel": true
-      }
-    }
-  },
-  "fourthListCaseSection": {
-    "splitFormAt": 4,
-    "caseHomeOrder": 4,
-    "caseHomeLocation": "list",
-    "printOrder": 6,
-    "previewFields": [
-      "withIncludeLabel",
-      "noIncludeLabel"
-    ],
-    "layout": {
-      "withIncludeLabel": {
-        "includeLabel": true
-      },
-      "noIncludeLabel": {
-       "includeLabel": false
-      }
-    }
-  },
-  "fifthListCaseSection": {
-    "splitFormAt": 4,
-    "caseHomeOrder": 5,
-    "caseHomeLocation": "list",
-    "printOrder": 7,
-    "previewFields": [
-      "1widthRatio",
-      "1_5widthRatio",
-      "2widthRatio"
-    ],
-    "layout": {
-      "1widthRatio": {
-        "widthRatio": 1
-      },
-      "1_5widthRatio": {
-        "widthRatio": 1.5
-      },
-      "2widthRatio": {
-        "widthRatio": 2
-      }
-    }
-  },
-  "sixthListCaseSection": {
-    "splitFormAt": 4,
-    "caseHomeOrder": 6,
-    "caseHomeLocation": "list",
-    "printFormat": "hidden",
-    "previewFields": [
-      "date",
-      "fileName",
-      "string"
-    ],
-    "layout": {
-      "date": {
-        "format": "date"
-      },
-      "fileName": {
-        "format": "file",
-        "widthRatio": 2
-      },
-      "string": {
-        "format": "string",
-        "widthRatio": 1
-      }
-    }
-  },
-  "sevenththListCaseSection": {
-    "splitFormAt": 4,
-    "caseHomeOrder": 7,
-    "caseHomeLocation": "list",
-    "printOrder": 2,
-    "printFormat": "tabular",
-    "previewFields": [
-      "printFormatTabularColumn1",
-      "printFormatTabularColumn2"
-    ],
-    "layout": {
-      "printFormatTabularColumn1": {
-        "includeLabel": true
-      },
-      "printFormatTabularColumn2": {
-        "includeLabel": true
-      }
-    }
-  },
-  "eighthListCaseSection": {
-    "splitFormAt": 4,
-    "caseHomeOrder": 8,
-    "caseHomeLocation": "list",
-    "printOrder": 8,
-    "previewFields": [
-      "labelTemplateCode",
-      "valueTemplateCode"
-    ],
-    "layout": {
-      "labelTemplateCode": {
-        "labelTemplateCode": "Case-labelTemplateCode"
-      },
-      "valueTemplateCode": {
-        "valueTemplateCode": "Case-valueTemplateCode"
-      },
-      "newCompoundField": {
-        "labelTemplateCode": "Case-newCompoundFieldLabel",
-        "valueTemplateCode": "Case-newCompoundFieldValue"
-      }
-    }
+    
   }
+ 
 }
