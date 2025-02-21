@@ -12,6 +12,7 @@
             "enable_permissions_from_backend": true,
             "enable_backend_hrm_contact_creation": true,
             "lambda_task_created_handler": true
-        }
+        },
+        "helplineLanguage": "en-US"
     }
 }
