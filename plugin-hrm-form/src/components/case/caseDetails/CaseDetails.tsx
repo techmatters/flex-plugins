@@ -14,19 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/* eslint-disable react/forbid-prop-types */
-/* eslint-disable no-empty-function */
-/* eslint-disable react/jsx-max-depth */
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable react/no-multi-comp */
-/* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { DefinitionVersion, StatusInfo } from 'hrm-form-definitions';
 import { parseISO } from 'date-fns';
 
-import CaseTags from './CaseTags';
-import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
+import CaseTags from '../casePrint/CasePrintTags';
+import CaseDetailsHeader from '../caseDetails/CaseDetailsHeader';
 import {
   CaseDetailsBorder,
   CaseSectionFont,
@@ -34,11 +28,14 @@ import {
   DetailsContainer,
   StyledInputField,
   ViewButton,
-} from './styles';
-import { Box } from '../../styles';
-import { PermissionActions } from '../../permissions';
+} from '../styles';
+import { Box } from '../../../styles';
+import { PermissionActions } from '../../../permissions';
+import CaseSummary from './CaseSummary';
+import { CustomITask, StandaloneITask } from 'types/types';
 
 type Props = {
+  task: CustomITask | StandaloneITask;
   caseId: string;
   categories: { [category: string]: string[] };
   counselor: string;
@@ -57,6 +54,7 @@ type Props = {
 };
 
 const CaseDetails: React.FC<Props> = ({
+  task,
   caseId,
   categories,
   counselor,
@@ -72,12 +70,13 @@ const CaseDetails: React.FC<Props> = ({
   definitionVersion,
   isOrphanedCase = false,
   editCaseSummary,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const formattedCreatedAt = parseISO(createdAt).toLocaleDateString();
   const formattedUpdatedAt = createdAt === updatedAt ? '—' : parseISO(updatedAt).toLocaleDateString();
   const editButton = can(PermissionActions.EDIT_CASE_OVERVIEW) || availableStatusTransitions.length > 1; // availableStatusTransitions always includes current status, if that's the only one available, you cannot change it
   const formatFollowUpDate = parseISO(followUpDate).toLocaleDateString();
+
+  console.log('>>> CaseDetailsHeader', { caseId, categoriesKeys: Object.keys(categories), isOrphanedCase });
 
   return (
     <>
@@ -187,6 +186,7 @@ const CaseDetails: React.FC<Props> = ({
             />
           </div>
         </div>
+          <CaseSummary task={task} />
       </DetailsContainer>
     </>
   );

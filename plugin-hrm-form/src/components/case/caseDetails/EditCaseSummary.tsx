@@ -32,30 +32,30 @@ import {
   Container,
   StyledNextStepButton,
   TwoColumnLayout,
-} from '../../styles';
-import { RootState } from '../../states';
-import * as RoutingActions from '../../states/routing/actions';
-import { newCloseModalAction, newGoBackAction } from '../../states/routing/actions';
-import type { Case, CaseOverview, CustomITask, StandaloneITask } from '../../types/types';
-import { recordingErrorHandler } from '../../fullStory';
-import { CaseSummaryWorkingCopy } from '../../states/case/types';
-import CloseCaseDialog from './CloseCaseDialog';
+} from '../../../styles';
+import { RootState } from '../../../states';
+import * as RoutingActions from '../../../states/routing/actions';
+import { newCloseModalAction, newGoBackAction } from '../../../states/routing/actions';
+import type { Case, CaseOverview, CustomITask, StandaloneITask } from '../../../types/types';
+import { recordingErrorHandler } from '../../../fullStory';
+import { CaseSummaryWorkingCopy } from '../../../states/case/types';
+import CloseCaseDialog from '../CloseCaseDialog';
 import {
   initialiseCaseSummaryWorkingCopy,
   removeCaseSummaryWorkingCopy,
   updateCaseSummaryWorkingCopy,
-} from '../../states/case/caseWorkingCopy';
-import { PermissionActions, PermissionActionType } from '../../permissions';
-import { disperseInputs, splitAt } from '../common/forms/formGenerators';
-import { useCreateFormFromDefinition } from '../forms';
-import { getTemplateStrings } from '../../hrmConfig';
-import { updateCaseOverviewAsyncAction } from '../../states/case/saveCase';
-import asyncDispatch from '../../states/asyncDispatch';
-import NavigableContainer from '../NavigableContainer';
-import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
+} from '../../../states/case/caseWorkingCopy';
+import { PermissionActions, PermissionActionType } from '../../../permissions';
+import { disperseInputs, splitAt } from '../../common/forms/formGenerators';
+import { useCreateFormFromDefinition } from '../../forms';
+import { getTemplateStrings } from '../../../hrmConfig';
+import { updateCaseOverviewAsyncAction } from '../../../states/case/saveCase';
+import asyncDispatch from '../../../states/asyncDispatch';
+import NavigableContainer from '../../NavigableContainer';
+import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRouteCase';
 import CaseSummaryEditHistory from './CaseSummaryEditHistory';
-import { selectDefinitionVersionForCase } from '../../states/configuration/selectDefinitions';
-import { selectCaseHistoryDetails } from '../../states/case/selectCaseStateByCaseId';
+import { selectDefinitionVersionForCase } from '../../../states/configuration/selectDefinitions';
+import { selectCaseHistoryDetails } from '../../../states/case/selectCaseStateByCaseId';
 
 export type EditCaseSummaryProps = {
   task: CustomITask | StandaloneITask;
@@ -107,6 +107,8 @@ const EditCaseSummary: React.FC<Props> = ({
   isUpdating,
 }) => {
   const { connectedCase, availableStatusTransitions } = connectedCaseState ?? {};
+
+  console.log('>>> connectedCase:', { categories: Object.keys(connectedCase?.categories) });
 
   const formDefinition: FormDefinition = useMemo(() => {
     try {
