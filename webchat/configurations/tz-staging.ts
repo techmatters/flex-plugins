@@ -139,7 +139,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'checkbox',
       name: 'termsAndConditions',
       label:
-        'I agree with the <a href="https://tinklefriend.sg/terms">Terms of Use</a>',
+        'I agree with the <a href="https://www.sematanzania.org/child-helpline">Terms of Use</a>',
       required: {
         value: true,
         message: '<message>',
