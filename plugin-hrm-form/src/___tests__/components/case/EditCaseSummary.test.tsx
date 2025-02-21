@@ -26,7 +26,7 @@ import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
-import EditCaseSummary, { EditCaseSummaryProps } from '../../../components/case/EditCaseSummary';
+import EditCaseSummary, { EditCaseSummaryProps } from '../../../components/case/caseDetails/EditCaseSummary';
 import { getDefinitionVersions } from '../../../hrmConfig';
 import { StandaloneITask } from '../../../types/types';
 import { CaseRoute } from '../../../states/routing/types';
