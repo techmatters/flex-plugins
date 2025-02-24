@@ -17,18 +17,20 @@ import { getSsmParameter } from '../ssmCache';
 import { AccountSID } from '../twilioTypes';
 import { newErr, newOk, Result } from '../Result';
 import { HttpClientError } from '../httpErrors';
+import { HrmAccountId } from './types';
 
 const requestFromInternalHrmEndpoint = async <TRequest, TResponse>(
-  accountSid: AccountSID,
+  hrmAccountId: HrmAccountId,
   hrmApiVersion: string,
   path: string,
   body: TRequest,
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
 ): Promise<Result<HttpClientError, TResponse>> => {
+  const [accountSid] = hrmAccountId.split('-');
   const [hrmStaticKey] = await Promise.all([
     getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/static_key`),
   ]);
-  const endpointUrl = `${process.env.INTERNAL_HRM_URL}/internal/${hrmApiVersion}/accounts/${accountSid}/${path}`;
+  const endpointUrl = `${process.env.INTERNAL_HRM_URL}/internal/${hrmApiVersion}/accounts/${hrmAccountId}/${path}`;
 
   const options: RequestInit = {
     method,

@@ -151,7 +151,7 @@ export const handleGetProfileFlagsForIdentifier: AccountScopedHandler = async (
       `[${accountSid}] Getting profile flags for identifier ${identifier} from ${profileFlagsByIdentifierPath}`,
     );
     const responseResult = await getFromInternalHrmEndpoint<{ name: string }[]>(
-      accountSid,
+      accountSid, // We use the accountSid rather than the hrmAccountId because we can't infer the hrmAccountSid based on worker at this point
       hrmApiVersion,
       profileFlagsByIdentifierPath,
     );

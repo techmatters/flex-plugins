@@ -124,7 +124,7 @@ export const handleEvent = async (
   }
 
   const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
-  const contactUrl = `${process.env.INTERNAL_HRM_URL}/internal/${hrmApiVersion}/accounts/${accountSid}/contacts`;
+  const contactUrl = `${process.env.INTERNAL_HRM_URL}/internal/${hrmApiVersion}/accounts/${hrmAccountId}/contacts`;
 
   console.debug('Creating HRM contact for task', taskSid, contactUrl);
 
