@@ -24,10 +24,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x]
-
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v4

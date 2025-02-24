@@ -70,6 +70,7 @@ export const handleEvent = async (
     TaskAttributes: taskAttributesString,
     TaskSid: taskSid,
     WorkerSid: workerSid,
+    WorkerName: workerName,
   }: EventFields,
   accountSid: AccountSID,
   client: twilio.Twilio,
@@ -109,6 +110,9 @@ export const handleEvent = async (
       enable_backend_hrm_contact_creation: enableBackendHrmContactCreation,
     },
   } = serviceConfig.attributes;
+  // This is a really hacky test, need a better way to determine if the user is one of our bots
+  const userIsAseloBot = /aselo.+@techmatters\.org/.test(workerName);
+  const hrmAccountId = userIsAseloBot ? `${accountSid}-aselo_test` : accountSid;
   const formDefinitionsVersionUrl =
     configFormDefinitionsVersionUrl ||
     `${assetsBucketUrl}/form-definitions/${helplineCode}/v1`;
