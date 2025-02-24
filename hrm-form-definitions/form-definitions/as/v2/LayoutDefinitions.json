@@ -183,7 +183,7 @@
           },
           "newCompoundField": {
             "labelTemplateCode": "Case-newCompoundFieldLabel",
-            "valueTemplateCode": "Case-newCompoundFieldValue"
+            "valueTemplateCode": "Case-SectionList-newCompoundFieldValue"
           }
         }
       }
