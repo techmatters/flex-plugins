@@ -18,7 +18,7 @@ import { ALBEvent } from 'aws-lambda';
 import { handler } from '../../src';
 import { getExpectedTwilioSignature } from 'twilio/lib/webhooks/webhooks';
 
-const TEST_HOST = 'http://example.com';
+const TEST_HOST = 'example.com';
 
 /**
  * QOL method that allows tests to invoke the lambda via the Runtime Interface Client in a similar way to how external callers would invoke them via the ALB
