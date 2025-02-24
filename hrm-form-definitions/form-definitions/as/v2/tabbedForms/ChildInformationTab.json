@@ -1,0 +1,264 @@
+[
+  {
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "gender",
+    "label": "Gender",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Boy", "label": "Boy" },
+      { "value": "Girl", "label": "Girl" },
+      { "value": "Non-Binary", "label": "Non-Binary" },
+      { "value": "Unknown", "label": "Unknown" }
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": false
+  },
+  {
+    "name": "age",
+    "label": "Age",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Unborn", "label": "Unborn" },
+      { "value": "00", "label": "0" },
+      { "value": "01", "label": "1" },
+      { "value": "02", "label": "2" },
+      { "value": "03", "label": "3" },
+      { "value": "04", "label": "4" },
+      { "value": "05", "label": "5" },
+      { "value": "06", "label": "6" },
+      { "value": "07", "label": "7" },
+      { "value": "08", "label": "8" },
+      { "value": "09", "label": "9" },
+      { "value": "10", "label": "10" },
+      { "value": "11", "label": "11" },
+      { "value": "12", "label": "12" },
+      { "value": "13", "label": "13" },
+      { "value": "14", "label": "14" },
+      { "value": "15", "label": "15" },
+      { "value": "16", "label": "16" },
+      { "value": "17", "label": "17" },
+      { "value": "18", "label": "18" },
+      { "value": "19", "label": "19" },
+      { "value": "20", "label": "20" },
+      { "value": "21", "label": "21" },
+      { "value": "22", "label": "22" },
+      { "value": "23", "label": "23" },
+      { "value": "24", "label": "24" },
+      { "value": "25", "label": "25" },
+      { "value": ">25", "label": ">25" },
+      { "value": "Unknown", "label": "Unknown" }
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": false
+  },
+  {
+    "name": "streetAddress",
+    "label": "Street Address",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "city",
+    "label": "City",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "province",
+    "label": "Province",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Northern", "label": "Northern" },
+      { "value": "Eastern", "label": "Eastern" },
+      { "value": "Western", "label": "Western" },
+      { "value": "Southern", "label": "Southern" },
+      { "value": "Unknown", "label": "Unknown"}
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": false
+  },
+  {
+    "name": "district",
+    "label": "District",
+    "type": "dependent-select",
+    "dependsOn": "province",
+    "defaultOption": { "value": "", "label": "" },
+    "options": {
+      "Northern": [
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" },
+        { "value": "Unknown", "label": "Unknown"}
+      ],
+      "Eastern": [
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" },
+        { "value": "Unknown", "label": "Unknown"}
+      ],
+      "Western": [
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" },
+        { "value": "Unknown", "label": "Unknown"}
+      ],
+      "Southern": [
+        { "value": "District A", "label": "District A" },
+        { "value": "District B", "label": "District B" },
+        { "value": "District C", "label": "District C" },
+        { "value": "Unknown", "label": "Unknown"}
+      ]
+    },
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": false
+  },
+  {
+    "name": "postalCode",
+    "label": "Postal Code",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "phone1",
+    "label": "Phone #1",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "phone2",
+    "label": "Phone #2",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "language",
+    "label": "Language",
+    "type": "select",
+    "options": [
+      { "value": "Unknown", "label": "" },
+      { "value": "Hausa", "label": "Hausa" },
+      { "value": "English", "label": "English" },
+      { "value": "Xhosa", "label": "Xhosa" },
+      { "value": "Bemba", "label": "Bemba" },
+      { "value": "Other", "label": "Other" }
+    ] ,
+    "isPII": false 
+  },
+  {
+    "name": "ethnicity",
+    "label": "Ethnicity",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "schoolName",
+    "label": "School Name",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "gradeLevel",
+    "label": "Grade Level",
+    "type": "select",
+    "options": [
+      { "value": "Unknown", "label": "" },
+      { "value": "Grade 1 to 4", "label": "Grade 1 to 4" },
+      { "value": "Grade 5 to 7", "label": "Grade 5 to 7" },
+      { "value": "Grade 8 to 9", "label": "Grade 8 to 9" },
+      { "value": "Grade 10 to 12", "label": "Grade 10 to 12" },
+      { "value": "Out of school", "label": "Out of school" }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "livingSituation",
+    "label": "Living Situation",
+    "type": "select",
+    "options": [
+      { "value": "Unknown", "label": "" },
+      { "value": "Alternative care", "label": "Alternative care" },
+      { "value": "Group residential facility", "label": "Group residential facility" },
+      { "value": "Homeless or marginally housed", "label": "Homeless or marginally housed" },
+      { "value": "In detention", "label": "In detention" },
+      { "value": "Living independently", "label": "Living independently" },
+      { "value": "With parent(s)", "label": "With parent(s)" },
+      { "value": "With relatives", "label": "With relatives" },
+      { "value": "Other", "label": "Other" }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "vulnerableGroups",
+    "label": "Vulnerable Groups",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Child in conflict with the law",
+        "label": "Child in conflict with the law"
+      },
+      {
+        "value": "Child living in conflict zone",
+        "label": "Child living in conflict zone"
+      },
+      {
+        "value": "Child living in poverty",
+        "label": "Child living in poverty"
+      },
+      {
+        "value": "Child member of an ethnic, racial or religious minority",
+        "label": "Child member of an ethnic, racial or religious minority"
+      },
+      {
+        "value": "Child on the move (involuntarily)",
+        "label": "Child on the move (involuntarily)"
+      },
+      {
+        "value": "Child on the move (voluntarily)",
+        "label": "Child on the move (voluntarily)"
+      },
+      {
+        "value": "Child with disability",
+        "label": "Child with disability"
+      },
+      {
+        "value": "LGBTQI+/SOGIESC child",
+        "label": "LGBTQI+/SOGIESC child"
+      },
+      {
+        "value": "Out-of-school child",
+        "label": "Out-of-school child"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "region",
+    "label": "Region",
+    "type": "select",
+    "options": [
+      { "value": "Unknown", "label": "" },
+      { "value": "Cities", "label": "Cities" },
+      { "value": "Rural areas", "label": "Rural areas" },
+      { "value": "Town & semi-dense areas", "label": "Town & semi-dense areas" }
+    ],
+    "isPII": false
+  }
+]

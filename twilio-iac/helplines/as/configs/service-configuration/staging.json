@@ -1,5 +1,6 @@
 {
     "attributes": {
+        "definitionVersion": "as-v2",
         "contacts_waiting_channels": [
             "voice",
             "sms",
