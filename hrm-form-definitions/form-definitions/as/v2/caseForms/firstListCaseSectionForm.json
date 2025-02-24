@@ -1,56 +1,46 @@
 [
-  {
-    "name": "firstListCaseSectionConfig",
-    "label": "Here is how this is configured",
-    "type": "textarea",
-    "rows": 20,
-    "width": 289
-  },
-  {
-    "name": "splitFormAt",
-    "label": "splitFormAt",
-    "type": "input",
-    "isPII": true
-  },
-  {
-    "name": "caseHomeOrder",
-    "label": "caseHomeOrder",
-    "type": "input",
-    "isPII": true
-  },
-  {
-    "name": "printOrder",
-    "label": "printOrder",
-    "type": "input",
-    "isPII": true
-  },
-  {
-    "name": "input",
-    "label": "input",
-    "type": "input",
-    "isPII": true
-  },
-  {
-    "name": "text",
-    "label": "text",
-    "type": "textarea",
-    "rows": 20,
-    "width": 289
-  },
-  {
-    "name": "date",
-    "type": "date-input",
-    "label": "Date",
-    "required": { "value": true, "message": "RequiredFieldError" },
-    "metadata": {
-      "eventTimestampSource": true
+    {
+      "name": "firstListCaseSectionConfig",
+      "label": "Here is how this is configured",
+      "type": "textarea",
+      "rows": 20,
+      "width": 289
+    },
+    {
+      "name": "firstListCaseSectionTranslations",
+      "label": "Here are the translations",
+      "type": "textarea",
+      "rows": 20,
+      "width": 289
+    },
+    {
+      "name": "input",
+      "label": "input",
+      "type": "input",
+      "isPII": true
+    },
+    {
+      "name": "text",
+      "label": "text",
+      "type": "textarea",
+      "rows": 20,
+      "width": 289
+    },
+    {
+      "name": "date",
+      "type": "date-input",
+      "label": "Date",
+      "required": { "value": true, "message": "RequiredFieldError" },
+      "metadata": {
+        "eventTimestampSource": true
+      }
     }
-  }
-
-]
-
-
-
-
-
-
+  
+  ]
+  
+  
+  
+  
+  
+  
+  

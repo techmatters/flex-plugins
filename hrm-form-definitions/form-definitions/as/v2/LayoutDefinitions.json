@@ -21,13 +21,13 @@
             "printFormatList1": {},
             "printFormatList2": {}
         },
-        "splitFormAt": 1,
+        "splitFormAt": 2,
         "printOrder": 1,
         "printFormat": "list",
         "caseHomeLocation": "timeline"
       },
       "firstListCaseSection": {
-        "splitFormAt": 4,
+        "splitFormAt": 2,
         "caseHomeOrder": 1,
         "caseHomeLocation": "list",
         "printOrder": 3,
@@ -50,7 +50,7 @@
         }
       },
       "secondListCaseSection": {
-        "splitFormAt": 4,
+        "splitFormAt": 2,
         "caseHomeOrder": 2,
         "caseHomeLocation": "list",
         "printOrder": 4,
@@ -68,7 +68,7 @@
         }
       },
       "thirdListCaseSection": {
-        "splitFormAt": 4,
+        "splitFormAt": 2,
         "caseHomeOrder": 3,
         "caseHomeLocation": "list",
         "printOrder": 5,
@@ -86,7 +86,7 @@
         }
       },
       "fourthListCaseSection": {
-        "splitFormAt": 4,
+        "splitFormAt": 2,
         "caseHomeOrder": 4,
         "caseHomeLocation": "list",
         "printOrder": 6,
@@ -104,7 +104,7 @@
         }
       },
       "fifthListCaseSection": {
-        "splitFormAt": 4,
+        "splitFormAt": 2,
         "caseHomeOrder": 5,
         "caseHomeLocation": "list",
         "printOrder": 7,
@@ -126,7 +126,7 @@
         }
       },
       "sixthListCaseSection": {
-        "splitFormAt": 4,
+        "splitFormAt": 2,
         "caseHomeOrder": 6,
         "caseHomeLocation": "list",
         "printFormat": "hidden",
@@ -150,7 +150,7 @@
         }
       },
       "sevenththListCaseSection": {
-        "splitFormAt": 4,
+        "splitFormAt": 2,
         "caseHomeOrder": 7,
         "caseHomeLocation": "list",
         "printOrder": 2,
@@ -169,7 +169,7 @@
         }
       },
       "eighthListCaseSection": {
-        "splitFormAt": 4,
+        "splitFormAt": 2,
         "caseHomeOrder": 8,
         "caseHomeLocation": "list",
         "printOrder": 8,
