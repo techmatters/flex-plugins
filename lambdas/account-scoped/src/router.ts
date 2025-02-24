@@ -38,7 +38,7 @@ const ROUTES: Record<string, FunctionRoute> = {
     requestPipeline: [validateWebhookRequest],
     handler: handleTaskRouterEvent,
   },
-  getProfileFlagForIdentifier: {
+  getProfileFlagsForIdentifier: {
     requestPipeline: [validateWebhookRequest],
     handler: handleGetProfileFlagsForIdentifier,
   },
