@@ -49,7 +49,7 @@ export const lambdaAlbFetch = async (
   if (options.signatureAuthToken) {
     headers['x-twilio-signature'] = getExpectedTwilioSignature(
       options.signatureAuthToken,
-      headers['x-original-webhook-url'] || `${TEST_HOST}${path}`,
+      headers['x-original-webhook-url'] || `https://${TEST_HOST}${path}`,
       JSON.parse(options.body?.toString() || '{}'),
     );
   }
