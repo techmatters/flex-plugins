@@ -5,14 +5,14 @@
     "type": "checkbox"
   },
   {
-    "name": "dispatchToArrivalAtIncidentLocation",
-    "type": "date-input",
-    "label": "Dispatch to Arrival at Incident Location"
+    "name": "incidentArrivalTime",
+    "type": "time-input",
+    "label": "Incident Arrival Time"
   },
   {
-    "name": "timeFromArrivalToCompletion",
-    "type": "date-input",
-    "label": "Time from Arrival to Completion"
+    "name": "incidentCompletionTime",
+    "type": "time-input",
+    "label": "Incident Completion Time"
   },
   {
     "name": "primaryDisposition",
