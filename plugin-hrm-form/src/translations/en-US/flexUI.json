@@ -575,6 +575,7 @@
   "CaseSection-Add/timelineCaseSectionW": "Add Timeline Section",
   "CaseSection-BottomBar-Save/timelineCaseSection": "Save Timeline Section",
   "CaseSection-BottomBar-SaveAndAddAnother/timelineCaseSection": "Save and add another",
+  "CasePrint-TabularSection-Header/timelineCaseSection": "2th Section: Select-Multiselect",
 
   "Case-SectionList-Title/firstListCaseSection": "1th Section: Input-Text-Date",
   "Case-SectionList-Add/firstListCaseSection":"Add First Section",
@@ -582,6 +583,7 @@
   "CaseSection-BottomBar-Save/firstListCaseSection": "Save Section",
   "CaseSection-BottomBar-SaveAndAddAnother/firstListCaseSection": "Save and add another",
   "Case-SectionList-NoItems/firstListCaseSection" :"No sections listed",
+  "CasePrint-TabularSection-Header/firstListCaseSection": "2th Section: Select-Multiselect",
 
   "Case-SectionList-Title/secondListCaseSection": "2th Section: Select-Multiselect",
   "Case-SectionList-Add/secondListCaseSection":"Add Section",
@@ -589,6 +591,7 @@
   "CaseSection-BottomBar-Save/secondListCaseSection": "Save Section",
   "CaseSection-BottomBar-SaveAndAddAnother/secondListCaseSection": "Save and add another",
   "Case-SectionList-NoItems/secondListCaseSection" :"No sections listed",
+  "CasePrint-TabularSection-Header/secondListCaseSection": "2th Section: Select-Multiselect",
 
   "Case-SectionList-Title/thirdListCaseSection": "3th Section: Checkbox-MixedCheckbox",
   "Case-SectionList-Add/thirdListCaseSection":"Add Section",
@@ -596,6 +599,7 @@
   "CaseSection-BottomBar-Save/thirdListCaseSection": "Save Section",
   "CaseSection-BottomBar-SaveAndAddAnother/thirdListCaseSection": "Save and add another",
   "Case-SectionList-NoItems/thirdListCaseSection" :"No sections listed",
+  "CasePrint-TabularSection-Header/thirdListCaseSection": "3th Section: Checkbox-MixedCheckbox",
 
   "Case-SectionList-Title/fourthListCaseSection": "4th Section: W & W/O label",
   "Case-SectionList-Add/fourthListCaseSection":"Add Section",
@@ -603,6 +607,7 @@
   "CaseSection-BottomBar-Save/fourthListCaseSection": "Save Section",
   "CaseSection-BottomBar-SaveAndAddAnother/fourthListCaseSection": "Save and add another",
   "Case-SectionList-NoItems/fourthListCaseSection" :"No sections listed",
+  "CasePrint-TabularSection-Header/fourthListCaseSection": "4th Section: W & W/O label",
 
   "Case-SectionList-Title/fifthListCaseSection": "5th Section: Ratios",
   "Case-SectionList-Add/fifthListCaseSection":"Add Section",
@@ -610,6 +615,7 @@
   "CaseSection-BottomBar-Save/fifthListCaseSection": "Save Section",
   "CaseSection-BottomBar-SaveAndAddAnother/fifthListCaseSection": "Save and add another",
   "Case-SectionList-NoItems/fifthListCaseSection" :"No sections listed",
+  "CasePrint-TabularSection-Header/fifthListCaseSection": "5th Section: Ratios",
 
   "Case-SectionList-Title/sixthListCaseSection": "6th Section: Layout Formats",
   "Case-SectionList-Add/sixthListCaseSection":"Add Section",
@@ -617,6 +623,7 @@
   "CaseSection-BottomBar-Save/sixthListCaseSection": "Save Section",
   "CaseSection-BottomBar-SaveAndAddAnother/sixthListCaseSection": "Save and add another",
   "Case-SectionList-NoItems/sixthListCaseSection" :"No sections listed",
+  "CasePrint-TabularSection-Header/sixthListCaseSection": "6th Section: Layout Formats",
 
   "Case-SectionList-Title/seventhListCaseSection": "7th Section: Print Format Tabular",
   "Case-SectionList-Add/seventhListCaseSection":"Add Section",
@@ -624,6 +631,7 @@
   "CaseSection-BottomBar-Save/seventhListCaseSection": "Save Section",
   "CaseSection-BottomBar-SaveAndAddAnother/seventhListCaseSection": "Save and add another",
   "Case-SectionList-NoItems/seventhListCaseSection" :"No sections listed",
+  "CasePrint-TabularSection-Header/seventhListCaseSection": "7th Section: Print Format Tabular",
   
   "Case-SectionList-Title/eighthListCaseSection": "8th Section: Label/Value via Translations",
   "Case-SectionList-Add/eighthListCaseSection":"Add Section",
@@ -631,6 +639,7 @@
   "CaseSection-BottomBar-Save/eighthListCaseSection": "Save Section",
   "CaseSection-BottomBar-SaveAndAddAnother/eighthListCaseSection": "Save and add another",
   "Case-SectionList-NoItems/eighthListCaseSection" :"No sections listed",
+  "CasePrint-TabularSection-Header/eighthListCaseSection": "8th Section: Label/Value via Translations",
   "Case-labelTemplateCode": "Label via template (existing field)",
   "Case-newCompoundFieldLabel" : "Label via template (new field)",
   "Case-SectionList-newCompoundFieldValue":  "Field 1: {{field1}}, Field 2:{{field2}} "
