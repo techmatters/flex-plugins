@@ -5,6 +5,11 @@
     "type": "checkbox"
   },
   {
+    "name": "beaconIncidentId",
+    "type": "input",
+    "label": "Beacon Incident ID"
+  },
+  {
     "name": "incidentArrivalTime",
     "type": "time-input",
     "label": "Incident Arrival Time"
