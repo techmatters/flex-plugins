@@ -181,9 +181,6 @@
           "labelTemplateCode": {
             "labelTemplateCode": "Case-labelTemplateCode"
           },
-          "valueTemplateCode": {
-            "valueTemplateCode": "Case-valueTemplateCode"
-          },
           "newCompoundField": {
             "labelTemplateCode": "Case-newCompoundFieldLabel",
             "valueTemplateCode": "Case-newCompoundFieldValue"

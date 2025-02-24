@@ -572,5 +572,54 @@
   "LlmAssistant-Notifications-SummaryGenerationError": "There was an error generating the summary: {{errorMessage}}",
 
   "Case-labelTemplateCode": "Changed label via template code",
-  "Case-valueTemplateCode": "Field 1: {{field1}}, Field 2:{{field2}} "
+  "Case-valueTemplateCode": "Field 1: {{field1}}, Field 2:{{field2}} ",
+  "Case-SectionList-Add/timelineCaseSection": "Add Timeline Section",
+  "CaseSection-Add/timelineCaseSectionW": "Add Timeline Section",
+  "CaseSection-BottomBar-Save/timelineCaseSection": "Save Timeline Section",
+  "CaseSection-Bottombar-SaveAndAddAnother/timelineCaseSection": "Save and add another",
+
+  "Case-SectionList-Title/firstListCaseSection": "First Section: Input-Text-Date",
+  "Case-SectionList-Add/firstListCaseSection":"Add First Section",
+  "CaseSection-Add/firstListCaseSection": "First Section: Input-Text-Date",
+  "CaseSection-BottomBar-Save/firstListCaseSection": "Save Section",
+  "CaseSection-Bottombar-SaveAndAddAnother/firstListCaseSection": "Save and add another",
+
+  "Case-SectionList-Title/ListCaseSection": "First Section: Input-Text-Date",
+  "Case-SectionList-Add/ListCaseSection":"Add Section",
+  "CaseSection-Add/ListCaseSection": "First Section: Input-Text-Date",
+  "CaseSection-BottomBar-Save/ListCaseSection": "Save Section",
+  "CaseSection-Bottombar-SaveAndAddAnother/ListCaseSection": "Save and add another",
+
+  "Case-SectionList-Title/SecondListCaseSection": "Second Section: Select-Multiselect",
+  "Case-SectionList-Add/SecondListCaseSection":"Add Section",
+  "CaseSection-Add/SecondListCaseSection": "Second Section: Select-Multiselect",
+  "CaseSection-BottomBar-Save/SecondListCaseSection": "Save Section",
+  "CaseSection-Bottombar-SaveAndAddAnother/SecondListCaseSection": "Save and add another",
+
+  "Case-SectionList-Title/ThirdListCaseSection": "Third Section: Checkbox-MixedCheckbox",
+  "Case-SectionList-Add/ThirdListCaseSection":"Add Section",
+  "CaseSection-Add/ThirdListCaseSection": "Third Section: Checkbox-MixedCheckbox",
+  "CaseSection-BottomBar-Save/ThirdListCaseSection": "Save Section",
+  "CaseSection-Bottombar-SaveAndAddAnother/ThirdListCaseSection": "Save and add another",
+
+  "Case-SectionList-Title/FourthListCaseSection": "Fourth Section: W & W/O label",
+  "Case-SectionList-Add/FourthListCaseSection":"Add Section",
+  "CaseSection-Add/FourthListCaseSection": "Fourth Section: W & W/O label",
+  "CaseSection-BottomBar-Save/FourthListCaseSection": "Save Section",
+  "CaseSection-Bottombar-SaveAndAddAnother/FourthListCaseSection": "Save and add another",
+
+  "Case-SectionList-Title/FifthListCaseSection": "First Section: Ratios",
+  "Case-SectionList-Add/FifthListCaseSection":"Add Section",
+  "CaseSection-Add/FifthListCaseSection": "First Section: Ratios",
+  "CaseSection-BottomBar-Save/FifthListCaseSection": "Save Section",
+  "CaseSection-Bottombar-SaveAndAddAnother/FifthListCaseSection": "Save and add another",
+
+  "Case-SectionList-Title/sixthListCaseSection": "First Section: Input-Text-Date",
+  "Case-SectionList-Add/ListCaseSection":"Add Section",
+  "CaseSection-Add/ListCaseSection": "First Section: Input-Text-Date",
+  "CaseSection-BottomBar-Save/ListCaseSection": "Save Section",
+  "CaseSection-Bottombar-SaveAndAddAnother/ListCaseSection": "Save and add another",
+  
+ 
+
 }

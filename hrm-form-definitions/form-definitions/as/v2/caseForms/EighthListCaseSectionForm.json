@@ -41,12 +41,6 @@
     "label": "labelTemplateCode",
     "type": "input",
     "isPII": true
-  },
-  {
-    "name": "valueTemplateCode",
-    "label": "valueTemplateCode",
-    "type": "input",
-    "isPII": true
   }
 ]
 
