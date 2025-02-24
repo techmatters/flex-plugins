@@ -37,7 +37,7 @@ export const validateWebhookRequest: HttpRequestPipelineStep = async (
   const isValid = twilio.validateRequest(
     authToken,
     twiloSignature,
-    originalWebhookUrl || `${host}${path}`,
+    originalWebhookUrl || `https://${host}${path}`,
     body,
   );
   if (!isValid) {
