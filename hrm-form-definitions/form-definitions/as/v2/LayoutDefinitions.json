@@ -175,13 +175,15 @@
         "printOrder": 8,
         "previewFields": [
           "labelTemplateCode",
-          "valueTemplateCode"
+          "newCompoundField"
         ],
         "layout": {
           "labelTemplateCode": {
+            "includeLabel": true,
             "labelTemplateCode": "Case-labelTemplateCode"
           },
           "newCompoundField": {
+            "includeLabel": true,
             "labelTemplateCode": "Case-newCompoundFieldLabel",
             "valueTemplateCode": "Case-SectionList-newCompoundFieldValue"
           }
