@@ -18,12 +18,27 @@
 import type {MockedEndpoint, Mockttp} from 'mockttp';
 import { HrmContact } from '../../../src/hrm/populateHrmContactFormFromTask';
 import { AccountSID } from '../../../src/twilioTypes';
+import { TEST_ACCOUNT_SID, TEST_AUTH_TOKEN } from '../../testTwilioValues';
 
 const mockContacts: Record<AccountSID, Record<string, HrmContact>> = {};
 const contactRootPathRegex = new RegExp(
   `${process.env.INTERNAL_HRM_URL!.replace('/', '\\/')}\\/internal\\/v1\\/accounts\\/([^\\/]+)\\/contacts`,
 );
+const profileIdentifiersFlagsPathRegex = new RegExp(
+  `${process.env.INTERNAL_HRM_URL!.replace('/', '\\/')}\\/internal\\/v1\\/accounts\\/([^\\/]+)\\/profiles\\/identifier\\/([^\/]+)\\/flags`,
+);
 let idCounter = 0;
+
+export const HRM_AUTH_SSM_PARAMETERS = [
+  {
+    name: `/${process.env.NODE_ENV}/twilio/${TEST_ACCOUNT_SID}/auth_token`,
+    valueGenerator: () => TEST_AUTH_TOKEN,
+  },
+  {
+    name: `/${process.env.NODE_ENV}/twilio/${TEST_ACCOUNT_SID}/static_key`,
+    valueGenerator: () => 'static_key',
+  },
+];
 
 export const mockHrmContacts = async (mockttp: Mockttp) => {
   return mockttp
@@ -52,4 +67,26 @@ export const verifyCreateContactRequest = async (
   const [request] = requests;
   expect(request.method).toBe('POST');
   expect(await request.body.getJson()).toEqual(expectedContact);
+};
+
+export const mockIdentifierFlags = async (
+  mockttp: Mockttp,
+  identifier: string,
+  responseFlags: { name: string }[],
+) => {
+  return mockttp
+    .forGet(profileIdentifiersFlagsPathRegex)
+    .always()
+    .asPriority(10000)
+    .thenCallback(async req => {
+      const [, , pathIdentifier] = req.url.match(profileIdentifiersFlagsPathRegex) as [
+        unknown,
+        unknown,
+        string,
+      ];
+      return {
+        json: pathIdentifier === identifier ? responseFlags : [],
+        statusCode: 200,
+      };
+    });
 };
