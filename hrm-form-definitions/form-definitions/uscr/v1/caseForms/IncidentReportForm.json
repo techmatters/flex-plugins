@@ -10,14 +10,19 @@
     "label": "Beacon Incident ID"
   },
   {
-    "name": "incidentArrivalTime",
+    "name": "incidentActivationTime",
     "type": "time-input",
-    "label": "Incident Arrival Time"
+    "label": "Incident Activation Time"
   },
   {
-    "name": "incidentCompletionTime",
+    "name": "sceneArrivalTime",
     "type": "time-input",
-    "label": "Incident Completion Time"
+    "label": "Scene Arrival Time"
+  },
+  {
+    "name": "totalIncidentTime",
+    "type": "time-input",
+    "label": "Time from Arrival to Completion"
   },
   {
     "name": "primaryDisposition",
