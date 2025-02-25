@@ -19,7 +19,7 @@ import { handler } from '../../src';
 import { getExpectedTwilioSignature } from 'twilio/lib/webhooks/webhooks';
 
 const TEST_HOST = 'example.com';
-
+const DUMMY_SHA = '1664905929c33351d8f48f1ffa530d011f2c37cb66c4aa0deeb384ea79757844';
 /**
  * QOL method that allows tests to invoke the lambda via the Runtime Interface Client in a similar way to how external callers would invoke them via the ALB
  * @param path
@@ -49,8 +49,9 @@ export const lambdaAlbFetch = async (
   if (options.signatureAuthToken) {
     headers['x-twilio-signature'] = getExpectedTwilioSignature(
       options.signatureAuthToken,
-      headers['x-original-webhook-url'] || `https://${TEST_HOST}${path}`,
-      JSON.parse(options.body?.toString() || '{}'),
+      headers['x-original-webhook-url'] ||
+        `https://${TEST_HOST}${path}?bodySHA256=${DUMMY_SHA}`,
+      {},
     );
   }
 
@@ -65,6 +66,9 @@ export const lambdaAlbFetch = async (
     headers,
     path: sanitizedPath,
     body: options.body?.toString() || '',
+    queryStringParameters: {
+      bodySHA256: DUMMY_SHA,
+    },
     isBase64Encoded: false,
   };
 

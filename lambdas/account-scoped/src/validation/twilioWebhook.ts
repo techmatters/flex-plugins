@@ -48,7 +48,7 @@ export const validateWebhookRequest: HttpRequestPipelineStep = async (
     authToken,
     twiloSignature,
     originalWebhookUrl || `https://${host}${path}?bodySHA256=${bodySHA256}`,
-    {},
+    [],
   );
   if (!isValid) {
     return newErr({ message: 'Request validation failed', error: { statusCode: 403 } });
