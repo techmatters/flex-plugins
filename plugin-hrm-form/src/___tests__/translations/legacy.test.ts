@@ -140,7 +140,6 @@ describe('Test initLocalization', () => {
     afterNewStrings.mockClear();
   });
 
-
   test('Non default language', async () => {
     initLocalization(localizationConfig, 'es');
 

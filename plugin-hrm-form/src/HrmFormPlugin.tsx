@@ -55,9 +55,8 @@ export type SetupObject = ReturnType<typeof getHrmConfig>;
 
 const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   const manager = Flex.Manager.getInstance();
-  
+
   const { counselorLanguage, helplineLanguage } = config;
-  console.log('>>> setUpLocalization', counselorLanguage, helplineLanguage);
 
   const twilioStrings = { ...manager.strings }; // save the originals
 
@@ -73,7 +72,6 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
 
   const localizationConfig = { twilioStrings, setNewStrings, afterNewStrings };
   const initialLanguage = counselorLanguage || helplineLanguage;
-  console.log('>>> setUpLocalization', { initialLanguage, helplineLanguage });
 
   return initLocalization(localizationConfig, initialLanguage);
 };

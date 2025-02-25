@@ -93,7 +93,6 @@ const readConfig = () => {
     ...featureFlagsFromServiceConfig,
     ...featureFlagsFromEnv,
   };
-  featureFlags.enable_hierarchical_translations = true;
   const { strings } = (manager as unknown) as {
     strings: { [key: string]: string };
   };

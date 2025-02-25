@@ -99,41 +99,37 @@ const bundledMessages = {
 
 export const loadTranslations = async (language: string): Promise<Record<string, string>> => {
   const [baseLanguage] = language.split('-');
-  console.log('>>> baseLanguage', baseLanguage);  
+  let translations = {};
+
   try {
-    // Load base language translations
-    let translations = {};
-    try {
-      translations = require(`./locales/${baseLanguage}.json`);
-      console.log('>>> baseTranslations', translations);
-    } catch (error) {
-      console.error(`Base language file not found for ${baseLanguage}`);
-    }
-
-    // Load locale-specific overrides if they exist
-    if (language !== baseLanguage) {
-      const localeOverrides = require(`./locales/${language}.json`);
-      console.log('>>> localeOverrides', localeOverrides);
-      translations = { ...translations, ...localeOverrides };
-    }
-
-    // Load helpline-specific overrides from hrm-form-definitions
-    const { helplineCode } = getHrmConfig();
-    try {
-      const helplineTranslations = require(`../../../hrm-form-definitions/form-definitions/${helplineCode}/v1/translations/Substitutions.json`);
-      if (helplineTranslations[baseLanguage]) {
-        console.log('>>> helplineTranslations', helplineTranslations[baseLanguage]);
-        translations = { ...translations, ...helplineTranslations[baseLanguage] };
-      }
-    } catch (error) {
-      console.warn(`Helpline translations not found in hrm-form-definitions for helpline: ${helplineCode}`);
-    }
-
-    return translations;
+    const baseTranslations = require(`./locales/${baseLanguage}.json`);
+    translations = { ...baseTranslations };
   } catch (error) {
-    console.error('Error loading translations:', error);
-    return {};
+    console.error(`Base language file not found for ${baseLanguage}`);
   }
+
+  if (language !== baseLanguage) {
+    try {
+      const localeOverrides = require(`./locales/${language}.json`);
+      translations = { ...translations, ...localeOverrides };
+    } catch (error) {
+      console.error(`Locale-specific translations not found for ${language}`);
+    }
+  }
+
+  const { helplineCode } = getHrmConfig();
+  try {
+    const helplineTranslations = require(`../../../hrm-form-definitions/form-definitions/${helplineCode}/v1/translations/Substitutions.json`);
+    
+    if (helplineTranslations && helplineTranslations[baseLanguage]) {
+      translations = { ...translations, ...helplineTranslations[baseLanguage] };
+    }
+
+  } catch (error) {
+    console.warn(`Helpline translations not found in hrm-form-definitions for helpline: ${helplineCode}`);
+  }
+
+  return translations;
 };
 
 const translationErrorMsg = 'Could not translate, using default';
@@ -151,55 +147,43 @@ type LocalizationConfig = {
 export const initTranslateUI = (localizationConfig: LocalizationConfig) => async (language: string): Promise<void> => {
   const { twilioStrings, setNewStrings, afterNewStrings } = localizationConfig;
   const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
-  // const enableHierarchicalTranslations = true;
   try {
-    let customStrings;
     if (enableHierarchicalTranslations) {
-      customStrings = await loadTranslations(language);
-      console.log('>>> initTranslateUI: customStrings loaded:', customStrings ? 'success' : 'null/undefined');
+      const customStrings = await loadTranslations(language);
       
-      if (!customStrings) {
-        console.error(`Could not load translations for ${language}`);
-        console.error(translationErrorMsg);
+      if (!customStrings || Object.keys(customStrings).length === 0) {
+        console.error(`Could not load translations for ${language}, using default`);
         return;
       }
-      
-      setNewStrings({ ...twilioStrings, ...customStrings });
+
+      const mergedStrings = { ...twilioStrings, ...customStrings };
+      setNewStrings(mergedStrings);
       afterNewStrings(language);
       return;
-    } else {
-      console.log('>>> initTranslateUI: Using legacy translations');
-      // Use legacy translations
-      try {
-        if (language in bundledTranslations) {
-          const translation = bundledTranslations[language];
-          setNewStrings({ ...twilioStrings, ...translation });
-        } else {
-          const body = { language };
-          const translationJSON = await getTranslation(body);
-          const translation = await (typeof translationJSON === 'string'
-            ? JSON.parse(translationJSON)
-            : Promise.resolve(translationJSON));
-          setNewStrings(translation);
-        }
-        afterNewStrings(language);
-      } catch (err) {
-        console.error(translationErrorMsg, err);
-      }
     }
-    
-    // if (!customStrings) {
-    //   console.error(translationErrorMsg);
-    //   return;
-    // }
 
-    // setNewStrings({ ...twilioStrings, ...customStrings });
-    // afterNewStrings(language);
+    console.log('>>> initTranslateUI: Using legacy translations');
+    // Use legacy translations
+    try {
+      if (language in bundledTranslations) {
+        const translation = bundledTranslations[language];
+        setNewStrings({ ...twilioStrings, ...translation });
+      } else {
+        const body = { language };
+        const translationJSON = await getTranslation(body);
+        const translation = await (typeof translationJSON === 'string'
+          ? JSON.parse(translationJSON)
+          : Promise.resolve(translationJSON));
+        setNewStrings(translation);
+      }
+      afterNewStrings(language);
+    } catch (err) {
+      console.error('Could not translate, using default', err);
+    }
+
   } catch (error) {
-    console.log('>>> initTranslateUI: Caught error in outer try/catch:', error);
-    console.error(translationErrorMsg, error);
+    console.error('Could not translate, using default', error);
   }
-  console.log('>>> initTranslateUI: Function execution completed');
 };
 
 /**
@@ -210,7 +194,7 @@ export const initTranslateUI = (localizationConfig: LocalizationConfig) => async
  */
 export const getMessage = messageKey => async language => {
   const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
-  // const enableHierarchicalTranslations = true;
+
   try {
     if (enableHierarchicalTranslations) {
       const { helplineCode } = getHrmConfig();
@@ -232,7 +216,7 @@ export const getMessage = messageKey => async language => {
 
     return defaultMessages[messageKey];
   } catch (err) {
-    console.error(translationErrorMsg, err);
+    console.error('Could not translate, using default', err);
     return defaultMessages[messageKey];
   }
 };
@@ -242,16 +226,14 @@ export const initLocalization = (localizationConfig: LocalizationConfig, initial
   const { setNewStrings } = localizationConfig;
 
   setNewStrings(defaultTranslation);
-  
+
   const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
-  // const enableHierarchicalTranslations = true;
-  
-  // Always call translateUI when hierarchical translations are enabled
+
   if (enableHierarchicalTranslations || (initialLanguage && initialLanguage !== defaultLanguage)) {
     translateUI(initialLanguage);
   } else {
-    console.log('>>> translateUI NOT called because condition failed');
+    console.error('translateUI NOT called because condition failed');
   }
-  
+
   return { translateUI, getMessage };
 };
