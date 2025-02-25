@@ -15,6 +15,7 @@
  */
 
 import * as mockingProxy from '../sandbox/mockingProxy';
+import '../expectToParseAsDate';
 import {
   initialiseMockServiceConfigurationApi,
   mockServiceConfiguration,
@@ -37,13 +38,24 @@ import { RESERVATION_ACCEPTED } from '../../../src/taskrouter/eventTypes';
 import { mockFormDefinitions } from '../sandbox/mockFormDefinitions';
 import { BASE_FORM_DEFINITION } from '../../testHrmValues';
 
-import { mockHrmContacts } from '../sandbox/mockHrm';
+import { mockHrmContacts, verifyCreateContactRequest } from '../sandbox/mockHrm';
+import { MockedEndpoint } from 'mockttp';
+import { BLANK_CONTACT } from '../../unit/hrm/testContacts';
+import { TaskSID } from '../../../src/twilioTypes';
+import { HrmContact } from '../../../src/hrm/populateHrmContactFormFromTask';
 
-afterAll(async () => {
+const BLANK_POPULATED_PERSON_INFORMATION = {
+  age: '',
+  firstName: '',
+  gender: 'Unknown',
+  otherGender: '',
+};
+
+afterEach(async () => {
   await mockingProxy.stop();
 });
 
-beforeAll(async () => {
+beforeEach(async () => {
   await mockingProxy.start();
   await initialiseMockServiceConfigurationApi();
   await mockServiceConfiguration({
@@ -58,9 +70,10 @@ beforeAll(async () => {
 });
 
 describe('Create HRM Contact on Reservation Accepted event', () => {
-  // let createHrmContactEndpoint: MockedEndpoint;
+  let createHrmContactEndpoint: MockedEndpoint;
 
   beforeEach(async () => {
+    createHrmContactEndpoint = await mockHrmContacts(await mockttpServer());
     await mockFormDefinitions(
       await mockttpServer(),
       DEFAULT_CONFIGURATION_ATTRIBUTES.helpline_code,
@@ -80,7 +93,6 @@ describe('Create HRM Contact on Reservation Accepted event', () => {
         valueGenerator: () => 'static_key',
       },
     ]);
-    await mockHrmContacts(await mockttpServer());
     await mockTaskApi(EMPTY_TASK);
   });
   test('should return 400 if no twilio signature header is provided', async () => {
@@ -155,14 +167,14 @@ describe('Create HRM Contact on Reservation Accepted event', () => {
     );
 
     expect(response.status).toBe(200);
-    /*
-     TODO: Fix and add thisd check - run out of time
     await verifyCreateContactRequest(createHrmContactEndpoint, {
       ...BLANK_CONTACT,
-      channel: 'default',
+      definitionVersion: 'ut-v1',
       rawJson: {
-        definitionVersion: DEFAULT_CONFIGURATION_ATTRIBUTES.definitionVersion,
         ...BLANK_CONTACT.rawJson,
+        callerInformation: BLANK_POPULATED_PERSON_INFORMATION,
+        childInformation: BLANK_POPULATED_PERSON_INFORMATION,
+        definitionVersion: 'ut-v1', // for backwards compatibility
       },
       twilioWorkerId: TEST_WORKER_SID,
       taskId: TEST_TASK_SID as TaskSID,
@@ -170,7 +182,7 @@ describe('Create HRM Contact on Reservation Accepted event', () => {
       serviceSid: '',
       // We set createdBy to the workerSid because the contact is 'created' by the worker who accepts the task
       createdBy: TEST_WORKER_SID as HrmContact['createdBy'],
+      timeOfContact: expect.toParseAsDate(),
     });
-     */
   });
 });

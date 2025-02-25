@@ -26,16 +26,21 @@ const contactRootPathRegex = new RegExp(
 let idCounter = 0;
 
 export const mockHrmContacts = async (mockttp: Mockttp) => {
-  return mockttp.forPost(contactRootPathRegex).thenCallback(async req => {
-    const accountSid = req.url.match(contactRootPathRegex)![1] as AccountSID;
-    mockContacts[accountSid] = mockContacts[accountSid] || {};
-    const id = `mock-contact-${idCounter++}`;
-    mockContacts[accountSid][id] = {
-      ...((await req.body.getJson()) as HrmContact),
-      id,
-    };
-    return { json: mockContacts[accountSid][id], statusCode: 200 };
-  });
+  return mockttp
+    .forPost(contactRootPathRegex)
+    .always()
+    .asPriority(10000)
+    .thenCallback(async req => {
+      const accountSid = req.url.match(contactRootPathRegex)![1] as AccountSID;
+      mockContacts[accountSid] = mockContacts[accountSid] || {};
+      const id = `mock-contact-${idCounter++}`;
+      mockContacts[accountSid][id] = {
+        ...((await req.body.getJson()) as HrmContact),
+        id,
+      };
+      console.info('completed mocked request', req.method, req.url);
+      return { json: mockContacts[accountSid][id], statusCode: 200 };
+    });
 };
 
 export const verifyCreateContactRequest = async (
