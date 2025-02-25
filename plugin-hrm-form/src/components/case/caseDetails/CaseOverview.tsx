@@ -14,31 +14,23 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-/* eslint-disable react/forbid-prop-types */
-/* eslint-disable no-empty-function */
-/* eslint-disable react/jsx-max-depth */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable react/no-multi-comp */
-/* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { DefinitionVersion, StatusInfo } from 'hrm-form-definitions';
 import { parseISO } from 'date-fns';
 
-import CaseTags from './CaseTags';
-import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
-import {
-  CaseDetailsBorder,
-  CaseSectionFont,
-  DetailDescription,
-  DetailsContainer,
-  StyledInputField,
-  ViewButton,
-} from './styles';
-import { Box } from '../../styles';
-import { PermissionActions } from '../../permissions';
+import { CustomITask, StandaloneITask } from '../../../types/types';
+import CaseTags from '../CaseTags';
+import CaseDetailsHeader from './CaseDetailsHeader';
+import { CaseDetailsBorder, CaseSectionFont, DetailsContainer, ViewButton } from '../styles';
+import { Box } from '../../../styles';
+import { PermissionActions } from '../../../permissions';
+import CaseSummary from './CaseSummary';
+import CaseDetailsInput from './CaseDetailsInput';
 
 type Props = {
+  task: CustomITask | StandaloneITask;
   caseId: string;
   categories: { [category: string]: string[] };
   counselor: string;
@@ -57,6 +49,7 @@ type Props = {
 };
 
 const CaseDetails: React.FC<Props> = ({
+  task,
   caseId,
   categories,
   counselor,
@@ -72,7 +65,6 @@ const CaseDetails: React.FC<Props> = ({
   definitionVersion,
   isOrphanedCase = false,
   editCaseSummary,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const formattedCreatedAt = parseISO(createdAt).toLocaleDateString();
   const formattedUpdatedAt = createdAt === updatedAt ? '—' : parseISO(updatedAt).toLocaleDateString();
@@ -108,85 +100,43 @@ const CaseDetails: React.FC<Props> = ({
         )}
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div style={{ paddingRight: '20px' }}>
-            <DetailDescription>
-              <label id="CaseDetailsStatusLabel">
-                <Template code="Case-CaseDetailsStatusLabel" />
-              </label>
-            </DetailDescription>
-            <StyledInputField
-              data-testid="Case-Details_CaseStatus"
-              id="Details_CaseStatus"
-              name="Details_CaseStatus"
-              aria-labelledby="CaseDetailsStatusLabel"
-              disabled={true}
-              defaultValue={statusLabel}
-            />
-          </div>
-          <div style={{ paddingRight: '20px' }}>
-            <DetailDescription>
-              <label id="CaseChildIsAtRisk">
-                <Template code="Case-ChildIsAtRisk" />
-              </label>
-            </DetailDescription>
-            <StyledInputField
-              data-testid="Case-Details_ChildAtRisk"
-              id="Details_ChildAtRisk"
-              name="Details_ChildAtRisk"
-              aria-labelledby="CaseDetailsStatusLabel"
-              disabled={true}
-              defaultValue={childIsAtRisk ? 'Yes' : 'No'}
-              color={childIsAtRisk ? '#d22f2f' : '#d8d8d8'}
-            />
-          </div>
+          <CaseDetailsInput
+            labelId="CaseDetailsStatusLabel"
+            templateCode="Case-CaseDetailsStatusLabel"
+            inputId="Details_CaseStatus"
+            value={statusLabel}
+          />
+          <CaseDetailsInput
+            labelId="CaseChildIsAtRisk"
+            templateCode="Case-ChildIsAtRisk"
+            inputId="Details_ChildAtRisk"
+            value={childIsAtRisk ? 'Yes' : 'No'}
+            color={childIsAtRisk ? '#d22f2f' : '#d8d8d8'}
+          />
         </div>
       </DetailsContainer>
       <DetailsContainer aria-labelledby="Case-CaseId-label">
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div style={{ paddingRight: '20px' }}>
-            <DetailDescription>
-              <label id="CaseDetailsDateOpened">
-                <Template code="Case-CaseDetailsDateOpened" />
-              </label>
-            </DetailDescription>
-            <StyledInputField
-              data-testid="Case-Details_DateOpened"
-              disabled
-              id="Details_DateOpened"
-              value={formattedCreatedAt}
-              aria-labelledby="CaseDetailsDateOpened"
-            />
-          </div>
-          <div style={{ paddingRight: '20px' }}>
-            <DetailDescription>
-              <label id="CaseDetailsLastUpdated">
-                <Template code="Case-CaseDetailsLastUpdated" />
-              </label>
-            </DetailDescription>
-            <StyledInputField
-              data-testid="Case-Details_DateLastUpdated"
-              disabled
-              id="Details_DateLastUpdated"
-              value={formattedUpdatedAt}
-              aria-labelledby="CaseDetailsLastUpdated"
-            />
-          </div>
-          <div style={{ paddingRight: '20px' }}>
-            <DetailDescription>
-              <label id="CaseDetailsFollowUpDate">
-                <Template code="Case-CaseDetailsFollowUpDate" />
-              </label>
-            </DetailDescription>
-            <StyledInputField
-              id="Details_DateFollowUp"
-              name="Details_DateFollowUp"
-              data-testid="Case-Details_DateFollowUp"
-              disabled={true}
-              defaultValue={formatFollowUpDate === 'Invalid Date' ? '—' : formatFollowUpDate}
-              aria-labelledby="CaseDetailsFollowUpDate"
-            />
-          </div>
+          <CaseDetailsInput
+            labelId="CaseDetailsDateOpened"
+            templateCode="Case-CaseDetailsDateOpened"
+            inputId="Details_DateOpened"
+            value={formattedCreatedAt}
+          />
+          <CaseDetailsInput
+            labelId="CaseDetailsLastUpdated"
+            templateCode="Case-CaseDetailsLastUpdated"
+            inputId="Details_DateLastUpdated"
+            value={formattedUpdatedAt}
+          />
+          <CaseDetailsInput
+            labelId="CaseDetailsFollowUpDate"
+            templateCode="Case-CaseDetailsFollowUpDate"
+            inputId="Details_DateFollowUp"
+            value={formatFollowUpDate === 'Invalid Date' ? '—' : formatFollowUpDate}
+          />
         </div>
+        <CaseSummary task={task} />
       </DetailsContainer>
     </>
   );

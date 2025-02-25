@@ -13,9 +13,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-/* eslint-disable react/jsx-max-depth */
-/* eslint-disable react/no-multi-comp */
-/* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { Print as PrintIcon } from '@material-ui/icons';

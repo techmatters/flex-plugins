@@ -14,6 +14,4 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import Case from './Case';
-
-export default Case;
+export { default } from './Case';

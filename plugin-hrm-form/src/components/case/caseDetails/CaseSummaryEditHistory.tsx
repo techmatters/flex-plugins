@@ -18,11 +18,11 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import { Row } from '../../styles';
-import { CaseActionDetailFont } from './styles';
-import ActionHeader from './ActionHeader';
-import { getAseloFeatureFlags } from '../../hrmConfig';
-import { CaseHistoryDetails } from '../../states/case/selectCaseStateByCaseId';
+import { Row } from '../../../styles';
+import { CaseActionDetailFont } from '../styles';
+import ActionHeader from '../ActionHeader';
+import { getAseloFeatureFlags } from '../../../hrmConfig';
+import { CaseHistoryDetails } from '../../../states/case/selectCaseStateByCaseId';
 
 type OwnProps = CaseHistoryDetails;
 
