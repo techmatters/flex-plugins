@@ -1,0 +1,38 @@
+{
+  "timelineCaseSection": {
+    "label": "Timeline Case Section",
+    "formPath": "caseForms/TimelineCaseSectionForm.json"
+  },
+  "firstListCaseSection": {
+    "label": "First List Case Section",
+    "formPath": "caseForms/FirstListCaseSectionForm.json"
+  },
+  "secondListCaseSection": {
+    "label": "Second List Case Section",
+    "formPath": "caseForms/SecondListCaseSectionForm.json"
+  },
+  "thirdListCaseSection": {
+    "label": "Third List Case Section",
+    "formPath": "caseForms/ThirdListCaseSectionForm.json"
+  },
+  "fourthListCaseSection": {
+    "label": "Fourth List Case Section",
+    "formPath": "caseForms/FourthListCaseSectionForm.json"
+  },
+  "fifthListCaseSection": {
+    "label": "Fifth List Case Section",
+    "formPath": "caseForms/FifthListCaseSectionForm.json"
+  },
+  "sixthListCaseSection": {
+    "label": "Sixth List Case Section",
+    "formPath": "caseForms/SixthListCaseSectionForm.json"
+  },
+  "seventhListCaseSection": {
+    "label": "Seventh List Case Section",
+    "formPath": "caseForms/SeventhListCaseSectionForm.json"
+  },
+  "eighthListCaseSection": {
+    "label": "Eighth List Case Section",
+    "formPath": "caseForms/EighthListCaseSectionForm.json"
+  }
+}

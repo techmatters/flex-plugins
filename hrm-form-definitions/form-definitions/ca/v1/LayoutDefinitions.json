@@ -88,7 +88,8 @@
           "referredTo"
         ],
         "splitFormAt": 5,
-        "printOrder": 4
+        "printOrder": 4,
+        "caseHomeLocation": "timeline"
       },
       "note": {
         "printOrder": 5,

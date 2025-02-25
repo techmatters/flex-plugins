@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
-FROM public.ecr.aws/lambda/nodejs:18 as build
+FROM public.ecr.aws/lambda/nodejs:22 as build
 
 ARG lambda_dir
 ENV lambda_dir ${lambda_dir}
@@ -27,7 +27,7 @@ COPY ${lambda_dir}/${lambda_name} /tmp/build/${lambda_dir}/${lambda_name}
 COPY ${lambda_dir}/../packages /tmp/build/${lambda_dir}/../packages
 COPY package.json package-lock.json tsconfig.json tsconfig.base.json ${lambda_dir}/${lambda_name}/tsconfig.build.json /tmp/build/
 
-RUN yum install -y rsync \
+RUN dnf install -y rsync \
     && cd /tmp/build \
     && npm ci -w ${lambda_dir}/${lambda_name} -w ${lambda_dir}/../packages/* --verbose \
     && npx tsc -b tsconfig.build.json --verbose \
@@ -41,7 +41,7 @@ RUN rsync -a ${lambda_dir}/${lambda_name}/node_modules/ /var/task/node_modules; 
 
 # The added layers from our build increase image size significantly. This flattens the image
 # to reduce the size of the final image.
-FROM public.ecr.aws/lambda/nodejs:18
+FROM public.ecr.aws/lambda/nodejs:22
 COPY --from=build /var/task /var/task
 
 # all of this is a little more fragile than I would like because we have to duplicate the parent repo
