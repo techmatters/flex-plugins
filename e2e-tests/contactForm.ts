@@ -87,6 +87,8 @@ export function contactForm(page: Page) {
       await responsePromise;
     },
     fill: async (tabs: ContactFormTab<any>[]) => {
+      const button = selectors.tabButton(tabs[0]);
+      await expect(button).toBeVisible({ timeout: 15000 });
       for (const tab of tabs) {
         await selectTab(tab);
         await tab.fill(tab);

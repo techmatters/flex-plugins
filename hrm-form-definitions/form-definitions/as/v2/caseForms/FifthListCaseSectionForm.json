@@ -1,0 +1,41 @@
+[
+  {
+    "name": "fifthListCaseSectionConfig",
+    "label": "Here is how this is configured",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289
+  },
+  {
+    "name": "fifthListCaseSectionTranslations",
+    "label": "Here are the translations",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289
+  },
+  {
+    "name": "1widthRatio",
+    "label": "widthRatio: 1",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "1_5widthRatio",
+    "label": "widthRatio: 1.5",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "2widthRatio",
+    "label": "widthRatio: 2",
+    "type": "input",
+    "isPII": true
+  }
+  
+]
+
+
+
+
+
+

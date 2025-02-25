@@ -1,0 +1,40 @@
+[
+  {
+    "name": "eighthListCaseSectionConfig",
+    "label": "Here is how this is configured",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289
+  },
+  {
+    "name": "eighthListCaseSectionTranslations",
+    "label": "Here are the translations",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289
+  },
+  {
+    "name": "field1",
+    "label": "field1",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "field2",
+    "label": "field2",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "labelTemplateCode",
+    "label": "labelTemplateCode",
+    "type": "input",
+    "isPII": true
+  }
+]
+
+
+
+
+
+
