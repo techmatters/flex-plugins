@@ -155,20 +155,14 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
           />
           <CaseOverview
             task={task}
-            caseId={id}
-            statusLabel={statusLabel}
-            can={can}
-            counselor={counselor}
-            categories={categories}
             createdAt={createdAt}
             updatedAt={updatedAt}
             followUpDate={followUpDate}
+            statusLabel={statusLabel}
+            can={can}
             childIsAtRisk={childIsAtRisk}
             availableStatusTransitions={availableStatusTransitions}
-            office={office?.label}
-            handlePrintCase={handlePrintCase}
-            definitionVersion={definitionVersion}
-            isOrphanedCase={isOrphanedCase}
+           definitionVersion={definitionVersion}
             editCaseSummary={onEditCaseSummaryClick}
           />
         </Box>
