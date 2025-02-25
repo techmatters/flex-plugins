@@ -24,6 +24,10 @@
     "label": "Primary Disposition",
     "type": "select",
     "unknownOption": "Unknown",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
     "options": [
       {
         "value": "Unknown",
