@@ -24,10 +24,12 @@ const DUMMY_SHA = '1664905929c33351d8f48f1ffa530d011f2c37cb66c4aa0deeb384ea79757
  * QOL method that allows tests to invoke the lambda via the Runtime Interface Client in a similar way to how external callers would invoke them via the ALB
  * @param path
  * @param options
+ * @param useBodySHA256QueryParameter - if true, the request will include a query parameter `bodySHA256` with a dummy value, required to test JSON requests that originate from Studio Flows
  */
 export const lambdaAlbFetch = async (
   path: string,
   options: RequestInit & { signatureAuthToken?: string } = {},
+  useBodySHA256QueryParameter = false,
 ): Promise<Response> => {
   const sanitizedPath = path.startsWith('/') ? path : `/${path}`;
   const multiValueHeaders: Record<string, string[]> = {};
@@ -50,7 +52,7 @@ export const lambdaAlbFetch = async (
     headers['x-twilio-signature'] = getExpectedTwilioSignature(
       options.signatureAuthToken,
       headers['x-original-webhook-url'] ||
-        `https://${TEST_HOST}${path}?bodySHA256=${DUMMY_SHA}`,
+        `https://${TEST_HOST}${path}${useBodySHA256QueryParameter ? `?bodySHA256=${DUMMY_SHA}` : ''}`,
       {},
     );
   }
@@ -67,7 +69,7 @@ export const lambdaAlbFetch = async (
     path: sanitizedPath,
     body: options.body?.toString() || '',
     queryStringParameters: {
-      bodySHA256: DUMMY_SHA,
+      ...(useBodySHA256QueryParameter ? { bodySHA256: DUMMY_SHA } : {}),
     },
     isBase64Encoded: false,
   };
