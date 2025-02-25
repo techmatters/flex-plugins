@@ -323,11 +323,6 @@
     }
   },
   {
-    "name": "ethnicity",
-    "label": "Ethnicity",
-    "type": "input"
-  },
-  {
     "name": "schoolName",
     "label": "School Name",
     "type": "input"
