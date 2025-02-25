@@ -134,7 +134,7 @@ export const handleEvent = async (
   const newContact: HrmContact = {
     ...BLANK_CONTACT,
     definitionVersion,
-    channel: (customChannelType || channelType) as HrmContact['channel'],
+    channel: (customChannelType || channelType || 'default') as HrmContact['channel'],
     rawJson: {
       definitionVersion,
       ...BLANK_CONTACT.rawJson,
