@@ -257,6 +257,11 @@ type CaseSectionTypeEntry = {
   form: FormDefinition;
 };
 
+export type CaseOverviewDefinition = {
+  summary: { isPII: boolean };
+  additionalFields: Record<string, CaseSectionTypeEntry>;
+};
+
 export type CaseSectionTypeDefinitions = Record<string, CaseSectionTypeEntry>;
 
 export type HelplineEntry = {
