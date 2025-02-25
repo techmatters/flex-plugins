@@ -18,7 +18,7 @@ import { AccountSID } from '../twilioTypes';
 import { newErr, newOk, Result } from '../Result';
 import { HttpClientError } from '../httpErrors';
 
-import {HrmAccountId, inferAccountSidFromHrmAccountId} from "./hrmAccountId";
+import { HrmAccountId, inferAccountSidFromHrmAccountId } from './hrmAccountId';
 
 const requestFromInternalHrmEndpoint = async <TRequest, TResponse>(
   hrmAccountId: HrmAccountId,
