@@ -225,7 +225,7 @@ const memberDisplayOptions = {
   yourDefaultName: 'You',
   yourFriendlyNameOverride: false,
   theirFriendlyNameOverride: false,
-  theirDefaultName: 'Helpline Counsellor',
+  theirDefaultName: 'CIRCLE Operator',
 };
 
 const mapHelplineLanguage: MapHelplineLanguage = (helpline) => {

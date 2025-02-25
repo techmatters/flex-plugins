@@ -18,10 +18,6 @@
   "note": {
     "label": "Note",
     "formPath": "caseForms/NoteForm.json"
-  },
-  "referral": {
-    "label": "Referral",
-    "formPath": "caseForms/ReferralForm.json"
   }
 
 }

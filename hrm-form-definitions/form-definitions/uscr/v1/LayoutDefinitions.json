@@ -43,7 +43,7 @@
         
       },
       "incidentReport": {
-        "splitFormAt": 9,
+        "splitFormAt": 10,
         "printOrder": 1,
         "caseHomeOrder": 1,
         "caseHomeLocation": "timeline",
@@ -65,17 +65,6 @@
         "splitFormAt": 4,
         "printOrder": 5,
         "caseHomeOrder": 5
-      },
-       "referral": {
-        "previewFields": [
-          "referredTo"
-        ],
-        "layout": {
-          "referredTo": {}
-        },
-        "splitFormAt": 2,
-        "printOrder": 6,
-        "caseHomeLocation": "timeline"
       },
       "note": {
         "printOrder": 7,
