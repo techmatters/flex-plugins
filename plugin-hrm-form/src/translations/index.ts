@@ -97,9 +97,9 @@ const bundledMessages = {
   'th-TH': thTHMessages,
 };
 
-export const loadTranslations = (language: string): Record<string, string> => {
+export const loadTranslations = async (language: string): Promise<Record<string, string>> => {
   const [baseLanguage] = language.split('-');
-
+  console.log('>>> baseLanguage', baseLanguage);  
   try {
     // Load base language translations
     let translations = {};
@@ -150,17 +150,25 @@ type LocalizationConfig = {
  */
 export const initTranslateUI = (localizationConfig: LocalizationConfig) => async (language: string): Promise<void> => {
   const { twilioStrings, setNewStrings, afterNewStrings } = localizationConfig;
-  // const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
-  const enableHierarchicalTranslations = true;
-  console.log('>>> initTranslateUI', { language, enableHierarchicalTranslations });
+  const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
+  // const enableHierarchicalTranslations = true;
   try {
     let customStrings;
     if (enableHierarchicalTranslations) {
-      customStrings = loadTranslations(language);
+      customStrings = await loadTranslations(language);
+      console.log('>>> initTranslateUI: customStrings loaded:', customStrings ? 'success' : 'null/undefined');
+      
       if (!customStrings) {
         console.error(`Could not load translations for ${language}`);
+        console.error(translationErrorMsg);
+        return;
       }
+      
+      setNewStrings({ ...twilioStrings, ...customStrings });
+      afterNewStrings(language);
+      return;
     } else {
+      console.log('>>> initTranslateUI: Using legacy translations');
       // Use legacy translations
       try {
         if (language in bundledTranslations) {
@@ -179,17 +187,19 @@ export const initTranslateUI = (localizationConfig: LocalizationConfig) => async
         console.error(translationErrorMsg, err);
       }
     }
+    
+    // if (!customStrings) {
+    //   console.error(translationErrorMsg);
+    //   return;
+    // }
 
-    if (!customStrings) {
-      console.error(translationErrorMsg);
-      return;
-    }
-
-    setNewStrings({ ...twilioStrings, ...customStrings });
-    afterNewStrings(language);
+    // setNewStrings({ ...twilioStrings, ...customStrings });
+    // afterNewStrings(language);
   } catch (error) {
+    console.log('>>> initTranslateUI: Caught error in outer try/catch:', error);
     console.error(translationErrorMsg, error);
   }
+  console.log('>>> initTranslateUI: Function execution completed');
 };
 
 /**
@@ -199,8 +209,8 @@ export const initTranslateUI = (localizationConfig: LocalizationConfig) => async
  * @returns {(language: string) => Promise<string>} - Function that takes a language code and returns the translated message
  */
 export const getMessage = messageKey => async language => {
-  // const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
-  const enableHierarchicalTranslations = true;
+  const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
+  // const enableHierarchicalTranslations = true;
   try {
     if (enableHierarchicalTranslations) {
       const { helplineCode } = getHrmConfig();
@@ -228,11 +238,20 @@ export const getMessage = messageKey => async language => {
 };
 
 export const initLocalization = (localizationConfig: LocalizationConfig, initialLanguage: string) => {
-  console.log('>>> initLocalization', initialLanguage);
   const translateUI = initTranslateUI(localizationConfig);
   const { setNewStrings } = localizationConfig;
 
   setNewStrings(defaultTranslation);
-  if (initialLanguage) translateUI(initialLanguage);
+  
+  const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
+  // const enableHierarchicalTranslations = true;
+  
+  // Always call translateUI when hierarchical translations are enabled
+  if (enableHierarchicalTranslations || (initialLanguage && initialLanguage !== defaultLanguage)) {
+    translateUI(initialLanguage);
+  } else {
+    console.log('>>> translateUI NOT called because condition failed');
+  }
+  
   return { translateUI, getMessage };
 };
