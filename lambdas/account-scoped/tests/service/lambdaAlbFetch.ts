@@ -53,7 +53,9 @@ export const lambdaAlbFetch = async (
       options.signatureAuthToken,
       headers['x-original-webhook-url'] ||
         `https://${TEST_HOST}${path}${useBodySHA256QueryParameter ? `?bodySHA256=${DUMMY_SHA}` : ''}`,
-      {},
+      !useBodySHA256QueryParameter && options.body
+        ? JSON.parse(options.body?.toString())
+        : {},
     );
   }
 
