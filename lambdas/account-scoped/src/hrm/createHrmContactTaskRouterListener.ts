@@ -76,6 +76,10 @@ export const handleEvent = async (
   accountSid: AccountSID,
   client: twilio.Twilio,
 ): Promise<void> => {
+  console.debug(
+    'Creating HRM contact for task on reservation accepted handler invoked',
+    taskSid,
+  );
   const taskAttributes = taskAttributesString ? JSON.parse(taskAttributesString) : {};
   const {
     channelSid,
