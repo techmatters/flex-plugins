@@ -28,7 +28,7 @@ import { AccountSID } from '../twilioTypes';
 import { getWorkspaceSid } from '../configuration/twilioConfiguration';
 import { postToInternalHrmEndpoint } from './internalHrmRequest';
 import { isErr } from '../Result';
-import {HrmAccountId, inferHrmAccountId} from './hrmAccountId';
+import { inferHrmAccountId } from './hrmAccountId';
 
 // Temporarily copied to this repo, will share the flex types when we move them into the same repo
 

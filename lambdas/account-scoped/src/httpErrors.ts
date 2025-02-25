@@ -19,7 +19,7 @@ export class HttpClientError extends Error {
 
   constructor(message: string, statusCode: number) {
     super(message);
-      Object.setPrototypeOf(this, HttpClientError.prototype);
+    Object.setPrototypeOf(this, HttpClientError.prototype);
     this.statusCode = statusCode;
     this.name = 'HttpClientError';
   }
