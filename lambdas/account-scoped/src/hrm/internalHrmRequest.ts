@@ -39,7 +39,7 @@ const requestFromInternalHrmEndpoint = async <TRequest, TResponse>(
       'Content-Type': 'application/json',
       Authorization: `Basic ${hrmStaticKey}`,
     },
-    ...(body === undefined || body === null ? { body: JSON.stringify(body) } : {}),
+    ...(body !== undefined && body !== null ? { body: JSON.stringify(body) } : {}),
   };
   console.debug(`Requesting ${endpointUrl} with options:`, options);
   try {
