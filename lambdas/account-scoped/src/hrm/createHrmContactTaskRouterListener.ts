@@ -157,8 +157,9 @@ export const handleEvent = async (
   );
   if (isErr(responseResult)) {
     console.error(
-      `Failed to create HRM contact for task ${taskSid} - status: ${responseResult.status}`,
+      `Failed to create HRM contact for task ${taskSid}`,
       responseResult.message,
+      responseResult.error,
     );
     return;
   }

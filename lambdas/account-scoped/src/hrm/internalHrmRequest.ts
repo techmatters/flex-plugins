@@ -26,7 +26,7 @@ const requestFromInternalHrmEndpoint = async <TRequest, TResponse>(
   path: string,
   body: TRequest,
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
-): Promise<Result<HttpClientError, TResponse>> => {
+): Promise<Result<Error, TResponse>> => {
   const accountSid = inferAccountSidFromHrmAccountId(hrmAccountId);
   const [hrmStaticKey] = await Promise.all([
     getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/static_key`),
@@ -42,25 +42,33 @@ const requestFromInternalHrmEndpoint = async <TRequest, TResponse>(
     ...(body === undefined || body === null ? { body: JSON.stringify(body) } : {}),
   };
   console.debug(`Requesting ${endpointUrl} with options:`, options);
-  const response = await fetch(endpointUrl, options);
-  if (!response.ok) {
-    const bodyText = await response.text();
-    return newErr<HttpClientError>({
-      message: bodyText,
-      error: new HttpClientError(bodyText, response.status),
+  try {
+    const response = await fetch(endpointUrl, options);
+    if (!response.ok) {
+      const bodyText = await response.text();
+      return newErr<HttpClientError>({
+        message: bodyText,
+        error: new HttpClientError(bodyText, response.status),
+      });
+    }
+    const hrmResponse = await response.json();
+    console.info(`HRM responded ${response.status} to ${method} ${endpointUrl}`);
+    console.debug(`HRM response content:`, hrmResponse);
+    return newOk(hrmResponse as TResponse);
+  } catch (thrown) {
+    const error = thrown as Error;
+    return newErr<Error>({
+      message: error.message,
+      error,
     });
   }
-  const hrmResponse = await response.json();
-  console.info(`HRM responded ${response.status} to ${method} ${endpointUrl}`);
-  console.debug(`HRM response content:`, hrmResponse);
-  return newOk(hrmResponse as TResponse);
 };
 
 export const getFromInternalHrmEndpoint = async <TResponse>(
   accountSid: AccountSID,
   hrmApiVersion: string,
   path: string,
-): Promise<Result<HttpClientError, TResponse>> =>
+): Promise<Result<Error, TResponse>> =>
   requestFromInternalHrmEndpoint(accountSid, hrmApiVersion, path, null, 'GET');
 
 export const postToInternalHrmEndpoint = async <TRequest, TResponse>(
@@ -68,5 +76,5 @@ export const postToInternalHrmEndpoint = async <TRequest, TResponse>(
   hrmApiVersion: string,
   path: string,
   body: TRequest,
-): Promise<Result<HttpClientError, TResponse>> =>
+): Promise<Result<Error, TResponse>> =>
   requestFromInternalHrmEndpoint(accountSid, hrmApiVersion, path, body, 'GET');
