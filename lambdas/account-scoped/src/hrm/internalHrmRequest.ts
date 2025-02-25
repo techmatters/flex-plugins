@@ -17,7 +17,8 @@ import { getSsmParameter } from '../ssmCache';
 import { AccountSID } from '../twilioTypes';
 import { newErr, newOk, Result } from '../Result';
 import { HttpClientError } from '../httpErrors';
-import { HrmAccountId } from './types';
+
+import {HrmAccountId, inferAccountSidFromHrmAccountId} from "./hrmAccountId";
 
 const requestFromInternalHrmEndpoint = async <TRequest, TResponse>(
   hrmAccountId: HrmAccountId,
@@ -26,7 +27,7 @@ const requestFromInternalHrmEndpoint = async <TRequest, TResponse>(
   body: TRequest,
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
 ): Promise<Result<HttpClientError, TResponse>> => {
-  const [accountSid] = hrmAccountId.split('-');
+  const accountSid = inferAccountSidFromHrmAccountId(hrmAccountId);
   const [hrmStaticKey] = await Promise.all([
     getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/static_key`),
   ]);
@@ -40,7 +41,7 @@ const requestFromInternalHrmEndpoint = async <TRequest, TResponse>(
     },
     ...(body === undefined || body === null ? { body: JSON.stringify(body) } : {}),
   };
-
+  console.debug(`Requesting ${endpointUrl} with options:`, options);
   const response = await fetch(endpointUrl, options);
   if (!response.ok) {
     const bodyText = await response.text();
@@ -49,7 +50,10 @@ const requestFromInternalHrmEndpoint = async <TRequest, TResponse>(
       error: new HttpClientError(bodyText, response.status),
     });
   }
-  return newOk((await response.json()) as TResponse);
+  const hrmResponse = await response.json();
+  console.info(`HRM responded ${response.status} to ${method} ${endpointUrl}`);
+  console.debug(`HRM response content:`, hrmResponse);
+  return newOk(hrmResponse as TResponse);
 };
 
 export const getFromInternalHrmEndpoint = async <TResponse>(

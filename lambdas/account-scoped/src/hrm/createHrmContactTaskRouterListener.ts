@@ -28,6 +28,7 @@ import { AccountSID } from '../twilioTypes';
 import { getWorkspaceSid } from '../configuration/twilioConfiguration';
 import { postToInternalHrmEndpoint } from './internalHrmRequest';
 import { isErr } from '../Result';
+import {HrmAccountId, inferHrmAccountId} from './hrmAccountId';
 
 // Temporarily copied to this repo, will share the flex types when we move them into the same repo
 
@@ -110,9 +111,8 @@ export const handleEvent = async (
       enable_backend_hrm_contact_creation: enableBackendHrmContactCreation,
     },
   } = serviceConfig.attributes;
-  // This is a really hacky test, need a better way to determine if the user is one of our bots
-  const userIsAseloBot = /aselo.+@techmatters\.org/.test(workerName);
-  const hrmAccountId = userIsAseloBot ? `${accountSid}-aselo_test` : accountSid;
+
+  const hrmAccountId = inferHrmAccountId(accountSid, workerName);
   const formDefinitionsVersionUrl =
     configFormDefinitionsVersionUrl ||
     `${assetsBucketUrl}/form-definitions/${helplineCode}/v1`;
@@ -124,9 +124,8 @@ export const handleEvent = async (
   }
 
   const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
-  const contactUrl = `${process.env.INTERNAL_HRM_URL}/internal/${hrmApiVersion}/accounts/${hrmAccountId}/contacts`;
 
-  console.debug('Creating HRM contact for task', taskSid, contactUrl);
+  console.debug('Creating HRM contact for task', taskSid, 'Hrm Account:', hrmAccountId);
 
   const newContact: HrmContact = {
     ...BLANK_CONTACT,
@@ -151,7 +150,7 @@ export const handleEvent = async (
     formDefinitionsVersionUrl,
   );
   const responseResult = await postToInternalHrmEndpoint<HrmContact, HrmContact>(
-    accountSid,
+    hrmAccountId,
     hrmApiVersion,
     'contact',
     populatedContact,

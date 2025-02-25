@@ -17,3 +17,15 @@
 import { AccountSID } from '../twilioTypes';
 
 export type HrmAccountId = `${AccountSID}` | `${AccountSID}-${string}`;
+
+export const inferHrmAccountId = (
+  accountSid: AccountSID,
+  workerName: string,
+): HrmAccountId => {
+  // This is a really hacky test, need a better way to determine if the user is one of our bots
+  const userIsAseloBot = /aselo.+@techmatters\.org/.test(workerName);
+  return userIsAseloBot ? `${accountSid}-aselo_test` : accountSid;
+};
+
+export const inferAccountSidFromHrmAccountId = (hrmAccountId: HrmAccountId): AccountSID =>
+  hrmAccountId.split('-')[0] as AccountSID;
