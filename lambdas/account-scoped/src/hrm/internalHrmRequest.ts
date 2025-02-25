@@ -77,4 +77,4 @@ export const postToInternalHrmEndpoint = async <TRequest, TResponse>(
   path: string,
   body: TRequest,
 ): Promise<Result<Error, TResponse>> =>
-  requestFromInternalHrmEndpoint(accountSid, hrmApiVersion, path, body, 'GET');
+  requestFromInternalHrmEndpoint(accountSid, hrmApiVersion, path, body, 'POST');
