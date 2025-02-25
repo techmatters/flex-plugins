@@ -25,23 +25,17 @@ import { CaseSectionFont, DetailsContainer, ViewButton } from '../styles';
 import { Box } from '../../../styles';
 import { PermissionActions } from '../../../permissions';
 import CaseSummary from './CaseSummary';
-import CaseDetailsInput from './CaseDetailsInput';
+import CaseOverviewInput from './CaseOverviewInput';
 
 type Props = {
   task: CustomITask | StandaloneITask;
-  caseId: string;
-  categories: { [category: string]: string[] };
-  counselor: string;
   createdAt: string;
   updatedAt: string | undefined;
   followUpDate: string | undefined;
   statusLabel: string;
   definitionVersion: DefinitionVersion;
-  office: string | undefined;
   childIsAtRisk: boolean;
-  isOrphanedCase: boolean | undefined;
   editCaseSummary: () => void;
-  handlePrintCase: () => void;
   availableStatusTransitions: StatusInfo[];
   can: (action: string) => boolean;
 };
@@ -79,13 +73,13 @@ const CaseOverview: React.FC<Props> = ({
         )}
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <CaseDetailsInput
+          <CaseOverviewInput
             labelId="CaseDetailsStatusLabel"
             templateCode="Case-CaseDetailsStatusLabel"
             inputId="Details_CaseStatus"
             value={statusLabel}
           />
-          <CaseDetailsInput
+          <CaseOverviewInput
             labelId="CaseChildIsAtRisk"
             templateCode="Case-ChildIsAtRisk"
             inputId="Details_ChildAtRisk"
@@ -96,19 +90,19 @@ const CaseOverview: React.FC<Props> = ({
       </DetailsContainer>
       <DetailsContainer aria-labelledby="Case-CaseId-label">
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <CaseDetailsInput
+          <CaseOverviewInput
             labelId="CaseDetailsDateOpened"
             templateCode="Case-CaseDetailsDateOpened"
             inputId="Details_DateOpened"
             value={formattedCreatedAt}
           />
-          <CaseDetailsInput
+          <CaseOverviewInput
             labelId="CaseDetailsLastUpdated"
             templateCode="Case-CaseDetailsLastUpdated"
             inputId="Details_DateLastUpdated"
             value={formattedUpdatedAt}
           />
-          <CaseDetailsInput
+          <CaseOverviewInput
             labelId="CaseDetailsFollowUpDate"
             templateCode="Case-CaseDetailsFollowUpDate"
             inputId="Details_DateFollowUp"
