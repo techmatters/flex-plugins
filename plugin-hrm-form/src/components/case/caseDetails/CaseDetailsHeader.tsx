@@ -27,31 +27,37 @@ import {
 } from '../styles';
 import { Flex, Box } from '../../../styles';
 import { getHrmConfig } from '../../../hrmConfig';
+import CaseTags from '../CaseTags';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 type OwnProps = {
   caseId: string;
-  office: string;
+  office?: string;
   counselor: string;
   handlePrintCase: () => void;
   isOrphanedCase: boolean;
+  definitionVersion: DefinitionVersion;
+  categories: { [category: string]: string[] };
 };
 
-const CaseDetailsHeader: React.FC<OwnProps> = ({ caseId, office, counselor, handlePrintCase, isOrphanedCase }) => {
+const CaseDetailsHeader: React.FC<OwnProps> = ({ caseId, office, counselor, handlePrintCase, isOrphanedCase, definitionVersion, categories }) => {
   const { multipleOfficeSupport } = getHrmConfig();
 
   return (
     <DetailsHeaderContainer>
-      <DetailsHeaderCaseContainer>
-        <DetailsHeaderCaseId id="Case-CaseId-label" data-testid="Case-DetailsHeaderCaseId">
-          <Template code="Case-CaseNumber" />
-          {caseId}
-        </DetailsHeaderCaseId>
-        {multipleOfficeSupport && office && <DetailsHeaderOfficeName>({office})</DetailsHeaderOfficeName>}
-      </DetailsHeaderCaseContainer>
       <Flex justifyContent="space-between">
-        <DetailsHeaderCounselor data-testid="Case-DetailsHeaderCounselor">
-          <Template code="Case-Counsellor" />: {counselor}
-        </DetailsHeaderCounselor>
+        <Box style={{ flexGrow: 1 }}>
+          <DetailsHeaderCaseContainer>
+            <DetailsHeaderCaseId id="Case-CaseId-label" data-testid="Case-DetailsHeaderCaseId">
+              <Template code="Case-CaseNumber" />
+              {caseId}
+            </DetailsHeaderCaseId>
+            {multipleOfficeSupport && office && <DetailsHeaderOfficeName> ({office})</DetailsHeaderOfficeName>}
+          </DetailsHeaderCaseContainer>
+          <DetailsHeaderCounselor data-testid="Case-DetailsHeaderCounselor">
+            <Template code="Case-Counsellor" />: {counselor}
+          </DetailsHeaderCounselor>
+        </Box>
         {!isOrphanedCase && (
           <StyledPrintButton
             onClick={handlePrintCase}
@@ -61,6 +67,7 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({ caseId, office, counselor, hand
           />
         )}
       </Flex>
+      <CaseTags definitionVersion={definitionVersion} categories={categories} />
     </DetailsHeaderContainer>
   );
 };

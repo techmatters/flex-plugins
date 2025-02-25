@@ -21,9 +21,7 @@ import { DefinitionVersion, StatusInfo } from 'hrm-form-definitions';
 import { parseISO } from 'date-fns';
 
 import { CustomITask, StandaloneITask } from '../../../types/types';
-import CaseTags from '../CaseTags';
-import CaseDetailsHeader from './CaseDetailsHeader';
-import { CaseDetailsBorder, CaseSectionFont, DetailsContainer, ViewButton } from '../styles';
+import { CaseSectionFont, DetailsContainer, ViewButton } from '../styles';
 import { Box } from '../../../styles';
 import { PermissionActions } from '../../../permissions';
 import CaseSummary from './CaseSummary';
@@ -48,22 +46,15 @@ type Props = {
   can: (action: string) => boolean;
 };
 
-const CaseDetails: React.FC<Props> = ({
+const CaseOverview: React.FC<Props> = ({
   task,
-  caseId,
-  categories,
-  counselor,
   createdAt,
   updatedAt = '',
   followUpDate = '',
   statusLabel,
   can,
-  office = '',
   childIsAtRisk,
   availableStatusTransitions,
-  handlePrintCase,
-  definitionVersion,
-  isOrphanedCase = false,
   editCaseSummary,
 }) => {
   const formattedCreatedAt = parseISO(createdAt).toLocaleDateString();
@@ -72,19 +63,7 @@ const CaseDetails: React.FC<Props> = ({
   const formatFollowUpDate = parseISO(followUpDate).toLocaleDateString();
 
   return (
-    <>
-      <CaseDetailsBorder>
-        <CaseDetailsHeader
-          caseId={caseId}
-          counselor={counselor}
-          office={office}
-          handlePrintCase={handlePrintCase}
-          isOrphanedCase={isOrphanedCase}
-        />
-        <div style={{ paddingTop: '15px' }}>
-          <CaseTags definitionVersion={definitionVersion} categories={categories} />
-        </div>
-      </CaseDetailsBorder>
+      <div style={{ border: '1px solid #6a82ba' }}>
       <DetailsContainer aria-labelledby="Case-CaseId-label">
         <Box style={{ display: 'inline-block' }}>
           <CaseSectionFont style={{ marginBottom: '5px' }} id="Case-CaseOverview-label">
@@ -138,10 +117,10 @@ const CaseDetails: React.FC<Props> = ({
         </div>
         <CaseSummary task={task} />
       </DetailsContainer>
-    </>
+      </div>
   );
 };
 
-CaseDetails.displayName = 'CaseDetails';
+CaseOverview.displayName = 'CaseOverview';
 
-export default CaseDetails;
+export default CaseOverview;
