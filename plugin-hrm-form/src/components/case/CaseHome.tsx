@@ -14,14 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseContainer, CaseDetailsBorder, ViewButton } from './styles';
 import { BottomButtonBar, Box, SaveAndEndButton } from '../../styles';
-import CaseDetails from './caseDetails/CaseOverview';
+import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
+import CaseOverview from './caseDetails/CaseOverview';
 import Timeline from './timeline/Timeline';
 import CaseSection from './CaseSection';
 import { PermissionActions, PermissionActionType } from '../../permissions';
@@ -45,6 +46,7 @@ import {
   selectContactsByCaseIdInCreatedOrder,
   selectFirstContactByCaseId,
 } from '../../states/contacts/selectContactByCaseId';
+
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -142,7 +144,16 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
           </Box>
         )}
         <Box marginTop="13px">
-          <CaseDetails
+          <CaseDetailsHeader
+            caseId={caseId}
+            counselor={counselor}
+            office={office?.label}
+            handlePrintCase={handlePrintCase}
+            isOrphanedCase={isOrphanedCase}
+            definitionVersion={definitionVersion}
+            categories={categories}
+          />
+          <CaseOverview
             task={task}
             caseId={id}
             statusLabel={statusLabel}
