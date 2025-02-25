@@ -120,11 +120,10 @@ export const loadTranslations = async (language: string): Promise<Record<string,
   const { helplineCode } = getHrmConfig();
   try {
     const helplineTranslations = require(`../../../hrm-form-definitions/form-definitions/${helplineCode}/v1/translations/Substitutions.json`);
-    
+
     if (helplineTranslations && helplineTranslations[baseLanguage]) {
       translations = { ...translations, ...helplineTranslations[baseLanguage] };
     }
-
   } catch (error) {
     console.warn(`Helpline translations not found in hrm-form-definitions for helpline: ${helplineCode}`);
   }
@@ -150,7 +149,7 @@ export const initTranslateUI = (localizationConfig: LocalizationConfig) => async
   try {
     if (enableHierarchicalTranslations) {
       const customStrings = await loadTranslations(language);
-      
+
       if (!customStrings || Object.keys(customStrings).length === 0) {
         console.error(`Could not load translations for ${language}, using default`);
         return;
@@ -180,7 +179,6 @@ export const initTranslateUI = (localizationConfig: LocalizationConfig) => async
     } catch (err) {
       console.error('Could not translate, using default', err);
     }
-
   } catch (error) {
     console.error('Could not translate, using default', error);
   }
