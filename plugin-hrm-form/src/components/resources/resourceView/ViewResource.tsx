@@ -83,7 +83,7 @@ const ViewResource: React.FC<Props> = ({ resource, error, loadViewedResource, na
           />
         </Box>
         <ViewResourceArea>
-          {error && ( // TODO: translation / friendlyisation layer
+          {error && (
             <>
               <ResourceTitle>
                 <Template code="Resources-LoadResourceError" />

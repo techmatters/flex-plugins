@@ -16,7 +16,6 @@
             "enable_csam_report": true,
             "enable_post_survey": false
         },
-        "helplineLanguage": "",
         "permissionConfig": "demo",
         "resources_base_url": "https://hrm-production.tl.techmatters.org"
     },

@@ -1,0 +1,8 @@
+{
+  "es": {
+    "WelcomeMsg": "Hola. ¡Qué gusto saludarte!",
+    "GoodbyeMsg": "El guía abandonó el chat. Gracias por contactarnos. Por favor contáctanos nuevamente si necesita más ayuda.",
+    "EndChatMsg": "El usuario a abandonado el chat. Gracias por contactarse con nosotros. Por favor contáctenos de nuevo si necesita más ayuda.",
+    "UnsupportedMediaErrorMsg": "Lo sentimos, el mensaje que acaba de enviar no es compatible y no se pudo entregar."
+  }
+}

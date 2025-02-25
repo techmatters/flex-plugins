@@ -80,6 +80,7 @@ const readConfig = () => {
 
   const configFlags: ConfigFlags = manager.serviceConfiguration.attributes.config_flags || {};
 
+  const featureFlagEnvVarPrefix = 'REACT_APP_FF_';
   const featureFlagsFromEnvEntries = Object.entries(process.env)
     .filter(([varName]) => varName.startsWith(featureFlagEnvVarPrefix))
     .map(([name, value]) => [
@@ -88,7 +89,6 @@ const readConfig = () => {
     ]);
   const featureFlagsFromEnv = Object.fromEntries(featureFlagsFromEnvEntries);
   const featureFlagsFromServiceConfig: FeatureFlags = manager.serviceConfiguration.attributes.feature_flags || {};
-
   const featureFlags = {
     ...featureFlagsFromServiceConfig,
     ...featureFlagsFromEnv,
@@ -117,7 +117,7 @@ const readConfig = () => {
       helpline,
       currentWorkspace,
       counselorLanguage,
-      helplineLanguage,
+      helplineLanguage: helplineLanguage || 'en-US',
       identity,
       counselorName,
       isSupervisor,
