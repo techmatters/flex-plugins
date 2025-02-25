@@ -156,7 +156,7 @@ export const handleEvent = async (
   const responseResult = await postToInternalHrmEndpoint<HrmContact, HrmContact>(
     hrmAccountId,
     hrmApiVersion,
-    'contact',
+    'contacts',
     populatedContact,
   );
   if (isErr(responseResult)) {
