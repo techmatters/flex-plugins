@@ -26,7 +26,6 @@ type CaseOverviewItemProps = {
   value: string;
   testId?: string;
   color?: string;
-  disabled?: boolean;
 };
 
 const CaseOverviewItem: React.FC<CaseOverviewItemProps> = ({
@@ -36,7 +35,6 @@ const CaseOverviewItem: React.FC<CaseOverviewItemProps> = ({
   value,
   testId,
   color,
-  disabled = true,
 }) => (
   <div style={{ paddingRight: '20px' }}>
     <DetailDescription>
@@ -50,7 +48,7 @@ const CaseOverviewItem: React.FC<CaseOverviewItemProps> = ({
       id={inputId}
       name={inputId}
       aria-labelledby={labelId}
-      disabled={disabled}
+      disabled
       value={value}
       color={color}
     />

@@ -16,6 +16,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { Print as PrintIcon } from '@material-ui/icons';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 import {
   DetailsHeaderCaseContainer,
@@ -28,7 +29,6 @@ import {
 import { Flex, Box } from '../../../styles';
 import { getHrmConfig } from '../../../hrmConfig';
 import CaseTags from '../CaseTags';
-import { DefinitionVersion } from 'hrm-form-definitions';
 
 type OwnProps = {
   caseId: string;
@@ -40,7 +40,15 @@ type OwnProps = {
   categories: { [category: string]: string[] };
 };
 
-const CaseOverviewHeader: React.FC<OwnProps> = ({ caseId, office, counselor, handlePrintCase, isOrphanedCase, definitionVersion, categories }) => {
+const CaseOverviewHeader: React.FC<OwnProps> = ({
+  caseId,
+  office,
+  counselor,
+  handlePrintCase,
+  isOrphanedCase,
+  definitionVersion,
+  categories,
+}) => {
   const { multipleOfficeSupport } = getHrmConfig();
 
   return (

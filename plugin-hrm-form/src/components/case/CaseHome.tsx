@@ -47,7 +47,6 @@ import {
   selectFirstContactByCaseId,
 } from '../../states/contacts/selectContactByCaseId';
 
-
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
   definitionVersion: DefinitionVersion;
@@ -162,7 +161,7 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
             can={can}
             childIsAtRisk={childIsAtRisk}
             availableStatusTransitions={availableStatusTransitions}
-           definitionVersion={definitionVersion}
+            definitionVersion={definitionVersion}
             editCaseSummary={onEditCaseSummaryClick}
           />
         </Box>

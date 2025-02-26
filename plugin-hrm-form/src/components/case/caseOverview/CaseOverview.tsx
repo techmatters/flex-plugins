@@ -56,10 +56,9 @@ const CaseOverview: React.FC<Props> = ({
   const formattedUpdatedAt = createdAt === updatedAt ? '—' : parseISO(updatedAt).toLocaleDateString();
   const editButton = can(PermissionActions.EDIT_CASE_OVERVIEW) || availableStatusTransitions.length > 1; // availableStatusTransitions always includes current status, if that's the only one available, you cannot change it
   const formatFollowUpDate = parseISO(followUpDate).toLocaleDateString();
-  
 
   return (
-      <div>
+    <div>
       <DetailsContainer aria-labelledby="Case-CaseId-label">
         <Box style={{ display: 'inline-block' }}>
           <CaseSectionFont style={{ marginBottom: '5px' }} id="Case-CaseOverview-label">
@@ -113,7 +112,7 @@ const CaseOverview: React.FC<Props> = ({
         </div>
         <CaseSummary task={task} />
       </DetailsContainer>
-      </div>
+    </div>
   );
 };
 
