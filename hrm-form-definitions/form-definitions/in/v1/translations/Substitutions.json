@@ -1,1 +1,23 @@
-{"en": {}}
+{"en": {
+  "Case-Counsellor": "Case Worker",
+  "Case-ActionHeaderCounselor": "Case Worker: ",
+  "SearchForm-Counselor": "Case Worker",
+  "SearchResultsIndex-Counselor": "Case Worker",
+  "CaseList-THCounselor": "Case Worker",
+  "ContactDetails-GeneralDetails-Counselor": "Case Worker",
+  "Counsellor": "Case Worker",
+  "Case-ChildIsAtRisk": "Client in imminent physical danger",
+  "CallSummary-Counselor": "Case Worker: ",
+  "CallType-child": "Client calling about self",
+  "CallType-caller": "Someone calling about a client",
+  "SearchResultsIndex-NoCasesFound": "No {{type}}s Found",
+  "SearchResultsIndex-SearchAgainForCase": "Search again for a {{type}}",
+  "CaseHeader-CopyChildInfo": "Copy Client Information into Current Contact",
+  "SharedStateLoadFormError": "The information stored in the form by previous case worker couldn't be retrieved. Starting current task with clear contact form.",
+  "TabbedForms-AddChildInfoTab": "Client",
+  "TabbedForms-ReportsChildLink": "Create link for client",
+  "TabbedForms-ReportsCounselorReport": "Report as case worker",
+  "Case-CaseDetailsChildName": "Client Name",
+  "Case-CaseDetailsOwner": "Case Worker",
+  "CallerForm-RelationshipToChild": "Relationship to Client"
+}}

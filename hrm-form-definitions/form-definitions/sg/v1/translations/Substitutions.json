@@ -1,1 +1,24 @@
-{"en": {}}
+{"en": {
+  "CaseHeader-Counsellor": "Tinkle Friend",
+  "CaseHeader-CaseNumber": "Case #",
+  "Case-CaseDetailsChildName": "Client Name",
+  "Case-CaseDetailsOwner": "Tinkle Friend",
+  "Case-SectionList-Add/household": "Family Member",
+  "CaseSection-Add/household": "Add Family Member",
+  "CaseSection-Edit/household": "Edit Family Member",
+  "Case-ActionHeaderAdded": "Added on {{date}} at {{time}} by {{counsellor}}",
+  "CSAMCLC-ActionHeaderAdded": "Added {{date}} at {{time}} &nbsp;&nbsp; Tinkle Friend: {{counsellor}}",
+  "Case-ActionHeaderUpdated": "Updated on {{date}} at {{time}} by {{counsellor}}",
+  "Case-ActionHeaderCounselor": "Tinkle Friend:",
+  "Case-PerpetratorRelationship": "Relationship to client: ",
+  "Case-Counsellor": "Tinkle Friend",
+  "CaseList-THChildName": "Client",
+  "CaseList-THCounselor": "Tinkle Friend",
+  "CaseList-Filters-Counselor": "Tinkle Friend",
+  "CaseList-Filters-SearchForCounselor": "Search for tinkle friend by name",
+  "CallerForm-RelationshipToChild": "Relationship to Client",
+  "CallerSection-RelationshipToChild": "Relationship to Client",
+  "ContactDetails-GeneralDetails-Counselor": "Tinkle Friend",
+  "SectionName-ChildInformation": "Client Information {{sectionNo}} of {{sectionCount}}",
+  "CasePrint-TabularSection-Header/household": "Family Member {{sectionNo}} of {{sectionCount}}"
+}}
