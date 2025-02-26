@@ -15,9 +15,17 @@
  */
 import { Twilio } from 'twilio';
 
+export const retrieveServiceConfigurationAttributes = async (
+  client: Twilio,
+): Promise<
+  Record<string, any> & { feature_flags: Record<string, boolean | undefined> }
+> => {
+  const serviceConfig = await client.flexApi.v1.configuration.get().fetch();
+  return serviceConfig.attributes;
+};
+
 export const retrieveFeatureFlags = async (
   client: Twilio,
-): Promise<Record<string, boolean>> => {
-  const serviceConfig = await client.flexApi.v1.configuration.get().fetch();
-  return serviceConfig.attributes.feature_flags;
+): Promise<Record<string, boolean | undefined>> => {
+  return (await retrieveServiceConfigurationAttributes(client)).feature_flags;
 };

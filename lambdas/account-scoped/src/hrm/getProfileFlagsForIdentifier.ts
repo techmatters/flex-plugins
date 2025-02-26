@@ -17,8 +17,9 @@
 import { AccountScopedHandler, HttpError } from '../httpTypes';
 import { getAccountAuthToken } from '../configuration/twilioConfiguration';
 import twilio from 'twilio';
-import { isErr, newErr, newOk } from '../Result';
+import { isErr, newErr, newOk, Result } from '../Result';
 import { getFromInternalHrmEndpoint } from './internalHrmRequest';
+import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 
 type ChatTrigger = {
   message: {
@@ -138,12 +139,11 @@ const getIdentifier = (trigger: Event['trigger'], channelType?: string): string 
 export const handleGetProfileFlagsForIdentifier: AccountScopedHandler = async (
   request,
   accountSid,
-) => {
+): Promise<Result<HttpError, { flags: string[] }>> => {
   try {
     const authToken = await getAccountAuthToken(accountSid);
-    const client = twilio(accountSid, authToken);
-    const serviceConfig = await client.flexApi.v1.configuration.get().fetch();
-    const { hrm_api_version: hrmApiVersion } = serviceConfig.attributes;
+    const { hrm_api_version: hrmApiVersion } =
+      await retrieveServiceConfigurationAttributes(twilio(accountSid, authToken));
     const { trigger, channelType } = request.body;
     const identifier = getIdentifier(trigger, channelType);
     const profileFlagsByIdentifierPath = `profiles/identifier/${identifier}/flags`;
@@ -168,6 +168,6 @@ export const handleGetProfileFlagsForIdentifier: AccountScopedHandler = async (
     );
     return newOk({ flags: responseBody.map(flag => flag.name) });
   } catch (error: any) {
-    return newErr({ message: error.message, error });
+    return newErr({ message: error.message, error: { statusCode: 500, cause: error } });
   }
 };

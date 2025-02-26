@@ -17,10 +17,6 @@
 import { RecursivePartial } from '../RecursivePartial';
 import twilio from 'twilio';
 import { TaskContext, TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
-import {
-  ConfigurationContext,
-  ConfigurationInstance,
-} from 'twilio/lib/rest/flexApi/v1/configuration';
 import { WorkspaceContext } from 'twilio/lib/rest/taskrouter/v1/workspace';
 import { BLANK_CONTACT } from './testContacts';
 import { EventFields } from '../../../src/taskrouter';
@@ -28,14 +24,13 @@ import { getSsmParameter } from '../../../src/ssmCache';
 import { handleEvent } from '../../../src/hrm/createHrmContactTaskRouterListener';
 import { populateHrmContactFormFromTask } from '../../../src/hrm/populateHrmContactFormFromTask';
 import {
-  DEFAULT_CONFIGURATION_ATTRIBUTES,
   TEST_ACCOUNT_SID,
   TEST_CONTACT_ID,
   TEST_TASK_SID,
   TEST_WORKER_SID,
   TEST_WORKSPACE_SID,
 } from '../../testTwilioValues';
-import { AseloServiceConfigurationAttributes } from '../../testTwilioTypes';
+import { setConfigurationAttributes } from '../mockServiceConfiguration';
 
 const mockFetch: jest.MockedFunction<typeof fetch> = jest.fn();
 global.fetch = mockFetch;
@@ -54,26 +49,6 @@ const mockPopulateHrmContactFormFromTask =
   populateHrmContactFormFromTask as jest.MockedFunction<
     typeof populateHrmContactFormFromTask
   >;
-
-const mockServiceConfigurationFetch: jest.MockedFunction<ConfigurationContext['fetch']> =
-  jest.fn();
-
-const setConfigurationAttributes = (
-  attributes: RecursivePartial<AseloServiceConfigurationAttributes>,
-) => {
-  const updatedConfiguration: AseloServiceConfigurationAttributes = {
-    ...DEFAULT_CONFIGURATION_ATTRIBUTES,
-    ...attributes,
-    feature_flags: {
-      ...DEFAULT_CONFIGURATION_ATTRIBUTES.feature_flags,
-      ...attributes.feature_flags,
-    },
-  };
-  mockServiceConfigurationFetch.mockClear();
-  mockServiceConfigurationFetch.mockResolvedValue({
-    attributes: updatedConfiguration,
-  } as ConfigurationInstance);
-};
 
 const newEventFields = (
   attributes: Record<string, string | boolean | number> = {},
@@ -107,15 +82,6 @@ describe('handleEvent', () => {
     jest.clearAllMocks();
 
     const mockTwilioClient: RecursivePartial<twilio.Twilio> = {
-      flexApi: {
-        v1: {
-          configuration: {
-            get: () => ({
-              fetch: mockServiceConfigurationFetch as ConfigurationContext['fetch'],
-            }),
-          },
-        },
-      },
       taskrouter: {
         v1: {
           workspaces: {
@@ -150,7 +116,7 @@ describe('handleEvent', () => {
       }
       throw new Error(`Unexpected SSM parameter path: ${path}`);
     });
-    setConfigurationAttributes({});
+    twilioClient = setConfigurationAttributes(twilioClient, {});
     mockFetch.mockResolvedValue({
       ok: true,
       json: async () => ({
@@ -181,7 +147,7 @@ describe('handleEvent', () => {
   });
 
   test('enable_backend_hrm_contact_creation not set - does nothing', async () => {
-    setConfigurationAttributes({
+    twilioClient = setConfigurationAttributes(twilioClient, {
       feature_flags: {
         enable_backend_hrm_contact_creation: false,
       },
