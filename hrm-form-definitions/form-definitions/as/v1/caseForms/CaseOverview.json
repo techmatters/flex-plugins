@@ -1,3 +1,73 @@
-{
-  "summary": { "isPII": true }
-}
+[
+  {
+    "name": "caseStatus",
+    "label": "Case Status",
+    "type": "select",
+    "options": [
+      { "value": "open", "label": "open" },
+      { "value": "closed", "label": "closed" }
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
+    "name": "childIsAtRisk",
+    "label": "Child is at risk",
+    "type": "select",
+    "options": [
+      { "value": "true", "label": "true" },
+      { "value": "false", "label": "false" }
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
+    "name": "createdAt",
+    "label": "Created Date",
+    "type": "date-input",
+    "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
+    "name": "updatedAt",
+    "label": "Updated Date",
+    "type": "date-input",
+    "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
+    "name": "followUpDate",
+    "label": "Follow Up Date",
+    "type": "date-input"
+  },
+  {
+    "name": "summary",
+    "label": "Summary",
+    "type": "textarea",
+    "rows": 5,
+    "width": 500,
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": true
+  },
+  {
+    "name": "operatingArea",
+    "label": "Operating Area",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Los Angeles City", "label": "Los Angeles City" },
+      { "value": "Long Beach", "label": "Long Beach" },
+      { "value": "Lynwood", "label": "Lynwood" },
+      { "value": "South Pasadena", "label": "South Pasadena" },
+      { "value": "Unknown", "label": "Unknown" }
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
+    "name": "priority",
+    "label": "Priority",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "1", "label": "High" },
+      { "value": "2", "label": "Medium" },
+      { "value": "3", "label": "Low" }
+    ]
+  }
+]
