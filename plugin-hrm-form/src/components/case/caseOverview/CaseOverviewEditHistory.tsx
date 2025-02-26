@@ -28,7 +28,7 @@ type OwnProps = CaseHistoryDetails;
 
 type Props = OwnProps;
 
-const CaseSummaryEditHistory: React.FC<Props> = ({
+const CaseOverviewEditHistory: React.FC<Props> = ({
   createdAt,
   createdBy,
   updatedBy,
@@ -62,6 +62,6 @@ const CaseSummaryEditHistory: React.FC<Props> = ({
   );
 };
 
-CaseSummaryEditHistory.displayName = 'ActionHeader';
+CaseOverviewEditHistory.displayName = 'ActionHeader';
 
-export default CaseSummaryEditHistory;
+export default CaseOverviewEditHistory;

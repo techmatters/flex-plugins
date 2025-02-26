@@ -19,7 +19,7 @@ import { Template } from '@twilio/flex-ui';
 
 import { DetailDescription, StyledInputField } from '../styles';
 
-type CaseOverviewInputProps = {
+type CaseOverviewItemProps = {
   labelId: string;
   templateCode: string;
   inputId: string;
@@ -29,7 +29,7 @@ type CaseOverviewInputProps = {
   disabled?: boolean;
 };
 
-const CaseOverviewInput: React.FC<CaseOverviewInputProps> = ({
+const CaseOverviewItem: React.FC<CaseOverviewItemProps> = ({
   labelId,
   templateCode,
   inputId,
@@ -57,4 +57,4 @@ const CaseOverviewInput: React.FC<CaseOverviewInputProps> = ({
   </div>
 );
 
-export default CaseOverviewInput;
+export default CaseOverviewItem;

@@ -25,7 +25,7 @@ import { CaseSectionFont, DetailsContainer, ViewButton } from '../styles';
 import { Box } from '../../../styles';
 import { PermissionActions } from '../../../permissions';
 import CaseSummary from './CaseSummary';
-import CaseOverviewInput from './CaseOverviewInput';
+import CaseOverviewItem from './CaseOverviewItem';
 
 type Props = {
   task: CustomITask | StandaloneITask;
@@ -50,14 +50,16 @@ const CaseOverview: React.FC<Props> = ({
   childIsAtRisk,
   availableStatusTransitions,
   editCaseSummary,
+  definitionVersion,
 }) => {
   const formattedCreatedAt = parseISO(createdAt).toLocaleDateString();
   const formattedUpdatedAt = createdAt === updatedAt ? '—' : parseISO(updatedAt).toLocaleDateString();
   const editButton = can(PermissionActions.EDIT_CASE_OVERVIEW) || availableStatusTransitions.length > 1; // availableStatusTransitions always includes current status, if that's the only one available, you cannot change it
   const formatFollowUpDate = parseISO(followUpDate).toLocaleDateString();
+  
 
   return (
-      <div style={{ border: '1px solid #6a82ba' }}>
+      <div>
       <DetailsContainer aria-labelledby="Case-CaseId-label">
         <Box style={{ display: 'inline-block' }}>
           <CaseSectionFont style={{ marginBottom: '5px' }} id="Case-CaseOverview-label">
@@ -73,13 +75,13 @@ const CaseOverview: React.FC<Props> = ({
         )}
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <CaseOverviewInput
+          <CaseOverviewItem
             labelId="CaseDetailsStatusLabel"
             templateCode="Case-CaseDetailsStatusLabel"
             inputId="Details_CaseStatus"
             value={statusLabel}
           />
-          <CaseOverviewInput
+          <CaseOverviewItem
             labelId="CaseChildIsAtRisk"
             templateCode="Case-ChildIsAtRisk"
             inputId="Details_ChildAtRisk"
@@ -90,19 +92,19 @@ const CaseOverview: React.FC<Props> = ({
       </DetailsContainer>
       <DetailsContainer aria-labelledby="Case-CaseId-label">
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <CaseOverviewInput
+          <CaseOverviewItem
             labelId="CaseDetailsDateOpened"
             templateCode="Case-CaseDetailsDateOpened"
             inputId="Details_DateOpened"
             value={formattedCreatedAt}
           />
-          <CaseOverviewInput
+          <CaseOverviewItem
             labelId="CaseDetailsLastUpdated"
             templateCode="Case-CaseDetailsLastUpdated"
             inputId="Details_DateLastUpdated"
             value={formattedUpdatedAt}
           />
-          <CaseOverviewInput
+          <CaseOverviewItem
             labelId="CaseDetailsFollowUpDate"
             templateCode="Case-CaseDetailsFollowUpDate"
             inputId="Details_DateFollowUp"
