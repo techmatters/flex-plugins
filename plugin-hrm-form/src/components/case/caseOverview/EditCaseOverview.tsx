@@ -53,16 +53,16 @@ import { updateCaseOverviewAsyncAction } from '../../../states/case/saveCase';
 import asyncDispatch from '../../../states/asyncDispatch';
 import NavigableContainer from '../../NavigableContainer';
 import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRouteCase';
-import CaseSummaryEditHistory from './CaseSummaryEditHistory';
+import CaseSummaryEditHistory from './CaseOverviewEditHistory';
 import { selectDefinitionVersionForCase } from '../../../states/configuration/selectDefinitions';
 import { selectCaseHistoryDetails } from '../../../states/case/selectCaseStateByCaseId';
 
-export type EditCaseSummaryProps = {
+export type EditCaseOverviewProps = {
   task: CustomITask | StandaloneITask;
   can: (action: PermissionActionType) => boolean;
 };
 
-const mapStateToProps = (state: RootState, { task }: EditCaseSummaryProps) => {
+const mapStateToProps = (state: RootState, { task }: EditCaseOverviewProps) => {
   const connectedCaseState = selectCurrentRouteCaseState(state, task.taskSid);
   const historyDetails = selectCaseHistoryDetails(state, connectedCaseState?.connectedCase);
   const workingCopy = connectedCaseState?.caseWorkingCopy.caseSummary;
@@ -71,7 +71,7 @@ const mapStateToProps = (state: RootState, { task }: EditCaseSummaryProps) => {
   return { connectedCaseState, workingCopy, definitionVersion, historyDetails, isUpdating };
 };
 
-const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
+const mapDispatchToProps = (dispatch, { task }: EditCaseOverviewProps) => {
   const updateCaseAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   return {
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
@@ -86,7 +86,7 @@ const mapDispatchToProps = (dispatch, { task }: EditCaseSummaryProps) => {
   };
 };
 
-type Props = EditCaseSummaryProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type Props = EditCaseOverviewProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const enum DialogState {
   Closed,
@@ -94,7 +94,7 @@ const enum DialogState {
   OpenForClose,
 }
 
-const EditCaseSummary: React.FC<Props> = ({
+const EditCaseOverview: React.FC<Props> = ({
   task,
   historyDetails,
   connectedCaseState,
@@ -192,7 +192,7 @@ const EditCaseSummary: React.FC<Props> = ({
   };
 
   const strings = getTemplateStrings();
-  const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler(`Case: EditCaseSummary`, () => {
+  const onError: SubmitErrorHandler<FieldValues> = recordingErrorHandler(`Case: EditCaseOverview`, () => {
     window.alert(strings['Error-Form']);
     if (dialogState) setDialogState(DialogState.Closed);
   });
@@ -207,7 +207,7 @@ const EditCaseSummary: React.FC<Props> = ({
     <FormProvider {...methods}>
       <NavigableContainer
         task={task}
-        titleCode="Case-EditCaseSummary"
+        titleCode="Case-EditCaseOverview"
         onGoBack={checkForEdits}
         onCloseModal={checkForEdits}
       >
@@ -243,6 +243,6 @@ const EditCaseSummary: React.FC<Props> = ({
   );
 };
 
-EditCaseSummary.displayName = 'EditCaseSummary';
+EditCaseOverview.displayName = 'EditCaseOverview';
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditCaseSummary);
+export default connect(mapStateToProps, mapDispatchToProps)(EditCaseOverview);

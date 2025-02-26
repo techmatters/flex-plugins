@@ -21,8 +21,8 @@ import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseContainer, CaseDetailsBorder, ViewButton } from './styles';
 import { BottomButtonBar, Box, SaveAndEndButton } from '../../styles';
-import CaseDetailsHeader from './caseDetails/CaseDetailsHeader';
-import CaseOverview from './caseDetails/CaseOverview';
+import CaseOverviewHeader from './caseOverview/CaseOverviewHeader';
+import CaseOverview from './caseOverview/CaseOverview';
 import Timeline from './timeline/Timeline';
 import CaseSection from './CaseSection';
 import { PermissionActions, PermissionActionType } from '../../permissions';
@@ -144,7 +144,7 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
           </Box>
         )}
         <Box marginTop="13px">
-          <CaseDetailsHeader
+          <CaseOverviewHeader
             caseId={caseId}
             counselor={counselor}
             office={office?.label}

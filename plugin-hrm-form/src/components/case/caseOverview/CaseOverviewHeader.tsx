@@ -40,7 +40,7 @@ type OwnProps = {
   categories: { [category: string]: string[] };
 };
 
-const CaseDetailsHeader: React.FC<OwnProps> = ({ caseId, office, counselor, handlePrintCase, isOrphanedCase, definitionVersion, categories }) => {
+const CaseOverviewHeader: React.FC<OwnProps> = ({ caseId, office, counselor, handlePrintCase, isOrphanedCase, definitionVersion, categories }) => {
   const { multipleOfficeSupport } = getHrmConfig();
 
   return (
@@ -72,6 +72,6 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({ caseId, office, counselor, hand
   );
 };
 
-CaseDetailsHeader.displayName = 'CaseDetailsHeader';
+CaseOverviewHeader.displayName = 'CaseOverviewHeader';
 
-export default CaseDetailsHeader;
+export default CaseOverviewHeader;

@@ -41,7 +41,7 @@ import { bindFileUploadCustomHandlers } from './documentUploadHandler';
 import { recordBackendError } from '../../fullStory';
 import { getInitializedCan } from '../../permissions';
 import { CenteredContainer } from './styles';
-import EditCaseOverview from './caseDetails/EditCaseOverview';
+import EditCaseOverview from './caseOverview/EditCaseOverview';
 import * as ContactActions from '../../states/contacts/existingContacts';
 import { getHrmConfig, getTemplateStrings } from '../../hrmConfig';
 import asyncDispatch from '../../states/asyncDispatch';
