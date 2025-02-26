@@ -37,7 +37,7 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
     "options": [
       {
         "value": "Unknown",
