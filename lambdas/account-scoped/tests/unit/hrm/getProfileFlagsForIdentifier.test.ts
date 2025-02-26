@@ -77,6 +77,16 @@ const newWebchatEvent = (from: string): Event => ({
   request: { cookies: {}, headers: {} },
 });
 
+const newConversationEvent = (channelType: string, from: string): Event => ({
+  trigger: {
+    conversation: {
+      Author: from,
+    },
+  },
+  channelType,
+  request: { cookies: {}, headers: {} },
+});
+
 const newProfileFlagsForIdentifierRequest = (event: Event): HttpRequest => ({
   body: event,
   method: 'GET',
@@ -175,6 +185,21 @@ describe('handleGetProfileFlagsForIdentifier', () => {
         expectedIdentifier: '+123456789',
       },
       {
+        description: "Pure numeric sms number '123'",
+        inputEvent: newConversationEvent('sms', '123'),
+        expectedIdentifier: '123',
+      },
+      {
+        description: "Numeric sms number with spaces and dashes '123-456 789'",
+        inputEvent: newConversationEvent('sms', '123-456 789'),
+        expectedIdentifier: '123456789',
+      },
+      {
+        description: "Numeric sms number with other characters '123A456*78 9'",
+        inputEvent: newConversationEvent('sms', '123A456*78 9'),
+        expectedIdentifier: '123A456*789',
+      },
+      {
         description: "Webchat with IP in pre-engagement data '1.2.3.4'",
         inputEvent: newWebchatEvent('1.2.3.4'),
         expectedIdentifier: '1.2.3.4',
@@ -219,6 +244,52 @@ describe('handleGetProfileFlagsForIdentifier', () => {
         },
         expectedIdentifier: 'undefined',
       },
+      ...['telegram', 'instagram', 'messenger'].flatMap(channelType => [
+        {
+          description: `Conversation with ${channelType} prefixed channel identifier '${channelType}:lornas-address'`,
+          inputEvent: newConversationEvent(channelType, `${channelType}:lornas-address`),
+          expectedIdentifier: `lornas-address`,
+        },
+        {
+          description: `Conversation with ${channelType} non prefixed channel identifier 'lornas-address'`,
+          inputEvent: newConversationEvent(channelType, `lornas-address`),
+          expectedIdentifier: `lornas-address`,
+        },
+      ]),
+      ...['whatsapp', 'modica'].flatMap(channelType => [
+        {
+          description: `Conversation with ${channelType} prefixed channel identifier '${channelType}:123456789'`,
+          inputEvent: newConversationEvent(channelType, `${channelType}:123456789`),
+          expectedIdentifier: `123456789`,
+        },
+        {
+          description: `Conversation with ${channelType} non prefixed channel identifier '123456789'`,
+          inputEvent: newConversationEvent(channelType, `123456789`),
+          expectedIdentifier: `123456789`,
+        },
+        {
+          description: `Conversation with ${channelType} prefixed channel identifier with spaces and dashes '${channelType}:+123 456-789'`,
+          inputEvent: newConversationEvent(channelType, `${channelType}:+123456789`),
+          expectedIdentifier: `+123456789`,
+        },
+      ]),
+      ...['line', 'web'].flatMap(channelType => [
+        {
+          description: `Conversation with ${channelType} prefixed channel identifier '${channelType}:lornas-address'`,
+          inputEvent: newConversationEvent(channelType, `${channelType}:lornas-address`),
+          expectedIdentifier: `${channelType}:lornas-address`,
+        },
+        {
+          description: `Conversation with ${channelType} non prefixed channel identifier 'lornas-address'`,
+          inputEvent: newConversationEvent(channelType, `lornas-address`),
+          expectedIdentifier: `lornas-address`,
+        },
+        {
+          description: `Conversation with ${channelType} prefixed channel identifier with spaces '${channelType}:+123 456-789'`,
+          inputEvent: newConversationEvent(channelType, `${channelType}:+123 456-789`),
+          expectedIdentifier: `${channelType}:+123 456-789`,
+        },
+      ]),
     ];
 
     each(testCases).test(
@@ -247,5 +318,43 @@ describe('handleGetProfileFlagsForIdentifier', () => {
         );
       },
     );
+    test('Unrecognised conversations channel returns 400 error result', async () => {
+      // Act
+      const result = await handleGetProfileFlagsForIdentifier(
+        newProfileFlagsForIdentifierRequest(
+          newConversationEvent('carrier pigeon', 'speedy geraldine'),
+        ),
+        TEST_ACCOUNT_SID,
+      );
+      // Assert
+      if (isOk(result)) {
+        throw new AssertionError({
+          message: 'Expected an error response',
+          actual: result,
+        });
+      }
+      expect(result.error.statusCode).toEqual(400);
+      expect(mockGetFromInternalHrmEndpoint).not.toBeCalled();
+    });
+    test('Invalid trigger returns 400 error result', async () => {
+      // Act
+      const result = await handleGetProfileFlagsForIdentifier(
+        newProfileFlagsForIdentifierRequest({
+          trigger: { some: 'crap' } as any,
+          channelType: 'voice',
+          request: { cookies: {}, headers: {} },
+        }),
+        TEST_ACCOUNT_SID,
+      );
+      // Assert
+      if (isOk(result)) {
+        throw new AssertionError({
+          message: 'Expected an error response',
+          actual: result,
+        });
+      }
+      expect(result.error.statusCode).toEqual(400);
+      expect(mockGetFromInternalHrmEndpoint).not.toBeCalled();
+    });
   });
 });

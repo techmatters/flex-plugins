@@ -81,7 +81,6 @@ const channelTransformations: { [k: string]: TransformIdentifierFunction[] } = {
   sms: [phoneNumberStandardization],
   whatsapp: [s => s.replace('whatsapp:', ''), phoneNumberStandardization],
   modica: [s => s.replace('modica:', ''), phoneNumberStandardization],
-  facebook: [s => s.replace('messenger:', '')],
   messenger: [s => s.replace('messenger:', '')],
   instagram: [s => s.replace('instagram:', '')],
   line: [],
@@ -89,51 +88,75 @@ const channelTransformations: { [k: string]: TransformIdentifierFunction[] } = {
   web: [],
 };
 
-const getIdentifier = (trigger: Event['trigger'], channelType?: string): string => {
-  if (isVoiceTrigger(trigger)) {
-    const transformed = channelTransformations.voice.reduce(
-      (accum, f) => f(accum),
-      trigger.call.From,
-    );
-    console.debug(`Transformed voice identifier ${trigger.call.From} to ${transformed}`);
-    return transformed;
-  }
+type UnsupportedChannelResultPayload = {
+  type: 'unsupported-channel';
+  channelType: string;
+};
+type UnsupportedTriggerResultPayload = { type: 'unsupported-trigger' };
 
-  if (isChatTrigger(trigger)) {
-    // webchat is a special case since it does not only depends on channel but in the task attributes too
-    if (trigger.message.ChannelAttributes.channel_type === 'web') {
-      const identifier = getContactValueFromWebchat(trigger);
-      console.debug(`Found webchat identifier ${identifier}`);
-      return identifier;
+const getIdentifier = (
+  trigger: Event['trigger'],
+  channelType?: string,
+): Result<
+  UnsupportedChannelResultPayload | UnsupportedTriggerResultPayload | Error,
+  string
+> => {
+  try {
+    if (isVoiceTrigger(trigger)) {
+      const transformed = channelTransformations.voice.reduce(
+        (accum, f) => f(accum),
+        trigger.call.From,
+      );
+      console.debug(
+        `Transformed voice identifier ${trigger.call.From} to ${transformed}`,
+      );
+      return newOk(transformed);
     }
 
-    // otherwise, return the "defaultFrom" with the transformations on the identifier corresponding to each channel
-    const transformed = channelTransformations[
-      trigger.message.ChannelAttributes.channel_type
-    ].reduce((accum, f) => f(accum), trigger.message.ChannelAttributes.from);
+    if (isChatTrigger(trigger)) {
+      // webchat is a special case since it does not only depends on channel but in the task attributes too
+      if (trigger.message.ChannelAttributes.channel_type === 'web') {
+        const identifier = getContactValueFromWebchat(trigger);
+        console.debug(`Found webchat identifier ${identifier}`);
+        return newOk(identifier);
+      }
 
-    console.debug(
-      `Transformed chat identifier ${trigger.message.ChannelAttributes.from} to ${transformed}`,
-    );
-    return transformed;
-  }
+      // otherwise, return the "defaultFrom" with the transformations on the identifier corresponding to each channel
+      const transformed = channelTransformations[
+        trigger.message.ChannelAttributes.channel_type
+      ].reduce((accum, f) => f(accum), trigger.message.ChannelAttributes.from);
 
-  if (isConversationTrigger(trigger) && channelType) {
-    if (!channelTransformations[channelType] || !channelType) {
-      console.error(`Channel type ${channelType} is not supported`);
-      throw new Error(`Channel type ${channelType} is not supported`);
+      console.debug(
+        `Transformed chat identifier ${trigger.message.ChannelAttributes.from} to ${transformed}`,
+      );
+      return newOk(transformed);
     }
-    const transformed = channelTransformations[channelType].reduce(
-      (accum, f) => f(accum),
-      trigger.conversation.Author,
-    );
-    console.debug(
-      `Transformed conversation identifier ${trigger.conversation.Author} to ${transformed}`,
-    );
-    return transformed;
-  }
 
-  throw new Error('Trigger is none VoiceTrigger nor ChatTrigger');
+    if (isConversationTrigger(trigger) && channelType) {
+      if (!channelTransformations[channelType] || !channelType) {
+        console.error(`Channel type ${channelType} is not supported`);
+        return newErr({
+          message: `Channel type ${channelType} is not supported`,
+          error: { type: 'unsupported-channel', channelType },
+        });
+      }
+      const transformed = channelTransformations[channelType].reduce(
+        (accum, f) => f(accum),
+        trigger.conversation.Author,
+      );
+      console.debug(
+        `Transformed conversation identifier ${trigger.conversation.Author} to ${transformed}`,
+      );
+      return newOk(transformed);
+    }
+    return newErr({
+      message: 'Unsupported Trigger',
+      error: { type: 'unsupported-trigger' },
+    });
+  } catch (e) {
+    const err = e as Error;
+    return newErr({ message: err.message, error: err });
+  }
 };
 
 export const handleGetProfileFlagsForIdentifier: AccountScopedHandler = async (
@@ -145,7 +168,21 @@ export const handleGetProfileFlagsForIdentifier: AccountScopedHandler = async (
     const { hrm_api_version: hrmApiVersion } =
       await retrieveServiceConfigurationAttributes(twilio(accountSid, authToken));
     const { trigger, channelType } = request.body;
-    const identifier = getIdentifier(trigger, channelType);
+    const identifierResult = getIdentifier(trigger, channelType);
+    if (isErr(identifierResult)) {
+      if (identifierResult.error instanceof Error) {
+        return newErr({
+          message: identifierResult.message,
+          error: { statusCode: 500, cause: identifierResult.error },
+        });
+      } else {
+        return newErr({
+          message: identifierResult.message,
+          error: { statusCode: 400, cause: new Error(identifierResult.message) },
+        });
+      }
+    }
+    const identifier = identifierResult.unwrap();
     const profileFlagsByIdentifierPath = `profiles/identifier/${identifier}/flags`;
     console.info(
       `[${accountSid}] Getting profile flags for identifier ${identifier} from ${profileFlagsByIdentifierPath}`,
