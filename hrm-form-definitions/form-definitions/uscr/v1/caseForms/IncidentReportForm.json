@@ -10,6 +10,11 @@
     "label": "Beacon Incident ID"
   },
   {
+    "name": "responderName",
+    "type": "input",
+    "label": "Responder"
+  },
+  {
     "name": "incidentActivationTime",
     "type": "time-input",
     "label": "Incident Activation Time"
