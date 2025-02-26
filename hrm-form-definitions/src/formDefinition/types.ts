@@ -257,6 +257,11 @@ type CaseSectionTypeEntry = {
   form: FormDefinition;
 };
 
+export type CaseOverviewDefinition = {
+  summary: { isPII: boolean };
+  additionalFields: Record<string, CaseSectionTypeEntry>;
+};
+
 export type CaseSectionTypeDefinitions = Record<string, CaseSectionTypeEntry>;
 
 export type HelplineEntry = {
@@ -326,6 +331,7 @@ export type StatusInfo = {
  * Type that defines a complete version for all the customizable forms used across the app
  */
 export type DefinitionVersion = {
+  caseOverview: CaseOverviewDefinition;
   caseSectionTypes: CaseSectionTypeDefinitions;
   // TODO: change this property to contactForms to be consistent (though that may create confusion with the component name)
   tabbedForms: {

@@ -55,6 +55,7 @@ export enum DefinitionVersionId {
   zwV1 = 'zw-v1', // Childline Zimbabwe v1
   mtV1 = 'mt-v1', // Kellimni Malta v1
   nzV1 = 'nz-v1', // Youthline (NZ) v1
+  uscrV1 = 'uscr-v1', // LA Circle(USCR) v1
 }
 
 const expandFormDefinition = (
@@ -184,6 +185,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     oneToOneConfigSpec,
     oneToManyConfigSpecs,
     caseStatus,
+    caseOverview,
     prepopulateKeys,
     referenceData,
     blockedEmojis,
@@ -206,6 +208,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     fetchDefinition<OneToOneConfigSpec>('insights/oneToOneConfigSpec.json'),
     fetchDefinition<OneToManyConfigSpecs>('insights/oneToManyConfigSpecs.json'),
     fetchDefinition<DefinitionVersion['caseStatus']>('CaseStatus.json'),
+    fetchDefinition<DefinitionVersion['caseOverview']>('caseForms/CaseOverview.json'),
     fetchDefinition<DefinitionVersion['prepopulateKeys']>(
       'PrepopulateKeys.json',
       prepopulateKeysEmpty,
@@ -243,6 +246,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
       oneToManyConfigSpecs,
     },
     caseStatus,
+    caseOverview,
     prepopulateKeys,
     referenceData,
     blockedEmojis,

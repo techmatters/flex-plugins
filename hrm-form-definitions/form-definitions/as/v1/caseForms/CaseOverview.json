@@ -1,3 +1,32 @@
 {
-  "summary": { "isPII": true }
+  "summary": { "isPII": true },
+  "additionalFields": [
+    {
+      "name": "operatingArea",
+      "label": "Operating Area",
+      "type": "select",
+      "options": [
+        { "value": "", "label": "" },
+        { "value": "Los Angeles City", "label": "Los Angeles City" },
+        { "value": "Long Beach", "label": "Long Beach" },
+        { "value": "Lynwood", "label": "Lynwood" },
+        { "value": "South Pasadena", "label": "South Pasadena" },
+        { "value": "Unknown", "label": "Unknown" }
+      ],
+      "required": { "value": true, "message": "RequiredFieldError" },
+      "isPII": false
+    },
+    {
+      "name": "priority",
+      "label": "Priority",
+      "type": "select",
+      "options": [
+        { "value": "", "label": "" },
+        { "value": "1", "label": "High" },
+        { "value": "2", "label": "Medium" },
+        { "value": "3", "label": "Low" }
+      ],
+      "isPII": true
+    }
+  ]
 }
