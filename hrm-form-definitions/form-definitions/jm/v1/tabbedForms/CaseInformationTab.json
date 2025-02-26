@@ -20,16 +20,6 @@
     "type": "input"
   },
   {
-    "name": "repeatCaller",
-    "label": "Repeat Caller?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "didYouDiscussRightsWithTheChild",
-    "label": "Did you discuss rights with the child as well as Safeguarding Children and Confidentiality Policy?",
-    "type": "mixed-checkbox"
-  },
-  {
     "name": "actionTaken",
     "label": "Action Taken",
     "type": "select",
@@ -75,6 +65,11 @@
     ]
   },
   {
+    "name": "repeatCaller",
+    "label": "Repeat Caller?",
+    "type": "mixed-checkbox"
+  },
+  {
     "name": "keepConfidential",
     "label": "Keep confidential?",
     "type": "checkbox",
@@ -93,6 +88,11 @@
   {
     "name": "wouldTheChildRecommendUsToAFriend",
     "label": "Would the child recommend us to a friend?",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "didYouDiscussRightsWithTheChild",
+    "label": "Did you discuss rights with the child as well as Safeguarding Children and Confidentiality Policy?",
     "type": "mixed-checkbox"
   },
   {
