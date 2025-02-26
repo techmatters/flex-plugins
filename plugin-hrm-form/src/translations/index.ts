@@ -108,25 +108,15 @@ export const loadTranslations = async (language: string): Promise<Record<string,
   }
 
   if (language !== baseLanguage) {
-    try {
-      const localeOverrides = require(`./locales/${language}.json`);
-      translations = { ...translations, ...localeOverrides };
-    } catch (error) {
-      console.error(`Locale-specific translations not found for ${language}`);
-    }
+    const localeOverrides = require(`./locales/${language}.json`);
+    translations = { ...translations, ...localeOverrides };
   }
 
-  const { helplineCode } = getHrmConfig();
-  try {
-    const definitionVersion = getDefinitionVersions().currentDefinitionVersion;
+  const definitionVersion = getDefinitionVersions().currentDefinitionVersion;
 
-    const helplineTranslations = definitionVersion?.customStrings.Substitutions;
-    console.log('>>> helplineTranslations', helplineTranslations);
-    if (helplineTranslations && helplineTranslations[baseLanguage]) {
-      translations = { ...translations, ...helplineTranslations[baseLanguage] };
-    }
-  } catch (error) {
-    console.warn(`Helpline translations not found in hrm-form-definitions for helpline: ${helplineCode}`);
+  const helplineTranslations = definitionVersion?.customStrings?.Substitutions;
+  if (helplineTranslations && helplineTranslations[baseLanguage]) {
+    translations = { ...translations, ...helplineTranslations[baseLanguage] };
   }
 
   return translations;
