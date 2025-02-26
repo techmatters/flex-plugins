@@ -9,21 +9,18 @@
     }
   },
   {
-    "name": "lastName",
-    "label": "Last Name",
-    "type": "input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "name": "surname",
+    "label": "Surname",
+    "type": "input"
   },
   {
     "name": "relationshipToChild",
-    "label": "Relationship to child",
+    "label": "Relationship to Child",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
@@ -39,34 +36,14 @@
         "label": "Grandparent"
       },
       {
-        "value": "Neighbour",
-        "label": "Neighbour"
-      },
-      {
         "value": "Parent",
         "label": "Parent"
-      },
-      {
-        "value": "Partner",
-        "label": "Partner"
-      },
-      {
-        "value": "Person in a position of responsibility",
-        "label": "Person in a position of responsibility"
-      },
-      {
-        "value": "Sibling",
-        "label": "Sibling"
-      },
-      {
-        "value": "Stranger",
-        "label": "Stranger"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "streetAddress",
@@ -74,21 +51,29 @@
     "type": "input"
   },
   {
-    "name": "province",
-    "label": "Province",
+    "name": "region",
+    "label": "Region",
     "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
     "options": [
       {
         "value": "",
         "label": ""
       },
       {
-        "value": "Central",
-        "label": "Central"
-      },
-      {
         "value": "Unknown",
         "label": "Unknown"
+      },
+      {
+        "value": "Region A",
+        "label": "Region A"
+      },
+      {
+        "value": "Region B",
+        "label": "Region B"
       }
     ],
     "required": {
@@ -100,30 +85,54 @@
     "name": "district",
     "label": "District",
     "type": "dependent-select",
-    "dependsOn": "province",
+    "dependsOn": "region",
     "defaultOption": {
       "value": "",
       "label": ""
     },
     "options": {
-      "District1": [
+      "Region A": [
         {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
+          "value": "",
+          "label": ""
         },
         {
           "value": "Unknown",
           "label": "Unknown"
+        },
+        {
+          "value": "District I",
+          "label": "District I"
+        },
+        {
+          "value": "District II",
+          "label": "District II"
+        },
+        {
+          "value": "District III",
+          "label": "District III"
         }
       ],
-      "District2": [
+      "Region B": [
         {
-          "value": "Subdistrict1",
-          "label": "Subdistrict1"
+          "value": "",
+          "label": ""
         },
         {
           "value": "Unknown",
           "label": "Unknown"
+        },
+        {
+          "value": "District VI",
+          "label": "District VI"
+        },
+        {
+          "value": "District VII",
+          "label": "District VII"
+        },
+        {
+          "value": "District VIII",
+          "label": "District VIII"
         }
       ]
     },
@@ -133,84 +142,198 @@
     }
   },
   {
-    "name": "phone1",
-    "label": "Phone #1",
-    "type": "input",
+    "name": "ward",
+    "label": "Ward",
+    "type": "dependent-select",
+    "dependsOn": "district",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "District I": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        },
+        {
+          "value": "Ward 1A",
+          "label": "Ward 1A"
+        },
+        {
+          "value": "Ward 2A",
+          "label": "Ward 2A"
+        }
+      ],
+      "District II": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        },
+        {
+          "value": "Ward 1B",
+          "label": "Ward 1B"
+        },
+        {
+          "value": "Ward 2B",
+          "label": "Ward 2B"
+        }
+      ],
+      "District III": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        },
+        {
+          "value": "Ward 1C",
+          "label": "Ward 1C"
+        }
+      ],
+      "District VI": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        },
+        {
+          "value": "Ward 1D",
+          "label": "Ward 1D"
+        },
+        {
+          "value": "Ward 2D",
+          "label": "Ward 2D"
+        }
+      ],
+      "District VII": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        },
+        {
+          "value": "Ward 1E",
+          "label": "Ward 1E"
+        },
+        {
+          "value": "Ward 2E",
+          "label": "Ward 2E"
+        }
+      ],
+      "District VIII": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        },
+        {
+          "value": "Ward 1F",
+          "label": "Ward 1F"
+        }
+      ]
+    },
     "required": {
       "value": true,
       "message": "RequiredFieldError"
     }
   },
   {
+    "name": "phone",
+    "label": "Phone",
+    "type": "input"
+  },
+  {
     "name": "gender",
     "label": "Gender",
     "type": "select",
+    "unknownOption": "",
     "options": [
       {
-        "value": "Unknown",
+        "value": "",
         "label": ""
       },
       {
-        "value": "Boy",
-        "label": "Boy"
+        "value": "Male",
+        "label": "Male"
       },
       {
-        "value": "Girl",
-        "label": "Girl"
+        "value": "Female",
+        "label": "Female"
       },
       {
-        "value": "Non-Binary",
-        "label": "Non-Binary"
+        "value": "Other",
+        "label": "Other"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "age",
     "label": "Age",
     "type": "select",
+    "unknownOption": "Unknown",
     "options": [
       {
         "value": "Unknown",
         "label": ""
       },
       {
-        "value": "0",
-        "label": "0"
-      },
-      {
-        "value": "1",
+        "value": "01",
         "label": "1"
       },
       {
-        "value": "2",
+        "value": "02",
         "label": "2"
       },
       {
-        "value": "3",
+        "value": "03",
         "label": "3"
       },
       {
-        "value": "4",
+        "value": "04",
         "label": "4"
       },
       {
-        "value": "5",
+        "value": "05",
         "label": "5"
       },
       {
-        "value": "6",
+        "value": "06",
         "label": "6"
       },
       {
-        "value": "7",
+        "value": "07",
         "label": "7"
       },
       {
-        "value": "8",
+        "value": "08",
         "label": "8"
       },
       {
-        "value": "9",
+        "value": "09",
         "label": "9"
       },
       {
@@ -226,89 +349,14 @@
         "label": "12"
       },
       {
-        "value": "13",
-        "label": "13"
-      },
-      {
-        "value": "14",
-        "label": "14"
-      },
-      {
-        "value": "15",
-        "label": "15"
-      },
-      {
-        "value": "16",
-        "label": "16"
-      },
-      {
-        "value": "17",
-        "label": "17"
-      },
-      {
-        "value": "18",
-        "label": "18"
-      },
-      {
-        "value": "19",
-        "label": "19"
-      },
-      {
-        "value": "20",
-        "label": "20"
-      },
-      {
-        "value": "21",
-        "label": "21"
-      },
-      {
-        "value": "22",
-        "label": "22"
-      },
-      {
-        "value": "23",
-        "label": "23"
-      },
-      {
-        "value": "24",
-        "label": "24"
-      },
-      {
-        "value": "25",
-        "label": "25"
-      },
-      {
-        "value": ">25",
-        "label": ">25"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
+        "value": ">12",
+        "label": ">12"
       }
     ]
   },
   {
     "name": "language",
     "label": "Language",
-    "type": "select",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "language1",
-        "label": "language1"
-      }
-    ]
-  },
-  {
-    "name": "ethnicity",
-    "label": "Ethnicity",
     "type": "input"
   }
 ]
