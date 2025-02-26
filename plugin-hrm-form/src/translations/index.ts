@@ -14,9 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
 import { getMessages, getTranslation } from '../services/ServerlessService';
-import { getAseloFeatureFlags, getHrmConfig } from '../hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig, getDefinitionVersions } from '../hrmConfig';
 
 // default language to initialize plugin
 export const defaultLanguage = 'en-US';
@@ -119,8 +118,10 @@ export const loadTranslations = async (language: string): Promise<Record<string,
 
   const { helplineCode } = getHrmConfig();
   try {
-    const helplineTranslations = require(`../../../hrm-form-definitions/form-definitions/${helplineCode}/v1/translations/Substitutions.json`);
+    const definitionVersion = getDefinitionVersions().currentDefinitionVersion;
 
+    const helplineTranslations = definitionVersion?.customStrings.Substitutions;
+    console.log('>>> helplineTranslations', helplineTranslations);
     if (helplineTranslations && helplineTranslations[baseLanguage]) {
       translations = { ...translations, ...helplineTranslations[baseLanguage] };
     }
@@ -145,17 +146,19 @@ type LocalizationConfig = {
  */
 export const initTranslateUI = (localizationConfig: LocalizationConfig) => async (language: string): Promise<void> => {
   const { twilioStrings, setNewStrings, afterNewStrings } = localizationConfig;
-  const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
+  // const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
+  const enableHierarchicalTranslations = true;
+  console.log('>>> initTranslateUI', language, enableHierarchicalTranslations);
   try {
     if (enableHierarchicalTranslations) {
-      const customStrings = await loadTranslations(language);
+      const localizedMessages = await loadTranslations(language || defaultLanguage);
 
-      if (!customStrings || Object.keys(customStrings).length === 0) {
+      if (!localizedMessages || Object.keys(localizedMessages).length === 0) {
         console.error(`Could not load translations for ${language}, using default`);
         return;
       }
 
-      const mergedStrings = { ...twilioStrings, ...customStrings };
+      const mergedStrings = { ...twilioStrings, ...localizedMessages };
       setNewStrings(mergedStrings);
       afterNewStrings(language);
       return;
@@ -195,10 +198,10 @@ export const getMessage = messageKey => async language => {
 
   try {
     if (enableHierarchicalTranslations) {
-      const { helplineCode } = getHrmConfig();
-      const helplineTranslations = require(`../../../hrm-form-definitions/form-definitions/${helplineCode}/v1/translations/Messages.json`);
-
-      return helplineTranslations[language][messageKey];
+      const definitionVersion = getDefinitionVersions().currentDefinitionVersion;
+      const localizedMessages = definitionVersion?.customStrings.Messages;
+      console.log('>>> localizedMessages', localizedMessages);
+      return localizedMessages[language][messageKey];
     }
     if (!language) return defaultMessages[messageKey];
 
@@ -219,18 +222,22 @@ export const getMessage = messageKey => async language => {
   }
 };
 
-export const initLocalization = (localizationConfig: LocalizationConfig, initialLanguage: string) => {
+export const initLocalization = (localizationConfig: LocalizationConfig, helplineLanguage: string) => {
   const translateUI = initTranslateUI(localizationConfig);
   const { setNewStrings } = localizationConfig;
 
+  // TODO: reimplement defaultTranslation to use locale/en.json after deprecating legacy implementation
   setNewStrings(defaultTranslation);
 
-  const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
+  // const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
+  const enableHierarchicalTranslations = true;
+  const shouldLoadCustomTranslations =
+    enableHierarchicalTranslations || (helplineLanguage && helplineLanguage !== defaultLanguage);
 
-  if (enableHierarchicalTranslations || (initialLanguage && initialLanguage !== defaultLanguage)) {
-    translateUI(initialLanguage);
+  if (shouldLoadCustomTranslations) {
+    translateUI(helplineLanguage);
   } else {
-    console.error('translateUI NOT called because condition failed');
+    console.warn('Not loading custom translations', { enableHierarchicalTranslations, helplineLanguage });
   }
 
   return { translateUI, getMessage };
