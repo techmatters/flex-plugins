@@ -84,7 +84,8 @@
       },
       "referral": {
         "splitFormAt": 2,
-        "printOrder": 4
+        "printOrder": 4,       
+        "caseHomeLocation": "timeline"
       },
       "document": {
         "splitFormAt": 1,
