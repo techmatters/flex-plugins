@@ -49,7 +49,7 @@ on:
         description: If set to false a slack message will not be sent - useful for E2E test deploys.
         default: 'true'
         type: string
-      invalidate-forms-cache:
+      invalidate-cache:
         description: 'Specifies if should invalidate CloudFront cache for form data. Defaults to true, set to false if the caller will handle cache invalidation.'
         required: false
         default: 'true'
