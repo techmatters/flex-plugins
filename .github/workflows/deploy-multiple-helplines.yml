@@ -80,6 +80,7 @@ jobs:
       environment: ${{ matrix.environment }}
       recaptcha_verify_url: ${{ inputs.recaptcha_verify_url }}
       send-slack-message: ${{ inputs.send_slack_message_per_deploy }}
+      invalidate-forms-cache: ${{ inputs.invalidate-forms-cache }}
 
   # Send Slack notifying success
   send-slack-message:
