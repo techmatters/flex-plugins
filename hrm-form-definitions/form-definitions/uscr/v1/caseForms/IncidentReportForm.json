@@ -10,20 +10,34 @@
     "label": "Beacon Incident ID"
   },
   {
-    "name": "incidentArrivalTime",
-    "type": "time-input",
-    "label": "Incident Arrival Time"
+    "name": "responderName",
+    "type": "input",
+    "label": "Responder"
   },
   {
-    "name": "incidentCompletionTime",
+    "name": "incidentActivationTime",
     "type": "time-input",
-    "label": "Incident Completion Time"
+    "label": "Incident Activation Time"
+  },
+  {
+    "name": "sceneArrivalTime",
+    "type": "time-input",
+    "label": "Scene Arrival Time"
+  },
+  {
+    "name": "totalIncidentTime",
+    "type": "time-input",
+    "label": "Time from Arrival to Completion"
   },
   {
     "name": "primaryDisposition",
     "label": "Primary Disposition",
     "type": "select",
     "unknownOption": "Unknown",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
     "options": [
       {
         "value": "Unknown",
