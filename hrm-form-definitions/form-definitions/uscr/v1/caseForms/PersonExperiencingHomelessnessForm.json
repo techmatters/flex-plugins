@@ -41,7 +41,7 @@
   {
     "name": "dateOfBirth",
     "label": "Date of Birth",
-    "type": "date-input",
+    "type": "date-input"
   },
   {
     "name": "language",
