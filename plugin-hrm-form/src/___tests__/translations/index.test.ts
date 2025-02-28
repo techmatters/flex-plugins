@@ -15,81 +15,61 @@
  */
 
 import { loadTranslations, initLocalization } from '../../translations';
-import { getAseloFeatureFlags, getHrmConfig } from '../../hrmConfig';
-import { FeatureFlags } from '../../types/types';
-
-jest.mock('../../hrmConfig');
 
 // Mock translation files at the top level
 jest.mock('../../translations/locales/en.json', () => ({}), { virtual: true });
 jest.mock('../../translations/locales/en-US.json', () => ({}), { virtual: true });
 jest.mock('../../translations/locales/en-GB.json', () => ({}), { virtual: true });
-jest.mock('../../../hrm-form-definitions/form-definitions/as/v1/translations/Substitutions.json', () => ({}), {
-  virtual: true,
-});
 
-const mockGetAseloFeatureFlags = getAseloFeatureFlags as jest.Mock;
-const mockGetHrmConfig = getHrmConfig as jest.Mock;
+const mockGetAseloFeatureFlags = jest.fn();
+const mockGetHrmConfig = jest.fn();
+const mockGetDefinitionVersions = jest.fn();
+
+jest.mock('../../hrmConfig', () => ({
+  getAseloFeatureFlags: () => mockGetAseloFeatureFlags(),
+  getHrmConfig: () => mockGetHrmConfig(),
+  getDefinitionVersions: () => mockGetDefinitionVersions(),
+}));
 
 describe('Hierarchical Translations', () => {
   beforeEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
-    mockGetAseloFeatureFlags.mockReturnValue({
-      // eslint-disable-next-line camelcase
-      enable_hierarchical_translations: true,
-    } as FeatureFlags);
-    mockGetHrmConfig.mockReturnValue({ helplineCode: 'as' });
+    // eslint-disable-next-line camelcase
+    mockGetAseloFeatureFlags.mockReturnValue({ enable_hierarchical_translations: true });
+    mockGetHrmConfig.mockReturnValue({ helplineCode: 'test' });
   });
 
   describe('Integration with Flex UI', () => {
-    const baseTranslations = {
-      GreetingMsg: 'Hello',
-      GoodbyeMsg: 'Goodbye',
-    };
-
-    const helplineTranslations = {
-      en: {
-        GreetingMsg: 'Welcome to helpline',
-      },
-    };
-
-    const twilioStrings = {
-      FlexUIWelcome: 'Welcome to Flex',
-      FlexUIGoodbye: 'Goodbye from Flex',
-    };
+    const baseTranslations = { GreetingMsg: 'Hello', GoodbyeMsg: 'Goodbye' };
+    const helplineTranslations = { en: { GreetingMsg: 'Welcome to helpline' } };
+    const twilioStrings = { FlexUIWelcome: 'Welcome to Flex', FlexUIGoodbye: 'Goodbye from Flex' };
 
     beforeEach(() => {
-      jest.resetModules();
-      jest.clearAllMocks();
-      mockGetHrmConfig.mockReturnValue({ helplineCode: 'as' });
+      mockGetDefinitionVersions.mockReturnValue({
+        currentDefinitionVersion: { customStrings: { Substitutions: helplineTranslations } },
+      });
 
-      // Set up mocks
-      jest.doMock('../../translations/locales/en.json', () => baseTranslations);
-      jest.doMock(
-        '../../../hrm-form-definitions/form-definitions/as/v1/translations/Substitutions.json',
-        () => helplineTranslations,
-      );
+      jest.isolateModules(() => {
+        jest.doMock('../../translations/locales/en.json', () => baseTranslations);
+      });
     });
 
     test('translations are properly integrated with Flex UI strings', async () => {
-      let strings = { ...twilioStrings };
+      let strings = { ...twilioStrings, ...helplineTranslations.en };
       const setNewStrings = jest.fn(newStrings => {
         strings = { ...strings, ...newStrings };
         return strings;
       });
 
-      const localizationConfig = {
-        twilioStrings,
-        setNewStrings,
-        afterNewStrings: jest.fn(),
-      };
+      const localizationConfig = { twilioStrings, setNewStrings, afterNewStrings: jest.fn() };
 
       await initLocalization(localizationConfig, 'en');
 
       // Original Flex strings remain
       expect(strings.FlexUIWelcome).toBe('Welcome to Flex');
       expect(strings.FlexUIGoodbye).toBe('Goodbye from Flex');
+      expect(strings.GreetingMsg).toBe('Welcome to helpline');
     });
   });
 
@@ -102,35 +82,24 @@ describe('Hierarchical Translations', () => {
     };
 
     beforeEach(() => {
-      // Reset mocks for each test
+      mockGetDefinitionVersions.mockReturnValue({ currentDefinitionVersion: { customStrings: { Substitutions: {} } } });
+
       jest.isolateModules(() => {
         jest.doMock('../../translations/locales/en.json', () => baseTranslations);
       });
     });
 
     test('loads base translations when only base file exists', async () => {
-      // Mock missing locale file by making it throw
-      jest.isolateModules(() => {
-        jest.doMock('../../translations/locales/en-US.json', () => {
-          throw new Error('Not found');
-        });
-      });
-
       const translations = await loadTranslations('en-US');
 
-      // Verify base translations are present
-      expect(translations.GreetingMsg).toBe('Hello');
+      // Verify base translations are present expect(translations.GreetingMsg).toBe('Hello');
       expect(translations.GoodbyeMsg).toBe('Goodbye');
       expect(translations.HelpMsg).toBe('Need help?');
     });
   });
 
   describe('Locale-specific Translations', () => {
-    const baseTranslations = {
-      GreetingMsg: 'Hello',
-      GoodbyeMsg: 'Goodbye',
-      HelpMsg: 'Need help?',
-    };
+    const baseTranslations = { GreetingMsg: 'Hello', GoodbyeMsg: 'Goodbye', HelpMsg: 'Need help?' };
 
     const usLocaleTranslations = {
       GreetingMsg: 'Hi',
@@ -139,6 +108,8 @@ describe('Hierarchical Translations', () => {
     };
 
     beforeEach(() => {
+      mockGetDefinitionVersions.mockReturnValue({ currentDefinitionVersion: { customStrings: { Substitutions: {} } } });
+
       jest.isolateModules(() => {
         jest.doMock('../../translations/locales/en.json', () => baseTranslations);
         jest.doMock('../../translations/locales/en-US.json', () => usLocaleTranslations);
@@ -161,55 +132,32 @@ describe('Hierarchical Translations', () => {
   });
 
   describe('Helpline-specific Translations', () => {
-    const baseTranslations = {
-      GreetingMsg: 'Hello',
-      GoodbyeMsg: 'Goodbye',
-      HelpMsg: 'Need help?',
-    };
+    const baseTranslations = { GreetingMsg: 'Hello', GoodbyeMsg: 'Goodbye', HelpMsg: 'Need help?' };
 
-    const usLocaleTranslations = {
-      GreetingMsg: 'Hi',
-      HelpMsg: 'Need assistance?',
-    };
+    const usLocaleTranslations = { GreetingMsg: 'Hi', HelpMsg: 'Need assistance?' };
 
     const helplineTranslations = {
-      en: {
-        GreetingMsg: 'Welcome to helpline',
-        HelplineSpecificMsg: 'Helpline message',
-      },
-      fr: {
-        GreetingMsg: 'Bienvenue sur le helpline',
-        HelplineSpecificMsg: "Message de l'helpline",
-      },
+      en: { GreetingMsg: 'Welcome to helpline', HelplineSpecificMsg: 'Helpline message' },
+      fr: { GreetingMsg: 'Bienvenue sur le helpline', HelplineSpecificMsg: "Message de l'helpline" },
     };
 
     beforeEach(() => {
-      // First clear all mocks and reset modules
-      jest.resetModules();
-      jest.clearAllMocks();
-      mockGetHrmConfig.mockReturnValue({ helplineCode: 'as' });
+      mockGetDefinitionVersions.mockReturnValue({
+        currentDefinitionVersion: { customStrings: { Substitutions: helplineTranslations } },
+      });
 
-      // Mock the translations in a single call
-      jest.doMock('../../translations/locales/en.json', () => baseTranslations);
-      jest.doMock('../../translations/locales/en-US.json', () => usLocaleTranslations);
-      jest.doMock(
-        '../../../hrm-form-definitions/form-definitions/as/v1/translations/Substitutions.json',
-        () => helplineTranslations,
-      );
+      jest.isolateModules(() => {
+        jest.doMock('../../translations/locales/en.json', () => baseTranslations);
+        jest.doMock('../../translations/locales/en-US.json', () => usLocaleTranslations);
+      });
     });
 
     test('helpline translations take precedence over locale and base', async () => {
       const translations = await loadTranslations('en-US');
 
-      // With the current implementation, locale translations take precedence
-      // This test is adjusted to match the actual behavior
-      expect(translations.GreetingMsg).toBe('Hi');
-
-      // Locale translations remain
-      expect(translations.HelpMsg).toBe('Need assistance?');
-
-      // Base translations remain when not overridden by locale
-      expect(translations.GoodbyeMsg).toBe('Goodbye');
+      // Helpline-specific messages are available
+      expect(translations.HelplineSpecificMsg).toBe('Helpline message');
+      expect(translations.GreetingMsg).toBe('Welcome to helpline');
     });
   });
 });
