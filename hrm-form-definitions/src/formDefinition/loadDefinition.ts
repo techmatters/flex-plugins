@@ -34,6 +34,7 @@ import {
   LayoutVersion,
   ProfileFlagDurationDefinition,
   ProfileSectionDefinition,
+  LocalizedStringMap,
 } from './types';
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 
@@ -189,6 +190,8 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     blockedEmojis,
     profileSections,
     profileFlagDurations,
+    messages,
+    substitutions,
   ] = await Promise.all([
     fetchDefinition<LayoutVersion>('LayoutDefinitions.json'),
     fetchDefinition<FormItemJsonDefinition[]>('tabbedForms/CallerInformationTab.json'),
@@ -214,6 +217,8 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     fetchDefinition<string[]>('BlockedEmojis.json', []),
     fetchDefinition<ProfileSectionDefinition[]>('profileForms/Sections.json', []),
     fetchDefinition<ProfileFlagDurationDefinition[]>('profileForms/FlagDurations.json', []),
+    fetchDefinition<LocalizedStringMap>('customStrings/Messages.json', {}),
+    fetchDefinition<LocalizedStringMap>('customStrings/Substitutions.json', {}),
   ] as const);
   const expandedCaseSections: CaseSectionTypeDefinitions = await loadAndExpandCaseSections(
     caseSections,
@@ -249,6 +254,10 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     profileForms: {
       Sections: profileSections,
       FlagDurations: profileFlagDurations,
+    },
+    customStrings: {
+      Messages: messages,
+      Substitutions: substitutions,
     },
   };
 }

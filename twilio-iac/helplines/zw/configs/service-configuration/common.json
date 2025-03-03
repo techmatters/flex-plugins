@@ -3,7 +3,7 @@
         "definitionVersion": "zw-v1",
         "feature_flags": {
         },
-        "helplineLanguage": "",
+        "helplineLanguage": "en-US",
         "permissionConfig": "zw"
     },
     "ui_attributes": {
