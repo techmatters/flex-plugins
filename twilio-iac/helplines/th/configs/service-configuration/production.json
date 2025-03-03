@@ -1,7 +1,6 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_permissions_from_backend": false
         },
         "pdfImagesSource": "https://tl-public-chat-th-prod.s3.amazonaws.com"
     }
