@@ -19,6 +19,7 @@ import { AccountScopedRoute, FunctionRoute, HttpRequest } from './httpTypes';
 import { validateRequestMethod } from './validation/method';
 import { isAccountSID } from './twilioTypes';
 import { handleTaskRouterEvent } from './taskrouter';
+import { handleGetProfileFlagsForIdentifier } from './hrm/getProfileFlagsForIdentifier';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -36,6 +37,10 @@ const ROUTES: Record<string, FunctionRoute> = {
   'webhooks/taskrouterCallback': {
     requestPipeline: [validateWebhookRequest],
     handler: handleTaskRouterEvent,
+  },
+  getProfileFlagsForIdentifier: {
+    requestPipeline: [validateWebhookRequest],
+    handler: handleGetProfileFlagsForIdentifier,
   },
 };
 

@@ -23,7 +23,12 @@ export const validateWebhookRequest: HttpRequestPipelineStep = async (
   request,
   { accountSid },
 ) => {
-  const { headers, body, path } = request;
+  const {
+    headers,
+    path,
+    query: { bodySHA256 },
+    body,
+  } = request;
   const authToken = await getAccountAuthToken(accountSid);
   const {
     'x-twilio-signature': twiloSignature,
@@ -37,8 +42,9 @@ export const validateWebhookRequest: HttpRequestPipelineStep = async (
   const isValid = twilio.validateRequest(
     authToken,
     twiloSignature,
-    originalWebhookUrl || `${host}${path}`,
-    body,
+    originalWebhookUrl ||
+      `https://${host}${path}${bodySHA256 ? `?bodySHA256=${bodySHA256}` : ''}`,
+    bodySHA256 ? [] : body, // Pass in the body to validate the signature if no SHA256 is provided
   );
   if (!isValid) {
     return newErr({ message: 'Request validation failed', error: { statusCode: 403 } });

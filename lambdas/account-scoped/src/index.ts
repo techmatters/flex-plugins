@@ -29,6 +29,7 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
   const request = {
     method: event.httpMethod,
     path: event.path,
+    query: event.queryStringParameters ?? {},
     body: JSON.parse(event.body || 'null'),
     headers: event.headers ?? {},
   };

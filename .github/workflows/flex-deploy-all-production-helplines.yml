@@ -45,8 +45,8 @@ jobs:
       project: flex
       helplines: ${{ needs.configure.outputs.target_helplines }}
       environments: '[ "production" ]'
-      invalidate-forms-cache: false
-  invalidate-forms-cache:
+      invalidate-cache: false
+  invalidate-cache:
     name: Invalidate CloudFront cache for all production forms
     needs: deploy-helplines
     runs-on: ubuntu-latest

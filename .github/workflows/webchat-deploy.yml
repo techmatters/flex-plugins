@@ -49,6 +49,11 @@ on:
         description: If set to false a slack message will not be sent - useful for E2E test deploys.
         default: 'true'
         type: string
+      invalidate-cache:
+        description: 'Specifies if should invalidate CloudFront cache for form data. Defaults to true, set to false if the caller will handle cache invalidation.'
+        required: false
+        default: 'true'
+        type: string
 
 env:
   recaptcha_verify_url_default: https://hrm-${{ inputs.environment }}.tl.techmatters.org/lambda/recaptchaVerify
@@ -225,6 +230,7 @@ jobs:
           DEST_DIR: "webchat/${{ steps.helpline_code.outputs.lowercase }}"
 
       - name: Clear cloudfront cache
+        if: ${{ inputs.invalidate-cache != 'false' }}
         run: |
           CF_DISTRO=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].DomainName}[?origin=='assets-${{ inputs.environment }}.tl.techmatters.org.s3-website.us-east-1.amazonaws.com'].id" --output text)
           aws cloudfront create-invalidation --distribution-id $CF_DISTRO --paths /webchat/${{ steps.helpline_code.outputs.lowercase }}/*

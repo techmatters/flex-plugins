@@ -19,7 +19,8 @@ resource "twilio_chat_services_v2" "flex_chat_service" {
 }
 
 resource "twilio_proxy_services_v1" "flex_proxy_service" {
-  unique_name = "Flex Proxy Service"
+  unique_name                 = "Flex Proxy Service"
+  out_of_session_callback_url = ""
 }
 
 resource "twilio_sync_services_v1" "shared_state_service" {
