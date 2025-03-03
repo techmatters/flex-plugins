@@ -18,17 +18,17 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
-import { Row } from '../../styles';
-import { CaseActionDetailFont } from './styles';
-import ActionHeader from './ActionHeader';
-import { getAseloFeatureFlags } from '../../hrmConfig';
-import { CaseHistoryDetails } from '../../states/case/selectCaseStateByCaseId';
+import { Row } from '../../../styles';
+import { CaseActionDetailFont } from '../styles';
+import ActionHeader from '../ActionHeader';
+import { getAseloFeatureFlags } from '../../../hrmConfig';
+import { CaseHistoryDetails } from '../../../states/case/selectCaseStateByCaseId';
 
 type OwnProps = CaseHistoryDetails;
 
 type Props = OwnProps;
 
-const CaseSummaryEditHistory: React.FC<Props> = ({
+const CaseOverviewEditHistory: React.FC<Props> = ({
   createdAt,
   createdBy,
   updatedBy,
@@ -62,6 +62,6 @@ const CaseSummaryEditHistory: React.FC<Props> = ({
   );
 };
 
-CaseSummaryEditHistory.displayName = 'ActionHeader';
+CaseOverviewEditHistory.displayName = 'ActionHeader';
 
-export default CaseSummaryEditHistory;
+export default CaseOverviewEditHistory;

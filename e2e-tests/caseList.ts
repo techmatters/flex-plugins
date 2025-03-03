@@ -67,6 +67,7 @@ export const caseList = (page: Page) => {
     saveCaseItemButton: caseListPage.locator(
       `//button[@data-testid='Case-AddEditItemScreen-SaveItem']`,
     ),
+    categoryTooltip: caseListPage.locator(`//div[@data-testid='CaseDetails-CategoryTooltip']`),
   };
 
   async function openFilter(filter: Filter): Promise<void> {
@@ -170,6 +171,18 @@ export const caseList = (page: Page) => {
     await expect(summaryText).toContainText(`E2E Case Summary Test Edited on ${currentTime}`);
   }
 
+  async function verifyCasePrintButtonIsVisible() {
+    const printButton = selectors.casePrintButton;
+    await printButton.waitFor({ state: 'visible' });
+    await expect(printButton).toBeVisible();
+  }
+
+  async function verifyCategoryTooltipIsVisible() {
+    const categoryTooltip = selectors.categoryTooltip;
+    await categoryTooltip.waitFor({ state: 'visible' });
+    await expect(categoryTooltip).toBeVisible();
+  }
+
   async function verifyCaseIdsAreInListInOrder(ids: string[]) {
     await selectors.caseListRowIdButton.first().waitFor({ state: 'visible' });
     const caseListIdButtons = await selectors.caseListRowIdButton.all();
@@ -193,6 +206,8 @@ export const caseList = (page: Page) => {
     editCase,
     updateCaseSummary,
     verifyCaseSummaryUpdated,
+    verifyCasePrintButtonIsVisible,
+    verifyCategoryTooltipIsVisible,
     closeModal,
     verifyCaseIdsAreInListInOrder,
   };

@@ -19,11 +19,11 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 
-import { CaseDetailsBorder, CaseSectionFont, CaseSummaryTextArea } from './styles';
-import type { CustomITask, StandaloneITask } from '../../types/types';
-import { getTemplateStrings } from '../../hrmConfig';
-import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
-import { RootState } from '../../states';
+import { CaseDetailsBorder, CaseSectionFont, CaseSummaryTextArea } from '../styles';
+import type { CustomITask, StandaloneITask } from '../../../types/types';
+import { getTemplateStrings } from '../../../hrmConfig';
+import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRouteCase';
+import { RootState } from '../../../states';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -38,7 +38,7 @@ const CaseSummary: React.FC<Props> = ({ connectedCaseState }) => {
   const summary = connectedCase.info?.summary || '';
 
   return (
-    <CaseDetailsBorder marginBottom="-25px" paddingBottom="15px">
+    <CaseDetailsBorder marginTop="25px">
       <CaseSectionFont id="Case-CaseSummary-label">
         <Template code="Case-CaseSummarySection" />
       </CaseSectionFont>

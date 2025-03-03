@@ -24,16 +24,16 @@ import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 
-import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
-import { mockGetDefinitionsResponse } from '../../mockGetConfig';
-import EditCaseSummary, { EditCaseSummaryProps } from '../../../components/case/EditCaseSummary';
-import { getDefinitionVersions } from '../../../hrmConfig';
-import { StandaloneITask } from '../../../types/types';
-import { CaseRoute } from '../../../states/routing/types';
-import { changeRoute } from '../../../states/routing/actions';
-import { namespace } from '../../../states/storeNamespaces';
-import { RecursivePartial } from '../../RecursivePartial';
-import { RootState } from '../../../states';
+import { mockLocalFetchDefinitions } from '../../../mockFetchDefinitions';
+import { mockGetDefinitionsResponse } from '../../../mockGetConfig';
+import EditCaseOverview, { EditCaseOverviewProps } from '../../../../components/case/caseOverview/EditCaseOverview';
+import { getDefinitionVersions } from '../../../../hrmConfig';
+import { StandaloneITask } from '../../../../types/types';
+import { CaseRoute } from '../../../../states/routing/types';
+import { changeRoute } from '../../../../states/routing/actions';
+import { namespace } from '../../../../states/storeNamespaces';
+import { RecursivePartial } from '../../../RecursivePartial';
+import { RootState } from '../../../../states';
 
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
@@ -113,8 +113,8 @@ const task = {
   taskSid: 'task1',
 };
 
-describe('Test EditCaseSummary', () => {
-  let ownProps: EditCaseSummaryProps;
+describe('Test EditCaseOverview', () => {
+  let ownProps: EditCaseOverviewProps;
   const exitRoute: CaseRoute = { route: 'case', subroute: 'home', caseId: 'case1' };
 
   beforeAll(async () => {
@@ -138,7 +138,7 @@ describe('Test EditCaseSummary', () => {
     render(
       <StorelessThemeProvider themeConf={themeConf}>
         <Provider store={store}>
-          <EditCaseSummary {...ownProps} />
+          <EditCaseOverview {...ownProps} />
         </Provider>
       </StorelessThemeProvider>,
     );
@@ -154,7 +154,7 @@ describe('Test EditCaseSummary', () => {
     const wrapper = mount(
       <StorelessThemeProvider themeConf={themeConf}>
         <Provider store={store}>
-          <EditCaseSummary {...ownProps} />
+          <EditCaseOverview {...ownProps} />
         </Provider>
       </StorelessThemeProvider>,
     );

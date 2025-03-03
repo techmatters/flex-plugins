@@ -13,12 +13,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-/* eslint-disable react/jsx-max-depth */
-/* eslint-disable react/no-multi-comp */
-/* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { Print as PrintIcon } from '@material-ui/icons';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 import {
   DetailsHeaderCaseContainer,
@@ -30,31 +28,44 @@ import {
 } from '../styles';
 import { Flex, Box } from '../../../styles';
 import { getHrmConfig } from '../../../hrmConfig';
+import CaseTags from '../CaseTags';
 
 type OwnProps = {
   caseId: string;
-  office: string;
+  office?: string;
   counselor: string;
   handlePrintCase: () => void;
   isOrphanedCase: boolean;
+  definitionVersion: DefinitionVersion;
+  categories: { [category: string]: string[] };
 };
 
-const CaseDetailsHeader: React.FC<OwnProps> = ({ caseId, office, counselor, handlePrintCase, isOrphanedCase }) => {
+const CaseOverviewHeader: React.FC<OwnProps> = ({
+  caseId,
+  office,
+  counselor,
+  handlePrintCase,
+  isOrphanedCase,
+  definitionVersion,
+  categories,
+}) => {
   const { multipleOfficeSupport } = getHrmConfig();
 
   return (
     <DetailsHeaderContainer>
-      <DetailsHeaderCaseContainer>
-        <DetailsHeaderCaseId id="Case-CaseId-label" data-testid="Case-DetailsHeaderCaseId">
-          <Template code="Case-CaseNumber" />
-          {caseId}
-        </DetailsHeaderCaseId>
-        {multipleOfficeSupport && office && <DetailsHeaderOfficeName>({office})</DetailsHeaderOfficeName>}
-      </DetailsHeaderCaseContainer>
       <Flex justifyContent="space-between">
-        <DetailsHeaderCounselor data-testid="Case-DetailsHeaderCounselor">
-          <Template code="Case-Counsellor" />: {counselor}
-        </DetailsHeaderCounselor>
+        <Box style={{ flexGrow: 1 }}>
+          <DetailsHeaderCaseContainer>
+            <DetailsHeaderCaseId id="Case-CaseId-label" data-testid="Case-DetailsHeaderCaseId">
+              <Template code="Case-CaseNumber" />
+              {caseId}
+            </DetailsHeaderCaseId>
+            {multipleOfficeSupport && office && <DetailsHeaderOfficeName> ({office})</DetailsHeaderOfficeName>}
+          </DetailsHeaderCaseContainer>
+          <DetailsHeaderCounselor data-testid="Case-DetailsHeaderCounselor">
+            <Template code="Case-Counsellor" />: {counselor}
+          </DetailsHeaderCounselor>
+        </Box>
         {!isOrphanedCase && (
           <StyledPrintButton
             onClick={handlePrintCase}
@@ -64,10 +75,11 @@ const CaseDetailsHeader: React.FC<OwnProps> = ({ caseId, office, counselor, hand
           />
         )}
       </Flex>
+      <CaseTags definitionVersion={definitionVersion} categories={categories} />
     </DetailsHeaderContainer>
   );
 };
 
-CaseDetailsHeader.displayName = 'CaseDetailsHeader';
+CaseOverviewHeader.displayName = 'CaseOverviewHeader';
 
-export default CaseDetailsHeader;
+export default CaseOverviewHeader;
