@@ -18,6 +18,8 @@
           "form": "caseInformation",
           "item": "callSummary"
         }
+      }
+      ]
   },
   {
     "name": "repeatCaller",
