@@ -52,6 +52,7 @@ const newTestHttpRequest = (eventType: EventType): HttpRequest => ({
     EventType: eventType,
   },
   path: '/ignored',
+  query: {},
 });
 
 describe('handleTaskRouterEvent', () => {

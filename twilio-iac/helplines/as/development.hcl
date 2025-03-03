@@ -6,5 +6,6 @@ locals {
   local_config = {
     enable_external_recordings = true
     permission_config = "dev"
+    get_profile_flags_for_identifiers_base_url = "hrm-development.tl.techmatters.org/lambda/twilio"
   }
 }
