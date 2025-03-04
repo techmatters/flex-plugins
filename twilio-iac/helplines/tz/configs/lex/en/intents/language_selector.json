@@ -1,0 +1,32 @@
+{
+  "language_selector": {
+    "description": "Helpline Specific helplines/tz/configs/lex/en_TZ/intents Language Selector intent",
+    "sample_utterances": [
+      "trigger_language_selector"
+    ],
+    "fulfillment_activity": {
+      "type": "ReturnIntent"
+    },
+    "conclusion_statement": {
+      "content": "OK, thank you.",
+      "content_type": "PlainText"
+    },
+    "rejection_statement": {
+      "content": "Sorry, I didn't get that. I'll connect you to a counsellor now.",
+      "content_type": "PlainText"
+    },
+    "slots": {
+      "language": {
+        "priority": 0,
+        "description": "Imported from question 'language'",
+        "slot_constraint": "Required",
+        "slot_type": "language",
+        "value_elicitation_prompt": {
+          "content": "What language do you speak? Please select from the below supported languages: \n 1. English \n 2. KiSwahili",
+          "content_type": "PlainText",
+          "max_attempts": 3
+        }
+      }
+    }
+  }
+}
