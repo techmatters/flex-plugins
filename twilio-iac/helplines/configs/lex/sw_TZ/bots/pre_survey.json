@@ -1,0 +1,22 @@
+{
+  "pre_survey": {
+    "description": "General configs/lex/sw_TZ/bots Pre Survey bot",
+    "locale": "sw-TZ",
+    "process_behavior": "BUILD",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "enable_model_improvements": true,
+    "abort_statement": {
+      "content": "Samahani, sikuweza kuelewa hilo. Nitakuunganisha kwa mshauri sasa.",
+      "content_type": "PlainText"
+    },
+    "clarification_prompt": {
+      "max_attempts": 2,
+      "content": "Samahani, sikuweza kuelewa hilo. Tafadhali jaribu tena. \nTafadhali jibu maswali.",
+      "content_type": "PlainText"
+    },
+    "intents": [
+      "pre_survey"
+    ]
+  }
+}

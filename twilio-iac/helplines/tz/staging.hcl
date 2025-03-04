@@ -5,7 +5,9 @@ locals {
 
   local_config = {
     enable_post_survey                    = true
-    enable_datadog_monitoring                = false
+    enable_lex_v2                         = false
+    lex_v2_bot_languages                  = false
+    enable_datadog_monitoring             = false
     custom_task_routing_filter_expression = "channelType IN ['web','messenger']  OR isContactlessTask == true OR  twilioNumber == 'messenger:565233119996327'"
 
     #Studio flow
