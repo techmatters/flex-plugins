@@ -130,7 +130,7 @@ resource "aws_ssm_parameter" "hrm_static_api_key_v2" {
 
   tags = {
     Environment = lower(var.environment)
-    Name        = "/${lower(var.environment)}/twilio/${local.secrets..twilio_account_sid}/static_key"
+    Name        = "/${lower(var.environment)}/twilio/${local.secrets.twilio_account_sid}/static_key"
     Terraform   = true
   }
 }
