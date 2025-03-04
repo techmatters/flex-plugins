@@ -118,7 +118,7 @@ resource "aws_ssm_parameter" "case_status_transition" {
 }
 
 data "aws_ssm_parameter" "hrm_static_api_key_legacy" {
-  name     = "${var.short_environment}_TWILIO_${var.short_helpline}_HRM_STATIC_KEY"
+  name     = "${var.short_environment}_TWILIO_${upper(var.short_helpline)}_HRM_STATIC_KEY"
   #depends_on = [ module.hrmServiceIntegration.null_resource.hrm_static_api_key]
 }
 
