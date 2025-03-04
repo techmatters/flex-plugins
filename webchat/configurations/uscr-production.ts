@@ -15,7 +15,7 @@
  */
 
 import { Configuration } from '../types';
-import { config as uscrStaging } from './uscr-staging';
+import { config as uscrStaging } from '../configurations/uscr-staging';
 
 const accountSid = 'AC34800d0cf642c95ce1f17785d239333c';
 const flexFlowSid = 'FO8f7a4233cc590bf3d45f1b68c6058582';
