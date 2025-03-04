@@ -227,22 +227,5 @@ resource "aws_ssm_parameter" "aws_region" {
   }
 }
 
-data "aws_ssm_parameter" "hrm_static_api_key_legacy" {
-  name     = "${var.short_environment}_TWILIO_${var.short_helpline}_HRM_STATIC_KEY"
-  #depends_on = [ module.hrmServiceIntegration.null_resource.hrm_static_api_key]
-}
-
-resource "aws_ssm_parameter" "hrm_static_api_key_v2" {
-  name        = "/${lower(var.environment)}/twilio/${var.twilio_account_sid}/static_key"
-  type        = "SecureString"
-  value       = data.aws_ssm_parameter.hrm_static_api_key_legacy.value
-  description = "Twilio API Key"
-
-  tags = {
-    Environment = lower(var.environment)
-    Name        = "/${lower(var.environment)}/twilio/${var.twilio_account_sid}/static_key"
-    Terraform   = true
-  }
-}
 
 
