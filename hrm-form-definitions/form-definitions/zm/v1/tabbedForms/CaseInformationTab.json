@@ -5,7 +5,7 @@
     "type": "textarea",
     "required": { "value": true, "message": "RequiredFieldError" },
     "isPII": true,
-    "width": "225px",
+    "width": "200px",
     "rows": "40",
     "additionalActions": [
       {
