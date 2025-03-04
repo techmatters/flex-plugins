@@ -1,0 +1,10 @@
+{
+    "attributes": {
+        "contacts_waiting_channels": [
+            "web"
+        ],
+        "definitionVersion": "<helpline shortcode>-v1",
+        "helplineLanguage": "en-US",
+        "permissionConfig": "<helpline shortcode>"
+    }
+}
