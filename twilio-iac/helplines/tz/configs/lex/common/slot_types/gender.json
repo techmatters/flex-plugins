@@ -1,0 +1,118 @@
+{
+    "gender": {
+        "description": "Helpline Specific zm/configs/lex/common/slot_types Gender Slot Type",
+        "value_selection_strategy": "TOP_RESOLUTION",
+        "values": {
+            "Unknown": {
+                "synonyms": [
+                    "X",
+                    "prefer not to",
+                    "prefer not",
+                    "none of your business",
+                    "prefer not to answer"
+                ]
+            },
+            "Non-Binary": {
+                "synonyms": [
+                    "blonse biywanga pamo",
+                    "kimazwi afi a bunolo a yitusisizwe mwa ngambolo",
+                    "blonse biywanga pamo",
+                    "zonse zigwiritsana",
+                    "Yakazhima yina dikwatishi",
+                    "nb",
+                    "agender",
+                    "nonbinary"
+                ]
+            },
+            "Girl": {
+                "synonyms": [
+                    "kazhi",
+                    "woman",
+                    "female",
+                    "wamukazhi",
+                    "inetu",
+                    "wamukazhi inetu",
+                    "nsongwa kazhi",
+                    "wa musali",
+                    "Musali wa muna",
+                    "Musizana",
+                    "kazhi",
+                    "woman",
+                    "female",
+                    "wamukazhi",
+                    "inetu",
+                    "wamukazhi inetu",
+                    "nsongwa kazhi",
+                    "m'tsikana",
+                    "woman",
+                    "female",
+                    "mkazi",
+                    "Mtsikana",
+                    "mukamama",
+                    "mukulumpi",
+                    "wamumbanda",
+                    "kansi wamumbanda",
+                    "mwanakasi",
+                    "mulibasimbi",
+                    "mukaintu",
+                    "musimbi",
+                    "banakashi",
+                    "umwankashi",
+                    "Umwanakashi",
+                    "namayo",
+                    "Umukashana",
+                    "g",
+                    "females",
+                    "lady",
+                    "f",
+                    "w"
+                ]
+            },
+            "Boy": {
+                "synonyms": [
+                    "lume",
+                    "shetu",
+                    "kwamba",
+                    "mwakonsha",
+                    "mukwipipisha",
+                    "mwakonsha kwamba",
+                    "wamulume shetu",
+                    "nsogwa lume",
+                    "muna",
+                    "mushimani",
+                    "lume",
+                    "shetu",
+                    "kwamba",
+                    "mwakonsha",
+                    "mukwipipisha",
+                    "mwakonsha kwamba",
+                    "wamulume shetu",
+                    "nsogwa lume",
+                    "mnyamata",
+                    "male",
+                    "man",
+                    "mukwihihisha",
+                    "kuzatisha mazu",
+                    "munachweshi",
+                    "mukatata",
+                    "mukulumpi weyala",
+                    "kansi weyala",
+                    "ndimusankwa",
+                    "mulombe",
+                    "Mulibasankwa",
+                    "mwaalumi",
+                    "musankwa",
+                    "baume",
+                    "Umwaume",
+                    "Shibantu",
+                    "Umulumendo",
+                    "b",
+                    "males",
+                    "dude",
+                    "guy",
+                    "m"
+                ]
+            }
+        }
+    }
+}
