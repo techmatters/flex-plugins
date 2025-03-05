@@ -17,8 +17,8 @@
 import { Translations, Configuration, MapHelplineLanguage, ContactType } from '../types';
 import type { PreEngagementFormDefinition } from '../src/pre-engagement-form';
 
-const accountSid = 'xxx';
-const flexFlowSid = 'xxx';
+const accountSid = 'AC147e360e21386797593c3893bf4def12';
+const flexFlowSid = 'FW749183aae62c7dbd8095a47e06c205d0';
 const defaultLanguage = 'en-US';
 const captureIp = true;
 const contactType: ContactType = 'ip';
