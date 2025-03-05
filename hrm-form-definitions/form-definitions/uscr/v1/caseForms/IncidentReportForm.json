@@ -48,6 +48,49 @@
       }
     ]
   },
+    {
+    "name": "tags",
+    "label": "Incident Tags",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "East",
+        "label": "East"
+      },
+      {
+        "value": "Harbor",
+        "label": "Harbor"
+      },
+      {
+        "value": "Hollywood",
+        "label": "Hollywood"
+      },
+      {
+        "value": "Metro",
+        "label": "Metro"
+      },
+      {
+        "value": "Pacific",
+        "label": "Pacific"
+      },
+      {
+        "value": "South LA",
+        "label": "South LA"
+      },
+      {
+        "value": "Valley",
+        "label": "Valley"
+      },
+      {
+        "value": "Response Team",
+        "label": "Response Team"
+      },
+      {
+        "value": "Support Team",
+        "label": "Support Team"
+      }
+    ]
+  },
   {
     "name": "responderName",
     "type": "input",
