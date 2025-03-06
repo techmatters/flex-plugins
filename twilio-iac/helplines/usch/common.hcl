@@ -51,9 +51,8 @@ locals {
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/webchat-basic.tftpl"
         channel_flow_vars = {}
         chatbot_unique_names = []
-      }
-    },
-    voice : {
+      },
+      voice : {
         channel_type     = "voice"
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic.tftpl"
@@ -65,5 +64,7 @@ locals {
         }
         chatbot_unique_names = []
       }
+    }
+    
   }
 }
