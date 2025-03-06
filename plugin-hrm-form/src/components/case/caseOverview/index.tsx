@@ -69,11 +69,11 @@ const CaseOverview: React.FC<Props> = ({
 
   const renderDateValue = (fieldName: string) => {
     switch (fieldName) {
-      case 'createdAt':
+      case CASE_OVERVIEW_FIELDS.CREATED_AT:
         return formattedCreatedAt;
-      case 'updatedAt':
+      case CASE_OVERVIEW_FIELDS.UPDATED_AT:
         return formattedUpdatedAt;
-      case 'followUpDate':
+      case CASE_OVERVIEW_FIELDS.FOLLOW_UP_DATE:
         return formattedFollowUpDate === 'Invalid Date' ? '—' : formattedFollowUpDate;
       default:
         return connectedCase?.[fieldName] || connectedCase?.info?.[fieldName] || '—';
@@ -153,8 +153,8 @@ const CaseOverview: React.FC<Props> = ({
             />
           ))}
         </div>
-        <CaseSummary task={task} />
       </DetailsContainer>
+      <CaseSummary task={task} />
     </>
   );
 };
