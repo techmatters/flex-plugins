@@ -293,6 +293,8 @@ type CaseSectionTypeEntry = {
   form: FormDefinition;
 };
 
+export type CaseOverviewDefinition = Record<string, CaseSectionTypeEntry>;
+
 export type CaseSectionTypeDefinitions = Record<string, CaseSectionTypeEntry>;
 
 export type HelplineEntry = {
