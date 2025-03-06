@@ -40,7 +40,7 @@
   "Case-DocumentDate": "วันที่ส่งต่อ",
   "Case-DocumentFileName": "ชื่อไฟล์",
   "Case-EditButton": "แก้ไข",
-  "Case-EditCaseSummary": "แก้ไขข้อมูลเคส",
+  "Case-EditCaseOverview": "แก้ไขข้อมูลเคส",
   "CaseSection-Edit/document": "แก้ไขเอกสาร",
   "CaseSection-Edit/household": "แก้ไขสมาชิกในครัวเรือน",
   "CaseSection-Edit/incident": "แก้ไขเหตุการณ์",
