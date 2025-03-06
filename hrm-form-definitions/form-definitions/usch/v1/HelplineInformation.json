@@ -3,7 +3,7 @@
   "helplines": [
     {
       "label": "Childhelp",
-      "value": "Childhlelp",
+      "value": "Childhelp",
       "default": true,
       "kmsUrl": "www.google.com",
       "manager": {
