@@ -1,0 +1,49 @@
+[{
+    "label": "Thank you for contacting.",
+    "text": "Thank you for contacting the helpline. We are here to support you. My name is XXX and I am a counselor at the helpline. "
+  },
+  {
+    "label": "Confidentiality / Privacy",
+    "text": "Before we continue, I would love for you to know that this is a safe space for you to just talk and share the challenges that you are having. Everything you say here will remain here except in cases where you indicate that you are being harmed by someone (meaning any form of abuse), that you want to harm yourself (meaning suicide) or you want to harm someone. In any of these cases, I would have to inform my supervisor and inform the relevant authorities. Do you understand this?"
+  },
+  {
+    "label": "Emergency Services Call",
+    "text": "I am going to call 911 and will ask you to provide as much information as you can about the situation. Do you know where the situation is taking place?"
+  },
+  {
+    "label": "What is the helpline?",
+    "text": "ChildLine is a 24/7 counseling helpline that provides free counselling and psychosocial support to children and teens under the age of 18 years."
+  },
+  {
+    "label": "How did you learn about the helpline?",
+    "text": "If you don't mind me asking, can you please share with me how you came to know about the helpline?"
+  },
+  {
+    "label": "How do I avoid COVID?",
+    "text": "It’s understandable that you are worried about getting the COVID19 Virus, however, here are some tips to help you stay safe: \n\n • Wash your hands regularly / use sanitizer \n • Avoid handshakes, hugs and kisses. \n • Don’t touch your face unnecessarily \n • Keep a 1.5-meter distance from people, especially if they are symptomatic \n • If you feel that you show symptoms or have come in touch with a COVID19 positive person, please also call the COVID19 Helpline \n • Stay calm and don't panic"
+  },
+  {
+    "label": "What is Physical abuse?",
+    "text": "Physical violence and abuse based on the fact that you are a man or a woman is an increasing problem. If you or anyone you know is being: Beaten, slapped, punched, kicked, bruised, cut, burnt or physically hurt in any way, they are being physically abused."
+  },
+  {
+    "label": "What is Verbal and Emotional abuse?",
+    "text": "Not all sexual and gender based violence is physical. Verbal abuse like screaming, shouting and name calling, and emotional abuse like threats and intimidation, are real problems, especially in families."
+  },
+  {
+    "label": "What is Sexual abuse and rape?",
+    "text": "People are sometimes forced to have sex with people when they don’t want to (rape), or to do sexual things against their will. This can happen once or more often. People may know the person or they may be a stranger. Sexual violence and abuse have immediate as well as long term physical and emotional consequences. Being sexually abused because you are a man or a woman is a growing problem."
+  },
+  {
+    "label": "Affirmations",
+    "text": "Thank you for sharing this with me. It is completely natural to feel the way you do."
+  },
+  {
+    "label": "Silent",
+    "text": "Unfortunately because there has been no response, we will have to end this conversation to speak with the next caller. When you are ready to chat with us you are welcome to reach out again."
+  },
+  {
+    "label": "Goodbye",
+    "text": "Thank you for reaching out to the helpline, we are here to support you. Please reach out to us again if you need to talk. "
+  }
+]
