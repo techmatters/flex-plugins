@@ -86,6 +86,8 @@ const CaseOverview: React.FC<Props> = ({
       field.name === CASE_OVERVIEW_FIELDS.UPDATED_AT ||
       field.name === CASE_OVERVIEW_FIELDS.FOLLOW_UP_DATE,
   );
+
+  // additional fields
   const additionalFields = caseOverviewFieldsArray.filter(
     field =>
       !Object.values(CASE_OVERVIEW_FIELDS).includes(

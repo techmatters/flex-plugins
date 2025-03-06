@@ -27,13 +27,7 @@ type CaseOverviewItemProps = {
   color?: string;
 };
 
-const CaseOverviewItem: React.FC<CaseOverviewItemProps> = ({
-  labelId,
-  templateCode,
-  inputId,
-  value,
-  color,
-}) => (
+const CaseOverviewItem: React.FC<CaseOverviewItemProps> = ({ labelId, templateCode, inputId, value, color }) => (
   <div style={{ paddingRight: '20px' }}>
     <DetailDescription>
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}

@@ -112,7 +112,7 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
   };
 
   const onEditCaseOverviewClick = () => {
-    openModal({ route: 'case', subroute: 'caseSummary', action: CaseItemAction.Edit, id: '', caseId });
+    openModal({ route: 'case', subroute: 'caseOverview', action: CaseItemAction.Edit, id: '', caseId });
   };
 
   return (
