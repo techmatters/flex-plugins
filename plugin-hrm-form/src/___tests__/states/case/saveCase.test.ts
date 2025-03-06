@@ -230,6 +230,8 @@ describe('createCaseAsyncAction', () => {
             },
             connectedCase: {
               id: '234',
+              categories: undefined,
+              info: {},
             },
             references: new Set(),
             sections: {},
