@@ -136,9 +136,7 @@ type LocalizationConfig = {
  */
 export const initTranslateUI = (localizationConfig: LocalizationConfig) => async (language: string): Promise<void> => {
   const { twilioStrings, setNewStrings, afterNewStrings } = localizationConfig;
-  // const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
-  const enableHierarchicalTranslations = true;
-  console.log('>>> initTranslateUI', language, enableHierarchicalTranslations);
+  const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
   try {
     if (enableHierarchicalTranslations) {
       const localizedMessages = await loadTranslations(language || defaultLanguage);
@@ -154,8 +152,7 @@ export const initTranslateUI = (localizationConfig: LocalizationConfig) => async
       return;
     }
 
-    console.log('>>> initTranslateUI: Using legacy translations');
-    // Use legacy translations
+    // legacy translations logic
     try {
       if (language in bundledTranslations) {
         const translation = bundledTranslations[language];
@@ -190,7 +187,6 @@ export const getMessage = messageKey => async language => {
     if (enableHierarchicalTranslations) {
       const definitionVersion = getDefinitionVersions().currentDefinitionVersion;
       const localizedMessages = definitionVersion?.customStrings.Messages;
-      console.log('>>> localizedMessages', localizedMessages);
       return localizedMessages[language][messageKey];
     }
     if (!language) return defaultMessages[messageKey];
@@ -219,8 +215,8 @@ export const initLocalization = (localizationConfig: LocalizationConfig, helplin
   // TODO: reimplement defaultTranslation to use locale/en.json after deprecating legacy implementation
   setNewStrings(defaultTranslation);
 
-  // const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
-  const enableHierarchicalTranslations = true;
+  const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
+
   const shouldLoadCustomTranslations =
     enableHierarchicalTranslations || (helplineLanguage && helplineLanguage !== defaultLanguage);
 
