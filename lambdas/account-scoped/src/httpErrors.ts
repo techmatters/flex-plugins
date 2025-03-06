@@ -13,19 +13,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { Twilio } from 'twilio';
 
-export const retrieveServiceConfigurationAttributes = async (
-  client: Twilio,
-): Promise<
-  Record<string, any> & { feature_flags: Record<string, boolean | undefined> }
-> => {
-  const serviceConfig = await client.flexApi.v1.configuration.get().fetch();
-  return serviceConfig.attributes;
-};
+export class HttpClientError extends Error {
+  statusCode: number;
 
-export const retrieveFeatureFlags = async (
-  client: Twilio,
-): Promise<Record<string, boolean | undefined>> => {
-  return (await retrieveServiceConfigurationAttributes(client)).feature_flags;
-};
+  constructor(message: string, statusCode: number) {
+    super(message);
+    Object.setPrototypeOf(this, HttpClientError.prototype);
+    this.statusCode = statusCode;
+    this.name = 'HttpClientError';
+  }
+}

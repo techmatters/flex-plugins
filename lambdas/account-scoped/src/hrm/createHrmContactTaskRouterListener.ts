@@ -21,14 +21,14 @@ import {
   populateHrmContactFormFromTask,
 } from './populateHrmContactFormFromTask';
 import { registerTaskRouterEventHandler } from '../taskrouter/taskrouterEventHandler';
-import { EventType, RESERVATION_ACCEPTED } from '../taskrouter/eventTypes';
+import { RESERVATION_ACCEPTED } from '../taskrouter/eventTypes';
 import type { EventFields } from '../taskrouter';
 import twilio from 'twilio';
 import { AccountSID } from '../twilioTypes';
-import { getSsmParameter } from '../ssmCache';
 import { getWorkspaceSid } from '../configuration/twilioConfiguration';
-
-export const eventTypes: EventType[] = [RESERVATION_ACCEPTED];
+import { postToInternalHrmEndpoint } from './internalHrmRequest';
+import { isErr } from '../Result';
+import { inferHrmAccountId } from './hrmAccountId';
 
 // Temporarily copied to this repo, will share the flex types when we move them into the same repo
 
@@ -76,6 +76,10 @@ export const handleEvent = async (
   accountSid: AccountSID,
   client: twilio.Twilio,
 ): Promise<void> => {
+  console.debug(
+    'Creating HRM contact for task on reservation accepted handler invoked',
+    taskSid,
+  );
   const taskAttributes = taskAttributesString ? JSON.parse(taskAttributesString) : {};
   const {
     channelSid,
@@ -111,9 +115,8 @@ export const handleEvent = async (
       enable_backend_hrm_contact_creation: enableBackendHrmContactCreation,
     },
   } = serviceConfig.attributes;
-  // This is a really hacky test, need a better way to determine if the user is one of our bots
-  const userIsAseloBot = /aselo.+@techmatters\.org/.test(workerName);
-  const hrmAccountId = userIsAseloBot ? `${accountSid}-aselo_test` : accountSid;
+
+  const hrmAccountId = inferHrmAccountId(accountSid, workerName);
   const formDefinitionsVersionUrl =
     configFormDefinitionsVersionUrl ||
     `${assetsBucketUrl}/form-definitions/${helplineCode}/v1`;
@@ -124,18 +127,14 @@ export const handleEvent = async (
     return;
   }
 
-  const [hrmStaticKey, twilioWorkspaceSid] = await Promise.all([
-    getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/static_key`),
-    getWorkspaceSid(accountSid),
-  ]);
-  const contactUrl = `${process.env.INTERNAL_HRM_URL}/internal/${hrmApiVersion}/accounts/${hrmAccountId}/contacts`;
+  const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
 
-  console.debug('Creating HRM contact for task', taskSid, contactUrl);
+  console.debug('Creating HRM contact for task', taskSid, 'Hrm Account:', hrmAccountId);
 
   const newContact: HrmContact = {
     ...BLANK_CONTACT,
     definitionVersion,
-    channel: (customChannelType || channelType) as HrmContact['channel'],
+    channel: (customChannelType || channelType || 'default') as HrmContact['channel'],
     rawJson: {
       definitionVersion,
       ...BLANK_CONTACT.rawJson,
@@ -154,23 +153,21 @@ export const handleEvent = async (
     newContact,
     formDefinitionsVersionUrl,
   );
-  const options: RequestInit = {
-    method: 'POST',
-    body: JSON.stringify(populatedContact),
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Basic ${hrmStaticKey}`,
-    },
-  };
-  const response = await fetch(contactUrl, options);
-  if (!response.ok) {
+  const responseResult = await postToInternalHrmEndpoint<HrmContact, HrmContact>(
+    hrmAccountId,
+    hrmApiVersion,
+    'contacts',
+    populatedContact,
+  );
+  if (isErr(responseResult)) {
     console.error(
-      `Failed to create HRM contact for task ${taskSid} - status: ${response.status} - ${response.statusText}`,
-      await response.text(),
+      `Failed to create HRM contact for task ${taskSid}`,
+      responseResult.message,
+      responseResult.error,
     );
     return;
   }
-  const { id } = (await response.json()) as HrmContact;
+  const { id } = responseResult.data;
   console.info(`Created HRM contact with id ${id} for task ${taskSid}`);
 
   const taskContext = client.taskrouter.v1.workspaces

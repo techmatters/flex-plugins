@@ -431,7 +431,7 @@ export const populateHrmContactFormFromTask = async (
   const { memory, preEngagementData, firstName, language } = taskAttributes;
   const answers = { ...memory, firstName, language };
   await populateInitialValues(contact, formDefinitionRootUrl);
-  if (!answers && !preEngagementData) return contact;
+  if (!memory && !firstName && !preEngagementData) return contact;
   const { preEngagement: preEngagementKeys, survey: surveyKeys }: PrepopulateKeys =
     await loadConfigJson(formDefinitionRootUrl, 'PrepopulateKeys');
 

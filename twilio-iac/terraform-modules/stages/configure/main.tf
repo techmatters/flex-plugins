@@ -65,12 +65,13 @@ module "channel" {
   task_language              = var.task_language
   helpline                   = var.helpline
   short_helpline             = upper(var.short_helpline)
-  twilio_account_sid         = local.secrets.twilio_account_sid
-  serverless_url             = local.serverless_url
-  serverless_service_sid     = local.serverless_service_sid
-  serverless_environment_sid = local.serverless_environment_production_sid
-  region                     = var.helpline_region
-  base_priority              = 500
+  twilio_account_sid                         = local.secrets.twilio_account_sid
+  serverless_url                             = local.serverless_url
+  get_profile_flags_for_identifiers_base_url = var.get_profile_flags_for_identifiers_base_url == "" ? local.serverless_url : var.get_profile_flags_for_identifiers_base_url
+  serverless_service_sid                     = local.serverless_service_sid
+  serverless_environment_sid                 = local.serverless_environment_production_sid
+  region                                     = var.helpline_region
+  base_priority                              = 500
 }
 
 module "datadog" {
