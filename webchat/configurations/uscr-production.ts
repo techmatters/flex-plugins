@@ -14,6 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import Case from './Case';
+import { Configuration } from '../types';
+import { config as uscrStaging } from '../configurations/uscr-staging';
 
-export default Case;
+const accountSid = 'AC34800d0cf642c95ce1f17785d239333c';
+const flexFlowSid = 'FO8f7a4233cc590bf3d45f1b68c6058582';
+
+export const config: Configuration = {
+  ...uscrStaging,
+  checkOpenHours: true,
+  accountSid,
+  flexFlowSid,
+};

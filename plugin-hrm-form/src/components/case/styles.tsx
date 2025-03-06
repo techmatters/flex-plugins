@@ -348,10 +348,12 @@ type CaseDetailsBorderProps = {
   paddingBottom?: string;
   sectionTypeId?: boolean;
   marginBottom?: string;
+  marginTop?: string;
 };
 
 export const CaseDetailsBorder = styled('div')<CaseDetailsBorderProps>`
   border-bottom: ${props => (props.sectionTypeId ? 'none' : '1px solid #e5e6e7')};
   margin-bottom: ${props => (props.marginBottom ? props.marginBottom : '')};
   padding-bottom: ${props => (props.paddingBottom ? props.paddingBottom : '25px')};
+  margin-top: ${props => (props.marginTop ? props.marginTop : '')};
 `;

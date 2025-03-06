@@ -572,5 +572,15 @@
   "Case-SectionList-NoItems/incidentReport": "No Incident Reports listed",
   "Case-SectionList-NoItems/narrativeSummary": "No Narrative / Summaries listed",
   "Case-SectionList-NoItems/safetyPlan": "No Safety Plans listed",
-  "Case-SectionList-NoItems/sudSurvey": "No Surveys listed"
+  "Case-SectionList-NoItems/sudSurvey": "No Surveys listed",
+  "CaseSection-View-Title/personExperiencingHomelessness": "View PEH",
+  "CaseSection-View-Title/incidentReport": "View Incident Report",
+  "CaseSection-View-Title/narrativeSummary": "View Narrative Summary",
+  "CaseSection-View-Title/safetyPlan": "View Safety Plan",
+  "CaseSection-View-Title/sudSurvey": "View SUD Survey",
+  "CaseSection-Edit/personExperiencingHomelessness": "Edit PEH",
+  "CaseSection-Edit/incidentReport": "Edit Incident Report",
+  "CaseSection-Edit/narrativeSummary": "Edit Narrative Summary",
+  "CaseSection-Edit/safetyPlan": "Edit Safety Plan",
+  "CaseSection-Edit/sudSurvey": "Edit SUD Survey"
 }
