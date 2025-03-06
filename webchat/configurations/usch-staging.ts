@@ -15,30 +15,30 @@
  */
 
 import { Translations, Configuration, MapHelplineLanguage, ContactType } from '../types';
-import type { PreEngagementFormDefinition } from '../src/pre-engagement-form';
+import { PreEngagementFormDefinition } from '../src/pre-engagement-form';
 
 const accountSid = 'AC147e360e21386797593c3893bf4def12';
 const flexFlowSid = 'FW749183aae62c7dbd8095a47e06c205d0';
 const defaultLanguage = 'en-US';
 const captureIp = true;
+const checkOpenHours = false;
 const contactType: ContactType = 'ip';
 
-const translations: Translations = {
-  'en-US': {
-    WelcomeMessage: 'Welcome to Childhelp',
-    MessageCanvasTrayContent: '',
-    MessageInputDisabledReasonHold: 'Please hold for a counsellor.',
-    AutoFirstMessage: 'Incoming webchat contact from',
-    PreEngagementDescription: `Let's get started`,
-    WhatIsYourHelpline: 'What is your helpline?',
-    SelectHelpline: 'Select helpline',
-    LetsChat: "Let's chat!",
-  },
+const closedHours: PreEngagementFormDefinition = {
+  description:
+    'Closed offices message',
+  fields: [],
+};
+
+const holidayHours: PreEngagementFormDefinition = {
+  description:
+    'Closed holidays message',
+  fields: [],
 };
 
 const preEngagementConfig: PreEngagementFormDefinition = {
-  description: 'PreEngagementDescription',
-  submitLabel: 'LetsChat',
+  description: 'WelcomeMessage',
+  submitLabel: 'StartChat',
   fields: [
     {
       type: 'input-text',
@@ -273,10 +273,36 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         message: "Sorry, if you don't accept our terms and conditions we can't provide counselling to you.",
       }, 
     },
-   
   ],
 };
 
+const translations: Translations = {
+  'en-US': {
+    WelcomeMessage: 'Welcome to  Childhelp',
+    MessageCanvasTrayContent: '',
+    MessageInputDisabledReasonHold:
+      "Thank you very much for this information. We'll transfer you now. Please hold for a practitioner.",
+    AutoFirstMessage: 'Incoming webchat contact from',
+    TypingIndicator: 'Counselor is typing',
+    StartChat: 'Start Chat!',
+    MessageCanvasTrayButton: 'Start New Chat',
+    Email: 'Email',
+    Edad: 'Age',
+    Gender: 'What is your gender',
+    Masculino: 'Male',
+    Femenino: 'Female',
+    Otro: 'Other',
+    PrefieroNoDecir: 'Prefer not to say',
+    Nickname: 'Nickname',
+  },
+};
+
+const memberDisplayOptions = {
+  yourDefaultName: 'You',
+  yourFriendlyNameOverride: false,
+  theirFriendlyNameOverride: false,
+  theirDefaultName: 'Counsellor',
+};
 
 const mapHelplineLanguage: MapHelplineLanguage = (helpline) => {
   switch (helpline) {
@@ -291,7 +317,11 @@ export const config: Configuration = {
   defaultLanguage,
   translations,
   preEngagementConfig,
+  closedHours,
+  holidayHours,
+  checkOpenHours,
   mapHelplineLanguage,
+  memberDisplayOptions,
   captureIp,
   contactType,
 };
