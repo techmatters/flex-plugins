@@ -7,6 +7,10 @@
             "instagram"
         ],
         "definitionVersion": "tz-v1",
+        "feature_flags": {
+            "enable_lex": true,
+            "enable_permissions_from_backend": true
+        },
         "helplineLanguage": "en-US",
         "permissionConfig": "tz"
     },
