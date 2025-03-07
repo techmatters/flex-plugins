@@ -1,6 +1,6 @@
 [
   {
-    "name": "caseStatus",
+    "name": "status",
     "label": "Case Status",
     "type": "select",
     "options": [
@@ -12,11 +12,7 @@
   {
     "name": "childIsAtRisk",
     "label": "Child is at risk",
-    "type": "select",
-    "options": [
-      { "value": "true", "label": "true" },
-      { "value": "false", "label": "false" }
-    ],
+    "type": "checkbox",
     "required": { "value": true, "message": "RequiredFieldError" }
   },
   {

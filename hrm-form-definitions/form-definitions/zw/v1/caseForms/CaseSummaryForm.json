@@ -1,6 +1,6 @@
 [
     {
-    "name": "caseStatus",
+    "name": "status",
     "label": "Case Status",
     "type": "select",
     "options": [

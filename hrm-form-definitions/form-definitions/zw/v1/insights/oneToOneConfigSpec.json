@@ -79,7 +79,7 @@
         "insights": ["conversations", "case"]
       },
       {
-        "name": "caseStatus",
+        "name": "status",
         "insights": ["conversations", "in_business_hours"]
       }
     ],
