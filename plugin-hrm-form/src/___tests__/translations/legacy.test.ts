@@ -14,10 +14,23 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { initTranslateUI, getMessage, initLocalization, defaultLanguage } from '../../utils/pluginHelpers';
+import { initTranslateUI, getMessage, initLocalization, defaultLanguage } from '../../translations';
+import { getAseloFeatureFlags } from '../../hrmConfig';
+import { FeatureFlags } from '../../types/types';
+
+jest.mock('../../hrmConfig');
 
 console.log = jest.fn();
 console.error = jest.fn();
+
+const mockGetAseloFeatureFlags = getAseloFeatureFlags as jest.Mock;
+
+beforeEach(() => {
+  mockGetAseloFeatureFlags.mockReturnValue({
+    // eslint-disable-next-line camelcase
+    enable_hierarchical_translations: false,
+  } as FeatureFlags);
+});
 
 const defaultTranslation = require(`../../translations/${defaultLanguage}/flexUI.json`);
 const defaultMessages = require(`../../translations/${defaultLanguage}/messages.json`);
@@ -118,7 +131,7 @@ describe('Test getMessage', () => {
 strings = { ...twilioStrings };
 describe('Test initLocalization', () => {
   test('Default language', () => {
-    const unused = initLocalization(localizationConfig, defaultLanguage);
+    initLocalization(localizationConfig, defaultLanguage);
 
     expect(strings).toStrictEqual({ ...twilioStrings, ...defaultTranslation });
     expect(setNewStrings).toHaveBeenCalled();
@@ -128,7 +141,7 @@ describe('Test initLocalization', () => {
   });
 
   test('Non default language', async () => {
-    const unused = initLocalization(localizationConfig, 'es');
+    initLocalization(localizationConfig, 'es');
 
     await Promise.resolve(); // await inner call to translateUI
     await Promise.resolve(); // await inner call to getTranslation (nested in translateUI)
@@ -141,7 +154,7 @@ describe('Test initLocalization', () => {
   });
 
   test('Expect default (non existing translation)', async () => {
-    const unused = initLocalization(localizationConfig, 'non existing');
+    initLocalization(localizationConfig, 'non existing');
 
     await Promise.resolve(); // await inner call to translateUI
     await Promise.resolve(); // await inner call to getTranslation (nested in translateUI)

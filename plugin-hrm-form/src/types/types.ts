@@ -264,6 +264,7 @@ export type FeatureFlags = {
   enable_save_in_progress_contacts: boolean; // Enables Saving In Progress Contacts
   enable_save_insights: boolean; // Enables Saving Aditional Data on Insights
   enable_teams_view_enhancements2: boolean; // Enables custom Teams View UI with labels
+  enable_hierarchical_translations: boolean; // Enables new translation structure with base language, locale overrides, and helpline overrides. When false, uses legacy helpline-based translation files
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
   enable_llm_summary: boolean; // Enables generation of suggested contact summaries via an LLM

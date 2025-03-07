@@ -53,6 +53,8 @@ const files = [
   'profileForms/ProfileOverview.json',
   'profileForms/Sections.json',
   'profileForms/FlagDurations.json',
+  'customStrings/Messages.json',
+  'customStrings/Substitutions.json',
 ];
 
 const getDefinitionVersionId = (formDefinitionsBaseUrl: string) =>
