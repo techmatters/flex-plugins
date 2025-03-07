@@ -107,9 +107,13 @@ export const loadTranslations = async (language: string): Promise<Record<string,
     console.error(`Base language file not found for ${baseLanguage}`);
   }
 
-  if (language !== baseLanguage) {
-    const localeOverrides = require(`./locales/${language}.json`);
-    translations = { ...translations, ...localeOverrides };
+  try {
+    if (language !== baseLanguage) {
+      const localeOverrides = require(`./locales/${language}.json`);
+      translations = { ...translations, ...localeOverrides };
+    }
+  } catch (error) {
+    console.error(`Locale file not found for ${language}`);
   }
 
   const definitionVersion = getDefinitionVersions().currentDefinitionVersion;
