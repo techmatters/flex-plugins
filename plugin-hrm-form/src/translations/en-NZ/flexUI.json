@@ -39,7 +39,7 @@
   "Case-DocumentDate": "Date",
   "Case-DocumentFileName": "File Name",
   "Case-EditButton": "Edit",
-  "Case-EditCaseSummary": "Edit Incident Information",
+  "Case-EditCaseOverview": "Edit Incident Information",
   "CaseSection-Edit/document": "Edit Document",
   "CaseSection-Edit/household": "Edit Risk to Self Report",
   "CaseSection-Edit/incident": "Edit Risk to Others Report",

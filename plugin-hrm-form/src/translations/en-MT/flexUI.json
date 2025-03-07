@@ -172,7 +172,7 @@
   "CaseSection-BottomBar-SaveAndAddAnother/household": "Save And Add Another Member",
   "CaseSection-Add/incident": "Add Incident",
   "CaseSection-Add/document": "Add Document",
-  "Case-EditCaseSummary": "Edit Case Information",
+  "Case-EditCaseOverview": "Edit Case Information",
   "CaseSection-Edit/note": "Edit Note",
   "CaseSection-Edit/referral": "Edit Referral",
   "CaseSection-Edit/household": "Edit Household Member",

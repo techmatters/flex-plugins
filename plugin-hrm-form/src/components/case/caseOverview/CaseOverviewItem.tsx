@@ -24,18 +24,10 @@ type CaseOverviewItemProps = {
   templateCode: string;
   inputId: string;
   value: string;
-  testId?: string;
   color?: string;
 };
 
-const CaseOverviewItem: React.FC<CaseOverviewItemProps> = ({
-  labelId,
-  templateCode,
-  inputId,
-  value,
-  testId,
-  color,
-}) => (
+const CaseOverviewItem: React.FC<CaseOverviewItemProps> = ({ labelId, templateCode, inputId, value, color }) => (
   <div style={{ paddingRight: '20px' }}>
     <DetailDescription>
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
@@ -44,7 +36,7 @@ const CaseOverviewItem: React.FC<CaseOverviewItemProps> = ({
       </label>
     </DetailDescription>
     <StyledInputField
-      data-testid={testId ?? `Case-${inputId}`}
+      data-testid={`Case-CaseOverview-${labelId}`}
       id={inputId}
       name={inputId}
       aria-labelledby={labelId}

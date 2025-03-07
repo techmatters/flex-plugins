@@ -394,7 +394,7 @@ describe('useState mocked', () => {
       routing: {
         route: 'case',
         caseId: 'case123',
-        subroute: NewCaseSubroutes.CaseSummary,
+        subroute: NewCaseSubroutes.CaseOverview,
         action: CaseItemAction.Edit,
         id: '',
       },
