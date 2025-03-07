@@ -14,9 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { ITask, ReservationStatuses, TaskChannelDefinition } from '@twilio/flex-ui';
+import { ITask, ReservationStatuses, TaskChannelDefinition, DefaultTaskChannels } from '@twilio/flex-ui';
 import React from 'react';
-import * as Flex from '@twilio/flex-ui';
 
 import { ChannelColors } from '../states/DomainConstants';
 
@@ -36,11 +35,11 @@ export const mainChannelColor = (
   }
 };
 
-const voiceColor = mainChannelColor(Flex.DefaultTaskChannels.Call);
-const webColor = mainChannelColor(Flex.DefaultTaskChannels.Chat);
-const facebookColor = mainChannelColor(Flex.DefaultTaskChannels.ChatMessenger);
-const smsColor = mainChannelColor(Flex.DefaultTaskChannels.ChatSms);
-const whatsappColor = mainChannelColor(Flex.DefaultTaskChannels.ChatWhatsApp);
+const voiceColor = '#a0a8bd'; // mainChannelColor(DefaultTaskChannels.Voice) errors without a valid task in Flex 2.11.0
+const webColor = mainChannelColor(DefaultTaskChannels.Chat);
+const facebookColor = mainChannelColor(DefaultTaskChannels.ChatMessenger);
+const smsColor = mainChannelColor(DefaultTaskChannels.ChatSms);
+const whatsappColor = mainChannelColor(DefaultTaskChannels.ChatWhatsApp);
 const telegramColor = '#1DA1F2';
 const instagramColor = '#833AB4';
 const lineColor = '#00C300';
