@@ -21,7 +21,7 @@ import './styles/global-overrides.css';
 
 import reducers from './states';
 import HrmTheme, { overrides } from './styles/HrmTheme';
-import { initLocalization } from './utils/pluginHelpers';
+import { initLocalization, defaultLanguage } from './translations';
 import * as Providers from './utils/setUpProviders';
 import * as ActionFunctions from './utils/setUpActions';
 import { recordCallState } from './utils/setUpActions';
@@ -56,7 +56,7 @@ export type SetupObject = ReturnType<typeof getHrmConfig>;
 const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   const manager = Flex.Manager.getInstance();
 
-  const { counselorLanguage, helplineLanguage } = config;
+  const { helplineLanguage } = config;
 
   const twilioStrings = { ...manager.strings }; // save the originals
 
@@ -71,9 +71,8 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   };
 
   const localizationConfig = { twilioStrings, setNewStrings, afterNewStrings };
-  const initialLanguage = counselorLanguage || helplineLanguage;
 
-  return initLocalization(localizationConfig, initialLanguage);
+  return initLocalization(localizationConfig, helplineLanguage);
 };
 
 const setUpComponents = (
@@ -189,14 +188,14 @@ export default class HrmFormPlugin extends FlexPlugin {
     featureFlags.enable_permissions_from_backend = true;
 
     await validateAndSetPermissionRules();
-    /*
-     * localization setup (translates the UI if necessary)
-     * WARNING: the way this is done right now is "hacky". More info in initLocalization declaration
-     */
-    const { translateUI, getMessage } = setUpLocalization(config);
-    ActionFunctions.loadCurrentDefinitionVersion();
+    await ActionFunctions.loadCurrentDefinitionVersion();
 
     setUpSharedStateClient();
+
+    /*
+     * localization setup (translates the UI if necessary)
+     */
+    const { translateUI, getMessage } = setUpLocalization(config);
     setUpComponents(featureFlags, config, translateUI);
     setUpActions(featureFlags, config, getMessage);
 

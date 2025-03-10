@@ -377,6 +377,11 @@ export type StatusInfo = {
   transitions: string[]; // possible statuses this one can transition to (further update may be to include who can make such a transition for a more granular control)
 };
 
+export type LocalizedStringMap = {
+  [language: string]: {
+    [key: string]: string;
+  };
+};
 /**
  * Type that defines a complete version for all the customizable forms used across the app
  */
@@ -418,5 +423,9 @@ export type DefinitionVersion = {
   profileForms?: {
     Sections: ProfileSectionDefinition[];
     FlagDurations: ProfileFlagDurationDefinition[];
+  };
+  customStrings?: {
+    Messages: LocalizedStringMap;
+    Substitutions: LocalizedStringMap;
   };
 };

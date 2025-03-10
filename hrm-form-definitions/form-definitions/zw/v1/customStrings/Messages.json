@@ -1,0 +1,7 @@
+{
+  "en": {
+    "WelcomeMsg": "Hi, this is the agent. How can I help you?",
+    "GoodbyeMsg": "The agent has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "SaferNet-CustomGoodbyeMsg": "This chat has ended. Thank you for reaching out. Please help us improve by rating your experience through the following link: "
+  }
+}

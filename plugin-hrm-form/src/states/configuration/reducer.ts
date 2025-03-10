@@ -17,7 +17,7 @@
 import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import * as t from './types';
-import { defaultLanguage } from '../../utils/pluginHelpers';
+import { defaultLanguage } from '../../translations';
 import { FETCH_CASE_LIST_FULFILLED_ACTION, FetchCaseListFulfilledAction } from '../caseList/listContent';
 
 export type ConfigurationState = {

@@ -4,7 +4,7 @@
         "feature_flags": {
             "enable_lex": true
         },
-        "helplineLanguage": "",
+        "helplineLanguage": "en-US",
         "permissionConfig": "ph"
     },
     "ui_attributes": {
