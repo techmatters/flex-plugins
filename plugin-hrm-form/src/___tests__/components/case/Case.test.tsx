@@ -214,10 +214,10 @@ describe('useState mocked', () => {
 
     expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('case1');
     expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
-    expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe(
+    expect(screen.getByTestId('Case-CaseOverview-createdAt').getAttribute('value')).toBe(
       BASELINE_DATE.toLocaleDateString(),
     );
-    expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe('—');
+    expect(screen.getByTestId('Case-CaseOverview-updatedAt').getAttribute('value')).toBe('—');
     verifyTimelineActions();
   });
 
@@ -252,10 +252,10 @@ describe('useState mocked', () => {
 
     expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('case1');
     expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
-    expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe(
+    expect(screen.getByTestId('Case-CaseOverview-createdAt').getAttribute('value')).toBe(
       BASELINE_DATE.toLocaleDateString(),
     );
-    expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe('—');
+    expect(screen.getByTestId('Case-CaseOverview-updatedAt').getAttribute('value')).toBe('—');
     expect(screen.getByTestId('NavigableContainer-Title').innerHTML).toContain('first last');
   });
 
@@ -286,10 +286,10 @@ describe('useState mocked', () => {
 
     expect(screen.getByTestId('Case-DetailsHeaderCaseId').innerHTML).toContain('case1');
     expect(screen.getByTestId('Case-DetailsHeaderCounselor').innerHTML).toContain('worker1 name');
-    expect(screen.getByTestId('Case-Details_DateOpened').getAttribute('value')).toBe(
+    expect(screen.getByTestId('Case-CaseOverview-createdAt').getAttribute('value')).toBe(
       BASELINE_DATE.toLocaleDateString(),
     );
-    expect(screen.getByTestId('Case-Details_DateLastUpdated').getAttribute('value')).toBe(
+    expect(screen.getByTestId('Case-CaseOverview-updatedAt').getAttribute('value')).toBe(
       BASELINE_DATE.toLocaleDateString(),
     );
     verifyTimelineActions();

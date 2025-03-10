@@ -72,11 +72,11 @@ export type SearchRoute =
   | SearchResultRoute;
 
 export const NewCaseSectionSubroutes = {
-  CaseSummary: 'caseSummary',
+  CaseOverview: 'caseOverview',
 } as const;
 
 // eslint-disable-next-line prettier/prettier
-export type CaseSectionSubroute = 'caseSummary' | `section/${string}`;
+export type CaseSectionSubroute = 'caseOverview' | `section/${string}`;
 
 export const NewCaseSubroutes = Object.freeze({
   ...NewCaseSectionSubroutes,

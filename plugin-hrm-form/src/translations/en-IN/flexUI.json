@@ -204,7 +204,7 @@
   "CaseSection-Edit/perpetrator": "Edit Perpetrator",
   "CaseSection-Edit/incident": "Edit Incident",
   "CaseSection-Edit/document": "Edit Document",
-  "Case-EditCaseSummary": "Edit Case Information",
+  "Case-EditCaseOverview": "Edit Case Information",
   "Case-AddNoteTypeHere": "Type here to add note...",
   "Case-AddCaseSummaryHere": "Add case summary here...",
   "Case-ActionHeaderAdded": "Added on {{date}} at {{time}} by {{counsellor}}",

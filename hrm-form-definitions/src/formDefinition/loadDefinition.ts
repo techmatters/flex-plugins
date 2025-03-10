@@ -185,6 +185,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     oneToOneConfigSpec,
     oneToManyConfigSpecs,
     caseStatus,
+    caseOverview,
     prepopulateKeys,
     referenceData,
     blockedEmojis,
@@ -209,6 +210,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     fetchDefinition<OneToOneConfigSpec>('insights/oneToOneConfigSpec.json'),
     fetchDefinition<OneToManyConfigSpecs>('insights/oneToManyConfigSpecs.json'),
     fetchDefinition<DefinitionVersion['caseStatus']>('CaseStatus.json'),
+    fetchDefinition<DefinitionVersion['caseOverview']>('caseForms/CaseOverview.json'),
     fetchDefinition<DefinitionVersion['prepopulateKeys']>(
       'PrepopulateKeys.json',
       prepopulateKeysEmpty,
@@ -248,6 +250,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
       oneToManyConfigSpecs,
     },
     caseStatus,
+    caseOverview,
     prepopulateKeys,
     referenceData,
     blockedEmojis,
