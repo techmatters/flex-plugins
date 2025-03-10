@@ -12,20 +12,17 @@
   {
     "name": "childIsAtRisk",
     "label": "Child is at risk",
-    "type": "checkbox",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "type": "checkbox"
   },
   {
     "name": "createdAt",
     "label": "Opened",
-    "type": "date-input",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "type": "date-input"
   },
   {
     "name": "updatedAt",
     "label": "Last Updated/Closed",
-    "type": "date-input",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "type": "date-input"
   },
   {
     "name": "followUpDate",
@@ -37,8 +34,7 @@
     "label": "Case Summary",
     "type": "textarea",
     "rows": 5,
-    "width": 500,
-    "required": { "value": true, "message": "RequiredFieldError" },
+    "width": 300,
     "isPII": true
   },
   {
@@ -52,8 +48,7 @@
       { "value": "Lynwood", "label": "Lynwood" },
       { "value": "South Pasadena", "label": "South Pasadena" },
       { "value": "Unknown", "label": "Unknown" }
-    ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    ]
   },
   {
     "name": "priority",

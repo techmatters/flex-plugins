@@ -142,6 +142,7 @@ export const ColumnarBlock = styled('div')`
   flex-grow: 1;
   flex-basis: 0;
   margin: 0;
+  gap: 10px;
 `;
 ColumnarBlock.displayName = 'ColumnarBlock';
 

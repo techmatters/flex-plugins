@@ -105,11 +105,28 @@ const EditCaseOverview: React.FC<Props> = ({
   can,
   updateCaseAsyncAction,
   isUpdating,
+  definitionVersion,
 }) => {
   const { connectedCase, availableStatusTransitions } = connectedCaseState ?? {};
 
+  const caseOverviewFields = definitionVersion?.caseOverview;
+
   const formDefinition: FormDefinition = useMemo(() => {
     try {
+      if (caseOverviewFields && Array.isArray(caseOverviewFields)) {
+        return caseOverviewFields
+          .filter(field => field.name !== 'createdAt' && field.name !== 'updatedAt')
+          .map(field => {
+            if (field.name === 'status') {
+              return {
+                ...field,
+                options: availableStatusTransitions
+              };
+            }
+            return field;
+          });
+      }
+      
       return [
         {
           name: 'status',
@@ -137,19 +154,23 @@ const EditCaseOverview: React.FC<Props> = ({
       console.error('Failed to render edit case summary form', e);
       return [];
     }
-  }, [availableStatusTransitions]);
+  }, [availableStatusTransitions, caseOverviewFields]);
 
   const savedForm = React.useMemo(() => {
     const {
       status,
-      info: { summary, followUpDate, childIsAtRisk },
+      info,
     } = connectedCase;
-    return {
-      status,
-      summary: summary ?? '',
-      followUpDate: followUpDate ?? '',
-      childIsAtRisk: childIsAtRisk ?? false,
-    };
+    
+    const result = { status };
+    
+    if (info) {
+      Object.keys(info).forEach(key => {
+        result[key] = info[key] ?? (typeof info[key] === 'boolean' ? false : '');
+      });
+    }
+    
+    return result;
   }, [connectedCase]);
 
   const methods = useForm();
@@ -174,8 +195,20 @@ const EditCaseOverview: React.FC<Props> = ({
   });
 
   const [l, r] = React.useMemo(() => {
-    return splitAt(3)(disperseInputs(7)(form));
-  }, [form]);
+    const left: JSX.Element[] = [];
+    const right: JSX.Element[] = [];
+
+    form.forEach(field => {
+      const fieldDef = formDefinition.find(def => def.name === field.key);
+      if (fieldDef && fieldDef.type === FormInputType.Textarea) {
+        right.push(field);
+      } else {
+        left.push(field);
+      }
+    });
+
+    return [left, right];
+  }, [form, formDefinition]);
 
   if (!connectedCaseState?.connectedCase) return null;
 
@@ -219,7 +252,7 @@ const EditCaseOverview: React.FC<Props> = ({
               <ColumnarBlock>{r}</ColumnarBlock>
             </TwoColumnLayout>
           </Box>
-        </Container>{' '}
+        </Container>
         <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
         <BottomButtonBar>
           <StyledNextStepButton
