@@ -81,7 +81,7 @@ export const timelineReducer = (initialState: HrmState): ((state: HrmState, acti
             timeline[index + pagination.offset] = {
               ...timelineActivity,
               activityType: 'case-section-id',
-              activity: { sectionType: activity.sectionType, sectionId: activity.sectionId },
+              activity,
             } as CaseSectionIdentifierTimelineActivity;
             caseEntry.sections[activity.sectionType] = caseEntry.sections[activity.sectionType] ?? {};
             caseEntry.sections[activity.sectionType][activity.sectionId] = activity;
@@ -95,6 +95,7 @@ export const timelineReducer = (initialState: HrmState): ((state: HrmState, acti
           }
         });
         caseEntry.timelines[timelineId] = timeline;
+
         return {
           ...state,
           connectedCase: {

@@ -14,75 +14,62 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import asyncDispatch from '../../asyncDispatch';
-import * as CaseActions from '../singleCase';
 import { selectCaseByCaseId } from '../selectCaseStateByCaseId';
 import type { Case } from '../../../types/types';
 import type { RootState } from '../..';
 import { useLoadWithRetry } from '../../hooks/useLoadWithRetry';
+import { newGetTimelineAsyncAction, PaginationSettings, selectTimeline } from '../timeline';
 
-const useCaseLoader = ({
+const useCaseSectionsLoader = ({
   caseId,
-  referenceId,
+  sectionType,
+  paginationSettings,
   autoload = true,
   refresh = true,
 }: {
   caseId: Case['id'];
-  referenceId: string;
+  sectionType: string;
+  paginationSettings: PaginationSettings;
   autoload?: boolean;
   refresh?: boolean;
 }) => {
   const dispatch = useDispatch();
 
-  const error = useSelector((state: RootState) => selectCaseByCaseId(state, caseId)?.error);
-  const loading = useSelector((state: RootState) => selectCaseByCaseId(state, caseId)?.loading);
+  // const error = useSelector((state: RootState) => selectCaseByCaseId(state, caseId)?.error);
+  // const loading = useSelector((state: RootState) => selectCaseByCaseId(state, caseId)?.loading);
   const connectedCase = useSelector((state: RootState) => selectCaseByCaseId(state, caseId)?.connectedCase);
 
   const exists = Boolean(connectedCase);
 
-  const loadCase = useCallback(() => {
-    if (!caseId || !referenceId) {
+  const { limit, offset } = paginationSettings;
+
+  const loadCaseSections = useCallback(() => {
+    if (!caseId) {
       return;
     }
 
-    if (exists && !refresh) {
-      dispatch(CaseActions.referenceCaseAction({ caseId, referenceId }));
-      return;
-    }
+    asyncDispatch(dispatch)(newGetTimelineAsyncAction(caseId, sectionType, [sectionType], false, { offset, limit }));
+  }, [caseId, dispatch, limit, offset, sectionType]);
 
-    asyncDispatch(dispatch)(CaseActions.loadCaseAsync({ caseId, referenceId }));
-  }, [caseId, dispatch, exists, referenceId, refresh]);
-
-  const unloadCase = useCallback(() => {
-    if (!caseId || !referenceId) {
-      return;
-    }
-
-    dispatch(CaseActions.dereferenceCaseAction({ caseId, referenceId }));
-  }, [caseId, dispatch, referenceId]);
-
-  const safeToLoad = Boolean(caseId) && Boolean(referenceId);
+  const safeToLoad = Boolean(caseId) && exists;
   const shouldLoad = autoload || refresh;
+
+  // TODO: add error and loading states
+  const error = null;
+  const loading = false;
 
   const loader = useLoadWithRetry({
     error,
-    loadFunction: loadCase,
+    loadFunction: loadCaseSections,
     loading,
     retry: true,
     safeToLoad,
     shouldLoad,
   });
-
-  // Cleanup case reference on unmount. This is done in a separate effect since the cleanup is triggered every time an effect is triggered, and this should happen only on "unmount"
-  useEffect(() => {
-    return () => {
-      // setImmediate allows for computing next state before derefencing, preventing concurrently trying to ref/deref in transitions between two components that consume the same case
-      setImmediate(() => unloadCase());
-    };
-  }, [unloadCase]);
 
   return {
     ...loader,
@@ -92,25 +79,24 @@ const useCaseLoader = ({
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export const useCase = ({
+export const useCaseSections = ({
   caseId,
-  referenceId,
+  sectionType,
+  paginationSettings,
   autoload = true,
   refresh = false,
 }: {
   caseId: Case['id'];
-  referenceId: string;
+  sectionType: string;
+  paginationSettings: PaginationSettings;
   autoload?: boolean;
   refresh?: boolean;
 }) => {
-  // const can = useMemo(() => {
-  //   return getInitializedCan();
-  // }, []);
-
-  const connectedCase = useSelector((state: RootState) => selectCaseByCaseId(state, caseId)?.connectedCase);
+  const sections =
+    useSelector((state: RootState) => selectTimeline(state, caseId, sectionType, paginationSettings)) || [];
 
   return {
-    connectedCase,
-    ...useCaseLoader({ caseId, referenceId, autoload, refresh }),
+    sections,
+    ...useCaseSectionsLoader({ caseId, sectionType, autoload, refresh, paginationSettings }),
   };
 };
