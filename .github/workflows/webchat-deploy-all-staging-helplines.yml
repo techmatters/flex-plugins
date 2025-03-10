@@ -39,3 +39,14 @@ jobs:
       project: webchat
       helplines: ${{ needs.configure.outputs.target_helplines }}
       environments: '[ "staging" ]'
+      invalidate-cache: 'false'
+
+  invalidate-cache:
+    name: Invalidate CloudFront cache for all production webchat files
+    needs: deploy-helplines
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clear cloudfront cache
+        run: |
+          CF_DISTRO=$(aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].DomainName}[?origin=='assets-staging.tl.techmatters.org.s3-website.us-east-1.amazonaws.com'].id" --output text)
+          aws cloudfront create-invalidation --distribution-id $CF_DISTRO --paths /webchat/*

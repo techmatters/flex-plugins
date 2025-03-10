@@ -196,7 +196,7 @@
   "CaseSection-BottomBar-SaveAndAddAnother/incident": "Save And Add Another Report",
   "CaseSection-BottomBar-SaveAndAddAnother/note": "Save and Add More Details",
   "CaseSection-BottomBar-SaveAndAddAnother/perpetrator": "Save And Add Another Report",
-  "BottomBar-SaveAndAddAnotherReferral": "Save and Add Another Report",
+  "CaseSection-BottomBar-SaveAndAddAnother/referral": "Save and Add Another Intervention",
   "BottomBar-SaveAndAddToCase": "Save and Add to Incident",
   "BottomBar-AddedToCase": "Added to Incident",
   "BottomBar-SaveAndEnd": "Save and end",

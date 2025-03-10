@@ -20,8 +20,7 @@
           "firstName",
           "lastName",
           "nickname",
-          "gender",
-          "age"
+          "gender"
         ],
         "layout": {
           "firstName": {
@@ -35,15 +34,12 @@
           },
           "gender": {
             "includeLabel": true
-          },
-          "age": {
-            "includeLabel": true
           }
         }
         
       },
       "incidentReport": {
-        "splitFormAt": 12,
+        "splitFormAt": 23,
         "printOrder": 1,
         "caseHomeOrder": 1,
         "caseHomeLocation": "timeline",
@@ -59,12 +55,28 @@
       "safetyPlan": {
         "splitFormAt": 3,
         "printOrder": 4,
-        "caseHomeOrder": 4
+        "caseHomeOrder": 4,
+        "previewFields": [
+          "warningSigns"
+        ],
+        "layout": {
+          "warningSigns": {
+            "includeLabel": false
+          }
+        }
       },
       "sudSurvey": {
         "splitFormAt": 4,
         "printOrder": 5,
-        "caseHomeOrder": 5
+        "caseHomeOrder": 5,
+          "previewFields": [
+          "substancesUsed"
+        ],
+        "layout": {
+          "substancesUsed": {
+            "includeLabel": false
+          }
+        }
       },
       "note": {
         "printOrder": 7,

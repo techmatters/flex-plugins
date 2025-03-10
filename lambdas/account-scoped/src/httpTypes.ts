@@ -26,6 +26,7 @@ export type HttpRequest = {
   method: string;
   headers: Record<string, string | undefined>;
   path: string;
+  query: Record<string, string | undefined>;
   body: any;
 };
 

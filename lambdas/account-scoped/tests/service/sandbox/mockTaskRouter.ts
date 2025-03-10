@@ -51,7 +51,7 @@ export async function mockTaskApi(mockTaskResource: TaskResource): Promise<void>
       const task = mockTasks[workspaceSid][taskSid];
       Object.assign(task, body);
       return {
-        status: 200,
+        statusCode: 200,
         json: task,
       };
     });

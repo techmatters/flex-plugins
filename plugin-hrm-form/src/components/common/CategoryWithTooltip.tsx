@@ -44,7 +44,11 @@ type Props = {
 const CategoryWithTooltip: React.FC<Props> = ({ category, color = '#000000', fitTag = true }) => {
   const tag = fitTag ? truncateLabel(category) : category;
 
-  return <Tooltip title={category}>{renderTag(tag, color)}</Tooltip>;
+  return (
+    <Tooltip data-testid="CaseDetails-CategoryTooltip" title={category}>
+      {renderTag(tag, color)}
+    </Tooltip>
+  );
 };
 
 CategoryWithTooltip.displayName = 'CategoryWithTooltip';

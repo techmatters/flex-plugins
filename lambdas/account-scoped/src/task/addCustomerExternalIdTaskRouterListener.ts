@@ -59,7 +59,7 @@ const isTaskRequiringExternalId = async (
     await retrieveFeatureFlags(client);
   if (!lambdaTaskCreatedHandler) {
     console.debug(
-      `Feature flag lambda_task_created_handler is enabled. Skipping addCustomerExternalId for ${taskSid}, it will be handled in Twilio Serverless.`,
+      `Feature flag lambda_task_created_handler not is enabled. Skipping addCustomerExternalId for ${taskSid}, it will be handled in Twilio Serverless.`,
     );
     return false;
   }

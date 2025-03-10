@@ -1,13 +1,95 @@
 [
   {
-    "name": "wasThisAFollowUp",
-    "label": "Was this a follow up?",
-    "type": "checkbox"
-  },
-  {
     "name": "beaconIncidentId",
     "type": "input",
     "label": "Beacon Incident ID"
+  },
+  {
+    "name": "incidentType",
+    "label": "Incident Type",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Follow Up",
+        "label": "Follow Up"
+      },
+      {
+        "value": "Indecent Exposure",
+        "label": "Indecent Exposure"
+      },
+      {
+        "value": "Loitering",
+        "label": "Loitering"
+      },
+      {
+        "value": "Syringe Disposal",
+        "label": "Syringe Disposal"
+      },
+      {
+        "value": "Well-being Check",
+        "label": "Well-being Check"
+      },
+      {
+        "value": "Intoxication",
+        "label": "Intoxication"
+      },
+      {
+        "value": "Disturbance",
+        "label": "Disturbance"
+      },
+      {
+        "value": "Mental Health Crisis",
+        "label": "Mental Health Crisis"
+      }
+    ]
+  },
+    {
+    "name": "tags",
+    "label": "Incident Tags",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "East",
+        "label": "East"
+      },
+      {
+        "value": "Harbor",
+        "label": "Harbor"
+      },
+      {
+        "value": "Hollywood",
+        "label": "Hollywood"
+      },
+      {
+        "value": "Metro",
+        "label": "Metro"
+      },
+      {
+        "value": "Pacific",
+        "label": "Pacific"
+      },
+      {
+        "value": "South LA",
+        "label": "South LA"
+      },
+      {
+        "value": "Valley",
+        "label": "Valley"
+      },
+      {
+        "value": "Response Team",
+        "label": "Response Team"
+      },
+      {
+        "value": "Support Team",
+        "label": "Support Team"
+      }
+    ]
   },
   {
     "name": "responderName",
@@ -15,19 +97,139 @@
     "label": "Responder"
   },
   {
-    "name": "incidentActivationTime",
-    "type": "time-input",
-    "label": "Incident Activation Time"
+    "name": "latitude",
+    "type": "input",
+    "label": "Location: Latitude"
   },
   {
-    "name": "sceneArrivalTime",
+    "name": "longitude",
+    "type": "input",
+    "label": "Location: Longitude"
+  },
+  {
+    "name": "locationAddress",
+    "type": "input",
+    "label": "Location: Physical Address"
+  },
+  {
+    "name": "transportDestination",
+    "type": "input",
+    "label": "Transport Destination"
+  },
+  {
+    "name": "numberOfClientsTransported",
+    "type": "numeric-input",
+    "label": "# of Clients Transported"
+  },
+  {
+    "name": "enrouteTimestamp",
     "type": "time-input",
-    "label": "Scene Arrival Time"
+    "label": "En Route Timestamp"
+  },
+  {
+    "name": "onSceneTimestamp",
+    "type": "time-input",
+    "label": "On-Scene Timestamp"
+  },
+  {
+    "name": "additionanlResourcesTimestamp",
+    "type": "time-input",
+    "label": "Additional Resources Timestamp"
+  },
+  {
+    "name": "transportTimestamp",
+    "type": "time-input",
+    "label": "Transport Timestamp"
+  },
+  {
+    "name": "destinationArrivalTimestamp",
+    "type": "time-input",
+    "label": "Destination Arrival Timestamp"
+  },
+  {
+    "name": "incidentCompleteTimestamp",
+    "type": "time-input",
+    "label": "Incident Complete Timestamp"
+  },
+  {
+    "name": "incidentActivationInterval",
+    "type": "numeric-input",
+    "label": "Incident Activation Interval"
+  },
+  {
+    "name": "enrouteInterval",
+    "type": "numeric-input",
+    "label": "En Route Interval"
+  },
+  {
+    "name": "sceneArrivalInterval",
+    "type": "numeric-input",
+    "label": "Scene Arrival Interval"
+  },
+  {
+    "name": "triageInterval",
+    "type": "numeric-input",
+    "label": "Triage Interval"
+  },
+  {
+    "name": "transportInterval",
+    "type": "numeric-input",
+    "label": "Transport Interval"
   },
   {
     "name": "totalIncidentTime",
-    "type": "time-input",
+    "type": "numeric-input",
     "label": "Time from Arrival to Completion"
+  },
+  {
+    "name": "issueReport",
+    "label": "Issue Report",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Staff injury",
+        "label": "Staff injury"
+      },
+      {
+        "value": "Vehicle collision or damage",
+        "label": "Vehicle collision or damage"
+      },
+      {
+        "value": "Damage to a CIRCLE Facility",
+        "label": "Damage to a CIRCLE Facility"
+      },
+      {
+        "value": "Damage to or theft of CIRCLE equipment",
+        "label": "Damage to or theft of CIRCLE equipment"
+      },
+      {
+        "value": "Deceased person discovered /Death witnessed",
+        "label": "Deceased person discovered /Death witnessed"
+      },
+      {
+        "value": "Complaint or grievance regarding the actions of staff",
+        "label": "Complaint or grievance regarding the actions of staff"
+      },
+      {
+        "value": "On or off-duty arrest of a CIRCLE staff member",
+        "label": "On or off-duty arrest of a CIRCLE staff member"
+      },
+      {
+        "value": "Intervention request made to Child Protective Services.",
+        "label": "Intervention request made to Child Protective Services."
+      },
+      {
+        "value": "The filing of a police report;",
+        "label": "The filing of a police report;"
+      }
+    ]
+  },
+  {
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289
   },
   {
     "name": "primaryDisposition",
@@ -406,49 +608,6 @@
       {
         "value": "Vital Documents Obtained",
         "label": "Vital Documents Obtained"
-      }
-    ]
-  },
-  {
-    "name": "issueReport",
-    "label": "Issue Report",
-    "type": "listbox-multiselect",
-    "options": [
-      {
-        "value": "Staff injury",
-        "label": "Staff injury"
-      },
-      {
-        "value": "Vehicle collision or damage",
-        "label": "Vehicle collision or damage"
-      },
-      {
-        "value": "Damage to a CIRCLE Facility",
-        "label": "Damage to a CIRCLE Facility"
-      },
-      {
-        "value": "Damage to or theft of CIRCLE equipment",
-        "label": "Damage to or theft of CIRCLE equipment"
-      },
-      {
-        "value": "Deceased person discovered /Death witnessed",
-        "label": "Deceased person discovered /Death witnessed"
-      },
-      {
-        "value": "Complaint or grievance regarding the actions of staff",
-        "label": "Complaint or grievance regarding the actions of staff"
-      },
-      {
-        "value": "On or off-duty arrest of a CIRCLE staff member",
-        "label": "On or off-duty arrest of a CIRCLE staff member"
-      },
-      {
-        "value": "Intervention request made to Child Protective Services.",
-        "label": "Intervention request made to Child Protective Services."
-      },
-      {
-        "value": "The filing of a police report;",
-        "label": "The filing of a police report;"
       }
     ]
   },
