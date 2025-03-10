@@ -3,7 +3,8 @@
         "feature_flags": {
             "enable_client_profiles": true,
             "enable_backend_hrm_contact_creation": true,
-            "lambda_task_created_handler": true
+            "lambda_task_created_handler": true,
+            "enable_generalized_search": true
         },
         "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
     }
