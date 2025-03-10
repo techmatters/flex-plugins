@@ -9,30 +9,30 @@ locals {
 
 
   local_config = {
-    helpline                   = "<helpline name>"
+    helpline                   = "Childhelp"
     task_language              = "en-US"
     enable_post_survey         = false
-    enable_external_recordings = true
+    enable_external_recordings = false
     permission_config          = "demo"
     workflows = {
       master : {
         friendly_name = "Master Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+        templatefile = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
       },
       //NOTE: MAKE SURE TO ADD THIS IF THE ACCOUNT USES A CONVERSATION CHANNEL
       queue_transfers : {
         friendly_name = "Queue Transfers Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
+        templatefile = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
       },
       survey : {
         friendly_name = "Survey Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+        templatefile = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
     task_queues = {
       master : {
         "target_workers" = "1==1",
-        "friendly_name"  = "<helpline name>"
+        "friendly_name"  = "Childhelp"
       },
       survey : {
         "target_workers" = "1==0",
@@ -46,12 +46,25 @@ locals {
     #Channels
     channels = {
       webchat : {
-        channel_type         = "web"
-        contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/webchat-basic.tftpl"
-        channel_flow_vars    = {}
+        channel_type     = "web"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/webchat-basic.tftpl"
+        channel_flow_vars = {}
+        chatbot_unique_names = []
+      },
+      voice : {
+        channel_type     = "voice"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic.tftpl"
+        channel_flow_vars = {
+          voice_ivr_greeting_message = "Hello, welcome to Childhelp. Please wait for a counsellor."
+          voice_ivr_language         = "en-US"
+          voice_ivr_blocked_message  = "Apologies, your number has been blocked."
+
+        }
         chatbot_unique_names = []
       }
     }
+    
   }
 }
