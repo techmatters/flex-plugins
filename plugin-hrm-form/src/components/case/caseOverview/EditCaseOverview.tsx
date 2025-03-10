@@ -157,19 +157,13 @@ const EditCaseOverview: React.FC<Props> = ({
   }, [availableStatusTransitions, caseOverviewFields]);
 
   const savedForm = React.useMemo(() => {
-    const {
+    const { status, info } = connectedCase;
+    
+    const result = { 
       status,
-      info,
-    } = connectedCase;
-    
-    const result = { status };
-    
-    if (info) {
-      Object.keys(info).forEach(key => {
-        result[key] = info[key] ?? (typeof info[key] === 'boolean' ? false : '');
-      });
-    }
-    
+      ...(info || {})
+    };
+    console.log('>>> EditCaseOverview savedForm', result);
     return result;
   }, [connectedCase]);
 

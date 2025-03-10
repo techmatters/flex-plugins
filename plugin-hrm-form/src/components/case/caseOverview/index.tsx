@@ -17,7 +17,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import { DefinitionVersion, StatusInfo, CASE_OVERVIEW_FIELDS } from 'hrm-form-definitions';
+import { DefinitionVersion, StatusInfo, CASE_OVERVIEW_FIELDS, FormItemDefinition } from 'hrm-form-definitions';
 import { parseISO } from 'date-fns';
 
 import { Case, CustomITask, StandaloneITask } from '../../../types/types';
@@ -94,6 +94,25 @@ const CaseOverview: React.FC<Props> = ({
         field.name as typeof CASE_OVERVIEW_FIELDS[keyof typeof CASE_OVERVIEW_FIELDS],
       ),
   );
+  // console.log('>>> connectedCase', connectedCase);
+
+  const renderInfoValue = (field: any) => {
+    const value = connectedCase?.info?.[field.name];
+    // console.log('>>> connectedCase', connectedCase);
+    console.log('>>> renderInfoValue', field.name, value);
+    
+    if (value === undefined || value === null) return '—';
+    
+    switch (field.type) {
+      case 'checkbox':
+        return value ? 'Yes' : 'No';
+      case 'select':
+        const option = field.options?.find(opt => opt.value === value);
+        return option?.label || value;
+      default:
+        return value.toString();
+    }
+  };
 
   return (
     <>
@@ -151,7 +170,7 @@ const CaseOverview: React.FC<Props> = ({
               labelId={field.name}
               templateCode={field.label}
               inputId={`Details_${field.name}`}
-              value={connectedCase?.info?.[field.name] || '—'}
+              value={renderInfoValue(field)}
             />
           ))}
         </div>
