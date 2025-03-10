@@ -300,12 +300,14 @@ export const CASE_OVERVIEW_FIELDS = {
 export type RequiredCaseOverviewFieldName =
   typeof CASE_OVERVIEW_FIELDS[keyof typeof CASE_OVERVIEW_FIELDS];
 
-// type CaseOverviewTypeEntry = {
-//   form: FormDefinition;
-// };
+type CaseOverviewTypeEntry = {
+  name: string;
+  label: string;
+  form: FormDefinition;
+};
 
-export type CaseOverviewDefinition = Record<RequiredCaseOverviewFieldName, FormDefinition> &
-  Record<string, FormDefinition>;
+export type CaseOverviewDefinition = Record<RequiredCaseOverviewFieldName, CaseOverviewTypeEntry> &
+  Record<string, CaseOverviewTypeEntry>;
 
 type CaseSectionTypeEntry = {
   label: string;
