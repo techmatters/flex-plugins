@@ -92,13 +92,15 @@ const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => 
       cases: {
         ...state.connectedCase.cases,
         [connectedCase.id]: {
+          ...stateCase,
           connectedCase: {
+            ...stateCase?.connectedCase,
+            ...connectedCase,
             categories: stateCase?.connectedCase?.categories ?? connectedCase.categories,
             info: {
               ...(stateCase?.connectedCase?.info || {}),
               ...connectedCase.info,
             },
-            ...connectedCase,
           },
           caseWorkingCopy: { sections: {} },
           availableStatusTransitions: caseDefinitionVersion
