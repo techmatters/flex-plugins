@@ -39,12 +39,12 @@
         
       },
       "incidentReport": {
-        "splitFormAt": 23,
+        "splitFormAt": 10,
         "printOrder": 1,
         "caseHomeOrder": 1,
         "caseHomeLocation": "timeline",
         "previewFields": [
-          "primaryDisposition"
+          "incidentType"
         ],
         "layout": {
           "primaryDisposition": {
@@ -53,17 +53,17 @@
         }
       },
       "caseReport": {
+        "splitFormAt": 4,
+        "caseHomeLocation" : "timeline",
         "previewFields": [
-          "date"
+          "primaryDisposition"
         ],
         "layout": {
           "date": {
             "includeLabel": false,
             "format": "date"
           }
-        },
-        "splitFormAt": 3,
-        "caseHomeLocation" : "timeline"
+        }
       },
       "safetyPlan": {
         "splitFormAt": 3,
