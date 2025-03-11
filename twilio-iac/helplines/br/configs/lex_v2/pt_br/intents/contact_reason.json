@@ -1,5 +1,5 @@
 {
-    "intentName": "pre_survey",
+    "intentName": "contact_reason",
     "description": "Survey intent",
     "sampleUtterances": [
         {
