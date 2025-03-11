@@ -52,6 +52,19 @@
           }
         }
       },
+      "caseReport": {
+        "previewFields": [
+          "date"
+        ],
+        "layout": {
+          "date": {
+            "includeLabel": false,
+            "format": "date"
+          }
+        },
+        "splitFormAt": 3,
+        "caseHomeLocation" : "timeline"
+      },
       "safetyPlan": {
         "splitFormAt": 3,
         "printOrder": 4,
