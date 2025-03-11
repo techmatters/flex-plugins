@@ -1,7 +1,7 @@
 {
   "pre_survey": {
     "description": "General configs/lex/sw_TZ/bots Pre Survey bot",
-    "locale": "sw-TZ",
+    "locale": "en-US",
     "process_behavior": "BUILD",
     "child_directed": true,
     "idle_session_ttl_in_seconds": "600",
