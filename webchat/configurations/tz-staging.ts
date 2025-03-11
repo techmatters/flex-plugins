@@ -34,6 +34,19 @@ const translations: Translations = {
       'Thank you for contacting C-Sema. To chat with a counsellor, please type your name and select the Start Chat button.',
     WhatIsYourName: 'What is your name?',
     StartChat: 'Start Chat!',
+    SelectLanguage: 'Select your language',
+  },
+  "Swahili": {
+    WelcomeMessage: "C-Sema",
+    MessageCanvasTrayContent: "",
+    MessageInputDisabledReasonHold:
+      "Asante sana kwa maelezo haya. Tutakuunganisha sasa. Tafadhali subiri ili kuzungumza na mshauri.",
+    AutoFirstMessage: "Mawasiliano ya gumzo la wavuti yanayoingia kutoka",
+    PreEngagementDescription:
+      "Asante kwa kuwasiliana na C-Sema. Ili kuzungumza na mshauri, tafadhali andika jina lako na bonyeza kitufe cha Anza Gumzo.",
+    WhatIsYourName: "Jina lako ni nani?",
+    StartChat: "Anza Gumzo!",
+    SelectLanguage: "Chagua lugha yako"
   },
 };
 
@@ -50,90 +63,14 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: 'select',
-      name: 'Age',
-      label: 'age',
-      defaultValue: '',
-      options: [
-        {
-          value: "",
-          label: ""
-        },
-        {
-          value: "01",
-          label: "1"
-        },
-        {
-          value: "02",
-          label: "2"
-        },
-        {
-          value: "03",
-          label: "3"
-        },
-        {
-          value: "04",
-          label: "4"
-        },
-        {
-          value: "05",
-          label: "5"
-        },
-        {
-          value: "06",
-          label: "6"
-        },
-        {
-          value: "07",
-          label: "7"
-        },
-        {
-          value: "08",
-          label: "8"
-        },
-        {
-          value: "09",
-          label: "9"
-        },
-        {
-          value: "10",
-          label: "10"
-        },
-        {
-          value: "11",
-          label: "11"
-        },
-        {
-          value: "12",
-          label: "12"
-        },
-        {
-          value: ">12",
-          label: ">12"
-        }],
+      name: 'language',
+      label: 'SelectLanguage',
+      defaultValue: 'en-US',
       required: true,
-    },
-    {
-      type: 'select',
-      name: 'Gender',
-      label: 'gender',
-      defaultValue: '',
       options: [
-        {
-          value: "Unknown",
-          label: ""
-        },
-        {
-          value: "Male",
-          label: "Male"
-        },
-        {
-          value: "Female",
-          label: "Female"
-        },
-        {
-          value: "Others",
-          label: "Others"
-        }],
+        { value: 'en-US', label: '1. English' },
+        { value: 'Swahili', label: '2. Kiswahili' },
+      ],
     },
     {
       type: 'checkbox',
