@@ -2,6 +2,12 @@
 #   region = var.helpline_region
 # }
 
+
+provider "aws" {
+  alias  = "hl-region"
+  region = var.helpline_region # Replace with your actual region
+}
+
 module "lex" {
   source = "../../lex/v1"
 
