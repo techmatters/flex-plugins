@@ -105,6 +105,7 @@ export type CaseSummaryWorkingCopy = {
   followUpDate: string;
   childIsAtRisk: boolean;
   summary: string;
+  [key: string]: string | boolean;
 };
 
 export type CaseWorkingCopy = {

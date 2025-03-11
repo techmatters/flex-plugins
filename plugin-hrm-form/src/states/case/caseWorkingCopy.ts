@@ -219,7 +219,34 @@ const initialiseCaseSummaryWorkingCopyReducer = (
 ): CaseState => {
   const caseState = state.cases[action.caseId];
   if (!caseState) return state;
-  const { childIsAtRisk, summary, followUpDate } = caseState.connectedCase.info;
+  
+  const caseInfo = caseState.connectedCase.info || {};
+  
+  const caseSummary = {
+    status: caseInfo.status ?? action.defaults.status ?? 'open',
+    summary: caseInfo.summary ?? action.defaults.summary ?? '',
+    childIsAtRisk: caseInfo.childIsAtRisk ?? action.defaults.childIsAtRisk ?? false,
+    followUpDate: caseInfo.followUpDate ?? action.defaults.followUpDate ?? null,
+    
+    ...Object.entries(caseInfo).reduce((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {}),
+    
+    ...Object.entries(action.defaults).reduce((acc, [key, value]) => {
+      if (key === 'summary' || key === 'status' || caseInfo[key] !== undefined) {
+        return acc;
+      }
+      
+      if (value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {}),
+  };
+  
   return {
     ...state,
     cases: {
@@ -227,12 +254,7 @@ const initialiseCaseSummaryWorkingCopyReducer = (
       [action.caseId]: {
         ...caseState,
         caseWorkingCopy: {
-          caseSummary: {
-            status: caseState.connectedCase.status ?? action.defaults.status,
-            summary: summary ?? action.defaults.summary,
-            childIsAtRisk: childIsAtRisk ?? action.defaults.childIsAtRisk,
-            followUpDate: followUpDate ?? action.defaults.followUpDate,
-          },
+          caseSummary,
           ...caseState.caseWorkingCopy,
         },
       },

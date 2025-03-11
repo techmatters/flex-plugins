@@ -46,7 +46,6 @@ import {
   updateCaseSummaryWorkingCopy,
 } from '../../../states/case/caseWorkingCopy';
 import { PermissionActions, PermissionActionType } from '../../../permissions';
-import { disperseInputs, splitAt } from '../../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../../forms';
 import { getTemplateStrings } from '../../../hrmConfig';
 import { updateCaseOverviewAsyncAction } from '../../../states/case/saveCase';
@@ -159,12 +158,10 @@ const EditCaseOverview: React.FC<Props> = ({
   const savedForm = React.useMemo(() => {
     const { status, info } = connectedCase;
     
-    const result = { 
+    return { 
       status,
       ...(info || {})
     };
-    console.log('>>> EditCaseOverview savedForm', result);
-    return result;
   }, [connectedCase]);
 
   const methods = useForm();
@@ -175,7 +172,12 @@ const EditCaseOverview: React.FC<Props> = ({
 
   useEffect(() => {
     if (!workingCopy) {
-      initialiseWorkingCopy(connectedCase.id, getValues() as CaseSummaryWorkingCopy);
+      const formValues = getValues() as CaseSummaryWorkingCopy;
+      initialiseWorkingCopy(connectedCase.id, {
+        status: connectedCase.status,
+        ...connectedCase.info,
+        ...formValues,
+      });
     }
   });
 

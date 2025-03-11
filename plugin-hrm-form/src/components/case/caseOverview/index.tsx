@@ -94,13 +94,9 @@ const CaseOverview: React.FC<Props> = ({
         field.name as typeof CASE_OVERVIEW_FIELDS[keyof typeof CASE_OVERVIEW_FIELDS],
       ),
   );
-  // console.log('>>> connectedCase', connectedCase);
 
   const renderInfoValue = (field: any) => {
-    const value = connectedCase?.info?.[field.name];
-    // console.log('>>> connectedCase', connectedCase);
-    console.log('>>> renderInfoValue', field.name, value);
-    
+    let value = connectedCase?.info?.[field.name];
     if (value === undefined || value === null) return '—';
     
     switch (field.type) {
