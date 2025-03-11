@@ -64,7 +64,7 @@ resource "aws_lexv2models_bot_locale" "this" {
   bot_version                      = "DRAFT"
   locale_id                        = each.value.locale
   n_lu_intent_confidence_threshold = 0.70
-  depends_on = [aws_lexv2models_bot.this, aws_lexv2models_bot_version.this]
+  depends_on = [aws_lexv2models_bot.this/*, aws_lexv2models_bot_version.this*/]
 }
 
 resource "aws_lexv2models_slot_type" "this" {
