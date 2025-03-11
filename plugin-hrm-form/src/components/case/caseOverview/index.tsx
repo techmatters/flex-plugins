@@ -17,7 +17,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import { DefinitionVersion, StatusInfo, CASE_OVERVIEW_FIELDS, FormItemDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, StatusInfo, CASE_OVERVIEW_FIELDS } from 'hrm-form-definitions';
 import { parseISO } from 'date-fns';
 
 import { Case, CustomITask, StandaloneITask } from '../../../types/types';

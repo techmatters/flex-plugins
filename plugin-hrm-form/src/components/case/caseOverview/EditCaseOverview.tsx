@@ -114,18 +114,20 @@ const EditCaseOverview: React.FC<Props> = ({
     try {
       if (caseOverviewFields && Array.isArray(caseOverviewFields)) {
         return caseOverviewFields
-          .filter(field => field.name !== CASE_OVERVIEW_FIELDS.CREATED_AT && field.name !== CASE_OVERVIEW_FIELDS.UPDATED_AT)
+          .filter(
+            field => field.name !== CASE_OVERVIEW_FIELDS.CREATED_AT && field.name !== CASE_OVERVIEW_FIELDS.UPDATED_AT,
+          )
           .map(field => {
             if (field.name === CASE_OVERVIEW_FIELDS.CASE_STATUS) {
               return {
                 ...field,
-                options: availableStatusTransitions
+                options: availableStatusTransitions,
               };
             }
             return field;
           });
       }
-      
+
       return [
         {
           name: 'status',
@@ -157,10 +159,10 @@ const EditCaseOverview: React.FC<Props> = ({
 
   const savedForm = React.useMemo(() => {
     const { status, info } = connectedCase;
-    
-    return { 
+
+    return {
       status,
-      ...(info || {})
+      ...(info || {}),
     };
   }, [connectedCase]);
 
