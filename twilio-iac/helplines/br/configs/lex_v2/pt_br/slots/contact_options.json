@@ -1,5 +1,5 @@
 {
-    "slotName": "contact_reason",
+    "slotName": "contact_options",
     "slotTypeName": "contact_reason",
     "intentName": "contact_reason",
     "description": "Reason for contacting",

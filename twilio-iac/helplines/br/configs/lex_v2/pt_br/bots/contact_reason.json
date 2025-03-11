@@ -9,7 +9,7 @@
       "contact_reason"
     ],
     "slots": [
-      "contact_reason"
+      "contact_options"
     ],
     "slot_types" :[
       "contact_reason"

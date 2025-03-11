@@ -39,7 +39,7 @@
     "slotPriorities": [
         {
             "priority": 1,
-            "slotName": "contact_reason"
+            "slotName": "contact_options"
         }
     ],
     "intentClosingSetting": {
