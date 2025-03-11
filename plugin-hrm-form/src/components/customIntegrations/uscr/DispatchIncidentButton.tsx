@@ -15,10 +15,11 @@
  */
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Template } from '@twilio/flex-ui';
+import { Template, Notifications, NotificationType } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
+import { useFormContext } from 'react-hook-form';
 
-import { CheckCircleIcon, SendIcon } from './styles';
+import { CheckCircleIcon } from './styles';
 import customContactComponentRegistry from '../../forms/customContactComponentRegistry';
 import type { RootState } from '../../../states';
 import selectContactStateByContactId from '../../../states/contacts/selectContactStateByContactId';
@@ -31,6 +32,27 @@ import { TertiaryButton, StyledNextStepButton } from '../../../styles/buttons';
 import { dispatchAttachmentSectionType, IncidentReportAttempt } from './dispatchAttachment';
 import asyncDispatch from '../../../states/asyncDispatch';
 
+const dispatchSuccessNotification = 'dispatchSuccess';
+const dispatchErrorNotification = 'dispatchError';
+
+Notifications.registerNotification({
+  id: dispatchSuccessNotification,
+  closeButton: true,
+  content: (
+    <Template code="Dispatch request sent to Beacon. Any future edits to this contact will not be updated in Beacon" />
+  ),
+  timeout: 0,
+  type: NotificationType.success,
+});
+
+Notifications.registerNotification({
+  id: dispatchErrorNotification,
+  closeButton: true,
+  content: <Template code="Dispatch request failed, please try again" />,
+  timeout: 0,
+  type: NotificationType.error,
+});
+
 type OwnProps = {
   contactId: string;
 };
@@ -38,6 +60,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const DispatchIncidentButton: React.FC<Props> = ({ contactId }) => {
+  const { trigger } = useFormContext();
   const dispatch = useDispatch();
 
   const [dispatching, setDispatching] = React.useState(false);
@@ -78,12 +101,22 @@ const DispatchIncidentButton: React.FC<Props> = ({ contactId }) => {
   const refreshContact = () => asyncDispatch(dispatch)(loadContactFromHrmByIdAsyncAction(contactId, referenceId));
 
   const handleClickDispatch = async () => {
-    setDispatching(true);
-    await saveDraft();
-    await dispatchIncident({ contact: savedContact });
-    // force a contact refresh after an attempt
-    await refreshContact();
-    setDispatching(false);
+    try {
+      const valid = await trigger();
+      if (valid) {
+        setDispatching(true);
+        await saveDraft();
+        await dispatchIncident({ contact: savedContact });
+        // force a contact refresh after an attempt
+        await refreshContact();
+        Notifications.showNotificationSingle(dispatchSuccessNotification);
+      }
+    } catch (err) {
+      console.error(err);
+      Notifications.showNotificationSingle(dispatchErrorNotification);
+    } finally {
+      setDispatching(false);
+    }
   };
 
   const loading = dispatching || loadingStatus === 'loading' || caseLoading;
