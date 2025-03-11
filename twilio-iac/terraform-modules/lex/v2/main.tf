@@ -47,7 +47,7 @@ We can't import it because it fails a constraint that it needs to be a number (t
 We can't delete it from the console nor using the API AWS command.
 What I ended up doing was to comment this next resource and the reference in the resource that follows
 */
-
+/*
 resource "aws_lexv2models_bot_version" "this" {
   for_each                         = var.lex_v2_bots
   bot_id = aws_lexv2models_bot.this["${each.key}"].id
@@ -57,7 +57,7 @@ resource "aws_lexv2models_bot_version" "this" {
     }
   }
 }
-
+*/
 resource "aws_lexv2models_bot_locale" "this" {
   for_each                         = var.lex_v2_bots
   bot_id                           = aws_lexv2models_bot.this["${each.key}"].id
