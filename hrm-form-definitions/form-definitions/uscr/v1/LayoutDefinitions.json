@@ -47,7 +47,7 @@
           "incidentType"
         ],
         "layout": {
-          "primaryDisposition": {
+          "incidentType": {
             "includeLabel": true
           }
         }
@@ -62,6 +62,9 @@
           "date": {
             "includeLabel": false,
             "format": "date"
+          },
+          "primaryDisposition": {
+            "includeLabel": true
           }
         }
       },
