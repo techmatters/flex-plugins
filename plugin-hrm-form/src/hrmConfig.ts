@@ -127,7 +127,7 @@ const readConfig = () => {
       // definitionVersion,
       pdfImagesSource,
       multipleOfficeSupport,
-      permissionConfig,
+      permissionConfig: 'uscr',
       contactsWaitingChannels,
       externalRecordingsEnabled,
       helplineCode,

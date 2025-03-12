@@ -231,6 +231,7 @@ export type CounselorHash = {
 export type ConfigFlags = {
   enableExternalRecordings: boolean;
   enableUnmaskingCalls: boolean;
+  hideAddToNewCaseButton: boolean;
 };
 
 /* eslint-disable camelcase */
