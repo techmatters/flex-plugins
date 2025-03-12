@@ -13,11 +13,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Template, Notifications, NotificationType } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 import { useFormContext } from 'react-hook-form';
+import { v5 } from 'uuid';
 
 import { CheckCircleIcon } from './styles';
 import customContactComponentRegistry from '../../forms/customContactComponentRegistry';
@@ -72,13 +74,16 @@ const DispatchIncidentButton: React.FC<Props> = ({ contactId }) => {
     metadata: { loadingStatus },
   } = useSelector((state: RootState) => selectContactStateByContactId(state, contactId));
 
-  const referenceId = `contact-added-to-case-banner-${savedContact.id}`;
+  const referenceId = React.useMemo(() => {
+    const rand = Math.random();
+    return `dispatch-incident-button-${savedContact.id}-${rand}`;
+  }, [savedContact.id]);
 
   const { connectedCase, loading: caseLoading } = useCase({
     caseId: savedContact.caseId,
     referenceId,
   });
-  const { sections } = useCaseSections({
+  const { sections, forceRefresh: refreshCaseSections } = useCaseSections({
     caseId: savedContact.caseId,
     sectionType: dispatchAttachmentSectionType,
     autoload: true,
@@ -109,6 +114,7 @@ const DispatchIncidentButton: React.FC<Props> = ({ contactId }) => {
         await dispatchIncident({ contact: savedContact });
         // force a contact refresh after an attempt
         await refreshContact();
+        await refreshCaseSections();
         Notifications.showNotificationSingle(dispatchSuccessNotification);
       }
     } catch (err) {
