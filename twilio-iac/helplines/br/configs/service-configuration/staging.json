@@ -7,5 +7,8 @@
             "lambda_task_created_handler": true
         },
         "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png"
+    },
+    "ui_attributes": {
+        "logLevel": "debug"
     }
 }

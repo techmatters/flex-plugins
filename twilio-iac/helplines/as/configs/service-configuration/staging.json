@@ -27,6 +27,7 @@
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/"
     },
     "ui_attributes": {
+        "logLevel": "debug",
         "colorTheme": {
             "baseName": null,
             "light": null,
