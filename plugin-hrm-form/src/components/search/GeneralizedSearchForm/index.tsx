@@ -125,7 +125,9 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
     return [
       <div key="searchTerm">{itemsWithMargin[0]}</div>,
       <FontOpenSans key="filter-subtitle " style={{ margin: '10px' }}>
-        <Bold>Optional Filters</Bold>
+        <Bold>
+          <Template id="GeneralizedSearchForm-OptionalFilters" />
+        </Bold>
       </FontOpenSans>,
       <div key="counselor">{itemsWithMargin[1]}</div>,
       <TwoColumnLayoutResponsive key="dateRange" width={containerWidth}>
