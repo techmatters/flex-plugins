@@ -27,26 +27,26 @@ export const createSearchFormDefinition = ({ counselorsList }: { counselorsList:
   return [
     {
       name: 'searchTerm',
-      label: 'Search Term',
+      label: 'GeneralizedSearchForm-SearchTerm',
       type: FormInputType.SearchInput,
       maxLength: { value: 500, message: '500 characters max.' },
     },
     {
       name: 'counselor',
       type: FormInputType.Select,
-      label: 'Counselor',
+      label: 'GeneralizedSearchForm-Counselor',
       options: counsellorOptions,
     },
     {
       name: 'dateFrom',
       type: FormInputType.DateInput,
-      label: 'Date From',
+      label: 'GeneralizedSearchForm-DateFrom',
       initializeWithCurrent: false,
     },
     {
       name: 'dateTo',
       type: FormInputType.DateInput,
-      label: 'Date To',
+      label: 'GeneralizedSearchForm-DateTo',
       initializeWithCurrent: false,
     },
   ];
