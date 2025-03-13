@@ -44,16 +44,21 @@
         "caseHomeOrder": 1,
         "caseHomeLocation": "timeline",
         "previewFields": [
-          "incidentType"
+          "incidentType",
+          "beaconIncidentId"
+          "
         ],
         "layout": {
           "incidentType": {
             "includeLabel": true
+          },
+          "beaconIncidentId": {
+            "includeLabel": false
           }
         }
       },
       "caseReport": {
-        "splitFormAt": 4,
+        "splitFormAt": 6,
         "caseHomeLocation" : "timeline",
         "previewFields": [
           "primaryDisposition"
