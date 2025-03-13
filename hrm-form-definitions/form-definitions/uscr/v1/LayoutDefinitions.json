@@ -44,8 +44,8 @@
         "caseHomeOrder": 1,
         "caseHomeLocation": "timeline",
         "previewFields": [
-          "incidentType",
-          "beaconIncidentId"
+          "beaconIncidentId",
+          "incidentType"
         ],
         "layout": {
           "incidentType": {
