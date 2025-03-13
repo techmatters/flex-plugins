@@ -1,10 +1,26 @@
 [
-  {
+    {
     "name": "callSummary",
     "label": "Contact Summary",
     "type": "textarea",
-    "required": { "value": true, "message": "RequiredFieldError" }
-  },
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": true,
+    "width": "250px",
+    "rows": "40",
+    "additionalActions": [
+      {
+        "name": "generateSummary",
+        "label": "Generate Summary",
+        "type": "custom-contact-component",
+        "component": "generate-summary-button",
+        "saveable": false,
+        "props": {
+          "form": "caseInformation",
+          "item": "callSummary"
+        }
+      }
+    ]
+    },
   {
     "name": "repeatCaller",
     "label": "Repeat Caller?",

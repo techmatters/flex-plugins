@@ -345,8 +345,9 @@
   "SectionName-Contact": "Event",
   "CasePrint-TabularSection-Header/household": "Household Member {{sectionNo}} of {{sectionCount}}",
   "CasePrint-TabularSection-Header/perpetrator": "Perpetrator {{sectionNo}} of {{sectionCount}}",
-  "CasePrint-TabularSection-Header/incident": "Event {{sectionNo}} of {{sectionCount}}",
+  "CasePrint-TabularSection-Header/incident": "Incident {{sectionNo}} of {{sectionCount}}",
   "CasePrint-TabularSection-Header/referral": "Referral {{sectionNo}} of {{sectionCount}}",
+  "CasePrint-TabularSection-Header/caseReport": "Case Report {{sectionNo}} of {{sectionCount}}",
   "SectionName-Notes": "Notes",
   "SectionName-CaseSummary": "Case Summary",
   "TranscriptSection-PermanentError": "Something went wrong on our end. Please event your support team or supervisor.",
@@ -548,6 +549,13 @@
   "Case-SectionList-Add/incidentReport": "Add Incident Report",
   "CaseSection-BottomBar-SaveAndAddAnother/incidentReport": "Save and add another",
   "CaseSection-BottomBar-Save/incidentReport": "Save",
+  "Case-SectionList-Title/caseReport": "Case Report",
+  "Case-SectionList-Add/caseReport": "Add Case Report",
+  "CaseSection-BottomBar-Save/caseReport": "Save",
+  "CaseSection-BottomBar-SaveAndAddAnother/caseReport": "Save and add another",
+  "CaseSection-Edit/caseReport": "Edit Case Report",
+  "CaseSection-Add/caseReport": "Add Case Report",
+  "Case-NoSections/caseReport": "No case reports listed",
   "Case-SectionList-Title/narrativeSummary": "Narrative / Summary",
   "Case-NoSections/narrativeSummary": "No narrative / summaries listed",
   "Case-SectionList-Add/narrativeSummary": "Add Narrative / Summary",
@@ -582,5 +590,6 @@
   "CaseSection-Edit/incidentReport": "Edit Incident Report",
   "CaseSection-Edit/narrativeSummary": "Edit Narrative Summary",
   "CaseSection-Edit/safetyPlan": "Edit Safety Plan",
-  "CaseSection-Edit/sudSurvey": "Edit SUD Survey"
+  "CaseSection-Edit/sudSurvey": "Edit SUD Survey",
+  "CaseSection-View-Title/caseReport": "View Case Report"
 }

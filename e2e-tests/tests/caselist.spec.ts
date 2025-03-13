@@ -90,6 +90,7 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     await page.verifyCaseSummaryUpdated();
 
     await page.verifyCasePrintButtonIsVisible();
+    await page.verifyCategoryTooltipIsVisible();
 
     await page.closeModal();
     console.log('Closed Case');
