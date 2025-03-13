@@ -45,7 +45,7 @@ on:
         description: Recaptcha Verify URL
         type: string
         required: false
-      invalidate-forms-cache:
+      invalidate-cache:
         description: 'Specifies if should invalidate CloudFront cache for form data. Defaults to true, set to false if the caller will handle cache invalidation.'
         required: false
         default: 'true'
@@ -64,7 +64,7 @@ jobs:
       helpline_code: ${{ matrix.short_helplines }}
       environment_code: ${{ matrix.environment }}
       send-slack-message: ${{ inputs.send_slack_message_per_deploy }}
-      invalidate-forms-cache: ${{ inputs.invalidate-forms-cache }}
+      invalidate-cache: ${{ inputs.invalidate-cache }}
 
   deploy-web-chat-helplines:
     if: inputs.project == 'webchat'
@@ -80,6 +80,7 @@ jobs:
       environment: ${{ matrix.environment }}
       recaptcha_verify_url: ${{ inputs.recaptcha_verify_url }}
       send-slack-message: ${{ inputs.send_slack_message_per_deploy }}
+      invalidate-cache: ${{ inputs.invalidate-cache }}
 
   # Send Slack notifying success
   send-slack-message:

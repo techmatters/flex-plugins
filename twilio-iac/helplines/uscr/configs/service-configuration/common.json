@@ -16,7 +16,7 @@
         },
         "definitionVersion": "uscr-v1",
         "external_recordings_enabled": false,
-        "helplineLanguage": "en-USCR",
+        "helplineLanguage": "en-US",
         "permissionConfig": "uscr"
     }
 }

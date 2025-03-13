@@ -1,11 +1,5 @@
 [
   {
-    "name": "callSummary",
-    "label": "Contact Summary",
-    "type": "textarea",
-    "required": { "value": true, "message": "RequiredFieldError" }
-  },
-  {
     "name": "locationOfIssue",
     "label": "Location of Issue",
     "type": "select",
@@ -24,16 +18,6 @@
     "name": "otherLocation",
     "label": "If Other, please specify.",
     "type": "input"
-  },
-  {
-    "name": "repeatCaller",
-    "label": "Repeat Caller?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "didYouDiscussRightsWithTheChild",
-    "label": "Did you discuss rights with the child as well as Safeguarding Children and Confidentiality Policy?",
-    "type": "mixed-checkbox"
   },
   {
     "name": "actionTaken",
@@ -81,6 +65,11 @@
     ]
   },
   {
+    "name": "repeatCaller",
+    "label": "Repeat Caller?",
+    "type": "mixed-checkbox"
+  },
+  {
     "name": "keepConfidential",
     "label": "Keep confidential?",
     "type": "checkbox",
@@ -100,5 +89,32 @@
     "name": "wouldTheChildRecommendUsToAFriend",
     "label": "Would the child recommend us to a friend?",
     "type": "mixed-checkbox"
+  },
+  {
+    "name": "didYouDiscussRightsWithTheChild",
+    "label": "Did you discuss rights with the child as well as Safeguarding Children and Confidentiality Policy?",
+    "type": "mixed-checkbox"
+  },
+  {
+    "name": "callSummary",
+    "label": "Contact Summary",
+    "type": "textarea",
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": true,
+    "width": "300px",
+    "rows": "40",
+    "additionalActions": [
+      {
+        "name": "generateSummary",
+        "label": "Generate Summary",
+        "type": "custom-contact-component",
+        "component": "generate-summary-button",
+        "saveable": false,
+        "props": {
+          "form": "caseInformation",
+          "item": "callSummary"
+        }
+      }
+    ]
   }
 ]

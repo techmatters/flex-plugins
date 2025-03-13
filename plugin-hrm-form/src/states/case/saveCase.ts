@@ -82,9 +82,8 @@ const handlePendingAction = <T extends Parameters<CreateHandlerMap<HrmState>>[0]
 
 const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => {
   const caseDefinitionVersion = state.configuration.definitionVersions[connectedCase?.info?.definitionVersion];
-  const stateCase = state.connectedCase.cases[connectedCase?.id]?.connectedCase;
-  const stateInfo = stateCase?.info;
-  const outstandingUpdateCount = (state.connectedCase.cases[connectedCase.id]?.outstandingUpdateCount ?? 1) - 1;
+  const stateCase = state.connectedCase.cases[connectedCase?.id];
+  const outstandingUpdateCount = (stateCase?.outstandingUpdateCount ?? 1) - 1;
 
   return {
     ...state,
@@ -93,19 +92,23 @@ const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => 
       cases: {
         ...state.connectedCase.cases,
         [connectedCase.id]: {
+          ...stateCase,
           connectedCase: {
+            ...stateCase?.connectedCase,
             ...connectedCase,
-            ...((stateInfo || connectedCase.info) && {
-              info: { ...stateInfo, ...connectedCase.info },
-            }),
+            categories: stateCase?.connectedCase?.categories ?? connectedCase.categories,
+            info: {
+              ...(stateCase?.connectedCase?.info || {}),
+              ...connectedCase.info,
+            },
           },
           caseWorkingCopy: { sections: {} },
           availableStatusTransitions: caseDefinitionVersion
             ? getAvailableCaseStatusTransitions(connectedCase, caseDefinitionVersion)
             : [],
-          references: state.connectedCase.cases[connectedCase.id]?.references ?? new Set(),
-          sections: state.connectedCase.cases[connectedCase.id]?.sections ?? {},
-          timelines: state.connectedCase.cases[connectedCase.id]?.timelines ?? {},
+          references: stateCase?.references ?? new Set(),
+          sections: stateCase?.sections ?? {},
+          timelines: stateCase?.timelines ?? {},
           outstandingUpdateCount,
         },
       },

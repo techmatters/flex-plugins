@@ -16,7 +16,7 @@
 
 import React, { useMemo, useState, useEffect } from 'react';
 import { Close } from '@material-ui/icons';
-import { Template, Manager, Notifications, NotificationType, NotificationBar } from '@twilio/flex-ui';
+import { Template, Manager, Notifications, NotificationType } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
 
 import InfoIcon from '../caseMergingBanners/InfoIcon';

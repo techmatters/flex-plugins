@@ -2,7 +2,8 @@
     "attributes": {
         "definitionVersion": "th-v1",
         "feature_flags": {
-            "enable_manual_pulling": false
+            "enable_manual_pulling": false,
+            "enable_generalized_search": true
         },
         "helplineLanguage": "th-TH",
         "permissionConfig": "th"

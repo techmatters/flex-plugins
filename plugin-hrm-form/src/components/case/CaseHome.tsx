@@ -14,19 +14,19 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseContainer, CaseDetailsBorder, ViewButton } from './styles';
 import { BottomButtonBar, Box, SaveAndEndButton } from '../../styles';
-import CaseDetails from './CaseDetails';
+import CaseOverviewHeader from './caseOverview/CaseOverviewHeader';
+import CaseOverview from './caseOverview/CaseOverview';
 import Timeline from './timeline/Timeline';
 import CaseSection from './CaseSection';
 import { PermissionActions, PermissionActionType } from '../../permissions';
 import { AppRoutes, CaseItemAction, CaseRoute } from '../../states/routing/types';
-import CaseSummary from './CaseSummary';
 import { RootState } from '../../states';
 import { CustomITask, StandaloneITask } from '../../types/types';
 import * as RoutingActions from '../../states/routing/actions';
@@ -143,26 +143,27 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
           </Box>
         )}
         <Box marginTop="13px">
-          <CaseDetails
-            caseId={id}
-            statusLabel={statusLabel}
-            can={can}
+          <CaseOverviewHeader
+            caseId={caseId}
             counselor={counselor}
+            office={office?.label}
+            handlePrintCase={handlePrintCase}
+            isOrphanedCase={isOrphanedCase}
+            definitionVersion={definitionVersion}
             categories={categories}
+          />
+          <CaseOverview
+            task={task}
             createdAt={createdAt}
             updatedAt={updatedAt}
             followUpDate={followUpDate}
+            statusLabel={statusLabel}
+            can={can}
             childIsAtRisk={childIsAtRisk}
             availableStatusTransitions={availableStatusTransitions}
-            office={office?.label}
-            handlePrintCase={handlePrintCase}
             definitionVersion={definitionVersion}
-            isOrphanedCase={isOrphanedCase}
             editCaseSummary={onEditCaseSummaryClick}
           />
-        </Box>
-        <Box margin="25px 0 0 0">
-          <CaseSummary task={task} />
         </Box>
         <Box margin="25px 0 0 0" style={{ textAlign: 'center' }}>
           <CaseDetailsBorder>

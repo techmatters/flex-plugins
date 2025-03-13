@@ -33,6 +33,12 @@ variable "serverless_url" {
   type        = string
 }
 
+variable "get_profile_flags_for_identifiers_base_url" {
+  description = "Base URL for the get profile flags for identifiers endpoint"
+  type        = string
+  default     = var.serverless_url
+}
+
 variable "serverless_service_sid" {
   description = "Serverless Service SID"
   type        = string
