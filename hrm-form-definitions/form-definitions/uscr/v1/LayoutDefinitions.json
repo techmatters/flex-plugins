@@ -46,7 +46,6 @@
         "previewFields": [
           "incidentType",
           "beaconIncidentId"
-          "
         ],
         "layout": {
           "incidentType": {
