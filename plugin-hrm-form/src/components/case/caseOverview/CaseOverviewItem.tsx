@@ -27,21 +27,15 @@ type CaseOverviewItemProps = {
   color?: string;
 };
 
-const CaseOverviewItem: React.FC<CaseOverviewItemProps> = ({ 
-  labelId, 
-  templateCode, 
-  inputId, 
-  value, 
-  color
-}) => {
+const CaseOverviewItem: React.FC<CaseOverviewItemProps> = ({ labelId, templateCode, inputId, value, color }) => {
   const [translatedValue, setTranslatedValue] = useState('');
-  
+
   useEffect(() => {
     const tempElement = document.createElement('div');
     tempElement.innerHTML = Manager.getInstance().strings[value] || value;
     setTranslatedValue(tempElement.textContent || value);
   }, [value]);
-  
+
   return (
     <div style={{ paddingRight: '20px' }}>
       <DetailDescription>
