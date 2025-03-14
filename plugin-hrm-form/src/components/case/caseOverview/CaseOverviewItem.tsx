@@ -14,10 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState, useEffect } from 'react';
-import { Template, Manager } from '@twilio/flex-ui';
+import React from 'react';
+import { Template } from '@twilio/flex-ui';
 
 import { DetailDescription, StyledInputField } from '../styles';
+import { getTemplateStrings } from '../../../hrmConfig';
 
 type CaseOverviewItemProps = {
   labelId: string;
@@ -28,13 +29,7 @@ type CaseOverviewItemProps = {
 };
 
 const CaseOverviewItem: React.FC<CaseOverviewItemProps> = ({ labelId, templateCode, inputId, value, color }) => {
-  const [translatedValue, setTranslatedValue] = useState('');
-
-  useEffect(() => {
-    const tempElement = document.createElement('div');
-    tempElement.innerHTML = Manager.getInstance().strings[value] || value;
-    setTranslatedValue(tempElement.textContent || value);
-  }, [value]);
+  const strings = getTemplateStrings();
 
   return (
     <div style={{ paddingRight: '20px' }}>
@@ -50,7 +45,7 @@ const CaseOverviewItem: React.FC<CaseOverviewItemProps> = ({ labelId, templateCo
         name={inputId}
         aria-labelledby={labelId}
         disabled
-        value={translatedValue}
+        value={strings[value] || value}
         color={color}
       />
     </div>
