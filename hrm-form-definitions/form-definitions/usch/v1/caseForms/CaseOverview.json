@@ -1,3 +1,38 @@
-{
-  "summary": { "isPII": true }
-}
+[
+  {
+    "name": "status",
+    "label": "Case Status",
+    "type": "select",
+    "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
+    "name": "childIsAtRisk",
+    "label": "Child is at risk",
+    "type": "checkbox",
+    "required": { "value": true, "message": "RequiredFieldError" }
+  },
+  {
+    "name": "createdAt",
+    "label": "Created Date",
+    "type": "date-input"
+  },
+  {
+    "name": "updatedAt",
+    "label": "Updated Date",
+    "type": "date-input"
+  },
+  {
+    "name": "followUpDate",
+    "label": "Follow Up Date",
+    "type": "date-input"
+  },
+  {
+    "name": "summary",
+    "label": "Summary",
+    "type": "textarea",
+    "rows": 5,
+    "width": 300,
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": true
+  }
+]

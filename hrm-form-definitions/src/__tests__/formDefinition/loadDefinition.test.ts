@@ -42,6 +42,7 @@ describe('loadDefinition', () => {
         IssueCategorizationTab: expect.any(Function),
       });
       expect(definitions.caseStatus).toEqual(expect.anything());
+      expect(definitions.caseOverview).toBeDefined();
       expect(definitions.layoutVersion).toMatchObject({
         contact: expect.anything(),
         case: expect.anything(),

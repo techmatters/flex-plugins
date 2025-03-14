@@ -297,7 +297,7 @@ export const CASE_OVERVIEW_FIELDS = {
   CHILD_IS_AT_RISK: 'childIsAtRisk',
 } as const;
 
-export type RequiredCaseOverviewFieldName =
+export type CommonCaseOverviewFieldName =
   typeof CASE_OVERVIEW_FIELDS[keyof typeof CASE_OVERVIEW_FIELDS];
 
 type CaseOverviewTypeEntry = {
@@ -306,7 +306,7 @@ type CaseOverviewTypeEntry = {
   form: FormDefinition;
 };
 
-export type CaseOverviewDefinition = Record<RequiredCaseOverviewFieldName, CaseOverviewTypeEntry> &
+export type CaseOverviewDefinition = Record<CommonCaseOverviewFieldName, CaseOverviewTypeEntry> &
   Record<string, CaseOverviewTypeEntry>;
 
 type CaseSectionTypeEntry = {

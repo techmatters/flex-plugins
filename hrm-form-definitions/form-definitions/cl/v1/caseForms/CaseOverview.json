@@ -1,13 +1,8 @@
 [
   {
     "name": "status",
-    "label": "Case Status",
-    "type": "select",
-    "options": [
-      { "value": "open", "label": "open" },
-      { "value": "closed", "label": "closed" }
-    ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "label": "Status",
+    "type": "select"
   },
   {
     "name": "childIsAtRisk",
@@ -18,14 +13,12 @@
   {
     "name": "createdAt",
     "label": "Created Date",
-    "type": "date-input",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "type": "date-input"
   },
   {
     "name": "updatedAt",
     "label": "Updated Date",
-    "type": "date-input",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "type": "date-input"
   },
   {
     "name": "followUpDate",
@@ -37,7 +30,7 @@
     "label": "Summary",
     "type": "textarea",
     "rows": 5,
-    "width": 500,
+    "width": 300,
     "required": { "value": true, "message": "RequiredFieldError" },
     "isPII": true
   }

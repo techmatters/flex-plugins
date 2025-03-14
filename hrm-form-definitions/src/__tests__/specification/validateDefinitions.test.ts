@@ -175,6 +175,37 @@ describe('Validate form definitions', () => {
           });
         }
       });
+
+      test('Validating required fields in caseOverview definition', () => {
+        const requiredFields = ['status', 'childIsAtRisk', 'createdAt', 'updatedAt', 'summary'];
+
+        expect(definitionVersion.caseOverview).toBeDefined();
+
+        const caseOverviewItems = Array.isArray(definitionVersion.caseOverview)
+          ? definitionVersion.caseOverview
+          : Object.values(definitionVersion.caseOverview);
+
+        const caseOverviewFieldNames = caseOverviewItems.map((item) => item.name);
+
+        requiredFields.forEach((field) => {
+          expect(caseOverviewFieldNames).toContain(field);
+        });
+
+        caseOverviewItems
+          .filter((item) => item.name !== 'status')
+          .forEach((item) => {
+            const assertFun = testFormFileSpecification(definitionId, `caseOverview.${item.name}`);
+            const specification = { definitionFilePath: '', items: {} };
+            const definition = item.form || [item];
+
+            const result = assertFun(specification, definition);
+            expect(result).toEqual({
+              valid: true,
+              issues: [],
+              itemReports: expect.anything(),
+            });
+          });
+      });
     },
   );
 });
