@@ -385,24 +385,24 @@ describe('updateCaseOverviewAsyncAction', () => {
                   followUpDate: '2023-01-01',
                   childIsAtRisk: true,
                   summary: 'existing summary',
-                  operatingArea: 'Area 51'
-                }
-              }
-            }
-          }
-        }
+                  operatingArea: 'Area 51',
+                },
+              },
+            },
+          },
+        },
       } as HrmState;
-      
+
       const { getState, dispatch } = testStore(stateWithWorkingCopy);
-      
+
       const newOverview = {
-        summary: 'updated summary'
+        summary: 'updated summary',
       };
-      
+
       await ((dispatch(
-        updateCaseOverviewAsyncAction(mockPayload.id, newOverview, undefined)
+        updateCaseOverviewAsyncAction(mockPayload.id, newOverview, undefined),
       ) as unknown) as PromiseLike<void>);
-      
+
       const updatedCase = getState().connectedCase.cases[mockPayload.id].connectedCase;
       expect(updatedCase).toMatchObject({
         id: mockPayload.id,
@@ -411,37 +411,37 @@ describe('updateCaseOverviewAsyncAction', () => {
           operatingArea: 'Area 51',
           summary: 'updated summary',
           followUpDate: null,
-          definitionVersion: DefinitionVersionId.v1
-        }
+          definitionVersion: DefinitionVersionId.v1,
+        },
       });
     });
 
     test('handles optional fields correctly', async () => {
       const requiredFields = {
         caseStatus: 'open',
-        summary: 'test summary'
+        summary: 'test summary',
       };
-      
+
       const overview = {
         ...requiredFields,
         operatingArea: 'Test Area',
         followUpDate: '2023-05-12',
-        priority: 'high'
+        priority: 'high',
       };
-      
+
       const { getState, dispatch } = testStore(nonInitialState);
-      
-      await ((dispatch(
-        updateCaseOverviewAsyncAction(mockPayload.id, overview, undefined)
-      ) as unknown) as PromiseLike<void>);
-      
+
+      await ((dispatch(updateCaseOverviewAsyncAction(mockPayload.id, overview, undefined)) as unknown) as PromiseLike<
+        void
+      >);
+
       const updatedCase = getState().connectedCase.cases[mockPayload.id].connectedCase;
-      
+
       expect(updatedCase).toMatchObject({
         id: mockPayload.id,
         info: {
           ...overview,
-        }
+        },
       });
     });
 
@@ -456,8 +456,8 @@ describe('updateCaseOverviewAsyncAction', () => {
                 ...nonInitialState.connectedCase.cases[mockPayload.id].connectedCase,
                 info: {
                   summary: 'old summary',
-                  childIsAtRisk: false
-                }
+                  childIsAtRisk: false,
+                },
               },
               caseWorkingCopy: {
                 sections: {},
@@ -467,27 +467,27 @@ describe('updateCaseOverviewAsyncAction', () => {
                   childIsAtRisk: false,
                   summary: 'working copy summary',
                   operatingArea: 'Area 51',
-                  priority: 'low'
-                }
-              }
-            }
-          }
-        }
+                  priority: 'low',
+                },
+              },
+            },
+          },
+        },
       } as HrmState;
-      
+
       const { getState, dispatch } = testStore(stateWithExistingInfo);
-      
+
       const newOverview = {
         summary: 'new summary',
-        childIsAtRisk: true
+        childIsAtRisk: true,
       };
-      
+
       await ((dispatch(
-        updateCaseOverviewAsyncAction(mockPayload.id, newOverview, undefined)
+        updateCaseOverviewAsyncAction(mockPayload.id, newOverview, undefined),
       ) as unknown) as PromiseLike<void>);
-      
+
       const updatedCase = getState().connectedCase.cases[mockPayload.id].connectedCase;
-      
+
       expect(updatedCase).toMatchObject({
         id: mockPayload.id,
         info: {
@@ -496,7 +496,7 @@ describe('updateCaseOverviewAsyncAction', () => {
           operatingArea: 'Area 51',
           priority: 'low',
           followUpDate: null,
-        }
+        },
       });
     });
   });

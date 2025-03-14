@@ -233,8 +233,14 @@ const initialiseCaseSummaryWorkingCopyReducer = (
   // Add any other expected fields from action.defaults if not already set
   // but only if they are not already handled above
   Object.entries(action.defaults).forEach(([key, value]) => {
-    if (key !== 'status' && key !== 'summary' && key !== 'childIsAtRisk' && key !== 'followUpDate' &&
-        value !== undefined && caseSummary[key] === undefined) {
+    if (
+      key !== 'status' &&
+      key !== 'summary' &&
+      key !== 'childIsAtRisk' &&
+      key !== 'followUpDate' &&
+      value !== undefined &&
+      caseSummary[key] === undefined
+    ) {
       caseSummary[key] = value;
     }
   });
