@@ -141,7 +141,7 @@ const CaseOverview: React.FC<Props> = ({
               labelId="CaseChildIsAtRisk"
               templateCode="Case-ChildIsAtRisk"
               inputId="Details_ChildAtRisk"
-              value={childIsAtRisk ? 'Yes' : 'No'}
+              value={childIsAtRisk ? 'SectionEntry-Yes' : 'SectionEntry-No'}
               color={childIsAtRisk ? '#d22f2f' : '#d8d8d8'}
             />
           )}

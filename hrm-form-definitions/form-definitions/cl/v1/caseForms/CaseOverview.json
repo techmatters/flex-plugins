@@ -1,22 +1,22 @@
 [
   {
     "name": "status",
-    "label": "Status",
+    "label": "Estado",
     "type": "select"
   },
   {
     "name": "childIsAtRisk",
-    "label": "Child is at risk",
+    "label": "El niño está en riesgo",
     "type": "checkbox"
   },
   {
     "name": "createdAt",
-    "label": "Created Date",
+    "label": "Abierto",
     "type": "date-input"
   },
   {
     "name": "updatedAt",
-    "label": "Updated Date",
+    "label": "Última Actualización / Cerrada",
     "type": "date-input"
   },
   {
@@ -26,7 +26,8 @@
   },
   {
     "name": "summary",
-    "label": "Summary",
+    "label": "Resumen del Caso",
+    "placeholder": "Resumen del Caso",
     "type": "textarea",
     "rows": 5,
     "width": 300,

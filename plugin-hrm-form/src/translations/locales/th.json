@@ -4,7 +4,7 @@
   "Case Summary": "สาระสำคัญของเคส",
   "Case-ActionHeaderAdded": "สร้างวันที่ {{date}} เวลา {{time}} โดย {{counsellor}}",
   "Case-ActionHeaderCounselor": "คุณต้องกรอกข้อมูลในฟิลด์ที่จำเป็น",
-  "Case-ActionHeaderUpdated": "อัปเดตเมื่อ {{date}} at {{time}} by {{counsellor}}",
+  "Case-ActionHeaderUpdated": "อัปเดตเมื่อ {{date}} เวลา {{time}} โดย {{counsellor}}",
   "Case-EditSummary-EditHistory-StatusUpdated": "สถานะได้รับการอัปเดตจาก {{previousStatus}} เป็น {{updatedStatus}} เมื่อวันที่ {{date}} เวลา {{time}} โดย {{counsellor}}",
   "Case-AddCaseSummaryHere": "เพิ่มกรณีสรุปที่นี่ ...",
   "CaseSection-Add/document": "เพิ่มเอกสาร",

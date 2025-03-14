@@ -14,8 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
-import { Template } from '@twilio/flex-ui';
+import React, { useState, useEffect } from 'react';
+import { Template, Manager } from '@twilio/flex-ui';
 
 import { DetailDescription, StyledInputField } from '../styles';
 
@@ -27,24 +27,40 @@ type CaseOverviewItemProps = {
   color?: string;
 };
 
-const CaseOverviewItem: React.FC<CaseOverviewItemProps> = ({ labelId, templateCode, inputId, value, color }) => (
-  <div style={{ paddingRight: '20px' }}>
-    <DetailDescription>
-      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-      <label id={labelId} htmlFor={inputId}>
-        <Template code={templateCode} />
-      </label>
-    </DetailDescription>
-    <StyledInputField
-      data-testid={`Case-CaseOverview-${labelId}`}
-      id={inputId}
-      name={inputId}
-      aria-labelledby={labelId}
-      disabled
-      value={value}
-      color={color}
-    />
-  </div>
-);
+const CaseOverviewItem: React.FC<CaseOverviewItemProps> = ({ 
+  labelId, 
+  templateCode, 
+  inputId, 
+  value, 
+  color
+}) => {
+  const [translatedValue, setTranslatedValue] = useState('');
+  
+  useEffect(() => {
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = Manager.getInstance().strings[value] || value;
+    setTranslatedValue(tempElement.textContent || value);
+  }, [value]);
+  
+  return (
+    <div style={{ paddingRight: '20px' }}>
+      <DetailDescription>
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+        <label id={labelId} htmlFor={inputId}>
+          <Template code={templateCode} />
+        </label>
+      </DetailDescription>
+      <StyledInputField
+        data-testid={`Case-CaseOverview-${labelId}`}
+        id={inputId}
+        name={inputId}
+        aria-labelledby={labelId}
+        disabled
+        value={translatedValue}
+        color={color}
+      />
+    </div>
+  );
+};
 
 export default CaseOverviewItem;
