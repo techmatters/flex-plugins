@@ -160,19 +160,21 @@ const CaseOverview: React.FC<Props> = ({
           ))}
         </div>
       </DetailsContainer>
-      <DetailsContainer>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          {additionalFields.map(field => (
-            <CaseOverviewItem
-              key={field.name}
-              labelId={field.name}
-              templateCode={field.label}
-              inputId={`Details_${field.name}`}
-              value={renderInfoValue(field)}
-            />
-          ))}
-        </div>
-      </DetailsContainer>
+      {additionalFields.length > 0 && (
+        <DetailsContainer>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {additionalFields.map(field => (
+              <CaseOverviewItem
+                key={field.name}
+                labelId={field.name}
+                templateCode={field.label}
+                inputId={`Details_${field.name}`}
+                value={renderInfoValue(field)}
+              />
+            ))}
+          </div>
+        </DetailsContainer>
+      )}
       <CaseSummary task={task} />
     </>
   );

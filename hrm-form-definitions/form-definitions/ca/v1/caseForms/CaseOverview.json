@@ -2,14 +2,12 @@
   {
     "name": "status",
     "label": "Case Status",
-    "type": "select",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "type": "select"
   },
   {
     "name": "childIsAtRisk",
     "label": "Legal Hold",
-    "type": "checkbox",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "type": "checkbox"
   },
   {
     "name": "createdAt",
@@ -33,7 +31,6 @@
     "placeholder": "Please add details on weapon(s), accessibility, targets, suicide details, medication, crime",
     "rows": 5,
     "width": 300,
-    "required": { "value": true, "message": "RequiredFieldError" },
     "isPII": true
   }
 ]

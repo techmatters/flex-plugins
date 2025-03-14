@@ -41,6 +41,7 @@ export type CaseStatus = {
 
 export type AseloFormTemplateDefinitions = {
   caseForms: {
+    CaseOverviewForm: FormFileSpecification;
     HouseholdForm: FormFileSpecification;
     IncidentForm: FormFileSpecification;
     NoteForm: FormFileSpecification;
@@ -80,6 +81,10 @@ function generateAgeRangeOptions(from: number, to: number): SelectOption[] {
 
 export const aseloFormTemplates: AseloFormTemplateDefinitions = {
   caseForms: {
+    CaseOverviewForm: {
+      definitionFilePath: './caseForms/CaseOverviewForm.json',
+      items: {},
+    },
     HouseholdForm: {
       definitionFilePath: './caseForms/HouseholdForm.json',
       items: {

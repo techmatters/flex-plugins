@@ -2,14 +2,12 @@
   {
     "name": "status",
     "label": "Case Status",
-    "type": "select",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "type": "select"
   },
   {
     "name": "childIsAtRisk",
     "label": "Child is at risk",
-    "type": "checkbox",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "type": "checkbox"
   },
   {
     "name": "createdAt",

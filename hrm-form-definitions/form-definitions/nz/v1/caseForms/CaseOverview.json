@@ -2,14 +2,12 @@
   {
     "name": "status",
     "label": "Case Status",
-    "type": "select",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "type": "select"
   },
   {
     "name": "childIsAtRisk",
     "label": "Person of concern is at risk",
-    "type": "checkbox",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "type": "checkbox"
   },
   {
     "name": "createdAt",
@@ -27,7 +25,6 @@
     "type": "textarea",
     "rows": 5,
     "width": 300,
-    "required": { "value": true, "message": "RequiredFieldError" },
     "isPII": true
   }
 ]

@@ -222,7 +222,6 @@ const initialiseCaseSummaryWorkingCopyReducer = (
 
   const caseInfo = caseState.connectedCase.info || {};
 
-  // Only include the specific fields needed for case summary
   const caseSummary = {
     status: caseState.connectedCase.status ?? action.defaults.status ?? 'open',
     summary: caseInfo.summary ?? action.defaults.summary ?? '',
@@ -230,17 +229,8 @@ const initialiseCaseSummaryWorkingCopyReducer = (
     followUpDate: caseInfo.followUpDate ?? action.defaults.followUpDate ?? null,
   };
 
-  // Add any other expected fields from action.defaults if not already set
-  // but only if they are not already handled above
   Object.entries(action.defaults).forEach(([key, value]) => {
-    if (
-      key !== 'status' &&
-      key !== 'summary' &&
-      key !== 'childIsAtRisk' &&
-      key !== 'followUpDate' &&
-      value !== undefined &&
-      caseSummary[key] === undefined
-    ) {
+    if (key !== 'status' && key !== 'summary' && value !== undefined && caseSummary[key] === undefined) {
       caseSummary[key] = value;
     }
   });
