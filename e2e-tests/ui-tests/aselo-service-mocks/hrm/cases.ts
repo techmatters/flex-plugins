@@ -23,11 +23,10 @@ import { Page } from '@playwright/test';
 import context from '../global-context';
 import * as path from 'path';
 
-const generateMockCases = (toGenerate: number): Case[] => {
+const generateMockCases = (toGenerate: number): any[] => {
   const hourAgo = subHours(new Date(), 10);
   return Object.keys(new Array(toGenerate).fill(null)).map((idx) => {
     const idxNumber = Number.parseInt(idx);
-    let sectionIdx = 0;
     const time = addSeconds(hourAgo, idxNumber);
     return {
       accountSid: flexContext.ACCOUNT_SID,
@@ -41,14 +40,6 @@ const generateMockCases = (toGenerate: number): Case[] => {
       },
       info: {
         definitionVersion: DefinitionVersionId.demoV1,
-        counsellorNotes: [
-          {
-            id: `note-${sectionIdx++}`,
-            createdAt: time.toISOString(),
-            twilioWorkerId: flexContext.LOGGED_IN_WORKER_SID,
-            text: `Note ${sectionIdx} (Case ${idxNumber})`,
-          },
-        ],
       },
       createdAt: time.toISOString(),
       updatedAt: time.toISOString(),
