@@ -96,15 +96,17 @@ const CaseOverview: React.FC<Props> = ({
   );
 
   const renderInfoValue = (field: any) => {
-    let value = connectedCase?.info?.[field.name];
-    if (value === undefined || value === null) return '—';
-    
+    const value = connectedCase?.info?.[field.name];
+    if (value === undefined || value === '') return '—';
+
     switch (field.type) {
       case 'checkbox':
         return value ? 'Yes' : 'No';
       case 'select':
         const option = field.options?.find(opt => opt.value === value);
         return option?.label || value;
+      case 'date-input':
+        return parseISO(value).toLocaleDateString();
       default:
         return value.toString();
     }

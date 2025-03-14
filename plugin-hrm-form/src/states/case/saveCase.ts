@@ -84,6 +84,7 @@ const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => 
   const caseDefinitionVersion = state.configuration.definitionVersions[connectedCase?.info?.definitionVersion];
   const stateCase = state.connectedCase.cases[connectedCase?.id];
   const outstandingUpdateCount = (stateCase?.outstandingUpdateCount ?? 1) - 1;
+  const { status, ...restCaseSummary } = stateCase?.caseWorkingCopy?.caseSummary || {};
 
   return {
     ...state,
@@ -94,12 +95,12 @@ const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => 
         [connectedCase.id]: {
           ...stateCase,
           connectedCase: {
-            ...(stateCase?.connectedCase || {}),
+            ...stateCase?.connectedCase,
             ...connectedCase,
             categories: stateCase?.connectedCase?.categories ?? connectedCase.categories,
             info: {
               ...(stateCase?.connectedCase?.info || {}),
-              ...(stateCase?.caseWorkingCopy?.caseSummary || {}),
+              ...restCaseSummary,
               ...connectedCase.info,
             },
           },
