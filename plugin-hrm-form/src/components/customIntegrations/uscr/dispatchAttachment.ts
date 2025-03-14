@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-export const dispatchAttachmentSectionType = 'dispatchAttempt';
+export const dispatchAttemptSectionType = 'dispatchAttempt';
 export type IncidentReportAttempt = {
   attemptTimestamp: string;
   createdTimestamp: string | null;

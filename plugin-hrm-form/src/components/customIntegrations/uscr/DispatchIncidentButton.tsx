@@ -31,7 +31,7 @@ import { dispatchIncident } from './dispatchService';
 import { loadContactFromHrmByIdAsyncAction, updateContactInHrmAsyncAction } from '../../../states/contacts/saveContact';
 import { isCaseSectionTimelineActivity } from '../../../states/case/types';
 import { TertiaryButton, StyledNextStepButton } from '../../../styles/buttons';
-import { dispatchAttachmentSectionType, IncidentReportAttempt } from './dispatchAttachment';
+import { dispatchAttemptSectionType, IncidentReportAttempt } from './dispatchAttachment';
 import asyncDispatch from '../../../states/asyncDispatch';
 
 const dispatchSuccessNotification = 'dispatchSuccess';
@@ -85,7 +85,7 @@ const DispatchIncidentButton: React.FC<Props> = ({ contactId }) => {
   });
   const { sections, forceRefresh: refreshCaseSections } = useCaseSections({
     caseId: savedContact.caseId,
-    sectionType: dispatchAttachmentSectionType,
+    sectionType: dispatchAttemptSectionType,
     autoload: true,
     refresh: true,
     paginationSettings: { limit: 100, offset: 0 },
