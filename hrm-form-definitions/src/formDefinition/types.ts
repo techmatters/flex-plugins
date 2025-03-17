@@ -300,6 +300,7 @@ export type RequiredCaseOverviewFieldName =
 type CaseOverviewTypeEntry = {
   name: string;
   label: string;
+  type: string;
   form: FormDefinition;
 };
 
