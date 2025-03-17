@@ -1,23 +1,35 @@
 {
   "Mental Health Innovations": {
-    "Missing children": {
-      "color": "#BBE3FF",
+    "Accessibility": {
+      "color": "#8055BA",
       "subcategories": [
         {
-          "label": "Child abduction"
+          "label": "Education"
         },
         {
-          "label": "Lost, unaccounted for or otherwise missing child"
+          "label": "Essential needs"
         },
         {
-          "label": "Runaway"
+          "label": "General healthcare services"
+        },
+        {
+          "label": "Legal services and advice"
+        },
+        {
+          "label": "Mental health services"
+        },
+        {
+          "label": "Sexual health services"
+        },
+        {
+          "label": "Socio-economical services"
         },
         {
           "label": "Unspecified/Other"
         }
       ]
     },
-    "Violence": {
+    "Abuse": {
       "color": "#F5A623",
       "subcategories": [
         {
@@ -58,6 +70,69 @@
         },
         {
           "label": "Sexual violence"
+        },
+        {
+          "label": "Unspecified/Other"
+        }
+      ]
+    },
+    "Discrimination and Exclusion": {
+      "color": "#B971AF",
+      "subcategories": [
+        {
+          "label": "Ethnicity/nationality"
+        },
+        {
+          "label": "Financial situation"
+        },
+        {
+          "label": "Gender"
+        },
+        {
+          "label": "Gender identity or expression and sexual orientation"
+        },
+        {
+          "label": "Health"
+        },
+        {
+          "label": "Philosophical or religious beliefs"
+        },
+        {
+          "label": "Unspecified/Other"
+        }
+      ]
+    },
+    "Education and Occupation": {
+      "color": "#55AFAF",
+      "subcategories": [
+        {
+          "label": "Academic issues"
+        },
+        {
+          "label": "Teacher and school problems"
+        },
+        {
+          "label": "Problems at work"
+        },
+        {
+          "label": "Unspecified/Other"
+        }
+      ]
+    },
+    "Family Relationships": {
+      "color": "#239613",
+      "subcategories": [
+        {
+          "label": "Adoption, fostering, and extended family placement"
+        },
+        {
+          "label": "Relationship to caregiver"
+        },
+        {
+          "label": "Family health and wellbeing"
+        },
+        {
+          "label": "Relationship with sibling(s)"
         },
         {
           "label": "Unspecified/Other"
@@ -105,6 +180,63 @@
         }
       ]
     },
+    "Missing children": {
+      "color": "#BBE3FF",
+      "subcategories": [
+        {
+          "label": "Child abduction"
+        },
+        {
+          "label": "Lost, unaccounted for or otherwise missing child"
+        },
+        {
+          "label": "Runaway"
+        },
+        {
+          "label": "Unspecified/Other"
+        }
+      ]
+    },
+    "Non-Counselling contacts": {
+      "color": "#767777",
+      "subcategories": [
+        {
+          "label": "Complaints about the child helpline"
+        },
+        {
+          "label": "Questions by parents"
+        },
+        {
+          "label": "Questions about the child helpline"
+        },
+        {
+          "label": "Questions about other services"
+        },
+        {
+          "label": "\"Thank you for your assistance\""
+        },
+        {
+          "label": "Unspecified/Other"
+        }
+      ]
+    },
+    "Peer Relationships": {
+      "color": "#9AD703",
+      "subcategories": [
+        {
+          "label": "Friends and friendships"
+        },
+        {
+          "label": "Partner relationships"
+        },
+        {
+          "label": "Classmates/colleagues relationships"
+        },
+        {
+          "label": "Unspecified/Other"
+        }
+      ]
+    },
     "Physical Health": {
       "color": "#E86B6B",
       "subcategories": [
@@ -134,115 +266,6 @@
         }
       ]
     },
-    "Accessibility": {
-      "color": "#8055BA",
-      "subcategories": [
-        {
-          "label": "Education"
-        },
-        {
-          "label": "Essential needs"
-        },
-        {
-          "label": "General healthcare services"
-        },
-        {
-          "label": "Legal services and advice"
-        },
-        {
-          "label": "Mental health services"
-        },
-        {
-          "label": "Sexual health services"
-        },
-        {
-          "label": "Socio-economical services"
-        },
-        {
-          "label": "Unspecified/Other"
-        }
-      ]
-    },
-    "Discrimination and Exclusion": {
-      "color": "#B971AF",
-      "subcategories": [
-        {
-          "label": "Ethnicity/nationality"
-        },
-        {
-          "label": "Financial situation"
-        },
-        {
-          "label": "Gender"
-        },
-        {
-          "label": "Gender identity or expression and sexual orientation"
-        },
-        {
-          "label": "Health"
-        },
-        {
-          "label": "Philosophical or religious beliefs"
-        },
-        {
-          "label": "Unspecified/Other"
-        }
-      ]
-    },
-    "Family Relationships": {
-      "color": "#239613",
-      "subcategories": [
-        {
-          "label": "Adoption, fostering, and extended family placement"
-        },
-        {
-          "label": "Relationship to caregiver"
-        },
-        {
-          "label": "Family health and wellbeing"
-        },
-        {
-          "label": "Relationship with sibling(s)"
-        },
-        {
-          "label": "Unspecified/Other"
-        }
-      ]
-    },
-    "Peer Relationships": {
-      "color": "#9AD703",
-      "subcategories": [
-        {
-          "label": "Friends and friendships"
-        },
-        {
-          "label": "Partner relationships"
-        },
-        {
-          "label": "Classmates/colleagues relationships"
-        },
-        {
-          "label": "Unspecified/Other"
-        }
-      ]
-    },
-    "Education and Occupation": {
-      "color": "#55AFAF",
-      "subcategories": [
-        {
-          "label": "Academic issues"
-        },
-        {
-          "label": "Teacher and school problems"
-        },
-        {
-          "label": "Problems at work"
-        },
-        {
-          "label": "Unspecified/Other"
-        }
-      ]
-    },
     "Sexuality": {
       "color": "#506BA5",
       "subcategories": [
@@ -251,29 +274,6 @@
         },
         {
           "label": "Sexual behaviours"
-        },
-        {
-          "label": "Unspecified/Other"
-        }
-      ]
-    },
-    "Non-Counselling contacts": {
-      "color": "#767777",
-      "subcategories": [
-        {
-          "label": "Complaints about the child helpline"
-        },
-        {
-          "label": "Questions by parents"
-        },
-        {
-          "label": "Questions about the child helpline"
-        },
-        {
-          "label": "Questions about other services"
-        },
-        {
-          "label": "\"Thank you for your assistance\""
         },
         {
           "label": "Unspecified/Other"

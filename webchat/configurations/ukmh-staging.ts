@@ -15,13 +15,13 @@
  */
 
 import { Translations, Configuration, MapHelplineLanguage, ContactType } from '../types';
-import type { PreEngagementFormDefinition } from '../src/pre-engagement-form';
+import { PreEngagementFormDefinition, EMAIL_PATTERN } from '../src/pre-engagement-form';
 
 const accountSid = 'AC9eb11b6c714d785db648b6ea6a85c13f';
 const flexFlowSid = 'FO3bce9ff5450d3630078145e245b127eb';
 const defaultLanguage = 'en-GB';
 const captureIp = true;
-const contactType: ContactType = 'ip';
+const contactType: ContactType = 'email';
 
 const translations: Translations = {
   'en-GB': {
@@ -44,24 +44,34 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'input-text',
       name: 'firstName',
       label: 'First Name',
-      placeholder: 'GuestName',
+      placeholder: 'Your name',
       required: true,
     },
     {
-      label: 'Age',
-      type: 'select',
-      name: 'age',
+      type: 'input-text',
+      name: 'lastName',
+      label: 'Last Name',
+      placeholder: 'Your Lastname',
       required: true,
+    },
+    {
+      type: 'input-text',
+      name: 'contactIdentifier',
+      label: 'Email address',
+      required: true,
+      placeholder: 'Your Email',
+      pattern: {
+        value: EMAIL_PATTERN,
+        message: 'FieldValidationInvalidEmail',
+      },
+    },
+    {
+      label: 'On a scale from 0 (not anxious at all) to 10 (completely anxious), how anxious did you feel yesterday?',
+      type: 'select',
+      name: 'anxietyScale',
+      required: false,
       defaultValue: '',
       options: [
-        {
-          value: "",
-          label: ""
-        },
-        {
-          value: "Unborn",
-          label: "Unborn"
-        },
         {
           value: "00",
           label: "0"
@@ -105,162 +115,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         {
           value: "10",
           label: "10"
-        },
-        {
-          value: "11",
-          label: "11"
-        },
-        {
-          value: "12",
-          label: "12"
-        },
-        {
-          value: "13",
-          label: "13"
-        },
-        {
-          value: "14",
-          label: "14"
-        },
-        {
-          value: "15",
-          label: "15"
-        },
-        {
-          value: "16",
-          label: "16"
-        },
-        {
-          value: "17",
-          label: "17"
-        },
-        {
-          value: "18",
-          label: "18"
-        },
-        {
-          value: "19",
-          label: "19"
-        },
-        {
-          value: "20",
-          label: "20"
-        },
-        {
-          value: "21",
-          label: "21"
-        },
-        {
-          value: "22",
-          label: "22"
-        },
-        {
-          value: "23",
-          label: "23"
-        },
-        {
-          value: "24",
-          label: "24"
-        },
-        {
-          value: ">25",
-          label: ">25"
-        },
-        {
-          value: "Unknown",
-          label: "Unknown"
         }
-      ],
-    },
-    {
-      label: 'Gender',
-      type: 'select',
-      name: 'gender',
-      required: true,
-      defaultValue: '',
-      options: [
-        {
-          value: "",
-          label: ""
-        },
-        {
-          value: 'Girl',
-          label: 'Girl',
-        },
-        {
-          value: 'Boy',
-          label: 'Boy',
-        },
-        {
-          value: 'Non-Binary',
-          label: 'Non-Binary',
-        },
-        {
-          value: 'Unknown',
-          label: 'Unknown',
-        },
-      ],
-    },
-    {
-      type: 'select',
-      name: 'province',
-      label: 'Province',
-      required: false,
-      defaultValue: '',
-      options: [
-        { 'value': '', 'label': '' },
-        { 'value': 'Northern', 'label': 'Northern' },
-        { 'value': 'Eastern', 'label': 'Eastern' },
-        { 'value': 'Western', 'label': 'Western' },
-        { 'value': 'Southern', 'label': 'Southern' },
-        { 'value': 'Unknown', 'label': 'Unknown'}
-      ],
-    },
-    {
-      name: 'district',
-      label: 'District',
-      type: 'dependent-select',
-      dependsOn: 'province',
-      required: false,
-      options: {
-       'Northern': [
-        { 'value': 'District A', 'label': 'District A' },
-        { 'value': 'District B', 'label': 'District B' },
-        { 'value': 'District C', 'label': 'District C' },
-        { 'value': 'Unknown', 'label': 'Unknown'}
-      ],
-      'Eastern': [
-        { 'value': 'District A', 'label': 'District A' },
-        { 'value': 'District B', 'label': 'District B' },
-        { 'value': 'District C', 'label': 'District C' },
-        { 'value': 'Unknown', 'label': 'Unknown'}
-      ],
-      'Western': [
-        { 'value': 'District A', 'label': 'District A' },
-        { 'value': 'District B', 'label': 'District B' },
-        { 'value': 'District C', 'label': 'District C' },
-        { 'value': 'Unknown', 'label': 'Unknown'}
-      ],
-      'Southern': [
-        { 'value': 'District A', 'label': 'District A' },
-        { 'value': 'District B', 'label': 'District B' },
-        { 'value': 'District C', 'label': 'District C' },
-        { 'value': 'Unknown', 'label': 'Unknown'}
-      ]
-      },
-    },
-    {
-      label: 'How urgent is your situation?',
-      type: 'select',
-      name: 'urgencyLevel',
-      required: false,
-      defaultValue: '',
-      options: [
-        { 'value': '', 'label': '' },
-        { 'value': 'Urgent', 'label': 'Urgent' },
-        { 'value': 'Critical', 'label': 'Critical' },
-        { 'value': 'Non-critical', 'label': 'Non-critical' },
-        { 'value': 'Other', 'label': 'Other' }
       ],
     },
     {
@@ -271,9 +126,9 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       required: {
         value: true,
         message: "Sorry, if you don't accept our terms and conditions we can't provide counselling to you.",
-      }, 
+      },
     },
-   
+
   ],
 };
 
