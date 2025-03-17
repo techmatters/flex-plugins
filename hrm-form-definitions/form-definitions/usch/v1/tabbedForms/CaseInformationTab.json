@@ -1,0 +1,121 @@
+[
+  {
+    "name": "repeatCaller",
+    "label": "Repeat Caller?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "urgencyLevel",
+    "label": "Urgency Level",
+    "type": "select",
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Urgent", "label": "Urgent" },
+      { "value": "Critical", "label": "Critical" },
+      { "value": "Non-critical", "label": "Non-critical" },
+      { "value": "Other", "label": "Other" }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "actionTaken",
+    "label": "Action Taken",
+    "type": "listbox-multiselect",
+    "options": [
+      { "value": "Direct interventions by the child helpline", "label": "Direct interventions by the child helpline" },
+      { "value": "Recommendations of resources", "label": "Recommendations of resources" },
+      { "value": "Referrals to child protection agencies", "label": "Referrals to child protection agencies" },
+      { "value": "Referrals to general healthcare professionals", "label": "Referrals to general healthcare services" },
+      { "value": "Referrals to law enforcement agencies", "label": "Referrals to law enforcement agencies" },
+      { "value": "Referrals to mental health services", "label": "Referrals to mental health services" },
+      { "value": "Referrals to other organisations", "label": "Referrals to other organisations" },
+      { "value": "Referrals to school counsellors", "label": "Referrals to school counsellors" },
+      { "value": "Reports to Child Sexual Abuse Material", "label": "Reports to Child Sexual Abuse Material" },
+      { "value": "Other", "label": "Other" }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "howDidYouKnowAboutOurLine",
+    "label": "How did you know about our line/number?",
+    "type": "select",
+    "options": [
+      { "value": "Unknown", "label": "" },
+      { "value": "Word of mouth", "label": "Word of mouth" },
+      { "value": "Media", "label": "Media" },
+      { "value": "Friend", "label": "Friend" },
+      { "value": "School", "label": "School" },
+      { "value": "Others", "label": "Others" }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "keepConfidential",
+    "label": "Keep confidential?",
+    "type": "mixed-checkbox",
+    "initialChecked": true,
+    "isPII": false
+  },
+  {
+    "name": "mustCallBack",
+    "label": "Is it necessary for a case worker to call back?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "okForCaseWorkerToCall",
+    "label": "Is it okay for case worker to call?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "didYouDiscussRightsWithTheChild",
+    "label": "Did you discuss rights with the child?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "didTheChildFeelWeSolvedTheirProblem",
+    "label": "Did the child feel we solved their problem?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "wouldTheChildRecommendUsToAFriend",
+    "label": "Would the child recommend us to a friend?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "referrals",
+    "label": "referrals",
+    "type": "custom-contact-component",
+    "component": "resource-referral-list",
+    "saveable": false,
+    "isPII": false
+  },
+  {
+    "name": "callSummary",
+    "label": "Contact Summary",
+    "type": "textarea",
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": true,
+    "width": "300px",
+    "rows": "40",
+    "additionalActions": [
+      {
+        "name": "generateSummary",
+        "label": "Generate Summary",
+        "type": "custom-contact-component",
+        "component": "generate-summary-button",
+        "saveable": false,
+        "props": {
+          "form": "caseInformation",
+          "item": "callSummary"
+        }
+      }
+    ]
+  }
+]

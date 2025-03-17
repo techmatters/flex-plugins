@@ -1,0 +1,16 @@
+{
+  "label": "Childhelp",
+  "helplines": [
+    {
+      "label": "Childhelp",
+      "value": "Childhelp",
+      "default": true,
+      "kmsUrl": "www.google.com",
+      "manager": {
+        "name": "Helpline Manager",
+        "phone": "+123 45 678",
+        "email": "supervisor@helpline.org"
+      }
+    }
+  ]
+}

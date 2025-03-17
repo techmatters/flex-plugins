@@ -39,14 +39,33 @@
         
       },
       "incidentReport": {
-        "splitFormAt": 23,
+        "splitFormAt": 10,
         "printOrder": 1,
         "caseHomeOrder": 1,
         "caseHomeLocation": "timeline",
         "previewFields": [
+          "incidentType"
+        ],
+        "layout": {
+          "incidentType": {
+            "includeLabel": true
+          },
+          "beaconIncidentId": {
+            "includeLabel": false
+          }
+        }
+      },
+      "caseReport": {
+        "splitFormAt": 6,
+        "caseHomeLocation" : "timeline",
+        "previewFields": [
           "primaryDisposition"
         ],
         "layout": {
+          "date": {
+            "includeLabel": false,
+            "format": "date"
+          },
           "primaryDisposition": {
             "includeLabel": true
           }

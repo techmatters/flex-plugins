@@ -7,6 +7,10 @@
     "label": "Incident Report",
     "formPath": "caseForms/IncidentReportForm.json"
   },
+  "caseReport": {
+    "label": "Case Report",
+    "formPath": "caseForms/CaseReportForm.json"
+  },
   "safetyPlan": {
     "label": "Safety Plan",
     "formPath": "caseForms/SafetyPlanForm.json"
