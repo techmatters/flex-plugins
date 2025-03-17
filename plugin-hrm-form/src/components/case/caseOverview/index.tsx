@@ -73,7 +73,7 @@ const CaseOverview: React.FC<Props> = ({
     "label": "Case-CaseDetailsLastUpdated",
     "type": "date-input"
   }];
-  const dateFields = [...requiredDateFields, ...caseOverviewFieldsArray].filter(field => field.type === 'date-input');
+  const dateFields = caseOverviewFieldsArray.filter(field => field.type === 'date-input');
 
   const renderDateValue = (fieldName: string) => {
     switch (fieldName) {
@@ -91,6 +91,7 @@ const CaseOverview: React.FC<Props> = ({
   const additionalFields = caseOverviewFieldsArray.filter(
     field =>
       !dateFields.includes(field) &&
+  field.name !== 'status' &&
       field.name !== 'summary' &&
       field.type !== 'checkbox' &&
       field.type !== 'textarea',
@@ -151,7 +152,7 @@ const CaseOverview: React.FC<Props> = ({
       </DetailsContainer>
       <DetailsContainer>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          {dateFields.map(field => (
+          {[...requiredDateFields, ...dateFields].map(field => (
             <CaseOverviewItem
               key={field.name}
               labelId={field.name}
