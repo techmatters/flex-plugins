@@ -44,12 +44,7 @@ const CaseOverview: React.FC<Props> = ({
   definitionVersion,
   connectedCase,
 }) => {
-  const {
-    info,
-    status,
-    createdAt,
-    updatedAt,
-  } = connectedCase;
+  const { info, status, createdAt, updatedAt } = connectedCase;
 
   const editButton = can(PermissionActions.EDIT_CASE_OVERVIEW) || availableStatusTransitions.length > 1; // availableStatusTransitions always includes current status, if that's the only one available, you cannot change it
   const caseOverviewFields = definitionVersion?.caseOverview;
@@ -57,21 +52,20 @@ const CaseOverview: React.FC<Props> = ({
 
   // status & childIsAtRisk fields
   const statusLabel = definitionVersion?.caseStatus[status]?.label ?? status;
-  const caseStatusField = caseOverviewFieldsArray.filter(field => field.name === REQUIRED_CASE_OVERVIEW_FIELDS.CASE_STATUS);
-
-  const checkboxFields = caseOverviewFieldsArray.filter(
-    field =>
-      field.type === 'checkbox'
+  const caseStatusField = caseOverviewFieldsArray.filter(
+    field => field.name === REQUIRED_CASE_OVERVIEW_FIELDS.CASE_STATUS,
   );
+
+  const checkboxFields = caseOverviewFieldsArray.filter(field => field.type === 'checkbox');
   // date fields
   const formattedCreatedAt = parseISO(createdAt).toLocaleDateString();
   const formattedUpdatedAt = createdAt === updatedAt ? '—' : parseISO(updatedAt).toLocaleDateString();
-  
+
   const dateFields = caseOverviewFieldsArray.filter(
     field =>
       field.name === REQUIRED_CASE_OVERVIEW_FIELDS.CREATED_AT ||
-    field.name === REQUIRED_CASE_OVERVIEW_FIELDS.UPDATED_AT ||
-    field.type === 'date-input'
+      field.name === REQUIRED_CASE_OVERVIEW_FIELDS.UPDATED_AT ||
+      field.type === 'date-input',
   );
 
   // additional fields
@@ -79,13 +73,14 @@ const CaseOverview: React.FC<Props> = ({
     field =>
       !Object.values(REQUIRED_CASE_OVERVIEW_FIELDS).includes(
         field.name as typeof REQUIRED_CASE_OVERVIEW_FIELDS[keyof typeof REQUIRED_CASE_OVERVIEW_FIELDS],
-      ) && field.type !== 'date-input' && field.name !== 'summary' && field.type !== 'checkbox' && field.type !== 'textarea',
+      ) &&
+      field.type !== 'date-input' &&
+      field.name !== 'summary' &&
+      field.type !== 'checkbox' &&
+      field.type !== 'textarea',
   );
 
-  const textareaFields = caseOverviewFieldsArray.filter(
-    field =>
-      field.type === 'textarea'
-  );
+  const textareaFields = caseOverviewFieldsArray.filter(field => field.type === 'textarea');
 
   const renderDateValue = (fieldName: string) => {
     switch (fieldName) {
@@ -99,9 +94,9 @@ const CaseOverview: React.FC<Props> = ({
     }
   };
 
-  const renderInfoValue = (field) => {
+  const renderInfoValue = field => {
     const value = connectedCase?.info?.[field.name];
-    
+
     switch (field.type) {
       case 'checkbox':
         return value ? 'Yes' : 'No';
@@ -118,6 +113,7 @@ const CaseOverview: React.FC<Props> = ({
       const value = connectedCase?.info?.childIsAtRisk;
       return value ? '#d22f2f' : '#d8d8d8';
     }
+    return null;
   };
 
   return (

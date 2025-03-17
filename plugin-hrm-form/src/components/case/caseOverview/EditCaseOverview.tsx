@@ -115,7 +115,9 @@ const EditCaseOverview: React.FC<Props> = ({
       if (caseOverviewFields && Array.isArray(caseOverviewFields)) {
         return caseOverviewFields
           .filter(
-            field => field.name !== REQUIRED_CASE_OVERVIEW_FIELDS.CREATED_AT && field.name !== REQUIRED_CASE_OVERVIEW_FIELDS.UPDATED_AT,
+            field =>
+              field.name !== REQUIRED_CASE_OVERVIEW_FIELDS.CREATED_AT &&
+              field.name !== REQUIRED_CASE_OVERVIEW_FIELDS.UPDATED_AT,
           )
           .map(field => {
             if (field.name === REQUIRED_CASE_OVERVIEW_FIELDS.CASE_STATUS) {
