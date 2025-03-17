@@ -113,16 +113,15 @@ const EditCaseOverview: React.FC<Props> = ({
   const formDefinition: FormDefinition = useMemo(() => {
     try {
       if (caseOverviewFields && Array.isArray(caseOverviewFields)) {
-        return caseOverviewFields
-          .map(field => {
-            if (field.name === 'status') {
-              return {
-                ...field,
-                options: availableStatusTransitions,
-              };
-            }
-            return field;
-          });
+        return caseOverviewFields.map(field => {
+          if (field.name === 'status') {
+            return {
+              ...field,
+              options: availableStatusTransitions,
+            };
+          }
+          return field;
+        });
       }
 
       return [

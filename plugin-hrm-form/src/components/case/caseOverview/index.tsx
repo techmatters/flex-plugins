@@ -63,16 +63,18 @@ const CaseOverview: React.FC<Props> = ({
   };
 
   // 2nd row: date fields
-  const requiredDateFields = [{
-    "name": "createdAt",
-    "label": "Case-CaseDetailsDateOpened",
-    "type": "date-input"
-  },
-  {
-    "name": "updatedAt",
-    "label": "Case-CaseDetailsLastUpdated",
-    "type": "date-input"
-  }];
+  const requiredDateFields = [
+    {
+      name: 'createdAt',
+      label: 'Case-CaseDetailsDateOpened',
+      type: 'date-input',
+    },
+    {
+      name: 'updatedAt',
+      label: 'Case-CaseDetailsLastUpdated',
+      type: 'date-input',
+    },
+  ];
   const dateFields = caseOverviewFieldsArray.filter(field => field.type === 'date-input');
 
   const renderDateValue = (fieldName: string) => {
@@ -91,7 +93,7 @@ const CaseOverview: React.FC<Props> = ({
   const additionalFields = caseOverviewFieldsArray.filter(
     field =>
       !dateFields.includes(field) &&
-  field.name !== 'status' &&
+      field.name !== 'status' &&
       field.name !== 'summary' &&
       field.type !== 'checkbox' &&
       field.type !== 'textarea',
