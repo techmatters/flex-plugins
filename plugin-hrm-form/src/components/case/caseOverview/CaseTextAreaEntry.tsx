@@ -58,7 +58,7 @@ const CaseTextAreaEntry: React.FC<Props> = ({ connectedCaseState, textareaFields
             </CaseSectionFont>
             <CaseStyledTextArea
               rows={fieldValue ? defaultRows : undefined}
-              data-testid={ field.name === 'summary' ? 'Case-CaseSummary-TextArea' : `Case-${field.name}-TextArea`}
+              data-testid={field.name === 'summary' ? 'Case-CaseSummary-TextArea' : `Case-${field.name}-TextArea`}
               aria-labelledby={`Case-${field.name}-label`}
               placeholder={placeholder}
               value={fieldValue}
