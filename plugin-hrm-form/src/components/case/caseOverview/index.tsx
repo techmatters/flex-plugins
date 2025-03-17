@@ -17,7 +17,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import { DefinitionVersion, StatusInfo, REQUIRED_CASE_OVERVIEW_FIELDS, FormInputType } from 'hrm-form-definitions';
+import { DefinitionVersion, StatusInfo, REQUIRED_CASE_OVERVIEW_FIELDS } from 'hrm-form-definitions';
 import { parseISO } from 'date-fns';
 
 import { Case, CustomITask, StandaloneITask } from '../../../types/types';
@@ -45,7 +45,7 @@ const CaseOverview: React.FC<Props> = ({
   connectedCase,
 }) => {
   const {
-    info: { followUpDate, childIsAtRisk },
+    info,
     status,
     createdAt,
     updatedAt,
@@ -58,58 +58,55 @@ const CaseOverview: React.FC<Props> = ({
   // status & childIsAtRisk fields
   const statusLabel = definitionVersion?.caseStatus[status]?.label ?? status;
   const caseStatusField = caseOverviewFieldsArray.filter(field => field.name === REQUIRED_CASE_OVERVIEW_FIELDS.CASE_STATUS);
-  // const childIsAtRiskField = caseOverviewFieldsArray.filter(
-  //   field => field.name === CASE_OVERVIEW_FIELDS.CHILD_IS_AT_RISK,
-  // );
 
   // date fields
   const formattedCreatedAt = parseISO(createdAt).toLocaleDateString();
   const formattedUpdatedAt = createdAt === updatedAt ? '—' : parseISO(updatedAt).toLocaleDateString();
-  const formattedFollowUpDate = parseISO(followUpDate).toLocaleDateString();
-
+  
+  const dateFields = caseOverviewFieldsArray.filter(
+    field =>
+      field.name === REQUIRED_CASE_OVERVIEW_FIELDS.CREATED_AT ||
+    field.name === REQUIRED_CASE_OVERVIEW_FIELDS.UPDATED_AT ||
+    field.type === 'date-input'
+  );
   const renderDateValue = (fieldName: string) => {
     switch (fieldName) {
       case REQUIRED_CASE_OVERVIEW_FIELDS.CREATED_AT:
         return formattedCreatedAt;
       case REQUIRED_CASE_OVERVIEW_FIELDS.UPDATED_AT:
         return formattedUpdatedAt;
-      // case REQUIRED_CASE_OVERVIEW_FIELDS.FOLLOW_UP_DATE:
-      //   return formattedFollowUpDate === 'Invalid Date' ? '—' : formattedFollowUpDate;
       default:
-        return connectedCase?.[fieldName] || connectedCase?.info?.[fieldName] || '—';
+        if (!info?.[fieldName] || info?.[fieldName] === '') return '—';
+        return parseISO(info?.[fieldName] || '').toLocaleDateString() || '—';
     }
   };
-
-  const dateFields = caseOverviewFieldsArray.filter(
-    field =>
-      field.name === REQUIRED_CASE_OVERVIEW_FIELDS.CREATED_AT ||
-      field.name === REQUIRED_CASE_OVERVIEW_FIELDS.UPDATED_AT 
-      //field type is a date-input
-      // field.form[0]?.type === FormInputType.DateInput
-  );
-
+  
   // additional fields
   const additionalFields = caseOverviewFieldsArray.filter(
     field =>
       !Object.values(REQUIRED_CASE_OVERVIEW_FIELDS).includes(
         field.name as typeof REQUIRED_CASE_OVERVIEW_FIELDS[keyof typeof REQUIRED_CASE_OVERVIEW_FIELDS],
-      ),
+      ) && field.type !== 'date-input' && field.name !== 'summary',
   );
 
-  const renderInfoValue = (field: any) => {
+  const renderValue = (field) => {
     const value = connectedCase?.info?.[field.name];
-    if (value === undefined || value === '') return '—';
-
-    switch (field.form[0]?.type) {
+    
+    switch (field.type) {
       case 'checkbox':
         return value ? 'Yes' : 'No';
       case 'select':
         const option = field.options?.find(opt => opt.value === value);
-        return option?.label || value;
-      case 'date-input':
-        return parseISO(value).toLocaleDateString();
+        return option?.label || value || '—';
       default:
-        return value.toString();
+        return value.toString() || '—';
+    }
+  };
+
+  const renderColor = (fieldName: string) => {
+    if (fieldName === 'childIsAtRisk') {
+      const value = connectedCase?.info?.childIsAtRisk;
+      return value ? '#d22f2f' : '#d8d8d8';
     }
   };
 
@@ -162,7 +159,8 @@ const CaseOverview: React.FC<Props> = ({
                 labelId={field.name}
                 templateCode={field.label}
                 inputId={`Details_${field.name}`}
-                value={renderInfoValue(field)}
+                value={renderValue(field)}
+                color={renderColor(field.name)}
               />
             ))}
           </div>

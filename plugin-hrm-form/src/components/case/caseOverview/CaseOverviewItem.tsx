@@ -30,7 +30,6 @@ type CaseOverviewItemProps = {
 
 const CaseOverviewItem: React.FC<CaseOverviewItemProps> = ({ labelId, templateCode, inputId, value, color }) => {
   const strings = getTemplateStrings();
-
   return (
     <div style={{ paddingRight: '20px' }}>
       <DetailDescription>
