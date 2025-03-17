@@ -10,16 +10,6 @@
     "type": "checkbox"
   },
   {
-    "name": "createdAt",
-    "label": "วันที่เปิดเคส",
-    "type": "date-input"
-  },
-  {
-    "name": "updatedAt",
-    "label": "วันที่อัพเดท",
-    "type": "date-input"
-  },
-  {
     "name": "followUpDate",
     "label": "Follow Up Date",
     "type": "date-input"
