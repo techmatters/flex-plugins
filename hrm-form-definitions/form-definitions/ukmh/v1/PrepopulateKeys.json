@@ -4,8 +4,8 @@
     "CallerInformationTab":[]
   },
   "preEngagement":{
-    "ChildInformationTab":["age", "gender", "firstName"],
-    "CallerInformationTab":["province","district"],
-    "CaseInformationTab":["urgencyLevel"]
+    "ChildInformationTab":["firstName", "lastName", "contactIdentifier", "ip", "anxietyScale"],
+    "CallerInformationTab":[],
+    "CaseInformationTab":[]
   }
 }
