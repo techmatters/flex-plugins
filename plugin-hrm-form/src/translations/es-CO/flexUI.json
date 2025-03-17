@@ -461,7 +461,7 @@
   "CaseSection-View-Title/referral": "Ver Referencia",
   "CaseSection-View-Title/note": "Ver Nota",
   "Case-CaseOverviewLabel": "Ficha del Caso",
-  "Case-EditCaseSummary": "Editar Información del Caso",
+  "Case-EditCaseOverview": "Editar Información del Caso",
   "BottomBar-SaveCaseSummary": "Guardar",
   "Follow Up Date": "Fecha Seguimiento",
   "Case Status": "Estado del Caso",

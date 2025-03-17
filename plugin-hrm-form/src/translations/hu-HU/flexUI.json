@@ -478,7 +478,7 @@
   "TabbedForms-ReportsChildLink": "Hozzon létre linket a gyermek számára",
   "TabbedForms-ReportsCounselorReport": "Jelentés tanácsadóként",
   "Case-CaseOverviewLabel": "Eset áttekintése",
-  "Case-EditCaseSummary": "Az esetinformációk szerkesztése",
+  "Case-EditCaseOverview": "Az esetinformációk szerkesztése",
   "CSAMCLC-ActionHeaderAdded": "Hozzáadva {{date}} {{time}} &nbsp;&nbsp; Tanácsadó: {{counsellor}}",
   "ContactDetails-GeneralDetails-Email": "Email",
   "ContactDetails-LoadRecording-Button": "Nyitott felvétel",

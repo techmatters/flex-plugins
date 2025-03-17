@@ -18,8 +18,9 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
+import { CaseOverviewTypeEntry } from 'hrm-form-definitions';
 
-import { CaseDetailsBorder, CaseSectionFont, CaseSummaryTextArea } from '../styles';
+import { CaseDetailsBorder, CaseSectionFont, CaseStyledTextArea } from '../styles';
 import type { CustomITask, StandaloneITask } from '../../../types/types';
 import { getTemplateStrings } from '../../../hrmConfig';
 import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRouteCase';
@@ -27,38 +28,53 @@ import { RootState } from '../../../states';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
+  textareaFields?: (CaseOverviewTypeEntry & {
+    placeholder?: string;
+  })[];
 };
 
 // eslint-disable-next-line no-use-before-define
 type Props = OwnProps & ReturnType<typeof mapStateToProps>;
 
-const CaseSummary: React.FC<Props> = ({ connectedCaseState }) => {
+const CaseTextAreaEntry: React.FC<Props> = ({ connectedCaseState, textareaFields }) => {
   const strings = getTemplateStrings();
   const { connectedCase } = connectedCaseState;
-  const summary = connectedCase.info?.summary || '';
+
+  if (!textareaFields || textareaFields.length === 0) return null;
 
   return (
-    <CaseDetailsBorder marginTop="25px">
-      <CaseSectionFont id="Case-CaseSummary-label">
-        <Template code="Case-CaseSummarySection" />
-      </CaseSectionFont>
-      <CaseSummaryTextArea
-        rows={summary ? 5 : undefined}
-        data-testid="Case-CaseSummary-TextArea"
-        aria-labelledby="Case-CaseSummary-label"
-        // Add Case summary doesn't show up as default value
-        placeholder={strings.NoCaseSummary}
-        value={summary}
-        readOnly={true}
-      />
-    </CaseDetailsBorder>
+    <>
+      {textareaFields.map(field => {
+        const fieldValue = connectedCase.info?.[field.name] || '';
+        const defaultRows = 5;
+
+        const placeholder =
+          field.placeholder || (field.name === 'summary' ? strings.NoCaseSummary : `No ${field.label}`);
+
+        return (
+          <CaseDetailsBorder key={field.name} marginTop="25px">
+            <CaseSectionFont id={`Case-${field.name}-label`}>
+              <Template code={field.label} />
+            </CaseSectionFont>
+            <CaseStyledTextArea
+              rows={fieldValue ? defaultRows : undefined}
+              data-testid={field.name === 'summary' ? 'Case-CaseSummary-TextArea' : `Case-${field.name}-TextArea`}
+              aria-labelledby={`Case-${field.name}-label`}
+              placeholder={placeholder}
+              value={fieldValue}
+              readOnly={true}
+            />
+          </CaseDetailsBorder>
+        );
+      })}
+    </>
   );
 };
 
-CaseSummary.displayName = 'CaseSummary';
+CaseTextAreaEntry.displayName = 'CaseTextAreaEntry';
 
 const mapStateToProps = (state: RootState, { task }: OwnProps) => {
   return { connectedCaseState: selectCurrentRouteCaseState(state, task.taskSid) };
 };
 
-export default connect(mapStateToProps)(CaseSummary);
+export default connect(mapStateToProps)(CaseTextAreaEntry);

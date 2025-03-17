@@ -1,32 +1,33 @@
 [
   {
     "name": "status",
-    "label": "Case Status",
+    "label": "Állapot",
     "type": "select"
   },
   {
     "name": "childIsAtRisk",
-    "label": "Child is at risk",
+    "label": "A gyermek veszélyben van",
     "type": "checkbox"
   },
   {
     "name": "createdAt",
-    "label": "Created Date",
+    "label": "Folyamatban lévő",
     "type": "date-input"
   },
   {
     "name": "updatedAt",
-    "label": "Updated Date",
+    "label": "Utoljára frissítve / lezárt",
     "type": "date-input"
   },
   {
     "name": "followUpDate",
-    "label": "Follow Up Date",
+    "label": "Frissítés dátuma",
     "type": "date-input"
   },
   {
     "name": "summary",
-    "label": "Summary",
+    "label": "Esetleírás",
+    "placeholder": "Nincs eset összefoglaló",
     "type": "textarea",
     "rows": 5,
     "width": 300,

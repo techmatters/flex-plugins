@@ -41,7 +41,7 @@ const CaseOverviewEditHistory: React.FC<Props> = ({
   const { enable_last_case_status_update_info: enableLastCaseStatusUpdateInfo } = getAseloFeatureFlags();
 
   return (
-    <>
+    <div style={{ marginBottom: '15px' }}>
       <ActionHeader added={createdAt} addingCounsellor={createdBy} updated={updatedAt} updatingCounsellor={updatedBy} />
 
       {enableLastCaseStatusUpdateInfo && statusUpdatedAt && (
@@ -58,7 +58,7 @@ const CaseOverviewEditHistory: React.FC<Props> = ({
           </CaseActionDetailFont>
         </Row>
       )}
-    </>
+    </div>
   );
 };
 

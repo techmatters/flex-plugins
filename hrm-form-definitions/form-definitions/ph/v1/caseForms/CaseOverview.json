@@ -12,12 +12,12 @@
   {
     "name": "createdAt",
     "label": "Created Date",
-    "type": "date-input"
+  "type": "date-input"
   },
   {
     "name": "updatedAt",
     "label": "Updated Date",
-    "type": "date-input"
+  "type": "date-input"
   },
   {
     "name": "followUpDate",

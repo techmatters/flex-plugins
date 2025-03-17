@@ -446,10 +446,10 @@ describe('Working copy reducers', () => {
               caseWorkingCopy: {
                 ...initialState.cases[1].caseWorkingCopy,
                 caseSummary: {
-                  childIsAtRisk: initialStateInfo.childIsAtRisk,
-                  followUpDate: initialStateInfo.followUpDate,
-                  summary: initialStateInfo.summary,
                   status: initialState.cases[1].connectedCase.status,
+                  followUpDate: 'In a while',
+                  summary: 'Default summary',
+                  childIsAtRisk: false,
                 },
               },
             },
@@ -457,7 +457,7 @@ describe('Working copy reducers', () => {
         },
       });
     });
-    test('Task exists with connectedCase but uundefined case summary properties- uses provided defaults where case properties are undefined', () => {
+    test('Task exists with connectedCase but undefined case summary properties- uses provided defaults where case properties are undefined', () => {
       const initialStateInfo = {
         ...state.cases[1].connectedCase.info,
         followUpDate: undefined,
@@ -502,10 +502,10 @@ describe('Working copy reducers', () => {
               caseWorkingCopy: {
                 ...initialState.cases[1].caseWorkingCopy,
                 caseSummary: {
-                  childIsAtRisk: false,
-                  followUpDate: 'In a while',
-                  summary: initialStateInfo.summary,
                   status: initialState.cases[1].connectedCase.status,
+                  followUpDate: 'In a while',
+                  summary: 'Default summary',
+                  childIsAtRisk: false,
                 },
               },
             },
@@ -516,10 +516,10 @@ describe('Working copy reducers', () => {
   });
   describe('UPDATE_CASE_SUMMARY_WORKING_COPY', () => {
     const workingCopy: CaseSummaryWorkingCopy = {
+      status: 'mulching',
       summary: 'a new summary',
       followUpDate: 'Ragnarok',
       childIsAtRisk: false,
-      status: 'mulching',
     };
 
     test("Task doesn't exist - noop", () => {

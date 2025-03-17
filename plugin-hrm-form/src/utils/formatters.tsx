@@ -58,7 +58,9 @@ export const formatDuration = inSeconds => {
 };
 
 /**
- * @param {number} charLimit
+ * @param {string} summary - summary value
+ * @param {number} charLimit - number of characters to truncate to
+ * @param {string} chooseMessage - 'call', 'case', 'profile'
  */
 export const getShortSummary = (summary, charLimit, chooseMessage = 'call') => {
   if (!summary) {

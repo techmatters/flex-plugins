@@ -288,7 +288,26 @@ export type CaseSectionTypeJsonEntry = {
   formPath: string;
 };
 
-type CaseSectionTypeEntry = {
+export const REQUIRED_CASE_OVERVIEW_FIELDS = {
+  CASE_STATUS: 'status',
+  CREATED_AT: 'createdAt',
+  UPDATED_AT: 'updatedAt',
+} as const;
+
+export type RequiredCaseOverviewFieldName =
+  typeof REQUIRED_CASE_OVERVIEW_FIELDS[keyof typeof REQUIRED_CASE_OVERVIEW_FIELDS];
+
+export type CaseOverviewTypeEntry = {
+  name: string;
+  label: string;
+  type: string;
+  form: FormDefinition;
+};
+
+export type CaseOverviewDefinition = Record<RequiredCaseOverviewFieldName, CaseOverviewTypeEntry> &
+  Record<string, CaseOverviewTypeEntry>;
+
+export type CaseSectionTypeEntry = {
   label: string;
   form: FormDefinition;
 };
@@ -367,6 +386,7 @@ export type LocalizedStringMap = {
  * Type that defines a complete version for all the customizable forms used across the app
  */
 export type DefinitionVersion = {
+  caseOverview: CaseOverviewDefinition;
   caseSectionTypes: CaseSectionTypeDefinitions;
   // TODO: change this property to contactForms to be consistent (though that may create confusion with the component name)
   tabbedForms: {

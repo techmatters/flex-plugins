@@ -6,7 +6,7 @@
   },
   {
     "name": "childIsAtRisk",
-    "label": "Child is at risk",
+    "label": "Person of concern is at risk",
     "type": "checkbox"
   },
   {
@@ -17,11 +17,6 @@
   {
     "name": "updatedAt",
     "label": "Updated Date",
-    "type": "date-input"
-  },
-  {
-    "name": "followUpDate",
-    "label": "Follow Up Date",
     "type": "date-input"
   },
   {
