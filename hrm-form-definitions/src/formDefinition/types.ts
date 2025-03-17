@@ -288,17 +288,14 @@ export type CaseSectionTypeJsonEntry = {
   formPath: string;
 };
 
-export const CASE_OVERVIEW_FIELDS = {
+export const REQUIRED_CASE_OVERVIEW_FIELDS = {
   CASE_STATUS: 'status',
-  SUMMARY: 'summary',
   CREATED_AT: 'createdAt',
   UPDATED_AT: 'updatedAt',
-  FOLLOW_UP_DATE: 'followUpDate',
-  CHILD_IS_AT_RISK: 'childIsAtRisk',
 } as const;
 
-export type CommonCaseOverviewFieldName =
-  typeof CASE_OVERVIEW_FIELDS[keyof typeof CASE_OVERVIEW_FIELDS];
+export type RequiredCaseOverviewFieldName =
+  typeof REQUIRED_CASE_OVERVIEW_FIELDS[keyof typeof REQUIRED_CASE_OVERVIEW_FIELDS];
 
 type CaseOverviewTypeEntry = {
   name: string;
@@ -306,7 +303,7 @@ type CaseOverviewTypeEntry = {
   form: FormDefinition;
 };
 
-export type CaseOverviewDefinition = Record<CommonCaseOverviewFieldName, CaseOverviewTypeEntry> &
+export type CaseOverviewDefinition = Record<RequiredCaseOverviewFieldName, CaseOverviewTypeEntry> &
   Record<string, CaseOverviewTypeEntry>;
 
 type CaseSectionTypeEntry = {
