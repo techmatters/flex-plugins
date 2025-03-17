@@ -102,7 +102,6 @@ export const isCaseSectionIdentifierTimelineActivity = (
 
 export type CaseSummaryWorkingCopy = {
   status: string;
-  summary: string;
   [key: string]: string | boolean;
 };
 

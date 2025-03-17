@@ -224,13 +224,10 @@ const initialiseCaseSummaryWorkingCopyReducer = (
 
   const caseSummary = {
     status: caseState.connectedCase.status ?? action.defaults.status ?? 'open',
-    summary: caseInfo.summary ?? action.defaults.summary ?? '',
-    childIsAtRisk: caseInfo.childIsAtRisk ?? action.defaults.childIsAtRisk ?? false,
-    followUpDate: caseInfo.followUpDate ?? action.defaults.followUpDate ?? null,
   };
 
   Object.entries(action.defaults).forEach(([key, value]) => {
-    if (key !== 'status' && key !== 'summary' && value !== undefined && caseSummary[key] === undefined) {
+    if (key !== 'status' && value !== undefined && caseSummary[key] === undefined) {
       caseSummary[key] = value;
     }
   });
