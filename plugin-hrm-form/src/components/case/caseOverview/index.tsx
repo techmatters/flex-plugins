@@ -24,7 +24,7 @@ import { Case, CustomITask, StandaloneITask } from '../../../types/types';
 import { CaseSectionFont, DetailsContainer, ViewButton } from '../styles';
 import { Box } from '../../../styles';
 import { PermissionActions } from '../../../permissions';
-import CaseSummary from './CaseSummary';
+import CaseTextAreaEntry from './CaseTextAreaEntry';
 import CaseOverviewItem from './CaseOverviewItem';
 
 type Props = {
@@ -59,6 +59,10 @@ const CaseOverview: React.FC<Props> = ({
   const statusLabel = definitionVersion?.caseStatus[status]?.label ?? status;
   const caseStatusField = caseOverviewFieldsArray.filter(field => field.name === REQUIRED_CASE_OVERVIEW_FIELDS.CASE_STATUS);
 
+  const checkboxFields = caseOverviewFieldsArray.filter(
+    field =>
+      field.type === 'checkbox'
+  );
   // date fields
   const formattedCreatedAt = parseISO(createdAt).toLocaleDateString();
   const formattedUpdatedAt = createdAt === updatedAt ? '—' : parseISO(updatedAt).toLocaleDateString();
@@ -69,6 +73,20 @@ const CaseOverview: React.FC<Props> = ({
     field.name === REQUIRED_CASE_OVERVIEW_FIELDS.UPDATED_AT ||
     field.type === 'date-input'
   );
+
+  // additional fields
+  const additionalFields = caseOverviewFieldsArray.filter(
+    field =>
+      !Object.values(REQUIRED_CASE_OVERVIEW_FIELDS).includes(
+        field.name as typeof REQUIRED_CASE_OVERVIEW_FIELDS[keyof typeof REQUIRED_CASE_OVERVIEW_FIELDS],
+      ) && field.type !== 'date-input' && field.name !== 'summary' && field.type !== 'checkbox' && field.type !== 'textarea',
+  );
+
+  const textareaFields = caseOverviewFieldsArray.filter(
+    field =>
+      field.type === 'textarea'
+  );
+
   const renderDateValue = (fieldName: string) => {
     switch (fieldName) {
       case REQUIRED_CASE_OVERVIEW_FIELDS.CREATED_AT:
@@ -80,16 +98,8 @@ const CaseOverview: React.FC<Props> = ({
         return parseISO(info?.[fieldName] || '').toLocaleDateString() || '—';
     }
   };
-  
-  // additional fields
-  const additionalFields = caseOverviewFieldsArray.filter(
-    field =>
-      !Object.values(REQUIRED_CASE_OVERVIEW_FIELDS).includes(
-        field.name as typeof REQUIRED_CASE_OVERVIEW_FIELDS[keyof typeof REQUIRED_CASE_OVERVIEW_FIELDS],
-      ) && field.type !== 'date-input' && field.name !== 'summary',
-  );
 
-  const renderValue = (field) => {
+  const renderInfoValue = (field) => {
     const value = connectedCase?.info?.[field.name];
     
     switch (field.type) {
@@ -134,7 +144,16 @@ const CaseOverview: React.FC<Props> = ({
               value={statusLabel}
             />
           )}
-
+          {checkboxFields.map(field => (
+            <CaseOverviewItem
+              key={field.name}
+              labelId={field.name}
+              templateCode={field.label}
+              inputId={`Details_${field.name}`}
+              value={renderInfoValue(field)}
+              color={renderColor(field.name)}
+            />
+          ))}
         </div>
       </DetailsContainer>
       <DetailsContainer>
@@ -159,14 +178,13 @@ const CaseOverview: React.FC<Props> = ({
                 labelId={field.name}
                 templateCode={field.label}
                 inputId={`Details_${field.name}`}
-                value={renderValue(field)}
-                color={renderColor(field.name)}
+                value={renderInfoValue(field)}
               />
             ))}
           </div>
         </DetailsContainer>
       )}
-      <CaseSummary task={task} />
+      <CaseTextAreaEntry task={task} textareaFields={textareaFields} />
     </>
   );
 };

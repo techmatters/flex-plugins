@@ -27,6 +27,7 @@
   {
     "name": "summary",
     "label": "Case Summary",
+    "placeholder": "No case summary",
     "type": "textarea",
     "rows": 5,
     "width": 300,

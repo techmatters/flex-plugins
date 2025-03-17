@@ -297,7 +297,7 @@ export const REQUIRED_CASE_OVERVIEW_FIELDS = {
 export type RequiredCaseOverviewFieldName =
   typeof REQUIRED_CASE_OVERVIEW_FIELDS[keyof typeof REQUIRED_CASE_OVERVIEW_FIELDS];
 
-type CaseOverviewTypeEntry = {
+export type CaseOverviewTypeEntry = {
   name: string;
   label: string;
   type: string;
@@ -307,7 +307,7 @@ type CaseOverviewTypeEntry = {
 export type CaseOverviewDefinition = Record<RequiredCaseOverviewFieldName, CaseOverviewTypeEntry> &
   Record<string, CaseOverviewTypeEntry>;
 
-type CaseSectionTypeEntry = {
+export type CaseSectionTypeEntry = {
   label: string;
   form: FormDefinition;
 };
