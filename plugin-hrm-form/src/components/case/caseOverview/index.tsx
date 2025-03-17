@@ -50,17 +50,22 @@ const CaseOverview: React.FC<Props> = ({
   const caseOverviewFields = definitionVersion?.caseOverview;
   const caseOverviewFieldsArray = Object.values(caseOverviewFields);
 
-  // status & childIsAtRisk fields
+  // 1st row: status, childIsAtRisk and any other checkbox fields
   const statusLabel = definitionVersion?.caseStatus[status]?.label ?? status;
   const caseStatusField = caseOverviewFieldsArray.filter(
     field => field.name === REQUIRED_CASE_OVERVIEW_FIELDS.CASE_STATUS,
   );
-
   const checkboxFields = caseOverviewFieldsArray.filter(field => field.type === 'checkbox');
-  // date fields
-  const formattedCreatedAt = parseISO(createdAt).toLocaleDateString();
-  const formattedUpdatedAt = createdAt === updatedAt ? '—' : parseISO(updatedAt).toLocaleDateString();
 
+  const renderRiskyColor = (fieldName: string) => {
+    if (fieldName === 'childIsAtRisk') {
+      const value = connectedCase?.info?.childIsAtRisk;
+      return value ? '#d22f2f' : '#d8d8d8';
+    }
+    return null;
+  };
+
+  // 2nd row: date fields
   const dateFields = caseOverviewFieldsArray.filter(
     field =>
       field.name === REQUIRED_CASE_OVERVIEW_FIELDS.CREATED_AT ||
@@ -68,7 +73,19 @@ const CaseOverview: React.FC<Props> = ({
       field.type === 'date-input',
   );
 
-  // additional fields
+  const renderDateValue = (fieldName: string) => {
+    switch (fieldName) {
+      case REQUIRED_CASE_OVERVIEW_FIELDS.CREATED_AT:
+        return parseISO(createdAt).toLocaleDateString();
+      case REQUIRED_CASE_OVERVIEW_FIELDS.UPDATED_AT:
+        return createdAt === updatedAt ? '—' : parseISO(updatedAt).toLocaleDateString();
+      default:
+        if (!info?.[fieldName] || info?.[fieldName] === '') return '—';
+        return parseISO(info?.[fieldName] || '').toLocaleDateString() || '—';
+    }
+  };
+
+  // 3rd row: remaining fields (new helpline based fields)
   const additionalFields = caseOverviewFieldsArray.filter(
     field =>
       !Object.values(REQUIRED_CASE_OVERVIEW_FIELDS).includes(
@@ -79,20 +96,6 @@ const CaseOverview: React.FC<Props> = ({
       field.type !== 'checkbox' &&
       field.type !== 'textarea',
   );
-
-  const textareaFields = caseOverviewFieldsArray.filter(field => field.type === 'textarea');
-
-  const renderDateValue = (fieldName: string) => {
-    switch (fieldName) {
-      case REQUIRED_CASE_OVERVIEW_FIELDS.CREATED_AT:
-        return formattedCreatedAt;
-      case REQUIRED_CASE_OVERVIEW_FIELDS.UPDATED_AT:
-        return formattedUpdatedAt;
-      default:
-        if (!info?.[fieldName] || info?.[fieldName] === '') return '—';
-        return parseISO(info?.[fieldName] || '').toLocaleDateString() || '—';
-    }
-  };
 
   const renderInfoValue = field => {
     const value = connectedCase?.info?.[field.name];
@@ -108,13 +111,8 @@ const CaseOverview: React.FC<Props> = ({
     }
   };
 
-  const renderColor = (fieldName: string) => {
-    if (fieldName === 'childIsAtRisk') {
-      const value = connectedCase?.info?.childIsAtRisk;
-      return value ? '#d22f2f' : '#d8d8d8';
-    }
-    return null;
-  };
+  // 4th row: textarea fields (summary)
+  const textareaFields = caseOverviewFieldsArray.filter(field => field.type === 'textarea');
 
   return (
     <>
@@ -147,7 +145,7 @@ const CaseOverview: React.FC<Props> = ({
               templateCode={field.label}
               inputId={`Details_${field.name}`}
               value={renderInfoValue(field)}
-              color={renderColor(field.name)}
+              color={renderRiskyColor(field.name)}
             />
           ))}
         </div>
