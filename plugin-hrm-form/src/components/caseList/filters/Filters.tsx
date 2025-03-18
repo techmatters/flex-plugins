@@ -250,11 +250,13 @@ const Filters: React.FC<Props> = ({
         </CountText>
       </FiltersContainer>
       {featureFlags.enable_filter_cases && (
-        <FiltersContainer data-testid="CaseList-Filters-Panel">
+        <FiltersContainer data-testid="CaseList-Filters-Panel" style={{ border: '1px solid #bf2020' }}>
           <FilterList fontSize="small" />
           <FilterTitle>
             <Template code="Table-FilterBy" />
           </FilterTitle>
+
+          {/* Status Filter */}
           <MultiSelectFilter
             name="status"
             text={strings['CaseList-Filters-Status']}
@@ -263,6 +265,8 @@ const Filters: React.FC<Props> = ({
             applyFilter={handleApplyStatusFilter}
             setOpenedFilter={setOpenedFilter}
           />
+          
+          {/* Counselor Filter */}
           {canViewCounselorFilter && (
             <MultiSelectFilter
               name="counselor"
@@ -275,6 +279,8 @@ const Filters: React.FC<Props> = ({
               searchable
             />
           )}
+
+          {/* Categories Filter */}
           <CategoriesFilter
             name="categories"
             searchDescription={strings['CaseList-Filters-SearchByCategory']}
@@ -285,11 +291,25 @@ const Filters: React.FC<Props> = ({
             setOpenedFilter={setOpenedFilter}
             searchable
           />
+          
+          {/* Operating Area Filter */}
+          {/* <MultiSelectFilter
+            name="operatingArea"
+            searchDescription={strings['CaseList-Filters-SearchForOperatingArea']}
+            text={strings['CaseList-Filters-OperatingArea']}
+            defaultValues={operatingAreaValues}
+            openedFilter={openedFilter}
+            applyFilter={handleApplyOperatingAreaFilter}
+            setOpenedFilter={setOpenedFilter}
+            searchable
+          /> */}
+          
           <div style={{ display: 'inline-flex', marginLeft: 'auto' }}>
             <DateRange fontSize="small" style={{ marginTop: '4px' }} />
             <FilterTitle style={{ margin: '5px 10px 0 6px' }}>
               <Template code="CaseList-Filters-DateFiltersLabel" />
             </FilterTitle>
+            {/* Date Filters */}
             {getInitialDateFilters().map(df => {
               return (
                 <DateRangeFilter
