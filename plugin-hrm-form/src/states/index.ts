@@ -48,6 +48,7 @@ import {
   routingBase,
 } from './storeNamespaces';
 import { reduce as CaseMergingBannersReducer } from './case/caseBanners';
+import { customIntegrationsReducer } from './customIntegrations';
 
 const reducers = {
   searchContacts: SearchFormReducer,
@@ -79,7 +80,8 @@ const combinedReducers = combineReducers(reducers);
 // Combine the reducers
 const reducer = (state: HrmState, action): HrmState => {
   const stateWithCaseUpdates: HrmState = ConnectedCaseReducer(state, action);
-  return {
+
+  const stateWithAllStandardReducerUpdates = {
     ...combinedReducers(stateWithCaseUpdates, action),
     connectedCase: stateWithCaseUpdates.connectedCase,
     /*
@@ -88,6 +90,7 @@ const reducer = (state: HrmState, action): HrmState => {
      */
     activeContacts: ContactStateReducer(state, (state ?? {})[contactFormsBase], action),
   };
+  return customIntegrationsReducer(stateWithAllStandardReducerUpdates, action);
 };
 
 export default reducer;
