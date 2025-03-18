@@ -33,6 +33,7 @@ const readConfig = () => {
   const userIsAseloBot = /aselo.+@techmatters\.org/.test(identity);
 
   const accountSid = manager.serviceConfiguration.account_sid;
+  const baseUrl = process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url;
   const hrmBaseUrl = `${process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}/${
     manager.serviceConfiguration.attributes.hrm_api_version
   }/accounts/${accountSid}${userIsAseloBot ? '-aselo_test' : ''}`;
@@ -105,6 +106,7 @@ const readConfig = () => {
     },
     hrm: {
       accountSid,
+      baseUrl,
       hrmBaseUrl,
       hrmMicroserviceBaseUrl,
       serverlessBaseUrl,

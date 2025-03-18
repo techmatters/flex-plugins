@@ -20,6 +20,7 @@ import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
+import { getAseloConfigFlags } from '../hrmConfig';
 import { StyledNextStepButton, StyledAddNewCaseDropdown, StyledAddNewCaseDropdownList } from '../styles/buttons';
 
 type OwnProps = {
@@ -31,6 +32,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const AddCaseButton: React.FC<Props> = ({ handleNewCaseType, handleExistingCaseType, position }) => {
+  const { hideAddToNewCaseButton } = getAseloConfigFlags();
   const [dropdown, setDropdown] = useState(false);
 
   const [enabled, setEnabled] = useState(true);
@@ -62,15 +64,17 @@ const AddCaseButton: React.FC<Props> = ({ handleNewCaseType, handleExistingCaseT
       disabled={!enabled}
     >
       <StyledAddNewCaseDropdown position={position} dropdown={dropdown}>
-        <StyledAddNewCaseDropdownList
-          onMouseDown={event => event.preventDefault}
-          onClick={newOptionHandler(handleNewCaseType)}
-          tabIndex={0}
-          data-testid="TabbedForms-AddNewCase-Button"
-          data-fs-id="TabbedForms-AddToNewCase-Button"
-        >
-          <Template code="TabbedForms-NewCase" />
-        </StyledAddNewCaseDropdownList>
+        {hideAddToNewCaseButton ? null : (
+          <StyledAddNewCaseDropdownList
+            onMouseDown={event => event.preventDefault}
+            onClick={newOptionHandler(handleNewCaseType)}
+            tabIndex={0}
+            data-testid="TabbedForms-AddNewCase-Button"
+            data-fs-id="TabbedForms-AddToNewCase-Button"
+          >
+            <Template code="TabbedForms-NewCase" />
+          </StyledAddNewCaseDropdownList>
+        )}
         <StyledAddNewCaseDropdownList
           onMouseDown={event => event.preventDefault}
           onClick={newOptionHandler(handleExistingCaseType)}
