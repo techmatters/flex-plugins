@@ -42,7 +42,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
   fields: [
     {
       type: 'input-text',
-      name: 'firstName',
+      name: 'friendlyName',
       label: 'First Name',
       placeholder: 'Your name',
       required: true,
@@ -51,7 +51,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'input-text',
       name: 'lastName',
       label: 'Last Name',
-      placeholder: 'Your Lastname',
+      placeholder: 'Your last name',
       required: true,
     },
     {
@@ -62,7 +62,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       placeholder: 'Your Email',
       pattern: {
         value: EMAIL_PATTERN,
-        message: 'FieldValidationInvalidEmail',
+        message: 'Please enter valid email address',
       },
     },
     {
@@ -72,6 +72,10 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       required: false,
       defaultValue: '',
       options: [
+        {
+          value: "",
+          label: " "
+        },
         {
           value: "00",
           label: "0"
