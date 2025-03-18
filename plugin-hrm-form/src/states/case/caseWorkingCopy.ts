@@ -219,7 +219,19 @@ const initialiseCaseSummaryWorkingCopyReducer = (
 ): CaseState => {
   const caseState = state.cases[action.caseId];
   if (!caseState) return state;
-  const { childIsAtRisk, summary, followUpDate } = caseState.connectedCase.info;
+
+  const caseInfo = caseState.connectedCase.info || {};
+
+  const caseSummary = {
+    status: caseState.connectedCase.status ?? action.defaults.status ?? 'open',
+  };
+
+  Object.entries(action.defaults).forEach(([key, value]) => {
+    if (key !== 'status' && value !== undefined && caseSummary[key] === undefined) {
+      caseSummary[key] = value;
+    }
+  });
+
   return {
     ...state,
     cases: {
@@ -227,12 +239,7 @@ const initialiseCaseSummaryWorkingCopyReducer = (
       [action.caseId]: {
         ...caseState,
         caseWorkingCopy: {
-          caseSummary: {
-            status: caseState.connectedCase.status ?? action.defaults.status,
-            summary: summary ?? action.defaults.summary,
-            childIsAtRisk: childIsAtRisk ?? action.defaults.childIsAtRisk,
-            followUpDate: followUpDate ?? action.defaults.followUpDate,
-          },
+          caseSummary,
           ...caseState.caseWorkingCopy,
         },
       },

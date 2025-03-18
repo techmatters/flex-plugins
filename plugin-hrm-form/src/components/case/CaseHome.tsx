@@ -22,7 +22,7 @@ import { DefinitionVersion } from 'hrm-form-definitions';
 import { CaseContainer, CaseDetailsBorder, ViewButton } from './styles';
 import { BottomButtonBar, Box, SaveAndEndButton } from '../../styles';
 import CaseOverviewHeader from './caseOverview/CaseOverviewHeader';
-import CaseOverview from './caseOverview/CaseOverview';
+import CaseOverview from './caseOverview';
 import Timeline from './timeline/Timeline';
 import CaseSection from './CaseSection';
 import { PermissionActions, PermissionActionType } from '../../permissions';
@@ -111,19 +111,8 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
     openModal({ route: 'case', subroute: 'timeline', caseId, page: 0 });
   };
 
-  const {
-    info: { followUpDate, childIsAtRisk },
-    status,
-    id,
-    categories,
-    createdAt,
-    updatedAt,
-  } = connectedCase;
-
-  const statusLabel = definitionVersion.caseStatus[status]?.label ?? status;
-
-  const onEditCaseSummaryClick = () => {
-    openModal({ route: 'case', subroute: 'caseSummary', action: CaseItemAction.Edit, id: '', caseId });
+  const onEditCaseOverviewClick = () => {
+    openModal({ route: 'case', subroute: 'caseOverview', action: CaseItemAction.Edit, id: '', caseId });
   };
 
   return (
@@ -150,19 +139,15 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
             handlePrintCase={handlePrintCase}
             isOrphanedCase={isOrphanedCase}
             definitionVersion={definitionVersion}
-            categories={categories}
+            categories={connectedCase.categories}
           />
           <CaseOverview
             task={task}
-            createdAt={createdAt}
-            updatedAt={updatedAt}
-            followUpDate={followUpDate}
-            statusLabel={statusLabel}
             can={can}
-            childIsAtRisk={childIsAtRisk}
+            editCaseOverview={onEditCaseOverviewClick}
             availableStatusTransitions={availableStatusTransitions}
             definitionVersion={definitionVersion}
-            editCaseSummary={onEditCaseSummaryClick}
+            connectedCase={connectedCase}
           />
         </Box>
         <Box margin="25px 0 0 0" style={{ textAlign: 'center' }}>

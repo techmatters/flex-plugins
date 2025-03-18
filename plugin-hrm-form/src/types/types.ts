@@ -54,6 +54,7 @@ export type CaseOverview = {
   followUpDate?: string;
   childIsAtRisk?: boolean;
   summary?: string;
+  [key: string]: any;
 }
 
 export type CaseInfo = CaseOverview & {

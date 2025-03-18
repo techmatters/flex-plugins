@@ -11,12 +11,12 @@
   },
   {
     "name": "createdAt",
-    "label": "Created Date",
+    "label": "วันที่เปิดเคส",
     "type": "date-input"
   },
   {
     "name": "updatedAt",
-    "label": "Updated Date",
+    "label": "วันที่อัพเดท",
     "type": "date-input"
   },
   {

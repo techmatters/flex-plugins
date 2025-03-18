@@ -11,12 +11,12 @@
   },
   {
     "name": "createdAt",
-    "label": "Opened",
+    "label": "Created Date",
     "type": "date-input"
   },
   {
     "name": "updatedAt",
-    "label": "Last Updated/Closed",
+    "label": "Updated Date",
     "type": "date-input"
   },
   {
@@ -26,8 +26,7 @@
   },
   {
     "name": "summary",
-    "label": "Case Summary",
-    "placeholder": "No case summary",
+    "label": "Summary",
     "type": "textarea",
     "rows": 5,
     "width": 300,
