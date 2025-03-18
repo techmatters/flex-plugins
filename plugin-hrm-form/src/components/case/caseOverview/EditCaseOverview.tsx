@@ -20,7 +20,7 @@ import React, { useEffect, useMemo } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
-import { FormDefinition, FormInputType, REQUIRED_CASE_OVERVIEW_FIELDS } from 'hrm-form-definitions';
+import { FormDefinition, FormInputType } from 'hrm-form-definitions';
 import { isEqual } from 'lodash';
 import { AnyAction, bindActionCreators } from 'redux';
 
@@ -113,21 +113,15 @@ const EditCaseOverview: React.FC<Props> = ({
   const formDefinition: FormDefinition = useMemo(() => {
     try {
       if (caseOverviewFields && Array.isArray(caseOverviewFields)) {
-        return caseOverviewFields
-          .filter(
-            field =>
-              field.name !== REQUIRED_CASE_OVERVIEW_FIELDS.CREATED_AT &&
-              field.name !== REQUIRED_CASE_OVERVIEW_FIELDS.UPDATED_AT,
-          )
-          .map(field => {
-            if (field.name === REQUIRED_CASE_OVERVIEW_FIELDS.CASE_STATUS) {
-              return {
-                ...field,
-                options: availableStatusTransitions,
-              };
-            }
-            return field;
-          });
+        return caseOverviewFields.map(field => {
+          if (field.name === 'status') {
+            return {
+              ...field,
+              options: availableStatusTransitions,
+            };
+          }
+          return field;
+        });
       }
 
       return [
