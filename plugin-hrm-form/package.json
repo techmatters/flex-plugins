@@ -137,7 +137,7 @@
     "pretty-format": "26.6.2",
     "redux-mock-store": "^1.5.4",
     "rxjs-compat": "6.6.3",
-    "storybook": "^8.3.3",
+    "storybook": "^8.6.7",
     "timezoned-date": "^3.0.2",
     "ts-jest": "^28.0.8",
     "ts-node": "^10.9.1",
