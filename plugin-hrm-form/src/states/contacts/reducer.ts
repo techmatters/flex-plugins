@@ -57,7 +57,7 @@ import { resourceReferralReducer } from './resourceReferral';
 import { ContactCategoryAction, toggleSubCategoriesReducer } from './categories';
 import { HrmState } from '..';
 import { createCaseAsyncAction } from '../case/saveCase';
-import { loadContactIntoRedux, saveContactReducer } from './saveContact';
+import { saveContactReducer } from './saveContact';
 import { ConfigurationState } from '../configuration/reducer';
 import { Contact } from '../../types/types';
 import {
@@ -69,6 +69,7 @@ import {
 import { GET_CASE_TIMELINE_ACTION_FULFILLED, isContactTimelineActivity } from '../case/types';
 import { GetTimelineAsyncAction } from '../case/timeline';
 import {llmAssistantReducer} from "./llmAssistant";
+import {loadContactIntoRedux} from "./contactReduxUpdates";
 
 export const emptyCategories = [];
 

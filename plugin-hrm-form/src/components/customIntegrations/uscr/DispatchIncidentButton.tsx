@@ -19,7 +19,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Template, Notifications, NotificationType } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 import { useFormContext } from 'react-hook-form';
-import { v5 } from 'uuid';
 
 import { CheckCircleIcon } from './styles';
 import customContactComponentRegistry from '../../forms/customContactComponentRegistry';
@@ -27,12 +26,12 @@ import type { RootState } from '../../../states';
 import selectContactStateByContactId from '../../../states/contacts/selectContactStateByContactId';
 import { useCase } from '../../../states/case/hooks/useCase';
 import { useCaseSections } from '../../../states/case/hooks/useCaseSections';
-import { dispatchIncident } from './dispatchService';
-import { loadContactFromHrmByIdAsyncAction, updateContactInHrmAsyncAction } from '../../../states/contacts/saveContact';
+import { updateContactInHrmAsyncAction } from '../../../states/contacts/saveContact';
 import { isCaseSectionTimelineActivity } from '../../../states/case/types';
-import { TertiaryButton, StyledNextStepButton } from '../../../styles/buttons';
-import { dispatchAttemptSectionType, IncidentReportAttempt } from './dispatchAttachment';
+import { TertiaryButton, StyledNextStepButton } from '../../../styles';
+import { dispatchAttemptSectionType, IncidentReportAttempt } from './dispatchAttempt';
 import asyncDispatch from '../../../states/asyncDispatch';
+import { newIncidentDispatchAction } from '../../../states/customIntegrations/uscrIncidentDispatch';
 
 const dispatchSuccessNotification = 'dispatchSuccess';
 const dispatchErrorNotification = 'dispatchError';
@@ -64,8 +63,8 @@ type Props = OwnProps;
 const DispatchIncidentButton: React.FC<Props> = ({ contactId }) => {
   const { trigger } = useFormContext();
   const dispatch = useDispatch();
+  const asyncDispatcher = asyncDispatch(dispatch);
 
-  const [dispatching, setDispatching] = React.useState(false);
   // const dispatching = React.useRef(false);
 
   const {
@@ -73,7 +72,6 @@ const DispatchIncidentButton: React.FC<Props> = ({ contactId }) => {
     draftContact,
     metadata: { loadingStatus },
   } = useSelector((state: RootState) => selectContactStateByContactId(state, contactId));
-
   const referenceId = React.useMemo(() => {
     const rand = Math.random();
     return `dispatch-incident-button-${savedContact.id}-${rand}`;
@@ -83,7 +81,7 @@ const DispatchIncidentButton: React.FC<Props> = ({ contactId }) => {
     caseId: savedContact.caseId,
     referenceId,
   });
-  const { sections, forceRefresh: refreshCaseSections } = useCaseSections({
+  const { sections } = useCaseSections({
     caseId: savedContact.caseId,
     sectionType: dispatchAttemptSectionType,
     autoload: true,
@@ -101,31 +99,24 @@ const DispatchIncidentButton: React.FC<Props> = ({ contactId }) => {
         (t.activity.sectionTypeSpecificData as IncidentReportAttempt).incidentId !== null,
     );
 
-  const saveDraft = () =>
-    asyncDispatch(dispatch)(updateContactInHrmAsyncAction(savedContact, draftContact, referenceId));
-  const refreshContact = () => asyncDispatch(dispatch)(loadContactFromHrmByIdAsyncAction(contactId, referenceId));
+  const saveDraft = () => asyncDispatcher(updateContactInHrmAsyncAction(savedContact, draftContact, referenceId));
 
   const handleClickDispatch = async () => {
     try {
       const valid = await trigger();
       if (valid) {
-        setDispatching(true);
         await saveDraft();
-        await dispatchIncident({ contact: savedContact });
-        // force a contact refresh after an attempt
-        await refreshContact();
-        await refreshCaseSections();
+        // We use a regular dispatch here because we handle the error from where it is called.
+        await dispatch(newIncidentDispatchAction(savedContact));
         Notifications.showNotificationSingle(dispatchSuccessNotification);
       }
     } catch (err) {
       console.error(err);
       Notifications.showNotificationSingle(dispatchErrorNotification);
-    } finally {
-      setDispatching(false);
     }
   };
 
-  const loading = dispatching || loadingStatus === 'loading' || caseLoading;
+  const loading = loadingStatus === 'loading' || caseLoading;
 
   return dispatchPending ? (
     <StyledNextStepButton
