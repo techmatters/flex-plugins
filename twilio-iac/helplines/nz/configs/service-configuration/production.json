@@ -1,7 +1,6 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_save_in_progress_contacts": false
         },
         "form_definitions_base_url": "https://assets-production.tl.techmatters.org/form-definitions/"
     }
