@@ -34,8 +34,7 @@
       { "value": "Metro", "label": "Metro" },
       { "value": "Pacific", "label": "Pacific" },
       { "value": "South LA", "label": "South LA" },
-      { "value": "Valley", "label": "Valley" },
-      { "value": "Unknown", "label": "Unknown" }
+      { "value": "Valley", "label": "Valley" }
     ]
   }
 ]

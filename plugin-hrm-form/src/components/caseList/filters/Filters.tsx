@@ -62,6 +62,30 @@ const getCounselorsInitialValue = (counselorsHash: CounselorHash) =>
     checked: false,
   }));
 
+/**
+ * Reads the CaseOverview fields in definition version and returns an array of items (type Item[])
+ * to be used as the options for the operating area filter
+ * @param definitionVersion DefinitionVersion
+ * @returns Item[]
+ */
+const getOperatingAreaInitialValue = (definitionVersion: DefinitionVersion) => {
+  if (!definitionVersion) return [];
+  
+  const operatingAreaField = Object.values(definitionVersion.caseOverview).find(
+    field => field && typeof field === 'object' && (field as { name: string }).name === 'operatingArea'
+  ) as { options?: Array<{ value: string; label: string }> } | undefined;
+  
+  if (!operatingAreaField?.options) return [];
+  
+  return operatingAreaField.options
+    .filter(option => option && option.value !== '')
+    .map(option => ({
+      value: String(option.value),
+      label: String(option.label),
+      checked: false,
+    }));
+};
+
 const getInitialDateFilters = (): DateFilter[] => [
   {
     labelKey: 'CaseList-Filters-DateFilter-CreatedAt',
@@ -79,7 +103,6 @@ const getInitialDateFilters = (): DateFilter[] => [
     options: followUpDateFilterOptions(),
   },
 ];
-
 /**
  * Reads the definition version and returns and array of categories (type Category[])
  * to be used as the options for the categories filter
@@ -176,25 +199,35 @@ const Filters: React.FC<Props> = ({
   const [categoriesValues, setCategoriesValues] = useState<Category[]>(
     getCategoriesInitialValue(currentDefinitionVersion, helpline),
   );
+  const [operatingAreaValues, setOperatingAreaValues] = useState<Item[]>(
+    getOperatingAreaInitialValue(currentDefinitionVersion),
+  );
 
   useEffect(() => {
     setStatusValues(getStatusInitialValue(currentDefinitionVersion));
     setCategoriesValues(getCategoriesInitialValue(currentDefinitionVersion, helpline));
+    setOperatingAreaValues(getOperatingAreaInitialValue(currentDefinitionVersion));
   }, [currentDefinitionVersion, helpline]);
 
   // Updates UI state from current filters
   useEffect(() => {
-    const { counsellors, statuses, categories, includeOrphans, ...currentDateFilters } = currentFilter;
+    const { counsellors, statuses, categories, operatingAreas, includeOrphans, ...currentDateFilters } = currentFilter;
     const newCounselorValues = getCounselorsInitialValue(counselorsHash).map(cv => ({
       ...cv,
       checked: counsellors.includes(cv.value),
     }));
     const newStatusValues = statusValues.map(sv => ({ ...sv, checked: statuses.includes(sv.value) }));
     const newCategoriesValues = getUpdatedCategoriesValues(categories, categoriesValues);
+    const newOperatingAreaValues = operatingAreaValues.map(oav => ({ 
+      ...oav, 
+      checked: operatingAreas?.includes(oav.value) || false 
+    }));
+    
     setCounselorValues(newCounselorValues);
     setStatusValues(newStatusValues);
     setDateFilterValues(currentDateFilters);
     setCategoriesValues(newCategoriesValues);
+    setOperatingAreaValues(newOperatingAreaValues);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentFilterCompare, counselorsHashCompare]);
 
@@ -219,6 +252,10 @@ const Filters: React.FC<Props> = ({
     updateCaseListFilter({ categories: filterCheckedCategories(values) });
   };
 
+  const handleApplyOperatingAreaFilter = (values: Item[]) => {
+    updateCaseListFilter({ operatingAreas: filterCheckedItems(values) });
+  };
+
   const handleClearFilters = () => {
     clearCaseListFilter();
   };
@@ -230,7 +267,8 @@ const Filters: React.FC<Props> = ({
     filterCheckedItems(statusValues).length > 0 ||
     filterCheckedItems(counselorValues).length > 0 ||
     Boolean(Object.values(dateFilterValues).filter(dfv => dfv).length) ||
-    filterCheckedCategories(categoriesValues).length > 0;
+    filterCheckedCategories(categoriesValues).length > 0 ||
+    filterCheckedItems(operatingAreaValues).length > 0;
 
   const canViewCounselorFilter = !canOnlyViewOwnCases();
 
@@ -250,7 +288,7 @@ const Filters: React.FC<Props> = ({
         </CountText>
       </FiltersContainer>
       {featureFlags.enable_filter_cases && (
-        <FiltersContainer data-testid="CaseList-Filters-Panel" style={{ border: '1px solid #bf2020' }}>
+        <FiltersContainer data-testid="CaseList-Filters-Panel">
           <FilterList fontSize="small" />
           <FilterTitle>
             <Template code="Table-FilterBy" />
@@ -293,16 +331,22 @@ const Filters: React.FC<Props> = ({
           />
           
           {/* Operating Area Filter */}
-          {/* <MultiSelectFilter
+          <MultiSelectFilter
             name="operatingArea"
-            searchDescription={strings['CaseList-Filters-SearchForOperatingArea']}
-            text={strings['CaseList-Filters-OperatingArea']}
+            text={
+              currentDefinitionVersion?.caseOverview[
+                Object.keys(currentDefinitionVersion.caseOverview).find(
+                  key => currentDefinitionVersion.caseOverview[key].name === 'operatingArea'
+                )
+              ].label
+            }
             defaultValues={operatingAreaValues}
             openedFilter={openedFilter}
             applyFilter={handleApplyOperatingAreaFilter}
             setOpenedFilter={setOpenedFilter}
             searchable
-          /> */}
+          />
+          
           
           <div style={{ display: 'inline-flex', marginLeft: 'auto' }}>
             <DateRange fontSize="small" style={{ marginTop: '4px' }} />
