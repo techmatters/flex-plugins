@@ -49,7 +49,7 @@
             "backend_handled_chat_janitor": true,
             "enable_active_contact_header": true,
             "enable_aselo_messaging_ui": false,
-            "enable_backend_hrm_contact_creation": false,
+            "enable_backend_hrm_contact_creation": true,
             "enable_backend_manual_pulling": true,
             "enable_canned_responses": true,
             "enable_case_merging": true,
@@ -83,7 +83,8 @@
             "enable_transfers": true,
             "enable_twilio_transcripts": false,
             "enable_upload_documents": true,
-            "enable_voice_recordings": false
+            "enable_voice_recordings": false,
+            "lambda_task_created_handler": true
         },
         "multipleOfficeSupport": false,
         "WARNING": "These attributes are set using a tool in the twilio-iac repo. If you are seeing this message anywhere else, please stop and use the process described here: https://github.com/techmatters/flex-plugins/blob/master/twilio-iac/docs/service_configuration.md"

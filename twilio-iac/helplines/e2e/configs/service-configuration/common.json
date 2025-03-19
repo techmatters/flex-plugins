@@ -10,9 +10,7 @@
             "enable_external_transcripts": false,
             "enable_lex": true,
             "enable_save_insights": true,
-            "enable_permissions_from_backend": true,
-            "enable_backend_hrm_contact_creation": true,
-            "lambda_task_created_handler": true
+            "enable_permissions_from_backend": true
         },
         "permissionConfig": "e2e",
         "previous_ui_version": {
