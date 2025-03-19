@@ -288,15 +288,6 @@ export type CaseSectionTypeJsonEntry = {
   formPath: string;
 };
 
-export const REQUIRED_CASE_OVERVIEW_FIELDS = {
-  CASE_STATUS: 'status',
-  CREATED_AT: 'createdAt',
-  UPDATED_AT: 'updatedAt',
-} as const;
-
-export type RequiredCaseOverviewFieldName =
-  typeof REQUIRED_CASE_OVERVIEW_FIELDS[keyof typeof REQUIRED_CASE_OVERVIEW_FIELDS];
-
 export type CaseOverviewTypeEntry = {
   name: string;
   label: string;
@@ -304,7 +295,7 @@ export type CaseOverviewTypeEntry = {
   form: FormDefinition;
 };
 
-export type CaseOverviewDefinition = Record<RequiredCaseOverviewFieldName, CaseOverviewTypeEntry> &
+export type CaseOverviewDefinition = Record<'status', CaseOverviewTypeEntry> &
   Record<string, CaseOverviewTypeEntry>;
 
 export type CaseSectionTypeEntry = {

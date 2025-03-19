@@ -1,32 +1,23 @@
 [
   {
     "name": "status",
-    "label": "Case Status",
+    "label": "สถานะเคส",
     "type": "select"
   },
   {
     "name": "childIsAtRisk",
-    "label": "Child is at risk",
+    "label": "เด็กอยู่ในภาวะเสี่ยง",
     "type": "checkbox"
   },
   {
-    "name": "createdAt",
-    "label": "วันที่เปิดเคส",
-    "type": "date-input"
-  },
-  {
-    "name": "updatedAt",
-    "label": "วันที่อัพเดท",
-    "type": "date-input"
-  },
-  {
     "name": "followUpDate",
-    "label": "Follow Up Date",
+    "label": "กำหนดติดตาม",
     "type": "date-input"
   },
   {
     "name": "summary",
-    "label": "Summary",
+    "label": "สาระสำคัญของเคส",
+    "placeholder": "- ไม่มีสาระสำคัญของเคส -",
     "type": "textarea",
     "rows": 5,
     "width": 300,

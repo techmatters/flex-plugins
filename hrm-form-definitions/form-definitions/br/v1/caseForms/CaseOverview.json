@@ -10,16 +10,6 @@
     "type": "checkbox"
   },
   {
-    "name": "createdAt",
-    "label": "Aberto",
-    "type": "date-input"
-  },
-  {
-    "name": "updatedAt",
-    "label": "Última atualização / fechada",
-    "type": "date-input"
-  },
-  {
     "name": "followUpDate",
     "label": "Resumo do Caso",
     "type": "date-input"

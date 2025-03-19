@@ -10,16 +10,6 @@
     "type": "checkbox"
   },
   {
-    "name": "createdAt",
-    "label": "Created Date",
-    "type": "date-input"
-  },
-  {
-    "name": "updatedAt",
-    "label": "Updated Date",
-    "type": "date-input"
-  },
-  {
     "name": "followUpDate",
     "label": "Follow Up Date",
     "type": "date-input"
