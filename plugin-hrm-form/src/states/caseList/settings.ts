@@ -30,8 +30,7 @@ export const caseListSettingsInitialState = (): CaseListSettingsState => ({
     counsellors: [],
     statuses: [],
     categories: [],
-    operatingAreas: [],
-    customFilter: [],
+    customFilter: {},
   },
   sort: {
     sortBy: ListCasesSortBy.ID,
