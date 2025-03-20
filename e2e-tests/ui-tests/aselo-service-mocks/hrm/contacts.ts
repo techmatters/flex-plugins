@@ -41,6 +41,20 @@ const hrmContacts = () => {
           await route.continue();
         }
       });
+      await page.route(
+        new URL(`${PATH_PREFIX}/byTaskSid/*`, context.HRM_BASE_URL).toString(),
+        async (route) => {
+          if (route.request().method().toUpperCase() === 'GET') {
+            await route.fulfill({
+              status: 404,
+              contentType: 'application/json',
+              body: JSON.stringify({}),
+            });
+          } else {
+            await route.continue();
+          }
+        },
+      );
     },
   };
 };
