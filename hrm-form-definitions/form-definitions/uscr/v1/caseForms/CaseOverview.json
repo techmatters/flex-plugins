@@ -27,11 +27,13 @@
     "label": "Operating Area",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
-      { "value": "Los Angeles City", "label": "Los Angeles City" },
-      { "value": "Long Beach", "label": "Long Beach" },
-      { "value": "Lynwood", "label": "Lynwood" },
-      { "value": "South Pasadena", "label": "South Pasadena" },
+      { "value": "East", "label": "East" },
+      { "value": "Harbor", "label": "Harbor" },
+      { "value": "Hollywood", "label": "Hollywood" },
+      { "value": "Metro", "label": "Metro" },
+      { "value": "Pacific", "label": "Pacific" },
+      { "value": "South LA", "label": "South LA" },
+      { "value": "Valley", "label": "Valley" },
       { "value": "Unknown", "label": "Unknown" }
     ]
   },
