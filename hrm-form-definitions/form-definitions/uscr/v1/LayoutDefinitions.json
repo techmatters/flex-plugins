@@ -49,9 +49,20 @@
         "layout": {
           "incidentType": {
             "includeLabel": true
-          },
-          "beaconIncidentId": {
-            "includeLabel": false
+          }
+        }
+      },
+      "assignedResponder": {
+        "splitFormAt": 7,
+        "printOrder": 1,
+        "caseHomeOrder": 1,
+        "caseHomeLocation": "timeline",
+        "previewFields": [
+          "responderName"
+        ],
+        "layout": {
+          "incidentType": {
+            "includeLabel": true
           }
         }
       },

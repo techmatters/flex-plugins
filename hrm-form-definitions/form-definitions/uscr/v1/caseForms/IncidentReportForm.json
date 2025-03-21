@@ -92,11 +92,6 @@
     ]
   },
   {
-    "name": "responderName",
-    "type": "input",
-    "label": "Responder"
-  },
-  {
     "name": "latitude",
     "type": "input",
     "label": "Location: Latitude"

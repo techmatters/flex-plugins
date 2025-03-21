@@ -1,0 +1,67 @@
+[
+  {
+    "name": "responderName",
+    "type": "input",
+    "label": "Responder"
+  },
+  {
+    "name": "enrouteTimestamp",
+    "type": "time-input",
+    "label": "En Route Timestamp"
+  },
+  {
+    "name": "onSceneTimestamp",
+    "type": "time-input",
+    "label": "On-Scene Timestamp"
+  },
+  {
+    "name": "additionanlResourcesTimestamp",
+    "type": "time-input",
+    "label": "Additional Resources Timestamp"
+  },
+  {
+    "name": "transportTimestamp",
+    "type": "time-input",
+    "label": "Transport Timestamp"
+  },
+  {
+    "name": "destinationArrivalTimestamp",
+    "type": "time-input",
+    "label": "Destination Arrival Timestamp"
+  },
+  {
+    "name": "incidentCompleteTimestamp",
+    "type": "time-input",
+    "label": "Incident Complete Timestamp"
+  },
+  {
+    "name": "incidentActivationInterval",
+    "type": "numeric-input",
+    "label": "Incident Activation Interval"
+  },
+  {
+    "name": "enrouteInterval",
+    "type": "numeric-input",
+    "label": "En Route Interval"
+  },
+  {
+    "name": "sceneArrivalInterval",
+    "type": "numeric-input",
+    "label": "Scene Arrival Interval"
+  },
+  {
+    "name": "triageInterval",
+    "type": "numeric-input",
+    "label": "Triage Interval"
+  },
+  {
+    "name": "transportInterval",
+    "type": "numeric-input",
+    "label": "Transport Interval"
+  },
+  {
+    "name": "totalIncidentTime",
+    "type": "numeric-input",
+    "label": "Time from Arrival to Completion"
+  }
+]
