@@ -105,7 +105,7 @@ export const isFixedDateRange = (item: any): item is FixedDateRange =>
 
 export const isExistsDateFilter = (item: any): item is ExistsDateFilter => Boolean((<ExistsDateFilter>item)?.exists);
 
-export const standardCaseListDateFilterOptions = (): DateFilterOptions => [
+export const dateFilterOptionsInPast = (): DateFilterOptions => [
   ['TODAY', today()],
   ['YESTERDAY', yesterday()],
   ['PAST_7_DAYS', pastXDays(7)],
@@ -114,7 +114,7 @@ export const standardCaseListDateFilterOptions = (): DateFilterOptions => [
   ['CUSTOM_RANGE', customRange()],
 ];
 
-export const followUpDateFilterOptions = (): DateFilterOptions => [
+export const dateFilterOptionsInPastAndFuture = (): DateFilterOptions => [
   ['TODAY', today()],
   ['YESTERDAY', yesterday()],
   ['PAST_7_DAYS', pastXDays(7)],

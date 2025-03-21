@@ -26,7 +26,7 @@ import { FiltersContainer, FiltersResetAll, MainTitle, CountText, FilterTitle } 
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
 import { CategoryFilter, CounselorHash } from '../../../types/types';
 import DateRangeFilter from './DateRangeFilter';
-import { DateFilter, followUpDateFilterOptions, standardCaseListDateFilterOptions } from './dateFilters';
+import { DateFilter, dateFilterOptionsInPastAndFuture, dateFilterOptionsInPast } from './dateFilters';
 import CategoriesFilter, { Category } from './CategoriesFilter';
 import { RootState } from '../../../states';
 import * as CaseListSettingsActions from '../../../states/caseList/settings';
@@ -35,8 +35,29 @@ import { canOnlyViewOwnCases } from '../../../permissions';
 import { caseListBase, configurationBase, namespace } from '../../../states/storeNamespaces';
 import { DateFilterValue } from '../../../states/caseList/dateFilters';
 
-const CUSTOM_FILTERS = {'operatingArea': {searchable:true, type: 'multi-select' }, 'priority': {searchable:true, type: 'multi-select'}};
-
+const CUSTOM_CASEINFO_FILTERS: Record<
+  string,
+  {
+    searchable?: boolean;
+    type:
+      | 'multi-select'
+      | 'select'
+      | 'date-input'
+      | 'checkbox'
+      | 'textarea'
+      | 'text-input'
+      | 'number-input'
+      | 'boolean-input'
+      | 'radio-input'
+      | 'file-input';
+    allowFutureDates?: boolean;
+  }
+> = {
+  operatingArea: { searchable: true, type: 'multi-select' },
+  priority: { searchable: true, type: 'select' },
+  reportDate: { type: 'date-input', allowFutureDates: true },
+  childIsAtRisk: { type: 'checkbox' },
+};
 
 /**
  * Reads the definition version and returns and array of items (type Item[])
@@ -70,17 +91,18 @@ const getCounselorsInitialValue = (counselorsHash: CounselorHash) =>
  * Reads the CaseOverview fields in definition version and returns an array of items (type Item[])
  * to be used as the options for the custom filter
  * @param definitionVersion DefinitionVersion
+ * @param filterName The name of the filter to get values for
  * @returns Item[]
  */
-const getCustomFilterInitialValue = (definitionVersion: DefinitionVersion) => {
+const getCustomFilterInitialValue = (definitionVersion: DefinitionVersion, filterName: string) => {
   if (!definitionVersion) return [];
-  
+
   const customFilterField = Object.values(definitionVersion.caseOverview).find(
-    field => field && typeof field === 'object' && (field as { name: string }).name === 'operatingArea'
+    field => field && typeof field === 'object' && (field as { name: string }).name === filterName,
   ) as { options?: Array<{ value: string; label: string }> } | undefined;
-  
+
   if (!customFilterField?.options) return [];
-  
+
   return customFilterField.options
     .filter(option => option && option.value !== '')
     .map(option => ({
@@ -94,17 +116,17 @@ const getInitialDateFilters = (): DateFilter[] => [
   {
     labelKey: 'CaseList-Filters-DateFilter-CreatedAt',
     filterPayloadParameter: 'createdAt',
-    options: standardCaseListDateFilterOptions(),
+    options: dateFilterOptionsInPast(),
   },
   {
     labelKey: 'CaseList-Filters-DateFilter-UpdatedAt',
     filterPayloadParameter: 'updatedAt',
-    options: standardCaseListDateFilterOptions(),
+    options: dateFilterOptionsInPast(),
   },
   {
     labelKey: 'CaseList-Filters-DateFilter-FollowUpDate',
     filterPayloadParameter: 'followUpDate',
-    options: followUpDateFilterOptions(),
+    options: dateFilterOptionsInPastAndFuture(),
   },
 ];
 /**
@@ -203,35 +225,68 @@ const Filters: React.FC<Props> = ({
   const [categoriesValues, setCategoriesValues] = useState<Category[]>(
     getCategoriesInitialValue(currentDefinitionVersion, helpline),
   );
-  const [customFilterValues, setCustomFilterValues] = useState<Item[]>(
-    getCustomFilterInitialValue(currentDefinitionVersion),
+  const [caseInfoFilterValues, setCaseInfoFilterValues] = useState<Record<string, Item[]>>(
+    Object.keys(CUSTOM_CASEINFO_FILTERS).reduce(
+      (acc, filterName) => ({
+        ...acc,
+        [filterName]: getCustomFilterInitialValue(currentDefinitionVersion, filterName),
+      }),
+      {},
+    ),
   );
 
   useEffect(() => {
     setStatusValues(getStatusInitialValue(currentDefinitionVersion));
     setCategoriesValues(getCategoriesInitialValue(currentDefinitionVersion, helpline));
-    setCustomFilterValues(getCustomFilterInitialValue(currentDefinitionVersion));
+    setCaseInfoFilterValues(
+      Object.keys(CUSTOM_CASEINFO_FILTERS).reduce(
+        (acc, filterName) => ({
+          ...acc,
+          [filterName]: getCustomFilterInitialValue(currentDefinitionVersion, filterName),
+        }),
+        {},
+      ),
+    );
   }, [currentDefinitionVersion, helpline]);
 
   // Updates UI state from current filters
   useEffect(() => {
-    const { counsellors, statuses, categories, customFilter, includeOrphans, ...currentDateFilters } = currentFilter;
+    const { counsellors, statuses, categories, caseInfoFilters, includeOrphans, ...currentDateFilters } = currentFilter;
     const newCounselorValues = getCounselorsInitialValue(counselorsHash).map(cv => ({
       ...cv,
       checked: counsellors.includes(cv.value),
     }));
     const newStatusValues = statusValues.map(sv => ({ ...sv, checked: statuses.includes(sv.value) }));
     const newCategoriesValues = getUpdatedCategoriesValues(categories, categoriesValues);
-    const newCustomFilterValues = customFilterValues.map(oav => ({ 
-      ...oav, 
-      checked: customFilter?.['operatingArea']?.includes(oav.value) || false 
-    }));
-    
+    const newCaseInfoFilterValues = Object.keys(CUSTOM_CASEINFO_FILTERS)
+      .filter(filterName => CUSTOM_CASEINFO_FILTERS[filterName].type === 'multi-select')
+      .reduce(
+        (acc, filterName) => ({
+          ...acc,
+          [filterName]: caseInfoFilterValues[filterName].map(option => ({
+            ...option,
+            checked: Array.isArray(caseInfoFilters?.[filterName])
+              ? (caseInfoFilters?.[filterName] as string[]).includes(option.value) || false
+              : false,
+          })),
+        }),
+        {},
+      );
+
+    // Update date filter values with any custom date filters from caseInfoFilters
+    Object.keys(CUSTOM_CASEINFO_FILTERS)
+      .filter(filterName => CUSTOM_CASEINFO_FILTERS[filterName].type === 'date-input')
+      .forEach(filterName => {
+        if (caseInfoFilters?.[filterName] && typeof caseInfoFilters[filterName] === 'object') {
+          currentDateFilters[filterName] = caseInfoFilters[filterName] as DateFilterValue;
+        }
+      });
+
     setCounselorValues(newCounselorValues);
     setStatusValues(newStatusValues);
     setDateFilterValues(currentDateFilters);
     setCategoriesValues(newCategoriesValues);
-    setCustomFilterValues(newCustomFilterValues);
+    setCaseInfoFilterValues(newCaseInfoFilterValues);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentFilterCompare, counselorsHashCompare]);
 
@@ -246,22 +301,34 @@ const Filters: React.FC<Props> = ({
   };
 
   const handleApplyDateRangeFilter = (filter: DateFilter) => (filterValue: DateFilterValue | undefined) => {
-    const updatedDateFilterValues = { ...dateFilterValues, [filter.filterPayloadParameter]: filterValue };
-    updateCaseListFilter({
-      ...updatedDateFilterValues,
-    });
+    // Check if this is a standard date filter or a custom date filter from CUSTOM_CASEINFO_FILTERS
+    if (Object.keys(CUSTOM_CASEINFO_FILTERS).includes(filter.filterPayloadParameter)) {
+      // This is a custom date filter (like reportDate), store it in caseInfoFilters
+      updateCaseListFilter({
+        caseInfoFilters: {
+          ...currentFilter.caseInfoFilters,
+          [filter.filterPayloadParameter]: filterValue,
+        },
+      });
+    } else {
+      // This is a standard date filter (createdAt, updatedAt, followUpDate)
+      const updatedDateFilterValues = { ...dateFilterValues, [filter.filterPayloadParameter]: filterValue };
+      updateCaseListFilter({
+        ...updatedDateFilterValues,
+      });
+    }
   };
 
   const handleApplyCategoriesFilter = (values: Category[]) => {
     updateCaseListFilter({ categories: filterCheckedCategories(values) });
   };
 
-  const handleApplyCustomFilter = (values: Item[]) => {
-    updateCaseListFilter({ 
-      customFilter: { 
-        ...currentFilter.customFilter,
-        operatingArea: filterCheckedItems(values) 
-      } 
+  const handleApplyCustomFilter = (filterName: string) => (values: Item[]) => {
+    updateCaseListFilter({
+      caseInfoFilters: {
+        ...currentFilter.caseInfoFilters,
+        [filterName]: filterCheckedItems(values),
+      },
     });
   };
 
@@ -277,7 +344,10 @@ const Filters: React.FC<Props> = ({
     filterCheckedItems(counselorValues).length > 0 ||
     Boolean(Object.values(dateFilterValues).filter(dfv => dfv).length) ||
     filterCheckedCategories(categoriesValues).length > 0 ||
-    (currentFilter.customFilter && Object.values(currentFilter.customFilter).some(values => values && values.length > 0));
+    (currentFilter.caseInfoFilters &&
+      Object.values(currentFilter.caseInfoFilters).some(
+        values => values && (Array.isArray(values) ? values.length > 0 : true),
+      ));
 
   const canViewCounselorFilter = !canOnlyViewOwnCases();
 
@@ -312,7 +382,7 @@ const Filters: React.FC<Props> = ({
             applyFilter={handleApplyStatusFilter}
             setOpenedFilter={setOpenedFilter}
           />
-          
+
           {/* Counselor Filter */}
           {canViewCounselorFilter && (
             <MultiSelectFilter
@@ -338,25 +408,29 @@ const Filters: React.FC<Props> = ({
             setOpenedFilter={setOpenedFilter}
             searchable
           />
-          
+
           {/* Custom Filter */}
-          <MultiSelectFilter
-            name="customFilter"
-            text={
-              currentDefinitionVersion?.caseOverview[
-                Object.keys(currentDefinitionVersion.caseOverview).find(
-                  key => currentDefinitionVersion.caseOverview[key].name === 'operatingArea'
-                )
-              ].label
-            }
-            defaultValues={customFilterValues}
-            openedFilter={openedFilter}
-            applyFilter={handleApplyCustomFilter}
-            setOpenedFilter={setOpenedFilter}
-            searchable
-          />
-          
-          
+          {Object.keys(CUSTOM_CASEINFO_FILTERS)
+            .filter(filterName => CUSTOM_CASEINFO_FILTERS[filterName].type === 'multi-select')
+            .map(filterName => (
+              <MultiSelectFilter
+                key={filterName}
+                name={filterName}
+                text={
+                  currentDefinitionVersion?.caseOverview[
+                    Object.keys(currentDefinitionVersion.caseOverview).find(
+                      key => currentDefinitionVersion.caseOverview[key].name === filterName,
+                    )
+                  ].label
+                }
+                defaultValues={caseInfoFilterValues[filterName]}
+                openedFilter={openedFilter}
+                applyFilter={handleApplyCustomFilter(filterName)}
+                setOpenedFilter={setOpenedFilter}
+                searchable
+              />
+            ))}
+
           <div style={{ display: 'inline-flex', marginLeft: 'auto' }}>
             <DateRange fontSize="small" style={{ marginTop: '4px' }} />
             <FilterTitle style={{ margin: '5px 10px 0 6px' }}>
@@ -364,6 +438,7 @@ const Filters: React.FC<Props> = ({
             </FilterTitle>
             {/* Date Filters */}
             {getInitialDateFilters().map(df => {
+              console.log('>>> Date Filter', df);
               return (
                 <DateRangeFilter
                   name={`${df.filterPayloadParameter}Filter`}
@@ -378,6 +453,34 @@ const Filters: React.FC<Props> = ({
                 />
               );
             })}
+
+            {Object.keys(CUSTOM_CASEINFO_FILTERS)
+              .filter(filterName => CUSTOM_CASEINFO_FILTERS[filterName].type === 'date-input')
+              .map(filterName => {
+                const filter = CUSTOM_CASEINFO_FILTERS[filterName];
+                const filterForm = currentDefinitionVersion?.caseOverview[filterName];
+                console.log('>>> Custom Date Filter', filterForm, filterName, filter);
+
+                const dateFilter: DateFilter = {
+                  labelKey: filterForm?.label || filterName,
+                  filterPayloadParameter: filterName,
+                  options: dateFilterOptionsInPastAndFuture(),
+                };
+
+                return (
+                  <DateRangeFilter
+                    name={filterName}
+                    allowFutureDates={filter.allowFutureDates}
+                    labelKey={filterForm?.label}
+                    options={dateFilterOptionsInPastAndFuture()}
+                    current={currentFilter.caseInfoFilters?.[filterName] as DateFilterValue}
+                    openedFilter={openedFilter}
+                    applyFilter={handleApplyDateRangeFilter(dateFilter)}
+                    setOpenedFilter={setOpenedFilter}
+                    key={filterName}
+                  />
+                );
+              })}
           </div>
         </FiltersContainer>
       )}

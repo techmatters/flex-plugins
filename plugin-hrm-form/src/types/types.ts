@@ -223,7 +223,7 @@ export type ListCasesFilters = {
   updatedAt?: DateFilterValue;
   followUpDate?: DateFilterValue;
   categories?: CategoryFilter[];
-  customFilter?: Record<string, string[]>;
+  caseInfoFilters?: Record<string, string[] | DateFilterValue>;
 };
 
 export type CounselorHash = {
