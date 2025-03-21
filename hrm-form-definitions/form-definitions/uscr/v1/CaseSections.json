@@ -7,6 +7,10 @@
     "label": "Incident Report",
     "formPath": "caseForms/IncidentReportForm.json"
   },
+  "assignedResponders": {
+    "label": "Assigned Responder",
+    "formPath": "caseForms/AssignedResponder.json"
+  },
   "caseReport": {
     "label": "Case Report",
     "formPath": "caseForms/CaseReportForm.json"
