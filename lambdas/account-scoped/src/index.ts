@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { ALBEvent, ALBResult } from 'aws-lambda';
+import type { ALBEvent, ALBResult } from 'aws-lambda';
 import { lookupRoute } from './router';
 import { isErr } from './Result';
 import {

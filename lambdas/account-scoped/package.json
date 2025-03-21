@@ -2,9 +2,10 @@
   "name": "@tech-matters/twilio-account-scoped",
   "version": "1.0.0",
   "devDependencies": {
+    "@tsconfig/node22": "^22.0.0",
     "@types/aws-lambda": "^8.10.108",
     "@types/lodash": "^4.17.13",
-    "@types/node": "^18.16.2",
+    "@types/node": "^22.13.11",
     "global-agent": "^3.0.0",
     "jest-each": "^29.5.0",
     "mockttp": "^3.15.5",

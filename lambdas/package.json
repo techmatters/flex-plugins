@@ -5,7 +5,20 @@
   "author": "",
   "license": "AGPL",
   "workspaces": [
-    "account-scoped"
+    "account-scoped",
+    "associate-client-vpn",
+    "disassociate-client-vpn",
+    "facebook-callback",
+    "facebookSignin",
+    "instagramWebhook",
+    "ipLocationFinder",
+    "lineSetup",
+    "lineWebhook",
+    "modicaWebhook",
+    "recaptchaVerify",
+    "savePendingContacts",
+    "TwilioErrorReporter",
+    "twilioEventStreams"
   ],
   "dependencies": {
     "dotenv": "^16.3.1",
@@ -14,6 +27,7 @@
   "devDependencies": {
     "@tsconfig/node16": "^1.0.3",
     "@tsconfig/node18": "^18.2.1",
+    "@tsconfig/node22": "^22.0.0",
     "@types/aws-lambda": "^8.10.119",
     "@types/jest": "^26.0.24",
     "@types/node": "^18.16.2",
@@ -42,7 +56,7 @@
     "prettier": "^3.0.0",
     "ts-jest": "^28.0.8",
     "ts-node": "^10.9.1",
-    "typescript": "^4.8.4",
+    "typescript": "^5.8.2",
     "wait-on": "^7.2.0"
   },
   "scripts": {

@@ -1,0 +1,19 @@
+{
+  "name": "@tech-matters/linewebhook",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test:e2e": "jest tests/e2e",
+    "docker:build_": "docker build -t account-scoped --build-arg lambda_name=account-scoped --build-arg lambda_dir=. -f ../Dockerfile ../"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.108",
+    "ts-node": "^10.9.1"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.716.0"
+  }
+}
