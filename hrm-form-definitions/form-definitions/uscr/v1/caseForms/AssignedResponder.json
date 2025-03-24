@@ -15,42 +15,27 @@
   {
     "name": "onSceneTimestamp",
     "type": "time-input",
-    "label": "On-Scene Timestamp",
-    "metadata": {
-        "eventTimestampSource": true
-    }
+    "label": "On-Scene Timestamp"
   },
   {
     "name": "additionanlResourcesTimestamp",
     "type": "time-input",
-    "label": "Additional Resources Timestamp",
-    "metadata": {
-        "eventTimestampSource": true
-    }
+    "label": "Additional Resources Timestamp"
   },
   {
     "name": "transportTimestamp",
     "type": "time-input",
-    "label": "Transport Timestamp",
-    "metadata": {
-        "eventTimestampSource": true
-    }
+    "label": "Transport Timestamp"
   },
   {
     "name": "destinationArrivalTimestamp",
     "type": "time-input",
-    "label": "Destination Arrival Timestamp",
-    "metadata": {
-        "eventTimestampSource": true
-    }
+    "label": "Destination Arrival Timestamp"
   },
   {
     "name": "incidentCompleteTimestamp",
     "type": "time-input",
-    "label": "Incident Complete Timestamp",
-    "metadata": {
-        "eventTimestampSource": true
-    }
+    "label": "Incident Complete Timestamp"
   },
   {
     "name": "incidentActivationInterval",
