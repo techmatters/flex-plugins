@@ -39,7 +39,7 @@
         
       },
       "incidentReport": {
-        "splitFormAt": 10,
+        "splitFormAt": 9,
         "printOrder": 1,
         "caseHomeOrder": 1,
         "caseHomeLocation": "timeline",
@@ -49,10 +49,21 @@
         "layout": {
           "incidentType": {
             "includeLabel": true
-          },
-          "beaconIncidentId": {
-            "includeLabel": false
           }
+        }
+      },
+      "assignedResponder": {
+        "splitFormAt": 7,
+        "printOrder": 1,
+        "caseHomeOrder": 1,
+        "caseHomeLocation": "timeline",
+        "previewFields": [
+          "responderName"
+        ],
+        "layout": {
+          "responderName": {
+            "includeLabel": true
+          } 
         }
       },
       "caseReport": {
