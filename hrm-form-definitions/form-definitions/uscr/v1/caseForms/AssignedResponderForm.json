@@ -7,10 +7,7 @@
   {
     "name": "enrouteTimestamp",
     "type": "time-input",
-    "label": "En Route Timestamp",
-    "metadata": {
-        "eventTimestampSource": true
-    }
+    "label": "En Route Timestamp"
   },
   {
     "name": "onSceneTimestamp",
