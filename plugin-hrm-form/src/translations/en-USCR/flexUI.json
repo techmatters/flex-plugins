@@ -601,5 +601,6 @@
   "Case-SectionList-NoItems/assignedResponder": "No Responders listed",
   "CaseSection-View-Title/assignedResponder": "View Assigned Responder",
   "CaseSection-Edit/assignedResponder": "Edit Assigned Responder",
+  "CaseSection-Add/assignedResponder": "Add Assigned Responder",
   "GeneralizedSearchForm-Counselor": "Operator"
 }
