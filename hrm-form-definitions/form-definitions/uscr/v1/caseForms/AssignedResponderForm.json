@@ -1,0 +1,37 @@
+[
+  {
+    "name": "responderName",
+    "type": "input",
+    "label": "Responder"
+  },
+  {
+    "name": "enrouteTimestamp",
+    "type": "time-input",
+    "label": "En Route Timestamp"
+  },
+  {
+    "name": "onSceneTimestamp",
+    "type": "time-input",
+    "label": "On-Scene Timestamp"
+  },
+  {
+    "name": "additionanlResourcesTimestamp",
+    "type": "time-input",
+    "label": "Additional Resources Timestamp"
+  },
+  {
+    "name": "transportTimestamp",
+    "type": "time-input",
+    "label": "Transport Timestamp"
+  },
+  {
+    "name": "destinationArrivalTimestamp",
+    "type": "time-input",
+    "label": "Destination Arrival Timestamp"
+  },
+  {
+    "name": "incidentCompleteTimestamp",
+    "type": "time-input",
+    "label": "Incident Complete Timestamp"
+  }
+]

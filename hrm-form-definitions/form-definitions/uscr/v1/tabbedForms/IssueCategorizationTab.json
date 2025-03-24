@@ -63,6 +63,12 @@
           {"label": "Declined Incident - Out of Area"},
           {"label": "Cancelled by 911"}
       ]
+    },
+    "Additional Information": {
+      "color": "#767777",
+      "subcategories": [
+          {"label": "Additional Information Requested"}
+      ]
     }
   }
 }

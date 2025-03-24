@@ -1,7 +1,7 @@
 {
   "contact": {
     "callerInformation": {
-      "splitFormAt": 7
+      "splitFormAt": 6
     },
     "childInformation": {
       "splitFormAt": 2
@@ -39,7 +39,7 @@
         
       },
       "incidentReport": {
-        "splitFormAt": 9,
+        "splitFormAt": 10,
         "printOrder": 1,
         "caseHomeOrder": 1,
         "caseHomeLocation": "timeline",

@@ -7,10 +7,7 @@
    {
     "name": "incidentCreationTimestamp",
     "type": "time-input",
-    "label": "Incident Creation Timestamp",
-    "metadata": {
-        "eventTimestampSource": true
-    }
+    "label": "Incident Creation Timestamp"
   }, 
   {
     "name": "incidentType",
@@ -125,10 +122,17 @@
     "label": "# of Clients Transported"
   },
   {
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289
+  },
+  {
     "name": "incidentActivationInterval",
     "type": "numeric-input",
     "label": "Incident Activation Interval"
-  },
+  },  
   {
     "name": "enrouteInterval",
     "type": "numeric-input",
@@ -153,12 +157,5 @@
     "name": "totalIncidentTime",
     "type": "numeric-input",
     "label": "Time from Arrival to Completion"
-  },
-  {
-    "name": "comments",
-    "label": "Comments",
-    "type": "textarea",
-    "rows": 20,
-    "width": 289
   }
 ]

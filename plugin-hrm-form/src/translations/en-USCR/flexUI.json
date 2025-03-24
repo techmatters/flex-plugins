@@ -593,11 +593,13 @@
   "CaseSection-Edit/sudSurvey": "Edit SUD Survey",
   "CaseSection-View-Title/caseReport": "View Case Report",
   "Case-SectionList-Title/assignedResponder": "Assigned Responder",
-  "Case-SectionList-Add/caseReport": "Add Assigned Responder",
-  "CaseSection-BottomBar-Save/caseReport": "Save",
-  "CaseSection-BottomBar-SaveAndAddAnother/caseReport": "Save and add another",
-  "CaseSection-Edit/caseReport": "Edit Assigned Responder",
-  "CaseSection-Add/caseReport": "Add Assigned Responder",
-  "Case-NoSections/caseReport": "No responders listed",
-  "CaseSection-View-Title/caseReport": "View Assigned Responder"
+  "Case-NoSections/assignedResponder": "No responders listed",
+  "Case-SectionList-Add/assignedResponder": "Add Assigned Responder",
+  "CaseSection-Add/incidentReport": "Add Assigned Responder",
+  "CaseSection-BottomBar-SaveAndAddAnother/assignedResponder": "Save and add another",
+  "CaseSection-BottomBar-Save/assignedResponder": "Save",
+  "Case-SectionList-NoItems/assignedResponder": "No Responders listed",
+  "CaseSection-View-Title/assignedResponder": "View Assigned Responder",
+  "CaseSection-Edit/assignedResponder": "Edit Assigned Responder",
+  "GeneralizedSearchForm-Counselor": "Operator"
 }
