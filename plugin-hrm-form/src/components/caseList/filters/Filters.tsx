@@ -35,7 +35,7 @@ import { canOnlyViewOwnCases } from '../../../permissions';
 import { caseListBase, configurationBase, namespace } from '../../../states/storeNamespaces';
 import { DateFilterValue } from '../../../states/caseList/dateFilters';
 
-const CUSTOM_CASEINFO_FILTERS: Record<
+const CASEINFO_FILTERS: Record<
   string,
   {
     searchable?: boolean;
@@ -226,7 +226,7 @@ const Filters: React.FC<Props> = ({
     getCategoriesInitialValue(currentDefinitionVersion, helpline),
   );
   const [caseInfoFilterValues, setCaseInfoFilterValues] = useState<Record<string, Item[]>>(
-    Object.keys(CUSTOM_CASEINFO_FILTERS).reduce(
+    Object.keys(CASEINFO_FILTERS).reduce(
       (acc, filterName) => ({
         ...acc,
         [filterName]: getCustomFilterInitialValue(currentDefinitionVersion, filterName),
@@ -239,7 +239,7 @@ const Filters: React.FC<Props> = ({
     setStatusValues(getStatusInitialValue(currentDefinitionVersion));
     setCategoriesValues(getCategoriesInitialValue(currentDefinitionVersion, helpline));
     setCaseInfoFilterValues(
-      Object.keys(CUSTOM_CASEINFO_FILTERS).reduce(
+      Object.keys(CASEINFO_FILTERS).reduce(
         (acc, filterName) => ({
           ...acc,
           [filterName]: getCustomFilterInitialValue(currentDefinitionVersion, filterName),
@@ -258,8 +258,8 @@ const Filters: React.FC<Props> = ({
     }));
     const newStatusValues = statusValues.map(sv => ({ ...sv, checked: statuses.includes(sv.value) }));
     const newCategoriesValues = getUpdatedCategoriesValues(categories, categoriesValues);
-    const newCaseInfoFilterValues = Object.keys(CUSTOM_CASEINFO_FILTERS)
-      .filter(filterName => CUSTOM_CASEINFO_FILTERS[filterName].type === 'multi-select')
+    const newCaseInfoFilterValues = Object.keys(CASEINFO_FILTERS)
+      .filter(filterName => CASEINFO_FILTERS[filterName].type === 'multi-select')
       .reduce(
         (acc, filterName) => ({
           ...acc,
@@ -274,9 +274,11 @@ const Filters: React.FC<Props> = ({
       );
 
     // Update date filter values with any custom date filters from caseInfoFilters
-    Object.keys(CUSTOM_CASEINFO_FILTERS)
-      .filter(filterName => CUSTOM_CASEINFO_FILTERS[filterName].type === 'date-input')
+    Object.keys(CASEINFO_FILTERS)
+      .filter(filterName => CASEINFO_FILTERS[filterName].type === 'date-input')
       .forEach(filterName => {
+        // Store custom date filters only in dateFilterValues for UI display purposes
+        // They will be sent back to caseInfoFilters when applied
         if (caseInfoFilters?.[filterName] && typeof caseInfoFilters[filterName] === 'object') {
           currentDateFilters[filterName] = caseInfoFilters[filterName] as DateFilterValue;
         }
@@ -301,20 +303,18 @@ const Filters: React.FC<Props> = ({
   };
 
   const handleApplyDateRangeFilter = (filter: DateFilter) => (filterValue: DateFilterValue | undefined) => {
-    // Check if this is a standard date filter or a custom date filter from CUSTOM_CASEINFO_FILTERS
-    if (Object.keys(CUSTOM_CASEINFO_FILTERS).includes(filter.filterPayloadParameter)) {
-      // This is a custom date filter (like reportDate), store it in caseInfoFilters
+    // Check if this is a standard date filter or a custom date filter from CASEINFO_FILTERS
+    if (Object.keys(CASEINFO_FILTERS).includes(filter.filterPayloadParameter)) {
       updateCaseListFilter({
         caseInfoFilters: {
           ...currentFilter.caseInfoFilters,
           [filter.filterPayloadParameter]: filterValue,
         },
+        // [filter.filterPayloadParameter]: undefined,
       });
     } else {
-      // This is a standard date filter (createdAt, updatedAt, followUpDate)
-      const updatedDateFilterValues = { ...dateFilterValues, [filter.filterPayloadParameter]: filterValue };
       updateCaseListFilter({
-        ...updatedDateFilterValues,
+        [filter.filterPayloadParameter]: filterValue,
       });
     }
   };
@@ -409,9 +409,9 @@ const Filters: React.FC<Props> = ({
             searchable
           />
 
-          {/* Custom Filter */}
-          {Object.keys(CUSTOM_CASEINFO_FILTERS)
-            .filter(filterName => CUSTOM_CASEINFO_FILTERS[filterName].type === 'multi-select')
+          {/* Multi-Select Filters */}
+          {Object.keys(CASEINFO_FILTERS)
+            .filter(filterName => CASEINFO_FILTERS[filterName].type === 'multi-select')
             .map(filterName => (
               <MultiSelectFilter
                 key={filterName}
@@ -454,10 +454,10 @@ const Filters: React.FC<Props> = ({
               );
             })}
 
-            {Object.keys(CUSTOM_CASEINFO_FILTERS)
-              .filter(filterName => CUSTOM_CASEINFO_FILTERS[filterName].type === 'date-input')
+            {Object.keys(CASEINFO_FILTERS)
+              .filter(filterName => CASEINFO_FILTERS[filterName].type === 'date-input')
               .map(filterName => {
-                const filter = CUSTOM_CASEINFO_FILTERS[filterName];
+                const filter = CASEINFO_FILTERS[filterName];
                 const filterForm = currentDefinitionVersion?.caseOverview[filterName];
                 console.log('>>> Custom Date Filter', filterForm, filterName, filter);
 
