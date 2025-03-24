@@ -122,17 +122,17 @@
     "label": "# of Clients Transported"
   },
   {
-    "name": "incidentActivationInterval",
-    "type": "numeric-input",
-    "label": "Incident Activation Interval"
-  },  
-  {
     "name": "comments",
     "label": "Comments",
     "type": "textarea",
     "rows": 20,
     "width": 289
   },
+  {
+    "name": "incidentActivationInterval",
+    "type": "numeric-input",
+    "label": "Incident Activation Interval"
+  },  
   {
     "name": "enrouteInterval",
     "type": "numeric-input",
