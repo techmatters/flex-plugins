@@ -36,35 +36,5 @@
     "name": "incidentCompleteTimestamp",
     "type": "time-input",
     "label": "Incident Complete Timestamp"
-  },
-  {
-    "name": "incidentActivationInterval",
-    "type": "numeric-input",
-    "label": "Incident Activation Interval"
-  },
-  {
-    "name": "enrouteInterval",
-    "type": "numeric-input",
-    "label": "En Route Interval"
-  },
-  {
-    "name": "sceneArrivalInterval",
-    "type": "numeric-input",
-    "label": "Scene Arrival Interval"
-  },
-  {
-    "name": "triageInterval",
-    "type": "numeric-input",
-    "label": "Triage Interval"
-  },
-  {
-    "name": "transportInterval",
-    "type": "numeric-input",
-    "label": "Transport Interval"
-  },
-  {
-    "name": "totalIncidentTime",
-    "type": "numeric-input",
-    "label": "Time from Arrival to Completion"
   }
 ]
