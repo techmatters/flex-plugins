@@ -7,10 +7,7 @@
    {
     "name": "incidentCreationTimestamp",
     "type": "time-input",
-    "label": "Incident Creation Timestamp",
-    "metadata": {
-        "eventTimestampSource": true
-    }
+    "label": "Incident Creation Timestamp"
   }, 
   {
     "name": "incidentType",
