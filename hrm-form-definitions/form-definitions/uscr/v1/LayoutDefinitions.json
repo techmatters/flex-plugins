@@ -58,12 +58,16 @@
         "caseHomeOrder": 1,
         "caseHomeLocation": "timeline",
         "previewFields": [
+         "enrouteTimestamp", 
           "responderName"
         ],
         "layout": {
-          "incidentType": {
+          "responderName": {
             "includeLabel": true
-          }
+          },
+          "enrouteTimestamp": {
+            "includeLabel": true
+          }        
         }
       },
       "caseReport": {
