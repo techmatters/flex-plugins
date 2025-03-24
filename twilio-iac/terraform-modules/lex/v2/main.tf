@@ -19,6 +19,19 @@ locals {
       }
     ]
   ])
+ grouped_intent_slots = {
+    for key, group in { for item in local.intent_slot_pairs : "${item.bot_name}_${item.intent_name}" => item... } :
+    key => {
+      bot_name      = group[0].bot_name
+      intent_name   = group[0].intent_name
+      slot_priorities = jsonencode([
+        for slot in group : {
+          priority = slot.priority
+          slotId   = split(",", aws_lexv2models_slot.this["${slot.intent_name}_${slot.slot_name}"].id)[4]
+        }
+      ])
+    }
+  }
 }
 
 data "aws_iam_role" "role-lex-v2-bot" {
@@ -303,6 +316,7 @@ Since I can't reference the slot ids when creating the intent I need to update t
 This command doesn't always work, sometimes it only add just one dependency, so I usually run the apply twice.
 
  */
+ /*
 resource "null_resource" "update_intent_slots" {
     triggers = {
         always_run = timestamp()
@@ -324,6 +338,29 @@ resource "null_resource" "update_intent_slots" {
     aws_lexv2models_intent.this,
     aws_lexv2models_slot.this
   ]
+}*/
+resource "null_resource" "update_intent_slots" {
+    triggers = {
+        always_run = timestamp()
+    }
+    for_each = local.grouped_intent_slots
+
+    provisioner "local-exec" {
+        command = <<EOT
+        aws lexv2-models update-intent \
+        --bot-id ${aws_lexv2models_bot.this[each.value.bot_name].id} \
+        --bot-version ${aws_lexv2models_bot_locale.this[each.value.bot_name].bot_version} \
+        --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
+        --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.intent_name}"].id)[0]} \
+        --intent-name ${each.value.intent_name} \
+        --slot-priorities '${each.value.slot_priorities}'
+        EOT
+    }
+
+    depends_on = [
+        aws_lexv2models_intent.this,
+        aws_lexv2models_slot.this
+    ]
 }
 
 resource "time_sleep" "wait_10_seconds" {
