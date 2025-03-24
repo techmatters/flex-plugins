@@ -128,7 +128,14 @@
     "name": "incidentActivationInterval",
     "type": "numeric-input",
     "label": "Incident Activation Interval"
-  },
+  },  
+  {
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289
+  }
   {
     "name": "enrouteInterval",
     "type": "numeric-input",
@@ -153,12 +160,5 @@
     "name": "totalIncidentTime",
     "type": "numeric-input",
     "label": "Time from Arrival to Completion"
-  },
-  {
-    "name": "comments",
-    "label": "Comments",
-    "type": "textarea",
-    "rows": 20,
-    "width": 289
   }
 ]
