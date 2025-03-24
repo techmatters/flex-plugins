@@ -106,7 +106,7 @@ locals {
       es_CL : ["post_survey"]
     }
     lex_v2_bot_languages = {
-     // es_CL : ["post_survey"]
+      es_CL : ["post_survey"]
     }
 
   }
