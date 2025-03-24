@@ -35,7 +35,8 @@
         "post_survey_no": {
           "closing_response": {
             "message": "Gracias por contactarnos. No dudes en escribirnos de nuevo cuando necesites ayuda."
-          }
+          },
+          "slot_priorities": {}
       }
     }
   }
