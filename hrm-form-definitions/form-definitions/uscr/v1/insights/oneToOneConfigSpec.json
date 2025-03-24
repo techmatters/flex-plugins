@@ -23,7 +23,7 @@
     "caseInformation": [
       {
         "name": "priority",
-        "insights": ["conversations", "conversation_attribute_7"],
+        "insights": ["conversations", "conversation_attribute_7"]
       }
     ]
   },
