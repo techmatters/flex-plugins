@@ -135,7 +135,7 @@
     "type": "textarea",
     "rows": 20,
     "width": 289
-  }
+  },
   {
     "name": "enrouteInterval",
     "type": "numeric-input",
