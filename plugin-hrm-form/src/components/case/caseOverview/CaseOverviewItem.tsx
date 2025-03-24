@@ -18,41 +18,37 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
 import { DetailDescription, StyledInputField } from '../styles';
+import { getTemplateStrings } from '../../../hrmConfig';
 
 type CaseOverviewItemProps = {
   labelId: string;
   templateCode: string;
   inputId: string;
   value: string;
-  testId?: string;
   color?: string;
 };
 
-const CaseOverviewItem: React.FC<CaseOverviewItemProps> = ({
-  labelId,
-  templateCode,
-  inputId,
-  value,
-  testId,
-  color,
-}) => (
-  <div style={{ paddingRight: '20px' }}>
-    <DetailDescription>
-      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-      <label id={labelId} htmlFor={inputId}>
-        <Template code={templateCode} />
-      </label>
-    </DetailDescription>
-    <StyledInputField
-      data-testid={testId ?? `Case-${inputId}`}
-      id={inputId}
-      name={inputId}
-      aria-labelledby={labelId}
-      disabled
-      value={value}
-      color={color}
-    />
-  </div>
-);
+const CaseOverviewItem: React.FC<CaseOverviewItemProps> = ({ labelId, templateCode, inputId, value, color }) => {
+  const strings = getTemplateStrings();
+  return (
+    <div style={{ paddingRight: '20px' }}>
+      <DetailDescription>
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+        <label id={labelId} htmlFor={inputId}>
+          <Template code={templateCode} />
+        </label>
+      </DetailDescription>
+      <StyledInputField
+        data-testid={`Case-CaseOverview-${labelId}`}
+        id={inputId}
+        name={inputId}
+        aria-labelledby={labelId}
+        disabled
+        value={strings[value] || value}
+        color={color}
+      />
+    </div>
+  );
+};
 
 export default CaseOverviewItem;

@@ -163,21 +163,71 @@ test.describe.serial('Offline Contact (with Case)', () => {
     );
 
     expect(new Date(resultCase.createdAt).getTime()).toBeGreaterThan(beforeDate.getTime());
-    expect(resultCase.info.counsellorNotes).toMatchObject([
+
+    const resultNotes = await pluginPage.evaluate(
+      async ([caseIdArg]) => {
+        const manager = (window as any).Twilio.Flex.Manager.getInstance();
+        const token = manager.user.token;
+        const hrmBaseUrl = `${manager.serviceConfiguration.attributes.hrm_base_url}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}-aselo_test`;
+
+        const url = `${hrmBaseUrl}/cases/${caseIdArg}/timeline?sectionTypes=note&&includeContacts=false`;
+        const options = {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        };
+
+        const response = await window.fetch(url, options);
+        return response.json();
+      },
+      [caseId],
+    );
+
+    expect(resultNotes.activities).toMatchObject([
       {
-        note: 'E2E TEST NOTE',
+        activity: {
+          sectionTypeSpecificData: {
+            note: 'E2E TEST NOTE',
+          },
+        },
       },
     ]);
-    expect(resultCase.info.households).toMatchObject([
+
+    const resultHouseholds = await pluginPage.evaluate(
+      async ([caseIdArg]) => {
+        const manager = (window as any).Twilio.Flex.Manager.getInstance();
+        const token = manager.user.token;
+        const hrmBaseUrl = `${manager.serviceConfiguration.attributes.hrm_base_url}/${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${manager.workerClient.accountSid}-aselo_test`;
+
+        const url = `${hrmBaseUrl}/cases/${caseIdArg}/timeline?sectionTypes=household&includeContacts=false`;
+        const options = {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        };
+
+        const response = await window.fetch(url, options);
+        return response.json();
+      },
+      [caseId],
+    );
+
+    expect(resultHouseholds.activities).toMatchObject([
       {
-        household: {
-          firstName: 'FIRST NAME',
-          lastName: 'LAST NAME',
-          relationshipToChild: 'Unknown',
-          province: 'Northern',
-          district: 'District A',
-          gender: 'Unknown',
-          age: 'Unknown',
+        activity: {
+          sectionTypeSpecificData: {
+            firstName: 'FIRST NAME',
+            lastName: 'LAST NAME',
+            relationshipToChild: 'Unknown',
+            province: 'Northern',
+            district: 'District A',
+            gender: 'Unknown',
+            age: 'Unknown',
+          },
         },
       },
     ]);

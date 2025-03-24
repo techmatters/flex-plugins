@@ -102,9 +102,7 @@ export const isCaseSectionIdentifierTimelineActivity = (
 
 export type CaseSummaryWorkingCopy = {
   status: string;
-  followUpDate: string;
-  childIsAtRisk: boolean;
-  summary: string;
+  [key: string]: string | boolean;
 };
 
 export type CaseWorkingCopy = {

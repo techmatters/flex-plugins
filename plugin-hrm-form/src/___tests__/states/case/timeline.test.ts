@@ -92,14 +92,10 @@ const wrapCaseSectionInTimelineActivity = (section: FullCaseSection): TimelineAc
   activityType: 'case-section',
   activity: section,
 });
-const newCaseSectionIdTimelineActivity = ({
-  sectionType,
-  sectionId,
-  eventTimestamp,
-}: FullCaseSection): CaseSectionIdentifierTimelineActivity => ({
-  timestamp: eventTimestamp,
+const newCaseSectionIdTimelineActivity = (activity: FullCaseSection): CaseSectionIdentifierTimelineActivity => ({
+  timestamp: activity.eventTimestamp,
   activityType: 'case-section-id',
-  activity: { sectionType, sectionId },
+  activity,
 });
 
 describe('newGetTimelineAsyncAction', () => {

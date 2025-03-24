@@ -67,7 +67,7 @@ const useCaseLoader = ({
   const safeToLoad = Boolean(caseId) && Boolean(referenceId);
   const shouldLoad = autoload || refresh;
 
-  useLoadWithRetry({
+  const loader = useLoadWithRetry({
     error,
     loadFunction: loadCase,
     loading,
@@ -85,6 +85,7 @@ const useCaseLoader = ({
   }, [unloadCase]);
 
   return {
+    ...loader,
     error,
     loading,
   };

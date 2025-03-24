@@ -54,6 +54,7 @@ export type CaseOverview = {
   followUpDate?: string;
   childIsAtRisk?: boolean;
   summary?: string;
+  [key: string]: any;
 }
 
 export type CaseInfo = CaseOverview & {
@@ -231,6 +232,7 @@ export type CounselorHash = {
 export type ConfigFlags = {
   enableExternalRecordings: boolean;
   enableUnmaskingCalls: boolean;
+  hideAddToNewCaseButton: boolean;
 };
 
 /* eslint-disable camelcase */

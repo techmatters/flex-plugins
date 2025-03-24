@@ -5,7 +5,8 @@
             "web"
         ],
         "config_flags": {
-            "enableExternalRecordings": false
+            "enableExternalRecordings": false,
+            "hideAddToNewCaseButton": true
         },
         "feature_flags": {
             "enable_voice_recordings": true,
@@ -15,7 +16,7 @@
         },
         "definitionVersion": "uscr-v1",
         "external_recordings_enabled": false,
-        "helplineLanguage": "en-US",
+        "helplineLanguage": "en-USCR",
         "permissionConfig": "uscr"
     }
 }

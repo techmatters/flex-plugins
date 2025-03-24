@@ -195,7 +195,7 @@ const Case: React.FC<Props> = ({
         },
       });
     }
-    if (subroute === NewCaseSubroutes.CaseSummary) {
+    if (subroute === NewCaseSubroutes.CaseOverview) {
       return (
         <EditCaseOverview
           {...{

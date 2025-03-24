@@ -1,0 +1,26 @@
+[
+  {
+    "name": "status",
+    "label": "Status do caso",
+    "type": "select"
+  },
+  {
+    "name": "childIsAtRisk",
+    "label": "Criança está em risco",
+    "type": "checkbox"
+  },
+  {
+    "name": "followUpDate",
+    "label": "Resumo do Caso",
+    "type": "date-input"
+  },
+  {
+    "name": "summary",
+    "label": "Resumo do Caso",
+    "placeholder": "Resumo do Caso",
+    "type": "textarea",
+    "rows": 5,
+    "width": 300,
+    "isPII": true
+  }
+]

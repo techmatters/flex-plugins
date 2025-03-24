@@ -15,9 +15,8 @@
             "enable_post_survey": true,
             "enable_voice_recordings": true,
             "enable_client_profiles":true,
-            "enable_conferencing": true,
-            "enable_backend_hrm_contact_creation" : true,
-            "lambda_task_created_handler": true
+            "enable_conferencing": true
+            
         },
         "helplineLanguage": "es-CL",
         "permissionConfig": "cl"

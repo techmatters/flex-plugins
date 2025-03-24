@@ -223,7 +223,7 @@ export const TimelineIconContainer = styled('div')`
 `;
 TimelineIconContainer.displayName = 'TimelineIconContainer';
 
-export const CaseSummaryTextArea = styled(BaseTextArea)`
+export const CaseStyledTextArea = styled(BaseTextArea)`
   background-color: #f6f6f67d;
   height: 100%;
   width: 100%;
@@ -233,7 +233,7 @@ export const CaseSummaryTextArea = styled(BaseTextArea)`
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 `;
-CaseSummaryTextArea.displayName = 'CaseSummaryTextArea';
+CaseStyledTextArea.displayName = 'CaseStyledTextArea';
 
 export const RowItemContainer = styled(Row)`
   white-space: nowrap;

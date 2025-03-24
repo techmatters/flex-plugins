@@ -41,13 +41,13 @@ export type CaseStatus = {
 
 export type AseloFormTemplateDefinitions = {
   caseForms: {
+    CaseOverviewForm: FormFileSpecification;
     HouseholdForm: FormFileSpecification;
     IncidentForm: FormFileSpecification;
     NoteForm: FormFileSpecification;
     PerpetratorForm: FormFileSpecification;
     ReferralForm: FormFileSpecification;
     DocumentForm: FormFileSpecification;
-    CaseSummaryForm: FormFileSpecification;
   };
   tabbedForms: {
     CallerInformationTab: FormFileSpecification;
@@ -81,6 +81,10 @@ function generateAgeRangeOptions(from: number, to: number): SelectOption[] {
 
 export const aseloFormTemplates: AseloFormTemplateDefinitions = {
   caseForms: {
+    CaseOverviewForm: {
+      definitionFilePath: './caseForms/CaseOverviewForm.json',
+      items: {},
+    },
     HouseholdForm: {
       definitionFilePath: './caseForms/HouseholdForm.json',
       items: {
@@ -523,10 +527,6 @@ export const aseloFormTemplates: AseloFormTemplateDefinitions = {
     },
     DocumentForm: {
       definitionFilePath: './caseForms/DocumentForm.json',
-      items: {},
-    },
-    CaseSummaryForm: {
-      definitionFilePath: './caseForms/CaseSummaryForm.json',
       items: {},
     },
   },

@@ -46,7 +46,6 @@ import {
   updateCaseSummaryWorkingCopy,
 } from '../../../states/case/caseWorkingCopy';
 import { PermissionActions, PermissionActionType } from '../../../permissions';
-import { disperseInputs, splitAt } from '../../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../../forms';
 import { getTemplateStrings } from '../../../hrmConfig';
 import { updateCaseOverviewAsyncAction } from '../../../states/case/saveCase';
@@ -105,11 +104,26 @@ const EditCaseOverview: React.FC<Props> = ({
   can,
   updateCaseAsyncAction,
   isUpdating,
+  definitionVersion,
 }) => {
   const { connectedCase, availableStatusTransitions } = connectedCaseState ?? {};
 
+  const caseOverviewFields = definitionVersion?.caseOverview;
+
   const formDefinition: FormDefinition = useMemo(() => {
     try {
+      if (caseOverviewFields && Array.isArray(caseOverviewFields)) {
+        return caseOverviewFields.map(field => {
+          if (field.name === 'status') {
+            return {
+              ...field,
+              options: availableStatusTransitions,
+            };
+          }
+          return field;
+        });
+      }
+
       return [
         {
           name: 'status',
@@ -137,18 +151,14 @@ const EditCaseOverview: React.FC<Props> = ({
       console.error('Failed to render edit case summary form', e);
       return [];
     }
-  }, [availableStatusTransitions]);
+  }, [availableStatusTransitions, caseOverviewFields]);
 
   const savedForm = React.useMemo(() => {
-    const {
-      status,
-      info: { summary, followUpDate, childIsAtRisk },
-    } = connectedCase;
+    const { status, info } = connectedCase;
+
     return {
       status,
-      summary: summary ?? '',
-      followUpDate: followUpDate ?? '',
-      childIsAtRisk: childIsAtRisk ?? false,
+      ...(info || {}),
     };
   }, [connectedCase]);
 
@@ -160,7 +170,12 @@ const EditCaseOverview: React.FC<Props> = ({
 
   useEffect(() => {
     if (!workingCopy) {
-      initialiseWorkingCopy(connectedCase.id, getValues() as CaseSummaryWorkingCopy);
+      const formValues = getValues() as CaseSummaryWorkingCopy;
+      initialiseWorkingCopy(connectedCase.id, {
+        status: connectedCase.status,
+        ...connectedCase.info,
+        ...formValues,
+      });
     }
   });
 
@@ -174,8 +189,20 @@ const EditCaseOverview: React.FC<Props> = ({
   });
 
   const [l, r] = React.useMemo(() => {
-    return splitAt(3)(disperseInputs(7)(form));
-  }, [form]);
+    const left: JSX.Element[] = [];
+    const right: JSX.Element[] = [];
+
+    form.forEach(field => {
+      const fieldDef = formDefinition.find(def => def.name === field.key);
+      if (fieldDef && fieldDef.type === FormInputType.Textarea) {
+        right.push(field);
+      } else {
+        left.push(field);
+      }
+    });
+
+    return [left, right];
+  }, [form, formDefinition]);
 
   if (!connectedCaseState?.connectedCase) return null;
 
@@ -219,7 +246,7 @@ const EditCaseOverview: React.FC<Props> = ({
               <ColumnarBlock>{r}</ColumnarBlock>
             </TwoColumnLayout>
           </Box>
-        </Container>{' '}
+        </Container>
         <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
         <BottomButtonBar>
           <StyledNextStepButton

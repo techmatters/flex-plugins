@@ -1,0 +1,26 @@
+[
+  {
+    "name": "status",
+    "label": "Case Status",
+    "type": "select"
+  },
+  {
+    "name": "childIsAtRisk",
+    "label": "Legal Hold",
+    "type": "checkbox"
+  },
+  {
+    "name": "followUpDate",
+    "label": "Follow Up Date",
+    "type": "date-input"
+  },
+  {
+    "name": "summary",
+    "label": "Nature of Crisis",
+    "type": "textarea",
+    "placeholder": "Please add details on weapon(s), accessibility, targets, suicide details, medication, crime",
+    "rows": 5,
+    "width": 300,
+    "isPII": true
+  }
+]

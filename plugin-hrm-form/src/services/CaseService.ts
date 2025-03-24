@@ -41,7 +41,7 @@ const convertApiCaseToFlexCase = (apiCase: ApiCase): Case => {
   };
 };
 
-export async function createCase(contact: Contact, creatingWorkerSid: string, definitionVersion: DefinitionVersionId) {
+export const getCasePayload = (contact: Contact, creatingWorkerSid: string, definitionVersion: DefinitionVersionId) => {
   const { helpline, rawJson: contactForm } = contact;
 
   const caseRecord = contactForm.contactlessTask?.createdOnBehalfOf
@@ -57,6 +57,12 @@ export async function createCase(contact: Contact, creatingWorkerSid: string, de
         twilioWorkerId: creatingWorkerSid,
         info: { definitionVersion },
       };
+
+  return caseRecord;
+};
+
+export async function createCase(contact: Contact, creatingWorkerSid: string, definitionVersion: DefinitionVersionId) {
+  const caseRecord = getCasePayload(contact, creatingWorkerSid, definitionVersion);
 
   const options = {
     method: 'POST',
@@ -131,6 +137,7 @@ export async function getCaseTimeline(
     )}`,
     options,
   );
+
   return {
     ...rawResult,
     activities: rawResult.activities.map(timelineActivity => {
