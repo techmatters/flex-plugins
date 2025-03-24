@@ -591,5 +591,13 @@
   "CaseSection-Edit/narrativeSummary": "Edit Narrative Summary",
   "CaseSection-Edit/safetyPlan": "Edit Safety Plan",
   "CaseSection-Edit/sudSurvey": "Edit SUD Survey",
-  "CaseSection-View-Title/caseReport": "View Case Report"
+  "CaseSection-View-Title/caseReport": "View Case Report",
+  "Case-SectionList-Title/assignedResponder": "Assigned Responder",
+  "Case-SectionList-Add/caseReport": "Add Assigned Responder",
+  "CaseSection-BottomBar-Save/caseReport": "Save",
+  "CaseSection-BottomBar-SaveAndAddAnother/caseReport": "Save and add another",
+  "CaseSection-Edit/caseReport": "Edit Assigned Responder",
+  "CaseSection-Add/caseReport": "Add Assigned Responder",
+  "Case-NoSections/caseReport": "No responders listed",
+  "CaseSection-View-Title/caseReport": "View Assigned Responder"
 }
