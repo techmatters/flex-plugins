@@ -66,6 +66,25 @@
                     }
                 }
             }
+        },
+        "slotCaptureSetting": {
+            "captureNextStep": {
+                "dialogAction": {
+                    "type": "FulfillIntent"
+                },
+                "intent": {}
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "StartIntent"
+                },
+                "intent": {
+                    "name": "FallbackIntent"
+                }
+            },
+            "elicitationCodeHook": {
+                "enableCodeHookInvocation": true
+            }
         }
     }
 }

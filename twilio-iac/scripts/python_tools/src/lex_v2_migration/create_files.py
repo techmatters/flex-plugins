@@ -3,6 +3,7 @@ import json
 import os
 import argparse
 
+
 def generate_intent_files(bot_definition_path, template_path, output_dir):
     # Load bot definition
     with open(bot_definition_path, 'r', encoding='utf-8') as f:
@@ -60,7 +61,7 @@ def generate_slot_files(bot_definition_path, template_path, output_dir):
     with open(template_path, 'r', encoding='utf-8') as f:
         slot_template = json.load(f)
     
-     # Ensure output directory exists
+    # Ensure output directory exists
     slot_dir = os.path.join(output_dir, "slots")
     os.makedirs(slot_dir, exist_ok=True)
     
@@ -69,7 +70,11 @@ def generate_slot_files(bot_definition_path, template_path, output_dir):
         if "intents" in intent_data:
             for intent, details in intent_data["intents"].items():
                 if "slot_priorities" in details:
-                    for _, slot in details["slot_priorities"].items():
+                    # Get all slots in the correct order
+                    slot_priorities = sorted(details["slot_priorities"].items(), key=lambda x: int(x[0]))
+                    
+                    # Iterate over sorted slots
+                    for i, (_, slot) in enumerate(slot_priorities):
                         slot_name = slot["slot_name"]
                         slot_type_name = slot["slot_type_name"]
                         question = slot["slot_question"]
@@ -81,6 +86,50 @@ def generate_slot_files(bot_definition_path, template_path, output_dir):
                         slot_json["intentName"] = intent
                         slot_json["description"] = f"Slot {slot_name} for intent {intent}"
                         slot_json["valueElicitationSetting"]["promptSpecification"]["messageGroups"][0]["message"]["plainTextMessage"]["value"] = question
+                        
+                        # Add the slotCaptureSetting
+                        if i < len(slot_priorities) - 1:  # Not the last slot
+                            next_slot_name = slot_priorities[i + 1][1]["slot_name"]
+                            slot_json["valueElicitationSetting"]["slotCaptureSetting"] = {
+                                "captureNextStep": {
+                                    "dialogAction": {
+                                        "type": "ElicitSlot",
+                                        "slotToElicit": next_slot_name
+                                    },
+                                    "intent": {}
+                                },
+                                "failureNextStep": {
+                                    "dialogAction": {
+                                        "type": "StartIntent"
+                                    },
+                                    "intent": {
+                                        "name": "FallbackIntent"
+                                    }
+                                },
+                                "elicitationCodeHook": {
+                                    "enableCodeHookInvocation": True
+                                }
+                            }
+                        else:  # Last slot
+                            slot_json["valueElicitationSetting"]["slotCaptureSetting"] = {
+                                "captureNextStep": {
+                                    "dialogAction": {
+                                        "type": "FulfillIntent"
+                                    },
+                                    "intent": {}
+                                },
+                                "failureNextStep": {
+                                    "dialogAction": {
+                                        "type": "StartIntent"
+                                    },
+                                    "intent": {
+                                        "name": "FallbackIntent"
+                                    }
+                                },
+                                "elicitationCodeHook": {
+                                    "enableCodeHookInvocation": True
+                                }
+                            }
                         
                         # Save to file
                         output_path = os.path.join(slot_dir, f"{slot_name}.json")
