@@ -591,5 +591,6 @@
   "CaseSection-Edit/narrativeSummary": "Edit Narrative Summary",
   "CaseSection-Edit/safetyPlan": "Edit Safety Plan",
   "CaseSection-Edit/sudSurvey": "Edit SUD Survey",
-  "CaseSection-View-Title/caseReport": "View Case Report"
+  "CaseSection-View-Title/caseReport": "View Case Report",
+  "GeneralizedSearchForm-Counselor": "Operator",
 }
