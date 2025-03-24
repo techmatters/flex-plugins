@@ -32,7 +32,7 @@ locals {
     }
     task_queues = {
       master : {
-        "target_workers" = "1==1",
+        "target_workers" = "routing.skills HAS 'Operator'",
         "friendly_name"  = "CIRCLE"
       },
       survey : {
