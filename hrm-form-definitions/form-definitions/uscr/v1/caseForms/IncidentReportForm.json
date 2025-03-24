@@ -117,11 +117,6 @@
     "label": "# of Clients Transported"
   },
   {
-    "name": "activationTimestamp",
-    "type": "time-input",
-    "label": "Activation Timestamp"
-  },
-  {
     "name": "enrouteTimestamp",
     "type": "time-input",
     "label": "En Route Timestamp"
