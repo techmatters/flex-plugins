@@ -394,8 +394,8 @@ resource "null_resource" "update_intent_settings" {
         ${each.value.config.intentClosingSetting != null ? "--intent-closing-setting '${jsonencode(each.value.config.intentClosingSetting)}'" : ""} \
         ${each.value.config.initialResponseSetting != null ? "--initial-response-setting '${jsonencode(each.value.config.initialResponseSetting)}'" : ""} \
         ${each.value.config.fulfillmentCodeHook != null ? "--fulfillment-code-hook '${jsonencode(each.value.config.fulfillmentCodeHook)}'" : ""} \
-        ${each.value.config.sampleUtterances != null ? "--sample-utterances '${jsonencode(each.value.config.sampleUtterances)}'" : ""} 
-        --slot-priorities ${local.grouped_intent_slots[each.key].slot_priorities}
+        ${each.value.config.sampleUtterances != null ? "--sample-utterances '${jsonencode(each.value.config.sampleUtterances)}'" : ""} \
+        --slot-priorities '${local.grouped_intent_slots[each.key].slot_priorities}'
         EOT
     }
     depends_on = [
