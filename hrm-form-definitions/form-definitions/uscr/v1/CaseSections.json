@@ -9,7 +9,7 @@
   },
   "assignedResponder": {
     "label": "Assigned Responder",
-    "formPath": "caseForms/AssignedResponder.json"
+    "formPath": "caseForms/AssignedResponderForm.json"
   },
   "caseReport": {
     "label": "Case Report",
