@@ -97,6 +97,13 @@
     ]
   },
   {
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289
+  },
+  {
     "name": "latitude",
     "type": "input",
     "label": "Location: Latitude"
@@ -120,13 +127,6 @@
     "name": "numberOfClientsTransported",
     "type": "numeric-input",
     "label": "# of Clients Transported"
-  },
-  {
-    "name": "comments",
-    "label": "Comments",
-    "type": "textarea",
-    "rows": 20,
-    "width": 289
   },
   {
     "name": "incidentActivationInterval",
