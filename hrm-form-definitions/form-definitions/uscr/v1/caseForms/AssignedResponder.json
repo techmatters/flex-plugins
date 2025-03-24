@@ -7,32 +7,50 @@
   {
     "name": "enrouteTimestamp",
     "type": "time-input",
-    "label": "En Route Timestamp"
+    "label": "En Route Timestamp",
+    "metadata": {
+        "eventTimestampSource": true
+    }
   },
   {
     "name": "onSceneTimestamp",
     "type": "time-input",
-    "label": "On-Scene Timestamp"
+    "label": "On-Scene Timestamp",
+    "metadata": {
+        "eventTimestampSource": true
+    }
   },
   {
     "name": "additionanlResourcesTimestamp",
     "type": "time-input",
-    "label": "Additional Resources Timestamp"
+    "label": "Additional Resources Timestamp",
+    "metadata": {
+        "eventTimestampSource": true
+    }
   },
   {
     "name": "transportTimestamp",
     "type": "time-input",
-    "label": "Transport Timestamp"
+    "label": "Transport Timestamp",
+    "metadata": {
+        "eventTimestampSource": true
+    }
   },
   {
     "name": "destinationArrivalTimestamp",
     "type": "time-input",
-    "label": "Destination Arrival Timestamp"
+    "label": "Destination Arrival Timestamp",
+    "metadata": {
+        "eventTimestampSource": true
+    }
   },
   {
     "name": "incidentCompleteTimestamp",
     "type": "time-input",
-    "label": "Incident Complete Timestamp"
+    "label": "Incident Complete Timestamp",
+    "metadata": {
+        "eventTimestampSource": true
+    }
   },
   {
     "name": "incidentActivationInterval",
