@@ -39,7 +39,7 @@
         
       },
       "incidentReport": {
-        "splitFormAt": 10,
+        "splitFormAt": 9,
         "printOrder": 1,
         "caseHomeOrder": 1,
         "caseHomeLocation": "timeline",
@@ -58,16 +58,12 @@
         "caseHomeOrder": 1,
         "caseHomeLocation": "timeline",
         "previewFields": [
-         "enrouteTimestamp", 
           "responderName"
         ],
         "layout": {
           "responderName": {
             "includeLabel": true
-          },
-          "enrouteTimestamp": {
-            "includeLabel": true
-          }        
+          } 
         }
       },
       "caseReport": {
