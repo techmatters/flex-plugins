@@ -339,6 +339,7 @@ resource "null_resource" "update_intent_slots" {
     aws_lexv2models_slot.this
   ]
 }*/
+/*
 resource "null_resource" "update_intent_slots" {
     triggers = {
         always_run = timestamp()
@@ -367,7 +368,7 @@ resource "time_sleep" "wait_10_seconds" {
   create_duration = "10s"
 
   depends_on = [null_resource.update_intent_slots]
-}
+}*/
 
 /*
 Based on what is writen on the intent resource. This will actually add all the sections that were not added by the resource.
@@ -398,10 +399,10 @@ resource "null_resource" "update_intent_settings" {
         ${lookup(local.grouped_intent_slots, each.key, null) != null ? "--slot-priorities '${local.grouped_intent_slots[each.key].slot_priorities}'"  : ""} \
         EOT
     }
-    depends_on = [
+   /* depends_on = [
     time_sleep.wait_10_seconds,
     null_resource.update_intent_slots
-  ]
+  ]*/
 }
 
 
