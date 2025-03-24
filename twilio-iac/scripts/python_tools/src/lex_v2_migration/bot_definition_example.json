@@ -1,0 +1,37 @@
+{
+  "pre_survey": {
+    "description": "Example configs/lex_v2/en_US/bots Pre Survey bot",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "type": "Bot",
+    "intents": {
+      "pre_survey": {
+        "initial_response": {
+          "message": "Welcome to the helpline. Please answer the following questions.",
+          "slot_to_elicit": "about_self"
+        },
+        "closing_response": {
+          "message": "We will transfer you now. Please hold for a counsellor."
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "about_self",
+            "slot_type_name": "yes_no",
+            "slot_question": "Are you calling about yourself? Please answer Yes or No."
+          },
+          "2": {
+            "slot_name": "age",
+            "slot_type_name": "age",
+            "slot_question": "How old are you?"
+          },
+          "3": {
+            "slot_name": "gender",
+            "slot_type_name": "gender",
+            "slot_question": "What is your gender?"
+          }
+        }
+      }
+    }
+  }
+}
