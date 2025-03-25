@@ -59,12 +59,24 @@
     "type": "listbox-multiselect",
     "options": [
       {
+        "value": "Alcott",
+        "label": "Alcott"
+      },
+      {
+        "value": "Canopy Roots",
+        "label": "Canopy Roots"
+      },
+      {
         "value": "East",
         "label": "East"
       },
       {
         "value": "Harbor",
         "label": "Harbor"
+      },
+      {
+        "value": "Heluna",
+        "label": "Heluna"
       },
       {
         "value": "Hollywood",
@@ -75,24 +87,36 @@
         "label": "Metro"
       },
       {
+        "value": "MOCS",
+        "label": "MOCS"
+      },
+      {
         "value": "Pacific",
         "label": "Pacific"
-      },
-      {
-        "value": "South LA",
-        "label": "South LA"
-      },
-      {
-        "value": "Valley",
-        "label": "Valley"
       },
       {
         "value": "Response Team",
         "label": "Response Team"
       },
       {
+        "value": "South LA",
+        "label": "South LA"
+      },
+      {
         "value": "Support Team",
         "label": "Support Team"
+      },
+      {
+        "value": "Sycamores",
+        "label": "Sycamores"
+      },
+      {
+        "value": "UA",
+        "label": "UA"
+      },
+      {
+        "value": "Valley",
+        "label": "Valley"
       }
     ]
   },

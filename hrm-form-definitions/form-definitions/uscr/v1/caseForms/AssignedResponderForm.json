@@ -15,7 +15,7 @@
     "label": "On-Scene Timestamp"
   },
   {
-    "name": "additionanlResourcesTimestamp",
+    "name": "additionalResourcesTimestamp",
     "type": "time-input",
     "label": "Additional Resources Timestamp"
   },
