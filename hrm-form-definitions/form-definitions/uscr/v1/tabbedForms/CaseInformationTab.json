@@ -6,16 +6,12 @@
     "unknownOption": "Unknown",
     "options": [
       {
-        "value": "Unknown",
-        "label": ""
+        "value": "Normal",
+        "label": "Normal"
       },
       {
         "value": "High",
         "label": "High"
-      },
-      {
-        "value": "Normal",
-        "label": "Normal"
       }
     ]
   },
