@@ -149,6 +149,11 @@
     "label": "Triage Interval"
   },
   {
+    "name": "totalSceneInterval",
+    "type": "numeric-input",
+    "label": "Total Scene Interval"
+  },
+  {
     "name": "transportInterval",
     "type": "numeric-input",
     "label": "Transport Interval"
