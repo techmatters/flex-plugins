@@ -595,7 +595,6 @@
   "Case-SectionList-Title/assignedResponder": "Assigned Responder",
   "Case-NoSections/assignedResponder": "No responders listed",
   "Case-SectionList-Add/assignedResponder": "Add Assigned Responder",
-  "CaseSection-Add/incidentReport": "Add Assigned Responder",
   "CaseSection-BottomBar-SaveAndAddAnother/assignedResponder": "Save and add another",
   "CaseSection-BottomBar-Save/assignedResponder": "Save",
   "Case-SectionList-NoItems/assignedResponder": "No Responders listed",
