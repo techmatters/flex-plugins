@@ -24,172 +24,56 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { FiltersContainer, FiltersResetAll, MainTitle, CountText, FilterTitle } from '../../../styles';
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
-import { CategoryFilter, CounselorHash } from '../../../types/types';
 import DateRangeFilter from './DateRangeFilter';
-import { DateFilter, dateFilterOptionsInPastAndFuture, dateFilterOptionsInPast } from './dateFilters';
-import CategoriesFilter, { Category } from './CategoriesFilter';
+import { DateFilter, dateFilterOptionsInPastAndFuture, dateFilterOptionsInPast, isDivider } from './dateFilters';
+import { Category } from './CategoriesFilter';
 import { RootState } from '../../../states';
 import * as CaseListSettingsActions from '../../../states/caseList/settings';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 import { canOnlyViewOwnCases } from '../../../permissions';
 import { caseListBase, configurationBase, namespace } from '../../../states/storeNamespaces';
-import { DateFilterValue } from '../../../states/caseList/dateFilters';
+import { DateFilterValue, DateExistsCondition } from '../../../states/caseList/dateFilters';
+import { getFilterComponent, getFilterComponentProps } from './FilterComponentsRegistry';
+import {
+  getStatusInitialValue,
+  getCounselorsInitialValue,
+  getCustomFilterInitialValue,
+  getInitialDateFilters,
+  getCategoriesInitialValue,
+  filterCheckedItems,
+  filterCheckedCategories,
+  getUpdatedCategoriesValues,
+} from './filterUtils';
 
 const CASEINFO_FILTERS: Record<
   string,
   {
     searchable?: boolean;
-    type:
+    type?:
       | 'multi-select'
-      | 'select'
-      | 'date-input'
-      | 'checkbox'
-      | 'textarea'
-      | 'text-input'
-      | 'number-input'
-      | 'boolean-input'
-      | 'radio-input'
-      | 'file-input';
+      // | 'select'
+      | 'date-input';
+    // | 'checkbox'
+    // | 'textarea'
+    // | 'text-input'
+    // | 'number-input'
+    // | 'boolean-input'
+    // | 'radio-input'
+    // | 'file-input';
     allowFutureDates?: boolean;
+    component?: string;
+    position: 'left' | 'right';
   }
 > = {
-  operatingArea: { searchable: true, type: 'multi-select' },
-  priority: { searchable: true, type: 'select' },
-  reportDate: { type: 'date-input', allowFutureDates: true },
-  childIsAtRisk: { type: 'checkbox' },
-};
-
-/**
- * Reads the definition version and returns and array of items (type Item[])
- * to be used as the options for the status filter
- * @param definitionVersion DefinitionVersion
- * @returns Item[]
- */
-const getStatusInitialValue = (definitionVersion: DefinitionVersion) =>
-  definitionVersion
-    ? Object.values(definitionVersion.caseStatus).map(caseStatus => ({
-        value: caseStatus.value,
-        label: caseStatus.label,
-        checked: false,
-      }))
-    : [];
-
-/**
- * Reads the counselors hash and returns and array of items (type Item[])
- * to be used as the options for the counselors filter
- * @param counselorsHash CounselorHash
- * @returns Item[]
- */
-const getCounselorsInitialValue = (counselorsHash: CounselorHash) =>
-  Object.keys(counselorsHash).map(key => ({
-    value: key,
-    label: counselorsHash[key],
-    checked: false,
-  }));
-
-/**
- * Reads the CaseOverview fields in definition version and returns an array of items (type Item[])
- * to be used as the options for the custom filter
- * @param definitionVersion DefinitionVersion
- * @param filterName The name of the filter to get values for
- * @returns Item[]
- */
-const getCustomFilterInitialValue = (definitionVersion: DefinitionVersion, filterName: string) => {
-  if (!definitionVersion) return [];
-
-  const customFilterField = Object.values(definitionVersion.caseOverview).find(
-    field => field && typeof field === 'object' && (field as { name: string }).name === filterName,
-  ) as { options?: Array<{ value: string; label: string }> } | undefined;
-
-  if (!customFilterField?.options) return [];
-
-  return customFilterField.options
-    .filter(option => option && option.value !== '')
-    .map(option => ({
-      value: String(option.value),
-      label: String(option.label),
-      checked: false,
-    }));
-};
-
-const getInitialDateFilters = (): DateFilter[] => [
-  {
-    labelKey: 'CaseList-Filters-DateFilter-CreatedAt',
-    filterPayloadParameter: 'createdAt',
-    options: dateFilterOptionsInPast(),
-  },
-  {
-    labelKey: 'CaseList-Filters-DateFilter-UpdatedAt',
-    filterPayloadParameter: 'updatedAt',
-    options: dateFilterOptionsInPast(),
-  },
-  {
-    labelKey: 'CaseList-Filters-DateFilter-FollowUpDate',
-    filterPayloadParameter: 'followUpDate',
-    options: dateFilterOptionsInPastAndFuture(),
-  },
-];
-/**
- * Reads the definition version and returns and array of categories (type Category[])
- * to be used as the options for the categories filter
- */
-const getCategoriesInitialValue = (definitionVersion: DefinitionVersion, helpline: string) =>
-  definitionVersion
-    ? Object.entries(definitionVersion.tabbedForms.IssueCategorizationTab(helpline)).map(
-        ([categoryName, { subcategories }]) => ({
-          categoryName,
-          subcategories: subcategories.map(subcategory => ({
-            value: subcategory.label,
-            label: subcategory.label,
-            checked: false,
-          })),
-        }),
-      )
-    : [];
-
-/**
- * Convert an array of items (type Item[]) into an array of strings.
- * This array will contain only the items that are checked.
- * @param items Item[]
- * @returns string[]
- */
-const filterCheckedItems = (items: Item[]): string[] => items.filter(item => item.checked).map(item => item.value);
-
-/**
- * Convert an array of categories (type Category[]) into an array of CategoryFilter.
- * This array will contain only the categories that are checked.
- * @param categories Category[]
- * @returns CategoryFilter[]
- */
-const filterCheckedCategories = (categories: Category[]): CategoryFilter[] =>
-  categories.flatMap(category =>
-    category.subcategories
-      .filter(subcategory => subcategory.checked)
-      .map(subcategory => ({
-        category: category.categoryName,
-        subcategory: subcategory.label,
-      })),
-  );
-
-/**
- * Given the selected categories from redux and the previous categoriesValues,
- * it returns the updated values for categoriesValues, whith the correct checked values.
- *
- * @param categories Selected categories from redux (type CategoryFilter[])
- * @param categoriesValues Previous categoriesValues (type Category[])
- * @returns
- */
-const getUpdatedCategoriesValues = (categories: CategoryFilter[], categoriesValues: Category[]): Category[] => {
-  const isChecked = (categoryName: string, subcategoryName: string) =>
-    categories.some(c => c.category === categoryName && c.subcategory === subcategoryName);
-
-  return categoriesValues.map(categoryValue => ({
-    ...categoryValue,
-    subcategories: categoryValue.subcategories.map(subcategory => ({
-      ...subcategory,
-      checked: isChecked(categoryValue.categoryName, subcategory.label),
-    })),
-  }));
+  status: { component: 'generate-status-filter', position: 'left' },
+  counselor: { component: 'generate-counselor-filter', position: 'left' },
+  category: { component: 'generate-category-filter', position: 'left' },
+  operatingArea: { searchable: true, type: 'multi-select', position: 'left' },
+  // priority: { searchable: true, type: 'multi-select', position: 'left' },
+  createdDate: { component: 'generate-created-date-filter', position: 'right' },
+  updatedDate: { component: 'generate-updated-date-filter', position: 'right' },
+  followUpDate: { type: 'date-input', allowFutureDates: true, position: 'right' },
+  // reportDate: { type: 'date-input', allowFutureDates: true, position: 'right' },
 };
 
 type OwnProps = {
@@ -220,7 +104,6 @@ const Filters: React.FC<Props> = ({
   const [dateFilterValues, setDateFilterValues] = useState<{
     createdAt?: DateFilterValue;
     updatedAt?: DateFilterValue;
-    followUpDate?: DateFilterValue;
   }>({});
   const [categoriesValues, setCategoriesValues] = useState<Category[]>(
     getCategoriesInitialValue(currentDefinitionVersion, helpline),
@@ -249,7 +132,6 @@ const Filters: React.FC<Props> = ({
     );
   }, [currentDefinitionVersion, helpline]);
 
-  // Updates UI state from current filters
   useEffect(() => {
     const { counsellors, statuses, categories, caseInfoFilters, includeOrphans, ...currentDateFilters } = currentFilter;
     const newCounselorValues = getCounselorsInitialValue(counselorsHash).map(cv => ({
@@ -273,12 +155,9 @@ const Filters: React.FC<Props> = ({
         {},
       );
 
-    // Update date filter values with any custom date filters from caseInfoFilters
     Object.keys(CASEINFO_FILTERS)
       .filter(filterName => CASEINFO_FILTERS[filterName].type === 'date-input')
       .forEach(filterName => {
-        // Store custom date filters only in dateFilterValues for UI display purposes
-        // They will be sent back to caseInfoFilters when applied
         if (caseInfoFilters?.[filterName] && typeof caseInfoFilters[filterName] === 'object') {
           currentDateFilters[filterName] = caseInfoFilters[filterName] as DateFilterValue;
         }
@@ -289,8 +168,15 @@ const Filters: React.FC<Props> = ({
     setDateFilterValues(currentDateFilters);
     setCategoriesValues(newCategoriesValues);
     setCaseInfoFilterValues(newCaseInfoFilterValues);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentFilterCompare, counselorsHashCompare]);
+  }, [
+    currentFilterCompare,
+    counselorsHashCompare,
+    caseInfoFilterValues,
+    categoriesValues,
+    counselorsHash,
+    currentFilter,
+    statusValues,
+  ]);
 
   if (!currentDefinitionVersion) return null;
 
@@ -303,7 +189,6 @@ const Filters: React.FC<Props> = ({
   };
 
   const handleApplyDateRangeFilter = (filter: DateFilter) => (filterValue: DateFilterValue | undefined) => {
-    // Check if this is a standard date filter or a custom date filter from CASEINFO_FILTERS
     if (Object.keys(CASEINFO_FILTERS).includes(filter.filterPayloadParameter)) {
       updateCaseListFilter({
         caseInfoFilters: {
@@ -373,115 +258,191 @@ const Filters: React.FC<Props> = ({
             <Template code="Table-FilterBy" />
           </FilterTitle>
 
-          {/* Status Filter */}
-          <MultiSelectFilter
-            name="status"
-            text={strings['CaseList-Filters-Status']}
-            defaultValues={statusValues}
-            openedFilter={openedFilter}
-            applyFilter={handleApplyStatusFilter}
-            setOpenedFilter={setOpenedFilter}
-          />
-
-          {/* Counselor Filter */}
-          {canViewCounselorFilter && (
-            <MultiSelectFilter
-              name="counselor"
-              searchDescription={strings['CaseList-Filters-SearchForCounselor']}
-              text={strings['CaseList-Filters-Counselor']}
-              defaultValues={counselorValues}
-              openedFilter={openedFilter}
-              applyFilter={handleApplyCounselorFilter}
-              setOpenedFilter={setOpenedFilter}
-              searchable
-            />
-          )}
-
-          {/* Categories Filter */}
-          <CategoriesFilter
-            name="categories"
-            searchDescription={strings['CaseList-Filters-SearchByCategory']}
-            text={strings['CaseList-Filters-Categories']}
-            defaultValues={categoriesValues}
-            openedFilter={openedFilter}
-            applyFilter={handleApplyCategoriesFilter}
-            setOpenedFilter={setOpenedFilter}
-            searchable
-          />
-
-          {/* Multi-Select Filters */}
-          {Object.keys(CASEINFO_FILTERS)
-            .filter(filterName => CASEINFO_FILTERS[filterName].type === 'multi-select')
-            .map(filterName => (
-              <MultiSelectFilter
-                key={filterName}
-                name={filterName}
-                text={
-                  currentDefinitionVersion?.caseOverview[
-                    Object.keys(currentDefinitionVersion.caseOverview).find(
-                      key => currentDefinitionVersion.caseOverview[key].name === filterName,
-                    )
-                  ].label
-                }
-                defaultValues={caseInfoFilterValues[filterName]}
-                openedFilter={openedFilter}
-                applyFilter={handleApplyCustomFilter(filterName)}
-                setOpenedFilter={setOpenedFilter}
-                searchable
-              />
-            ))}
-
-          <div style={{ display: 'inline-flex', marginLeft: 'auto' }}>
-            <DateRange fontSize="small" style={{ marginTop: '4px' }} />
-            <FilterTitle style={{ margin: '5px 10px 0 6px' }}>
-              <Template code="CaseList-Filters-DateFiltersLabel" />
-            </FilterTitle>
-            {/* Date Filters */}
-            {getInitialDateFilters().map(df => {
-              console.log('>>> Date Filter', df);
-              return (
-                <DateRangeFilter
-                  name={`${df.filterPayloadParameter}Filter`}
-                  allowFutureDates={df.filterPayloadParameter === 'followUpDate'}
-                  labelKey={df.labelKey}
-                  options={df.options}
-                  current={dateFilterValues[df.filterPayloadParameter]}
-                  openedFilter={openedFilter}
-                  applyFilter={handleApplyDateRangeFilter(df)}
-                  setOpenedFilter={setOpenedFilter}
-                  key={df.filterPayloadParameter}
-                />
-              );
-            })}
-
+          <div style={{ display: 'inline-flex' }}>
             {Object.keys(CASEINFO_FILTERS)
-              .filter(filterName => CASEINFO_FILTERS[filterName].type === 'date-input')
+              .filter(filterName => CASEINFO_FILTERS[filterName].position === 'left')
               .map(filterName => {
                 const filter = CASEINFO_FILTERS[filterName];
-                const filterForm = currentDefinitionVersion?.caseOverview[filterName];
-                console.log('>>> Custom Date Filter', filterForm, filterName, filter);
 
-                const dateFilter: DateFilter = {
-                  labelKey: filterForm?.label || filterName,
-                  filterPayloadParameter: filterName,
-                  options: dateFilterOptionsInPastAndFuture(),
-                };
+                if (filter.component === 'generate-counselor-filter' && !canViewCounselorFilter) {
+                  return null;
+                }
 
-                return (
-                  <DateRangeFilter
-                    name={filterName}
-                    allowFutureDates={filter.allowFutureDates}
-                    labelKey={filterForm?.label}
-                    options={dateFilterOptionsInPastAndFuture()}
-                    current={currentFilter.caseInfoFilters?.[filterName] as DateFilterValue}
-                    openedFilter={openedFilter}
-                    applyFilter={handleApplyDateRangeFilter(dateFilter)}
-                    setOpenedFilter={setOpenedFilter}
-                    key={filterName}
-                  />
-                );
+                if (filter.component) {
+                  const componentId = filter.component as string;
+                  const FilterComponent = getFilterComponent(componentId);
+
+                  if (!FilterComponent) {
+                    console.warn(`Filter component ${componentId} not found in registry for filter ${filterName}`);
+                    return null;
+                  }
+
+                  const baseProps = {
+                    key: filterName,
+                    name: filterName,
+                    openedFilter,
+                    setOpenedFilter,
+                  };
+
+                  const filterData = {
+                    strings,
+                    statusValues,
+                    counselorValues,
+                    categoriesValues,
+                    dateFilterValues,
+                    dateFilters: getInitialDateFilters(CASEINFO_FILTERS),
+                    handleApplyStatusFilter,
+                    handleApplyCounselorFilter,
+                    handleApplyCategoriesFilter,
+                    handleApplyDateRangeFilter,
+                  };
+
+                  const props = getFilterComponentProps(componentId, filterName, baseProps, filterData);
+
+                  return <FilterComponent key={filterName} {...props} />;
+                } else if (filter.type === 'multi-select') {
+                  return (
+                    <MultiSelectFilter
+                      key={filterName}
+                      name={filterName}
+                      text={
+                        currentDefinitionVersion?.caseOverview[
+                          Object.keys(currentDefinitionVersion.caseOverview).find(
+                            key => currentDefinitionVersion.caseOverview[key].name === filterName,
+                          )
+                        ]?.label || filterName
+                      }
+                      defaultValues={caseInfoFilterValues[filterName]}
+                      openedFilter={openedFilter}
+                      applyFilter={handleApplyCustomFilter(filterName)}
+                      setOpenedFilter={setOpenedFilter}
+                      searchable={filter.searchable}
+                    />
+                  );
+                } else if (filter.type === 'date-input') {
+                  const filterForm = currentDefinitionVersion?.caseOverview[filterName];
+
+                  const dateFilter: DateFilter = {
+                    labelKey: filterName === 'reportDate' ? 'Case.ReportDate' : filterForm?.label || filterName,
+                    filterPayloadParameter: filterName,
+                    options:
+                      filterName === 'reportDate'
+                        ? [
+                            ...dateFilterOptionsInPastAndFuture().filter(
+                              option => !isDivider(option) && option[0] !== 'withoutDate',
+                            ),
+                            [
+                              'withoutDate',
+                              { titleKey: 'Case.NoReportDate', exists: DateExistsCondition.MUST_NOT_EXIST },
+                            ],
+                          ]
+                        : filter.allowFutureDates
+                        ? dateFilterOptionsInPastAndFuture()
+                        : dateFilterOptionsInPast(),
+                  };
+
+                  return (
+                    <DateRangeFilter
+                      key={filterName}
+                      name={filterName}
+                      allowFutureDates={filter.allowFutureDates}
+                      labelKey={filterName === 'reportDate' ? 'Case.ReportDate' : filterForm?.label || filterName}
+                      options={dateFilter.options}
+                      current={currentFilter.caseInfoFilters?.[filterName] as DateFilterValue}
+                      openedFilter={openedFilter}
+                      applyFilter={handleApplyDateRangeFilter(dateFilter)}
+                      setOpenedFilter={setOpenedFilter}
+                    />
+                  );
+                }
+
+                return null;
               })}
           </div>
+
+          {Object.keys(CASEINFO_FILTERS).some(filterName => CASEINFO_FILTERS[filterName].position === 'right') && (
+            <div style={{ display: 'inline-flex', marginLeft: 'auto' }}>
+              <DateRange fontSize="small" style={{ marginTop: '4px' }} />
+              <FilterTitle style={{ margin: '5px 10px 0 6px' }}>
+                <Template code="CaseList-Filters-DateFiltersLabel" />
+              </FilterTitle>
+
+              {Object.keys(CASEINFO_FILTERS)
+                .filter(filterName => CASEINFO_FILTERS[filterName].position === 'right')
+                .map(filterName => {
+                  const filter = CASEINFO_FILTERS[filterName];
+
+                  if (filter.component) {
+                    const componentId = filter.component as string;
+                    const FilterComponent = getFilterComponent(componentId);
+
+                    if (!FilterComponent) {
+                      console.warn(`Filter component ${componentId} not found in registry for filter ${filterName}`);
+                      return null;
+                    }
+
+                    const baseProps = {
+                      key: filterName,
+                      name: filterName,
+                      openedFilter,
+                      setOpenedFilter,
+                    };
+
+                    const filterData = {
+                      strings,
+                      statusValues,
+                      counselorValues,
+                      categoriesValues,
+                      dateFilterValues,
+                      dateFilters: getInitialDateFilters(CASEINFO_FILTERS),
+                      handleApplyStatusFilter,
+                      handleApplyCounselorFilter,
+                      handleApplyCategoriesFilter,
+                      handleApplyDateRangeFilter,
+                    };
+
+                    const props = getFilterComponentProps(componentId, filterName, baseProps, filterData);
+
+                    return <FilterComponent key={filterName} {...props} />;
+                  } else if (filter.type === 'date-input') {
+                    const filterForm = currentDefinitionVersion?.caseOverview[filterName];
+
+                    const dateFilter: DateFilter = {
+                      labelKey: filterName === 'reportDate' ? 'Case.ReportDate' : filterForm?.label || filterName,
+                      filterPayloadParameter: filterName,
+                      options:
+                        filterName === 'reportDate'
+                          ? [
+                              ...dateFilterOptionsInPastAndFuture().filter(
+                                option => !isDivider(option) && option[0] !== 'withoutDate',
+                              ),
+                              [
+                                'withoutDate',
+                                { titleKey: 'Case.NoReportDate', exists: DateExistsCondition.MUST_NOT_EXIST },
+                              ],
+                            ]
+                          : dateFilterOptionsInPastAndFuture(),
+                    };
+
+                    return (
+                      <DateRangeFilter
+                        key={filterName}
+                        name={filterName}
+                        allowFutureDates={filter.allowFutureDates}
+                        labelKey={filterName === 'reportDate' ? 'Case.ReportDate' : filterForm?.label || filterName}
+                        options={dateFilter.options}
+                        current={currentFilter.caseInfoFilters?.[filterName] as DateFilterValue}
+                        openedFilter={openedFilter}
+                        applyFilter={handleApplyDateRangeFilter(dateFilter)}
+                        setOpenedFilter={setOpenedFilter}
+                      />
+                    );
+                  }
+
+                  return null;
+                })}
+            </div>
+          )}
         </FiltersContainer>
       )}
     </>
