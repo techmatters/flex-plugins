@@ -45,7 +45,9 @@ const BASE_PERSON_FORM_DEFINITION: FormItemDefinition[] = [
   },
   {
     name: 'gender',
-    defaultOption: 'Unknown',
+    defaultOption: {
+      value: 'Unknown',
+    },
     type: FormInputType.Select,
     options: [
       {
