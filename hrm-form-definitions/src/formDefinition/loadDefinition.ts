@@ -121,12 +121,12 @@ const fetchDefinitionGivenConfig = async <T>(
   const url = new URL(path.join(baseUrlObj.pathname, jsonPath), baseUrlObj.origin);
   const response = await fetch(url.toString());
 
-  if (response.ok) {
+  if (response?.ok) {
     const json = await response.json();
     return json as T;
   }
 
-  if (response.status === 404) {
+  if (response?.status === 404) {
     if (placeholder) {
       // eslint-disable-next-line no-console
       console.log(`Could not find definition for: ${url}. Using placeholder instead.`);
@@ -134,7 +134,9 @@ const fetchDefinitionGivenConfig = async <T>(
     }
   }
   throw new Error(
-    `Error response from form definitions service [${url}]: ${response.statusText} (${response.status}).`,
+    `Error response from form definitions service [${url}]:\n` +
+      `${response?.statusText ?? 'No response'}\n` +
+      `(${response?.status ?? 'undefined'})`,
   );
 };
 /**
