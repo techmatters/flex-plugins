@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Template } from '@twilio/flex-ui';
 import type { DefinitionVersion } from 'hrm-form-definitions';
 import FilterList from '@material-ui/icons/FilterList';
@@ -51,15 +51,7 @@ const CASEINFO_FILTERS: Record<
     searchable?: boolean;
     type?:
       | 'multi-select'
-      // | 'select'
       | 'date-input';
-    // | 'checkbox'
-    // | 'textarea'
-    // | 'text-input'
-    // | 'number-input'
-    // | 'boolean-input'
-    // | 'radio-input'
-    // | 'file-input';
     allowFutureDates?: boolean;
     component?: string;
     position: 'left' | 'right';
@@ -69,11 +61,11 @@ const CASEINFO_FILTERS: Record<
   counselor: { component: 'generate-counselor-filter', position: 'left' },
   category: { component: 'generate-category-filter', position: 'left' },
   operatingArea: { searchable: true, type: 'multi-select', position: 'left' },
-  // priority: { searchable: true, type: 'multi-select', position: 'left' },
+  // // priority: { searchable: true, type: 'multi-select', position: 'left' },
   createdDate: { component: 'generate-created-date-filter', position: 'right' },
   updatedDate: { component: 'generate-updated-date-filter', position: 'right' },
   followUpDate: { type: 'date-input', allowFutureDates: true, position: 'right' },
-  // reportDate: { type: 'date-input', allowFutureDates: true, position: 'right' },
+  reportDate: { type: 'date-input', allowFutureDates: true, position: 'right' },
 };
 
 type OwnProps = {
@@ -171,11 +163,8 @@ const Filters: React.FC<Props> = ({
   }, [
     currentFilterCompare,
     counselorsHashCompare,
-    caseInfoFilterValues,
-    categoriesValues,
     counselorsHash,
     currentFilter,
-    statusValues,
   ]);
 
   if (!currentDefinitionVersion) return null;
@@ -224,7 +213,7 @@ const Filters: React.FC<Props> = ({
   const getCasesCountString = () =>
     caseCount === 1 ? 'CaseList-Filters-CaseCount-Singular' : 'CaseList-Filters-CaseCount-Plural';
 
-  const hasFiltersApplied =
+  const hasFiltersApplied = useMemo(() => 
     filterCheckedItems(statusValues).length > 0 ||
     filterCheckedItems(counselorValues).length > 0 ||
     Boolean(Object.values(dateFilterValues).filter(dfv => dfv).length) ||
@@ -232,7 +221,8 @@ const Filters: React.FC<Props> = ({
     (currentFilter.caseInfoFilters &&
       Object.values(currentFilter.caseInfoFilters).some(
         values => values && (Array.isArray(values) ? values.length > 0 : true),
-      ));
+      ))
+  , [statusValues, counselorValues, dateFilterValues, categoriesValues, currentFilter.caseInfoFilters]);
 
   const canViewCounselorFilter = !canOnlyViewOwnCases();
 
@@ -320,25 +310,16 @@ const Filters: React.FC<Props> = ({
                     />
                   );
                 } else if (filter.type === 'date-input') {
-                  const filterForm = currentDefinitionVersion?.caseOverview[filterName];
+                 
+                  const filterForm = currentDefinitionVersion?.caseOverview[
+                    Object.keys(currentDefinitionVersion.caseOverview).find(
+                      key => currentDefinitionVersion.caseOverview[key].name === filterName,
+                    )];
 
                   const dateFilter: DateFilter = {
-                    labelKey: filterName === 'reportDate' ? 'Case.ReportDate' : filterForm?.label || filterName,
+                    labelKey: filterForm?.label || filterName,
                     filterPayloadParameter: filterName,
-                    options:
-                      filterName === 'reportDate'
-                        ? [
-                            ...dateFilterOptionsInPastAndFuture().filter(
-                              option => !isDivider(option) && option[0] !== 'withoutDate',
-                            ),
-                            [
-                              'withoutDate',
-                              { titleKey: 'Case.NoReportDate', exists: DateExistsCondition.MUST_NOT_EXIST },
-                            ],
-                          ]
-                        : filter.allowFutureDates
-                        ? dateFilterOptionsInPastAndFuture()
-                        : dateFilterOptionsInPast(),
+                    options: dateFilterOptionsInPastAndFuture(filterForm?.label || filterName),
                   };
 
                   return (
@@ -346,7 +327,7 @@ const Filters: React.FC<Props> = ({
                       key={filterName}
                       name={filterName}
                       allowFutureDates={filter.allowFutureDates}
-                      labelKey={filterName === 'reportDate' ? 'Case.ReportDate' : filterForm?.label || filterName}
+                      labelKey={filterForm?.label || filterName}
                       options={dateFilter.options}
                       current={currentFilter.caseInfoFilters?.[filterName] as DateFilterValue}
                       openedFilter={openedFilter}
@@ -405,23 +386,16 @@ const Filters: React.FC<Props> = ({
 
                     return <FilterComponent key={filterName} {...props} />;
                   } else if (filter.type === 'date-input') {
-                    const filterForm = currentDefinitionVersion?.caseOverview[filterName];
+           
+                    const filterForm = currentDefinitionVersion?.caseOverview[
+                      Object.keys(currentDefinitionVersion.caseOverview).find(
+                        key => currentDefinitionVersion.caseOverview[key].name === filterName,
+                      )];
 
                     const dateFilter: DateFilter = {
-                      labelKey: filterName === 'reportDate' ? 'Case.ReportDate' : filterForm?.label || filterName,
+                      labelKey: filterForm?.label || filterName,
                       filterPayloadParameter: filterName,
-                      options:
-                        filterName === 'reportDate'
-                          ? [
-                              ...dateFilterOptionsInPastAndFuture().filter(
-                                option => !isDivider(option) && option[0] !== 'withoutDate',
-                              ),
-                              [
-                                'withoutDate',
-                                { titleKey: 'Case.NoReportDate', exists: DateExistsCondition.MUST_NOT_EXIST },
-                              ],
-                            ]
-                          : dateFilterOptionsInPastAndFuture(),
+                      options: dateFilterOptionsInPastAndFuture(filterForm?.label || filterName),
                     };
 
                     return (
@@ -429,7 +403,7 @@ const Filters: React.FC<Props> = ({
                         key={filterName}
                         name={filterName}
                         allowFutureDates={filter.allowFutureDates}
-                        labelKey={filterName === 'reportDate' ? 'Case.ReportDate' : filterForm?.label || filterName}
+                        labelKey={filterForm?.label || filterName}
                         options={dateFilter.options}
                         current={currentFilter.caseInfoFilters?.[filterName] as DateFilterValue}
                         openedFilter={openedFilter}

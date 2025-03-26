@@ -85,7 +85,7 @@ export const getInitialDateFilters = (caseInfoFilters?: Record<string, any>): Da
         customDateFilters.push({
           labelKey: filterConfig.label || filterName,
           filterPayloadParameter: filterName,
-          options: filterConfig.allowFutureDates ? dateFilterOptionsInPastAndFuture() : dateFilterOptionsInPast(),
+          options: filterConfig.allowFutureDates ? dateFilterOptionsInPastAndFuture(filterConfig.label || filterName) : dateFilterOptionsInPast(),
         });
       }
     });
