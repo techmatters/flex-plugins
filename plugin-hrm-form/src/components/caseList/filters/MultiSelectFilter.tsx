@@ -101,7 +101,7 @@ const MultiSelectFilter: React.FC<Props> = ({
       setSelectedCount(count);
     };
 
-    reset(transformToValues(defaultValues));
+    reset(defaultValues);
     updateSelectedCount();
   }, [reset, defaultValues]);
 
@@ -112,7 +112,7 @@ const MultiSelectFilter: React.FC<Props> = ({
     const closeDialog = event => {
       if (event.key === 'Escape') {
         // Always reset to defaultValues whenever you open/close the component
-        reset(transformToValues(defaultValues));
+        reset(defaultValues);
         setSearchTerm('');
         setOpenedFilter(null);
         filterButtonElement.current?.focus();
@@ -136,7 +136,7 @@ const MultiSelectFilter: React.FC<Props> = ({
 
   const handleClick = () => {
     // Always reset to defaultValues whenever you open/close the component
-    reset(transformToValues(defaultValues));
+    reset(defaultValues);
     setSearchTerm('');
 
     if (isOpened) {

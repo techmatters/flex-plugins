@@ -22,7 +22,6 @@ import DateRangeFilter from './DateRangeFilter';
 import { DateFilterValue } from '../../../states/caseList/dateFilters';
 import { DateFilter } from './dateFilters';
 
-// Define types for filter component props
 type FilterComponentBaseProps = {
   name: string;
   openedFilter: string | undefined;
@@ -33,7 +32,6 @@ type FilterComponentConfig = FilterComponentBaseProps & {
   [key: string]: any;
 };
 
-// Component registry for filter components
 const createFilterComponentRegistry = () => {
   const registry: Record<string, React.ComponentType<any>> = {};
 
@@ -69,7 +67,6 @@ const configureStatusFilter = (
   name: 'status',
 });
 
-// Helper function to configure counselor filter
 const configureCounselorFilter = (
   props: FilterComponentConfig,
   strings: Record<string, string>,
@@ -85,7 +82,6 @@ const configureCounselorFilter = (
   name: 'counselor',
 });
 
-// Helper function to configure categories filter
 const configureCategoriesFilter = (
   props: FilterComponentConfig,
   strings: Record<string, string>,
@@ -101,7 +97,6 @@ const configureCategoriesFilter = (
   name: 'categories',
 });
 
-// Helper function to configure date filter
 const configureDateFilter = (
   props: FilterComponentConfig,
   dateFilters: DateFilter[] | undefined,
@@ -154,10 +149,8 @@ export const getFilterComponentProps = (
     handleApplyDateRangeFilter,
   } = filterData;
 
-  // Start with base props all components receive
   let props: FilterComponentConfig = { ...baseProps };
 
-  // Add specific props based on component type
   if (componentId === 'generate-status-filter') {
     props = configureStatusFilter(props, strings, statusValues, handleApplyStatusFilter);
   } else if (componentId === 'generate-counselor-filter') {
@@ -181,5 +174,4 @@ const getFilterComponent = (componentId: string): React.ComponentType<any> | und
   return FilterComponentRegistry.get(componentId);
 };
 
-// eslint-disable-next-line
 export { FilterComponentRegistry, getFilterComponent };
