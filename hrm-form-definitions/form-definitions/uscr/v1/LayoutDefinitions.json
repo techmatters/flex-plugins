@@ -49,6 +49,9 @@
         "layout": {
           "incidentType": {
             "includeLabel": true
+          },
+          "incidentCreationTimestamp": {
+            "format": "timestamp"
           }
         }
       },
@@ -63,7 +66,26 @@
         "layout": {
           "responderName": {
             "includeLabel": true
-          } 
+          },
+
+          "enrouteTimestamp": {
+            "format": "timestamp"
+          },
+          "onSceneTimestamp": {
+            "format": "timestamp"
+          },
+          "additionalResourcesTimestamp": {
+            "format": "timestamp"
+          },
+          "transportTimestamp": {
+            "format": "timestamp"
+          },
+          "destinationArrivalTimestamp": {
+            "format": "timestamp"
+          },
+          "incidentCompleteTimestamp": {
+            "format": "timestamp"
+          }
         }
       },
       "caseReport": {

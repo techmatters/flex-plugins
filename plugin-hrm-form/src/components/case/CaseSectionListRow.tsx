@@ -46,6 +46,7 @@ const CaseSectionListRow: React.FC<OwnProps> = ({ definition, section, layoutDef
   const renderValue = (name: string): JSX.Element => {
     const layout: LayoutValue | undefined = layouts[name];
     switch (layout?.format) {
+      case 'timestamp':
       case 'date': {
         let value: Date | string = section.sectionTypeSpecificData[name];
         if (!value) {
@@ -54,7 +55,13 @@ const CaseSectionListRow: React.FC<OwnProps> = ({ definition, section, layoutDef
         if (!(value instanceof Date)) {
           value = parseISO(value);
         }
-        return <TimelineDate>{value.toLocaleDateString(navigator.language)}</TimelineDate>;
+        return (
+          <TimelineDate>
+            {layout.format === 'timestamp'
+              ? value.toLocaleString(navigator.language)
+              : value.toLocaleDateString(navigator.language)}
+          </TimelineDate>
+        );
       }
       case 'file': {
         return (

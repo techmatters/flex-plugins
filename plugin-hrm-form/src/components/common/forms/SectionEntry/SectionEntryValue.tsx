@@ -17,7 +17,7 @@
 import React from 'react';
 import type { FormItemDefinition, LayoutValue } from 'hrm-form-definitions';
 import { Template } from '@twilio/flex-ui';
-import { parse } from 'date-fns';
+import { parse, parseISO } from 'date-fns';
 
 import { FormTargetObject } from '../types';
 import { presentValue } from '../../../../utils';
@@ -43,10 +43,22 @@ const SectionEntryValue: React.FC<Props> = ({ value, definition, layout, notBold
   }
 
   const renderValue = (displayValue: LayoutValue, value: string | number | boolean) => {
-    const formattedValue =
-      displayValue && displayValue.format === 'date' && typeof value === 'string'
-        ? parse(value, 'yyyy-MM-dd', new Date()).toLocaleDateString(navigator.language)
-        : value;
+    let formattedValue = value;
+    if (displayValue && typeof value === 'string') {
+      switch (displayValue.format) {
+        case 'date': {
+          formattedValue = parse(value as string, 'yyyy-MM-dd', new Date()).toLocaleDateString(navigator.language);
+          break;
+        }
+        case 'timestamp': {
+          formattedValue = parseISO(value).toLocaleString(navigator.language);
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+    }
     return presentValue(
       code => (
         <SectionValueText notBold={notBold}>
