@@ -11,8 +11,8 @@
   "viewContact": [["everyone"]],
   "editContact": [["isSupervisor"], ["isOwner"]],
   "editInProgressContact": [["isSupervisor"], ["isOwner"]],
-  "viewExternalTranscript": [["everyone"]],
-  "viewRecording": [["everyone"]],
+  "viewExternalTranscript": [["isSupervisor"]],
+  "viewRecording": [["isSupervisor"]],
   "addContactToCase": [["isSupervisor"], ["isOwner"]],
   "removeContactFromCase": [["isSupervisor"], ["isOwner"]],
   
