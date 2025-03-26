@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Template } from '@twilio/flex-ui';
-import type { DefinitionVersion } from 'hrm-form-definitions';
+import type { DefinitionVersion, CaseFilterPosition } from 'hrm-form-definitions';
 import FilterList from '@material-ui/icons/FilterList';
 import DateRange from '@material-ui/icons/DateRange';
 import { useSelector, useDispatch } from 'react-redux';
@@ -45,33 +45,6 @@ import {
   getUpdatedCategoriesValues,
 } from './filterUtils';
 
-type CaseFilterType = 'multi-select' | 'date-input';
-type CaseFilterPosition = 'left' | 'right';
-
-type CaseFilterConfig = {
-  searchable?: boolean;
-  type?: CaseFilterType;
-  allowFutureDates?: boolean;
-  component?: string;
-  position: CaseFilterPosition;
-}
-
-const CASEINFO_FILTERS: Record<string, CaseFilterConfig> = {
-  status: { component: 'generate-status-filter', position: 'left' },
-  counselor: { component: 'generate-counselor-filter', position: 'left' },
-  category: { component: 'generate-category-filter', position: 'left' },
-  operatingArea: { searchable: true, type: 'multi-select', position: 'left' },
-  // priority: { searchable: true, type: 'multi-select', position: 'left' },
-
-  // updatedDate: { component: 'generate-updated-date-filter', position: 'left' },
-  // followUpDate: { type: 'date-input', allowFutureDates: true, position: 'left' },
-  // reportDate: { type: 'date-input', allowFutureDates: true, position: 'left' },
-  createdDate: { component: 'generate-created-date-filter', position: 'right' },
-  updatedDate: { component: 'generate-updated-date-filter', position: 'right' },
-  followUpDate: { type: 'date-input', allowFutureDates: true, position: 'right' },
-  reportDate: { type: 'date-input', allowFutureDates: true, position: 'right' },
-};
-
 type OwnProps = {
   currentDefinitionVersion?: DefinitionVersion;
   caseCount: number;
@@ -94,13 +67,11 @@ const Filters: React.FC<OwnProps> = ({
   caseCount,
 }) => {
   const dispatch = useDispatch();
+  
   const currentFilter = useSelector((state: RootState) => state[namespace][caseListBase].currentSettings.filter);
-  const currentFilterCompare = useSelector((state: RootState) => 
-    JSON.stringify(state[namespace][caseListBase].currentSettings.filter));
   const counselorsHash = useSelector((state: RootState) => 
     state[namespace][configurationBase].counselors.hash);
-  const counselorsHashCompare = useSelector((state: RootState) => 
-    JSON.stringify(state[namespace][configurationBase].counselors.hash));
+  const caseFilterDefinition = currentDefinitionVersion?.caseFilters;
 
   const strings = getTemplateStrings();
   const featureFlags = getAseloFeatureFlags();
@@ -113,7 +84,7 @@ const Filters: React.FC<OwnProps> = ({
     counselorValues: getCounselorsInitialValue(counselorsHash),
     dateFilterValues: {},
     categoriesValues: getCategoriesInitialValue(currentDefinitionVersion, helpline),
-    caseInfoFilterValues: Object.keys(CASEINFO_FILTERS).reduce(
+    caseInfoFilterValues: Object.keys(caseFilterDefinition).reduce(
       (acc, filterName) => ({
         ...acc,
         [filterName]: getCustomFilterInitialValue(currentDefinitionVersion, filterName),
@@ -127,7 +98,7 @@ const Filters: React.FC<OwnProps> = ({
       ...prevState,
       statusValues: getStatusInitialValue(currentDefinitionVersion),
       categoriesValues: getCategoriesInitialValue(currentDefinitionVersion, helpline),
-      caseInfoFilterValues: Object.keys(CASEINFO_FILTERS).reduce(
+      caseInfoFilterValues: Object.keys(caseFilterDefinition).reduce(
         (acc, filterName) => ({
           ...acc,
           [filterName]: getCustomFilterInitialValue(currentDefinitionVersion, filterName),
@@ -154,8 +125,8 @@ const Filters: React.FC<OwnProps> = ({
     
     const newCategoriesValues = getUpdatedCategoriesValues(categories, filterState.categoriesValues);
     
-    const newCaseInfoFilterValues = Object.keys(CASEINFO_FILTERS)
-      .filter(filterName => CASEINFO_FILTERS[filterName].type === 'multi-select')
+    const newCaseInfoFilterValues = Object.keys(caseFilterDefinition)
+      .filter(filterName => caseFilterDefinition[filterName].type === 'multi-select')
       .reduce(
         (acc, filterName) => ({
           ...acc,
@@ -171,8 +142,8 @@ const Filters: React.FC<OwnProps> = ({
 
     const newDateFilters = { ...currentDateFilters };
     
-    Object.keys(CASEINFO_FILTERS)
-      .filter(filterName => CASEINFO_FILTERS[filterName].type === 'date-input')
+    Object.keys(caseFilterDefinition)
+      .filter(filterName => caseFilterDefinition[filterName].type === 'date-input')
       .forEach(filterName => {
         if (caseInfoFilters?.[filterName] && typeof caseInfoFilters[filterName] === 'object') {
           newDateFilters[filterName] = caseInfoFilters[filterName] as DateFilterValue;
@@ -187,7 +158,7 @@ const Filters: React.FC<OwnProps> = ({
       categoriesValues: newCategoriesValues,
       caseInfoFilterValues: newCaseInfoFilterValues,
     }));
-  }, [currentFilterCompare, counselorsHashCompare, counselorsHash, currentFilter]);
+  }, [currentFilter, counselorsHash]);
 
   if (!currentDefinitionVersion) return null;
   
@@ -204,7 +175,7 @@ const Filters: React.FC<OwnProps> = ({
   }, [dispatch]);
 
   const handleApplyDateRangeFilter = useCallback((filter: DateFilter) => (filterValue: DateFilterValue | undefined) => {
-    if (Object.keys(CASEINFO_FILTERS).includes(filter.filterPayloadParameter)) {
+    if (Object.keys(caseFilterDefinition).includes(filter.filterPayloadParameter)) {
       dispatch(CaseListSettingsActions.updateCaseListFilter({
         caseInfoFilters: {
           ...currentFilter.caseInfoFilters,
@@ -262,7 +233,7 @@ const Filters: React.FC<OwnProps> = ({
   ]);
 
   const renderRegisteredComponents = (filterName: string, position: CaseFilterPosition) => {
-    const filter = CASEINFO_FILTERS[filterName];
+    const filter = caseFilterDefinition[filterName];
     
     if (!filter || filter.position !== position || !filter.component) return null;
     
@@ -291,7 +262,7 @@ const Filters: React.FC<OwnProps> = ({
       counselorValues: filterState.counselorValues,
       categoriesValues: filterState.categoriesValues,
       dateFilterValues: filterState.dateFilterValues,
-      dateFilters: getInitialDateFilters(CASEINFO_FILTERS),
+      dateFilters: getInitialDateFilters(caseFilterDefinition),
       handleApplyStatusFilter,
       handleApplyCounselorFilter,
       handleApplyCategoriesFilter,
@@ -304,7 +275,7 @@ const Filters: React.FC<OwnProps> = ({
   };
 
   const renderMultiSelectFilters = (filterName: string, position: CaseFilterPosition) => {
-    const filter = CASEINFO_FILTERS[filterName];
+    const filter = caseFilterDefinition[filterName];
     
     if (!filter || filter.position !== position || filter.type !== 'multi-select') return null;
     
@@ -329,7 +300,7 @@ const Filters: React.FC<OwnProps> = ({
   };
 
   const renderDateInputFilters = (filterName: string, position: CaseFilterPosition) => {
-    const filter = CASEINFO_FILTERS[filterName];
+    const filter = caseFilterDefinition[filterName];
     
     if (!filter || filter.position !== position || filter.type !== 'date-input') return null;
     
@@ -361,10 +332,10 @@ const Filters: React.FC<OwnProps> = ({
   };
 
   const renderFiltersByPosition = (position: CaseFilterPosition) => {
-    return Object.keys(CASEINFO_FILTERS)
-      .filter(filterName => CASEINFO_FILTERS[filterName].position === position)
+    return Object.keys(caseFilterDefinition)
+      .filter(filterName => caseFilterDefinition[filterName].position === position)
       .map(filterName => {
-        const filter = CASEINFO_FILTERS[filterName];
+        const filter = caseFilterDefinition[filterName];
         
         if (filter.component) {
           return renderRegisteredComponents(filterName, position);
@@ -378,8 +349,8 @@ const Filters: React.FC<OwnProps> = ({
       });
   };
 
-  const hasFiltersOnRight = Object.keys(CASEINFO_FILTERS).some(
-    filterName => CASEINFO_FILTERS[filterName].position === 'right'
+  const hasFiltersOnRight = Object.keys(caseFilterDefinition).some(
+    filterName => caseFilterDefinition[filterName].position === 'right'
   );
 
   return (

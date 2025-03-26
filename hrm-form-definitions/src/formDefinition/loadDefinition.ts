@@ -184,6 +184,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     cannedResponses,
     oneToOneConfigSpec,
     oneToManyConfigSpecs,
+    caseFilters,
     caseStatus,
     caseOverview,
     prepopulateKeys,
@@ -209,6 +210,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     fetchDefinition<CannedResponsesDefinitions>('CannedResponses.json', []),
     fetchDefinition<OneToOneConfigSpec>('insights/oneToOneConfigSpec.json'),
     fetchDefinition<OneToManyConfigSpecs>('insights/oneToManyConfigSpecs.json'),
+    fetchDefinition<DefinitionVersion['caseFilters']>('CaseFilters.json'),
     fetchDefinition<DefinitionVersion['caseStatus']>('CaseStatus.json'),
     fetchDefinition<DefinitionVersion['caseOverview']>('caseForms/CaseOverview.json'),
     fetchDefinition<DefinitionVersion['prepopulateKeys']>(
@@ -245,15 +247,16 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     layoutVersion,
     helplineInformation,
     cannedResponses,
-    insights: {
-      oneToOneConfigSpec,
-      oneToManyConfigSpecs,
-    },
+    caseFilters,
     caseStatus,
     caseOverview,
     prepopulateKeys,
     referenceData,
     blockedEmojis,
+    insights: {
+      oneToOneConfigSpec,
+      oneToManyConfigSpecs,
+    },
     profileForms: {
       Sections: profileSections,
       FlagDurations: profileFlagDurations,
