@@ -15,24 +15,24 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Template } from '@twilio/flex-ui';
 import type { DefinitionVersion } from 'hrm-form-definitions';
 import FilterList from '@material-ui/icons/FilterList';
 import DateRange from '@material-ui/icons/DateRange';
-import { connect, ConnectedProps } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { FiltersContainer, FiltersResetAll, MainTitle, CountText, FilterTitle } from '../../../styles';
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
 import DateRangeFilter from './DateRangeFilter';
-import { DateFilter, dateFilterOptionsInPastAndFuture, dateFilterOptionsInPast, isDivider } from './dateFilters';
+import { DateFilter, dateFilterOptionsInPastAndFuture } from './dateFilters';
 import { Category } from './CategoriesFilter';
 import { RootState } from '../../../states';
 import * as CaseListSettingsActions from '../../../states/caseList/settings';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
 import { canOnlyViewOwnCases } from '../../../permissions';
 import { caseListBase, configurationBase, namespace } from '../../../states/storeNamespaces';
-import { DateFilterValue, DateExistsCondition } from '../../../states/caseList/dateFilters';
+import { DateFilterValue } from '../../../states/caseList/dateFilters';
 import { getFilterComponent, getFilterComponentProps } from './FilterComponentsRegistry';
 import {
   getStatusInitialValue,
@@ -45,23 +45,27 @@ import {
   getUpdatedCategoriesValues,
 } from './filterUtils';
 
-const CASEINFO_FILTERS: Record<
-  string,
-  {
-    searchable?: boolean;
-    type?:
-      | 'multi-select'
-      | 'date-input';
-    allowFutureDates?: boolean;
-    component?: string;
-    position: 'left' | 'right';
-  }
-> = {
+type CaseFilterType = 'multi-select' | 'date-input';
+type CaseFilterPosition = 'left' | 'right';
+
+type CaseFilterConfig = {
+  searchable?: boolean;
+  type?: CaseFilterType;
+  allowFutureDates?: boolean;
+  component?: string;
+  position: CaseFilterPosition;
+}
+
+const CASEINFO_FILTERS: Record<string, CaseFilterConfig> = {
   status: { component: 'generate-status-filter', position: 'left' },
   counselor: { component: 'generate-counselor-filter', position: 'left' },
   category: { component: 'generate-category-filter', position: 'left' },
   operatingArea: { searchable: true, type: 'multi-select', position: 'left' },
-  // // priority: { searchable: true, type: 'multi-select', position: 'left' },
+  // priority: { searchable: true, type: 'multi-select', position: 'left' },
+
+  // updatedDate: { component: 'generate-updated-date-filter', position: 'left' },
+  // followUpDate: { type: 'date-input', allowFutureDates: true, position: 'left' },
+  // reportDate: { type: 'date-input', allowFutureDates: true, position: 'left' },
   createdDate: { component: 'generate-created-date-filter', position: 'right' },
   updatedDate: { component: 'generate-updated-date-filter', position: 'right' },
   followUpDate: { type: 'date-input', allowFutureDates: true, position: 'right' },
@@ -73,158 +77,310 @@ type OwnProps = {
   caseCount: number;
 };
 
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
+type FilterState = {
+  statusValues: Item[];
+  counselorValues: Item[];
+  dateFilterValues: {
+    createdAt?: DateFilterValue;
+    updatedAt?: DateFilterValue;
+  };
+  categoriesValues: Category[];
+  caseInfoFilterValues: Record<string, Item[]>;
+  openedFilter?: string;
+}
 
-const Filters: React.FC<Props> = ({
+const Filters: React.FC<OwnProps> = ({
   currentDefinitionVersion,
-  currentFilter,
-  currentFilterCompare,
-  counselorsHash,
-  counselorsHashCompare,
   caseCount,
-  updateCaseListFilter,
-  clearCaseListFilter,
 }) => {
+  const dispatch = useDispatch();
+  const currentFilter = useSelector((state: RootState) => state[namespace][caseListBase].currentSettings.filter);
+  const currentFilterCompare = useSelector((state: RootState) => 
+    JSON.stringify(state[namespace][caseListBase].currentSettings.filter));
+  const counselorsHash = useSelector((state: RootState) => 
+    state[namespace][configurationBase].counselors.hash);
+  const counselorsHashCompare = useSelector((state: RootState) => 
+    JSON.stringify(state[namespace][configurationBase].counselors.hash));
+
   const strings = getTemplateStrings();
   const featureFlags = getAseloFeatureFlags();
   const { helpline } = getHrmConfig();
+  const canViewCounselorFilter = !canOnlyViewOwnCases();
 
-  const [openedFilter, setOpenedFilter] = useState<string>();
-  const [statusValues, setStatusValues] = useState<Item[]>(getStatusInitialValue(currentDefinitionVersion));
-  const [counselorValues, setCounselorValues] = useState<Item[]>(getCounselorsInitialValue(counselorsHash));
-  const [dateFilterValues, setDateFilterValues] = useState<{
-    createdAt?: DateFilterValue;
-    updatedAt?: DateFilterValue;
-  }>({});
-  const [categoriesValues, setCategoriesValues] = useState<Category[]>(
-    getCategoriesInitialValue(currentDefinitionVersion, helpline),
-  );
-  const [caseInfoFilterValues, setCaseInfoFilterValues] = useState<Record<string, Item[]>>(
-    Object.keys(CASEINFO_FILTERS).reduce(
+  const [filterState, setFilterState] = useState<FilterState>({
+    openedFilter: undefined,
+    statusValues: getStatusInitialValue(currentDefinitionVersion),
+    counselorValues: getCounselorsInitialValue(counselorsHash),
+    dateFilterValues: {},
+    categoriesValues: getCategoriesInitialValue(currentDefinitionVersion, helpline),
+    caseInfoFilterValues: Object.keys(CASEINFO_FILTERS).reduce(
       (acc, filterName) => ({
         ...acc,
         [filterName]: getCustomFilterInitialValue(currentDefinitionVersion, filterName),
       }),
       {},
     ),
-  );
+  });
 
   useEffect(() => {
-    setStatusValues(getStatusInitialValue(currentDefinitionVersion));
-    setCategoriesValues(getCategoriesInitialValue(currentDefinitionVersion, helpline));
-    setCaseInfoFilterValues(
-      Object.keys(CASEINFO_FILTERS).reduce(
+    setFilterState(prevState => ({
+      ...prevState,
+      statusValues: getStatusInitialValue(currentDefinitionVersion),
+      categoriesValues: getCategoriesInitialValue(currentDefinitionVersion, helpline),
+      caseInfoFilterValues: Object.keys(CASEINFO_FILTERS).reduce(
         (acc, filterName) => ({
           ...acc,
           [filterName]: getCustomFilterInitialValue(currentDefinitionVersion, filterName),
         }),
         {},
       ),
-    );
+    }));
   }, [currentDefinitionVersion, helpline]);
 
   useEffect(() => {
+    if (!currentFilter) return;
+    
     const { counsellors, statuses, categories, caseInfoFilters, includeOrphans, ...currentDateFilters } = currentFilter;
+    
     const newCounselorValues = getCounselorsInitialValue(counselorsHash).map(cv => ({
       ...cv,
       checked: counsellors.includes(cv.value),
     }));
-    const newStatusValues = statusValues.map(sv => ({ ...sv, checked: statuses.includes(sv.value) }));
-    const newCategoriesValues = getUpdatedCategoriesValues(categories, categoriesValues);
+    
+    const newStatusValues = filterState.statusValues.map(sv => ({ 
+      ...sv, 
+      checked: statuses.includes(sv.value) 
+    }));
+    
+    const newCategoriesValues = getUpdatedCategoriesValues(categories, filterState.categoriesValues);
+    
     const newCaseInfoFilterValues = Object.keys(CASEINFO_FILTERS)
       .filter(filterName => CASEINFO_FILTERS[filterName].type === 'multi-select')
       .reduce(
         (acc, filterName) => ({
           ...acc,
-          [filterName]: caseInfoFilterValues[filterName].map(option => ({
+          [filterName]: filterState.caseInfoFilterValues[filterName].map(option => ({
             ...option,
             checked: Array.isArray(caseInfoFilters?.[filterName])
               ? (caseInfoFilters?.[filterName] as string[]).includes(option.value) || false
               : false,
           })),
         }),
-        {},
+        filterState.caseInfoFilterValues,
       );
 
+    const newDateFilters = { ...currentDateFilters };
+    
     Object.keys(CASEINFO_FILTERS)
       .filter(filterName => CASEINFO_FILTERS[filterName].type === 'date-input')
       .forEach(filterName => {
         if (caseInfoFilters?.[filterName] && typeof caseInfoFilters[filterName] === 'object') {
-          currentDateFilters[filterName] = caseInfoFilters[filterName] as DateFilterValue;
+          newDateFilters[filterName] = caseInfoFilters[filterName] as DateFilterValue;
         }
       });
 
-    setCounselorValues(newCounselorValues);
-    setStatusValues(newStatusValues);
-    setDateFilterValues(currentDateFilters);
-    setCategoriesValues(newCategoriesValues);
-    setCaseInfoFilterValues(newCaseInfoFilterValues);
-  }, [
-    currentFilterCompare,
-    counselorsHashCompare,
-    counselorsHash,
-    currentFilter,
-  ]);
+    setFilterState(prevState => ({
+      ...prevState,
+      counselorValues: newCounselorValues,
+      statusValues: newStatusValues,
+      dateFilterValues: newDateFilters,
+      categoriesValues: newCategoriesValues,
+      caseInfoFilterValues: newCaseInfoFilterValues,
+    }));
+  }, [currentFilterCompare, counselorsHashCompare, counselorsHash, currentFilter]);
 
   if (!currentDefinitionVersion) return null;
+  
+  const handleSetOpenedFilter = useCallback((filterName?: string) => {
+    setFilterState(prev => ({ ...prev, openedFilter: filterName }));
+  }, []);
 
-  const handleApplyStatusFilter = (values: Item[]) => {
-    updateCaseListFilter({ statuses: filterCheckedItems(values) });
-  };
+  const handleApplyStatusFilter = useCallback((values: Item[]) => {
+    dispatch(CaseListSettingsActions.updateCaseListFilter({ statuses: filterCheckedItems(values) }));
+  }, [dispatch]);
 
-  const handleApplyCounselorFilter = (values: Item[]) => {
-    updateCaseListFilter({ counsellors: filterCheckedItems(values) });
-  };
+  const handleApplyCounselorFilter = useCallback((values: Item[]) => {
+    dispatch(CaseListSettingsActions.updateCaseListFilter({ counsellors: filterCheckedItems(values) }));
+  }, [dispatch]);
 
-  const handleApplyDateRangeFilter = (filter: DateFilter) => (filterValue: DateFilterValue | undefined) => {
+  const handleApplyDateRangeFilter = useCallback((filter: DateFilter) => (filterValue: DateFilterValue | undefined) => {
     if (Object.keys(CASEINFO_FILTERS).includes(filter.filterPayloadParameter)) {
-      updateCaseListFilter({
+      dispatch(CaseListSettingsActions.updateCaseListFilter({
         caseInfoFilters: {
           ...currentFilter.caseInfoFilters,
           [filter.filterPayloadParameter]: filterValue,
         },
-        // [filter.filterPayloadParameter]: undefined,
-      });
+      }));
     } else {
-      updateCaseListFilter({
+      dispatch(CaseListSettingsActions.updateCaseListFilter({
         [filter.filterPayloadParameter]: filterValue,
-      });
+      }));
     }
-  };
+  }, [dispatch, currentFilter]);
 
-  const handleApplyCategoriesFilter = (values: Category[]) => {
-    updateCaseListFilter({ categories: filterCheckedCategories(values) });
-  };
+  const handleApplyCategoriesFilter = useCallback((values: Category[]) => {
+    dispatch(CaseListSettingsActions.updateCaseListFilter({ categories: filterCheckedCategories(values) }));
+  }, [dispatch]);
 
-  const handleApplyCustomFilter = (filterName: string) => (values: Item[]) => {
-    updateCaseListFilter({
+  const handleApplyCustomFilter = useCallback((filterName: string) => (values: Item[]) => {
+    dispatch(CaseListSettingsActions.updateCaseListFilter({
       caseInfoFilters: {
         ...currentFilter.caseInfoFilters,
         [filterName]: filterCheckedItems(values),
       },
-    });
-  };
+    }));
+  }, [dispatch, currentFilter]);
 
-  const handleClearFilters = () => {
-    clearCaseListFilter();
-  };
+  const handleClearFilters = useCallback(() => {
+    dispatch(CaseListSettingsActions.clearCaseListFilter());
+  }, [dispatch]);
 
   const getCasesCountString = () =>
     caseCount === 1 ? 'CaseList-Filters-CaseCount-Singular' : 'CaseList-Filters-CaseCount-Plural';
 
-  const hasFiltersApplied = useMemo(() => 
-    filterCheckedItems(statusValues).length > 0 ||
-    filterCheckedItems(counselorValues).length > 0 ||
-    Boolean(Object.values(dateFilterValues).filter(dfv => dfv).length) ||
-    filterCheckedCategories(categoriesValues).length > 0 ||
-    (currentFilter.caseInfoFilters &&
+  const hasFiltersApplied = useMemo(() => {
+    const statusFiltersApplied = filterCheckedItems(filterState.statusValues).length > 0;
+    const counselorFiltersApplied = filterCheckedItems(filterState.counselorValues).length > 0;
+    const dateFiltersApplied = Boolean(Object.values(filterState.dateFilterValues).filter(dfv => dfv).length);
+    const categoryFiltersApplied = filterCheckedCategories(filterState.categoriesValues).length > 0;
+    const customFiltersApplied = currentFilter.caseInfoFilters &&
       Object.values(currentFilter.caseInfoFilters).some(
-        values => values && (Array.isArray(values) ? values.length > 0 : true),
-      ))
-  , [statusValues, counselorValues, dateFilterValues, categoriesValues, currentFilter.caseInfoFilters]);
+        values => values && (Array.isArray(values) ? values.length > 0 : true)
+      );
+    
+    return statusFiltersApplied || 
+           counselorFiltersApplied || 
+           dateFiltersApplied || 
+           categoryFiltersApplied || 
+           customFiltersApplied;
+  }, [
+    filterState.statusValues, 
+    filterState.counselorValues, 
+    filterState.dateFilterValues, 
+    filterState.categoriesValues, 
+    currentFilter.caseInfoFilters
+  ]);
 
-  const canViewCounselorFilter = !canOnlyViewOwnCases();
+  const renderRegisteredComponents = (filterName: string, position: CaseFilterPosition) => {
+    const filter = CASEINFO_FILTERS[filterName];
+    
+    if (!filter || filter.position !== position || !filter.component) return null;
+    
+    if (filter.component === 'generate-counselor-filter' && !canViewCounselorFilter) {
+      return null;
+    }
+    
+    const componentId = filter.component;
+    const FilterComponent = getFilterComponent(componentId);
+
+    if (!FilterComponent) {
+      console.warn(`Filter component ${componentId} not found in registry for filter ${filterName}`);
+      return null;
+    }
+
+    const baseProps = {
+      key: filterName,
+      name: filterName,
+      openedFilter: filterState.openedFilter,
+      setOpenedFilter: handleSetOpenedFilter,
+    };
+
+    const filterData = {
+      strings,
+      statusValues: filterState.statusValues,
+      counselorValues: filterState.counselorValues,
+      categoriesValues: filterState.categoriesValues,
+      dateFilterValues: filterState.dateFilterValues,
+      dateFilters: getInitialDateFilters(CASEINFO_FILTERS),
+      handleApplyStatusFilter,
+      handleApplyCounselorFilter,
+      handleApplyCategoriesFilter,
+      handleApplyDateRangeFilter,
+    };
+
+    const props = getFilterComponentProps(componentId, filterName, baseProps, filterData);
+
+    return <FilterComponent key={filterName} {...props} />;
+  };
+
+  const renderMultiSelectFilters = (filterName: string, position: CaseFilterPosition) => {
+    const filter = CASEINFO_FILTERS[filterName];
+    
+    if (!filter || filter.position !== position || filter.type !== 'multi-select') return null;
+    
+    return (
+      <MultiSelectFilter
+        key={filterName}
+        name={filterName}
+        text={
+          currentDefinitionVersion?.caseOverview[
+            Object.keys(currentDefinitionVersion.caseOverview).find(
+              key => currentDefinitionVersion.caseOverview[key].name === filterName,
+            )
+          ]?.label || filterName
+        }
+        defaultValues={filterState.caseInfoFilterValues[filterName]}
+        openedFilter={filterState.openedFilter}
+        applyFilter={handleApplyCustomFilter(filterName)}
+        setOpenedFilter={handleSetOpenedFilter}
+        searchable={filter.searchable}
+      />
+    );
+  };
+
+  const renderDateInputFilters = (filterName: string, position: CaseFilterPosition) => {
+    const filter = CASEINFO_FILTERS[filterName];
+    
+    if (!filter || filter.position !== position || filter.type !== 'date-input') return null;
+    
+    const filterForm = currentDefinitionVersion?.caseOverview[
+      Object.keys(currentDefinitionVersion.caseOverview).find(
+        key => currentDefinitionVersion.caseOverview[key].name === filterName,
+      )
+    ];
+
+    const dateFilter: DateFilter = {
+      labelKey: filterForm?.label || filterName,
+      filterPayloadParameter: filterName,
+      options: dateFilterOptionsInPastAndFuture(filterForm?.label || filterName),
+    };
+
+    return (
+      <DateRangeFilter
+        key={filterName}
+        name={filterName}
+        allowFutureDates={filter.allowFutureDates}
+        labelKey={filterForm?.label || filterName}
+        options={dateFilter.options}
+        current={currentFilter.caseInfoFilters?.[filterName] as DateFilterValue}
+        openedFilter={filterState.openedFilter}
+        applyFilter={handleApplyDateRangeFilter(dateFilter)}
+        setOpenedFilter={handleSetOpenedFilter}
+      />
+    );
+  };
+
+  const renderFiltersByPosition = (position: CaseFilterPosition) => {
+    return Object.keys(CASEINFO_FILTERS)
+      .filter(filterName => CASEINFO_FILTERS[filterName].position === position)
+      .map(filterName => {
+        const filter = CASEINFO_FILTERS[filterName];
+        
+        if (filter.component) {
+          return renderRegisteredComponents(filterName, position);
+        } else if (filter.type === 'multi-select') {
+          return renderMultiSelectFilters(filterName, position);
+        } else if (filter.type === 'date-input') {
+          return renderDateInputFilters(filterName, position);
+        }
+        
+        return null;
+      });
+  };
+
+  const hasFiltersOnRight = Object.keys(CASEINFO_FILTERS).some(
+    filterName => CASEINFO_FILTERS[filterName].position === 'right'
+  );
 
   return (
     <>
@@ -249,172 +405,16 @@ const Filters: React.FC<Props> = ({
           </FilterTitle>
 
           <div style={{ display: 'inline-flex' }}>
-            {Object.keys(CASEINFO_FILTERS)
-              .filter(filterName => CASEINFO_FILTERS[filterName].position === 'left')
-              .map(filterName => {
-                const filter = CASEINFO_FILTERS[filterName];
-
-                if (filter.component === 'generate-counselor-filter' && !canViewCounselorFilter) {
-                  return null;
-                }
-
-                if (filter.component) {
-                  const componentId = filter.component as string;
-                  const FilterComponent = getFilterComponent(componentId);
-
-                  if (!FilterComponent) {
-                    console.warn(`Filter component ${componentId} not found in registry for filter ${filterName}`);
-                    return null;
-                  }
-
-                  const baseProps = {
-                    key: filterName,
-                    name: filterName,
-                    openedFilter,
-                    setOpenedFilter,
-                  };
-
-                  const filterData = {
-                    strings,
-                    statusValues,
-                    counselorValues,
-                    categoriesValues,
-                    dateFilterValues,
-                    dateFilters: getInitialDateFilters(CASEINFO_FILTERS),
-                    handleApplyStatusFilter,
-                    handleApplyCounselorFilter,
-                    handleApplyCategoriesFilter,
-                    handleApplyDateRangeFilter,
-                  };
-
-                  const props = getFilterComponentProps(componentId, filterName, baseProps, filterData);
-
-                  return <FilterComponent key={filterName} {...props} />;
-                } else if (filter.type === 'multi-select') {
-                  return (
-                    <MultiSelectFilter
-                      key={filterName}
-                      name={filterName}
-                      text={
-                        currentDefinitionVersion?.caseOverview[
-                          Object.keys(currentDefinitionVersion.caseOverview).find(
-                            key => currentDefinitionVersion.caseOverview[key].name === filterName,
-                          )
-                        ]?.label || filterName
-                      }
-                      defaultValues={caseInfoFilterValues[filterName]}
-                      openedFilter={openedFilter}
-                      applyFilter={handleApplyCustomFilter(filterName)}
-                      setOpenedFilter={setOpenedFilter}
-                      searchable={filter.searchable}
-                    />
-                  );
-                } else if (filter.type === 'date-input') {
-                 
-                  const filterForm = currentDefinitionVersion?.caseOverview[
-                    Object.keys(currentDefinitionVersion.caseOverview).find(
-                      key => currentDefinitionVersion.caseOverview[key].name === filterName,
-                    )];
-
-                  const dateFilter: DateFilter = {
-                    labelKey: filterForm?.label || filterName,
-                    filterPayloadParameter: filterName,
-                    options: dateFilterOptionsInPastAndFuture(filterForm?.label || filterName),
-                  };
-
-                  return (
-                    <DateRangeFilter
-                      key={filterName}
-                      name={filterName}
-                      allowFutureDates={filter.allowFutureDates}
-                      labelKey={filterForm?.label || filterName}
-                      options={dateFilter.options}
-                      current={currentFilter.caseInfoFilters?.[filterName] as DateFilterValue}
-                      openedFilter={openedFilter}
-                      applyFilter={handleApplyDateRangeFilter(dateFilter)}
-                      setOpenedFilter={setOpenedFilter}
-                    />
-                  );
-                }
-
-                return null;
-              })}
+            {renderFiltersByPosition('left')}
           </div>
 
-          {Object.keys(CASEINFO_FILTERS).some(filterName => CASEINFO_FILTERS[filterName].position === 'right') && (
+          {hasFiltersOnRight && (
             <div style={{ display: 'inline-flex', marginLeft: 'auto' }}>
               <DateRange fontSize="small" style={{ marginTop: '4px' }} />
               <FilterTitle style={{ margin: '5px 10px 0 6px' }}>
                 <Template code="CaseList-Filters-DateFiltersLabel" />
               </FilterTitle>
-
-              {Object.keys(CASEINFO_FILTERS)
-                .filter(filterName => CASEINFO_FILTERS[filterName].position === 'right')
-                .map(filterName => {
-                  const filter = CASEINFO_FILTERS[filterName];
-
-                  if (filter.component) {
-                    const componentId = filter.component as string;
-                    const FilterComponent = getFilterComponent(componentId);
-
-                    if (!FilterComponent) {
-                      console.warn(`Filter component ${componentId} not found in registry for filter ${filterName}`);
-                      return null;
-                    }
-
-                    const baseProps = {
-                      key: filterName,
-                      name: filterName,
-                      openedFilter,
-                      setOpenedFilter,
-                    };
-
-                    const filterData = {
-                      strings,
-                      statusValues,
-                      counselorValues,
-                      categoriesValues,
-                      dateFilterValues,
-                      dateFilters: getInitialDateFilters(CASEINFO_FILTERS),
-                      handleApplyStatusFilter,
-                      handleApplyCounselorFilter,
-                      handleApplyCategoriesFilter,
-                      handleApplyDateRangeFilter,
-                    };
-
-                    const props = getFilterComponentProps(componentId, filterName, baseProps, filterData);
-
-                    return <FilterComponent key={filterName} {...props} />;
-                  } else if (filter.type === 'date-input') {
-           
-                    const filterForm = currentDefinitionVersion?.caseOverview[
-                      Object.keys(currentDefinitionVersion.caseOverview).find(
-                        key => currentDefinitionVersion.caseOverview[key].name === filterName,
-                      )];
-
-                    const dateFilter: DateFilter = {
-                      labelKey: filterForm?.label || filterName,
-                      filterPayloadParameter: filterName,
-                      options: dateFilterOptionsInPastAndFuture(filterForm?.label || filterName),
-                    };
-
-                    return (
-                      <DateRangeFilter
-                        key={filterName}
-                        name={filterName}
-                        allowFutureDates={filter.allowFutureDates}
-                        labelKey={filterForm?.label || filterName}
-                        options={dateFilter.options}
-                        current={currentFilter.caseInfoFilters?.[filterName] as DateFilterValue}
-                        openedFilter={openedFilter}
-                        applyFilter={handleApplyDateRangeFilter(dateFilter)}
-                        setOpenedFilter={setOpenedFilter}
-                      />
-                    );
-                  }
-
-                  return null;
-                })}
+              {renderFiltersByPosition('right')}
             </div>
           )}
         </FiltersContainer>
@@ -425,19 +425,4 @@ const Filters: React.FC<Props> = ({
 
 Filters.displayName = 'Filters';
 
-const mapDispatchToProps = {
-  updateCaseListFilter: CaseListSettingsActions.updateCaseListFilter,
-  clearCaseListFilter: CaseListSettingsActions.clearCaseListFilter,
-};
-
-const mapStateToProps = (state: RootState) => ({
-  currentFilter: state[namespace][caseListBase].currentSettings.filter,
-  currentFilterCompare: JSON.stringify(state[namespace][caseListBase].currentSettings.filter),
-  counselorsHash: state[namespace][configurationBase].counselors.hash,
-  counselorsHashCompare: JSON.stringify(state[namespace][configurationBase].counselors.hash),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-const connected = connector(Filters);
-
-export default connected;
+export default Filters;
