@@ -46,13 +46,13 @@ const createFilterComponentRegistry = () => {
   };
 };
 
-const FilterComponentRegistry = createFilterComponentRegistry();
+const FilterComponentsRegistry = createFilterComponentRegistry();
 
-FilterComponentRegistry.register('generate-status-filter', MultiSelectFilter);
-FilterComponentRegistry.register('generate-counselor-filter', MultiSelectFilter);
-FilterComponentRegistry.register('generate-category-filter', CategoriesFilter);
-FilterComponentRegistry.register('generate-created-date-filter', DateRangeFilter);
-FilterComponentRegistry.register('generate-updated-date-filter', DateRangeFilter);
+FilterComponentsRegistry.register('generate-status-filter', MultiSelectFilter);
+FilterComponentsRegistry.register('generate-counselor-filter', MultiSelectFilter);
+FilterComponentsRegistry.register('generate-category-filter', CategoriesFilter);
+FilterComponentsRegistry.register('generate-created-date-filter', DateRangeFilter);
+FilterComponentsRegistry.register('generate-updated-date-filter', DateRangeFilter);
 
 const configureStatusFilter = (
   props: FilterComponentConfig,
@@ -170,8 +170,6 @@ export const getFilterComponentProps = (
   return props;
 };
 
-const getFilterComponent = (componentId: string): React.ComponentType<any> | undefined => {
-  return FilterComponentRegistry.get(componentId);
+export const getFilterComponent = (componentId: string): React.ComponentType<any> | undefined => {
+  return FilterComponentsRegistry.get(componentId);
 };
-
-export { FilterComponentRegistry, getFilterComponent };
