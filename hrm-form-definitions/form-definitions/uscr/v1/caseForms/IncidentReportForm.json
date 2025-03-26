@@ -4,6 +4,11 @@
     "type": "input",
     "label": "Beacon Incident ID"
   },
+   {
+    "name": "incidentCreationTimestamp",
+    "type": "time-input",
+    "label": "Incident Creation Timestamp"
+  }, 
   {
     "name": "incidentType",
     "label": "Incident Type",
@@ -54,12 +59,24 @@
     "type": "listbox-multiselect",
     "options": [
       {
+        "value": "Alcott",
+        "label": "Alcott"
+      },
+      {
+        "value": "Canopy Roots",
+        "label": "Canopy Roots"
+      },
+      {
         "value": "East",
         "label": "East"
       },
       {
         "value": "Harbor",
         "label": "Harbor"
+      },
+      {
+        "value": "Heluna",
+        "label": "Heluna"
       },
       {
         "value": "Hollywood",
@@ -70,31 +87,45 @@
         "label": "Metro"
       },
       {
+        "value": "MOCS",
+        "label": "MOCS"
+      },
+      {
         "value": "Pacific",
         "label": "Pacific"
-      },
-      {
-        "value": "South LA",
-        "label": "South LA"
-      },
-      {
-        "value": "Valley",
-        "label": "Valley"
       },
       {
         "value": "Response Team",
         "label": "Response Team"
       },
       {
+        "value": "South LA",
+        "label": "South LA"
+      },
+      {
         "value": "Support Team",
         "label": "Support Team"
+      },
+      {
+        "value": "Sycamores",
+        "label": "Sycamores"
+      },
+      {
+        "value": "UA",
+        "label": "UA"
+      },
+      {
+        "value": "Valley",
+        "label": "Valley"
       }
     ]
   },
   {
-    "name": "responderName",
-    "type": "input",
-    "label": "Responder"
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289
   },
   {
     "name": "latitude",
@@ -122,40 +153,10 @@
     "label": "# of Clients Transported"
   },
   {
-    "name": "enrouteTimestamp",
-    "type": "time-input",
-    "label": "En Route Timestamp"
-  },
-  {
-    "name": "onSceneTimestamp",
-    "type": "time-input",
-    "label": "On-Scene Timestamp"
-  },
-  {
-    "name": "additionanlResourcesTimestamp",
-    "type": "time-input",
-    "label": "Additional Resources Timestamp"
-  },
-  {
-    "name": "transportTimestamp",
-    "type": "time-input",
-    "label": "Transport Timestamp"
-  },
-  {
-    "name": "destinationArrivalTimestamp",
-    "type": "time-input",
-    "label": "Destination Arrival Timestamp"
-  },
-  {
-    "name": "incidentCompleteTimestamp",
-    "type": "time-input",
-    "label": "Incident Complete Timestamp"
-  },
-  {
     "name": "incidentActivationInterval",
     "type": "numeric-input",
     "label": "Incident Activation Interval"
-  },
+  },  
   {
     "name": "enrouteInterval",
     "type": "numeric-input",
@@ -172,6 +173,11 @@
     "label": "Triage Interval"
   },
   {
+    "name": "totalSceneInterval",
+    "type": "numeric-input",
+    "label": "Total Scene Interval"
+  },
+  {
     "name": "transportInterval",
     "type": "numeric-input",
     "label": "Transport Interval"
@@ -180,12 +186,5 @@
     "name": "totalIncidentTime",
     "type": "numeric-input",
     "label": "Time from Arrival to Completion"
-  },
-  {
-    "name": "comments",
-    "label": "Comments",
-    "type": "textarea",
-    "rows": 20,
-    "width": 289
   }
 ]

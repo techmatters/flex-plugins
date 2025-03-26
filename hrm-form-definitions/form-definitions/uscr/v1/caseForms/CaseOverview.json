@@ -27,7 +27,7 @@
     "label": "Operating Area",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
+      { "value": "Unknown", "label": "" },
       { "value": "East", "label": "East" },
       { "value": "Harbor", "label": "Harbor" },
       { "value": "Hollywood", "label": "Hollywood" },
