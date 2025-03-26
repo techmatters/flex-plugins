@@ -89,7 +89,10 @@ const nextXDays = (days: number): RelativeDateRange => ({
 });
 
 const withoutDate = (titleKey: string): ExistsDateFilter => ({
-  titleKey: React.createElement(Template, { code: 'CaseList-Filters-DateFilterOptions-WithoutDate', labelKey: titleKey }),
+  titleKey: React.createElement(Template, {
+    code: 'CaseList-Filters-DateFilterOptions-WithoutDate',
+    labelKey: titleKey,
+  }),
   exists: DateExistsCondition.MUST_NOT_EXIST,
 });
 

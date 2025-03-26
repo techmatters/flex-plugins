@@ -60,17 +60,13 @@ type FilterState = {
   categoriesValues: Category[];
   caseInfoFilterValues: Record<string, Item[]>;
   openedFilter?: string;
-}
+};
 
-const Filters: React.FC<OwnProps> = ({
-  currentDefinitionVersion,
-  caseCount,
-}) => {
+const Filters: React.FC<OwnProps> = ({ currentDefinitionVersion, caseCount }) => {
   const dispatch = useDispatch();
-  
+
   const currentFilter = useSelector((state: RootState) => state[namespace][caseListBase].currentSettings.filter);
-  const counselorsHash = useSelector((state: RootState) => 
-    state[namespace][configurationBase].counselors.hash);
+  const counselorsHash = useSelector((state: RootState) => state[namespace][configurationBase].counselors.hash);
   const caseFilterDefinition = currentDefinitionVersion?.caseFilters;
 
   const strings = getTemplateStrings();
@@ -84,7 +80,7 @@ const Filters: React.FC<OwnProps> = ({
     counselorValues: getCounselorsInitialValue(counselorsHash),
     dateFilterValues: {},
     categoriesValues: getCategoriesInitialValue(currentDefinitionVersion, helpline),
-    caseInfoFilterValues: Object.keys(caseFilterDefinition).reduce(
+    caseInfoFilterValues: Object.keys(caseFilterDefinition || {}).reduce(
       (acc, filterName) => ({
         ...acc,
         [filterName]: getCustomFilterInitialValue(currentDefinitionVersion, filterName),
@@ -93,12 +89,109 @@ const Filters: React.FC<OwnProps> = ({
     ),
   });
 
+  const handleSetOpenedFilter = useCallback((filterName?: string) => {
+    setFilterState(prev => ({ ...prev, openedFilter: filterName }));
+  }, []);
+
+  const handleApplyStatusFilter = useCallback(
+    (values: Item[]) => {
+      dispatch(CaseListSettingsActions.updateCaseListFilter({ statuses: filterCheckedItems(values) }));
+    },
+    [dispatch],
+  );
+
+  const handleApplyCounselorFilter = useCallback(
+    (values: Item[]) => {
+      dispatch(CaseListSettingsActions.updateCaseListFilter({ counsellors: filterCheckedItems(values) }));
+    },
+    [dispatch],
+  );
+
+  const handleApplyDateRangeFilter = useCallback(
+    (filter: DateFilter) => (filterValue: DateFilterValue | undefined) => {
+      if (caseFilterDefinition && Object.keys(caseFilterDefinition).includes(filter.filterPayloadParameter)) {
+        dispatch(
+          CaseListSettingsActions.updateCaseListFilter({
+            caseInfoFilters: {
+              ...currentFilter.caseInfoFilters,
+              [filter.filterPayloadParameter]: filterValue,
+            },
+          }),
+        );
+      } else {
+        dispatch(
+          CaseListSettingsActions.updateCaseListFilter({
+            [filter.filterPayloadParameter]: filterValue,
+          }),
+        );
+      }
+    },
+    [dispatch, currentFilter, caseFilterDefinition],
+  );
+
+  const handleApplyCategoriesFilter = useCallback(
+    (values: Category[]) => {
+      dispatch(CaseListSettingsActions.updateCaseListFilter({ categories: filterCheckedCategories(values) }));
+    },
+    [dispatch],
+  );
+
+  const handleApplyCustomFilter = useCallback(
+    (filterName: string) => (values: Item[]) => {
+      dispatch(
+        CaseListSettingsActions.updateCaseListFilter({
+          caseInfoFilters: {
+            ...currentFilter.caseInfoFilters,
+            [filterName]: filterCheckedItems(values),
+          },
+        }),
+      );
+    },
+    [dispatch, currentFilter],
+  );
+
+  const handleClearFilters = useCallback(() => {
+    dispatch(CaseListSettingsActions.clearCaseListFilter());
+  }, [dispatch]);
+
+  const getCasesCountString = () =>
+    caseCount === 1 ? 'CaseList-Filters-CaseCount-Singular' : 'CaseList-Filters-CaseCount-Plural';
+
+  const hasFiltersApplied = useMemo(() => {
+    if (!currentFilter?.caseInfoFilters) return false;
+
+    const statusFiltersApplied = filterCheckedItems(filterState.statusValues).length > 0;
+    const counselorFiltersApplied = filterCheckedItems(filterState.counselorValues).length > 0;
+    const dateFiltersApplied = Boolean(Object.values(filterState.dateFilterValues).filter(dfv => dfv).length);
+    const categoryFiltersApplied = filterCheckedCategories(filterState.categoriesValues).length > 0;
+    const customFiltersApplied =
+      currentFilter.caseInfoFilters &&
+      Object.values(currentFilter.caseInfoFilters).some(
+        values => values && (Array.isArray(values) ? values.length > 0 : true),
+      );
+
+    return (
+      statusFiltersApplied ||
+      counselorFiltersApplied ||
+      dateFiltersApplied ||
+      categoryFiltersApplied ||
+      customFiltersApplied
+    );
+  }, [
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    filterState.statusValues,
+    filterState.counselorValues,
+    filterState.dateFilterValues,
+    filterState.categoriesValues,
+    currentFilter?.caseInfoFilters,
+  ]);
+
   useEffect(() => {
     setFilterState(prevState => ({
       ...prevState,
       statusValues: getStatusInitialValue(currentDefinitionVersion),
       categoriesValues: getCategoriesInitialValue(currentDefinitionVersion, helpline),
-      caseInfoFilterValues: Object.keys(caseFilterDefinition).reduce(
+      caseInfoFilterValues: Object.keys(caseFilterDefinition || {}).reduce(
         (acc, filterName) => ({
           ...acc,
           [filterName]: getCustomFilterInitialValue(currentDefinitionVersion, filterName),
@@ -106,27 +199,27 @@ const Filters: React.FC<OwnProps> = ({
         {},
       ),
     }));
-  }, [currentDefinitionVersion, helpline]);
+  }, [currentDefinitionVersion, helpline, caseFilterDefinition]);
 
   useEffect(() => {
     if (!currentFilter) return;
-    
+
     const { counsellors, statuses, categories, caseInfoFilters, includeOrphans, ...currentDateFilters } = currentFilter;
-    
+
     const newCounselorValues = getCounselorsInitialValue(counselorsHash).map(cv => ({
       ...cv,
       checked: counsellors.includes(cv.value),
     }));
-    
-    const newStatusValues = filterState.statusValues.map(sv => ({ 
-      ...sv, 
-      checked: statuses.includes(sv.value) 
+
+    const newStatusValues = filterState.statusValues.map(sv => ({
+      ...sv,
+      checked: statuses.includes(sv.value),
     }));
-    
+
     const newCategoriesValues = getUpdatedCategoriesValues(categories, filterState.categoriesValues);
-    
-    const newCaseInfoFilterValues = Object.keys(caseFilterDefinition)
-      .filter(filterName => caseFilterDefinition[filterName].type === 'multi-select')
+
+    const newCaseInfoFilterValues = Object.keys(caseFilterDefinition || {})
+      .filter(filterName => caseFilterDefinition?.[filterName]?.type === 'multi-select')
       .reduce(
         (acc, filterName) => ({
           ...acc,
@@ -141,9 +234,9 @@ const Filters: React.FC<OwnProps> = ({
       );
 
     const newDateFilters = { ...currentDateFilters };
-    
-    Object.keys(caseFilterDefinition)
-      .filter(filterName => caseFilterDefinition[filterName].type === 'date-input')
+
+    Object.keys(caseFilterDefinition || {})
+      .filter(filterName => caseFilterDefinition?.[filterName]?.type === 'date-input')
       .forEach(filterName => {
         if (caseInfoFilters?.[filterName] && typeof caseInfoFilters[filterName] === 'object') {
           newDateFilters[filterName] = caseInfoFilters[filterName] as DateFilterValue;
@@ -158,89 +251,20 @@ const Filters: React.FC<OwnProps> = ({
       categoriesValues: newCategoriesValues,
       caseInfoFilterValues: newCaseInfoFilterValues,
     }));
-  }, [currentFilter, counselorsHash]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentFilter, counselorsHash, caseFilterDefinition]);
 
   if (!currentDefinitionVersion) return null;
-  
-  const handleSetOpenedFilter = useCallback((filterName?: string) => {
-    setFilterState(prev => ({ ...prev, openedFilter: filterName }));
-  }, []);
-
-  const handleApplyStatusFilter = useCallback((values: Item[]) => {
-    dispatch(CaseListSettingsActions.updateCaseListFilter({ statuses: filterCheckedItems(values) }));
-  }, [dispatch]);
-
-  const handleApplyCounselorFilter = useCallback((values: Item[]) => {
-    dispatch(CaseListSettingsActions.updateCaseListFilter({ counsellors: filterCheckedItems(values) }));
-  }, [dispatch]);
-
-  const handleApplyDateRangeFilter = useCallback((filter: DateFilter) => (filterValue: DateFilterValue | undefined) => {
-    if (Object.keys(caseFilterDefinition).includes(filter.filterPayloadParameter)) {
-      dispatch(CaseListSettingsActions.updateCaseListFilter({
-        caseInfoFilters: {
-          ...currentFilter.caseInfoFilters,
-          [filter.filterPayloadParameter]: filterValue,
-        },
-      }));
-    } else {
-      dispatch(CaseListSettingsActions.updateCaseListFilter({
-        [filter.filterPayloadParameter]: filterValue,
-      }));
-    }
-  }, [dispatch, currentFilter]);
-
-  const handleApplyCategoriesFilter = useCallback((values: Category[]) => {
-    dispatch(CaseListSettingsActions.updateCaseListFilter({ categories: filterCheckedCategories(values) }));
-  }, [dispatch]);
-
-  const handleApplyCustomFilter = useCallback((filterName: string) => (values: Item[]) => {
-    dispatch(CaseListSettingsActions.updateCaseListFilter({
-      caseInfoFilters: {
-        ...currentFilter.caseInfoFilters,
-        [filterName]: filterCheckedItems(values),
-      },
-    }));
-  }, [dispatch, currentFilter]);
-
-  const handleClearFilters = useCallback(() => {
-    dispatch(CaseListSettingsActions.clearCaseListFilter());
-  }, [dispatch]);
-
-  const getCasesCountString = () =>
-    caseCount === 1 ? 'CaseList-Filters-CaseCount-Singular' : 'CaseList-Filters-CaseCount-Plural';
-
-  const hasFiltersApplied = useMemo(() => {
-    const statusFiltersApplied = filterCheckedItems(filterState.statusValues).length > 0;
-    const counselorFiltersApplied = filterCheckedItems(filterState.counselorValues).length > 0;
-    const dateFiltersApplied = Boolean(Object.values(filterState.dateFilterValues).filter(dfv => dfv).length);
-    const categoryFiltersApplied = filterCheckedCategories(filterState.categoriesValues).length > 0;
-    const customFiltersApplied = currentFilter.caseInfoFilters &&
-      Object.values(currentFilter.caseInfoFilters).some(
-        values => values && (Array.isArray(values) ? values.length > 0 : true)
-      );
-    
-    return statusFiltersApplied || 
-           counselorFiltersApplied || 
-           dateFiltersApplied || 
-           categoryFiltersApplied || 
-           customFiltersApplied;
-  }, [
-    filterState.statusValues, 
-    filterState.counselorValues, 
-    filterState.dateFilterValues, 
-    filterState.categoriesValues, 
-    currentFilter.caseInfoFilters
-  ]);
 
   const renderRegisteredComponents = (filterName: string, position: CaseFilterPosition) => {
-    const filter = caseFilterDefinition[filterName];
-    
+    const filter = caseFilterDefinition?.[filterName];
+
     if (!filter || filter.position !== position || !filter.component) return null;
-    
+
     if (filter.component === 'generate-counselor-filter' && !canViewCounselorFilter) {
       return null;
     }
-    
+
     const componentId = filter.component;
     const FilterComponent = getFilterComponent(componentId);
 
@@ -275,10 +299,10 @@ const Filters: React.FC<OwnProps> = ({
   };
 
   const renderMultiSelectFilters = (filterName: string, position: CaseFilterPosition) => {
-    const filter = caseFilterDefinition[filterName];
-    
+    const filter = caseFilterDefinition?.[filterName];
+
     if (!filter || filter.position !== position || filter.type !== 'multi-select') return null;
-    
+
     return (
       <MultiSelectFilter
         key={filterName}
@@ -300,15 +324,16 @@ const Filters: React.FC<OwnProps> = ({
   };
 
   const renderDateInputFilters = (filterName: string, position: CaseFilterPosition) => {
-    const filter = caseFilterDefinition[filterName];
-    
+    const filter = caseFilterDefinition?.[filterName];
+
     if (!filter || filter.position !== position || filter.type !== 'date-input') return null;
-    
-    const filterForm = currentDefinitionVersion?.caseOverview[
-      Object.keys(currentDefinitionVersion.caseOverview).find(
-        key => currentDefinitionVersion.caseOverview[key].name === filterName,
-      )
-    ];
+
+    const filterForm =
+      currentDefinitionVersion?.caseOverview[
+        Object.keys(currentDefinitionVersion.caseOverview).find(
+          key => currentDefinitionVersion.caseOverview[key].name === filterName,
+        )
+      ];
 
     const dateFilter: DateFilter = {
       labelKey: filterForm?.label || filterName,
@@ -332,11 +357,11 @@ const Filters: React.FC<OwnProps> = ({
   };
 
   const renderFiltersByPosition = (position: CaseFilterPosition) => {
-    return Object.keys(caseFilterDefinition)
-      .filter(filterName => caseFilterDefinition[filterName].position === position)
+    return Object.keys(caseFilterDefinition || {})
+      .filter(filterName => caseFilterDefinition?.[filterName]?.position === position)
       .map(filterName => {
-        const filter = caseFilterDefinition[filterName];
-        
+        const filter = caseFilterDefinition?.[filterName];
+
         if (filter.component) {
           return renderRegisteredComponents(filterName, position);
         } else if (filter.type === 'multi-select') {
@@ -344,13 +369,13 @@ const Filters: React.FC<OwnProps> = ({
         } else if (filter.type === 'date-input') {
           return renderDateInputFilters(filterName, position);
         }
-        
+
         return null;
       });
   };
 
-  const hasFiltersOnRight = Object.keys(caseFilterDefinition).some(
-    filterName => caseFilterDefinition[filterName].position === 'right'
+  const hasFiltersOnRight = Object.keys(caseFilterDefinition || {}).some(
+    filterName => caseFilterDefinition?.[filterName]?.position === 'right',
   );
 
   return (
@@ -375,9 +400,7 @@ const Filters: React.FC<OwnProps> = ({
             <Template code="Table-FilterBy" />
           </FilterTitle>
 
-          <div style={{ display: 'inline-flex' }}>
-            {renderFiltersByPosition('left')}
-          </div>
+          <div style={{ display: 'inline-flex' }}>{renderFiltersByPosition('left')}</div>
 
           {hasFiltersOnRight && (
             <div style={{ display: 'inline-flex', marginLeft: 'auto' }}>
