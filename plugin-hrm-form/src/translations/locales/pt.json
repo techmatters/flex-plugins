@@ -308,7 +308,7 @@
   "CaseList-Filters-DateFilterOptions-PastXDays": "Últimos {{days}} dias",
   "CaseList-Filters-DateFilterOptions-Tomorrow": "Amanhã",
   "CaseList-Filters-DateFilterOptions-NextXDays": "Próximos {{days}} dias",
-  "CaseList-Filters-DateFilterOptions-WithoutDate": "Sem data de acompanhamento",
+  "CaseList-Filters-DateFilterOptions-WithoutDate": "Sem data de {{labelKey}}",
   "CaseList-Filters-DateFilterOptions-CustomRange": "Personalizada",
   "ContactPreview-CopyButton": "Copiar informação",
   "ContactPreview-ExpandButton": "Abrir detalhes do caso",

@@ -277,7 +277,7 @@
   "CaseList-Filters-DateFilterOptions-PastXDays": "Past {{days}} days",
   "CaseList-Filters-DateFilterOptions-Tomorrow": "Tomorrow",
   "CaseList-Filters-DateFilterOptions-NextXDays": "Next {{days}} days",
-  "CaseList-Filters-DateFilterOptions-WithoutDate": "No follow up date",
+  "CaseList-Filters-DateFilterOptions-WithoutDate": "No {{labelKey}}",
   "CaseList-Filters-DateFilterOptions-CustomRange": "Custom",
   "ContactPreview-CopyButton": "Copy information",
   "ContactPreview-ExpandButton": "Open case details",
