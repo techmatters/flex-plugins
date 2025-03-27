@@ -22,6 +22,10 @@ variable "lex_bot_languages" {
   type    = map(list(string))
   default = {}
 }
+variable "lex_v2_bot_languages" {
+  type    = map(list(string))
+  default = {}
+}
 
 variable "lex_slot_types" {
   description = "The slot types for the helpline."

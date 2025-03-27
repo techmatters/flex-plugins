@@ -1,0 +1,1032 @@
+{
+    "slotTypeName": "age",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "88"
+            },
+            "synonyms": [
+                {
+                    "value": "oitenta e oito"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "89"
+            },
+            "synonyms": [
+                {
+                    "value": "oitenta e nove"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Unknown"
+            },
+            "synonyms": [
+                {
+                    "value": "Preferia não dizer"
+                },
+                {
+                    "value": "X"
+                },
+                {
+                    "value": "Gostaria de não dizer"
+                },
+                {
+                    "value": "prefiro não responder"
+                },
+                {
+                    "value": "prefiro não"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "90"
+            },
+            "synonyms": [
+                {
+                    "value": "noventa"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "91"
+            },
+            "synonyms": [
+                {
+                    "value": "noventa e um"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "92"
+            },
+            "synonyms": [
+                {
+                    "value": "noventa e dois"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "93"
+            },
+            "synonyms": [
+                {
+                    "value": "noventa e três"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "94"
+            },
+            "synonyms": [
+                {
+                    "value": "noventa e quatro"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "95"
+            },
+            "synonyms": [
+                {
+                    "value": "noventa e cinco"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "96"
+            },
+            "synonyms": [
+                {
+                    "value": "noventa e seis"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "97"
+            },
+            "synonyms": [
+                {
+                    "value": "noventa e sete"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "98"
+            },
+            "synonyms": [
+                {
+                    "value": "noventa e oito"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "10"
+            },
+            "synonyms": [
+                {
+                    "value": "dez"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "11"
+            },
+            "synonyms": [
+                {
+                    "value": "onze"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "99"
+            },
+            "synonyms": [
+                {
+                    "value": "noventa e nove"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "12"
+            },
+            "synonyms": [
+                {
+                    "value": "doze"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "13"
+            },
+            "synonyms": [
+                {
+                    "value": "treze"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "14"
+            },
+            "synonyms": [
+                {
+                    "value": "catorze"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "15"
+            },
+            "synonyms": [
+                {
+                    "value": "quinze"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "16"
+            },
+            "synonyms": [
+                {
+                    "value": "dezesseis"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "17"
+            },
+            "synonyms": [
+                {
+                    "value": "dezessete"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "18"
+            },
+            "synonyms": [
+                {
+                    "value": "dezoito"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "19"
+            },
+            "synonyms": [
+                {
+                    "value": "dezenove"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "1"
+            },
+            "synonyms": [
+                {
+                    "value": "um"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "2"
+            },
+            "synonyms": [
+                {
+                    "value": "dois"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "3"
+            },
+            "synonyms": [
+                {
+                    "value": "três"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "4"
+            },
+            "synonyms": [
+                {
+                    "value": "quatro"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "5"
+            },
+            "synonyms": [
+                {
+                    "value": "cinco"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "6"
+            },
+            "synonyms": [
+                {
+                    "value": "seis"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "7"
+            },
+            "synonyms": [
+                {
+                    "value": "sete"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "8"
+            },
+            "synonyms": [
+                {
+                    "value": "oito"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "9"
+            },
+            "synonyms": [
+                {
+                    "value": "nove"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "20"
+            },
+            "synonyms": [
+                {
+                    "value": "vinte"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "21"
+            },
+            "synonyms": [
+                {
+                    "value": "vinte e um"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "22"
+            },
+            "synonyms": [
+                {
+                    "value": "vinte e dois"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "23"
+            },
+            "synonyms": [
+                {
+                    "value": "vinte e três"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "24"
+            },
+            "synonyms": [
+                {
+                    "value": "vinte e quatro"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "25"
+            },
+            "synonyms": [
+                {
+                    "value": "vinte e cinco"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "26"
+            },
+            "synonyms": [
+                {
+                    "value": "vinte e seis"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "27"
+            },
+            "synonyms": [
+                {
+                    "value": "vinte e sete"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "28"
+            },
+            "synonyms": [
+                {
+                    "value": "vinte e oito"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "29"
+            },
+            "synonyms": [
+                {
+                    "value": "vinte e nove"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "30"
+            },
+            "synonyms": [
+                {
+                    "value": "trinta"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "31"
+            },
+            "synonyms": [
+                {
+                    "value": "trinta e um"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "32"
+            },
+            "synonyms": [
+                {
+                    "value": "trinta e dois"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "33"
+            },
+            "synonyms": [
+                {
+                    "value": "trinta e três"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "34"
+            },
+            "synonyms": [
+                {
+                    "value": "trinta e quatro"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "35"
+            },
+            "synonyms": [
+                {
+                    "value": "trinta e cinco"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "36"
+            },
+            "synonyms": [
+                {
+                    "value": "trinta e seis"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "37"
+            },
+            "synonyms": [
+                {
+                    "value": "trinta e sete"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "38"
+            },
+            "synonyms": [
+                {
+                    "value": "trinta e oito"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "39"
+            },
+            "synonyms": [
+                {
+                    "value": "trinta e nove"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "40"
+            },
+            "synonyms": [
+                {
+                    "value": "quarenta"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "41"
+            },
+            "synonyms": [
+                {
+                    "value": "quarenta e um"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "42"
+            },
+            "synonyms": [
+                {
+                    "value": "quarenta e dois"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "43"
+            },
+            "synonyms": [
+                {
+                    "value": "quarenta e três"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "44"
+            },
+            "synonyms": [
+                {
+                    "value": "quarenta e quatro"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "45"
+            },
+            "synonyms": [
+                {
+                    "value": "quarenta e cinco"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "46"
+            },
+            "synonyms": [
+                {
+                    "value": "quarenta e seis"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "47"
+            },
+            "synonyms": [
+                {
+                    "value": "quarenta e sete"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "48"
+            },
+            "synonyms": [
+                {
+                    "value": "quarenta e oito"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "49"
+            },
+            "synonyms": [
+                {
+                    "value": "quarenta e nove"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "50"
+            },
+            "synonyms": [
+                {
+                    "value": "cinquenta"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "51"
+            },
+            "synonyms": [
+                {
+                    "value": "cinquenta e um"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "52"
+            },
+            "synonyms": [
+                {
+                    "value": "cinquenta e dois"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "53"
+            },
+            "synonyms": [
+                {
+                    "value": "cinquenta e três"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "54"
+            },
+            "synonyms": [
+                {
+                    "value": "cinquenta e quatro"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "55"
+            },
+            "synonyms": [
+                {
+                    "value": "cinquenta e cinco"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "56"
+            },
+            "synonyms": [
+                {
+                    "value": "cinquenta e seis"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "57"
+            },
+            "synonyms": [
+                {
+                    "value": "cinquenta e sete"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "58"
+            },
+            "synonyms": [
+                {
+                    "value": "cinquenta e oito"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "59"
+            },
+            "synonyms": [
+                {
+                    "value": "cinquenta e nove"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "60"
+            },
+            "synonyms": [
+                {
+                    "value": "sessenta"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "61"
+            },
+            "synonyms": [
+                {
+                    "value": "sessenta e um"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "62"
+            },
+            "synonyms": [
+                {
+                    "value": "sessenta e dois"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "63"
+            },
+            "synonyms": [
+                {
+                    "value": "sessenta e três"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "64"
+            },
+            "synonyms": [
+                {
+                    "value": "sessenta e quatro"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "65"
+            },
+            "synonyms": [
+                {
+                    "value": "sessenta e cinco"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "66"
+            },
+            "synonyms": [
+                {
+                    "value": "sessenta e seis"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "67"
+            },
+            "synonyms": [
+                {
+                    "value": "sessenta e sete"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "68"
+            },
+            "synonyms": [
+                {
+                    "value": "sessenta e oito"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "69"
+            },
+            "synonyms": [
+                {
+                    "value": "sessenta e nove"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "70"
+            },
+            "synonyms": [
+                {
+                    "value": "setenta"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "71"
+            },
+            "synonyms": [
+                {
+                    "value": "setenta e um"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "72"
+            },
+            "synonyms": [
+                {
+                    "value": "setenta e dois"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "73"
+            },
+            "synonyms": [
+                {
+                    "value": "setenta e três"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "74"
+            },
+            "synonyms": [
+                {
+                    "value": "setenta e quatro"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "75"
+            },
+            "synonyms": [
+                {
+                    "value": "setenta e cinco"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "76"
+            },
+            "synonyms": [
+                {
+                    "value": "setenta e seis"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "77"
+            },
+            "synonyms": [
+                {
+                    "value": "setenta e sete"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "78"
+            },
+            "synonyms": [
+                {
+                    "value": "setenta e oito"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "79"
+            },
+            "synonyms": [
+                {
+                    "value": "setenta e nove"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "100"
+            },
+            "synonyms": [
+                {
+                    "value": "cem"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "80"
+            },
+            "synonyms": [
+                {
+                    "value": "oitenta"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "81"
+            },
+            "synonyms": [
+                {
+                    "value": "oitenta e um"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "82"
+            },
+            "synonyms": [
+                {
+                    "value": "oitenta e dois"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "83"
+            },
+            "synonyms": [
+                {
+                    "value": "oitenta e três"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "84"
+            },
+            "synonyms": [
+                {
+                    "value": "oitenta e quatro"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "85"
+            },
+            "synonyms": [
+                {
+                    "value": "oitenta e cinco"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "86"
+            },
+            "synonyms": [
+                {
+                    "value": "oitenta e seis"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "87"
+            },
+            "synonyms": [
+                {
+                    "value": "oitenta e sete"
+                }
+            ]
+        }
+
+
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

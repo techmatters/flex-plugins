@@ -4,7 +4,7 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
-
+    enable_lex_v2 = true
     #Studio flow
     flow_vars = {
       service_sid                   = "ZSeed7070ce3f2974cb12a0382a2c93340"
