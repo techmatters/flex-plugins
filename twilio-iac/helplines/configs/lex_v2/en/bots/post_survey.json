@@ -1,20 +1,34 @@
 {
   "post_survey": {
-    "description": "General configs/lex/en/bots Post Survey bot",
+    "description": "General es/bots Post Survey bot",
     "locale": "en_US",
     "child_directed": true,
     "idle_session_ttl_in_seconds": "600",
     "type": "Bot",
-    "intents": [
-      "post_survey_yes",
-      "post_survey_no"
-    ],
-    "slots": [
-      "was_helpful",
-      "would_recommend"
-    ],
-    "slot_types" :[
-      "yes_no"
-    ]
+    "intents": {
+      "post_survey_yes": {
+        "closing_response": {
+          "message": "Gracias por contactarnos. No dudes en escribirnos de nuevo cuando necesites ayuda."
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "was_helpful",
+            "slot_type_name": "yes_no",
+            "slot_question": "Did you find this conversation helpful? Please answer Yes or No."
+          },
+          "2":  {
+            "slot_name": "would_recommend",
+            "slot_type_name": "yes_no",
+            "slot_question": "Based on this conversation, would you recommend that someone in a similar situation contact us? Please answer Yes or No."
+          }
+                }
+      },
+      "post_survey_no": {
+        "closing_response": {
+          "message": "Thank you for reaching out. Please contact us again if you need more help."
+        },
+        "slot_priorities": {}
+    }
   }
+}
 }

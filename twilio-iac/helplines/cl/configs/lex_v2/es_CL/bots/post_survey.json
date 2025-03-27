@@ -7,10 +7,6 @@
       "type": "Bot",
       "intents": {
         "post_survey_yes": {
-          "initial_response": {
-            "message": "Welcome to the helpline. Please answer the following questions.",
-            "slot_to_elicit": "about_self"
-          },
           "closing_response": {
             "message": "Gracias por contactarnos. No dudes en escribirnos de nuevo cuando necesites ayuda."
           },
