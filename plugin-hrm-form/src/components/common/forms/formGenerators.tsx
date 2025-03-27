@@ -83,7 +83,7 @@ export const getInitialValue = (def: FormItemDefinition) => {
     case FormInputType.ListboxMultiselect:
       return [];
     case FormInputType.Select:
-      return def.defaultOption ? def.defaultOption : def.options[0].value;
+      return def.defaultOption?.value || def.options[0].value;
     case FormInputType.DependentSelect:
       return def.defaultOption.value;
     case FormInputType.CopyTo:
@@ -337,7 +337,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
             const [isMounted, setIsMounted] = React.useState(false); // value to avoid setting the default in the first render.
 
             React.useEffect(() => {
-              if (isMounted && def.defaultOption) setValue(path, def.defaultOption);
+              if (isMounted && def.defaultOption) setValue(path, def.defaultOption.value);
               else setIsMounted(true);
             }, [isMounted, setValue]);
 
@@ -570,7 +570,7 @@ export const getInputType = (parents: string[], updateCallback: () => void, cust
 
             React.useEffect(() => {
               if (isMounted.current && prevDependeeValue.current && dependeeValue !== prevDependeeValue.current) {
-                setValue(path, def.defaultOption.value, { shouldValidate: true });
+                setValue(path, def.defaultOption, { shouldValidate: true });
               } else isMounted.current = true;
 
               prevDependeeValue.current = dependeeValue;

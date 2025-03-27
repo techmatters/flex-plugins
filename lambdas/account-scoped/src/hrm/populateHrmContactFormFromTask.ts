@@ -42,6 +42,7 @@ export enum FormInputType {
 }
 
 export type FormItemDefinition = {
+  type: FormInputType;
   name: string;
   unknownOption?: string;
   options?: { value: string }[];
@@ -50,7 +51,9 @@ export type FormItemDefinition = {
 } & (
   | {
       type: Exclude<FormInputType, FormInputType.DependentSelect>;
-      defaultOption?: string;
+      defaultOption?: {
+        value: string;
+      };
     }
   | {
       type: FormInputType.DependentSelect;
@@ -184,14 +187,14 @@ const getInitialValue = (def: FormItemDefinition): FormValue => {
       return '';
     }
     case FormInputType.RadioInput:
-      return def.defaultOption ?? '';
+      return def.defaultOption?.value ?? '';
     case FormInputType.ListboxMultiselect:
       return [];
     case FormInputType.Select:
-      if (def.defaultOption) return def.defaultOption;
+      if (def.defaultOption) return def.defaultOption.value;
       return def.options && def.options[0] ? def.options[0].value : null;
     case FormInputType.DependentSelect:
-      return def.defaultOption?.value;
+      return def.defaultOption?.value ?? '';
     case FormInputType.CopyTo:
     case FormInputType.Checkbox:
       return Boolean(def.initialChecked);

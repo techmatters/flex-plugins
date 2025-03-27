@@ -113,7 +113,7 @@ export type InputOption = { value: any; label: string };
 type RadioInputDefinition = {
   type: FormInputType.RadioInput;
   options: InputOption[];
-  defaultOption?: InputOption['value'];
+  defaultOption?: InputOption;
 } & ItemBase;
 
 /**
@@ -133,7 +133,7 @@ export type SelectOption = { value: any; label: string };
 
 type BaseSelectDefinition = {
   type: FormInputType.Select;
-  defaultOption?: SelectOption['value'];
+  defaultOption?: SelectOption;
   unknownOption?: SelectOption['value'];
 } & ItemBase;
 
