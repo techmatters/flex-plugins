@@ -61,13 +61,13 @@
         "caseHomeOrder": 1,
         "caseHomeLocation": "timeline",
         "previewFields": [
+          "enrouteTimestamp", 
           "responderName"
         ],
         "layout": {
           "responderName": {
             "includeLabel": true
           },
-
           "enrouteTimestamp": {
             "format": "timestamp"
           },
