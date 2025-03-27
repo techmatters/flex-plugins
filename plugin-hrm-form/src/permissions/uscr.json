@@ -1,6 +1,6 @@
 {
   "viewCase": [["everyone"]],
-  "closeCase": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
+  "closeCase": [["everyone"]],
   "reopenCase": [["isSupervisor"]],
   "caseStatusTransition": [["everyone"]],
   "addCaseSection": [["everyone"]],
