@@ -50,6 +50,9 @@
           "incidentType": {
             "includeLabel": true
           },
+          "incidentCreationTimestamp": {
+            "format": "timestamp"
+          },          
           "incidentActivationInterval": {
             "format": "duration-from-seconds"
           },
