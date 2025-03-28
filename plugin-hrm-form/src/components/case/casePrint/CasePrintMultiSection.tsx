@@ -49,7 +49,7 @@ const CasePrintMultiSection: React.FC<Props> = ({ sectionType, sections, definit
               }}
               values={value.sectionTypeSpecificData}
               definitions={form}
-              layoutDefinition={definition.layoutVersion.case[sectionType]}
+              layoutDefinition={definition.layoutVersion.case.sectionTypes[sectionType]}
             />
           );
         })}
