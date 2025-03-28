@@ -11,8 +11,7 @@
         "external_recordings_enabled": true,
         "config_flags": {
             "enableExternalRecordings": true,
-            "enableUnmaskingCalls": false,
-            "enable_backend_hrm_contact_creation": false
+            "enableUnmaskingCalls": false
         },
         "feature_flags": {
             "enable_client_profiles": true,
@@ -20,7 +19,8 @@
             "enable_last_case_status_update_info": false,
             "enable_lex": true,
             "enable_separate_timeline_view": false,
-            "enable_voice_recordings": true
+            "enable_voice_recordings": true,
+            "enable_backend_hrm_contact_creation": false
         },
         "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
         "helplineLanguage": "en-NZ",
