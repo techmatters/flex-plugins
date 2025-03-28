@@ -17,7 +17,7 @@ import type { LayoutValue } from 'hrm-form-definitions';
 import { parse, parseISO } from 'date-fns';
 
 import { getTemplateStrings } from '../../hrmConfig';
-import { formatFileNameAtAws } from '../../utils';
+import { formatDuration, formatFileNameAtAws } from '../../utils';
 
 /**
  * Formats a form value based on its layout definition as a simple string
@@ -29,24 +29,43 @@ const formatFormValue = (
   value: string | number | boolean,
   layout?: LayoutValue,
   allFormValues?: Record<string, string | boolean | number>,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ) => {
   const strings = getTemplateStrings();
-  if (layout && typeof value === 'string') {
+
+  if (layout) {
     switch (layout.format) {
       case 'date': {
-        return parse(value as string, 'yyyy-MM-dd', new Date()).toLocaleDateString(navigator.language);
+        if (typeof value === 'string') {
+          return parse(value, 'yyyy-MM-dd', new Date()).toLocaleDateString(navigator.language);
+        }
+        break;
       }
       case 'timestamp': {
-        return parseISO(value).toLocaleString(navigator.language);
+        if (typeof value === 'string') {
+          return parseISO(value).toLocaleString(navigator.language);
+        }
+        break;
+      }
+      case 'duration-from-seconds': {
+        if (typeof value === 'number') {
+          return formatDuration(value);
+        }
+        if (typeof value === 'string') {
+          return formatDuration(parseInt(value, 10));
+        }
+        break;
       }
       case 'file': {
-        return formatFileNameAtAws(value);
+        if (typeof value === 'string') {
+          return formatFileNameAtAws(value);
+        }
+        break;
       }
       default: {
         if (layout.valueTemplateCode && allFormValues && strings[layout.valueTemplateCode]) {
           return Handlebars.compile(strings[layout.valueTemplateCode])(allFormValues);
         }
-        return value;
       }
     }
   }

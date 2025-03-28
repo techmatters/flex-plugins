@@ -19,7 +19,7 @@
  */
 export type LayoutValue = {
   includeLabel: boolean;
-  format?: 'date' | 'string' | 'file' | 'timestamp';
+  format?: 'date' | 'string' | 'file' | 'timestamp' | 'duration-from-seconds';
   valueTemplateCode?: string; // If specified, this template code will be used to render a value, with all form values passed as parameters
   labelTemplateCode?: string; // If specified, this template code will be used to render a label
   widthRatio?: number;
