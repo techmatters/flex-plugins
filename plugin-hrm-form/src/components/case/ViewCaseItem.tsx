@@ -105,6 +105,7 @@ const ViewCaseItem: React.FC<ViewCaseItemProps> = ({ task, definitionVersion, se
                   <SectionEntryValue
                     layout={sectionTypeLayoutDefinition?.layout?.[e.name]}
                     value={form[e.name]}
+                    form={form}
                     targetObject={targetObject}
                     definition={e}
                   />

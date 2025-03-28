@@ -17,13 +17,13 @@
 import React from 'react';
 import type { FormItemDefinition, LayoutValue } from 'hrm-form-definitions';
 import { Template } from '@twilio/flex-ui';
-import { parse, parseISO } from 'date-fns';
 
 import { FormTargetObject } from '../types';
 import { presentValue } from '../../../../utils';
 import DownloadFile from '../DownloadFile';
 import { SectionValueText } from '../../../search/styles';
 import { Flex } from '../../../../styles';
+import formatFormValue from '../../../forms/formatFormValue';
 
 type Props = {
   value?: string | number | boolean;
@@ -31,34 +31,20 @@ type Props = {
   definition?: FormItemDefinition;
   layout?: LayoutValue;
   targetObject?: FormTargetObject;
+  form?: Record<string, string | boolean | number>;
 };
 
 /**
  * Presentational component used to nicely consume the form values in SectionEntry
  */
 
-const SectionEntryValue: React.FC<Props> = ({ value, definition, layout, notBold, targetObject }) => {
+const SectionEntryValue: React.FC<Props> = ({ value, definition, layout, notBold, targetObject, form }) => {
   if (definition && definition.type === 'file-upload' && typeof value === 'string') {
     return <DownloadFile fileNameAtAws={value} targetObject={targetObject} />;
   }
 
-  const renderValue = (displayValue: LayoutValue, value: string | number | boolean) => {
-    let formattedValue = value;
-    if (displayValue && typeof value === 'string') {
-      switch (displayValue.format) {
-        case 'date': {
-          formattedValue = parse(value as string, 'yyyy-MM-dd', new Date()).toLocaleDateString(navigator.language);
-          break;
-        }
-        case 'timestamp': {
-          formattedValue = parseISO(value).toLocaleString(navigator.language);
-          break;
-        }
-        default: {
-          break;
-        }
-      }
-    }
+  const renderValue = (layoutValue: LayoutValue, value: string | number | boolean) => {
+    const formattedValue = formatFormValue(value, layoutValue, form);
     return presentValue(
       code => (
         <SectionValueText notBold={notBold}>
