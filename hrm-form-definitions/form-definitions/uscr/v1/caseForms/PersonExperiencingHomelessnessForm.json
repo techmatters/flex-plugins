@@ -58,9 +58,33 @@
         "label": "English"
       },
       {
+        "value": "Cantonese",
+        "label": "Cantonese"
+      },
+      {
+        "value": "Japanese",
+        "label": "Japanese"
+      },
+      {
+        "value": "Korean",
+        "label": "Korean"
+      },
+      {
+        "value": "Russian",
+        "label": "Russian"
+      },
+      {
         "value": "Spanish",
         "label": "Spanish"
-      }
+      },
+      {
+        "value": "Tagalog",
+        "label": "Tagalog"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
     ]
   },
   {
