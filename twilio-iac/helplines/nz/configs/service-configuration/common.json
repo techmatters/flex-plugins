@@ -11,7 +11,8 @@
         "external_recordings_enabled": true,
         "config_flags": {
             "enableExternalRecordings": true,
-            "enableUnmaskingCalls": false
+            "enableUnmaskingCalls": false,
+            "enable_backend_hrm_contact_creation": false
         },
         "feature_flags": {
             "enable_client_profiles": true,
