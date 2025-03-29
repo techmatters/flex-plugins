@@ -301,7 +301,11 @@ const DateRangeFilter: React.FC<Props> = ({
                             register(ref);
                           }}
                         />
-                        <Template code={filter.titleKey} {...(filter.titleParameters ?? {})} />
+                        {typeof filter.titleKey === 'string' ? (
+                          <Template code={filter.titleKey} {...(filter.titleParameters ?? {})} />
+                        ) : (
+                          filter.titleKey
+                        )}
                       </FormLabel>
                     </li>
                   );

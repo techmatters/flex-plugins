@@ -145,7 +145,7 @@
   "CaseList-Filters-DateFilterOptions-PastXDays": "อดีต {{days}} วัน",
   "CaseList-Filters-DateFilterOptions-Today": "วันนี้",
   "CaseList-Filters-DateFilterOptions-Tomorrow": "พรุ่งนี้",
-  "CaseList-Filters-DateFilterOptions-WithoutDate": "ไม่มีวันติดตาม",
+  "CaseList-Filters-DateFilterOptions-WithoutDate": "ไม่มีวัน {{labelKey}}",
   "CaseList-Filters-DateFilterOptions-Yesterday": "เมื่อวาน",
   "CaseList-Filters-DateFiltersLabel": "ตัวกรองวันที่",
   "CaseList-Filters-DialogTitlePrefix": "ตัวกรอง:",

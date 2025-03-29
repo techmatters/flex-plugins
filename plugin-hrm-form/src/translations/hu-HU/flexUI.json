@@ -411,7 +411,7 @@
   "CaseList-Filters-DateFilterOptions-PastXDays": "Elmúlt {{days}} nap",
   "CaseList-Filters-DateFilterOptions-Tomorrow": "Holnap",
   "CaseList-Filters-DateFilterOptions-NextXDays": "Következő {{days}} nap",
-  "CaseList-Filters-DateFilterOptions-WithoutDate": "Nincs dátum",
+  "CaseList-Filters-DateFilterOptions-WithoutDate": "Nincs {{labelKey}}",
   "CaseList-Filters-DateFilterOptions-CustomRange": "Egyedi",
   "ContactPreview-CopyButton": "Információk másolása",
   "ContactPreview-ExpandButton": "Folyamatban lévő esetek részletei",

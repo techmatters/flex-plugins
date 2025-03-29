@@ -283,11 +283,35 @@ export type CallTypeButtonsEntry = {
 
 export type CallTypeButtonsDefinitions = CallTypeButtonsEntry[];
 
-export type CaseSectionTypeJsonEntry = {
-  label: string;
-  formPath: string;
+/**
+ * Case filter definition
+ */
+export type CaseFilterType = 'multi-select' | 'date-input';
+export type CaseFilterPosition = 'left' | 'right';
+
+export type CaseFilterConfig = {
+  searchable?: boolean;
+  type?: CaseFilterType;
+  allowFutureDates?: boolean;
+  component?: string;
+  position: CaseFilterPosition;
 };
 
+export type CaseFiltersDefinition = Record<string, CaseFilterConfig>;
+
+/**
+ * Status info definition
+ */
+export type StatusInfo = {
+  value: string;
+  label: string;
+  color: string; // color that represents this status in the UI
+  transitions: string[]; // possible statuses this one can transition to (further update may be to include who can make such a transition for a more granular control)
+};
+
+/**
+ * Case overview definition
+ */
 export type CaseOverviewTypeEntry = {
   name: string;
   label: string;
@@ -297,6 +321,14 @@ export type CaseOverviewTypeEntry = {
 
 export type CaseOverviewDefinition = Record<'status', CaseOverviewTypeEntry> &
   Record<string, CaseOverviewTypeEntry>;
+
+/**
+ * Case section definition
+ */
+export type CaseSectionTypeJsonEntry = {
+  label: string;
+  formPath: string;
+};
 
 export type CaseSectionTypeEntry = {
   label: string;
@@ -361,13 +393,6 @@ export type LayoutVersion = {
   thaiCharacterPdfSupport?: boolean;
 };
 
-export type StatusInfo = {
-  value: string;
-  label: string;
-  color: string; // color that represents this status in the UI
-  transitions: string[]; // possible statuses this one can transition to (further update may be to include who can make such a transition for a more granular control)
-};
-
 export type LocalizedStringMap = {
   [language: string]: {
     [key: string]: string;
@@ -377,7 +402,11 @@ export type LocalizedStringMap = {
  * Type that defines a complete version for all the customizable forms used across the app
  */
 export type DefinitionVersion = {
+  caseStatus: {
+    [status: string]: StatusInfo;
+  };
   caseOverview: CaseOverviewDefinition;
+  caseFilters: CaseFiltersDefinition;
   caseSectionTypes: CaseSectionTypeDefinitions;
   // TODO: change this property to contactForms to be consistent (though that may create confusion with the component name)
   tabbedForms: {
@@ -394,9 +423,6 @@ export type DefinitionVersion = {
   insights: {
     oneToOneConfigSpec: OneToOneConfigSpec;
     oneToManyConfigSpecs: OneToManyConfigSpecs;
-  };
-  caseStatus: {
-    [status: string]: StatusInfo;
   };
   prepopulateKeys?: {
     survey: {
