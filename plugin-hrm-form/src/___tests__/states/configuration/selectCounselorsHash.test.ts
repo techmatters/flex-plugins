@@ -17,6 +17,7 @@
 import { RootState } from '../../../states';
 import { RecursivePartial } from '../../RecursivePartial';
 import { namespace } from '../../../states/storeNamespaces';
+import '../../mockGetConfig';
 import { selectCounselorName } from '../../../states/configuration/selectCounselorsHash';
 import { WorkerSID } from '../../../types/twilio';
 
@@ -39,6 +40,9 @@ beforeEach(() => {
 });
 
 describe('selectCounselorsName', () => {
+  test('sid is internal helpline account - replace with placeholder', () => {
+    expect(selectCounselorName(state, 'account-ACfake' as WorkerSID)).toBe('system');
+  });
   test('sid present in counselor hash - returns looked up name', () => {
     expect(selectCounselorName(state, 'WK-1')).toEqual('Counselor 1');
   });

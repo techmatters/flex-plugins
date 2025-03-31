@@ -39,6 +39,7 @@ import asyncDispatch from '../../../states/asyncDispatch';
 import { selectContactsByCaseIdInCreatedOrder } from '../../../states/contacts/selectContactByCaseId';
 import { FullCaseSection } from '../../../services/caseSectionService';
 import { selectDefinitionVersionForCase } from '../../../states/configuration/selectDefinitions';
+import formatFormValue from '../../forms/formatFormValue';
 
 type OwnProps = {
   taskSid: CustomITask['taskSid'];
@@ -163,11 +164,23 @@ const Timeline: React.FC<OwnProps> = ({
         timelineActivities.length > 0 &&
         timelineActivities.map((timelineActivity, index) => {
           let iconType: IconType;
+          let { text } = timelineActivity;
           if (isContactTimelineActivity(timelineActivity)) {
             iconType = timelineActivity.activity.channel as IconType;
           } else if (isCaseSectionTimelineActivity(timelineActivity)) {
             const layout = definitionVersion.layoutVersion.case.sectionTypes[timelineActivity.activity.sectionType];
             iconType = (layout?.timelineIcon || timelineActivity.activity.sectionType) as IconType;
+
+            text =
+              (layout.previewFields ?? [])
+                .map(field =>
+                  formatFormValue(
+                    timelineActivity.activity.sectionTypeSpecificData[field],
+                    layout?.layout?.[field],
+                    timelineActivity.activity.sectionTypeSpecificData,
+                  ),
+                )
+                .join(', ') || '--';
           }
           const date = timelineActivity.timestamp.toLocaleDateString(navigator.language);
           let canViewActivity = true;
@@ -193,7 +206,7 @@ const Timeline: React.FC<OwnProps> = ({
                   <CallTypeIcon callType={timelineActivity.activity.rawJson.callType} fontSize="18px" />
                 </TimelineCallTypeIcon>
               )}
-              <TimelineText>{timelineActivity.text}</TimelineText>
+              <TimelineText>{text}</TimelineText>
               {canViewActivity && (
                 <Box marginLeft="auto">
                   <Box marginLeft="auto">
