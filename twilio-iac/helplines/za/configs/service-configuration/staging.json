@@ -1,8 +1,6 @@
 {
     "attributes": {
         "feature_flags": {
-            "enable_backend_hrm_contact_creation": true,
-            "lambda_task_created_handler": true
         },
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",
         "previous_ui_version": {

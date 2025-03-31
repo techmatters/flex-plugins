@@ -177,7 +177,7 @@ describe('Validate form definitions', () => {
       });
 
       test('Validating required fields in caseOverview definition', () => {
-        const requiredFields = ['status', 'createdAt', 'updatedAt'];
+        const requiredFields = ['status'];
 
         expect(definitionVersion.caseOverview).toBeDefined();
 

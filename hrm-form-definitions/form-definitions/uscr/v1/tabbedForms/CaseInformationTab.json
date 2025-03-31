@@ -1,22 +1,26 @@
-[ 
- {
+[
+  {
     "name": "priority",
     "label": "Priority",
     "type": "select",
     "unknownOption": "Unknown",
     "options": [
       {
-        "value": "Unknown",
-        "label": ""
+        "value": "Normal",
+        "label": "Normal"
       },
       {
         "value": "High",
         "label": "High"
-      },
-      {
-        "value": "Normal",
-        "label": "Normal"
       }
     ]
- }
+  },
+  {
+    "name": "dispatchIncident",
+    "label": "Dispatch Incident",
+    "type": "custom-contact-component",
+    "component": "uscr-dispatch-incident-button",
+    "saveable": false,
+    "isPII": false
+  }
 ]

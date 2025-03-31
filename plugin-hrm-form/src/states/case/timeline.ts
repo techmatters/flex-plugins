@@ -60,52 +60,62 @@ export const newGetTimelineAsyncAction = createAsyncAction(
   },
 );
 
+export const loadTimelineIntoRedux = (
+  state: HrmState,
+  caseId: Case['id'],
+  timelineResult: TimelineResult<Date>,
+  timelineId: string,
+  pagination: Partial<PaginationSettings> & Pick<PaginationSettings, 'offset'> = { offset: 0 },
+): HrmState => {
+  const caseEntry = state.connectedCase.cases[caseId];
+  if (!caseEntry) return state;
+  caseEntry.timelines = caseEntry.timelines ?? {};
+  caseEntry.sections = caseEntry.sections ?? {};
+  let timeline: (CaseSectionIdentifierTimelineActivity | ContactIdentifierTimelineActivity)[] =
+    caseEntry.timelines[timelineId] ?? [];
+  if (timeline.length !== timelineResult.count) {
+    timeline = [];
+    timeline.length = timelineResult.count;
+  }
+  timelineResult.activities.forEach((timelineActivity, index) => {
+    if (isCaseSectionTimelineActivity(timelineActivity)) {
+      const { activity } = timelineActivity;
+      timeline[index + pagination.offset] = {
+        ...timelineActivity,
+        activityType: 'case-section-id',
+        activity,
+      } as CaseSectionIdentifierTimelineActivity;
+      caseEntry.sections[activity.sectionType] = caseEntry.sections[activity.sectionType] ?? {};
+      caseEntry.sections[activity.sectionType][activity.sectionId] = activity;
+    } else if (isContactTimelineActivity(timelineActivity)) {
+      const { activity } = timelineActivity;
+      timeline[index + pagination.offset] = {
+        ...timelineActivity,
+        activityType: 'contact-id',
+        activity: { contactId: activity.id },
+      } as ContactIdentifierTimelineActivity;
+    }
+  });
+  caseEntry.timelines[timelineId] = timeline;
+
+  return {
+    ...state,
+    connectedCase: {
+      ...state.connectedCase,
+      cases: {
+        ...state.connectedCase.cases,
+        [caseId]: caseEntry,
+      },
+    },
+  };
+};
+
 export const timelineReducer = (initialState: HrmState): ((state: HrmState, action) => HrmState) =>
   createReducer(initialState, handleAction => [
     handleAction(
       newGetTimelineAsyncAction.fulfilled,
-      (state, { payload: { caseId, timelineId, timelineResult, pagination } }) => {
-        const caseEntry = state.connectedCase.cases[caseId];
-        if (!caseEntry) return state;
-        caseEntry.timelines = caseEntry.timelines ?? {};
-        caseEntry.sections = caseEntry.sections ?? {};
-        let timeline: (CaseSectionIdentifierTimelineActivity | ContactIdentifierTimelineActivity)[] =
-          caseEntry.timelines[timelineId] ?? [];
-        if (timeline.length !== timelineResult.count) {
-          timeline = [];
-          timeline.length = timelineResult.count;
-        }
-        timelineResult.activities.forEach((timelineActivity, index) => {
-          if (isCaseSectionTimelineActivity(timelineActivity)) {
-            const { activity } = timelineActivity;
-            timeline[index + pagination.offset] = {
-              ...timelineActivity,
-              activityType: 'case-section-id',
-              activity: { sectionType: activity.sectionType, sectionId: activity.sectionId },
-            } as CaseSectionIdentifierTimelineActivity;
-            caseEntry.sections[activity.sectionType] = caseEntry.sections[activity.sectionType] ?? {};
-            caseEntry.sections[activity.sectionType][activity.sectionId] = activity;
-          } else if (isContactTimelineActivity(timelineActivity)) {
-            const { activity } = timelineActivity;
-            timeline[index + pagination.offset] = {
-              ...timelineActivity,
-              activityType: 'contact-id',
-              activity: { contactId: activity.id },
-            } as ContactIdentifierTimelineActivity;
-          }
-        });
-        caseEntry.timelines[timelineId] = timeline;
-        return {
-          ...state,
-          connectedCase: {
-            ...state.connectedCase,
-            cases: {
-              ...state.connectedCase.cases,
-              [caseId]: caseEntry,
-            },
-          },
-        };
-      },
+      (state, { payload: { caseId, timelineId, timelineResult, pagination } }) =>
+        loadTimelineIntoRedux(state, caseId, timelineResult, timelineId, pagination),
     ),
   ]);
 
