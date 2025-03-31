@@ -31,12 +31,12 @@ import {
   HelplineEntry,
   isDependentSelectDefinitionWithReferenceOptions,
   isSelectDefinitionWithReferenceOptions,
-  LayoutVersion,
   ProfileFlagDurationDefinition,
   ProfileSectionDefinition,
   LocalizedStringMap,
 } from './types';
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
+import { LayoutVersion } from './layoutVersion';
 
 export enum DefinitionVersionId {
   demoV1 = 'demo-v1', // Demo v1
