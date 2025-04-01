@@ -18,6 +18,11 @@ import { ContactState } from './existingContacts';
 import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
 
-const selectContactStateByContactId = (state: RootState, contactId: string): ContactState | undefined =>
-  contactId ? state[namespace].activeContacts.existingContacts[contactId] : undefined;
+const selectContactStateByContactId = (state: RootState, contactId: string): ContactState | undefined => {
+  const contact = contactId ? state[namespace].activeContacts.existingContacts[contactId] : undefined;
+  if (contact?.savedContact?.channel !== 'default') {
+    console.log('>>> selectContactStateByContactId', {contactId, contact, existingContacts: state[namespace].activeContacts.existingContacts});
+  }
+  return contact;
+};
 export default selectContactStateByContactId;

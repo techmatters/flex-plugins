@@ -57,12 +57,16 @@ const TaskView: React.FC<Props> = ({ task }) => {
   const taskContactId = (task?.attributes as any)?.contactId;
   const currentDefinitionVersion = useSelector((state: RootState) => selectCurrentDefinitionVersion(state));
   // Check if the entry for this task exists in each reducer
+  console.log(
+    `TaskView: checking contact state for ${task?.taskSid} and contactId ${taskContactId}`,
+  );
   const { savedContact, draftContact, metadata } = useSelector(
     (state: RootState) =>
       (enableBackendHrmContactCreation && isTwilioTask(task)
         ? selectContactStateByContactId(state, taskContactId)
         : selectContactByTaskSid(state, task?.taskSid)) ?? ({} as ContactState),
   );
+  console.log(`TaskView: selected contact state`, savedContact, draftContact, metadata);
   const unsavedContact = getUnsavedContact(savedContact, draftContact);
   const currentRoute = useSelector((state: RootState) => selectCurrentBaseRoute(state, task?.taskSid));
   const isModalOpen = currentRoute && isRouteModal(currentRoute);

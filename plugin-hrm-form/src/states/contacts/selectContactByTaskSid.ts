@@ -18,7 +18,12 @@ import { RootState } from '..';
 import { ContactState } from './existingContacts';
 import { namespace } from '../storeNamespaces';
 
-const selectContactByTaskSid = (state: RootState, taskSid: string): ContactState =>
-  Object.values(state[namespace].activeContacts.existingContacts).find(cs => cs.savedContact?.taskId === taskSid);
+const selectContactByTaskSid = (state: RootState, taskSid: string): ContactState => {
+  const contact = Object.values(state[namespace].activeContacts.existingContacts).find(cs => cs.savedContact?.taskId === taskSid);
+  if (contact?.savedContact?.channel !== 'default') {
+    console.log('>>> selectContactByTaskSid', {taskSid, contact});
+  }
+  return contact;
+};
 
 export default selectContactByTaskSid;

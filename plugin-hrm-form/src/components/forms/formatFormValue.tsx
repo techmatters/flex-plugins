@@ -41,21 +41,21 @@ const formatFormValue = (
         }
         break;
       }
-      case 'timestamp': {
-        if (typeof value === 'string') {
-          return parseISO(value).toLocaleString(navigator.language);
-        }
-        break;
-      }
-      case 'duration-from-seconds': {
-        if (typeof value === 'number') {
-          return formatDuration(value);
-        }
-        if (typeof value === 'string') {
-          return formatDuration(parseInt(value, 10));
-        }
-        break;
-      }
+      // case 'timestamp': {
+      //   if (typeof value === 'string') {
+      //     return parseISO(value).toLocaleString(navigator.language);
+      //   }
+      //   break;
+      // }
+      // case 'duration-from-seconds': {
+      //   if (typeof value === 'number') {
+      //     return formatDuration(value);
+      //   }
+      //   if (typeof value === 'string') {
+      //     return formatDuration(parseInt(value, 10));
+      //   }
+      //   break;
+      // }
       case 'file': {
         if (typeof value === 'string') {
           return formatFileNameAtAws(value);

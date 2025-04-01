@@ -40,7 +40,7 @@ const CaseSectionPreviewTextValue: React.FC<Props> = ({ section, layoutDefinitio
   }
   const formattedText = formatFormValue(value, layout, section.sectionTypeSpecificData);
   switch (layout?.format) {
-    case 'timestamp':
+    // case 'timestamp':
     case 'date': {
       return <TimelineDate>{formattedText}</TimelineDate>;
     }

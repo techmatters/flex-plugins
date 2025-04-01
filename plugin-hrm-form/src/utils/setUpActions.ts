@@ -73,6 +73,7 @@ const initializeContactForm = async ({ task }: ActionPayload) => {
     ...newContact(currentDefinitionVersion, task),
     number: getNumberFromTask(task),
   };
+  console.log('>>> setUpActions initializeContactForm contact', contact);
   const { workerSid } = getHrmConfig();
 
   await asyncDispatch(Manager.getInstance().store.dispatch)(createContactAsyncAction(contact, workerSid, task));

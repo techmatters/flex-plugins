@@ -93,6 +93,7 @@ const readConfig = () => {
     ...featureFlagsFromServiceConfig,
     ...featureFlagsFromEnv,
   };
+  // featureFlags['enable_backend_hrm_contact_creation'] = true;
   const { strings } = (manager as unknown) as {
     strings: { [key: string]: string };
   };

@@ -74,6 +74,8 @@ export const createContactAsyncAction = createAsyncAction(
     let contact: Contact;
     const { taskSid } = task;
     if (isOfflineContactTask(task)) {
+      console.log('>>> offline saveContact creating contact', contactToCreate);
+
       contact = await createContact(contactToCreate, workerSid, task);
       if (!contact.rawJson.contactlessTask.createdOnBehalfOf) {
         const now = new Date();
@@ -95,6 +97,7 @@ export const createContactAsyncAction = createAsyncAction(
         });
       }
     } else {
+      console.log('>>> online saveContact creating contact', contactToCreate);
       const attributes = task.attributes ?? {};
       const { contactId } = attributes;
       if (contactId) {
