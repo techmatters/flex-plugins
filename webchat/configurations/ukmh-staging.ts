@@ -25,13 +25,11 @@ const contactType: ContactType = 'email';
 
 const translations: Translations = {
   'en-GB': {
-    WelcomeMessage: 'Welcome to Aselo!',
+    WelcomeMessage: 'Welcome to The Mix Peer Chat Service',
     MessageCanvasTrayContent: '',
-    MessageInputDisabledReasonHold: 'Please hold for a counsellor.',
+    MessageInputDisabledReasonHold: 'Please hold for a Peer Supporter.',
     AutoFirstMessage: 'Incoming webchat contact from',
     PreEngagementDescription: `Let's get started`,
-    WhatIsYourHelpline: 'What is your helpline?',
-    SelectHelpline: 'Select helpline',
     LetsChat: "Let's chat!",
   },
 };
@@ -57,7 +55,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       type: 'input-text',
       name: 'contactIdentifier',
-      label: 'Email address',
+      label: 'Email Address',
       required: true,
       placeholder: 'Your Email',
       pattern: {
@@ -66,10 +64,17 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       },
     },
     {
+      type: 'input-text',
+      name: 'phone1',
+      label: 'Phone Number',
+      placeholder: 'Your phone number',
+      required: true,
+    },
+    {
       label: 'On a scale from 0 (not anxious at all) to 10 (completely anxious), how anxious did you feel yesterday?',
       type: 'select',
       name: 'anxietyScale',
-      required: false,
+      required: true,
       defaultValue: '',
       options: [
         {
