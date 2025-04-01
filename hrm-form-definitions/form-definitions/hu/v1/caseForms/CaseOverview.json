@@ -10,16 +10,6 @@
     "type": "checkbox"
   },
   {
-    "name": "createdAt",
-    "label": "Folyamatban lévő",
-    "type": "date-input"
-  },
-  {
-    "name": "updatedAt",
-    "label": "Utoljára frissítve / lezárt",
-    "type": "date-input"
-  },
-  {
     "name": "followUpDate",
     "label": "Frissítés dátuma",
     "type": "date-input"

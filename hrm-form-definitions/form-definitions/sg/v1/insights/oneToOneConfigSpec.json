@@ -58,6 +58,13 @@
                     "customers",
                     "email"
                 ]
+            },
+            {
+                "name": "howDidYouHearAboutUs",
+                "insights": [
+                    "customers",
+                    "area"
+                ]
             }
         ],
         "caseInformation": [

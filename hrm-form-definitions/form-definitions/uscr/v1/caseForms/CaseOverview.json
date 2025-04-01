@@ -10,16 +10,6 @@
     "type": "checkbox"
   },
   {
-    "name": "createdAt",
-    "label": "Created Date",
-    "type": "date-input"
-  },
-  {
-    "name": "updatedAt",
-    "label": "Updated Date",
-    "type": "date-input"
-  },
-  {
     "name": "followUpDate",
     "label": "Follow Up Date",
     "type": "date-input"
@@ -37,23 +27,14 @@
     "label": "Operating Area",
     "type": "select",
     "options": [
-      { "value": "", "label": "" },
-      { "value": "Los Angeles City", "label": "Los Angeles City" },
-      { "value": "Long Beach", "label": "Long Beach" },
-      { "value": "Lynwood", "label": "Lynwood" },
-      { "value": "South Pasadena", "label": "South Pasadena" },
-      { "value": "Unknown", "label": "Unknown" }
-    ]
-  },
-  {
-    "name": "priority",
-    "label": "Priority",
-    "type": "select",
-    "options": [
-      { "value": "", "label": "" },
-      { "value": "1", "label": "High" },
-      { "value": "2", "label": "Medium" },
-      { "value": "3", "label": "Low" }
+      { "value": "Unknown", "label": "" },
+      { "value": "East", "label": "East" },
+      { "value": "Harbor", "label": "Harbor" },
+      { "value": "Hollywood", "label": "Hollywood" },
+      { "value": "Metro", "label": "Metro" },
+      { "value": "Pacific", "label": "Pacific" },
+      { "value": "South LA", "label": "South LA" },
+      { "value": "Valley", "label": "Valley" }
     ]
   }
 ]
