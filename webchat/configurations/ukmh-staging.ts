@@ -26,6 +26,8 @@ const contactType: ContactType = 'email';
 const translations: Translations = {
   'en-GB': {
     WelcomeMessage: 'Welcome to The Mix Peer Chat Service',
+    EntryPointTagLine: 'The Mix Peer Chat Service',
+    TypingIndicator: 'Peer Supporter is typing',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold: 'Please hold for a Peer Supporter.',
     AutoFirstMessage: 'Incoming webchat contact from',
