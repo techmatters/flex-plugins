@@ -18,3 +18,6 @@ export * from './callTypes';
 export * from './insightsConfig';
 export * from './types';
 export * from './loadDefinition';
+export { LayoutVersion } from './layoutVersion';
+export { LayoutDefinition } from './layoutVersion';
+export { LayoutValue } from './layoutVersion';

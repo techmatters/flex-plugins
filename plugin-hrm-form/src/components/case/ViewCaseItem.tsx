@@ -82,6 +82,8 @@ const ViewCaseItem: React.FC<ViewCaseItemProps> = ({ task, definitionVersion, se
     type: 'case',
   };
 
+  const sectionTypeLayoutDefinition = definitionVersion.layoutVersion.case.sectionTypes[sectionTypeName];
+
   return (
     <CaseLayout>
       <NavigableContainer task={task} titleCode={`CaseSection-View-Title/${sectionTypeName}`}>
@@ -100,7 +102,13 @@ const ViewCaseItem: React.FC<ViewCaseItemProps> = ({ task, definitionVersion, se
             <Box paddingTop="10px">
               {formDefinition.map(e => (
                 <SectionEntry key={`entry-${e.label}`} descriptionKey={e.label}>
-                  <SectionEntryValue value={form[e.name]} targetObject={targetObject} definition={e} />
+                  <SectionEntryValue
+                    layout={sectionTypeLayoutDefinition?.layout?.[e.name]}
+                    value={form[e.name]}
+                    form={form}
+                    targetObject={targetObject}
+                    definition={e}
+                  />
                 </SectionEntry>
               ))}
             </Box>

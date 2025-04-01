@@ -18,14 +18,12 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import type { FormDefinition, LayoutDefinition, LayoutValue } from 'hrm-form-definitions';
-import { parseISO } from 'date-fns';
-import AttachFileIcon from '@material-ui/icons/AttachFile';
+import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
-import { RowItemContainer, TimelineDate, TimelineLabel, TimelineRow, TimelineText, ViewButton } from './styles';
-import { Box, Flex, HiddenText } from '../../styles';
+import { RowItemContainer, TimelineLabel, TimelineRow, ViewButton } from './styles';
+import { Box, HiddenText } from '../../styles';
 import { CaseSection } from '../../services/caseSectionService';
-import { formatFileNameAtAws } from '../../utils';
+import CaseSectionPreviewTextValue from './CaseSectionPreviewText';
 
 type OwnProps = {
   definition: FormDefinition;
@@ -43,39 +41,6 @@ const CaseSectionListRow: React.FC<OwnProps> = ({ definition, section, layoutDef
   const layouts = layoutDefinition.layout ?? { createdAt: { format: 'date' } };
   const previewFields = layoutDefinition.previewFields ?? Object.values(layouts);
 
-  const renderValue = (name: string): JSX.Element => {
-    const layout: LayoutValue | undefined = layouts[name];
-    switch (layout?.format) {
-      case 'date': {
-        let value: Date | string = section.sectionTypeSpecificData[name];
-        if (!value) {
-          value = section[name];
-        }
-        if (!(value instanceof Date)) {
-          value = parseISO(value);
-        }
-        return <TimelineDate>{value.toLocaleDateString(navigator.language)}</TimelineDate>;
-      }
-      case 'file': {
-        return (
-          <Flex>
-            <AttachFileIcon style={{ fontSize: '20px', marginRight: 5 }} />
-            <TimelineText>{formatFileNameAtAws(section.sectionTypeSpecificData[name])}</TimelineText>
-          </Flex>
-        );
-      }
-      case 'string':
-      default:
-        if (layout?.valueTemplateCode) {
-          return (
-            <TimelineText>
-              <Template code={layout.valueTemplateCode} {...section.sectionTypeSpecificData} />
-            </TimelineText>
-          );
-        }
-        return <TimelineText>{section.sectionTypeSpecificData[name]}</TimelineText>;
-    }
-  };
   return (
     <TimelineRow>
       {previewFields.map((name, index) => {
@@ -93,7 +58,7 @@ const CaseSectionListRow: React.FC<OwnProps> = ({ definition, section, layoutDef
                   <Template code={layout?.labelTemplateCode ?? fieldDef?.label ?? '#MISSING_LABEL'} />:{' '}
                 </TimelineLabel>
               )}
-              {renderValue(name)}
+              <CaseSectionPreviewTextValue section={section} layoutDefinition={layoutDefinition} fieldName={name} />
             </div>
           </RowItem>
         );

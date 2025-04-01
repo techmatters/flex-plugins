@@ -25,13 +25,13 @@ const contactType: ContactType = 'email';
 
 const translations: Translations = {
   'en-GB': {
-    WelcomeMessage: 'Welcome to Aselo!',
+    WelcomeMessage: 'Welcome to The Mix Peer Chat Service',
+    EntryPointTagLine: 'The Mix Peer Chat Service',
+    TypingIndicator: 'Peer Supporter is typing',
     MessageCanvasTrayContent: '',
-    MessageInputDisabledReasonHold: 'Please hold for a counsellor.',
+    MessageInputDisabledReasonHold: 'Please hold for a Peer Supporter.',
     AutoFirstMessage: 'Incoming webchat contact from',
     PreEngagementDescription: `Let's get started`,
-    WhatIsYourHelpline: 'What is your helpline?',
-    SelectHelpline: 'Select helpline',
     LetsChat: "Let's chat!",
   },
 };
@@ -42,7 +42,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
   fields: [
     {
       type: 'input-text',
-      name: 'firstName',
+      name: 'friendlyName',
       label: 'First Name',
       placeholder: 'Your name',
       required: true,
@@ -51,27 +51,38 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'input-text',
       name: 'lastName',
       label: 'Last Name',
-      placeholder: 'Your Lastname',
+      placeholder: 'Your last name',
       required: true,
     },
     {
       type: 'input-text',
       name: 'contactIdentifier',
-      label: 'Email address',
+      label: 'Email Address',
       required: true,
       placeholder: 'Your Email',
       pattern: {
         value: EMAIL_PATTERN,
-        message: 'FieldValidationInvalidEmail',
+        message: 'Please enter valid email address',
       },
+    },
+    {
+      type: 'input-text',
+      name: 'phone1',
+      label: 'Phone Number',
+      placeholder: 'Your phone number',
+      required: true,
     },
     {
       label: 'On a scale from 0 (not anxious at all) to 10 (completely anxious), how anxious did you feel yesterday?',
       type: 'select',
       name: 'anxietyScale',
-      required: false,
+      required: true,
       defaultValue: '',
       options: [
+        {
+          value: "",
+          label: " "
+        },
         {
           value: "00",
           label: "0"

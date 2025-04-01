@@ -92,5 +92,7 @@ locals {
         description : "system - 'In Progress' cases are closed after 5 minutes"
       }
     ]
+
+    get_profile_flags_for_identifier_base_url = "hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

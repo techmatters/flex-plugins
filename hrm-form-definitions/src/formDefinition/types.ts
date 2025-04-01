@@ -19,6 +19,7 @@
 import { RegisterOptions } from 'react-hook-form';
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 import { CallTypeKeys } from './callTypes';
+import { LayoutVersion } from './layoutVersion';
 
 export enum FormInputType {
   Input = 'input',
@@ -113,7 +114,7 @@ export type InputOption = { value: any; label: string };
 type RadioInputDefinition = {
   type: FormInputType.RadioInput;
   options: InputOption[];
-  defaultOption?: InputOption['value'];
+  defaultOption?: InputOption;
 } & ItemBase;
 
 /**
@@ -133,7 +134,7 @@ export type SelectOption = { value: any; label: string };
 
 type BaseSelectDefinition = {
   type: FormInputType.Select;
-  defaultOption?: SelectOption['value'];
+  defaultOption?: SelectOption;
   unknownOption?: SelectOption['value'];
 } & ItemBase;
 
@@ -358,40 +359,6 @@ export type CannedResponsesDefinitions = {
   label: string;
   text: string;
 }[];
-
-/**
- * Type that gives extra info on how a single field should be formatted
- */
-export type LayoutValue = {
-  includeLabel: boolean;
-  format?: 'date' | 'string' | 'file';
-  valueTemplateCode?: string; // If specified, this template code will be used to render a value, with all form values passed as parameters
-  labelTemplateCode?: string; // If specified, this template code will be used to render a label
-  widthRatio?: number;
-};
-export type LayoutDefinition = {
-  previewFields?: ItemBase['name'][];
-  layout?: { [name: string]: LayoutValue };
-  splitFormAt?: number;
-  caseHomeOrder?: number;
-  printOrder?: number;
-  caseHomeLocation?: 'list' | 'timeline' | 'hidden';
-  printFormat?: 'tabular' | 'list' | 'hidden';
-  timelineIcon?: string;
-};
-
-export type LayoutVersion = {
-  contact: {
-    callerInformation: LayoutDefinition;
-    childInformation: LayoutDefinition;
-    caseInformation: LayoutDefinition;
-  };
-  case: {
-    hideCounselorDetails?: boolean;
-    sectionTypes: Record<string, LayoutDefinition>;
-  };
-  thaiCharacterPdfSupport?: boolean;
-};
 
 export type LocalizedStringMap = {
   [language: string]: {

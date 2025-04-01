@@ -206,7 +206,7 @@ variable "region" {
   type        = string
 }
 
-variable "get_profile_flags_for_identifiers_base_url" {
+variable "get_profile_flags_for_identifier_base_url" {
   description = "Base URL for the get profile flags for identifiers endpoint"
   type        = string
   default     = ""

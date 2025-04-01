@@ -49,6 +49,30 @@
         "layout": {
           "incidentType": {
             "includeLabel": true
+          },
+          "incidentCreationTimestamp": {
+            "format": "timestamp"
+          },          
+          "incidentActivationInterval": {
+            "format": "duration-from-seconds"
+          },
+          "enrouteInterval": {
+            "format": "duration-from-seconds"
+          },
+          "sceneArrivalInterval": {
+            "format": "duration-from-seconds"
+          },
+          "triageInterval": {
+            "format": "duration-from-seconds"
+          },
+          "totalSceneInterval": {
+            "format": "duration-from-seconds"
+          },
+          "transportInterval": {
+            "format": "duration-from-seconds"
+          },
+          "totalIncidentTime": {
+            "format": "duration-from-seconds"
           }
         }
       },
@@ -58,12 +82,31 @@
         "caseHomeOrder": 1,
         "caseHomeLocation": "timeline",
         "previewFields": [
+          "enrouteTimestamp", 
           "responderName"
         ],
         "layout": {
           "responderName": {
             "includeLabel": true
-          } 
+          },
+          "enrouteTimestamp": {
+            "format": "timestamp"
+          },
+          "onSceneTimestamp": {
+            "format": "timestamp"
+          },
+          "additionalResourcesTimestamp": {
+            "format": "timestamp"
+          },
+          "transportTimestamp": {
+            "format": "timestamp"
+          },
+          "destinationArrivalTimestamp": {
+            "format": "timestamp"
+          },
+          "incidentCompleteTimestamp": {
+            "format": "timestamp"
+          }
         }
       },
       "caseReport": {

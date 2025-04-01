@@ -33,10 +33,10 @@ variable "serverless_url" {
   type        = string
 }
 
-variable "get_profile_flags_for_identifiers_base_url" {
+variable "get_profile_flags_for_identifier_base_url" {
   description = "Base URL for the get profile flags for identifiers endpoint"
   type        = string
-  default     = var.serverless_url
+  default     = ""
 }
 
 variable "serverless_service_sid" {
@@ -57,19 +57,19 @@ variable "task_language" {
 
 variable "channels" {
   type = map(object({
-    templatefile         = string,
-    channel_type         = string,
-    contact_identity     = string,
-    channel_flow_vars    = map(string)
-    chatbot_unique_names = list(string)
-    lambda_channel       = optional(bool)
-    messaging_mode       = optional(string, "programmable-chat")
-    enable_datadog_monitor = optional(bool, false)
-    custom_monitor = optional(object({
-      query = optional(string)
-      custom_schedule      = optional(object({
-      rrule = optional(string)
-      timezone = optional(string)
+    templatefile                              = string,
+    channel_type                              = string,
+    contact_identity                          = string,
+    channel_flow_vars                         = map(string)
+    chatbot_unique_names                      = list(string)
+    lambda_channel                            = optional(bool)
+    messaging_mode                            = optional(string, "programmable-chat")
+    enable_datadog_monitor                    = optional(bool, false)
+    custom_monitor                            = optional(object({
+      query                                     = optional(string)
+      custom_schedule                           = optional(object({
+      rrule                                     = optional(string)
+      timezone                                  = optional(string)
     }),{    })
     }))
     
