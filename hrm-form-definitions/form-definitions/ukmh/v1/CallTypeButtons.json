@@ -1,13 +1,7 @@
 [
   {
     "name": "child",
-    "label": "Child calling about self",
-    "type": "button",
-    "category": "data"
-  },
-  {
-    "name": "caller",
-    "label": "Someone calling about a child",
+    "label": "Young person calling about self",
     "type": "button",
     "category": "data"
   },
