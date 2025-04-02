@@ -1,0 +1,20 @@
+{
+  "contact_reason": {
+    "description": "Specific configs/lex_v2/pt_BR/bots Contact Reason bot",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "type": "Bot",
+    "intents": {
+      "contact_reason" : {
+        "slot_priorities": {
+          "1": {
+            "slot_name": "contact_options",
+            "slot_type_name": "contact_reason",
+            "slot_question": "Obrigada por nos contactar, escolha uma das opções abaixo antes de falar conosco:  1 - Você quer denunciar um conteúdo na Internet?  2 - Você precisa de ajuda para alguma violência que sofreu na Internet?  3 - Você é jornalista ou pesquisador e quer entrevista/dados da SaferNet?  4 -Nenhuma das opções acima"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "slotTypeName": "four_level_assessment",
+  "slotTypeValues": [
+    {
+      "sampleValue": {
+        "value": "nada"
+      },
+      "synonyms": [
+        {
+          "value": "1."
+        },
+        {
+          "value": "1!"
+        },
+        {
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "mucho"
+      },
+      "synonyms": [
+        {
+          "value": "4"
+        },
+        {
+          "value": "4."
+        },
+        {
+          "value": "4!"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "suficiente"
+      },
+      "synonyms": [
+        {
+          "value": "3."
+        },
+        {
+          "value": "3!"
+        },
+        {
+          "value": "3"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "un poco"
+      },
+      "synonyms": [
+        {
+          "value": "2."
+        },
+        {
+          "value": "2!"
+        },
+        {
+          "value": "2"
+        }
+      ]
+    }
+  ],
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution"
+  }
+}
