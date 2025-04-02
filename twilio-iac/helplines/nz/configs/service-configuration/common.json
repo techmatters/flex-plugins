@@ -16,6 +16,7 @@
         "feature_flags": {
             "enable_client_profiles": true,
             "enable_conferencing": true,
+            "enable_generalized_search": true,
             "enable_last_case_status_update_info": false,
             "enable_lex": true,
             "enable_separate_timeline_view": false,
