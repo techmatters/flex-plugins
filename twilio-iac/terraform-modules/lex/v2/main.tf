@@ -405,4 +405,24 @@ resource "null_resource" "update_intent_settings" {
   ]*/
 }
 
-
+// Save SSM parameter containing bot id, alias and locale
+resource "aws_ssm_parameter" "lex_bot_config" {
+  for_each = var.lex_v2_bots
+  
+  name        = "/${lower(var.environment)}/serverless/bots/${nonsensitive(aws_lexv2models_bot.this["${each.key}"].name)}"
+  # name        = "/lex/bots/${local.name_prefix}_${each.key}/config"
+  description = "Configuration for Lex V2 bot ${aws_lexv2models_bot.this["${each.key}"].name}"
+  type        = "SecureString"
+  
+  # Store the bot configuration as a JSON string
+  value = jsonencode({
+    botId      = aws_lexv2models_bot.this[each.key].id
+    # botAliasId = aws_lexv2models_bot_alias.this[each.key].id  # Assuming you have an alias resource
+    botAliasId = aws_lexv2models_bot.this[each.key].alias_id
+    localeId   = aws_lexv2models_bot_locale.this[each.key].locale_id
+  })
+  
+  tags = {
+    Environment = var.environment
+  }
+}
