@@ -143,7 +143,7 @@
   "CaseList-Filters-DateFilterOptions-PastXDays": "Past {{days}} days",
   "CaseList-Filters-DateFilterOptions-Today": "Today",
   "CaseList-Filters-DateFilterOptions-Tomorrow": "Tomorrow",
-  "CaseList-Filters-DateFilterOptions-WithoutDate": "No follow up date",
+  "CaseList-Filters-DateFilterOptions-WithoutDate": "No {{labelKey}}",
   "CaseList-Filters-DateFilterOptions-Yesterday": "Yesterday",
   "CaseList-Filters-DateFiltersLabel": "Date Filters",
   "CaseList-Filters-DialogTitlePrefix": "Filter by:",

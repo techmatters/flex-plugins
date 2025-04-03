@@ -14,6 +14,12 @@
     "label": "Follow Up Date",
     "type": "date-input"
   },
+
+  {
+    "name": "reportDate",
+    "label": "Date of Report",
+    "type": "date-input"
+  },
   {
     "name": "summary",
     "label": "Case Summary",
@@ -29,12 +35,14 @@
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "Los Angeles City", "label": "Los Angeles City" },
-      { "value": "Long Beach", "label": "Long Beach" },
-      { "value": "Lynwood", "label": "Lynwood" },
-      { "value": "South Pasadena", "label": "South Pasadena" },
-      { "value": "Unknown", "label": "Unknown" }
-    ]
+      { "value": "East", "label": "East" },
+      { "value": "Harbor", "label": "Harbor" },
+      { "value": "Hollywood", "label": "Hollywood" },
+      { "value": "Metro", "label": "Metro" },
+      { "value": "Pacific", "label": "Pacific" },
+      { "value": "South LA", "label": "South LA" },
+      { "value": "Valley", "label": "Valley" }
+   ]
   },
   {
     "name": "priority",
@@ -42,9 +50,9 @@
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "1", "label": "High" },
-      { "value": "2", "label": "Medium" },
-      { "value": "3", "label": "Low" }
+      { "value": "High", "label": "High" },
+      { "value": "Medium", "label": "Medium" },
+      { "value": "Low", "label": "Low" }
     ]
   }
 ]

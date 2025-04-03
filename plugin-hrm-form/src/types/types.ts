@@ -223,6 +223,7 @@ export type ListCasesFilters = {
   updatedAt?: DateFilterValue;
   followUpDate?: DateFilterValue;
   categories?: CategoryFilter[];
+  caseInfoFilters?: Record<string, string[] | DateFilterValue>;
 };
 
 export type CounselorHash = {
@@ -328,7 +329,7 @@ export function isStandaloneTask(task: RouterTask): task is StandaloneITask {
 // Whilst this is the same as ITask<{ isContactlessTask: true; isInMyBehalf: true }>, TS can distinguish this one from a Twilio ITask
 export type InMyBehalfITask = ITask & { attributes: { isContactlessTask: true; isInMyBehalf: true } };
 
-export type CustomITask = ITask | OfflineContactTask | InMyBehalfITask;
+export type CustomITask = ITask | OfflineContactTask | InMyBehalfITask
 
 export type RouterTask = CustomITask | StandaloneITask
 

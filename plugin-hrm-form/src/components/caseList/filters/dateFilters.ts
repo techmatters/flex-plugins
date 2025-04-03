@@ -15,6 +15,8 @@
  */
 
 import { addDays, endOfDay, startOfDay, subDays } from 'date-fns';
+import React from 'react';
+import { Template } from '@twilio/flex-ui';
 
 import { DateExistsCondition } from '../../../states/caseList/dateFilters';
 
@@ -34,7 +36,7 @@ type FixedDateRange = {
 };
 
 type ExistsDateFilter = {
-  titleKey: string;
+  titleKey: string | React.ReactNode;
   titleParameters?: Record<string, string | number>;
   exists: DateExistsCondition;
 };
@@ -86,8 +88,11 @@ const nextXDays = (days: number): RelativeDateRange => ({
   to: referenceDate => endOfDay(addDays(referenceDate, days)),
 });
 
-const withoutDate = (): ExistsDateFilter => ({
-  titleKey: 'CaseList-Filters-DateFilterOptions-WithoutDate',
+const withoutDate = (titleKey: string): ExistsDateFilter => ({
+  titleKey: React.createElement(Template, {
+    code: 'CaseList-Filters-DateFilterOptions-WithoutDate',
+    labelKey: titleKey,
+  }),
   exists: DateExistsCondition.MUST_NOT_EXIST,
 });
 
@@ -105,7 +110,7 @@ export const isFixedDateRange = (item: any): item is FixedDateRange =>
 
 export const isExistsDateFilter = (item: any): item is ExistsDateFilter => Boolean((<ExistsDateFilter>item)?.exists);
 
-export const standardCaseListDateFilterOptions = (): DateFilterOptions => [
+export const dateFilterOptionsInPast = (): DateFilterOptions => [
   ['TODAY', today()],
   ['YESTERDAY', yesterday()],
   ['PAST_7_DAYS', pastXDays(7)],
@@ -114,7 +119,7 @@ export const standardCaseListDateFilterOptions = (): DateFilterOptions => [
   ['CUSTOM_RANGE', customRange()],
 ];
 
-export const followUpDateFilterOptions = (): DateFilterOptions => [
+export const dateFilterOptionsInPastAndFuture = (labelKey: string): DateFilterOptions => [
   ['TODAY', today()],
   ['YESTERDAY', yesterday()],
   ['PAST_7_DAYS', pastXDays(7)],
@@ -124,7 +129,7 @@ export const followUpDateFilterOptions = (): DateFilterOptions => [
   ['NEXT_7_DAYS', nextXDays(7)],
   ['NEXT_30_DAYS', nextXDays(30)],
   divider(),
-  ['WITHOUT_DATE', withoutDate()],
+  ['WITHOUT_DATE', withoutDate(labelKey)],
   divider(),
   ['CUSTOM_RANGE', customRange()],
 ];

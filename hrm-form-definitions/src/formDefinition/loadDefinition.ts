@@ -121,12 +121,12 @@ const fetchDefinitionGivenConfig = async <T>(
   const url = new URL(path.join(baseUrlObj.pathname, jsonPath), baseUrlObj.origin);
   const response = await fetch(url.toString());
 
-  if (response.ok) {
+  if (response?.ok) {
     const json = await response.json();
     return json as T;
   }
 
-  if (response.status === 404) {
+  if (response?.status === 404) {
     if (placeholder) {
       // eslint-disable-next-line no-console
       console.log(`Could not find definition for: ${url}. Using placeholder instead.`);
@@ -134,7 +134,9 @@ const fetchDefinitionGivenConfig = async <T>(
     }
   }
   throw new Error(
-    `Error response from form definitions service [${url}]: ${response.statusText} (${response.status}).`,
+    `Error response from form definitions service [${url}]:\n` +
+      `${response?.statusText ?? 'No response'}\n` +
+      `(${response?.status ?? 'undefined'})`,
   );
 };
 /**
@@ -184,6 +186,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     cannedResponses,
     oneToOneConfigSpec,
     oneToManyConfigSpecs,
+    caseFilters,
     caseStatus,
     caseOverview,
     prepopulateKeys,
@@ -209,6 +212,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     fetchDefinition<CannedResponsesDefinitions>('CannedResponses.json', []),
     fetchDefinition<OneToOneConfigSpec>('insights/oneToOneConfigSpec.json'),
     fetchDefinition<OneToManyConfigSpecs>('insights/oneToManyConfigSpecs.json'),
+    fetchDefinition<DefinitionVersion['caseFilters']>('CaseFilters.json'),
     fetchDefinition<DefinitionVersion['caseStatus']>('CaseStatus.json'),
     fetchDefinition<DefinitionVersion['caseOverview']>('caseForms/CaseOverview.json'),
     fetchDefinition<DefinitionVersion['prepopulateKeys']>(
@@ -245,15 +249,16 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     layoutVersion,
     helplineInformation,
     cannedResponses,
-    insights: {
-      oneToOneConfigSpec,
-      oneToManyConfigSpecs,
-    },
+    caseFilters,
     caseStatus,
     caseOverview,
     prepopulateKeys,
     referenceData,
     blockedEmojis,
+    insights: {
+      oneToOneConfigSpec,
+      oneToManyConfigSpecs,
+    },
     profileForms: {
       Sections: profileSections,
       FlagDurations: profileFlagDurations,

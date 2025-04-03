@@ -41,6 +41,7 @@ describe('loadDefinition', () => {
         ChildInformationTab: expect.anything(),
         IssueCategorizationTab: expect.any(Function),
       });
+      expect(definitions.caseFilters).toBeDefined();
       expect(definitions.caseStatus).toEqual(expect.anything());
       expect(definitions.caseOverview).toBeDefined();
       expect(definitions.layoutVersion).toMatchObject({
