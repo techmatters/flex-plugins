@@ -1,0 +1,71 @@
+{
+    "slotName": "age",
+    "slotTypeName": "age",
+    "intentName": "pre_survey",
+    "description": "Age",
+    "valueElicitationSetting": {
+        "slotConstraint": "Required",
+        "promptSpecification": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Quantos anos você tem? Por favor escreva um número"
+                        }
+                    }
+                }
+            ],
+            "maxRetries": 1,
+            "allowInterrupt": true,
+            "messageSelectionStrategy": "Random",
+            "promptAttemptsSpecification": {
+                "Initial": {
+                    "allowInterrupt": true,
+                    "allowedInputTypes": {
+                        "allowAudioInput": true,
+                        "allowDTMFInput": true
+                    },
+                    "audioAndDTMFInputSpecification": {
+                        "startTimeoutMs": 4000,
+                        "audioSpecification": {
+                            "maxLengthMs": 15000,
+                            "endTimeoutMs": 640
+                        },
+                        "dtmfSpecification": {
+                            "maxLength": 513,
+                            "endTimeoutMs": 5000,
+                            "deletionCharacter": "*",
+                            "endCharacter": "#"
+                        }
+                    },
+                    "textInputSpecification": {
+                        "startTimeoutMs": 30000
+                    }
+                },
+                "Retry1": {
+                    "allowInterrupt": true,
+                    "allowedInputTypes": {
+                        "allowAudioInput": true,
+                        "allowDTMFInput": true
+                    },
+                    "audioAndDTMFInputSpecification": {
+                        "startTimeoutMs": 4000,
+                        "audioSpecification": {
+                            "maxLengthMs": 15000,
+                            "endTimeoutMs": 640
+                        },
+                        "dtmfSpecification": {
+                            "maxLength": 513,
+                            "endTimeoutMs": 5000,
+                            "deletionCharacter": "*",
+                            "endCharacter": "#"
+                        }
+                    },
+                    "textInputSpecification": {
+                        "startTimeoutMs": 30000
+                    }
+                }
+            }
+        }
+    }
+}

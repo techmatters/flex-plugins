@@ -1,6 +1,6 @@
 {
   "pre_survey": {
-    "description": "Example configs/lex_v2/en_US/bots Pre Survey bot",
+    "description": "Specific configs/lex_v2/pt_BR/bots Pre Survey bot",
     "locale": "en_US",
     "child_directed": true,
     "idle_session_ttl_in_seconds": "600",
@@ -29,6 +29,11 @@
             "slot_name": "gender",
             "slot_type_name": "gender",
             "slot_question": "What is your gender?"
+          },
+          "4": {
+            "slot_name": "ethnicity",
+            "slot_type_name": "ethnicity",
+            "slot_question": "What is your ethnicity?"
           }
         }
       }

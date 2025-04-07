@@ -1,0 +1,79 @@
+{
+    "intentName": "pre_survey",
+    "description": "Pre Survey intent",
+    "sampleUtterances": [
+        {
+            "utterance": "trigger_pre_survey"
+        },
+        {
+            "utterance": "Incoming webchat contact"
+        }
+    ],
+    "dialogCodeHook": {
+        "enabled": false
+    },
+    "fulfillmentCodeHook": {
+        "enabled": false,
+        "active": true,
+        "postFulfillmentStatusSpecification": {
+            "successNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "timeoutNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            }
+        }
+    },
+    "slotPriorities": [
+        {
+            "priority": 1,
+            "slotName": "about_self"
+        },
+        {
+            "priority": 2,
+            "slotName": "age"
+        },
+        {
+            "priority": 3,
+            "slotName": "gender"
+        },
+        {
+            "priority": 4,
+            "slotName": "ethnicity"
+        }
+
+    ],
+    "intentClosingSetting": {
+        "closingResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Vamos transferir você. Por favor, aguarde até ser atendido."
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "EndConversation"
+            },
+            "intent": {}
+        }
+    }
+}

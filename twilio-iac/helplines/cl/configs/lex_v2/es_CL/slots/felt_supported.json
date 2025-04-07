@@ -1,0 +1,91 @@
+{
+    "slotName": "felt_supported",
+    "slotTypeName": "four_level_assessment",
+    "intentName": "post_survey_yes",
+    "description": "Slot felt_supported for intent post_survey_yes",
+    "valueElicitationSetting": {
+        "slotConstraint": "Required",
+        "promptSpecification": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "¿Te sentiste escuchado/a y apoyado/a por la/el psicólogo que te atendió?  Escriba el número que corresponda:\n1 - No me sentí escuchad@ \n2 - Me sentí  poco escuchad@ \n3 - Me sentí escuchad@ \n4 - Me sentí muy escuchad@"
+                        }
+                    }
+                }
+            ],
+            "maxRetries": 1,
+            "allowInterrupt": true,
+            "messageSelectionStrategy": "Random",
+            "promptAttemptsSpecification": {
+                "Initial": {
+                    "allowInterrupt": true,
+                    "allowedInputTypes": {
+                        "allowAudioInput": true,
+                        "allowDTMFInput": true
+                    },
+                    "audioAndDTMFInputSpecification": {
+                        "startTimeoutMs": 4000,
+                        "audioSpecification": {
+                            "maxLengthMs": 15000,
+                            "endTimeoutMs": 640
+                        },
+                        "dtmfSpecification": {
+                            "maxLength": 513,
+                            "endTimeoutMs": 5000,
+                            "deletionCharacter": "*",
+                            "endCharacter": "#"
+                        }
+                    },
+                    "textInputSpecification": {
+                        "startTimeoutMs": 30000
+                    }
+                },
+                "Retry1": {
+                    "allowInterrupt": true,
+                    "allowedInputTypes": {
+                        "allowAudioInput": true,
+                        "allowDTMFInput": true
+                    },
+                    "audioAndDTMFInputSpecification": {
+                        "startTimeoutMs": 4000,
+                        "audioSpecification": {
+                            "maxLengthMs": 15000,
+                            "endTimeoutMs": 640
+                        },
+                        "dtmfSpecification": {
+                            "maxLength": 513,
+                            "endTimeoutMs": 5000,
+                            "deletionCharacter": "*",
+                            "endCharacter": "#"
+                        }
+                    },
+                    "textInputSpecification": {
+                        "startTimeoutMs": 30000
+                    }
+                }
+            }
+        },
+        "slotCaptureSetting": {
+            "captureNextStep": {
+                "dialogAction": {
+                    "type": "ElicitSlot",
+                    "slotToElicit": "would_recommend"
+                },
+                "intent": {}
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "StartIntent"
+                },
+                "intent": {
+                    "name": "FallbackIntent"
+                }
+            },
+            "elicitationCodeHook": {
+                "enableCodeHookInvocation": true
+            }
+        }
+    }
+}
