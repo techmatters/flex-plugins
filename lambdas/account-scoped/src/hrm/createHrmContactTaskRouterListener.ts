@@ -100,6 +100,30 @@ export const handleEvent = async (
     console.debug(
       `Task ${taskSid} was created to receive a ${transferTargetType} transfer. The original contact will be used so a new one will not be created.`,
     );
+
+    const taskContext = client.taskrouter.v1.workspaces
+      .get(await getWorkspaceSid(accountSid))
+      .tasks.get(taskSid);
+    const reservations = await taskContext.reservations.list();
+    const thisWorkersReservation = reservations.find(r => r.workerSid === workerSid);
+    if (thisWorkersReservation) {
+      await taskContext.update({
+        attributes: JSON.stringify({
+          ...taskAttributes,
+          transferMeta: {
+            ...taskAttributes.transferMeta,
+            sidWithTaskControl: thisWorkersReservation.sid,
+          },
+        }),
+      });
+      console.info(
+        `Set sidWithTaskControl to ${thisWorkersReservation.sid} for task ${taskSid}, giving control of it to worker ${workerSid}, who is accepting the transfer.`,
+      );
+    } else
+      console.warn(
+        `Could not find reservation on task ${taskSid} for worker ${workerSid}, even though they are accepting the task. Cannot set sidWithTaskControl to complete transfer.`,
+      );
+
     return;
   }
 
