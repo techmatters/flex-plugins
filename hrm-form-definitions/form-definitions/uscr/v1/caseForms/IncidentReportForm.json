@@ -185,6 +185,6 @@
   {
     "name": "totalIncidentTime",
     "type": "numeric-input",
-    "label": "Time from Arrival to Completion"
+    "label": "Total Incident Time"
   }
 ]
