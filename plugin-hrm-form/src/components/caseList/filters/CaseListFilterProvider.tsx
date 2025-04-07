@@ -28,9 +28,6 @@ type FilterComponentBaseProps = {
   setOpenedFilter: (filter: string | undefined) => void;
 };
 
-// This type allows any additional properties while preserving the base props
-type FilterProps = FilterComponentBaseProps & Record<string, any>;
-
 type FilterDataProps = {
   strings: Record<string, string>;
   statusValues?: Item[];
@@ -137,7 +134,6 @@ const UpdatedDateFilter: React.FC<FilterComponentBaseProps & FilterDataProps> = 
   );
 };
 
-// A registry mapping component IDs to component implementations
 const FilterComponents: Record<string, React.ComponentType<FilterComponentBaseProps & FilterDataProps>> = {
   'generate-status-filter': StatusFilter,
   'generate-counselor-filter': CounselorFilter,
@@ -146,9 +142,6 @@ const FilterComponents: Record<string, React.ComponentType<FilterComponentBasePr
   'generate-updated-date-filter': UpdatedDateFilter,
 };
 
-/**
- * Returns the appropriate filter component type based on component ID
- */
 export const getFilterComponent = (
   componentId: string,
   baseProps: FilterComponentBaseProps,
@@ -159,6 +152,17 @@ export const getFilterComponent = (
   if (!FilterComponent) {
     console.warn(`No filter component registered for ID: ${componentId}`);
     return null;
+  }
+
+  // Pre-check for date filter components to avoid unnecessary rendering
+  if (componentId === 'generate-created-date-filter') {
+    if (!filterData.handleApplyDateRangeFilter) return null;
+    if (!filterData.dateFilters?.some(f => f.filterPayloadParameter === 'createdAt')) return null;
+  }
+  
+  if (componentId === 'generate-updated-date-filter') {
+    if (!filterData.handleApplyDateRangeFilter) return null;
+    if (!filterData.dateFilters?.some(f => f.filterPayloadParameter === 'updatedAt')) return null;
   }
 
   return <FilterComponent {...baseProps} {...filterData} />;
