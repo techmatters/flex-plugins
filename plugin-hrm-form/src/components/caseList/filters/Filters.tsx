@@ -25,7 +25,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { FiltersContainer, FiltersResetAll, MainTitle, CountText, FilterTitle } from '../../../styles';
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
 import DateRangeFilter from './DateRangeFilter';
-import { DateFilter, dateFilterOptionsInPastAndFuture } from './dateFilters';
+import { DateFilter, dateFilterOptionsInPast, dateFilterOptionsInPastAndFuture } from './dateFilters';
 import { Category } from './CategoriesFilter';
 import { RootState } from '../../../states';
 import * as CaseListSettingsActions from '../../../states/caseList/settings';
@@ -33,17 +33,168 @@ import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../..
 import { canOnlyViewOwnCases } from '../../../permissions';
 import { caseListBase, configurationBase, namespace } from '../../../states/storeNamespaces';
 import { DateFilterValue } from '../../../states/caseList/dateFilters';
-import { getFilterComponent, getFilterComponentProps } from './FilterComponentsRegistry';
-import {
-  getStatusInitialValue,
-  getCounselorsInitialValue,
-  getCustomFilterInitialValue,
-  getInitialDateFilters,
-  getCategoriesInitialValue,
-  filterCheckedItems,
-  filterCheckedCategories,
-  getUpdatedCategoriesValues,
-} from './filterUtils';
+import { getFilterComponent } from './CaseListFilterProvider';
+import { CategoryFilter, CounselorHash } from '../../../types/types';
+
+/**
+ * Reads the definition version and returns and array of items (type Item[])
+ * to be used as the options for the status filter
+ * @param definitionVersion DefinitionVersion
+ * @returns Item[]
+ */
+const getStatusInitialValue = (definitionVersion: DefinitionVersion) =>
+  definitionVersion
+    ? Object.values(definitionVersion.caseStatus).map(caseStatus => ({
+        value: caseStatus.value,
+        label: caseStatus.label,
+        checked: false,
+      }))
+    : [];
+
+/**
+ * Reads the counselors hash and returns and array of items (type Item[])
+ * to be used as the options for the counselors filter
+ * @param counselorsHash CounselorHash
+ * @returns Item[]
+ */
+const getCounselorsInitialValue = (counselorsHash: CounselorHash) =>
+  Object.keys(counselorsHash).map(key => ({
+    value: key,
+    label: counselorsHash[key],
+    checked: false,
+  }));
+
+/**
+ * Reads the CaseOverview fields in definition version and returns an array of items (type Item[])
+ * to be used as the options for the custom filter
+ * @param definitionVersion DefinitionVersion
+ * @param filterName The name of the filter to get values for
+ * @returns Item[]
+ */
+const getCustomFilterInitialValue = (definitionVersion: DefinitionVersion, filterName: string) => {
+  if (!definitionVersion) return [];
+
+  const customFilterField = Object.values(definitionVersion.caseOverview).find(
+    field => field && typeof field === 'object' && (field as { name: string }).name === filterName,
+  ) as { options?: Array<{ value: string; label: string }> } | undefined;
+
+  if (!customFilterField?.options) return [];
+
+  return customFilterField.options
+    .filter(option => option && option.value !== '')
+    .map(option => ({
+      value: String(option.value),
+      label: String(option.label),
+      checked: false,
+    }));
+};
+
+/**
+ * Creates and returns an array of date filters based on the case info filters
+ * @param caseInfoFilters Record of case info filters
+ * @returns DateFilter[]
+ */
+const getInitialDateFilters = (caseInfoFilters?: Record<string, any>): DateFilter[] => {
+  const standardFilters = [
+    {
+      labelKey: 'CaseList-Filters-DateFilter-CreatedAt',
+      filterPayloadParameter: 'createdAt',
+      options: dateFilterOptionsInPast(),
+    },
+    {
+      labelKey: 'CaseList-Filters-DateFilter-UpdatedAt',
+      filterPayloadParameter: 'updatedAt',
+      options: dateFilterOptionsInPast(),
+    },
+  ];
+
+  const customDateFilters: DateFilter[] = [];
+
+  if (caseInfoFilters) {
+    Object.keys(caseInfoFilters).forEach(filterName => {
+      if (filterName === 'createdAt' || filterName === 'updatedAt') {
+        return;
+      }
+
+      const filterConfig = caseInfoFilters[filterName];
+      if (filterConfig?.type === 'date-input') {
+        customDateFilters.push({
+          labelKey: filterConfig.label || filterName,
+          filterPayloadParameter: filterName,
+          options: filterConfig.allowFutureDates
+            ? dateFilterOptionsInPastAndFuture(filterConfig.label || filterName)
+            : dateFilterOptionsInPast(),
+        });
+      }
+    });
+  }
+
+  return [...standardFilters, ...customDateFilters];
+};
+
+/**
+ * Reads the definition version and returns and array of categories (type Category[])
+ * to be used as the options for the categories filter
+ */
+const getCategoriesInitialValue = (definitionVersion: DefinitionVersion, helpline: string) =>
+  definitionVersion
+    ? Object.entries(definitionVersion.tabbedForms.IssueCategorizationTab(helpline)).map(
+        ([categoryName, { subcategories }]) => ({
+          categoryName,
+          subcategories: subcategories.map(subcategory => ({
+            value: subcategory.label,
+            label: subcategory.label,
+            checked: false,
+          })),
+        }),
+      )
+    : [];
+
+/**
+ * Convert an array of items (type Item[]) into an array of strings.
+ * This array will contain only the items that are checked.
+ * @param items Item[]
+ * @returns string[]
+ */
+const filterCheckedItems = (items: Item[]): string[] =>
+  items.filter(item => item.checked).map(item => item.value);
+
+/**
+ * Convert an array of categories (type Category[]) into an array of CategoryFilter.
+ * This array will contain only the categories that are checked.
+ * @param categories Category[]
+ * @returns CategoryFilter[]
+ */
+const filterCheckedCategories = (categories: Category[]): CategoryFilter[] =>
+  categories.flatMap(category =>
+    category.subcategories
+      .filter(subcategory => subcategory.checked)
+      .map(subcategory => ({
+        category: category.categoryName,
+        subcategory: subcategory.label,
+      })),
+  );
+
+/**
+ * Given the selected categories from redux and the previous categoriesValues,
+ * it returns the updated values for categoriesValues, whith the correct checked values.
+ *
+ * @param categories Selected categories from redux (type CategoryFilter[])
+ * @param categoriesValues Previous categoriesValues (type Category[])
+ * @returns
+ */
+const getUpdatedCategoriesValues = (categories: CategoryFilter[], categoriesValues: Category[]): Category[] => {
+  const isChecked = (categoryName: string, subcategoryName: string) =>
+    categories.some(c => c.category === categoryName && c.subcategory === subcategoryName);
+
+  return categoriesValues.map(categoryValue => ({
+    ...categoryValue,
+    subcategories: categoryValue.subcategories.map(subcategory => ({
+      ...subcategory,
+      checked: isChecked(categoryValue.categoryName, subcategory.label),
+    })),
+  }));
+};
 
 type OwnProps = {
   currentDefinitionVersion?: DefinitionVersion;
@@ -266,13 +417,7 @@ const Filters: React.FC<OwnProps> = ({ currentDefinitionVersion, caseCount }) =>
     }
 
     const componentId = filter.component;
-    const FilterComponent = getFilterComponent(componentId);
-
-    if (!FilterComponent) {
-      console.warn(`Filter component ${componentId} not found in registry for filter ${filterName}`);
-      return null;
-    }
-
+    
     const baseProps = {
       key: filterName,
       name: filterName,
@@ -293,9 +438,14 @@ const Filters: React.FC<OwnProps> = ({ currentDefinitionVersion, caseCount }) =>
       handleApplyDateRangeFilter,
     };
 
-    const props = getFilterComponentProps(componentId, filterName, baseProps, filterData);
+    const configuredComponent = getFilterComponent(componentId, baseProps, filterData);
+    
+    if (!configuredComponent) {
+      console.warn(`Filter component ${componentId} not found for filter ${filterName}`);
+      return null;
+    }
 
-    return <FilterComponent key={filterName} {...props} />;
+    return configuredComponent;
   };
 
   const renderMultiSelectFilters = (filterName: string, position: CaseFilterPosition) => {
@@ -303,16 +453,18 @@ const Filters: React.FC<OwnProps> = ({ currentDefinitionVersion, caseCount }) =>
 
     if (!filter || filter.position !== position || filter.type !== 'multi-select') return null;
 
+    // Check if the filterName exists in caseOverview fields
+    const caseOverviewKey = Object.keys(currentDefinitionVersion.caseOverview).find(
+      key => currentDefinitionVersion.caseOverview[key].name === filterName,
+    );
+    if (!caseOverviewKey) return null;
+
     return (
       <MultiSelectFilter
         key={filterName}
         name={filterName}
         text={
-          currentDefinitionVersion?.caseOverview[
-            Object.keys(currentDefinitionVersion.caseOverview).find(
-              key => currentDefinitionVersion.caseOverview[key].name === filterName,
-            )
-          ]?.label || filterName
+          currentDefinitionVersion?.caseOverview[caseOverviewKey]?.label || filterName
         }
         defaultValues={filterState.caseInfoFilterValues[filterName]}
         openedFilter={filterState.openedFilter}
@@ -328,12 +480,13 @@ const Filters: React.FC<OwnProps> = ({ currentDefinitionVersion, caseCount }) =>
 
     if (!filter || filter.position !== position || filter.type !== 'date-input') return null;
 
-    const filterForm =
-      currentDefinitionVersion?.caseOverview[
-        Object.keys(currentDefinitionVersion.caseOverview).find(
-          key => currentDefinitionVersion.caseOverview[key].name === filterName,
-        )
-      ];
+    // Check if the filterName exists in caseOverview fields
+    const caseOverviewKey = Object.keys(currentDefinitionVersion.caseOverview).find(
+      key => currentDefinitionVersion.caseOverview[key].name === filterName,
+    );
+    if (!caseOverviewKey) return null;
+
+    const filterForm = currentDefinitionVersion?.caseOverview[caseOverviewKey];
 
     const dateFilter: DateFilter = {
       labelKey: filterForm?.label || filterName,
