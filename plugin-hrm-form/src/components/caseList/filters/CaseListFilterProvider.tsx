@@ -45,9 +45,9 @@ type FilterDataProps = {
 };
 
 // Status Filter Component
-const StatusFilter: React.FC<FilterComponentBaseProps & FilterDataProps> = (props) => {
+const StatusFilter: React.FC<FilterComponentBaseProps & FilterDataProps> = props => {
   const { strings, statusValues = [], handleApplyStatusFilter, ...baseProps } = props;
-  
+
   return (
     <MultiSelectFilter
       {...baseProps}
@@ -60,9 +60,9 @@ const StatusFilter: React.FC<FilterComponentBaseProps & FilterDataProps> = (prop
 };
 
 // Counselor Filter Component
-const CounselorFilter: React.FC<FilterComponentBaseProps & FilterDataProps> = (props) => {
+const CounselorFilter: React.FC<FilterComponentBaseProps & FilterDataProps> = props => {
   const { strings, counselorValues = [], handleApplyCounselorFilter, ...baseProps } = props;
-  
+
   return (
     <MultiSelectFilter
       {...baseProps}
@@ -77,9 +77,9 @@ const CounselorFilter: React.FC<FilterComponentBaseProps & FilterDataProps> = (p
 };
 
 // Categories Filter Component
-const CategoryFilter: React.FC<FilterComponentBaseProps & FilterDataProps> = (props) => {
+const CategoryFilter: React.FC<FilterComponentBaseProps & FilterDataProps> = props => {
   const { strings, categoriesValues = [], handleApplyCategoriesFilter, ...baseProps } = props;
-  
+
   return (
     <CategoriesFilter
       {...baseProps}
@@ -94,11 +94,11 @@ const CategoryFilter: React.FC<FilterComponentBaseProps & FilterDataProps> = (pr
 };
 
 // Created Date Filter Component
-const CreatedDateFilter: React.FC<FilterComponentBaseProps & FilterDataProps> = (props) => {
+const CreatedDateFilter: React.FC<FilterComponentBaseProps & FilterDataProps> = props => {
   const { dateFilters = [], dateFilterValues = {}, handleApplyDateRangeFilter, ...baseProps } = props;
-  
+
   if (!handleApplyDateRangeFilter) return null;
-  
+
   const df = dateFilters.find(f => f.filterPayloadParameter === 'createdAt');
   if (!df) return null;
 
@@ -116,11 +116,11 @@ const CreatedDateFilter: React.FC<FilterComponentBaseProps & FilterDataProps> = 
 };
 
 // Updated Date Filter Component
-const UpdatedDateFilter: React.FC<FilterComponentBaseProps & FilterDataProps> = (props) => {
+const UpdatedDateFilter: React.FC<FilterComponentBaseProps & FilterDataProps> = props => {
   const { dateFilters = [], dateFilterValues = {}, handleApplyDateRangeFilter, ...baseProps } = props;
-  
+
   if (!handleApplyDateRangeFilter) return null;
-  
+
   const df = dateFilters.find(f => f.filterPayloadParameter === 'updatedAt');
   if (!df) return null;
 
@@ -155,11 +155,11 @@ export const getFilterComponent = (
   filterData: FilterDataProps,
 ): React.ReactElement | null => {
   const FilterComponent = FilterComponents[componentId];
-  
+
   if (!FilterComponent) {
     console.warn(`No filter component registered for ID: ${componentId}`);
     return null;
   }
-  
+
   return <FilterComponent {...baseProps} {...filterData} />;
 };

@@ -156,8 +156,7 @@ const getCategoriesInitialValue = (definitionVersion: DefinitionVersion, helplin
  * @param items Item[]
  * @returns string[]
  */
-const filterCheckedItems = (items: Item[]): string[] =>
-  items.filter(item => item.checked).map(item => item.value);
+const filterCheckedItems = (items: Item[]): string[] => items.filter(item => item.checked).map(item => item.value);
 
 /**
  * Convert an array of categories (type Category[]) into an array of CategoryFilter.
@@ -417,7 +416,7 @@ const Filters: React.FC<OwnProps> = ({ currentDefinitionVersion, caseCount }) =>
     }
 
     const componentId = filter.component;
-    
+
     const baseProps = {
       key: filterName,
       name: filterName,
@@ -439,7 +438,7 @@ const Filters: React.FC<OwnProps> = ({ currentDefinitionVersion, caseCount }) =>
     };
 
     const configuredComponent = getFilterComponent(componentId, baseProps, filterData);
-    
+
     if (!configuredComponent) {
       console.warn(`Filter component ${componentId} not found for filter ${filterName}`);
       return null;
@@ -463,9 +462,7 @@ const Filters: React.FC<OwnProps> = ({ currentDefinitionVersion, caseCount }) =>
       <MultiSelectFilter
         key={filterName}
         name={filterName}
-        text={
-          currentDefinitionVersion?.caseOverview[caseOverviewKey]?.label || filterName
-        }
+        text={currentDefinitionVersion?.caseOverview[caseOverviewKey]?.label || filterName}
         defaultValues={filterState.caseInfoFilterValues[filterName]}
         openedFilter={filterState.openedFilter}
         applyFilter={handleApplyCustomFilter(filterName)}
