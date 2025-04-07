@@ -90,12 +90,8 @@ describe('CaseListFilterProvider', () => {
 
   test('renders StatusFilter component', () => {
     const component = getFilterComponent('generate-status-filter', baseProps, filterData);
-    
-    render(
-      <StorelessThemeProvider themeConf={themeConf}>
-        {component}
-      </StorelessThemeProvider>,
-    );
+
+    render(<StorelessThemeProvider themeConf={themeConf}>{component}</StorelessThemeProvider>);
 
     const statusButton = screen.getByRole('button', { name: /Status/i });
     expect(statusButton).toBeInTheDocument();
@@ -103,12 +99,8 @@ describe('CaseListFilterProvider', () => {
 
   test('renders CounselorFilter component', () => {
     const component = getFilterComponent('generate-counselor-filter', baseProps, filterData);
-    
-    render(
-      <StorelessThemeProvider themeConf={themeConf}>
-        {component}
-      </StorelessThemeProvider>,
-    );
+
+    render(<StorelessThemeProvider themeConf={themeConf}>{component}</StorelessThemeProvider>);
 
     const counselorButton = screen.getByRole('button', { name: /Counselor/i });
     expect(counselorButton).toBeInTheDocument();
@@ -116,12 +108,8 @@ describe('CaseListFilterProvider', () => {
 
   test('renders CategoryFilter component', () => {
     const component = getFilterComponent('generate-category-filter', baseProps, filterData);
-    
-    render(
-      <StorelessThemeProvider themeConf={themeConf}>
-        {component}
-      </StorelessThemeProvider>,
-    );
+
+    render(<StorelessThemeProvider themeConf={themeConf}>{component}</StorelessThemeProvider>);
 
     const categoriesButton = screen.getByRole('button', { name: /Categories/i });
     expect(categoriesButton).toBeInTheDocument();
@@ -129,72 +117,58 @@ describe('CaseListFilterProvider', () => {
 
   test('renders CreatedDateFilter component', () => {
     const component = getFilterComponent('generate-created-date-filter', baseProps, filterData);
-    
-    render(
-      <StorelessThemeProvider themeConf={themeConf}>
-        {component}
-      </StorelessThemeProvider>,
-    );
+
+    render(<StorelessThemeProvider themeConf={themeConf}>{component}</StorelessThemeProvider>);
 
     expect(screen.getByRole('button')).toBeInTheDocument();
   });
 
   test('renders UpdatedDateFilter component', () => {
     const component = getFilterComponent('generate-updated-date-filter', baseProps, filterData);
-    
-    render(
-      <StorelessThemeProvider themeConf={themeConf}>
-        {component}
-      </StorelessThemeProvider>,
-    );
+
+    render(<StorelessThemeProvider themeConf={themeConf}>{component}</StorelessThemeProvider>);
 
     expect(screen.getByRole('button')).toBeInTheDocument();
   });
 
   test('CreatedDateFilter applies correct filter properties', () => {
     const component = getFilterComponent('generate-created-date-filter', baseProps, filterData);
-    
-    render(
-      <StorelessThemeProvider themeConf={themeConf}>
-        {component}
-      </StorelessThemeProvider>,
-    );
+
+    render(<StorelessThemeProvider themeConf={themeConf}>{component}</StorelessThemeProvider>);
 
     expect(screen.getByRole('button')).toHaveAttribute('name', 'createdAtFilter');
   });
 
   test('UpdatedDateFilter applies correct filter properties', () => {
     const component = getFilterComponent('generate-updated-date-filter', baseProps, filterData);
-    
-    render(
-      <StorelessThemeProvider themeConf={themeConf}>
-        {component}
-      </StorelessThemeProvider>,
-    );
+
+    render(<StorelessThemeProvider themeConf={themeConf}>{component}</StorelessThemeProvider>);
 
     expect(screen.getByRole('button')).toHaveAttribute('name', 'updatedAtFilter');
   });
 
   test('returns null for date filters when handler is not provided', () => {
-    const dataWithoutHandler = { 
-      ...filterData, 
-      handleApplyDateRangeFilter: undefined 
+    const dataWithoutHandler = {
+      ...filterData,
+      handleApplyDateRangeFilter: undefined,
     };
-    
+
     const component = getFilterComponent('generate-created-date-filter', baseProps, dataWithoutHandler);
     expect(component).toBeNull();
   });
 
   test('returns null for date filters when filter definition is not found', () => {
-    const dataWithMissingCreatedAt = { 
-      ...filterData, 
-      dateFilters: [{
-        labelKey: 'CaseList-Filters-DateFilter-UpdatedAt',
-        filterPayloadParameter: 'updatedAt',
-        options: dateFilterOptionsInPast(),
-      }]
+    const dataWithMissingCreatedAt = {
+      ...filterData,
+      dateFilters: [
+        {
+          labelKey: 'CaseList-Filters-DateFilter-UpdatedAt',
+          filterPayloadParameter: 'updatedAt',
+          options: dateFilterOptionsInPast(),
+        },
+      ],
     };
-    
+
     const component = getFilterComponent('generate-created-date-filter', baseProps, dataWithMissingCreatedAt);
     expect(component).toBeNull();
   });

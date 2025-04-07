@@ -159,7 +159,7 @@ export const getFilterComponent = (
     if (!filterData.handleApplyDateRangeFilter) return null;
     if (!filterData.dateFilters?.some(f => f.filterPayloadParameter === 'createdAt')) return null;
   }
-  
+
   if (componentId === 'generate-updated-date-filter') {
     if (!filterData.handleApplyDateRangeFilter) return null;
     if (!filterData.dateFilters?.some(f => f.filterPayloadParameter === 'updatedAt')) return null;
