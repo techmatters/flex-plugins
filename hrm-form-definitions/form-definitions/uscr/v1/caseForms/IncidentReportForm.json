@@ -4,6 +4,11 @@
     "type": "input",
     "label": "Beacon Incident ID"
   },
+  {
+    "name": "incidentNumber",
+    "type": "input",
+    "label": "Incident Number"
+  },
    {
     "name": "incidentCreationTimestamp",
     "type": "time-input",
