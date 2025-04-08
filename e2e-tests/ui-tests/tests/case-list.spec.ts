@@ -81,15 +81,14 @@ test.describe.serial('Case List', () => {
 
     await scanFilterDialogue('Status');
     await scanFilterDialogue('Categories');
-    // await scanFilterDialogue('Counselor');
+    await scanFilterDialogue('Counselor');
     await scanFilterDialogue('createdAtFilter');
     await scanFilterDialogue('updatedAtFilter');
-    await scanFilterDialogue('followUpDateFilter');
     await caseListPage.openFirstCaseButton();
     const caseHomeAccessibilityScanResults = await new AxeBuilder({ page })
       .include('div.Twilio-View-case-list')
       .analyze();
-    //expect(caseHomeAccessibilityScanResults.violations).toEqual([]);
+    expect(caseHomeAccessibilityScanResults.violations).toEqual([]);
     warnViolations(caseHomeAccessibilityScanResults, `the case home page`);
     await caseListPage.editCase();
     const caseEditAccessibilityScanResults = await new AxeBuilder({ page })
