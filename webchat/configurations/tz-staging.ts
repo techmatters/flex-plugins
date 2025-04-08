@@ -64,7 +64,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       type: 'select',
       name: 'language',
-      label: 'SelectLanguage',
+      label: 'Select Language',
       defaultValue: 'en-US',
       required: true,
       options: [
