@@ -4,6 +4,11 @@
     "type": "input",
     "label": "Beacon Incident ID"
   },
+  {
+    "name": "incidentNumber",
+    "type": "input",
+    "label": "Incident Number"
+  },
    {
     "name": "incidentCreationTimestamp",
     "type": "time-input",
@@ -185,6 +190,6 @@
   {
     "name": "totalIncidentTime",
     "type": "numeric-input",
-    "label": "Time from Arrival to Completion"
+    "label": "Total Incident Time"
   }
 ]
