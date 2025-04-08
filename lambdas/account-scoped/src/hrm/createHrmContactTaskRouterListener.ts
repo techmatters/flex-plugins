@@ -181,6 +181,7 @@ export const handleEvent = async (
     ...JSON.parse(currentTaskAttributes),
     contactId: id.toString(),
   };
+  console.debug('>>> Updated task attributes:', taskContext, updatedAttributes);
   await taskContext.update({ attributes: JSON.stringify(updatedAttributes) });
 };
 
