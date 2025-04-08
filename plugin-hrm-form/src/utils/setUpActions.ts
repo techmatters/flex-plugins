@@ -170,11 +170,14 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   }
   const { enable_backend_hrm_contact_creation: enableBackendHrmContactCreation } = featureFlags;
   if (!enableBackendHrmContactCreation) {
+    console.log('>>> afterAcceptTask flag off: Initializing contact form');
     await initializeContactForm(payload);
   }
   if (TransferHelpers.hasTransferStarted(task)) {
+    console.log('>>> afterAcceptTask flag on: Handling transferred task');
     await handleTransferredTask(task);
   } else if (!enableBackendHrmContactCreation) {
+    console.log('>>> afterAcceptTask flag on: Prepopulating form');
     await prepopulateForm(task);
   }
 };

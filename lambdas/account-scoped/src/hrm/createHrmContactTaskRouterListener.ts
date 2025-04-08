@@ -88,6 +88,7 @@ export const handleEvent = async (
     channelType,
     customChannelType,
   } = taskAttributes;
+  console.debug('>>> createHrmContactTaskRouterListener Task attributes:', taskAttributes);
 
   if (isContactlessTask) {
     console.debug(
@@ -147,18 +148,20 @@ export const handleEvent = async (
     createdBy: workerSid as HrmContact['createdBy'],
     timeOfContact: new Date().toISOString(),
   };
-  console.debug('Creating HRM contact with timeOfContact:', newContact.timeOfContact);
+  console.debug('>>> Creating HRM contact with timeOfContact:', newContact.timeOfContact);
   const populatedContact = await populateHrmContactFormFromTask(
     taskAttributes,
     newContact,
     formDefinitionsVersionUrl,
   );
+  console.debug('>>> Created HRM contact with populated contact:', populatedContact);
   const responseResult = await postToInternalHrmEndpoint<HrmContact, HrmContact>(
     hrmAccountId,
     hrmApiVersion,
     'contacts',
     populatedContact,
   );
+  console.debug('>>> Created HRM contact response:', responseResult);
   if (isErr(responseResult)) {
     console.error(
       `Failed to create HRM contact for task ${taskSid}`,
