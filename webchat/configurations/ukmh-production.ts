@@ -15,7 +15,7 @@
  */
 
 import { Configuration } from '../types';
-import { config as ukmhStaging } from './ukmh-staging';
+import { config as ukmhStaging } from '../configurations/ukmh-staging';
 
 const accountSid = 'AC10edaafc5e4a4b6017d758b2f011142b';
 const flexFlowSid = 'FOafba2a238b869a6b507a7d46ba3a126c';
