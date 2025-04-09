@@ -88,7 +88,10 @@ export const handleEvent = async (
     channelType,
     customChannelType,
   } = taskAttributes;
-  console.debug('>>> 1. createHrmContactTaskRouterListener Task attributes:', taskAttributes);
+  console.debug(
+    '>>> 1. createHrmContactTaskRouterListener Task attributes:',
+    taskAttributes,
+  );
 
   if (isContactlessTask) {
     console.debug(
@@ -148,7 +151,10 @@ export const handleEvent = async (
     createdBy: workerSid as HrmContact['createdBy'],
     timeOfContact: new Date().toISOString(),
   };
-  console.debug('>>> 2. Creating HRM contact with timeOfContact:', newContact.timeOfContact);
+  console.debug(
+    '>>> 2. Creating HRM contact with timeOfContact:',
+    newContact.timeOfContact,
+  );
   const populatedContact = await populateHrmContactFormFromTask(
     taskAttributes,
     newContact,
@@ -160,6 +166,7 @@ export const handleEvent = async (
     hrmApiVersion,
     'contacts',
     populatedContact,
+    p,
   );
   console.debug('>>> 4. Created HRM contact response:', responseResult);
   if (isErr(responseResult)) {
@@ -181,7 +188,12 @@ export const handleEvent = async (
     ...JSON.parse(currentTaskAttributes),
     contactId: id.toString(),
   };
-  console.debug('>>> 5. Updated task attributes:', taskContext, updatedAttributes, id.toString());
+  console.debug(
+    '>>> 5. Updated task attributes:',
+    taskContext,
+    updatedAttributes,
+    id.toString(),
+  );
   await taskContext.update({ attributes: JSON.stringify(updatedAttributes) });
 };
 
