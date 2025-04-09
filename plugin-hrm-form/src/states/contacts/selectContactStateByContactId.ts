@@ -25,7 +25,7 @@ const selectContactStateByContactId = (state: RootState, contactId: string): Con
   if (!contactState) return undefined;
   
   if (!isOfflineContact(contactState.savedContact)) {
-    console.log('>>> TaskView selectContactStateByContactId', contactId, contactState.savedContact);
+    console.log('>> TaskView selectContactStateByContactId', contactId, contactState.savedContact);
     return contactState;
   }
   
