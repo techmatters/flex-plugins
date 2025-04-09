@@ -33,7 +33,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
         contact_identity     = "messenger:565233119996327"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/tz/templates/studio-flows/messaging-lex-v3-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -41,7 +41,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "whatsapp"
         contact_identity     = "whatsapp:+18454704393"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/tz/templates/studio-flows/messaging-lex-v3-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },

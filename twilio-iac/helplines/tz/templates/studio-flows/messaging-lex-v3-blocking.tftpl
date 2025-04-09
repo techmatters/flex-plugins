@@ -1,0 +1,459 @@
+${
+  jsonencode(
+   {
+  "description": flow_description,
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -60,
+          "y": -540
+        }
+      }
+    },
+    {
+      "name": "getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "pre_survey_complete",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -350,
+          "y": -280
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"${channel_name}\"}",
+        "url": "${get_profile_flags_for_identifier_base_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "send_blocked_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 560,
+          "y": 170
+        },
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
+        "from": flow_vars["widget_from"],
+        "to": "{{contact.channel.address}}",
+        "body": flow_vars["chat_blocked_message"]
+      }
+    },
+    {
+      "name": "contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "split_language",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_blocked_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "contains",
+              "value": "blocked"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": -10,
+          "y": -50
+        }
+      }
+    },
+    {
+      "name": "attributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "next": "webhook_notify_failed_to_enqueue",
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -30,
+          "y": 1500
+        },
+      "workflow": workflow_sids["master"],
+      "channel": task_channel_sids["chat"],
+      "attributes":channel_attributes["default"]
+      }
+    },
+    {
+      "name": "pre_survey_complete",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "capture_channel_with_bot",
+          "event": "noMatch"
+        },
+        {
+          "next": "attributes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}",
+        "offset": {
+          "x": -300,
+          "y": 730
+        }
+      }
+    },
+    {
+      "name": "capture_channel_with_bot",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "next": "webhook_notify_error",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": -580,
+          "y": 1030
+        },
+        "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "trigger_pre_survey",
+            "key": "message"
+          },
+          {
+            "value": "{{flow.flow_sid}}",
+            "key": "studioFlowSid"
+          },
+          {
+            "value": "en-US",
+            "key": "language"
+          },
+          {
+            "value": "pre_survey",
+            "key": "botSuffix"
+          },
+          {
+            "value": "withUserMessage",
+            "key": "triggerType"
+          },
+          {
+            "value": "triggerStudioFlow",
+            "key": "releaseType"
+          },
+          {
+            "value": "preSurveyComplete",
+            "key": "releaseFlag"
+          },
+          {
+            "value": "{{trigger.conversation.Source | downcase}}",
+            "key": "channelType"
+          },
+          {
+            "value": "true",
+            "key": "isConversation"
+          }
+        ],
+        "url": "${serverless_url}/channelCapture/captureChannelWithBot"
+      }
+    },
+    {
+      "name": "channel_cleanup",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "attributes",
+          "event": "success"
+        },
+        {
+          "next": "send_message_run_janitor",
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": -660,
+          "y": 1610
+        },
+        "function_sid": flow_vars["chatbot_callback_cleanup_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          }
+        ],
+        "url": "${serverless_url}/channelCapture/chatbotCallbackCleanup"
+      }
+    },
+    {
+      "name": "webhook_notify_error",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "channel_cleanup",
+          "event": "success"
+        },
+        {
+          "next": "channel_cleanup",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -450,
+          "y": 1260
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "url": webhook_url_studio_errors
+      }
+    },
+    {
+      "name": "webhook_notify_failed_to_enqueue",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 90,
+          "y": 1780
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "url": webhook_url_studio_errors
+      }
+    },
+    {
+      "name": "send_message_run_janitor",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": serverless_service_sid,
+        "environment_sid": serverless_environment_sid,
+        "offset": {
+          "x": -340,
+          "y": 1790
+        },
+        "function_sid": flow_vars["send_message_janitor_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": flow_vars["error_message"],
+            "key": "message"
+          },
+          {
+            "value": flow_vars["widget_from"],
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "split_language",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_en_US",
+          "event": "noMatch"
+        },
+        {
+          "next": "set_en_US",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to sw_TZ",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.languageMemory.language}}"
+              ],
+              "type": "equal_to",
+              "value": "en_US"
+            }
+          ]
+        },
+        {
+          "next": "set_sw_TZ",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to sw_TZ",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.languageMemory.language}}"
+              ],
+              "type": "equal_to",
+              "value": "sw_TZ"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.ChannelAttributes.languageMemory.language}}",
+        "offset": {
+          "x": 40,
+          "y": 240
+        }
+      }
+    },
+    {
+      "name": "set_en_US",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "pre_survey_complete",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "en_US",
+            "key": "language"
+          }
+        ],
+        "offset": {
+          "x": -110,
+          "y": 490
+        }
+      }
+    },
+    {
+      "name": "set_sw_TZ",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "pre_survey_complete",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "sw_TZ",
+            "key": "language"
+          }
+        ],
+        "offset": {
+          "x": 240,
+          "y": 490
+        }
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+}
+
+  )
+}
