@@ -36,7 +36,7 @@ const translations: Translations = {
     StartChat: 'Start Chat!',
     SelectLanguage: 'Select your language',
   },
-  "Swahili": {
+  "sw_TZ": {
     WelcomeMessage: "C-Sema",
     MessageCanvasTrayContent: "",
     MessageInputDisabledReasonHold:
@@ -64,12 +64,12 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       type: 'select',
       name: 'language',
-      label: 'SelectLanguage',
-      defaultValue: 'en-US',
+      label: 'Select Language',
+      defaultValue: '',
       required: true,
       options: [
         { value: 'en-US', label: '1. English' },
-        { value: 'Swahili', label: '2. Kiswahili' },
+        { value: 'sw_TZ', label: '2. Kiswahili' },
       ],
     },
     {
@@ -88,6 +88,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 const mapHelplineLanguage: MapHelplineLanguage = (helpline) => {
   // eslint-disable-next-line sonarjs/no-small-switch
   switch (helpline) {
+    case '2. Kiswahili':
+      return 'sw_TZ';
     default:
       return defaultLanguage;
   }
