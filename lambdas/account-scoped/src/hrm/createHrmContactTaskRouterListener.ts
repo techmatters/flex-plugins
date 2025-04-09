@@ -66,6 +66,18 @@ const BLANK_CONTACT: HrmContact = {
   conversationMedia: [],
 };
 
+const BLANK_VOICE_CONTACT: HrmContact = {
+  ...BLANK_CONTACT,
+  rawJson: {
+    ...BLANK_CONTACT.rawJson,
+    contactlessTask: {
+      ...BLANK_CONTACT.rawJson.contactlessTask,
+      channel: 'voice',
+    },
+  },
+  channel: 'voice',
+};
+
 export const handleEvent = async (
   {
     TaskAttributes: taskAttributesString,
@@ -87,10 +99,16 @@ export const handleEvent = async (
     transferTargetType,
     channelType,
     customChannelType,
+    conference,
   } = taskAttributes;
+
+  const isVoiceChannel = Boolean(conference) ? 'voice' : channelType;
+
   console.debug(
     '>>> 1. createHrmContactTaskRouterListener Task attributes:',
     taskAttributes,
+    isVoiceChannel,
+    customChannelType,
   );
 
   if (isContactlessTask) {
@@ -136,9 +154,9 @@ export const handleEvent = async (
   console.debug('Creating HRM contact for task', taskSid, 'Hrm Account:', hrmAccountId);
 
   const newContact: HrmContact = {
-    ...BLANK_CONTACT,
+    ...(isVoiceChannel === 'voice' ? BLANK_VOICE_CONTACT : BLANK_CONTACT),
     definitionVersion,
-    channel: (customChannelType || channelType || 'default') as HrmContact['channel'],
+    channel: (customChannelType || isVoiceChannel || 'default') as HrmContact['channel'],
     rawJson: {
       definitionVersion,
       ...BLANK_CONTACT.rawJson,
@@ -151,10 +169,7 @@ export const handleEvent = async (
     createdBy: workerSid as HrmContact['createdBy'],
     timeOfContact: new Date().toISOString(),
   };
-  console.debug(
-    '>>> 2. Creating HRM contact with timeOfContact:',
-    newContact.timeOfContact,
-  );
+  console.debug('>>> 2. Creating HRM contact', newContact);
   const populatedContact = await populateHrmContactFormFromTask(
     taskAttributes,
     newContact,
@@ -187,12 +202,7 @@ export const handleEvent = async (
     ...JSON.parse(currentTaskAttributes),
     contactId: id.toString(),
   };
-  console.debug(
-    '>>> 5. Updated task attributes:',
-    taskContext,
-    updatedAttributes,
-    id.toString(),
-  );
+  console.debug('>>> 5. Updated task attributes:', updatedAttributes);
   await taskContext.update({ attributes: JSON.stringify(updatedAttributes) });
 };
 

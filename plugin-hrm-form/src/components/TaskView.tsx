@@ -57,23 +57,22 @@ const TaskView: React.FC<Props> = ({ task }) => {
   const taskContactId = (task?.attributes as any)?.contactId;
   const currentDefinitionVersion = useSelector((state: RootState) => selectCurrentDefinitionVersion(state));
   // Check if the entry for this task exists in each reducer
-  const { savedContact, draftContact, metadata } = useSelector(
-    (state: RootState) => {
-      console.log('>>> TaskView contact selection:', {
-        enableBackendHrmContactCreation,
-        isTwilioTask: isTwilioTask(task),
-        taskContactId,
-        taskSid: task?.taskSid
-      });
-      
-      const selectedContact = (enableBackendHrmContactCreation && isTwilioTask(task)
+  const { savedContact, draftContact, metadata } = useSelector((state: RootState) => {
+    console.log('>>> TaskView contact selection:', {
+      enableBackendHrmContactCreation,
+      isTwilioTask: isTwilioTask(task),
+      taskContactId,
+      taskSid: task?.taskSid,
+    });
+
+    const selectedContact =
+      (enableBackendHrmContactCreation && isTwilioTask(task)
         ? selectContactStateByContactId(state, taskContactId)
         : selectContactByTaskSid(state, task?.taskSid)) ?? ({} as ContactState);
-      
-      console.log('>>> Selected contact state:', selectedContact);
-      return selectedContact;
-    },
-  );
+
+    console.log('>>> Selected contact state:', selectedContact);
+    return selectedContact;
+  });
   const unsavedContact = getUnsavedContact(savedContact, draftContact);
   const currentRoute = useSelector((state: RootState) => selectCurrentBaseRoute(state, task?.taskSid));
   const isModalOpen = currentRoute && isRouteModal(currentRoute);
