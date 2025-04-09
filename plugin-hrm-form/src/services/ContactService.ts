@@ -283,7 +283,7 @@ export const finalizeContact = async (
   contact: Contact,
   reservationSid?: string | undefined,
 ): Promise<Contact> => {
-  console.log('>>> finalizeContact', task, contact, reservationSid);
+  console.log('>>> ContactService finalizeContact', task, contact, reservationSid);
   try {
     const twilioTaskResult = await handleTwilioTask(task, contact, reservationSid);
     await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
@@ -359,6 +359,7 @@ export const getContactByTaskSid = async (taskSid: string): Promise<Contact | un
     returnNullFor404: true,
   };
   try {
+    console.log('>>> ContactService getContactByTaskSid', taskSid);
     return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/byTaskSid/${taskSid}`, options));
   } catch (err) {
     if (err instanceof ApiError && err.response.status >= 404) {
@@ -374,6 +375,7 @@ export const getContactById = async (contactId: string): Promise<Contact | undef
     returnNullFor404: true,
   };
   try {
+    console.log('>>> ContactService getContactById', contactId);
     return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/${contactId}`, options));
   } catch (err) {
     if (err instanceof ApiError && err.response.status >= 404) {

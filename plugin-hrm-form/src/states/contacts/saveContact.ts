@@ -265,12 +265,12 @@ export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = crea
         throw error;
       }
     } else if (task) {
-      console.log('>>> finalizeContact with task', task, contact, reservationSid);
+      console.log('>>> ContactService finalizeContact with task', task, contact, reservationSid);
       await completeTaskAssignment(task.taskSid || (isTwilioTask(task) && task.sid));
       const updatedContact = await submitContactForm(task, contact, caseState);
       return finalizeContact(task, updatedContact, reservationSid);
     }
-    console.log('>>> finalizeContact without task', task, contact);
+    console.log('>>> ContactService finalizeContact without task', task, contact);
     return finalizeContact(task, contact);
   },
   (contact: Contact) => contact,

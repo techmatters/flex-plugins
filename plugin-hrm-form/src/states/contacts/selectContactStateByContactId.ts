@@ -18,6 +18,8 @@ import { ContactState } from './existingContacts';
 import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
 
-const selectContactStateByContactId = (state: RootState, contactId: string): ContactState | undefined =>
-  contactId ? state[namespace].activeContacts.existingContacts[contactId] : undefined;
+const selectContactStateByContactId = (state: RootState, contactId: string): ContactState | undefined => {
+  console.log('>>> TaskView selectContactStateByContactId', contactId, state[namespace].activeContacts.existingContacts);
+  return contactId ? state[namespace].activeContacts.existingContacts[contactId] : undefined;
+};
 export default selectContactStateByContactId;

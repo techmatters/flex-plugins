@@ -18,7 +18,9 @@ import { RootState } from '..';
 import { ContactState } from './existingContacts';
 import { namespace } from '../storeNamespaces';
 
-const selectContactByTaskSid = (state: RootState, taskSid: string): ContactState =>
-  Object.values(state[namespace].activeContacts.existingContacts).find(cs => cs.savedContact?.taskId === taskSid);
+const selectContactByTaskSid = (state: RootState, taskSid: string): ContactState => {
+  console.log('>>> TaskView selectContactByTaskSid', taskSid, state[namespace].activeContacts.existingContacts);
+  return Object.values(state[namespace].activeContacts.existingContacts).find(cs => cs.savedContact?.taskId === taskSid);
+};
 
 export default selectContactByTaskSid;
