@@ -44,7 +44,7 @@ const BLANK_CONTACT: HrmContact = {
     caseInformation: {},
     callType: '',
     contactlessTask: {
-      channel: 'web',
+      channel: '' as any,
       date: '',
       time: '',
       createdOnBehalfOf: '',
@@ -64,18 +64,6 @@ const BLANK_CONTACT: HrmContact = {
   conversationDuration: 0,
   csamReports: [],
   conversationMedia: [],
-};
-
-const BLANK_VOICE_CONTACT: HrmContact = {
-  ...BLANK_CONTACT,
-  rawJson: {
-    ...BLANK_CONTACT.rawJson,
-    contactlessTask: {
-      ...BLANK_CONTACT.rawJson.contactlessTask,
-      channel: 'voice',
-    },
-  },
-  channel: 'voice',
 };
 
 export const handleEvent = async (
@@ -154,9 +142,11 @@ export const handleEvent = async (
   console.debug('Creating HRM contact for task', taskSid, 'Hrm Account:', hrmAccountId);
 
   const newContact: HrmContact = {
-    ...(isVoiceChannel === 'voice' ? BLANK_VOICE_CONTACT : BLANK_CONTACT),
+    ...BLANK_CONTACT,
     definitionVersion,
-    channel: (customChannelType || isVoiceChannel || 'default') as HrmContact['channel'],
+    channel: (customChannelType ||
+      (isVoiceChannel && 'voice') ||
+      'default') as HrmContact['channel'],
     rawJson: {
       definitionVersion,
       ...BLANK_CONTACT.rawJson,
