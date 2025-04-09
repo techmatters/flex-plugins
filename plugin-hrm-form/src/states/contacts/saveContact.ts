@@ -195,7 +195,7 @@ export const removeFromCaseAsyncAction = createAsyncAction(
 export const submitContactFormAsyncAction = createAsyncAction(
   SET_SAVED_CONTACT,
   async (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) => {
-    console.log('>>> submitContactFormAsyncAction', task, contact, metadata, caseState);
+    console.log('>>> saveContact submitContactFormAsyncAction', task, contact, metadata, caseState);
     const contactWithConversationDuration = setConversationDurationFromMetadata(contact, metadata);
     return submitContactForm(task, contactWithConversationDuration, caseState);
   },

@@ -42,11 +42,14 @@ export const completeContactTask = async (task: RouterTask) => {
 
   if (task.status !== 'wrapping') {
     if (task.channelType === channelTypes.voice) {
+      console.log('>>> completeContactTask voice', task);
       await Actions.invokeAction('HangupCall', { sid, task });
     } else {
+      console.log('>>> completeContactTask chat', task);
       await Actions.invokeAction('WrapupTask', { sid, task });
     }
   }
+  console.log('>>> completeContactTask final', task);
   await Actions.invokeAction('CompleteTask', { sid, task });
 };
 
@@ -59,17 +62,19 @@ export const removeOfflineContact = async (dispatch: Dispatch<any>, contact: Con
   }
 };
 
-export const completeTask = (task: RouterTask, contact: Contact) =>
-  isOfflineContactTask(task)
+export const completeTask = (task: RouterTask, contact: Contact) => {
+  console.log('>>> formSubmissionHelpers completeTask', task, contact);
+  return isOfflineContactTask(task)
     ? Manager.getInstance().store.dispatch(GeneralActions.removeContactState(getOfflineContactTaskSid(), contact.id))
     : completeContactTask(task);
+};
 
 export const submitContactForm = async (
   task: CustomITask,
   contact: Contact,
   caseState: Pick<CaseStateEntry, 'sections' | 'connectedCase'>,
 ) => {
-  console.log('>>> submitContactForm', task, contact, caseState);
+  console.log('>>> formSubmissionHelpers submitContactForm', task, contact, caseState);
   const { workerSid } = getHrmConfig();
 
   if (isOfflineContactTask(task)) {

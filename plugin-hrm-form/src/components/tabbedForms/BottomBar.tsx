@@ -83,6 +83,7 @@ const BottomBar: React.FC<
     if (contactIsSaving || !hasTaskControl(task)) return;
 
     try {
+      console.log('>>> BottomBar handleSubmit', contact, metadata, caseState);
       await submitContactForm(task as CustomITask, contact, metadata, caseState);
       await completeTask(task, contact);
     } catch (error) {

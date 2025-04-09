@@ -18,7 +18,7 @@ import { Contact } from '../../types/types';
 import { ContactDraftChanges } from './existingContacts';
 
 export const getUnsavedContact = (savedContact: Contact, draftContact: ContactDraftChanges): Contact => {
-  console.log('>>> getUnsavedContact', savedContact, draftContact);
+  // console.log('>>> getUnsavedContact', savedContact, draftContact);
   if (!savedContact && !draftContact) {
     return undefined;
   }
