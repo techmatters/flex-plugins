@@ -73,6 +73,7 @@ export const createContactAsyncAction = createAsyncAction(
   async (contactToCreate: Contact, workerSid: WorkerSID, task: CustomITask) => {
     let contact: Contact;
     const { taskSid } = task;
+    console.log('>>> createContactAsyncAction', task);
     if (isOfflineContactTask(task)) {
       contact = await createContact(contactToCreate, workerSid, task);
       if (!contact.rawJson.contactlessTask.createdOnBehalfOf) {
@@ -194,6 +195,7 @@ export const removeFromCaseAsyncAction = createAsyncAction(
 export const submitContactFormAsyncAction = createAsyncAction(
   SET_SAVED_CONTACT,
   async (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) => {
+    console.log('>>> submitContactFormAsyncAction', task, contact, metadata, caseState);
     const contactWithConversationDuration = setConversationDurationFromMetadata(contact, metadata);
     return submitContactForm(task, contactWithConversationDuration, caseState);
   },
@@ -263,10 +265,12 @@ export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = crea
         throw error;
       }
     } else if (task) {
+      console.log('>>> finalizeContact with task', task, contact, reservationSid);
       await completeTaskAssignment(task.taskSid || (isTwilioTask(task) && task.sid));
       const updatedContact = await submitContactForm(task, contact, caseState);
       return finalizeContact(task, updatedContact, reservationSid);
     }
+    console.log('>>> finalizeContact without task', task, contact);
     return finalizeContact(task, contact);
   },
   (contact: Contact) => contact,

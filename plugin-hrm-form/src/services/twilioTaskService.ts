@@ -59,17 +59,21 @@ export const assignOfflineContactResolve = async (payload: OfflineContactComplet
  * Wraps up a conversations task using the interactions API rather than the default actions API.
  * This prevents the underlying conversation being closed so a post survey can vbe performed.
  */
-export const wrapupConversationTask = async (taskSid: TaskSID) =>
-  fetchProtectedApi('/interaction/transitionAgentParticipants', { taskSid, targetStatus: 'wrapup' });
-
+export const wrapupConversationTask = async (taskSid: TaskSID) => {
+  console.log('>>> wrapupConversationTask', taskSid);
+  return fetchProtectedApi('/interaction/transitionAgentParticipants', { taskSid, targetStatus: 'wrapup' });
+}
 /**
  * Completes a conversations task using the interactions API rather than the default actions API.
  * This prevents the underlying conversation being closed so a post survey can vbe performed.
  */
-export const completeConversationTask = async (taskSid: TaskSID) =>
-  fetchProtectedApi('/interaction/transitionAgentParticipants', { taskSid, targetStatus: 'closed' });
+export const completeConversationTask = async (taskSid: TaskSID) => {
+  console.log('>>> completeConversationTask', taskSid);
+  return fetchProtectedApi('/interaction/transitionAgentParticipants', { taskSid, targetStatus: 'closed' });
+};
 
 export const checkTaskAssignment = async (taskSid: string) => {
+  console.log('>>> checkTaskAssignment', taskSid);
   const body = { taskSid };
 
   return fetchProtectedApi('/checkTaskAssignment', body);
@@ -94,6 +98,7 @@ export const getTaskAndReservations = async (taskSid: string): Promise<GetTaskAn
 };
 
 export const completeTaskAssignment = async (taskSid: string) => {
+  console.log('>>> completeTaskAssignment', taskSid);
   const body = { taskSid };
 
   return fetchProtectedApi('/completeTaskAssignment', body);

@@ -56,6 +56,7 @@ export const loadCurrentDefinitionVersion = async () => {
 /* eslint-enable sonarjs/prefer-single-boolean-return */
 /* eslint-disable sonarjs/cognitive-complexity */
 const saveEndMillis = async (payload: ActionPayload) => {
+  console.log('>>> saveEndMillis', payload.task.taskSid);
   Manager.getInstance().store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
 };
 
@@ -170,14 +171,14 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   }
   const { enable_backend_hrm_contact_creation: enableBackendHrmContactCreation } = featureFlags;
   if (!enableBackendHrmContactCreation) {
-    console.log('>>> afterAcceptTask flag off: Initializing contact form');
+    console.log('>>> afterAcceptTask flag off: Initializing contact form', payload);
     await initializeContactForm(payload);
   }
   if (TransferHelpers.hasTransferStarted(task)) {
-    console.log('>>> afterAcceptTask flag on: Handling transferred task');
+    console.log('>>> afterAcceptTask flag on: Handling transferred task', payload);
     await handleTransferredTask(task);
   } else if (!enableBackendHrmContactCreation) {
-    console.log('>>> afterAcceptTask flag on: Prepopulating form');
+    console.log('>>> afterAcceptTask flag on: Prepopulating form', payload);
     await prepopulateForm(task);
   }
 };
@@ -191,11 +192,14 @@ export const wrapupTask = (setupObject: SetupObject, getMessage: GetMessage) => 
   payload,
   original: ActionFunction,
 ): Promise<any> => {
+  console.log('>>> wrapupTask', payload);
   if (TaskHelper.isChatBasedTask(payload.task)) {
+    console.log('>>> wrapupTask is chat based task');
     await sendGoodbyeMessage(payload.task.taskSid)(setupObject, getMessage)(payload);
   }
   await saveEndMillis(payload);
   if (payload.task.attributes.conversationSid) {
+    console.log('>>> wrapupTask is conversation task');
     return wrapupConversationTask(payload.task.taskSid);
   }
   return original(payload);

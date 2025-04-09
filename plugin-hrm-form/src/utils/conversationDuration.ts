@@ -30,6 +30,7 @@ const fillEndMillis = (metadata: ContactMetadata): ContactMetadata => ({
  * @param {{ startMillis: number, endMillis: number, recreated: boolean }} metadata
  */
 const getConversationDuration = ({ startMillis, endMillis, recreated }) => {
+  console.log('>>> getConversationDuration', startMillis, endMillis, recreated);
   const validMetrics = !recreated && !isNullOrUndefined(endMillis) && !isNullOrUndefined(startMillis);
 
   if (!validMetrics) return null;
@@ -39,6 +40,7 @@ const getConversationDuration = ({ startMillis, endMillis, recreated }) => {
 };
 
 export const setConversationDurationFromMetadata = (contact: Contact, metadata: ContactMetadata): Contact => {
+  console.log('>>> setConversationDurationFromMetadata', contact, metadata);
   if (!isOfflineContact(contact)) {
     const metadataForDuration = fillEndMillis(metadata);
     const conversationDuration = getConversationDuration(metadataForDuration);

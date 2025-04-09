@@ -283,6 +283,7 @@ export const finalizeContact = async (
   contact: Contact,
   reservationSid?: string | undefined,
 ): Promise<Contact> => {
+  console.log('>>> finalizeContact', task, contact, reservationSid);
   try {
     const twilioTaskResult = await handleTwilioTask(task, contact, reservationSid);
     await saveConversationMedia(contact.id, twilioTaskResult.conversationMedia);
@@ -294,6 +295,7 @@ export const finalizeContact = async (
 };
 
 export const saveContact = async (task, contact: Contact, workerSid: WorkerSID, uniqueIdentifier: TaskSID) => {
+  console.log('>>> saveContact', task, contact, workerSid, uniqueIdentifier);
   const savedContact = await saveContactToHrm(task, contact, workerSid, uniqueIdentifier);
   // TODO: add catch clause to handle saving to Sync Doc
   try {
@@ -342,6 +344,7 @@ export async function removeFromCase(contactId: string) {
 }
 
 async function saveConversationMedia(contactId: string, conversationMedia: ConversationMedia[]) {
+  console.log('>>> saveConversationMedia', contactId, conversationMedia);
   const options = {
     method: 'POST',
     body: JSON.stringify(conversationMedia),

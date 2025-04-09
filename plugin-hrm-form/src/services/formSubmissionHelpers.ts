@@ -69,6 +69,7 @@ export const submitContactForm = async (
   contact: Contact,
   caseState: Pick<CaseStateEntry, 'sections' | 'connectedCase'>,
 ) => {
+  console.log('>>> submitContactForm', task, contact, caseState);
   const { workerSid } = getHrmConfig();
 
   if (isOfflineContactTask(task)) {
