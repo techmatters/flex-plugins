@@ -166,7 +166,6 @@ export const handleEvent = async (
     hrmApiVersion,
     'contacts',
     populatedContact,
-    p,
   );
   console.debug('>>> 4. Created HRM contact response:', responseResult);
   if (isErr(responseResult)) {
