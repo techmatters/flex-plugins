@@ -20,6 +20,7 @@ import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestra
 
 import { getDefinitionVersion, sendSystemMessage } from '../services/ServerlessService';
 import * as Actions from '../states/contacts/actions';
+import { loadContact } from '../states/contacts/existingContacts';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
@@ -170,15 +171,39 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
     sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
   }
   const { enable_backend_hrm_contact_creation: enableBackendHrmContactCreation } = featureFlags;
+  
+  console.log(`>>> afterAcceptTask with enableBackendHrmContactCreation=${enableBackendHrmContactCreation}`, task.taskSid);
+  
   if (!enableBackendHrmContactCreation) {
     console.log('>>> afterAcceptTask flag off: Initializing contact form', payload);
     await initializeContactForm(payload);
+  } else {
+    // When backend contact creation is enabled, we need to fetch and synchronize the contact
+    console.log('>>> afterAcceptTask flag on: Fetch and synchronize the contact', payload);
+      // Get the contact ID from the task attributes
+      const contactId = isTwilioTask(task) ? task.attributes.contactId : undefined;
+      
+      if (contactId) {
+        console.log(`>>> Fetch and synchronize the contact with contactId ${contactId} in task ${task.taskSid}`);
+        
+        const reference = `task-${task.taskSid}`;
+        
+        // Load the contact into the Redux store with the task reference
+        Manager.getInstance().store.dispatch(loadContact({ id: contactId }, reference, false));
+        
+        const state = Manager.getInstance().store.getState() as RootState;
+        const contactState = state[namespace].activeContacts.existingContacts[contactId];
+        console.log('>>> Contact state after synchronization:', contactId, contactState ? 'loaded' : 'not loaded');
+      } else {
+        console.warn(`>>> No contactId found in task ${task.taskSid}, cannot synchronize contact state`);
+      }
   }
+  
   if (TransferHelpers.hasTransferStarted(task)) {
-    console.log('>>> afterAcceptTask flag on: Handling transferred task', payload);
+    console.log('>>> afterAcceptTask: Handling transferred task', payload);
     await handleTransferredTask(task);
   } else if (!enableBackendHrmContactCreation) {
-    console.log('>>> afterAcceptTask flag on: Prepopulating form', payload);
+    console.log('>>> afterAcceptTask: Prepopulating form', payload);
     await prepopulateForm(task);
   }
 };

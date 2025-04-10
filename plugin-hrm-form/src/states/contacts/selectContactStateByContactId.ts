@@ -21,7 +21,8 @@ import { isOfflineContact } from '../../types/types';
 
 const selectContactStateByContactId = (state: RootState, contactId: string): ContactState | undefined => {
   const contactState = contactId ? state[namespace].activeContacts.existingContacts[contactId] : undefined;
-  
+  console.log(`>> Looking up contact state for ${contactId}: ${contactState ? 'FOUND' : 'NOT FOUND'}`);
+
   if (!contactState) return undefined;
   
   if (!isOfflineContact(contactState.savedContact)) {

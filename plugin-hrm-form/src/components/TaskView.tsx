@@ -58,19 +58,19 @@ const TaskView: React.FC<Props> = ({ task }) => {
   const currentDefinitionVersion = useSelector((state: RootState) => selectCurrentDefinitionVersion(state));
   // Check if the entry for this task exists in each reducer
   const { savedContact, draftContact, metadata } = useSelector((state: RootState) => {
-    // console.log('>>> TaskView contact selection:', {
-    //   enableBackendHrmContactCreation,
-    //   isTwilioTask: isTwilioTask(task),
-    //   taskContactId,
-    //   taskSid: task?.taskSid,
-    // });
+    console.log('>> TaskView contact selection:', {
+      enableBackendHrmContactCreation,
+      isTwilioTask: isTwilioTask(task),
+      taskContactId,
+      taskSid: task?.taskSid,
+    });
 
     const selectedContact =
       (enableBackendHrmContactCreation && isTwilioTask(task)
         ? selectContactStateByContactId(state, taskContactId)
         : selectContactByTaskSid(state, task?.taskSid)) ?? ({} as ContactState);
 
-    // console.log('>>> Selected contact state:', selectedContact);
+    console.log('>> Selected contact state:', selectedContact.savedContact ? 'found' : 'not found');
     return selectedContact;
   });
   const unsavedContact = getUnsavedContact(savedContact, draftContact);
@@ -93,13 +93,17 @@ const TaskView: React.FC<Props> = ({ task }) => {
   const updateHelpline = (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline }));
   React.useEffect(() => {
     if (shouldRecreateState && !isOfflineContactTask(task)) {
+      console.log(`>>> TaskView useEffect: shouldRecreateState=${shouldRecreateState}, enableBackendHrmContactCreation=${enableBackendHrmContactCreation}, taskContactId=${taskContactId}`);
+      
       if (enableBackendHrmContactCreation && taskContactId) {
+        console.log(`>>> Loading contact from HRM for task ${task.taskSid} with contactId ${taskContactId}`);
         asyncDispatcher(newLoadContactFromHrmForTaskAsyncAction(task, workerSid, `${task.taskSid}-active`));
       } else if (
         !enableBackendHrmContactCreation &&
         TaskHelper.isTaskAccepted(task) &&
         !task.attributes.isContactlessTask
       ) {
+        console.log(`>>> Creating new contact for task ${task.taskSid}`);
         createContact(currentDefinitionVersion);
       }
     }
