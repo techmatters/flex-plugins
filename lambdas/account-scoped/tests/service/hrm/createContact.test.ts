@@ -175,6 +175,10 @@ describe('Create HRM Contact on Reservation Accepted event', () => {
         callerInformation: BLANK_POPULATED_PERSON_INFORMATION,
         childInformation: BLANK_POPULATED_PERSON_INFORMATION,
         definitionVersion: 'ut-v1', // for backwards compatibility
+        contactlessTask: {
+          ...BLANK_CONTACT.rawJson.contactlessTask,
+          channel: '' as any,
+        },
       },
       twilioWorkerId: TEST_WORKER_SID,
       taskId: TEST_TASK_SID as TaskSID,

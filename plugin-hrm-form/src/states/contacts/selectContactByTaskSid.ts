@@ -17,8 +17,16 @@
 import { RootState } from '..';
 import { ContactState } from './existingContacts';
 import { namespace } from '../storeNamespaces';
+import { isOfflineContact } from '../../types/types';
 
-const selectContactByTaskSid = (state: RootState, taskSid: string): ContactState =>
-  Object.values(state[namespace].activeContacts.existingContacts).find(cs => cs.savedContact?.taskId === taskSid);
+const selectContactByTaskSid = (state: RootState, taskSid: string): ContactState => {
+  return Object.values(state[namespace].activeContacts.existingContacts).find(cs => {
+    if (!isOfflineContact(cs.savedContact)) {
+      console.log('>> TaskView selectContactByTaskSid', taskSid, cs.savedContact);
+      return cs.savedContact?.taskId === taskSid;
+    }
+    return false;
+  });
+};
 
 export default selectContactByTaskSid;

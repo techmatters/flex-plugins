@@ -20,6 +20,7 @@ import type { ChatOrchestrationsEvents } from '@twilio/flex-ui/src/ChatOrchestra
 
 import { getDefinitionVersion, sendSystemMessage } from '../services/ServerlessService';
 import * as Actions from '../states/contacts/actions';
+import { loadContact } from '../states/contacts/existingContacts';
 import { populateCurrentDefinitionVersion, updateDefinitionVersion } from '../states/configuration/actions';
 import { clearCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import * as GeneralActions from '../states/actions';
@@ -56,6 +57,7 @@ export const loadCurrentDefinitionVersion = async () => {
 /* eslint-enable sonarjs/prefer-single-boolean-return */
 /* eslint-disable sonarjs/cognitive-complexity */
 const saveEndMillis = async (payload: ActionPayload) => {
+  console.log('>>> saveEndMillis', payload.task.taskSid);
   Manager.getInstance().store.dispatch(Actions.saveEndMillis(payload.task.taskSid));
 };
 
@@ -160,21 +162,66 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   payload: ActionPayload,
 ) => {
   const { task } = payload;
+  console.log('>>> afterAcceptTask triggered with task:', {
+    taskSid: task.taskSid,
+    attributes: JSON.stringify(task.attributes),
+    hasContactId: Boolean(task.attributes?.contactId),
+    timestamp: new Date().toISOString(),
+  });
+
   if (TaskHelper.isChatBasedTask(task)) {
     subscribeAlertOnConversationJoined(task);
   }
 
-  // If this is the first counsellor that gets the task, say hi
   if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
     sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
   }
-  const { enable_backend_hrm_contact_creation: enableBackendHrmContactCreation } = featureFlags;
+
+  const { enable_backend_hrm_contact_creation: enableBackendHrmContactCreation } = getAseloFeatureFlags();
+  console.log(
+    `>>> afterAcceptTask with enableBackendHrmContactCreation=${enableBackendHrmContactCreation}`,
+    task.taskSid,
+  );
+
   if (!enableBackendHrmContactCreation) {
+    console.log('>>> afterAcceptTask flag off: Initializing contact form', payload);
     await initializeContactForm(payload);
+  } else {
+    console.log('>>> afterAcceptTask flag on: Fetch and synchronize the contact', payload);
+    // Get the contact ID from the task attributes
+    const contactId = isTwilioTask(task) ? task.attributes.contactId : undefined;
+
+    if (contactId) {
+      console.log(`>>> Fetch and synchronize the contact with contactId ${contactId} in task ${task.taskSid}`);
+
+      const reference = `task-${task.taskSid}`;
+
+      // Check if contact is already in Redux store before loading
+      const state = Manager.getInstance().store.getState() as RootState;
+      const contactStateBefore = state[namespace].activeContacts.existingContacts[contactId];
+      console.log(`>>> Before sync - contact state exists in Redux: ${Boolean(contactStateBefore?.savedContact)}`);
+
+      // Load the contact into the Redux store with the task reference
+      console.log(`>>> Dispatching loadContact for contact ${contactId} with reference ${reference}`);
+      Manager.getInstance().store.dispatch(loadContact({ id: contactId }, reference, false));
+
+      // Check if contact is in Redux store after loading attempt
+      setTimeout(() => {
+        const stateAfter = Manager.getInstance().store.getState() as RootState;
+        const contactStateAfter = stateAfter[namespace].activeContacts.existingContacts[contactId];
+        console.log(`>>> After sync - contact state exists in Redux: ${Boolean(contactStateAfter?.savedContact)}`);
+        console.log('>>> Contact state after synchronization:', contactId, contactStateAfter ? 'loaded' : 'not loaded');
+      }, 1000); // Check after a short delay to allow for async operations
+    } else {
+      console.warn(`>>> No contactId found in task ${task.taskSid}, cannot synchronize contact state`);
+    }
   }
+
   if (TransferHelpers.hasTransferStarted(task)) {
+    console.log('>>> afterAcceptTask: Handling transferred task', payload);
     await handleTransferredTask(task);
   } else if (!enableBackendHrmContactCreation) {
+    console.log('>>> afterAcceptTask: Prepopulating form', payload);
     await prepopulateForm(task);
   }
 };
@@ -188,11 +235,14 @@ export const wrapupTask = (setupObject: SetupObject, getMessage: GetMessage) => 
   payload,
   original: ActionFunction,
 ): Promise<any> => {
+  console.log('>>> wrapupTask', payload);
   if (TaskHelper.isChatBasedTask(payload.task)) {
+    console.log('>>> wrapupTask is chat based task');
     await sendGoodbyeMessage(payload.task.taskSid)(setupObject, getMessage)(payload);
   }
   await saveEndMillis(payload);
   if (payload.task.attributes.conversationSid) {
+    console.log('>>> wrapupTask is conversation task');
     return wrapupConversationTask(payload.task.taskSid);
   }
   return original(payload);

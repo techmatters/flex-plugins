@@ -61,6 +61,7 @@ const TabbedFormsCase: React.FC<Props> = props => {
 
   const submit = async () => {
     try {
+      console.log('>>> TabbedFormsCase submit', savedContact, metadata, caseState);
       await finaliseContact(savedContact, metadata, caseState);
       await completeTask(task, savedContact);
     } catch (error) {

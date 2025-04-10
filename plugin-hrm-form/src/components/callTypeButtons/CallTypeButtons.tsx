@@ -117,6 +117,7 @@ const CallTypeButtons: React.FC<Props> = ({
     if (!hasTaskControl(task)) return undefined;
 
     try {
+      console.log('>>> CallTypeButtons handleConfirmNonDataCallType', savedContact, draftContact, metadata);
       await saveFinalizedNonDataContact(savedContact, draftContact, metadata);
       return completeTask(task, savedContact);
     } catch (error) {

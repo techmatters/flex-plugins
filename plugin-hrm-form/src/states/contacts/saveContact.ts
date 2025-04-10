@@ -74,6 +74,7 @@ export const createContactAsyncAction = createAsyncAction(
   async (contactToCreate: Contact, workerSid: WorkerSID, task: CustomITask) => {
     let contact: Contact;
     const { taskSid } = task;
+    console.log('>>> createContactAsyncAction', task);
     if (isOfflineContactTask(task)) {
       contact = await createContact(contactToCreate, workerSid, task);
       if (!contact.rawJson.contactlessTask.createdOnBehalfOf) {
@@ -199,6 +200,7 @@ export const removeFromCaseAsyncAction = createAsyncAction(
 export const submitContactFormAsyncAction = createAsyncAction(
   SET_SAVED_CONTACT,
   async (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) => {
+    console.log('>>> saveContact submitContactFormAsyncAction', task, contact, metadata, caseState);
     const contactWithConversationDuration = setConversationDurationFromMetadata(contact, metadata);
     return submitContactForm(task, contactWithConversationDuration, caseState);
   },
@@ -268,10 +270,12 @@ export const newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction = crea
         throw error;
       }
     } else if (task) {
+      console.log('>>> ContactService finalizeContact with task', task, contact, reservationSid);
       await completeTaskAssignment(task.taskSid || (isTwilioTask(task) && task.sid));
       const updatedContact = await submitContactForm(task, contact, caseState);
       return finalizeContact(task, updatedContact, reservationSid);
     }
+    console.log('>>> ContactService finalizeContact without task', task, contact);
     return finalizeContact(task, contact);
   },
   (contact: Contact) => contact,
@@ -282,14 +286,21 @@ export const newLoadContactFromHrmForTaskAsyncAction = createAsyncAction(
   async (task: CustomITask, workerSid: WorkerSID, reference: string = task.taskSid) => {
     const { taskSid } = task;
     const contactId = isTwilioTask(task) ? task.attributes?.contactId : undefined;
+    console.log(`>>> Loading contact for task ${taskSid}, contactId: ${contactId}, reference: ${reference}`);
+
     let contact: Contact;
     if (contactId) {
+      console.log(`>>> Getting contact by ID: ${contactId}`);
       contact = await getContactById(contactId);
     } else {
+      console.log(`>>> Getting contact by TaskSid: ${taskSid}`);
       contact = await getContactByTaskSid(task.taskSid);
     }
+    console.log(`>>> Retrieved contact:`, contact?.id);
+
     if (contact.taskId !== task.taskSid || contact.twilioWorkerId !== workerSid) {
       // If the contact is being transferred from a client that doesn't set the contactId on the task, we need to update the contact with the task id and worker id
+      console.log(`>>> Updating contact with taskId ${taskSid} and workerSid ${workerSid}`);
       contact = await updateContactInHrm(contact.id, { taskId: taskSid, twilioWorkerId: workerSid }, false);
     }
     if (isTwilioTask(task) && TransferHelpers.isColdTransfer(task) && !TransferHelpers.hasTaskControl(task))
@@ -298,6 +309,7 @@ export const newLoadContactFromHrmForTaskAsyncAction = createAsyncAction(
     if (contact?.caseId) {
       contactCase = await getCase(contact.caseId);
     }
+    console.log(`>>> Returning contact ${contact.id} for reference ${reference}`);
     return {
       contact,
       contactCase,
@@ -421,7 +433,15 @@ export const saveContactReducer = (initialState: ContactsState) =>
       loadContactFromHrmByIdAsyncAction.fulfilled,
       (state, { payload: { contact, reference } }): ContactsState => {
         if (!contact) return state;
+        console.log(`>>> Contact loaded successfully from HRM for reference ${reference}:`, contact.id);
         return loadContactIntoRedux(state, contact, reference, newContactMetaData(true));
+      },
+    ),
+    handleAction(
+      loadContactFromHrmByIdAsyncAction.rejected,
+      (state, action): ContactsState => {
+        console.error(`>>> Failed to load contact from HRM:`, action.payload);
+        return state;
       },
     ),
     handleAction(
@@ -436,13 +456,16 @@ export const saveContactReducer = (initialState: ContactsState) =>
     handleAction(
       newLoadContactFromHrmForTaskAsyncAction.fulfilled,
       (state, { payload: { contact, reference } }): ContactsState => {
-        if (!contact) return state;
-        return loadContactIntoRedux(state, contact, reference, newContactMetaData(true));
+        console.log(`>>> Contact loaded successfully from HRM for reference ${reference}:`, contact.id);
+        return loadContactIntoRedux(state, contact, reference);
       },
     ),
     handleAction(
       newLoadContactFromHrmForTaskAsyncAction.rejected,
-      (state, { meta: { taskSid } }: any): ContactsState => markContactAsNotCreatingInRedux(state, taskSid),
+      (state, action: any): ContactsState => {
+        console.error(`>>> Failed to load contact from HRM:`, action.payload);
+        return markContactAsNotCreatingInRedux(state, action.meta.taskSid);
+      },
     ),
     handleAction(
       connectToCaseAsyncAction.fulfilled,

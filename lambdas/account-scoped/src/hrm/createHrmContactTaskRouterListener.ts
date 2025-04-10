@@ -44,7 +44,7 @@ const BLANK_CONTACT: HrmContact = {
     caseInformation: {},
     callType: '',
     contactlessTask: {
-      channel: 'web',
+      channel: '' as any,
       date: '',
       time: '',
       createdOnBehalfOf: '',
@@ -87,7 +87,17 @@ export const handleEvent = async (
     transferTargetType,
     channelType,
     customChannelType,
+    conference,
   } = taskAttributes;
+
+  const isVoiceChannel = Boolean(conference) ? 'voice' : channelType;
+
+  console.debug(
+    '>>> 1. createHrmContactTaskRouterListener Task attributes:',
+    taskAttributes,
+    isVoiceChannel,
+    customChannelType,
+  );
 
   if (isContactlessTask) {
     console.debug(
@@ -151,6 +161,11 @@ export const handleEvent = async (
     return;
   }
 
+  console.debug(
+    '>>> 1.5 Flag check passed, continuing with backend contact creation for task:',
+    taskSid,
+  );
+
   const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
 
   console.debug('Creating HRM contact for task', taskSid, 'Hrm Account:', hrmAccountId);
@@ -158,7 +173,9 @@ export const handleEvent = async (
   const newContact: HrmContact = {
     ...BLANK_CONTACT,
     definitionVersion,
-    channel: (customChannelType || channelType || 'default') as HrmContact['channel'],
+    channel: (customChannelType ||
+      (isVoiceChannel && 'voice') ||
+      'default') as HrmContact['channel'],
     rawJson: {
       definitionVersion,
       ...BLANK_CONTACT.rawJson,
@@ -171,18 +188,20 @@ export const handleEvent = async (
     createdBy: workerSid as HrmContact['createdBy'],
     timeOfContact: new Date().toISOString(),
   };
-  console.debug('Creating HRM contact with timeOfContact:', newContact.timeOfContact);
+  console.debug('>>> 2. Creating HRM contact', newContact);
   const populatedContact = await populateHrmContactFormFromTask(
     taskAttributes,
     newContact,
     formDefinitionsVersionUrl,
   );
+  console.debug('>>> 3. Created HRM contact with populated contact:', populatedContact);
   const responseResult = await postToInternalHrmEndpoint<HrmContact, HrmContact>(
     hrmAccountId,
     hrmApiVersion,
     'contacts',
     populatedContact,
   );
+  console.debug('>>> 4. Created HRM contact response:', responseResult);
   if (isErr(responseResult)) {
     console.error(
       `Failed to create HRM contact for task ${taskSid}`,
@@ -202,6 +221,7 @@ export const handleEvent = async (
     ...JSON.parse(currentTaskAttributes),
     contactId: id.toString(),
   };
+  console.debug('>>> 5. Updated task attributes:', updatedAttributes);
   await taskContext.update({ attributes: JSON.stringify(updatedAttributes) });
 };
 
