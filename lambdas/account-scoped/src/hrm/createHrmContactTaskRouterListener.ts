@@ -44,7 +44,7 @@ const BLANK_CONTACT: HrmContact = {
     caseInformation: {},
     callType: '',
     contactlessTask: {
-      channel: 'web',
+      channel: '' as any,
       date: '',
       time: '',
       createdOnBehalfOf: '',
@@ -87,6 +87,8 @@ export const handleEvent = async (
     transferTargetType,
     channelType,
     customChannelType,
+    conference,
+    direction,
   } = taskAttributes;
 
   if (isContactlessTask) {
@@ -155,10 +157,15 @@ export const handleEvent = async (
 
   console.debug('Creating HRM contact for task', taskSid, 'Hrm Account:', hrmAccountId);
 
+  const isOutboundVoiceTask = direction === 'outbound' && Boolean(conference);
+
   const newContact: HrmContact = {
     ...BLANK_CONTACT,
     definitionVersion,
-    channel: (customChannelType || channelType || 'default') as HrmContact['channel'],
+    channel: (customChannelType ||
+      (isOutboundVoiceTask && 'voice') ||
+      channelType ||
+      'default') as HrmContact['channel'],
     rawJson: {
       definitionVersion,
       ...BLANK_CONTACT.rawJson,

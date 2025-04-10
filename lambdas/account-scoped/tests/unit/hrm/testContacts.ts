@@ -28,7 +28,7 @@ export const BLANK_CONTACT: HrmContact = {
     caseInformation: {},
     callType: '',
     contactlessTask: {
-      channel: 'web',
+      channel: '' as any,
       date: '',
       time: '',
       createdOnBehalfOf: '',
