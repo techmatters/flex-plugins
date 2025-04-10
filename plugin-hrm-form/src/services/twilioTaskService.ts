@@ -62,7 +62,7 @@ export const assignOfflineContactResolve = async (payload: OfflineContactComplet
 export const wrapupConversationTask = async (taskSid: TaskSID) => {
   console.log('>>> wrapupConversationTask', taskSid);
   return fetchProtectedApi('/interaction/transitionAgentParticipants', { taskSid, targetStatus: 'wrapup' });
-}
+};
 /**
  * Completes a conversations task using the interactions API rather than the default actions API.
  * This prevents the underlying conversation being closed so a post survey can vbe performed.

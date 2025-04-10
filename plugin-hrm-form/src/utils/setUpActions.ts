@@ -165,8 +165,8 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   console.log('>>> afterAcceptTask triggered with task:', {
     taskSid: task.taskSid,
     attributes: JSON.stringify(task.attributes),
-    hasContactId: !!task.attributes?.contactId,
-    timestamp: new Date().toISOString()
+    hasContactId: Boolean(task.attributes?.contactId),
+    timestamp: new Date().toISOString(),
   });
 
   if (TaskHelper.isChatBasedTask(task)) {
@@ -176,9 +176,12 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
     sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
   }
-  
+
   const { enable_backend_hrm_contact_creation: enableBackendHrmContactCreation } = getAseloFeatureFlags();
-  console.log(`>>> afterAcceptTask with enableBackendHrmContactCreation=${enableBackendHrmContactCreation}`, task.taskSid);
+  console.log(
+    `>>> afterAcceptTask with enableBackendHrmContactCreation=${enableBackendHrmContactCreation}`,
+    task.taskSid,
+  );
 
   if (!enableBackendHrmContactCreation) {
     console.log('>>> afterAcceptTask flag off: Initializing contact form', payload);
@@ -187,33 +190,33 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
     console.log('>>> afterAcceptTask flag on: Fetch and synchronize the contact', payload);
     // Get the contact ID from the task attributes
     const contactId = isTwilioTask(task) ? task.attributes.contactId : undefined;
-    
+
     if (contactId) {
       console.log(`>>> Fetch and synchronize the contact with contactId ${contactId} in task ${task.taskSid}`);
-      
+
       const reference = `task-${task.taskSid}`;
-      
+
       // Check if contact is already in Redux store before loading
       const state = Manager.getInstance().store.getState() as RootState;
       const contactStateBefore = state[namespace].activeContacts.existingContacts[contactId];
-      console.log(`>>> Before sync - contact state exists in Redux: ${!!contactStateBefore?.savedContact}`);
-      
+      console.log(`>>> Before sync - contact state exists in Redux: ${Boolean(contactStateBefore?.savedContact)}`);
+
       // Load the contact into the Redux store with the task reference
       console.log(`>>> Dispatching loadContact for contact ${contactId} with reference ${reference}`);
       Manager.getInstance().store.dispatch(loadContact({ id: contactId }, reference, false));
-      
+
       // Check if contact is in Redux store after loading attempt
       setTimeout(() => {
         const stateAfter = Manager.getInstance().store.getState() as RootState;
         const contactStateAfter = stateAfter[namespace].activeContacts.existingContacts[contactId];
-        console.log(`>>> After sync - contact state exists in Redux: ${!!contactStateAfter?.savedContact}`);
+        console.log(`>>> After sync - contact state exists in Redux: ${Boolean(contactStateAfter?.savedContact)}`);
         console.log('>>> Contact state after synchronization:', contactId, contactStateAfter ? 'loaded' : 'not loaded');
       }, 1000); // Check after a short delay to allow for async operations
     } else {
       console.warn(`>>> No contactId found in task ${task.taskSid}, cannot synchronize contact state`);
     }
   }
-  
+
   if (TransferHelpers.hasTransferStarted(task)) {
     console.log('>>> afterAcceptTask: Handling transferred task', payload);
     await handleTransferredTask(task);

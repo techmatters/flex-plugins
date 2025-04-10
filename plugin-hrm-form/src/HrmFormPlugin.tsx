@@ -141,14 +141,36 @@ const setUpActions = (
   const wrapupOverride = ActionFunctions.wrapupTask(setupObject, getMessage);
   const beforeCompleteAction = ActionFunctions.beforeCompleteTask(featureFlags);
 
-  Flex.Actions.addListener('afterAcceptTask', ActionFunctions.afterAcceptTask(featureFlags, setupObject, getMessage));
+  console.log('>>> HRMFormPlugin afterAcceptTask event listener');
+  const afterAcceptTaskHandler = ActionFunctions.afterAcceptTask(featureFlags, setupObject, getMessage);
+  Flex.Actions.addListener('afterAcceptTask', payload => {
+    console.log('>>> afterAcceptTask raw event with payload:', payload);
+    afterAcceptTaskHandler(payload);
+  });
 
   setUpTransferActions(setupObject);
 
   Flex.Actions.replaceAction('HangupCall', ActionFunctions.hangupCall);
+
+  console.log('>>> reservationCreated event listener');
   Flex.Manager.getInstance().workerClient.addListener('reservationCreated', reservation => {
+    console.log('>>> reservationCreated with reservation:', {
+      sid: reservation.sid,
+      taskSid: reservation.task?.sid,
+      status: reservation.status,
+      hasTaskAttributes: Boolean(reservation.task?.attributes),
+      hasContactId: Boolean(reservation.task?.attributes?.contactId),
+    });
+
     reservation.addListener('wrapup', recordCallState);
     reservation.addListener('completed', recordCallState);
+
+    reservation.addListener('accepted', () => {
+      console.log('>>> reservation.accepted event for task:', {
+        taskSid: reservation.task?.sid,
+        hasContactId: Boolean(reservation.task?.attributes?.contactId),
+      });
+    });
   });
 
   Flex.Actions.replaceAction('WrapupTask', wrapupOverride);

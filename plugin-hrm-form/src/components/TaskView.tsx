@@ -67,16 +67,22 @@ const TaskView: React.FC<Props> = ({ task }) => {
 
     console.log('>>> Current Redux contact state:', {
       allContactIds: Object.keys(state['plugin-hrm-form'].activeContacts.existingContacts),
-      contactStateExists: taskContactId ? !!state['plugin-hrm-form'].activeContacts.existingContacts[taskContactId] : false,
+      contactStateExists: taskContactId
+        ? Boolean(state['plugin-hrm-form'].activeContacts.existingContacts[taskContactId])
+        : false,
       lookingForContactId: taskContactId,
       usingContactId: enableBackendHrmContactCreation && isTwilioTask(task),
-      taskSidKey: task?.taskSid ? !!state['plugin-hrm-form'].activeContacts.existingContacts[task.taskSid] : null
+      taskSidKey: task?.taskSid
+        ? Boolean(state['plugin-hrm-form'].activeContacts.existingContacts[task.taskSid])
+        : null,
     });
 
     if (taskContactId && state['plugin-hrm-form'].activeContacts.existingContacts[taskContactId]) {
-      const references = state['plugin-hrm-form'].activeContacts.existingContacts[taskContactId].references;
-      console.log(`>>> Found contactId=${taskContactId} in Redux with references:`, 
-        references ? Array.from(references) : 'no references');
+      const { references } = state['plugin-hrm-form'].activeContacts.existingContacts[taskContactId];
+      console.log(
+        `>>> Found contactId=${taskContactId} in Redux with references:`,
+        references ? Array.from(references) : 'no references',
+      );
     }
 
     const selectedContact =
@@ -107,8 +113,10 @@ const TaskView: React.FC<Props> = ({ task }) => {
   const updateHelpline = (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline }));
   React.useEffect(() => {
     if (shouldRecreateState && !isOfflineContactTask(task)) {
-      console.log(`>>> TaskView useEffect: shouldRecreateState=${shouldRecreateState}, enableBackendHrmContactCreation=${enableBackendHrmContactCreation}, taskContactId=${taskContactId}`);
-      
+      console.log(
+        `>>> TaskView useEffect: shouldRecreateState=${shouldRecreateState}, enableBackendHrmContactCreation=${enableBackendHrmContactCreation}, taskContactId=${taskContactId}`,
+      );
+
       if (enableBackendHrmContactCreation && taskContactId) {
         console.log(`>>> Loading contact from HRM for task ${task.taskSid} with contactId ${taskContactId}`);
         asyncDispatcher(newLoadContactFromHrmForTaskAsyncAction(task, workerSid, `${task.taskSid}-active`));

@@ -137,6 +137,11 @@ export const handleEvent = async (
     return;
   }
 
+  console.debug(
+    '>>> 1.5 Flag check passed, continuing with backend contact creation for task:',
+    taskSid,
+  );
+
   const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
 
   console.debug('Creating HRM contact for task', taskSid, 'Hrm Account:', hrmAccountId);

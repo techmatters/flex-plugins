@@ -282,7 +282,7 @@ export const newLoadContactFromHrmForTaskAsyncAction = createAsyncAction(
     const { taskSid } = task;
     const contactId = isTwilioTask(task) ? task.attributes?.contactId : undefined;
     console.log(`>>> Loading contact for task ${taskSid}, contactId: ${contactId}, reference: ${reference}`);
-    
+
     let contact: Contact;
     if (contactId) {
       console.log(`>>> Getting contact by ID: ${contactId}`);
@@ -292,7 +292,7 @@ export const newLoadContactFromHrmForTaskAsyncAction = createAsyncAction(
       contact = await getContactByTaskSid(task.taskSid);
     }
     console.log(`>>> Retrieved contact:`, contact?.id);
-    
+
     if (contact.taskId !== task.taskSid || contact.twilioWorkerId !== workerSid) {
       // If the contact is being transferred from a client that doesn't set the contactId on the task, we need to update the contact with the task id and worker id
       console.log(`>>> Updating contact with taskId ${taskSid} and workerSid ${workerSid}`);

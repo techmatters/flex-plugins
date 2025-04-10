@@ -26,27 +26,27 @@ import { isOfflineContact } from '../../types/types';
  */
 const selectContactStateByContactId = (state: RootState, contactId: string): ContactState | undefined => {
   console.log(`[CONTACT_SYNC_LOOKUP] Looking up contact state for contactId=${contactId}`);
-  
+
   if (!contactId) {
     console.warn('[CONTACT_SYNC_LOOKUP] Attempted to select contact with undefined/null contactId');
     return undefined;
   }
-  
+
   const allContactsInStore = state[namespace].activeContacts.existingContacts;
   const contactState = contactId ? allContactsInStore[contactId] : undefined;
-  
+
   if (contactState) {
     console.log(`[CONTACT_SYNC_LOOKUP] Contact state FOUND for contactId=${contactId}`, {
       hasReferences: contactState.references?.size > 0,
       referenceCount: contactState.references?.size,
-      hasSavedContact: !!contactState.savedContact,
+      hasSavedContact: Boolean(contactState.savedContact),
       taskId: contactState.savedContact?.taskId,
     });
   } else {
     console.warn(`[CONTACT_SYNC_LOOKUP] Contact state NOT FOUND for contactId=${contactId}`);
     console.log('[CONTACT_SYNC_LOOKUP] Available contact IDs in store:', Object.keys(allContactsInStore));
   }
-  
+
   return contactState;
 };
 export default selectContactStateByContactId;

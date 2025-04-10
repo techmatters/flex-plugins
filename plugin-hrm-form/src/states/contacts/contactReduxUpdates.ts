@@ -70,8 +70,10 @@ export const loadContactIntoRedux = (
   reference?: string,
   newMetadata?: ContactMetadata,
 ): ContactsState => {
-  console.log(`>>> loadContactIntoRedux for contact ID ${contact.id}, task ID ${contact.taskId}, reference: ${reference}`);
-  
+  console.log(
+    `>>> loadContactIntoRedux for contact ID ${contact.id}, task ID ${contact.taskId}, reference: ${reference}`,
+  );
+
   const { existingContacts } = state;
   const references = existingContacts[contact.id]?.references ?? new Set();
   if (reference) {
