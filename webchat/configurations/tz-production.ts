@@ -15,7 +15,7 @@
  */
 
 import { Configuration } from '../types';
-import { config as tzStaging } from './tz-staging';
+import { config as tzStaging } from '../configurations/tz-staging';
 
 const accountSid = 'AC24b2e69a74f051b368f4ec17f51ddbbc';
 const flexFlowSid = 'FO84244cfcfb1f02bd6790b29c72421449';

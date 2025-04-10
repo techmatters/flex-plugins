@@ -106,16 +106,6 @@
     }
   },
   {
-    "name": "nearestLandmark",
-    "label": "Nearest Landmark",
-    "type": "input"
-  },
-  {
-    "name": "city",
-    "label": "City",
-    "type": "input"
-  },
-  {
     "name": "region",
     "label": "Region",
     "type": "select",
@@ -123,24 +113,7 @@
       "value": "",
       "label": ""
     },
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      },
-      {
-        "value": "Region A",
-        "label": "Region A"
-      },
-      {
-        "value": "Region B",
-        "label": "Region B"
-      }
-    ],
+    "optionsReferenceKey": "regionOptions",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -155,52 +128,7 @@
       "value": "",
       "label": ""
     },
-    "options": {
-      "Region A": [
-        {
-          "value": "",
-          "label": ""
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        },
-        {
-          "value": "District I",
-          "label": "District I"
-        },
-        {
-          "value": "District II",
-          "label": "District II"
-        },
-        {
-          "value": "District III",
-          "label": "District III"
-        }
-      ],
-      "Region B": [
-        {
-          "value": "",
-          "label": ""
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        },
-        {
-          "value": "District VI",
-          "label": "District VI"
-        },
-        {
-          "value": "District VII",
-          "label": "District VII"
-        },
-        {
-          "value": "District VIII",
-          "label": "District VIII"
-        }
-      ]
-    },
+    "optionsReferenceKey": "districtOptions",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -215,108 +143,7 @@
       "value": "",
       "label": ""
     },
-    "options": {
-      "District I": [
-        {
-          "value": "",
-          "label": ""
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        },
-        {
-          "value": "Ward 1A",
-          "label": "Ward 1A"
-        },
-        {
-          "value": "Ward 2A",
-          "label": "Ward 2A"
-        }
-      ],
-      "District II": [
-        {
-          "value": "",
-          "label": ""
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        },
-        {
-          "value": "Ward 1B",
-          "label": "Ward 1B"
-        },
-        {
-          "value": "Ward 2B",
-          "label": "Ward 2B"
-        }
-      ],
-      "District III": [
-        {
-          "value": "",
-          "label": ""
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        },
-        {
-          "value": "Ward 1C",
-          "label": "Ward 1C"
-        }
-      ],
-      "District VI": [
-        {
-          "value": "",
-          "label": ""
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        },
-        {
-          "value": "Ward 1D",
-          "label": "Ward 1D"
-        },
-        {
-          "value": "Ward 2D",
-          "label": "Ward 2D"
-        }
-      ],
-      "District VII": [
-        {
-          "value": "",
-          "label": ""
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        },
-        {
-          "value": "Ward 1E",
-          "label": "Ward 1E"
-        },
-        {
-          "value": "Ward 2E",
-          "label": "Ward 2E"
-        }
-      ],
-      "District VIII": [
-        {
-          "value": "",
-          "label": ""
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        },
-        {
-          "value": "Ward 1F",
-          "label": "Ward 1F"
-        }
-      ]
-    },
+    "optionsReferenceKey": "wardOptions",
     "required": {
       "value": true,
       "message": "RequiredFieldError"
