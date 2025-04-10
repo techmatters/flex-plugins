@@ -160,6 +160,11 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   payload: ActionPayload,
 ) => {
   const { task } = payload;
+  console.log('>>> afterAcceptTask triggered with task:', {
+    taskSid: task.taskSid,
+    task: task,
+    hasContactId: Boolean(task.attributes?.contactId),
+  });
   if (TaskHelper.isChatBasedTask(task)) {
     subscribeAlertOnConversationJoined(task);
   }
@@ -171,6 +176,34 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   const { enable_backend_hrm_contact_creation: enableBackendHrmContactCreation } = featureFlags;
   if (!enableBackendHrmContactCreation) {
     await initializeContactForm(payload);
+  } else {
+    console.log('>>> afterAcceptTask: Backend contact creation is enabled, skipping contact form initialization');
+    // Initialize only the metadata with startMillis for conversation duration calculation
+    const manager = Manager.getInstance();
+    manager.store.dispatch({
+      type: 'ADD_METADATA',
+      taskId: task.taskSid,
+      metadata: {
+        startMillis: new Date().getTime(),
+        endMillis: null,
+        recreated: false,
+        categories: {
+          gridView: false,
+          expanded: {},
+        },
+        draft: {
+          resourceReferralList: {
+            resourceReferralIdToAdd: '',
+            lookupStatus: 'NOT_STARTED',
+          },
+          dialogsOpen: {},
+        },
+        loadingStatus: 'LOADED',
+        llmAssistant: {
+          status: 'READY',
+        },
+      },
+    });
   }
   if (TransferHelpers.hasTransferStarted(task)) {
     await handleTransferredTask(task);

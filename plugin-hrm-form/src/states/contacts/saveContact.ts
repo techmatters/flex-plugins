@@ -200,6 +200,11 @@ export const submitContactFormAsyncAction = createAsyncAction(
   SET_SAVED_CONTACT,
   async (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) => {
     const contactWithConversationDuration = setConversationDurationFromMetadata(contact, metadata);
+    console.log('>>> submitContactFormAsyncAction:', {
+      taskSid: task.taskSid,
+      contactId: contact.id,
+      metadata,
+    });
     return submitContactForm(task, contactWithConversationDuration, caseState);
   },
   (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) => ({

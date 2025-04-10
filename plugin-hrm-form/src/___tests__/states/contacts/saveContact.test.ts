@@ -32,11 +32,14 @@ import { initialState } from '../../../states/contacts/reducer';
 import { getCase } from '../../../services/CaseService';
 import { newContactMetaData } from '../../../states/contacts/contactState';
 import { VALID_EMPTY_CASE, VALID_EMPTY_CASE_STATE_ENTRY } from '../../testCases';
+import { setConversationDurationFromMetadata } from '../../../utils/conversationDuration';
+import { getAseloFeatureFlags } from '../../../hrmConfig';
 
 jest.mock('../../../services/ContactService');
 jest.mock('../../../services/CaseService');
 jest.mock('../../../services/formSubmissionHelpers');
 jest.mock('../../../components/case/Case');
+jest.mock('../../../hrmConfig');
 
 const mockGetContactByTaskSid = getContactByTaskSid as jest.MockedFunction<typeof getContactByTaskSid>;
 const mockUpdateContactInHrm = updateContactInHrm as jest.Mock<ReturnType<typeof updateContactInHrm>>;
@@ -44,6 +47,7 @@ const mockSubmitContactForm = submitContactForm as jest.Mock<ReturnType<typeof s
 const mockConnectToCase = connectToCase as jest.Mock<ReturnType<typeof connectToCase>>;
 const mockGetCase = getCase as jest.Mock<ReturnType<typeof getCase>>;
 const mockCompleteTask = completeTask as jest.Mock<ReturnType<typeof completeTask>>;
+const mockGetAseloFeatureFlags = getAseloFeatureFlags as jest.Mock<ReturnType<typeof getAseloFeatureFlags>>;
 
 beforeEach(() => {
   mockUpdateContactInHrm.mockReset();
@@ -51,6 +55,10 @@ beforeEach(() => {
   mockConnectToCase.mockReset();
   mockGetCase.mockReset();
   mockCompleteTask.mockReset();
+  mockGetAseloFeatureFlags.mockReset();
+  mockGetAseloFeatureFlags.mockReturnValue({
+    enable_backend_hrm_contact_creation: false, // Default to false for most tests
+  });
 });
 
 const boundSaveContactReducer = saveContactReducer(initialState);
@@ -111,7 +119,7 @@ const baseState: ContactsState = {
 // const dispatch = jest.fn();
 
 describe('actions', () => {
-  describe('loadContactFromHrmForTaskAsyncAction', () => {
+  describe('newLoadContactFromHrmForTaskAsyncAction', () => {
     test('Finds a contact with no attached case - loads ', async () => {
       const { dispatch, getState } = testStore(baseState);
       const taskContact: Contact = {
