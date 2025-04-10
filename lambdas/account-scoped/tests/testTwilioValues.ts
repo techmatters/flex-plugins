@@ -23,6 +23,9 @@ export const TEST_TASK_SID: TaskSID = 'WTut';
 export const TEST_WORKER_SID: WorkerSID = 'WKut';
 export const TEST_CONTACT_ID = '1337';
 export const TEST_WORKSPACE_SID = 'WSut';
+export const TEST_CONVERSATION_SID = 'CHut';
+export const TEST_CHAT_SERVICE_SID = 'ISut';
+export const TEST_CHANNEL_SID = 'CHut';
 export const DEFAULT_CONFIGURATION_ATTRIBUTES: AseloServiceConfigurationAttributes = {
   definitionVersion: 'ut-v1',
   hrm_api_version: 'v1',
