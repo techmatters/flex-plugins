@@ -140,6 +140,7 @@ export const loadContactReducer = (state = initialState, action: LoadContactActi
           gridView: false,
         },
       };
+      console.log(`>>> loadContactReducer: Updating contact state for ID=${c.id} with reference=${action.reference}, current state:`, current);
       return [
         c.id,
         {
