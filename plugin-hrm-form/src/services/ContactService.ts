@@ -354,15 +354,21 @@ async function saveConversationMedia(contactId: string, conversationMedia: Conve
 }
 
 export const getContactByTaskSid = async (taskSid: string): Promise<Contact | undefined> => {
+  console.log(`>>> getContactByTaskSid for task ${taskSid}`);
   const options: FetchOptions = {
     method: 'GET',
     returnNullFor404: true,
   };
   try {
-    console.log('>>> ContactService getContactByTaskSid', taskSid);
-    return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/byTaskSid/${taskSid}`, options));
+    console.log(`>>> Calling API endpoint: /contacts/byTaskSid/${taskSid}`);
+    const result = await fetchHrmApi(`/contacts/byTaskSid/${taskSid}`, options);
+    console.log(`>>> getContactByTaskSid result for task ${taskSid}:`, 
+      result ? `Found contact ID: ${result.id}` : 'No contact found');
+    return convertApiContactToFlexContact(result);
   } catch (err) {
+    console.error(`>>> Error in getContactByTaskSid for task ${taskSid}:`, err);
     if (err instanceof ApiError && err.response.status >= 404) {
+      console.log(`>>> 404 Not Found for task ${taskSid} - returning null`);
       return null;
     }
     throw err;
@@ -370,15 +376,21 @@ export const getContactByTaskSid = async (taskSid: string): Promise<Contact | un
 };
 
 export const getContactById = async (contactId: string): Promise<Contact | undefined> => {
+  console.log(`>>> getContactById for contact ${contactId}`);
   const options: FetchOptions = {
     method: 'GET',
     returnNullFor404: true,
   };
   try {
-    console.log('>>> ContactService getContactById', contactId);
-    return convertApiContactToFlexContact(await fetchHrmApi(`/contacts/${contactId}`, options));
+    console.log(`>>> Calling API endpoint: /contacts/${contactId}`);
+    const result = await fetchHrmApi(`/contacts/${contactId}`, options);
+    console.log(`>>> getContactById result for contact ${contactId}:`, 
+      result ? `Found contact with taskId: ${result.taskId}` : 'No contact found');
+    return convertApiContactToFlexContact(result);
   } catch (err) {
+    console.error(`>>> Error in getContactById for contact ${contactId}:`, err);
     if (err instanceof ApiError && err.response.status >= 404) {
+      console.log(`>>> 404 Not Found for contact ${contactId} - returning null`);
       return null;
     }
     throw err;

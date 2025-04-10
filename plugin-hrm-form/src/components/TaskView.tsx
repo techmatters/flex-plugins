@@ -58,19 +58,33 @@ const TaskView: React.FC<Props> = ({ task }) => {
   const currentDefinitionVersion = useSelector((state: RootState) => selectCurrentDefinitionVersion(state));
   // Check if the entry for this task exists in each reducer
   const { savedContact, draftContact, metadata } = useSelector((state: RootState) => {
-    console.log('>> TaskView contact selection:', {
+    console.log('>>> TaskView contact selection:', {
       enableBackendHrmContactCreation,
       isTwilioTask: isTwilioTask(task),
       taskContactId,
       taskSid: task?.taskSid,
     });
 
+    console.log('>>> Current Redux contact state:', {
+      allContactIds: Object.keys(state['plugin-hrm-form'].activeContacts.existingContacts),
+      contactStateExists: taskContactId ? !!state['plugin-hrm-form'].activeContacts.existingContacts[taskContactId] : false,
+      lookingForContactId: taskContactId,
+      usingContactId: enableBackendHrmContactCreation && isTwilioTask(task),
+      taskSidKey: task?.taskSid ? !!state['plugin-hrm-form'].activeContacts.existingContacts[task.taskSid] : null
+    });
+
+    if (taskContactId && state['plugin-hrm-form'].activeContacts.existingContacts[taskContactId]) {
+      const references = state['plugin-hrm-form'].activeContacts.existingContacts[taskContactId].references;
+      console.log(`>>> Found contactId=${taskContactId} in Redux with references:`, 
+        references ? Array.from(references) : 'no references');
+    }
+
     const selectedContact =
       (enableBackendHrmContactCreation && isTwilioTask(task)
         ? selectContactStateByContactId(state, taskContactId)
         : selectContactByTaskSid(state, task?.taskSid)) ?? ({} as ContactState);
 
-    console.log('>> Selected contact state:', selectedContact.savedContact ? 'found' : 'not found');
+    console.log('>>> Selected contact state:', selectedContact.savedContact ? 'found' : 'not found');
     return selectedContact;
   });
   const unsavedContact = getUnsavedContact(savedContact, draftContact);

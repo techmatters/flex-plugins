@@ -162,41 +162,56 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   payload: ActionPayload,
 ) => {
   const { task } = payload;
+  console.log('>>> afterAcceptTask triggered with task:', {
+    taskSid: task.taskSid,
+    attributes: JSON.stringify(task.attributes),
+    hasContactId: !!task.attributes?.contactId,
+    timestamp: new Date().toISOString()
+  });
+
   if (TaskHelper.isChatBasedTask(task)) {
     subscribeAlertOnConversationJoined(task);
   }
 
-  // If this is the first counsellor that gets the task, say hi
   if (TaskHelper.isChatBasedTask(task) && !TransferHelpers.hasTransferStarted(task)) {
     sendWelcomeMessageOnConversationJoined(setupObject, getMessage, payload);
   }
-  const { enable_backend_hrm_contact_creation: enableBackendHrmContactCreation } = featureFlags;
   
+  const { enable_backend_hrm_contact_creation: enableBackendHrmContactCreation } = getAseloFeatureFlags();
   console.log(`>>> afterAcceptTask with enableBackendHrmContactCreation=${enableBackendHrmContactCreation}`, task.taskSid);
-  
+
   if (!enableBackendHrmContactCreation) {
     console.log('>>> afterAcceptTask flag off: Initializing contact form', payload);
     await initializeContactForm(payload);
   } else {
-    // When backend contact creation is enabled, we need to fetch and synchronize the contact
     console.log('>>> afterAcceptTask flag on: Fetch and synchronize the contact', payload);
-      // Get the contact ID from the task attributes
-      const contactId = isTwilioTask(task) ? task.attributes.contactId : undefined;
+    // Get the contact ID from the task attributes
+    const contactId = isTwilioTask(task) ? task.attributes.contactId : undefined;
+    
+    if (contactId) {
+      console.log(`>>> Fetch and synchronize the contact with contactId ${contactId} in task ${task.taskSid}`);
       
-      if (contactId) {
-        console.log(`>>> Fetch and synchronize the contact with contactId ${contactId} in task ${task.taskSid}`);
-        
-        const reference = `task-${task.taskSid}`;
-        
-        // Load the contact into the Redux store with the task reference
-        Manager.getInstance().store.dispatch(loadContact({ id: contactId }, reference, false));
-        
-        const state = Manager.getInstance().store.getState() as RootState;
-        const contactState = state[namespace].activeContacts.existingContacts[contactId];
-        console.log('>>> Contact state after synchronization:', contactId, contactState ? 'loaded' : 'not loaded');
-      } else {
-        console.warn(`>>> No contactId found in task ${task.taskSid}, cannot synchronize contact state`);
-      }
+      const reference = `task-${task.taskSid}`;
+      
+      // Check if contact is already in Redux store before loading
+      const state = Manager.getInstance().store.getState() as RootState;
+      const contactStateBefore = state[namespace].activeContacts.existingContacts[contactId];
+      console.log(`>>> Before sync - contact state exists in Redux: ${!!contactStateBefore?.savedContact}`);
+      
+      // Load the contact into the Redux store with the task reference
+      console.log(`>>> Dispatching loadContact for contact ${contactId} with reference ${reference}`);
+      Manager.getInstance().store.dispatch(loadContact({ id: contactId }, reference, false));
+      
+      // Check if contact is in Redux store after loading attempt
+      setTimeout(() => {
+        const stateAfter = Manager.getInstance().store.getState() as RootState;
+        const contactStateAfter = stateAfter[namespace].activeContacts.existingContacts[contactId];
+        console.log(`>>> After sync - contact state exists in Redux: ${!!contactStateAfter?.savedContact}`);
+        console.log('>>> Contact state after synchronization:', contactId, contactStateAfter ? 'loaded' : 'not loaded');
+      }, 1000); // Check after a short delay to allow for async operations
+    } else {
+      console.warn(`>>> No contactId found in task ${task.taskSid}, cannot synchronize contact state`);
+    }
   }
   
   if (TransferHelpers.hasTransferStarted(task)) {

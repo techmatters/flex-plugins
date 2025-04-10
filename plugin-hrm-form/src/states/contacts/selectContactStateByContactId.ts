@@ -19,17 +19,34 @@ import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
 import { isOfflineContact } from '../../types/types';
 
+/**
+ * Select contact state by contactId
+ * @param state
+ * @param contactId
+ */
 const selectContactStateByContactId = (state: RootState, contactId: string): ContactState | undefined => {
-  const contactState = contactId ? state[namespace].activeContacts.existingContacts[contactId] : undefined;
-  console.log(`>> Looking up contact state for ${contactId}: ${contactState ? 'FOUND' : 'NOT FOUND'}`);
-
-  if (!contactState) return undefined;
+  console.log(`[CONTACT_SYNC_LOOKUP] Looking up contact state for contactId=${contactId}`);
   
-  if (!isOfflineContact(contactState.savedContact)) {
-    console.log('>> TaskView selectContactStateByContactId', contactId, contactState.savedContact);
-    return contactState;
+  if (!contactId) {
+    console.warn('[CONTACT_SYNC_LOOKUP] Attempted to select contact with undefined/null contactId');
+    return undefined;
   }
   
-  return undefined;
+  const allContactsInStore = state[namespace].activeContacts.existingContacts;
+  const contactState = contactId ? allContactsInStore[contactId] : undefined;
+  
+  if (contactState) {
+    console.log(`[CONTACT_SYNC_LOOKUP] Contact state FOUND for contactId=${contactId}`, {
+      hasReferences: contactState.references?.size > 0,
+      referenceCount: contactState.references?.size,
+      hasSavedContact: !!contactState.savedContact,
+      taskId: contactState.savedContact?.taskId,
+    });
+  } else {
+    console.warn(`[CONTACT_SYNC_LOOKUP] Contact state NOT FOUND for contactId=${contactId}`);
+    console.log('[CONTACT_SYNC_LOOKUP] Available contact IDs in store:', Object.keys(allContactsInStore));
+  }
+  
+  return contactState;
 };
 export default selectContactStateByContactId;
