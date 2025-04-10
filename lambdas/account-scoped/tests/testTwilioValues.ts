@@ -23,6 +23,7 @@ export const TEST_TASK_SID: TaskSID = 'WTut';
 export const TEST_WORKER_SID: WorkerSID = 'WKut';
 export const TEST_CONTACT_ID = '1337';
 export const TEST_WORKSPACE_SID = 'WSut';
+export const TEST_RESERVATION_FOR_TEST_WORKER_ON_TEST_TASK_SID = 'WKut reservation for WTut'
 export const DEFAULT_CONFIGURATION_ATTRIBUTES: AseloServiceConfigurationAttributes = {
   definitionVersion: 'ut-v1',
   hrm_api_version: 'v1',

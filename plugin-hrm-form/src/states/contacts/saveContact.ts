@@ -67,6 +67,7 @@ import {
   rollbackSavingStateInRedux,
   contactReduxUpdates,
 } from './contactReduxUpdates';
+import { getAseloFeatureFlags } from '../../hrmConfig';
 
 export const createContactAsyncAction = createAsyncAction(
   CREATE_CONTACT_ACTION,
@@ -104,7 +105,11 @@ export const createContactAsyncAction = createAsyncAction(
         contact = await createContact(contactToCreate, workerSid, task);
         await task.setAttributes({ ...attributes, contactId: contact.id });
       }
-      if (TransferHelpers.isColdTransfer(task) && !TransferHelpers.hasTaskControl(task))
+      if (
+        !getAseloFeatureFlags().enable_backend_hrm_contact_creation &&
+        TransferHelpers.isColdTransfer(task) &&
+        !TransferHelpers.hasTaskControl(task)
+      )
         await TransferHelpers.takeTaskControl(task);
     }
     let contactCase: Case | undefined;
