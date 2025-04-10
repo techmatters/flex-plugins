@@ -1,0 +1,193 @@
+${
+  jsonencode(
+    {
+      "description": "flow_description",
+      "states": [
+        {
+          "name": "Trigger",
+          "type": "trigger",
+          "transitions": [
+            {
+              "next": "getProfileFlagsForIdentifier",
+              "event": "incomingMessage"
+            },
+            {
+              "event": "incomingCall"
+            },
+            {
+              "event": "incomingConversationMessage"
+            },
+            {
+              "event": "incomingRequest"
+            },
+            {
+              "event": "incomingParent"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": -160,
+              "y": -460
+            }
+          }
+        },
+        {
+          "name": "getProfileFlagsForIdentifier",
+          "type": "make-http-request",
+          "transitions": [
+            {
+              "next": "contact_routing",
+              "event": "success"
+            },
+            {
+              "next": "welcome_message",
+              "event": "failed"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": -350,
+              "y": -280
+            },
+            "method": "POST",
+            "content_type": "application/json;charset=utf-8",
+            "add_twilio_auth": false,
+            "body": "{ \"trigger\": {{trigger | to_json}}}",
+            "url": "${get_profile_flags_for_identifier_base_url}/getProfileFlagsForIdentifier"
+          }
+        },
+        {
+          "name": "send_blocked_message",
+          "type": "send-message",
+          "transitions": [
+            {
+              "event": "sent"
+            },
+            {
+              "event": "failed"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": -640,
+              "y": 210
+            },
+            "service": "{{trigger.message.InstanceSid}}",
+            "channel": "{{trigger.message.ChannelSid}}",
+            "from": flow_vars["widget_from"],
+            "to": "{{contact.channel.address}}",
+            "body": flow_vars["chat_blocked_message"]
+          }
+        },
+        {
+          "name": "contact_routing",
+          "type": "split-based-on",
+          "transitions": [
+            {
+              "next": "welcome_message",
+              "event": "noMatch"
+            },
+            {
+              "next": "send_blocked_message",
+              "event": "match",
+              "conditions": [
+                {
+                  "friendly_name": "If value contains blocked",
+                  "arguments": [
+                    "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+                  ],
+                  "type": "contains",
+                  "value": "blocked"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+            "offset": {
+              "x": -690,
+              "y": -60
+            }
+          }
+        },
+        {
+          "name": "attributes",
+          "type": "send-to-flex",
+          "transitions": [
+            {
+              "event": "callComplete"
+            },
+            {
+              "next": "webhook_notify_failed_to_enqueue",
+              "event": "failedToEnqueue"
+            },
+            {
+              "event": "callFailure"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": 80,
+              "y": 250
+            },
+            "workflow": workflow_sids["master"],
+            "channel": task_channel_sids["chat"],
+            "attributes": channel_attributes["default"]
+          }
+        },
+        {
+          "name": "webhook_notify_failed_to_enqueue",
+          "type": "make-http-request",
+          "transitions": [
+            {
+              "event": "success"
+            },
+            {
+              "event": "failed"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": 540,
+              "y": 1250
+            },
+            "method": "POST",
+            "content_type": "application/json;charset=utf-8",
+            "add_twilio_auth": false,
+            "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on UKMH STG Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+            "url": webhook_url_studio_errors
+          }
+        },
+        {
+          "name": "welcome_message",
+          "type": "send-message",
+          "transitions": [
+            {
+              "next": "attributes",
+              "event": "sent"
+            },
+            {
+              "event": "failed"
+            }
+          ],
+          "properties": {
+            "offset": {
+              "x": 70,
+              "y": 20
+            },
+            "service": "{{trigger.message.InstanceSid}}",
+            "channel": "{{trigger.message.ChannelSid}}",
+            "from": "The Mix Peer Support",
+            "message_type": "custom",
+            "to": "{{contact.channel.address}}",
+            "body": "Welcome to The Mix. We'll be with you soon. If you're currently in crisis, text THEMIX to 85258"
+          }
+        }
+      ],
+      "initial_state": "Trigger",
+      "flags": {
+        "allow_concurrent_calls": true
+      }
+    }
+  )
+}
