@@ -69,7 +69,8 @@ const TaskView: React.FC<Props> = ({ task }) => {
   const contactIsLoading = useSelector((state: RootState) => selectIsContactCreating(state, task?.taskSid));
   const shouldRecreateState =
     currentDefinitionVersion &&
-    !savedContact &&
+    // Needs reloading if taskSid on contact doesn't match the taskSid of the task
+    (!savedContact || savedContact.taskId !== task.taskSid) &&
     !(metadata?.loadingStatus === LoadingStatus.LOADING) &&
     !contactIsLoading;
 

@@ -26,6 +26,7 @@ import { populateHrmContactFormFromTask } from '../../../src/hrm/populateHrmCont
 import {
   TEST_ACCOUNT_SID,
   TEST_CONTACT_ID,
+  TEST_RESERVATION_FOR_TEST_WORKER_ON_TEST_TASK_SID,
   TEST_TASK_SID,
   TEST_WORKER_SID,
   TEST_WORKSPACE_SID,
@@ -94,6 +95,18 @@ describe('handleEvent', () => {
                         return {
                           update: mockUpdateTask as TaskContext['update'],
                           fetch: mockFetchTask as TaskContext['fetch'],
+                          reservations: {
+                            list: async () => {
+                              return [
+                                {
+                                  sid: TEST_RESERVATION_FOR_TEST_WORKER_ON_TEST_TASK_SID,
+                                  reservationStatus: 'pending',
+                                  workerName: 'workerName',
+                                  workerSid: TEST_WORKER_SID,
+                                },
+                              ];
+                            },
+                          },
                         } as TaskContext;
                       } else throw new Error(`Unexpected task SID: ${taskSid}`);
                     },
@@ -138,12 +151,23 @@ describe('handleEvent', () => {
     expect(mockUpdateTask).not.toHaveBeenCalled();
   });
 
-  test('transfer task - does nothing', async () => {
+  test('transfer task - sets sidWithTaskControl to reservation sid for worker', async () => {
     const eventFields = newEventFields({ transferTargetType: 'queue' });
     setTaskReturnedByFetch(eventFields);
     await handleEvent(eventFields, TEST_ACCOUNT_SID, twilioClient);
+    const originalAttributes = JSON.parse(eventFields.TaskAttributes);
     expect(mockFetch).not.toHaveBeenCalled();
-    expect(mockUpdateTask).not.toHaveBeenCalled();
+    expect(mockUpdateTask).toHaveBeenCalledWith(
+      expect.objectContaining({
+        attributes: JSON.stringify({
+          ...originalAttributes,
+          transferMeta: {
+            ...originalAttributes.transferMeta,
+            sidWithTaskControl: TEST_RESERVATION_FOR_TEST_WORKER_ON_TEST_TASK_SID,
+          },
+        }),
+      }),
+    );
   });
 
   test('enable_backend_hrm_contact_creation not set - does nothing', async () => {
