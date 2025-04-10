@@ -208,6 +208,7 @@ export const handleEvent = async (
   const updatedAttributes = {
     ...JSON.parse(currentTaskAttributes),
     contactId: id.toString(),
+    outboundVoiceTaskStartMillis: isOutboundVoiceTask ? new Date().getTime() : null,
   };
   await taskContext.update({ attributes: JSON.stringify(updatedAttributes) });
 };
