@@ -90,6 +90,7 @@ export const handleEvent = async (
     conference,
     direction,
   } = taskAttributes;
+  console.debug('>>> 1. Task attributes:', taskAttributes);
 
   if (isContactlessTask) {
     console.debug(
@@ -208,7 +209,6 @@ export const handleEvent = async (
   const updatedAttributes = {
     ...JSON.parse(currentTaskAttributes),
     contactId: id.toString(),
-    outboundVoiceTaskStartMillis: isOutboundVoiceTask ? new Date().getTime() : null,
   };
   await taskContext.update({ attributes: JSON.stringify(updatedAttributes) });
 };
