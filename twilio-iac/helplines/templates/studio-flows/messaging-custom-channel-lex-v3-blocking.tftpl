@@ -14,7 +14,7 @@ ${
           "event": "incomingCall"
         },
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "set_hasNonSurveyTasks",
           "event": "incomingConversationMessage"
         },
         {
@@ -30,7 +30,55 @@ ${
           "y": -460
         }
       }
-    },
+    },{
+              "name": "set_hasNonSurveyTasks",
+              "type": "set-variables",
+              "transitions": [
+                {
+                  "next": "block_if_non_survey_task_associated",
+                  "event": "next"
+                }
+              ],
+              "properties": {
+                "variables": [
+                  {
+                    "value": "{% if trigger.conversation.ChannelAttributes.tasksSids %}true{% elif trigger.message.ChannelAttributes.tasksSids %}true{% else %}false{% endif %}",
+                    "key": "hasNonSurveyTasks"
+                  }
+                ],
+                "offset": {
+                  "x": 520,
+                  "y": 1760
+                }
+              }
+          },
+          {
+            "name": "block_if_non_survey_task_associated",
+            "type": "split-based-on",
+            "transitions": [
+              {
+                "next": "getProfileFlagsForIdentifier",
+                "event": "match",
+                "conditions": [
+                  {
+                    "friendly_name": "Has no non-survey tasks",
+                    "arguments": [
+                      "{{widgets.set_hasNonSurveyTasks.hasNonSurveyTasks}}"
+                    ],
+                    "type": "equal_to",
+                    "value": "false"
+                  }
+                ]
+              }
+            ],
+            "properties": {
+              "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+              "offset": {
+                "x": -690,
+                "y": -60
+              }
+            }
+          },
     {
       "name": "getProfileFlagsForIdentifier",
       "type": "make-http-request",
