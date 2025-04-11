@@ -171,6 +171,7 @@ export const handleEvent = async (
       definitionVersion,
       ...BLANK_CONTACT.rawJson,
     },
+
     twilioWorkerId: workerSid as HrmContact['twilioWorkerId'],
     taskId: taskSid as HrmContact['taskId'],
     channelSid: channelSid ?? '',
@@ -180,6 +181,7 @@ export const handleEvent = async (
     timeOfContact: new Date().toISOString(),
   };
   console.debug('Creating HRM contact with timeOfContact:', newContact.timeOfContact);
+  console.debug('>>> 2. Creating HRM contact', newContact);
   const populatedContact = await populateHrmContactFormFromTask(
     taskAttributes,
     newContact,
@@ -191,6 +193,7 @@ export const handleEvent = async (
     'contacts',
     populatedContact,
   );
+  console.debug('>>> 4. Created HRM contact response:', responseResult);
   if (isErr(responseResult)) {
     console.error(
       `Failed to create HRM contact for task ${taskSid}`,
@@ -211,6 +214,7 @@ export const handleEvent = async (
     contactId: id.toString(),
     outboundVoiceTaskStartMillis: isOutboundVoiceTask ? new Date().getTime() : null,
   };
+  console.debug('>>> 5. Updated task attributes:', updatedAttributes);
   await taskContext.update({ attributes: JSON.stringify(updatedAttributes) });
 };
 
