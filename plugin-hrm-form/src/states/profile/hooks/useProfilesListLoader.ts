@@ -65,7 +65,7 @@ export const useProfilesListLoader = ({ autoload = false }: UseProfilesListLoade
   const isOnUpdateLoad = shouldTriggerOnUpdate && !loading && !error;
   const shouldLoad = isOnFirstLoad || isOnUpdateLoad;
 
-  useLoadWithRetry({
+  return useLoadWithRetry({
     error,
     loading,
     loadFunction: loadProfileList,
