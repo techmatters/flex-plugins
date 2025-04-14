@@ -39,7 +39,7 @@ export const newContactMetaData = (recreated: boolean): ContactMetadata => {
       },
       dialogsOpen: {},
     },
-    startMillis: recreated ? null : new Date().getTime(),
+    startMillis: new Date().getTime(),
     endMillis: null,
     recreated,
     categories: categoriesMeta,

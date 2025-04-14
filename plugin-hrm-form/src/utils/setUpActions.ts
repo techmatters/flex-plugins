@@ -161,13 +161,7 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   payload: ActionPayload,
 ) => {
   const { task } = payload;
-  console.log('>>> afterAcceptTask triggered with task:', {
-    payload,
-    taskSid: task.taskSid,
-    taskCreatedTime: new Date(task.dateCreated).getMilliseconds(),
-    isTwilioTask: isTwilioTask(task),
-    contactId: task.attributes?.contactId,
-  });
+
   if (TaskHelper.isChatBasedTask(task)) {
     subscribeAlertOnConversationJoined(task);
   }
@@ -179,23 +173,6 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   const { enable_backend_hrm_contact_creation: enableBackendHrmContactCreation } = featureFlags;
   if (!enableBackendHrmContactCreation) {
     await initializeContactForm(payload);
-  } else {
-    console.log('>>> afterAcceptTask: Backend contact creation is enabled, skipping contact form initialization');
-    // Initialize only the metadata with startMillis for conversation duration calculation
-    const contactId = isTwilioTask(task) ? task.attributes?.contactId : undefined;
-    if (contactId) {
-      const existingContacts = Manager.getInstance().store.getState()[namespace].activeContacts.existingContacts;
-      const reference = `task-${task.taskSid}`;
-      Manager.getInstance().store.dispatch(loadContact({ id: contactId }, reference, false));
-      // Check if contact is in Redux store after loading attempt
-      const contactStateBefore = existingContacts[contactId];
-      setTimeout(() => {
-        const contactStateAfter = existingContacts[contactId];
-        console.log('>>> Contact state after synchronization:', contactId, contactStateBefore, contactStateAfter);
-      }, 1000); // Check after a short delay to allow for async operations
-    } else {
-      console.log('>>> No contactId found in task attributes, skipping contact loading');
-    }
   }
   if (TransferHelpers.hasTransferStarted(task)) {
     await handleTransferredTask(task);
