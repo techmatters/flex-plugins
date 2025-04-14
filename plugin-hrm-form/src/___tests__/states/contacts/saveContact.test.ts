@@ -56,9 +56,6 @@ beforeEach(() => {
   mockGetCase.mockReset();
   mockCompleteTask.mockReset();
   mockGetAseloFeatureFlags.mockReset();
-  mockGetAseloFeatureFlags.mockReturnValue({
-    enable_backend_hrm_contact_creation: false, // Default to false for most tests
-  });
 });
 
 const boundSaveContactReducer = saveContactReducer(initialState);
