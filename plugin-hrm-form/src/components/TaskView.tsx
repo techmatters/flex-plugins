@@ -171,10 +171,6 @@ const TaskView: React.FC<Props> = ({ task }) => {
   const featureFlags = getAseloFeatureFlags();
   const isFormLocked = !hasTaskControl(task);
 
-  console.log('>> TaskView contact conversationDuration', {
-    draftContact: draftContact?.conversationDuration,
-    savedContact: savedContact?.conversationDuration,
-  });
   return (
     <Flex flexDirection="column" style={{ pointerEvents: isFormLocked ? 'none' : 'auto', height: '100%' }}>
       {featureFlags.enable_previous_contacts && !isModalOpen && <ProfileIdentifierBanner task={task} />}

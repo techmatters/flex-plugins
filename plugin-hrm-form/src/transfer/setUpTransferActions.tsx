@@ -110,9 +110,7 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
     const { conferenceSid } = payload.task.conference || {};
     const conferenceSidFromAttributes = payload.task.attributes?.conference?.sid;
     if (!conferenceSid && !conferenceSidFromAttributes) {
-      console.log('>> Could not find any conferenceSid');
     } else if (conferenceSid && !conferenceSidFromAttributes) {
-      console.log('>> Updating task attributes with conferenceSid');
       // const customer = payload.task.conference?.participants.find(p => p.participantType === 'customer').participantSid;
       await payload.task.setAttributes({
         ...payload.task.attributes,

@@ -188,11 +188,10 @@ const mapDispatchToProps = (dispatch, { task }: BottomBarProps) => {
   return {
     changeRoute: (route: AppRoutes) => dispatch(RoutingActions.changeRoute(route, task.taskSid)),
     openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, task.taskSid)),
-    submitContactForm: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) => {
+    submitContactForm: (task: CustomITask, contact: Contact, metadata: ContactMetadata, caseState: CaseStateEntry) =>
       // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
       // TODO: Rework error handling to be based on redux state set by the _REJECTED action
-      dispatch(submitContactFormAsyncAction(task, contact, metadata, caseState));
-    },
+      dispatch(submitContactFormAsyncAction(task, contact, metadata, caseState)),
     createNewCase: async (task: RouterTask, savedContact: Contact, contact: Contact) =>
       openNewCase(task, savedContact, contact, dispatch),
   };
