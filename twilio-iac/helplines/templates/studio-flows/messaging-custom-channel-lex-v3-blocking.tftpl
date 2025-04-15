@@ -42,7 +42,7 @@ ${
               "properties": {
                 "variables": [
                   {
-                    "value": "{% if trigger.conversation.ChannelAttributes.tasksSids %}true{% elif trigger.message.ChannelAttributes.tasksSids %}true{% else %}false{% endif %}",
+                    "value": "{% if trigger.conversation.ChannelAttributes.tasksSids %}{{true}}{% elsif trigger.message.ChannelAttributes.tasksSids %}{{true}}{% else %}{{false}}{% endif %}",
                     "key": "hasNonSurveyTasks"
                   }
                 ],
