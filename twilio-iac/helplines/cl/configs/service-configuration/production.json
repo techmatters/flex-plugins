@@ -1,6 +1,7 @@
 {
     "attributes": {
         "feature_flags": {
+            "enable_backend_hrm_contact_creation": false
         },
         "form_definitions_base_url": "https://assets-production.tl.techmatters.org/form-definitions/",
         "resources_base_url": ""
