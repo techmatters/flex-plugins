@@ -139,7 +139,7 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
             handlePrintCase={handlePrintCase}
             isOrphanedCase={isOrphanedCase}
             definitionVersion={definitionVersion}
-            categories={connectedCase.categories}
+            categories={firstConnectedContact?.rawJson?.categories ?? {}}
           />
           <CaseOverview
             task={task}
