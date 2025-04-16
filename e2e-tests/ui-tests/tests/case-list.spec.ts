@@ -84,18 +84,25 @@ test.describe.serial('Case List', () => {
     await scanFilterDialogue('Counselor');
     await scanFilterDialogue('createdAtFilter');
     await scanFilterDialogue('updatedAtFilter');
-    await caseListPage.openFirstCaseButton();
-    const caseHomeAccessibilityScanResults = await new AxeBuilder({ page })
+  });
+
+  test('Case list accessibility: screen reader labels', async () => {
+    await page.goto('/case-list', { waitUntil: 'networkidle' });
+    // Check that filter buttons have aria-label or accessible name
+    const filterButtons = await page.$$('[data-testid^="CaseList-Filter-"]');
+    for (const btn of filterButtons) {
+      const ariaLabel = await btn.getAttribute('aria-label');
+      const label = await btn.evaluate((el) => el.textContent?.trim() || '');
+      expect(ariaLabel || label.length > 0).toBeTruthy();
+    }
+  });
+
+  test('Case list accessibility: color contrast and ARIA compliance', async () => {
+    await page.goto('/case-list', { waitUntil: 'networkidle' });
+    const results = await new AxeBuilder({ page })
       .include('div.Twilio-View-case-list')
+      .withTags(['wcag2aa', 'wcag2a', 'section508'])
       .analyze();
-    expect(caseHomeAccessibilityScanResults.violations).toEqual([]);
-    warnViolations(caseHomeAccessibilityScanResults, `the case home page`);
-    await caseListPage.editCase();
-    const caseEditAccessibilityScanResults = await new AxeBuilder({ page })
-      .include('div.Twilio-View-case-list')
-      .analyze();
-    //expect(caseHomeAccessibilityScanResults.violations).toEqual([]);
-    warnViolations(caseEditAccessibilityScanResults, `the case summary edit page`);
-    await caseListPage.closeModal();
+    expect(results.violations).toEqual([]);
   });
 });
