@@ -80,3 +80,54 @@ export const caseHome = (page: Page) => {
     saveCaseAndEnd,
   };
 };
+
+// Add utility functions moved from caseList.ts
+export async function viewClosePrintView(page: Page) {
+  const openPrintButton = page.locator('[data-testid="CasePrint-Button"]');
+  await openPrintButton.waitFor({ state: 'visible' });
+  await openPrintButton.click();
+  console.log('Opened Case Print');
+  const closePrintButton = page.locator('[data-testid="NavigableContainer-CloseCross"]');
+  await closePrintButton.waitFor({ state: 'visible' });
+  await closePrintButton.click();
+  console.log('Close Case Print');
+}
+
+export async function editCase(page: Page) {
+  const editButton = page.locator('[data-testid="Case-EditButton"]');
+  await editButton.waitFor({ state: 'visible' });
+  await editButton.click();
+}
+
+export async function updateCaseSummary(page: Page) {
+  const summaryInput = page.locator('[data-testid="CaseSummary-Input"]');
+  await summaryInput.waitFor({ state: 'visible' });
+  await summaryInput.fill('Updated summary');
+  const saveButton = page.locator('[data-testid="CaseSummary-SaveButton"]');
+  await saveButton.waitFor({ state: 'visible' });
+  await saveButton.click();
+}
+
+export async function verifyCaseSummaryUpdated(page: Page) {
+  const summaryContent = page.locator('[data-testid="CaseSummary-Content"]');
+  await summaryContent.waitFor({ state: 'visible' });
+  expect(await summaryContent.textContent()).toContain('Updated summary');
+}
+
+export async function verifyCasePrintButtonIsVisible(page: Page) {
+  const printButton = page.locator('[data-testid="CasePrint-Button"]');
+  await printButton.waitFor({ state: 'visible' });
+  expect(await printButton.isVisible()).toBe(true);
+}
+
+export async function verifyCategoryTooltipIsVisible(page: Page) {
+  const tooltip = page.locator('[data-testid="Category-Tooltip"]');
+  await tooltip.waitFor({ state: 'visible' });
+  expect(await tooltip.isVisible()).toBe(true);
+}
+
+export async function closeModal(page: Page) {
+  const closeCaseButton = page.locator('[data-testid="NavigableContainer-CloseCross"]');
+  await closeCaseButton.waitFor({ state: 'visible' });
+  await closeCaseButton.click();
+}

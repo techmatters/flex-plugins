@@ -4,6 +4,7 @@ import '../flex-in-a-box/local-resources';
 import hrmCases from '../aselo-service-mocks/hrm/cases';
 import hrmPermissions from '../aselo-service-mocks/hrm/permissions';
 import { caseList } from '../../caseList';
+import { editCase, closeModal } from '../../case';
 import AxeBuilder from '@axe-core/playwright';
 import { aseloPage } from '../aselo-service-mocks/aselo-page';
 import type { AxeResults } from 'axe-core';
@@ -41,11 +42,11 @@ test.describe.serial('Case View', () => {
       .analyze();
     expect(caseHomeAccessibilityScanResults.violations).toEqual([]);
     warnViolations(caseHomeAccessibilityScanResults, `the case home page`);
-    await caseListPage.editCase();
+    await editCase(page);
     const caseEditAccessibilityScanResults = await new AxeBuilder({ page })
       .include('div.Twilio-View-case-list')
       .analyze();
     warnViolations(caseEditAccessibilityScanResults, `the case summary edit page`);
-    await caseListPage.closeModal();
+    await closeModal(page);
   });
 });
