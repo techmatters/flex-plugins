@@ -7,7 +7,7 @@
   {
     "name": "incidentNumber",
     "type": "input",
-    "label": "Incident Number"
+    "label": "Beacon Incident Number"
   },
    {
     "name": "incidentCreationTimestamp",
