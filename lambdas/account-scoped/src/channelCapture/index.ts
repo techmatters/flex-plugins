@@ -16,4 +16,3 @@
 export { handleCaptureChannelWithBot } from './captureChannelWithBot';
 export { handleChatbotCallback } from './chatbotCallback';
 export { handleChatbotCallbackCleanup } from './chatbotCallbackCleanup';
-export { handlePostSurveyInit } from './postSurveyInit';
