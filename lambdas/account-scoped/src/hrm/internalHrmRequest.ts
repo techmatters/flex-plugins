@@ -14,7 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import { getSsmParameter } from '../ssmCache';
-import { AccountSID } from '../twilioTypes';
 import { newErr, newOk, Result } from '../Result';
 import { HttpClientError } from '../httpErrors';
 
@@ -65,16 +64,28 @@ const requestFromInternalHrmEndpoint = async <TRequest, TResponse>(
 };
 
 export const getFromInternalHrmEndpoint = async <TResponse>(
-  accountSid: AccountSID,
+  accountSid: string,
   hrmApiVersion: string,
   path: string,
 ): Promise<Result<Error, TResponse>> =>
-  requestFromInternalHrmEndpoint(accountSid, hrmApiVersion, path, null, 'GET');
+  requestFromInternalHrmEndpoint(
+    accountSid as HrmAccountId,
+    hrmApiVersion,
+    path,
+    null,
+    'GET',
+  );
 
 export const postToInternalHrmEndpoint = async <TRequest, TResponse>(
-  accountSid: AccountSID,
+  accountSid: string,
   hrmApiVersion: string,
   path: string,
   body: TRequest,
 ): Promise<Result<Error, TResponse>> =>
-  requestFromInternalHrmEndpoint(accountSid, hrmApiVersion, path, body, 'POST');
+  requestFromInternalHrmEndpoint(
+    accountSid as HrmAccountId,
+    hrmApiVersion,
+    path,
+    body,
+    'POST',
+  );
