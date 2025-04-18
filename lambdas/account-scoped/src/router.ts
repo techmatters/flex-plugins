@@ -20,6 +20,11 @@ import { validateRequestMethod } from './validation/method';
 import { isAccountSID } from './twilioTypes';
 import { handleTaskRouterEvent } from './taskrouter';
 import { handleGetProfileFlagsForIdentifier } from './hrm/getProfileFlagsForIdentifier';
+import {
+  handleCaptureChannelWithBot,
+  handleChatbotCallback,
+  handleChatbotCallbackCleanup,
+} from './channelCapture';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -41,6 +46,18 @@ const ROUTES: Record<string, FunctionRoute> = {
   getProfileFlagsForIdentifier: {
     requestPipeline: [validateWebhookRequest],
     handler: handleGetProfileFlagsForIdentifier,
+  },
+  'channelCapture/handleCaptureChannelWithBot': {
+    requestPipeline: [validateWebhookRequest],
+    handler: handleCaptureChannelWithBot,
+  },
+  'channelCapture/handleChatbotCallback': {
+    requestPipeline: [validateWebhookRequest],
+    handler: handleChatbotCallback,
+  },
+  'channelCapture/handleChatbotCallbackCleanup': {
+    requestPipeline: [validateWebhookRequest],
+    handler: handleChatbotCallbackCleanup,
   },
 };
 
