@@ -47,15 +47,15 @@ const ROUTES: Record<string, FunctionRoute> = {
     requestPipeline: [validateWebhookRequest],
     handler: handleGetProfileFlagsForIdentifier,
   },
-  'channelCapture/handleCaptureChannelWithBot': {
+  'channelCapture/captureChannelWithBot': {
     requestPipeline: [validateWebhookRequest],
     handler: handleCaptureChannelWithBot,
   },
-  'channelCapture/handleChatbotCallback': {
+  'channelCapture/chandleChatbotCallback': {
     requestPipeline: [validateWebhookRequest],
     handler: handleChatbotCallback,
   },
-  'channelCapture/handleChatbotCallbackCleanup': {
+  'channelCapture/chandleChatbotCallbackCleanup': {
     requestPipeline: [validateWebhookRequest],
     handler: handleChatbotCallbackCleanup,
   },
