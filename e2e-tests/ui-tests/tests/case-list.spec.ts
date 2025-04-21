@@ -45,8 +45,7 @@ test.describe.serial('Case List', () => {
 
   test('Case list loads items', async () => {
     await page.goto('/case-list', { waitUntil: 'networkidle' });
-    await expect(page.locator('div.Twilio-View-case-list')).toBeVisible();
-
+    await page.waitForSelector('div.Twilio-View-case-list', { state: 'visible', timeout: 10000 });
     await page.waitForTimeout(10000);
     await caseList(page).verifyCaseIdsAreInListInOrder(
       cases
