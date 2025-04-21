@@ -48,6 +48,10 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
     }
     const result = await route.handler(processedRequest, route.accountSid);
     if (isErr(result)) {
+      console.error(
+        `handler for path ${event.path} resulted in error ${result.message}`,
+        result.error,
+      );
       return convertHttpErrorResultToALBResult(result);
     }
     return okJsonResponse(result.unwrap());

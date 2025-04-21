@@ -31,7 +31,6 @@ export const handleCaptureChannelWithBot: AccountScopedHandler = async (
   request,
   accountSid,
 ): Promise<Result<HttpError, {}>> => {
-  console.log('handleCaptureChannelWithBot called with parameters', request.body);
   try {
     const authToken = await getAccountAuthToken(accountSid);
     const twilioClient = twilio(accountSid, authToken);
@@ -102,7 +101,6 @@ export const handleCaptureChannelWithBot: AccountScopedHandler = async (
     console.info(`[${accountSid}] channel ${channelSid} captured`);
     return newOk({});
   } catch (error: any) {
-    console.error('handleCaptureChannelWithBot', error);
     return newErr({ message: error.message, error: { statusCode: 500, cause: error } });
   }
 };
