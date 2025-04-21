@@ -232,42 +232,42 @@ const EditCaseOverview: React.FC<Props> = ({
 
   return (
     <div data-testid="Case-EditCaseOverview">
-    <FormProvider {...methods}>
-      <NavigableContainer
-        task={task}
-        titleCode="Case-EditCaseOverview"
-        onGoBack={checkForEdits}
-        onCloseModal={checkForEdits}
-      >
-        <CaseSummaryEditHistory {...historyDetails} />
-        <Container formContainer={true}>
-          <Box paddingBottom={`${BottomButtonBarHeight}px`}>
-            <TwoColumnLayout>
-              <ColumnarBlock>{l}</ColumnarBlock>
-              <ColumnarBlock>{r}</ColumnarBlock>
-            </TwoColumnLayout>
-          </Box>
-        </Container>
-        <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
-        <BottomButtonBar>
-          <StyledNextStepButton
-            disabled={isUpdating}
-            data-testid="Case-EditCaseScreen-SaveItem"
-            roundCorners
-            onClick={methods.handleSubmit(saveAndLeave, onError)}
-          >
-            <Template code="BottomBar-SaveCaseSummary" />
-          </StyledNextStepButton>
-        </BottomButtonBar>
-        <CloseCaseDialog
-          data-testid="CloseCaseDialog"
-          openDialog={dialogState === DialogState.OpenForClose || dialogState === DialogState.OpenForBack}
-          setDialog={() => setDialogState(DialogState.Closed)}
-          handleDontSaveClose={() => closeActions(connectedCase.id, dialogState === DialogState.OpenForClose)}
-          handleSaveUpdate={methods.handleSubmit(saveAndLeave, onError)}
-        />
-      </NavigableContainer>
-    </FormProvider>
+      <FormProvider {...methods}>
+        <NavigableContainer
+          task={task}
+          titleCode="Case-EditCaseOverview"
+          onGoBack={checkForEdits}
+          onCloseModal={checkForEdits}
+        >
+          <CaseSummaryEditHistory {...historyDetails} />
+          <Container formContainer={true}>
+            <Box paddingBottom={`${BottomButtonBarHeight}px`}>
+              <TwoColumnLayout>
+                <ColumnarBlock>{l}</ColumnarBlock>
+                <ColumnarBlock>{r}</ColumnarBlock>
+              </TwoColumnLayout>
+            </Box>
+          </Container>
+          <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
+          <BottomButtonBar>
+            <StyledNextStepButton
+              disabled={isUpdating}
+              data-testid="Case-EditCaseScreen-SaveItem"
+              roundCorners
+              onClick={methods.handleSubmit(saveAndLeave, onError)}
+            >
+              <Template code="BottomBar-SaveCaseSummary" />
+            </StyledNextStepButton>
+          </BottomButtonBar>
+          <CloseCaseDialog
+            data-testid="CloseCaseDialog"
+            openDialog={dialogState === DialogState.OpenForClose || dialogState === DialogState.OpenForBack}
+            setDialog={() => setDialogState(DialogState.Closed)}
+            handleDontSaveClose={() => closeActions(connectedCase.id, dialogState === DialogState.OpenForClose)}
+            handleSaveUpdate={methods.handleSubmit(saveAndLeave, onError)}
+          />
+        </NavigableContainer>
+      </FormProvider>
     </div>
   );
 };
