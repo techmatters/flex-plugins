@@ -139,16 +139,18 @@ export const handleChatbotCallbackCleanup: AccountScopedHandler = async (
   request,
   accountSid,
 ): Promise<Result<HttpError, {}>> => {
-  console.log('===== chatbotCallbackCleanup handler =====');
+  console.log('handleChatbotCallbackCleanup called with parameters', request.body);
   try {
     const authToken = await getAccountAuthToken(accountSid);
     const twilioClient = twilio(accountSid, authToken);
 
     const { channelSid } = request.body;
     if (!channelSid) {
+      const message = 'Missing channelSid parameter';
+      console.error(message);
       return newErr({
-        message: 'Missing channelSid parameter',
-        error: { statusCode: 400, cause: new Error('Missing channelSid parameter') },
+        message,
+        error: { statusCode: 400, cause: new Error(message) },
       });
     }
 
@@ -180,6 +182,7 @@ export const handleChatbotCallbackCleanup: AccountScopedHandler = async (
 
     return newOk({});
   } catch (error: any) {
+    console.error('handleChatbotCallbackCleanup', error);
     return newErr({ message: error.message, error: { statusCode: 500, cause: error } });
   }
 };
