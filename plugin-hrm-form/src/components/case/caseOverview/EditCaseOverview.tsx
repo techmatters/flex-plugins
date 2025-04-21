@@ -231,6 +231,7 @@ const EditCaseOverview: React.FC<Props> = ({
   };
 
   return (
+    <div data-testid="Case-EditCaseOverview">
     <FormProvider {...methods}>
       <NavigableContainer
         task={task}
@@ -267,6 +268,7 @@ const EditCaseOverview: React.FC<Props> = ({
         />
       </NavigableContainer>
     </FormProvider>
+    </div>
   );
 };
 

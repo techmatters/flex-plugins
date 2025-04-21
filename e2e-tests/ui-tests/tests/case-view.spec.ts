@@ -94,6 +94,10 @@ test.describe.serial('Case View', () => {
 
   test('Case overview edit form opens and supports keyboard navigation', async () => {
     await clickEditCase(page);
+    await page.waitForSelector('[data-testid="Case-EditCaseOverview"]', {
+      state: 'visible',
+      timeout: 10000,
+    });
     await expect(page.getByTestId('Case-EditCaseOverview')).toBeVisible();
 
     const getActiveElement = () => {
@@ -139,8 +143,12 @@ test.describe.serial('Case View', () => {
     await closeModal(page);
   });
 
-  test('Case overview edit form meets accessibility requirements', async () => {
+  test('Case overview edit form meets accessibility requirements for screen reader', async () => {
     await clickEditCase(page);
+    await page.waitForSelector('[data-testid="Case-EditCaseOverview"]', {
+      state: 'visible',
+      timeout: 10000,
+    });
     await expect(page.getByTestId('Case-EditCaseOverview')).toBeVisible();
 
     const caseEditScanResults = await new AxeBuilder({ page })
