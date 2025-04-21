@@ -51,11 +51,11 @@ const ROUTES: Record<string, FunctionRoute> = {
     requestPipeline: [validateWebhookRequest],
     handler: handleCaptureChannelWithBot,
   },
-  'channelCapture/chandleChatbotCallback': {
+  'channelCapture/chatbotCallback': {
     requestPipeline: [validateWebhookRequest],
     handler: handleChatbotCallback,
   },
-  'channelCapture/chandleChatbotCallbackCleanup': {
+  'channelCapture/chatbotCallbackCleanup': {
     requestPipeline: [validateWebhookRequest],
     handler: handleChatbotCallbackCleanup,
   },
@@ -81,3 +81,17 @@ export const lookupRoute = (event: HttpRequest): AccountScopedRoute | undefined 
     }
   }
 };
+
+
+{
+  "channelSid": {{flow.channel.address}},
+  "message": "Incoming webchat contact",
+  "studioFlowSid": {{flow.flow_sid}},
+  "language"; {{widgets.variables.language}},
+  "botSuffix": "pre_survey",
+  "triggerType": "withUserMessage",
+  "releaseType": triggerStudioFlow,
+  "releaseFlag": "preSurveyComplete",
+  "isConversation": {{widgets.variables.isConversation}},
+  "channelType": {{widgets.variables.channelType}}
+}
