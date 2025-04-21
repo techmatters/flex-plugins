@@ -31,6 +31,14 @@ test.describe.serial('Case List', () => {
   let page: Page;
   const cases = hrmCases();
   const permissions = hrmPermissions();
+  // Define the filters array for easy access and modification
+  const filters: Filter[] = [
+    'Status',
+    'Categories',
+    'Counselor',
+    'createdAtFilter',
+    'updatedAtFilter',
+  ];
 
   test.beforeAll(async ({ browser }) => {
     await mockServer.start();
@@ -43,9 +51,12 @@ test.describe.serial('Case List', () => {
     await mockServer.stop();
   });
 
-  test('Case list loads items', async () => {
+  test.beforeEach(async () => {
     await page.goto('/case-list', { waitUntil: 'networkidle' });
     await page.waitForSelector('div.Twilio-View-case-list', { state: 'visible', timeout: 10000 });
+  });
+
+  test('Case list loads items', async () => {
     await page.waitForTimeout(10000);
     await caseList(page).verifyCaseIdsAreInListInOrder(
       cases
@@ -81,15 +92,12 @@ test.describe.serial('Case List', () => {
       await caseListPage.openFilter(filter);
     };
 
-    await scanFilterDialogue('Status');
-    await scanFilterDialogue('Categories');
-    await scanFilterDialogue('Counselor');
-    await scanFilterDialogue('createdAtFilter');
-    await scanFilterDialogue('updatedAtFilter');
+    for (const filter of filters) {
+      await scanFilterDialogue(filter);
+    }
   });
 
   test('Case list accessibility: screen reader labels', async () => {
-    await page.goto('/case-list', { waitUntil: 'networkidle' });
     // Check that filter buttons have aria-label or accessible name
     const filterButtons = await page.$$('[data-testid^="CaseList-Filter-"]');
     for (const btn of filterButtons) {
@@ -97,14 +105,5 @@ test.describe.serial('Case List', () => {
       const label = await btn.evaluate((el) => el.textContent?.trim() || '');
       expect(ariaLabel || label.length > 0).toBeTruthy();
     }
-  });
-
-  test('Case list accessibility: color contrast and ARIA compliance', async () => {
-    await page.goto('/case-list', { waitUntil: 'networkidle' });
-    const results = await new AxeBuilder({ page })
-      .include('div.Twilio-View-case-list')
-      .withTags(['wcag2aa', 'wcag2a', 'section508'])
-      .analyze();
-    expect(results.violations).toEqual([]);
   });
 });

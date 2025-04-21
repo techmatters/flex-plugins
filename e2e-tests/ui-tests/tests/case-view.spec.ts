@@ -20,18 +20,9 @@ import '../flex-in-a-box/local-resources';
 import hrmCases from '../aselo-service-mocks/hrm/cases';
 import hrmPermissions from '../aselo-service-mocks/hrm/permissions';
 import { caseList } from '../../caseList';
-import { editCase, closeModal } from '../../case';
+import { clickEditCase, closeModal } from '../../case';
 import AxeBuilder from '@axe-core/playwright';
 import { aseloPage } from '../aselo-service-mocks/aselo-page';
-import type { AxeResults } from 'axe-core';
-
-function warnViolations(results: AxeResults, componentDescription: string) {
-  if (results.violations.length) {
-    console.warn(
-      `${results.violations.length} accessibility violations found in ${componentDescription}.`,
-    );
-  }
-}
 
 test.describe.serial('Case View', () => {
   let page: Page;
@@ -50,19 +41,114 @@ test.describe.serial('Case View', () => {
     await mockServer.stop();
   });
 
-  test('Case view and edit passes AXE scan', async () => {
-    const caseListPage = caseList(page);
-    await caseListPage.openFirstCaseButton();
-    const caseHomeAccessibilityScanResults = await new AxeBuilder({ page })
-      .include('div.Twilio-View-case-list')
+  test.beforeEach(async () => {
+    await page.goto('/case-list', { waitUntil: 'networkidle' });
+    await page.waitForSelector('div.Twilio-View-case-list', { state: 'visible', timeout: 10000 });
+    await caseList(page).openFirstCaseButton();
+    await page.waitForSelector('div[data-testid="CaseHome-CaseDetailsComponent"]', {
+      state: 'visible',
+      timeout: 10000,
+    });
+  });
+
+  test('Case view page is loaded and passes AXE scan', async () => {
+    const caseViewScanResults = await new AxeBuilder({ page })
+      .include('div[data-testid="CaseHome-CaseDetailsComponent"]')
       .analyze();
-    expect(caseHomeAccessibilityScanResults.violations).toEqual([]);
-    warnViolations(caseHomeAccessibilityScanResults, `the case home page`);
-    await editCase(page);
-    const caseEditAccessibilityScanResults = await new AxeBuilder({ page })
-      .include('div.Twilio-View-case-list')
+    expect(caseViewScanResults.violations).toEqual([]);
+  });
+
+  test('Case view page is accessible and has case information and overview elements', async () => {
+    const checkElementAccessibility = async (testId: string, attributeName: string) => {
+      await expect(page.getByTestId(testId)).toBeVisible();
+      const element = page.getByTestId(testId);
+      expect(await element.getAttribute(attributeName)).toBeTruthy();
+    };
+
+    const checkElementHasVisibleLabel = async (testId: string) => {
+      const input = page.getByTestId(testId);
+      const labelId = await input.getAttribute('aria-labelledby');
+
+      if (labelId) {
+        const label = page.locator(`#${labelId}`);
+        await expect(label).toBeVisible();
+      }
+    };
+
+    await checkElementAccessibility('Case-DetailsHeaderCaseId', 'id');
+    await expect(page.getByTestId('Case-DetailsHeaderCounselor')).toBeVisible();
+    const caseOverviewIds = ['CaseDetailsStatusLabel', 'childIsAtRisk', 'createdAt', 'updatedAt'];
+
+    for (const fieldId of caseOverviewIds) {
+      await checkElementAccessibility(`Case-CaseOverview-${fieldId}`, 'aria-labelledby');
+      await checkElementHasVisibleLabel(`Case-CaseOverview-${fieldId}`);
+    }
+
+    const caseViewScanResults = await new AxeBuilder({ page })
+      .include('div[data-testid="CaseHome-CaseDetailsComponent"]')
       .analyze();
-    warnViolations(caseEditAccessibilityScanResults, `the case summary edit page`);
+    expect(caseViewScanResults.violations).toEqual([]);
+
     await closeModal(page);
+  });
+
+  test('Case overview edit form opens and supports keyboard navigation', async () => {
+    await clickEditCase(page);
+    await expect(page.getByTestId('Case-EditCaseOverview')).toBeVisible();
+
+    const getActiveElement = () => {
+      return (
+        document.activeElement?.getAttribute('id') ||
+        document.activeElement?.getAttribute('data-testid')
+      );
+    };
+    const activeElement = await page.evaluate(getActiveElement);
+    expect(activeElement).toBeTruthy();
+
+    const formControls = [
+      { selector: '#status', type: 'select' },
+      { selector: '#childIsAtRisk', type: 'checkbox' },
+      { selector: '#followUpDate', type: 'date' },
+      { selector: '#reportDate', type: 'date' },
+      { selector: '#operatingArea', type: 'select' },
+      { selector: '#priority', type: 'select' },
+      { selector: '#summary', type: 'textarea' },
+      { selector: '[data-testid="Case-EditCaseScreen-SaveItem"]', type: 'button' },
+    ];
+
+    await page.focus(formControls[0].selector);
+
+    for (let i = 1; i < formControls.length; i++) {
+      if (i > 0 && formControls[i - 1].type === 'date') {
+        await page.keyboard.press('Tab'); // day
+        await page.keyboard.press('Tab'); // year
+        await page.keyboard.press('Tab'); // calendar icon/next field
+      } else {
+        await page.keyboard.press('Tab');
+      }
+
+      const focusedElement = await page.evaluate(getActiveElement);
+
+      const expectedId = formControls[i].selector.startsWith('#')
+        ? formControls[i].selector.substring(1)
+        : formControls[i].selector.match(/data-testid="([^"]+)"/)?.[1];
+
+      expect(focusedElement).toBe(expectedId);
+    }
+
+    await closeModal(page);
+  });
+
+  test('Case overview edit form meets accessibility requirements', async () => {
+    await clickEditCase(page);
+    await expect(page.getByTestId('Case-EditCaseOverview')).toBeVisible();
+
+    const caseEditScanResults = await new AxeBuilder({ page })
+      .include('div[data-testid="Case-EditCaseOverview"]')
+      .analyze();
+    expect(caseEditScanResults.violations).toEqual([]);
+    await closeModal(page);
+    await expect(page.getByTestId('Case-EditCaseOverview')).not.toBeVisible();
+    await expect(page.getByTestId('CaseHome-CaseDetailsComponent')).toBeVisible();
   });
 });

@@ -93,7 +93,7 @@ export async function viewClosePrintView(page: Page) {
   console.log('Close Case Print');
 }
 
-export async function editCase(page: Page) {
+export async function clickEditCase(page: Page) {
   const editButton = page.locator('[data-testid="Case-EditButton"]');
   await editButton.waitFor({ state: 'visible' });
   await editButton.click();
