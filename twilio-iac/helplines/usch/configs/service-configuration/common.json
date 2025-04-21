@@ -10,8 +10,7 @@
         "feature_flags": {
             "enable_voice_recordings": true,
             "enable_client_profiles":true,
-            "enable_conferencing": true,
-            "enable_generalized_search": true
+            "enable_conferencing": true
         },
         "definitionVersion": "usch-v1",
         "external_recordings_enabled": false,
