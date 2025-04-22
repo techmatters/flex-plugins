@@ -185,6 +185,7 @@ const triggerWithUserMessage = async (
     webhookBaseUrl,
   }: CaptureChannelOptions,
 ) => {
+  console.log('triggerWithUserMessage - about to send message to Lex');
   // trigger Lex first, in order to reduce the time between the creating the webhook and sending the message
   const lexResult = await LexClient.postText({
     enableLexV2,
@@ -197,7 +198,9 @@ const triggerWithUserMessage = async (
       sessionId: userId,
     },
   });
+  console.log('triggerWithUserMessage - message sent', lexResult);
 
+  console.log('triggerWithUserMessage - creating webhook');
   const webhook = await (channelOrConversation as ConversationInstance)
     .webhooks()
     .create({
@@ -206,7 +209,9 @@ const triggerWithUserMessage = async (
       'configuration.method': 'POST',
       'configuration.url': `${webhookBaseUrl}/channelCapture/chatbotCallback`,
     });
+  console.log('triggerWithUserMessage - created webhook');
 
+  console.log('triggerWithUserMessage - updating channel');
   await updateChannelWithCapture(channelOrConversation, {
     enableLexV2,
     userId,
@@ -223,9 +228,14 @@ const triggerWithUserMessage = async (
     isConversation,
     channelType,
   });
+  console.log('triggerWithUserMessage - updated channel');
 
   // Bubble exception after the channel is updated because capture attributes are needed for the cleanup
   if (isErr(lexResult)) {
+    console.error(
+      `triggerWithUserMessage - lexResult error ${lexResult.message}`,
+      lexResult.error,
+    );
     throw lexResult.error;
   }
 
@@ -241,6 +251,7 @@ const triggerWithUserMessage = async (
     messages = messages.concat(lexResponse.messages.map(m => m.content || ''));
   }
 
+  console.log('triggerWithUserMessage - sending messages');
   for (const message of messages) {
     if (isConversation) {
       // eslint-disable-next-line no-await-in-loop
@@ -258,6 +269,7 @@ const triggerWithUserMessage = async (
       });
     }
   }
+  console.log('triggerWithUserMessage - sent messages');
 };
 
 /**
@@ -559,6 +571,7 @@ export const handleChannelCapture = async (
 
     return newOk({});
   } catch (error) {
+    console.error('handleChannelCapture', error);
     return newErr({
       message: error instanceof Error ? error.message : String(error),
       error: error instanceof Error ? error : new Error(String(error)),
@@ -743,6 +756,7 @@ export const handleChannelRelease = async ({
 
     return newOk({});
   } catch (error) {
+    console.error('handeChannelRelease', error);
     return newErr({
       message: error instanceof Error ? error.message : String(error),
       error: error instanceof Error ? error : new Error(String(error)),
