@@ -164,7 +164,7 @@ type CaptureChannelOptions = {
 };
 
 const getChatBotCallbackURL = (webhookBaseUrl: string) =>
-  `${webhookBaseUrl}/${ROUTE_PREFIX}/channelCapture/chatbotCallback`;
+  `${webhookBaseUrl}${ROUTE_PREFIX}/channelCapture/chatbotCallback`;
 
 /**
  * Trigger a chatbot execution by redirecting a message that already exists in the channel (used to trigger executions from service user messages)
