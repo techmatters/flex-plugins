@@ -557,6 +557,7 @@ export const handleChannelCapture = async (
 
     const serviceConfig = await twilioClient.flexApi.v1.configuration.get().fetch();
     const enableLexV2 = Boolean(serviceConfig.attributes.feature_flags.enable_lex_v2);
+    console.log('>>>>>>>>>>>>>>> enableLexV2 is', enableLexV2);
 
     const options: CaptureChannelOptions = {
       enableLexV2,
