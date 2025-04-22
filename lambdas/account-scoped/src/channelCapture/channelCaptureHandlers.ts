@@ -201,14 +201,13 @@ const triggerWithUserMessage = async (
   console.log('triggerWithUserMessage - message sent', lexResult);
 
   console.log('triggerWithUserMessage - creating webhook');
-  const webhook = await (channelOrConversation as ConversationInstance)
-    .webhooks()
-    .create({
-      target: 'webhook',
-      'configuration.filters': ['onMessageAdded'],
-      'configuration.method': 'POST',
-      'configuration.url': `${webhookBaseUrl}/channelCapture/chatbotCallback`,
-    });
+  const webhook = await channelOrConversation.webhooks().create({
+    target: 'webhook',
+    type: 'webhook',
+    'configuration.filters': ['onMessageAdded'],
+    'configuration.method': 'POST',
+    'configuration.url': `${webhookBaseUrl}/channelCapture/chatbotCallback`,
+  });
   console.log('triggerWithUserMessage - created webhook');
 
   console.log('triggerWithUserMessage - updating channel');
@@ -762,10 +761,4 @@ export const handleChannelRelease = async ({
       error: error instanceof Error ? error : new Error(String(error)),
     });
   }
-};
-
-export type ChannelCaptureHandlers = {
-  isChatCaptureControlTask: typeof isChatCaptureControlTask;
-  handleChannelCapture: typeof handleChannelCapture;
-  handleChannelRelease: typeof handleChannelRelease;
 };
