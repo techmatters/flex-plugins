@@ -64,6 +64,7 @@ export const handleCaptureChannelWithBot: AccountScopedHandler = async (
     const twilioWorkspaceSid = await getTwilioWorkspaceSid(accountSid);
 
     const result = await handleChannelCapture(twilioClient, {
+      accountSid,
       channelSid,
       conversationSid: isConversation ? channelSid : '',
       message,

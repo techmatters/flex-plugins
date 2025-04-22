@@ -146,6 +146,7 @@ const updateChannelWithCapture = async (
 };
 
 type CaptureChannelOptions = {
+  accountSid: string;
   enableLexV2: boolean;
   environment: string;
   helplineCode: string;
@@ -163,8 +164,13 @@ type CaptureChannelOptions = {
   webhookBaseUrl: string;
 };
 
-const getChatBotCallbackURL = (webhookBaseUrl: string) =>
-  `${webhookBaseUrl}${ROUTE_PREFIX}channelCapture/chatbotCallback`;
+const getChatBotCallbackURL = ({
+  accountSid,
+  webhookBaseUrl,
+}: {
+  accountSid: string;
+  webhookBaseUrl: string;
+}) => `${webhookBaseUrl}${ROUTE_PREFIX}${accountSid}/channelCapture/chatbotCallback`;
 
 /**
  * Trigger a chatbot execution by redirecting a message that already exists in the channel (used to trigger executions from service user messages)
@@ -172,6 +178,7 @@ const getChatBotCallbackURL = (webhookBaseUrl: string) =>
 const triggerWithUserMessage = async (
   channelOrConversation: ChannelInstance | ConversationInstance,
   {
+    accountSid,
     enableLexV2,
     userId,
     environment,
@@ -211,14 +218,14 @@ const triggerWithUserMessage = async (
       target: 'webhook',
       'configuration.filters': ['onMessageAdded'],
       'configuration.method': 'POST',
-      'configuration.url': getChatBotCallbackURL(webhookBaseUrl),
+      'configuration.url': getChatBotCallbackURL({ accountSid, webhookBaseUrl }),
     });
   } else {
     webhook = await (channelOrConversation as ChannelInstance).webhooks().create({
       type: 'webhook',
       'configuration.filters': ['onMessageSent'],
       'configuration.method': 'POST',
-      'configuration.url': getChatBotCallbackURL(webhookBaseUrl),
+      'configuration.url': getChatBotCallbackURL({ accountSid, webhookBaseUrl }),
     });
   }
   console.log('triggerWithUserMessage - created webhook');
@@ -290,6 +297,7 @@ const triggerWithUserMessage = async (
 const triggerWithNextMessage = async (
   channelOrConversation: ChannelInstance | ConversationInstance,
   {
+    accountSid,
     enableLexV2,
     userId,
     environment,
@@ -325,14 +333,14 @@ const triggerWithNextMessage = async (
       target: 'webhook',
       'configuration.filters': ['onMessageAdded'],
       'configuration.method': 'POST',
-      'configuration.url': getChatBotCallbackURL(webhookBaseUrl),
+      'configuration.url': getChatBotCallbackURL({ accountSid, webhookBaseUrl }),
     });
   } else {
     webhook = await (channelOrConversation as ChannelInstance).webhooks().create({
       type: 'webhook',
       'configuration.filters': ['onMessageSent'],
       'configuration.method': 'POST',
-      'configuration.url': getChatBotCallbackURL(webhookBaseUrl),
+      'configuration.url': getChatBotCallbackURL({ accountSid, webhookBaseUrl }),
     });
   }
 
@@ -362,6 +370,7 @@ export type HandleChannelCaptureParams = (
     }
   | { conversationSid: string; channelSid?: string }
 ) & {
+  accountSid: string;
   environment: string;
   message: string; // The triggering message (in Studio Flow, trigger.message.Body)
   language: string; // (in Studio Flow, {{trigger.message.ChannelAttributes.pre_engagement_data.language | default: 'en-US'}} )
@@ -470,6 +479,7 @@ export const handleChannelCapture = async (
     }
 
     const {
+      accountSid,
       chatServiceSid,
       helplineCode,
       surveyWorkflowSid,
@@ -563,6 +573,7 @@ export const handleChannelCapture = async (
     const enableLexV2 = Boolean(serviceConfig.attributes.feature_flags.enable_lex_v2);
 
     const options: CaptureChannelOptions = {
+      accountSid,
       enableLexV2,
       environment: environment.toLowerCase(),
       helplineCode: helplineCode.toLowerCase(),
