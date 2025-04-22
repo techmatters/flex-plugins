@@ -24,6 +24,7 @@ import { isErr, newErr, newOk, Result } from '../Result';
 import { Twilio } from 'twilio';
 import { postToInternalHrmEndpoint } from '../hrm/internalHrmRequest';
 import { getFormDefinitionUrl, loadConfigJson } from '../formDefinitionsCache';
+import { ROUTE_PREFIX } from '../router';
 
 const triggerTypes = ['withUserMessage', 'withNextMessage'] as const;
 export type TriggerTypes = (typeof triggerTypes)[number];
@@ -162,6 +163,9 @@ type CaptureChannelOptions = {
   webhookBaseUrl: string;
 };
 
+const getChatBotCallbackURL = (webhookBaseUrl: string) =>
+  `${webhookBaseUrl}/${ROUTE_PREFIX}/channelCapture/chatbotCallback`;
+
 /**
  * Trigger a chatbot execution by redirecting a message that already exists in the channel (used to trigger executions from service user messages)
  */
@@ -207,14 +211,14 @@ const triggerWithUserMessage = async (
       target: 'webhook',
       'configuration.filters': ['onMessageAdded'],
       'configuration.method': 'POST',
-      'configuration.url': `${webhookBaseUrl}/channelCapture/chatbotCallback`,
+      'configuration.url': getChatBotCallbackURL(webhookBaseUrl),
     });
   } else {
     webhook = await (channelOrConversation as ChannelInstance).webhooks().create({
       type: 'webhook',
       'configuration.filters': ['onMessageSent'],
       'configuration.method': 'POST',
-      'configuration.url': `${webhookBaseUrl}/channelCapture/chatbotCallback`,
+      'configuration.url': getChatBotCallbackURL(webhookBaseUrl),
     });
   }
   console.log('triggerWithUserMessage - created webhook');
@@ -321,14 +325,14 @@ const triggerWithNextMessage = async (
       target: 'webhook',
       'configuration.filters': ['onMessageAdded'],
       'configuration.method': 'POST',
-      'configuration.url': `${webhookBaseUrl}/channelCapture/chatbotCallback`,
+      'configuration.url': getChatBotCallbackURL(webhookBaseUrl),
     });
   } else {
     webhook = await (channelOrConversation as ChannelInstance).webhooks().create({
       type: 'webhook',
       'configuration.filters': ['onMessageSent'],
       'configuration.method': 'POST',
-      'configuration.url': `${webhookBaseUrl}/channelCapture/chatbotCallback`,
+      'configuration.url': getChatBotCallbackURL(webhookBaseUrl),
     });
   }
 
@@ -557,7 +561,6 @@ export const handleChannelCapture = async (
 
     const serviceConfig = await twilioClient.flexApi.v1.configuration.get().fetch();
     const enableLexV2 = Boolean(serviceConfig.attributes.feature_flags.enable_lex_v2);
-    console.log('>>>>>>>>>>>>>>> enableLexV2 is', enableLexV2);
 
     const options: CaptureChannelOptions = {
       enableLexV2,
