@@ -32,13 +32,18 @@ import { getNumberFromTask, getTaskLanguage } from './task';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { newContact } from '../states/contacts/contactState';
 import asyncDispatch from '../states/asyncDispatch';
-import { createContactAsyncAction, newFinalizeContactAsyncAction } from '../states/contacts/saveContact';
+import {
+  createContactAsyncAction,
+  loadContactFromHrmByIdAsyncAction,
+  newFinalizeContactAsyncAction,
+} from '../states/contacts/saveContact';
 import { handleTransferredTask } from '../transfer/setUpTransferActions';
 import { prepopulateForm } from './prepopulateForm';
 import { namespace } from '../states/storeNamespaces';
 import { recordEvent } from '../fullStory';
 import { completeConversationTask, wrapupConversationTask } from '../services/twilioTaskService';
 import { adjustChatCapacity } from '../services/twilioWorkerService';
+import selectContactStateByContactId from '../states/contacts/selectContactStateByContactId';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type GetMessage = (key: string) => (key: string) => Promise<string>;
@@ -160,6 +165,19 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
   payload: ActionPayload,
 ) => {
   const { task } = payload;
+
+  task.source.addListener('updated', ({ attributes }) => {
+    console.info('TASK UPDATED EVENT FIRED!');
+    if (attributes.contactId) {
+      const { store } = Manager.getInstance();
+      const stateContact = selectContactStateByContactId(store.getState() as RootState, attributes.contactId);
+      if (!stateContact || stateContact.savedContact?.twilioWorkerId !== payload.task.workerSid) {
+        asyncDispatch(store.dispatch)(
+          loadContactFromHrmByIdAsyncAction(attributes.contactId, `${payload.task.taskSid}-active`),
+        );
+      }
+    }
+  });
   if (TaskHelper.isChatBasedTask(task)) {
     subscribeAlertOnConversationJoined(task);
   }
