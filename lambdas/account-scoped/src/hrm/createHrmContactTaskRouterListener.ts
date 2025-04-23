@@ -26,7 +26,10 @@ import type { EventFields } from '../taskrouter';
 import twilio from 'twilio';
 import { AccountSID, TaskSID, WorkerSID } from '../twilioTypes';
 import { getWorkspaceSid } from '../configuration/twilioConfiguration';
-import { postToInternalHrmEndpoint } from './internalHrmRequest';
+import {
+  patchOnInternalHrmEndpoint,
+  postToInternalHrmEndpoint,
+} from './internalHrmRequest';
 import { isErr } from '../Result';
 import { inferHrmAccountId } from './hrmAccountId';
 
@@ -124,7 +127,7 @@ export const handleEvent = async (
     console.debug(
       `Accepting task ${taskSid} that already has contactId ${contactId} attached. Ensuring this contact is owned by accepting worker ${workerSid}`,
     );
-    const responseResult = await postToInternalHrmEndpoint<
+    const responseResult = await patchOnInternalHrmEndpoint<
       Partial<HrmContact>,
       HrmContact
     >(hrmAccountId, hrmApiVersion, `contacts/${contactId}`, {

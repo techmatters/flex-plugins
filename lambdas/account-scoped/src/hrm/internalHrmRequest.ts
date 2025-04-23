@@ -78,3 +78,11 @@ export const postToInternalHrmEndpoint = async <TRequest, TResponse>(
   body: TRequest,
 ): Promise<Result<Error, TResponse>> =>
   requestFromInternalHrmEndpoint(accountSid, hrmApiVersion, path, body, 'POST');
+
+export const patchOnInternalHrmEndpoint = async <TRequest, TResponse>(
+  accountSid: AccountSID,
+  hrmApiVersion: string,
+  path: string,
+  body: TRequest,
+): Promise<Result<Error, TResponse>> =>
+  requestFromInternalHrmEndpoint(accountSid, hrmApiVersion, path, body, 'PATCH');
