@@ -24,7 +24,7 @@ import { registerTaskRouterEventHandler } from '../taskrouter/taskrouterEventHan
 import { RESERVATION_ACCEPTED } from '../taskrouter/eventTypes';
 import type { EventFields } from '../taskrouter';
 import twilio from 'twilio';
-import { AccountSID } from '../twilioTypes';
+import { AccountSID, TaskSID, WorkerSID } from '../twilioTypes';
 import { getWorkspaceSid } from '../configuration/twilioConfiguration';
 import { postToInternalHrmEndpoint } from './internalHrmRequest';
 import { isErr } from '../Result';
@@ -89,6 +89,7 @@ export const handleEvent = async (
     customChannelType,
     conference,
     direction,
+    contactId,
   } = taskAttributes;
 
   if (isContactlessTask) {
@@ -96,6 +97,47 @@ export const handleEvent = async (
       `Task ${taskSid} is a contactless task, contact was already created in Flex.`,
     );
     return;
+  }
+
+  const serviceConfig = await client.flexApi.v1.configuration.get().fetch();
+
+  const {
+    definitionVersion,
+    hrm_api_version: hrmApiVersion,
+    form_definitions_version_url: configFormDefinitionsVersionUrl,
+    assets_bucket_url: assetsBucketUrl,
+    helpline_code: helplineCode,
+    feature_flags: {
+      enable_backend_hrm_contact_creation: enableBackendHrmContactCreation,
+    },
+  } = serviceConfig.attributes;
+
+  if (!enableBackendHrmContactCreation) {
+    console.debug(
+      `enable_backend_hrm_contact_creation is not set, the contact associated with task ${taskSid} will be created from Flex.`,
+    );
+    return;
+  }
+  const hrmAccountId = inferHrmAccountId(accountSid, workerName);
+
+  if (contactId) {
+    console.debug(
+      `Accepting task ${taskSid} that already has contactId ${contactId} attached. Ensuring this contact is owned by accepting worker ${workerSid}`,
+    );
+    const responseResult = await postToInternalHrmEndpoint<
+      Partial<HrmContact>,
+      HrmContact
+    >(hrmAccountId, hrmApiVersion, `contacts/${contactId}`, {
+      twilioWorkerId: workerSid as WorkerSID,
+      taskId: taskSid as TaskSID,
+    });
+    if (isErr(responseResult)) {
+      console.error(
+        `Failed to update HRM contact for task ${taskSid}`,
+        responseResult.message,
+        responseResult.error,
+      );
+    }
   }
 
   if (transferTargetType) {
@@ -125,33 +167,12 @@ export const handleEvent = async (
       console.warn(
         `Could not find reservation on task ${taskSid} for worker ${workerSid}, even though they are accepting the task. Cannot set sidWithTaskControl to complete transfer.`,
       );
-
     return;
   }
 
-  const serviceConfig = await client.flexApi.v1.configuration.get().fetch();
-
-  const {
-    definitionVersion,
-    hrm_api_version: hrmApiVersion,
-    form_definitions_version_url: configFormDefinitionsVersionUrl,
-    assets_bucket_url: assetsBucketUrl,
-    helpline_code: helplineCode,
-    feature_flags: {
-      enable_backend_hrm_contact_creation: enableBackendHrmContactCreation,
-    },
-  } = serviceConfig.attributes;
-
-  const hrmAccountId = inferHrmAccountId(accountSid, workerName);
   const formDefinitionsVersionUrl =
     configFormDefinitionsVersionUrl ||
     `${assetsBucketUrl}/form-definitions/${helplineCode}/v1`;
-  if (!enableBackendHrmContactCreation) {
-    console.debug(
-      `enable_backend_hrm_contact_creation is not set, the contact associated with task ${taskSid} will be created from Flex.`,
-    );
-    return;
-  }
 
   const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
 
