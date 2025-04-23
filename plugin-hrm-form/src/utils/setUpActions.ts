@@ -177,11 +177,7 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
         stateContact.savedContact?.taskId !== task.taskSid
       ) {
         asyncDispatch(store.dispatch)(
-          newLoadContactFromHrmForTaskAsyncAction(
-            attributes.contactId,
-            task.workerSid as WorkerSID,
-            `${task.taskSid}-active`,
-          ),
+          newLoadContactFromHrmForTaskAsyncAction(task, task.workerSid as WorkerSID, `${task.taskSid}-active`),
         );
       }
     }
