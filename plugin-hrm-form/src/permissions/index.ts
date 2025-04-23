@@ -288,7 +288,7 @@ const isCounselorWhoCreated = (user: TwilioUser, caseObj: any) => user.workerSid
 
 const isCaseOpen = (caseObj: any) => caseObj?.status !== 'closed';
 
-const isContactOwner = (user: TwilioUser, contactObj: any) => user.workerSid === contactObj?.twilioWorkerId;
+const isContactOwner = (user: TwilioUser, contactObj: any) => user.workerSid === contactObj?.activty?.twilioWorkerId;
 
 const isCaseContactOwner = (caseObj: any) => caseObj?.precalculatedPermissions?.userOwnsContact;
 
