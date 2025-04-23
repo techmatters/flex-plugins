@@ -21,7 +21,9 @@
             "enable_save_in_progress_contacts": true,
             "enable_save_insights": true,
             "enable_teams_view_enhancements2": true,
-            "enable_voice_recordings": false
+            "enable_voice_recordings": false,
+            "enable_backend_hrm_contact_creation": true,
+            "enable_lex_v2": true
         },
         "contact_save_frequency": "onTabChange",
         "multipleOfficeSupport": true,
