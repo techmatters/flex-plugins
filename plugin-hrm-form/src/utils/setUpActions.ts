@@ -171,7 +171,11 @@ export const afterAcceptTask = (featureFlags: FeatureFlags, setupObject: SetupOb
     if (attributes.contactId) {
       const { store } = Manager.getInstance();
       const stateContact = selectContactStateByContactId(store.getState() as RootState, attributes.contactId);
-      if (!stateContact || stateContact.savedContact?.twilioWorkerId !== task.workerSid) {
+      if (
+        !stateContact ||
+        stateContact.savedContact?.twilioWorkerId !== task.workerSid ||
+        stateContact.savedContact?.taskId !== task.taskSid
+      ) {
         asyncDispatch(store.dispatch)(
           newLoadContactFromHrmForTaskAsyncAction(
             attributes.contactId,
