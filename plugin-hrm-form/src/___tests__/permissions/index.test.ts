@@ -356,7 +356,7 @@ describe('ContactActions', () => {
 
       const can = getInitializedCan();
 
-      expect(can(action, { twilioWorkerId: 'owner', createdAt })).toBe(expectedResult);
+      expect(can(action, { activity: { twilioWorkerId: 'owner' }, createdAt })).toBe(expectedResult);
     },
   );
 });
