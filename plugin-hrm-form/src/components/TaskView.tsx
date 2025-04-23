@@ -83,6 +83,7 @@ const TaskView: React.FC<Props> = ({ task }) => {
   );
   const updateHelpline = (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline }));
   const { transferMeta } = isOfflineContactTask(task) ? { transferMeta: undefined } : task.attributes;
+  const sidWithTaskControl = transferMeta?.sidWithTaskControl;
   React.useEffect(() => {
     if (shouldRecreateState && !isOfflineContactTask(task)) {
       if (enableBackendHrmContactCreation && taskContactId) {
@@ -103,6 +104,7 @@ const TaskView: React.FC<Props> = ({ task }) => {
     shouldRecreateState,
     task,
     transferMeta,
+    sidWithTaskControl,
     taskContactId,
     workerSid,
   ]);
