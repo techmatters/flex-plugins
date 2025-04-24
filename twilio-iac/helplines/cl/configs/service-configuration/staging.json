@@ -1,6 +1,7 @@
 {
     "attributes": {
         "feature_flags": { 
+            "enable_backend_hrm_contact_creation": true
         },
         "pdfImagesSource": "https://tl-public-chat-cl-stg.s3.amazonaws.com",
         "helpline_code": "cl",

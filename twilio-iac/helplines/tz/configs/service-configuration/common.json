@@ -9,7 +9,8 @@
         "definitionVersion": "tz-v1",
         "feature_flags": {
             "enable_lex": true,
-            "enable_permissions_from_backend": true
+            "enable_permissions_from_backend": true,
+            "enable_generalized_search": true
         },
         "helplineLanguage": "en-US",
         "permissionConfig": "tz"

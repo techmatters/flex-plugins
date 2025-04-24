@@ -3,7 +3,7 @@
     "callerInformation": [
       {
         "name": "reportingDistrict",
-        "insights": ["conversations", "region"]
+        "insights": ["conversations", "conversation_attribute_5"]
       },
       {
         "name": "officerRequest",

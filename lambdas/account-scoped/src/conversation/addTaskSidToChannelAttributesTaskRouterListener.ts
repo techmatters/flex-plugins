@@ -26,18 +26,17 @@ import { getChatServiceSid, getWorkspaceSid } from '../configuration/twilioConfi
 
 type RelevantTaskAttributes = {
   isContactlessTask?: boolean;
-  channelType?: string;
-  customChannelType?: string;
 };
 
 const isTaskThatNeedsToBeAddedToChannelAttributes = async (
   taskSid: TaskSID,
-  { isContactlessTask, channelType, customChannelType }: RelevantTaskAttributes,
+  taskChannelUniqueName: string,
+  { isContactlessTask }: RelevantTaskAttributes,
   client: Twilio,
 ): Promise<boolean> => {
-  if (isContactlessTask || (channelType || customChannelType) !== 'web') {
+  if (isContactlessTask || taskChannelUniqueName === 'survey') {
     console.debug(
-      `Task ${taskSid} not suitable to add to channel attributes, isContactlessTask: ${isContactlessTask}, channelType: ${channelType}, customChannelType: ${customChannelType}`,
+      `Task ${taskSid} not suitable to add to channel attributes, isContactlessTask: ${isContactlessTask}, taskChannelUniqueName: ${taskChannelUniqueName}`,
     );
     return false;
   }
@@ -53,13 +52,13 @@ const isTaskThatNeedsToBeAddedToChannelAttributes = async (
   return true;
 };
 
-const addTaskSidToChannelAttributes: TaskRouterEventHandler = async (
+export const addTaskSidToChannelAttributes: TaskRouterEventHandler = async (
   event: EventFields,
   accountSid: AccountSID,
   client: Twilio,
 ) => {
   console.debug('addTaskSidToChannelAttributes execution starts');
-  const { TaskSid, TaskAttributes } = event;
+  const { TaskSid, TaskAttributes, TaskChannelUniqueName: taskChannelUniqueName } = event;
 
   if (TaskSid === undefined) {
     throw new Error('TaskSid missing in event object');
@@ -71,6 +70,7 @@ const addTaskSidToChannelAttributes: TaskRouterEventHandler = async (
   if (
     !(await isTaskThatNeedsToBeAddedToChannelAttributes(
       taskSid,
+      taskChannelUniqueName,
       eventTaskAttributes,
       client,
     ))
@@ -83,14 +83,17 @@ const addTaskSidToChannelAttributes: TaskRouterEventHandler = async (
     await getChatServiceSid(accountSid),
   ]);
 
-  const task = await client.taskrouter.v1.workspaces(workspaceSid).tasks(TaskSid).fetch();
+  const task = await client.taskrouter.v1.workspaces
+    .get(workspaceSid)
+    .tasks.get(TaskSid)
+    .fetch();
 
   const { channelSid, conversationSid } = JSON.parse(task.attributes);
 
   if (conversationSid) {
     // Fetch channel to update with a taskId
-    const conversation = await client.conversations.v1
-      .conversations(conversationSid)
+    const conversation = await client.conversations.v1.conversations
+      .get(conversationSid)
       .fetch();
 
     const conversationAttributes = JSON.parse(conversation.attributes);
@@ -113,9 +116,9 @@ const addTaskSidToChannelAttributes: TaskRouterEventHandler = async (
   }
 
   // Fetch channel to update with a taskId
-  const channel = await client.chat.v2
-    .services(chatServiceSid)
-    .channels(channelSid)
+  const channel = await client.chat.v2.services
+    .get(chatServiceSid)
+    .channels.get(channelSid)
     .fetch();
 
   const channelAttributes = JSON.parse(channel.attributes);
