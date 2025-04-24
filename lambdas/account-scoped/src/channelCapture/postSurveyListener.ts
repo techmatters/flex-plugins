@@ -197,7 +197,17 @@ const triggerPostSurvey: TaskRouterEventHandler = async (
       // This task is a candidate to trigger post survey. Check feature flags for the account.
       const serviceConfig = await retrieveServiceConfigurationAttributes(client);
       const { feature_flags: featureFlags, helplineLanguage } = serviceConfig.attributes;
-      const { enable_post_survey: enablePostSurvey } = featureFlags;
+      const {
+        enable_post_survey: enablePostSurvey,
+        enable_lambda_post_survey_processing: enableLambdaPostSurveyProcessing,
+      } = featureFlags;
+
+      if (!enableLambdaPostSurveyProcessing) {
+        console.debug(
+          'enable_lambda_post_survey_processing is not set, the post survey handler will be process in twilio serverless.',
+        );
+        return;
+      }
 
       if (enablePostSurvey) {
         const { channelSid, conversationSid, channelType, customChannelType } =
