@@ -143,9 +143,11 @@ export const handleEvent = async (
   } = serviceConfig.attributes;
 
   const hrmAccountId = inferHrmAccountId(accountSid, workerName);
-  const formDefinitionsVersionUrl =
-    configFormDefinitionsVersionUrl ||
-    `${assetsBucketUrl}/form-definitions/${helplineCode}/v1`;
+  const formDefinitionsBaseUrl =
+    configFormDefinitionsVersionUrl || `${assetsBucketUrl}/form-definitions/`;
+  const formDefinitionsVersionUrl = new URL(
+    `${formDefinitionsBaseUrl}${helplineCode}/v1`,
+  );
   if (!enableBackendHrmContactCreation) {
     console.debug(
       `enable_backend_hrm_contact_creation is not set, the contact associated with task ${taskSid} will be created from Flex.`,
