@@ -16,6 +16,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import promiseMiddleware from 'redux-promise-middleware';
 
+import '../../mockGetConfig';
 import { connectToCase, getContactByTaskSid, updateContactInHrm } from '../../../services/ContactService';
 import { completeTask, submitContactForm } from '../../../services/formSubmissionHelpers';
 import { Case, Contact, CustomITask } from '../../../types/types';
