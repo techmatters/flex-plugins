@@ -73,6 +73,10 @@ const requestFromInternalHrmEndpoint = async <TRequest, TResponse>(
       errorResult.message,
       errorResult.error,
     );
+    if (attempt + 1 < retryLimit) {
+      // eslint-disable-next-line @typescript-eslint/no-loop-func
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
   }
   return errorResult;
 };
