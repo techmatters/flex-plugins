@@ -212,6 +212,7 @@ const Case: React.FC<Props> = ({
   }
 
   if (routing.subroute === 'timeline') {
+    console.log('>>> timeline routing',{ routing, task});
     return <FullTimelineView task={task} />;
   }
 

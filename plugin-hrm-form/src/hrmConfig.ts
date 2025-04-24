@@ -93,6 +93,7 @@ const readConfig = () => {
     ...featureFlagsFromServiceConfig,
     ...featureFlagsFromEnv,
   };
+  featureFlags.enable_permissions_from_backend = false;
   const { strings } = (manager as unknown) as {
     strings: { [key: string]: string };
   };

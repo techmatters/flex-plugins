@@ -18,8 +18,8 @@ import parseISO from 'date-fns/parseISO';
 import { differenceInDays, differenceInHours } from 'date-fns';
 
 import { fetchRules } from './fetchRules';
-import { getHrmConfig, getAseloFeatureFlags } from '../hrmConfig';
-import { ProfileSection } from '../types/types';
+import { getHrmConfig } from '../hrmConfig';
+import { ProfileSection, Contact } from '../types/types';
 
 export { canOnlyViewOwnCases, canOnlyViewOwnContacts } from './search-permissions';
 
@@ -288,7 +288,14 @@ const isCounselorWhoCreated = (user: TwilioUser, caseObj: any) => user.workerSid
 
 const isCaseOpen = (caseObj: any) => caseObj?.status !== 'closed';
 
+<<<<<<< Updated upstream
 const isContactOwner = (user: TwilioUser, contactObj: any) => user.workerSid === contactObj?.activity?.twilioWorkerId;
+=======
+const isContactOwner = (user: TwilioUser, contactObj: Contact) => {
+  console.log(`>>> isContactOwner check: user.workerSid=${user.workerSid}, contactObj.twilioWorkerId=${contactObj.twilioWorkerId}`,{contactObj});
+  return user.workerSid === contactObj.twilioWorkerId;
+};
+>>>>>>> Stashed changes
 
 const isCaseContactOwner = (caseObj: any) => caseObj?.precalculatedPermissions?.userOwnsContact;
 

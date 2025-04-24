@@ -72,6 +72,7 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
   const firstConnectedContact = useSelector(
     (state: RootState) => selectFirstContactByCaseId(state, routing.caseId)?.savedContact,
   );
+  console.log('>>> firstConnectedContact', firstConnectedContact);
   const activityCount = useSelector((state: RootState) =>
     routing.route === 'case' ? selectTimelineCount(state, routing.caseId, MAIN_TIMELINE_ID) : 0,
   );
@@ -114,6 +115,7 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
   const onEditCaseOverviewClick = () => {
     openModal({ route: 'case', subroute: 'caseOverview', action: CaseItemAction.Edit, id: '', caseId });
   };
+
 
   return (
     <NavigableContainer

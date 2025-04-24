@@ -245,6 +245,7 @@ const TabbedFormsTabs: React.FC<Props> = ({
       navigateToTab(tab);
     }
   };
+  console.log('>>> savedContact', savedContact);
 
   const HeaderControlButtons = () => (
     <Box marginTop="10px" marginBottom="5px" paddingLeft="20px">

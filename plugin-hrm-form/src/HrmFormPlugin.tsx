@@ -184,6 +184,11 @@ export default class HrmFormPlugin extends FlexPlugin {
 
     const config = getHrmConfig();
     const featureFlags = getAseloFeatureFlags();
+<<<<<<< Updated upstream
+=======
+    // eslint-disable-next-line camelcase
+    // featureFlags.enable_permissions_from_backend = true;
+>>>>>>> Stashed changes
 
     await validateAndSetPermissionRules();
     await ActionFunctions.loadCurrentDefinitionVersion();

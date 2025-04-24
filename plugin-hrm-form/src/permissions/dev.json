@@ -8,7 +8,7 @@
   "editCaseOverview": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "updateCaseContacts": [["isSupervisor"], ["isCaseOpen"]],
 
-  "viewContact": [["everyone"]],
+  "viewContact": [["isOwner"]],
   "editContact": [["isSupervisor"], ["isOwner"]],
   "editInProgressContact": [["isSupervisor"], ["isOwner"]],
  "viewExternalTranscript": [["everyone"]],
