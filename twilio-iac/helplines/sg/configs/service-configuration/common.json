@@ -11,8 +11,7 @@
         },
         "feature_flags": {
             "enable_voice_recordings": true,
-            "enable_post_survey": false,
-            "enable_generalized_search": true
+            "enable_post_survey": false
         },
         "helplineLanguage": "en-SG",
         "permissionConfig": "sg"
