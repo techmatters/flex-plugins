@@ -62,6 +62,7 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
 
   const setNewStrings = (newStrings: { [key: string]: string }) => {
     const overrideStrings = { ...manager.strings, ...newStrings };
+    // maskMessageListWithIdentifiers(overrideStrings);
     manager.strings = maskManagerStringsWithIdentifiers(overrideStrings);
   };
 
@@ -94,7 +95,6 @@ const setUpComponents = (
   Channels.setupLineChatChannel();
 
   setUpViewMaskedVoiceNumber();
-  maskMessageListWithIdentifiers();
 
   setUpTransferComponents();
   Channels.setUpIncomingTransferMessage();

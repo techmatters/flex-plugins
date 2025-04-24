@@ -72,14 +72,18 @@ export const maskManagerStringsWithIdentifiers = <T extends Strings<string> & { 
 };
 
 // Mask identifiers in the messaging canvas in chat window
-export const maskMessageListWithIdentifiers = () => {
+export const maskMessageListWithIdentifiers = <T extends Strings<string> & { MaskIdentifiers?: string }>(
+  newStrings?: T,
+) => {
   const can = getInitializedCan();
   const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
 
   if (!maskIdentifiers) return;
 
+  const defaultMask = newStrings?.MaskIdentifiers || 'XXXXXX';
+
   MessagingCanvas.defaultProps.memberDisplayOptions = {
-    theirDefaultName: 'XXXXXX',
+    theirDefaultName: defaultMask,
     theirFriendlyNameOverride: false,
     yourFriendlyNameOverride: true,
   };
