@@ -195,8 +195,9 @@ const triggerPostSurvey: TaskRouterEventHandler = async (
       console.log('taskAttributes', taskAttributes);
 
       // This task is a candidate to trigger post survey. Check feature flags for the account.
-      const serviceConfig = await retrieveServiceConfigurationAttributes(client);
-      const { feature_flags: featureFlags, helplineLanguage } = serviceConfig.attributes;
+      const serviceConfigAttributes =
+        await retrieveServiceConfigurationAttributes(client);
+      const { feature_flags: featureFlags, helplineLanguage } = serviceConfigAttributes;
       const {
         enable_post_survey: enablePostSurvey,
         enable_lambda_post_survey_processing: enableLambdaPostSurveyProcessing,
