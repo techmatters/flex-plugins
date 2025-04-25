@@ -707,17 +707,23 @@ const handlePostSurveyComplete = async ({
   const formDefinitionsVersionUrl =
     configFormDefinitionsVersionUrl ||
     getFormDefinitionUrl({ assetsBucketUrl, definitionVersion });
+  console.log('loading form definitions');
   const postSurveyConfigJson = await loadConfigJson(
     formDefinitionsVersionUrl,
     'PostSurvey',
   );
+  console.log('loaded form definitions', postSurveyConfigJson);
 
   if (definitionVersion && postSurveyConfigJson) {
+    console.log('parsing form definitions');
     const postSurveyConfigSpecs = JSON.parse(
       postSurveyConfigJson,
     ) as OneToManyConfigSpec[];
+    console.log('parsed form definitions', postSurveyConfigSpecs);
 
+    console.log('parsing control task attributes');
     const controlTaskAttributes = JSON.parse(controlTask.attributes);
+    console.log('parsed control task attributes', controlTaskAttributes);
 
     // parallel execution to save survey collected data in insights and hrm
     await Promise.all([
