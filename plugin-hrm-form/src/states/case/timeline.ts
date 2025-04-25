@@ -170,3 +170,18 @@ export const selectTimeline = (
 // eslint-disable-next-line import/no-unused-modules
 export const selectTimelineCount = (state: RootState, caseId: string, timelineId: string): number | undefined =>
   state[namespace].connectedCase.cases[caseId]?.timelines?.[timelineId]?.length;
+
+export const selectTimelineContactCategories = (state: RootState, caseId: string, timelineId: string) => {
+  const timeline = selectTimeline(state, caseId, timelineId, { offset: 0, limit: 10000 });
+  const contactActivities = timeline.filter(isContactTimelineActivity) as TimelineActivity<Contact>[];
+  const timelineCategories: Record<string, string[]> = {};
+  for (const { activity } of contactActivities) {
+    const categoriesList = Object.entries(activity.rawJson?.categories ?? {});
+    for (const [newCategory, newSubcategories] of categoriesList) {
+      timelineCategories[newCategory] = Array.from(
+        new Set([...(timelineCategories[newCategory] ?? []), ...newSubcategories]),
+      );
+    }
+  }
+  return timelineCategories;
+};

@@ -75,7 +75,6 @@ export type Case = {
   statusUpdatedAt?: string;
   statusUpdatedBy?: WorkerSID;
   previousStatus?: string;
-  categories: Record<string, string[]>;
   firstContact?: Contact;
 };
 
