@@ -288,7 +288,10 @@ export const newLoadContactFromHrmForTaskAsyncAction = createAsyncAction(
     } else {
       contact = await getContactByTaskSid(task.taskSid);
     }
-    if (contact.taskId !== task.taskSid || contact.twilioWorkerId !== workerSid) {
+    if (
+      !getAseloFeatureFlags().enable_backend_hrm_contact_creation &&
+      (contact.taskId !== task.taskSid || contact.twilioWorkerId !== workerSid)
+    ) {
       // If the contact is being transferred from a client that doesn't set the contactId on the task, we need to update the contact with the task id and worker id
       contact = await updateContactInHrm(contact.id, { taskId: taskSid, twilioWorkerId: workerSid }, false);
     }

@@ -5,7 +5,6 @@
         ],
         "definitionVersion": "ukmh-v1",
         "feature_flags": {
-            "enable_generalized_search": true
         },
         "helplineLanguage": "en-GB",
         "permissionConfig": "ukmh"
