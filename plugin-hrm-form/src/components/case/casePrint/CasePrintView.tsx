@@ -40,7 +40,11 @@ import { Contact, CustomITask, StandaloneITask } from '../../../types/types';
 import { TimelineActivity } from '../../../states/case/types';
 import { RootState } from '../../../states';
 import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRouteCase';
-import { newGetTimelineAsyncAction, selectTimeline } from '../../../states/case/timeline';
+import {
+  newGetTimelineAsyncAction,
+  selectTimeline,
+  selectTimelineContactCategories,
+} from '../../../states/case/timeline';
 import { selectDefinitionVersionForCase } from '../../../states/configuration/selectDefinitions';
 import { selectCounselorsHash } from '../../../states/configuration/selectCounselorsHash';
 import selectCaseHelplineData from '../../../states/case/selectCaseHelplineData';
@@ -68,6 +72,9 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
         offset: 0,
         limit: MAX_PRINTOUT_CONTACTS,
       }) as TimelineActivity<Contact>[],
+  );
+  const categories = useSelector((state: RootState) =>
+    selectTimelineContactCategories(state, connectedCase?.id, 'print-contacts'),
   );
   const sectionTypeNames = Object.keys(definitionVersion.caseSectionTypes).filter(
     sectionType => definitionVersion.layoutVersion.case.sectionTypes?.[sectionType]?.printFormat !== 'hidden',
@@ -212,7 +219,7 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
                   followUpDate={printedFollowUpDate}
                   childIsAtRisk={connectedCase.info.childIsAtRisk}
                   counselor={counselorsHash[connectedCase.twilioWorkerId]}
-                  categories={connectedCase.categories}
+                  categories={categories}
                   caseManager={office?.manager}
                   chkOnBlob={chkOnBlob}
                   chkOffBlob={chkOffBlob}
