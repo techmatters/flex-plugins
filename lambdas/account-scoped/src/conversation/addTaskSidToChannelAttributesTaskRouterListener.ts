@@ -34,7 +34,7 @@ const isTaskThatNeedsToBeAddedToChannelAttributes = async (
   { isContactlessTask }: RelevantTaskAttributes,
   client: Twilio,
 ): Promise<boolean> => {
-  if (isContactlessTask || ['survey', 'voice'].includes(taskChannelUniqueName)) {
+  if (isContactlessTask || taskChannelUniqueName !== 'chat') {
     console.debug(
       `Task ${taskSid} not suitable to add to channel attributes, isContactlessTask: ${isContactlessTask}, taskChannelUniqueName: ${taskChannelUniqueName}`,
     );
