@@ -708,19 +708,13 @@ const handlePostSurveyComplete = async ({
     configFormDefinitionsVersionUrl ||
     getFormDefinitionUrl({ assetsBucketUrl, definitionVersion });
   console.log('loading form definitions');
-  const postSurveyConfigJson = await loadConfigJson(
+  const postSurveyConfigSpecs = await loadConfigJson(
     formDefinitionsVersionUrl,
     'PostSurvey',
   );
-  console.log('loaded form definitions', postSurveyConfigJson);
+  console.log('loaded form definitions', postSurveyConfigSpecs);
 
-  if (definitionVersion && postSurveyConfigJson) {
-    console.log('parsing form definitions');
-    const postSurveyConfigSpecs = JSON.parse(
-      postSurveyConfigJson,
-    ) as OneToManyConfigSpec[];
-    console.log('parsed form definitions', postSurveyConfigSpecs);
-
+  if (definitionVersion && postSurveyConfigSpecs) {
     console.log('parsing control task attributes');
     const controlTaskAttributes = JSON.parse(controlTask.attributes);
     console.log('parsed control task attributes', controlTaskAttributes);
@@ -751,7 +745,7 @@ const handlePostSurveyComplete = async ({
       // eslint-disable-next-line no-nested-ternary
       !definitionVersion
         ? 'Current definitionVersion is missing in service configuration.'
-        : !postSurveyConfigJson
+        : !postSurveyConfigSpecs
           ? `No postSurveyConfigJson found for definitionVersion ${definitionVersion}.`
           : `postSurveyConfigJson for definitionVersion ${definitionVersion} is not a Twilio asset as expected`; // This should removed when if we move definition versions to an external source.
     console.info(`Error accessing to the post survey form definitions: ${errorMEssage}`);
