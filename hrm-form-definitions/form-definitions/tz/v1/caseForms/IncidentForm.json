@@ -94,8 +94,10 @@
     "type": "mixed-checkbox"
   },
   {
-    "name": "whereElseBeenReported",
-    "label": "Where else the incident has been reported?",
-    "type": "mixed-checkbox"
+    "name": "incidentSummary",
+    "label": "Summary of the incident",
+    "type": "textarea",
+    "rows": 5,
+    "width": 300
   }
 ]
