@@ -37,7 +37,7 @@ import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute'
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 import CaseCreatedBanner from '../caseMergingBanners/CaseCreatedBanner';
 import AddToCaseBanner from '../caseMergingBanners/AddToCaseBanner';
-import { selectTimelineCount } from '../../states/case/timeline';
+import { selectTimelineContactCategories, selectTimelineCount } from '../../states/case/timeline';
 import { selectDefinitionVersionForCase } from '../../states/configuration/selectDefinitions';
 import selectCaseHelplineData from '../../states/case/selectCaseHelplineData';
 import { selectCounselorName } from '../../states/configuration/selectCounselorsHash';
@@ -71,6 +71,9 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
   const caseContacts = useSelector((state: RootState) => selectContactsByCaseIdInCreatedOrder(state, routing.caseId));
   const firstConnectedContact = useSelector(
     (state: RootState) => selectFirstContactByCaseId(state, routing.caseId)?.savedContact,
+  );
+  const timelineCategories = useSelector((state: RootState) =>
+    selectTimelineContactCategories(state, routing.caseId, MAIN_TIMELINE_ID),
   );
   const activityCount = useSelector((state: RootState) =>
     routing.route === 'case' ? selectTimelineCount(state, routing.caseId, MAIN_TIMELINE_ID) : 0,
@@ -139,7 +142,7 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
             handlePrintCase={handlePrintCase}
             isOrphanedCase={isOrphanedCase}
             definitionVersion={definitionVersion}
-            categories={firstConnectedContact?.rawJson?.categories ?? {}}
+            categories={timelineCategories ?? {}}
           />
           <CaseOverview
             task={task}

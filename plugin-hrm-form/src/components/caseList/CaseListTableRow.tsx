@@ -17,13 +17,13 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { Template } from '@twilio/flex-ui';
-import { connect, ConnectedProps } from 'react-redux';
+import { connect, ConnectedProps, useDispatch, useSelector } from 'react-redux';
 import { DefinitionVersionId } from 'hrm-form-definitions';
 import { parseISO } from 'date-fns';
 
 import { getDefinitionVersion } from '../../services/ServerlessService';
 import { RootState } from '../../states';
-import * as ConfigActions from '../../states/configuration/actions';
+import { updateDefinitionVersion } from '../../states/configuration/actions';
 import { Case } from '../../types/types';
 import {
   Box,
@@ -48,40 +48,27 @@ import { configurationBase, namespace } from '../../states/storeNamespaces';
 import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import { selectFirstCaseContact } from '../../states/contacts/selectContactByCaseId';
 import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
+import { selectDefinitionVersions } from '../../states/configuration/selectDefinitions';
+import { newGetTimelineAsyncAction, selectTimelineContactCategories } from '../../states/case/timeline';
 
 const CHAR_LIMIT = 200;
+const CONTACTS_TIMELINE_ID = 'print-contacts';
 
-type OwnProps = {
+type Props = {
   caseId: Case['id'];
   handleClickViewCase: (currentCase: Case) => () => void;
 };
 
-const mapStateToProps = (state: RootState, { caseId }: OwnProps) => {
-  const caseItem = selectCaseByCaseId(state, caseId)?.connectedCase;
-  return {
-    definitionVersions: state[namespace][configurationBase].definitionVersions,
-    counselorsHash: selectCounselorsHash(state),
-    caseItem,
-    firstConnectedContact: selectFirstCaseContact(state, caseItem),
-  };
-};
+const CaseListTableRow: React.FC<Props> = ({ caseId, handleClickViewCase, ...props }) => {
+  const dispatch = useDispatch();
+  const { connectedCase: caseItem, timelines } = useSelector((state: RootState) => selectCaseByCaseId(state, caseId));
+  const firstConnectedContact = useSelector((state: RootState) => selectFirstCaseContact(state, caseItem));
+  const counselorsHash = useSelector(selectCounselorsHash);
+  const definitionVersions = useSelector(selectDefinitionVersions);
+  const timelineCategories = useSelector((state: RootState) =>
+    selectTimelineContactCategories(state, caseId, CONTACTS_TIMELINE_ID),
+  );
 
-const mapDispatchToProps = {
-  updateDefinitionVersion: ConfigActions.updateDefinitionVersion,
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type Props = OwnProps & ConnectedProps<typeof connector>;
-
-const CaseListTableRow: React.FC<Props> = ({
-  caseItem,
-  firstConnectedContact,
-  counselorsHash,
-  handleClickViewCase,
-  ...props
-}) => {
-  const { updateDefinitionVersion, definitionVersions } = props;
   const { definitionVersion } = getHrmConfig();
   let version = caseItem.info.definitionVersion;
   if (!Object.values(DefinitionVersionId).includes(version)) {
@@ -98,12 +85,18 @@ const CaseListTableRow: React.FC<Props> = ({
   useEffect(() => {
     const fetchDefinitionVersions = async () => {
       const definitionVersion = await getDefinitionVersion(version);
-      updateDefinitionVersion(version, definitionVersion);
+      dispatch(updateDefinitionVersion(version, definitionVersion));
     };
     if (version && !definitionVersions[version]) {
       fetchDefinitionVersions();
     }
-  }, [definitionVersions, updateDefinitionVersion, version]);
+  }, [definitionVersions, version, dispatch]);
+
+  useEffect(() => {
+    if (!timelineCategories) {
+      dispatch(newGetTimelineAsyncAction(caseId, CONTACTS_TIMELINE_ID, [], true, { offset: 0, limit: 10000 }));
+    }
+  }, [timelineCategories, caseId, dispatch]);
 
   if (!caseItem) {
     return null;
@@ -123,7 +116,7 @@ const CaseListTableRow: React.FC<Props> = ({
 
     const definitionVersion = definitionVersions[version];
 
-    const categories = getContactTags(definitionVersion, caseItem.categories);
+    const categories = timelineCategories ? getContactTags(definitionVersion, timelineCategories) : [];
     // Get the status for a case from the value of CaseStatus.json of the current form definitions
     const getCaseStatusLabel = (caseStatus: string) => {
       return definitionVersion
@@ -190,6 +183,5 @@ const CaseListTableRow: React.FC<Props> = ({
 };
 
 CaseListTableRow.displayName = 'CaseListTableRow';
-const connected = connector(CaseListTableRow);
 
-export default connected;
+export default CaseListTableRow;

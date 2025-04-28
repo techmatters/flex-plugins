@@ -52,6 +52,7 @@ jest.mock('../../../states/case/timeline', () => ({
   newGetTimelineAsyncAction: jest.fn(),
   selectTimelineCount: jest.fn(() => 0),
   selectTimeline: jest.fn(() => []),
+  selectTimelineContactCategories: jest.fn().mockReturnValue({}),
 }));
 
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();

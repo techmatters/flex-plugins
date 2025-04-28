@@ -97,7 +97,6 @@ const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => 
           connectedCase: {
             ...stateCase?.connectedCase,
             ...connectedCase,
-            categories: stateCase?.connectedCase?.categories ?? connectedCase.categories,
             info: {
               ...(stateCase?.connectedCase?.info || {}),
               ...restCaseSummary,

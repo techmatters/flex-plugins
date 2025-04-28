@@ -173,6 +173,9 @@ export const selectTimelineCount = (state: RootState, caseId: string, timelineId
 
 export const selectTimelineContactCategories = (state: RootState, caseId: string, timelineId: string) => {
   const timeline = selectTimeline(state, caseId, timelineId, { offset: 0, limit: 10000 });
+  if (!timeline) {
+    return undefined;
+  }
   const contactActivities = timeline.filter(isContactTimelineActivity) as TimelineActivity<Contact>[];
   const timelineCategories: Record<string, string[]> = {};
   for (const { activity } of contactActivities) {

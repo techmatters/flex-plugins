@@ -16,7 +16,7 @@
 
 /* eslint-disable react/prop-types */
 import React, { Dispatch, useEffect } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { connect, ConnectedProps, useDispatch, useSelector } from 'react-redux';
 
 import { Case, Contact, RouterTask } from '../../../types/types';
 import CaseHeader from './CaseHeader';
@@ -37,49 +37,39 @@ import selectContactStateByContactId from '../../../states/contacts/selectContac
 import selectContextContactId from '../../../states/contacts/selectContextContactId';
 import { selectFirstCaseContact } from '../../../states/contacts/selectContactByCaseId';
 import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
+import { selectDefinitionVersions } from '../../../states/configuration/selectDefinitions';
+import { newGetTimelineAsyncAction, selectTimelineContactCategories } from '../../../states/case/timeline';
 
-type OwnProps = {
+type Props = {
   currentCase: Case;
   onClickViewCase: () => void;
   counselorsHash: { [sid: string]: string };
   task: RouterTask;
 };
 
-const mapStateToProps = (state: RootState, { task, currentCase }: OwnProps) => {
-  const contactId = selectContextContactId(state, task.taskSid, 'search', 'case-results');
-  const taskContact = selectContactStateByContactId(state, contactId)?.savedContact;
-  const firstConnectedContact = selectFirstCaseContact(state, currentCase);
-  return {
-    definitionVersions: state[namespace].configuration.definitionVersions,
-    taskContact,
-    firstConnectedContact,
-    isConnectedToTaskContact: Boolean(taskContact?.caseId && taskContact.caseId === currentCase?.id),
-  };
-};
+const CONTACTS_TIMELINE_ID = 'print-contacts';
 
-const mapDispatchToProps = (dispatch: Dispatch<any>, { task, currentCase }: OwnProps) => ({
-  connectCaseToTaskContact: async (taskContact: Contact) => {
-    await asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, currentCase.id));
-  },
-  closeModal: () => dispatch(newCloseModalAction(task.taskSid)),
-});
+const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselorsHash, task }) => {
+  const contactId = useSelector((state: RootState) =>
+    selectContextContactId(state, task.taskSid, 'search', 'case-results'),
+  );
+  const definitionVersions = useSelector(selectDefinitionVersions);
+  const firstConnectedContact = useSelector((state: RootState) => selectFirstCaseContact(state, currentCase));
+  const taskContact = useSelector((state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact);
+  const isConnectedToTaskContact = Boolean(taskContact?.caseId && taskContact.caseId === currentCase?.id);
+  const timelineCategories = useSelector((state: RootState) =>
+    selectTimelineContactCategories(state, currentCase.id.toString(), CONTACTS_TIMELINE_ID),
+  );
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
+  const dispatch = useDispatch();
 
-type Props = OwnProps & ConnectedProps<typeof connector>;
+  useEffect(() => {
+    if (!timelineCategories) {
+      dispatch(newGetTimelineAsyncAction(currentCase.id, CONTACTS_TIMELINE_ID, [], true, { offset: 0, limit: 10000 }));
+    }
+  }, [timelineCategories, currentCase.id, dispatch]);
 
-const CasePreview: React.FC<Props> = ({
-  currentCase,
-  onClickViewCase,
-  counselorsHash,
-  definitionVersions,
-  taskContact,
-  firstConnectedContact,
-  isConnectedToTaskContact,
-  connectCaseToTaskContact,
-  closeModal,
-}) => {
-  const { id, createdAt, status, info, twilioWorkerId, categories } = currentCase;
+  const { id, createdAt, status, info, twilioWorkerId } = currentCase;
   const updatedAtObj = getUpdatedDate(currentCase);
   const followUpDateObj = info.followUpDate ? new Date(info.followUpDate) : undefined;
   const { definitionVersion: versionId } = info;
@@ -133,8 +123,8 @@ const CasePreview: React.FC<Props> = ({
           isConnectedToTaskContact={isConnectedToTaskContact}
           showConnectButton={showConnectButton}
           onClickConnectToTaskContact={() => {
-            connectCaseToTaskContact(taskContact);
-            closeModal();
+            asyncDispatch(dispatch)(connectToCaseAsyncAction(taskContact.id, currentCase.id));
+            dispatch(newCloseModalAction(task.taskSid));
           }}
         />
         <PreviewRow>
@@ -144,7 +134,7 @@ const CasePreview: React.FC<Props> = ({
             </PreviewDescription>
           )}
         </PreviewRow>
-        <TagsAndCounselor counselor={counselor} categories={categories} definitionVersion={definitionVersion} />
+        <TagsAndCounselor counselor={counselor} categories={timelineCategories} definitionVersion={definitionVersion} />
       </PreviewWrapper>
     </Flex>
   );
@@ -152,6 +142,4 @@ const CasePreview: React.FC<Props> = ({
 
 CasePreview.displayName = 'CasePreview';
 
-const connected = connector(CasePreview);
-
-export default connected;
+export default CasePreview;

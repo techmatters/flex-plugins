@@ -39,6 +39,7 @@ import { RecursivePartial } from '../../RecursivePartial';
 import { HrmState, RootState } from '../../../states';
 import { CaseStateEntry } from '../../../states/case/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
+import { newGetTimelineAsyncAction } from '../../../states/case/timeline';
 
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 const e2eRules = require('../../../permissions/e2e.json');
@@ -50,6 +51,16 @@ jest.mock('../../../permissions/fetchRules', () => {
     }),
   };
 });
+
+jest.mock('../../../states/case/timeline', () => ({
+  newGetTimelineAsyncAction: jest.fn(),
+  selectTimelineContactCategories: jest.fn().mockReturnValue({}),
+}));
+
+jest.mock('../../../states/caseList/listContent', () => ({
+  ...jest.requireActual('../../../states/caseList/listContent'),
+  fetchCaseListAsyncAction: jest.fn(),
+}));
 
 beforeEach(async () => {
   const fetchRulesSpy = fetchRules as jest.MockedFunction<typeof fetchRules>;
@@ -117,12 +128,6 @@ const mockedCases: Record<string, CaseStateEntry> = {
 };
 
 const mockedCaseList = Object.keys(mockedCases);
-
-jest.mock('../../../states/caseList/listContent', () => ({
-  ...jest.requireActual('../../../states/caseList/listContent'),
-  fetchCaseListAsyncAction: jest.fn(),
-}));
-
 expect.extend(toHaveNoViolations);
 const mockStore = configureMockStore([]);
 
@@ -142,11 +147,16 @@ const blankCaseListState: CaseListState = {
 let mockV1;
 
 const mockFetchCaseListAsyncAction = fetchCaseListAsyncAction as jest.MockedFunction<typeof fetchCaseListAsyncAction>;
+const mockNewGetTimelineAsyncAction = newGetTimelineAsyncAction as jest.MockedFunction<
+  typeof newGetTimelineAsyncAction
+>;
 
 beforeEach(() => {
   mockReset();
   mockFetchCaseListAsyncAction.mockReset();
   mockFetchCaseListAsyncAction.mockReturnValue({ type: 'cases/fetch-list' } as any);
+  mockNewGetTimelineAsyncAction.mockReset();
+  mockNewGetTimelineAsyncAction.mockReturnValue({ type: 'case-action/get-timeline' } as any);
 });
 
 beforeAll(async () => {
