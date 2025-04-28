@@ -190,8 +190,7 @@ const Timeline: React.FC<OwnProps> = ({
             } else {
               const contactId = timelineActivity.activity.id;
               const { savedContact } = contacts.find(contact => contact.savedContact?.id === contactId);
-              // savedContact is used for contacts, timelineActivity is used for non-contact / case activities
-              canViewActivity = can(PermissionActions.VIEW_CONTACT, savedContact || timelineActivity);
+              canViewActivity = can(PermissionActions.VIEW_CONTACT, savedContact);
             }
           }
 
