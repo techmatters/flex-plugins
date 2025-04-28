@@ -189,9 +189,14 @@ export const getMessage = messageKey => async language => {
 
   try {
     if (enableHierarchicalTranslations) {
+      const [baseLanguage] = language.split('-');
       const definitionVersion = getDefinitionVersions().currentDefinitionVersion;
       const localizedMessages = definitionVersion?.customStrings.Messages;
-      return localizedMessages[language][messageKey];
+      if (!localizedMessages || !localizedMessages[baseLanguage || language]) {
+        console.error('Could not load messages, using default', { messageKey, language });
+        return defaultMessages[messageKey];
+      }
+      return localizedMessages[baseLanguage || language][messageKey];
     }
     if (!language) return defaultMessages[messageKey];
 
