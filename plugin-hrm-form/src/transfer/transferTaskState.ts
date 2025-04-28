@@ -99,8 +99,6 @@ export const returnTaskControl = async (task: ITask) => {
 
 /**
  * Updates the state of the transfer and adds a dummy channelSid to start tracking the task in TransferredTaskJanitor
- * @param {string} newStatus
- * @returns {(task: ITask) => Promise<void>}
  */
 export const updateTransferStatus = (newStatus: keyof typeof transferStatuses) => async (task: ITask) => {
   const updatedAttributes = {

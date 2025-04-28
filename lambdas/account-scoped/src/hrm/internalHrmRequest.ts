@@ -14,17 +14,18 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import { getSsmParameter } from '../ssmCache';
-import { newErr, newOk, Result } from '../Result';
+import { ErrorResult, newErr, newOk, Result } from '../Result';
 import { HttpClientError } from '../httpErrors';
 
-import { HrmAccountId, inferAccountSidFromHrmAccountId } from './hrmAccountId';
+import { inferAccountSidFromHrmAccountId } from './hrmAccountId';
 
 const requestFromInternalHrmEndpoint = async <TRequest, TResponse>(
-  hrmAccountId: HrmAccountId,
+  hrmAccountId: string,
   hrmApiVersion: string,
   path: string,
   body: TRequest,
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
+  retryLimit: number,
 ): Promise<Result<Error, TResponse>> => {
   const accountSid = inferAccountSidFromHrmAccountId(hrmAccountId);
   const [hrmStaticKey] = await Promise.all([
@@ -41,39 +42,57 @@ const requestFromInternalHrmEndpoint = async <TRequest, TResponse>(
     ...(body !== undefined && body !== null ? { body: JSON.stringify(body) } : {}),
   };
   console.debug(`Requesting ${endpointUrl} with options:`, options);
-  try {
-    const response = await fetch(endpointUrl, options);
-    if (!response.ok) {
+  let errorResult: ErrorResult<Error> = newErr<Error>({
+    message: 'Assert - error thrown without being set',
+    error: new Error(),
+  });
+  for (let attempt = 0; attempt < retryLimit; attempt++) {
+    try {
+      const response = await fetch(endpointUrl, options);
+      if (response.ok) {
+        const hrmResponse = await response.json();
+        console.info(`HRM responded ${response.status} to ${method} ${endpointUrl}`);
+        console.debug(`HRM response content:`, hrmResponse);
+        return newOk(hrmResponse as TResponse);
+      }
       const bodyText = await response.text();
-      return newErr<HttpClientError>({
+      errorResult = newErr<HttpClientError>({
         message: bodyText,
         error: new HttpClientError(bodyText, response.status),
       });
+    } catch (thrown) {
+      const error = thrown as Error;
+      errorResult = newErr<Error>({
+        message: error.message,
+        error,
+      });
     }
-    const hrmResponse = await response.json();
-    console.info(`HRM responded ${response.status} to ${method} ${endpointUrl}`);
-    console.debug(`HRM response content:`, hrmResponse);
-    return newOk(hrmResponse as TResponse);
-  } catch (thrown) {
-    const error = thrown as Error;
-    return newErr<Error>({
-      message: error.message,
-      error,
-    });
+    console.warn(
+      `HRM request ${method} ${endpointUrl} attempt ${attempt + 1} failed`,
+      errorResult.message,
+      errorResult.error,
+    );
+    if (attempt + 1 < retryLimit) {
+      // eslint-disable-next-line @typescript-eslint/no-loop-func
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
   }
+  return errorResult;
 };
 
 export const getFromInternalHrmEndpoint = async <TResponse>(
   accountSid: string,
   hrmApiVersion: string,
   path: string,
+  retryLimit = 3,
 ): Promise<Result<Error, TResponse>> =>
   requestFromInternalHrmEndpoint(
-    accountSid as HrmAccountId,
+    accountSid,
     hrmApiVersion,
     path,
     null,
     'GET',
+    retryLimit,
   );
 
 export const postToInternalHrmEndpoint = async <TRequest, TResponse>(
@@ -81,11 +100,29 @@ export const postToInternalHrmEndpoint = async <TRequest, TResponse>(
   hrmApiVersion: string,
   path: string,
   body: TRequest,
+  retryLimit = 3,
 ): Promise<Result<Error, TResponse>> =>
   requestFromInternalHrmEndpoint(
-    accountSid as HrmAccountId,
+    accountSid,
     hrmApiVersion,
     path,
     body,
     'POST',
+    retryLimit,
+  );
+
+export const patchOnInternalHrmEndpoint = async <TRequest, TResponse>(
+  accountSid: string,
+  hrmApiVersion: string,
+  path: string,
+  body: TRequest,
+  retryLimit = 3,
+): Promise<Result<Error, TResponse>> =>
+  requestFromInternalHrmEndpoint(
+    accountSid,
+    hrmApiVersion,
+    path,
+    body,
+    'PATCH',
+    retryLimit,
   );

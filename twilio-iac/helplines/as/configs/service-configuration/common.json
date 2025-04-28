@@ -6,7 +6,6 @@
             "enable_client_profiles": true,
             "enable_conferencing": true,
             "enable_fullstory_monitoring": true,
-            "enable_generalized_search": true,
             "enable_hierarchical_translations": true,
             "enable_permissions_from_backend": true,
             "enable_region_resource_search": true,

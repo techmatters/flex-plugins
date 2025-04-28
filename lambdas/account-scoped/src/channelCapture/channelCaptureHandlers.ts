@@ -196,7 +196,6 @@ const triggerWithUserMessage = async (
     webhookBaseUrl,
   }: CaptureChannelOptions,
 ) => {
-  console.log('triggerWithUserMessage - about to send message to Lex');
   // trigger Lex first, in order to reduce the time between the creating the webhook and sending the message
   const lexResult = await LexClient.postText({
     enableLexV2,
@@ -209,9 +208,7 @@ const triggerWithUserMessage = async (
       sessionId: userId,
     },
   });
-  console.log('triggerWithUserMessage - message sent', lexResult);
 
-  console.log('triggerWithUserMessage - creating webhook');
   let webhook;
   if (isConversation) {
     webhook = await (channelOrConversation as ConversationInstance).webhooks().create({
@@ -228,9 +225,7 @@ const triggerWithUserMessage = async (
       'configuration.url': getChatBotCallbackURL({ accountSid, webhookBaseUrl }),
     });
   }
-  console.log('triggerWithUserMessage - created webhook');
 
-  console.log('triggerWithUserMessage - updating channel');
   await updateChannelWithCapture(channelOrConversation, {
     enableLexV2,
     userId,
@@ -247,7 +242,6 @@ const triggerWithUserMessage = async (
     isConversation,
     channelType,
   });
-  console.log('triggerWithUserMessage - updated channel');
 
   // Bubble exception after the channel is updated because capture attributes are needed for the cleanup
   if (isErr(lexResult)) {
@@ -270,7 +264,6 @@ const triggerWithUserMessage = async (
     messages = messages.concat(lexResponse.messages.map(m => m.content || ''));
   }
 
-  console.log('triggerWithUserMessage - sending messages');
   for (const message of messages) {
     if (isConversation) {
       // eslint-disable-next-line no-await-in-loop
@@ -288,7 +281,6 @@ const triggerWithUserMessage = async (
       });
     }
   }
-  console.log('triggerWithUserMessage - sent messages');
 };
 
 /**
@@ -707,17 +699,13 @@ const handlePostSurveyComplete = async ({
   const formDefinitionsVersionUrl =
     configFormDefinitionsVersionUrl ||
     getFormDefinitionUrl({ assetsBucketUrl, definitionVersion });
-  console.log('loading form definitions');
   const postSurveyConfigSpecs = await loadConfigJson(
     formDefinitionsVersionUrl,
     'PostSurvey',
   );
-  console.log('loaded form definitions', postSurveyConfigSpecs);
 
   if (definitionVersion && postSurveyConfigSpecs) {
-    console.log('parsing control task attributes');
     const controlTaskAttributes = JSON.parse(controlTask.attributes);
-    console.log('parsed control task attributes', controlTaskAttributes);
 
     // parallel execution to save survey collected data in insights and hrm
     await Promise.all([
