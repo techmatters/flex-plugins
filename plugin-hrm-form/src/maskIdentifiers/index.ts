@@ -50,7 +50,7 @@ export const maskChannelStringsWithIdentifiers = (channelType: TaskChannelDefini
   Supervisor.TaskOverviewCanvas.firstLine = 'MaskIdentifiers';
 };
 
-// Mask identifiers in the manager strings
+// Mask identifiers in the manager strings & messaging canvas
 export const maskManagerStringsWithIdentifiers = <T extends Strings<string> & { MaskIdentifiers?: string }>(
   newStrings: T,
 ) => {
@@ -68,22 +68,17 @@ export const maskManagerStringsWithIdentifiers = <T extends Strings<string> & { 
     }
   });
 
-  return newStrings;
-};
-
-// Mask identifiers in the messaging canvas in chat window
-export const maskMessageListWithIdentifiers = () => {
-  const can = getInitializedCan();
-  const maskIdentifiers = !can(PermissionActions.VIEW_IDENTIFIERS);
-
-  if (!maskIdentifiers) return;
-
+  const maskedMessage = newStrings.MaskIdentifiers || 'XXXXXX';
+  // Mask identifiers in messaging canvas for the sender
   MessagingCanvas.defaultProps.memberDisplayOptions = {
-    theirDefaultName: 'XXXXXX',
+    theirDefaultName: maskedMessage,
     theirFriendlyNameOverride: false,
     yourFriendlyNameOverride: true,
   };
+
+  // Mask IP address shown in the first message for web channel
   MessageList.Content.remove('0', {
     if: ({ conversation }) => conversation?.source?.attributes?.channel_type === 'web',
   });
+  return newStrings;
 };
