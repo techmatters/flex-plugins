@@ -189,9 +189,11 @@ export const getMessage = messageKey => async language => {
 
   try {
     if (enableHierarchicalTranslations) {
+      const [baseLanguage] = language.split('-');
+      
       const definitionVersion = getDefinitionVersions().currentDefinitionVersion;
       const localizedMessages = definitionVersion?.customStrings.Messages;
-      return localizedMessages[language][messageKey];
+      return localizedMessages[baseLanguage || language][messageKey];
     }
     if (!language) return defaultMessages[messageKey];
 
