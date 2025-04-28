@@ -23,7 +23,7 @@
             "enable_voice_recordings": false,
             "enable_backend_hrm_contact_creation": true,
             "enable_lambda_post_survey_processing": true,
-            "enable_lex_v2": true
+            "enable_lex_v2": false
         },
         "contact_save_frequency": "onTabChange",
         "multipleOfficeSupport": true,
