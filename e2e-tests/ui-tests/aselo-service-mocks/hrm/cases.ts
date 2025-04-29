@@ -103,7 +103,7 @@ const hrmCases = () => {
         },
       );
       await page.route(
-        new URL(path.join(PATH_PREFIX, '*', 'timeline', '**'), context.HRM_BASE_URL).toString(),
+        new URL(path.join(PATH_PREFIX, '*', 'timeline**'), context.HRM_BASE_URL).toString(),
         async (route) => {
           await route.fulfill({
             status: 200,
