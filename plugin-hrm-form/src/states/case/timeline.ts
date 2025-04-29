@@ -170,8 +170,12 @@ export const selectTimeline = (
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export const selectTimelineCount = (state: RootState, caseId: string, timelineId: string): number | undefined =>
-  state[namespace].connectedCase.cases[caseId]?.timelines?.[timelineId]?.length;
+export const selectTimelineCount = (
+  state: RootState,
+  caseId: string,
+  timelineId: string,
+  filter: (activity: ContactIdentifierTimelineActivity | CaseSectionIdentifierTimelineActivity) => boolean = () => true,
+): number | undefined => state[namespace].connectedCase.cases[caseId]?.timelines?.[timelineId]?.filter(filter)?.length;
 
 export const selectTimelineContactCategories = (state: RootState, caseId: string, timelineId: string) => {
   const timeline = selectTimeline(state, caseId, timelineId, { offset: 0, limit: 10000 });

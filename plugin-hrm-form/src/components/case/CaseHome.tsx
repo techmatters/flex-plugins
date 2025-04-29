@@ -41,6 +41,7 @@ import { selectCaseLabel, selectTimelineContactCategories, selectTimelineCount }
 import { selectDefinitionVersionForCase } from '../../states/configuration/selectDefinitions';
 import selectCaseHelplineData from '../../states/case/selectCaseHelplineData';
 import { selectCounselorName } from '../../states/configuration/selectCounselorsHash';
+import { isContactIdentifierTimelineActivity } from '../../states/case/types';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -62,12 +63,16 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
     isStandaloneITask(task) ? undefined : selectContactByTaskSid(state, task.taskSid)?.savedContact,
   );
   const routing = useSelector((state: RootState) => selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseRoute);
-
   const timelineCategories = useSelector((state: RootState) =>
     selectTimelineContactCategories(state, routing.caseId, MAIN_TIMELINE_ID),
   );
   const activityCount = useSelector((state: RootState) =>
     routing.route === 'case' ? selectTimelineCount(state, routing.caseId, MAIN_TIMELINE_ID) : 0,
+  );
+  const contactCount = useSelector((state: RootState) =>
+    routing.route === 'case'
+      ? selectTimelineCount(state, routing.caseId, MAIN_TIMELINE_ID, isContactIdentifierTimelineActivity)
+      : 0,
   );
   const caseLabel = useSelector((state: RootState) =>
     selectCaseLabel(state, routing.caseId, MAIN_TIMELINE_ID, {
@@ -85,7 +90,9 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
   // End Hooks
   if (!connectedCase) return null; // narrow type before deconstructing
 
-  const isNewContact = Boolean(taskContact && taskContact.caseId === routing.caseId && !taskContact.finalizedAt);
+  const isNewContact = Boolean(
+    contactCount === 1 && taskContact && taskContact.caseId === routing.caseId && !taskContact.finalizedAt,
+  );
   const isNewCase = taskContact && taskContact.caseId === routing.caseId;
   const isOrphanedCase = !timelineCategories;
   const label = caseLabel;
