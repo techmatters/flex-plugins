@@ -56,7 +56,7 @@ import { ADD_EXTERNAL_REPORT_ENTRY, addExternalReportEntryReducer } from '../csa
 import { resourceReferralReducer } from './resourceReferral';
 import { ContactCategoryAction, toggleSubCategoriesReducer } from './categories';
 import { HrmState } from '..';
-import { createCaseAsyncAction } from '../case/saveCase';
+import { createCaseAsyncAction, CreateCaseAsyncActionFulfilled } from '../case/saveCase';
 import { saveContactReducer } from './saveContact';
 import { ConfigurationState } from '../configuration/reducer';
 import { Contact } from '../../types/types';
@@ -65,7 +65,11 @@ import {
   SearchCasesSuccessAction,
   SearchContactsSuccessAction,
 } from '../search/types';
-import { GET_CASE_TIMELINE_ACTION_FULFILLED, isContactTimelineActivity } from '../case/types';
+import {
+  CREATE_CASE_ACTION_FULFILLED,
+  GET_CASE_TIMELINE_ACTION_FULFILLED,
+  isContactTimelineActivity
+} from '../case/types';
 import { GetTimelineAsyncAction } from '../case/timeline';
 import {llmAssistantReducer} from "./llmAssistant";
 import {loadContactIntoRedux} from "./contactReduxUpdates";
@@ -149,7 +153,8 @@ export function reduce(
     | SaveContactReducerAction
     | SearchContactsSuccessAction
     | SearchCasesSuccessAction
-  | GetTimelineAsyncAction,
+  | GetTimelineAsyncAction
+  | CreateCaseAsyncActionFulfilled
 ): ContactsState {
   let state = boundReferralReducer(inputState, inputAction as any);
   state = toggleSubCategoriesReducer(state, inputAction as ContactCategoryAction);
@@ -256,6 +261,10 @@ export function reduce(
       const { payload: { caseId, timelineResult: { activities } } } = action;
       const contacts = activities.filter(isContactTimelineActivity).map(({ activity })=> activity);
       return loadContactListIntoState(state, rootState.configuration, contacts, `case-${caseId}`, false);
+    }
+    case CREATE_CASE_ACTION_FULFILLED: {
+      const { payload: { connectedContact } } = action as CreateCaseAsyncActionFulfilled;
+      return loadContactIntoRedux(state, connectedContact);
     }
     default:
       return state;
