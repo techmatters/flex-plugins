@@ -26,6 +26,10 @@ import { getQueryParams } from './PaginationParams';
 import { convertApiCaseSectionToCaseSection, FullGenericCaseSection } from './caseSectionService';
 import { convertApiContactToFlexContact } from './ContactService';
 
+const convertApiCaseToFlexCase = (apiCase: Case): Case => ({
+  ...apiCase,
+  id: apiCase.id.toString(), // coerce to string type, can be removed once API is aligned
+});
 export const getCasePayload = (contact: Contact, creatingWorkerSid: string, definitionVersion: DefinitionVersionId) => {
   const { helpline, rawJson: contactForm } = contact;
 
@@ -52,7 +56,7 @@ export async function createCase(contact: Contact, creatingWorkerSid: string, de
     body: JSON.stringify(caseRecord),
   };
 
-  return fetchHrmApi('/cases', options);
+  return convertApiCaseToFlexCase(await fetchHrmApi('/cases', options));
 }
 
 export async function cancelCase(caseId: Case['id']) {
@@ -69,7 +73,7 @@ export async function updateCaseOverview(caseId: Case['id'], body: CaseOverview)
     body: JSON.stringify(body),
   };
 
-  return fetchHrmApi(`/cases/${caseId}/overview`, options);
+  return convertApiCaseToFlexCase(await fetchHrmApi(`/cases/${caseId}/overview`, options));
 }
 
 export async function updateCaseStatus(caseId: Case['id'], status: Case['status']): Promise<Case> {
@@ -78,7 +82,7 @@ export async function updateCaseStatus(caseId: Case['id'], status: Case['status'
     body: JSON.stringify({ status }),
   };
 
-  return fetchHrmApi(`/cases/${caseId}/status`, options);
+  return convertApiCaseToFlexCase(await fetchHrmApi(`/cases/${caseId}/status`, options));
 }
 
 export async function getCase(caseId: Case['id']): Promise<Case> {
@@ -86,7 +90,8 @@ export async function getCase(caseId: Case['id']): Promise<Case> {
     method: 'GET',
     returnNullFor404: true,
   };
-  return fetchHrmApi(`/cases/${caseId}`, options);
+  const fromApi: Case = await fetchHrmApi(`/cases/${caseId}`, options);
+  return convertApiCaseToFlexCase(fromApi);
 }
 
 export type TimelineResult<TDate extends string | Date> = {
@@ -150,7 +155,12 @@ export async function listCases(queryParams, listCasesPayload): Promise<SearchCa
     body: JSON.stringify(listCasesPayload),
   };
 
-  return fetchHrmApi(`/cases/search${queryParamsString}`, options);
+  const fromApi: SearchCaseResult = await fetchHrmApi(`/cases/search${queryParamsString}`, options);
+
+  return {
+    ...fromApi,
+    cases: fromApi.cases.map(convertApiCaseToFlexCase),
+  };
 }
 
 export async function generalizedSearch({
@@ -169,5 +179,10 @@ export async function generalizedSearch({
     body: JSON.stringify({ searchParameters }),
   };
 
-  return fetchHrmApi(`/cases/generalizedSearch${queryParamsString}`, options);
+  const fromApi: SearchCaseResult = await fetchHrmApi(`/cases/generalizedSearch${queryParamsString}`, options);
+
+  return {
+    ...fromApi,
+    cases: fromApi.cases.map(convertApiCaseToFlexCase),
+  };
 }
