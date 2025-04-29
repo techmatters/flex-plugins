@@ -14,15 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React from 'react';
+import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
 import { getFilterComponent } from '../../../../components/caseList/filters/CaseListFilterProvider';
 import { dateFilterOptionsInPast } from '../../../../components/caseList/filters/dateFilters';
-import { Category } from '../../../../components/caseList/filters/CategoriesFilter';
-import { Item } from '../../../../components/caseList/filters/MultiSelectFilter';
 
 const themeConf = {};
 
@@ -75,7 +73,6 @@ describe('CaseListFilterProvider', () => {
     dateFilterValues: {},
     handleApplyStatusFilter: jest.fn(),
     handleApplyCounselorFilter: jest.fn(),
-    handleApplyCategoriesFilter: jest.fn(),
     handleApplyDateRangeFilter: jest.fn(),
   };
 
@@ -104,15 +101,6 @@ describe('CaseListFilterProvider', () => {
 
     const counselorButton = screen.getByRole('button', { name: /Counselor/i });
     expect(counselorButton).toBeInTheDocument();
-  });
-
-  test('renders CategoryFilter component', () => {
-    const component = getFilterComponent('generate-category-filter', baseProps, filterData);
-
-    render(<StorelessThemeProvider themeConf={themeConf}>{component}</StorelessThemeProvider>);
-
-    const categoriesButton = screen.getByRole('button', { name: /Categories/i });
-    expect(categoriesButton).toBeInTheDocument();
   });
 
   test('renders CreatedDateFilter component', () => {
