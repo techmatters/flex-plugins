@@ -41,10 +41,10 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       type: 'checkbox',
       name: 'iAmTrainedBID',
-      label:  `I am a trained BID partner or trained City staff`,
+      label:  'I am an authorized CIRCLE requestor',
       required: {
         value: true,
-        message: 'Check the box if you are a trained BID partner.',
+        message: 'Check the box if you are an authorized user.',
       },
     },
     {
@@ -72,6 +72,13 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       name: 'friendlyName',
       label: 'Your Name',
       placeholder: 'Name',
+      required: true,
+    },
+    {
+      type: 'input-text',
+      name: 'phone',
+      label: 'Phone Number for Callback',
+      placeholder: 'Phone Number',
       required: true,
     },
     {
@@ -146,18 +153,21 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           "value": "mayor_s_office_dept"
         },
         {
-          value: "The Hollywood Partnership",
-          label: "The Hollywood Partnership"
-        },
-        {
-          value: "Venice",
-          label: "Venice"
+          value: "BID",
+          label: "BID"
         },
         {
           value: "Other",
           label: "Other"
         },
       ],
+    },
+    {
+      type: 'input-text',
+      name: 'otherBID',
+      label: 'If BID/Other, please specify:',
+      placeholder: '',
+      required: true,
     },
     {
       type: 'checkbox',
@@ -181,28 +191,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       label: 'Please provide a description of the situation, encampment, or individual(s) and any particular issues/needs and any relevant history or upcoming operations that will impact the location',
       placeholder: 'Please provide a description',
       required: true,
-    },
-    {
-      type: 'select',
-      name: 'priority',
-      label: 'Priority',
-      defaultValue: '',
-      required: false,
-      options: [
-        {
-          value: "",
-          label: ""
-        },
-        {
-          value: "High",
-          label: "High"
-        },
-        {
-          value: "Normal",
-          label: "Normal"
-        }
-      ],
-    },  
+    }, 
   ],
 };
 
