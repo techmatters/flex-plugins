@@ -40,7 +40,7 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/uscr/templates/studio-flows/incoming_to_outbound_number.tftpl"
         channel_flow_vars = {
-          voice_ivr_not_allowed_message = "Hello you are trying to contact LA CICLE. Sorry, we don't take calls directly from the public. Please call 911 if you are facing an emergency."
+          voice_ivr_not_allowed_message = "Hello you are trying to contact LA CIRCLE. Sorry, we don't take calls directly from the public. Please call 911 if you are facing an emergency."
           voice_ivr_language         = "en-US"
 
         }
