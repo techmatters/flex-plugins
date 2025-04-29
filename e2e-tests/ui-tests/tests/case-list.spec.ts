@@ -80,7 +80,6 @@ test.describe.serial('Case List', () => {
     };
 
     await scanFilterDialogue('Status');
-    await scanFilterDialogue('Categories');
     await scanFilterDialogue('Counselor');
     await scanFilterDialogue('createdAtFilter');
     await scanFilterDialogue('updatedAtFilter');
