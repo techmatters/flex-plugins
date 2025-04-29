@@ -93,6 +93,7 @@ const mockedCases: Record<string, CaseStateEntry> = {
     },
     timelines: {},
     sections: {},
+    outstandingUpdateCount: 0,
   },
   '2': {
     caseWorkingCopy: undefined,
@@ -113,6 +114,7 @@ const mockedCases: Record<string, CaseStateEntry> = {
     },
     timelines: {},
     sections: {},
+    outstandingUpdateCount: 0,
   },
 };
 
