@@ -167,7 +167,6 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       name: 'otherBID',
       label: 'If BID/Other, please specify:',
       placeholder: '',
-      required: true,
     },
     {
       type: 'checkbox',
