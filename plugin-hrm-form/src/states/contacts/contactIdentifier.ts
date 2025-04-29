@@ -32,7 +32,7 @@ const definitionUsesChildName = (definition: DefinitionVersion) =>
       definition.tabbedForms.ChildInformationTab.find(input => input.name === 'firstName' || input.name === 'lastName'),
   );
 
-type ContactLabelOptions = { placeholder?: string; substituteForId?: boolean };
+export type ContactLabelOptions = { placeholder?: string; substituteForId?: boolean };
 
 const contactLabel = (
   definition: DefinitionVersion,

@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
@@ -37,15 +37,10 @@ import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute'
 import selectCurrentRouteCaseState from '../../states/case/selectCurrentRouteCase';
 import CaseCreatedBanner from '../caseMergingBanners/CaseCreatedBanner';
 import AddToCaseBanner from '../caseMergingBanners/AddToCaseBanner';
-import { selectTimelineContactCategories, selectTimelineCount } from '../../states/case/timeline';
+import { selectCaseLabel, selectTimelineContactCategories, selectTimelineCount } from '../../states/case/timeline';
 import { selectDefinitionVersionForCase } from '../../states/configuration/selectDefinitions';
 import selectCaseHelplineData from '../../states/case/selectCaseHelplineData';
 import { selectCounselorName } from '../../states/configuration/selectCounselorsHash';
-import { contactLabelFromHrmContact } from '../../states/contacts/contactIdentifier';
-import {
-  selectContactsByCaseIdInCreatedOrder,
-  selectFirstContactByCaseId,
-} from '../../states/contacts/selectContactByCaseId';
 
 export type CaseHomeProps = {
   task: CustomITask | StandaloneITask;
@@ -68,15 +63,17 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
   );
   const routing = useSelector((state: RootState) => selectCurrentTopmostRouteForTask(state, task.taskSid) as CaseRoute);
 
-  const caseContacts = useSelector((state: RootState) => selectContactsByCaseIdInCreatedOrder(state, routing.caseId));
-  const firstConnectedContact = useSelector(
-    (state: RootState) => selectFirstContactByCaseId(state, routing.caseId)?.savedContact,
-  );
   const timelineCategories = useSelector((state: RootState) =>
     selectTimelineContactCategories(state, routing.caseId, MAIN_TIMELINE_ID),
   );
   const activityCount = useSelector((state: RootState) =>
     routing.route === 'case' ? selectTimelineCount(state, routing.caseId, MAIN_TIMELINE_ID) : 0,
+  );
+  const caseLabel = useSelector((state: RootState) =>
+    selectCaseLabel(state, routing.caseId, MAIN_TIMELINE_ID, {
+      substituteForId: false,
+      placeholder: '',
+    }),
   );
 
   const definitionVersion = useSelector((state: RootState) => selectDefinitionVersionForCase(state, connectedCase));
@@ -89,12 +86,9 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
   if (!connectedCase) return null; // narrow type before deconstructing
 
   const isNewContact = Boolean(taskContact && taskContact.caseId === routing.caseId && !taskContact.finalizedAt);
-  const isNewCase = caseContacts.length === 1 && taskContact && taskContact.caseId === routing.caseId;
-  const isOrphanedCase = !firstConnectedContact;
-  const label = contactLabelFromHrmContact(definitionVersion, firstConnectedContact ?? taskContact, {
-    placeholder: '',
-    substituteForId: false,
-  });
+  const isNewCase = taskContact && taskContact.caseId === routing.caseId;
+  const isOrphanedCase = !timelineCategories;
+  const label = caseLabel;
   const hasMoreActivities = activityCount > MAX_ACTIVITIES_IN_TIMELINE_SECTION;
 
   const caseId = connectedCase.id;

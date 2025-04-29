@@ -33,13 +33,13 @@ import { getDefinitionVersions } from '../../../hrmConfig';
 import { CaseListState } from '../../../states/caseList/reducer';
 import { caseListContentInitialState, fetchCaseListAsyncAction } from '../../../states/caseList/listContent';
 import { caseListSettingsInitialState } from '../../../states/caseList/settings';
-import { Contact, ContactRawJson, standaloneTaskSid } from '../../../types/types';
+import { standaloneTaskSid } from '../../../types/types';
 import { namespace } from '../../../states/storeNamespaces';
 import { RecursivePartial } from '../../RecursivePartial';
 import { HrmState, RootState } from '../../../states';
 import { CaseStateEntry } from '../../../states/case/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
-import { newGetTimelineAsyncAction } from '../../../states/case/timeline';
+import { newGetTimelineAsyncAction, selectCaseLabel } from '../../../states/case/timeline';
 
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 const e2eRules = require('../../../permissions/e2e.json');
@@ -55,6 +55,7 @@ jest.mock('../../../permissions/fetchRules', () => {
 jest.mock('../../../states/case/timeline', () => ({
   newGetTimelineAsyncAction: jest.fn(),
   selectTimelineContactCategories: jest.fn().mockReturnValue({}),
+  selectCaseLabel: jest.fn().mockReturnValue(''),
 }));
 
 jest.mock('../../../states/caseList/listContent', () => ({
@@ -79,6 +80,7 @@ const mockedCases: Record<string, CaseStateEntry> = {
     availableStatusTransitions: [],
     connectedCase: {
       id: '1',
+      label: '',
       accountSid: 'AC',
       twilioWorkerId: 'WK worker 1',
       createdAt: '2020-07-07T17:38:42.227Z',
@@ -88,10 +90,6 @@ const mockedCases: Record<string, CaseStateEntry> = {
         definitionVersion: DefinitionVersionId.v1,
       },
       helpline: '',
-      categories: {},
-      firstContact: {
-        id: 'contact-1',
-      } as Contact,
     },
     timelines: {},
     sections: {},
@@ -102,6 +100,7 @@ const mockedCases: Record<string, CaseStateEntry> = {
     availableStatusTransitions: [],
     connectedCase: {
       id: '2',
+      label: '',
       accountSid: 'AC',
       twilioWorkerId: 'WK-worker 2',
       createdAt: '2020-07-07T17:38:42.227Z',
@@ -111,16 +110,6 @@ const mockedCases: Record<string, CaseStateEntry> = {
         definitionVersion: DefinitionVersionId.v1,
       },
       helpline: '',
-      firstContact: {
-        id: 'contact-2',
-        rawJson: {
-          childInformation: {
-            firstName: 'Sonya',
-            lastName: 'Michels',
-          },
-        } as Partial<ContactRawJson>,
-      } as Contact,
-      categories: {},
     },
     timelines: {},
     sections: {},
@@ -209,6 +198,16 @@ test('Should dispatch fetchList actions', async () => {
 });
 
 test('Should render list if it is populated', async () => {
+  (selectCaseLabel as jest.MockedFunction<typeof selectCaseLabel>).mockImplementation((state, caseId) => {
+    switch (caseId) {
+      case '1':
+        return 'Michael Smith';
+      case '2':
+        return 'Sonya Michels';
+      default:
+        return '';
+    }
+  });
   const initialState: RootState = createState({
     configuration: {
       counselors: {

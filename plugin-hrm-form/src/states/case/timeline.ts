@@ -33,7 +33,9 @@ import {
 } from './types';
 import { FullCaseSection } from '../../services/caseSectionService';
 import { getTemplateStrings } from '../../hrmConfig';
-import { selectDefinitionVersionForCase } from '../configuration/selectDefinitions';
+import { selectDefinitionVersionForCase, selectDefinitionVersionForContact } from '../configuration/selectDefinitions';
+import { selectCaseByCaseId } from './selectCaseStateByCaseId';
+import { contactLabelFromHrmContact, ContactLabelOptions } from '../contacts/contactIdentifier';
 
 export type PaginationSettings = { offset: number; limit: number };
 
@@ -187,4 +189,23 @@ export const selectTimelineContactCategories = (state: RootState, caseId: string
     }
   }
   return timelineCategories;
+};
+
+export const selectCaseLabel = (
+  state: RootState,
+  caseId: string,
+  timelineId: string,
+  contactLabelOptions?: ContactLabelOptions,
+) => {
+  const caseLabelFromCase = selectCaseByCaseId(state, caseId)?.connectedCase?.label;
+  if (caseLabelFromCase) return caseLabelFromCase;
+  const timeline = selectTimeline(state, caseId, timelineId, { offset: 0, limit: 10000 });
+  if (timeline) {
+    const firstContact = timeline.find(isContactTimelineActivity) as TimelineActivity<Contact>;
+    if (firstContact?.activity) {
+      const def = selectDefinitionVersionForContact(state, firstContact.activity);
+      return contactLabelFromHrmContact(def, firstContact.activity, contactLabelOptions);
+    }
+  }
+  return undefined;
 };

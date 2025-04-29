@@ -15,10 +15,10 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { Dispatch, useEffect } from 'react';
-import { connect, ConnectedProps, useDispatch, useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { Case, Contact, RouterTask } from '../../../types/types';
+import { Case, RouterTask } from '../../../types/types';
 import CaseHeader from './CaseHeader';
 import { Flex, PreviewWrapper } from '../../../styles';
 import getUpdatedDate from '../../../states/getUpdatedDate';
@@ -27,7 +27,6 @@ import { getDefinitionVersion } from '../../../services/ServerlessService';
 import { updateDefinitionVersion } from '../../../states/configuration/actions';
 import { RootState } from '../../../states';
 import TagsAndCounselor from '../TagsAndCounselor';
-import { namespace } from '../../../states/storeNamespaces';
 import asyncDispatch from '../../../states/asyncDispatch';
 import { connectToCaseAsyncAction } from '../../../states/contacts/saveContact';
 import { newCloseModalAction } from '../../../states/routing/actions';
@@ -35,10 +34,12 @@ import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { PreviewRow } from '../styles';
 import selectContactStateByContactId from '../../../states/contacts/selectContactStateByContactId';
 import selectContextContactId from '../../../states/contacts/selectContextContactId';
-import { selectFirstCaseContact } from '../../../states/contacts/selectContactByCaseId';
-import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
 import { selectDefinitionVersions } from '../../../states/configuration/selectDefinitions';
-import { newGetTimelineAsyncAction, selectTimelineContactCategories } from '../../../states/case/timeline';
+import {
+  newGetTimelineAsyncAction,
+  selectCaseLabel,
+  selectTimelineContactCategories,
+} from '../../../states/case/timeline';
 
 type Props = {
   currentCase: Case;
@@ -54,11 +55,16 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
     selectContextContactId(state, task.taskSid, 'search', 'case-results'),
   );
   const definitionVersions = useSelector(selectDefinitionVersions);
-  const firstConnectedContact = useSelector((state: RootState) => selectFirstCaseContact(state, currentCase));
   const taskContact = useSelector((state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact);
   const isConnectedToTaskContact = Boolean(taskContact?.caseId && taskContact.caseId === currentCase?.id);
   const timelineCategories = useSelector((state: RootState) =>
-    selectTimelineContactCategories(state, currentCase.id.toString(), CONTACTS_TIMELINE_ID),
+    selectTimelineContactCategories(state, currentCase.id, CONTACTS_TIMELINE_ID),
+  );
+  const caseLabel = useSelector((state: RootState) =>
+    selectCaseLabel(state, currentCase.id, CONTACTS_TIMELINE_ID, {
+      substituteForId: false,
+      placeholder: '',
+    }),
   );
 
   const dispatch = useDispatch();
@@ -73,10 +79,8 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
   const updatedAtObj = getUpdatedDate(currentCase);
   const followUpDateObj = info.followUpDate ? new Date(info.followUpDate) : undefined;
   const { definitionVersion: versionId } = info;
-  const orphanedCase = !firstConnectedContact;
-  const { caseInformation } = (firstConnectedContact || {}).rawJson || {};
-  const { callSummary } = caseInformation || {};
-  const summary = info?.summary || callSummary;
+  const orphanedCase = !timelineCategories;
+  const summary = info?.summary;
   const counselor = counselorsHash[twilioWorkerId];
 
   const can = React.useMemo(() => {
@@ -102,17 +106,13 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
         (!taskContact.caseId || isConnectedToTaskContact),
     );
   }
-  const contactLabel = contactLabelFromHrmContact(definitionVersion, firstConnectedContact, {
-    substituteForId: false,
-    placeholder: '',
-  });
 
   return (
     <Flex width="100%">
       <PreviewWrapper>
         <CaseHeader
           caseId={id}
-          contactLabel={contactLabel}
+          caseLabel={caseLabel}
           createdAt={createdAt}
           updatedAt={updatedAtObj ? updatedAtObj.toISOString() : ''}
           followUpDate={followUpDateObj}

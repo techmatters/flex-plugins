@@ -61,7 +61,6 @@ import { saveContactReducer } from './saveContact';
 import { ConfigurationState } from '../configuration/reducer';
 import { Contact } from '../../types/types';
 import {
-  SEARCH_CASES_SUCCESS,
   SEARCH_CONTACTS_SUCCESS,
   SearchCasesSuccessAction,
   SearchContactsSuccessAction,
@@ -252,9 +251,6 @@ export function reduce(
     }
     case SEARCH_CONTACTS_SUCCESS: {
       return loadContactListIntoState(state, rootState.configuration, action.searchResult.contacts, `${action.taskId}-search-contact`);
-    }
-    case SEARCH_CASES_SUCCESS: {
-      return loadContactListIntoState(state, rootState.configuration, action.searchResult.cases.map(c => c.firstContact).filter(Boolean), `${action.taskId}-search-case`);
     }
     case GET_CASE_TIMELINE_ACTION_FULFILLED: {
       const { payload: { caseId, timelineResult: { activities } } } = action;
