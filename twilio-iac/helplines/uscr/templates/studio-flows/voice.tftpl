@@ -51,7 +51,7 @@ ${
               "x": 80,
               "y": 460
             },
-            "attributes": channel_attributes["default"],
+            "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"LA CIRCLE\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\"\n}",
             "workflow":  workflow_sids["master"],
             "channel": task_channel_sids["voice"],
             "timeout": "1800"
