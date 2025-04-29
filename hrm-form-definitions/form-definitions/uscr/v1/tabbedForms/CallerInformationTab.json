@@ -2480,18 +2480,19 @@
         "value": "mayor_s_office_dept"
       },
       {
-        "value": "The Holloywood Partnership",
-        "label": "The Holloywood Partnership"
-      },
-      {
-        "value": "Venice",
-        "label": "Venice"
+        "value": "BID",
+        "label": "BID"
       },
       {
         "value": "Other",
         "label": "Other"
       }
     ]
+  },
+  {
+    "name": "otherBID",
+    "label": "If BID/Other, please specify:",
+    "type": "input"
   },
   {
     "name": "officerRequest",
