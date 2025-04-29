@@ -34,7 +34,6 @@ export type LexMemory = { [q: string]: string | number };
 type PostTextParams = {
   environment: string;
   helplineCode: string;
-  botLanguage: string;
   botSuffix: string;
   sessionId: string;
   inputText: string;
@@ -42,7 +41,6 @@ type PostTextParams = {
 type DeleteSessionParams = {
   environment: string;
   helplineCode: string;
-  botLanguage: string;
   botSuffix: string;
   sessionId: string;
 };
@@ -63,13 +61,13 @@ const getBotNameV1 = ({
 });
 
 const postTextV1 = async ({
-  botLanguage,
+  botLanguageV1: botLanguage,
   botSuffix,
   environment,
   helplineCode,
   inputText,
   sessionId,
-}: PostTextParams) => {
+}: PostTextParams & { botLanguageV1: string }) => {
   try {
     const { botAlias, botName } = getBotNameV1({
       botLanguage,
@@ -102,12 +100,12 @@ const isEndOfDialogV1 = (dialogState: string | undefined) =>
   dialogState === 'Fulfilled' || dialogState === 'Failed';
 
 const deleteSessionV1 = async ({
-  botLanguage,
+  botLanguageV1: botLanguage,
   botSuffix,
   environment,
   helplineCode,
   sessionId,
-}: DeleteSessionParams) => {
+}: DeleteSessionParams & { botLanguageV1: string }) => {
   try {
     const { botAlias, botName } = getBotNameV1({
       botLanguage,
@@ -193,7 +191,7 @@ const postTextV2 = async ({
   helplineCode,
   inputText,
   sessionId,
-}: PostTextParams) => {
+}: PostTextParams & { botLanguage: string }) => {
   try {
     const result = await getBotNameV2({
       botLanguage,
@@ -237,7 +235,7 @@ const deleteSessionV2 = async ({
   environment,
   helplineCode,
   sessionId,
-}: DeleteSessionParams) => {
+}: DeleteSessionParams & { botLanguage: string }) => {
   try {
     const result = await getBotNameV2({
       botLanguage,
@@ -302,7 +300,7 @@ const postText = async ({
   postTextParams,
 }: {
   enableLexV2: boolean;
-  postTextParams: PostTextParams;
+  postTextParams: PostTextParams & { botLanguage: string; botLanguageV1: string };
 }) => {
   try {
     if (enableLexV2) {
@@ -321,38 +319,21 @@ const postText = async ({
 };
 
 const deleteSession = async ({
-  botLanguage,
-  botSuffix,
   enableLexV2,
-  environment,
-  helplineCode,
-  sessionId,
+  deleteSessionParams,
 }: {
   enableLexV2: boolean;
-  environment: string;
-  helplineCode: string;
-  botLanguage: string;
-  botSuffix: string;
-  sessionId: string;
+  deleteSessionParams: DeleteSessionParams & {
+    botLanguage: string;
+    botLanguageV1: string;
+  };
 }) => {
   try {
     if (enableLexV2) {
-      return await LexV2.deleteSession({
-        botLanguage,
-        botSuffix,
-        environment,
-        helplineCode,
-        sessionId,
-      });
+      return await LexV2.deleteSession(deleteSessionParams);
     }
 
-    return await LexV1.deleteSession({
-      botLanguage,
-      botSuffix,
-      environment,
-      helplineCode,
-      sessionId,
-    });
+    return await LexV1.deleteSession(deleteSessionParams);
   } catch (error) {
     return newErr({
       message: error instanceof Error ? error.message : String(error),

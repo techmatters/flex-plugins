@@ -121,13 +121,21 @@ export const handleChatbotCallback: AccountScopedHandler = async (
       const capturedChannelAttributes =
         channelAttributes.capturedChannelAttributes as CapturedChannelAttributes;
 
-      const { botLanguage, botSuffix, enableLexV2, environment, helplineCode, userId } =
-        capturedChannelAttributes;
+      const {
+        botLanguage,
+        botLanguageV1,
+        botSuffix,
+        enableLexV2,
+        environment,
+        helplineCode,
+        userId,
+      } = capturedChannelAttributes;
 
       const lexResult = await LexClient.postText({
         enableLexV2,
         postTextParams: {
           botLanguage,
+          botLanguageV1,
           botSuffix,
           environment,
           helplineCode,

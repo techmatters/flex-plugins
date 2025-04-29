@@ -38,6 +38,7 @@ export type CapturedChannelAttributes = {
   environment: string;
   helplineCode: string;
   botLanguage: string;
+  botLanguageV1: string;
   botSuffix: string;
   controlTaskSid: string;
   releaseType: ReleaseTypes;
@@ -95,6 +96,7 @@ const updateChannelWithCapture = async (
     environment,
     helplineCode,
     botLanguage,
+    botLanguageV1,
     botSuffix,
     controlTaskSid,
     chatbotCallbackWebhookSid,
@@ -126,6 +128,7 @@ const updateChannelWithCapture = async (
         environment,
         helplineCode,
         botLanguage,
+        botLanguageV1,
         botSuffix,
         controlTaskSid,
         chatbotCallbackWebhookSid,
@@ -151,6 +154,7 @@ type CaptureChannelOptions = {
   environment: string;
   helplineCode: string;
   botLanguage: string;
+  botLanguageV1: string;
   botSuffix: string;
   inputText: string;
   userId: string;
@@ -185,6 +189,7 @@ const triggerWithUserMessage = async (
     helplineCode,
     botSuffix,
     botLanguage,
+    botLanguageV1,
     inputText,
     controlTaskSid,
     releaseType,
@@ -201,6 +206,7 @@ const triggerWithUserMessage = async (
     enableLexV2,
     postTextParams: {
       botLanguage,
+      botLanguageV1,
       botSuffix,
       environment,
       helplineCode,
@@ -232,6 +238,7 @@ const triggerWithUserMessage = async (
     environment,
     helplineCode,
     botLanguage,
+    botLanguageV1,
     botSuffix,
     controlTaskSid,
     releaseType,
@@ -295,6 +302,7 @@ const triggerWithNextMessage = async (
     environment,
     helplineCode,
     botLanguage,
+    botLanguageV1,
     botSuffix,
     inputText,
     controlTaskSid,
@@ -343,6 +351,7 @@ const triggerWithNextMessage = async (
     environment,
     helplineCode,
     botLanguage,
+    botLanguageV1,
     botSuffix,
     controlTaskSid,
     releaseType,
@@ -571,6 +580,7 @@ export const handleChannelCapture = async (
       helplineCode: helplineCode.toLowerCase(),
       botSuffix,
       botLanguage: languageSanitized.toLowerCase(),
+      botLanguageV1: languageSanitized,
       releaseType,
       studioFlowSid,
       memoryAttribute,
