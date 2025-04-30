@@ -188,9 +188,7 @@ const Timeline: React.FC<OwnProps> = ({
             if (timelineActivity.isDraft) {
               canViewActivity = false;
             } else {
-              const contactId = timelineActivity.activity.id;
-              const { savedContact } = contacts.find(contact => contact.savedContact?.id === contactId);
-              canViewActivity = can(PermissionActions.VIEW_CONTACT, savedContact);
+              canViewActivity = can(PermissionActions.VIEW_CONTACT, timelineActivity.activity);
             }
           }
 
