@@ -40,8 +40,20 @@
         "label": ""
       },
       {
-        "value": "",
-        "label": ""
+        "value": "Male",
+        "label": "Male"
+      },
+      {
+        "value": "Female",
+        "label": "Female"
+      },
+      {
+        "value": "Gender Expansive",
+        "label": "Gender Expansive"
+      },
+      {
+        "value": "N/A",
+        "label": "N/A"
       }
     ],
     "required": {
@@ -61,8 +73,28 @@
         "label": ""
       },
       {
-        "value": "",
-        "label": ""
+        "value": "0-5",
+        "label": "0-5"
+      },
+      {
+        "value": "6-12",
+        "label": "6-12"
+      },
+      {
+        "value": "13-17",
+        "label": "13-17"
+      },
+      {
+        "value": "18-24",
+        "label": "18-24"
+      },
+      {
+        "value": "Adult 25+",
+        "label": "Adult 25+"
+      },
+      {
+        "value": "N/A",
+        "label": "N/A"
       }
     ],
     "required": {
