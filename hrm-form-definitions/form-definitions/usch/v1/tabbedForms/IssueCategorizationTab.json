@@ -4,16 +4,10 @@
       "color": "#085f63",
       "subcategories": [
         {
-          "label": "Child abduction"
-        },
-        {
-          "label": "Lost, unaccounted for or otherwise missing child"
+          "label": "Abduction Issues"
         },
         {
           "label": "Runaway"
-        },
-        {
-          "label": "Unspecified/Other - MS"
         }
       ]
     },
@@ -24,40 +18,58 @@
           "label": "Bullying"
         },
         {
-          "label": "Child/Early/Forced marriage"
+          "label": "Forced Child Marriage"
         },
         {
-          "label": "Child labour"
+          "label": "Trafficking- Labor"
         },
         {
-          "label": "Commercial sexual exploitation (offline)"
+          "label": "Trafficking- Sex"
         },
         {
-          "label": "Female Genital Mutilation (FGM)\r"
+          "label": "Female Genital Mutilation (FGM/C)\n"
         },
         {
-          "label": "Gender-based harmful traditional practices (other than FGM)"
+          "label": "Domestic Violence"
         },
         {
-          "label": "Harmful traditional practices other than child marriage and FGM"
+          "label": "Abandonment"
         },
         {
-          "label": "Neglect (or negligent treatment)"
+          "label": "Abuse- Neglect"
         },
         {
-          "label": "Online child sexual abuse and exploitation"
+          "label": "Child Sexual Abuse Material (CSAM)"
         },
         {
-          "label": "Physical violence"
+          "label": "Sextortion"
         },
         {
-          "label": "Psychological / Emotional violence"
+          "label": "Abuse- Physical"
         },
         {
-          "label": "Sexual violence"
+          "label": "Abuse- Emotional"
         },
         {
-          "label": "Unspecified/Other - V"
+          "label": "Abuse- Sexual"
+        },
+        {
+          "label": "Abuse- Sibling"
+        },
+        {
+          "label": "Abuse Neglect- Medical"
+        },
+        {
+          "label": "Abuse- Unspecified"
+        },
+        {
+          "label": "Sex Offender Issues"
+        },
+        {
+          "label": "Online Concerns"
+        },
+        {
+          "label": "Abuse- Elderly or Adult"
         }
       ]
     },
@@ -65,66 +77,27 @@
       "color": "#fac05e",
       "subcategories": [
         {
-          "label": "Addictive behaviours and substance use"
+          "label": "Addiction/Substance Use"
         },
         {
-          "label": "Behavioural problems"
+          "label": "Discipline/Behavior Issues"
         },
         {
-          "label": "Concerns about the self"
+          "label": "Adult Survivor Issues"
         },
         {
-          "label": "Emotional distress – anger problems"
+          "label": "Mental Health Issues"
         },
         {
-          "label": "Emotional distress – fear and anxiety problems"
+          "label": "Suicide Ideation- Self",
+          "toolkitUrl": "https//www.google.com"
         },
         {
-          "label": "Emotional distress – mood problems"
+          "label": "Suicide Ideation- Other",
+          "toolkitUrl": "https://www.google.com"
         },
         {
-          "label": "Neurodevelopmental concerns"
-        },
-        {
-          "label": "Problems with eating behaviour"
-        },
-        {
-          "label": "Self-harming behaviour"
-        },
-        {
-          "label": "Suicidal thoughts and suicide attempts"
-        },
-        {
-          "label": "Traumatic distress"
-        },
-        {
-          "label": "Unspecified/Other - MH"
-        }
-      ]
-    },
-    "Physical Health": {
-      "color": "#f79d8f",
-      "subcategories": [
-        {
-          "label": "COVID-19"
-        },
-        {
-          "label": "General medical concerns"
-        },
-        {
-          "label": "Medical or lifestyle information about HIV/AIDS"
-        },
-        {
-          "label": "Nutrition"
-        },
-        {
-          "label": "Pregnancy and maternal care"
-        },
-        {
-          "label": "Sexual and reproductive health"
-        },
-        {
-          "label": "Unspecified/Other - PH"
+          "label": "Non-Suicidal Self Injury"
         }
       ]
     },
@@ -132,28 +105,40 @@
       "color": "#f0817c",
       "subcategories": [
         {
-          "label": "Education"
+          "label": "Child Care Issues"
         },
         {
-          "label": "Essential needs"
+          "label": "Homelessness"
         },
         {
-          "label": "General healthcare services"
+          "label": "Child Support- Custody Dispute"
         },
         {
-          "label": "Legal services and advice"
+          "label": "CPS- Report Abuse"
         },
         {
-          "label": "Mental health services"
+          "label": "CPS- Questions/Information"
         },
         {
-          "label": "Sexual health services"
+          "label": "Emancipation"
         },
         {
-          "label": "Socio-economical services"
+          "label": "Father's Rights"
         },
         {
-          "label": "Unspecified/Other - A"
+          "label": "Grandparent's Rights"
+        },
+        {
+          "label": "Legal Issues"
+        },
+        {
+          "label": "System Failure"
+        },
+        {
+          "label": "Welfare Fraud"
+        },
+        {
+          "label": "Childhelp Information"
         }
       ]
     },
@@ -161,25 +146,16 @@
       "color": "#4d92c2",
       "subcategories": [
         {
-          "label": "Ethnicity/nationality"
+          "label": "Immigration Issues"
         },
         {
-          "label": "Financial situation"
+          "label": "Refugee Issues"
         },
         {
-          "label": "Gender"
+          "label": "Racial Bias/Discrimination"
         },
         {
-          "label": "Gender identity or expression and sexual orientation"
-        },
-        {
-          "label": "Health"
-        },
-        {
-          "label": "Philosophical or religious beliefs"
-        },
-        {
-          "label": "Unspecified/Other - DE"
+          "label": "LGBTQIA Issues"
         }
       ]
     },
@@ -187,39 +163,16 @@
       "color": "#c99f7d",
       "subcategories": [
         {
-          "label": "Adoption, fostering, and extended family placement"
+          "label": "Parenting Concerns- Other"
         },
         {
-          "label": "Family health and wellbeing"
+          "label": "Parenting Concerns- Own"
         },
         {
-          "label": "General family issues"
+          "label": "Parent-Teen Relationships"
         },
         {
-          "label": "Relationship to caregiver"
-        },
-        {
-          "label": "Relationship with sibling(s)"
-        },
-        {
-          "label": "Unspecified/Other - FR"
-        }
-      ]
-    },
-    "Peer Relationships": {
-      "color": "#db7a34",
-      "subcategories": [
-        {
-          "label": "Classmates/colleagues relationships"
-        },
-        {
-          "label": "Friends and friendships"
-        },
-        {
-          "label": "Partner relationships"
-        },
-        {
-          "label": "Unspecified/Other - PR"
+          "label": "Teen Issues"
         }
       ]
     },
@@ -227,30 +180,63 @@
       "color": "#e7c582",
       "subcategories": [
         {
-          "label": "Academic issues"
+          "label": "School Issues"
         },
         {
-          "label": "Problems at work"
-        },
-        {
-          "label": "Teacher and school problems"
-        },
-        {
-          "label": "Unspecified/Other - EO"
+          "label": "Youth Sports/Coaching Issues"
         }
       ]
     },
-    "Sexuality": {
-      "color": "#037971",
+    "Courage First Athlete Helpline": {
+      "color": "#14919b",
       "subcategories": [
         {
-          "label": "Sexual behaviours"
+          "label": "Athletic Touching"
         },
         {
-          "label": "Sexual orientation and gender identity"
+          "label": "Bullying/Team Dynamics"
         },
         {
-          "label": "Unspecified/Other - S"
+          "label": "Coaching Issue"
+        },
+        {
+          "label": "Courage First Information"
+        },
+        {
+          "label": "Discrimination- Gender/Sex"
+        },
+        {
+          "label": "Discrimination- Other"
+        },
+        {
+          "label": "Eating Disorder"
+        },
+        {
+          "label": "Grooming/Power Asymmetry"
+        },
+        {
+          "label": "Monetary Concerns- NIL Funding"
+        },
+        {
+          "label": "Safesport Reporting Information"
+        },
+        {
+          "label": "Sports Retirement"
+        },
+        {
+          "label": "Doping"
+        },
+        {
+          "label": "System Failure- Abuse Not Investigated"
+        },
+        {
+          "label": "System Failure- Outcome Dissatisfaction"
+        },
+        {
+          "label": "Teammate Challenge/Issue"
+        },
+        {
+          "label": "Trafficking/Immigration"
         }
       ]
     }

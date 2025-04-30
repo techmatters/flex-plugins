@@ -5,8 +5,8 @@
     "type": "select",
     "isPII": false,
     "defaultOption": {
-      "value": "TEST",
-      "label": "TEST"
+      "value": "",
+      "label": ""
     },
     "options": [
       {
@@ -138,52 +138,29 @@
     "name": "languageLineUsed",
     "label": "Language Line Used",
     "type": "select",
-    "isPII": false,
     "defaultOption": {
-      "value": "No",
-      "label": "No"
+      "value": "Not used",
+      "label": "Not used"
     },
+    "unknownOption": "",
     "options": [
       {
         "value": "",
         "label": ""
       },
       {
-        "value": "Yes",
-        "label": "Yes"
+        "value": "Not used",
+        "label": "Not used"
       },
       {
-        "value": "No",
-        "label": "No"
+        "value": "Spanish",
+        "label": "Spanish"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
       }
     ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "language",
-    "label": "Language",
-    "type": "dependent-select",
-    "isPII": false,
-    "dependsOn": "languageLineUsed",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "Yes": [
-        {
-          "value": "Spanish",
-          "label": "Spanish"
-        },
-        {
-          "value": "Other",
-          "label": "Other"
-        }
-      ]
-    },
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -193,7 +170,10 @@
     "name": "counselorSpokeForeignLanguage",
     "label": "Counselor Spoke Foreign Language",
     "type": "select",
-    "isPII": false,
+    "defaultOption": {
+      "value": "No",
+      "label": "No"
+    },
     "unknownOption": "",
     "options": [
       {
@@ -219,10 +199,9 @@
     "label": "How the Helpseeker heard about us",
     "type": "select",
     "defaultOption": {
-      "value": "Billboard",
-      "label": "Billboard"
+      "value": "",
+      "label": ""
     },
-    "isPII": false,
     "unknownOption": "",
     "options": [
       {
@@ -386,10 +365,6 @@
     "isPII": false,
     "options": [
       {
-        "value": "",
-        "label": ""
-      },
-      {
         "value": "Barrier Identification & Resolution",
         "label": "Barrier Identification & Resolution"
       },
@@ -445,10 +420,6 @@
     "type": "listbox-multiselect",
     "isPII": false,
     "options": [
-      {
-        "value": "",
-        "label": ""
-      },
       {
         "value": "Referred to child protection agencies",
         "label": "Referred to child protection agencies"
@@ -511,7 +482,10 @@
     "name": "levelOfIntervention",
     "label": "Level of Intervention",
     "type": "select",
-    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
     "unknownOption": "",
     "options": [
       {
@@ -540,7 +514,10 @@
     "name": "helpseekerReaction",
     "label": "Helpseeker Reaction",
     "type": "select",
-    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
     "unknownOption": "",
     "options": [
       {
@@ -577,7 +554,10 @@
     "name": "wasASafetyPlanCreated",
     "label": "Was a Safety Plan created?",
     "type": "select",
-    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
     "unknownOption": "",
     "options": [
       {
@@ -604,10 +584,6 @@
     "type": "listbox-multiselect",
     "isPII": false,
     "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
       {
         "value": "Identified steps to reduce danger (locking up guns, moving medications to a public area, reducing contact with perpetrator, etc)",
         "label": "Identified steps to reduce danger (locking up guns, moving medications to a public area, reducing contact with perpetrator, etc)"

@@ -7,7 +7,7 @@
     },
     {
         "name": "caller",
-        "label": "Someone calling about a child",
+        "label": "Other",
         "type": "button",
         "category": "data"
     },
