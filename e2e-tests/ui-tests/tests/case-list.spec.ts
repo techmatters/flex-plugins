@@ -79,8 +79,8 @@ test.describe.serial('Case List', () => {
       await caseListPage.openFilter(filter);
     };
 
-    await scanFilterDialogue('Status');
-    await scanFilterDialogue('Counselor');
+    await scanFilterDialogue('status');
+    await scanFilterDialogue('counselor');
     await scanFilterDialogue('createdAtFilter');
     await scanFilterDialogue('updatedAtFilter');
     await caseListPage.openFirstCaseButton();
