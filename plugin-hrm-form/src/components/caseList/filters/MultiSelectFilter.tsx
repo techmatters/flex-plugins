@@ -246,11 +246,7 @@ const MultiSelectFilter: React.FC<Props> = ({
                 const hidden = !item.label.toLowerCase().includes(searchTerm.toLowerCase());
                 const isFirstFocusableElement = i === 0 && !searchable;
                 return (
-                  <MultiSelectListItem
-                    key={i}
-                    hidden={hidden}
-                    data-testid={`${openedFilter.charAt(0).toUpperCase() + openedFilter.slice(1)}-${item.label}`}
-                  >
+                  <MultiSelectListItem key={i} hidden={hidden} data-testid={`${openedFilter}-${item.label}`}>
                     <FormLabel htmlFor={item.value} style={{ flexDirection: 'row' }}>
                       <FiltersCheckbox
                         id={item.value}
