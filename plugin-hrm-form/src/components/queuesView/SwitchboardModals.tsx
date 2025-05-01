@@ -15,6 +15,7 @@
  */
 
 import React from 'react';
+import { Modal, Paper, FormControl, FormControlLabel } from '@material-ui/core';
 
 import { Box, SaveAndEndButton, StyledNextStepButton, TertiaryButton, FormLabel } from '../../styles';
 import { CloseButton, NonDataCallTypeDialogContainer, CloseTaskDialog } from '../callTypeButtons/styles';
@@ -45,98 +46,130 @@ export const SelectQueueModal: React.FC<SelectQueueModalProps> = ({
   queueRef,
   queues,
 }) => {
+  // Define custom radio button handler
+  const handleRadioChange = (value: string) => {
+    console.log('>>> Direct handler clicked:', value);
+    setSelectedQueue(value);
+    queueRef.current = value;
+  };
+
   return (
-    <CloseTaskDialog open={isOpen} onClose={onClose} width={700}>
-      <TabPressWrapper>
-        <NonDataCallTypeDialogContainer style={{ position: 'relative', maxWidth: '700px', padding: '20px' }}>
-          <Box style={{ position: 'absolute', top: '10px', right: '10px' }}>
-            <CloseButton tabIndex={3} aria-label="CloseButton" onClick={onClose} />
-          </Box>
+    <Modal open={isOpen} onClose={onClose} aria-labelledby="queue-selection-modal-title">
+      <Paper
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          maxWidth: '700px',
+          width: '90%',
+          backgroundColor: 'white',
+          padding: '20px',
+          outline: 'none',
+          borderRadius: '4px',
+        }}
+      >
+        <Box style={{ position: 'absolute', top: '10px', right: '10px' }}>
+          <CloseButton tabIndex={3} aria-label="CloseButton" onClick={onClose} />
+        </Box>
 
-          <Box style={{ marginBottom: '20px' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: 'bold', margin: '0' }}>Select queue to switchboard</h2>
-          </Box>
+        <Box style={{ marginBottom: '20px' }}>
+          <h2 id="queue-selection-modal-title" style={{ fontSize: '18px', fontWeight: 'bold', margin: '0' }}>
+            Select queue to switchboard
+          </h2>
+        </Box>
 
-          <form>
-            <Box
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '2px 30px',
-                margin: '0 10px',
-                padding: '10px 0',
-                width: '100%',
-              }}
-            >
-              {queues &&
-                [...queues]
-                  .sort((a, b) => a.friendly_name.localeCompare(b.friendly_name))
-                  .map(queue => (
-                    <div key={queue.key} style={{ marginBottom: '10px' }}>
-                      <FormLabel htmlFor={queue.key} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <input
-                          type="radio"
-                          id={queue.key}
-                          name="switchboardQueue"
-                          value={queue.key}
-                          checked={selectedQueue === queue.key}
-                          onChange={e => {
-                            const newValue = e.target.value;
-                            console.log('>>> Radio onChange:', newValue);
-                            setSelectedQueue(newValue);
-                            queueRef.current = newValue;
-                          }}
+        <FormControl component="fieldset" style={{ width: '100%' }}>
+          <Box
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '2px 30px',
+              margin: '0 10px',
+              padding: '10px 0',
+              width: '100%',
+            }}
+          >
+            {queues &&
+              [...queues]
+                .sort((a, b) => a.friendly_name.localeCompare(b.friendly_name))
+                .map(queue => (
+                  <div 
+                    key={queue.key} 
+                    onClick={() => handleRadioChange(queue.key)}
+                    style={{ 
+                      marginBottom: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '16px',
+                        height: '16px',
+                        borderRadius: '50%',
+                        border: '2px solid #000',
+                        marginRight: '8px',
+                        position: 'relative',
+                        backgroundColor: 'white',
+                      }}
+                    >
+                      {selectedQueue === queue.key && (
+                        <div
                           style={{
-                            margin: '0 7px 0 0',
-                            width: '12px',
-                            height: '12px',
-                            border: '2px solid #080808',
+                            width: '8px',
+                            height: '8px',
                             borderRadius: '50%',
-                            backgroundColor: '#f4f4f4',
+                            backgroundColor: '#000',
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
                           }}
                         />
-                        {queue.friendly_name}
-                      </FormLabel>
+                      )}
                     </div>
-                  ))}
-            </Box>
+                    <label style={{ cursor: 'pointer' }}>{queue.friendly_name}</label>
+                  </div>
+                ))}
+          </Box>
+        </FormControl>
 
-            <Box
-              style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                marginTop: '20px',
-                gap: '10px',
-              }}
-            >
-              <TertiaryButton
-                type="button"
-                onClick={onClose}
-                style={{
-                  background: '#EEEEEE',
-                  border: 'none',
-                  borderRadius: '3px',
-                }}
-              >
-                Cancel
-              </TertiaryButton>
-              <StyledNextStepButton
-                onClick={() => {
-                  const currentQueue = selectedQueue || queueRef.current;
-                  if (currentQueue) {
-                    onSelect(currentQueue);
-                  } else {
-                    alert('Please select a queue first');
-                  }
-                }}
-              >
-                Activate Switchboarding
-              </StyledNextStepButton>
-            </Box>
-          </form>
-        </NonDataCallTypeDialogContainer>
-      </TabPressWrapper>
-    </CloseTaskDialog>
+        <Box
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            marginTop: '20px',
+            gap: '10px',
+          }}
+        >
+          <TertiaryButton
+            type="button"
+            onClick={onClose}
+            style={{
+              background: '#EEEEEE',
+              border: 'none',
+              borderRadius: '3px',
+            }}
+          >
+            Cancel
+          </TertiaryButton>
+          <StyledNextStepButton
+            onClick={() => {
+              const currentQueue = selectedQueue || queueRef.current;
+              if (currentQueue) {
+                onSelect(currentQueue);
+              } else {
+                alert('Please select a queue first');
+              }
+            }}
+          >
+            Activate Switchboarding
+          </StyledNextStepButton>
+        </Box>
+      </Paper>
+    </Modal>
   );
 };
 
@@ -166,7 +199,7 @@ export const TurnOffSwitchboardModal: React.FC<TurnOffSwitchboardModalProps> = (
           </Box>
 
           <Box style={{ marginBottom: '20px' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: 'bold', margin: '0', maxWidth: '400px', textAlign: 'center' }}>
+            <h2 id="turn-off-switchboard-title" style={{ fontSize: '18px', fontWeight: 'bold', margin: '0' }}>
               Are you sure you want to turn off switchboarding?
             </h2>
           </Box>
@@ -175,8 +208,7 @@ export const TurnOffSwitchboardModal: React.FC<TurnOffSwitchboardModalProps> = (
             style={{
               display: 'flex',
               justifyContent: 'flex-end',
-              alignSelf: 'flex-end',
-              margin: '20px',
+              marginTop: '20px',
               gap: '10px',
             }}
           >

@@ -164,50 +164,6 @@ const SwitchboardTile = () => {
             <div>{renderSwitchboardStatusText(selectedQueue, switchboardingStartTime)}</div>
           ) : (
             <div>
-              <form>
-                <Box
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '2px 30px',
-                    margin: '0 10px',
-                    padding: '10px 0',
-                    width: '100%',
-                  }}
-                >
-                  {queues &&
-                    Object.values(queues)
-                      .sort((a, b) => a.friendly_name.localeCompare(b.friendly_name))
-                      .map(queue => (
-                        <div key={queue.key} style={{ marginBottom: '10px' }}>
-                          <FormLabel htmlFor={queue.key} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <input
-                              type="radio"
-                              id={queue.key}
-                              name="switchboardQueue"
-                              value={queue.key}
-                              checked={selectedQueue === queue.key}
-                              onChange={e => {
-                                const newValue = e.target.value;
-                                console.log('>>> Radio onChange:', newValue);
-                                setSelectedQueue(newValue);
-                                selectedQueueRef.current = newValue;
-                              }}
-                              style={{
-                                margin: '0 7px 0 0',
-                                width: '12px',
-                                height: '12px',
-                                border: '2px solid #080808',
-                                borderRadius: '50%',
-                                backgroundColor: '#f4f4f4',
-                              }}
-                            />
-                            {queue.friendly_name}
-                          </FormLabel>
-                        </div>
-                      ))}
-                </Box>
-              </form>
               No queues are currently being switchboarded{' '}
             </div>
           )}
