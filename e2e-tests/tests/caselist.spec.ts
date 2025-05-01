@@ -16,6 +16,15 @@
 
 import { Page, request, test } from '@playwright/test';
 import { caseList } from '../caseList';
+import {
+  viewClosePrintView,
+  clickEditCase,
+  verifyCaseSummaryUpdated,
+  verifyCasePrintButtonIsVisible,
+  verifyCategoryTooltipIsVisible,
+  closeModal,
+  updateCaseSummary,
+} from '../case';
 import { skipTestIfNotTargeted, skipTestIfDataUpdateDisabled } from '../skipTest';
 import { notificationBar } from '../notificationBar';
 import { setupContextAndPage, closePage } from '../browser';
@@ -51,17 +60,14 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     let page = caseList(pluginPage);
 
     await page.filterCases('Status', 'Open');
-    // await page.filterCases('Counselor', 'Aselo Alerts');
-
-    //for Categories filter, 2 valid options are required
-    await page.filterCases('Categories', 'Accessibility', 'Education');
+    await page.filterCases('Counselor', 'Aselo Alerts');
 
     const caseHomePage = await page.openFirstCaseButton();
 
     // Open notifications cover up the print icon :facepalm
     await notificationBar(pluginPage).dismissAllNotifications();
 
-    await page.viewClosePrintView();
+    await viewClosePrintView(pluginPage);
 
     await caseHomePage.addCaseSection({
       sectionTypeId: 'note',
@@ -83,16 +89,16 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
       },
     });
 
-    await page.editCase();
+    await clickEditCase(pluginPage);
 
-    await page.updateCaseSummary();
+    await updateCaseSummary(pluginPage);
 
-    await page.verifyCaseSummaryUpdated();
+    await verifyCaseSummaryUpdated(pluginPage);
 
-    await page.verifyCasePrintButtonIsVisible();
-    await page.verifyCategoryTooltipIsVisible();
+    await verifyCasePrintButtonIsVisible(pluginPage);
+    await verifyCategoryTooltipIsVisible(pluginPage);
 
-    await page.closeModal();
+    await closeModal(pluginPage);
     console.log('Closed Case');
   });
 });
