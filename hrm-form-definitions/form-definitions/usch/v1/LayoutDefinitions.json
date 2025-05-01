@@ -27,7 +27,7 @@
 
         }
       },
-      "enFollowUpForm": {
+      "enFollowUp": {
         "splitFormAt": 3,
         "caseHomeOrder": 2,
         "printOrder": 2,
