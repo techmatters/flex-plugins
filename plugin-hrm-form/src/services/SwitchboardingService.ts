@@ -17,10 +17,7 @@
 import fetchProtectedApi from './fetchProtectedApi';
 import { ApiError } from './fetchApi';
 
-
-
 export const switchboardQueue = async (queueSid: string): Promise<void> => {
-
   const body = {
     originalQueueSid: queueSid,
   };
