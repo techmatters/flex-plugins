@@ -34,8 +34,8 @@
     "TabbedForms-AddCallerInfoTab": "Help Seeker",
     "TabbedForms-AddChildInfoTab": "Victim",
     "TabbedForms-ReportsChildLink": "Create link for victim",
-    "TabbedForms-NewCase": "New External Notification",
-    "TabbedForms-ExistingCase": "Existing External Notification",
+    "TabbedForms-NewCase": "New EN",
+    "TabbedForms-ExistingCase": "Existing EN",
     "Case-CaseNumber": "External Notification #",
     "Case-Timeline-ModalTitle": "External Notification #{{caseId}} Timeline",
     "Case-CaseSummarySection": "External Notification Summary",
@@ -99,6 +99,20 @@
     "CaseMerging-ContactRemovedFromCase": "Contact removed from external notification",
     "CaseMerging-CaseCreatedAndContactAdded": "External Notification #{{caseId}} created and contact added",
     "CaseMerging-ContactAddedToExistingCase": "Contact added to External Notification #{{caseId}}",
-    "CaseMerging-CancelCase": "Cancel External Notification"
+    "CaseMerging-CancelCase": "Cancel External Notification",
+    "Case-SectionList-Title/externalNotification": "External Notification",
+    "Case-SectionList-Add/externalNotification": "Add EN",
+    "CaseSection-Add/externalNotification": "Add EN",
+    "CaseSection-BottomBar-Save/externalNotification": "Save EN",
+    "CaseSection-BottomBar-SaveAndAddAnother/externalNotification": "Save and Add Another EN",
+    "Case-SectionList-NoItems/externalNotification": "External Notification",
+    "CasePrint-TabularSection-Header/externalNotification": "External Notification",
+    "Case-SectionList-Title/enFollowUp": "EN Follow Up",
+    "Case-SectionList-Add/enFollowUp": "Add EN Follow Up",
+    "CaseSection-Add/enFollowUp": "Add EN Follow Up",
+    "CaseSection-BottomBar-Save/enFollowUp": "Save EN Follow Up",
+    "CaseSection-BottomBar-SaveAndAddAnother/enFollowUp": "Save and Add Another Follow Up",
+    "Case-SectionList-NoItems/enFollowUp": "EN Follow Up",
+    "CasePrint-TabularSection-Header/enFollowUp": "EN Follow Up"
   }
 }

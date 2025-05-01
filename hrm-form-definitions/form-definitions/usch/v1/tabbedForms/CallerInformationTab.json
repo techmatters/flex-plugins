@@ -447,10 +447,6 @@
     "options": {
       "Out of USA": [
         {
-          "value": "",
-          "label": ""
-        },
-        {
           "value": "Unknown",
           "label": "Unknown"
         },

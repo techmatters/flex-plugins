@@ -196,10 +196,6 @@
     "options": {
       "Suicidal Ideation": [
         {
-          "value": "",
-          "label": ""
-        },
-        {
           "value": "Unknown",
           "label": "Unknown"
         },
