@@ -29,6 +29,6 @@ export const switchboardQueue = async (queueSid: string): Promise<void> => {
     console.log('>>>switchboardQueue', body);
     return await fetchProtectedApi('/assignSwitchboarding', body);
   } catch (err) {
-    throw new ApiError(err.message, { response: err.response, body: err.body });
+    console.error('Error switching queue:', err);
   }
 };

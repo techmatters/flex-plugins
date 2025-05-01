@@ -33,6 +33,7 @@ import TabPressWrapper from '../TabPressWrapper';
 import { Box } from '../../styles';
 import { CloseButton, NonDataCallTypeDialogContainer, CloseTaskDialog } from '../callTypeButtons/styles';
 import { switchboardQueue } from '../../services/SwitchboardingService';
+import SwitchboardIcon from '../common/icons/SwitchboardIcon';
 
 // eslint-disable-next-line import/no-unused-modules
 export const setUpSwitchboard = () => {
@@ -64,16 +65,25 @@ const SwitchboardTile = () => {
     setSelectedQueue(queue); // Update state after the operation if needed
   };
 
-  const renderSwitch = () => (
-    <FormControl component="fieldset">
-      <FormGroup>
-        <FormControlLabel
-          labelPlacement="start"
-          control={<Switch checked={isSwitchboarding} color="primary" onChange={handleOpenModal} />}
-          label="Switchboarding"
+  const renderSwitchboard = () => (
+    <Box style={{ display: 'flex', flexDirection: 'column', padding: '20px' }}>
+      <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+        <Box style={{ display: 'flex', alignItems: 'center' }}>
+          <SwitchboardIcon width="24px" height="24px"/>
+          <span style={{ fontWeight: 'bold', fontSize: '18px', marginLeft: '10px' }}>
+            Switchboarding: {isSwitchboarding ? 'On' : 'Off'}
+          </span>
+        </Box>
+        <Switch 
+          checked={isSwitchboarding} 
+          onChange={handleOpenModal} 
+          color="primary"
         />
-      </FormGroup>
-    </FormControl>
+      </Box>
+      <Box style={{ marginTop: '15px' }}>
+        <p style={{ fontSize: '16px' }}>No queues are currently being switchboarded</p>
+      </Box>
+    </Box>
   );
 
   const queues = Manager.getInstance()?.store.getState()?.flex?.realtimeQueues?.queuesList;
@@ -86,7 +96,7 @@ const SwitchboardTile = () => {
 
   return (
     <>
-      <Box>{renderSwitch()}</Box>
+      {renderSwitchboard()}
       {isModalOpen && (
         <CloseTaskDialog open={isModalOpen} onClose={handleCloseModal}>
           <TabPressWrapper>
