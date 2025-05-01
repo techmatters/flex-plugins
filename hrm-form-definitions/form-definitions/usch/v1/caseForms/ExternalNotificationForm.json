@@ -1,0 +1,183 @@
+[
+    {
+      "name": "nameOfSupervisorConsulted",
+      "label": "Name of Supervisor Consulted",
+      "type": "input",
+      "isPII": false,
+      "required": {
+        "value": true,
+        "message": "RequiredFieldError"
+      }
+    },
+    {
+      "name": "whyExternalAgencyNeededNotification",
+      "label": "Detailed reason why External Agency needed to be notified (including ALL identifying information provided by caller such as name of child, age of child, address, details of allegation)",
+      "type": "textarea",
+      "isPII": false,
+      "rows": 20,
+      "width": 289,
+      "required": {
+        "value": true,
+        "message": "RequiredFieldError"
+      }
+    },
+    {
+      "name": "commentsFromExternalAgency",
+      "label": "Comments from External Agency",
+      "type": "textarea",
+      "isPII": false,
+      "rows": 20,
+      "width": 289,
+      "required": {
+        "value": true,
+        "message": "RequiredFieldError"
+      }
+    },
+    {
+      "name": "otherNotes",
+      "label": "Other Notes",
+      "type": "textarea",
+      "isPII": false,
+      "rows": 20,
+      "width": 289
+    },
+    {
+      "name": "agencyContacted",
+      "label": "Agency Contacted",
+      "type": "select",
+      "defaultOption": {
+        "value": "",
+        "label": ""
+      },
+      "unknownOption": "",
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "CPS",
+          "label": "CPS"
+        },
+        {
+          "value": "Law Enforcement",
+          "label": "Law Enforcement"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
+        }
+      ],
+      "required": {
+        "value": true,
+        "message": "RequiredFieldError"
+      }
+    },
+    {
+      "name": "nameidOfCpsWorker",
+      "label": "Name/ID of CPS Worker",
+      "type": "textarea",
+      "isPII": false,
+      "rows": 20,
+      "width": 289
+    },
+    {
+      "name": "stateAndCountyWhereCpsWasNotified",
+      "label": "State and County where CPS was notified",
+      "type": "textarea",
+      "isPII": false,
+      "rows": 20,
+      "width": 289
+    },
+    {
+      "name": "dateAndTimeOfNotificationToCps",
+      "label": "Date and Time of notification to CPS",
+      "type": "textarea",
+      "isPII": false,
+      "rows": 20,
+      "width": 289
+    },
+    {
+      "name": "didYouContactCpsIn",
+      "label": "Did you contact CPS in Alabama, California, Connecticut, Iowa, Louisiana, Maryland, Massachussets, Michigan, Mississippi, Nevada, New York, or Vermont?",
+      "type": "select",
+      "isPII": false,
+      "defaultOption": {
+        "value": "",
+        "label": ""
+      },
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        }
+      ],
+      "required": {
+        "value": true,
+        "message": "RequiredFieldError"
+      }
+    },
+    {
+      "name": "didYouSubmit",
+      "label": "Did you submit the written form?",
+      "type": "dependent-select",
+      "isPII": false,
+      "dependsOn": "didYouContactCpsIn",
+      "defaultOption": {
+        "value": "",
+        "label": ""
+      },
+      "options": {
+        "Yes": [
+          {
+            "value": "",
+            "label": ""
+          },
+          {
+            "value": "Yes",
+            "label": "Yes"
+          },
+          {
+            "value": "No",
+            "label": "No"
+          }
+        ]
+      },
+      "required": {
+        "value": true,
+        "message": "RequiredFieldError"
+      }
+    },
+    {
+      "name": "namebadgeNumberOfLawEnforcement",
+      "label": "Name/Badge Number of Law Enforcement",
+      "type": "textarea",
+      "isPII": false,
+      "rows": 20,
+      "width": 289
+    },
+    {
+      "name": "lawEnforcementAgencyAndPhoneNumber",
+      "label": "Name of Law Enforcement Agency and Phone Number that was notified",
+      "type": "textarea",
+      "isPII": false,
+      "rows": 20,
+      "width": 289
+    },
+    {
+      "name": "dateAndTimeOfNotificationToLawEnforcement",
+      "label": "Date and Time of notification to Law Enforcement",
+      "type": "textarea",
+      "isPII": false,
+      "rows": 20,
+      "width": 289
+    }
+  ]
