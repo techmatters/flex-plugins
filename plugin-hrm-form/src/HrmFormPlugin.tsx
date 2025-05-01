@@ -43,7 +43,7 @@ import { setUpConferenceActions, setupConferenceComponents } from './conference'
 import { setUpTransferActions } from './transfer/setUpTransferActions';
 import { playNotification } from './notifications/playNotification';
 import { namespace } from './states/storeNamespaces';
-import { maskManagerStringsWithIdentifiers, maskMessageListWithIdentifiers } from './maskIdentifiers';
+import { maskManagerStringsWithIdentifiers } from './maskIdentifiers';
 import { setUpViewMaskedVoiceNumber } from './maskIdentifiers/unmaskPhoneNumber';
 import { validateAndSetPermissionRules } from './permissions';
 import { setupLlmNotifications } from './components/contact/GenerateSummaryButton/setUpLlmNotifications';
@@ -94,7 +94,6 @@ const setUpComponents = (
   Channels.setupLineChatChannel();
 
   setUpViewMaskedVoiceNumber();
-  maskMessageListWithIdentifiers();
 
   setUpTransferComponents();
   Channels.setUpIncomingTransferMessage();
