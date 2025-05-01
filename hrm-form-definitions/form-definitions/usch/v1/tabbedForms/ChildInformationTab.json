@@ -4,6 +4,10 @@
     "label": "Child Is",
     "type": "select",
     "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
     "unknownOption": "",
     "options": [
       {
@@ -33,6 +37,10 @@
     "label": "Child Gender",
     "type": "select",
     "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
     "unknownOption": "",
     "options": [
       {
@@ -66,6 +74,10 @@
     "label": "Child Age",
     "type": "select",
     "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
     "unknownOption": "",
     "options": [
       {
@@ -107,6 +119,10 @@
     "label": "Number of additional victims",
     "type": "select",
     "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
     "unknownOption": "Unknown",
     "options": [
       {
@@ -150,10 +166,6 @@
         "label": ""
       },
       {
-        "value": "Unknown",
-        "label": "Unknown"
-      },
-      {
         "value": "Suicidal Ideation",
         "label": "Suicidal Ideation"
       },
@@ -195,10 +207,6 @@
     },
     "options": {
       "Suicidal Ideation": [
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        },
         {
           "value": "No plan, means, intent",
           "label": "No plan, means, intent"
@@ -470,10 +478,6 @@
     },
     "options": {
       "Out of USA": [
-        {
-          "value": "Unknown",
-          "label": ""
-        },
         {
           "value": "Afghanistan",
           "label": "Afghanistan"
