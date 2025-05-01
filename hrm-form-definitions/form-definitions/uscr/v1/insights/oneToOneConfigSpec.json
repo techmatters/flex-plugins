@@ -3,8 +3,12 @@
     "callerInformation": [
       {
         "name": "reportingDistrict",
-        "insights": ["conversations", "region"]
+        "insights": ["conversations", "conversation_attribute_5"]
       },
+      {
+        "name": "officeDepartmentBid",
+        "insights": ["conversations", "conversation_attribute_6"]
+      },      
       {
         "name": "officerRequest",
         "insights": ["conversations", "conversation_attribute_4"]

@@ -3,7 +3,6 @@
         "definitionVersion": "th-v1",
         "feature_flags": {
             "enable_manual_pulling": false,
-            "enable_generalized_search": true,
             "enable_backend_hrm_contact_creation": false
         },
         "helplineLanguage": "th-TH",
