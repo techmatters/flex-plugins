@@ -24,10 +24,8 @@
   {
     "name": "agencyNameAndState",
     "label": "Agency Name and State",
-    "type": "textarea",
+    "type": "input",
     "isPII": false,
-    "rows": 20,
-    "width": 289,
     "required": {
       "value": true,
       "message": "RequiredFieldError"
