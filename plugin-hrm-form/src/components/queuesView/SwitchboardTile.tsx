@@ -16,22 +16,20 @@
 
 import React, { useState, useEffect } from 'react';
 import { QueuesStats, Manager } from '@twilio/flex-ui';
-import { Switch, Button } from '@material-ui/core';
+import { Switch } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 
-import { getAseloFeatureFlags, getHrmConfig } from '../../hrmConfig';
-import TabPressWrapper from '../TabPressWrapper';
-import { Bold, Box, StyledNextStepButton } from '../../styles';
-import { CloseButton, NonDataCallTypeDialogContainer, CloseTaskDialog } from '../callTypeButtons/styles';
+import { getHrmConfig } from '../../hrmConfig';
+import { Bold, Box, FormLabel, TertiaryButton, StyledNextStepButton } from '../../styles';
 import { switchboardQueue } from '../../services/SwitchboardingService';
 import SwitchboardIcon from '../common/icons/SwitchboardIcon';
 import { RootState } from '../../states';
 import { namespace, configurationBase } from '../../states/storeNamespaces';
+import { SelectQueueModal, TurnOffSwitchboardModal } from './SwitchboardModals';
 
 // eslint-disable-next-line import/no-unused-modules
 export const setUpSwitchboard = () => {
   // if (!getAseloFeatureFlags().enable_switchboarding) return;
-
   QueuesStats.AggregatedQueuesDataTiles.Content.add(<SwitchboardTile key="switchboard" />, {
     sortOrder: -1,
   });
@@ -39,23 +37,25 @@ export const setUpSwitchboard = () => {
 
 const SwitchboardTile = () => {
   const [isSwitchboarding, setIsSwitchboarding] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedQueue, setSelectedQueue] = useState<string | null>(null);
   const [switchboardingStartTime, setSwitchboardingStartTime] = useState<string | null>(null);
 
-  // Use a ref to track the selected queue to avoid state timing issues
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+
+  // Queue reference to avoid timing issues
   const selectedQueueRef = React.useRef<string | null>(null);
 
+  // Config and state values
   const { workerSid } = getHrmConfig();
-
   const counselorsHash = useSelector((state: RootState) => state[namespace][configurationBase].counselors.hash);
 
-  // Update ref when state changes
+  // Update queue reference when state changes
   useEffect(() => {
     selectedQueueRef.current = selectedQueue;
-    console.log('>>> Updated queue ref:', selectedQueueRef.current);
   }, [selectedQueue]);
 
+  // Modal handlers
   const handleOpenModal = () => {
     setIsModalOpen(true);
     // Reset selection when opening modal
@@ -63,24 +63,19 @@ const SwitchboardTile = () => {
     selectedQueueRef.current = null;
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+  const handleCloseModal = () => setIsModalOpen(false);
+  const handleOpenConfirmationModal = () => setIsConfirmationModalOpen(true);
+  const handleCloseConfirmationModal = () => setIsConfirmationModalOpen(false);
 
+  // Core switchboarding logic
   const handleSwitchboarding = async (queue: string) => {
-    console.log('>>>>> handleSwitchboarding input', { queue });
-    if (!queue) {
-      console.error('>>>> No queue selected for switchboarding');
-      return;
-    }
+    if (!queue) return;
 
     try {
-      const result = await switchboardQueue(queue);
-      console.log('>>>>> handleSwitchboarding result', result);
+      await switchboardQueue(queue);
       const willBeActive = !isSwitchboarding;
       setIsSwitchboarding(willBeActive);
 
-      // Store the current date/time when activating switchboarding
       if (willBeActive) {
         const currentTime = new Date().toLocaleString('en-US', {
           hour: '2-digit',
@@ -95,142 +90,148 @@ const SwitchboardTile = () => {
         setSwitchboardingStartTime(null);
       }
 
-      setIsModalOpen(false); // Close the modal after selection
-      setSelectedQueue(queue); // Update state after the operation if needed
+      setIsModalOpen(false);
+      setSelectedQueue(queue);
     } catch (error) {
       console.error('Error in switchboarding:', error);
     }
   };
-  const renderSwitchboard = () => (
-    <Box
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '20px',
-        border: '2px solid #e1e3ea',
-        borderRadius: '4px',
-        backgroundColor: isSwitchboarding ? '#FFF7DE' : 'transparent',
-      }}
-      data-testid="switchboard-tile"
-    >
-      <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-        <Box style={{ display: 'flex', alignItems: 'center' }}>
-          <SwitchboardIcon width="24px" height="24px" />
-          <span style={{ fontWeight: 'bold', fontSize: '14px', marginLeft: '10px' }}>
-            Switchboarding: {isSwitchboarding ? 'In Progress' : 'Off'}
-          </span>
-        </Box>
-        <Switch checked={isSwitchboarding} onChange={handleOpenModal} color="primary" />
-      </Box>
-      <Box style={{ marginTop: '15px' }}>
-        {isSwitchboarding && selectedQueue ? (
-          <div>
-            <span>
-              <Bold>{filteredQueues.find((q: any) => q.key === selectedQueue)?.friendly_name || selectedQueue}</Bold>{' '}
-              calls are being switchboarded by supervisor{' '}
-              <Bold>
-                {counselorsHash && workerSid
-                  ? counselorsHash[workerSid] || Manager.getInstance().user.identity
-                  : Manager.getInstance().user.identity}
-              </Bold>{' '}
-              since {switchboardingStartTime}
-            </span>
-          </div>
-        ) : (
-          <p style={{ fontSize: '16px' }}>No queues are currently being switchboarded</p>
-        )}
-      </Box>
-    </Box>
-  );
 
+  const handleSwitchToggle = () => {
+    if (isSwitchboarding && selectedQueue) {
+      // If already switchboarding, open confirmation modal to turn it off
+      handleOpenConfirmationModal();
+    } else {
+      // If not switchboarding, open the modal to select a queue
+      handleOpenModal();
+    }
+  };
+
+  // Get queue data
   const queues = Manager.getInstance()?.store.getState()?.flex?.realtimeQueues?.queuesList;
-
   const filteredQueues = queues
     ? Object.values(queues).filter(
         (queue: any) => queue.friendly_name !== 'Survey' && queue.friendly_name !== 'Switchboard Queue',
       )
     : [];
 
+  // Formatting helpers
+  const getQueueName = (queueKey: string) =>
+    filteredQueues.find((q: any) => q.key === queueKey)?.friendly_name || queueKey;
+
+  const getSupervisorName = () =>
+    counselorsHash && workerSid ? counselorsHash[workerSid] : Manager.getInstance().user.identity;
+
+  const renderSwitchboardStatusText = (queueKey: string, startTime: string | null) => (
+    <span>
+      <Bold>{getQueueName(queueKey)}</Bold> calls are being switchboarded by supervisor{' '}
+      <Bold>{getSupervisorName()}</Bold> since {startTime}
+    </span>
+  );
+
+  const handleConfirmTurnOff = () => {
+    if (selectedQueue) {
+      handleSwitchboarding(selectedQueue);
+      handleCloseConfirmationModal();
+    }
+  };
+
   return (
     <>
-      {renderSwitchboard()}
-      {isModalOpen && (
-        <CloseTaskDialog open={isModalOpen} onClose={handleCloseModal} width={500}>
-          <TabPressWrapper>
-            <NonDataCallTypeDialogContainer style={{ position: 'relative', maxWidth: '500px', padding: '20px' }}>
-              <Box style={{ position: 'absolute', top: '10px', right: '10px' }}>
-                <CloseButton tabIndex={3} aria-label="CloseButton" onClick={handleCloseModal} />
-              </Box>
+      <Box
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          padding: '20px',
+          border: '2px solid #e1e3ea',
+          borderRadius: '4px',
+          backgroundColor: isSwitchboarding ? '#FFF7DE' : 'transparent',
+        }}
+        data-testid="switchboard-tile"
+      >
+        <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+          <Box style={{ display: 'flex', alignItems: 'center' }}>
+            <SwitchboardIcon width="24px" height="24px" />
+            <span style={{ fontWeight: 'bold', fontSize: '14px', marginLeft: '10px' }}>
+              Switchboarding: {isSwitchboarding ? 'In Progress' : 'Off'}
+            </span>
+          </Box>
+          <Switch checked={isSwitchboarding} onChange={handleSwitchToggle} color="primary" />
+        </Box>
 
-              <Box style={{ marginBottom: '20px' }}>
-                <h2 style={{ fontSize: '18px', fontWeight: 'bold', margin: '0' }}>Select queue to switchboard</h2>
-              </Box>
-
+        <Box style={{ marginTop: '15px' }}>
+          {isSwitchboarding && selectedQueue ? (
+            <div>{renderSwitchboardStatusText(selectedQueue, switchboardingStartTime)}</div>
+          ) : (
+            <div>
               <form>
-                <Box style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0px', margin: 0, padding: 0 }}>
-                  {filteredQueues &&
-                    filteredQueues.map(queue => {
-                      return (
-                        <div key={queue.key} style={{ padding: '1px' }}>
-                          <input
-                            type="radio"
-                            id={queue.key}
-                            name="switchboardQueue"
-                            value={queue.key}
-                            checked={selectedQueue === queue.key}
-                            onChange={e => {
-                              const newValue = e.target.value;
-                              console.log('>>> Radio onChange:', newValue);
-                              setSelectedQueue(newValue);
-                              selectedQueueRef.current = newValue;
-                            }}
-                          />
-                          <label htmlFor={queue.key}>{queue.friendly_name}</label>
-                        </div>
-                      );
-                    })}
-                </Box>
-
                 <Box
                   style={{
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    marginTop: '20px',
-                    gap: '10px',
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '2px 30px',
+                    margin: '0 10px',
+                    padding: '10px 0',
+                    width: '100%',
                   }}
                 >
-                  <Button
-                    type="button"
-                    onClick={handleCloseModal}
-                    style={{
-                      padding: '8px 15px',
-                      background: '#EEEEEE',
-                      border: 'none',
-                      borderRadius: '3px',
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <StyledNextStepButton
-                    onClick={() => {
-                      const currentQueue = selectedQueue || selectedQueueRef.current;
-                      console.log('>>> Activate button clicked. Queue:', currentQueue);
-
-                      if (currentQueue) {
-                        handleSwitchboarding(currentQueue);
-                      } else {
-                        alert('Please select a queue first');
-                      }
-                    }}
-                  >
-                    Activate Switchboarding
-                  </StyledNextStepButton>
+                  {queues &&
+                    Object.values(queues)
+                      .sort((a, b) => a.friendly_name.localeCompare(b.friendly_name))
+                      .map(queue => (
+                        <div key={queue.key} style={{ marginBottom: '10px' }}>
+                          <FormLabel htmlFor={queue.key} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <input
+                              type="radio"
+                              id={queue.key}
+                              name="switchboardQueue"
+                              value={queue.key}
+                              checked={selectedQueue === queue.key}
+                              onChange={e => {
+                                const newValue = e.target.value;
+                                console.log('>>> Radio onChange:', newValue);
+                                setSelectedQueue(newValue);
+                                selectedQueueRef.current = newValue;
+                              }}
+                              style={{
+                                margin: '0 7px 0 0',
+                                width: '12px',
+                                height: '12px',
+                                border: '2px solid #080808',
+                                borderRadius: '50%',
+                                backgroundColor: '#f4f4f4',
+                              }}
+                            />
+                            {queue.friendly_name}
+                          </FormLabel>
+                        </div>
+                      ))}
                 </Box>
               </form>
-            </NonDataCallTypeDialogContainer>
-          </TabPressWrapper>
-        </CloseTaskDialog>
-      )}
+              No queues are currently being switchboarded{' '}
+            </div>
+          )}
+        </Box>
+      </Box>
+
+      <SelectQueueModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSelect={handleSwitchboarding}
+        selectedQueue={selectedQueue}
+        setSelectedQueue={setSelectedQueue}
+        queueRef={selectedQueueRef}
+        queues={filteredQueues}
+      />
+
+      <TurnOffSwitchboardModal
+        isOpen={isConfirmationModalOpen}
+        onClose={handleCloseConfirmationModal}
+        onConfirm={handleConfirmTurnOff}
+        selectedQueue={selectedQueue}
+        renderStatusText={renderSwitchboardStatusText}
+        switchboardingStartTime={switchboardingStartTime}
+      />
     </>
   );
 };

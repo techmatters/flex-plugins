@@ -15,7 +15,6 @@
  */
 
 import fetchProtectedApi from './fetchProtectedApi';
-import { ApiError } from './fetchApi';
 
 export const switchboardQueue = async (queueSid: string): Promise<void> => {
   const body = {
@@ -27,5 +26,6 @@ export const switchboardQueue = async (queueSid: string): Promise<void> => {
     return await fetchProtectedApi('/assignSwitchboarding', body);
   } catch (err) {
     console.error('Error switching queue:', err);
+    return undefined;
   }
 };
