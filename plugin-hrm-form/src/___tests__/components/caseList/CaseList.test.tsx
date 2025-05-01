@@ -40,6 +40,7 @@ import { HrmState, RootState } from '../../../states';
 import { CaseStateEntry } from '../../../states/case/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { newGetTimelineAsyncAction, selectCaseLabel } from '../../../states/case/timeline';
+import { loadTranslations } from '../../../translations';
 
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 const e2eRules = require('../../../permissions/e2e.json');

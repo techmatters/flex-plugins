@@ -132,7 +132,8 @@ export async function getCaseTimeline(
       if (isApiCaseSectionTimelineActivity(timelineActivity)) {
         activity = convertApiCaseSectionToCaseSection(activity);
       } else if (isApiContactTimelineActivity(timelineActivity)) {
-        activity = convertApiContactToFlexContact(activity);
+        // Bug in HRTM strips the caseId from the contact activity, workaround here adds it back
+        activity = convertApiContactToFlexContact({ caseId, ...activity });
       }
       return {
         ...timelineActivity,
