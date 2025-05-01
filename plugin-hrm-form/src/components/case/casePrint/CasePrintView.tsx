@@ -40,13 +40,17 @@ import { Contact, CustomITask, StandaloneITask } from '../../../types/types';
 import { TimelineActivity } from '../../../states/case/types';
 import { RootState } from '../../../states';
 import selectCurrentRouteCaseState from '../../../states/case/selectCurrentRouteCase';
-import { newGetTimelineAsyncAction, selectTimeline } from '../../../states/case/timeline';
+import {
+  newGetTimelineAsyncAction,
+  selectCaseLabel,
+  selectTimeline,
+  selectTimelineContactCategories,
+} from '../../../states/case/timeline';
 import { selectDefinitionVersionForCase } from '../../../states/configuration/selectDefinitions';
 import { selectCounselorsHash } from '../../../states/configuration/selectCounselorsHash';
 import selectCaseHelplineData from '../../../states/case/selectCaseHelplineData';
 import * as RoutingActions from '../../../states/routing/actions';
 import { FullCaseSection } from '../../../services/caseSectionService';
-import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';
 
 type OwnProps = {
   task: CustomITask | StandaloneITask;
@@ -69,6 +73,10 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
         limit: MAX_PRINTOUT_CONTACTS,
       }) as TimelineActivity<Contact>[],
   );
+  const categories = useSelector((state: RootState) =>
+    selectTimelineContactCategories(state, connectedCase?.id, 'print-contacts'),
+  );
+  const caseLabel = useSelector((state: RootState) => selectCaseLabel(state, connectedCase?.id, 'print-contacts'));
   const sectionTypeNames = Object.keys(definitionVersion.caseSectionTypes).filter(
     sectionType => definitionVersion.layoutVersion.case.sectionTypes?.[sectionType]?.printFormat !== 'hidden',
   );
@@ -175,7 +183,6 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
     ? parseISO(connectedCase.info.followUpDate).toLocaleDateString()
     : '';
 
-  const caseLabel = contactLabelFromHrmContact(definitionVersion, connectedCase.firstContact);
   const allCsamReports = contactTimeline?.flatMap(({ activity }) => activity?.csamReports ?? []) ?? [];
 
   const orderedListSections = Object.entries(definitionVersion.caseSectionTypes)
@@ -212,7 +219,7 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
                   followUpDate={printedFollowUpDate}
                   childIsAtRisk={connectedCase.info.childIsAtRisk}
                   counselor={counselorsHash[connectedCase.twilioWorkerId]}
-                  categories={connectedCase.categories}
+                  categories={categories}
                   caseManager={office?.manager}
                   chkOnBlob={chkOnBlob}
                   chkOffBlob={chkOffBlob}

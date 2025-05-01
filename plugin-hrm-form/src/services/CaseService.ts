@@ -26,25 +26,14 @@ import { getQueryParams } from './PaginationParams';
 import { convertApiCaseSectionToCaseSection, FullGenericCaseSection } from './caseSectionService';
 import { convertApiContactToFlexContact } from './ContactService';
 
-type ApiCase = Omit<Case, 'firstContact'> & { connectedContacts: Contact[] };
-
-const convertApiCaseToFlexCase = (apiCase: ApiCase): Case => {
-  if (!apiCase) {
-    return apiCase;
-  }
-  const { connectedContacts, ...withoutConnectedContacts } = apiCase;
-  const firstContact = connectedContacts?.[0];
-  return {
-    ...(firstContact ? { firstContact: convertApiContactToFlexContact(firstContact) } : {}),
-    ...withoutConnectedContacts,
-    id: apiCase.id.toString(), // coerce to string type, can be removed once API is aligned
-  };
-};
-
+const convertApiCaseToFlexCase = (apiCase: Case): Case => ({
+  ...apiCase,
+  id: apiCase.id.toString(), // coerce to string type, can be removed once API is aligned
+});
 export const getCasePayload = (contact: Contact, creatingWorkerSid: string, definitionVersion: DefinitionVersionId) => {
   const { helpline, rawJson: contactForm } = contact;
 
-  const caseRecord = contactForm.contactlessTask?.createdOnBehalfOf
+  return contactForm.contactlessTask?.createdOnBehalfOf
     ? {
         helpline,
         status: 'open',
@@ -57,8 +46,6 @@ export const getCasePayload = (contact: Contact, creatingWorkerSid: string, defi
         twilioWorkerId: creatingWorkerSid,
         info: { definitionVersion },
       };
-
-  return caseRecord;
 };
 
 export async function createCase(contact: Contact, creatingWorkerSid: string, definitionVersion: DefinitionVersionId) {
@@ -103,7 +90,7 @@ export async function getCase(caseId: Case['id']): Promise<Case> {
     method: 'GET',
     returnNullFor404: true,
   };
-  const fromApi: ApiCase = await fetchHrmApi(`/cases/${caseId}`, options);
+  const fromApi: Case = await fetchHrmApi(`/cases/${caseId}`, options);
   return convertApiCaseToFlexCase(fromApi);
 }
 
