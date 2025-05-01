@@ -13,7 +13,7 @@
   "case": {
     "sectionTypes": {
       "externalNotification": {
-        "splitFormAt": 8,
+        "splitFormAt": 7,
         "caseHomeOrder": 1,
         "printOrder": 1,
         "previewFields": [
@@ -54,7 +54,7 @@
       },
       "document": {
         "splitFormAt": 1,
-        "caseHomeOrder": 5,
+        "caseHomeOrder": 3,
         "printFormat": "hidden",
         "previewFields": [
           "createdAt",

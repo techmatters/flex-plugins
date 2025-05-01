@@ -44,10 +44,6 @@
     "options": {
       "Courage First": [
         {
-          "value": "",
-          "label": ""
-        },
-        {
           "value": "Baseball",
           "label": "Baseball"
         },
@@ -138,6 +134,7 @@
     "name": "languageLineUsed",
     "label": "Language Line Used",
     "type": "select",
+    "isPII": false,
     "defaultOption": {
       "value": "Not used",
       "label": "Not used"
@@ -170,6 +167,7 @@
     "name": "counselorSpokeForeignLanguage",
     "label": "Counselor Spoke Foreign Language",
     "type": "select",
+    "isPII": false,
     "defaultOption": {
       "value": "No",
       "label": "No"
@@ -198,6 +196,7 @@
     "name": "howTheHelpseekerHeardAboutUs",
     "label": "How the Helpseeker heard about us",
     "type": "select",
+    "isPII": false,
     "defaultOption": {
       "value": "",
       "label": ""
@@ -482,6 +481,7 @@
     "name": "levelOfIntervention",
     "label": "Level of Intervention",
     "type": "select",
+    "isPII": false,
     "defaultOption": {
       "value": "",
       "label": ""
@@ -514,6 +514,7 @@
     "name": "helpseekerReaction",
     "label": "Helpseeker Reaction",
     "type": "select",
+    "isPII": false,
     "defaultOption": {
       "value": "",
       "label": ""
@@ -554,6 +555,7 @@
     "name": "wasASafetyPlanCreated",
     "label": "Was a Safety Plan created?",
     "type": "select",
+    "isPII": false,
     "defaultOption": {
       "value": "",
       "label": ""

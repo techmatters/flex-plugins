@@ -4,6 +4,10 @@
     "label": "Helpseeker is",
     "type": "select",
     "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
     "unknownOption": "",
     "options": [
       {
@@ -125,6 +129,10 @@
     "label": "Helpseeker Gender",
     "type": "select",
     "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
     "unknownOption": "",
     "options": [
       {
@@ -158,6 +166,10 @@
     "label": "Helpseeker Age",
     "type": "select",
     "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
     "unknownOption": "",
     "options": [
       {
@@ -169,8 +181,8 @@
         "label": "0-5"
       },
       {
-        "value": "Thu Jun 12 2025 00:00:00 GMT-0400 (Chile Standard Time)",
-        "label": "Thu Jun 12 2025 00:00:00 GMT-0400 (Chile Standard Time)"
+        "value": "6-12",
+        "label": "6-12"
       },
       {
         "value": "13-17",
@@ -207,10 +219,6 @@
       {
         "value": "",
         "label": ""
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
       },
       {
         "value": "Out of USA",
@@ -446,10 +454,6 @@
     },
     "options": {
       "Out of USA": [
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        },
         {
           "value": "Afghanistan",
           "label": "Afghanistan"
