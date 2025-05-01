@@ -173,9 +173,31 @@ export const handleEvent = async (
     return;
   }
 
-  const formDefinitionsVersionUrl =
-    configFormDefinitionsVersionUrl ||
-    `${assetsBucketUrl}/form-definitions/${helplineCode}/v1`;
+  const serviceConfig = await client.flexApi.v1.configuration.get().fetch();
+
+  const {
+    definitionVersion,
+    hrm_api_version: hrmApiVersion,
+    form_definitions_version_url: configFormDefinitionsVersionUrl,
+    assets_bucket_url: assetsBucketUrl,
+    helpline_code: helplineCode,
+    feature_flags: {
+      enable_backend_hrm_contact_creation: enableBackendHrmContactCreation,
+    },
+  } = serviceConfig.attributes;
+
+  const hrmAccountId = inferHrmAccountId(accountSid, workerName);
+  const formDefinitionsBaseUrl =
+    configFormDefinitionsVersionUrl || `${assetsBucketUrl}/form-definitions/`;
+  const formDefinitionsVersionUrl = new URL(
+    `${formDefinitionsBaseUrl}${helplineCode}/v1`,
+  );
+  if (!enableBackendHrmContactCreation) {
+    console.debug(
+      `enable_backend_hrm_contact_creation is not set, the contact associated with task ${taskSid} will be created from Flex.`,
+    );
+    return;
+  }
 
   const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
 
