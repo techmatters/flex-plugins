@@ -21,7 +21,8 @@ locals {
         chatbot_unique_names = []
       },
       facebook : {
-        channel_type     = "facebook"
+        messaging_mode   = "conversations"
+        channel_type     = "messenger"
         contact_identity = "messenger:103574689075106"
         templatefile     = "/app/twilio-iac/helplines/co/templates/studio-flows/messaging-flow.tftpl"
         channel_flow_vars = {
@@ -38,19 +39,19 @@ locals {
         channel_flow_vars = {
           widget_from           = "Te Guío"
           chat_greeting_message = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
-          chat_blocked_message = "Lamentablemente eres de y no puedes utilizar nuestros servicios."
+          chat_blocked_message  = "Lamentablemente eres de y no puedes utilizar nuestros servicios."
         }
         chatbot_unique_names = []
       },
-      voice : {
-        channel_type     = "voice"
-        contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-no-chatbot-operating-hours-blocking.tftpl"
-        channel_flow_vars = {
-          widget_from                = "Te Guío"
-          voice_ivr_greeting_message = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
-          voice_ivr_blocked_message  = "Lamentablemente el número del cual llamas se encuentra bloqueado en nuestro sistema."
-          voice_ivr_language         = "es-MX"
+      whatsapp : {
+        messaging_mode       = "conversations"
+        channel_type         = "whatsapp"
+        contact_identity     = "whatsapp:+12135834846"
+        templatefile         = "/app/twilio-iac/helplines/co/templates/studio-flows/whatsapp.tftpl"
+        channel_flow_vars    = {
+          widget_from           = "Te Guío"
+          chat_greeting_message = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
+          chat_blocked_message  = "Lamentablemente eres de y no puedes utilizar nuestros servicios."        
         }
         chatbot_unique_names = []
       }
