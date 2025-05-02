@@ -26,7 +26,8 @@ locals {
         contact_identity = "messenger:103574689075106"
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking-conv.tftpl"
         channel_flow_vars = {
-          widget_from          = "Te Guío"
+          widget_from          = "Te Guío",
+          chat_greeting_message = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
           chat_blocked_message = "Lamentablemente eres de y no puedes utilizar nuestros servicios."
         }
         chatbot_unique_names = []
