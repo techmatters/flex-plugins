@@ -63,6 +63,7 @@ locals {
       operating_hours_function_sid      = "ZH5fcc5dee5089c176acd0bd24e7fa873e"
       send_message_janitor_function_sid = "ZH74666f7e7ee6bc54405a2d37b98518f8"
       chat_blocked_message              = "Lamentablemente no puedes utilizar nuestros servicios."
+      widget_from                       = "Te Guío"
     }
 
 
