@@ -1,0 +1,58 @@
+[
+  {
+    "name": "followUpToEnCompletedOnDate",
+    "type": "date-input",
+    "isPII": false,
+    "label": "Follow up to EN completed on (date)",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "nameAndBadgeNumberID",
+    "label": "Name and Badge Number/ID of External Individual following up",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 20,
+    "width": 289,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "agencyNameAndState",
+    "label": "Agency Name and State",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "feedbackFindingsUpdatesComplications",
+    "label": "Feedback, Findings, Updates, Complications",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 20,
+    "width": 289,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "anyAdditionalActionNeededOrFeedbackToAdd",
+    "label": "Any additional action needed or feedback to add",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 20,
+    "width": 289,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  }
+]
