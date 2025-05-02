@@ -28,7 +28,7 @@ locals {
         channel_flow_vars = {
           widget_from           = "Te Guío",
           chat_greeting_message = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
-          chat_blocked_message  = "Lamentablemente eres de y no puedes utilizar nuestros servicios."
+          chat_blocked_message  = "Lamentablemente no puedes utilizar nuestros servicios."
         }
         chatbot_unique_names = []
       },
@@ -40,7 +40,7 @@ locals {
         channel_flow_vars = {
           widget_from           = "Te Guío"
           chat_greeting_message = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
-          chat_blocked_message  = "Lamentablemente eres de y no puedes utilizar nuestros servicios."
+          chat_blocked_message  = "Lamentablemente no puedes utilizar nuestros servicios."
         }
         chatbot_unique_names = []
       },
@@ -52,7 +52,7 @@ locals {
         channel_flow_vars = {
           widget_from           = "Te Guío"
           chat_greeting_message = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
-          chat_blocked_message  = "Lamentablemente eres de y no puedes utilizar nuestros servicios."
+          chat_blocked_message  = "Lamentablemente no puedes utilizar nuestros servicios."
         }
         chatbot_unique_names = []
       }
@@ -62,6 +62,7 @@ locals {
       environment_sid                   = "ZE339938daa781b8e21baa45feae0e1afe"
       operating_hours_function_sid      = "ZH5fcc5dee5089c176acd0bd24e7fa873e"
       send_message_janitor_function_sid = "ZH74666f7e7ee6bc54405a2d37b98518f8"
+      chat_blocked_message              = "Lamentablemente no puedes utilizar nuestros servicios."
     }
 
 
