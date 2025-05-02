@@ -87,7 +87,7 @@ describe('useState mocked', () => {
       expect(mockNewGetTimelineAction).toHaveBeenCalledWith(case1.connectedCase.id, sectionType, [sectionType], false, {
         limit: 100,
         offset: 0,
-      });
+      }, `case-${case1.connectedCase.id}`);
     });
 
     expect(mockNewGetTimelineAction).toHaveBeenCalledWith(
@@ -96,6 +96,7 @@ describe('useState mocked', () => {
       expect.arrayContaining(['referral', 'note']),
       true,
       { limit: 5, offset: 0 },
+      `case-${case1.connectedCase.id}`,
     );
   };
 

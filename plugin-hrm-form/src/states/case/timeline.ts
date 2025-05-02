@@ -47,17 +47,20 @@ export const newGetTimelineAsyncAction = createAsyncAction(
     sectionTypes: string[],
     includeContacts: boolean,
     pagination: PaginationSettings,
+    reference: string,
   ): Promise<{
     timelineResult: TimelineResult<Date>;
     caseId: Case['id'];
     timelineId: string;
     pagination: PaginationSettings;
+    reference: string;
   }> => {
     return {
       timelineResult: await getCaseTimeline(caseId, sectionTypes, includeContacts, pagination),
       caseId,
       timelineId,
       pagination,
+      reference,
     };
   },
 );
@@ -211,5 +214,5 @@ export const selectCaseLabel = (
       return contactLabelFromHrmContact(def, firstContact.activity, contactLabelOptions);
     }
   }
-  return undefined;
+  return contactLabelOptions?.placeholder ?? '';
 };

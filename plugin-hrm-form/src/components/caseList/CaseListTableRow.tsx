@@ -95,7 +95,9 @@ const CaseListTableRow: React.FC<Props> = ({ caseId, handleClickViewCase }) => {
 
   useEffect(() => {
     if (!timelineCategories) {
-      dispatch(newGetTimelineAsyncAction(caseId, CONTACTS_TIMELINE_ID, [], true, { offset: 0, limit: 10000 }));
+      dispatch(
+        newGetTimelineAsyncAction(caseId, CONTACTS_TIMELINE_ID, [], true, { offset: 0, limit: 10000 }, `case-list`),
+      );
     }
   }, [timelineCategories, caseId, dispatch]);
 

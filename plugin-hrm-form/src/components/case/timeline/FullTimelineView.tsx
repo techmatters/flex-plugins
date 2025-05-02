@@ -53,10 +53,17 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, { task }: MyProps) => {
         changeRoute({ route: 'case', subroute: 'timeline', caseId, page }, task.taskSid, ChangeRouteMode.Replace),
       );
       dispatch(
-        newGetTimelineAsyncAction(caseId, 'prime-timeline', ['note', 'referral'], true, {
-          offset: page * TIMELINE_PAGE_SIZE,
-          limit: TIMELINE_PAGE_SIZE,
-        }),
+        newGetTimelineAsyncAction(
+          caseId,
+          'prime-timeline',
+          ['note', 'referral'],
+          true,
+          {
+            offset: page * TIMELINE_PAGE_SIZE,
+            limit: TIMELINE_PAGE_SIZE,
+          },
+          `case-${caseId}`,
+        ),
       );
     },
   };
