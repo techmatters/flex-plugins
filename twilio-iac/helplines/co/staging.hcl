@@ -24,7 +24,7 @@ locals {
         messaging_mode   = "conversations"
         channel_type     = "messenger"
         contact_identity = "messenger:103574689075106"
-        templatefile     = "/app/twilio-iac/helplines/co/templates/studio-flows/messaging-flow.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking-conv.tftpl"
         channel_flow_vars = {
           widget_from          = "Te Guío"
           chat_blocked_message = "Lamentablemente eres de y no puedes utilizar nuestros servicios."
