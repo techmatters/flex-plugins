@@ -81,6 +81,14 @@ const copyError = error => ({
   ...(error.cause && { stack: error.cause }),
 });
 
+const validateSyncConnection = (): void => {
+  if (!isSharedStateClientConnected(sharedStateClient)) {
+    console.error('Error with Sync Client connection. Sync Client object is: ', sharedStateClient);
+    console.error(getTemplateStrings().SharedStateSaveContactError);
+    throw new Error('Sync client not connected');
+  }
+};
+
 /**
  * Saves a pending contact into the Sync Client
  * @param task task used to save the contact
@@ -92,11 +100,7 @@ export const savePendingContactToSharedState = async (task, payload, error) => {
   if (!task || !payload) return null;
 
   try {
-    if (!isSharedStateClientConnected(sharedStateClient)) {
-      console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
-      console.error(getTemplateStrings().SharedStateSaveContactError);
-      return null;
-    }
+    validateSyncConnection();
 
     const list = await sharedStateClient.list('pending-contacts');
 
@@ -132,4 +136,95 @@ export const createCallStatusSyncDocument = async (onUpdateCallback: ({ data }: 
   onUpdateCallback({ data: callStatusSyncDocument.data });
 
   return { status: 'success', callStatusSyncDocument } as const;
+};
+
+export type SwitchboardState = {
+  isSwitchboardingActive: boolean;
+  queueSid: string | null;
+  queueName: string | null;
+  startTime: string | null;
+  supervisorWorkerSid: string | null;
+};
+
+const SWITCHBOARD_DOCUMENT_NAME = 'switchboard-state';
+const DEFAULT_SWITCHBOARD_STATE: SwitchboardState = {
+  isSwitchboardingActive: false,
+  queueSid: null,
+  queueName: null,
+  startTime: null,
+  supervisorWorkerSid: null,
+};
+
+/**
+ * Initialize or get the switchboard document from Twilio Sync
+ * @returns Twilio Sync document
+ */
+const initSwitchboardSyncDocument = () => {
+  try {
+    return sharedStateClient.document(SWITCHBOARD_DOCUMENT_NAME);
+  } catch (error) {
+    return sharedStateClient.document({
+      id: SWITCHBOARD_DOCUMENT_NAME,
+      data: DEFAULT_SWITCHBOARD_STATE,
+      ttl: 48 * 60 * 60, // 48 hours
+    });
+  }
+};
+
+/**
+ * Update the switchboarding state in the shared document
+ * @param state Partial state to update
+ * @returns Updated switchboarding state
+ */
+export const updateSwitchboardState = async (state: Partial<SwitchboardState>): Promise<SwitchboardState> => {
+  validateSyncConnection();
+
+  try {
+    const doc = await initSwitchboardSyncDocument();
+    const currentData = doc.data as SwitchboardState;
+    const updatedData = { ...currentData, ...state };
+    await doc.update(updatedData);
+    return updatedData;
+  } catch (error) {
+    console.error('Error updating switchboard state:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get the current switchboard state
+ * @returns Current switchboarding state
+ */
+export const getSwitchboardState = async (): Promise<SwitchboardState> => {
+  validateSyncConnection();
+
+  try {
+    const doc = await initSwitchboardSyncDocument();
+    return doc.data as SwitchboardState;
+  } catch (error) {
+    console.error('Error getting switchboard state:', error);
+    throw error;
+  }
+};
+
+/**
+ * Subscribe to switchboarding state changes
+ * @param callback Function to call when switchboarding state changes: (state: SwitchboardState) => void
+ * @returns Function to unsubscribe from updates: () => void
+ */
+export const subscribeSwitchboardState = async (callback: (state: SwitchboardState) => void): Promise<() => void> => {
+  validateSyncConnection();
+
+  try {
+    const doc = await initSwitchboardSyncDocument();
+    const handler = (event: { data: unknown }) => {
+      callback(event.data as SwitchboardState);
+    };
+    doc.on('updated', handler);
+    callback(doc.data as SwitchboardState);
+    return () => doc.off('updated', handler);
+  } catch (error) {
+    console.error('Error subscribing to switchboard state:', error);
+    throw error;
+  }
 };

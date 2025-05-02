@@ -94,14 +94,22 @@ export const SelectQueueModal: React.FC<SelectQueueModalProps> = ({
               [...queues]
                 .sort((a, b) => a.friendly_name.localeCompare(b.friendly_name))
                 .map(queue => (
-                  <div 
-                    key={queue.key} 
+                  <div
+                    key={queue.key}
                     onClick={() => handleRadioChange(queue.key)}
-                    style={{ 
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        handleRadioChange(queue.key);
+                      }
+                    }}
+                    role="radio"
+                    aria-checked={selectedQueue === queue.key}
+                    tabIndex={0}
+                    style={{
                       marginBottom: '10px',
                       display: 'flex',
                       alignItems: 'center',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
                     }}
                   >
                     <div
@@ -130,7 +138,23 @@ export const SelectQueueModal: React.FC<SelectQueueModalProps> = ({
                         />
                       )}
                     </div>
-                    <label style={{ cursor: 'pointer' }}>{queue.friendly_name}</label>
+                    <label
+                      id={`queue-label-${queue.key}`}
+                      htmlFor={`queue-radio-${queue.key}`}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      {queue.friendly_name}
+                    </label>
+                    <input
+                      type="radio"
+                      id={`queue-radio-${queue.key}`}
+                      name="queue-selection"
+                      value={queue.key}
+                      checked={selectedQueue === queue.key}
+                      onChange={() => handleRadioChange(queue.key)}
+                      style={{ position: 'absolute', opacity: 0 }}
+                      aria-labelledby={`queue-label-${queue.key}`}
+                    />
                   </div>
                 ))}
           </Box>
@@ -173,7 +197,7 @@ export const SelectQueueModal: React.FC<SelectQueueModalProps> = ({
   );
 };
 
-type TurnOffSwitchboardModalProps = {
+type TurnOffSwitchboardDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -182,7 +206,7 @@ type TurnOffSwitchboardModalProps = {
   switchboardingStartTime: string | null;
 };
 
-export const TurnOffSwitchboardModal: React.FC<TurnOffSwitchboardModalProps> = ({
+export const TurnOffSwitchboardDialog: React.FC<TurnOffSwitchboardDialogProps> = ({
   isOpen,
   onClose,
   onConfirm,
@@ -197,9 +221,11 @@ export const TurnOffSwitchboardModal: React.FC<TurnOffSwitchboardModalProps> = (
           <Box style={{ position: 'absolute', top: '10px', right: '10px' }}>
             <CloseButton tabIndex={3} aria-label="CloseButton" onClick={onClose} />
           </Box>
-
           <Box style={{ marginBottom: '20px' }}>
-            <h2 id="turn-off-switchboard-title" style={{ fontSize: '18px', fontWeight: 'bold', margin: '0' }}>
+            <h2
+              id="turn-off-switchboard-title"
+              style={{ fontSize: '18px', fontWeight: 'bold', margin: '0', maxWidth: '80%', textAlign: 'center' }}
+            >
               Are you sure you want to turn off switchboarding?
             </h2>
           </Box>
@@ -210,6 +236,7 @@ export const TurnOffSwitchboardModal: React.FC<TurnOffSwitchboardModalProps> = (
               justifyContent: 'flex-end',
               marginTop: '20px',
               gap: '10px',
+              alignSelf: 'flex-end',
             }}
           >
             <TertiaryButton

@@ -16,16 +16,19 @@
 
 import React, { useState, useEffect } from 'react';
 import { QueuesStats, Manager } from '@twilio/flex-ui';
-import { Switch } from '@material-ui/core';
+import { Switch, CircularProgress, Tooltip } from '@material-ui/core';
 import { useSelector } from 'react-redux';
+import InfoIcon from '@material-ui/icons/Info';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 import { getHrmConfig } from '../../hrmConfig';
-import { Bold, Box, FormLabel, TertiaryButton, StyledNextStepButton } from '../../styles';
+import { Bold, Box } from '../../styles';
 import { switchboardQueue } from '../../services/SwitchboardingService';
 import SwitchboardIcon from '../common/icons/SwitchboardIcon';
 import { RootState } from '../../states';
 import { namespace, configurationBase } from '../../states/storeNamespaces';
-import { SelectQueueModal, TurnOffSwitchboardModal } from './SwitchboardModals';
+import { SelectQueueModal, TurnOffSwitchboardDialog } from './SwitchboardModals';
+import { SwitchboardState, subscribeSwitchboardState } from '../../utils/sharedState';
 
 // eslint-disable-next-line import/no-unused-modules
 export const setUpSwitchboard = () => {
@@ -36,78 +39,90 @@ export const setUpSwitchboard = () => {
 };
 
 const SwitchboardTile = () => {
-  const [isSwitchboarding, setIsSwitchboarding] = useState(false);
+  const [switchboardState, setSwitchboardState] = useState<SwitchboardState | null>(null);
   const [selectedQueue, setSelectedQueue] = useState<string | null>(null);
-  const [switchboardingStartTime, setSwitchboardingStartTime] = useState<string | null>(null);
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false);
 
-  // Queue reference to avoid timing issues
   const selectedQueueRef = React.useRef<string | null>(null);
 
-  // Config and state values
   const { workerSid } = getHrmConfig();
   const counselorsHash = useSelector((state: RootState) => state[namespace][configurationBase].counselors.hash);
 
-  // Update queue reference when state changes
+  useEffect(() => {
+    let unsubscribe: (() => void) | undefined;
+
+    const initSwitchboardSubscription = async () => {
+      try {
+        setIsLoading(true);
+        unsubscribe = await subscribeSwitchboardState(state => {
+          setSwitchboardState(state);
+          setIsLoading(false);
+        });
+      } catch (err) {
+        console.error('Error initializing switchboard subscription:', err);
+        setError('Failed to connect to switchboard state. Please refresh the page or contact support.');
+        setIsLoading(false);
+      }
+    };
+
+    initSwitchboardSubscription();
+
+    // Clean up subscription when component unmounts
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, []);
+
   useEffect(() => {
     selectedQueueRef.current = selectedQueue;
   }, [selectedQueue]);
 
-  // Modal handlers
   const handleOpenModal = () => {
     setIsModalOpen(true);
-    // Reset selection when opening modal
     setSelectedQueue(null);
     selectedQueueRef.current = null;
   };
 
   const handleCloseModal = () => setIsModalOpen(false);
-  const handleOpenConfirmationModal = () => setIsConfirmationModalOpen(true);
-  const handleCloseConfirmationModal = () => setIsConfirmationModalOpen(false);
+  const handleOpenConfirmationDialog = () => setIsConfirmationDialogOpen(true);
+  const handleCloseConfirmationDialog = () => setIsConfirmationDialogOpen(false);
 
-  // Core switchboarding logic
   const handleSwitchboarding = async (queue: string) => {
     if (!queue) return;
 
     try {
+      setIsLoading(true);
+      setError(null);
       await switchboardQueue(queue);
-      const willBeActive = !isSwitchboarding;
-      setIsSwitchboarding(willBeActive);
-
-      if (willBeActive) {
-        const currentTime = new Date().toLocaleString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true,
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric',
-        });
-        setSwitchboardingStartTime(currentTime);
-      } else {
-        setSwitchboardingStartTime(null);
-      }
-
       setIsModalOpen(false);
       setSelectedQueue(queue);
     } catch (error) {
       console.error('Error in switchboarding:', error);
+      setError('Failed to activate switchboarding. Please try again or contact support.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleSwitchToggle = () => {
-    if (isSwitchboarding && selectedQueue) {
+    if (switchboardState?.isSwitchboardingActive) {
       // If already switchboarding, open confirmation modal to turn it off
-      handleOpenConfirmationModal();
+      if (switchboardState.queueSid) {
+        setSelectedQueue(switchboardState.queueSid);
+        handleOpenConfirmationDialog();
+      }
     } else {
       // If not switchboarding, open the modal to select a queue
       handleOpenModal();
     }
   };
 
-  // Get queue data
   const queues = Manager.getInstance()?.store.getState()?.flex?.realtimeQueues?.queuesList;
   const filteredQueues = queues
     ? Object.values(queues).filter(
@@ -115,26 +130,37 @@ const SwitchboardTile = () => {
       )
     : [];
 
-  // Formatting helpers
   const getQueueName = (queueKey: string) =>
     filteredQueues.find((q: any) => q.key === queueKey)?.friendly_name || queueKey;
 
-  const getSupervisorName = () =>
-    counselorsHash && workerSid ? counselorsHash[workerSid] : Manager.getInstance().user.identity;
+  const getSupervisorName = (supervisorWorkerSid: string | null) => {
+    if (!supervisorWorkerSid) return 'Unknown supervisor';
+    console.log('>>>supervisorWorkerSid', supervisorWorkerSid, counselorsHash[supervisorWorkerSid]);
+    return counselorsHash && counselorsHash[supervisorWorkerSid]
+      ? counselorsHash[supervisorWorkerSid]
+      : 'Unknown supervisor';
+  };
 
-  const renderSwitchboardStatusText = (queueKey: string, startTime: string | null) => (
+  const renderSwitchboardStatusText = (
+    queueName: string | null,
+    startTime: string | null,
+    supervisorName: string | null,
+  ) => (
     <span>
-      <Bold>{getQueueName(queueKey)}</Bold> calls are being switchboarded by supervisor{' '}
-      <Bold>{getSupervisorName()}</Bold> since {startTime}
+      <Bold>{queueName}</Bold> calls are being switchboarded by supervisor <Bold>{supervisorName}</Bold> since{' '}
+      {startTime}
     </span>
   );
 
   const handleConfirmTurnOff = () => {
     if (selectedQueue) {
       handleSwitchboarding(selectedQueue);
-      handleCloseConfirmationModal();
+      handleCloseConfirmationDialog();
     }
   };
+
+  const borderColor = switchboardState?.isSwitchboardingActive ? '#f8c000' : '#e1e3ea';
+  const backgroundColor = switchboardState?.isSwitchboardingActive ? '#fff7de' : 'transparent';
 
   return (
     <>
@@ -143,28 +169,74 @@ const SwitchboardTile = () => {
           display: 'flex',
           flexDirection: 'column',
           padding: '20px',
-          border: '2px solid #e1e3ea',
+          border: `2px solid ${borderColor}`,
           borderRadius: '4px',
-          backgroundColor: isSwitchboarding ? '#FFF7DE' : 'transparent',
+          backgroundColor,
+          fontFamily: 'Open Sans',
+          position: 'relative',
         }}
         data-testid="switchboard-tile"
       >
+        {isLoading && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'rgba(255, 255, 255, 0.7)',
+              zIndex: 1,
+              borderRadius: '4px',
+            }}
+          >
+            <CircularProgress size={40} />
+          </div>
+        )}
+
+        {error && (
+          <div style={{ marginBottom: '10px' }}>
+            <h1>Error</h1>
+            {error}
+          </div>
+        )}
+
         <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
           <Box style={{ display: 'flex', alignItems: 'center' }}>
-            <SwitchboardIcon width="24px" height="24px" />
-            <span style={{ fontWeight: 'bold', fontSize: '14px', marginLeft: '10px' }}>
-              Switchboarding: {isSwitchboarding ? 'In Progress' : 'Off'}
-            </span>
+            <SwitchboardIcon width="38" height="38" />
+            <h3 style={{ fontWeight: 'bold', fontSize: '16px' }}>
+              Switchboarding: {switchboardState?.isSwitchboardingActive ? 'In Progress' : 'Off'}
+            </h3>
           </Box>
-          <Switch checked={isSwitchboarding} onChange={handleSwitchToggle} color="primary" />
+          <Switch
+            checked={switchboardState?.isSwitchboardingActive || false}
+            onChange={handleSwitchToggle}
+            color="primary"
+            disabled={isLoading}
+          />
         </Box>
 
-        <Box style={{ marginTop: '15px' }}>
-          {isSwitchboarding && selectedQueue ? (
-            <div>{renderSwitchboardStatusText(selectedQueue, switchboardingStartTime)}</div>
-          ) : (
+        <Box style={{ marginTop: '15px', display: 'flex', alignItems: 'center' }}>
+          {switchboardState?.isSwitchboardingActive && switchboardState.queueSid ? (
             <div>
-              No queues are currently being switchboarded{' '}
+              {renderSwitchboardStatusText(
+                switchboardState.queueName,
+                switchboardState.startTime,
+                getSupervisorName(switchboardState.supervisorWorkerSid),
+              )}
+            </div>
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              No queues are currently being switchboarded
+              <Tooltip title="Learn more about switchboarding">
+                <Box style={{ display: 'flex', marginLeft: '8px', cursor: 'pointer' }}>
+                  <InfoIcon style={{ fontSize: '16px', marginRight: '2px' }} />
+                  <OpenInNewIcon style={{ fontSize: '16px' }} />
+                </Box>
+              </Tooltip>
             </div>
           )}
         </Box>
@@ -180,14 +252,23 @@ const SwitchboardTile = () => {
         queues={filteredQueues}
       />
 
-      <TurnOffSwitchboardModal
-        isOpen={isConfirmationModalOpen}
-        onClose={handleCloseConfirmationModal}
+      <TurnOffSwitchboardDialog
+        isOpen={isConfirmationDialogOpen}
+        onClose={handleCloseConfirmationDialog}
         onConfirm={handleConfirmTurnOff}
         selectedQueue={selectedQueue}
-        renderStatusText={renderSwitchboardStatusText}
-        switchboardingStartTime={switchboardingStartTime}
+        renderStatusText={(queueKey, startTime) =>
+          renderSwitchboardStatusText(
+            getQueueName(queueKey),
+            switchboardState?.startTime || startTime,
+            getSupervisorName(workerSid),
+          )
+        }
+        switchboardingStartTime={switchboardState?.startTime || null}
       />
     </>
   );
 };
+
+// eslint-disable-next-line import/no-unused-modules
+export default SwitchboardTile;
