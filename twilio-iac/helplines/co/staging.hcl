@@ -26,9 +26,9 @@ locals {
         contact_identity = "messenger:103574689075106"
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours-blocking-conv.tftpl"
         channel_flow_vars = {
-          widget_from          = "Te Guío",
+          widget_from           = "Te Guío",
           chat_greeting_message = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
-          chat_blocked_message = "Lamentablemente eres de y no puedes utilizar nuestros servicios."
+          chat_blocked_message  = "Lamentablemente eres de y no puedes utilizar nuestros servicios."
         }
         chatbot_unique_names = []
       },
@@ -45,23 +45,23 @@ locals {
         chatbot_unique_names = []
       },
       whatsapp : {
-        messaging_mode       = "conversations"
-        channel_type         = "whatsapp"
-        contact_identity     = "whatsapp:+12135834846"
-        templatefile         = "/app/twilio-iac/helplines/co/templates/studio-flows/whatsapp.tftpl"
-        channel_flow_vars    = {
+        messaging_mode   = "conversations"
+        channel_type     = "whatsapp"
+        contact_identity = "whatsapp:+12135834846"
+        templatefile     = "/app/twilio-iac/helplines/co/templates/studio-flows/whatsapp.tftpl"
+        channel_flow_vars = {
           widget_from           = "Te Guío"
           chat_greeting_message = "¡Hola, te damos la bienvenida a Te Guío! Esta es la línea de ayuda dedicada a adolescentes como tú, donde escuchamos y orientamos  las inquietudes que puedes tener para lograr vivir una sexualidad saludable. Qué gusto que te contactes con nosotros. Por favor espéranos mientras te contactamos con un Guía."
-          chat_blocked_message  = "Lamentablemente eres de y no puedes utilizar nuestros servicios."        
+          chat_blocked_message  = "Lamentablemente eres de y no puedes utilizar nuestros servicios."
         }
         chatbot_unique_names = []
       }
     }
     flow_vars = {
-      service_sid                  = "ZSbf1bb881cc2e8db613ee6bca0e8e2c29"
-      environment_sid              = "ZE339938daa781b8e21baa45feae0e1afe"
-      operating_hours_function_sid = "ZH5fcc5dee5089c176acd0bd24e7fa873e"
-
+      service_sid                       = "ZSbf1bb881cc2e8db613ee6bca0e8e2c29"
+      environment_sid                   = "ZE339938daa781b8e21baa45feae0e1afe"
+      operating_hours_function_sid      = "ZH5fcc5dee5089c176acd0bd24e7fa873e"
+      send_message_janitor_function_sid = "ZH74666f7e7ee6bc54405a2d37b98518f8"
     }
 
 
