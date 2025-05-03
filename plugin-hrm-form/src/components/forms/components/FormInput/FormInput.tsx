@@ -62,19 +62,48 @@ const FormInputUI: React.FC<FormInputUIProps> = ({
           {required && <RequiredAsterisk />}
         </Box>
       </Row>
-      <StyledFormInput
-        id={inputId}
-        data-testid={inputId}
-        name={inputId}
-        error={isErrorState}
-        aria-invalid={isErrorState}
-        aria-required={required}
-        aria-errormessage={isErrorState ? errorId : undefined}
-        onBlur={updateCallback}
-        ref={refFunction}
-        defaultValue={defaultValue}
-        disabled={disabled}
-      />
+      <Row>
+        <StyledFormInput
+          id={inputId}
+          data-testid={inputId}
+          name={inputId}
+          error={isErrorState}
+          aria-invalid={isErrorState}
+          aria-required={required}
+          aria-errormessage={isErrorState ? errorId : undefined}
+          onBlur={updateCallback}
+          ref={refFunction}
+          defaultValue={defaultValue}
+          disabled={disabled}
+        />
+        <Box marginLeft="4px"marginTop="8px" display="flex" justifyContent="flex-end">
+          <button
+            type="button"
+            data-testid={`spark-button-${inputId}`}
+            aria-label="Toggle spark"
+            onClick={(e) => {
+              const btn = e.currentTarget;
+              const input = document.getElementById(inputId) as HTMLInputElement;
+              if (btn.style.backgroundColor === 'gray') {
+                btn.style.backgroundColor = 'transparent';
+                input.value = '';
+              } else {
+                btn.style.backgroundColor = 'gray';
+                input.value = 'AI-generated!';
+              }
+            }}
+            style={{
+              padding: '6px',
+              backgroundColor: 'transparent', 
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            <span role="img" aria-label="Spark">✨</span>
+          </button>
+        </Box>
+      </Row>
       {isErrorState && <FormError>{errorTextComponent}</FormError>}
     </FormLabel>
   );
