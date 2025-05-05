@@ -48,220 +48,460 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       required: true,
     },
     {
-      label: 'Age',
+      label: 'How old are you?',
       type: 'select',
-      name: 'age',
+      name: 'childAge',
       required: true,
       defaultValue: '',
       options: [
         {
-          value: "",
-          label: ""
+          "value": "",
+          "label": ""
         },
         {
-          value: "Unborn",
-          label: "Unborn"
+          "value": "0-5",
+          "label": "0-5"
         },
         {
-          value: "00",
-          label: "0"
+          "value": "6-12",
+          "label": "6-12"
         },
         {
-          value: "01",
-          label: "1"
+          "value": "13-17",
+          "label": "13-17"
         },
         {
-          value: "02",
-          label: "2"
+          "value": "18-24",
+          "label": "18-24"
         },
         {
-          value: "03",
-          label: "3"
+          "value": "Adult 25+",
+          "label": "Adult 25+"
         },
         {
-          value: "04",
-          label: "4"
-        },
-        {
-          value: "05",
-          label: "5"
-        },
-        {
-          value: "06",
-          label: "6"
-        },
-        {
-          value: "07",
-          label: "7"
-        },
-        {
-          value: "08",
-          label: "8"
-        },
-        {
-          value: "09",
-          label: "9"
-        },
-        {
-          value: "10",
-          label: "10"
-        },
-        {
-          value: "11",
-          label: "11"
-        },
-        {
-          value: "12",
-          label: "12"
-        },
-        {
-          value: "13",
-          label: "13"
-        },
-        {
-          value: "14",
-          label: "14"
-        },
-        {
-          value: "15",
-          label: "15"
-        },
-        {
-          value: "16",
-          label: "16"
-        },
-        {
-          value: "17",
-          label: "17"
-        },
-        {
-          value: "18",
-          label: "18"
-        },
-        {
-          value: "19",
-          label: "19"
-        },
-        {
-          value: "20",
-          label: "20"
-        },
-        {
-          value: "21",
-          label: "21"
-        },
-        {
-          value: "22",
-          label: "22"
-        },
-        {
-          value: "23",
-          label: "23"
-        },
-        {
-          value: "24",
-          label: "24"
-        },
-        {
-          value: ">25",
-          label: ">25"
-        },
-        {
-          value: "Unknown",
-          label: "Unknown"
+          "value": "N/A",
+          "label": "Prefer not to answer"
         }
       ],
     },
     {
-      label: 'Gender',
+      label: 'What is your gender identity?',
       type: 'select',
-      name: 'gender',
+      name: 'childGender',
       required: true,
       defaultValue: '',
       options: [
         {
-          value: "",
-          label: ""
+          "value": "",
+          "label": ""
         },
         {
-          value: 'Girl',
-          label: 'Girl',
+          "value": "Male",
+          "label": "Male"
         },
         {
-          value: 'Boy',
-          label: 'Boy',
+          "value": "Female",
+          "label": "Female"
         },
         {
-          value: 'Non-Binary',
-          label: 'Non-Binary',
+          "value": "Gender Expansive",
+          "label": "Gender Expansive"
         },
         {
-          value: 'Unknown',
-          label: 'Unknown',
-        },
+          "value": "N/A",
+          "label": "Prefer not to answer"
+        }
       ],
     },
     {
+      label: 'What state are you chatting from?',
       type: 'select',
-      name: 'province',
-      label: 'Province',
-      required: false,
+      name: 'childState',
+      required: true,
       defaultValue: '',
       options: [
-        { 'value': '', 'label': '' },
-        { 'value': 'Northern', 'label': 'Northern' },
-        { 'value': 'Eastern', 'label': 'Eastern' },
-        { 'value': 'Western', 'label': 'Western' },
-        { 'value': 'Southern', 'label': 'Southern' },
-        { 'value': 'Unknown', 'label': 'Unknown'}
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Out of USA",
+          "label": "Out of USA"
+        },
+        {
+          "value": "Alabama",
+          "label": "Alabama"
+        },
+        {
+          "value": "Alaska",
+          "label": "Alaska"
+        },
+        {
+          "value": "Arizona",
+          "label": "Arizona"
+        },
+        {
+          "value": "Arkansas",
+          "label": "Arkansas"
+        },
+        {
+          "value": "California",
+          "label": "California"
+        },
+        {
+          "value": "Colorado",
+          "label": "Colorado"
+        },
+        {
+          "value": "Connecticut",
+          "label": "Connecticut"
+        },
+        {
+          "value": "Delaware",
+          "label": "Delaware"
+        },
+        {
+          "value": "Florida",
+          "label": "Florida"
+        },
+        {
+          "value": "Georgia",
+          "label": "Georgia"
+        },
+        {
+          "value": "Hawaii",
+          "label": "Hawaii"
+        },
+        {
+          "value": "Idaho",
+          "label": "Idaho"
+        },
+        {
+          "value": "Illinois",
+          "label": "Illinois"
+        },
+        {
+          "value": "Indiana",
+          "label": "Indiana"
+        },
+        {
+          "value": "Iowa",
+          "label": "Iowa"
+        },
+        {
+          "value": "Kansas",
+          "label": "Kansas"
+        },
+        {
+          "value": "Kentucky",
+          "label": "Kentucky"
+        },
+        {
+          "value": "Louisiana",
+          "label": "Louisiana"
+        },
+        {
+          "value": "Maine",
+          "label": "Maine"
+        },
+        {
+          "value": "Maryland",
+          "label": "Maryland"
+        },
+        {
+          "value": "Massachusetts",
+          "label": "Massachusetts"
+        },
+        {
+          "value": "Michigan",
+          "label": "Michigan"
+        },
+        {
+          "value": "Minnesota",
+          "label": "Minnesota"
+        },
+        {
+          "value": "Mississippi",
+          "label": "Mississippi"
+        },
+        {
+          "value": "Missouri",
+          "label": "Missouri"
+        },
+        {
+          "value": "Montana",
+          "label": "Montana"
+        },
+        {
+          "value": "Nebraska",
+          "label": "Nebraska"
+        },
+        {
+          "value": "Nevada",
+          "label": "Nevada"
+        },
+        {
+          "value": "New Hampshire",
+          "label": "New Hampshire"
+        },
+        {
+          "value": "New Jersey",
+          "label": "New Jersey"
+        },
+        {
+          "value": "New Mexico",
+          "label": "New Mexico"
+        },
+        {
+          "value": "New York",
+          "label": "New York"
+        },
+        {
+          "value": "North Carolina",
+          "label": "North Carolina"
+        },
+        {
+          "value": "North Dakota",
+          "label": "North Dakota"
+        },
+        {
+          "value": "Ohio",
+          "label": "Ohio"
+        },
+        {
+          "value": "Oklahoma",
+          "label": "Oklahoma"
+        },
+        {
+          "value": "Oregon",
+          "label": "Oregon"
+        },
+        {
+          "value": "Pennsylvania",
+          "label": "Pennsylvania"
+        },
+        {
+          "value": "Rhode Island",
+          "label": "Rhode Island"
+        },
+        {
+          "value": "South Carolina",
+          "label": "South Carolina"
+        },
+        {
+          "value": "South Dakota",
+          "label": "South Dakota"
+        },
+        {
+          "value": "Tennessee",
+          "label": "Tennessee"
+        },
+        {
+          "value": "Texas",
+          "label": "Texas"
+        },
+        {
+          "value": "Utah",
+          "label": "Utah"
+        },
+        {
+          "value": "Vermont",
+          "label": "Vermont"
+        },
+        {
+          "value": "Virginia",
+          "label": "Virginia"
+        },
+        {
+          "value": "Washington",
+          "label": "Washington"
+        },
+        {
+          "value": "Washington, D.C.",
+          "label": "Washington, D.C."
+        },
+        {
+          "value": "West Virginia",
+          "label": "West Virginia"
+        },
+        {
+          "value": "Wisconsin",
+          "label": "Wisconsin"
+        },
+        {
+          "value": "Wyoming",
+          "label": "Wyoming"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        },
+        {
+          "value": "N/A",
+          "label": "Prefer not to answer"
+        }
       ],
     },
     {
-      name: 'district',
-      label: 'District',
-      type: 'dependent-select',
-      dependsOn: 'province',
-      required: false,
-      options: {
-       'Northern': [
-        { 'value': 'District A', 'label': 'District A' },
-        { 'value': 'District B', 'label': 'District B' },
-        { 'value': 'District C', 'label': 'District C' },
-        { 'value': 'Unknown', 'label': 'Unknown'}
-      ],
-      'Eastern': [
-        { 'value': 'District A', 'label': 'District A' },
-        { 'value': 'District B', 'label': 'District B' },
-        { 'value': 'District C', 'label': 'District C' },
-        { 'value': 'Unknown', 'label': 'Unknown'}
-      ],
-      'Western': [
-        { 'value': 'District A', 'label': 'District A' },
-        { 'value': 'District B', 'label': 'District B' },
-        { 'value': 'District C', 'label': 'District C' },
-        { 'value': 'Unknown', 'label': 'Unknown'}
-      ],
-      'Southern': [
-        { 'value': 'District A', 'label': 'District A' },
-        { 'value': 'District B', 'label': 'District B' },
-        { 'value': 'District C', 'label': 'District C' },
-        { 'value': 'Unknown', 'label': 'Unknown'}
+      label: 'How did you hear about this hotline?',
+      name: 'howTheHelpseekerHeardAboutUs',
+      type: 'select',
+      required: true,
+      options: [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Billboard",
+          "label": "Billboard"
+        },
+        {
+          "value": "Book",
+          "label": "Book"
+        },
+        {
+          "value": "Chat GPT/AI",
+          "label": "Chat GPT/AI"
+        },
+        {
+          "value": "Discord",
+          "label": "Discord"
+        },
+        {
+          "value": "Family Member",
+          "label": "Family Member"
+        },
+        {
+          "value": "Friend",
+          "label": "Friend"
+        },
+        {
+          "value": "In and Out Burger Bag",
+          "label": "In and Out Burger Bag"
+        },
+        {
+          "value": "John Stamos",
+          "label": "John Stamos"
+        },
+        {
+          "value": "Marketing Media",
+          "label": "Marketing Media"
+        },
+        {
+          "value": "National Center for Missing and Exploited Children",
+          "label": "National Center for Missing and Exploited Children"
+        },
+        {
+          "value": "National Domestic Violence Hotline",
+          "label": "National Domestic Violence Hotline"
+        },
+        {
+          "value": "National Runaway Safeline",
+          "label": "National Runaway Safeline"
+        },
+        {
+          "value": "National Sexual Assault Hotline",
+          "label": "National Sexual Assault Hotline"
+        },
+        {
+          "value": "National Suicide Prevention Lifeline (988)",
+          "label": "National Suicide Prevention Lifeline (988)"
+        },
+        {
+          "value": "NEDA Helpline",
+          "label": "NEDA Helpline"
+        },
+        {
+          "value": "Newspaper/Magazine",
+          "label": "Newspaper/Magazine"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
+        },
+        {
+          "value": "Other Hotline",
+          "label": "Other Hotline"
+        },
+        {
+          "value": "Phonebook/Operator",
+          "label": "Phonebook/Operator"
+        },
+        {
+          "value": "Professional",
+          "label": "Professional"
+        },
+        {
+          "value": "Radio",
+          "label": "Radio"
+        },
+        {
+          "value": "Repeat Call/Called Before",
+          "label": "Repeat Call/Called Before"
+        },
+        {
+          "value": "SNAP",
+          "label": "SNAP"
+        },
+        {
+          "value": "Social Media: Facebook",
+          "label": "Social Media: Facebook"
+        },
+        {
+          "value": "Social Media: Instagram",
+          "label": "Social Media: Instagram"
+        },
+        {
+          "value": "Social Media: Reddit",
+          "label": "Social Media: Reddit"
+        },
+        {
+          "value": "Social Media: Snapchat",
+          "label": "Social Media: Snapchat"
+        },
+        {
+          "value": "Social Media: Spotify",
+          "label": "Social Media: Spotify"
+        },
+        {
+          "value": "Social Media: TikTok",
+          "label": "Social Media: TikTok"
+        },
+        {
+          "value": "Social Media: X (formerly Twitter)",
+          "label": "Social Media: X (formerly Twitter)"
+        },
+        {
+          "value": "Social Media: Unspecified",
+          "label": "Social Media: Unspecified"
+        },
+        {
+          "value": "SUBS - Childhelp Speak Up Be Safe Program",
+          "label": "SUBS - Childhelp Speak Up Be Safe Program"
+        },
+        {
+          "value": "Television/Streaming Services",
+          "label": "Television/Streaming Services"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        },
+        {
+          "value": "Website-Internet",
+          "label": "Website-Internet"
+        },
+        {
+          "value": "YouTube",
+          "label": "YouTube"
+        },
+        {
+          "value": "N/A",
+          "label": "Prefer not to answer"
+        }
       ]
-      },
-    },
-    {
-      label: 'How urgent is your situation?',
-      type: 'select',
-      name: 'urgencyLevel',
-      required: false,
-      defaultValue: '',
-      options: [
-        { 'value': '', 'label': '' },
-        { 'value': 'Urgent', 'label': 'Urgent' },
-        { 'value': 'Critical', 'label': 'Critical' },
-        { 'value': 'Non-critical', 'label': 'Non-critical' },
-        { 'value': 'Other', 'label': 'Other' }
-      ],
+      ,
     },
     {
       type: 'checkbox',
@@ -270,7 +510,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         'I\'ve read and accept the <a href="https://en.wikipedia.org/wiki/Terms_of_service">Terms and Conditions</a>',
       required: {
         value: true,
-        message: "Sorry, if you don't accept our terms and conditions we can't provide counselling to you.",
+        message: "Sorry, if you don't accept our terms and conditions we can't provide counseling to you.",
       }, 
     },
   ],
@@ -278,10 +518,10 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 
 const translations: Translations = {
   'en-US': {
-    WelcomeMessage: 'Welcome to  Childhelp',
+    WelcomeMessage: 'To best serve you, answer 4 short questions and you will then be connected to a counselor. You can select "Prefer not to answer" for any question. ',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
-      "Thank you very much for this information. We'll transfer you now. Please hold for a practitioner.",
+      "Thank you very much for this information. We'll transfer you now. Please hold for a counselor.",
     AutoFirstMessage: 'Incoming webchat contact from',
     TypingIndicator: 'Counselor is typing',
     StartChat: 'Start Chat!',
@@ -301,7 +541,7 @@ const memberDisplayOptions = {
   yourDefaultName: 'You',
   yourFriendlyNameOverride: false,
   theirFriendlyNameOverride: false,
-  theirDefaultName: 'Counsellor',
+  theirDefaultName: 'Counselor',
 };
 
 const mapHelplineLanguage: MapHelplineLanguage = (helpline) => {
