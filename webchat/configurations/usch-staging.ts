@@ -41,13 +41,6 @@ const preEngagementConfig: PreEngagementFormDefinition = {
   submitLabel: 'StartChat',
   fields: [
     {
-      type: 'input-text',
-      name: 'firstName',
-      label: 'First Name',
-      placeholder: 'GuestName',
-      required: true,
-    },
-    {
       label: 'How old are you?',
       type: 'select',
       name: 'childAge',
