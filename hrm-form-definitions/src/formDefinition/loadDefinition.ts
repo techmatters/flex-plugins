@@ -34,6 +34,7 @@ import {
   ProfileFlagDurationDefinition,
   ProfileSectionDefinition,
   LocalizedStringMap,
+  FlexUILocaleEntry,
 } from './types';
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 import { LayoutVersion } from './layoutVersion';
@@ -196,6 +197,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     profileFlagDurations,
     messages,
     substitutions,
+    flexUiLocales,
   ] = await Promise.all([
     fetchDefinition<LayoutVersion>('LayoutDefinitions.json'),
     fetchDefinition<FormItemJsonDefinition[]>('tabbedForms/CallerInformationTab.json'),
@@ -225,6 +227,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     fetchDefinition<ProfileFlagDurationDefinition[]>('profileForms/FlagDurations.json', []),
     fetchDefinition<LocalizedStringMap>('customStrings/Messages.json', {}),
     fetchDefinition<LocalizedStringMap>('customStrings/Substitutions.json', {}),
+    fetchDefinition<FlexUILocaleEntry[]>('flexUiLocales.json', []),
   ] as const);
   const expandedCaseSections: CaseSectionTypeDefinitions = await loadAndExpandCaseSections(
     caseSections,
@@ -267,5 +270,6 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
       Messages: messages,
       Substitutions: substitutions,
     },
+    flexUiLocales,
   };
 }

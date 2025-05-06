@@ -56,6 +56,7 @@ const files = [
   'profileForms/FlagDurations.json',
   'customStrings/Messages.json',
   'customStrings/Substitutions.json',
+  'flexUiLocales.json',
 ];
 
 const getDefinitionVersionId = (formDefinitionsBaseUrl: string) =>

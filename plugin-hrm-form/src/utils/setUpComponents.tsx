@@ -263,7 +263,7 @@ export const setUpDeveloperComponents = (translateUI: (language: string) => Prom
       key="SettingsSideLink"
       onClick={() => Flex.Actions.invokeAction('NavigateToView', { viewName: 'settings' })}
       reserveSpace={false}
-      showLabel={false}
+      showLabel={true}
     />,
     {
       align: 'end',
@@ -413,4 +413,11 @@ export const setupCannedResponses = () => {
  */
 export const setupEmojiPicker = () => {
   Flex.MessageInputActions.Content.add(<EmojiPicker key="emoji-picker" />);
+};
+
+export const setupWorkerLanguageSelect = (translateUI: (language: string) => Promise<void>) => {
+  Flex.MainHeader.Content.add(
+    <Translator manager={Flex.Manager.getInstance()} translateUI={translateUI} key="locale-selector" />,
+    { align: 'end', sortOrder: 0 },
+  );
 };
