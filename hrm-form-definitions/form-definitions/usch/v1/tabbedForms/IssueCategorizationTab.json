@@ -194,7 +194,10 @@
           "label": "Athletic Touching"
         },
         {
-          "label": "Bullying/Team Dynamics"
+          "label": "Bullying/Teammate Dynamics"
+        },
+        {
+          "label": "Burnout/Loss of Identity"
         },
         {
           "label": "Coaching Issue"
@@ -203,19 +206,10 @@
           "label": "Courage First Information"
         },
         {
-          "label": "Discrimination- Gender/Sex"
-        },
-        {
-          "label": "Discrimination- Other"
-        },
-        {
-          "label": "Eating Disorder"
+          "label": "Body Image/Eating Disorder"
         },
         {
           "label": "Grooming/Power Asymmetry"
-        },
-        {
-          "label": "Monetary Concerns- NIL Funding"
         },
         {
           "label": "Safesport Reporting Information"
@@ -225,18 +219,6 @@
         },
         {
           "label": "Doping"
-        },
-        {
-          "label": "System Failure- Abuse Not Investigated"
-        },
-        {
-          "label": "System Failure- Outcome Dissatisfaction"
-        },
-        {
-          "label": "Teammate Challenge/Issue"
-        },
-        {
-          "label": "Trafficking/Immigration"
         }
       ]
     }
