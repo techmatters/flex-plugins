@@ -14,8 +14,8 @@
     "label": "Detailed reason why External Agency needed to be notified (including ALL identifying information provided by caller such as name of child, age of child, address, details of allegation)",
     "type": "textarea",
     "isPII": false,
-    "rows": 20,
-    "width": 289,
+    "rows": 10,
+    "width": 250,
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -26,8 +26,8 @@
     "label": "Comments from External Agency",
     "type": "textarea",
     "isPII": false,
-    "rows": 20,
-    "width": 289,
+    "rows": 10,
+    "width": 250,
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -38,8 +38,8 @@
     "label": "Other Notes",
     "type": "textarea",
     "isPII": false,
-    "rows": 20,
-    "width": 289
+    "rows": 10,
+    "width": 250
   },
   {
     "name": "agencyContacted",
@@ -79,24 +79,24 @@
     "label": "Name/ID of CPS Worker",
     "type": "textarea",
     "isPII": false,
-    "rows": 20,
-    "width": 289
+    "rows": 10,
+    "width": 250
   },
   {
     "name": "stateAndCountyWhereCpsWasNotified",
     "label": "State and County where CPS was notified",
     "type": "textarea",
     "isPII": false,
-    "rows": 20,
-    "width": 289
+    "rows": 10,
+    "width": 250
   },
   {
     "name": "dateAndTimeOfNotificationToCps",
     "label": "Date and Time of notification to CPS",
     "type": "textarea",
     "isPII": false,
-    "rows": 20,
-    "width": 289
+    "rows": 10,
+    "width": 250
   },
   {
     "name": "didYouContactCpsIn",
@@ -158,23 +158,23 @@
     "label": "Name/Badge Number of Law Enforcement",
     "type": "textarea",
     "isPII": false,
-    "rows": 20,
-    "width": 289
+    "rows": 10,
+    "width": 250
   },
   {
     "name": "lawEnforcementAgencyAndPhoneNumber",
     "label": "Name of Law Enforcement Agency and Phone Number that was notified",
     "type": "textarea",
     "isPII": false,
-    "rows": 20,
-    "width": 289
+    "rows": 10,
+    "width": 250
   },
   {
     "name": "dateAndTimeOfNotificationToLawEnforcement",
     "label": "Date and Time of notification to Law Enforcement",
     "type": "textarea",
     "isPII": false,
-    "rows": 20,
-    "width": 289
+    "rows": 10,
+    "width": 250
   }
 ]

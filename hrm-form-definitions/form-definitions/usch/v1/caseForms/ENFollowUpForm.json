@@ -14,8 +14,8 @@
     "label": "Name and Badge Number/ID of External Individual following up",
     "type": "textarea",
     "isPII": false,
-    "rows": 20,
-    "width": 289,
+    "rows": 10,
+    "width": 250,
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -36,8 +36,8 @@
     "label": "Feedback, Findings, Updates, Complications",
     "type": "textarea",
     "isPII": false,
-    "rows": 20,
-    "width": 289,
+    "rows": 10,
+    "width": 250,
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -48,8 +48,8 @@
     "label": "Any additional action needed or feedback to add",
     "type": "textarea",
     "isPII": false,
-    "rows": 20,
-    "width": 289,
+    "rows": 10,
+    "width": 250,
     "required": {
       "value": true,
       "message": "RequiredFieldError"

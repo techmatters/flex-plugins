@@ -60,6 +60,10 @@
         "label": "Gender Expansive"
       },
       {
+        "value": "Unknown",
+        "label": "Unknown"
+      },
+      {
         "value": "N/A",
         "label": "N/A"
       }
@@ -99,10 +103,6 @@
       {
         "value": "18-24",
         "label": "18-24"
-      },
-      {
-        "value": "Adult 25+",
-        "label": "Adult 25+"
       },
       {
         "value": "N/A",

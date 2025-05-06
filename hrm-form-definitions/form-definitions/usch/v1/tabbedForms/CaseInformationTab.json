@@ -548,8 +548,8 @@
     "label": "Comments",
     "type": "textarea",
     "isPII": false,
-    "rows": 20,
-    "width": 289
+    "rows": 10,
+    "width": 250
   },
   {
     "name": "wasASafetyPlanCreated",
