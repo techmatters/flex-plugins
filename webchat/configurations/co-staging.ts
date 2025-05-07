@@ -32,7 +32,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'checkbox',
       name: 'termsAndConditions',
       label:
-        'Tu privacidad es nuestra prioridad: No pedimos datos personales y puedes hablar con nosotros de forma anónima.\n 🔹 Solo guardamos información estadística para mejorar el servicio.,\n Los registros se eliminan en 15 días hábiles. Si hay riesgo para ti o alguien más, podríamos informar a las autoridades. Consulta nuestra política de privacidad aquí.Para continuar, ¿aceptas los términos y condiciones de nuestra política de privacidad? <a href="https://www.linealibre.cl/wp-content/uploads/2020/11/TERMINOS-Y-CONDICIONES-DE-USO-Y-POLITICA-DE-PRIVACIDAD-LL.pdf">términos y condiciones</a>',
+        'Para continuar, ¿aceptas los términos y condiciones de nuestra <a href="https://www.redpapaz.org/politica-de-tratamiento-de-datos-personales-de-la-corporacion-colombiana-de-padres-y-madres-red-papaz/">política de privacidad</a>?',
       required: {
         value: true,
         message: 'Tienes que approbar los términos y condiciones para poder iniciar un chat.',
@@ -64,7 +64,7 @@ const translations: Translations = {
     MessageCanvasTrayButton: 'Start New Chat',
   },
   'es-CO': {
-    WelcomeMessage: '¡Bienvenido a Te Guío! \n Tu privacidad es nuestra prioridad: No pedimos datos personales y puedes hablar con nosotros de forma anónima.\n 🔹 Solo guardamos información estadística para mejorar el servicio.,\n Los registros se eliminan en 15 días hábiles. Si hay riesgo para ti o alguien más, podríamos informar a las autoridades. Consulta nuestra política de privacidad aquí.Para continuar, ¿aceptas los términos y condiciones de nuestra política de privacidad? <a href="https://www.linealibre.cl/wp-content/uploads/2020/11/TERMINOS-Y-CONDICIONES-DE-USO-Y-POLITICA-DE-PRIVACIDAD-LL.pdf">términos y condiciones</a>',
+    WelcomeMessage: '¡Bienvenido a Te Guío! \n Tu privacidad es nuestra prioridad: No pedimos datos personales y puedes hablar con nosotros de forma anónima.\n 🔹 Solo guardamos información estadística para mejorar el servicio. Los registros se eliminan en 15 días hábiles.\n ⚠️ Si hay riesgo para ti o alguien más, podríamos informar a las autoridades.\n 📌 Consulta nuestra política de privacidad <a href="https://www.redpapaz.org/politica-de-tratamiento-de-datos-personales-de-la-corporacion-colombiana-de-padres-y-madres-red-papaz/">aquí</a>.',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
       'Muchas gracias por la información. Lo transferiremos ahora. Por favor espere for un guía.',
@@ -89,7 +89,7 @@ const translations: Translations = {
     SendMessageTooltip: 'Enviar Mensaje',
     FieldValidationRequiredField: 'Campo requerido',
     FieldValidationInvalidEmail: 'Por favor provea una dirección válida de email',
-    PreEngagementDescription: '¡Bienvenido a Te Guío! \n Tu privacidad es nuestra prioridad: No pedimos datos personales y puedes hablar con nosotros de forma anónima.\n 🔹 Solo guardamos información estadística para mejorar el servicio.,\n Los registros se eliminan en 15 días hábiles. Si hay riesgo para ti o alguien más, podríamos informar a las autoridades. Consulta nuestra política de privacidad aquí.Para continuar, ¿aceptas los términos y condiciones de nuestra política de privacidad? <a href="https://www.linealibre.cl/wp-content/uploads/2020/11/TERMINOS-Y-CONDICIONES-DE-USO-Y-POLITICA-DE-PRIVACIDAD-LL.pdf">términos y condiciones</a>',
+    PreEngagementDescription: '¡Bienvenido a Te Guío!',
     BotGreeting: '¿Cómo puedo ayudar?',
   },
 };
