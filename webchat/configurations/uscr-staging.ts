@@ -77,9 +77,9 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       type: 'input-text',
       name: 'phone',
-      label: 'Phone Number for Callback',
+      label: 'Callback Phone Number',
       placeholder: 'Phone Number',
-      required: true,
+      required: false,
     },
     {
       type: 'select',
