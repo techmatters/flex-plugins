@@ -40,8 +40,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
   fields: [
     {
       type: 'checkbox',
-      name: 'iAmTrainedBID',
-      label:  'I am an authorized CIRCLE requestor',
+      name: 'authorized',
+      label:  'I am authorized by the Mayor’s Office of Community Safety to use this form.',
       required: {
         value: true,
         message: 'Check the box if you are an authorized user.',
@@ -196,8 +196,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 
 const translations: Translations = {
   'en-US': {
-    WelcomeMessage: 'CIRCLE BID Request',
-    EntryPointTagline: 'Submit a request',
+    WelcomeMessage: 'CIRCLE Response Request \nCIRCLE is an unarmed civilian crisis response alternative to law enforcement, and serves people experiencing homelessness. \nIf violence or weapons are present, call 911 for LAPD response.',
+    EntryPointTagline: 'Circle Response Requestt',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
       "Thank you very much for this information. We'll transfer you now. Please hold for an agent.",
