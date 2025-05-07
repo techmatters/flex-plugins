@@ -92,6 +92,9 @@ describe('getProfileFlagsForIdentifier endpoint', () => {
       {
         method: 'POST',
         body: JSON.stringify(MOCK_VOICE_EVENT),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
       true,
     );
@@ -109,6 +112,7 @@ describe('getProfileFlagsForIdentifier endpoint', () => {
         body: JSON.stringify(MOCK_VOICE_EVENT),
         headers: {
           'X-Twilio-Signature': 'invalid_signature',
+          'Content-Type': 'application/json',
         },
       },
       true,
@@ -131,6 +135,9 @@ describe('getProfileFlagsForIdentifier endpoint', () => {
           method: 'POST',
           body: JSON.stringify(MOCK_VOICE_EVENT),
           signatureAuthToken: TEST_AUTH_TOKEN,
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
         true,
       );
@@ -155,6 +162,9 @@ describe('getProfileFlagsForIdentifier endpoint', () => {
           method: 'POST',
           body: JSON.stringify(MOCK_WEBCHAT_EVENT),
           signatureAuthToken: TEST_AUTH_TOKEN,
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
         true,
       );
@@ -179,6 +189,9 @@ describe('getProfileFlagsForIdentifier endpoint', () => {
           method: 'POST',
           body: JSON.stringify(MOCK_CONVERSATIONS_EVENT),
           signatureAuthToken: TEST_AUTH_TOKEN,
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
         true,
       );

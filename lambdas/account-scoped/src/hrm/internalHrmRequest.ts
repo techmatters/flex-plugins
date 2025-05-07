@@ -14,21 +14,20 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import { getSsmParameter } from '../ssmCache';
-import { AccountSID } from '../twilioTypes';
 import { ErrorResult, newErr, newOk, Result } from '../Result';
 import { HttpClientError } from '../httpErrors';
 
 import { HrmAccountId, inferAccountSidFromHrmAccountId } from './hrmAccountId';
 
 const requestFromInternalHrmEndpoint = async <TRequest, TResponse>(
-  hrmAccountId: HrmAccountId,
+  hrmAccountId: string,
   hrmApiVersion: string,
   path: string,
   body: TRequest,
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
   retryLimit: number,
 ): Promise<Result<Error, TResponse>> => {
-  const accountSid = inferAccountSidFromHrmAccountId(hrmAccountId);
+  const accountSid = inferAccountSidFromHrmAccountId(hrmAccountId as HrmAccountId);
   const [hrmStaticKey] = await Promise.all([
     getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/static_key`),
   ]);
@@ -82,7 +81,7 @@ const requestFromInternalHrmEndpoint = async <TRequest, TResponse>(
 };
 
 export const getFromInternalHrmEndpoint = async <TResponse>(
-  accountSid: AccountSID,
+  accountSid: string,
   hrmApiVersion: string,
   path: string,
   retryLimit = 3,
@@ -97,7 +96,7 @@ export const getFromInternalHrmEndpoint = async <TResponse>(
   );
 
 export const postToInternalHrmEndpoint = async <TRequest, TResponse>(
-  accountSid: AccountSID,
+  accountSid: string,
   hrmApiVersion: string,
   path: string,
   body: TRequest,
@@ -113,7 +112,7 @@ export const postToInternalHrmEndpoint = async <TRequest, TResponse>(
   );
 
 export const patchOnInternalHrmEndpoint = async <TRequest, TResponse>(
-  accountSid: AccountSID,
+  accountSid: string,
   hrmApiVersion: string,
   path: string,
   body: TRequest,

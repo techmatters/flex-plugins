@@ -18,6 +18,8 @@
     "test": "jest"
   },
   "dependencies": {
+    "@aws-sdk/client-lex-runtime-service": "^3.787.0",
+    "@aws-sdk/client-lex-runtime-v2": "^3.787.0",
     "@aws-sdk/client-ssm": "^3.716.0",
     "@twilio-labs/serverless-runtime-types": "^4.0.1",
     "date-fns": "^4.1.0",

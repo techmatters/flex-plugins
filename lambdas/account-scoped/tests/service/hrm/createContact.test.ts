@@ -113,6 +113,9 @@ describe('Create HRM Contact on Reservation Accepted event', () => {
       {
         method: 'POST',
         body: JSON.stringify(event),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
     );
 
@@ -138,6 +141,7 @@ describe('Create HRM Contact on Reservation Accepted event', () => {
         body: JSON.stringify(event),
         headers: {
           'X-Twilio-Signature': 'invalid_signature',
+          'Content-Type': 'application/json',
         },
       },
     );
@@ -163,6 +167,9 @@ describe('Create HRM Contact on Reservation Accepted event', () => {
         method: 'POST',
         body: JSON.stringify(event),
         signatureAuthToken: TEST_AUTH_TOKEN,
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
     );
 
