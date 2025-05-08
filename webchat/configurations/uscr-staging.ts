@@ -79,7 +79,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       name: 'phone',
       label: 'Callback Phone Number',
       placeholder: 'Phone Number',
-      required: false,
+      required: true,
     },
     {
       type: 'select',
@@ -197,12 +197,12 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 const translations: Translations = {
   'en-US': {
     WelcomeMessage: 'CIRCLE Response Request \nCIRCLE is an unarmed civilian crisis response alternative to law enforcement, and serves people experiencing homelessness. \nIf violence or weapons are present, call 911 for LAPD response.',
-    EntryPointTagline: 'Circle Response Requestt',
+    EntryPointTagline: 'Circle Response Request',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
-      "Thank you very much for this information. We'll transfer you now. Please hold for an agent.",
+      "Thank you very much for this information. We'll transfer you now. Please hold for an operator.",
     AutoFirstMessage: 'Incoming webchat contact from',
-    TypingIndicator: 'CIRCLE is typing',
+    TypingIndicator: 'CIRCLE Operator is typing',
     StartChat: 'Submit',
     MessageCanvasTrayButton: 'Submit a new request',
     Email: 'Email'
