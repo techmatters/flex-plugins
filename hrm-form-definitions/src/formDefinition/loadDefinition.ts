@@ -34,9 +34,22 @@ import {
   ProfileFlagDurationDefinition,
   ProfileSectionDefinition,
   LocalizedStringMap,
+  FullyQualifiedFieldReference,
 } from './types';
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 import { LayoutVersion } from './layoutVersion';
+
+// Type reperesenting the JSON form where single fields don't need to be wrapped in arrays
+type PrepopulateMappingJson = {
+  survey: Record<
+    string,
+    (FullyQualifiedFieldReference[] | FullyQualifiedFieldReference)[] | FullyQualifiedFieldReference
+  >;
+  preEngagement: Record<
+    string,
+    (FullyQualifiedFieldReference[] | FullyQualifiedFieldReference)[] | FullyQualifiedFieldReference
+  >;
+};
 
 export enum DefinitionVersionId {
   demoV1 = 'demo-v1', // Demo v1
@@ -165,6 +178,33 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     },
   };
 
+  // Placeholder for prepopulateMappings
+  const prepopulateMappingsEmpty: DefinitionVersion['prepopulateMappings'] = {
+    survey: {},
+    preEngagement: {},
+  };
+
+  const expandPrepopulateMappings = (
+    json: PrepopulateMappingJson,
+  ): DefinitionVersion['prepopulateMappings'] => {
+    const expandedMapping: DefinitionVersion['prepopulateMappings'] = prepopulateMappingsEmpty;
+    for (const [sourceSetName, sourceSetFields] of Object.entries(json)) {
+      const targetObj =
+        expandedMapping[sourceSetName as keyof DefinitionVersion['prepopulateMappings']];
+      for (const [sourceField, sourceFieldMappings] of Object.entries(sourceSetFields)) {
+        targetObj[sourceField] = targetObj[sourceField] ?? [];
+        const andFields = Array.isArray(sourceFieldMappings)
+          ? sourceFieldMappings
+          : [sourceFieldMappings];
+        for (const andFieldEntry of andFields) {
+          const orFields = Array.isArray(andFieldEntry) ? andFieldEntry : [andFieldEntry];
+          targetObj[sourceField].push(orFields);
+        }
+      }
+    }
+    return expandedMapping;
+  };
+
   /**
    * Currently the following constants are order sensitive.
    * It's very easy to make a human mistake and place one at the wrong order.
@@ -190,6 +230,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     caseStatus,
     caseOverview,
     prepopulateKeys,
+    prepopulateMappings,
     referenceData,
     blockedEmojis,
     profileSections,
@@ -219,6 +260,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
       'PrepopulateKeys.json',
       prepopulateKeysEmpty,
     ),
+    fetchDefinition<PrepopulateMappingJson>('PrepopulateMappings.json', prepopulateMappingsEmpty),
     fetchDefinition<Record<string, any>>('ReferenceData.json', {}),
     fetchDefinition<string[]>('BlockedEmojis.json', []),
     fetchDefinition<ProfileSectionDefinition[]>('profileForms/Sections.json', []),
@@ -253,6 +295,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     caseStatus,
     caseOverview,
     prepopulateKeys,
+    prepopulateMappings: expandPrepopulateMappings(prepopulateMappings),
     referenceData,
     blockedEmojis,
     insights: {

@@ -49,6 +49,7 @@ const files = [
   'CaseStatus.json',
   'caseForms/CaseOverview.json',
   'PrepopulateKeys.json',
+  'PrepopulateMappings.json',
   'ReferenceData.json',
   'BlockedEmojis.json',
   'profileForms/ProfileOverview.json',
