@@ -105,5 +105,22 @@ test.describe.serial('Case List', () => {
       const label = await btn.evaluate((el) => el.textContent?.trim() || '');
       expect(ariaLabel || label.length > 0).toBeTruthy();
     }
+    await scanFilterDialogue('status');
+    await scanFilterDialogue('counselor');
+    await scanFilterDialogue('createdAtFilter');
+    await scanFilterDialogue('updatedAtFilter');
+    await caseListPage.openFirstCaseButton();
+    const caseHomeAccessibilityScanResults = await new AxeBuilder({ page })
+      .include('div.Twilio-View-case-list')
+      .analyze();
+    expect(caseHomeAccessibilityScanResults.violations).toEqual([]);
+    warnViolations(caseHomeAccessibilityScanResults, `the case home page`);
+    await caseListPage.editCase();
+    const caseEditAccessibilityScanResults = await new AxeBuilder({ page })
+      .include('div.Twilio-View-case-list')
+      .analyze();
+    //expect(caseHomeAccessibilityScanResults.violations).toEqual([]);
+    warnViolations(caseEditAccessibilityScanResults, `the case summary edit page`);
+    await caseListPage.closeModal();
   });
 });

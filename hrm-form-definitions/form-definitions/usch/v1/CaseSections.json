@@ -7,17 +7,13 @@
     "label": "Referral",
     "formPath": "caseForms/ReferralForm.json"
   },
-  "household": {
-    "label": "Household Member",
-    "formPath": "caseForms/HouseholdForm.json"
+  "externalNotification": {
+    "label": "External Notification",
+    "formPath": "caseForms/ExternalNotificationForm.json"
   },
-  "perpetrator": {
-    "label": "Perpetrator",
-    "formPath": "caseForms/PerpetratorForm.json"
-  },
-  "incident": {
-    "label": "Incident",
-    "formPath": "caseForms/IncidentForm.json"
+  "enFollowUp": {
+    "label": "EN Follow Up",
+    "formPath": "caseForms/ENFollowUpForm.json"
   },
   "document": {
     "label": "Document",

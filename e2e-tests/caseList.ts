@@ -19,9 +19,8 @@ import { Page, expect } from '@playwright/test';
 import { caseHome } from './case';
 
 export type Filter =
-  | 'Status'
-  | 'Counselor'
-  | 'Categories'
+  | 'status'
+  | 'counselor'
   | 'createdAtFilter'
   | 'updatedAtFilter'
   | 'followUpDateFilter';
@@ -44,8 +43,6 @@ export const caseList = (page: Page) => {
       caseListPage.locator(`//button[@data-testid='FilterBy-${filter}-Button']`),
     filterOptionCheckbox: (filter: Filter, option: string) =>
       caseListPage.locator(`//li[@data-testid='${filter}-${option}']`),
-    filterCategories: (filter: Filter, option: string) =>
-      caseListPage.locator(`//div[@data-testid='${filter}-${option}']`),
     filterApplyButton: caseListPage.locator(`//button[@data-testid='Filter-Apply-Button']`),
 
     openFirstCaseButton: caseListPage
@@ -85,25 +82,12 @@ export const caseList = (page: Page) => {
 
   /** Filter cases (excluding Date filters)
    *
-   * @param filter: Filter (status, counselor or categories)
-   * @param option: string (required for all 3 filter)
-   * @param option2: string (required only for Categories filter)
    */
-  async function filterCases(filter: Filter, option: string, option2?: string): Promise<void> {
+  async function filterCases(filter: Filter, option: string): Promise<void> {
     await openFilter(filter);
 
-    if (filter === 'Categories' && option2) {
-      //for Categories filter, 2 valid options are required
-      const selectOption = selectors.filterCategories(filter, option);
-      await selectOption.click();
-
-      const selectSubCategoryOption = selectors.filterOptionCheckbox(filter, option2);
-      console.log({ selectSubCategoryOption });
-      await selectSubCategoryOption.click();
-    } else {
-      const selectOption = selectors.filterOptionCheckbox(filter, option).first();
-      await selectOption.click();
-    }
+    const selectOption = selectors.filterOptionCheckbox(filter, option).first();
+    await selectOption.click();
 
     const applyFilterButton = selectors.filterApplyButton;
     await applyFilterButton.waitFor({ state: 'visible' });

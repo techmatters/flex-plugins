@@ -27,7 +27,7 @@ import ConnectToCaseButton from '../../case/ConnectToCaseButton';
 
 type OwnProps = {
   caseId: string;
-  contactLabel?: string;
+  caseLabel?: string;
   createdAt: string;
   updatedAt?: string;
   followUpDate?: Date;
@@ -44,7 +44,7 @@ type Props = OwnProps;
 
 const CaseHeader: React.FC<Props> = ({
   caseId,
-  contactLabel,
+  caseLabel,
   createdAt,
   updatedAt,
   followUpDate,
@@ -71,7 +71,7 @@ const CaseHeader: React.FC<Props> = ({
             <StyledLink underline={true} style={{ minWidth: 'inherit', marginInlineEnd: 10 }} onClick={onClickViewCase}>
               <PreviewHeaderText style={{ textDecoration: 'underline' }}>#{caseId}</PreviewHeaderText>
             </StyledLink>
-            <PreviewHeaderText>{isOrphanedCase ? strings['CaseHeader-Voided'] : `${contactLabel}`}</PreviewHeaderText>
+            <PreviewHeaderText>{isOrphanedCase ? strings['CaseHeader-Voided'] : `${caseLabel}`}</PreviewHeaderText>
           </Flex>
           {showConnectButton && (
             <Flex style={{ minWidth: 'fit-content' }}>
