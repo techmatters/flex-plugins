@@ -396,7 +396,7 @@ export type DefinitionVersion = {
   /**
    * @deprecated - this is the legacy prepopulation configuration. Use prepopulationMappings for all new code
    */
-  prepopulateKeys?: {
+  prepopulateKeys: {
     survey: {
       ChildInformationTab: string[];
       CallerInformationTab: string[];

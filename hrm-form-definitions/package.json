@@ -1,5 +1,5 @@
 {
-  "name": "hrm-form-definitions",
+  "name": "@tech-matters/hrm-form-definitions",
   "version": "1.0.0",
   "description": "Module to manage form definitions in the Aselo HRM Twilio plugin",
   "main": "dist/index.js",
