@@ -61,10 +61,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       defaultValue: '',
       required: true,
       options: [
-        {
-          value: '',
-          label: ''
-        },
+        { value: '', label: '' },
         { value: 'en-US', label: '1. English' },
         { value: 'sw_TZ', label: '2. Kiswahili' },
       ],
