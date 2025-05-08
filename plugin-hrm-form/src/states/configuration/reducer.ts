@@ -32,7 +32,7 @@ export type ConfigurationState = {
 };
 
 const initialState: ConfigurationState = {
-  language: defaultLanguage,
+  language: localStorage.getItem('ASELO_PLUGIN_USER_LOCALE') || defaultLanguage,
   counselors: {
     list: [],
     hash: {},

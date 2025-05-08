@@ -258,9 +258,9 @@ export function reduce(
       return loadContactListIntoState(state, rootState.configuration, action.searchResult.contacts, `${action.taskId}-search-contact`);
     }
     case GET_CASE_TIMELINE_ACTION_FULFILLED: {
-      const { payload: { caseId, timelineResult: { activities } } } = action;
+      const { payload: { timelineResult: { activities }, reference } } = action;
       const contacts = activities.filter(isContactTimelineActivity).map(({ activity })=> activity);
-      return loadContactListIntoState(state, rootState.configuration, contacts, `case-${caseId}`, false);
+      return loadContactListIntoState(state, rootState.configuration, contacts, reference, false);
     }
     case CREATE_CASE_ACTION_FULFILLED: {
       const { payload: { connectedContact } } = action as CreateCaseAsyncActionFulfilled;

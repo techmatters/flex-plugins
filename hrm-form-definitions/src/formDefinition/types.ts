@@ -243,6 +243,12 @@ export declare type ProfileFlagDurationDefinition = {
   durationInHours: string;
 };
 
+export declare type FlexUILocaleEntry = {
+  label: string;
+  aseloLocale: string;
+  flexLocale?: string; // We try to automatically infer the best match from the list of supported locals if this is not set
+};
+
 export type FormItemDefinition =
   | InputDefinition
   | SearchInputDefinition
@@ -412,4 +418,5 @@ export type DefinitionVersion = {
     Messages: LocalizedStringMap;
     Substitutions: LocalizedStringMap;
   };
+  flexUiLocales?: FlexUILocaleEntry[];
 };
