@@ -1,0 +1,13 @@
+{
+  "survey":{
+  },
+  "preEngagement":{
+    "age": [["ChildInformationTab.age", "CallerInformationTab.age"]],
+    "gender": [["ChildInformationTab.gender", "CallerInformationTab.gender"]],
+    "contactIdentifier":"ChildInformationTab.contactIdentifier",
+    "friendlyName":"ChildInformationTab.friendlyName",
+    "province":"ChildInformationTab.province",
+    "district":"ChildInformationTab.district",
+    "ip":"ChildInformationTab.ip"
+  }
+}
