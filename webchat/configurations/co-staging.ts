@@ -25,7 +25,7 @@ const checkOpenHours = false;
 const contactType: ContactType = 'ip';
 
 const preEngagementConfig: PreEngagementFormDefinition = {
-  description: 'WelcomeMessage',
+  description: 'PreEngagementConfigDescription',
   submitLabel: 'StartChat',
   fields: [
     {
@@ -64,7 +64,8 @@ const translations: Translations = {
     MessageCanvasTrayButton: 'Start New Chat',
   },
   'es-CO': {
-    WelcomeMessage: '¡Bienvenido a Te Guío! \n Tu privacidad es nuestra prioridad: No pedimos datos personales y puedes hablar con nosotros de forma anónima.\n 🔹 Solo guardamos información estadística para mejorar el servicio. Los registros se eliminan en 15 días hábiles.\n ⚠️ Si hay riesgo para ti o alguien más, podríamos informar a las autoridades.\n 📌 Consulta nuestra política de privacidad <a href="https://www.redpapaz.org/politica-de-tratamiento-de-datos-personales-de-la-corporacion-colombiana-de-padres-y-madres-red-papaz/">aquí</a>.',
+    WelcomeMessage: '¡Bienvenido a Te Guío!',
+    PreEngagementConfigDescription :'¡Bienvenido a Te Guío! \n Tu privacidad es nuestra prioridad: No pedimos datos personales y puedes hablar con nosotros de forma anónima.\n 🔹 Solo guardamos información estadística para mejorar el servicio. Los registros se eliminan en 15 días hábiles.\n ⚠️ Si hay riesgo para ti o alguien más, podríamos informar a las autoridades.\n 📌 Consulta nuestra política de privacidad <a href="https://www.redpapaz.org/politica-de-tratamiento-de-datos-personales-de-la-corporacion-colombiana-de-padres-y-madres-red-papaz/">aquí</a>.',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
       'Muchas gracias por la información. Lo transferiremos ahora. Por favor espere for un guía.',
