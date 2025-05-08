@@ -345,8 +345,8 @@ const loadConfigJson = async (
   formDefinitionRootUrl: URL,
   section: string,
 ): Promise<any> => {
-  if (!loadedConfigJsons[section]) {
-    const url = `${formDefinitionRootUrl}/${section}.json`;
+  const url = `${formDefinitionRootUrl}/${section}.json`;
+  if (!loadedConfigJsons[url]) {
     console.debug('Loading forms at:', url);
     const response = await fetch(url);
     if (!response.ok) {
@@ -358,9 +358,9 @@ const loadConfigJson = async (
         `Failed to load config json from ${url}: Status ${response.status} - ${response.statusText}\r\n${await response.text()}`,
       );
     }
-    loadedConfigJsons[section] = await response.json();
+    loadedConfigJsons[url] = await response.json();
   }
-  return loadedConfigJsons[section];
+  return loadedConfigJsons[url];
 };
 
 const populateInitialValues = async (contact: HrmContact, formDefinitionRootUrl: URL) => {
