@@ -59,8 +59,8 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     console.log('Open Case List page');
     let page = caseList(pluginPage);
 
-    await page.filterCases('Status', 'Open');
-    await page.filterCases('Counselor', 'Aselo Alerts');
+    await page.filterCases('status', 'Open');
+    await page.filterCases('counselor', 'Aselo Alerts');
 
     const caseHomePage = await page.openFirstCaseButton();
 
