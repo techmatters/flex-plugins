@@ -48,7 +48,7 @@ const DependentSelect: React.FC<Props> = ({ name, label, rules, dependsOn, optio
   } = useFormContext();
   const currentValue = watch(name);
   const dependsOnValue = watch(dependsOn);
-  const prevValueRef = useRef();
+  const prevValueRef = useRef(undefined);
 
   const isDirty = currentValue || dirtyFields[name];
   const shouldClear = prevValueRef.current && dependsOnValue !== prevValueRef.current;
