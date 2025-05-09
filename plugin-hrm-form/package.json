@@ -21,7 +21,7 @@
     "dev:local:e2e:docker": "npm run ssm:local:appConfig:e2e && cross-env REACT_APP_SERVERLESS_BASE_URL=http://localhost:3030 REACT_APP_HRM_BASE_URL=http://localhost:8081 npm run dev",
     "proxy": "npx @twilio/flex-ui-dev-proxy -p 3008",
     "start": "twilio flex:plugins:start",
-    "build": "twilio flex:plugins:build",
+    "build": "twilio flex:plugins:build -l debug",
     "predeploy": "npm run build",
     "deploy": "twilio flex:plugins:deploy",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest --config jest-standalone.config.js --maxWorkers=1",

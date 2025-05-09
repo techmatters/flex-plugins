@@ -93,8 +93,7 @@ runs:
       shell: bash
     # Build flex plugin
     - name: Run build command
-      run: ENABLE_MONITORING=true twilio flex:plugins:build -l debug || true
-      working-directory: ./plugin-hrm-form
+      run: ENABLE_MONITORING=true npm run build:plugin || true
       shell: bash
     - name: Check bundle was built
       if: ${{ hashFiles('plugin-hrm-form/build/plugin-hrm-form.js') == '' }}

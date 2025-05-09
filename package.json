@@ -13,6 +13,8 @@
     "@types/react-transition-group": "^4.2.0"
   },
   "scripts": {
+    "build": "npm run docker:build --workspaces --if-present",
+    "build:plugin": "npm run docker:build --w hrm-form-definitions plugin-hrm-form",
     "license:add": "docker run --rm -v ${PWD}:/src ghcr.io/google/addlicense -c \"Technology Matters\" -y \"2021-2023\" -ignore \"twilio-iac/**\" -ignore \"scripts/**\" -ignore \".idea/**\" -ignore \"**/node_modules/**\" -ignore \"**/dist/**\" -ignore \"**/coverage/**\" -ignore \"**/build/**\" -f license-header.tpl .",
     "license:check": "docker run --rm -v ${PWD}:/src ghcr.io/google/addlicense -check -c \"Technology Matters\" -y \"2021-2023\" -ignore \"twilio-iac/**\" -ignore \"scripts/**\" -ignore \".idea/**\" -ignore \"**/node_modules/**\" -ignore \"**/dist/**\" -ignore \"**/coverage/**\" -ignore \"**/build/**\" -f license-header.tpl .",
     "license:add:windows": "docker run --rm -v %cd%:/src ghcr.io/google/addlicense -c \"Technology Matters\" -y \"2021-2023\" -ignore \"twilio-iac/**\" -ignore \"scripts/**\" -ignore \".idea/**\" -ignore \"**/node_modules/**\" -ignore \"**/dist/**\" -ignore \"**/coverage/**\" -ignore \"**/build/**\" -f license-header.tpl .",
