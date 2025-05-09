@@ -1,5 +1,5 @@
 {
-  "viewCase": [["isSupervisor"], ["isCreator"]],
+  "viewCase": [["everyone"]],
   "closeCase": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
   "reopenCase": [["isSupervisor"]],
   "caseStatusTransition": [["isSupervisor"], ["isCreator", "isCaseOpen"]],
@@ -17,7 +17,7 @@
   "removeContactFromCase": [["isSupervisor"], ["isOwner"]],
 
   "viewProfile": [["everyone"]],
-  "flagProfile": [["isSupervisor"]],
+  "flagProfile": [["everyone"]],
   "unflagProfile": [["isSupervisor"]],
   "viewProfileSection": [["everyone", { "sectionType": "summary" }], ["isSupervisor"]],
   "createProfileSection": [["isSupervisor"]],
