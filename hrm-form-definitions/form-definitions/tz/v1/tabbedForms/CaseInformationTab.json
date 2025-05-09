@@ -9,13 +9,55 @@
     }
   },
   {
-    "name": "repeatCaller",
-    "label": "Repeat Caller?",
-    "type": "mixed-checkbox"
+    "name": "signPosting",
+    "label": "Signposting",
+    "type": "select",
+    "options": [
+    {
+      "value": "Clinic",
+      "label": "Clinic"
+    },
+    {
+      "value": "Hospital",
+      "label": "Hospital"
+    },
+    {
+      "value": "Social Welfare",
+      "label": "Social Welfare"
+    },
+    {
+      "value": "Police",
+      "label": "Police"
+    },
+    {
+      "value": "Religious leader",
+      "label": "Religious leader"
+    },
+    {
+      "value": "Local Government Authorities",
+      "label": "Local Government Authorities"
+    },
+    {
+      "value": "Gender Desk",
+      "label": "Gender Desk"
+    },
+    {
+      "value": "One-Stop Center (OSC)",
+      "label": "One-Stop Center (OSC)"
+    },
+    {
+      "value": "Women & Children Coordinator (WCC)",
+      "label": "Women & Children Coordinator (WCC)"
+    },
+    {
+      "value": "Sheha",
+      "label": "Sheha"
+    }
+    ]
   },
   {
-    "name": "actionTaken",
-    "label": "Action Taken",
+    "name": "urgencyLevel",
+    "label": "Level of Urgency",
     "type": "select",
     "options": [
       {
