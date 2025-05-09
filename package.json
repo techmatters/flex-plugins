@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build": "npm run build --workspaces --if-present",
-    "build:plugin": "npm run build --w hrm-form-definitions plugin-hrm-form",
+    "build:plugin": "npm run build --w hrm-form-definitions -w plugin-hrm-form",
     "license:add": "docker run --rm -v ${PWD}:/src ghcr.io/google/addlicense -c \"Technology Matters\" -y \"2021-2023\" -ignore \"twilio-iac/**\" -ignore \"scripts/**\" -ignore \".idea/**\" -ignore \"**/node_modules/**\" -ignore \"**/dist/**\" -ignore \"**/coverage/**\" -ignore \"**/build/**\" -f license-header.tpl .",
     "license:check": "docker run --rm -v ${PWD}:/src ghcr.io/google/addlicense -check -c \"Technology Matters\" -y \"2021-2023\" -ignore \"twilio-iac/**\" -ignore \"scripts/**\" -ignore \".idea/**\" -ignore \"**/node_modules/**\" -ignore \"**/dist/**\" -ignore \"**/coverage/**\" -ignore \"**/build/**\" -f license-header.tpl .",
     "license:add:windows": "docker run --rm -v %cd%:/src ghcr.io/google/addlicense -c \"Technology Matters\" -y \"2021-2023\" -ignore \"twilio-iac/**\" -ignore \"scripts/**\" -ignore \".idea/**\" -ignore \"**/node_modules/**\" -ignore \"**/dist/**\" -ignore \"**/coverage/**\" -ignore \"**/build/**\" -f license-header.tpl .",
