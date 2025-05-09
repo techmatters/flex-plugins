@@ -4875,43 +4875,47 @@
       "value": "",
       "label": ""
     },
-    "unknownOption": "Unknown",
+    "unknownOption": "Desconocido",
     "options": [
       {
-        "value": "Unknown",
+        "value": "Desconocido",
         "label": ""
       },
       {
-        "value": "Alternative care",
-        "label": "Alternative care"
+        "value": "Hogar sustituto",
+        "label": "Hogar sustituto"
       },
       {
-        "value": "Group residential facility",
-        "label": "Group residential facility"
+        "value": "Institución de protección",
+        "label": "Institución de protección"
       },
       {
-        "value": "Homeless or marginally housed",
-        "label": "Homeless or marginally housed"
+        "value": "Viviendo independiente",
+        "label": "Viviendo independiente"
       },
       {
-        "value": "In detention",
-        "label": "In detention"
+        "value": "Con familiares",
+        "label": "Con familiares"
       },
       {
-        "value": "Living independently",
-        "label": "Living independently"
+        "value": "Con padres",
+        "label": "Con padres"
       },
       {
-        "value": "With parent(s)",
-        "label": "With parent(s)"
+        "value": "Sin hogar o marginalmente alojado",
+        "label": "Sin hogar o marginalmente alojado"
       },
       {
-        "value": "With relatives",
-        "label": "With relatives"
+        "value": "En detención",
+        "label": "En detención"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "Otro",
+        "label": "Otro"
+      },
+      {
+        "value": "Desconocido",
+        "label": "Desconocido"
       }
     ]
   },
@@ -5009,13 +5013,8 @@
   {
     "name": "vulnerableGroups",
     "label": "Grupos Vulnerables",
-    "type": "select",
+    "type": "listbox-multiselect",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "Desconocido",
     "options": [
       {
         "value": "En conflicto con la ley",
