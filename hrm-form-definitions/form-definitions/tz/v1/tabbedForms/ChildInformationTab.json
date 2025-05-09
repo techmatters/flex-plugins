@@ -120,14 +120,62 @@
         "label": "18"
       },
       {
-        "value": ">18",
-        "label": ">18"
+        "value": "19",
+        "label": "19"
+      },
+      {
+        "value": "20",
+        "label": "20"
+      },
+      {
+        "value": "21",
+        "label": "21"
+      },
+      {
+        "value": "22",
+        "label": "22"
+      },
+      {
+        "value": "23",
+        "label": "23"
+      },
+      {
+        "value": "24",
+        "label": "24"
+      },
+      {
+        "value": "25",
+        "label": "25"
+      },
+      {
+        "value": ">25",
+        "label": ">25"
       }
     ],
     "required": {
       "value": true,
       "message": "RequiredFieldError"
     }
+  },
+  {
+    "name": "location",
+    "label": "Location",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "tanzania",
+        "label": "Tanzania - Main land"
+      },
+      {
+        "value": "zanzibar",
+        "label": "Zanzibar & Pemba"
+      }
+    ]
   },
   {
     "name": "region",
@@ -182,33 +230,104 @@
     "name": "gradeLevel",
     "label": "Grade Level",
     "type": "select",
-    "unknownOption": "Unknown",
+    "defaultOption": {
+      "value": "Unknown",
+      "label": ""
+    },
     "options": [
       {
         "value": "Unknown",
         "label": ""
       },
       {
-        "value": "01",
-        "label": "1"
+        "value": "Primary",
+        "label": "Primary"
       },
       {
-        "value": "02",
-        "label": "2"
-      },
-      {
-        "value": "03",
-        "label": "3"
-      },
-      {
-        "value": "04",
-        "label": "4"
-      },
-      {
-        "value": "05",
-        "label": "5"
+        "value": "Secondary",
+        "label": "Secondary"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "district",
+    "label": "District",
+    "type": "dependent-select",
+    "dependsOn": "province",
+    "defaultOption": {
+      "value": "Unknown",
+      "label": ""
+    },
+    "options": {
+      "Primary": [
+        {
+          "value": "Unknown",
+          "label": ""
+        },
+        {
+          "value": "Standard 1",
+          "label": "Standard 1"
+        },
+        {
+          "value": "Standard 2",
+          "label": "Standard 2"
+        },
+        {
+          "value": "Standard 3",
+          "label": "Standard 3"
+        },
+        {
+          "value": "Standard 4",
+          "label": "Standard 4"
+        },
+        {
+          "value": "Standard 5",
+          "label": "Standard 5"
+        },
+        {
+          "value": "Standard 6",
+          "label": "Standard 6"
+        },
+        {
+          "value": "Standard 7",
+          "label": "Standard 7"
+        }
+      ],
+      "Secondary": [
+        {
+          "value": "Unknown",
+          "label": ""
+        },
+        {
+          "value": "Form 1",
+          "label": "Form 1"
+        },
+        {
+          "value": "Form 2",
+          "label": "Form 2"
+        },
+        {
+          "value": "Form 3",
+          "label": "Form 3"
+        },
+        {
+          "value": "Form 4",
+          "label": "Form 4"
+        },
+        {
+          "value": "Form 5",
+          "label": "Form 5"
+        },
+        {
+          "value": "Form 6",
+          "label": "Form 6"
+        }
+      ]
+    }
   },
   {
     "name": "livingSituation",
@@ -257,6 +376,7 @@
   {
     "name": "vulnerableGroups",
     "label": "Vulnerable Groups",
+    "unknownOption": "Unknown",
     "type": "listbox-multiselect",
     "options": [
       {
