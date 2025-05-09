@@ -18,7 +18,7 @@
 /* eslint-disable dot-notation */
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
-import { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
+import { FormDefinition, LayoutDefinition } from '@tech-matters/hrm-form-definitions';
 import Handlebars from 'handlebars';
 
 import styles from './styles';

@@ -18,7 +18,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
-import { CaseOverviewTypeEntry } from 'hrm-form-definitions';
+import { CaseOverviewTypeEntry } from '@tech-matters/hrm-form-definitions';
 
 import { CaseDetailsBorder, CaseSectionFont, CaseStyledTextArea } from '../styles';
 import type { CustomITask, StandaloneITask } from '../../../types/types';

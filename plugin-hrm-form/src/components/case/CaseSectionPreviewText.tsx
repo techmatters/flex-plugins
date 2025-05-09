@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import type { LayoutDefinition, LayoutValue } from 'hrm-form-definitions';
+import type { LayoutDefinition, LayoutValue } from '@tech-matters/hrm-form-definitions';
 import React from 'react';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 

@@ -16,7 +16,7 @@
 
 // @ts-ignore
 import React from 'react';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from '@tech-matters/hrm-form-definitions';
 import { render, screen } from '@testing-library/react';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';

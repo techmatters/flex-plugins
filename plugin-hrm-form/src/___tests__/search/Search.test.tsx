@@ -19,7 +19,7 @@ import { Provider } from 'react-redux';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import configureMockStore from 'redux-mock-store';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from '@tech-matters/hrm-form-definitions';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
 import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';

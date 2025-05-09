@@ -18,7 +18,7 @@ import React, { useEffect, useRef } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { get } from 'lodash';
 import { useFormContext } from 'react-hook-form';
-import { CustomContactComponentDefinition } from 'hrm-form-definitions';
+import { CustomContactComponentDefinition } from '@tech-matters/hrm-form-definitions';
 
 import { Box, Row, FormTextArea as StyledTextArea } from '../../../../styles';
 import { FormError, FormLabel, RequiredAsterisk } from '../styles';

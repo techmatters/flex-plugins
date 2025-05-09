@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import { DefinitionVersion } from 'hrm-form-definitions';
+import { DefinitionVersion } from '@tech-matters/hrm-form-definitions';
 
 import { Flex, ChipText } from '../../styles';
 import { SilentText, SubtitleLabel, SummaryText, TagsWrapper } from './styles';

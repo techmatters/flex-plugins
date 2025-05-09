@@ -18,7 +18,7 @@ import React from 'react';
 import { truncate } from 'lodash';
 import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
-import type { FormItemDefinition } from 'hrm-form-definitions';
+import type { FormItemDefinition } from '@tech-matters/hrm-form-definitions';
 
 import { OpaqueText } from '../styles';
 

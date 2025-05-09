@@ -16,7 +16,7 @@
 
 import { ITask, Manager } from '@twilio/flex-ui';
 import { capitalize } from 'lodash';
-import { callTypes, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
+import { callTypes, FormDefinition, FormItemDefinition } from '@tech-matters/hrm-form-definitions';
 
 import { LexMemory, AutopilotMemory } from '../types/types';
 import { mapAge, mapGenericOption } from './mappers';

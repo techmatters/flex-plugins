@@ -17,7 +17,7 @@
 import React from 'react';
 import { RegisterOptions } from 'react-hook-form';
 import { pick } from 'lodash';
-import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
+import { FormInputType, FormItemDefinition } from '@tech-matters/hrm-form-definitions';
 
 import { FormInputBaseProps } from './components/types';
 import { FormInput } from './components';

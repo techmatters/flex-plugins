@@ -22,7 +22,7 @@ import { RegisterOptions, useFormContext } from 'react-hook-form';
 import { get, pick } from 'lodash';
 import { format, startOfDay } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
-import { FormInputType, FormItemDefinition, InputOption, MixedOrBool, SelectOption } from 'hrm-form-definitions';
+import { FormInputType, FormItemDefinition, InputOption, MixedOrBool, SelectOption } from '@tech-matters/hrm-form-definitions';
 import SearchIcon from '@material-ui/icons/Search';
 
 import {

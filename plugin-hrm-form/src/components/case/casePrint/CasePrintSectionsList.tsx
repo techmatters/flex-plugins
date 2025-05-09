@@ -19,7 +19,7 @@
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
 import { format } from 'date-fns';
-import { DefinitionVersion } from 'hrm-form-definitions';
+import { DefinitionVersion } from '@tech-matters/hrm-form-definitions';
 
 import { formatName } from '../../../utils';
 import styles from './styles';

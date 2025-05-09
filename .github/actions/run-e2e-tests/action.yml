@@ -55,8 +55,8 @@ runs:
         aws-region: us-east-1
 
     - name: Install e2e-tests dependencies
-      run: npm ci
-      working-directory: ${{ inputs.path }}/e2e-tests
+      run: npm ci -w e2e-tests
+      working-directory: ${{ inputs.path }}
       shell: bash
 
     - name: Setup dependencies for playwright/browsers

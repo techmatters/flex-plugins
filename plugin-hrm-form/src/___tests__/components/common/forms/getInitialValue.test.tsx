@@ -15,7 +15,7 @@
  */
 
 import each from 'jest-each';
-import { FormInputType } from 'hrm-form-definitions';
+import { FormInputType } from '@tech-matters/hrm-form-definitions';
 
 import { MockDateSetup, setupMockDate } from '../../../dateAndTimeMocks';
 import { getInitialValue } from '../../../../components/common/forms/formGenerators';

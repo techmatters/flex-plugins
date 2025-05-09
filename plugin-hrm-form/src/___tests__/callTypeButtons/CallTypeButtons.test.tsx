@@ -23,7 +23,7 @@ import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import '../mockStyled';
 import '../mockGetConfig';
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes } from '@tech-matters/hrm-form-definitions';
 
 import '../../states/conferencing';
 import {

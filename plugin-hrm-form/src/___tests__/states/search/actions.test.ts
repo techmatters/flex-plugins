@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from '@tech-matters/hrm-form-definitions';
 import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';

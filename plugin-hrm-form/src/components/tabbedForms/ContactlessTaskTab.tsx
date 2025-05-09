@@ -20,7 +20,7 @@ import { connect, ConnectedProps, useSelector } from 'react-redux';
 import { FieldError, useFormContext } from 'react-hook-form';
 import { format, isFuture, parse } from 'date-fns';
 import { get } from 'lodash';
-import type { DefinitionVersion } from 'hrm-form-definitions';
+import type { DefinitionVersion } from '@tech-matters/hrm-form-definitions';
 
 import { disperseInputs } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';

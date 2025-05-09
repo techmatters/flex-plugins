@@ -18,7 +18,7 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { TaskHelper } from '@twilio/flex-ui';
-import { DefinitionVersion } from 'hrm-form-definitions';
+import { DefinitionVersion } from '@tech-matters/hrm-form-definitions';
 
 import HrmForm from './HrmForm';
 import FormNotEditable from './FormNotEditable';

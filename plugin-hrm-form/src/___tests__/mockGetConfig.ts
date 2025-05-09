@@ -16,7 +16,7 @@
 
 /* eslint-disable camelcase */
 
-import { DefinitionVersion, DefinitionVersionId } from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId } from '@tech-matters/hrm-form-definitions';
 
 export const baseMockConfig = {
   accountSid: 'ACfake',

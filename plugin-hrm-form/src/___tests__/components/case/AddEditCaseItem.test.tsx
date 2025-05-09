@@ -22,7 +22,7 @@ import { mount } from 'enzyme';
 import { StorelessThemeProvider, ThemeConfigProps } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from '@tech-matters/hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';

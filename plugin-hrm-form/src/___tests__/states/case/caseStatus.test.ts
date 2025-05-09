@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersion, DefinitionVersionId, loadDefinition, StatusInfo } from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, loadDefinition, StatusInfo } from '@tech-matters/hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { getInitializedCan, PermissionActions } from '../../../permissions';

@@ -16,7 +16,7 @@
 
 /* eslint-disable react/prop-types */
 import React from 'react';
-import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
+import type { FormDefinition, LayoutDefinition } from '@tech-matters/hrm-form-definitions';
 import { useFormContext } from 'react-hook-form';
 
 import { ColumnarBlock, TwoColumnLayout, Box, BottomButtonBarHeight, ColumnarContent, Container } from '../../styles';

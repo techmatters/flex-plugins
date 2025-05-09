@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId, FormInputType, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersionId, FormInputType, loadDefinition } from '@tech-matters/hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { CaseState, CaseStateEntry, CaseSummaryWorkingCopy, CaseWorkingCopy } from '../../../states/case/types';

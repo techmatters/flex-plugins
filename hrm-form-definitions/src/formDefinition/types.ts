@@ -16,7 +16,6 @@
 
 /* eslint-disable import/no-unused-modules */
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { RegisterOptions } from 'react-hook-form';
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 import { CallTypeKeys } from './callTypes';
 import { LayoutVersion } from './layoutVersion';
@@ -61,8 +60,8 @@ type ItemBase = {
   label: string;
   type: FormInputType;
   metadata?: Record<string, any>;
-} & IsPIIFlag &
-  RegisterOptions;
+  required?: { value: boolean, message: string };
+} & IsPIIFlag;
 
 type NonSaveable = {
   saveable: false;
@@ -365,6 +364,8 @@ export type LocalizedStringMap = {
     [key: string]: string;
   };
 };
+
+export type FullyQualifiedFieldReference = `${keyof DefinitionVersion['tabbedForms']}.${string}`
 /**
  * Type that defines a complete version for all the customizable forms used across the app
  */
@@ -391,7 +392,10 @@ export type DefinitionVersion = {
     oneToOneConfigSpec: OneToOneConfigSpec;
     oneToManyConfigSpecs: OneToManyConfigSpecs;
   };
-  prepopulateKeys?: {
+  /**
+   * @deprecated - this is the legacy prepopulation configuration. Use prepopulationMappings for all new code
+   */
+  prepopulateKeys: {
     survey: {
       ChildInformationTab: string[];
       CallerInformationTab: string[];
@@ -401,6 +405,34 @@ export type DefinitionVersion = {
       CallerInformationTab: string[];
       CaseInformationTab: string[];
     };
+  };
+  prepopulateMappings: {
+    /**
+     * The config for the survey and preEngagement values is:
+     * An object, with each key, as it appears in the set of values provided in the task
+     * The value is a 2d array of strings representing the field which they target.
+     * The field names must be in the form '<form name>.<field name>', e.g. ChildInformationTab.gender
+     * The top level array represents the fields that must ALL be targeted.
+     * So
+     * "gender": [["ChildInformationTab.gender"], ["CaseInformationTab.gender]]
+     * would target both fields
+     * The lower level represents a list of fields that it will populate thw first available one for.
+     * So
+     * "gender": [["CallerInformationTab.gender", "ChildInformationTab.gender"], ["CaseInformationTab.gender"]]
+     * Would target CallerInformationTab.gender if it is available, or ChildInformationTab.gender if not.
+     * It would also target "CaseInformationTab.gender"
+     * In the JSON, strings are assumed to be single item arrays if not already wrapped in two levels of arrays
+     * So
+     * "gender": ["ChildInformationTab.gender", "CaseInformationTab.gender"]
+     * is equivalent to
+     * "gender": [["ChildInformationTab.gender"], ["CaseInformationTab.gender]]
+     * and
+     * "gender": "ChildInformationTab.gender"
+     * is equivalent to
+     * "gender": [["ChildInformationTab.gender"]]
+     */
+    survey: Record<string, FullyQualifiedFieldReference[][]>;
+    preEngagement: Record<string, FullyQualifiedFieldReference[][]>;
   };
   referenceData?: Record<string, any>;
   blockedEmojis: string[];

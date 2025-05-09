@@ -18,7 +18,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useSelector } from 'react-redux';
-import type { FormDefinition } from 'hrm-form-definitions';
+import type { FormDefinition } from '@tech-matters/hrm-form-definitions';
 import { pick } from 'lodash';
 import { Template } from '@twilio/flex-ui';
 import isFuture from 'date-fns/isFuture';

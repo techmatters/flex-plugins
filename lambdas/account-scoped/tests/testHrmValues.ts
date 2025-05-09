@@ -17,7 +17,7 @@
 import {
   FormInputType,
   FormItemDefinition,
-} from '../src/hrm/populateHrmContactFormFromTask';
+} from '@tech-matters/hrm-form-definitions';
 import { FormDefinitionSet } from './testHrmTypes';
 
 const BASE_PERSON_FORM_DEFINITION: FormItemDefinition[] = [
@@ -65,7 +65,7 @@ const BASE_PERSON_FORM_DEFINITION: FormItemDefinition[] = [
     name: 'otherGender',
     type: FormInputType.Input,
   },
-];
+] as FormItemDefinition[];
 export const BASE_FORM_DEFINITION: FormDefinitionSet = {
   childInformation: BASE_PERSON_FORM_DEFINITION,
   callerInformation: BASE_PERSON_FORM_DEFINITION,

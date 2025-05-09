@@ -20,7 +20,7 @@ import React, { useEffect } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
 import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
-import type { DefinitionVersion } from 'hrm-form-definitions';
+import type { DefinitionVersion } from '@tech-matters/hrm-form-definitions';
 import { isEqual } from 'lodash';
 
 import {

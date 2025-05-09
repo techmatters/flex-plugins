@@ -19,7 +19,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import Edit from '@material-ui/icons/Edit';
-import { DefinitionVersion, isNonSaveable } from 'hrm-form-definitions';
+import { DefinitionVersion, isNonSaveable } from '@tech-matters/hrm-form-definitions';
 
 import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles';
 import { CaseLayout, FullWidthFormTextContainer } from './styles';

@@ -91,8 +91,7 @@ jobs:
 
       # Build and compile Webchat
       - name: Run build command
-        run: CONFIG=as-development npm run build
-        working-directory: ./webchat
+        run: CONFIG=as-development npm run build -w webchat
 
   lint:
     runs-on: ubuntu-latest

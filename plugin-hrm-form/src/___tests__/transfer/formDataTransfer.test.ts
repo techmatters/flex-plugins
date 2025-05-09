@@ -17,7 +17,7 @@
 /* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable global-require */
 /* eslint-disable camelcase */
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from '@tech-matters/hrm-form-definitions';
 import { Manager } from '@twilio/flex-ui';
 
 import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';

@@ -17,7 +17,7 @@
 import React, { Dispatch, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
-import { callTypes, DataCallTypes, DefinitionVersion } from 'hrm-form-definitions';
+import { callTypes, DataCallTypes, DefinitionVersion } from '@tech-matters/hrm-form-definitions';
 import _ from 'lodash';
 
 import ContactDetailsHome from './ContactDetailsHome';

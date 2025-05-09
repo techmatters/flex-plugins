@@ -17,7 +17,7 @@
 import * as React from 'react';
 import renderer from 'react-test-renderer';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from '@tech-matters/hrm-form-definitions';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { DeepPartial } from 'redux';

@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { FormItemDefinition, FormInputType, FormDefinition } from 'hrm-form-definitions';
+import { FormItemDefinition, FormInputType, FormDefinition } from '@tech-matters/hrm-form-definitions';
 import { useForm } from 'react-hook-form';
 
 import { addMargin, getInitialValue } from '../common/forms/formGenerators';

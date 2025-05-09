@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import type { CategoriesDefinition } from 'hrm-form-definitions';
+import type { CategoriesDefinition } from '@tech-matters/hrm-form-definitions';
 import { Template } from '@twilio/flex-ui';
 import GridIcon from '@material-ui/icons/GridOn';
 import ListIcon from '@material-ui/icons/List';

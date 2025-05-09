@@ -17,62 +17,13 @@
 import { capitalize } from 'lodash';
 import { startOfDay, format } from 'date-fns';
 import { TaskSID } from '../twilioTypes';
+import { FormInputType, DefinitionVersion, FormItemDefinition, loadDefinition } from "@tech-matters/hrm-form-definitions";
 
 type MapperFunction = (options: string[]) => (value: string) => string;
 
-// When we move this into the flex repo we can depend on hrm-form-definitions for these types & enums
-export enum FormInputType {
-  Input = 'input',
-  SearchInput = 'search-input',
-  NumericInput = 'numeric-input',
-  Email = 'email',
-  RadioInput = 'radio-input',
-  ListboxMultiselect = 'listbox-multiselect',
-  Select = 'select',
-  DependentSelect = 'dependent-select',
-  Checkbox = 'checkbox',
-  MixedCheckbox = 'mixed-checkbox',
-  Textarea = 'textarea',
-  DateInput = 'date-input',
-  TimeInput = 'time-input',
-  FileUpload = 'file-upload',
-  Button = 'button',
-  CopyTo = 'copy-to',
-  CustomContactComponent = 'custom-contact-component',
-}
-
-export type FormItemDefinition = {
-  type: FormInputType;
-  name: string;
-  unknownOption?: string;
-  options?: { value: string }[];
-  initialChecked?: boolean;
-  initializeWithCurrent?: boolean;
-} & (
-  | {
-      type: Exclude<FormInputType, FormInputType.DependentSelect>;
-      defaultOption?: {
-        value: string;
-      };
-    }
-  | {
-      type: FormInputType.DependentSelect;
-      defaultOption: {
-        value: string;
-      };
-    }
-);
 
 // Exported for testing purposes
-export type PrepopulateKeys = {
-  preEngagement: {
-    ChildInformationTab: string[];
-    CallerInformationTab: string[];
-    CaseInformationTab: string[];
-  };
-  survey: { ChildInformationTab: string[]; CallerInformationTab: string[] };
-};
-
+type PrepopulateKeys = Exclude<DefinitionVersion['prepopulateKeys'], undefined>
 type ChannelTypes =
   | 'voice'
   | 'sms'
@@ -340,6 +291,7 @@ const getValuesFromPreEngagementData = (
 };
 
 const loadedConfigJsons: Record<string, any> = {};
+const loadedDefinitions: Record<string, DefinitionVersion> = {};
 
 const loadConfigJson = async (
   formDefinitionRootUrl: URL,
@@ -363,6 +315,16 @@ const loadConfigJson = async (
   return loadedConfigJsons[section];
 };
 
+const loadDefinitionForVersion = async (
+    formDefinitionRootUrl: URL,
+) => {
+  const rootAsString = formDefinitionRootUrl.toString()
+  if (!loadedDefinitions[rootAsString]) {
+    loadedDefinitions[rootAsString] = await loadDefinition(`${formDefinitionRootUrl}/${rootAsString}`)
+  }
+  return loadedDefinitions[rootAsString];
+}
+
 const populateInitialValues = async (contact: HrmContact, formDefinitionRootUrl: URL) => {
   const tabNamesAndRawJsonSections: [string, Record<string, FormValue>][] = [
     ['CaseInformationTab', contact.rawJson.caseInformation],
@@ -370,14 +332,14 @@ const populateInitialValues = async (contact: HrmContact, formDefinitionRootUrl:
     ['CallerInformationTab', contact.rawJson.callerInformation],
   ];
 
-  const defintionsAndJsons: [FormItemDefinition[], Record<string, FormValue>][] =
+  const definitionsAndJsons: [FormItemDefinition[], Record<string, FormValue>][] =
     await Promise.all(
       tabNamesAndRawJsonSections.map(async ([tabbedFormsSection, rawJsonSection]) => [
         await loadConfigJson(formDefinitionRootUrl, `tabbedForms/${tabbedFormsSection}`),
         rawJsonSection,
       ]),
     );
-  for (const [tabFormDefinition, rawJson] of defintionsAndJsons) {
+  for (const [tabFormDefinition, rawJson] of definitionsAndJsons) {
     for (const formItemDefinition of tabFormDefinition) {
       rawJson[formItemDefinition.name] = getInitialValue(formItemDefinition);
     }
@@ -431,12 +393,14 @@ export const populateHrmContactFormFromTask = async (
   contact: HrmContact,
   formDefinitionRootUrl: URL,
 ): Promise<HrmContact> => {
+
   const { memory, preEngagementData, firstName, language } = taskAttributes;
   const answers = { ...memory, firstName, language };
   await populateInitialValues(contact, formDefinitionRootUrl);
   if (!memory && !firstName && !preEngagementData) return contact;
+  const definition = await loadDefinitionForVersion(formDefinitionRootUrl)
   const { preEngagement: preEngagementKeys, survey: surveyKeys }: PrepopulateKeys =
-    await loadConfigJson(formDefinitionRootUrl, 'PrepopulateKeys');
+      definition.prepopulateKeys;
 
   const isValidSurvey = Boolean(answers?.aboutSelf); // determines if the memory has valid values or if it was aborted
   const isAboutSelf = answers.aboutSelf === 'Yes';

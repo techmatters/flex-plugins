@@ -23,7 +23,7 @@
  */
 
 /* eslint-disable react/require-default-props */
-import React, { useRef } from 'react';
+import React, { useRef, JSX } from 'react';
 import { connect } from 'react-redux';
 import { useFormContext, Controller, UseControllerProps, FieldError } from 'react-hook-form';
 

@@ -16,7 +16,7 @@
 import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import { FormInputType } from 'hrm-form-definitions';
+import { FormInputType } from '@tech-matters/hrm-form-definitions';
 
 import customContactComponentRegistry from '../../../../components/forms/customContactComponentRegistry';
 import { generateCustomContactFormItem } from '../../../../components/forms/components/customContactComponent';

@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, loadDefinition } from '@tech-matters/hrm-form-definitions';
 import each from 'jest-each';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';

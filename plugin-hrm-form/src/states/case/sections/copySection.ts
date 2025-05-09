@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersion, FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, FormDefinition, FormItemDefinition } from '@tech-matters/hrm-form-definitions';
 
 import { CaseSectionTypeSpecificData } from '../../../services/caseSectionService';
 

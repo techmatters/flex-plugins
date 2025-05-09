@@ -15,7 +15,7 @@
  */
 
 import { omit } from 'lodash';
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes } from '@tech-matters/hrm-form-definitions';
 import { createReducer } from 'redux-promise-middleware-actions';
 
 import * as t from './types';

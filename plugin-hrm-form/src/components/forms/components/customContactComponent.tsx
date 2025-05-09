@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
+import { FormInputType, FormItemDefinition } from '@tech-matters/hrm-form-definitions';
 
 import customContactComponentRegistry from '../customContactComponentRegistry';
 

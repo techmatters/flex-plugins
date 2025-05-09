@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, JSX } from 'react';
 import type { Manager } from '@twilio/flex-webchat-ui';
 import PubSub from 'pubsub-js';
 

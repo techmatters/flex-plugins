@@ -15,7 +15,7 @@
  */
 
 import { isFuture, parse } from 'date-fns';
-import { DefinitionVersion, FormDefinition, FormInputType } from 'hrm-form-definitions';
+import { DefinitionVersion, FormDefinition, FormInputType } from '@tech-matters/hrm-form-definitions';
 
 import { coreChannelTypes } from '../../states/DomainConstants';
 import { mapChannelForInsights } from '../../utils';

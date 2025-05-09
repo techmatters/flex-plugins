@@ -20,7 +20,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Tab as TwilioTab, Template } from '@twilio/flex-ui';
 import InfoIcon from '@material-ui/icons/Info';
-import { DefinitionVersionId } from 'hrm-form-definitions';
+import { DefinitionVersionId } from '@tech-matters/hrm-form-definitions';
 
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';

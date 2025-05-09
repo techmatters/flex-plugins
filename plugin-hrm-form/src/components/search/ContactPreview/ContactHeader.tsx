@@ -18,7 +18,7 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
-import { CallTypes } from 'hrm-form-definitions';
+import { CallTypes } from '@tech-matters/hrm-form-definitions';
 
 import { Flex } from '../../../styles';
 import { BannerText } from '../../../styles/banners';
