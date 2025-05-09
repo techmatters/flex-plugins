@@ -3,6 +3,11 @@
     "name": "contactClass",
     "label": "Clase de Contacto",
     "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
     "unknownOption": "",
     "options": [
       {
@@ -10,12 +15,12 @@
         "label": ""
       },
       {
-        "value": "Preguntas/Información",
-        "label": "Preguntas/Información"
+        "value": "Información",
+        "label": "Información"
       },
       {
-        "value": "Teleorientación",
-        "label": "Teleorientación"
+        "value": "Orientación",
+        "label": "Orientación"
       }
     ],
     "required": {
@@ -24,19 +29,14 @@
     }
   },
   {
-    "name": "firstName",
-    "label": "Nombre",
-    "type": "input"
-  },
-  {
-    "name": "lastName",
-    "label": "Apellido",
-    "type": "input"
-  },
-  {
     "name": "age",
     "label": "Edad",
     "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
     "unknownOption": "",
     "options": [
       {
@@ -94,14 +94,14 @@
     }
   },
   {
-    "name": "idNumber",
-    "label": "Tarjeta de Identidad",
-    "type": "input"
-  },
-  {
     "name": "gender",
-    "label": "Género",
+    "label": "Genero",
     "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
     "unknownOption": "",
     "options": [
       {
@@ -135,9 +135,14 @@
     }
   },
   {
-    "name": "ethnicity",
-    "label": "Etnia",
+    "name": "requiresReporting",
+    "label": "Requiere ser Reportado",
     "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
     "unknownOption": "",
     "options": [
       {
@@ -145,49 +150,67 @@
         "label": ""
       },
       {
-        "value": "Afrocolombiano",
-        "label": "Afrocolombiano"
+        "value": "Sí",
+        "label": "Sí"
       },
       {
-        "value": "Indígena",
-        "label": "Indígena"
-      },
-      {
-        "value": "Rom",
-        "label": "Rom"
-      },
-      {
-        "value": "Gitano",
-        "label": "Gitano"
-      },
-      {
-        "value": "Raizal",
-        "label": "Raizal"
+        "value": "No",
+        "label": "No"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "phone1",
+    "name": "name",
+    "label": "Nombre",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Apellido",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "identityCard",
+    "label": "Tarjeta de Identidad",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "telephone",
     "label": "Teléfono",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
-    "name": "streetAddress",
+    "name": "address",
     "label": "Dirección",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "neighborhood",
     "label": "Barrio",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
-    "name": "province",
+    "name": "department",
     "label": "Departamento",
     "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "Unknown",
+      "label": ""
+    },
     "options": [
       {
-        "value": "",
+        "value": "Desconocido",
         "label": ""
       },
       {
@@ -317,70 +340,21 @@
       {
         "value": "Vaupés",
         "label": "Vaupés"
-      },
-      {
-        "value": "Vichada",
-        "label": "Vichada"
       }
     ]
   },
   {
-    "name": "district",
+    "name": "city/municipality",
     "label": "Ciudad/Municipio",
     "type": "dependent-select",
-    "dependsOn": "province",
+    "isPII": false,
+    "dependsOn": "department",
     "defaultOption": {
-      "value": "",
+      "value": "Unknown",
       "label": ""
     },
     "options": {
       "Amazonas": [
-        {
-          "value": "El Encanto",
-          "label": "El Encanto"
-        },
-        {
-          "value": "La Chorrera",
-          "label": "La Chorrera"
-        },
-        {
-          "value": "La Pedrera",
-          "label": "La Pedrera"
-        },
-        {
-          "value": "La Victoria",
-          "label": "La Victoria"
-        },
-        {
-          "value": "Leticia",
-          "label": "Leticia"
-        },
-        {
-          "value": "Mirití-Paraná",
-          "label": "Mirití-Paraná"
-        },
-        {
-          "value": "Puerto Alegría",
-          "label": "Puerto Alegría"
-        },
-        {
-          "value": "Puerto Arica",
-          "label": "Puerto Arica"
-        },
-        {
-          "value": "Puerto Nariño",
-          "label": "Puerto Nariño"
-        },
-        {
-          "value": "Puerto Santander",
-          "label": "Puerto Santander"
-        },
-        {
-          "value": "Tarapacá",
-          "label": "Tarapacá"
-        }
-      ],
-      "Antioquia": [
         {
           "value": "Abejorral",
           "label": "Abejorral"
@@ -882,7 +856,7 @@
           "label": "Zaragoza"
         }
       ],
-      "Arauca": [
+      "Antioquia": [
         {
           "value": "Arauca",
           "label": "Arauca"
@@ -912,7 +886,7 @@
           "label": "Tame"
         }
       ],
-      "Atlántico": [
+      "Arauca": [
         {
           "value": "Baranoa",
           "label": "Baranoa"
@@ -1006,7 +980,7 @@
           "label": "Usiacurí"
         }
       ],
-      "Bolívar": [
+      "Atlántico": [
         {
           "value": "Achí",
           "label": "Achí"
@@ -1196,7 +1170,7 @@
           "label": "Zambrano"
         }
       ],
-      "Boyacá": [
+      "Bolívar": [
         {
           "value": "Almeida",
           "label": "Almeida"
@@ -1690,7 +1664,7 @@
           "label": "Zetaquira"
         }
       ],
-      "Caldas": [
+      "Boyacá": [
         {
           "value": "Aguadas",
           "label": "Aguadas"
@@ -1800,7 +1774,7 @@
           "label": "Viterbo"
         }
       ],
-      "Caquetá": [
+      "Caldas": [
         {
           "value": "Albania",
           "label": "Albania"
@@ -1866,7 +1840,7 @@
           "label": "Valparaíso"
         }
       ],
-      "Casanare": [
+      "Caquetá": [
         {
           "value": "Aguazul",
           "label": "Aguazul"
@@ -1944,7 +1918,7 @@
           "label": "Yopal"
         }
       ],
-      "Cauca": [
+      "Casanare": [
         {
           "value": "Almaguer",
           "label": "Almaguer"
@@ -2114,7 +2088,7 @@
           "label": "Villa Rica"
         }
       ],
-      "Cesar": [
+      "Cauca": [
         {
           "value": "Aguachica",
           "label": "Aguachica"
@@ -2216,7 +2190,7 @@
           "label": "Valledupar"
         }
       ],
-      "Chocó": [
+      "Cesar": [
         {
           "value": "Acandí",
           "label": "Acandí"
@@ -2338,7 +2312,7 @@
           "label": "Unión Panamericana"
         }
       ],
-      "Córdoba": [
+      "Chocó": [
         {
           "value": "Ayapel",
           "label": "Ayapel"
@@ -2460,7 +2434,7 @@
           "label": "Valencia"
         }
       ],
-      "Cundinamarca": [
+      "Córdoba": [
         {
           "value": "Agua de Dios",
           "label": "Agua de Dios"
@@ -2926,13 +2900,13 @@
           "label": "Zipaquirá"
         }
       ],
-      "Distrito Capital": [
+      "Cundinamarca": [
         {
           "value": "Bogotá",
           "label": "Bogotá"
         }
       ],
-      "Guainía": [
+      "Distrito Capital": [
         {
           "value": "Barrancominas",
           "label": "Barrancominas"
@@ -2966,7 +2940,7 @@
           "label": "San Felipe"
         }
       ],
-      "Guaviare": [
+      "Guainía": [
         {
           "value": "Calamar",
           "label": "Calamar"
@@ -2984,7 +2958,7 @@
           "label": "San José del Guaviare"
         }
       ],
-      "Huila": [
+      "Guaviare": [
         {
           "value": "Acevedo",
           "label": "Acevedo"
@@ -3134,7 +3108,7 @@
           "label": "Yaguará"
         }
       ],
-      "La Guajira": [
+      "Huila": [
         {
           "value": "Albania",
           "label": "Albania"
@@ -3196,7 +3170,7 @@
           "label": "Villanueva"
         }
       ],
-      "Magdalena": [
+      "La Guajira": [
         {
           "value": "Algarrobo",
           "label": "Algarrobo"
@@ -3318,7 +3292,7 @@
           "label": "Zona Bananera"
         }
       ],
-      "Meta": [
+      "Magdalena": [
         {
           "value": "Acacías",
           "label": "Acacías"
@@ -3436,7 +3410,7 @@
           "label": "Vista Hermosa"
         }
       ],
-      "Nariño": [
+      "Meta": [
         {
           "value": "San José de Albán",
           "label": "San José de Albán"
@@ -3694,7 +3668,7 @@
           "label": "Yacuanquer"
         }
       ],
-      "Norte de Santander": [
+      "Nariño": [
         {
           "value": "Ábrego",
           "label": "Ábrego"
@@ -3856,7 +3830,7 @@
           "label": "Villa del Rosario"
         }
       ],
-      "Putumayo": [
+      "Norte de Santander": [
         {
           "value": "Colón",
           "label": "Colón"
@@ -3910,7 +3884,7 @@
           "label": "Villagarzón"
         }
       ],
-      "Quindío": [
+      "Putumayo": [
         {
           "value": "Armenia",
           "label": "Armenia"
@@ -3960,7 +3934,7 @@
           "label": "Salento"
         }
       ],
-      "Risaralda": [
+      "Quindío": [
         {
           "value": "Apía",
           "label": "Apía"
@@ -4018,13 +3992,13 @@
           "label": "Santuario"
         }
       ],
-      "San Andrés y Providencia": [
+      "Risaralda": [
         {
           "value": "Providencia y Santa Catalina Islas",
           "label": "Providencia y Santa Catalina Islas"
         }
       ],
-      "Santander": [
+      "San Andrés y Providencia": [
         {
           "value": "Aguada",
           "label": "Aguada"
@@ -4374,7 +4348,7 @@
           "label": "Zapatoca"
         }
       ],
-      "Sucre": [
+      "Santander": [
         {
           "value": "Buenavista",
           "label": "Buenavista"
@@ -4480,7 +4454,7 @@
           "label": "Tolú Viejo"
         }
       ],
-      "Tolima": [
+      "Sucre": [
         {
           "value": "Alpujarra",
           "label": "Alpujarra"
@@ -4670,7 +4644,7 @@
           "label": "Villarrica"
         }
       ],
-      "Valle del Cauca": [
+      "Tolima": [
         {
           "value": "Alcalá",
           "label": "Alcalá"
@@ -4840,7 +4814,7 @@
           "label": "Zarzal"
         }
       ],
-      "Vaupés": [
+      "Valle del Cauca": [
         {
           "value": "Carurú",
           "label": "Carurú"
@@ -4866,7 +4840,7 @@
           "label": "Yavaraté"
         }
       ],
-      "Vichada": [
+      "Vaupés": [
         {
           "value": "Cumaribo",
           "label": "Cumaribo"
@@ -4887,70 +4861,78 @@
     }
   },
   {
-    "name": "otherCountry",
+    "name": "anotherCountry",
     "label": "Otro País",
-    "type": "input"
+    "type": "input",
+    "isPII": false
   },
   {
     "name": "livingSituation",
     "label": "Situación de Vivienda",
     "type": "select",
-    "unknownOption": "Desconocido",
+    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "unknownOption": "Unknown",
     "options": [
       {
-        "value": "Desconocido",
+        "value": "Unknown",
         "label": ""
       },
       {
-        "value": "Hogar sustituto",
-        "label": "Hogar sustituto"
+        "value": "Alternative care",
+        "label": "Alternative care"
       },
       {
-        "value": "Institución de protección",
-        "label": "Institución de protección"
+        "value": "Group residential facility",
+        "label": "Group residential facility"
       },
       {
-        "value": "Viviendo independiente",
-        "label": "Viviendo independiente"
+        "value": "Homeless or marginally housed",
+        "label": "Homeless or marginally housed"
       },
       {
-        "value": "Con familiares",
-        "label": "Con familiares"
+        "value": "In detention",
+        "label": "In detention"
       },
       {
-        "value": "Con padres",
-        "label": "Con padres"
+        "value": "Living independently",
+        "label": "Living independently"
       },
       {
-        "value": "Sin hogar o marginalmente alojado",
-        "label": "Sin hogar o marginalmente alojado"
+        "value": "With parent(s)",
+        "label": "With parent(s)"
       },
       {
-        "value": "En detención",
-        "label": "En detención"
+        "value": "With relatives",
+        "label": "With relatives"
       },
       {
-        "value": "Otro",
-        "label": "Otro"
-      },
-      {
-        "value": "Desconocido",
-        "label": "Desconocido"
+        "value": "Other",
+        "label": "Other"
       }
     ]
   },
   {
-    "name": "schoolName",
+    "name": "educationalInstitution",
     "label": "Institución Educativa",
-    "type": "input"
+    "type": "input",
+    "isPII": false
   },
   {
     "name": "schooling",
     "label": "Escolaridad",
     "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "Unknown",
+      "label": ""
+    },
     "options": [
       {
-        "value": "",
+        "value": "Desconocido",
         "label": ""
       },
       {
@@ -4967,9 +4949,10 @@
     "name": "grade",
     "label": "Grado",
     "type": "dependent-select",
+    "isPII": false,
     "dependsOn": "schooling",
     "defaultOption": {
-      "value": "",
+      "value": "Unknown",
       "label": ""
     },
     "options": {
@@ -5026,7 +5009,13 @@
   {
     "name": "vulnerableGroups",
     "label": "Grupos Vulnerables",
-    "type": "listbox-multiselect",
+    "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "unknownOption": "Desconocido",
     "options": [
       {
         "value": "En conflicto con la ley",
@@ -5066,10 +5055,15 @@
     "name": "epsType",
     "label": "Tipo de EPS",
     "type": "select",
-    "unknownOption": "",
+    "isPII": true,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "unknownOption": "Desconocido",
     "options": [
       {
-        "value": "",
+        "value": "Desconocido",
         "label": ""
       },
       {
@@ -5086,10 +5080,15 @@
     "name": "eps",
     "label": "EPS",
     "type": "select",
-    "unknownOption": "",
+    "isPII": true,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "unknownOption": "Desconocido",
     "options": [
       {
-        "value": "",
+        "value": "Desconocido",
         "label": ""
       },
       {
@@ -5173,6 +5172,7 @@
   {
     "name": "epsName",
     "label": "Nombre de EPS",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   }
 ]
