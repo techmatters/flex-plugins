@@ -15,7 +15,7 @@
  */
 
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
-import { DefinitionVersionId } from 'hrm-form-definitions';
+import { DefinitionVersionId } from '@tech-matters/hrm-form-definitions';
 import { CreateHandlerMap } from 'redux-promise-middleware-actions/lib/reducers';
 
 import { cancelCase, createCase, updateCaseOverview, updateCaseStatus } from '../../services/CaseService';

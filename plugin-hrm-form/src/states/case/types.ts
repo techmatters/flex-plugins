@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import type { StatusInfo } from 'hrm-form-definitions';
+import type { StatusInfo } from '@tech-matters/hrm-form-definitions';
 
 import type * as t from '../../types/types';
 import type { Contact } from '../../types/types';

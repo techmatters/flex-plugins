@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes } from '@tech-matters/hrm-form-definitions';
 
 /*
  * Questionable whether we should export this

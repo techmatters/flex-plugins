@@ -18,7 +18,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
-import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
+import type { FormDefinition, LayoutDefinition } from '@tech-matters/hrm-form-definitions';
 
 import { RowItemContainer, TimelineLabel, TimelineRow, ViewButton } from './styles';
 import { Box, HiddenText } from '../../styles';

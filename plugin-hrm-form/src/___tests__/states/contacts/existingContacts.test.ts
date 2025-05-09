@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersion, DefinitionVersionId, FormInputType } from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, FormInputType } from '@tech-matters/hrm-form-definitions';
 
 import {
   clearDraft,

@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersion, StatusInfo } from 'hrm-form-definitions';
+import { DefinitionVersion, StatusInfo } from '@tech-matters/hrm-form-definitions';
 
 import { getInitializedCan, PermissionActions } from '../../permissions';
 import { Case } from '../../types/types';

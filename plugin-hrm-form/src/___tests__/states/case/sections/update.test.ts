@@ -21,7 +21,7 @@ import {
   FormDefinition,
   FormInputType,
   loadDefinition,
-} from 'hrm-form-definitions';
+} from '@tech-matters/hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../../mockFetchDefinitions';
 import { copyCaseSectionItem } from '../../../../states/case/sections/copySection';

@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { HelplineEntry } from 'hrm-form-definitions';
+import { HelplineEntry } from '@tech-matters/hrm-form-definitions';
 
 import { RootState } from '..';
 import { Case } from '../../types/types';

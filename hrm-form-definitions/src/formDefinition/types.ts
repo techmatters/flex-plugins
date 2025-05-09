@@ -16,7 +16,6 @@
 
 /* eslint-disable import/no-unused-modules */
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { RegisterOptions } from 'react-hook-form';
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 import { CallTypeKeys } from './callTypes';
 import { LayoutVersion } from './layoutVersion';
@@ -61,8 +60,8 @@ type ItemBase = {
   label: string;
   type: FormInputType;
   metadata?: Record<string, any>;
-} & IsPIIFlag &
-  RegisterOptions;
+  required?: { value: boolean, message: string };
+} & IsPIIFlag;
 
 type NonSaveable = {
   saveable: false;

@@ -21,7 +21,7 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 /* eslint-disable camelcase */
 import { ITask, Notifications } from '@twilio/flex-ui';
-import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, loadDefinition } from '@tech-matters/hrm-form-definitions';
 
 import fetchProtectedApi from './fetchProtectedApi';
 import type { ChildCSAMReportForm, CounselorCSAMReportForm } from '../states/csam-report/types';

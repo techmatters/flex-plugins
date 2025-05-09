@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { callTypes, DefinitionVersion, FormInputType } from 'hrm-form-definitions';
+import { callTypes, DefinitionVersion, FormInputType } from '@tech-matters/hrm-form-definitions';
 import each from 'jest-each';
 
 import { contactLabelFromHrmContact } from '../../../states/contacts/contactIdentifier';

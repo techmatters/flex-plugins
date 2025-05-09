@@ -16,7 +16,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { Print as PrintIcon } from '@material-ui/icons';
-import { DefinitionVersion } from 'hrm-form-definitions';
+import { DefinitionVersion } from '@tech-matters/hrm-form-definitions';
 
 import {
   DetailsHeaderCaseContainer,

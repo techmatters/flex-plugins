@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { FormDefinition, FormInputType } from 'hrm-form-definitions';
+import { FormDefinition, FormInputType } from '@tech-matters/hrm-form-definitions';
 
 import { getValuesFromPreEngagementData } from '../../utils/prepopulateForm';
 

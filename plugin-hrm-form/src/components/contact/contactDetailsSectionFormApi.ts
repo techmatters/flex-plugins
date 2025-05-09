@@ -15,9 +15,8 @@
  */
 
 /* eslint-disable import/named */
-import { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, FormDefinition, LayoutDefinition } from '@tech-matters/hrm-form-definitions';
 
-import { ContactDraftChanges } from '../../states/contacts/existingContacts';
 import { Contact } from '../../types/types';
 
 type ContactFormValues = {

@@ -17,7 +17,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
-import { DefinitionVersion } from 'hrm-form-definitions';
+import { DefinitionVersion } from '@tech-matters/hrm-form-definitions';
 
 import { CaseContainer, CaseDetailsBorder, ViewButton } from './styles';
 import { BottomButtonBar, Box, SaveAndEndButton } from '../../styles';

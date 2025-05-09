@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { callTypes, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { callTypes, DefinitionVersionId, loadDefinition } from '@tech-matters/hrm-form-definitions';
 import { TaskHelper } from '@twilio/flex-ui';
 
 import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';

@@ -18,7 +18,7 @@
 /* eslint-disable dot-notation */
 import React from 'react';
 import { View, Text } from '@react-pdf/renderer';
-import { DefinitionVersion } from 'hrm-form-definitions';
+import { DefinitionVersion } from '@tech-matters/hrm-form-definitions';
 
 import { Flex } from '../../styles';
 import { TagsWrapper } from '../search/styles';

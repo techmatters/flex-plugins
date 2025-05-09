@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { ProfileSectionDefinition } from 'hrm-form-definitions';
+import { ProfileSectionDefinition } from '@tech-matters/hrm-form-definitions';
 import { Template } from '@twilio/flex-ui';
 
 import { ProfileCommonProps } from '../types';

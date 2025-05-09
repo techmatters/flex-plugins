@@ -16,7 +16,7 @@
 
 import * as fs from 'fs/promises';
 
-import { mockFetchDefinitions } from 'hrm-form-definitions';
+import { mockFetchDefinitions } from '@tech-matters/hrm-form-definitions';
 
 export const mockLocalFetchDefinitions = () =>
   mockFetchDefinitions(async (jsonPath: string) => {

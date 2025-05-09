@@ -15,7 +15,7 @@
  */
 
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
-import { DefinitionVersion } from 'hrm-form-definitions';
+import { DefinitionVersion } from '@tech-matters/hrm-form-definitions';
 import { parseISO } from 'date-fns';
 
 import { Case } from '../../../types/types';

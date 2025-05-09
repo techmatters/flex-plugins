@@ -17,7 +17,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import * as React from 'react';
 import each from 'jest-each';
-import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
+import { FormInputType, FormItemDefinition } from '@tech-matters/hrm-form-definitions';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FormProvider, useForm } from 'react-hook-form';

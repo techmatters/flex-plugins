@@ -16,7 +16,7 @@
 
 import promiseMiddleware from 'redux-promise-middleware';
 import { configureStore } from '@reduxjs/toolkit';
-import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, loadDefinition } from '@tech-matters/hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../../mockFetchDefinitions';
 import { HrmState } from '../../../../states';
