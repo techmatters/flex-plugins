@@ -55,6 +55,13 @@ const preEngagementConfig: PreEngagementFormDefinition = {
   submitLabel: 'StartChat',
   fields: [
     {
+      type: 'input-text',
+      name: 'friendlyName',
+      label: 'Name/Jina',
+      placeholder: 'What is your name?/Jina lako ni nani?',
+      required: true,
+    },
+    {
       type: 'select',
       name: 'language',
       label: 'Select Language/Chagua lugha',
@@ -65,13 +72,18 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         { value: 'en-US', label: '1. English' },
         { value: 'sw_TZ', label: '2. Kiswahili' },
       ],
-    },
-    {
-      type: 'input-text',
-      name: 'friendlyName',
-      label: 'Name/Jina',
-      placeholder: 'What is your name?/Jina lako ni nani?',
+    },    {
+      type: 'select',
+      name: 'location',
+      label: 'Select Location/Chagua maeneo',
+      placeholder: 'Select your location/Chagua maeneo yako',
+      defaultValue: '',
       required: true,
+      options: [
+        { value: '', label: '' },
+        { value: 'tanzania', label: 'Tanzania - Main Land' },
+        { value: 'zanzibar', label: 'Zanzibar or Pemba' },
+      ],
     },
     {
       type: 'checkbox',
