@@ -13,6 +13,9 @@
           "label": "Runaway"
         },
         {
+          "label": "Child trafficking"
+        },
+        {
           "label": "Unspecified/Other"
         }
       ]
@@ -176,9 +179,6 @@
           "label": "Gender"
         },
         {
-          "label": "Gender identity or expression and sexual orientation"
-        },
-        {
           "label": "Health"
         },
         {
@@ -237,20 +237,6 @@
         },
         {
           "label": "Problems at work"
-        },
-        {
-          "label": "Unspecified/Other"
-        }
-      ]
-    },
-    "Sexuality": {
-      "color": "#506BA5",
-      "subcategories": [
-        {
-          "label": "Sexual orientation and gender identity"
-        },
-        {
-          "label": "Sexual behaviours"
         },
         {
           "label": "Unspecified/Other"
