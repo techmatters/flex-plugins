@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "preinstall": "cd ../hrm-form-definitions && npm ci && npm run build",
+    "preinstall": "cd ../lambdas/packages/hrm-form-definitions && npm ci && npm run build",
     "lint": "eslint --ext js .",
     "lint:fix": "npm run lint -- --fix",
     "compile": "npx tsc",
@@ -20,7 +20,7 @@
     "aws-sdk": "^2.947.0",
     "axios": "^1.6.0",
     "dotenv": "^10.0.0",
-    "hrm-form-definitions": "file:../hrm-form-definitions",
+    "hrm-form-definitions": "file:../lambdas/packages/hrm-form-definitions",
     "node-fetch": "^2.6.4",
     "prompt": "^1.2.0",
     "prompt-confirm": "^2.0.4",

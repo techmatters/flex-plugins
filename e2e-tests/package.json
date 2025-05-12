@@ -51,7 +51,7 @@
     "eslint-import-resolver-typescript": "^2.7.1",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "hrm-form-definitions": "file:../hrm-form-definitions",
+    "hrm-form-definitions": "file:../lambdas/packages/hrm-form-definitions",
     "mock-socket": "^9.1.5",
     "npm-run-all": "^4.1.5",
     "playwright-core": "^1.30.0",

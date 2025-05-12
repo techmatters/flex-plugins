@@ -31,7 +31,7 @@ import {
   FormDefinition,
   FormFileSpecification,
   loadDefinition,
-} from '../..';
+} from '../../index';
 import { mockFetchDefinitions } from '../fetchDefinitionsMock';
 import { loadLocalJson } from '../loadLocalJson';
 

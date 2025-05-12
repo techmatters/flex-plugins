@@ -37,7 +37,7 @@ jobs:
         uses: ./.github/actions/install-flex-plugin
       - name: Run hrm-form-definitions Lint
         run: npm run lint
-        working-directory: ./hrm-form-definitions
+        working-directory: ./lambdas/packages/hrm-form-definitions
       - name: Run plugin-hrm-form code Lint
         run: npm run lint --if-present
         working-directory: ./plugin-hrm-form
@@ -61,7 +61,7 @@ jobs:
       uses: ./.github/actions/install-flex-plugin
     - name: Run hrm-form-definitions Tests
       run: npm run test
-      working-directory: ./hrm-form-definitions
+      working-directory: ./lambdas/packages/hrm-form-definitions
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:

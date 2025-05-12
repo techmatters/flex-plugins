@@ -1,12 +1,12 @@
 {
-  "name": "hrm-form-definitions",
+  "name": "@tech-matters/hrm-form-definitions",
   "version": "1.0.0",
   "description": "Module to manage form definitions in the Aselo HRM Twilio plugin",
   "main": "dist/index.js",
   "scripts": {
-    "test": "jest",
+    "test": "node_modules/.bin/jest",
     "build": "npx tsc",
-    "lint": "eslint --max-warnings 5 --ext ts ./src"
+    "lint": "eslint --max-warnings 5 --ext ts src"
   },
   "author": "",
   "license": "AGPL",
