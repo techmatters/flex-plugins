@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "preinstall": "cd ../lambdas/packages/hrm-form-definitions && npm ci && npm run build",
+    "preinstall": "cd ../lambdas && npm ci && cd ./packages/hrm-form-definitions && npm run build",
     "lint": "eslint --ext js .",
     "lint:fix": "npm run lint -- --fix",
     "compile": "npx tsc",
