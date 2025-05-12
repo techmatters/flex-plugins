@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable global-require */
 /* eslint-disable import/no-dynamic-require */
 import path from 'path';
@@ -39,7 +39,7 @@ import {
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 import { LayoutVersion } from './layoutVersion';
 
-// Type reperesenting the JSON form where single fields don't need to be wrapped in arrays
+// Type representing the JSON form where single fields don't need to be wrapped in arrays
 type PrepopulateMappingJson = {
   survey: Record<
     string,
