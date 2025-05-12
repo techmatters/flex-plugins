@@ -22,11 +22,6 @@
     "label": "Cómo supo de nuestra línea/número",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "Desconocido",
     "options": [
       {
         "value": "Desconocido",
@@ -59,11 +54,6 @@
     "label": "¿La orientación que recibiste te fue útil?",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "Desconocido",
     "options": [
       {
         "value": "Desconocido",
@@ -96,11 +86,6 @@
     "label": "¿Qué tan rápido recibiste nuestra respuesta?",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "Desconocido",
     "options": [
       {
         "value": "Desconocido",
