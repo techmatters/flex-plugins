@@ -189,26 +189,94 @@
         "label": ""
       },
       {
-        "value": "01",
-        "label": "1"
+        "value": "Primary",
+        "label": "Primary"
       },
       {
-        "value": "02",
-        "label": "2"
-      },
-      {
-        "value": "03",
-        "label": "3"
-      },
-      {
-        "value": "04",
-        "label": "4"
-      },
-      {
-        "value": "05",
-        "label": "5"
+        "value": "Secondary",
+        "label": "Secondary"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "grade",
+    "label": "Grades",
+    "type": "dependent-select",
+    "dependsOn": "gradeLevel",
+    "defaultOption": {
+      "value": "Unknown",
+      "label": ""
+    },
+    "options": {
+      "Primary": [
+        {
+          "value": "Unknown",
+          "label": ""
+        },
+        {
+          "value": "Standard 1",
+          "label": "Standard 1"
+        },
+        {
+          "value": "Standard 2",
+          "label": "Standard 2"
+        },
+        {
+          "value": "Standard 3",
+          "label": "Standard 3"
+        },
+        {
+          "value": "Standard 4",
+          "label": "Standard 4"
+        },
+        {
+          "value": "Standard 5",
+          "label": "Standard 5"
+        },
+        {
+          "value": "Standard 6",
+          "label": "Standard 6"
+        },
+        {
+          "value": "Standard 7",
+          "label": "Standard 7"
+        }
+      ],
+      "Secondary": [
+        {
+          "value": "Unknown",
+          "label": ""
+        },
+        {
+          "value": "Form 1",
+          "label": "Form 1"
+        },
+        {
+          "value": "Form 2",
+          "label": "Form 2"
+        },
+        {
+          "value": "Form 3",
+          "label": "Form 3"
+        },
+        {
+          "value": "Form 4",
+          "label": "Form 4"
+        },
+        {
+          "value": "Form 5",
+          "label": "Form 5"
+        },
+        {
+          "value": "Form 6",
+          "label": "Form 6"
+        }
+      ]
+    }
   },
   {
     "name": "livingSituation",
