@@ -59,7 +59,7 @@ type ItemBase = {
   type: FormInputType;
   metadata?: Record<string, any>;
   required?: { value: boolean; message: string } | boolean;
-  maxLength?: { value: number; message: string; };
+  maxLength?: { value: number; message: string };
   validate?: (data: any) => string | boolean;
 } & IsPIIFlag;
 
@@ -365,7 +365,7 @@ export type LocalizedStringMap = {
   };
 };
 
-export type FullyQualifiedFieldReference = `${keyof DefinitionVersion['tabbedForms']}.${string}`
+export type FullyQualifiedFieldReference = `${keyof DefinitionVersion['tabbedForms']}.${string}`;
 /**
  * Type that defines a complete version for all the customizable forms used across the app
  */
