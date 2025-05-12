@@ -35,12 +35,15 @@ jobs:
         working-directory: ./plugin-hrm-form
       - name: Install Flex Plugin
         uses: ./.github/actions/install-flex-plugin
-      - name: Run Lambdas Lint
-        run: npm run lint
-        working-directory: ./lambdas
       - name: Run plugin-hrm-form code Lint
         run: npm run lint --if-present
         working-directory: ./plugin-hrm-form
+      - name: Install Lambdas
+        run: npm ci
+        working-directory: ./lambdas
+      - name: Run Lambdas Lint
+        run: npm run lint
+        working-directory: ./lambdas
       - name: Install e2e-test Packages
         run: npm ci
         working-directory: ./e2e-tests
