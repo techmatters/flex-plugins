@@ -254,10 +254,10 @@
     }
   },
   {
-    "name": "district",
-    "label": "District",
+    "name": "grade",
+    "label": "Grades",
     "type": "dependent-select",
-    "dependsOn": "province",
+    "dependsOn": "gradeLevel",
     "defaultOption": {
       "value": "Unknown",
       "label": ""
