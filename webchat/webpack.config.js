@@ -79,7 +79,7 @@ const webpackConfig = {
     fallback: {
       buffer: require.resolve('buffer'),
       fs: false,
-      events: require.resolve('events/'),
+      events: require.resolve('events'),
     },
   },
   output: {
