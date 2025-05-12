@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+/* eslint-disable no-restricted-syntax */
 
 import { DefinitionVersionId, loadDefinition } from '../../formDefinition';
 
