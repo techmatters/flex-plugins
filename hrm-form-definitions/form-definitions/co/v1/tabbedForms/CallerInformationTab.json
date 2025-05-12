@@ -16,11 +16,6 @@
     "label": "Relación con el Adolescente",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -93,11 +88,6 @@
     "label": "Género",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "Desconocido",
     "options": [
       {
         "value": "Desconocido",
@@ -130,11 +120,6 @@
     "label": "Edad",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "Desconocido",
     "options": [
       {
         "value": "Desconocido",
