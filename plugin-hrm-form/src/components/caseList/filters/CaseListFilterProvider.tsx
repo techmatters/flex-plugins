@@ -17,7 +17,6 @@
 import React from 'react';
 
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
-import CategoriesFilter, { Category } from './CategoriesFilter';
 import DateRangeFilter from './DateRangeFilter';
 import { DateFilterValue } from '../../../states/caseList/dateFilters';
 import { DateFilter } from './dateFilters';
@@ -32,12 +31,10 @@ type FilterDataProps = {
   strings: Record<string, string>;
   statusValues?: Item[];
   counselorValues?: Item[];
-  categoriesValues?: Category[];
   dateFilterValues?: Record<string, DateFilterValue | undefined>;
   dateFilters?: DateFilter[];
   handleApplyStatusFilter?: (values: Item[]) => void;
   handleApplyCounselorFilter?: (values: Item[]) => void;
-  handleApplyCategoriesFilter?: (values: Category[]) => void;
   handleApplyDateRangeFilter?: (filter: DateFilter) => (filterValue: DateFilterValue | undefined) => void;
 };
 
@@ -48,7 +45,7 @@ const StatusFilter: React.FC<FilterComponentBaseProps & FilterDataProps> = props
   return (
     <MultiSelectFilter
       {...baseProps}
-      text={strings['CaseList-Filters-Status']}
+      textCode="CaseList-Filters-Status"
       defaultValues={statusValues}
       applyFilter={handleApplyStatusFilter}
       name="status"
@@ -64,28 +61,11 @@ const CounselorFilter: React.FC<FilterComponentBaseProps & FilterDataProps> = pr
     <MultiSelectFilter
       {...baseProps}
       searchDescription={strings['CaseList-Filters-SearchForCounselor']}
-      text={strings['CaseList-Filters-Counselor']}
+      textCode="CaseList-Filters-Counselor"
       defaultValues={counselorValues}
       applyFilter={handleApplyCounselorFilter}
       searchable={true}
       name="counselor"
-    />
-  );
-};
-
-// Categories Filter Component
-const CategoryFilter: React.FC<FilterComponentBaseProps & FilterDataProps> = props => {
-  const { strings, categoriesValues = [], handleApplyCategoriesFilter, ...baseProps } = props;
-
-  return (
-    <CategoriesFilter
-      {...baseProps}
-      searchDescription={strings['CaseList-Filters-SearchByCategory']}
-      text={strings['CaseList-Filters-Categories']}
-      defaultValues={categoriesValues}
-      applyFilter={handleApplyCategoriesFilter}
-      searchable={true}
-      name="categories"
     />
   );
 };
@@ -137,7 +117,6 @@ const UpdatedDateFilter: React.FC<FilterComponentBaseProps & FilterDataProps> = 
 const FilterComponents: Record<string, React.ComponentType<FilterComponentBaseProps & FilterDataProps>> = {
   'generate-status-filter': StatusFilter,
   'generate-counselor-filter': CounselorFilter,
-  'generate-category-filter': CategoryFilter,
   'generate-created-date-filter': CreatedDateFilter,
   'generate-updated-date-filter': UpdatedDateFilter,
 };
