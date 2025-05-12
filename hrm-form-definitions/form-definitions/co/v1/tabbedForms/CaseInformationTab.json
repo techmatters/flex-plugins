@@ -1,6 +1,6 @@
 [
   {
-    "name": "contactSummary",
+    "name": "callSummary",
     "label": "Resumen de Contacto",
     "type": "textarea",
     "isPII": false,
