@@ -507,5 +507,6 @@
 "CaseMerging-ContactRemovedFromCase": "Contact supprimé du dossier",
 "CaseMerging-CaseCreatedAndContactAdded": "Dossier n° {{caseId}} créé et contact ajouté",
 "CaseMerging-CancelCase": "Annuler le dossier",
-"CaseMerging-ContactUndoRemovedFromCase": "Annuler"
+"CaseMerging-ContactUndoRemovedFromCase": "Annuler",
+"TeamsView-NoSkills": "- Aucune Compétence Répertoirée -"
 }
