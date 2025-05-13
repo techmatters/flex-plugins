@@ -32,10 +32,12 @@ import { SwitchboardState, subscribeSwitchboardState } from '../../utils/sharedS
 
 // eslint-disable-next-line import/no-unused-modules
 export const setUpSwitchboard = () => {
+  console.log('>>> 1. Starting setUpSwitchboard');
   // if (!getAseloFeatureFlags().enable_switchboarding) return;
   QueuesStats.AggregatedQueuesDataTiles.Content.add(<SwitchboardTile key="switchboard" />, {
     sortOrder: -1,
   });
+  console.log('>>> 1a. SwitchboardTile added to Queues Stats');
 };
 
 const SwitchboardTile = () => {
@@ -53,16 +55,21 @@ const SwitchboardTile = () => {
   const counselorsHash = useSelector((state: RootState) => state[namespace][configurationBase].counselors.hash);
 
   useEffect(() => {
+    console.log('>>> 2. SwitchboardTile component mounting');
     let unsubscribe: (() => void) | undefined;
 
     const initSwitchboardSubscription = async () => {
       try {
+        console.log('>>> 2a. Initializing switchboard subscription');
         setIsLoading(true);
         unsubscribe = await subscribeSwitchboardState(state => {
+          console.log('>>> Received switchboard state update:', state);
           setSwitchboardState(state);
           setIsLoading(false);
         });
+        console.log('>>> Subscription set up successfully');
       } catch (err) {
+        console.log('>>> Error initializing switchboard subscription:', err);
         console.error('Error initializing switchboard subscription:', err);
         setError('Failed to connect to switchboard state. Please refresh the page or contact support.');
         setIsLoading(false);
@@ -73,6 +80,7 @@ const SwitchboardTile = () => {
 
     // Clean up subscription when component unmounts
     return () => {
+      console.log('>>> 2c. Cleaning up switchboard subscription');
       if (unsubscribe) {
         unsubscribe();
       }
@@ -80,45 +88,73 @@ const SwitchboardTile = () => {
   }, []);
 
   useEffect(() => {
+    console.log('>>> 3. Selected queue changed to:', selectedQueue);
     selectedQueueRef.current = selectedQueue;
   }, [selectedQueue]);
 
   const handleOpenModal = () => {
+    console.log('>>> 4a. Opening queue selection modal');
     setIsModalOpen(true);
     setSelectedQueue(null);
     selectedQueueRef.current = null;
   };
 
-  const handleCloseModal = () => setIsModalOpen(false);
-  const handleOpenConfirmationDialog = () => setIsConfirmationDialogOpen(true);
-  const handleCloseConfirmationDialog = () => setIsConfirmationDialogOpen(false);
+  const handleCloseModal = () => {
+    console.log('>>> 4b. Closing queue selection modal');
+    setIsModalOpen(false);
+  };
+  
+  const handleOpenConfirmationDialog = () => {
+    console.log('>>> 4c. Opening turn-off confirmation dialog');
+    setIsConfirmationDialogOpen(true);
+  };
+  
+  const handleCloseConfirmationDialog = () => {
+    console.log('>>> 4d. Closing turn-off confirmation dialog');
+    setIsConfirmationDialogOpen(false);
+  };
 
   const handleSwitchboarding = async (queue: string) => {
-    if (!queue) return;
+    console.log('>>> 5. handleSwitchboarding called with queue:', queue);
+    if (!queue) {
+      console.log('>>> 5a. Queue is empty, returning');
+      return;
+    }
 
     try {
+      console.log('>>> 5b. Setting loading state and clearing errors');
       setIsLoading(true);
       setError(null);
+      console.log('>>> 5c. Calling switchboardQueue service');
       await switchboardQueue(queue);
+      console.log('>>> 5d. Switchboarding successful, updating UI');
       setIsModalOpen(false);
       setSelectedQueue(queue);
     } catch (error) {
+      console.log('>>> 5e. Error in switchboarding:', error);
       console.error('Error in switchboarding:', error);
       setError('Failed to activate switchboarding. Please try again or contact support.');
     } finally {
+      console.log('>>> 5f. Clearing loading state');
       setIsLoading(false);
     }
   };
 
   const handleSwitchToggle = () => {
+    console.log('>>> 6. Switch toggle clicked, current state:', switchboardState?.isSwitchboardingActive);
     if (switchboardState?.isSwitchboardingActive) {
       // If already switchboarding, open confirmation modal to turn it off
+      console.log('>>> 6a. Currently active, preparing to turn off');
       if (switchboardState.queueSid) {
+        console.log('>>> 6a.1. Setting selected queue to:', switchboardState.queueSid);
         setSelectedQueue(switchboardState.queueSid);
         handleOpenConfirmationDialog();
+      } else {
+        console.log('>>> 6a.2. No queue SID found in switchboard state');
       }
     } else {
       // If not switchboarding, open the modal to select a queue
+      console.log('>>> 6b. Currently inactive, preparing to turn on');
       handleOpenModal();
     }
   };
@@ -130,12 +166,12 @@ const SwitchboardTile = () => {
       )
     : [];
 
-  const getQueueName = (queueKey: string) =>
-    filteredQueues.find((q: any) => q.key === queueKey)?.friendly_name || queueKey;
+  const getQueueName = (queueKey: string) => {
+    return filteredQueues.find((q: any) => q.key === queueKey)?.friendly_name || queueKey;
+  };
 
   const getSupervisorName = (supervisorWorkerSid: string | null) => {
     if (!supervisorWorkerSid) return 'Unknown supervisor';
-    console.log('>>>supervisorWorkerSid', supervisorWorkerSid, counselorsHash[supervisorWorkerSid]);
     return counselorsHash && counselorsHash[supervisorWorkerSid]
       ? counselorsHash[supervisorWorkerSid]
       : 'Unknown supervisor';
@@ -153,12 +189,17 @@ const SwitchboardTile = () => {
   );
 
   const handleConfirmTurnOff = () => {
+    console.log('>>> 9. Confirmed turning off switchboarding');
     if (selectedQueue) {
+      console.log('>>> 9a. Selected queue for turn off:', selectedQueue);
       handleSwitchboarding(selectedQueue);
       handleCloseConfirmationDialog();
+    } else {
+      console.log('>>> 9b. No queue selected, cannot turn off');
     }
   };
 
+  console.log('>>> 10. Preparing to render SwitchboardTile with state:', switchboardState);
   const borderColor = switchboardState?.isSwitchboardingActive ? '#f8c000' : '#e1e3ea';
   const backgroundColor = switchboardState?.isSwitchboardingActive ? '#fff7de' : 'transparent';
 
@@ -198,8 +239,7 @@ const SwitchboardTile = () => {
         )}
 
         {error && (
-          <div style={{ marginBottom: '10px' }}>
-            <h1>Error</h1>
+          <div style={{ marginBottom: '10px', color: 'red' }}>
             {error}
           </div>
         )}

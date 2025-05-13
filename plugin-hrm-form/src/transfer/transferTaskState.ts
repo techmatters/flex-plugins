@@ -20,6 +20,7 @@ import type { RootState } from '../states';
 import { transferModes, transferStatuses } from '../states/DomainConstants';
 import { isInMyBehalfITask, isTwilioTask, RouterTask } from '../types/types';
 import { isCallStatusLoading } from '../states/conferencing/callStatus';
+import { getSwitchboardState } from '../utils/sharedState';
 
 export const hasTransferStarted = (task: ITask) => Boolean(task.attributes && task.attributes.transferMeta);
 
@@ -121,6 +122,7 @@ export const setTransferRejected = updateTransferStatus(transferStatuses.rejecte
  * @param {{ task: ITask, options: { mode: string }, targetSid: string }} payload
  * @param {string} counselorName
  */
+
 export const setTransferMeta = async (
   payload: { task: ITask; options: { mode: string }; targetSid: string },
   counselorName: string,
@@ -129,10 +131,27 @@ export const setTransferMeta = async (
   const { mode } = options;
   const targetType = targetSid.startsWith('WK') ? 'worker' : 'queue';
 
+  // Check if the user is a supervisor
+  const { roles = [] } = Manager.getInstance().user;
+  const isSupervisor = roles.includes('supervisor');
+  
+  // Check if switchboarding is currently active
+  let isSwitchboardingActive = false;
+  try {
+    const switchboardState = await getSwitchboardState();
+    isSwitchboardingActive = switchboardState.isSwitchboardingActive;
+    console.log(`Current switchboarding state: ${isSwitchboardingActive ? 'ACTIVE' : 'INACTIVE'}`);
+  } catch (err) {
+    console.error('Error checking switchboarding state:', err);
+  }
+  
   // Set transfer metadata
   const updatedAttributes = {
     ...task.attributes,
     transferStarted: true,
+    // Only apply exemption if switchboarding is actually active, otherwise it's unnecessary
+    // If a supervisor is transferring the task, mark it to bypass switchboarding
+    switchboardingTransferExempt: isSwitchboardingActive && isSupervisor,
     transferMeta: {
       originalTask: task.taskSid,
       originalReservation: task.sid,
@@ -146,6 +165,7 @@ export const setTransferMeta = async (
     },
   };
 
+  console.log(`Transfer initiated by ${isSupervisor ? 'supervisor' : 'non-supervisor'}, bypass switchboarding: ${isSwitchboardingActive && isSupervisor}`);
   await task.setAttributes(updatedAttributes);
 };
 

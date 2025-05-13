@@ -17,68 +17,58 @@
 import { Manager } from '@twilio/flex-ui';
 
 import fetchProtectedApi from './fetchProtectedApi';
-import { updateSwitchboardState, getSwitchboardState } from '../utils/sharedState';
+import { getSwitchboardState } from '../utils/sharedState';
 
 /**
  * Activates or deactivates switchboarding for a specific queue
- * Updates the shared state for all supervisors
+ * Calls the backend API to update the TaskRouter workflow and updates Twilio Sync state
  *
  * @param queueSid The SID of the queue to switchboard
  * @returns Promise that resolves when the operation is complete
  */
 export const switchboardQueue = async (queueSid: string): Promise<void> => {
   try {
-    // Get the current switchboarding state
-    const currentState = await getSwitchboardState();
-    const isToggling = currentState.isSwitchboardingActive && currentState.queueSid === queueSid;
+    // Input validation
+    if (!queueSid || typeof queueSid !== 'string') {
+      throw new Error('Invalid queue SID provided');
+    }
 
-    // If we're toggling the switchboarding state, we need to call the API
+    console.log('Getting current switchboard state');
+    // Get current state to determine if we're enabling or disabling
+    const currentState = await getSwitchboardState();
+    const isDisabling = currentState.isSwitchboardingActive && currentState.queueSid === queueSid;
+    const operation = isDisabling ? 'disable' : 'enable';
+    console.log(`Switchboard operation: ${operation} for queue: ${queueSid}`);
+
+    // Call backend API with the operation parameter
     const body = {
       originalQueueSid: queueSid,
+      operation
     };
 
-    console.log(`${isToggling ? 'Deactivating' : 'Activating'} switchboarding for queue: ${queueSid}`);
+    console.log('Calling assignSwitchboarding endpoint');
+    // Backend will handle both the workflow changes and sync state update
     await fetchProtectedApi('/assignSwitchboarding', body);
-
-    // Get queue details
-    const queues = Manager.getInstance()?.store.getState()?.flex?.realtimeQueues?.queuesList;
-    const queue = queues ? queues[queueSid] : null;
-    const queueName = queue?.friendly_name || queueSid;
-
-    // Get worker details
-    const { workerSid } = Manager.getInstance().workerClient;
-    const { identity } = Manager.getInstance().user;
-
-    if (isToggling) {
-      // Turning off switchboarding
-      await updateSwitchboardState({
-        isSwitchboardingActive: false,
-        queueSid: null,
-        queueName: null,
-        startTime: null,
-        supervisorWorkerSid: null,
-      });
-    } else {
-      // Turning on switchboarding
-      const startTime = new Date().toLocaleString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      });
-
-      await updateSwitchboardState({
-        isSwitchboardingActive: true,
-        queueSid,
-        queueName,
-        startTime,
-        supervisorWorkerSid: workerSid,
-      });
-    }
+    console.log('Switchboarding operation completed successfully');
   } catch (err) {
+    // Enhanced error logging with more context
     console.error('Error in switchboardQueue:', err);
+    
+    // Add more context to the error for better troubleshooting
+    if (err instanceof Error) {
+      if (err.message.includes('403')) {
+        console.error('Permission error: User may not have supervisor permissions');
+        throw new Error('You do not have permission to control switchboarding. Please contact an administrator.');
+      } else if (err.message.includes('500')) {
+        console.error('Server error: The switchboarding service encountered an internal error');
+        throw new Error('The switchboarding service is currently unavailable. Please try again later or contact support.');
+      } else if (err.message.includes('token')) {
+        console.error('Authentication error: Invalid token');
+        throw new Error('Your session may have expired. Please refresh the page and try again.');
+      }
+    }
+    
+    // Re-throw the original error if none of the specific cases match
     throw err;
   }
 };
