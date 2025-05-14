@@ -9,15 +9,6 @@
     "placeholder": "Enter a summary of the client"
   },
   {
-    "name": "recommendedApproach",
-    "label": "Recommended Approach",
-    "editLabel": "Edit Recommended Approach",
-    "type": "textarea",
-    "rows": 20,
-    "width": 500,
-    "placeholder": "Enter recommended approach"
-  },
-  {
     "name": "details",
     "label": "Details",
     "editLabel": "Edit Details",
