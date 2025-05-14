@@ -24,7 +24,7 @@ ENV lambda_name ${lambda_name}
 # copy the hrm-lib package and labmdas folders so that the file: based
 # dependency in package.json can be resolved
 COPY ${lambda_dir}/${lambda_name} /tmp/build/${lambda_dir}/${lambda_name}
-COPY ${lambda_dir}/../packages /tmp/build/${lambda_dir}/../packages
+COPY ${lambda_dir}/../packages /tmp/build/packages
 COPY package.json package-lock.json tsconfig.json tsconfig.base.json ${lambda_dir}/${lambda_name}/tsconfig.build.json /tmp/build/
 
 RUN dnf install -y rsync \
