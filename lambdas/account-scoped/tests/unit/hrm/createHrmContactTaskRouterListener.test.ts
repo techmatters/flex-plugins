@@ -32,6 +32,7 @@ import {
   TEST_WORKSPACE_SID,
 } from '../../testTwilioValues';
 import { setConfigurationAttributes } from '../mockServiceConfiguration';
+import {newOk} from "../../../src/Result";
 
 const mockFetch: jest.MockedFunction<typeof fetch> = jest.fn();
 global.fetch = mockFetch;
@@ -137,10 +138,10 @@ describe('handleEvent', () => {
         id: TEST_CONTACT_ID,
       }),
     } as Response);
-    mockPopulateHrmContactFormFromTask.mockResolvedValue({
+    mockPopulateHrmContactFormFromTask.mockResolvedValue(newOk({
       ...BLANK_CONTACT,
       id: TEST_CONTACT_ID,
-    });
+    }));
   });
 
   test('offline contact task - does nothing', async () => {

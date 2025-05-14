@@ -41,6 +41,7 @@ import { LayoutVersion } from './layoutVersion';
 
 // Type representing the JSON form where single fields don't need to be wrapped in arrays
 type PrepopulateMappingJson = {
+  formSelector?: { selectorType: string; parameter: any };
   survey: Record<
     string,
     (FullyQualifiedFieldReference[] | FullyQualifiedFieldReference)[] | FullyQualifiedFieldReference
@@ -185,12 +186,12 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
   };
 
   const expandPrepopulateMappings = (
-    json: PrepopulateMappingJson,
+      { formSelector, ...sourceSets }: PrepopulateMappingJson,
   ): DefinitionVersion['prepopulateMappings'] => {
     const expandedMapping: DefinitionVersion['prepopulateMappings'] = prepopulateMappingsEmpty;
-    for (const [sourceSetName, sourceSetFields] of Object.entries(json)) {
+    for (const [sourceSetName, sourceSetFields] of Object.entries(sourceSets)) {
       const targetObj =
-        expandedMapping[sourceSetName as keyof DefinitionVersion['prepopulateMappings']];
+        expandedMapping[sourceSetName as keyof Omit<DefinitionVersion['prepopulateMappings'], 'formSelector'>];
       for (const [sourceField, sourceFieldMappings] of Object.entries(sourceSetFields)) {
         targetObj[sourceField] = targetObj[sourceField] ?? [];
         const andFields = Array.isArray(sourceFieldMappings)

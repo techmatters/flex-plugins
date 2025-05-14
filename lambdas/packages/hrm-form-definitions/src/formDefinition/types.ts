@@ -431,6 +431,7 @@ export type DefinitionVersion = {
      * is equivalent to
      * "gender": [["ChildInformationTab.gender"]]
      */
+    formSelector?: { selectorType: string; parameter: any };
     survey: Record<string, FullyQualifiedFieldReference[][]>;
     preEngagement: Record<string, FullyQualifiedFieldReference[][]>;
   };

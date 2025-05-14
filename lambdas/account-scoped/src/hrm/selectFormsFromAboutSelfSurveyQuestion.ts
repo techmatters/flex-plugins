@@ -16,9 +16,9 @@
 
 import { AvailableContactFormSelector } from './availableContactFormSelector';
 
-export const selectTabsFromAboutSelfSurveyQuestion: AvailableContactFormSelector = (
+export const selectFormsFromAboutSelfSurveyQuestion: AvailableContactFormSelector = () => (
   source,
-  preEngagementSelections,
+  _preEngagementSelections,
   surveyAnswers,
 ) => {
   if (source === 'survey') {

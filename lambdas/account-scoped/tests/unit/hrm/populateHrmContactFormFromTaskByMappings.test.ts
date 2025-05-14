@@ -91,6 +91,7 @@ const mockFormDefinitions = (definitionSet: FormDefinitionPatch) => {
               },
             },
             prepopulateMappings: {
+              ...definitionSet.prepopulateMappings,
               preEngagement: definitionSet.prepopulateMappings?.preEngagement ?? {},
               survey: definitionSet.prepopulateMappings?.survey ?? {},
             },
@@ -107,7 +108,6 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
     mockFetch.mockClear();
     clearDefinitionCache();
   });
-
   type TestParams = {
     description: string;
     preEngagementData?: Record<string, string>;
@@ -121,246 +121,641 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
     expectedCallType?: HrmContact['rawJson']['callType'];
   };
 
-  const testCases: TestParams[] = [
-    {
-      description:
-        'nothing set - sets callType as child and childInformation includes preEngagement data specified in prepopulateKeys',
-      formDefinitionSet: {
-        prepopulateKeys: {
-          preEngagement: {
-            ChildInformationTab: ['age', 'gender'],
-          },
-        },
-      },
-      expectedChildInformation: {
-        age: '',
-        gender: 'Unknown',
-        firstName: '', // firstName is always added whether in the form def or not
-        otherGender: '',
-      },
-      expectedCallerInformation: {
-        age: '',
-        gender: 'Unknown',
-        firstName: '', // firstName is always added whether in the form def or not
-        otherGender: '',
-      },
-      expectedCallType: '' as any,
-    },
-    {
-      description:
-        'preEngagement only, child caller - sets callType as child and childInformation includes preEngagement data specified in prepopulateKeys',
-      preEngagementData: {
-        upsetLevel: '1',
-        gender: 'Agender',
-        friendlyName: 'Anonymous',
-        age: '11',
-      },
-      formDefinitionSet: {
-        prepopulateMappings: {
-          preEngagement: {
-            age: [['ChildInformationTab.age']],
-            gender: [['ChildInformationTab.gender']],
-          },
-        },
-      },
-      expectedChildInformation: {
-        age: '11',
-        gender: 'Agender',
-        firstName: '', // firstName is always added whether in the form def or not
-        otherGender: '',
-      },
-      expectedCallerInformation: {
-        age: '',
-        gender: 'Unknown',
-        firstName: '', // firstName is always added whether in the form def or not
-        otherGender: '',
-      },
-      expectedCallType: callTypes.child,
-    },
-    {
-      description:
-        'chatbot memory only, child calling about self - sets callType as child and childInformation includes chatbot data specified in prepopulateKeys',
-      memory: {
-        aboutSelf: 'Yes',
-        upsetLevel: '1',
-        gender: 'Agender',
-        friendlyName: 'Anonymous',
-        age: '11',
-      },
-      formDefinitionSet: {
-        prepopulateMappings: {
-          survey: {
-            age: [['ChildInformationTab.age']],
-            gender: [['ChildInformationTab.gender']],
-          },
-        },
-      },
-      expectedChildInformation: {
-        age: '11',
-        gender: 'Agender',
-        firstName: '', // firstName is always added whether in the form def or not
-        otherGender: '',
-      },
-      expectedCallerInformation: {
-        age: '',
-        gender: 'Unknown',
-        firstName: '', // firstName is always added whether in the form def or not
-        otherGender: '',
-      },
-      expectedCallType: callTypes.child,
-    },
-    {
-      description:
-        'chatbot memory only, calling about child - sets callType as caller and childInformation includes preEngagement data specified in prepopulateKeys',
-      memory: {
-        aboutSelf: 'No',
-        upsetLevel: '1',
-        gender: 'Agender',
-        friendlyName: 'Anonymous',
-        age: '11',
-      },
-      formDefinitionSet: {
-        prepopulateMappings: {
-          survey: {
-            age: [['CallerInformationTab.age']],
-            gender: [['CallerInformationTab.gender']],
-          },
-        },
-      },
-      expectedChildInformation: {
-        age: '',
-        gender: 'Unknown',
-        firstName: '', // firstName is always added whether in the form def or not
-        otherGender: '',
-      },
-      expectedCallerInformation: {
-        age: '11',
-        gender: 'Agender',
-        firstName: '', // firstName is always added whether in the form def or not
-        otherGender: '',
-      },
-      expectedCallType: callTypes.caller,
-    },
-    {
-      description:
-        'chatbot memory and pre-engagement, child calling about self - sets callType as child and childInformation includes both sets of data specified in prepopulateKeys',
-      memory: {
-        aboutSelf: 'Yes',
-        friendlyName: 'Anonymous',
-        age: '11',
-      },
-      preEngagementData: {
-        upsetLevel: '1',
-        gender: 'Agender',
-      },
-      formDefinitionSet: {
-        prepopulateMappings: {
-          survey: {
-            age: [['ChildInformationTab.age']],
-          },
-          preEngagement: {
-            gender: [['ChildInformationTab.gender']],
-          },
-        },
-      },
-      expectedChildInformation: {
-        age: '11',
-        gender: 'Agender',
-        firstName: '', // firstName is always added whether in the form def or not
-        otherGender: '',
-      },
-      expectedCallerInformation: {
-        age: '',
-        gender: 'Unknown',
-        firstName: '', // firstName is always added whether in the form def or not
-        otherGender: '',
-      },
-      expectedCallType: callTypes.child,
-    },
-    {
-      description:
-        'chatbot memory and pre-engagement, caller calling about child - sets callType as caller and callerInformation includes both sets of data specified in prepopulateKeys',
-      memory: {
-        aboutSelf: 'No',
-        friendlyName: 'Anonymous',
-        age: '11',
-      },
-      preEngagementData: {
-        upsetLevel: '1',
-        gender: 'Agender',
-      },
-      formDefinitionSet: {
-        prepopulateMappings: {
-          survey: {
-            age: [['CallerInformationTab.age']],
-          },
-          preEngagement: {
-            gender: [['CallerInformationTab.gender']],
-          },
-        },
-      },
-      expectedChildInformation: {
-        age: '',
-        gender: 'Unknown',
-        firstName: '', // firstName is always added whether in the form def or not
-        otherGender: '',
-      },
-      expectedCallerInformation: {
-        age: '11',
-        gender: 'Agender',
-        firstName: '', // firstName is always added whether in the form def or not
-        otherGender: '',
-      },
-      expectedCallType: callTypes.caller,
-    },
-  ];
+  const commonTest = async ({
+                              formDefinitionSet,
+                              preEngagementData,
+                              memory,
+                              firstName,
+                              language,
+                              expectedChildInformation,
+                              expectedCallerInformation,
+                              expectedCallType,
+                              expectedCaseInformation,
+                            }: TestParams) => {
 
-  each(testCases).test(
-    '$description',
-    async ({
-      formDefinitionSet,
-      preEngagementData,
-      memory,
-      firstName,
-      language,
-      expectedChildInformation,
-      expectedCallerInformation,
-      expectedCallType,
-      expectedCaseInformation,
-    }: TestParams) => {
-      mockFormDefinitions(formDefinitionSet);
+        mockFormDefinitions(formDefinitionSet);
 
-      const populatedContactResult = await populateHrmContactFormFromTaskByMappings(
-        {
-          ...(preEngagementData ? { preEngagementData } : {}),
-          ...(memory ? { memory } : {}),
-          ...(firstName ? { firstName } : {}),
-          ...(language ? { language } : {}),
-        },
-        BLANK_CONTACT,
-        MOCK_FORM_DEFINITION_URL,
-      );
-      if (isErr(populatedContactResult)) {
-        throw new AssertionError({ message: populatedContactResult.message });
-      }
-      const populatedContact = populatedContactResult.data;
-
-      if (expectedChildInformation) {
-        expect(populatedContact.rawJson.childInformation).toEqual(
-          expectedChildInformation,
+        const populatedContactResult = await populateHrmContactFormFromTaskByMappings(
+            {
+              ...(preEngagementData ? { preEngagementData } : {}),
+              ...(memory ? { memory } : {}),
+              ...(firstName ? { firstName } : {}),
+              ...(language ? { language } : {}),
+            },
+            BLANK_CONTACT,
+            MOCK_FORM_DEFINITION_URL,
         );
-      }
-      if (expectedCallerInformation) {
-        expect(populatedContact.rawJson.callerInformation).toEqual(
-          expectedCallerInformation,
-        );
-      }
-      if (expectedCaseInformation) {
-        expect(populatedContact.rawJson.caseInformation).toEqual(expectedCaseInformation);
-      }
-      if (expectedCallType) {
-        expect(populatedContact.rawJson.callType).toEqual(expectedCallType);
-      }
-    },
-  );
+        if (isErr(populatedContactResult)) {
+          throw new AssertionError({ message: populatedContactResult.message });
+        }
+        const populatedContact = populatedContactResult.data;
+
+        if (expectedChildInformation) {
+          expect(populatedContact.rawJson.childInformation).toEqual(
+              expectedChildInformation,
+          );
+        }
+        if (expectedCallerInformation) {
+          expect(populatedContact.rawJson.callerInformation).toEqual(
+              expectedCallerInformation,
+          );
+        }
+        if (expectedCaseInformation) {
+          expect(populatedContact.rawJson.caseInformation).toEqual(
+              expectedCaseInformation,
+          );
+        }
+        if (expectedCallType) {
+          expect(populatedContact.rawJson.callType).toEqual(expectedCallType);
+        }
+      };
+
+  describe('selectTabsFromAboutSelfSurveyQuestion (default form selector)', () => {
+    type TestParams = {
+      description: string;
+      preEngagementData?: Record<string, string>;
+      memory?: Record<string, string>;
+      firstName?: string;
+      language?: string;
+      formDefinitionSet: FormDefinitionPatch;
+      expectedChildInformation?: HrmContact['rawJson']['childInformation'];
+      expectedCallerInformation?: HrmContact['rawJson']['callerInformation'];
+      expectedCaseInformation?: HrmContact['rawJson']['caseInformation'];
+      expectedCallType?: HrmContact['rawJson']['callType'];
+    };
+
+    const testCases: TestParams[] = [
+      {
+        description:
+          'nothing set - sets callType as child and childInformation includes preEngagement data specified in prepopulateKeys',
+        formDefinitionSet: {
+          prepopulateKeys: {
+            preEngagement: {
+              ChildInformationTab: ['age', 'gender'],
+            },
+          },
+        },
+        expectedChildInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallerInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallType: '' as any,
+      },
+      {
+        description:
+          'preEngagement only, child caller - sets callType as child and childInformation includes preEngagement data specified in prepopulateKeys',
+        preEngagementData: {
+          upsetLevel: '1',
+          gender: 'Agender',
+          friendlyName: 'Anonymous',
+          age: '11',
+        },
+        formDefinitionSet: {
+          prepopulateMappings: {
+            preEngagement: {
+              age: [['ChildInformationTab.age']],
+              gender: [['ChildInformationTab.gender']],
+            },
+          },
+        },
+        expectedChildInformation: {
+          age: '11',
+          gender: 'Agender',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallerInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallType: callTypes.child,
+      },
+      {
+        description:
+          'chatbot memory only, child calling about self - sets callType as child and childInformation includes chatbot data specified in prepopulateKeys',
+        memory: {
+          aboutSelf: 'Yes',
+          upsetLevel: '1',
+          gender: 'Agender',
+          friendlyName: 'Anonymous',
+          age: '11',
+        },
+        formDefinitionSet: {
+          prepopulateMappings: {
+            survey: {
+              age: [['ChildInformationTab.age']],
+              gender: [['ChildInformationTab.gender']],
+            },
+          },
+        },
+        expectedChildInformation: {
+          age: '11',
+          gender: 'Agender',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallerInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallType: callTypes.child,
+      },
+      {
+        description:
+          'chatbot memory only, calling about child - sets callType as caller and childInformation includes preEngagement data specified in prepopulateKeys',
+        memory: {
+          aboutSelf: 'No',
+          upsetLevel: '1',
+          gender: 'Agender',
+          friendlyName: 'Anonymous',
+          age: '11',
+        },
+        formDefinitionSet: {
+          prepopulateMappings: {
+            survey: {
+              age: [['CallerInformationTab.age']],
+              gender: [['CallerInformationTab.gender']],
+            },
+          },
+        },
+        expectedChildInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallerInformation: {
+          age: '11',
+          gender: 'Agender',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallType: callTypes.caller,
+      },
+      {
+        description:
+          'chatbot memory and pre-engagement, child calling about self - sets callType as child and childInformation includes both sets of data specified in prepopulateKeys',
+        memory: {
+          aboutSelf: 'Yes',
+          friendlyName: 'Anonymous',
+          age: '11',
+        },
+        preEngagementData: {
+          upsetLevel: '1',
+          gender: 'Agender',
+        },
+        formDefinitionSet: {
+          prepopulateMappings: {
+            survey: {
+              age: [['ChildInformationTab.age']],
+            },
+            preEngagement: {
+              gender: [['ChildInformationTab.gender']],
+            },
+          },
+        },
+        expectedChildInformation: {
+          age: '11',
+          gender: 'Agender',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallerInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallType: callTypes.child,
+      },
+      {
+        description:
+          'chatbot memory and pre-engagement, caller calling about child - sets callType as caller and callerInformation includes both sets of data specified in prepopulateKeys',
+        memory: {
+          aboutSelf: 'No',
+          friendlyName: 'Anonymous',
+          age: '11',
+        },
+        preEngagementData: {
+          upsetLevel: '1',
+          gender: 'Agender',
+        },
+        formDefinitionSet: {
+          prepopulateMappings: {
+            survey: {
+              age: [['CallerInformationTab.age']],
+            },
+            preEngagement: {
+              gender: [['CallerInformationTab.gender']],
+            },
+          },
+        },
+        expectedChildInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallerInformation: {
+          age: '11',
+          gender: 'Agender',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallType: callTypes.caller,
+      },
+    ];
+
+    each(testCases).test(
+      '$description',
+      commonTest
+    );
+  });
+  describe('staticAvailableContactTabSelector', () => {
+
+    const testCases: TestParams[] = [
+      {
+        description:
+            'nothing set - sets callType as child and childInformation includes preEngagement data specified in prepopulateKeys',
+        formDefinitionSet: {
+          prepopulateMappings: {
+            formSelector: { selectorType: 'staticSelector', parameter: ['ChildInformationTab', 'CallerInformationTab', 'CaseInformationTab'] },
+            preEngagement: {
+              age: [['ChildInformationTab.age']],
+              gender: [['ChildInformationTab.gender']],
+            },
+          },
+        },
+        expectedChildInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallerInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallType: '' as any,
+      },
+      {
+        description:
+            'preEngagement only, child caller - still sets callType as child and childInformation includes preEngagement data specified in prepopulateKeys',
+        preEngagementData: {
+          upsetLevel: '1',
+          gender: 'Agender',
+          friendlyName: 'Anonymous',
+          age: '11',
+        },
+        formDefinitionSet: {
+          prepopulateMappings: {
+            formSelector: { selectorType: 'staticSelector', parameter: ['ChildInformationTab', 'CallerInformationTab', 'CaseInformationTab'] },
+            preEngagement: {
+              age: [['ChildInformationTab.age']],
+              gender: [['ChildInformationTab.gender']],
+            },
+          },
+        },
+        expectedChildInformation: {
+          age: '11',
+          gender: 'Agender',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallerInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallType: callTypes.child,
+      },
+      {
+        description:
+            'chatbot memory only, child calling about self - sets callType as child and childInformation includes chatbot data specified in prepopulateKeys',
+        memory: {
+          aboutSelf: 'Yes',
+          upsetLevel: '1',
+          gender: 'Agender',
+          friendlyName: 'Anonymous',
+          age: '11',
+        },
+        formDefinitionSet: {
+          prepopulateMappings: {
+            formSelector: { selectorType: 'staticSelector', parameter: ['ChildInformationTab', 'CallerInformationTab', 'CaseInformationTab'] },
+            survey: {
+              age: [['ChildInformationTab.age']],
+              gender: [['ChildInformationTab.gender']],
+            },
+          },
+        },
+        expectedChildInformation: {
+          age: '11',
+          gender: 'Agender',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallerInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallType: callTypes.child,
+      },
+      {
+        description:
+            'chatbot memory only, calling about child - sets callType as caller and childInformation includes preEngagement data specified in prepopulateKeys',
+        memory: {
+          aboutSelf: 'No',
+          upsetLevel: '1',
+          gender: 'Agender',
+          friendlyName: 'Anonymous',
+          age: '11',
+        },
+        formDefinitionSet: {
+          prepopulateMappings: {
+            formSelector: { selectorType: 'staticSelector', parameter: ['ChildInformationTab', 'CallerInformationTab', 'CaseInformationTab'] },
+            survey: {
+              age: [['CallerInformationTab.age']],
+              gender: [['CallerInformationTab.gender']],
+            },
+          },
+        },
+        expectedChildInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallerInformation: {
+          age: '11',
+          gender: 'Agender',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallType: callTypes.caller,
+      },
+      {
+        description:
+            'chatbot memory and pre-engagement, child calling about self - sets callType as child and childInformation includes both sets of data specified in prepopulateKeys',
+        memory: {
+          aboutSelf: 'Yes',
+          friendlyName: 'Anonymous',
+          age: '11',
+        },
+        preEngagementData: {
+          upsetLevel: '1',
+          gender: 'Agender',
+        },
+        formDefinitionSet: {
+          prepopulateMappings: {
+            formSelector: { selectorType: 'staticSelector', parameter: ['ChildInformationTab', 'CallerInformationTab', 'CaseInformationTab'] },
+            survey: {
+              age: [['ChildInformationTab.age']],
+            },
+            preEngagement: {
+              gender: [['ChildInformationTab.gender']],
+            },
+          },
+        },
+        expectedChildInformation: {
+          age: '11',
+          gender: 'Agender',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallerInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallType: callTypes.child,
+      },
+      {
+        description:
+            'chatbot memory and pre-engagement, caller calling about child - sets callType as caller and callerInformation includes both sets of data specified in prepopulateKeys',
+        memory: {
+          aboutSelf: 'No',
+          friendlyName: 'Anonymous',
+          age: '11',
+        },
+        preEngagementData: {
+          upsetLevel: '1',
+          gender: 'Agender',
+        },
+        formDefinitionSet: {
+          prepopulateMappings: {
+            formSelector: { selectorType: 'staticSelector', parameter: ['ChildInformationTab', 'CallerInformationTab', 'CaseInformationTab'] },
+            survey: {
+              age: [['CallerInformationTab.age']],
+            },
+            preEngagement: {
+              gender: [['CallerInformationTab.gender']],
+            },
+          },
+        },
+        expectedChildInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallerInformation: {
+          age: '11',
+          gender: 'Agender',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallType: callTypes.caller,
+      },
+      {
+        description:
+            'chatbot memory, value mapped to a single choice of several forms, and the first form is available - populates first form',
+        memory: {
+          aboutSelf: 'No',
+          friendlyName: 'Anonymous',
+          age: '11',
+        },
+        formDefinitionSet: {
+          prepopulateMappings: {
+            formSelector: { selectorType: 'staticSelector', parameter: ['ChildInformationTab', 'CallerInformationTab', 'CaseInformationTab'] },
+            survey: {
+              age: [['CallerInformationTab.age', 'ChildInformationTab.age']],
+            },
+          },
+        },
+        expectedChildInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallerInformation: {
+          age: '11',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallType: callTypes.caller,
+      },
+      {
+        description:
+            'chatbot memory, value mapped to a single choice of several forms, and the first choice form is not available but second choice is - populates second form',
+        memory: {
+          aboutSelf: 'No',
+          friendlyName: 'Anonymous',
+          age: '11',
+        },
+        formDefinitionSet: {
+          prepopulateMappings: {
+            formSelector: { selectorType: 'staticSelector', parameter: ['ChildInformationTab', 'CaseInformationTab'] },
+            survey: {
+              age: [['CallerInformationTab.age', 'ChildInformationTab.age']],
+            },
+          },
+        },
+        expectedChildInformation: {
+          age: '11',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallerInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallType: callTypes.caller,
+      },{
+        description:
+            'chatbot memory, value mapped to a single choice of several forms, and choice form is available- populates nothing',
+        memory: {
+          aboutSelf: 'No',
+          friendlyName: 'Anonymous',
+          age: '11',
+        },
+        formDefinitionSet: {
+          prepopulateMappings: {
+            formSelector: { selectorType: 'staticSelector', parameter: ['CaseInformationTab'] },
+            survey: {
+              age: [['CallerInformationTab.age', 'ChildInformationTab.age']],
+            },
+          },
+        },
+        expectedChildInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallerInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallType: callTypes.caller,
+      },{
+        description:
+            'chatbot memory, value mapped to a several choice sets - populates the first available choice for all of them',
+        memory: {
+          aboutSelf: 'No',
+          friendlyName: 'Anonymous',
+          age: '11',
+          gender: 'Agender',
+          flub: 'dub'
+        },
+        formDefinitionSet: {
+          prepopulateMappings: {
+            formSelector: { selectorType: 'staticSelector', parameter: ['CaseInformationTab', 'ChildInformationTab'] },
+            survey: {
+              age: [['CaseInformationTab.age', 'ChildInformationTab.age']],
+              gender: [['CallerInformationTab.gender', 'ChildInformationTab.gender']],
+              flub: [['CallerInformationTab.flub']],
+            },
+          },
+        },
+        expectedCaseInformation: {
+          age: '11',
+        },
+        expectedChildInformation: {
+          age: '',
+          gender: 'Agender',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallerInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallType: callTypes.caller,
+      },{
+        description:
+            'chatbot memory and pre-engagement survey, takes pre-engagement in a conflict',
+        memory: {
+          aboutSelf: 'No',
+          friendlyName: 'Anonymous',
+          age: '11',
+          gender: 'Agender',
+          flub: 'dub'
+        },
+        preEngagementData: {
+          age: '15',
+        },
+        formDefinitionSet: {
+          prepopulateMappings: {
+            formSelector: { selectorType: 'staticSelector', parameter: ['CaseInformationTab', 'ChildInformationTab'] },
+            survey: {
+              age: [['CaseInformationTab.age', 'ChildInformationTab.age']],
+              gender: [['CallerInformationTab.gender', 'ChildInformationTab.gender']],
+              flub: [['CallerInformationTab.flub']],
+            },
+            preEngagement: {
+              age: [['CaseInformationTab.age', 'ChildInformationTab.age']],
+            }
+          },
+        },
+        expectedCaseInformation: {
+          age: '15',
+        },
+        expectedChildInformation: {
+          age: '',
+          gender: 'Agender',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallerInformation: {
+          age: '',
+          gender: 'Unknown',
+          firstName: '', // firstName is always added whether in the form def or not
+          otherGender: '',
+        },
+        expectedCallType: callTypes.caller,
+      },
+    ];
+
+    each(testCases).test(
+        '$description',
+        commonTest
+    );
+  });
 });

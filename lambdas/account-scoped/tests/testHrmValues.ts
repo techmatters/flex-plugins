@@ -78,7 +78,10 @@ const BASE_PERSON_FORM_DEFINITION: FormItemDefinition[] = [
 export const BASE_FORM_DEFINITION: FormDefinitionSet = {
   childInformation: BASE_PERSON_FORM_DEFINITION,
   callerInformation: BASE_PERSON_FORM_DEFINITION,
-  caseInformation: [],
+  caseInformation: [{
+    label: '',
+    name: 'age',
+    type: FormInputType.Input, }],
   prepopulateKeys: {
     preEngagement: {
       ChildInformationTab: [],
