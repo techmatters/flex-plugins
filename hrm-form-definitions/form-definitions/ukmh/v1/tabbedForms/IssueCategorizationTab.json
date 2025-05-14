@@ -1,5 +1,5 @@
 {
-  "The Mix ": {
+  "The Mix": {
     "Abuse": {
       "color": "#085f63",
       "subcategories": [
@@ -89,9 +89,6 @@
         },
         {
           "label": "Work/employment"
-        },
-        {
-          "label": "---------- Relationships ----------"
         },
         {
           "label": "Breakups/separation/divorce"
