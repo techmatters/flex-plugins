@@ -15,7 +15,6 @@
  */
 
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
-import { CallTypeKeys } from '@tech-matters/hrm-types';
 import { LayoutVersion } from './layoutVersion';
 
 export enum FormInputType {
@@ -276,7 +275,7 @@ export type CategoriesDefinition = { [category: string]: CategoryEntry };
 
 export type CallTypeButtonsEntry = {
   type: 'button';
-  name: CallTypeKeys;
+  name: string;
   label: string;
   category: 'data' | 'non-data';
 };

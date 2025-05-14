@@ -18,6 +18,8 @@
 import { cloneDeep, get } from 'lodash';
 import {
   callTypes,
+} from 'hrm-types';
+import {
   DefinitionVersion,
   FieldType,
   InsightsFieldSpec,

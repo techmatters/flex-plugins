@@ -39,8 +39,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.16.5",
-    "lodash": "^4.17.21",
-    "@tech-matters/hrm-types":"../hrm-types"
+    "lodash": "^4.17.21"
   },
   "prettier": {
     "printWidth": 100,
