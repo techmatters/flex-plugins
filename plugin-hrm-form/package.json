@@ -8,7 +8,7 @@
   },
   "scripts": {
     "bundle-analyzer": "cross-env BUNDLE_ANALYZER=true npm run build",
-    "preinstall": "cd ../lambdas/packages/hrm-form-definitions && npm ci && npm run build",
+    "preinstall": "cd ../lambdas/packages/hrm-form-definitions && npm ci && npm run build && cd ../hrm-types && npm ci && npm run build",
     "postinstall": "flex-plugin pre-script-check",
     "prestart": "flex-plugin pre-start-check",
     "dev:local-form-definition-server": "npx http-server ../lambdas/packages/hrm-form-definitions/form-definitions -p 8090 --cors -c-1",

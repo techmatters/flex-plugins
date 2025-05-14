@@ -14,7 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 import { callTypes } from 'hrm-types';
 import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
 import { TaskHelper } from '@twilio/flex-ui';

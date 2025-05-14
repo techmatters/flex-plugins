@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Module to hold HRM data types (twilio domain repo version)",
   "main": "dist/index.js",
+  "devDependencies": {
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
+  },
   "scripts": {
     "build": "npx tsc",
     "lint": "eslint --max-warnings 5 --ext ts src"

@@ -17,12 +17,11 @@
 import { capitalize } from 'lodash';
 import { format, startOfDay } from 'date-fns';
 import {
-  callTypes,
   DefinitionVersion,
   FormInputType,
   FormItemDefinition,
 } from '@tech-matters/hrm-form-definitions';
-import { FormValue, HrmContact } from '@tech-matters/hrm-types';
+import { FormValue, HrmContact, callTypes } from '@tech-matters/hrm-types';
 import { newErr, newOk, Result } from '../Result';
 
 type MapperFunction = (options: string[]) => (value: string) => string;
