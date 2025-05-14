@@ -4,11 +4,6 @@
     "label": "Child Is",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -33,15 +28,10 @@
     }
   },
   {
-    "name": "childGender",
+    "name": "gender",
     "label": "Child Gender",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -74,15 +64,10 @@
     }
   },
   {
-    "name": "childAge",
+    "name": "age",
     "label": "Child Age",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -119,11 +104,6 @@
     "label": "Number of additional victims",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "Unknown",
     "options": [
       {
         "value": "Unknown",
@@ -150,89 +130,6 @@
         "label": "5+"
       }
     ]
-  },
-  {
-    "name": "safetyConcern",
-    "label": "Safety Concern",
-    "type": "select",
-    "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Suicidal Ideation",
-        "label": "Suicidal Ideation"
-      },
-      {
-        "value": "None",
-        "label": "None"
-      },
-      {
-        "value": "Imminent Harm",
-        "label": "Imminent Harm"
-      },
-      {
-        "value": "Homicidal Ideation",
-        "label": "Homicidal Ideation"
-      },
-      {
-        "value": "Medical Emergency",
-        "label": "Medical Emergency"
-      },
-      {
-        "value": "Safety Concern- Other",
-        "label": "Safety Concern- Other"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "riskAssessment",
-    "label": "Risk Assessment",
-    "type": "dependent-select",
-    "isPII": false,
-    "dependsOn": "safetyConcern",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": {
-      "Suicidal Ideation": [
-        {
-          "value": "No plan, means, intent",
-          "label": "No plan, means, intent"
-        },
-        {
-          "value": "Plan, no means or intent",
-          "label": "Plan, no means or intent"
-        },
-        {
-          "value": "Plan and means, no intent",
-          "label": "Plan and means, no intent"
-        },
-        {
-          "value": "Plan, means, and intent",
-          "label": "Plan, means, and intent"
-        },
-        {
-          "value": "Plan, means, intent, and action taken",
-          "label": "Plan, means, intent, and action taken"
-        }
-      ]
-    },
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
   },
   {
     "name": "childState",
@@ -1258,6 +1155,270 @@
           "value": "Zimbabwe",
           "label": "Zimbabwe"
         }
+      ]
+    }
+  },
+  {
+    "name": "safetyConcern",
+    "label": "Safety Concern",
+    "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Suicidal Ideation",
+        "label": "Suicidal Ideation"
+      },
+      {
+        "value": "None",
+        "label": "None"
+      },
+      {
+        "value": "Imminent Harm",
+        "label": "Imminent Harm"
+      },
+      {
+        "value": "Homicidal Ideation",
+        "label": "Homicidal Ideation"
+      },
+      {
+        "value": "Medical Emergency",
+        "label": "Medical Emergency"
+      },
+      {
+        "value": "Safety Concern- Other",
+        "label": "Safety Concern- Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "q1",
+    "label": "Have you wished you were dead or wished you could go to sleep and not wake up?",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "safetyConcern",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Suicidal Ideation": [
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        }
+      ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "q2",
+    "label": "Have you actually had any thoughts of killing yourself?",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "q1",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Yes": [
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        }
+      ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "q3",
+    "label": "Have you been thinking about how you might do this?",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "q2",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Yes": [
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        }
+      ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "q4",
+    "label": "Have you had these thoughts and had some intention of acting on them?",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "q3",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Yes": [
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        }
+      ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "q5",
+    "label": "Have you started to work out or worked out the details of how to kill yourself? Did you intend to carry out this plan?",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "q4",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Yes": [
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        }
+      ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "q6",
+    "label": "Have you ever done anything, started to do anything, or prepared to do anything to end your life?",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "q5",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Yes": [
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        }
+      ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "q7",
+    "label": "In the last 3 months, have you ever done anything, started to do anything, or prepared to do anything to end your life?",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "q6",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Yes": [
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        }
+      ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "riskLevel",
+    "label": "Risk level",
+    "type": "dependent-select",
+    "dependsOn": "safetyConcern",
+    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Suicidal Ideation": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Low risk - Suicidal ideation without plan or intent",
+        "label": "Low risk - Suicidal ideation without plan or intent"
+      },
+      {
+        "value": "Medium risk - Suicidal ideation with some level of plan and low intent",
+        "label": "Medium risk - Suicidal ideation with some level of plan and low intent"
+      },
+      {
+        "value": "High risk – Suicidal ideation with a plan and intent",
+        "label": "High risk – Suicidal ideation with a plan and intent"
+      }
       ]
     }
   }
