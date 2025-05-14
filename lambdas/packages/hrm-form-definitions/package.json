@@ -40,7 +40,7 @@
   "dependencies": {
     "@babel/runtime": "^7.16.5",
     "lodash": "^4.17.21",
-    "@tech-matters/hrm-form-definitions": "1.0.0"
+    "@tech-matters/hrm-types":"../hrm-types"
   },
   "prettier": {
     "printWidth": 100,
