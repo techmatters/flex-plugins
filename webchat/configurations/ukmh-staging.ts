@@ -133,13 +133,28 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'checkbox',
       name: 'termsAndConditions',
       label:
-        'I\'ve read and accept the <a href="https://en.wikipedia.org/wiki/Terms_of_service">Terms and Conditions</a>',
+        'I have read terms of use and the privacy policy and agree to them.',
       required: {
         value: true,
-        message: "Sorry, if you don't accept our terms and conditions we can't provide counselling to you.",
+        message: "Sorry, if you don't accept our terms and privacy policy we can't provide counselling to you.",
       },
     },
-
+    {
+      type: 'checkbox',
+      name: 'dataProcessingAndStorage',
+      label:
+        'I consent to my data being processed and stored in order to access the Peer Support service.',
+      required: {
+        value: true,
+        message: "Sorry, if you don't consent to have your data being processed and stored we can't provide counselling to you.",
+      },
+    },
+    {
+      type: 'checkbox',
+      name: 'consentForResearchevaluation',
+      label:
+        'I consent to being contacted for research or evaluation purposes.'
+    },
   ],
 };
 
