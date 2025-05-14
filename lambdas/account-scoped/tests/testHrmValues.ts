@@ -14,54 +14,63 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  FormInputType,
-  FormItemDefinition,
-} from '../src/hrm/populateHrmContactFormFromTask';
+import { FormInputType, FormItemDefinition } from '@tech-matters/hrm-form-definitions';
 import { FormDefinitionSet } from './testHrmTypes';
 
 const BASE_PERSON_FORM_DEFINITION: FormItemDefinition[] = [
   {
+    label: '',
     name: 'firstName',
     type: FormInputType.Input,
   },
   {
+    label: '',
     name: 'age',
     type: FormInputType.Select,
     options: [
       {
         value: '',
+        label: '',
       },
       {
         value: '11',
+        label: '',
       },
       {
         value: '>12',
+        label: '',
       },
       {
         value: 'Unknown',
+        label: '',
       },
     ],
   },
   {
+    label: '',
     name: 'gender',
     defaultOption: {
+      label: '',
       value: 'Unknown',
     },
     type: FormInputType.Select,
     options: [
       {
+        label: '',
         value: 'Agender',
       },
       {
+        label: '',
         value: 'Non-Binary/Genderqueer/Gender fluid',
       },
       {
+        label: '',
         value: 'Unknown',
       },
     ],
   },
   {
+    label: '',
     name: 'otherGender',
     type: FormInputType.Input,
   },
@@ -80,6 +89,10 @@ export const BASE_FORM_DEFINITION: FormDefinitionSet = {
       ChildInformationTab: [],
       CallerInformationTab: [],
     },
+  },
+  prepopulateMappings: {
+    preEngagement: {},
+    survey: {},
   },
   helplineInformation: {
     label: '',

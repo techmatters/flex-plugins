@@ -14,16 +14,17 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  callTypes,
-  clearDefinitionCache,
-  HrmContact,
-  populateHrmContactFormFromTask,
-} from '../../../src/hrm/populateHrmContactFormFromTask';
 import { BLANK_CONTACT } from './testContacts';
+import { callTypes, HrmContact } from '@tech-matters/hrm-types';
 import each from 'jest-each';
 import { FormDefinitionPatch, FormDefinitionSet } from '../../testHrmTypes';
 import { BASE_FORM_DEFINITION, MOCK_FORM_DEFINITION_URL } from '../../testHrmValues';
+import {
+  populateHrmContactFormFromTaskByMappings,
+  clearDefinitionCache,
+} from '../../../src/hrm/populateHrmContactFormFromTaskByMappings';
+import { isErr } from '../../../src/Result';
+import { AssertionError } from 'node:assert';
 
 const fetchFormDefinition = async (
   url: string,
@@ -38,8 +39,8 @@ const fetchFormDefinition = async (
         return definitionSet.callerInformation;
       case '/tabbedForms/CaseInformationTab.json':
         return definitionSet.caseInformation;
-      case '/PrepopulateKeys.json':
-        return definitionSet.prepopulateKeys;
+      case '/PrepopulateMappings.json':
+        return definitionSet.prepopulateMappings;
       case '/HelplineInformation.json':
         return definitionSet.helplineInformation;
       default:
@@ -89,6 +90,10 @@ const mockFormDefinitions = (definitionSet: FormDefinitionPatch) => {
                   BASE_FORM_DEFINITION.prepopulateKeys.survey.CallerInformationTab,
               },
             },
+            prepopulateMappings: {
+              preEngagement: definitionSet.prepopulateMappings?.preEngagement ?? {},
+              survey: definitionSet.prepopulateMappings?.survey ?? {},
+            },
           }),
         ),
     } as Response),
@@ -97,7 +102,7 @@ const mockFormDefinitions = (definitionSet: FormDefinitionPatch) => {
 
 global.fetch = mockFetch;
 
-describe('populateHrmContactFormFromTask', () => {
+describe('populateHrmContactFormFromTaskByMappings', () => {
   beforeEach(() => {
     mockFetch.mockClear();
     clearDefinitionCache();
@@ -139,7 +144,7 @@ describe('populateHrmContactFormFromTask', () => {
         firstName: '', // firstName is always added whether in the form def or not
         otherGender: '',
       },
-      expectedCallType: '',
+      expectedCallType: '' as any,
     },
     {
       description:
@@ -151,9 +156,10 @@ describe('populateHrmContactFormFromTask', () => {
         age: '11',
       },
       formDefinitionSet: {
-        prepopulateKeys: {
+        prepopulateMappings: {
           preEngagement: {
-            ChildInformationTab: ['age', 'gender'],
+            age: [['ChildInformationTab.age']],
+            gender: [['ChildInformationTab.gender']],
           },
         },
       },
@@ -182,9 +188,10 @@ describe('populateHrmContactFormFromTask', () => {
         age: '11',
       },
       formDefinitionSet: {
-        prepopulateKeys: {
+        prepopulateMappings: {
           survey: {
-            ChildInformationTab: ['age', 'gender'],
+            age: [['ChildInformationTab.age']],
+            gender: [['ChildInformationTab.gender']],
           },
         },
       },
@@ -213,9 +220,10 @@ describe('populateHrmContactFormFromTask', () => {
         age: '11',
       },
       formDefinitionSet: {
-        prepopulateKeys: {
+        prepopulateMappings: {
           survey: {
-            CallerInformationTab: ['age', 'gender'],
+            age: [['CallerInformationTab.age']],
+            gender: [['CallerInformationTab.gender']],
           },
         },
       },
@@ -246,12 +254,12 @@ describe('populateHrmContactFormFromTask', () => {
         gender: 'Agender',
       },
       formDefinitionSet: {
-        prepopulateKeys: {
+        prepopulateMappings: {
           survey: {
-            ChildInformationTab: ['age'],
+            age: [['ChildInformationTab.age']],
           },
           preEngagement: {
-            ChildInformationTab: ['gender'],
+            gender: [['ChildInformationTab.gender']],
           },
         },
       },
@@ -282,12 +290,12 @@ describe('populateHrmContactFormFromTask', () => {
         gender: 'Agender',
       },
       formDefinitionSet: {
-        prepopulateKeys: {
+        prepopulateMappings: {
           survey: {
-            CallerInformationTab: ['age'],
+            age: [['CallerInformationTab.age']],
           },
           preEngagement: {
-            CallerInformationTab: ['gender'],
+            gender: [['CallerInformationTab.gender']],
           },
         },
       },
@@ -322,7 +330,7 @@ describe('populateHrmContactFormFromTask', () => {
     }: TestParams) => {
       mockFormDefinitions(formDefinitionSet);
 
-      const populatedContact = await populateHrmContactFormFromTask(
+      const populatedContactResult = await populateHrmContactFormFromTaskByMappings(
         {
           ...(preEngagementData ? { preEngagementData } : {}),
           ...(memory ? { memory } : {}),
@@ -332,6 +340,11 @@ describe('populateHrmContactFormFromTask', () => {
         BLANK_CONTACT,
         MOCK_FORM_DEFINITION_URL,
       );
+      if (isErr(populatedContactResult)) {
+        throw new AssertionError({ message: populatedContactResult.message });
+      }
+      const populatedContact = populatedContactResult.data;
+
       if (expectedChildInformation) {
         expect(populatedContact.rawJson.childInformation).toEqual(
           expectedChildInformation,

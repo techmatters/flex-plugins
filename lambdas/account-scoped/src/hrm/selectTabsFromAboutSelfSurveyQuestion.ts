@@ -13,38 +13,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { HrmContact } from '@tech-matters/hrm-types';
 
-export const BLANK_CONTACT: HrmContact = {
-  id: '',
-  definitionVersion: '',
-  timeOfContact: new Date().toISOString(),
-  taskId: null,
-  helpline: '',
-  rawJson: {
-    childInformation: {},
-    callerInformation: {},
-    caseInformation: {},
-    callType: '' as any,
-    contactlessTask: {
-      channel: '' as any,
-      date: '',
-      time: '',
-      createdOnBehalfOf: '',
-      helpline: '',
-    },
-    categories: {},
-  },
-  channelSid: '',
-  serviceSid: '',
-  channel: 'default',
-  createdBy: '',
-  createdAt: '',
-  updatedBy: '',
-  updatedAt: '',
-  queueName: '',
-  number: '',
-  conversationDuration: 0,
-  csamReports: [],
-  conversationMedia: [],
+import { AvailableContactFormSelector } from './availableContactFormSelector';
+
+export const selectTabsFromAboutSelfSurveyQuestion: AvailableContactFormSelector = (
+  source,
+  preEngagementSelections,
+  surveyAnswers,
+) => {
+  if (source === 'survey') {
+    if (surveyAnswers?.aboutSelf === 'Yes') {
+      return ['CaseInformationTab', 'ChildInformationTab'];
+    } else if (surveyAnswers?.aboutSelf) {
+      return ['CaseInformationTab', 'CallerInformationTab'];
+    }
+    return ['CaseInformationTab'];
+  } else {
+    if (surveyAnswers?.aboutSelf === 'Yes' || !surveyAnswers?.aboutSelf) {
+      return ['CaseInformationTab', 'ChildInformationTab'];
+    }
+    return ['CaseInformationTab', 'CallerInformationTab'];
+  }
 };

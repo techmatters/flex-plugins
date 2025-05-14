@@ -22,7 +22,7 @@ import { BLANK_CONTACT } from './testContacts';
 import { EventFields } from '../../../src/taskrouter';
 import { getSsmParameter } from '../../../src/ssmCache';
 import { handleEvent } from '../../../src/hrm/createHrmContactTaskRouterListener';
-import { populateHrmContactFormFromTask } from '../../../src/hrm/populateHrmContactFormFromTask';
+import { populateHrmContactFormFromTaskByKeys } from '../../../src/hrm/populateHrmContactFormFromTaskByKeys';
 import {
   TEST_ACCOUNT_SID,
   TEST_CONTACT_ID,
@@ -43,12 +43,12 @@ const mockGetSsmParameter = getSsmParameter as jest.MockedFunction<
   typeof getSsmParameter
 >;
 
-jest.mock('../../../src/hrm/populateHrmContactFormFromTask', () => ({
-  populateHrmContactFormFromTask: jest.fn(),
+jest.mock('../../../src/hrm/populateHrmContactFormFromTaskByKeys', () => ({
+  populateHrmContactFormFromTaskByKeys: jest.fn(),
 }));
 const mockPopulateHrmContactFormFromTask =
-  populateHrmContactFormFromTask as jest.MockedFunction<
-    typeof populateHrmContactFormFromTask
+  populateHrmContactFormFromTaskByKeys as jest.MockedFunction<
+    typeof populateHrmContactFormFromTaskByKeys
   >;
 
 const newEventFields = (

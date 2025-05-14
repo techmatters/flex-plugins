@@ -16,7 +16,6 @@
 
 // eslint-disable-next-line import/no-extraneous-dependencies,prettier/prettier
 import type {MockedEndpoint, Mockttp} from 'mockttp';
-import { HrmContact } from '../../../src/hrm/populateHrmContactFormFromTask';
 import { AccountSID } from '../../../src/twilioTypes';
 import { TEST_ACCOUNT_SID, TEST_AUTH_TOKEN } from '../../testTwilioValues';
 

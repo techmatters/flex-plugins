@@ -13,38 +13,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { HrmContact } from '@tech-matters/hrm-types';
 
-export const BLANK_CONTACT: HrmContact = {
-  id: '',
-  definitionVersion: '',
-  timeOfContact: new Date().toISOString(),
-  taskId: null,
-  helpline: '',
-  rawJson: {
-    childInformation: {},
-    callerInformation: {},
-    caseInformation: {},
-    callType: '' as any,
-    contactlessTask: {
-      channel: '' as any,
-      date: '',
-      time: '',
-      createdOnBehalfOf: '',
-      helpline: '',
-    },
-    categories: {},
-  },
-  channelSid: '',
-  serviceSid: '',
-  channel: 'default',
-  createdBy: '',
-  createdAt: '',
-  updatedBy: '',
-  updatedAt: '',
-  queueName: '',
-  number: '',
-  conversationDuration: 0,
-  csamReports: [],
-  conversationMedia: [],
-};
+// Data callTypes. Preserving name to avoid big refactor
+export const callTypes = {
+  child: 'Child calling about self',
+  caller: 'Someone calling about a child',
+} as const;
+
+export type DataCallTypesKeys = keyof typeof callTypes;
+export type CallTypeKeys = DataCallTypesKeys | string; // This results in "strings" as it's a broader type. Leaving the DataCallTypesKeys in intentionally to emphasize them.
+export type DataCallTypes = (typeof callTypes)[keyof typeof callTypes];
+export type CallTypes = DataCallTypes | string; // This results in "strings" as it's a broader type. Leaving the DataCallTypes in intentionally to emphasize them.

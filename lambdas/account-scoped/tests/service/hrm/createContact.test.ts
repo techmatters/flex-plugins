@@ -42,7 +42,6 @@ import { mockHrmContacts, verifyCreateContactRequest } from '../sandbox/mockHrm'
 import { MockedEndpoint } from 'mockttp';
 import { BLANK_CONTACT } from '../../unit/hrm/testContacts';
 import { TaskSID } from '../../../src/twilioTypes';
-import { HrmContact } from '../../../src/hrm/populateHrmContactFormFromTask';
 
 const BLANK_POPULATED_PERSON_INFORMATION = {
   age: '',
