@@ -4,7 +4,7 @@
     "formPath": "caseForms/NoteForm.json"
   },
   "referral": {
-    "label": "Referral",
+    "label": "Break Confidentiality",
     "formPath": "caseForms/ReferralForm.json"
   },
   "household": {
@@ -16,7 +16,7 @@
     "formPath": "caseForms/PerpetratorForm.json"
   },
   "incident": {
-    "label": "Incident",
+    "label": "Safegaurding/Risk",
     "formPath": "caseForms/IncidentForm.json"
   },
   "document": {
