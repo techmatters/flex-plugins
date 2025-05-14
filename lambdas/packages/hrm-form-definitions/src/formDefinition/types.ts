@@ -15,7 +15,7 @@
  */
 
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
-import { CallTypeKeys } from './callTypes';
+import { CallTypeKeys } from '@tech-matters/hrm-types';
 import { LayoutVersion } from './layoutVersion';
 
 export enum FormInputType {

@@ -3,8 +3,8 @@
   "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
-    { "path": "packages/hrm-form-definitions" },
     { "path": "packages/hrm-types" },
+    { "path": "packages/hrm-form-definitions" },
     { "path": "account-scoped" },
   ]
 }

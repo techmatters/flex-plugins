@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "Module to hold HRM data types (twilio domain repo version)",
   "main": "dist/index.js",
-  "dependencies": {
-    "@tech-matters/hrm-form-definitions": "1.0.0"
-  },
   "scripts": {
     "build": "npx tsc",
     "lint": "eslint --max-warnings 5 --ext ts src"
