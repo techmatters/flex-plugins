@@ -29,11 +29,11 @@ COPY package.json package-lock.json tsconfig.json tsconfig.base.json ${lambda_di
 
 RUN dnf install -y rsync \
     && cd /tmp/build \
-    && npm ci -w ${lambda_dir}/${lambda_name} -w ${lambda_dir}/../packages/* --verbose \
+    && npm ci -w ${lambda_dir}/${lambda_name} -w packages/* --verbose \
     && npx tsc -b tsconfig.build.json --verbose \
     && cp -r ${lambda_dir}/${lambda_name}/dist/. /var/task/ \
     && mkdir -p /var/task/${lambda_dir} \
-    && cp -r ${lambda_dir}/../packages /var/task/${lambda_dir}/../packages/ \
+    && cp -r packages /var/task/ \
     && cp -r node_modules /var/task/
 
 # Ignore errors if node_modules is not present
