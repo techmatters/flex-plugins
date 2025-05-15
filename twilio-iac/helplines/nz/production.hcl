@@ -32,7 +32,7 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-no-chatbot-operating-hours-flags-routing-v2.tftpl"
         channel_flow_vars = {
-          chat_greeting_message = "Kia ora, thank you for contacting Youthline. One of our counsellors will get back to you as soon as we can. If you or someone else are in immediate danger, please call 111 immediately."
+          chat_greeting_message = "Kia ora, we'll connect you with someone soon. Your conversation is confidential, but if we feel that you or someone else is at serious risk of harm, we may have to link in with other services. We'll let you know if that becomes necessary."
           widget_from           = "Youthline"
         }
         enable_datadog_monitor = true
