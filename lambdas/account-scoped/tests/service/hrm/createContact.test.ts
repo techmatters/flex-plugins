@@ -14,6 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import type { HrmContact } from '@tech-matters/hrm-types';
 import * as mockingProxy from '../sandbox/mockingProxy';
 import '../expectToParseAsDate';
 import {
