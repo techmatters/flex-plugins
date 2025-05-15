@@ -1,8 +1,8 @@
 {
   "en": {
     "WelcomeMsg": "You're now talking with Youthline.",
-    "GoodbyeMsg": "This conversation is now closed. If you or someone else is feeling unsafe and you need urgent support, please call 111.You can also reach out to your local mental health crisis team. Their information can be found here: info.health.nz/crisis-assessment-teams",
-    "EndChatMsg": "The client has clicked 'End Chat'. If you or someone else is feeling unsafe and you need urgent support, please call 111.You can also reach out to your local mental health crisis team. Their information can be found here: info.health.nz/crisis-assessment-teams",
+    "GoodbyeMsg": "This conversation is now closed. If you or someone else is feeling unsafe and you need urgent support, please call 111. You can also reach out to your local mental health crisis team. Their information can be found here: info.health.nz/crisis-assessment-teams",
+    "EndChatMsg": "The client has clicked 'End Chat'. If you or someone else is feeling unsafe and you need urgent support, please call 111. You can also reach out to your local mental health crisis team. Their information can be found here: info.health.nz/crisis-assessment-teams",
     "ClosedOutOfShift": "You've reached the Helpline outside our webchat hours. If you'd like to talk to us now, please txt us for free on 234 or call us for free on 0800376633",
     "ClosedHolidays": "The helpline is closed due to a holiday."
   }
