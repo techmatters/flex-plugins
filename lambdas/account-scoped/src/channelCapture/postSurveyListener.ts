@@ -119,7 +119,7 @@ export const postSurveyInitHandler = async ({
   channelSid,
   conversationSid,
 }: {
-  accountSid: string;
+  accountSid: AccountSID;
   client: Twilio;
   taskSid: string;
   taskLanguage: string;

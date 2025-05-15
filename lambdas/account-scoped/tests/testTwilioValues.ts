@@ -23,14 +23,15 @@ export const TEST_TASK_SID: TaskSID = 'WTut';
 export const TEST_WORKER_SID: WorkerSID = 'WKut';
 export const TEST_CONTACT_ID = '1337';
 export const TEST_WORKSPACE_SID = 'WSut';
-export const TEST_RESERVATION_FOR_TEST_WORKER_ON_TEST_TASK_SID = 'WKut reservation for WTut'
+export const TEST_RESERVATION_FOR_TEST_WORKER_ON_TEST_TASK_SID =
+  'WKut reservation for WTut';
 export const TEST_CONVERSATION_SID = 'CHut';
 export const TEST_CHAT_SERVICE_SID = 'ISut';
 export const TEST_CHANNEL_SID = 'CHut';
 export const DEFAULT_CONFIGURATION_ATTRIBUTES: AseloServiceConfigurationAttributes = {
   definitionVersion: 'ut-v1',
   hrm_api_version: 'v1',
-  form_definitions_version_url: 'http://mock-assets-bucket/form-definitions/ut/v1',
+  form_definitions_version_url: 'http://mock-assets-bucket/form-definitions/',
   assets_bucket_url: 'http://mock-assets-bucket',
   helpline_code: 'ut',
   feature_flags: {
