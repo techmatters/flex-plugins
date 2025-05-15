@@ -134,6 +134,38 @@
         }
       ]
     },
+    "OCSEA": {
+      "color": "#BBE3FF",
+      "subcategories": [
+        {
+          "label": "Online sexual harassment"
+        },
+        {
+          "label": "Receiving unwanted sexual images"
+        },
+        {
+          "label": "Unwanted/Non-consensual sexting"
+        },
+        {
+          "label": "Exposure to child sexual abuse material"
+        },
+        {
+          "label": "Non-consensual sharing of self-generated sexual content"
+        },
+        {
+          "label": "Online grooming"
+        },
+        {
+          "label": "Sexual extortion"
+        },
+        {
+          "label": "Production of child sexual abuse material"
+        },
+        {
+          "label": "Cyber-bullying"
+        }
+      ]
+    },
     "Accessibility": {
       "color": "#8055BA",
       "subcategories": [
