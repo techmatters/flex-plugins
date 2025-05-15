@@ -29,6 +29,10 @@ runs:
       run: npm ci
       working-directory: ${{ inputs.path }}/lambdas
       shell: bash
+    - name: Build lambdas packages
+      run: npm build
+      working-directory: ${{ inputs.path }}/lambdas
+      shell: bash
     - name: Install plugin-hrm-form Packages
       run: npm ci
       working-directory: ${{ inputs.path }}/plugin-hrm-form
