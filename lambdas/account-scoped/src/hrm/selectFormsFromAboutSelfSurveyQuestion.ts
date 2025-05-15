@@ -16,22 +16,19 @@
 
 import { AvailableContactFormSelector } from './availableContactFormSelector';
 
-export const selectFormsFromAboutSelfSurveyQuestion: AvailableContactFormSelector = () => (
-  source,
-  _preEngagementSelections,
-  surveyAnswers,
-) => {
-  if (source === 'survey') {
-    if (surveyAnswers?.aboutSelf === 'Yes') {
-      return ['CaseInformationTab', 'ChildInformationTab'];
-    } else if (surveyAnswers?.aboutSelf) {
+export const selectFormsFromAboutSelfSurveyQuestion: AvailableContactFormSelector =
+  () => (source, _preEngagementSelections, surveyAnswers) => {
+    if (source === 'survey') {
+      if (surveyAnswers?.aboutSelf === 'Yes') {
+        return ['CaseInformationTab', 'ChildInformationTab'];
+      } else if (surveyAnswers?.aboutSelf) {
+        return ['CaseInformationTab', 'CallerInformationTab'];
+      }
+      return ['CaseInformationTab'];
+    } else {
+      if (surveyAnswers?.aboutSelf === 'Yes' || !surveyAnswers?.aboutSelf) {
+        return ['CaseInformationTab', 'ChildInformationTab'];
+      }
       return ['CaseInformationTab', 'CallerInformationTab'];
     }
-    return ['CaseInformationTab'];
-  } else {
-    if (surveyAnswers?.aboutSelf === 'Yes' || !surveyAnswers?.aboutSelf) {
-      return ['CaseInformationTab', 'ChildInformationTab'];
-    }
-    return ['CaseInformationTab', 'CallerInformationTab'];
-  }
-};
+  };

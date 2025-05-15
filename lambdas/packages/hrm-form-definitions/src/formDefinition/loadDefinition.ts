@@ -185,13 +185,16 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     preEngagement: {},
   };
 
-  const expandPrepopulateMappings = (
-      { formSelector, ...sourceSets }: PrepopulateMappingJson,
-  ): DefinitionVersion['prepopulateMappings'] => {
+  const expandPrepopulateMappings = ({
+    formSelector,
+    ...sourceSets
+  }: PrepopulateMappingJson): DefinitionVersion['prepopulateMappings'] => {
     const expandedMapping: DefinitionVersion['prepopulateMappings'] = prepopulateMappingsEmpty;
     for (const [sourceSetName, sourceSetFields] of Object.entries(sourceSets)) {
       const targetObj =
-        expandedMapping[sourceSetName as keyof Omit<DefinitionVersion['prepopulateMappings'], 'formSelector'>];
+        expandedMapping[
+          sourceSetName as keyof Omit<DefinitionVersion['prepopulateMappings'], 'formSelector'>
+        ];
       for (const [sourceField, sourceFieldMappings] of Object.entries(sourceSetFields)) {
         targetObj[sourceField] = targetObj[sourceField] ?? [];
         const andFields = Array.isArray(sourceFieldMappings)

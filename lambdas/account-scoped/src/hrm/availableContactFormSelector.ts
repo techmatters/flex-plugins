@@ -27,12 +27,14 @@ export type ContactFormName = keyof Omit<
   'callType' | 'definitionVersion' | 'categories' | 'contactlessTask'
 >;
 
-export type AvailableContactFormSelector =
-    (parameter?: any,) => (
+export type AvailableContactFormSelector = (
+  parameter?: any,
+) => (
   source: keyof DefinitionVersion['prepopulateMappings'],
   preEngagementSelections: any,
   surveyAnswers: any,
 ) => ContactFormDefinitionName[];
 
-export const staticAvailableContactTabSelector: AvailableContactFormSelector = ( availableTabs ) =>
-    () => availableTabs;
+export const staticAvailableContactTabSelector: AvailableContactFormSelector =
+  availableTabs => () =>
+    availableTabs;
