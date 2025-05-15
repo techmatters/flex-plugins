@@ -14,44 +14,20 @@
     "type": "select",
     "options": [
     {
-      "value": "Clinic",
-      "label": "Clinic"
+      "value": "Social Welfare Officer",
+      "label": "Social Welfare Officer"
     },
     {
-      "value": "Hospital",
-      "label": "Hospital"
-    },
-    {
-      "value": "Social Welfare",
-      "label": "Social Welfare"
-    },
-    {
-      "value": "Police",
-      "label": "Police"
-    },
-    {
-      "value": "Religious leader",
-      "label": "Religious leader"
+      "value": "Police - Gender & Children's Desk",
+      "label": "Police - Gender & Children's Desk"
     },
     {
       "value": "Local Government Authorities",
       "label": "Local Government Authorities"
     },
     {
-      "value": "Gender Desk",
-      "label": "Gender Desk"
-    },
-    {
-      "value": "One-Stop Center (OSC)",
-      "label": "One-Stop Center (OSC)"
-    },
-    {
-      "value": "Women & Children Coordinator (WCC)",
-      "label": "Women & Children Coordinator (WCC)"
-    },
-    {
-      "value": "Sheha",
-      "label": "Sheha"
+      "value": "Other",
+      "label": "Other"
     }
     ]
   },
