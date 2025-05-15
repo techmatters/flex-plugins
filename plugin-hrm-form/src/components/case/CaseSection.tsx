@@ -65,7 +65,14 @@ const CaseSection: React.FC<Props> = ({ taskSid, canAdd, sectionType }) => {
       // eslint-disable-next-line no-console
       console.log(`Fetching ${sectionType} sections for case ${caseId}`);
       asyncDispatcher(
-        newGetTimelineAsyncAction(caseId, sectionType, [sectionType], false, { offset: 0, limit: MAX_SECTIONS }),
+        newGetTimelineAsyncAction(
+          caseId,
+          sectionType,
+          [sectionType],
+          false,
+          { offset: 0, limit: MAX_SECTIONS },
+          `case-${caseId}`,
+        ),
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
