@@ -92,7 +92,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         'I agree with the <a href="https://www.sematanzania.org/child-helpline">Terms of Use</a>',
       required: {
         value: true,
-        message: '<message>',
+        message: "Sorry, if you don't accept our terms and conditions we can't provide counselling to you.",
       },
     },
   ],
