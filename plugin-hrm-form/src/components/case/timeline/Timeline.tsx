@@ -188,7 +188,7 @@ const Timeline: React.FC<OwnProps> = ({
             if (timelineActivity.isDraft) {
               canViewActivity = false;
             } else {
-              canViewActivity = can(PermissionActions.VIEW_CONTACT, timelineActivity);
+              canViewActivity = can(PermissionActions.VIEW_CONTACT, timelineActivity.activity);
             }
           }
 

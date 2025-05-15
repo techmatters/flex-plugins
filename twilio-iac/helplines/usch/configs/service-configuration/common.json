@@ -10,11 +10,12 @@
         "feature_flags": {
             "enable_voice_recordings": true,
             "enable_client_profiles":true,
-            "enable_conferencing": true
+            "enable_conferencing": true,
+            "enable_hierarchical_translations": true
         },
         "definitionVersion": "usch-v1",
         "external_recordings_enabled": false,
-        "helplineLanguage": "en-US",
+        "helplineLanguage": "en-USCH",
         "permissionConfig": "demo"
     }
 }

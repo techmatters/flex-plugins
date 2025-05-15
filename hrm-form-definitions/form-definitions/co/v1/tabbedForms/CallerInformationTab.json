@@ -1,18 +1,21 @@
 [
   {
-    "name": "firstName",
+    "name": "name",
     "label": "Nombre",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "lastName",
     "label": "Apellido",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
-    "name": "relationshipToChild",
+    "name": "relationshipWithTheAdolescent",
     "label": "Relación con el Adolescente",
     "type": "select",
+    "isPII": false,
     "options": [
       {
         "value": "",
@@ -59,6 +62,14 @@
         "label": "Otro familiar"
       },
       {
+        "value": "Profesor/Profesora",
+        "label": "Profesor/Profesora"
+      },
+      {
+        "value": "Otro Profesional de la IE",
+        "label": "Otro Profesional de la IE"
+      },
+      {
         "value": "No requerido",
         "label": "No requerido"
       },
@@ -76,23 +87,31 @@
     "name": "gender",
     "label": "Género",
     "type": "select",
-    "unknownOption": "Unknown",
+    "isPII": false,
     "options": [
       {
-        "value": "",
+        "value": "Desconocido",
         "label": ""
-      },
-      {
-        "value": "Femenino",
-        "label": "Femenino"
       },
       {
         "value": "Masculino",
         "label": "Masculino"
       },
       {
+        "value": "Femenino",
+        "label": "Femenino"
+      },
+      {
         "value": "No binario",
         "label": "No binario"
+      },
+      {
+        "value": "No requerido",
+        "label": "No requerido"
+      },
+      {
+        "value": "Desconocido",
+        "label": "Desconocido"
       }
     ]
   },
@@ -100,19 +119,55 @@
     "name": "age",
     "label": "Edad",
     "type": "select",
-    "unknownOption": "Desconocido",
+    "isPII": false,
     "options": [
       {
-        "value": "",
+        "value": "Desconocido",
         "label": ""
       },
       {
-        "value": "<18",
-        "label": "<18"
+        "value": "<12",
+        "label": "<12"
+      },
+      {
+        "value": "12",
+        "label": "12"
+      },
+      {
+        "value": "13",
+        "label": "13"
+      },
+      {
+        "value": "14",
+        "label": "14"
+      },
+      {
+        "value": "15",
+        "label": "15"
+      },
+      {
+        "value": "16",
+        "label": "16"
+      },
+      {
+        "value": "17",
+        "label": "17"
+      },
+      {
+        "value": "18",
+        "label": "18"
       },
       {
         "value": ">18",
         "label": ">18"
+      },
+      {
+        "value": "No requerido",
+        "label": "No requerido"
+      },
+      {
+        "value": "Desconocido",
+        "label": "Desconocido"
       }
     ]
   }
