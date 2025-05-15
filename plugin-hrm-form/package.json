@@ -25,7 +25,7 @@
     "build": "twilio flex:plugins:build",
     "predeploy": "npm run build",
     "deploy": "twilio flex:plugins:deploy",
-    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest --config jest-standalone.config.js --maxWorkers=1",
+    "test": "npx jest --config jest-standalone.config.js --maxWorkers=1",
     "list": "twilio flex:plugins:list:plugins",
     "lint": "eslint --ignore-pattern src/private --ext js --ext jsx --ext ts --ext tsx src/",
     "lint:fix": "npm run lint -- --fix",
