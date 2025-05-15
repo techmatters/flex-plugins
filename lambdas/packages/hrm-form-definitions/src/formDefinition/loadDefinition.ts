@@ -14,9 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 /* eslint-disable no-restricted-syntax */
-/* eslint-disable global-require */
-/* eslint-disable import/no-dynamic-require */
-import path from 'path';
+import * as path from 'path';
 import {
   CallTypeButtonsDefinitions,
   CannedResponsesDefinitions,
