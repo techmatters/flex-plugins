@@ -38,7 +38,7 @@ runs:
       working-directory: ${{ inputs.path }}/lambdas/packages/hrm-form-definitions
       shell: bash
     - name: Install hrm-types packages outside workspace
-      run: rm -r ./node_modules && cp -r ../../node_modules .
+      run: cp -r ../../node_modules .
       working-directory: ${{ inputs.path }}/lambdas/packages/hrm-types
       shell: bash
     - name: Install plugin-hrm-form Packages
