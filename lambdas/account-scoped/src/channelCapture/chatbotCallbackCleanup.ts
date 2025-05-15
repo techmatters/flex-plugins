@@ -31,9 +31,10 @@ import {
   getChatServiceSid,
   getTwilioWorkspaceSid,
 } from '../configuration/twilioConfiguration';
+import { AccountSID } from '../twilioTypes';
 
 type ChatbotCallbackCleanupParams = {
-  accountSid: string;
+  accountSid: AccountSID;
   twilioWorkspaceSid: string;
   channel?: ChannelInstance;
   conversation?: ConversationInstance;

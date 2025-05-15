@@ -25,6 +25,7 @@ import { Twilio } from 'twilio';
 import { postToInternalHrmEndpoint } from '../hrm/internalHrmRequest';
 import { getFormDefinitionUrl, loadConfigJson } from '../formDefinitionsCache';
 import { ROUTE_PREFIX } from '../router';
+import { AccountSID } from '../twilioTypes';
 
 const triggerTypes = ['withUserMessage', 'withNextMessage'] as const;
 export type TriggerTypes = (typeof triggerTypes)[number];
@@ -146,7 +147,7 @@ const updateChannelWithCapture = async (
 };
 
 type CaptureChannelOptions = {
-  accountSid: string;
+  accountSid: AccountSID;
   enableLexV2: boolean;
   environment: string;
   helplineCode: string;
@@ -168,7 +169,7 @@ const getChatBotCallbackURL = ({
   accountSid,
   webhookBaseUrl,
 }: {
-  accountSid: string;
+  accountSid: AccountSID;
   webhookBaseUrl: string;
 }) => `${webhookBaseUrl}${ROUTE_PREFIX}${accountSid}/channelCapture/chatbotCallback`;
 
@@ -362,7 +363,7 @@ export type HandleChannelCaptureParams = (
     }
   | { conversationSid: string; channelSid?: string }
 ) & {
-  accountSid: string;
+  accountSid: AccountSID;
   environment: string;
   message: string; // The triggering message (in Studio Flow, trigger.message.Body)
   language: string; // (in Studio Flow, {{trigger.message.ChannelAttributes.pre_engagement_data.language | default: 'en-US'}} )
@@ -663,7 +664,7 @@ const saveSurveyInHRM = async ({
   memory: LexMemory;
   controlTask: TaskInstance;
   controlTaskAttributes: any;
-  accountSid: string;
+  accountSid: AccountSID;
   hrmApiVersion: string;
 }) => {
   const data = buildDataObject(postSurveyConfigSpecs, memory);
@@ -683,7 +684,7 @@ const handlePostSurveyComplete = async ({
   memory,
   twilioClient,
 }: {
-  accountSid: string;
+  accountSid: AccountSID;
   twilioClient: Twilio;
   memory: LexMemory;
   controlTask: TaskInstance;
@@ -748,7 +749,7 @@ export const handleChannelRelease = async ({
   twilioClient,
   twilioWorkspaceSid,
 }: {
-  accountSid: string;
+  accountSid: AccountSID;
   twilioClient: Twilio;
   channelOrConversation: ChannelInstance | ConversationInstance;
   capturedChannelAttributes: CapturedChannelAttributes;
