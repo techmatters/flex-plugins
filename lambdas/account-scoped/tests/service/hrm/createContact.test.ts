@@ -174,6 +174,7 @@ describe('Create HRM Contact on Reservation Accepted event', () => {
         ...BLANK_CONTACT.rawJson,
         callerInformation: BLANK_POPULATED_PERSON_INFORMATION,
         childInformation: BLANK_POPULATED_PERSON_INFORMATION,
+        caseInformation: { age: '' },
         definitionVersion: 'ut-v1', // for backwards compatibility
       },
       twilioWorkerId: TEST_WORKER_SID,

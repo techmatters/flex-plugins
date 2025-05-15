@@ -44,7 +44,7 @@ const BLANK_CONTACT: HrmContact = {
     childInformation: {},
     callerInformation: {},
     caseInformation: {},
-    callType: 'Child calling about self',
+    callType: '' as any,
     contactlessTask: {
       channel: '' as any,
       date: '',
