@@ -17,16 +17,21 @@
 import { capitalize } from 'lodash';
 import { format, startOfDay } from 'date-fns';
 import {
-  callTypes,
   DefinitionVersion,
   FormInputType,
   FormItemDefinition,
 } from '@tech-matters/hrm-form-definitions';
-import { FormValue, HrmContact, HrmContactRawJson } from '@tech-matters/hrm-types';
+import {
+  FormValue,
+  HrmContact,
+  HrmContactRawJson,
+  callTypes,
+} from '@tech-matters/hrm-types';
 import {
   AvailableContactFormSelector,
   ContactFormDefinitionName,
-  ContactFormName, staticAvailableContactTabSelector,
+  ContactFormName,
+  staticAvailableContactTabSelector,
 } from './availableContactFormSelector';
 import { selectFormsFromAboutSelfSurveyQuestion } from './selectFormsFromAboutSelfSurveyQuestion';
 import { newErr, newOk, Result } from '../Result';
@@ -46,7 +51,6 @@ const SELECTOR_MAP: Record<string, AvailableContactFormSelector> = {
   staticSelector: staticAvailableContactTabSelector,
   surveyAnswerSelector: selectFormsFromAboutSelfSurveyQuestion,
 };
-
 
 const DEFAULT_SELECTOR: ReturnType<AvailableContactFormSelector> =
   selectFormsFromAboutSelfSurveyQuestion();
@@ -314,7 +318,10 @@ const populateContactSection = async (
   targetFormDefinitionName: ContactFormDefinitionName,
   availableFormDefinitions: ContactFormDefinitionName[],
   valuesToPopulate: Record<string, string>,
-  mappings: DefinitionVersion['prepopulateMappings'][keyof Omit<DefinitionVersion['prepopulateMappings'], 'formSelector'>],
+  mappings: DefinitionVersion['prepopulateMappings'][keyof Omit<
+    DefinitionVersion['prepopulateMappings'],
+    'formSelector'
+  >],
   formDefinitionRootUrl: URL,
   converter: (
     keys: Set<string>,
@@ -395,7 +402,9 @@ export const populateHrmContactFormFromTaskByMappings = async (
       // eslint-disable-next-line no-param-reassign
       contact.rawJson.callType = callTypes.child;
     }
-    const formSelector = formSelectorConfig ? SELECTOR_MAP[formSelectorConfig.selectorType](formSelectorConfig.parameter) : DEFAULT_SELECTOR;
+    const formSelector = formSelectorConfig
+      ? SELECTOR_MAP[formSelectorConfig.selectorType](formSelectorConfig.parameter)
+      : DEFAULT_SELECTOR;
 
     const availableFormsForSurveyPrepopulation = formSelector(
       'survey',

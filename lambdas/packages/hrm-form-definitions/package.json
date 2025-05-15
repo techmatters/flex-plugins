@@ -4,7 +4,8 @@
   "description": "Module to manage form definitions in the Aselo HRM Twilio plugin",
   "main": "dist/index.js",
   "scripts": {
-    "test": "node_modules/.bin/jest",
+    "test": "jest",
+    "test:unit": "jest",
     "build": "npx tsc",
     "lint": "eslint --max-warnings 5 --ext ts src"
   },

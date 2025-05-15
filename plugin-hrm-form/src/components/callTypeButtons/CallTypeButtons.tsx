@@ -22,7 +22,6 @@ import { connect, ConnectedProps } from 'react-redux';
 import { callTypes } from 'hrm-types';
 import { CallTypeButtonsEntry } from 'hrm-form-definitions';
 
-
 import { RootState } from '../../states';
 import { ContactDraftChanges, updateDraft as newUpdateDraftAction } from '../../states/contacts/existingContacts';
 import { changeRoute as newChangeRouteAction } from '../../states/routing/actions';
