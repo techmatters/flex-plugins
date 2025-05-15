@@ -43,7 +43,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       label: 'How old are you?',
       type: 'select',
-      name: 'childAge',
+      name: 'age',
       required: true,
       defaultValue: '',
       options: [
@@ -78,33 +78,11 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       ],
     },
     {
+      type: 'input-text',
+      name: 'gender',
       label: 'What is your gender identity?',
-      type: 'select',
-      name: 'childGender',
+      placeholder: '',
       required: true,
-      defaultValue: '',
-      options: [
-        {
-          "value": "",
-          "label": ""
-        },
-        {
-          "value": "Male",
-          "label": "Male"
-        },
-        {
-          "value": "Female",
-          "label": "Female"
-        },
-        {
-          "value": "Gender Expansive",
-          "label": "Gender Expansive"
-        },
-        {
-          "value": "N/A",
-          "label": "Prefer not to answer"
-        }
-      ],
     },
     {
       label: 'What state are you chatting from?',
@@ -495,6 +473,40 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         }
       ]
       ,
+    }, 
+    {
+      label: 'Are you reaching out on behalf of yourself or another person?',
+      type: 'select',
+      name: 'callingAboutSelf',
+      required: true,
+      defaultValue: '',
+      options: [
+        {
+          "value": "Yes",
+          "label": "Myself"
+        },
+        {
+          "value": "No",
+          "label": "Someone else"
+        }
+      ],
+    },
+    {
+      label: 'What is your preferred language?',
+      type: 'select',
+      name: 'language',
+      required: true,
+      defaultValue: '',
+      options: [
+        {
+          "value": "English",
+          "label": "English"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
+        }
+      ],
     },
     {
       type: 'checkbox',
