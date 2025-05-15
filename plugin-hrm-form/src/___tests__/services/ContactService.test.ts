@@ -15,7 +15,7 @@
  */
 
 import { callTypes } from 'hrm-types';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 import { TaskHelper } from '@twilio/flex-ui';
 
 import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
@@ -71,11 +71,11 @@ beforeEach(() => {
 const offlineContactTaskSid = 'offline-contact-task-workerSid';
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL('v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+  mockGetDefinitionsResponse(getDefinitionVersions, 'v1', mockV1);
 });
 
 const createContactState = ({ callType, childFirstName }, contactlessTaskInfo = undefined): ContactState => {

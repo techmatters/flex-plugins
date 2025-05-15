@@ -16,7 +16,7 @@
 
 import each from 'jest-each';
 import { pipe } from 'lodash/fp';
-import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, loadDefinition } from 'hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import {
@@ -39,7 +39,7 @@ const { mockFetchImplementation, buildBaseURL } = mockLocalFetchDefinitions();
 let mockV1: DefinitionVersion;
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL('v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);

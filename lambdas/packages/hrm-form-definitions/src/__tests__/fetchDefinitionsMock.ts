@@ -14,8 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import type { DefinitionVersionId } from '../formDefinition';
-
 type MockResponse = {
   ok: boolean;
   status: number;
@@ -122,8 +120,7 @@ export const mockFetchDefinitions = (jsonLoader: (jsonPath: string) => any) => {
     return mockFetchImplementationGivenSpy(formDefinitionsBaseUrl, fetchSpy, jsonLoader);
   };
 
-  const buildBaseURL = (definitionVersionId: DefinitionVersionId) =>
-    `${BASE_URL_MOCK}/${definitionVersionId}`;
+  const buildBaseURL = (definitionVersionId: string) => `${BASE_URL_MOCK}/${definitionVersionId}`;
 
   const mockReset = () => fetchSpy.mockReset();
 

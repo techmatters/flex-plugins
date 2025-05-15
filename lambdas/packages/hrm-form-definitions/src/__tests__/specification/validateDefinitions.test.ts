@@ -27,13 +27,13 @@ import {
   CategoriesDefinition,
   DefinitionSpecification,
   DefinitionVersion,
-  DefinitionVersionId,
   FormDefinition,
   FormFileSpecification,
   loadDefinition,
 } from '../../index';
 import { mockFetchDefinitions } from '../fetchDefinitionsMock';
 import { loadLocalJson } from '../loadLocalJson';
+import { DefinitionVersionId } from '../definitionVersionId';
 
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockFetchDefinitions(loadLocalJson);
 
@@ -41,7 +41,7 @@ const { mockFetchImplementation, mockReset, buildBaseURL } = mockFetchDefinition
  * Given a DefinitionSpecification and a CategoriesDefinition, will expect that the CategoriesDefinition is valid under the DefinitionSpecification.
  */
 const testCategoriesDefinition =
-  (definitionVersionId: DefinitionVersionId, specificationPath: string) =>
+  (definitionVersionId: string, specificationPath: string) =>
   (specification: DefinitionSpecification, definition: CategoriesDefinition) => {
     const result = validateCategoriesDefinition(specification, definition);
 
@@ -59,7 +59,7 @@ const testCategoriesDefinition =
  * Given a FormFileSpecification and a FormDefinition, will expect that the FormDefinition is valid under the FormFileSpecification.
  */
 const testFormFileSpecification =
-  (definitionVersionId: DefinitionVersionId, specificationPath: string) =>
+  (definitionVersionId: string, specificationPath: string) =>
   (specification: FormFileSpecification, definition: FormDefinition) => {
     const result = validateFormDefinition(specification, definition);
 

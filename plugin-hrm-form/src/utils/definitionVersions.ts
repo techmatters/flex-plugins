@@ -21,7 +21,7 @@ import { getDefinitionVersionsList } from '../services/ServerlessService';
 import { getDefinitionVersions } from '../hrmConfig';
 
 // eslint-disable-next-line import/no-unused-modules
-const getMissingDefinitionVersions = async (versions: DefinitionVersionId[]) => {
+const getMissingDefinitionVersions = async (versions: string[]) => {
   const { definitionVersions } = getDefinitionVersions();
   const missingDefinitionVersions = new Set(
     versions.filter(v => Object.values(DefinitionVersionId).includes(v) && !definitionVersions[v]),

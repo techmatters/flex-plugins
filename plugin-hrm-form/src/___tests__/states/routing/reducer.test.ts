@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, loadDefinition } from 'hrm-form-definitions';
 import each from 'jest-each';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
@@ -47,11 +47,11 @@ mockPartialConfiguration({ workerSid: 'workerSid' });
 let mockV1: DefinitionVersion;
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL('v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+  mockGetDefinitionsResponse(getDefinitionVersions, 'v1', mockV1);
 });
 
 beforeEach(() => {
