@@ -24,7 +24,7 @@
         "slot_type": "yes_no",
         "value_elicitation_prompt": {
           "max_attempts": 2,
-          "content": "You've selected to speak to the Helpline. Your conversation is confidential, but if we feel that you or someone else is at serious risk of harm, we may have to link in with other services. We'll let you know if that becomes necessary. -Do you need urgent support? Please respond 'Yes' or 'No'",
+          "content": "You've selected to speak to the Helpline. Your conversation is confidential, but if we feel that you or someone else is at serious risk of harm, we may have to link in with other services. We'll let you know if that becomes necessary. Do you need urgent support? Please respond 'Yes' or 'No'",
           "content_type": "PlainText"
         }
       }
