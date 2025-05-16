@@ -3,7 +3,7 @@ ${
     {
     "description": flow_description,
     "states": [
-         {
+    {
       "name": "Trigger",
       "type": "trigger",
       "transitions": [
@@ -30,7 +30,8 @@ ${
           "y": -460
         }
       }
-    },{
+    },
+  {
               "name": "set_hasNonSurveyTasks",
               "type": "set-variables",
               "transitions": [
@@ -231,7 +232,7 @@ ${
             }
         }
         },
-        {
+  {
   "name": "captureChannelWithBot",
   "type": "make-http-request",
   "transitions": [
@@ -239,7 +240,7 @@ ${
       "event": "success"
     },
     {
-      "event": "fail",
+      "event": "failed",
       "next": "webhook_notify_error"
     }
   ],
@@ -265,7 +266,7 @@ ${
     },
     {
       "next": "send_message_run_janitor",
-      "event": "fail"
+      "event": "failed"
     }
   ],
   "properties": {
