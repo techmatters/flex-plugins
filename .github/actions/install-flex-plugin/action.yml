@@ -31,9 +31,5 @@ runs:
       shell: bash
     - name: Install hrm-types packages
       run: npm ci
-      working-directory: ${{ inputs.path }}/lambdas/packages/hrm-types
-      shell: bash
-    - name: Install hrm-form-definitions packages
-      run: npm ci
-      working-directory: ${{ inputs.path }}/lambdas/packages/hrm-form-definitions
+      working-directory: ${{ inputs.path }}/lambdas
       shell: bash
