@@ -27,7 +27,7 @@ runs:
       shell: bash
     - name: Install hrm-form-definitions Packages
       run: npm ci
-      working-directory: ${{ inputs.path }}/hrm-form-definitions
+      working-directory: ${{ inputs.path }}/lambdas/packages/hrm-form-definitions
       shell: bash
     - name: Install plugin-hrm-form Packages
       run: npm ci

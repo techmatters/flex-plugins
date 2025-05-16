@@ -21,7 +21,7 @@ import { mockFetchDefinitions } from 'hrm-form-definitions';
 export const mockLocalFetchDefinitions = () =>
   mockFetchDefinitions(async (jsonPath: string) => {
     try {
-      return JSON.parse(await fs.readFile(`../hrm-form-definitions/${jsonPath}`, 'utf8'));
+      return JSON.parse(await fs.readFile(`../lambdas/packages/hrm-form-definitions/${jsonPath}`, 'utf8'));
     } catch (e) {
       const error = e as any;
       if (error.code === 'ENOENT') {

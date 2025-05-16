@@ -14,6 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { Mockttp } from 'mockttp';
 import { FormDefinitionSet } from '../../testHrmTypes';
 

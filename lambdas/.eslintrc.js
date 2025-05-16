@@ -16,7 +16,7 @@
 
 module.exports = {
   extends: ['airbnb-typescript/base', 'plugin:prettier/recommended'],
-  plugins: ['prettier', 'jest', 'import'],
+  plugins: ['jest', 'import'],
   rules: {
     'prettier/prettier': ['error'],
     'no-console': 'off',
@@ -49,5 +49,7 @@ module.exports = {
     '**/coverage/**',
     'node_modules/**',
     '**/node_modules/**',
+    '**/*.js',
+    '**/*.d.ts'
   ],
 };
