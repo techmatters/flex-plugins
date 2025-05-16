@@ -16,7 +16,7 @@
 
 // @ts-ignore
 import React from 'react';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 import { render, screen } from '@testing-library/react';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
@@ -101,11 +101,11 @@ let timelines: CaseStateEntry['timelines'];
 
 describe('useState mocked', () => {
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL('v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+    mockGetDefinitionsResponse(getDefinitionVersions, 'v1', mockV1);
   });
 
   beforeEach(() => {

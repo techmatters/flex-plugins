@@ -14,12 +14,25 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// NOTE: seems like this ain't used at all, can we just delete it?
-module.exports = (config, { isProd, isDev, isTest }) => {
-  config.transformIgnorePatterns = ['/node_modules/(?!wavesurfer.js)'];
-  config.testEnvironment = 'jsdom';
-  config.testURL = 'http://localhost/';
-  config.reporters = ['default', 'jest-junit'];
-  // config.testEnvironmentOptions = {};
+// For rapidly running non flex UI dependent tests locally
+const { defaults } = require('jest-config');
+
+module.exports = config => {
+  config = config || {
+    ...defaults,
+    rootDir: '.',
+    setupFilesAfterEnv: ['./src/setupTests.js'],
+    testEnvironment: 'jest-environment-jsdom',
+    testEnvironmentOptions: {
+      url: 'http://localhost/',
+    },
+    testTimeout: 2 * 60 * 1000, // 2 minutes in ms
+    transformIgnorePatterns: ['/node_modules/(?!(uuid|axios|@twilio-paste/icons)/)'],
+    moduleNameMapper: {
+      '\\.css$': 'identity-obj-proxy',
+    },
+    reporters: ['default', 'jest-junit'],
+  };
+
   return config;
 };

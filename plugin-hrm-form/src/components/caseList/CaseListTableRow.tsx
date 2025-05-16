@@ -18,7 +18,6 @@
 import React, { useEffect } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
-import { DefinitionVersionId } from 'hrm-form-definitions';
 import { parseISO } from 'date-fns';
 
 import { getDefinitionVersion } from '../../services/ServerlessService';
@@ -70,18 +69,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseId, handleClickViewCase }) => {
   );
   const caseLabel = useSelector((state: RootState) => selectCaseLabel(state, caseId, CONTACTS_TIMELINE_ID));
 
-  const { definitionVersion } = getHrmConfig();
-  let version = caseItem.info.definitionVersion;
-  if (!Object.values(DefinitionVersionId).includes(version)) {
-    console.warn(
-      `Form definition version ${
-        typeof version === 'string' ? `'${version}'` : version
-      } does not exist in defined set: ${Object.values(
-        DefinitionVersionId,
-      )}. Falling back to to current configured version '${definitionVersion}' for case with id ${caseItem.id}`,
-    );
-    version = definitionVersion;
-  }
+  const version = caseItem.info.definitionVersion;
 
   useEffect(() => {
     const fetchDefinitionVersions = async () => {

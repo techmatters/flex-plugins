@@ -16,7 +16,7 @@
 
 /* eslint-disable import/no-unused-modules */
 import type { ITask as ITaskOriginalType, TaskContextProps as TaskContextPropsOriginalType } from '@twilio/flex-ui';
-import type { CallTypes, DefinitionVersionId } from 'hrm-form-definitions';
+import type { CallTypes } from 'hrm-types';
 
 import type { ChannelTypes } from '../states/DomainConstants';
 import type { ResourceReferral } from '../states/contacts/resourceReferral';
@@ -58,7 +58,7 @@ export type CaseOverview = {
 }
 
 export type CaseInfo = CaseOverview & {
-  definitionVersion?: DefinitionVersionId;
+  definitionVersion?: string;
   offlineContactCreator?: string;
 };
 
@@ -130,7 +130,7 @@ export const isS3StoredRecording = (m: ConversationMedia): m is S3StoredRecordin
 
 // Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
 export type ContactRawJson = {
-  definitionVersion?: DefinitionVersionId;
+  definitionVersion?: string;
   callType: CallTypes | '';
   childInformation: Record<string, boolean | string>;
   callerInformation: Record<string, boolean | string>;

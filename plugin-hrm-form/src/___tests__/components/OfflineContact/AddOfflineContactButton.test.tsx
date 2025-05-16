@@ -22,7 +22,7 @@ import { Actions, StorelessThemeProvider, withTheme } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import '@testing-library/jest-dom/extend-expect';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockPartialConfiguration } from '../../mockGetConfig';
@@ -58,7 +58,7 @@ const mockRerenderAgentDesktop = rerenderAgentDesktop as jest.MockedFunction<typ
 const mockCreateContact = createContact as jest.MockedFunction<typeof createContact>;
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL('v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);

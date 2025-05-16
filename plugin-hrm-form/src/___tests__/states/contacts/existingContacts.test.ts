@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersion, DefinitionVersionId, FormInputType } from 'hrm-form-definitions';
+import { DefinitionVersion, FormInputType } from 'hrm-form-definitions';
 
 import {
   clearDraft,
@@ -51,7 +51,7 @@ const baseContact: Contact = {
   taskId: 'TASK_ID',
   rawJson: {
     ...VALID_EMPTY_CONTACT.rawJson,
-    definitionVersion: DefinitionVersionId.v1,
+    definitionVersion: 'v1',
     callType: 'Child calling about self',
     childInformation: { firstName: 'Lorna', lastName: 'Ballantyne' },
     callerInformation: { firstName: 'Charlie', lastName: 'Ballantyne' },

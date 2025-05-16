@@ -39,10 +39,10 @@ fi
 helpline="${helpline,,}"
 
 path="form-definitions/${helpline}"
-helpline_dir="./hrm-form-definitions/${path}"
+helpline_dir="./lambdas/packages/hrm-form-definitions/${path}"
 
 if [ ! -d "$helpline_dir" ]; then
-  echo "${helpline} is not a valid helpline. It must be one of: $(ls ./hrm-form-definitions/form-definitions)"
+  echo "${helpline} is not a valid helpline. It must be one of: $(ls ./lambdas/packages/hrm-form-definitions/form-definitions)"
 fi
 
 echo "environment=${environment}" >> $GITHUB_ENV

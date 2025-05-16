@@ -15,127 +15,45 @@
  */
 
 import { capitalize } from 'lodash';
-import { startOfDay, format } from 'date-fns';
-import { TaskSID } from '../twilioTypes';
+import { format, startOfDay } from 'date-fns';
+import {
+  DefinitionVersion,
+  FormInputType,
+  FormItemDefinition,
+} from '@tech-matters/hrm-form-definitions';
+import {
+  FormValue,
+  HrmContact,
+  HrmContactRawJson,
+  callTypes,
+} from '@tech-matters/hrm-types';
+import {
+  AvailableContactFormSelector,
+  ContactFormDefinitionName,
+  ContactFormName,
+  staticAvailableContactTabSelector,
+} from './availableContactFormSelector';
+import { selectFormsFromAboutSelfSurveyQuestion } from './selectFormsFromAboutSelfSurveyQuestion';
+import { newErr, newOk, Result } from '../Result';
 
 type MapperFunction = (options: string[]) => (value: string) => string;
 
-// When we move this into the flex repo we can depend on hrm-form-definitions for these types & enums
-export enum FormInputType {
-  Input = 'input',
-  SearchInput = 'search-input',
-  NumericInput = 'numeric-input',
-  Email = 'email',
-  RadioInput = 'radio-input',
-  ListboxMultiselect = 'listbox-multiselect',
-  Select = 'select',
-  DependentSelect = 'dependent-select',
-  Checkbox = 'checkbox',
-  MixedCheckbox = 'mixed-checkbox',
-  Textarea = 'textarea',
-  DateInput = 'date-input',
-  TimeInput = 'time-input',
-  FileUpload = 'file-upload',
-  Button = 'button',
-  CopyTo = 'copy-to',
-  CustomContactComponent = 'custom-contact-component',
-}
-
-export type FormItemDefinition = {
-  type: FormInputType;
-  name: string;
-  unknownOption?: string;
-  options?: { value: string }[];
-  initialChecked?: boolean;
-  initializeWithCurrent?: boolean;
-} & (
-  | {
-      type: Exclude<FormInputType, FormInputType.DependentSelect>;
-      defaultOption?: {
-        value: string;
-      };
-    }
-  | {
-      type: FormInputType.DependentSelect;
-      defaultOption: {
-        value: string;
-      };
-    }
-);
-
 // Exported for testing purposes
-export type PrepopulateKeys = {
-  preEngagement: {
-    ChildInformationTab: string[];
-    CallerInformationTab: string[];
-    CaseInformationTab: string[];
-  };
-  survey: { ChildInformationTab: string[]; CallerInformationTab: string[] };
+type PrepopulateMappings = DefinitionVersion['prepopulateMappings'];
+// Hardcoded for now, will need to be configured if we move to configurable sets of contact forms
+const FORM_DEFINITION_MAP: { [x in ContactFormDefinitionName]: ContactFormName } = {
+  ChildInformationTab: 'childInformation',
+  CallerInformationTab: 'callerInformation',
+  CaseInformationTab: 'caseInformation',
 };
 
-type ChannelTypes =
-  | 'voice'
-  | 'sms'
-  | 'facebook'
-  | 'messenger'
-  | 'whatsapp'
-  | 'web'
-  | 'telegram'
-  | 'instagram'
-  | 'line'
-  | 'modica';
-
-export const callTypes = {
-  child: 'Child calling about self',
-  caller: 'Someone calling about a child',
+const SELECTOR_MAP: Record<string, AvailableContactFormSelector> = {
+  staticSelector: staticAvailableContactTabSelector,
+  surveyAnswerSelector: selectFormsFromAboutSelfSurveyQuestion,
 };
 
-type HrmContactRawJson = {
-  definitionVersion?: string;
-  callType: (typeof callTypes)[keyof typeof callTypes];
-  childInformation: Record<string, FormValue>;
-  callerInformation: Record<string, FormValue>;
-  caseInformation: Record<string, FormValue>;
-  categories: Record<string, string[]>;
-  contactlessTask: {
-    channel: ChannelTypes;
-    createdOnBehalfOf: `WK${string}` | '';
-    [key: string]: string | boolean;
-  };
-};
-
-export type HrmContact = {
-  id: string;
-  accountSid?: `AC${string}`;
-  twilioWorkerId?: `WK${string}`;
-  number: string;
-  conversationDuration: number;
-  csamReports: unknown[];
-  referrals?: unknown[];
-  conversationMedia?: unknown[];
-  createdAt: string;
-  createdBy: string;
-  helpline: string;
-  taskId: TaskSID | null;
-  profileId?: string;
-  identifierId?: string;
-  channel: ChannelTypes | 'default';
-  updatedBy: string;
-  updatedAt?: string;
-  finalizedAt?: string;
-  rawJson: HrmContactRawJson;
-  timeOfContact: string;
-  queueName: string;
-  channelSid: string;
-  serviceSid: string;
-  caseId?: string;
-  definitionVersion: string;
-};
-
-type FormValue = string | string[] | boolean | null;
-
-// This hardcoded logic should be moved into the form definition JSON or some other configuration
-const MANDATORY_CHATBOT_FIELDS = ['age', 'gender', 'ethnicity'];
+const DEFAULT_SELECTOR: ReturnType<AvailableContactFormSelector> =
+  selectFormsFromAboutSelfSurveyQuestion();
 
 const CUSTOM_MAPPERS: Record<string, MapperFunction> = {
   age:
@@ -396,119 +314,147 @@ const populateInitialValues = async (contact: HrmContact, formDefinitionRootUrl:
 };
 
 const populateContactSection = async (
-  target: Record<string, FormValue>,
+  contact: HrmContact,
+  targetFormDefinitionName: ContactFormDefinitionName,
+  availableFormDefinitions: ContactFormDefinitionName[],
   valuesToPopulate: Record<string, string>,
-  keys: Set<string>,
+  mappings: DefinitionVersion['prepopulateMappings'][keyof Omit<
+    DefinitionVersion['prepopulateMappings'],
+    'formSelector'
+  >],
   formDefinitionRootUrl: URL,
-  tabbedFormsSection:
-    | 'CaseInformationTab'
-    | 'ChildInformationTab'
-    | 'CallerInformationTab',
   converter: (
     keys: Set<string>,
     formTabDefinition: FormItemDefinition[],
     values: Record<string, string>,
   ) => Record<string, string | boolean>,
 ) => {
-  console.debug('Populating', tabbedFormsSection);
-  console.debug('Keys', Array.from(keys));
+  const targetFormName: ContactFormName = FORM_DEFINITION_MAP[targetFormDefinitionName];
+  console.debug('Populating', targetFormName);
+  console.debug('Mappings', mappings);
   console.debug('Using Values', valuesToPopulate);
+  const target: HrmContactRawJson[ContactFormName] = contact.rawJson[targetFormName];
+  const formMappings: Record<string, string[]> = {};
+  // Convert mapping specification to a simple sourceKey -> formField of mappings that are valid for this form
+  Object.entries(mappings).forEach(([key, mapping]) =>
+    mapping.forEach(mappingItem => {
+      for (const mappingChoice of mappingItem) {
+        const [formDefinitionName, field] = mappingChoice.split('.');
+        if (formDefinitionName === targetFormDefinitionName) {
+          formMappings[key] = formMappings[key] ?? [];
+          formMappings[key].push(field);
+        }
+        if (availableFormDefinitions.includes(formDefinitionName as any)) {
+          return;
+        }
+      }
+      return;
+    }),
+  );
 
-  if (keys.size > 0) {
-    const childInformationTabDefinition = await loadConfigJson(
+  // Now if there are any valid mappings in the config, map the values in the source data to the target fields
+  if (Object.keys(formMappings).length > 0) {
+    const contactFormDefinition = await loadConfigJson(
       formDefinitionRootUrl,
-      `tabbedForms/${tabbedFormsSection}`,
+      `tabbedForms/${targetFormDefinitionName}`,
     );
-    Object.assign(
-      target,
-      converter(keys, childInformationTabDefinition, valuesToPopulate),
+    const converted = converter(
+      new Set(Object.keys(formMappings)),
+      contactFormDefinition,
+      valuesToPopulate,
     );
+    const mapped: Record<string, string | boolean> = {};
+
+    for (const [sourceField, formFields] of Object.entries(formMappings)) {
+      for (const formField of formFields) {
+        mapped[formField] = converted[sourceField];
+      }
+    }
+    Object.assign(target, mapped);
   }
 };
 
-export const populateHrmContactFormFromTask = async (
+export const populateHrmContactFormFromTaskByMappings = async (
   taskAttributes: Record<string, any>,
   contact: HrmContact,
   formDefinitionRootUrl: URL,
-): Promise<HrmContact> => {
-  const { memory, preEngagementData, firstName, language } = taskAttributes;
-  const answers = { ...memory, firstName, language };
-  await populateInitialValues(contact, formDefinitionRootUrl);
-  if (!memory && !firstName && !preEngagementData) return contact;
-  const { preEngagement: preEngagementKeys, survey: surveyKeys }: PrepopulateKeys =
-    await loadConfigJson(formDefinitionRootUrl, 'PrepopulateKeys');
-
-  const isValidSurvey = Boolean(answers?.aboutSelf); // determines if the memory has valid values or if it was aborted
-  const isAboutSelf = answers.aboutSelf === 'Yes';
-  if (isValidSurvey) {
-    // eslint-disable-next-line no-param-reassign
-    contact.rawJson.callType = isAboutSelf ? callTypes.child : callTypes.caller;
-  } else {
-    // eslint-disable-next-line no-param-reassign
-    contact.rawJson.callType = callTypes.child;
-  }
-
-  if (isValidSurvey) {
-    if (isAboutSelf) {
-      await populateContactSection(
-        contact.rawJson.childInformation,
-        answers,
-        new Set<string>([...MANDATORY_CHATBOT_FIELDS, ...surveyKeys.ChildInformationTab]),
-        formDefinitionRootUrl,
-        'ChildInformationTab',
-        getValuesFromAnswers,
-      );
-    } else {
-      await populateContactSection(
-        contact.rawJson.callerInformation,
-        answers,
-        new Set<string>([
-          ...MANDATORY_CHATBOT_FIELDS,
-          ...surveyKeys.CallerInformationTab,
-        ]),
-        formDefinitionRootUrl,
-        'CallerInformationTab',
-        getValuesFromAnswers,
-      );
-    }
-  }
-
-  if (preEngagementData) {
-    await populateContactSection(
-      contact.rawJson.caseInformation,
-      preEngagementData,
-      new Set<string>(preEngagementKeys.CaseInformationTab),
+): Promise<Result<Error, HrmContact>> => {
+  try {
+    const { memory, preEngagementData, firstName, language } = taskAttributes;
+    const answers = { ...memory, firstName, language };
+    await populateInitialValues(contact, formDefinitionRootUrl);
+    if (!memory && !firstName && !preEngagementData) return newOk(contact);
+    const {
+      formSelector: formSelectorConfig,
+      preEngagement: preEngagementMappings,
+      survey: surveyMappings,
+    }: PrepopulateMappings = await loadConfigJson(
       formDefinitionRootUrl,
-      'CaseInformationTab',
-      getValuesFromPreEngagementData,
+      'PrepopulateMappings',
     );
 
-    if (!isValidSurvey || isAboutSelf) {
-      await populateContactSection(
-        contact.rawJson.childInformation,
-        preEngagementData,
-        new Set<string>(preEngagementKeys.ChildInformationTab),
-        formDefinitionRootUrl,
-        'ChildInformationTab',
-        getValuesFromPreEngagementData,
-      );
+    const isValidSurvey = Boolean(answers?.aboutSelf); // determines if the memory has valid values or if it was aborted
+    const isAboutSelf = answers.aboutSelf === 'Yes';
+    if (isValidSurvey) {
+      // eslint-disable-next-line no-param-reassign
+      contact.rawJson.callType = isAboutSelf ? callTypes.child : callTypes.caller;
     } else {
-      await populateContactSection(
-        contact.rawJson.callerInformation,
-        preEngagementData,
-        new Set<string>(preEngagementKeys.CallerInformationTab),
-        formDefinitionRootUrl,
-        'CallerInformationTab',
-        getValuesFromPreEngagementData,
-      );
+      // eslint-disable-next-line no-param-reassign
+      contact.rawJson.callType = callTypes.child;
     }
+    const formSelector = formSelectorConfig
+      ? SELECTOR_MAP[formSelectorConfig.selectorType](formSelectorConfig.parameter)
+      : DEFAULT_SELECTOR;
+
+    const availableFormsForSurveyPrepopulation = formSelector(
+      'survey',
+      preEngagementData,
+      answers,
+    );
+    if (availableFormsForSurveyPrepopulation.length > 0) {
+      for (const form of availableFormsForSurveyPrepopulation) {
+        await populateContactSection(
+          contact,
+          form,
+          availableFormsForSurveyPrepopulation,
+          answers,
+          surveyMappings,
+          formDefinitionRootUrl,
+          getValuesFromAnswers,
+        );
+      }
+    }
+
+    const availableFormsForPreEngagementPrepopulation = formSelector(
+      'preEngagement',
+      preEngagementData,
+      answers,
+    );
+    if (preEngagementData && availableFormsForPreEngagementPrepopulation.length > 0) {
+      for (const form of availableFormsForPreEngagementPrepopulation) {
+        await populateContactSection(
+          contact,
+          form,
+          availableFormsForPreEngagementPrepopulation,
+          preEngagementData,
+          preEngagementMappings,
+          formDefinitionRootUrl,
+          getValuesFromPreEngagementData,
+        );
+      }
+    }
+
+    return newOk(contact);
+  } catch (err) {
+    const error = err as Error;
+    console.error(
+      `Error prepopulating contact ${contact.id} using mappings`,
+      error,
+      'task attributes:',
+      taskAttributes,
+    );
+    return newErr({ error, message: error.message });
   }
-
-  return contact;
-};
-
-export type PrepopulateForm = {
-  populateHrmContactFormFromTask: typeof populateHrmContactFormFromTask;
 };
 
 /**

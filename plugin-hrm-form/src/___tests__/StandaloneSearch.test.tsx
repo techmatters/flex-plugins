@@ -14,57 +14,28 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import * as React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-import configureMockStore from 'redux-mock-store';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from './mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from './mockGetConfig';
-import { initialState as searchInitialState } from '../states/search/reducer';
-import { standaloneTaskSid } from '../types/types';
 import { getDefinitionVersions } from '../hrmConfig';
 
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
-const mockStore = configureMockStore([]);
-
 jest.mock('../services/ServerlessService', () => ({
   populateCounselors: async () => [],
 }));
-
-function createState() {
-  return {
-    'plugin-hrm-form': {
-      configuration: {
-        counselors: {
-          list: [],
-          hash: {},
-        },
-      },
-      routing: {
-        tasks: {
-          [standaloneTaskSid]: 'some-id',
-        },
-      },
-      searchContacts: searchInitialState,
-    },
-  };
-}
 
 beforeEach(() => {
   mockReset();
 });
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL('v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
-  mockGetDefinitionsResponse(
-    getDefinitionVersions,
-    DefinitionVersionId.v1,
-    await loadDefinition(formDefinitionsBaseUrl),
-  );
+  mockGetDefinitionsResponse(getDefinitionVersions, 'v1', await loadDefinition(formDefinitionsBaseUrl));
 });
 
 test('<StandaloneSearch> should display <Search />', () => {

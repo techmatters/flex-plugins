@@ -16,7 +16,7 @@
 
 import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-types';
 
 import { RootState } from '../../states';
 import asyncDispatch from '../../states/asyncDispatch';

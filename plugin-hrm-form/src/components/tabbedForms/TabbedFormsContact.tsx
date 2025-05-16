@@ -15,7 +15,7 @@
  */
 import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { callTypes, DataCallTypes } from 'hrm-form-definitions';
+import { callTypes, DataCallTypes } from 'hrm-types';
 
 import { RootState } from '../../states';
 import { DetailsContext } from '../../states/contacts/contactDetails';

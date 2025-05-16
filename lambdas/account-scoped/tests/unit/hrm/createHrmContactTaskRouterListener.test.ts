@@ -22,7 +22,7 @@ import { BLANK_CONTACT } from './testContacts';
 import { EventFields } from '../../../src/taskrouter';
 import { getSsmParameter } from '../../../src/ssmCache';
 import { handleEvent } from '../../../src/hrm/createHrmContactTaskRouterListener';
-import { populateHrmContactFormFromTask } from '../../../src/hrm/populateHrmContactFormFromTask';
+import { populateHrmContactFormFromTaskByKeys } from '../../../src/hrm/populateHrmContactFormFromTaskByKeys';
 import {
   TEST_ACCOUNT_SID,
   TEST_CONTACT_ID,
@@ -32,6 +32,7 @@ import {
   TEST_WORKSPACE_SID,
 } from '../../testTwilioValues';
 import { setConfigurationAttributes } from '../mockServiceConfiguration';
+import { newOk } from '../../../src/Result';
 
 const mockFetch: jest.MockedFunction<typeof fetch> = jest.fn();
 global.fetch = mockFetch;
@@ -43,12 +44,12 @@ const mockGetSsmParameter = getSsmParameter as jest.MockedFunction<
   typeof getSsmParameter
 >;
 
-jest.mock('../../../src/hrm/populateHrmContactFormFromTask', () => ({
-  populateHrmContactFormFromTask: jest.fn(),
+jest.mock('../../../src/hrm/populateHrmContactFormFromTaskByKeys', () => ({
+  populateHrmContactFormFromTaskByKeys: jest.fn(),
 }));
 const mockPopulateHrmContactFormFromTask =
-  populateHrmContactFormFromTask as jest.MockedFunction<
-    typeof populateHrmContactFormFromTask
+  populateHrmContactFormFromTaskByKeys as jest.MockedFunction<
+    typeof populateHrmContactFormFromTaskByKeys
   >;
 
 const newEventFields = (
@@ -137,10 +138,12 @@ describe('handleEvent', () => {
         id: TEST_CONTACT_ID,
       }),
     } as Response);
-    mockPopulateHrmContactFormFromTask.mockResolvedValue({
-      ...BLANK_CONTACT,
-      id: TEST_CONTACT_ID,
-    });
+    mockPopulateHrmContactFormFromTask.mockResolvedValue(
+      newOk({
+        ...BLANK_CONTACT,
+        id: TEST_CONTACT_ID,
+      }),
+    );
   });
 
   test('offline contact task - does nothing', async () => {

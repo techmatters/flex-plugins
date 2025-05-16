@@ -13,8 +13,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { DefinitionVersionId } from 'hrm-form-definitions';
-
 import { Case } from '../types/types';
 import { CaseStateEntry } from '../states/case/types';
 
@@ -23,7 +21,7 @@ export const VALID_EMPTY_CASE: Case = {
   id: '1',
   accountSid: 'AC',
   info: {
-    definitionVersion: DefinitionVersionId.v1,
+    definitionVersion: 'v1',
   },
   updatedAt: new Date(2000, 0, 1).toISOString(),
   createdAt: new Date(2000, 0, 1).toISOString(),

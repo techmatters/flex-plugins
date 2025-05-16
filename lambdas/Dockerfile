@@ -24,16 +24,16 @@ ENV lambda_name ${lambda_name}
 # copy the hrm-lib package and labmdas folders so that the file: based
 # dependency in package.json can be resolved
 COPY ${lambda_dir}/${lambda_name} /tmp/build/${lambda_dir}/${lambda_name}
-COPY ${lambda_dir}/../packages /tmp/build/${lambda_dir}/../packages
+COPY ${lambda_dir}/../packages /tmp/build/packages
 COPY package.json package-lock.json tsconfig.json tsconfig.base.json ${lambda_dir}/${lambda_name}/tsconfig.build.json /tmp/build/
 
 RUN dnf install -y rsync \
     && cd /tmp/build \
-    && npm ci -w ${lambda_dir}/${lambda_name} -w ${lambda_dir}/../packages/* --verbose \
+    && npm ci -w ${lambda_dir}/${lambda_name} -w packages/* --verbose \
     && npx tsc -b tsconfig.build.json --verbose \
     && cp -r ${lambda_dir}/${lambda_name}/dist/. /var/task/ \
     && mkdir -p /var/task/${lambda_dir} \
-    && cp -r ${lambda_dir}/../packages /var/task/${lambda_dir}/../packages/ \
+    && cp -r packages /var/task/ \
     && cp -r node_modules /var/task/
 
 # Ignore errors if node_modules is not present

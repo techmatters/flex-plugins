@@ -17,7 +17,7 @@
 import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import { ArrowDropDownTwoTone, ArrowRightTwoTone, Edit, Link } from '@material-ui/icons';
-import { DataCallTypes } from 'hrm-form-definitions';
+import { DataCallTypes } from 'hrm-types';
 
 import {
   ContactDetailsIcon,

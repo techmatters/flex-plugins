@@ -15,7 +15,6 @@
  */
 
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
-import { CallTypeKeys } from './callTypes';
 import { LayoutVersion } from './layoutVersion';
 
 export enum FormInputType {
@@ -276,7 +275,7 @@ export type CategoriesDefinition = { [category: string]: CategoryEntry };
 
 export type CallTypeButtonsEntry = {
   type: 'button';
-  name: CallTypeKeys;
+  name: string;
   label: string;
   category: 'data' | 'non-data';
 };
@@ -395,7 +394,7 @@ export type DefinitionVersion = {
   /**
    * @deprecated - this is the legacy prepopulation configuration. Use prepopulationMappings for all new code
    */
-  prepopulateKeys?: {
+  prepopulateKeys: {
     survey: {
       ChildInformationTab: string[];
       CallerInformationTab: string[];
@@ -431,6 +430,7 @@ export type DefinitionVersion = {
      * is equivalent to
      * "gender": [["ChildInformationTab.gender"]]
      */
+    formSelector?: { selectorType: string; parameter: any };
     survey: Record<string, FullyQualifiedFieldReference[][]>;
     preEngagement: Record<string, FullyQualifiedFieldReference[][]>;
   };

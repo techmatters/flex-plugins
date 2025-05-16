@@ -20,7 +20,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from '../mockGetConfig';
@@ -56,11 +56,11 @@ beforeEach(() => {
 
 describe('Search Results', () => {
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL('v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+    mockGetDefinitionsResponse(getDefinitionVersions, 'v1', mockV1);
 
     state1 = {
       [namespace]: {

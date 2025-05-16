@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersion, DefinitionVersionId, loadDefinition, StatusInfo } from 'hrm-form-definitions';
+import { DefinitionVersion, loadDefinition, StatusInfo } from 'hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { getInitializedCan, PermissionActions } from '../../../permissions';
@@ -68,7 +68,7 @@ function createDefinition(statuses: StatusInfo[]): DefinitionVersion {
 describe('getAvailableCaseStatusTransitions', () => {
   beforeEach(async () => {
     mockReset();
-    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL('v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);

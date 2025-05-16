@@ -13,8 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
-import { HrmContact } from '../../../src/hrm/populateHrmContactFormFromTask';
+import { HrmContact } from '@tech-matters/hrm-types';
 
 export const BLANK_CONTACT: HrmContact = {
   id: '',
@@ -26,7 +25,7 @@ export const BLANK_CONTACT: HrmContact = {
     childInformation: {},
     callerInformation: {},
     caseInformation: {},
-    callType: '',
+    callType: '' as any,
     contactlessTask: {
       channel: '' as any,
       date: '',

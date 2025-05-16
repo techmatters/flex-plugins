@@ -15,15 +15,16 @@
  */
 
 import {
-  callTypes,
   clearDefinitionCache,
-  HrmContact,
-  populateHrmContactFormFromTask,
-} from '../../../src/hrm/populateHrmContactFormFromTask';
+  populateHrmContactFormFromTaskByKeys,
+} from '../../../src/hrm/populateHrmContactFormFromTaskByKeys';
 import { BLANK_CONTACT } from './testContacts';
+import { callTypes, HrmContact } from '@tech-matters/hrm-types';
 import each from 'jest-each';
 import { FormDefinitionPatch, FormDefinitionSet } from '../../testHrmTypes';
 import { BASE_FORM_DEFINITION, MOCK_FORM_DEFINITION_URL } from '../../testHrmValues';
+import { isErr } from '../../../src/Result';
+import { AssertionError } from 'node:assert';
 
 const fetchFormDefinition = async (
   url: string,
@@ -89,6 +90,10 @@ const mockFormDefinitions = (definitionSet: FormDefinitionPatch) => {
                   BASE_FORM_DEFINITION.prepopulateKeys.survey.CallerInformationTab,
               },
             },
+            prepopulateMappings: {
+              preEngagement: {},
+              survey: {},
+            },
           }),
         ),
     } as Response),
@@ -139,7 +144,7 @@ describe('populateHrmContactFormFromTask', () => {
         firstName: '', // firstName is always added whether in the form def or not
         otherGender: '',
       },
-      expectedCallType: '',
+      expectedCallType: '' as any,
     },
     {
       description:
@@ -322,7 +327,7 @@ describe('populateHrmContactFormFromTask', () => {
     }: TestParams) => {
       mockFormDefinitions(formDefinitionSet);
 
-      const populatedContact = await populateHrmContactFormFromTask(
+      const populatedContactResult = await populateHrmContactFormFromTaskByKeys(
         {
           ...(preEngagementData ? { preEngagementData } : {}),
           ...(memory ? { memory } : {}),
@@ -332,6 +337,10 @@ describe('populateHrmContactFormFromTask', () => {
         BLANK_CONTACT,
         MOCK_FORM_DEFINITION_URL,
       );
+      if (isErr(populatedContactResult)) {
+        throw new AssertionError({ message: populatedContactResult.message });
+      }
+      const populatedContact = populatedContactResult.data;
       if (expectedChildInformation) {
         expect(populatedContact.rawJson.childInformation).toEqual(
           expectedChildInformation,
