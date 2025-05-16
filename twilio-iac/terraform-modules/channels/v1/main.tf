@@ -38,7 +38,7 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
   for_each      = var.channels
   friendly_name = "${title(replace(each.key, "_", " "))} Studio Flow"
   status        = "published"
-  definition = templatefile(
+  definition = nonsensitive(templatefile(
     each.value.templatefile,
     {
       flow_description                           = "${title(replace(each.key, "_", " "))} Studio Flow",
@@ -74,6 +74,7 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
 
 
     }
+  )
   )
 }
 
