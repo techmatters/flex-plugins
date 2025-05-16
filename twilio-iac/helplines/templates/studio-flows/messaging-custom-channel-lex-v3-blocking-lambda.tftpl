@@ -251,7 +251,7 @@ ${
     "method": "POST",
     "content_type": "application/json;charset=utf-8",
     "add_twilio_auth": false,
-    "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_pre_survey\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"${flow_vars[\\\"bot_language\\\"]}\", \"botSuffix\": \"pre_survey\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"preSurveyComplete\", \"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type | downcase}}\", \"isConversation\": \"true\"}",
+    "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_pre_survey\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"${flow_vars[\"bot_language\"]}\", \"botSuffix\": \"pre_survey\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"preSurveyComplete\", \"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type | downcase}}\", \"isConversation\": \"true\"}",
     "url": "https://hrm-${environment}.tl.techmatters.org/lambda/twilio/account-scoped/{%if trigger.conversation%}{{trigger.conversation.AccountSid}}{%else%}{{trigger.message.AccountSid}}{%endif%}/channelCapture/captureChannelWithBot"
   }
 },
