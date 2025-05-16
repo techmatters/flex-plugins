@@ -60,6 +60,7 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
       webhook_url_studio_errors                  = local.webhook_url_studio_errors,
       short_helpline                             = var.short_helpline,
       short_environment                          = var.short_environment,
+      environement                               = var.environment,
       channel_attributes = {
         default : templatefile(
           lookup(
