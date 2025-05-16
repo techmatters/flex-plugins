@@ -24,7 +24,7 @@
         "slot_type": "yes_no",
         "value_elicitation_prompt": {
           "max_attempts": 2,
-          "content": "Kia ora, you've reached Youthline. Your conversation is confidential, but ifwe feel that you or someone else is at serious risk of harm, we may have to link in with other services. We'll let you know if that becomes necessary. -Do you need urgent support? Respond 1 for 'Yes' or 2 for 'No'",
+          "content": "Kia ora, you've reached Youthline. Your conversation is confidential, but if we feel that you or someone else is at serious risk of harm, we may have to link in with other services. We'll let you know if that becomes necessary. \nDo you need urgent support?  \n1. Yes \n2. No",
           "content_type": "PlainText"
         }
       }
