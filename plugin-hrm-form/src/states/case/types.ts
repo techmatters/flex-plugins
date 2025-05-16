@@ -89,6 +89,10 @@ export type ContactIdentifierTimelineActivity = TimelineActivity<{ contactId: Co
   activityType: 'contact-id';
 };
 
+export const isContactIdentifierTimelineActivity = (
+  activity: TimelineActivity<any>,
+): activity is CaseSectionIdentifierTimelineActivity => activity.activityType === 'contact-id';
+
 export type CaseSectionIdentifierTimelineActivity = TimelineActivity<{
   sectionType: string;
   sectionId: string;

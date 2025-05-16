@@ -51,7 +51,7 @@ type ReactHookFormValues = {
 
 type OwnProps = {
   name: string;
-  text: string | React.ReactElement;
+  textCode: string;
   defaultValues: Item[];
   withSearch?: boolean;
   openedFilter: string;
@@ -67,7 +67,7 @@ type Props = OwnProps;
 
 const MultiSelectFilter: React.FC<Props> = ({
   name,
-  text,
+  textCode,
   defaultValues,
   openedFilter,
   searchable,
@@ -206,7 +206,7 @@ const MultiSelectFilter: React.FC<Props> = ({
   return (
     <div style={{ position: 'relative' }}>
       <MultiSelectButton
-        data-testid={`FilterBy-${text}-Button`}
+        data-testid={`FilterBy-${name}-Button`}
         isOpened={isOpened}
         isActive={Boolean(selectedCount > 0)}
         type="button"
@@ -217,7 +217,7 @@ const MultiSelectFilter: React.FC<Props> = ({
           register(ref as HTMLButtonElement & HTMLSelectElement);
         }}
       >
-        {text}
+        <Template code={textCode} />
         {drawCount()}
         <Flex marginLeft="15px">
           {isOpened && <ArrowDropUp />}
@@ -227,7 +227,9 @@ const MultiSelectFilter: React.FC<Props> = ({
       {isOpened && (
         <FiltersDialog role="dialog" aria-labelledby="dialog-title">
           <DialogArrow />
-          <FiltersDialogTitle id="dialog-title">Filter by: {text}</FiltersDialogTitle>
+          <FiltersDialogTitle id="dialog-title">
+            Filter by: <Template code={textCode} />
+          </FiltersDialogTitle>
           {searchable && (
             <SearchInput
               label={searchDescription}
@@ -244,11 +246,7 @@ const MultiSelectFilter: React.FC<Props> = ({
                 const hidden = !item.label.toLowerCase().includes(searchTerm.toLowerCase());
                 const isFirstFocusableElement = i === 0 && !searchable;
                 return (
-                  <MultiSelectListItem
-                    key={i}
-                    hidden={hidden}
-                    data-testid={`${openedFilter.charAt(0).toUpperCase() + openedFilter.slice(1)}-${item.label}`}
-                  >
+                  <MultiSelectListItem key={i} hidden={hidden} data-testid={`${openedFilter}-${item.label}`}>
                     <FormLabel htmlFor={item.value} style={{ flexDirection: 'row' }}>
                       <FiltersCheckbox
                         id={item.value}

@@ -26,7 +26,6 @@ import { FiltersContainer, FiltersResetAll, MainTitle, CountText, FilterTitle } 
 import MultiSelectFilter, { Item } from './MultiSelectFilter';
 import DateRangeFilter from './DateRangeFilter';
 import { DateFilter, dateFilterOptionsInPast, dateFilterOptionsInPastAndFuture } from './dateFilters';
-import { Category } from './CategoriesFilter';
 import { RootState } from '../../../states';
 import * as CaseListSettingsActions from '../../../states/caseList/settings';
 import { getAseloFeatureFlags, getHrmConfig, getTemplateStrings } from '../../../hrmConfig';
@@ -34,7 +33,7 @@ import { canOnlyViewOwnCases } from '../../../permissions';
 import { caseListBase, configurationBase, namespace } from '../../../states/storeNamespaces';
 import { DateFilterValue } from '../../../states/caseList/dateFilters';
 import { getFilterComponent } from './CaseListFilterProvider';
-import { CategoryFilter, CounselorHash } from '../../../types/types';
+import { CounselorHash } from '../../../types/types';
 
 /**
  * Reads the definition version and returns and array of items (type Item[])
@@ -133,67 +132,12 @@ const getInitialDateFilters = (caseInfoFilters?: Record<string, any>): DateFilte
 };
 
 /**
- * Reads the definition version and returns and array of categories (type Category[])
- * to be used as the options for the categories filter
- */
-const getCategoriesInitialValue = (definitionVersion: DefinitionVersion, helpline: string) =>
-  definitionVersion
-    ? Object.entries(definitionVersion.tabbedForms.IssueCategorizationTab(helpline)).map(
-        ([categoryName, { subcategories }]) => ({
-          categoryName,
-          subcategories: subcategories.map(subcategory => ({
-            value: subcategory.label,
-            label: subcategory.label,
-            checked: false,
-          })),
-        }),
-      )
-    : [];
-
-/**
  * Convert an array of items (type Item[]) into an array of strings.
  * This array will contain only the items that are checked.
  * @param items Item[]
  * @returns string[]
  */
 const filterCheckedItems = (items: Item[]): string[] => items.filter(item => item.checked).map(item => item.value);
-
-/**
- * Convert an array of categories (type Category[]) into an array of CategoryFilter.
- * This array will contain only the categories that are checked.
- * @param categories Category[]
- * @returns CategoryFilter[]
- */
-const filterCheckedCategories = (categories: Category[]): CategoryFilter[] =>
-  categories.flatMap(category =>
-    category.subcategories
-      .filter(subcategory => subcategory.checked)
-      .map(subcategory => ({
-        category: category.categoryName,
-        subcategory: subcategory.label,
-      })),
-  );
-
-/**
- * Given the selected categories from redux and the previous categoriesValues,
- * it returns the updated values for categoriesValues, whith the correct checked values.
- *
- * @param categories Selected categories from redux (type CategoryFilter[])
- * @param categoriesValues Previous categoriesValues (type Category[])
- * @returns
- */
-const getUpdatedCategoriesValues = (categories: CategoryFilter[], categoriesValues: Category[]): Category[] => {
-  const isChecked = (categoryName: string, subcategoryName: string) =>
-    categories.some(c => c.category === categoryName && c.subcategory === subcategoryName);
-
-  return categoriesValues.map(categoryValue => ({
-    ...categoryValue,
-    subcategories: categoryValue.subcategories.map(subcategory => ({
-      ...subcategory,
-      checked: isChecked(categoryValue.categoryName, subcategory.label),
-    })),
-  }));
-};
 
 type OwnProps = {
   currentDefinitionVersion?: DefinitionVersion;
@@ -207,7 +151,6 @@ type FilterState = {
     createdAt?: DateFilterValue;
     updatedAt?: DateFilterValue;
   };
-  categoriesValues: Category[];
   caseInfoFilterValues: Record<string, Item[]>;
   openedFilter?: string;
 };
@@ -229,7 +172,6 @@ const Filters: React.FC<OwnProps> = ({ currentDefinitionVersion, caseCount }) =>
     statusValues: getStatusInitialValue(currentDefinitionVersion),
     counselorValues: getCounselorsInitialValue(counselorsHash),
     dateFilterValues: {},
-    categoriesValues: getCategoriesInitialValue(currentDefinitionVersion, helpline),
     caseInfoFilterValues: Object.keys(caseFilterDefinition || {}).reduce(
       (acc, filterName) => ({
         ...acc,
@@ -279,13 +221,6 @@ const Filters: React.FC<OwnProps> = ({ currentDefinitionVersion, caseCount }) =>
     [dispatch, currentFilter, caseFilterDefinition],
   );
 
-  const handleApplyCategoriesFilter = useCallback(
-    (values: Category[]) => {
-      dispatch(CaseListSettingsActions.updateCaseListFilter({ categories: filterCheckedCategories(values) }));
-    },
-    [dispatch],
-  );
-
   const handleApplyCustomFilter = useCallback(
     (filterName: string) => (values: Item[]) => {
       dispatch(
@@ -313,26 +248,18 @@ const Filters: React.FC<OwnProps> = ({ currentDefinitionVersion, caseCount }) =>
     const statusFiltersApplied = filterCheckedItems(filterState.statusValues).length > 0;
     const counselorFiltersApplied = filterCheckedItems(filterState.counselorValues).length > 0;
     const dateFiltersApplied = Boolean(Object.values(filterState.dateFilterValues).filter(dfv => dfv).length);
-    const categoryFiltersApplied = filterCheckedCategories(filterState.categoriesValues).length > 0;
     const customFiltersApplied =
       currentFilter.caseInfoFilters &&
       Object.values(currentFilter.caseInfoFilters).some(
         values => values && (Array.isArray(values) ? values.length > 0 : true),
       );
 
-    return (
-      statusFiltersApplied ||
-      counselorFiltersApplied ||
-      dateFiltersApplied ||
-      categoryFiltersApplied ||
-      customFiltersApplied
-    );
+    return statusFiltersApplied || counselorFiltersApplied || dateFiltersApplied || customFiltersApplied;
   }, [
     // eslint-disable-next-line react-hooks/exhaustive-deps
     filterState.statusValues,
     filterState.counselorValues,
     filterState.dateFilterValues,
-    filterState.categoriesValues,
     currentFilter?.caseInfoFilters,
   ]);
 
@@ -340,7 +267,6 @@ const Filters: React.FC<OwnProps> = ({ currentDefinitionVersion, caseCount }) =>
     setFilterState(prevState => ({
       ...prevState,
       statusValues: getStatusInitialValue(currentDefinitionVersion),
-      categoriesValues: getCategoriesInitialValue(currentDefinitionVersion, helpline),
       caseInfoFilterValues: Object.keys(caseFilterDefinition || {}).reduce(
         (acc, filterName) => ({
           ...acc,
@@ -365,8 +291,6 @@ const Filters: React.FC<OwnProps> = ({ currentDefinitionVersion, caseCount }) =>
       ...sv,
       checked: statuses.includes(sv.value),
     }));
-
-    const newCategoriesValues = getUpdatedCategoriesValues(categories, filterState.categoriesValues);
 
     const newCaseInfoFilterValues = Object.keys(caseFilterDefinition || {})
       .filter(filterName => caseFilterDefinition?.[filterName]?.type === 'multi-select')
@@ -398,7 +322,6 @@ const Filters: React.FC<OwnProps> = ({ currentDefinitionVersion, caseCount }) =>
       counselorValues: newCounselorValues,
       statusValues: newStatusValues,
       dateFilterValues: newDateFilters,
-      categoriesValues: newCategoriesValues,
       caseInfoFilterValues: newCaseInfoFilterValues,
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -428,12 +351,10 @@ const Filters: React.FC<OwnProps> = ({ currentDefinitionVersion, caseCount }) =>
       strings,
       statusValues: filterState.statusValues,
       counselorValues: filterState.counselorValues,
-      categoriesValues: filterState.categoriesValues,
       dateFilterValues: filterState.dateFilterValues,
       dateFilters: getInitialDateFilters(caseFilterDefinition),
       handleApplyStatusFilter,
       handleApplyCounselorFilter,
-      handleApplyCategoriesFilter,
       handleApplyDateRangeFilter,
     };
 
@@ -462,7 +383,7 @@ const Filters: React.FC<OwnProps> = ({ currentDefinitionVersion, caseCount }) =>
       <MultiSelectFilter
         key={filterName}
         name={filterName}
-        text={currentDefinitionVersion?.caseOverview[caseOverviewKey]?.label || filterName}
+        textCode={currentDefinitionVersion?.caseOverview[caseOverviewKey]?.label || filterName}
         defaultValues={filterState.caseInfoFilterValues[filterName]}
         openedFilter={filterState.openedFilter}
         applyFilter={handleApplyCustomFilter(filterName)}
@@ -543,26 +464,24 @@ const Filters: React.FC<OwnProps> = ({ currentDefinitionVersion, caseCount }) =>
           <Template code={getCasesCountString()} count={caseCount} />
         </CountText>
       </FiltersContainer>
-      {featureFlags.enable_filter_cases && (
-        <FiltersContainer data-testid="CaseList-Filters-Panel">
-          <FilterList fontSize="small" />
-          <FilterTitle>
-            <Template code="Table-FilterBy" />
-          </FilterTitle>
+      <FiltersContainer data-testid="CaseList-Filters-Panel">
+        <FilterList fontSize="small" />
+        <FilterTitle>
+          <Template code="Table-FilterBy" />
+        </FilterTitle>
 
-          <div style={{ display: 'inline-flex' }}>{renderFiltersByPosition('left')}</div>
+        <div style={{ display: 'inline-flex' }}>{renderFiltersByPosition('left')}</div>
 
-          {hasFiltersOnRight && (
-            <div style={{ display: 'inline-flex', marginLeft: 'auto' }}>
-              <DateRange fontSize="small" style={{ marginTop: '4px' }} />
-              <FilterTitle style={{ margin: '5px 10px 0 6px' }}>
-                <Template code="CaseList-Filters-DateFiltersLabel" />
-              </FilterTitle>
-              {renderFiltersByPosition('right')}
-            </div>
-          )}
-        </FiltersContainer>
-      )}
+        {hasFiltersOnRight && (
+          <div style={{ display: 'inline-flex', marginLeft: 'auto' }}>
+            <DateRange fontSize="small" style={{ marginTop: '4px' }} />
+            <FilterTitle style={{ margin: '5px 10px 0 6px' }}>
+              <Template code="CaseList-Filters-DateFiltersLabel" />
+            </FilterTitle>
+            {renderFiltersByPosition('right')}
+          </div>
+        )}
+      </FiltersContainer>
     </>
   );
 };
