@@ -286,11 +286,11 @@ ${
         "type": "make-http-request",
         "transitions": [
           {
-            "next": "channel_cleanup",
+            "next": "channelCleanup",
             "event": "success"
           },
           {
-            "next": "channel_cleanup",
+            "next": "channelCleanup",
             "event": "failed"
           }
         ],
