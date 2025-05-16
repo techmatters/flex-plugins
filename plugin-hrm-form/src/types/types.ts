@@ -16,7 +16,7 @@
 
 /* eslint-disable import/no-unused-modules */
 import type { ITask as ITaskOriginalType, TaskContextProps as TaskContextPropsOriginalType } from '@twilio/flex-ui';
-import type { CallTypes, DefinitionVersionId } from 'hrm-form-definitions';
+import type { CallTypes, DefinitionVersionId } from '@tech-matters/hrm-form-definitions';
 
 import type { ChannelTypes } from '../states/DomainConstants';
 import type { ResourceReferral } from '../states/contacts/resourceReferral';

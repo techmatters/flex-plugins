@@ -18,7 +18,7 @@ import React, { Dispatch } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import SearchIcon from '@material-ui/icons/Search';
 import { Template } from '@twilio/flex-ui';
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes } from '@tech-matters/hrm-form-definitions';
 
 import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { RootState } from '../../states';

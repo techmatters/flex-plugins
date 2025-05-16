@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { callTypes, DefinitionVersionId } from 'hrm-form-definitions';
+import { callTypes, DefinitionVersionId } from '@tech-matters/hrm-form-definitions';
 
 import { Contact } from '../types/types';
 import { ContactMetadata, LlmAssistantStatus, LoadingStatus } from '../states/contacts/types';

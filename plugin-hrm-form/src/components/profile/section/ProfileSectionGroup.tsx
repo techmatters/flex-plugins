@@ -29,7 +29,7 @@
  */
 
 import React from 'react';
-import type { ProfileSectionDefinition } from 'hrm-form-definitions';
+import type { ProfileSectionDefinition } from '@tech-matters/hrm-form-definitions';
 import { Template } from '@twilio/flex-ui';
 
 import { HiddenText } from '../../../styles';

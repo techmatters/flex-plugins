@@ -17,7 +17,7 @@ import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import each from 'jest-each';
-import { FormInputType, FormItemDefinition } from 'hrm-form-definitions';
+import { FormInputType, FormItemDefinition } from '@tech-matters/hrm-form-definitions';
 
 import * as FormComponents from '../../../components/forms/components';
 import { createInput } from '../../../components/forms/inputGenerator';

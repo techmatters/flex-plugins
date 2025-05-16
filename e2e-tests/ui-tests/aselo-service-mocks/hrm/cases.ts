@@ -17,7 +17,7 @@
 import flexContext from '../../flex-in-a-box/global-context';
 import { addSeconds, subHours } from 'date-fns';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { DefinitionVersionId } from 'hrm-form-definitions';
+import { DefinitionVersionId } from '@tech-matters/hrm-form-definitions';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Page } from '@playwright/test';
 import context from '../global-context';

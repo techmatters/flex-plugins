@@ -18,7 +18,7 @@
 import React, { useEffect } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
-import { DefinitionVersionId } from 'hrm-form-definitions';
+import { DefinitionVersionId } from '@tech-matters/hrm-form-definitions';
 import { parseISO } from 'date-fns';
 
 import { getDefinitionVersion } from '../../services/ServerlessService';

@@ -17,7 +17,7 @@
 import * as React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import configureMockStore from 'redux-mock-store';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersionId, loadDefinition } from '@tech-matters/hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from './mockFetchDefinitions';
 import { mockGetDefinitionsResponse } from './mockGetConfig';
@@ -27,30 +27,11 @@ import { getDefinitionVersions } from '../hrmConfig';
 
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 
-const mockStore = configureMockStore([]);
+configureMockStore([]);
 
 jest.mock('../services/ServerlessService', () => ({
   populateCounselors: async () => [],
 }));
-
-function createState() {
-  return {
-    'plugin-hrm-form': {
-      configuration: {
-        counselors: {
-          list: [],
-          hash: {},
-        },
-      },
-      routing: {
-        tasks: {
-          [standaloneTaskSid]: 'some-id',
-        },
-      },
-      searchContacts: searchInitialState,
-    },
-  };
-}
 
 beforeEach(() => {
   mockReset();

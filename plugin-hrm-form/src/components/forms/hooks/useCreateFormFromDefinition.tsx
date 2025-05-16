@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { FormDefinition, FormItemDefinition } from 'hrm-form-definitions';
+import { FormDefinition, FormItemDefinition } from '@tech-matters/hrm-form-definitions';
 import { get } from 'lodash';
 
 import { createInput, CreateInputParams } from '../inputGenerator';

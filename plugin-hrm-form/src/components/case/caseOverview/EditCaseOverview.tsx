@@ -20,7 +20,7 @@ import React, { useEffect, useMemo } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { connect } from 'react-redux';
 import { FieldValues, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
-import { FormDefinition, FormInputType } from 'hrm-form-definitions';
+import { FormDefinition, FormInputType } from '@tech-matters/hrm-form-definitions';
 import { isEqual } from 'lodash';
 import { AnyAction, bindActionCreators } from 'redux';
 

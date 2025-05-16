@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import type { DefinitionVersion } from 'hrm-form-definitions';
+import type { DefinitionVersion } from '@tech-matters/hrm-form-definitions';
 
 import { ParseFetchErrorResult } from './parseFetchError';
 

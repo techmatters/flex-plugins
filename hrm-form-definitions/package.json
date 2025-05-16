@@ -1,5 +1,5 @@
 {
-  "name": "hrm-form-definitions",
+  "name": "@tech-matters/hrm-form-definitions",
   "version": "1.0.0",
   "description": "Module to manage form definitions in the Aselo HRM Twilio plugin",
   "main": "dist/index.js",
@@ -15,8 +15,8 @@
     "@babel/preset-typescript": "^7.16.5",
     "@types/jest": "^27.0.3",
     "@types/lodash": "^4.14.182",
-    "@types/node": "^17.0.8",
-    "@types/react": "^17.0.38",
+    "@types/node": "^18.16.2",
+    "@types/react": "^17.0.47",
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
     "babel-core": "^6.26.3",
@@ -32,7 +32,6 @@
     "jest-each": "^28.1.1",
     "jest-junit": "^16.0.0",
     "prettier": "^2.3.2",
-    "react-hook-form": "^6.11.0",
     "ts-jest": "^27.1.2",
     "ts-node": "^10.1.0",
     "typescript": "^4.3.5"

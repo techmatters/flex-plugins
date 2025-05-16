@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId } from 'hrm-form-definitions';
+import { DefinitionVersionId } from '@tech-matters/hrm-form-definitions';
 
 import { cancelCase, createCase, getCase, updateCaseOverview, updateCaseStatus } from '../../services/CaseService';
 import { fetchHrmApi } from '../../services/fetchHrmApi';

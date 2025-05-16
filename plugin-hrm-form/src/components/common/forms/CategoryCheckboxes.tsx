@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import React from 'react';
-import { CategoryEntry } from 'hrm-form-definitions';
+import { CategoryEntry } from '@tech-matters/hrm-form-definitions';
 
 import {
   SubcategoriesWrapper,

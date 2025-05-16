@@ -14,10 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersion, FormDefinition, FormItemDefinition, isNonSaveable } from 'hrm-form-definitions';
+import { DefinitionVersion, FormDefinition, FormItemDefinition, isNonSaveable } from '@tech-matters/hrm-form-definitions';
 
 import { ContactRawJson } from '../../types/types';
-import { RecursivePartial } from '../../___tests__/RecursivePartial';
 
 const transformValue = (e: FormItemDefinition) => (value: string | boolean | null) => {
   if (e.type === 'mixed-checkbox' && value === 'mixed') return null;

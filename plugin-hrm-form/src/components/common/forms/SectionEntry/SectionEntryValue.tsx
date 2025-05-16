@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import type { FormItemDefinition, LayoutValue } from 'hrm-form-definitions';
+import type { FormItemDefinition, LayoutValue } from '@tech-matters/hrm-form-definitions';
 import { Template } from '@twilio/flex-ui';
 
 import { FormTargetObject } from '../types';

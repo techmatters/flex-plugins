@@ -9,7 +9,7 @@ import {
   isFormDefinitionSpecification,
   processDefinitionFiles,
   aseloFormTemplates,
-} from 'hrm-form-definitions';
+} from '@tech-matters/hrm-form-definitions';
 import prompt from 'prompt';
 
 async function main() {

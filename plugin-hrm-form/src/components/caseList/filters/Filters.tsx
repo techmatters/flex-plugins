@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Template } from '@twilio/flex-ui';
-import type { DefinitionVersion, CaseFilterPosition } from 'hrm-form-definitions';
+import type { DefinitionVersion, CaseFilterPosition } from '@tech-matters/hrm-form-definitions';
 import FilterList from '@material-ui/icons/FilterList';
 import DateRange from '@material-ui/icons/DateRange';
 import { useSelector, useDispatch } from 'react-redux';
@@ -163,7 +163,6 @@ const Filters: React.FC<OwnProps> = ({ currentDefinitionVersion, caseCount }) =>
   const caseFilterDefinition = currentDefinitionVersion?.caseFilters;
 
   const strings = getTemplateStrings();
-  const featureFlags = getAseloFeatureFlags();
   const { helpline } = getHrmConfig();
   const canViewCounselorFilter = !canOnlyViewOwnCases();
 

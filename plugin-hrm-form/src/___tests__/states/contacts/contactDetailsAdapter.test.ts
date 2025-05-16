@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { FormInputType } from 'hrm-form-definitions';
+import { FormInputType } from '@tech-matters/hrm-form-definitions';
 
 import { transformValues } from '../../../states/contacts/contactDetailsAdapter';
 

@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import { useSelector } from 'react-redux';
-import { ProfileFlagDurationDefinition } from 'hrm-form-definitions';
+import { ProfileFlagDurationDefinition } from '@tech-matters/hrm-form-definitions';
 
 import { RootState } from '../..';
 import { selectCurrentDefinitionVersion } from '../selectDefinitions';

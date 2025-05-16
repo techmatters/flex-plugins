@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable sonarjs/prefer-immediate-return */
-import { DefinitionVersionId } from 'hrm-form-definitions';
+import { DefinitionVersionId } from '@tech-matters/hrm-form-definitions';
 
 import type { GeneralizedSearchParams } from '../states/search/types';
 import type { Case, CaseOverview, Contact, SearchCaseResult } from '../types/types';

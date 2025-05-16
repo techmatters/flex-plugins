@@ -23,7 +23,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, DefinitionVersionId, loadDefinition } from '@tech-matters/hrm-form-definitions';
 import { parseISO } from 'date-fns';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';

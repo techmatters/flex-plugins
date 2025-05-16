@@ -25,11 +25,11 @@ runs:
     - name: Install the Twilio CLI and plugins
       run: npm install -g twilio-cli  && twilio plugins:install @twilio-labs/plugin-flex@7.0.0
       shell: bash
-    - name: Install hrm-form-definitions Packages
+    - name: Install All Packages
       run: npm ci
-      working-directory: ${{ inputs.path }}/hrm-form-definitions
+      working-directory: ${{ inputs.path }}
       shell: bash
-    - name: Install plugin-hrm-form Packages
-      run: npm ci
-      working-directory: ${{ inputs.path }}/plugin-hrm-form
+    - name: Build hrm-form-definitions module
+      run: npm run build -w hrm-form-definitions
+      working-directory: ${{ inputs.path }}
       shell: bash

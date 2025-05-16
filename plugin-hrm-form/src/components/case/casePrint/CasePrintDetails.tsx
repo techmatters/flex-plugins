@@ -19,7 +19,7 @@
 /* eslint-disable dot-notation */
 import React from 'react';
 import { Text, View, Image } from '@react-pdf/renderer';
-import { DefinitionVersion } from 'hrm-form-definitions';
+import { DefinitionVersion } from '@tech-matters/hrm-form-definitions';
 
 import styles from './styles';
 import CasePrintCategories from './CasePrintCategories';

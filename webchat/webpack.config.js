@@ -19,7 +19,6 @@ const path = require('path');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const BomPlugin = require('webpack-utf8-bom');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
@@ -80,6 +79,7 @@ const webpackConfig = {
     fallback: {
       buffer: require.resolve('buffer'),
       fs: false,
+      events: require.resolve('events'),
     },
   },
   output: {
@@ -115,11 +115,6 @@ const webpackConfig = {
 
 if (process.env.BUNDLE_ANALYZER) {
   webpackConfig.plugins.push(new BundleAnalyzerPlugin());
-}
-
-if (!isDevMode) {
-  // The bom plugin breaks the dev server and hot
-  webpackConfig.plugins.push(new BomPlugin(true));
 }
 
 module.exports = webpackConfig;

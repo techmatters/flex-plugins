@@ -22,7 +22,17 @@ module.exports = (config, { isProd, isDev, isTest }) => {
    * Customize the webpack by modifying the config object.
    * Consult https://webpack.js.org/configuration for more information
    */
-
+  config.module.rules.push({
+    test: /\.(js|jsx)$/,
+    include: '/node_modules/emoji-mart/**',
+    use: {
+      loader: 'babel-loader',
+      options: {
+        presets: ['@babel/preset-env'],
+        plugins: ['@babel/plugin-transform-optional-chaining']
+      }
+    }
+  });
   config.plugins.push(
     new DotenvFlow({
       // eslint-disable-next-line camelcase

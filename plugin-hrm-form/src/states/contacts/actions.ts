@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable import/no-unused-modules */
-import { callTypes, DataCallTypes } from 'hrm-form-definitions';
+import { callTypes, DataCallTypes } from '@tech-matters/hrm-form-definitions';
 
 import * as t from './types';
 import { EXISTING_CONTACT_UPDATE_DRAFT_ACTION, ExistingContactAction } from './existingContacts';

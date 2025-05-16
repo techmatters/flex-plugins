@@ -25,7 +25,7 @@ import {
   OneToManyConfigSpec,
   OneToManyConfigSpecs,
   OneToOneConfigSpec,
-} from 'hrm-form-definitions';
+} from '@tech-matters/hrm-form-definitions';
 import { parseISO } from 'date-fns';
 
 import { isNonDataCallType } from '../states/validationRules';
