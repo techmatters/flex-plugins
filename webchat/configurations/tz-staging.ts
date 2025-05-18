@@ -25,25 +25,25 @@ const contactType: ContactType = 'ip';
 
 const translations: Translations = {
   'en-US': {
-    WelcomeMessage: 'C-Sema',
+    WelcomeMessage: 'National Child Helpline (116)',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
       "Thank you very much for this information. We'll transfer you now. Please hold for a counsellor.",
     AutoFirstMessage: 'Incoming webchat contact from',
     PreEngagementDescription:
-      'Thank you for contacting C-Sema. To chat with a counsellor, please type your name and select the Start Chat button.',
+      'Thank you for contacting National Child Helpline (116). To chat with a counsellor, please type your name and select the Start Chat button.',
     WhatIsYourName: 'What is your name?',
     StartChat: 'Start Chat!',
     SelectLanguage: 'Select your language',
   },
   "sw_TZ": {
-    WelcomeMessage: "C-Sema",
+    WelcomeMessage: "National Child Helpline (116)",
     MessageCanvasTrayContent: "",
     MessageInputDisabledReasonHold:
       "Asante sana kwa maelezo haya. Tutakuunganisha sasa. Tafadhali subiri ili kuzungumza na mshauri.",
     AutoFirstMessage: "Mawasiliano ya gumzo la wavuti yanayoingia kutoka",
     PreEngagementDescription:
-      "Asante kwa kuwasiliana na C-Sema. Ili kuzungumza na mshauri, tafadhali andika jina lako na bonyeza kitufe cha Anza Gumzo.",
+      "Asante kwa kuwasiliana na National Child Helpline (116). Ili kuzungumza na mshauri, tafadhali andika jina lako na bonyeza kitufe cha Anza Gumzo.",
     WhatIsYourName: "Jina lako ni nani?",
     StartChat: "Anza Gumzo!",
     SelectLanguage: "Chagua lugha yako"
@@ -164,7 +164,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           label: ">18"
         }
       ],
-    },
+    }, 
     {
       type: 'select',
       name: 'gender',

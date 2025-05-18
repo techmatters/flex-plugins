@@ -1,3 +1,6 @@
 {
-  "en": {}
+  "en": {
+    "WelcomeMsg": "Welcome to the National Child Helpline 116, you are speaking to a counsellor, welcome to serve you. \n Karibu Huduma Simu kwa Mtoto Namba 116, unaongea na mshauri nasaha, Karibu nikuhudumie.",
+    "GoodbyeMsg": "The Counsellor has left the chat. Thank you for reaching out. Please contact us again if you need more help."
+  }
 }
