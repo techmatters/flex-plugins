@@ -380,10 +380,6 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
         "value": "Child in conflict with the law",
         "label": "Child in conflict with the law"
       },

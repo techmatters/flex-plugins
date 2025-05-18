@@ -2,7 +2,7 @@
     "regionOptions": [
       {
         "value": "Unknown",
-        "label": "Unknown"
+        "label": ""
       },
       {
         "value": "ARUSHA",
@@ -145,7 +145,7 @@
       "ARUSHA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "ARUSHA CBD",
@@ -179,7 +179,7 @@
       "BARABARANI ": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MLODA",
@@ -189,7 +189,7 @@
       "BWAWANI ": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MKOYO",
@@ -199,7 +199,7 @@
       "CBD ": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MJINI",
@@ -601,7 +601,7 @@
       "CENTRE ": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "",
@@ -611,7 +611,7 @@
       "DAR-ES-SALAAM": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "ILALA CBD",
@@ -641,7 +641,7 @@
       "DODOMA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "DODOMA",
@@ -675,7 +675,7 @@
       "GEITA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "GEITA",
@@ -701,7 +701,7 @@
       "IRINGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "IRINGA CBD",
@@ -723,7 +723,7 @@
       "KAGERA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BUKOBA CBD",
@@ -761,7 +761,7 @@
       "KASKAZINI ": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "",
@@ -771,7 +771,7 @@
       "KATAVI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MPANDA -CBD",
@@ -789,7 +789,7 @@
       "KIGOMA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KIGOMA",
@@ -819,7 +819,7 @@
       "KILIMANJARO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MOSHI CBD",
@@ -853,7 +853,7 @@
       "LINDI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "LINDI CBD",
@@ -883,7 +883,7 @@
       "MAGHOROFANI ": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KIHONDA MAGHOROFANI",
@@ -893,7 +893,7 @@
       "MANYARA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BABATI CBD",
@@ -923,7 +923,7 @@
       "MARA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MUSOMA CBD",
@@ -953,7 +953,7 @@
       "MBE ": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MDANDU",
@@ -1043,7 +1043,7 @@
       "MBEYA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MBEYA CBD",
@@ -1073,7 +1073,7 @@
       "MOROGORO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MOROGORO",
@@ -1107,7 +1107,7 @@
       "MTWARA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MTWARA CBD",
@@ -1137,7 +1137,7 @@
       "MWANZA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NYAMAGANA",
@@ -1171,7 +1171,7 @@
       "NDEGE ": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MNAZI MMOJA",
@@ -1189,7 +1189,7 @@
       "NJOMBE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NJOMBE CBD",
@@ -1215,7 +1215,7 @@
       "PWANI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KIBAHA CBD",
@@ -1253,7 +1253,7 @@
       "RUKWA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SUMBAWANGA",
@@ -1271,7 +1271,7 @@
       "RUVUMA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SONGEA CBD",
@@ -1301,7 +1301,7 @@
       "SHINYANGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SHINYANGA",
@@ -1319,7 +1319,7 @@
       "SIMIYU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BARIADI",
@@ -1345,7 +1345,7 @@
       "SINGIDA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SINGIDA CBD",
@@ -1375,7 +1375,7 @@
       "SONGWE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SONGWE",
@@ -1397,7 +1397,7 @@
       "TABORA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "TABORA CBD",
@@ -1431,7 +1431,7 @@
       "TANGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "TANGA CBD",
@@ -1475,7 +1475,7 @@
       "ARUSHA CBD": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SEKEI",
@@ -1601,7 +1601,7 @@
       "ARUSHA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "OLTURUMET",
@@ -1715,7 +1715,7 @@
       "ARUMERU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "USA RIVER",
@@ -1825,7 +1825,7 @@
       "MONDULI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MONDULI MJINI",
@@ -1911,7 +1911,7 @@
       "LONGIDO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "LONGIDO",
@@ -1989,7 +1989,7 @@
       "KARATU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KARATU",
@@ -2051,7 +2051,7 @@
       "NGORONGORO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "ORGOSOROK",
@@ -2169,7 +2169,7 @@
       "MLODA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "",
@@ -2179,7 +2179,7 @@
       "MKOYO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "",
@@ -2189,7 +2189,7 @@
       "MJINI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KAUNDA",
@@ -2199,7 +2199,7 @@
       "KAMBARAGE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KAMBARAGE",
@@ -2209,7 +2209,7 @@
       "NGOKOLO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MAGADULA",
@@ -2219,7 +2219,7 @@
       "CHAMAGUHA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "TANESCO",
@@ -2229,7 +2229,7 @@
       "KITANGILI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KITANGILI",
@@ -2239,7 +2239,7 @@
       "IBINZAMATA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BUGWANDEGE",
@@ -2249,7 +2249,7 @@
       "NDALA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BANDUKA",
@@ -2259,7 +2259,7 @@
       "KIZUMBI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NHELEGANI",
@@ -2269,7 +2269,7 @@
       "MWAWAZA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NEGEZI",
@@ -2279,7 +2279,7 @@
       "CHIBE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "CHIBE",
@@ -2289,7 +2289,7 @@
       "MWAMALILI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MWAMALILI",
@@ -2299,7 +2299,7 @@
       "IBADAKULI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BUGWETO A",
@@ -2309,7 +2309,7 @@
       "KOLANDOTO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KOLANDOTO",
@@ -2319,7 +2319,7 @@
       "LUBAGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "LUBAGA,",
@@ -2329,7 +2329,7 @@
       "MASEKELO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MASEKELO",
@@ -2339,7 +2339,7 @@
       "NDEMBEZI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "TAMBUKARELI",
@@ -2349,7 +2349,7 @@
       "OLD SHINYANGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "OLD SHINYANGA",
@@ -2359,7 +2359,7 @@
       "KIGOMA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MAHEMBE",
@@ -2409,7 +2409,7 @@
       "BANGWE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KATONGA MASHARIKI",
@@ -2419,7 +2419,7 @@
       "MWANGA KASKAZINI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KISANGANI",
@@ -2429,7 +2429,7 @@
       "MWANGA KUSINI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KILIMA HEWA",
@@ -2439,7 +2439,7 @@
       "GUNGU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BUSHABANI",
@@ -2449,7 +2449,7 @@
       "BUHANDA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MSUFINI",
@@ -2459,7 +2459,7 @@
       "KITONGONI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MNAZI MMOJA",
@@ -2469,7 +2469,7 @@
       "KASINGIRIMA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "LIVINGSTONE",
@@ -2479,7 +2479,7 @@
       "MACHINJIONI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "UKUMBI",
@@ -2489,7 +2489,7 @@
       "MAJENGO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BOGOGWA",
@@ -2507,7 +2507,7 @@
       "RUBUGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NDARABU",
@@ -2517,7 +2517,7 @@
       "KASIMBU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NDAHIRIYO",
@@ -2527,7 +2527,7 @@
       "KAGERA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KANSWA",
@@ -2537,7 +2537,7 @@
       "RUSIMBI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SOKOINE",
@@ -2547,7 +2547,7 @@
       "KATUBUKA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MWANGA SOKONI",
@@ -2557,7 +2557,7 @@
       "KIBIRIZI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KIBIRIZII A",
@@ -2567,7 +2567,7 @@
       "BUZEBAZEBA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "VAMIA",
@@ -2577,7 +2577,7 @@
       "KIPAMPA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KAWAWA",
@@ -2587,7 +2587,7 @@
       "BUSINDE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KIRUGU",
@@ -2597,7 +2597,7 @@
       "UHURU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KIPANDE",
@@ -2607,7 +2607,7 @@
       "VIWANDANI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KINYALI",
@@ -2617,7 +2617,7 @@
       "MADUKANI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KAMILI",
@@ -2627,7 +2627,7 @@
       "TAMBUKARELI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "RELI",
@@ -2637,7 +2637,7 @@
       "MAKOLE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "CHIMULI",
@@ -2647,7 +2647,7 @@
       "DODOMA MAKULU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MEDELI",
@@ -2657,7 +2657,7 @@
       "HAZINA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KINYAMBWA",
@@ -2667,7 +2667,7 @@
       "CHAMWINO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "CHILONWA",
@@ -2817,7 +2817,7 @@
       "KILIMANI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KILIMANI",
@@ -2827,7 +2827,7 @@
       "KIKUYU KASKAZINI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KIKUYU MISSION",
@@ -2837,7 +2837,7 @@
       "KIKUYU KUSINI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MKALAMA 'A'",
@@ -2847,7 +2847,7 @@
       "MIYUJI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MPAMAA",
@@ -2857,7 +2857,7 @@
       "KIZOTA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MKONONGO",
@@ -2867,7 +2867,7 @@
       "KIWANJA CHA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "",
@@ -2877,7 +2877,7 @@
       "MKONZE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "CHIDACHI",
@@ -2887,7 +2887,7 @@
       "NKUHUNGU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SALAMA",
@@ -2897,7 +2897,7 @@
       "IHUMWA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "CHILWANA",
@@ -2907,7 +2907,7 @@
       "NG'ONNG'ONHA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NG‚ÄôONNG‚ÄôONHA",
@@ -2917,7 +2917,7 @@
       "MATUMBULU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MPUNGUZI ‚ÄòA‚Äô",
@@ -2927,7 +2927,7 @@
       "SULTANI AREA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KIKUNDI",
@@ -2937,7 +2937,7 @@
       "MJI MKUU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SHORT",
@@ -2947,7 +2947,7 @@
       "SABASABA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BETELO",
@@ -2957,7 +2957,7 @@
       "MAFIGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KIDONDOLO A",
@@ -2967,7 +2967,7 @@
       "UWANJA WA TAIFA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "UKUTU",
@@ -2977,7 +2977,7 @@
       "KINGO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "RELI",
@@ -2987,7 +2987,7 @@
       "MJI MPYA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MAKABURI A",
@@ -2997,7 +2997,7 @@
       "BOMA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KIBWE",
@@ -3007,7 +3007,7 @@
       "KILAKALA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BIGWA KISIWANI",
@@ -3017,7 +3017,7 @@
       "BIGWA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BIGWA BARABARANI",
@@ -3027,7 +3027,7 @@
       "KICHANGANI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KOLA B",
@@ -3037,7 +3037,7 @@
       "MWEMBESONGO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MWIGOLE",
@@ -3047,7 +3047,7 @@
       "KIHONDA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KILIMANJARO",
@@ -3061,7 +3061,7 @@
       "MAZIMBU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MAZIMBU DARAJANI",
@@ -3071,7 +3071,7 @@
       "MBUYUNI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MTONI B",
@@ -3081,7 +3081,7 @@
       "MLIMANI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MBETE",
@@ -3091,7 +3091,7 @@
       "MZINGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KIDANGAWA",
@@ -3101,7 +3101,7 @@
       "KINGOLWIRA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "ZAHANATI",
@@ -3111,7 +3111,7 @@
       "LUKOBE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "TUELEWANE",
@@ -3121,7 +3121,7 @@
       "MAFISA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SINA",
@@ -3131,7 +3131,7 @@
       "TUNGI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NANENANE",
@@ -3141,7 +3141,7 @@
       "KAUZENI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KAUZENI",
@@ -3151,7 +3151,7 @@
       "LUHUNGO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MAMBANI",
@@ -3161,7 +3161,7 @@
       "MAGADU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MAGADU",
@@ -3171,7 +3171,7 @@
       "MKUNDI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MAILI 18",
@@ -3181,7 +3181,7 @@
       "MINDU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KASANGA",
@@ -3191,7 +3191,7 @@
       "SUMBAWANGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "LAELA",
@@ -3305,7 +3305,7 @@
       "IZIA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "HALMASHAURI",
@@ -3315,7 +3315,7 @@
       "KATANDALA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KATANDALA ‚ÄòC‚Äô",
@@ -3325,7 +3325,7 @@
       "MALANGALI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MPANGA",
@@ -3335,7 +3335,7 @@
       "KIZWITE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SENTI",
@@ -3345,7 +3345,7 @@
       "MAZWI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "RTC",
@@ -3355,7 +3355,7 @@
       "CHANJI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SOKODOGO",
@@ -3365,7 +3365,7 @@
       "NTENDO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "LUWA",
@@ -3375,7 +3375,7 @@
       "SENGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SENGA",
@@ -3385,7 +3385,7 @@
       "MILANZI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MLANDA B",
@@ -3395,7 +3395,7 @@
       "KASENSE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KASENSE",
@@ -3405,7 +3405,7 @@
       "MOLLO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MALONJE",
@@ -3415,7 +3415,7 @@
       "MATANGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MATANGA",
@@ -3425,7 +3425,7 @@
       "PITO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KATUMBA AZIMIO",
@@ -3435,7 +3435,7 @@
       "MAFULALA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MAFULALA",
@@ -3445,7 +3445,7 @@
       "MSUA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MSUA",
@@ -3455,7 +3455,7 @@
       "MOMOKA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KASHAI",
@@ -3465,7 +3465,7 @@
       "LWICHE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "UTENGULE",
@@ -3475,7 +3475,7 @@
       "": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "",
@@ -3485,7 +3485,7 @@
       "ILALA CBD": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KIVUKONI",
@@ -3527,7 +3527,7 @@
       "ILALA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "ILALA",
@@ -3641,7 +3641,7 @@
       "KINONDONI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MAGOMENI",
@@ -3727,7 +3727,7 @@
       "TEMEKE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "TEMEKE",
@@ -3825,7 +3825,7 @@
       "UBUNGO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MBURAHATI",
@@ -3887,7 +3887,7 @@
       "KIGAMBONI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KIMBIJI",
@@ -3929,7 +3929,7 @@
       "DODOMA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MAKUTOPORA",
@@ -4019,7 +4019,7 @@
       "BAHI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BAHI",
@@ -4113,7 +4113,7 @@
       "KONGWA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KONGWA",
@@ -4207,7 +4207,7 @@
       "MPWAPWA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MPWAPWA MJINI",
@@ -4345,7 +4345,7 @@
       "KONDOA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KONDOA MJINI",
@@ -4467,7 +4467,7 @@
       "CHEMBA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "CHEMBA",
@@ -4577,7 +4577,7 @@
       "GEITA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KALANGALALA",
@@ -4779,7 +4779,7 @@
       "NYANG'HWALE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NYANG'HWALE",
@@ -4845,7 +4845,7 @@
       "CHATO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "CHATO",
@@ -4943,7 +4943,7 @@
       "MBOGWE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "IPONYA",
@@ -5017,7 +5017,7 @@
       "BUKOMBE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BUKOMBE",
@@ -5091,7 +5091,7 @@
       "IRINGA CBD": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MIVINJENI",
@@ -5169,7 +5169,7 @@
       "IRINGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KALENGA",
@@ -5287,7 +5287,7 @@
       "KILOLO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "IROLE",
@@ -5389,7 +5389,7 @@
       "MUFINDI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BOMA",
@@ -5539,7 +5539,7 @@
       "BUKOBA CBD": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BUKOBA",
@@ -5601,7 +5601,7 @@
       "BUKOBA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BEHENDANGABO",
@@ -5723,7 +5723,7 @@
       "MISSENYI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "ISHOZI",
@@ -5809,7 +5809,7 @@
       "KARAGWE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NDAMA",
@@ -5907,7 +5907,7 @@
       "MULEBA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MULEBA",
@@ -6085,7 +6085,7 @@
       "BIHARAMULO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BIHARAMULO MJINI",
@@ -6159,7 +6159,7 @@
       "NGARA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NGARA MJINI",
@@ -6253,7 +6253,7 @@
       "KYERWA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KYERWA",
@@ -6355,7 +6355,7 @@
       "MPANDA -CBD": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KAWAJENSE",
@@ -6469,7 +6469,7 @@
       "TANGANYIKA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KAREMA",
@@ -6539,7 +6539,7 @@
       "MLELE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "INYONGA",
@@ -6605,7 +6605,7 @@
       "KASULU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KASULU MJINI",
@@ -6719,7 +6719,7 @@
       "KIBONDO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KIBONDO MJINI",
@@ -6769,7 +6769,7 @@
       "BUHIGWE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BUHIGWE",
@@ -6843,7 +6843,7 @@
       "UVINZA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "UVINZA",
@@ -6885,7 +6885,7 @@
       "KAKONKO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KAKONKO",
@@ -6927,7 +6927,7 @@
       "MOSHI CBD": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MAWENZI",
@@ -7017,7 +7017,7 @@
       "MOSHI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MABOGINI",
@@ -7151,7 +7151,7 @@
       "HAI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MACHAME MASHARIKI",
@@ -7225,7 +7225,7 @@
       "SIHA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "IVAENY",
@@ -7299,7 +7299,7 @@
       "MWANGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "JIPE",
@@ -7385,7 +7385,7 @@
       "SAME": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SAME",
@@ -7527,7 +7527,7 @@
       "ROMBO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MAHIDA",
@@ -7641,7 +7641,7 @@
       "LINDI CBD": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MAKONDE",
@@ -7727,7 +7727,7 @@
       "LINDI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NACHUNYU",
@@ -7861,7 +7861,7 @@
       "NACHINGWEA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NACHINGWEA MJINI",
@@ -8011,7 +8011,7 @@
       "KILWA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KILWA MASOKO",
@@ -8109,7 +8109,7 @@
       "LIWALE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "LIWALE MJINI",
@@ -8195,7 +8195,7 @@
       "RUANGWA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "RUANGWA",
@@ -8289,7 +8289,7 @@
       "KIHONDA MAGHOROFANI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "",
@@ -8299,7 +8299,7 @@
       "BABATI CBD": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BABATI",
@@ -8337,7 +8337,7 @@
       "BABATI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MAGUGU",
@@ -8443,7 +8443,7 @@
       "HANANG'": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KATESH",
@@ -8581,7 +8581,7 @@
       "MBULU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "AYOMOHE",
@@ -8723,7 +8723,7 @@
       "KITETO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KIBAYA",
@@ -8821,7 +8821,7 @@
       "SIMANJIRO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "ORKESUMET",
@@ -8991,7 +8991,7 @@
       "MUSOMA CBD": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MUKENDO",
@@ -9145,7 +9145,7 @@
       "BUTIAMA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BUTIAMA",
@@ -9223,7 +9223,7 @@
       "RORYA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BUKURA",
@@ -9333,7 +9333,7 @@
       "TARIME": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BOMANI",
@@ -9475,7 +9475,7 @@
       "BUNDA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BUNDA MJINI",
@@ -9609,7 +9609,7 @@
       "SERENGETI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MUGUMU",
@@ -9739,7 +9739,7 @@
       "MDANDU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "ITAMBO",
@@ -9749,7 +9749,7 @@
       "IGIMA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MLEVELA",
@@ -9759,7 +9759,7 @@
       "USUKA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MATOWO",
@@ -9769,7 +9769,7 @@
       "LUDUGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "LUDUGA",
@@ -9779,7 +9779,7 @@
       "ILEMBULA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "ILEMBULA",
@@ -9789,7 +9789,7 @@
       "UHAMBULE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "UJINDILE",
@@ -9799,7 +9799,7 @@
       "WANGING'OMBE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "WANGING'OMBE",
@@ -9809,7 +9809,7 @@
       "KIJOMBE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "LYADEBWE",
@@ -9819,7 +9819,7 @@
       "SAJA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SAJA",
@@ -9829,7 +9829,7 @@
       "IGOSI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "IGOSI",
@@ -9839,7 +9839,7 @@
       "WANGAMA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "WANGAMA",
@@ -9849,7 +9849,7 @@
       "KIDUGALA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KIDUGALA",
@@ -9859,7 +9859,7 @@
       "ULEMBWE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "ULEMBWE",
@@ -9869,7 +9869,7 @@
       "KIPENGELE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KIPENGELE",
@@ -9879,7 +9879,7 @@
       "MAKOGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NG'ANDA",
@@ -9889,7 +9889,7 @@
       "IMALINYI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "IMALINYI",
@@ -9899,7 +9899,7 @@
       "ITULAHUMBA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SAKALENGA",
@@ -9909,7 +9909,7 @@
       "IGWACHANYA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "IDINDILIMUNYO",
@@ -9919,7 +9919,7 @@
       "UHENGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "IKULIMAMBO",
@@ -9929,7 +9929,7 @@
       "UDONJA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "UDONJA",
@@ -9939,7 +9939,7 @@
       "MBEYA CBD": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MBALIZI ROAD",
@@ -10089,7 +10089,7 @@
       "MBEYA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "IJOMBE",
@@ -10207,7 +10207,7 @@
       "RUNGWE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BULYAGA",
@@ -10381,7 +10381,7 @@
       "MBARALI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "RUJEWA",
@@ -10467,7 +10467,7 @@
       "KYELA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KYELA",
@@ -10605,7 +10605,7 @@
       "CHUNYA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "CHOKAA",
@@ -10691,7 +10691,7 @@
       "MOROGORO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "TEGETERO",
@@ -10821,7 +10821,7 @@
       "MVOMERO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MVOMERO",
@@ -10947,7 +10947,7 @@
       "KILOSA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KASIKI",
@@ -11113,7 +11113,7 @@
       "KILOMBERO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "IFAKARA",
@@ -11259,7 +11259,7 @@
       "ULANGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MAHENGE MJINI",
@@ -11349,7 +11349,7 @@
       "GAIRO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "GAIRO",
@@ -11427,7 +11427,7 @@
       "MALINYI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "ITETE",
@@ -11473,7 +11473,7 @@
       "MTWARA CBD": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "RELI",
@@ -11551,7 +11551,7 @@
       "MTWARA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "ZIWANI",
@@ -11709,7 +11709,7 @@
       "TANDAHIMBA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "TANDAHIMBA",
@@ -11923,7 +11923,7 @@
       "NEWALA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "LUCHINGU",
@@ -12081,7 +12081,7 @@
       "MASASI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MKUTI",
@@ -12279,7 +12279,7 @@
       "NANYUMBU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NANGOMBA",
@@ -12353,7 +12353,7 @@
       "NYAMAGANA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NYAMAGANA",
@@ -12431,7 +12431,7 @@
       "ILEMELA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NYAKATO",
@@ -12513,7 +12513,7 @@
       "SENGEREMA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "IBISABAGENI",
@@ -12707,7 +12707,7 @@
       "MAGU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MAGU MJINI",
@@ -12813,7 +12813,7 @@
       "MISUNGWI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NHUNDULU",
@@ -12927,7 +12927,7 @@
       "UKEREWE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NANSIO",
@@ -13033,7 +13033,7 @@
       "KWIMBA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NGUDU",
@@ -13159,7 +13159,7 @@
       "MNAZI MMOJA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "",
@@ -13169,7 +13169,7 @@
       "OSTERBAY": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "",
@@ -13179,7 +13179,7 @@
       "TUMBAKU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "",
@@ -13189,7 +13189,7 @@
       "NJOMBE CBD": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NJOMBE MJINI",
@@ -13295,7 +13295,7 @@
       "NJOMBE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "IKONDO",
@@ -13349,7 +13349,7 @@
       "WANGING'O": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "",
@@ -13359,7 +13359,7 @@
       "LUDEWA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "LUDEWA",
@@ -13469,7 +13469,7 @@
       "MAKETE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "IWAWA",
@@ -13567,7 +13567,7 @@
       "KIBAHA CBD": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "TUMBI",
@@ -13629,7 +13629,7 @@
       "KIBAHA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MLANDIZI",
@@ -13691,7 +13691,7 @@
       "BAGAMOYO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "DUNDA",
@@ -13801,7 +13801,7 @@
       "KISARAWE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KISARAWE",
@@ -13875,7 +13875,7 @@
       "MKURANGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MKURANGA",
@@ -13981,7 +13981,7 @@
       "RUFIJI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "UTETE",
@@ -14043,7 +14043,7 @@
       "MAFIA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KILINDONI",
@@ -14081,7 +14081,7 @@
       "KIBITI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SALALE",
@@ -14147,7 +14147,7 @@
       "NKASI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NAMANYERE",
@@ -14265,7 +14265,7 @@
       "KALAMBO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MATAI",
@@ -14363,7 +14363,7 @@
       "SONGEA CBD": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MJINI",
@@ -14453,7 +14453,7 @@
       "SONGEA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MAPOSENI",
@@ -14555,7 +14555,7 @@
       "NAMTUMBO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NAMTUMBO",
@@ -14645,7 +14645,7 @@
       "MBINGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MBINGA MJINI",
@@ -14843,7 +14843,7 @@
       "NYASA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MBAMBABAY",
@@ -14929,7 +14929,7 @@
       "TUNDURU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MLINGOTI MASHARIKI",
@@ -15091,7 +15091,7 @@
       "SHINYANGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SAMUYE",
@@ -15201,7 +15201,7 @@
       "KAHAMA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MAJENGO",
@@ -15439,7 +15439,7 @@
       "KISHAPU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KISHAPU",
@@ -15561,7 +15561,7 @@
       "BARIADI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BARIADI",
@@ -15691,7 +15691,7 @@
       "ITILIMA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "LAGANGABILILI",
@@ -15785,7 +15785,7 @@
       "MASWA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "BUCHAMBI",
@@ -15935,7 +15935,7 @@
       "MEATU": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "LUBIGA",
@@ -16057,7 +16057,7 @@
       "BUSEGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KABITA",
@@ -16123,7 +16123,7 @@
       "SINGIDA CBD": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "UTEMINI",
@@ -16201,7 +16201,7 @@
       "SINGIDA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MGORI",
@@ -16291,7 +16291,7 @@
       "IRAMBA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KIOMBOI",
@@ -16377,7 +16377,7 @@
       "MANYONI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MANYONI URBAN",
@@ -16511,7 +16511,7 @@
       "MKALAMA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KINYANGIRI",
@@ -16585,7 +16585,7 @@
       "IKUNGI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "IHANJA",
@@ -16703,7 +16703,7 @@
       "SONGWE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "GUA",
@@ -16777,7 +16777,7 @@
       "MBOZI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "VWAWA",
@@ -16899,7 +16899,7 @@
       "ILEJE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "ITUMBA",
@@ -16977,7 +16977,7 @@
       "MOMBA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "TUNDUMA",
@@ -17099,7 +17099,7 @@
       "TABORA CBD": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NG'AMBO",
@@ -17221,7 +17221,7 @@
       "UYUI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "GOWEKO",
@@ -17347,7 +17347,7 @@
       "SIKONGE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SIKONGE",
@@ -17433,7 +17433,7 @@
       "NZEGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "NZEGA MJINI MAGHARIBI",
@@ -17623,7 +17623,7 @@
       "URAMBO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "URAMBO",
@@ -17701,7 +17701,7 @@
       "IGUNGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "IGUNGA",
@@ -17847,7 +17847,7 @@
       "KALIUA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "KALIUA",
@@ -17965,7 +17965,7 @@
       "TANGA CBD": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "CENTRAL",
@@ -18039,7 +18039,7 @@
       "TANGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "TANGASISI",
@@ -18085,7 +18085,7 @@
       "PANGANI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "PANGANI",
@@ -18143,7 +18143,7 @@
       "MUHEZA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MAJENGO",
@@ -18297,7 +18297,7 @@
       "MKINGA": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "DALUNI",
@@ -18391,7 +18391,7 @@
       "KOROGWE": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "MANUNDU",
@@ -18557,7 +18557,7 @@
       "LUSHOTO": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "LUSHOTO",
@@ -18767,7 +18767,7 @@
       "HANDENI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "CHANIKA",
@@ -18905,7 +18905,7 @@
       "KILINDI": [
         {
           "value": "Unknown",
-          "label": "Unknown"
+          "label": ""
         },
         {
           "value": "SONGE",
