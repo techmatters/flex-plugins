@@ -161,21 +161,15 @@
     "name": "location",
     "label": "Location",
     "type": "select",
-    "unknownOption": "Unknown",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "tanzania",
-        "label": "Tanzania - Main land"
-      },
-      {
-        "value": "zanzibar",
-        "label": "Zanzibar & Pemba"
-      }
-    ]
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "locationOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
     "name": "region",
