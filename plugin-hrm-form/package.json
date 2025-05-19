@@ -34,8 +34,8 @@
     "env:dev": "run-s env:clear env:dev:*",
     "env:clear:": "rm -f .env.local",
     "ssm:local": "npm run ssm:local:appConfig && npm run ssm:local:secret",
-    "ssm:local:appConfig": "export docker run --rm -v ~/.aws:/home/aws/.aws -e AWS_DEFAULT_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY interrobangc/awscli2 ssm get-parameter --name \"/local/flex-plugins/plugin-hrm-form/appConfig.js\" --with-decryption --query \"Parameter.Value\" --output text > ./public/appConfig.js",
-    "ssm:local:appConfig:e2e": "docker run --rm -v ~/.aws:/home/aws/.aws -e AWS_DEFAULT_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY interrobangc/awscli2 ssm get-parameter --name \"/local/flex-plugins/plugin-hrm-form/e2e-test/appConfig.js\" --with-decryption --query \"Parameter.Value\" --output text > ./public/appConfig.js",
+    "ssm:local:appConfig": "cd ../scripts && npm run setAppConfigCreds -- -h AS -e development",
+    "ssm:local:appConfig:e2e": "cd ../scripts && npm run setAppConfigCreds -- -h E2E -e development",
     "ssm:local:secret": "docker run --rm -v ~/.aws:/home/aws/.aws -e AWS_DEFAULT_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY interrobangc/awscli2 ssm get-parameter --name \"/local/flex-plugins/plugin-hrm-form/secret.js\" --with-decryption --query \"Parameter.Value\" --output text > ./src/private/secret.js",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"

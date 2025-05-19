@@ -2,10 +2,11 @@ import { config } from 'dotenv';
 import yargs from 'yargs';
 import fetch from 'node-fetch';
 import * as fs from 'node:fs/promises';
+import { getSSMParameter, setRoleToAssume } from './helpers/ssm';
 
 config();
 
-type Args = { a: string | null };
+type Args = { [x in 'a' | 'h' | 'e' | 'ssmRole']: string | null };
 
 async function main() {
   const args: Args = yargs(process.argv.slice(2))
@@ -27,11 +28,47 @@ async function main() {
       describe:
         'Helpline account sid - use instead of shortcode / environment if you want to avoid needing AWS access',
     })
+    .option('h', {
+      alias: 'helpline',
+      type: 'string',
+      default: null,
+      describe: 'Helpline shortcode',
+    })
+    .option('e', {
+      alias: 'helplineEnvironment',
+      type: 'string',
+      default: null,
+      describe: 'Helpline environment',
+    })
+    .option('ssmRole', {
+      type: 'string',
+      default: null,
+      describe: 'Helpline environment',
+    })
     .parseSync();
   console.debug('parsed args:', args);
-  const { a: accountSid } = args;
+  let { a: accountSid } = args;
+  const { h: helplineShortCode, e: helplineEnvironment, ssmRole } = args;
   if (!accountSid) {
-    throw new Error('accountSid parameter required');
+    if (!helplineShortCode || !helplineEnvironment) {
+      throw new Error('accountSid or helpline/helpline environment required');
+    }
+    if (ssmRole) {
+      setRoleToAssume(ssmRole);
+    }
+    accountSid =
+      (
+        await getSSMParameter(
+          `/${helplineEnvironment}/twilio/${helplineShortCode?.toUpperCase()}/account_sid`,
+          !ssmRole,
+        )
+      )?.Parameter?.Value ?? null;
+
+    if (!accountSid) {
+      throw new Error(
+        `Failed to find acccount SID for ${helplineEnvironment}/${helplineShortCode}`,
+      );
+    }
   }
   const resp = await fetch(
     `https://services.twilio.com/v1/Flex/Authentication/Config?AccountSid=${accountSid}`,
