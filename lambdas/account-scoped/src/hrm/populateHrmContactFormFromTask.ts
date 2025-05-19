@@ -17,7 +17,7 @@
 import { capitalize } from 'lodash';
 import { startOfDay, format } from 'date-fns';
 import { TaskSID } from '../twilioTypes';
-import { loadConfigJson, loadedConfigJsons } from '../formDefinitionsCache';
+import { loadConfigJson, loadedConfigJsons } from './formDefinitionsCache';
 
 type MapperFunction = (options: string[]) => (value: string) => string;
 
