@@ -1,5 +1,5 @@
 {
-  "C-Sema": {
+  "National Child Helpline": {
     "Missing children": {
       "color": "#BBE3FF",
       "subcategories": [
@@ -11,6 +11,9 @@
         },
         {
           "label": "Runaway"
+        },
+        {
+          "label": "Child trafficking"
         },
         {
           "label": "Unspecified/Other"
@@ -46,18 +49,6 @@
         },
         {
           "label": "Neglect (or negligent treatment)"
-        },
-        {
-          "label": "Online sexual abuse"
-        },
-        {
-          "label": "Online sexual exploitation"
-        },
-        {
-          "label": "Physical violence"
-        },
-        {
-          "label": "Sexual violence"
         },
         {
           "label": "Unspecified/Other"
@@ -105,6 +96,29 @@
         }
       ]
     },
+    "Physical Abuse": {
+      "color": "#f8b595",
+      "subcategories": [
+        {
+          "label": "Beating"
+        },
+        {
+          "label": "Burning"
+        },
+        {
+          "label": "Biting"
+        },
+        {
+          "label": "Kicking"
+        },
+        {
+          "label": "Slapping"
+        },
+        {
+          "label": "Other"
+        }
+      ]
+    },
     "Physical Health": {
       "color": "#E86B6B",
       "subcategories": [
@@ -131,6 +145,38 @@
         },
         {
           "label": "Unspecified/Other"
+        }
+      ]
+    },
+    "Online Safety (OCSEA)": {
+      "color": "#BBE3FF",
+      "subcategories": [
+        {
+          "label": "Online sexual harassment"
+        },
+        {
+          "label": "Receiving unwanted sexual images"
+        },
+        {
+          "label": "Unwanted/Non-consensual sexting"
+        },
+        {
+          "label": "Exposure to child sexual abuse material"
+        },
+        {
+          "label": "Non-consensual sharing of self-generated sexual content"
+        },
+        {
+          "label": "Online grooming"
+        },
+        {
+          "label": "Sexual extortion"
+        },
+        {
+          "label": "Production of child sexual abuse material"
+        },
+        {
+          "label": "Cyber-bullying"
         }
       ]
     },
@@ -174,9 +220,6 @@
         },
         {
           "label": "Gender"
-        },
-        {
-          "label": "Gender identity or expression and sexual orientation"
         },
         {
           "label": "Health"
@@ -226,6 +269,32 @@
         }
       ]
     },
+    "Sexual Abuse": {
+      "color": "#037971",
+      "subcategories": [
+        {
+          "label": "Rape"
+        },
+        {
+          "label": "Sodomy"
+        },
+        {
+          "label": "Inappropriate Touching"
+        },
+        {
+          "label": "Child Sexual Exploitation"
+        },
+        {
+          "label": "Indecent Exposure"
+        },
+        {
+          "label": "Pornography"
+        },
+        {
+          "label": "Other"
+        }
+      ]
+    },
     "Education and Occupation": {
       "color": "#55AFAF",
       "subcategories": [
@@ -237,20 +306,6 @@
         },
         {
           "label": "Problems at work"
-        },
-        {
-          "label": "Unspecified/Other"
-        }
-      ]
-    },
-    "Sexuality": {
-      "color": "#506BA5",
-      "subcategories": [
-        {
-          "label": "Sexual orientation and gender identity"
-        },
-        {
-          "label": "Sexual behaviours"
         },
         {
           "label": "Unspecified/Other"
