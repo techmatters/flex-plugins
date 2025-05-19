@@ -25,25 +25,25 @@ const contactType: ContactType = 'ip';
 
 const translations: Translations = {
   'en-US': {
-    WelcomeMessage: 'C-Sema',
+    WelcomeMessage: 'National Child Helpline (116)',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
       "Thank you very much for this information. We'll transfer you now. Please hold for a counsellor.",
     AutoFirstMessage: 'Incoming webchat contact from',
     PreEngagementDescription:
-      'Thank you for contacting C-Sema. To chat with a counsellor, please type your name and select the Start Chat button.',
+      'Thank you for contacting National Child Helpline (116). To chat with a counsellor, please type your name and select the Start Chat button.',
     WhatIsYourName: 'What is your name?',
     StartChat: 'Start Chat!',
     SelectLanguage: 'Select your language',
   },
   "sw_TZ": {
-    WelcomeMessage: "C-Sema",
+    WelcomeMessage: "National Child Helpline (116)",
     MessageCanvasTrayContent: "",
     MessageInputDisabledReasonHold:
       "Asante sana kwa maelezo haya. Tutakuunganisha sasa. Tafadhali subiri ili kuzungumza na mshauri.",
     AutoFirstMessage: "Mawasiliano ya gumzo la wavuti yanayoingia kutoka",
     PreEngagementDescription:
-      "Asante kwa kuwasiliana na C-Sema. Ili kuzungumza na mshauri, tafadhali andika jina lako na bonyeza kitufe cha Anza Gumzo.",
+      "Asante kwa kuwasiliana na National Child Helpline (116). Ili kuzungumza na mshauri, tafadhali andika jina lako na bonyeza kitufe cha Anza Gumzo.",
     WhatIsYourName: "Jina lako ni nani?",
     StartChat: "Anza Gumzo!",
     SelectLanguage: "Chagua lugha yako"
@@ -55,21 +55,6 @@ const preEngagementConfig: PreEngagementFormDefinition = {
   submitLabel: 'StartChat',
   fields: [
     {
-      type: 'select',
-      name: 'language',
-      label: 'Select Language/Chagua lugha',
-      defaultValue: '',
-      required: true,
-      options: [
-        {
-          value: '',
-          label: ''
-        },
-        { value: 'en-US', label: '1. English' },
-        { value: 'sw_TZ', label: '2. Kiswahili' },
-      ],
-    },
-    {
       type: 'input-text',
       name: 'friendlyName',
       label: 'Name/Jina',
@@ -77,113 +62,28 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       required: true,
     },
     {
-      label: 'Age/Umri',
       type: 'select',
-      name: 'age',
-      required: true,
+      name: 'language',
+      label: 'Select Language/Chagua lugha',
       defaultValue: '',
+      required: true,
       options: [
-        {
-          value: "",
-          label: ""
-        },
-        {
-          value: "01",
-          label: "1"
-        },
-        {
-          value: "02",
-          label: "2"
-        },
-        {
-          value: "03",
-          label: "3"
-        },
-        {
-          value: "04",
-          label: "4"
-        },
-        {
-          value: "05",
-          label: "5"
-        },
-        {
-          value: "06",
-          label: "6"
-        },
-        {
-          value: "07",
-          label: "7"
-        },
-        {
-          value: "08",
-          label: "8"
-        },
-        {
-          value: "09",
-          label: "9"
-        },
-        {
-          value: "10",
-          label: "10"
-        },
-        {
-          value: "11",
-          label: "11"
-        },
-        {
-          value: "12",
-          label: "12"
-        },
-        {
-          value: "13",
-          label: "13"
-        },
-        {
-          value: "14",
-          label: "14"
-        },
-        {
-          value: "15",
-          label: "15"
-        },
-        {
-          value: "16",
-          label: "16"
-        },
-        {
-          value: "17",
-          label: "17"
-        },
-        {
-          value: "18",
-          label: "18"
-        },
-        {
-          value: ">18",
-          label: ">18"
-        }
+        { value: '', label: '' },
+        { value: 'en-US', label: '1. English' },
+        { value: 'sw_TZ', label: '2. Kiswahili' },
       ],
-    },
+    }, 
     {
       type: 'select',
-      name: 'gender',
-      label: 'Gender/Jinsi',
+      name: 'location',
+      label: 'Select Location/Chagua maeneo',
+      placeholder: 'Select your location/Chagua maeneo yako',
       defaultValue: '',
       required: true,
       options: [
-        {
-          value: "",
-          label: ""
-        },
-        {
-          value: "Male",
-          label: "Male/ME"
-        },
-        {
-          value: "Female",
-          label: "Female/KE"
-        }
+        { value: '', label: '' },
+        { value: 'tanzania', label: 'Tanzania - Main Land' },
+        { value: 'zanzibar', label: 'Zanzibar or Pemba' },
       ],
     },
     {
@@ -193,7 +93,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         'I agree with the <a href="https://www.sematanzania.org/child-helpline">Terms of Use</a>',
       required: {
         value: true,
-        message: '<message>',
+        message: "Sorry, if you don't accept our terms and conditions we can't provide counselling to you.",
       },
     },
   ],

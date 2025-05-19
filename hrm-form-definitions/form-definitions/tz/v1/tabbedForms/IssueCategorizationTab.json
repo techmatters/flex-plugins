@@ -13,6 +13,9 @@
           "label": "Runaway"
         },
         {
+          "label": "Child trafficking"
+        },
+        {
           "label": "Unspecified/Other"
         }
       ]
@@ -134,6 +137,38 @@
         }
       ]
     },
+    "OCSEA": {
+      "color": "#BBE3FF",
+      "subcategories": [
+        {
+          "label": "Online sexual harassment"
+        },
+        {
+          "label": "Receiving unwanted sexual images"
+        },
+        {
+          "label": "Unwanted/Non-consensual sexting"
+        },
+        {
+          "label": "Exposure to child sexual abuse material"
+        },
+        {
+          "label": "Non-consensual sharing of self-generated sexual content"
+        },
+        {
+          "label": "Online grooming"
+        },
+        {
+          "label": "Sexual extortion"
+        },
+        {
+          "label": "Production of child sexual abuse material"
+        },
+        {
+          "label": "Cyber-bullying"
+        }
+      ]
+    },
     "Accessibility": {
       "color": "#8055BA",
       "subcategories": [
@@ -174,9 +209,6 @@
         },
         {
           "label": "Gender"
-        },
-        {
-          "label": "Gender identity or expression and sexual orientation"
         },
         {
           "label": "Health"
@@ -237,20 +269,6 @@
         },
         {
           "label": "Problems at work"
-        },
-        {
-          "label": "Unspecified/Other"
-        }
-      ]
-    },
-    "Sexuality": {
-      "color": "#506BA5",
-      "subcategories": [
-        {
-          "label": "Sexual orientation and gender identity"
-        },
-        {
-          "label": "Sexual behaviours"
         },
         {
           "label": "Unspecified/Other"
