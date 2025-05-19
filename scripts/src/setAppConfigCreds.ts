@@ -5,8 +5,10 @@ import * as fs from 'node:fs/promises';
 
 config();
 
+type Args = { a: string | null };
+
 async function main() {
-  const args = yargs(process.argv.slice(2))
+  const args: Args = yargs(process.argv.slice(2))
     .command(
       '$0',
       'Generate a default set of json form definitions for an Aselo helpline.',
@@ -18,17 +20,18 @@ async function main() {
         });
       },
     )
-    .option('accountSid', {
+    .option('a', {
+      alias: 'accountSid',
       type: 'string',
       default: null,
-      global: true,
       describe:
         'Helpline account sid - use instead of shortcode / environment if you want to avoid needing AWS access',
     })
     .parseSync();
-  const { accountSid } = args;
+  console.debug('parsed args:', args);
+  const { a: accountSid } = args;
   if (!accountSid) {
-    throw new Error('accountSid or helpline / helplineEnvironment parameters required');
+    throw new Error('accountSid parameter required');
   }
   const resp = await fetch(
     `https://services.twilio.com/v1/Flex/Authentication/Config?AccountSid=${accountSid}`,
@@ -39,12 +42,17 @@ async function main() {
     );
   }
   const {
-    config_list: { connection_name: connectionName, client_id: clientId },
+    config_list: [{ connection_name: connectionName, client_id: clientId }],
   } = await resp.json();
   const templateText = await fs.readFile(
     '../plugin-hrm-form/public/appConfig.template.e2e.js',
     'utf8',
   );
+
+  console.debug('Setting account SID to:', accountSid);
+  console.debug('Setting connection to:', connectionName);
+  console.debug('Setting client ID to:', clientId);
+
   await fs.writeFile(
     '../plugin-hrm-form/public/appConfig.js',
     templateText

@@ -42,12 +42,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      # Create Configuration file to replace AS_DEV_ACCOUNT_SID with E2E_ACCOUNT_SID
-      - name: Create appConfig.js
-        run: cp ./public/appConfig.template.e2e.js ./public/appConfig.js
-        working-directory: ./plugin-hrm-form
-        shell: bash
-
       - name: Set Twilio account SID
         uses: "marvinpinto/action-inject-ssm-secrets@latest"
         with:
@@ -60,12 +54,10 @@ jobs:
           ssm_parameter: "/development/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
           env_variable_name: "TWILIO_AUTH_TOKEN"
 
-      - name: Replace Twilio account SID in appConfig.js
-        uses: falnyr/replace-env-vars-action@master
-        env:
-          TWILIO_ACCOUNT_SID: ${{env.TWILIO_ACCOUNT_SID}}
-        with:
-          filename: ./plugin-hrm-form/public/appConfig.js
+      - name: Set E2E connection details in appConfig.js
+        run: npm run setAppConfigCreds -- -a ${{env.TWILIO_ACCOUNT_SID}}
+        working-directory: ./scripts
+        shell: bash
 
       - name: Create secret.js
         run: |
