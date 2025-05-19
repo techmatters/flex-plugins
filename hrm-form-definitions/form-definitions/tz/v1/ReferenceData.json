@@ -1,22 +1,4 @@
 {
-  "locationOptions": [
-    {
-      "value": "",
-      "label": ""
-    },
-    {
-      "value": "Unknown",
-      "label": "Unknown"
-    },
-    {
-      "value": "Main Land",
-      "label": "Main Land"
-    },
-    {
-      "value": "Zanzibar/Pemba",
-      "label": "Zanzibar/Pemba"
-    }
-  ],
   "regionOptions": {
     "Main Land": [
       {
