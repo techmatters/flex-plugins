@@ -74,7 +74,7 @@ async function main() {
     '../plugin-hrm-form/public/appConfig.template.e2e.js',
     'utf8',
   );
-  if (accountSid === 'FAKE_UI_TEST_ACCOUNT') {
+  if (accountSid === 'AC_FAKE_UI_TEST_ACCOUNT') {
     await fs.writeFile(
       '../plugin-hrm-form/public/appConfig.js',
       templateText.replace('__TWILIO_ACCOUNT_SID__', accountSid),
