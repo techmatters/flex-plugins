@@ -87,8 +87,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           value: '',
           label: ''
         },
-        { value: 'etanzania', label: 'Tanzania - Main Land' },
-        { value: 'zanzibar', label: 'Zanzibar and Pemba' },
+        { value: 'Main Land', label: 'Tanzania - Main Land' },
+        { value: 'Zanzibar/Pemba', label: 'Zanzibar/Pemba' },
       ],
     },
     {
