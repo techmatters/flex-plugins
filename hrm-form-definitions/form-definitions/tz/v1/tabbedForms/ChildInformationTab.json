@@ -191,7 +191,7 @@
   {
     "name": "region",
     "label": "Region",
-    "type": "select",
+    "type": "dependent-select",
     "dependsOn": "location",
     "defaultOption": {
       "value": "",
