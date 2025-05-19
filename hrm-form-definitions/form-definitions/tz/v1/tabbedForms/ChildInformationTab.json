@@ -165,7 +165,20 @@
       "value": "",
       "label": ""
     },
-    "optionsReferenceKey": "locationOptions",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Main Land",
+        "label": "Main Land"
+      },
+      {
+        "value": "Zanzibar/Pemba",
+        "label": "Zanzibar/Pemba"
+      }
+    ],
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -174,8 +187,7 @@
   {
     "name": "region",
     "label": "Region",
-    "type": "dependent-select",
-    "dependsOn": "location",
+    "type": "select",
     "defaultOption": {
       "value": "",
       "label": ""
@@ -203,7 +215,7 @@
   },
   {
     "name": "ward",
-    "label": "Ward",
+    "label": "Ward/Shehia",
     "type": "dependent-select",
     "dependsOn": "district",
     "defaultOption": {
