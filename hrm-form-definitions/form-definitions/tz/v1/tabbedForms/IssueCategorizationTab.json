@@ -51,18 +51,6 @@
           "label": "Neglect (or negligent treatment)"
         },
         {
-          "label": "Online sexual abuse"
-        },
-        {
-          "label": "Online sexual exploitation"
-        },
-        {
-          "label": "Physical violence"
-        },
-        {
-          "label": "Sexual violence"
-        },
-        {
           "label": "Unspecified/Other"
         }
       ]
@@ -108,6 +96,29 @@
         }
       ]
     },
+    "Physical Abuse": {
+      "color": "#f8b595",
+      "subcategories": [
+        {
+          "label": "Beating"
+        },
+        {
+          "label": "Burning"
+        },
+        {
+          "label": "Biting"
+        },
+        {
+          "label": "Kicking"
+        },
+        {
+          "label": "Slapping"
+        },
+        {
+          "label": "Other"
+        }
+      ]
+    },
     "Physical Health": {
       "color": "#E86B6B",
       "subcategories": [
@@ -137,7 +148,7 @@
         }
       ]
     },
-    "OCSEA": {
+    "Online Safety (OCSEA)": {
       "color": "#BBE3FF",
       "subcategories": [
         {
@@ -255,6 +266,32 @@
         },
         {
           "label": "Unspecified/Other"
+        }
+      ]
+    },
+    "Sexual Abuse": {
+      "color": "#037971",
+      "subcategories": [
+        {
+          "label": "Rape"
+        },
+        {
+          "label": "Sodomy"
+        },
+        {
+          "label": "Inappropriate Touching"
+        },
+        {
+          "label": "Child Sexual Exploitation"
+        },
+        {
+          "label": "Indecent Exposure"
+        },
+        {
+          "label": "Pornography"
+        },
+        {
+          "label": "Other"
         }
       ]
     },
