@@ -1,6 +1,10 @@
 {
   "locationOptions": [
     {
+      "value": "",
+      "label": ""
+    },
+    {
       "value": "Main Land",
       "label": "Main Land"
     },

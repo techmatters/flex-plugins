@@ -175,6 +175,7 @@
     "name": "region",
     "label": "Region",
     "type": "select",
+    "dependsOn": "location",
     "defaultOption": {
       "value": "",
       "label": ""
