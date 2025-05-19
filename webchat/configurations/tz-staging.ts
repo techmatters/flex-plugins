@@ -55,6 +55,13 @@ const preEngagementConfig: PreEngagementFormDefinition = {
   submitLabel: 'StartChat',
   fields: [
     {
+      type: 'input-text',
+      name: 'friendlyName',
+      label: 'Name/Jina',
+      placeholder: 'What is your name?/Jina lako ni nani?',
+      required: true,
+    },
+    {
       type: 'select',
       name: 'language',
       label: 'Select Language/Chagua lugha',
@@ -70,120 +77,18 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       ],
     },
     {
-      type: 'input-text',
-      name: 'friendlyName',
-      label: 'Name/Jina',
-      placeholder: 'What is your name?/Jina lako ni nani?',
-      required: true,
-    },
-    {
-      label: 'Age/Umri',
       type: 'select',
-      name: 'age',
-      required: true,
-      defaultValue: '',
-      options: [
-        {
-          value: "",
-          label: ""
-        },
-        {
-          value: "01",
-          label: "1"
-        },
-        {
-          value: "02",
-          label: "2"
-        },
-        {
-          value: "03",
-          label: "3"
-        },
-        {
-          value: "04",
-          label: "4"
-        },
-        {
-          value: "05",
-          label: "5"
-        },
-        {
-          value: "06",
-          label: "6"
-        },
-        {
-          value: "07",
-          label: "7"
-        },
-        {
-          value: "08",
-          label: "8"
-        },
-        {
-          value: "09",
-          label: "9"
-        },
-        {
-          value: "10",
-          label: "10"
-        },
-        {
-          value: "11",
-          label: "11"
-        },
-        {
-          value: "12",
-          label: "12"
-        },
-        {
-          value: "13",
-          label: "13"
-        },
-        {
-          value: "14",
-          label: "14"
-        },
-        {
-          value: "15",
-          label: "15"
-        },
-        {
-          value: "16",
-          label: "16"
-        },
-        {
-          value: "17",
-          label: "17"
-        },
-        {
-          value: "18",
-          label: "18"
-        },
-        {
-          value: ">18",
-          label: ">18"
-        }
-      ],
-    }, 
-    {
-      type: 'select',
-      name: 'gender',
-      label: 'Gender/Jinsi',
+      name: 'location',
+      label: 'Select Location/Chagua maeneo',
       defaultValue: '',
       required: true,
       options: [
         {
-          value: "",
-          label: ""
+          value: '',
+          label: ''
         },
-        {
-          value: "Male",
-          label: "Male/ME"
-        },
-        {
-          value: "Female",
-          label: "Female/KE"
-        }
+        { value: 'etanzania', label: 'Tanzania - Main Land' },
+        { value: 'zanzibar', label: 'Zanzibar and Pemba' },
       ],
     },
     {
@@ -213,7 +118,7 @@ const memberDisplayOptions = {
   yourDefaultName: 'You',
   yourFriendlyNameOverride: false,
   theirFriendlyNameOverride: false,
-  theirDefaultName: 'C-Sema Counsellor',
+  theirDefaultName: 'National Child Helpline Counsellor',
 };
 
 export const config: Configuration = {
