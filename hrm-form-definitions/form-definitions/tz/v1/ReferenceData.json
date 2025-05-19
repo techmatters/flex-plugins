@@ -5,6 +5,10 @@
       "label": ""
     },
     {
+      "value": "Unknown",
+      "label": "Unknown"
+    },
+    {
       "value": "Main Land",
       "label": "Main Land"
     },
@@ -13,9 +17,8 @@
       "label": "Zanzibar/Pemba"
     }
   ],
-  "regionOptions": [
-    "Main Land",
-    [
+  "regionOptions": {
+    "Main Land": [
       {
         "value": "Arusha",
         "label": "Arusha"
@@ -153,8 +156,7 @@
         "label": "Tanga"
       }
     ],
-    "Zanzibar/Pemba",
-    [
+    "Zanzibar/Pemba": [
       {
         "value": "Mjini Magharibi",
         "label": "Mjini Magharibi"
@@ -192,7 +194,7 @@
         "label": "Mkoa Wa Kaskazini Pemba"
       }
     ]
-  ],
+  },
   "districtOptions": {
     "Arusha": [
       {
@@ -450,8 +452,8 @@
         "label": "Ihumwa"
       },
       {
-        "value": "Ng'onng'onha",
-        "label": "Ng'onng'onha"
+        "value": "Ngonngonha",
+        "label": "Ngonngonha"
       },
       {
         "value": "Matumbulu",
@@ -656,20 +658,12 @@
       {
         "value": "Kaskazini a",
         "label": "Kaskazini a"
-      },
-      {
-        "value": "Kaskazini 'a'",
-        "label": "Kaskazini 'a'"
       }
     ],
     "Mkoa Wa Kaskazini Unguja": [
       {
         "value": "Kaskazini b",
         "label": "Kaskazini b"
-      },
-      {
-        "value": "Kaskazini 'b'",
-        "label": "Kaskazini 'b'"
       }
     ],
     "Mkoa Wa Kusini Unguja": [
@@ -870,8 +864,8 @@
         "label": "Olorien"
       },
       {
-        "value": "Ilkiding'a",
-        "label": "Ilkiding'a"
+        "value": "Ilkidinga",
+        "label": "Ilkidinga"
       },
       {
         "value": "Sambasha",
@@ -956,8 +950,8 @@
         "label": "Poli"
       },
       {
-        "value": "Seela Sing'isi",
-        "label": "Seela Sing'isi"
+        "value": "Seela Singisi",
+        "label": "Seela Singisi"
       },
       {
         "value": "Akheri",
@@ -1000,8 +994,8 @@
         "label": "Kikatiti"
       },
       {
-        "value": "King'ori",
-        "label": "King'ori"
+        "value": "Kingori",
+        "label": "Kingori"
       },
       {
         "value": "Leguruki",
@@ -1156,8 +1150,8 @@
         "label": "Engikaret"
       },
       {
-        "value": "Elang'atadapash",
-        "label": "Elang'atadapash"
+        "value": "Elangatadapash",
+        "label": "Elangatadapash"
       },
       {
         "value": "Ketumbeine",
@@ -1246,8 +1240,8 @@
         "label": "Daa"
       },
       {
-        "value": "Mang'ola",
-        "label": "Mang'ola"
+        "value": "Mangola",
+        "label": "Mangola"
       },
       {
         "value": "Baray",
@@ -1662,8 +1656,8 @@
     ],
     "Kikuyu Kusini": [
       {
-        "value": "Mkalama A",
-        "label": "Mkalama A"
+        "value": "Mkalama a",
+        "label": "Mkalama a"
       }
     ],
     "Miyuji": [
@@ -1732,8 +1726,8 @@
         "label": "Kidongo Chekundu"
       },
       {
-        "value": "Jang'ombe",
-        "label": "Jang'ombe"
+        "value": "Jangombe",
+        "label": "Jangombe"
       },
       {
         "value": "Urusi",
@@ -1904,7 +1898,7 @@
         "label": "Mpendae"
       }
     ],
-    "Magharibi A": [
+    "Magharibi a": [
       {
         "value": "Sharifu Msa",
         "label": "Sharifu Msa"
@@ -2030,7 +2024,7 @@
         "label": "Mwera"
       }
     ],
-    "Magharibi B": [
+    "Magharibi b": [
       {
         "value": "",
         "label": ""
@@ -2170,6 +2164,318 @@
       {
         "value": "Kijitoupele",
         "label": "Kijitoupele"
+      }
+    ],
+    "Kaskazini a": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Chaani Masingini",
+        "label": "Chaani Masingini"
+      },
+      {
+        "value": "Mchenza Shauri",
+        "label": "Mchenza Shauri"
+      },
+      {
+        "value": "Chaani Kubwa",
+        "label": "Chaani Kubwa"
+      },
+      {
+        "value": "Bandamaji",
+        "label": "Bandamaji"
+      },
+      {
+        "value": "Kikobweni",
+        "label": "Kikobweni"
+      },
+      {
+        "value": "Kinyasini",
+        "label": "Kinyasini"
+      },
+      {
+        "value": "Kandwi",
+        "label": "Kandwi"
+      },
+      {
+        "value": "Pwani Mchangani",
+        "label": "Pwani Mchangani"
+      },
+      {
+        "value": "Kigongoni",
+        "label": "Kigongoni"
+      },
+      {
+        "value": "Potoa",
+        "label": "Potoa"
+      },
+      {
+        "value": "Kijini Matemwe",
+        "label": "Kijini Matemwe"
+      },
+      {
+        "value": "Mbuyutende",
+        "label": "Mbuyutende"
+      },
+      {
+        "value": "Kigomani",
+        "label": "Kigomani"
+      },
+      {
+        "value": "Juga Kuu",
+        "label": "Juga Kuu"
+      },
+      {
+        "value": "Muwange",
+        "label": "Muwange"
+      },
+      {
+        "value": "Pitanazako",
+        "label": "Pitanazako"
+      },
+      {
+        "value": "Kivunge",
+        "label": "Kivunge"
+      },
+      {
+        "value": "Kibeni",
+        "label": "Kibeni"
+      },
+      {
+        "value": "Mkwajuni",
+        "label": "Mkwajuni"
+      },
+      {
+        "value": "Kidombo",
+        "label": "Kidombo"
+      },
+      {
+        "value": "Chutama",
+        "label": "Chutama"
+      },
+      {
+        "value": "Moga",
+        "label": "Moga"
+      },
+      {
+        "value": "Matemwe Kaskazini",
+        "label": "Matemwe Kaskazini"
+      },
+      {
+        "value": "Matemwe Kusini",
+        "label": "Matemwe Kusini"
+      },
+      {
+        "value": "Gamba",
+        "label": "Gamba"
+      },
+      {
+        "value": "Mtakuja",
+        "label": "Mtakuja"
+      },
+      {
+        "value": "Gomani",
+        "label": "Gomani"
+      },
+      {
+        "value": "Uvivini",
+        "label": "Uvivini"
+      },
+      {
+        "value": "Jongowe",
+        "label": "Jongowe"
+      },
+      {
+        "value": "Mto wa Pwani",
+        "label": "Mto wa Pwani"
+      },
+      {
+        "value": "Mkokotoni",
+        "label": "Mkokotoni"
+      },
+      {
+        "value": "Pale",
+        "label": "Pale"
+      },
+      {
+        "value": "Muwanda",
+        "label": "Muwanda"
+      },
+      {
+        "value": "Kipange",
+        "label": "Kipange"
+      },
+      {
+        "value": "Mchangani",
+        "label": "Mchangani"
+      },
+      {
+        "value": "Bandakuu",
+        "label": "Bandakuu"
+      },
+      {
+        "value": "Kiungani",
+        "label": "Kiungani"
+      },
+      {
+        "value": "Kilindi",
+        "label": "Kilindi"
+      },
+      {
+        "value": "Kigunda",
+        "label": "Kigunda"
+      },
+      {
+        "value": "Tazari",
+        "label": "Tazari"
+      },
+      {
+        "value": "Kilimani Tazari",
+        "label": "Kilimani Tazari"
+      },
+      {
+        "value": "Kidoti",
+        "label": "Kidoti"
+      },
+      {
+        "value": "Bwereu",
+        "label": "Bwereu"
+      },
+      {
+        "value": "Fukuchani",
+        "label": "Fukuchani"
+      }
+    ],
+    "Kaskazini b": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Donge Mtambile",
+        "label": "Donge Mtambile"
+      },
+      {
+        "value": "Njia ya Mtoni",
+        "label": "Njia ya Mtoni"
+      },
+      {
+        "value": "Donge Vijibweni",
+        "label": "Donge Vijibweni"
+      },
+      {
+        "value": "Majenzi",
+        "label": "Majenzi"
+      },
+      {
+        "value": "Donge Karange",
+        "label": "Donge Karange"
+      },
+      {
+        "value": "Donge Pwani",
+        "label": "Donge Pwani"
+      },
+      {
+        "value": "Donge Mbiji",
+        "label": "Donge Mbiji"
+      },
+      {
+        "value": "Mnyimbi",
+        "label": "Mnyimbi"
+      },
+      {
+        "value": "Mkataleni",
+        "label": "Mkataleni"
+      },
+      {
+        "value": "Matetema",
+        "label": "Matetema"
+      },
+      {
+        "value": "Mahonda",
+        "label": "Mahonda"
+      },
+      {
+        "value": "Kinduni",
+        "label": "Kinduni"
+      },
+      {
+        "value": "Kwagube",
+        "label": "Kwagube"
+      },
+      {
+        "value": "Kitope",
+        "label": "Kitope"
+      },
+      {
+        "value": "Mbaleni",
+        "label": "Mbaleni"
+      },
+      {
+        "value": "Kilombero",
+        "label": "Kilombero"
+      },
+      {
+        "value": "Mgambo",
+        "label": "Mgambo"
+      },
+      {
+        "value": "Kisongoni",
+        "label": "Kisongoni"
+      },
+      {
+        "value": "Pangeni",
+        "label": "Pangeni"
+      },
+      {
+        "value": "Upenja",
+        "label": "Upenja"
+      },
+      {
+        "value": "Kiwengwa",
+        "label": "Kiwengwa"
+      },
+      {
+        "value": "Kiongwe Kidogo",
+        "label": "Kiongwe Kidogo"
+      },
+      {
+        "value": "Mafufuni",
+        "label": "Mafufuni"
+      },
+      {
+        "value": "Makoba",
+        "label": "Makoba"
+      },
+      {
+        "value": "Misufini",
+        "label": "Misufini"
+      },
+      {
+        "value": "Kidanzini",
+        "label": "Kidanzini"
+      },
+      {
+        "value": "Mangapwani",
+        "label": "Mangapwani"
+      },
+      {
+        "value": "Fujoni",
+        "label": "Fujoni"
+      },
+      {
+        "value": "Zingwezingwe",
+        "label": "Zingwezingwe"
+      },
+      {
+        "value": "Kiombamvua",
+        "label": "Kiombamvua"
+      },
+      {
+        "value": "Mkadini",
+        "label": "Mkadini"
       }
     ],
     "Kati": [
@@ -2342,8 +2648,8 @@
         "label": "Uzi"
       },
       {
-        "value": "Ng'ambwa",
-        "label": "Ng'ambwa"
+        "value": "Ngambwa",
+        "label": "Ngambwa"
       }
     ],
     "Kusini": [
@@ -2392,8 +2698,8 @@
         "label": "WILAYA YA KUSINI B259:B266"
       },
       {
-        "value": "Muyuni 'C '",
-        "label": "Muyuni 'C '"
+        "value": "Muyuni C",
+        "label": "Muyuni C"
       },
       {
         "value": "Kizimkazi Dimbani",
@@ -2494,8 +2800,8 @@
         "label": "Pujini"
       },
       {
-        "value": "Ng'ambwa",
-        "label": "Ng'ambwa"
+        "value": "Ngambwa",
+        "label": "Ngambwa"
       },
       {
         "value": "Uwandani",
@@ -2636,8 +2942,8 @@
         "label": "Makombeni"
       },
       {
-        "value": "Ng'ombeni",
-        "label": "Ng'ombeni"
+        "value": "Ngombeni",
+        "label": "Ngombeni"
       },
       {
         "value": "Uweleni",
@@ -2928,8 +3234,8 @@
         "label": "Kiuyu Mbuyuni"
       },
       {
-        "value": "Maziwa Ng'ombe",
-        "label": "Maziwa Ng'ombe"
+        "value": "Maziwa Ngombe",
+        "label": "Maziwa Ngombe"
       },
       {
         "value": "Tumbe Magharibi",
