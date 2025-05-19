@@ -202,6 +202,7 @@ export const createContact = async (
     },
     twilioWorkerId,
     taskId: taskSid,
+    ...(contact.caseId ? { caseId: contact.caseId.toString() } : {}),
   };
 
   const options = {

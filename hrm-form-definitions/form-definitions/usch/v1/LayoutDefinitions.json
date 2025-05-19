@@ -1,90 +1,45 @@
 {
   "contact": {
     "callerInformation": {
+      "splitFormAt": 3
     },
     "childInformation": {
-      "splitFormAt": 12
+      "splitFormAt": 4
     },
     "caseInformation": {
-      "splitFormAt": 11
+      "splitFormAt": 7
     }
   },
   "case": {
     "sectionTypes": {
-      "household": {
+      "externalNotification": {
         "splitFormAt": 7,
         "caseHomeOrder": 1,
         "printOrder": 1,
         "previewFields": [
-          "name",
-          "gender",
-          "age",
-          "relationshipToChild"
+          "agencyContacted"
         ],
         "layout": {
-          "name": {
-            "widthRatio": 1.5,
-            "labelTemplateCode": "Case-PerpetratorName",
-            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
-          },
-          "age": {
-            "labelTemplateCode": "Case-PerpetratorAge"
-          },
-          "gender": {
-            "labelTemplateCode": "Case-PerpetratorGender"
-          },
-          "relationshipToChild": {
-            "labelTemplateCode": "Case-PerpetratorRelationship"
+          "agencyContacted": {
+            "includeLabel": true,
+            "format": "string"
           }
+
         }
       },
-      "perpetrator": {
-        "splitFormAt": 7,
+      "enFollowUp": {
+        "splitFormAt": 3,
         "caseHomeOrder": 2,
         "printOrder": 2,
         "previewFields": [
-          "name",
-          "gender",
-          "age",
-          "relationshipToChild"
+          "agencyNameAndState"
         ],
         "layout": {
-          "name": {
-            "labelTemplateCode": "Case-PerpetratorName",
-            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
-          },
-          "age": {
-            "labelTemplateCode": "Case-PerpetratorAge"
-          },
-          "gender": {
-            "labelTemplateCode": "Case-PerpetratorGender"
-          },
-          "relationshipToChild": {
-            "labelTemplateCode": "Case-PerpetratorRelationship"
+          "agencyNameAndState": {
+            "includeLabel": true,
+            "format": "string"
           }
         }
-      },
-      "incident": {
-        "previewFields": [
-          "date",
-          "duration",
-          "location"
-        ],
-        "layout": {
-          "date": {
-            "includeLabel": false,
-            "format": "date"
-          },
-          "duration": {
-            "includeLabel": true
-          },
-          "location": {
-            "includeLabel": true
-          }
-        },
-        "caseHomeOrder": 3,
-        "printOrder": 3,
-        "splitFormAt": 3
       },
       "referral": {
         "previewFields": [
@@ -99,7 +54,7 @@
       },
       "document": {
         "splitFormAt": 1,
-        "caseHomeOrder": 5,
+        "caseHomeOrder": 3,
         "printFormat": "hidden",
         "previewFields": [
           "createdAt",

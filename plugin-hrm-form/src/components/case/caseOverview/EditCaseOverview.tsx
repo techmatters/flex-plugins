@@ -168,20 +168,24 @@ const EditCaseOverview: React.FC<Props> = ({
 
   const { getValues } = methods;
 
+  const initialValues = useMemo(() => {
+    const formValues = getValues() as CaseSummaryWorkingCopy;
+    return {
+      status: connectedCase.status,
+      ...connectedCase.info,
+      ...formValues,
+    };
+  }, [connectedCase.info, connectedCase.status, getValues]);
+
   useEffect(() => {
     if (!workingCopy) {
-      const formValues = getValues() as CaseSummaryWorkingCopy;
-      initialiseWorkingCopy(connectedCase.id, {
-        status: connectedCase.status,
-        ...connectedCase.info,
-        ...formValues,
-      });
+      initialiseWorkingCopy(connectedCase.id, initialValues);
     }
-  });
+  }, [connectedCase.id, initialValues, initialiseWorkingCopy, workingCopy]);
 
   const form = useCreateFormFromDefinition({
     definition: formDefinition,
-    initialValues: workingCopy,
+    initialValues,
     parentsPath: '',
     updateCallback: () => updateWorkingCopy(connectedCase.id, getValues() as CaseSummaryWorkingCopy),
     isItemEnabled: item => item.name === 'status' || can(PermissionActions.EDIT_CASE_OVERVIEW),

@@ -2480,18 +2480,20 @@
         "value": "Mayor's Office"
       },
       {
-        "value": "The Hollywood Partnership",
-        "label": "The Hollywood Partnership"
-      },
-      {
-        "value": "Venice",
-        "label": "Venice"
+        "value": "BID",
+        "label": "BID"
+
       },
       {
         "value": "Other",
         "label": "Other"
       }
     ]
+  },
+  {
+    "name": "otherBID",
+    "label": "If BID/Other, please specify:",
+    "type": "input"
   },
   {
     "name": "officerRequest",

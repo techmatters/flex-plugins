@@ -3,6 +3,9 @@
     "name": "callSummary",
     "label": "Resumen de Contacto",
     "type": "textarea",
+    "isPII": false,
+    "rows": 10,
+    "width": 250,
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -11,50 +14,19 @@
   {
     "name": "repeatCaller",
     "label": "¿Usuario antiguo?",
-    "type": "checkbox"
-  },
-  {
-    "name": "interventionLevel",
-    "label": "Nivel de intervención",
-    "type": "select",
-    "unknownOption": "",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Atención en crisis ",
-        "label": "Atención en crisis "
-      },
-      {
-        "value": "Acompañamiento ",
-        "label": "Acompañamiento "
-      },
-      {
-        "value": "Orientación ",
-        "label": "Orientación "
-      },
-      {
-        "value": "Información ",
-        "label": "Información "
-      },
-      {
-        "value": "Psicoeducación ",
-        "label": "Psicoeducación "
-      },
-      {
-        "value": "Remisión ",
-        "label": "Remisión "
-      }
-    ]
+    "type": "checkbox",
+    "isPII": false
   },
   {
     "name": "howDidYouKnowAboutOurLine",
     "label": "Cómo supo de nuestra línea/número",
     "type": "select",
-    "unknownOption": "",
+    "isPII": false,
     "options": [
+      {
+        "value": "Desconocido",
+        "label": ""
+      },
       {
         "value": "Voz a voz",
         "label": "Voz a voz"
@@ -78,110 +50,71 @@
     ]
   },
   {
-    "name": "hasConsent",
-    "label": "¿Se recibió consentimiento para almacenar datos personales?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "keepConfidential",
-    "label": "¿Mantener confidencial?",
-    "type": "mixed-checkbox",
-    "initialChecked": true
-  },
-  {
-    "name": "didUserFeelSupported",
-    "label": "¿Sintió el usuario que fue escuchado y apoyado?",
+    "name": "wasUseful",
+    "label": "¿La orientación que recibiste te fue útil?",
     "type": "select",
-    "unknownOption": "",
+    "isPII": false,
     "options": [
       {
-        "value": "",
+        "value": "Desconocido",
         "label": ""
       },
       {
-        "value": "01",
-        "label": "1"
+        "value": "1 (Nada útil)",
+        "label": "1 (Nada útil)"
       },
       {
-        "value": "02",
-        "label": "2"
+        "value": "2 (Poco útil)",
+        "label": "2 (Poco útil)"
       },
       {
-        "value": "03",
-        "label": "3"
+        "value": "3 (Medianamente útil)",
+        "label": "3 (Medianamente útil)"
       },
       {
-        "value": "04",
-        "label": "4"
+        "value": "4 (Bastante útil)",
+        "label": "4 (Bastante útil)"
+      },
+      {
+        "value": "5 (Muy útil)",
+        "label": "5 (Muy útil)"
       }
     ]
   },
   {
-    "name": "wouldRecommend",
-    "label": "¿Recomendaría el usuario el servicio a alguien más?",
+    "name": "wasQuickToRespond",
+    "label": "¿Qué tan rápido recibiste nuestra respuesta?",
     "type": "select",
-    "unknownOption": "",
+    "isPII": false,
     "options": [
       {
-        "value": "",
+        "value": "Desconocido",
         "label": ""
       },
       {
-        "value": "Si",
-        "label": "Si"
+        "value": "1 (Muy lenta)",
+        "label": "1 (Muy lenta)"
       },
       {
-        "value": "No",
-        "label": "No"
+        "value": "2 (Algo lenta)",
+        "label": "2 (Algo lenta)"
+      },
+      {
+        "value": "3 (Rápida)",
+        "label": "3 (Rápida)"
+      },
+      {
+        "value": "4 (Muy rápida)",
+        "label": "4 (Muy rápida)"
       }
     ]
   },
   {
-    "name": "wouldRepeat",
-    "label": "¿Repetiría el usuario el uso del servicio?",
-    "type": "select",
-    "unknownOption": "",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Si",
-        "label": "Si"
-      },
-      {
-        "value": "No",
-        "label": "No"
-      }
-    ]
-  },
-  {
-    "name": "wasHelpful",
-    "label": "¿Fue útil para el usuario la información provista?",
-    "type": "select",
-    "unknownOption": "",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "01",
-        "label": "1"
-      },
-      {
-        "value": "02",
-        "label": "2"
-      },
-      {
-        "value": "03",
-        "label": "3"
-      },
-      {
-        "value": "04",
-        "label": "4"
-      }
-    ]
+    "name": "comment",
+    "label": "¿Te gustaría dejarnos un comentario?",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 10,
+    "width": 250
   }
 ]
