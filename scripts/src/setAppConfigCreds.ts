@@ -70,33 +70,40 @@ async function main() {
       );
     }
   }
-  const resp = await fetch(
-    `https://services.twilio.com/v1/Flex/Authentication/Config?AccountSid=${accountSid}`,
-  );
-  if (!resp.ok) {
-    throw new Error(
-      `Failed to fetch auth config for ${accountSid}: [${resp.status}]: ${await resp.text()}`,
-    );
-  }
-  const {
-    config_list: [{ connection_name: connectionName, client_id: clientId }],
-  } = await resp.json();
   const templateText = await fs.readFile(
     '../plugin-hrm-form/public/appConfig.template.e2e.js',
     'utf8',
   );
+  if (accountSid === 'FAKE_UI_TEST_ACCOUNT') {
+    await fs.writeFile(
+      '../plugin-hrm-form/public/appConfig.js',
+      templateText.replace('__TWILIO_ACCOUNT_SID__', accountSid),
+    );
+  } else {
+    const resp = await fetch(
+      `https://services.twilio.com/v1/Flex/Authentication/Config?AccountSid=${accountSid}`,
+    );
+    if (!resp.ok) {
+      throw new Error(
+        `Failed to fetch auth config for ${accountSid}: [${resp.status}]: ${await resp.text()}`,
+      );
+    }
+    const {
+      config_list: [{ connection_name: connectionName, client_id: clientId }],
+    } = await resp.json();
 
-  console.debug('Setting account SID to:', accountSid);
-  console.debug('Setting connection to:', connectionName);
-  console.debug('Setting client ID to:', clientId);
+    console.debug('Setting account SID to:', accountSid);
+    console.debug('Setting connection to:', connectionName);
+    console.debug('Setting client ID to:', clientId);
 
-  await fs.writeFile(
-    '../plugin-hrm-form/public/appConfig.js',
-    templateText
-      .replace('__TWILIO_ACCOUNT_SID__', accountSid)
-      .replace('__TWILIO_CLIENT_ID__', clientId)
-      .replace('__TWILIO_CONNECTION__', connectionName),
-  );
+    await fs.writeFile(
+      '../plugin-hrm-form/public/appConfig.js',
+      templateText
+        .replace('__TWILIO_ACCOUNT_SID__', accountSid)
+        .replace('__TWILIO_CLIENT_ID__', clientId)
+        .replace('__TWILIO_CONNECTION__', connectionName),
+    );
+  }
 }
 
 main().catch((err) => {
