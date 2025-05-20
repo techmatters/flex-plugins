@@ -55,7 +55,7 @@ jobs:
           env_variable_name: "TWILIO_AUTH_TOKEN"
 
       - name: Set E2E connection details in appConfig.js
-        run: npm ci && npm run setAppConfigCreds -- -a ${{env.TWILIO_ACCOUNT_SID}}
+        run: npm ci && npm run setAppConfigCreds -- -a ${{env.TWILIO_ACCOUNT_SID}} -l
         working-directory: ./scripts
         shell: bash
 

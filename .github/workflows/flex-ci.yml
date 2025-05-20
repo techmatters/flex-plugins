@@ -133,7 +133,7 @@ jobs:
 
       # Create Configuration file to replace AS_DEV_ACCOUNT_SID with E2E_ACCOUNT_SID
       - name: Create appConfig.js
-        run: npm ci && npm run setAppConfigCreds -- -a AC_FAKE_UI_TEST_ACCOUNT
+        run: npm ci && npm run setAppConfigCreds -- -a AC_FAKE_UI_TEST_ACCOUNT -l
         working-directory: ./scripts
         shell: bash
 
