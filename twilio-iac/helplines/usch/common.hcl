@@ -39,7 +39,7 @@ locals {
         "friendly_name"  = "Survey"
       },
       courage_first : {
-        "target_workers" = "routing.skills HAS 'Courage First'",
+        "target_workers" = "routing.skills HAS 'CourageFirst'",
         "friendly_name"  = "Courage First"
       },
       e2e_test : {
