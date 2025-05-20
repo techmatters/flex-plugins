@@ -167,12 +167,8 @@
     },
     "options": [
       {
-        "value": "",
-        "label": ""
-      },
-      {
         "value": "Unknown",
-        "label": "Unknown"
+        "label": ""
       },
       {
         "value": "Main Land",
@@ -220,7 +216,7 @@
   },
   {
     "name": "ward",
-    "label": "Ward",
+    "label": "Ward/Shehia",
     "type": "dependent-select",
     "dependsOn": "district",
     "defaultOption": {
