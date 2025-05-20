@@ -1,1 +1,103 @@
-{}
+{
+  "contactForm": {
+    "callerInformation": [
+      {
+        "name": "relationshipToChild",
+        "insights": ["conversations", "initiated_by"]
+      },
+      {
+        "name": "gender",
+        "insights": ["conversations", "conversation_attribute_4"]
+      },
+      {
+        "name": "age",
+        "insights": ["conversations", "conversation_attribute_3"]
+      }
+    ],
+    "childInformation": [
+      {
+        "name": "ward",
+        "insights": ["customers", "city"]
+      },
+      {
+        "name": "district",
+        "insights": ["customers", "zip"]
+      },
+      {
+        "name": "region",
+        "insights": ["customers", "region"]
+      },
+      {
+        "name": "location",
+        "insights": ["customers", "area"]
+      },
+      {
+        "name": "grades",
+        "insights": ["customers", "customer_attribute_2"]
+      },
+      {
+        "name": "gradeLevel",
+        "insights": ["customers", "acquisition_date"]
+      },
+      {
+        "name": "livingSituation",
+        "insights": ["customers", "customer_attribute_1"]
+      },
+      {
+        "name": "vulnerableGroups",
+        "insights": [
+          "customers", 
+          "email"
+        ]
+      }
+    ],
+    "caseInformation": [
+      {
+        "name": "urgencyLevel",
+        "insights": ["conversations", "initiative"]
+      },
+      {
+        "name": "signPosting",
+        "insights": ["conversations", "conversation_attribute_5"]
+      }
+    ]
+  },
+  "caseForm": {
+    "topLevel": [
+      {
+        "name": "id",
+        "insights": ["conversations", "case"]
+      }
+    ],
+    "perpetrator": [
+      {
+        "name": "relationshipToChild",
+        "insights": ["customers", "organization"]
+      },
+      {
+        "name": "gender",
+        "insights": ["conversations", "followed_by"]
+      },
+      {
+        "name": "age",
+        "insights": ["conversations", "preceded_by"]
+      }
+    ],
+    "incident": [
+      {
+        "name": "duration",
+        "insights": ["conversations", "in_business_hours"]
+      },
+      {
+        "name": "location",
+        "insights": ["customers", "market_segment"]
+      }
+    ],
+    "referral": [
+      {
+        "name": "referredTo",
+        "insights": ["customers", "customer_manager"]
+      }
+    ]
+  }
+}
