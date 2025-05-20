@@ -6,7 +6,7 @@ import { getSSMParameter, setRoleToAssume } from './helpers/ssm';
 
 config();
 
-type Args = { [x in 'a' | 'h' | 'e' | 'ssmRole']: string | null };
+type Args = { [x in 'a' | 'h' | 'e' | 'ssmRole']: string | null } & { l: boolean };
 
 async function main() {
   const args: Args = yargs(process.argv.slice(2))
@@ -40,6 +40,12 @@ async function main() {
       default: null,
       describe: 'Helpline environment',
     })
+    .option('l', {
+      alias: 'legacyAuth',
+      type: 'boolean',
+      default: false,
+      describe: 'Legacy Auth Mode',
+    })
     .option('ssmRole', {
       type: 'string',
       default: null,
@@ -48,7 +54,7 @@ async function main() {
     .parseSync();
   console.debug('parsed args:', args);
   let { a: accountSid } = args;
-  const { h: helplineShortCode, e: helplineEnvironment, ssmRole } = args;
+  const { h: helplineShortCode, e: helplineEnvironment, ssmRole, l: legacyAuthMode } = args;
   if (!accountSid) {
     if (!helplineShortCode || !helplineEnvironment) {
       throw new Error('accountSid or helpline/helpline environment required');
@@ -71,7 +77,9 @@ async function main() {
     }
   }
   const templateText = await fs.readFile(
-    '../plugin-hrm-form/public/appConfig.template.e2e.js',
+    legacyAuthMode
+      ? '../plugin-hrm-form/public/appConfig.template.legacy-e2e.js'
+      : '../plugin-hrm-form/public/appConfig.template.e2e.js',
     'utf8',
   );
   if (accountSid === 'AC_FAKE_UI_TEST_ACCOUNT') {
