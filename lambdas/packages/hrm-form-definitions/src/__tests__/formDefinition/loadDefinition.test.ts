@@ -15,10 +15,11 @@
  */
 /* eslint-disable no-restricted-syntax */
 
-import { DefinitionVersionId, loadDefinition } from '../../formDefinition';
+import { loadDefinition } from '../../formDefinition';
 
 import { mockFetchDefinitions } from '../fetchDefinitionsMock';
 import { loadLocalJson } from '../loadLocalJson';
+import { DefinitionVersionId } from '../definitionVersionId';
 
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockFetchDefinitions(loadLocalJson);
 
@@ -29,7 +30,7 @@ beforeEach(() => {
 describe('loadDefinition', () => {
   test.each(Object.values(DefinitionVersionId))(
     '%p - successfully loads basic structure',
-    async (definitionVersionId: DefinitionVersionId) => {
+    async (definitionVersionId: string) => {
       const formDefinitionsBaseUrl = buildBaseURL(definitionVersionId);
       await mockFetchImplementation(formDefinitionsBaseUrl);
 

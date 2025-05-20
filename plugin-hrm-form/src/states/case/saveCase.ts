@@ -15,7 +15,6 @@
  */
 
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
-import { DefinitionVersionId } from 'hrm-form-definitions';
 import { CreateHandlerMap } from 'redux-promise-middleware-actions/lib/reducers';
 
 import { cancelCase, createCase, updateCaseOverview, updateCaseStatus } from '../../services/CaseService';
@@ -34,7 +33,7 @@ export const createCaseAsyncAction = createAsyncAction(
   async (
     contact,
     workerSid: string,
-    definitionVersion: DefinitionVersionId,
+    definitionVersion: string,
   ): Promise<{ newCase: Case; connectedContact: Contact }> => {
     // We should probably update the case POST endpoint to accept a connected contact to simplify this and avoid extra calls and inconsistent state
     const newCase = await createCase(contact, workerSid, definitionVersion);

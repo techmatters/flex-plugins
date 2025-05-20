@@ -14,21 +14,27 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { HrmContactRawJson } from '@tech-matters/hrm-types';
 import { DefinitionVersion } from '@tech-matters/hrm-form-definitions';
-import { RecursivePartial } from './unit/RecursivePartial';
 
-export type FormDefinitionSet = Pick<
-  DefinitionVersion,
-  'prepopulateKeys' | 'prepopulateMappings' | 'helplineInformation'
-> & {
-  childInformation: DefinitionVersion['tabbedForms']['ChildInformationTab'];
-  callerInformation: DefinitionVersion['tabbedForms']['CallerInformationTab'];
-  caseInformation: DefinitionVersion['tabbedForms']['CaseInformationTab'];
-};
+export type ContactFormDefinitionName = keyof Pick<
+  DefinitionVersion['tabbedForms'],
+  'ChildInformationTab' | 'CallerInformationTab' | 'CaseInformationTab'
+>;
 
-export type FormDefinitionPatch = Partial<
-  Omit<DefinitionVersion, 'prepopulateKeys' | 'prepopulateMappings'>
-> & {
-  prepopulateKeys?: RecursivePartial<DefinitionVersion['prepopulateKeys']>;
-  prepopulateMappings?: Partial<DefinitionVersion['prepopulateMappings']>;
-};
+export type ContactFormName = keyof Omit<
+  HrmContactRawJson,
+  'callType' | 'definitionVersion' | 'categories' | 'contactlessTask'
+>;
+
+export type AvailableContactFormSelector = (
+  parameter?: any,
+) => (
+  source: keyof DefinitionVersion['prepopulateMappings'],
+  preEngagementSelections: any,
+  surveyAnswers: any,
+) => ContactFormDefinitionName[];
+
+export const staticAvailableContactTabSelector: AvailableContactFormSelector =
+  availableTabs => () =>
+    availableTabs;

@@ -15,13 +15,7 @@
  */
 
 import each from 'jest-each';
-import {
-  DefinitionVersion,
-  DefinitionVersionId,
-  FormDefinition,
-  FormInputType,
-  loadDefinition,
-} from 'hrm-form-definitions';
+import { DefinitionVersion, FormDefinition, FormInputType, loadDefinition } from 'hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../../mockFetchDefinitions';
 import { copyCaseSectionItem } from '../../../../states/case/sections/copySection';
@@ -39,7 +33,7 @@ describe('copyCaseSection', () => {
 
   let demoV1: DefinitionVersion;
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.demoV1);
+    const formDefinitionsBaseUrl = buildBaseURL('demo-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     demoV1 = await loadDefinition(formDefinitionsBaseUrl);
