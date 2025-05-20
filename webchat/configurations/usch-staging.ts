@@ -79,7 +79,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: 'input-text',
-      name: 'gender',
+      name: 'genderInput',
       label: 'What is your gender identity?',
       placeholder: '',
       required: true,
@@ -482,6 +482,10 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       defaultValue: '',
       options: [
         {
+          "value": "",
+          "label": ""
+        },
+        {
           "value": "Yes",
           "label": "Myself"
         },
@@ -498,6 +502,10 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       required: true,
       defaultValue: '',
       options: [
+        {
+          "value": "",
+          "label": ""
+        },
         {
           "value": "English",
           "label": "English"
