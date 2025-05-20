@@ -2,8 +2,8 @@
     "label": "Helpline",
     "helplines": [
       {
-        "label": "C-Sema",
-        "value": "C-Sema",
+        "label": "National Child Helpline",
+        "value": "National Child Helpline",
         "default": true,
         "manager": {
           "name": "Helpline Manager",
