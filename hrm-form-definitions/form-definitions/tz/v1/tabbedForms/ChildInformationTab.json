@@ -167,37 +167,6 @@
     },
     "options": [
       {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      },
-      {
-        "value": "Main Land",
-        "label": "Main Land"
-      },
-      {
-        "value": "Zanzibar/Pemba",
-        "label": "Zanzibar/Pemba"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "location",
-    "label": "Location",
-    "type": "select",
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "options": [
-      {
         "value": "Unknown",
         "label": ""
       },
