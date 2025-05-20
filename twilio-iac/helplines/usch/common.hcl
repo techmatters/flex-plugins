@@ -30,13 +30,17 @@ locals {
       }
     }
     task_queues = {
-      master : {
-        "target_workers" = "1==1",
-        "friendly_name"  = "Childhelp"
+      childhelp : {
+        "target_workers" = "routing.skills HAS 'ChildHelp'",
+        "friendly_name"  = "ChildHelp"
       },
       survey : {
         "target_workers" = "1==0",
         "friendly_name"  = "Survey"
+      },
+      courage_first : {
+        "target_workers" = "routing.skills HAS 'Courage First'",
+        "friendly_name"  = "Courage First"
       },
       e2e_test : {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
