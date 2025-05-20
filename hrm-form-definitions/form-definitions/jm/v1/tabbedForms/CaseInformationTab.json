@@ -56,13 +56,15 @@
     "label": "How did the child hear about us?",
     "type": "select",
     "options": [
-      { "value": "Unknown", "label": "" },
+      { "value": "", "label": "" },
       { "value": "Advertisement", "label": "Advertisement" },
       { "value": "Social media", "label": "Social media" },
       { "value": "SMS/Text Message", "label": "SMS/Text Message" },      
       { "value": "Traditional Media", "label": "Traditional Media (TV, Radio, Local News Outlet, Newspaper, etc.)" },
-      { "value": "Word of Mouth", "label": "Word of Mouth" }
-    ]
+      { "value": "Word of Mouth", "label": "Word of Mouth" },
+      { "value": "Unknown", "label": "Unknown" }
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "repeatCaller",

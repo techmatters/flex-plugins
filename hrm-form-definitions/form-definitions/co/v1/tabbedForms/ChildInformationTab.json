@@ -4,11 +4,6 @@
     "label": "Clase de Contacto",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -33,11 +28,6 @@
     "label": "Edad",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -98,11 +88,6 @@
     "label": "Genero",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -139,11 +124,6 @@
     "label": "Requiere ser Reportado",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "",
     "options": [
       {
         "value": "",
@@ -4871,11 +4851,6 @@
     "label": "Situación de Vivienda",
     "type": "select",
     "isPII": false,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "Desconocido",
     "options": [
       {
         "value": "Desconocido",
@@ -5055,11 +5030,6 @@
     "label": "Tipo de EPS",
     "type": "select",
     "isPII": true,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "Desconocido",
     "options": [
       {
         "value": "Desconocido",
@@ -5080,11 +5050,6 @@
     "label": "EPS",
     "type": "select",
     "isPII": true,
-    "defaultOption": {
-      "value": "",
-      "label": ""
-    },
-    "unknownOption": "Desconocido",
     "options": [
       {
         "value": "Desconocido",
