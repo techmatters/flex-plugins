@@ -172,26 +172,6 @@ const initSwitchboardSyncDocument = () => {
 };
 
 /**
- * Update the switchboarding state in the shared document
- * @param state Partial state to update
- * @returns Updated switchboarding state
- */
-export const updateSwitchboardState = async (state: Partial<SwitchboardState>): Promise<SwitchboardState> => {
-  validateSyncConnection();
-
-  try {
-    const doc = await initSwitchboardSyncDocument();
-    const currentData = doc.data as SwitchboardState;
-    const updatedData = { ...currentData, ...state };
-    await doc.update(updatedData);
-    return updatedData;
-  } catch (error) {
-    console.error('Error updating switchboard state:', error);
-    throw error;
-  }
-};
-
-/**
  * Get the current switchboard state
  * @returns Current switchboarding state
  */

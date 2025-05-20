@@ -134,17 +134,17 @@ export const setTransferMeta = async (
   // Check if the user is a supervisor
   const { roles = [] } = Manager.getInstance().user;
   const isSupervisor = roles.includes('supervisor');
-  
+
   // Check if switchboarding is currently active
   let isSwitchboardingActive = false;
   try {
-    const switchboardState = await getSwitchboardState();
-    isSwitchboardingActive = switchboardState.isSwitchboardingActive;
+    const { isSwitchboardingActive: newIsSwitchboardingActive } = await getSwitchboardState();
+    isSwitchboardingActive = newIsSwitchboardingActive;
     console.log(`Current switchboarding state: ${isSwitchboardingActive ? 'ACTIVE' : 'INACTIVE'}`);
   } catch (err) {
     console.error('Error checking switchboarding state:', err);
   }
-  
+
   // Set transfer metadata
   const updatedAttributes = {
     ...task.attributes,
@@ -165,7 +165,11 @@ export const setTransferMeta = async (
     },
   };
 
-  console.log(`Transfer initiated by ${isSupervisor ? 'supervisor' : 'non-supervisor'}, bypass switchboarding: ${isSwitchboardingActive && isSupervisor}`);
+  console.log(
+    `Transfer initiated by ${isSupervisor ? 'supervisor' : 'non-supervisor'}, bypass switchboarding: ${
+      isSwitchboardingActive && isSupervisor
+    }`,
+  );
   await task.setAttributes(updatedAttributes);
 };
 
