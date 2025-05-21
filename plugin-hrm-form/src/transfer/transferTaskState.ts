@@ -132,7 +132,8 @@ export const setTransferMeta = async (
   const targetType = targetSid.startsWith('WK') ? 'worker' : 'queue';
 
   // Check if the user is a supervisor
-  const { roles = [] } = Manager.getInstance().user;
+  const manager = Manager.getInstance();
+  const { roles = [] } = manager?.user || {};
   const isSupervisor = roles.includes('supervisor');
 
   // Check if switchboarding is currently active
@@ -140,7 +141,6 @@ export const setTransferMeta = async (
   try {
     const { isSwitchboardingActive: newIsSwitchboardingActive } = await getSwitchboardState();
     isSwitchboardingActive = newIsSwitchboardingActive;
-    console.log(`Current switchboarding state: ${isSwitchboardingActive ? 'ACTIVE' : 'INACTIVE'}`);
   } catch (err) {
     console.error('Error checking switchboarding state:', err);
   }
