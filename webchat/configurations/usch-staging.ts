@@ -478,13 +478,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       label: 'Are you reaching out on behalf of yourself or another person?',
       type: 'select',
       name: 'callingAboutSelf',
-      required: true,
-      defaultValue: '',
       options: [
-        {
-          "value": "",
-          "label": ""
-        },
         {
           "value": "Yes",
           "label": "Myself"
@@ -499,13 +493,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       label: 'What is your preferred language?',
       type: 'select',
       name: 'language',
-      required: true,
-      defaultValue: '',
       options: [
-        {
-          "value": "",
-          "label": ""
-        },
         {
           "value": "English",
           "label": "English"
