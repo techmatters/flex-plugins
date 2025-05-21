@@ -32,7 +32,7 @@ import { SwitchboardState, subscribeSwitchboardState } from '../../utils/sharedS
 
 // eslint-disable-next-line import/no-unused-modules
 export const setUpSwitchboard = () => {
-  if (!getAseloFeatureFlags().enable_switchboarding) return;
+  // if (!getAseloFeatureFlags().enable_switchboarding) return;
   QueuesStats.AggregatedQueuesDataTiles.Content.add(<SwitchboardTile key="switchboard" />, {
     sortOrder: -1,
   });
@@ -63,8 +63,8 @@ const SwitchboardTile = () => {
           setIsLoading(false);
         });
       } catch (err) {
-        console.error('Error initializing switchboard subscription:', err);
         setError('Failed to connect to switchboard state. Please refresh the page or contact support.');
+        console.error('Error initializing switchboard subscription:', err);
         setIsLoading(false);
       }
     };
@@ -125,7 +125,6 @@ const SwitchboardTile = () => {
       if (switchboardState.queueSid) {
         setSelectedQueue(switchboardState.queueSid);
         handleOpenConfirmationDialog();
-      } else {
       }
     } else {
       handleOpenModal();
