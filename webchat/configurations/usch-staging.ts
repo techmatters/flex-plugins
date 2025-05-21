@@ -37,7 +37,7 @@ const holidayHours: PreEngagementFormDefinition = {
 };
 
 const preEngagementConfig: PreEngagementFormDefinition = {
-  description: 'WelcomeMessage',
+  description: 'PreEngagementConfigDescription',
   submitLabel: 'StartChat',
   fields: [
     {
@@ -519,7 +519,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 
 const translations: Translations = {
   'en-US': {
-    WelcomeMessage: 'To best serve you, answer 4 short questions and you will then be connected to a counselor. You can select "Prefer not to answer" for any question. ',
+    WelcomeMessage: 'Welcome to ChildHelp',
+    PreEngagementConfigDescription : 'To best serve you, answer 4 short questions and you will then be connected to a counselor. You can select "Prefer not to answer" for any question.',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
       "Thank you very much for this information. We'll transfer you now. Please hold for a counselor.",
@@ -527,13 +528,6 @@ const translations: Translations = {
     TypingIndicator: 'Counselor is typing',
     StartChat: 'Start Chat!',
     MessageCanvasTrayButton: 'Start New Chat',
-    Email: 'Email',
-    Edad: 'Age',
-    Gender: 'What is your gender',
-    Masculino: 'Male',
-    Femenino: 'Female',
-    Otro: 'Other',
-    PrefieroNoDecir: 'Prefer not to say',
     Nickname: 'Nickname',
   },
 };
