@@ -2,6 +2,40 @@
   "task_routing": {
     "filters": [
       {
+        "filter_friendly_name": "Childhelp - ChatText - Spanish",
+        "expression": "(channelType IN ['web','sms'] AND language == 'Spanish' AND service =='ChildHelp' )  OR isContactlessTask == true",
+        "targets": [
+          {
+            "expression": "(worker.waitingOfflineContact != true AND ('ChatText' IN worker.routing.skills AND 'Spanish' IN worker.routing.skills) AND (worker.roles HAS 'agent' OR worker.roles HAS 'supervisor') AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "queue": "${task_queues.master}",
+            "order_by": "worker.routing.levels.ChatText ASC",
+            "skip_if": "1==1"
+          },
+          {
+            "expression": "( worker.waitingOfflineContact != true AND ('ChatText' IN worker.routing.skills) AND (worker.roles HAS 'agent' OR worker.roles HAS 'supervisor')  AND  (  (task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))   ) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "queue": "${task_queues.master}",
+            "order_by": "worker.routing.levels.ChatText ASC"
+          }
+        ]
+      },
+      {
+        "filter_friendly_name": "Childhelp - Phone - Spanish",
+        "expression": "(channelType IN ['voice'] AND language == 'Spanish' AND service =='ChildHelp' )  ",
+        "targets": [
+          {
+            "expression": "(worker.waitingOfflineContact != true AND ('Phone' IN worker.routing.skills AND 'Spanish' IN worker.routing.skills) AND (worker.roles HAS 'agent' OR worker.roles HAS 'supervisor') AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)))",
+            "queue": "${task_queues.master}",
+            "order_by": "worker.routing.levels.Phone ASC",
+            "skip_if": "1==1"
+          },
+          {
+            "expression": "( worker.waitingOfflineContact != true AND ('Phone' IN worker.routing.skills) AND (worker.roles HAS 'agent' OR worker.roles HAS 'supervisor')  AND  ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)))",
+            "queue": "${task_queues.master}",
+            "order_by": "worker.routing.levels.Phone ASC"
+          }
+        ]
+      },
+      {
         "filter_friendly_name": "Childhelp - ChatText",
         "expression": "(channelType IN ['web','sms'] AND service =='ChildHelp' )  OR isContactlessTask == true",
         "targets": [
