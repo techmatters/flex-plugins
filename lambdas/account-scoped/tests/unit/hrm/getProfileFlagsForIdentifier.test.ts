@@ -240,7 +240,7 @@ describe('handleGetProfileFlagsForIdentifier', () => {
           channelType: 'web',
           request: { cookies: {}, headers: {} },
         },
-        expectedIdentifier: 'undefined',
+        expectedIdentifier: '',
       },
       ...['telegram', 'instagram', 'messenger'].flatMap(channelType => [
         {
