@@ -14,6 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import each from 'jest-each';
 import * as mockingProxy from '../sandbox/mockingProxy';
 import '../expectToParseAsDate';
 import {
@@ -42,7 +43,7 @@ import { mockHrmContacts, verifyCreateContactRequest } from '../sandbox/mockHrm'
 import { MockedEndpoint } from 'mockttp';
 import { BLANK_CONTACT } from '../../unit/hrm/testContacts';
 import { TaskSID } from '../../../src/twilioTypes';
-import { HrmContact } from '../../../src/hrm/populateHrmContactFormFromTask';
+import { callTypes, HrmContact } from '../../../src/hrm/populateHrmContactFormFromTask';
 
 const BLANK_POPULATED_PERSON_INFORMATION = {
   age: '',
@@ -148,48 +149,153 @@ describe('Create HRM Contact on Reservation Accepted event', () => {
 
     expect(response.status).toBe(403);
   });
-  test('should return 200 if valid twilio signature header is provided', async () => {
-    // Arrange
-    await mockTaskApi(EMPTY_TASK);
 
-    const event: Partial<EventFields> = {
-      AccountSid: TEST_ACCOUNT_SID,
-      TaskAttributes: JSON.stringify({}),
-      TaskSid: TEST_TASK_SID,
-      WorkerSid: TEST_WORKER_SID,
-      WorkspaceSid: TEST_WORKSPACE_SID,
-      EventType: RESERVATION_ACCEPTED,
-    };
-
-    const response = await lambdaAlbFetch(
-      `/lambda/twilio/account-scoped/${TEST_ACCOUNT_SID}/webhooks/taskrouterCallback`,
-      {
-        method: 'POST',
-        body: JSON.stringify(event),
-        signatureAuthToken: TEST_AUTH_TOKEN,
-        headers: {
-          'Content-Type': 'application/json',
+  each([
+    {
+      channelType: 'default',
+      extraTaskAttributes: { memory: {} },
+      expectedIdentifier: '',
+    },
+    {
+      channelType: 'web',
+      extraTaskAttributes: {
+        name: 'not this!',
+        preEngagementData: {
+          contactIdentifier: '1.2.3.4',
         },
       },
-    );
-
-    expect(response.status).toBe(200);
-    await verifyCreateContactRequest(createHrmContactEndpoint, {
-      ...BLANK_CONTACT,
-      definitionVersion: 'ut-v1',
-      rawJson: {
-        ...BLANK_CONTACT.rawJson,
-        callerInformation: BLANK_POPULATED_PERSON_INFORMATION,
-        childInformation: BLANK_POPULATED_PERSON_INFORMATION,
-        definitionVersion: 'ut-v1', // for backwards compatibility
+      expectedIdentifier: '1.2.3.4',
+    },
+    {
+      channelType: 'voice',
+      extraTaskAttributes: {
+        name: '+123-456-789',
+        memory: {},
       },
-      twilioWorkerId: TEST_WORKER_SID,
-      taskId: TEST_TASK_SID as TaskSID,
-      channelSid: '',
-      serviceSid: '',
-      // We set createdBy to the workerSid because the contact is 'created' by the worker who accepts the task
-      createdBy: TEST_WORKER_SID as HrmContact['createdBy'],
-      timeOfContact: expect.toParseAsDate(),
-    });
-  });
+      expectedIdentifier: '+123456789',
+    },
+    {
+      channelType: 'sms',
+      extraTaskAttributes: {
+        name: '+123-456-789',
+        memory: {},
+      },
+      expectedIdentifier: '+123456789',
+    },
+    {
+      channelType: 'whatsapp',
+      extraTaskAttributes: {
+        name: 'whatsapp:+123-456-789',
+        memory: {},
+      },
+      expectedIdentifier: '+123456789',
+    },
+    {
+      channelType: 'modica',
+      extraTaskAttributes: {
+        name: 'modica:+123-456-789',
+        memory: {},
+      },
+      expectedIdentifier: '+123456789',
+    },
+    {
+      channelType: 'messenger',
+      extraTaskAttributes: {
+        name: 'messenger:123456789',
+        memory: {},
+      },
+      expectedIdentifier: '123456789',
+    },
+    {
+      channelType: 'instagram',
+      extraTaskAttributes: {
+        name: 'instagram:123456789',
+        memory: {},
+      },
+      expectedIdentifier: '123456789',
+    },
+    {
+      channelType: 'line',
+      extraTaskAttributes: {
+        name: 'line:123456789',
+        memory: {},
+      },
+      expectedIdentifier: 'line:123456789',
+    },
+    {
+      channelType: 'telegram',
+      extraTaskAttributes: {
+        name: 'telegram:123456789',
+        memory: {},
+      },
+      expectedIdentifier: '123456789',
+    },
+  ]).test.only(
+    // 'should return 200 if valid twilio signature header is provided', async () => {
+    "should return 200 if valid twilio signature header is provided with channel: '$channelType' and identifier: '$expectedIdentifier'",
+    async ({
+      channelType,
+      expectedIdentifier,
+      extraTaskAttributes,
+    }: {
+      channelType: string;
+      expectedIdentifier: string;
+      extraTaskAttributes: { [k: string]: any };
+    }) => {
+      const taskAttributes = {
+        ...extraTaskAttributes,
+        channelType,
+        customChannelType: channelType,
+      };
+
+      // Arrange
+      await mockTaskApi({
+        ...EMPTY_TASK,
+        attributes: JSON.stringify(taskAttributes),
+      });
+
+      const event: Partial<EventFields> = {
+        AccountSid: TEST_ACCOUNT_SID,
+        TaskAttributes: JSON.stringify(taskAttributes),
+        TaskSid: TEST_TASK_SID,
+        WorkerSid: TEST_WORKER_SID,
+        WorkspaceSid: TEST_WORKSPACE_SID,
+        EventType: RESERVATION_ACCEPTED,
+      };
+
+      const response = await lambdaAlbFetch(
+        `/lambda/twilio/account-scoped/${TEST_ACCOUNT_SID}/webhooks/taskrouterCallback`,
+        {
+          method: 'POST',
+          body: JSON.stringify(event),
+          signatureAuthToken: TEST_AUTH_TOKEN,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      expect(response.status).toBe(200);
+      await verifyCreateContactRequest(createHrmContactEndpoint, {
+        ...BLANK_CONTACT,
+        definitionVersion: 'ut-v1',
+        rawJson: {
+          ...BLANK_CONTACT.rawJson,
+          callType: callTypes.child,
+          callerInformation: BLANK_POPULATED_PERSON_INFORMATION,
+          childInformation: BLANK_POPULATED_PERSON_INFORMATION,
+          definitionVersion: 'ut-v1', // for backwards compatibility
+        },
+        twilioWorkerId: TEST_WORKER_SID,
+        taskId: TEST_TASK_SID as TaskSID,
+        channelSid: '',
+        serviceSid: '',
+        // We set createdBy to the workerSid because the contact is 'created' by the worker who accepts the task
+        createdBy: TEST_WORKER_SID as HrmContact['createdBy'],
+        timeOfContact: expect.toParseAsDate(),
+        number: expectedIdentifier,
+        channel: channelType as HrmContact['channel'],
+      });
+    },
+  );
 });
