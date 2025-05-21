@@ -1,9 +1,11 @@
 {
   "contact": {
     "callerInformation": {},
-    "childInformation": {},
+    "childInformation": {
+      "splitFormAt": 11
+    },
     "caseInformation": {
-      "splitFormAt": 4
+      "splitFormAt": 7
     }
   },
   "case": {
@@ -83,7 +85,7 @@
         "printOrder": 3
       },
       "referral": {
-        "splitFormAt": 2,
+        "splitFormAt": 3,
         "printOrder": 4
       },
       "document": {
