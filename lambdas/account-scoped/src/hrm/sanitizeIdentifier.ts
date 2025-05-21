@@ -189,7 +189,7 @@ export const sanitizeIdentifierFromTask = ({
       return newOk('');
     }
 
-    const from = taskAttributes.name || taskAttributes.name;
+    const from = taskAttributes.name || taskAttributes.from;
 
     if (!from) {
       return newErr({

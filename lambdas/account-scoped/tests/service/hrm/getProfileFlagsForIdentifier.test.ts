@@ -28,7 +28,7 @@ import { HRM_AUTH_SSM_PARAMETERS, mockIdentifierFlags } from '../sandbox/mockHrm
 import { mockSsmParameters } from '../sandbox/mockSsm';
 import { mockttpServer } from '../sandbox/mockingProxy';
 import { lambdaAlbFetch } from '../lambdaAlbFetch';
-import { Event } from '../../../src/hrm/getProfileFlagsForIdentifier';
+import { Event } from '../../../src/hrm/sanitizeIdentifier';
 import { MockedEndpoint } from 'mockttp';
 
 afterEach(async () => {
