@@ -1,6 +1,6 @@
 {
   "open": {
-    "value": "ongoing",
+    "value": "open",
     "label": "Ongoing",
     "color": "green",
     "transitions": [
