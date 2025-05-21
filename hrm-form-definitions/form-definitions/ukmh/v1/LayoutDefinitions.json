@@ -65,19 +65,15 @@
       },
       "incident": {
         "previewFields": [
-          "date",
-          "duration",
-          "location"
+          "riskToLifeAssessmentCompleted",
+          "safeguardingConcernsRaised",
+          "escalationToOncall"
         ],
         "layout": {
-          "date": {
-            "includeLabel": false,
-            "format": "date"
-          },
-          "duration": {
+          "safeguardingConcernsRaised": {
             "includeLabel": true
           },
-          "location": {
+          "escalationToOncall": {
             "includeLabel": true
           }
         },
@@ -85,6 +81,10 @@
         "printOrder": 3
       },
       "referral": {
+        "previewFields": [
+          "breakConfidentialityBc",
+          "bcWhereReported"
+        ],
         "splitFormAt": 3,
         "printOrder": 4
       },

@@ -53,6 +53,7 @@
         "CaseList-Filters-Categories": "Topics",
         "CaseList-Filters-SearchByCategory": "Search by topic",
         "Contact-EditCategories": "Edit Topics",
-        "GeneralizedSearchForm-Counselor": "Peer Supporter"
+        "GeneralizedSearchForm-Counselor": "Peer Supporter",
+        "CaseHeader-Counsellor": "Peer Supporter"
     }
 }
