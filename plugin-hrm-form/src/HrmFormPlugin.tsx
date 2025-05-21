@@ -21,7 +21,7 @@ import './styles/global-overrides.css';
 
 import reducers from './states';
 import HrmTheme, { overrides } from './styles/HrmTheme';
-import { initLocalization, defaultLanguage } from './translations';
+import { defaultLanguage, initLocalization } from './translations';
 import * as Providers from './utils/setUpProviders';
 import * as ActionFunctions from './utils/setUpActions';
 import { recordCallState } from './utils/setUpActions';
@@ -56,7 +56,7 @@ export type SetupObject = ReturnType<typeof getHrmConfig>;
 const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
   const manager = Flex.Manager.getInstance();
 
-  const { helplineLanguage } = config;
+  const { counselorLanguage, helplineLanguage } = config;
 
   const twilioStrings = { ...manager.strings }; // save the originals
 
@@ -72,7 +72,10 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
 
   const localizationConfig = { twilioStrings, setNewStrings, afterNewStrings };
 
-  return initLocalization(localizationConfig, helplineLanguage);
+  return initLocalization(
+    localizationConfig,
+    localStorage.getItem('ASELO_PLUGIN_USER_LOCALE') || counselorLanguage || helplineLanguage || defaultLanguage,
+  );
 };
 
 const setUpComponents = (
@@ -127,6 +130,8 @@ const setUpComponents = (
   TeamsView.setUpWorkerDirectoryFilters();
 
   if (featureFlags.enable_conferencing) setupConferenceComponents();
+
+  Components.setupWorkerLanguageSelect(translateUI);
 };
 
 const setUpActions = (

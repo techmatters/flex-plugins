@@ -115,10 +115,17 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
   useEffect(() => {
     if (!contactTimeline) {
       dispatch(
-        newGetTimelineAsyncAction(connectedCase.id, 'print-contacts', [], true, {
-          offset: 0,
-          limit: MAX_PRINTOUT_CONTACTS,
-        }),
+        newGetTimelineAsyncAction(
+          connectedCase.id,
+          'print-contacts',
+          [],
+          true,
+          {
+            offset: 0,
+            limit: MAX_PRINTOUT_CONTACTS,
+          },
+          `case-${connectedCase.id}`,
+        ),
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -129,10 +136,17 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
     useEffect(
       () => {
         dispatch(
-          newGetTimelineAsyncAction(connectedCase.id, sectionType, [sectionType], false, {
-            offset: 0,
-            limit: MAX_SECTIONS,
-          }),
+          newGetTimelineAsyncAction(
+            connectedCase.id,
+            sectionType,
+            [sectionType],
+            false,
+            {
+              offset: 0,
+              limit: MAX_SECTIONS,
+            },
+            `case-${connectedCase.id}`,
+          ),
         );
       },
       // eslint-disable-next-line react-hooks/exhaustive-deps
