@@ -80,13 +80,11 @@ const isConversationTrigger = (obj: any): obj is ConversationTrigger =>
   typeof obj?.conversation === 'object';
 
 const getContactValueFromWebchat = ({
-  defaultFrom,
   preEngagementData,
 }: {
-  defaultFrom?: string;
   preEngagementData?: { contactIdentifier?: string };
 }) => {
-  return preEngagementData?.contactIdentifier || defaultFrom || '';
+  return preEngagementData?.contactIdentifier || '';
 };
 
 type UnsupportedChannelResultPayload = {
@@ -131,7 +129,6 @@ export const sanitizeIdentifierFromTrigger = ({
       if (trigger.message.ChannelAttributes.channel_type === 'web') {
         const identifier = getContactValueFromWebchat({
           preEngagementData: trigger.message.ChannelAttributes.pre_engagement_data,
-          defaultFrom: trigger.message.ChannelAttributes.from,
         });
         console.debug(`Found webchat identifier ${identifier}`);
         return newOk(identifier);
@@ -203,7 +200,6 @@ export const sanitizeIdentifierFromTask = ({
 
     if (channelType === 'web') {
       const identifier = getContactValueFromWebchat({
-        defaultFrom: from,
         preEngagementData: taskAttributes.preEngagementData,
       });
       console.debug(`Found webchat identifier ${identifier}`);

@@ -214,7 +214,7 @@ describe('handleGetProfileFlagsForIdentifier', () => {
           trigger: {
             message: {
               ChannelAttributes: {
-                from: 'from',
+                from: 'not this!',
                 channel_type: 'web',
               },
             },
@@ -222,7 +222,7 @@ describe('handleGetProfileFlagsForIdentifier', () => {
           channelType: 'web',
           request: { cookies: {}, headers: {} },
         },
-        expectedIdentifier: 'from',
+        expectedIdentifier: '',
       },
 
       {
@@ -231,7 +231,7 @@ describe('handleGetProfileFlagsForIdentifier', () => {
           trigger: {
             message: {
               ChannelAttributes: {
-                from: 'from',
+                from: 'not this!',
                 channel_type: 'web',
                 pre_engagement_data: {} as any,
               },
@@ -240,7 +240,7 @@ describe('handleGetProfileFlagsForIdentifier', () => {
           channelType: 'web',
           request: { cookies: {}, headers: {} },
         },
-        expectedIdentifier: 'from',
+        expectedIdentifier: 'undefined',
       },
       ...['telegram', 'instagram', 'messenger'].flatMap(channelType => [
         {
