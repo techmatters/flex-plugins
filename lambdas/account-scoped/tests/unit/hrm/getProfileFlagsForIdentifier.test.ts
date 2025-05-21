@@ -21,10 +21,8 @@ import {
   TEST_AUTH_TOKEN,
 } from '../../testTwilioValues';
 import { getFromInternalHrmEndpoint } from '../../../src/hrm/internalHrmRequest';
-import {
-  handleGetProfileFlagsForIdentifier,
-  Event,
-} from '../../../src/hrm/getProfileFlagsForIdentifier';
+import { handleGetProfileFlagsForIdentifier } from '../../../src/hrm/getProfileFlagsForIdentifier';
+import { Event } from '../../../src/hrm/sanitizeIdentifier';
 import { getAccountAuthToken } from '../../../src/configuration/twilioConfiguration';
 import { isErr, isOk, newErr, newOk } from '../../../src/Result';
 import { HttpRequest } from '../../../src/httpTypes';
@@ -216,7 +214,7 @@ describe('handleGetProfileFlagsForIdentifier', () => {
           trigger: {
             message: {
               ChannelAttributes: {
-                from: 'not this!',
+                from: 'from',
                 channel_type: 'web',
               },
             },
@@ -224,7 +222,7 @@ describe('handleGetProfileFlagsForIdentifier', () => {
           channelType: 'web',
           request: { cookies: {}, headers: {} },
         },
-        expectedIdentifier: '',
+        expectedIdentifier: 'from',
       },
 
       {
@@ -233,7 +231,7 @@ describe('handleGetProfileFlagsForIdentifier', () => {
           trigger: {
             message: {
               ChannelAttributes: {
-                from: 'not this!',
+                from: 'from',
                 channel_type: 'web',
                 pre_engagement_data: {} as any,
               },
@@ -242,7 +240,7 @@ describe('handleGetProfileFlagsForIdentifier', () => {
           channelType: 'web',
           request: { cookies: {}, headers: {} },
         },
-        expectedIdentifier: 'undefined',
+        expectedIdentifier: 'from',
       },
       ...['telegram', 'instagram', 'messenger'].flatMap(channelType => [
         {

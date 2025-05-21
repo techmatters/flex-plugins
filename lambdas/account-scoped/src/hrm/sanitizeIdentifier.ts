@@ -150,8 +150,7 @@ export const sanitizeIdentifierFromTrigger = ({
     }
 
     if (isConversationTrigger(trigger) && channelType) {
-      // TODO: handle webchat when it is migrated over to conversations
-      if (!channelTransformations[channelType] || !channelType || channelType === 'web') {
+      if (!channelTransformations[channelType] || !channelType) {
         console.error(`Channel type ${channelType} is not supported`);
         return newErr({
           message: `Channel type ${channelType} is not supported`,
