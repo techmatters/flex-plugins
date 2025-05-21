@@ -34,13 +34,13 @@ locals {
         "target_workers" = "routing.skills HAS 'ChildHelp'",
         "friendly_name"  = "ChildHelp"
       },
-      survey : {
-        "target_workers" = "1==0",
-        "friendly_name"  = "Survey"
-      },
       courage_first : {
         "target_workers" = "routing.skills HAS 'CourageFirst'",
         "friendly_name"  = "Courage First"
+      },
+      survey : {
+        "target_workers" = "1==0",
+        "friendly_name"  = "Survey"
       },
       e2e_test : {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
