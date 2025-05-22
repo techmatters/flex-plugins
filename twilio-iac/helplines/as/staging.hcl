@@ -30,14 +30,14 @@ locals {
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
-     /* facebook : {
+      facebook : {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
         contact_identity     = "messenger:399736463213496"
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-lex-v3-blocking-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
-      },*/
+      },
       whatsapp : {
         messaging_mode       = "conversations"
         channel_type         = "whatsapp"
