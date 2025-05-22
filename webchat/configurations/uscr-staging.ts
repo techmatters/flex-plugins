@@ -196,7 +196,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 
 const translations: Translations = {
   'en-US': {
-    WelcomeMessage: 'CIRCLE Response Request \nCIRCLE is an unarmed civilian crisis response alternative to law enforcement, and serves people experiencing homelessness. \nIf violence or weapons are present, call 911 for LAPD response.',
+    WelcomeMessage: 'CIRCLE is an unarmed civilian crisis response alternative to law enforcement, and serves people experiencing homelessness. \nIf violence or weapons are present, call 911 for LAPD response.',
     EntryPointTagline: 'CIRCLE Response Request',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
