@@ -12,7 +12,8 @@
     "createTwilioApiKeyAndSsmSecret": "node dist/terraformSupplemental/createTwilioApiKeyAndSsmSecret.js",
     "generateNewHelplineFormDefinitions": "node dist/formDefinitions/generateNewHelplineFormDefinitions.js",
     "twilioResources": "tsx src/terraformSupplemental/twilioResources.ts",
-    "updateAllAssetUrls": "tsx src/terraformSupplemental/updateAllAssetUrls.ts"
+    "updateAllAssetUrls": "tsx src/terraformSupplemental/updateAllAssetUrls.ts",
+    "setAppConfigCreds": "tsx src/setAppConfigCreds.ts"
   },
   "author": "",
   "license": "AGPL",
