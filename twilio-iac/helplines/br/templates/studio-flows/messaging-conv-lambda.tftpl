@@ -1,0 +1,678 @@
+${
+  jsonencode(
+{
+  "description": flow_description,
+  "states": [
+     {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -190,
+          "y": -1660
+        }
+      }
+    },
+    {
+      "name": "getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "check_image",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -440,
+          "y": -1460
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"${channel_name}\"}",
+        "url": "${get_profile_flags_for_identifier_base_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "send_blocked_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -880,
+          "y": -1000
+        },
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
+        "from": flow_vars["widget_from"],
+        "to": "{{contact.channel.address}}",
+        "body":  flow_vars["chat_blocked_message"]
+      }
+    },
+    {
+      "name": "contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "check_image",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_blocked_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "contains",
+              "value": "blocked"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": -800,
+          "y": -1260
+        }
+      }
+    },
+    {
+      "name": "attributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -50,
+          "y": 380
+        },
+        "workflow": workflow_sids["master"],
+        "channel": task_channel_sids["chat"],
+        "attributes": channel_attributes["default"]
+      }
+    },
+    {
+      "name": "facebook_hours",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "check_fb_hours",
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": flow_vars["service_sid"],
+          "environment_sid": flow_vars["environment_sid"],
+        "offset": {
+          "x": -80,
+          "y": -280
+        },
+        "function_sid": flow_vars["operating_hours_function_sid"],
+        "parameters": [
+          {
+            "value": "facebook",
+            "key": "channel"
+          }
+        ],
+        "url": "${serverless_url}/operatingHours"
+      }
+    },
+    {
+      "name": "check_fb_hours",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "pre_survey_complete",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains open",
+              "arguments": [
+                "{{widgets.facebook_hours.body}}"
+              ],
+              "type": "contains",
+              "value": "open"
+            }
+          ]
+        },
+        {
+          "next": "closed",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains closed",
+              "arguments": [
+                "{{widgets.facebook_hours.body}}"
+              ],
+              "type": "contains",
+              "value": "closed"
+            }
+          ]
+        },
+        {
+          "next": "holiday",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains holiday",
+              "arguments": [
+                "{{widgets.facebook_hours.body}}"
+              ],
+              "type": "contains",
+              "value": "holiday"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.facebook_hours.body}}",
+        "offset": {
+          "x": 40,
+          "y": -60
+        }
+      }
+    },
+    {
+      "name": "closed",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": flow_vars["service_sid"],
+        "environment_sid": flow_vars["environment_sid"],
+        "offset": {
+          "x": 350,
+          "y": 260
+        },
+        "function_sid": flow_vars["send_message_run_janitor_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "No momento não há atendentes disponíveis. Nosso canal de ajuda está aberto Segunda, Quarta e Sexta, das 14h às 18h, Terça e Quinta, das 9h às 13h. Você pode nos enviar um email: https://new.safernet.org.br/contato",
+            "key": "message"
+          },
+          {
+            "value": "SaferNet",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+     {
+      "name": "holiday",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": flow_vars["service_sid"],
+        "environment_sid": flow_vars["environment_sid"],
+        "offset": {
+          "x": 740,
+          "y": 260
+        },
+        "function_sid": flow_vars["send_message_run_janitor_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "Nosso canal de ajuda está aberto em feriados não oficiais: Segunda, Quarta e Sexta, das 14h às 18h, Terça e Quinta, das 9h às 13h. Você pode nos enviar um email: https://new.safernet.org.br/contato#",
+            "key": "message"
+          },
+          {
+            "value": "SaferNet",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "check_image",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "contact_reason_complete",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "{{trigger.conversation.Body}}",
+              "arguments": [
+                "{{trigger.conversation.Body}}"
+              ],
+              "type": "is_not_blank",
+              "value": "Is Not Blank"
+            }
+          ]
+        },
+        {
+          "next": "no_images",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "{{trigger.conversation.Body}}",
+              "arguments": [
+                "{{trigger.conversation.Body}}"
+              ],
+              "type": "is_blank",
+              "value": "Is Blank"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.Body}}",
+        "offset": {
+          "x": -430,
+          "y": -1000
+        }
+      }
+    },
+    {
+      "name": "check_response",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "is_other",
+          "event": "noMatch"
+        },
+        {
+          "next": "facebook_hours",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.contactReasonMemory.contactReason}}"
+              ],
+              "type": "contains",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "is_crime_report",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 1",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.contactReasonMemory.contactReason}}"
+              ],
+              "type": "contains",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "is_researcher",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 3",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.contactReasonMemory.contactReason}}"
+              ],
+              "type": "contains",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "next": "is_other",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains 4",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.contactReasonMemory.contactReason}}"
+              ],
+              "type": "contains",
+              "value": "4"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.ChannelAttributes.contactReasonMemory.contactReason}}",
+        "offset": {
+          "x": -820,
+          "y": -490
+        }
+      }
+    },
+    {
+      "name": "no_images",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 70,
+          "y": -710
+        },
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "Não é possível receber imagens ou arquivos de mídia pelo Messenger, por enquanto. Por favor, envie apenas texto."
+      }
+    },
+    {
+      "name": "contact_reason_complete",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "reason_bot",
+          "event": "noMatch"
+        },
+        {
+          "next": "check_response",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.contactReasonComplete}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.ChannelAttributes.contactReasonComplete}}",
+        "offset": {
+          "x": -720,
+          "y": -770
+        }
+      }
+    },
+    {
+      "name": "pre_survey_complete",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "capture_channel_bot",
+          "event": "noMatch"
+        },
+        {
+          "next": "attributes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}",
+        "offset": {
+          "x": -230,
+          "y": 140
+        }
+      }
+    },
+    {
+      "name": "reasonBot",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -1210,
+          "y": -570
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_contact_reason\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"pt_br\", \"botSuffix\": \"contact_reason\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"contactReasonComplete\", \"memoryAttribute\": \"contactReasonMemory\", \"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type | downcase}}\", \"isConversation\": \"true\"}",
+        "url": "https://hrm-${environment}.tl.techmatters.org/lambda/twilio/account-scoped/{%if trigger.conversation%}{{trigger.conversation.AccountSid}}{%else%}{{trigger.message.AccountSid}}{%endif%}/channelCapture/captureChannelWithBot"
+      }
+    },
+    {
+      "name": "captureChannelBot",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -630,
+          "y": 390
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_pre_survey\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"pt_br\", \"botSuffix\": \"pre_survey\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"preSurveyComplete\", \"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type | downcase}}\", \"isConversation\": \"true\"}",
+        "url": "https://hrm-${environment}.tl.techmatters.org/lambda/twilio/account-scoped/{%if trigger.conversation%}{{trigger.conversation.AccountSid}}{%else%}{{trigger.message.AccountSid}}{%endif%}/channelCapture/captureChannelWithBot"
+      }
+    },
+    {
+      "name": "is_crime_report",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": flow_vars["service_sid"],
+        "environment_sid": flow_vars["environment_sid"],
+        "offset": {
+          "x": -1150,
+          "y": -210
+        },
+        "function_sid": flow_vars["send_message_run_janitor_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "Você pode denunciar um crime contra direitos humanos na Internet anonimamente aqui: denuncie.org.br",
+            "key": "message"
+          },
+          {
+            "value": "SaferNet",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "is_researcher",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": flow_vars["service_sid"],
+        "environment_sid": flow_vars["environment_sid"],
+        "offset": {
+          "x": -800,
+          "y": -210
+        },
+        "function_sid": flow_vars["send_message_run_janitor_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "Por favor envie sua mensagem através do nosso formulário de contato https://new.safernet.org.br/contato#",
+            "key": "message"
+          },
+          {
+            "value": "contact_reason",
+            "key": "botSuffix"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "is_other",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": flow_vars["service_sid"],
+        "environment_sid": flow_vars["environment_sid"],
+        "offset": {
+          "x": -450,
+          "y": -210
+        },
+        "function_sid": flow_vars["send_message_run_janitor_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "Por favor envie sua mensagem",
+            "key": "message"
+          },
+          {
+            "value": "contact_reason",
+            "key": "botSuffix"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+}
+)
+}
