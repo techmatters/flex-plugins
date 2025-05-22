@@ -190,36 +190,31 @@ ${
           "url": "https://hrm-${environment}.tl.techmatters.org/lambda/twilio/account-scoped/{%if trigger.conversation%}{{trigger.conversation.AccountSid}}{%else%}{{trigger.message.AccountSid}}{%endif%}/channelCapture/captureChannelWithBot"
         }
       },
-        {
-            "name": "channel_cleanup",
-            "type": "run-function",
-            "transitions": [
-                  {
-                    "next": "attributes",
-                    "event": "success"
-                  },
-                  {
-                    "next": "send_message_run_janitor",
-                    "event": "fail"
-                  }
-            ],
-            "properties": {
-                "service_sid": serverless_service_sid,
-                "environment_sid": serverless_environment_sid,
-                "offset": {
-                  "x": 70,
-                  "y": 1000
-                },
-                "function_sid": flow_vars["chatbot_callback_cleanup_function_sid"],
-                "parameters": [
-                {
-                    "value": "{{flow.channel.address}}",
-                    "key": "channelSid"
-                }
-                ],
-                "url": "${serverless_url}/channelCapture/chatbotCallbackCleanup"
-            }
-        },
+       {
+        "name": "channelCleanup",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "next": "attributes",
+            "event": "success"
+          },
+          {
+            "next": "send_message_run_janitor",
+            "event": "fail"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 70,
+            "y": 1000
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{\"channelSid\": \"{{flow.channel.address}}\"}",
+          "url": "https://hrm-${environment}.tl.techmatters.org/lambda/twilio/account-scoped/{%if trigger.conversation%}{{trigger.conversation.AccountSid}}{%else%}{{trigger.message.AccountSid}}{%endif%}/channelCapture/chatbotCallbackCleanup"
+        }
+      },
     {
         "name": "webhook_notify_error",
         "type": "make-http-request",
