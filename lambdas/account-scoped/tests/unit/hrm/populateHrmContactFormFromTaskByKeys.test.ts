@@ -14,10 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  clearDefinitionCache,
-  populateHrmContactFormFromTaskByKeys,
-} from '../../../src/hrm/populateHrmContactFormFromTaskByKeys';
+import { populateHrmContactFormFromTaskByKeys } from '../../../src/hrm/populateHrmContactFormFromTaskByKeys';
 import { BLANK_CONTACT } from './testContacts';
 import { callTypes, HrmContact } from '@tech-matters/hrm-types';
 import each from 'jest-each';
@@ -25,6 +22,7 @@ import { FormDefinitionPatch, FormDefinitionSet } from '../../testHrmTypes';
 import { BASE_FORM_DEFINITION, MOCK_FORM_DEFINITION_URL } from '../../testHrmValues';
 import { isErr } from '../../../src/Result';
 import { AssertionError } from 'node:assert';
+import { clearDefinitionCache } from '../../../src/hrm/formDefinitionsCache';
 
 const fetchFormDefinition = async (
   url: string,

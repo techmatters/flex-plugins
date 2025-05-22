@@ -62,3 +62,12 @@ export const loadConfigJson = async (
   }
   return loadedConfigJsons[url];
 };
+/**
+ * This function is used to clear the cache of loaded config jsons.
+ * This is used for testing purposes.
+ */
+export const clearDefinitionCache = () => {
+  Object.keys(loadedConfigJsons).forEach(key => {
+    delete loadedConfigJsons[key];
+  });
+};

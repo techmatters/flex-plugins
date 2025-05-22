@@ -23,6 +23,7 @@ import {
 } from '@tech-matters/hrm-form-definitions';
 import { FormValue, HrmContact, callTypes } from '@tech-matters/hrm-types';
 import { newErr, newOk, Result } from '../Result';
+import { loadConfigJson } from './formDefinitionsCache';
 
 type MapperFunction = (options: string[]) => (value: string) => string;
 
@@ -390,14 +391,4 @@ export const populateHrmContactFormFromTaskByKeys = async (
     );
     return newErr({ error, message: error.message });
   }
-};
-
-/**
- * This function is used to clear the cache of loaded config jsons.
- * This is used for testing purposes.
- */
-export const clearDefinitionCache = () => {
-  Object.keys(loadedConfigJsons).forEach(key => {
-    delete loadedConfigJsons[key];
-  });
 };

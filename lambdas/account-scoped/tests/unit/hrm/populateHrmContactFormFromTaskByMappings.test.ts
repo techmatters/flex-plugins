@@ -19,12 +19,10 @@ import { callTypes, HrmContact } from '@tech-matters/hrm-types';
 import each from 'jest-each';
 import { FormDefinitionPatch, FormDefinitionSet } from '../../testHrmTypes';
 import { BASE_FORM_DEFINITION, MOCK_FORM_DEFINITION_URL } from '../../testHrmValues';
-import {
-  populateHrmContactFormFromTaskByMappings,
-  clearDefinitionCache,
-} from '../../../src/hrm/populateHrmContactFormFromTaskByMappings';
+import { populateHrmContactFormFromTaskByMappings } from '../../../src/hrm/populateHrmContactFormFromTaskByMappings';
 import { isErr } from '../../../src/Result';
 import { AssertionError } from 'node:assert';
+import { clearDefinitionCache } from '../../../src/hrm/formDefinitionsCache';
 
 const fetchFormDefinition = async (
   url: string,
