@@ -23,7 +23,7 @@ import { OneToManyConfigSpec, buildSurveyInsightsData } from './insightsService'
 import { isErr, newErr, newOk, Result } from '../Result';
 import { Twilio } from 'twilio';
 import { postToInternalHrmEndpoint } from '../hrm/internalHrmRequest';
-import { getFormDefinitionUrl, loadConfigJson } from '../formDefinitionsCache';
+import { getFormDefinitionUrl, loadConfigJson } from '../hrm/formDefinitionsCache';
 import { ROUTE_PREFIX } from '../router';
 import { AccountSID } from '../twilioTypes';
 

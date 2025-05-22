@@ -120,7 +120,7 @@
     "label": "Living Situation",
     "type": "select",
     "options": [
-      { "value": "Unknown", "label": "" },
+      { "value": "", "label": "" },
       { "value": "Alternative care", "label": "Alternative care" },
       { "value": "Group residential facility", "label": "Group residential facility" },
       { "value": "Homeless or marginally housed", "label": "Homeless or marginally housed" },
@@ -128,8 +128,10 @@
       { "value": "Living independently", "label": "Living independently" },
       { "value": "With parent(s)", "label": "With parent(s)" },
       { "value": "With relatives", "label": "With relatives" },
-      { "value": "Other", "label": "Other" }
-    ]
+      { "value": "Other", "label": "Other" },
+      { "value": "Unknown", "label": "Unknown" }
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" }
   },
   {
     "name": "vulnerableGroups",

@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+/* eslint-disable no-restricted-syntax */
 
 import { DefinitionVersionId, loadDefinition } from '../../formDefinition';
 
@@ -52,6 +53,19 @@ describe('loadDefinition', () => {
         helplines: expect.arrayContaining([expect.anything()]),
         label: expect.any(String),
       });
+      if (definitions.prepopulateMappings) {
+        for (const mappings of Object.values(definitions.prepopulateMappings.survey)) {
+          const topLevelIsArray = Array.isArray(mappings);
+          expect(topLevelIsArray).toBe(true);
+          for (const mappingSet of mappings) {
+            const lowerLevelIsArray = Array.isArray(mappingSet);
+            expect(lowerLevelIsArray).toBe(true);
+            for (const mappingEntry of mappingSet) {
+              expect(mappingEntry).toMatch(/[a-zA-Z]+\.[a-zA-Z]+/);
+            }
+          }
+        }
+      }
     },
   );
 });
