@@ -28,6 +28,12 @@
     }
   },
   {
+    "name": "genderInput",
+    "label": "Child Gender (Input from Webchat Form)",
+    "type": "input",
+    "isPII": false
+  },
+  {
     "name": "gender",
     "label": "Child Gender",
     "type": "select",

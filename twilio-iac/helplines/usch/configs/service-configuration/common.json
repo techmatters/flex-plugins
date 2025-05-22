@@ -2,7 +2,8 @@
     "attributes": {
         "contacts_waiting_channels": [
             "voice",
-            "web"
+            "web",
+            "sms"
         ],
         "config_flags": {
             "enableExternalRecordings": false
