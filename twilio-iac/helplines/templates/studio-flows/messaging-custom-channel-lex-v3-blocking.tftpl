@@ -63,7 +63,7 @@ ${
                   {
                     "friendly_name": "Has no non-survey tasks",
                     "arguments": [
-                      "{{widgets.set_hasNonSurveyTasks.hasNonSurveyTasks}}"
+                      "{{flow.variables.hasNonSurveyTasks}}"
                     ],
                     "type": "equal_to",
                     "value": "false"
@@ -72,7 +72,7 @@ ${
               }
             ],
             "properties": {
-              "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+              "input": "{{flow.variables.hasNonSurveyTasks}}",
               "offset": {
                 "x": -690,
                 "y": -60
