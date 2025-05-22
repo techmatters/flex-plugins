@@ -1,101 +1,64 @@
 [
   {
-    "name": "date",
-    "label": "Date",
-    "type": "date-input",
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "duration",
-    "label": "Duration",
-    "type": "select",
+    "name": "riskToLifeAssessmentCompleted",
+    "label": "Risk to life assessment completed",
+    "type": "listbox-multiselect",
     "options": [
       {
-        "value": "",
-        "label": ""
+        "value": "Thoughts",
+        "label": "Thoughts"
       },
       {
-        "value": "Ongoing",
-        "label": "Ongoing"
+        "value": "Plan",
+        "label": "Plan"
       },
       {
-        "value": "Once Off",
-        "label": "Once Off"
+        "value": "Access to means",
+        "label": "Access to means"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "Set a timeframe",
+        "label": "Set a timeframe"
       }
     ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "rows": 6
   },
   {
-    "name": "location",
-    "label": "Location",
-    "type": "select",
-    "options": [
-      {
-        "value": "",
-        "label": ""
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      },
-      {
-        "value": "School",
-        "label": "School"
-      },
-      {
-        "value": "Home",
-        "label": "Home"
-      },
-      {
-        "value": "Institution",
-        "label": "Institution"
-      },
-      {
-        "value": "Online",
-        "label": "Online"
-      },
-      {
-        "value": "Public Place",
-        "label": "Public Place"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    "name": "plan",
+    "label": "Plan",
+    "type": "textarea",
+    "rows": 10,
+    "width": 250
   },
   {
-    "name": "isCaregiverAware",
-    "label": "Is caregiver aware?",
-    "type": "mixed-checkbox"
+    "name": "accessToMeans",
+    "label": "Access to means",
+    "type": "textarea",
+    "rows": 10,
+    "width": 250
   },
   {
-    "name": "incidentWitnessed",
-    "label": "Was the incident witnessed by anyone?",
-    "type": "mixed-checkbox"
+    "name": "setATimeframe",
+    "label": "Set a timeframe ",
+    "type": "textarea",
+    "rows": 8,
+    "width": 250
   },
   {
-    "name": "abuseReportedElsewhere",
-    "label": "Has abuse been reported elsewhere?",
-    "type": "mixed-checkbox"
+    "name": "escalationToOncall",
+    "label": "Escalation to on-call",
+    "type": "checkbox"
   },
   {
-    "name": "whereElseBeenReported",
-    "label": "Where else the incident has been reported?",
-    "type": "mixed-checkbox"
+    "name": "escalationToOncallNotes",
+    "label": "Escalation to on-call (Notes)",
+    "type": "textarea",
+    "rows": 10,
+    "width": 250
+  },
+  {
+    "name": "oncallTeamMemberConsulted",
+    "label": "On-Call team member consulted",
+    "type": "input"
   }
 ]

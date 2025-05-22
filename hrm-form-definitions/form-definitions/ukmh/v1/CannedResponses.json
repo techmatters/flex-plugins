@@ -1,49 +1,42 @@
-[{
-    "label": "Thank you for contacting.",
-    "text": "Thank you for contacting the helpline. We are here to support you. My name is XXX and I am a counselor at the helpline. "
+[
+  {
+  "label": "Hello",
+  "text": "Hello, thank you for signing up to speak with us today. Before we get started can we share a bit about the ways we can offer you support here on our PeerChat service?"
   },
   {
-    "label": "Confidentiality / Privacy",
-    "text": "Before we continue, I would love for you to know that this is a safe space for you to just talk and share the challenges that you are having. Everything you say here will remain here except in cases where you indicate that you are being harmed by someone (meaning any form of abuse), that you want to harm yourself (meaning suicide) or you want to harm someone. In any of these cases, I would have to inform my supervisor and inform the relevant authorities. Do you understand this?"
+  "label": "Remit",
+  "text": "Thank you for reaching out to The Mix’s PeerChat. Today, you’ll have 45 minutes to talk to a trained volunteer about your thoughts and feelings, what’s been going for you and why you have reached out. We can also look for more options that may be able to help further. If you become disconnected at any time during the chat please rejoin the link in your confirmation email.\n\n\nThe Mix is unable to provide urgent help. If you need urgent help, please visit https://www.themix.org.uk/get-support/urgent-help/\n\n\nHere at The Mix, we don’t tell anyone outside of the charity what you have shared with us. However, if we felt that you or someone else were in danger, then we would widen the circle of confidentiality by contacting the emergency services. If this were the case, we would tell you straight away and ask you for your details if we haven't got them already. \n\nFor further information, please visit https://www.themix.org.uk/about-us/privacy-centre/privacy-policy/"
   },
   {
-    "label": "Emergency Services Call",
-    "text": "I am going to call 911 and will ask you to provide as much information as you can about the situation. Do you know where the situation is taking place?"
+  "label": "Silent - Check In",
+  "text": "I noticed you’ve gone quiet, I just wanted to check if now is still a good time to talk. If you become disconnected at any time please rejoin the link sent in your confirmation email."
   },
   {
-    "label": "What is the helpline?",
-    "text": "ChildLine is a 24/7 counseling helpline that provides free counselling and psychosocial support to children and teens under the age of 18 years."
+  "label": "Signposting - Types of help",
+  "text": "We can look for different types of support, such as advice, counselling, emotional support and practical help. Do you know which of these you would prefer?"
   },
   {
-    "label": "How did you learn about the helpline?",
-    "text": "If you don't mind me asking, can you please share with me how you came to know about the helpline?"
+  "label": "Signposting- How support can be accessed.",
+  "text": "Support can be accessed in a few different ways such as face-to-face, over the phone or online. Do you know which of these you’d prefer?"
   },
   {
-    "label": "How do I avoid COVID?",
-    "text": "It’s understandable that you are worried about getting the COVID19 Virus, however, here are some tips to help you stay safe: \n\n • Wash your hands regularly / use sanitizer \n • Avoid handshakes, hugs and kisses. \n • Don’t touch your face unnecessarily \n • Keep a 1.5-meter distance from people, especially if they are symptomatic \n • If you feel that you show symptoms or have come in touch with a COVID19 positive person, please also call the COVID19 Helpline \n • Stay calm and don't panic"
+  "label": "Urge 999",
+  "text": "Here at The Mix we take your thoughts of suicide seriously. We hear you and your feelings are important. We just wanted to let you know that if you did feel at any point that you were going to act on your thoughts of suicide, then we would urge you to call the emergency services on 999, or go to your local A&E department to explain your intentions to them, so that they can support you."
   },
   {
-    "label": "What is Physical abuse?",
-    "text": "Physical violence and abuse based on the fact that you are a man or a woman is an increasing problem. If you or anyone you know is being: Beaten, slapped, punched, kicked, bruised, cut, burnt or physically hurt in any way, they are being physically abused."
+  "label": "Breaking Confidentiality Part 1",
+  "text": "Here at The Mix, we take what you share seriously. We are concerned about what you’ve told us and believe that [your/ someone’s/ xxxx’s] life is in danger. Because of this, this conversation is no longer confidential, and we are limited in the options we can offer you. We are going to share this information with the emergency services to support you further. We would appreciate it if you could share your details to aid in this process.\n\nThank you , we will now be passing the details you have provided us with onto the Police. I am going to bring this conversation to an end as they may get in touch to provide you with support. You’ve been so brave to share your experiences today."
   },
   {
-    "label": "What is Verbal and Emotional abuse?",
-    "text": "Not all sexual and gender based violence is physical. Verbal abuse like screaming, shouting and name calling, and emotional abuse like threats and intimidation, are real problems, especially in families."
+  "label": "Breaking Confidentiality Part 2",
+  "text": "We would urge you to call the emergency services on 999, or go to your local A&E department to explain your intentions to them, so that they can support you. Please take care. Bye for now."
   },
   {
-    "label": "What is Sexual abuse and rape?",
-    "text": "People are sometimes forced to have sex with people when they don’t want to (rape), or to do sexual things against their will. This can happen once or more often. People may know the person or they may be a stranger. Sexual violence and abuse have immediate as well as long term physical and emotional consequences. Being sexually abused because you are a man or a woman is a growing problem."
+  "label": "Bye Message",
+  "text": "You’ve been really brave in taking the time to reach out to us here at The Mix today. After this chat ends, you will receive an email that outlines what was spoken about in this chat and the resources you asked for. We hope these resources will be able to support you further.\n\nTake good care."
   },
   {
-    "label": "Affirmations",
-    "text": "Thank you for sharing this with me. It is completely natural to feel the way you do."
-  },
-  {
-    "label": "Silent",
-    "text": "Unfortunately because there has been no response, we will have to end this conversation to speak with the next caller. When you are ready to chat with us you are welcome to reach out again."
-  },
-  {
-    "label": "Goodbye",
-    "text": "Thank you for reaching out to the helpline, we are here to support you. Please reach out to us again if you need to talk. "
+  "label": "Bye - Survey link",
+  "text": "Just before you go, here at The Mix, we want to make sure we’re providing services that suit your needs and preferences. To get that right we’d love to ask you a few questions about your preferences when it comes to services and your experience with them. Could we contact you after this conversation via email to send you a link to our short survey?"
   }
-]
+  ]
