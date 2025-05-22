@@ -35,7 +35,7 @@ import {
 } from './availableContactFormSelector';
 import { selectFormsFromAboutSelfSurveyQuestion } from './selectFormsFromAboutSelfSurveyQuestion';
 import { newErr, newOk, Result } from '../Result';
-import {loadConfigJson} from "./formDefinitionsCache";
+import { loadConfigJson } from './formDefinitionsCache';
 
 type MapperFunction = (options: string[]) => (value: string) => string;
 
