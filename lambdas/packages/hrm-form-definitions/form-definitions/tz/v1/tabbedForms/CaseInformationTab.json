@@ -9,37 +9,57 @@
     }
   },
   {
-    "name": "repeatCaller",
-    "label": "Repeat Caller?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "actionTaken",
-    "label": "Action Taken",
+    "name": "signPosting",
+    "label": "Signposting",
     "type": "select",
     "options": [
       {
-        "value": "Unknown",
-        "label": " "
+        "value": "",
+        "label": ""
       },
-      {
-        "value": "Action taken",
-        "label": "Action taken"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      }
+    {
+      "value": "Social Welfare Officer",
+      "label": "Social Welfare Officer"
+    },
+    {
+      "value": "Police - Gender & Children's Desk",
+      "label": "Police - Gender & Children's Desk"
+    },
+    {
+      "value": "Local Government Authorities",
+      "label": "Local Government Authorities"
+    },
+    {
+      "value": "Other",
+      "label": "Other"
+    },
+    {
+      "value": "No Signposting Made",
+      "label": "No Signposting Made"
+    }
     ]
   },
   {
-    "name": "okForCaseWorkerToCall",
-    "label": "Ok for case worker to call?",
-    "type": "mixed-checkbox"
-  },
-  {
-    "name": "didYouDiscussRightsWithTheChild",
-    "label": "Did you discuss rights with the child?",
-    "type": "mixed-checkbox"
+    "name": "urgencyLevel",
+    "label": "Level of Urgency",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+    {
+      "value": "Level 1",
+      "label": "Level 1"
+    },
+    {
+      "value": "Level 2",
+      "label": "Level 2"
+    },
+    {
+      "value": "Level 3",
+      "label": "Level 3"
+    }
+    ]
   }
 ]

@@ -234,30 +234,6 @@ const getValuesFromPreEngagementData = (
   return values;
 };
 
-const loadedConfigJsons: Record<string, any> = {};
-
-const loadConfigJson = async (
-  formDefinitionRootUrl: URL,
-  section: string,
-): Promise<any> => {
-  if (!loadedConfigJsons[section]) {
-    const url = `${formDefinitionRootUrl}/${section}.json`;
-    console.debug('Loading forms at:', url);
-    const response = await fetch(url);
-    if (!response.ok) {
-      if (response.status === 404) {
-        console.warn(`No config json found at ${url}`);
-        return null;
-      }
-      throw new Error(
-        `Failed to load config json from ${url}: Status ${response.status} - ${response.statusText}\r\n${await response.text()}`,
-      );
-    }
-    loadedConfigJsons[section] = await response.json();
-  }
-  return loadedConfigJsons[section];
-};
-
 const populateInitialValues = async (contact: HrmContact, formDefinitionRootUrl: URL) => {
   const tabNamesAndRawJsonSections: [string, Record<string, FormValue>][] = [
     ['CaseInformationTab', contact.rawJson.caseInformation],

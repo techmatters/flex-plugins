@@ -68,7 +68,7 @@
             "enable_generalized_search": true,
             "enable_last_case_status_update_info": true,
             "enable_lex": false,
-            "enable_hierarchical_translations": false,
+            "enable_hierarchical_translations": true,
             "enable_manual_pulling": true,
             "enable_offline_contact": true,
             "enable_permissions_from_backend": true,
