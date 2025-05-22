@@ -5,10 +5,6 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
         "value": "Safeguarding",
         "label": "Safeguarding"
       },
@@ -16,17 +12,14 @@
         "value": "Risk",
         "label": "Risk"
       }
-    ]
+    ],
+    "rows": 3
   },
   {
     "name": "bcWhereReported",
     "label": "BC - where reported",
     "type": "listbox-multiselect",
     "options": [
-      {
-        "value": "",
-        "label": ""
-      },
       {
         "value": "Police",
         "label": "Police"
@@ -43,7 +36,8 @@
     "required": {
       "value": true,
       "message": "RequiredFieldError"
-    }
+    },
+    "rows": 5
   },
   {
     "name": "bcReferenceNumberProvided",

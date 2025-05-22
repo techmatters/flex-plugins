@@ -5,10 +5,6 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
         "value": "Thoughts",
         "label": "Thoughts"
       },
@@ -24,7 +20,8 @@
         "value": "Set a timeframe",
         "label": "Set a timeframe"
       }
-    ]
+    ],
+    "rows": 6
   },
   {
     "name": "plan",

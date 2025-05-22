@@ -36,16 +36,20 @@
         "Resources-View-PrivateInformationWarning": "This information is private. Do not share with Young Person.",
         "BottomBar-SaveAndAddAnotherReferral": "Save and Add Another Break Confidentiality",
         "CaseSection-BottomBar-Save/referral": "Save Break Confidentiality",
+        "Case-SectionList-Title/referral": "Break Confidentiality",
         "Case-SectionList-Add/referral": "Break Confidentiality",
         "CaseSection-Add/referral": "Add Break Confidentiality",
+        "CaseSection-BottomBar-SaveAndAddAnother/referral": "Save and Add Another Break Confidentiality",
         "CaseSection-Edit/referral": "Edit Break Confidentiality",
         "CasePrint-TabularSection-Header/referral": "Break Confidentiality {{sectionNo}} of {{sectionCount}}",
         "CaseSection-BottomBar-SaveAndAddAnother/incident": "Save and Add Another Safeguarding/Risk",
+        "CaseSection-Add/incident": "Add Safeguarding/Risk",
         "CaseSection-BottomBar-Save/incident": "Save Safeguarding/Risk",
         "Case-SectionList-Title/incident": "Safeguarding/Risk",
         "Case-SectionList-Add/incident": "Safeguarding/Risk",
         "CaseSection-Edit/incident": "Edit Safeguarding/Risk",
         "Case-SectionList-NoItems/incident": "No Safeguarding/Risk Listed",
+        "Case-SectionList-NoItems/referral": "No Break Confidentiality Listed",
         "CaseSection-View-Title/incident": "View Safeguarding/Risk",
         "CasePrint-TabularSection-Header/incident": "Safeguarding/Risk {{sectionNo}} of {{sectionCount}}",
         "TabbedForms-CategoriesTab": "Topics",
@@ -54,6 +58,9 @@
         "CaseList-Filters-SearchByCategory": "Search by topic",
         "Contact-EditCategories": "Edit Topics",
         "GeneralizedSearchForm-Counselor": "Peer Supporter",
-        "CaseHeader-Counsellor": "Peer Supporter"
+        "CaseHeader-Counsellor": "Peer Supporter",
+        "Case-DetailsHeaderCounselor": "Peer Supporter",
+        "Categories-Title": "Choose appropriate topic(s) for this contact",
+        "CaseList-THCategory": "Topic"
     }
 }

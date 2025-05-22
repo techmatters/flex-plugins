@@ -1,44 +1,9 @@
 [
   {
-    "name": "whichOtherTheMixServicesUsed",
-    "label": "Which other The Mix services used?",
-    "type": "listbox-multiselect",
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Counselling",
-        "label": "Counselling"
-      },
-      {
-        "value": "Discussion boards ",
-        "label": "Discussion boards "
-      },
-      {
-        "value": "Group chats ",
-        "label": "Group chats "
-      },
-      {
-        "value": "Website ",
-        "label": "Website "
-      },
-      {
-        "value": "Social media ",
-        "label": "Social media "
-      }
-    ]
-  },
-  {
     "name": "sessionOutcome",
     "label": "Session Outcome",
     "type": "select",
     "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
       {
         "value": "Completed",
         "label": "Completed"
@@ -74,10 +39,6 @@
     "label": "How did you hear of the Mix Peer Support Service?",
     "type": "select",
     "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
       {
         "value": "Peers (e.g. friends / siblings)",
         "label": "Peers (e.g. friends / siblings)"
@@ -117,8 +78,35 @@
     ]
   },
   {
+    "name": "whichOtherTheMixServicesUsed",
+    "label": "Which other The Mix services used?",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Counselling",
+        "label": "Counselling"
+      },
+      {
+        "value": "Discussion boards ",
+        "label": "Discussion boards "
+      },
+      {
+        "value": "Group chats ",
+        "label": "Group chats "
+      },
+      {
+        "value": "Website ",
+        "label": "Website "
+      },
+      {
+        "value": "Social media ",
+        "label": "Social media "
+      }
+    ]
+  },
+  {
     "name": "groundingOrBreathingTechniquesUsed",
-    "label": "Grounding or breathing techniques used",
+    "label": "Were Grounding or breathing techniques used?",
     "type": "checkbox"
   },
   {
@@ -126,10 +114,6 @@
     "label": "How do they prefer help?",
     "type": "listbox-multiselect",
     "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
       {
         "value": "Webchat",
         "label": "Webchat"
@@ -193,10 +177,6 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
         "value": "Counselling",
         "label": "Counselling"
       },
@@ -234,7 +214,7 @@
     "name": "signpostsOfferedOther",
     "label": "Signposts offered - other",
     "type": "textarea",
-    "rows": 10,
+    "rows": 8,
     "width": 250
   },
   {
@@ -242,10 +222,6 @@
     "label": "Current coping strategies",
     "type": "listbox-multiselect",
     "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
       {
         "value": "Breathing Techniques",
         "label": "Breathing Techniques"
@@ -292,7 +268,7 @@
     "name": "otherCurrentCopingStrategies",
     "label": "Other current coping strategies",
     "type": "textarea",
-    "rows": 10,
+    "rows": 8,
     "width": 250
   },
   {
@@ -300,10 +276,6 @@
     "label": "Recommended coping strategies",
     "type": "listbox-multiselect",
     "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
       {
         "value": "Breathing Techniques",
         "label": "Breathing Techniques"
@@ -350,14 +322,14 @@
     "name": "otherRecommendedCopingStrategies",
     "label": "Other recommended coping strategies",
     "type": "textarea",
-    "rows": 10,
+    "rows": 8,
     "width": 250
   },
   {
     "name": "nextSteps",
     "label": "Next Steps",
     "type": "textarea",
-    "rows": 10,
+    "rows": 8,
     "width": 250
   }
 ]

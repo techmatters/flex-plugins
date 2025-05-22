@@ -197,7 +197,7 @@
     }
   },
   {
-    "name": "phone",
+    "name": "phone1",
     "label": "Phone Number",
     "type": "input"
   },
@@ -1089,10 +1089,6 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
         "value": "School (primary or secondary)",
         "label": "School (primary or secondary)"
       },
@@ -1152,10 +1148,6 @@
     "type": "listbox-multiselect",
     "options": [
       {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
         "value": "Mental Health",
         "label": "Mental Health"
       },
@@ -1167,7 +1159,8 @@
         "value": "Relationships",
         "label": "Relationships"
       }
-    ]
+    ],
+    "rows": 5
   },
   {
     "name": "anxietyScale",
@@ -1219,11 +1212,7 @@
         "value": "10",
         "label": "10"
       }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    ]
   },
   {
     "name": "moodhappinessBefore",
@@ -1261,10 +1250,6 @@
     "label": "Pre-existing Conditions/Difficulties",
     "type": "listbox-multiselect",
     "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
       {
         "value": "ADHD",
         "label": "ADHD"
@@ -1332,13 +1317,13 @@
     ]
   },
   {
-    "name": "ip",
-    "label": "IP",
-    "type": "input"
-  },
-  {
     "name": "consentForResearchevaluation",
     "label": "Consent for Research/Evaluation",
     "type": "checkbox"
+  },
+  {
+    "name": "ip",
+    "label": "IP Address",
+    "type": "input"
   }
 ]
