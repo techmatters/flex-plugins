@@ -23,7 +23,7 @@ import selectChannelType from './selectChannelType';
 const getContactValueFromWebchat = task => {
   const { preEngagementData } = task.attributes;
   if (!preEngagementData) return '';
-  return preEngagementData.contactIdentifier || task.defaultFrom || '';
+  return preEngagementData.contactIdentifier || '';
 };
 
 /**

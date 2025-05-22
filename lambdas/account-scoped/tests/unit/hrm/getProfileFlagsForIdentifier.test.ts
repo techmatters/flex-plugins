@@ -21,10 +21,8 @@ import {
   TEST_AUTH_TOKEN,
 } from '../../testTwilioValues';
 import { getFromInternalHrmEndpoint } from '../../../src/hrm/internalHrmRequest';
-import {
-  handleGetProfileFlagsForIdentifier,
-  Event,
-} from '../../../src/hrm/getProfileFlagsForIdentifier';
+import { handleGetProfileFlagsForIdentifier } from '../../../src/hrm/getProfileFlagsForIdentifier';
+import { Event } from '../../../src/hrm/sanitizeIdentifier';
 import { getAccountAuthToken } from '../../../src/configuration/twilioConfiguration';
 import { isErr, isOk, newErr, newOk } from '../../../src/Result';
 import { HttpRequest } from '../../../src/httpTypes';
@@ -242,7 +240,7 @@ describe('handleGetProfileFlagsForIdentifier', () => {
           channelType: 'web',
           request: { cookies: {}, headers: {} },
         },
-        expectedIdentifier: 'undefined',
+        expectedIdentifier: '',
       },
       ...['telegram', 'instagram', 'messenger'].flatMap(channelType => [
         {
