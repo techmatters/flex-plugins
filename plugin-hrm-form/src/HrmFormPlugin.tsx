@@ -35,6 +35,7 @@ import { setUpSharedStateClient } from './utils/sharedState';
 import { FeatureFlags } from './types/types';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
 import TeamsView from './components/teamsView';
+import QueuesView from './components/queuesView';
 import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
 import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
 import { subscribeNewMessageAlertOnPluginInit } from './notifications/newMessage';
@@ -125,6 +126,8 @@ const setUpComponents = (
   TeamsView.setUpTeamsViewSorting();
   TeamsView.setUpTeamsViewFilters();
   TeamsView.setUpWorkerDirectoryFilters();
+
+  QueuesView.setUpSwitchboard();
 
   if (featureFlags.enable_conferencing) setupConferenceComponents();
 };
