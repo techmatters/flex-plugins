@@ -41,13 +41,8 @@
     "name": "setATimeframe",
     "label": "Set a timeframe ",
     "type": "textarea",
-    "rows": 10,
+    "rows": 8,
     "width": 250
-  },
-  {
-    "name": "safeguardingConcernsRaised",
-    "label": "Safeguarding concerns raised",
-    "type": "checkbox"
   },
   {
     "name": "escalationToOncall",
