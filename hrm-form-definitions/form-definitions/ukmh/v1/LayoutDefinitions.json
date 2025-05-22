@@ -12,8 +12,7 @@
     "sectionTypes": {
       "household": {
         "splitFormAt": 7,
-        "caseHomeOrder": 1,
-        "printOrder": 1,
+        "printOrder": 3,
         "previewFields": [
           "name",
           "gender",
@@ -39,8 +38,7 @@
       },
       "perpetrator": {
         "splitFormAt": 7,
-        "caseHomeOrder": 2,
-        "printOrder": 2,
+        "printOrder": 4,
         "previewFields": [
           "name",
           "gender",
@@ -77,7 +75,8 @@
             "includeLabel": true
           }
         },
-        "splitFormAt": 3,
+        "caseHomeOrder": 2,
+        "splitFormAt": 2,
         "printOrder": 3
       },
       "referral": {
@@ -85,8 +84,9 @@
           "breakConfidentialityBc",
           "bcWhereReported"
         ],
+        "caseHomeOrder": 1,
         "splitFormAt": 3,
-        "printOrder": 4
+        "printOrder": 1
       },
       "document": {
         "splitFormAt": 1,
