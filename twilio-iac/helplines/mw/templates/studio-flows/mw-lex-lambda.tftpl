@@ -1,0 +1,475 @@
+${
+  jsonencode({
+  "description": "Messaging Flow - Lex - MW",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -160,
+          "y": -460
+        }
+      }
+    },
+    {
+      "name": "getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "split_channel",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -350,
+          "y": -280
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "body": "{ \"trigger\": {{trigger | to_json}}}",
+        "url": "${get_profile_flags_for_identifier_base_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "send_blocked_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -640,
+          "y": 210
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "${flow_vars.widget_from}",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.chat_blocked_message}"
+      }
+    },
+    {
+      "name": "contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "split_channel",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_blocked_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "contains",
+              "value": "blocked"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": -690,
+          "y": -60
+        }
+      }
+    },
+    {
+      "name": "smsAttributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 270,
+          "y": 810
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.sms}",
+        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}}"
+      }
+    },
+    {
+      "name": "defaultAttributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -690,
+          "y": 810
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.default}",
+        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}}"
+      }
+    },
+    {
+      "name": "whatsappAttributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -370,
+          "y": 810
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}}"
+      }
+    },
+    {
+      "name": "facebookAttributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -50,
+          "y": 810
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "attributes": "{\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}}"
+      }
+    },
+    {
+      "name": "webAttributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 590,
+          "y": 810
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "attributes": "{\"ip\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.ip}}\",\"name\": \"{{trigger.message.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.message.ChannelSid}}\", \"helpline\": \"{{trigger.message.ChannelAttributes.pre_engagement_data.helpline}}\", \"ignoreAgent\":\"\",\n\"transferTargetType\":\"\",\"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}, \"preEngagementData\": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}}}"
+      }
+    },
+    {
+      "name": "AdjustAttributes",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "defaultAttributes",
+          "event": "noMatch"
+        },
+        {
+          "next": "whatsappAttributes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to whatsapp",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.channel_type}}"
+              ],
+              "type": "contains",
+              "value": "whatsapp"
+            }
+          ]
+        },
+        {
+          "next": "facebookAttributes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to facebook",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.channel_type}}"
+              ],
+              "type": "contains",
+              "value": "facebook"
+            }
+          ]
+        },
+        {
+          "next": "smsAttributes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to sms",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.channel_type}}"
+              ],
+              "type": "contains",
+              "value": "sms"
+            }
+          ]
+        },
+        {
+          "next": "webAttributes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to web",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.channel_type}}"
+              ],
+              "type": "contains",
+              "value": "web"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.channel_type}}",
+        "offset": {
+          "x": -200,
+          "y": 560
+        }
+      }
+    },
+    {
+      "name": "check_image",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "pre_survey_complete",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "{{trigger.message.Body}}",
+              "arguments": [
+                "{{trigger.message.Body}}"
+              ],
+              "type": "is_not_blank",
+              "value": "Is Not Blank"
+            }
+          ]
+        },
+        {
+          "next": "send_message_1",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "{{trigger.message.Body}}",
+              "arguments": [
+                "{{trigger.message.Body}}"
+              ],
+              "type": "is_blank",
+              "value": "Is Blank"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.Body}}",
+        "offset": {
+          "x": 100,
+          "y": -190
+        }
+      }
+    },
+    {
+      "name": "send_message_1",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 510,
+          "y": 60
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "It is not possible to receive images or media files through Messenger at this time. Please send text only."
+      }
+    },
+    {
+      "name": "split_channel",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "pre_survey_complete",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains web",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.channel_type}}"
+              ],
+              "type": "contains",
+              "value": "web"
+            }
+          ]
+        },
+        {
+          "next": "check_image",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains facebook",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.channel_type}}"
+              ],
+              "type": "contains",
+              "value": "facebook"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.channel_type}}",
+        "offset": {
+          "x": -150,
+          "y": -470
+        }
+      }
+    },
+    {
+      "name": "pre_survey_complete",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "captureChannelBot",
+          "event": "noMatch"
+        },
+        {
+          "next": "AdjustAttributes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{trigger.message.ChannelAttributes.preSurveyComplete}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.ChannelAttributes.preSurveyComplete}}",
+        "offset": {
+          "x": -140,
+          "y": 40
+        }
+      }
+    },
+    {
+      "name": "captureChannelBot",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -550,
+          "y": 290
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_pre_survey\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"${flow_vars.bot_language}\", \"botSuffix\": \"pre_survey\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"preSurveyComplete\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type | downcase}}\", \"isConversation\": \"false\"}",
+        "url": "https://hrm-${environment}.tl.techmatters.org/lambda/twilio/account-scoped/{%if trigger.conversation%}{{trigger.conversation.AccountSid}}{%else%}{{trigger.message.AccountSid}}{%endif%}/channelCapture/captureChannelWithBot"
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+})
+}
