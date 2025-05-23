@@ -1,0 +1,670 @@
+${
+  jsonencode({
+  "description": "${flow_description}",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "next": "getProfileFlagsForIdentifiers",
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -240,
+          "y": -620
+        }
+      }
+    },
+    {
+      "name": "attributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 860,
+          "y": 430
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "attributes": "{\n  \"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\",\n  \"customChannelType\": \"{{trigger.conversation.ChannelAttributes.channelType}}\",\n  \"channelSid\": \"{{trigger.conversation.ChannelSid}}\",\n  \"helpline\": \"{{ trigger.conversation.ChannelAttributes.memory.helpline}}\",\n  \"ignoreAgent\": \"\",\n  \"transferTargetType\": \"\",\n  \"language\": \"{{trigger.conversation.ChannelAttributes.languageMemory.language }}\",\n  \"memory\": {{ trigger.conversation.ChannelAttributes.memory | to_json }},\n  \"preEngagementData\": {{trigger.conversation.ChannelAttributes.pre_engagement_data | to_json}} \n}"
+      }
+    },
+    {
+      "name": "check_image",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "language_selector_complete",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "{{trigger.conversation.Body}}",
+              "arguments": [
+                "{{trigger.conversation.Body}}"
+              ],
+              "type": "is_not_blank",
+              "value": "Is Not Blank"
+            }
+          ]
+        },
+        {
+          "next": "no_img_msg",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "{{trigger.conversation.Body}}",
+              "arguments": [
+                "{{trigger.conversation.Body}}"
+              ],
+              "type": "is_blank",
+              "value": "Is Blank"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.Body}}",
+        "offset": {
+          "x": -350,
+          "y": 450
+        }
+      }
+    },
+    {
+      "name": "no_img_msg",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${serverless_service_sid}",
+        "environment_sid": "${serverless_environment_sid}",
+        "offset": {
+          "x": 340,
+          "y": 690
+        },
+        "function_sid": "${flow_vars.send_message_janitor_function_sid}",
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "It is currently not possible to receive images or media files through Messenger at this time. Please send text only.",
+            "key": "message"
+          },
+          {
+            "value": "Childline",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "set_en_US",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "captureChannelWithBot",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "en-US",
+            "key": "language"
+          }
+        ],
+        "offset": {
+          "x": -300,
+          "y": 1390
+        }
+      }
+    },
+    {
+      "name": "set_bem",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "captureChannelWithBot",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "bem",
+            "key": "language"
+          }
+        ],
+        "offset": {
+          "x": -630,
+          "y": 1390
+        }
+      }
+    },
+    {
+      "name": "set_toi",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "captureChannelWithBot",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "toi",
+            "key": "language"
+          }
+        ],
+        "offset": {
+          "x": 1460,
+          "y": 1400
+        }
+      }
+    },
+    {
+      "name": "set_lun",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "captureChannelWithBot",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "lun",
+            "key": "language"
+          }
+        ],
+        "offset": {
+          "x": 1110,
+          "y": 1390
+        }
+      }
+    },
+    {
+      "name": "set_nyz",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "captureChannelWithBot",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "nyz",
+            "key": "language"
+          }
+        ],
+        "offset": {
+          "x": 770,
+          "y": 1390
+        }
+      }
+    },
+    {
+      "name": "set_kqn",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "captureChannelWithBot",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "kqn",
+            "key": "language"
+          }
+        ],
+        "offset": {
+          "x": 420,
+          "y": 1390
+        }
+      }
+    },
+    {
+      "name": "set_loz",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "captureChannelWithBot",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "loz",
+            "key": "language"
+          }
+        ],
+        "offset": {
+          "x": 50,
+          "y": 1390
+        }
+      }
+    },
+    {
+      "name": "captureChannelWithBot",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "next": "channelCleanup",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 420,
+          "y": 1900
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_pre_survey\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"{{flow.variables.language}}\", \"botSuffix\": \"pre_survey\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"preSurveyComplete\", \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\", \"isConversation\": \"true\"}",
+        "url": "https://hrm-${environment}.tl.techmatters.org/lambda/twilio/account-scoped/{%if trigger.conversation%}{{trigger.conversation.AccountSid}}{%else%}{{trigger.message.AccountSid}}{%endif%}/channelCapture/captureChannelWithBot"
+      }
+    },
+    {
+      "name": "pre_survey_complete",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "check_image",
+          "event": "noMatch"
+        },
+        {
+          "next": "attributes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}",
+        "offset": {
+          "x": -170,
+          "y": 170
+        }
+      }
+    },
+    {
+      "name": "language_selector_complete",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "captureChannelWithLanguageBot",
+          "event": "noMatch"
+        },
+        {
+          "next": "split_language_from_bot",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.isSelectLanguageComplete}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.ChannelAttributes.isSelectLanguageComplete}}",
+        "offset": {
+          "x": -180,
+          "y": 730
+        }
+      }
+    },
+    {
+      "name": "captureChannelWithLanguageBot",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "next": "channelCleanup",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -590,
+          "y": 1020
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_language_selector\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"en-US\", \"botSuffix\": \"language_selector\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"isSelectLanguageComplete\", \"memoryAttribute\": \"languageMemory\", \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\", \"isConversation\": \"true\"}",
+        "url": "https://hrm-${environment}.tl.techmatters.org/lambda/twilio/account-scoped/{%if trigger.conversation%}{{trigger.conversation.AccountSid}}{%else%}{{trigger.message.AccountSid}}{%endif%}/channelCapture/captureChannelWithBot"
+      }
+    },
+    {
+      "name": "split_language_from_bot",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "set_en_US",
+          "event": "noMatch"
+        },
+        {
+          "next": "set_en_US",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to en-US",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.languageMemory.language}}"
+              ],
+              "type": "equal_to",
+              "value": "en-US"
+            }
+          ]
+        },
+        {
+          "next": "set_bem",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to Bemba",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.languageMemory.language}}"
+              ],
+              "type": "equal_to",
+              "value": "Bemba"
+            }
+          ]
+        },
+        {
+          "next": "set_toi",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to Tonga",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.languageMemory.language}}"
+              ],
+              "type": "equal_to",
+              "value": "Tonga"
+            }
+          ]
+        },
+        {
+          "next": "set_lun",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to Lunda",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.languageMemory.language}}"
+              ],
+              "type": "equal_to",
+              "value": "Lunda"
+            }
+          ]
+        },
+        {
+          "next": "set_nyz",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to Nyanja",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.languageMemory.language}}"
+              ],
+              "type": "equal_to",
+              "value": "Nyanja"
+            }
+          ]
+        },
+        {
+          "next": "set_kqn",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to Kaonde",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.languageMemory.language}}"
+              ],
+              "type": "equal_to",
+              "value": "Kaonde"
+            }
+          ]
+        },
+        {
+          "next": "set_loz",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to Lozi",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.languageMemory.language}}"
+              ],
+              "type": "equal_to",
+              "value": "Lozi"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.ChannelAttributes.languageMemory.language}}",
+        "offset": {
+          "x": -20,
+          "y": 1020
+        }
+      }
+    },
+    {
+      "name": "getProfileFlagsForIdentifiers",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "pre_survey_complete",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -50,
+          "y": -330
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"trigger\": {{trigger | to_json}}, \"channelType\": \"${channel_name}\"}",
+        "url": "${get_profile_flags_for_identifier_base_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "pre_survey_complete",
+          "event": "noMatch"
+        },
+        {
+          "next": "blocked",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifiers.parsed}}"
+              ],
+              "type": "contains",
+              "value": "blocked"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagsForIdentifiers.parsed}}",
+        "offset": {
+          "x": 190,
+          "y": -100
+        }
+      }
+    },
+    {
+      "name": "blocked",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 440,
+          "y": 160
+        },
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
+        "from": "${flow_vars.widget_from}",
+        "to": "{{contact.channel.address}}",
+        "body": "${flow_vars.chat_blocked_message}"
+      }
+    },
+    {
+      "name": "channelCleanup",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "attributes",
+          "event": "success"
+        },
+        {
+          "next": "send_message_run_janitor",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1280,
+          "y": 830
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\"}",
+        "url": "https://hrm-${environment}.tl.techmatters.org/lambda/twilio/account-scoped/{%if trigger.conversation%}{{trigger.conversation.AccountSid}}{%else%}{{trigger.message.AccountSid}}{%endif%}/channelCapture/chatbotCallbackCleanup"
+      }
+    },
+    {
+      "name": "send_message_run_janitor",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${serverless_service_sid}",
+        "environment_sid": "${serverless_environment_sid}",
+        "offset": {
+          "x": 1450,
+          "y": 1030
+        },
+        "function_sid": "${flow_vars.send_message_janitor_function_sid}",
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "There has been an error with your message, please try writing us again.",
+            "key": "message"
+          },
+          {
+            "value": "${flow_vars.widget_from}",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+})
+}
