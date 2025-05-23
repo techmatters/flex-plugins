@@ -17,6 +17,7 @@
 export * from './insightsConfig';
 export * from './types';
 export * from './loadDefinition';
+export * from './formSelector';
 export { LayoutVersion } from './layoutVersion';
 export { LayoutDefinition } from './layoutVersion';
 export { LayoutValue } from './layoutVersion';
