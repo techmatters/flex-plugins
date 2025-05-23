@@ -1,8 +1,8 @@
 ${
-  jsonencode( {
-  "description": flow_description,
+  jsonencode({
+  "description": "${flow_description}",
   "states": [
-   {
+    {
       "name": "Trigger",
       "type": "trigger",
       "transitions": [
@@ -87,13 +87,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
+        "service_sid": "${serverless_service_sid}",
+        "environment_sid": "${serverless_environment_sid}",
         "offset": {
           "x": 570,
           "y": -160
         },
-        "function_sid": flow_vars["send_message_janitor_function_sid"],
+        "function_sid": "${flow_vars.send_message_janitor_function_sid}",
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -104,11 +104,11 @@ ${
             "key": "conversationSid"
           },
           {
-            "value": flow_vars["outside_country_message"],
+            "value": "${flow_vars.outside_country_message}",
             "key": "message"
           },
           {
-            "value": flow_vars["widget_from"],
+            "value": "${flow_vars.widget_from}",
             "key": "from"
           }
         ],
@@ -151,13 +151,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
+        "service_sid": "${serverless_service_sid}",
+        "environment_sid": "${serverless_environment_sid}",
         "offset": {
           "x": -640,
           "y": 210
         },
-        "function_sid": flow_vars["send_message_janitor_function_sid"],
+        "function_sid": "${flow_vars.send_message_janitor_function_sid}",
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -168,11 +168,11 @@ ${
             "key": "conversationSid"
           },
           {
-            "value": flow_vars["chat_blocked_message"],
+            "value": "${flow_vars.chat_blocked_message}",
             "key": "message"
           },
           {
-            "value": flow_vars["widget_from"],
+            "value": "${flow_vars.widget_from}",
             "key": "from"
           }
         ],
@@ -229,8 +229,8 @@ ${
           "x": 1410,
           "y": 1380
         },
-        "workflow": workflow_sids["master"],
-        "channel": task_channel_sids["chat"],
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
         "attributes": "{\n  \"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\",\n  \"customChannelType\": \"{{trigger.conversation.ChannelAttributes.channelType}}\",\n  \"channelSid\": \"{{trigger.conversation.ChannelSid}}\",\n  \"ignoreAgent\": \"\",\n  \"language\":\"{{trigger.conversation.ChannelAttributes.languageMemory.language  | default: 'en-MT'}}\",\n  \"transferTargetType\": \"\",\n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}"
       }
     },
@@ -239,7 +239,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "capture_channel_with_language_bot",
+          "next": "captureChannelWithLanguageBot",
           "event": "noMatch"
         },
         {
@@ -266,76 +266,27 @@ ${
       }
     },
     {
-      "name": "capture_channel_with_language_bot",
-      "type": "run-function",
+      "name": "captureChannelWithLanguageBot",
+      "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "next": "channel_cleanup",
-          "event": "fail"
+          "next": "channelCleanup",
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": -850,
           "y": 570
         },
-        "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
-        "parameters": [
-          {
-            "value": "{{flow.channel.address}}",
-            "key": "channelSid"
-          },
-          {
-            "value": "{{flow.channel.address}}",
-            "key": "conversationSid"
-          },
-          {
-            "value": "trigger_language_selector",
-            "key": "message"
-          },
-          {
-            "value": "{{flow.flow_sid}}",
-            "key": "studioFlowSid"
-          },
-          {
-            "value": "en-MT",
-            "key": "language"
-          },
-          {
-            "value": "language_selector",
-            "key": "botSuffix"
-          },
-          {
-            "value": "withUserMessage",
-            "key": "triggerType"
-          },
-          {
-            "value": "triggerStudioFlow",
-            "key": "releaseType"
-          },
-          {
-            "value": "isSelectLanguageComplete",
-            "key": "releaseFlag"
-          },
-          {
-            "value": "languageMemory",
-            "key": "memoryAttribute"
-          },
-          {
-            "value": "{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}",
-            "key": "channelType"
-          },
-          {
-            "value": "true",
-            "key": "isConversation"
-          }
-        ],
-        "url": "${serverless_url}/channelCapture/captureChannelWithBot"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_language_selector\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"en-MT\", \"botSuffix\": \"language_selector\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"isSelectLanguageComplete\", \"memoryAttribute\": \"languageMemory\", \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\", \"isConversation\": \"true\"}",
+        "url": "https://hrm-${environment}.tl.techmatters.org/lambda/twilio/account-scoped/{%if trigger.conversation%}{{trigger.conversation.AccountSid}}{%else%}{{trigger.message.AccountSid}}{%endif%}/channelCapture/captureChannelWithBot"
       }
     },
     {
@@ -370,72 +321,27 @@ ${
       }
     },
     {
-      "name": "capture_channel_with_bot",
-      "type": "run-function",
+      "name": "captureChannelWithBot",
+      "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "next": "channel_cleanup",
-          "event": "fail"
+          "next": "channelCleanup",
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": 720,
           "y": 1670
         },
-        "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
-        "parameters": [
-          {
-            "value": "{{flow.channel.address}}",
-            "key": "channelSid"
-          },
-          {
-            "value": "{{flow.channel.address}}",
-            "key": "conversationSid"
-          },
-          {
-            "value": "trigger_pre_survey",
-            "key": "message"
-          },
-          {
-            "value": "{{flow.flow_sid}}",
-            "key": "studioFlowSid"
-          },
-          {
-            "value": "{{trigger.conversation.ChannelAttributes.languageMemory.language  | default: 'en-MT'}}",
-            "key": "language"
-          },
-          {
-            "value": "pre_survey",
-            "key": "botSuffix"
-          },
-          {
-            "value": "withUserMessage",
-            "key": "triggerType"
-          },
-          {
-            "value": "triggerStudioFlow",
-            "key": "releaseType"
-          },
-          {
-            "value": "preSurveyComplete",
-            "key": "releaseFlag"
-          },
-          {
-            "value": "{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}",
-            "key": "channelType"
-          },
-          {
-            "value": "true",
-            "key": "isConversation"
-          }
-        ],
-        "url": "${serverless_url}/channelCapture/captureChannelWithBot"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_pre_survey\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"{{trigger.conversation.ChannelAttributes.languageMemory.language  | default: 'en-MT'}}\", \"botSuffix\": \"pre_survey\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"preSurveyComplete\", \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\", \"isConversation\": \"true\"}",
+        "url": "https://hrm-${environment}.tl.techmatters.org/lambda/twilio/account-scoped/{%if trigger.conversation%}{{trigger.conversation.AccountSid}}{%else%}{{trigger.message.AccountSid}}{%endif%}/channelCapture/captureChannelWithBot"
       }
     },
     {
@@ -470,76 +376,27 @@ ${
       }
     },
     {
-      "name": "capture_channel_terms",
-      "type": "run-function",
+      "name": "captureChannelTerms",
+      "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "next": "channel_cleanup",
-          "event": "fail"
+          "next": "channelCleanup",
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": -710,
           "y": 990
         },
-        "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
-        "parameters": [
-          {
-            "value": "{{flow.channel.address}}",
-            "key": "channelSid"
-          },
-          {
-            "value": "{{flow.channel.address}}",
-            "key": "conversationSid"
-          },
-          {
-            "value": "trigger_permissions",
-            "key": "message"
-          },
-          {
-            "value": "{{flow.flow_sid}}",
-            "key": "studioFlowSid"
-          },
-          {
-            "value": "{{trigger.conversation.ChannelAttributes.languageMemory.language  | default: 'en-MT'}}",
-            "key": "language"
-          },
-          {
-            "value": "terms_conditions_acceptance",
-            "key": "botSuffix"
-          },
-          {
-            "value": "withUserMessage",
-            "key": "triggerType"
-          },
-          {
-            "value": "triggerStudioFlow",
-            "key": "releaseType"
-          },
-          {
-            "value": "isTermsConditionsComplete",
-            "key": "releaseFlag"
-          },
-          {
-            "value": "termsConditionsMemory",
-            "key": "memoryAttribute"
-          },
-          {
-            "value": "{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}",
-            "key": "channelType"
-          },
-          {
-            "value": "true",
-            "key": "isConversation"
-          }
-        ],
-        "url": "${serverless_url}/channelCapture/captureChannelWithBot"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_permissions\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"{{trigger.conversation.ChannelAttributes.languageMemory.language  | default: 'en-MT'}}\", \"botSuffix\": \"terms_conditions_acceptance\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"isTermsConditionsComplete\", \"memoryAttribute\": \"termsConditionsMemory\", \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\", \"isConversation\": \"true\"}",
+        "url": "https://hrm-${environment}.tl.techmatters.org/lambda/twilio/account-scoped/{%if trigger.conversation%}{{trigger.conversation.AccountSid}}{%else%}{{trigger.message.AccountSid}}{%endif%}/channelCapture/captureChannelWithBot"
       }
     },
     {
@@ -637,11 +494,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "capture_channel_terms",
+          "next": "captureChannelTerms",
           "event": "noMatch"
         },
         {
-          "next": "capture_channel_terms_UK",
+          "next": "captureChannelTermsUk",
           "event": "match",
           "conditions": [
             {
@@ -664,76 +521,27 @@ ${
       }
     },
     {
-      "name": "capture_channel_terms_UK",
-      "type": "run-function",
+      "name": "captureChannelTermsUk",
+      "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "next": "channel_cleanup",
-          "event": "fail"
+          "next": "channelCleanup",
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": -330,
           "y": 1000
         },
-        "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
-        "parameters": [
-          {
-            "value": "{{flow.channel.address}}",
-            "key": "channelSid"
-          },
-          {
-            "value": "{{flow.channel.address}}",
-            "key": "conversationSid"
-          },
-          {
-            "value": "trigger_permissions",
-            "key": "message"
-          },
-          {
-            "value": "{{flow.flow_sid}}",
-            "key": "studioFlowSid"
-          },
-          {
-            "value": "uk",
-            "key": "language"
-          },
-          {
-            "value": "terms_conditions_acceptance",
-            "key": "botSuffix"
-          },
-          {
-            "value": "withUserMessage",
-            "key": "triggerType"
-          },
-          {
-            "value": "triggerStudioFlow",
-            "key": "releaseType"
-          },
-          {
-            "value": "isTermsConditionsComplete",
-            "key": "releaseFlag"
-          },
-          {
-            "value": "termsConditionsMemory",
-            "key": "memoryAttribute"
-          },
-          {
-            "value": "{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}",
-            "key": "channelType"
-          },
-          {
-            "value": "true",
-            "key": "isConversation"
-          }
-        ],
-        "url": "${serverless_url}/channelCapture/captureChannelWithBot"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_permissions\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"uk\", \"botSuffix\": \"terms_conditions_acceptance\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"isTermsConditionsComplete\", \"memoryAttribute\": \"termsConditionsMemory\", \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\", \"isConversation\": \"true\"}",
+        "url": "https://hrm-${environment}.tl.techmatters.org/lambda/twilio/account-scoped/{%if trigger.conversation%}{{trigger.conversation.AccountSid}}{%else%}{{trigger.message.AccountSid}}{%endif%}/channelCapture/captureChannelWithBot"
       }
     },
     {
@@ -741,11 +549,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "capture_channel_with_bot",
+          "next": "captureChannelWithBot",
           "event": "noMatch"
         },
         {
-          "next": "capture_channel_with_bot_UK",
+          "next": "captureChannelWithBotUk",
           "event": "match",
           "conditions": [
             {
@@ -768,72 +576,27 @@ ${
       }
     },
     {
-      "name": "capture_channel_with_bot_UK",
-      "type": "run-function",
+      "name": "captureChannelWithBotUk",
+      "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "next": "channel_cleanup",
-          "event": "fail"
+          "next": "channelCleanup",
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
         "offset": {
           "x": 1070,
           "y": 1670
         },
-        "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
-        "parameters": [
-          {
-            "value": "{{flow.channel.address}}",
-            "key": "channelSid"
-          },
-          {
-            "value": "{{flow.channel.address}}",
-            "key": "conversationSid"
-          },
-          {
-            "value": "trigger_pre_survey",
-            "key": "message"
-          },
-          {
-            "value": "{{flow.flow_sid}}",
-            "key": "studioFlowSid"
-          },
-          {
-            "value": "uk",
-            "key": "language"
-          },
-          {
-            "value": "pre_survey",
-            "key": "botSuffix"
-          },
-          {
-            "value": "withUserMessage",
-            "key": "triggerType"
-          },
-          {
-            "value": "triggerStudioFlow",
-            "key": "releaseType"
-          },
-          {
-            "value": "preSurveyComplete",
-            "key": "releaseFlag"
-          },
-          {
-            "value": "{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}",
-            "key": "channelType"
-          },
-          {
-            "value": "true",
-            "key": "isConversation"
-          }
-        ],
-        "url": "${serverless_url}/channelCapture/captureChannelWithBot"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_pre_survey\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"uk\", \"botSuffix\": \"pre_survey\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"preSurveyComplete\", \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\", \"isConversation\": \"true\"}",
+        "url": "https://hrm-${environment}.tl.techmatters.org/lambda/twilio/account-scoped/{%if trigger.conversation%}{{trigger.conversation.AccountSid}}{%else%}{{trigger.message.AccountSid}}{%endif%}/channelCapture/captureChannelWithBot"
       }
     },
     {
@@ -1017,8 +780,8 @@ ${
           "x": 930,
           "y": 790
         },
-        "workflow": workflow_sids["master"],
-        "channel": task_channel_sids["chat"],
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
         "attributes": "{\n  \"name\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"language\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.language  | default: 'en-MT'}}\",\n  \"transferTargetType\": \"\",\n \"preEngagementData\": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}}, \n  \"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}\n}"
       }
     },
@@ -1034,13 +797,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
+        "service_sid": "${serverless_service_sid}",
+        "environment_sid": "${serverless_environment_sid}",
         "offset": {
           "x": -440,
           "y": 1680
         },
-        "function_sid": flow_vars["send_message_janitor_function_sid"],
+        "function_sid": "${flow_vars.send_message_janitor_function_sid}",
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -1074,13 +837,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
+        "service_sid": "${serverless_service_sid}",
+        "environment_sid": "${serverless_environment_sid}",
         "offset": {
           "x": -20,
           "y": 1680
         },
-        "function_sid": flow_vars["send_message_janitor_function_sid"],
+        "function_sid": "${flow_vars.send_message_janitor_function_sid}",
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -1114,13 +877,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
+        "service_sid": "${serverless_service_sid}",
+        "environment_sid": "${serverless_environment_sid}",
         "offset": {
           "x": 330,
           "y": 1680
         },
-        "function_sid": flow_vars["send_message_janitor_function_sid"],
+        "function_sid": "${flow_vars.send_message_janitor_function_sid}",
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -1143,63 +906,54 @@ ${
       }
     },
     {
-        "name": "webhook_notify_error",
-        "type": "make-http-request",
-        "transitions": [
-          {
-            "next": "attributes",
-            "event": "success"
-          },
-          {
-            "next": "attributes",
-            "event": "failed"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 1100,
-            "y": 2050
-          },
-          "method": "POST",
-          "content_type": "application/json;charset=utf-8",
-          "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
-          "url": webhook_url_studio_errors
-        }
-      },
+      "name": "webhook_notify_error",
+      "type": "make-http-request",
+      "transitions": [
         {
-            "name": "channel_cleanup",
-            "type": "run-function",
-            "transitions": [
-                {
-                "next": "webhook_notify_error",
-                "event": "success"
-                },
-                {
-                "next": "send_message_run_janitor",
-                "event": "fail"
-                }
-            ],
-            "properties": {
-                "service_sid": serverless_service_sid,
-                "environment_sid": serverless_environment_sid,
-                "offset": {
-                 "x": -740,
-                 "y": 1990
-                },
-                "function_sid": flow_vars["chatbot_callback_cleanup_function_sid"],
-                "parameters": [
-                {
-                    "value": "{{flow.channel.address}}",
-                    "key": "channelSid"
-                },
-                {
-                  "value": "{{flow.channel.address}}",
-                  "key": "conversationSid"
-                }
-                ],
-                "url": "${serverless_url}/channelCapture/chatbotCallbackCleanup"
-            }
+          "next": "attributes",
+          "event": "success"
         },
+        {
+          "next": "attributes",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1100,
+          "y": 2050
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "url": "${webhook_url_studio_errors}"
+      }
+    },
+    {
+      "name": "channelCleanup",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "webhook_notify_error",
+          "event": "success"
+        },
+        {
+          "next": "send_message_run_janitor",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -740,
+          "y": 1990
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\"}",
+        "url": "https://hrm-${environment}.tl.techmatters.org/lambda/twilio/account-scoped/{%if trigger.conversation%}{{trigger.conversation.AccountSid}}{%else%}{{trigger.message.AccountSid}}{%endif%}/channelCapture/chatbotCallbackCleanup"
+      }
+    },
     {
       "name": "send_message_run_janitor",
       "type": "run-function",
@@ -1214,13 +968,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
+        "service_sid": "${serverless_service_sid}",
+        "environment_sid": "${serverless_environment_sid}",
         "offset": {
           "x": -360,
           "y": 2260
         },
-        "function_sid": flow_vars["send_message_janitor_function_sid"],
+        "function_sid": "${flow_vars.send_message_janitor_function_sid}",
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -1262,7 +1016,7 @@ ${
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
         "body": "{ \"text\": \"Issue detected [Chatbot and Cleanup failure] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \"  }",
-        "url": webhook_url_studio_errors
+        "url": "${webhook_url_studio_errors}"
       }
     }
   ],
@@ -1270,8 +1024,5 @@ ${
   "flags": {
     "allow_concurrent_calls": true
   }
-}
-
-
-  )
+})
 }
