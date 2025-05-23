@@ -14,6 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import type { HrmContact } from '@tech-matters/hrm-types';
 import * as mockingProxy from '../sandbox/mockingProxy';
 import '../expectToParseAsDate';
 import {
@@ -42,7 +43,6 @@ import { mockHrmContacts, verifyCreateContactRequest } from '../sandbox/mockHrm'
 import { MockedEndpoint } from 'mockttp';
 import { BLANK_CONTACT } from '../../unit/hrm/testContacts';
 import { TaskSID } from '../../../src/twilioTypes';
-import { HrmContact } from '../../../src/hrm/populateHrmContactFormFromTask';
 
 const BLANK_POPULATED_PERSON_INFORMATION = {
   age: '',
@@ -181,6 +181,7 @@ describe('Create HRM Contact on Reservation Accepted event', () => {
         ...BLANK_CONTACT.rawJson,
         callerInformation: BLANK_POPULATED_PERSON_INFORMATION,
         childInformation: BLANK_POPULATED_PERSON_INFORMATION,
+        caseInformation: { age: '' },
         definitionVersion: 'ut-v1', // for backwards compatibility
       },
       twilioWorkerId: TEST_WORKER_SID,

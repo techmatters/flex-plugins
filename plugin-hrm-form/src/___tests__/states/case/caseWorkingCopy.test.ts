@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId, FormInputType, loadDefinition } from 'hrm-form-definitions';
+import { FormInputType, loadDefinition } from 'hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { CaseState, CaseStateEntry, CaseSummaryWorkingCopy, CaseWorkingCopy } from '../../../states/case/types';
@@ -75,13 +75,13 @@ beforeEach(() => {
 
 describe('Working copy reducers', () => {
   const caseStateEntry: RecursivePartial<CaseStateEntry> = {
-    connectedCase: { info: { definitionVersion: DefinitionVersionId.v1 } },
+    connectedCase: { info: { definitionVersion: 'v1' } },
   };
   const state: CaseState = { cases: { 1: caseStateEntry as CaseStateEntry } };
   let mockV1;
 
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL('v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);

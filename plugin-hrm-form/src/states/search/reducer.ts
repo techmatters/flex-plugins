@@ -79,7 +79,7 @@ export const newTaskEntry: SearchStateTaskEntry = {
   searchExistingCaseStatus: false,
 };
 
-export const initialState: SearchState = {
+const initialState: SearchState = {
   tasks: {
     [standaloneTaskSid]: {
       root: newTaskEntry,

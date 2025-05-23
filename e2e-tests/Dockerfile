@@ -36,7 +36,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
     curl -Lo /usr/local/bin/aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/${REI_FILE} && \
     chmod +x /usr/local/bin/aws-lambda-rie
 
-COPY hrm-form-definitions/package*.json /app/hrm-form-definitions/
+COPY lambdas/packages/hrm-form-definitions/package*.json /app/hrm-form-definitions/
 COPY e2e-tests/package*.json /app/e2e-tests/
 
 RUN cd hrm-form-definitions && \
@@ -75,7 +75,7 @@ WORKDIR /app/e2e-tests
 
 RUN npx playwright install-deps
 
-COPY hrm-form-definitions /app/hrm-form-definitions
+COPY lambdas/packages/hrm-form-definitions /app/hrm-form-definitions
 COPY e2e-tests /app/e2e-tests
 COPY --chmod=0755 e2e-tests/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY e2e-tests/lambda/handler.js /app/e2e-tests/handler.js
