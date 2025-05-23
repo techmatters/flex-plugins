@@ -184,7 +184,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
         }
       }
     }
-    return expandedMapping;
+    return { ...expandedMapping, formSelector };
   };
 
   /**

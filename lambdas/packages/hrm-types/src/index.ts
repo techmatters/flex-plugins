@@ -18,7 +18,7 @@ import { callTypes } from './callTypes';
 
 export * from './callTypes';
 
-type TaskSID = `WT${string}`;
+type TaskSID = `WT${string}` | `offline-contact-task${string}` | 'standalone-task-sid';
 
 export type ChannelTypes =
   | 'voice'
