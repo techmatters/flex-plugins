@@ -1,0 +1,445 @@
+${
+  jsonencode({
+  "description": "${flow_description}",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "next": "country_check",
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 150,
+          "y": -450
+        }
+      }
+    },
+    {
+      "name": "attributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 430,
+          "y": 1560
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "attributes": "${channel_attributes.default}"
+      }
+    },
+    {
+      "name": "pre_survey_complete",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "captureChannelWithBot",
+          "event": "noMatch"
+        },
+        {
+          "next": "is_bot",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}",
+        "offset": {
+          "x": -80,
+          "y": 800
+        }
+      }
+    },
+    {
+      "name": "captureChannelWithBot",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "next": "channelCleanup",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -320,
+          "y": 1040
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_pre_survey\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"en-NZ\", \"botSuffix\": \"pre_survey\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"preSurveyComplete\", \"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type | downcase}}\", \"isConversation\": \"true\"}",
+        "url": "https://hrm-${environment}.tl.techmatters.org/lambda/twilio/account-scoped/{%if trigger.conversation%}{{trigger.conversation.AccountSid}}{%else%}{{trigger.message.AccountSid}}{%endif%}/channelCapture/captureChannelWithBot"
+      }
+    },
+    {
+      "name": "channelCleanup",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "attributes",
+          "event": "success"
+        },
+        {
+          "next": "send_message_run_janitor",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -220,
+          "y": 1330
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\"}",
+        "url": "https://hrm-${environment}.tl.techmatters.org/lambda/twilio/account-scoped/{%if trigger.conversation%}{{trigger.conversation.AccountSid}}{%else%}{{trigger.message.AccountSid}}{%endif%}/channelCapture/chatbotCallbackCleanup"
+      }
+    },
+    {
+      "name": "getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "contact_routing",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 30,
+          "y": 130
+        },
+        "method": "POST",
+        "add_twilio_auth": false,
+        "content_type": "application/json;charset=utf-8",
+        "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"${channel_name}\" }",
+        "url": "${serverless_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "pre_survey_complete",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_blocked_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "contains",
+              "value": "blocked"
+            }
+          ]
+        },
+        {
+          "next": "set_clinical",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains case management",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "contains",
+              "value": "case management"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": -40,
+          "y": 390
+        }
+      }
+    },
+    {
+      "name": "set_clinical",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "attributes",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "value": "true",
+            "key": "clinical",
+            "type": "string"
+          }
+        ],
+        "offset": {
+          "x": 320,
+          "y": 800
+        }
+      }
+    },
+    {
+      "name": "send_blocked_message",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${serverless_service_sid}",
+        "environment_sid": "${serverless_environment_sid}",
+        "offset": {
+          "x": 670,
+          "y": 800
+        },
+        "function_sid": "${flow_vars.send_message_run_janitor_sid}",
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "${flow_vars.blocked_message}",
+            "key": "message"
+          },
+          {
+            "value": "Youthline",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "send_message_run_janitor",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${serverless_service_sid}",
+        "environment_sid": "${serverless_environment_sid}",
+        "offset": {
+          "x": -50,
+          "y": 1580
+        },
+        "function_sid": "${flow_vars.send_message_run_janitor_sid}",
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "I'm sorry, we couldn't receive your message.  Please try texting us again  or call us for free on 0800376633.",
+            "key": "message"
+          },
+          {
+            "value": "Youthline",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    },
+    {
+      "name": "is_bot",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "attributes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value starts_with Bot",
+              "arguments": [
+                "{{trigger.conversation.From}}"
+              ],
+              "type": "starts_with",
+              "value": "Bot"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.From}}",
+        "offset": {
+          "x": 570,
+          "y": 1170
+        }
+      }
+    },
+    {
+      "name": "country_check",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "send_blocked_country_message",
+          "event": "noMatch"
+        },
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value starts_with ${channel_name}:+64",
+              "arguments": [
+                "{{trigger.conversation.From}}"
+              ],
+              "type": "starts_with",
+              "value": "${channel_name}:+64"
+            }
+          ]
+        },
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to modica:111",
+              "arguments": [
+                "{{trigger.conversation.From}}"
+              ],
+              "type": "equal_to",
+              "value": "modica:111"
+            }
+          ]
+        },
+        {
+          "next": "attributes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to Bot",
+              "arguments": [
+                "{{trigger.conversation.From}}"
+              ],
+              "type": "equal_to",
+              "value": "Bot"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.From}}",
+        "offset": {
+          "x": 260,
+          "y": -200
+        }
+      }
+    },
+    {
+      "name": "send_blocked_country_message",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": "${serverless_service_sid}",
+        "environment_sid": "${serverless_environment_sid}",
+        "offset": {
+          "x": 570,
+          "y": 90
+        },
+        "function_sid": "${flow_vars.send_message_run_janitor_sid}",
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "${flow_vars.outside_country_message}",
+            "key": "message"
+          },
+          {
+            "value": "Youthline",
+            "key": "from"
+          }
+        ],
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+})
+}

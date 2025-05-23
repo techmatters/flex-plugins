@@ -1,8 +1,8 @@
 ${
-  jsonencode( {
+  jsonencode({
   "description": "Messaging Flow - Lex - MT",
   "states": [
-   {
+    {
       "name": "Trigger",
       "type": "trigger",
       "transitions": [
@@ -66,24 +66,24 @@ ${
         }
       ],
       "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
+        "service_sid": "${serverless_service_sid}",
+        "environment_sid": "${serverless_environment_sid}",
         "offset": {
           "x": -640,
           "y": 210
         },
-        "function_sid": flow_vars["send_message_janitor_function_sid"],
+        "function_sid": "${flow_vars.send_message_janitor_function_sid}",
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
             "key": "channelSid"
           },
           {
-            "value": flow_vars["chat_blocked_message"],
+            "value": "${flow_vars.chat_blocked_message}",
             "key": "message"
           },
           {
-            "value": flow_vars["widget_from"],
+            "value": "${flow_vars.widget_from}",
             "key": "from"
           }
         ],
@@ -271,8 +271,8 @@ ${
           "x": 930,
           "y": 790
         },
-        "workflow": workflow_sids["master"],
-        "channel": task_channel_sids["chat"],
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
         "attributes": "{\n  \"name\": \"{{trigger.message.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.message.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"language\":\"{{trigger.message.ChannelAttributes.pre_engagement_data.language  | default: 'en-MT'}}\",\n  \"transferTargetType\": \"\",\n \"preEngagementData\": {{trigger.message.ChannelAttributes.pre_engagement_data | to_json}}, \n  \"memory\": {{trigger.message.ChannelAttributes.memory | to_json}}\n}"
       }
     },
@@ -298,7 +298,7 @@ ${
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
         "body": "{ \"trigger\": {{trigger | to_json}}}",
-        "url": flow_vars["ip_location_finder_url"]
+        "url": "${flow_vars.ip_location_finder_url}"
       }
     },
     {
@@ -344,24 +344,24 @@ ${
         }
       ],
       "properties": {
-        "service_sid": serverless_service_sid,
-        "environment_sid": serverless_environment_sid,
+        "service_sid": "${serverless_service_sid}",
+        "environment_sid": "${serverless_environment_sid}",
         "offset": {
           "x": -1000,
           "y": -210
         },
-        "function_sid": flow_vars["send_message_janitor_function_sid"],
+        "function_sid": "${flow_vars.send_message_janitor_function_sid}",
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
             "key": "channelSid"
           },
           {
-            "value": flow_vars["outside_country_message"],
+            "value": "${flow_vars.outside_country_message}",
             "key": "message"
           },
           {
-            "value": flow_vars["widget_from"],
+            "value": "${flow_vars.widget_from}",
             "key": "from"
           }
         ],
@@ -373,8 +373,5 @@ ${
   "flags": {
     "allow_concurrent_calls": true
   }
-}
-
-
-  )
+})
 }
