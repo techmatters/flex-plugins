@@ -1,7 +1,6 @@
 ${
-  jsonencode(
-    {
-  "description": flow_description,
+  jsonencode({
+  "description": "${flow_description}",
   "states": [
     {
       "name": "Trigger",
@@ -165,8 +164,8 @@ ${
           "x": 570,
           "y": -120
         },
-        "workflow": workflow_sids["master"],
-        "channel": task_channel_sids["chat"],
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
         "attributes": "{\n  \"ip\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.ip}}\",\n  \"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.message.ChannelSid}}\",\n  \"helpline\": \"{{ trigger.conversation.ChannelAttributes.memory .helpline}}\",\n  \"ignoreAgent\": \"\",\n  \"transferTargetType\": \"\",\n  \"language\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.language | default: 'en-US' }}\",\n \"memory\": {{ trigger.conversation.ChannelAttributes.memory | to_json }},\n \"preEngagementData\": {{trigger.conversation.ChannelAttributes.pre_engagement_data | to_json}} \n}"
       }
     },
@@ -175,7 +174,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "capture_channel_with_bot",
+          "next": "captureChannelWithBot",
           "event": "next"
         }
       ],
@@ -197,7 +196,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "capture_channel_with_bot",
+          "next": "captureChannelWithBot",
           "event": "next"
         }
       ],
@@ -219,7 +218,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "capture_channel_with_bot",
+          "next": "captureChannelWithBot",
           "event": "next"
         }
       ],
@@ -241,7 +240,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "capture_channel_with_bot",
+          "next": "captureChannelWithBot",
           "event": "next"
         }
       ],
@@ -263,7 +262,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "capture_channel_with_bot",
+          "next": "captureChannelWithBot",
           "event": "next"
         }
       ],
@@ -285,7 +284,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "capture_channel_with_bot",
+          "next": "captureChannelWithBot",
           "event": "next"
         }
       ],
@@ -307,7 +306,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "capture_channel_with_bot",
+          "next": "captureChannelWithBot",
           "event": "next"
         }
       ],
@@ -325,67 +324,26 @@ ${
       }
     },
     {
-      "name": "capture_channel_with_bot",
-      "type": "run-function",
+      "name": "captureChannelWithBot",
+      "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
         "offset": {
           "x": -780,
           "y": 650
         },
-        "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
-        "parameters": [
-          {
-            "value": "{{flow.channel.address}}",
-            "key": "channelSid"
-          },
-          {
-            "value": "trigger_pre_survey",
-            "key": "message"
-          },
-          {
-            "value": "{{flow.flow_sid}}",
-            "key": "studioFlowSid"
-          },
-          {
-            "value": "{{flow.variables.language}}",
-            "key": "language"
-          },
-          {
-            "value": "pre_survey",
-            "key": "botSuffix"
-          },
-          {
-            "value": "withUserMessage",
-            "key": "triggerType"
-          },
-          {
-            "value": "triggerStudioFlow",
-            "key": "releaseType"
-          },
-          {
-            "value": "preSurveyComplete",
-            "key": "releaseFlag"
-          },
-          {
-            "value": "{{trigger.conversation.ChannelAttributes.channel_type | downcase}}",
-            "key": "channelType"
-          },
-          {
-            "value": "false",
-            "key": "isConversation"
-          }
-        ],
-        "url": "${serverless_url}/channelCapture/captureChannelWithBot"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_pre_survey\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"{{flow.variables.language}}\", \"botSuffix\": \"pre_survey\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"preSurveyComplete\", \"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type | downcase}}\", \"isConversation\": \"false\"}",
+        "url": "https://hrm-${environment}.tl.techmatters.org/lambda/twilio/account-scoped/{%if trigger.conversation%}{{trigger.conversation.AccountSid}}{%else%}{{trigger.message.AccountSid}}{%endif%}/channelCapture/captureChannelWithBot"
       }
     },
     {
@@ -493,9 +451,9 @@ ${
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
-        "from": flow_vars["widget_from"],
+        "from": "${flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
-        "body": flow_vars["chat_blocked_message"]
+        "body": "${flow_vars.chat_blocked_message}"
       }
     }
   ],
@@ -503,6 +461,5 @@ ${
   "flags": {
     "allow_concurrent_calls": true
   }
-}
-  )
+})
 }
