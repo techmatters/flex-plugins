@@ -1,9 +1,9 @@
 ${
   jsonencode(
 {
-  "description": flow_description,
+  "description": "${flow_description}",
   "states": [
-     {
+    {
       "name": "Trigger",
       "type": "trigger",
       "transitions": [
@@ -73,9 +73,9 @@ ${
         },
         "service": "{{trigger.conversation.InstanceSid}}",
         "channel": "{{trigger.conversation.ChannelSid}}",
-        "from": flow_vars["widget_from"],
+        "from": "${flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
-        "body":  flow_vars["chat_blocked_message"]
+        "body": "${flow_vars.chat_blocked_message}"
       }
     },
     {
@@ -128,9 +128,9 @@ ${
           "x": -50,
           "y": 380
         },
-        "workflow": workflow_sids["master"],
-        "channel": task_channel_sids["chat"],
-        "attributes": channel_attributes["default"]
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "attributes": "${channel_attributes.default}"
       }
     },
     {
@@ -146,13 +146,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-          "environment_sid": flow_vars["environment_sid"],
+        "service_sid": "${flow_vars.service_sid}",
+        "environment_sid": "${flow_vars.environment_sid}",
         "offset": {
           "x": -80,
           "y": -280
         },
-        "function_sid": flow_vars["operating_hours_function_sid"],
+        "function_sid": "${flow_vars.operating_hours_function_sid}",
         "parameters": [
           {
             "value": "facebook",
@@ -232,13 +232,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": "${flow_vars.service_sid}",
+        "environment_sid": "${flow_vars.environment_sid}",
         "offset": {
           "x": 350,
           "y": 260
         },
-        "function_sid": flow_vars["send_message_run_janitor_function_sid"],
+        "function_sid": "${flow_vars.send_message_run_janitor_function_sid}",
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -260,7 +260,7 @@ ${
         "url": "${serverless_url}/sendMessageAndRunJanitor"
       }
     },
-     {
+    {
       "name": "holiday",
       "type": "run-function",
       "transitions": [
@@ -272,13 +272,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": "${flow_vars.service_sid}",
+        "environment_sid": "${flow_vars.environment_sid}",
         "offset": {
           "x": 740,
           "y": 260
         },
-        "function_sid": flow_vars["send_message_run_janitor_function_sid"],
+        "function_sid": "${flow_vars.send_message_run_janitor_function_sid}",
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -445,7 +445,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "reason_bot",
+          "next": "reasonBot",
           "event": "noMatch"
         },
         {
@@ -476,7 +476,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "capture_channel_bot",
+          "next": "captureChannelBot",
           "event": "noMatch"
         },
         {
@@ -510,7 +510,7 @@ ${
           "event": "success"
         },
         {
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
@@ -533,7 +533,7 @@ ${
           "event": "success"
         },
         {
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
@@ -560,13 +560,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": "${flow_vars.service_sid}",
+        "environment_sid": "${flow_vars.environment_sid}",
         "offset": {
           "x": -1150,
           "y": -210
         },
-        "function_sid": flow_vars["send_message_run_janitor_function_sid"],
+        "function_sid": "${flow_vars.send_message_run_janitor_function_sid}",
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -600,13 +600,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": "${flow_vars.service_sid}",
+        "environment_sid": "${flow_vars.environment_sid}",
         "offset": {
           "x": -800,
           "y": -210
         },
-        "function_sid": flow_vars["send_message_run_janitor_function_sid"],
+        "function_sid": "${flow_vars.send_message_run_janitor_function_sid}",
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -640,13 +640,13 @@ ${
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
+        "service_sid": "${flow_vars.service_sid}",
+        "environment_sid": "${flow_vars.environment_sid}",
         "offset": {
           "x": -450,
           "y": -210
         },
-        "function_sid": flow_vars["send_message_run_janitor_function_sid"],
+        "function_sid": "${flow_vars.send_message_run_janitor_function_sid}",
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
