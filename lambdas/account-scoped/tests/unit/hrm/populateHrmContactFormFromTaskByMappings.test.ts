@@ -411,7 +411,7 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
             formSelector: {
               selectorType: 'staticSelector',
               parameter: {
-                callType: callTypes.caller,
+                callType: callTypes.child,
                 availableTabs: [
                   'ChildInformationTab',
                   'CallerInformationTab',
