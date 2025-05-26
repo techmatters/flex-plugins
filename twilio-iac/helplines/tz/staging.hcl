@@ -8,7 +8,7 @@ locals {
     enable_lex_v2                         = false
     lex_v2_bot_languages                  = false
     enable_datadog_monitoring             = false
-    custom_task_routing_filter_expression = "channelType IN ['web','messenger', 'whatsapp', 'instagram']  OR isContactlessTask == true OR  twilioNumber == 'messenger:565233119996327'"
+    custom_task_routing_filter_expression = "channelType IN ['web','messenger', 'whatsapp', 'instagram']  OR isContactlessTask == true OR  twilioNumber == 'messenger:565233119996327' OR  twilioNumber == 'messenger:709371978917654'"
 
     #Studio flow
     flow_vars = {
@@ -29,10 +29,18 @@ locals {
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
-      facebook : {
+      facebook_mainland : {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
         contact_identity     = "messenger:565233119996327"
+        templatefile         = "/app/twilio-iac/helplines/tz/templates/studio-flows/messaging-lex-v3-blocking.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      facebook_zanzibar : {
+        messaging_mode       = "conversations"
+        channel_type         = "messenger"
+        contact_identity     = "messenger:709371978917654"
         templatefile         = "/app/twilio-iac/helplines/tz/templates/studio-flows/messaging-lex-v3-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
