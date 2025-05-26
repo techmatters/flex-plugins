@@ -14,7 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {HrmContact, HrmContactRawJson} from '@tech-matters/hrm-types';
 import { DefinitionVersion } from '../types';
 
 export type ContactFormDefinitionName = keyof Pick<
@@ -22,10 +21,9 @@ export type ContactFormDefinitionName = keyof Pick<
   'ChildInformationTab' | 'CallerInformationTab' | 'CaseInformationTab'
 >;
 
-export type ContactFormName = keyof Omit<
-  HrmContactRawJson,
-  'callType' | 'definitionVersion' | 'categories' | 'contactlessTask'
->;
+export type ContactFormName =
+  'callerInformation' | 'childInformation' | 'caseInformation'
+;
 
 export type AvailableContactFormSelector = (
     parameter?: any,
@@ -35,8 +33,9 @@ export type AvailableContactFormSelector = (
       preEngagementSelections: any,
       surveyAnswers: any,
     ) => ContactFormDefinitionName[];
-    selectFromContact:  (
-        contact: HrmContact,
+    selectFromContact: (
+        // Replace this with a proper Contact type once packages can depend on each other and still be used in the plugin
+        contact: any,
     ) => ContactFormDefinitionName[];
 };
 
