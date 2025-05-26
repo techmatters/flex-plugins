@@ -369,11 +369,13 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
           prepopulateMappings: {
             formSelector: {
               selectorType: 'staticSelector',
-              parameter: [
-                'ChildInformationTab',
-                'CallerInformationTab',
-                'CaseInformationTab',
-              ],
+              parameter: {
+                availableTabs: [
+                  'ChildInformationTab',
+                  'CallerInformationTab',
+                  'CaseInformationTab',
+                ],
+              },
             },
             preEngagement: {
               age: [['ChildInformationTab.age']],
@@ -393,7 +395,7 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
           firstName: '', // firstName is always added whether in the form def or not
           otherGender: '',
         },
-        expectedCallType: '' as any,
+        expectedCallType: undefined,
       },
       {
         description:
@@ -408,11 +410,14 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
           prepopulateMappings: {
             formSelector: {
               selectorType: 'staticSelector',
-              parameter: [
-                'ChildInformationTab',
-                'CallerInformationTab',
-                'CaseInformationTab',
-              ],
+              parameter: {
+                callType: callTypes.caller,
+                availableTabs: [
+                  'ChildInformationTab',
+                  'CallerInformationTab',
+                  'CaseInformationTab',
+                ],
+              },
             },
             preEngagement: {
               age: [['ChildInformationTab.age']],
@@ -448,11 +453,13 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
           prepopulateMappings: {
             formSelector: {
               selectorType: 'staticSelector',
-              parameter: [
-                'ChildInformationTab',
-                'CallerInformationTab',
-                'CaseInformationTab',
-              ],
+              parameter: {
+                availableTabs: [
+                  'ChildInformationTab',
+                  'CallerInformationTab',
+                  'CaseInformationTab',
+                ],
+              },
             },
             survey: {
               age: [['ChildInformationTab.age']],
@@ -472,7 +479,7 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
           firstName: '', // firstName is always added whether in the form def or not
           otherGender: '',
         },
-        expectedCallType: callTypes.child,
+        expectedCallType: undefined,
       },
       {
         description:
@@ -488,11 +495,14 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
           prepopulateMappings: {
             formSelector: {
               selectorType: 'staticSelector',
-              parameter: [
-                'ChildInformationTab',
-                'CallerInformationTab',
-                'CaseInformationTab',
-              ],
+              parameter: {
+                callType: callTypes.caller,
+                availableTabs: [
+                  'ChildInformationTab',
+                  'CallerInformationTab',
+                  'CaseInformationTab',
+                ],
+              },
             },
             survey: {
               age: [['CallerInformationTab.age']],
@@ -530,11 +540,14 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
           prepopulateMappings: {
             formSelector: {
               selectorType: 'staticSelector',
-              parameter: [
-                'ChildInformationTab',
-                'CallerInformationTab',
-                'CaseInformationTab',
-              ],
+              parameter: {
+                callType: callTypes.child,
+                availableTabs: [
+                  'ChildInformationTab',
+                  'CallerInformationTab',
+                  'CaseInformationTab',
+                ],
+              },
             },
             survey: {
               age: [['ChildInformationTab.age']],
@@ -574,11 +587,14 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
           prepopulateMappings: {
             formSelector: {
               selectorType: 'staticSelector',
-              parameter: [
-                'ChildInformationTab',
-                'CallerInformationTab',
-                'CaseInformationTab',
-              ],
+              parameter: {
+                callType: callTypes.caller,
+                availableTabs: [
+                  'ChildInformationTab',
+                  'CallerInformationTab',
+                  'CaseInformationTab',
+                ],
+              },
             },
             survey: {
               age: [['CallerInformationTab.age']],
@@ -614,11 +630,14 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
           prepopulateMappings: {
             formSelector: {
               selectorType: 'staticSelector',
-              parameter: [
-                'ChildInformationTab',
-                'CallerInformationTab',
-                'CaseInformationTab',
-              ],
+              parameter: {
+                callType: callTypes.caller,
+                availableTabs: [
+                  'ChildInformationTab',
+                  'CallerInformationTab',
+                  'CaseInformationTab',
+                ],
+              },
             },
             survey: {
               age: [['CallerInformationTab.age', 'ChildInformationTab.age']],
@@ -651,7 +670,10 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
           prepopulateMappings: {
             formSelector: {
               selectorType: 'staticSelector',
-              parameter: ['ChildInformationTab', 'CaseInformationTab'],
+              parameter: {
+                callType: callTypes.caller,
+                availableTabs: ['ChildInformationTab', 'CaseInformationTab'],
+              },
             },
             survey: {
               age: [['CallerInformationTab.age', 'ChildInformationTab.age']],
@@ -684,7 +706,10 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
           prepopulateMappings: {
             formSelector: {
               selectorType: 'staticSelector',
-              parameter: ['CaseInformationTab'],
+              parameter: {
+                callType: callTypes.caller,
+                availableTabs: ['CaseInformationTab'],
+              },
             },
             survey: {
               age: [['CallerInformationTab.age', 'ChildInformationTab.age']],
@@ -719,7 +744,10 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
           prepopulateMappings: {
             formSelector: {
               selectorType: 'staticSelector',
-              parameter: ['CaseInformationTab', 'ChildInformationTab'],
+              parameter: {
+                callType: callTypes.caller,
+                availableTabs: ['ChildInformationTab', 'CaseInformationTab'],
+              },
             },
             survey: {
               age: [['CaseInformationTab.age', 'ChildInformationTab.age']],
@@ -762,7 +790,10 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
           prepopulateMappings: {
             formSelector: {
               selectorType: 'staticSelector',
-              parameter: ['CaseInformationTab', 'ChildInformationTab'],
+              parameter: {
+                callType: callTypes.caller,
+                availableTabs: ['ChildInformationTab', 'CaseInformationTab'],
+              },
             },
             survey: {
               age: [['CaseInformationTab.age', 'ChildInformationTab.age']],

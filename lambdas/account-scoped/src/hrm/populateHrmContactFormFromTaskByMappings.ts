@@ -25,12 +25,7 @@ import {
   ContactFormDefinitionName,
   ContactFormName,
 } from '@tech-matters/hrm-form-definitions';
-import {
-  FormValue,
-  HrmContact,
-  HrmContactRawJson,
-  callTypes,
-} from '@tech-matters/hrm-types';
+import { FormValue, HrmContact, HrmContactRawJson } from '@tech-matters/hrm-types';
 import { newErr, newOk, Result } from '../Result';
 import { loadConfigJson } from './formDefinitionsCache';
 
@@ -350,15 +345,6 @@ export const populateHrmContactFormFromTaskByMappings = async (
     );
     const { selectCallType, selectForms } = lookupFormSelector(prepopulateMappings);
     contact.rawJson.callType = selectCallType(preEngagementData, answers);
-    const isValidSurvey = Boolean(answers?.aboutSelf); // determines if the memory has valid values or if it was aborted
-    const isAboutSelf = answers.aboutSelf === 'Yes';
-    if (isValidSurvey) {
-      // eslint-disable-next-line no-param-reassign
-      contact.rawJson.callType = isAboutSelf ? callTypes.child : callTypes.caller;
-    } else {
-      // eslint-disable-next-line no-param-reassign
-      contact.rawJson.callType = callTypes.child;
-    }
 
     const availableFormsForSurveyPrepopulation = selectForms(
       'survey',

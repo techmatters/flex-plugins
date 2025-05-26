@@ -29,13 +29,13 @@ export type PrepopulateContactFormSelector = (parameter?: any) => {
     preEngagementSelections: any,
     surveyAnswers: any,
   ) => ContactFormDefinitionName[];
-  selectCallType: (
-      preEngagementSelections: any,
-      surveyAnswers: any,
-  ) => string | undefined;
+  selectCallType: (preEngagementSelections: any, surveyAnswers: any) => string | undefined;
 };
 
-export const staticAvailableContactTabSelector: PrepopulateContactFormSelector = ({ availableTabs, callType }) => ({
+export const staticAvailableContactTabSelector: PrepopulateContactFormSelector = ({
+  availableTabs,
+  callType,
+}) => ({
   selectForms: () => availableTabs,
   selectCallType: () => callType,
 });

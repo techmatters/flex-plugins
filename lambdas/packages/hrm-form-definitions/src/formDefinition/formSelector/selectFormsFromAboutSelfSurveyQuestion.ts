@@ -35,7 +35,8 @@ export const selectFormsFromAboutSelfSurveyQuestion: PrepopulateContactFormSelec
   selectCallType: (_preEngagementSelections, surveyAnswers) => {
     const isValidSurvey = Boolean(surveyAnswers?.aboutSelf); // determines if the memory has valid values or if it was aborted
     const isAboutSelf = surveyAnswers.aboutSelf === 'Yes';
-    return isValidSurvey && !isAboutSelf ? 'Someone calling about a child' : 'Child calling about self';
-  }
-
+    return isValidSurvey && !isAboutSelf
+      ? 'Someone calling about a child'
+      : 'Child calling about self';
+  },
 });
