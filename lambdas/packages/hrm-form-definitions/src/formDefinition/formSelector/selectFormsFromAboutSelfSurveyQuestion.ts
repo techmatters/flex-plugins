@@ -17,23 +17,23 @@
 import { AvailableContactFormSelector } from './availableContactFormSelector';
 
 export const selectFormsFromAboutSelfSurveyQuestion: AvailableContactFormSelector = () => ({
-    selectFromInputs:(source, _preEngagementSelections, surveyAnswers) => {
-        if (source === 'survey') {
-            if (surveyAnswers?.aboutSelf === 'Yes') {
-                return ['CaseInformationTab', 'ChildInformationTab'];
-            } else if (surveyAnswers?.aboutSelf) {
-                return ['CaseInformationTab', 'CallerInformationTab'];
-            }
-            return ['CaseInformationTab'];
-        } else {
-            if (surveyAnswers?.aboutSelf === 'Yes' || !surveyAnswers?.aboutSelf) {
-                return ['CaseInformationTab', 'ChildInformationTab'];
-            }
-            return ['CaseInformationTab', 'CallerInformationTab'];
-        }
-    },
-    selectFromContact: (contact) =>
-        contact.rawJson.callType === 'Someone calling about a child' ?
-            ['ChildInformationTab','CallerInformationTab', 'CaseInformationTab'] :
-            ['ChildInformationTab', 'CaseInformationTab'],
-})
+  selectFromInputs: (source, _preEngagementSelections, surveyAnswers) => {
+    if (source === 'survey') {
+      if (surveyAnswers?.aboutSelf === 'Yes') {
+        return ['CaseInformationTab', 'ChildInformationTab'];
+      } else if (surveyAnswers?.aboutSelf) {
+        return ['CaseInformationTab', 'CallerInformationTab'];
+      }
+      return ['CaseInformationTab'];
+    } else {
+      if (surveyAnswers?.aboutSelf === 'Yes' || !surveyAnswers?.aboutSelf) {
+        return ['CaseInformationTab', 'ChildInformationTab'];
+      }
+      return ['CaseInformationTab', 'CallerInformationTab'];
+    }
+  },
+  selectFromContact: (contact) =>
+    contact.rawJson.callType === 'Someone calling about a child'
+      ? ['ChildInformationTab', 'CallerInformationTab', 'CaseInformationTab']
+      : ['ChildInformationTab', 'CaseInformationTab'],
+});

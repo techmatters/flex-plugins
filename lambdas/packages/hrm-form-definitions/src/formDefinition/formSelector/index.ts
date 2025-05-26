@@ -15,37 +15,39 @@
  */
 
 import {
-    AvailableContactFormSelector,
-    ContactFormDefinitionName,
-    ContactFormName,
-    staticAvailableContactTabSelector
-} from "./availableContactFormSelector";
-import { selectFormsFromAboutSelfSurveyQuestion } from "./selectFormsFromAboutSelfSurveyQuestion";
-import { DefinitionVersion } from "../types";
+  AvailableContactFormSelector,
+  ContactFormDefinitionName,
+  ContactFormName,
+  staticAvailableContactTabSelector,
+} from './availableContactFormSelector';
+import { selectFormsFromAboutSelfSurveyQuestion } from './selectFormsFromAboutSelfSurveyQuestion';
+import { DefinitionVersion } from '../types';
 
 export * from './availableContactFormSelector';
 export * from './selectFormsFromAboutSelfSurveyQuestion';
 
 const SELECTOR_MAP: Record<string, AvailableContactFormSelector> = {
-    staticSelector: staticAvailableContactTabSelector,
-    surveyAnswerSelector: selectFormsFromAboutSelfSurveyQuestion,
+  staticSelector: staticAvailableContactTabSelector,
+  surveyAnswerSelector: selectFormsFromAboutSelfSurveyQuestion,
 };
 
-const DEFAULT_SELECTOR = selectFormsFromAboutSelfSurveyQuestion
+const DEFAULT_SELECTOR = selectFormsFromAboutSelfSurveyQuestion;
 
-export const lookupFormSelector = (prepopulateMappings: DefinitionVersion['prepopulateMappings']): ReturnType<AvailableContactFormSelector> => {
-    const { formSelector } = prepopulateMappings;
-    if (formSelector) {
-        const { selectorType, parameter } = formSelector;
-        return (SELECTOR_MAP[selectorType] ?? DEFAULT_SELECTOR)(parameter);
-    } else {
-        return DEFAULT_SELECTOR();
-    }
-}
+export const lookupFormSelector = (
+  prepopulateMappings: DefinitionVersion['prepopulateMappings'],
+): ReturnType<AvailableContactFormSelector> => {
+  const { formSelector } = prepopulateMappings;
+  if (formSelector) {
+    const { selectorType, parameter } = formSelector;
+    return (SELECTOR_MAP[selectorType] ?? DEFAULT_SELECTOR)(parameter);
+  } else {
+    return DEFAULT_SELECTOR();
+  }
+};
 
 // Hardcoded for now, will need to be configured if we move to configurable sets of contact forms
 export const FORM_DEFINITION_MAP: { [x in ContactFormDefinitionName]: ContactFormName } = {
-    ChildInformationTab: 'childInformation',
-    CallerInformationTab: 'callerInformation',
-    CaseInformationTab: 'caseInformation',
+  ChildInformationTab: 'childInformation',
+  CallerInformationTab: 'callerInformation',
+  CaseInformationTab: 'caseInformation',
 };
