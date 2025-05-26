@@ -15,18 +15,18 @@
  */
 
 import {
-  AvailableContactFormSelector,
+  PrepopulateContactFormSelector,
   ContactFormDefinitionName,
   ContactFormName,
   staticAvailableContactTabSelector,
-} from './availableContactFormSelector';
+} from './prepopulateContactFormSelector';
 import { selectFormsFromAboutSelfSurveyQuestion } from './selectFormsFromAboutSelfSurveyQuestion';
 import { DefinitionVersion } from '../types';
 
-export * from './availableContactFormSelector';
+export * from './prepopulateContactFormSelector';
 export * from './selectFormsFromAboutSelfSurveyQuestion';
 
-const SELECTOR_MAP: Record<string, AvailableContactFormSelector> = {
+const SELECTOR_MAP: Record<string, PrepopulateContactFormSelector> = {
   staticSelector: staticAvailableContactTabSelector,
   surveyAnswerSelector: selectFormsFromAboutSelfSurveyQuestion,
 };
@@ -35,7 +35,7 @@ const DEFAULT_SELECTOR = selectFormsFromAboutSelfSurveyQuestion;
 
 export const lookupFormSelector = (
   prepopulateMappings: DefinitionVersion['prepopulateMappings'],
-): ReturnType<AvailableContactFormSelector> => {
+): ReturnType<PrepopulateContactFormSelector> => {
   const { formSelector } = prepopulateMappings;
   if (formSelector) {
     const { selectorType, parameter } = formSelector;

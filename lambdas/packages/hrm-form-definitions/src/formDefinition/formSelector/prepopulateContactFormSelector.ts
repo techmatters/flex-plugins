@@ -23,19 +23,19 @@ export type ContactFormDefinitionName = keyof Pick<
 
 export type ContactFormName = 'callerInformation' | 'childInformation' | 'caseInformation';
 
-export type AvailableContactFormSelector = (parameter?: any) => {
-  selectFromInputs: (
+export type PrepopulateContactFormSelector = (parameter?: any) => {
+  selectForms: (
     source: keyof DefinitionVersion['prepopulateMappings'],
     preEngagementSelections: any,
     surveyAnswers: any,
   ) => ContactFormDefinitionName[];
-  selectFromContact: (
-    // Replace this with a proper Contact type once packages can depend on each other and still be used in the plugin
-    contact: any,
-  ) => ContactFormDefinitionName[];
+  selectCallType: (
+      preEngagementSelections: any,
+      surveyAnswers: any,
+  ) => string | undefined;
 };
 
-export const staticAvailableContactTabSelector: AvailableContactFormSelector = (availableTabs) => ({
-  selectFromInputs: () => availableTabs,
-  selectFromContact: () => availableTabs,
+export const staticAvailableContactTabSelector: PrepopulateContactFormSelector = ({ availableTabs, callType }) => ({
+  selectForms: () => availableTabs,
+  selectCallType: () => callType,
 });

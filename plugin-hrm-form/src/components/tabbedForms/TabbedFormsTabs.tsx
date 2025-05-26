@@ -19,7 +19,6 @@ import { connect, ConnectedProps } from 'react-redux';
 import SearchIcon from '@material-ui/icons/Search';
 import { Template } from '@twilio/flex-ui';
 import { callTypes } from 'hrm-types';
-import { DefinitionVersion, lookupFormSelector } from 'hrm-form-definitions';
 
 import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { RootState } from '../../states';
@@ -154,29 +153,6 @@ const mapTabsToIndex = (contact: Contact, contactForm: Partial<ContactRawJson>):
     : ['search', 'childInformation', 'categories', 'caseInformation'];
 };
 
-const getAvailableTabs = (contact: Contact, formDefinition: DefinitionVersion): (TabbedFormSubroutes | 'search')[] => {
-  const { prepopulateMappings } = formDefinition;
-  // When Contact types are consolidated we won't need the cast
-  const selectedTabs = lookupFormSelector(prepopulateMappings).selectFromContact(contact as any);
-  const tabs: (TabbedFormSubroutes | 'search')[] = ['search'];
-  if (isOfflineContact(contact)) {
-    if (isNonDataCallType(contact.rawJson.callType)) return ['contactlessTask'];
-    tabs.push('contactlessTask');
-  } else if (isEmptyCallType(contact.rawJson.callType)) return ['search'];
-
-  if (selectedTabs.includes('CallerInformationTab')) {
-    tabs.push('callerInformation');
-  }
-  if (selectedTabs.includes('ChildInformationTab')) {
-    tabs.push('childInformation');
-  }
-  tabs.push('categories');
-  if (selectedTabs.includes('CaseInformationTab')) {
-    tabs.push('childInformation');
-  }
-  return tabs;
-};
-
 const TabbedFormsTabs: React.FC<Props> = ({
   task,
   savedContact,
@@ -239,9 +215,7 @@ const TabbedFormsTabs: React.FC<Props> = ({
     helpline,
   } = updatedContact;
 
-  const tabsToIndex = getAseloFeatureFlags().use_prepopulate_mappings
-    ? getAvailableTabs(savedContact, currentDefinitionVersion)
-    : mapTabsToIndex(savedContact, updatedContact.rawJson);
+  const tabsToIndex = mapTabsToIndex(savedContact, updatedContact.rawJson);
   // tabIndex -1 doesn't cause user facing errors but it does generate lots of console log noise
   const tabIndex = Math.max(
     tabsToIndex.findIndex(t => t === subroute),

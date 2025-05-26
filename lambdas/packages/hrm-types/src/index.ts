@@ -14,9 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { callTypes } from './callTypes';
+import type { CallType } from './callType';
 
-export * from './callTypes';
+export * from './callType';
 
 type TaskSID = `WT${string}` | `offline-contact-task${string}` | 'standalone-task-sid';
 
@@ -34,7 +34,7 @@ export type ChannelTypes =
 
 export type HrmContactRawJson = {
   definitionVersion?: string;
-  callType: (typeof callTypes)[keyof typeof callTypes];
+  callType: CallType | undefined;
   childInformation: Record<string, FormValue>;
   callerInformation: Record<string, FormValue>;
   caseInformation: Record<string, FormValue>;

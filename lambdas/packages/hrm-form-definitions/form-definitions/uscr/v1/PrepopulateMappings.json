@@ -1,11 +1,13 @@
 {
   "formSelector": {
     "selectorType": "staticSelector",
-    "parameter": [
-      "ChildInformationTab",
-      "CallerInformationTab",
-      "CaseInformationTab"
-    ]
+    "parameter": {
+      "availableTabs": [
+        "ChildInformationTab",
+        "CallerInformationTab",
+        "CaseInformationTab"
+      ]
+    }
   },
   "survey":{},
   "preEngagement":{

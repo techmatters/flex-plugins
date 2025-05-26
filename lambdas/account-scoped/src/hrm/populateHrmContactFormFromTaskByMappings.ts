@@ -348,7 +348,8 @@ export const populateHrmContactFormFromTaskByMappings = async (
       formDefinitionRootUrl,
       'PrepopulateMappings',
     );
-
+    const { selectCallType, selectForms } = lookupFormSelector(prepopulateMappings);
+    contact.rawJson.callType = selectCallType(preEngagementData, answers);
     const isValidSurvey = Boolean(answers?.aboutSelf); // determines if the memory has valid values or if it was aborted
     const isAboutSelf = answers.aboutSelf === 'Yes';
     if (isValidSurvey) {
@@ -358,9 +359,8 @@ export const populateHrmContactFormFromTaskByMappings = async (
       // eslint-disable-next-line no-param-reassign
       contact.rawJson.callType = callTypes.child;
     }
-    const formSelector = lookupFormSelector(prepopulateMappings).selectFromInputs;
 
-    const availableFormsForSurveyPrepopulation = formSelector(
+    const availableFormsForSurveyPrepopulation = selectForms(
       'survey',
       preEngagementData,
       answers,
@@ -379,7 +379,7 @@ export const populateHrmContactFormFromTaskByMappings = async (
       }
     }
 
-    const availableFormsForPreEngagementPrepopulation = formSelector(
+    const availableFormsForPreEngagementPrepopulation = selectForms(
       'preEngagement',
       preEngagementData,
       answers,
