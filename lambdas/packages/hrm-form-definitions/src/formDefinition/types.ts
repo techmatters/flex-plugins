@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
+import {OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 import { LayoutVersion } from './layoutVersion';
 
 export enum FormInputType {
@@ -390,6 +390,7 @@ export type DefinitionVersion = {
   insights: {
     oneToOneConfigSpec: OneToOneConfigSpec;
     oneToManyConfigSpecs: OneToManyConfigSpecs;
+    postSurveySpecs?: OneToManyConfigSpecs;
   };
   /**
    * @deprecated - this is the legacy prepopulation configuration. Use prepopulationMappings for all new code

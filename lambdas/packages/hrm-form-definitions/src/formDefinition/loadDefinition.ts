@@ -34,7 +34,7 @@ import {
   LocalizedStringMap,
   FullyQualifiedFieldReference,
 } from './types';
-import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
+import {OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 import { LayoutVersion } from './layoutVersion';
 
 // Type representing the JSON form where single fields don't need to be wrapped in arrays
@@ -114,8 +114,14 @@ const fetchDefinitionGivenConfig = async <T>(
   const response = await fetch(url.toString());
 
   if (response?.ok) {
-    const json = await response.json();
-    return json as T;
+    const bodyText = await response.text()
+    try {
+      const json = JSON.parse(bodyText);
+      return json as T;
+    } catch (e) {
+      console.error(`Could not parse response for ${url}:`, bodyText)
+      throw e;
+    }
   }
 
   if (response?.status === 404) {
@@ -208,6 +214,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     cannedResponses,
     oneToOneConfigSpec,
     oneToManyConfigSpecs,
+      postSurveySpecs,
     caseFilters,
     caseStatus,
     caseOverview,
@@ -235,6 +242,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     fetchDefinition<CannedResponsesDefinitions>('CannedResponses.json', []),
     fetchDefinition<OneToOneConfigSpec>('insights/oneToOneConfigSpec.json'),
     fetchDefinition<OneToManyConfigSpecs>('insights/oneToManyConfigSpecs.json'),
+    fetchDefinition<OneToManyConfigSpecs>('insights/postSurvey.private.json', undefined),
     fetchDefinition<DefinitionVersion['caseFilters']>('CaseFilters.json'),
     fetchDefinition<DefinitionVersion['caseStatus']>('CaseStatus.json'),
     fetchDefinition<DefinitionVersion['caseOverview']>('caseForms/CaseOverview.json'),
@@ -283,6 +291,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     insights: {
       oneToOneConfigSpec,
       oneToManyConfigSpecs,
+      postSurveySpecs,
     },
     profileForms: {
       Sections: profileSections,

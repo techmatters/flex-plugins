@@ -27,7 +27,7 @@ import {
 } from '@tech-matters/hrm-form-definitions';
 import { FormValue, HrmContact, HrmContactRawJson } from '@tech-matters/hrm-types';
 import { newErr, newOk, Result } from '../Result';
-import { loadConfigJson } from './formDefinitionsCache';
+import { getDefinitionVersion } from './formDefinitionsCache';
 
 type MapperFunction = (options: string[]) => (value: string) => string;
 
@@ -236,29 +236,32 @@ const getValuesFromPreEngagementData = (
   return values;
 };
 
-const populateInitialValues = async (contact: HrmContact, formDefinitionRootUrl: URL) => {
-  const tabNamesAndRawJsonSections: [string, Record<string, FormValue>][] = [
+const populateInitialValues = async (
+  contact: HrmContact,
+  { tabbedForms, helplineInformation }: DefinitionVersion,
+) => {
+  const tabNamesAndRawJsonSections: [
+    keyof DefinitionVersion['tabbedForms'],
+    Record<string, FormValue>,
+  ][] = [
     ['CaseInformationTab', contact.rawJson.caseInformation],
     ['ChildInformationTab', contact.rawJson.childInformation],
     ['CallerInformationTab', contact.rawJson.callerInformation],
   ];
 
-  const defintionsAndJsons: [FormItemDefinition[], Record<string, FormValue>][] =
+  const definitionsAndJsons: [FormItemDefinition[], Record<string, FormValue>][] =
     await Promise.all(
       tabNamesAndRawJsonSections.map(async ([tabbedFormsSection, rawJsonSection]) => [
-        await loadConfigJson(formDefinitionRootUrl, `tabbedForms/${tabbedFormsSection}`),
+        tabbedForms[tabbedFormsSection] as FormItemDefinition[],
         rawJsonSection,
       ]),
     );
-  for (const [tabFormDefinition, rawJson] of defintionsAndJsons) {
+  for (const [tabFormDefinition, rawJson] of definitionsAndJsons) {
     for (const formItemDefinition of tabFormDefinition) {
       rawJson[formItemDefinition.name] = getInitialValue(formItemDefinition);
     }
   }
-  const helplineInformation = await loadConfigJson(
-    formDefinitionRootUrl,
-    'HelplineInformation',
-  );
+
   const defaultHelplineOption = (
     helplineInformation.helplines.find((helpline: any) => helpline.default) ||
     helplineInformation.helplines[0]
@@ -277,7 +280,7 @@ const populateContactSection = async (
     DefinitionVersion['prepopulateMappings'],
     'formSelector'
   >],
-  formDefinitionRootUrl: URL,
+  definitionVersion: DefinitionVersion,
   converter: (
     keys: Set<string>,
     formTabDefinition: FormItemDefinition[],
@@ -309,10 +312,7 @@ const populateContactSection = async (
 
   // Now if there are any valid mappings in the config, map the values in the source data to the target fields
   if (Object.keys(formMappings).length > 0) {
-    const contactFormDefinition = await loadConfigJson(
-      formDefinitionRootUrl,
-      `tabbedForms/${targetFormDefinitionName}`,
-    );
+    const contactFormDefinition = definitionVersion.tabbedForms[targetFormDefinitionName];
     const converted = converter(
       new Set(Object.keys(formMappings)),
       contactFormDefinition,
@@ -337,12 +337,11 @@ export const populateHrmContactFormFromTaskByMappings = async (
   try {
     const { memory, preEngagementData, firstName, language } = taskAttributes;
     const answers = { ...memory, firstName, language };
-    await populateInitialValues(contact, formDefinitionRootUrl);
+    const definitionVersion = await getDefinitionVersion(formDefinitionRootUrl);
+    await populateInitialValues(contact, definitionVersion);
     if (!memory && !firstName && !preEngagementData) return newOk(contact);
-    const prepopulateMappings: PrepopulateMappings = await loadConfigJson(
-      formDefinitionRootUrl,
-      'PrepopulateMappings',
-    );
+    const prepopulateMappings: PrepopulateMappings =
+      definitionVersion.prepopulateMappings;
     const { selectCallType, selectForms } = lookupFormSelector(prepopulateMappings);
     contact.rawJson.callType = selectCallType(preEngagementData, answers);
 
@@ -358,8 +357,8 @@ export const populateHrmContactFormFromTaskByMappings = async (
           form,
           availableFormsForSurveyPrepopulation,
           answers,
-          prepopulateMappings.survey,
-          formDefinitionRootUrl,
+          prepopulateMappings.survey ?? {},
+          definitionVersion,
           getValuesFromAnswers,
         );
       }
@@ -377,8 +376,8 @@ export const populateHrmContactFormFromTaskByMappings = async (
           form,
           availableFormsForPreEngagementPrepopulation,
           preEngagementData,
-          prepopulateMappings.preEngagement,
-          formDefinitionRootUrl,
+          prepopulateMappings.preEngagement ?? {},
+          definitionVersion,
           getValuesFromPreEngagementData,
         );
       }

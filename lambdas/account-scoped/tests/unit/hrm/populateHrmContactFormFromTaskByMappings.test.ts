@@ -17,86 +17,32 @@
 import { BLANK_CONTACT } from './testContacts';
 import { callTypes, HrmContact } from '@tech-matters/hrm-types';
 import each from 'jest-each';
-import { FormDefinitionPatch, FormDefinitionSet } from '../../testHrmTypes';
 import { BASE_FORM_DEFINITION, MOCK_FORM_DEFINITION_URL } from '../../testHrmValues';
 import { populateHrmContactFormFromTaskByMappings } from '../../../src/hrm/populateHrmContactFormFromTaskByMappings';
 import { isErr } from '../../../src/Result';
 import { AssertionError } from 'node:assert';
-import { clearDefinitionCache } from '../../../src/hrm/formDefinitionsCache';
+import { getDefinitionVersion } from '../../../src/hrm/formDefinitionsCache';
+import { RecursivePartial } from '../RecursivePartial';
+import { DefinitionVersion } from '@tech-matters/hrm-form-definitions';
 
-const fetchFormDefinition = async (
-  url: string,
-  definitionSet: FormDefinitionSet,
-): Promise<FormDefinitionSet[keyof FormDefinitionSet]> => {
-  if (url.startsWith(MOCK_FORM_DEFINITION_URL.toString())) {
-    const formPath = url.substring(MOCK_FORM_DEFINITION_URL.toString().length);
-    switch (formPath) {
-      case '/tabbedForms/ChildInformationTab.json':
-        return definitionSet.childInformation;
-      case '/tabbedForms/CallerInformationTab.json':
-        return definitionSet.callerInformation;
-      case '/tabbedForms/CaseInformationTab.json':
-        return definitionSet.caseInformation;
-      case '/PrepopulateMappings.json':
-        return definitionSet.prepopulateMappings;
-      case '/HelplineInformation.json':
-        return definitionSet.helplineInformation;
-      default:
-        throw new Error(`Unrecognised form path: ${formPath}`);
-    }
-  }
-  throw new Error(
-    `Invalid URL: ${url}, this test only mocks fetches starting with ${MOCK_FORM_DEFINITION_URL}`,
-  );
-};
+jest.mock('../../../src/hrm/formDefinitionsCache', () => ({
+  getDefinitionVersion: jest.fn(),
+}));
 
 const mockFetch: jest.MockedFunction<typeof fetch> = jest.fn();
+const mockGetDefinitionVersion = getDefinitionVersion as jest.MockedFunction<
+  typeof getDefinitionVersion
+>;
 
-const mockFormDefinitions = (definitionSet: FormDefinitionPatch) => {
-  mockFetch.mockImplementation((url: string | URL | Request) =>
-    Promise.resolve({
-      ok: true,
-      text: () => Promise.resolve('Text response'),
-      json: () =>
-        Promise.resolve(
-          fetchFormDefinition(url.toString(), {
-            ...BASE_FORM_DEFINITION,
-            ...definitionSet,
-            prepopulateKeys: {
-              preEngagement: {
-                ChildInformationTab:
-                  (definitionSet.prepopulateKeys?.preEngagement
-                    ?.ChildInformationTab as string[]) ??
-                  BASE_FORM_DEFINITION.prepopulateKeys.preEngagement.ChildInformationTab,
-                CallerInformationTab:
-                  (definitionSet.prepopulateKeys?.preEngagement
-                    ?.CallerInformationTab as string[]) ??
-                  BASE_FORM_DEFINITION.prepopulateKeys.preEngagement.CallerInformationTab,
-                CaseInformationTab:
-                  (definitionSet.prepopulateKeys?.preEngagement
-                    ?.CaseInformationTab as string[]) ??
-                  BASE_FORM_DEFINITION.prepopulateKeys.preEngagement.CaseInformationTab,
-              },
-              survey: {
-                ChildInformationTab:
-                  (definitionSet.prepopulateKeys?.survey
-                    ?.ChildInformationTab as string[]) ??
-                  BASE_FORM_DEFINITION.prepopulateKeys.survey.ChildInformationTab,
-                CallerInformationTab:
-                  (definitionSet.prepopulateKeys?.survey
-                    ?.CallerInformationTab as string[]) ??
-                  BASE_FORM_DEFINITION.prepopulateKeys.survey.CallerInformationTab,
-              },
-            },
-            prepopulateMappings: {
-              ...definitionSet.prepopulateMappings,
-              preEngagement: definitionSet.prepopulateMappings?.preEngagement ?? {},
-              survey: definitionSet.prepopulateMappings?.survey ?? {},
-            },
-          }),
-        ),
-    } as Response),
-  );
+const mockFormDefinitions = (definitionSet: RecursivePartial<any>) => {
+  mockGetDefinitionVersion.mockResolvedValue({
+    ...BASE_FORM_DEFINITION,
+    ...definitionSet,
+    tabbedForms: {
+      ...BASE_FORM_DEFINITION.tabbedForms,
+      ...definitionSet.tabbedForms,
+    },
+  });
 };
 
 global.fetch = mockFetch;
@@ -104,7 +50,6 @@ global.fetch = mockFetch;
 describe('populateHrmContactFormFromTaskByMappings', () => {
   beforeEach(() => {
     mockFetch.mockClear();
-    clearDefinitionCache();
   });
   type TestParams = {
     description: string;
@@ -112,7 +57,7 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
     memory?: Record<string, string>;
     firstName?: string;
     language?: string;
-    formDefinitionSet: FormDefinitionPatch;
+    formDefinitionSet: RecursivePartial<DefinitionVersion>;
     expectedChildInformation?: HrmContact['rawJson']['childInformation'];
     expectedCallerInformation?: HrmContact['rawJson']['callerInformation'];
     expectedCaseInformation?: HrmContact['rawJson']['caseInformation'];
@@ -375,7 +320,7 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
                   'CallerInformationTab',
                   'CaseInformationTab',
                 ],
-              },
+              } as any,
             },
             preEngagement: {
               age: [['ChildInformationTab.age']],
@@ -417,7 +362,7 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
                   'CallerInformationTab',
                   'CaseInformationTab',
                 ],
-              },
+              } as any,
             },
             preEngagement: {
               age: [['ChildInformationTab.age']],
@@ -459,7 +404,7 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
                   'CallerInformationTab',
                   'CaseInformationTab',
                 ],
-              },
+              } as any,
             },
             survey: {
               age: [['ChildInformationTab.age']],
@@ -502,7 +447,7 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
                   'CallerInformationTab',
                   'CaseInformationTab',
                 ],
-              },
+              } as any,
             },
             survey: {
               age: [['CallerInformationTab.age']],
@@ -547,7 +492,7 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
                   'CallerInformationTab',
                   'CaseInformationTab',
                 ],
-              },
+              } as any,
             },
             survey: {
               age: [['ChildInformationTab.age']],
@@ -594,7 +539,7 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
                   'CallerInformationTab',
                   'CaseInformationTab',
                 ],
-              },
+              } as any,
             },
             survey: {
               age: [['CallerInformationTab.age']],
@@ -637,7 +582,7 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
                   'CallerInformationTab',
                   'CaseInformationTab',
                 ],
-              },
+              } as any,
             },
             survey: {
               age: [['CallerInformationTab.age', 'ChildInformationTab.age']],
@@ -673,7 +618,7 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
               parameter: {
                 callType: callTypes.caller,
                 availableTabs: ['ChildInformationTab', 'CaseInformationTab'],
-              },
+              } as any,
             },
             survey: {
               age: [['CallerInformationTab.age', 'ChildInformationTab.age']],
@@ -709,7 +654,7 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
               parameter: {
                 callType: callTypes.caller,
                 availableTabs: ['CaseInformationTab'],
-              },
+              } as any,
             },
             survey: {
               age: [['CallerInformationTab.age', 'ChildInformationTab.age']],
@@ -747,7 +692,7 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
               parameter: {
                 callType: callTypes.caller,
                 availableTabs: ['ChildInformationTab', 'CaseInformationTab'],
-              },
+              } as any,
             },
             survey: {
               age: [['CaseInformationTab.age', 'ChildInformationTab.age']],
@@ -793,7 +738,7 @@ describe('populateHrmContactFormFromTaskByMappings', () => {
               parameter: {
                 callType: callTypes.caller,
                 availableTabs: ['ChildInformationTab', 'CaseInformationTab'],
-              },
+              } as any,
             },
             survey: {
               age: [['CaseInformationTab.age', 'ChildInformationTab.age']],

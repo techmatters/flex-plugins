@@ -23,7 +23,6 @@ import { OneToManyConfigSpec, buildSurveyInsightsData } from './insightsService'
 import { isErr, newErr, newOk, Result } from '../Result';
 import { Twilio } from 'twilio';
 import { postToInternalHrmEndpoint } from '../hrm/internalHrmRequest';
-import { getFormDefinitionUrl, loadConfigJson } from '../hrm/formDefinitionsCache';
 import { ROUTE_PREFIX } from '../router';
 import { AccountSID } from '../twilioTypes';
 
@@ -701,19 +700,8 @@ const handlePostSurveyComplete = async ({
 }) => {
   const serviceConfig = await twilioClient.flexApi.v1.configuration.get().fetch();
 
-  const {
-    definitionVersion,
-    hrm_api_version: hrmApiVersion,
-    form_definitions_version_url: configFormDefinitionsVersionUrl,
-    assets_bucket_url: assetsBucketUrl,
-  } = serviceConfig.attributes;
-  const formDefinitionsVersionUrl =
-    configFormDefinitionsVersionUrl ||
-    getFormDefinitionUrl({ assetsBucketUrl, definitionVersion });
-  const postSurveyConfigSpecs = await loadConfigJson(
-    formDefinitionsVersionUrl,
-    'PostSurvey',
-  );
+  const { definitionVersion, hrm_api_version: hrmApiVersion } = serviceConfig.attributes;
+  const postSurveyConfigSpecs = definitionVersion?.insights?.postSurveySpecs;
 
   if (definitionVersion && postSurveyConfigSpecs) {
     const controlTaskAttributes = JSON.parse(controlTask.attributes);
