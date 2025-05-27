@@ -5,11 +5,6 @@
     "type": "select"
   },
   {
-    "name": "childIsAtRisk",
-    "label": "Person of concern is at risk",
-    "type": "checkbox"
-  },
-  {
     "name": "summary",
     "label": "Summary",
     "type": "textarea",
