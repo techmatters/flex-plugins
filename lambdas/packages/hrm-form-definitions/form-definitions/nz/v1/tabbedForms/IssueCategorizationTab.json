@@ -1,146 +1,316 @@
 {
   "Youthline": {
-    "Missing children": {
-      "color": "#BBE3FF",
-      "subcategories": [
-        {"label": "Child abduction"},
-        {"label": "Lost, unaccounted for or otherwise missing child"},
-        {"label": "Runaway"},
-        {"label": "Unspecified/Other - MS"}
-      ]
-    },
-    "Violence": {
-      "color": "#F5A623",
-      "subcategories": [
-        {"label": "Bullying"},
-        {"label": "Child/Early/Forced marriage"},
-        {"label": "Child labour"},
-        {"label": "Commercial sexual exploitation (offline)"},
-        {"label": "Female Genital Mutilation (FGM)"},
-        {"label": "Gender-based harmful traditional practices (other than FGM)"},
-        {"label": "Harmful traditional practices other than child marriage and FGM"},
-        {"label": "Mental/Emotional violence"},
-        {"label": "Neglect (or negligent treatment)"},
-        {"label": "Online sexual abuse (OSA)"},
-        {"label": "Online sexual exploitation (OSE)"},
-        {"label": "Information seeking about OSE/OSA"},
-        {"label": "Physical violence"},
-        {"label": "Sexual violence"},
-        {"label": "Unspecified/Other - V"}
-      ]
-    },
-    "Mental Health": {
-      "color": "#F8E900",
-      "subcategories": [
-        {"label": "Addictive behaviours and substance use"},
-        {"label": "Behavioural problems"},
-        {"label": "Concerns about the self"},
-        {"label": "Emotional distress – anger problems"},
-        {"label": "Emotional distress – fear and anxiety problems"},
-        {"label": "Emotional distress – mood problems"},
-        {"label": "Neurodevelopmental concerns"},
-        {"label": "Problems with eating behaviour"},
-        {"label": "Self-harming behaviour"},
-        {"label": "Suicidal thoughts and suicide attempts"},
-        {"label": "Traumatic distress"},
-        {"label": "Unspecified/Other - MH"}
-      ]
-    },
-    "Physical Health": {
-      "color": "#E86B6B",
-      "subcategories": [
-        {"label": "COVID-19"},
-        {"label": "General medical or lifestyle concerns"},
-        {"label": "Medical or lifestyle information about HIV/AIDS"},
-        {"label": "Male circumcision"},
-        {"label": "Pregnancy and maternal care"},
-        {"label": "Sexual and reproductive health"},
-        {"label": "Nutrition"},
-        {"label": "Unspecified/Other - PH"}
-      ]
-    },
     "Accessibility": {
-      "color": "#8055BA",
+      "color": "#085f63",
       "subcategories": [
-        {"label": "Education"},
-        {"label": "Essential needs"},
-        {"label": "General healthcare services"},
-        {"label": "Legal services and advice"},
-        {"label": "Mental health services"},
-        {"label": "Sexual health services"},
-        {"label": "Socio-economical services"},
-        {"label": "Unspecified/Other - A"}
-      ]
-    },
-    "Discrimination and Exclusion": {
-      "color": "#B971AF",
-      "subcategories": [
-        {"label": "Ethnicity/nationality"},
-        {"label": "Financial situation"},
-        {"label": "Gender"},
-        {"label": "Gender identity or expression and sexual orientation"},
-        {"label": "Health"},
-        {"label": "Philosophical or religious beliefs"},
-        {"label": "Unspecified/Other - DE"}
-      ]
-    },
-    "Family Relationships": {
-      "color": "#239613",
-      "subcategories": [
-        {"label": "Adoption, fostering, and extended family placement"},
-        {"label": "Relationship to caregiver"},
-        {"label": "Family health and wellbeing"},
-        {"label": "Relationship with sibling(s)"},
-        {"label": "Unspecified/Other - FR"}
-      ]
-    },
-    "Peer Relationships": {
-      "color": "#9AD703",
-      "subcategories": [
-        {"label": "Friends and friendships"},
-        {"label": "Partner relationships"},
-        {"label": "Classmates/colleagues relationships"},
-        {"label": "Unspecified/Other - PR"}
-      ]
-    },
-    "Education and Occupation": {
-      "color": "#55AFAF",
-      "subcategories": [
-        {"label": "Academic issues"},
-        {"label": "Teacher and school problems"},
-        {"label": "Problems at work"},
-        {"label": "Unspecified/Other - EO"}
-      ]
-    },
-    "Sexuality": {
-      "color": "#506BA5",
-      "subcategories": [
-        {"label": "Sexual orientation and gender identity"},
-        {"label": "Sexual behaviours"},
-        {"label": "Unspecified/Other - S"}
+        {
+          "label": "Disability issues"
+        },
+        {
+          "label": "Financial stress"
+        },
+        {
+          "label": "Food / warmth"
+        },
+        {
+          "label": "Housing"
+        },
+        {
+          "label": "Intellectual Disability"
+        },
+        {
+          "label": "Legal"
+        },
+        {
+          "label": "Long term Unemployment "
+        },
+        {
+          "label": "NEET Not in education, employment or training"
+        },
+        {
+          "label": "Recent Unemployment"
+        },
+        {
+          "label": "Youth Services YP/YPP"
+        }
       ]
     },
     "Crime": {
-      "color": "#C1570B",
+      "color": "#14919b",
       "subcategories": [
-        {"label": "Victim of crime"},
-        {"label": "Perpetrator of crime"},
-        {"label": "Unspecified/Other - C"}
+        {
+          "label": "Broken Bail"
+        },
+        {
+          "label": "Offending"
+        },
+        {
+          "label": "Victim of crime"
+        }
+      ]
+    },
+    "Discrimination & Exclusion": {
+      "color": "#fac05e",
+      "subcategories": [
+        {
+          "label": "Homophobia / transphobia "
+        },
+        {
+          "label": "Racism / discrimination "
+        }
+      ]
+    },
+    "Education & Occupation": {
+      "color": "#f79d8f",
+      "subcategories": [
+        {
+          "label": "Academic issues / Learning disorders"
+        },
+        {
+          "label": "School disengagement / refusal"
+        }
+      ]
+    },
+    "Family Relationships ": {
+      "color": "#f0817c",
+      "subcategories": [
+        {
+          "label": "Caregiving issues"
+        },
+        {
+          "label": "Familial substance use"
+        },
+        {
+          "label": "Family health and wellbeing"
+        },
+        {
+          "label": "Intergenerational trauma"
+        },
+        {
+          "label": "Parenting issues "
+        }
+      ]
+    },
+    "Mental Health": {
+      "color": "#4d92c2",
+      "subcategories": [
+        {
+          "label": "Addiction (not AOD or Gambling)"
+        },
+        {
+          "label": "Alcohol and other Drug issues"
+        },
+        {
+          "label": "Anger management"
+        },
+        {
+          "label": "Anxiety"
+        },
+        {
+          "label": "Child / Youth Behavioural issues"
+        },
+        {
+          "label": "Depression / Low mood"
+        },
+        {
+          "label": "Eating issues "
+        },
+        {
+          "label": "Gambling problems"
+        },
+        {
+          "label": "Generalised stress "
+        },
+        {
+          "label": "Loneliness "
+        },
+        {
+          "label": "Mental Wellbeing - other "
+        },
+        {
+          "label": "Neurodiversity "
+        },
+        {
+          "label": "Psychosis"
+        },
+        {
+          "label": "Risk / safety concerns"
+        },
+        {
+          "label": "Self-harm"
+        },
+        {
+          "label": "Sense of self / identity - general"
+        },
+        {
+          "label": "Suicidal ideation"
+        },
+        {
+          "label": "Suicide attempts"
+        },
+        {
+          "label": "Trauma (incl. PTSD)"
+        }
+      ]
+    },
+    "Missing child": {
+      "color": "#c99f7d",
+      "subcategories": [
+        {
+          "label": "Child abduction"
+        },
+        {
+          "label": "Lost, unaccounted for or otherwise missing child"
+        }
       ]
     },
     "Other": {
-      "color": "#C15BA5",
+      "color": "#db7a34",
       "subcategories": [
-        {"label": "Complaints about the child helpline"},
-        {"label": "Questions about the child helpline"},
-        {"label": "Questions about other services"},
-        {"label": "Thank you for your assistance"},
-        {"label": "Misuse - Sexually abusive"},
-        {"label": "Misuse - Verbally abusive"},
-        {"label": "Misuse - Prank/Testing service"},
-        {"label": "Unspecified/Other - O"}
+        {
+          "label": "Advice/Information about other services"
+        },
+        {
+          "label": "BRAVE"
+        },
+        {
+          "label": "Culture - Asian"
+        },
+        {
+          "label": "Culture - Pacific "
+        },
+        {
+          "label": "Culture - Refugee / migrant "
+        },
+        {
+          "label": "Culture (Tikanga Māori) "
+        },
+        {
+          "label": "Environmental (Taiao)"
+        },
+        {
+          "label": "Faith / religion (Whakapono)"
+        },
+        {
+          "label": "Grief & Loss"
+        },
+        {
+          "label": "Spiritual Wellbeing - other"
+        }
+      ]
+    },
+    "Peer Relationships": {
+      "color": "#e7c582",
+      "subcategories": [
+        {
+          "label": "Relationship issues"
+        },
+        {
+          "label": "Social isolation"
+        },
+        {
+          "label": "Whānau, Social, Community Wellbeing - other "
+        }
+      ]
+    },
+    "Physical Health": {
+      "color": "#037971",
+      "subcategories": [
+        {
+          "label": "Antenatal / Postnatal physical wellbeing"
+        },
+        {
+          "label": "Antenatal / Postnatal wellbeing"
+        },
+        {
+          "label": "Body image/weight concerns"
+        },
+        {
+          "label": "Diet"
+        },
+        {
+          "label": "Exercise "
+        },
+        {
+          "label": "Health and Lifestyle - other "
+        },
+        {
+          "label": "Long Term condition - other "
+        },
+        {
+          "label": "Pain "
+        },
+        {
+          "label": "Physical Wellbeing - other "
+        },
+        {
+          "label": "Post termination support"
+        },
+        {
+          "label": "Pregnancy and maternal care"
+        },
+        {
+          "label": "Sexual health "
+        },
+        {
+          "label": "Sleep"
+        },
+        {
+          "label": "Smoking cessation"
+        },
+        {
+          "label": "Vaping"
+        },
+        {
+          "label": "Weight / obesity"
+        }
+      ]
+    },
+    "Sexuality": {
+      "color": "#f8b595",
+      "subcategories": [
+        {
+          "label": "Gender transitioning "
+        },
+        {
+          "label": "Sexual & Gender Identity "
+        },
+        {
+          "label": "Sexualised behaviours"
+        }
+      ]
+    },
+    "Violence": {
+      "color": "#f67280",
+      "subcategories": [
+        {
+          "label": "Bullying"
+        },
+        {
+          "label": "Cyber bullying "
+        },
+        {
+          "label": "Emotional/psychological abuse"
+        },
+        {
+          "label": "Family harm "
+        },
+        {
+          "label": "Neglect"
+        },
+        {
+          "label": "Physical abuse & violence"
+        },
+        {
+          "label": "School-related bullying/harassment "
+        },
+        {
+          "label": "Sexual Harm"
+        },
+        {
+          "label": "Workplace bullying/harassment"
+        }
       ]
     }
   }
-  
 }

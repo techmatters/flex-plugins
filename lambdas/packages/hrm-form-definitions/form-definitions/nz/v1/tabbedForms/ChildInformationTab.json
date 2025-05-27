@@ -3,6 +3,7 @@
     "name": "friendlyName",
     "label": "Preferred Name",
     "type": "input",
+    "isPII": true,
     "required": {
       "value": true,
       "message": "RequiredFieldError"
@@ -11,18 +12,20 @@
   {
     "name": "firstName",
     "label": "First Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "lastName",
     "label": "Last Name",
-    "type": "input"
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "gender",
     "label": "Gender",
     "type": "select",
-    "unknownOption": "",
+    "isPII": false,
     "options": [
       {
         "value": "",
@@ -54,7 +57,7 @@
     "name": "age",
     "label": "Age",
     "type": "select",
-    "unknownOption": "",
+    "isPII": false,
     "options": [
       {
         "value": "",
@@ -158,7 +161,7 @@
     "name": "region",
     "label": "Region",
     "type": "select",
-    "unknownOption": "",
+    "isPII": false,
     "options": [
       {
         "value": "",
@@ -246,7 +249,7 @@
     "name": "ethnicity",
     "label": "Ethnicity",
     "type": "select",
-    "unknownOption": "",
+    "isPII": false,
     "options": [
       {
         "value": "",
@@ -338,7 +341,7 @@
     "name": "livingSituation",
     "label": "Living Situation",
     "type": "select",
-    "unknownOption": "Unknown",
+    "isPII": false,
     "options": [
       {
         "value": "Unknown",
@@ -365,6 +368,10 @@
         "label": "Living independently"
       },
       {
+        "value": "Live in rural or isolated location",
+        "label": "Live in rural or isolated location"
+      },
+      {
         "value": "With parent(s)",
         "label": "With parent(s)"
       },
@@ -382,6 +389,7 @@
     "name": "vulnerableGroups",
     "label": "Vulnerable Groups",
     "type": "listbox-multiselect",
+    "isPII": false,
     "options": [
       {
         "value": "In conflict with the law",
@@ -396,12 +404,12 @@
         "label": "Member of an ethnic, racial or religious minority"
       },
       {
-        "value": "With disability",
-        "label": "With disability"
+        "value": "Member of rainbox community?",
+        "label": "Member of rainbox community?"
       },
       {
-        "value": "LGBTQI+/SOGIESC",
-        "label": "LGBTQI+/SOGIESC"
+        "value": "With disability",
+        "label": "With disability"
       },
       {
         "value": "Refugee",
