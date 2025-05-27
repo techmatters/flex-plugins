@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DataCallTypes } from 'hrm-form-definitions';
+import { DataCallTypes } from 'hrm-types';
 
 import { Case, Contact } from '../../types/types';
 import { DraftResourceReferralState } from './resourceReferral';

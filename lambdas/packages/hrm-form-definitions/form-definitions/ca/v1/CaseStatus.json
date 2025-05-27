@@ -1,0 +1,18 @@
+{
+  "open": {
+    "value": "ongoing",
+    "label": "Ongoing",
+    "color": "green",
+    "transitions": [
+      "closed"
+    ]
+  },
+  "closed": {
+    "value": "closed",
+    "label": "Closed",
+    "color": "red",
+    "transitions": [
+      "ongoing"
+    ]
+  }
+}

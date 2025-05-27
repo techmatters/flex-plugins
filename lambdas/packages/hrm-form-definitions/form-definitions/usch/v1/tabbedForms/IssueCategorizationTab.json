@@ -1,0 +1,226 @@
+{
+  "Childhelp": {
+    "Missing children": {
+      "color": "#085f63",
+      "subcategories": [
+        {
+          "label": "Abduction Issues"
+        },
+        {
+          "label": "Runaway"
+        }
+      ]
+    },
+    "Violence": {
+      "color": "#14919b",
+      "subcategories": [
+        {
+          "label": "Bullying"
+        },
+        {
+          "label": "Forced Child Marriage"
+        },
+        {
+          "label": "Trafficking- Labor"
+        },
+        {
+          "label": "Trafficking- Sex"
+        },
+        {
+          "label": "Female Genital Mutilation (FGM/C)\n"
+        },
+        {
+          "label": "Domestic Violence"
+        },
+        {
+          "label": "Abandonment"
+        },
+        {
+          "label": "Abuse- Neglect"
+        },
+        {
+          "label": "Child Sexual Abuse Material (CSAM)"
+        },
+        {
+          "label": "Sextortion"
+        },
+        {
+          "label": "Abuse- Physical"
+        },
+        {
+          "label": "Abuse- Emotional"
+        },
+        {
+          "label": "Abuse- Sexual"
+        },
+        {
+          "label": "Abuse- Sibling"
+        },
+        {
+          "label": "Abuse Neglect- Medical"
+        },
+        {
+          "label": "Abuse- Unspecified"
+        },
+        {
+          "label": "Sex Offender Issues"
+        },
+        {
+          "label": "Online Concerns"
+        },
+        {
+          "label": "Abuse- Elderly or Adult"
+        }
+      ]
+    },
+    "Mental Health": {
+      "color": "#fac05e",
+      "subcategories": [
+        {
+          "label": "Addiction/Substance Use"
+        },
+        {
+          "label": "Discipline/Behavior Issues"
+        },
+        {
+          "label": "Adult Survivor Issues"
+        },
+        {
+          "label": "Mental Health Issues"
+        },
+        {
+          "label": "Suicide Ideation- Self",
+          "toolkitUrl": "https://www.google.com"
+        },
+        {
+          "label": "Suicide Ideation- Other",
+          "toolkitUrl": "https://www.google.com"
+        },
+        {
+          "label": "Non-Suicidal Self Injury"
+        }
+      ]
+    },
+    "Access to Services": {
+      "color": "#f0817c",
+      "subcategories": [
+        {
+          "label": "Child Care Issues"
+        },
+        {
+          "label": "Homelessness"
+        },
+        {
+          "label": "Child Support- Custody Dispute"
+        },
+        {
+          "label": "CPS- Report Abuse"
+        },
+        {
+          "label": "CPS- Questions/Information"
+        },
+        {
+          "label": "Emancipation"
+        },
+        {
+          "label": "Father's Rights"
+        },
+        {
+          "label": "Grandparent's Rights"
+        },
+        {
+          "label": "Legal Issues"
+        },
+        {
+          "label": "System Failure"
+        },
+        {
+          "label": "Welfare Fraud"
+        },
+        {
+          "label": "Childhelp Information"
+        }
+      ]
+    },
+    "Discrimination and Exclusion": {
+      "color": "#4d92c2",
+      "subcategories": [
+        {
+          "label": "Immigration Issues"
+        },
+        {
+          "label": "Refugee Issues"
+        },
+        {
+          "label": "Racial Bias/Discrimination"
+        },
+        {
+          "label": "LGBTQIA Issues"
+        }
+      ]
+    },
+    "Family Relationships": {
+      "color": "#c99f7d",
+      "subcategories": [
+        {
+          "label": "Parenting Concerns- Other"
+        },
+        {
+          "label": "Parenting Concerns- Own"
+        },
+        {
+          "label": "Parent-Teen Relationships"
+        },
+        {
+          "label": "Teen Issues"
+        }
+      ]
+    },
+    "Education and Occupation": {
+      "color": "#e7c582",
+      "subcategories": [
+        {
+          "label": "School Issues"
+        },
+        {
+          "label": "Youth Sports/Coaching Issues"
+        }
+      ]
+    },
+    "Courage First Athlete Helpline": {
+      "color": "#14919b",
+      "subcategories": [
+        {
+          "label": "Athletic Touching"
+        },
+        {
+          "label": "Bullying/Teammate Dynamics"
+        },
+        {
+          "label": "Burnout/Loss of Identity"
+        },
+        {
+          "label": "Coaching Issue"
+        },
+        {
+          "label": "Courage First Information"
+        },
+        {
+          "label": "Body Image/Eating Disorder"
+        },
+        {
+          "label": "Grooming/Power Asymmetry"
+        },
+        {
+          "label": "Safesport Reporting Information"
+        },
+        {
+          "label": "Sports Retirement"
+        },
+        {
+          "label": "Doping"
+        }
+      ]
+    }
+  }
+}

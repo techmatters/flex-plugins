@@ -1,0 +1,71 @@
+[
+  {
+    "name": "date",
+    "label": "Date",
+    "type": "date-input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "referredTo",
+    "label": "Referred To",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Clinic",
+        "label": "Clinic"
+      },
+      {
+        "value": "Hospital",
+        "label": "Hospital"
+      },
+      {
+        "value": "Social Welfare",
+        "label": "Social Welfare"
+      },
+      {
+        "value": "Police",
+        "label": "Police"
+      },
+      {
+        "value": "Religious leader",
+        "label": "Religious leader"
+      },
+      {
+        "value": "Local Government Authorities",
+        "label": "Local Government Authorities"
+      },
+      {
+        "value": "Gender Desk",
+        "label": "Gender Desk"
+      },
+      {
+        "value": "One-Stop Center (OSC)",
+        "label": "One-Stop Center (OSC)"
+      },
+      {
+        "value": "Women & Children Coordinator (WCC)",
+        "label": "Women & Children Coordinator (WCC)"
+      },
+      {
+        "value": "Sheha",
+        "label": "Sheha"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea"
+  }
+]

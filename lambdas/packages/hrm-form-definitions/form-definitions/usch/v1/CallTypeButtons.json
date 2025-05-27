@@ -1,0 +1,50 @@
+[
+    {
+        "name": "child",
+        "label": "Helpseeker calling about self",
+        "type": "button",
+        "category": "data"
+    },
+    {
+        "name": "caller",
+        "label": "Other",
+        "type": "button",
+        "category": "data"
+    },
+    {
+        "name": "silent",
+        "label": "Silent",
+        "type": "button",
+        "category": "non-data"
+    },
+    {
+        "name": "hangup",
+        "label": "Hang up",
+        "type": "button",
+        "category": "non-data"
+    },
+    {
+        "name": "abusive",
+        "label": "Abusive",
+        "type": "button",
+        "category": "non-data"
+    },
+    {
+        "name": "thanks",
+        "label": "Thank you",
+        "type": "button",
+        "category": "non-data"
+    },
+    {
+        "name": "questions",
+        "label": "Questions",
+        "type": "button",
+        "category": "non-data"
+    },
+    {
+        "name": "emergency",
+        "label": "Emergency",
+        "type": "button",
+        "category": "non-data"
+    }
+]

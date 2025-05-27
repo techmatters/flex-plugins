@@ -1,0 +1,22 @@
+{
+  "note": {
+    "label": "Note",
+    "formPath": "caseForms/NoteForm.json"
+  },
+  "referral": {
+    "label": "Referral",
+    "formPath": "caseForms/ReferralForm.json"
+  },
+  "externalNotification": {
+    "label": "External Notification",
+    "formPath": "caseForms/ExternalNotificationForm.json"
+  },
+  "enFollowUp": {
+    "label": "EN Follow Up",
+    "formPath": "caseForms/ENFollowUpForm.json"
+  },
+  "document": {
+    "label": "Document",
+    "formPath": "caseForms/DocumentForm.json"
+  }
+}

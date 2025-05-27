@@ -17,7 +17,7 @@
 import * as React from 'react';
 import renderer from 'react-test-renderer';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { DeepPartial } from 'redux';
@@ -62,11 +62,11 @@ beforeEach(async () => {
 });
 
 test('<ContactPreview> should mount', async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL('v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   const defaultDef = await loadDefinition(formDefinitionsBaseUrl);
-  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, defaultDef);
+  mockGetDefinitionsResponse(getDefinitionVersions, 'v1', defaultDef);
 
   const counselorsHash = {
     WKxxxx: 'John Doe',
@@ -76,7 +76,7 @@ test('<ContactPreview> should mount', async () => {
     [namespace]: {
       [configurationBase]: {
         definitionVersions: {
-          [DefinitionVersionId.v1]: defaultDef,
+          v1: defaultDef,
         },
         counselors: {
           hash: counselorsHash,
@@ -96,7 +96,7 @@ test('<ContactPreview> should mount', async () => {
     conversationDuration: 0,
     taskId: 'TASK_ID',
     rawJson: {
-      definitionVersion: DefinitionVersionId.v1,
+      definitionVersion: 'v1',
       callType: 'Child calling about self',
       categories: { category1: ['Tag1', 'Tag2'] },
       childInformation: {

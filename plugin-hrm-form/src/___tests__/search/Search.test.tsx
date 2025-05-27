@@ -19,7 +19,7 @@ import { Provider } from 'react-redux';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import configureMockStore from 'redux-mock-store';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 
 import { mockLocalFetchDefinitions } from '../mockFetchDefinitions';
@@ -199,11 +199,11 @@ beforeEach(() => {
 });
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL('v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+  mockGetDefinitionsResponse(getDefinitionVersions, 'v1', mockV1);
 });
 
 afterEach(() => {
@@ -305,7 +305,7 @@ test('<Search> should display <ContactDetails />', async () => {
       callType: 'Child calling about self',
       categories: {},
       contactlessTask: VALID_EMPTY_CONTACT.rawJson.contactlessTask,
-      definitionVersion: DefinitionVersionId.v1,
+      definitionVersion: 'v1',
       childInformation: {
         firstName: 'Jill',
         lastName: 'Smith',

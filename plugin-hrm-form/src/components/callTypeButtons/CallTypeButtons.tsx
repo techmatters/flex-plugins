@@ -19,7 +19,8 @@
 import React from 'react';
 import { ITask, TaskHelper, Template } from '@twilio/flex-ui';
 import { connect, ConnectedProps } from 'react-redux';
-import { CallTypeButtonsEntry, callTypes } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-types';
+import { CallTypeButtonsEntry } from 'hrm-form-definitions';
 
 import { RootState } from '../../states';
 import { ContactDraftChanges, updateDraft as newUpdateDraftAction } from '../../states/contacts/existingContacts';

@@ -9,7 +9,7 @@
     "jest-each": "^29.5.0",
     "mockttp": "^3.15.5",
     "ts-node": "^10.9.1",
-    "undici": "^5.28.5"
+    "undici": "^5.29.0"
   },
   "scripts": {
     "docker:build": "docker build -t account-scoped --build-arg lambda_name=account-scoped --build-arg lambda_dir=. -f ../Dockerfile ../",
@@ -18,7 +18,11 @@
     "test": "jest"
   },
   "dependencies": {
+    "@aws-sdk/client-lex-runtime-service": "^3.787.0",
+    "@aws-sdk/client-lex-runtime-v2": "^3.787.0",
     "@aws-sdk/client-ssm": "^3.716.0",
+    "@tech-matters/hrm-form-definitions": "^1.0.0",
+    "@tech-matters/hrm-types": "^1.0.0",
     "@twilio-labs/serverless-runtime-types": "^4.0.1",
     "date-fns": "^4.1.0",
     "lodash": "^4.17.21",

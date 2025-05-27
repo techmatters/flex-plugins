@@ -19,7 +19,7 @@
 import React, { useEffect, useState } from 'react';
 import { Document, Page, PDFViewer, View } from '@react-pdf/renderer';
 import { CircularProgress } from '@material-ui/core';
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-types';
 import { parseISO } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 
