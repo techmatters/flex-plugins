@@ -8,69 +8,65 @@
   },
   "case": {
     "sectionTypes": {
-      "household": {
+      "riskToSelf": {
         "splitFormAt": 13,
         "caseHomeOrder": 1,
         "printOrder": 1,
         "previewFields": [
-          "name",
-          "gender",
-          "age",
-          "relationshipToChild"
+          "personAtRisk",
+          "alreadyActed",
+          "expressedThoughts"
         ],
         "layout": {
-          "name": {
+          "personAtRisk": {
             "widthRatio": 1.5,
-            "labelTemplateCode": "Case-PerpetratorName",
-            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
+            "includeLabel": true
+
           },
-          "age": {
-            "labelTemplateCode": "Case-PerpetratorAge"
+          "alreadyActed": {
+            "includeLabel": true
           },
-          "gender": {
-            "labelTemplateCode": "Case-PerpetratorGender"
-          },
-          "relationshipToChild": {
-            "labelTemplateCode": "Case-PerpetratorRelationship"
+          "expressedThoughts": {
+            "includeLabel": true
           }
         }
       },
-      "perpetrator": {
+      "riskFromOthers": {
         "splitFormAt": 9,
         "caseHomeOrder": 2,
         "printOrder": 2,
         "previewFields": [
-          "name",
-          "gender",
-          "age",
-          "relationshipToChild"
+          "personAtRisk",
+          "ageOfPersonAtRisk",
+          "relationshipToPerson"
         ],
         "layout": {
-          "name": {
-            "labelTemplateCode": "Case-PerpetratorName",
-            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
+          "personAtRisk": {
+            "widthRatio": 1.5,
+            "includeLabel": true
           },
-          "age": {
-            "labelTemplateCode": "Case-PerpetratorAge"
+          "ageOfPersonAtRisk": {
+            "includeLabel": true
           },
-          "gender": {
-            "labelTemplateCode": "Case-PerpetratorGender"
-          },
-          "relationshipToChild": {
-            "labelTemplateCode": "Case-PerpetratorRelationship"
+          "relationshipToPerson": {
+            "includeLabel": true
           }
         }
       },
-      "incident": {
+      "riskToOthers": {
         "previewFields": [
           "whoPresentsRisk",
           "typeOfHarm"
         ],
         "layout": {
           "whoPresentsRisk": {
+            "widthRatio": 1.5,
             "includeLabel": true
           },
           "typeOfHarm": {
+            "includeLabel": true
+          },
+          "alreadyActed": {
             "includeLabel": true
           }
         },
@@ -78,7 +74,7 @@
         "caseHomeOrder": 3,
         "printOrder": 3
       },
-      "referral": {
+      "externalIntervention": {
         "previewFields": [
           "referredTo"
         ],
