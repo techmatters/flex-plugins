@@ -703,7 +703,7 @@ const handlePostSurveyComplete = async ({
   const { definitionVersion, hrm_api_version: hrmApiVersion } = serviceConfig.attributes;
   const postSurveyConfigSpecs = definitionVersion?.insights?.postSurveySpecs;
 
-  if (definitionVersion && postSurveyConfigSpecs) {
+  if (definitionVersion && postSurveyConfigSpecs?.length) {
     const controlTaskAttributes = JSON.parse(controlTask.attributes);
 
     // parallel execution to save survey collected data in insights and hrm

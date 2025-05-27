@@ -125,7 +125,7 @@ const fetchDefinitionGivenConfig = async <T>(
   }
 
   if (response?.status === 404) {
-    if (placeholder) {
+    if (placeholder !== undefined) {
       // eslint-disable-next-line no-console
       console.log(`Could not find definition for: ${url}. Using placeholder instead.`);
       return placeholder;
@@ -242,7 +242,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     fetchDefinition<CannedResponsesDefinitions>('CannedResponses.json', []),
     fetchDefinition<OneToOneConfigSpec>('insights/oneToOneConfigSpec.json'),
     fetchDefinition<OneToManyConfigSpecs>('insights/oneToManyConfigSpecs.json'),
-    fetchDefinition<OneToManyConfigSpecs>('insights/postSurvey.private.json', undefined),
+    fetchDefinition<OneToManyConfigSpecs>('insights/postSurvey.private.json', []),
     fetchDefinition<DefinitionVersion['caseFilters']>('CaseFilters.json'),
     fetchDefinition<DefinitionVersion['caseStatus']>('CaseStatus.json'),
     fetchDefinition<DefinitionVersion['caseOverview']>('caseForms/CaseOverview.json'),
