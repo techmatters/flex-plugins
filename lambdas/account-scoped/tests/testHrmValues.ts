@@ -90,6 +90,7 @@ export const BASE_FORM_DEFINITION: DefinitionVersion = {
   insights: {
     oneToManyConfigSpecs: [],
     oneToOneConfigSpec: { contactForm: {}, caseForm: {} },
+    postSurveySpecs: [],
   },
   layoutVersion: {
     case: { hideCounselorDetails: false, sectionTypes: {} },

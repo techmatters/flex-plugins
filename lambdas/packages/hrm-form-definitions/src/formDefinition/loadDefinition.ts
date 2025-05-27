@@ -34,7 +34,7 @@ import {
   LocalizedStringMap,
   FullyQualifiedFieldReference,
 } from './types';
-import {OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
+import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 import { LayoutVersion } from './layoutVersion';
 
 // Type representing the JSON form where single fields don't need to be wrapped in arrays
@@ -114,12 +114,12 @@ const fetchDefinitionGivenConfig = async <T>(
   const response = await fetch(url.toString());
 
   if (response?.ok) {
-    const bodyText = await response.text()
+    const bodyText = await response.text();
     try {
       const json = JSON.parse(bodyText);
       return json as T;
     } catch (e) {
-      console.error(`Could not parse response for ${url}:`, bodyText)
+      console.error(`Could not parse response for ${url}:`, bodyText);
       throw e;
     }
   }
@@ -214,7 +214,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     cannedResponses,
     oneToOneConfigSpec,
     oneToManyConfigSpecs,
-      postSurveySpecs,
+    postSurveySpecs,
     caseFilters,
     caseStatus,
     caseOverview,

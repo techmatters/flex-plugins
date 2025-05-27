@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
+import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 import { LayoutVersion } from './layoutVersion';
 
 export enum FormInputType {
