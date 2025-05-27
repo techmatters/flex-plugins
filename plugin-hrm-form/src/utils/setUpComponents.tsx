@@ -18,6 +18,7 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import * as Flex from '@twilio/flex-ui';
+import { Notifications, NotificationType, Template } from '@twilio/flex-ui';
 
 import * as TransferHelpers from '../transfer/transferTaskState';
 import EmojiPicker from '../components/emojiPicker';
@@ -50,6 +51,7 @@ import { AppRoutes, ChangeRouteMode } from '../states/routing/types';
 import { selectCurrentBaseRoute } from '../states/routing/getRoute';
 import { RootState } from '../states';
 import selectCurrentOfflineContact from '../states/contacts/selectCurrentOfflineContact';
+import {REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID} from "../states/configuration/changeLanguage";
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
@@ -420,4 +422,10 @@ export const setupWorkerLanguageSelect = (translateUI: (language: string) => Pro
     <Translator manager={Flex.Manager.getInstance()} translateUI={translateUI} key="locale-selector" />,
     { align: 'end', sortOrder: 0 },
   );
+  Notifications.registerNotification({
+    id: REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID,
+    type: NotificationType.information,
+    timeout: 0,
+    content: <Template code="Notifications-Translator-RefreshRequired" />,
+  });
 };

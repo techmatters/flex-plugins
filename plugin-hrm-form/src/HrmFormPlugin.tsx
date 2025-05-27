@@ -131,7 +131,7 @@ const setUpComponents = (
 
   if (featureFlags.enable_conferencing) setupConferenceComponents();
 
-  Components.setupWorkerLanguageSelect(translateUI);
+  if (featureFlags.enable_language_selector) Components.setupWorkerLanguageSelect(translateUI);
 };
 
 const setUpActions = (
@@ -165,6 +165,7 @@ const setUpActions = (
 
   if (featureFlags.enable_conferencing) setUpConferenceActions();
   if (featureFlags.enable_llm_summary) setupLlmNotifications();
+
 };
 
 export default class HrmFormPlugin extends FlexPlugin {

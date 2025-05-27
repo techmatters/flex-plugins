@@ -14,14 +14,15 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import * as Flex from '@twilio/flex-ui';
 import { CircularProgress, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectLanguage } from '../../states/configuration/selectLanguage';
+import { selectLocaleState } from '../../states/configuration/selectLocaleState';
 import { selectCurrentDefinitionVersion } from '../../states/configuration/selectDefinitions';
 import { changeLanguage } from '../../states/configuration/actions';
+import asyncDispatch from '../../states/asyncDispatch';
 
 type Props = {
   translateUI: (language: string) => Promise<void>;
@@ -29,10 +30,9 @@ type Props = {
 };
 
 const Translator: React.FC<Props> = ({ manager }) => {
-  const language = useSelector(selectLanguage);
+  const { selected: currentlocale, status: loadingStatus } = useSelector(selectLocaleState);
   const { flexUiLocales } = useSelector(selectCurrentDefinitionVersion);
-  const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
+  const dispatch = asyncDispatch(useDispatch());
 
   if (flexUiLocales.length < 2) return null;
 
@@ -40,49 +40,8 @@ const Translator: React.FC<Props> = ({ manager }) => {
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const handleChange = async e => {
     const selectedLocale = e.target.value;
-    if (!loading && selectedLocale !== language) {
-      setLoading(true);
-      // await translateUI(selectedLanguage);
-      localStorage.setItem('ASELO_PLUGIN_USER_LOCALE', selectedLocale);
-      dispatch(changeLanguage(selectedLocale));
-      const { availableLocales } = manager.localization;
-      const specifiedFlexLocale = flexUiLocales.find(locale => locale === selectedLocale)?.flexLocale;
-      if (specifiedFlexLocale) {
-        //
-        if (availableLocales.find(locale => locale.tag === selectedLocale)) {
-          await manager.localization.setLocalePreference(specifiedFlexLocale);
-          return;
-        }
-        console.warn(
-          `The configured Flex Locale '${specifiedFlexLocale}' for Aselo Locale '${selectedLocale}' is not supported in this version of Flex UI. Attempting to find a best match from available locales`,
-        );
-      } else {
-        const exactMatch = availableLocales.find(({ tag }) => tag === selectedLocale)?.tag;
-        if (exactMatch) {
-          console.info(
-            `Aselo Locale '${selectedLocale}' is also a supported Flex Locale, setting Flex Llocale to '${selectedLocale}'`,
-          );
-          await manager.localization.setLocalePreference(exactMatch);
-        } else {
-          const [selectedLanguage] = selectedLocale.split('-');
-          const languageMatch = availableLocales.find(l => {
-            const [availableLocaleLanguage] = l.tag.split('-');
-            return availableLocaleLanguage === selectedLanguage;
-          })?.tag;
-          if (languageMatch) {
-            console.info(
-              `Aselo Locale '${selectedLocale}' is not supported, but a locale with the same language, '${languageMatch}' is supported, so using that`,
-            );
-            await manager.localization.setLocalePreference(languageMatch);
-          } else {
-            console.info(
-              `Aselo Locale '${selectedLocale}' is not supported, nor are any with the same language, falling back to global default (en-US)`,
-            );
-            await manager.localization.setLocalePreference('en-US');
-          }
-        }
-      }
-      setLoading(false);
+    if (loadingStatus === 'loaded' && selectedLocale !== currentlocale) {
+      await dispatch(changeLanguage(selectedLocale));
     }
   };
 
@@ -96,10 +55,10 @@ const Translator: React.FC<Props> = ({ manager }) => {
         disableUnderline
         labelId={`${TranslateButtonAriaLabel}-label`}
         id={TranslateButtonAriaLabel}
-        value={language}
-        defaultValue={language}
+        value={currentlocale}
+        defaultValue={currentlocale}
         onChange={handleChange}
-        disabled={loading}
+        disabled={loadingStatus === 'loading'}
       >
         {flexUiLocales.map(({ aseloLocale, label }) => (
           <MenuItem value={aseloLocale} key={aseloLocale}>
@@ -107,7 +66,7 @@ const Translator: React.FC<Props> = ({ manager }) => {
           </MenuItem>
         ))}
       </Select>
-      {loading && <CircularProgress style={{ position: 'absolute', flex: 1 }} />}
+      {loadingStatus === 'loading' && <CircularProgress style={{ position: 'absolute', flex: 1 }} />}
     </FormControl>
   );
 };

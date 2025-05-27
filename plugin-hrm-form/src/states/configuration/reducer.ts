@@ -19,9 +19,13 @@ import type { DefinitionVersion } from 'hrm-form-definitions';
 import * as t from './types';
 import { defaultLanguage } from '../../translations';
 import { FETCH_CASE_LIST_FULFILLED_ACTION, FetchCaseListFulfilledAction } from '../caseList/listContent';
+import { changeLanguageReducer } from './changeLanguage';
 
 export type ConfigurationState = {
-  language: string;
+  locale: {
+    selected: string;
+    status: 'loading' | 'loaded';
+  };
   counselors: {
     list: t.CounselorsList;
     hash: { [sid: string]: string };
@@ -32,7 +36,10 @@ export type ConfigurationState = {
 };
 
 const initialState: ConfigurationState = {
-  language: localStorage.getItem('ASELO_PLUGIN_USER_LOCALE') || defaultLanguage,
+  locale: {
+    selected: localStorage.getItem('ASELO_PLUGIN_USER_LOCALE') || defaultLanguage,
+    status: 'loading',
+  },
   counselors: {
     list: [],
     hash: {},
@@ -41,17 +48,16 @@ const initialState: ConfigurationState = {
   definitionVersions: {},
 };
 
+const boundChangeLanguageReducer = changeLanguageReducer(initialState);
+
 // eslint-disable-next-line import/no-unused-modules
 export function reduce(
-  state = initialState,
+  inputState = initialState,
   action: t.ConfigurationActionType | FetchCaseListFulfilledAction,
 ): ConfigurationState {
+  const state = boundChangeLanguageReducer(inputState, action as any);
+
   switch (action.type) {
-    case t.CHANGE_LANGUAGE:
-      return {
-        ...state,
-        language: action.language,
-      };
     case t.POPULATE_COUNSELORS: {
       const sortedList = action.counselorsList.sort((c1, c2) => c1.fullName.localeCompare(c2.fullName));
       const counselorsHash = Object.fromEntries(sortedList.map(({ sid, fullName }) => [sid, fullName]));

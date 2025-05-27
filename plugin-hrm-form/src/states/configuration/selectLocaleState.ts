@@ -17,4 +17,4 @@
 import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
 
-export const selectLanguage = (state: RootState) => state[namespace].configuration.language;
+export const selectLocaleState = (state: RootState) => state[namespace].configuration.locale;

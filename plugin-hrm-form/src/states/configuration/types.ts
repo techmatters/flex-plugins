@@ -15,9 +15,11 @@
  */
 
 import type { DefinitionVersion } from 'hrm-form-definitions';
+import {CHANGE_LANGUAGE_ACTION} from "./changeLanguage";
 
 // Action types
 export const CHANGE_LANGUAGE = 'CHANGE_LANGUAGE';
+export const CHANGE_LANGUAGE_FULFILLED_ACTION = `${CHANGE_LANGUAGE_ACTION}_FULFILLED`;
 export const POPULATE_COUNSELORS = 'POPULATE_COUNSELORS';
 export const CHAT_CAPACITY_UPDATED = 'CHAT_CAPACITY_UPDATED';
 export const POPULATE_CURRENT_DEFINITION_VERSION = 'POPULATE_CURRENT_DEFINITION_VERSION';

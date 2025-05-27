@@ -270,6 +270,7 @@ export type FeatureFlags = {
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
   enable_llm_summary: boolean; // Enables generation of suggested contact summaries via an LLM
+  enable_language_selector: boolean // Enables the language of the UI to be changed by the user via a dropdown menu
 };
 /* eslint-enable camelcase */
 
