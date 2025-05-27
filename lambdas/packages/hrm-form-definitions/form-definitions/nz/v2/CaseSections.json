@@ -1,0 +1,26 @@
+{
+  "note": {
+    "label": "Note",
+    "formPath": "caseForms/NoteForm.json"
+  },
+  "externalIntervention": {
+    "label": "External Intervention",
+    "formPath": "caseForms/ExternalInterventionForm.json"
+  },
+  "riskToSelf": {
+    "label": "Risk to Self",
+    "formPath": "caseForms/RiskToSelfForm.json"
+  },
+  "riskFromOthers": {
+    "label": "Risk from Others",
+    "formPath": "caseForms/RiskFromOthersForm.json"
+  },
+  "riskToOthers": {
+    "label": "Risk to Others",
+    "formPath": "caseForms/RiskToOthersForm.json"
+  },
+  "document": {
+    "label": "Document",
+    "formPath": "caseForms/DocumentForm.json"
+  }
+}

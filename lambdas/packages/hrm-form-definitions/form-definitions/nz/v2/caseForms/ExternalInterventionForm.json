@@ -1,0 +1,92 @@
+[
+  {
+    "name": "date",
+    "type": "date-input",
+    "label": "Date",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "metadata": {
+      "eventTimestampSource": true
+    }
+  },
+  {
+    "name": "referredTo",
+    "label": "External Intervention to",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Ambulance",
+        "label": "Ambulance"
+      },
+      {
+        "value": "Caregiver",
+        "label": "Caregiver"
+      },
+      {
+        "value": "Residential facility",
+        "label": "Residential facility"
+      },
+      {
+        "value": "Crisis Assessment Team",
+        "label": "Crisis Assessment Team"
+      },
+      {
+        "value": "Police",
+        "label": "Police"
+      },
+      {
+        "value": "Oranga Tamariki",
+        "label": "Oranga Tamariki"
+      },
+      {
+        "value": "School",
+        "label": "School"
+      },
+      {
+        "value": "Other specialist support",
+        "label": "Other specialist support"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "externalInterventionDetails",
+    "label": "External Intervention Details",
+    "type": "textarea",
+    "placeholder": ""
+  },
+  {
+    "name": "referenceNumber",
+    "label": "Add Reference number for external interventions (if provided)",
+    "type": "input"
+  },
+  {
+    "name": "haveConsent",
+    "label": "Did we have client consent to the intervention?",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  }
+]

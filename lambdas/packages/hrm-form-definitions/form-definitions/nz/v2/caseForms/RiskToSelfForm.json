@@ -1,0 +1,261 @@
+[
+  {
+    "name": "personAtRisk",
+    "label": "Who is at risk from themselves?",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "The person I talked with",
+        "label": "The person I talked with"
+      },
+      {
+        "value": "Someone else",
+        "label": "Someone else"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "alreadyActed",
+    "label": "Have they already acted to take their own life?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "actionDetails",
+    "label": "Details of any actions they have already taken",
+    "type": "textarea",
+    "placeholder": ""
+  },
+  {
+    "name": "expressedThoughts",
+    "label": "Have they expressed thoughts or feelings of wanting to end their life?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "feelingDetails",
+    "label": "Details of any thoughts or feelings",
+    "type": "textarea",
+    "placeholder": ""
+  },
+  {
+    "name": "havePlan",
+    "label": "Do they have a specific plan to end their life?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "planDetails",
+    "label": "Details of any plan",
+    "type": "textarea",
+    "placeholder": ""
+  },
+  {
+    "name": "previouslyActed",
+    "label": "Have they previously acted to end their life?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "previousActionsDetails",
+    "label": "Details of previous actions",
+    "type": "textarea",
+    "placeholder": ""
+  },
+  {
+    "name": "accessToMeans",
+    "label": "Do they have access to means of acting to end their life?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "accessToMeansDetails",
+    "label": "Details of means",
+    "type": "textarea",
+    "placeholder": ""
+  },
+  {
+    "name": "timeframe",
+    "label": "Have they described a timeframe for acting to end their life?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "timeframeDetails",
+    "label": "Details of timeframe",
+    "type": "textarea",
+    "placeholder": ""
+  },
+  {
+    "name": "recentlySelfHarmed",
+    "label": "Have they recently self-harmed?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "selfHarmDetails",
+    "label": "Details of self-harm",
+    "type": "textarea",
+    "placeholder": ""
+  },
+  {
+    "name": "medicalAttentionRequired",
+    "label": "Was medical attention required?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "medicalAttentionDetails",
+    "label": "Details of medical attention",
+    "type": "textarea",
+    "placeholder": ""
+  },
+  {
+    "name": "selfHarmThoughts",
+    "label": "Have they expressed thoughts or feelings about self-harming?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "selfHarmFeelingsDetails",
+    "label": "Details of any thoughts or feelings",
+    "type": "textarea",
+    "placeholder": ""
+  },
+  {
+    "name": "selfHarmPlan",
+    "label": "Do they have a specific plan to self-harm?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "selfHarmPlanDetails",
+    "label": "Details of any plan",
+    "type": "textarea",
+    "placeholder": ""
+  },
+  {
+    "name": "accessToSelfHarm",
+    "label": "Do they have access to means of self-harming?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "accessToSelfHarmDetails",
+    "label": "Details of means",
+    "type": "textarea",
+    "placeholder": ""
+  },
+  {
+    "name": "selfHarmTimeframe",
+    "label": "Have they described a timeframe for self-harming?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "selfHarmTimeframeDetails",
+    "label": "Details of timeframe",
+    "type": "textarea",
+    "placeholder": ""
+  }
+]

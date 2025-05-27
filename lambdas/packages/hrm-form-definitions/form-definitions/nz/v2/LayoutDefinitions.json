@@ -1,0 +1,121 @@
+{
+  "contact": {
+    "callerInformation": {},
+    "childInformation": {},
+    "caseInformation": {
+      "splitFormAt": 1
+    }
+  },
+  "case": {
+    "sectionTypes": {
+      "riskToSelf": {
+        "splitFormAt": 13,
+        "caseHomeOrder": 1,
+        "printOrder": 1,
+        "previewFields": [
+          "personAtRisk",
+          "alreadyActed",
+          "expressedThoughts"
+        ],
+        "layout": {
+          "personAtRisk": {
+            "widthRatio": 1.5,
+            "includeLabel": true
+
+          },
+          "alreadyActed": {
+            "includeLabel": true
+          },
+          "expressedThoughts": {
+            "includeLabel": true
+          }
+        }
+      },
+      "riskFromOthers": {
+        "splitFormAt": 9,
+        "caseHomeOrder": 2,
+        "printOrder": 2,
+        "previewFields": [
+          "personAtRisk",
+          "ageOfPersonAtRisk",
+          "relationshipToPerson"
+        ],
+        "layout": {
+          "personAtRisk": {
+            "widthRatio": 1.5,
+            "includeLabel": true
+          },
+          "ageOfPersonAtRisk": {
+            "includeLabel": true
+          },
+          "relationshipToPerson": {
+            "includeLabel": true
+          }
+        }
+      },
+      "riskToOthers": {
+        "previewFields": [
+          "whoPresentsRisk",
+          "typeOfHarm"
+        ],
+        "layout": {
+          "whoPresentsRisk": {
+            "widthRatio": 1.5,
+            "includeLabel": true
+          },
+          "typeOfHarm": {
+            "includeLabel": true
+          },
+          "alreadyActed": {
+            "includeLabel": true
+          }
+        },
+        "splitFormAt": 6,
+        "caseHomeOrder": 3,
+        "printOrder": 3
+      },
+      "externalIntervention": {
+        "previewFields": [
+          "referredTo"
+        ],
+        "splitFormAt": 3,
+        "printOrder": 4,        
+        "caseHomeLocation": "timeline"
+      },
+      "document": {
+        "splitFormAt": 1,
+        "caseHomeOrder": 4,
+        "printFormat": "hidden",
+        "previewFields": [
+          "createdAt",
+          "fileName",
+          "comments"
+        ],
+        "layout": {
+          "createdAt": {
+            "labelTemplateCode": "Case-DocumentFileName",
+            "format": "date"
+          },
+          "fileName": {
+            "labelTemplateCode": "Case-DocumentDate",
+            "format": "file",
+            "widthRatio": 2
+          },
+          "comments": {
+            "labelTemplateCode": "Case-DocumentComments",
+            "widthRatio": 2
+          }
+        }
+      },
+      "note": {
+        "printOrder": 5,
+        "caseHomeLocation": "timeline",
+        "printFormat": "list",
+        "previewFields": ["note"],
+        "layout": {
+          "note": {}
+        }
+      }
+    }
+  }
+}

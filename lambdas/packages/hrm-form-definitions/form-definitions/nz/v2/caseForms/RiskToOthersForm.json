@@ -1,0 +1,152 @@
+[
+  {
+    "name": "whoPresentsRisk",
+    "label": "Who is presenting as a risk to others?",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "The person I talked with",
+        "label": "The person I talked with"
+      },
+      {
+        "value": "Someone else",
+        "label": "Someone else"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "typeOfHarm",
+    "label": "What is the type of harm?",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Physical",
+        "label": "Physical"
+      },
+      {
+        "value": "Emotional",
+        "label": "Emotional"
+      },
+      {
+        "value": "Sexual",
+        "label": "Sexual"
+      },
+      {
+        "value": "Neglect",
+        "label": "Neglect"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "alreadyActed",
+    "label": "Have they already acted to harm someone else?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "harmDetails",
+    "label": "Details of harm",
+    "type": "textarea",
+    "placeholder": ""
+  },
+  {
+    "name": "expressedThoughts",
+    "label": "Have they expressed thoughts or feelings about harming someone?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "thoughtsDetails",
+    "label": "Details of thoughts or feelings",
+    "type": "textarea",
+    "placeholder": ""
+  },
+  {
+    "name": "expressedIntent",
+    "label": "Have they expressed intending to act to harm someone?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "intentDetails",
+    "label": "Details of any intent",
+    "type": "textarea",
+    "placeholder": ""
+  },
+  {
+    "name": "describedMethod",
+    "label": "Have they described a specific method, means or way of harming someone else that they intend to use?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "methodDetails",
+    "label": "Details of means",
+    "type": "textarea",
+    "placeholder": ""
+  },
+  {
+    "name": "timeframe",
+    "label": "Have they described a timeframe for when they will harm someone else?",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "responseOptions",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "timeframeDetails",
+    "label": "Details of timeframe",
+    "type": "textarea",
+    "placeholder": ""
+  }
+]

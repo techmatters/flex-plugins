@@ -1,0 +1,52 @@
+[
+  {
+    "attributeName": "customer_attribute_3",
+    "insightsObject": "customers",
+    "paths": [
+      "savedContact.id"
+    ],
+    "saveForNonDataContacts": true
+  },
+  {
+    "attributeName": "region",
+    "insightsObject": "customers",
+    "paths": [
+      "contactForm.childInformation.region"
+    ]
+  },
+  {
+    "attributeName": "email",
+    "insightsObject": "customers",
+    "paths": [
+      "contactForm.childInformation.ethnicity"
+    ]
+  },
+  {
+    "attributeName": "conversation_attribute_7",
+    "insightsObject": "conversations",
+    "paths": [
+      "contactForm.caseInformation.repeatCaller"
+    ]
+  },
+  {
+    "attributeName": "conversation_attribute_6",
+    "insightsObject": "conversations",
+    "paths": [
+      "contactForm.caseInformation.howDidYouKnowAboutOurLine"
+    ]
+  },
+  {
+    "attributeName": "conversation_attribute_5",
+    "insightsObject": "conversations",
+    "paths": [
+      "contactForm.caseInformation.actionTaken"
+    ]
+  },
+  {
+    "attributeName": "followed_by",
+    "insightsObject": "conversations",
+    "paths": [
+      "caseForm.childIsAtRisk"
+    ]
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "name": "note",
+    "label": "Additional information",
+    "type": "textarea",
+    "placeholder": ""
+  },
+  {
+    "name": "stepsNeeded",
+    "label": "Any next steps that you feel may need to be considered?",
+    "type": "textarea",
+    "placeholder": ""
+  }
+]
