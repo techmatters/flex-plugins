@@ -15,6 +15,7 @@
  */
 
 import each from 'jest-each';
+import type { HrmContact } from '@tech-matters/hrm-types';
 import * as mockingProxy from '../sandbox/mockingProxy';
 import '../expectToParseAsDate';
 import {
@@ -43,7 +44,7 @@ import { mockHrmContacts, verifyCreateContactRequest } from '../sandbox/mockHrm'
 import { MockedEndpoint } from 'mockttp';
 import { BLANK_CONTACT } from '../../unit/hrm/testContacts';
 import { TaskSID } from '../../../src/twilioTypes';
-import { callTypes, HrmContact } from '../../../src/hrm/populateHrmContactFormFromTask';
+import { callTypes } from '../../../src/hrm/populateHrmContactFormFromTask';
 
 const BLANK_POPULATED_PERSON_INFORMATION = {
   age: '',

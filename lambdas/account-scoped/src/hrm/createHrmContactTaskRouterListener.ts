@@ -16,10 +16,7 @@
 
 /* eslint-disable global-require */
 /* eslint-disable import/no-dynamic-require */
-import {
-  HrmContact,
-  populateHrmContactFormFromTask,
-} from './populateHrmContactFormFromTask';
+import { populateHrmContactFormFromTaskByKeys } from './populateHrmContactFormFromTaskByKeys';
 import { registerTaskRouterEventHandler } from '../taskrouter/taskrouterEventHandler';
 import { RESERVATION_ACCEPTED } from '../taskrouter/eventTypes';
 import type { EventFields } from '../taskrouter';
@@ -33,6 +30,8 @@ import {
 import { isErr, isOk } from '../Result';
 import { inferHrmAccountId } from './hrmAccountId';
 import { sanitizeIdentifierFromTask } from './sanitizeIdentifier';
+import { HrmContact } from '@tech-matters/hrm-types';
+import { populateHrmContactFormFromTaskByMappings } from './populateHrmContactFormFromTaskByMappings';
 
 // Temporarily copied to this repo, will share the flex types when we move them into the same repo
 
@@ -46,7 +45,7 @@ const BLANK_CONTACT: HrmContact = {
     childInformation: {},
     callerInformation: {},
     caseInformation: {},
-    callType: '',
+    callType: '' as any,
     contactlessTask: {
       channel: '' as any,
       date: '',
@@ -113,6 +112,7 @@ export const handleEvent = async (
     helpline_code: helplineCode,
     feature_flags: {
       enable_backend_hrm_contact_creation: enableBackendHrmContactCreation,
+      use_prepopulate_mappings: usePrepopulateMappings,
     },
   } = serviceConfig.attributes;
 
@@ -225,16 +225,22 @@ export const handleEvent = async (
     number: identifier,
   };
   console.debug('Creating HRM contact with timeOfContact:', newContact.timeOfContact);
-  const populatedContact = await populateHrmContactFormFromTask(
+  const prepopulate = usePrepopulateMappings
+    ? populateHrmContactFormFromTaskByMappings
+    : populateHrmContactFormFromTaskByKeys;
+  const populatedContactResult = await prepopulate(
     taskAttributes,
     newContact,
     formDefinitionsVersionUrl,
   );
+  if (isErr(populatedContactResult)) {
+    console.warn(`Populating contact ${newContact.id} failed, creating blank contact`);
+  }
   const responseResult = await postToInternalHrmEndpoint<HrmContact, HrmContact>(
     hrmAccountId,
     hrmApiVersion,
     'contacts',
-    populatedContact,
+    isOk(populatedContactResult) ? populatedContactResult.data : newContact,
   );
   if (isErr(responseResult)) {
     console.error(

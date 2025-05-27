@@ -21,7 +21,7 @@
 /* eslint-disable sonarjs/prefer-immediate-return */
 /* eslint-disable camelcase */
 import { ITask, Notifications } from '@twilio/flex-ui';
-import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, loadDefinition } from 'hrm-form-definitions';
 
 import fetchProtectedApi from './fetchProtectedApi';
 import type { ChildCSAMReportForm, CounselorCSAMReportForm } from '../states/csam-report/types';
@@ -79,12 +79,12 @@ export const sendSystemMessage = async (body: { taskSid: ITask['taskSid']; messa
   return response;
 };
 
-export const getDefinitionVersion = async (version: DefinitionVersionId): Promise<DefinitionVersion> => {
+export const getDefinitionVersion = async (version: string): Promise<DefinitionVersion> => {
   const { getFormDefinitionsBaseUrl } = getHrmConfig();
   return loadDefinition(getFormDefinitionsBaseUrl(version));
 };
 
-export const getDefinitionVersionsList = async (missingDefinitionVersions: DefinitionVersionId[]) =>
+export const getDefinitionVersionsList = async (missingDefinitionVersions: string[]) =>
   Promise.all(
     missingDefinitionVersions.map(async version => {
       const definition = await getDefinitionVersion(version);

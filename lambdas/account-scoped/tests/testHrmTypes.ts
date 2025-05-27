@@ -14,25 +14,21 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  FormItemDefinition,
-  PrepopulateKeys,
-} from '../src/hrm/populateHrmContactFormFromTask';
+import { DefinitionVersion } from '@tech-matters/hrm-form-definitions';
 import { RecursivePartial } from './unit/RecursivePartial';
 
-export type FormDefinitionSet = {
-  childInformation: FormItemDefinition[];
-  callerInformation: FormItemDefinition[];
-  caseInformation: FormItemDefinition[];
-  prepopulateKeys: PrepopulateKeys;
-  helplineInformation: {
-    label: string;
-    helplines: {
-      label: string;
-      value: string;
-    }[];
-  };
+export type FormDefinitionSet = Pick<
+  DefinitionVersion,
+  'prepopulateKeys' | 'prepopulateMappings' | 'helplineInformation'
+> & {
+  childInformation: DefinitionVersion['tabbedForms']['ChildInformationTab'];
+  callerInformation: DefinitionVersion['tabbedForms']['CallerInformationTab'];
+  caseInformation: DefinitionVersion['tabbedForms']['CaseInformationTab'];
 };
-export type FormDefinitionPatch = Partial<Omit<FormDefinitionSet, 'prepopulateKeys'>> & {
-  prepopulateKeys?: RecursivePartial<PrepopulateKeys>;
+
+export type FormDefinitionPatch = Partial<
+  Omit<DefinitionVersion, 'prepopulateKeys' | 'prepopulateMappings'>
+> & {
+  prepopulateKeys?: RecursivePartial<DefinitionVersion['prepopulateKeys']>;
+  prepopulateMappings?: Partial<DefinitionVersion['prepopulateMappings']>;
 };
