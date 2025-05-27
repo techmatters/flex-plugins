@@ -3,21 +3,21 @@
     "label": "Note",
     "formPath": "caseForms/NoteForm.json"
   },
-  "externalIntervention": {
-    "label": "External Intervention",
-    "formPath": "caseForms/ExternalInterventionForm.json"
+  "referral": {
+    "label": "Referral",
+    "formPath": "caseForms/ReferralForm.json"
   },
-  "riskToSelf": {
-    "label": "Risk to Self",
-    "formPath": "caseForms/RiskToSelfForm.json"
+  "household": {
+    "label": "Household Member",
+    "formPath": "caseForms/HouseholdForm.json"
   },
-  "riskFromOthers": {
-    "label": "Risk from Others",
-    "formPath": "caseForms/RiskFromOthersForm.json"
+  "perpetrator": {
+    "label": "Perpetrator",
+    "formPath": "caseForms/PerpetratorForm.json"
   },
-  "riskToOthers": {
-    "label": "Risk to Others",
-    "formPath": "caseForms/RiskToOthersForm.json"
+  "incident": {
+    "label": "Incident",
+    "formPath": "caseForms/IncidentForm.json"
   },
   "document": {
     "label": "Document",

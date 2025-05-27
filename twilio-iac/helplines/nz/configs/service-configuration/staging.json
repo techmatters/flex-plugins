@@ -1,6 +1,6 @@
 {
     "attributes": {
-        "definitionVersion": "nz-v1",
+        "definitionVersion": "nz-v2",
         "feature_flags": {
             "enable_llm_summary": true
         },
