@@ -251,7 +251,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     fetchDefinition<ProfileFlagDurationDefinition[]>('profileForms/FlagDurations.json', []),
     fetchDefinition<LocalizedStringMap>('customStrings/Messages.json', {}),
     fetchDefinition<LocalizedStringMap>('customStrings/Substitutions.json', {}),
-    fetchDefinition<FlexUILocaleEntry[]>('flexUiLocales.json', []),
+    fetchDefinition<FlexUILocaleEntry[]>('FlexUiLocales.json', []),
   ] as const);
   const expandedCaseSections: CaseSectionTypeDefinitions = await loadAndExpandCaseSections(
     caseSections,
