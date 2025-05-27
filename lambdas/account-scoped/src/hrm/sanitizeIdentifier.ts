@@ -14,8 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { HrmContact } from '@tech-matters/hrm-types';
 import { newErr, newOk, Result } from '../Result';
-import { HrmContact } from './populateHrmContactFormFromTask';
 
 /**
  * IMPORTANT: keep up to date with flex-plugins/plugin-hrm-form/src/utils/task
