@@ -13,10 +13,10 @@
         "caseHomeOrder": 1,
         "printOrder": 1,
         "previewFields": [
-          "personAtRisk"
+          "reportAddedAtRisk"
         ],
         "layout": {
-          "personAtRisk": {
+          "reportAddedAtRisk": {
             "widthRatio": 1,
             "labelValueCode": "Case-SectionList-Value/reportAddedAtRisk",
             "includeLabel": false
@@ -29,10 +29,10 @@
         "caseHomeOrder": 2,
         "printOrder": 2,
         "previewFields": [
-          "personAtRisk"
+          "reportAddedAtRisk"
         ],
         "layout": {
-          "personAtRisk": {
+          "reportAddedAtRisk": {
             "widthRatio": 1,
             "labelValueCode": "Case-SectionList-Value/reportAddedAtRisk",
             "includeLabel": false
@@ -41,10 +41,10 @@
       },
       "riskToOthers": {
         "previewFields": [
-          "whoPresentsRisk"
+          "reportAddedPresentsRisk"
         ],
         "layout": {
-          "whoPresentsRisk": {
+          "reportAddedPresentsRisk": {
            "widthRatio": 1,
             "labelValueCode": "Case-SectionList-Value/reportAddedPresentsRisk",
             "includeLabel": false
