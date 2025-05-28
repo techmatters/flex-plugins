@@ -16,7 +16,7 @@
                 ]
             }
         ],
-        "incident": [
+        "riskToOthers": [
             {
                 "name": "expressedThoughts",
                 "insights": [
@@ -25,7 +25,7 @@
                 ]
             }
         ],
-        "referral": [
+        "externalIntervention": [
             {
                 "name": "referredTo",
                 "insights": [
@@ -41,9 +41,9 @@
                 ]
             }
         ],
-        "household": [
+        "riskToSelf": [
             {
-                "name": "relationshipToChild",
+                "name": "expressedThoughts",
                 "insights": [
                     "customers",
                     "organization"
@@ -57,9 +57,9 @@
                 ]
             }
         ],
-        "perpetrator": [
+        "riskFromOthers": [
             {
-                "name": "relationshipToChild",
+                "name": "typeOfHarm",
                 "insights": [
                     "customers",
                     "category"

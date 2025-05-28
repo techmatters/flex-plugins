@@ -46,7 +46,7 @@
     "attributeName": "followed_by",
     "insightsObject": "conversations",
     "paths": [
-      "caseForm.childIsAtRisk"
+      "caseForm.riskScale"
     ]
   }
 ]
