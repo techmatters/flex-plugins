@@ -17,7 +17,7 @@
         ],
         "layout": {
           "reportAddedAtRisk": {
-            "widthRatio": 1,
+            "widthRatio": 3,
             "valueTemplateCode": "Case-SectionList-Value/reportAddedAtRisk",
             "includeLabel": false
 
@@ -33,7 +33,7 @@
         ],
         "layout": {
           "reportAddedAtRisk": {
-            "widthRatio": 1,
+            "widthRatio": 3,
             "valueTemplateCode": "Case-SectionList-Value/reportAddedAtRisk",
             "includeLabel": false
           }
@@ -45,7 +45,7 @@
         ],
         "layout": {
           "reportAddedPresentsRisk": {
-           "widthRatio": 1,
+           "widthRatio": 3,
             "valueTemplateCode": "Case-SectionList-Value/reportAddedPresentsRisk",
             "includeLabel": false
           }
