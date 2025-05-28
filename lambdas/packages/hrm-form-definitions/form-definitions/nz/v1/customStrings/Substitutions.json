@@ -259,6 +259,13 @@
     "CaseSection-BottomBar-Save/externalIntervention": "Save External Intervention",
     "CaseSection-BottomBar-SaveAndAddAnother/externalIntervention": "Save And Add Another ",
     "Case-SectionList-NoItems/externalIntervention": "No Reports listed",
-    "CasePrint-TabularSection-Header/externalIntervention": "External Intervention {{sectionNo}} of {{sectionCount}}"
+    "CasePrint-TabularSection-Header/externalIntervention": "External Intervention {{sectionNo}} of {{sectionCount}}",
+    "Case-SectionList-Label/personAtRisk": "Person at risk",
+    "Case-SectionList-Label/alreadyActed": "Already acted?",
+    "Case-SectionList-Label/expressedThoughts": "Expressed thoughts?",
+    "Case-SectionList-Label/ageOfPersonAtRisk": "Age of person at risk",
+    "Case-SectionList-Label/relationshipToPerson": "Relationship to person at risk",
+    "Case-SectionList-Label/whoPresentsRisk": "Person who presents a risk",
+    "Case-SectionList-Label/typeOfHarm": "Type of harm"
   }
 }
