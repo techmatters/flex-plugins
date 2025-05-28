@@ -264,7 +264,7 @@
     "Case-SectionList-Label/alreadyActed": "Already acted?",
     "Case-SectionList-Label/expressedThoughts": "Expressed thoughts?",
     "Case-SectionList-Label/ageOfPersonAtRisk": "Age of person at risk",
-    "Case-SectionList-Label/relationshipToPerson": "Relationship to person at risk",
+    "Case-SectionList-Label/relationshipToPerson": "Relationship",
     "Case-SectionList-Label/whoPresentsRisk": "Person who presents a risk",
     "Case-SectionList-Label/typeOfHarm": "Type of harm"
   }
