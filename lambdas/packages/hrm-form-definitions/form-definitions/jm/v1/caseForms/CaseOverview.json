@@ -13,6 +13,22 @@
     "name": "followUpDate",
     "label": "Follow Up Date",
     "type": "date-input"
+  },  
+  {
+    "name": "riskFactors",
+    "label": "Risk Factors",
+    "type": "textarea",
+    "rows": 5,
+    "width": 300,
+    "isPII": true
+  },
+  {
+    "name": "protectiveFactors",
+    "label": "Protective Factors",
+    "type": "textarea",
+    "rows": 5,
+    "width": 300,
+    "isPII": true
   },
   {
     "name": "summary",
