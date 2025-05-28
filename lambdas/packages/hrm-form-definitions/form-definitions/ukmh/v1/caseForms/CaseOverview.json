@@ -5,8 +5,8 @@
     "type": "select"
   },
   {
-    "name": "childIsAtRisk",
-    "label": "Child is at risk",
+    "name": "safeguardingConcernsRaised",
+    "label": "Safeguarding concerns raised",
     "type": "checkbox"
   },
   {
