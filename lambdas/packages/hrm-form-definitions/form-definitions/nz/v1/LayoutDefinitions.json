@@ -13,24 +13,14 @@
         "caseHomeOrder": 1,
         "printOrder": 1,
         "previewFields": [
-          "personAtRisk",
-          "alreadyActed",
-          "expressedThoughts"
+          "personAtRisk"
         ],
         "layout": {
           "personAtRisk": {
-            "widthRatio": 1.5,
-            "labelTemplateCode": "Case-SectionList-Label/personAtRisk",
-            "includeLabel": true
+            "widthRatio": 1,
+            "labelValueCode": "Case-SectionList-Value/reportAddedAtRisk",
+            "includeLabel": false
 
-          },
-          "alreadyActed": {
-            "includeLabel": true,
-            "labelTemplateCode": "Case-SectionList-Label/alreadyActed"
-          },
-          "expressedThoughts": {
-            "includeLabel": true,
-            "labelTemplateCode": "Case-SectionList-Label/expressedThoughts"
           }
         }
       },
@@ -39,44 +29,25 @@
         "caseHomeOrder": 2,
         "printOrder": 2,
         "previewFields": [
-          "personAtRisk",
-          "ageOfPersonAtRisk",
-          "relationshipToPerson"
+          "personAtRisk"
         ],
         "layout": {
           "personAtRisk": {
-            "widthRatio": 1.5,
-            "labelTemplateCode": "Case-SectionList-Label/personAtRisk",
-            "includeLabel": true
-          },
-          "ageOfPersonAtRisk": {
-            "labelTemplateCode": "Case-SectionList-Label/ageOfPersonAtRisk",
-            "includeLabel": true
-          },
-          "relationshipToPerson": {
-            "labelTemplateCode": "Case-SectionList-Label/relationshipToPerson",
-            "includeLabel": true
+            "widthRatio": 1,
+            "labelValueCode": "Case-SectionList-Value/reportAddedAtRisk",
+            "includeLabel": false
           }
         }
       },
       "riskToOthers": {
         "previewFields": [
-          "whoPresentsRisk",
-          "typeOfHarm"
+          "whoPresentsRisk"
         ],
         "layout": {
           "whoPresentsRisk": {
-            "widthRatio": 1.5,
-            "labelTemplateCode": "Case-SectionList-Label/whoPresentsRisk",
-            "includeLabel": true
-          },
-          "alreadyActed": {
-            "labelTemplateCode": "Case-SectionList-Label/alreadyActed",
-            "includeLabel": true
-          },
-          "typeOfHarm": {
-            "labelTemplateCode": "Case-SectionList-Label/typeOfHarm",
-            "includeLabel": true
+           "widthRatio": 1,
+            "labelValueCode": "Case-SectionList-Value/reportAddedPresentsRisk",
+            "includeLabel": false
           }
         },
         "splitFormAt": 6,
