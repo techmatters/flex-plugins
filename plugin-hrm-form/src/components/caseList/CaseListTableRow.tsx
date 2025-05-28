@@ -38,10 +38,9 @@ import {
   TableSummaryFont,
   TextCell,
 } from '../../styles';
-import { formatName, getShortSummary } from '../../utils';
+import { formatName, getShortSummary } from '../../utils/formatters';
 import { getContactTags } from '../../utils/categories';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
-import { getHrmConfig } from '../../hrmConfig';
 import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
 import { selectDefinitionVersions } from '../../states/configuration/selectDefinitions';

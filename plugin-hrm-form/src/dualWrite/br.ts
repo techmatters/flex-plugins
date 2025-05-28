@@ -20,7 +20,7 @@ import { saveContactToSaferNet } from '../services/ServerlessService';
 import { getMessage } from '../translations';
 import { setCustomGoodbyeMessage } from '../states/dualWrite/actions';
 import { getHrmConfig } from '../hrmConfig';
-import { getTaskLanguage } from '../utils';
+import { getTaskLanguage } from '../utils/task';
 
 const saveContact = async (task: ITask, payload: any) => {
   const { channelSid } = task.attributes;

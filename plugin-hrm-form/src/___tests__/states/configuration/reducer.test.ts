@@ -37,7 +37,10 @@ describe('test reducer', () => {
 
   test('should return initial state', async () => {
     const expected = {
-      language: defaultLanguage,
+      locale: {
+        selected: defaultLanguage,
+        status: 'loaded',
+      },
       counselors: { list: [], hash: {} },
       workerInfo: {
         chatChannelCapacity: 0,
@@ -49,14 +52,6 @@ describe('test reducer', () => {
     expect(result).toStrictEqual(expected);
 
     state = result;
-  });
-
-  test('should handle CHANGE_LANGUAGE', async () => {
-    const language = 'es';
-    const expected = { ...state, language };
-
-    const result = reduce(state, actions.changeLanguage(language));
-    expect(result).toStrictEqual(expected);
   });
 
   test('should handle POPULATE_COUNSELORS', async () => {

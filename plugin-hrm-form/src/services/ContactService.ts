@@ -30,7 +30,7 @@ import {
   isTwilioTask,
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
-import { getNumberFromTask } from '../utils';
+import { getNumberFromTask } from '../utils/task';
 import {
   ExternalRecordingInfoSuccess,
   getExternalRecordingInfo,

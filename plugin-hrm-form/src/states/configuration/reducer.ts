@@ -35,7 +35,7 @@ export type ConfigurationState = {
   currentDefinitionVersion?: DefinitionVersion;
 };
 
-const initialState: ConfigurationState = {
+export const initialState: ConfigurationState = {
   locale: {
     selected: localStorage.getItem('ASELO_PLUGIN_USER_LOCALE') || defaultLanguage,
     status: 'loaded',

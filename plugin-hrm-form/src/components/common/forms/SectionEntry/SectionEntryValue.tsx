@@ -19,7 +19,7 @@ import type { FormItemDefinition, LayoutValue } from 'hrm-form-definitions';
 import { Template } from '@twilio/flex-ui';
 
 import { FormTargetObject } from '../types';
-import { presentValue } from '../../../../utils';
+import { presentValue } from '../../../../utils/formatters';
 import DownloadFile from '../DownloadFile';
 import { SectionValueText } from '../../../search/styles';
 import { Flex } from '../../../../styles';

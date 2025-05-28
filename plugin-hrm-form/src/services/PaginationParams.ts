@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { isNullOrUndefined } from '../utils';
+import { isNullOrUndefined } from '../utils/checkers';
 
 export function getQueryParams({
   limit,

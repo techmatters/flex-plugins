@@ -34,7 +34,7 @@ import {
   Row,
 } from '../../../styles';
 import { StyledNextStepButton } from '../../../styles/buttons';
-import { getContactValueTemplate, getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
+import { getContactValueTemplate, getFormattedNumberFromTask, getNumberFromTask } from '../../../utils/task';
 import {
   canOnlyViewOwnCases,
   canOnlyViewOwnContacts,

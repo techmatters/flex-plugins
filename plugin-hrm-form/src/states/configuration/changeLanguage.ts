@@ -22,7 +22,7 @@ import { ConfigurationState } from './reducer';
 
 export const REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID = 'RefreshBrowserRequiredForLanguageChange';
 
-export const CHANGE_LANGUAGE_ACTION: string = 'configuration-action/change-language';
+const CHANGE_LANGUAGE_ACTION: string = 'configuration-action/change-language';
 
 export const newChangeLanguageAsyncAction = createAsyncAction(
   CHANGE_LANGUAGE_ACTION,
@@ -33,7 +33,7 @@ export const newChangeLanguageAsyncAction = createAsyncAction(
     const selectedLocaleEntry = flexUiLocales.find(locale => locale.aseloLocale === selectedLocale);
     const specifiedFlexLocale = selectedLocaleEntry?.flexLocale;
     if (specifiedFlexLocale) {
-      if (availableLocales.find(locale => locale.tag === selectedLocale)) {
+      if (availableLocales.find(locale => locale.tag === specifiedFlexLocale)) {
         await manager.localization.setLocalePreference(specifiedFlexLocale);
       } else {
         console.warn(
