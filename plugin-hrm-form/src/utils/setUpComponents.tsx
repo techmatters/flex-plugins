@@ -51,7 +51,7 @@ import { AppRoutes, ChangeRouteMode } from '../states/routing/types';
 import { selectCurrentBaseRoute } from '../states/routing/getRoute';
 import { RootState } from '../states';
 import selectCurrentOfflineContact from '../states/contacts/selectCurrentOfflineContact';
-import {REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID} from "../states/configuration/changeLanguage";
+import { REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID } from '../states/configuration/changeLanguage';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 /**
@@ -422,10 +422,22 @@ export const setupWorkerLanguageSelect = (translateUI: (language: string) => Pro
     <Translator manager={Flex.Manager.getInstance()} translateUI={translateUI} key="locale-selector" />,
     { align: 'end', sortOrder: 0 },
   );
+  const LanguageSelectedNotification: React.FC<{ notificationContext?: { localeSelection: string } }> = ({
+    notificationContext: { localeSelection },
+  }) => (
+    <span>
+      <Template code="MainHeader-Translator-SelectionNotification" localeSelection={localeSelection} />{' '}
+      <a href=".">
+        <Template code="MainHeader-Translator-RefreshRequiredNotification" />
+      </a>{' '}
+      <Template code="MainHeader-Translator-RefreshWarningNotification" />
+    </span>
+  );
+
   Notifications.registerNotification({
     id: REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID,
     type: NotificationType.information,
     timeout: 0,
-    content: <Template code="Notifications-Translator-RefreshRequired" />,
+    content: <LanguageSelectedNotification />,
   });
 };

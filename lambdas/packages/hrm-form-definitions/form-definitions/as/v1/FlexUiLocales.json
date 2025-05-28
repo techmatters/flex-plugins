@@ -1,5 +1,5 @@
 [
-  { "label": "English", "aseloLocale": "en-US" },
-  { "label": "Thai", "aseloLocale": "th-TH" },
-  { "label": "Español", "aseloLocale": "es-CL" }
+  { "label": "English (EN)", "shortLabel": "EN", "aseloLocale": "en-US" },
+  { "label": "แบบไทย (TH)", "shortLabel": "TH", "aseloLocale": "th-TH" },
+  { "label": "Español (ES)", "shortLabel": "ES", "aseloLocale": "es-CL" }
 ]

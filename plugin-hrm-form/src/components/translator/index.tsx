@@ -21,8 +21,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { selectLocaleState } from '../../states/configuration/selectLocaleState';
 import { selectCurrentDefinitionVersion } from '../../states/configuration/selectDefinitions';
-import { changeLanguage } from '../../states/configuration/actions';
 import asyncDispatch from '../../states/asyncDispatch';
+import { newChangeLanguageAsyncAction } from '../../states/configuration/changeLanguage';
 
 type Props = {
   translateUI: (language: string) => Promise<void>;
@@ -31,8 +31,12 @@ type Props = {
 
 const Translator: React.FC<Props> = ({ manager }) => {
   const { selected: currentlocale, status: loadingStatus } = useSelector(selectLocaleState);
-  const { flexUiLocales } = useSelector(selectCurrentDefinitionVersion);
+  const definitionVersion = useSelector(selectCurrentDefinitionVersion);
   const dispatch = asyncDispatch(useDispatch());
+  const { flexUiLocales } = definitionVersion;
+  const { shortLabel } = flexUiLocales.find(e => e.aseloLocale === currentlocale) ?? {
+    shortLabel: currentlocale,
+  };
 
   if (flexUiLocales.length < 2) return null;
 
@@ -41,7 +45,7 @@ const Translator: React.FC<Props> = ({ manager }) => {
   const handleChange = async e => {
     const selectedLocale = e.target.value;
     if (loadingStatus === 'loaded' && selectedLocale !== currentlocale) {
-      await dispatch(changeLanguage(selectedLocale));
+      await dispatch(newChangeLanguageAsyncAction(selectedLocale, definitionVersion));
     }
   };
 
@@ -52,6 +56,7 @@ const Translator: React.FC<Props> = ({ manager }) => {
       <InputLabel id={`${TranslateButtonAriaLabel}-label`}>{TranslateButtonAriaLabel}</InputLabel>
       <Select
         style={{ padding: '0 20px' }}
+        label={shortLabel}
         disableUnderline
         labelId={`${TranslateButtonAriaLabel}-label`}
         id={TranslateButtonAriaLabel}

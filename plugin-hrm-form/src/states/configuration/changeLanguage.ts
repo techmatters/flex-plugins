@@ -24,27 +24,27 @@ export const REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID = 'Ref
 
 export const CHANGE_LANGUAGE_ACTION: string = 'configuration-action/change-language';
 
-export const changeLanguageAsyncAction = createAsyncAction(
+export const newChangeLanguageAsyncAction = createAsyncAction(
   CHANGE_LANGUAGE_ACTION,
   async (selectedLocale: string, { flexUiLocales }: DefinitionVersion): Promise<{ selectedLocale: string }> => {
     localStorage.setItem('ASELO_PLUGIN_USER_LOCALE', selectedLocale);
     const manager = Manager.getInstance();
     const { availableLocales } = manager.localization;
-    const specifiedFlexLocale = flexUiLocales.find(locale => locale.aseloLocale === selectedLocale)?.flexLocale;
+    const selectedLocaleEntry = flexUiLocales.find(locale => locale.aseloLocale === selectedLocale);
+    const specifiedFlexLocale = selectedLocaleEntry?.flexLocale;
     if (specifiedFlexLocale) {
-      //
       if (availableLocales.find(locale => locale.tag === selectedLocale)) {
         await manager.localization.setLocalePreference(specifiedFlexLocale);
-        return { selectedLocale };
+      } else {
+        console.warn(
+          `The configured Flex Locale '${specifiedFlexLocale}' for Aselo Locale '${selectedLocale}' is not supported in this version of Flex UI. Attempting to find a best match from available locales`,
+        );
       }
-      console.warn(
-        `The configured Flex Locale '${specifiedFlexLocale}' for Aselo Locale '${selectedLocale}' is not supported in this version of Flex UI. Attempting to find a best match from available locales`,
-      );
     } else {
       const exactMatch = availableLocales.find(({ tag }) => tag === selectedLocale)?.tag;
       if (exactMatch) {
         console.info(
-          `Aselo Locale '${selectedLocale}' is also a supported Flex Locale, setting Flex Llocale to '${selectedLocale}'`,
+          `Aselo Locale '${selectedLocale}' is also a supported Flex Locale, setting Flex Locale to '${selectedLocale}'`,
         );
         await manager.localization.setLocalePreference(exactMatch);
       } else {
@@ -63,10 +63,13 @@ export const changeLanguageAsyncAction = createAsyncAction(
             `Aselo Locale '${selectedLocale}' is not supported, nor are any with the same language, falling back to global default (en-US)`,
           );
           await manager.localization.setLocalePreference('en-US');
-          Notifications.showNotificationSingle(REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID);
         }
       }
     }
+    Notifications.dismissNotificationById(REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID);
+    Notifications.showNotification(REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID, {
+      localeSelection: selectedLocaleEntry.label,
+    });
     return {
       selectedLocale,
     };
@@ -76,7 +79,7 @@ export const changeLanguageAsyncAction = createAsyncAction(
 export const changeLanguageReducer = (initialState: ConfigurationState) =>
   createReducer(initialState, handleAction => [
     handleAction(
-      changeLanguageAsyncAction.pending,
+      newChangeLanguageAsyncAction.pending,
       (state): ConfigurationState => {
         return {
           ...state,
@@ -88,7 +91,7 @@ export const changeLanguageReducer = (initialState: ConfigurationState) =>
       },
     ),
     handleAction(
-      changeLanguageAsyncAction.fulfilled,
+      newChangeLanguageAsyncAction.fulfilled,
       (state, { payload: { selectedLocale } }): ConfigurationState => {
         return {
           ...state,
@@ -100,7 +103,7 @@ export const changeLanguageReducer = (initialState: ConfigurationState) =>
       },
     ),
     handleAction(
-      changeLanguageAsyncAction.rejected,
+      newChangeLanguageAsyncAction.rejected,
       (state): ConfigurationState => {
         return {
           ...state,

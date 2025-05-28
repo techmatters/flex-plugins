@@ -165,7 +165,6 @@ const setUpActions = (
 
   if (featureFlags.enable_conferencing) setUpConferenceActions();
   if (featureFlags.enable_llm_summary) setupLlmNotifications();
-
 };
 
 export default class HrmFormPlugin extends FlexPlugin {
