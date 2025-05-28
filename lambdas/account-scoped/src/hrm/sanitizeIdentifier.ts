@@ -64,7 +64,7 @@ type VoiceTrigger = {
 const isVoiceTrigger = (obj: any): obj is VoiceTrigger =>
   obj && obj.call && typeof obj.call === 'object';
 
-export type Event = {
+export type TriggerEvent = {
   trigger: ChatTrigger | VoiceTrigger | ConversationTrigger;
   request: { cookies: {}; headers: {} };
   channelType?: string;
@@ -106,7 +106,7 @@ export const sanitizeIdentifierFromTrigger = ({
   trigger,
   channelType,
 }: {
-  trigger: Event['trigger'];
+  trigger: TriggerEvent['trigger'];
   channelType?: string;
 }): Result<
   UnsupportedChannelResultPayload | UnsupportedTriggerResultPayload | Error,
@@ -155,6 +155,14 @@ export const sanitizeIdentifierFromTrigger = ({
         });
       }
 
+      if (channelType === 'web') {
+        console.error(`Channel type ${channelType} is not supported in conversations`);
+        return newErr({
+          message: `Channel type ${channelType} is not supported in conversations`,
+          error: { type: 'unsupported-channel', channelType },
+        });
+      }
+
       const transformed = applyTransformations({
         channelType,
         identifier: trigger.conversation.Author,
@@ -189,6 +197,14 @@ export const sanitizeIdentifierFromTask = ({
       return newOk('');
     }
 
+    if (channelType === 'web') {
+      const identifier = getContactValueFromWebchat({
+        preEngagementData: taskAttributes.preEngagementData,
+      });
+      console.debug(`Found webchat identifier ${identifier}`);
+      return newOk(identifier);
+    }
+
     const from = taskAttributes.name || taskAttributes.from;
 
     if (!from) {
@@ -196,14 +212,6 @@ export const sanitizeIdentifierFromTask = ({
         message: 'No "name" or "from" property present in task attributes',
         error: { type: 'invalid-task-attributes' },
       });
-    }
-
-    if (channelType === 'web') {
-      const identifier = getContactValueFromWebchat({
-        preEngagementData: taskAttributes.preEngagementData,
-      });
-      console.debug(`Found webchat identifier ${identifier}`);
-      return newOk(identifier);
     }
 
     if (!channelTransformations[channelType] || !channelType) {
