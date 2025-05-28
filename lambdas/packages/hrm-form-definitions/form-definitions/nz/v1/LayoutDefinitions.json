@@ -20,14 +20,17 @@
         "layout": {
           "personAtRisk": {
             "widthRatio": 1.5,
+            "labelTemplateCode": "Case-SectionList-Label/personAtRisk",
             "includeLabel": true
 
           },
           "alreadyActed": {
-            "includeLabel": true
+            "includeLabel": true,
+            "labelTemplateCode": "Case-SectionList-Label/alreadyActed"
           },
           "expressedThoughts": {
-            "includeLabel": true
+            "includeLabel": true,
+            "labelTemplateCode": "Case-SectionList-Label/expressedThoughts"
           }
         }
       },
@@ -43,12 +46,15 @@
         "layout": {
           "personAtRisk": {
             "widthRatio": 1.5,
+            "labelTemplateCode": "Case-SectionList-Label/personAtRisk",
             "includeLabel": true
           },
           "ageOfPersonAtRisk": {
+            "labelTemplateCode": "Case-SectionList-Label/ageOfPersonAtRisk",
             "includeLabel": true
           },
           "relationshipToPerson": {
+            "labelTemplateCode": "Case-SectionList-Label/relationshipToPerson",
             "includeLabel": true
           }
         }
@@ -61,12 +67,15 @@
         "layout": {
           "whoPresentsRisk": {
             "widthRatio": 1.5,
-            "includeLabel": true
-          },
-          "typeOfHarm": {
+            "labelTemplateCode": "Case-SectionList-Label/whoPresentsRisk",
             "includeLabel": true
           },
           "alreadyActed": {
+            "labelTemplateCode": "Case-SectionList-Label/alreadyActed",
+            "includeLabel": true
+          },
+          "typeOfHarm": {
+            "labelTemplateCode": "Case-SectionList-Label/typeOfHarm",
             "includeLabel": true
           }
         },
