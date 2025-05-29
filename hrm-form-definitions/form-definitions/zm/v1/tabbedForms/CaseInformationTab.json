@@ -22,6 +22,17 @@
     ]
     },
   {
+    "name": "aiSummaryFeedback",
+    "label": "Was this AI summary helpful?",
+    "type": "select",
+    "options": [
+      { "value": "Unknown", "label": "" },
+      { "value": "Yes", "label": "Yes" },
+      { "value": "No", "label": "No" }
+    ],
+    "isPII": false
+  },
+  {
     "name": "repeatCaller",
     "label": "Repeat Caller?",
     "type": "mixed-checkbox"
