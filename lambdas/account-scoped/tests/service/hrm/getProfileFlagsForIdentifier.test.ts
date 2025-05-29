@@ -28,7 +28,7 @@ import { HRM_AUTH_SSM_PARAMETERS, mockIdentifierFlags } from '../sandbox/mockHrm
 import { mockSsmParameters } from '../sandbox/mockSsm';
 import { mockttpServer } from '../sandbox/mockingProxy';
 import { lambdaAlbFetch } from '../lambdaAlbFetch';
-import { Event } from '../../../src/hrm/getProfileFlagsForIdentifier';
+import { TriggerEvent } from '../../../src/hrm/sanitizeIdentifier';
 import { MockedEndpoint } from 'mockttp';
 
 afterEach(async () => {
@@ -48,7 +48,7 @@ beforeEach(async () => {
 describe('getProfileFlagsForIdentifier endpoint', () => {
   const MOCK_IDENTIFIER = '123456789';
 
-  const MOCK_VOICE_EVENT: Omit<Event, 'request'> = {
+  const MOCK_VOICE_EVENT: Omit<TriggerEvent, 'request'> = {
     channelType: '',
     trigger: {
       call: {
@@ -58,7 +58,7 @@ describe('getProfileFlagsForIdentifier endpoint', () => {
     },
   };
 
-  const MOCK_WEBCHAT_EVENT: Omit<Event, 'request'> = {
+  const MOCK_WEBCHAT_EVENT: Omit<TriggerEvent, 'request'> = {
     channelType: 'web',
     trigger: {
       message: {
@@ -73,7 +73,7 @@ describe('getProfileFlagsForIdentifier endpoint', () => {
     },
   };
 
-  const MOCK_CONVERSATIONS_EVENT: Omit<Event, 'request'> = {
+  const MOCK_CONVERSATIONS_EVENT: Omit<TriggerEvent, 'request'> = {
     channelType: 'telegram',
     trigger: {
       conversation: {
