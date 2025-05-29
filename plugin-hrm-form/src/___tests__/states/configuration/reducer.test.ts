@@ -20,7 +20,7 @@ import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { reduce } from '../../../states/configuration/reducer';
 import * as types from '../../../states/configuration/types';
 import * as actions from '../../../states/configuration/actions';
-import { defaultLanguage } from '../../../translations';
+import { defaultLocale } from '../../../translations';
 import { ConfigurationActionType } from '../../../states/configuration/types';
 
 const { mockFetchImplementation, buildBaseURL } = mockLocalFetchDefinitions();
@@ -38,7 +38,7 @@ describe('test reducer', () => {
   test('should return initial state', async () => {
     const expected = {
       locale: {
-        selected: defaultLanguage,
+        selected: defaultLocale,
         status: 'loaded',
       },
       counselors: { list: [], hash: {} },

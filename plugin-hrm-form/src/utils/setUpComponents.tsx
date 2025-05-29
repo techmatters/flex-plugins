@@ -247,34 +247,7 @@ export const setUpCustomCRMContainer = () => {
 };
 
 /**
- * Add components used only by developers
- */
-export const setUpDeveloperComponents = (translateUI: (language: string) => Promise<void>) => {
-  const manager = Flex.Manager.getInstance();
-
-  Flex.ViewCollection.Content.add(
-    <Flex.View name="settings" key="settings-view">
-      <div>
-        <Translator manager={manager} translateUI={translateUI} key="translator" />
-      </div>
-    </Flex.View>,
-  );
-
-  Flex.SideNav.Content.add(
-    <SettingsSideLink
-      key="SettingsSideLink"
-      onClick={() => Flex.Actions.invokeAction('NavigateToView', { viewName: 'settings' })}
-      reserveSpace={false}
-      showLabel={true}
-    />,
-    {
-      align: 'end',
-    },
-  );
-};
-
-/**
- * Add components used only by developers
+ * Add components for case list
  */
 export const setUpCaseList = () => {
   Flex.ViewCollection.Content.add(
@@ -417,11 +390,8 @@ export const setupEmojiPicker = () => {
   Flex.MessageInputActions.Content.add(<EmojiPicker key="emoji-picker" />);
 };
 
-export const setupWorkerLanguageSelect = (translateUI: (language: string) => Promise<void>) => {
-  Flex.MainHeader.Content.add(
-    <Translator manager={Flex.Manager.getInstance()} translateUI={translateUI} key="locale-selector" />,
-    { align: 'end', sortOrder: 0 },
-  );
+export const setupWorkerLanguageSelect = () => {
+  Flex.MainHeader.Content.add(<Translator key="locale-selector" />, { align: 'end', sortOrder: 0 });
   const LanguageSelectedNotification: React.FC<{ notificationContext?: { localeSelection: string } }> = ({
     notificationContext: { localeSelection },
   }) => (

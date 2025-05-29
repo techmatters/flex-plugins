@@ -15,23 +15,28 @@
  */
 
 import React from 'react';
-import * as Flex from '@twilio/flex-ui';
-import { CircularProgress, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+import { CircularProgress, MenuItem, MenuList } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
+import { Template } from '@twilio/flex-ui';
+import LanguageIcon from '@material-ui/icons/Language';
 
 import { selectLocaleState } from '../../states/configuration/selectLocaleState';
 import { selectCurrentDefinitionVersion } from '../../states/configuration/selectDefinitions';
 import asyncDispatch from '../../states/asyncDispatch';
 import { newChangeLanguageAsyncAction } from '../../states/configuration/changeLanguage';
+import { Flex, MultiSelectButton } from '../../styles';
+import {
+  MainHeaderButton,
+  MainHeaderDialog,
+  MainHeaderDialogTitle,
+  MainHeaderMenuItemText,
+} from '../../styles/mainHeader';
+import ChevronDownIcon from '../common/icons/ChevronDownIcon';
 
-type Props = {
-  translateUI: (language: string) => Promise<void>;
-  manager: Flex.Manager;
-};
-
-const Translator: React.FC<Props> = ({ manager }) => {
+const Translator: React.FC = () => {
   const { selected: currentlocale, status: loadingStatus } = useSelector(selectLocaleState);
   const definitionVersion = useSelector(selectCurrentDefinitionVersion);
+  const [isOpened, setOpened] = React.useState(false);
   const dispatch = asyncDispatch(useDispatch());
   const { flexUiLocales } = definitionVersion;
   const { shortLabel } = flexUiLocales.find(e => e.aseloLocale === currentlocale) ?? {
@@ -42,37 +47,62 @@ const Translator: React.FC<Props> = ({ manager }) => {
 
   // receives the new language selected (passed via event value)
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  const handleChange = async e => {
-    const selectedLocale = e.target.value;
-    if (loadingStatus === 'loaded' && selectedLocale !== currentlocale) {
-      await dispatch(newChangeLanguageAsyncAction(selectedLocale, definitionVersion));
-    }
+  const handleMenuButtonClick = async () => {
+    setOpened(!isOpened);
   };
 
-  const { TranslateButtonAriaLabel } = manager.strings as any;
+  // receives the new language selected (passed via event value)
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+  const handleMenuItemClick = async (selectedLocale: string) => {
+    await dispatch(newChangeLanguageAsyncAction(selectedLocale, definitionVersion));
+    setOpened(false);
+  };
 
   return (
-    <FormControl variant="filled">
-      <InputLabel id={`${TranslateButtonAriaLabel}-label`}>{TranslateButtonAriaLabel}</InputLabel>
-      <Select
-        style={{ padding: '0 20px' }}
-        label={shortLabel}
-        disableUnderline
-        labelId={`${TranslateButtonAriaLabel}-label`}
-        id={TranslateButtonAriaLabel}
-        value={currentlocale}
-        defaultValue={currentlocale}
-        onChange={handleChange}
-        disabled={loadingStatus === 'loading'}
+    <div
+      style={{ position: 'relative' }}
+      onBlurCapture={event => {
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+          setOpened(false);
+        }
+      }}
+    >
+      <MainHeaderButton
+        data-testid="MainHeader-Translator-Button"
+        type="button"
+        name="MainHeader-Translator-Button"
+        onClick={handleMenuButtonClick}
       >
-        {flexUiLocales.map(({ aseloLocale, label }) => (
-          <MenuItem value={aseloLocale} key={aseloLocale}>
-            {label}
-          </MenuItem>
-        ))}
-      </Select>
-      {loadingStatus === 'loading' && <CircularProgress style={{ position: 'absolute', flex: 1 }} />}
-    </FormControl>
+        <LanguageIcon style={{ width: '20px', marginRight: '10px' }} />
+        {shortLabel}
+        <Flex marginLeft="15px" style={{ width: '20px' }}>
+          <ChevronDownIcon />
+        </Flex>
+      </MainHeaderButton>
+      {isOpened && (
+        <MainHeaderDialog>
+          <MainHeaderDialogTitle id="dialog-title">
+            <Template code="MainHeader-Translator-MenuTitle" />
+          </MainHeaderDialogTitle>
+          <MenuList id="MainHeader-Translator-MenuList" defaultValue={currentlocale}>
+            {flexUiLocales.map(({ aseloLocale, label }) => (
+              <MenuItem
+                value={aseloLocale}
+                key={aseloLocale}
+                disabled={loadingStatus === 'loading'}
+                onClick={() => handleMenuItemClick(aseloLocale)}
+                style={{ paddingLeft: 0, marginLeft: 0 }}
+              >
+                <MainHeaderMenuItemText style={{ fontWeight: aseloLocale === currentlocale ? 'bold' : 'normal' }}>
+                  {label}
+                </MainHeaderMenuItemText>
+              </MenuItem>
+            ))}
+          </MenuList>
+          {loadingStatus === 'loading' && <CircularProgress style={{ position: 'absolute', flex: 1 }} />}
+        </MainHeaderDialog>
+      )}
+    </div>
   );
 };
 

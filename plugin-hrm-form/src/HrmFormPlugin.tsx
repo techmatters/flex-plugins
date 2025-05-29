@@ -21,7 +21,7 @@ import './styles/global-overrides.css';
 
 import reducers from './states';
 import HrmTheme, { overrides } from './styles/HrmTheme';
-import { defaultLanguage, initLocalization } from './translations';
+import { defaultLocale, initLocalization } from './translations';
 import * as Providers from './utils/setUpProviders';
 import * as ActionFunctions from './utils/setUpActions';
 import { recordCallState } from './utils/setUpActions';
@@ -74,15 +74,11 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
 
   return initLocalization(
     localizationConfig,
-    localStorage.getItem('ASELO_PLUGIN_USER_LOCALE') || counselorLanguage || helplineLanguage || defaultLanguage,
+    localStorage.getItem('ASELO_PLUGIN_USER_LOCALE') || counselorLanguage || helplineLanguage || defaultLocale,
   );
 };
 
-const setUpComponents = (
-  featureFlags: FeatureFlags,
-  setupObject: ReturnType<typeof getHrmConfig>,
-  translateUI: (language: string) => Promise<void>,
-) => {
+const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typeof getHrmConfig>) => {
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus(setupObject);
@@ -103,8 +99,6 @@ const setUpComponents = (
 
   Components.setUpCaseList();
   if (featureFlags.enable_client_profiles) Components.setUpClientProfileList();
-
-  if (!Boolean(setupObject.helpline)) Components.setUpDeveloperComponents(translateUI); // utilities for developers only
 
   // remove dynamic components
   Components.removeTaskCanvasHeaderActions(featureFlags);
@@ -131,7 +125,7 @@ const setUpComponents = (
 
   if (featureFlags.enable_conferencing) setupConferenceComponents();
 
-  if (featureFlags.enable_language_selector) Components.setupWorkerLanguageSelect(translateUI);
+  if (featureFlags.enable_language_selector) Components.setupWorkerLanguageSelect();
 };
 
 const setUpActions = (
@@ -199,8 +193,8 @@ export default class HrmFormPlugin extends FlexPlugin {
     /*
      * localization setup (translates the UI if necessary)
      */
-    const { translateUI, getMessage } = setUpLocalization(config);
-    setUpComponents(featureFlags, config, translateUI);
+    const { getMessage } = setUpLocalization(config);
+    setUpComponents(featureFlags, config);
     setUpActions(featureFlags, config, getMessage);
 
     TaskRouterListeners.setTaskWrapupEventListeners(featureFlags);

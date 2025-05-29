@@ -647,7 +647,7 @@
   "CasePrint-TabularSection-Header/eighthListCaseSection": "8th Section: Label/Value via Translations",
   "Case-labelTemplateCode": "Label via template (existing field)",
   "Case-newCompoundFieldLabel" : "Label via template (new field)",
-  "Case-SectionList-newCompoundFieldValue":  "Field 1: {{field1}}, Field 2:{{field2}} "
- 
+  "Case-SectionList-newCompoundFieldValue":  "Field 1: {{field1}}, Field 2:{{field2}} ",
 
+  "MainHeader-Translator-MenuTitle": "Language Preference"
 }

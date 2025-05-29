@@ -17,7 +17,7 @@
 import type { DefinitionVersion } from 'hrm-form-definitions';
 
 import * as t from './types';
-import { defaultLanguage } from '../../translations';
+import { defaultLocale } from '../../translations';
 import { FETCH_CASE_LIST_FULFILLED_ACTION, FetchCaseListFulfilledAction } from '../caseList/listContent';
 import { changeLanguageReducer } from './changeLanguage';
 
@@ -37,7 +37,7 @@ export type ConfigurationState = {
 
 export const initialState: ConfigurationState = {
   locale: {
-    selected: localStorage.getItem('ASELO_PLUGIN_USER_LOCALE') || defaultLanguage,
+    selected: localStorage.getItem('ASELO_PLUGIN_USER_LOCALE') || defaultLocale,
     status: 'loaded',
   },
   counselors: {

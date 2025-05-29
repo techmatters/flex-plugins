@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { initTranslateUI, getMessage, initLocalization, defaultLanguage } from '../../translations';
+import { initTranslateUI, getMessage, initLocalization, defaultLocale } from '../../translations';
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { FeatureFlags } from '../../types/types';
 
@@ -32,8 +32,8 @@ beforeEach(() => {
   } as FeatureFlags);
 });
 
-const defaultTranslation = require(`../../translations/${defaultLanguage}/flexUI.json`);
-const defaultMessages = require(`../../translations/${defaultLanguage}/messages.json`);
+const defaultTranslation = require(`../../translations/${defaultLocale}/flexUI.json`);
+const defaultMessages = require(`../../translations/${defaultLocale}/messages.json`);
 
 const esTranslation = { 'CallType-child': 'Menor llamando por si mismo' };
 const esMessages = {
@@ -42,7 +42,7 @@ const esMessages = {
 };
 
 const mockTranslations = {
-  [defaultLanguage]: { flexUI: defaultTranslation, messages: defaultMessages },
+  [defaultLocale]: { flexUI: defaultTranslation, messages: defaultMessages },
   es: { flexUI: esTranslation, messages: esMessages },
 };
 
@@ -73,7 +73,7 @@ describe('Test initTranslateUI', () => {
   const translateUI = initTranslateUI(localizationConfig);
 
   test('Default language', async () => {
-    await translateUI(defaultLanguage);
+    await translateUI(defaultLocale);
 
     expect(strings).toStrictEqual({ ...twilioStrings, ...defaultTranslation });
     expect(setNewStrings).toHaveBeenCalled();
@@ -104,10 +104,10 @@ describe('Test initTranslateUI', () => {
 
 describe('Test getMessage', () => {
   test('Default language', async () => {
-    const welcomeMsg = await getMessage('WelcomeMsg')(defaultLanguage);
+    const welcomeMsg = await getMessage('WelcomeMsg')(defaultLocale);
     expect(welcomeMsg).toStrictEqual(defaultMessages.WelcomeMsg);
 
-    const goodbyeMsg = await getMessage('GoodbyeMsg')(defaultLanguage);
+    const goodbyeMsg = await getMessage('GoodbyeMsg')(defaultLocale);
     expect(goodbyeMsg).toStrictEqual(defaultMessages.GoodbyeMsg);
   });
 
@@ -131,7 +131,7 @@ describe('Test getMessage', () => {
 strings = { ...twilioStrings };
 describe('Test initLocalization', () => {
   test('Default language', () => {
-    initLocalization(localizationConfig, defaultLanguage);
+    initLocalization(localizationConfig, defaultLocale);
 
     expect(strings).toStrictEqual({ ...twilioStrings, ...defaultTranslation });
     expect(setNewStrings).toHaveBeenCalled();
