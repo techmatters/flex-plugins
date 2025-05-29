@@ -17,7 +17,7 @@
 type MockResponse = {
   ok: boolean;
   status: number;
-  json: () => Promise<any>;
+  text: () => Promise<string>;
 };
 
 const FORM_DEFINITIONS_PATH = './form-definitions';
@@ -43,6 +43,7 @@ const files = [
   'CannedResponses.json',
   'insights/oneToOneConfigSpec.json',
   'insights/oneToManyConfigSpecs.json',
+  'insights/postSurvey.private.json',
   'CaseFilters.json',
   'CaseStatus.json',
   'caseForms/CaseOverview.json',
@@ -105,7 +106,7 @@ const mockFetchImplementationGivenSpy = async (
     map[remotePath] = {
       ok: fileExists,
       status: fileExists ? 200 : 404,
-      json: () => Promise.resolve(jsonFile),
+      text: () => Promise.resolve(JSON.stringify(jsonFile)),
     };
   }
 

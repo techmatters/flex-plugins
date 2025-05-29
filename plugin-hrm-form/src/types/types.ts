@@ -16,7 +16,7 @@
 
 /* eslint-disable import/no-unused-modules */
 import type { ITask as ITaskOriginalType, TaskContextProps as TaskContextPropsOriginalType } from '@twilio/flex-ui';
-import type { CallTypes } from 'hrm-types';
+import type { CallType } from 'hrm-types';
 
 import type { ChannelTypes } from '../states/DomainConstants';
 import type { ResourceReferral } from '../states/contacts/resourceReferral';
@@ -131,7 +131,7 @@ export const isS3StoredRecording = (m: ConversationMedia): m is S3StoredRecordin
 // Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
 export type ContactRawJson = {
   definitionVersion?: string;
-  callType: CallTypes | '';
+  callType: CallType | '';
   childInformation: Record<string, boolean | string>;
   callerInformation: Record<string, boolean | string>;
   caseInformation: Record<string, boolean | string>;
@@ -270,6 +270,7 @@ export type FeatureFlags = {
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
   enable_llm_summary: boolean; // Enables generation of suggested contact summaries via an LLM
+  use_prepopulate_mappings: boolean; // Use PrepopulateMappings.json instead of PrepopulateKeys.json
 };
 /* eslint-enable camelcase */
 

@@ -1,8 +1,15 @@
 {
-  "survey":{
-    "ChildInformationTab":[],
-    "CallerInformationTab":[]
+  "formSelector": {
+    "selectorType": "staticSelector",
+    "parameter": {
+      "availableTabs": [
+        "ChildInformationTab",
+        "CallerInformationTab",
+        "CaseInformationTab"
+      ]
+    }
   },
+  "survey":{},
   "preEngagement":{
     "contactIdentifier": "CallerInformationTab.contactIdentifier",
     "friendlyName": "CallerInformationTab.friendlyName",

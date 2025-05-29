@@ -23,7 +23,7 @@ import {
 } from '@tech-matters/hrm-form-definitions';
 import { FormValue, HrmContact, callTypes } from '@tech-matters/hrm-types';
 import { newErr, newOk, Result } from '../Result';
-import { loadConfigJson } from './formDefinitionsCache';
+import { getDefinitionVersion } from './formDefinitionsCache';
 
 type MapperFunction = (options: string[]) => (value: string) => string;
 
@@ -235,29 +235,31 @@ const getValuesFromPreEngagementData = (
   return values;
 };
 
-const populateInitialValues = async (contact: HrmContact, formDefinitionRootUrl: URL) => {
-  const tabNamesAndRawJsonSections: [string, Record<string, FormValue>][] = [
+const populateInitialValues = async (
+  contact: HrmContact,
+  { tabbedForms, helplineInformation }: DefinitionVersion,
+) => {
+  const tabNamesAndRawJsonSections: [
+    keyof DefinitionVersion['tabbedForms'],
+    Record<string, FormValue>,
+  ][] = [
     ['CaseInformationTab', contact.rawJson.caseInformation],
     ['ChildInformationTab', contact.rawJson.childInformation],
     ['CallerInformationTab', contact.rawJson.callerInformation],
   ];
 
-  const defintionsAndJsons: [FormItemDefinition[], Record<string, FormValue>][] =
+  const definitionsAndJsons: [FormItemDefinition[], Record<string, FormValue>][] =
     await Promise.all(
       tabNamesAndRawJsonSections.map(async ([tabbedFormsSection, rawJsonSection]) => [
-        await loadConfigJson(formDefinitionRootUrl, `tabbedForms/${tabbedFormsSection}`),
+        tabbedForms[tabbedFormsSection] as FormItemDefinition[],
         rawJsonSection,
       ]),
     );
-  for (const [tabFormDefinition, rawJson] of defintionsAndJsons) {
+  for (const [tabFormDefinition, rawJson] of definitionsAndJsons) {
     for (const formItemDefinition of tabFormDefinition) {
       rawJson[formItemDefinition.name] = getInitialValue(formItemDefinition);
     }
   }
-  const helplineInformation = await loadConfigJson(
-    formDefinitionRootUrl,
-    'HelplineInformation',
-  );
   const defaultHelplineOption = (
     helplineInformation.helplines.find((helpline: any) => helpline.default) ||
     helplineInformation.helplines[0]
@@ -271,7 +273,7 @@ const populateContactSection = async (
   target: Record<string, FormValue>,
   valuesToPopulate: Record<string, string>,
   keys: Set<string>,
-  formDefinitionRootUrl: URL,
+  definitionVersion: DefinitionVersion,
   tabbedFormsSection:
     | 'CaseInformationTab'
     | 'ChildInformationTab'
@@ -287,10 +289,8 @@ const populateContactSection = async (
   console.debug('Using Values', valuesToPopulate);
 
   if (keys.size > 0) {
-    const childInformationTabDefinition = await loadConfigJson(
-      formDefinitionRootUrl,
-      `tabbedForms/${tabbedFormsSection}`,
-    );
+    const childInformationTabDefinition =
+      definitionVersion.tabbedForms[tabbedFormsSection];
     Object.assign(
       target,
       converter(keys, childInformationTabDefinition, valuesToPopulate),
@@ -306,10 +306,12 @@ export const populateHrmContactFormFromTaskByKeys = async (
   try {
     const { memory, preEngagementData, firstName, language } = taskAttributes;
     const answers = { ...memory, firstName, language };
-    await populateInitialValues(contact, formDefinitionRootUrl);
+    const definitionVersion = await getDefinitionVersion(formDefinitionRootUrl);
+    console.debug(definitionVersion.tabbedForms);
+    await populateInitialValues(contact, definitionVersion);
     if (!memory && !firstName && !preEngagementData) return newOk(contact);
     const { preEngagement: preEngagementKeys, survey: surveyKeys }: PrepopulateKeys =
-      await loadConfigJson(formDefinitionRootUrl, 'PrepopulateKeys');
+      definitionVersion.prepopulateKeys;
 
     const isValidSurvey = Boolean(answers?.aboutSelf); // determines if the memory has valid values or if it was aborted
     const isAboutSelf = answers.aboutSelf === 'Yes';
@@ -330,7 +332,7 @@ export const populateHrmContactFormFromTaskByKeys = async (
             ...MANDATORY_CHATBOT_FIELDS,
             ...surveyKeys.ChildInformationTab,
           ]),
-          formDefinitionRootUrl,
+          definitionVersion,
           'ChildInformationTab',
           getValuesFromAnswers,
         );
@@ -342,7 +344,7 @@ export const populateHrmContactFormFromTaskByKeys = async (
             ...MANDATORY_CHATBOT_FIELDS,
             ...surveyKeys.CallerInformationTab,
           ]),
-          formDefinitionRootUrl,
+          definitionVersion,
           'CallerInformationTab',
           getValuesFromAnswers,
         );
@@ -354,7 +356,7 @@ export const populateHrmContactFormFromTaskByKeys = async (
         contact.rawJson.caseInformation,
         preEngagementData,
         new Set<string>(preEngagementKeys.CaseInformationTab),
-        formDefinitionRootUrl,
+        definitionVersion,
         'CaseInformationTab',
         getValuesFromPreEngagementData,
       );
@@ -364,7 +366,7 @@ export const populateHrmContactFormFromTaskByKeys = async (
           contact.rawJson.childInformation,
           preEngagementData,
           new Set<string>(preEngagementKeys.ChildInformationTab),
-          formDefinitionRootUrl,
+          definitionVersion,
           'ChildInformationTab',
           getValuesFromPreEngagementData,
         );
@@ -373,7 +375,7 @@ export const populateHrmContactFormFromTaskByKeys = async (
           contact.rawJson.callerInformation,
           preEngagementData,
           new Set<string>(preEngagementKeys.CallerInformationTab),
-          formDefinitionRootUrl,
+          definitionVersion,
           'CallerInformationTab',
           getValuesFromPreEngagementData,
         );
