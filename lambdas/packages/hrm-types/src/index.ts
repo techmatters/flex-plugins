@@ -35,6 +35,14 @@ export type ChannelTypes =
 export type HrmContactRawJson = {
   definitionVersion?: string;
   callType: CallType | undefined;
+  hangUpBy?:
+    | 'Agent'
+    | 'Customer'
+    | 'Consult'
+    | 'Cold Transfer'
+    | 'Warm Transfer'
+    | 'External Cold Transfer'
+    | 'External Warm Transfer';
   childInformation: Record<string, FormValue>;
   callerInformation: Record<string, FormValue>;
   caseInformation: Record<string, FormValue>;
@@ -43,6 +51,9 @@ export type HrmContactRawJson = {
     channel: ChannelTypes;
     createdOnBehalfOf: `WK${string}` | '';
     [key: string]: string | boolean;
+  };
+  llmSupportedEntries?: {
+    [key in 'childInformation' | 'callerInformation' | 'caseInformation']?: string[];
   };
 };
 
