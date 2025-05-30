@@ -397,6 +397,7 @@ export type DefinitionVersion = {
   insights: {
     oneToOneConfigSpec: OneToOneConfigSpec;
     oneToManyConfigSpecs: OneToManyConfigSpecs;
+    postSurveySpecs: OneToManyConfigSpecs;
   };
   /**
    * @deprecated - this is the legacy prepopulation configuration. Use prepopulationMappings for all new code

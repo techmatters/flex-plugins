@@ -191,9 +191,13 @@ export const createContact = async (
     isOfflineContactTask(task) || isInMyBehalfITask(task)
       ? task.taskSid
       : task.attributes?.transferMeta?.originalTask ?? task.taskSid;
+
+  const number = getNumberFromTask(task);
+
   const { definitionVersion } = getHrmConfig();
   const contactForApi: Contact = {
     ...contact,
+    number,
     definitionVersion,
     channel: ((task.attributes as any)?.customChannelType || task.channelType) as Contact['channel'],
     rawJson: {

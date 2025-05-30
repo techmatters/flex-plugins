@@ -16,12 +16,12 @@
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Mockttp } from 'mockttp';
-import { FormDefinitionSet } from '../../testHrmTypes';
+import { DefinitionVersion } from '@tech-matters/hrm-form-definitions';
 
 export const mockFormDefinitions = async (
   mockttp: Mockttp,
   helplineCode: string,
-  definitions: FormDefinitionSet,
+  definitions: DefinitionVersion,
 ) => {
   await mockttp
     .forGet(/http:\/\/mock-assets-bucket\/form-definitions\/(.*)/)
@@ -35,17 +35,17 @@ export const mockFormDefinitions = async (
           case 'tabbedForms/ChildInformationTab.json':
             return {
               statusCode: 200,
-              body: JSON.stringify(definitions.childInformation),
+              body: JSON.stringify(definitions.tabbedForms.ChildInformationTab),
             };
           case 'tabbedForms/CallerInformationTab.json':
             return {
               statusCode: 200,
-              body: JSON.stringify(definitions.callerInformation),
+              body: JSON.stringify(definitions.tabbedForms.CallerInformationTab),
             };
           case 'tabbedForms/CaseInformationTab.json':
             return {
               statusCode: 200,
-              body: JSON.stringify(definitions.caseInformation),
+              body: JSON.stringify(definitions.tabbedForms.CaseInformationTab),
             };
           case 'HelplineInformation.json':
             return {
@@ -57,9 +57,42 @@ export const mockFormDefinitions = async (
               statusCode: 200,
               body: JSON.stringify(definitions.prepopulateKeys),
             };
+          case 'PrepopulateMappings.json':
+            return {
+              statusCode: 200,
+              body: JSON.stringify(definitions.prepopulateMappings),
+            };
+          case 'LayoutDefinitions.json':
+            return {
+              statusCode: 200,
+              body: JSON.stringify(definitions.layoutVersion),
+            };
+          case 'tabbedForms/IssueCategorizationTab.json':
+            return {
+              statusCode: 200,
+              body: JSON.stringify(definitions.tabbedForms.IssueCategorizationTab('')),
+            };
+          case 'tabbedForms/ContactlessTaskTab.json':
+            return {
+              statusCode: 200,
+              body: JSON.stringify(definitions.tabbedForms.ContactlessTaskTab),
+            };
+          case 'insights/oneToManyConfigSpecs.json':
+            return {
+              statusCode: 200,
+              body: JSON.stringify(definitions.insights.oneToManyConfigSpecs),
+            };
+          case 'insights/oneToOneConfigSpecs.json':
+            return {
+              statusCode: 200,
+              body: JSON.stringify(definitions.insights.oneToOneConfigSpec),
+            };
         }
       }
-      return { statusCode: 404 };
+      return {
+        statusCode: 200,
+        body: '{}',
+      };
     });
   console.log(
     `Mocked form definitions on http://mock-assets-bucket/form-definitions/${helplineCode}/v1/`,

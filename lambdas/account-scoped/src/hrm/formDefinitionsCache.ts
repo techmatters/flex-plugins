@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { DefinitionVersion, loadDefinition } from '@tech-matters/hrm-form-definitions';
 
 const getHelplineCodeFromDefinitionVersionId = (definitionVersionId: string) => {
   if (definitionVersionId === 'demo-v1') return 'as';
@@ -39,35 +40,26 @@ export const getFormDefinitionUrl = ({
   return `${assetsBucketUrl}/form-definitions/${helplineCode}/${version}`;
 };
 
-export const loadedConfigJsons: Record<string, any> = {};
+export const loadedDefinitionVersions: Record<string, DefinitionVersion> = {};
 
-export const loadConfigJson = async (
+export const getDefinitionVersion = async (
   formDefinitionRootUrl: URL,
-  section: string,
-): Promise<any> => {
-  const url = `${formDefinitionRootUrl}/${section}.json`;
-  if (!loadedConfigJsons[url]) {
-    console.debug('Loading forms at:', url);
-    const response = await fetch(url);
-    if (!response.ok) {
-      if (response.status === 404) {
-        console.warn(`No config json found at ${url}`);
-        return null;
-      }
-      throw new Error(
-        `Failed to load config json from ${url}: Status ${response.status} - ${response.statusText}\r\n${await response.text()}`,
-      );
-    }
-    loadedConfigJsons[url] = await response.json();
+): Promise<DefinitionVersion> => {
+  const formDefinitionRootUrlString = formDefinitionRootUrl.toString();
+  if (!loadedDefinitionVersions[formDefinitionRootUrlString]) {
+    console.debug('Loading forms at:', formDefinitionRootUrlString);
+    loadedDefinitionVersions[formDefinitionRootUrlString] = await loadDefinition(
+      formDefinitionRootUrlString,
+    );
   }
-  return loadedConfigJsons[url];
+  return loadedDefinitionVersions[formDefinitionRootUrlString];
 };
 /**
  * This function is used to clear the cache of loaded config jsons.
  * This is used for testing purposes.
  */
 export const clearDefinitionCache = () => {
-  Object.keys(loadedConfigJsons).forEach(key => {
-    delete loadedConfigJsons[key];
+  Object.keys(loadedDefinitionVersions).forEach(key => {
+    delete loadedDefinitionVersions[key];
   });
 };

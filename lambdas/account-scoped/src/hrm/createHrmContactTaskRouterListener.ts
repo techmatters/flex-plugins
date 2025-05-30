@@ -29,6 +29,7 @@ import {
 } from './internalHrmRequest';
 import { isErr, isOk } from '../Result';
 import { inferHrmAccountId } from './hrmAccountId';
+import { sanitizeIdentifierFromTask } from './sanitizeIdentifier';
 import { HrmContact } from '@tech-matters/hrm-types';
 import { populateHrmContactFormFromTaskByMappings } from './populateHrmContactFormFromTaskByMappings';
 
@@ -191,13 +192,25 @@ export const handleEvent = async (
 
   const isOutboundVoiceTask = direction === 'outbound' && Boolean(conference);
 
+  const channel = (customChannelType ||
+    (isOutboundVoiceTask && 'voice') ||
+    channelType ||
+    'default') as HrmContact['channel'];
+
+  const identifierResult = sanitizeIdentifierFromTask({
+    channelType: channel,
+    taskAttributes,
+  });
+
+  if (isErr(identifierResult)) {
+    console.warn(`Couldn't retrieve identifier for task ${taskSid}, using empty`);
+  }
+  const identifier = isOk(identifierResult) ? identifierResult.data : '';
+
   const newContact: HrmContact = {
     ...BLANK_CONTACT,
     definitionVersion,
-    channel: (customChannelType ||
-      (isOutboundVoiceTask && 'voice') ||
-      channelType ||
-      'default') as HrmContact['channel'],
+    channel,
     rawJson: {
       definitionVersion,
       ...BLANK_CONTACT.rawJson,
@@ -209,6 +222,7 @@ export const handleEvent = async (
     // We set createdBy to the workerSid because the contact is 'created' by the worker who accepts the task
     createdBy: workerSid as HrmContact['createdBy'],
     timeOfContact: new Date().toISOString(),
+    number: identifier,
   };
   console.debug('Creating HRM contact with timeOfContact:', newContact.timeOfContact);
   const prepopulate = usePrepopulateMappings

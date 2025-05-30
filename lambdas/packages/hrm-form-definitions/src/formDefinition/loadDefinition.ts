@@ -115,12 +115,18 @@ const fetchDefinitionGivenConfig = async <T>(
   const response = await fetch(url.toString());
 
   if (response?.ok) {
-    const json = await response.json();
-    return json as T;
+    const bodyText = await response.text();
+    try {
+      const json = JSON.parse(bodyText);
+      return json as T;
+    } catch (e) {
+      console.error(`Could not parse response for ${url}:`, bodyText);
+      throw e;
+    }
   }
 
   if (response?.status === 404) {
-    if (placeholder) {
+    if (placeholder !== undefined) {
       // eslint-disable-next-line no-console
       console.log(`Could not find definition for: ${url}. Using placeholder instead.`);
       return placeholder;
@@ -185,7 +191,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
         }
       }
     }
-    return expandedMapping;
+    return { ...expandedMapping, formSelector };
   };
 
   /**
@@ -209,6 +215,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     cannedResponses,
     oneToOneConfigSpec,
     oneToManyConfigSpecs,
+    postSurveySpecs,
     caseFilters,
     caseStatus,
     caseOverview,
@@ -237,6 +244,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     fetchDefinition<CannedResponsesDefinitions>('CannedResponses.json', []),
     fetchDefinition<OneToOneConfigSpec>('insights/oneToOneConfigSpec.json'),
     fetchDefinition<OneToManyConfigSpecs>('insights/oneToManyConfigSpecs.json'),
+    fetchDefinition<OneToManyConfigSpecs>('insights/postSurvey.private.json', []),
     fetchDefinition<DefinitionVersion['caseFilters']>('CaseFilters.json'),
     fetchDefinition<DefinitionVersion['caseStatus']>('CaseStatus.json'),
     fetchDefinition<DefinitionVersion['caseOverview']>('caseForms/CaseOverview.json'),
@@ -286,6 +294,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     insights: {
       oneToOneConfigSpec,
       oneToManyConfigSpecs,
+      postSurveySpecs,
     },
     profileForms: {
       Sections: profileSections,
