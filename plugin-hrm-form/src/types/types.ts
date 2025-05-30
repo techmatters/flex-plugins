@@ -271,6 +271,7 @@ export type FeatureFlags = {
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
   enable_llm_summary: boolean; // Enables generation of suggested contact summaries via an LLM
   use_prepopulate_mappings: boolean; // Use PrepopulateMappings.json instead of PrepopulateKeys.json
+  enable_language_selector: boolean // Enables the language of the UI to be changed by the user via a dropdown menu
 };
 /* eslint-enable camelcase */
 

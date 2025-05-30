@@ -20,7 +20,7 @@ import { Template } from '@twilio/flex-ui';
 
 import { Box, Column, Row } from '../../styles';
 import { CSAMAttachmentIcon, CSAMAttachmentText } from '../CSAMReport/styles';
-import { formatStringToDateAndTime } from '../../utils';
+import { formatStringToDateAndTime } from '../../utils/formatters';
 import type { CSAMReportEntry } from '../../types/types';
 
 type Props = {

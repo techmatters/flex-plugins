@@ -23,7 +23,8 @@ import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
 
 import styles from './styles';
-import { mapChannel, mapChannelForInsights, formatStringToDateAndTime } from '../../../utils';
+import { mapChannel, mapChannelForInsights } from '../../../utils/mappers';
+import { formatStringToDateAndTime } from '../../../utils/formatters';
 import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { presentValueFromStrings } from './presentValuesFromStrings';
 import { getTemplateStrings } from '../../../hrmConfig';

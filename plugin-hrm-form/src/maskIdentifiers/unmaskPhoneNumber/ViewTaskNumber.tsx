@@ -17,7 +17,7 @@ import React, { useRef, useState } from 'react';
 import { Template, ThemeProps } from '@twilio/flex-ui';
 import { Paper, Popper } from '@material-ui/core';
 
-import { getFormattedNumberFromTask } from '../../utils';
+import { getFormattedNumberFromTask } from '../../utils/task';
 import EyeOpenIcon from './EyeOpenIcon';
 import EyeCloseIcon from './EyeCloseIcon';
 import { PhoneNumberPopperText, UnmaskStyledButton } from './styles';

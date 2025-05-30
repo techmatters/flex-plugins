@@ -22,7 +22,7 @@ import { useIdentifierByIdentifier, useProfile, useProfileRelationshipsByType } 
 import { BannerLink, IconContainer, IdentifierContainer, YellowBannerContainer } from './styles';
 import { Bold } from '../../../styles';
 import { newOpenModalAction } from '../../../states/routing/actions';
-import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
+import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils/task';
 import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { CustomITask } from '../../../types/types';
 import selectChannelType from '../../../utils/selectChannelType';

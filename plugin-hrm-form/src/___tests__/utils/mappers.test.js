@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { mapAge, mapCallType, mapChannel } from '../../utils';
+import { mapAge, mapCallType, mapChannel } from '../../utils/mappers';
 import { channelTypes } from '../../states/DomainConstants';
 
 test('Test contact call type mapper', () => {

@@ -84,10 +84,17 @@ beforeEach(() => {
 describe('useState mocked', () => {
   const verifyTimelineActions = () => {
     ['household', 'incident', 'perpetrator'].forEach(sectionType => {
-      expect(mockNewGetTimelineAction).toHaveBeenCalledWith(case1.connectedCase.id, sectionType, [sectionType], false, {
-        limit: 100,
-        offset: 0,
-      });
+      expect(mockNewGetTimelineAction).toHaveBeenCalledWith(
+        case1.connectedCase.id,
+        sectionType,
+        [sectionType],
+        false,
+        {
+          limit: 100,
+          offset: 0,
+        },
+        `case-${case1.connectedCase.id}`,
+      );
     });
 
     expect(mockNewGetTimelineAction).toHaveBeenCalledWith(
@@ -96,6 +103,7 @@ describe('useState mocked', () => {
       expect.arrayContaining(['referral', 'note']),
       true,
       { limit: 5, offset: 0 },
+      `case-${case1.connectedCase.id}`,
     );
   };
 
@@ -136,12 +144,8 @@ describe('useState mocked', () => {
       twilioWorkerId: WORKER_SID,
       status: 'open',
       info: { definitionVersion: 'v1' },
-      categories: {},
       accountSid: 'AC-accountSid',
       helpline: 'helpline',
-      firstContact: {
-        id: 'contact1',
-      } as Contact,
     },
     availableStatusTransitions: [],
     references: new Set(['x']),
