@@ -16,6 +16,7 @@
 
 /* eslint-disable import/named */
 import { DefinitionVersion, FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
+import { FormValue } from 'hrm-types';
 
 import { ContactDraftChanges } from '../../states/contacts/existingContacts';
 import { Contact } from '../../types/types';
@@ -32,7 +33,7 @@ export type ContactDetailsSectionFormApi = {
 
 const mapFormToDefinition = (
   def: FormDefinition,
-  form: Record<string, string | boolean>,
+  form: Record<string, FormValue>,
 ): Record<string, string | boolean> => {
   const entries = Object.entries(def).map(([, { name }]) => [name, form[name]]);
   return Object.fromEntries(entries);

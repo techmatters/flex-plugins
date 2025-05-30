@@ -16,7 +16,7 @@
 
 /* eslint-disable camelcase */
 import { cloneDeep, get } from 'lodash';
-import { callTypes } from 'hrm-types';
+import {callTypes, FormValue} from 'hrm-types';
 import {
   DefinitionVersion,
   FieldType,
@@ -63,7 +63,7 @@ type InsightsUpdateFunction = (
   savedContact: Contact,
 ) => InsightsAttributes;
 
-const sanitizeInsightsValue = (value: string | boolean) => {
+const sanitizeInsightsValue = (value: FormValue) => {
   if (typeof value === 'string' && value) return value;
 
   if (typeof value === 'boolean') return value.toString();

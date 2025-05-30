@@ -85,4 +85,4 @@ export type HrmContact = {
   definitionVersion: string;
 };
 
-export type FormValue = string | string[] | boolean | null;
+export type FormValue = string | string[] | boolean | number | null;
