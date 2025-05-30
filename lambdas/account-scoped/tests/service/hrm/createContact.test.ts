@@ -230,7 +230,7 @@ describe('Create HRM Contact on Reservation Accepted event', () => {
       },
       expectedIdentifier: '123456789',
     },
-  ]).test.only(
+  ]).test(
     // 'should return 200 if valid twilio signature header is provided', async () => {
     "should return 200 if valid twilio signature header is provided with channel: '$channelType' and identifier: '$expectedIdentifier'",
     async ({
@@ -285,6 +285,7 @@ describe('Create HRM Contact on Reservation Accepted event', () => {
           callerInformation: BLANK_POPULATED_PERSON_INFORMATION,
           childInformation: BLANK_POPULATED_PERSON_INFORMATION,
           caseInformation: { age: '' },
+          hangUpBy: 'Customer',
           definitionVersion: 'ut-v1', // for backwards compatibility
         },
         twilioWorkerId: TEST_WORKER_SID,
