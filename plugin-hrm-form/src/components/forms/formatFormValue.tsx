@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import type { FormValue } from 'hrm-types';
 import type { LayoutValue } from 'hrm-form-definitions';
 import { parse, parseISO } from 'date-fns';
 
@@ -26,13 +27,13 @@ import { formatDuration, formatFileNameAtAws } from '../../utils';
  * @param allFormValues
  */
 const formatFormValue = (
-  value: string | number | boolean,
+  rawValue: FormValue,
   layout?: LayoutValue,
-  allFormValues?: Record<string, string | boolean | number>,
+  allFormValues?: Record<string, FormValue>,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 ) => {
   const strings = getTemplateStrings();
-
+  const value = (Array.isArray(rawValue) ? rawValue.join(', ') : allFormValues) ?? '';
   if (layout) {
     switch (layout.format) {
       case 'date': {
