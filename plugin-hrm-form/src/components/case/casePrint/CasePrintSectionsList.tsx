@@ -21,7 +21,7 @@ import { Text, View } from '@react-pdf/renderer';
 import { format } from 'date-fns';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
-import { formatName } from '../../../utils';
+import { formatName } from '../../../utils/formatters';
 import styles from './styles';
 import { getTemplateStrings } from '../../../hrmConfig';
 import { FullCaseSection } from '../../../services/caseSectionService';

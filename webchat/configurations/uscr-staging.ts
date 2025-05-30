@@ -94,63 +94,63 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         },
         {
           "label": "CAO",
-          "value": "cao_office_dept"
+          "value": "CAO"
         },
         {
           "label": "LAPD",
-          "value": "lapd_office_dept"
+          "value": "LAPD"
         },
         {
           "label": "CD1",
-          "value": "cd1_office_dept"
+          "value": "CD1"
         },
         {
           "label": "CD4",
-          "value": "cd4_office_dept"
+          "value": "CD4"
         },
         {
           "label": "CD5",
-          "value": "cd5_office_dept"
+          "value": "CD5"
         },
         {
           "label": "CD6",
-          "value": "cd6_office_dept"
+          "value": "CD6"
         },
         {
           "label": "CD7",
-          "value": "cd7_office_dept"
+          "value": "CD7"
         },
         {
           "label": "CD8",
-          "value": "cd8_office_dept"
+          "value": "CD8"
         },
         {
           "label": "CD9",
-          "value": "cd9_office_dept"
+          "value": "CD9"
         },
         {
           "label": "CD10",
-          "value": "cd10_office_dept"
+          "value": "CD10"
         },
         {
           "label": "CD11",
-          "value": "cd11_office_dept"
+          "value": "CD11"
         },
         {
           "label": "CD13",
-          "value": "cd13_office_dept"
+          "value": "CD13"
         },
         {
           "label": "CD14",
-          "value": "cd14_office_dept"
+          "value": "CD14"
         },
         {
           "label": "CD15",
-          "value": "cd15_office_dept"
+          "value": "CD15"
         },
         {
           "label": "Mayor's Office",
-          "value": "mayor_s_office_dept"
+          "value": "Mayor's Office"
         },
         {
           value: "BID",
@@ -196,7 +196,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 
 const translations: Translations = {
   'en-US': {
-    WelcomeMessage: 'CIRCLE Response Request \nCIRCLE is an unarmed civilian crisis response alternative to law enforcement, and serves people experiencing homelessness. \nIf violence or weapons are present, call 911 for LAPD response.',
+    WelcomeMessage: 'CIRCLE is an unarmed civilian crisis response alternative to law enforcement, and serves people experiencing homelessness. \nIf violence or weapons are present, call 911 for LAPD response.',
     EntryPointTagline: 'CIRCLE Response Request',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:

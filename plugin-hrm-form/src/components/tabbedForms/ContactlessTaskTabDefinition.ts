@@ -18,7 +18,7 @@ import { isFuture, parse } from 'date-fns';
 import { DefinitionVersion, FormDefinition, FormInputType } from 'hrm-form-definitions';
 
 import { coreChannelTypes } from '../../states/DomainConstants';
-import { mapChannelForInsights } from '../../utils';
+import { mapChannelForInsights } from '../../utils/mappers';
 import type { CounselorsList } from '../../states/configuration/types';
 
 const defaultChannelOptions = [{ value: '', label: '' }].concat(

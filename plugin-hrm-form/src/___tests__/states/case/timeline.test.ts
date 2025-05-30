@@ -111,6 +111,7 @@ describe('newGetTimelineAsyncAction', () => {
       ['note', 'household'],
       true,
       SAMPLE_PAGINATION,
+      'test-reference',
     );
     expect(getCaseTimeline).toHaveBeenCalledWith(TEST_CASE_ID, ['note', 'household'], true, SAMPLE_PAGINATION);
 
@@ -120,6 +121,7 @@ describe('newGetTimelineAsyncAction', () => {
       timelineId: TEST_TIMELINE_ID,
       caseId: TEST_CASE_ID,
       pagination: SAMPLE_PAGINATION,
+      reference: 'test-reference',
     });
   });
 
@@ -197,7 +199,14 @@ describe('newGetTimelineAsyncAction', () => {
         } = getState() as HrmState;
         mockGetCaseTimeline.mockResolvedValue(apiResponse);
         await ((dispatch(
-          newGetTimelineAsyncAction(TEST_CASE_ID, TEST_TIMELINE_ID, ['note', 'household'], true, pagination),
+          newGetTimelineAsyncAction(
+            TEST_CASE_ID,
+            TEST_TIMELINE_ID,
+            ['note', 'household'],
+            true,
+            pagination,
+            'test-reference',
+          ),
         ) as unknown) as PromiseLike<void>);
         const {
           connectedCase: {

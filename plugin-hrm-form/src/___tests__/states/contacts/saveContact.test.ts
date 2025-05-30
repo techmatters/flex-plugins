@@ -93,7 +93,6 @@ const baseCase: Case = {
   status: 'test-st',
   twilioWorkerId: 'WK2xxx1',
   info: {},
-  categories: {},
   createdAt: '12-05-2023',
   updatedAt: '12-05-2023',
 };

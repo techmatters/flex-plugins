@@ -15,8 +15,6 @@
  */
 
 /* eslint-disable sonarjs/prefer-immediate-return */
-import { DefinitionVersionId } from 'hrm-form-definitions';
-
 import type { GeneralizedSearchParams } from '../states/search/types';
 import type { Case, CaseOverview, Contact, SearchCaseResult } from '../types/types';
 import type { FetchOptions } from './fetchApi';
@@ -30,7 +28,7 @@ const convertApiCaseToFlexCase = (apiCase: Case): Case => ({
   ...apiCase,
   id: apiCase.id.toString(), // coerce to string type, can be removed once API is aligned
 });
-export const getCasePayload = (contact: Contact, creatingWorkerSid: string, definitionVersion: DefinitionVersionId) => {
+export const getCasePayload = (contact: Contact, creatingWorkerSid: string, definitionVersion: string) => {
   const { helpline, rawJson: contactForm } = contact;
 
   return contactForm.contactlessTask?.createdOnBehalfOf
@@ -48,7 +46,7 @@ export const getCasePayload = (contact: Contact, creatingWorkerSid: string, defi
       };
 };
 
-export async function createCase(contact: Contact, creatingWorkerSid: string, definitionVersion: DefinitionVersionId) {
+export async function createCase(contact: Contact, creatingWorkerSid: string, definitionVersion: string) {
   const caseRecord = getCasePayload(contact, creatingWorkerSid, definitionVersion);
 
   const options = {

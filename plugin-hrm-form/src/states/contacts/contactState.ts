@@ -21,9 +21,9 @@ import { ContactMetadata, LlmAssistantStatus, LoadingStatus } from './types';
 import { ReferralLookupStatus } from './resourceReferral';
 import type { ContactState } from './existingContacts';
 import { Contact, ContactRawJson, isOfflineContactTask, OfflineContactTask } from '../../types/types';
-import { createStateItem, getInitialValue } from '../../components/common/forms/formGenerators';
 import { createContactlessTaskTabDefinition } from '../../components/tabbedForms/ContactlessTaskTabDefinition';
 import { getHrmConfig } from '../../hrmConfig';
+import { createStateItem, getInitialValue } from '../../components/common/forms/formValues';
 
 export const newContactMetaData = (recreated: boolean): ContactMetadata => {
   const categoriesMeta = {

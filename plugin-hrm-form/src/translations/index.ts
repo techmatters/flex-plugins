@@ -18,10 +18,12 @@ import { getMessages, getTranslation } from '../services/ServerlessService';
 import { getAseloFeatureFlags, getHrmConfig, getDefinitionVersions } from '../hrmConfig';
 
 // default language to initialize plugin
-export const defaultLanguage = 'en-US';
+export const defaultLocale = 'en-US';
 
-const defaultTranslation = require(`./${defaultLanguage}/flexUI.json`);
-const defaultMessages = require(`./${defaultLanguage}/messages.json`);
+const defaultLanguage = 'en';
+
+const defaultTranslation = require(`./${defaultLocale}/flexUI.json`);
+const defaultMessages = require(`./${defaultLocale}/messages.json`);
 
 const enCATranslation = require(`./en-CA/flexUI.json`);
 const enCAMessages = require(`./en-CA/messages.json`);
@@ -63,7 +65,7 @@ const thTHTranslation = require(`./th-TH/flexUI.json`);
 const thTHMessages = require(`./th-TH/messages.json`);
 
 const bundledTranslations = {
-  [defaultLanguage]: defaultTranslation,
+  [defaultLocale]: defaultTranslation,
   'en-CA': enCATranslation,
   'en-IN': enINTranslation,
   'en-JM': enJMTranslation,
@@ -80,7 +82,7 @@ const bundledTranslations = {
 };
 
 const bundledMessages = {
-  [defaultLanguage]: defaultMessages,
+  [defaultLocale]: defaultMessages,
   'en-CA': enCAMessages,
   'en-IN': enINMessages,
   'en-JM': enJMMessages,
@@ -97,12 +99,12 @@ const bundledMessages = {
 };
 
 export const loadTranslations = async (language: string): Promise<Record<string, string>> => {
+  let translations = require(`./locales/${defaultLanguage}.json`);
   const [baseLanguage] = language.split('-');
-  let translations = {};
 
   try {
     const baseTranslations = require(`./locales/${baseLanguage}.json`);
-    translations = { ...baseTranslations };
+    translations = { ...translations, ...baseTranslations };
   } catch (error) {
     console.error(`Base language file not found for ${baseLanguage}`);
   }
@@ -143,7 +145,7 @@ export const initTranslateUI = (localizationConfig: LocalizationConfig) => async
   const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
   try {
     if (enableHierarchicalTranslations) {
-      const localizedMessages = await loadTranslations(language || defaultLanguage);
+      const localizedMessages = await loadTranslations(language || defaultLocale);
 
       if (!localizedMessages || Object.keys(localizedMessages).length === 0) {
         console.error(`Could not load translations for ${language}, using default`);
@@ -227,7 +229,7 @@ export const initLocalization = (localizationConfig: LocalizationConfig, helplin
   const { enable_hierarchical_translations: enableHierarchicalTranslations } = getAseloFeatureFlags();
 
   const shouldLoadCustomTranslations =
-    enableHierarchicalTranslations || (helplineLanguage && helplineLanguage !== defaultLanguage);
+    enableHierarchicalTranslations || (helplineLanguage && helplineLanguage !== defaultLocale);
 
   if (shouldLoadCustomTranslations) {
     translateUI(helplineLanguage);

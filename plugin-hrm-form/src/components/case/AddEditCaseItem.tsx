@@ -36,7 +36,7 @@ import {
 import { CaseActionFormContainer } from './styles';
 import ActionHeader from './ActionHeader';
 import { RootState } from '../../states';
-import { createStateItem, CustomHandlers, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
+import { CustomHandlers, disperseInputs, splitAt, splitInHalf } from '../common/forms/formGenerators';
 import { useCreateFormFromDefinition } from '../forms';
 import type { Case, CustomITask, StandaloneITask } from '../../types/types';
 import {
@@ -68,6 +68,7 @@ import {
 } from '../../states/case/sections/caseSectionUpdates';
 import { getWorkingCopy } from '../../states/case/sections/workingCopy';
 import { getSectionItemById } from '../../states/case/sections/get';
+import { createStateItem } from '../common/forms/formValues';
 
 export type AddEditCaseItemProps = {
   task: CustomITask | StandaloneITask;

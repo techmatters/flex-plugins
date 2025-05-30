@@ -17,8 +17,6 @@
 import flexContext from '../../flex-in-a-box/global-context';
 import { addSeconds, subHours } from 'date-fns';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { DefinitionVersionId } from 'hrm-form-definitions';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Page } from '@playwright/test';
 import context from '../global-context';
 import * as path from 'path';
@@ -39,7 +37,7 @@ const generateMockCases = (toGenerate: number): any[] => {
         'case category 2': ['subcategory3'],
       },
       info: {
-        definitionVersion: DefinitionVersionId.demoV1,
+        definitionVersion: 'demo-v1',
       },
       createdAt: time.toISOString(),
       updatedAt: time.toISOString(),

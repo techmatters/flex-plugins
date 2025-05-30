@@ -30,7 +30,7 @@ import {
 } from '../../services/CaseService';
 import { updateDefinitionVersion } from '../configuration/actions';
 import { getCasesMissingVersions, getContactsMissingVersions } from '../../utils/definitionVersions';
-import { getNumberFromTask } from '../../utils';
+import { getNumberFromTask } from '../../utils/task';
 
 // Action creators
 export const handleSearchFormChange = (taskId: string, context: string) => <K extends keyof t.SearchFormValues>(

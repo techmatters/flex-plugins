@@ -14,13 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { reduce } from '../../../states/configuration/reducer';
 import * as types from '../../../states/configuration/types';
 import * as actions from '../../../states/configuration/actions';
-import { defaultLanguage } from '../../../translations';
+import { defaultLocale } from '../../../translations';
 import { ConfigurationActionType } from '../../../states/configuration/types';
 
 const { mockFetchImplementation, buildBaseURL } = mockLocalFetchDefinitions();
@@ -30,14 +30,17 @@ describe('test reducer', () => {
   let mockV1;
 
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL('v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);
   });
 
   test('should return initial state', async () => {
     const expected = {
-      language: defaultLanguage,
+      locale: {
+        selected: defaultLocale,
+        status: 'loaded',
+      },
       counselors: { list: [], hash: {} },
       workerInfo: {
         chatChannelCapacity: 0,
@@ -49,14 +52,6 @@ describe('test reducer', () => {
     expect(result).toStrictEqual(expected);
 
     state = result;
-  });
-
-  test('should handle CHANGE_LANGUAGE', async () => {
-    const language = 'es';
-    const expected = { ...state, language };
-
-    const result = reduce(state, actions.changeLanguage(language));
-    expect(result).toStrictEqual(expected);
   });
 
   test('should handle POPULATE_COUNSELORS', async () => {

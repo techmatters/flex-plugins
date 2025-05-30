@@ -19,7 +19,7 @@
 import React, { useEffect, useState } from 'react';
 import { Document, Page, PDFViewer, View } from '@react-pdf/renderer';
 import { CircularProgress } from '@material-ui/core';
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-types';
 import { parseISO } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -115,10 +115,17 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
   useEffect(() => {
     if (!contactTimeline) {
       dispatch(
-        newGetTimelineAsyncAction(connectedCase.id, 'print-contacts', [], true, {
-          offset: 0,
-          limit: MAX_PRINTOUT_CONTACTS,
-        }),
+        newGetTimelineAsyncAction(
+          connectedCase.id,
+          'print-contacts',
+          [],
+          true,
+          {
+            offset: 0,
+            limit: MAX_PRINTOUT_CONTACTS,
+          },
+          `case-${connectedCase.id}`,
+        ),
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -129,10 +136,17 @@ const CasePrintView: React.FC<OwnProps> = ({ task }) => {
     useEffect(
       () => {
         dispatch(
-          newGetTimelineAsyncAction(connectedCase.id, sectionType, [sectionType], false, {
-            offset: 0,
-            limit: MAX_SECTIONS,
-          }),
+          newGetTimelineAsyncAction(
+            connectedCase.id,
+            sectionType,
+            [sectionType],
+            false,
+            {
+              offset: 0,
+              limit: MAX_SECTIONS,
+            },
+            `case-${connectedCase.id}`,
+          ),
         );
       },
       // eslint-disable-next-line react-hooks/exhaustive-deps

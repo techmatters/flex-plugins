@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { presentValue } from '../../../utils';
+import { presentValue } from '../../../utils/formatters';
 
 export const presentValueFromStrings = (strings: Record<string, string>) =>
   presentValue(
