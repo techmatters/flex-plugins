@@ -22,7 +22,7 @@ import { formatDuration, formatFileNameAtAws } from '../../utils';
 
 /**
  * Formats a form value based on its layout definition as a simple string
- * @param value
+ * @param rawValue
  * @param layout
  * @param allFormValues
  */
@@ -33,7 +33,7 @@ const formatFormValue = (
   // eslint-disable-next-line sonarjs/cognitive-complexity
 ) => {
   const strings = getTemplateStrings();
-  const value = (Array.isArray(rawValue) ? rawValue.join(', ') : allFormValues) ?? '';
+  const value = (Array.isArray(rawValue) ? rawValue.join(', ') : rawValue) ?? '';
   if (layout) {
     switch (layout.format) {
       case 'date': {
