@@ -213,6 +213,7 @@ export const handleEvent = async (
     channel,
     rawJson: {
       definitionVersion,
+      ...(channel === 'voice' ? { hangUpBy: 'Customer' } : {}),
       ...BLANK_CONTACT.rawJson,
     },
     twilioWorkerId: workerSid as HrmContact['twilioWorkerId'],

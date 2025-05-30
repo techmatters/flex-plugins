@@ -16,12 +16,14 @@
 
 /* eslint-disable import/no-unused-modules */
 import type { ITask as ITaskOriginalType, TaskContextProps as TaskContextPropsOriginalType } from '@twilio/flex-ui';
-import type { CallType } from 'hrm-types';
+import type { HrmContactRawJson } from 'hrm-types';
 
 import type { ChannelTypes } from '../states/DomainConstants';
 import type { ResourceReferral } from '../states/contacts/resourceReferral';
 import { DateFilterValue } from '../states/caseList/dateFilters';
 import { AccountSID, TaskSID, WorkerSID } from './twilio';
+
+export type { HrmContactRawJson as ContactRawJson } from 'hrm-types';
 
 declare global {
   export interface ITask<T = Record<string, any>> extends ITaskOriginalType<T> {
@@ -128,21 +130,7 @@ export const isS3StoredTranscript = (m: ConversationMedia): m is S3StoredTranscr
 export const isS3StoredRecording = (m: ConversationMedia): m is S3StoredRecording =>
   m.storeType === 'S3' && m.storeTypeSpecificData.type === 'recording';
 
-// Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
-export type ContactRawJson = {
-  definitionVersion?: string;
-  callType: CallType | '';
-  childInformation: Record<string, boolean | string>;
-  callerInformation: Record<string, boolean | string>;
-  caseInformation: Record<string, boolean | string>;
-  categories: Record<string, string[]>;
-  contactlessTask: {
-    channel: ChannelTypes;
-    createdOnBehalfOf: WorkerSID;
-    [key: string]: string | boolean;
-  };
-  llmSupportedEntries?: { [key in 'childInformation'|'callerInformation'|'caseInformation']?: string[] }
-};
+
 
 export type Contact = {
   id: string;
@@ -164,7 +152,7 @@ export type Contact = {
   updatedBy: string;
   updatedAt?: string;
   finalizedAt?: string;
-  rawJson: ContactRawJson;
+  rawJson: HrmContactRawJson;
   timeOfContact: string;
   queueName: string;
   channelSid: string;

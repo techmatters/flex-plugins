@@ -18,7 +18,8 @@
 /* eslint-disable dot-notation */
 import React from 'react';
 import { Text, View } from '@react-pdf/renderer';
-import { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
+import type { FormValue } from 'hrm-types';
+import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 import Handlebars from 'handlebars';
 
 import styles from './styles';
@@ -29,7 +30,7 @@ import formatFormValue from '../../forms/formatFormValue';
 type OwnProps = {
   sectionNameTemplateCode: string;
   sectionNameTemplateValues: Record<string, string>;
-  values: Record<string, string | boolean>;
+  values: Record<string, FormValue>;
   definitions: FormDefinition;
   layoutDefinition?: LayoutDefinition;
 };
