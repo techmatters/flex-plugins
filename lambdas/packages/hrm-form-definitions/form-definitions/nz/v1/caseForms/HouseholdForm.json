@@ -1,6 +1,6 @@
 [
   {
-    "name": "personAtRisk",
+    "name": "firstName",
     "label": "Who is at risk from themselves?",
     "type": "listbox-multiselect",
     "options": [
@@ -19,7 +19,7 @@
     }
   },
   {
-    "name": "alreadyActed",
+    "name": "gender",
     "label": "Have they already acted to take their own life?",
     "type": "select",
     "defaultOption": {
@@ -39,7 +39,7 @@
     "placeholder": ""
   },
   {
-    "name": "expressedThoughts",
+    "name": "relationshipToChild",
     "label": "Have they expressed thoughts or feelings of wanting to end their life?",
     "type": "select",
     "defaultOption": {
@@ -59,7 +59,7 @@
     "placeholder": ""
   },
   {
-    "name": "havePlan",
+    "name": "age",
     "label": "Do they have a specific plan to end their life?",
     "type": "select",
     "defaultOption": {

@@ -1,6 +1,6 @@
 [
   {
-    "name": "personAtRisk",
+    "name": "firstName",
     "label": "Who is at risk from someone else?",
     "type": "listbox-multiselect",
     "options": [
@@ -25,7 +25,7 @@
     "placeholder": ""
   },
   {
-    "name": "typeOfHarm",
+    "name": "relationshipToChild",
     "label": "What is the type of harm that is happening?",
     "type": "listbox-multiselect",
     "options": [
@@ -66,7 +66,7 @@
     "placeholder": ""
   },
   {
-    "name": "ageOfPersonAtRisk",
+    "name": "age",
     "label": "What is the age of the person who is at risk?",
     "type": "listbox-multiselect",
     "options": [
@@ -165,7 +165,7 @@
     }
   },
   {
-    "name": "relationshipToPerson",
+    "name": "gender",
     "label": "What is their relationship to the person causing the risk?",
     "type": "select",
     "unknownOption": "",
@@ -291,7 +291,7 @@
     }
   },
   {
-    "name": "involvementDetails",
+    "name": "involnvolvementDetails",
     "label": "Details of involvement",
     "type": "textarea",
     "placeholder": "Include which services and approximately when they were involved."

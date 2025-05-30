@@ -8,53 +8,77 @@
   },
   "case": {
     "sectionTypes": {
-      "riskToSelf": {
+      "household": {
         "splitFormAt": 13,
         "caseHomeOrder": 1,
         "printOrder": 1,
         "previewFields": [
-          "reportAddedAtRisk"
+          "name",
+          "gender",
+          "age",
+          "relationshipToChild"
         ],
         "layout": {
-          "reportAddedAtRisk": {
-            "widthRatio": 3,
-            "valueTemplateCode": "Case-SectionList-Value/reportAddedAtRisk",
-            "includeLabel": false
-
+          "name": {
+            "widthRatio": 1.5,
+            "labelTemplateCode": "Case-PerpetratorName",
+            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
+          },
+          "age": {
+            "labelTemplateCode": "Case-PerpetratorAge"
+          },
+          "gender": {
+            "labelTemplateCode": "Case-PerpetratorGender"
+          },
+          "relationshipToChild": {
+            "labelTemplateCode": "Case-PerpetratorRelationship"
           }
         }
       },
-      "riskFromOthers": {
+      "perpetrator": {
         "splitFormAt": 9,
         "caseHomeOrder": 2,
         "printOrder": 2,
         "previewFields": [
-          "reportAddedAtRisk"
+          "name",
+          "gender",
+          "age",
+          "relationshipToChild"
         ],
         "layout": {
-          "reportAddedAtRisk": {
-            "widthRatio": 3,
-            "valueTemplateCode": "Case-SectionList-Value/reportAddedAtRisk",
-            "includeLabel": false
+          "name": {
+            "labelTemplateCode": "Case-PerpetratorName",
+            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
+          },
+          "age": {
+            "labelTemplateCode": "Case-PerpetratorAge"
+          },
+          "gender": {
+            "labelTemplateCode": "Case-PerpetratorGender"
+          },
+          "relationshipToChild": {
+            "labelTemplateCode": "Case-PerpetratorRelationship"
           }
         }
       },
-      "riskToOthers": {
+      "incident": {
         "previewFields": [
-          "reportAddedPresentsRisk"
+          "whoPresentsRisk",
+          "typeOfHarm"
         ],
         "layout": {
-          "reportAddedPresentsRisk": {
-           "widthRatio": 3,
-            "valueTemplateCode": "Case-SectionList-Value/reportAddedPresentsRisk",
-            "includeLabel": false
+          "whoPresentsRisk": {
+            "includeLabel": true
+          },
+          "typeOfHarm": {
+            "includeLabel": true
           }
         },
         "splitFormAt": 6,
         "caseHomeOrder": 3,
         "printOrder": 3
       },
-      "externalIntervention": {
+      "referral": {
         "previewFields": [
           "referredTo"
         ],
