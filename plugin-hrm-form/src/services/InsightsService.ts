@@ -16,7 +16,7 @@
 
 /* eslint-disable camelcase */
 import { cloneDeep, get } from 'lodash';
-import {callTypes, FormValue} from 'hrm-types';
+import { callTypes, FormValue } from 'hrm-types';
 import {
   DefinitionVersion,
   FieldType,
