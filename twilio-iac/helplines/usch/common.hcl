@@ -17,7 +17,7 @@ locals {
     workflows = {
       master : {
         friendly_name = "Master Workflow"
-        templatefile = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
+        templatefile = "/app/twilio-iac/helplines/usch/templates/workflows/master.tftpl"
       },
       //NOTE: MAKE SURE TO ADD THIS IF THE ACCOUNT USES A CONVERSATION CHANNEL
       queue_transfers : {
@@ -31,8 +31,12 @@ locals {
     }
     task_queues = {
       master : {
-        "target_workers" = "1==1",
-        "friendly_name"  = "Childhelp"
+        "target_workers" = "routing.skills HAS 'ChildHelp'",
+        "friendly_name"  = "ChildHelp"
+      },
+      courage_first : {
+        "target_workers" = "routing.skills HAS 'CourageFirst'",
+        "friendly_name"  = "Courage First"
       },
       survey : {
         "target_workers" = "1==0",
