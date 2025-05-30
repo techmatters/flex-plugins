@@ -16,7 +16,7 @@
 
 import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { callTypes } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-types';
 
 import ContactHeader from './ContactHeader';
 import TagsAndCounselor from '../TagsAndCounselor';

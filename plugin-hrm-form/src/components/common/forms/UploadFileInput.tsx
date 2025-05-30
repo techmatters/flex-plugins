@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useState, useRef, ReactDOM } from 'react';
+import React, { useState, useRef } from 'react';
 import { get } from 'lodash';
 import { Template } from '@twilio/flex-ui';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
@@ -25,7 +25,7 @@ import { Box, FormError, Row, FormInput, UploadFileLabel, UploadFileFileName } f
 import { StyledNextStepButton } from '../../../styles/buttons';
 import { StyledLink } from '../../search/styles';
 import UploadIcon from '../icons/UploadIcon';
-import { formatFileNameAtAws } from '../../../utils';
+import { formatFileNameAtAws } from '../../../utils/formatters';
 import type { HTMLElementRef } from './types';
 
 type UploadFileInputProps = {

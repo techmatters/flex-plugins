@@ -18,7 +18,7 @@ import each from 'jest-each';
 import { FormInputType } from 'hrm-form-definitions';
 
 import { MockDateSetup, setupMockDate } from '../../../dateAndTimeMocks';
-import { getInitialValue } from '../../../../components/common/forms/formGenerators';
+import { getInitialValue } from '../../../../components/common/forms/formValues';
 
 describe('getInitialValue', () => {
   test('Missing values throw', () => {

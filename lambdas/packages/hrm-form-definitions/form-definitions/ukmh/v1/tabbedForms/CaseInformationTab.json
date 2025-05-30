@@ -1,0 +1,335 @@
+[
+  {
+    "name": "sessionOutcome",
+    "label": "Session Outcome",
+    "type": "select",
+    "options": [
+      {
+        "value": "Completed",
+        "label": "Completed"
+      },
+      {
+        "value": "User did not attend (DNA)",
+        "label": "User did not attend (DNA)"
+      },
+      {
+        "value": "User cancelled - less than 24H notice",
+        "label": "User cancelled - less than 24H notice"
+      },
+      {
+        "value": "User cancelled - over 24H notice",
+        "label": "User cancelled - over 24H notice"
+      },
+      {
+        "value": "Agent cancelled",
+        "label": "Agent cancelled"
+      },
+      {
+        "value": "User disengaged during the session",
+        "label": "User disengaged during the session"
+      },
+      {
+        "value": "Session not delivered due to technical issues",
+        "label": "Session not delivered due to technical issues"
+      }
+    ]
+  },
+  {
+    "name": "howDidYouHearOfTheMixPeerSupportService",
+    "label": "How did you hear of the Mix Peer Support Service?",
+    "type": "select",
+    "options": [
+      {
+        "value": "Peers (e.g. friends / siblings)",
+        "label": "Peers (e.g. friends / siblings)"
+      },
+      {
+        "value": "A search engine",
+        "label": "A search engine"
+      },
+      {
+        "value": "Social media",
+        "label": "Social media"
+      },
+      {
+        "value": "Teacher / health professional / youth worker",
+        "label": "Teacher / health professional / youth worker"
+      },
+      {
+        "value": "Referral from another website or organisation",
+        "label": "Referral from another website or organisation"
+      },
+      {
+        "value": "Media",
+        "label": "Media"
+      },
+      {
+        "value": "The Mix",
+        "label": "The Mix"
+      },
+      {
+        "value": "I don't remember",
+        "label": "I don't remember"
+      },
+      {
+        "value": "Other (please specify):",
+        "label": "Other (please specify):"
+      }
+    ]
+  },
+  {
+    "name": "whichOtherTheMixServicesUsed",
+    "label": "Which other The Mix services used?",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Counselling",
+        "label": "Counselling"
+      },
+      {
+        "value": "Discussion boards ",
+        "label": "Discussion boards "
+      },
+      {
+        "value": "Group chats ",
+        "label": "Group chats "
+      },
+      {
+        "value": "Website ",
+        "label": "Website "
+      },
+      {
+        "value": "Social media ",
+        "label": "Social media "
+      }
+    ]
+  },
+  {
+    "name": "groundingOrBreathingTechniquesUsed",
+    "label": "Were Grounding or breathing techniques used?",
+    "type": "checkbox"
+  },
+  {
+    "name": "howDoTheyPreferHelp",
+    "label": "How do they prefer help?",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Webchat",
+        "label": "Webchat"
+      },
+      {
+        "value": "Email",
+        "label": "Email"
+      },
+      {
+        "value": "Online information/resources",
+        "label": "Online information/resources"
+      },
+      {
+        "value": "Phone",
+        "label": "Phone"
+      },
+      {
+        "value": "Prefer not to say",
+        "label": "Prefer not to say"
+      },
+      {
+        "value": "Text/ SMS",
+        "label": "Text/ SMS"
+      },
+      {
+        "value": "Not specified",
+        "label": "Not specified"
+      },
+      {
+        "value": "Face to face",
+        "label": "Face to face"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
+    "name": "wereSignpostsOffered",
+    "label": "Were signposts offered?",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+  },
+  {
+    "name": "internalSignpostsOffered",
+    "label": "Internal signposts offered",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Counselling",
+        "label": "Counselling"
+      },
+      {
+        "value": "Shout",
+        "label": "Shout"
+      },
+      {
+        "value": "Discussion boards",
+        "label": "Discussion boards"
+      },
+      {
+        "value": "Self-paced learning",
+        "label": "Self-paced learning"
+      },
+      {
+        "value": "The Mix website",
+        "label": "The Mix website"
+      },
+      {
+        "value": "Support Circle",
+        "label": "Support Circle"
+      },
+      {
+        "value": "Support Chat",
+        "label": "Support Chat"
+      },
+      {
+        "value": "General Chat",
+        "label": "General Chat"
+      }
+    ]
+  },
+  {
+    "name": "signpostsOfferedOther",
+    "label": "Signposts offered - other",
+    "type": "textarea",
+    "rows": 8,
+    "width": 250
+  },
+  {
+    "name": "currentCopingStrategies",
+    "label": "Current coping strategies",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Breathing Techniques",
+        "label": "Breathing Techniques"
+      },
+      {
+        "value": "Grounding techniques",
+        "label": "Grounding techniques"
+      },
+      {
+        "value": "Focusing on the present moment (e.g describing an object)",
+        "label": "Focusing on the present moment (e.g describing an object)"
+      },
+      {
+        "value": "Visualisation of a safe space",
+        "label": "Visualisation of a safe space"
+      },
+      {
+        "value": "Distraction techniques (e.g. thinking in categories)",
+        "label": "Distraction techniques (e.g. thinking in categories)"
+      },
+      {
+        "value": "Playing games (e.g. phone, computer)",
+        "label": "Playing games (e.g. phone, computer)"
+      },
+      {
+        "value": "Writing",
+        "label": "Writing"
+      },
+      {
+        "value": "Drawing/colouring",
+        "label": "Drawing/colouring"
+      },
+      {
+        "value": "Watching TV/films",
+        "label": "Watching TV/films"
+      },
+      {
+        "value": "Using social media",
+        "label": "Using social media"
+      }
+    ]
+  },
+  {
+    "name": "otherCurrentCopingStrategies",
+    "label": "Other current coping strategies",
+    "type": "textarea",
+    "rows": 8,
+    "width": 250
+  },
+  {
+    "name": "recommendedCopingStrategies",
+    "label": "Recommended coping strategies",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Breathing Techniques",
+        "label": "Breathing Techniques"
+      },
+      {
+        "value": "Grounding techniques",
+        "label": "Grounding techniques"
+      },
+      {
+        "value": "Focusing on the present moment (e.g describing an object)",
+        "label": "Focusing on the present moment (e.g describing an object)"
+      },
+      {
+        "value": "Visualisation of a safe space",
+        "label": "Visualisation of a safe space"
+      },
+      {
+        "value": "Distraction techniques (e.g thinking in categories)",
+        "label": "Distraction techniques (e.g thinking in categories)"
+      },
+      {
+        "value": "Playing games (e.g. phone, computer)",
+        "label": "Playing games (e.g. phone, computer)"
+      },
+      {
+        "value": "Writing",
+        "label": "Writing"
+      },
+      {
+        "value": "Drawing/colouring",
+        "label": "Drawing/colouring"
+      },
+      {
+        "value": "Watching TV/films",
+        "label": "Watching TV/films"
+      },
+      {
+        "value": "Using social media",
+        "label": "Using social media"
+      }
+    ]
+  },
+  {
+    "name": "otherRecommendedCopingStrategies",
+    "label": "Other recommended coping strategies",
+    "type": "textarea",
+    "rows": 8,
+    "width": 250
+  },
+  {
+    "name": "nextSteps",
+    "label": "Next Steps",
+    "type": "textarea",
+    "rows": 8,
+    "width": 250
+  }
+]

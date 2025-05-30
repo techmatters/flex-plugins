@@ -17,10 +17,9 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
-import { Tab } from '@material-ui/core';
 
 import ProfileFlagChip from '../profile/profileFlag/ProfileFlagChip';
-import { getShortSummary } from '../../utils';
+import { getShortSummary } from '../../utils/formatters';
 import { useProfile } from '../../states/profile/hooks/useProfile';
 import {
   DataTableRow,

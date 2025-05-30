@@ -13,10 +13,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { Mockttp, getLocal, generateCACertificate } from 'mockttp';
 // @ts-ignore
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { createGlobalProxyAgent } from 'global-agent';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { ProxyAgent, setGlobalDispatcher } from 'undici';
 
 let mockServer: Mockttp;

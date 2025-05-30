@@ -570,5 +570,9 @@
   "CaseMerging-CancelCase": "Cancel Case",
   "CaseMerging-ContactUndoRemovedFromCase": "Undo",
 
-  "TeamsView-NoSkills": "- No skills listed -"
+  "TeamsView-NoSkills": "- No skills listed -",
+  "MainHeader-Translator-RefreshRequiredNotification": "Refresh page to apply",
+  "MainHeader-Translator-SelectionNotification": "You have selected {{localeSelection}}",
+  "MainHeader-Translator-RefreshWarningNotification": "Refreshing will disconnect any active voice and video calls.",
+  "MainHeader-Translator-MenuTitle": "Language Preference"
 }

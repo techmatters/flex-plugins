@@ -35,12 +35,15 @@ jobs:
         working-directory: ./plugin-hrm-form
       - name: Install Flex Plugin
         uses: ./.github/actions/install-flex-plugin
-      - name: Run hrm-form-definitions Lint
-        run: npm run lint
-        working-directory: ./hrm-form-definitions
       - name: Run plugin-hrm-form code Lint
         run: npm run lint --if-present
         working-directory: ./plugin-hrm-form
+      - name: Install Lambdas
+        run: npm ci
+        working-directory: ./lambdas
+      - name: Run Lambdas Lint
+        run: npm run lint
+        working-directory: ./lambdas
       - name: Install e2e-test Packages
         run: npm ci
         working-directory: ./e2e-tests
@@ -59,9 +62,6 @@ jobs:
         node-version: '20.x'
     - name: Install Flex Plugin
       uses: ./.github/actions/install-flex-plugin
-    - name: Run hrm-form-definitions Tests
-      run: npm run test
-      working-directory: ./hrm-form-definitions
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
