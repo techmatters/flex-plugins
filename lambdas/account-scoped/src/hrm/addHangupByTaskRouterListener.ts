@@ -17,7 +17,7 @@
 import type { EventFields } from '../taskrouter';
 import { AccountSID } from '../twilioTypes';
 import { registerTaskRouterEventHandler } from '../taskrouter/taskrouterEventHandler';
-import { RESERVATION_COMPLETED } from '../taskrouter/eventTypes';
+import { TASK_COMPLETED } from '../taskrouter/eventTypes';
 import { patchOnInternalHrmEndpoint } from './internalHrmRequest';
 import { HrmContact, HrmContactRawJson } from '@tech-matters/hrm-types';
 import { isErr } from '../Result';
@@ -75,4 +75,4 @@ export const handleEvent = async (
   }
 };
 
-registerTaskRouterEventHandler([RESERVATION_COMPLETED], handleEvent);
+registerTaskRouterEventHandler([TASK_COMPLETED], handleEvent);
