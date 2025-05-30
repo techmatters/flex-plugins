@@ -192,6 +192,12 @@ const configOptions: ConfigOptions = {
     envKey: 'HRM_ROOT',
     default: '', // Default cannot be set up front due to the account sid might not calculated.
   },
+
+  legacyOktaSso: {
+    envKey: 'LEGACY_OKTA_SSO',
+    ssmPath: () => `/${localOverrideEnv}/twilio/${getConfigValue('twilioAccountSid')}/legacy_sso`,
+    default: 'false',
+  },
 };
 
 export const setConfigValue = (key: string, value: ConfigValue) => {
@@ -241,6 +247,8 @@ const setConfigValueFromSsm = async (key: string) => {
     }
 
     console.log(`Failed to load config value from SSM at ${option.ssmPath}. Using default value`);
+
+    setConfigValue(key, typeof option.default === 'function' ? option.default() : option.default);
   }
 };
 
