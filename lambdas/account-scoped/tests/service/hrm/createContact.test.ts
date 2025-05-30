@@ -15,7 +15,7 @@
  */
 
 import each from 'jest-each';
-import { HrmContact, callTypes } from '@tech-matters/hrm-types';
+import { HrmContact, callTypes, HrmContactRawJson } from '@tech-matters/hrm-types';
 import * as mockingProxy from '../sandbox/mockingProxy';
 import '../expectToParseAsDate';
 import {
@@ -150,7 +150,14 @@ describe('Create HRM Contact on Reservation Accepted event', () => {
     expect(response.status).toBe(403);
   });
 
-  each([
+  type TestCase = {
+    channelType: string;
+    expectedIdentifier: string;
+    extraTaskAttributes: { [k: string]: any };
+    expectedHangUpBy?: HrmContactRawJson['hangUpBy'];
+  };
+
+  const testCases: TestCase[] = [
     {
       channelType: 'default',
       extraTaskAttributes: { memory: {} },
@@ -173,6 +180,7 @@ describe('Create HRM Contact on Reservation Accepted event', () => {
         memory: {},
       },
       expectedIdentifier: '+123456789',
+      expectedHangUpBy: 'Customer',
     },
     {
       channelType: 'sms',
@@ -230,18 +238,17 @@ describe('Create HRM Contact on Reservation Accepted event', () => {
       },
       expectedIdentifier: '123456789',
     },
-  ]).test(
+  ];
+
+  each(testCases).test(
     // 'should return 200 if valid twilio signature header is provided', async () => {
     "should return 200 if valid twilio signature header is provided with channel: '$channelType' and identifier: '$expectedIdentifier'",
     async ({
       channelType,
       expectedIdentifier,
       extraTaskAttributes,
-    }: {
-      channelType: string;
-      expectedIdentifier: string;
-      extraTaskAttributes: { [k: string]: any };
-    }) => {
+      expectedHangUpBy,
+    }: TestCase) => {
       const taskAttributes = {
         ...extraTaskAttributes,
         channelType,
@@ -285,7 +292,7 @@ describe('Create HRM Contact on Reservation Accepted event', () => {
           callerInformation: BLANK_POPULATED_PERSON_INFORMATION,
           childInformation: BLANK_POPULATED_PERSON_INFORMATION,
           caseInformation: { age: '' },
-          hangUpBy: 'Customer',
+          ...(expectedHangUpBy ? { hangUpBy: expectedHangUpBy } : {}),
           definitionVersion: 'ut-v1', // for backwards compatibility
         },
         twilioWorkerId: TEST_WORKER_SID,

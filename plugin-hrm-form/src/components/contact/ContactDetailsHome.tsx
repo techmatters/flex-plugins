@@ -159,7 +159,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const isDraft = !savedContact.finalizedAt;
 
-  const { callType, categories } = rawJson;
+  const { callType, categories, hangUpBy } = rawJson;
 
   const auditMessage = (timestampText: string, workerSid: string, templateKey: string) => {
     if (timestampText && workerSid) {
@@ -338,6 +338,11 @@ const ContactDetailsHome: React.FC<Props> = function ({
         {addedBy && addedBy !== twilioWorkerId && (
           <SectionEntry descriptionKey="ContactDetails-GeneralDetails-AddedBy">
             <SectionEntryValue value={addedBy} />
+          </SectionEntry>
+        )}
+        {hangUpBy && (
+          <SectionEntry descriptionKey="ContactDetails-GeneralDetails-HangUpBy">
+            <SectionEntryValue value={`ContactDetails-GeneralDetails-HangUpBy/${hangUpBy}`} />
           </SectionEntry>
         )}
       </ContactDetailsSection>

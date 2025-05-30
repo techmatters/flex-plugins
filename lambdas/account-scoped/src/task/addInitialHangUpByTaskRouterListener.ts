@@ -29,13 +29,15 @@ const addInitialHangUpBy: TaskRouterEventHandler = async (
 ) => {
   const { TaskSid } = event;
   const taskSid = TaskSid as TaskSID;
-  await patchTaskAttributes(client, accountSid, taskSid, originalAttributes => ({
-    ...originalAttributes,
-    conversations: {
-      ...originalAttributes.conversations,
-      hang_up_by: 'Customer',
-    },
-  }));
+  if (event.TaskChannelUniqueName === 'voice') {
+    await patchTaskAttributes(client, accountSid, taskSid, originalAttributes => ({
+      ...originalAttributes,
+      conversations: {
+        ...originalAttributes.conversations,
+        hang_up_by: 'Customer',
+      },
+    }));
+  }
 };
 
 registerTaskRouterEventHandler([TASK_CREATED], addInitialHangUpBy);
