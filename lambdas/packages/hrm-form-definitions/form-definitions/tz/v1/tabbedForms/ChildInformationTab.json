@@ -9,7 +9,7 @@
     }
   },
   {
-    "name": "surname",
+    "name": "lastName",
     "label": "Surname",
     "type": "input"
   },
