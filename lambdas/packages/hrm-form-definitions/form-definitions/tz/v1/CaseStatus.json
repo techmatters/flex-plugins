@@ -1,7 +1,7 @@
 {
   "open": {
-    "value": "open",
-    "label": "Open",
+    "value": "ongoing",
+    "label": "Ongoing",
     "color": "green",
     "transitions": [
       "closed"
@@ -12,7 +12,7 @@
     "label": "Closed",
     "color": "red",
     "transitions": [
-      "open"
+      "ongoing"
     ]
   }
 }
