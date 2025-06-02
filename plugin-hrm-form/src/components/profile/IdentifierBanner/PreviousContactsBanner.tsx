@@ -29,7 +29,7 @@ import { CASES_PER_PAGE, CONTACTS_PER_PAGE } from '../../search/SearchResults';
 import { BannerLink, IconContainer, IdentifierContainer, YellowBannerContainer } from './styles';
 import { Bold } from '../../../styles';
 import { changeRoute, newOpenModalAction } from '../../../states/routing/actions';
-import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils';
+import { getFormattedNumberFromTask, getNumberFromTask } from '../../../utils/task';
 import { getInitializedCan, PermissionActions } from '../../../permissions';
 import { CustomITask, isTwilioTask } from '../../../types/types';
 import { selectCounselorsHash } from '../../../states/configuration/selectCounselorsHash';
