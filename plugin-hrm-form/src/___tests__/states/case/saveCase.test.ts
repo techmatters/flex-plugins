@@ -176,7 +176,7 @@ const contact = {
     resourceReferralList: { resourceReferralIdToAdd: '', lookupStatus: ReferralLookupStatus.NOT_STARTED },
   },
   helpline: '',
-  metadata: { categories: { expanded: {}, gridView: false }, endMillis: 0, recreated: false, startMillis: 0 },
+  metadata: { categories: { expanded: {}, gridView: false }, endMillis: 0, startMillis: 0 },
   referrals: [],
 };
 
