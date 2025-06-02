@@ -32,6 +32,19 @@ const RemoveParticipantButton: React.FC<Props> = ({ participant, task }) => {
 
   const handleClick = async () => {
     setIsLoading(true);
+
+    try {
+      // Assume if the arttribute hasn't been set to anything yet, the 'hang up by' plugin is not in use
+      if (task.attributes.conversations.hang_up_by) {
+        await task.setAttributes({
+          ...task.attributes,
+          // eslint-disable-next-line camelcase
+          conversations: { ...task.attributes.conversations, hang_up_by: 'Agent' },
+        });
+      }
+    } catch (err) {
+      console.error('Setting hang_up_by attribute failed', err);
+    }
     try {
       await conferenceApi.removeParticipant({
         callSid: participant.callSid,
@@ -41,15 +54,6 @@ const RemoveParticipantButton: React.FC<Props> = ({ participant, task }) => {
       Notifications.showNotificationSingle(ConferenceNotifications.ErrorUpdatingParticipantNotification);
     } finally {
       setIsLoading(false);
-    }
-
-    // Assume if the arttribute hasn't been set to anything yet, the 'hang up by' plugin is not in use
-    if (task.attributes.conversations.hang_up_by) {
-      await task.setAttributes({
-        ...task.attributes,
-        // eslint-disable-next-line camelcase
-        conversations: { ...task.attributes.conversations, hang_up_by: 'Agent' },
-      });
     }
   };
 
