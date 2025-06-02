@@ -71,7 +71,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "whatsapp"
         contact_identity     = "whatsapp:+6498865661"
-        templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }
