@@ -20,6 +20,7 @@ import type { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/compone
 
 import { ConferenceNotifications } from '../../../conference/setUpConferenceActions';
 import * as conferenceApi from '../../../services/conferenceService';
+import { getAseloFeatureFlags } from '../../../hrmConfig';
 
 type Props = Partial<ParticipantCanvasChildrenProps>;
 
@@ -41,6 +42,12 @@ const RemoveParticipantButton: React.FC<Props> = ({ participant, task, ...props 
       Notifications.showNotificationSingle(ConferenceNotifications.ErrorUpdatingParticipantNotification);
     } finally {
       setIsLoading(false);
+    }
+
+    // Assume if the arttribute hasn't been set to anything yet, the 'hang up by' plugin is not in use
+    if (task.attributes.hang_up_by) {
+      // eslint-disable-next-line camelcase
+      await task.setAttributes({ hang_up_by: 'Agent' });
     }
   };
 
