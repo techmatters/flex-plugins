@@ -15,6 +15,7 @@
  */
 
 import fetchProtectedApi from './fetchProtectedApi';
+import { getAseloFeatureFlags } from '../hrmConfig';
 
 const validUpdates = ['endConferenceOnExit', 'hold', 'muted'] as const;
 type ConferenceAddParticipantParams = {
@@ -46,7 +47,9 @@ export const addParticipant = async ({
     label,
   };
 
-  return fetchProtectedApi('/conference/addParticipant', body);
+  return fetchProtectedApi('/conference/addParticipant', body, {
+    useTwilioLambda: getAseloFeatureFlags().use_twilio_lambda_for_conference_functions,
+  });
 };
 
 export const getParticipant = async ({
@@ -58,7 +61,9 @@ export const getParticipant = async ({
     callSid,
   };
 
-  return fetchProtectedApi('/conference/getParticipant', body);
+  return fetchProtectedApi('/conference/getParticipant', body, {
+    useTwilioLambda: getAseloFeatureFlags().use_twilio_lambda_for_conference_functions,
+  });
 };
 
 export const removeParticipant = async ({ conferenceSid, callSid }: ConferenceRemoveParticipantParams) => {
@@ -67,7 +72,9 @@ export const removeParticipant = async ({ conferenceSid, callSid }: ConferenceRe
     callSid,
   };
 
-  return fetchProtectedApi('/conference/removeParticipant', body);
+  return fetchProtectedApi('/conference/removeParticipant', body, {
+    useTwilioLambda: getAseloFeatureFlags().use_twilio_lambda_for_conference_functions,
+  });
 };
 
 export const updateParticipant = async ({ callSid, conferenceSid, updates }: ConferenceUpdateParticipantParams) => {
@@ -77,5 +84,7 @@ export const updateParticipant = async ({ callSid, conferenceSid, updates }: Con
     updates: JSON.stringify(updates),
   };
 
-  return fetchProtectedApi('/conference/updateParticipant', body);
+  return fetchProtectedApi('/conference/updateParticipant', body, {
+    useTwilioLambda: getAseloFeatureFlags().use_twilio_lambda_for_conference_functions,
+  });
 };

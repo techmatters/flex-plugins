@@ -36,10 +36,16 @@ export class ProtectedApiError extends ApiError {
  * Will throw Error if server responses with and http error code.
  * @param {string} endPoint endpoint to fetch from (withouth the host part of url, e.g. "/cases/contacts").
  * @param {{ [k: string]: any }} body Same options object that will be passed to the fetch function (here you can include the BODY of the request)
+ * @param {FetchOptions & { useTwilioLambda?: boolean }} allOptions
  * @returns {Promise<any>} the api response (if not error)
  */
-const fetchProtectedApi = async (endPoint, body: Record<string, string> = {}, fetchOptions?: FetchOptions) => {
-  const { serverlessBaseUrl } = getHrmConfig();
+const fetchProtectedApi = async (
+  endPoint,
+  body: Record<string, string> = {},
+  allOptions?: FetchOptions & { useTwilioLambda?: boolean },
+) => {
+  const { serverlessBaseUrl, accountScopedLambdaBaseUrl } = getHrmConfig();
+  const { useTwilioLambda, ...fetchOptions } = allOptions;
   const token = getValidToken();
   if (token instanceof Error) throw new ApiError(`Aborting request due to token issue: ${token.message}`, {}, token);
   const options: RequestInit = {
@@ -51,7 +57,7 @@ const fetchProtectedApi = async (endPoint, body: Record<string, string> = {}, fe
     ...fetchOptions,
   };
   try {
-    return await fetchApi(new URL(serverlessBaseUrl), endPoint, options);
+    return await fetchApi(new URL(useTwilioLambda ? accountScopedLambdaBaseUrl : serverlessBaseUrl), endPoint, options);
   } catch (error) {
     if (error instanceof ApiError) {
       const message = error.response?.status === 403 ? 'Server responded with 403 status (Forbidden)' : error.message;

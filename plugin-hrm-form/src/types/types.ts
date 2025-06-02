@@ -259,6 +259,7 @@ export type FeatureFlags = {
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
   enable_llm_summary: boolean; // Enables generation of suggested contact summaries via an LLM
   use_prepopulate_mappings: boolean; // Use PrepopulateMappings.json instead of PrepopulateKeys.json
+  use_twilio_lambda_for_conference_functions: boolean; // Use PrepopulateMappings.json instead of PrepopulateKeys.json
 };
 /* eslint-enable camelcase */
 
