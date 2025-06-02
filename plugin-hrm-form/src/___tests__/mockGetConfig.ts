@@ -16,7 +16,7 @@
 
 /* eslint-disable camelcase */
 
-import { DefinitionVersion, DefinitionVersionId } from 'hrm-form-definitions';
+import { DefinitionVersion } from 'hrm-form-definitions';
 
 export const baseMockConfig = {
   accountSid: 'ACfake',
@@ -69,7 +69,7 @@ export const mockPartialConfiguration = partialConfig =>
 
 export const mockGetDefinitionsResponse = (
   funcToMock: () => any,
-  mockVersion: DefinitionVersionId,
+  mockVersion: string,
   mockFormDefinitions: DefinitionVersion,
 ) => {
   (<jest.Mock>funcToMock).mockReturnValue({

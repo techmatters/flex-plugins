@@ -17,7 +17,7 @@ import type { LayoutValue } from 'hrm-form-definitions';
 import { parse, parseISO } from 'date-fns';
 
 import { getTemplateStrings } from '../../hrmConfig';
-import { formatDuration, formatFileNameAtAws } from '../../utils';
+import { formatDuration, formatFileNameAtAws } from '../../utils/formatters';
 
 /**
  * Formats a form value based on its layout definition as a simple string

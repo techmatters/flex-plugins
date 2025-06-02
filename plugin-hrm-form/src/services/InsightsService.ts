@@ -16,8 +16,8 @@
 
 /* eslint-disable camelcase */
 import { cloneDeep, get } from 'lodash';
+import { callTypes } from 'hrm-types';
 import {
-  callTypes,
   DefinitionVersion,
   FieldType,
   InsightsFieldSpec,
@@ -29,7 +29,8 @@ import {
 import { parseISO } from 'date-fns';
 
 import { isNonDataCallType } from '../states/validationRules';
-import { formatCategories, mapChannelForInsights } from '../utils';
+import { formatCategories } from '../utils/formatters';
+import { mapChannelForInsights } from '../utils/mappers';
 import { Case, Contact, ContactRawJson, CustomITask } from '../types/types';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import {

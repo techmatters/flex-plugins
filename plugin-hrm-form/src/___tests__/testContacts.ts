@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { callTypes, DefinitionVersionId } from 'hrm-form-definitions';
+import { callTypes } from 'hrm-types';
 
 import { Contact } from '../types/types';
 import { ContactMetadata, LlmAssistantStatus, LoadingStatus } from '../states/contacts/types';
@@ -23,7 +23,7 @@ import { ReferralLookupStatus } from '../states/contacts/resourceReferral';
 export const VALID_EMPTY_CONTACT: Contact = {
   accountSid: 'AC',
   id: '',
-  definitionVersion: DefinitionVersionId.demoV1,
+  definitionVersion: 'demo-v1',
   taskId: 'WT',
   serviceSid: '',
   channelSid: '',

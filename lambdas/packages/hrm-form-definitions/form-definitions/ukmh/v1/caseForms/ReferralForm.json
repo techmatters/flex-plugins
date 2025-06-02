@@ -1,0 +1,90 @@
+[
+  {
+    "name": "breakConfidentialityBc",
+    "label": "Break Confidentiality (BC)",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Safeguarding",
+        "label": "Safeguarding"
+      },
+      {
+        "value": "Risk",
+        "label": "Risk"
+      }
+    ],
+    "rows": 3
+  },
+  {
+    "name": "bcWhereReported",
+    "label": "BC - where reported",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Police",
+        "label": "Police"
+      },
+      {
+        "value": "Local Authority Children's/Adult's Social Care",
+        "label": "Local Authority Children's/Adult's Social Care"
+      },
+      {
+        "value": "Ambulance Service",
+        "label": "Ambulance Service"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "rows": 5
+  },
+  {
+    "name": "bcReferenceNumberProvided",
+    "label": "BC - Reference Number Provided",
+    "type": "input"
+  },
+  {
+    "name": "bcSummaryOfConcernsShared",
+    "label": "BC - Summary of Concerns shared",
+    "type": "textarea",
+    "rows": 10,
+    "width": 250
+  },
+  {
+    "name": "safetyPlanCompleted",
+    "label": "Safety plan completed",
+    "type": "checkbox"
+  },
+  {
+    "name": "whichSupervisorDidYouAlertToTheRisk",
+    "label": "Which supervisor did you alert to the risk",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Supervisor 1",
+        "label": "Supervisor 1"
+      },
+      {
+        "value": "Supervisor 2",
+        "label": "Supervisor 2"
+      },
+      {
+        "value": "Supervisor 3",
+        "label": "Supervisor 3"
+      },
+      {
+        "value": "Supervisor 4",
+        "label": "Supervisor 4"
+      },
+      {
+        "value": "Supervisor 5",
+        "label": "Supervisor 5"
+      }
+    ]
+  }
+]

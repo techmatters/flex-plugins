@@ -1,0 +1,611 @@
+[
+  {
+    "name": "campaign",
+    "label": "Campaign",
+    "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Courage First",
+        "label": "Courage First"
+      },
+      {
+        "value": "Childhelp Hotline",
+        "label": "Childhelp Hotline"
+      },
+      {
+        "value": "PeeDee",
+        "label": "PeeDee"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "typeOfSport",
+    "label": "Type of Sport",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "campaign",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Courage First": [
+        {
+          "value": "Baseball",
+          "label": "Baseball"
+        },
+        {
+          "value": "Basketball",
+          "label": "Basketball"
+        },
+        {
+          "value": "Cricket",
+          "label": "Cricket"
+        },
+        {
+          "value": "Dance",
+          "label": "Dance"
+        },
+        {
+          "value": "Figure Skating",
+          "label": "Figure Skating"
+        },
+        {
+          "value": "Football",
+          "label": "Football"
+        },
+        {
+          "value": "Golf",
+          "label": "Golf"
+        },
+        {
+          "value": "Gymnastics",
+          "label": "Gymnastics"
+        },
+        {
+          "value": "Hockey",
+          "label": "Hockey"
+        },
+        {
+          "value": "Karate",
+          "label": "Karate"
+        },
+        {
+          "value": "Lacrosse",
+          "label": "Lacrosse"
+        },
+        {
+          "value": "Rugby",
+          "label": "Rugby"
+        },
+        {
+          "value": "Skiing",
+          "label": "Skiing"
+        },
+        {
+          "value": "Soccer",
+          "label": "Soccer"
+        },
+        {
+          "value": "Softball",
+          "label": "Softball"
+        },
+        {
+          "value": "Swim",
+          "label": "Swim"
+        },
+        {
+          "value": "Tennis",
+          "label": "Tennis"
+        },
+        {
+          "value": "Track and Field",
+          "label": "Track and Field"
+        },
+        {
+          "value": "Volleyball",
+          "label": "Volleyball"
+        },
+        {
+          "value": "Wrestling",
+          "label": "Wrestling"
+        }
+      ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "languageLineUsed",
+    "label": "Language Line Used",
+    "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "Not used",
+      "label": "Not used"
+    },
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Not used",
+        "label": "Not used"
+      },
+      {
+        "value": "Spanish",
+        "label": "Spanish"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "counselorSpokeForeignLanguage",
+    "label": "Counselor Spoke Foreign Language",
+    "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "No",
+      "label": "No"
+    },
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Spanish",
+        "label": "Spanish"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "howTheHelpseekerHeardAboutUs",
+    "label": "How the Helpseeker heard about us",
+    "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Billboard",
+        "label": "Billboard"
+      },
+      {
+        "value": "Book",
+        "label": "Book"
+      },
+      {
+        "value": "Chat GPT/AI",
+        "label": "Chat GPT/AI"
+      },
+      {
+        "value": "Discord",
+        "label": "Discord"
+      },
+      {
+        "value": "Family Member",
+        "label": "Family Member"
+      },
+      {
+        "value": "Friend",
+        "label": "Friend"
+      },
+      {
+        "value": "In and Out Burger Bag",
+        "label": "In and Out Burger Bag"
+      },
+      {
+        "value": "John Stamos",
+        "label": "John Stamos"
+      },
+      {
+        "value": "Marketing Media",
+        "label": "Marketing Media"
+      },
+      {
+        "value": "National Center for Missing and Exploited Children",
+        "label": "National Center for Missing and Exploited Children"
+      },
+      {
+        "value": "National Domestic Violence Hotline",
+        "label": "National Domestic Violence Hotline"
+      },
+      {
+        "value": "National Runaway Safeline",
+        "label": "National Runaway Safeline"
+      },
+      {
+        "value": "National Sexual Assault Hotline",
+        "label": "National Sexual Assault Hotline"
+      },
+      {
+        "value": "National Suicide Prevention Lifeline (988)",
+        "label": "National Suicide Prevention Lifeline (988)"
+      },
+      {
+        "value": "NEDA Helpline",
+        "label": "NEDA Helpline"
+      },
+      {
+        "value": "Newspaper/Magazine",
+        "label": "Newspaper/Magazine"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Other Hotline",
+        "label": "Other Hotline"
+      },
+      {
+        "value": "Phonebook/Operator",
+        "label": "Phonebook/Operator"
+      },
+      {
+        "value": "Professional",
+        "label": "Professional"
+      },
+      {
+        "value": "Radio",
+        "label": "Radio"
+      },
+      {
+        "value": "Repeat Call/Called Before",
+        "label": "Repeat Call/Called Before"
+      },
+      {
+        "value": "SNAP",
+        "label": "SNAP"
+      },
+      {
+        "value": "Social Media: Facebook",
+        "label": "Social Media: Facebook"
+      },
+      {
+        "value": "Social Media: Instagram",
+        "label": "Social Media: Instagram"
+      },
+      {
+        "value": "Social Media: Reddit",
+        "label": "Social Media: Reddit"
+      },
+      {
+        "value": "Social Media: Snapchat",
+        "label": "Social Media: Snapchat"
+      },
+      {
+        "value": "Social Media: Spotify",
+        "label": "Social Media: Spotify"
+      },
+      {
+        "value": "Social Media: TikTok",
+        "label": "Social Media: TikTok"
+      },
+      {
+        "value": "Social Media: X (formerly Twitter)",
+        "label": "Social Media: X (formerly Twitter)"
+      },
+      {
+        "value": "Social Media: Unspecified",
+        "label": "Social Media: Unspecified"
+      },
+      {
+        "value": "SUBS - Childhelp Speak Up Be Safe Program",
+        "label": "SUBS - Childhelp Speak Up Be Safe Program"
+      },
+      {
+        "value": "Television/Streaming Services",
+        "label": "Television/Streaming Services"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      },
+      {
+        "value": "Website-Internet",
+        "label": "Website-Internet"
+      },
+      {
+        "value": "YouTube",
+        "label": "YouTube"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "interactionWithHelpseeker",
+    "label": "Interaction with Helpseeker",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Barrier Identification & Resolution",
+        "label": "Barrier Identification & Resolution"
+      },
+      {
+        "value": "Child Abuse & System Education",
+        "label": "Child Abuse & System Education"
+      },
+      {
+        "value": "Crisis intervention",
+        "label": "Crisis intervention"
+      },
+      {
+        "value": "Empower caller",
+        "label": "Empower caller"
+      },
+      {
+        "value": "Encourage appropriate actions",
+        "label": "Encourage appropriate actions"
+      },
+      {
+        "value": "Issues identification",
+        "label": "Issues identification"
+      },
+      {
+        "value": "Mandated Reporter Professional Consult",
+        "label": "Mandated Reporter Professional Consult"
+      },
+      {
+        "value": "Minimize anger-hostility",
+        "label": "Minimize anger-hostility"
+      },
+      {
+        "value": "Only provide information",
+        "label": "Only provide information"
+      },
+      {
+        "value": "Reduce Anxiety",
+        "label": "Reduce Anxiety"
+      },
+      {
+        "value": "Validate feelings",
+        "label": "Validate feelings"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "actionPlanDeveloped",
+    "label": "Action Plan Developed",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Referred to child protection agencies",
+        "label": "Referred to child protection agencies"
+      },
+      {
+        "value": "Referred to general healthcare services",
+        "label": "Referred to general healthcare services"
+      },
+      {
+        "value": "Referred to law enforcement agencies",
+        "label": "Referred to law enforcement agencies"
+      },
+      {
+        "value": "Referred to mental health services",
+        "label": "Referred to mental health services"
+      },
+      {
+        "value": "Referred to other organizations",
+        "label": "Referred to other organizations"
+      },
+      {
+        "value": "Referred to school counselors",
+        "label": "Referred to school counselors"
+      },
+      {
+        "value": "Referred to cyber reporting agencies",
+        "label": "Referred to cyber reporting agencies"
+      },
+      {
+        "value": "Provided informational resources",
+        "label": "Provided informational resources"
+      },
+      {
+        "value": "Identified support systems",
+        "label": "Identified support systems"
+      },
+      {
+        "value": "Identified coping skills",
+        "label": "Identified coping skills"
+      },
+      {
+        "value": "Safety plan created",
+        "label": "Safety plan created"
+      },
+      {
+        "value": "Next steps identified",
+        "label": "Next steps identified"
+      },
+      {
+        "value": "N/A- Helpseeker stopped responding",
+        "label": "N/A- Helpseeker stopped responding"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "levelOfIntervention",
+    "label": "Level of Intervention",
+    "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Level 1",
+        "label": "Level 1"
+      },
+      {
+        "value": "Level 2",
+        "label": "Level 2"
+      },
+      {
+        "value": "Level 3",
+        "label": "Level 3"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "helpseekerReaction",
+    "label": "Helpseeker Reaction",
+    "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Appreciates Service",
+        "label": "Appreciates Service"
+      },
+      {
+        "value": "Dissatisfied with Service",
+        "label": "Dissatisfied with Service"
+      },
+      {
+        "value": "No Percieved Difference",
+        "label": "No Percieved Difference"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 10,
+    "width": 250
+  },
+  {
+    "name": "wasASafetyPlanCreated",
+    "label": "Was a Safety Plan created?",
+    "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "componentsOfSafetyPlan",
+    "label": "Components of Safety Plan",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Identified steps to reduce danger (locking up guns, moving medications to a public area, reducing contact with perpetrator, etc)",
+        "label": "Identified steps to reduce danger (locking up guns, moving medications to a public area, reducing contact with perpetrator, etc)"
+      },
+      {
+        "value": "Identified internal support/coping skills",
+        "label": "Identified internal support/coping skills"
+      },
+      {
+        "value": "Identified warning signs/triggers",
+        "label": "Identified warning signs/triggers"
+      },
+      {
+        "value": "Identified social supports (telling a parent/guardian/trusted adult, texting a friend)",
+        "label": "Identified social supports (telling a parent/guardian/trusted adult, texting a friend)"
+      },
+      {
+        "value": "Provided resource referrals (988, 911)",
+        "label": "Provided resource referrals (988, 911)"
+      }
+    ]
+  }
+]

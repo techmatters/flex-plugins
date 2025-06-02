@@ -19,7 +19,7 @@ import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import IssueCategorizationSectionForm from '../../../components/contact/IssueCategorizationSectionForm';
@@ -67,7 +67,7 @@ beforeEach(() => {
 });
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL('v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);

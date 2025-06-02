@@ -1,0 +1,269 @@
+{
+  "Te Guío": {
+    "Tipo de Conducta Sexual": {
+      "color": "#085f63",
+      "subcategories": [
+        {
+          "label": "Normal"
+        },
+        {
+          "label": "Inapropiado"
+        },
+        {
+          "label": "Problemático"
+        },
+        {
+          "label": "Abusivo"
+        },
+        {
+          "label": "Violento"
+        }
+      ]
+    },
+    "Violencia": {
+      "color": "#14919b",
+      "subcategories": [
+        {
+          "label": "Acoso"
+        },
+        {
+          "label": "Matrimonio infantil/temprano/forzado"
+        },
+        {
+          "label": "Explotación sexual comercial (fuera de línea)"
+        },
+        {
+          "label": "Trabajo infantil"
+        },
+        {
+          "label": "Violencia mental / emocional"
+        },
+        {
+          "label": "Negligencia (o tratamiento negligente)"
+        },
+        {
+          "label": "Abuso sexual infantil en línea"
+        },
+        {
+          "label": "Explotación sexual infantil en línea"
+        },
+        {
+          "label": "Violencia física"
+        },
+        {
+          "label": "Violencia sexual"
+        },
+        {
+          "label": "No especificado/otro - Violencia física"
+        }
+      ]
+    },
+    "Salud Mental": {
+      "color": "#fac05e",
+      "subcategories": [
+        {
+          "label": "Comportamientos adictivos y uso de sustancias"
+        },
+        {
+          "label": "Problemas de conducta"
+        },
+        {
+          "label": "Preocupaciones sobre si mismo"
+        },
+        {
+          "label": "Angustia emocional - problemas de ira"
+        },
+        {
+          "label": "Angustia emocional - problemas de miedo y ansiedad"
+        },
+        {
+          "label": "Angustia emocional - problemas de humor"
+        },
+        {
+          "label": "Preocupaciones del desarrollo neurológico"
+        },
+        {
+          "label": "Problemas con el comportamiento alimentario"
+        },
+        {
+          "label": "Comportamientos de autolesión"
+        },
+        {
+          "label": "Angustia traumática"
+        },
+        {
+          "label": "Pensamientos suicidas e intentos de suicidio"
+        },
+        {
+          "label": "No especificado/otro - Salud mental"
+        }
+      ]
+    },
+    "Salud Física": {
+      "color": "#f79d8f",
+      "subcategories": [
+        {
+          "label": "Información médica o de estilo de vida sobre VIH/SIDA"
+        },
+        {
+          "label": "Preocupaciones médicas generales o de estilo de vida"
+        },
+        {
+          "label": "Embarazo y atención materna"
+        },
+        {
+          "label": "Salud sexual y reproductiva"
+        },
+        {
+          "label": "Nutrición"
+        },
+        {
+          "label": "No especificado/otro - Salud física"
+        }
+      ]
+    },
+    "Accesibilidad": {
+      "color": "#f0817c",
+      "subcategories": [
+        {
+          "label": "Educación"
+        },
+        {
+          "label": "Necesidades esenciales"
+        },
+        {
+          "label": "Servicios generales de atención médica"
+        },
+        {
+          "label": "Servicios legales y asesoramiento"
+        },
+        {
+          "label": "Servicios de salud mental"
+        },
+        {
+          "label": "Servicios de salud sexual"
+        },
+        {
+          "label": "Servicios socioeconómicos"
+        },
+        {
+          "label": "No especificado/otro - Accesibilidad"
+        }
+      ]
+    },
+    "Discriminación y Exclusión": {
+      "color": "#4d92c2",
+      "subcategories": [
+        {
+          "label": "Etnia/nacionalidad"
+        },
+        {
+          "label": "Situación financiera"
+        },
+        {
+          "label": "Género"
+        },
+        {
+          "label": "Identidad o expresión de género y orientación sexual"
+        },
+        {
+          "label": "Salud"
+        },
+        {
+          "label": "Creencias filosóficas o religiosas"
+        },
+        {
+          "label": "No especificado/otro - discriminación y exclusión"
+        }
+      ]
+    },
+    "Relaciones Familiares": {
+      "color": "#c99f7d",
+      "subcategories": [
+        {
+          "label": "Adopción, crianza y ubicación en familiar extendida,"
+        },
+        {
+          "label": "Relación con el cuidador"
+        },
+        {
+          "label": "Salud y bienestar familiar"
+        },
+        {
+          "label": "Relación con los hermanos (s)"
+        },
+        {
+          "label": "No especificado/otros - Relaciones familiares"
+        }
+      ]
+    },
+    "Relaciones con Pares": {
+      "color": "#db7a34",
+      "subcategories": [
+        {
+          "label": "Amigos y amistades"
+        },
+        {
+          "label": "Relaciones de pareja"
+        },
+        {
+          "label": "Relaciones de compañeros de clase/colegas"
+        },
+        {
+          "label": "No especificado/otro - Relaciones con pares"
+        }
+      ]
+    },
+    "Educación y Ocupación": {
+      "color": "#e7c582",
+      "subcategories": [
+        {
+          "label": "Problemas académicos"
+        },
+        {
+          "label": "Problemas con profesores o escolares"
+        },
+        {
+          "label": "Problemas en el trabajo"
+        },
+        {
+          "label": "No especificado/otro - Escuela"
+        }
+      ]
+    },
+    "Sexualidad": {
+      "color": "#037971",
+      "subcategories": [
+        {
+          "label": "Orientación sexual e identidad de género"
+        },
+        {
+          "label": "Comportamientos sexuales"
+        },
+        {
+          "label": "No especificado/otro - Sexualidad"
+        }
+      ]
+    },
+    "Información y Otro Tipo de Llamadas": {
+      "color": "#f8b595",
+      "subcategories": [
+        {
+          "label": "Quejas sobre la línea de ayuda"
+        },
+        {
+          "label": "Preguntas sobre la línea de ayuda"
+        },
+        {
+          "label": "Preguntas sobre otros servicios"
+        },
+        {
+          "label": "Agradecimiento"
+        },
+        {
+          "label": "No especificado/otro - Información y otros"
+        }
+      ]
+    }
+  }
+}

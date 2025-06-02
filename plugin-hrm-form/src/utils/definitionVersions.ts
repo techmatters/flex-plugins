@@ -13,19 +13,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
-import { DefinitionVersionId } from 'hrm-form-definitions';
-
 import { Case, Contact } from '../types/types';
 import { getDefinitionVersionsList } from '../services/ServerlessService';
 import { getDefinitionVersions } from '../hrmConfig';
 
 // eslint-disable-next-line import/no-unused-modules
-const getMissingDefinitionVersions = async (versions: DefinitionVersionId[]) => {
+const getMissingDefinitionVersions = async (versions: string[]) => {
   const { definitionVersions } = getDefinitionVersions();
-  const missingDefinitionVersions = new Set(
-    versions.filter(v => Object.values(DefinitionVersionId).includes(v) && !definitionVersions[v]),
-  );
+  const missingDefinitionVersions = new Set(versions.filter(v => !definitionVersions[v]));
 
   // eslint-disable-next-line sonarjs/prefer-immediate-return
   const definitions = await getDefinitionVersionsList(Array.from(missingDefinitionVersions));

@@ -9,7 +9,7 @@ locals {
 
   local_config = {
 
-    custom_task_routing_filter_expression = "channelType =='web'  OR isContactlessTask == true OR  twilioNumber IN ['messenger:103538615719253', 'twitter:1532353002387931139', 'instagram:17841453197793547'] OR to == '+578005190690'"
+    custom_task_routing_filter_expression = "OR channelType IN ['webchat', 'facebook', 'instagram', 'whatsapp']  OR isContactlessTask == true OR  twilioNumber IN ['messenger:103538615719253', 'twitter:1532353002387931139', 'instagram:17841453197793547'] OR to == '+578005190690'"
     flow_vars = {
       service_sid                  = "ZS70d962b047c1cd528ad2f2cae9f33b8b"
       environment_sid              = "ZE5dd6ef3cbb63cc2418c472cd51fb2d16"

@@ -1,0 +1,425 @@
+{
+  "Mental Health Innovations": {
+    "Abuse": {
+      "color": "#085f63",
+      "subcategories": [
+        {
+          "label": "Abuse (not specified/other)"
+        },
+        {
+          "label": "Domestic Abuse"
+        },
+        {
+          "label": "Emotional Abuse"
+        },
+        {
+          "label": "Child abuse"
+        },
+        {
+          "label": "Neglect"
+        },
+        {
+          "label": "Physical Abuse"
+        },
+        {
+          "label": "Sexual Abuse"
+        },
+        {
+          "label": "Position of trust abuse"
+        }
+      ]
+    },
+    "Crime & Safety": {
+      "color": "#14919b",
+      "subcategories": [
+        {
+          "label": "Bullying"
+        },
+        {
+          "label": "Crime"
+        },
+        {
+          "label": "Discrimination"
+        },
+        {
+          "label": "Hate Crime"
+        },
+        {
+          "label": "Racial discrimination and harassment"
+        },
+        {
+          "label": "Rape/sexual assault"
+        },
+        {
+          "label": "Sexual Harassment"
+        }
+      ]
+    },
+    "Education": {
+      "color": "#fac05e",
+      "subcategories": [
+        {
+          "label": "Exam stress"
+        },
+        {
+          "label": "Exam results"
+        },
+        {
+          "label": "NEET/Unemployment (Not in education, employment or training)"
+        },
+        {
+          "label": "School, university and education"
+        },
+        {
+          "label": "Special Educational Needs/Learning difficulty"
+        }
+      ]
+    },
+    "Employment": {
+      "color": "#f79d8f",
+      "subcategories": [
+        {
+          "label": "Careers and training"
+        },
+        {
+          "label": "Stress at work"
+        },
+        {
+          "label": "Finding work"
+        },
+        {
+          "label": "Work/employment"
+        },
+        {
+          "label": "Breakups/separation/divorce"
+        },
+        {
+          "label": "Friendships/Relationships"
+        }
+      ]
+    },
+    "Family and children": {
+      "color": "#f0817c",
+      "subcategories": [
+        {
+          "label": "Family"
+        },
+        {
+          "label": "Abortion"
+        },
+        {
+          "label": "Children and childcare"
+        },
+        {
+          "label": "Fostering"
+        },
+        {
+          "label": "Pregnancy"
+        },
+        {
+          "label": "Single parents"
+        }
+      ]
+    },
+    "Housing, Accommodation & Migration": {
+      "color": "#4d92c2",
+      "subcategories": [
+        {
+          "label": "Moving out"
+        },
+        {
+          "label": "Homelessness"
+        },
+        {
+          "label": "Housing"
+        },
+        {
+          "label": "Immigration"
+        },
+        {
+          "label": "Running Away"
+        },
+        {
+          "label": "Thrown out of home"
+        }
+      ]
+    },
+    "Involvement with other services": {
+      "color": "#c99f7d",
+      "subcategories": [
+        {
+          "label": "Concerns and questions about social services"
+        },
+        {
+          "label": "Counselling"
+        },
+        {
+          "label": "Care Leavers"
+        },
+        {
+          "label": "Currently on a waiting list for mental health services"
+        },
+        {
+          "label": "Involvement in criminal justice system"
+        },
+        {
+          "label": "Involvement with mental health services"
+        },
+        {
+          "label": "Involvement with physical health services/NHS"
+        },
+        {
+          "label": "Involvement with social services"
+        },
+        {
+          "label": "Legal issues"
+        }
+      ]
+    },
+    "LGBTQIA": {
+      "color": "#db7a34",
+      "subcategories": [
+        {
+          "label": "LGBTQIA+"
+        },
+        {
+          "label": "Coming out"
+        },
+        {
+          "label": "Gender identity"
+        },
+        {
+          "label": "Sexual orientation"
+        }
+      ]
+    },
+    "Mental Health Conditions": {
+      "color": "#e7c582",
+      "subcategories": [
+        {
+          "label": "Anxiety (includes panic disorder)"
+        },
+        {
+          "label": "Bipolar disorder"
+        },
+        {
+          "label": "Depression/Low Mood"
+        },
+        {
+          "label": "Eating Disorders/ Disordered Eating"
+        },
+        {
+          "label": "OCD (Obsessive-compulsive disorder)"
+        },
+        {
+          "label": "Personality disorder"
+        },
+        {
+          "label": "PTSD/trauma disorders"
+        },
+        {
+          "label": "Has received a mental health diagnosis"
+        }
+      ]
+    },
+    "Mental Health, Feelings, Thoughts & Emotions": {
+      "color": "#037971",
+      "subcategories": [
+        {
+          "label": "Anger"
+        },
+        {
+          "label": "Bereavement, Death, Loss & Grief"
+        },
+        {
+          "label": "Body Image"
+        },
+        {
+          "label": "Flashbacks/Related to symptoms of trauma"
+        },
+        {
+          "label": "Hearing Voices (Hallucinations)/Experiencing unusual beliefs or sensory experiences (incl. Paranoia) "
+        },
+        {
+          "label": "Hospitalisation (mental health)/being held under the mental health act"
+        },
+        {
+          "label": "Loneliness/Isolation"
+        },
+        {
+          "label": "Panic attack/s"
+        },
+        {
+          "label": "Self-worth/(low) self-esteem"
+        },
+        {
+          "label": "Stress"
+        }
+      ]
+    },
+    "Money": {
+      "color": "#f8b595",
+      "subcategories": [
+        {
+          "label": "Cost of living"
+        },
+        {
+          "label": "Benefits"
+        },
+        {
+          "label": "Debt"
+        },
+        {
+          "label": "Money Worries"
+        }
+      ]
+    },
+    "Neurodiversity": {
+      "color": "#f67280",
+      "subcategories": [
+        {
+          "label": "Autistic Spectrum Condition (inc Asperger's)"
+        },
+        {
+          "label": "ADHD"
+        }
+      ]
+    },
+    "Online Behaviours": {
+      "color": "#c06c84",
+      "subcategories": [
+        {
+          "label": "Cyber bullying"
+        },
+        {
+          "label": "Revenge porn"
+        },
+        {
+          "label": "Sexting"
+        },
+        {
+          "label": "Social media"
+        }
+      ]
+    },
+    "Other": {
+      "color": "#6c5b7b",
+      "subcategories": [
+        {
+          "label": "War/Conflict"
+        },
+        {
+          "label": "Complaints"
+        },
+        {
+          "label": "Feedback"
+        },
+        {
+          "label": "Thank you/compliment"
+        },
+        {
+          "label": "No issues identified"
+        },
+        {
+          "label": "Support for another person"
+        },
+        {
+          "label": "Other"
+        }
+      ]
+    },
+    "Physical Health": {
+      "color": "#355c7d",
+      "subcategories": [
+        {
+          "label": "Difficulty sleeping/insomnia"
+        },
+        {
+          "label": "General health concerns"
+        },
+        {
+          "label": "Hospitalisation (physical health)"
+        },
+        {
+          "label": "Sex and sexual health"
+        },
+        {
+          "label": "Weight/size issues"
+        }
+      ]
+    },
+    "Physical Health Conditions": {
+      "color": "#a47fbc",
+      "subcategories": [
+        {
+          "label": "Cancer"
+        },
+        {
+          "label": "Chronic Illness"
+        }
+      ]
+    },
+    "Protected Characteristics": {
+      "color": "#b3b582",
+      "subcategories": [
+        {
+          "label": "Disability"
+        },
+        {
+          "label": "Ethnic Minorities"
+        },
+        {
+          "label": "Religion/faith"
+        }
+      ]
+    },
+    "Self Harm": {
+      "color": "#a7416a",
+      "subcategories": [
+        {
+          "label": "Disclosure of previous self harm"
+        },
+        {
+          "label": "Has acted on thoughts of self harm (recent/ongoing)"
+        },
+        {
+          "label": "Thoughts of self harm"
+        }
+      ]
+    },
+    "Substances & Addiction": {
+      "color": "#8b5b6e",
+      "subcategories": [
+        {
+          "label": "Addiction"
+        },
+        {
+          "label": "Alcohol"
+        },
+        {
+          "label": "Drugs and Solvents"
+        },
+        {
+          "label": "Gambling"
+        },
+        {
+          "label": "Smoking/Vaping"
+        }
+      ]
+    },
+    "Suicide": {
+      "color": "#b2a39f",
+      "subcategories": [
+        {
+          "label": "Disclosure of a previous suicide attempt"
+        },
+        {
+          "label": "Thoughts of suicide with intent to act"
+        },
+        {
+          "label": "Thoughts of suicide without intent to act"
+        }
+      ]
+    }
+  }
+}

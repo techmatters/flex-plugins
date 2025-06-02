@@ -15,12 +15,11 @@
  */
 
 import { createAsyncAction, createReducer } from 'redux-promise-middleware-actions';
-import { DefinitionVersionId } from 'hrm-form-definitions';
 import { CreateHandlerMap } from 'redux-promise-middleware-actions/lib/reducers';
 
 import { cancelCase, createCase, updateCaseOverview, updateCaseStatus } from '../../services/CaseService';
 import { Case, CaseOverview, Contact } from '../../types/types';
-import { CANCEL_CASE_ACTION, CREATE_CASE_ACTION } from './types';
+import { CANCEL_CASE_ACTION, CREATE_CASE_ACTION, CREATE_CASE_ACTION_FULFILLED } from './types';
 import type { HrmState } from '..';
 import { getAvailableCaseStatusTransitions } from './caseStatus';
 import { connectToCase } from '../../services/ContactService';
@@ -34,17 +33,21 @@ export const createCaseAsyncAction = createAsyncAction(
   async (
     contact,
     workerSid: string,
-    definitionVersion: DefinitionVersionId,
+    definitionVersion: string,
   ): Promise<{ newCase: Case; connectedContact: Contact }> => {
     // We should probably update the case POST endpoint to accept a connected contact to simplify this and avoid extra calls and inconsistent state
     const newCase = await createCase(contact, workerSid, definitionVersion);
-    await connectToCase(contact.id, newCase.id);
+    const newContact = await connectToCase(contact.id, newCase.id);
     return {
       newCase,
-      connectedContact: contact,
+      connectedContact: newContact,
     };
   },
 );
+
+export type CreateCaseAsyncActionFulfilled = ReturnType<typeof createCaseAsyncAction.fulfilled> & {
+  type: typeof CREATE_CASE_ACTION_FULFILLED;
+};
 
 export const updateCaseOverviewAsyncAction = createAsyncAction(
   UPDATE_CASE_OVERVIEW_ACTION,
@@ -97,7 +100,6 @@ const updateConnectedCase = (state: HrmState, connectedCase: Case): HrmState => 
           connectedCase: {
             ...stateCase?.connectedCase,
             ...connectedCase,
-            categories: stateCase?.connectedCase?.categories ?? connectedCase.categories,
             info: {
               ...(stateCase?.connectedCase?.info || {}),
               ...restCaseSummary,
