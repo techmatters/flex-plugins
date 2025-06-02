@@ -45,8 +45,11 @@ const RemoveParticipantButton: React.FC<Props> = ({ participant, task }) => {
 
     // Assume if the arttribute hasn't been set to anything yet, the 'hang up by' plugin is not in use
     if (task.attributes.conversations.hang_up_by) {
-      // eslint-disable-next-line camelcase
-      await task.setAttributes({ conversations: { ...task.attributes.conversations, hang_up_by: 'Agent' } });
+      await task.setAttributes({
+        ...task.attributes,
+        // eslint-disable-next-line camelcase
+        conversations: { ...task.attributes.conversations, hang_up_by: 'Agent' },
+      });
     }
   };
 
