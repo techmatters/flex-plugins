@@ -39,7 +39,6 @@ import {
 } from './getExternalRecordingInfo';
 import { GeneralizedSearchParams, SearchParams } from '../states/search/types';
 import { ContactDraftChanges } from '../states/contacts/existingContacts';
-import { newContactState } from '../states/contacts/contactState';
 import { ApiError, FetchOptions } from './fetchApi';
 import { TaskSID, WorkerSID } from '../types/twilio';
 import { recordEvent } from '../fullStory';
@@ -253,9 +252,10 @@ const saveContactToHrm = async (
   }
 
   if (isNonDataCallType(callType)) {
-    const newContactWithMetaData = newContactState(currentDefinitionVersion, task)(false);
+    // What is this for? Nothing seems to be used here, except contact data that's already available from parameters
+    // const newContactWithMetaData = newContactState(currentDefinitionVersion, task)({ recreated: false });
     form = {
-      ...newContactWithMetaData.savedContact.rawJson,
+      ...contact.rawJson,
       callType,
       ...(isOfflineContactTask(task) && {
         contactlessTask: contact.rawJson.contactlessTask,

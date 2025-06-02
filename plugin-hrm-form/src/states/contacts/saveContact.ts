@@ -123,7 +123,7 @@ export const createContactAsyncAction = createAsyncAction(
       // We assume that any contact we create will be the active contact because that's the only way to create contacts currently
       // This assumption may not always be valid.
       reference: `${taskSid}-active`,
-      metadata: newContactMetaData(false),
+      metadata: newContactMetaData({ createdAt: contact?.createdAt }),
     };
   },
   (contactToCreate: Contact, workerSid: string, { taskSid }: CustomITask) => ({
@@ -362,7 +362,7 @@ export const saveContactReducer = (initialState: ContactsState) =>
     handleAction(
       createContactAsyncAction.fulfilled,
       (state, { payload: { contact, reference } }): ContactsState => {
-        return loadContactIntoRedux(state, contact, reference, newContactMetaData(false));
+        return loadContactIntoRedux(state, contact, reference, newContactMetaData({ createdAt: contact?.createdAt }));
       },
     ),
     handleAction(
@@ -379,7 +379,7 @@ export const saveContactReducer = (initialState: ContactsState) =>
     handleAction(
       submitContactFormAsyncAction.fulfilled,
       (state, { payload }): ContactsState => {
-        return loadContactIntoRedux(state, payload, undefined, newContactMetaData(false));
+        return loadContactIntoRedux(state, payload, undefined, newContactMetaData({ createdAt: payload?.createdAt }));
       },
     ),
     handleAction(
@@ -402,7 +402,7 @@ export const saveContactReducer = (initialState: ContactsState) =>
     handleAction(
       newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction.fulfilled,
       (state, { payload }): ContactsState => {
-        return loadContactIntoRedux(state, payload, undefined, newContactMetaData(false));
+        return loadContactIntoRedux(state, payload, undefined, newContactMetaData({ createdAt: payload?.createdAt }));
       },
     ),
     handleAction(
@@ -424,7 +424,7 @@ export const saveContactReducer = (initialState: ContactsState) =>
       loadContactFromHrmByIdAsyncAction.fulfilled,
       (state, { payload: { contact, reference } }): ContactsState => {
         if (!contact) return state;
-        return loadContactIntoRedux(state, contact, reference, newContactMetaData(true));
+        return loadContactIntoRedux(state, contact, reference, newContactMetaData({ createdAt: contact?.createdAt }));
       },
     ),
     handleAction(
@@ -440,7 +440,7 @@ export const saveContactReducer = (initialState: ContactsState) =>
       newLoadContactFromHrmForTaskAsyncAction.fulfilled,
       (state, { payload: { contact, reference } }): ContactsState => {
         if (!contact) return state;
-        return loadContactIntoRedux(state, contact, reference, newContactMetaData(true));
+        return loadContactIntoRedux(state, contact, reference, newContactMetaData({ createdAt: contact?.createdAt }));
       },
     ),
     handleAction(
