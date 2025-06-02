@@ -140,12 +140,14 @@ export const loadContactReducer = (state = initialState, action: LoadContactActi
           gridView: false,
         },
       };
+
+      const savedContact = action.replaceExisting || !current.references.size ? c : state[c.id].savedContact;
       return [
         c.id,
         {
-          metadata: newContactMetaData(true),
+          metadata: newContactMetaData({ createdAt: savedContact?.createdAt }),
           ...currentContact,
-          savedContact: action.replaceExisting || !current.references.size ? c : state[c.id].savedContact,
+          savedContact,
           references: action.reference ? current.references.add(action.reference) : current.references,
           draftContact: action.replaceExisting ? undefined : draftContact,
         },
