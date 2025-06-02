@@ -149,7 +149,6 @@ const hrmState: Partial<RootState[typeof namespace]> = {
           startMillis: 0,
           endMillis: 0,
           categories: { gridView: false, expanded: {} },
-          recreated: false,
           draft: {
             dialogsOpen: {},
             resourceReferralList: {
