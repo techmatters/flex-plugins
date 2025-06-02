@@ -1,1 +1,4 @@
-[]
+[
+  { "label": "English (EN)", "shortLabel": "EN", "aseloLocale": "en-US" },
+  { "label": "French (FR)", "shortLabel": "FR", "aseloLocale": "fr" }
+]
