@@ -31,13 +31,11 @@ export const validateFlexTokenRequest: HttpRequestPipelineStep = async (
   request,
   { accountSid },
 ) => {
-  const { authorization } = request.headers;
-  if (!authorization?.startsWith('Bearer ')) {
-    return newMissingParameterResult('Bearer Authorization header');
+  const { Token: token } = request.body;
+  if (!token) {
+    return newMissingParameterResult('Token');
   }
   try {
-    const token = authorization?.substring('Bearer '.length);
-
     const tokenResult: TokenValidatorResponse = (await validator(
       token,
       accountSid,
