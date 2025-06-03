@@ -45,7 +45,7 @@ const RemoveParticipantButton: React.FC<Props> = ({ participant, task }) => {
         setIsLoading(false);
       }
       // Have to set hang_up_by in localStorage, setting the task attribute won't work because hangUpBy plugin overwrites it
-      const hangUpByStorageKey = `hang_up_by_${Manager.getInstance().serviceConfiguration.chat_service_instance_sid}`;
+      const hangUpByStorageKey = `hang_up_by_${Manager.getInstance().serviceConfiguration.flex_service_instance_sid}`;
       const currentState = JSON.parse(localStorage.getItem(hangUpByStorageKey) ?? '{}');
       localStorage.setItem(hangUpByStorageKey, JSON.stringify({ ...currentState, [task.sid]: 'Agent' }));
     } catch (err) {
