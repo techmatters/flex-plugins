@@ -45,7 +45,7 @@ const fetchProtectedApi = async (
   allOptions?: FetchOptions & { useTwilioLambda?: boolean },
 ) => {
   const { serverlessBaseUrl, accountScopedLambdaBaseUrl } = getHrmConfig();
-  const { useTwilioLambda, ...fetchOptions } = allOptions;
+  const { useTwilioLambda, ...fetchOptions } = allOptions ?? {};
   const token = getValidToken();
   if (token instanceof Error) throw new ApiError(`Aborting request due to token issue: ${token.message}`, {}, token);
   const options: RequestInit = {
