@@ -21,6 +21,7 @@ import { DefinitionVersion, loadDefinition } from 'hrm-form-definitions';
 import { LocalizationType } from '@twilio/flex-ui/src/localization/LocaleManager/LocaleManager.definitions';
 import { AvailableLocale } from '@twilio/flex-ui/src/localization/locale.definitions';
 
+import { mockPartialConfiguration } from '../../mockGetConfig';
 import { ConfigurationState, initialState } from '../../../states/configuration/reducer';
 import {
   changeLanguageReducer,
@@ -71,6 +72,9 @@ beforeAll(async () => {
   const formDefinitionsBaseUrl = buildBaseURL('v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
+  mockPartialConfiguration({
+    accountSid: 'ACfake',
+  });
 });
 
 beforeEach(() => {
@@ -119,7 +123,7 @@ describe('newChangeLanguageAsyncAction', () => {
         status: 'loaded',
       },
     });
-    expect(mockLocalStorageSetItem).toHaveBeenCalledWith('ASELO_PLUGIN_USER_LOCALE', 'fr-CA');
+    expect(mockLocalStorageSetItem).toHaveBeenCalledWith('ACfake_ASELO_PLUGIN_USER_LOCALE', 'fr-CA');
     expect(mockSetLocalePreference).toHaveBeenCalledWith('fr-FR');
     expect(mockDismissNotificationById).toHaveBeenCalledWith(
       REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID,
