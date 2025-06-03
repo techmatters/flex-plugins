@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { IconButton, Notifications, TaskHelper } from '@twilio/flex-ui';
+import { IconButton, Manager, Notifications, TaskHelper } from '@twilio/flex-ui';
 import type { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
 
 import { ConferenceNotifications } from '../../../conference/setUpConferenceActions';
@@ -34,26 +34,22 @@ const RemoveParticipantButton: React.FC<Props> = ({ participant, task }) => {
     setIsLoading(true);
 
     try {
-      // Assume if the arttribute hasn't been set to anything yet, the 'hang up by' plugin is not in use
-      if (task.attributes.conversations.hang_up_by) {
-        await task.setAttributes({
-          ...task.attributes,
-          // eslint-disable-next-line camelcase
-          conversations: { ...task.attributes.conversations, hang_up_by: 'Agent' },
+      try {
+        await conferenceApi.removeParticipant({
+          callSid: participant.callSid,
+          conferenceSid: task.conference.conferenceSid,
         });
+      } catch (err) {
+        Notifications.showNotificationSingle(ConferenceNotifications.ErrorUpdatingParticipantNotification);
+      } finally {
+        setIsLoading(false);
       }
+      // Have to set hang_up_by in localStorage, setting the task attribute won't work because hangUpBy plugin overwrites it
+      const hangUpByStorageKey = `hang_up_by_${Manager.getInstance().serviceConfiguration.chat_service_instance_sid}`;
+      const currentState = JSON.parse(localStorage.getItem(hangUpByStorageKey) ?? '{}');
+      localStorage.setItem(hangUpByStorageKey, JSON.stringify({ ...currentState, [task.sid]: 'Agent' }));
     } catch (err) {
       console.error('Setting hang_up_by attribute failed', err);
-    }
-    try {
-      await conferenceApi.removeParticipant({
-        callSid: participant.callSid,
-        conferenceSid: task.conference.conferenceSid,
-      });
-    } catch (err) {
-      Notifications.showNotificationSingle(ConferenceNotifications.ErrorUpdatingParticipantNotification);
-    } finally {
-      setIsLoading(false);
     }
   };
 
