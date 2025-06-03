@@ -15,12 +15,12 @@
  */
 
 import type { DefinitionVersion } from 'hrm-form-definitions';
+import { Manager } from '@twilio/flex-ui';
 
 import * as t from './types';
 import { defaultLocale } from '../../translations';
 import { FETCH_CASE_LIST_FULFILLED_ACTION, FetchCaseListFulfilledAction } from '../caseList/listContent';
 import { changeLanguageReducer } from './changeLanguage';
-import { getHrmConfig } from '../../hrmConfig';
 
 export type ConfigurationState = {
   locale: {
@@ -38,7 +38,9 @@ export type ConfigurationState = {
 
 export const initialState: ConfigurationState = {
   locale: {
-    selected: localStorage.getItem(`${getHrmConfig().accountSid}_ASELO_PLUGIN_USER_LOCALE`) || defaultLocale,
+    selected:
+      localStorage.getItem(`${Manager.getInstance().serviceConfiguration.account_sid}_ASELO_PLUGIN_USER_LOCALE`) ||
+      defaultLocale,
     status: 'loaded',
   },
   counselors: {

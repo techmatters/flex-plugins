@@ -21,6 +21,7 @@ import { DefinitionVersion, loadDefinition } from 'hrm-form-definitions';
 import { LocalizationType } from '@twilio/flex-ui/src/localization/LocaleManager/LocaleManager.definitions';
 import { AvailableLocale } from '@twilio/flex-ui/src/localization/locale.definitions';
 
+import '../../mockFlexUi';
 import { mockPartialConfiguration } from '../../mockGetConfig';
 import { ConfigurationState, initialState } from '../../../states/configuration/reducer';
 import {

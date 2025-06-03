@@ -16,8 +16,8 @@
 
 import { loadDefinition } from 'hrm-form-definitions';
 
-import '../../mockGetConfig';
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
+import '../../mockFlexUi';
 import { reduce } from '../../../states/configuration/reducer';
 import * as types from '../../../states/configuration/types';
 import * as actions from '../../../states/configuration/actions';
