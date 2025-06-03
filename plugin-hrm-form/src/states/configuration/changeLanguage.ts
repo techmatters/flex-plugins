@@ -19,6 +19,7 @@ import { Notifications, Manager } from '@twilio/flex-ui';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { ConfigurationState } from './reducer';
+import { getHrmConfig } from '../../hrmConfig';
 
 export const REFRESH_BROWSER_REQUIRED_FOR_LANGUAGE_CHANGE_NOTIFICATION_ID = 'RefreshBrowserRequiredForLanguageChange';
 
@@ -27,7 +28,7 @@ const CHANGE_LANGUAGE_ACTION: string = 'configuration-action/change-language';
 export const newChangeLanguageAsyncAction = createAsyncAction(
   CHANGE_LANGUAGE_ACTION,
   async (selectedLocale: string, { flexUiLocales }: DefinitionVersion): Promise<{ selectedLocale: string }> => {
-    localStorage.setItem('ASELO_PLUGIN_USER_LOCALE', selectedLocale);
+    localStorage.setItem(`${getHrmConfig().accountSid}_ASELO_PLUGIN_USER_LOCALE`, selectedLocale);
     const manager = Manager.getInstance();
     const { availableLocales } = manager.localization;
     const selectedLocaleEntry = flexUiLocales.find(locale => locale.aseloLocale === selectedLocale);
