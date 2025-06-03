@@ -34,6 +34,7 @@ import { getAseloFeatureFlags, getHrmConfig, initializeConfig, subscribeToConfig
 import { setUpSharedStateClient } from './utils/sharedState';
 import { FeatureFlags } from './types/types';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
+import QueuesView from './components/queuesView';
 import TeamsView from './components/teamsView';
 import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
 import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
@@ -122,6 +123,9 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   TeamsView.setUpTeamsViewSorting();
   TeamsView.setUpTeamsViewFilters();
   TeamsView.setUpWorkerDirectoryFilters();
+
+  // if (featureFlags.enable_switchboarding)
+     QueuesView.setUpSwitchboard();
 
   if (featureFlags.enable_conferencing) setupConferenceComponents();
 
