@@ -14,6 +14,7 @@
             "enable_csam_clc_report": true,
             "enable_csam_report": true,
             "enable_client_profiles": true,
+            "enable_language_selector": true,
             "enable_lex": true,
             "enable_llm_summary": true,
             "enable_post_survey": true,
