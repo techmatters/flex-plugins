@@ -14,9 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { getSwitchboardState } from '../utils/sharedState';
 import { Manager } from '@twilio/flex-ui';
-import { fetchHrmApi } from './fetchHrmApi';
+
+import { getSwitchboardState } from '../utils/sharedState';
+import { fetchBaseApi } from './fetchHrmApi';
 
 /**
  * Activates or deactivates switchboarding for a specific queue
@@ -50,12 +51,12 @@ export const toggleSwitchboardingForQueue = async (queueSid: string): Promise<vo
       operation,
     };
 
-    await fetchHrmApi(getAccountScopedPath('/toggleSwitchboardQueue'), {
+    await fetchBaseApi(getAccountScopedPath('/toggleSwitchboardQueue'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     });
   } catch (err) {
     if (err instanceof Error) {
