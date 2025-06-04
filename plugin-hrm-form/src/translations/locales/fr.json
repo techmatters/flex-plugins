@@ -545,6 +545,7 @@
 "CaseMerging-CancelCase": "Annuler le dossier",
 "CaseMerging-ContactUndoRemovedFromCase": "Annuler",
 "TeamsView-NoSkills": "- Aucune Compétence Répertoirée -",  
+"ColumnHeaderAgent": "Conseiller",
 "TeamsViewFilterAction": "Filtre {{#if filterCount}} ({{filterCount}}) {{/if}}",
 "TeamsViewClearSearchAction": "Effacer le résultat de la recherche",
 "TeamsViewClearSearchPlaceholder": "Rechercher un agent",
@@ -569,7 +570,7 @@
 "OutboundCallFailedNotificationTitleBusy": "Ce numéro est occupé. Merci de réessayer.",
 "OutboundCallFailedNotificationTitleNoAnswer": "Pas de réponse. Merci de réessayer.",
 "OutboundCallFailedNotificationTitleInvalidNumber": "Ce numéro n'est pas valide. Merci de vérifier le numéro et réessayer.",
-"OutboundCallFailedNotificationAction": "Réessayer".
+"OutboundCallFailedNotificationAction": "Réessayer",
 "QueuesStatsHeaderQueueName": "Files d'attente",
 "QueuesStatsHeaderActiveTasks": "Actif",
 "QueuesStatsHeaderWaitingTasks": "En attente",
@@ -580,5 +581,6 @@
 "QueuesStatsSubHeaderNow": "Maintenant",
 "QueuesStatsSubHeaderToday": "Aujourd'hui",
 "TaskLineOutboundCallConnecting": "Connexion...",
-"LogOut": "Déconnexion"
+"LogOut": "Déconnexion",
+
 }
