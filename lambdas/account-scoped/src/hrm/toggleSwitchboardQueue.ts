@@ -526,7 +526,6 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
           taskRouterClient,
           switchboardQueue,
           masterWorkflow,
-          validatedToken,
         );
         return newOk(state);
       }
