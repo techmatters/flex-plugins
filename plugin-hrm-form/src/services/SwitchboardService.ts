@@ -16,6 +16,7 @@
 
 import fetchProtectedApi from './fetchProtectedApi';
 import { getSwitchboardState } from '../utils/sharedState';
+import { Manager } from '@twilio/flex-ui';
 
 /**
  * Activates or deactivates switchboarding for a specific queue
@@ -24,6 +25,16 @@ import { getSwitchboardState } from '../utils/sharedState';
  * @param queueSid The SID of the queue to switchboard
  * @returns Promise that resolves when the operation is complete
  */
+/**
+ * Constructs the account-scoped lambda path with the proper prefix and account SID
+ * @param path The path to the lambda function, without prefix or account SID
+ * @returns The full path including prefix and account SID
+ */
+const getAccountScopedPath = (path: string): string => {
+  const accountSid = Manager.getInstance().serviceConfiguration.account_sid;
+  return `/lambda/twilio/account-scoped/${accountSid}/${path}`;
+};
+
 export const toggleSwitchboardingForQueue = async (queueSid: string): Promise<void> => {
   try {
     if (!queueSid || typeof queueSid !== 'string') {
@@ -39,7 +50,8 @@ export const toggleSwitchboardingForQueue = async (queueSid: string): Promise<vo
       operation,
     };
 
-    await fetchProtectedApi('/taskrouter/toggleSwitchboardQueue', body);
+    // Call the account-scoped lambda with the proper path format
+    await fetchProtectedApi(getAccountScopedPath('taskrouter/toggleSwitchboardQueue'), body);
   } catch (err) {
     if (err instanceof Error) {
       if (err.message.includes('403')) {
