@@ -42,6 +42,14 @@ export const toggleSwitchboardingForQueue = async (queueSid: string): Promise<vo
       throw new Error('Invalid queue SID provided');
     }
 
+    // Get the Flex token for authentication
+    const manager = Manager.getInstance();
+    const flexToken = manager.user.token;
+
+    if (!flexToken) {
+      throw new Error('Authentication token not available. Please refresh the page and try again.');
+    }
+
     const currentState = await getSwitchboardState();
     const isDisabling = currentState.isSwitchboardingActive && currentState.queueSid === queueSid;
     const operation = isDisabling ? 'disable' : 'enable';
@@ -49,6 +57,7 @@ export const toggleSwitchboardingForQueue = async (queueSid: string): Promise<vo
     const body = {
       originalQueueSid: queueSid,
       operation,
+      Token: flexToken,
     };
 
     await fetchBaseApi(getAccountScopedPath('/toggleSwitchboardQueue'), {
