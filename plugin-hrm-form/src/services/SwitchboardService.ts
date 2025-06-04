@@ -34,7 +34,6 @@ export const toggleSwitchboardingForQueue = async (queueSid: string): Promise<vo
       throw new Error('Invalid queue SID provided');
     }
 
-    // Get the Flex token for authentication
     const manager = Manager.getInstance();
     const flexToken = manager.user.token;
 
