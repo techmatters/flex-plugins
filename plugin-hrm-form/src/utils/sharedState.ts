@@ -138,6 +138,7 @@ export const createCallStatusSyncDocument = async (onUpdateCallback: ({ data }: 
   return { status: 'success', callStatusSyncDocument } as const;
 };
 
+// eslint-disable-next-line import/no-unused-modules
 export type SwitchboardState = {
   isSwitchboardingActive: boolean;
   queueSid: string | null;

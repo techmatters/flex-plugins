@@ -14,13 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { 
-  SWITCHBOARD_STATE_UPDATE, 
-  SWITCHBOARD_SET_LOADING, 
+import {
+  SWITCHBOARD_STATE_UPDATE,
+  SWITCHBOARD_SET_LOADING,
   SWITCHBOARD_SET_ERROR,
   SwitchboardStateUpdateAction,
   SwitchboardSetLoadingAction,
-  SwitchboardSetErrorAction
+  SwitchboardSetErrorAction,
 } from './types';
 
 export const updateSwitchboardState = (state: {
@@ -31,15 +31,15 @@ export const updateSwitchboardState = (state: {
   supervisorWorkerSid: string | null;
 }): SwitchboardStateUpdateAction => ({
   type: SWITCHBOARD_STATE_UPDATE,
-  payload: state
+  payload: state,
 });
 
 export const setSwitchboardLoading = (isLoading: boolean): SwitchboardSetLoadingAction => ({
   type: SWITCHBOARD_SET_LOADING,
-  payload: isLoading
+  payload: isLoading,
 });
 
 export const setSwitchboardError = (error: string | null): SwitchboardSetErrorAction => ({
   type: SWITCHBOARD_SET_ERROR,
-  payload: error
+  payload: error,
 });

@@ -14,13 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { 
-  SwitchboardState, 
-  SwitchboardActionTypes, 
-  SWITCHBOARD_STATE_UPDATE, 
-  SWITCHBOARD_SET_LOADING, 
+import {
+  SwitchboardState,
+  SwitchboardActionTypes,
+  SWITCHBOARD_STATE_UPDATE,
+  SWITCHBOARD_SET_LOADING,
   SWITCHBOARD_SET_ERROR,
-  initialState 
+  initialState,
 } from './types';
 
 export const reduce = (state = initialState, action: SwitchboardActionTypes): SwitchboardState => {
@@ -28,17 +28,17 @@ export const reduce = (state = initialState, action: SwitchboardActionTypes): Sw
     case SWITCHBOARD_STATE_UPDATE:
       return {
         ...state,
-        ...action.payload
+        ...action.payload,
       };
     case SWITCHBOARD_SET_LOADING:
       return {
         ...state,
-        isLoading: action.payload
+        isLoading: action.payload,
       };
     case SWITCHBOARD_SET_ERROR:
       return {
         ...state,
-        error: action.payload
+        error: action.payload,
       };
     default:
       return state;

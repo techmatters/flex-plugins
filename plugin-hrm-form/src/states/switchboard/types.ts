@@ -56,7 +56,7 @@ export type SwitchboardSetErrorAction = {
   payload: string | null;
 };
 
-export type SwitchboardActionTypes = 
-  | SwitchboardStateUpdateAction 
-  | SwitchboardSetLoadingAction 
+export type SwitchboardActionTypes =
+  | SwitchboardStateUpdateAction
+  | SwitchboardSetLoadingAction
   | SwitchboardSetErrorAction;

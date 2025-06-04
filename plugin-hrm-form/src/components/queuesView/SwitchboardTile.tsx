@@ -25,9 +25,13 @@ import { getHrmConfig } from '../../hrmConfig';
 import { Bold, Box } from '../../styles';
 import SwitchboardIcon from '../common/icons/SwitchboardIcon';
 import { RootState } from '../../states';
-import { namespace, configurationBase, switchboardBase } from '../../states/storeNamespaces';
+import { namespace, configurationBase } from '../../states/storeNamespaces';
 import { SelectQueueModal, TurnOffSwitchboardDialog } from './QueueSelectionModals';
-import { toggleSwitchboardingForQueueRedux, initializeSwitchboardState } from '../../services/SwitchboardReduxService';
+import {
+  useInitializeSwitchboard,
+  useToggleSwitchboardingForQueue,
+  useSwitchboardState,
+} from '../../states/switchboard/useSwitchboard';
 
 export const setUpSwitchboard = () => {
   QueuesStats.AggregatedQueuesDataTiles.Content.add(<SwitchboardTile key="switchboard" />, {
@@ -45,29 +49,12 @@ const SwitchboardTile = () => {
 
   const { workerSid } = getHrmConfig();
   const counselorsHash = useSelector((state: RootState) => state[namespace][configurationBase].counselors.hash);
-  
-  const switchboardState = useSelector((state: RootState) => state[namespace][switchboardBase]);
+
+  const switchboardState = useSwitchboardState();
   const { isLoading, error } = switchboardState;
 
-  useEffect(() => {
-    let unsubscribe: (() => void) | undefined;
-
-    const initSwitchboard = async () => {
-      try {
-        unsubscribe = await initializeSwitchboardState(dispatch);
-      } catch (err) {
-        console.error('Error initializing switchboard subscription:', err);
-      }
-    };
-
-    initSwitchboard();
-
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
-  }, [dispatch]);
+  // Initialize switchboard state
+  useInitializeSwitchboard();
 
   useEffect(() => {
     selectedQueueRef.current = selectedQueue;
@@ -91,13 +78,15 @@ const SwitchboardTile = () => {
     setIsConfirmationDialogOpen(false);
   };
 
+  const toggleSwitchboardingForQueue = useToggleSwitchboardingForQueue();
+
   const handleSwitchboarding = async (queue: string) => {
     if (!queue) {
       return;
     }
 
     try {
-      await toggleSwitchboardingForQueueRedux(queue, dispatch);
+      await toggleSwitchboardingForQueue(queue);
       setIsModalOpen(false);
       setSelectedQueue(queue);
     } catch (error) {
