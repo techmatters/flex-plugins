@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { IconButton, Notifications, TaskHelper } from '@twilio/flex-ui';
+import { IconButton, Manager, Notifications, TaskHelper } from '@twilio/flex-ui';
 import type { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
 
 import { ConferenceNotifications } from '../../../conference/setUpConferenceActions';
@@ -23,7 +23,7 @@ import * as conferenceApi from '../../../services/conferenceService';
 
 type Props = Partial<ParticipantCanvasChildrenProps>;
 
-const RemoveParticipantButton: React.FC<Props> = ({ participant, task, ...props }) => {
+const RemoveParticipantButton: React.FC<Props> = ({ participant, task }) => {
   const [isLoading, setIsLoading] = React.useState(false);
 
   if (!participant?.callSid || !task?.conference?.conferenceSid) {
@@ -32,15 +32,24 @@ const RemoveParticipantButton: React.FC<Props> = ({ participant, task, ...props 
 
   const handleClick = async () => {
     setIsLoading(true);
+
     try {
-      await conferenceApi.removeParticipant({
-        callSid: participant.callSid,
-        conferenceSid: task.conference.conferenceSid,
-      });
+      try {
+        await conferenceApi.removeParticipant({
+          callSid: participant.callSid,
+          conferenceSid: task.conference.conferenceSid,
+        });
+      } catch (err) {
+        Notifications.showNotificationSingle(ConferenceNotifications.ErrorUpdatingParticipantNotification);
+      } finally {
+        setIsLoading(false);
+      }
+      // Have to set hang_up_by in localStorage, setting the task attribute won't work because hangUpBy plugin overwrites it
+      const hangUpByStorageKey = `hang_up_by_${Manager.getInstance().serviceConfiguration.flex_service_instance_sid}`;
+      const currentState = JSON.parse(localStorage.getItem(hangUpByStorageKey) ?? '{}');
+      localStorage.setItem(hangUpByStorageKey, JSON.stringify({ ...currentState, [task.sid]: 'Agent' }));
     } catch (err) {
-      Notifications.showNotificationSingle(ConferenceNotifications.ErrorUpdatingParticipantNotification);
-    } finally {
-      setIsLoading(false);
+      console.error('Setting hang_up_by attribute failed', err);
     }
   };
 

@@ -19,7 +19,7 @@ import { AccountSID } from '../twilioTypes';
 import { newOk } from '../Result';
 import { EventType } from './eventTypes';
 import twilio from 'twilio';
-import { getAccountAuthToken } from '../configuration/twilioConfiguration';
+import { getTwilioClient } from '../configuration/twilioConfiguration';
 
 export type TaskRouterEventHandler = (
   event: any,
@@ -57,11 +57,9 @@ export const handleTaskRouterEvent: AccountScopedHandler = async (
     `Handling task router event: ${body.EventType} for account: ${accountSid} - executing ${handlers.length} registered handlers.`,
   );
   await Promise.all(
-    handlers.map(async handler => {
-      const authToken = await getAccountAuthToken(accountSid);
-      const client = twilio(accountSid, authToken);
-      return handler(body, accountSid, client);
-    }),
+    handlers.map(async handler =>
+      handler(body, accountSid, await getTwilioClient(accountSid)),
+    ),
   );
   console.debug(
     `Successfully executed ${handlers.length} registered handlers task router event: ${body.EventType} for account: ${accountSid}.`,
