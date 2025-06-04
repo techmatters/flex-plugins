@@ -17,20 +17,18 @@
 import React, { useState, useEffect } from 'react';
 import { QueuesStats, Manager } from '@twilio/flex-ui';
 import { Switch, CircularProgress, Tooltip } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import InfoIcon from '@material-ui/icons/Info';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 import { getHrmConfig } from '../../hrmConfig';
 import { Bold, Box } from '../../styles';
-import { toggleSwitchboardingForQueue } from '../../services/SwitchboardService';
 import SwitchboardIcon from '../common/icons/SwitchboardIcon';
 import { RootState } from '../../states';
-import { namespace, configurationBase } from '../../states/storeNamespaces';
+import { namespace, configurationBase, switchboardBase } from '../../states/storeNamespaces';
 import { SelectQueueModal, TurnOffSwitchboardDialog } from './QueueSelectionModals';
-import { SwitchboardState, subscribeSwitchboardState } from '../../utils/sharedState';
+import { toggleSwitchboardingForQueueRedux, initializeSwitchboardState } from '../../services/SwitchboardReduxService';
 
-// eslint-disable-next-line import/no-unused-modules
 export const setUpSwitchboard = () => {
   QueuesStats.AggregatedQueuesDataTiles.Content.add(<SwitchboardTile key="switchboard" />, {
     sortOrder: -1,
@@ -38,44 +36,38 @@ export const setUpSwitchboard = () => {
 };
 
 const SwitchboardTile = () => {
-  const [switchboardState, setSwitchboardState] = useState<SwitchboardState | null>(null);
   const [selectedQueue, setSelectedQueue] = useState<string | null>(null);
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false);
 
   const selectedQueueRef = React.useRef<string | null>(null);
+  const dispatch = useDispatch();
 
   const { workerSid } = getHrmConfig();
   const counselorsHash = useSelector((state: RootState) => state[namespace][configurationBase].counselors.hash);
+  
+  const switchboardState = useSelector((state: RootState) => state[namespace][switchboardBase]);
+  const { isLoading, error } = switchboardState;
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
 
-    const initSwitchboardSubscription = async () => {
+    const initSwitchboard = async () => {
       try {
-        setIsLoading(true);
-        unsubscribe = await subscribeSwitchboardState(state => {
-          setSwitchboardState(state);
-          setIsLoading(false);
-        });
+        unsubscribe = await initializeSwitchboardState(dispatch);
       } catch (err) {
-        setError('Failed to connect to switchboard state. Please refresh the page or contact support.');
         console.error('Error initializing switchboard subscription:', err);
-        setIsLoading(false);
       }
     };
 
-    initSwitchboardSubscription();
+    initSwitchboard();
 
     return () => {
       if (unsubscribe) {
         unsubscribe();
       }
     };
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     selectedQueueRef.current = selectedQueue;
@@ -105,16 +97,11 @@ const SwitchboardTile = () => {
     }
 
     try {
-      setIsLoading(true);
-      setError(null);
-      await toggleSwitchboardingForQueue(queue);
+      await toggleSwitchboardingForQueueRedux(queue, dispatch);
       setIsModalOpen(false);
       setSelectedQueue(queue);
     } catch (error) {
       console.error('Error in switchboarding:', error);
-      setError('Failed to activate switchboarding. Please try again or contact support.');
-    } finally {
-      setIsLoading(false);
     }
   };
 
