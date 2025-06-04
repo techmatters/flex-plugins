@@ -38,7 +38,7 @@ const CaseSectionPreviewTextValue: React.FC<Props> = ({ section, layoutDefinitio
   if (value instanceof Date) {
     value = value.toISOString();
   }
-  const formattedText = formatFormValue(value, layout, section.sectionTypeSpecificData);
+  const formattedText = formatFormValue(value as any, layout, section.sectionTypeSpecificData);
   switch (layout?.format) {
     case 'timestamp':
     case 'date': {

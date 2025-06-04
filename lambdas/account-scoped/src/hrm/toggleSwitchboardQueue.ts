@@ -56,9 +56,15 @@ const isSupervisor = (tokenResult: TokenResponse): boolean =>
 /**
  * Get or create the switchboard document in Twilio Sync
  */
-async function getSwitchboardStateDocument(client: any, syncServiceSid: string): Promise<any> {
+async function getSwitchboardStateDocument(
+  client: any,
+  syncServiceSid: string,
+): Promise<any> {
   try {
-    return client.sync.services(syncServiceSid).documents(SWITCHBOARD_DOCUMENT_NAME).fetch();
+    return client.sync
+      .services(syncServiceSid)
+      .documents(SWITCHBOARD_DOCUMENT_NAME)
+      .fetch();
   } catch (error: any) {
     // If document doesn't exist, create it
     if (error.status === 404) {
@@ -207,7 +213,10 @@ async function moveTaskToQueue(
       ...additionalAttributes,
     };
 
-    await client.taskrouter.workspaces(workspaceSid).tasks(taskSid).update({
+    await client.taskrouter
+      .workspaces(workspaceSid)
+      .tasks(taskSid)
+      .update({
       attributes: JSON.stringify(switchboardingAttributes),
       taskQueueSid: targetQueueSid,
     });
@@ -286,7 +295,7 @@ async function handleEnableOperation(
   const updatedConfig = addSwitchboardingFilter(
     currentConfig,
     originalQueue.sid,
-    switchboardQueue.sid
+    switchboardQueue.sid,
   );
   
   // Update the workflow with the new configuration
@@ -371,7 +380,9 @@ async function handleDisableOperation(
 /**
  * Validates the request payload for the switchboard toggle operation
  */
-const validateSwitchboardRequest = (request: SwitchboardRequest): Result<HttpError, TokenResponse> => {
+const validateSwitchboardRequest = (
+  request: SwitchboardRequest,
+): Result<HttpError, TokenResponse> => {
   const { Token: tokenData, operation } = request;
   
   if (!tokenData) {
@@ -399,15 +410,18 @@ const validateSwitchboardRequest = (request: SwitchboardRequest): Result<HttpErr
         error: { statusCode: 401, cause: new Error('Invalid token structure') },
       });
     }
-    
+
     if (!isSupervisor(tokenResult)) {
       console.error('Unauthorized access attempt by non-supervisor');
       return newErr({
         message: 'Unauthorized: endpoint not open to non supervisors',
-        error: { statusCode: 403, cause: new Error('Unauthorized: endpoint not open to non supervisors') },
+        error: {
+          statusCode: 403,
+          cause: new Error('Unauthorized: endpoint not open to non supervisors'),
+        },
       });
     }
-    
+
     return newOk(tokenResult);
   } catch (tokenError: any) {
     console.error('Token validation error:', tokenError);
@@ -424,121 +438,123 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
 ): Promise<Result<HttpError, any>> => {
   try {
     const { originalQueueSid, operation } = request.body as SwitchboardRequest;
-    
+
     const tokenResult = validateSwitchboardRequest(request.body as SwitchboardRequest);
     if (isErr(tokenResult)) {
       return tokenResult;
     }
-    
+
     const validatedToken = tokenResult.unwrap();
-      
-      const authToken = await getAccountAuthToken(accountSid);
-      const client = twilio(accountSid, authToken);
-      
-      const syncServices = await client.sync.services.list();
-      const syncService = syncServices[0]; // Using the first sync service or implement proper lookup
-      if (!syncService) {
-        return newErr({ 
-          message: 'Sync service not configured', 
-          error: { statusCode: 500 } 
-        });
-      }
-      
-      // Get TaskRouter workspace
-      const workspaces = await client.taskrouter.workspaces.list();
-      const workspace = workspaces[0]; // Using the first workspace or implement proper lookup
-      if (!workspace) {
-        return newErr({ 
-          message: 'TaskRouter workspace not found', 
-          error: { statusCode: 500 } 
-        });
-      }
-      
-      const taskRouterClient = client.taskrouter.workspaces(workspace.sid);
-      
-      // Status operation doesn't require a queue SID
-      if (operation === 'status') {
-        const state = await handleStatusOperation(client, syncService.sid);
-        return newOk(state);
-      }
-      
-      // For enable/disable operations, queue SID is required
-      if (!originalQueueSid) {
-        return newErr({ 
-          message: 'Original Queue SID is required for enable/disable operations', 
-          error: { statusCode: 400, cause: new Error('Original Queue SID is required for enable/disable operations') } 
-        });
-      }
-      
-      // Get queues and find switchboard queue
-      const queues = await taskRouterClient.taskQueues.list();
-      const switchboardQueue = queues.find((queue) => queue.friendlyName === 'Switchboard Queue');
-      
-      if (!switchboardQueue) {
-        return newErr({ 
-          message: 'Switchboard Queue not found', 
-          error: { statusCode: 400, cause: new Error('Switchboard Queue not found') } 
-        });
-      }
-      
-      // Find original queue
-      const originalQueue = queues.find((queue) => queue.sid === originalQueueSid);
-      if (!originalQueue) {
-        return newErr({ 
-          message: 'Original Queue not found', 
-          error: { statusCode: 400, cause: new Error('Original Queue not found') } 
-        });
-      }
-      
-      // Find Master Workflow
-      const workflows = await taskRouterClient.workflows.list();
-      const masterWorkflow = workflows.find(
-        (workflow) => workflow.friendlyName === 'Master Workflow',
-      );
-      
-      if (!masterWorkflow) {
-        return newErr({ 
-          message: 'Master Workflow not found', 
-          error: { statusCode: 400, cause: new Error('Master Workflow not found') } 
-        });
-      }
-      
-      // Handle enable/disable operations
-      if (operation === 'enable') {
-        const state = await handleEnableOperation(
-          client,
-          syncService.sid,
-          workspace.sid,
-          taskRouterClient,
-          originalQueue,
-          switchboardQueue,
-          masterWorkflow,
-          validatedToken,
-        );
-        return newOk(state);
-      }
-      
-      if (operation === 'disable') {
-        const state = await handleDisableOperation(
-          client,
-          syncService.sid,
-          workspace.sid,
-          taskRouterClient,
-          switchboardQueue,
-          masterWorkflow,
-        );
-        return newOk(state);
-      }
-      
-      return newErr({ 
-        message: `Unknown operation: ${operation}`, 
-        error: { statusCode: 400, cause: new Error(`Unknown operation: ${operation}`) } 
+
+    const authToken = await getAccountAuthToken(accountSid);
+    const client = twilio(accountSid, authToken);
+
+    const syncServices = await client.sync.services.list();
+    const syncService = syncServices[0]; // Using the first sync service or implement proper lookup
+    if (!syncService) {
+      return newErr({
+        message: 'Sync service not configured',
+        error: { statusCode: 500 },
       });
+    }
+
+    // Get TaskRouter workspace
+    const workspaces = await client.taskrouter.workspaces.list();
+    const workspace = workspaces[0]; // Using the first workspace or implement proper lookup
+    if (!workspace) {
+      return newErr({
+        message: 'TaskRouter workspace not found',
+        error: { statusCode: 500 },
+      });
+    }
+
+    const taskRouterClient = client.taskrouter.workspaces(workspace.sid);
+
+    // Status operation doesn't require a queue SID
+    if (operation === 'status') {
+      const state = await handleStatusOperation(client, syncService.sid);
+      return newOk(state);
+    }
+
+    // For enable/disable operations, queue SID is required
+    if (!originalQueueSid) {
+      return newErr({
+        message: 'Original Queue SID is required for enable/disable operations',
+        error: {
+          statusCode: 400,
+          cause: new Error('Original Queue SID is required for enable/disable operations'),
+        },
+      });
+    }
+
+    // Get queues and find switchboard queue
+    const queues = await taskRouterClient.taskQueues.list();
+    const switchboardQueue = queues.find(
+      queue => queue.friendlyName === 'Switchboard Queue',
+    );
+
+    if (!switchboardQueue) {
+      return newErr({
+        message: 'Switchboard Queue not found',
+        error: { statusCode: 400, cause: new Error('Switchboard Queue not found') },
+      });
+    }
+
+    // Find original queue
+    const originalQueue = queues.find(queue => queue.sid === originalQueueSid);
+    if (!originalQueue) {
+      return newErr({
+        message: 'Original Queue not found',
+        error: { statusCode: 400, cause: new Error('Original Queue not found') },
+      });
+    }
+
+    // Find Master Workflow
+    const workflows = await taskRouterClient.workflows.list();
+    const masterWorkflow = workflows.find(workflow => workflow.friendlyName === 'Master Workflow');
+
+    if (!masterWorkflow) {
+      return newErr({
+        message: 'Master Workflow not found',
+        error: { statusCode: 400, cause: new Error('Master Workflow not found') },
+      });
+    }
+
+    if (operation === 'enable') {
+      const state = await handleEnableOperation(
+        client,
+        syncService.sid,
+        workspace.sid,
+        taskRouterClient,
+        originalQueue,
+        switchboardQueue,
+        masterWorkflow,
+        validatedToken,
+      );
+      return newOk(state);
+    }
+
+    if (operation === 'disable') {
+      const state = await handleDisableOperation(
+        client,
+        syncService.sid,
+        workspace.sid,
+        taskRouterClient,
+        switchboardQueue,
+        masterWorkflow,
+      );
+      return newOk(state);
+    }
+
+    return newErr({
+      message: `Unknown operation: ${operation}`,
+      error: { statusCode: 400, cause: new Error(`Unknown operation: ${operation}`) },
+    });
   } catch (err: any) {
     console.error('Error in switchboarding handler:', err);
-    return newErr({ 
-      message: err.message || 'Internal server error', 
-      error: { statusCode: 500, cause: err } 
+    return newErr({
+      message: err.message || 'Internal server error',
+      error: { statusCode: 500, cause: err },
     });
   }
 }
