@@ -20,7 +20,7 @@ import { validateRequestMethod } from './validation/method';
 import { isAccountSID } from './twilioTypes';
 import { handleTaskRouterEvent } from './taskrouter';
 import { handleGetProfileFlagsForIdentifier } from './hrm/getProfileFlagsForIdentifier';
-import { handleToggleSwitchboardQueue } from './switchboarding/toggleSwitchboardQueue';
+import { handleToggleSwitchboardQueue } from './taskrouter/toggleSwitchboardQueue';
 import {
   handleCaptureChannelWithBot,
   handleChatbotCallback,
@@ -60,7 +60,7 @@ const ROUTES: Record<string, FunctionRoute> = {
     requestPipeline: [validateWebhookRequest],
     handler: handleChatbotCallbackCleanup,
   },
-  'switchboarding/toggleSwitchboardQueue': {
+  'taskrouter/toggleSwitchboardQueue': {
     requestPipeline: [validateWebhookRequest],
     handler: handleToggleSwitchboardQueue,
   },

@@ -125,7 +125,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   TeamsView.setUpWorkerDirectoryFilters();
 
   // if (featureFlags.enable_switchboarding)
-     QueuesView.setUpSwitchboard();
+  QueuesView.setUpSwitchboard();
 
   if (featureFlags.enable_conferencing) setupConferenceComponents();
 

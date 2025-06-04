@@ -155,7 +155,15 @@ const SwitchboardTile = () => {
   ) => (
     <span>
       <Bold>{queueName}</Bold> calls are being switchboarded by supervisor <Bold>{supervisorName}</Bold> since{' '}
-      {startTime ? new Date(startTime).toLocaleString('en-US', { month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : ''}
+      {startTime
+        ? new Date(startTime).toLocaleString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+          })
+        : ''}
     </span>
   );
 

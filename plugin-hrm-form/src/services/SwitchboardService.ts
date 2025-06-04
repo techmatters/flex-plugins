@@ -39,7 +39,7 @@ export const toggleSwitchboardingForQueue = async (queueSid: string): Promise<vo
       operation,
     };
 
-    await fetchProtectedApi('/switchboarding/toggleSwitchboardQueue', body);
+    await fetchProtectedApi('/taskrouter/toggleSwitchboardQueue', body);
   } catch (err) {
     if (err instanceof Error) {
       if (err.message.includes('403')) {
