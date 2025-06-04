@@ -489,9 +489,7 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
 
     // Get queues and find switchboard queue
     const queues = await taskRouterClient.taskQueues.list();
-    const switchboardQueue = queues.find(
-      queue => queue.friendlyName === 'Switchboard Queue',
-    );
+    const switchboardQueue = queues.find((queue: any) => queue.friendlyName === 'Switchboard Queue');
 
     if (!switchboardQueue) {
       return newErr({
@@ -501,7 +499,7 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
     }
 
     // Find original queue
-    const originalQueue = queues.find(queue => queue.sid === originalQueueSid);
+    const originalQueue = queues.find((queue: any) => queue.sid === originalQueueSid);
     if (!originalQueue) {
       return newErr({
         message: 'Original Queue not found',
@@ -511,7 +509,7 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
 
     // Find Master Workflow
     const workflows = await taskRouterClient.workflows.list();
-    const masterWorkflow = workflows.find(workflow => workflow.friendlyName === 'Master Workflow');
+    const masterWorkflow = workflows.find((workflow: any) => workflow.friendlyName === 'Master Workflow');
 
     if (!masterWorkflow) {
       return newErr({
