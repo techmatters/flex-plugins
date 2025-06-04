@@ -16,6 +16,7 @@
 
 import { getSwitchboardState } from '../utils/sharedState';
 import { Manager } from '@twilio/flex-ui';
+import { fetchHrmApi } from './fetchHrmApi';
 
 /**
  * Activates or deactivates switchboarding for a specific queue
@@ -49,7 +50,7 @@ export const toggleSwitchboardingForQueue = async (queueSid: string): Promise<vo
       operation,
     };
 
-    await fetch(getAccountScopedPath('taskrouter/toggleSwitchboardQueue'), {
+    await fetchHrmApi(getAccountScopedPath('/toggleSwitchboardQueue'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
