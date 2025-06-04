@@ -14,7 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import fetchProtectedApi from './fetchProtectedApi';
 import { getSwitchboardState } from '../utils/sharedState';
 import { Manager } from '@twilio/flex-ui';
 
@@ -50,8 +49,13 @@ export const toggleSwitchboardingForQueue = async (queueSid: string): Promise<vo
       operation,
     };
 
-    // Call the account-scoped lambda with the proper path format
-    await fetchProtectedApi(getAccountScopedPath('taskrouter/toggleSwitchboardQueue'), body);
+    await fetch(getAccountScopedPath('taskrouter/toggleSwitchboardQueue'), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body)
+    });
   } catch (err) {
     if (err instanceof Error) {
       if (err.message.includes('403')) {
