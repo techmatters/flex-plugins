@@ -66,10 +66,6 @@ const ROUTES: Record<string, FunctionRoute> = {
     requestPipeline: [validateWebhookRequest],
     handler: handleChatbotCallbackCleanup,
   },
-  toggleSwitchboardQueue: {
-    requestPipeline: [validateWebhookRequest],
-    handler: handleToggleSwitchboardQueue,
-  },
   'conference/addParticipant': {
     requestPipeline: [validateFlexTokenRequest],
     handler: addParticipantHandler,
@@ -89,6 +85,10 @@ const ROUTES: Record<string, FunctionRoute> = {
   'conference/statusCallback': {
     requestPipeline: [validateWebhookRequest],
     handler: statusCallbackHandler,
+  },
+  toggleSwitchboardQueue: {
+    requestPipeline: [validateWebhookRequest],
+    handler: handleToggleSwitchboardQueue,
   },
 };
 

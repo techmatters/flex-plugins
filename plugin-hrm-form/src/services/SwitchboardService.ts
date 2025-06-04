@@ -18,6 +18,7 @@ import { Manager } from '@twilio/flex-ui';
 
 import { getSwitchboardState } from '../utils/sharedState';
 import { fetchBaseApi } from './fetchHrmApi';
+import fetchProtectedApi from './fetchProtectedApi';
 
 /**
  * Activates or deactivates switchboarding for a specific queue
@@ -26,15 +27,6 @@ import { fetchBaseApi } from './fetchHrmApi';
  * @param queueSid The SID of the queue to switchboard
  * @returns Promise that resolves when the operation is complete
  */
-/**
- * Constructs the account-scoped lambda path with the proper prefix and account SID
- * @param path The path to the lambda function, without prefix or account SID
- * @returns The full path including prefix and account SID
- */
-const getAccountScopedPath = (path: string): string => {
-  const accountSid = Manager.getInstance().serviceConfiguration.account_sid;
-  return `/lambda/twilio/account-scoped/${accountSid}/${path}`;
-};
 
 export const toggleSwitchboardingForQueue = async (queueSid: string): Promise<void> => {
   try {
@@ -60,12 +52,8 @@ export const toggleSwitchboardingForQueue = async (queueSid: string): Promise<vo
       Token: flexToken,
     };
 
-    await fetchBaseApi(getAccountScopedPath('/toggleSwitchboardQueue'), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
+    return fetchProtectedApi('/toggleSwitchboardQueue', body, {
+      useTwilioLambda: true,
     });
   } catch (err) {
     if (err instanceof Error) {
