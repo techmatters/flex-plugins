@@ -15,7 +15,7 @@
  */
 
 import { AccountScopedHandler, HttpError, HttpRequest } from '../httpTypes';
-import { newErr, newOk, Result } from '../Result';
+import { newErr, newOk, Result, isErr } from '../Result';
 import twilio from 'twilio';
 import { getAccountAuthToken } from '../configuration/twilioConfiguration';
 
@@ -369,51 +369,72 @@ async function handleDisableOperation(
 }
 
 /**
- * Main handler function for assign-switchboard endpoint
+ * Validates the request payload for the switchboard toggle operation
  */
+const validateSwitchboardRequest = (request: SwitchboardRequest): Result<HttpError, TokenResponse> => {
+  const { Token: tokenData, operation } = request;
+  
+  if (!tokenData) {
+    console.error('Token is missing in the request');
+    return newErr({
+      message: 'Token is required',
+      error: { statusCode: 400, cause: new Error('Token is required') },
+    });
+  }
+  
+  if (!operation || !['enable', 'disable', 'status'].includes(operation)) {
+    console.error(`Invalid operation: ${operation}`);
+    return newErr({
+      message: `Invalid operation: ${operation}`,
+      error: { statusCode: 400, cause: new Error(`Invalid operation: ${operation}`) },
+    });
+  }
+  
+  try {
+    const tokenResult = typeof tokenData === 'string' ? JSON.parse(tokenData) : tokenData;
+    
+    if (!tokenResult || !tokenResult.roles) {
+      return newErr({
+        message: 'Invalid token structure',
+        error: { statusCode: 401, cause: new Error('Invalid token structure') },
+      });
+    }
+    
+    if (!isSupervisor(tokenResult)) {
+      console.error('Unauthorized access attempt by non-supervisor');
+      return newErr({
+        message: 'Unauthorized: endpoint not open to non supervisors',
+        error: { statusCode: 403, cause: new Error('Unauthorized: endpoint not open to non supervisors') },
+      });
+    }
+    
+    return newOk(tokenResult);
+  } catch (tokenError: any) {
+    console.error('Token validation error:', tokenError);
+    return newErr({
+      message: 'Invalid token format',
+      error: { statusCode: 400, cause: tokenError },
+    });
+  }
+};
+
 export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
   request: HttpRequest,
   accountSid,
 ): Promise<Result<HttpError, any>> => {
   try {
-    const { Token: tokenData, originalQueueSid, operation } = request.body as SwitchboardRequest;
+    const { originalQueueSid, operation } = request.body as SwitchboardRequest;
     
-    if (!tokenData) {
-      console.error('Token is missing in the request');
-      return newErr({ 
-        message: 'Token is required', 
-        error: { statusCode: 400 } 
-      });
+    const tokenResult = validateSwitchboardRequest(request.body as SwitchboardRequest);
+    if (isErr(tokenResult)) {
+      return tokenResult;
     }
     
-    // Parse token data directly from the request
-    let tokenResult: TokenResponse;
-    try {
-      // The token passed from the frontend is actually an object with user data, not a JWT
-      tokenResult = typeof tokenData === 'string' ? JSON.parse(tokenData) : tokenData;
+    const validatedToken = tokenResult.unwrap();
       
-      if (!tokenResult || !tokenResult.roles) {
-        console.error('Invalid token structure');
-        return newErr({ 
-          message: 'Invalid token structure', 
-          error: { statusCode: 401 } 
-        });
-      }
-      
-      // Check if user has supervisor permissions
-      if (!isSupervisor(tokenResult)) {
-        console.error('Unauthorized access attempt by non-supervisor');
-        return newErr({ 
-          message: 'Unauthorized: endpoint not open to non supervisors',
-          error: { statusCode: 403 } 
-        });
-      }
-      
-      // Get authentication token and set up Twilio client
       const authToken = await getAccountAuthToken(accountSid);
       const client = twilio(accountSid, authToken);
       
-      // Get Twilio Sync service details from account
       const syncServices = await client.sync.services.list();
       const syncService = syncServices[0]; // Using the first sync service or implement proper lookup
       if (!syncService) {
@@ -445,7 +466,7 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
       if (!originalQueueSid) {
         return newErr({ 
           message: 'Original Queue SID is required for enable/disable operations', 
-          error: { statusCode: 400 } 
+          error: { statusCode: 400, cause: new Error('Original Queue SID is required for enable/disable operations') } 
         });
       }
       
@@ -456,7 +477,7 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
       if (!switchboardQueue) {
         return newErr({ 
           message: 'Switchboard Queue not found', 
-          error: { statusCode: 400 } 
+          error: { statusCode: 400, cause: new Error('Switchboard Queue not found') } 
         });
       }
       
@@ -465,7 +486,7 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
       if (!originalQueue) {
         return newErr({ 
           message: 'Original Queue not found', 
-          error: { statusCode: 400 } 
+          error: { statusCode: 400, cause: new Error('Original Queue not found') } 
         });
       }
       
@@ -478,7 +499,7 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
       if (!masterWorkflow) {
         return newErr({ 
           message: 'Master Workflow not found', 
-          error: { statusCode: 400 } 
+          error: { statusCode: 400, cause: new Error('Master Workflow not found') } 
         });
       }
       
@@ -492,7 +513,7 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
           originalQueue,
           switchboardQueue,
           masterWorkflow,
-          tokenResult,
+          validatedToken,
         );
         return newOk(state);
       }
@@ -505,21 +526,15 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
           taskRouterClient,
           switchboardQueue,
           masterWorkflow,
+          validatedToken,
         );
         return newOk(state);
       }
       
       return newErr({ 
         message: `Unknown operation: ${operation}`, 
-        error: { statusCode: 400 } 
+        error: { statusCode: 400, cause: new Error(`Unknown operation: ${operation}`) } 
       });
-    } catch (tokenError: any) {
-      console.error('Token validation error:', tokenError);
-      return newErr({ 
-        message: 'Invalid token format', 
-        error: { statusCode: 400, cause: tokenError } 
-      });
-    }
   } catch (err: any) {
     console.error('Error in switchboarding handler:', err);
     return newErr({ 
