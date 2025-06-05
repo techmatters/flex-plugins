@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "How did you hear about us? Please select one: 1: Advertisement 2: Social Media 3: SMS/Text Message 4: Traditional Media 5: Word of Mouth"
+                            "value": "What parish are you located in?"
                         }
                     }
                 }
@@ -70,7 +70,8 @@
         "slotCaptureSetting": {
             "captureNextStep": {
                 "dialogAction": {
-                    "type": "FulfillIntent"
+                    "type": "ElicitSlot",
+                    "slotToElicit": "how_did_you_hear_about_us"
                 },
                 "intent": {}
             },
