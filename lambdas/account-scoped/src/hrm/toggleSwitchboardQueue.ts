@@ -65,13 +65,19 @@ async function getSwitchboardStateDocument(
       .documents(SWITCHBOARD_DOCUMENT_NAME)
       .fetch();
   } catch (error: any) {
-    // If document doesn't exist, create it
-    if (error.status === 404) {
-      return client.sync.services(syncServiceSid).documents.create({
-        uniqueName: SWITCHBOARD_DOCUMENT_NAME,
-        data: DEFAULT_SWITCHBOARD_STATE,
-        ttl: 48 * 60 * 60, // 48 hours
-      });
+    console.log('Error fetching switchboard document:', error);
+    if (error.status === 404 || (error.message && error.message.includes('not found'))) {
+      console.log(`Document ${SWITCHBOARD_DOCUMENT_NAME} not found, creating it now...`);
+      try {
+        return client.sync.services(syncServiceSid).documents.create({
+          uniqueName: SWITCHBOARD_DOCUMENT_NAME,
+          data: DEFAULT_SWITCHBOARD_STATE,
+          ttl: 48 * 60 * 60, // 48 hours
+        });
+      } catch (createError: any) {
+        console.error('Error creating switchboard document:', createError);
+        throw createError;
+      }
     }
     throw error;
   }
@@ -107,6 +113,7 @@ async function updateSwitchboardState(
   state: Partial<SwitchboardingState>,
 ): Promise<SwitchboardingState> {
   const document = await getSwitchboardStateDocument(client, syncServiceSid);
+  console.log('Updating switchboard state:', document.data);
   const currentState = document.data;
   const updatedState = { ...currentState, ...state };
 
@@ -384,6 +391,10 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
     const client = await getTwilioClient(accountSid);
 
     const syncServices = await client.sync.services.list();
+    console.log(
+      'Available sync services:',
+      syncServices.map(s => ({ sid: s.sid, name: s.friendlyName })),
+    );
     const syncService = syncServices[0]; // Using the first sync service or implement proper lookup
     if (!syncService) {
       return newErr({
@@ -391,6 +402,11 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
         error: { statusCode: 500 },
       });
     }
+    console.log(
+      'Using Sync service:',
+      syncService.sid,
+      syncService.friendlyName || 'unnamed',
+    );
 
     // Get TaskRouter workspace
     const workspaces = await client.taskrouter.workspaces.list();
