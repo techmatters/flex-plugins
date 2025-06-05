@@ -401,7 +401,7 @@ resource "null_resource" "update_slots" {
 resource "time_sleep" "wait_10_seconds" {
   create_duration = "10s"
 
-  depends_on = [null_resource.update_intent_settings]
+  depends_on = [null_resource.update_slots]
 }
 
 resource "null_resource" "update_intent_settings" {
