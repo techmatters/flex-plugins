@@ -87,7 +87,7 @@ const ROUTES: Record<string, FunctionRoute> = {
     handler: statusCallbackHandler,
   },
   toggleSwitchboardQueue: {
-    requestPipeline: [validateWebhookRequest],
+    requestPipeline: [validateFlexTokenRequest],
     handler: handleToggleSwitchboardQueue,
   },
 };
