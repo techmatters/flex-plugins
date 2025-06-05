@@ -36,8 +36,8 @@
             "slot_question": "What parish are you located in?"
           },
           "5": {
-            "slot_name": "parish",
-            "slot_type_name": "parish",
+            "slot_name": "how_did_you_hear_about_us",
+            "slot_type_name": "how_did_you_hear_about_us",
             "slot_question": "How did you hear about us? Please select one: 1: Advertisement 2: Social Media 3: SMS/Text Message 4: Traditional Media 5: Word of Mouth"
           }
         }

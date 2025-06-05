@@ -16,7 +16,7 @@ locals {
       en_JM : ["pre_survey"]
     }
     lex_v2_bot_languages = {
-      en_JM : ["pre_survey"]
+      en_JM : []
     }
 
 
