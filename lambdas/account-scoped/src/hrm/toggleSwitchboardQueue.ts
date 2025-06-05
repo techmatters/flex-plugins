@@ -128,16 +128,44 @@ async function updateSwitchboardState(
   syncServiceSid: string,
   state: Partial<SwitchboardingState>,
 ): Promise<SwitchboardingState> {
-  const document = await getSwitchboardStateDocument(client, syncServiceSid);
-  console.log('Updating switchboard state:', document.data);
-  const currentState = document.data;
-  const updatedState = { ...currentState, ...state };
+  console.log(`Updating switchboard state. SyncServiceSid: ${syncServiceSid}`);
+  console.log(`Input state update:`, JSON.stringify(state, null, 2));
 
-  await client.sync.services(syncServiceSid).documents(SWITCHBOARD_DOCUMENT_NAME).update({
-    data: updatedState,
-  });
+  try {
+    console.log(`Attempting to get switchboard document...`);
+    const document = await getSwitchboardStateDocument(client, syncServiceSid);
 
-  return updatedState;
+    console.log(`Successfully retrieved document:`, {
+      uniqueName: document.uniqueName,
+      sid: document.sid,
+      documentData: JSON.stringify(document.data, null, 2),
+    });
+
+    const currentState = document.data;
+    const updatedState = { ...currentState, ...state };
+    console.log(`Merged state to update:`, JSON.stringify(updatedState, null, 2));
+
+    console.log(
+      `Attempting to update document ${SWITCHBOARD_DOCUMENT_NAME} in service ${syncServiceSid}...`,
+    );
+    await client.sync
+      .services(syncServiceSid)
+      .documents(SWITCHBOARD_DOCUMENT_NAME)
+      .update({
+        data: updatedState,
+      });
+    console.log(`Successfully updated switchboard document.`);
+
+    return updatedState;
+  } catch (error: any) {
+    console.error(`Error in updateSwitchboardState:`, {
+      message: error.message,
+      status: error.status,
+      code: error.code,
+      stack: error.stack,
+    });
+    throw error;
+  }
 }
 
 /**
@@ -307,28 +335,59 @@ async function handleEnableOperation(
 ): Promise<SwitchboardingState> {
   console.log('Handling enable operation');
 
-  // Get current workflow configuration
   const configResp = await taskRouterClient.workflows(masterWorkflow.sid).fetch();
   const currentConfig = JSON.parse(configResp.configuration);
 
-  // Add the switchboarding filter to route tasks to the switchboard queue
   const updatedConfig = addSwitchboardingFilter(
     currentConfig,
     originalQueue.sid,
     switchboardQueue.sid,
   );
 
-  // Update the workflow with the new configuration
   await taskRouterClient.workflows(masterWorkflow.sid).update({
     configuration: JSON.stringify(updatedConfig),
   });
+  console.log(
+    `Preparing to update switchboard state for queue ${originalQueue.friendlyName}`,
+  );
 
-  // Update the switchboard state to reflect that switchboarding is active
+  try {
+    console.log(`Verifying switchboard document exists in service ${syncServiceSid}`);
+    let document;
+    try {
+      document = await client.sync
+        .services(syncServiceSid)
+        .documents(SWITCHBOARD_DOCUMENT_NAME)
+        .fetch();
+      console.log(`Found existing switchboard document with SID: ${document.sid}`);
+    } catch (docError: any) {
+      if (docError.status === 404) {
+        console.log(`Document not found, creating new switchboard document...`);
+        document = await client.sync.services(syncServiceSid).documents.create({
+          uniqueName: SWITCHBOARD_DOCUMENT_NAME,
+          data: DEFAULT_SWITCHBOARD_STATE,
+          ttl: 48 * 60 * 60,
+        });
+        console.log(
+          `Successfully created new switchboard document with SID: ${document.sid}`,
+        );
+      } else {
+        throw docError;
+      }
+    }
+  } catch (error: any) {
+    console.error(`Failed to verify switchboard document:`, {
+      message: error.message,
+      status: error.status,
+      code: error.code,
+    });
+    throw error;
+  }
+
   const state = await updateSwitchboardState(client, syncServiceSid, {
     isSwitchboardingActive: true,
     queueSid: originalQueue.sid,
     queueName: originalQueue.friendlyName,
-    // supervisorWorkerSid: tokenResult.worker_sid,
     startTime: new Date().toISOString(),
   });
 
