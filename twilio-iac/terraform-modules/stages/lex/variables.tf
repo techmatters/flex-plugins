@@ -359,7 +359,6 @@ variable "lex_v2_slots" {
           failureNextStep = object({
             dialogAction = object({
               type         = string
-              slotToElicit = optional(string)
             })
             intent = optional(map(string)) 
           })
