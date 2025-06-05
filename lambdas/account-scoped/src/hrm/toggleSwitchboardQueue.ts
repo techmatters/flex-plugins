@@ -15,9 +15,8 @@
  */
 
 import { AccountScopedHandler, HttpError, HttpRequest } from '../httpTypes';
-import { newErr, newOk, Result, isErr } from '../Result';
-import twilio from 'twilio';
-import { getAccountAuthToken } from '../configuration/twilioConfiguration';
+import { newErr, newOk, Result } from '../Result';
+import { getTwilioClient } from '../configuration/twilioConfiguration';
 
 export type OperationType = 'enable' | 'disable' | 'status';
 
@@ -47,11 +46,11 @@ const DEFAULT_SWITCHBOARD_STATE: SwitchboardingState = {
   supervisorWorkerSid: undefined,
 };
 
-/**
- * Check if the user has supervisor permissions
- */
-const isSupervisor = (tokenResult: TokenResponse): boolean =>
-  Array.isArray(tokenResult.roles) && tokenResult.roles.includes('supervisor');
+// /**
+//  * Check if the user has supervisor permissions
+//  */
+// const isSupervisor = (tokenResult: TokenResponse): boolean =>
+//   Array.isArray(tokenResult.roles) && tokenResult.roles.includes('supervisor');
 
 /**
  * Get or create the switchboard document in Twilio Sync
@@ -217,9 +216,9 @@ async function moveTaskToQueue(
       .workspaces(workspaceSid)
       .tasks(taskSid)
       .update({
-      attributes: JSON.stringify(switchboardingAttributes),
-      taskQueueSid: targetQueueSid,
-    });
+        attributes: JSON.stringify(switchboardingAttributes),
+        taskQueueSid: targetQueueSid,
+      });
   } catch (err) {
     console.error(`>>> Error moving task ${taskSid} to queue ${targetQueueSid}:`, err);
     throw err;
@@ -278,40 +277,38 @@ async function handleStatusOperation(
 async function handleEnableOperation(
   client: any,
   syncServiceSid: string,
-  workspaceSid: string,
   taskRouterClient: any,
   originalQueue: any,
   switchboardQueue: any,
   masterWorkflow: any,
-  tokenResult: TokenResponse,
 ): Promise<SwitchboardingState> {
   console.log('Handling enable operation');
-  
+
   // Get current workflow configuration
   const configResp = await taskRouterClient.workflows(masterWorkflow.sid).fetch();
   const currentConfig = JSON.parse(configResp.configuration);
-  
+
   // Add the switchboarding filter to route tasks to the switchboard queue
   const updatedConfig = addSwitchboardingFilter(
     currentConfig,
     originalQueue.sid,
     switchboardQueue.sid,
   );
-  
+
   // Update the workflow with the new configuration
   await taskRouterClient.workflows(masterWorkflow.sid).update({
     configuration: JSON.stringify(updatedConfig),
   });
-  
+
   // Update the switchboard state to reflect that switchboarding is active
   const state = await updateSwitchboardState(client, syncServiceSid, {
     isSwitchboardingActive: true,
     queueSid: originalQueue.sid,
     queueName: originalQueue.friendlyName,
-    supervisorWorkerSid: tokenResult.worker_sid,
+    // supervisorWorkerSid: tokenResult.worker_sid,
     startTime: new Date().toISOString(),
   });
-  
+
   console.log(`Switchboarding enabled for queue ${originalQueue.friendlyName}`);
   return state;
 }
@@ -328,43 +325,43 @@ async function handleDisableOperation(
   masterWorkflow: any,
 ): Promise<SwitchboardingState> {
   console.log('Handling disable operation');
-  
+
   // Get the current switchboarding state to know which queue to restore tasks to
   const currentState = await getSwitchboardState(client, syncServiceSid);
-  
+
   if (!currentState.isSwitchboardingActive) {
     console.log('Switchboarding is not active, nothing to disable');
     return currentState;
   }
-  
+
   // Get the workflow configuration
   const configResp = await taskRouterClient.workflows(masterWorkflow.sid).fetch();
   const currentConfig = JSON.parse(configResp.configuration);
-  
+
   // Remove the switchboarding filter from the workflow
   const updatedConfig = removeSwitchboardingFilter(currentConfig);
-  
+
   // Update the workflow
   await taskRouterClient.workflows(masterWorkflow.sid).update({
     configuration: JSON.stringify(updatedConfig),
   });
-  
+
   // Move any waiting tasks from the switchboard queue back to the original queue
   if (currentState.queueSid) {
     try {
       await moveWaitingTasks(
-        client, 
-        workspaceSid, 
-        switchboardQueue.sid, 
+        client,
+        workspaceSid,
+        switchboardQueue.sid,
         currentState.queueSid,
-        { switchboardingActive: false }
+        { switchboardingActive: false },
       );
     } catch (err) {
       console.error('Error moving tasks back to the original queue:', err);
       // Continue with disabling even if task movement fails
     }
   }
-  
+
   // Update the state to reflect that switchboarding is disabled
   const state = await updateSwitchboardState(client, syncServiceSid, {
     isSwitchboardingActive: false,
@@ -372,65 +369,10 @@ async function handleDisableOperation(
     queueName: undefined,
     supervisorWorkerSid: undefined,
   });
-  
+
   console.log('Switchboarding disabled');
   return state;
 }
-
-/**
- * Validates the request payload for the switchboard toggle operation
- */
-const validateSwitchboardRequest = (
-  request: SwitchboardRequest,
-): Result<HttpError, TokenResponse> => {
-  const { Token: tokenData, operation } = request;
-  
-  if (!tokenData) {
-    console.error('Token is missing in the request');
-    return newErr({
-      message: 'Token is required',
-      error: { statusCode: 400, cause: new Error('Token is required') },
-    });
-  }
-  
-  if (!operation || !['enable', 'disable', 'status'].includes(operation)) {
-    console.error(`Invalid operation: ${operation}`);
-    return newErr({
-      message: `Invalid operation: ${operation}`,
-      error: { statusCode: 400, cause: new Error(`Invalid operation: ${operation}`) },
-    });
-  }
-  
-  try {
-    const tokenResult = typeof tokenData === 'string' ? JSON.parse(tokenData) : tokenData;
-    
-    if (!tokenResult || !tokenResult.roles) {
-      return newErr({
-        message: 'Invalid token structure',
-        error: { statusCode: 401, cause: new Error('Invalid token structure') },
-      });
-    }
-
-    if (!isSupervisor(tokenResult)) {
-      console.error('Unauthorized access attempt by non-supervisor');
-      return newErr({
-        message: 'Unauthorized: endpoint not open to non supervisors',
-        error: {
-          statusCode: 403,
-          cause: new Error('Unauthorized: endpoint not open to non supervisors'),
-        },
-      });
-    }
-
-    return newOk(tokenResult);
-  } catch (tokenError: any) {
-    console.error('Token validation error:', tokenError);
-    return newErr({
-      message: 'Invalid token format',
-      error: { statusCode: 400, cause: tokenError },
-    });
-  }
-};
 
 export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
   request: HttpRequest,
@@ -439,15 +381,7 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
   try {
     const { originalQueueSid, operation } = request.body as SwitchboardRequest;
 
-    const tokenResult = validateSwitchboardRequest(request.body as SwitchboardRequest);
-    if (isErr(tokenResult)) {
-      return tokenResult;
-    }
-
-    const validatedToken = tokenResult.unwrap();
-
-    const authToken = await getAccountAuthToken(accountSid);
-    const client = twilio(accountSid, authToken);
+    const client = await getTwilioClient(accountSid);
 
     const syncServices = await client.sync.services.list();
     const syncService = syncServices[0]; // Using the first sync service or implement proper lookup
@@ -482,14 +416,18 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
         message: 'Original Queue SID is required for enable/disable operations',
         error: {
           statusCode: 400,
-          cause: new Error('Original Queue SID is required for enable/disable operations'),
+          cause: new Error(
+            'Original Queue SID is required for enable/disable operations',
+          ),
         },
       });
     }
 
     // Get queues and find switchboard queue
     const queues = await taskRouterClient.taskQueues.list();
-    const switchboardQueue = queues.find((queue: any) => queue.friendlyName === 'Switchboard Queue');
+    const switchboardQueue = queues.find(
+      (queue: any) => queue.friendlyName === 'Switchboard Queue',
+    );
 
     if (!switchboardQueue) {
       return newErr({
@@ -509,7 +447,9 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
 
     // Find Master Workflow
     const workflows = await taskRouterClient.workflows.list();
-    const masterWorkflow = workflows.find((workflow: any) => workflow.friendlyName === 'Master Workflow');
+    const masterWorkflow = workflows.find(
+      (workflow: any) => workflow.friendlyName === 'Master Workflow',
+    );
 
     if (!masterWorkflow) {
       return newErr({
@@ -522,12 +462,10 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
       const state = await handleEnableOperation(
         client,
         syncService.sid,
-        workspace.sid,
         taskRouterClient,
         originalQueue,
         switchboardQueue,
         masterWorkflow,
-        validatedToken,
       );
       return newOk(state);
     }
@@ -555,4 +493,4 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
       error: { statusCode: 500, cause: err },
     });
   }
-}
+};
