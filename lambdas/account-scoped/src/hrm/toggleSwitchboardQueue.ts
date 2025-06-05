@@ -34,7 +34,6 @@ type SwitchboardingState = {
   startTime?: string;
 };
 
-// Token response structure expected from the request body
 export type TokenResponse = { identity: string; roles?: string[]; worker_sid?: string };
 
 const SWITCHBOARD_DOCUMENT_NAME = 'switchboard-state';
