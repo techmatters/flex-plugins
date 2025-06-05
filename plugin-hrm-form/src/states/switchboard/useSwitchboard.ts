@@ -84,16 +84,16 @@ export const useInitializeSwitchboard = (): void => {
  * Hook that provides a function to toggle switchboarding for a queue
  * @returns Function to toggle switchboarding for a queue
  */
-export const useToggleSwitchboardingForQueue = (): ((queueSid: string) => Promise<void>) => {
+export const useToggleSwitchboardingForQueue = (): ((queueSid: string, supervisorWorkerSid?: string) => Promise<void>) => {
   const dispatch = useDispatch();
 
   return useCallback(
-    async (queueSid: string): Promise<void> => {
+    async (queueSid: string, supervisorWorkerSid?: string): Promise<void> => {
       try {
         dispatch(setSwitchboardLoading(true));
         dispatch(setSwitchboardError(null));
 
-        await toggleSwitchboardingForQueue(queueSid);
+        await toggleSwitchboardingForQueue(queueSid, supervisorWorkerSid);
 
         // Note: State will be updated via the Sync subscription
       } catch (error) {

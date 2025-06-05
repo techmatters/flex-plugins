@@ -24,6 +24,7 @@ export type SwitchboardRequest = {
   originalQueueSid?: string;
   operation: OperationType;
   Token: string;
+  supervisorWorkerSid?: string;
 };
 
 type SwitchboardingState = {
@@ -44,25 +45,6 @@ const DEFAULT_SWITCHBOARD_STATE: SwitchboardingState = {
   startTime: undefined,
   supervisorWorkerSid: undefined,
 };
-
-/**
- * Check if the user has supervisor permissions
- */
-const isSupervisor = (tokenResult: TokenResponse): boolean =>
-  Array.isArray(tokenResult.roles) && tokenResult.roles.includes('supervisor');
-
-/**
- * Get user information from the token
- */
-async function parseToken(client: any, token: string): Promise<TokenResponse> {
-  try {
-    const tokenInfo = await client.tokens(token).fetch();
-    return tokenInfo;
-  } catch (error: any) {
-    console.error('Error parsing token:', error);
-    throw error;
-  }
-}
 
 /**
  * Get or create the switchboard document in Twilio Sync
@@ -345,7 +327,7 @@ async function handleEnableOperation(
   originalQueue: any,
   switchboardQueue: any,
   masterWorkflow: any,
-  token: string,
+  supervisorWorkerSid?: string,
 ): Promise<SwitchboardingState> {
   console.log('Handling enable operation');
 
@@ -398,19 +380,10 @@ async function handleEnableOperation(
     throw error;
   }
 
-  // Get supervisor information from token
-  let supervisorWorkerSid;
-  try {
-    const tokenInfo = await parseToken(client, token);
-    if (isSupervisor(tokenInfo) && tokenInfo.worker_sid) {
-      supervisorWorkerSid = tokenInfo.worker_sid;
-      console.log(`Setting supervisor worker SID: ${supervisorWorkerSid}`);
-    } else {
-      console.warn('Token does not have supervisor role or missing worker_sid');
-    }
-  } catch (err) {
-    console.error('Error getting supervisor info from token:', err);
-    // Continue even if we can't get supervisor info
+  if (supervisorWorkerSid) {
+    console.log(`Using provided supervisor worker SID: ${supervisorWorkerSid}`);
+  } else {
+    console.warn('No supervisor worker SID provided');
   }
 
   const state = await updateSwitchboardState(client, syncServiceSid, {
@@ -491,7 +464,8 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
   accountSid,
 ): Promise<Result<HttpError, any>> => {
   try {
-    const { originalQueueSid, operation, Token } = request.body as SwitchboardRequest;
+    const { originalQueueSid, operation, supervisorWorkerSid } =
+      request.body as SwitchboardRequest;
 
     const client = await getTwilioClient(accountSid);
 
@@ -587,7 +561,7 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
         originalQueue,
         switchboardQueue,
         masterWorkflow,
-        Token,
+        supervisorWorkerSid,
       );
       return newOk(state);
     }

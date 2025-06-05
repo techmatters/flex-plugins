@@ -86,7 +86,7 @@ const SwitchboardTile = () => {
     }
 
     try {
-      await toggleSwitchboardingForQueue(queue);
+      await toggleSwitchboardingForQueue(queue, workerSid);
       setIsModalOpen(false);
       setSelectedQueue(queue);
     } catch (error) {

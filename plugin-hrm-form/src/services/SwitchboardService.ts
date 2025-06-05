@@ -28,7 +28,7 @@ import fetchProtectedApi from './fetchProtectedApi';
  * @returns Promise that resolves when the operation is complete
  */
 
-export const toggleSwitchboardingForQueue = async (queueSid: string): Promise<void> => {
+export const toggleSwitchboardingForQueue = async (queueSid: string, supervisorWorkerSid?: string): Promise<void> => {
   try {
     if (!queueSid || typeof queueSid !== 'string') {
       throw new Error('Invalid queue SID provided');
@@ -49,6 +49,7 @@ export const toggleSwitchboardingForQueue = async (queueSid: string): Promise<vo
       originalQueueSid: queueSid,
       operation,
       Token: flexToken,
+      supervisorWorkerSid,
     };
 
     return fetchProtectedApi('/toggleSwitchboardQueue', body, {
