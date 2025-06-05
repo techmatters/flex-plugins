@@ -56,6 +56,7 @@
         }
       },
       "fallback": {
+        "slot_priorities": {},
         "closing_response": {
           "message": "Sorry, I am having trouble understanding. We will transfer you now. Please hold for a counsellor."
         }
