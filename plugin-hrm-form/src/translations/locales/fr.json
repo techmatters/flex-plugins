@@ -599,5 +599,13 @@
 "AgentStatusAvailable": "Disponible",
 "AgentStatusBusy": "Occupé",
 "AgentStatusUnavailable": "Non disponible",
-"AgentStatusOffline": "Hors ligne"
+"AgentStatusOffline": "Hors ligne",
+"SendMessageTooltip": "Envoyez le message",
+"MessageInputSendButtonText": "Envoyez",
+"WorkerSkillsSaved": "Modifications enregistrées avec succès",
+"SupervisorTaskHeaderLine": "Surveiller",
+"WorkerSkillsReverted": "Modifications annulées",
+"Save": "Enregistrer",
+"Reset": "Réinitialiser"
+
 }
