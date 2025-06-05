@@ -74,13 +74,23 @@
                 },
                 "intent": {}
             },
+            "failureResponse": {
+                "messageGroups": [
+                    {
+                        "message": {
+                            "plainTextMessage": {
+                                "value": "I am having trouble understanding."
+                            }
+                        }
+                    }
+                ],
+                "allowInterrupt": true
+            },
             "failureNextStep": {
                 "dialogAction": {
-                    "type": "StartIntent"
+                    "type": "CloseIntent"
                 },
-                "intent": {
-                    "name": "fallback"
-                }
+                "intent": {}
             },
             "elicitationCodeHook": {
                 "enableCodeHookInvocation": true
