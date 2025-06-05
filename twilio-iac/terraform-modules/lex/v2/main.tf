@@ -391,7 +391,7 @@ resource "null_resource" "update_intent_settings" {
         --bot-version ${aws_lexv2models_bot_locale.this[each.value.bot_name].bot_version} \
         --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
         --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intentName}"].id)[0]} \
-        --intent-name ${aws_lexv2models_slot} \
+        --intent-name ${each.value.config.intentName} \
         ${each.value.config.intentClosingSetting != null ? "--intent-closing-setting '${jsonencode(each.value.config.intentClosingSetting)}'" : ""} \
         ${each.value.config.initialResponseSetting != null ? "--initial-response-setting '${jsonencode(each.value.config.initialResponseSetting)}'" : ""} \
         ${each.value.config.fulfillmentCodeHook != null ? "--fulfillment-code-hook '${jsonencode(each.value.config.fulfillmentCodeHook)}'" : ""} \
