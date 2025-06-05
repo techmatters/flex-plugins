@@ -212,7 +212,7 @@ variable "lex_v2_slots" {
             })
             intent = optional(map(string))
           })
-          failureResponse = object({
+          failureResponse = optional(object({
             messageGroups = list(object({
               message = object({
                 plainTextMessage = object({
@@ -221,7 +221,7 @@ variable "lex_v2_slots" {
               })
             }))
             allowInterrupt = bool
-          })
+          }))
           failureNextStep = object({
             dialogAction = object({
               type         = string
