@@ -437,7 +437,7 @@ resource "null_resource" "update_intent_settings" {
 
 resource "aws_ssm_parameter" "bot_config" {
   for_each = var.lex_v2_bots
-  name  = "/${var.environment}/serverless/bots/${each.key}"
+  name  = "/${var.environment}/serverless/bots/${replace("${local.name_prefix}_${each.key}", "2", "")}"
   type  = "String"
   value = jsonencode({
     botId      = "${aws_lexv2models_bot.this["${each.key}"].id}"
