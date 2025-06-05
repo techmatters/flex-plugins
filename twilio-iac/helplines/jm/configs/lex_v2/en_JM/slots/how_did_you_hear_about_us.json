@@ -79,7 +79,7 @@
                     "type": "StartIntent"
                 },
                 "intent": {
-                    "name": "FallbackIntent"
+                    "name": "fallback"
                 }
             },
             "elicitationCodeHook": {
