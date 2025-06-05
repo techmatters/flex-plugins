@@ -428,6 +428,7 @@ resource "null_resource" "update_slots" {
         --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
         --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intentName}"].id)[0]} \
         --slot-id ${split(",", aws_lexv2models_slot.this["${each.value.config.intentName}_${each.value.config.slotName}"].id)[4]}  \
+        --slot-name ${each.value.config.slotName} \
         --value-elicitation-setting '${jsonencode(each.value.config.valueElicitationSetting)}'
         EOT
     }
