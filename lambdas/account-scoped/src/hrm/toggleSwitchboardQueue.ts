@@ -59,23 +59,40 @@ async function getSwitchboardStateDocument(
   client: any,
   syncServiceSid: string,
 ): Promise<any> {
+  console.log(`Fetching switchboard state document. SyncServiceSid: ${syncServiceSid}`);
   try {
+    console.log(`Attempting to fetch document: ${SWITCHBOARD_DOCUMENT_NAME}`);
     return client.sync
       .services(syncServiceSid)
       .documents(SWITCHBOARD_DOCUMENT_NAME)
       .fetch();
   } catch (error: any) {
-    console.log('Error fetching switchboard document:', error);
-    if (error.status === 404 || (error.message && error.message.includes('not found'))) {
-      console.log(`Document ${SWITCHBOARD_DOCUMENT_NAME} not found, creating it now...`);
+    console.log(`Error fetching document: ${SWITCHBOARD_DOCUMENT_NAME}`, {
+      status: error.status,
+      message: error.message,
+      code: error.code,
+    });
+
+    if (error.status === 404) {
+      console.log(
+        `Document not found, attempting to create: ${SWITCHBOARD_DOCUMENT_NAME}`,
+      );
       try {
-        return client.sync.services(syncServiceSid).documents.create({
+        const newDocument = await client.sync.services(syncServiceSid).documents.create({
           uniqueName: SWITCHBOARD_DOCUMENT_NAME,
           data: DEFAULT_SWITCHBOARD_STATE,
           ttl: 48 * 60 * 60, // 48 hours
         });
+        console.log(`Successfully created document: ${SWITCHBOARD_DOCUMENT_NAME}`, {
+          documentSid: newDocument.sid,
+        });
+        return newDocument;
       } catch (createError: any) {
-        console.error('Error creating switchboard document:', createError);
+        console.error(`Failed to create document: ${SWITCHBOARD_DOCUMENT_NAME}`, {
+          status: createError.status,
+          message: createError.message,
+          code: createError.code,
+        });
         throw createError;
       }
     }
