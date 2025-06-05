@@ -207,10 +207,7 @@ variable "lex_v2_slots" {
         }))
         slotCaptureSetting = optional(object({
           captureNextStep = object({
-            dialogAction = object({
-              type = string
-              slotToElicit = string
-            })
+            dialogAction = map(any)
             intent = optional(map(string))
           })
           failureResponse = optional(object({
@@ -224,9 +221,7 @@ variable "lex_v2_slots" {
             allowInterrupt = bool
           }))
           failureNextStep = object({
-            dialogAction = object({
-              type         = string
-            })
+            dialogAction = map(any)
             intent = optional(map(string)) 
           })
           elicitationCodeHook = optional(object({
