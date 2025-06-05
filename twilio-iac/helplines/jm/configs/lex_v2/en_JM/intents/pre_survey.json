@@ -85,7 +85,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Welcome to the helpline. To help us better serve you, please answer the following questions. You can say \\'prefer not to answer\\' (or type X) to any question."
+                            "value": "Welcome to the helpline. To help us better serve you, please answer the following questions. You can say 'prefer not to answer' (or type X) to any question."
                         }
                     }
                 }

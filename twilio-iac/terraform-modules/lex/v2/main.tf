@@ -385,20 +385,20 @@ resource "null_resource" "update_intent_settings" {
     }
 
     provisioner "local-exec" {
-        command = <<EOT
-        aws lexv2-models update-intent \
-        --bot-id ${aws_lexv2models_bot.this[each.value.bot_name].id} \
-        --bot-version ${aws_lexv2models_bot_locale.this[each.value.bot_name].bot_version} \
-        --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
-        --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intentName}"].id)[0]} \
-        --intent-name ${each.value.config.intentName} \
-        ${each.value.config.intentClosingSetting != null ? "--intent-closing-setting '${jsonencode(each.value.config.intentClosingSetting)}'" : ""} \
-        ${each.value.config.initialResponseSetting != null ? "--initial-response-setting '${jsonencode(each.value.config.initialResponseSetting)}'" : ""} \
-        ${each.value.config.fulfillmentCodeHook != null ? "--fulfillment-code-hook '${jsonencode(each.value.config.fulfillmentCodeHook)}'" : ""} \
-        ${each.value.config.sampleUtterances != null ? "--sample-utterances '${jsonencode(each.value.config.sampleUtterances)}'" : ""} \
-        ${lookup(local.grouped_intent_slots, each.key, null) != null ? "--slot-priorities '${local.grouped_intent_slots[each.key].slot_priorities}'"  : ""} \
-        EOT
-    }
+  command = <<EOT
+  aws lexv2-models update-intent \
+    --bot-id ${aws_lexv2models_bot.this[each.value.bot_name].id} \
+    --bot-version ${aws_lexv2models_bot_locale.this[each.value.bot_name].bot_version} \
+    --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
+    --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intentName}"].id)[0]} \
+    --intent-name "${each.value.config.intentName}" \
+    ${each.value.config.intentClosingSetting != null ? "--intent-closing-setting ${jsonencode(each.value.config.intentClosingSetting)}" : ""} \
+    ${each.value.config.initialResponseSetting != null ? "--initial-response-setting ${jsonencode(each.value.config.initialResponseSetting)}" : ""} \
+    ${each.value.config.fulfillmentCodeHook != null ? "--fulfillment-code-hook ${jsonencode(each.value.config.fulfillmentCodeHook)}" : ""} \
+    ${each.value.config.sampleUtterances != null ? "--sample-utterances ${jsonencode(each.value.config.sampleUtterances)}" : ""} \
+    ${lookup(local.grouped_intent_slots, each.key, null) != null ? "--slot-priorities ${jsonencode(local.grouped_intent_slots[each.key].slot_priorities)}" : ""}
+  EOT
+  }
    /* depends_on = [
     time_sleep.wait_10_seconds,
     null_resource.update_intent_slots
