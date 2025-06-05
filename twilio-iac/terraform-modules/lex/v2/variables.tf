@@ -209,6 +209,7 @@ variable "lex_v2_slots" {
           captureNextStep = object({
             dialogAction = object({
               type = string
+              slotToElicit = string
             })
             intent = optional(map(string))
           })
