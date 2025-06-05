@@ -89,7 +89,6 @@
             },
             "failureNextStep": {
                 "dialogAction": {
-                    "slotToElicit": "null",
                     "type": "CloseIntent"
                 },
                 "intent": {}
