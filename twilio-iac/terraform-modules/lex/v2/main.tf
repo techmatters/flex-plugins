@@ -405,4 +405,35 @@ resource "null_resource" "update_intent_settings" {
   ]*/
 }
 
+resource "time_sleep" "wait_10_seconds" {
+  create_duration = "10s"
+
+  depends_on = [null_resource.update_intent_settings]
+}
+
+resource "null_resource" "update_slots" {
+    triggers = {
+        always_run = timestamp()
+    }
+    for_each = {
+      for idx, slot in var.lex_v2_slots :
+      "${slot.config.intentName}_${slot.config.slotName}" => slot
+    }
+
+    provisioner "local-exec" {
+        command = <<EOT
+        aws lexv2-models update-slot \
+        --bot-id ${aws_lexv2models_bot.this[each.value.bot_name].id} \
+        --bot-version ${aws_lexv2models_bot_locale.this[each.value.bot_name].bot_version} \
+        --locale-id ${aws_lexv2models_bot_locale.this[each.value.bot_name].locale_id} \
+        --intent-id ${split(":", aws_lexv2models_intent.this["${each.value.bot_name}_${each.value.config.intentName}"].id)[0]} \
+        --slot-id ${split(",", aws_lexv2models_slot.this["${each.value.intent_name}_${each.value.slot_name}"].id)[4]}  \
+        --value-elicitation-setting '${jsonencode(each.value.config.valueElicitationSetting)}'
+        EOT
+    }
+    depends_on = [
+    time_sleep.wait_10_seconds
+  ]
+}
+
 
