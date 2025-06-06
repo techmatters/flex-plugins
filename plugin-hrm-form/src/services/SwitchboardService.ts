@@ -62,9 +62,9 @@ export const toggleSwitchboardingForQueue = async (
       const errors = {
         '403': 'You do not have permission to control switchboarding. Please contact a supervisor.',
         '500': 'The switchboarding service is currently unavailable. Please try again later or contact support.',
-        'token': 'Your session may have expired. Please refresh the page and try again.'
+        token: 'Your session may have expired. Please refresh the page and try again.',
       };
-      
+
       const errorKey = Object.keys(errors).find(key => err.message.includes(key));
       if (errorKey) throw new Error(errors[errorKey]);
     }

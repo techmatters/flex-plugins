@@ -19,6 +19,7 @@ import SyncClient from 'twilio-sync';
 import { issueSyncToken } from '../services/ServerlessService';
 import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
 
+// eslint-disable-next-line import/no-mutable-exports
 let sharedSyncClient: SyncClient;
 
 export { sharedSyncClient };

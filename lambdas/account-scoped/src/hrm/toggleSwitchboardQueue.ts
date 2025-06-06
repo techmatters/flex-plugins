@@ -68,10 +68,8 @@ async function fetchSwitchboardResources(client: Twilio, originalQueueSid?: stri
 
   const taskRouterClient = client.taskrouter.v1.workspaces(workspace.sid);
 
-  // Get queues
   const queues = await taskRouterClient.taskQueues.list();
 
-  // Find switchboard queue
   const switchboardQueue = queues.find(
     (queue: any) => queue.friendlyName === 'Switchboard Queue',
   );
@@ -79,7 +77,6 @@ async function fetchSwitchboardResources(client: Twilio, originalQueueSid?: stri
     throw new Error('Switchboard Queue not found');
   }
 
-  // Find original queue
   const originalQueue = queues.find((queue: any) => queue.sid === originalQueueSid);
   if (!originalQueue) {
     throw new Error('Original Queue not found');
@@ -187,8 +184,7 @@ async function updateSwitchboardState(
 }
 
 /**
- * Adds a filter to the workflow configuration to redirect calls from originalQueue to switchboardQueue
- * except for calls that have been transferred (to avoid bouncing)
+ * Adds a filter to the workflow configuration to redirect calls from originalQueue to switchboardQueue to the top of the master workflow
  */
 function addSwitchboardingFilter(
   config: any,
@@ -199,21 +195,26 @@ function addSwitchboardingFilter(
 
   const filterName = `Switchboard Workflow - ${originalQueueSid}`;
 
-  // Find the filter that matches the original queue to get its expression
-  let targetExpression = '1==1'; // Default fallback
+  let filterExpression;
+  let targetExpression;
+
   const originalQueueFilters = updatedConfig.task_routing.filters.find((filter: any) =>
     filter.targets?.some(
       (target: any) =>
         target.queue === originalQueueSid ||
-        target.target_expression?.includes(`'${originalQueueSid}'`),
+        target.target_expression?.includes(originalQueueSid),
     ),
   );
 
-  if (originalQueueFilters?.targets) {
-    const originalQueueTarget = originalQueueFilters.targets.find(
+  if (originalQueueFilters) {
+    if (originalQueueFilters.expression) {
+      filterExpression = originalQueueFilters.expression;
+    }
+
+    const originalQueueTarget = originalQueueFilters.targets?.find(
       (target: any) =>
         target.queue === originalQueueSid ||
-        target.target_expression?.includes(`'${originalQueueSid}'`),
+        target.target_expression?.includes(originalQueueSid),
     );
     if (originalQueueTarget?.expression) {
       targetExpression = originalQueueTarget.expression;
@@ -222,12 +223,11 @@ function addSwitchboardingFilter(
 
   const switchboardingFilter = {
     filter_friendly_name: filterName,
-    expression:
-      'task.transferMeta == null AND task.switchboardingHandled == null AND task.switchboardingTransferExempt == null',
+    expression: filterExpression,
     targets: [
       {
         queue: switchboardQueueSid,
-        expression: targetExpression, // Use the expression from the workflow configuration
+        expression: targetExpression,
         priority: 100,
         target_expression: `DEFAULT_TARGET_QUEUE_SID == '${originalQueueSid}'`,
         task_attributes: {
