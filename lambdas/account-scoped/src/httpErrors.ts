@@ -13,6 +13,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { ErrorResult, newErr } from './Result';
+import { HttpError } from './httpTypes';
 
 export class HttpClientError extends Error {
   statusCode: number;
@@ -24,3 +26,8 @@ export class HttpClientError extends Error {
     this.name = 'HttpClientError';
   }
 }
+export const newMissingParameterResult = (property: string): ErrorResult<HttpError> =>
+  newErr({
+    message: `${property} missing`,
+    error: { cause: new Error(`${property} is required`), statusCode: 400 },
+  });
