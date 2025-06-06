@@ -198,21 +198,15 @@ export const subscribeSwitchboardState = async (callback: (state: SwitchboardSta
 
   try {
     const doc = await initSwitchboardSyncDocument();
-    console.log('>>>> Initial sync document data:', doc.data);
     
     const handler = (event: { data: unknown }) => {
-      console.log('>>>> Sync document updated with data:', event.data);
       callback(event.data as SwitchboardState);
     };
     
     doc.on('updated', handler);
-    
-    // Initial callback with the current state
-    console.log('>>>> Calling initial callback with data:', doc.data);
     callback(doc.data as SwitchboardState);
     
     return () => {
-      console.log('>>>> Unsubscribing from switchboard state updates');
       doc.off('updated', handler);
     };
   } catch (error) {
