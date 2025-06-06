@@ -76,13 +76,11 @@
         "intent": {}
       },
       "failureNextStep": {
-        "dialogAction": {
-          "type": "StartIntent"
-        },
-        "intent": {
-          "name": "FallbackIntent"
-        }
-      },
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
       "elicitationCodeHook": {
         "enableCodeHookInvocation": true
       }

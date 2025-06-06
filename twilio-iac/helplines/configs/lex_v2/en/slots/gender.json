@@ -76,11 +76,9 @@
             },
             "failureNextStep": {
                 "dialogAction": {
-                    "type": "StartIntent"
+                    "type": "CloseIntent"
                 },
-                "intent": {
-                    "name": "FallbackIntent"
-                }
+                "intent": {}
             },
             "elicitationCodeHook": {
                 "enableCodeHookInvocation": true
