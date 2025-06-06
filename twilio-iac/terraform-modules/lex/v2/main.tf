@@ -395,7 +395,7 @@ resource "null_resource" "update_slots" {
         --slot-id ${split(",", aws_lexv2models_slot.this["${each.value.config.intentName}_${each.value.config.slotName}"].id)[4]}  \
         --slot-name ${each.value.config.slotName} \
         --slot-type-id ${split(",", aws_lexv2models_slot_type.this["${each.value.bot_name}_${each.value.config.slotTypeName}"].id)[3]} \
-        --value-elicitation-setting '${jsonencode(each.value.config.valueElicitationSetting)}'
+        --value-elicitation-setting '${replace(jsonencode(each.value.config.valueElicitationSetting, "'", "'\\''"))}'
         EOT
     }
     
