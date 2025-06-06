@@ -129,7 +129,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.chat}",
-        "attributes": "{\"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \"twilioNumber\": \"{{trigger.conversation.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"ECPAT\",\n\"language\":\"en-PH\",\n\"helpline\":\"ECPAT Philippines\",\n\"memory\": {{ trigger.conversation. ChannelAttributes.memory | to_json}}}"
+        "attributes": "{\"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\", \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \"twilioNumber\": \"{{trigger.conversation.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"ECPAT\",\n\"language\":\"en-PH\",\n\"helpline\":\"ECPAT Philippines\",\n\"memory\": {{ trigger.conversation. ChannelAttributes.memory | to_json}}}"
       }
     },
     {
@@ -291,7 +291,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.chat}",
-        "attributes": "{\"name\": \"{{trigger.conversation.ChannelAttributes.from}}\", \"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \"twilioNumber\": \"{{trigger.conversation.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"ECPAT\",\n\"language\":\"tl-PH\",\n\"helpline\":\"ECPAT Philippines\",\n\"memory\": {{trigger.conversation.ChannelAttributes .memory | to_json}}}"
+        "attributes": "{\"name\": \"{{trigger.conversation.ChannelAttributes.from}}\", \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\", \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \"twilioNumber\": \"{{trigger.conversation.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"ECPAT\",\n\"language\":\"tl-PH\",\n\"helpline\":\"ECPAT Philippines\",\n\"memory\": {{trigger.conversation.ChannelAttributes .memory | to_json}}}"
       }
     },
     {
@@ -639,7 +639,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.chat}",
-        "attributes": "{\"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \"twilioNumber\": \"{{trigger.conversation.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"Outside Operating Hours\",\n\"language\":\"en-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+        "attributes": "{\"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\", \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \"twilioNumber\": \"{{trigger.conversation.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"Outside Operating Hours\",\n\"language\":\"en-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
         "timeout": "259200"
       }
     },
@@ -664,7 +664,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.chat}",
-        "attributes": "{\"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \"twilioNumber\": \"{{trigger.conversation.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"Non Counselling\",\n\"language\":\"en-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+        "attributes": "{\"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\", \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \"twilioNumber\": \"{{trigger.conversation.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"Non Counselling\",\n\"language\":\"en-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
         "timeout": "604800"
       }
     },
@@ -689,7 +689,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.chat}",
-        "attributes": "{\"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \"twilioNumber\": \"{{trigger.conversation.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"Outside Operating Hours\",\n\"language\":\"tl-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+        "attributes": "{\"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\", \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \"twilioNumber\": \"{{trigger.conversation.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"Outside Operating Hours\",\n\"language\":\"tl-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
         "timeout": "259200"
       }
     },
@@ -714,7 +714,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.chat}",
-        "attributes": "{\"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type}}\", \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \"twilioNumber\": \"{{trigger.conversation.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"Non Counselling\",\n\"language\":\"tl-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
+        "attributes": "{\"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\", \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \"twilioNumber\": \"{{trigger.conversation.ChannelAttributes.twilioNumber}}\", \"ignoreAgent\":\"\", \"transferTargetType\":\"\",\n\"taskQueue\":\"Non Counselling\",\n\"language\":\"tl-PH\",\n\"memory\": {{widgets.ChatBot.memory | to_json}}}",
         "timeout": "604800"
       }
     },
