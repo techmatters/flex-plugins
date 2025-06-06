@@ -40,6 +40,7 @@ data "aws_iam_role" "role-lex-v2-bot" {
 }
 
 resource "aws_lexv2models_bot" "this" {
+  provider    = aws.hl-region
   for_each = var.lex_v2_bots
   name     = replace("${local.name_prefix}_${each.key}", "2", "")
   description = each.value.description
@@ -73,6 +74,7 @@ resource "aws_lexv2models_bot_version" "this" {
 }
 */
 resource "aws_lexv2models_bot_locale" "this" {
+  provider    = aws.hl-region
   for_each                         = var.lex_v2_bots
   bot_id                           = aws_lexv2models_bot.this["${each.key}"].id
   bot_version                      = "DRAFT"
@@ -82,6 +84,7 @@ resource "aws_lexv2models_bot_locale" "this" {
 }
 
 resource "aws_lexv2models_slot_type" "this" {
+  provider    = aws.hl-region
   for_each = {
     for idx, slot_type in var.lex_v2_slot_types :
     "${slot_type.bot_name}_${slot_type.config.slotTypeName}" => slot_type
@@ -128,6 +131,7 @@ Intents are pretty buggy, nothing is actually added to the intent when the resou
 */
 
 resource "aws_lexv2models_intent" "this" {
+  provider    = aws.hl-region
   for_each = {
     for idx, intent in var.lex_v2_intents :
     "${intent.bot_name}_${intent.config.intentName}" => intent
@@ -226,6 +230,7 @@ resource "aws_lexv2models_intent" "this" {
 }
 
 resource "aws_lexv2models_slot" "this" {
+  provider    = aws.hl-region
   for_each = {
     for idx, slot in var.lex_v2_slots :
     "${slot.config.intentName}_${slot.config.slotName}" => slot
