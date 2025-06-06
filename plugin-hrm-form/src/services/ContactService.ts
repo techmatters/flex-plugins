@@ -264,7 +264,10 @@ const saveContactToHrm = async (
   }
 
   // If isOfflineContactTask, send the target Sid as twilioWorkerId value and store workerSid (issuer) in rawForm
-  const twilioWorkerId = isOfflineContactTask(task) ? form.contactlessTask.createdOnBehalfOf : workerSid;
+  const twilioWorkerId =
+    isOfflineContactTask(task) && form.contactlessTask.createdOnBehalfOf
+      ? form.contactlessTask.createdOnBehalfOf
+      : workerSid;
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.

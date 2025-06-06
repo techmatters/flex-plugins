@@ -16,6 +16,7 @@
 
 import { AccountSID, ChatServiceSID, WorkspaceSID } from '../twilioTypes';
 import { getSsmParameter } from '../ssmCache';
+import twilio, { Twilio } from 'twilio';
 
 export const getWorkspaceSid = async (accountSid: AccountSID): Promise<WorkspaceSID> =>
   (await getSsmParameter(
@@ -41,5 +42,13 @@ export const getSurveyWorkflowSid = (accountSid: AccountSID): Promise<string> =>
 export const getHelplineCode = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/short_helpline`);
 
+export const getSyncServiceSid = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/sync_sid`);
+
 export const getServerlessBaseUrl = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/serverless/${accountSid}/base_url`);
+
+export const getTwilioClient = async (accountSid: AccountSID): Promise<Twilio> => {
+  const authToken = await getAccountAuthToken(accountSid);
+  return twilio(accountSid, authToken);
+};

@@ -13,21 +13,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { ErrorResult, newErr } from './Result';
-import { HttpError } from './httpTypes';
 
-export class HttpClientError extends Error {
-  statusCode: number;
+// your account sid
+const accountSid = '__TWILIO_ACCOUNT_SID__';
 
-  constructor(message: string, statusCode: number) {
-    super(message);
-    Object.setPrototypeOf(this, HttpClientError.prototype);
-    this.statusCode = statusCode;
-    this.name = 'HttpClientError';
-  }
-}
-export const newMissingParameterResult = (property: string): ErrorResult<HttpError> =>
-  newErr({
-    message: `${property} missing`,
-    error: { cause: new Error(`${property} is required`), statusCode: 400 },
-  });
+/*
+ * set to /plugins.json for local dev
+ * set to /plugins.local.build.json for testing your build
+ * set to "" for the default live plugin loader
+ */
+const pluginServiceUrl = '/plugins';
+
+const appConfig = {
+  pluginService: {
+    enabled: true,
+    url: pluginServiceUrl,
+    initializationTimeout: 1,
+  },
+  sso: {
+    accountSid,
+  },
+  logLevel: 'debug',
+  showSupervisorDesktopView: true,
+};
