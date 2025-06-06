@@ -160,7 +160,7 @@ const DEFAULT_SWITCHBOARD_STATE: SwitchboardState = {
  * Initialize or get the switchboard document from Twilio Sync
  * @returns Twilio Sync document
  */
-const initSwitchboardSyncDocument = () => {
+export const initSwitchboardSyncDocument = () => {
   try {
     return sharedStateClient.document(SWITCHBOARD_DOCUMENT_NAME);
   } catch (error) {
@@ -198,12 +198,23 @@ export const subscribeSwitchboardState = async (callback: (state: SwitchboardSta
 
   try {
     const doc = await initSwitchboardSyncDocument();
+    console.log('>>>> Initial sync document data:', doc.data);
+    
     const handler = (event: { data: unknown }) => {
+      console.log('>>>> Sync document updated with data:', event.data);
       callback(event.data as SwitchboardState);
     };
+    
     doc.on('updated', handler);
+    
+    // Initial callback with the current state
+    console.log('>>>> Calling initial callback with data:', doc.data);
     callback(doc.data as SwitchboardState);
-    return () => doc.off('updated', handler);
+    
+    return () => {
+      console.log('>>>> Unsubscribing from switchboard state updates');
+      doc.off('updated', handler);
+    };
   } catch (error) {
     console.error('Error subscribing to switchboard state:', error);
     throw error;

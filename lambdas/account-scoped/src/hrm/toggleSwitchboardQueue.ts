@@ -17,17 +17,19 @@
 import { AccountScopedHandler, HttpError, HttpRequest } from '../httpTypes';
 import { newErr, newOk, Result } from '../Result';
 import { getTwilioClient } from '../configuration/twilioConfiguration';
+import { Twilio } from 'twilio';
+import { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 
 export type OperationType = 'enable' | 'disable' | 'status';
 
 export type SwitchboardRequest = {
-  originalQueueSid?: string;
+  originalQueueSid: string;
   operation: OperationType;
+  supervisorWorkerSid: string;
   Token: string;
-  supervisorWorkerSid?: string;
 };
 
-type SwitchboardingState = {
+type SwitchboardingSyncState = {
   isSwitchboardingActive: boolean;
   queueSid?: string;
   queueName?: string;
@@ -37,8 +39,83 @@ type SwitchboardingState = {
 
 export type TokenResponse = { identity: string; roles?: string[]; worker_sid?: string };
 
+/**
+ * Helper function to create error responses
+ */
+function createError(
+  message: string,
+  statusCode: number,
+  cause?: Error,
+): Result<HttpError, any> {
+  return newErr({
+    message,
+    error: { statusCode, cause: cause || new Error(message) },
+  });
+}
+
+/**
+ * Fetches required Twilio resources for switchboard operations
+ */
+async function fetchSwitchboardResources(client: any, originalQueueSid?: string) {
+  // Get Sync Service
+  const syncServices = await client.sync.v1.services.list();
+  const syncService = syncServices[0];
+  if (!syncService) {
+    throw new Error('Sync service not configured');
+  }
+
+  // Get TaskRouter workspace
+  const workspaces = await client.taskrouter.workspaces.list();
+  const workspace = workspaces[0];
+  if (!workspace) {
+    throw new Error('TaskRouter workspace not found');
+  }
+
+  const taskRouterClient = client.taskrouter.workspaces(workspace.sid);
+
+  // For status operations, we don't need queues or workflows
+  if (!originalQueueSid) {
+    return { syncService, workspace, taskRouterClient };
+  }
+
+  // Get queues
+  const queues = await taskRouterClient.taskQueues.list();
+
+  // Find switchboard queue
+  const switchboardQueue = queues.find(
+    (queue: any) => queue.friendlyName === 'Switchboard Queue',
+  );
+  if (!switchboardQueue) {
+    throw new Error('Switchboard Queue not found');
+  }
+
+  // Find original queue
+  const originalQueue = queues.find((queue: any) => queue.sid === originalQueueSid);
+  if (!originalQueue) {
+    throw new Error('Original Queue not found');
+  }
+
+  // Find Master Workflow
+  const workflows = await taskRouterClient.workflows.list();
+  const masterWorkflow = workflows.find(
+    (workflow: any) => workflow.friendlyName === 'Master Workflow',
+  );
+  if (!masterWorkflow) {
+    throw new Error('Master Workflow not found');
+  }
+
+  return {
+    syncService,
+    workspace,
+    taskRouterClient,
+    switchboardQueue,
+    originalQueue,
+    masterWorkflow,
+  };
+}
+
 const SWITCHBOARD_DOCUMENT_NAME = 'switchboard-state';
-const DEFAULT_SWITCHBOARD_STATE: SwitchboardingState = {
+const DEFAULT_SWITCHBOARD_STATE: SwitchboardingSyncState = {
   isSwitchboardingActive: false,
   queueSid: undefined,
   queueName: undefined,
@@ -50,45 +127,22 @@ const DEFAULT_SWITCHBOARD_STATE: SwitchboardingState = {
  * Get or create the switchboard document in Twilio Sync
  */
 async function getSwitchboardStateDocument(
-  client: any,
+  client: Twilio,
   syncServiceSid: string,
 ): Promise<any> {
-  console.log(`Fetching switchboard state document. SyncServiceSid: ${syncServiceSid}`);
   try {
-    console.log(`Attempting to fetch document: ${SWITCHBOARD_DOCUMENT_NAME}`);
-    return client.sync
+    return await client.sync.v1
       .services(syncServiceSid)
       .documents(SWITCHBOARD_DOCUMENT_NAME)
       .fetch();
   } catch (error: any) {
-    console.log(`Error fetching document: ${SWITCHBOARD_DOCUMENT_NAME}`, {
-      status: error.status,
-      message: error.message,
-      code: error.code,
-    });
-
+    // If document doesn't exist, create it
     if (error.status === 404) {
-      console.log(
-        `Document not found, attempting to create: ${SWITCHBOARD_DOCUMENT_NAME}`,
-      );
-      try {
-        const newDocument = await client.sync.services(syncServiceSid).documents.create({
-          uniqueName: SWITCHBOARD_DOCUMENT_NAME,
-          data: DEFAULT_SWITCHBOARD_STATE,
-          ttl: 48 * 60 * 60, // 48 hours
-        });
-        console.log(`Successfully created document: ${SWITCHBOARD_DOCUMENT_NAME}`, {
-          documentSid: newDocument.sid,
-        });
-        return newDocument;
-      } catch (createError: any) {
-        console.error(`Failed to create document: ${SWITCHBOARD_DOCUMENT_NAME}`, {
-          status: createError.status,
-          message: createError.message,
-          code: createError.code,
-        });
-        throw createError;
-      }
+      return client.sync.services(syncServiceSid).documents.create({
+        uniqueName: SWITCHBOARD_DOCUMENT_NAME,
+        data: DEFAULT_SWITCHBOARD_STATE,
+        ttl: 48 * 60 * 60, // 48 hours
+      });
     }
     throw error;
   }
@@ -98,9 +152,9 @@ async function getSwitchboardStateDocument(
  * Get current switchboarding state
  */
 async function getSwitchboardState(
-  client: any,
+  client: Twilio,
   syncServiceSid: string,
-): Promise<SwitchboardingState> {
+): Promise<SwitchboardingSyncState> {
   const document = await getSwitchboardStateDocument(client, syncServiceSid);
 
   const state = document.data || {};
@@ -119,10 +173,10 @@ async function getSwitchboardState(
  * Update switchboarding state
  */
 async function updateSwitchboardState(
-  client: any,
+  client: Twilio,
   syncServiceSid: string,
-  state: Partial<SwitchboardingState>,
-): Promise<SwitchboardingState> {
+  state: Partial<SwitchboardingSyncState>,
+): Promise<SwitchboardingSyncState> {
   console.log(`Updating switchboard state. SyncServiceSid: ${syncServiceSid}`);
   console.log(`Input state update:`, JSON.stringify(state, null, 2));
 
@@ -220,20 +274,20 @@ function removeSwitchboardingFilter(config: any): any {
  * Finds all tasks in a queue that are in a specific status
  */
 async function findTasksInQueue(
-  client: any,
+  client: Twilio,
   workspaceSid: string,
   queueSid: string,
   assignmentStatus: string = 'pending',
-): Promise<any[]> {
+): Promise<TaskInstance[]> {
   try {
-    const tasks = await client.taskrouter.workspaces(workspaceSid).tasks.list({
-      assignmentStatus,
+    const tasks = await client.taskrouter.v1.workspaces(workspaceSid).tasks.list({
+      assignmentStatus: [assignmentStatus],
       taskQueueSid: queueSid,
     });
 
     return tasks;
   } catch (err) {
-    console.error(`>>> Error finding ${assignmentStatus} tasks in queue:`, err);
+    console.error(`Error finding ${assignmentStatus} tasks in queue:`, err);
     throw err;
   }
 }
@@ -242,31 +296,69 @@ async function findTasksInQueue(
  * Moves a task from one queue to another
  */
 async function moveTaskToQueue(
-  client: any,
+  client: Twilio,
   workspaceSid: string,
   taskSid: string,
   targetQueueSid: string,
   additionalAttributes: Record<string, any> = {},
 ): Promise<void> {
   try {
-    const task = await client.taskrouter.workspaces(workspaceSid).tasks(taskSid).fetch();
+    // First, fetch the current task data
+    const task = await client.taskrouter.v1
+      .workspaces(workspaceSid)
+      .tasks(taskSid)
+      .fetch();
+
+    // Update the attributes to include our switchboarding metadata
     const currentAttributes = JSON.parse(task.attributes);
     const switchboardingAttributes = {
       ...currentAttributes,
       switchboardingHandled: true,
       switchboardingTimestamp: new Date().toISOString(),
+      targetQueueSid, // Store target queue in attributes for reference
       ...additionalAttributes,
     };
 
-    await client.taskrouter
+    // We need to create a new task in the target queue with the updated attributes
+    // First, update the task with our switchboarding metadata
+    await client.taskrouter.v1
       .workspaces(workspaceSid)
       .tasks(taskSid)
       .update({
         attributes: JSON.stringify(switchboardingAttributes),
-        taskQueueSid: targetQueueSid,
       });
+
+    // Then use a workflow redirect to move the task to the new queue
+    // Get available workflows
+    const workflows = await client.taskrouter.v1
+      .workspaces(workspaceSid)
+      .workflows.list();
+    const masterWorkflow = workflows.find(
+      workflow => workflow.friendlyName === 'Master Workflow',
+    );
+
+    if (!masterWorkflow) {
+      throw new Error('Master Workflow not found');
+    }
+
+    // Create a new task in the target queue that copies the current task's data
+    await client.taskrouter.v1.workspaces(workspaceSid).tasks.create({
+      attributes: JSON.stringify({
+        ...switchboardingAttributes,
+        transferTargetTaskSid: taskSid, // Track relationship for reporting
+      }),
+      workflowSid: masterWorkflow.sid,
+      taskChannel: task.taskChannelUniqueName,
+      priority: task.priority,
+    });
+
+    // Complete the original task as it's been replaced
+    await client.taskrouter.v1.workspaces(workspaceSid).tasks(taskSid).update({
+      assignmentStatus: 'completed',
+      reason: 'Moved to another queue via Switchboard',
+    });
   } catch (err) {
-    console.error(`>>> Error moving task ${taskSid} to queue ${targetQueueSid}:`, err);
+    console.error(`Error moving task ${taskSid} to queue ${targetQueueSid}:`, err);
     throw err;
   }
 }
@@ -300,7 +392,7 @@ async function moveWaitingTasks(
     await Promise.all(movePromises);
     return tasks.length;
   } catch (err) {
-    console.error('>>> Error moving waiting tasks:', err);
+    console.error('Error moving waiting tasks:', err);
     throw err;
   }
 }
@@ -311,7 +403,7 @@ async function moveWaitingTasks(
 async function handleStatusOperation(
   client: any,
   syncServiceSid: string,
-): Promise<SwitchboardingState> {
+): Promise<SwitchboardingSyncState> {
   console.log('Handling status operation');
   const state = await getSwitchboardState(client, syncServiceSid);
   return state;
@@ -328,7 +420,7 @@ async function handleEnableOperation(
   switchboardQueue: any,
   masterWorkflow: any,
   supervisorWorkerSid?: string,
-): Promise<SwitchboardingState> {
+): Promise<SwitchboardingSyncState> {
   console.log('Handling enable operation');
 
   const configResp = await taskRouterClient.workflows(masterWorkflow.sid).fetch();
@@ -343,42 +435,33 @@ async function handleEnableOperation(
   await taskRouterClient.workflows(masterWorkflow.sid).update({
     configuration: JSON.stringify(updatedConfig),
   });
-  console.log(
-    `Preparing to update switchboard state for queue ${originalQueue.friendlyName}`,
-  );
 
-  try {
-    console.log(`Verifying switchboard document exists in service ${syncServiceSid}`);
-    let document;
-    try {
-      document = await client.sync
-        .services(syncServiceSid)
-        .documents(SWITCHBOARD_DOCUMENT_NAME)
-        .fetch();
-      console.log(`Found existing switchboard document with SID: ${document.sid}`);
-    } catch (docError: any) {
-      if (docError.status === 404) {
-        console.log(`Document not found, creating new switchboard document...`);
-        document = await client.sync.services(syncServiceSid).documents.create({
-          uniqueName: SWITCHBOARD_DOCUMENT_NAME,
-          data: DEFAULT_SWITCHBOARD_STATE,
-          ttl: 48 * 60 * 60,
-        });
-        console.log(
-          `Successfully created new switchboard document with SID: ${document.sid}`,
-        );
-      } else {
-        throw docError;
-      }
-    }
-  } catch (error: any) {
-    console.error(`Failed to verify switchboard document:`, {
-      message: error.message,
-      status: error.status,
-      code: error.code,
-    });
-    throw error;
-  }
+  // try {
+  //   let document;
+  //   try {
+  //     document = await client.sync
+  //       .services(syncServiceSid)
+  //       .documents(SWITCHBOARD_DOCUMENT_NAME)
+  //       .fetch();
+  //   } catch (docError: any) {
+  //     if (docError.status === 404) {
+  //       document = await client.sync.services(syncServiceSid).documents.create({
+  //         uniqueName: SWITCHBOARD_DOCUMENT_NAME,
+  //         data: DEFAULT_SWITCHBOARD_STATE,
+  //         ttl: 48 * 60 * 60,
+  //       });
+  //     } else {
+  //       throw docError;
+  //     }
+  //   }
+  // } catch (error: any) {
+  //   console.error(`Failed to verify switchboard document:`, {
+  //     message: error.message,
+  //     status: error.status,
+  //     code: error.code,
+  //   });
+  //   throw error;
+  // }
 
   if (supervisorWorkerSid) {
     console.log(`Using provided supervisor worker SID: ${supervisorWorkerSid}`);
@@ -408,7 +491,7 @@ async function handleDisableOperation(
   taskRouterClient: any,
   switchboardQueue: any,
   masterWorkflow: any,
-): Promise<SwitchboardingState> {
+): Promise<SwitchboardingSyncState> {
   console.log('Handling disable operation');
 
   // Get the current switchboarding state to know which queue to restore tasks to
@@ -467,126 +550,66 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
     const { originalQueueSid, operation, supervisorWorkerSid } =
       request.body as SwitchboardRequest;
 
-    const client = await getTwilioClient(accountSid);
-
-    const syncServices = await client.sync.services.list();
-    console.log(
-      'Available sync services:',
-      syncServices.map(s => ({ sid: s.sid, name: s.friendlyName })),
-    );
-    const syncService = syncServices[0]; // Using the first sync service or implement proper lookup
-    if (!syncService) {
-      return newErr({
-        message: 'Sync service not configured',
-        error: { statusCode: 500 },
-      });
-    }
-    console.log(
-      'Using Sync service:',
-      syncService.sid,
-      syncService.friendlyName || 'unnamed',
-    );
-
-    // Get TaskRouter workspace
-    const workspaces = await client.taskrouter.workspaces.list();
-    const workspace = workspaces[0]; // Using the first workspace or implement proper lookup
-    if (!workspace) {
-      return newErr({
-        message: 'TaskRouter workspace not found',
-        error: { statusCode: 500 },
-      });
-    }
-
-    const taskRouterClient = client.taskrouter.workspaces(workspace.sid);
+    const client: Twilio = await getTwilioClient(accountSid);
 
     // Status operation doesn't require a queue SID
     if (operation === 'status') {
+      const { syncService } = await fetchSwitchboardResources(client);
       const state = await handleStatusOperation(client, syncService.sid);
       return newOk(state);
     }
 
     // For enable/disable operations, queue SID is required
     if (!originalQueueSid) {
-      return newErr({
-        message: 'Original Queue SID is required for enable/disable operations',
-        error: {
-          statusCode: 400,
-          cause: new Error(
-            'Original Queue SID is required for enable/disable operations',
-          ),
-        },
-      });
+      return createError(
+        'Original Queue SID is required for enable/disable operations',
+        400,
+      );
     }
 
-    // Get queues and find switchboard queue
-    const queues = await taskRouterClient.taskQueues.list();
-    const switchboardQueue = queues.find(
-      (queue: any) => queue.friendlyName === 'Switchboard Queue',
-    );
-
-    if (!switchboardQueue) {
-      return newErr({
-        message: 'Switchboard Queue not found',
-        error: { statusCode: 400, cause: new Error('Switchboard Queue not found') },
-      });
-    }
-
-    // Find original queue
-    const originalQueue = queues.find((queue: any) => queue.sid === originalQueueSid);
-    if (!originalQueue) {
-      return newErr({
-        message: 'Original Queue not found',
-        error: { statusCode: 400, cause: new Error('Original Queue not found') },
-      });
-    }
-
-    // Find Master Workflow
-    const workflows = await taskRouterClient.workflows.list();
-    const masterWorkflow = workflows.find(
-      (workflow: any) => workflow.friendlyName === 'Master Workflow',
-    );
-
-    if (!masterWorkflow) {
-      return newErr({
-        message: 'Master Workflow not found',
-        error: { statusCode: 400, cause: new Error('Master Workflow not found') },
-      });
-    }
-
-    if (operation === 'enable') {
-      const state = await handleEnableOperation(
-        client,
-        syncService.sid,
+    try {
+      const {
+        syncService,
+        workspace,
         taskRouterClient,
+        switchboardQueue,
         originalQueue,
-        switchboardQueue,
         masterWorkflow,
-        supervisorWorkerSid,
-      );
-      return newOk(state);
-    }
+      } = await fetchSwitchboardResources(client, originalQueueSid);
 
-    if (operation === 'disable') {
-      const state = await handleDisableOperation(
-        client,
-        syncService.sid,
-        workspace.sid,
-        taskRouterClient,
-        switchboardQueue,
-        masterWorkflow,
-      );
-      return newOk(state);
-    }
+      // Handle the requested operation
+      let state;
+      if (operation === 'enable') {
+        state = await handleEnableOperation(
+          client,
+          syncService.sid,
+          taskRouterClient,
+          originalQueue,
+          switchboardQueue,
+          masterWorkflow,
+          supervisorWorkerSid,
+        );
+        return newOk(state);
+      }
 
-    return newErr({
-      message: `Unknown operation: ${operation}`,
-      error: { statusCode: 400, cause: new Error(`Unknown operation: ${operation}`) },
-    });
+      if (operation === 'disable') {
+        state = await handleDisableOperation(
+          client,
+          syncService.sid,
+          workspace.sid,
+          taskRouterClient,
+          switchboardQueue,
+          masterWorkflow,
+        );
+        return newOk(state);
+      }
+
+      return createError(`Unknown operation: ${operation}`, 400);
+    } catch (resourceError: any) {
+      return createError(resourceError.message, 400);
+    }
   } catch (err: any) {
     console.error('Error in switchboarding handler:', err);
-    return newErr({
-      message: err.message || 'Internal server error',
-      error: { statusCode: 500, cause: err },
-    });
+    return createError(err.message || 'Internal server error', 500, err);
   }
 };

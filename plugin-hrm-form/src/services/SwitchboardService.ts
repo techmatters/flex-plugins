@@ -17,8 +17,15 @@
 import { Manager } from '@twilio/flex-ui';
 
 import { getSwitchboardState } from '../utils/sharedState';
-import { fetchBaseApi } from './fetchHrmApi';
 import fetchProtectedApi from './fetchProtectedApi';
+
+type SwitchboardStateType = {
+  isSwitchboardingActive: boolean;
+  queueSid: string | null;
+  queueName: string | null;
+  startTime: string | null;
+  supervisorWorkerSid: string | null;
+}
 
 /**
  * Activates or deactivates switchboarding for a specific queue
@@ -28,10 +35,10 @@ import fetchProtectedApi from './fetchProtectedApi';
  * @returns Promise that resolves when the operation is complete
  */
 
-export const toggleSwitchboardingForQueue = async (queueSid: string, supervisorWorkerSid?: string): Promise<void> => {
+export const toggleSwitchboardingForQueue = async (queueSid: string, supervisorWorkerSid?: string): Promise<SwitchboardStateType> => {
   try {
-    if (!queueSid || typeof queueSid !== 'string') {
-      throw new Error('Invalid queue SID provided');
+    if (!queueSid || typeof queueSid !== 'string' || !supervisorWorkerSid || typeof supervisorWorkerSid !== 'string') {
+      throw new Error('Invalid queue SID or supervisor worker SID provided');
     }
 
     const manager = Manager.getInstance();
@@ -52,9 +59,11 @@ export const toggleSwitchboardingForQueue = async (queueSid: string, supervisorW
       supervisorWorkerSid,
     };
 
-    return fetchProtectedApi('/toggleSwitchboardQueue', body, {
+    const response = await fetchProtectedApi('/toggleSwitchboardQueue', body, {
       useTwilioLambda: true,
     });
+    
+    return response;
   } catch (err) {
     if (err instanceof Error) {
       if (err.message.includes('403')) {
@@ -67,7 +76,6 @@ export const toggleSwitchboardingForQueue = async (queueSid: string, supervisorW
         throw new Error('Your session may have expired. Please refresh the page and try again.');
       }
     }
-
     throw err;
   }
 };

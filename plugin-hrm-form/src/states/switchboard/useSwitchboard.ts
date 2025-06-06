@@ -17,17 +17,13 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useCallback } from 'react';
 
-import { subscribeSwitchboardState } from '../../utils/sharedState';
+import { subscribeSwitchboardState, initSwitchboardSyncDocument } from '../../utils/sharedState';
 import { updateSwitchboardState, setSwitchboardLoading, setSwitchboardError } from './actions';
 import { toggleSwitchboardingForQueue } from '../../services/SwitchboardService';
 import { RootState } from '..';
 import { SwitchboardState } from './types';
 import { namespace, switchboardBase } from '../storeNamespaces';
 
-/**
- * Hook to access the switchboard state from Redux
- * @returns The current switchboard state
- */
 export const useSwitchboardState = (): SwitchboardState => {
   return useSelector((state: RootState) => state[namespace][switchboardBase]);
 };
@@ -46,9 +42,7 @@ export const useInitializeSwitchboard = (): void => {
       try {
         dispatch(setSwitchboardLoading(true));
 
-        // Subscribe to the switchboard state updates from Twilio Sync
         unsubscribe = await subscribeSwitchboardState(state => {
-          // Update the Redux state when the Twilio Sync state changes
           dispatch(
             updateSwitchboardState({
               isSwitchboardingActive: state.isSwitchboardingActive,
@@ -93,11 +87,29 @@ export const useToggleSwitchboardingForQueue = (): ((queueSid: string, superviso
         dispatch(setSwitchboardLoading(true));
         dispatch(setSwitchboardError(null));
 
-        await toggleSwitchboardingForQueue(queueSid, supervisorWorkerSid);
+        const response = await toggleSwitchboardingForQueue(queueSid, supervisorWorkerSid);
 
-        // Note: State will be updated via the Sync subscription
+        if (response && typeof response === 'object') {
+          const newState = {
+            isSwitchboardingActive: response.isSwitchboardingActive,
+            queueSid: response.queueSid,
+            queueName: response.queueName,
+            startTime: response.startTime,
+            supervisorWorkerSid: response.supervisorWorkerSid,
+          };
+          
+          dispatch(updateSwitchboardState(newState));
+          
+          try {
+            const syncDoc = await initSwitchboardSyncDocument();
+            await syncDoc.update(newState);
+          } catch (syncError) {
+            console.error('Failed to update Sync document:', syncError);
+          }
+        }
+
+        dispatch(setSwitchboardLoading(false));
       } catch (error) {
-        console.error('Error in switchboarding:', error);
         const errorMessage = 'Failed to activate switchboarding. Please try again or contact support.';
         dispatch(setSwitchboardError(errorMessage));
         dispatch(setSwitchboardLoading(false));

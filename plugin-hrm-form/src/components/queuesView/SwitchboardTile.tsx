@@ -32,6 +32,7 @@ import {
   useToggleSwitchboardingForQueue,
   useSwitchboardState,
 } from '../../states/switchboard/useSwitchboard';
+import { getSwitchboardState } from '../../utils/sharedState';
 
 export const setUpSwitchboard = () => {
   QueuesStats.AggregatedQueuesDataTiles.Content.add(<SwitchboardTile key="switchboard" />, {
@@ -45,12 +46,12 @@ const SwitchboardTile = () => {
   const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false);
 
   const selectedQueueRef = React.useRef<string | null>(null);
-  const dispatch = useDispatch();
 
   const { workerSid } = getHrmConfig();
   const counselorsHash = useSelector((state: RootState) => state[namespace][configurationBase].counselors.hash);
 
   const switchboardState = useSwitchboardState();
+  console.log('>>>> Switchboard state:', switchboardState);
   const { isLoading, error } = switchboardState;
 
   // Initialize switchboard state
@@ -79,7 +80,7 @@ const SwitchboardTile = () => {
   };
 
   const toggleSwitchboardingForQueue = useToggleSwitchboardingForQueue();
-
+  
   const handleSwitchboarding = async (queue: string) => {
     if (!queue) {
       return;

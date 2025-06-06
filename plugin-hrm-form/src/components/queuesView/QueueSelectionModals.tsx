@@ -48,7 +48,6 @@ export const SelectQueueModal: React.FC<SelectQueueModalProps> = ({
 }) => {
   // Define custom radio button handler
   const handleRadioChange = (value: string) => {
-    console.log('>>> Direct handler clicked:', value);
     setSelectedQueue(value);
     queueRef.current = value;
   };
