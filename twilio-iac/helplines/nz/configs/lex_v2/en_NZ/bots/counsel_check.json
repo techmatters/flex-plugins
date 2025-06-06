@@ -1,0 +1,36 @@
+{
+  "counsel_check": {
+    "description": "Specific configs/lex_v2/en_NZ/counsel_check",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "type": "Bot",
+    "intents": {
+      "counsel_check_intent": {
+        "utterances": [
+          {
+            "utterance": "trigger_pre_survey"
+          },
+          {
+            "utterance": "Incoming webchat contact"
+          }
+        ],
+        "initial_response": {
+          "message": "Kia ora, you have reached Youthline.",
+          "slot_to_elicit": "counsel_check"
+        },
+        "closing_response": {
+          "message": "The next message you get will be from one of our counsellors. In the meantime, if you are interested here is a link to our privacy statement: https://youthline.co.nz/privacy-statements/"
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "counsel_check",
+            "slot_type_name": "yes_no",
+            "slot_question": " If you would like to talk to the Helpline, please respond: Yes. To contact the Fundraising and Marketing team, please respond: No.",
+            "failure_response": "We are having trouble understanding your response."
+          }
+        }
+      }
+    }
+  }
+}
