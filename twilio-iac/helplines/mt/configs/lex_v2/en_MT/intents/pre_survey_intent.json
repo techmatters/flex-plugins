@@ -1,9 +1,15 @@
 {
-    "intentName": "terms_conditions_acceptance_intent_mt",
-    "description": "Specific configs/lex_v2/en_MT/bots/terms_conditions_acceptance",
+    "intentName": "pre_survey_intent",
+    "description": "Specific configs/lex_v2/en_MT/bots/pre_survey",
     "sampleUtterances": [
         {
-            "utterance": "trigger_terms_conditions_acceptance_mt"
+            "utterance": "trigger_pre_survey"
+        },
+        {
+            "utterance": "Hi"
+        },
+        {
+            "utterance": "Hello"
         }
     ],
     "dialogCodeHook": {
@@ -36,7 +42,19 @@
     "slotPriorities": [
         {
             "priority": 1,
-            "slotName": "terms_conditions_acceptance_mt"
+            "slotName": "about_self"
+        },
+        {
+            "priority": 2,
+            "slotName": "age"
+        },
+        {
+            "priority": 3,
+            "slotName": "gender"
+        },
+        {
+            "priority": 4,
+            "slotName": "feeling"
         }
     ],
     "intentClosingSetting": {
@@ -45,7 +63,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Grazzi."
+                            "value": "Thank you for reaching out. We are currently assisting other clients, but we will do our utmost to respond to you shortly. Kindly wait for assistance. If this is an emergency, please contact 112, until we are in a position to assist you."
                         }
                     }
                 }
@@ -66,7 +84,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Inti taċċetta t-Termini u l-Kundizzjonijiet tagħna? https://kellimni.com/chat-terms/ ."
+                            "value": "You have reached Kellimni."
                         }
                     }
                 }
@@ -87,7 +105,7 @@
                 "successNextStep": {
                     "dialogAction": {
                         "type": "ElicitSlot",
-                        "slotToElicit": "terms_conditions_acceptance_mt"
+                        "slotToElicit": "about_self"
                     },
                     "intent": {}
                 },

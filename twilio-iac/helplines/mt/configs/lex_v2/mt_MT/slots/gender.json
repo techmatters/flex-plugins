@@ -1,8 +1,8 @@
 {
-    "slotName": "gender_en",
+    "slotName": "gender",
     "slotTypeName": "gender",
-    "intentName": "pre_survey_intent_en",
-    "description": "Slot gender_en for intent pre_survey_intent_en",
+    "intentName": "pre_survey_intent",
+    "description": "Slot gender for intent pre_survey_intent",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "What is your gender? \n 1. Female \n 2. Male \n 3. Others \n 4. Rather not say"
+                            "value": "WX'inhu s-sess tiegħek? \n 1. Mara \n 2. Raġel \n 3. Oħrajn \n 4. Ma nixtieqx naghti risposta"
                         }
                     }
                 }
@@ -71,7 +71,7 @@
             "captureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "feeling_en"
+                    "slotToElicit": "feeling"
                 },
                 "intent": {}
             },
@@ -80,7 +80,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "We are having trouble understanding your response."
+                                "value": "Sorry, mhux nista' ngħin f'dan iż-żmien."
                             }
                         }
                     }

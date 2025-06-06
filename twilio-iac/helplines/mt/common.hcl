@@ -69,7 +69,9 @@ locals {
       uk : ["pre_survey", "terms_conditions_acceptance"]
     }
      lex_v2_bot_languages = {
-      en_MT : ["pre_survey", "language_selector", "terms_conditions_acceptance"]
+      en_MT : ["pre_survey", "language_selector", "terms_conditions_acceptance"],
+      mt_MT : ["pre_survey", "terms_conditions_acceptance"],
+      ukr_MT : ["pre_survey", "terms_conditions_acceptance"]
     }
 
 

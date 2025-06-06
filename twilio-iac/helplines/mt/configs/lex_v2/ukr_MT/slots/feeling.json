@@ -1,8 +1,8 @@
 {
-    "slotName": "about_self_mt",
-    "slotTypeName": "yes_no",
-    "intentName": "pre_survey_intent_mt",
-    "description": "Slot about_self_mt for intent pre_survey_intent_mt",
+    "slotName": "feeling",
+    "slotTypeName": "feeling",
+    "intentName": "pre_survey_intent",
+    "description": "Slot feeling for intent pre_survey_intent",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Qed iċċempel dwarek innifsek? Jekk jogħġbok wieġeb Iva jew Le"
+                            "value": "HЯк ти себе почуваєш? \n 1. Щасливий \n 2. Збентежений \n 3. Злий \n 4. Шокований \n 5. Переляканий \n 6. Розгублений"
                         }
                     }
                 }
@@ -70,8 +70,7 @@
         "slotCaptureSetting": {
             "captureNextStep": {
                 "dialogAction": {
-                    "type": "ElicitSlot",
-                    "slotToElicit": "age_mt"
+                    "type": "FulfillIntent"
                 },
                 "intent": {}
             },
@@ -80,7 +79,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "Sorry, mhux nista' ngħin f'dan iż-żmien."
+                                "value": "Вибачте, на даний момент я не можу надати допомогу."
                             }
                         }
                     }

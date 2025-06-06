@@ -1,8 +1,8 @@
 {
-    "slotName": "age_en",
-    "slotTypeName": "age",
-    "intentName": "pre_survey_intent_en",
-    "description": "Slot age_en for intent pre_survey_intent_en",
+    "slotName": "about_self",
+    "slotTypeName": "yes_no",
+    "intentName": "pre_survey_intent",
+    "description": "Slot about_self for intent pre_survey_intent",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "How old are you?"
+                            "value": "Are you calling about yourself? Please answer Yes or No."
                         }
                     }
                 }
@@ -71,7 +71,7 @@
             "captureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "gender_en"
+                    "slotToElicit": "age"
                 },
                 "intent": {}
             },

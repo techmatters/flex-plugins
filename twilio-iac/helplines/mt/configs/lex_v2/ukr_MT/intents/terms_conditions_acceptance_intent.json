@@ -1,9 +1,9 @@
 {
-    "intentName": "terms_conditions_acceptance_intent_en",
+    "intentName": "terms_conditions_acceptance_intent",
     "description": "Specific configs/lex_v2/en_MT/bots/terms_conditions_acceptance",
     "sampleUtterances": [
         {
-            "utterance": "trigger_terms_conditions_acceptance_en"
+            "utterance": "trigger_terms_conditions_acceptance"
         }
     ],
     "dialogCodeHook": {
@@ -36,7 +36,7 @@
     "slotPriorities": [
         {
             "priority": 1,
-            "slotName": "terms_conditions_acceptance_en"
+            "slotName": "terms_conditions_acceptance"
         }
     ],
     "intentClosingSetting": {
@@ -45,7 +45,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Thank you."
+                            "value": "Дякую."
                         }
                     }
                 }
@@ -66,7 +66,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Do you accept our Terms and Conditions? https://kellimni.com/chat-terms/ ."
+                            "value": "Ви приймаєте наші умови? https://kellimni.com/chat-terms/ ."
                         }
                     }
                 }
@@ -87,7 +87,7 @@
                 "successNextStep": {
                     "dialogAction": {
                         "type": "ElicitSlot",
-                        "slotToElicit": "terms_conditions_acceptance_en"
+                        "slotToElicit": "terms_conditions_acceptance"
                     },
                     "intent": {}
                 },

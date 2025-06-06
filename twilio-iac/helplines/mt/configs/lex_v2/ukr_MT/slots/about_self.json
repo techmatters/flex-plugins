@@ -1,8 +1,8 @@
 {
-    "slotName": "age_mt",
-    "slotTypeName": "age",
-    "intentName": "pre_survey_intent_mt",
-    "description": "Slot age_mt for intent pre_survey_intent_mt",
+    "slotName": "about_self",
+    "slotTypeName": "yes_no",
+    "intentName": "pre_survey_intent",
+    "description": "Slot about_self for intent pre_survey_intent",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Kemm għandek żmien?"
+                            "value": "Ти звертаєшся з приводу себе? так або ні"
                         }
                     }
                 }
@@ -71,7 +71,7 @@
             "captureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "gender_mt"
+                    "slotToElicit": "age"
                 },
                 "intent": {}
             },
@@ -80,7 +80,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "Sorry, mhux nista' ngħin f'dan iż-żmien."
+                                "value": "Вибачте, на даний момент я не можу надати допомогу."
                             }
                         }
                     }

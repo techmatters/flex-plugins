@@ -1,8 +1,8 @@
 {
-    "slotName": "age_uk",
-    "slotTypeName": "age",
-    "intentName": "pre_survey_intent_uk",
-    "description": "Slot age_uk for intent pre_survey_intent_uk",
+    "slotName": "gender",
+    "slotTypeName": "gender",
+    "intentName": "pre_survey_intent",
+    "description": "Slot gender for intent pre_survey_intent",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Скільки тобі років?"
+                            "value": "Яка у вас стать? \n 1. Жінка \n 2. Чоловік \n 3. Інші \n 4. Не хочу відповідати"
                         }
                     }
                 }
@@ -71,7 +71,7 @@
             "captureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "gender_uk"
+                    "slotToElicit": "feeling"
                 },
                 "intent": {}
             },

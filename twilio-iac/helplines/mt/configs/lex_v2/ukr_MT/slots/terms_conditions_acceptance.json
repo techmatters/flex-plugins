@@ -1,8 +1,8 @@
 {
-    "slotName": "feeling_en",
-    "slotTypeName": "feeling",
-    "intentName": "pre_survey_intent_en",
-    "description": "Slot feeling_en for intent pre_survey_intent_en",
+    "slotName": "terms_conditions_acceptance",
+    "slotTypeName": "yes_no",
+    "intentName": "terms_conditions_acceptance_intent",
+    "description": "Slot terms_conditions_acceptance for intent terms_conditions_acceptance_intent",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "How are you feeling? You can write the number or word of your choice. \n 1. Happy \n 2. Confused \n 3. Angry \n 4. Shocked \n 5. Scared \n 6. Uncertain "
+                            "value": "Будь ласка, дайте відповідь цифрою: \n1. Так, я приймаю умови. \n2. Ні, я не приймаю умови."
                         }
                     }
                 }
@@ -79,7 +79,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "We are having trouble understanding your response."
+                                "value": "Вибачте, наразі я не можу допомогти."
                             }
                         }
                     }

@@ -1,8 +1,8 @@
 {
-    "slotName": "about_self_uk",
+    "slotName": "terms_conditions_acceptance",
     "slotTypeName": "yes_no",
-    "intentName": "pre_survey_intent_uk",
-    "description": "Slot about_self_uk for intent pre_survey_intent_uk",
+    "intentName": "terms_conditions_acceptance_intent",
+    "description": "Slot terms_conditions_acceptance for intent terms_conditions_acceptance_intent",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Ти звертаєшся з приводу себе? так або ні"
+                            "value": "Jekk jogħġbok wieġeb billi tagħżel numru:\n1. Iva, naċċetta t-Termini u l-Kundizzjonijiet. \n2. Le, ma naċċettax t-Termini u l-Kundizzjonijiet."
                         }
                     }
                 }
@@ -70,8 +70,7 @@
         "slotCaptureSetting": {
             "captureNextStep": {
                 "dialogAction": {
-                    "type": "ElicitSlot",
-                    "slotToElicit": "age_uk"
+                    "type": "FulfillIntent"
                 },
                 "intent": {}
             },
@@ -80,7 +79,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "Вибачте, на даний момент я не можу надати допомогу."
+                                "value": "Jiddispjaċini, ma fhimtx eżatt."
                             }
                         }
                     }

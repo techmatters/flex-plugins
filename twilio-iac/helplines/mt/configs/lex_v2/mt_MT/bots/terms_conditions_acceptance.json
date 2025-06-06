@@ -1,0 +1,33 @@
+{
+  "terms_conditions_acceptance": {
+    "description": "Specific configs/lex_v2/mt_MT/bots/terms_conditions_acceptance",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "type": "Bot",
+    "intents": {
+      "terms_conditions_acceptance_intent": {
+        "utterances": [
+          {
+            "utterance": "trigger_terms_conditions_acceptance"
+          }
+        ],
+        "initial_response": {
+          "message": "Inti taċċetta t-Termini u l-Kundizzjonijiet tagħna? https://kellimni.com/chat-terms/ .",
+          "slot_to_elicit": "terms_conditions_acceptance"
+        },
+        "closing_response": {
+          "message": "Grazzi."
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "terms_conditions_acceptance",
+            "slot_type_name": "yes_no",
+            "slot_question": "Jekk jogħġbok wieġeb billi tagħżel numru:\n1. Iva, naċċetta t-Termini u l-Kundizzjonijiet. \n2. Le, ma naċċettax t-Termini u l-Kundizzjonijiet.",
+            "failure_response": "Jiddispjaċini, ma fhimtx eżatt."
+          }
+        }
+      }
+    }
+  }
+}

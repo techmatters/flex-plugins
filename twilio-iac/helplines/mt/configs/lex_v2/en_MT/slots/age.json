@@ -1,8 +1,8 @@
 {
-    "slotName": "terms_conditions_acceptance_uk",
-    "slotTypeName": "yes_no",
-    "intentName": "terms_conditions_acceptance_intent_uk",
-    "description": "Slot terms_conditions_acceptance_uk for intent terms_conditions_acceptance_intent_uk",
+    "slotName": "age",
+    "slotTypeName": "age",
+    "intentName": "pre_survey_intent",
+    "description": "Slot age for intent pre_survey_intent",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Будь ласка, дайте відповідь цифрою: \n1. Так, я приймаю умови. \n2. Ні, я не приймаю умови."
+                            "value": "How old are you?"
                         }
                     }
                 }
@@ -70,7 +70,8 @@
         "slotCaptureSetting": {
             "captureNextStep": {
                 "dialogAction": {
-                    "type": "FulfillIntent"
+                    "type": "ElicitSlot",
+                    "slotToElicit": "gender"
                 },
                 "intent": {}
             },
@@ -79,7 +80,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "Вибачте, наразі я не можу допомогти."
+                                "value": "We are having trouble understanding your response."
                             }
                         }
                     }

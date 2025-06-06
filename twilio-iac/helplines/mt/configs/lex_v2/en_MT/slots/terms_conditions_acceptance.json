@@ -1,8 +1,8 @@
 {
-    "slotName": "terms_conditions_acceptance_en",
+    "slotName": "terms_conditions_acceptance",
     "slotTypeName": "yes_no",
-    "intentName": "terms_conditions_acceptance_intent_en",
-    "description": "Slot terms_conditions_acceptance_en for intent terms_conditions_acceptance_intent_en",
+    "intentName": "terms_conditions_acceptance_intent",
+    "description": "Slot terms_conditions_acceptance for intent terms_conditions_acceptance_intent",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {

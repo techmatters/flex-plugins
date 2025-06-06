@@ -1,8 +1,8 @@
 {
-    "slotName": "gender_mt",
-    "slotTypeName": "gender",
-    "intentName": "pre_survey_intent_mt",
-    "description": "Slot gender_mt for intent pre_survey_intent_mt",
+    "slotName": "feeling",
+    "slotTypeName": "feeling",
+    "intentName": "pre_survey_intent",
+    "description": "Slot feeling for intent pre_survey_intent",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "WX'inhu s-sess tiegħek? \n 1. Mara \n 2. Raġel \n 3. Oħrajn \n 4. Ma nixtieqx naghti risposta"
+                            "value": "X'inhu s-sess tiegħek? \n 1. Mara \n 2. Raġel \n 3. Oħrajn \n 4. Ma nixtieqx naghti risposta"
                         }
                     }
                 }
@@ -70,8 +70,7 @@
         "slotCaptureSetting": {
             "captureNextStep": {
                 "dialogAction": {
-                    "type": "ElicitSlot",
-                    "slotToElicit": "feeling_mt"
+                    "type": "FulfillIntent"
                 },
                 "intent": {}
             },

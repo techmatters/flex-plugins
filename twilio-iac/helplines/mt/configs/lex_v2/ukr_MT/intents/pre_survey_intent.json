@@ -1,9 +1,9 @@
 {
-    "intentName": "pre_survey_intent_uk",
+    "intentName": "pre_survey_intent",
     "description": "Specific configs/lex_v2/en_MT/bots/pre_survey",
     "sampleUtterances": [
         {
-            "utterance": "trigger_pre_survey_uk"
+            "utterance": "trigger_pre_survey"
         },
         {
             "utterance": "Привіт"
@@ -42,19 +42,19 @@
     "slotPriorities": [
         {
             "priority": 1,
-            "slotName": "about_self_uk"
+            "slotName": "about_self"
         },
         {
             "priority": 2,
-            "slotName": "age_uk"
+            "slotName": "age"
         },
         {
             "priority": 3,
-            "slotName": "gender_uk"
+            "slotName": "gender"
         },
         {
             "priority": 4,
-            "slotName": "feeling_uk"
+            "slotName": "feeling"
         }
     ],
     "intentClosingSetting": {
@@ -105,7 +105,7 @@
                 "successNextStep": {
                     "dialogAction": {
                         "type": "ElicitSlot",
-                        "slotToElicit": "about_self_uk"
+                        "slotToElicit": "about_self"
                     },
                     "intent": {}
                 },

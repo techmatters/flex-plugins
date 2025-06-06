@@ -1,8 +1,8 @@
 {
-    "slotName": "terms_conditions_acceptance_mt",
-    "slotTypeName": "yes_no",
-    "intentName": "terms_conditions_acceptance_intent_mt",
-    "description": "Slot terms_conditions_acceptance_mt for intent terms_conditions_acceptance_intent_mt",
+    "slotName": "gender",
+    "slotTypeName": "gender",
+    "intentName": "pre_survey_intent",
+    "description": "Slot gender for intent pre_survey_intent",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Jekk jogħġbok wieġeb billi tagħżel numru:\n1. Iva, naċċetta t-Termini u l-Kundizzjonijiet. \n2. Le, ma naċċettax t-Termini u l-Kundizzjonijiet."
+                            "value": "What is your gender? \n 1. Female \n 2. Male \n 3. Others \n 4. Rather not say"
                         }
                     }
                 }
@@ -70,7 +70,8 @@
         "slotCaptureSetting": {
             "captureNextStep": {
                 "dialogAction": {
-                    "type": "FulfillIntent"
+                    "type": "ElicitSlot",
+                    "slotToElicit": "feeling"
                 },
                 "intent": {}
             },
@@ -79,7 +80,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "Jiddispjaċini, ma fhimtx eżatt."
+                                "value": "We are having trouble understanding your response."
                             }
                         }
                     }

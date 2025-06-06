@@ -1,8 +1,8 @@
 {
-    "slotName": "feeling_mt",
+    "slotName": "feeling",
     "slotTypeName": "feeling",
-    "intentName": "pre_survey_intent_mt",
-    "description": "Slot feeling_mt for intent pre_survey_intent_mt",
+    "intentName": "pre_survey_intent",
+    "description": "Slot feeling for intent pre_survey_intent",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "X'inhu s-sess tiegħek? \n 1. Mara \n 2. Raġel \n 3. Oħrajn \n 4. Ma nixtieqx naghti risposta"
+                            "value": "How are you feeling? You can write the number or word of your choice. \n 1. Happy \n 2. Confused \n 3. Angry \n 4. Shocked \n 5. Scared \n 6. Uncertain "
                         }
                     }
                 }
@@ -79,7 +79,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "Sorry, mhux nista' ngħin f'dan iż-żmien."
+                                "value": "We are having trouble understanding your response."
                             }
                         }
                     }

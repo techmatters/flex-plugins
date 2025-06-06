@@ -1,8 +1,8 @@
 {
-    "slotName": "gender_uk",
-    "slotTypeName": "gender",
-    "intentName": "pre_survey_intent_uk",
-    "description": "Slot gender_uk for intent pre_survey_intent_uk",
+    "slotName": "age",
+    "slotTypeName": "age",
+    "intentName": "pre_survey_intent",
+    "description": "Slot age for intent pre_survey_intent",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Яка у вас стать? \n 1. Жінка \n 2. Чоловік \n 3. Інші \n 4. Не хочу відповідати"
+                            "value": "Kemm għandek żmien?"
                         }
                     }
                 }
@@ -71,7 +71,7 @@
             "captureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "feeling_uk"
+                    "slotToElicit": "gender"
                 },
                 "intent": {}
             },
@@ -80,7 +80,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "Вибачте, на даний момент я не можу надати допомогу."
+                                "value": "Sorry, mhux nista' ngħin f'dan iż-żmien."
                             }
                         }
                     }

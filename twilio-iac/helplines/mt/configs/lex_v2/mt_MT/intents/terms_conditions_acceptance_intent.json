@@ -1,15 +1,9 @@
 {
-    "intentName": "pre_survey_intent_en",
-    "description": "Specific configs/lex_v2/en_MT/bots/pre_survey",
+    "intentName": "terms_conditions_acceptance_intent",
+    "description": "Specific configs/lex_v2/en/bots/terms_conditions_acceptance",
     "sampleUtterances": [
         {
-            "utterance": "trigger_pre_survey_en"
-        },
-        {
-            "utterance": "Hi"
-        },
-        {
-            "utterance": "Hello"
+            "utterance": "trigger_terms_conditions_acceptance"
         }
     ],
     "dialogCodeHook": {
@@ -42,19 +36,7 @@
     "slotPriorities": [
         {
             "priority": 1,
-            "slotName": "about_self_en"
-        },
-        {
-            "priority": 2,
-            "slotName": "age_en"
-        },
-        {
-            "priority": 3,
-            "slotName": "gender_en"
-        },
-        {
-            "priority": 4,
-            "slotName": "feeling_en"
+            "slotName": "terms_conditions_acceptance"
         }
     ],
     "intentClosingSetting": {
@@ -63,7 +45,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Thank you for reaching out. We are currently assisting other clients, but we will do our utmost to respond to you shortly. Kindly wait for assistance. If this is an emergency, please contact 112, until we are in a position to assist you."
+                            "value": "Grazzi."
                         }
                     }
                 }
@@ -84,7 +66,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "You have reached Kellimni."
+                            "value": "Inti taċċetta t-Termini u l-Kundizzjonijiet tagħna? https://kellimni.com/chat-terms/ ."
                         }
                     }
                 }
@@ -105,7 +87,7 @@
                 "successNextStep": {
                     "dialogAction": {
                         "type": "ElicitSlot",
-                        "slotToElicit": "about_self_en"
+                        "slotToElicit": "terms_conditions_acceptance"
                     },
                     "intent": {}
                 },

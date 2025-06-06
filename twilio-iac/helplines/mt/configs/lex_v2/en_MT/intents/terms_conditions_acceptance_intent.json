@@ -1,15 +1,9 @@
 {
-    "intentName": "pre_survey_intent_mt",
-    "description": "Specific configs/lex_v2/en_MT/bots/pre_survey",
+    "intentName": "terms_conditions_acceptance_intent",
+    "description": "Specific configs/lex_v2/en_MT/bots/terms_conditions_acceptance",
     "sampleUtterances": [
         {
-            "utterance": "trigger_pre_survey_mt"
-        },
-        {
-            "utterance": "Bongu"
-        },
-        {
-            "utterance": "Ħelow"
+            "utterance": "trigger_terms_conditions_acceptance"
         }
     ],
     "dialogCodeHook": {
@@ -42,19 +36,7 @@
     "slotPriorities": [
         {
             "priority": 1,
-            "slotName": "about_self_mt"
-        },
-        {
-            "priority": 2,
-            "slotName": "age_mt"
-        },
-        {
-            "priority": 3,
-            "slotName": "gender_mt"
-        },
-        {
-            "priority": 4,
-            "slotName": "feeling_mt"
+            "slotName": "terms_conditions_acceptance"
         }
     ],
     "intentClosingSetting": {
@@ -63,7 +45,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Grazzi talli kkuntatjajtna. Bħalissa qed ngħinu klijenti oħra, iżda aħna se nagħmlu l-almu tagħna biex nirrisponduk fl-iqsar ħin possibli. Jekk jogħġbok stenna għall-assistenza. Jekk din hija emerġenza, ikkuntattja lill-112, sakemm inkunu f'pożizzjoni li ngħinuk."
+                            "value": "Thank you."
                         }
                     }
                 }
@@ -84,7 +66,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Wasalt għand Kellimni."
+                            "value": "Do you accept our Terms and Conditions? https://kellimni.com/chat-terms/ ."
                         }
                     }
                 }
@@ -105,7 +87,7 @@
                 "successNextStep": {
                     "dialogAction": {
                         "type": "ElicitSlot",
-                        "slotToElicit": "about_self_mt"
+                        "slotToElicit": "terms_conditions_acceptance"
                     },
                     "intent": {}
                 },
