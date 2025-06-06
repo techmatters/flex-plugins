@@ -9,7 +9,7 @@ locals {
     enable_external_recordings = true
     enable_datadog_monitoring  = false
     permission_config          = "nz"
-    enable_lex_v2                         = false
+    enable_lex_v2              = true
 
     channel_attributes = {
       webchat                 = "/app/twilio-iac/helplines/nz/templates/channel-attributes/webchat.tftpl",
