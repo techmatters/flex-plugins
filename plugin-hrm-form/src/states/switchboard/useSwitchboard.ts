@@ -17,28 +17,100 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useCallback } from 'react';
 
-import { subscribeSwitchboardState, initSwitchboardSyncDocument } from '../../utils/sharedState';
 import { updateSwitchboardState, setSwitchboardLoading, setSwitchboardError } from './actions';
 import { toggleSwitchboardingForQueue } from '../../services/SwitchboardService';
 import { RootState } from '..';
 import { SwitchboardState } from './types';
 import { namespace, switchboardBase } from '../storeNamespaces';
+import { sharedSyncClient } from '../../utils/sharedState';
+
+export type SwitchboardSyncState = {
+  isSwitchboardingActive: boolean;
+  queueSid: string | null;
+  queueName: string | null;
+  startTime: string | null;
+  supervisorWorkerSid: string | null;
+};
+
+const SWITCHBOARD_DOCUMENT_NAME = 'switchboard-state';
+const DEFAULT_SWITCHBOARD_STATE: SwitchboardSyncState = {
+  isSwitchboardingActive: false,
+  queueSid: null,
+  queueName: null,
+  startTime: null,
+  supervisorWorkerSid: null,
+};
+
+/**
+ * Initialize or get the switchboard document from Twilio Sync
+ * @returns Twilio Sync document
+ */
+const initSwitchboardSyncDocument = () => {
+  try {
+    return sharedSyncClient.document(SWITCHBOARD_DOCUMENT_NAME);
+  } catch (error) {
+    return sharedSyncClient.document({
+      id: SWITCHBOARD_DOCUMENT_NAME,
+      data: DEFAULT_SWITCHBOARD_STATE,
+      ttl: 48 * 60 * 60, // 48 hours
+    });
+  }
+};
+
+/**
+ * Get the current switchboard state
+ * @returns Current switchboarding state
+ */
+export const getSwitchboardState = async (): Promise<SwitchboardSyncState> => {
+  try {
+    const doc = await initSwitchboardSyncDocument();
+    return doc.data as SwitchboardSyncState;
+  } catch (error) {
+    console.error('Error getting switchboard state:', error);
+    throw error;
+  }
+};
+
+/**
+ * Subscribe to switchboarding state changes
+ * @param callback Function to call when switchboarding state changes: (state: SwitchboardSyncState) => void
+ * @returns Function to unsubscribe from updates: () => void
+ */
+const subscribeSwitchboardState = async (callback: (state: SwitchboardSyncState) => void): Promise<() => void> => {
+  try {
+    const doc = await initSwitchboardSyncDocument();
+
+    const handler = (event: { data: unknown }) => {
+      callback(event.data as SwitchboardSyncState);
+    };
+
+    doc.on('updated', handler);
+    callback(doc.data as SwitchboardSyncState);
+
+    return () => {
+      doc.off('updated', handler);
+    };
+  } catch (error) {
+    console.error('Error subscribing to switchboard state:', error);
+    throw error;
+  }
+};
 
 export const useSwitchboardState = (): SwitchboardState => {
   return useSelector((state: RootState) => state[namespace][switchboardBase]);
 };
 
 /**
- * Hook to initialize the switchboard state in Redux by subscribing to the Twilio Sync service
+ * Hook to subscribe to the switchboard state from the Twilio Sync service and update the Redux store
  * @returns Cleanup function to unsubscribe from updates
  */
-export const useInitializeSwitchboard = (): void => {
+export const useSubscribeToSwitchboardState = (): void => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
 
-    const initialize = async () => {
+    const initializeSwitchboardState = async () => {
       try {
         dispatch(setSwitchboardLoading(true));
 
@@ -63,9 +135,8 @@ export const useInitializeSwitchboard = (): void => {
       }
     };
 
-    initialize();
+    initializeSwitchboardState();
 
-    // Cleanup function to unsubscribe
     return () => {
       if (unsubscribe) {
         unsubscribe();
@@ -78,7 +149,10 @@ export const useInitializeSwitchboard = (): void => {
  * Hook that provides a function to toggle switchboarding for a queue
  * @returns Function to toggle switchboarding for a queue
  */
-export const useToggleSwitchboardingForQueue = (): ((queueSid: string, supervisorWorkerSid?: string) => Promise<void>) => {
+export const useToggleSwitchboardingForQueue = (): ((
+  queueSid: string,
+  supervisorWorkerSid?: string,
+) => Promise<void>) => {
   const dispatch = useDispatch();
 
   return useCallback(
@@ -97,9 +171,9 @@ export const useToggleSwitchboardingForQueue = (): ((queueSid: string, superviso
             startTime: response.startTime,
             supervisorWorkerSid: response.supervisorWorkerSid,
           };
-          
+
           dispatch(updateSwitchboardState(newState));
-          
+
           try {
             const syncDoc = await initSwitchboardSyncDocument();
             await syncDoc.update(newState);

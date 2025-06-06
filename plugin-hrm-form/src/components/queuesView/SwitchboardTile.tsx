@@ -28,11 +28,10 @@ import { RootState } from '../../states';
 import { namespace, configurationBase } from '../../states/storeNamespaces';
 import { SelectQueueModal, TurnOffSwitchboardDialog } from './QueueSelectionModals';
 import {
-  useInitializeSwitchboard,
+  useSubscribeToSwitchboardState,
   useToggleSwitchboardingForQueue,
   useSwitchboardState,
 } from '../../states/switchboard/useSwitchboard';
-import { getSwitchboardState } from '../../utils/sharedState';
 
 export const setUpSwitchboard = () => {
   QueuesStats.AggregatedQueuesDataTiles.Content.add(<SwitchboardTile key="switchboard" />, {
@@ -51,11 +50,9 @@ const SwitchboardTile = () => {
   const counselorsHash = useSelector((state: RootState) => state[namespace][configurationBase].counselors.hash);
 
   const switchboardState = useSwitchboardState();
-  console.log('>>>> Switchboard state:', switchboardState);
   const { isLoading, error } = switchboardState;
 
-  // Initialize switchboard state
-  useInitializeSwitchboard();
+  useSubscribeToSwitchboardState();
 
   useEffect(() => {
     selectedQueueRef.current = selectedQueue;
@@ -80,7 +77,7 @@ const SwitchboardTile = () => {
   };
 
   const toggleSwitchboardingForQueue = useToggleSwitchboardingForQueue();
-  
+
   const handleSwitchboarding = async (queue: string) => {
     if (!queue) {
       return;

@@ -19,34 +19,35 @@ import SyncClient from 'twilio-sync';
 import { issueSyncToken } from '../services/ServerlessService';
 import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
 
-let sharedStateClient: SyncClient;
+let sharedSyncClient: SyncClient;
 
-export const setUpSharedStateClient = async () => {
+export { sharedSyncClient };
+
+export const setUpSyncClient = async () => {
   const updateSharedStateToken = async () => {
     try {
       const syncToken = await issueSyncToken();
-      await sharedStateClient.updateToken(syncToken);
+      await sharedSyncClient.updateToken(syncToken);
     } catch (err) {
       console.error('SYNC TOKEN ERROR', err);
     }
   };
 
   // initializes sync client for shared state
-  const initSharedStateClient = async () => {
+  const initSyncClient = async () => {
     try {
       const syncToken = await issueSyncToken();
-      sharedStateClient = new SyncClient(syncToken);
-      sharedStateClient.on('tokenAboutToExpire', () => updateSharedStateToken());
+      sharedSyncClient = new SyncClient(syncToken);
+      sharedSyncClient.on('tokenAboutToExpire', () => updateSharedStateToken());
     } catch (err) {
       console.error('SYNC CLIENT INIT ERROR', err);
     }
   };
 
-  await initSharedStateClient();
+  await initSyncClient();
 };
 
-const isSharedStateClientConnected = sharedStateClient =>
-  sharedStateClient && sharedStateClient.connectionState === 'connected';
+const isSyncClientConnected = (client: any) => client && client.connectionState === 'connected';
 
 /**
  * This function creates an object with all parseable attributes from the original Twilio Task.
@@ -82,8 +83,8 @@ const copyError = error => ({
 });
 
 const validateSyncConnection = (): void => {
-  if (!isSharedStateClientConnected(sharedStateClient)) {
-    console.error('Error with Sync Client connection. Sync Client object is: ', sharedStateClient);
+  if (!isSyncClientConnected(sharedSyncClient)) {
+    console.error('Error with Sync Client connection. Sync Client object is: ', sharedSyncClient);
     console.error(getTemplateStrings().SharedStateSaveContactError);
     throw new Error('Sync client not connected');
   }
@@ -102,7 +103,7 @@ export const savePendingContactToSharedState = async (task, payload, error) => {
   try {
     validateSyncConnection();
 
-    const list = await sharedStateClient.list('pending-contacts');
+    const list = await sharedSyncClient.list('pending-contacts');
 
     const taskToSave = copyTask(task);
     const errorToSave = copyError(error);
@@ -119,13 +120,13 @@ export const savePendingContactToSharedState = async (task, payload, error) => {
 };
 
 export const createCallStatusSyncDocument = async (onUpdateCallback: ({ data }: any) => void) => {
-  if (!isSharedStateClientConnected(sharedStateClient)) {
-    console.error('Error with Sync Client connection. Sync Client object is: ', sharedStateClient);
+  if (!isSyncClientConnected(sharedSyncClient)) {
+    console.error('Error with Sync Client connection. Sync Client object is: ', sharedSyncClient);
     console.error(getTemplateStrings().SharedStateSaveContactError);
     return { status: 'failure', callStatusSyncDocument: null } as const;
   }
 
-  const callStatusSyncDocument = await sharedStateClient.document({
+  const callStatusSyncDocument = await sharedSyncClient.document({
     mode: 'create_new',
     data: { CallStatus: 'initiating' },
     ttl: 60 * 2, // No need to keep track of this for longer than two minutes
@@ -136,81 +137,4 @@ export const createCallStatusSyncDocument = async (onUpdateCallback: ({ data }: 
   onUpdateCallback({ data: callStatusSyncDocument.data });
 
   return { status: 'success', callStatusSyncDocument } as const;
-};
-
-// eslint-disable-next-line import/no-unused-modules
-export type SwitchboardSyncState = {
-  isSwitchboardingActive: boolean;
-  queueSid: string | null;
-  queueName: string | null;
-  startTime: string | null;
-  supervisorWorkerSid: string | null;
-};
-
-const SWITCHBOARD_DOCUMENT_NAME = 'switchboard-state';
-const DEFAULT_SWITCHBOARD_STATE: SwitchboardSyncState = {
-  isSwitchboardingActive: false,
-  queueSid: null,
-  queueName: null,
-  startTime: null,
-  supervisorWorkerSid: null,
-};
-
-/**
- * Initialize or get the switchboard document from Twilio Sync
- * @returns Twilio Sync document
- */
-export const initSwitchboardSyncDocument = () => {
-  try {
-    return sharedStateClient.document(SWITCHBOARD_DOCUMENT_NAME);
-  } catch (error) {
-    return sharedStateClient.document({
-      id: SWITCHBOARD_DOCUMENT_NAME,
-      data: DEFAULT_SWITCHBOARD_STATE,
-      ttl: 48 * 60 * 60, // 48 hours
-    });
-  }
-};
-
-/**
- * Get the current switchboard state
- * @returns Current switchboarding state
- */
-export const getSwitchboardState = async (): Promise<SwitchboardSyncState> => {
-  validateSyncConnection();
-
-  try {
-    const doc = await initSwitchboardSyncDocument();
-    return doc.data as SwitchboardSyncState;
-  } catch (error) {
-    console.error('Error getting switchboard state:', error);
-    throw error;
-  }
-};
-
-/**
- * Subscribe to switchboarding state changes
- * @param callback Function to call when switchboarding state changes: (state: SwitchboardSyncState) => void
- * @returns Function to unsubscribe from updates: () => void
- */
-export const subscribeSwitchboardState = async (callback: (state: SwitchboardSyncState) => void): Promise<() => void> => {
-  validateSyncConnection();
-
-  try {
-    const doc = await initSwitchboardSyncDocument();
-    
-    const handler = (event: { data: unknown }) => {
-      callback(event.data as SwitchboardSyncState);
-    };
-    
-    doc.on('updated', handler);
-    callback(doc.data as SwitchboardSyncState);
-    
-    return () => {
-      doc.off('updated', handler);
-    };
-  } catch (error) {
-    console.error('Error subscribing to switchboard state:', error);
-    throw error;
-  }
 };
