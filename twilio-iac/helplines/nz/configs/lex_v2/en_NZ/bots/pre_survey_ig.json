@@ -7,7 +7,14 @@
     "type": "Bot",
     "intents": {
       "pre_survey_ig_intent": {
-        "utterances": [],
+        "utterances": [
+           {
+            "utterance": "trigger_pre_survey"
+          },
+          {
+            "utterance": "Incoming webchat contact"
+          }
+        ],
         "initial_response": {
           "message": "You have selected to speak to the Helpline.",
           "slot_to_elicit": "pre_survey_ig"

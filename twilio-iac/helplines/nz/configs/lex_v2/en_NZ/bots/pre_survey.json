@@ -7,7 +7,14 @@
     "type": "Bot",
     "intents": {
       "pre_survey_intent": {
-        "utterances": [],
+        "utterances": [
+           {
+            "utterance": "trigger_pre_survey"
+          },
+          {
+            "utterance": "Incoming webchat contact"
+          }
+        ],
         "initial_response": {
           "message": "Kia ora, you have reached Youthline.",
           "slot_to_elicit": "pre_survey"
