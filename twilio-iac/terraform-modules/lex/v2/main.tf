@@ -9,6 +9,7 @@ terraform {
 
 locals {
   name_prefix = "${var.environment}_${var.short_helpline}_${var.language}"
+  ssm_variable_name_prefix = "/${var.environment}/serverless/bots/${lower(var.short_helpline)}_${lower(var.language)}"
   intent_slot_pairs = flatten([
     for intent in var.lex_v2_intents : [
       for slot in intent.config.slotPriorities : {
@@ -437,7 +438,7 @@ resource "null_resource" "update_intent_settings" {
 
 resource "aws_ssm_parameter" "bot_config" {
   for_each = var.lex_v2_bots
-  name  = "/${var.environment}/serverless/bots/${replace("${lower(local.name_prefix)}_${each.key}", "2", "")}"
+  name  = "${replace("${ssm_variable_name_prefix}_${each.key}", "2", "")}"
   type  = "SecureString"
   value = jsonencode({
     botId      = "${aws_lexv2models_bot.this["${each.key}"].id}"
