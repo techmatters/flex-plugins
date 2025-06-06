@@ -382,6 +382,7 @@ This is not ideal, but it works.
  */
 
 resource "null_resource" "update_slots" {
+
     triggers = {
         always_run = timestamp()
     }
@@ -391,6 +392,9 @@ resource "null_resource" "update_slots" {
     }
 
     provisioner "local-exec" {
+        environment = {
+          AWS_REGION = var.helpline_region
+        }
         command = <<EOT
         aws lexv2-models update-slot \
         --bot-id ${aws_lexv2models_bot.this[each.value.bot_name].id} \
@@ -421,6 +425,9 @@ resource "null_resource" "update_intent_settings" {
     }
 
     provisioner "local-exec" {
+        environment = {
+          AWS_REGION = var.helpline_region
+        }
         command = <<EOT
         aws lexv2-models update-intent \
         --bot-id ${aws_lexv2models_bot.this[each.value.bot_name].id} \
