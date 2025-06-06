@@ -139,7 +139,7 @@ export const createCallStatusSyncDocument = async (onUpdateCallback: ({ data }: 
 };
 
 // eslint-disable-next-line import/no-unused-modules
-export type SwitchboardState = {
+export type SwitchboardSyncState = {
   isSwitchboardingActive: boolean;
   queueSid: string | null;
   queueName: string | null;
@@ -148,7 +148,7 @@ export type SwitchboardState = {
 };
 
 const SWITCHBOARD_DOCUMENT_NAME = 'switchboard-state';
-const DEFAULT_SWITCHBOARD_STATE: SwitchboardState = {
+const DEFAULT_SWITCHBOARD_STATE: SwitchboardSyncState = {
   isSwitchboardingActive: false,
   queueSid: null,
   queueName: null,
@@ -176,12 +176,12 @@ export const initSwitchboardSyncDocument = () => {
  * Get the current switchboard state
  * @returns Current switchboarding state
  */
-export const getSwitchboardState = async (): Promise<SwitchboardState> => {
+export const getSwitchboardState = async (): Promise<SwitchboardSyncState> => {
   validateSyncConnection();
 
   try {
     const doc = await initSwitchboardSyncDocument();
-    return doc.data as SwitchboardState;
+    return doc.data as SwitchboardSyncState;
   } catch (error) {
     console.error('Error getting switchboard state:', error);
     throw error;
@@ -190,21 +190,21 @@ export const getSwitchboardState = async (): Promise<SwitchboardState> => {
 
 /**
  * Subscribe to switchboarding state changes
- * @param callback Function to call when switchboarding state changes: (state: SwitchboardState) => void
+ * @param callback Function to call when switchboarding state changes: (state: SwitchboardSyncState) => void
  * @returns Function to unsubscribe from updates: () => void
  */
-export const subscribeSwitchboardState = async (callback: (state: SwitchboardState) => void): Promise<() => void> => {
+export const subscribeSwitchboardState = async (callback: (state: SwitchboardSyncState) => void): Promise<() => void> => {
   validateSyncConnection();
 
   try {
     const doc = await initSwitchboardSyncDocument();
     
     const handler = (event: { data: unknown }) => {
-      callback(event.data as SwitchboardState);
+      callback(event.data as SwitchboardSyncState);
     };
     
     doc.on('updated', handler);
-    callback(doc.data as SwitchboardState);
+    callback(doc.data as SwitchboardSyncState);
     
     return () => {
       doc.off('updated', handler);
