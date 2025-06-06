@@ -16,7 +16,7 @@
           }
         ],
         "initial_response": {
-          "message": "Kia ora, you have reached Youthline.",
+          "message": "Kia ora, you've reached Youthline.",
           "slot_to_elicit": "counsel_check"
         },
         "closing_response": {
@@ -26,7 +26,7 @@
           "1": {
             "slot_name": "counsel_check",
             "slot_type_name": "yes_no",
-            "slot_question": "If you would like to talk to the Helpline, please respond: Yes. To contact the Fundraising and Marketing team, please respond: No.",
+            "slot_question": "If you'd like to talk to the Helpline, please respond 'Yes'. To contact the Fundraising and Marketing team, please respond 'No'.",
             "failure_response": "We are having trouble understanding your response."
           }
         }

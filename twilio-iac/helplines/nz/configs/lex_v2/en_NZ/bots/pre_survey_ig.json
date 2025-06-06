@@ -16,11 +16,11 @@
           }
         ],
         "initial_response": {
-          "message": "You have selected to speak to the Helpline.",
+          "message": "You've selected to speak to the Helpline.",
           "slot_to_elicit": "pre_survey_ig"
         },
         "closing_response": {
-          "message": "We will connect you with someone soon. Your conversation will be recorded and may be monitored for quality purposes. For more information, here is a link to our privacy statement: https://youthline.co.nz/privacy-statements/"
+          "message": "We'll connect you with someone soon. Your conversation will be recorded and may be monitored for quality purposes. For more information, here is a link to our privacy statement: https://youthline.co.nz/privacy-statements/"
         },
         "slot_priorities": {
           "1": {
