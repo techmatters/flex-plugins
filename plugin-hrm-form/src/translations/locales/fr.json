@@ -16,12 +16,6 @@
 "CallSummary-ContactDate": "Date du contact",
 "CallSummary-CallerName": "Nom de l'appelant",
 "CallSummary-Counselor": "Conseiller :",
-"child": "Appel d'une personne concernant lui-même",
-"caller": "Appel d'une personne concernant une autre personne",
-"silent": "Silence",
-"blank": "Vide",
-"joke": "Blague",
-"hangup": "Raccrocher",
 "CallType-wrongnumber": "Mauvais numéro",
 "CallType-abusive": "Abus",
 "CallType-CloseContact": "Contact proche",
@@ -313,8 +307,6 @@
 "relationshipToPerson": "Relation à la personne",
 "CallerForm-Age": "Âge",
 "CallerForm-gender": "Sexe",
-"Gender": "Sexe",
-"otherGender": "Si autre, veuillez préciser",
 "CallerSection-Name": "Nom",
 "CallerSection-RelationshipToChild": "Lien de parenté avec l'enfant",
 "CallerSection-Address": "Adresse",
@@ -632,5 +624,9 @@
 "Conference-AddConferenceCallParticipant": "Ajouter Participant à la Conférence",
 "Conference-EnterPhoneNumber": "Entrez le numéro de téléphone",
 "Conference-DialButton": "Appel",
-"Conference": "Conférence"
+"Conference": "Conférence",
+"Gender": "Sexe",
+"Age": "Âge",
+"Silent": "Silence",
+"Hang up": "Raccroché"
 }
