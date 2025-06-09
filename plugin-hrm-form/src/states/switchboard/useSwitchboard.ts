@@ -37,25 +37,21 @@ export const useSubscribeToSwitchboardState = (): void => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    let unsubscribe: (() => void) | undefined;
+    let unsubscribeFun: (() => void) | undefined;
 
     const initializeSwitchboardState = async () => {
       try {
         dispatch(setSwitchboardLoading(true));
 
-        unsubscribe = await subscribeSwitchboardState(state => {
-          dispatch(
-            updateSwitchboardState({
-              isSwitchboardingActive: state.isSwitchboardingActive,
-              queueSid: state.queueSid,
-              queueName: state.queueName,
-              startTime: state.startTime,
-              supervisorWorkerSid: state.supervisorWorkerSid,
-            }),
-          );
-
-          dispatch(setSwitchboardLoading(false));
+        const { documentData, unsubscribe } = await subscribeSwitchboardState({
+          onRemove: () => {
+            dispatch(updateSwitchboardState(null));
+          },
         });
+
+        dispatch(updateSwitchboardState(documentData));
+        dispatch(setSwitchboardLoading(false));
+        unsubscribeFun = unsubscribe;
       } catch (err) {
         const errorMessage = 'Failed to connect to switchboard state. Please refresh the page or contact support.';
         console.error('Error initializing switchboard subscription:', err);
@@ -67,8 +63,8 @@ export const useSubscribeToSwitchboardState = (): void => {
     initializeSwitchboardState();
 
     return () => {
-      if (unsubscribe) {
-        unsubscribe();
+      if (unsubscribeFun) {
+        unsubscribeFun();
       }
     };
   }, [dispatch]);
@@ -107,10 +103,9 @@ export const useToggleSwitchboardingForQueue = (): (({
           dispatch(updateSwitchboardState(newState));
 
           try {
-            const syncDoc = await initSwitchboardSyncDocument();
-            await syncDoc.update(newState);
+            const syncDoc = await subscribeSwitchboardState({ onRemove: () => dispatch(updateSwitchboardState(null)) });
           } catch (syncError) {
-            console.error('Failed to update Sync document:', syncError);
+            console.error('Failed to subscribe to Sync document:', syncError);
           }
         }
 

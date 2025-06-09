@@ -14,24 +14,18 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { SwitchboardSyncState } from 'hrm-types';
+
 // Switchboard State
 export type SwitchboardState = {
-  isSwitchboardingActive: boolean;
-  queueSid: string | null;
-  queueName: string | null;
-  startTime: string | null;
-  supervisorWorkerSid: string | null;
+  switchboarding: SwitchboardSyncState | null;
   isLoading: boolean;
   error: string | null;
 };
 
 // Initial state
 export const initialState: SwitchboardState = {
-  isSwitchboardingActive: false,
-  queueSid: null,
-  queueName: null,
-  startTime: null,
-  supervisorWorkerSid: null,
+  switchboarding: null,
   isLoading: false,
   error: null,
 };
@@ -43,7 +37,7 @@ export const SWITCHBOARD_SET_ERROR = 'SWITCHBOARD_SET_ERROR';
 
 export type SwitchboardStateUpdateAction = {
   type: typeof SWITCHBOARD_STATE_UPDATE;
-  payload: Omit<SwitchboardState, 'isLoading' | 'error'>;
+  payload: SwitchboardSyncState;
 };
 
 export type SwitchboardSetLoadingAction = {

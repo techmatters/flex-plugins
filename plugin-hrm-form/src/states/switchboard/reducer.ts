@@ -28,7 +28,7 @@ export const reduce = (state = initialState, action: SwitchboardActionTypes): Sw
     case SWITCHBOARD_STATE_UPDATE:
       return {
         ...state,
-        ...action.payload,
+        switchboarding: action.payload,
       };
     case SWITCHBOARD_SET_LOADING:
       return {

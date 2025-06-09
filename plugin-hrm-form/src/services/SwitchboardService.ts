@@ -14,10 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { Manager } from '@twilio/flex-ui';
 import { SwitchboardSyncState } from 'hrm-types';
 
-import { getSwitchboardState } from '../states/switchboard/useSwitchboard';
+import { getSwitchboardState } from './SyncService';
 import fetchProtectedApi from './fetchProtectedApi';
 
 /**
@@ -38,7 +37,7 @@ export const toggleSwitchboardingForQueue = async (
     }
 
     const currentState = await getSwitchboardState();
-    const isDisabling = currentState.isSwitchboardingActive && currentState.queueSid === queueSid;
+    const isDisabling = Boolean(currentState);
     const operation = isDisabling ? 'disable' : 'enable';
 
     const body = {

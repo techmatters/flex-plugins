@@ -40,27 +40,18 @@ export const setUpSwitchboard = () => {
 };
 
 const SwitchboardTile = () => {
-  // const [selectedQueue, setSelectedQueue] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false);
-
-  const selectedQueueRef = React.useRef<string | null>(null);
 
   const { workerSid } = getHrmConfig();
   const counselorsHash = useSelector((state: RootState) => state[namespace][configurationBase].counselors.hash);
 
-  const switchboardState = useSwitchboardState();
-  const { isLoading, error } = switchboardState;
+  const { error, isLoading, switchboarding: switchboardState } = useSwitchboardState();
 
   useSubscribeToSwitchboardState();
 
-  useEffect(() => {
-    selectedQueueRef.current = switchboardState.queueName;
-  }, [switchboardState]);
-
   const handleOpenModal = () => {
     setIsModalOpen(true);
-    selectedQueueRef.current = null;
   };
 
   const handleCloseModal = () => {
@@ -85,7 +76,6 @@ const SwitchboardTile = () => {
     try {
       await toggleSwitchboardingForQueue({ queueSid, supervisorWorkerSid: workerSid });
       setIsModalOpen(false);
-      selectedQueueRef.current = queueSid;
     } catch (error) {
       console.error('Error in switchboarding:', error);
     }
@@ -95,7 +85,6 @@ const SwitchboardTile = () => {
     if (switchboardState?.isSwitchboardingActive) {
       // If already switchboarding, open confirmation modal to turn it off
       if (switchboardState.queueSid) {
-        selectedQueueRef.current = switchboardState.queueSid;
         handleOpenConfirmationDialog();
       }
     } else {
@@ -141,8 +130,8 @@ const SwitchboardTile = () => {
   );
 
   const handleConfirmTurnOff = () => {
-    if (!switchboardState.isSwitchboardingActive) {
-      handleSwitchboarding(switchboardState.queueName);
+    if (switchboardState?.isSwitchboardingActive) {
+      handleSwitchboarding(switchboardState.queueSid);
       handleCloseConfirmationDialog();
     }
   };
@@ -235,7 +224,7 @@ const SwitchboardTile = () => {
         isOpen={isConfirmationDialogOpen}
         onClose={handleCloseConfirmationDialog}
         onConfirm={handleConfirmTurnOff}
-        selectedQueue={selectedQueueRef.current}
+        selectedQueue={switchboardState?.queueSid}
         renderStatusText={(queueKey, startTime) =>
           renderSwitchboardStatusText(
             getQueueName(queueKey),

@@ -15,15 +15,13 @@
  */
 
 import SyncClient from 'twilio-sync';
-import { DEFAULT_SWITCHBOARD_STATE, SWITCHBOARD_DOCUMENT_NAME, SwitchboardSyncState } from 'hrm-types';
+import { SWITCHBOARD_DOCUMENT_NAME, SwitchboardSyncState } from 'hrm-types';
 
 import { issueSyncToken } from './ServerlessService';
 import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
 
 // eslint-disable-next-line import/no-mutable-exports
 let sharedSyncClient: SyncClient;
-
-export { sharedSyncClient };
 
 export const setUpSyncClient = async () => {
   const updateSharedStateToken = async () => {
@@ -145,13 +143,12 @@ export const createCallStatusSyncDocument = async (onUpdateCallback: ({ data }: 
  * Get the current switchboard state
  * @returns Current switchboarding state
  */
-export const getSwitchboardState = async (): Promise<SwitchboardSyncState> => {
+export const getSwitchboardState = async () => {
   try {
-    const doc = await sharedSyncClient.document(SWITCHBOARD_DOCUMENT_NAME);
-    return doc.data as SwitchboardSyncState;
+    return await sharedSyncClient.document(SWITCHBOARD_DOCUMENT_NAME);
   } catch (error) {
-    console.error('Error getting switchboard state:', error);
-    throw error;
+    console.warn('Error getting switchboard state:', error);
+    return null;
   }
 };
 
@@ -160,21 +157,33 @@ export const getSwitchboardState = async (): Promise<SwitchboardSyncState> => {
  * @param callback Function to call when switchboarding state changes: (state: SwitchboardSyncState) => void
  * @returns Function to unsubscribe from updates: () => void
  */
-export const subscribeSwitchboardState = async (
-  callback: (state: SwitchboardSyncState) => void,
-): Promise<() => void> => {
+export const subscribeSwitchboardState = async ({
+  onRemove,
+}: {
+  onRemove: (state: SwitchboardSyncState) => void;
+}): Promise<{ unsubscribe: () => void; documentData: SwitchboardSyncState | null }> => {
   try {
     const doc = await getSwitchboardState();
 
+    if (!doc) {
+      const timeout = setTimeout(() => {
+        subscribeSwitchboardState({ onRemove });
+      }, 10000);
+      return { unsubscribe: () => clearTimeout(timeout), documentData: null };
+    }
+
     const handler = (event: { data: unknown }) => {
-      callback(event.data as SwitchboardSyncState);
+      onRemove(event.data as SwitchboardSyncState);
     };
 
-    doc.on('updated', handler);
-    callback(doc.data as SwitchboardSyncState);
+    doc.on('removed', handler);
+    onRemove(doc.data as SwitchboardSyncState);
 
-    return () => {
-      doc.off('updated', handler);
+    return {
+      unsubscribe: () => {
+        doc.off('removed', handler);
+      },
+      documentData: doc.data as SwitchboardSyncState,
     };
   } catch (error) {
     console.error('Error subscribing to switchboard state:', error);
