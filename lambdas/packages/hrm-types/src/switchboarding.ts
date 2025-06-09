@@ -26,11 +26,3 @@ export type SwitchboardSyncState = {
   supervisorWorkerSid: string | null;
   startTime: string | null;
 };
-
-export const DEFAULT_SWITCHBOARD_STATE: SwitchboardSyncState = {
-  isSwitchboardingActive: false,
-  queueSid: null,
-  queueName: null,
-  startTime: null,
-  supervisorWorkerSid: null,
-};

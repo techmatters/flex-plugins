@@ -27,7 +27,6 @@ import {
   SWITCHBOARD_QUEUE_NAME,
   SwitchboardSyncState,
   SWITCHBOARD_DOCUMENT_NAME,
-  DEFAULT_SWITCHBOARD_STATE,
   SWITCHBOARD_WORKFLOW_FILTER_PREFIX,
 } from '@tech-matters/hrm-types';
 import { AccountSID } from '../twilioTypes';
@@ -68,22 +67,17 @@ async function fetchSwitchboardResources(
   const queues = await taskRouterClient.taskQueues.list();
 
   const switchboardQueue = queues.find(
-    (queue: any) => queue.friendlyName === SWITCHBOARD_QUEUE_NAME,
+    queue => queue.friendlyName === SWITCHBOARD_QUEUE_NAME,
   );
   if (!switchboardQueue) {
     throw new Error('Switchboard Queue not found');
   }
 
-  const originalQueue = queues.find((queue: any) => queue.sid === originalQueueSid);
+  const originalQueue = queues.find(queue => queue.sid === originalQueueSid);
   if (!originalQueue) {
     throw new Error('Original Queue not found');
   }
 
-  // Find Master Workflow
-  // const workflows = await taskRouterClient.workflows.list();
-  // const masterWorkflow = workflows.find(
-  //   (workflow: any) => workflow.friendlyName === 'Master Workflow',
-  // );
   const masterWorkflowSid = await getMasterWorkflowSid(accountSid);
 
   if (!masterWorkflowSid) {
@@ -92,7 +86,6 @@ async function fetchSwitchboardResources(
 
   return {
     syncServiceSid,
-    workspaceSid,
     taskRouterClient,
     switchboardQueue,
     originalQueue,
@@ -101,26 +94,20 @@ async function fetchSwitchboardResources(
 }
 
 /**
- * Get or create the switchboard document in Twilio Sync
+ * Create the switchboard document in Twilio Sync
  */
-async function getSwitchboardStateDocument(
+async function createSwitchboardStateDocument(
   client: Twilio,
   syncServiceSid: string,
+  state: SwitchboardSyncState,
 ): Promise<any> {
   try {
-    return await client.sync.v1
-      .services(syncServiceSid)
-      .documents(SWITCHBOARD_DOCUMENT_NAME)
-      .fetch();
+    return await client.sync.v1.services(syncServiceSid).documents.create({
+      uniqueName: SWITCHBOARD_DOCUMENT_NAME,
+      data: state,
+      ttl: 48 * 60 * 60, // 48 hours
+    });
   } catch (error: any) {
-    // If document doesn't exist, create it
-    if (error.status === 404) {
-      return client.sync.v1.services(syncServiceSid).documents.create({
-        uniqueName: SWITCHBOARD_DOCUMENT_NAME,
-        data: DEFAULT_SWITCHBOARD_STATE,
-        ttl: 48 * 60 * 60, // 48 hours
-      });
-    }
     throw error;
   }
 }
@@ -128,30 +115,27 @@ async function getSwitchboardStateDocument(
 /**
  * Update switchboarding state
  */
-async function updateSwitchboardState(
+async function deleteSwitchboardState(
   client: Twilio,
   syncServiceSid: string,
-  state: Partial<SwitchboardSyncState>,
-): Promise<SwitchboardSyncState> {
+): Promise<any> {
   console.log(
-    `Updating switchboard state: ${JSON.stringify({ syncServiceSid, stateUpdate: state }, null, 2)}`,
+    `Updating switchboard state: ${JSON.stringify({ syncServiceSid }, null, 2)}`,
   );
 
   try {
-    const document = await getSwitchboardStateDocument(client, syncServiceSid);
-    const currentState = document.data;
-    const updatedState = { ...currentState, ...state };
+    // const document = await getSwitchboardStateDocument(client, syncServiceSid);
+    // const currentState = document.data;
+    // const updatedState = { ...currentState, ...state };
 
-    await client.sync.v1
+    const deletedDocument = await client.sync.v1
       .services(syncServiceSid)
       .documents(SWITCHBOARD_DOCUMENT_NAME)
-      .update({
-        data: updatedState,
-      });
+      .remove();
 
-    return updatedState;
+    return deletedDocument;
   } catch (error: any) {
-    console.error(`Error in updateSwitchboardState:`, {
+    console.error(`Error in deleteSwitchboardState:`, {
       message: error.message,
       status: error.status,
       code: error.code,
@@ -378,7 +362,7 @@ async function handleEnableOperation(
     switchboardQueueSid: switchboardQueue.sid,
   });
 
-  const updatedState = await updateSwitchboardState(client, syncServiceSid, {
+  const updatedState = await createSwitchboardStateDocument(client, syncServiceSid, {
     isSwitchboardingActive: true,
     queueSid: originalQueue.sid,
     queueName: originalQueue.friendlyName,
@@ -399,28 +383,18 @@ async function handleEnableOperation(
 async function handleDisableOperation(
   client: Twilio,
   syncServiceSid: string,
-  workspaceSid: string,
   taskRouterClient: any,
-  switchboardQueue: any,
   masterWorkflow: any,
-): Promise<SwitchboardSyncState> {
-  const currentState = await getSwitchboardStateDocument(client, syncServiceSid);
-
-  if (!currentState.isSwitchboardingActive) {
-    return currentState;
-  }
-
+): Promise<void> {
   const configResp = await taskRouterClient.workflows(masterWorkflow.sid).fetch();
   const currentConfig = JSON.parse(configResp.configuration);
 
   const updatedConfig = removeSwitchboardingFilter(currentConfig);
 
-  const updatedState = await updateSwitchboardState(client, syncServiceSid, {
-    isSwitchboardingActive: false,
-    queueSid: undefined,
-    queueName: undefined,
-    startTime: undefined,
-    supervisorWorkerSid: undefined,
+  await deleteSwitchboardState(client, syncServiceSid);
+
+  await taskRouterClient.workflows(masterWorkflow.sid).update({
+    configuration: JSON.stringify(updatedConfig),
   });
 
   await taskRouterClient.workflows(masterWorkflow.sid).update({
@@ -441,8 +415,6 @@ async function handleDisableOperation(
   //     console.error('Error moving tasks back to the original queue:', err);
   //   }
   // }
-
-  return updatedState;
 }
 
 export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
@@ -458,7 +430,6 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
     try {
       const {
         syncServiceSid,
-        workspaceSid,
         taskRouterClient,
         switchboardQueue,
         originalQueue,
@@ -483,9 +454,7 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
         state = await handleDisableOperation(
           client,
           syncServiceSid,
-          workspaceSid,
           taskRouterClient,
-          switchboardQueue,
           masterWorkflowSid,
         );
         return newOk(state);
