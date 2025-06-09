@@ -111,6 +111,7 @@
 "TaskLineCallIncomingTitle": "Appel entrant",
 "IncomingSmsReserved": "Demande de SMS entrant",
 "TaskLineChatReserved": "Demande de Chat Entrant",
+"TaskLineCallEndedTitle": "Appel terminé",
 "TaskTabAgentIncomingLabel": "Entrant",
 "InputPlaceHolder": "Écrivez le message",
 "ChatInputDisabledText": "La conversation se termine", 
@@ -522,9 +523,6 @@
 "Resources-View-Eligibility": "Admissibilité",
 "Resources-CopyId": "Copier la pièce d'identité",
 "Resources-IdCopied": "Copié !",
-"Conference-AddConferenceCallParticipant": "Ajouter un participant à la conférence téléphonique",
-"Conference-EnterPhoneNumber": "Saisir le numéro de téléphone",
-"Conference-DialButton": "Composer",
 "HangupCallLeaveTooltip": "Quitter",
 "NavigableContainer-BackButton": "Retour",
 "NavigableContainer-CloseButton": "Fermer",
@@ -633,5 +631,6 @@
 "QueuesStatsFilterCardsCount": "cartes sélectionnées",
 "Conference-AddConferenceCallParticipant": "Ajouter Participant à la Conférence",
 "Conference-EnterPhoneNumber": "Entrez le numéro de téléphone",
-"Conference-DialButton": "Appel"
+"Conference-DialButton": "Appel",
+"Conference": "Conférence"
 }
