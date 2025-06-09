@@ -630,5 +630,8 @@
 "QueuesStatsSubscribedQueuesCount": "files d'attente sélectionnées",
 "QueuesStatsFilterQueuesCount": "files d'attente sélectionnées",
 "QueuesStatsFilterMetricsCount": "métriques sélectionnées",
-"QueuesStatsFilterCardsCount": "cartes sélectionnées"
+"QueuesStatsFilterCardsCount": "cartes sélectionnées",
+"Conference-AddConferenceCallParticipant": "Ajouter Participant à la Conférence",
+"Conference-EnterPhoneNumber": "Entrez le numéro de téléphone",
+"Conference-DialButton": "Appel"
 }
