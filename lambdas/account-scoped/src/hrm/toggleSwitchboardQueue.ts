@@ -16,9 +16,16 @@
 
 import { AccountScopedHandler, HttpError, HttpRequest } from '../httpTypes';
 import { newErr, newOk, Result } from '../Result';
-import { getTwilioClient } from '../configuration/twilioConfiguration';
+import { getSyncServiceSid, getTwilioClient, getTwilioWorkspaceSid } from '../configuration/twilioConfiguration';
 import { Twilio } from 'twilio';
 import { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
+import {
+  SWITCHBOARD_QUEUE_NAME,
+  SwitchboardSyncState,
+  SWITCHBOARD_DOCUMENT_NAME,
+  DEFAULT_SWITCHBOARD_STATE,
+} from '@tech-matters/hrm-types';
+import { AccountSID } from '../twilioTypes';
 
 export type OperationType = 'enable' | 'disable';
 
@@ -29,49 +36,30 @@ export type SwitchboardRequest = {
   Token: string;
 };
 
-type SwitchboardSyncState = {
-  isSwitchboardingActive: boolean;
-  queueSid?: string;
-  queueName?: string;
-  supervisorWorkerSid?: string;
-  startTime?: string;
-};
-
-const SWITCHBOARD_DOCUMENT_NAME = 'switchboard-state';
-const DEFAULT_SWITCHBOARD_STATE: SwitchboardSyncState = {
-  isSwitchboardingActive: false,
-  queueSid: undefined,
-  queueName: undefined,
-  startTime: undefined,
-  supervisorWorkerSid: undefined,
-};
-
 export type TokenResponse = { identity: string; roles?: string[]; worker_sid?: string };
 
 /**
  * Fetches required Twilio resources for switchboard operations
  */
-async function fetchSwitchboardResources(client: Twilio, originalQueueSid?: string) {
+async function fetchSwitchboardResources(client: Twilio, accountSid: AccountSID, originalQueueSid?: string) {
   // Get Sync Service
-  const syncServices = await client.sync.v1.services.list();
-  const syncService = syncServices[0];
-  if (!syncService) {
+  const syncServiceSid = await getSyncServiceSid(accountSid);
+  if (!syncServiceSid) {
     throw new Error('Sync service not configured');
   }
 
   // Get TaskRouter workspace
-  const workspaces = await client.taskrouter.v1.workspaces.list();
-  const workspace = workspaces[0];
-  if (!workspace) {
+  const workspaceSid = await getTwilioWorkspaceSid(accountSid);
+  if (!workspaceSid) {
     throw new Error('TaskRouter workspace not found');
   }
 
-  const taskRouterClient = client.taskrouter.v1.workspaces(workspace.sid);
+  const taskRouterClient = client.taskrouter.v1.workspaces(workspaceSid);
 
   const queues = await taskRouterClient.taskQueues.list();
 
   const switchboardQueue = queues.find(
-    (queue: any) => queue.friendlyName === 'Switchboard Queue',
+    (queue: any) => queue.friendlyName === SWITCHBOARD_QUEUE_NAME,
   );
   if (!switchboardQueue) {
     throw new Error('Switchboard Queue not found');
@@ -92,8 +80,8 @@ async function fetchSwitchboardResources(client: Twilio, originalQueueSid?: stri
   }
 
   return {
-    syncService,
-    workspace,
+    syncServiceSid,
+    workspaceSid,
     taskRouterClient,
     switchboardQueue,
     originalQueue,
@@ -124,27 +112,6 @@ async function getSwitchboardStateDocument(
     }
     throw error;
   }
-}
-
-/**
- * Get current switchboarding state
- */
-async function getSwitchboardState(
-  client: Twilio,
-  syncServiceSid: string,
-): Promise<SwitchboardSyncState> {
-  const document = await getSwitchboardStateDocument(client, syncServiceSid);
-
-  const state = document.data || {};
-
-  return {
-    isSwitchboardingActive:
-      state.isSwitchboardingActive === undefined ? false : state.isSwitchboardingActive,
-    queueSid: state.queueSid,
-    queueName: state.queueName,
-    startTime: state.startTime,
-    supervisorWorkerSid: state.supervisorWorkerSid,
-  };
 }
 
 /**
@@ -187,7 +154,7 @@ async function updateSwitchboardState(
  * Adds a filter to the workflow configuration to redirect calls from originalQueue to switchboardQueue to the top of the master workflow
  */
 function addSwitchboardingFilter(
-  config: any,
+  config: Twilio,
   originalQueueSid: string,
   switchboardQueueSid: string,
 ): any {
@@ -198,23 +165,22 @@ function addSwitchboardingFilter(
   let filterExpression;
   let targetExpression;
 
-  const originalQueueFilters = updatedConfig.task_routing.filters.find((filter: any) =>
+  const originalQueueFilters = updatedConfig.task_routing.filters.filter((filter: any) =>
     filter.targets?.some(
       (target: any) =>
-        target.queue === originalQueueSid ||
-        target.target_expression?.includes(originalQueueSid),
+        target.queue === originalQueueSid
     ),
   );
 
-  if (originalQueueFilters) {
+
+  if (originalQueueFilters.length > 0) {
     if (originalQueueFilters.expression) {
       filterExpression = originalQueueFilters.expression;
     }
 
     const originalQueueTarget = originalQueueFilters.targets?.find(
       (target: any) =>
-        target.queue === originalQueueSid ||
-        target.target_expression?.includes(originalQueueSid),
+        target.queue === originalQueueSid,
     );
     if (originalQueueTarget?.expression) {
       targetExpression = originalQueueTarget.expression;
@@ -227,9 +193,8 @@ function addSwitchboardingFilter(
     targets: [
       {
         queue: switchboardQueueSid,
-        expression: targetExpression,
         priority: 100,
-        target_expression: `DEFAULT_TARGET_QUEUE_SID == '${originalQueueSid}'`,
+        expression: targetExpression,
         task_attributes: {
           originalQueueSid,
           needsSwitchboarding: true,
@@ -422,7 +387,7 @@ async function handleDisableOperation(
   switchboardQueue: any,
   masterWorkflow: any,
 ): Promise<SwitchboardSyncState> {
-  const currentState = await getSwitchboardState(client, syncServiceSid);
+  const currentState = await getSwitchboardStateDocument(client, syncServiceSid);
 
   if (!currentState.isSwitchboardingActive) {
     return currentState;
@@ -481,7 +446,7 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
         switchboardQueue,
         originalQueue,
         masterWorkflow,
-      } = await fetchSwitchboardResources(client, originalQueueSid);
+      } = await fetchSwitchboardResources(client, accountSid, originalQueueSid);
 
       let state;
       if (operation === 'enable') {
