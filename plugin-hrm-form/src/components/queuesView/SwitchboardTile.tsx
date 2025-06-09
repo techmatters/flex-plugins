@@ -20,6 +20,7 @@ import { Switch, CircularProgress, Tooltip } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import InfoIcon from '@material-ui/icons/Info';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import { SWITCHBOARD_QUEUE_NAME } from 'hrm-types';
 
 import { getHrmConfig } from '../../hrmConfig';
 import { Bold, Box } from '../../styles';
@@ -95,7 +96,7 @@ const SwitchboardTile = () => {
   const queues = Manager.getInstance()?.store.getState()?.flex?.realtimeQueues?.queuesList;
   const filteredQueues = queues
     ? Object.values(queues).filter(
-        (queue: any) => queue.friendly_name !== 'Survey' && queue.friendly_name !== 'Switchboard Queue',
+        (queue: any) => queue.friendly_name !== 'Survey' && queue.friendly_name !== SWITCHBOARD_QUEUE_NAME,
       )
     : [];
 

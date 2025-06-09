@@ -384,20 +384,20 @@ async function handleDisableOperation(
   client: Twilio,
   syncServiceSid: string,
   taskRouterClient: any,
-  masterWorkflow: any,
+  masterWorkflowSid: string,
 ): Promise<void> {
-  const configResp = await taskRouterClient.workflows(masterWorkflow.sid).fetch();
+  const configResp = await taskRouterClient.workflows(masterWorkflowSid).fetch();
   const currentConfig = JSON.parse(configResp.configuration);
 
   const updatedConfig = removeSwitchboardingFilter(currentConfig);
 
   await deleteSwitchboardState(client, syncServiceSid);
 
-  await taskRouterClient.workflows(masterWorkflow.sid).update({
+  await taskRouterClient.workflows(masterWorkflowSid).update({
     configuration: JSON.stringify(updatedConfig),
   });
 
-  await taskRouterClient.workflows(masterWorkflow.sid).update({
+  await taskRouterClient.workflows(masterWorkflowSid).update({
     configuration: JSON.stringify(updatedConfig),
   });
 

@@ -16,7 +16,6 @@
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useCallback } from 'react';
-import { SwitchboardSyncState, SWITCHBOARD_DOCUMENT_NAME, DEFAULT_SWITCHBOARD_STATE } from 'hrm-types';
 
 import { updateSwitchboardState, setSwitchboardLoading, setSwitchboardError } from './actions';
 import { toggleSwitchboardingForQueue } from '../../services/SwitchboardService';
