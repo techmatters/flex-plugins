@@ -33,6 +33,7 @@ locals {
         channel_flow_vars = {
           chat_greeting_message = "Kia ora, we'll connect you with someone soon. Your conversation is confidential, but if we feel that you or someone else is at serious risk of harm, we may have to link in with other services. We'll let you know if that becomes necessary."
           widget_from           = "Youthline"
+          allowed_shortcode_locations = "NZ,US,CL,ZA"
         }
         chatbot_unique_names = []
       },
