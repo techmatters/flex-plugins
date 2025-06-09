@@ -17,7 +17,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { FullConfig, request } from '@playwright/test';
 import { differenceInMilliseconds } from 'date-fns';
-import { oktaSsoLoginViaApi } from './okta/sso-login';
+import { legacyOktaSsoLoginViaApi, oktaSsoLoginViaApi } from './okta/sso-login';
 import { getConfigValue, initConfig } from './config';
 import { getSidForWorker } from './twilio/worker';
 import { clearOfflineTask } from './hrm/clearOfflineTask';
@@ -33,7 +33,8 @@ async function globalSetup(config: FullConfig) {
   }
 
   await initConfig();
-  process.env.FLEX_TOKEN = await oktaSsoLoginViaApi(
+  const login = getConfigValue('legacyOktaSso') ? legacyOktaSsoLoginViaApi : oktaSsoLoginViaApi;
+  process.env.FLEX_TOKEN = await login(
     getConfigValue('baseURL') as string,
     getConfigValue('oktaUsername') as string,
     getConfigValue('oktaPassword') as string,

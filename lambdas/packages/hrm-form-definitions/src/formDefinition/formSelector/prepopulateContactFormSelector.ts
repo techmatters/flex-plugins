@@ -14,27 +14,28 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { HrmContactRawJson } from '@tech-matters/hrm-types';
-import { DefinitionVersion } from '@tech-matters/hrm-form-definitions';
+import { DefinitionVersion } from '../types';
 
 export type ContactFormDefinitionName = keyof Pick<
   DefinitionVersion['tabbedForms'],
   'ChildInformationTab' | 'CallerInformationTab' | 'CaseInformationTab'
 >;
 
-export type ContactFormName = keyof Omit<
-  HrmContactRawJson,
-  'callType' | 'definitionVersion' | 'categories' | 'contactlessTask'
->;
+export type ContactFormName = 'callerInformation' | 'childInformation' | 'caseInformation';
 
-export type AvailableContactFormSelector = (
-  parameter?: any,
-) => (
-  source: keyof DefinitionVersion['prepopulateMappings'],
-  preEngagementSelections: any,
-  surveyAnswers: any,
-) => ContactFormDefinitionName[];
+export type PrepopulateContactFormSelector = (parameter?: any) => {
+  selectForms: (
+    source: keyof DefinitionVersion['prepopulateMappings'],
+    preEngagementSelections: any,
+    surveyAnswers: any,
+  ) => ContactFormDefinitionName[];
+  selectCallType: (preEngagementSelections: any, surveyAnswers: any) => string | undefined;
+};
 
-export const staticAvailableContactTabSelector: AvailableContactFormSelector =
-  availableTabs => () =>
-    availableTabs;
+export const staticAvailableContactTabSelector: PrepopulateContactFormSelector = ({
+  availableTabs,
+  callType,
+}) => ({
+  selectForms: () => availableTabs,
+  selectCallType: () => callType,
+});

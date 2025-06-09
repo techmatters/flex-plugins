@@ -16,7 +16,7 @@
 
 /* eslint-disable camelcase */
 import { cloneDeep, get } from 'lodash';
-import { callTypes } from 'hrm-types';
+import { callTypes, FormValue } from 'hrm-types';
 import {
   DefinitionVersion,
   FieldType,
@@ -29,7 +29,8 @@ import {
 import { parseISO } from 'date-fns';
 
 import { isNonDataCallType } from '../states/validationRules';
-import { formatCategories, mapChannelForInsights } from '../utils';
+import { formatCategories } from '../utils/formatters';
+import { mapChannelForInsights } from '../utils/mappers';
 import { Case, Contact, ContactRawJson, CustomITask } from '../types/types';
 import { getDefinitionVersions, getHrmConfig } from '../hrmConfig';
 import {
@@ -63,7 +64,7 @@ type InsightsUpdateFunction = (
   savedContact: Contact,
 ) => InsightsAttributes;
 
-const sanitizeInsightsValue = (value: string | boolean) => {
+const sanitizeInsightsValue = (value: FormValue) => {
   if (typeof value === 'string' && value) return value;
 
   if (typeof value === 'boolean') return value.toString();

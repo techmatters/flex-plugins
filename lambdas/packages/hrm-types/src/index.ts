@@ -14,11 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { callTypes } from './callTypes';
+import type { CallType } from './callType';
 
-export * from './callTypes';
+export * from './callType';
 
-type TaskSID = `WT${string}`;
+type TaskSID = `WT${string}` | `offline-contact-task${string}` | 'standalone-task-sid';
 
 export type ChannelTypes =
   | 'voice'
@@ -34,7 +34,15 @@ export type ChannelTypes =
 
 export type HrmContactRawJson = {
   definitionVersion?: string;
-  callType: (typeof callTypes)[keyof typeof callTypes];
+  callType: CallType | undefined;
+  hangUpBy?:
+    | 'Agent'
+    | 'Customer'
+    | 'Consult'
+    | 'Cold Transfer'
+    | 'Warm Transfer'
+    | 'External Cold Transfer'
+    | 'External Warm Transfer';
   childInformation: Record<string, FormValue>;
   callerInformation: Record<string, FormValue>;
   caseInformation: Record<string, FormValue>;
@@ -43,6 +51,9 @@ export type HrmContactRawJson = {
     channel: ChannelTypes;
     createdOnBehalfOf: `WK${string}` | '';
     [key: string]: string | boolean;
+  };
+  llmSupportedEntries?: {
+    [key in 'childInformation' | 'callerInformation' | 'caseInformation']?: string[];
   };
 };
 
@@ -74,4 +85,4 @@ export type HrmContact = {
   definitionVersion: string;
 };
 
-export type FormValue = string | string[] | boolean | null;
+export type FormValue = string | string[] | boolean | number | null;

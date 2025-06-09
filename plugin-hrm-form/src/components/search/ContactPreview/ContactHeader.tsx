@@ -18,7 +18,7 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { Template } from '@twilio/flex-ui';
-import { CallTypes } from 'hrm-types';
+import { CallType } from 'hrm-types';
 
 import { Flex } from '../../../styles';
 import { BannerText } from '../../../styles/banners';
@@ -38,7 +38,7 @@ import InfoIcon from '../../caseMergingBanners/InfoIcon';
 
 type OwnProps = {
   channel: ChannelTypes | 'default';
-  callType: CallTypes;
+  callType: CallType;
   id: string;
   name?: string;
   callerName?: string;

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021-2023 Technology Matters
+ * Copyright (C) 2021-2025 Technology Matters
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-export * from './formatters';
-export * from './mappers';
-export * from './checkers';
-export * from './task';
+import { RootState } from '..';
+import { namespace } from '../storeNamespaces';
+
+export const selectLocaleState = (state: RootState) => state[namespace].configuration.locale;

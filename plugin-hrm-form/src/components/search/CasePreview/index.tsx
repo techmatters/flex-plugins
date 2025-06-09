@@ -39,6 +39,7 @@ import {
   newGetTimelineAsyncAction,
   selectCaseLabel,
   selectTimelineContactCategories,
+  selectTimelineCount,
 } from '../../../states/case/timeline';
 
 type Props = {
@@ -60,6 +61,9 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
   const timelineCategories = useSelector((state: RootState) =>
     selectTimelineContactCategories(state, currentCase.id, CONTACTS_TIMELINE_ID),
   );
+  const contactCount = useSelector((state: RootState) =>
+    selectTimelineCount(state, currentCase.id, CONTACTS_TIMELINE_ID),
+  );
   const caseLabel = useSelector((state: RootState) =>
     selectCaseLabel(state, currentCase.id, CONTACTS_TIMELINE_ID, {
       substituteForId: false,
@@ -71,15 +75,24 @@ const CasePreview: React.FC<Props> = ({ currentCase, onClickViewCase, counselors
 
   useEffect(() => {
     if (!timelineCategories) {
-      dispatch(newGetTimelineAsyncAction(currentCase.id, CONTACTS_TIMELINE_ID, [], true, { offset: 0, limit: 10000 }));
+      dispatch(
+        newGetTimelineAsyncAction(
+          currentCase.id,
+          CONTACTS_TIMELINE_ID,
+          [],
+          true,
+          { offset: 0, limit: 10000 },
+          `search-${task.taskSid}`,
+        ),
+      );
     }
-  }, [timelineCategories, currentCase.id, dispatch]);
+  }, [timelineCategories, currentCase.id, dispatch, task.taskSid]);
 
   const { id, createdAt, status, info, twilioWorkerId } = currentCase;
   const updatedAtObj = getUpdatedDate(currentCase);
   const followUpDateObj = info.followUpDate ? new Date(info.followUpDate) : undefined;
   const { definitionVersion: versionId } = info;
-  const orphanedCase = !timelineCategories;
+  const orphanedCase = contactCount === 0;
   const summary = info?.summary;
   const counselor = counselorsHash[twilioWorkerId];
 
