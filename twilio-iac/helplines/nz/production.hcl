@@ -73,7 +73,9 @@ locals {
         channel_type           = "custom"
         contact_identity       = "modica"
         templatefile           = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3.tftpl"
-        channel_flow_vars      = {}
+        channel_flow_vars    = {
+          regex_allowed_test_numbers = "modica:\\+(<SHORTCODE_HERE>)\\d{1,20}"
+        }
         chatbot_unique_names   = []
         enable_datadog_monitor = true
         custom_monitor = {
@@ -97,7 +99,9 @@ locals {
         channel_type         = "whatsapp"
         contact_identity     = "whatsapp:+6498865696"
         templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3.tftpl"
-        channel_flow_vars    = {}
+        channel_flow_vars    = {
+          regex_allowed_test_numbers = "whatsapp:\\+(<SHORTCODE_HERE>)\\d{6,20}"
+        }
         chatbot_unique_names = []
       }
     }

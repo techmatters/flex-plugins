@@ -57,7 +57,9 @@ locals {
         channel_type         = "custom"
         contact_identity     = "modica"
         templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3-lambda.tftpl"
-        channel_flow_vars    = {}
+        channel_flow_vars    = {
+          regex_allowed_test_numbers = "modica:\\+(111)\\d{1,20}"
+        }
         chatbot_unique_names = []
       },
       instagram : {
@@ -73,7 +75,9 @@ locals {
         channel_type         = "whatsapp"
         contact_identity     = "whatsapp:+6498865661"
         templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3-lambda.tftpl"
-        channel_flow_vars    = {}
+        channel_flow_vars    = {
+          regex_allowed_test_numbers = "whatsapp:\\+(56|1|27)\\d{6,20}"
+        }
         chatbot_unique_names = []
       }
     }
