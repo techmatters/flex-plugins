@@ -19,7 +19,8 @@ import React, { useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
 import { Actions, Icon, Insights, Template } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
-import { callTypes, DataCallTypes, isNonSaveable } from 'hrm-form-definitions';
+import { callTypes, DataCallTypes } from 'hrm-types';
+import { isNonSaveable } from 'hrm-form-definitions';
 import { Edit } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
@@ -40,7 +41,8 @@ import ContactDetailsSection from './ContactDetailsSection';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
 import { channelTypes, isChatChannel, isVoiceChannel } from '../../states/DomainConstants';
 import { isNonDataCallType } from '../../states/validationRules';
-import { formatCategories, formatDuration, mapChannelForInsights } from '../../utils';
+import { formatCategories, formatDuration } from '../../utils/formatters';
+import { mapChannelForInsights } from '../../utils/mappers';
 import { ContactDetailsSections, ContactDetailsSectionsType } from '../common/ContactDetails';
 import { RootState } from '../../states';
 import { DetailsContext, toggleDetailSectionExpanded } from '../../states/contacts/contactDetails';
@@ -158,7 +160,7 @@ const ContactDetailsHome: React.FC<Props> = function ({
 
   const isDraft = !savedContact.finalizedAt;
 
-  const { callType, categories } = rawJson;
+  const { callType, categories, hangUpBy } = rawJson;
 
   const auditMessage = (timestampText: string, workerSid: string, templateKey: string) => {
     if (timestampText && workerSid) {
@@ -337,6 +339,11 @@ const ContactDetailsHome: React.FC<Props> = function ({
         {addedBy && addedBy !== twilioWorkerId && (
           <SectionEntry descriptionKey="ContactDetails-GeneralDetails-AddedBy">
             <SectionEntryValue value={addedBy} />
+          </SectionEntry>
+        )}
+        {hangUpBy && (
+          <SectionEntry descriptionKey="ContactDetails-GeneralDetails-HangUpBy">
+            <SectionEntryValue value={`ContactDetails-GeneralDetails-HangUpBy/${hangUpBy}`} />
           </SectionEntry>
         )}
       </ContactDetailsSection>

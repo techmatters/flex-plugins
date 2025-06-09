@@ -16,22 +16,23 @@
 
 import React from 'react';
 import type { FormItemDefinition, LayoutValue } from 'hrm-form-definitions';
+import type { FormValue } from 'hrm-types';
 import { Template } from '@twilio/flex-ui';
 
 import { FormTargetObject } from '../types';
-import { presentValue } from '../../../../utils';
+import { presentValue } from '../../../../utils/formatters';
 import DownloadFile from '../DownloadFile';
 import { SectionValueText } from '../../../search/styles';
 import { Flex } from '../../../../styles';
 import formatFormValue from '../../../forms/formatFormValue';
 
 type Props = {
-  value?: string | number | boolean;
+  value?: FormValue;
   notBold?: boolean;
   definition?: FormItemDefinition;
   layout?: LayoutValue;
   targetObject?: FormTargetObject;
-  form?: Record<string, string | boolean | number>;
+  form?: Record<string, FormValue>;
 };
 
 /**
@@ -43,7 +44,7 @@ const SectionEntryValue: React.FC<Props> = ({ value, definition, layout, notBold
     return <DownloadFile fileNameAtAws={value} targetObject={targetObject} />;
   }
 
-  const renderValue = (layoutValue: LayoutValue, value: string | number | boolean) => {
+  const renderValue = (layoutValue: LayoutValue, value: FormValue) => {
     const formattedValue = formatFormValue(value, layoutValue, form);
     return presentValue(
       code => (

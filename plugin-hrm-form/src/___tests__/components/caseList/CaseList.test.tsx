@@ -22,7 +22,7 @@ import configureMockStore from 'redux-mock-store';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { mount } from 'enzyme';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 
 import { mockGetDefinitionsResponse } from '../../mockGetConfig';
 import { fetchRules } from '../../../permissions/fetchRules';
@@ -40,7 +40,6 @@ import { HrmState, RootState } from '../../../states';
 import { CaseStateEntry } from '../../../states/case/types';
 import { VALID_EMPTY_CONTACT } from '../../testContacts';
 import { newGetTimelineAsyncAction, selectCaseLabel } from '../../../states/case/timeline';
-import { loadTranslations } from '../../../translations';
 
 const { mockFetchImplementation, mockReset, buildBaseURL } = mockLocalFetchDefinitions();
 const e2eRules = require('../../../permissions/e2e.json');
@@ -88,7 +87,7 @@ const mockedCases: Record<string, CaseStateEntry> = {
       updatedAt: '2020-07-07T19:20:33.339Z',
       status: 'open',
       info: {
-        definitionVersion: DefinitionVersionId.v1,
+        definitionVersion: 'v1',
       },
       helpline: '',
     },
@@ -109,7 +108,7 @@ const mockedCases: Record<string, CaseStateEntry> = {
       updatedAt: '2020-07-07T19:20:33.339Z',
       status: 'closed',
       info: {
-        definitionVersion: DefinitionVersionId.v1,
+        definitionVersion: 'v1',
       },
       helpline: '',
     },
@@ -152,11 +151,11 @@ beforeEach(() => {
 });
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+  const formDefinitionsBaseUrl = buildBaseURL('v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-  mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.v1, mockV1);
+  mockGetDefinitionsResponse(getDefinitionVersions, 'v1', mockV1);
 });
 
 test('Should dispatch fetchList actions', async () => {

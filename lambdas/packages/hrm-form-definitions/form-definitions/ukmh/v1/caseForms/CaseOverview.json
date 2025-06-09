@@ -1,0 +1,25 @@
+[
+  {
+    "name": "status",
+    "label": "Case Status",
+    "type": "select"
+  },
+  {
+    "name": "safeguardingConcernsRaised",
+    "label": "Safeguarding concerns raised",
+    "type": "checkbox"
+  },
+  {
+    "name": "followUpDate",
+    "label": "Follow Up Date",
+    "type": "date-input"
+  },
+  {
+    "name": "summary",
+    "label": "Summary",
+    "type": "textarea",
+    "rows": 5,
+    "width": 300,
+    "isPII": true
+  }
+]

@@ -5,14 +5,14 @@
   "author": "",
   "license": "AGPL",
   "workspaces": [
-    "account-scoped"
+    "account-scoped",
+    "packages/*"
   ],
   "dependencies": {
     "dotenv": "^16.3.1",
     "twilio": "^5.4.0"
   },
   "devDependencies": {
-    "@tsconfig/node16": "^1.0.3",
     "@tsconfig/node18": "^18.2.1",
     "@types/aws-lambda": "^8.10.119",
     "@types/jest": "^26.0.24",
@@ -50,7 +50,7 @@
     "docker:build": "npm run docker:build --workspaces --if-present",
     "test:unit": "npm run test:unit --workspaces --if-present",
     "test:service": "npm run test:service --workspaces --if-present",
-    "lint": "cross-env eslint .",
+    "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "license:add": "docker run --rm -v ${PWD}:/src ghcr.io/google/addlicense -c \"Technology Matters\" -y \"2021-2023\" -ignore \".idea/**\" -ignore \"**/node_modules/**\" -ignore \"**/dist/**\" -ignore \"**/coverage/**\" -ignore \"cdk.out/**\" -f license-header.tpl .",
     "license:check": "docker run --rm -v ${PWD}:/src ghcr.io/google/addlicense -check -c \"Technology Matters\" -y \"2021-2023\" -ignore \".idea/**\" -ignore \"**/node_modules/**\" -ignore \"**/dist/**\" -ignore \"**/coverage/**\" -f license-header.tpl .",

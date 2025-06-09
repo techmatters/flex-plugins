@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, loadDefinition } from 'hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { reduce } from '../../../states/case/reducer';
@@ -46,7 +46,7 @@ describe('test reducer', () => {
     status: 'open',
     twilioWorkerId: 'WK123',
     info: {
-      definitionVersion: DefinitionVersionId.v1,
+      definitionVersion: 'v1',
     },
     createdAt: '2020-07-31T20:39:37.408Z',
     updatedAt: '2020-07-31T20:39:37.408Z',
@@ -54,7 +54,7 @@ describe('test reducer', () => {
   };
 
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL('v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);

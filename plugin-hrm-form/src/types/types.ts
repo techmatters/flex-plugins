@@ -16,12 +16,14 @@
 
 /* eslint-disable import/no-unused-modules */
 import type { ITask as ITaskOriginalType, TaskContextProps as TaskContextPropsOriginalType } from '@twilio/flex-ui';
-import type { CallTypes, DefinitionVersionId } from 'hrm-form-definitions';
+import type { HrmContactRawJson } from 'hrm-types';
 
 import type { ChannelTypes } from '../states/DomainConstants';
 import type { ResourceReferral } from '../states/contacts/resourceReferral';
 import { DateFilterValue } from '../states/caseList/dateFilters';
 import { AccountSID, TaskSID, WorkerSID } from './twilio';
+
+export type { HrmContactRawJson as ContactRawJson } from 'hrm-types';
 
 declare global {
   export interface ITask<T = Record<string, any>> extends ITaskOriginalType<T> {
@@ -58,7 +60,7 @@ export type CaseOverview = {
 }
 
 export type CaseInfo = CaseOverview & {
-  definitionVersion?: DefinitionVersionId;
+  definitionVersion?: string;
   offlineContactCreator?: string;
 };
 
@@ -128,21 +130,7 @@ export const isS3StoredTranscript = (m: ConversationMedia): m is S3StoredTranscr
 export const isS3StoredRecording = (m: ConversationMedia): m is S3StoredRecording =>
   m.storeType === 'S3' && m.storeTypeSpecificData.type === 'recording';
 
-// Information about a single contact, as expected from DB (we might want to reuse this type in backend) - (is this a correct placement for this?)
-export type ContactRawJson = {
-  definitionVersion?: DefinitionVersionId;
-  callType: CallTypes | '';
-  childInformation: Record<string, boolean | string>;
-  callerInformation: Record<string, boolean | string>;
-  caseInformation: Record<string, boolean | string>;
-  categories: Record<string, string[]>;
-  contactlessTask: {
-    channel: ChannelTypes;
-    createdOnBehalfOf: WorkerSID;
-    [key: string]: string | boolean;
-  };
-  llmSupportedEntries?: { [key in 'childInformation'|'callerInformation'|'caseInformation']?: string[] }
-};
+
 
 export type Contact = {
   id: string;
@@ -164,7 +152,7 @@ export type Contact = {
   updatedBy: string;
   updatedAt?: string;
   finalizedAt?: string;
-  rawJson: ContactRawJson;
+  rawJson: HrmContactRawJson;
   timeOfContact: string;
   queueName: string;
   channelSid: string;
@@ -270,6 +258,9 @@ export type FeatureFlags = {
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
   enable_llm_summary: boolean; // Enables generation of suggested contact summaries via an LLM
+  use_prepopulate_mappings: boolean; // Use PrepopulateMappings.json instead of PrepopulateKeys.json
+  enable_language_selector: boolean // Enables the language of the UI to be changed by the user via a dropdown menu
+  use_twilio_lambda_for_conference_functions: boolean; // Use PrepopulateMappings.json instead of PrepopulateKeys.json
 };
 /* eslint-enable camelcase */
 

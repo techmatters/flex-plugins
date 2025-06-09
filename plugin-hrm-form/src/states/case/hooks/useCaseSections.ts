@@ -52,7 +52,9 @@ const useCaseSectionsLoader = ({
       return;
     }
 
-    asyncDispatch(dispatch)(newGetTimelineAsyncAction(caseId, sectionType, [sectionType], false, { offset, limit }));
+    asyncDispatch(dispatch)(
+      newGetTimelineAsyncAction(caseId, sectionType, [sectionType], false, { offset, limit }, `case-${caseId}`),
+    );
   }, [caseId, dispatch, limit, offset, sectionType]);
 
   const safeToLoad = Boolean(caseId) && exists;

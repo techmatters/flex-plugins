@@ -21,7 +21,7 @@ import { Template } from '@twilio/flex-ui';
 
 import { getHrmConfig } from '../../../hrmConfig';
 import { Flex, Box, HiddenText, StyledNextStepButton } from '../../../styles';
-import { formatFileNameAtAws } from '../../../utils';
+import { formatFileNameAtAws } from '../../../utils/formatters';
 import { fetchHrmApi, generateSignedURLPath } from '../../../services/fetchHrmApi';
 import { FormTargetObject } from './types';
 

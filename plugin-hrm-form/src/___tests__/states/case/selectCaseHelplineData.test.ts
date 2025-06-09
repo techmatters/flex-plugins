@@ -14,8 +14,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId } from 'hrm-form-definitions';
-
 import selectCaseHelplineData from '../../../states/case/selectCaseHelplineData';
 import { RootState } from '../../../states';
 import { namespace } from '../../../states/storeNamespaces';
@@ -33,7 +31,7 @@ beforeEach(() => {
             connectedCase: {
               helpline: 'Fakeline',
               info: {
-                definitionVersion: DefinitionVersionId.demoV1,
+                definitionVersion: 'demo-v1',
               },
             },
           },
@@ -41,7 +39,7 @@ beforeEach(() => {
       },
       configuration: {
         definitionVersions: {
-          [DefinitionVersionId.demoV1]: {
+          'demo-v1': {
             helplineInformation: {
               helplines: [
                 {
@@ -79,7 +77,7 @@ test('Case with ID exists in redux, and it has no definitionVersion set, but a h
 });
 
 test("Case with ID exists in redux, and it has a definitionVersion set that isn't defined in configuration, but a helpline that exists in the current definition - returns helpline entry from current definition", () => {
-  state[namespace].connectedCase.cases[CASE_ID].connectedCase.info.definitionVersion = DefinitionVersionId.v1;
+  state[namespace].connectedCase.cases[CASE_ID].connectedCase.info.definitionVersion = 'v1';
   expect(selectCaseHelplineData(state, '1234').label).toBe('Default Fake Helpline');
 });
 

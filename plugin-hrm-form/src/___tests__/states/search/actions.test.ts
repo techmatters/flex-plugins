@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 import { endOfDay, formatISO, parseISO, startOfDay } from 'date-fns';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
@@ -41,14 +41,10 @@ beforeEach(() => {
 
 describe('test action creators', () => {
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.v1);
+    const formDefinitionsBaseUrl = buildBaseURL('v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
-    mockGetDefinitionsResponse(
-      getDefinitionVersions,
-      DefinitionVersionId.v1,
-      await loadDefinition(formDefinitionsBaseUrl),
-    );
+    mockGetDefinitionsResponse(getDefinitionVersions, 'v1', await loadDefinition(formDefinitionsBaseUrl));
   });
 
   test('handleSearchFormChange', () => {

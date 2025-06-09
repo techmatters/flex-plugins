@@ -25,6 +25,12 @@ import {
   handleChatbotCallback,
   handleChatbotCallbackCleanup,
 } from './channelCapture';
+import { addParticipantHandler } from './conference/addParticipant';
+import { validateFlexTokenRequest } from './validation/flexToken';
+import { getParticipantHandler } from './conference/getParticipant';
+import { updateParticipantHandler } from './conference/updateParticipant';
+import { removeParticipantHandler } from './conference/removeParticipant';
+import { statusCallbackHandler } from './conference/statusCallback.protected';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions
@@ -58,6 +64,26 @@ const ROUTES: Record<string, FunctionRoute> = {
   'channelCapture/chatbotCallbackCleanup': {
     requestPipeline: [validateWebhookRequest],
     handler: handleChatbotCallbackCleanup,
+  },
+  'conference/addParticipant': {
+    requestPipeline: [validateFlexTokenRequest],
+    handler: addParticipantHandler,
+  },
+  'conference/getParticipant': {
+    requestPipeline: [validateFlexTokenRequest],
+    handler: getParticipantHandler,
+  },
+  'conference/removeParticipant': {
+    requestPipeline: [validateFlexTokenRequest],
+    handler: removeParticipantHandler,
+  },
+  'conference/updateParticipant': {
+    requestPipeline: [validateFlexTokenRequest],
+    handler: updateParticipantHandler,
+  },
+  'conference/statusCallback': {
+    requestPipeline: [validateWebhookRequest],
+    handler: statusCallbackHandler,
   },
 };
 

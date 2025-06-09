@@ -39,7 +39,7 @@ import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 
-import { isNullOrUndefined } from '../utils';
+import { isNullOrUndefined } from '../utils/checkers';
 
 class TabPressWrapper extends Component {
   static displayName = 'TabPressWrapper';
