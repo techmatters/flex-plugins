@@ -71,7 +71,7 @@ const ProfileFilters: React.FC = () => {
     return (
       <MultiSelectFilter
         name="status"
-        text={<Template code="ProfileList-THStatus" />}
+        textCode="ProfileList-THStatus"
         defaultValues={statusValues}
         openedFilter={openedFilter}
         applyFilter={handleApplyStatusFilter}

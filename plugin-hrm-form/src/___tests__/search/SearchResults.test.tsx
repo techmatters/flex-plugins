@@ -92,11 +92,16 @@ describe('Search Results', () => {
           cases: {
             case1: {
               connectedCase: {
+                id: 'case1',
                 createdAt: new Date(1593469560208).toISOString(),
                 twilioWorkerId: 'worker1',
                 status: 'open',
                 info: null,
               },
+              timelines: { 'print-contacts': [] },
+            },
+            case2: {
+              timelines: { 'print-contacts': [] },
             },
           },
         },
@@ -206,6 +211,7 @@ describe('Search Results', () => {
       count: 1,
       cases: [
         {
+          id: 'case1',
           createdAt: '2020-11-23T17:38:42.227Z',
           updatedAt: '2020-11-23T17:38:42.227Z',
           helpline: '',
@@ -314,6 +320,7 @@ describe('Search Results', () => {
             households: [{ household: { name: { firstName: 'Maria', lastName: 'Silva' } } }],
             summary: 'case 1 summary',
           },
+          id: 'case1',
         },
         {
           createdAt: '2020-11-23T17:38:42.227Z',
@@ -323,6 +330,7 @@ describe('Search Results', () => {
             households: [{ household: { name: { firstName: 'John', lastName: 'Doe' } } }],
             summary: 'case 2 summary',
           },
+          id: 'case2',
         },
       ],
     };

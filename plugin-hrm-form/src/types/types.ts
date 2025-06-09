@@ -65,6 +65,7 @@ export type CaseInfo = CaseOverview & {
 export type Case = {
   accountSid: AccountSID;
   id: string;
+  label: string;
   status: string;
   helpline: string;
   twilioWorkerId: WorkerSID;
@@ -75,8 +76,6 @@ export type Case = {
   statusUpdatedAt?: string;
   statusUpdatedBy?: WorkerSID;
   previousStatus?: string;
-  categories: Record<string, string[]>;
-  firstContact?: Contact;
 };
 
 export type TwilioStoredMedia = {
