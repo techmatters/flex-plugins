@@ -102,11 +102,12 @@ export const useToggleSwitchboardingForQueue = (): (({
 
           dispatch(updateSwitchboardState(newState));
 
-          try {
-            const syncDoc = await subscribeSwitchboardState({ onRemove: () => dispatch(updateSwitchboardState(null)) });
-          } catch (syncError) {
-            console.error('Failed to subscribe to Sync document:', syncError);
-          }
+          // FIX THIS!
+          // try {
+          //   const syncDoc = await subscribeSwitchboardState({ onRemove: () => dispatch(updateSwitchboardState(null)) });
+          // } catch (syncError) {
+          //   console.error('Failed to subscribe to Sync document:', syncError);
+          // }
         }
 
         dispatch(setSwitchboardLoading(false));
