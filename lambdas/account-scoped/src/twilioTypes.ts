@@ -20,6 +20,7 @@ export type WorkspaceSID = `WS${string}`;
 export type WorkerSID = `WK${string}`;
 export type TaskSID = `WT${string}`;
 export type ChatServiceSID = `IS${string}`;
+export type WorkflowSID = `WW${string}`;
 
 export const isAccountSID = (value: string): value is AccountSID =>
   // This regex could be stricter if we only wanted to catch 'real' account SIDs, but our test account sids have non hexadecimal characters

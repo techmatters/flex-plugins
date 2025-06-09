@@ -23,23 +23,11 @@ import { RootState } from '..';
 import { SwitchboardState } from './types';
 import { namespace, switchboardBase } from '../storeNamespaces';
 import { sharedSyncClient } from '../../utils/sharedState';
-
-export type SwitchboardSyncState = {
-  isSwitchboardingActive: boolean;
-  queueSid: string | null;
-  queueName: string | null;
-  startTime: string | null;
-  supervisorWorkerSid: string | null;
-};
-
-const SWITCHBOARD_DOCUMENT_NAME = 'switchboard-state';
-const DEFAULT_SWITCHBOARD_STATE: SwitchboardSyncState = {
-  isSwitchboardingActive: false,
-  queueSid: null,
-  queueName: null,
-  startTime: null,
-  supervisorWorkerSid: null,
-};
+import { 
+  SwitchboardSyncState, 
+  SWITCHBOARD_DOCUMENT_NAME, 
+  DEFAULT_SWITCHBOARD_STATE 
+} from '@tech-matters/hrm-types';
 
 /**
  * Initialize or get the switchboard document from Twilio Sync

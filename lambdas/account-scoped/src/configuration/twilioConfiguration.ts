@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AccountSID, ChatServiceSID, WorkspaceSID } from '../twilioTypes';
+import { AccountSID, ChatServiceSID, WorkflowSID, WorkspaceSID } from '../twilioTypes';
 import { getSsmParameter } from '../ssmCache';
 import twilio, { Twilio } from 'twilio';
 
@@ -29,6 +29,13 @@ export const getChatServiceSid = async (
   (await getSsmParameter(
     `/${process.env.NODE_ENV}/twilio/${accountSid}/chat_service_sid`,
   )) as ChatServiceSID;
+
+export const getMasterWorkflowSid = async (
+  accountSid: AccountSID,
+): Promise<WorkflowSID> =>
+  (await getSsmParameter(
+    `/${process.env.NODE_ENV}/twilio/${accountSid}/chat_workflow_sid`,
+  )) as WorkflowSID;
 
 export const getAccountAuthToken = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/auth_token`);

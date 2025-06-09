@@ -17,12 +17,12 @@
 import { AccountScopedHandler, HttpError, HttpRequest } from '../httpTypes';
 import { newErr, newOk, Result } from '../Result';
 import {
+  getMasterWorkflowSid,
   getSyncServiceSid,
   getTwilioClient,
   getTwilioWorkspaceSid,
 } from '../configuration/twilioConfiguration';
 import { Twilio } from 'twilio';
-import { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 import {
   SWITCHBOARD_QUEUE_NAME,
   SwitchboardSyncState,
@@ -80,11 +80,13 @@ async function fetchSwitchboardResources(
   }
 
   // Find Master Workflow
-  const workflows = await taskRouterClient.workflows.list();
-  const masterWorkflow = workflows.find(
-    (workflow: any) => workflow.friendlyName === 'Master Workflow',
-  );
-  if (!masterWorkflow) {
+  // const workflows = await taskRouterClient.workflows.list();
+  // const masterWorkflow = workflows.find(
+  //   (workflow: any) => workflow.friendlyName === 'Master Workflow',
+  // );
+  const masterWorkflowSid = await getMasterWorkflowSid(accountSid);
+
+  if (!masterWorkflowSid) {
     throw new Error('Master Workflow not found');
   }
 
@@ -94,7 +96,7 @@ async function fetchSwitchboardResources(
     taskRouterClient,
     switchboardQueue,
     originalQueue,
-    masterWorkflow,
+    masterWorkflowSid,
   };
 }
 
@@ -246,119 +248,114 @@ function removeSwitchboardingFilter(config: any): any {
 /**
  * Finds all tasks in a queue that are in a specific status
  */
-async function findTasksInQueue(
-  client: Twilio,
-  workspaceSid: string,
-  queueSid: string,
-  assignmentStatus: string = 'pending',
-): Promise<TaskInstance[]> {
-  try {
-    const tasks = await client.taskrouter.v1.workspaces(workspaceSid).tasks.list({
-      assignmentStatus: [assignmentStatus],
-      taskQueueSid: queueSid,
-    });
+// async function findTasksInQueue(
+//   client: Twilio,
+//   workspaceSid: string,
+//   queueSid: string,
+//   assignmentStatus: string = 'pending',
+// ): Promise<TaskInstance[]> {
+//   try {
+//     const tasks = await client.taskrouter.v1.workspaces(workspaceSid).tasks.list({
+//       assignmentStatus: [assignmentStatus],
+//       taskQueueSid: queueSid,
+//     });
 
-    return tasks;
-  } catch (err) {
-    console.error(`Error finding ${assignmentStatus} tasks in queue:`, err);
-    throw err;
-  }
-}
+//     return tasks;
+//   } catch (err) {
+//     console.error(`Error finding ${assignmentStatus} tasks in queue:`, err);
+//     throw err;
+//   }
+// }
 
 /**
  * Moves a task from one queue to another
  */
-async function moveTaskToQueue(
-  client: Twilio,
-  workspaceSid: string,
-  taskSid: string,
-  targetQueueSid: string,
-  additionalAttributes: Record<string, any> = {},
-): Promise<void> {
-  try {
-    const task = await client.taskrouter.v1
-      .workspaces(workspaceSid)
-      .tasks(taskSid)
-      .fetch();
-    const currentAttributes = JSON.parse(task.attributes);
-    const switchboardingAttributes = {
-      ...currentAttributes,
-      switchboardingHandled: true,
-      switchboardingTimestamp: new Date().toISOString(),
-      targetQueueSid,
-      ...additionalAttributes,
-    };
+// TODO from Review: this approach of "replace one task with another" approach only works for chat based tasks. I don't know if it does for voice tasks, that should be tested.
+//
+// async function moveTaskToQueue(
+//   client: Twilio,
+//   workspaceSid: string,
+//   taskSid: string,
+//   targetQueueSid: string,
+//   additionalAttributes: Record<string, any> = {},
+// ): Promise<void> {
+//   try {
+//     const task = await client.taskrouter.v1
+//       .workspaces(workspaceSid)
+//       .tasks(taskSid)
+//       .fetch();
+//     const currentAttributes = JSON.parse(task.attributes);
+//     const switchboardingAttributes = {
+//       ...currentAttributes,
+//       switchboardingHandled: true,
+//       switchboardingTimestamp: new Date().toISOString(),
+//       targetQueueSid,
+//       ...additionalAttributes,
+//     };
 
-    await client.taskrouter.v1
-      .workspaces(workspaceSid)
-      .tasks(taskSid)
-      .update({
-        attributes: JSON.stringify(switchboardingAttributes),
-      });
+//     await client.taskrouter.v1
+//       .workspaces(workspaceSid)
+//       .tasks(taskSid)
+//       .update({
+//         attributes: JSON.stringify(switchboardingAttributes),
+//       });
+// const masterWorkflow = getTwilioWorkspaceSid(accountSid)
+//     if (!masterWorkflow) {
+//       throw new Error('Master Workflow not found');
+//     }
 
-    const workflows = await client.taskrouter.v1
-      .workspaces(workspaceSid)
-      .workflows.list();
-    const masterWorkflow = workflows.find(
-      workflow => workflow.friendlyName === 'Master Workflow',
-    );
+//     // Create a new task in the target queue that copies the current task's data
+//     await client.taskrouter.v1.workspaces(workspaceSid).tasks.create({
+//       attributes: JSON.stringify({
+//         ...switchboardingAttributes,
+//         transferTargetTaskSid: taskSid,
+//       }),
+//       workflowSid: masterWorkflow.sid,
+//       taskChannel: task.taskChannelUniqueName,
+//       priority: task.priority,
+//     });
 
-    if (!masterWorkflow) {
-      throw new Error('Master Workflow not found');
-    }
+//     // Complete the original task as it's been replaced
+//     await client.taskrouter.v1.workspaces(workspaceSid).tasks(taskSid).update({
+//       assignmentStatus: 'completed',
+//       reason: 'Moved to another queue via Switchboard',
+//     });
+//   } catch (err) {
+//     console.error(`Error moving task ${taskSid} to queue ${targetQueueSid}:`, err);
+//     throw err;
+//   }
+// }
 
-    // Create a new task in the target queue that copies the current task's data
-    await client.taskrouter.v1.workspaces(workspaceSid).tasks.create({
-      attributes: JSON.stringify({
-        ...switchboardingAttributes,
-        transferTargetTaskSid: taskSid,
-      }),
-      workflowSid: masterWorkflow.sid,
-      taskChannel: task.taskChannelUniqueName,
-      priority: task.priority,
-    });
+// /**
+//  * Moves waiting tasks from source queue to target queue
+//  */
+// async function moveWaitingTasks(
+//   client: Twilio,
+//   workspaceSid: string,
+//   sourceQueueSid: string,
+//   targetQueueSid: string,
+//   additionalAttributes: Record<string, any> = {},
+// ): Promise<number> {
+//   try {
+//     const tasks = await findTasksInQueue(client, workspaceSid, sourceQueueSid);
 
-    // Complete the original task as it's been replaced
-    await client.taskrouter.v1.workspaces(workspaceSid).tasks(taskSid).update({
-      assignmentStatus: 'completed',
-      reason: 'Moved to another queue via Switchboard',
-    });
-  } catch (err) {
-    console.error(`Error moving task ${taskSid} to queue ${targetQueueSid}:`, err);
-    throw err;
-  }
-}
+//     const movePromises = tasks.map(async (task: any) => {
+//       await moveTaskToQueue(
+//         client,
+//         workspaceSid,
+//         task.sid,
+//         targetQueueSid,
+//         additionalAttributes,
+//       );
+//     });
 
-/**
- * Moves waiting tasks from source queue to target queue
- */
-async function moveWaitingTasks(
-  client: Twilio,
-  workspaceSid: string,
-  sourceQueueSid: string,
-  targetQueueSid: string,
-  additionalAttributes: Record<string, any> = {},
-): Promise<number> {
-  try {
-    const tasks = await findTasksInQueue(client, workspaceSid, sourceQueueSid);
-
-    const movePromises = tasks.map(async (task: any) => {
-      await moveTaskToQueue(
-        client,
-        workspaceSid,
-        task.sid,
-        targetQueueSid,
-        additionalAttributes,
-      );
-    });
-
-    await Promise.all(movePromises);
-    return tasks.length;
-  } catch (err) {
-    console.error('Error moving waiting tasks:', err);
-    throw err;
-  }
-}
+//     await Promise.all(movePromises);
+//     return tasks.length;
+//   } catch (err) {
+//     console.error('Error moving waiting tasks:', err);
+//     throw err;
+//   }
+// }
 
 /**
  * Handles the 'enable' operation - turns on switchboarding for a queue
@@ -381,16 +378,16 @@ async function handleEnableOperation(
     switchboardQueueSid: switchboardQueue.sid,
   });
 
-  await taskRouterClient.workflows(masterWorkflow.sid).update({
-    configuration: JSON.stringify(updatedConfig),
-  });
-
   const updatedState = await updateSwitchboardState(client, syncServiceSid, {
     isSwitchboardingActive: true,
     queueSid: originalQueue.sid,
     queueName: originalQueue.friendlyName,
     startTime: new Date().toISOString(),
     supervisorWorkerSid,
+  });
+
+  await taskRouterClient.workflows(masterWorkflow.sid).update({
+    configuration: JSON.stringify(updatedConfig),
   });
 
   return updatedState;
@@ -418,25 +415,6 @@ async function handleDisableOperation(
 
   const updatedConfig = removeSwitchboardingFilter(currentConfig);
 
-  await taskRouterClient.workflows(masterWorkflow.sid).update({
-    configuration: JSON.stringify(updatedConfig),
-  });
-
-  // TODO: Move any waiting tasks from the switchboard queue back to the original queue
-  if (currentState.queueSid) {
-    try {
-      await moveWaitingTasks(
-        client,
-        workspaceSid,
-        switchboardQueue.sid,
-        currentState.queueSid,
-        { switchboardingActive: false },
-      );
-    } catch (err) {
-      console.error('Error moving tasks back to the original queue:', err);
-    }
-  }
-
   const updatedState = await updateSwitchboardState(client, syncServiceSid, {
     isSwitchboardingActive: false,
     queueSid: undefined,
@@ -444,6 +422,25 @@ async function handleDisableOperation(
     startTime: undefined,
     supervisorWorkerSid: undefined,
   });
+
+  await taskRouterClient.workflows(masterWorkflow.sid).update({
+    configuration: JSON.stringify(updatedConfig),
+  });
+
+  // TODO: Move any waiting tasks from the switchboard queue back to the original queue
+  // if (currentState.queueSid) {
+  //   try {
+  //     await moveWaitingTasks(
+  //       client,
+  //       workspaceSid,
+  //       switchboardQueue.sid,
+  //       currentState.queueSid,
+  //       { switchboardingActive: false },
+  //     );
+  //   } catch (err) {
+  //     console.error('Error moving tasks back to the original queue:', err);
+  //   }
+  // }
 
   return updatedState;
 }
@@ -465,7 +462,7 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
         taskRouterClient,
         switchboardQueue,
         originalQueue,
-        masterWorkflow,
+        masterWorkflowSid,
       } = await fetchSwitchboardResources(client, accountSid, originalQueueSid);
 
       let state;
@@ -476,7 +473,7 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
           taskRouterClient,
           originalQueue,
           switchboardQueue,
-          masterWorkflow,
+          masterWorkflowSid,
           supervisorWorkerSid,
         );
         return newOk(state);
@@ -489,7 +486,7 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
           workspaceSid,
           taskRouterClient,
           switchboardQueue,
-          masterWorkflow,
+          masterWorkflowSid,
         );
         return newOk(state);
       }
