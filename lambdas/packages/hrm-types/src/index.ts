@@ -15,12 +15,6 @@
  */
 
 import type { CallType } from './callType';
-import type { SwitchboardSyncState } from './switchboarding';
-import {
-  SWITCHBOARD_QUEUE_NAME,
-  SWITCHBOARD_DOCUMENT_NAME,
-  DEFAULT_SWITCHBOARD_STATE,
-} from './switchboarding';
 
 export * from './callType';
 export * from './switchboarding';

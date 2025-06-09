@@ -16,7 +16,11 @@
 
 import { AccountScopedHandler, HttpError, HttpRequest } from '../httpTypes';
 import { newErr, newOk, Result } from '../Result';
-import { getSyncServiceSid, getTwilioClient, getTwilioWorkspaceSid } from '../configuration/twilioConfiguration';
+import {
+  getSyncServiceSid,
+  getTwilioClient,
+  getTwilioWorkspaceSid,
+} from '../configuration/twilioConfiguration';
 import { Twilio } from 'twilio';
 import { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 import {
@@ -24,6 +28,7 @@ import {
   SwitchboardSyncState,
   SWITCHBOARD_DOCUMENT_NAME,
   DEFAULT_SWITCHBOARD_STATE,
+  SWITCHBOARD_WORKFLOW_FILTER_PREFIX,
 } from '@tech-matters/hrm-types';
 import { AccountSID } from '../twilioTypes';
 
@@ -41,7 +46,11 @@ export type TokenResponse = { identity: string; roles?: string[]; worker_sid?: s
 /**
  * Fetches required Twilio resources for switchboard operations
  */
-async function fetchSwitchboardResources(client: Twilio, accountSid: AccountSID, originalQueueSid?: string) {
+async function fetchSwitchboardResources(
+  client: Twilio,
+  accountSid: AccountSID,
+  originalQueueSid?: string,
+) {
   // Get Sync Service
   const syncServiceSid = await getSyncServiceSid(accountSid);
   if (!syncServiceSid) {
@@ -150,62 +159,72 @@ async function updateSwitchboardState(
   }
 }
 
+// https://www.twilio.com/docs/taskrouter/workflow-configuration#workflow-configuration-document-structure
+type WorkflowFilter = {
+  filter_friendly_name: string;
+  expression: string;
+  targets: {
+    queue: string;
+    priority: number;
+    expression: string;
+    timeout: number;
+  }[];
+};
+type WorkflowConfig = {
+  task_routing: {
+    filters: WorkflowFilter[];
+    default_filter: {
+      queue: string;
+    };
+  };
+};
+
 /**
  * Adds a filter to the workflow configuration to redirect calls from originalQueue to switchboardQueue to the top of the master workflow
  */
-function addSwitchboardingFilter(
-  config: Twilio,
-  originalQueueSid: string,
-  switchboardQueueSid: string,
-): any {
-  const updatedConfig = JSON.parse(JSON.stringify(config));
-
-  const filterName = `Switchboard Workflow - ${originalQueueSid}`;
-
-  let filterExpression;
-  let targetExpression;
-
-  const originalQueueFilters = updatedConfig.task_routing.filters.filter((filter: any) =>
-    filter.targets?.some(
-      (target: any) =>
-        target.queue === originalQueueSid
-    ),
+function addSwitchboardingFilters({
+  config,
+  originalQueueSid,
+  switchboardQueueSid,
+}: {
+  config: WorkflowConfig;
+  originalQueueSid: string;
+  switchboardQueueSid: string;
+}): WorkflowConfig {
+  const originalQueueFilters = config.task_routing.filters.filter(filter =>
+    filter.targets?.some(target => target.queue === originalQueueSid),
   );
 
-
-  if (originalQueueFilters.length > 0) {
-    if (originalQueueFilters.expression) {
-      filterExpression = originalQueueFilters.expression;
-    }
-
-    const originalQueueTarget = originalQueueFilters.targets?.find(
-      (target: any) =>
-        target.queue === originalQueueSid,
-    );
-    if (originalQueueTarget?.expression) {
-      targetExpression = originalQueueTarget.expression;
-    }
+  if (originalQueueFilters.length === 0) {
+    return config;
   }
 
-  const switchboardingFilter = {
-    filter_friendly_name: filterName,
-    expression: filterExpression,
-    targets: [
-      {
+  const switchboardFilters = originalQueueFilters.map(filter => {
+    const switchboardTargets = filter.targets
+      .filter(target => target.queue === originalQueueSid)
+      .map(target => ({
+        ...target,
         queue: switchboardQueueSid,
         priority: 100,
-        expression: targetExpression,
-        task_attributes: {
-          originalQueueSid,
-          needsSwitchboarding: true,
-          taskQueueSid: switchboardQueueSid,
-          switchboardingActive: true,
-        },
-      },
-    ],
-  };
+      }));
 
-  updatedConfig.task_routing.filters.unshift(switchboardingFilter);
+    const filterName = `${SWITCHBOARD_WORKFLOW_FILTER_PREFIX} - ${filter.filter_friendly_name}`;
+    const switchboardingFilter = {
+      ...filter,
+      filter_friendly_name: filterName,
+      targets: switchboardTargets,
+    };
+
+    return switchboardingFilter;
+  });
+
+  const updatedConfig = {
+    ...config,
+    task_routing: {
+      ...config.task_routing,
+      filters: switchboardFilters.concat(config.task_routing.filters),
+    },
+  };
 
   return updatedConfig;
 }
@@ -217,7 +236,8 @@ function removeSwitchboardingFilter(config: any): any {
   const updatedConfig = JSON.parse(JSON.stringify(config));
 
   updatedConfig.task_routing.filters = updatedConfig.task_routing.filters.filter(
-    (filter: any) => !filter.filter_friendly_name.startsWith('Switchboard Workflow'),
+    (filter: any) =>
+      !filter.filter_friendly_name.startsWith(SWITCHBOARD_WORKFLOW_FILTER_PREFIX),
   );
 
   return updatedConfig;
@@ -353,13 +373,13 @@ async function handleEnableOperation(
   supervisorWorkerSid: string,
 ): Promise<SwitchboardSyncState> {
   const configResp = await taskRouterClient.workflows(masterWorkflow.sid).fetch();
-  const currentConfig = JSON.parse(configResp.configuration);
+  const currentConfig = JSON.parse(configResp.configuration) as WorkflowConfig;
 
-  const updatedConfig = addSwitchboardingFilter(
-    currentConfig,
-    originalQueue.sid,
-    switchboardQueue.sid,
-  );
+  const updatedConfig = addSwitchboardingFilters({
+    config: currentConfig,
+    originalQueueSid: originalQueue.sid,
+    switchboardQueueSid: switchboardQueue.sid,
+  });
 
   await taskRouterClient.workflows(masterWorkflow.sid).update({
     configuration: JSON.stringify(updatedConfig),
@@ -440,8 +460,8 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
 
     try {
       const {
-        syncService,
-        workspace,
+        syncServiceSid,
+        workspaceSid,
         taskRouterClient,
         switchboardQueue,
         originalQueue,
@@ -452,7 +472,7 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
       if (operation === 'enable') {
         state = await handleEnableOperation(
           client,
-          syncService.sid,
+          syncServiceSid,
           taskRouterClient,
           originalQueue,
           switchboardQueue,
@@ -465,8 +485,8 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
       if (operation === 'disable') {
         state = await handleDisableOperation(
           client,
-          syncService.sid,
-          workspace.sid,
+          syncServiceSid,
+          workspaceSid,
           taskRouterClient,
           switchboardQueue,
           masterWorkflow,

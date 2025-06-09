@@ -15,6 +15,7 @@
  */
 
 export const SWITCHBOARD_QUEUE_NAME = 'Switchboard Queue';
+export const SWITCHBOARD_WORKFLOW_FILTER_PREFIX = 'Switchboard Workflow';
 
 export const SWITCHBOARD_DOCUMENT_NAME = 'switchboard-state';
 
