@@ -40,7 +40,7 @@ export const setUpSwitchboard = () => {
 };
 
 const SwitchboardTile = () => {
-  const [selectedQueue, setSelectedQueue] = useState<string | null>(null);
+  // const [selectedQueue, setSelectedQueue] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false);
 
@@ -55,12 +55,11 @@ const SwitchboardTile = () => {
   useSubscribeToSwitchboardState();
 
   useEffect(() => {
-    selectedQueueRef.current = selectedQueue;
-  }, [selectedQueue]);
+    selectedQueueRef.current = switchboardState.queueName;
+  }, [switchboardState]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
-    setSelectedQueue(null);
     selectedQueueRef.current = null;
   };
 
@@ -78,15 +77,15 @@ const SwitchboardTile = () => {
 
   const toggleSwitchboardingForQueue = useToggleSwitchboardingForQueue();
 
-  const handleSwitchboarding = async (queue: string) => {
-    if (!queue) {
+  const handleSwitchboarding = async (queueSid: string) => {
+    if (!queueSid) {
       return;
     }
 
     try {
-      await toggleSwitchboardingForQueue(queue, workerSid);
+      await toggleSwitchboardingForQueue({ queueSid, supervisorWorkerSid: workerSid });
       setIsModalOpen(false);
-      setSelectedQueue(queue);
+      selectedQueueRef.current = queueSid;
     } catch (error) {
       console.error('Error in switchboarding:', error);
     }
@@ -96,7 +95,7 @@ const SwitchboardTile = () => {
     if (switchboardState?.isSwitchboardingActive) {
       // If already switchboarding, open confirmation modal to turn it off
       if (switchboardState.queueSid) {
-        setSelectedQueue(switchboardState.queueSid);
+        selectedQueueRef.current = switchboardState.queueSid;
         handleOpenConfirmationDialog();
       }
     } else {
@@ -142,10 +141,9 @@ const SwitchboardTile = () => {
   );
 
   const handleConfirmTurnOff = () => {
-    if (selectedQueue) {
-      handleSwitchboarding(selectedQueue);
+    if (!switchboardState.isSwitchboardingActive) {
+      handleSwitchboarding(switchboardState.queueName);
       handleCloseConfirmationDialog();
-    } else {
     }
   };
   const borderColor = switchboardState?.isSwitchboardingActive ? '#f8c000' : '#e1e3ea';
@@ -230,9 +228,6 @@ const SwitchboardTile = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onSelect={handleSwitchboarding}
-        selectedQueue={selectedQueue}
-        setSelectedQueue={setSelectedQueue}
-        queueRef={selectedQueueRef}
         queues={filteredQueues}
       />
 
@@ -240,7 +235,7 @@ const SwitchboardTile = () => {
         isOpen={isConfirmationDialogOpen}
         onClose={handleCloseConfirmationDialog}
         onConfirm={handleConfirmTurnOff}
-        selectedQueue={selectedQueue}
+        selectedQueue={selectedQueueRef.current}
         renderStatusText={(queueKey, startTime) =>
           renderSwitchboardStatusText(
             getQueueName(queueKey),

@@ -15,8 +15,9 @@
  */
 
 import { Manager } from '@twilio/flex-ui';
+import { SwitchboardSyncState } from 'hrm-types';
 
-import { getSwitchboardState, SwitchboardSyncState } from '../states/switchboard/useSwitchboard';
+import { getSwitchboardState } from '../states/switchboard/useSwitchboard';
 import fetchProtectedApi from './fetchProtectedApi';
 
 /**
@@ -36,13 +37,6 @@ export const toggleSwitchboardingForQueue = async (
       throw new Error('Invalid queue SID or supervisor worker SID provided');
     }
 
-    const manager = Manager.getInstance();
-    const flexToken = manager.user.token;
-
-    if (!flexToken) {
-      throw new Error('Authentication token not available. Please refresh the page and try again.');
-    }
-
     const currentState = await getSwitchboardState();
     const isDisabling = currentState.isSwitchboardingActive && currentState.queueSid === queueSid;
     const operation = isDisabling ? 'disable' : 'enable';
@@ -50,7 +44,6 @@ export const toggleSwitchboardingForQueue = async (
     const body = {
       originalQueueSid: queueSid,
       operation,
-      Token: flexToken,
       supervisorWorkerSid,
     };
 

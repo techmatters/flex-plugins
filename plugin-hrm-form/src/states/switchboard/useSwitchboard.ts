@@ -16,73 +16,14 @@
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useCallback } from 'react';
+import { SwitchboardSyncState, SWITCHBOARD_DOCUMENT_NAME, DEFAULT_SWITCHBOARD_STATE } from 'hrm-types';
 
 import { updateSwitchboardState, setSwitchboardLoading, setSwitchboardError } from './actions';
 import { toggleSwitchboardingForQueue } from '../../services/SwitchboardService';
 import { RootState } from '..';
 import { SwitchboardState } from './types';
 import { namespace, switchboardBase } from '../storeNamespaces';
-import { sharedSyncClient } from '../../utils/sharedState';
-import { 
-  SwitchboardSyncState, 
-  SWITCHBOARD_DOCUMENT_NAME, 
-  DEFAULT_SWITCHBOARD_STATE 
-} from '@tech-matters/hrm-types';
-
-/**
- * Initialize or get the switchboard document from Twilio Sync
- * @returns Twilio Sync document
- */
-const initSwitchboardSyncDocument = () => {
-  try {
-    return sharedSyncClient.document(SWITCHBOARD_DOCUMENT_NAME);
-  } catch (error) {
-    return sharedSyncClient.document({
-      id: SWITCHBOARD_DOCUMENT_NAME,
-      data: DEFAULT_SWITCHBOARD_STATE,
-      ttl: 48 * 60 * 60, // 48 hours
-    });
-  }
-};
-
-/**
- * Get the current switchboard state
- * @returns Current switchboarding state
- */
-export const getSwitchboardState = async (): Promise<SwitchboardSyncState> => {
-  try {
-    const doc = await initSwitchboardSyncDocument();
-    return doc.data as SwitchboardSyncState;
-  } catch (error) {
-    console.error('Error getting switchboard state:', error);
-    throw error;
-  }
-};
-
-/**
- * Subscribe to switchboarding state changes
- * @param callback Function to call when switchboarding state changes: (state: SwitchboardSyncState) => void
- * @returns Function to unsubscribe from updates: () => void
- */
-const subscribeSwitchboardState = async (callback: (state: SwitchboardSyncState) => void): Promise<() => void> => {
-  try {
-    const doc = await initSwitchboardSyncDocument();
-
-    const handler = (event: { data: unknown }) => {
-      callback(event.data as SwitchboardSyncState);
-    };
-
-    doc.on('updated', handler);
-    callback(doc.data as SwitchboardSyncState);
-
-    return () => {
-      doc.off('updated', handler);
-    };
-  } catch (error) {
-    console.error('Error subscribing to switchboard state:', error);
-    throw error;
-  }
-};
+import { subscribeSwitchboardState } from '../../services/SyncService';
 
 export const useSwitchboardState = (): SwitchboardState => {
   return useSelector((state: RootState) => state[namespace][switchboardBase]);
@@ -137,14 +78,17 @@ export const useSubscribeToSwitchboardState = (): void => {
  * Hook that provides a function to toggle switchboarding for a queue
  * @returns Function to toggle switchboarding for a queue
  */
-export const useToggleSwitchboardingForQueue = (): ((
-  queueSid: string,
-  supervisorWorkerSid?: string,
-) => Promise<void>) => {
+export const useToggleSwitchboardingForQueue = (): (({
+  queueSid,
+  supervisorWorkerSid,
+}: {
+  queueSid: string;
+  supervisorWorkerSid?: string;
+}) => Promise<void>) => {
   const dispatch = useDispatch();
 
   return useCallback(
-    async (queueSid: string, supervisorWorkerSid?: string): Promise<void> => {
+    async ({ queueSid, supervisorWorkerSid }: { queueSid: string; supervisorWorkerSid?: string }): Promise<void> => {
       try {
         dispatch(setSwitchboardLoading(true));
         dispatch(setSwitchboardError(null));

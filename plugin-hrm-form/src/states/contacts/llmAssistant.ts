@@ -95,7 +95,7 @@ export const llmAssistantReducer = (initialState: ContactsState) =>
       (state, { payload: { contactId, summaryText, form, item } }): ContactsState => {
         const { draftContact, savedContact } = state.existingContacts[contactId];
         const llmSupportedEntries =
-          draftContact?.rawJson?.llmSupportedEntries ?? (savedContact.rawJson as any).llmSupportedEntries ?? {};
+          draftContact?.rawJson?.llmSupportedEntries ?? savedContact.rawJson.llmSupportedEntries ?? {};
         llmSupportedEntries[form] = Array.from(new Set([...(llmSupportedEntries[form] ?? []), item]));
         const existingText = draftContact?.rawJson[form]?.[item] ?? savedContact.rawJson[form]?.[item] ?? '';
         const updatedText = `${existingText}${existingText ? '\n\n' : ''}${summaryText}`;

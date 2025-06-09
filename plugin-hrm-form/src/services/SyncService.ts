@@ -15,8 +15,9 @@
  */
 
 import SyncClient from 'twilio-sync';
+import { DEFAULT_SWITCHBOARD_STATE, SWITCHBOARD_DOCUMENT_NAME, SwitchboardSyncState } from 'hrm-types';
 
-import { issueSyncToken } from '../services/ServerlessService';
+import { issueSyncToken } from './ServerlessService';
 import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
 
 // eslint-disable-next-line import/no-mutable-exports
@@ -138,4 +139,45 @@ export const createCallStatusSyncDocument = async (onUpdateCallback: ({ data }: 
   onUpdateCallback({ data: callStatusSyncDocument.data });
 
   return { status: 'success', callStatusSyncDocument } as const;
+};
+
+/**
+ * Get the current switchboard state
+ * @returns Current switchboarding state
+ */
+export const getSwitchboardState = async (): Promise<SwitchboardSyncState> => {
+  try {
+    const doc = await sharedSyncClient.document(SWITCHBOARD_DOCUMENT_NAME);
+    return doc.data as SwitchboardSyncState;
+  } catch (error) {
+    console.error('Error getting switchboard state:', error);
+    throw error;
+  }
+};
+
+/**
+ * Subscribe to switchboarding state changes
+ * @param callback Function to call when switchboarding state changes: (state: SwitchboardSyncState) => void
+ * @returns Function to unsubscribe from updates: () => void
+ */
+export const subscribeSwitchboardState = async (
+  callback: (state: SwitchboardSyncState) => void,
+): Promise<() => void> => {
+  try {
+    const doc = await getSwitchboardState();
+
+    const handler = (event: { data: unknown }) => {
+      callback(event.data as SwitchboardSyncState);
+    };
+
+    doc.on('updated', handler);
+    callback(doc.data as SwitchboardSyncState);
+
+    return () => {
+      doc.off('updated', handler);
+    };
+  } catch (error) {
+    console.error('Error subscribing to switchboard state:', error);
+    throw error;
+  }
 };

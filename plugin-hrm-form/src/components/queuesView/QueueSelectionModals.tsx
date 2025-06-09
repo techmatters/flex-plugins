@@ -31,25 +31,15 @@ type SelectQueueModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onSelect: (queue: string) => void;
-  selectedQueue: string | null;
-  setSelectedQueue: (queue: string) => void;
-  queueRef: React.MutableRefObject<string | null>;
   queues: Queue[];
 };
 
-export const SelectQueueModal: React.FC<SelectQueueModalProps> = ({
-  isOpen,
-  onClose,
-  onSelect,
-  selectedQueue,
-  setSelectedQueue,
-  queueRef,
-  queues,
-}) => {
+export const SelectQueueModal: React.FC<SelectQueueModalProps> = ({ isOpen, onClose, onSelect, queues }) => {
   // Define custom radio button handler
+  const [selectedQueue, setSelectedQueue] = React.useState<string | null>(null);
+
   const handleRadioChange = (value: string) => {
     setSelectedQueue(value);
-    queueRef.current = value;
   };
 
   return (
@@ -180,7 +170,7 @@ export const SelectQueueModal: React.FC<SelectQueueModalProps> = ({
           </TertiaryButton>
           <StyledNextStepButton
             onClick={() => {
-              const currentQueue = selectedQueue || queueRef.current;
+              const currentQueue = selectedQueue;
               if (currentQueue) {
                 onSelect(currentQueue);
               } else {
