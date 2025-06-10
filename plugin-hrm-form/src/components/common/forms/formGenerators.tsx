@@ -71,7 +71,7 @@ const getRules = (field: FormItemDefinition): RegisterOptions =>
 
 const bindCreateSelectOptions = (path: string) => (o: SelectOption, selected: boolean) => (
   <FormOption key={`${path}-${o.label}-${o.value}`} value={o.value} isEmptyValue={o.value === ''} selected={selected}>
-    {o.label}
+    <Template code={o.label} />
   </FormOption>
 );
 
