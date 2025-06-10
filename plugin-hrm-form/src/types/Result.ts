@@ -96,6 +96,7 @@ export const ensureRejection = <TError extends ErrorResult<any>, TData>(
       };
       return await inputWrapper(errorUnwrapper);
     } catch (e) {
+      // eslint-disable-next-line prettier/prettier
       if (e instanceof ResultError<TError>) {
         return e.errorResult;
       }
