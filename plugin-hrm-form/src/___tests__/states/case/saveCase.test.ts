@@ -15,7 +15,7 @@
  */
 import promiseMiddleware from 'redux-promise-middleware';
 import { configureStore } from '@reduxjs/toolkit';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import '../../mockGetConfig';
@@ -47,7 +47,7 @@ const mockUpdateStatus = updateCaseStatus as jest.Mock<
 
 const mockGetCase = getCase as jest.Mock<ReturnType<typeof getCase>, Parameters<typeof getCase>>;
 const workerSid = 'Worker-Sid';
-const definitionVersion: DefinitionVersionId = DefinitionVersionId.demoV1;
+const definitionVersion: string = 'demo-v1';
 const partialState: RecursivePartial<HrmState> = {
   connectedCase: {
     cases: {},
@@ -62,7 +62,7 @@ const partialState: RecursivePartial<HrmState> = {
 const saveCaseState = partialState as HrmState;
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(definitionVersion as DefinitionVersionId);
+  const formDefinitionsBaseUrl = buildBaseURL(definitionVersion);
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   const mockV1 = await loadDefinition(formDefinitionsBaseUrl);
@@ -204,16 +204,14 @@ const expectObject: RecursivePartial<HrmState> = {
 
 describe('createCaseAsyncAction', () => {
   test('Calls the createCase service, and create a case', () => {
-    createCaseAsyncAction(contact, workerSid, definitionVersion as DefinitionVersionId);
+    createCaseAsyncAction(contact, workerSid, definitionVersion);
     expect(createCase).toHaveBeenCalledWith(contact, workerSid, definitionVersion);
   });
 
   test('should dispatch createCaseAsyncAction correctly', async () => {
     const { dispatch, getState } = testStore(nonInitialState);
     const startingState = getState();
-    await ((dispatch(
-      createCaseAsyncAction(contact, workerSid, definitionVersion as DefinitionVersionId),
-    ) as unknown) as Promise<void>);
+    await ((dispatch(createCaseAsyncAction(contact, workerSid, definitionVersion)) as unknown) as Promise<void>);
     const state = getState();
     expect(state).toStrictEqual({
       ...startingState,
@@ -356,7 +354,7 @@ describe('updateCaseOverviewAsyncAction', () => {
           connectedCase: {
             ...VALID_EMPTY_CASE,
             id: 'ANOTHER_CASE',
-            info: { ...overview, definitionVersion: DefinitionVersionId.v1 },
+            info: { ...overview, definitionVersion: 'v1' },
           },
           references: new Set(),
           availableStatusTransitions: [],
@@ -408,7 +406,7 @@ describe('updateCaseOverviewAsyncAction', () => {
           operatingArea: 'Area 51',
           summary: 'updated summary',
           followUpDate: null,
-          definitionVersion: DefinitionVersionId.v1,
+          definitionVersion: 'v1',
         },
       });
     });

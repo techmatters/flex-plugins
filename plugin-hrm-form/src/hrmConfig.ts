@@ -25,6 +25,7 @@ import { WorkerSID } from './types/twilio';
 const featureFlagEnvVarPrefix = 'REACT_APP_FF_';
 type ContactSaveFrequency = 'onTabChange' | 'onFinalSaveAndTransfer';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const readConfig = () => {
   const manager = Flex.Manager.getInstance();
   const { identity } = manager.user;
@@ -40,6 +41,9 @@ const readConfig = () => {
   const hrmMicroserviceBaseUrl = process.env.REACT_APP_HRM_MICROSERVICE_BASE_URL
     ? `${process.env.REACT_APP_HRM_MICROSERVICE_BASE_URL}${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${accountSid}`
     : hrmBaseUrl;
+  const accountScopedLambdaBaseUrl = `${
+    process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url
+  }/lambda/twilio/account-scoped/${accountSid}`;
   const llmAssistantBaseUrl = `${
     process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url
   }/lambda/ai/llm-service/${accountSid}`;
@@ -109,6 +113,7 @@ const readConfig = () => {
       baseUrl,
       hrmBaseUrl,
       hrmMicroserviceBaseUrl,
+      accountScopedLambdaBaseUrl,
       serverlessBaseUrl,
       logoUrl,
       assetsBucketUrl,

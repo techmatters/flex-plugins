@@ -1,0 +1,10 @@
+{
+  "en": {
+    "WelcomeMsg": "Your request has been received by a CIRCLE Operator. Please let us know if you have any additional details to share.",
+    "GoodbyeMsg": "The operator has closed the request. Thank you for reaching out.",
+    "EndChatMsg": "You closed the request. Thank you for reaching out.",
+    "ClosedOutOfShift": "The line is off shift, please reach us later.",
+    "ClosedHolidays": "The line is closed due to a holiday.",
+    "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
+  }
+}

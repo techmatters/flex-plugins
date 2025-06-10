@@ -13,9 +13,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-
-import { DefinitionVersionId } from 'hrm-form-definitions';
-
 import { cancelCase, createCase, getCase, updateCaseOverview, updateCaseStatus } from '../../services/CaseService';
 import { fetchHrmApi } from '../../services/fetchHrmApi';
 import { CaseOverview, Contact } from '../../types/types';
@@ -88,7 +85,7 @@ describe('createCase()', () => {
   test('No createdOnBehalfOf set - assumes a twilio contact, calls "POST /cases with twilioWorkerId set to owning worker', async () => {
     mockFetchHrmAPi.mockResolvedValue(baselineResponse);
 
-    const response = await createCase(baselineContact, 'creating worker', DefinitionVersionId.demoV1);
+    const response = await createCase(baselineContact, 'creating worker', 'demo-v1');
 
     const expectedUrl = `/cases`;
     const expectedOptions = {
@@ -98,7 +95,7 @@ describe('createCase()', () => {
         status: 'open',
         helpline: 'a helpline',
         info: {
-          definitionVersion: DefinitionVersionId.demoV1,
+          definitionVersion: 'demo-v1',
         },
       }),
     };
@@ -126,7 +123,7 @@ describe('createCase()', () => {
 
     mockFetchHrmAPi.mockResolvedValue(mockedResponse);
 
-    const response = await createCase(contactForm, 'creating worker', DefinitionVersionId.demoV1);
+    const response = await createCase(contactForm, 'creating worker', 'demo-v1');
 
     const expectedUrl = `/cases`;
     const expectedOptions = {
@@ -136,7 +133,7 @@ describe('createCase()', () => {
         status: 'open',
         helpline: 'a helpline',
         info: {
-          definitionVersion: DefinitionVersionId.demoV1,
+          definitionVersion: 'demo-v1',
           offlineContactCreator: 'creating worker',
         },
       }),

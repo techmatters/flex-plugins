@@ -20,7 +20,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Tab as TwilioTab, Template } from '@twilio/flex-ui';
 import InfoIcon from '@material-ui/icons/Info';
-import { DefinitionVersionId } from 'hrm-form-definitions';
 
 import ContactPreview from '../ContactPreview';
 import CasePreview from '../CasePreview';
@@ -459,7 +458,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     changeRoute: bindActionCreators(RoutingActions.changeRoute, dispatch),
     openModal: (route: AppRoutes) => dispatch(RoutingActions.newOpenModalAction(route, taskId)),
     closeModal: () => dispatch(RoutingActions.newCloseModalAction(taskId)),
-    createCaseAsyncAction: async (contact, workerSid: string, definitionVersion: DefinitionVersionId) => {
+    createCaseAsyncAction: async (contact, workerSid: string, definitionVersion: string) => {
       // Deliberately using dispatch rather than asyncDispatch here, because we still handle the error from where the action is dispatched.
       // TODO: Rework error handling to be based on redux state set by the _REJECTED action
       await asyncDispatch(dispatch)(createCaseAsyncAction(contact, workerSid, definitionVersion));

@@ -1,0 +1,127 @@
+{
+  "contact": {
+    "callerInformation": {},
+    "childInformation": {
+      "splitFormAt": 11
+    },
+    "caseInformation": {
+      "splitFormAt": 7
+    }
+  },
+  "case": {
+    "sectionTypes": {
+      "household": {
+        "splitFormAt": 7,
+        "printOrder": 3,
+        "previewFields": [
+          "name",
+          "gender",
+          "age",
+          "relationshipToChild"
+        ],
+        "layout": {
+          "name": {
+            "widthRatio": 1.5,
+            "labelTemplateCode": "Case-PerpetratorName",
+            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
+          },
+          "age": {
+            "labelTemplateCode": "Case-PerpetratorAge"
+          },
+          "gender": {
+            "labelTemplateCode": "Case-PerpetratorGender"
+          },
+          "relationshipToChild": {
+            "labelTemplateCode": "Case-PerpetratorRelationship"
+          }
+        }
+      },
+      "perpetrator": {
+        "splitFormAt": 7,
+        "printOrder": 4,
+        "previewFields": [
+          "name",
+          "gender",
+          "age",
+          "relationshipToChild"
+        ],
+        "layout": {
+          "name": {
+            "labelTemplateCode": "Case-PerpetratorName",
+            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
+          },
+          "age": {
+            "labelTemplateCode": "Case-PerpetratorAge"
+          },
+          "gender": {
+            "labelTemplateCode": "Case-PerpetratorGender"
+          },
+          "relationshipToChild": {
+            "labelTemplateCode": "Case-PerpetratorRelationship"
+          }
+        }
+      },
+      "incident": {
+        "previewFields": [
+          "riskToLifeAssessmentCompleted",
+          "safeguardingConcernsRaised",
+          "escalationToOncall"
+        ],
+        "layout": {
+          "safeguardingConcernsRaised": {
+            "includeLabel": true
+          },
+          "escalationToOncall": {
+            "includeLabel": true
+          }
+        },
+        "caseHomeOrder": 2,
+        "splitFormAt": 2,
+        "printOrder": 3
+      },
+      "referral": {
+        "previewFields": [
+          "breakConfidentialityBc",
+          "bcWhereReported"
+        ],
+        "caseHomeOrder": 1,
+        "splitFormAt": 3,
+        "printOrder": 1
+      },
+      "document": {
+        "splitFormAt": 1,
+        "caseHomeOrder": 4,
+        "printFormat": "hidden",
+        "previewFields": [
+          "createdAt",
+          "fileName",
+          "comments"
+        ],
+        "layout": {
+          "createdAt": {
+            "labelTemplateCode": "Case-DocumentFileName",
+            "format": "date"
+          },
+          "fileName": {
+            "labelTemplateCode": "Case-DocumentDate",
+            "format": "file",
+            "widthRatio": 2
+          },
+          "comments": {
+            "labelTemplateCode": "Case-DocumentComments",
+            "widthRatio": 2
+          }
+        }
+      },
+      "note": {
+        "printOrder": 5,
+        "caseHomeLocation": "timeline",
+        "printFormat": "list",
+        "previewFields": ["note"],
+        "layout": {
+          "note": {}
+        }
+      }
+    }
+  }
+}

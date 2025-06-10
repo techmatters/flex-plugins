@@ -118,7 +118,7 @@ jobs:
       - name: Slack Aselo channel
         if: ${{ inputs.send-slack-message != 'false' }}
         id: slack
-        uses: slackapi/slack-github-action@v2.0.0
+        uses: slackapi/slack-github-action@v2.1.0
         with:
           method: chat.postMessage
           token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}

@@ -12,7 +12,7 @@ locals {
 
     #Studio flow
     flow_vars = {
-      widget_from                           = "C-Sema"
+      widget_from                           = "National Child Helpline"
       chat_blocked_message                  = "Hi, you've been blocked from accessing our services and we are not able to read or receive further messages from you."
       send_message_janitor_function_sid     = "ZH167067f5634dd8326504f0c43b5ac4e0"
       capture_channel_with_bot_function_sid = "ZH2b185a0342af6f903bf34461036006b7"

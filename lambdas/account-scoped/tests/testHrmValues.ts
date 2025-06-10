@@ -15,61 +15,100 @@
  */
 
 import {
+  DefinitionVersion,
   FormInputType,
   FormItemDefinition,
-} from '../src/hrm/populateHrmContactFormFromTask';
-import { FormDefinitionSet } from './testHrmTypes';
+} from '@tech-matters/hrm-form-definitions';
 
 const BASE_PERSON_FORM_DEFINITION: FormItemDefinition[] = [
   {
+    label: '',
     name: 'firstName',
     type: FormInputType.Input,
   },
   {
+    label: '',
     name: 'age',
     type: FormInputType.Select,
     options: [
       {
         value: '',
+        label: '',
       },
       {
         value: '11',
+        label: '',
       },
       {
         value: '>12',
+        label: '',
       },
       {
         value: 'Unknown',
+        label: '',
       },
     ],
   },
   {
+    label: '',
     name: 'gender',
     defaultOption: {
+      label: '',
       value: 'Unknown',
     },
     type: FormInputType.Select,
     options: [
       {
+        label: '',
         value: 'Agender',
       },
       {
+        label: '',
         value: 'Non-Binary/Genderqueer/Gender fluid',
       },
       {
+        label: '',
         value: 'Unknown',
       },
     ],
   },
   {
+    label: '',
     name: 'otherGender',
     type: FormInputType.Input,
   },
 ];
-export const BASE_FORM_DEFINITION: FormDefinitionSet = {
-  childInformation: BASE_PERSON_FORM_DEFINITION,
-  callerInformation: BASE_PERSON_FORM_DEFINITION,
-  caseInformation: [],
+export const BASE_FORM_DEFINITION: DefinitionVersion = {
+  blockedEmojis: [],
+  callTypeButtons: [],
+  caseFilters: {},
+  caseOverview: {
+    status: { name: '', label: '', type: 'input', form: [] },
+  },
+  caseSectionTypes: {},
+  caseStatus: {},
+  insights: {
+    oneToManyConfigSpecs: [],
+    oneToOneConfigSpec: { contactForm: {}, caseForm: {} },
+    postSurveySpecs: [],
+  },
+  layoutVersion: {
+    case: { hideCounselorDetails: false, sectionTypes: {} },
+    contact: { childInformation: {}, caseInformation: {}, callerInformation: {} },
+  },
+  tabbedForms: {
+    ChildInformationTab: BASE_PERSON_FORM_DEFINITION,
+    CallerInformationTab: BASE_PERSON_FORM_DEFINITION,
+    CaseInformationTab: [
+      {
+        label: '',
+        name: 'age',
+        type: FormInputType.Input,
+      },
+    ],
+    ContactlessTaskTab: {},
+    IssueCategorizationTab: () => ({}),
+  },
   prepopulateKeys: {
     preEngagement: {
       ChildInformationTab: [],
@@ -80,6 +119,10 @@ export const BASE_FORM_DEFINITION: FormDefinitionSet = {
       ChildInformationTab: [],
       CallerInformationTab: [],
     },
+  },
+  prepopulateMappings: {
+    preEngagement: {},
+    survey: {},
   },
   helplineInformation: {
     label: '',

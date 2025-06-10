@@ -348,7 +348,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
      {
       type: 'select',
       name: 'reason',
-      label: 'What kind of support are you looking for?',
+      label: 'Do you need urgent support?',
       defaultValue: '',
       options: [
         {
@@ -357,15 +357,11 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         },
         {
           value: "emergency",
-          label: "I'm in need of urgent support"
+          label: "Yes"
         },
         {
           value: "counselling",
-          label: "I'm looking for support"
-        },
-        {
-          value: "Unknown",
-          label: "Other"
+          label: "No"
         }
       ],
     },
@@ -392,7 +388,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 
 const translations: Translations = {
   'en-NZ': {
-    WelcomeMessage: 'Welcome to Youthline',
+    WelcomeMessage: 'Welcome to the Youthline Helpline',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
       "Thank you very much for this information. We'll transfer you now. Please hold for a practitioner.",
@@ -412,7 +408,7 @@ const memberDisplayOptions = {
   yourDefaultName: 'You',
   yourFriendlyNameOverride: false,
   theirFriendlyNameOverride: false,
-  theirDefaultName: 'Helpline Counsellor',
+  theirDefaultName: 'Youthline',
 };
 
 const mapHelplineLanguage: MapHelplineLanguage = (helpline) => {

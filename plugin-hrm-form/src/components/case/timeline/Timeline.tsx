@@ -92,10 +92,17 @@ const Timeline: React.FC<OwnProps> = ({
     if (caseId) {
       console.log(`Fetching main timeline sections for case ${caseId}`);
       asyncDispatch(dispatch)(
-        newGetTimelineAsyncAction(caseId, timelineId, timelineCaseSectionTypes, true, {
-          offset: page * pageSize,
-          limit: pageSize,
-        }),
+        newGetTimelineAsyncAction(
+          caseId,
+          timelineId,
+          timelineCaseSectionTypes,
+          true,
+          {
+            offset: page * pageSize,
+            limit: pageSize,
+          },
+          `case-${caseId}`,
+        ),
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

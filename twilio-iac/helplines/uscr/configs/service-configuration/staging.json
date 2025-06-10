@@ -4,6 +4,7 @@
         "resources_base_url": "",
         "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png",
         "feature_flags": {
+            "use_prepopulate_mappings": true
         }
     }
 }

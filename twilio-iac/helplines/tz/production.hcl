@@ -8,7 +8,8 @@ locals {
 
     #Studio flow
     flow_vars = {
-      widget_from                           = "C-Sema"
+      widget_from                           = "National Child Helpline"
+
       chat_blocked_message                  = "Hi, you've been blocked from accessing our services and we are not able to read or receive further messages from you."
       error_message                         = "There has been an error with your message, please try writing us again."
       bot_language                          = "en-US"
@@ -18,7 +19,7 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/webchat-basic.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }

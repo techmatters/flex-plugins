@@ -23,7 +23,7 @@ import '@testing-library/jest-dom/extend-expect';
 import configureMockStore from 'redux-mock-store';
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
 import { StorelessThemeProvider } from '@twilio/flex-ui';
-import { DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { loadDefinition } from 'hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../mockFetchDefinitions';
 import { mockGetDefinitionsResponse, mockPartialConfiguration } from '../../mockGetConfig';
@@ -84,10 +84,17 @@ beforeEach(() => {
 describe('useState mocked', () => {
   const verifyTimelineActions = () => {
     ['household', 'incident', 'perpetrator'].forEach(sectionType => {
-      expect(mockNewGetTimelineAction).toHaveBeenCalledWith(case1.connectedCase.id, sectionType, [sectionType], false, {
-        limit: 100,
-        offset: 0,
-      });
+      expect(mockNewGetTimelineAction).toHaveBeenCalledWith(
+        case1.connectedCase.id,
+        sectionType,
+        [sectionType],
+        false,
+        {
+          limit: 100,
+          offset: 0,
+        },
+        `case-${case1.connectedCase.id}`,
+      );
     });
 
     expect(mockNewGetTimelineAction).toHaveBeenCalledWith(
@@ -96,15 +103,16 @@ describe('useState mocked', () => {
       expect.arrayContaining(['referral', 'note']),
       true,
       { limit: 5, offset: 0 },
+      `case-${case1.connectedCase.id}`,
     );
   };
 
   beforeAll(async () => {
-    const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.demoV1);
+    const formDefinitionsBaseUrl = buildBaseURL('demo-v1');
     await mockFetchImplementation(formDefinitionsBaseUrl);
 
     mockV1 = await loadDefinition(formDefinitionsBaseUrl);
-    mockGetDefinitionsResponse(getDefinitionVersions, DefinitionVersionId.demoV1, mockV1);
+    mockGetDefinitionsResponse(getDefinitionVersions, 'demo-v1', mockV1);
     mockPartialConfiguration({ workerSid: CURRENT_WORKER_SID });
   });
 
@@ -135,13 +143,9 @@ describe('useState mocked', () => {
       updatedAt: BASELINE_DATE.toISOString(),
       twilioWorkerId: WORKER_SID,
       status: 'open',
-      info: { definitionVersion: DefinitionVersionId.v1 },
-      categories: {},
+      info: { definitionVersion: 'v1' },
       accountSid: 'AC-accountSid',
       helpline: 'helpline',
-      firstContact: {
-        id: 'contact1',
-      } as Contact,
     },
     availableStatusTransitions: [],
     references: new Set(['x']),

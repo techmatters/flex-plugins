@@ -18,7 +18,6 @@
 import React, { useEffect } from 'react';
 import { Template } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
-import { DefinitionVersionId } from 'hrm-form-definitions';
 import { parseISO } from 'date-fns';
 
 import { getDefinitionVersion } from '../../services/ServerlessService';
@@ -39,10 +38,9 @@ import {
   TableSummaryFont,
   TextCell,
 } from '../../styles';
-import { formatName, getShortSummary } from '../../utils';
+import { formatName, getShortSummary } from '../../utils/formatters';
 import { getContactTags } from '../../utils/categories';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
-import { getHrmConfig } from '../../hrmConfig';
 import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import { selectCounselorsHash } from '../../states/configuration/selectCounselorsHash';
 import { selectDefinitionVersions } from '../../states/configuration/selectDefinitions';
@@ -70,18 +68,7 @@ const CaseListTableRow: React.FC<Props> = ({ caseId, handleClickViewCase }) => {
   );
   const caseLabel = useSelector((state: RootState) => selectCaseLabel(state, caseId, CONTACTS_TIMELINE_ID));
 
-  const { definitionVersion } = getHrmConfig();
-  let version = caseItem.info.definitionVersion;
-  if (!Object.values(DefinitionVersionId).includes(version)) {
-    console.warn(
-      `Form definition version ${
-        typeof version === 'string' ? `'${version}'` : version
-      } does not exist in defined set: ${Object.values(
-        DefinitionVersionId,
-      )}. Falling back to to current configured version '${definitionVersion}' for case with id ${caseItem.id}`,
-    );
-    version = definitionVersion;
-  }
+  const version = caseItem.info.definitionVersion;
 
   useEffect(() => {
     const fetchDefinitionVersions = async () => {
@@ -95,7 +82,9 @@ const CaseListTableRow: React.FC<Props> = ({ caseId, handleClickViewCase }) => {
 
   useEffect(() => {
     if (!timelineCategories) {
-      dispatch(newGetTimelineAsyncAction(caseId, CONTACTS_TIMELINE_ID, [], true, { offset: 0, limit: 10000 }));
+      dispatch(
+        newGetTimelineAsyncAction(caseId, CONTACTS_TIMELINE_ID, [], true, { offset: 0, limit: 10000 }, `case-list`),
+      );
     }
   }, [timelineCategories, caseId, dispatch]);
 

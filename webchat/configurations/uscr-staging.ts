@@ -40,11 +40,11 @@ const preEngagementConfig: PreEngagementFormDefinition = {
   fields: [
     {
       type: 'checkbox',
-      name: 'iAmTrainedBID',
-      label:  `I am a trained BID partner or trained City staff`,
+      name: 'authorized',
+      label:  'I am authorized by the Mayor’s Office of Community Safety to use this form.',
       required: {
         value: true,
-        message: 'Check the box if you are a trained BID partner.',
+        message: 'Check the box if you are an authorized user.',
       },
     },
     {
@@ -75,6 +75,13 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       required: true,
     },
     {
+      type: 'input-text',
+      name: 'phone',
+      label: 'Callback Phone Number',
+      placeholder: 'Phone Number',
+      required: true,
+    },
+    {
       type: 'select',
       name: 'officeDepartmentBid',
       label: 'Your Office/Department or BID',
@@ -82,82 +89,84 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       required: true,
       options: [
         {
-          "label": "",
-          "value": ""
+          label: "",
+          value: ""
         },
         {
-          "label": "CAO",
-          "value": "cao_office_dept"
+          label: "CAO",
+          value: "CAO"
         },
         {
-          "label": "LAPD",
-          "value": "lapd_office_dept"
+          label: "LAPD",
+          value: "LAPD"
         },
         {
-          "label": "CD1",
-          "value": "cd1_office_dept"
+          label: "CD1",
+          value: "CD1"
         },
         {
-          "label": "CD4",
-          "value": "cd4_office_dept"
+          label: "CD4",
+          value: "CD4"
         },
         {
-          "label": "CD5",
-          "value": "cd5_office_dept"
+          label: "CD5",
+          value: "CD5"
         },
         {
-          "label": "CD6",
-          "value": "cd6_office_dept"
+          label: "CD6",
+          value: "CD6"
         },
         {
-          "label": "CD7",
-          "value": "cd7_office_dept"
+          label: "CD7",
+          value: "CD7"
         },
         {
-          "label": "CD8",
-          "value": "cd8_office_dept"
+          label: "CD8",
+          value: "CD8"
         },
         {
-          "label": "CD9",
-          "value": "cd9_office_dept"
+          label: "CD9",
+          value: "CD9"
         },
         {
-          "label": "CD10",
-          "value": "cd10_office_dept"
+          label: "CD10",
+          value: "CD10"
         },
         {
-          "label": "CD11",
-          "value": "cd11_office_dept"
+          label: "CD11",
+          value: "CD11"
         },
         {
-          "label": "CD13",
-          "value": "cd13_office_dept"
+          label: "CD13",
+          value: "CD13"
         },
         {
-          "label": "CD14",
-          "value": "cd14_office_dept"
+          label: "CD14",
+          value: "CD14"
         },
         {
-          "label": "CD15",
-          "value": "cd15_office_dept"
+          label: "CD15",
+          value: "CD15"
         },
         {
-          "label": "Mayor's Office",
-          "value": "mayor_s_office_dept"
+          label: "Mayor's Office",
+          value: "Mayor's Office"
         },
         {
-          value: "The Hollywood Partnership",
-          label: "The Hollywood Partnership"
-        },
-        {
-          value: "Venice",
-          label: "Venice"
+          value: "BID",
+          label: "BID"
         },
         {
           value: "Other",
           label: "Other"
         },
       ],
+    },
+    {
+      type: 'input-text',
+      name: 'otherBID',
+      label: 'If BID/Other, please specify:',
+      placeholder: '',
     },
     {
       type: 'checkbox',
@@ -181,40 +190,19 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       label: 'Please provide a description of the situation, encampment, or individual(s) and any particular issues/needs and any relevant history or upcoming operations that will impact the location',
       placeholder: 'Please provide a description',
       required: true,
-    },
-    {
-      type: 'select',
-      name: 'priority',
-      label: 'Priority',
-      defaultValue: '',
-      required: false,
-      options: [
-        {
-          value: "",
-          label: ""
-        },
-        {
-          value: "High",
-          label: "High"
-        },
-        {
-          value: "Normal",
-          label: "Normal"
-        }
-      ],
-    },  
+    }, 
   ],
 };
 
 const translations: Translations = {
   'en-US': {
-    WelcomeMessage: 'CIRCLE BID Request',
-    EntryPointTagline: 'Submit a request',
+    WelcomeMessage: 'CIRCLE is an unarmed civilian crisis response alternative to law enforcement, and serves people experiencing homelessness. \nIf violence or weapons are present, call 911 for LAPD response.',
+    EntryPointTagline: 'CIRCLE Response Request',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
-      "Thank you very much for this information. We'll transfer you now. Please hold for an agent.",
+      "Thank you very much for this information. We'll transfer you now. Please hold for an operator.",
     AutoFirstMessage: 'Incoming webchat contact from',
-    TypingIndicator: 'CIRCLE is typing',
+    TypingIndicator: 'CIRCLE Operator is typing',
     StartChat: 'Submit',
     MessageCanvasTrayButton: 'Submit a new request',
     Email: 'Email'

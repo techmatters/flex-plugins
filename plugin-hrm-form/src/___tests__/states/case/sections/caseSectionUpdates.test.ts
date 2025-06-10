@@ -16,7 +16,7 @@
 
 import promiseMiddleware from 'redux-promise-middleware';
 import { configureStore } from '@reduxjs/toolkit';
-import { DefinitionVersion, DefinitionVersionId, loadDefinition } from 'hrm-form-definitions';
+import { DefinitionVersion, loadDefinition } from 'hrm-form-definitions';
 
 import { mockLocalFetchDefinitions } from '../../../mockFetchDefinitions';
 import { HrmState } from '../../../../states';
@@ -60,7 +60,7 @@ const testStore = (stateChanges: Partial<HrmState> = {}) =>
   });
 
 beforeAll(async () => {
-  const formDefinitionsBaseUrl = buildBaseURL(DefinitionVersionId.demoV1);
+  const formDefinitionsBaseUrl = buildBaseURL('demo-v1');
   await mockFetchImplementation(formDefinitionsBaseUrl);
 
   definitionVersion = await loadDefinition(formDefinitionsBaseUrl);

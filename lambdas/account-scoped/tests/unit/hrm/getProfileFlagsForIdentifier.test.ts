@@ -21,10 +21,8 @@ import {
   TEST_AUTH_TOKEN,
 } from '../../testTwilioValues';
 import { getFromInternalHrmEndpoint } from '../../../src/hrm/internalHrmRequest';
-import {
-  handleGetProfileFlagsForIdentifier,
-  Event,
-} from '../../../src/hrm/getProfileFlagsForIdentifier';
+import { handleGetProfileFlagsForIdentifier } from '../../../src/hrm/getProfileFlagsForIdentifier';
+import { TriggerEvent } from '../../../src/hrm/sanitizeIdentifier';
 import { getAccountAuthToken } from '../../../src/configuration/twilioConfiguration';
 import { isErr, isOk, newErr, newOk } from '../../../src/Result';
 import { HttpRequest } from '../../../src/httpTypes';
@@ -57,13 +55,13 @@ const mockGetFromInternalHrmEndpoint = getFromInternalHrmEndpoint as jest.Mocked
   typeof getFromInternalHrmEndpoint
 >;
 
-const newCallEvent = (from: string): Event => ({
+const newCallEvent = (from: string): TriggerEvent => ({
   trigger: { call: { From: from, Caller: 'Lorna' } },
   channelType: 'voice',
   request: { cookies: {}, headers: {} },
 });
 
-const newWebchatEvent = (from: string): Event => ({
+const newWebchatEvent = (from: string): TriggerEvent => ({
   trigger: {
     message: {
       ChannelAttributes: {
@@ -77,7 +75,7 @@ const newWebchatEvent = (from: string): Event => ({
   request: { cookies: {}, headers: {} },
 });
 
-const newConversationEvent = (channelType: string, from: string): Event => ({
+const newConversationEvent = (channelType: string, from: string): TriggerEvent => ({
   trigger: {
     conversation: {
       Author: from,
@@ -87,7 +85,7 @@ const newConversationEvent = (channelType: string, from: string): Event => ({
   request: { cookies: {}, headers: {} },
 });
 
-const newProfileFlagsForIdentifierRequest = (event: Event): HttpRequest => ({
+const newProfileFlagsForIdentifierRequest = (event: TriggerEvent): HttpRequest => ({
   body: event,
   method: 'GET',
   headers: {},
@@ -147,7 +145,7 @@ describe('handleGetProfileFlagsForIdentifier', () => {
   describe('Valid request and successful response returns a 200 response with the flag names from HRM', () => {
     type TestCaseParameters = {
       description: string;
-      inputEvent: Event;
+      inputEvent: TriggerEvent;
       expectedIdentifier: string;
     };
 
@@ -242,7 +240,7 @@ describe('handleGetProfileFlagsForIdentifier', () => {
           channelType: 'web',
           request: { cookies: {}, headers: {} },
         },
-        expectedIdentifier: 'undefined',
+        expectedIdentifier: '',
       },
       ...['telegram', 'instagram', 'messenger'].flatMap(channelType => [
         {
@@ -273,7 +271,8 @@ describe('handleGetProfileFlagsForIdentifier', () => {
           expectedIdentifier: `+123456789`,
         },
       ]),
-      ...['line', 'web'].flatMap(channelType => [
+      // ...['line', 'web'].flatMap(channelType => [
+      ...['line'].flatMap(channelType => [
         {
           description: `Conversation with ${channelType} prefixed channel identifier '${channelType}:lornas-address'`,
           inputEvent: newConversationEvent(channelType, `${channelType}:lornas-address`),
@@ -318,6 +317,7 @@ describe('handleGetProfileFlagsForIdentifier', () => {
         );
       },
     );
+
     test('Unrecognised conversations channel returns 400 error result', async () => {
       // Act
       const result = await handleGetProfileFlagsForIdentifier(
@@ -336,6 +336,25 @@ describe('handleGetProfileFlagsForIdentifier', () => {
       expect(result.error.statusCode).toEqual(400);
       expect(mockGetFromInternalHrmEndpoint).not.toBeCalled();
     });
+    test('web conversations channel returns 400 error result', async () => {
+      // Act
+      const result = await handleGetProfileFlagsForIdentifier(
+        newProfileFlagsForIdentifierRequest(
+          newConversationEvent('web', 'speedy geraldine'),
+        ),
+        TEST_ACCOUNT_SID,
+      );
+      // Assert
+      if (isOk(result)) {
+        throw new AssertionError({
+          message: 'Expected an error response',
+          actual: result,
+        });
+      }
+      expect(result.error.statusCode).toEqual(400);
+      expect(mockGetFromInternalHrmEndpoint).not.toBeCalled();
+    });
+
     test('Invalid trigger returns 400 error result', async () => {
       // Act
       const result = await handleGetProfileFlagsForIdentifier(

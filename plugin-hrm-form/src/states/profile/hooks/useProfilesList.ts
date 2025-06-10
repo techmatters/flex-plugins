@@ -23,24 +23,26 @@ import { useProfilesListLoader } from './useProfilesListLoader';
 
 export const useProfilesList = ({ autoload = true }: { autoload?: boolean }) => {
   const dispatch = useDispatch();
-  useProfilesListLoader({ autoload });
+  const { forceRefresh } = useProfilesListLoader({ autoload });
 
   const updateProfilesListPage = useCallback(
     (page: number) => {
+      forceRefresh();
       dispatch(
         profilesListActions.updateProfilesListPage({
           page,
         }),
       );
     },
-    [dispatch],
+    [dispatch, forceRefresh],
   );
 
   const updateProfilesListSettings = useCallback(
     (settings: Partial<ProfilesListState['settings']>) => {
+      forceRefresh();
       dispatch(profilesListActions.updateProfileListSettings(settings));
     },
-    [dispatch],
+    [dispatch, forceRefresh],
   );
 
   return {

@@ -19,10 +19,9 @@ import { Template } from '@twilio/flex-ui';
 import FilterList from '@material-ui/icons/FilterList';
 
 import { ProfileFlag } from '../../../types/types';
-import { useProfilesList, useProfilesListSettings } from '../../../states/profile/hooks/useProfilesList';
+import { useProfilesList, useProfilesListSettings, useAllProfileFlags } from '../../../states/profile/hooks';
 import MultiSelectFilter, { Item } from '../../caseList/filters/MultiSelectFilter';
 import { CountText, FiltersContainer, FiltersResetAll, FilterTitle, MainTitle } from '../../../styles';
-import { useAllProfileFlags } from '../../../states/profile/hooks';
 
 const filterCheckedItems = (items: Item[]): string[] => items.filter(item => item.checked).map(item => item.value);
 
@@ -30,7 +29,7 @@ const ProfileFilters: React.FC = () => {
   const [openedFilter, setOpenedFilter] = useState<string>(null);
   const [statusValues, setStatusValues] = useState<Item[]>([]);
 
-  const { count, updateProfilesListSettings } = useProfilesList({ autoload: false });
+  const { count, updateProfilesListSettings } = useProfilesList({ autoload: true });
   const { allProfileFlags, loading: flagsLoading } = useAllProfileFlags();
   const { filter } = useProfilesListSettings();
 
