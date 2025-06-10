@@ -1179,12 +1179,12 @@
         "label": ""
       },
       {
-        "value": "Suicidal Ideation",
-        "label": "Suicidal Ideation"
-      },
-      {
         "value": "None",
         "label": "None"
+      },
+      {
+        "value": "Suicidal Ideation",
+        "label": "Suicidal Ideation"
       },
       {
         "value": "Imminent Harm",

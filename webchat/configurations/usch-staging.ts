@@ -324,96 +324,60 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           "label": ""
         },
         {
-          "value": "Billboard",
-          "label": "Billboard"
-        },
-        {
-          "value": "Book",
-          "label": "Book"
+          "value": "Google",
+          "label": "Google"
         },
         {
           "value": "Chat GPT/AI",
           "label": "Chat GPT/AI"
         },
         {
-          "value": "Discord",
-          "label": "Discord"
+          "value": "Family/Friend",
+          "label": "Family/Friend"
         },
         {
-          "value": "Family Member",
-          "label": "Family Member"
+          "value": "Internet/Website",
+          "label": "Internet/Website"
         },
         {
-          "value": "Friend",
-          "label": "Friend"
+          "value": "Professional (Counselor, Teacher, Doctor, etc)",
+          "label": "Professional (Counselor, Teacher, Doctor, etc)"
         },
         {
-          "value": "In and Out Burger Bag",
-          "label": "In and Out Burger Bag"
+          "value": "Hotline: 988 - National Suicide Prevention Lifeline",
+          "label": "Hotline: 988 - National Suicide Prevention Lifeline"
         },
         {
-          "value": "John Stamos",
-          "label": "John Stamos"
+          "value": "Hotline: NCMEC - National Center for Missing and Exploited Children",
+          "label": "Hotline: NCMEC - National Center for Missing and Exploited Children"
         },
         {
-          "value": "Marketing Media",
-          "label": "Marketing Media"
+          "value": "Hotline: NDVH - National Domestic Violence Hotline",
+          "label": "Hotline: NDVH - National Domestic Violence Hotline"
         },
         {
-          "value": "National Center for Missing and Exploited Children",
-          "label": "National Center for Missing and Exploited Children"
+          "value": "Hotline: NRS - National Runaway Safeline",
+          "label": "Hotline: NRS - National Runaway Safeline"
         },
         {
-          "value": "National Domestic Violence Hotline",
-          "label": "National Domestic Violence Hotline"
-        },
-        {
-          "value": "National Runaway Safeline",
-          "label": "National Runaway Safeline"
-        },
-        {
-          "value": "National Sexual Assault Hotline",
-          "label": "National Sexual Assault Hotline"
-        },
-        {
-          "value": "National Suicide Prevention Lifeline (988)",
-          "label": "National Suicide Prevention Lifeline (988)"
-        },
-        {
-          "value": "NEDA Helpline",
-          "label": "NEDA Helpline"
-        },
-        {
-          "value": "Newspaper/Magazine",
-          "label": "Newspaper/Magazine"
-        },
-        {
-          "value": "Other",
-          "label": "Other"
+          "value": "Hotline: RAINN - National Sexual Assault Hotline",
+          "label": "Hotline: RAINN - National Sexual Assault Hotline"
         },
         {
           "value": "Other Hotline",
           "label": "Other Hotline"
         },
         {
-          "value": "Phonebook/Operator",
-          "label": "Phonebook/Operator"
+          "value": "Other",
+          "label": "Other"
         },
         {
-          "value": "Professional",
-          "label": "Professional"
+          "value": "Repeat Caller/Called Before",
+          "label": "Repeat Caller/Called Before"
         },
         {
-          "value": "Radio",
-          "label": "Radio"
-        },
-        {
-          "value": "Repeat Call/Called Before",
-          "label": "Repeat Call/Called Before"
-        },
-        {
-          "value": "SNAP",
-          "label": "SNAP"
+          "value": "Social Media: Discord",
+          "label": "Social Media: Discord"
         },
         {
           "value": "Social Media: Facebook",
@@ -432,20 +396,20 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           "label": "Social Media: Snapchat"
         },
         {
-          "value": "Social Media: Spotify",
-          "label": "Social Media: Spotify"
-        },
-        {
           "value": "Social Media: TikTok",
           "label": "Social Media: TikTok"
         },
         {
-          "value": "Social Media: X (formerly Twitter)",
-          "label": "Social Media: X (formerly Twitter)"
+          "value": "Social Media: X / (Twitter)",
+          "label": "Social Media: X / (Twitter)"
         },
         {
-          "value": "Social Media: Unspecified",
-          "label": "Social Media: Unspecified"
+          "value": "Social Media: Youtube",
+          "label": "Social Media: Youtube"
+        },
+        {
+          "value": "Social Media: Other",
+          "label": "Social Media: Other"
         },
         {
           "value": "SUBS - Childhelp Speak Up Be Safe Program",
@@ -456,20 +420,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           "label": "Television/Streaming Services"
         },
         {
-          "value": "Unknown",
-          "label": "Unknown"
-        },
-        {
-          "value": "Website-Internet",
-          "label": "Website-Internet"
-        },
-        {
-          "value": "YouTube",
-          "label": "YouTube"
-        },
-        {
-          "value": "N/A",
-          "label": "Prefer not to answer"
+          "value": "Unknown / Prefer Not to Answer",
+          "label": "Unknown / Prefer Not to Answer"
         }
       ]
       ,
