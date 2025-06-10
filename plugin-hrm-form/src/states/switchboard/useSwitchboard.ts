@@ -16,7 +16,6 @@
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useCallback } from 'react';
-import { isErr } from 'hrm-types';
 
 import { updateSwitchboardState, setSwitchboardLoading, setSwitchboardError } from './actions';
 import { toggleSwitchboardingForQueue } from '../../services/SwitchboardService';
@@ -24,6 +23,7 @@ import { RootState } from '..';
 import { SwitchboardState } from './types';
 import { namespace, switchboardBase } from '../storeNamespaces';
 import { getSwitchboardState, subscribeSwitchboardNotify } from '../../services/SyncService';
+import { isErr } from '../../types/Result';
 
 const useSwitchboardState = (): SwitchboardState => {
   return useSelector((state: RootState) => state[namespace][switchboardBase]);
@@ -68,6 +68,7 @@ const useSubscribeSwitchboardNotify = (): void => {
       try {
         dispatch(setSwitchboardLoading(true));
 
+        onUpdate();
         const subscribeResult = await subscribeSwitchboardNotify({
           onUpdate,
         });

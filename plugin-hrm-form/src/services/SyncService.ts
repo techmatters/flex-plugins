@@ -15,17 +15,11 @@
  */
 
 import SyncClient from 'twilio-sync';
-import {
-  SWITCHBOARD_NOTIFY_DOCUMENT,
-  SWITCHBOARD_STATE_DOCUMENT,
-  SwitchboardSyncState,
-  isErr,
-  newErr,
-  newOk,
-} from 'hrm-types';
+import { SWITCHBOARD_NOTIFY_DOCUMENT, SWITCHBOARD_STATE_DOCUMENT, SwitchboardSyncState } from 'hrm-types';
 
 import { issueSyncToken } from './ServerlessService';
 import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
+import { isErr, newErr, newOk } from '../types/Result';
 
 // eslint-disable-next-line import/no-mutable-exports
 let sharedSyncClient: SyncClient;
@@ -152,15 +146,21 @@ export const createCallStatusSyncDocument = async (onUpdateCallback: ({ data }: 
  */
 export const getSwitchboardState = async () => {
   try {
-    const doc = await sharedSyncClient.document(SWITCHBOARD_STATE_DOCUMENT);
+    const doc = await sharedSyncClient.document({
+      id: SWITCHBOARD_STATE_DOCUMENT,
+      mode: 'open_existing',
+    });
 
     return newOk({
       documentData: doc.data as SwitchboardSyncState,
     });
   } catch (error) {
-    // if (error) {
+    if (error.status === 404 || String(error).includes('Unique name not found')) {
+      return newOk({
+        documentData: null,
+      });
+    }
 
-    // }
     const message = `Error getting switchboard state: ${error}`;
     return newErr({ error, message });
   }
@@ -181,7 +181,6 @@ const getOrCreateSwitchboardNotify = async () => {
   }
 };
 
-// eslint-disable-next-line import/no-unused-modules
 export const subscribeSwitchboardNotify = async ({ onUpdate }: { onUpdate: () => void }) => {
   try {
     const docResult = await getOrCreateSwitchboardNotify();

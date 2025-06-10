@@ -14,9 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { isOk, SwitchboardSyncState } from 'hrm-types';
+import { SwitchboardSyncState } from 'hrm-types';
 
-import { getSwitchboardState } from './SyncService';
 import fetchProtectedApi from './fetchProtectedApi';
 
 /**
