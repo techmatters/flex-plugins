@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unused-modules */
 /**
  * Copyright (C) 2021-2023 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -49,7 +50,7 @@ export const newErr = <TError>({
     status: 'error',
     message,
     error,
-    unwrap: function (this: ErrorResult<TError>) {
+    unwrap (this: ErrorResult<TError>) {
       throw new ResultError(this);
     },
   };
@@ -88,7 +89,7 @@ export const ensureRejection = <TError extends ErrorResult<any>, TData>(
 ): AsyncResultTypeFunctionWrapper<TError, TData> => {
   return async (workFunc: AsyncResultTypeFunction<TError, TData>) => {
     try {
-      let errorUnwrapper: typeof workFunc = async (...p: Parameters<typeof workFunc>) => {
+      const errorUnwrapper: typeof workFunc = async (...p: Parameters<typeof workFunc>) => {
         const initialWorkResult = await workFunc(...p);
         initialWorkResult.unwrap(); // Will throw an error if it's an error result
         return initialWorkResult;
