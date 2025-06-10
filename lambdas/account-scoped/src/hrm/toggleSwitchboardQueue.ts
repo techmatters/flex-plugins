@@ -480,9 +480,9 @@ async function handleDisableOperation({
       .workflows(masterWorkflowSid)
       .fetch();
 
-    const currentConfig = JSON.parse(configResp.configuration);
+    const currentConfig = JSON.parse(configResp.configuration) as WorkflowConfig;
 
-    const updatedConfig = removeSwitchboardingFilter(currentConfig);
+    const updatedConfig = removeSwitchboardingFilter({ config: currentConfig });
 
     // try to update taskrouter settings to stop switchboard
     await client.taskrouter.v1
