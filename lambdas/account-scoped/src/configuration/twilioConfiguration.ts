@@ -52,13 +52,11 @@ export const getHelplineCode = (accountSid: AccountSID): Promise<string> =>
 export const getSyncServiceSid = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/sync_sid`);
 
+export const getSwitchboardQueueSid = (accountSid: AccountSID): Promise<string> =>
+  getSsmParameter(`/${process.env.NODE_ENV}/twilio/${accountSid}/switchboard_queue_sid`);
+
 export const getServerlessBaseUrl = (accountSid: AccountSID): Promise<string> =>
   getSsmParameter(`/${process.env.NODE_ENV}/serverless/${accountSid}/base_url`);
-
-export const getSwitchboardQueueSid = (accountSid: AccountSID): Promise<string> =>
-  getSsmParameter(
-    `/${process.env.NODE_ENV}/serverless/${accountSid}/switchboard_queue_sid`,
-  );
 
 export const getTwilioClient = async (accountSid: AccountSID): Promise<Twilio> => {
   const authToken = await getAccountAuthToken(accountSid);
