@@ -22,7 +22,7 @@ type HTMLElementRef = {
   current: HTMLElement | null;
 };
 
-type FormInputBaseProps = {
+export type FormInputBaseProps = {
   inputId: string;
   label: string;
   registerOptions: RegisterOptions;
