@@ -195,7 +195,7 @@ const SwitchboardTile = () => {
         onConfirm={handleConfirmTurnOff}
         switchboardSyncState={{ isSwitchboardingActive, queueSid, queueName, startTime, supervisorWorkerSid }}
         renderStatusText={(queueKey, startTime) =>
-          renderSwitchboardStatusText(getQueueName(queueKey), startTime, getSupervisorName(workerSid))
+          renderSwitchboardStatusText(getQueueName(queueKey), startTime, getSupervisorName(supervisorWorkerSid))
         }
       />
     </>
