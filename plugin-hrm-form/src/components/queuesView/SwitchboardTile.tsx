@@ -15,7 +15,7 @@
  */
 
 import React, { useState } from 'react';
-import { QueuesStats, Manager } from '@twilio/flex-ui';
+import { QueuesStats, Manager, Template } from '@twilio/flex-ui';
 import { Switch, CircularProgress, Tooltip } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import InfoIcon from '@material-ui/icons/Info';
@@ -49,6 +49,13 @@ const SwitchboardTile = () => {
   const counselorsHash = useSelector((state: RootState) => state[namespace][configurationBase].counselors.hash);
 
   const { error, isLoading, switchboardSyncState } = useSwitchboardState();
+  const { 
+    isSwitchboardingActive = false,
+    queueSid,
+    queueName,
+    startTime,
+    supervisorWorkerSid 
+  } = switchboardSyncState || {};
 
   useSubscribeToSwitchboardState();
 
@@ -84,8 +91,8 @@ const SwitchboardTile = () => {
   };
 
   const handleSwitchToggle = () => {
-    if (switchboardSyncState?.isSwitchboardingActive) {
-      if (switchboardSyncState.queueSid) {
+    if (isSwitchboardingActive) {
+      if (queueSid) {
         handleOpenConfirmationDialog();
       }
     } else {
@@ -115,24 +122,32 @@ const SwitchboardTile = () => {
     queueName: string | null,
     startTime: string | null,
     supervisorName: string | null,
-  ) => (
-    <span>
-      <Bold>{queueName}</Bold> calls are being switchboarded by supervisor <Bold>{supervisorName}</Bold> since{' '}
-      {startTime
-        ? new Date(startTime).toLocaleString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true,
-          })
-        : ''}
-    </span>
-  );
+  ) => {
+    const formattedTime = startTime
+      ? new Date(startTime).toLocaleString('en-US', {
+          month: 'long',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true,
+        })
+      : '';
+      
+    return (
+      <>
+        <Template
+          code="Switchboard-QueueSwitchboardedStatus"
+          queueName={queueName || ''}
+          supervisorName={supervisorName || ''}
+          startTime={formattedTime}
+        />
+      </>
+    );
+  };
 
   const handleConfirmTurnOff = () => {
-    if (switchboardSyncState?.isSwitchboardingActive) {
-      handleSwitchboarding(switchboardSyncState.queueSid);
+    if (isSwitchboardingActive && queueSid) {
+      handleSwitchboarding(queueSid);
       handleCloseConfirmationDialog();
     }
   };
@@ -140,7 +155,7 @@ const SwitchboardTile = () => {
   return (
     <>
       <SwitchboardTileBox 
-        isActive={switchboardSyncState?.isSwitchboardingActive}
+        isActive={isSwitchboardingActive}
         data-testid="switchboard-tile"
       >
         {isLoading && (
@@ -155,11 +170,13 @@ const SwitchboardTile = () => {
           <Box style={{ display: 'flex', alignItems: 'center' }}>
             <SwitchboardIcon width="38" height="38" />
             <h3 style={{ fontWeight: 'bold', fontSize: '16px' }}>
-              Switchboarding: {switchboardSyncState?.isSwitchboardingActive ? 'In Progress' : 'Off'}
+              <Template 
+                code={isSwitchboardingActive ? "Switchboard-StatusActive" : "Switchboard-StatusInactive"} 
+              />
             </h3>
           </Box>
           <Switch
-            checked={switchboardSyncState?.isSwitchboardingActive || false}
+            checked={isSwitchboardingActive}
             onChange={handleSwitchToggle}
             color="primary"
             disabled={isLoading}
@@ -167,17 +184,17 @@ const SwitchboardTile = () => {
         </Box>
 
         <Box style={{ marginTop: '15px', display: 'flex', alignItems: 'center' }}>
-          {switchboardSyncState?.isSwitchboardingActive && switchboardSyncState.queueSid ? (
+          {isSwitchboardingActive && queueSid ? (
             <div>
               {renderSwitchboardStatusText(
-                switchboardSyncState.queueName,
-                switchboardSyncState.startTime,
-                getSupervisorName(switchboardSyncState.supervisorWorkerSid),
+                queueName,
+                startTime,
+                getSupervisorName(supervisorWorkerSid),
               )}
             </div>
           ) : (
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              No queues are currently being switchboarded
+              <Template code="Switchboard-NoQueuesSwitchboarded" />
               <Tooltip title="Learn more about switchboarding">
                 <Box style={{ display: 'flex', marginLeft: '8px', cursor: 'pointer' }}>
                   <InfoIcon style={{ fontSize: '16px', marginRight: '2px' }} />
@@ -200,7 +217,7 @@ const SwitchboardTile = () => {
         isOpen={isConfirmationDialogOpen}
         onClose={handleCloseConfirmationDialog}
         onConfirm={handleConfirmTurnOff}
-        switchboardSyncState={switchboardSyncState}
+        switchboardSyncState={{ isSwitchboardingActive, queueSid, queueName, startTime, supervisorWorkerSid }}
         renderStatusText={(queueKey, startTime) =>
           renderSwitchboardStatusText(
             getQueueName(queueKey),

@@ -37,11 +37,8 @@ export const toggleSwitchboardingForQueue = async (
     }
 
     const currentState = await getSwitchboardState();
-    // Check if the document exists and has actual data with required properties
     const hasActiveState = Boolean(currentState?.data && Object.keys(currentState.data).length > 0);
     const isDisabling = hasActiveState;
-    console.log('>>> currentState', currentState?.data);
-    console.log('>>> isDisabling', isDisabling);
     const operation = isDisabling ? 'disable' : 'enable';
 
     const body = {
@@ -49,12 +46,10 @@ export const toggleSwitchboardingForQueue = async (
       operation,
       supervisorWorkerSid,
     };
-    console.log('>>> body', body);
 
     const response = await fetchProtectedApi('/toggleSwitchboardQueue', body, {
       useTwilioLambda: true,
     });
-    console.log('>>> response from lambda', response);
     return response;
   } catch (err) {
     if (err instanceof Error) {

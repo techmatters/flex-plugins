@@ -38,10 +38,10 @@ import {
   DialogTitle,
   StatusTextContainer,
 } from './styles';
+import { Template } from '@twilio/flex-ui';
 
 type Queue = {
   key: string;
-  // eslint-disable-next-line camelcase
   friendly_name: string;
 };
 
@@ -68,7 +68,7 @@ export const SelectQueueModal: React.FC<SelectQueueModalProps> = ({ isOpen, onCl
 
         <HeaderBox>
           <ModalTitle id="queue-selection-modal-title">
-            Select queue to switchboard
+            <Template code="Switchboard-SelectQueueModalTitle" />
           </ModalTitle>
         </HeaderBox>
 

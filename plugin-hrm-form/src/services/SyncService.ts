@@ -146,7 +146,6 @@ export const createCallStatusSyncDocument = async (onUpdateCallback: ({ data }: 
 export const getSwitchboardState = async () => {
   try {
     const doc = await sharedSyncClient.document(SWITCHBOARD_DOCUMENT_NAME);
-    console.log('>>> Switchboard state:', doc.data);
     return doc;
   } catch (error) {
     console.warn('Error getting switchboard state:', error);
