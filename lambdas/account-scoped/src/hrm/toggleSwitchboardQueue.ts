@@ -94,7 +94,41 @@ async function fetchSwitchboardResources(
 }
 
 /**
- * Create the switchboard document in Twilio Sync
+ * Delete switchboarding state document
+ */
+async function deleteSwitchboardState(
+  client: Twilio,
+  syncServiceSid: string,
+): Promise<any> {
+  console.log(
+    `Deleting switchboard state document: ${JSON.stringify({ syncServiceSid }, null, 2)}`,
+  );
+
+  try {
+    // Try to delete the document if it exists
+    const deletedDocument = await client.sync.v1
+      .services(syncServiceSid)
+      .documents(SWITCHBOARD_DOCUMENT_NAME)
+      .remove();
+    console.log('Successfully deleted switchboard state document');
+    return deletedDocument;
+  } catch (error: any) {
+    // If document doesn't exist, that's fine
+    if (error.status === 404 || error.code === 20404) {
+      console.log('Document may not exist, proceeding anyway:', error.message);
+      return { status: 'deleted_or_not_found' };
+    }
+
+    // Log and rethrow any other errors
+    console.error(`Error in deleteSwitchboardState:`, {
+      message: error.message,
+    });
+    throw error;
+  }
+}
+
+/**
+ * Create or update the switchboard document in Twilio Sync
  */
 async function createSwitchboardStateDocument(
   client: Twilio,
@@ -102,46 +136,23 @@ async function createSwitchboardStateDocument(
   state: SwitchboardSyncState,
 ): Promise<any> {
   try {
+    // First attempt to create the document
     return await client.sync.v1.services(syncServiceSid).documents.create({
       uniqueName: SWITCHBOARD_DOCUMENT_NAME,
       data: state,
       ttl: 48 * 60 * 60, // 48 hours
     });
   } catch (error: any) {
-    throw error;
-  }
-}
-
-/**
- * Update switchboarding state
- */
-async function deleteSwitchboardState(
-  client: Twilio,
-  syncServiceSid: string,
-): Promise<any> {
-  console.log(
-    `Updating switchboard state: ${JSON.stringify({ syncServiceSid }, null, 2)}`,
-  );
-
-  try {
-    // const document = await getSwitchboardStateDocument(client, syncServiceSid);
-    // const currentState = document.data;
-    // const updatedState = { ...currentState, ...state };
-
-    const deletedDocument = await client.sync.v1
-      .services(syncServiceSid)
-      .documents(SWITCHBOARD_DOCUMENT_NAME)
-      .remove();
-
-    return deletedDocument;
-  } catch (error: any) {
-    console.error(`Error in deleteSwitchboardState:`, {
-      message: error.message,
-      status: error.status,
-      code: error.code,
-      stack: error.stack,
-    });
-    throw error;
+    if (error.message.includes('Unique name already exists')) {
+      await deleteSwitchboardState(client, syncServiceSid);
+      return await client.sync.v1.services(syncServiceSid).documents.create({
+        uniqueName: SWITCHBOARD_DOCUMENT_NAME,
+        data: state,
+        ttl: 48 * 60 * 60, // 48 hours
+      });
+    } else {
+      throw error;
+    }
   }
 }
 
