@@ -373,19 +373,21 @@ async function handleEnableOperation(
     switchboardQueueSid: switchboardQueue.sid,
   });
 
-  const updatedState = await createSwitchboardStateDocument(client, syncServiceSid, {
+  const syncState: SwitchboardSyncState = {
     isSwitchboardingActive: true,
     queueSid: originalQueue.sid,
     queueName: originalQueue.friendlyName,
     startTime: new Date().toISOString(),
     supervisorWorkerSid,
-  });
+  };
+
+  await createSwitchboardStateDocument(client, syncServiceSid, syncState);
 
   await taskRouterClient.workflows(masterWorkflowSid).update({
     configuration: JSON.stringify(updatedConfig),
   });
 
-  return updatedState;
+  return syncState;
 }
 
 /**

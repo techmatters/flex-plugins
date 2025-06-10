@@ -46,6 +46,7 @@ export const toggleSwitchboardingForQueue = async (
       operation: 'enable',
       supervisorWorkerSid,
     };
+    console.log('>>> body', body);
 
     return await fetchProtectedApi('/toggleSwitchboardQueue', body, {
       useTwilioLambda: true,
