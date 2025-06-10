@@ -15,7 +15,14 @@
  */
 
 import SyncClient from 'twilio-sync';
-import { SWITCHBOARD_DOCUMENT_NAME, SwitchboardSyncState } from 'hrm-types';
+import {
+  SWITCHBOARD_NOTIFY_DOCUMENT,
+  SWITCHBOARD_STATE_DOCUMENT,
+  SwitchboardSyncState,
+  isErr,
+  newErr,
+  newOk,
+} from 'hrm-types';
 
 import { issueSyncToken } from './ServerlessService';
 import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
@@ -145,49 +152,55 @@ export const createCallStatusSyncDocument = async (onUpdateCallback: ({ data }: 
  */
 export const getSwitchboardState = async () => {
   try {
-    const doc = await sharedSyncClient.document(SWITCHBOARD_DOCUMENT_NAME);
-    return doc;
+    const doc = await sharedSyncClient.document(SWITCHBOARD_STATE_DOCUMENT);
+
+    return newOk({
+      documentData: doc.data as SwitchboardSyncState,
+    });
   } catch (error) {
-    console.warn('Error getting switchboard state:', error);
-    return null;
+    // if (error) {
+
+    // }
+    const message = `Error getting switchboard state: ${error}`;
+    return newErr({ error, message });
   }
 };
 
-/**
- * Subscribe to switchboarding state changes
- * @param callback Function to call when switchboarding state changes: (state: SwitchboardSyncState) => void
- * @returns Function to unsubscribe from updates: () => void
- */
-export const subscribeSwitchboardState = async ({
-  onRemove,
-}: {
-  onRemove: (state: SwitchboardSyncState) => void;
-}): Promise<{ unsubscribe: () => void; documentData: SwitchboardSyncState | null }> => {
+const getOrCreateSwitchboardNotify = async () => {
   try {
-    const doc = await getSwitchboardState();
+    const doc = await sharedSyncClient.document({
+      id: SWITCHBOARD_NOTIFY_DOCUMENT,
+      data: { updatedAt: new Date().getTime() },
+      mode: 'open_or_create',
+    });
 
-    if (!doc) {
-      const timeout = setTimeout(() => {
-        subscribeSwitchboardState({ onRemove });
-      }, 10000);
-      return { unsubscribe: () => clearTimeout(timeout), documentData: null };
+    return newOk(doc);
+  } catch (error) {
+    const message = `Error getting switchboard notify: ${error}`;
+    return newErr({ error, message });
+  }
+};
+
+// eslint-disable-next-line import/no-unused-modules
+export const subscribeSwitchboardNotify = async ({ onUpdate }: { onUpdate: () => void }) => {
+  try {
+    const docResult = await getOrCreateSwitchboardNotify();
+
+    if (isErr(docResult)) {
+      return docResult;
     }
 
-    const handler = (event: { data: unknown }) => {
-      onRemove(event.data as SwitchboardSyncState);
-    };
+    const doc = docResult.data;
+    doc.on('updated', onUpdate);
 
-    doc.on('removed', handler);
-    onRemove(doc.data as SwitchboardSyncState);
-
-    return {
+    return newOk({
       unsubscribe: () => {
-        doc.off('removed', handler);
+        doc.off('updated', onUpdate);
       },
       documentData: doc.data as SwitchboardSyncState,
-    };
+    });
   } catch (error) {
-    console.error('Error subscribing to switchboard state:', error);
-    throw error;
+    const message = `Error subscribing switchboard notify: ${error}`;
+    return newErr({ error, message });
   }
 };

@@ -16,6 +16,7 @@
 
 import styled from '@emotion/styled';
 import { Paper, FormControl } from '@material-ui/core';
+
 import { Box } from '../../styles';
 
 export const ModalPaper = styled(Paper)`
@@ -30,7 +31,6 @@ export const ModalPaper = styled(Paper)`
   outline: none;
   border-radius: 4px;
 `;
-
 
 export const ModalTitle = styled('h2')`
   font-size: 18px;
@@ -123,28 +123,26 @@ export const StatusTextContainer = styled(Box)`
   margin: 20px;
 `;
 
-export const SWITCHBOARD_TILE_COLORS = {
+const SWITCHBOARD_TILE_COLORS = {
   active: {
     border: '#f8c000',
-    background: '#fff7de'
+    background: '#fff7de',
   },
   inactive: {
     border: '#e1e3ea',
-    background: 'transparent'
-  }
+    background: 'transparent',
+  },
 };
 
 export const SwitchboardTileBox = styled(Box)<{ isActive?: boolean }>`
   display: flex;
   flex-direction: column;
   padding: 20px;
-  border: 2px solid ${props => props.isActive 
-    ? SWITCHBOARD_TILE_COLORS.active.border 
-    : SWITCHBOARD_TILE_COLORS.inactive.border};
+  border: 2px solid
+    ${props => (props.isActive ? SWITCHBOARD_TILE_COLORS.active.border : SWITCHBOARD_TILE_COLORS.inactive.border)};
   border-radius: 4px;
-  background-color: ${props => props.isActive 
-    ? SWITCHBOARD_TILE_COLORS.active.background 
-    : SWITCHBOARD_TILE_COLORS.inactive.background};
+  background-color: ${props =>
+    props.isActive ? SWITCHBOARD_TILE_COLORS.active.background : SWITCHBOARD_TILE_COLORS.inactive.background};
   font-family: 'Open Sans';
   position: relative;
 `;

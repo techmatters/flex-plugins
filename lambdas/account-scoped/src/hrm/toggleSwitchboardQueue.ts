@@ -26,7 +26,8 @@ import { Twilio } from 'twilio';
 import {
   SWITCHBOARD_QUEUE_NAME,
   SwitchboardSyncState,
-  SWITCHBOARD_DOCUMENT_NAME,
+  SWITCHBOARD_STATE_DOCUMENT,
+  SWITCHBOARD_NOTIFY_DOCUMENT,
   SWITCHBOARD_WORKFLOW_FILTER_PREFIX,
 } from '@tech-matters/hrm-types';
 import { AccountSID } from '../twilioTypes';
@@ -94,7 +95,41 @@ async function fetchSwitchboardResources(
 }
 
 /**
- * Delete switchboarding state document
+ * Create the switchboard document in Twilio Sync
+ */
+async function createSwitchboardStateDocument(
+  client: Twilio,
+  syncServiceSid: string,
+  state: SwitchboardSyncState,
+): Promise<any> {
+  try {
+    await client.sync.v1.services(syncServiceSid).documents.create({
+      uniqueName: SWITCHBOARD_STATE_DOCUMENT,
+      data: state,
+      ttl: 48 * 60 * 60, // 48 hours
+    });
+
+    // update or create the notify document
+    try {
+      await client.sync.v1
+        .services(syncServiceSid)
+        .documents.get(SWITCHBOARD_NOTIFY_DOCUMENT)
+        .update({
+          data: { updatedAt: new Date().getTime() },
+        });
+    } catch (err) {
+      await client.sync.v1.services(syncServiceSid).documents.create({
+        uniqueName: SWITCHBOARD_NOTIFY_DOCUMENT,
+        data: { updatedAt: new Date().getTime() },
+      });
+    }
+  } catch (error: any) {
+    throw error;
+  }
+}
+
+/**
+ * Update switchboarding state
  */
 async function deleteSwitchboardState(
   client: Twilio,
@@ -108,9 +143,24 @@ async function deleteSwitchboardState(
     // Try to delete the document if it exists
     const deletedDocument = await client.sync.v1
       .services(syncServiceSid)
-      .documents(SWITCHBOARD_DOCUMENT_NAME)
+      .documents(SWITCHBOARD_STATE_DOCUMENT)
       .remove();
-    console.log('Successfully deleted switchboard state document');
+
+    // update or create the notify document
+    try {
+      await client.sync.v1
+        .services(syncServiceSid)
+        .documents.get(SWITCHBOARD_NOTIFY_DOCUMENT)
+        .update({
+          data: { updatedAt: new Date().getTime() },
+        });
+    } catch (err) {
+      await client.sync.v1.services(syncServiceSid).documents.create({
+        uniqueName: SWITCHBOARD_NOTIFY_DOCUMENT,
+        data: { updatedAt: new Date().getTime() },
+      });
+    }
+
     return deletedDocument;
   } catch (error: any) {
     // If document doesn't exist, that's fine
@@ -123,35 +173,6 @@ async function deleteSwitchboardState(
       message: error.message,
     });
     throw error;
-  }
-}
-
-/**
- * Create or update the switchboard document in Twilio Sync
- */
-async function createSwitchboardStateDocument(
-  client: Twilio,
-  syncServiceSid: string,
-  state: SwitchboardSyncState,
-): Promise<any> {
-  try {
-    // First attempt to create the document
-    return await client.sync.v1.services(syncServiceSid).documents.create({
-      uniqueName: SWITCHBOARD_DOCUMENT_NAME,
-      data: state,
-      ttl: 48 * 60 * 60, // 48 hours
-    });
-  } catch (error: any) {
-    if (error.message.includes('Unique name already exists')) {
-      await deleteSwitchboardState(client, syncServiceSid);
-      return await client.sync.v1.services(syncServiceSid).documents.create({
-        uniqueName: SWITCHBOARD_DOCUMENT_NAME,
-        data: state,
-        ttl: 48 * 60 * 60, // 48 hours
-      });
-    } else {
-      throw error;
-    }
   }
 }
 

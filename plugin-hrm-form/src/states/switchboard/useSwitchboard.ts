@@ -16,15 +16,16 @@
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useCallback } from 'react';
+import { isErr } from 'hrm-types';
 
 import { updateSwitchboardState, setSwitchboardLoading, setSwitchboardError } from './actions';
 import { toggleSwitchboardingForQueue } from '../../services/SwitchboardService';
 import { RootState } from '..';
 import { SwitchboardState } from './types';
 import { namespace, switchboardBase } from '../storeNamespaces';
-import { subscribeSwitchboardState } from '../../services/SyncService';
+import { getSwitchboardState, subscribeSwitchboardNotify } from '../../services/SyncService';
 
-export const useSwitchboardState = (): SwitchboardState => {
+const useSwitchboardState = (): SwitchboardState => {
   return useSelector((state: RootState) => state[namespace][switchboardBase]);
 };
 
@@ -32,63 +33,90 @@ export const useSwitchboardState = (): SwitchboardState => {
  * Hook to subscribe to the switchboard state from the Twilio Sync service and update the Redux store
  * @returns Cleanup function to unsubscribe from updates
  */
-export const useSubscribeToSwitchboardState = (): void => {
+const useSubscribeSwitchboardNotify = (): void => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    let unsubscribeFun: (() => void) | undefined;
+  const handleError = useCallback(
+    err => {
+      const errorMessage = 'Failed to connect to switchboard state. Please refresh the page or contact support.';
+      console.error('Error initializing switchboard subscription:', err);
+      dispatch(setSwitchboardError(errorMessage));
+      dispatch(setSwitchboardLoading(false));
+    },
+    [dispatch],
+  );
 
-    const initializeSwitchboardState = async () => {
+  const onUpdate = useCallback(async () => {
+    dispatch(setSwitchboardLoading(true));
+    const switchboardStateResult = await getSwitchboardState();
+
+    if (isErr(switchboardStateResult)) {
+      handleError(switchboardStateResult.error);
+      return;
+    }
+
+    const { documentData } = switchboardStateResult.data;
+
+    dispatch(updateSwitchboardState(documentData));
+    dispatch(setSwitchboardLoading(false));
+  }, [dispatch, handleError]);
+
+  useEffect(() => {
+    let unsubscribe: (() => void) | undefined;
+
+    const switchboardSubscribe = async () => {
       try {
         dispatch(setSwitchboardLoading(true));
 
-        const { documentData, unsubscribe } = await subscribeSwitchboardState({
-          onRemove: () => {
-            dispatch(updateSwitchboardState(null));
-          },
+        const subscribeResult = await subscribeSwitchboardNotify({
+          onUpdate,
         });
 
-        dispatch(updateSwitchboardState(documentData));
+        if (isErr(subscribeResult)) {
+          handleError(subscribeResult.error);
+          return;
+        }
+
         dispatch(setSwitchboardLoading(false));
-        unsubscribeFun = unsubscribe;
-      } catch (err) {
-        const errorMessage = 'Failed to connect to switchboard state. Please refresh the page or contact support.';
-        console.error('Error initializing switchboard subscription:', err);
-        dispatch(setSwitchboardError(errorMessage));
-        dispatch(setSwitchboardLoading(false));
-      }
+        // eslint-disable-next-line prefer-destructuring
+        unsubscribe = subscribeResult.data.unsubscribe;
+      } catch (err) {}
     };
 
-    initializeSwitchboardState();
+    switchboardSubscribe();
 
     return () => {
-      if (unsubscribeFun) {
-        unsubscribeFun();
+      if (unsubscribe) {
+        unsubscribe();
       }
     };
-  }, [dispatch]);
+  }, [dispatch, handleError, onUpdate]);
 };
 
 /**
  * Hook that provides a function to toggle switchboarding for a queue
  * @returns Function to toggle switchboarding for a queue
  */
-export const useToggleSwitchboardingForQueue = (): (({
-  queueSid,
-  supervisorWorkerSid,
-}: {
-  queueSid: string;
-  supervisorWorkerSid?: string;
-}) => Promise<void>) => {
+export const useSwitchboard = () => {
   const dispatch = useDispatch();
+  const state = useSwitchboardState();
+  useSubscribeSwitchboardNotify();
 
-  return useCallback(
-    async ({ queueSid, supervisorWorkerSid }: { queueSid: string; supervisorWorkerSid?: string }): Promise<void> => {
+  const toggleSwitchboard = useCallback(
+    async ({
+      queueSid,
+      supervisorWorkerSid,
+      operation,
+    }: {
+      queueSid: string;
+      supervisorWorkerSid?: string;
+      operation: 'disable' | 'enable';
+    }): Promise<void> => {
       try {
         dispatch(setSwitchboardLoading(true));
         dispatch(setSwitchboardError(null));
 
-        const response = await toggleSwitchboardingForQueue(queueSid, supervisorWorkerSid);
+        const response = await toggleSwitchboardingForQueue({ queueSid, supervisorWorkerSid, operation });
 
         if (response && typeof response === 'object') {
           const newState = {
@@ -100,13 +128,6 @@ export const useToggleSwitchboardingForQueue = (): (({
           };
 
           dispatch(updateSwitchboardState(newState));
-
-          // FIX THIS!
-          // try {
-          //   const syncDoc = await subscribeSwitchboardState({ onRemove: () => dispatch(updateSwitchboardState(null)) });
-          // } catch (syncError) {
-          //   console.error('Failed to subscribe to Sync document:', syncError);
-          // }
         }
 
         dispatch(setSwitchboardLoading(false));
@@ -119,4 +140,6 @@ export const useToggleSwitchboardingForQueue = (): (({
     },
     [dispatch],
   );
+
+  return { state, toggleSwitchboard };
 };

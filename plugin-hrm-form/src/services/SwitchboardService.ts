@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { SwitchboardSyncState } from 'hrm-types';
+import { isOk, SwitchboardSyncState } from 'hrm-types';
 
 import { getSwitchboardState } from './SyncService';
 import fetchProtectedApi from './fetchProtectedApi';
@@ -27,19 +27,19 @@ import fetchProtectedApi from './fetchProtectedApi';
  * @returns Promise that resolves when the operation is complete
  */
 
-export const toggleSwitchboardingForQueue = async (
-  queueSid: string,
-  supervisorWorkerSid: string,
-): Promise<SwitchboardSyncState> => {
+export const toggleSwitchboardingForQueue = async ({
+  operation,
+  queueSid,
+  supervisorWorkerSid,
+}: {
+  operation: 'disable' | 'enable';
+  queueSid: string;
+  supervisorWorkerSid: string;
+}): Promise<SwitchboardSyncState> => {
   try {
     if (!queueSid || typeof queueSid !== 'string' || !supervisorWorkerSid || typeof supervisorWorkerSid !== 'string') {
       throw new Error('Invalid queue SID or supervisor worker SID provided');
     }
-
-    const currentState = await getSwitchboardState();
-    const hasActiveState = Boolean(currentState?.data && Object.keys(currentState.data).length > 0);
-    const isDisabling = hasActiveState;
-    const operation = isDisabling ? 'disable' : 'enable';
 
     const body = {
       originalQueueSid: queueSid,
@@ -47,10 +47,9 @@ export const toggleSwitchboardingForQueue = async (
       supervisorWorkerSid,
     };
 
-    const response = await fetchProtectedApi('/toggleSwitchboardQueue', body, {
+    return await fetchProtectedApi('/toggleSwitchboardQueue', body, {
       useTwilioLambda: true,
     });
-    return response;
   } catch (err) {
     if (err instanceof Error) {
       const errors = {

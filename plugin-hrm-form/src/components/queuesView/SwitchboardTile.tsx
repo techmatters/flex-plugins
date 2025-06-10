@@ -23,17 +23,13 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import { SWITCHBOARD_QUEUE_NAME } from 'hrm-types';
 
 import { getHrmConfig } from '../../hrmConfig';
-import { Bold, Box } from '../../styles';
+import { Box } from '../../styles';
 import SwitchboardIcon from '../common/icons/SwitchboardIcon';
 import { RootState } from '../../states';
 import { namespace, configurationBase } from '../../states/storeNamespaces';
 import { SelectQueueModal, TurnOffSwitchboardDialog } from './QueueSelectionModals';
 import { SwitchboardTileBox, LoadingContainer } from './styles';
-import {
-  useSubscribeToSwitchboardState,
-  useToggleSwitchboardingForQueue,
-  useSwitchboardState,
-} from '../../states/switchboard/useSwitchboard';
+import { useSwitchboard } from '../../states/switchboard/useSwitchboard';
 
 export const setUpSwitchboard = () => {
   QueuesStats.AggregatedQueuesDataTiles.Content.add(<SwitchboardTile key="switchboard" />, {
@@ -48,16 +44,13 @@ const SwitchboardTile = () => {
   const { workerSid } = getHrmConfig();
   const counselorsHash = useSelector((state: RootState) => state[namespace][configurationBase].counselors.hash);
 
-  const { error, isLoading, switchboardSyncState } = useSwitchboardState();
-  const { 
-    isSwitchboardingActive = false,
-    queueSid,
-    queueName,
-    startTime,
-    supervisorWorkerSid 
-  } = switchboardSyncState || {};
+  const {
+    state: { error, isLoading, switchboardSyncState },
+    toggleSwitchboard,
+  } = useSwitchboard();
 
-  useSubscribeToSwitchboardState();
+  const { isSwitchboardingActive = false, queueSid, queueName, startTime, supervisorWorkerSid } =
+    switchboardSyncState || {};
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -75,15 +68,14 @@ const SwitchboardTile = () => {
     setIsConfirmationDialogOpen(false);
   };
 
-  const toggleSwitchboardingForQueue = useToggleSwitchboardingForQueue();
-
   const handleSwitchboarding = async (queueSid: string) => {
     if (!queueSid) {
       return;
     }
 
     try {
-      await toggleSwitchboardingForQueue({ queueSid, supervisorWorkerSid: workerSid });
+      const operation = isSwitchboardingActive ? 'disable' : 'enable';
+      await toggleSwitchboard({ queueSid, supervisorWorkerSid: workerSid, operation });
       setIsModalOpen(false);
     } catch (error) {
       console.error('Error in switchboarding:', error);
@@ -132,7 +124,7 @@ const SwitchboardTile = () => {
           hour12: true,
         })
       : '';
-      
+
     return (
       <>
         <Template
@@ -154,10 +146,7 @@ const SwitchboardTile = () => {
 
   return (
     <>
-      <SwitchboardTileBox 
-        isActive={isSwitchboardingActive}
-        data-testid="switchboard-tile"
-      >
+      <SwitchboardTileBox isActive={isSwitchboardingActive} data-testid="switchboard-tile">
         {isLoading && (
           <LoadingContainer>
             <CircularProgress size={40} />
@@ -170,28 +159,15 @@ const SwitchboardTile = () => {
           <Box style={{ display: 'flex', alignItems: 'center' }}>
             <SwitchboardIcon width="38" height="38" />
             <h3 style={{ fontWeight: 'bold', fontSize: '16px' }}>
-              <Template 
-                code={isSwitchboardingActive ? "Switchboard-StatusActive" : "Switchboard-StatusInactive"} 
-              />
+              <Template code={isSwitchboardingActive ? 'Switchboard-StatusActive' : 'Switchboard-StatusInactive'} />
             </h3>
           </Box>
-          <Switch
-            checked={isSwitchboardingActive}
-            onChange={handleSwitchToggle}
-            color="primary"
-            disabled={isLoading}
-          />
+          <Switch checked={isSwitchboardingActive} onChange={handleSwitchToggle} color="primary" disabled={isLoading} />
         </Box>
 
         <Box style={{ marginTop: '15px', display: 'flex', alignItems: 'center' }}>
           {isSwitchboardingActive && queueSid ? (
-            <div>
-              {renderSwitchboardStatusText(
-                queueName,
-                startTime,
-                getSupervisorName(supervisorWorkerSid),
-              )}
-            </div>
+            <div>{renderSwitchboardStatusText(queueName, startTime, getSupervisorName(supervisorWorkerSid))}</div>
           ) : (
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <Template code="Switchboard-NoQueuesSwitchboarded" />
@@ -219,16 +195,12 @@ const SwitchboardTile = () => {
         onConfirm={handleConfirmTurnOff}
         switchboardSyncState={{ isSwitchboardingActive, queueSid, queueName, startTime, supervisorWorkerSid }}
         renderStatusText={(queueKey, startTime) =>
-          renderSwitchboardStatusText(
-            getQueueName(queueKey),
-            startTime,
-            getSupervisorName(workerSid),
-          )
+          renderSwitchboardStatusText(getQueueName(queueKey), startTime, getSupervisorName(workerSid))
         }
       />
     </>
   );
 };
- 
+
 // eslint-disable-next-line import/no-unused-modules
 export default SwitchboardTile;

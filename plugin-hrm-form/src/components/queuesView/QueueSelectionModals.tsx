@@ -16,11 +16,12 @@
 
 import React from 'react';
 import { Modal } from '@material-ui/core';
+import { SwitchboardSyncState } from 'hrm-types';
+import { Template } from '@twilio/flex-ui';
 
 import { Box, SaveAndEndButton, StyledNextStepButton, TertiaryButton } from '../../styles';
 import { CloseButton, NonDataCallTypeDialogContainer, CloseTaskDialog } from '../callTypeButtons/styles';
 import TabPressWrapper from '../TabPressWrapper';
-import { SwitchboardSyncState } from 'hrm-types';
 import {
   ModalPaper,
   ModalTitle,
@@ -38,10 +39,10 @@ import {
   DialogTitle,
   StatusTextContainer,
 } from './styles';
-import { Template } from '@twilio/flex-ui';
 
 type Queue = {
   key: string;
+  // eslint-disable-next-line camelcase
   friendly_name: string;
 };
 
@@ -91,13 +92,8 @@ export const SelectQueueModal: React.FC<SelectQueueModalProps> = ({ isOpen, onCl
                     aria-checked={selectedQueue === queue.key}
                     tabIndex={0}
                   >
-                    <RadioCircle>
-                      {selectedQueue === queue.key && <RadioDot />}
-                    </RadioCircle>
-                    <QueueOptionLabel
-                      id={`queue-label-${queue.key}`}
-                      htmlFor={`queue-radio-${queue.key}`}
-                    >
+                    <RadioCircle>{selectedQueue === queue.key && <RadioDot />}</RadioCircle>
+                    <QueueOptionLabel id={`queue-label-${queue.key}`} htmlFor={`queue-radio-${queue.key}`}>
                       {queue.friendly_name}
                     </QueueOptionLabel>
                     <HiddenInput
@@ -115,10 +111,7 @@ export const SelectQueueModal: React.FC<SelectQueueModalProps> = ({ isOpen, onCl
         </StyledFormControl>
 
         <ButtonGroup>
-          <TertiaryButton
-            type="button"
-            onClick={onClose}
-          >
+          <TertiaryButton type="button" onClick={onClose}>
             Cancel
           </TertiaryButton>
           <StyledNextStepButton
@@ -162,9 +155,7 @@ export const TurnOffSwitchboardDialog: React.FC<TurnOffSwitchboardDialogProps> =
             <CloseButton tabIndex={3} aria-label="CloseButton" onClick={onClose} />
           </CloseButtonWrapper>
           <HeaderBox>
-            <DialogTitle id="turn-off-switchboard-title">
-              Are you sure you want to turn off switchboarding?
-            </DialogTitle>
+            <DialogTitle id="turn-off-switchboard-title">Are you sure you want to turn off switchboarding?</DialogTitle>
           </HeaderBox>
           <StatusTextContainer>
             {renderStatusText(switchboardSyncState?.queueSid || '', switchboardSyncState?.startTime || null)}
@@ -173,9 +164,7 @@ export const TurnOffSwitchboardDialog: React.FC<TurnOffSwitchboardDialogProps> =
             <TertiaryButton type="button" onClick={onClose}>
               Cancel
             </TertiaryButton>
-            <SaveAndEndButton onClick={onConfirm}>
-              Turn Off Switchboarding
-            </SaveAndEndButton>
+            <SaveAndEndButton onClick={onConfirm}>Turn Off Switchboarding</SaveAndEndButton>
           </ButtonGroup>
         </NonDataCallTypeDialogContainer>
       </TabPressWrapper>
