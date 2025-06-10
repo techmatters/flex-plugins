@@ -350,10 +350,10 @@ async function handleEnableOperation(
   taskRouterClient: any,
   originalQueue: any,
   switchboardQueue: any,
-  masterWorkflow: any,
+  masterWorkflowSid: string,
   supervisorWorkerSid: string,
 ): Promise<SwitchboardSyncState> {
-  const configResp = await taskRouterClient.workflows(masterWorkflow.sid).fetch();
+  const configResp = await taskRouterClient.workflows(masterWorkflowSid).fetch();
   const currentConfig = JSON.parse(configResp.configuration) as WorkflowConfig;
 
   const updatedConfig = addSwitchboardingFilters({
@@ -370,7 +370,7 @@ async function handleEnableOperation(
     supervisorWorkerSid,
   });
 
-  await taskRouterClient.workflows(masterWorkflow.sid).update({
+  await taskRouterClient.workflows(masterWorkflowSid).update({
     configuration: JSON.stringify(updatedConfig),
   });
 

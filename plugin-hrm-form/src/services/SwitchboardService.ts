@@ -37,7 +37,7 @@ export const toggleSwitchboardingForQueue = async (
     }
 
     const currentState = await getSwitchboardState();
-    const isDisabling = Boolean(currentState);
+    const isDisabling = Boolean(currentState?.data);
     const operation = isDisabling ? 'disable' : 'enable';
 
     const body = {
