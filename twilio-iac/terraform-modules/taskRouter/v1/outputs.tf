@@ -7,6 +7,10 @@ output "workflow_sids" {
   value = { for idx, w in var.workflows : idx => try(twilio_taskrouter_workspaces_workflows_v1.workflow[idx].sid, "") }
 }
 
+output "task_queue_sids" {
+  value = { for idx, w in var.task_queues : idx => try(twilio_taskrouter_workspaces_task_queues_v1.task_queue[idx].sid, "") }
+}
+
 output "task_channel_sids" {
   value = { for idx, tc in var.task_channels : idx => try(twilio_taskrouter_workspaces_task_channels_v1.task_channel[idx].sid, "") }
 }
