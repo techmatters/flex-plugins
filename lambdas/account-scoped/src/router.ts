@@ -67,19 +67,19 @@ const ROUTES: Record<string, FunctionRoute> = {
     handler: handleChatbotCallbackCleanup,
   },
   'conference/addParticipant': {
-    requestPipeline: [validateFlexTokenRequest],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
     handler: addParticipantHandler,
   },
   'conference/getParticipant': {
-    requestPipeline: [validateFlexTokenRequest],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
     handler: getParticipantHandler,
   },
   'conference/removeParticipant': {
-    requestPipeline: [validateFlexTokenRequest],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
     handler: removeParticipantHandler,
   },
   'conference/updateParticipant': {
-    requestPipeline: [validateFlexTokenRequest],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
     handler: updateParticipantHandler,
   },
   'conference/statusCallback': {
@@ -87,7 +87,7 @@ const ROUTES: Record<string, FunctionRoute> = {
     handler: statusCallbackHandler,
   },
   toggleSwitchboardQueue: {
-    requestPipeline: [validateFlexTokenRequest],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'supervisor' })],
     handler: handleToggleSwitchboardQueue,
   },
 };
