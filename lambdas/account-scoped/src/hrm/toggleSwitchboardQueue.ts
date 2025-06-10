@@ -14,8 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { AccountScopedHandler } from '../httpTypes';
-import { isErr, newErr, newOk } from '../Result';
+import { AccountScopedHandler, HttpError } from '../httpTypes';
+import { isErr, newErr, newOk, Result } from '../Result';
 import {
   getMasterWorkflowSid,
   getSwitchboardQueueSid,
@@ -81,7 +81,10 @@ async function createSwitchboardStateDocument({
     return newOk(null);
   } catch (error) {
     const message = `Error creating switchboard document: ${error instanceof Error ? error.message : String(error)}`;
-    return newErr({ error, message });
+    return newErr({
+      error: error instanceof Error ? error : new Error(String(error)),
+      message,
+    });
   }
 }
 
@@ -132,7 +135,10 @@ async function deleteSwitchboardStateDocument({
 
     const message = `Error creating switchboard document: ${error instanceof Error ? error.message : String(error)}`;
     console.error(`Error in deleteSwitchboardState:`, message);
-    return newErr({ error, message });
+    return newErr({
+      error: error instanceof Error ? error : new Error(String(error)),
+      message,
+    });
   }
 }
 
@@ -425,11 +431,17 @@ async function handleEnableOperation({
       // remove switchboard-state document as switchboarding failed
       await deleteSwitchboardStateDocument({ client, syncServiceSid });
       const message = `Error enabling switchboard document: ${error instanceof Error ? error.message : String(error)}`;
-      return newErr({ error, message });
+      return newErr({
+        error: error instanceof Error ? error : new Error(String(error)),
+        message,
+      });
     }
   } catch (error) {
     const message = `Error enabling switchboard document: ${error instanceof Error ? error.message : String(error)}`;
-    return newErr({ error, message });
+    return newErr({
+      error: error instanceof Error ? error : new Error(String(error)),
+      message,
+    });
   }
 }
 
@@ -500,14 +512,17 @@ async function handleDisableOperation({
     // }
   } catch (error) {
     const message = `Error disabling switchboard document: ${error instanceof Error ? error.message : String(error)}`;
-    return newErr({ error, message });
+    return newErr({
+      error: error instanceof Error ? error : new Error(String(error)),
+      message,
+    });
   }
 }
 
 export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
   request,
   accountSid,
-) => {
+): Promise<Result<HttpError, null | boolean>> => {
   try {
     const { originalQueueSid, operation, supervisorWorkerSid } =
       request.body as SwitchboardRequest;
@@ -521,6 +536,12 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
         originalQueueSid,
         supervisorWorkerSid,
       });
+      if (isErr(enableResult)) {
+        return newErr({
+          message: enableResult.message,
+          error: { statusCode: 500, cause: enableResult.error },
+        });
+      }
       return enableResult;
     }
 
@@ -529,6 +550,12 @@ export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
         accountSid,
         client,
       });
+      if (isErr(disableResult)) {
+        return newErr({
+          message: disableResult.message,
+          error: { statusCode: 500, cause: disableResult.error },
+        });
+      }
       return disableResult;
     }
 
