@@ -74,6 +74,7 @@ module "aws" {
   master_workflow_sid                = module.taskRouter.workflow_sids["master"]
   queue_transfers_workflow_sid       = try(module.taskRouter.workflow_sids["queue_transfers"],"NOTVALIDWORKFLOWSID")
   switchboard_queue_sid              = try(module.taskRouter.queue_sids["switchboard"],"NOTVALIDQUEUESID")
+  enable_switchboarding              = var.enable_switchboarding
   shared_state_sync_service_sid      = module.services.shared_state_sync_service_sid
   flex_chat_service_sid              = module.services.flex_chat_service_sid
   flex_proxy_service_sid             = module.services.flex_proxy_service_sid

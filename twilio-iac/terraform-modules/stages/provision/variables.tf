@@ -105,3 +105,9 @@ variable "ui_editable" {
   type        = bool
   default     = false
 }
+
+variable "enable_switchboarding" {
+  description = "true to enable switchboarding"
+  type        = bool
+  default     = false
+}
