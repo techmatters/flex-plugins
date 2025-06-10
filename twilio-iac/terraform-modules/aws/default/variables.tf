@@ -111,9 +111,3 @@ variable "switchboard_queue_sid" {
   type        = string
   default = "NOTVALIDQUEUESID"
 }
-
-variable "enable_switchboarding" {
-  description = "true to enable switchboarding"
-  type        = bool
-  default     = false
-}
