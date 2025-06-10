@@ -15,11 +15,29 @@
  */
 
 import React from 'react';
-import { Modal, Paper, FormControl, FormControlLabel } from '@material-ui/core';
+import { Modal } from '@material-ui/core';
 
-import { Box, SaveAndEndButton, StyledNextStepButton, TertiaryButton, FormLabel } from '../../styles';
+import { Box, SaveAndEndButton, StyledNextStepButton, TertiaryButton } from '../../styles';
 import { CloseButton, NonDataCallTypeDialogContainer, CloseTaskDialog } from '../callTypeButtons/styles';
 import TabPressWrapper from '../TabPressWrapper';
+import { SwitchboardSyncState } from 'hrm-types';
+import {
+  ModalPaper,
+  ModalTitle,
+  CloseButtonWrapper,
+  HeaderBox,
+  QueueGridContainer,
+  QueueOption,
+  RadioCircle,
+  RadioDot,
+  QueueOptionLabel,
+  HiddenInput,
+  ButtonGroup,
+  StyledFormControl,
+  DialogContainer,
+  DialogTitle,
+  StatusTextContainer,
+} from './styles';
 
 type Queue = {
   key: string;
@@ -35,7 +53,6 @@ type SelectQueueModalProps = {
 };
 
 export const SelectQueueModal: React.FC<SelectQueueModalProps> = ({ isOpen, onClose, onSelect, queues }) => {
-  // Define custom radio button handler
   const [selectedQueue, setSelectedQueue] = React.useState<string | null>(null);
 
   const handleRadioChange = (value: string) => {
@@ -44,47 +61,26 @@ export const SelectQueueModal: React.FC<SelectQueueModalProps> = ({ isOpen, onCl
 
   return (
     <Modal open={isOpen} onClose={onClose} aria-labelledby="queue-selection-modal-title">
-      <Paper
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          maxWidth: '700px',
-          width: '90%',
-          backgroundColor: 'white',
-          padding: '20px',
-          outline: 'none',
-          borderRadius: '4px',
-        }}
-      >
-        <Box style={{ position: 'absolute', top: '10px', right: '10px' }}>
+      <ModalPaper>
+        <CloseButtonWrapper>
           <CloseButton tabIndex={3} aria-label="CloseButton" onClick={onClose} />
-        </Box>
+        </CloseButtonWrapper>
 
-        <Box style={{ marginBottom: '20px' }}>
-          <h2 id="queue-selection-modal-title" style={{ fontSize: '18px', fontWeight: 'bold', margin: '0' }}>
+        <HeaderBox>
+          <ModalTitle id="queue-selection-modal-title">
             Select queue to switchboard
-          </h2>
-        </Box>
+          </ModalTitle>
+        </HeaderBox>
 
-        <FormControl component="fieldset" style={{ width: '100%' }}>
-          <Box
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '2px 30px',
-              margin: '0 10px',
-              padding: '10px 0',
-              width: '100%',
-            }}
-          >
+        <StyledFormControl>
+          <QueueGridContainer>
             {queues &&
               [...queues]
                 .sort((a, b) => a.friendly_name.localeCompare(b.friendly_name))
                 .map(queue => (
-                  <div
+                  <QueueOption
                     key={queue.key}
+                    selected={selectedQueue === queue.key}
                     onClick={() => handleRadioChange(queue.key)}
                     onKeyDown={e => {
                       if (e.key === 'Enter' || e.key === ' ') {
@@ -94,77 +90,34 @@ export const SelectQueueModal: React.FC<SelectQueueModalProps> = ({ isOpen, onCl
                     role="radio"
                     aria-checked={selectedQueue === queue.key}
                     tabIndex={0}
-                    style={{
-                      marginBottom: '10px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      cursor: 'pointer',
-                    }}
                   >
-                    <div
-                      style={{
-                        width: '16px',
-                        height: '16px',
-                        borderRadius: '50%',
-                        border: '2px solid #000',
-                        marginRight: '8px',
-                        position: 'relative',
-                        backgroundColor: 'white',
-                      }}
-                    >
-                      {selectedQueue === queue.key && (
-                        <div
-                          style={{
-                            width: '8px',
-                            height: '8px',
-                            borderRadius: '50%',
-                            backgroundColor: '#000',
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                          }}
-                        />
-                      )}
-                    </div>
-                    <label
+                    <RadioCircle>
+                      {selectedQueue === queue.key && <RadioDot />}
+                    </RadioCircle>
+                    <QueueOptionLabel
                       id={`queue-label-${queue.key}`}
                       htmlFor={`queue-radio-${queue.key}`}
-                      style={{ cursor: 'pointer' }}
                     >
                       {queue.friendly_name}
-                    </label>
-                    <input
+                    </QueueOptionLabel>
+                    <HiddenInput
                       type="radio"
                       id={`queue-radio-${queue.key}`}
                       name="queue-selection"
                       value={queue.key}
                       checked={selectedQueue === queue.key}
                       onChange={() => handleRadioChange(queue.key)}
-                      style={{ position: 'absolute', opacity: 0 }}
                       aria-labelledby={`queue-label-${queue.key}`}
                     />
-                  </div>
+                  </QueueOption>
                 ))}
-          </Box>
-        </FormControl>
+          </QueueGridContainer>
+        </StyledFormControl>
 
-        <Box
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            marginTop: '20px',
-            gap: '10px',
-          }}
-        >
+        <ButtonGroup>
           <TertiaryButton
             type="button"
             onClick={onClose}
-            style={{
-              background: '#EEEEEE',
-              border: 'none',
-              borderRadius: '3px',
-            }}
           >
             Cancel
           </TertiaryButton>
@@ -180,8 +133,8 @@ export const SelectQueueModal: React.FC<SelectQueueModalProps> = ({ isOpen, onCl
           >
             Activate Switchboarding
           </StyledNextStepButton>
-        </Box>
-      </Paper>
+        </ButtonGroup>
+      </ModalPaper>
     </Modal>
   );
 };
@@ -190,57 +143,40 @@ type TurnOffSwitchboardDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  selectedQueue: string | null;
+  switchboardSyncState: SwitchboardSyncState | null;
   renderStatusText: (queueKey: string, startTime: string | null) => React.ReactNode;
-  switchboardingStartTime: string | null;
 };
 
 export const TurnOffSwitchboardDialog: React.FC<TurnOffSwitchboardDialogProps> = ({
   isOpen,
   onClose,
   onConfirm,
-  selectedQueue,
+  switchboardSyncState,
   renderStatusText,
-  switchboardingStartTime,
 }) => {
   return (
     <CloseTaskDialog open={isOpen} onClose={onClose} width={500}>
       <TabPressWrapper>
-        <NonDataCallTypeDialogContainer style={{ position: 'relative', maxWidth: '500px', padding: '20px' }}>
-          <Box style={{ position: 'absolute', top: '10px', right: '10px' }}>
+        <NonDataCallTypeDialogContainer as={DialogContainer}>
+          <CloseButtonWrapper>
             <CloseButton tabIndex={3} aria-label="CloseButton" onClick={onClose} />
-          </Box>
-          <Box style={{ marginBottom: '20px' }}>
-            <h2
-              id="turn-off-switchboard-title"
-              style={{ fontSize: '18px', fontWeight: 'bold', margin: '0', maxWidth: '80%', textAlign: 'center' }}
-            >
+          </CloseButtonWrapper>
+          <HeaderBox>
+            <DialogTitle id="turn-off-switchboard-title">
               Are you sure you want to turn off switchboarding?
-            </h2>
-          </Box>
-          <Box style={{ margin: '20px' }}>{renderStatusText(selectedQueue || '', switchboardingStartTime)}</Box>
-          <Box
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              marginTop: '20px',
-              gap: '10px',
-              alignSelf: 'flex-end',
-            }}
-          >
-            <TertiaryButton
-              type="button"
-              onClick={onClose}
-              style={{
-                background: '#EEEEEE',
-                border: 'none',
-                borderRadius: '3px',
-              }}
-            >
+            </DialogTitle>
+          </HeaderBox>
+          <StatusTextContainer>
+            {renderStatusText(switchboardSyncState?.queueSid || '', switchboardSyncState?.startTime || null)}
+          </StatusTextContainer>
+          <ButtonGroup>
+            <TertiaryButton type="button" onClick={onClose}>
               Cancel
             </TertiaryButton>
-            <SaveAndEndButton onClick={onConfirm}>Turn Off Switchboarding</SaveAndEndButton>
-          </Box>
+            <SaveAndEndButton onClick={onConfirm}>
+              Turn Off Switchboarding
+            </SaveAndEndButton>
+          </ButtonGroup>
         </NonDataCallTypeDialogContainer>
       </TabPressWrapper>
     </CloseTaskDialog>

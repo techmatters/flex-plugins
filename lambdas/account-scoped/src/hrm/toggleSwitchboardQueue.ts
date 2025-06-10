@@ -119,7 +119,6 @@ async function deleteSwitchboardState(
       return { status: 'deleted_or_not_found' };
     }
 
-    // Log and rethrow any other errors
     console.error(`Error in deleteSwitchboardState:`, {
       message: error.message,
     });

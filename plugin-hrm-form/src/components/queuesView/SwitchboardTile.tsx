@@ -14,10 +14,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { QueuesStats, Manager } from '@twilio/flex-ui';
 import { Switch, CircularProgress, Tooltip } from '@material-ui/core';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import InfoIcon from '@material-ui/icons/Info';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import { SWITCHBOARD_QUEUE_NAME } from 'hrm-types';
@@ -28,6 +28,7 @@ import SwitchboardIcon from '../common/icons/SwitchboardIcon';
 import { RootState } from '../../states';
 import { namespace, configurationBase } from '../../states/storeNamespaces';
 import { SelectQueueModal, TurnOffSwitchboardDialog } from './QueueSelectionModals';
+import { SwitchboardTileBox, LoadingContainer } from './styles';
 import {
   useSubscribeToSwitchboardState,
   useToggleSwitchboardingForQueue,
@@ -47,7 +48,7 @@ const SwitchboardTile = () => {
   const { workerSid } = getHrmConfig();
   const counselorsHash = useSelector((state: RootState) => state[namespace][configurationBase].counselors.hash);
 
-  const { error, isLoading, switchboarding: switchboardState } = useSwitchboardState();
+  const { error, isLoading, switchboardSyncState } = useSwitchboardState();
 
   useSubscribeToSwitchboardState();
 
@@ -83,9 +84,8 @@ const SwitchboardTile = () => {
   };
 
   const handleSwitchToggle = () => {
-    if (switchboardState?.isSwitchboardingActive) {
-      // If already switchboarding, open confirmation modal to turn it off
-      if (switchboardState.queueSid) {
+    if (switchboardSyncState?.isSwitchboardingActive) {
+      if (switchboardSyncState.queueSid) {
         handleOpenConfirmationDialog();
       }
     } else {
@@ -131,47 +131,22 @@ const SwitchboardTile = () => {
   );
 
   const handleConfirmTurnOff = () => {
-    if (switchboardState?.isSwitchboardingActive) {
-      handleSwitchboarding(switchboardState.queueSid);
+    if (switchboardSyncState?.isSwitchboardingActive) {
+      handleSwitchboarding(switchboardSyncState.queueSid);
       handleCloseConfirmationDialog();
     }
   };
-  const borderColor = switchboardState?.isSwitchboardingActive ? '#f8c000' : '#e1e3ea';
-  const backgroundColor = switchboardState?.isSwitchboardingActive ? '#fff7de' : 'transparent';
 
   return (
     <>
-      <Box
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '20px',
-          border: `2px solid ${borderColor}`,
-          borderRadius: '4px',
-          backgroundColor,
-          fontFamily: 'Open Sans',
-          position: 'relative',
-        }}
+      <SwitchboardTileBox 
+        isActive={switchboardSyncState?.isSwitchboardingActive}
         data-testid="switchboard-tile"
       >
         {isLoading && (
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'rgba(255, 255, 255, 0.7)',
-              zIndex: 1,
-              borderRadius: '4px',
-            }}
-          >
+          <LoadingContainer>
             <CircularProgress size={40} />
-          </div>
+          </LoadingContainer>
         )}
 
         {error && <div style={{ marginBottom: '10px', color: 'red' }}>{error}</div>}
@@ -180,11 +155,11 @@ const SwitchboardTile = () => {
           <Box style={{ display: 'flex', alignItems: 'center' }}>
             <SwitchboardIcon width="38" height="38" />
             <h3 style={{ fontWeight: 'bold', fontSize: '16px' }}>
-              Switchboarding: {switchboardState?.isSwitchboardingActive ? 'In Progress' : 'Off'}
+              Switchboarding: {switchboardSyncState?.isSwitchboardingActive ? 'In Progress' : 'Off'}
             </h3>
           </Box>
           <Switch
-            checked={switchboardState?.isSwitchboardingActive || false}
+            checked={switchboardSyncState?.isSwitchboardingActive || false}
             onChange={handleSwitchToggle}
             color="primary"
             disabled={isLoading}
@@ -192,12 +167,12 @@ const SwitchboardTile = () => {
         </Box>
 
         <Box style={{ marginTop: '15px', display: 'flex', alignItems: 'center' }}>
-          {switchboardState?.isSwitchboardingActive && switchboardState.queueSid ? (
+          {switchboardSyncState?.isSwitchboardingActive && switchboardSyncState.queueSid ? (
             <div>
               {renderSwitchboardStatusText(
-                switchboardState.queueName,
-                switchboardState.startTime,
-                getSupervisorName(switchboardState.supervisorWorkerSid),
+                switchboardSyncState.queueName,
+                switchboardSyncState.startTime,
+                getSupervisorName(switchboardSyncState.supervisorWorkerSid),
               )}
             </div>
           ) : (
@@ -212,7 +187,7 @@ const SwitchboardTile = () => {
             </div>
           )}
         </Box>
-      </Box>
+      </SwitchboardTileBox>
 
       <SelectQueueModal
         isOpen={isModalOpen}
@@ -225,19 +200,18 @@ const SwitchboardTile = () => {
         isOpen={isConfirmationDialogOpen}
         onClose={handleCloseConfirmationDialog}
         onConfirm={handleConfirmTurnOff}
-        selectedQueue={switchboardState?.queueSid}
+        switchboardSyncState={switchboardSyncState}
         renderStatusText={(queueKey, startTime) =>
           renderSwitchboardStatusText(
             getQueueName(queueKey),
-            switchboardState?.startTime || startTime,
+            startTime,
             getSupervisorName(workerSid),
           )
         }
-        switchboardingStartTime={switchboardState?.startTime || null}
       />
     </>
   );
 };
-
+ 
 // eslint-disable-next-line import/no-unused-modules
 export default SwitchboardTile;

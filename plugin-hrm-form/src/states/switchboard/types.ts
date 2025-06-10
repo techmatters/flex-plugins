@@ -18,14 +18,14 @@ import { SwitchboardSyncState } from 'hrm-types';
 
 // Switchboard State
 export type SwitchboardState = {
-  switchboarding: SwitchboardSyncState | null;
+  switchboardSyncState: SwitchboardSyncState | null;
   isLoading: boolean;
   error: string | null;
 };
 
 // Initial state
 export const initialState: SwitchboardState = {
-  switchboarding: null,
+  switchboardSyncState: null,
   isLoading: false,
   error: null,
 };
