@@ -317,7 +317,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       label: 'How did you hear about this hotline?',
       name: 'howTheHelpseekerHeardAboutUs',
       type: 'select',
-      required: true,
+      required: false,
       options: [
         {
           "value": "",
