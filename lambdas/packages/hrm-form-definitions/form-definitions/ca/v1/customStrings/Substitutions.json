@@ -322,7 +322,7 @@
   "ifOtherAbuse": "Si autre, fournir des détails",
   "safetyPlan": "Plan de sécurité créé avec l'utilisateur du service",
   "emergencyReferralPolice": "Orientation d'urgence fournie (police/ambulance)",
-  "emergencyReferralCPS": "Orientation d'urgence fournie (protection de l'enfance)",
+  "emergencyReferralCPS": "Orientation d'urgence fournie (CPS)",
   "callerAgreeable": "L'appelant était-il d'accord pour une orientation d'urgence ou un rapport obligatoire ?",
   "languageService": "Le cas échéant, quel service d'interprétation linguistique a été utilisé",
   "interpreterID": "Le cas échéant, veuillez fournir l'identifiant de l'interprète.",
