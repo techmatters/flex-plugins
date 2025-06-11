@@ -101,7 +101,8 @@
   "SearchContactsAndCases-TitleExistingCase": "Search for Referrals",
   "SearchResultsIndex-SelectCase": "Select Referral",
   "SearchResultsIndex-NoCasesFound": "No Referral Found",
-  "SearchResultsIndex-SearchAgainForCase": "Search again for an referral"
+  "SearchResultsIndex-SearchAgainForCase": "Search again for an referral",
+  "relationshipToPerson": "Relationship to Person"
   },
   "fr": {
   "Case-ChildIsAtRisk": "Mise en suspens juridique",
@@ -218,15 +219,7 @@
   "Date of Contact": "Date de contact",
   "Time of Contact": "Heure du contact",
   "Helpline": "Ligne",
-  "Relationship to person": "Lien avec la personne",
-  "Caregiver": "Soignant·e",
-  "Friend": "Ami·e",
-  "Grandparent": "Grand-parent",
-  "Neighbour": "Voisin",
-  "Partner": "Conjoint",
-  "Person in a position of responsibility": "Personne en situation de responsabilité",
-  "Sibling": "Frère ou sœur",
-  "Stranger": "Inconnu",
-  "Other": "Autre"
+  "relationshipToPerson": "Lien avec la personne",
+  "Gender": "Orientation sexuelle"
   }
 }
