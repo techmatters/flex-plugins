@@ -54,7 +54,7 @@ ${
         "channel": task_channel_sids["voice"],
         "waitUrl": channel_flow_vars["en_function_url"],
         "waitUrlMethod": "GET"
-        "attributes": "{\"language\": \"en-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\"}"
+        "attributes": "{\"language\": \"en-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"conversations\": {\"ivr_path\" : \"988 English\"}}"
       }
     },
     {
@@ -79,7 +79,7 @@ ${
         "workflow": workflow_sids["master"],
         "waitUrl": channel_flow_vars["fr_function_url"],
         "channel": task_channel_sids["voice"],
-        "attributes": "{\"language\": \"fr-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\"}",
+        "attributes": "{\"language\": \"fr-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"conversations\": {\"ivr_path\" : \"988 French\"}}",
         "waitUrlMethod": "GET"
       }
     },
