@@ -206,7 +206,7 @@
   },
   {
     "name": "otherGender",
-    "label": "If Other for Gender, please specify: ",
+    "label": "ifOtherGenderPleaseSpecify",
     "type": "input"
   }
 ]
