@@ -25,6 +25,8 @@ import { CustomHandlers, getInputType } from '../common/forms/formGenerators';
 import { generateCustomContactFormItem } from './components/customContactComponent';
 import FormTextArea from './components/FormTextArea/FormTextArea';
 import { TaskSID } from '../../types/twilio';
+import FormSelect from './components/FormSelect/FormSelect';
+import DependentFormSelect from './components/FormSelect/DependentFormSelect';
 
 const getRegisterOptions = (formItemDefinition: FormItemDefinition): RegisterOptions =>
   pick(formItemDefinition, ['max', 'maxLength', 'min', 'minLength', 'pattern', 'required', 'validate']);
@@ -88,6 +90,38 @@ export const createInput = ({
           registerOptions={registerOptions}
           isEnabled={isEnabled}
           htmlElRef={htmlElRef}
+        />
+      );
+    }
+    case FormInputType.Select: {
+      return (
+        <FormSelect
+          key={inputId}
+          inputId={inputId}
+          initialValue={initialValue}
+          updateCallback={updateCallback}
+          label={formItemDefinition.label}
+          registerOptions={registerOptions}
+          isEnabled={isEnabled}
+          htmlElRef={htmlElRef}
+          selectOptions={formItemDefinition.options}
+        />
+      );
+    }
+    case FormInputType.DependentSelect: {
+      return (
+        <DependentFormSelect
+          key={inputId}
+          inputId={inputId}
+          initialValue={initialValue}
+          updateCallback={updateCallback}
+          label={formItemDefinition.label}
+          registerOptions={registerOptions}
+          isEnabled={isEnabled}
+          htmlElRef={htmlElRef}
+          dependsOn={formItemDefinition.dependsOn}
+          dependentOptions={formItemDefinition.options}
+          defaultOption={formItemDefinition.defaultOption}
         />
       );
     }
