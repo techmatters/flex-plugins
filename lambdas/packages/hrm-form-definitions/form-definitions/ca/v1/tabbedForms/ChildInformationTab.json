@@ -563,7 +563,7 @@
   },
   {
     "name": "otherPopulation",
-    "label": "ifOtherPopulationPleaseSpecify ",
+    "label": "ifOtherPopulationPleaseSpecify",
     "type": "input"
   },
   {
