@@ -580,5 +580,11 @@
   "MainHeader-Translator-RefreshRequiredNotification": "Refresh page to apply",
   "MainHeader-Translator-SelectionNotification": "You have selected {{localeSelection}}",
   "MainHeader-Translator-RefreshWarningNotification": "Refreshing will disconnect any active voice and video calls.",
-  "MainHeader-Translator-MenuTitle": "Language Preference"
+  "MainHeader-Translator-MenuTitle": "Language Preference",
+
+  "Switchboard-NoQueuesSwitchboarded": "No queues are currently being switchboarded",
+  "Switchboard-QueueSwitchboardedStatus": "<strong>{{queueName}}</strong> queue is currently being switchboarded by <strong>{{supervisorName}}</strong> since <strong>{{startTime}}</strong>",
+  "Switchboard-SelectQueueModalTitle": "Select queue to switchboard",
+  "Switchboard-StatusActive": "Switchboarding: In Progress",
+  "Switchboard-StatusInactive": "Switchboarding: Off"
 }
