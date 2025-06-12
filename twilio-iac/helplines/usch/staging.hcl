@@ -10,5 +10,7 @@ locals {
   local_config = {
     custom_task_routing_filter_expression = ""
     flow_vars                             = {}
+    //Serverless -- to allow enabling the operating hours check on this staging account.
+    ui_editable = true
   }
 }
