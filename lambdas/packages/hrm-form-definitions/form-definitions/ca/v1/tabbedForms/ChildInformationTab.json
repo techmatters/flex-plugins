@@ -176,12 +176,12 @@
   },
   {
     "name": "otherGender",
-    "label": "If Other for Gender, please specify: ",
+    "label": "ifOtherGenderPleaseSpecify",
     "type": "input"
   },
   {
     "name": "sexualOrientation",
-    "label": "Sexual Orientation",
+    "label": "SexualOrientation",
     "type": "listbox-multiselect",
     "options": [
       {
@@ -224,7 +224,7 @@
   },
   {
     "name": "otherSexualOrientation",
-    "label": "If Other for Sexual Orientation, please specify: ",
+    "label": "ifOtherSexualOrientationPleaseSpecify",
     "type": "input"
   },
   {
@@ -387,7 +387,7 @@
   },
   {
     "name": "otherEthnicity",
-    "label": "If Other for Race/Ethnicity, please specify: ",
+    "label": "ifOtherRacePleaseSpecify",
     "type": "input"
   },
   {
@@ -447,7 +447,7 @@
   },
   {
     "name": "otherSchool",
-    "label": "If Other for School, please specify: ",
+    "label": "ifOtherSchoolPleaseSpecify",
     "type": "input"
   },
   {
@@ -515,12 +515,12 @@
   },
   {
     "name": "otherResidence",
-    "label": "If Other for Residence/Living Situation, please specify: ",
+    "label": "ifOtherResidencePleaseSpecify",
     "type": "input"
   },
   {
     "name": "region",
-    "label": "Population Centre",
+    "label": "PopulationCentre",
     "type": "select",
     "options": [
       {
@@ -563,12 +563,12 @@
   },
   {
     "name": "otherPopulation",
-    "label": "If Other for Population Centre, please specify: ",
+    "label": "ifOtherPopulationPleaseSpecify ",
     "type": "input"
   },
   {
     "name": "upset",
-    "label": "(Chat Only) On a scale of 1 to 7, how upset is the person?",
+    "label": "Upset",
     "type": "select",
     "options": [
         {
@@ -611,7 +611,7 @@
   },
   {
     "name": "supportType",
-    "label": "(Chat Only) What type of support is the service user seeking?",
+    "label": "supportType",
     "type": "listbox-multiselect",
     "options": [
       {
@@ -642,7 +642,7 @@
   },
   {
     "name": "suicidalThoughts",
-    "label": "(Chat Only) Is the service user having suicidal thoughts?",
+    "label": "suicidalThoughts",
     "type": "select",
     "options": [
         {
@@ -669,7 +669,7 @@
   },
   {
     "name": "Newcomer",
-    "label": "Newcomer (e.g., Arrived in Canada within 5 years or less)/Recent Immigrant/Refugee",
+    "label": "Newcomer",
     "type": "checkbox"
   }
 ]
