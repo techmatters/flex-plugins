@@ -73,7 +73,9 @@ const DependentFormSelect: React.FC<DependentFormSelectProps> = ({
   React.useEffect(() => {
     if (isMounted.current && prevDependeeValue.current && dependeeValue !== prevDependeeValue.current) {
       setValue(inputId, defaultOption, { shouldValidate: true });
-    } else isMounted.current = true;
+    } else {
+      isMounted.current = true;
+    }
 
     prevDependeeValue.current = dependeeValue;
   }, [setValue, dependeeValue, inputId, defaultOption]);
