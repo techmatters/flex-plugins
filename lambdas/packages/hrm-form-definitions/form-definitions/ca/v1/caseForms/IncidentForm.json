@@ -1,12 +1,12 @@
 [
     {
       "name": "offenderName",
-      "label": "Name of Alleged Offender(s)",
+      "label": "offenderName",
       "type": "input"
     },
     {
       "name": "relationshipToChild",
-      "label": "Relationship to youth",
+      "label": "relationshipToPerson",
         "type": "select",
         "options": [
           { "value": "Unknown", "label": "" },
@@ -25,7 +25,7 @@
     },
     {
       "name": "isChildHurt",
-      "label": "Is the person of concern hurt?",
+      "label": "isChildHurt",
       "type": "select",
       "options": [
         {
@@ -48,7 +48,7 @@
     },
     {
         "name": "isChildInImmediateDanger",
-        "label": "Is the person of concern in immediate danger?",
+        "label": "isChildInImmediateDanger",
         "type": "select",
         "options": [
           {
@@ -71,17 +71,17 @@
     },
     {
       "name": "date",
-      "label": "When did the most recent incident occur",
+      "label": "incidentDate",
       "type": "date-input"
     },
     {
       "name": "location",
-      "label": "Location of Incident",
+      "label": "incidentLocation",
       "type": "input"
     },
     {
       "name": "incidentType",
-      "label": "Type of Incident?",
+      "label": "incidentType",
       "type": "listbox-multiselect",
       "options": [
         {
@@ -124,12 +124,12 @@
     },
     {
       "name": "otherAbuse",
-      "label": "If Other, provide details:",
+      "label": "ifOtherAbuse",
       "type": "input"
     },
     {
       "name": "safetyPlan",
-      "label": "Safety Plan",
+      "label": "safetyPlan",
       "type": "textarea",
       "placeholder": "",
       "rows": 10,

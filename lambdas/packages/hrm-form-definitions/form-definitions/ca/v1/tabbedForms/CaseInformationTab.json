@@ -1,7 +1,7 @@
 [  
   {
     "name": "contactType",
-    "label": "What type of contact is this?",
+    "label": "contactType",
     "type": "listbox-multiselect",
     "options": [
       { "value": "Abusive", "label": "Abusive" },
@@ -22,17 +22,17 @@
     },
   {
     "name": "callSummary",
-    "label": "If Thank You, Provide Details",
+    "label": "ifThankYou",
     "type": "input"
   },
   {
     "name": "complaintDetails",
-    "label": "If Complaint, Provide Details",
+    "label": "ifComplaint",
     "type": "input"
   },
   {
     "name": "abuseDetails",
-    "label": "If Abusive, Please Select All That Apply:",
+    "label": "ifAbusive",
     "type": "listbox-multiselect",
     "options": [
       { "value": "Directly Abusive", "label": "Direct Abusive to Counsellor" },
@@ -42,32 +42,32 @@
   },  
   {
     "name": "otherAbuseDetails",
-    "label": "If Other, Provide Details",
+    "label": "ifOtherAbuse",
     "type": "input"
   },
   {
     "name": "safetyPlan",
-    "label": "Safety plan created with the service user",
+    "label": "safetyPlan",
     "type": "checkbox"
   },
   {
     "name": "emergencyReferralPolice",
-    "label": "Emergency referral provided (Police/Ambulance)",
+    "label": "emergencyReferralPolice",
     "type": "checkbox"
   },
   {
     "name": "emergencyReferralCPS",
-    "label": "Emergency referral provided (Child Protective Services)",
+    "label": "emergencyReferralCPS",
     "type": "checkbox"
   },
   {
     "name": "callerAgreeable",
-    "label": "Was the caller agreeable to an Emergency Referral or Mandatory Report?",
+    "label": "callerAgreeable",
     "type": "checkbox"
   },
     {
         "name": "languageService",
-        "label": "If applicable, which Language Interpretation service was used",
+        "label": "languageService",
         "type": "select",
         "options": [
           { "value": "Unknown", "label": "" },
@@ -81,12 +81,12 @@
     },
     {
         "name": "interpreterID",
-        "label": "If applicable, provide Interpreter ID",
+        "label": "interpreterID",
         "type": "input"
       },   
   {
     "name": "technicalProblems",
-    "label": "Please indicate if you experienced any technical problems for this contact.",
+    "label": "technicalProblems",
     "type": "listbox-multiselect",
     "options": [
       { "value": "Dropped Contact - Unknown Reason", "label": "Dropped Contact - Unknown reason" },
@@ -101,12 +101,12 @@
   },
   {
     "name": "otherTechnicalProblems",
-    "label": "If Other technical problem, please specify: ",
+    "label": "otherTechnicalProblems ",
     "type": "input"
   },
   {
     "name": "additionalTools",
-    "label": "What tools helped support you with this contact?",
+    "label": "additionalTools",
     "type": "listbox-multiselect",
     "options": [
       { "value": "KMS", "label": "KMS" },
