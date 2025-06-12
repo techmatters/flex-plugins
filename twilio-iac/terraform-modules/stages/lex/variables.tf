@@ -339,7 +339,29 @@ variable "lex_v2_slots" {
             }))
           })))
         }))
-       
+       slotCaptureSetting = optional(object({
+          captureNextStep = object({
+            dialogAction = map(any)
+            intent = optional(map(string))
+          })
+          failureResponse = optional(object({
+            messageGroups = list(object({
+              message = object({
+                plainTextMessage = object({
+                  value = string
+                })
+              })
+            }))
+            allowInterrupt = bool
+          }))
+          failureNextStep = object({
+            dialogAction = map(any)
+            intent = optional(map(string)) 
+          })
+          elicitationCodeHook = optional(object({
+            enableCodeHookInvocation = bool
+          }))
+        }))
       })
     })
 }))

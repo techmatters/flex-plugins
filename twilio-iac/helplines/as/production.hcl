@@ -70,6 +70,6 @@ locals {
       }
     }
 
-    get_profile_flags_for_identifier_base_url = "hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
+    get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

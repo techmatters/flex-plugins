@@ -4,7 +4,8 @@
       "enable_manual_pulling": false,
       "enable_voice_recordings": true,
       "enable_client_profiles": true,
-      "enable_llm_summary": true
+      "enable_llm_summary": true,
+      "enable_lex_v2": true
     },
     "hrm_base_url": "https://hrm-test.tl.techmatters.org",
     "pdfImagesSource": "https://tl-public-chat-jm-stg.s3.amazonaws.com",

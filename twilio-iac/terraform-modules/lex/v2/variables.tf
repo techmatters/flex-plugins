@@ -2,6 +2,10 @@ variable "environment" {
   description = "The environment for the helpline."
   type        = string
 }
+variable helpline_region {
+  type        = string
+  description = "The region for the helpline."
+}
 
 variable "short_helpline" {
   description = "The short code for the helpline."
@@ -207,12 +211,10 @@ variable "lex_v2_slots" {
         }))
         slotCaptureSetting = optional(object({
           captureNextStep = object({
-            dialogAction = object({
-              type = string
-            })
+            dialogAction = map(any)
             intent = optional(map(string))
           })
-          failureResponse = object({
+          failureResponse = optional(object({
             messageGroups = list(object({
               message = object({
                 plainTextMessage = object({
@@ -221,12 +223,9 @@ variable "lex_v2_slots" {
               })
             }))
             allowInterrupt = bool
-          })
+          }))
           failureNextStep = object({
-            dialogAction = object({
-              type         = string
-              slotToElicit = optional(string)
-            })
+            dialogAction = map(any)
             intent = optional(map(string)) 
           })
           elicitationCodeHook = optional(object({
