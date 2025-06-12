@@ -63,7 +63,7 @@ ${
                   {
                     "friendly_name": "Has no non-survey tasks",
                     "arguments": [
-                      "{{widgets.set_hasNonSurveyTasks.hasNonSurveyTasks}}"
+                      "{{flow.variables.hasNonSurveyTasks}}"
                     ],
                     "type": "equal_to",
                     "value": "false"
@@ -72,7 +72,7 @@ ${
               }
             ],
             "properties": {
-              "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+              "input": "{{flow.variables.hasNonSurveyTasks}}",
               "offset": {
                 "x": -690,
                 "y": -60
@@ -93,7 +93,7 @@ ${
         }
       ],
       "properties": {
-        "add_twilio_auth" = false,
+        "add_twilio_auth" : false,
         "offset": {
           "x": -350,
           "y": -280
@@ -240,7 +240,7 @@ ${
                 },
                 {
                 "event": "fail",
-                "next": "webhook_notify_error",
+                "next": "webhook_notify_error"
                 }
             ],
             "properties": {
@@ -269,7 +269,7 @@ ${
                     "key": "studioFlowSid"
                 },
                 {
-                    "value": flow_vars["bot_language"],
+                    "value": "${flow_vars.bot_language}",
                     "key": "language"
                 },
                 {
@@ -348,7 +348,7 @@ ${
           }
         ],
         "properties": {
-          "add_twilio_auth" = false,
+          "add_twilio_auth" : false,
           "offset": {
             "x": -40,
             "y": 740
@@ -371,7 +371,7 @@ ${
           }
         ],
         "properties": {
-          "add_twilio_auth" = false,
+          "add_twilio_auth" : false,
           "offset": {
             "x": 660,
             "y": 1360
