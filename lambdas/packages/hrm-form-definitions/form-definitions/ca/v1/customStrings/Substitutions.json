@@ -156,6 +156,11 @@
   "incidentDate": "When did the most recent incident occur",
   "incidentLocation": "Location of Incident",
   "incidentType": "Type of Incident?",
+  "HangUp": "Hang Up",
+  "Direct Abuse to Counsellor": "Direct Abuse to Counsellor",
+  "Arousal Caller": "Arousal Caller",
+  "Training/Tech Testing": "Training/Tech Testing",
+  "CM Only - Emergency": "CM Only - Emergency",
 
   "Switchboard-NoQueuesSwitchboarded": "No queues are currently being switchboarded",
   "Switchboard-QueueSwitchboardedStatus": "{{queueName}} queue is currently being switchboarded by {{supervisorName}} since {{startTime}}",
@@ -363,7 +368,13 @@
   "callerAddress": "Adresse/emplacement de la source de référence",
   "callerProvince": "Province/Territoire de la source de référence",
   "callerPhone": "Numéro de téléphone de la source de référence",
-
+  "Silent": "Silencieux",
+  "HangUp": "Raccroché",
+  "DirectAbusetoCounsellor": "Abus direct envers le conseiller",
+  "ArousalCaller": "Appel d'éveil",
+  "Training/TechTesting": "Formation/Essais techniques",
+  "CMOnlyEmergency": "Gestionnaire des services d’intervention uniquement - Urgence",
+  "Channel": "Canal",
 
   "Switchboard-NoQueuesSwitchboarded": "aucune file d'attente n'est commutée",
   "Switchboard-QueueSwitchboardedStatus": "{{queueName}} est en cours de changement par {{supervisorName}} depuis {{startTime}}",
