@@ -1,7 +1,7 @@
 [
   {
     "name": "firstName",
-    "label": "First Name",
+    "label": "firstName",
     "type": "input",
     "required": {
       "value": true,
@@ -10,7 +10,7 @@
   },
   {
     "name": "lastName",
-    "label": "Last Name",
+    "label": "lastName",
     "type": "input",
     "required": {
       "value": true,
@@ -19,7 +19,7 @@
   },
   {
     "name": "relationshipToChild",
-    "label": "Relationship to young person",
+    "label": "relationshipToPerson",
     "type": "select",
     "options": [
       { "value": "Unknown", "label": "" },
@@ -38,7 +38,7 @@
   },
   {
     "name": "otherMinorAtRisk",
-    "label": "Minor at risk?",
+    "label": "otherMinorAtRisk",
     "type": "checkbox"
   },
   {
