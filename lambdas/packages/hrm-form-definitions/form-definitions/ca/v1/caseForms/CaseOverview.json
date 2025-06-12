@@ -6,7 +6,7 @@
   },
   {
     "name": "childIsAtRisk",
-    "label": "Legal Hold",
+    "label": "LegalHold",
     "type": "checkbox"
   },
   {
@@ -16,7 +16,7 @@
   },
   {
     "name": "summary",
-    "label": "Nature of Crisis",
+    "label": "NatureofCrisis",
     "type": "textarea",
     "placeholder": "Please add details on weapon(s), accessibility, targets, suicide details, medication, crime",
     "rows": 5,
