@@ -75,7 +75,10 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
 
   return initLocalization(
     localizationConfig,
-    localStorage.getItem('ASELO_PLUGIN_USER_LOCALE') || counselorLanguage || helplineLanguage || defaultLocale,
+    localStorage.getItem(`${getHrmConfig().accountSid}_ASELO_PLUGIN_USER_LOCALE`) ||
+      counselorLanguage ||
+      helplineLanguage ||
+      defaultLocale,
   );
 };
 

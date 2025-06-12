@@ -15,6 +15,7 @@
  */
 
 import type { DefinitionVersion } from 'hrm-form-definitions';
+import { Manager } from '@twilio/flex-ui';
 
 import * as t from './types';
 import { defaultLocale } from '../../translations';
@@ -37,7 +38,9 @@ export type ConfigurationState = {
 
 export const initialState: ConfigurationState = {
   locale: {
-    selected: localStorage.getItem('ASELO_PLUGIN_USER_LOCALE') || defaultLocale,
+    selected:
+      localStorage.getItem(`${Manager.getInstance().serviceConfiguration.account_sid}_ASELO_PLUGIN_USER_LOCALE`) ||
+      defaultLocale,
     status: 'loaded',
   },
   counselors: {

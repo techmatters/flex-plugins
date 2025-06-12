@@ -140,7 +140,7 @@ ${
           },
           "workflow": workflow_sids["master"],
           "channel": task_channel_sids["voice"],
-          "attributes": "{\"language\": \"en-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\"}",
+          "attributes": "{\"language\": \"en-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"conversations\": {\"ivr_path\" : \"KHP English\"}}",
           "waitUrlMethod": "GET"
         }
       },
@@ -166,7 +166,7 @@ ${
           },
           "workflow": workflow_sids["master"],
           "channel": task_channel_sids["voice"],
-          "attributes": "{\"language\": \"fr-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\"}",
+          "attributes": "{\"language\": \"fr-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"conversations\": {\"ivr_path\" : \"KHP French\"}}",
           "waitUrlMethod": "GET"
         }
       },
@@ -192,7 +192,7 @@ ${
           },
           "workflow": workflow_sids["master"],
           "channel": task_channel_sids["voice"],
-          "attributes": "{\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"interpreter\": \"main\"}",
+          "attributes": "{\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"interpreter\": \"main\", \"conversations\": {\"ivr_path\" : \"KHP Interpreter\"}}",
           "waitUrlMethod": "GET"
         }
       },
@@ -1316,7 +1316,7 @@ ${
           },
           "workflow": workflow_sids["master"],
           "channel": task_channel_sids["voice"],
-          "attributes": "{\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"interpreter\": \"fr\"}",
+          "attributes": "{\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"interpreter\": \"fr\", \"conversations\": {\"ivr_path\" : \"French Interpreter\"}}",
           "waitUrlMethod": "GET"
         }
       },
@@ -1405,7 +1405,7 @@ ${
           },
           "workflow": workflow_sids["master"],
           "channel": task_channel_sids["voice"],
-          "attributes": "{\"language\": \"en-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"interpreter\": \"indigenous\"}",
+          "attributes": "{\"language\": \"en-CA\",\n\"type\": \"inbound\", \"name\": \"{{trigger.call.From}}\",\"ignoreAgent\":\"\", \"transferTargetType\":\"\",\"channelType\":\"voice\", \"interpreter\": \"indigenous\", \"conversations\": {\"ivr_path\" : \"Indigenous/Interpreter\"}}",
           "waitUrlMethod": "GET"
         }
       },
