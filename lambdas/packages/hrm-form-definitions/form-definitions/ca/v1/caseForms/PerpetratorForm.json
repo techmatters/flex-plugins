@@ -1,7 +1,7 @@
 [
   {
     "name": "firstName",
-    "label": "First Name",
+    "label": "firstName",
     "type": "input",
     "required": {
       "value": true,
@@ -10,7 +10,7 @@
   },
   {
     "name": "lastName",
-    "label": "Last Name",
+    "label": "lastName",
     "type": "input",
     "required": {
       "value": true,
@@ -19,7 +19,7 @@
   },
   {
     "name": "dateofBirth",
-    "label": "Date of Birth",
+    "label": "dateofBirth",
     "type": "date-input",
     "required": {
       "value": true,
@@ -55,7 +55,7 @@
   },
   {
     "name": "schoolName",
-    "label": "School Name and Address",
+    "label": "schoolName",
     "type": "input",
     "required": {
       "value": true,
@@ -73,7 +73,7 @@
   },
   {
     "name": "callerName",
-    "label": "Name of Referral Source",
+    "label": "callerNamee",
     "type": "input",
     "required": {
       "value": true,
@@ -83,7 +83,7 @@
   {
     "name": "relationshipToChild",
     "type": "select",
-    "label": "Referral source relationship to person(s) of concern",
+    "label": "referralSourceRelationship",
     "options": [
       { "value": "", "label": "" },
       { "value": "Peer", "label": "Peer" },
@@ -100,7 +100,7 @@
   },
   {
     "name": "callerAddress",
-    "label": "Referral Source Address/Location",
+    "label": "callerAddress",
     "type": "input",
     "required": {
       "value": true,
@@ -109,7 +109,7 @@
   },
   {
     "name": "callerProvince",
-    "label": "Referral Source Province/Territory",
+    "label": "callerProvince",
     "type": "select",
     "options": [
       {
@@ -196,7 +196,7 @@
   },
   {
     "name": "callerPhone",
-    "label": "Referral Source Phone",
+    "label": "callerPhone",
     "type": "input",
     "required": {
       "value": true,

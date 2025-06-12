@@ -10,7 +10,7 @@
     },
     {
       "name": "referredTo",
-      "label": "Name of Agency",
+      "label": "referredTo",
       "type": "input",
       "required": {
         "value": true,
@@ -19,7 +19,7 @@
     },
     {
       "name": "contactName",
-      "label": "Contact Name",
+      "label": "contactName",
       "type": "input",
       "required": {
         "value": true,
@@ -28,7 +28,7 @@
     },  
     {
       "name": "contactLocation",
-      "label": "Contact Address/Location",
+      "label": "contactLocation",
       "type": "input",
       "required": {
         "value": true,
@@ -37,7 +37,7 @@
     },
     {
         "name": "badgeNumber",
-        "label": "Badge Number",
+        "label": "badgeNumber",
         "type": "input",
         "required": {
             "value": true,
