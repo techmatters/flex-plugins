@@ -634,5 +634,9 @@
 "Gender": "Sexe",
 "Age": "Âge",
 "Silent": "Silence",
-"Hang up": "Raccroché"
+"Hang up": "Raccroché",
+"HangUp": "Raccrocher",
+"Dial": "Composer",
+"Unmute": "Activer le son",
+"Mute": "Couper"
 }
