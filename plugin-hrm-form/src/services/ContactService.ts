@@ -39,7 +39,7 @@ import {
 } from './getExternalRecordingInfo';
 import { GeneralizedSearchParams, SearchParams } from '../states/search/types';
 import { ContactDraftChanges } from '../states/contacts/existingContacts';
-import { newContactState } from '../states/contacts/contactState';
+import { newContact } from '../states/contacts/contactState';
 import { ApiError, FetchOptions } from './fetchApi';
 import { TaskSID, WorkerSID } from '../types/twilio';
 import { recordEvent } from '../fullStory';
@@ -253,9 +253,9 @@ const saveContactToHrm = async (
   }
 
   if (isNonDataCallType(callType)) {
-    const newContactWithMetaData = newContactState(currentDefinitionVersion, task)(false);
+    const blankContact = newContact(currentDefinitionVersion, task);
     form = {
-      ...newContactWithMetaData.savedContact.rawJson,
+      ...blankContact.rawJson,
       callType,
       ...(isOfflineContactTask(task) && {
         contactlessTask: contact.rawJson.contactlessTask,
