@@ -19,7 +19,7 @@ import { PreEngagementFormDefinition } from '../src/pre-engagement-form';
 
 const accountSid = 'AC147e360e21386797593c3893bf4def12';
 const flexFlowSid = 'FO464be1805424c9a42a90a88e53cc0ed0';
-const defaultLanguage = 'en-US';
+const defaultLanguage = 'en-USCH';
 const captureIp = true;
 const checkOpenHours = false;
 const contactType: ContactType = 'ip';
