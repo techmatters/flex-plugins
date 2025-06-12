@@ -9,7 +9,10 @@ locals {
 
   local_config = {
     custom_task_routing_filter_expression = ""
-    flow_vars                             = {}
+    flow_vars                             = {
+      widget_from = "Bot"
+      chat_blocked_message = "Sorry, you've been blocked"
+    }
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
   #Channels
