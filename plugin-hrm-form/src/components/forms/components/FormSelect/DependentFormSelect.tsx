@@ -46,29 +46,32 @@ const DependentFormSelect: React.FC<DependentFormSelectProps> = ({
     errorId,
   ]);
 
-  const validate = (data: any) =>
-    hasOptions && required && data === defaultOption.value ? 'RequiredFieldError' : null;
+  const parents = inputId.split('.').slice(0, -1);
+  const dependeePath = [...parents, dependsOn].join('.');
+  const dependeeValue = watch(dependeePath);
+  const isMounted = React.useRef(false);
+  const hasOptions = Boolean(dependeeValue && dependentOptions[dependeeValue]);
+  const shouldInitialize = initialValue && !isMounted.current;
 
+  const required = Boolean(registerOptions.required);
   const refFunction = React.useCallback(
     ref => {
       if (htmlElRef && ref) {
         htmlElRef.current = ref;
       }
 
-      register({ ...registerOptions, validate })(ref);
+      register({
+        ...registerOptions,
+        validate: (data: any) => (hasOptions && required && data === defaultOption.value ? 'RequiredFieldError' : null),
+      })(ref);
     },
-    [htmlElRef, register, registerOptions, validate],
+    [defaultOption.value, hasOptions, htmlElRef, register, registerOptions, required],
   );
   // ====== //
 
   const defaultValue = initialValue.toString();
-
-  const isMounted = React.useRef(false); // mutable value to avoid reseting the state in the first render. This preserves the "intialValue" provided
+  // mutable value to avoid reseting the state in the first render. This preserves the "intialValue" provided
   const prevDependeeValue = React.useRef(undefined); // mutable value to store previous dependeeValue
-  const parents = inputId.split('.').slice(0, -1);
-  const dependeePath = [...parents, dependsOn].join('.');
-  const dependeeValue = watch(dependeePath);
-  const required = Boolean(registerOptions.required);
 
   React.useEffect(() => {
     if (isMounted.current && prevDependeeValue.current && dependeeValue !== prevDependeeValue.current) {
@@ -79,9 +82,6 @@ const DependentFormSelect: React.FC<DependentFormSelectProps> = ({
 
     prevDependeeValue.current = dependeeValue;
   }, [setValue, dependeeValue, inputId, defaultOption]);
-
-  const hasOptions = Boolean(dependeeValue && dependentOptions[dependeeValue]);
-  const shouldInitialize = initialValue && !isMounted.current;
 
   // eslint-disable-next-line no-nested-ternary
   const options: SelectOption[] = hasOptions
