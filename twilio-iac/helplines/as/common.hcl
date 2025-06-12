@@ -50,7 +50,7 @@ locals {
         "friendly_name"  = "E2E Test Queue"
       },
       switchboard : {
-        "target_workers" = "routing.skills HAS 'Supervisor'",
+        "target_workers" = "1==1",
         "friendly_name"  = "Switchboard Queue"
       },
     }
