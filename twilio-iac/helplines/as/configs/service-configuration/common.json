@@ -8,7 +8,8 @@
             "enable_fullstory_monitoring": true,
             "enable_hierarchical_translations": true,
             "enable_region_resource_search": true,
-            "enable_save_in_progress_contacts": true
+            "enable_save_in_progress_contacts": true,
+            "enable_switchboarding": true
         },
         "helplineLanguage": "en-US"
     }
