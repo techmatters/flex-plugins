@@ -16,13 +16,13 @@
 
 import { SelectOption } from 'hrm-form-definitions';
 import React from 'react';
-import { Template } from '@twilio/flex-ui';
 
 import { FormOption } from '../../../../styles';
+import { getTemplateStrings } from '../../../../hrmConfig';
 
 const bindCreateSelectOptions = (path: string) => (o: SelectOption, selected: boolean) => (
   <FormOption key={`${path}-${o.label}-${o.value}`} value={o.value} isEmptyValue={o.value === ''} selected={selected}>
-    <Template code={o.label} />
+    {getTemplateStrings()[o.label] ?? o.label}
   </FormOption>
 );
 
