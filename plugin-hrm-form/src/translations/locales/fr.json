@@ -602,7 +602,7 @@
 "QueuesStatsSelectQueues": "Sélectionnez jusqu'à 20 files d'attente pour des performances optimales",
 "QueuesStatsSelectCards": "Sélectionnez jusqu'à 6 cartes pour éviter le défilement",
 "QueueStatsBreadCrumb": "Surveillance des statistiques de file d'attente",
-"QueueStatsContactCenter": "Surveillance des statistiques de file d'attente"
+"QueueStatsContactCenter": "Surveillance des statistiques de file d'attente",
 "ActiveTasksTileTitle": "Tâches actives",
 "WaitingTasksTileTitle": "Tâches en attente",
 "LongestWaitTimeTileTitle": "Attente la plus longue",
