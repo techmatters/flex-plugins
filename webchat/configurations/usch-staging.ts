@@ -19,7 +19,7 @@ import { PreEngagementFormDefinition } from '../src/pre-engagement-form';
 
 const accountSid = 'AC147e360e21386797593c3893bf4def12';
 const flexFlowSid = 'FO464be1805424c9a42a90a88e53cc0ed0';
-const defaultLanguage = 'en-US';
+const defaultLanguage = 'en-USCH';
 const captureIp = true;
 const checkOpenHours = false;
 const contactType: ContactType = 'ip';
@@ -429,6 +429,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       label: 'Are you reaching out on behalf of yourself or another person?',
       type: 'select',
+      defaultValue: 'Yes',
       name: 'callingAboutSelf',
       options: [
         {
@@ -444,6 +445,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       label: 'What is your preferred language?',
       type: 'select',
+      defaultValue: 'English',
       name: 'language',
       options: [
         {
