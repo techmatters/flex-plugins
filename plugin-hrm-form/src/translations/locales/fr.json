@@ -554,7 +554,7 @@
 "FilterItemOnly": "{{item.label}} uniquement",
 "FilterItemAmountSelected": "{{amount}} sélectionnés",
 "TaskTabSupervisorCallLabel": "Appel",
-"SupervisorTaskCanvasHeader": "Surveiller"
+"SupervisorTaskCanvasHeader": "Surveiller",
 "NoOutboundCallingWhenOffline": "Pour passer un appel, veuillez modifier votre statut de {{activityName}}",
 "OutboundCallFailedNotificationTitleDisabledCountry": "Les appels vers ce pays ne sont pas autorisés. Merci de contacter votre administrateur pour changer les permissions géographiques.",
 "OutboundDialerPanelTitle": "Appel",
