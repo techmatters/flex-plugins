@@ -108,20 +108,6 @@ resource "aws_ssm_parameter" "twilio_conversations_chat_transfer_workflow_sid" {
   }
 }
 
-resource "aws_ssm_parameter" "twilio_switchboard_queue_sid" {
-  count       = var.switchboard_queue_sid == "NOTVALIDQUEUESID" ? 0 : 1
-  name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/switchboard_queue_sid"
-  type        = "SecureString"
-  value       = var.switchboard_queue_sid
-  description = "Twilio account - Switchboard Queue SID"
-
-  tags = {
-    Environment = lower(var.environment)
-    Name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/switchboard_queue_sid"
-    Terraform   = true
-  }
-}
-
 resource "aws_ssm_parameter" "twilio_sync_sid" {
   name        = "/${lower(var.environment)}/twilio/${nonsensitive(var.twilio_account_sid)}/sync_sid"
   type        = "SecureString"
