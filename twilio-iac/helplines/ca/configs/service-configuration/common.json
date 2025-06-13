@@ -14,9 +14,11 @@
             "enable_client_profiles": false,
             "enable_conferencing": true,
             "enable_language_selector": true,
+            "enable_hang_up_by_hrm_saving": true,
             "enable_manual_pulling": false,
             "enable_previous_contacts": false,
             "enable_region_resource_search": true,
+            "enable_switchboarding": true,
             "enable_upload_documents": false,
             "enable_voice_recordings": true
         },
