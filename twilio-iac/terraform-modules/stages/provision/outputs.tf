@@ -22,6 +22,10 @@ output "task_router_task_channel_sids" {
   value = module.taskRouter.task_channel_sids
 }
 
+output "task_router_task_queue_sids" {
+  value = module.taskRouter.task_queue_sids
+}
+
 output "task_router_chat_task_channel_sid" {
   value = module.taskRouter.task_channel_sids.chat
 }

@@ -106,8 +106,3 @@ variable "queue_transfers_workflow_sid" {
   default     = "WWxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 }
 
-variable "switchboard_queue_sid" {
-  description = "switchboard_queue_sid"
-  type        = string
-  default = "NOTVALIDQUEUESID"
-}
