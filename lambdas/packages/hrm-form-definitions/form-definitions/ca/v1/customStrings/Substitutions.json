@@ -156,6 +156,11 @@
   "incidentDate": "When did the most recent incident occur",
   "incidentLocation": "Location of Incident",
   "incidentType": "Type of Incident?",
+  "HangUp": "Hang Up",
+  "DirectAbusetoCounsellor": "Direct Abuse to Counsellor",
+  "ArousalCaller": "Arousal Caller",
+  "Training/TechTesting": "Training/Tech Testing",
+  "CMOnlyEmergency": "CM Only - Emergency",
 
   "Switchboard-NoQueuesSwitchboarded": "No queues are currently being switchboarded",
   "Switchboard-QueueSwitchboardedStatus": "{{queueName}} queue is currently being switchboarded by {{supervisorName}} since {{startTime}}",
@@ -183,8 +188,12 @@
   "CaseSection-BottomBar-SaveAndAddAnother/note": "Sauvegarder et Ajouter Autre",
   "CaseSection-Edit/note": "Modifier Détails du suivi",
   "CaseSection-Edit/referral": "Modifier Personne-ressource",
+  "Case-SectionList-Add/household": "Membre de la famille/du ménag",
+  "CaseSection-Add/household": "Ajouter Membre de la famille/du ménag",
+  "CaseSection-Add/incident": "Ajouter Incident",
   "Case-SectionList-Add/referral": "Personne-ressource",
   "CaseSection-Add/referral": "Ajouter Personne-ressource",
+  "CaseSection-View-Title/household": "Visualiser Membre de la famille/du ménage",
   "CaseSection-Edit/household": "Modifier Membre de la famille/du ménage",
   "CaseSection-Edit/perpetrator": "Modifier Personne-ressource",
   "CaseSection-Edit/incident": "Modifier Incident",
@@ -337,8 +346,6 @@
   "additionalTools":"Quels outils vous ont aidé à réaliser ce contact ?",
   "otherTools":"Si autres outils, veuillez préciser :",
   "Referrals": "Ressources partagées :",
-  "NoCaseSummary": "Veuillez ajouter des détails sur les armes, l'accessibilité, les cibles, les détails du suicide, les médicaments, le crime.",
-  "CaseSummary-None": "Veuillez ajouter des détails sur les armes, l'accessibilité, les cibles, les détails du suicide, les médicaments, le crime.",
   "LegalHold": "Retención Legal", 
   "NatureofCrisis": "Naturaleza de la crisis",
   "Case Status": "Statut",
@@ -347,7 +354,6 @@
   "contactLocation": "Adresse/Lieu de contact",
   "badgeNumber": "Numéro de badge",
   "Phone": "Numéro de téléphone",
-  "BottomBar-SaveAndAddAnotherReferral": "Sauveguarder et ajouter un autre",
   "FollowUpDetails": "Détails de suivi",
   "counsellingManagerInformed": "Avez-vous informé le responsable du service de conseil de l'existence de ce formulaire de recommandation ? (L'équipe du service de conseil doit être informée une fois la recommandation effectuée.)",
   "cmSignOff": "Signature du responsable du conseil (réservé à l'usage du CM)",
@@ -363,13 +369,22 @@
   "callerAddress": "Adresse/emplacement de la source de référence",
   "callerProvince": "Province/Territoire de la source de référence",
   "callerPhone": "Numéro de téléphone de la source de référence",
-
+  "Silent": "Silencieux",
+  "HangUp": "Raccroché",
+  "DirectAbusetoCounsellor": "Abus direct envers le conseiller",
+  "ArousalCaller": "Appel d'éveil",
+  "Training/TechTesting": "Formation/Essais techniques",
+  "CMOnlyEmergency": "Gestionnaire des services d’intervention uniquement - Urgence",
+  "offenderName": "Nombre du présunto infracteur(s)",
+  "isChildHurt": "La personne concernée est-elle blessée ?",
+  "isChildInImmediateDanger": "La personne concernée est-elle en danger immédiat ?",
+  "incidentLocation": "Lieu de l'incident",
+  "incidentType": "Type d'incident ?",
 
   "Switchboard-NoQueuesSwitchboarded": "aucune file d'attente n'est commutée",
   "Switchboard-QueueSwitchboardedStatus": "{{queueName}} est en cours de changement par {{supervisorName}} depuis {{startTime}}",
   "Switchboard-SelectQueueModalTitle": "Sélectionner la file d'attente pour changer",
   "Switchboard-StatusActive": "Commutation : en cours",
-  "Switchboard-StatusInactive": "Commutation : Off"
-  
+  "Switchboard-StatusInactive": "Commutation : désactivé"
   }
 }
