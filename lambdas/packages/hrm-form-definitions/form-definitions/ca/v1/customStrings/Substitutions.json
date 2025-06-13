@@ -188,8 +188,12 @@
   "CaseSection-BottomBar-SaveAndAddAnother/note": "Sauvegarder et Ajouter Autre",
   "CaseSection-Edit/note": "Modifier Détails du suivi",
   "CaseSection-Edit/referral": "Modifier Personne-ressource",
+  "Case-SectionList-Add/household": "Membre de la famille/du ménag",
+  "CaseSection-Add/household": "Ajouter Membre de la famille/du ménag",
+  "CaseSection-Add/incident": "Ajouter Incident",
   "Case-SectionList-Add/referral": "Personne-ressource",
   "CaseSection-Add/referral": "Ajouter Personne-ressource",
+  "CaseSection-View-Title/household": "Visualiser Membre de la famille/du ménage",
   "CaseSection-Edit/household": "Modifier Membre de la famille/du ménage",
   "CaseSection-Edit/perpetrator": "Modifier Personne-ressource",
   "CaseSection-Edit/incident": "Modifier Incident",
@@ -378,12 +382,13 @@
   "offenderName": "Nombre du présunto infracteur(s)",
   "isChildHurt": "La personne concernée est-elle blessée ?",
   "isChildInImmediateDanger": "La personne concernée est-elle en danger immédiat ?",
+  "incidentLocation": "Lieu de l'incident",
+  "incidentType": "Type d'incident ?",
 
   "Switchboard-NoQueuesSwitchboarded": "aucune file d'attente n'est commutée",
   "Switchboard-QueueSwitchboardedStatus": "{{queueName}} est en cours de changement par {{supervisorName}} depuis {{startTime}}",
   "Switchboard-SelectQueueModalTitle": "Sélectionner la file d'attente pour changer",
   "Switchboard-StatusActive": "Commutation : en cours",
-  "Switchboard-StatusInactive": "Commutation : Off"
-  
+  "Switchboard-StatusInactive": "Commutation : désactivé"
   }
 }
