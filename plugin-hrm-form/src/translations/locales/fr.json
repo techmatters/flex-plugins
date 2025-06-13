@@ -553,6 +553,8 @@
 "FilterItemAny": "Aucun",
 "FilterItemOnly": "{{item.label}} uniquement",
 "FilterItemAmountSelected": "{{amount}} sélectionnés",
+"TaskTabSupervisorCallLabel": "Appel",
+"SupervisorTaskCanvasHeader": "Surveiller"
 "NoOutboundCallingWhenOffline": "Pour passer un appel, veuillez modifier votre statut de {{activityName}}",
 "OutboundCallFailedNotificationTitleDisabledCountry": "Les appels vers ce pays ne sont pas autorisés. Merci de contacter votre administrateur pour changer les permissions géographiques.",
 "OutboundDialerPanelTitle": "Appel",
@@ -600,6 +602,7 @@
 "QueuesStatsSelectQueues": "Sélectionnez jusqu'à 20 files d'attente pour des performances optimales",
 "QueuesStatsSelectCards": "Sélectionnez jusqu'à 6 cartes pour éviter le défilement",
 "QueueStatsBreadCrumb": "Surveillance des statistiques de file d'attente",
+"QueueStatsContactCenter": "Surveillance des statistiques de file d'attente"
 "ActiveTasksTileTitle": "Tâches actives",
 "WaitingTasksTileTitle": "Tâches en attente",
 "LongestWaitTimeTileTitle": "Attente la plus longue",
@@ -626,6 +629,7 @@
 "Save": "Enregistrer",
 "Reset": "Réinitialiser",
 "QueuesStatsHeading": "Surveillance des files d'attente",
+"QueueStatsNumberWarning": "",
 "QueuesStatsSubscribedQueuesCount": "files d'attente sélectionnées",
 "QueuesStatsFilterQueuesCount": "files d'attente sélectionnées",
 "QueuesStatsFilterMetricsCount": "métriques sélectionnées",
@@ -642,5 +646,20 @@
 "Dial": "Composer",
 "Unmute": "Activer le son",
 "Mute": "Couper",
-"Resources Shared:": "Ressource(s) partagée(s)"
+"Resources Shared:": "Ressource(s) partagée(s)",
+"Invalid Date": "Date invalide",
+"TaskLineCallTransferTitle": "Transfert",
+"Today": "Aujourd'hui",
+"Yesterday": "Hier",
+"ColdTransferTooltip": "Transfert direct",
+"WarmTransferTooltip": "Transfert consultatif",
+"AcceptTaskTooltip": "Accepter",
+"RejectTaskTooltip": "Rejeter",
+"HangupCallTooltip": "Raccrocher",
+"MuteCallTooltip": "Couper le son",
+"HoldCustomerTooltip": "Mettre en attente",
+"UnholdCustomerTooltip": "Décoller",
+"HoldAgentTooltip": "Mettre en attente",
+"UnholdAgentTooltip": "Décoller",
+"NewChatMessageNotificationTitle": "Nouveau message de {{lastMessage.authorName}}"
 }
