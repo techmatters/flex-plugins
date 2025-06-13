@@ -19,31 +19,31 @@
   },
   {
     "name": "hangup",
-    "label": "HangUp",
+    "label": "Hang Up",
     "type": "button",
     "category": "non-data"
   },    
   {
     "name": "abuse",
-    "label": "DirectAbusetoCounsellor",
+    "label": "Direct Abuse to Counsellor",
     "type": "button",
     "category": "non-data"
   },  
   {
     "name": "arousal",
-    "label": "ArousalCaller",
+    "label": "Arousal Caller",
     "type": "button",
     "category": "non-data"
   },  
   {
     "name": "training",
-    "label": "Training/TechTesting",
+    "label": "Training/Tech Testing",
     "type": "button",
     "category": "non-data"
   }, 
   {
     "name": "emergency",
-    "label": "CMOnlyEmergency",
+    "label": "CM Only - Emergency",
     "type": "button",
     "category": "non-data"
   }
