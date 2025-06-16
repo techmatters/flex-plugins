@@ -13,7 +13,8 @@ locals {
     task_language              = "en-US"
     enable_post_survey         = false
     enable_external_recordings = false
-    permission_config          = "demo"
+    permission_config          = "usch"
+    enable_lex_v2              = true
     workflows = {
       master : {
         friendly_name = "Master Workflow"

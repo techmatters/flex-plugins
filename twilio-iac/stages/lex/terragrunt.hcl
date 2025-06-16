@@ -166,25 +166,26 @@ locals {
     )
   }) : {}
 
-  lex_v2_slot_types = local.enable_lex_v2 ? tomap({
-    for language, bots in local.lex_v2_bot_languages :
-    language => [
-      for slot_type in local.lex_v2_slot_types_names[language] : {
-        bot_name = slot_type.bot_name
-        config = jsondecode(
-          file(
-            fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/slot_types/${slot_type.name}.json") ?
-            "/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/slot_types/${slot_type.name}.json" :
-            fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/slot_types/${slot_type.name}.json") ?
-            "/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/slot_types/${slot_type.name}.json" :
-            fileexists("/app/twilio-iac/helplines/configs/lex_v2/${language}/slot_types/${slot_type.name}.json") ?
-            "/app/twilio-iac/helplines/configs/lex_v2/${language}/slot_types/${slot_type.name}.json" :
-            "/app/twilio-iac/helplines/configs/lex_v2/${substr(language, 0, 2)}/slot_types/${slot_type.name}.json"
-          )
-        )
-      }
-    ]
-  }) : {}
+lex_v2_slot_types = local.enable_lex_v2 ? tomap({
+  for language, bots in local.lex_v2_bot_languages :
+  language => [
+    for slot_type in local.lex_v2_slot_types_names[language] :
+    {
+      bot_name = slot_type.bot_name,
+      config = (
+        fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/slot_types/${slot_type.name}.json") ?
+          jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/${language}/slot_types/${slot_type.name}.json")) :
+        fileexists("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/slot_types/${slot_type.name}.json") ?
+          jsondecode(file("/app/twilio-iac/helplines/${local.short_helpline}/configs/lex_v2/common/slot_types/${slot_type.name}.json")) :
+        fileexists("/app/twilio-iac/helplines/configs/lex_v2/${language}/slot_types/${slot_type.name}.json") ?
+          jsondecode(file("/app/twilio-iac/helplines/configs/lex_v2/${language}/slot_types/${slot_type.name}.json")) :
+          jsondecode(file("/app/twilio-iac/helplines/configs/lex_v2/${substr(language, 0, 2)}/slot_types/${slot_type.name}.json"))
+      )
+    }
+    if !startswith(slot_type.name, "AMAZON")
+  ]
+}) : {}
+
   //leaving for debugging purposes
   //print6 = run_cmd("echo", jsonencode(local.lex_v2_slot_types))
 

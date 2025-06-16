@@ -11,7 +11,8 @@
             "enable_voice_recordings": true,
             "enable_client_profiles":true,
             "enable_conferencing": true,
-            "enable_hierarchical_translations": true
+            "enable_hierarchical_translations": true,
+            "enable_lex_v2": true
         },
         "definitionVersion": "usch-v1",
         "external_recordings_enabled": false,
