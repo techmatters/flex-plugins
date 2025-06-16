@@ -587,6 +587,7 @@
   "Switchboard-SelectQueueModalTitle": "Select queue to switchboard",
   "Switchboard-StatusActive": "Switchboarding: In Progress",
   "Switchboard-StatusInactive": "Switchboarding: Off",
-  "Switchboard-ConfirmTurnOffSwitchboard": "Are you sure you want to turn off switchboarding?"
-
+  "Switchboard-ConfirmTurnOffSwitchboard": "Are you sure you want to turn off switchboarding?",
+  "Switchboard-ActivateSwitchboarding": "Activate switchboarding",
+  "Switchboard-PleaseSelectQueue": "Please select a queue first"
 }

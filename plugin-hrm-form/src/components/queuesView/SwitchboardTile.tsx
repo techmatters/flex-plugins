@@ -117,9 +117,8 @@ const SwitchboardTile = () => {
     startTime: string | null,
     supervisorName: string | null,
   ) => {
-    
-    const userLocale = (currentlocale==='fr')?'fr-FR':'en-US';
-    
+    const userLocale = currentlocale || 'en-US';
+
     let formattedDate = '';
     let formattedTime = '';
     if (startTime) {

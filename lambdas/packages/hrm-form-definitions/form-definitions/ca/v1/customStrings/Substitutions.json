@@ -168,8 +168,9 @@
   "Switchboard-StatusActive": "Switchboarding: In Progress",
   "Switchboard-StatusInactive": "Switchboarding: Off",
   "Switchboard-ModalTitleTurnOffSwitchboard": "Are you sure you want to turn off switchboarding?",
-  "Switchboard-ButtonTurnOffSwitchboard": "Turn off switchboard"
-  
+  "Switchboard-ButtonTurnOffSwitchboard": "Turn off switchboard",
+  "Switchboard-ActivateSwitchboarding": "Activate switchboarding",
+  "Switchboard-PleaseSelectQueue": "Please select a queue"
   
   },
   "fr": {
@@ -388,6 +389,9 @@
   "Switchboard-QueueSwitchboardedStatus": "{{queueName}} est en cours de changement par {{supervisorName}} depuis {{startDate}} à {{startTime}}",
   "Switchboard-SelectQueueModalTitle": "Sélectionner la file d'attente pour changer",
   "Switchboard-StatusActive": "Commutation : en cours",
-  "Switchboard-StatusInactive": "Commutation : désactivé"
+  "Switchboard-StatusInactive": "Commutation : désactivé",
+  "Switchboard-ModalTitleTurnOffSwitchboard": "Êtes-vous sûr de vouloir désactiver la commutation?",
+  "Switchboard-ButtonTurnOffSwitchboard": "Désactiver",
+  "Switchboard-ActivateSwitchboarding": "Activer la commutation"
   }
 }
