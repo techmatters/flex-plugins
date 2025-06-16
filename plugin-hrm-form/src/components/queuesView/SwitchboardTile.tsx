@@ -175,7 +175,7 @@ const SwitchboardTile = () => {
           <Switch checked={isSwitchboardingActive} onChange={handleSwitchToggle} color="primary" disabled={isLoading} />
         </Box>
 
-        <Box style={{ marginTop: '15px', display: 'flex', alignItems: 'center' }}>
+        <Box>
           {isSwitchboardingActive && queueSid ? (
             <div>{renderSwitchboardStatusText(queueName, startTime, getSupervisorName(supervisorWorkerSid))}</div>
           ) : (
@@ -188,14 +188,12 @@ const SwitchboardTile = () => {
                   rel="noopener noreferrer"
                   style={{
                     display: 'flex',
-                    marginLeft: '8px',
                     cursor: 'pointer',
-                    color: 'inherit',
                     textDecoration: 'none',
                   }}
                 >
-                  <InfoIcon style={{ fontSize: '18px', marginRight: '2px' }} />
-                  <OpenInNewIcon style={{ fontSize: '14px' }} />
+                  <InfoIcon style={{ fontSize: '20px' }} />
+                  <OpenInNewIcon style={{ fontSize: '12px' }} />
                 </a>
               </Tooltip>
             </div>
