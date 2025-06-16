@@ -182,10 +182,15 @@ const SwitchboardTile = () => {
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <Template code="Switchboard-NoQueuesSwitchboarded" />
               <Tooltip title="Learn more about switchboarding">
-                <Box style={{ display: 'flex', marginLeft: '8px', cursor: 'pointer' }}>
-                  <InfoIcon style={{ fontSize: '16px', marginRight: '2px' }} />
-                  <OpenInNewIcon style={{ fontSize: '16px' }} />
-                </Box>
+                <a 
+                  href="https://aselo-support.freshdesk.com/en/support/solutions/articles/151000202559-switchboarding" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ display: 'flex', marginLeft: '8px', cursor: 'pointer', color: 'inherit', textDecoration: 'none' }}
+                >
+                  <InfoIcon style={{ fontSize: '18px', marginRight: '2px' }} />
+                  <OpenInNewIcon style={{ fontSize: '14px' }} />
+                </a>
               </Tooltip>
             </div>
           )}
