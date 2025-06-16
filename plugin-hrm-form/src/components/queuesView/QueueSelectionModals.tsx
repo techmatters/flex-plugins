@@ -155,7 +155,9 @@ export const TurnOffSwitchboardDialog: React.FC<TurnOffSwitchboardDialogProps> =
             <CloseButton tabIndex={3} aria-label="CloseButton" onClick={onClose} />
           </CloseButtonWrapper>
           <HeaderBox>
-            <DialogTitle id="turn-off-switchboard-title">Are you sure you want to turn off switchboarding?</DialogTitle>
+            <DialogTitle id="turn-off-switchboard-title">
+              <Template code="Switchboard-ModalTitleTurnOffSwitchboard" />
+            </DialogTitle>
           </HeaderBox>
           <StatusTextContainer>
             {renderStatusText(switchboardSyncState?.queueSid || '', switchboardSyncState?.startTime || null)}
@@ -164,7 +166,9 @@ export const TurnOffSwitchboardDialog: React.FC<TurnOffSwitchboardDialogProps> =
             <TertiaryButton type="button" onClick={onClose}>
               Cancel
             </TertiaryButton>
-            <SaveAndEndButton onClick={onConfirm}>Turn Off Switchboarding</SaveAndEndButton>
+            <SaveAndEndButton onClick={onConfirm}>
+              <Template code="Switchboard-ButtonTurnOffSwitchboard" />
+            </SaveAndEndButton>
           </ButtonGroup>
         </NonDataCallTypeDialogContainer>
       </TabPressWrapper>

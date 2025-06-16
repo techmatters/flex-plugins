@@ -163,10 +163,13 @@
   "CMOnlyEmergency": "CM Only - Emergency",
 
   "Switchboard-NoQueuesSwitchboarded": "No queues are currently being switchboarded",
-  "Switchboard-QueueSwitchboardedStatus": "{{queueName}} queue is currently being switchboarded by {{supervisorName}} since {{startTime}}",
+  "Switchboard-QueueSwitchboardedStatus": "{{queueName}} queue is currently being switchboarded by {{supervisorName}} since {{startDate}} at {{startTime}}",
   "Switchboard-SelectQueueModalTitle": "Select queue to switchboard",
   "Switchboard-StatusActive": "Switchboarding: In Progress",
-  "Switchboard-StatusInactive": "Switchboarding: Off"
+  "Switchboard-StatusInactive": "Switchboarding: Off",
+  "Switchboard-ModalTitleTurnOffSwitchboard": "Are you sure you want to turn off switchboarding?",
+  "Switchboard-ButtonTurnOffSwitchboard": "Turn off switchboard"
+  
   
   },
   "fr": {
@@ -382,7 +385,7 @@
   "incidentType": "Type d'incident ?",
 
   "Switchboard-NoQueuesSwitchboarded": "aucune file d'attente n'est commutée",
-  "Switchboard-QueueSwitchboardedStatus": "{{queueName}} est en cours de changement par {{supervisorName}} depuis {{startTime}}",
+  "Switchboard-QueueSwitchboardedStatus": "{{queueName}} est en cours de changement par {{supervisorName}} depuis {{startDate}} à {{startTime}}",
   "Switchboard-SelectQueueModalTitle": "Sélectionner la file d'attente pour changer",
   "Switchboard-StatusActive": "Commutation : en cours",
   "Switchboard-StatusInactive": "Commutation : désactivé"

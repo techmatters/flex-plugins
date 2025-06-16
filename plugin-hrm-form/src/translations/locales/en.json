@@ -583,8 +583,10 @@
   "MainHeader-Translator-MenuTitle": "Language Preference",
 
   "Switchboard-NoQueuesSwitchboarded": "No queues are currently being switchboarded",
-  "Switchboard-QueueSwitchboardedStatus": "<strong>{{queueName}}</strong> queue is currently being switchboarded by <strong>{{supervisorName}}</strong> since <strong>{{startTime}}</strong>",
+  "Switchboard-QueueSwitchboardedStatus": "<strong>{{queueName}}</strong> queue is currently being switchboarded by <strong>{{supervisorName}}</strong> since <strong>{{startDate}} at {{startTime}}</strong>",
   "Switchboard-SelectQueueModalTitle": "Select queue to switchboard",
   "Switchboard-StatusActive": "Switchboarding: In Progress",
-  "Switchboard-StatusInactive": "Switchboarding: Off"
+  "Switchboard-StatusInactive": "Switchboarding: Off",
+  "Switchboard-ConfirmTurnOffSwitchboard": "Are you sure you want to turn off switchboarding?"
+
 }

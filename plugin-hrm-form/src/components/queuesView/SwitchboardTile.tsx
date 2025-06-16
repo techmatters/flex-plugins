@@ -27,6 +27,7 @@ import { Box } from '../../styles';
 import SwitchboardIcon from '../common/icons/SwitchboardIcon';
 import { RootState } from '../../states';
 import { namespace, configurationBase } from '../../states/storeNamespaces';
+import { selectLocaleState } from '../../states/configuration/selectLocaleState';
 import { SelectQueueModal, TurnOffSwitchboardDialog } from './QueueSelectionModals';
 import { SwitchboardTileBox, LoadingContainer } from './styles';
 import { useSwitchboard } from '../../states/switchboard/useSwitchboard';
@@ -109,21 +110,30 @@ const SwitchboardTile = () => {
       ? counselorsHash[supervisorWorkerSid]
       : 'Unknown supervisor';
   };
+  const { selected: currentlocale } = useSelector(selectLocaleState);
 
   const renderSwitchboardStatusText = (
     queueName: string | null,
     startTime: string | null,
     supervisorName: string | null,
   ) => {
-    const formattedTime = startTime
-      ? new Date(startTime).toLocaleString('en-US', {
-          month: 'long',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: '2-digit',
-          hour12: true,
-        })
-      : '';
+    
+    const userLocale = (currentlocale==='fr')?'fr-FR':'en-US';
+    
+    let formattedDate = '';
+    let formattedTime = '';
+    if (startTime) {
+      const dateObj = new Date(startTime);
+      formattedDate = dateObj.toLocaleDateString(userLocale, {
+        month: 'long',
+        day: 'numeric',
+      });
+      formattedTime = dateObj.toLocaleTimeString(userLocale, {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+      });
+    }
 
     return (
       <>
@@ -131,6 +141,7 @@ const SwitchboardTile = () => {
           code="Switchboard-QueueSwitchboardedStatus"
           queueName={queueName || ''}
           supervisorName={supervisorName || ''}
+          startDate={formattedDate}
           startTime={formattedTime}
         />
       </>
