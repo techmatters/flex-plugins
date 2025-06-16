@@ -59,8 +59,23 @@ test.describe.serial('Open and Edit a Case in Case List page', () => {
     console.log('Open Case List page');
     let page = caseList(pluginPage);
 
-    await page.filterCases('status', 'Open');
-    await page.filterCases('counselor', 'Aselo Alerts');
+    // Wait for the case list to be fully loaded before applying filters
+    await pluginPage.waitForSelector('tr[data-testid="CaseList-TableRow"]', { timeout: 30000 });
+    console.log('Case list rows are visible, proceeding with filtering');
+
+    try {
+      await page.filterCases('status', 'Open');
+      console.log('Successfully filtered by Open status');
+
+      // Add a short delay to ensure the first filter is fully applied
+      await pluginPage.waitForTimeout(1000);
+
+      await page.filterCases('counselor', 'Aselo Alerts');
+      console.log('Successfully filtered by counselor Aselo Alerts');
+    } catch (error) {
+      console.error('Error during filtering:', error);
+      throw error;
+    }
 
     const caseHomePage = await page.openFirstCaseButton();
 
