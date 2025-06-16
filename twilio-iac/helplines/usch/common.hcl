@@ -67,10 +67,10 @@ locals {
       }
     }
     lex_bot_languages = {
-      en_NZ : []
+      en_USCH : []
     }
     lex_v2_bot_languages = {
-       en_NZ : ["pre_survey"]
+       en_USCH : ["pre_survey"]
     }
     
   }
