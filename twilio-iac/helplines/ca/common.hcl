@@ -98,6 +98,10 @@ locals {
         "target_workers" = "routing.skills HAS '988NSFr'",
         "friendly_name"  = "988 NS French"
       },
+      "switchboard" : {
+        "target_workers" = "routing.skills HAS 'Supervisor'",
+        "friendly_name"  = "Switchboard Queue"
+      },
       e2e_test : {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
         "friendly_name"  = "E2E Test Queue"

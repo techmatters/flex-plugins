@@ -97,6 +97,7 @@
     "type": "select",
     "options": [
       { "value": "", "label": "" },
+      { "value": "AI", "label": "AI" },
       { "value": "Advertisement", "label": "Advertisement" },
       { "value": "Social media", "label": "Social media" },
       { "value": "SMS/Text Message", "label": "SMS/Text Message" },      

@@ -29,7 +29,9 @@ locals {
         channel_type         = "web"
         contact_identity     = ""
         templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-lex-web-location-block.tftpl"
-        channel_flow_vars    = {}
+        channel_flow_vars    = {
+          allowed_shortcode_locations = "MT"
+        }
         chatbot_unique_names = []
         enable_datadog_monitor = true
         custom_monitor = {
@@ -61,7 +63,9 @@ locals {
         channel_type         = "whatsapp"
         contact_identity     = "whatsapp:+15077097720"
         templatefile         = "/app/twilio-iac/helplines/mt/templates/studio-flows/messaging-whatsapp-lex-conv.tftpl"
-        channel_flow_vars    = {}
+        channel_flow_vars    = {
+           regex_allowed_test_numbers = "whatsapp:\\+(<SHORT_CODE_HERE>)\\d{6,20}"
+        }
         chatbot_unique_names = []
       },
       instagram : {

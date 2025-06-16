@@ -66,6 +66,7 @@ const testStore = (stateChanges: ContactsState) =>
     ],
   });
 
+const createdAtTimestamp = new Date().toISOString();
 const baseContact: Contact = {
   ...VALID_EMPTY_CONTACT,
   id: '1337',
@@ -80,6 +81,7 @@ const baseContact: Contact = {
     categories: {},
     contactlessTask: { ...VALID_EMPTY_CONTACT.rawJson.contactlessTask, channel: 'web' },
   },
+  createdAt: createdAtTimestamp,
 };
 
 const task = <ITask>(<unknown>{ taskSid: 'WT-mock task' });
@@ -247,10 +249,12 @@ describe('actions', () => {
       ) as unknown);
       const { metadata, savedContact } = getState().existingContacts[baseContact.id];
       // Check that the difference in startMillis is still insignificant
-      expect(Math.abs(metadata.startMillis - newContactMetaData(false).startMillis)).toBeLessThanOrEqual(100);
+      expect(
+        Math.abs(metadata.startMillis - newContactMetaData({ createdAt: new Date().toISOString() }).startMillis),
+      ).toBeLessThanOrEqual(100);
       expect(metadata).toStrictEqual(
         expect.objectContaining({
-          ...newContactMetaData(false),
+          ...newContactMetaData({ createdAt: createdAtTimestamp }),
           loadingStatus: LoadingStatus.LOADED,
           startMillis: expect.any(Number),
         }),

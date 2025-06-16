@@ -15,7 +15,8 @@
             "enable_post_survey": true,
             "enable_voice_recordings": true,
             "enable_client_profiles":true,
-            "enable_conferencing": true            
+            "enable_conferencing": true,
+            "enable_lambda_post_survey_processing": true            
         },
         "helplineLanguage": "es-CL",
         "permissionConfig": "cl"

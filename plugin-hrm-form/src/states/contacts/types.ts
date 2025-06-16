@@ -59,7 +59,6 @@ export type LlmAssistantStatus = typeof LlmAssistantStatus[keyof typeof LlmAssis
 export type ContactMetadata = {
   startMillis: number;
   endMillis: number;
-  recreated: boolean;
   categories: {
     gridView: boolean;
     expanded: { [key: string]: boolean };
