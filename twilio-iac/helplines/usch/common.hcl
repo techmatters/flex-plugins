@@ -66,6 +66,12 @@ locals {
         chatbot_unique_names = []
       }
     }
+    lex_bot_languages = {
+      en_NZ : []
+    }
+    lex_v2_bot_languages = {
+       en_NZ : ["pre_survey"]
+    }
     
   }
 }
