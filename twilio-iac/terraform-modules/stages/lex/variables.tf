@@ -315,6 +315,11 @@ variable "lex_v2_slots" {
                 value = string
               })
             })
+            variations = optional(object({
+              plainTextMessage = object({
+                value = string
+              })
+            }))
           }))
           maxRetries                 = number
           allowInterrupt             = bool
