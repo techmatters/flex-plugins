@@ -39,11 +39,11 @@
   "slotPriorities": [
     {
       "priority": 1,
-      "slotName": "about_self"
+      "slotName": "aboutSelf"
     },
     {
       "priority": 2,
-      "slotName": "gender_identity"
+      "slotName": "genderInput"
     },
     {
       "priority": 3,

@@ -1,5 +1,5 @@
 {
-    "slotName": "gender_identity",
+    "slotName": "genderInput",
     "slotTypeName": "AMAZON.AlphaNumeric",
     "intentName": "pre_survey",
     "description": "Slot gender_identity for intent pre_survey",

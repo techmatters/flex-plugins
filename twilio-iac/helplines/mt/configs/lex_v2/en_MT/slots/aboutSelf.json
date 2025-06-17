@@ -1,5 +1,5 @@
 {
-    "slotName": "about_self",
+    "slotName": "aboutSelf",
     "slotTypeName": "yes_no",
     "intentName": "pre_survey_intent",
     "description": "Slot about_self for intent pre_survey_intent",

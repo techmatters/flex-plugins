@@ -1,8 +1,8 @@
 {
-    "slotName": "about_self",
+    "slotName": "aboutSelf",
     "slotTypeName": "yes_no",
     "intentName": "pre_survey",
-    "description": "Slot about_self for intent pre_survey",
+    "description": "Slot aboutSelf for intent pre_survey",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -71,7 +71,7 @@
             "captureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "gender_identity"
+                    "slotToElicit": "genderInput"
                 },
                 "intent": {}
             },
