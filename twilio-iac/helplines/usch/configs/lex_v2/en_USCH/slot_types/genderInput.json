@@ -1,0 +1,8 @@
+{
+    "slotTypeName": "genderInput",
+    "slotTypeValues": [],
+    "parentSlotTypeSignature": "AMAZON.AlphaNumeric",
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

@@ -31,7 +31,7 @@
           },
           "2": {
             "slot_name": "genderInput",
-            "slot_type_name": "AMAZON.AlphaNumeric",
+            "slot_type_name": "genderInput",
             "slot_question": "What is your gender identity?",
             "failure_response": "We are having trouble understanding your response."
           },

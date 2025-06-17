@@ -1,8 +1,8 @@
 {
     "slotName": "genderInput",
-    "slotTypeName": "AMAZON.AlphaNumeric",
+    "slotTypeName": "genderInput",
     "intentName": "pre_survey",
-    "description": "Slot gender_identity for intent pre_survey",
+    "description": "Slot genderInput for intent pre_survey",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
