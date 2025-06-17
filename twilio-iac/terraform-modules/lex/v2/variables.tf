@@ -43,6 +43,9 @@ variable "lex_v2_slot_types" {
         slotTypeName = string,
         valueSelectionSetting = object({
           resolutionStrategy = string
+          regexFilter = optional(object({
+            pattern = string
+          }))
         })
         parentSlotTypeSignature = optional(string)
         slotTypeValues = list( object({

@@ -176,6 +176,9 @@ variable "lex_v2_bots" {
         parentSlotTypeSignature = optional(string)
         valueSelectionSetting = object({
           resolutionStrategy = string
+          regexFilter = optional(object({
+            pattern = string
+          }))
         })
         slotTypeValues = list( object({
           sampleValue = object({

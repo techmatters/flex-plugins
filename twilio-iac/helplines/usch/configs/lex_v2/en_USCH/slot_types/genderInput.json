@@ -3,6 +3,9 @@
     "slotTypeValues": [],
     "parentSlotTypeSignature": "AMAZON.AlphaNumeric",
     "valueSelectionSetting": {
-        "resolutionStrategy": "TopResolution"
+        "resolutionStrategy": "TopResolution",
+        "regexFilter": {
+            "pattern": "^[A-Za-z]{1,30}( [A-Za-z]{1,30}){0,2}$"
+        }
     }
 }
