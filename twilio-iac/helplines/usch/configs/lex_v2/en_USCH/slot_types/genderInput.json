@@ -5,7 +5,7 @@
     "valueSelectionSetting": {
         "resolutionStrategy": "TopResolution",
         "regexFilter": {
-            "pattern": "^[A-Za-z ]{1,30}$"
+            "pattern": "[A-Za-z ]{1,30}"
         }
     }
 }
