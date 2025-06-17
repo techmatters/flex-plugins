@@ -44,6 +44,7 @@ variable "lex_v2_slot_types" {
         valueSelectionSetting = object({
           resolutionStrategy = string
         })
+        parentSlotTypeSignature = optional(string)
         slotTypeValues = list( object({
           sampleValue = object({
             value    = string

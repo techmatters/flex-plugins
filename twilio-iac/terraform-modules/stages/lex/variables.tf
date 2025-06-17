@@ -173,6 +173,7 @@ variable "lex_v2_bots" {
       bot_name = string
       config = object({
         slotTypeName = string,
+        parentSlotTypeSignature = optional(string)
         valueSelectionSetting = object({
           resolutionStrategy = string
         })
