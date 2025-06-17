@@ -7,6 +7,14 @@
     "type": "Bot",
     "intents": {
       "pre_survey": {
+        "utterances": [
+          {
+            "utterance": "trigger_pre_survey"
+          },
+          {
+            "utterance": "Incoming webchat contact"
+          }
+        ],
         "initial_response": {
           "message": "To help us better serve you, please answer the next four short questions. You will then be connected to a counselor. You can type '0' for any question.",
           "slot_to_elicit": "about_self"
