@@ -100,9 +100,10 @@ resource "aws_lexv2models_slot_type" "this" {
     resolution_strategy = each.value.config.valueSelectionSetting.resolutionStrategy
     dynamic "regex_filter" {
       for_each = each.value.config.valueSelectionSetting.regexFilter != null ? [each.value.config.valueSelectionSetting.regexFilter] : []
-      pattern = regex_filter.value.pattern
-      
+      content {
+        pattern = regex_filter.value.pattern
       }
+    }
   }
   parent_slot_type_signature = (
     each.value.config.parentSlotTypeSignature != null && each.value.config.parentSlotTypeSignature != ""
