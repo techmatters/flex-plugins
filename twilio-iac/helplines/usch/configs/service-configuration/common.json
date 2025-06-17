@@ -2,7 +2,8 @@
     "attributes": {
         "contacts_waiting_channels": [
             "voice",
-            "web"
+            "web",
+            "sms"
         ],
         "config_flags": {
             "enableExternalRecordings": false
@@ -12,7 +13,9 @@
             "enable_client_profiles":true,
             "enable_conferencing": true,
             "enable_hierarchical_translations": true,
-            "enable_lex_v2": true
+            "enable_lex_v2": true,
+            "enable_llm_summary": false
+
         },
         "definitionVersion": "usch-v1",
         "external_recordings_enabled": false,
