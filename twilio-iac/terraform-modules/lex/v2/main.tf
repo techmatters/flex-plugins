@@ -99,6 +99,11 @@ resource "aws_lexv2models_slot_type" "this" {
   value_selection_setting {
     resolution_strategy = each.value.config.valueSelectionSetting.resolutionStrategy
   }
+  parent_slot_type_signature = (
+    each.value.config.parentSlotTypeSignature != null && each.value.config.parentSlotTypeSignature != ""
+    ? each.value.config.parentSlotTypeSignature
+    : null
+  )
 
   dynamic "slot_type_values" {
     for_each = each.value.config.slotTypeValues
