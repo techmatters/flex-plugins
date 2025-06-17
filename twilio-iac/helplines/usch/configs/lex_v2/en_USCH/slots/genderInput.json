@@ -12,12 +12,19 @@
                         "plainTextMessage": {
                             "value": "What is your gender identity?"
                         }
-                    }
+                    },
+                    "variations": [
+                        {
+                            "plainTextMessage": {
+                                "value": "In one or two words. What is your gender identity?"
+                            }
+                        }
+                    ]
                 }
             ],
             "maxRetries": 1,
             "allowInterrupt": true,
-            "messageSelectionStrategy": "Random",
+            "messageSelectionStrategy": "Ordered",
             "promptAttemptsSpecification": {
                 "Initial": {
                     "allowInterrupt": true,
