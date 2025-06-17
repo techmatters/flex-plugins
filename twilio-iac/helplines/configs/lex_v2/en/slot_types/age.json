@@ -3,16 +3,6 @@
   "slotTypeValues": [
     {
       "sampleValue": {
-        "value": "0"
-      },
-      "synonyms": [
-        {
-          "value": "zero"
-        }
-      ]
-    },
-    {
-      "sampleValue": {
         "value": "1"
       },
       "synonyms": [
