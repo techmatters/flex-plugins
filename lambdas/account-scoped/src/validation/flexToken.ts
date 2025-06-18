@@ -26,35 +26,51 @@ const isWorker = (tokenResult: TokenValidatorResponse) =>
   Boolean(tokenResult.worker_sid) && tokenResult.worker_sid.startsWith('WK');
 const isGuest = (tokenResult: TokenValidatorResponse) =>
   Array.isArray(tokenResult.roles) && tokenResult.roles.includes('guest');
+const isSupervisor = (tokenResult: TokenValidatorResponse) =>
+  Array.isArray(tokenResult.roles) && tokenResult.roles.includes('supervisor');
 
-export const validateFlexTokenRequest: HttpRequestPipelineStep = async (
-  request,
-  { accountSid },
-) => {
-  const { Token: token } = request.body;
-  if (!token) {
-    return newMissingParameterResult('Token');
-  }
-  try {
-    const tokenResult: TokenValidatorResponse = (await validator(
-      token,
-      accountSid,
-      await getAccountAuthToken(accountSid),
-    )) as TokenValidatorResponse;
-    const isGuestToken = !isWorker(tokenResult) || isGuest(tokenResult);
-    if (isGuestToken) {
+export const validateFlexTokenRequest: ({
+  tokenMode,
+}: {
+  tokenMode: 'supervisor' | 'worker';
+}) => HttpRequestPipelineStep =
+  ({ tokenMode }: { tokenMode: 'supervisor' | 'worker' }) =>
+  async (request, { accountSid }) => {
+    const { Token: token } = request.body;
+    if (!token) {
+      return newMissingParameterResult('Token');
+    }
+    try {
+      const tokenResult: TokenValidatorResponse = (await validator(
+        token,
+        accountSid,
+        await getAccountAuthToken(accountSid),
+      )) as TokenValidatorResponse;
+      const isGuestToken = !isWorker(tokenResult) || isGuest(tokenResult);
+      if (isGuestToken) {
+        return newErr({
+          message: 'Guest tokens are not authorized for this endpoint',
+          error: { statusCode: 403 },
+        });
+      }
+
+      if (tokenMode === 'supervisor') {
+        const isSupervisorToken = isSupervisor(tokenResult);
+        if (!isSupervisorToken) {
+          return newErr({
+            message: 'Only supervisor tokens are authorized for this endpoint',
+            error: { statusCode: 403 },
+          });
+        }
+      }
+
+      return newOk(request);
+    } catch (err) {
+      const error = err as Error;
+
       return newErr({
-        message: 'Guest tokens are not authorized for this endpoint',
-        error: { statusCode: 403 },
+        message: 'Validating flex token failed',
+        error: { statusCode: 403, cause: error },
       });
     }
-    return newOk(request);
-  } catch (err) {
-    const error = err as Error;
-
-    return newErr({
-      message: 'Validating flex token failed',
-      error: { statusCode: 403, cause: error },
-    });
-  }
-};
+  };
