@@ -13,7 +13,14 @@ locals {
     task_language              = "en-US"
     enable_post_survey         = false
     enable_external_recordings = false
-    permission_config          = "demo"
+    permission_config          = "en-USCH"
+    channel_attributes = {
+      webchat                 = "/app/twilio-iac/helplines/usch/templates/channel-attributes/webchat.tftpl",
+      voice                   = "/app/twilio-iac/helplines/usch/templates/channel-attributes/voice.tftpl",
+      sms                     = "/app/twilio-iac/helplines/usch/templates/channel-attributes/modica.tftpl",
+      default                 = "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
+      default-conversations   = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
+    }
     workflows = {
       master : {
         friendly_name = "Master Workflow"

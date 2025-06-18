@@ -136,6 +136,12 @@
         "label": "5+"
       }
     ]
+  }, 
+  {
+    "name": "stateInput",
+    "label": "Child State (Input from SMS Chatbot)",
+    "type": "input",
+    "isPII": false
   },
   {
     "name": "childState",

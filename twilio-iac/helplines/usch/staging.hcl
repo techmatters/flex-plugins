@@ -9,19 +9,25 @@ locals {
 
   local_config = {
     custom_task_routing_filter_expression = ""
-    flow_vars                             = {
-      widget_from = "Bot"
-      chat_blocked_message = "Sorry, you've been blocked"
+    flow_vars = {
+      widget_from                          = "Bot"
+      operating_hours_function_sid         = "ZHdf153e322af3839adf83b303cb465846"
+      chat_blocked_message                 = "Sorry, you've been blocked"
+      other_language_message_childhelp     = "Currently, our chat platform only works in English. For assistance in other languages, please call our hotline at 1-800-422-4453."
+      other_language_message_courage_first = "Currently, our chat platform only works in English. For assistance in other languages, please call our hotline at 1-888-279-1026 ."
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
-  #Channels
+    #Channels
     channels = {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/webchat-basic.tftpl"
-        channel_flow_vars = {}
+        channel_flow_vars = {
+          courage_first_url = "https://assets-staging.tl.techmatters.org/webchat/usch/usch_courage_first.html"
+          childhelp_url     = "https://assets-staging.tl.techmatters.org/webchat/usch/usch_childhelp_hotline.html"
+        }
         chatbot_unique_names = []
       },
       voice : {
@@ -53,6 +59,6 @@ locals {
         chatbot_unique_names = []
       }
     }
-  
+
   }
 }
