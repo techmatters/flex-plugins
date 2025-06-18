@@ -12,10 +12,13 @@ locals {
     flow_vars = {
       widget_from                          = "Bot"
       operating_hours_function_sid         = "ZHdf153e322af3839adf83b303cb465846"
-      chat_blocked_message                 = "Sorry, you've been blocked"
-      other_language_message_childhelp     = "Currently, our chat platform only works in English. For assistance in other languages, please call our hotline at 1-800-422-4453."
-      other_language_message_courage_first = "Currently, our chat platform only works in English. For assistance in other languages, please call our hotline at 1-888-279-1026 ."
-    }
+      other_language_childhelp_message     = "Currently, our chat platform only works in English. For assistance in other languages, please call our hotline at 1-800-422-4453."
+      other_language_courage_first_message = "Currently, our chat platform only works in English. For assistance in other languages, please call our hotline at 1-888-279-1026."
+      courage_first_closed_message = "courage_first_closed_message"
+      blocked_client_message = "blocked_client_message"
+      childhelp_welcome_message= "Thank you for reaching out to our hotline! We will be with you shortly.\nPlease note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp’s National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
+      couragefirst_welcome_message = "couragefirst_welcome_message"
+      }
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
     #Channels

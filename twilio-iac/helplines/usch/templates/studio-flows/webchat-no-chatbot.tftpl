@@ -7,7 +7,7 @@ ${
       "type": "trigger",
       "transitions": [
         {
-          "next": "split_service",
+          "next": "getProfileFlagsForIdentifier",
           "event": "incomingMessage"
         },
         {
@@ -25,8 +25,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 0,
-          "y": 0
+          "x": 440,
+          "y": -460
         }
       }
     },
@@ -47,8 +47,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 80,
-          "y": 3130
+          "x": 90,
+          "y": 2960
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.chat}",
@@ -69,7 +69,7 @@ ${
       "properties": {
         "offset": {
           "x": 320,
-          "y": 3370
+          "y": 3190
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
@@ -191,7 +191,7 @@ ${
           ]
         },
         {
-          "next": "other_language_message_childhelp",
+          "next": "send_other_language_childhelp_message",
           "event": "match",
           "conditions": [
             {
@@ -205,7 +205,7 @@ ${
           ]
         },
         {
-          "next": "send_other_language_message_childhelp",
+          "next": "send_other_language_childhelp_message",
           "event": "match",
           "conditions": [
             {
@@ -228,7 +228,7 @@ ${
       }
     },
     {
-      "name": "send_other_language_message_childhelp",
+      "name": "send_other_language_childhelp_message",
       "type": "send-message",
       "transitions": [
         {
@@ -248,7 +248,7 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.other_language_message_childhelp}"
+        "body": "${flow_vars.other_language_childhelp_message}"
       }
     },
     {
@@ -256,11 +256,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "split_welcome_message",
           "event": "noMatch"
         },
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "split_welcome_message",
           "event": "match",
           "conditions": [
             {
@@ -274,7 +274,7 @@ ${
           ]
         },
         {
-          "next": "other_language_message_courage_first",
+          "next": "send_other_language_courage_first_message",
           "event": "match",
           "conditions": [
             {
@@ -288,7 +288,7 @@ ${
           ]
         },
         {
-          "next": "send_other_language_message_courage_first",
+          "next": "send_other_language_courage_first_message",
           "event": "match",
           "conditions": [
             {
@@ -311,7 +311,7 @@ ${
       }
     },
     {
-      "name": "other_language_message_courage_first",
+      "name": "send_other_language_courage_first_message",
       "type": "send-message",
       "transitions": [
         {
@@ -331,7 +331,7 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.other_language_message_courage_first}"
+        "body": "${flow_vars.other_language_courage_first_message}"
       }
     },
     {
@@ -349,8 +349,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 350,
-          "y": 1910
+          "x": 190,
+          "y": -260
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
@@ -368,7 +368,7 @@ ${
           "event": "success"
         },
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "split_welcome_message",
           "event": "fail"
         }
       ],
@@ -394,7 +394,7 @@ ${
             "key": "language"
           }
         ],
-        "url": "https://serverless-4364-production.twil.io/operatingHours"
+        "url": "${serverless_url}/operatingHours"
       }
     },
     {
@@ -405,7 +405,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "courage_first_closed_message",
+          "next": "send_courage_first_closed_message",
           "event": "match",
           "conditions": [
             {
@@ -419,7 +419,7 @@ ${
           ]
         },
         {
-          "next": "getProfileFlagsForIdentifier",
+          "next": "split_welcome_message",
           "event": "match",
           "conditions": [
             {
@@ -442,11 +442,12 @@ ${
       }
     },
     {
-      "name": "courage_first_closed_message",
+      "name": "send_courage_first_closed_message",
       "type": "send-message",
       "transitions": [
         {
-          "event": "sent"
+          "event": "sent",
+          "next": "reset_childhelp_variable"
         },
         {
           "event": "failed"
@@ -462,11 +463,11 @@ ${
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "courage_first_closed_message"
+        "body": "${flow_vars.courage_first_closed_message}"
       }
     },
     {
-      "name": "blocked_client_message",
+      "name": "send_blocked_client_message",
       "type": "send-message",
       "transitions": [
         {
@@ -478,15 +479,15 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 540,
-          "y": 2430
+          "x": 990,
+          "y": 270
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "blocked_client_message"
+        "body": "${flow_vars.blocked_client_message}"
       }
     },
     {
@@ -494,11 +495,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "split_welcome_message",
+          "next": "split_service",
           "event": "noMatch"
         },
         {
-          "next": "blocked_client_message",
+          "next": "send_blocked_client_message",
           "event": "match",
           "conditions": [
             {
@@ -515,13 +516,13 @@ ${
       "properties": {
         "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
         "offset": {
-          "x": 150,
-          "y": 2180
+          "x": 600,
+          "y": -20
         }
       }
     },
     {
-      "name": "childhelp_welcome_message",
+      "name": "send_childhelp_welcome_message",
       "type": "send-message",
       "transitions": [
         {
@@ -536,14 +537,14 @@ ${
       "properties": {
         "offset": {
           "x": 320,
-          "y": 2800
+          "y": 2590
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "Thank you for reaching out to our hotline! We will be with you shortly.\nPlease note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp’s National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
+        "body": "${flow_vars.childhelp_welcome_message}"
       }
     },
     {
@@ -554,7 +555,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "couragefirst_welcome_message",
+          "next": "send_couragefirst_welcome_message",
           "event": "match",
           "conditions": [
             {
@@ -568,7 +569,7 @@ ${
           ]
         },
         {
-          "next": "childhelp_welcome_message",
+          "next": "send_childhelp_welcome_message",
           "event": "match",
           "conditions": [
             {
@@ -585,13 +586,13 @@ ${
       "properties": {
         "input": "{{flow.variables.service}}",
         "offset": {
-          "x": -180,
-          "y": 2530
+          "x": 160,
+          "y": 2080
         }
       }
     },
     {
-      "name": "couragefirst_welcome_message",
+      "name": "send_couragefirst_welcome_message",
       "type": "send-message",
       "transitions": [
         {
@@ -605,15 +606,38 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": -30,
-          "y": 2800
+          "x": -20,
+          "y": 2590
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "Bot",
         "message_type": "custom",
         "to": "{{contact.channel.address}}",
-        "body": "couragefirst_welcome_message"
+        "body": "${flow_vars.couragefirst_welcome_message}"
+      }
+    },
+    {
+      "name": "reset_childhelp_variable",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "attributes",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "ChildHelp",
+            "key": "service"
+          }
+        ],
+        "offset": {
+          "x": -500,
+          "y": 2410
+        }
       }
     }
   ],
