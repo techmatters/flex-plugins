@@ -18,6 +18,11 @@
                             "plainTextMessage": {
                                 "value": "In one or two words. What is your gender identity?"
                             }
+                        },
+                        {
+                            "plainTextMessage": {
+                                "value": "In just words. What is your gender identity?"
+                            }
                         }
                     ]
                 }

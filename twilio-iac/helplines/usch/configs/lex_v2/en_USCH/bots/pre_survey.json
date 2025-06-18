@@ -42,7 +42,7 @@
             "failure_response": "We are having trouble understanding your response."
           },
           "4": {
-            "slot_name": "state",
+            "slot_name": "stateInput",
             "slot_type_name": "AMAZON.State",
             "slot_question": "What state are you texting from?",
             "failure_response": "We are having trouble understanding your response."

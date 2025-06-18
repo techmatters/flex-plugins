@@ -51,7 +51,7 @@
         },
         {
             "priority": 4,
-            "slotName": "state"
+            "slotName": "stateInput"
         }
     ],
     "intentClosingSetting": {

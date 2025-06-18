@@ -1,8 +1,8 @@
 {
-    "slotName": "state",
+    "slotName": "stateInput",
     "slotTypeName": "AMAZON.State",
     "intentName": "pre_survey",
-    "description": "Slot state for intent pre_survey",
+    "description": "Slot stateInput for intent pre_survey",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -17,7 +17,7 @@
             ],
             "maxRetries": 1,
             "allowInterrupt": true,
-            "messageSelectionStrategy": "Random",
+            "messageSelectionStrategy": "Ordered",
             "promptAttemptsSpecification": {
                 "Initial": {
                     "allowInterrupt": true,
