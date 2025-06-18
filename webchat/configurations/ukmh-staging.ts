@@ -80,10 +80,6 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       defaultValue: '',
       options: [
         {
-          value: "",
-          label: " "
-        },
-        {
           value: "00",
           label: "0"
         },
@@ -126,6 +122,35 @@ const preEngagementConfig: PreEngagementFormDefinition = {
         {
           value: "10",
           label: "10"
+        }
+      ],
+    },
+    {
+      label: 'On a scale from 1 (sad) to 5 (happy), what mood are in currently?',
+      type: 'select',
+      name: 'moodhappinessBefore',
+      required: true,
+      defaultValue: '',
+      options: [
+        {
+          "value": "01",
+          "label": "☹️ 1"
+        },
+        {
+          "value": "02",
+          "label": "🙁 2"
+        },
+        {
+          "value": "03",
+          "label": "😐 3"
+        },
+        {
+          "value": "04",
+          "label": "🙂 4"
+        },
+        {
+          "value": "05",
+          "label": "😀 5"
         }
       ],
     },
