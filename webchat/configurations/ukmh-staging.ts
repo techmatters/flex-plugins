@@ -77,8 +77,11 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'select',
       name: 'anxietyScale',
       required: true,
-      defaultValue: '',
       options: [
+        {
+          "value": "Unknown",
+          "label": ""
+        },
         {
           value: "00",
           label: "0"
@@ -130,8 +133,11 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'select',
       name: 'moodhappinessBefore',
       required: true,
-      defaultValue: '',
       options: [
+        {
+          "value": "Unknown",
+          "label": ""
+        },
         {
           "value": "01",
           "label": "☹️ 1"
