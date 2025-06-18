@@ -112,7 +112,7 @@ export const SelectQueueModal: React.FC<SelectQueueModalProps> = ({ isOpen, onCl
 
         <ButtonGroup>
           <TertiaryButton type="button" onClick={onClose}>
-            Cancel
+            <Template code="BottomBar-Cancel" />
           </TertiaryButton>
           <StyledNextStepButton
             onClick={() => {

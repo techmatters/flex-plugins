@@ -190,6 +190,8 @@ const SwitchboardTile = () => {
                     display: 'flex',
                     cursor: 'pointer',
                     textDecoration: 'none',
+                    color: '#000',
+                    paddingLeft: '5px',
                   }}
                 >
                   <InfoIcon style={{ fontSize: '20px' }} />
