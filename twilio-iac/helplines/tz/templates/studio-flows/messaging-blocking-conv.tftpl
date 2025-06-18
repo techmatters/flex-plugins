@@ -178,9 +178,9 @@ ${
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
-        "from": "{{flow.channel.address}}",
+        "from": flow_vars["widget_from"],
         "to": "{{contact.channel.address}}",
-        "body":channel_flow_vars["chat_greeting_message"]
+        "body":flow_vars["chat_greeting_message"]
       }
     } 
       ],

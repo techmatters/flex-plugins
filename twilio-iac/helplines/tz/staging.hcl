@@ -26,7 +26,7 @@ locals {
       webchat : {
         channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/tz/templates/studio-flows/messaging-blocking.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -34,7 +34,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
         contact_identity     = "messenger:565233119996327"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/tz/templates/studio-flows/messaging-blocking-conv.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -42,7 +42,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
         contact_identity     = "messenger:709371978917654"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/tz/templates/studio-flows/messaging-blocking-conv.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -58,7 +58,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "custom"
         contact_identity     = "instagram"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-custom-channel-blocking-conv.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/tz/templates/studio-flows/messaging-custom-channel-blocking-conv.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }
