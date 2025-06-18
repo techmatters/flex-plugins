@@ -661,5 +661,15 @@
 "UnholdCustomerTooltip": "Décoller",
 "HoldAgentTooltip": "Mettre en attente",
 "UnholdAgentTooltip": "Décoller",
-"NewChatMessageNotificationTitle": "Nouveau message de {{lastMessage.authorName}}"
+"NewChatMessageNotificationTitle": "Nouveau message de {{lastMessage.authorName}}",
+
+"Switchboard-NoQueuesSwitchboarded": "aucune file d'attente n'est commutée",
+"Switchboard-QueueSwitchboardedStatus": "{{queueName}} est en cours de changement par {{supervisorName}} depuis {{startDate}} à {{startTime}}",
+"Switchboard-SelectQueueModalTitle": "Sélectionner la file d'attente pour changer",
+"Switchboard-StatusActive": "Commutation : en cours",
+"Switchboard-StatusInactive": "Commutation : désactivé",
+"Switchboard-ModalTitleTurnOffSwitchboard": "Êtes-vous sûr de vouloir désactiver la commutation?",
+"Switchboard-ButtonTurnOffSwitchboard": "Désactiver",
+"Switchboard-ActivateSwitchboarding": "Activer la commutation",
+"Switchboard-PleaseSelectQueue": "Veuillez d'abord sélectionner une file d'attente"
 }
