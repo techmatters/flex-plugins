@@ -65,7 +65,6 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'select',
       name: 'language',
       label: 'Select Language/Chagua lugha',
-      defaultValue: '',
       required: true,
       options: [
         {
@@ -78,17 +77,20 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: 'select',
-      name: 'location',
+      name: 'area',
       label: 'Select Location/Chagua maeneo',
-      defaultValue: '',
       required: true,
       options: [
         {
           value: '',
           label: ''
         },
-        { value: 'Main Land', label: 'Tanzania - Main Land' },
-        { value: 'Zanzibar/Pemba', label: 'Zanzibar/Pemba' },
+        { value: 'Main Land', 
+          label: 'Tanzania - Main Land' 
+        },
+        { value: 'Zanzibar/Pemba', 
+          label: 'Zanzibar/Pemba' 
+        },
       ],
     },
     {
