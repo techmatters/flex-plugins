@@ -33,6 +33,7 @@
             "slot_name": "genderInput",
             "slot_type_name": "genderInput",
             "slot_question": "What is your gender identity?",
+            "variations" : ["In one or two words. What is your gender identity?","In just words. What is your gender identity?"],
             "failure_response": "We are having trouble understanding your response."
           },
           "3": {
