@@ -14,11 +14,12 @@ locals {
       operating_hours_function_sid         = "ZHdf153e322af3839adf83b303cb465846"
       other_language_childhelp_message     = "Currently, our chat platform only works in English. For assistance in other languages, please call our hotline at 1-800-422-4453."
       other_language_courage_first_message = "Currently, our chat platform only works in English. For assistance in other languages, please call our hotline at 1-888-279-1026."
-      courage_first_closed_message = "courage_first_closed_message"
-      blocked_client_message = "blocked_client_message"
-      childhelp_welcome_message= "Thank you for reaching out to our hotline! We will be with you shortly.\nPlease note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp’s National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
-      couragefirst_welcome_message = "couragefirst_welcome_message"
-      }
+      courage_first_closed_message         = "courage_first_closed_message"
+      blocked_client_message               = "blocked_client_message"
+      childhelp_welcome_message            = "Thank you for reaching out to our hotline! We will be with you shortly.\nPlease note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp’s National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
+      couragefirst_welcome_message         = "couragefirst_welcome_message"
+      chat_blocked_message = "chat_blocked_message"
+    }
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
     #Channels
@@ -26,7 +27,7 @@ locals {
       webchat : {
         channel_type     = "web"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/webchat-basic.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/webchat-no-chatbot.tftpl"
         channel_flow_vars = {
           courage_first_url = "https://assets-staging.tl.techmatters.org/webchat/usch/usch_courage_first.html"
           childhelp_url     = "https://assets-staging.tl.techmatters.org/webchat/usch/usch_childhelp_hotline.html"
