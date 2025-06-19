@@ -19,7 +19,7 @@
   },
   {
     "name": "hangup",
-    "label": "Hang up",
+    "label": "Hang Up",
     "type": "button",
     "category": "non-data"
   },    
