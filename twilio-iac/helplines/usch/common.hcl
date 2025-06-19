@@ -17,7 +17,7 @@ locals {
     channel_attributes = {
       webchat                 = "/app/twilio-iac/helplines/usch/templates/channel-attributes/webchat.tftpl",
       voice                   = "/app/twilio-iac/helplines/usch/templates/channel-attributes/voice.tftpl",
-      sms                     = "/app/twilio-iac/helplines/usch/templates/channel-attributes/modica.tftpl",
+      sms                     = "/app/twilio-iac/helplines/usch/templates/channel-attributes/sms.tftpl",
       default                 = "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
       default-conversations   = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
     }
