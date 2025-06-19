@@ -27,6 +27,7 @@ export const contactReduxUpdates = (
 ): ContactsState => {
   const { existingContacts } = state;
   const id = typeof contact === 'object' ? contact.id : contact;
+  const savedContact = getUnsavedContact(existingContacts[id]?.savedContact, updates);
   return {
     ...state,
     existingContacts: {
@@ -34,9 +35,9 @@ export const contactReduxUpdates = (
       [id]: {
         ...existingContacts[id],
         draftContact: undefined,
-        savedContact: getUnsavedContact(existingContacts[id]?.savedContact, updates),
+        savedContact,
         metadata: {
-          ...newContactMetaData(false),
+          ...newContactMetaData({ createdAt: savedContact?.createdAt }),
           ...existingContacts[id]?.metadata,
           loadingStatus: LoadingStatus.LOADING,
         },
@@ -75,7 +76,10 @@ export const loadContactIntoRedux = (
   if (reference) {
     references.add(reference);
   }
-  const metadata = { ...newContactMetaData(false), ...(newMetadata ?? existingContacts[contact.id]?.metadata) };
+  const metadata = {
+    ...newContactMetaData({ createdAt: contact?.createdAt }),
+    ...(newMetadata ?? existingContacts[contact.id]?.metadata),
+  };
   const existingContact = existingContacts[contact.id]?.savedContact;
   const existingAssociations = {
     ...(existingContact?.csamReports ? { csamReports: existingContact.csamReports } : {}),

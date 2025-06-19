@@ -1,7 +1,7 @@
 [
     {
       "name": "note",
-      "label": "Follow-Up Details",
+      "label": "FollowUpDetails",
       "type": "textarea",
       "placeholder": "",
       "rows": 20,
@@ -9,12 +9,12 @@
     },
     {
     "name": "counsellingManagerInformed",
-    "label": "Did you inform the Counselling Manager about this referral form? (CM team must be informed once referral is complete)",
+    "label": "counsellingManagerInformed",
     "type": "checkbox"
     },
     {
       "name": "cmSignOff",
-      "label": "Sign off from Counselling Manager (CM use only)",
+      "label": "cmSignOff",
       "type": "input"
     }
   ]

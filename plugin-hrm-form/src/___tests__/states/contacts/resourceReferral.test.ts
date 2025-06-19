@@ -95,7 +95,6 @@ describe('resourceReferralReducer', () => {
         metadata: {
           categories: { expanded: {}, gridView: false },
           endMillis: 0,
-          recreated: false,
           startMillis: 0,
           draft: {
             resourceReferralList: { resourceReferralIdToAdd: '', lookupStatus: ReferralLookupStatus.NOT_STARTED },

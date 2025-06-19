@@ -29,8 +29,8 @@ const fillEndMillis = (metadata: ContactMetadata): ContactMetadata => ({
  * - endMillis was not set
  * @param {{ startMillis: number, endMillis: number, recreated: boolean }} metadata
  */
-const getConversationDuration = ({ startMillis, endMillis, recreated }) => {
-  const validMetrics = !recreated && !isNullOrUndefined(endMillis) && !isNullOrUndefined(startMillis);
+const getConversationDuration = ({ startMillis, endMillis }: { startMillis: number; endMillis: number }) => {
+  const validMetrics = !isNullOrUndefined(endMillis) && !isNullOrUndefined(startMillis);
 
   if (!validMetrics) return null;
 
