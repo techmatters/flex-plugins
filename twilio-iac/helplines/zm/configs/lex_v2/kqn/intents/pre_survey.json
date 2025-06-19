@@ -1,0 +1,66 @@
+{
+    "pre_survey": {
+      "description": "Helpline Specific helplines/zm/configs/lex//intents Pre Survey Intent",
+      "sample_utterances": [
+        "trigger_pre_survey"
+      ],
+      "fulfillment_activity": {
+        "type": "ReturnIntent"
+      },
+      "conclusion_statement": {
+        "content": "Tusakwimi tuma pembelelai, pacheche ba nkwasho.",
+        "content_type": "PlainText"
+      },
+      "rejection_statement": {
+        "content": "Sorry, I didn't get that. I'll connect you to a counsellor now.",
+        "content_type": "PlainText"
+      },
+      "slots": {
+        "aboutSelf": {
+            "priority": 0,
+            "description": "Imported from question 'about_self'",
+            "slot_type": "yes_no",
+            "slot_constraint": "Required",
+            "value_elicitation_prompt": {
+              "content": "Mwena kwitumina anwe bene, mwitabe emwane nangwa ine.",
+              "content_type": "PlainText",
+              "max_attempts": 2
+            }
+          },
+          "helpline": {
+            "priority": 1,
+            "description": "Imported from question 'helpline'",
+            "slot_type": "helpline",
+            "slot_constraint": "Required",
+            "value_elicitation_prompt": {
+              "content": "Mwatuma amba twimikwashe ko byepi? \n 1.LifeLine 933 (older than 18) \n 2.ChildLine 116 (18 years old or younger)",
+              "content_type": "PlainText",
+              "max_attempts": 2
+            }
+          },
+          "age": {
+            "priority": 2,
+            "description": "Imported from question 'age'",
+            "slot_type": "age",
+            "slot_constraint": "Required",
+            "value_elicitation_prompt": {
+              "content": "Twasanta mwankosha nga kemwena kukeba ne kwamba, kubikapo x pajipusho. \nMuji na myaka inga?",
+              "content_type": "PlainText",
+              "max_attempts": 2
+            }
+          },
+          "gender": {
+            "priority": 3,
+            "description": "Imported from question 'gender'",
+            "slot_type": "gender",
+            "slot_constraint": "Required",
+            "value_elicitation_prompt": {
+              "content": "Mwibabalume nangwa babakazhi?",
+              "content_type": "PlainText",
+              "max_attempts": 2
+            }
+          }
+
+      }
+    }
+  }

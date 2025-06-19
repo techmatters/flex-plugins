@@ -1,0 +1,115 @@
+{
+    "slotTypeName": "yes_no",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "Yes"
+            },
+            "synonyms": [
+                {
+                    "value": "y"
+                },
+                {
+                    "value": "yes"
+                },
+                {
+                    "value": "yep"
+                },
+                {
+                    "value": "yeah"
+                },
+                {
+                    "value": "ya"
+                },
+                {
+                    "value": "ee mwane"
+                },
+                {
+                    "value": "ee"
+                },
+                {
+                    "value": "eni"
+                },
+                {
+                    "value": "eng'a"
+                },
+                {
+                    "value": "enga"
+                },
+                {
+                    "value": "iiyi"
+                },
+                {
+                    "value": "inzya"
+                },
+                {
+                    "value": "iyo"
+                },
+                {
+                    "value": "iyii"
+                },
+                {
+                    "value": "eya"
+                },
+                {
+                    "value": "inde"
+                },
+                {
+                    "value": "yah"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "No"
+            },
+            "synonyms": [
+                {
+                    "value": "no"
+                },
+                {
+                    "value": "nope"
+                },
+                {
+                    "value": "nah"
+                },
+                {
+                    "value": "not"
+                },
+                {
+                    "value": "ine mwane"
+                },
+                {
+                    "value": "ine"
+                },
+                {
+                    "value": "batili"
+                },
+                {
+                    "value": "Inehi"
+                },
+                {
+                    "value": "peepe"
+                },
+                {
+                    "value": "pepe"
+                },
+                {
+                    "value": "awe"
+                },
+                {
+                    "value": "iyo"
+                },
+                {
+                    "value": "iyayi"
+                },
+                {
+                    "value": "aye"
+                }
+            ]
+        }
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}
