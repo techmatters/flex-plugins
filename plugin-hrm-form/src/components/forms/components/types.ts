@@ -15,6 +15,8 @@
  */
 
 import type { RegisterOptions } from 'react-hook-form';
+import type { DependentOptions, SelectOption } from 'hrm-form-definitions';
+import React from 'react';
 
 type HTMLElementRef = {
   current: HTMLElement | null;
@@ -28,4 +30,12 @@ export type FormInputBaseProps = {
   initialValue: React.HTMLAttributes<HTMLElement>['defaultValue'] | React.HTMLAttributes<HTMLElement>['defaultChecked'];
   htmlElRef: HTMLElementRef | null;
   isEnabled: boolean;
+};
+
+export type FormSelectProps = FormInputBaseProps & { selectOptions: SelectOption[] };
+
+export type DependentFormSelectProps = FormInputBaseProps & {
+  dependentOptions: DependentOptions;
+  dependsOn: string;
+  defaultOption: SelectOption;
 };
