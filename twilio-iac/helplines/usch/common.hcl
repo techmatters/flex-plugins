@@ -15,25 +15,26 @@ locals {
     enable_external_recordings = false
     permission_config          = "en-USCH"
     channel_attributes = {
-      webchat                 = "/app/twilio-iac/helplines/usch/templates/channel-attributes/webchat.tftpl",
-      voice                   = "/app/twilio-iac/helplines/usch/templates/channel-attributes/voice.tftpl",
-      sms                     = "/app/twilio-iac/helplines/usch/templates/channel-attributes/sms.tftpl",
-      default                 = "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
-      default-conversations   = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
+      webchat               = "/app/twilio-iac/helplines/usch/templates/channel-attributes/webchat.tftpl",
+      voice                 = "/app/twilio-iac/helplines/usch/templates/channel-attributes/voice.tftpl",
+      sms_courage_first     = "/app/twilio-iac/helplines/usch/templates/channel-attributes/sms_courage_first.tftpl",
+      sms_childhelp         = "/app/twilio-iac/helplines/usch/templates/channel-attributes/sms_childhelp.tftpl",
+      default               = "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
+      default-conversations = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
     }
     workflows = {
       master : {
         friendly_name = "Master Workflow"
-        templatefile = "/app/twilio-iac/helplines/usch/templates/workflows/master.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/usch/templates/workflows/master.tftpl"
       },
       //NOTE: MAKE SURE TO ADD THIS IF THE ACCOUNT USES A CONVERSATION CHANNEL
       queue_transfers : {
         friendly_name = "Queue Transfers Workflow"
-        templatefile = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
       },
       survey : {
         friendly_name = "Survey Workflow"
-        templatefile = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
     task_queues = {
@@ -54,7 +55,7 @@ locals {
         "friendly_name"  = "E2E Test Queue"
       }
     }
-    
-    
+
+
   }
 }
