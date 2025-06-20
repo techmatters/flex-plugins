@@ -44,14 +44,12 @@ export async function oktaSsoLoginViaApi(
   accountSid: string,
 ): Promise<string> {
   const apiRequest = await request.newContext();
-  const configResp = await fetch(
+  const configResp = await apiRequest.get(
     `https://services.twilio.com/v1/Flex/Authentication/Config?AccountSid=${accountSid}`,
   );
-  if (!configResp.ok) {
+  if (!configResp.ok()) {
     throw new Error(
-      `Failed to fetch auth config for ${accountSid}: [${
-        configResp.status
-      }]: ${await configResp.text()}`,
+      `Failed to fetch auth config for ${accountSid}: [${configResp.status()}]: ${await configResp.text()}`,
     );
   }
   const {
@@ -153,8 +151,9 @@ export async function oktaSsoLoginViaApi(
     console.error(`Looking up token failed`, await tokenLookupResponse.text());
   }
   expect(tokenLookupResponse.ok()).toBe(true);
-  const { token } = await tokenLookupResponse.json();
-  return token!;
+  const tokenLookupResponseBody = await tokenLookupResponse.json();
+
+  return tokenLookupResponseBody.token!;
 }
 
 export async function legacyOktaSsoLoginViaApi(

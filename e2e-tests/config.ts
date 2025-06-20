@@ -51,7 +51,7 @@ const skipDataUpdateEnvs = ['staging', 'production'];
 const flexEnvs = ['development', 'staging', 'production'];
 
 // This is kindof a hack to get the correct default remote webchat url and twilio account info for the local env
-export const localOverrideEnv = helplineEnv == 'local' ? 'development' : helplineEnv;
+export const localOverrideEnv = helplineEnv === 'local' ? 'development' : helplineEnv;
 
 export const config: Config = {};
 
@@ -152,7 +152,11 @@ const configOptions: ConfigOptions = {
   },
   isDevelopment: {
     envKey: 'IS_DEVELOPMENT',
-    default: helplineEnv === 'staging',
+    default: helplineEnv === 'development',
+  },
+  isLocal: {
+    envKey: 'IS_DEVELOPMENT',
+    default: helplineEnv === 'local',
   },
 
   // We can skip data updates in certain environments to keep from impacting real data
@@ -260,9 +264,10 @@ const initSsmConfigValues = async () => {
   if (!helplineShortCode) {
     throw new Error('Trying to load config from SSM, but HELPLINE_SHORT_CODE is not set');
   }
-
+  console.info('Setting config values from AWS SSM', Object.keys(configOptions));
   // This must be done in series because some config options depend on others
   for (const key of Object.keys(configOptions)) {
+    console.info('Setting config value from AWS SSM', key);
     await setConfigValueFromSsm(key);
   }
 };
