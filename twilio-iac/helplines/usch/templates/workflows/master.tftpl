@@ -3,7 +3,7 @@
     "filters": [
       {
         "filter_friendly_name": "Childhelp - ChatText - Spanish",
-        "expression": "(channelType IN ['web','sms'] AND language == 'Spanish' AND service =='ChildHelp' )  OR isContactlessTask == true",
+        "expression": "(channelType IN ['web','sms'] AND counselingLanguage == 'Spanish' AND service =='ChildHelp' )  OR isContactlessTask == true",
         "targets": [
           {
             "expression": "(worker.waitingOfflineContact != true AND ('ChatText' IN worker.routing.skills AND 'Spanish' IN worker.routing.skills) AND (worker.roles HAS 'agent' OR worker.roles HAS 'supervisor') AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
@@ -20,7 +20,7 @@
       },
       {
         "filter_friendly_name": "Childhelp - Phone - Spanish",
-        "expression": "(channelType IN ['voice'] AND language == 'Spanish' AND service =='ChildHelp' )  ",
+        "expression": "(channelType IN ['voice'] AND counselingLanguage == 'Spanish' AND service =='ChildHelp' )  ",
         "targets": [
           {
             "expression": "(worker.waitingOfflineContact != true AND ('Phone' IN worker.routing.skills AND 'Spanish' IN worker.routing.skills) AND (worker.roles HAS 'agent' OR worker.roles HAS 'supervisor') AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)))",
@@ -71,7 +71,7 @@
       },
       {
         "filter_friendly_name": "CourageFirst - ChatText - Spanish",
-        "expression": "(channelType IN ['web','sms'] AND language == 'Spanish' AND service =='CourageFirst' )  OR isContactlessTask == true",
+        "expression": "(channelType IN ['web','sms'] AND counselingLanguage == 'Spanish' AND service =='CourageFirst' )  OR isContactlessTask == true",
         "targets": [
           {
             "expression": "(worker.waitingOfflineContact != true AND ('ChatText' IN worker.routing.skills AND 'Spanish' IN worker.routing.skills) AND (worker.roles HAS 'agent' OR worker.roles HAS 'supervisor') AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
@@ -88,7 +88,7 @@
       },
       {
         "filter_friendly_name": "CourageFirst - Phone - Spanish",
-        "expression": "(channelType IN ['voice'] AND language == 'Spanish' AND service =='CourageFirst' )  ",
+        "expression": "(channelType IN ['voice'] AND counselingLanguage == 'Spanish' AND service =='CourageFirst' )  ",
         "targets": [
           {
             "expression": "(worker.waitingOfflineContact != true AND ('Phone' IN worker.routing.skills AND 'Spanish' IN worker.routing.skills) AND (worker.roles HAS 'agent' OR worker.roles HAS 'supervisor') AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)))",

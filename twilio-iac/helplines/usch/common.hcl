@@ -42,6 +42,10 @@ locals {
         "target_workers" = "routing.skills HAS 'ChildHelp'",
         "friendly_name"  = "ChildHelp"
       },
+      childhelp_spanish : {
+        "target_workers" = "routing.skills HAS 'ChildHelp'",
+        "friendly_name"  = "ChildHelp Spanish"
+      },
       courage_first : {
         "target_workers" = "routing.skills HAS 'CourageFirst'",
         "friendly_name"  = "Courage First"
