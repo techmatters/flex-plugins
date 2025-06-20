@@ -484,6 +484,18 @@ const translations: Translations = {
     MessageCanvasTrayButton: 'Start New Chat',
     Nickname: 'Nickname',
   },
+  'Other': {
+    WelcomeMessage: 'Welcome to ChildHelp',
+    PreEngagementConfigDescription : 'To best serve you, answer 4 short questions and you will then be connected to a counselor. You can select "Prefer not to answer" for any question.',
+    MessageCanvasTrayContent: '',
+    MessageInputDisabledReasonHold:
+      "Thank you very much for this information. We'll transfer you now. Please hold for a counselor.",
+    AutoFirstMessage: 'Incoming webchat contact from',
+    TypingIndicator: 'Counselor is typing',
+    StartChat: 'Start Chat!',
+    MessageCanvasTrayButton: 'Start New Chat',
+    Nickname: 'Nickname',
+  },
 };
 
 const memberDisplayOptions = {
