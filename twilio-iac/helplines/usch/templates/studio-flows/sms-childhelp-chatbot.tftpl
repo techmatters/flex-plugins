@@ -246,10 +246,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
+          "next": "send_childhelp_eng_language_message",
           "event": "noMatch"
         },
         {
-          "next": "childhelp_eng_language_message",
+          "next": "send_childhelp_eng_language_message",
           "event": "match",
           "conditions": [
             {
@@ -263,7 +264,7 @@ ${
           ]
         },
         {
-          "next": "childhelp_other_message",
+          "next": "send_childhelp_other_message",
           "event": "match",
           "conditions": [
             {
@@ -286,7 +287,7 @@ ${
       }
     },
     {
-      "name": "childhelp_other_message",
+      "name": "send_childhelp_other_message",
       "type": "send-message",
       "transitions": [
         {
@@ -310,7 +311,7 @@ ${
       }
     },
     {
-      "name": "childhelp_eng_language_message",
+      "name": "send_childhelp_eng_language_message",
       "type": "send-message",
       "transitions": [
         {

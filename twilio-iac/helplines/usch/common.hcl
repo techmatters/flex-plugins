@@ -17,8 +17,8 @@ locals {
     channel_attributes = {
       webchat               = "/app/twilio-iac/helplines/usch/templates/channel-attributes/webchat.tftpl",
       voice                 = "/app/twilio-iac/helplines/usch/templates/channel-attributes/voice.tftpl",
-      sms_courage_first     = "/app/twilio-iac/helplines/usch/templates/channel-attributes/sms_courage_first.tftpl",
-      sms_childhelp         = "/app/twilio-iac/helplines/usch/templates/channel-attributes/sms_childhelp.tftpl",
+      sms_courage_first     = "/app/twilio-iac/helplines/usch/templates/channel-attributes/sms_courage_first-conversations.tftpl",
+      sms_childhelp         = "/app/twilio-iac/helplines/usch/templates/channel-attributes/sms_childhelp-conversations.tftpl",
       default               = "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl",
       default-conversations = "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
     }
