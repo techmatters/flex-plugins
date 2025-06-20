@@ -6,24 +6,36 @@ locals {
 
 
   local_config = {
-    helpline                          = "C-Sema"
-    task_language                     = "en-US"
-    enable_post_survey                = false
-    permission_config                 = "tz"
+    helpline           = "C-Sema"
+    task_language      = "en-US"
+    enable_post_survey = false
+    permission_config  = "tz"
+
+    channel_attributes = {
+      webchat : "/app/twilio-iac/helplines/templates/channel-attributes/webchat.tftpl"
+      voice : "/app/twilio-iac/helplines/templates/channel-attributes/voice.tftpl"
+      default : "/app/twilio-iac/helplines/templates/channel-attributes/default.tftpl"
+      default-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/default-conversations.tftpl"
+      line-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/custom-channel-conversations.tftpl"
+      telegram-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/custom-channel-conversations.tftpl"
+      instagram-conversations : "/app/twilio-iac/helplines/templates/channel-attributes/custom-channel-conversations.tftpl"
+      facebook_mainland-conversations: "/app/twilio-iac/helplines/tz/templates/channel-attributes/facebook_mainland-conversations.tftpl"
+      facebook_zanzibar-conversations: "/app/twilio-iac/helplines/tz/templates/channel-attributes/facebook_zanzibar-conversations.tftpl"
+    }
 
 
     workflows = {
       master : {
         friendly_name = "Master Workflow"
-        templatefile = "/app/twilio-iac/helplines/tz/templates/workflows/master.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/tz/templates/workflows/master.tftpl"
       },
       queue_transfers = {
         friendly_name = "Queue Transfers Workflow"
-        templatefile = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
       },
       survey : {
         friendly_name = "Survey Workflow"
-        templatefile = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
       }
     }
 

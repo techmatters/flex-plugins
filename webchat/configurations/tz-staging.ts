@@ -71,8 +71,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           value: '',
           label: ''
         },
-        { value: 'en-US', label: '1. English' },
-        { value: 'sw_TZ', label: '2. Kiswahili' },
+        { value: 'en-US', label: 'English' },
+        { value: 'sw_TZ', label: 'Kiswahili' },
       ],
     },
     {
