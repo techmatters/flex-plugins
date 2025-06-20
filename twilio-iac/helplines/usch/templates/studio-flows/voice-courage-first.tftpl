@@ -59,7 +59,7 @@ ${
       }
     },
     {
-      "name": "send_welcome_message",
+      "name": "send_couragefirst_welcome_voice_message",
       "type": "say-play",
       "transitions": [
         {
@@ -551,11 +551,11 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_welcome_message",
+          "next": "send_couragefirst_welcome_voice_message",
           "event": "noMatch"
         },
         {
-          "next": "send_welcome_message",
+          "next": "send_couragefirst_welcome_voice_message",
           "event": "match",
           "conditions": [
             {
