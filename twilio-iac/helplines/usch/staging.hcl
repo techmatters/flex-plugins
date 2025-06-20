@@ -50,7 +50,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "sms"
         contact_identity     = "+14809999197"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-childhelp-chatbot.tftpl"
         channel_flow_vars    = {
           language_message = "Thank you for texting the National Child Abuse Hotline. For English, press 1.\nFor any other language, please press 2."
           childhelp_other_message = "Currently, our text messaging platform only works in English. For assistance in other languages, please call our hotline at 1-800-422-4453."
