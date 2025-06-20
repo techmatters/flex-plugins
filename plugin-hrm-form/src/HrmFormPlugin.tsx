@@ -31,9 +31,10 @@ import * as Channels from './channels/setUpChannels';
 import setUpMonitoring from './utils/setUpMonitoring';
 import { changeLanguage } from './states/configuration/actions';
 import { getAseloFeatureFlags, getHrmConfig, initializeConfig, subscribeToConfigUpdates } from './hrmConfig';
-import { setUpSharedStateClient } from './utils/sharedState';
+import { setUpSyncClient } from './services/SyncService';
 import { FeatureFlags } from './types/types';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
+import QueuesView from './components/queuesView';
 import TeamsView from './components/teamsView';
 import { setUpCounselorToolkits } from './components/toolkits/setUpCounselorToolkits';
 import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
@@ -74,7 +75,10 @@ const setUpLocalization = (config: ReturnType<typeof getHrmConfig>) => {
 
   return initLocalization(
     localizationConfig,
-    localStorage.getItem('ASELO_PLUGIN_USER_LOCALE') || counselorLanguage || helplineLanguage || defaultLocale,
+    localStorage.getItem(`${getHrmConfig().accountSid}_ASELO_PLUGIN_USER_LOCALE`) ||
+      counselorLanguage ||
+      helplineLanguage ||
+      defaultLocale,
   );
 };
 
@@ -122,6 +126,10 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   TeamsView.setUpTeamsViewSorting();
   TeamsView.setUpTeamsViewFilters();
   TeamsView.setUpWorkerDirectoryFilters();
+
+  if (featureFlags.enable_switchboarding) {
+    QueuesView.setUpSwitchboard();
+  }
 
   if (featureFlags.enable_conferencing) setupConferenceComponents();
 
@@ -188,7 +196,7 @@ export default class HrmFormPlugin extends FlexPlugin {
     await validateAndSetPermissionRules();
     await ActionFunctions.loadCurrentDefinitionVersion();
 
-    setUpSharedStateClient();
+    setUpSyncClient();
 
     /*
      * localization setup (translates the UI if necessary)

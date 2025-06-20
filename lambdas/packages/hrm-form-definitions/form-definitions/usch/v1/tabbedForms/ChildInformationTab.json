@@ -1185,12 +1185,12 @@
         "label": ""
       },
       {
-        "value": "Suicidal Ideation",
-        "label": "Suicidal Ideation"
-      },
-      {
         "value": "None",
         "label": "None"
+      },
+      {
+        "value": "Suicidal Ideation",
+        "label": "Suicidal Ideation"
       },
       {
         "value": "Imminent Harm",
@@ -1433,5 +1433,173 @@
       "value": true,
       "message": "RequiredFieldError"
     }
+  },
+  {
+    "name": "cfSportLevel",
+    "label": "CF - Sport Level",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "N/A",
+        "label": ""
+      },
+      {
+        "value": "N/A",
+        "label": "N/A"
+      },
+      {
+        "value": "Club",
+        "label": "Club"
+      },
+      {
+        "value": "K-12",
+        "label": "K-12"
+      },
+      {
+        "value": "College",
+        "label": "College"
+      },
+      {
+        "value": "Recreational",
+        "label": "Recreational"
+      },
+      {
+        "value": "Pro",
+        "label": "Pro"
+      },
+      {
+        "value": "Elite",
+        "label": "Elite"
+      },
+      {
+        "value": "Adaptive Paralympic",
+        "label": "Adaptive Paralympic"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ]
+  },
+  {
+    "name": "cfSportPlayed",
+    "label": "CF - Sport Played",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "N/A",
+        "label": ""
+      },
+      {
+        "value": "N/A",
+        "label": "N/A"
+      },
+      {
+        "value": "Archery",
+        "label": "Archery"
+      },
+      {
+        "value": "Baseball",
+        "label": "Baseball"
+      },
+      {
+        "value": "Basketball",
+        "label": "Basketball"
+      },
+      {
+        "value": "Cheer",
+        "label": "Cheer"
+      },
+      {
+        "value": "Cycling",
+        "label": "Cycling"
+      },
+      {
+        "value": "Dance",
+        "label": "Dance"
+      },
+      {
+        "value": "Fencing",
+        "label": "Fencing"
+      },
+      {
+        "value": "Football",
+        "label": "Football"
+      },
+      {
+        "value": "Golf",
+        "label": "Golf"
+      },
+      {
+        "value": "Gymnastics",
+        "label": "Gymnastics"
+      },
+      {
+        "value": "Hockey",
+        "label": "Hockey"
+      },
+      {
+        "value": "Horseback riding",
+        "label": "Horseback riding"
+      },
+      {
+        "value": "Lacrosse",
+        "label": "Lacrosse"
+      },
+      {
+        "value": "Martial arts",
+        "label": "Martial arts"
+      },
+      {
+        "value": "Rowing",
+        "label": "Rowing"
+      },
+      {
+        "value": "Rugby",
+        "label": "Rugby"
+      },
+      {
+        "value": "Skiing/Snowboarding",
+        "label": "Skiing/Snowboarding"
+      },
+      {
+        "value": "Soccer",
+        "label": "Soccer"
+      },
+      {
+        "value": "Softball",
+        "label": "Softball"
+      },
+      {
+        "value": "Swimming/Diving",
+        "label": "Swimming/Diving"
+      },
+      {
+        "value": "Tennis",
+        "label": "Tennis"
+      },
+      {
+        "value": "Track & field",
+        "label": "Track & field"
+      },
+      {
+        "value": "Volleyball",
+        "label": "Volleyball"
+      },
+      {
+        "value": "Weightlifting/Body building",
+        "label": "Weightlifting/Body building"
+      },
+      {
+        "value": "Wrestling",
+        "label": "Wrestling"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
   }
 ]

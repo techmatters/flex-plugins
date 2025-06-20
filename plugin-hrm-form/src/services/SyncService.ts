@@ -15,38 +15,40 @@
  */
 
 import SyncClient from 'twilio-sync';
+import { SWITCHBOARD_NOTIFY_DOCUMENT, SWITCHBOARD_STATE_DOCUMENT, SwitchboardSyncState } from 'hrm-types';
 
-import { issueSyncToken } from '../services/ServerlessService';
+import { issueSyncToken } from './ServerlessService';
 import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
+import { isErr, newErr, newOk } from '../types/Result';
 
-let sharedStateClient: SyncClient;
+// eslint-disable-next-line import/no-mutable-exports
+let sharedSyncClient: SyncClient;
 
-export const setUpSharedStateClient = async () => {
+export const setUpSyncClient = async () => {
   const updateSharedStateToken = async () => {
     try {
       const syncToken = await issueSyncToken();
-      await sharedStateClient.updateToken(syncToken);
+      await sharedSyncClient.updateToken(syncToken);
     } catch (err) {
       console.error('SYNC TOKEN ERROR', err);
     }
   };
 
   // initializes sync client for shared state
-  const initSharedStateClient = async () => {
+  const initSyncClient = async () => {
     try {
       const syncToken = await issueSyncToken();
-      sharedStateClient = new SyncClient(syncToken);
-      sharedStateClient.on('tokenAboutToExpire', () => updateSharedStateToken());
+      sharedSyncClient = new SyncClient(syncToken);
+      sharedSyncClient.on('tokenAboutToExpire', () => updateSharedStateToken());
     } catch (err) {
       console.error('SYNC CLIENT INIT ERROR', err);
     }
   };
 
-  await initSharedStateClient();
+  await initSyncClient();
 };
 
-const isSharedStateClientConnected = sharedStateClient =>
-  sharedStateClient && sharedStateClient.connectionState === 'connected';
+const isSyncClientConnected = (client: any) => client && client.connectionState === 'connected';
 
 /**
  * This function creates an object with all parseable attributes from the original Twilio Task.
@@ -81,6 +83,14 @@ const copyError = error => ({
   ...(error.cause && { stack: error.cause }),
 });
 
+const validateSyncConnection = (): void => {
+  if (!isSyncClientConnected(sharedSyncClient)) {
+    console.error('Error with Sync Client connection. Sync Client object is: ', sharedSyncClient);
+    console.error(getTemplateStrings().SharedStateSaveContactError);
+    throw new Error('Sync client not connected');
+  }
+};
+
 /**
  * Saves a pending contact into the Sync Client
  * @param task task used to save the contact
@@ -92,13 +102,9 @@ export const savePendingContactToSharedState = async (task, payload, error) => {
   if (!task || !payload) return null;
 
   try {
-    if (!isSharedStateClientConnected(sharedStateClient)) {
-      console.error('Error with Sync Client conection. Sync Client object is: ', sharedStateClient);
-      console.error(getTemplateStrings().SharedStateSaveContactError);
-      return null;
-    }
+    validateSyncConnection();
 
-    const list = await sharedStateClient.list('pending-contacts');
+    const list = await sharedSyncClient.list('pending-contacts');
 
     const taskToSave = copyTask(task);
     const errorToSave = copyError(error);
@@ -115,13 +121,13 @@ export const savePendingContactToSharedState = async (task, payload, error) => {
 };
 
 export const createCallStatusSyncDocument = async (onUpdateCallback: ({ data }: any) => void) => {
-  if (!isSharedStateClientConnected(sharedStateClient)) {
-    console.error('Error with Sync Client connection. Sync Client object is: ', sharedStateClient);
+  if (!isSyncClientConnected(sharedSyncClient)) {
+    console.error('Error with Sync Client connection. Sync Client object is: ', sharedSyncClient);
     console.error(getTemplateStrings().SharedStateSaveContactError);
     return { status: 'failure', callStatusSyncDocument: null } as const;
   }
 
-  const callStatusSyncDocument = await sharedStateClient.document({
+  const callStatusSyncDocument = await sharedSyncClient.document({
     mode: 'create_new',
     data: { CallStatus: 'initiating' },
     ttl: 60 * 2, // No need to keep track of this for longer than two minutes
@@ -132,4 +138,68 @@ export const createCallStatusSyncDocument = async (onUpdateCallback: ({ data }: 
   onUpdateCallback({ data: callStatusSyncDocument.data });
 
   return { status: 'success', callStatusSyncDocument } as const;
+};
+
+/**
+ * Get the current switchboard state
+ * @returns Current switchboarding state
+ */
+export const getSwitchboardState = async () => {
+  try {
+    const doc = await sharedSyncClient.document({
+      id: SWITCHBOARD_STATE_DOCUMENT,
+      mode: 'open_existing',
+    });
+
+    return newOk({
+      documentData: doc.data as SwitchboardSyncState,
+    });
+  } catch (error) {
+    if (error.status === 404 || String(error).includes('Unique name not found')) {
+      return newOk({
+        documentData: null,
+      });
+    }
+
+    const message = `Error getting switchboard state: ${error}`;
+    return newErr({ error, message });
+  }
+};
+
+const getOrCreateSwitchboardNotify = async () => {
+  try {
+    const doc = await sharedSyncClient.document({
+      id: SWITCHBOARD_NOTIFY_DOCUMENT,
+      data: { updatedAt: new Date().getTime() },
+      mode: 'open_or_create',
+    });
+
+    return newOk(doc);
+  } catch (error) {
+    const message = `Error getting switchboard notify: ${error}`;
+    return newErr({ error, message });
+  }
+};
+
+export const subscribeSwitchboardNotify = async ({ onUpdate }: { onUpdate: () => void }) => {
+  try {
+    const docResult = await getOrCreateSwitchboardNotify();
+
+    if (isErr(docResult)) {
+      return docResult;
+    }
+
+    const doc = docResult.data;
+    doc.on('updated', onUpdate);
+
+    return newOk({
+      unsubscribe: () => {
+        doc.off('updated', onUpdate);
+      },
+      documentData: doc.data as SwitchboardSyncState,
+    });
+  } catch (error) {
+    const message = `Error subscribing switchboard notify: ${error}`;
+    return newErr({ error, message });
+  }
 };

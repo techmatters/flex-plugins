@@ -51,6 +51,7 @@ import {
 } from '../../../styles';
 import type { HTMLElementRef } from './types';
 import UploadFileInput from './UploadFileInput';
+import { getTemplateStrings } from '../../../hrmConfig';
 
 const ConnectForm: React.FC<{
   children: <P extends ReturnType<typeof useFormContext>>(args: P) => JSX.Element;
@@ -71,7 +72,7 @@ const getRules = (field: FormItemDefinition): RegisterOptions =>
 
 const bindCreateSelectOptions = (path: string) => (o: SelectOption, selected: boolean) => (
   <FormOption key={`${path}-${o.label}-${o.value}`} value={o.value} isEmptyValue={o.value === ''} selected={selected}>
-    {o.label}
+    {getTemplateStrings()[o.label] ?? o.label}
   </FormOption>
 );
 

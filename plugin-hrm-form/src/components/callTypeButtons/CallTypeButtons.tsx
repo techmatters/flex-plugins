@@ -151,7 +151,7 @@ const CallTypeButtons: React.FC<Props> = ({
                     {/* TODO: We currently need the call type name in English. I think we should actually save callType.name (instead of label) on the DB, and use it in here.  */}
                     <CallTypeIcon callType={callTypes[callType.name]} />
                   </Flex>
-                  {callType.label}
+                  <Template code={callType.label} />
                 </DataCallTypeButton>
               );
             })}

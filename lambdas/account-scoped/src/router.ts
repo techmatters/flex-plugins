@@ -20,6 +20,7 @@ import { validateRequestMethod } from './validation/method';
 import { isAccountSID } from './twilioTypes';
 import { handleTaskRouterEvent } from './taskrouter';
 import { handleGetProfileFlagsForIdentifier } from './hrm/getProfileFlagsForIdentifier';
+import { handleToggleSwitchboardQueue } from './hrm/toggleSwitchboardQueue';
 import {
   handleCaptureChannelWithBot,
   handleChatbotCallback,
@@ -66,24 +67,28 @@ const ROUTES: Record<string, FunctionRoute> = {
     handler: handleChatbotCallbackCleanup,
   },
   'conference/addParticipant': {
-    requestPipeline: [validateFlexTokenRequest],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
     handler: addParticipantHandler,
   },
   'conference/getParticipant': {
-    requestPipeline: [validateFlexTokenRequest],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
     handler: getParticipantHandler,
   },
   'conference/removeParticipant': {
-    requestPipeline: [validateFlexTokenRequest],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
     handler: removeParticipantHandler,
   },
   'conference/updateParticipant': {
-    requestPipeline: [validateFlexTokenRequest],
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'worker' })],
     handler: updateParticipantHandler,
   },
   'conference/statusCallback': {
     requestPipeline: [validateWebhookRequest],
     handler: statusCallbackHandler,
+  },
+  toggleSwitchboardQueue: {
+    requestPipeline: [validateFlexTokenRequest({ tokenMode: 'supervisor' })],
+    handler: handleToggleSwitchboardQueue,
   },
 };
 
