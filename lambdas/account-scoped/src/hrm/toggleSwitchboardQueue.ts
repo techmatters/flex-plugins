@@ -272,7 +272,6 @@ async function moveTaskToQueue({
   workspaceSid: string;
   taskSid: string;
   targetQueueSid: string;
-  // additionalAttributes: Record<string, any>;
 }): Promise<Result<Error, { canceledTask: TaskInstance; newTask: TaskInstance }>> {
   try {
     const originalTask = await client.taskrouter.v1
@@ -282,7 +281,6 @@ async function moveTaskToQueue({
     const currentAttributes = JSON.parse(originalTask.attributes);
     const originalAttributes = {
       ...currentAttributes,
-      // ...additionalAttributes,
     };
 
     // update task adding switchboardInProgress flag to avoid task being assigned
@@ -303,6 +301,7 @@ async function moveTaskToQueue({
       taskChannel: originalTask.taskChannelUniqueName,
       priority: originalTask.priority,
       taskQueueSid: targetQueueSid,
+      routingTarget: targetQueueSid,
     });
 
     // Cancel the original task as it's been replaced
