@@ -45,18 +45,24 @@ const waitForBrowser = async (browser: Browser): Promise<void> => {
 export const setupContextAndPage = async (browser: Browser): Promise<SetupPageReturn> => {
   await waitForBrowser(browser);
 
-  console.log('Launching page');
+  console.info('Launching page');
   const context = await browser.newContext({
     storageState: getConfigValue('storageStatePath') as string,
   });
   const page = await context.newPage();
 
   logPageTelemetry(page);
+  console.debug(
+    `Visiting /${process.env.TWILIO_RUNTIME_DOMAIN} to ensure future requests route to correct account`,
+  );
   await page.goto(`/${process.env.TWILIO_RUNTIME_DOMAIN}`, { waitUntil: 'domcontentloaded' });
+  console.debug(
+    `Visited /${process.env.TWILIO_RUNTIME_DOMAIN} - waiting for logged in page element to load`,
+  );
   // There are multiple elements so we need to use waitForSelector instead of a locator/waitFor
   await page.waitForSelector('h2[data-testid="side-nav-header"]');
 
-  console.log('Plugin page browser session launched');
+  console.info('Plugin page browser session launched');
   return { page, context };
 };
 
@@ -65,6 +71,6 @@ export const closePage = async (page: Page): Promise<void> => {
   try {
     await page.close();
   } catch (e) {
-    console.log('Error closing page' + e);
+    console.log('Error closing page: ' + e);
   }
 };

@@ -66,6 +66,7 @@ async function globalSetup(config: FullConfig) {
   });
   const { runtime_domain: runtimeDomain } = await configResponse.json();
   process.env.TWILIO_RUNTIME_DOMAIN = getConfigValue('isLocal') ? '' : runtimeDomain.split('.')[0];
+  console.info('TWILIO_RUNTIME_DOMAIN', process.env.TWILIO_RUNTIME_DOMAIN);
   console.log(
     'Global setup completed',
     `Took ${differenceInMilliseconds(new Date(), start) / 1000} seconds`,
