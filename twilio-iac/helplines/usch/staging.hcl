@@ -62,7 +62,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "sms"
         contact_identity     = "+16066032348"
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/sms-courage-first-chatbot.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-courage-first-chatbot.tftpl"
         channel_flow_vars    = {
           language_message = "Thank you for texting the Courage Help Hotline. For English, press 1.\nFor any other language, please press 2."
         }
