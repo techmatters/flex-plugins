@@ -472,7 +472,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 };
 
 const translations: Translations = {
-  'en-US': {
+  'en-USCH': {
     WelcomeMessage: 'Welcome to ChildHelp',
     PreEngagementConfigDescription : 'To best serve you, answer 4 short questions and you will then be connected to a counselor. You can select "Prefer not to answer" for any question.',
     MessageCanvasTrayContent: '',
