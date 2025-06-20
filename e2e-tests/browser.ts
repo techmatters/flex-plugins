@@ -52,6 +52,9 @@ export const setupContextAndPage = async (browser: Browser): Promise<SetupPageRe
   const page = await context.newPage();
 
   logPageTelemetry(page);
+  await page.goto(`/${process.env.TWILIO_RUNTIME_DOMAIN}`, { waitUntil: 'domcontentloaded' });
+  // There are multiple elements so we need to use waitForSelector instead of a locator/waitFor
+  await page.waitForSelector('h2[data-testid="side-nav-header"]');
 
   console.log('Plugin page browser session launched');
   return { page, context };
