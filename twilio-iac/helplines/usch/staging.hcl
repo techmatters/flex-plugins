@@ -53,8 +53,8 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv.tftpl"
         channel_flow_vars    = {
           language_message = "Thank you for texting the National Child Abuse Hotline. For English, press 1.\nFor any other language, please press 2."
-          courage_first_other_message = "Currently, our text messaging platform only works in English. For assistance in other languages, please call our hotline at 1-800-422-4453."
-          courage_first_eng_language_message = "Thanks for texting. For emergencies contact 911. Standard msg rates may apply. Terms of service can be found here: www.childhelphotline.org/terms-of-service. By continuing, you agree to our terms of service. If you cannot access the terms of service, you can also access help by calling the hotline at 800-422-4453."
+          childhelp_other_message = "Currently, our text messaging platform only works in English. For assistance in other languages, please call our hotline at 1-800-422-4453."
+          childhelp_eng_language_message = "Thanks for texting. For emergencies contact 911. Standard msg rates may apply. Terms of service can be found here: https://www.childhelphotline.org/terms-of-service . By continuing, you agree to our terms of service. If you cannot access the terms of service, you can also access help by calling the hotline at 800-422-4453."
         }
         chatbot_unique_names = []
       },
@@ -65,6 +65,8 @@ locals {
         templatefile         = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-courage-first-chatbot.tftpl"
         channel_flow_vars    = {
           language_message = "Thank you for texting the Courage Help Hotline. For English, press 1.\nFor any other language, please press 2."
+          courage_first_other_message = "Currently, our text messaging platform only works in English. For assistance in other languages, please call our hotline at 1-888-279-1026."
+          courage_first_eng_language_message = "Thanks for texting. For emergencies contact 911. Standard msg rates may apply. Terms of service can be found here: https://www.athletehelpline.org/privacy-policy . By continuing, you agree to our terms of service. If you cannot access the terms of service, you can also access help by calling the hotline at 888-279-1026."
         }
         chatbot_unique_names = []
       }
