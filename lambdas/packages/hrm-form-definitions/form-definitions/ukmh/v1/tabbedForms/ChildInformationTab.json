@@ -1317,6 +1317,16 @@
     ]
   },
   {
+    "name": "termsAndConditions",
+    "label": "Read and Agreed to Privacy Policy",
+    "type": "checkbox"
+  },
+  {
+    "name": "dataProcessingAndStorage",
+    "label": "Consent for Data Porcessing and Storage",
+    "type": "checkbox"
+  },
+  {
     "name": "consentForResearchevaluation",
     "label": "Consent for Research/Evaluation",
     "type": "checkbox"
