@@ -272,7 +272,7 @@ async function moveTaskToQueue({
   workspaceSid: string;
   taskSid: string;
   targetQueueSid: string;
-}): Promise<Result<Error, { originalTask: TaskInstance }>> {
+}): Promise<Result<Error, { canceledTask: TaskInstance; newTask: TaskInstance }>> {
   try {
     const originalTask = await client.taskrouter.v1
       .workspaces(workspaceSid)
@@ -283,7 +283,7 @@ async function moveTaskToQueue({
       ...currentAttributes,
     };
 
-    // update task adding switchboardInProgress to reset task routing
+    // update task adding switchboardInProgress flag to avoid task being assigned
     await client.taskrouter.v1
       .workspaces(workspaceSid)
       .tasks(taskSid)
@@ -294,7 +294,45 @@ async function moveTaskToQueue({
         }),
       });
 
-    return newOk({ originalTask });
+    let newTask: TaskInstance;
+    try {
+      // Create a new task in the target queue that copies the current task's data
+      newTask = await client.taskrouter.v1.workspaces(workspaceSid).tasks.create({
+        attributes: JSON.stringify(originalAttributes),
+        workflowSid: originalTask.workflowSid,
+        taskChannel: originalTask.taskChannelUniqueName,
+        priority: originalTask.priority,
+        taskQueueSid: targetQueueSid,
+        routingTarget: targetQueueSid,
+      });
+    } catch (error) {
+      // rollback the original task update so it becames "assignable" in the original queue
+      await client.taskrouter.v1
+        .workspaces(workspaceSid)
+        .tasks(taskSid)
+        .update({
+          // ifMatch how can I get this from original task?
+          attributes: JSON.stringify(originalAttributes),
+        });
+
+      const message = `Error creating new task on queue ${targetQueueSid}: ${error instanceof Error ? error.message : String(error)}`;
+      console.error(message);
+      return newErr({
+        error: error instanceof Error ? error : new Error(String(error)),
+        message,
+      });
+    }
+
+    // Cancel the original task as it's been replaced
+    const canceledTask = await client.taskrouter.v1
+      .workspaces(workspaceSid)
+      .tasks(taskSid)
+      .update({
+        assignmentStatus: 'canceled',
+        reason: 'Moved to another queue via Switchboard',
+      });
+
+    return newOk({ canceledTask, newTask });
   } catch (error) {
     const message = `Error moving task ${taskSid} to queue ${targetQueueSid}: ${error instanceof Error ? error.message : String(error)}`;
     console.error(message);
@@ -397,8 +435,7 @@ async function handleEnableOperation({
     const configResp = await client.taskrouter.v1
       .workspaces(workspaceSid)
       .workflows(masterWorkflowSid)
-      .update({ reEvaluateTasks: 'true' });
-
+      .fetch();
     const currentConfig = JSON.parse(configResp.configuration) as WorkflowConfig;
 
     const queues = await client.taskrouter.v1.workspaces(workspaceSid).taskQueues.list();
