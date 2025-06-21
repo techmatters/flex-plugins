@@ -397,7 +397,8 @@ async function handleEnableOperation({
     const configResp = await client.taskrouter.v1
       .workspaces(workspaceSid)
       .workflows(masterWorkflowSid)
-      .fetch();
+      .update({ reEvaluateTasks: 'true' });
+
     const currentConfig = JSON.parse(configResp.configuration) as WorkflowConfig;
 
     const queues = await client.taskrouter.v1.workspaces(workspaceSid).taskQueues.list();
