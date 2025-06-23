@@ -19,7 +19,7 @@
             "enable_voice_recordings": true,
             "enable_llm_summary": true,
             "enable_lambda_post_survey_processing": true,
-            "use_prepopulate_mappings": true,
+            "use_prepopulate_mappings": false,
             "enable_lex_v2": false
 
         },
