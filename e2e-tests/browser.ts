@@ -52,14 +52,16 @@ export const setupContextAndPage = async (browser: Browser): Promise<SetupPageRe
   const page = await context.newPage();
 
   logPageTelemetry(page);
-  console.debug(
-    `Visiting /${process.env.TWILIO_RUNTIME_DOMAIN} to ensure future requests route to correct account`,
-  );
-  await page.goto(`/${process.env.TWILIO_RUNTIME_DOMAIN}`, { waitUntil: 'domcontentloaded' });
-  console.debug(
-    `Visited /${process.env.TWILIO_RUNTIME_DOMAIN} - waiting for logged in page element to load`,
-  );
-  // There are multiple elements so we need to use waitForSelector instead of a locator/waitFor
+  if (process.env.TWILIO_RUNTIME_DOMAIN) {
+    console.debug(
+      `Visiting /${process.env.TWILIO_RUNTIME_DOMAIN} to ensure future requests route to correct account`,
+    );
+    await page.goto(`/${process.env.TWILIO_RUNTIME_DOMAIN}`, { waitUntil: 'domcontentloaded' });
+    console.debug(
+      `Visited /${process.env.TWILIO_RUNTIME_DOMAIN} - waiting for logged in page element to load`,
+    );
+    // There are multiple elements so we need to use waitForSelector instead of a locator/waitFor
+  }
   await page.waitForSelector('h2[data-testid="side-nav-header"]');
 
   console.info('Plugin page browser session launched');
