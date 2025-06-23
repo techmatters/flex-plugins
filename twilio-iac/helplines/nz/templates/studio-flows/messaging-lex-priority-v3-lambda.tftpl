@@ -364,12 +364,12 @@ ${
           "event": "match",
           "conditions": [
             {
-              "friendly_name": "If value equal_to modica:111",
+              "friendly_name": "If value regex ${channel_flow_vars.regex_allowed_test_numbers}",
               "arguments": [
                 "{{trigger.conversation.From}}"
               ],
-              "type": "equal_to",
-              "value": "modica:111"
+              "type": "regex",
+              "value": "${channel_flow_vars.regex_allowed_test_numbers}"
             }
           ]
         },

@@ -53,6 +53,20 @@ ${
           ]
         },
         {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value regex ${channel_flow_vars.regex_allowed_test_numbers}",
+              "arguments": [
+                "{{trigger.conversation.From}}"
+              ],
+              "type": "regex",
+              "value": "${channel_flow_vars.regex_allowed_test_numbers}"
+            }
+          ]
+        },
+        {
           "next": "language_selector_complete",
           "event": "match",
           "conditions": [

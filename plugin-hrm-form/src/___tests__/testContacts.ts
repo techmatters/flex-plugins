@@ -60,7 +60,6 @@ export const VALID_EMPTY_METADATA: ContactMetadata = {
   startMillis: undefined,
   endMillis: undefined,
   categories: { gridView: false, expanded: {} },
-  recreated: false,
   draft: {
     resourceReferralList: { resourceReferralIdToAdd: undefined, lookupStatus: ReferralLookupStatus.NOT_STARTED },
     dialogsOpen: {},

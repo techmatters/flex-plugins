@@ -6,9 +6,12 @@
             "enable_client_profiles": true,
             "enable_conferencing": true,
             "enable_fullstory_monitoring": true,
+            "enable_hang_up_by_hrm_saving": true,
             "enable_hierarchical_translations": true,
             "enable_region_resource_search": true,
-            "enable_save_in_progress_contacts": true
+            "enable_save_in_progress_contacts": true,
+            "enable_switchboarding": true,
+            "use_prepopulate_mappings": true
         },
         "helplineLanguage": "en-US"
     }

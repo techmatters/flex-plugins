@@ -19,7 +19,7 @@ import { Manager, Notifications, TaskContextProps, TaskHelper, Template, withTas
 import AddIcCallRounded from '@material-ui/icons/AddIcCallRounded';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { createCallStatusSyncDocument } from '../../../utils/sharedState';
+import { createCallStatusSyncDocument } from '../../../services/SyncService';
 import { ConferenceNotifications } from '../../../conference/setUpConferenceActions';
 import PhoneInputDialog from './PhoneInputDialog';
 import { ConferenceButtonWrapper, ConferenceButton } from './styles';
