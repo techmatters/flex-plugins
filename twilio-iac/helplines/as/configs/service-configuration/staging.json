@@ -19,7 +19,8 @@
             "enable_voice_recordings": true,
             "enable_llm_summary": true,
             "enable_lambda_post_survey_processing": true,
-            "use_prepopulate_mappings": true
+            "use_prepopulate_mappings": true,
+            "enable_lex_v2": true
 
         },
         "hrm_base_url": "https://hrm-test.tl.techmatters.org",

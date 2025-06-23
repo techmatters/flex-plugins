@@ -1,8 +1,8 @@
 {
-    "slotName": "caller_type",
+    "slotName": "aboutSelf",
     "slotTypeName": "yes_no",
-    "description": "caller_type",
     "intentName": "pre_survey",
+    "description": "Slot aboutSelf for intent pre_survey",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -12,12 +12,19 @@
                         "plainTextMessage": {
                             "value": "Are you calling about yourself? Please answer Yes or No."
                         }
-                    }
+                    },
+                    "variations": [
+                        {
+                            "plainTextMessage": {
+                                "value": "You can answer 'Yes' or 'No'. Are you calling about yourself?"
+                            }
+                        }
+                    ]
                 }
             ],
-            "maxRetries": 4,
+            "maxRetries": 1,
             "allowInterrupt": true,
-            "messageSelectionStrategy": "Random",
+            "messageSelectionStrategy": "Ordered",
             "promptAttemptsSpecification": {
                 "Initial": {
                     "allowInterrupt": true,
@@ -64,75 +71,6 @@
                     "textInputSpecification": {
                         "startTimeoutMs": 30000
                     }
-                },
-                "Retry2": {
-                    "allowInterrupt": true,
-                    "allowedInputTypes": {
-                        "allowAudioInput": true,
-                        "allowDTMFInput": true
-                    },
-                    "audioAndDTMFInputSpecification": {
-                        "startTimeoutMs": 4000,
-                        "audioSpecification": {
-                            "maxLengthMs": 15000,
-                            "endTimeoutMs": 640
-                        },
-                        "dtmfSpecification": {
-                            "maxLength": 513,
-                            "endTimeoutMs": 5000,
-                            "deletionCharacter": "*",
-                            "endCharacter": "#"
-                        }
-                    },
-                    "textInputSpecification": {
-                        "startTimeoutMs": 30000
-                    }
-                },
-                "Retry3": {
-                    "allowInterrupt": true,
-                    "allowedInputTypes": {
-                        "allowAudioInput": true,
-                        "allowDTMFInput": true
-                    },
-                    "audioAndDTMFInputSpecification": {
-                        "startTimeoutMs": 4000,
-                        "audioSpecification": {
-                            "maxLengthMs": 15000,
-                            "endTimeoutMs": 640
-                        },
-                        "dtmfSpecification": {
-                            "maxLength": 513,
-                            "endTimeoutMs": 5000,
-                            "deletionCharacter": "*",
-                            "endCharacter": "#"
-                        }
-                    },
-                    "textInputSpecification": {
-                        "startTimeoutMs": 30000
-                    }
-                },
-                "Retry4": {
-                    "allowInterrupt": true,
-                    "allowedInputTypes": {
-                        "allowAudioInput": true,
-                        "allowDTMFInput": true
-                    },
-                    "audioAndDTMFInputSpecification": {
-                        "startTimeoutMs": 4000,
-                        "audioSpecification": {
-                            "maxLengthMs": 15000,
-                            "endTimeoutMs": 640
-                        },
-                        "dtmfSpecification": {
-                            "maxLength": 513,
-                            "endTimeoutMs": 5000,
-                            "deletionCharacter": "*",
-                            "endCharacter": "#"
-                        }
-                    },
-                    "textInputSpecification": {
-                        "startTimeoutMs": 30000
-                    }
                 }
             }
         },
@@ -149,7 +87,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "Sorry, I didn't understand that."
+                                "value": "We are having trouble understanding your response. But nothing to worry, we will transfer you to a counsellor."
                             }
                         }
                     }
