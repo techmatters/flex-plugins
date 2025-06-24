@@ -74,7 +74,8 @@ runs:
       working-directory: ${{ inputs.path }}/e2e-tests
       shell: bash
       env:
-        DEBUG: 'pw:api'
+        # Uncomment for more logging
+        # DEBUG: 'pw:api'
         LOAD_SSM_CONFIG: true
         HL: ${{inputs.helpline-shortcode}}
         HL_ENV: ${{inputs.environment}}
