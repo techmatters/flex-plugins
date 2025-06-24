@@ -1,11 +1,11 @@
 {
   "survey":{
-   "age":[["ChildInformationTab.age"],["CallerInformationTab.helpseekerAge"]],
+   "childAge":[["ChildInformationTab.childAge"],["CallerInformationTab.helpseekerAge"]],
    "genderInput":[["ChildInformationTab.genderInput"],["CallerInformationTab.helpseekerGenderInput"]],
    "stateInput":[["ChildInformationTab.stateInput"],["CallerInformationTab.helpseekerStateInput"]]
   },
   "preEngagement":{
-    "age": [["ChildInformationTab.age"],["CallerInformationTab.helpseekerAge"]],
+    "childAge": [["ChildInformationTab.childAge"],["CallerInformationTab.helpseekerAge"]],
     "genderInput":[["ChildInformationTab.genderInput"],["CallerInformationTab.helpseekerGenderInput"]],
     "childState":[["ChildInformationTab.childState"],["CallerInformationTab.helpseekerState"]],
     "howTheHelpseekerHeardAboutUs":"CaseInformationTab.howTheHelpseekerHeardAboutUs"

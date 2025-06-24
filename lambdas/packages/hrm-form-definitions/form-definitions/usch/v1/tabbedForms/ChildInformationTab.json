@@ -70,7 +70,7 @@
     }
   },
   {
-    "name": "age",
+    "name": "childAge",
     "label": "Child Age",
     "type": "select",
     "isPII": false,
