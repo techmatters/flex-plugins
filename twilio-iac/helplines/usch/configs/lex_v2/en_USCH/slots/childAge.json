@@ -1,8 +1,8 @@
 {
-    "slotName": "age",
+    "slotName": "childAge",
     "slotTypeName": "age",
     "intentName": "pre_survey",
-    "description": "Slot age for intent pre_survey",
+    "description": "Slot childAge for intent pre_survey",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {

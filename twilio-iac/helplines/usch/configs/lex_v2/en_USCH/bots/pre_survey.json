@@ -38,7 +38,7 @@
           },
           "3": {
             "slot_name": "age",
-            "slot_type_name": "age",
+            "slot_type_name": "childAge",
             "slot_question": "How old are you?",
             "failure_response": "We are having trouble understanding your response."
           },
