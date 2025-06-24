@@ -60,7 +60,6 @@ async function createSwitchboardStateDocument({
     await client.sync.v1.services(syncServiceSid).documents.create({
       uniqueName: SWITCHBOARD_STATE_DOCUMENT,
       data: state,
-      ttl: 48 * 60 * 60, // 48 hours
     });
 
     // update or create the notify document to emit a notification
