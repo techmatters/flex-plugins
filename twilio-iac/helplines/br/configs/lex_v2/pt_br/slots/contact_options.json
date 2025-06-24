@@ -2,7 +2,7 @@
     "slotName": "contact_options",
     "slotTypeName": "contact_reason",
     "intentName": "contact_reason",
-    "description": "Reason for contacting",
+    "description": "Slot contact_options for intent contact_reason",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,14 +10,14 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Obrigada por nos contactar, escolha uma das opções abaixo antes de falar conosco:  1 - Você quer denunciar um conteúdo na Internet?  2 - Você precisa de ajuda para alguma violência que sofreu na Internet?  3 - Você é jornalista ou pesquisador e quer entrevista/dados da SaferNet?  4 -Nenhuma das opções acima"
+                            "value": "Escolha uma das opções abaixo antes de falar conosco:  1 - Você quer denunciar um conteúdo na Internet?  2 - Você precisa de ajuda para alguma violência que sofreu na Internet?  3 - Você é jornalista ou pesquisador e quer entrevista/dados da SaferNet?  4 -Nenhuma das opções acima"
                         }
                     }
                 }
             ],
             "maxRetries": 1,
             "allowInterrupt": true,
-            "messageSelectionStrategy": "Random",
+            "messageSelectionStrategy": "Ordered",
             "promptAttemptsSpecification": {
                 "Initial": {
                     "allowInterrupt": true,
@@ -65,6 +65,35 @@
                         "startTimeoutMs": 30000
                     }
                 }
+            }
+        },
+        "slotCaptureSetting": {
+            "captureNextStep": {
+                "dialogAction": {
+                    "type": "FulfillIntent"
+                },
+                "intent": {}
+            },
+            "failureResponse": {
+                "messageGroups": [
+                    {
+                        "message": {
+                            "plainTextMessage": {
+                                "value": "Desculpe, não posso ajudar neste momento."
+                            }
+                        }
+                    }
+                ],
+                "allowInterrupt": true
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "elicitationCodeHook": {
+                "enableCodeHookInvocation": true
             }
         }
     }
