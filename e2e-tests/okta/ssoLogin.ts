@@ -99,7 +99,11 @@ export async function oktaSsoLoginViaApi(
   // Scrape required SAML response values from the HTML response in the redirected page
   // this is kinda :vomit but I couldn't see an alternative API that provides this via JSON or another API friendly format
   const samlResponseHtml = await redirectResponse.text();
+  console.debug('SAML respone HTML:', samlResponseHtml);
   const { samlResponse, relayState, actionUrl } = samlResponseHtml.match(formRegex)!.groups!;
+  console.debug('Extracted SAML Response', samlResponse);
+  console.debug('Extracted SAML relayState', relayState);
+  console.debug('Extracted SAML actionURL', actionUrl);
 
   const flexTimeoutTime = Date.now() + 120000; // 2 minutes
   // Post the SAML response to twilio - if successful this redirects to the flex landing page, whose contents we drop on the floor, we just want to ensure the cookies get set
