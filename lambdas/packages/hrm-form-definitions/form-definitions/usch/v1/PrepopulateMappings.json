@@ -6,7 +6,7 @@
   },
   "preEngagement":{
     "age": [["ChildInformationTab.age"],["CallerInformationTab.helpseekerAge"]],
-    "gender":[["ChildInformationTab.genderInput"],["CallerInformationTab.helpseekerGenderInput"]],
+    "genderInput":[["ChildInformationTab.genderInput"],["CallerInformationTab.helpseekerGenderInput"]],
     "childState":[["ChildInformationTab.childState"],["CallerInformationTab.helpseekerState"]],
     "howTheHelpseekerHeardAboutUs":"CaseInformationTab.howTheHelpseekerHeardAboutUs"
   }
