@@ -34,7 +34,7 @@ jest.mock('../styles/', () => ({
   StyledLabel: 'StyledLabel',
   StyledSelect: 'StyledSelect',
   StyledMenuItem: 'StyledMenuItem',
-  StyledNextStepButton: 'StyledNextStepButton',
+  PrimaryButton: 'PrimaryButton',
   CheckboxField: 'CheckboxField',
   StyledCheckboxLabel: 'StyledCheckboxLabel',
   StyledCategoryCheckboxLabel: 'StyledCategoryCheckboxLabel',

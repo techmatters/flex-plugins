@@ -33,7 +33,7 @@ import {
   Container,
   ColumnarBlock,
   BottomButtonBar,
-  StyledNextStepButton,
+  PrimaryButton,
   FontOpenSans,
   Bold,
   DateRangeSpacer,
@@ -219,9 +219,9 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
           >
             <Template code="Search-ClearFormButton" />
           </SearchFormClearButton>
-          <StyledNextStepButton type="submit" roundCorners={true} disabled={formInvalid}>
+          <PrimaryButton type="submit" roundCorners={true} disabled={formInvalid}>
             <Template code="SearchForm-Button" />
-          </StyledNextStepButton>
+          </PrimaryButton>
         </BottomButtonBar>
       </form>
     </FormProvider>

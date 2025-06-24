@@ -17,6 +17,40 @@
 import { DeepPartial } from 'redux';
 import type { Theme } from '@twilio/flex-ui';
 
+export const buttonColors = {
+  primary: {
+    default: '#192B33',
+    defaultTextColor: '#FFFFFF',
+    hover: '#2A4551',
+    pressed: '#6E828B',
+    focus: '#192B33',
+    disabled: '#DADBE1',
+  },
+  secondary: {
+    default: '#ECEDF1',
+    hover: '#DADBE1',
+    pressed: '#B5B7BF',
+    focus: '#ECEDF1',
+    disabled: '#F9FAFB',
+    disabledTextColor: '#B4B9BC',
+  },
+  destructive: {
+    default: '#D61F1F',
+    hover: '#B41C1C',
+    pressed: '#4A0B0B',
+    focus: '#22A3FA',
+    disabled: '#DADBE1',
+  },
+  tertiary: {
+    default: '#ECEDF1',
+    hover: '#DADBE1',
+    pressed: '#B5B7BF',
+    focus: '#ECEDF1',
+    disabled: '#F9FAFB',
+    disabledTextColor: '#B4B9BC',
+  },
+};
+
 const colors = {
   /*
    * base1: '#ffffff',
@@ -146,6 +180,7 @@ export const overrides: ThemeOverrides = {
 
 const HrmTheme = {
   baseName: 'HrmTheme',
+  buttonColors,
   colors,
   overrides,
 };

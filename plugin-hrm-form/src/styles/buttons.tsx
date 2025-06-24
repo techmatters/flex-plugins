@@ -22,6 +22,60 @@ import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
 import HrmTheme from './HrmTheme';
 
+type AseloBaseButtonProps = {
+  disabled?: boolean;
+  buttonSize?: 'small' | 'large';
+  buttonType?: 'primary' | 'secondary' | 'destructive' | 'tertiary';
+  icon?: 'left' | 'right';
+};
+
+export const AseloBaseButton = styled(Button)<AseloBaseButtonProps>`
+  display: flex;
+  align-items: center;
+  background-color: ${({ disabled }) =>
+    disabled ? HrmTheme.buttonColors.primary.disabled : HrmTheme.buttonColors.primary.default};
+  font-size: ${({ buttonSize }) => (buttonSize === 'large' ? '16px' : '14px')};
+  padding: ${({ buttonSize }) => (buttonSize === 'large' ? '12px 24px' : '8px 16px')};
+  letter-spacing: normal;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+  transition: background-color 0.2s ease;
+
+  &:hover:not([disabled]) {
+    background: ${HrmTheme.buttonColors.primary.hover};
+  }
+
+  &:active:not([disabled]) {
+    background: ${HrmTheme.buttonColors.primary.pressed};
+  }
+
+  &:focus:not([disabled]) {
+    background: ${HrmTheme.buttonColors.primary.focus};
+    outline: 2px solid #22a3fa;
+    outline-offset: 2px;
+  }
+`;
+
+export const PrimaryButton = (props: React.ComponentProps<typeof AseloBaseButton>) => (
+  <AseloBaseButton {...props} buttonType="primary" />
+);
+
+export const SecondaryButton = (props: React.ComponentProps<typeof AseloBaseButton>) => (
+  <AseloBaseButton {...props} buttonType="secondary" />
+);
+
+export const DestructiveButton = (props: React.ComponentProps<typeof AseloBaseButton>) => (
+  <AseloBaseButton {...props} buttonType="destructive" />
+);
+
+export const TertiaryyButton = (props: React.ComponentProps<typeof AseloBaseButton>) => (
+  <AseloBaseButton {...props} buttonType="tertiary" />
+);
+
+
 type TransferStyledButtonProps = {
   background?: string;
   color?: string;
