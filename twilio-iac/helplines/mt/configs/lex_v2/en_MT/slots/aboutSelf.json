@@ -2,7 +2,7 @@
     "slotName": "aboutSelf",
     "slotTypeName": "yes_no",
     "intentName": "pre_survey_intent",
-    "description": "Slot about_self for intent pre_survey_intent",
+    "description": "Slot aboutSelf for intent pre_survey_intent",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -17,7 +17,7 @@
             ],
             "maxRetries": 1,
             "allowInterrupt": true,
-            "messageSelectionStrategy": "Random",
+            "messageSelectionStrategy": "Ordered",
             "promptAttemptsSpecification": {
                 "Initial": {
                     "allowInterrupt": true,

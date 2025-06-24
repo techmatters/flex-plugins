@@ -1,8 +1,8 @@
 {
-    "slotName": "about_self",
+    "slotName": "aboutSelf",
     "slotTypeName": "yes_no",
     "intentName": "pre_survey_intent",
-    "description": "Slot about_self for intent pre_survey_intent",
+    "description": "Slot aboutSelf for intent pre_survey_intent",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Ти звертаєшся з приводу себе? так або ні"
+                            "value": "Qed iċċempel dwarek innifsek? Jekk jogħġbok wieġeb Iva jew Le"
                         }
                     }
                 }
@@ -80,7 +80,7 @@
                     {
                         "message": {
                             "plainTextMessage": {
-                                "value": "Вибачте, на даний момент я не можу надати допомогу."
+                                "value": "Sorry, mhux nista' ngħin f'dan iż-żmien."
                             }
                         }
                     }

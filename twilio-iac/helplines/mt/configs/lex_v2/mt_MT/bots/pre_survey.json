@@ -20,14 +20,14 @@
         ],
         "initial_response": {
           "message": "Wasalt għand Kellimni.",
-          "slot_to_elicit": "about_self"
+          "slot_to_elicit": "aboutSelf"
         },
         "closing_response": {
           "message": "Grazzi talli kkuntatjajtna. Bħalissa qed ngħinu klijenti oħra, iżda aħna se nagħmlu l-almu tagħna biex nirrisponduk fl-iqsar ħin possibli. Jekk jogħġbok stenna għall-assistenza. Jekk din hija emerġenza, ikkuntattja lill-112, sakemm inkunu f'pożizzjoni li ngħinuk."
         },
         "slot_priorities": {
           "1": {
-            "slot_name": "about_self",
+            "slot_name": "aboutSelf",
             "slot_type_name": "yes_no",
             "slot_question": "Qed iċċempel dwarek innifsek? Jekk jogħġbok wieġeb Iva jew Le",
             "failure_response": "Sorry, mhux nista' ngħin f'dan iż-żmien."

@@ -20,14 +20,14 @@
         ],
         "initial_response": {
           "message": "You have reached Kellimni",
-          "slot_to_elicit": "about_self"
+          "slot_to_elicit": "aboutSelf"
         },
         "closing_response": {
           "message": "Дякуємо за звернення. Зараз ми допомагаємо іншим клієнтам, але зробимо все можливе, щоб відповісти вам найближчим часом. Будь ласка, чекайте допомоги. Якщо це екстрена ситуація, зв’яжіться з нами за номером 112, поки ми не зможемо вам допомогти."
         },
         "slot_priorities": {
           "1": {
-            "slot_name": "about_self",
+            "slot_name": "aboutSelf",
             "slot_type_name": "yes_no",
             "slot_question": "Ти звертаєшся з приводу себе? так або ні",
             "failure_response": "Вибачте, на даний момент я не можу надати допомогу."
