@@ -95,5 +95,5 @@ runs:
     - uses: actions/upload-artifact@v4
       if: ${{ always() }}
       with:
-        name: test-artifacts
+        name: test-state
         path: ${{ inputs.path }}/e2e-tests/temp
