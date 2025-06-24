@@ -430,7 +430,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       label: 'Are you reaching out on behalf of yourself or another person?',
       type: 'select',
       defaultValue: 'Yes',
-      name: 'callingAboutSelf',
+      name: 'aboutSelf',
       options: [
         {
           "value": "Yes",
