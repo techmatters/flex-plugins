@@ -462,7 +462,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'checkbox',
       name: 'termsAndConditions',
       label:
-        'I\'ve read and accept the <a href="https://en.wikipedia.org/wiki/Terms_of_service">Terms and Conditions</a>',
+        'I\'ve read and accept the <a href="https://www.childhelphotline.org/terms-of-service/">Terms and Conditions</a>',
       required: {
         value: true,
         message: "Sorry, if you don't accept our terms and conditions we can't provide counseling to you.",
