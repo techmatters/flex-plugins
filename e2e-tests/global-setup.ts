@@ -17,7 +17,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { FullConfig, request } from '@playwright/test';
 import { differenceInMilliseconds } from 'date-fns';
-import { legacyOktaSsoLoginViaApi, oktaSsoLoginViaApi } from './okta/sso-login';
+import { legacyOktaSsoLoginViaApi, oktaSsoLoginViaApi } from './okta/ssoLogin';
 import { getConfigValue, initConfig } from './config';
 import { getSidForWorker } from './twilio/worker';
 import { clearOfflineTask } from './hrm/clearOfflineTask';
@@ -56,6 +56,19 @@ async function globalSetup(config: FullConfig) {
     );
   }
   process.env.ARTIFACT_PATH = config.projects[0].outputDir;
+  const configResponse = await fetch(`https://flex-api.twilio.com/v1/Configuration`, {
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      Authorization: `Basic ${Buffer.from(
+        `${getConfigValue('twilioAccountSid')}:${getConfigValue('twilioAuthToken')}`,
+      ).toString('base64')}`,
+    }),
+  });
+  const { runtime_domain: runtimeDomain } = await configResponse.json();
+  process.env.TWILIO_RUNTIME_DOMAIN = getConfigValue('baseURL')?.toString().includes('localhost')
+    ? ''
+    : runtimeDomain.split('.')[0];
+  console.info('TWILIO_RUNTIME_DOMAIN', process.env.TWILIO_RUNTIME_DOMAIN);
   console.log(
     'Global setup completed',
     `Took ${differenceInMilliseconds(new Date(), start) / 1000} seconds`,
