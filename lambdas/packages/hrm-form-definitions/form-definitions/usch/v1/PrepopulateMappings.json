@@ -3,5 +3,11 @@
    "childAge":[["CallerInformationTab.helpseekerAge","ChildInformationTab.childAge"]],
    "genderInput":[["CallerInformationTab.helpseekerGenderInput","ChildInformationTab.genderInput"]],
    "stateInput":[["CallerInformationTab.helpseekerStateInput","ChildInformationTab.stateInput"]]
+  },
+  "preEngagement":{
+    "childAge": [["CallerInformationTab.helpseekerAge","ChildInformationTab.childAge"]],
+    "genderInput":[["CallerInformationTab.helpseekerGenderInput","ChildInformationTab.genderInput"]],
+    "childState":[["CallerInformationTab.helpseekerState","ChildInformationTab.childState"]],
+    "howTheHelpseekerHeardAboutUs":"CaseInformationTab.howTheHelpseekerHeardAboutUs"
   }
 }

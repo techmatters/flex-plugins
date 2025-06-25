@@ -95,16 +95,16 @@ export const getChangeLanguageWebChat = (manager: FlexWebChat.Manager, config: C
   };
 
   return (language: string) => {
-    try {
-      setNewLanguage(language);
-      overrideLanguageOnContext(manager, language);
-    } catch (err) {
-      const translationErrorMsg = 'Could not translate, using default';
-      window.alert(translationErrorMsg);
-      console.error(translationErrorMsg, err);
-      setNewLanguage(defaultLanguage);
-    } finally {
-      notifyStringsUpdated();
-    }
-  };
+  try {
+    setNewLanguage(language);
+    overrideLanguageOnContext(manager, language);
+  } catch (err) {
+    const translationErrorMsg = `Could not load translations for language "${language}", using default "${defaultLanguage}"`;
+    window.alert(translationErrorMsg);
+    console.error(translationErrorMsg, err);
+    setNewLanguage(defaultLanguage);
+  } finally {
+    notifyStringsUpdated();
+  }
+};
 };
