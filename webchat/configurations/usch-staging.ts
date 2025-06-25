@@ -450,11 +450,11 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       options: [
         {
           "value": "English",
-          "label": "English"
+          "label": "en-US"
         },
         {
           "value": "Other",
-          "label": "Other"
+          "label": "en"
         }
       ],
     },
