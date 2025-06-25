@@ -108,7 +108,7 @@ export const llmAssistantReducer = (initialState: ContactsState) =>
               ...draftContact?.rawJson[form],
               [item]: updatedText,
             },
-            llmSupportedEntries,
+            llmSupportedEntries: llmSupportedEntries as any,
           },
         };
         const updatedMetadata: ContactMetadata = {

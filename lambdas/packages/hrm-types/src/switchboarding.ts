@@ -14,14 +14,16 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// Temporary duplication, these should be shared with the same types in the flex plugin
-export type AccountSID = `AC${string}`;
-export type WorkspaceSID = `WS${string}`;
-export type WorkerSID = `WK${string}`;
-export type TaskSID = `WT${string}`;
-export type ChatServiceSID = `IS${string}`;
-export type WorkflowSID = `WW${string}`;
+export const SWITCHBOARD_QUEUE_NAME = 'Switchboard Queue';
+export const SWITCHBOARD_WORKFLOW_FILTER_PREFIX = 'Switchboard Workflow';
 
-export const isAccountSID = (value: string): value is AccountSID =>
-  // This regex could be stricter if we only wanted to catch 'real' account SIDs, but our test account sids have non hexadecimal characters
-  /^AC[0-9a-zA-Z_]+$/.test(value);
+export const SWITCHBOARD_STATE_DOCUMENT = 'switchboard-state';
+export const SWITCHBOARD_NOTIFY_DOCUMENT = 'switchboard-notify';
+
+export type SwitchboardSyncState = {
+  isSwitchboardingActive: boolean;
+  queueSid: string | null;
+  queueName: string | null;
+  supervisorWorkerSid: string | null;
+  startTime: string | null;
+};

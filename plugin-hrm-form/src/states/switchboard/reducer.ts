@@ -14,14 +14,33 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// Temporary duplication, these should be shared with the same types in the flex plugin
-export type AccountSID = `AC${string}`;
-export type WorkspaceSID = `WS${string}`;
-export type WorkerSID = `WK${string}`;
-export type TaskSID = `WT${string}`;
-export type ChatServiceSID = `IS${string}`;
-export type WorkflowSID = `WW${string}`;
+import {
+  SwitchboardState,
+  SwitchboardActionTypes,
+  SWITCHBOARD_STATE_UPDATE,
+  SWITCHBOARD_SET_LOADING,
+  SWITCHBOARD_SET_ERROR,
+  initialState,
+} from './types';
 
-export const isAccountSID = (value: string): value is AccountSID =>
-  // This regex could be stricter if we only wanted to catch 'real' account SIDs, but our test account sids have non hexadecimal characters
-  /^AC[0-9a-zA-Z_]+$/.test(value);
+export const reduce = (state = initialState, action: SwitchboardActionTypes): SwitchboardState => {
+  switch (action.type) {
+    case SWITCHBOARD_STATE_UPDATE:
+      return {
+        ...state,
+        switchboardSyncState: action.payload,
+      };
+    case SWITCHBOARD_SET_LOADING:
+      return {
+        ...state,
+        isLoading: action.payload,
+      };
+    case SWITCHBOARD_SET_ERROR:
+      return {
+        ...state,
+        error: action.payload,
+      };
+    default:
+      return state;
+  }
+};

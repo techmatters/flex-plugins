@@ -62,7 +62,7 @@ const CasePrintSection: React.FC<Props> = ({
           return (
             <View key={i} style={i % 2 === 0 ? styles['sectionItemRowOdd'] : styles['sectionItemRowEven']}>
               <View style={styles['sectionItemFirstColumn']}>
-                <Text style={{ marginRight: '10px' }}>{def.label}</Text>
+                <Text style={{ marginRight: '10px' }}>{strings[def.label] ?? def.label}</Text>
               </View>
               <View style={styles['sectionItemSecondColumn']}>
                 <Text>

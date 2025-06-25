@@ -101,7 +101,7 @@
   },
   {
     "name": "otherTechnicalProblems",
-    "label": "otherTechnicalProblems ",
+    "label": "otherTechnicalProblems",
     "type": "input"
   },
   {
@@ -118,7 +118,7 @@
   },
   {
     "name": "otherTools",
-    "label": "If Other tools, please specify: ",
+    "label": "otherTools",
     "type": "input"
   },  
   {

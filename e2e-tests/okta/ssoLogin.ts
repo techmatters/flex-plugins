@@ -44,14 +44,12 @@ export async function oktaSsoLoginViaApi(
   accountSid: string,
 ): Promise<string> {
   const apiRequest = await request.newContext();
-  const configResp = await fetch(
+  const configResp = await apiRequest.get(
     `https://services.twilio.com/v1/Flex/Authentication/Config?AccountSid=${accountSid}`,
   );
-  if (!configResp.ok) {
+  if (!configResp.ok()) {
     throw new Error(
-      `Failed to fetch auth config for ${accountSid}: [${
-        configResp.status
-      }]: ${await configResp.text()}`,
+      `Failed to fetch auth config for ${accountSid}: [${configResp.status()}]: ${await configResp.text()}`,
     );
   }
   const {
@@ -101,7 +99,12 @@ export async function oktaSsoLoginViaApi(
   // Scrape required SAML response values from the HTML response in the redirected page
   // this is kinda :vomit but I couldn't see an alternative API that provides this via JSON or another API friendly format
   const samlResponseHtml = await redirectResponse.text();
+  // commented debug lines are spammy, but handy debugging auth problems
+  // console.debug('SAML response HTML:', samlResponseHtml);
   const { samlResponse, relayState, actionUrl } = samlResponseHtml.match(formRegex)!.groups!;
+  // console.debug('Extracted SAML Response', samlResponse);
+  // console.debug('Extracted SAML relayState', relayState);
+  // console.debug('Extracted SAML actionURL', actionUrl);
 
   const flexTimeoutTime = Date.now() + 120000; // 2 minutes
   // Post the SAML response to twilio - if successful this redirects to the flex landing page, whose contents we drop on the floor, we just want to ensure the cookies get set
@@ -153,8 +156,9 @@ export async function oktaSsoLoginViaApi(
     console.error(`Looking up token failed`, await tokenLookupResponse.text());
   }
   expect(tokenLookupResponse.ok()).toBe(true);
-  const { token } = await tokenLookupResponse.json();
-  return token!;
+  const tokenLookupResponseBody = await tokenLookupResponse.json();
+
+  return tokenLookupResponseBody.token!;
 }
 
 export async function legacyOktaSsoLoginViaApi(

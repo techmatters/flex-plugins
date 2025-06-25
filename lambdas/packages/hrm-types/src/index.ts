@@ -17,6 +17,7 @@
 import type { CallType } from './callType';
 
 export * from './callType';
+export * from './switchboarding';
 
 type TaskSID = `WT${string}` | `offline-contact-task${string}` | 'standalone-task-sid';
 

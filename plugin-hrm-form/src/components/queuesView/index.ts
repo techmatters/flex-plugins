@@ -13,15 +13,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+import { setUpSwitchboard } from './SwitchboardTile';
 
-// Temporary duplication, these should be shared with the same types in the flex plugin
-export type AccountSID = `AC${string}`;
-export type WorkspaceSID = `WS${string}`;
-export type WorkerSID = `WK${string}`;
-export type TaskSID = `WT${string}`;
-export type ChatServiceSID = `IS${string}`;
-export type WorkflowSID = `WW${string}`;
+const QueuesView = {
+  setUpSwitchboard,
+};
 
-export const isAccountSID = (value: string): value is AccountSID =>
-  // This regex could be stricter if we only wanted to catch 'real' account SIDs, but our test account sids have non hexadecimal characters
-  /^AC[0-9a-zA-Z_]+$/.test(value);
+export default QueuesView;
