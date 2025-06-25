@@ -19,7 +19,7 @@ import { PreEngagementFormDefinition } from '../src/pre-engagement-form';
 
 const accountSid = 'AC147e360e21386797593c3893bf4def12';
 const flexFlowSid = 'FO464be1805424c9a42a90a88e53cc0ed0';
-const defaultLanguage = 'en-USCH';
+const defaultLanguage = 'en';
 const captureIp = true;
 const checkOpenHours = false;
 const contactType: ContactType = 'ip';
@@ -472,7 +472,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 };
 
 const translations: Translations = {
-  'en-USCH': {
+  'en': {
     WelcomeMessage: 'Welcome to ChildHelp',
     PreEngagementConfigDescription : 'To best serve you, answer 4 short questions and you will then be connected to a counselor. You can select "Prefer not to answer" for any question.',
     MessageCanvasTrayContent: '',
