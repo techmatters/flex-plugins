@@ -18,8 +18,8 @@ import { CheckCircleOutlineOutlined, CreateNewFolderOutlined } from '@material-u
 import { Template } from '@twilio/flex-ui';
 import React from 'react';
 
-import { PreviewActionButton } from '../search/styles';
 import { getTemplateStrings } from '../../hrmConfig';
+import { PrimaryButton, SecondaryButton } from '../../styles';
 
 type OwnProps = {
   isConnectedToTaskContact: boolean;
@@ -38,21 +38,37 @@ const ConnectToCaseButton: React.FC<Props> = ({
 }) => {
   const strings = getTemplateStrings();
   return (
-    <PreviewActionButton
-      style={{ height: '28px' }}
-      disabled={isConnectedToTaskContact}
-      onClick={onClickConnectToTaskContact}
-      data-fs-id="AddToCase-Button"
-      secondary={color === 'grey' ? 'true' : 'false'}
-      title={`${strings['CaseHeader-ConnectToTaskContact']} #${caseId}`}
-    >
-      {!isConnectedToTaskContact && <CreateNewFolderOutlined />}
-      {isConnectedToTaskContact && <CheckCircleOutlineOutlined />}
-      <div style={{ width: 10 }} />
-      <Template
-        code={isConnectedToTaskContact ? 'CaseHeader-TaskContactConnected' : 'CaseHeader-ConnectToTaskContact'}
-      />
-    </PreviewActionButton>
+    color === 'black' ? (
+      <PrimaryButton
+        style={{ height: '28px' }}
+        disabled={isConnectedToTaskContact}
+        onClick={onClickConnectToTaskContact}
+        data-fs-id="AddToCase-Button"
+        title={`${strings['CaseHeader-ConnectToTaskContact']} #${caseId}`}
+      >
+        {!isConnectedToTaskContact && <CreateNewFolderOutlined />}
+        {isConnectedToTaskContact && <CheckCircleOutlineOutlined />}
+        <div style={{ width: 10 }} />
+        <Template
+          code={isConnectedToTaskContact ? 'CaseHeader-TaskContactConnected' : 'CaseHeader-ConnectToTaskContact'}
+        />
+      </PrimaryButton>
+    ) : (
+      <SecondaryButton
+        style={{ height: '28px' }}
+        disabled={isConnectedToTaskContact}
+        onClick={onClickConnectToTaskContact}
+        data-fs-id="AddToCase-Button"
+        title={`${strings['CaseHeader-ConnectToTaskContact']} #${caseId}`}
+      >
+        {!isConnectedToTaskContact && <CreateNewFolderOutlined />}
+        {isConnectedToTaskContact && <CheckCircleOutlineOutlined />}
+        <div style={{ width: 10 }} />
+        <Template
+          code={isConnectedToTaskContact ? 'CaseHeader-TaskContactConnected' : 'CaseHeader-ConnectToTaskContact'}
+        />
+      </SecondaryButton>
+  )
   );
 };
 

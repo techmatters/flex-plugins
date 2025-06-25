@@ -19,7 +19,7 @@ import { Template } from '@twilio/flex-ui';
 import WarningIcon from '@material-ui/icons/Warning';
 
 import TabPressWrapper from '../TabPressWrapper';
-import { Box, Row, HiddenText, PrimaryButton } from '../../styles';
+import { Box, Row, HiddenText, PrimaryButton, SecondaryButton } from '../../styles';
 import { CloseButton, CloseTaskDialog } from '../callTypeButtons/styles';
 import { CloseDialogText } from './styles';
 
@@ -47,16 +47,14 @@ const CloseCaseDialog: React.FC<Props> = ({ setDialog, handleDontSaveClose, hand
             <Template code="BottomBar-SaveOnClose" />
           </CloseDialogText>
           <Row style={{ justifyContent: 'space-evenly' }}>
-            <PrimaryButton
+            <SecondaryButton
               tabIndex={1}
-              secondary="true"
               onClick={handleDontSaveClose}
-              margin="15px 0"
-              style={{ background: '#fff' }}
+              style={{ background: '#fff', margin: '15px 0' }}
             >
               <Template code="BottomBar-DontSave" />
-            </PrimaryButton>
-            <PrimaryButton tabIndex={2} onClick={handleSaveUpdate} margin="15px 0">
+            </SecondaryButton>
+            <PrimaryButton tabIndex={2} onClick={handleSaveUpdate} style={{ margin: '15px 0' }}>
               <Template code="BottomBar-Save" />
             </PrimaryButton>
           </Row>

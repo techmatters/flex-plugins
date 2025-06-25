@@ -212,7 +212,6 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
         >
           <SearchFormClearButton
             type="button"
-            secondary="true"
             roundCorners={true}
             onClick={clearForm}
             disabled={formInvalid}

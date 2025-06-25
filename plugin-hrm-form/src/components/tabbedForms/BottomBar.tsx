@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 
-import { BottomButtonBar, Box, SaveAndEndButton, PrimaryButton } from '../../styles';
+import { BottomButtonBar, Box, SaveAndEndButton, PrimaryButton, SecondaryButton } from '../../styles';
 import { AddedToCaseButton } from './styles';
 import * as RoutingActions from '../../states/routing/actions';
 import { completeTask } from '../../services/formSubmissionHelpers';
@@ -130,15 +130,14 @@ const BottomBar: React.FC<
       {optionalButtons &&
         optionalButtons.map((i, index) => (
           <Box key={`optional-button-${index}`} marginRight="15px">
-            <PrimaryButton
+            <SecondaryButton
               type="button"
               roundCorners
-              secondary="true"
               onClick={i.onClick}
               disabled={contactIsSaving}
             >
               <Template code={i.label} />
-            </PrimaryButton>
+            </SecondaryButton>
           </Box>
         ))}
 

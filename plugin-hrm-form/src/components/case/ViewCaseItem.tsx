@@ -21,7 +21,7 @@ import { Template } from '@twilio/flex-ui';
 import Edit from '@material-ui/icons/Edit';
 import { DefinitionVersion, isNonSaveable } from 'hrm-form-definitions';
 
-import { BottomButtonBar, Box, PrimaryButton } from '../../styles';
+import { BottomButtonBar, Box, SecondaryButton } from '../../styles';
 import { CaseLayout, FullWidthFormTextContainer } from './styles';
 import { RootState } from '../../states';
 import { SectionEntry, SectionEntryValue } from '../common/forms/SectionEntry';
@@ -117,15 +117,14 @@ const ViewCaseItem: React.FC<ViewCaseItemProps> = ({ task, definitionVersion, se
         {canEdit && (
           <BottomButtonBar>
             <Box marginRight="15px">
-              <PrimaryButton
-                secondary="true"
+              <SecondaryButton
                 roundCorners
                 onClick={onEditCaseItemClick}
                 data-testid="Case-EditButton"
               >
                 <Edit fontSize="inherit" style={{ marginRight: 5 }} />
                 <Template code="EditButton" />
-              </PrimaryButton>
+              </SecondaryButton>
             </Box>
           </BottomButtonBar>
         )}

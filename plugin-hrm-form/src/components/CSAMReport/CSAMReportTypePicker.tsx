@@ -21,7 +21,7 @@ import { useForm } from 'react-hook-form';
 import Close from '@material-ui/icons/Close';
 
 import ActionHeader from '../case/ActionHeader';
-import { BottomButtonBar, Box, HeaderCloseButton, HiddenText, Row, PrimaryButton } from '../../styles';
+import { BottomButtonBar, Box, HeaderCloseButton, HiddenText, Row, PrimaryButton, SecondaryButton } from '../../styles';
 import { BoldDescriptionText, CSAMReportContainer, CSAMReportLayout } from './styles';
 import { addMargin } from '../common/forms/formGenerators';
 import { CSAMReportType } from '../../states/csam-report/types';
@@ -94,9 +94,9 @@ const CSAMReportTypePicker: React.FC<Props> = ({
 
       <BottomButtonBar>
         <Box marginRight="15px">
-          <PrimaryButton secondary="true" roundCorners onClick={onClickClose}>
+          <SecondaryButton roundCorners onClick={onClickClose}>
             <Template code="BottomBar-Cancel" />
-          </PrimaryButton>
+          </SecondaryButton>
         </Box>
         <PrimaryButton roundCorners onClick={onSubmit} data-testid="CSAMReport-PickerSubmitButton">
           <Template code="BottomBar-Next" />
