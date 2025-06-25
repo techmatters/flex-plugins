@@ -14,11 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import * as FlexWebChat from '@twilio/flex-webchat-ui';
+import * as FlexWebChat from "@twilio/flex-webchat-ui";
 
-import { Configuration } from '../types';
-import { notifyStringsUpdated } from './pre-engagement-form/localization';
-import standardTranslations from './translations';
+import { Configuration } from "../types";
+import { notifyStringsUpdated } from "./pre-engagement-form/localization";
+import standardTranslations from "./translations";
 
 /**
  * Loads the 'standard' translations for a language based on the keys in 'standardTranslations'.
@@ -29,14 +29,20 @@ import standardTranslations from './translations';
  * If none of what it searches for are found, if will just return an empty map ({})
  * @param language
  */
-const standardTranslationsForLanguage = (language: string): Record<string, string> => {
-  const [languageOnlyCode] = language.split('-');
+const standardTranslationsForLanguage = (
+  language: string
+): Record<string, string> => {
+  const [languageOnlyCode] = language.split("-");
   const languageTranslations = standardTranslations[languageOnlyCode] ?? {};
-  const cultureSpecificTranslations = (languageOnlyCode !== language ? standardTranslations[language] : {}) ?? {};
+  const cultureSpecificTranslations =
+    (languageOnlyCode !== language ? standardTranslations[language] : {}) ?? {};
   return { ...languageTranslations, ...cultureSpecificTranslations };
 };
 
-export const overrideLanguageOnContext = (manager: FlexWebChat.Manager, language: string) => {
+export const overrideLanguageOnContext = (
+  manager: FlexWebChat.Manager,
+  language: string
+) => {
   const appConfig = manager.configuration;
 
   const updateConfig = {
@@ -51,7 +57,7 @@ export const overrideLanguageOnContext = (manager: FlexWebChat.Manager, language
 };
 
 const setMainHeaderTitle = (manager: FlexWebChat.Manager, language: string) => {
-  const [languageOnlyCode] = language.split('-');
+  const [languageOnlyCode] = language.split("-");
 
   const appConfig = manager.configuration;
 
@@ -66,13 +72,18 @@ const setMainHeaderTitle = (manager: FlexWebChat.Manager, language: string) => {
   manager.updateConfig(updateConfig);
 };
 
-export const getChangeLanguageWebChat = (manager: FlexWebChat.Manager, config: Configuration) => {
+export const getChangeLanguageWebChat = (
+  manager: FlexWebChat.Manager,
+  config: Configuration
+) => {
   const { defaultLanguage, translations: configTranslations } = config;
   const setNewLanguage = (language: string) => {
     const twilioStrings = { ...manager.strings }; // save the originals
-    const defaultLanguageTranslations = standardTranslationsForLanguage(defaultLanguage);
+    const defaultLanguageTranslations =
+      standardTranslationsForLanguage(defaultLanguage);
     // eslint-disable-next-line no-shadow
-    const setConfigLanguage = (language: string) => (manager.store.getState().flex.config.language = language);
+    const setConfigLanguage = (language: string) =>
+      (manager.store.getState().flex.config.language = language);
     const setNewStrings = (newStrings: FlexWebChat.Strings) =>
       (manager.strings = { ...manager.strings, ...newStrings });
 
@@ -89,22 +100,26 @@ export const getChangeLanguageWebChat = (manager: FlexWebChat.Manager, config: C
       setMainHeaderTitle(manager, language);
     } else {
       setConfigLanguage(defaultLanguage);
-      setNewStrings({ ...twilioStrings, ...defaultLanguageTranslations, ...configTranslations[defaultLanguage] });
+      setNewStrings({
+        ...twilioStrings,
+        ...defaultLanguageTranslations,
+        ...configTranslations[defaultLanguage],
+      });
       setMainHeaderTitle(manager, defaultLanguage);
     }
   };
 
   return (language: string) => {
-  try {
-    setNewLanguage(language);
-    overrideLanguageOnContext(manager, language);
-  } catch (err) {
-    const translationErrorMsg = `Could not load translations for language "${language}", using default "${defaultLanguage}"`;
-    window.alert(translationErrorMsg);
-    console.error(translationErrorMsg, err);
-    setNewLanguage(defaultLanguage);
-  } finally {
-    notifyStringsUpdated();
-  }
-};
+    try {
+      setNewLanguage(language);
+      overrideLanguageOnContext(manager, language);
+    } catch (err) {
+      const translationErrorMsg = `Could not load translations for language "${language}", using default "${defaultLanguage}"`;
+      window.alert(translationErrorMsg);
+      console.error(translationErrorMsg, err);
+      setNewLanguage(defaultLanguage);
+    } finally {
+      notifyStringsUpdated();
+    }
+  };
 };
