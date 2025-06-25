@@ -61,7 +61,6 @@ export const setupContextAndPage = async (browser: Browser): Promise<SetupPageRe
       `Visited /${process.env.TWILIO_RUNTIME_DOMAIN} - waiting for logged in page element to load`,
     );
   } else {
-
     await page.goto(`/`, { waitUntil: 'domcontentloaded' });
   }
   // There are multiple elements so we need to use waitForSelector instead of a locator/waitFor
