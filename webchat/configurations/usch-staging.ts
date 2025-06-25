@@ -445,16 +445,16 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       label: 'What is your preferred language?',
       type: 'select',
-      defaultValue: 'English',
+      defaultValue: 'en-US',
       name: 'language',
       options: [
         {
-          "value": "English",
-          "label": "en-US"
+          "value": "en-US",
+          "label": "English"
         },
         {
-          "value": "Other",
-          "label": "en"
+          "value": "en",
+          "label": "Other"
         }
       ],
     },
