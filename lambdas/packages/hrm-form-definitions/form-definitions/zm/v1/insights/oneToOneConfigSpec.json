@@ -12,6 +12,14 @@
         "insights": ["customers", "city"]
       },
       {
+        "name": "province",
+        "insights": ["conversations", "conversation_attribute_9"]
+      },
+        {
+        "name": "district",
+        "insights": ["conversations", "outcome"]
+      },
+      {
         "name": "postalCode",
         "insights": ["customers", "zip"]
       },
