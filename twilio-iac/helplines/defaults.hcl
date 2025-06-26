@@ -76,6 +76,11 @@ locals {
     // },
   }
 
+
+  /*
+  CAREFUL: OUR CODE BASE ONLY SUPPORTS CONVERSATIONS FOR THE CHAT TASK CHANNEL. 
+  SMS FOR EXAMPLE IS NOT SUPPORTED.
+  */
   task_channels = {
     default : "Default"
     chat : "Programmable Chat"
