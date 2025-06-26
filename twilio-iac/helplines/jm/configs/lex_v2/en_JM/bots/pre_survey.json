@@ -17,14 +17,14 @@
         ],
         "initial_response": {
           "message": "Welcome to the helpline. To help us better serve you, please answer the following questions. You can say -prefer not to answer- (or type X) to any question.",
-          "slot_to_elicit": "about_self"
+          "slot_to_elicit": "aboutSelf"
         },
         "closing_response": {
           "message": "We will transfer you now. Please hold for a counsellor."
         },
         "slot_priorities": {
           "1": {
-            "slot_name": "about_self",
+            "slot_name": "aboutSelf",
             "slot_type_name": "yes_no",
             "slot_question": "Are you calling about yourself? Please answer Yes or No.",
             "failure_response": "I am having trouble understanding your response."

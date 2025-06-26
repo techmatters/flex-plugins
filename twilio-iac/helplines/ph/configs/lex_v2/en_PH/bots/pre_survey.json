@@ -1,0 +1,56 @@
+{
+  "pre_survey": {
+    "description": "Helpline Specific ph/configs/lex_v2/en_PH/bots Pre Survey Intent Survey intentPre Survey bot",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "type": "Bot",
+    "intents": {
+      "pre_survey": {
+        "utterances": [
+          {
+            "utterance": "trigger_pre_survey"
+          },
+          {
+            "utterance": "Incoming webchat contact"
+          }
+        ],
+        "closing_response": {
+          "message": "We'll transfer you now. Please hold for a counsellor."
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "aboutSelf",
+            "slot_type_name": "yes_no",
+            "slot_question": "Are you reporting about yourself? Please answer Yes or No.",
+            "failure_response": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a youth responder."
+          },
+          "2": {
+            "slot_name": "csam",
+            "slot_type_name": "yes_no",
+            "slot_question": "Are you reporting a child sexual abuse material (CSAM) or Incident of Sexual Exploitation? Respond 1 to report and 2 if you are not reporting.",
+            "failure_response": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a youth responder."
+          },
+          "3": {
+            "slot_name": "age",
+            "slot_type_name": "age",
+            "slot_question": "How old are you?",
+            "failure_response": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a youth responder."
+          },
+          "4": {
+            "slot_name": "gender",
+            "slot_type_name": "gender",
+            "slot_question": "What is your gender? Please enter 1.Male, 2.Female, 3.LGBTQ+",
+            "failure_response": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a youth responder."
+          },
+          "5": {
+            "slot_name": "counsellorGenderPreference",
+            "slot_type_name": "counsellorGenderPreference",
+            "slot_question": "Do you have a counselor preference? 1. Male counselor 2. Female counselor 3. Non-binary 4. No preference",
+            "failure_response": "Sorry, I'm having trouble understanding. We'll transfer you now. Please hold for a youth responder."
+          }
+        }
+      }
+    }
+  }
+}
