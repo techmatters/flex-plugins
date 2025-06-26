@@ -31,7 +31,6 @@ import {
   SWITCHBOARD_WORKFLOW_FILTER_PREFIX,
 } from '@tech-matters/hrm-types';
 import { AccountSID } from '../twilioTypes';
-import { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 
 export type OperationType = 'enable' | 'disable';
