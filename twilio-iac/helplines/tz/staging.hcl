@@ -57,7 +57,7 @@ locals {
       instagram : {
         messaging_mode       = "conversations"
         channel_type         = "custom"
-        contact_identity     = "instagram"
+        contact_identity     = ""
         templatefile         = "/app/twilio-iac/helplines/tz/templates/studio-flows/messaging-custom-channel-blocking-conv.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
