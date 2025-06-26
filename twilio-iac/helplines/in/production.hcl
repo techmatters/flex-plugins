@@ -11,5 +11,6 @@ locals {
 
 
     channels = {}
+    get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }
