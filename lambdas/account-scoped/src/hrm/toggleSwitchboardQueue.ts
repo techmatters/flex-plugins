@@ -32,6 +32,7 @@ import {
 } from '@tech-matters/hrm-types';
 import { AccountSID } from '../twilioTypes';
 import { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
+import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 
 export type OperationType = 'enable' | 'disable';
 
@@ -346,7 +347,7 @@ async function moveTaskToQueue({
 /**
  * Moves waiting tasks from source queue to target queue
  */
-async function moveWaitingTasks({
+async function movePendingTasks({
   client,
   sourceQueueSid,
   targetQueueSid,
@@ -481,14 +482,24 @@ async function handleEnableOperation({
           configuration: JSON.stringify(updatedConfig),
         });
 
-      const moveResult = await moveWaitingTasks({
-        client,
-        sourceQueueSid: originalQueueSid,
-        targetQueueSid: switchboardQueueSid,
-        workspaceSid,
-      });
+      const {
+        feature_flags: {
+          enable_switchboarding_move_tasks: enableSwitchboardingMoveTasks,
+        },
+      } = await retrieveServiceConfigurationAttributes(client);
 
-      return moveResult;
+      if (enableSwitchboardingMoveTasks) {
+        const moveResult = await movePendingTasks({
+          client,
+          sourceQueueSid: originalQueueSid,
+          targetQueueSid: switchboardQueueSid,
+          workspaceSid,
+        });
+
+        return moveResult;
+      }
+
+      return newOk({});
     } catch (error) {
       // remove switchboard-state document as switchboarding failed
       await deleteSwitchboardStateDocument({ client, syncServiceSid });
@@ -557,21 +568,6 @@ async function handleDisableOperation({
     // remove switchboard-state document once the taskrouter config is back to normal
     const deleteResult = await deleteSwitchboardStateDocument({ client, syncServiceSid });
     return deleteResult;
-
-    // TODO: Move any waiting tasks from the switchboard queue back to the original queue
-    // if (currentState.queueSid) {
-    //   try {
-    //     await moveWaitingTasks(
-    //       client,
-    //       workspaceSid,
-    //       switchboardQueue.sid,
-    //       currentState.queueSid,
-    //       { switchboardingActive: false },
-    //     );
-    //   } catch (err) {
-    //     console.error('Error moving tasks back to the original queue:', err);
-    //   }
-    // }
   } catch (error) {
     const message = `Error disabling switchboard document: ${error instanceof Error ? error.message : String(error)}`;
     return newErr({
