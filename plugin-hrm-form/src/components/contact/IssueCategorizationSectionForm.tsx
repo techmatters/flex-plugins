@@ -50,6 +50,8 @@ type Props = {
   contactId: Contact['id'];
 };
 
+const DEFAULT_MAXIMUM_SELECTIONS = 3;
+
 const IssueCategorizationSectionForm: React.FC<Props> = ({ display, definition, autoFocus, contactId }) => {
   const {
     savedContact,
@@ -66,6 +68,10 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({ display, definition, 
   const selectedCount = Object.values(selectedCategories).reduce((acc, curr) => acc + curr.length, 0);
 
   const { clearErrors, register } = useFormContext();
+  const maxSelections =
+    (getAseloFeatureFlags().enable_configurable_max_categories
+      ? definition.maxSelections
+      : DEFAULT_MAXIMUM_SELECTIONS) ?? DEFAULT_MAXIMUM_SELECTIONS;
 
   // Add invisible field that errors if no category is selected (triggered by validation)
   React.useEffect(() => {
@@ -80,14 +86,14 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({ display, definition, 
     });
     register('categories.maxCategorySelected', {
       validate: () => {
-        if (selectedCount > 3) {
+        if (selectedCount > maxSelections) {
           return 'Error';
         }
 
         return null;
       },
     });
-  }, [register, selectedCount]);
+  }, [maxSelections, register, selectedCount]);
 
   // Clear the error state once the count is non-zero
   React.useEffect(() => {
@@ -103,7 +109,7 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({ display, definition, 
       </CategoryTitle>
       <CategorySubtitleSection>
         <CategoryRequiredText>
-          <Template code="Error-CategoryRequired" />
+          <Template code="Error-CategoryRequired" minSelections={1} maxSelections={maxSelections} />
         </CategoryRequiredText>
         <ToggleViewButton onClick={() => dispatch(setCategoriesGridView(contactId, true))} active={gridView}>
           <GridIcon />
@@ -113,7 +119,7 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({ display, definition, 
         </ToggleViewButton>
       </CategorySubtitleSection>
       <CategoriesWrapper>
-        {Object.entries(definition).map(([category, categoryDefinition], index) => (
+        {Object.entries(definition.categories).map(([category, categoryDefinition], index) => (
           <Box marginBottom="6px" key={`IssueCategorization_${category}_${index}`}>
             <Section
               sectionTitle={category}
@@ -133,7 +139,7 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({ display, definition, 
                 selectedSubcategories={selectedCategories[category] ?? []}
                 counselorToolkitsEnabled={getAseloFeatureFlags().enable_counselor_toolkits}
                 selectedCount={selectedCount}
-                maxSelections={3}
+                maxSelections={maxSelections}
               />
             </Section>
           </Box>

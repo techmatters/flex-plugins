@@ -278,7 +278,7 @@ export type CategoryEntry = {
   color: string;
   subcategories: { label: string; toolkitUrl?: string }[];
 };
-export type CategoriesDefinition = { [category: string]: CategoryEntry };
+export type CategoriesDefinition ={ categories: { [category: string]: CategoryEntry }, maxSelections?: number };
 
 export type CallTypeButtonsEntry = {
   type: 'button';
