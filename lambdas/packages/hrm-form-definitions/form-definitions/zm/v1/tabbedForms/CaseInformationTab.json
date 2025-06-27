@@ -22,7 +22,7 @@
   },
   {
     "name": "summaryAccuracy",
-    "label": "How accurate was the summary written by AI?",
+    "label": "[For AI Summary only] How accurate was the summary written by AI?",
     "type": "select",
     "options": [
       { "value": "Unknown", "label": "" },
@@ -33,7 +33,7 @@
   },
     {
     "name": "summaryFeedback",
-    "label": "Tell us more about your answer above.",
+    "label": "[For AI Summary only] Tell us more about your answer above.",
     "type": "textarea",
     "isPII": true,
     "rows": "4"
