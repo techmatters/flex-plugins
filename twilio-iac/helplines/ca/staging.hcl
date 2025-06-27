@@ -225,5 +225,6 @@ locals {
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

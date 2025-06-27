@@ -55,7 +55,7 @@ locals {
       error_message                         = "There has been an error with your message, please try writing us again."
     }
 
-
+    get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
 
   }
 }
