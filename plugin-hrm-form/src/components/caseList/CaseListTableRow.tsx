@@ -143,7 +143,11 @@ const CaseListTableRow: React.FC<Props> = ({ caseId, handleClickViewCase }) => {
           {categories &&
             categories.map(category => (
               <Box key={`category-tag-${category.label}`} marginBottom="5px">
-                <CategoryWithTooltip category={category.label} color={category.color} />
+                <CategoryWithTooltip
+                  category={category.label}
+                  color={category.color}
+                  fullyQualifiedName={category.fullyQualifiedName}
+                />
               </Box>
             ))}
         </CategoriesCell>

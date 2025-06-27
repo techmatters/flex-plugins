@@ -23,6 +23,7 @@ import { Flex, ChipText } from '../../styles';
 import { SilentText, SubtitleLabel, SummaryText, TagsWrapper } from './styles';
 import CategoryWithTooltip from '../common/CategoryWithTooltip';
 import { getContactTags } from '../../utils/categories';
+import ExpandableTextBlock from './ExpandableTextBlock';
 
 type DataCallProps = {
   counselor: string;
@@ -45,13 +46,22 @@ const TagsAndCounselor: React.FC<Props> = props => {
   const { counselor, definitionVersion } = props;
   const leftTags = () => {
     if (isDataCallProps(props)) {
-      const [category1, category2, category3] = getContactTags(definitionVersion, props.categories);
+      const categories = getContactTags(definitionVersion, props.categories);
       return (
-        <TagsWrapper>
-          {category1 && <CategoryWithTooltip category={category1.label} color={category1.color} />}
-          {category2 && <CategoryWithTooltip category={category2.label} color={category2.color} />}
-          {category3 && <CategoryWithTooltip category={category3.label} color={category3.color} />}
-        </TagsWrapper>
+        <ExpandableTextBlock
+          collapseLinkText="ReadLess"
+          expandLinkText="ReadMore"
+          style={{ maxWidth: '500px', textOverflow: 'clip' }}
+        >
+          {categories.map(({ label, color, fullyQualifiedName }) => (
+            <CategoryWithTooltip
+              key={fullyQualifiedName}
+              fullyQualifiedName={fullyQualifiedName}
+              category={label}
+              color={color}
+            />
+          ))}
+        </ExpandableTextBlock>
       );
     }
 
@@ -70,10 +80,11 @@ const TagsAndCounselor: React.FC<Props> = props => {
     <Flex
       style={{
         justifyContent: 'space-between',
-        height: '23px',
+        minHeight: '26px',
         marginTop: '10px',
         padding: '0 20px 0px 20px',
         display: 'flex', // Not sure why but display is set to 'block' without this
+        maxWidth: '',
       }}
     >
       {leftTags()}
