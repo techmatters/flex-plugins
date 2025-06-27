@@ -12,5 +12,6 @@ locals {
       operating_hours_function_sid  = "ZHb02706803df7458aebd679967beb1005"
       operating_hours_function_name = "operatingHours"
     }
+    get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

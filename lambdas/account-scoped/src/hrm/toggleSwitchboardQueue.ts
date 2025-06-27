@@ -31,6 +31,8 @@ import {
   SWITCHBOARD_WORKFLOW_FILTER_PREFIX,
 } from '@tech-matters/hrm-types';
 import { AccountSID } from '../twilioTypes';
+import { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
+import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 
 export type OperationType = 'enable' | 'disable';
 
@@ -60,7 +62,6 @@ async function createSwitchboardStateDocument({
     await client.sync.v1.services(syncServiceSid).documents.create({
       uniqueName: SWITCHBOARD_STATE_DOCUMENT,
       data: state,
-      ttl: 48 * 60 * 60, // 48 hours
     });
 
     // update or create the notify document to emit a notification
@@ -228,114 +229,168 @@ function removeSwitchboardingFilter({ config }: { config: WorkflowConfig }) {
 /**
  * Finds all tasks in a queue that are in a specific status
  */
-// async function findTasksInQueue(
-//   client: Twilio,
-//   workspaceSid: string,
-//   queueSid: string,
-//   assignmentStatus: string = 'pending',
-// ): Promise<TaskInstance[]> {
-//   try {
-//     const tasks = await client.taskrouter.v1.workspaces(workspaceSid).tasks.list({
-//       assignmentStatus: [assignmentStatus],
-//       taskQueueSid: queueSid,
-//     });
+async function findTasksInQueue({
+  assignmentStatus,
+  client,
+  queueSid,
+  workspaceSid,
+}: {
+  client: Twilio;
+  workspaceSid: string;
+  queueSid: string;
+  assignmentStatus: TaskInstance['assignmentStatus'];
+}): Promise<Result<Error, TaskInstance[]>> {
+  try {
+    const tasks = await client.taskrouter.v1.workspaces(workspaceSid).tasks.list({
+      assignmentStatus: [assignmentStatus],
+      taskQueueSid: queueSid,
+    });
 
-//     return tasks;
-//   } catch (err) {
-//     console.error(`Error finding ${assignmentStatus} tasks in queue:`, err);
-//     throw err;
-//   }
-// }
+    return newOk(tasks);
+  } catch (error) {
+    const message = `Error finding ${assignmentStatus} tasks in queue: ${error instanceof Error ? error.message : String(error)}`;
+    console.error(message);
+    return newErr({
+      error: error instanceof Error ? error : new Error(String(error)),
+      message,
+    });
+  }
+}
 
 /**
  * Moves a task from one queue to another
  */
 // TODO from Review: this approach of "replace one task with another" approach only works for chat based tasks. I don't know if it does for voice tasks, that should be tested.
-//
-// async function moveTaskToQueue(
-//   client: Twilio,
-//   workspaceSid: string,
-//   taskSid: string,
-//   targetQueueSid: string,
-//   additionalAttributes: Record<string, any> = {},
-// ): Promise<void> {
-//   try {
-//     const task = await client.taskrouter.v1
-//       .workspaces(workspaceSid)
-//       .tasks(taskSid)
-//       .fetch();
-//     const currentAttributes = JSON.parse(task.attributes);
-//     const switchboardingAttributes = {
-//       ...currentAttributes,
-//       switchboardingHandled: true,
-//       switchboardingTimestamp: new Date().toISOString(),
-//       targetQueueSid,
-//       ...additionalAttributes,
-//     };
+async function moveTaskToQueue({
+  // additionalAttributes,
+  client,
+  targetQueueSid,
+  taskSid,
+  workspaceSid,
+}: {
+  client: Twilio;
+  workspaceSid: string;
+  taskSid: string;
+  targetQueueSid: string;
+}): Promise<Result<Error, { canceledTask: TaskInstance; newTask: TaskInstance }>> {
+  try {
+    const originalTask = await client.taskrouter.v1
+      .workspaces(workspaceSid)
+      .tasks(taskSid)
+      .fetch();
+    const currentAttributes = JSON.parse(originalTask.attributes);
+    const originalAttributes = {
+      ...currentAttributes,
+    };
 
-//     await client.taskrouter.v1
-//       .workspaces(workspaceSid)
-//       .tasks(taskSid)
-//       .update({
-//         attributes: JSON.stringify(switchboardingAttributes),
-//       });
-// const masterWorkflow = getTwilioWorkspaceSid(accountSid)
-//     if (!masterWorkflow) {
-//       throw new Error('Master Workflow not found');
-//     }
+    // update task adding switchboardInProgress flag to avoid task being assigned
+    await client.taskrouter.v1
+      .workspaces(workspaceSid)
+      .tasks(taskSid)
+      .update({
+        attributes: JSON.stringify({
+          ...originalAttributes,
+          switchboardInProgress: true,
+        }),
+      });
 
-//     // Create a new task in the target queue that copies the current task's data
-//     await client.taskrouter.v1.workspaces(workspaceSid).tasks.create({
-//       attributes: JSON.stringify({
-//         ...switchboardingAttributes,
-//         transferTargetTaskSid: taskSid,
-//       }),
-//       workflowSid: masterWorkflow.sid,
-//       taskChannel: task.taskChannelUniqueName,
-//       priority: task.priority,
-//     });
+    let newTask: TaskInstance;
+    try {
+      // Create a new task in the target queue that copies the current task's data
+      newTask = await client.taskrouter.v1.workspaces(workspaceSid).tasks.create({
+        attributes: JSON.stringify(originalAttributes),
+        workflowSid: originalTask.workflowSid,
+        taskChannel: originalTask.taskChannelUniqueName,
+        priority: originalTask.priority,
+        taskQueueSid: targetQueueSid,
+        routingTarget: targetQueueSid,
+      });
+    } catch (error) {
+      // rollback the original task update so it becames "assignable" in the original queue
+      await client.taskrouter.v1
+        .workspaces(workspaceSid)
+        .tasks(taskSid)
+        .update({
+          // ifMatch how can I get this from original task?
+          attributes: JSON.stringify(originalAttributes),
+        });
 
-//     // Complete the original task as it's been replaced
-//     await client.taskrouter.v1.workspaces(workspaceSid).tasks(taskSid).update({
-//       assignmentStatus: 'completed',
-//       reason: 'Moved to another queue via Switchboard',
-//     });
-//   } catch (err) {
-//     console.error(`Error moving task ${taskSid} to queue ${targetQueueSid}:`, err);
-//     throw err;
-//   }
-// }
+      const message = `Error creating new task on queue ${targetQueueSid}: ${error instanceof Error ? error.message : String(error)}`;
+      console.error(message);
+      return newErr({
+        error: error instanceof Error ? error : new Error(String(error)),
+        message,
+      });
+    }
 
-// /**
-//  * Moves waiting tasks from source queue to target queue
-//  */
-// async function moveWaitingTasks(
-//   client: Twilio,
-//   workspaceSid: string,
-//   sourceQueueSid: string,
-//   targetQueueSid: string,
-//   additionalAttributes: Record<string, any> = {},
-// ): Promise<number> {
-//   try {
-//     const tasks = await findTasksInQueue(client, workspaceSid, sourceQueueSid);
+    // Cancel the original task as it's been replaced
+    const canceledTask = await client.taskrouter.v1
+      .workspaces(workspaceSid)
+      .tasks(taskSid)
+      .update({
+        assignmentStatus: 'canceled',
+        reason: 'Moved to another queue via Switchboard',
+      });
 
-//     const movePromises = tasks.map(async (task: any) => {
-//       await moveTaskToQueue(
-//         client,
-//         workspaceSid,
-//         task.sid,
-//         targetQueueSid,
-//         additionalAttributes,
-//       );
-//     });
+    return newOk({ canceledTask, newTask });
+  } catch (error) {
+    const message = `Error moving task ${taskSid} to queue ${targetQueueSid}: ${error instanceof Error ? error.message : String(error)}`;
+    console.error(message);
+    return newErr({
+      error: error instanceof Error ? error : new Error(String(error)),
+      message,
+    });
+  }
+}
 
-//     await Promise.all(movePromises);
-//     return tasks.length;
-//   } catch (err) {
-//     console.error('Error moving waiting tasks:', err);
-//     throw err;
-//   }
-// }
+/**
+ * Moves waiting tasks from source queue to target queue
+ */
+async function movePendingTasks({
+  client,
+  sourceQueueSid,
+  targetQueueSid,
+  workspaceSid,
+}: {
+  client: Twilio;
+  workspaceSid: string;
+  sourceQueueSid: string;
+  targetQueueSid: string;
+}): Promise<
+  Result<Error, PromiseSettledResult<Awaited<ReturnType<typeof moveTaskToQueue>>>[]>
+> {
+  try {
+    const tasksResult = await findTasksInQueue({
+      assignmentStatus: 'pending',
+      client,
+      queueSid: sourceQueueSid,
+      workspaceSid,
+    });
+
+    if (isErr(tasksResult)) {
+      return tasksResult;
+    }
+
+    const movePromises = tasksResult.data.map(task =>
+      moveTaskToQueue({
+        client,
+        targetQueueSid,
+        taskSid: task.sid,
+        workspaceSid,
+      }),
+    );
+
+    const moveResults = await Promise.allSettled(movePromises);
+    return newOk(moveResults);
+  } catch (error) {
+    const message = `Error moving waiting tasks: ${error instanceof Error ? error.message : String(error)}`;
+    console.error(message);
+    return newErr({
+      error: error instanceof Error ? error : new Error(String(error)),
+      message,
+    });
+  }
+}
 
 /**
  * Handles the 'enable' operation - turns on switchboarding for a queue
@@ -426,7 +481,24 @@ async function handleEnableOperation({
           configuration: JSON.stringify(updatedConfig),
         });
 
-      return newOk(null);
+      const {
+        feature_flags: {
+          enable_switchboarding_move_tasks: enableSwitchboardingMoveTasks,
+        },
+      } = await retrieveServiceConfigurationAttributes(client);
+
+      if (enableSwitchboardingMoveTasks) {
+        const moveResult = await movePendingTasks({
+          client,
+          sourceQueueSid: originalQueueSid,
+          targetQueueSid: switchboardQueueSid,
+          workspaceSid,
+        });
+
+        return moveResult;
+      }
+
+      return newOk({});
     } catch (error) {
       // remove switchboard-state document as switchboarding failed
       await deleteSwitchboardStateDocument({ client, syncServiceSid });
@@ -495,21 +567,6 @@ async function handleDisableOperation({
     // remove switchboard-state document once the taskrouter config is back to normal
     const deleteResult = await deleteSwitchboardStateDocument({ client, syncServiceSid });
     return deleteResult;
-
-    // TODO: Move any waiting tasks from the switchboard queue back to the original queue
-    // if (currentState.queueSid) {
-    //   try {
-    //     await moveWaitingTasks(
-    //       client,
-    //       workspaceSid,
-    //       switchboardQueue.sid,
-    //       currentState.queueSid,
-    //       { switchboardingActive: false },
-    //     );
-    //   } catch (err) {
-    //     console.error('Error moving tasks back to the original queue:', err);
-    //   }
-    // }
   } catch (error) {
     const message = `Error disabling switchboard document: ${error instanceof Error ? error.message : String(error)}`;
     return newErr({
@@ -522,7 +579,7 @@ async function handleDisableOperation({
 export const handleToggleSwitchboardQueue: AccountScopedHandler = async (
   request,
   accountSid,
-): Promise<Result<HttpError, null | boolean>> => {
+): Promise<Result<HttpError, any>> => {
   try {
     const { originalQueueSid, operation, supervisorWorkerSid } =
       request.body as SwitchboardRequest;

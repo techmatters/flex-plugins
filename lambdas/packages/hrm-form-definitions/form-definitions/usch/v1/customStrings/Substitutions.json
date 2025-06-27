@@ -113,6 +113,7 @@
     "CaseSection-BottomBar-Save/enFollowUp": "Save EN Follow Up",
     "CaseSection-BottomBar-SaveAndAddAnother/enFollowUp": "Save and Add Another Follow Up",
     "Case-SectionList-NoItems/enFollowUp": "EN Follow Up",
-    "CasePrint-TabularSection-Header/enFollowUp": "EN Follow Up"
+    "CasePrint-TabularSection-Header/enFollowUp": "EN Follow Up",
+    "abusive": "Outside of Scope"
   }
 }
