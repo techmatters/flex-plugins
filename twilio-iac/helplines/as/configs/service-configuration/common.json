@@ -11,6 +11,7 @@
             "enable_region_resource_search": true,
             "enable_save_in_progress_contacts": true,
             "enable_switchboarding": true,
+            "enable_switchboarding_move_tasks": true,
             "use_prepopulate_mappings": true
         },
         "helplineLanguage": "en-US"

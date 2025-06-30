@@ -125,6 +125,12 @@
     }
   },
   {
+    "name": "helpseekerGenderInput",
+    "label": "Helpseeker Gender (Input from Webchat Form)",
+    "type": "input",
+    "isPII": false
+  },
+  {
     "name": "helpseekerGender",
     "label": "Helpseeker Gender",
     "type": "select",
@@ -205,6 +211,12 @@
       "value": true,
       "message": "RequiredFieldError"
     }
+  }, 
+  {
+    "name": "helpseekerStateInput",
+    "label": "Helpseeker State (Input from SMS Chatbot)",
+    "type": "input",
+    "isPII": false
   },
   {
     "name": "helpseekerState",
