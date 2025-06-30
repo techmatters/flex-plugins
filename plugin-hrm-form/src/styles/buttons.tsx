@@ -75,7 +75,6 @@ export const TertiaryyButton = (props: React.ComponentProps<typeof AseloBaseButt
   <AseloBaseButton {...props} buttonType="tertiary" />
 );
 
-
 type TransferStyledButtonProps = {
   background?: string;
   color?: string;

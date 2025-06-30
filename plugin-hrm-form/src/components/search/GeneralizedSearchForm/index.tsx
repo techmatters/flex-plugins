@@ -210,12 +210,7 @@ export const GeneralizedSearchForm: React.FC<OwnProps> = ({
         <BottomButtonBar
           style={{ position: 'fixed', bottom: '0', width: containerWidth + 40, borderTop: '1px solid #e1e3ea' }}
         >
-          <SearchFormClearButton
-            type="button"
-            roundCorners={true}
-            onClick={clearForm}
-            disabled={formInvalid}
-          >
+          <SearchFormClearButton type="button" roundCorners={true} onClick={clearForm} disabled={formInvalid}>
             <Template code="Search-ClearFormButton" />
           </SearchFormClearButton>
           <PrimaryButton type="submit" roundCorners={true} disabled={formInvalid}>

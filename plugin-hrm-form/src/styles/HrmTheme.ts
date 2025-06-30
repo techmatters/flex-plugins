@@ -17,7 +17,7 @@
 import { DeepPartial } from 'redux';
 import type { Theme } from '@twilio/flex-ui';
 
-export const buttonColors = {
+const buttonColors = {
   primary: {
     default: '#192B33',
     defaultTextColor: '#FFFFFF',

@@ -117,11 +117,7 @@ const ViewCaseItem: React.FC<ViewCaseItemProps> = ({ task, definitionVersion, se
         {canEdit && (
           <BottomButtonBar>
             <Box marginRight="15px">
-              <SecondaryButton
-                roundCorners
-                onClick={onEditCaseItemClick}
-                data-testid="Case-EditButton"
-              >
+              <SecondaryButton roundCorners onClick={onEditCaseItemClick} data-testid="Case-EditButton">
                 <Edit fontSize="inherit" style={{ marginRight: 5 }} />
                 <Template code="EditButton" />
               </SecondaryButton>

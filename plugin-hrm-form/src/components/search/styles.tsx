@@ -374,11 +374,6 @@ export const SwitchLabel = styled(SummaryText)`
 `;
 SwitchLabel.displayName = 'SwitchLabel';
 
-export const PreviewActionButton = styled(PrimaryButton)`
-  padding: 5px 17px 5px 12px;
-`;
-PreviewActionButton.displayName = 'PreviewActionButton';
-
 export const SearchResultWarningContainer = styled('div')`
   width: 100%;
   height: auto;

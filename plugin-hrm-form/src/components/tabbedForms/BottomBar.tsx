@@ -130,12 +130,7 @@ const BottomBar: React.FC<
       {optionalButtons &&
         optionalButtons.map((i, index) => (
           <Box key={`optional-button-${index}`} marginRight="15px">
-            <SecondaryButton
-              type="button"
-              roundCorners
-              onClick={i.onClick}
-              disabled={contactIsSaving}
-            >
+            <SecondaryButton type="button" roundCorners onClick={i.onClick} disabled={contactIsSaving}>
               <Template code={i.label} />
             </SecondaryButton>
           </Box>

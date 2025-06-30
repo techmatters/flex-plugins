@@ -37,38 +37,36 @@ const ConnectToCaseButton: React.FC<Props> = ({
   caseId,
 }) => {
   const strings = getTemplateStrings();
-  return (
-    color === 'black' ? (
-      <PrimaryButton
-        style={{ height: '28px' }}
-        disabled={isConnectedToTaskContact}
-        onClick={onClickConnectToTaskContact}
-        data-fs-id="AddToCase-Button"
-        title={`${strings['CaseHeader-ConnectToTaskContact']} #${caseId}`}
-      >
-        {!isConnectedToTaskContact && <CreateNewFolderOutlined />}
-        {isConnectedToTaskContact && <CheckCircleOutlineOutlined />}
-        <div style={{ width: 10 }} />
-        <Template
-          code={isConnectedToTaskContact ? 'CaseHeader-TaskContactConnected' : 'CaseHeader-ConnectToTaskContact'}
-        />
-      </PrimaryButton>
-    ) : (
-      <SecondaryButton
-        style={{ height: '28px' }}
-        disabled={isConnectedToTaskContact}
-        onClick={onClickConnectToTaskContact}
-        data-fs-id="AddToCase-Button"
-        title={`${strings['CaseHeader-ConnectToTaskContact']} #${caseId}`}
-      >
-        {!isConnectedToTaskContact && <CreateNewFolderOutlined />}
-        {isConnectedToTaskContact && <CheckCircleOutlineOutlined />}
-        <div style={{ width: 10 }} />
-        <Template
-          code={isConnectedToTaskContact ? 'CaseHeader-TaskContactConnected' : 'CaseHeader-ConnectToTaskContact'}
-        />
-      </SecondaryButton>
-  )
+  return color === 'black' ? (
+    <PrimaryButton
+      style={{ height: '28px' }}
+      disabled={isConnectedToTaskContact}
+      onClick={onClickConnectToTaskContact}
+      data-fs-id="AddToCase-Button"
+      title={`${strings['CaseHeader-ConnectToTaskContact']} #${caseId}`}
+    >
+      {!isConnectedToTaskContact && <CreateNewFolderOutlined />}
+      {isConnectedToTaskContact && <CheckCircleOutlineOutlined />}
+      <div style={{ width: 10 }} />
+      <Template
+        code={isConnectedToTaskContact ? 'CaseHeader-TaskContactConnected' : 'CaseHeader-ConnectToTaskContact'}
+      />
+    </PrimaryButton>
+  ) : (
+    <SecondaryButton
+      style={{ height: '28px' }}
+      disabled={isConnectedToTaskContact}
+      onClick={onClickConnectToTaskContact}
+      data-fs-id="AddToCase-Button"
+      title={`${strings['CaseHeader-ConnectToTaskContact']} #${caseId}`}
+    >
+      {!isConnectedToTaskContact && <CreateNewFolderOutlined />}
+      {isConnectedToTaskContact && <CheckCircleOutlineOutlined />}
+      <div style={{ width: 10 }} />
+      <Template
+        code={isConnectedToTaskContact ? 'CaseHeader-TaskContactConnected' : 'CaseHeader-ConnectToTaskContact'}
+      />
+    </SecondaryButton>
   );
 };
 

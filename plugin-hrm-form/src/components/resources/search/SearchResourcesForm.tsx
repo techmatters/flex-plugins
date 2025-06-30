@@ -406,7 +406,6 @@ const SearchResourcesForm: React.FC<Props> = ({
       <BottomButtonBar>
         <SearchFormClearButton
           type="button"
-
           roundCorners={true}
           onClick={() => {
             setGeneralSearchTermBoxText('');
