@@ -332,7 +332,7 @@ test('<CallTypeButtons> click on Data (Child) button', async () => {
           <CallTypeButtons task={task} />
         </Provider>
       </LocalizationContext.Provider>
-    </StorelessThemeProvider>
+    </StorelessThemeProvider>,
   );
 
   expect(screen.getByText('Child calling about self')).toBeInTheDocument();
@@ -420,7 +420,7 @@ test('<CallTypeButtons> click on END CHAT button', async () => {
           <CallTypeButtons task={task} />
         </Provider>
       </LocalizationContext.Provider>
-    </StorelessThemeProvider>
+    </StorelessThemeProvider>,
   );
 
   expect(screen.getByText('TaskHeaderEndChat')).toBeInTheDocument();
