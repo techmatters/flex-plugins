@@ -5,6 +5,7 @@
     "type": "textarea",
     "placeholder": "Type here to add note...",
     "rows": 20,
-    "width": 500
+    "width": 500,
+    "isPII": false
   }
 ]

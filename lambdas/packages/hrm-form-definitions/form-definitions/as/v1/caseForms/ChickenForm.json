@@ -9,7 +9,8 @@
       { "value": "Bwaaaaak", "label": "Bwaaaaak" },
       { "value": "BocARGHHH", "label": "BocARGHHH" }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": false
   }
 ]
 
