@@ -15,6 +15,7 @@ locals {
       usch_functions_serverless_service_id         = "ZSa6dafc8e097453d9b5041e4a3123525c"
       usch_functions_serverless_environement_id    = "ZEbcc21f22160cba1e3fdb1bff6ae24295"
       is_skilled_worker_available_function_sid     = "ZHa1e94f59f90924f9e2ab41714d848471"
+      worspace_sid                                 = "WS3320dfd12f64cb39784075ef93c8babf"
       other_language_childhelp_message             = "Currently, our chat platform only works in English. For assistance in other languages, please call our hotline at 1-800-422-4453."
       other_language_courage_first_message         = "Currently, our chat platform only works in English. For assistance in other languages, please call our hotline at 1-888-279-1026."
       courage_first_closed_message                 = "courage_first_closed_message"
