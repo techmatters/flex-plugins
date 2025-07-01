@@ -14,11 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import React from 'react';
-import { Template, Button } from '@twilio/flex-ui';
+import { Template } from '@twilio/flex-ui';
 import { CallEnd as CallEndIcon } from '@material-ui/icons';
 import { CircularProgress } from '@material-ui/core';
 
-import { Row, Bold, CloseButton } from '../../../styles';
+import { Row, Bold, CloseButton, SecondaryButton } from '../../../styles';
 import { PhoneDialogWrapper, DialogArrow } from './styles';
 
 type PhoneDialogProps = {
@@ -59,12 +59,7 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
           style={{ width: '60%', padding: '5px' }}
           disabled={isLoading}
         />
-        <Button
-          style={{ backgroundColor: '#192b33', color: '#fff', width: '30%', margin: '0 4px', height: '35px' }}
-          autoFocus
-          onClick={handleClick}
-          disabled={isLoading}
-        >
+        <SecondaryButton autoFocus onClick={handleClick} disabled={isLoading}>
           {isLoading ? (
             <CircularProgress size={30} style={{ color: '#fff' }} />
           ) : (
@@ -73,7 +68,7 @@ const PhoneInputDialog: React.FC<PhoneDialogProps> = ({
               <Template code="Conference-DialButton" />
             </>
           )}
-        </Button>
+        </SecondaryButton>
       </Row>
     </PhoneDialogWrapper>
   );

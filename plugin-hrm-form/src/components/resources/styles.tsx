@@ -18,7 +18,7 @@ import { styled } from '@twilio/flex-ui';
 import { ButtonBase } from '@material-ui/core';
 
 import { Box, Column, Flex, Row, FontOpenSans, PreviewWrapper } from '../../styles';
-import { PrimaryButton, SecondaryButton } from '../../styles/buttons';
+import { SecondaryButton } from '../../styles/buttons';
 import HrmTheme from '../../styles/HrmTheme';
 
 export const ResourcePreviewWrapper = styled(PreviewWrapper)`

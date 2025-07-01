@@ -17,10 +17,7 @@
 import React from 'react';
 import '@emotion/react';
 import Dialog from '@material-ui/core/Dialog';
-
 import { styled, Button } from '@twilio/flex-ui';
-
-import HrmTheme from '../../styles/HrmTheme';
 
 export const Container = styled('div')`
   width: 300px;

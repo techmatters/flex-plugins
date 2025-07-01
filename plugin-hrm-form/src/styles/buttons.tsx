@@ -68,7 +68,7 @@ export const AseloBaseButton = styled(Button)<AseloBaseButtonProps>`
  * but that should be very rare, if ever in Aselo. We want the user to not have to think.
  */
 export const PrimaryButton = (props: React.ComponentProps<typeof AseloBaseButton>) => (
-  <AseloBaseButton {...props} buttonType="primary" />
+  <AseloBaseButton {...props} buttonType="primary" aria-disabled={props.disabled} role="button" />
 );
 
 /**
@@ -77,14 +77,14 @@ export const PrimaryButton = (props: React.ComponentProps<typeof AseloBaseButton
  * or used independently for less crucial tasks.
  */
 export const SecondaryButton = (props: React.ComponentProps<typeof AseloBaseButton>) => (
-  <AseloBaseButton {...props} buttonType="secondary" />
+  <AseloBaseButton {...props} buttonType="secondary" aria-disabled={props.disabled} role="button" />
 );
 
 /**
  * Destructive Button: Used for potentially dangerous or destructive actions that require caution.
  */
 export const DestructiveButton = (props: React.ComponentProps<typeof AseloBaseButton>) => (
-  <AseloBaseButton {...props} buttonType="destructive" />
+  <AseloBaseButton {...props} buttonType="destructive" aria-disabled={props.disabled} role="button" />
 );
 
 /**
@@ -92,7 +92,7 @@ export const DestructiveButton = (props: React.ComponentProps<typeof AseloBaseBu
  * Used for Add, Edit, Delete, Skip, Close, More, etc.
  */
 export const TertiaryButton = (props: React.ComponentProps<typeof AseloBaseButton>) => (
-  <AseloBaseButton {...props} buttonType="tertiary" />
+  <AseloBaseButton {...props} buttonType="tertiary" aria-disabled={props.disabled} role="button" />
 );
 
 /**
@@ -186,7 +186,6 @@ export const ToggleViewButton = styled('button')<ToggleViewButtonProps>`
 `;
 ToggleViewButton.displayName = 'ToggleViewButton';
 
-
 type ConfirmButtonProps = {
   disabled: boolean;
 };
@@ -238,7 +237,7 @@ export const CancelButton = styled(CloseDialogButton)`
 `;
 
 export const CloseButton = styled(props => (
-  <IconButton {...props} classes={{ label: 'label' }}>
+  <IconButton {...props} aria-label="Close">
     <ClearIcon />
   </IconButton>
 ))`

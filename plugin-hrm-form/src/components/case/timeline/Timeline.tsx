@@ -155,7 +155,7 @@ const Timeline: React.FC<OwnProps> = ({
           <CaseSectionFont id="Case-TimelineSection-label">
             <Template code={titleCode} />
           </CaseSectionFont>
-          <Box marginLeft="auto">
+          <Box marginLeft="auto" display="inline-flex">
             {timelineCaseSectionTypes.map(sectionType => (
               <CaseAddButton
                 key={sectionType}

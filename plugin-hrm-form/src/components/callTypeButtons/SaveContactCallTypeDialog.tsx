@@ -18,11 +18,7 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 
 import { Box, Row, HiddenText } from '../../styles';
-import {
-  CloseTaskDialog,
-  CloseTaskDialogText,
-  NonDataCallTypeDialogContainer,
-} from './styles';
+import { CloseTaskDialog, CloseTaskDialogText, NonDataCallTypeDialogContainer } from './styles';
 import { ConfirmButton, CancelButton, CloseButton } from '../../styles/buttons';
 import TabPressWrapper from '../TabPressWrapper';
 
