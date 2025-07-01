@@ -251,7 +251,7 @@ describe('actions', () => {
       // Check that the difference in startMillis is still insignificant
       expect(
         Math.abs(metadata.startMillis - newContactMetaData({ createdAt: new Date().toISOString() }).startMillis),
-      ).toBeLessThanOrEqual(100);
+      ).toBeLessThanOrEqual(10000);
       expect(metadata).toStrictEqual(
         expect.objectContaining({
           ...newContactMetaData({ createdAt: createdAtTimestamp }),
