@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import { CaseContainer, CaseDetailsBorder, ViewButton } from './styles';
-import { BottomButtonBar, Box, SaveAndEndButton } from '../../styles';
+import { BottomButtonBar, Box, DestructiveButton } from '../../styles';
 import CaseOverviewHeader from './caseOverview/CaseOverviewHeader';
 import CaseOverview from './caseOverview';
 import Timeline from './timeline/Timeline';
@@ -184,9 +184,9 @@ const CaseHome: React.FC<CaseHomeProps> = ({ task, handlePrintCase, handleClose,
       </CaseContainer>
       {isNewContact && (
         <BottomButtonBar>
-          <SaveAndEndButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
+          <DestructiveButton roundCorners onClick={handleSaveAndEnd} data-testid="BottomBar-SaveCaseAndEnd">
             <Template code="BottomBar-SaveAndEnd" />
-          </SaveAndEndButton>
+          </DestructiveButton>
         </BottomButtonBar>
       )}
     </NavigableContainer>

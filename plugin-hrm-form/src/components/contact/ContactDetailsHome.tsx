@@ -58,7 +58,7 @@ import ContactRemovedFromCaseBanner from '../caseMergingBanners/ContactRemovedFr
 import { selectCaseMergingBanners } from '../../states/case/caseBanners';
 import { isSmsChannelType } from '../../utils/groupedChannels';
 import getCanEditContact from '../../permissions/canEditContact';
-import AddCaseButton from '../AddCaseButton';
+import AddCaseButton from '../tabbedForms/AddCaseButton';
 import openNewCase from '../case/openNewCase';
 import { formatCsamReport, formatResourceReferral } from './helpers';
 import ContactInProgressBanners from './ContactInProgressBanners';

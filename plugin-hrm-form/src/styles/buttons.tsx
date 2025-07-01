@@ -32,12 +32,13 @@ type AseloBaseButtonProps = {
 export const AseloBaseButton = styled(Button)<AseloBaseButtonProps>`
   display: flex;
   align-items: center;
-  background-color: ${({ disabled }) =>
-    disabled ? HrmTheme.buttonColors.primary.disabled : HrmTheme.buttonColors.primary.default};
+  background-color: ${({ disabled, buttonType = 'primary' }) =>
+    disabled ? HrmTheme.buttonColors[buttonType].disabled : HrmTheme.buttonColors[buttonType].default};
   font-size: ${({ buttonSize }) => (buttonSize === 'large' ? '16px' : '14px')};
-  padding: ${({ buttonSize }) => (buttonSize === 'large' ? '12px 24px' : '8px 16px')};
+  padding: ${({ buttonSize }) => (buttonSize === 'large' ? '12px 24px' : '4px 10px')};
+
   letter-spacing: normal;
-  color: #ffffff;
+  color: ${({buttonType}) => HrmTheme.buttonColors[buttonType].textColor};
   border: none;
   border-radius: 4px;
   font-weight: 600;
@@ -45,15 +46,15 @@ export const AseloBaseButton = styled(Button)<AseloBaseButtonProps>`
   transition: background-color 0.2s ease;
 
   &:hover:not([disabled]) {
-    background: ${HrmTheme.buttonColors.primary.hover};
+    background: ${({ buttonType = 'primary' }) => HrmTheme.buttonColors[buttonType].hover};
   }
 
   &:active:not([disabled]) {
-    background: ${HrmTheme.buttonColors.primary.pressed};
+    background: ${({ buttonType = 'primary' }) => HrmTheme.buttonColors[buttonType].pressed};
   }
 
   &:focus:not([disabled]) {
-    background: ${HrmTheme.buttonColors.primary.focus};
+    background: ${({ buttonType = 'primary' }) => HrmTheme.buttonColors[buttonType].focus};
     outline: 2px solid #22a3fa;
     outline-offset: 2px;
   }
@@ -75,114 +76,18 @@ export const TertiaryyButton = (props: React.ComponentProps<typeof AseloBaseButt
   <AseloBaseButton {...props} buttonType="tertiary" />
 );
 
-type TransferStyledButtonProps = {
-  background?: string;
-  color?: string;
-  taller?: boolean;
-};
-
-// This should be called SecondaryButton /TeritaryButton
-// Used in 4 instances - 3 for transfer (accept, reject, transfer) and 1 for unmasking identifiers
-export const TransferStyledButton = styled('button')<TransferStyledButtonProps>`
-  background: ${props => (props.background ? props.background : '#ccc')};
-  color: ${props => (props.color ? props.color : '#000')};
-  letter-spacing: 0px;
-  text-transform: none;
+export const TransferButton = styled(SecondaryButton)`
   margin-right: 1em;
-  padding: 0px 16px;
-  height: ${props => (props.taller ? 35 : 28)}px;
+  padding: 4px 12px;
   font-size: 13px;
-  outline: none;
-  border-radius: 4px;
-  border: none;
-  align-self: center;
-  font-weight: 600;
-  &:hover:not([disabled]) {
-    cursor: pointer;
-    border: 1px solid gray;
-    padding: 0px 15px;
-  }
-  &:focus:not([disabled]) {
-    outline: auto;
-    outline-color: #1976d2;
-  }
-  &:active:not([disabled]) {
-    background: rgb(172, 179, 181);
-  }
-  &:disabled {
-    opacity: 50%;
-  }
 `;
-TransferStyledButton.displayName = 'TransferStyledButton';
-
-export const RefreshStyledSpan = styled(`span`)`
-  align-self: center;
-  font-size: 14px;
-`;
-export const RefreshStyledButton = styled('button')`
-  background: none;
-  border: none;
-  margin-left: 5px;
-  padding: 0;
-  font: inherit;
-  color: blue;
-  text-decoration: underline;
-  cursor: pointer;
-`;
+TransferButton.displayName = 'TransferButton';
 
 type ButtonProps = {
   secondary?: string; // string to prevent console errors
   disabled?: boolean;
   margin?: string;
 };
-
-type StyledNextStepButtonProps = ButtonProps & {
-  secondary?: string;
-};
-
-// Primary button
-export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  letter-spacing: normal;
-  color: ${props =>
-    props.secondary?.toLowerCase() === 'true'
-      ? HrmTheme.colors.secondaryButtonTextColor
-      : HrmTheme.colors.buttonTextColor};
-  border: none;
-  border-radius: 4px;
-  margin: ${props => (props.margin ? props.margin : '0')};
-  padding: 4px 10px;
-  min-width: auto;
-  background-color: ${props =>
-    props.disabled
-      ? HrmTheme.colors.disabledColor
-      : props.secondary?.toLowerCase() === 'true'
-      ? HrmTheme.colors.secondaryButtonColor
-      : HrmTheme.colors.defaultButtonColor};
-  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
-
-  &&:hover {
-    background-color: ${p =>
-      p.disabled
-        ? `${HrmTheme.colors.base5}CC`
-        : p.secondary?.toLowerCase() === 'true'
-        ? `${HrmTheme.colors.secondaryButtonColor}CC`
-        : `${HrmTheme.colors.defaultButtonColor}CC`};
-    background-blend-mode: color;
-  }
-
-  &&:focus {
-    outline-style: auto;
-    outline-width: initial;
-  }
-
-  &&:active {
-    background-color: rgba(255, 255, 255, 0.3);
-  }
-`;
-StyledNextStepButton.displayName = 'StyledNextStepButton';
 
 export const TertiaryButton = styled(Button)<ButtonProps>`
   display: flex;
@@ -213,81 +118,6 @@ export const TertiaryButton = styled(Button)<ButtonProps>`
     background-color: rgba(255, 255, 255, 0.3);
   }
 `;
-StyledNextStepButton.displayName = 'StyledNextStepButton';
-
-type StyledAddNewCaseDropdown = {
-  position?: string;
-  dropdown?: boolean;
-};
-
-export const StyledAddNewCaseDropdown = styled('ul')<StyledAddNewCaseDropdown>`
-  position: absolute;
-  right: -12%;
-  display: ${({ dropdown }) => (dropdown ? 'block' : 'none')};
-  ${({ position }) => (position === 'top' ? 'top: 110%;' : 'bottom: 110%;')}
-  box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
-  -webkit-box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
-  -moz-box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
-  font-size: 0.875rem;
-  z-index: 9999;
-  width: 164px;
-  padding: 10px 0 10px 0;
-  flex-direction: column;
-  align-items: flex-start;
-  background: var(--background-color-background-body, #fff);
-  border: 1px solid var(--border-color-border-weaker, #e1e3ea);
-  border-radius: 8px;
-  margin-right: 20px;
-`;
-StyledAddNewCaseDropdown.displayName = 'StyledAddNewCaseDropdown';
-
-export const StyledAddNewCaseDropdownList = styled('button')`
-  position: relative;
-  font-size: 14px;
-  display: flex;
-  color: inherit;
-  min-width: 10.1rem;
-  align-items: flex-start;
-  align-self: stretch;
-  padding: 7px 0 7px 18px;
-  text-decoration: none;
-  &:hover {
-    background-color: #f2f2f2;
-    cursor: pointer;
-  }
-  background: none;
-  border: none;
-`;
-StyledAddNewCaseDropdownList.displayName = 'StyledAddNewCaseDropdownList';
-
-// Secondary/tertiary button
-export const SaveAndEndButton = styled(Button)<StyledNextStepButtonProps>`
-  display: flex;
-  align-items: center;
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: normal;
-  color: ${HrmTheme.colors.buttonTextColor};
-  background: linear-gradient(to top, ${HrmTheme.colors.declineColor}, ${HrmTheme.colors.declineColor});
-  border: none;
-  padding: 4px 10px;
-  min-width: auto;
-  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
-
-  &&:focus {
-    outline-style: auto;
-    outline-width: initial;
-  }
-
-  &&:active {
-    background-color: #d61f1f;
-  }
-
-  &&:hover {
-    background-color: #4a0b0b;
-  }
-`;
-SaveAndEndButton.displayName = 'SaveAndEndButton';
 
 const TabbedFormsHeaderButton = styled(ButtonBase)`
   &:focus {

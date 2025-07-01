@@ -50,7 +50,6 @@ const CloseCaseDialog: React.FC<Props> = ({ setDialog, handleDontSaveClose, hand
             <SecondaryButton
               tabIndex={1}
               onClick={handleDontSaveClose}
-              style={{ background: '#fff', margin: '15px 0' }}
             >
               <Template code="BottomBar-DontSave" />
             </SecondaryButton>

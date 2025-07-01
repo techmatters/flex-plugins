@@ -18,9 +18,8 @@
 import React from 'react';
 import { TaskHelper, Template, ThemeProps } from '@twilio/flex-ui';
 
-import { TransferStyledButton } from '../../styles';
+import { TransferButton } from '../../styles';
 import { closeCallSelf } from '../../transfer/transferTaskState';
-import HrmTheme from '../../styles/HrmTheme';
 
 const handleRejectTransfer = async (task: ITask) => {
   if (TaskHelper.isChatBasedTask(task)) return; // this case should never happen
@@ -30,16 +29,13 @@ const handleRejectTransfer = async (task: ITask) => {
 
 type Props = ThemeProps & { task?: ITask };
 
-const RejectTransferButton: React.FC<Props> = ({ theme, task }) => {
+const RejectTransferButton: React.FC<Props> = ({ task }) => {
   return (
-    <TransferStyledButton
-      color={HrmTheme.colors.base11}
-      background={HrmTheme.colors.base1}
-      taller
+    <TransferButton
       onClick={() => handleRejectTransfer(task)}
     >
       <Template code="Transfer-RejectTransferButton" />
-    </TransferStyledButton>
+    </TransferButton>
   );
 };
 

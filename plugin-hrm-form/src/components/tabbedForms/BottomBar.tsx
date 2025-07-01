@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 import { Template } from '@twilio/flex-ui';
 import { CircularProgress } from '@material-ui/core';
 
-import { BottomButtonBar, Box, SaveAndEndButton, PrimaryButton, SecondaryButton } from '../../styles';
+import { BottomButtonBar, Box, DestructiveButton, PrimaryButton, SecondaryButton } from '../../styles';
 import { AddedToCaseButton } from './styles';
 import * as RoutingActions from '../../states/routing/actions';
 import { completeTask } from '../../services/formSubmissionHelpers';
@@ -33,7 +33,7 @@ import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
 import { submitContactFormAsyncAction } from '../../states/contacts/saveContact';
 import { ContactMetadata, LoadingStatus } from '../../states/contacts/types';
 import { AppRoutes } from '../../states/routing/types';
-import AddCaseButton from '../AddCaseButton';
+import AddCaseButton from './AddCaseButton';
 import { selectCaseByCaseId } from '../../states/case/selectCaseStateByCaseId';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
 import { SuccessReportIcon } from '../CSAMReport/styles';
@@ -145,7 +145,7 @@ const BottomBar: React.FC<
         <>
           {renderCaseButton()}
 
-          <SaveAndEndButton
+          <DestructiveButton
             roundCorners={true}
             onClick={handleSubmitIfValid(handleSubmit)}
             disabled={contactIsSaving}
@@ -156,7 +156,7 @@ const BottomBar: React.FC<
               <Template code="BottomBar-SaveAndEnd" />
             </span>
             {contactIsSaving ? <CircularProgress size={12} style={{ position: 'absolute' }} /> : null}
-          </SaveAndEndButton>
+          </DestructiveButton>
         </>
       )}
     </BottomButtonBar>

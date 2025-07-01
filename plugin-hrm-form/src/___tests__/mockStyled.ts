@@ -53,7 +53,7 @@ jest.mock('../styles/', () => ({
   Row: 'Row',
   FontOpenSans: 'FontOpenSans',
   HiddenText: 'HiddenText',
-  TransferStyledButton: 'TransferStyledButton',
+  SecondaryButton: 'SecondaryButton',
   HeaderContainer: 'HeaderContainer',
   StyledIcon: () => 'StyledIcon',
   addHover: () => 'addHover',

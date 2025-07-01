@@ -20,8 +20,9 @@ import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
-import { getAseloConfigFlags } from '../hrmConfig';
-import { SecondaryButton, StyledAddNewCaseDropdown, StyledAddNewCaseDropdownList } from '../styles/buttons';
+import { getAseloConfigFlags } from '../../hrmConfig';
+import { SecondaryButton } from '../../styles/buttons';
+import { StyledAddNewCaseDropdown, StyledAddNewCaseDropdownList } from '../../components/tabbedForms/styles';
 
 type OwnProps = {
   handleNewCaseType: () => void;
@@ -61,6 +62,7 @@ const AddCaseButton: React.FC<Props> = ({ handleNewCaseType, handleExistingCaseT
       data-fs-id="Contact-SaveAndAddToCase-Button"
       data-testid="BottomBar-SaveAndAddToCase-Button"
       disabled={!enabled}
+      style={{ padding: '4px 8px' }}
     >
       <StyledAddNewCaseDropdown position={position} dropdown={dropdown}>
         {hideAddToNewCaseButton ? null : (

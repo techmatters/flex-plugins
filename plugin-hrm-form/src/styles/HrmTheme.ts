@@ -20,7 +20,7 @@ import type { Theme } from '@twilio/flex-ui';
 const buttonColors = {
   primary: {
     default: '#192B33',
-    defaultTextColor: '#FFFFFF',
+    textColor: '#FFFFFF',
     hover: '#2A4551',
     pressed: '#6E828B',
     focus: '#192B33',
@@ -28,6 +28,7 @@ const buttonColors = {
   },
   secondary: {
     default: '#ECEDF1',
+    textColor: '#111111',
     hover: '#DADBE1',
     pressed: '#B5B7BF',
     focus: '#ECEDF1',
@@ -36,6 +37,7 @@ const buttonColors = {
   },
   destructive: {
     default: '#D61F1F',
+    textColor: '#FFFFFF',
     hover: '#B41C1C',
     pressed: '#4A0B0B',
     focus: '#22A3FA',
@@ -43,6 +45,7 @@ const buttonColors = {
   },
   tertiary: {
     default: '#ECEDF1',
+    textColor: '#111111',
     hover: '#DADBE1',
     pressed: '#B5B7BF',
     focus: '#ECEDF1',

@@ -19,7 +19,7 @@ import { Modal } from '@material-ui/core';
 import { SwitchboardSyncState } from 'hrm-types';
 import { Template, Manager } from '@twilio/flex-ui';
 
-import { Box, SaveAndEndButton, PrimaryButton, TertiaryButton } from '../../styles';
+import { Box, DestructiveButton, PrimaryButton, TertiaryButton } from '../../styles';
 import { CloseButton, NonDataCallTypeDialogContainer, CloseTaskDialog } from '../callTypeButtons/styles';
 import TabPressWrapper from '../TabPressWrapper';
 import {
@@ -167,9 +167,9 @@ export const TurnOffSwitchboardDialog: React.FC<TurnOffSwitchboardDialogProps> =
             <TertiaryButton type="button" onClick={onClose}>
               <Template code="BottomBar-Cancel" />
             </TertiaryButton>
-            <SaveAndEndButton onClick={onConfirm}>
+            <DestructiveButton onClick={onConfirm}>
               <Template code="Switchboard-ButtonTurnOffSwitchboard" />
-            </SaveAndEndButton>
+            </DestructiveButton>
           </ButtonGroup>
         </NonDataCallTypeDialogContainer>
       </TabPressWrapper>
