@@ -287,44 +287,6 @@ ${
       }
     },
     {
-      "name": "send_courage_first_donation_voice_message",
-      "type": "say-play",
-      "transitions": [
-        {
-          "event": "audioComplete"
-        }
-      ],
-      "properties": {
-        "voice": "Polly.Salli",
-        "offset": {
-          "x": 610,
-          "y": 1730
-        },
-        "loop": 1,
-        "say": "${flow_vars.courage_first_donation_voice_message}",
-        "language": "en-US"
-      }
-    },
-    {
-      "name": "send_courage_first_volunteering_voice_message",
-      "type": "say-play",
-      "transitions": [
-        {
-          "event": "audioComplete"
-        }
-      ],
-      "properties": {
-        "voice": "Polly.Salli",
-        "offset": {
-          "x": 1000,
-          "y": 1730
-        },
-        "loop": 1,
-        "say": "${flow_vars.courage_first_volunteering_voice_message}",
-        "language": "en-US"
-      }
-    },
-    {
       "name": "isSkilledWorkerAvailable",
       "type": "run-function",
       "transitions": [
