@@ -412,7 +412,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.voice}",
-        "attributes": "{\n \"type\": \"inbound\",\n \"name\": \"{{trigger.call.From}}\",\n \"ignoreAgent\": \"\",\n \"language\":\"en-USCH\", \n \"service\":\"ChildHelp\",\n \"transferTargetType\": \"\",\n \"channelType\": \"voice\",\n \"conversations\": {\n   \"ivr_path\": \"ChildHelp No Spanish\",\n   \"hang_up_by\": \"Customer\"\n }\n}",
+        "attributes": "{\n \"type\": \"inbound\",\n \"name\": \"{{trigger.call.From}}\",\n \"ignoreAgent\": \"\",\n \"language\":\"en-USCH\", \n \"service\":\"ChildHelp\",\n\"counselingLanguage\": \"Spanish\",\n \"transferTargetType\": \"\",\n \"channelType\": \"voice\",\n \"conversations\": {\n   \"ivr_path\": \"ChildHelp No Spanish\",\n   \"hang_up_by\": \"Customer\"\n }\n}",
         "waitUrlMethod": "GET"
       }
     },
