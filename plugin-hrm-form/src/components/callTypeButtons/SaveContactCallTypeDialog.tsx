@@ -56,6 +56,7 @@ const SaveContactCallTypeDialog: React.FC<Props> = ({
         <Box marginBottom="32px">
           <Row>
             <ConfirmButton
+              id="Task-EndCallOrChat-Button"
               disabled={!isEnabled}
               data-fs-id="Task-EndCallOrChat-Button"
               autoFocus

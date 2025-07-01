@@ -220,6 +220,8 @@ export const ConfirmButton = styled(CloseDialogButton)<ConfirmButtonProps>`
   }
 `;
 
+ConfirmButton.displayName = 'ConfirmButton';
+
 export const CancelButton = styled(CloseDialogButton)`
   text-transform: uppercase;
   margin-left: 30px;
@@ -253,3 +255,5 @@ export const CloseButton = styled(props => (
     outline: auto;
   }
 `;
+
+CloseButton.displayName = 'CloseButton';
