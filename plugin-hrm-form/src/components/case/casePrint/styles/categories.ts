@@ -24,7 +24,7 @@ const categoriesStyles: ReactPDF.Styles = {
   },
   categoryView: {
     marginBottom: '10px',
-    marginLeft: '3px',
+    marginRight: '3px',
     opacity: 0.15,
     paddingTop: '2px',
     paddingBottom: '2px',

@@ -205,9 +205,9 @@ describe('actions', () => {
       expect(submitContactForm).toHaveBeenCalledWith(task, baseContact, caseState);
     });
     test('Action sets the conversation duration', async () => {
-      let conversatioonDurationPassedToSubmitContactForm: number | undefined;
+      let conversationDurationPassedToSubmitContactForm: number | undefined;
       mockSubmitContactForm.mockImplementation((task, contact) => {
-        conversatioonDurationPassedToSubmitContactForm = contact.conversationDuration;
+        conversationDurationPassedToSubmitContactForm = contact.conversationDuration;
         return Promise.resolve(contact);
       });
       const caseState = {
@@ -232,7 +232,7 @@ describe('actions', () => {
         { ...baseContact, conversationDuration: expect.any(Number) },
         caseState,
       );
-      expect(conversatioonDurationPassedToSubmitContactForm).toBeGreaterThanOrEqual(100);
+      expect(conversationDurationPassedToSubmitContactForm).toBeGreaterThanOrEqual(100);
     });
 
     test('Updates contact in redux and sets metadata', async () => {

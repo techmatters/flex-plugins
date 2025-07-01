@@ -38,7 +38,7 @@ const CasePrintCategories: React.FC<Props> = ({ categories, definitionVersion })
   return (
     <View>
       <Text style={{ marginBottom: '10px' }}>{strings['TabbedForms-CategoriesTab']}</Text>
-      <View style={styles['flexRow']}>
+      <View style={{ ...styles['flexRow'], flexWrap: 'wrap' }}>
         {getContactTags(definitionVersion, categories).map(category => (
           <View
             key={category.fullyQualifiedName}
