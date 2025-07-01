@@ -22,7 +22,7 @@ import { parseISO } from 'date-fns';
 
 import { Case, CustomITask, StandaloneITask } from '../../../types/types';
 import { CaseSectionFont, DetailsContainer } from '../styles';
-import { Box, TertiaryButton } from '../../../styles';
+import { Box, SecondaryButton } from '../../../styles';
 import { PermissionActions } from '../../../permissions';
 import CaseTextAreaEntry from './CaseTextAreaEntry';
 import CaseOverviewItem from './CaseOverviewItem';
@@ -126,9 +126,9 @@ const CaseOverview: React.FC<Props> = ({
         </Box>
         {editButton && (
           <Box style={{ display: 'inline-block' }} alignSelf="flex-end" marginTop="-20px" marginRight="35px">
-            <TertiaryButton onClick={editCaseOverview} data-testid="Case-EditButton">
+            <SecondaryButton onClick={editCaseOverview} data-testid="Case-EditButton">
               <Template code="Case-EditButton" />
-            </TertiaryButton>
+            </SecondaryButton>
           </Box>
         )}
         <div style={{ display: 'flex', alignItems: 'center' }}>
