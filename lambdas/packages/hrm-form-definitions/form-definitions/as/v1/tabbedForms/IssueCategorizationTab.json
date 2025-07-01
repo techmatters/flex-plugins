@@ -256,7 +256,7 @@
         ]
       }
     },
-    "maxSelections": 15
+    "maxSelections": 100
   },
   "LifeLine": { "categories": {
     "Physical and Sexual Health": {
