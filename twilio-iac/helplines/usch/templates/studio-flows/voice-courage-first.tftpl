@@ -54,7 +54,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.voice}",
-        "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"service\":\" {{flow.variables.service}}\",\n   \"counselingLanguage\": \"Spanish\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\"\n}",
+        "attributes": "{\n \"type\": \"inbound\",\n \"name\": \"{{trigger.call.From}}\",\n \"ignoreAgent\": \"\",\n\"language\":\"en-USCH\", \n \"service\":\"{{flow.variables.service}}\",\n   \"counselingLanguage\": \"Spanish\",\n \"transferTargetType\": \"\",\n \"channelType\": \"voice\",\n \"conversations\": {\n   \"ivr_path\": \"CourageFirst Spanish\",\n   \"hang_up_by\": \"Customer\"\n }\n}",
         "waitUrlMethod": "POST"
       }
     },
@@ -149,12 +149,12 @@ ${
           "event": "match",
           "conditions": [
             {
-              "friendly_name": "If value equal_to 4",
+              "friendly_name": "If value equal_to 2",
               "arguments": [
                 "{{widgets.send_spanish_option_message.Digits}}"
               ],
               "type": "equal_to",
-              "value": "4"
+              "value": "2"
             }
           ]
         }
@@ -243,8 +243,8 @@ ${
             }
           ]
         },
-        {
-          "next": "send_courage_first_donation_voice_message",
+        { 
+          "next": "isSkilledWorkerAvailable",
           "event": "match",
           "conditions": [
             {
@@ -254,33 +254,6 @@ ${
               ],
               "type": "equal_to",
               "value": "2"
-            }
-          ]
-        },
-        {
-          "next": "send_courage_first_volunteering_voice_message",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to 3",
-              "arguments": [
-                "{{widgets.send_english_options_voice_message.Digits}}"
-              ],
-              "type": "equal_to",
-              "value": "3"
-            }
-          ]
-        },
-        {
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to 4",
-              "arguments": [
-                "{{widgets.send_english_options_voice_message.Digits}}"
-              ],
-              "type": "equal_to",
-              "value": "4"
             }
           ]
         }
@@ -303,52 +276,14 @@ ${
         }
       ],
       "properties": {
-        "voice": "Polly.Mia",
+        "voice": "Polly.Salli",
         "offset": {
           "x": 190,
           "y": 1740
         },
         "loop": 1,
         "say": "${flow_vars.courage_first_prequeue_english_voice_message}",
-        "language": "es-MX"
-      }
-    },
-    {
-      "name": "send_courage_first_donation_voice_message",
-      "type": "say-play",
-      "transitions": [
-        {
-          "event": "audioComplete"
-        }
-      ],
-      "properties": {
-        "voice": "Polly.Salli",
-        "offset": {
-          "x": 610,
-          "y": 1730
-        },
-        "loop": 1,
-        "say": "${flow_vars.courage_first_donation_voice_message}",
-        "language": "en-US"
-      }
-    },
-    {
-      "name": "send_courage_first_volunteering_voice_message",
-      "type": "say-play",
-      "transitions": [
-        {
-          "event": "audioComplete"
-        }
-      ],
-      "properties": {
-        "voice": "Polly.Salli",
-        "offset": {
-          "x": 1000,
-          "y": 1730
-        },
-        "loop": 1,
-        "say": "${flow_vars.courage_first_volunteering_voice_message}",
-        "language": "en-US"
+        "language": "es-US"
       }
     },
     {
@@ -373,7 +308,7 @@ ${
         "function_sid": "${flow_vars.is_skilled_worker_available_function_sid}",
         "parameters": [
           {
-            "value": "${workflow_sids.master}",
+            "value": "${flow_vars.worspace_sid}",
             "key": "workspaceSid"
           },
           {
@@ -477,7 +412,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.voice}",
-        "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"service\":\" {{flow.variables.service}}\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\"\n}",
+        "attributes": "{\n \"type\": \"inbound\",\n \"name\": \"{{trigger.call.From}}\",\n \"ignoreAgent\": \"\",\n\"language\":\"en-USCH\", \n \"service\":\"{{flow.variables.service}}\",\n\"counselingLanguage\": \"Spanish\",\n \"transferTargetType\": \"\",\n \"channelType\": \"voice\",\n \"conversations\": {\n   \"ivr_path\": \"CourageFirst No Spanish\",\n   \"hang_up_by\": \"Customer\"\n }\n}",
         "waitUrlMethod": "POST"
       }
     },
@@ -505,7 +440,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.voice}",
-        "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"service\":\" {{flow.variables.service}}\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\"\n}",
+        "attributes": "{\n \"type\": \"inbound\",\n \"name\": \"{{trigger.call.From}}\",\n \"ignoreAgent\": \"\",\n\"language\":\"en-USCH\", \n \"service\":\"{{flow.variables.service}}\",\n \"transferTargetType\": \"\",\n \"channelType\": \"voice\",\n \"conversations\": {\n   \"ivr_path\": \"CourageFirst English\",\n   \"hang_up_by\": \"Customer\"\n }\n}",
         "waitUrlMethod": "POST"
       }
     },
