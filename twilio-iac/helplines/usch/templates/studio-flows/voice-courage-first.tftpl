@@ -54,7 +54,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.voice}",
-        "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"service\":\" {{flow.variables.service}}\",\n   \"counselingLanguage\": \"Spanish\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\"\n}",
+        "attributes": "{\n \"type\": \"inbound\",\n \"name\": \"{{trigger.call.From}}\",\n \"ignoreAgent\": \"\",\n\"language\":\"en-USCH\", \n \"service\":\"{{flow.variables.service}}\",\n   \"counselingLanguage\": \"Spanish\",\n \"transferTargetType\": \"\",\n \"channelType\": \"voice\",\n \"conversations\": {\n   \"ivr_path\": \"CourageFirst Spanish\",\n   \"hang_up_by\": \"Customer\"\n }\n}",
         "waitUrlMethod": "POST"
       }
     },
@@ -450,7 +450,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.voice}",
-        "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"service\":\" {{flow.variables.service}}\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\"\n}",
+        "attributes": "{\n \"type\": \"inbound\",\n \"name\": \"{{trigger.call.From}}\",\n \"ignoreAgent\": \"\",\n\"language\":\"en-USCH\", \n \"service\":\"{{flow.variables.service}}\",\n \"transferTargetType\": \"\",\n \"channelType\": \"voice\",\n \"conversations\": {\n   \"ivr_path\": \"CourageFirst No Spanish\",\n   \"hang_up_by\": \"Customer\"\n }\n}",
         "waitUrlMethod": "POST"
       }
     },
@@ -478,7 +478,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.voice}",
-        "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"service\":\" {{flow.variables.service}}\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\"\n}",
+        "attributes": "{\n \"type\": \"inbound\",\n \"name\": \"{{trigger.call.From}}\",\n \"ignoreAgent\": \"\",\n\"language\":\"en-USCH\", \n \"service\":\"{{flow.variables.service}}\",\n \"transferTargetType\": \"\",\n \"channelType\": \"voice\",\n \"conversations\": {\n   \"ivr_path\": \"CourageFirst English\",\n   \"hang_up_by\": \"Customer\"\n }\n}",
         "waitUrlMethod": "POST"
       }
     },
