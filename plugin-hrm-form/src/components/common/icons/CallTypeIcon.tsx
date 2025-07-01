@@ -17,13 +17,13 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import FaceIcon from '@material-ui/icons/Face';
-import { callTypes, CallTypes } from 'hrm-types';
+import { callTypes, CallType } from 'hrm-types';
 
 import { Flex } from '../../../styles';
 import { SilentText } from '../../search/styles';
 
 type OwnProps = {
-  callType: CallTypes; // Refactor to use callType.name instead the label
+  callType: CallType; // Refactor to use callType.name instead the label
   fontSize?: string;
 };
 

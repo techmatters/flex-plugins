@@ -14,8 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { FormInputType, FormItemDefinition } from '@tech-matters/hrm-form-definitions';
-import { FormDefinitionSet } from './testHrmTypes';
+import {
+  DefinitionVersion,
+  FormInputType,
+  FormItemDefinition,
+} from '@tech-matters/hrm-form-definitions';
 
 const BASE_PERSON_FORM_DEFINITION: FormItemDefinition[] = [
   {
@@ -75,16 +78,37 @@ const BASE_PERSON_FORM_DEFINITION: FormItemDefinition[] = [
     type: FormInputType.Input,
   },
 ];
-export const BASE_FORM_DEFINITION: FormDefinitionSet = {
-  childInformation: BASE_PERSON_FORM_DEFINITION,
-  callerInformation: BASE_PERSON_FORM_DEFINITION,
-  caseInformation: [
-    {
-      label: '',
-      name: 'age',
-      type: FormInputType.Input,
-    },
-  ],
+export const BASE_FORM_DEFINITION: DefinitionVersion = {
+  blockedEmojis: [],
+  callTypeButtons: [],
+  caseFilters: {},
+  caseOverview: {
+    status: { name: '', label: '', type: 'input', form: [] },
+  },
+  caseSectionTypes: {},
+  caseStatus: {},
+  insights: {
+    oneToManyConfigSpecs: [],
+    oneToOneConfigSpec: { contactForm: {}, caseForm: {} },
+    postSurveySpecs: [],
+  },
+  layoutVersion: {
+    case: { hideCounselorDetails: false, sectionTypes: {} },
+    contact: { childInformation: {}, caseInformation: {}, callerInformation: {} },
+  },
+  tabbedForms: {
+    ChildInformationTab: BASE_PERSON_FORM_DEFINITION,
+    CallerInformationTab: BASE_PERSON_FORM_DEFINITION,
+    CaseInformationTab: [
+      {
+        label: '',
+        name: 'age',
+        type: FormInputType.Input,
+      },
+    ],
+    ContactlessTaskTab: {},
+    IssueCategorizationTab: () => ({}),
+  },
   prepopulateKeys: {
     preEngagement: {
       ChildInformationTab: [],

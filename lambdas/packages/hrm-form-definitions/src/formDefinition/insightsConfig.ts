@@ -41,4 +41,5 @@ export type OneToManyConfigSpec = {
   paths: string[]; // Array of paths to grab and concatenate to drop in above property
   saveForNonDataContacts?: boolean; // Allows the custom mapping to be saved for non-data contacts
 };
+
 export type OneToManyConfigSpecs = OneToManyConfigSpec[];

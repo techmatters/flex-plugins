@@ -33,6 +33,7 @@ import {
   ProfileSectionDefinition,
   LocalizedStringMap,
   FullyQualifiedFieldReference,
+  FlexUILocaleEntry,
 } from './types';
 import { OneToManyConfigSpecs, OneToOneConfigSpec } from './insightsConfig';
 import { LayoutVersion } from './layoutVersion';
@@ -114,12 +115,18 @@ const fetchDefinitionGivenConfig = async <T>(
   const response = await fetch(url.toString());
 
   if (response?.ok) {
-    const json = await response.json();
-    return json as T;
+    const bodyText = await response.text();
+    try {
+      const json = JSON.parse(bodyText);
+      return json as T;
+    } catch (e) {
+      console.error(`Could not parse response for ${url}:`, bodyText);
+      throw e;
+    }
   }
 
   if (response?.status === 404) {
-    if (placeholder) {
+    if (placeholder !== undefined) {
       // eslint-disable-next-line no-console
       console.log(`Could not find definition for: ${url}. Using placeholder instead.`);
       return placeholder;
@@ -184,7 +191,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
         }
       }
     }
-    return expandedMapping;
+    return { ...expandedMapping, formSelector };
   };
 
   /**
@@ -208,6 +215,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     cannedResponses,
     oneToOneConfigSpec,
     oneToManyConfigSpecs,
+    postSurveySpecs,
     caseFilters,
     caseStatus,
     caseOverview,
@@ -219,6 +227,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     profileFlagDurations,
     messages,
     substitutions,
+    flexUiLocales,
   ] = await Promise.all([
     fetchDefinition<LayoutVersion>('LayoutDefinitions.json'),
     fetchDefinition<FormItemJsonDefinition[]>('tabbedForms/CallerInformationTab.json'),
@@ -235,6 +244,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     fetchDefinition<CannedResponsesDefinitions>('CannedResponses.json', []),
     fetchDefinition<OneToOneConfigSpec>('insights/oneToOneConfigSpec.json'),
     fetchDefinition<OneToManyConfigSpecs>('insights/oneToManyConfigSpecs.json'),
+    fetchDefinition<OneToManyConfigSpecs>('insights/postSurvey.private.json', []),
     fetchDefinition<DefinitionVersion['caseFilters']>('CaseFilters.json'),
     fetchDefinition<DefinitionVersion['caseStatus']>('CaseStatus.json'),
     fetchDefinition<DefinitionVersion['caseOverview']>('caseForms/CaseOverview.json'),
@@ -249,6 +259,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     fetchDefinition<ProfileFlagDurationDefinition[]>('profileForms/FlagDurations.json', []),
     fetchDefinition<LocalizedStringMap>('customStrings/Messages.json', {}),
     fetchDefinition<LocalizedStringMap>('customStrings/Substitutions.json', {}),
+    fetchDefinition<FlexUILocaleEntry[]>('FlexUiLocales.json', []),
   ] as const);
   const expandedCaseSections: CaseSectionTypeDefinitions = await loadAndExpandCaseSections(
     caseSections,
@@ -283,6 +294,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     insights: {
       oneToOneConfigSpec,
       oneToManyConfigSpecs,
+      postSurveySpecs,
     },
     profileForms: {
       Sections: profileSections,
@@ -292,5 +304,6 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
       Messages: messages,
       Substitutions: substitutions,
     },
+    flexUiLocales,
   };
 }

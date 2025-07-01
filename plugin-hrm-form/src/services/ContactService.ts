@@ -30,7 +30,7 @@ import {
   isTwilioTask,
 } from '../types/types';
 import { saveContactToExternalBackend } from '../dualWrite';
-import { getNumberFromTask } from '../utils';
+import { getNumberFromTask } from '../utils/task';
 import {
   ExternalRecordingInfoSuccess,
   getExternalRecordingInfo,
@@ -39,7 +39,7 @@ import {
 } from './getExternalRecordingInfo';
 import { GeneralizedSearchParams, SearchParams } from '../states/search/types';
 import { ContactDraftChanges } from '../states/contacts/existingContacts';
-import { newContactState } from '../states/contacts/contactState';
+import { newContact } from '../states/contacts/contactState';
 import { ApiError, FetchOptions } from './fetchApi';
 import { TaskSID, WorkerSID } from '../types/twilio';
 import { recordEvent } from '../fullStory';
@@ -191,9 +191,13 @@ export const createContact = async (
     isOfflineContactTask(task) || isInMyBehalfITask(task)
       ? task.taskSid
       : task.attributes?.transferMeta?.originalTask ?? task.taskSid;
+
+  const number = getNumberFromTask(task);
+
   const { definitionVersion } = getHrmConfig();
   const contactForApi: Contact = {
     ...contact,
+    number,
     definitionVersion,
     channel: ((task.attributes as any)?.customChannelType || task.channelType) as Contact['channel'],
     rawJson: {
@@ -249,9 +253,9 @@ const saveContactToHrm = async (
   }
 
   if (isNonDataCallType(callType)) {
-    const newContactWithMetaData = newContactState(currentDefinitionVersion, task)(false);
+    const blankContact = newContact(currentDefinitionVersion, task);
     form = {
-      ...newContactWithMetaData.savedContact.rawJson,
+      ...blankContact.rawJson,
       callType,
       ...(isOfflineContactTask(task) && {
         contactlessTask: contact.rawJson.contactlessTask,
@@ -260,7 +264,10 @@ const saveContactToHrm = async (
   }
 
   // If isOfflineContactTask, send the target Sid as twilioWorkerId value and store workerSid (issuer) in rawForm
-  const twilioWorkerId = isOfflineContactTask(task) ? form.contactlessTask.createdOnBehalfOf : workerSid;
+  const twilioWorkerId =
+    isOfflineContactTask(task) && form.contactlessTask.createdOnBehalfOf
+      ? form.contactlessTask.createdOnBehalfOf
+      : workerSid;
   /*
    * We do a transform from the original and then add things.
    * Not sure if we should drop that all into one function or not.

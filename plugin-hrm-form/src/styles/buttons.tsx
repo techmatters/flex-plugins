@@ -131,7 +131,6 @@ export const StyledNextStepButton = styled(Button)<StyledNextStepButtonProps>`
 `;
 StyledNextStepButton.displayName = 'StyledNextStepButton';
 
-// Primary button
 export const TertiaryButton = styled(Button)<ButtonProps>`
   display: flex;
   align-items: center;

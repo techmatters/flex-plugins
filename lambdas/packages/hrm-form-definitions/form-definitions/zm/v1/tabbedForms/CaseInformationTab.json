@@ -1,11 +1,10 @@
 [
-    {
+   {
     "name": "callSummary",
     "label": "Contact Summary",
     "type": "textarea",
     "required": { "value": true, "message": "RequiredFieldError" },
     "isPII": true,
-    "width": "250px",
     "rows": "40",
     "additionalActions": [
       {
@@ -20,7 +19,25 @@
         }
       }
     ]
-    },
+  },
+  {
+    "name": "summaryAccuracy",
+    "label": "[For AI Summary only] How accurate was the summary written by AI?",
+    "type": "select",
+    "options": [
+      { "value": "Unknown", "label": "" },
+      { "value": "Very accurate", "label": "Very accurate" },
+      { "value": "Somewhat accurate", "label": "Somewhat accurate" },
+      { "value": "Not accurate", "label": "Not accurate" }
+    ]
+  },
+    {
+    "name": "summaryFeedback",
+    "label": "[For AI Summary only] Tell us more about your answer above.",
+    "type": "textarea",
+    "isPII": true,
+    "rows": "4"
+  },
   {
     "name": "repeatCaller",
     "label": "Repeat Caller?",

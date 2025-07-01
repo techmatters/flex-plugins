@@ -13,13 +13,15 @@
         "feature_flags": {
             "enable_active_contact_header": true,
             "enable_csam_report": true,
+            "enable_language_selector": true,
             "enable_lex": true,
             "enable_post_survey": true,
             "enable_voice_recordings": true,
             "enable_llm_summary": true,
+            "enable_lambda_post_survey_processing": true,
             "use_prepopulate_mappings": true
+
         },
-        "hrm_base_url": "https://hrm-test.tl.techmatters.org",
         "multipleOfficeSupport": true,
         "pdfImagesSource": "https://tl-public-chat-as-stg.s3.amazonaws.com",
         "permissionConfig": "demo",

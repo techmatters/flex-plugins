@@ -1,11 +1,11 @@
 {
   "survey":{
-    "ChildInformationTab":[],
-    "CallerInformationTab":[]
+    "ChildInformationTab":["age", "genderInput", "stateInput"],
+    "CallerInformationTab":["age", "genderInput", "stateInput"]
   },
   "preEngagement":{
-    "ChildInformationTab":["childAge", "childGender", "childState"],
-    "CallerInformationTab":["province","district"],
+    "ChildInformationTab":["age", "genderInput", "childState"],
+    "CallerInformationTab":["age", "genderInput","childState"],
     "CaseInformationTab":["howTheHelpseekerHeardAboutUs"]
   }
 }

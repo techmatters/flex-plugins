@@ -2,7 +2,6 @@
     "attributes": {
         "feature_flags": {
         },
-        "hrm_base_url": "https://hrm-test.tl.techmatters.org",
         "previous_ui_version": {
             "date": "2022-12-05T11:25:21.793Z",
             "semver": "~1.31.2",

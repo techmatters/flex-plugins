@@ -37,13 +37,13 @@ const holidayHours: PreEngagementFormDefinition = {
 };
 
 const preEngagementConfig: PreEngagementFormDefinition = {
-  description: 'WelcomeMessage',
+  description: 'PreEngagementConfigDescription',
   submitLabel: 'StartChat',
   fields: [
     {
       label: 'How old are you?',
       type: 'select',
-      name: 'age',
+      name: 'childAge',
       required: true,
       defaultValue: '',
       options: [
@@ -79,7 +79,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     },
     {
       type: 'input-text',
-      name: 'gender',
+      name: 'genderInput',
       label: 'What is your gender identity?',
       placeholder: '',
       required: true,
@@ -317,103 +317,67 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       label: 'How did you hear about this hotline?',
       name: 'howTheHelpseekerHeardAboutUs',
       type: 'select',
-      required: true,
+      required: false,
       options: [
         {
           "value": "",
           "label": ""
         },
         {
-          "value": "Billboard",
-          "label": "Billboard"
-        },
-        {
-          "value": "Book",
-          "label": "Book"
+          "value": "Google",
+          "label": "Google"
         },
         {
           "value": "Chat GPT/AI",
           "label": "Chat GPT/AI"
         },
         {
-          "value": "Discord",
-          "label": "Discord"
+          "value": "Family/Friend",
+          "label": "Family/Friend"
         },
         {
-          "value": "Family Member",
-          "label": "Family Member"
+          "value": "Internet/Website",
+          "label": "Internet/Website"
         },
         {
-          "value": "Friend",
-          "label": "Friend"
+          "value": "Professional (Counselor, Teacher, Doctor, etc)",
+          "label": "Professional (Counselor, Teacher, Doctor, etc)"
         },
         {
-          "value": "In and Out Burger Bag",
-          "label": "In and Out Burger Bag"
+          "value": "Hotline: 988 - National Suicide Prevention Lifeline",
+          "label": "Hotline: 988 - National Suicide Prevention Lifeline"
         },
         {
-          "value": "John Stamos",
-          "label": "John Stamos"
+          "value": "Hotline: NCMEC - National Center for Missing and Exploited Children",
+          "label": "Hotline: NCMEC - National Center for Missing and Exploited Children"
         },
         {
-          "value": "Marketing Media",
-          "label": "Marketing Media"
+          "value": "Hotline: NDVH - National Domestic Violence Hotline",
+          "label": "Hotline: NDVH - National Domestic Violence Hotline"
         },
         {
-          "value": "National Center for Missing and Exploited Children",
-          "label": "National Center for Missing and Exploited Children"
+          "value": "Hotline: NRS - National Runaway Safeline",
+          "label": "Hotline: NRS - National Runaway Safeline"
         },
         {
-          "value": "National Domestic Violence Hotline",
-          "label": "National Domestic Violence Hotline"
-        },
-        {
-          "value": "National Runaway Safeline",
-          "label": "National Runaway Safeline"
-        },
-        {
-          "value": "National Sexual Assault Hotline",
-          "label": "National Sexual Assault Hotline"
-        },
-        {
-          "value": "National Suicide Prevention Lifeline (988)",
-          "label": "National Suicide Prevention Lifeline (988)"
-        },
-        {
-          "value": "NEDA Helpline",
-          "label": "NEDA Helpline"
-        },
-        {
-          "value": "Newspaper/Magazine",
-          "label": "Newspaper/Magazine"
-        },
-        {
-          "value": "Other",
-          "label": "Other"
+          "value": "Hotline: RAINN - National Sexual Assault Hotline",
+          "label": "Hotline: RAINN - National Sexual Assault Hotline"
         },
         {
           "value": "Other Hotline",
           "label": "Other Hotline"
         },
         {
-          "value": "Phonebook/Operator",
-          "label": "Phonebook/Operator"
+          "value": "Other",
+          "label": "Other"
         },
         {
-          "value": "Professional",
-          "label": "Professional"
+          "value": "Repeat Caller/Called Before",
+          "label": "Repeat Caller/Called Before"
         },
         {
-          "value": "Radio",
-          "label": "Radio"
-        },
-        {
-          "value": "Repeat Call/Called Before",
-          "label": "Repeat Call/Called Before"
-        },
-        {
-          "value": "SNAP",
-          "label": "SNAP"
+          "value": "Social Media: Discord",
+          "label": "Social Media: Discord"
         },
         {
           "value": "Social Media: Facebook",
@@ -432,20 +396,20 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           "label": "Social Media: Snapchat"
         },
         {
-          "value": "Social Media: Spotify",
-          "label": "Social Media: Spotify"
-        },
-        {
           "value": "Social Media: TikTok",
           "label": "Social Media: TikTok"
         },
         {
-          "value": "Social Media: X (formerly Twitter)",
-          "label": "Social Media: X (formerly Twitter)"
+          "value": "Social Media: X / (Twitter)",
+          "label": "Social Media: X / (Twitter)"
         },
         {
-          "value": "Social Media: Unspecified",
-          "label": "Social Media: Unspecified"
+          "value": "Social Media: Youtube",
+          "label": "Social Media: Youtube"
+        },
+        {
+          "value": "Social Media: Other",
+          "label": "Social Media: Other"
         },
         {
           "value": "SUBS - Childhelp Speak Up Be Safe Program",
@@ -456,20 +420,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
           "label": "Television/Streaming Services"
         },
         {
-          "value": "Unknown",
-          "label": "Unknown"
-        },
-        {
-          "value": "Website-Internet",
-          "label": "Website-Internet"
-        },
-        {
-          "value": "YouTube",
-          "label": "YouTube"
-        },
-        {
-          "value": "N/A",
-          "label": "Prefer not to answer"
+          "value": "Unknown / Prefer Not to Answer",
+          "label": "Unknown / Prefer Not to Answer"
         }
       ]
       ,
@@ -477,9 +429,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       label: 'Are you reaching out on behalf of yourself or another person?',
       type: 'select',
-      name: 'callingAboutSelf',
-      required: true,
-      defaultValue: '',
+      defaultValue: 'Yes',
+      name: 'aboutSelf',
       options: [
         {
           "value": "Yes",
@@ -494,16 +445,15 @@ const preEngagementConfig: PreEngagementFormDefinition = {
     {
       label: 'What is your preferred language?',
       type: 'select',
+      defaultValue: 'en-US',
       name: 'language',
-      required: true,
-      defaultValue: '',
       options: [
         {
-          "value": "English",
+          "value": "en-US",
           "label": "English"
         },
         {
-          "value": "Other",
+          "value": "en",
           "label": "Other"
         }
       ],
@@ -512,7 +462,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'checkbox',
       name: 'termsAndConditions',
       label:
-        'I\'ve read and accept the <a href="https://en.wikipedia.org/wiki/Terms_of_service">Terms and Conditions</a>',
+        'I\'ve read and accept the <a href="https://www.childhelphotline.org/terms-of-service/">Terms and Conditions</a>',
       required: {
         value: true,
         message: "Sorry, if you don't accept our terms and conditions we can't provide counseling to you.",
@@ -523,7 +473,8 @@ const preEngagementConfig: PreEngagementFormDefinition = {
 
 const translations: Translations = {
   'en-US': {
-    WelcomeMessage: 'To best serve you, answer 4 short questions and you will then be connected to a counselor. You can select "Prefer not to answer" for any question. ',
+    WelcomeMessage: 'Welcome to ChildHelp',
+    PreEngagementConfigDescription : 'To best serve you, answer 4 short questions and you will then be connected to a counselor. You can select "Prefer not to answer" for any question.',
     MessageCanvasTrayContent: '',
     MessageInputDisabledReasonHold:
       "Thank you very much for this information. We'll transfer you now. Please hold for a counselor.",
@@ -531,13 +482,18 @@ const translations: Translations = {
     TypingIndicator: 'Counselor is typing',
     StartChat: 'Start Chat!',
     MessageCanvasTrayButton: 'Start New Chat',
-    Email: 'Email',
-    Edad: 'Age',
-    Gender: 'What is your gender',
-    Masculino: 'Male',
-    Femenino: 'Female',
-    Otro: 'Other',
-    PrefieroNoDecir: 'Prefer not to say',
+    Nickname: 'Nickname',
+  },
+  'Other': {
+    WelcomeMessage: 'Welcome to ChildHelp',
+    PreEngagementConfigDescription : 'To best serve you, answer 4 short questions and you will then be connected to a counselor. You can select "Prefer not to answer" for any question.',
+    MessageCanvasTrayContent: '',
+    MessageInputDisabledReasonHold:
+      "Thank you very much for this information. We'll transfer you now. Please hold for a counselor.",
+    AutoFirstMessage: 'Incoming webchat contact from',
+    TypingIndicator: 'Counselor is typing',
+    StartChat: 'Start Chat!',
+    MessageCanvasTrayButton: 'Start New Chat',
     Nickname: 'Nickname',
   },
 };

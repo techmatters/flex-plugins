@@ -48,7 +48,11 @@ locals {
       e2e_test : {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
         "friendly_name"  = "E2E Test Queue"
-      }
+      },
+      switchboard : {
+        "target_workers" = "1==1",
+        "friendly_name"  = "Switchboard Queue"
+      },
     }
     task_channels = {
       default : "Default"

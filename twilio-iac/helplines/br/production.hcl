@@ -24,7 +24,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
         contact_identity     = "messenger:175804982467404"
-        templatefile         = "/app/twilio-iac/helplines/br/templates/studio-flows/messaging-conv.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/br/templates/studio-flows/messaging-conv-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
         enable_datadog_monitor = true
@@ -37,5 +37,6 @@ locals {
         }
       }
     }
+    get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

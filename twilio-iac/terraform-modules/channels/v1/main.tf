@@ -16,8 +16,8 @@ locals {
   webhook_url_studio_errors = nonsensitive(data.aws_ssm_parameter.webhook_url_studio_errors.value)
   custom_lambda_channels = {for key, val in var.channels:
   key => val if val.lambda_channel == true}
-
-  get_profile_flags_for_identifier_base_url = var.get_profile_flags_for_identifier_base_url == "" ? var.serverless_url : var.get_profile_flags_for_identifier_base_url
+  lambda_twilio_account_scoped_url = nonsensitive("https://hrm-${var.environment}.tl.techmatters.org/lambda/twilio/account-scoped/${var.twilio_account_sid}")
+  get_profile_flags_for_identifier_base_url = nonsensitive(var.get_profile_flags_for_identifier_base_url == "" ? var.serverless_url : var.get_profile_flags_for_identifier_base_url)
 }
 
 #I'm not sure about this resource, the idea is to have 1 studio flow json template and also as few as possible
@@ -49,7 +49,8 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
       serverless_service_sid                     = var.serverless_service_sid,
       serverless_environment_sid                 = var.serverless_environment_sid,
       serverless_url                             = var.serverless_url,
-      get_profile_flags_for_identifier_base_url = local.get_profile_flags_for_identifier_base_url,
+      lambda_twilio_account_scoped_url           = local.lambda_twilio_account_scoped_url,
+      get_profile_flags_for_identifier_base_url  = local.get_profile_flags_for_identifier_base_url,
       channel_flow_vars                          = each.value.channel_flow_vars,
       channel_chatbots = {
         for chatbot_name in each.value.chatbot_unique_names :
@@ -60,6 +61,7 @@ resource "twilio_studio_flows_v2" "channel_studio_flow" {
       webhook_url_studio_errors                  = local.webhook_url_studio_errors,
       short_helpline                             = var.short_helpline,
       short_environment                          = var.short_environment,
+      environment                                = var.environment,
       channel_attributes = {
         default : templatefile(
           lookup(

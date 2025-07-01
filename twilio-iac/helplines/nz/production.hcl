@@ -34,6 +34,7 @@ locals {
         channel_flow_vars = {
           chat_greeting_message = "Kia ora, we'll connect you with someone soon. Your conversation is confidential, but if we feel that you or someone else is at serious risk of harm, we may have to link in with other services. We'll let you know if that becomes necessary."
           widget_from           = "Youthline"
+          allowed_shortcode_locations = "NZ"
         }
         enable_datadog_monitor = true
         custom_monitor = {
@@ -71,8 +72,10 @@ locals {
         messaging_mode         = "conversations"
         channel_type           = "custom"
         contact_identity       = "modica"
-        templatefile           = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3.tftpl"
-        channel_flow_vars      = {}
+        templatefile           = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3-lambda.tftpl"
+        channel_flow_vars    = {
+          regex_allowed_test_numbers = "modica:\\+(<SHORTCODE_HERE>)\\d{1,20}"
+        }
         chatbot_unique_names   = []
         enable_datadog_monitor = true
         custom_monitor = {
@@ -87,7 +90,7 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "custom"
         contact_identity     = "instagram"
-        templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/instagram-lex-priority-v2.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/instagram-lex-priority-v2-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
@@ -95,10 +98,13 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "whatsapp"
         contact_identity     = "whatsapp:+6498865696"
-        templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3.tftpl"
-        channel_flow_vars    = {}
+        templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3-lambda.tftpl"
+        channel_flow_vars    = {
+          regex_allowed_test_numbers = "whatsapp:\\+(<SHORTCODE_HERE>)\\d{6,20}"
+        }
         chatbot_unique_names = []
       }
     }
+    get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

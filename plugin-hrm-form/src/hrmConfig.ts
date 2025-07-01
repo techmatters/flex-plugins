@@ -25,13 +25,13 @@ import { WorkerSID } from './types/twilio';
 const featureFlagEnvVarPrefix = 'REACT_APP_FF_';
 type ContactSaveFrequency = 'onTabChange' | 'onFinalSaveAndTransfer';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const readConfig = () => {
   const manager = Flex.Manager.getInstance();
   const { identity } = manager.user;
-
   // This is a really hacky test, need a better way to determine if the user is one of our bots
-  const userIsAseloBot = /aselo.+@techmatters\.org/.test(identity);
-
+  const userIsAseloBot = /aselo.+(@|_40)techmatters(\.|_2E)org/.test(identity);
+  console.warn('identity', identity);
   const accountSid = manager.serviceConfiguration.account_sid;
   const baseUrl = process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url;
   const hrmBaseUrl = `${process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url}/${
@@ -40,6 +40,9 @@ const readConfig = () => {
   const hrmMicroserviceBaseUrl = process.env.REACT_APP_HRM_MICROSERVICE_BASE_URL
     ? `${process.env.REACT_APP_HRM_MICROSERVICE_BASE_URL}${manager.serviceConfiguration.attributes.hrm_api_version}/accounts/${accountSid}`
     : hrmBaseUrl;
+  const accountScopedLambdaBaseUrl = `${
+    process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url
+  }/lambda/twilio/account-scoped/${accountSid}`;
   const llmAssistantBaseUrl = `${
     process.env.REACT_APP_HRM_BASE_URL || manager.serviceConfiguration.attributes.hrm_base_url
   }/lambda/ai/llm-service/${accountSid}`;
@@ -109,6 +112,7 @@ const readConfig = () => {
       baseUrl,
       hrmBaseUrl,
       hrmMicroserviceBaseUrl,
+      accountScopedLambdaBaseUrl,
       serverlessBaseUrl,
       logoUrl,
       assetsBucketUrl,

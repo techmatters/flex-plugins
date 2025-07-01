@@ -241,6 +241,13 @@ export declare type ProfileFlagDurationDefinition = {
   durationInHours: string;
 };
 
+export declare type FlexUILocaleEntry = {
+  shortLabel: string;
+  label: string;
+  aseloLocale: string;
+  flexLocale?: string; // We try to automatically infer the best match from the list of supported locals if this is not set
+};
+
 export type FormItemDefinition =
   | InputDefinition
   | SearchInputDefinition
@@ -390,6 +397,7 @@ export type DefinitionVersion = {
   insights: {
     oneToOneConfigSpec: OneToOneConfigSpec;
     oneToManyConfigSpecs: OneToManyConfigSpecs;
+    postSurveySpecs: OneToManyConfigSpecs;
   };
   /**
    * @deprecated - this is the legacy prepopulation configuration. Use prepopulationMappings for all new code
@@ -444,4 +452,5 @@ export type DefinitionVersion = {
     Messages: LocalizedStringMap;
     Substitutions: LocalizedStringMap;
   };
+  flexUiLocales?: FlexUILocaleEntry[];
 };

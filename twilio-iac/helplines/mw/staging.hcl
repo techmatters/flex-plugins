@@ -32,12 +32,12 @@ locals {
       facebook : {
         channel_type     = "facebook"
         contact_identity = "messenger:103647528912458"
-        templatefile     = "/app/twilio-iac/helplines/mw/templates/studio-flows/mw-lex.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/mw/templates/studio-flows/mw-lex-lambda.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
       }
     }
-
+  get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

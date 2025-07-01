@@ -187,6 +187,10 @@
     "type": "listbox-multiselect",
     "options": [
         {
+        "value": "Basic Needs",
+        "label": "Basic Needs"
+        },
+        {
         "value": "DV Services",
         "label": "DV Services"
         },
@@ -235,8 +239,16 @@
         "label": "Mental Health Provider: Other"
         },
         {
+        "value": "Mobile Hygiene Program (Mobile showers, laundry, or food bank/meal services)",
+        "label": "Mobile Hygiene Program (Mobile showers, laundry, or food bank/meal services)"
+        },
+        {
         "value": "Navigation Center/ FSC Referral",
         "label": "Navigation Center/ FSC Referral"
+        },
+        {
+        "value": "Social Services",
+        "label": "Social Services"
         },
         {
         "value": "Social Services: CalFresh Application Submitted",
@@ -289,6 +301,10 @@
     "label": "Service Obtained",
     "type": "listbox-multiselect",
     "options": [
+        {
+        "value": "Basic Needs",
+        "label": "Basic Needs"
+        },
         {
         "value": "Employment/Education Enrollment Established",
         "label": "Employment/Education Enrollment Established"
@@ -360,6 +376,14 @@
         {
         "value": "Mental Health Care ",
         "label": "Mental Health Care "
+        },
+        {
+        "value": "Mobile Hygiene Program (Mobile showers, laundry, or food bank/meal services)",
+        "label": "Mobile Hygiene Program (Mobile showers, laundry, or food bank/meal services)"
+        },
+        {
+        "value": "Social Services",
+        "label": "Social Services"
         },
         {
         "value": "SUD Treatment : Collaborative",
