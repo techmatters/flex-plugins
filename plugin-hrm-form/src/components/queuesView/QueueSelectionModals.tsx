@@ -19,8 +19,8 @@ import { Modal } from '@material-ui/core';
 import { SwitchboardSyncState } from 'hrm-types';
 import { Template, Manager } from '@twilio/flex-ui';
 
-import { Box, DestructiveButton, PrimaryButton, TertiaryButton } from '../../styles';
-import { CloseButton, NonDataCallTypeDialogContainer, CloseTaskDialog } from '../callTypeButtons/styles';
+import { DestructiveButton, PrimaryButton, TertiaryButton, CloseButton } from '../../styles';
+import { NonDataCallTypeDialogContainer, CloseTaskDialog } from '../callTypeButtons/styles';
 import TabPressWrapper from '../TabPressWrapper';
 import {
   ModalPaper,

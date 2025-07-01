@@ -15,10 +15,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import React from 'react';
-import { ButtonBase, Tooltip, withStyles } from '@material-ui/core';
+import { ButtonBase, withStyles, IconButton } from '@material-ui/core';
 import { styled, Button } from '@twilio/flex-ui';
-// import { getBackgroundWithHoverCSS } from '@twilio/flex-ui-core';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import ClearIcon from '@material-ui/icons/Clear';
 
 import HrmTheme from './HrmTheme';
 
@@ -38,44 +37,67 @@ export const AseloBaseButton = styled(Button)<AseloBaseButtonProps>`
   padding: ${({ buttonSize }) => (buttonSize === 'large' ? '12px 24px' : '4px 10px')};
 
   letter-spacing: normal;
-  color: ${({buttonType}) => HrmTheme.buttonColors[buttonType].textColor};
+  color: ${({ buttonType }) => HrmTheme.buttonColors[buttonType].textColor};
   border: none;
   border-radius: 4px;
   font-weight: 600;
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   transition: background-color 0.2s ease;
 
+  &:focus {
+    outline: 2px solid #22a3fa;
+  }
+
   &:hover:not([disabled]) {
-    background: ${({ buttonType = 'primary' }) => HrmTheme.buttonColors[buttonType].hover};
+    background: ${({ buttonType }) => HrmTheme.buttonColors[buttonType].hover};
   }
 
   &:active:not([disabled]) {
-    background: ${({ buttonType = 'primary' }) => HrmTheme.buttonColors[buttonType].pressed};
+    background: ${({ buttonType }) => HrmTheme.buttonColors[buttonType].pressed};
   }
 
   &:focus:not([disabled]) {
-    background: ${({ buttonType = 'primary' }) => HrmTheme.buttonColors[buttonType].focus};
     outline: 2px solid #22a3fa;
     outline-offset: 2px;
   }
 `;
 
+/**
+ * Primary Button: Highlights the most important action a user should take, often leading to a conversion or completion of a task.
+ * There is typically only one primary button per view, unless multiple actions are equally important,
+ * but that should be very rare, if ever in Aselo. We want the user to not have to think.
+ */
 export const PrimaryButton = (props: React.ComponentProps<typeof AseloBaseButton>) => (
   <AseloBaseButton {...props} buttonType="primary" />
 );
 
+/**
+ * Secondary Button: Indicates a less important action, often an alternative to the primary action.
+ * Can be paired with a primary button to provide a negative action like "Cancel" or "Clear",
+ * or used independently for less crucial tasks.
+ */
 export const SecondaryButton = (props: React.ComponentProps<typeof AseloBaseButton>) => (
   <AseloBaseButton {...props} buttonType="secondary" />
 );
 
+/**
+ * Destructive Button: Used for potentially dangerous or destructive actions that require caution.
+ */
 export const DestructiveButton = (props: React.ComponentProps<typeof AseloBaseButton>) => (
   <AseloBaseButton {...props} buttonType="destructive" />
 );
 
-export const TertiaryyButton = (props: React.ComponentProps<typeof AseloBaseButton>) => (
+/**
+ * Tertiary Button: Indicates a low-priority action or a supplemental action, often used for actions that are not critical for the main task.
+ * Used for Add, Edit, Delete, Skip, Close, More, etc.
+ */
+export const TertiaryButton = (props: React.ComponentProps<typeof AseloBaseButton>) => (
   <AseloBaseButton {...props} buttonType="tertiary" />
 );
 
+/**
+ * Transfer Button: Uses the secondary button style but slightly modified to match the flex-ui button style
+ */
 export const TransferButton = styled(SecondaryButton)`
   margin-right: 1em;
   padding: 4px 12px;
@@ -83,43 +105,7 @@ export const TransferButton = styled(SecondaryButton)`
 `;
 TransferButton.displayName = 'TransferButton';
 
-type ButtonProps = {
-  secondary?: string; // string to prevent console errors
-  disabled?: boolean;
-  margin?: string;
-};
-
-export const TertiaryButton = styled(Button)<ButtonProps>`
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  font-weight: 400;
-  letter-spacing: normal;
-  color: ${HrmTheme.colors.tertiaryButtonTextColor};
-  border: none;
-  border-radius: 4px;
-  margin: ${props => (props.margin ? props.margin : '0')};
-  padding: 4px 10px;
-  min-width: auto;
-  background-color: ${props => (props.disabled ? HrmTheme.colors.disabledColor : HrmTheme.colors.tertiaryButtonColor)};
-  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
-
-  &&:hover {
-    background-color: ${p => (p.disabled ? `${HrmTheme.colors.base5}CC` : `${HrmTheme.colors.tertiaryButtonColor}CC`)};
-    background-blend-mode: color;
-  }
-
-  &&:focus {
-    outline-style: auto;
-    outline-width: initial;
-  }
-
-  &&:active {
-    background-color: rgba(255, 255, 255, 0.3);
-  }
-`;
-
-const TabbedFormsHeaderButton = styled(ButtonBase)`
+export const StyledBackButton = styled(ButtonBase)`
   &:focus {
     outline-color: ${HrmTheme.colors.focusColor};
     outline-style: solid;
@@ -131,13 +117,7 @@ const TabbedFormsHeaderButton = styled(ButtonBase)`
     cursor: pointer;
   }
 `;
-TabbedFormsHeaderButton.displayName = 'TabbedFormsHeaderButton';
-
-export const StyledBackButton = TabbedFormsHeaderButton;
 StyledBackButton.displayName = 'StyledBackButton';
-
-export const StyledCSAMReportButton = TabbedFormsHeaderButton;
-StyledCSAMReportButton.displayName = 'StyledCSAMReportButton';
 
 // Navigation close icon button
 export const HeaderCloseButton = styled(ButtonBase)`
@@ -206,31 +186,71 @@ export const ToggleViewButton = styled('button')<ToggleViewButtonProps>`
 `;
 ToggleViewButton.displayName = 'ToggleViewButton';
 
-export const InformationIconButton = withStyles({
-  root: {
-    width: '16px',
-    height: '16px',
-    color: '#b4babd',
-    margin: '13px 20px 0 5px',
-    cursor: 'pointer',
-  },
-})(InfoOutlinedIcon);
 
-export const HtmlTooltip = withStyles(theme => ({
-  tooltip: {
-    backgroundColor: '#717171',
-    color: '#fff',
-    maxWidth: 400,
-    fontSize: '10pt',
-    fontStyle: 'open sans semibold',
-    border: '1px solid #dadde9',
-  },
-}))(Tooltip);
+type ConfirmButtonProps = {
+  disabled: boolean;
+};
 
-export const CasePrintViewSpinner = styled('div')`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
+const CloseDialogButton = styled(Button)`
+  padding: 0px 16px;
+  border: none;
+  outline: none;
+  align-self: center;
+  height: 28px;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  border-radius: 100px;
+  text-transform: uppercase;
 `;
-CasePrintViewSpinner.displayName = 'CasePrintViewSpinner';
+
+export const ConfirmButton = styled(CloseDialogButton)<ConfirmButtonProps>`
+  text-transform: uppercase;
+  color: ${props => HrmTheme.colors.declineTextColor};
+  background: linear-gradient(to top, ${HrmTheme.colors.declineColor}, ${HrmTheme.colors.declineColor});
+
+  &:hover {
+    background-color: ${HrmTheme.colors.declineColor}CC;
+    background-blend-mode: color;
+  }
+
+  &:focus {
+    outline-style: auto;
+    outline-width: initial;
+  }
+`;
+
+export const CancelButton = styled(CloseDialogButton)`
+  text-transform: uppercase;
+  margin-left: 30px;
+  color: rgb(0, 0, 0);
+  background: linear-gradient(to top, ${HrmTheme.colors.buttonTextColor}, ${HrmTheme.colors.buttonTextColor});
+
+  &:hover {
+    background-color: ${HrmTheme.colors.buttonHoverColor};
+    background-blend-mode: color;
+  }
+
+  &:focus {
+    outline: auto;
+  }
+`;
+
+export const CloseButton = styled(props => (
+  <IconButton {...props} classes={{ label: 'label' }}>
+    <ClearIcon />
+  </IconButton>
+))`
+  && .label {
+    color: ${HrmTheme.colors.defaultButtonColor};
+  }
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+  }
+
+  &:focus {
+    outline: auto;
+  }
+`;

@@ -21,8 +21,8 @@ import { DefinitionVersion, StatusInfo } from 'hrm-form-definitions';
 import { parseISO } from 'date-fns';
 
 import { Case, CustomITask, StandaloneITask } from '../../../types/types';
-import { CaseSectionFont, DetailsContainer, ViewButton } from '../styles';
-import { Box } from '../../../styles';
+import { CaseSectionFont, DetailsContainer } from '../styles';
+import { Box, TertiaryButton } from '../../../styles';
 import { PermissionActions } from '../../../permissions';
 import CaseTextAreaEntry from './CaseTextAreaEntry';
 import CaseOverviewItem from './CaseOverviewItem';
@@ -126,9 +126,9 @@ const CaseOverview: React.FC<Props> = ({
         </Box>
         {editButton && (
           <Box style={{ display: 'inline-block' }} alignSelf="flex-end" marginTop="-20px" marginRight="35px">
-            <ViewButton onClick={editCaseOverview} data-testid="Case-EditButton">
+            <TertiaryButton onClick={editCaseOverview} data-testid="Case-EditButton">
               <Template code="Case-EditButton" />
-            </ViewButton>
+            </TertiaryButton>
           </Box>
         )}
         <div style={{ display: 'flex', alignItems: 'center' }}>

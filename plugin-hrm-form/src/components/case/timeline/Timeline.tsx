@@ -22,8 +22,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 
 import CallTypeIcon from '../../common/icons/CallTypeIcon';
 import TimelineIcon, { IconType } from './TimelineIcon';
-import { CaseSectionFont, TimelineCallTypeIcon, TimelineDate, TimelineRow, TimelineText, ViewButton } from '../styles';
-import { Box, Row, colors } from '../../../styles';
+import { CaseSectionFont, TimelineCallTypeIcon, TimelineDate, TimelineRow, TimelineText } from '../styles';
+import { Box, Row, colors, TertiaryButton } from '../../../styles';
 import CaseAddButton from '../CaseAddButton';
 import { Contact, CustomITask } from '../../../types/types';
 import { isCaseSectionTimelineActivity, isContactTimelineActivity } from '../../../states/case/types';
@@ -217,9 +217,9 @@ const Timeline: React.FC<OwnProps> = ({
               {canViewActivity && (
                 <Box marginLeft="auto">
                   <Box marginLeft="auto">
-                    <ViewButton onClick={() => handleViewClick(timelineActivity)}>
+                    <TertiaryButton onClick={() => handleViewClick(timelineActivity)}>
                       <Template code="Case-ViewButton" />
-                    </ViewButton>
+                    </TertiaryButton>
                   </Box>
                 </Box>
               )}

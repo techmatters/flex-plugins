@@ -24,7 +24,7 @@ import OpenInNew from '@material-ui/icons/OpenInNew';
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import { Row } from '../../styles';
 import { CSAMReportButtonText } from './styles';
-import { StyledCSAMReportButton } from '../../styles/buttons';
+import { StyledBackButton } from '../../styles/buttons';
 import CSAMReportDropdown from './CSAMReportDropdown';
 
 type OwnProps = {
@@ -58,21 +58,21 @@ const CSAMReportButton: React.FC<Props> = ({ handleChildCSAMType, handleCounsell
       >
         <Row>
           {csamReportEnabled && csamClcReportEnabled && (
-            <StyledCSAMReportButton ref={buttonRef} style={{ marginRight: 10 }} onClick={handleDropdown}>
+            <StyledBackButton ref={buttonRef} style={{ marginRight: 10 }} onClick={handleDropdown}>
               <AssignmentIcon fontSize="inherit" style={{ marginRight: 5 }} />
               <CSAMReportButtonText>
                 <Template code="TabbedForms-CSAMReportButton" />
               </CSAMReportButtonText>
               <ExpandMoreIcon fontSize="inherit" style={{ marginLeft: 10 }} />
-            </StyledCSAMReportButton>
+            </StyledBackButton>
           )}
           {csamReportEnabled && !csamClcReportEnabled && (
-            <StyledCSAMReportButton onClick={handleCounsellorCSAMType}>
+            <StyledBackButton onClick={handleCounsellorCSAMType}>
               <OpenInNew fontSize="inherit" style={{ marginRight: 5 }} />
               <CSAMReportButtonText>
                 <Template code="TabbedForms-CSAMFileReportButton" />
               </CSAMReportButtonText>
-            </StyledCSAMReportButton>
+            </StyledBackButton>
           )}
         </Row>
         <CSAMReportDropdown

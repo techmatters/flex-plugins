@@ -20,8 +20,8 @@ import React from 'react';
 import { Template } from '@twilio/flex-ui';
 import type { FormDefinition, LayoutDefinition } from 'hrm-form-definitions';
 
-import { RowItemContainer, TimelineLabel, TimelineRow, ViewButton } from './styles';
-import { Box, HiddenText } from '../../styles';
+import { RowItemContainer, TimelineLabel, TimelineRow } from './styles';
+import { Box, HiddenText, TertiaryButton } from '../../styles';
 import { CaseSection } from '../../services/caseSectionService';
 import CaseSectionPreviewTextValue from './CaseSectionPreviewText';
 
@@ -65,9 +65,9 @@ const CaseSectionListRow: React.FC<OwnProps> = ({ definition, section, layoutDef
       })}
       <RowItem flexWidthRatio={1}>
         <Box marginLeft="auto">
-          <ViewButton onClick={onClickView} data-testid="Case-InformationRow-ViewButton">
+          <TertiaryButton onClick={onClickView} data-testid="Case-InformationRow-ViewButton">
             <Template code="Case-ViewButton" />
-          </ViewButton>
+          </TertiaryButton>
         </Box>
       </RowItem>
     </TimelineRow>

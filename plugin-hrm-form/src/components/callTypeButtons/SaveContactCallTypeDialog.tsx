@@ -22,10 +22,8 @@ import {
   CloseTaskDialog,
   CloseTaskDialogText,
   NonDataCallTypeDialogContainer,
-  ConfirmButton,
-  CancelButton,
-  CloseButton,
 } from './styles';
+import { ConfirmButton, CancelButton, CloseButton } from '../../styles/buttons';
 import TabPressWrapper from '../TabPressWrapper';
 
 type OwnProps = {

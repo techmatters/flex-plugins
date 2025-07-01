@@ -15,6 +15,8 @@
  */
 
 import { styled } from '@twilio/flex-ui';
+import { Tooltip, withStyles } from '@material-ui/core';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
 import HrmTheme from './HrmTheme';
 
@@ -163,3 +165,32 @@ export const OpaqueText = styled('span')`
   opacity: 0.7;
   font-size: 12px;
 `;
+
+export const CasePrintViewSpinner = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`;
+CasePrintViewSpinner.displayName = 'CasePrintViewSpinner';
+
+export const HtmlTooltip = withStyles(theme => ({
+  tooltip: {
+    backgroundColor: '#717171',
+    color: '#fff',
+    maxWidth: 400,
+    fontSize: '10pt',
+    fontStyle: 'open sans semibold',
+    border: '1px solid #dadde9',
+  },
+}))(Tooltip);
+
+export const InformationIconButton = withStyles({
+  root: {
+    width: '16px',
+    height: '16px',
+    color: '#b4babd',
+    margin: '13px 20px 0 5px',
+    cursor: 'pointer',
+  },
+})(InfoOutlinedIcon);

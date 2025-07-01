@@ -31,9 +31,7 @@ type Props = ThemeProps & { task?: ITask };
 
 const RejectTransferButton: React.FC<Props> = ({ task }) => {
   return (
-    <TransferButton
-      onClick={() => handleRejectTransfer(task)}
-    >
+    <TransferButton onClick={() => handleRejectTransfer(task)}>
       <Template code="Transfer-RejectTransferButton" />
     </TransferButton>
   );

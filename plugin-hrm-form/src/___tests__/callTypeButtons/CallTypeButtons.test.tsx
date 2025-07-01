@@ -29,9 +29,8 @@ import '../../states/conferencing';
 import {
   DataCallTypeButton,
   NonDataCallTypeButton,
-  ConfirmButton,
-  CancelButton,
 } from '../../components/callTypeButtons/styles';
+import { ConfirmButton, CancelButton } from '../../styles/buttons';
 import LocalizationContext from '../../contexts/LocalizationContext';
 import { changeRoute } from '../../states/routing/actions';
 import { updateDraft } from '../../states/contacts/existingContacts';

@@ -31,9 +31,7 @@ type Props = ThemeProps & { task?: ITask };
 
 const AcceptTransferButton: React.FC<Props> = ({ task }) => {
   return (
-    <TransferButton
-      onClick={() => handleAcceptTransfer(task)}
-    >
+    <TransferButton onClick={() => handleAcceptTransfer(task)}>
       <Template code="Transfer-AcceptTransferButton" />
     </TransferButton>
   );

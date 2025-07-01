@@ -18,8 +18,7 @@ import { Template, Button } from '@twilio/flex-ui';
 import { CallEnd as CallEndIcon } from '@material-ui/icons';
 import { CircularProgress } from '@material-ui/core';
 
-import { Row, Bold } from '../../../styles';
-import { CloseButton } from '../../callTypeButtons/styles';
+import { Row, Bold, CloseButton } from '../../../styles';
 import { PhoneDialogWrapper, DialogArrow } from './styles';
 
 type PhoneDialogProps = {

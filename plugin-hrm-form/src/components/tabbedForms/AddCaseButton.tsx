@@ -22,7 +22,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
 import { getAseloConfigFlags } from '../../hrmConfig';
 import { SecondaryButton } from '../../styles/buttons';
-import { StyledAddNewCaseDropdown, StyledAddNewCaseDropdownList } from '../../components/tabbedForms/styles';
+import { StyledAddNewCaseDropdown, StyledAddNewCaseDropdownList } from './styles';
 
 type OwnProps = {
   handleNewCaseType: () => void;
