@@ -18,17 +18,15 @@
 import React from 'react';
 import { withTaskContext, Template } from '@twilio/flex-ui';
 
-import { RefreshStyledSpan } from '../../styles/buttons';
-
 const RefreshMessage: React.FC<TaskContextProps> = ({ task }) => {
   if (!task) {
     return null;
   }
 
   return (
-    <RefreshStyledSpan>
+    <span style={{ alignSelf: 'center', fontSize: '14px' }}>
       <Template code="Transfer-ErrorLoadingMessages" />
-    </RefreshStyledSpan>
+    </span>
   );
 };
 

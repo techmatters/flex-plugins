@@ -30,7 +30,7 @@ import {
   Box,
   ColumnarBlock,
   Container,
-  StyledNextStepButton,
+  PrimaryButton,
   TwoColumnLayout,
 } from '../../../styles';
 import { RootState } from '../../../states';
@@ -253,14 +253,14 @@ const EditCaseOverview: React.FC<Props> = ({
         </Container>
         <div style={{ width: '100%', height: 5, backgroundColor: '#ffffff' }} />
         <BottomButtonBar>
-          <StyledNextStepButton
+          <PrimaryButton
             disabled={isUpdating}
             data-testid="Case-EditCaseScreen-SaveItem"
             roundCorners
             onClick={methods.handleSubmit(saveAndLeave, onError)}
           >
             <Template code="BottomBar-SaveCaseSummary" />
-          </StyledNextStepButton>
+          </PrimaryButton>
         </BottomButtonBar>
         <CloseCaseDialog
           data-testid="CloseCaseDialog"
