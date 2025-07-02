@@ -27,20 +27,6 @@ import fetchProtectedApi from './fetchProtectedApi';
 import type { ChildCSAMReportForm, CounselorCSAMReportForm } from '../states/csam-report/types';
 import { getHrmConfig } from '../hrmConfig';
 
-type GetTranslationBody = { language: string };
-
-// Returns translations json for Flex in string format
-export const getTranslation = async (body: GetTranslationBody): Promise<string> => {
-  const translation = await fetchProtectedApi('/getTranslation', body);
-  return translation;
-};
-
-// Returns translations json for system messages in string format
-export const getMessages = async (body: GetTranslationBody): Promise<string> => {
-  const messages = await fetchProtectedApi('/getMessages', body);
-  return messages;
-};
-
 type TransferChatStartBody = {
   taskSid: string;
   targetSid: string;
