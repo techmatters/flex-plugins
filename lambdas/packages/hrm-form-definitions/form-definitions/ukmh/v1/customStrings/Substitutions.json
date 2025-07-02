@@ -53,7 +53,7 @@
         "CaseSection-View-Title/incident": "View Safeguarding/Risk",
         "CasePrint-TabularSection-Header/incident": "Safeguarding/Risk {{sectionNo}} of {{sectionCount}}",
         "TabbedForms-CategoriesTab": "Topics",
-        "Error-CategoryRequired": "Required 1 topic minimum, 3 topics maximum",
+        "Error-CategoryRequired": "Required #{{minSelections}} topic minimum, #{{maxSelections}} topics maximum",
         "CaseList-Filters-Categories": "Topics",
         "CaseList-Filters-SearchByCategory": "Search by topic",
         "Contact-EditCategories": "Edit Topics",

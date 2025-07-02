@@ -285,7 +285,7 @@
   "DateCantBeLesserThanEpoch": "วันที่ไม่สามารถน้อยกว่า 00:00:00 UTC ในวันที่ 1 มกราคม 1970",
   "DownloadFile-ButtonText": "ดาวน์โหลดไฟล์",
   "EditButton": "แก้ไข",
-  "Error-CategoryRequired": "ต้องการ 1 หมวดหมู่ขั้นต่ำ 3 หมวดหมู่สูงสุด",
+  "Error-CategoryRequired": "ต้องการ #{{minSelections}} หมวดหมู่ขั้นต่ำ #{{maxSelections}} หมวดหมู่สูงสุด",
   "Error-ContinueWithoutRecording": "ข้อผิดพลาดจากระบบแบ็กเอนด์ แน่ใจหรือว่าต้องการจบงานโดยไม่ต้องบันทึก?",
   "Error-Form": "มีปัญหากับการส่งของคุณ โปรดตรวจสอบแบบฟอร์มสำหรับข้อผิดพลาด",
   "Error-Unexpected": "เกิดข้อผิดพลาดที่ไม่คาดคิดเกิดขึ้น",

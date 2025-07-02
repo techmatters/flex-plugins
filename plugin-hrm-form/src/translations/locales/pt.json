@@ -100,7 +100,7 @@
   "BottomBar-Next": "Próximo",
   "TabbedForms-BackButton": "Categorizar tipo de contato",
   "Categories-Title": "Categorizar este contato",
-  "Error-CategoryRequired": "Exigido 1 categoria no mínimo, 3 categorias no máximo.",
+  "Error-CategoryRequired": "Exigido #{{minSelections}} categoria no mínimo, #{{maxSelections}} categorias no máximo.",
   "BottomBar-SaveAndAddToCase": "Salvar e adicionar ao caso",
   "BottomBar-SaveContact": "Salvar",
   "Error-Form": "Há um problema com o seu envio. Verifique se há erros no formulário.",

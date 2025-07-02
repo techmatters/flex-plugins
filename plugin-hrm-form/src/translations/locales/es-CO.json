@@ -105,7 +105,7 @@
   "BottomBar-Next": "Siguiente",
   "TabbedForms-BackButton": "Categorizar el Tipo de Contacto",
   "Categories-Title": "Categorizar Este Contacto",
-  "Error-CategoryRequired": "Requerido 1 categoría mínimo, 3 categorías máximo.",
+  "Error-CategoryRequired": "Requerido #{{minSelections}} categoría mínimo, #{{maxSelections}} categorías máximo.",
   "CaseSection-BottomBar-SaveAndAddAnother/incident": "Guardar y Agregar Otro Incidente",
   "BottomBar-SaveAndAddAnotherReferral": "Guardar y Agregar Otra Referencia",
   "CaseSection-BottomBar-SaveAndAddAnother/note": "Guardar y Agregar Otra Nota",

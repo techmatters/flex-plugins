@@ -289,7 +289,7 @@
   "DateCantBeLesserThanEpoch": "Date can't be lesser than 00:00:00 UTC on 1 January 1970.",
   "DownloadFile-ButtonText": "Download File",
   "EditButton": "Edit",
-  "Error-CategoryRequired": "Required 1 category minimum, 3 categories maximum.",
+  "Error-CategoryRequired": "Required #{{minSelections}} category minimum, #{{maxSelections}} categories maximum.",
   "Error-ContinueWithoutRecording": "Error from backend system. Are you sure you want to end the task without recording?",
   "Error-Form": "There is a problem with your submission. Please check the form for errors.",
   "Error-Unexpected": "Unexpected error has occurred",

@@ -39,10 +39,11 @@ const createSubcategoryCheckbox = (
   selected: boolean,
   counselorToolkitsEnabled: boolean,
   selectedCount: number,
+  maxSelections: number,
 ) => {
   const { label, toolkitUrl } = subcategory;
   const lighterColor = `${color}99`; // Hex with alpha 0.6
-  const disabled = selectedCount >= 3 && !selected;
+  const disabled = selectedCount >= maxSelections && !selected;
 
   return (
     <CategoryCheckboxWrapper key={`${category}-${label}`}>
@@ -78,6 +79,7 @@ type Props = {
   selectedSubcategories: string[];
   gridView: boolean;
   selectedCount: number;
+  maxSelections: number;
 };
 
 const CategoryCheckboxes: React.FC<Props> = ({
@@ -88,6 +90,7 @@ const CategoryCheckboxes: React.FC<Props> = ({
   selectedSubcategories,
   gridView,
   selectedCount,
+  maxSelections,
 }) => {
   return (
     <SubcategoriesWrapper gridView={gridView}>
@@ -100,6 +103,7 @@ const CategoryCheckboxes: React.FC<Props> = ({
           selectedSubcategories.includes(subcategory.label),
           counselorToolkitsEnabled,
           selectedCount,
+          maxSelections,
         ),
       )}
     </SubcategoriesWrapper>

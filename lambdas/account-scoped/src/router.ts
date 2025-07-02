@@ -31,7 +31,7 @@ import { validateFlexTokenRequest } from './validation/flexToken';
 import { getParticipantHandler } from './conference/getParticipant';
 import { updateParticipantHandler } from './conference/updateParticipant';
 import { removeParticipantHandler } from './conference/removeParticipant';
-import { statusCallbackHandler } from './conference/statusCallback.protected';
+import { statusCallbackHandler } from './conference/statusCallback';
 
 /**
  * Super simple router sufficient for directly ported Twilio Serverless functions

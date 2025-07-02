@@ -167,7 +167,7 @@ export function validateCategoriesDefinition(
 ): ValidationReport {
   const issues = [];
 
-  const categoriesList = Object.entries(definition);
+  const categoriesList = Object.entries(definition.categories);
 
   if (specification.required && !categoriesList.length) {
     issues.push('Definition must contain at least one category.');

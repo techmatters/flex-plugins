@@ -1,133 +1,283 @@
 {
   "Kék Vonal": {
-    "Szökés, csellengés, eltűnés": {
-      "color": "#BBE3FF",
-      "subcategories": [
-        {"label": "Gyermekrablás"},
-        {"label": "Elveszett, vagy egyéb módon eltűnt"},
-        {"label": "Szökés"},
-        {"label": "Jogellenes elvitel"},
-        {"label": "Azon gondolkodik, hogy elszökik"},
-        {"label": "Egyéb - Szökés, csellengés, eltűnés"}
-      ]
-    },
-    "Bántalmazás, erőszak": {
-      "color": "#F5A623",
-      "subcategories": [
-        {"label": "Kortárs bántalmazás"},
-        {"label": "Gyerekházasság"},
-        {"label": "Gazdasági célú szexuális kizsákmányolás (offline)"},
-        {"label": "Gyerekmunka"},
-        {"label": "Érzelmi bántalmazás"},
-        {"label": "Elhanyagolás"},
-        {"label": "Online szexuális abúzus"},
-        {"label": "Online szexuális kizsákmányolás"},
-        {"label": "Fizikai bántalmazás"},
-        {"label": "Szexuális bántalmazás"},
-        {"label": "Kapcsolati erőszak a családban"},
-        {"label": "Egyéb - Bántalmazás, erőszak"}
-      ]
-    },
-    "Lelki egészség": {
-      "color": "#F8E900",
-      "subcategories": [
-        {"label": "Függőségek"},
-        {"label": "Magatartási problémák"},
-        {"label": "Önértékelési probléma"},
-        {"label": "Dühkezelési probléma"},
-        {"label": "Félelem, szorongások"},
-        {"label": "Általános lehangoltság"},
-        {"label": "Étkezési zavarok"},
-        {"label": "Önsértés"},
-        {"label": "Traumás nehézségek"},
-        {"label": "Öngyilkossági gondolatok, kísérlet"},
-        {"label": "Veszteség, gyász"},
-        {"label": "Már diagnosztizált pszichés, mentális problémák"},
-        {"label": "Magány"},
-        {"label": "Egyéb - Lelki egészség"}
-      ]
-    },
-    "Testi egészség": {
-      "color": "#E86B6B",
-      "subcategories": [
-        {"label": "Általános egészségügyi problémák"},
-        {"label": "Terhesség"},
-        {"label": "Szexuális és reprodukciós egészség"},
-        {"label": "Táplálkozás"},
-        {"label": "Egyéb - Testi egészség"}
-      ]
-    },
-    "Hozzáférés": {
-      "color": "#8055BA",
-      "subcategories": [
-        {"label": "Oktatás"},
-        {"label": "Alapvető szükségletek"},
-        {"label": "Egészségügyi szolgáltatások"},
-        {"label": "Jogi szolgáltatások"},
-        {"label": "Mentálhigiénés szolgáltatások"},
-        {"label": "Szexuális egészségügyi szolgáltatások"},
-        {"label": "Szociális szolgáltatások"},
-        {"label": "Családsegítő és gyermekjóléti szolgáltatások"},
-        {"label": "Egyéb - Hozzáférés"}
-      ]
-    },
-    "Diszkrimináció, kirekesztés": {
-      "color": "#B971AF",
-      "subcategories": [
-        {"label": "Etnikai/nemzetiségi"},
-        {"label": "Anyagi helyzet miatt"},
-        {"label": "Nemi alapú"},
-        {"label": "Gender, szexuális orientáció alapú"},
-        {"label": "Egészségügyi"},
-        {"label": "Vallási"},
-        {"label": "Egyéb - Diszkrimináció, kirekesztés"}
-      ]
-    },
-    "Családi kapcsolatok": {
-      "color": "#239613",
-      "subcategories": [
-        {"label": "Örökbefogadó, nevelőszülő, tágabb család"},
-        {"label": "Kapcsolat a szülővel, gondviselővel"},
-        {"label": "Családi kapcsolati problémák"},
-        {"label": "Kapcsolat a testvér(ek)vel"},
-        {"label": "Egyéb - Családi kapcsolatok"}
-      ]
-    },
-    "Kortárs kapcsolatok": {
-      "color": "#9AD703",
-      "subcategories": [
-        {"label": "Probléma a barátokkal"},
-        {"label": "Párkapcsolati probléma"},
-        {"label": "Probléma az osztálytársakkal, beilleszkedési probléma"},
-        {"label": "Egyéb - Kortárs kapcsolatok"}
-      ]
-    },
-    "Oktatás": {
-      "color": "#55AFAF",
-      "subcategories": [
-        {"label": "Teljesítmény, jegyek"},
-        {"label": "Probléma a tanárokkal, iskolával"},
-        {"label": "Probléma a munkával"},
-        {"label": "Egyéb - Oktatás"}
-      ]
-    },
-    "Szexualitás": {
-      "color": "#506BA5",
-      "subcategories": [
-        {"label": "Szexuális orientáció, nemi identitás"},
-        {"label": "Szexuális élet"},
-        {"label": "Egyéb - Szexualitás"}
-      ]
-    },
-    "Információs, nem konzultációs témák": {
-      "color": "#767777",
-      "subcategories": [
-        {"label": "Panasz a segélyvonallal kapcsolatban"},
-        {"label": "Kérdés a Kék Vonalról"},
-        {"label": "Kérdés egyéb szolgáltatásokról"},
-        {"label": "Köszönet"},
-        {"label": "Egyéb - Információs, nem konzultációs témák"}
-      ]
+    "categories": {
+      "Szökés, csellengés, eltűnés": {
+        "color": "#BBE3FF",
+        "subcategories": [
+          {
+            "label": "Gyermekrablás"
+          },
+          {
+            "label": "Elveszett, vagy egyéb módon eltűnt"
+          },
+          {
+            "label": "Szökés"
+          },
+          {
+            "label": "Jogellenes elvitel"
+          },
+          {
+            "label": "Azon gondolkodik, hogy elszökik"
+          },
+          {
+            "label": "Egyéb - Szökés, csellengés, eltűnés"
+          }
+        ]
+      },
+      "Bántalmazás, erőszak": {
+        "color": "#F5A623",
+        "subcategories": [
+          {
+            "label": "Kortárs bántalmazás"
+          },
+          {
+            "label": "Gyerekházasság"
+          },
+          {
+            "label": "Gazdasági célú szexuális kizsákmányolás (offline)"
+          },
+          {
+            "label": "Gyerekmunka"
+          },
+          {
+            "label": "Érzelmi bántalmazás"
+          },
+          {
+            "label": "Elhanyagolás"
+          },
+          {
+            "label": "Online szexuális abúzus"
+          },
+          {
+            "label": "Online szexuális kizsákmányolás"
+          },
+          {
+            "label": "Fizikai bántalmazás"
+          },
+          {
+            "label": "Szexuális bántalmazás"
+          },
+          {
+            "label": "Kapcsolati erőszak a családban"
+          },
+          {
+            "label": "Egyéb - Bántalmazás, erőszak"
+          }
+        ]
+      },
+      "Lelki egészség": {
+        "color": "#F8E900",
+        "subcategories": [
+          {
+            "label": "Függőségek"
+          },
+          {
+            "label": "Magatartási problémák"
+          },
+          {
+            "label": "Önértékelési probléma"
+          },
+          {
+            "label": "Dühkezelési probléma"
+          },
+          {
+            "label": "Félelem, szorongások"
+          },
+          {
+            "label": "Általános lehangoltság"
+          },
+          {
+            "label": "Étkezési zavarok"
+          },
+          {
+            "label": "Önsértés"
+          },
+          {
+            "label": "Traumás nehézségek"
+          },
+          {
+            "label": "Öngyilkossági gondolatok, kísérlet"
+          },
+          {
+            "label": "Veszteség, gyász"
+          },
+          {
+            "label": "Már diagnosztizált pszichés, mentális problémák"
+          },
+          {
+            "label": "Magány"
+          },
+          {
+            "label": "Egyéb - Lelki egészség"
+          }
+        ]
+      },
+      "Testi egészség": {
+        "color": "#E86B6B",
+        "subcategories": [
+          {
+            "label": "Általános egészségügyi problémák"
+          },
+          {
+            "label": "Terhesség"
+          },
+          {
+            "label": "Szexuális és reprodukciós egészség"
+          },
+          {
+            "label": "Táplálkozás"
+          },
+          {
+            "label": "Egyéb - Testi egészség"
+          }
+        ]
+      },
+      "Hozzáférés": {
+        "color": "#8055BA",
+        "subcategories": [
+          {
+            "label": "Oktatás"
+          },
+          {
+            "label": "Alapvető szükségletek"
+          },
+          {
+            "label": "Egészségügyi szolgáltatások"
+          },
+          {
+            "label": "Jogi szolgáltatások"
+          },
+          {
+            "label": "Mentálhigiénés szolgáltatások"
+          },
+          {
+            "label": "Szexuális egészségügyi szolgáltatások"
+          },
+          {
+            "label": "Szociális szolgáltatások"
+          },
+          {
+            "label": "Családsegítő és gyermekjóléti szolgáltatások"
+          },
+          {
+            "label": "Egyéb - Hozzáférés"
+          }
+        ]
+      },
+      "Diszkrimináció, kirekesztés": {
+        "color": "#B971AF",
+        "subcategories": [
+          {
+            "label": "Etnikai/nemzetiségi"
+          },
+          {
+            "label": "Anyagi helyzet miatt"
+          },
+          {
+            "label": "Nemi alapú"
+          },
+          {
+            "label": "Gender, szexuális orientáció alapú"
+          },
+          {
+            "label": "Egészségügyi"
+          },
+          {
+            "label": "Vallási"
+          },
+          {
+            "label": "Egyéb - Diszkrimináció, kirekesztés"
+          }
+        ]
+      },
+      "Családi kapcsolatok": {
+        "color": "#239613",
+        "subcategories": [
+          {
+            "label": "Örökbefogadó, nevelőszülő, tágabb család"
+          },
+          {
+            "label": "Kapcsolat a szülővel, gondviselővel"
+          },
+          {
+            "label": "Családi kapcsolati problémák"
+          },
+          {
+            "label": "Kapcsolat a testvér(ek)vel"
+          },
+          {
+            "label": "Egyéb - Családi kapcsolatok"
+          }
+        ]
+      },
+      "Kortárs kapcsolatok": {
+        "color": "#9AD703",
+        "subcategories": [
+          {
+            "label": "Probléma a barátokkal"
+          },
+          {
+            "label": "Párkapcsolati probléma"
+          },
+          {
+            "label": "Probléma az osztálytársakkal, beilleszkedési probléma"
+          },
+          {
+            "label": "Egyéb - Kortárs kapcsolatok"
+          }
+        ]
+      },
+      "Oktatás": {
+        "color": "#55AFAF",
+        "subcategories": [
+          {
+            "label": "Teljesítmény, jegyek"
+          },
+          {
+            "label": "Probléma a tanárokkal, iskolával"
+          },
+          {
+            "label": "Probléma a munkával"
+          },
+          {
+            "label": "Egyéb - Oktatás"
+          }
+        ]
+      },
+      "Szexualitás": {
+        "color": "#506BA5",
+        "subcategories": [
+          {
+            "label": "Szexuális orientáció, nemi identitás"
+          },
+          {
+            "label": "Szexuális élet"
+          },
+          {
+            "label": "Egyéb - Szexualitás"
+          }
+        ]
+      },
+      "Információs, nem konzultációs témák": {
+        "color": "#767777",
+        "subcategories": [
+          {
+            "label": "Panasz a segélyvonallal kapcsolatban"
+          },
+          {
+            "label": "Kérdés a Kék Vonalról"
+          },
+          {
+            "label": "Kérdés egyéb szolgáltatásokról"
+          },
+          {
+            "label": "Köszönet"
+          },
+          {
+            "label": "Egyéb - Információs, nem konzultációs témák"
+          }
+        ]
+      }
     }
   }
 }
