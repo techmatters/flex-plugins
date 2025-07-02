@@ -17,9 +17,9 @@
 import { loadTranslations, initLocalization } from '../../translations';
 
 // Mock translation files at the top level
-jest.mock('../../translations/locales/en.json', () => ({}), { virtual: true });
-jest.mock('../../translations/locales/en-US.json', () => ({}), { virtual: true });
-jest.mock('../../translations/locales/en-GB.json', () => ({}), { virtual: true });
+jest.mock('../../translations/en.json', () => ({}), { virtual: true });
+jest.mock('../../translations/en-US.json', () => ({}), { virtual: true });
+jest.mock('../../translations/en-GB.json', () => ({}), { virtual: true });
 
 const mockGetAseloFeatureFlags = jest.fn();
 const mockGetHrmConfig = jest.fn();
@@ -36,7 +36,6 @@ describe('Hierarchical Translations', () => {
     jest.resetModules();
     jest.clearAllMocks();
     // eslint-disable-next-line camelcase
-    mockGetAseloFeatureFlags.mockReturnValue({ enable_hierarchical_translations: true });
     mockGetHrmConfig.mockReturnValue({ helplineCode: 'test' });
   });
 
@@ -51,7 +50,7 @@ describe('Hierarchical Translations', () => {
       });
 
       jest.isolateModules(() => {
-        jest.doMock('../../translations/locales/en.json', () => baseTranslations);
+        jest.doMock('../../translations/en.json', () => baseTranslations);
       });
     });
 
@@ -85,7 +84,7 @@ describe('Hierarchical Translations', () => {
       mockGetDefinitionVersions.mockReturnValue({ currentDefinitionVersion: { customStrings: { Substitutions: {} } } });
 
       jest.isolateModules(() => {
-        jest.doMock('../../translations/locales/en.json', () => baseTranslations);
+        jest.doMock('../../translations/en.json', () => baseTranslations);
       });
     });
 
@@ -111,8 +110,8 @@ describe('Hierarchical Translations', () => {
       mockGetDefinitionVersions.mockReturnValue({ currentDefinitionVersion: { customStrings: { Substitutions: {} } } });
 
       jest.isolateModules(() => {
-        jest.doMock('../../translations/locales/en.json', () => baseTranslations);
-        jest.doMock('../../translations/locales/en-US.json', () => usLocaleTranslations);
+        jest.doMock('../../translations/en.json', () => baseTranslations);
+        jest.doMock('../../translations/en-US.json', () => usLocaleTranslations);
       });
     });
 
@@ -147,8 +146,8 @@ describe('Hierarchical Translations', () => {
       });
 
       jest.isolateModules(() => {
-        jest.doMock('../../translations/locales/en.json', () => baseTranslations);
-        jest.doMock('../../translations/locales/en-US.json', () => usLocaleTranslations);
+        jest.doMock('../../translations/en.json', () => baseTranslations);
+        jest.doMock('../../translations/en-US.json', () => usLocaleTranslations);
       });
     });
 
