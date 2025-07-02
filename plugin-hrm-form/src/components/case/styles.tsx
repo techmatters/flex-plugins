@@ -15,10 +15,9 @@
  */
 
 import React from 'react';
-import { Button, IconButton, styled } from '@twilio/flex-ui';
-import { ButtonBase } from '@material-ui/core';
+import { IconButton, styled } from '@twilio/flex-ui';
 
-import { Column, FontOpenSans, FormInput, Row } from '../../styles';
+import { Column, FontOpenSans, FormInput, Row, TertiaryButton } from '../../styles';
 import HrmTheme from '../../styles/HrmTheme';
 
 export const CaseLayout = styled('div')`
@@ -82,31 +81,11 @@ export const DetailDescription = styled(DetailEntryText)`
 `;
 DetailDescription.displayName = 'DetailDescription';
 
-type ViewButtonProps = {
-  onClick: () => void;
-};
-
-export const ViewButton = styled(props => <Button roundCorners={false} {...props} />)<ViewButtonProps>`
-  color: ${HrmTheme.colors.categoryTextColor};
-  background-color: #ecedf1;
-  height: 28px;
-  border-radius: 4px;
-  letter-spacing: normal;
-  font-size: 13px;
-  box-shadow: none;
-  border: none;
-
-  :focus {
-    outline: auto;
-  }
-`;
-ViewButton.displayName = 'ViewButton';
-
 type CaseAddButtonProps = {
   withDivider: boolean;
 };
 
-export const CaseAddButton = styled(ButtonBase)<CaseAddButtonProps>`
+export const CaseAddButton = styled(TertiaryButton)<CaseAddButtonProps>`
   && {
     margin-left: auto;
     padding-left: ${props => (props.withDivider ? '12px' : '0px')};

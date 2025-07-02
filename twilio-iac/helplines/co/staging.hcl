@@ -66,6 +66,6 @@ locals {
       widget_from                       = "Te Guío"
     }
 
-
+  get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

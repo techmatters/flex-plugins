@@ -30,7 +30,8 @@ import {
   ColumnarBlock,
   ColumnarContent,
   Container,
-  StyledNextStepButton,
+  PrimaryButton,
+  SecondaryButton,
   TwoColumnLayout,
 } from '../../styles';
 import { CaseActionFormContainer } from './styles';
@@ -270,25 +271,24 @@ const AddEditCaseItem: React.FC<AddEditCaseItemProps> = ({
         <BottomButtonBar>
           {currentRoute.action === CaseItemAction.Add && (
             <Box marginRight="15px">
-              <StyledNextStepButton
+              <SecondaryButton
                 data-testid="Case-AddEditItemScreen-SaveAndAddAnotherItem"
-                secondary="true"
                 roundCorners
                 onClick={methods.handleSubmit(saveAndStay, onError)}
                 disabled={isUpdating}
               >
                 <Template code={`CaseSection-BottomBar-SaveAndAddAnother/${sectionTypeName}`} />
-              </StyledNextStepButton>
+              </SecondaryButton>
             </Box>
           )}
-          <StyledNextStepButton
+          <PrimaryButton
             data-testid="Case-AddEditItemScreen-SaveItem"
             roundCorners
             onClick={methods.handleSubmit(() => saveAndLeave(DismissAction.BACK), onError)}
             disabled={isUpdating}
           >
             <Template code={`CaseSection-BottomBar-Save/${sectionTypeName}`} />
-          </StyledNextStepButton>
+          </PrimaryButton>
         </BottomButtonBar>
         <CloseCaseDialog
           data-testid="CloseCaseDialog"
