@@ -164,7 +164,7 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'checkbox',
       name: 'termsAndConditions',
       label:
-        'I have read terms of use and the privacy policy and agree to them.',
+        'I have read terms of use and the <a href="https://www.themix.org.uk/about-us/privacy-centre/privacy-policy/">privacy policy</a> and agree to them.',
       required: {
         value: true,
         message: "Sorry, if you don't accept our terms and privacy policy we can't provide counselling to you.",

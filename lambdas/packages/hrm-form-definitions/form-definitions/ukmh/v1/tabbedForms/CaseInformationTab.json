@@ -5,6 +5,10 @@
     "type": "select",
     "options": [
       {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
         "value": "Completed",
         "label": "Completed"
       },
@@ -39,6 +43,10 @@
     "label": "How did you hear of the Mix Peer Support Service?",
     "type": "select",
     "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
       {
         "value": "Peers (e.g. friends / siblings)",
         "label": "Peers (e.g. friends / siblings)"
@@ -207,6 +215,10 @@
       {
         "value": "General Chat",
         "label": "General Chat"
+      },
+      {
+        "value": "None",
+        "label": "None"
       }
     ]
   },
@@ -261,6 +273,10 @@
       {
         "value": "Using social media",
         "label": "Using social media"
+      },
+      {
+        "value": "None",
+        "label": "None"
       }
     ]
   },
@@ -315,6 +331,10 @@
       {
         "value": "Using social media",
         "label": "Using social media"
+      },
+      {
+        "value": "None",
+        "label": "None"
       }
     ]
   },
@@ -331,5 +351,10 @@
     "type": "textarea",
     "rows": 8,
     "width": 250
+  },
+  {
+    "name": "isChatCompleted",
+    "label": "Have you finished the chat with YP?",
+    "type": "checkbox"
   }
 ]
