@@ -4,7 +4,7 @@
     "CallerInformationTab":[]
   },
   "preEngagement":{
-    "ChildInformationTab":["firstName", "lastName", "contactIdentifier", "phone1", "ip", "anxietyScale"],
+    "ChildInformationTab":["friendlyName", "lastName", "contactIdentifier", "phone1", "ip", "anxietyScale", "moodhappinessBefore","consentForResearchevaluation", "dataProcessingAndStorage", "termsAndConditions"],
     "CallerInformationTab":[],
     "CaseInformationTab":[]
   }

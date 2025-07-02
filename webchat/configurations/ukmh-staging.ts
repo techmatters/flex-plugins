@@ -77,11 +77,10 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       type: 'select',
       name: 'anxietyScale',
       required: true,
-      defaultValue: '',
       options: [
         {
-          value: "",
-          label: " "
+          "value": "Unknown",
+          "label": ""
         },
         {
           value: "00",
@@ -130,10 +129,42 @@ const preEngagementConfig: PreEngagementFormDefinition = {
       ],
     },
     {
+      label: 'On a scale from 1 (sad) to 5 (happy), what mood are in currently?',
+      type: 'select',
+      name: 'moodhappinessBefore',
+      required: true,
+      options: [
+        {
+          "value": "Unknown",
+          "label": ""
+        },
+        {
+          "value": "01",
+          "label": "☹️ 1"
+        },
+        {
+          "value": "02",
+          "label": "🙁 2"
+        },
+        {
+          "value": "03",
+          "label": "😐 3"
+        },
+        {
+          "value": "04",
+          "label": "🙂 4"
+        },
+        {
+          "value": "05",
+          "label": "😀 5"
+        }
+      ],
+    },
+    {
       type: 'checkbox',
       name: 'termsAndConditions',
       label:
-        'I have read terms of use and the privacy policy and agree to them.',
+        'I have read terms of use and the <a href="https://www.themix.org.uk/about-us/privacy-centre/privacy-policy/">privacy policy</a> and agree to them.',
       required: {
         value: true,
         message: "Sorry, if you don't accept our terms and privacy policy we can't provide counselling to you.",
