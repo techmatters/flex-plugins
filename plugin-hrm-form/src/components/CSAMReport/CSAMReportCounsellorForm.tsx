@@ -21,7 +21,7 @@ import { useForm } from 'react-hook-form';
 import Close from '@material-ui/icons/Close';
 
 import ActionHeader from '../case/ActionHeader';
-import { BottomButtonBar, Box, HeaderCloseButton, HiddenText, Row, StyledNextStepButton } from '../../styles';
+import { BottomButtonBar, Box, HeaderCloseButton, HiddenText, Row, PrimaryButton, SecondaryButton } from '../../styles';
 import { BoldDescriptionText, CSAMReportContainer, CSAMReportLayout, OpenInNewIcon, RegularText } from './styles';
 import { definitionObject, generateCSAMFormElement, initialValues } from './CSAMReportFormDefinition';
 import { CounselorCSAMReportForm } from '../../states/csam-report/types';
@@ -117,13 +117,13 @@ const CSAMReportCounsellorForm: React.FC<Props> = ({
 
       <BottomButtonBar>
         <Box marginRight="15px">
-          <StyledNextStepButton secondary="true" roundCorners onClick={onClickClose}>
+          <SecondaryButton roundCorners onClick={onClickClose}>
             <Template code="BottomBar-Cancel" />
-          </StyledNextStepButton>
+          </SecondaryButton>
         </Box>
-        <StyledNextStepButton roundCorners onClick={onSendReport} data-testid="CSAMReport-SubmitButton">
+        <PrimaryButton roundCorners onClick={onSendReport} data-testid="CSAMReport-SubmitButton">
           <Template code="BottomBar-SendReport" />
-        </StyledNextStepButton>
+        </PrimaryButton>
       </BottomButtonBar>
     </CSAMReportContainer>
   );

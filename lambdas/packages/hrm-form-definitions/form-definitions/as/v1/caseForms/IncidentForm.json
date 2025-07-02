@@ -3,7 +3,8 @@
     "name": "date",
     "type": "date-input",
     "label": "Date of Incident",
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": false
   },
   {
     "name": "duration",
@@ -15,7 +16,8 @@
       { "value": "Once Off", "label": "Once Off" },
       { "value": "Other", "label": "Other" }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": false
   },
   {
     "name": "location",
@@ -32,27 +34,32 @@
       { "value": "Other", "label": "Other" },
       { "value": "Unknown", "label": "Unknown" }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" }
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": false
   },
   {
     "name": "isCaregiverAware",
     "label": "Is caregiver aware?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "incidentWitnessed",
     "label": "Was the incident witnessed by anyone?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "abuseReportedElsewhere",
     "label": "Has abuse been reported elsewhere?",
-    "type": "mixed-checkbox"
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "whereElseBeenReported",
     "label": "Where else the incident has been reported?",
-    "type": "input"
+    "type": "input",
+    "isPII": false
   }
 ]
 

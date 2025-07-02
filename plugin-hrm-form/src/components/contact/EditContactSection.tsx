@@ -22,7 +22,7 @@ import { CircularProgress } from '@material-ui/core';
 import { AnyAction } from 'redux';
 
 import { RootState } from '../../states';
-import { BottomButtonBar, Box, StyledNextStepButton } from '../../styles';
+import { BottomButtonBar, Box, PrimaryButton } from '../../styles';
 import { EditContactContainer } from '../case/styles';
 import { recordBackendError, recordingErrorHandler } from '../../fullStory';
 import { DetailsContext } from '../../states/contacts/contactDetails';
@@ -122,7 +122,7 @@ const EditContactSection: React.FC<Props> = ({
             />
           </Box>
           <Box marginRight="15px">
-            <StyledNextStepButton
+            <PrimaryButton
               roundCorners={true}
               onClick={onSubmitForm}
               disabled={isSubmitting}
@@ -134,7 +134,7 @@ const EditContactSection: React.FC<Props> = ({
                 <Template code="BottomBar-SaveContact" />
               </span>
               {isSubmitting ? <CircularProgress size={12} style={{ position: 'absolute' }} /> : null}
-            </StyledNextStepButton>
+            </PrimaryButton>
           </Box>
         </BottomButtonBar>
       </FormProvider>

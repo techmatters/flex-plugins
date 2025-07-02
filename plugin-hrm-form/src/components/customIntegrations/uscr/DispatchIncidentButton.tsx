@@ -28,7 +28,7 @@ import { useCase } from '../../../states/case/hooks/useCase';
 import { useCaseSections } from '../../../states/case/hooks/useCaseSections';
 import { updateContactInHrmAsyncAction } from '../../../states/contacts/saveContact';
 import { isCaseSectionTimelineActivity } from '../../../states/case/types';
-import { TertiaryButton, StyledNextStepButton } from '../../../styles';
+import { TertiaryButton, PrimaryButton } from '../../../styles';
 import { dispatchAttemptSectionType, IncidentReportAttempt } from './dispatchAttempt';
 import asyncDispatch from '../../../states/asyncDispatch';
 import { newIncidentDispatchAction } from '../../../states/customIntegrations/uscrIncidentDispatch';
@@ -119,7 +119,7 @@ const DispatchIncidentButton: React.FC<Props> = ({ contactId }) => {
   const loading = loadingStatus === 'loading' || caseLoading;
 
   return dispatchPending ? (
-    <StyledNextStepButton
+    <PrimaryButton
       type="button"
       onClick={handleClickDispatch}
       title="Dispatch Incident"
@@ -128,7 +128,7 @@ const DispatchIncidentButton: React.FC<Props> = ({ contactId }) => {
     >
       {loading && <CircularProgress size={12} />}
       <Template code="Dispatch Incident" />
-    </StyledNextStepButton>
+    </PrimaryButton>
   ) : (
     <TertiaryButton
       type="button"
