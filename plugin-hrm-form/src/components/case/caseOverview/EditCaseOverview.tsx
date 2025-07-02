@@ -241,6 +241,7 @@ const EditCaseOverview: React.FC<Props> = ({
         titleCode="Case-EditCaseOverview"
         onGoBack={checkForEdits}
         onCloseModal={checkForEdits}
+        data-testid="Case-EditCaseOverview"
       >
         <CaseSummaryEditHistory {...historyDetails} />
         <Container formContainer={true}>
