@@ -262,6 +262,7 @@ export type FeatureFlags = {
   use_prepopulate_mappings: boolean; // Use PrepopulateMappings.json instead of PrepopulateKeys.json
   enable_language_selector: boolean // Enables the language of the UI to be changed by the user via a dropdown menu
   use_twilio_lambda_for_conference_functions: boolean; // Use PrepopulateMappings.json instead of PrepopulateKeys.json
+  enable_configurable_max_categories: boolean;
 };
 /* eslint-enable camelcase */
 

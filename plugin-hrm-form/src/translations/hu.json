@@ -104,7 +104,7 @@
   "BottomBar-Next": "Következő",
   "TabbedForms-BackButton": "Válassz",
   "Categories-Title": "Válassz",
-  "Error-CategoryRequired": "Minimum 1 maximum 3 kategóriát lehet választani",
+  "Error-CategoryRequired": "Minimum #{{minSelections}} maximum #{{maxSelections}} kategóriát lehet választani",
   "CaseSection-BottomBar-SaveAndAddAnother/incident": "Mentse el és adjon hozzá újabb eseményt",
   "BottomBar-SaveAndAddAnotherReferral": "Mentse el és adjon hozzá új intervenciót",
   "CaseSection-BottomBar-SaveAndAddAnother/note": "Mentse el és adjon hozzá még egy jegyzetet",

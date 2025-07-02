@@ -24,13 +24,14 @@ const categoriesStyles: ReactPDF.Styles = {
   },
   categoryView: {
     marginBottom: '10px',
+    marginRight: '3px',
     opacity: 0.15,
-  },
-  categoryText: {
     paddingTop: '2px',
     paddingBottom: '2px',
     paddingLeft: '5px',
     paddingRight: '5px',
+  },
+  categoryText: {
     fontSize: 10,
     fontWeight: 600,
     color: '#000000',

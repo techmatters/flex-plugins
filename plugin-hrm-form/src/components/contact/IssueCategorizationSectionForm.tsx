@@ -16,7 +16,7 @@
 
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import type { CategoriesDefinition } from 'hrm-form-definitions';
 import { Template } from '@twilio/flex-ui';
 import GridIcon from '@material-ui/icons/GridOn';
@@ -25,7 +25,6 @@ import { useFormContext } from 'react-hook-form';
 
 import { RootState } from '../../states';
 import useFocus from '../../utils/useFocus';
-import { IssueCategorizationStateApi } from '../../states/contacts/issueCategorizationStateApi';
 import { getAseloFeatureFlags } from '../../hrmConfig';
 import {
   Box,
@@ -38,35 +37,43 @@ import {
 } from '../../styles';
 import Section from '../common/forms/Section';
 import CategoryCheckboxes from '../common/forms/CategoryCheckboxes';
+import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
+import { getUnsavedContact } from '../../states/contacts/getUnsavedContact';
+import { Contact } from '../../types/types';
+import { setCategoriesGridView, toggleCategoryExpanded } from '../../states/contacts/existingContacts';
+import { toggleSubcategory } from '../../states/contacts/categories';
 
-type OwnProps = {
+type Props = {
   display: boolean;
   definition: CategoriesDefinition;
   autoFocus: boolean;
-  stateApi: IssueCategorizationStateApi;
+  contactId: Contact['id'];
 };
 
-// eslint-disable-next-line no-use-before-define
-type Props = OwnProps & ConnectedProps<typeof connector>;
+const DEFAULT_MAXIMUM_SELECTIONS = 3;
 
-const IssueCategorizationSectionForm: React.FC<Props> = ({
-  display,
-  gridView,
-  selectedCategories,
-  expanded,
-  definition,
-  autoFocus,
-  toggleCategoryExpanded,
-  toggleSubcategory,
-  setCategoriesGridView,
-}) => {
+const IssueCategorizationSectionForm: React.FC<Props> = ({ display, definition, autoFocus, contactId }) => {
+  const {
+    savedContact,
+    draftContact,
+    metadata: {
+      categories: { expanded, gridView },
+    },
+  } = useSelector((state: RootState) => selectContactStateByContactId(state, contactId));
+  const selectedCategories = getUnsavedContact(savedContact, draftContact).rawJson.categories;
+  const dispatch = useDispatch();
+
   const shouldFocusFirstElement = display && autoFocus;
   const firstElementRef = useFocus(shouldFocusFirstElement);
   const selectedCount = Object.values(selectedCategories).reduce((acc, curr) => acc + curr.length, 0);
 
   const { clearErrors, register } = useFormContext();
+  const maxSelections =
+    (getAseloFeatureFlags().enable_configurable_max_categories
+      ? definition.maxSelections
+      : DEFAULT_MAXIMUM_SELECTIONS) ?? DEFAULT_MAXIMUM_SELECTIONS;
 
-  // Add invisible field that errors if no category is selected (triggered by validaiton)
+  // Add invisible field that errors if no category is selected (triggered by validation)
   React.useEffect(() => {
     register('categories.categorySelected', {
       validate: () => {
@@ -77,7 +84,16 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
         return null;
       },
     });
-  }, [register, selectedCount]);
+    register('categories.maxCategorySelected', {
+      validate: () => {
+        if (selectedCount > maxSelections) {
+          return 'Error';
+        }
+
+        return null;
+      },
+    });
+  }, [maxSelections, register, selectedCount]);
 
   // Clear the error state once the count is non-zero
   React.useEffect(() => {
@@ -93,23 +109,23 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
       </CategoryTitle>
       <CategorySubtitleSection>
         <CategoryRequiredText>
-          <Template code="Error-CategoryRequired" />
+          <Template code="Error-CategoryRequired" minSelections={1} maxSelections={maxSelections} />
         </CategoryRequiredText>
-        <ToggleViewButton onClick={() => setCategoriesGridView(true)} active={gridView}>
+        <ToggleViewButton onClick={() => dispatch(setCategoriesGridView(contactId, true))} active={gridView}>
           <GridIcon />
         </ToggleViewButton>
-        <ToggleViewButton onClick={() => setCategoriesGridView(false)} active={!gridView}>
+        <ToggleViewButton onClick={() => dispatch(setCategoriesGridView(contactId, false))} active={!gridView}>
           <ListIcon />
         </ToggleViewButton>
       </CategorySubtitleSection>
       <CategoriesWrapper>
-        {Object.entries(definition).map(([category, categoryDefinition], index) => (
+        {Object.entries(definition.categories).map(([category, categoryDefinition], index) => (
           <Box marginBottom="6px" key={`IssueCategorization_${category}_${index}`}>
             <Section
               sectionTitle={category}
               color={categoryDefinition.color}
               expanded={expanded[category]}
-              handleExpandClick={() => toggleCategoryExpanded(category)}
+              handleExpandClick={() => dispatch(toggleCategoryExpanded(contactId, category))}
               htmlElRef={index === 0 ? firstElementRef : null}
               buttonDataTestid={`IssueCategorization-Section-${category}`}
             >
@@ -117,10 +133,13 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
                 gridView={gridView}
                 category={category}
                 categoryDefinition={categoryDefinition}
-                toggleSubcategory={toggleSubcategory}
+                toggleSubcategory={(category, subcategory) =>
+                  dispatch(toggleSubcategory(contactId, category, subcategory))
+                }
                 selectedSubcategories={selectedCategories[category] ?? []}
                 counselorToolkitsEnabled={getAseloFeatureFlags().enable_counselor_toolkits}
                 selectedCount={selectedCount}
+                maxSelections={maxSelections}
               />
             </Section>
           </Box>
@@ -132,17 +151,4 @@ const IssueCategorizationSectionForm: React.FC<Props> = ({
 
 IssueCategorizationSectionForm.displayName = 'IssueCategorizationTab';
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  return ownProps.stateApi.retrieveState(state);
-};
-
-const mapDispatchToProps = (dispatch, ownProps: OwnProps) => ({
-  toggleSubcategory: ownProps.stateApi.toggleSubcategoryActionDispatcher(dispatch),
-  toggleCategoryExpanded: ownProps.stateApi.toggleCategoryExpandedActionDispatcher(dispatch),
-  setCategoriesGridView: ownProps.stateApi.setGridViewActionDispatcher(dispatch),
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-const connected = connector(IssueCategorizationSectionForm);
-
-export default connected;
+export default IssueCategorizationSectionForm;

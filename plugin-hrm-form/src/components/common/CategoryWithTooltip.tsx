@@ -17,36 +17,24 @@
 import React from 'react';
 import { Tooltip } from '@material-ui/core';
 
-import { CategoryChip, TagMiddleDot, ChipText } from '../../styles';
-
-/**
- * Given a category, truncates it (if necessary) to make it fit (aprox) in the space of 'UNSPECIFIED/OTHER' string
- * @param {string} category
- */
-export const truncateLabel = category =>
-  category.length > 17 && !category.toUpperCase().includes('UNSPECIFIED/OTHER')
-    ? `${category.substring(0, 15).trim()}...`
-    : category.substring(0, 17).trim();
+import { CategoryChip, ChipText } from '../../styles';
 
 const renderTag = (tag: string, color: string) => (
   <CategoryChip color={color}>
-    <TagMiddleDot color={color} />
     <ChipText>{tag}</ChipText>
   </CategoryChip>
 );
 
 type Props = {
   category: string;
+  fullyQualifiedName: string;
   color?: string;
-  fitTag?: boolean;
 };
 
-const CategoryWithTooltip: React.FC<Props> = ({ category, color = '#000000', fitTag = true }) => {
-  const tag = fitTag ? truncateLabel(category) : category;
-
+const CategoryWithTooltip: React.FC<Props> = ({ category, fullyQualifiedName, color = '#000000' }) => {
   return (
-    <Tooltip data-testid="CaseDetails-CategoryTooltip" title={category}>
-      {renderTag(tag, color)}
+    <Tooltip data-testid="CaseDetails-CategoryTooltip" title={fullyQualifiedName}>
+      {renderTag(category, color)}
     </Tooltip>
   );
 };

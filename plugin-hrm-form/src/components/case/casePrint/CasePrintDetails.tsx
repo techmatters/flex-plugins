@@ -93,23 +93,25 @@ const CasePrintDetails: React.FC<Props> = ({
         </View>
       </View>
       {hideCounselorDetails ? null : (
-        <View style={styles['caseDetailsSubSection']}>
-          <View style={styles['caseCounsellorSection']}>
-            <View style={styles['flexColumn']}>
-              <Text>{strings['Case-Counsellor']}</Text>
-              <Text style={styles['caseDetailsBoldText']}>{counselor}</Text>
+        <>
+          <View style={styles['caseDetailsSubSection']}>
+            <View style={styles['caseCounsellorSection']}>
+              <View style={styles['flexColumn']}>
+                <Text>{strings['Case-Counsellor']}</Text>
+                <Text style={styles['caseDetailsBoldText']}>{counselor}</Text>
+              </View>
             </View>
-            <View style={{ marginTop: 15, ...styles['flexColumn'] }}>
+            <View style={styles['flexColumn']}>
               <Text>{strings['Case-CaseManager']}</Text>
               <Text style={styles['caseDetailsBoldText']}>{caseManager?.name}</Text>
               <Text style={styles['caseDetailsBoldText']}>{caseManager?.phone}</Text>
               <Text style={styles['caseDetailsBoldText']}>{caseManager?.email}</Text>
             </View>
           </View>
-          <View>
+          <View style={styles['caseDetailsSubSection']}>
             <CasePrintCategories categories={categories} definitionVersion={definitionVersion} />
           </View>
-        </View>
+        </>
       )}
     </View>
   );

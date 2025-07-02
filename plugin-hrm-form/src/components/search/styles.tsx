@@ -21,7 +21,7 @@ import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import { ButtonProps } from '@material-ui/core/Button';
 import { TransitionProps } from '@material-ui/core/transitions/transition';
 
-import { BottomButtonBar, Flex, FontOpenSans, ChipBase, Row, StyledNextStepButton } from '../../styles';
+import { Flex, FontOpenSans, Row, StyledNextStepButton } from '../../styles';
 import HrmTheme from '../../styles/HrmTheme';
 import { BannerContainerProps, colors } from '../../styles/banners';
 
@@ -187,7 +187,6 @@ export const TagsWrapper = styled(Flex)`
     p {
       overflow: hidden;
       white-space: nowrap;
-      text-overflow: ellipsis;
     }
   }
 `;

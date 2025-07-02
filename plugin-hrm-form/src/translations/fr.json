@@ -177,7 +177,7 @@
 "Error-Backend": "Erreur du système backend.",
 "Error-ContinueWithoutRecording": "Erreur du système backend. Voulez-vous vraiment terminer la tâche sans enregistrer ?",
 "Error-Form": "Un problème est survenu lors de votre soumission. Veuillez vérifier si le formulaire contient des erreurs.",
-"Error-CategoryRequired": "Requis : 1 catégorie minimum, 3 catégories maximum",
+"Error-CategoryRequired": "Requis : #{{minSelections}} catégorie minimum, #{{maxSelections}} catégories maximum",
 "Error-Unexpected": "Une erreur inattendue s'est produite",
 "Case-CaseNumber": "N° de dossier",
 "Case-Timeline-RecentTitle": "Chronologie récente",
