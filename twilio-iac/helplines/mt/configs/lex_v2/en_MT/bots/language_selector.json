@@ -1,5 +1,5 @@
 {
-  "language": {
+  "language_selector": {
     "description": "Specific configs/lex_v2/en_MT/bots/language_selector",
     "locale": "en_US",
     "child_directed": true,
