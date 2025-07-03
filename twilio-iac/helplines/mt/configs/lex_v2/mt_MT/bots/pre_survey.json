@@ -48,7 +48,7 @@
           "4": {
             "slot_name": "feeling",
             "slot_type_name": "feeling",
-            "slot_question": "X'inhu s-sess tiegħek? \n 1. Mara \n 2. Raġel \n 3. Oħrajn \n 4. Ma nixtieqx naghti risposta",
+            "slot_question": "Kif qed tħossok?  Tista' tikteb in-numru jew il-kelma li tapplika għalik. \n 1. Ferħan \n 2. Konfuż \n 3. Rrabjat \n 4. Ixxukkjat \n 5. Begħzan \n 6. Inċert ",
             "failure_response": "Sorry, mhux nista' ngħin f'dan iż-żmien."
           }
         }
