@@ -39,7 +39,7 @@
   "slotPriorities": [
     {
       "priority": 1,
-      "slotName": "pre_survey_ig"
+      "slotName": "priority"
     }
   ],
   "intentClosingSetting": {
@@ -90,7 +90,7 @@
         "successNextStep": {
           "dialogAction": {
             "type": "ElicitSlot",
-            "slotToElicit": "pre_survey_ig"
+            "slotToElicit": "priority"
           },
           "intent": {}
         },

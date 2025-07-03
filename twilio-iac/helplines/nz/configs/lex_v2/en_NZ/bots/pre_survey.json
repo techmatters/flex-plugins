@@ -17,14 +17,14 @@
         ],
         "initial_response": {
           "message": "Kia ora, you've reached Youthline.",
-          "slot_to_elicit": "pre_survey"
+          "slot_to_elicit": "priority"
         },
         "closing_response": {
           "message": "We'll connect you with someone soon. Your conversation will be recorded and may be monitored for quality purposes. For more information, here is a link to our privacy statement: https://youthline.co.nz/privacy-statements/"
         },
         "slot_priorities": {
           "1": {
-            "slot_name": "pre_survey",
+            "slot_name": "priority",
             "slot_type_name": "yes_no",
             "slot_question": "Your conversation is confidential, but if we feel that you or someone else is at serious risk of harm, we may have to link in with other services. We will let you know if that becomes necessary. \nDo you need urgent support?  \n1. Yes \n2. No",
             "failure_response": "We are having trouble understanding your response."
