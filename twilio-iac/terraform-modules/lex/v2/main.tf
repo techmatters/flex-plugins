@@ -462,7 +462,6 @@ resource "null_resource" "update_intent_settings" {
 
 
 resource "aws_ssm_parameter" "bot_config" {
-  provider    = aws.hl-region
   for_each = var.lex_v2_bots
   name  = "${replace("${local.ssm_variable_name_prefix}_${each.key}", "2", "")}"
   type  = "SecureString"
