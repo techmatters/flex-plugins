@@ -4,7 +4,7 @@
     "locale": "en_US",
     "child_directed": true,
     "idle_session_ttl_in_seconds": "600",
-    "production_bot_alias_id":"CPV1X4E6ZN",
+    "staging_bot_alias_id":"CPV1X4E6ZN",
     "type": "Bot",
     "intents": {
       "pre_survey": {

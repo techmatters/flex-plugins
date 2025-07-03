@@ -467,7 +467,7 @@ resource "aws_ssm_parameter" "bot_config" {
   type  = "SecureString"
   value = jsonencode({
     botId      = "${aws_lexv2models_bot.this["${each.key}"].id}"
-    botAliasId = "${each.value.production_bot_alias_id}"
+    botAliasId =  var.environment == "staging" ? "${each.value.staging_bot_alias_id}" : "${each.value.production_bot_alias_id}"
     localeId   = "${each.value.locale}"
   })
 }

@@ -4,7 +4,7 @@
     "locale": "en_US",
     "child_directed": true,
     "idle_session_ttl_in_seconds": "600",
-    "production_bot_alias_id": "QUIVYKVF4P",
+    "staging_bot_alias_id": "QUIVYKVF4P",
     "type": "Bot",
     "intents": {
       "pre_survey": {

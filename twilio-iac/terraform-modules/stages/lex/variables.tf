@@ -105,6 +105,7 @@ variable "lex_v2_bots" {
     idle_session_ttl_in_seconds = optional(number, 300)
     type                        = optional(string, "Bot")
     production_bot_alias_id     = optional(string, "TSTALIASID")
+    staging_bot_alias_id        = optional(string, "TSTALIASID")
   })))
   default = null
   }
