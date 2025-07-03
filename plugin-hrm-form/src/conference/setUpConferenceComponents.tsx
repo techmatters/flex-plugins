@@ -90,8 +90,7 @@ export const setupConferenceComponents = () => {
     sortOrder: 2,
   });
   CallCanvas.Content.add(<HangUpByLabel key="call-hang-up-by" />, {
-    if: ({ task }: ParticipantCanvasChildrenProps) =>
-      task.taskStatus === 'wrapping' || Boolean(hangUpByStateManager.getForTask(task as ITask)),
+    if: ({ task }: ParticipantCanvasChildrenProps) => Boolean(hangUpByStateManager.getForTask(task as ITask)),
     sortOrder: 0,
   });
 };
