@@ -1,5 +1,5 @@
 {
-    "slotName": "pre_survey_ig",
+    "slotName": "priority",
     "slotTypeName": "yes_no",
     "intentName": "pre_survey_ig_intent",
     "description": "Slot pre_survey_ig for intent pre_survey_ig_intent",
