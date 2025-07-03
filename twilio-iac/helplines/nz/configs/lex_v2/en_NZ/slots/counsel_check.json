@@ -1,5 +1,5 @@
 {
-    "slotName": "counsel_check",
+    "slotName": "counselling",
     "slotTypeName": "yes_no",
     "intentName": "counsel_check_intent",
     "description": "Slot counsel_check for intent counsel_check_intent",
