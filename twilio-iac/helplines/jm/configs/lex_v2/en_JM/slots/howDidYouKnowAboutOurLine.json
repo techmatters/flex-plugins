@@ -1,8 +1,8 @@
 {
-    "slotName": "how_did_you_hear_about_us",
+    "slotName": "howDidYouKnowAboutOurLine",
     "slotTypeName": "how_did_you_hear_about_us",
     "intentName": "pre_survey",
-    "description": "Slot how_did_you_hear_about_us for intent pre_survey",
+    "description": "Slot howDidYouKnowAboutOurLine for intent pre_survey",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {

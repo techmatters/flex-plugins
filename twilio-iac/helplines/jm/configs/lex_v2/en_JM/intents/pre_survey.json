@@ -55,7 +55,7 @@
         },
         {
             "priority": 5,
-            "slotName": "how_did_you_hear_about_us"
+            "slotName": "howDidYouKnowAboutOurLine"
         }
     ],
     "intentClosingSetting": {

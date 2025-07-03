@@ -71,7 +71,7 @@
             "captureNextStep": {
                 "dialogAction": {
                     "type": "ElicitSlot",
-                    "slotToElicit": "how_did_you_hear_about_us"
+                    "slotToElicit": "howDidYouKnowAboutOurLine"
                 },
                 "intent": {}
             },
