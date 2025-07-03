@@ -1,0 +1,70 @@
+# Copyright (C) 2021-2023 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+name: Raise PR to merge RC branch changes to master
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'v[0-9]+.[0-9]+-rc'
+
+jobs:
+  raise_pr:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Find existing PR
+        id: list_prs
+        run: PR_URL=$(echo "gh pr ls -S 'base:master' -H ${{ github.base_ref }} --json url" | jq .[0].url) >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set New PR variable
+        if: env.PR_URL == 'null'
+        run: NEW_PR_URL=true >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create PR
+        if: env.PR_URL == 'null'
+        run: PR_URL=$(gh pr create -B master -H ${{ github.base_ref }} --title 'Merge ${{ github.base_ref }} into master' --body 'Created by Github action') >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Comment PR
+        run: gh pr comment ${{ env.PR_URL }} -b '${{ github.triggering_actor }} merged changes to ${{ github.base_ref }}'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Set GITHUB_ACTIONS_SLACK_BOT_TOKEN
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
+          env_variable_name: "GITHUB_ACTIONS_SLACK_BOT_TOKEN"
+      - name: Set ASELO_DEPLOYS_CHANNEL_ID
+        uses: "marvinpinto/action-inject-ssm-secrets@latest"
+        with:
+          ssm_parameter: "ASELO_DEPLOYS_CHANNEL_ID"
+          env_variable_name: "ASELO_DEPLOYS_CHANNEL_ID"
+      - name: Slack Aselo channel
+        id: slack
+        uses: slackapi/slack-github-action@v2.1.0
+        with:
+          method: chat.postMessage
+          token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
+            text: '`[RC branches]` PR ${{ env.PR_URL }} ${{ env.NEW_PR && 'raised' || 'updated' }} using workflow `${{ github.workflow }}`:rocket: because `${{ github.triggering_actor }}` merged changes to ${{ github.base_ref }} and these need to be merged to master. PLEASE MERGE THIS IMMEDIATELY'
