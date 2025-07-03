@@ -26,7 +26,7 @@ jobs:
     steps:
       - name: Find existing PR
         id: list_prs
-        run: PR_URL=$(echo "gh pr ls -S 'base:master' -H ${{ github.base_ref }} --json url" | jq .[0].url) >> $GITHUB_ENV
+        run: PR_URL=$(echo "gh pr ls -S 'base:master' -H ${{ github.ref_name }} --json url" | jq .[0].url) >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Set New PR variable
@@ -36,11 +36,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create PR
         if: env.PR_URL == 'null'
-        run: PR_URL=$(gh pr create -B master -H ${{ github.base_ref }} --title 'Merge ${{ github.base_ref }} into master' --body 'Created by Github action') >> $GITHUB_ENV
+        run: PR_URL=$(gh pr create -B master -H ${{ github.ref_name }} --title 'Merge ${{ github.ref_name }} into master' --body 'Created by Github action') >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Comment PR
-        run: gh pr comment ${{ env.PR_URL }} -b '${{ github.triggering_actor }} merged changes to ${{ github.base_ref }}'
+        run: gh pr comment ${{ env.PR_URL }} -b '${{ github.triggering_actor }} merged changes to ${{ github.ref_name }}'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Configure AWS credentials
@@ -67,4 +67,4 @@ jobs:
           token: ${{ env.GITHUB_ACTIONS_SLACK_BOT_TOKEN }}
           payload: |
             channel: ${{ env.ASELO_DEPLOYS_CHANNEL_ID }}
-            text: '`[RC branches]` PR ${{ env.PR_URL }} ${{ env.NEW_PR && 'raised' || 'updated' }} using workflow `${{ github.workflow }}`:rocket: because `${{ github.triggering_actor }}` merged changes to ${{ github.base_ref }} and these need to be merged to master. PLEASE MERGE THIS IMMEDIATELY'
+            text: '`[RC branches]` PR ${{ env.PR_URL }} ${{ env.NEW_PR && 'raised' || 'updated' }} using workflow `${{ github.workflow }}`:rocket: because `${{ github.triggering_actor }}` merged changes to ${{ github.ref_name }} and these need to be merged to master. PLEASE MERGE THIS IMMEDIATELY'
