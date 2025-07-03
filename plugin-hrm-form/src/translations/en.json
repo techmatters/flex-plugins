@@ -563,6 +563,12 @@
   "Conference-AddConferenceCallParticipant": "Add Conference Call Participant",
   "Conference-EnterPhoneNumber": "Enter phone number",
   "Conference-DialButton": "Dial",
+
+  "Conference-Wrapping-HangupBy/Customer": "Call Ended by Service User",
+  "Conference-Wrapping-HangupBy/Agent": "Call Ended by Counselor",
+  "Conference-Wrapping-HangupBy/Consult": "Call Ended by Consulting Counselor",
+  "Conference-Wrapping-HangupBy/Warm Transfer": "Call Ended by Transfer",
+  "Conference-Wrapping-HangupBy/Cold Transfer": "Call Ended by Transfer",
   "HangupCallLeaveTooltip": "Leave Call",
   "NavigableContainer-BackButton": "Back",
   "NavigableContainer-CloseButton": "Close",
