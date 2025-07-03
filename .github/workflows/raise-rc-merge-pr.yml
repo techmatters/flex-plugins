@@ -26,7 +26,9 @@ jobs:
     steps:
       - name: Find existing PR
         id: list_prs
-        run: PR_URL=$(echo "gh pr ls -S 'base:master' -H ${{ github.ref_name }} --json url" | jq .[0].url) >> $GITHUB_ENV
+        run: |
+          pr_url=$(gh pr ls -S 'base:master' -H ${{ github.ref_name }} --json url | jq .[0].url)
+          echo "PR_URL=$pr_url" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Set New PR variable
