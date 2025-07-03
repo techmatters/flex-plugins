@@ -1,8 +1,8 @@
 {
-    "slotName": "contact_options",
+    "slotName": "contactReason",
     "slotTypeName": "contact_reason",
     "intentName": "contact_reason",
-    "description": "Slot contact_options for intent contact_reason",
+    "description": "Slot contactReason for intent contact_reason",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {

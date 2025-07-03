@@ -18,14 +18,14 @@
         ],
         "initial_response": {
           "message": "Obrigada por nos contactar.",
-          "slot_to_elicit": "contact_options"
+          "slot_to_elicit": "contactReason"
         },
         "closing_response": {
           "message": "Obrigada."
         },
         "slot_priorities": {
           "1": {
-            "slot_name": "contact_options",
+            "slot_name": "contactReason",
             "slot_type_name": "contact_reason",
             "slot_question": "Escolha uma das opções abaixo antes de falar conosco:  1 - Você quer denunciar um conteúdo na Internet?  2 - Você precisa de ajuda para alguma violência que sofreu na Internet?  3 - Você é jornalista ou pesquisador e quer entrevista/dados da SaferNet?  4 -Nenhuma das opções acima",
             "failure_response": "Desculpe, não posso ajudar neste momento."

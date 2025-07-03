@@ -39,7 +39,7 @@
     "slotPriorities": [
         {
             "priority": 1,
-            "slotName": "contact_options"
+            "slotName": "contactReason"
         }
     ],
     "intentClosingSetting": {
@@ -90,7 +90,7 @@
                 "successNextStep": {
                     "dialogAction": {
                         "type": "ElicitSlot",
-                        "slotToElicit": "contact_options"
+                        "slotToElicit": "contactReason"
                     },
                     "intent": {}
                 },
