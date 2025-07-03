@@ -15,12 +15,7 @@
  */
 
 import React from 'react';
-import {
-  CallCanvas,
-  CallCanvasActions,
-  ParticipantCanvas,
-  TaskHelper,
-} from '@twilio/flex-ui';
+import { CallCanvas, CallCanvasActions, ParticipantCanvas, TaskHelper } from '@twilio/flex-ui';
 import { ParticipantCanvasChildrenProps } from '@twilio/flex-ui/src/components/canvas/ParticipantCanvas/ParticipantCanvas.definitions';
 
 import ConferencePanel from '../components/Conference/ConferenceActions/ConferencePanel';
