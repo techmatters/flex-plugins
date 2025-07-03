@@ -1,5 +1,5 @@
 {
-  "language_selector": {
+  "language": {
     "description": "Specific configs/lex_v2/en_MT/bots/language_selector",
     "locale": "en_US",
     "child_directed": true,
@@ -20,14 +20,14 @@
         ],
         "initial_response": {
           "message": "What language do you speak? ",
-          "slot_to_elicit": "language_selector"
+          "slot_to_elicit": "language"
         },
         "closing_response": {
           "message": "Thank you."
         },
         "slot_priorities": {
           "1": {
-            "slot_name": "language_selector",
+            "slot_name": "language",
             "slot_type_name": "language",
             "slot_question": "Please select from the below supported languages: \n 1. English \n 2. Maltese \n 3. Ukrainian",
             "failure_response": "We are having trouble understanding your response."

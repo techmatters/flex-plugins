@@ -6,7 +6,7 @@
     "idle_session_ttl_in_seconds": "600",
     "type": "Bot",
     "intents": {
-      "terms_conditions_acceptance_intent": {
+      "terms_conditions_acceptance": {
         "utterances": [
           {
             "utterance": "trigger_terms_conditions_acceptance"
@@ -14,14 +14,14 @@
         ],
         "initial_response": {
           "message": "Do you accept our Terms and Conditions? https://kellimni.com/chat-terms/ .",
-          "slot_to_elicit": "terms_conditions_acceptance"
+          "slot_to_elicit": "terms_conditions_response"
         },
         "closing_response": {
           "message": "Thank you."
         },
         "slot_priorities": {
           "1": {
-            "slot_name": "terms_conditions_acceptance",
+            "slot_name": "terms_conditions_response",
             "slot_type_name": "yes_no",
             "slot_question": "Please answer with a number: \n1. Yes, I accept the terms and conditions. \n2. No, I don't accept the terms and conditions.",
             "failure_response": "We are having trouble understanding your response."

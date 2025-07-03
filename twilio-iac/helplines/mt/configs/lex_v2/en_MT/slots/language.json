@@ -1,5 +1,5 @@
 {
-    "slotName": "language_selector",
+    "slotName": "language",
     "slotTypeName": "language",
     "intentName": "language_selector_intent",
     "description": "Slot language_selector for intent language_selector_intent",

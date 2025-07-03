@@ -39,7 +39,7 @@
     "slotPriorities": [
         {
             "priority": 1,
-            "slotName": "language_selector"
+            "slotName": "language"
         }
     ],
     "intentClosingSetting": {
@@ -90,7 +90,7 @@
                 "successNextStep": {
                     "dialogAction": {
                         "type": "ElicitSlot",
-                        "slotToElicit": "language_selector"
+                        "slotToElicit": "language"
                     },
                     "intent": {}
                 },
