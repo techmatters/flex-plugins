@@ -3,7 +3,7 @@
     "filters": [
       {
         "filter_friendly_name": "Mainland",
-        "expression": "channelType IN [ 'whatsapp', 'instagram'] OR (channelType IN ['web'] AND preEngagementData.area == 'Main Land') OR (channelType IN ['web'] AND preEngagementData.language == 'sw_TZ' AND worker.routing.skills HAS 'Swahili') OR (channelType IN ['messenger'] AND facebookPage == 'mainland') OR isContactlessTask == true OR twilioNumber == 'instagram:17841472327571934'",
+        "expression": "channelType IN [ 'whatsapp', 'instagram'] OR (channelType IN ['web'] AND preEngagementData.area == 'Main Land') OR (channelType IN ['web'] AND preEngagementData.language == 'sw_TZ' AND worker.routing.skills HAS 'Swahili') OR (channelType IN ['messenger'] AND facebookPage == 'mainland') OR isContactlessTask == true",
         "targets": [
           {
             "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
