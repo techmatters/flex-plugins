@@ -39,7 +39,7 @@ ${
           "event": "success"
         },
         {
-          "next": "attributes",
+          "next": "send_message",
           "event": "failed"
         }
       ],
@@ -99,7 +99,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "attributes",
+          "next": "send_message",
           "event": "noMatch"
         },
         {
@@ -126,6 +126,8 @@ ${
       }
     },
       {
+        "name": "attributes",
+        "type": "send-to-flex",
         "transitions": [
           {
             "event": "callComplete"
@@ -172,7 +174,32 @@ ${
           "add_twilio_auth": false,
           "url": webhook_url_studio_errors
         }
-      } 
+      },
+    {
+      "name": "send_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "attributes",
+          "event": "sent"
+        },
+        {
+          "next": "webhook_notify_failed_to_enqueue",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 160,
+          "y": 0
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": flow_vars["widget_from"],
+        "to": "{{contact.channel.address}}",
+        "body":flow_vars["chat_greeting_message"]
+      }
+    } 
       ],
       "initial_state": "Trigger",
       "flags": {
