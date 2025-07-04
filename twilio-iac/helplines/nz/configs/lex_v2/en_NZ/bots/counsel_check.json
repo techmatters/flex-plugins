@@ -27,7 +27,7 @@
             "slot_name": "counselling",
             "slot_type_name": "yes_no",
             "slot_question": "If you'd like to talk to the Helpline, please respond 'Yes'. To contact the Fundraising and Marketing team, please respond 'No'.",
-            "failure_response": "We are having trouble understanding your response."
+            "failure_response": "We'll connect you with someone soon. Your conversation will be recorded and may be monitored for quality purposes. For more information, here is a link to our privacy statement: https://youthline.co.nz/privacy-statements/"
           }
         }
       }
