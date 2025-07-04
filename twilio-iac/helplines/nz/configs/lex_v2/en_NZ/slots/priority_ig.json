@@ -1,8 +1,8 @@
 {
-    "slotName": "priority",
+    "slotName": "priority_ig",
     "slotTypeName": "yes_no",
-    "intentName": "pre_survey_intent",
-    "description": "Slot pre_survey_ig for intent pre_survey_intent",
+    "intentName": "pre_survey_ig_intent",
+    "description": "Slot pre_survey_ig for intent pre_survey_ig_intent",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
