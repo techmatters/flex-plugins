@@ -1,31 +1,99 @@
 {
-  "language_selector": {
-    "description": "Helpline Specific helplines/zm/configs/lex/en_ZM/intents Language Selector intent",
-    "sample_utterances": [
-      "trigger_language_selector"
-    ],
-    "fulfillment_activity": {
-      "type": "ReturnIntent"
-    },
-    "conclusion_statement": {
-      "content": "OK, thank you.",
-      "content_type": "PlainText"
-    },
-    "rejection_statement": {
-      "content": "Sorry, I didn't get that. I'll connect you to a counsellor now.",
-      "content_type": "PlainText"
-    },
-    "slots": {
-      "language": {
-        "priority": 0,
-        "description": "Imported from question 'language'",
-        "slot_constraint": "Required",
-        "slot_type": "language",
-        "value_elicitation_prompt": {
-          "content": "What language do you speak? Please select from the below supported languages: \n 1. English \n 2. Bemba \n 3. Tonga \n 4. Lunda \n 5. Nyanja \n 6. Kaonde \n 7. Lozi",
-          "content_type": "PlainText",
-          "max_attempts": 3
+  "slotName": "language",
+  "slotTypeName": "language",
+  "intentName": "language_selector_intent",
+  "description": "Slot language_selector for intent language_selector_intent",
+  "valueElicitationSetting": {
+    "slotConstraint": "Required",
+    "promptSpecification": {
+      "messageGroups": [
+        {
+          "message": {
+            "plainTextMessage": {
+              "value": "What language do you speak? Please select from the below supported languages: \n 1. English \n 2. Bemba \n 3. Tonga \n 4. Lunda \n 5. Nyanja \n 6. Kaonde \n 7. Lozi"
+            }
+          }
         }
+      ],
+      "maxRetries": 1,
+      "allowInterrupt": true,
+      "messageSelectionStrategy": "Ordered",
+      "promptAttemptsSpecification": {
+        "Initial": {
+          "allowInterrupt": true,
+          "allowedInputTypes": {
+            "allowAudioInput": true,
+            "allowDTMFInput": true
+          },
+          "audioAndDTMFInputSpecification": {
+            "startTimeoutMs": 4000,
+            "audioSpecification": {
+              "maxLengthMs": 15000,
+              "endTimeoutMs": 640
+            },
+            "dtmfSpecification": {
+              "maxLength": 513,
+              "endTimeoutMs": 5000,
+              "deletionCharacter": "*",
+              "endCharacter": "#"
+            }
+          },
+          "textInputSpecification": {
+            "startTimeoutMs": 30000
+          }
+        },
+        "Retry1": {
+          "allowInterrupt": true,
+          "allowedInputTypes": {
+            "allowAudioInput": true,
+            "allowDTMFInput": true
+          },
+          "audioAndDTMFInputSpecification": {
+            "startTimeoutMs": 4000,
+            "audioSpecification": {
+              "maxLengthMs": 15000,
+              "endTimeoutMs": 640
+            },
+            "dtmfSpecification": {
+              "maxLength": 513,
+              "endTimeoutMs": 5000,
+              "deletionCharacter": "*",
+              "endCharacter": "#"
+            }
+          },
+          "textInputSpecification": {
+            "startTimeoutMs": 30000
+          }
+        }
+      }
+    },
+    "slotCaptureSetting": {
+      "captureNextStep": {
+        "dialogAction": {
+          "type": "FulfillIntent"
+        },
+        "intent": {}
+      },
+      "failureResponse": {
+        "messageGroups": [
+          {
+            "message": {
+              "plainTextMessage": {
+                "value": "We are having trouble understanding your response."
+              }
+            }
+          }
+        ],
+        "allowInterrupt": true
+      },
+      "failureNextStep": {
+        "dialogAction": {
+          "type": "CloseIntent"
+        },
+        "intent": {}
+      },
+      "elicitationCodeHook": {
+        "enableCodeHookInvocation": true
       }
     }
   }

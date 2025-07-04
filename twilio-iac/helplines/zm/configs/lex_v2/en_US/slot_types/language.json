@@ -1,71 +1,159 @@
 {
-    "language": {
-        "description": "Helpline Specific zm/configs/lex/en_ZM/slot_types Language Slot Type",
-        "value_selection_strategy": "TOP_RESOLUTION",
-        "values": {
-          "en-US": {
+    "slotTypeName": "language",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "en-US"
+            },
             "synonyms": [
-              "1english",
-              "eng",
-              "english",
-              "en-US",
-              "1"
+                {
+                    "value": "1english"
+                },
+                {
+                    "value": "eng"
+                },
+                {
+                    "value": "english"
+                },
+                {
+                    "value": "en-US"
+                },
+                {
+                    "value": "1"
+                }
             ]
-          },
-          "Bemba": {
+        },
+        {
+            "sampleValue": {
+                "value": "Bemba"
+            },
             "synonyms": [
-              "b",
-              "bem",
-              "bemb",
-              "2bemba",
-              "Bemba",
-              "2"
+                {
+                    "value": "b"
+                },
+                {
+                    "value": "bem"
+                },
+                {
+                    "value": "bemb"
+                },
+                {
+                    "value": "2bemba"
+                },
+                {
+                    "value": "Bemba"
+                },
+                {
+                    "value": "2"
+                }
             ]
-          },
-          "Tonga": {
+        },
+        {
+            "sampleValue": {
+                "value": "Tonga"
+            },
             "synonyms": [
-              "3tonga",
-              "t",
-              "ton",
-              "tonga",
-              "3"
+                {
+                    "value": "3tonga"
+                },
+                {
+                    "value": "t"
+                },
+                {
+                    "value": "ton"
+                },
+                {
+                    "value": "tonga"
+                },
+                {
+                    "value": "3"
+                }
             ]
-          },
-          "Lunda": {
+        },
+        {
+            "sampleValue": {
+                "value": "Lunda"
+            },
             "synonyms": [
-              "4lunda",
-              "lun",
-              "lunda",
-              "4"
+                {
+                    "value": "4lunda"
+                },
+                {
+                    "value": "lun"
+                },
+                {
+                    "value": "lunda"
+                },
+                {
+                    "value": "4"
+                }
             ]
-          },
-          "Nyanja": {
+        },
+        {
+            "sampleValue": {
+                "value": "Nyanja"
+            },
             "synonyms": [
-              "n",
-              "nya",
-              "5nyanja",
-              "nyanja",
-              "5"
+                {
+                    "value": "n"
+                },
+                {
+                    "value": "nya"
+                },
+                {
+                    "value": "5nyanja"
+                },
+                {
+                    "value": "nyanja"
+                },
+                {
+                    "value": "5"
+                }
             ]
-          },
-          "Kaonde": {
+        },
+        {
+            "sampleValue": {
+                "value": "Kaonde"
+            },
             "synonyms": [
-              "6kaonde",
-              "kao",
-              "k",
-              "kaonde",
-              "6"
+                {
+                    "value": "6kaonde"
+                },
+                {
+                    "value": "kao"
+                },
+                {
+                    "value": "k"
+                },
+                {
+                    "value": "kaonde"
+                },
+                {
+                    "value": "6"
+                }
             ]
-          },
-          "Lozi": {
+        },
+        {
+            "sampleValue": {
+                "value": "Lozi"
+            },
             "synonyms": [
-              "7lozi",
-              "lo",
-              "lozi",
-              "7"
+                {
+                    "value": "7lozi"
+                },
+                {
+                    "value": "lo"
+                },
+                {
+                    "value": "lozi"
+                },
+                {
+                    "value": "7"
+                }
             ]
-          }
         }
-      }
-
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
 }
