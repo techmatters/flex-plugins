@@ -21,6 +21,12 @@
             "slot_question": "Are you calling about yourself? Please answer Yes or No.",
             "failure_response": "We are having trouble understanding your response"
           },
+          "2": {
+            "slot_name": "helpline",
+            "slot_type_name": "helpline",
+            "slot_question": "Which service are you calling for? \n 1.LifeLine 933 (older than 18) \n 2.ChildLine 116 (18 years old or younger)",
+            "failure_response": "We are having trouble understanding your response"
+          },
           "3": {
             "slot_name": "age",
             "slot_type_name": "age",
@@ -31,12 +37,6 @@
             "slot_name": "gender",
             "slot_type_name": "gender",
             "slot_question": "What is your gender?",
-            "failure_response": "We are having trouble understanding your response"
-          },
-          "2": {
-            "slot_name": "helpline",
-            "slot_type_name": "helpline",
-            "slot_question": "Which service are you calling for? \n 1.LifeLine 933 (older than 18) \n 2.ChildLine 116 (18 years old or younger)",
             "failure_response": "We are having trouble understanding your response"
           }
         }

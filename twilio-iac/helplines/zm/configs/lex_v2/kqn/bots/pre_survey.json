@@ -18,25 +18,25 @@
           "1": {
             "slot_name": "about_self",
             "slot_type_name": "yes_no",
-            "slot_question": "Are you calling about yourself? Please answer Yes or No.",
+            "slot_question": "Mwena kwitumina anwe bene, mwitabe emwane nangwa ine.",
             "failure_response": "We are having trouble understanding your response"
           },
           "3": {
             "slot_name": "age",
             "slot_type_name": "age",
-            "slot_question": "Thank you. You can say 'prefer not to answer' (or type X) to any question. \nHow old are you?",
+            "slot_question": "Twasanta mwankosha nga kemwena kukeba ne kwamba, kubikapo x pajipusho. \nMuji na myaka inga?",
             "failure_response": "We are having trouble understanding your response"
           },
           "4": {
             "slot_name": "gender",
             "slot_type_name": "gender",
-            "slot_question": "What is your gender?",
+            "slot_question": "Mwibabalume nangwa babakazhi?",
             "failure_response": "We are having trouble understanding your response"
           },
           "2": {
             "slot_name": "helpline",
             "slot_type_name": "helpline",
-            "slot_question": "Which service are you calling for? \n 1.LifeLine 933 (older than 18) \n 2.ChildLine 116 (18 years old or younger)",
+            "slot_question": "Mwatuma amba twimikwashe ko byepi? \n 1.LifeLine 933 (older than 18) \n 2.ChildLine 116 (18 years old or younger)",
             "failure_response": "We are having trouble understanding your response"
           }
         }
