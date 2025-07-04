@@ -379,12 +379,17 @@ async function handleDisableOperation({
 
     const updatedConfig = removeSwitchboardingFilter({ config: currentConfig });
 
+    const {
+      feature_flags: { enable_switchboarding_move_tasks: enableSwitchboardingMoveTasks },
+    } = await retrieveServiceConfigurationAttributes(client);
+
     // try to update taskrouter settings to stop switchboard
     await client.taskrouter.v1
       .workspaces(workspaceSid)
       .workflows(masterWorkflowSid)
       .update({
         configuration: JSON.stringify(updatedConfig),
+        reEvaluateTasks: enableSwitchboardingMoveTasks ? 'true' : undefined,
       });
 
     // remove switchboard-state document once the taskrouter config is back to normal
