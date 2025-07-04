@@ -13,11 +13,11 @@
           }
         ],
         "initial_response": {
-          "message": "Welcome to the helpline. Please answer the following questions.",
+          "message": "Mwabukeni ku Lifeline/Childline. Nafwebo fwayeni ukumfwa ifipushi ifili panshi",
           "slot_to_elicit": "aboutSelf"
         },
         "closing_response": {
-          "message": "We will transfer you now. Please hold for a counsellor."
+          "message": "Loleleni panono mulande nechimbusa"
         },
         "slot_priorities": {
           "1": {
