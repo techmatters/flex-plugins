@@ -1,0 +1,50 @@
+{
+  "pre_survey": {
+    "description": "Helpline Specific ph/configs/lex_v2/fil_PH/bots Pre Survey bot",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "type": "Bot",
+    "intents": {
+      "pre_survey": {
+        "utterances": [
+          {
+            "utterance": "trigger_pre_survey"
+          },
+          {
+            "utterance": "Incoming webchat contact"
+          }
+        ],
+        "closing_response": {
+          "message": "Pakiantay lamang para sa isang kabataang responder"
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "aboutSelf",
+            "slot_type_name": "yes_no",
+            "slot_question": "Ikaw ba ay nagrereport tungkol sa iyong sarili? Oo o Hindi",
+            "failure_response": "Pasensya na, nahihirapan akong umintindi. Ililipat ka na namin ngayon. Pakiantay lamang para sa isang kabataang responder"
+          },
+          "2": {
+            "slot_name": "csam",
+            "slot_type_name": "yes_no",
+            "slot_question": "Nais mo bang mag report ng Child Sexual Abuse Material (CSAM) o insidente ng Sexual Exploitation? Mangyaring tumugon 1 para sa pag-uulat ng CSAM, 2 kung hindi ka nag-uulat.",
+            "failure_response": "Pasensya na, nahihirapan akong umintindi. Ililipat ka na namin ngayon. Pakiantay lamang para sa isang kabataang responder"
+          },
+          "3": {
+            "slot_name": "age",
+            "slot_type_name": "age",
+            "slot_question": "Ilan taon ka na?",
+            "failure_response": "Pasensya na, nahihirapan akong umintindi. Ililipat ka na namin ngayon. Pakiantay lamang para sa isang kabataang responder"
+          },
+          "4": {
+            "slot_name": "gender",
+            "slot_type_name": "gender",
+            "slot_question": "Gender: 1.Babae, 2.Lalaki, 3.LGBTQ+",
+            "failure_response": "Pasensya na, nahihirapan akong umintindi. Ililipat ka na namin ngayon. Pakiantay lamang para sa isang kabataang responder"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,117 @@
+{
+    "intentName": "pre_survey",
+    "description": "Specific configs/lex_v2/ZM/bots Pre Survey bot",
+    "sampleUtterances": [],
+    "dialogCodeHook": {
+        "enabled": false
+    },
+    "fulfillmentCodeHook": {
+        "enabled": false,
+        "active": true,
+        "postFulfillmentStatusSpecification": {
+            "successNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "timeoutNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            }
+        }
+    },
+    "slotPriorities": [
+        {
+            "priority": 1,
+            "slotName": "aboutSelf"
+        },
+        {
+            "priority": 2,
+            "slotName": "helpline"
+        },
+        {
+            "priority": 3,
+            "slotName": "age"
+        },
+        {
+            "priority": 4,
+            "slotName": "gender"
+        }
+    ],
+    "intentClosingSetting": {
+        "closingResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Tusakwimi tuma pembelelai, pacheche ba nkwasho."
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "EndConversation"
+            },
+            "intent": {}
+        }
+    },
+    "initialResponseSetting": {
+        "initialResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Mwabula mukwai ku Lifeline/Childline. Tubakateke musubile bipusikilo bino."
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "InvokeDialogCodeHook"
+            },
+            "intent": {}
+        },
+        "codeHook": {
+            "enableCodeHookInvocation": true,
+            "active": true,
+            "postCodeHookSpecification": {
+                "successNextStep": {
+                    "dialogAction": {
+                        "type": "ElicitSlot",
+                        "slotToElicit": "aboutSelf"
+                    },
+                    "intent": {}
+                },
+                "failureNextStep": {
+                    "dialogAction": {
+                        "type": "EndConversation"
+                    },
+                    "intent": {}
+                },
+                "timeoutNextStep": {
+                    "dialogAction": {
+                        "type": "EndConversation"
+                    },
+                    "intent": {}
+                }
+            }
+        }
+    }
+}

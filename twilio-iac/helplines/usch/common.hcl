@@ -13,7 +13,9 @@ locals {
     task_language              = "en-US"
     enable_post_survey         = false
     enable_external_recordings = false
-    permission_config          = "en-USCH"
+    permission_config          = "usch"
+    enable_lex_v2              = true
+    
     channel_attributes = {
       webchat                         = "/app/twilio-iac/helplines/usch/templates/channel-attributes/webchat.tftpl",
       voice                           = "/app/twilio-iac/helplines/usch/templates/channel-attributes/voice.tftpl",
@@ -61,6 +63,12 @@ locals {
       }
     }
 
-
+    lex_bot_languages = {
+      en_USCH : []
+    }
+    lex_v2_bot_languages = {
+       en_USCH : ["pre_survey"]
+    }
+    
   }
 }

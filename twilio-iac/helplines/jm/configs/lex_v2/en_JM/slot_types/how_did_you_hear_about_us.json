@@ -1,0 +1,198 @@
+{
+    "slotTypeName": "how_did_you_hear_about_us",
+    "slotTypeValues": [
+         {
+            "sampleValue": {
+                "value": "Traditional Media"
+            },
+            "synonyms": [
+                {
+                    "value": "4"
+                },
+                {
+                    "value": "from the news"
+                },
+                {
+                    "value": "news"
+                },
+                {
+                    "value": "4."
+                },
+                {
+                    "value": "media"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Unknown"
+            },
+            "synonyms": [
+                {
+                    "value": "i dont know"
+                },
+                {
+                    "value": "dont know"
+                },
+                {
+                    "value": "x"
+                },
+                {
+                    "value": "no"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Social Media"
+            },
+            "synonyms": [
+                {
+                    "value": "whatsapp"
+                },
+                {
+                    "value": "on facebook"
+                },
+                {
+                    "value": "fb"
+                },
+                {
+                    "value": "insta"
+                },
+                {
+                    "value": "instagram"
+                },
+                {
+                    "value": "2."
+                },
+                {
+                    "value": "from fb"
+                },
+                {
+                    "value": "social"
+                },
+                {
+                    "value": "from wa"
+                },
+                {
+                    "value": "facebook"
+                },
+                {
+                    "value": "i saw online"
+                },
+                {
+                    "value": "from facebook"
+                },
+                {
+                    "value": "from ig"
+                },
+                {
+                    "value": "2"
+                },
+                {
+                    "value": "online"
+                },
+                {
+                    "value": "ig"
+                },
+                {
+                    "value": "from whatsapp"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "SMS/Text Message"
+            },
+            "synonyms": [
+                {
+                    "value": "3."
+                },
+                {
+                    "value": "text"
+                },
+                {
+                    "value": "from text"
+                },
+                {
+                    "value": "sms"
+                },
+                {
+                    "value": "i got a text"
+                },
+                {
+                    "value": "3"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Advertisement"
+            },
+            "synonyms": [
+                {
+                    "value": "ad"
+                },
+                {
+                    "value": "from ads"
+                },
+                {
+                    "value": "ads"
+                },
+                {
+                    "value": "1."
+                },
+                {
+                    "value": "adverts"
+                },
+                {
+                    "value": "advert"
+                },
+                {
+                    "value": "1"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Word of Mouth"
+            },
+            "synonyms": [
+                {
+                    "value": "from friends"
+                },
+                {
+                    "value": "school"
+                },
+                {
+                    "value": "5"
+                },
+                {
+                    "value": "friend"
+                },
+                {
+                    "value": "5."
+                },
+                {
+                    "value": "my friend"
+                },
+                {
+                    "value": "i heard"
+                },
+                {
+                    "value": "someone told me"
+                },
+                {
+                    "value": "from school"
+                },
+                {
+                    "value": "from my friend"
+                }
+            ]
+        }
+
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

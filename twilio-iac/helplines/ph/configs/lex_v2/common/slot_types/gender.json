@@ -1,0 +1,156 @@
+{
+    "slotTypeName": "gender",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "Non-Binary"
+            },
+            "synonyms": [
+                {
+                    "value": "T"
+                },
+                {
+                    "value": "Agender"
+                },
+                {
+                    "value": "Trans sexual"
+                },
+                {
+                    "value": "Bi"
+                },
+                {
+                    "value": "L"
+                },
+                {
+                    "value": "Nonbinary"
+                },
+                {
+                    "value": "Bisexual"
+                },
+                {
+                    "value": "Lgbtq"
+                },
+                {
+                    "value": "Q"
+                },
+                {
+                    "value": "Non binary"
+                },
+                {
+                    "value": "Trans"
+                },
+                {
+                    "value": "Lesbian"
+                },
+                {
+                    "value": "Nb"
+                },
+                {
+                    "value": "Gay"
+                },
+                {
+                    "value": "Lgbtq+"
+                },
+                {
+                    "value": "3"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Boy"
+            },
+            "synonyms": [
+                {
+                    "value": "M"
+                },
+                {
+                    "value": "Males"
+                },
+                {
+                    "value": "Dude"
+                },
+                {
+                    "value": "Guy"
+                },
+                {
+                    "value": "Man"
+                },
+                {
+                    "value": "B"
+                },
+                {
+                    "value": "Male"
+                },
+                {
+                    "value": "Babae"
+                },
+                {
+                    "value": "Baba"
+                },
+                {
+                    "value": "1"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Girl"
+            },
+            "synonyms": [
+                {
+                    "value": "G"
+                },
+                {
+                    "value": "Female"
+                },
+                {
+                    "value": "Females"
+                },
+                {
+                    "value": "W"
+                },
+                {
+                    "value": "Woman"
+                },
+                {
+                    "value": "Lady"
+                },
+                {
+                    "value": "F"
+                },
+                {
+                    "value": "Lalaki"
+                },
+                {
+                    "value": "2"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Unknown"
+            },
+            "synonyms": [
+                {
+                    "value": "Prefer not"
+                },
+                {
+                    "value": "None of your business"
+                },
+                {
+                    "value": "Prefer not to answer"
+                },
+                {
+                    "value": "X"
+                },
+                {
+                    "value": "Prefer not to"
+                }
+            ]
+        }
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

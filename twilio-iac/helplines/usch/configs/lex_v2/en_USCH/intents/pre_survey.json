@@ -1,0 +1,124 @@
+{
+    "intentName": "pre_survey",
+    "description": "Example specific usch/configs/lex_v2/en_USCH/bots Pre Survey bot",
+    "sampleUtterances": [
+        {
+            "utterance": "trigger_pre_survey"
+        },
+        {
+            "utterance": "Incoming webchat contact"
+        }
+    ],
+    "dialogCodeHook": {
+        "enabled": false
+    },
+    "fulfillmentCodeHook": {
+        "enabled": false,
+        "active": true,
+        "postFulfillmentStatusSpecification": {
+            "successNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "timeoutNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            }
+        }
+    },
+    "slotPriorities": [
+        {
+            "priority": 1,
+            "slotName": "aboutSelf"
+        },
+        {
+            "priority": 2,
+            "slotName": "genderInput"
+        },
+        {
+            "priority": 3,
+            "slotName": "childAge"
+        },
+        {
+            "priority": 4,
+            "slotName": "stateInput"
+        }
+    ],
+    "intentClosingSetting": {
+        "closingResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Thank you for reaching out to our hotline! We will be with you shortly. Please note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp's National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "EndConversation"
+            },
+            "intent": {}
+        }
+    },
+    "initialResponseSetting": {
+        "initialResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "To help us better serve you, please answer the next four short questions. You will then be connected to a counselor. You can type '0' for any question."
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "InvokeDialogCodeHook"
+            },
+            "intent": {}
+        },
+        "codeHook": {
+            "enableCodeHookInvocation": true,
+            "active": true,
+            "postCodeHookSpecification": {
+                "successNextStep": {
+                    "dialogAction": {
+                        "type": "ElicitSlot",
+                        "slotToElicit": "aboutSelf"
+                    },
+                    "intent": {}
+                },
+                "failureNextStep": {
+                    "dialogAction": {
+                        "type": "EndConversation"
+                    },
+                    "intent": {}
+                },
+                "timeoutNextStep": {
+                    "dialogAction": {
+                        "type": "EndConversation"
+                    },
+                    "intent": {}
+                }
+            }
+        }
+    }
+}

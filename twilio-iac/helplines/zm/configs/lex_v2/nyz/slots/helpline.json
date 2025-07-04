@@ -1,8 +1,8 @@
 {
-    "slotName": "about_self",
-    "slotTypeName": "yes_no",
+    "slotName": "helpline",
+    "slotTypeName": "helpline",
     "intentName": "pre_survey",
-    "description": "Contact about self or someone else",
+    "description": "Slot helpline for intent pre_survey",
     "valueElicitationSetting": {
         "slotConstraint": "Required",
         "promptSpecification": {
@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Você está buscando ajuda para você mesm? Sim ou não"
+                            "value": "Kodi ndithandizo lotani lomwe mukutumilapo lamya? \n 1.LifeLine 933 (older than 18) \n 2.ChildLine 116 (18 years old or younger)"
                         }
                     }
                 }
@@ -65,6 +65,36 @@
                         "startTimeoutMs": 30000
                     }
                 }
+            }
+        },
+        "slotCaptureSetting": {
+            "captureNextStep": {
+                "dialogAction": {
+                    "type": "ElicitSlot",
+                    "slotToElicit": "age"
+                },
+                "intent": {}
+            },
+            "failureResponse": {
+                "messageGroups": [
+                    {
+                        "message": {
+                            "plainTextMessage": {
+                                "value": "We are having trouble understanding your response"
+                            }
+                        }
+                    }
+                ],
+                "allowInterrupt": true
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "elicitationCodeHook": {
+                "enableCodeHookInvocation": true
             }
         }
     }

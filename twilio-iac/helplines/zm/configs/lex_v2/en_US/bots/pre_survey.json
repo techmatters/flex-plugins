@@ -1,0 +1,54 @@
+{
+  "pre_survey": {
+    "description": "Specific configs/lex_v2/ZM/bots Pre Survey bot",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "type": "Bot",
+    "intents": {
+      "pre_survey": {
+        "utterances": [
+          {
+            "utterance": "trigger_pre_survey"
+          },
+          {
+            "utterance": "Incoming webchat contact"
+          }
+        ],
+        "initial_response": {
+          "message": "Welcome to the helpline. Please answer the following questions.",
+          "slot_to_elicit": "aboutSelf"
+        },
+        "closing_response": {
+          "message": "We will transfer you now. Please hold for a counsellor."
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "aboutSelf",
+            "slot_type_name": "yes_no",
+            "slot_question": "Are you calling about yourself? Please answer Yes or No.",
+            "failure_response": "We are having trouble understanding your response"
+          },
+          "2": {
+            "slot_name": "helpline",
+            "slot_type_name": "helpline",
+            "slot_question": "Which service are you calling for? \n 1.LifeLine 933 (older than 18) \n 2.ChildLine 116 (18 years old or younger)",
+            "failure_response": "We are having trouble understanding your response"
+          },
+          "3": {
+            "slot_name": "age",
+            "slot_type_name": "age",
+            "slot_question": "Thank you. You can say 'prefer not to answer' (or type X) to any question. \nHow old are you?",
+            "failure_response": "We are having trouble understanding your response"
+          },
+          "4": {
+            "slot_name": "gender",
+            "slot_type_name": "gender",
+            "slot_question": "What is your gender?",
+            "failure_response": "We are having trouble understanding your response"
+          }
+        }
+      }
+    }
+  }
+}

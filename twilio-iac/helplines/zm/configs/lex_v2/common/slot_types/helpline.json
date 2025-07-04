@@ -1,0 +1,46 @@
+{
+    "slotTypeName": "helpline",
+    "slotTypeValues": [
+      {
+        "sampleValue": {
+          "value": "ChildLine Zambia (ZM)"
+        },
+        "synonyms": [
+          {
+            "value": "116"
+          },
+          {
+            "value": "childline"
+          },
+          {
+            "value": "child"
+          },
+          {
+            "value": "2"
+          }
+        ]
+      },
+      {
+        "sampleValue": {
+          "value": "LifeLine Zambia (ZM)"
+        },
+        "synonyms": [
+            {
+              "value": "933"
+            },
+            {
+              "value": "lifeline"
+            },
+            {
+              "value": "life"
+            },
+            {
+              "value": "1"
+            }
+        ]
+      }
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}
